@@ -8,7 +8,7 @@ import fd from "../../../selectors/financialDetails.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
 describe("Test suite: Financial Details Step: Incremental FP for your base period", 
-  { tags: '@iso-ignore' },  () => {
+  () => {
 
     beforeEach(() => {
       bootstrapMockApis();
@@ -21,8 +21,8 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
     
     it("TC1: Let’s create an incremental funding plan for your base period", () => {
       cy.findElement(contractDetails.baseDropdownMonth).click();
-      //Enter the Value for Base
-      const baseValue=randomNumberBetween(9,12)
+      //Enter the Value for Base      
+      const baseValue= "11"
       cy.findElement(contractDetails.baseInputTxtBox).type(baseValue);
       cy.btnClick(common.continueBtn, " Continue ");
       cy.verifyPageHeader("Do you want to request a PoP start date?");
@@ -156,17 +156,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
       cy.verifyPageHeader(
         " Based on your period of performance," +
       " this effort does not qualify for an incremental funding plan. "
-      );
-      const popAlertText = "Why can’t I request to incrementally fund my task order?" +
-      " An incremental funding plan provides the contracting office with assurance" +
-      " that funds have been budgeted and will be available to fully fund" +
-      " all non-optional services on a projected schedule." +
-      " To incrementally fund a task order, the period of performance" +
-      " must be at least 9 months. Based on what you previously told us," +
-      " this contracting effort requires a base period of s. If you would like to" +
-      " request incremental funding, please revisit the" +
-      " Contract Details section to update your period of performance."
-      cy.verifyTextMatches(fd.popUnder9monthsText, popAlertText);
+      );      
       cy.textExists(fd.linkToPoP, "update your period of performance. ").click();
       cy.verifyPageHeader("Let’s gather some details about the duration of your task order")
     }); 

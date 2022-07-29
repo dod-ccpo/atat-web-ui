@@ -33,7 +33,7 @@
             v-if="item.label" 
             :class="[
               {'card-label': item.label}, 
-              {'mb-0': item.label === otherValue }
+              {'mb-0': item.value === otherValue}
             ]"
           >
             {{ item.label }}
@@ -49,22 +49,22 @@
           v-if="otherEntryType === 'textarea'"
           ref="atatTextInput"
           v-show="showOtherEntry(item.value)"
-          id="OtherEntry"
+          :id="otherId"
           class="width-100 ml-5 mb-6"
           :rows="3"
           :validateItOnBlur="validateOtherOnBlur"
           :value.sync="_otherValueEntered"
-          :rules="textareaRequiredRule"
+          :rules="otherRequiredRule"
         />
         <ATATTextField
           v-if="otherEntryType === 'textfield'"
           ref="atatTextInput"
           v-show="showOtherEntry(item.value)"
-          id="OtherEntry"
+          :id="otherId"
           class="ml-5 mb-6 mt-2 _input-wrapper-max-width"
           :validateItOnBlur="validateOtherOnBlur"
           :value.sync="_otherValueEntered"
-          :rules="textareaRequiredRule"
+          :rules="otherRequiredRule"
         />
       </template>
 
@@ -135,9 +135,13 @@ export default class ATATCheckboxGroup extends Vue {
     this.checkboxRules = this.rules;
   }
 
-  private textareaRequiredRule = this.otherValueRequiredMessage 
+  private otherRequiredRule = this.otherValueRequiredMessage 
     ? [this.$validators.required(this.otherValueRequiredMessage)]
     : [];
+
+  get otherId(): string {
+    return getIdText(this.otherValue);
+  }
 
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[]): void {
@@ -145,7 +149,10 @@ export default class ATATCheckboxGroup extends Vue {
     const otherPrevSelectedIndex = this.prevSelected.indexOf(this.otherValue) > -1;
     if (otherIndex && !otherPrevSelectedIndex) {
       Vue.nextTick(() => {
-        document.getElementById("OtherEntry_text_area")?.focus();
+        const id = this.otherEntryType === "textarea" 
+          ? this.otherId + "_text_area" 
+          : this.otherId + "_text_field";
+        document.getElementById(id)?.focus();
       });
     }
     if (newVal.indexOf(this.noneValue) > -1) {

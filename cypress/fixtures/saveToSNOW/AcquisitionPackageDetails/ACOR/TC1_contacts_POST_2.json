@@ -1,0 +1,30 @@
+{
+    "result": {
+        "grade_civ": "",
+        "role": "",
+        "dodaac": "",
+        "sys_updated_on": "2022-07-21 20:21:03",
+        "suffix": "",
+        "title": "",
+        "type": "",
+        "can_access_package": "",
+        "sys_id": "2903a7c287b09150ec3b777acebb3576",
+        "sys_updated_by": "tony.sumner-ctr@ccpo.mil",
+        "phone_and_extension": "",
+        "sys_created_on": "2022-07-21 20:21:03",
+        "phone_extension": "",
+        "first_name": "",
+        "formal_name": " ",
+        "email": "",
+        "sys_created_by": "tony.sumner-ctr@ccpo.mil",
+        "sys_mod_count": "0",
+        "last_name": "",
+        "middle_name": "",
+        "sys_tags": "",
+        "salesforce_id": "",
+        "manually_entered": "false",
+        "phone": "",
+        "rank_components": "",
+        "salutation": ""
+    }
+}

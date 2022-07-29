@@ -24,8 +24,8 @@ module.exports = {
   contractorProviderLabelTxt:"#PackagingEtcCheckboxes label",
   otherCheckBox: "#Checkbox_Other",
   noneCheckBox: "#Checkbox_NoneApply",
-  otherTextBox:"#OtherEntry_text_area",
-  otherTxtError: "#OtherEntry_text_field_control .field-error",
+  otherTextBox:"#OTHER_text_area",
+  otherTxtError: "#OTHER_text_field_control .field-error",
   checkBoxError: "#PackagingEtcCheckboxes .field-error",
   checkBoxActive: "#PackagingEtcCheckboxes .v-input--is-label-active",
   

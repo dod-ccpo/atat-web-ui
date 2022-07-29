@@ -13,51 +13,71 @@ export const toTitleCase = (string: string): string => {
   return _.startCase(_.toLower(string));
 }
 
-export const convertSystemChoiceToSelect = 
-(data:SystemChoiceDTO[]): SelectData[] => data.map(choice=> {
-  const {value} = choice;
-  return {
-    text: choice.label,
-    value
-  }
-});
-
-export const buildClassificationCheckboxList 
-  = (data: ClassificationLevelDTO[], idSuffix: string): Checkbox[] => {
-    const arr: Checkbox[] = [];
-    idSuffix = idSuffix || "";
-    data.forEach((classLevel) => {
-      if (classLevel.impact_level 
-        && classLevel.classification
-        && classLevel.sys_id
-      ) {
-        const label = buildClassificationLabel(classLevel, "long");
-        const classificationCheckbox: Checkbox = {
-          id: classLevel.impact_level + idSuffix,
-          value: classLevel.sys_id,
-          label: label,
-        }
-        arr.push(classificationCheckbox)
+export const convertSystemChoiceToSelect =
+    (data: SystemChoiceDTO[]): SelectData[] => data.map(choice => {
+      const {value} = choice;
+      return {
+        text: choice.label,
+        value
       }
     });
-    return arr.sort((a, b) => (a.id > b.id) ? 1 : -1)
-  };
 
-export const buildClassificationLabel 
-  = (classLevel: ClassificationLevelDTO, type: string,): string => {
-    type = type || "long";
-    const classificationString = classLevel.classification === "U" 
-      ? "Unclassified" 
-      : "Secret";
-    const IL = classLevel.impact_level;
-    const ILNo = IL.charAt(IL.length - 1);
-    const ILString = "Impact Level " + ILNo + " (" + IL + ")";
+export const buildClassificationCheckboxList
+    = (data: ClassificationLevelDTO[], idSuffix: string, descriptionNeeded:boolean): Checkbox[] => {
+      const arr: Checkbox[] = [];
+      idSuffix = idSuffix || "";
+      data.forEach((classLevel) => {
+        if (classLevel.classification
+        && classLevel.sys_id
+        ) {
+          const label = buildClassificationLabel(classLevel, "long");
+          const description = buildClassificationDescription(classLevel)
+          const classificationCheckbox: Checkbox = {
+            id: classLevel.impact_level + idSuffix || classLevel.classification,
+            value: classLevel.sys_id,
+            label: label,
+            description: descriptionNeeded === true? description : "",
+          }
+          arr.push(classificationCheckbox)
+        }
+      });
+      return arr.sort((a, b) => (a.id > b.id) ? 1 : -1)
+    };
 
-    if (type === "long") {
-      return classificationString + " / " + ILString;
+export const buildClassificationLabel
+    = (classLevel: ClassificationLevelDTO, type: string,): string => {
+      type = type || "long";
+      const classificationString = classLevel.classification === "U"
+        ? "Unclassified"
+        : "Secret";
+      const IL = classLevel.impact_level;
+      const ILNo = IL.charAt(IL.length - 1);
+      const ILString = "Impact Level " + ILNo + " (" + IL + ")";
+      if (classLevel.classification === "TS") {
+        return "Top Secret"
+      }
+      if (type === "long") {
+        return classificationString + " / " + ILString;
+      }
+      return classificationString + "/" + IL;
     }
-    return classificationString + "/" + IL;
-  }
+
+export const buildClassificationDescription
+    = (classLevel: ClassificationLevelDTO): string => {
+      switch (classLevel.impact_level) {
+      case "IL2":
+        return `Accommodates DoD information that has been approved for public 
+        release (Low Confidentiality and Moderate Integrity)`
+      case "IL4":
+        return `Accommodates DoD Controlled Unclassified Information (CUI)`
+      case "IL5":
+        return `Accommodates DoD CUI and National Security Systems`
+      case "IL6":
+        return `Accommodates DoD Classified Information up to SECRET`
+      default:
+        return ""
+      }
+    }
 
 //strips whitespace, and special characters
 export const sanitizeOfferingName = (offeringName: string): string => {
@@ -67,10 +87,10 @@ export const sanitizeOfferingName = (offeringName: string): string => {
 
 // formats a number to currency string with commas and 2 decimal places
 export const toCurrencyString = (num: number, decimals?: boolean): string => {
-  const d = decimals === false  ? 0 : 2;
+  const d = decimals === false ? 0 : 2;
   if (!isNaN(num)) {
     return num.toLocaleString(
-      undefined, { minimumFractionDigits: d, maximumFractionDigits: d }
+      undefined, {minimumFractionDigits: d, maximumFractionDigits: d}
     );
   }
   return "";
@@ -78,7 +98,7 @@ export const toCurrencyString = (num: number, decimals?: boolean): string => {
 
 // converts a formatted currency string back to a number
 export const currencyStringToNumber = (str: string): number => {
-  return str ? parseFloat(str.replaceAll(",","")) : 0;
+  return str ? parseFloat(str.replaceAll(",", "")) : 0;
 }
 
 

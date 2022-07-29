@@ -147,7 +147,7 @@
       no-click-animation
       okText="Send Request"
       width="632"
-      :disabled="true"
+      :OKDisabled="true"
     >
       <template #content>
         <p class="body">
