@@ -611,30 +611,30 @@ export default class ComputeForm extends Vue {
       this.isPeriodsDataMissing = true;
     }
     
-    if (DescriptionOfWork.computeInstancesTouched.indexOf(
-      this._computeData.instanceNumber) > -1) {
-      // user is returning to this page, validate on load
-      this.validateOnLoad();
-    }
-
     const classifications = await classificationRequirements.getSelectedClassificationLevels();
     this.isClassificationDataMissing = classifications.length === 0 ? true : false;
 
     this.showSubtleAlert 
       = this.isPeriodsDataMissing || this.isClassificationDataMissing ? true : false;
+    
+    if (DescriptionOfWork.computeInstancesTouched.indexOf(
+      this._computeData.instanceNumber) > -1) {
+      // user is returning to this page, validate on load
+      await this.validateOnLoad();
+    }
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   };
 
-  public validateOnLoad(): void {
+  public async validateOnLoad(): Promise<void> {
     // const computeInstancesTouched = DescriptionOfWork.computeInstancesTouched;
     // const currentComputeInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
     // debugger;
     // // this should work after merge 
     // if (computeInstancesTouched.indexOf(currentComputeInstanceNumber) > -1) {
-    this.validateForm();
+    await this.validateForm();
     this.setErrorMessages();
     // }
   }
