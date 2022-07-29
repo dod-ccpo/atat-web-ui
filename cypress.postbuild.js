@@ -7,7 +7,6 @@ const dirTree = require('directory-tree')
 const clear = require('clear')
 const { minify } = require("terser");
 const html = require('html-minifier-terser');
-// const minify = require("babel-minify");
 const {
   Console
 } = require('console')
@@ -50,7 +49,6 @@ function transformScripts(inputHTML) {
 function resolveMetaTags(inputHTML) {
   return inputHTML.match(metaTagRegEx);
 }
-
 
 async function decorateIndexHTML(pathToHTML) {
   clear();
