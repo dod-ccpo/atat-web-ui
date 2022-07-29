@@ -162,4 +162,28 @@
   legend {
     font-weight: 500;
   }
+  
+  &.error--text {
+    color: $error !important;
+
+    label.error--text {
+      color: $error !important;
+    }
+
+    legend {
+      color: $base-darker !important;
+    }
+
+    .tooltip-button i {
+      color: $primary !important;
+    }
+  }
+
+  .v-messages.error--text {
+    transition: none !important;
+    display: none !important;
+    .v-messages__wrapper {
+      display: none !important;
+    }
+  }
 }

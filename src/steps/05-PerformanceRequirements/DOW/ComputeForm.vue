@@ -19,6 +19,20 @@
       </span>
     </p>
 
+    <ATATAlert
+      id="ErrorsOnLoadAlert"
+      v-show="hasErrorsOnLoad === true"
+      type="error"
+      class="mb-10"
+    >
+      <template v-slot:content>
+        <p class="mb-0" id="ErrorsOnLoadAlertText">
+          Some of your info is missing. You can add it now or come back at any 
+          time before finalizing your acquisition package.
+        </p>
+      </template>
+    </ATATAlert>
+
     <h2 class="mb-5" id="FormSection1Heading">
       1. Tell us about Instance #{{ _computeData.instanceNumber }}
     </h2>
@@ -84,6 +98,7 @@
           id="DescriptionOfNeed"
           label="Description of your anticipated need or usage"
           :value.sync="_computeData.needOrUsageDescription"
+          :textAreaWithCounter="true"
           :rules="[
             $validators.required(
               'Please provide a description for this requirement.'
@@ -99,7 +114,7 @@
     </v-row>
 
     <ATATRadioGroup
-      class="copy-max-width mb-10"
+      class="copy-max-width mb-10 mt-4"
       id="NeededForEntireDuration"
       legend="Is this instance needed for the entire duration of your task order?"
       :items="requirementOptions"
@@ -569,9 +584,19 @@ export default class ComputeForm extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    this.setErrorMessage();
-
+    this.validateOnLoad();
   };
+
+  public validateOnLoad(): void {
+    const computeInstancesTouched = DescriptionOfWork.computeInstancesTouched;
+    const currentComputeInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
+    debugger;
+    // this should work after merge 
+    if (computeInstancesTouched.indexOf(currentComputeInstanceNumber) > -1) {
+      this.validateForm();
+      this.setErrorMessages();
+    }
+  }
 
   $refs!: {
     computeForm: Vue & {
@@ -582,14 +607,41 @@ export default class ComputeForm extends Vue {
     };
   };
 
-  public errorMessages: string[] = []
-  private setErrorMessage(): void {
+  // public errorMessages: string[] = []
+  public hasErrorsOnLoad = false;
+
+  private setErrorMessages(): void {
     const formChildren = this.$refs.computeForm.$children;
     debugger;
-    Vue.nextTick(()=>{
-      this.errorMessages = this.$refs.computeForm.errorBucket;
-      debugger;
+    const inputRefs = ["atatTextField", "atatTextArea", "radioButtonGroup", "atatSelect"];
+    inputRefs.forEach((refName) => {
+
+      formChildren.forEach((child: any) => {
+        const refs = child.$refs;
+        const keys = Object.keys(refs);
+        keys.forEach((key: string) => {
+          if (keys.length && key.indexOf(refName) > -1) {
+            const childRefs: any = child.$refs[refName];
+            debugger;
+            if (childRefs && Object.prototype.hasOwnProperty.call(childRefs, "errorBucket")
+              && childRefs.errorBucket
+            ) {
+              const errorBucket: string[] = childRefs.errorBucket;
+              if (errorBucket.length) {
+                this.hasErrorsOnLoad = true;
+                errorBucket.forEach((error) => {
+                  child.errorMessages.push(error);
+                });
+              }
+            }
+          }
+        });
+      });
     });
+
+    // Vue.nextTick(()=>{
+    //   this.errorMessages = this.$refs.computeForm.errorBucket;
+    // });
   }
 
   get Form(): Vue & { validate: () => boolean } {
