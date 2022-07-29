@@ -116,3 +116,31 @@ export const getLegendAmount = (total: number, indexValue: number): string => {
   const amount = Math.round(total * indexValue / 100);
   return getCurrencyString(amount, false);
 }
+
+export const roundTo100 = (numberArr: number[], withTenths?: boolean): number[] => {
+  const output = [];
+  let acc = 0;
+  for(let i = 0; i < numberArr.length; i++) {
+    let roundedCur
+    if(withTenths){
+      roundedCur = Math.round(10 * numberArr[i])/10
+    } else {
+      roundedCur = Math.round(numberArr[i]);
+    }
+
+    const currentAcc = acc;
+    if (acc == 0) {
+      output.push(roundedCur);
+      acc += numberArr[i];
+      continue;
+    }
+    acc += numberArr[i];
+    if(withTenths) {
+      output.push(Math.round(10 * acc)/10 - Math.round(10 * currentAcc)/10);
+    } else {
+      output.push(Math.round(acc) - Math.round(currentAcc));
+    }
+  }
+
+  return output;
+}
