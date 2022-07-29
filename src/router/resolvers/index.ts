@@ -339,7 +339,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   }
   const groupId = DescriptionOfWork.currentGroupId;
   if (groupId.toLowerCase() === "compute") {
-    // EJY do we need to handle coming backward to this page?
     return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`
   }
 

@@ -604,9 +604,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       }
     }
     return 1;
-
   }
-
 
   @Action
   public async setCurrentComputeInstanceNumber(number: number): Promise<void> {

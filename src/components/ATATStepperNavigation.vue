@@ -23,7 +23,6 @@
             role="link" 
             class="ml-4"
             :id="button.buttonId"
-            data-foo="'' + button.hide"
             :class="{ 'd-none': button.hide }"
           >
             {{ button.buttonText }}
