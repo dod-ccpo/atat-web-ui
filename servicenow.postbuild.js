@@ -3,8 +3,11 @@
  */
 const servicenowConfig = require('./servicenow.config')
 const fs = require('fs')
+const path = require('path');
 const dirTree = require('directory-tree')
 const clear = require('clear')
+const { minify } = require("terser");
+const html = require('html-minifier-terser');
 const {
   Console
 } = require('console')
@@ -15,11 +18,17 @@ const metaTagRegEx = /<\s*meta[^>]*(.*?)>/g
 const materialIconsRegEx = /\s*other_assets\/MaterialIcons/g
 const robotoFontsRegex = /\s*other_assets\/roboto-/g
 const imgRegex =/\s*img\//g
-decorateIndexHTML(PATH_TO_DIST_HTML)
-updateAppAssetPaths()
-updateVendorAssetPaths()
-updateAppImgPaths()
-outputResults()
+
+
+;
+(async function () {
+  await decorateIndexHTML(PATH_TO_DIST_HTML)
+  updateAppAssetPaths()
+  updateVendorAssetPaths()
+  await minifyJavascript()
+  updateAppImgPaths()
+  outputResults()
+})();
 
 /**
  * 
@@ -185,7 +194,7 @@ function removeDoubleNewlines(inputHTML) {
   return inputHTML.replace(/\s{2,}/gm, '\n')
 }
 
-function decorateIndexHTML(pathToHTML) {
+async function decorateIndexHTML(pathToHTML) {
   const indexHTMLContent = fs.readFileSync(pathToHTML, 'utf-8')
   let decoratedHTML = indexHTMLContent
   decoratedHTML = removeDocType(decoratedHTML)
@@ -198,6 +207,7 @@ function decorateIndexHTML(pathToHTML) {
   decoratedHTML = injectJellyWrappers(decoratedHTML)
   decoratedHTML = removeXmlTag(decoratedHTML);
   // decoratedHTML = injectJellySafeMetaTags(decoratedHTML)
+  decoratedHTML = await html.minify(decoratedHTML, {});
   fs.writeFileSync(pathToHTML, decoratedHTML)
 }
 
@@ -282,6 +292,35 @@ function updateAppImgPaths() {
 
 function bytesNumToKbsStr(bytesNum) {
   return Math.round(bytesNum / 1000) + 'kB'
+}
+
+async function minifyJavascript(){
+
+  console.log('minify javascript');
+  try {
+
+ 
+    const files = fs.readdirSync('./dist/js');
+    const dirPath = path.join(__dirname, '/dist/js');
+    const jsFiles = files.map(file=> (`${dirPath}\\${file}`));
+    console.log('processing the following files:');
+    console.log({jsFiles});
+
+    const minifiyFiles = jsFiles.map(file=> (async ()=> {
+      console.log(`reading file ${file}`)
+      const content = fs.readFileSync(file, "utf8");
+      const output = await minify({"app":content.toString()}, {});
+      console.log(`writing minified output for ${file}`);
+      fs.writeFileSync(file, output.code, "utf8");
+    })());
+
+    await Promise.all(minifiyFiles);
+
+  } catch (error) {
+
+    console.log({error});
+
+  }
 }
 
 function outputResults() {
