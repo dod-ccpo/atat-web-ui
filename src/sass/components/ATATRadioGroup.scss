@@ -182,8 +182,16 @@
   .v-messages.error--text {
     transition: none !important;
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
     .v-messages__wrapper {
       display: none !important;
+      .v-messages__message {
+        display: none !important;
+        transition: none !important;
+      }
+  
     }
   }
+
 }

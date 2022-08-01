@@ -39,6 +39,7 @@
       @blur="onBlur"
       @update:error="setErrorMessage"
       autocomplete="off"
+      :type="type"
     >
       <template v-slot:prepend-inner>
         <ATATSVGIcon
@@ -115,6 +116,7 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: false }) private disabled?: boolean;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private hideHelpTextOnErrors?: boolean;
+  @Prop({ default: "text" }) private type?: string;
 
   @PropSync("value", { default: "" }) private _value!: string;
 

@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="computeForm" lazy-validation>
+  <v-form ref="computeForm">
     <h1 class="page-header mb-3">
       <span v-if="firstTimeHere">Let’s start by gathering your Compute requirements</span>
       <span v-else>
@@ -209,6 +209,7 @@
           label="Number of vCPUs"
           :tooltipText="VCPUTooltipText"
           :value.sync="_computeData.numberOfVCPUs"
+          type="number"
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
           ]"
@@ -222,6 +223,7 @@
           :tooltipText="memoryTooltipText"
           :value.sync="_computeData.memory"
           appendText="GB"
+          type="number"
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
           ]"
@@ -245,6 +247,7 @@
           :tooltipText="storageAmountTooltipText"
           :value.sync="_computeData.storageAmount"
           appendText="GB"
+          type="number"
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
           ]"
@@ -275,6 +278,7 @@
           label="Number of instances needed"
           :tooltipText="numberOfInstancesTooltipText"
           :value.sync="_computeData.numberOfInstancesNeeded"
+          type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.')
           ]"
@@ -616,27 +620,22 @@ export default class ComputeForm extends Vue {
 
     this.showSubtleAlert 
       = this.isPeriodsDataMissing || this.isClassificationDataMissing ? true : false;
-    
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
     if (DescriptionOfWork.computeInstancesTouched.indexOf(
       this._computeData.instanceNumber) > -1) {
       // user is returning to this page, validate on load
       await this.validateOnLoad();
     }
-  }
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
   };
 
   public async validateOnLoad(): Promise<void> {
-    // const computeInstancesTouched = DescriptionOfWork.computeInstancesTouched;
-    // const currentComputeInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
-    // debugger;
-    // // this should work after merge 
-    // if (computeInstancesTouched.indexOf(currentComputeInstanceNumber) > -1) {
     await this.validateForm();
-    this.setErrorMessages();
-    // }
+    this.$nextTick(async () => {
+      this.setErrorMessages();
+    });
   }
 
   $refs!: {
@@ -648,41 +647,34 @@ export default class ComputeForm extends Vue {
     };
   };
 
-  // public errorMessages: string[] = []
   public hasErrorsOnLoad = false;
 
   private setErrorMessages(): void {
     const formChildren = this.$refs.computeForm.$children;
-    debugger;
-    const inputRefs = ["atatTextField", "atatTextArea", "radioButtonGroup", "atatSelect"];
-    inputRefs.forEach((refName) => {
+    const inputRefs = ["radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect"];
 
-      formChildren.forEach((child: any) => {
-        const refs = child.$refs;
-        const keys = Object.keys(refs);
-        keys.forEach((key: string) => {
-          if (keys.length && key.indexOf(refName) > -1) {
-            const childRefs: any = child.$refs[refName];
-            debugger;
-            if (childRefs && Object.prototype.hasOwnProperty.call(childRefs, "errorBucket")
-              && childRefs.errorBucket
-            ) {
-              const errorBucket: string[] = childRefs.errorBucket;
-              if (errorBucket.length) {
-                this.hasErrorsOnLoad = true;
-                errorBucket.forEach((error) => {
-                  child.errorMessages.push(error);
-                });
-              }
+    formChildren.forEach((child: any) => {
+      const refs = child.$refs;
+      const keys = Object.keys(refs);
+
+      keys.forEach((key: string) => {
+
+        if (inputRefs.indexOf(key) > -1) {
+          const childRef: any = child.$refs[key];
+          if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")
+            && childRef.errorBucket
+          ) {
+            const errorBucket: string[] = childRef.errorBucket;
+            if (errorBucket.length) {
+              this.hasErrorsOnLoad = true;
+              errorBucket.forEach((error) => {
+                child.errorMessages.push(error);
+              });
             }
           }
-        });
+        }
       });
     });
-
-    // Vue.nextTick(()=>{
-    //   this.errorMessages = this.$refs.computeForm.errorBucket;
-    // });
   }
 
   get Form(): Vue & { validate: () => boolean } {

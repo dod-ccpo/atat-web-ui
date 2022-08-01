@@ -115,6 +115,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ComputeData, ComputeInstanceTableData } from "../../../../types/Global";
 import { buildClassificationLabel } from "@/helpers";
+import _ from 'lodash';
 
 @Component({
   components: {
@@ -145,6 +146,8 @@ export default class ComputeRequirements extends Vue {
   public showDeleteInstanceDialog = false;
   public instanceNumberToDelete = 0;
   public showDeleteComputeDialog = false;
+  public missingEnvironmentType = false;
+
 
   get confirmComputeDelete(): boolean {
     return DescriptionOfWork.confirmComputeDeleteVal;
@@ -208,24 +211,25 @@ export default class ComputeRequirements extends Vue {
     this.tableData = [];
     this.computeInstances = await DescriptionOfWork.getComputeInstances();
     this.computeInstances.forEach((instance) => {
+      const instanceClone = _.clone(instance);
       const otherRegionIndex = instance.deployedRegions.indexOf("OtherRegion");
       if (otherRegionIndex > -1) {
-        instance.deployedRegions.splice(otherRegionIndex, 1);
-        if (instance.deployedRegionsOther) {
-          instance.deployedRegions.push(instance.deployedRegionsOther);
+        instanceClone.deployedRegions.splice(otherRegionIndex, 1);
+        if (instanceClone.deployedRegionsOther) {
+          instanceClone.deployedRegions.push(instanceClone.deployedRegionsOther);
         }
       }
-      const deployedRegions = instance.deployedRegions.join(", ");
+      const deployedRegions = instanceClone.deployedRegions.join(", ");
 
-      const performanceTier = instance.performanceTier.indexOf("Other") > -1
-        ? instance.performanceTierOther
-        : instance.performanceTier;
+      const performanceTier = instanceClone.performanceTier.indexOf("Other") > -1
+        ? instanceClone.performanceTierOther
+        : instanceClone.performanceTier;
 
       const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
       let classificationLevel = "";
       if (classificationLevels.length > 1) {
         const classificationObj = classificationLevels.find(
-          obj => obj.sys_id === instance.classificationLevel
+          obj => obj.sys_id === instanceClone.classificationLevel
         );
         if (classificationObj) {
           classificationLevel = buildClassificationLabel(classificationObj, "short");
@@ -233,21 +237,21 @@ export default class ComputeRequirements extends Vue {
       } else {
         this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
       }
-
-      if (!instance.environmentType) {
+      
+      if (!instanceClone.environmentType) {
         // eslint-disable-next-line max-len
-        instance.environmentType = `<div class="text-error font-weight-500">Unknown</div><div class="d-flex align-center"><svg viewBox="0 0 18 18" height="14px" width="14px" xmlns="http://www.w3.org/2000/svg"><path d="M9.83366 13.6641H10.3337V13.1641V11.4974V10.9974H9.83366H8.16699H7.66699V11.4974V13.1641V13.6641H8.16699H9.83366ZM9.83366 10.3307H10.3337V9.83073V4.83073V4.33073H9.83366H8.16699H7.66699V4.83073V9.83073V10.3307H8.16699H9.83366ZM1.16699 8.9974C1.16699 4.67354 4.67647 1.16406 9.00033 1.16406C13.3242 1.16406 16.8337 4.67354 16.8337 8.9974C16.8337 13.3213 13.3242 16.8307 9.00033 16.8307C4.67647 16.8307 1.16699 13.3213 1.16699 8.9974Z" fill="#c60634" stroke="#c60634"/></svg><span class="font-size-12 text-error d-inline-block ml-1">Missing info</span></div>`;
+        instanceClone.environmentType = `<div class="text-error font-weight-500">Unknown</div><div class="d-flex align-center"><svg viewBox="0 0 18 18" height="14px" width="14px" xmlns="http://www.w3.org/2000/svg"><path d="M9.83366 13.6641H10.3337V13.1641V11.4974V10.9974H9.83366H8.16699H7.66699V11.4974V13.1641V13.6641H8.16699H9.83366ZM9.83366 10.3307H10.3337V9.83073V4.83073V4.33073H9.83366H8.16699H7.66699V4.83073V9.83073V10.3307H8.16699H9.83366ZM1.16699 8.9974C1.16699 4.67354 4.67647 1.16406 9.00033 1.16406C13.3242 1.16406 16.8337 4.67354 16.8337 8.9974C16.8337 13.3213 13.3242 16.8307 9.00033 16.8307C4.67647 16.8307 1.16699 13.3213 1.16699 8.9974Z" fill="#c60634" stroke="#c60634"/></svg><span class="font-size-12 text-error d-inline-block ml-1">Missing info</span></div>`;
       }
 
       const instanceData: ComputeInstanceTableData = {
-        instanceNumber: instance.instanceNumber,
-        type: instance.environmentType,
+        instanceNumber: instanceClone.instanceNumber,
+        type: instanceClone.environmentType,
         location: deployedRegions,
         classification: classificationLevel,
-        qty: instance.numberOfInstancesNeeded,
-        vCPU: instance.numberOfVCPUs,
-        memory: instance.memory ? `${instance.memory} GB` : "",
-        storage: instance.storageAmount ? `${instance.storageAmount} GB` : "" ,
+        qty: instanceClone.numberOfInstancesNeeded,
+        vCPU: instanceClone.numberOfVCPUs,
+        memory: instanceClone.memory ? `${instanceClone.memory} GB` : "",
+        storage: instanceClone.storageAmount ? `${instanceClone.storageAmount} GB` : "" ,
         performance: performanceTier,
       };
       this.tableData.push(instanceData);
