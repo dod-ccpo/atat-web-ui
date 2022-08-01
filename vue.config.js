@@ -1,9 +1,5 @@
-// const path = require('path')
-// const HtmlWebPackPlugin = require('html-webpack-plugin')
 const servicenowConfig = require('./servicenow.config')
-// const { merge } = require('webpack-merge');
 
-// const ROOT_PATH = path.join(__dirname, '../')
 
 const DEFAULTS = {
   ASSET_SIZE_LIMIT: 10000
@@ -28,6 +24,7 @@ module.exports = {
       // }
 
       config.optimization = {
+        minimize: true,
         splitChunks: {
           cacheGroups: {
             vendors: {
