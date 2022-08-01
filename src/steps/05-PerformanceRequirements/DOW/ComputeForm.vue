@@ -129,7 +129,7 @@
             ),
             $validators.maxLength(
               300,
-              'Please limit your description to 300 characters or less'
+              'Please limit your description to 300 characters or less.'
             ),
           ]"
           maxChars="300"
@@ -210,6 +210,7 @@
           :tooltipText="VCPUTooltipText"
           :value.sync="_computeData.numberOfVCPUs"
           type="number"
+          :allowDecimals="false"
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
           ]"
