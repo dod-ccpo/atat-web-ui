@@ -44,7 +44,7 @@ import occ from '../selectors/occ.sel';
 import fd from '../selectors/financialDetails.sel'
 import performanceReqs from '../selectors/performanceReqs.sel';
 
-import { mount } from "@cypress/vue2";
+import { mount } from "@cypress/vue";
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
 
@@ -1054,11 +1054,10 @@ Cypress.Commands.add("selectIncrementalFundingPlan", (radioSelector, value) => {
           
     })
 });
-
 Cypress.Commands.add("mount", (MountedComponent, options) => {
   // get the element that our mounted component will be injected into
   const root = document.getElementById("__cy_root");
-
+  root.setAttribute('style', 'display: block');
   // add the v-application class that allows Vuetify styles to work
   if (!root.classList.contains("v-application")) {
     root.classList.add("v-application");
@@ -1066,7 +1065,7 @@ Cypress.Commands.add("mount", (MountedComponent, options) => {
 
   // add the data-attribute — Vuetify selector used for popup elements to attach to the DOM
   root.setAttribute('data-app', 'true');
-  root.setAttribute('style', 'display: block');
+
   
   return mount(MountedComponent, {
     vuetify: new Vuetify({}),

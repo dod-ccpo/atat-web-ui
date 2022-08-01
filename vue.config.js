@@ -17,7 +17,6 @@ module.exports = {
 
   transpileDependencies: [
     'vuex-module-decorators',
-      'vuetify'
   ],
 
   // eslint-disable-next-line no-unused-vars

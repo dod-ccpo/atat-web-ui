@@ -9,7 +9,7 @@ Vue.use(Vuetify);
 describe('ATATTextField', () => {
 
   it('renders the ATATTextField component', () => {
-    // mount the component by itself in the browser 🏗
+    // mount the component by itself in the browser
     mount(ATATTextField);
   })
 })
