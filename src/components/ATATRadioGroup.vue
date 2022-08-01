@@ -149,9 +149,7 @@ export default class ATATRadioGroup extends Vue {
 
   // methods
   private setErrorMessage(): void {
-    Vue.nextTick(()=>{
-      this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
-    });
+    this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
   } 
   private clearErrorMessage(): void {
     this.errorMessages = [];

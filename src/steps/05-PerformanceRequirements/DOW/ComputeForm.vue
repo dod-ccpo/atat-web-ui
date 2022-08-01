@@ -512,7 +512,8 @@ export default class ComputeForm extends Vue {
     ) {
       const classificationObj = this.avlClassificationLevelObjects[0];
       this._computeData.classificationLevel = classificationObj.sys_id;
-      this.singleClassificationLevelName = buildClassificationLabel(classificationObj, "short");
+      this.singleClassificationLevelName 
+        = buildClassificationLabel(classificationObj, "short");
     }
   }
 
@@ -564,7 +565,7 @@ export default class ComputeForm extends Vue {
 
   private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";
-    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix, false) : [];
+    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix, false, false) : [];
   }
 
   public async setAvailableClassificationLevels(): Promise<void> {

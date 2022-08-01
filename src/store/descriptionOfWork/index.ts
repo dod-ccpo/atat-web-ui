@@ -733,7 +733,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const deleteIndex = this.computeInstancesTouched.indexOf(instanceNumber);
     this.computeInstancesTouched.splice(deleteIndex, 1);
     this.computeInstancesTouched.map(i => i >= deleteIndex ? i + 1 : i);
-    debugger;
   }
 
   confirmComputeDelete = false;

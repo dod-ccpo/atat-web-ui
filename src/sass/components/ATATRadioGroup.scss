@@ -158,7 +158,7 @@
   }
 }
 
-._atat-radio-group {
+._atat-radio-group.v-input.v-input--radio-group {
   legend {
     font-weight: 500;
   }
@@ -178,20 +178,28 @@
       color: $primary !important;
     }
   }
-
-  .v-messages.error--text {
-    transition: none !important;
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    .v-messages__wrapper {
+  .v-input__control {
+    .v-messages.error--text {
       display: none !important;
-      .v-messages__message {
+      .v-messages__wrapper {
         display: none !important;
-        transition: none !important;
+          .v-messages__message {
+          display: none !important;
+        }
       }
-  
     }
+    .v-messages {       
+      position: relative;
+      .message-transition-leave-active.message-transition-leave-to {
+        position: absolute;
+        display: none !important;
+        transition: none !important;  
+        transform: none !important;
+        left: -10000;
+        top: -10000;
+      }
+    }
+
   }
 
 }

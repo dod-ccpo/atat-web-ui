@@ -22,30 +22,40 @@ export const convertSystemChoiceToSelect =
       }
     });
 
-export const buildClassificationCheckboxList
-    = (data: ClassificationLevelDTO[], idSuffix: string, descriptionNeeded:boolean): Checkbox[] => {
-      const arr: Checkbox[] = [];
-      idSuffix = idSuffix || "";
-      data.forEach((classLevel) => {
-        if (classLevel.classification
-        && classLevel.sys_id
-        ) {
-          const label = buildClassificationLabel(classLevel, "long");
-          const description = buildClassificationDescription(classLevel)
-          const classificationCheckbox: Checkbox = {
-            id: classLevel.impact_level + idSuffix || classLevel.classification,
-            value: classLevel.sys_id,
-            label: label,
-            description: descriptionNeeded === true? description : "",
-          }
-          arr.push(classificationCheckbox)
-        }
-      });
-      return arr.sort((a, b) => (a.id > b.id) ? 1 : -1)
-    };
+export const buildClassificationCheckboxList = (
+  data: ClassificationLevelDTO[], 
+  idSuffix: string, 
+  descriptionNeeded: boolean,
+  includeTS: boolean,
+): Checkbox[] => {
+  includeTS = includeTS || false;
+  const arr: Checkbox[] = [];
+  idSuffix = idSuffix || "";
+
+  if (!includeTS) {
+    data = data.filter(obj => obj.classification !== "TS");
+  }
+
+  data.forEach((classLevel) => {
+    if (classLevel.classification
+    && classLevel.sys_id
+    ) {
+      const label = buildClassificationLabel(classLevel, "long");
+      const description = buildClassificationDescription(classLevel)
+      const classificationCheckbox: Checkbox = {
+        id: classLevel.impact_level + idSuffix || classLevel.classification,
+        value: classLevel.sys_id,
+        label: label,
+        description: descriptionNeeded === true? description : "",
+      }
+      arr.push(classificationCheckbox)
+    }
+  });
+  return arr.sort((a, b) => (a.id > b.id) ? 1 : -1)
+};
 
 export const buildClassificationLabel
-    = (classLevel: ClassificationLevelDTO, type: string,): string => {
+    = (classLevel: ClassificationLevelDTO, type: string): string => {
       type = type || "long";
       const classificationString = classLevel.classification === "U"
         ? "Unclassified"
