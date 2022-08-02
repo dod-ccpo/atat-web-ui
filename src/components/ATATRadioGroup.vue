@@ -114,7 +114,11 @@ export default class ATATRadioGroup extends Vue {
 
   // refs
   $refs!: {
-    radioButtonGroup: Vue & { errorBucket: string[]; errorCount: number };
+    radioButtonGroup: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      validate: () => boolean;
+    };
   }; 
 
   // props
@@ -137,18 +141,29 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: "" }) private otherValue!: string;
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
+  @Prop({ default: false }) private validateOtherNow?: boolean;
 
   // data
   private errorMessages: string[] = [];
-  private validateOtherOnBlur = true;
+  private validateOtherOnBlur = false;
   private hideOtherInput = false;
 
-  private otherRequiredRule = this.otherValueRequiredMessage 
+  private otherRequiredRule = this.otherValueRequiredMessage && this.validateOtherOnBlur
     ? [this.$validators.required(this.otherValueRequiredMessage)]
     : [];
+  // private otherRequiredRule = [];
+
+  @Watch("validateOtherOnBlur")
+  public validateOtherOnBlurChange(newVal: boolean): void {
+    this.otherRequiredRule = this.otherValueRequiredMessage && this.validateOtherOnBlur
+      ? [this.$validators.required(this.otherValueRequiredMessage)]
+      : [];
+  }
 
   // methods
   private setErrorMessage(): void {
+    debugger;
+
     this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
   } 
   private clearErrorMessage(): void {
@@ -183,6 +198,7 @@ export default class ATATRadioGroup extends Vue {
   // events
   private onClick(): void {
     this.clearErrorMessage();
+    this.$emit("radioClick");
   }
 
   private onBlur(): void {
@@ -208,6 +224,32 @@ export default class ATATRadioGroup extends Vue {
       this._otherValueEntered = "";
     }
   }
+
+  get radioGroup(): Vue & { validate: () => boolean } {
+    return this.$refs.radioButtonGroup as Vue & { validate: () => boolean };
+  }
+
+  @Watch("validateOtherNow")
+  public async validateOtherNowChanged(): Promise<void> {
+    const id = this.otherEntryType === "textarea" 
+      ? this.otherId + "_text_area" 
+      : this.otherId + "_text_field";
+    document.getElementById(id)?.focus();
+    document.getElementById(id)?.blur();
+
+    this.setErrorMessage();
+  }
+
+  public async validateRadioGroup(): Promise<boolean> {
+    let valid = false;
+    debugger;
+    await this.$nextTick(() => {
+      valid = this.radioGroup.validate();
+    });
+
+    return valid;
+  }
+
 }
 
 </script>

@@ -29,17 +29,19 @@
         >update your Classification Requirements</a>.
       </span>
     </p>
-
+    
     <DOWSubtleAlert
       v-show="showSubtleAlert"
       :isClassificationDataMissing="isClassificationDataMissing"
       :isPeriodsDataMissing="isPeriodsDataMissing"
       class="copy-max-width"
     />
+    <h2>formHasErrors: {{ formHasErrors }}</h2>
+      <!-- v-show="hasErrorsOnLoad === true" -->
 
     <ATATAlert
       id="ErrorsOnLoadAlert"
-      v-show="hasErrorsOnLoad === true"
+      v-show="formHasErrors === true"
       type="error"
       class="mb-10"
     >
@@ -68,6 +70,7 @@
       name="EnvironmnetType"
       class="mt-3 mb-8"
       :rules="[$validators.required('Please select a type of environment.')]"
+      @radioClick="validateForm"
     />
 
     <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
@@ -81,6 +84,7 @@
         :tooltipText="classificationTooltipText"
         tooltipLabel="Classification level for this instance"
         :rules="[$validators.required('Please select a classification level.')]"
+        @radioClick="validateForm"
       />
       <a 
         role="button" 
@@ -133,6 +137,7 @@
             ),
           ]"
           maxChars="300"
+          @blur="validateForm"
         />
       </v-col>
     </v-row>
@@ -146,6 +151,7 @@
       :rules="[
         $validators.required('Please select an option to specify your requirement’s duration.')
       ]"
+      @radioClick="validateForm"
     />
     <div v-if="_computeData.entireDuration === 'NO'">
       <p id="PeriodsLabel" class="_checkbox-group-label">
@@ -163,6 +169,7 @@
             ' to specify your requirement’s duration level.')
         ]"
         class="copy-max-width"
+        @otherBlurred="validateForm"
       />
       <ATATAlert
         id="PeriodRequirementsAlert"
@@ -198,6 +205,7 @@
           :rules="[
             $validators.required('Please describe your OS and licensing requirements.')
           ]"
+          @blur="validateForm"
 
         />
       </v-col>
@@ -214,7 +222,7 @@
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
           ]"
-
+          @blur="validateForm"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -228,6 +236,7 @@
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
           ]"
+          @blur="validateForm"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -239,6 +248,7 @@
           :rules="[
             $validators.required('Select a storage type.')
           ]"
+          @blur="validateForm"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -252,6 +262,7 @@
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
           ]"
+          @blur="validateForm"
         />
       </v-col>
     </v-row>
@@ -270,6 +281,8 @@
       :otherValue="otherPerformanceTierValue"
       :otherValueEntered.sync="_computeData.performanceTierOther"
       :otherValueRequiredMessage="otherPerformanceTierValueRequiredMessage"
+      :validateOtherNow="validateOtherTierNow"
+      @radioClick="validateForm"
     />
 
     <v-row>
@@ -283,6 +296,7 @@
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.')
           ]"
+          @blur="validateForm"
         />
       </v-col>
     </v-row>
@@ -554,8 +568,9 @@ export default class ComputeForm extends Vue {
     const arr: Checkbox[] = [];
     periods.forEach((period, i) => {
       const label = i === 0 ? "Base period" : `Option period ${i}`;
+      const id = i === 0 ? "Base" : `Option${i}`;
       const option: Checkbox = {
-        id: period.period_type,
+        id,
         label,
         value: period.sys_id || "",
       };
@@ -626,15 +641,26 @@ export default class ComputeForm extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    await this.validateForm();
+    // if (DescriptionOfWork.computeInstancesTouched.indexOf(
+    //   this._computeData.instanceNumber) > -1) {
+    //   // user is returning to this page, validate on load
+    //   await this.validateOnLoad();
+    // }
+  };
+
+  public async validateForm(): Promise<void> {
+    debugger;
     if (DescriptionOfWork.computeInstancesTouched.indexOf(
       this._computeData.instanceNumber) > -1) {
       // user is returning to this page, validate on load
       await this.validateOnLoad();
     }
-  };
+
+  }
 
   public async validateOnLoad(): Promise<void> {
-    await this.validateForm();
+    await this.validate();
     this.$nextTick(async () => {
       this.setErrorMessages();
     });
@@ -646,23 +672,96 @@ export default class ComputeForm extends Vue {
       errorBucket: string[];
       reset: () => void;
       validate: () => boolean;
+      // errorBag: Record<number, boolean>[];
+      errorBag: boolean[];
     };
   };
 
+  public formHasErrors = false;
+  public errorBagValues: boolean[] = []
+  
+  @Watch("errorBagValues")
+  public errorBagChange(newVal: Record<number, boolean>[]): void {
+    this.formHasErrors = this.errorBagValues.includes(true);
+    debugger;
+  }
+
+  get eBag(): boolean[] {
+    debugger;
+    return this.$refs.computeForm ? this.$refs.computeForm.errorBag : [];
+  }
+  
+  @Watch("eBag", { deep: true })
+  public errorBagChange2(newVal: boolean[]): void {
+    const foo = this.$refs.computeForm.errorBag;
+    debugger;
+  }
+
+  get computeForm(): any {
+    return this.$refs.computeForm;
+  }
+
+  @Watch("computeForm", { deep: true })
+  public cfChange(newVal: any) {
+    debugger;
+  }
+
+  @Watch("this.$refs.computeForm", { deep: true })
+  public refChange(newVal: any): void {
+    debugger;
+  }
+
+
   public hasErrorsOnLoad = false;
+  public validateOtherTierNow = false;
 
   private setErrorMessages(): void {
+    this.errorBagValues = Object.values(this.$refs.computeForm.errorBag);
+
     const formChildren = this.$refs.computeForm.$children;
-    const inputRefs = ["radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect"];
+    debugger;
+    const inputRefs = [
+      "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
+    ];
 
     formChildren.forEach((child: any) => {
       const refs = child.$refs;
       const keys = Object.keys(refs);
-
       keys.forEach((key: string) => {
 
         if (inputRefs.indexOf(key) > -1) {
           const childRef: any = child.$refs[key];
+          if (childRef[0]) {
+            if (childRef[0].attrs$["data-group-id"] === "PeriodsCheckboxes_Group"
+              && this._computeData.entireDuration.toLowerCase() === "no"
+              && this._computeData.periodsNeeded.length === 0
+            ) {
+              child.errorMessages.push(`Please select at least one base or option 
+                period to specify your requirement’s duration level.`);
+            }
+
+            if (childRef[0].attrs$["data-group-id"] === "Regions_Group"
+              && this._computeData.deployedRegions.indexOf(this.otherRegionValue) > -1
+              && this._computeData.deployedRegionsOther === ""
+            ) {
+              child.$refs["atatTextInput"][0].errorMessages.push(
+                'Please enter your other region(s).'
+              );
+            }
+          }
+
+          if (key === "radioButtonGroup" 
+            && child.$el.attributes.id.value.indexOf("PerformanceTier")
+            && this._computeData.performanceTier.indexOf(this.otherPerformanceTierValue) > -1
+            && this._computeData.performanceTierOther === ""
+          ) {
+            this.validateOtherTierNow = true;
+            // child.errorMessages.push("Please enter your other performance tier.")
+            debugger;
+            // 
+          }
+
+
           if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")
             && childRef.errorBucket
           ) {
@@ -677,13 +776,18 @@ export default class ComputeForm extends Vue {
         }
       });
     });
+
+    // if (this._computeData.entireDuration.toLowerCase() === "no") {
+
+    // }
+
   }
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.computeForm as Vue & { validate: () => boolean };
   }
 
-  public async validateForm(): Promise<boolean> {
+  public async validate(): Promise<boolean> {
     let valid = false;
 
     this.$nextTick(() => {
