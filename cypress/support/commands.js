@@ -49,6 +49,11 @@ const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
 const isTestingIsolated = Cypress.env("isTestingIsolated") === "true";
 let hopOutOfIframe = false;
 
+
+Cypress.Commands.add('vueWrapper', (key, value) => {
+  return cy.wrap(Cypress.vueWrapper)
+})
+
 Cypress.Commands.add("visitURL", () => {
   if (isTestingIsolated){
     cy.visit(Cypress.env("isolatedTestingURL"));    

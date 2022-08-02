@@ -26,5 +26,6 @@ require('cypress-plugin-tab')
 import registerCypressGrep from 'cypress-grep'
 registerCypressGrep()
 
+
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
