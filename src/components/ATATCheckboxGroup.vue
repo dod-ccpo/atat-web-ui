@@ -55,7 +55,6 @@
           :validateItOnBlur="validateOtherOnBlur"
           :value.sync="_otherValueEntered"
           :rules="otherRequiredRule"
-          @blur="otherBlurred"
         />
         <ATATTextField
           v-if="otherEntryType === 'textfield'"
@@ -66,7 +65,6 @@
           :validateItOnBlur="validateOtherOnBlur"
           :value.sync="_otherValueEntered"
           :rules="otherRequiredRule"
-          @blur="otherBlurred"
         />
       </template>
 
@@ -170,7 +168,6 @@ export default class ATATCheckboxGroup extends Vue {
     Vue.nextTick(() => {
       this.prevSelected = [...this._selected];
     });
-    // debugger;
     this.setErrorMessage();
   }
 
@@ -210,7 +207,6 @@ export default class ATATCheckboxGroup extends Vue {
 
   // methods
   private setErrorMessage(): void {
-    // debugger;
     if (this._selected.length) {
       this.clearErrorMessage();
     } else {
@@ -227,7 +223,6 @@ export default class ATATCheckboxGroup extends Vue {
   } 
 
   private setEventListeners(): void {
-    // debugger;
     document.querySelectorAll('input[type="checkbox"]').forEach((elem) => {
       const checkbox = elem as HTMLInputElement;
       checkbox.addEventListener("blur", this.setCheckboxEventListeners);
@@ -236,7 +231,6 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("items")
   protected checkboxItemsChange(): void {
-    // debugger;
     if (this.items.length) {
       this.$nextTick(() => {
         this.setEventListeners();
@@ -252,7 +246,6 @@ export default class ATATCheckboxGroup extends Vue {
     const thisCheckbox = event.currentTarget as HTMLInputElement;
     const id = thisCheckbox.id;
     const groupId: string = thisCheckbox.dataset.groupId || "CheckboxGroup";
-    // debugger;
     if (id && groupId && (groupId === this.id + "_Group")) {
       if (!Object.prototype.hasOwnProperty.call(this.blurredCheckboxes, groupId)) {
         this.blurredCheckboxes[groupId] = [];
@@ -272,11 +265,6 @@ export default class ATATCheckboxGroup extends Vue {
         this.setErrorMessage();
       }
     }
-
-  }
-
-  public otherBlurred(): void {
-    this.$emit("otherBlurred");
   }
 
 }

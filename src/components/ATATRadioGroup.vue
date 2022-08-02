@@ -152,17 +152,14 @@ export default class ATATRadioGroup extends Vue {
 
   // data
   private errorMessages: string[] = [];
-  // private validateOtherOnBlur = false;
   private hideOtherInput = false;
 
   private otherRequiredRule = this.otherValueRequiredMessage && this._validateOtherOnBlur
     ? [this.$validators.required(this.otherValueRequiredMessage)]
     : [];
-  // private otherRequiredRule = [];
 
   @Watch("validateOtherOnBlur")
   public validateOtherOnBlurChange(): void {
-    debugger;
     this.otherRequiredRule = this.otherValueRequiredMessage && this._validateOtherOnBlur
       ? [this.$validators.required(this.otherValueRequiredMessage)]
       : [];
@@ -170,8 +167,6 @@ export default class ATATRadioGroup extends Vue {
 
   // methods
   private setErrorMessage(): void {
-    debugger;
-
     this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
   } 
   private clearErrorMessage(): void {
@@ -218,10 +213,8 @@ export default class ATATRadioGroup extends Vue {
     this.$emit("radioButtonSelected", this._selectedValue);
     if (newVal === this.otherValue) {
       this._validateOtherOnBlur = true;
-      debugger;
       this.hideOtherInput = false;
       Vue.nextTick(() => {
-        debugger;
         const id = this.otherEntryType === "textarea" 
           ? this.otherId + "_text_area" 
           : this.otherId + "_text_field";
@@ -252,38 +245,14 @@ export default class ATATRadioGroup extends Vue {
     const header = document.getElementsByClassName("page-header")[0] as HTMLElement;
     header.focus();
 
-    debugger;    
     this.setErrorMessage();
   }
 
   @Watch("clearOtherValidation")
   public resetOtherValiation(): void {
-    debugger;
     this.$refs.atatTextInput.errorBucket = [];
     this.$refs.atatTextInput.errorCount = 0;
-    // debugger;
   }
-
-  // public async validateRadioGroup(): Promise<boolean> {
-  //   let valid = false;
-  //   debugger;
-  //   await this.$nextTick(() => {
-  //     valid = this.radioGroup.validate();
-  //   });
-
-  //   return valid;
-  // }
-
-  // public async validateTextInput(): Promise<boolean> {
-  //   let valid = false;
-  //   debugger;
-  //   await this.$nextTick(() => {
-  //     valid = this.textInput.validate();
-  //   });
-
-  //   return valid;
-  // }
-
 
 }
 

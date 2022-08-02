@@ -722,7 +722,6 @@ export default class ComputeForm extends Vue {
             && child.$el.attributes.id.value.indexOf("PerformanceTier")
             && this._computeData.performanceTier === this.otherPerformanceTierValue
           ) {
-            debugger;
             if (this._computeData.performanceTierOther === "") {
               this.validateOtherTierOnBlur = true;
               this.validateOtherTierNow = true;
