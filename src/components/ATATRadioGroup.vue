@@ -227,14 +227,6 @@ export default class ATATRadioGroup extends Vue {
     }
   }
 
-  get radioGroup(): Vue & { validate: () => boolean } {
-    return this.$refs.radioButtonGroup as Vue & { validate: () => boolean };
-  }
-
-  get textInput(): Vue & { validate: () => boolean } {
-    return this.$refs.atatTextInput as Vue & { validate: () => boolean };
-  }
-
   @Watch("validateOtherNow")
   public async validateOtherNowChanged(): Promise<void> {
     const id = this.otherEntryType === "textarea" 

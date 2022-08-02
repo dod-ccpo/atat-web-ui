@@ -569,7 +569,7 @@ export default class ComputeForm extends Vue {
     const arr: Checkbox[] = [];
     periods.forEach((period, i) => {
       const label = i === 0 ? "Base period" : `Option period ${i}`;
-      const id = i === 0 ? "Base" : `Option${i}`;
+      const id = i === 0 ? "BASE" : `OPTION${i}`;
       const option: Checkbox = {
         id,
         label,

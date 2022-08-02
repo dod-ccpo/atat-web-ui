@@ -144,7 +144,7 @@ export default class RequirementsForm extends Vue {
     const arr: Checkbox[] = [];
     periods.forEach((period, idx) => {
       const label = idx === 0 ? "Base period" : `Option period ${idx}`;
-      const id = idx === 0 ? "Base" : `Option${idx}`;
+      const id = idx === 0 ? "BASE" : `OPTION${idx}`;
       const option: Checkbox = {
         id,
         label,
