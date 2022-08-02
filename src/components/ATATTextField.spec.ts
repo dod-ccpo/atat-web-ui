@@ -1,55 +1,24 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
+import { mount } from '@cypress/vue'
 import ATATTextField from "@/components/ATATTextField.vue";
-import {DefaultProps} from "vue/types/options";
-Vue.use(Vuetify);
 
-describe("Testing ATATTextField Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(ATATTextField, {
-      localVue,
-      vuetify,
+describe('HelloWorld', () => {
+  it('renders a message', () => {
+    const id="tony";
+    const value = '1.00';
+    const isCurrency = true;
+    mount(ATATTextField, {
+      propsData: {
+        value,
+        id,
+        isCurrency 
+      }
+    })
+    cy.get('#' + id + '_text_field').should((tb)=>{
+      expect(tb)
+        .to.have.value(value)
+        .to.have.property('isCurrency', true)
+        .to.have.property('iconColor', 'base-darkest')
+
     });
-  });
-
-  describe("INITIALIZATION", () => { 
-    it("renders successfully", async () => {
-      expect(wrapper.exists()).toBe(true);
-    });
-  });
-
-  describe("PROPS", () => { 
-    it("label", async () => {
-      wrapper.setProps({
-        "label":"label Test"
-      });
-      await wrapper.vm.$nextTick();
-      expect(wrapper.find("label").exists()).toBe(true);
-    });
-  });
-
-  describe("EVENTS", () => { 
-    it("onInput", async () => {
-      const newVal = "newVal";
-      await wrapper.vm.onInput(newVal);
-      await wrapper.vm.$nextTick(()=>{
-        expect(wrapper.emitted("update:value")?.flat()[0]).toMatch(newVal);
-      });
-    });
-
-    // it("onBlur", async () => {
-    //   const valOnBlur = "newVa";
-    //   await wrapper.vm.onBlur(valOnBlur);
-    //   await wrapper.vm.$nextTick(()=>{
-    //     expect(wrapper.emitted("blur")?.flat()[0]).toMatch(valOnBlur);
-    //   });
-      
-    // });
-  });
-});
+  })
+})

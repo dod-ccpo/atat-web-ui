@@ -1,10 +1,10 @@
-// import { classificationRequirements, contractType, workflow } from "../helpers/mockedAPICalls/contractDetails";
-import { acquisitionPackageDetails } from "../helpers/mockedAPICalls/acquisitionPackageDetails";
+import { acquisitionPackageDetails } 
+  from "../helpers/mockedAPICalls/acquisitionPackageDetails";
 import { contractDetails } from  "../helpers/mockedAPICalls/contractDetails";
 import { financialDetails } from "../helpers/mockedAPICalls/financialDetails";
 import { otherContractConsiderations } from "../helpers/mockedAPICalls/otherContractConsiderations";
 import { standardsAndCompliance } from "./mockedAPICalls/standardsAndCompliance";
-import { background } from "./mockedAPICalls/background";
+// import { background } from "../mockedAPICalls/background";
 import { common } from "./mockedAPICalls/common";
 import { fairOpportunityProcess } from "./mockedAPICalls/fairOpportunityProcess";
 
@@ -98,11 +98,11 @@ const saveToSNOW = (testCase)=>{
   }
 
   /** background */ 
-  if (spec === "background"){
-    currentTestEndPoints = currentTestEndPoints.concat(
-      filterTestCases(background(fixtureFolder)[spec], testCase)
-    );
-  }
+  // if (spec === "background"){
+  //   currentTestEndPoints = currentTestEndPoints.concat(
+  //     filterTestCases(background(fixtureFolder)[spec], testCase)
+  //   );
+  // }
 
   /** common */
   if (spec === "common"){
