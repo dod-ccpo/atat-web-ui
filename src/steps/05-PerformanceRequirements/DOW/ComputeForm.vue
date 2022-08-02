@@ -1,6 +1,6 @@
 <template>
   <v-form ref="computeForm">
-    <h1 class="page-header mb-3">
+    <h1 class="page-header mb-3" tabindex="-1">
       <span v-if="firstTimeHere">Let’s start by gathering your Compute requirements</span>
       <span v-else>
         Let’s gather some details for Compute Instance #{{ _computeData.instanceNumber }}
@@ -36,22 +36,22 @@
       :isPeriodsDataMissing="isPeriodsDataMissing"
       class="copy-max-width"
     />
-    <h2>formHasErrors: {{ formHasErrors }}</h2>
-      <!-- v-show="hasErrorsOnLoad === true" -->
 
-    <ATATAlert
-      id="ErrorsOnLoadAlert"
-      v-show="formHasErrors === true"
-      type="error"
-      class="mb-10"
-    >
-      <template v-slot:content>
-        <p class="mb-0" id="ErrorsOnLoadAlertText">
-          Some of your info is missing. You can add it now or come back at any 
-          time before finalizing your acquisition package.
-        </p>
-      </template>
-    </ATATAlert>
+    <v-expand-transition>
+      <ATATAlert
+        id="ErrorsOnLoadAlert"
+        v-show="formHasErrors === true && formHasBeenTouched === true"
+        type="error"
+        class="mb-10"
+      >
+        <template v-slot:content>
+          <p class="mb-0" id="ErrorsOnLoadAlertText">
+            Some of your info is missing. You can add it now or come back at any 
+            time before finalizing your acquisition package.
+          </p>
+        </template>
+      </ATATAlert>
+    </v-expand-transition>
 
     <h2 class="mb-5" id="FormSection1Heading">
       1. 
@@ -70,7 +70,7 @@
       name="EnvironmnetType"
       class="mt-3 mb-8"
       :rules="[$validators.required('Please select a type of environment.')]"
-      @radioClick="validateForm"
+      
     />
 
     <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
@@ -84,7 +84,6 @@
         :tooltipText="classificationTooltipText"
         tooltipLabel="Classification level for this instance"
         :rules="[$validators.required('Please select a classification level.')]"
-        @radioClick="validateForm"
       />
       <a 
         role="button" 
@@ -137,7 +136,6 @@
             ),
           ]"
           maxChars="300"
-          @blur="validateForm"
         />
       </v-col>
     </v-row>
@@ -151,7 +149,6 @@
       :rules="[
         $validators.required('Please select an option to specify your requirement’s duration.')
       ]"
-      @radioClick="validateForm"
     />
     <div v-if="_computeData.entireDuration === 'NO'">
       <p id="PeriodsLabel" class="_checkbox-group-label">
@@ -169,7 +166,6 @@
             ' to specify your requirement’s duration level.')
         ]"
         class="copy-max-width"
-        @otherBlurred="validateForm"
       />
       <ATATAlert
         id="PeriodRequirementsAlert"
@@ -205,8 +201,6 @@
           :rules="[
             $validators.required('Please describe your OS and licensing requirements.')
           ]"
-          @blur="validateForm"
-
         />
       </v-col>
     </v-row>
@@ -222,7 +216,6 @@
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
           ]"
-          @blur="validateForm"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -236,7 +229,6 @@
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
           ]"
-          @blur="validateForm"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -248,7 +240,6 @@
           :rules="[
             $validators.required('Select a storage type.')
           ]"
-          @blur="validateForm"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -262,7 +253,6 @@
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
           ]"
-          @blur="validateForm"
         />
       </v-col>
     </v-row>
@@ -282,7 +272,8 @@
       :otherValueEntered.sync="_computeData.performanceTierOther"
       :otherValueRequiredMessage="otherPerformanceTierValueRequiredMessage"
       :validateOtherNow="validateOtherTierNow"
-      @radioClick="validateForm"
+      :validateOtherOnBlur="validateOtherTierOnBlur"
+      :clearOtherValidation="clearOtherTierValidation"
     />
 
     <v-row>
@@ -296,7 +287,6 @@
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.')
           ]"
-          @blur="validateForm"
         />
       </v-col>
     </v-row>
@@ -368,6 +358,15 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 })
 
 export default class ComputeForm extends Vue {
+  $refs!: {
+    computeForm: Vue & {
+      resetValidation: () => void;
+      errorBucket: string[];
+      reset: () => void;
+      validate: () => boolean;
+      errorBag: Record<number, boolean>;
+    };
+  };
 
   @PropSync("computeData") public _computeData!: ComputeData;
   public firstTimeHere = false;
@@ -504,6 +503,8 @@ export default class ComputeForm extends Vue {
     },
   ];
 
+  public clearOtherTierValidation = false;
+
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
     this.showDialog = true;
@@ -638,88 +639,55 @@ export default class ComputeForm extends Vue {
     this.showSubtleAlert 
       = this.isPeriodsDataMissing || this.isClassificationDataMissing ? true : false;
   }
+  public formHasBeenTouched = false;
+  public formHasErrors = false;
+  public errorBagValues: boolean[] = []
+  public hasErrorsOnLoad = false;
+  public validateOtherTierNow = false;
+  public validateOtherTierOnBlur = false;
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    await this.validateForm();
-    // if (DescriptionOfWork.computeInstancesTouched.indexOf(
-    //   this._computeData.instanceNumber) > -1) {
-    //   // user is returning to this page, validate on load
-    //   await this.validateOnLoad();
-    // }
+    this.formHasBeenTouched = DescriptionOfWork.computeInstancesTouched.indexOf(
+      this._computeData.instanceNumber) > -1;
+    if (this.formHasBeenTouched) {
+      // user is editing an existing instance, validate on load
+      await this.validate();
+      this.$nextTick(async () => {
+        this.setErrorMessages();
+      });
+    } else {
+      this.validateOtherTierOnBlur = true;
+    }
   };
 
-  public async validateForm(): Promise<void> {
-    debugger;
-    if (DescriptionOfWork.computeInstancesTouched.indexOf(
-      this._computeData.instanceNumber) > -1) {
-      // user is returning to this page, validate on load
-      await this.validateOnLoad();
-    }
-
+  public updated(): void {
+    const eb = this.$refs.computeForm.errorBag;
+    this.errorBagValues = Object.values(eb);
   }
 
-  public async validateOnLoad(): Promise<void> {
-    await this.validate();
-    this.$nextTick(async () => {
-      this.setErrorMessages();
+  @Watch("errorBagValues")
+  public errorBagChange(): void {
+    this.$nextTick(() => {
+      const errorBag = Object.values(this.$refs.computeForm.errorBag);
+      this.formHasErrors = errorBag.includes(true);
     });
   }
-
-  $refs!: {
-    computeForm: Vue & {
-      resetValidation: () => void;
-      errorBucket: string[];
-      reset: () => void;
-      validate: () => boolean;
-      // errorBag: Record<number, boolean>[];
-      errorBag: boolean[];
-    };
-  };
-
-  public formHasErrors = false;
-  public errorBagValues: boolean[] = []
   
-  @Watch("errorBagValues")
-  public errorBagChange(newVal: Record<number, boolean>[]): void {
-    this.formHasErrors = this.errorBagValues.includes(true);
-    debugger;
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.computeForm as Vue & { validate: () => boolean };
   }
 
-  get eBag(): boolean[] {
-    debugger;
-    return this.$refs.computeForm ? this.$refs.computeForm.errorBag : [];
+  public async validate(): Promise<void> {
+    this.$nextTick(() => {
+      this.Form.validate();
+    });
   }
-  
-  @Watch("eBag", { deep: true })
-  public errorBagChange2(newVal: boolean[]): void {
-    const foo = this.$refs.computeForm.errorBag;
-    debugger;
-  }
-
-  get computeForm(): any {
-    return this.$refs.computeForm;
-  }
-
-  @Watch("computeForm", { deep: true })
-  public cfChange(newVal: any) {
-    debugger;
-  }
-
-  @Watch("this.$refs.computeForm", { deep: true })
-  public refChange(newVal: any): void {
-    debugger;
-  }
-
-
-  public hasErrorsOnLoad = false;
-  public validateOtherTierNow = false;
 
   private setErrorMessages(): void {
     this.errorBagValues = Object.values(this.$refs.computeForm.errorBag);
 
     const formChildren = this.$refs.computeForm.$children;
-    debugger;
     const inputRefs = [
       "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
     ];
@@ -752,19 +720,19 @@ export default class ComputeForm extends Vue {
 
           if (key === "radioButtonGroup" 
             && child.$el.attributes.id.value.indexOf("PerformanceTier")
-            && this._computeData.performanceTier.indexOf(this.otherPerformanceTierValue) > -1
-            && this._computeData.performanceTierOther === ""
+            && this._computeData.performanceTier === this.otherPerformanceTierValue
           ) {
-            this.validateOtherTierNow = true;
-            // child.errorMessages.push("Please enter your other performance tier.")
             debugger;
-            // 
+            if (this._computeData.performanceTierOther === "") {
+              this.validateOtherTierOnBlur = true;
+              this.validateOtherTierNow = true;
+            } else {
+              this.validateOtherTierOnBlur = false;
+              this.clearOtherTierValidation = true;
+            }
           }
 
-
-          if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")
-            && childRef.errorBucket
-          ) {
+          if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")) {
             const errorBucket: string[] = childRef.errorBucket;
             if (errorBucket.length) {
               this.hasErrorsOnLoad = true;
@@ -776,24 +744,6 @@ export default class ComputeForm extends Vue {
         }
       });
     });
-
-    // if (this._computeData.entireDuration.toLowerCase() === "no") {
-
-    // }
-
-  }
-
-  get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.computeForm as Vue & { validate: () => boolean };
-  }
-
-  public async validate(): Promise<boolean> {
-    let valid = false;
-
-    this.$nextTick(() => {
-      valid = this.Form.validate();
-    });
-    return valid;
   }
 
   public regionTooltipText = `This is the geographic location where your public cloud 

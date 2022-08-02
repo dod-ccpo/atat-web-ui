@@ -290,6 +290,18 @@ export default class ComputeRequirements extends Vue {
         isValid = false;
       }
     });
+    if (instanceData.performanceTier === "OtherPerformance" 
+      && instanceData.performanceTierOther === ""
+    ) {
+      isValid = false;
+    }
+
+    if (instanceData.performanceTier === "OtherRegion" 
+      && instanceData.deployedRegionsOther === ""
+    ) {
+      isValid = false;
+    }
+
     debugger;
     return isValid;
   }

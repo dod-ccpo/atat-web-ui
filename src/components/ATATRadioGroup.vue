@@ -62,7 +62,7 @@
                 :id="otherId"
                 class="width-100 mb-6"
                 :rows="3"
-                :validateItOnBlur="validateOtherOnBlur"
+                :validateItOnBlur="_validateOtherOnBlur"
                 :value.sync="_otherValueEntered"
                 :rules="otherRequiredRule"
               />
@@ -72,7 +72,7 @@
                 v-show="showOtherEntry(item.value)"
                 :id="otherId"
                 class="mb-6 mt-2 _input-wrapper-max-width"
-                :validateItOnBlur="validateOtherOnBlur"
+                :validateItOnBlur="_validateOtherOnBlur"
                 :value.sync="_otherValueEntered"
                 :rules="otherRequiredRule"
               />
@@ -119,6 +119,11 @@ export default class ATATRadioGroup extends Vue {
       errorCount: number;
       validate: () => boolean;
     };
+    atatTextInput: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      validate: () => boolean;
+    };
   }; 
 
   // props
@@ -142,20 +147,23 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
   @Prop({ default: false }) private validateOtherNow?: boolean;
+  @Prop({ default: false}) private clearOtherValidation?: boolean;
+  @PropSync("validateOtherOnBlur") private _validateOtherOnBlur?: boolean;
 
   // data
   private errorMessages: string[] = [];
-  private validateOtherOnBlur = false;
+  // private validateOtherOnBlur = false;
   private hideOtherInput = false;
 
-  private otherRequiredRule = this.otherValueRequiredMessage && this.validateOtherOnBlur
+  private otherRequiredRule = this.otherValueRequiredMessage && this._validateOtherOnBlur
     ? [this.$validators.required(this.otherValueRequiredMessage)]
     : [];
   // private otherRequiredRule = [];
 
   @Watch("validateOtherOnBlur")
-  public validateOtherOnBlurChange(newVal: boolean): void {
-    this.otherRequiredRule = this.otherValueRequiredMessage && this.validateOtherOnBlur
+  public validateOtherOnBlurChange(): void {
+    debugger;
+    this.otherRequiredRule = this.otherValueRequiredMessage && this._validateOtherOnBlur
       ? [this.$validators.required(this.otherValueRequiredMessage)]
       : [];
   }
@@ -198,7 +206,6 @@ export default class ATATRadioGroup extends Vue {
   // events
   private onClick(): void {
     this.clearErrorMessage();
-    this.$emit("radioClick");
   }
 
   private onBlur(): void {
@@ -210,16 +217,18 @@ export default class ATATRadioGroup extends Vue {
   protected valueChange(newVal: string): void {
     this.$emit("radioButtonSelected", this._selectedValue);
     if (newVal === this.otherValue) {
-      this.validateOtherOnBlur = true;
+      this._validateOtherOnBlur = true;
+      debugger;
       this.hideOtherInput = false;
       Vue.nextTick(() => {
+        debugger;
         const id = this.otherEntryType === "textarea" 
           ? this.otherId + "_text_area" 
           : this.otherId + "_text_field";
         document.getElementById(id)?.focus();
       });
     } else {
-      this.validateOtherOnBlur = false;
+      this._validateOtherOnBlur = false;
       this.hideOtherInput = true;
       this._otherValueEntered = "";
     }
@@ -229,6 +238,10 @@ export default class ATATRadioGroup extends Vue {
     return this.$refs.radioButtonGroup as Vue & { validate: () => boolean };
   }
 
+  get textInput(): Vue & { validate: () => boolean } {
+    return this.$refs.atatTextInput as Vue & { validate: () => boolean };
+  }
+
   @Watch("validateOtherNow")
   public async validateOtherNowChanged(): Promise<void> {
     const id = this.otherEntryType === "textarea" 
@@ -236,19 +249,41 @@ export default class ATATRadioGroup extends Vue {
       : this.otherId + "_text_field";
     document.getElementById(id)?.focus();
     document.getElementById(id)?.blur();
+    const header = document.getElementsByClassName("page-header")[0] as HTMLElement;
+    header.focus();
 
+    debugger;    
     this.setErrorMessage();
   }
 
-  public async validateRadioGroup(): Promise<boolean> {
-    let valid = false;
+  @Watch("clearOtherValidation")
+  public resetOtherValiation(): void {
     debugger;
-    await this.$nextTick(() => {
-      valid = this.radioGroup.validate();
-    });
-
-    return valid;
+    this.$refs.atatTextInput.errorBucket = [];
+    this.$refs.atatTextInput.errorCount = 0;
+    // debugger;
   }
+
+  // public async validateRadioGroup(): Promise<boolean> {
+  //   let valid = false;
+  //   debugger;
+  //   await this.$nextTick(() => {
+  //     valid = this.radioGroup.validate();
+  //   });
+
+  //   return valid;
+  // }
+
+  // public async validateTextInput(): Promise<boolean> {
+  //   let valid = false;
+  //   debugger;
+  //   await this.$nextTick(() => {
+  //     valid = this.textInput.validate();
+  //   });
+
+  //   return valid;
+  // }
+
 
 }
 
