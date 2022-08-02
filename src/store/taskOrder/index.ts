@@ -51,12 +51,12 @@ export class TaskOrderStore extends VuexModule {
 
   @Action
   public async getTaskOrder(): Promise<TaskOrderDTO> {
-    return this.value;
-  }
-
-  public get value(): TaskOrderDTO {
     return this.taskOrder || initial;
   }
+
+  // public get value(): TaskOrderDTO {
+  //   return ;
+  // }
 
   @Mutation
   public setTaskOrder(value: TaskOrderDTO): void {
@@ -129,7 +129,10 @@ export class TaskOrderStore extends VuexModule {
 
   @Action
   public async isIncrementallyFunded(): Promise<string> {
-    return this.value.incrementally_funded;
+    if(this.taskOrder) {
+      return this.taskOrder.incrementally_funded;
+    }
+    return ""
   }
 
 }
