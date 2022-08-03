@@ -54,10 +54,6 @@ export class TaskOrderStore extends VuexModule {
     return this.taskOrder || initial;
   }
 
-  // public get value(): TaskOrderDTO {
-  //   return ;
-  // }
-
   @Mutation
   public setTaskOrder(value: TaskOrderDTO): void {
     this.taskOrder = value;
