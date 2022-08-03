@@ -1,6 +1,6 @@
-// instrument .js and .vue files
 module.exports = {
   presets: [
-    '@vue/app'
-  ],
+    '@vue/cli-plugin-babel/preset'
+  ]
 }
+yield
