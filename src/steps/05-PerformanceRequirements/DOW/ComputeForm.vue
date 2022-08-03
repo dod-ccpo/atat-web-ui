@@ -285,7 +285,8 @@
           :value.sync="_computeData.numberOfInstancesNeeded"
           type="number"
           :rules="[
-            $validators.required('Enter a number greater than or equal to 1.')
+            $validators.required('Enter a number greater than or equal to 1.'),
+            $validators.greaterThan(0, 'Enter a number greater than or equal to 1.'),            
           ]"
         />
       </v-col>
