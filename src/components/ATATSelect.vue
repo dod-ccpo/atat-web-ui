@@ -35,11 +35,11 @@
         :menu-props="{ bottom: true, offsetY: true }"
       >
         <template v-slot:item="{ item, on }">
-          <v-list-item v-on="on">
+          <v-list-item v-on="on" :class="{'_item-disabled': item.disabled }">
             <v-list-item-content
               :id="id + '_DropdownListItem_' + item.text.replace(/[^A-Z0-9]/ig, '')"
               :item-value = item.value
-              :class="{'text-disabled': item.disabled }"
+              
             >
               <v-list-item-title class="body">
                 <v-row no-gutters align="center">

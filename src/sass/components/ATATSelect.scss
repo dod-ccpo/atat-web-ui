@@ -1,6 +1,15 @@
 .v-select-list {
   .v-list-item {
     min-height: unset;
+    &._item-disabled {
+      @extend .text-disabled;
+      &:hover {
+        cursor: default;
+        &:before {
+          background-color: white;
+        }
+      }
+    }
   }
   .v-list-item__content {
     padding: 8px 0;

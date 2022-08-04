@@ -70,16 +70,16 @@
                       {{ index + 1 }}
                     </span>
 
-                    <!-- <ATATSelect
+                    <ATATSelect
                       :id="'IncrementPeriod' + index"
-                      :items="selectData[index]"
+                      :items="getSelectData(index)"
                       width="190"
                       :selectedValue.sync="quarterSelectData[index]"
                       class="mr-4"
                       :showErrorMessages="false"
                       @selectValueChange="quarterChange"
                       :returnObject="true"
-                    /> -->
+                    />
                       <!-- @blur="onPeriodChange(index)" -->
                       <!-- :selectedValue.sync="fundingIncrements[index]" -->
 
@@ -252,6 +252,7 @@ import { hasChanges } from "@/helpers";
 import { add, format, isValid } from "date-fns";
 import { parseISO } from "date-fns/fp";
 import formatISO from "date-fns/formatISO"
+import _ from "lodash";
 
 @Component({
   components: {
@@ -275,6 +276,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public startDate = new Date();//(): Date => {
 
   public currentQuarter():number {
+    debugger;
     const currentMonth = this.startDate.getMonth() + 1;
     return Math.ceil((currentMonth <= 9 ? currentMonth + 3 : currentMonth - 9)/3);
   };
@@ -312,7 +314,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public selectData: SelectData[][] = [];
 
-
   private get currentData(): IFPData {
     return {
       initialFundingIncrementStr: this.initialAmountStr,
@@ -325,7 +326,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     fundingIncrements: [],
   };
 
-  public fiscalQuarters: { text: string; multiSelectOrder: number }[] = [];
+  public fiscalQuarters: { text: string; multiSelectOrder: number, disabled: false }[] = [];
 
   public hasValidatedOnContinue = false;
   public allowContinue = true;
@@ -377,40 +378,54 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public quarterJustAdded = ""; // EJY move this somewhere better
 
   public async initializeIncrements(): Promise<void> {
-    let qtr = await this.currentQuarter();
-    console.log("qtr " + qtr)
-    console.log("this.startDate " + this.startDate);
-    let year = parseInt(format(this.startDate, "yy"));
-    console.log("year " + year);
-    for (let i = 0; i < 6; i++) {
-      const ordinal = this.ordinals[qtr-1];
-      // increment year if at first quarter and not first in the loop
-      year = qtr === 1 ? year + 1 : year;
-    
-      // increment quarter
-      qtr = qtr === 4 ? 1 : qtr + 1;
-      const periodStr = ordinal + " QTR FY" + year;
-      this.fiscalQuarters.push({ text: periodStr, multiSelectOrder: i + 1 });
-
-      if (i === 0 && this.fundingIncrements.length === 0) {
-        // default to 1st option if no store data
-        this.fundingIncrements.push({
-          qtr: periodStr,
-          amt: "",
-          order: 1,
-          sysId: "",
-        });
-
-        this.quarterSelectData.push({
-          text: periodStr,
-          multiSelectOrder: 1,
+    debugger;
+    if (this.fiscalQuarters.length === 0) {
+      let qtr = this.currentQuarter();
+      let year = parseInt(format(this.startDate, "yy"));
+      for (let i = 0; i < 6; i++) {
+        const ordinal = this.ordinals[qtr-1];
+        // increment year if at first quarter and not first in the loop
+        year = qtr === 1 ? year + 1 : year;
+      
+        // increment quarter
+        qtr = qtr === 4 ? 1 : qtr + 1;
+        const periodStr = ordinal + " QTR FY" + year;
+        this.fiscalQuarters.push({ 
+          text: periodStr, 
+          multiSelectOrder: i + 1,
           disabled: false,
         });
 
-        const firstSelectData = this.buildSelectData(0);
-        debugger;
+        if (i === 0 && (this.fundingIncrements.length === 0)) {
+          // default to 1st option if no store data
+          this.fundingIncrements.push({
+            qtr: periodStr,
+            amt: "",
+            order: 1,
+            sysId: "",
+          });
+          debugger;
+          this.quarterSelectData.push({
+            text: periodStr,
+            multiSelectOrder: 1,
+          });
+          // const firstSelectData = this.buildSelectData(0);
+          debugger;
 
-        this.quarterJustAdded = periodStr;
+          // this.quarterJustAdded = periodStr;
+
+        } else if (
+          i === 0 
+          && this.fundingIncrements[0].sysId 
+          && this.quarterSelectData.length === 0
+        ) {
+          const qtrStr = this.fundingIncrements[0].qtr;
+
+          this.quarterSelectData.push({
+            text: qtrStr,
+            multiSelectOrder: 1,
+          });
+        }
       }
     }
   }
@@ -429,6 +444,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
 
     this.fundingIncrements.splice(index, 1);
+    this.quarterSelectData.splice(index, 1);
     this.calcAmounts("");
   }
 
@@ -446,7 +462,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     let selectedQtrIndex = this.fiscalQuarters.findIndex(
       (p) => p.text === lastSelectedQtr
     );
-    debugger;
+
     let nextQtr;
     let nextQtrOrder = 0;
     if (
@@ -456,7 +472,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       nextQtr = this.fiscalQuarters[selectedQtrIndex + 1].text;
       nextQtrOrder = this.fiscalQuarters[selectedQtrIndex + 1].multiSelectOrder;
     }
-    debugger;
+
     if (nextQtr && nextQtrOrder) {
       const newIncrement = {
         qtr: nextQtr,
@@ -469,7 +485,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       const qtrSelectData: SelectData = {
         text: nextQtr,
         multiSelectOrder: nextQtrOrder,
-        disabled: false,
       }
       this.quarterSelectData.push(qtrSelectData);
       this.quarterJustAdded = nextQtr;
@@ -520,10 +535,16 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
 
-  public buildSelectData(index: number): SelectData[] {
-    // EJY  HERE HERE
-    // this.currentSelectedValue = this.fundingIncrements[index].qtr;
-    debugger;
+  public getSelectData(index: number): SelectData[] {
+    this.buildSelectData(index);
+    const options: SelectData[] = this.selectData[index] || [];
+    return options;
+  }
+
+  public async buildSelectData(index: number): Promise<void> {
+    if (this.fiscalQuarters.length === 0) {
+      await this.initializeIncrements();
+    }
     const firstSelectedQtr = this.fundingIncrements[0].qtr;
     const firstSelectedQtrIndex = this.fiscalQuarters.findIndex(
       (qtr) => qtr.text === firstSelectedQtr
@@ -534,58 +555,27 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       lastPossibleIndex > this.fiscalQuarters.length
         ? this.fiscalQuarters.length
         : lastPossibleIndex;
-    let optionsArr = this.fiscalQuarters.slice(
-      firstSelectedQtrIndex + 1,
-      lastPossibleIndex
-    );
-
-    if (index === 0) {
-      return this.fiscalQuarters;
+    let optionsArr = _.cloneDeep(this.fiscalQuarters);
+    if (index > 0) {
+      optionsArr = optionsArr.slice(
+        firstSelectedQtrIndex + 1,
+        lastPossibleIndex
+      );
     }
 
-    const alreadySelectedQuarters = this.fundingIncrements.map(obj => obj.qtr);
-    debugger;
-    optionsArr.forEach((option: SelectData) => {
-      const isAlreadySelected = alreadySelectedQuarters.includes(option.text);
-      option.disabled = isAlreadySelected ? true : false;
-    });
-    debugger;
-    return optionsArr;
+    if (index === 0 && this.selectData.length === 0) {
+      this.selectData[0] = _.cloneDeep(this.fiscalQuarters);
+    } else {
+      const alreadySelectedQuarters = this.fundingIncrements.map(obj => obj.qtr);
+      const thisDropdownValue = this.quarterSelectData[index].text;
+      optionsArr.forEach((option: SelectData) => {
+        const isAlreadySelected = alreadySelectedQuarters.includes(option.text);
+        const isThisOption = thisDropdownValue === option.text;
+        option.disabled = isAlreadySelected && !isThisOption ? true : false;
+      });
+      this.selectData[index] = optionsArr;
+    }
   }
-
-
-  // public getFiscalQuarters(index: number): SelectData[] {
-  //   // EJY  HERE HERE
-  //   // this.currentSelectedValue = this.fundingIncrements[index].qtr;
-  //   debugger;
-  //   const firstSelectedQtr = this.fundingIncrements[0].qtr;
-  //   const firstSelectedQtrIndex = this.fiscalQuarters.findIndex(
-  //     (qtr) => qtr.text === firstSelectedQtr
-  //   );
-
-  //   let lastPossibleIndex = firstSelectedQtrIndex + this.maxAllowedIncrements;
-  //   lastPossibleIndex =
-  //     lastPossibleIndex > this.fiscalQuarters.length
-  //       ? this.fiscalQuarters.length
-  //       : lastPossibleIndex;
-  //   let optionsArr = this.fiscalQuarters.slice(
-  //     firstSelectedQtrIndex + 1,
-  //     lastPossibleIndex
-  //   );
-
-  //   if (index === 0) {
-  //     return this.fiscalQuarters;
-  //   }
-
-  //   const alreadySelectedQuarters = this.fundingIncrements.map(obj => obj.qtr);
-  //   debugger;
-  //   optionsArr.forEach((option: SelectData) => {
-  //     const isAlreadySelected = alreadySelectedQuarters.includes(option.text);
-  //     option.disabled = isAlreadySelected ? true : false;
-  //   });
-  //   debugger;
-  //   return optionsArr;
-  // }
 
   public async loadOnEnter(): Promise<void> {
     const estimatedTOValue =
@@ -616,7 +606,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
           ? requestedPopStartDate : formatISO(new Date())
         ), 'MM/dd/yyyy')
       );
-    console.log(this.startDate)
     
     await this.initializeIncrements();
 
@@ -648,6 +637,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         }
       }
     }
+
+    // this.buildSelectData(0);
     // this.$nextTick(async () => {
     //   await this.validateDuplicateQuarters();
     // });
