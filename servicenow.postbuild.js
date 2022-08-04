@@ -25,7 +25,6 @@ const imgRegex =/\s*img\//g
   await decorateIndexHTML(PATH_TO_DIST_HTML)
   updateAppAssetPaths()
   updateVendorAssetPaths()
-  await minifyJavascript()
   updateAppImgPaths()
   outputResults()
 })();
