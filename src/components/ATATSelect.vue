@@ -39,6 +39,7 @@
             <v-list-item-content
               :id="id + '_DropdownListItem_' + item.text.replace(/[^A-Z0-9]/ig, '')"
               :item-value = item.value
+              :class="{'text-disabled': item.disabled }"
             >
               <v-list-item-title class="body">
                 <v-row no-gutters align="center">
@@ -104,6 +105,7 @@ export default class ATATSelect extends Vue {
   private onChange(val: string): void {
     this.selected = val;
     this.setErrorMessage();
+    this.$emit("selectValueChange", { val });
   }
 
   private onInput(v: string) {

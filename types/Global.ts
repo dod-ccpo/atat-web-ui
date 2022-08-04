@@ -31,6 +31,8 @@ export interface StepperStep {
 export interface SelectData {
   text: string;
   value?: string;
+  multiSelectOrder?: number;
+  disabled?: boolean;
 }
 
 /**

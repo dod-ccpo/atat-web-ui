@@ -66,22 +66,23 @@
               >
                 <div class="mb-4">
                   <div class="d-flex justify-space-between align-center mb-4">
-                    <ATATSelect
+                    <span class="d-block font-weight-500 text-base mr-4 ml-1 font-size-14">
+                      {{ index + 1 }}
+                    </span>
+
+                    <!-- <ATATSelect
                       :id="'IncrementPeriod' + index"
-                      :items="getFiscalQuarters(index)"
+                      :items="selectData[index]"
                       width="190"
-                      :selectedValue.sync="fundingIncrements[index].qtr"
-                      :class="[
-                        duplicateListingsIndices.some(
-                          (erroredIdx) => erroredIdx - 1 === index
-                        )
-                          ? 'customized-error-control error--text'
-                          : '',
-                        'mr-4',
-                      ]"
-                      @blur="onPeriodChange(index)"
+                      :selectedValue.sync="quarterSelectData[index]"
+                      class="mr-4"
                       :showErrorMessages="false"
-                    />
+                      @selectValueChange="quarterChange"
+                      :returnObject="true"
+                    /> -->
+                      <!-- @blur="onPeriodChange(index)" -->
+                      <!-- :selectedValue.sync="fundingIncrements[index]" -->
+
                     <ATATTextField
                       :id="'Amount' + index"
                       :value.sync="fundingIncrements[index].amt"
@@ -127,7 +128,7 @@
               </div>
               <v-btn
                 id="AddIncrementButton"
-                v-if="fundingIncrements.length < maxPayments"
+                v-if="fundingIncrements.length < maxAllowedIncrements"
                 plain
                 text
                 class="_text-link mt-5"
@@ -266,7 +267,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public currentYear = this.today.getFullYear();
 
   public periods: PeriodDTO[] | null = [];
-  public maxPayments = 1;
+  public maxAllowedIncrements = 1;
   public periodLengthStr = "";
   public requestedPopStartDate =
     Periods.periodOfPerformance?.requested_pop_start_date;
@@ -307,6 +308,10 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public hasReturnedToPage = false;
 
   public fundingIncrements: fundingIncrement[] = [];
+  public quarterSelectData: SelectData[] = [];
+
+  public selectData: SelectData[][] = [];
+
 
   private get currentData(): IFPData {
     return {
@@ -320,7 +325,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     fundingIncrements: [],
   };
 
-  public fiscalQuarters: { text: string; order: number }[] = [];
+  public fiscalQuarters: { text: string; multiSelectOrder: number }[] = [];
 
   public hasValidatedOnContinue = false;
   public allowContinue = true;
@@ -328,7 +333,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public async validateOnContinue(): Promise<void> {
     this.calcAmounts("initialIncrement");
     this.calcAmounts("increment0");
-    await this.validateDuplicateQuarters();
+    // await this.validateDuplicateQuarters();
     this.isUnderfunded(); 
     this.isOverfunded();
 
@@ -341,26 +346,35 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
   }
 
-  public async validateDuplicateQuarters(): Promise<void> {
-    // this.$nextTick(()=>{
-    this.duplicateListingsIndices = [];
-    this.fundingIncrements
-      .map((inc) => inc.qtr)
-      .filter((el, index, array )=>{
-        if (array.lastIndexOf(el) > index){
-          this.duplicateListingsIndices.push(index +1);
-          this.duplicateListingsIndices.push(array.lastIndexOf(el) +1)
-        }
-      });
-    // });
-  }
+  // EJY this won't be needed
+  // public async validateDuplicateQuarters(): Promise<void> {
+  //   // this.$nextTick(()=>{
+  //   this.duplicateListingsIndices = [];
+  //   this.fundingIncrements
+  //     .map((inc) => inc.qtr)
+  //     .filter((el, index, array )=>{
+  //       if (array.lastIndexOf(el) > index){
+  //         this.duplicateListingsIndices.push(index +1);
+  //         this.duplicateListingsIndices.push(array.lastIndexOf(el) +1)
+  //       }
+  //     });
+  //   // });
+  // }
 
-  private onPeriodChange(index: number) {
-    this.$nextTick(()=>{
-      this.currentSelectedValue = this.fundingIncrements[index].qtr;
-    })
-    
+  // private onPeriodChange(index: number) {
+  //   // this.$nextTick(()=>{
+  //   this.currentSelectedValue = this.fundingIncrements[index].qtr;
+  //   debugger;
+  //   // })
+  // }
+
+  public quarterChange(args: SelectData): void {
+    this.currentSelectedValue = args.text;
+    // EJY do sorting of this.fundingIncrements here
+    debugger;
   }
+  
+  public quarterJustAdded = ""; // EJY move this somewhere better
 
   public async initializeIncrements(): Promise<void> {
     let qtr = await this.currentQuarter();
@@ -372,12 +386,11 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       const ordinal = this.ordinals[qtr-1];
       // increment year if at first quarter and not first in the loop
       year = qtr === 1 ? year + 1 : year;
-      
     
       // increment quarter
       qtr = qtr === 4 ? 1 : qtr + 1;
       const periodStr = ordinal + " QTR FY" + year;
-      this.fiscalQuarters.push({ text: periodStr, order: i + 1 });
+      this.fiscalQuarters.push({ text: periodStr, multiSelectOrder: i + 1 });
 
       if (i === 0 && this.fundingIncrements.length === 0) {
         // default to 1st option if no store data
@@ -387,6 +400,17 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
           order: 1,
           sysId: "",
         });
+
+        this.quarterSelectData.push({
+          text: periodStr,
+          multiSelectOrder: 1,
+          disabled: false,
+        });
+
+        const firstSelectData = this.buildSelectData(0);
+        debugger;
+
+        this.quarterJustAdded = periodStr;
       }
     }
   }
@@ -422,21 +446,34 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     let selectedQtrIndex = this.fiscalQuarters.findIndex(
       (p) => p.text === lastSelectedQtr
     );
+    debugger;
     let nextQtr;
+    let nextQtrOrder = 0;
     if (
       selectedQtrIndex > -1 &&
       selectedQtrIndex !== this.fiscalQuarters.length
     ) {
       nextQtr = this.fiscalQuarters[selectedQtrIndex + 1].text;
+      nextQtrOrder = this.fiscalQuarters[selectedQtrIndex + 1].multiSelectOrder;
     }
-    if (nextQtr) {
+    debugger;
+    if (nextQtr && nextQtrOrder) {
       const newIncrement = {
         qtr: nextQtr,
         amt: "",
-        order: this.fundingIncrements.length + 1,
+        order: nextQtrOrder,
         sysId: "",
       };
       this.fundingIncrements.push(newIncrement);
+
+      const qtrSelectData: SelectData = {
+        text: nextQtr,
+        multiSelectOrder: nextQtrOrder,
+        disabled: false,
+      }
+      this.quarterSelectData.push(qtrSelectData);
+      this.quarterJustAdded = nextQtr;
+      
     }
   }
 
@@ -482,14 +519,17 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.isOverfunded();
   }
 
-  public getFiscalQuarters(index: number): SelectData[] {
-    this.currentSelectedValue = this.fundingIncrements[index].qtr;
+
+  public buildSelectData(index: number): SelectData[] {
+    // EJY  HERE HERE
+    // this.currentSelectedValue = this.fundingIncrements[index].qtr;
+    debugger;
     const firstSelectedQtr = this.fundingIncrements[0].qtr;
     const firstSelectedQtrIndex = this.fiscalQuarters.findIndex(
-      (p) => p.text === firstSelectedQtr
+      (qtr) => qtr.text === firstSelectedQtr
     );
 
-    let lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
+    let lastPossibleIndex = firstSelectedQtrIndex + this.maxAllowedIncrements;
     lastPossibleIndex =
       lastPossibleIndex > this.fiscalQuarters.length
         ? this.fiscalQuarters.length
@@ -502,8 +542,50 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     if (index === 0) {
       return this.fiscalQuarters;
     }
+
+    const alreadySelectedQuarters = this.fundingIncrements.map(obj => obj.qtr);
+    debugger;
+    optionsArr.forEach((option: SelectData) => {
+      const isAlreadySelected = alreadySelectedQuarters.includes(option.text);
+      option.disabled = isAlreadySelected ? true : false;
+    });
+    debugger;
     return optionsArr;
   }
+
+
+  // public getFiscalQuarters(index: number): SelectData[] {
+  //   // EJY  HERE HERE
+  //   // this.currentSelectedValue = this.fundingIncrements[index].qtr;
+  //   debugger;
+  //   const firstSelectedQtr = this.fundingIncrements[0].qtr;
+  //   const firstSelectedQtrIndex = this.fiscalQuarters.findIndex(
+  //     (qtr) => qtr.text === firstSelectedQtr
+  //   );
+
+  //   let lastPossibleIndex = firstSelectedQtrIndex + this.maxAllowedIncrements;
+  //   lastPossibleIndex =
+  //     lastPossibleIndex > this.fiscalQuarters.length
+  //       ? this.fiscalQuarters.length
+  //       : lastPossibleIndex;
+  //   let optionsArr = this.fiscalQuarters.slice(
+  //     firstSelectedQtrIndex + 1,
+  //     lastPossibleIndex
+  //   );
+
+  //   if (index === 0) {
+  //     return this.fiscalQuarters;
+  //   }
+
+  //   const alreadySelectedQuarters = this.fundingIncrements.map(obj => obj.qtr);
+  //   debugger;
+  //   optionsArr.forEach((option: SelectData) => {
+  //     const isAlreadySelected = alreadySelectedQuarters.includes(option.text);
+  //     option.disabled = isAlreadySelected ? true : false;
+  //   });
+  //   debugger;
+  //   return optionsArr;
+  // }
 
   public async loadOnEnter(): Promise<void> {
     const estimatedTOValue =
@@ -550,25 +632,25 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         this.periodLengthStr = unitCount + " " + unit;
         switch (unit) {
         case "days":
-          this.maxPayments = unitCount > 270 ? 5 : 4;
+          this.maxAllowedIncrements = unitCount > 270 ? 5 : 4;
           break;
         case "weeks":
-          this.maxPayments = unitCount > 36 ? 5 : 4;
+          this.maxAllowedIncrements = unitCount > 36 ? 5 : 4;
           break;
         case "months":
-          this.maxPayments = unitCount > 9 ? 5 : 4;
+          this.maxAllowedIncrements = unitCount > 9 ? 5 : 4;
           break;
         case "year":
-          this.maxPayments = 5;
+          this.maxAllowedIncrements = 5;
           break;
         default:
-          this.maxPayments = 1;
+          this.maxAllowedIncrements = 1;
         }
       }
     }
-    this.$nextTick(async () => {
-      await this.validateDuplicateQuarters();
-    });
+    // this.$nextTick(async () => {
+    //   await this.validateDuplicateQuarters();
+    // });
 
   }
 

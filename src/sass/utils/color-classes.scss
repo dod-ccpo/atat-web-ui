@@ -79,6 +79,8 @@
   .bg-disabled-dark   { background-color: $disabled-dark !important; }
   .bg-disabled        { background-color: $disabled !important; }
   .bg-disabled-light  { background-color: $disabled-light !important; }
+
+  .text-disabled      { color: $disabled-darker !important; }
 }
 
 .bg-transparent {
