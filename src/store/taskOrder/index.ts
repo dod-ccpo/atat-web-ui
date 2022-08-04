@@ -49,8 +49,7 @@ export class TaskOrderStore extends VuexModule {
     nameofProperty(this, (x) => x.taskOrder),
   ];
 
-  @Action
-  public async getTaskOrder(): Promise<TaskOrderDTO> {
+  public get value(): TaskOrderDTO {
     return this.taskOrder || initial;
   }
 
@@ -125,10 +124,7 @@ export class TaskOrderStore extends VuexModule {
 
   @Action
   public async isIncrementallyFunded(): Promise<string> {
-    if(this.taskOrder) {
-      return this.taskOrder.incrementally_funded;
-    }
-    return ""
+    return this.value.incrementally_funded;
   }
 
 }
