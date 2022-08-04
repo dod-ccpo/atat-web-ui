@@ -67,11 +67,6 @@ export class ClassificationRequirementsStore extends VuexModule {
   @Action({ rawError: true })
   public async getSelectedClassificationLevels(): Promise<ClassificationLevelDTO[]> {
     return this.selectedClassificationLevels;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_CLASSIFICATION_LEVELS_KEY
-    );
   }
 
   @Action({ rawError: true })
