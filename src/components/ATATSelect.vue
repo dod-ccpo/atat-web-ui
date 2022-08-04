@@ -98,14 +98,19 @@ export default class ATATSelect extends Vue {
 
   //data
   private rounded = false;
-  private selected = "";
+  // private selected: string | SelectData = "";
   private errorMessages: string[] = [];
+  private selectedBeforeChange: SelectData | string = "";
 
   @Emit("onChange")
-  private onChange(val: string): void {
-    this.selected = val;
+  private onChange(val: string | SelectData): void {
+    // this.selected = val;
     this.setErrorMessage();
-    this.$emit("selectValueChange", { val });
+    this.$emit("selectValueChange", { 
+      "newSelectedValue": val, 
+      "selectedBeforeChange": this.selectedBeforeChange 
+    });
+    this.selectedBeforeChange = val;
   }
 
   private onInput(v: string) {
@@ -122,6 +127,10 @@ export default class ATATSelect extends Vue {
   private onBlur(value: string) : void {
     this.setErrorMessage();
     this.$emit('blur', value);
+  }
+
+  public mounted(): void {
+    this.selectedBeforeChange = this._selectedValue;
   }
 
 }

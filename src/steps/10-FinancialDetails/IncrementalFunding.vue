@@ -276,7 +276,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public startDate = new Date();//(): Date => {
 
   public currentQuarter():number {
-    debugger;
     const currentMonth = this.startDate.getMonth() + 1;
     return Math.ceil((currentMonth <= 9 ? currentMonth + 3 : currentMonth - 9)/3);
   };
@@ -334,7 +333,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public async validateOnContinue(): Promise<void> {
     this.calcAmounts("initialIncrement");
     this.calcAmounts("increment0");
-    // await this.validateDuplicateQuarters();
     this.isUnderfunded(); 
     this.isOverfunded();
 
@@ -347,38 +345,36 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
   }
 
-  // EJY this won't be needed
-  // public async validateDuplicateQuarters(): Promise<void> {
-  //   // this.$nextTick(()=>{
-  //   this.duplicateListingsIndices = [];
-  //   this.fundingIncrements
-  //     .map((inc) => inc.qtr)
-  //     .filter((el, index, array )=>{
-  //       if (array.lastIndexOf(el) > index){
-  //         this.duplicateListingsIndices.push(index +1);
-  //         this.duplicateListingsIndices.push(array.lastIndexOf(el) +1)
-  //       }
-  //     });
-  //   // });
-  // }
+  public changedItemIndex = -1;
 
-  // private onPeriodChange(index: number) {
-  //   // this.$nextTick(()=>{
-  //   this.currentSelectedValue = this.fundingIncrements[index].qtr;
-  //   debugger;
-  //   // })
-  // }
+  public quarterChange(args: Record<string, SelectData>): void {
+    const newVal = args.newSelectedValue;
+    const oldVal = args.selectedBeforeChange;
+    this.changedItemIndex = this.fundingIncrements.findIndex(
+      incr => incr.qtr === oldVal.text
+    );
+    this.fundingIncrements[this.changedItemIndex].qtr = newVal.text;
+    if (newVal.multiSelectOrder) {
+      this.fundingIncrements[this.changedItemIndex].qtrOrder = newVal.multiSelectOrder;
 
-  public quarterChange(args: SelectData): void {
-    this.currentSelectedValue = args.text;
-    // EJY do sorting of this.fundingIncrements here
-    debugger;
+      const incrCount = this.fundingIncrements.length;
+      for (let index = 0; index < incrCount; index++) {
+        this.getSelectData(index);
+      }
+      debugger;
+
+      this.fundingIncrements.sort((a, b) => a.qtrOrder > b.qtrOrder ? 1 : -1)
+      debugger;
+      // EJY do sorting of this.fundingIncrements here
+
+      // EJY run getSelectData after to reset the menus?
+
+    }
   }
   
   public quarterJustAdded = ""; // EJY move this somewhere better
 
-  public async initializeIncrements(): Promise<void> {
-    debugger;
+  public initializeIncrements(): void {
     if (this.fiscalQuarters.length === 0) {
       let qtr = this.currentQuarter();
       let year = parseInt(format(this.startDate, "yy"));
@@ -403,24 +399,18 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
             amt: "",
             order: 1,
             sysId: "",
+            qtrOrder: 1,
           });
-          debugger;
           this.quarterSelectData.push({
             text: periodStr,
             multiSelectOrder: 1,
           });
-          // const firstSelectData = this.buildSelectData(0);
-          debugger;
-
-          // this.quarterJustAdded = periodStr;
-
         } else if (
           i === 0 
           && this.fundingIncrements[0].sysId 
           && this.quarterSelectData.length === 0
         ) {
           const qtrStr = this.fundingIncrements[0].qtr;
-
           this.quarterSelectData.push({
             text: qtrStr,
             multiSelectOrder: 1,
@@ -442,7 +432,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         this.removedIncrements.push(incr);
       }
     }
-
+    debugger;
     this.fundingIncrements.splice(index, 1);
     this.quarterSelectData.splice(index, 1);
     this.calcAmounts("");
@@ -479,6 +469,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         amt: "",
         order: nextQtrOrder,
         sysId: "",
+        qtrOrder: nextQtrOrder,
       };
       this.fundingIncrements.push(newIncrement);
 
@@ -536,14 +527,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
 
   public getSelectData(index: number): SelectData[] {
-    this.buildSelectData(index);
-    const options: SelectData[] = this.selectData[index] || [];
-    return options;
-  }
-
-  public async buildSelectData(index: number): Promise<void> {
     if (this.fiscalQuarters.length === 0) {
-      await this.initializeIncrements();
+      this.initializeIncrements();
     }
     const firstSelectedQtr = this.fundingIncrements[0].qtr;
     const firstSelectedQtrIndex = this.fiscalQuarters.findIndex(
@@ -555,26 +540,59 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       lastPossibleIndex > this.fiscalQuarters.length
         ? this.fiscalQuarters.length
         : lastPossibleIndex;
+
     let optionsArr = _.cloneDeep(this.fiscalQuarters);
+    debugger;
     if (index > 0) {
+      debugger;
       optionsArr = optionsArr.slice(
         firstSelectedQtrIndex + 1,
         lastPossibleIndex
       );
     }
-
+    debugger;
     if (index === 0 && this.selectData.length === 0) {
+      debugger;
       this.selectData[0] = _.cloneDeep(this.fiscalQuarters);
-    } else {
-      const alreadySelectedQuarters = this.fundingIncrements.map(obj => obj.qtr);
-      const thisDropdownValue = this.quarterSelectData[index].text;
-      optionsArr.forEach((option: SelectData) => {
-        const isAlreadySelected = alreadySelectedQuarters.includes(option.text);
-        const isThisOption = thisDropdownValue === option.text;
-        option.disabled = isAlreadySelected && !isThisOption ? true : false;
-      });
-      this.selectData[index] = optionsArr;
+      return this.selectData[0];
     }
+    debugger;
+    // check if we are past changedItemIndex
+    if (this.changedItemIndex !== -1 
+      && index > this.changedItemIndex
+      && this.quarterSelectData[this.changedItemIndex].multiSelectOrder
+    ) {
+      const changedItemQtrOrder = this.quarterSelectData[this.changedItemIndex].multiSelectOrder;
+      const thisItemQtrOrder = this.quarterSelectData[index].multiSelectOrder;
+      if (changedItemQtrOrder && thisItemQtrOrder && changedItemQtrOrder > thisItemQtrOrder) {
+        const amountPastChangedItem = index - this.changedItemIndex;
+        const nextIndex = firstSelectedQtrIndex + amountPastChangedItem
+        const nextQtr = this.fiscalQuarters[nextIndex];
+        // EJY don't change them if the multiSelectOrder is fine
+        const selectedQtrOrder = this.quarterSelectData[index].multiSelectOrder || false;
+        debugger;
+        // yeah this isn't working 
+        if (selectedQtrOrder && selectedQtrOrder < nextQtr.multiSelectOrder) {
+          this.quarterSelectData[index].multiSelectOrder = nextQtr.multiSelectOrder;
+          this.quarterSelectData[index].text = nextQtr.text;
+          this.fundingIncrements[index].qtr = nextQtr.text;
+          this.fundingIncrements[index].qtrOrder = nextQtr.multiSelectOrder;
+          debugger;
+        }
+
+      }
+
+    }
+    const alreadySelectedQuarters = this.fundingIncrements.map(obj => obj.qtr);
+    const thisDropdownValue = this.quarterSelectData[index].text;
+    optionsArr.forEach((option: SelectData) => {
+      const isAlreadySelected = alreadySelectedQuarters.includes(option.text);
+      const isThisOption = thisDropdownValue === option.text;
+      option.disabled = isAlreadySelected && !isThisOption ? true : false;
+    });
+    this.selectData[index] = optionsArr;
+    // debugger;
+    return this.selectData[index];
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -596,6 +614,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
       // use below for future validation ticket
       this.hasReturnedToPage = this.fundingIncrements.length > 0;
+
+      // EJY need to set qtrOrder on this.fundingIncrements
+
     }
     
     this.periodOfPerformance = await PeriodOfPerformance.loadPeriodOfPerformance();
@@ -637,12 +658,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         }
       }
     }
-
-    // this.buildSelectData(0);
-    // this.$nextTick(async () => {
-    //   await this.validateDuplicateQuarters();
-    // });
-
   }
 
   public async mounted(): Promise<void> {

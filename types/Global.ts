@@ -232,8 +232,9 @@ export interface DOWServiceOfferingGroup {
 export interface fundingIncrement {
   qtr: string;
   amt: string;
-  order: number;
+  order: number; // saved to database
   sysId?: string;
+  qtrOrder: number; // used for sorting on IFP page
 }
 export interface IFPData {
   initialFundingIncrementStr: string;
