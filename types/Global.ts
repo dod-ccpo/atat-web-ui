@@ -33,6 +33,7 @@ export interface SelectData {
   value?: string;
   multiSelectOrder?: number;
   disabled?: boolean;
+  errored?: boolean;
 }
 
 /**
@@ -230,7 +231,7 @@ export interface DOWServiceOfferingGroup {
 }
 
 export interface fundingIncrement {
-  qtr: string;
+  text: string;
   amt: string;
   order: number; // saved to database
   sysId?: string;
