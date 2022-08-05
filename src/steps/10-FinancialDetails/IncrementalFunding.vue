@@ -61,7 +61,7 @@
               <transition-group name="funding-increments" tag="div">
                 <div
                   v-for="(fundingIncrement, index) in fundingIncrements"
-                  :key="index"
+                  :key="fundingIncrement.text"
                   :id="'Increment' + index"
                   class="funding-increments-item"
                 >
