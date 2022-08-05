@@ -28,6 +28,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   public initialized = false;
   public classificationLevels: ClassificationLevelDTO[] = [];
   public selectedClassificationLevels: ClassificationLevelDTO[] = [];
+  public currentEnvClassificationLevels: ClassificationLevelDTO[] = [];
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -53,6 +54,16 @@ export class ClassificationRequirementsStore extends VuexModule {
   }
 
   @Mutation
+  public async setCurrentENVClassificationLevels(value: ClassificationLevelDTO[]): Promise<void> {
+    this.currentEnvClassificationLevels = value;
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_CLASSIFICATION_LEVELS_KEY
+    );
+
+  }
+  @Mutation
   public setStoreData(sessionData: string): void {
     try {
       const sessionDataObject = JSON.parse(sessionData);
@@ -67,6 +78,11 @@ export class ClassificationRequirementsStore extends VuexModule {
   @Action({ rawError: true })
   public async getSelectedClassificationLevels(): Promise<ClassificationLevelDTO[]> {
     return this.selectedClassificationLevels;
+  }
+
+  @Action({ rawError: true })
+  public async getCurrentENVClassificationLevels(): Promise<ClassificationLevelDTO[]> {
+    return this.currentEnvClassificationLevels;
   }
 
   @Action({ rawError: true })
