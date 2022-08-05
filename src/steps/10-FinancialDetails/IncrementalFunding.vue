@@ -58,74 +58,76 @@
               </div>
 
               <hr class="my-6" />
+              <transition-group name="funding-increments" tag="div">
+                <div
+                  v-for="(fundingIncrement, index) in fundingIncrements"
+                  :key="fundingIncrement.qtr"
+                  :id="'Increment' + index"
+                  class="funding-increments-item"
+                >
+                  <div class="mb-4">
+                    <div class="d-flex justify-space-between align-center mb-4">
+                      <span class="d-block font-weight-500 text-base mr-4 ml-1 font-size-14">
+                        {{ index + 1 }}
+                      </span>
 
-              <div
-                v-for="(fundingIncrement, index) in fundingIncrements"
-                :key="index"
-                :id="'Increment' + index"
-              >
-                <div class="mb-4">
-                  <div class="d-flex justify-space-between align-center mb-4">
-                    <span class="d-block font-weight-500 text-base mr-4 ml-1 font-size-14">
-                      {{ index + 1 }}
-                    </span>
+                      <ATATSelect
+                        :id="'IncrementPeriod' + index"
+                        :items="getSelectData(index)"
+                        width="190"
+                        :selectedValue.sync="quarterSelectData[index]"
+                        class="mr-4"
+                        :showErrorMessages="false"
+                        @selectValueChange="quarterChange"
+                        :returnObject="true"
+                      />
+                        <!-- @blur="onPeriodChange(index)" -->
+                        <!-- :selectedValue.sync="fundingIncrements[index]" -->
 
-                    <ATATSelect
-                      :id="'IncrementPeriod' + index"
-                      :items="getSelectData(index)"
-                      width="190"
-                      :selectedValue.sync="quarterSelectData[index]"
-                      class="mr-4"
-                      :showErrorMessages="false"
-                      @selectValueChange="quarterChange"
-                      :returnObject="true"
-                    />
-                      <!-- @blur="onPeriodChange(index)" -->
-                      <!-- :selectedValue.sync="fundingIncrements[index]" -->
+                      <ATATTextField
+                        :id="'Amount' + index"
+                        :value.sync="fundingIncrements[index].amt"
+                        :alignRight="true"
+                        :isCurrency="true"
+                        :showErrorMessages="false"
+                        width="190"
+                        class="mr-2"
+                        @blur="calcAmounts('increment' + index)"
+                        :rules="[$validators.required('', true)]"
+                      />
+                      <v-btn
+                        icon
+                        :id="'DeleteIncrement' + index"
+                        @click="deleteFundingIncrement(index)"
+                        :disabled="fundingIncrements.length === 1"
+                      >
+                        <v-icon> delete </v-icon>
+                      </v-btn>
+                    </div>
+                    <div>
+                      <!-- error validation for duped quarters -->
+                      <ATATErrorValidation
+                        :id="'isDuplicated_' + index"
+                        class="atat-text-field-error"
+                        :errorMessages="[duplicateErrorMessage]"
+                        v-if="
+                          duplicateListingsIndices.some(
+                            (erroredIdx) => erroredIdx - 1 === index
+                          ) && index === duplicateListingsIndices[duplicateListingsIndices.length-1]-1
+                        "
+                      />
 
-                    <ATATTextField
-                      :id="'Amount' + index"
-                      :value.sync="fundingIncrements[index].amt"
-                      :alignRight="true"
-                      :isCurrency="true"
-                      :showErrorMessages="false"
-                      width="190"
-                      class="mr-2"
-                      @blur="calcAmounts('increment' + index)"
-                      :rules="[$validators.required('', true)]"
-                    />
-                    <v-btn
-                      icon
-                      :id="'DeleteIncrement' + index"
-                      @click="deleteFundingIncrement(index)"
-                      :disabled="fundingIncrements.length === 1"
-                    >
-                      <v-icon> delete </v-icon>
-                    </v-btn>
-                  </div>
-                  <div>
-                    <!-- error validation for duped quarters -->
-                    <ATATErrorValidation
-                      :id="'isDuplicated_' + index"
-                      class="atat-text-field-error"
-                      :errorMessages="[duplicateErrorMessage]"
-                      v-if="
-                        duplicateListingsIndices.some(
-                          (erroredIdx) => erroredIdx - 1 === index
-                        ) && index === duplicateListingsIndices[duplicateListingsIndices.length-1]-1
-                      "
-                    />
-
-                    <!-- error validation for missing first increment -->
-                    <ATATErrorValidation
-                      :id="'isDuplicated_' + index"
-                      class="atat-text-field-error"
-                      :errorMessages="[errorMissingFirstIncrementMessage]"
-                      v-if="errorMissingFirstIncrement && index === 0"
-                    />
+                      <!-- error validation for missing first increment -->
+                      <ATATErrorValidation
+                        :id="'isDuplicated_' + index"
+                        class="atat-text-field-error"
+                        :errorMessages="[errorMissingFirstIncrementMessage]"
+                        v-if="errorMissingFirstIncrement && index === 0"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              </transition-group>
               <v-btn
                 id="AddIncrementButton"
                 v-if="fundingIncrements.length < maxAllowedIncrements"
@@ -229,6 +231,33 @@
     </v-row>
   </v-container>
 </template>
+
+<style lang="scss">
+
+// .list-enter, .list-leave-to {
+//   opacity: 0;
+// }
+// .list-enter-active, .list-leave-active {
+//   transition: opacity 0.5s ease;
+// }
+.funding-increments-item {
+  transition: all 0.5s ease;
+  display: inline-block;
+}
+.funding-increments-enter, .funding-increments-leave-to
+/* .list-complete-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  // transform: translateY(30px);
+}
+.funding-increments-leave-active {
+  position: absolute;
+}
+
+.funding-increments-move {
+  transition: transform 0.5s ease;
+}
+</style>
+
 
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
@@ -354,17 +383,22 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       incr => incr.qtr === oldVal.text
     );
     this.fundingIncrements[this.changedItemIndex].qtr = newVal.text;
+    debugger;
     if (newVal.multiSelectOrder) {
       this.fundingIncrements[this.changedItemIndex].qtrOrder = newVal.multiSelectOrder;
+      // this.quarterSelectData[this.changedItemIndex].multiSelectOrder = newVal.multiSelectOrder;
 
-      const incrCount = this.fundingIncrements.length;
-      for (let index = 0; index < incrCount; index++) {
-        this.getSelectData(index);
-      }
       debugger;
 
-      this.fundingIncrements.sort((a, b) => a.qtrOrder > b.qtrOrder ? 1 : -1)
+      this.fundingIncrements.sort((a, b) => a.qtrOrder > b.qtrOrder ? 1 : -1);
+      this.quarterSelectData.sort((a, b) => a.text > b.text ? 1 : -1);
       debugger;
+
+      // const incrCount = this.fundingIncrements.length;
+      // for (let index = 0; index < incrCount; index++) {
+      //   this.getSelectData(index);
+      // }
+
       // EJY do sorting of this.fundingIncrements here
 
       // EJY run getSelectData after to reset the menus?
@@ -542,47 +576,48 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         : lastPossibleIndex;
 
     let optionsArr = _.cloneDeep(this.fiscalQuarters);
-    debugger;
     if (index > 0) {
-      debugger;
       optionsArr = optionsArr.slice(
         firstSelectedQtrIndex + 1,
         lastPossibleIndex
       );
     }
-    debugger;
     if (index === 0 && this.selectData.length === 0) {
-      debugger;
       this.selectData[0] = _.cloneDeep(this.fiscalQuarters);
       return this.selectData[0];
     }
     debugger;
     // check if we are past changedItemIndex
-    if (this.changedItemIndex !== -1 
-      && index > this.changedItemIndex
-      && this.quarterSelectData[this.changedItemIndex].multiSelectOrder
-    ) {
-      const changedItemQtrOrder = this.quarterSelectData[this.changedItemIndex].multiSelectOrder;
-      const thisItemQtrOrder = this.quarterSelectData[index].multiSelectOrder;
-      if (changedItemQtrOrder && thisItemQtrOrder && changedItemQtrOrder > thisItemQtrOrder) {
-        const amountPastChangedItem = index - this.changedItemIndex;
-        const nextIndex = firstSelectedQtrIndex + amountPastChangedItem
-        const nextQtr = this.fiscalQuarters[nextIndex];
-        // EJY don't change them if the multiSelectOrder is fine
-        const selectedQtrOrder = this.quarterSelectData[index].multiSelectOrder || false;
-        debugger;
-        // yeah this isn't working 
-        if (selectedQtrOrder && selectedQtrOrder < nextQtr.multiSelectOrder) {
-          this.quarterSelectData[index].multiSelectOrder = nextQtr.multiSelectOrder;
-          this.quarterSelectData[index].text = nextQtr.text;
-          this.fundingIncrements[index].qtr = nextQtr.text;
-          this.fundingIncrements[index].qtrOrder = nextQtr.multiSelectOrder;
-          debugger;
-        }
+    // if (this.changedItemIndex !== -1 
+    //   && index > this.changedItemIndex
+    //   && this.quarterSelectData[this.changedItemIndex].multiSelectOrder
+    // ) {
+    //   const changedItemQtrOrder = this.quarterSelectData[this.changedItemIndex].multiSelectOrder;
+    //   const thisItemQtrOrder = this.quarterSelectData[index].multiSelectOrder;
+    //   const amountPastChangedItem = index - this.changedItemIndex;
+    //   const nextIndex = firstSelectedQtrIndex + amountPastChangedItem;
+    //   if (nextIndex <= lastPossibleIndex) {
+    //     if (changedItemQtrOrder && thisItemQtrOrder && (changedItemQtrOrder > thisItemQtrOrder)) {
+    //       const nextQtr = this.fiscalQuarters[nextIndex];
+    //       // EJY don't change them if the multiSelectOrder is fine
+    //       const thisQtrOrder = this.quarterSelectData[index].multiSelectOrder || false;
+    //       debugger;
+    //       // yeah this isn't working 
+    //       if (thisQtrOrder && (thisQtrOrder < nextQtr.multiSelectOrder)) {
+    //         this.quarterSelectData[index].multiSelectOrder = nextQtr.multiSelectOrder;
+    //         this.quarterSelectData[index].text = nextQtr.text;
+    //         this.fundingIncrements[index].qtr = nextQtr.text;
+    //         this.fundingIncrements[index].qtrOrder = nextQtr.multiSelectOrder;
+    //         debugger;
+    //       }
+    //     }
+    //   } else {
+    //     // remove any increments past lastPossibleIndex
+    //     this.quarterSelectData.splice(index, 1);
+    //     this.fundingIncrements.splice(index, 1);
+    //   }
+    // }
 
-      }
-
-    }
     const alreadySelectedQuarters = this.fundingIncrements.map(obj => obj.qtr);
     const thisDropdownValue = this.quarterSelectData[index].text;
     optionsArr.forEach((option: SelectData) => {
