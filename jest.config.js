@@ -1,9 +1,17 @@
 module.exports = {
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   transformIgnorePatterns: ["/node_modules/(?!vuetify/)"],
-  testMatch: ["**/src/**/*.spec.ts", "**/src/**/*.spec.js"],
+  testMatch: [
+    "**/src/components/*.spec.ts",
+    "**/src/steps/**/*.spec.ts",
+    "**/src/steps/**/**/*.spec.ts",
+  ],
   collectCoverage: true,
-  collectCoverageFrom: ["src/**/*.spec.ts", "src/**/*.vue"],
+  collectCoverageFrom: [
+    "src/components/*.{vue}",
+    "src/steps/**/*.{vue}",
+    "src/steps/**/**/*.{vue}"
+  ],
   globals: {
     'ts-jest': {
       diagnostics: true
