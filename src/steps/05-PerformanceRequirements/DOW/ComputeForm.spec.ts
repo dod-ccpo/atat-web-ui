@@ -1,12 +1,12 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper, config} from "@vue/test-utils";
+import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
 import ComputeForm from "../DOW/ComputeForm.vue";
-import {DefaultProps} from "vue/types/options";
+import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 
-import { 
-  Checkbox, 
+import {
+  Checkbox,
   ComputeData,
   RadioButton,
   SelectData,
@@ -21,13 +21,13 @@ describe("Testing ComputeForm Component", () => {
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
   config.showDeprecationWarnings = false
   Vue.config.silent = true;
-  
+
   //propsData
   const computeData = {
     "instanceNumber": 1,
     "environmentType": "Dev/Testing",
     // `pragma: allowlist secret`
-    "classificationLevel": "1", 
+    "classificationLevel": "class1",
     "deployedRegions": [
       "CONUS East"
     ],
@@ -47,7 +47,7 @@ describe("Testing ComputeForm Component", () => {
     "performanceTierOther": "",
     "numberOfInstancesNeeded": "1"
   }
-  
+
   const avlClassificationLevelObjects = [
     {
       "sys_id": "1",
@@ -73,13 +73,73 @@ describe("Testing ComputeForm Component", () => {
     }
   ]
 
-  
+  const allClassificationLevels = [
+    [
+      {
+        "sys_id": "class1",
+        "sys_updated_by": "person-ctr@ccpo.mil",
+        "sys_created_on": "2022-05-12 17:24:10",
+        "sys_mod_count": "0",
+        "impact_level": "IL4",
+        "sys_updated_on": "2022-05-12 17:24:10",
+        "classification": "U",
+        "sys_tags": "",
+        "sys_created_by": "person-ctr@ccpo.mil"
+      },
+      {
+        "sys_id": "class2",
+        "sys_updated_by": "person-ctr@ccpo.mil",
+        "sys_created_on": "2022-05-12 17:24:44",
+        "sys_mod_count": "0",
+        "impact_level": "",
+        "sys_updated_on": "2022-05-12 17:24:44",
+        "classification": "TS",
+        "sys_tags": "",
+        "sys_created_by": "person-ctr@ccpo.mil"
+      },
+      {
+        "sys_id": "class3",
+        "sys_updated_by": "person-ctr@ccpo.mil",
+        "sys_created_on": "2022-05-12 17:24:35",
+        "sys_mod_count": "0",
+        "impact_level": "IL6",
+        "sys_updated_on": "2022-05-12 17:24:35",
+        "classification": "S",
+        "sys_tags": "",
+        "sys_created_by": "person-ctr@ccpo.mil"
+      },
+      {
+        "sys_id": "class4",
+        "sys_updated_by": "person-ctr@ccpo.mil",
+        "sys_created_on": "2022-05-12 17:24:04",
+        "sys_mod_count": "0",
+        "impact_level": "IL2",
+        "sys_updated_on": "2022-05-12 17:24:04",
+        "classification": "U",
+        "sys_tags": "",
+        "sys_created_by": "person-ctr@ccpo.mil"
+      },
+      {
+        "sys_id": "class5",
+        "sys_updated_by": "person-ctr@ccpo.mil",
+        "sys_created_on": "2022-05-12 17:24:22",
+        "sys_mod_count": "0",
+        "impact_level": "IL5",
+        "sys_updated_on": "2022-05-12 17:24:22",
+        "classification": "U",
+        "sys_tags": "",
+        "sys_created_by": "person-ctr@ccpo.mil"
+      }
+    ]
+  ]
+
+
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(ComputeForm, {
       localVue,
       vuetify,
-      propsData:{
+      propsData: {
         computeData: computeData
       }
     });
@@ -89,19 +149,19 @@ describe("Testing ComputeForm Component", () => {
     console.error.mockImplementation(() => null);
   });
 
-  describe("INITIALIZATION", () => { 
+  describe("INITIALIZATION", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
   });
 
 
-  describe("testing entire duration radio button selection", () => { 
+  describe("testing entire duration radio button selection", () => {
     it("- selecting `YES` remove POP entries", async () => {
       computeData.entireDuration = 'YES';
       await wrapper.setData({
         _computeData: computeData,
-        availablePeriodCheckboxItems:[
+        availablePeriodCheckboxItems: [
           {
             id: "BaseDisabled",
             label: "Base period",
@@ -109,7 +169,7 @@ describe("Testing ComputeForm Component", () => {
           }
         ]
       })
-      Vue.nextTick(()=>{
+      Vue.nextTick(() => {
         expect(wrapper.vm.$props.computeData.periodsNeeded[0]).toBe([]);
       })
 
@@ -119,7 +179,7 @@ describe("Testing ComputeForm Component", () => {
       computeData.entireDuration = 'NO';
       await wrapper.setData({
         _computeData: computeData,
-        availablePeriodCheckboxItems:[
+        availablePeriodCheckboxItems: [
           {
             id: "BaseDisabled",
             label: "Base period",
@@ -127,7 +187,7 @@ describe("Testing ComputeForm Component", () => {
           }
         ]
       })
-      Vue.nextTick(()=>{
+      Vue.nextTick(() => {
         expect(wrapper.vm.$props.computeData.periodsNeeded[0]).toBe(['Base']);
       })
     });
@@ -157,8 +217,8 @@ describe("Testing ComputeForm Component", () => {
   })
 
   describe("testing form fields", () => {
-    describe("Classification Label", ()=>{
-      it("tests if verbiage is accurate for single classification level", async ()=>{
+    describe("Classification Label", () => {
+      it("tests if verbiage is accurate for single classification level", async () => {
         await wrapper.setData({
           avlClassificationLevelObjects: [avlClassificationLevelObjects[0]]
         })
@@ -172,22 +232,79 @@ describe("Testing ComputeForm Component", () => {
       })
     });
 
-    describe("Classification Modal Interactions", ()=>{
-      it("tests if classification levels change", async ()=>{
+
+    describe("Classification Modal Interactions", () => {
+      it("tests if classification levels change", async () => {
+
         await wrapper.setData({
-          avlClassificationLevelObjects: [avlClassificationLevelObjects[0]]
+          allClassificationLevels: allClassificationLevels,
+          modalSelectedOptions: ["class3", "class4"]
         })
-        const spy = await jest.spyOn(wrapper.vm, "checkSingleClassification");
-        await wrapper.vm.checkSingleClassification();
+
+        //closes modal and sets avlClassificationLevelObjects with 
+        //class levels selected in modal
+        const spy = await jest.spyOn(wrapper.vm, "classificationLevelsChanged");
+        await wrapper.vm.classificationLevelsChanged();
         expect(spy).toHaveBeenCalled();
-        const classLevelName = wrapper.vm.$data.singleClassificationLevelName;
-        expect(classLevelName).toContain(
-          wrapper.vm.$data.avlClassificationLevelObjects[0].impact_level
-        )
+        
+        //expects modal to be closed and data props to be set accordingly
+        expect(wrapper.vm.$data.showDialog).toBe(false);
+        expect(wrapper.vm.$data.avlClassificationLevelObjects.length).toEqual(0);
+
+        // available class levels should be same as 
+        // modal selected options
+        Vue.nextTick(()=>{
+          expect(wrapper.vm.$data.avlClassificationLevelObjects.length).toBe(
+            wrapper.vm.$data.modalSelectedOptions.length
+          )
+        })
       })
+
+      it("tests if only one classification level was selected in modal", async () => {
+        
+        await wrapper.setData({
+          allClassificationLevels: allClassificationLevels,
+          modalSelectedOptions: ["class3"]
+        })
+
+        //closes modal and sets avlClassificationLevelObjects with 
+        //class levels selected in modal
+        const classLevelsChangedSpy = await jest.spyOn(wrapper.vm, "classificationLevelsChanged");
+        await wrapper.vm.classificationLevelsChanged();
+        expect(classLevelsChangedSpy).toHaveBeenCalled();
+        
+        //expects modal to be closed and data props to be set accordingly
+        expect(wrapper.vm.$data.showDialog).toBe(false);
+        expect(wrapper.vm.$data.avlClassificationLevelObjects.length).toEqual(0);
+
+        const checkSingleClassSpy = await jest.spyOn(wrapper.vm, "checkSingleClassification");
+        await wrapper.vm.checkSingleClassification();
+        expect(checkSingleClassSpy).toHaveBeenCalled();
+      })
+
+      it("tests if multiple classification levels were selected in modal and are not what " + 
+          "was originally selected reset computeForm.classificationLevels", async () => {
+        computeData.classificationLevel = 'class3';
+        await wrapper.setData({
+          allClassificationLevels: allClassificationLevels,
+          modalSelectedOptions: ["class4", "class5"]
+        })
+
+        //closes modal and sets avlClassificationLevelObjects with 
+        //class levels selected in modal
+        const classLevelsChangedSpy = await jest.spyOn(wrapper.vm, "classificationLevelsChanged");
+        await wrapper.vm.classificationLevelsChanged();
+        expect(classLevelsChangedSpy).toHaveBeenCalled();
+
+        // if the classification level that was selected was removed via the modal,
+        // reset computeData.classificationLevel
+        Vue.nextTick(() => {
+          expect(wrapper.vm.$props.computeData.classificationLevel).toBe("");
+        })
+      });
     });
-    
-    describe("Available Classification Levels Radio Group", ()=>{
+
+    describe("Available Classification Levels Radio Group", () => {
       it("- tests if no items are in `avlClassificationLevelObjects` array ", async () => {
         //set `avlClassificationLevelObjects` with data
         await wrapper.setData({
@@ -195,11 +312,11 @@ describe("Testing ComputeForm Component", () => {
         })
         const spy = await jest.spyOn(wrapper.vm, "setAvlClassificationLevels");
         await wrapper.vm.setAvlClassificationLevels();
-  
+
         // call `setAvlClassificationLevels` to transform data into 
         // radio button list
         expect(spy).toHaveBeenCalled();
-        Vue.nextTick(()=>{
+        Vue.nextTick(() => {
           // ensure radio button list is the same length as array
           expect(wrapper.vm.$data.classificationRadioOptions).toEqual(0);
         })
@@ -215,16 +332,16 @@ describe("Testing ComputeForm Component", () => {
         // call `setAvlClassificationLevels` to transform data into 
         // radio button list
         expect(spy).toHaveBeenCalled();
-        Vue.nextTick(()=>{
+        Vue.nextTick(() => {
           // ensure radio button list is the same length as array
           expect(wrapper.vm.$data.classificationRadioOptions).toHaveLength(
             avlClassificationLevelObjects.length
           );
         })
       });
-      
+
     });
-   
+
   })
 
 
