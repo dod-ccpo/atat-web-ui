@@ -279,7 +279,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   private createCheckboxItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";
-    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix) : [];
+    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix, false, false) : [];
   }
 
   public classificationInstances: DOWClassificationInstance[] = [];

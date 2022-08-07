@@ -168,7 +168,6 @@ export default class ATATCheckboxGroup extends Vue {
     Vue.nextTick(() => {
       this.prevSelected = [...this._selected];
     });
-    
     this.setErrorMessage();
   }
 
@@ -266,7 +265,6 @@ export default class ATATCheckboxGroup extends Vue {
         this.setErrorMessage();
       }
     }
-
   }
 
 }
