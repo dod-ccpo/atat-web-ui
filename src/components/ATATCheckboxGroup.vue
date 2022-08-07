@@ -48,6 +48,7 @@
         <ATATTextArea
           v-if="otherEntryType === 'textarea'"
           ref="atatTextInput"
+          name="otherTextArea"
           v-show="showOtherEntry(item.value)"
           :id="otherId"
           class="width-100 ml-5 mb-6"
@@ -59,6 +60,7 @@
         <ATATTextField
           v-if="otherEntryType === 'textfield'"
           ref="atatTextInput"
+          name="otherTextField"
           v-show="showOtherEntry(item.value)"
           :id="otherId"
           class="ml-5 mb-6 mt-2 _input-wrapper-max-width"

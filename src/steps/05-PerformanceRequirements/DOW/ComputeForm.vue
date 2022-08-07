@@ -107,6 +107,7 @@
     </p>
     <ATATCheckboxGroup 
       id="Regions"
+      ref="regionsCheckbox"
       aria-describedby="CheckboxGroupLabel"
       :value.sync="_computeData.deployedRegions"
       :items="regionCheckboxOption"
@@ -142,6 +143,7 @@
 
     <ATATRadioGroup
       class="copy-max-width mb-10 mt-4"
+      ref="NeededForEntireDuration"
       id="NeededForEntireDuration"
       legend="Is this instance needed for the entire duration of your task order?"
       :items="requirementOptions"
@@ -156,6 +158,7 @@
       </p>
       <ATATCheckboxGroup
         id="PeriodsCheckboxes"
+        ref="periodsCheckboxes"
         aria-describedby="PeriodsLabel"
         :value.sync="_computeData.periodsNeeded"
         :items="availablePeriodCheckboxItems"
@@ -366,7 +369,7 @@ export default class ComputeForm extends Vue {
       reset: () => void;
       validate: () => boolean;
       errorBag: Record<number, boolean>;
-    };
+    },
   };
 
   @PropSync("computeData") public _computeData!: ComputeData;

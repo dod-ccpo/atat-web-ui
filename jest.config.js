@@ -5,8 +5,6 @@ module.exports = {
   //collectCoverageFrom: ["**/*.{js,vue}", "!**/node_modules/**"],
   collectCoverageFrom: [
     "<rootDir>/src/components/*.{vue,ts}",
-    "!<rootDir>/src/steps/**/*.{vue,ts}",
-    "!<rootDir>/steps/src/steps/**/*.{vue,ts}",
     //  "src/components/*.{js|vue}",
     // "src/components/**/*.{js|vue}",
     // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.{vue|js}",
@@ -16,14 +14,11 @@ module.exports = {
     // "src/steps/**/**/*.vue"
   ],
   // An array of regexp pattern strings used to skip coverage collection
-  coveragePathIgnorePatterns: [
-    "<rootDir>/src/components/*.{vue,ts}",
-    "<rootDir>/src/store/",
-    "<rootDir>/src/api/",
-    "<rootDir>/src/steps/",
-    "steps/",
-    // "steps/src/steps/",
-  ],
+  // coveragePathIgnorePatterns: [
+  //   "<rootDir>/src/store/",
+  //   "<rootDir>/src/api/",
+  //   "<rootDir>/src/steps/",
+  // ],
 
   // Indicates which provider should be used to instrument code for coverage
   //  coverageProvider: "babel",

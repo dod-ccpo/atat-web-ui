@@ -133,6 +133,46 @@ describe("Testing ComputeForm Component", () => {
     ]
   ]
 
+  const availablePeriodCheckboxItems =  [
+    {
+      "id": "BASE",
+      "label": "Base period",
+      "value": "base_01"
+    },
+    {
+      "id": "OPTION1",
+      "label": "Option period 1",
+      "value": "option_01"
+    }
+  ]
+
+  const regionCheckboxOptions = [
+    {
+      id: "CONUSEast",
+      label: "CONUS East",
+      value: "CONUS East",
+    },
+    {
+      id: "CONUSCentral",
+      label: "CONUS Central",
+      value: "CONUS Central",
+    },
+    {
+      id: "CONUSWest",
+      label: "CONUS West",
+      value: "CONUS West",
+    },
+    {
+      id: "OCONUS",
+      label: "OCONUS",
+      value: "OCONUS",
+    },
+    {
+      id: "Other",
+      label: "Other",
+      value: "OtherRegion",
+    }];
+
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -143,10 +183,6 @@ describe("Testing ComputeForm Component", () => {
         computeData: computeData
       }
     });
-    jest.spyOn(console, 'error');
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore jest.spyOn adds this functionality
-    console.error.mockImplementation(() => null);
   });
 
   describe("INITIALIZATION", () => {
@@ -342,9 +378,116 @@ describe("Testing ComputeForm Component", () => {
 
     });
 
+    describe("***** testing validation *****", () => {
+      describe("on page load and...", () => {
+        it("validates if page has been 'touched'", async () => {
+          await wrapper.setData({
+            formHasBeenTouched: true
+          })
+          const spy = await jest.spyOn(wrapper.vm, "validate");
+          await wrapper.vm.validate();
+          expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        it("does not validate if page has NOT been 'touched'", async () => {
+          await wrapper.setData({
+            formHasBeenTouched: false
+          })
+          Vue.nextTick(()=>{
+            expect(wrapper.vm.$data.validateOtherTierOnBlur).toBe(true);
+          })
+        });
+        describe("validates `performanceTier` radio group 'other' textbox with ...", () => {
+          it("invalid data", async()=>{
+            computeData.performanceTier = "Premium";
+            computeData.performanceTierOther = "";
+   
+            await wrapper.setData({
+              _computeData: computeData,
+              otherPerformanceTierValue: "Premium"
+            })
+
+            const spy = await jest.spyOn(wrapper.vm, "setErrorMessages");
+            await wrapper.vm.setErrorMessages();
+            expect(spy).toHaveBeenCalledTimes(1);
+
+            Vue.nextTick(()=>{
+              expect(wrapper.vm.$data.validateOtherTierOnBlur).toBe(true);
+              expect(wrapper.vm.$data.validateOtherTierNow).toBe(true);
+            })
+          });
+          it("valid data", async()=>{
+            computeData.performanceTier = "Premium";
+            computeData.performanceTierOther = "OtherValue";
+   
+            await wrapper.setData({
+              _computeData: computeData,
+              otherPerformanceTierValue: "Premium"
+            })
+
+            const spy = await jest.spyOn(wrapper.vm, "setErrorMessages");
+            await wrapper.vm.setErrorMessages();
+            expect(spy).toHaveBeenCalledTimes(1);
+            
+            Vue.nextTick(()=>{
+              expect(wrapper.vm.$data.validateOtherTierOnBlur).toBe(false);
+              expect(wrapper.vm.$data.clearOtherTierValidation).toBe(true);
+            })
+          });
+        });
+        describe("tests validation on 'periodsCheckboxes(other option)' & triggers error if ...", () => {
+          it("- no data", async()=>{
+            computeData.entireDuration = "NO";
+            computeData.periodsNeeded = [];
+   
+            await wrapper.setData({
+              _computeData: computeData,
+              availablePeriodCheckboxItems: availablePeriodCheckboxItems
+            });
+  
+            const spy = await jest.spyOn(wrapper.vm, "setErrorMessages");
+            await wrapper.vm.setErrorMessages();
+            expect(spy).toHaveBeenCalledTimes(1);
+            
+            //updated wrapper.setData causes periodCheckboxList to display
+            
+            const periodCheckboxes = await wrapper.findComponent(
+              {ref:"periodsCheckboxes"}
+            );
+            await periodCheckboxes.setData({
+              prevSelected: []
+            })
+            expect(periodCheckboxes.exists()).toBe(true);
+            expect(periodCheckboxes.vm.$data.errorMessages).toHaveLength(1);
+          });
+        });
+        describe("tests validation on 'regionsCheckboxes(other option)' & triggers error if ...", () => {
+          it("- no data", async()=>{
+            computeData.deployedRegions = ["OtherRegion"];
+            computeData.deployedRegionsOther = "";
+   
+            await wrapper.setData({
+              _computeData: computeData,
+              otherRegionValue: "OtherRegion",
+              regionCheckboxOptions: regionCheckboxOptions
+            });
+          
+            const spy = await jest.spyOn(wrapper.vm, "setErrorMessages");
+            await wrapper.vm.setErrorMessages();
+            expect(spy).toHaveBeenCalledTimes(1);
+            
+            const regionCheckboxes = await wrapper.findComponent(
+              {ref:"regionsCheckbox"}
+            );
+            expect(regionCheckboxes.exists()).toBe(true);
+            expect(regionCheckboxes.html().trim()).toContain(
+              "<div class=\"field-error ml-2\">Please enter your other region(s).</div>"
+            );
+            
+          });
+        });
+      });
+     
+    });
   })
-
-
-
-
 });
