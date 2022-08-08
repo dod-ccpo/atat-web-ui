@@ -197,6 +197,7 @@
     <v-row class="mt-7">
       <v-col class="col-md-12 col-lg-9">
         <ATATTextField
+          ref="operatingSystemAndLicensing"
           id="OperatingSystemAndLicensing"
           label="Operating system and licensing"
           :tooltipText="operatingSystemTooltipText"
@@ -248,6 +249,7 @@
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
           id="StorageAmount"
+          ref="storageAmount"
           label="Storage amount"
           :tooltipText="storageAmountTooltipText"
           :value.sync="_computeData.storageAmount"
@@ -283,6 +285,7 @@
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
           id="NumberOfInstancesNeeded"
+          ref="numberOfInstancesNeeded"
           label="Number of instances needed"
           :tooltipText="numberOfInstancesTooltipText"
           :value.sync="_computeData.numberOfInstancesNeeded"

@@ -1,3 +1,5 @@
+const { sassFalse } = require("sass");
+
 module.exports = {
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: true,
@@ -28,7 +30,8 @@ module.exports = {
     "json",
     "text",
     "lcov",
-    "clover"
+    "clover",
+    "html"
   ],
   // A set of global variables that need to be available in all test environments
   // globals: {
@@ -51,10 +54,10 @@ module.exports = {
   ],
   // The glob patterns Jest uses to detect test files
   testMatch: [
-    // "<rootDir>/src/components/*.spec.ts",
-    // "<rootDir>/src/steps/**/*.spec.ts",
-    // "<rootDir>/src/steps/**/**/*.spec.ts",
-    "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.spec.ts",
+    "<rootDir>/src/components/*.spec.ts",
+    "<rootDir>/src/steps/**/*.spec.ts",
+    "<rootDir>/src/steps/**/**/*.spec.ts",
+    // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.spec.ts",
   ],
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [
@@ -67,7 +70,7 @@ module.exports = {
   // A map from regular expressions to paths to transformers
   // transform: {
   //   "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-  //   "^.+\\.ts$": "ts-jest"
+  //   "^.+\\.ts$": ["ts-jest",{"sourceMaps": "inline"}]
   // },
   // // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
