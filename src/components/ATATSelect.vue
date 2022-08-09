@@ -111,6 +111,7 @@ export default class ATATSelect extends Vue {
   private onChange(val: string | SelectData): void {
     // this.selected = val;
     this.setErrorMessage();
+    debugger;
     this.$emit("selectValueChange", { 
       "newSelectedValue": val, 
       "selectedBeforeChange": this.selectedBeforeChange 
@@ -123,8 +124,11 @@ export default class ATATSelect extends Vue {
   }
 
   private setErrorMessage(): void {
-    setTimeout(()=>{
-      this.errorMessages = this.$refs.atatSelect.errorBucket;
+    setTimeout(() => {
+      debugger;
+      this.errorMessages = this.$refs.atatSelect && Object.prototype.hasOwnProperty.call(
+        this.$refs.atatSelect, "errorBucket"
+      ) ? this.errorMessages : [];
     }, 0);
   }
 

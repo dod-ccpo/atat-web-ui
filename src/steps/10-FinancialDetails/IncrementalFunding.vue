@@ -59,6 +59,7 @@
 
               <hr class="my-6" />
               <transition-group name="funding-increments" tag="div">
+                  <!-- :key="fundingIncrement.text + '_' + fundingIncrement.order + '_' + index" -->
                 <div
                   v-for="(fundingIncrement, index) in fundingIncrements"
                   :key="fundingIncrement.text"
@@ -66,7 +67,16 @@
                   class="funding-increments-item"
                 >
                   <div class="mb-4">
-                    <div class="d-flex justify-space-between align-center mb-4">
+                    <div class="d-flex justify-space-between align-center mb-4 position-relative">
+                      <span class="_insert-increment">
+                        <button
+                          class="text-link"
+                          v-if="fundingIncrement.hasPeriodGap"
+                          @click="insertIncrement(index)"
+                        >
+                          <ATATSVGIcon color="base" :height="12" :width="12" name="plusSign" />
+                        </button>
+                      </span>
                       <span class="d-block font-weight-500 text-base mr-4 ml-1 font-size-14">
                         {{ index + 1 }}
                       </span>
@@ -130,7 +140,7 @@
               </transition-group>
               <v-btn
                 id="AddIncrementButton"
-                v-if="fundingIncrements.length < maxAllowedIncrements"
+                v-if="showAddIncrementButton"
                 plain
                 text
                 class="_text-link mt-5"
@@ -232,29 +242,6 @@
   </v-container>
 </template>
 
-<style lang="scss">
-.funding-increments-item {
-  transition: all 0.25s ease;
-  display: inline-block;
-}
-
-.funding-increments-enter, 
-.funding-increments-enter-active,
-.funding-increments-leave-to,
-.funding-increments-leave-active {
-  opacity: 0;
-}
-
-.funding-increments-leave-active {
-  position: absolute;
-}
-
-.funding-increments-move {
-  transition: transform 0.5s ease;
-}
-</style>
-
-
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 
@@ -288,6 +275,7 @@ import _ from "lodash";
     ATATAlert
   },
 })
+
 export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public today = new Date();
   public currentYear = this.today.getFullYear();
@@ -415,6 +403,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       incr.order = i + 1;
     });
 
+    this.shouldShowAddIncrementButton();
   }
   
   public initializeIncrements(): void {
@@ -445,6 +434,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
             order: 1,
             sysId: "",
             qtrOrder: 1,
+            hasPeriodGap: false,
           });
           this.quarterSelectData.push({
             text: periodStr,
@@ -478,6 +468,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.fundingIncrements.splice(index, 1);
     this.quarterSelectData.splice(index, 1);
     this.calcAmounts("");
+    this.shouldShowAddIncrementButton();
   }
 
   public isOverfunded():void{
@@ -487,6 +478,25 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public isUnderfunded():void{
     this.isIFPUnderfunded = this.costEstimate > this.totalAmount;
   }
+
+  public showAddIncrementButton = true;
+
+  public shouldShowAddIncrementButton(): void {
+
+    const lastQuarter = this.fiscalQuarters[this.lastPossibleQuarterIndex - 1];
+    debugger;
+    if (lastQuarter && this.quarterSelectData.length) {
+      const lastQuarterSelectedIndex: number 
+        = this.quarterSelectData.findIndex(q => q.text === lastQuarter.text);
+      const isLastQuarterSelected = lastQuarterSelectedIndex > -1;
+
+      debugger;
+      
+      this.showAddIncrementButton = !isLastQuarterSelected ? true : false;
+
+    }
+  }
+
 
   public addIncrement(): void {
     const lastFundingIncrement = this.fundingIncrements.at(-1);
@@ -512,6 +522,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         order: nextQtrOrder,
         sysId: "",
         qtrOrder: nextQtrOrder,
+        hasPeriodGap: false,
       };
       this.fundingIncrements.push(newIncrement);
 
@@ -521,6 +532,26 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       }
       this.quarterSelectData.push(qtrSelectData);
     }
+    this.shouldShowAddIncrementButton();
+  }
+
+  public insertIncrement(index: number): void {
+    const nextPeriod = this.fiscalQuarters[index + 1];
+    const nextIncrement: fundingIncrement = {
+      text: nextPeriod.text,
+      qtrOrder: nextPeriod.multiSelectOrder,
+      amt: "",
+      hasPeriodGap: false,
+      order: 0,
+    };
+    this.fundingIncrements.splice(index +1, 0, nextIncrement);
+    this.fundingIncrements.map((incr, i) => incr.order = i + 1);
+    
+    const nextSelectData: SelectData = {
+      text: nextPeriod.text,
+      multiSelectOrder: nextPeriod.multiSelectOrder,
+    }
+    this.quarterSelectData.splice(index + 1, 0, nextSelectData);
   }
 
   public isFundingMet = false;
@@ -565,22 +596,39 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.isOverfunded();
   }
 
+  public checkIfHasPeriodGap(index: number): boolean {
+    const thisIncrement = this.fundingIncrements[index];
+    const fundingIncrementCount = this.fundingIncrements.length;
+    debugger;
+    // last 2 funding increments will never have a gap, so no + button
+    if (index < fundingIncrementCount - 1) {
+      const nextIncrement = this.fundingIncrements[index + 1];
+      const dif = nextIncrement.qtrOrder - thisIncrement.qtrOrder;
+      if (dif > 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public lastPossibleQuarterIndex = 0;
 
   public getFiscalQuarters(index: number): SelectData[] {
     if (this.fiscalQuarters.length === 0) {
       this.initializeIncrements();
     }
-    debugger;
     const firstSelectedQtr = this.fundingIncrements[0].text;
     const firstSelectedQtrIndex = this.fiscalQuarters.findIndex(
       (qtr) => qtr.text === firstSelectedQtr
     );
 
-    let lastPossibleIndex = firstSelectedQtrIndex + this.maxAllowedIncrements;
-    lastPossibleIndex =
-      lastPossibleIndex > this.fiscalQuarters.length
+    this.lastPossibleQuarterIndex = firstSelectedQtrIndex + this.maxAllowedIncrements;
+    this.lastPossibleQuarterIndex =
+      this.lastPossibleQuarterIndex > this.fiscalQuarters.length
         ? this.fiscalQuarters.length
-        : lastPossibleIndex;
+        : this.lastPossibleQuarterIndex;
+
+    debugger;
 
     let optionsArr = _.cloneDeep(this.fiscalQuarters);
 
@@ -591,7 +639,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     if (index > 0) {
       optionsArr = optionsArr.slice(
         firstSelectedQtrIndex + 1,
-        lastPossibleIndex
+        this.lastPossibleQuarterIndex
       );
     }
 
@@ -622,6 +670,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     } else if (index === this.quarterSelectData.length - 1) {
       this.outOfRangeIndex = null;
     }
+
+    this.fundingIncrements[index].hasPeriodGap = this.checkIfHasPeriodGap(index);
 
     return optionsArr;
   }

@@ -236,6 +236,7 @@ export interface fundingIncrement {
   order: number; // saved to database
   sysId?: string;
   qtrOrder: number; // used for sorting on IFP page
+  hasPeriodGap: boolean;
 }
 export interface IFPData {
   initialFundingIncrementStr: string;

@@ -219,3 +219,29 @@ textarea {
 ._v-align-top {
   vertical-align: top !important;
 }
+
+.funding-increments-item {
+  transition: all 0.25s ease;
+  display: inline-block;
+}
+
+.funding-increments-enter, 
+.funding-increments-enter-active,
+.funding-increments-leave-to,
+.funding-increments-leave-active {
+  opacity: 0;
+}
+
+.funding-increments-leave-active {
+  position: absolute;
+}
+
+.funding-increments-move {
+  transition: transform 0.5s ease;
+}
+
+._insert-increment {
+  position: absolute;
+  top: 10px;
+  left: -20px;
+}
