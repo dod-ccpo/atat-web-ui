@@ -20,7 +20,8 @@
       "jest",
       "cypress",
       "cypress-real-events",
-      "@4tw/cypress-drag-drop"
+      "@4tw/cypress-drag-drop",
+      "@testing-library/jest-dom"
     ],
     "paths": {
       "@/*": ["src/*"]
@@ -29,10 +30,11 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "cypress"
+  ]
 }
