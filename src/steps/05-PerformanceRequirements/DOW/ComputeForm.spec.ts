@@ -219,7 +219,7 @@ describe("Testing ComputeForm Component", () => {
           {
             "period_unit": "YEAR",
             "period_unit_count": "1",
-            "period_type": "BASE",
+            "period_type": "OPTION",
             "option_order": "2",
             "sys_id": "period_02"
           },
