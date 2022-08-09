@@ -378,27 +378,27 @@
                             <template v-slot:default>
                               <thead class="bg-base-lightest">
                               <tr>
-                                <th>
+                                <th id="ClinNumberHeader">
                                   <div class="font-size-12 text-base-darker" id="ClinNumber">Clin
                                   </div>
                                   </th>
-                                <th>
-                                  <div class="font-size-12 text-base-darker" id="status">Status
+                                <th id="StatusHeader">
+                                  <div class="font-size-12 text-base-darker" id="Status">Status
                                   </div>
                                   </th>
-                                <th>
+                                <th id="PoPHeader">
                                   <div class="font-size-12 text-base-darker" id="PoP">
                                   Period Of Performance
                                   </div>
                                 </th>
-                                <th>
+                                <th id="TotalFundsSpentHeader">
                                   <div class="
                                     font-size-12 text-base-darker d-flex justify-end align-center "
                                     id="TotalFundsSpent">
                                       Total Funds Spent (%)
                                   </div>
                                 </th>
-                                <th>
+                                <th id="LastMonthsSpendHeader">
                                   <div class="
                                     font-size-12 text-base-darker d-flex justify-end align-center "
                                        id="LastMonthsSpend">

@@ -563,11 +563,6 @@ export const FinancialPOCResolver =  (current: string): string => {
     ? routeNames.SummaryPage
     : routeNames.FinancialPOCForm
 
-
-
-  return current === routeNames.SeverabilityAndIncrementalFunding
-    ? routeNames.IncrementalFunding
-    : routeNames.SeverabilityAndIncrementalFunding
 }
 
 

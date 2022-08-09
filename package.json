@@ -13,8 +13,8 @@
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest",
-    "test-file:watch": "jest --watch --no-cache src/components/ATATTextArea.spec.ts ",
-    "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
+    "test-file:watch": "jest --watch --no-cache src/helpers/index.spec.ts",
+    "test:coverage": "jest",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
     "cypress:single-test": "npm run test:e2e --  --spec 'cypress/integration/ATATDevSnow/OtherContractConsiderations/Trainin*.spec.js'",
     "cypress:isolated-tests": "npx cypress run --env grepTags=-@iso-ignore"
@@ -57,6 +57,7 @@
     "@4tw/cypress-drag-drop": "^2.1.0",
     "@babel/eslint-parser": "^7.17.0",
     "@cypress/code-coverage": "^3.10.0",
+    "@testing-library/jest-dom": "^5.16.5",
     "@types/inputmask": "^5.0.3",
     "@types/jest": "^24.0.19",
     "@types/lodash": "^4.14.182",

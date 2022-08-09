@@ -49,11 +49,6 @@ export class TaskOrderStore extends VuexModule {
     nameofProperty(this, (x) => x.taskOrder),
   ];
 
-  @Action
-  public async getTaskOrder(): Promise<TaskOrderDTO> {
-    return this.value;
-  }
-
   public get value(): TaskOrderDTO {
     return this.taskOrder || initial;
   }
