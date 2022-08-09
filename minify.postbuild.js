@@ -3,7 +3,14 @@ const { exec } = require("child_process");
 const path = require('path');
 const fs = require('fs');
 const { Console } = require("console");
-const directoryPath = path.join(__dirname, 'dist/js');
+
+const distPath = process.argv[2];
+
+if(!distPath){
+    throw new Error('dist path not specified');
+}
+
+const directoryPath = path.join(__dirname, distPath);
 
 const minify = (file) => {
 
@@ -28,6 +35,6 @@ fs.readdir(directoryPath, function (err, files) {
     } 
 
     console.log('minifying js files...');
-    const filesToMinify = files.map(file=> `dist/js/${file}`);
+    const filesToMinify = files.map(file=> `${distPath}${file}`);
     filesToMinify.forEach(file=>minify(file));
 });
