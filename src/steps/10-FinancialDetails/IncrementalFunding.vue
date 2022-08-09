@@ -440,17 +440,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
             text: periodStr,
             multiSelectOrder: 1,
           });
-        } /* else if (
-          i === 0 
-          && this.fundingIncrements[0].sysId 
-          && this.quarterSelectData.length === 0
-        ) {
-          const qtrStr = this.fundingIncrements[0].text;
-          this.quarterSelectData.push({
-            text: qtrStr,
-            multiSelectOrder: 1,
-          });
-        } */
+        } 
       }
     }
   }
@@ -458,6 +448,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public removedIncrements: fundingIncrement[] = [];
 
   public deleteFundingIncrement(index: number): void {
+    debugger;
     if (this.savedData.fundingIncrements && this.fundingIncrements[index].sysId) {
       const incr = this.savedData.fundingIncrements[index];
       if (incr) {
@@ -536,7 +527,13 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public insertIncrement(index: number): void {
-    const nextPeriod = this.fiscalQuarters[index + 1];
+    const insertAfterIncrementText = this.fundingIncrements[index].text;
+    const nextFiscalQuarterIndex = this.fiscalQuarters.findIndex(
+      q => q.text === insertAfterIncrementText
+    ) + 1;
+    debugger;
+
+    const nextPeriod = this.fiscalQuarters[nextFiscalQuarterIndex];
     const nextIncrement: fundingIncrement = {
       text: nextPeriod.text,
       qtrOrder: nextPeriod.multiSelectOrder,
@@ -544,6 +541,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       hasPeriodGap: false,
       order: 0,
     };
+    debugger;
     this.fundingIncrements.splice(index +1, 0, nextIncrement);
     this.fundingIncrements.map((incr, i) => incr.order = i + 1);
     
@@ -552,6 +550,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       multiSelectOrder: nextPeriod.multiSelectOrder,
     }
     this.quarterSelectData.splice(index + 1, 0, nextSelectData);
+    this.shouldShowAddIncrementButton();
+
   }
 
   public isFundingMet = false;
@@ -599,7 +599,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public checkIfHasPeriodGap(index: number): boolean {
     const thisIncrement = this.fundingIncrements[index];
     const fundingIncrementCount = this.fundingIncrements.length;
-    debugger;
+
     // last 2 funding increments will never have a gap, so no + button
     if (index < fundingIncrementCount - 1) {
       const nextIncrement = this.fundingIncrements[index + 1];
@@ -614,25 +614,27 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public lastPossibleQuarterIndex = 0;
 
   public getFiscalQuarters(index: number): SelectData[] {
+    
     if (this.fiscalQuarters.length === 0) {
       this.initializeIncrements();
     }
-    const firstSelectedQtr = this.fundingIncrements[0].text;
+    const fundingIncrements = _.cloneDeep(this.fundingIncrements);
+    const firstSelectedQtr = fundingIncrements[0].text;
     const firstSelectedQtrIndex = this.fiscalQuarters.findIndex(
       (qtr) => qtr.text === firstSelectedQtr
     );
 
-    this.lastPossibleQuarterIndex = firstSelectedQtrIndex + this.maxAllowedIncrements;
+    const lastPossibleQuarterIndex = firstSelectedQtrIndex + this.maxAllowedIncrements;
     this.lastPossibleQuarterIndex =
-      this.lastPossibleQuarterIndex > this.fiscalQuarters.length
-        ? this.fiscalQuarters.length
-        : this.lastPossibleQuarterIndex;
+      lastPossibleQuarterIndex > this.fiscalQuarters.length
+        ? this.fiscalQuarters.length - 1
+        : lastPossibleQuarterIndex;
 
     debugger;
 
     let optionsArr = _.cloneDeep(this.fiscalQuarters);
 
-    if (index === 0 && this.fundingIncrements.length === 0) {
+    if (index === 0 && fundingIncrements.length === 0) {
       return optionsArr;
     }
 
@@ -643,8 +645,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       );
     }
 
-    const alreadySelectedQuarters = this.fundingIncrements.map(obj => obj.text);
-    const thisDropdownValue = this.fundingIncrements[index].text;
+    const alreadySelectedQuarters = fundingIncrements.map(obj => obj.text);
+    const thisDropdownValue = fundingIncrements[index].text;
 
     let lastSelectionOutOfRange: boolean | null = null;
 
@@ -672,6 +674,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
 
     this.fundingIncrements[index].hasPeriodGap = this.checkIfHasPeriodGap(index);
+  
+    this.shouldShowAddIncrementButton();
 
     return optionsArr;
   }
