@@ -29,6 +29,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   classification_level: string;
   required_services: string;
   current_environment: string;
+  environment_instance: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {

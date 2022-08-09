@@ -33,15 +33,16 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
 
 import { Component, Mixins } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox } from "../../../../types/Global";
-import { ClassificationLevelDTO } from "@/api/models";
+import { ClassificationLevelDTO, EnvironmentInstanceDTO } from "@/api/models";
 import classificationRequirements from "@/store/classificationRequirements";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import acquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -53,6 +54,26 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedData: ClassificationLevelDTO[] = []
+  public environmentInstanceIDs: string[] = []
+  public newEnvInstance: EnvironmentInstanceDTO = {
+    /* eslint-disable camelcase */
+    storage_amount: "",
+    storage_type: "",
+    instance_name: "",
+    classification_level: "",
+    number_of_vcpus: "",
+    data_egress_monthly_amount: "",
+    performance_tier: "",
+    pricing_model_expiration: "",
+    csp_region: "",
+    memory_unit: "",
+    storage_unit: "",
+    pricing_model: "",
+    instance_location: "",
+    memory_amount: "",
+    operating_system_licensing: "",
+    data_egress_monthly_unit: "",
+  }
 
   private saveSelected() {
     const arr :ClassificationLevelDTO[] = [];
@@ -78,12 +99,38 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         classificationRequirements.setCurrentENVClassificationLevels(this.currentData)
+        for (const val of this.currentData) {
+          console.log(val.sys_id)
+          await AcquisitionPackage
+            .saveData<EnvironmentInstanceDTO>({
+              data: Object.assign(this.newEnvInstance, {classification_level: val.sys_id}),
+              storeProperty: StoreProperties.EnvironmentInstance
+            })
+        }
+        // if(this.environmentInstanceIDs.length > 0) {
+        //   const environmentIDToDelete: string[] = []
+        //   const newData =
+        //     await AcquisitionPackage.loadData<EnvironmentInstanceDTO[]>(
+        //       {storeProperty: StoreProperties.EnvironmentInstance})
+        //   const newEnvIDs = newData.map(val => val.sys_id)
+        //   this.environmentInstanceIDs.forEach(val => {
+        //     if(!newEnvIDs.indexOf(val)){
+        //       environmentIDToDelete.push(val)
+        //     }
+        //     //write delete api function
+        //   })
+        // }
       }
     } catch (error) {
       console.log(error);
     }
     return true;
   }
+
+  // forEach classification level created create a environment instance object
+  // and send sys_id for classification level
+  // save the environmentInstance to SNOW
+  // keep them in sync between the store and SNOW
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     return buildClassificationCheckboxList(data, "",true);
@@ -100,6 +147,13 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
           this.selectedOptions.push(val.sys_id)
         }
       })
+    }
+    const environmentData =
+      await AcquisitionPackage.loadData<EnvironmentInstanceDTO[]>(
+        {storeProperty: StoreProperties.EnvironmentInstance})
+    console.log(environmentData)
+    if(environmentData.length > 0){
+      environmentData.forEach((val) => {this.environmentInstanceIDs.push(val.sys_id|| "")})
     }
   }
 
