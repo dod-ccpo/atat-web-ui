@@ -107,6 +107,7 @@ export default class ATATTextArea extends Vue {
       Vue.nextTick(() => {
         this.setErrorMessage();
       })
+      this.$emit("blur");
     }
   }
 }

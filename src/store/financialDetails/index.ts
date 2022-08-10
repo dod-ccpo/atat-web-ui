@@ -183,7 +183,7 @@ export class FinancialDetailsStore extends VuexModule {
 
     // get funding plan sysID from taskorder table if it exists
     if (!this.fundingPlan.sys_id) {
-      const taskOrder = await TaskOrder.getTaskOrder();
+      const taskOrder = TaskOrder.value;
       const fundingPlanSysId = taskOrder.funding_plan;
 
       if (fundingPlanSysId.length > 0) {

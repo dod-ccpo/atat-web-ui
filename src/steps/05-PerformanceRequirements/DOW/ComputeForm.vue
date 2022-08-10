@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1 class="page-header mb-3">
+  <v-form ref="computeForm">
+    <h1 class="page-header mb-3" tabindex="-1">
       <span v-if="firstTimeHere">Let’s start by gathering your Compute requirements</span>
       <span v-else>
         Let’s gather some details for Compute Instance #{{ _computeData.instanceNumber }}
@@ -29,13 +29,29 @@
         >update your Classification Requirements</a>.
       </span>
     </p>
-
+    
     <DOWSubtleAlert
       v-show="showSubtleAlert"
       :isClassificationDataMissing="isClassificationDataMissing"
       :isPeriodsDataMissing="isPeriodsDataMissing"
       class="copy-max-width"
     />
+
+    <v-expand-transition>
+      <ATATAlert
+        id="ErrorsOnLoadAlert"
+        v-show="formHasErrors === true && formHasBeenTouched === true"
+        type="error"
+        class="mb-10"
+      >
+        <template v-slot:content>
+          <p class="mb-0" id="ErrorsOnLoadAlertText">
+            Some of your info is missing. You can add it now or come back at any 
+            time before finalizing your acquisition package.
+          </p>
+        </template>
+      </ATATAlert>
+    </v-expand-transition>
 
     <h2 class="mb-5" id="FormSection1Heading">
       1. 
@@ -53,7 +69,8 @@
       :items="EnvironmentTypeOptions"
       name="EnvironmnetType"
       class="mt-3 mb-8"
-      :rules="[$validators.required('Please select an option')]"
+      :rules="[$validators.required('Please select a type of environment.')]"
+      
     />
 
     <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
@@ -66,7 +83,7 @@
         class="mt-3 mb-2"
         :tooltipText="classificationTooltipText"
         tooltipLabel="Classification level for this instance"
-        :rules="[$validators.required('Please select an option')]"
+        :rules="[$validators.required('Please select a classification level.')]"
       />
       <a 
         role="button" 
@@ -90,6 +107,7 @@
     </p>
     <ATATCheckboxGroup 
       id="Regions"
+      ref="regionsCheckbox"
       aria-describedby="CheckboxGroupLabel"
       :value.sync="_computeData.deployedRegions"
       :items="regionCheckboxOption"
@@ -108,13 +126,14 @@
           id="DescriptionOfNeed"
           label="Description of your anticipated need or usage"
           :value.sync="_computeData.needOrUsageDescription"
+          :textAreaWithCounter="true"
           :rules="[
             $validators.required(
-              'Please describe your anticipated need or usage'
+              'Please provide a description for this requirement.'
             ),
             $validators.maxLength(
               300,
-              'Please limit your description to 300 characters or less'
+              'Please limit your description to 300 characters or less.'
             ),
           ]"
           maxChars="300"
@@ -123,13 +142,14 @@
     </v-row>
 
     <ATATRadioGroup
-      class="copy-max-width mb-10"
+      class="copy-max-width mb-10 mt-4"
+      ref="NeededForEntireDuration"
       id="NeededForEntireDuration"
       legend="Is this instance needed for the entire duration of your task order?"
       :items="requirementOptions"
       :value.sync="_computeData.entireDuration"
       :rules="[
-        $validators.required('Please select an option to specify your requirements.')
+        $validators.required('Please select an option to specify your requirement’s duration.')
       ]"
     />
     <div v-if="_computeData.entireDuration === 'NO'">
@@ -138,6 +158,7 @@
       </p>
       <ATATCheckboxGroup
         id="PeriodsCheckboxes"
+        ref="periodsCheckboxes"
         aria-describedby="PeriodsLabel"
         :value.sync="_computeData.periodsNeeded"
         :items="availablePeriodCheckboxItems"
@@ -176,10 +197,14 @@
     <v-row class="mt-7">
       <v-col class="col-md-12 col-lg-9">
         <ATATTextField
+          ref="operatingSystemAndLicensing"
           id="OperatingSystemAndLicensing"
           label="Operating system and licensing"
           :tooltipText="operatingSystemTooltipText"
           :value.sync="_computeData.operatingSystemAndLicensing"
+          :rules="[
+            $validators.required('Please describe your OS and licensing requirements.')
+          ]"
         />
       </v-col>
     </v-row>
@@ -190,6 +215,11 @@
           label="Number of vCPUs"
           :tooltipText="VCPUTooltipText"
           :value.sync="_computeData.numberOfVCPUs"
+          type="number"
+          :allowDecimals="false"
+          :rules="[
+            $validators.required('Please enter a number greater than or equal to 0.')
+          ]"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -199,6 +229,10 @@
           :tooltipText="memoryTooltipText"
           :value.sync="_computeData.memory"
           appendText="GB"
+          type="number"
+          :rules="[
+            $validators.required('Please enter a number greater than or equal to 0.')
+          ]"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -207,15 +241,23 @@
           label="Storage type"
           :items="storageTypes"
           :selectedValue.sync="_computeData.storageType"
+          :rules="[
+            $validators.required('Select a storage type.')
+          ]"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
           id="StorageAmount"
+          ref="storageAmount"
           label="Storage amount"
           :tooltipText="storageAmountTooltipText"
           :value.sync="_computeData.storageAmount"
           appendText="GB"
+          type="number"
+          :rules="[
+            $validators.required('Please enter a number greater than or equal to 0.')
+          ]"
         />
       </v-col>
     </v-row>
@@ -227,22 +269,31 @@
       :items="performanceTiers"
       :value.sync="_computeData.performanceTier"
       :rules="[
-        $validators.required('Please select an option to specify your requirements.')
+        $validators.required('Please select your performance tier.')
       ]"
       :tooltipText="performanceTierTooltipText"
       :hasOtherValue="true"
       :otherValue="otherPerformanceTierValue"
       :otherValueEntered.sync="_computeData.performanceTierOther"
       :otherValueRequiredMessage="otherPerformanceTierValueRequiredMessage"
+      :validateOtherNow="validateOtherTierNow"
+      :validateOtherOnBlur="validateOtherTierOnBlur"
+      :clearOtherValidation="clearOtherTierValidation"
     />
 
     <v-row>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
           id="NumberOfInstancesNeeded"
+          ref="numberOfInstancesNeeded"
           label="Number of instances needed"
           :tooltipText="numberOfInstancesTooltipText"
           :value.sync="_computeData.numberOfInstancesNeeded"
+          type="number"
+          :rules="[
+            $validators.required('Enter a number greater than or equal to 1.'),
+            $validators.greaterThan(0, 'Enter a number greater than or equal to 1.'),            
+          ]"
         />
       </v-col>
     </v-row>
@@ -258,7 +309,7 @@
       :isIL6Selected.sync="isIL6Selected"
     />
 
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -314,6 +365,15 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 })
 
 export default class ComputeForm extends Vue {
+  $refs!: {
+    computeForm: Vue & {
+      resetValidation: () => void;
+      errorBucket: string[];
+      reset: () => void;
+      validate: () => boolean;
+      errorBag: Record<number, boolean>;
+    },
+  };
 
   @PropSync("computeData") public _computeData!: ComputeData;
   public firstTimeHere = false;
@@ -450,6 +510,8 @@ export default class ComputeForm extends Vue {
     },
   ];
 
+  public clearOtherTierValidation = false;
+
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
     this.showDialog = true;
@@ -473,7 +535,8 @@ export default class ComputeForm extends Vue {
     ) {
       const classificationObj = this.avlClassificationLevelObjects[0];
       this._computeData.classificationLevel = classificationObj.sys_id;
-      this.singleClassificationLevelName = buildClassificationLabel(classificationObj, "short");
+      this.singleClassificationLevelName 
+        = buildClassificationLabel(classificationObj, "short");
     }
   }
 
@@ -513,8 +576,9 @@ export default class ComputeForm extends Vue {
     const arr: Checkbox[] = [];
     periods.forEach((period, i) => {
       const label = i === 0 ? "Base period" : `Option period ${i}`;
+      const id = i === 0 ? "BASE" : `OPTION${i}`;
       const option: Checkbox = {
-        id: period.period_type,
+        id,
         label,
         value: period.sys_id || "",
       };
@@ -525,7 +589,7 @@ export default class ComputeForm extends Vue {
 
   private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";
-    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix, false) : [];
+    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix, false, false) : [];
   }
 
   public async setAvailableClassificationLevels(): Promise<void> {
@@ -575,17 +639,118 @@ export default class ComputeForm extends Vue {
       ];
       this.isPeriodsDataMissing = true;
     }
-
+    
     const classifications = await classificationRequirements.getSelectedClassificationLevels();
     this.isClassificationDataMissing = classifications.length === 0 ? true : false;
 
     this.showSubtleAlert 
       = this.isPeriodsDataMissing || this.isClassificationDataMissing ? true : false;
   }
+  public formHasBeenTouched = false;
+  public formHasErrors = false;
+  public errorBagValues: boolean[] = []
+  public hasErrorsOnLoad = false;
+  public validateOtherTierNow = false;
+  public validateOtherTierOnBlur = false;
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    this.formHasBeenTouched = DescriptionOfWork.computeInstancesTouched.indexOf(
+      this._computeData.instanceNumber) > -1;
+    if (this.formHasBeenTouched) {
+      // user is editing an existing instance, validate on load
+      await this.validate();
+      this.$nextTick(async () => {
+        this.setErrorMessages();
+      });
+    } else {
+      this.validateOtherTierOnBlur = true;
+    }
   };
+
+  public updated(): void {
+    const eb = this.$refs.computeForm.errorBag;
+    this.errorBagValues = Object.values(eb);
+  }
+
+  @Watch("errorBagValues")
+  public errorBagChange(): void {
+    this.$nextTick(() => {
+      const errorBag = Object.values(this.$refs.computeForm.errorBag);
+      this.formHasErrors = errorBag.includes(true);
+    });
+  }
+  
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.computeForm as Vue & { validate: () => boolean };
+  }
+
+  public async validate(): Promise<void> {
+    this.$nextTick(() => {
+      this.Form.validate();
+    });
+  }
+
+  private setErrorMessages(): void {
+    this.errorBagValues = Object.values(this.$refs.computeForm.errorBag);
+
+    const formChildren = this.$refs.computeForm.$children;
+    const inputRefs = [
+      "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
+    ];
+
+    formChildren.forEach((child: any) => {
+      const refs = child.$refs;
+      const keys = Object.keys(refs);
+      keys.forEach((key: string) => {
+
+        if (inputRefs.indexOf(key) > -1) {
+          const childRef: any = child.$refs[key];
+          if (childRef[0]) {
+            if (childRef[0].attrs$["data-group-id"] === "PeriodsCheckboxes_Group"
+              && this._computeData.entireDuration.toLowerCase() === "no"
+              && this._computeData.periodsNeeded.length === 0
+            ) {
+              child.errorMessages.push(`Please select at least one base or option 
+                period to specify your requirement’s duration level.`);
+            }
+
+            if (childRef[0].attrs$["data-group-id"] === "Regions_Group"
+              && this._computeData.deployedRegions.indexOf(this.otherRegionValue) > -1
+              && this._computeData.deployedRegionsOther === ""
+            ) {
+              child.$refs["atatTextInput"][0].errorMessages.push(
+                'Please enter your other region(s).'
+              );
+            }
+          }
+
+          if (key === "radioButtonGroup" 
+            && child.$el.attributes.id.value.indexOf("PerformanceTier")
+            && this._computeData.performanceTier === this.otherPerformanceTierValue
+          ) {
+            if (this._computeData.performanceTierOther === "") {
+              this.validateOtherTierOnBlur = true;
+              this.validateOtherTierNow = true;
+            } else {
+              this.validateOtherTierOnBlur = false;
+              this.clearOtherTierValidation = true;
+            }
+          }
+
+          if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")) {
+            const errorBucket: string[] = childRef.errorBucket;
+            if (errorBucket.length) {
+              this.hasErrorsOnLoad = true;
+              errorBucket.forEach((error) => {
+                child.errorMessages.push(error);
+              });
+            }
+          }
+        }
+      });
+    });
+  }
 
   public regionTooltipText = `This is the geographic location where your public cloud 
     resources are located, e.g., within the continental U.S. (CONUS) or outside of the 

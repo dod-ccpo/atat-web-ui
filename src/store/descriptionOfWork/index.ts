@@ -674,6 +674,10 @@ export class DescriptionOfWorkStore extends VuexModule {
             computeObj.computeData?.push(computeData);
           }
         }
+        if (!(this.computeInstancesTouched.indexOf(computeData.instanceNumber) > -1)) {
+          this.computeInstancesTouched.push(computeData.instanceNumber);
+        }
+
       } else {
         throw new Error("Error saving Compute data to store");
       }
@@ -725,6 +729,13 @@ export class DescriptionOfWorkStore extends VuexModule {
         }
       }
     }
+    // remove instanceNumber from touched ones - this.computeInstancesTouched
+    // decrease each instance number after instanceNumber
+    this.computeInstancesTouched.sort((a, b) => a > b ? 1 : -1);
+    const deleteIndex = this.computeInstancesTouched.indexOf(instanceNumber);
+    this.computeInstancesTouched.splice(deleteIndex, 1);
+    this.computeInstancesTouched 
+      = this.computeInstancesTouched.map(i => i >= deleteIndex + 1 ? i - 1 : i);
   }
 
   confirmComputeDelete = false;
@@ -764,6 +775,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   }
 
+  computeInstancesTouched: number[] = [];
   // END COMPUTE data/methods
 
   @Mutation
