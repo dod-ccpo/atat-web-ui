@@ -39,6 +39,8 @@
       @blur="onBlur"
       @update:error="setErrorMessage"
       autocomplete="off"
+      :type="type"
+      @keypress="filterNumbers($event)"
     >
       <template v-slot:prepend-inner>
         <ATATSVGIcon
@@ -115,6 +117,8 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: false }) private disabled?: boolean;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private hideHelpTextOnErrors?: boolean;
+  @Prop({ default: "text" }) private type?: string;
+  @Prop({ default: true }) private allowDecimals?: boolean;
 
   @PropSync("value", { default: "" }) private _value!: string;
 
@@ -191,6 +195,18 @@ export default class ATATTextField extends Vue  {
       return false;
     }
     return  this.helpText.length > 0;
+  }
+
+  public filterNumbers(evt: KeyboardEvent): void {
+    if (this.type === "number") {
+      let keyPressed = evt.key.toString();
+      const regex = this.allowDecimals
+        ? /^[0-9]*\.?[0-9]*$/
+        : /^[0-9]+$/
+      if (!regex.test(keyPressed)) {
+        evt.preventDefault();
+      }
+    }
   }
 
 }
