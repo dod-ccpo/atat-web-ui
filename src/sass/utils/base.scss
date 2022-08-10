@@ -242,6 +242,30 @@ textarea {
 
 ._insert-increment {
   position: absolute;
-  top: 10px;
-  left: -20px;
+  top: 9px;
+  left: -28px;
+
+  ._button-help {
+    display: none !important;
+    position: absolute;
+    bottom: -40px;
+    left: -20px;
+    background-color: rgba($base-darkest, 0.9);
+    padding: 4px 10px !important;
+    line-height: 1.5em !important;
+    display: block;
+    border-radius: 4px;
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: white;
+    z-index: 10;
+
+  }
+
+  &:hover {
+    ._button-help {
+      display: block !important;
+    }
+  }
+  
 }

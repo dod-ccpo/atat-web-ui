@@ -69,13 +69,23 @@
                   <div class="mb-4">
                     <div class="d-flex justify-space-between align-center mb-4 position-relative">
                       <span class="_insert-increment">
-                        <button
-                          class="text-link"
+                        <v-btn
+                          :id="'InsertIncrement' + index"
+                          class="_icon-only _plus position-relative"
                           v-if="fundingIncrement.hasPeriodGap"
                           @click="insertIncrement(index)"
                         >
                           <ATATSVGIcon color="base" :height="12" :width="12" name="plusSign" />
-                        </button>
+                          <div 
+                            :id="'AddIncrementTooltipText' + index" 
+                            class="_button-help"
+                          >
+                            Add increment below
+                          </div>
+
+                        </v-btn>
+
+
                       </span>
                       <span class="d-block font-weight-500 text-base mr-4 ml-1 font-size-14">
                         {{ index + 1 }}
@@ -110,8 +120,8 @@
                         :rules="[$validators.required('', true)]"
                       />
                       <v-btn
-                        icon
                         :id="'DeleteIncrement' + index"
+                        class="_icon-only"
                         @click="deleteFundingIncrement(index)"
                         :disabled="fundingIncrements.length === 1"
                       >
