@@ -162,7 +162,7 @@ export const ComputeOfferingDetailsPathResolver = (current: string, direction: s
 
   debugger;
 
-  if(current === routeNames.ServiceOfferings && direction === null){
+  if(current === routeNames.ServiceOfferingDetails && direction === "next"){
     return descriptionOfWorkSummaryPath;
   }
 
