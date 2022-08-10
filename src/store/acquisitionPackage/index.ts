@@ -30,7 +30,6 @@ import {
   ProjectOverviewDTO,
   SensitiveInformationDTO,
   CurrentEnvironmentDTO,
-  EnvironmentInstanceDTO,
 } from "@/api/models";
 
 import { SelectData } from "types/Global";
