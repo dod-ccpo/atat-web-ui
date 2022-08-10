@@ -41,8 +41,7 @@ import { ClassificationLevelDTO, EnvironmentInstanceDTO } from "@/api/models";
 import classificationRequirements from "@/store/classificationRequirements";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import acquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+
 
 @Component({
   components: {
@@ -54,26 +53,6 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedData: ClassificationLevelDTO[] = []
-  public environmentInstanceIDs: string[] = []
-  public newEnvInstance: EnvironmentInstanceDTO = {
-    /* eslint-disable camelcase */
-    storage_amount: "",
-    storage_type: "",
-    instance_name: "",
-    classification_level: "",
-    number_of_vcpus: "",
-    data_egress_monthly_amount: "",
-    performance_tier: "",
-    pricing_model_expiration: "",
-    csp_region: "",
-    memory_unit: "",
-    storage_unit: "",
-    pricing_model: "",
-    instance_location: "",
-    memory_amount: "",
-    operating_system_licensing: "",
-    data_egress_monthly_unit: "",
-  }
 
   private saveSelected() {
     const arr :ClassificationLevelDTO[] = [];
@@ -122,12 +101,6 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
           this.selectedOptions.push(val.sys_id)
         }
       })
-    }
-    const environmentData =
-      await AcquisitionPackage.loadData<EnvironmentInstanceDTO[]>(
-        {storeProperty: StoreProperties.EnvironmentInstance})
-    if(environmentData.length > 0){
-      environmentData.forEach((val) => {this.environmentInstanceIDs.push(val.sys_id|| "")})
     }
   }
 

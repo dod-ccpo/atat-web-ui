@@ -59,7 +59,6 @@ export const StoreProperties = {
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
   CurrentEnvironment: "currentEnvironment",
-  EnvironmentInstance: "environmentInstance",
 };
 
 const initialCurrentContract = ()=> {
@@ -208,26 +207,6 @@ const initialCurrentEnvironment = () => {
     additional_information: "",
   }
 }
-const initialEnvironmentInstance = () => {
-  return {
-    storage_amount: "",
-    storage_type: "",
-    instance_name: "",
-    classification_level: "",
-    number_of_vcpus: "",
-    data_egress_monthly_amount: "",
-    performance_tier: "",
-    pricing_model_expiration: "",
-    csp_region: "",
-    memory_unit: "",
-    storage_unit: "",
-    pricing_model: "",
-    instance_location: "",
-    memory_amount: "",
-    operating_system_licensing: "",
-    data_egress_monthly_unit: "",
-  }
-}
 
 const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
@@ -249,7 +228,6 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensitiveInformation: store.sensitiveInformation,
       currentEnvironment: store.currentEnvironment,
-      environmentInstance: store.environmentInstance,
     })
   );
 };
@@ -304,7 +282,6 @@ export class AcquisitionPackageStore extends VuexModule {
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
   currentEnvironment: CurrentEnvironmentDTO | null = null;
-  environmentInstance: EnvironmentInstanceDTO | null = null;
   totalBasePoPDuration = 0;
 
   fundingRequestType: string | null =  null;
@@ -435,13 +412,6 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  @Mutation
-  public setEnvironmentInstance(value: EnvironmentInstanceDTO): void {
-    this.environmentInstance = this.environmentInstance
-      ? Object.assign(this.environmentInstance, value)
-      : value;
-  }
-
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
     console.log("in store: actionArgs", actionArgs);
@@ -466,7 +436,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.gfeOverview = sessionData.gfeOverview;
     this.classificationLevel = sessionData.classificationLevel;
     this.currentEnvironment = sessionData.currentEnvironment;
-    this.environmentInstance = sessionData.environmentInstance
   }
 
   @Action({ rawError: true })
@@ -507,7 +476,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
           this.setCurrentEnvironment(initialCurrentEnvironment());
-          this.setEnvironmentInstance(initialEnvironmentInstance());
           this.setAcquisitionPackage(acquisitionPackage);
           await TaskOrder.initialize(acquisitionPackage.sys_id || "");
           this.setInitialized(true);
@@ -563,7 +531,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
     [StoreProperties.CurrentEnvironment]: api.currentEnvironmentTable,
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
-    [StoreProperties.EnvironmentInstance]: api.environmentInstanceTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -580,7 +547,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.SensitiveInformation]: "sensitive_information",
     [StoreProperties.ClassificationLevel]: "classification_level",
     [StoreProperties.CurrentEnvironment]: "current_environment",
-    [StoreProperties.EnvironmentInstance]: "environment_instance",
   }
 
   @Action({ rawError: true })

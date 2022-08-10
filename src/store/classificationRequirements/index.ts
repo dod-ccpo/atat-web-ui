@@ -15,7 +15,6 @@ import {
 import Vue from "vue";
 
 import { ClassificationLevelDTO, EnvironmentInstanceDTO, ReferenceColumn } from "@/api/models";
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 
 const ATAT_CLASSIFICATION_LEVELS_KEY = "ATAT_CLASSIFICATION_LEVELS_KEY";
 
