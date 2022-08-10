@@ -482,8 +482,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       const isLastQuarterSelected = lastQuarterSelectedIndex > -1;
 
       debugger;
+      const outOfRange = this.outOfRangeIndex && this.outOfRangeIndex >= 0;
       
-      this.showAddIncrementButton = !isLastQuarterSelected ? true : false;
+      this.showAddIncrementButton = !isLastQuarterSelected && !outOfRange ? true : false;
 
     }
   }
@@ -527,11 +528,13 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public insertIncrement(index: number): void {
+    
+    // EJY need to add button tooltip and hover state
+
     const insertAfterIncrementText = this.fundingIncrements[index].text;
     const nextFiscalQuarterIndex = this.fiscalQuarters.findIndex(
       q => q.text === insertAfterIncrementText
     ) + 1;
-    debugger;
 
     const nextPeriod = this.fiscalQuarters[nextFiscalQuarterIndex];
     const nextIncrement: fundingIncrement = {
