@@ -98,39 +98,13 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        classificationRequirements.setCurrentENVClassificationLevels(this.currentData)
-        for (const val of this.currentData) {
-          console.log(val.sys_id)
-          await AcquisitionPackage
-            .saveData<EnvironmentInstanceDTO>({
-              data: Object.assign(this.newEnvInstance, {classification_level: val.sys_id}),
-              storeProperty: StoreProperties.EnvironmentInstance
-            })
-        }
-        // if(this.environmentInstanceIDs.length > 0) {
-        //   const environmentIDToDelete: string[] = []
-        //   const newData =
-        //     await AcquisitionPackage.loadData<EnvironmentInstanceDTO[]>(
-        //       {storeProperty: StoreProperties.EnvironmentInstance})
-        //   const newEnvIDs = newData.map(val => val.sys_id)
-        //   this.environmentInstanceIDs.forEach(val => {
-        //     if(!newEnvIDs.indexOf(val)){
-        //       environmentIDToDelete.push(val)
-        //     }
-        //     //write delete api function
-        //   })
-        // }
+        classificationRequirements.saveSelectedClassificationInstances(this.currentData)
       }
     } catch (error) {
       console.log(error);
     }
     return true;
   }
-
-  // forEach classification level created create a environment instance object
-  // and send sys_id for classification level
-  // save the environmentInstance to SNOW
-  // keep them in sync between the store and SNOW
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     return buildClassificationCheckboxList(data, "",true);
@@ -139,6 +113,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     this.classifications = await classificationRequirements.getAllClassificationLevels();
     this.checkboxItems =this.createCheckboxItems(this.classifications)
+    await classificationRequirements.loadEnvironmentInstances()
     const storeData = await classificationRequirements.getCurrentENVClassificationLevels()
     if(storeData) {
       this.savedData = storeData
@@ -151,7 +126,6 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     const environmentData =
       await AcquisitionPackage.loadData<EnvironmentInstanceDTO[]>(
         {storeProperty: StoreProperties.EnvironmentInstance})
-    console.log(environmentData)
     if(environmentData.length > 0){
       environmentData.forEach((val) => {this.environmentInstanceIDs.push(val.sys_id|| "")})
     }
