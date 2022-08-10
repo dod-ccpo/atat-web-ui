@@ -346,7 +346,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.duplicateListingsIndices = [];
     this.fundingIncrements
       .map((inc) => inc.qtr)
-      .filter((el, index, array )=>{
+      .forEach((el, index, array )=>{
         if (array.lastIndexOf(el) > index){
           this.duplicateListingsIndices.push(index +1);
           this.duplicateListingsIndices.push(array.lastIndexOf(el) +1)

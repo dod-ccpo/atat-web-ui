@@ -22,30 +22,40 @@ export const convertSystemChoiceToSelect =
       }
     });
 
-export const buildClassificationCheckboxList
-    = (data: ClassificationLevelDTO[], idSuffix: string, descriptionNeeded:boolean): Checkbox[] => {
-      const arr: Checkbox[] = [];
-      idSuffix = idSuffix || "";
-      data.forEach((classLevel) => {
-        if (classLevel.classification
-        && classLevel.sys_id
-        ) {
-          const label = buildClassificationLabel(classLevel, "long");
-          const description = buildClassificationDescription(classLevel)
-          const classificationCheckbox: Checkbox = {
-            id: classLevel.impact_level + idSuffix || classLevel.classification,
-            value: classLevel.sys_id,
-            label: label,
-            description: descriptionNeeded === true? description : "",
-          }
-          arr.push(classificationCheckbox)
-        }
-      });
-      return arr.sort((a, b) => (a.id > b.id) ? 1 : -1)
-    };
+export const buildClassificationCheckboxList = (
+  data: ClassificationLevelDTO[], 
+  idSuffix: string, 
+  descriptionNeeded: boolean,
+  includeTS: boolean,
+): Checkbox[] => {
+  includeTS = includeTS || false;
+  const arr: Checkbox[] = [];
+  idSuffix = idSuffix || "";
+
+  if (!includeTS) {
+    data = data.filter(obj => obj.classification !== "TS");
+  }
+
+  data.forEach((classLevel) => {
+    if (classLevel.classification
+    && classLevel.sys_id
+    ) {
+      const label = buildClassificationLabel(classLevel, "long");
+      const description = buildClassificationDescription(classLevel)
+      const classificationCheckbox: Checkbox = {
+        id: classLevel.impact_level + idSuffix || classLevel.classification,
+        value: classLevel.sys_id,
+        label: label,
+        description: descriptionNeeded === true? description : "",
+      }
+      arr.push(classificationCheckbox)
+    }
+  });
+  return arr.sort((a, b) => (a.id > b.id) ? 1 : -1)
+};
 
 export const buildClassificationLabel
-    = (classLevel: ClassificationLevelDTO, type: string,): string => {
+    = (classLevel: ClassificationLevelDTO, type: string): string => {
       type = type || "long";
       const classificationString = classLevel.classification === "U"
         ? "Unclassified"
@@ -115,4 +125,32 @@ export const roundDecimal = (value: number, decimals: number): number => {
 export const getLegendAmount = (total: number, indexValue: number): string => {
   const amount = Math.round(total * indexValue / 100);
   return getCurrencyString(amount, false);
+}
+
+export const roundTo100 = (numberArr: number[], withTenths?: boolean): number[] => {
+  const output = [];
+  let acc = 0;
+  for(let i = 0; i < numberArr.length; i++) {
+    let roundedCur
+    if(withTenths){
+      roundedCur = Math.round(10 * numberArr[i])/10
+    } else {
+      roundedCur = Math.round(numberArr[i]);
+    }
+
+    const currentAcc = acc;
+    if (acc == 0) {
+      output.push(roundedCur);
+      acc += numberArr[i];
+      continue;
+    }
+    acc += numberArr[i];
+    if(withTenths) {
+      output.push(Math.round(10 * acc)/10 - Math.round(10 * currentAcc)/10);
+    } else {
+      output.push(Math.round(acc) - Math.round(currentAcc));
+    }
+  }
+
+  return output;
 }

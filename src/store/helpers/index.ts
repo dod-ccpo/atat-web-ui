@@ -6,7 +6,7 @@ export function nameofProperty<T>(obj: T, expression:
   const res: { [Property in keyof T]: 
       () => string } = {} as { [Property in keyof T]: () => string };
     
-  Object.getOwnPropertyNames(obj).map(k => res[k as keyof T] = () => k);
+  Object.getOwnPropertyNames(obj).forEach(k => res[k as keyof T] = () => k);
     
   return expression(res)();
 }

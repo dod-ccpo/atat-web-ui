@@ -62,7 +62,7 @@
                 :id="otherId"
                 class="width-100 mb-6"
                 :rows="3"
-                :validateItOnBlur="validateOtherOnBlur"
+                :validateItOnBlur="_validateOtherOnBlur"
                 :value.sync="_otherValueEntered"
                 :rules="otherRequiredRule"
               />
@@ -72,7 +72,7 @@
                 v-show="showOtherEntry(item.value)"
                 :id="otherId"
                 class="mb-6 mt-2 _input-wrapper-max-width"
-                :validateItOnBlur="validateOtherOnBlur"
+                :validateItOnBlur="_validateOtherOnBlur"
                 :value.sync="_otherValueEntered"
                 :rules="otherRequiredRule"
               />
@@ -114,7 +114,16 @@ export default class ATATRadioGroup extends Vue {
 
   // refs
   $refs!: {
-    radioButtonGroup: Vue & { errorBucket: string[]; errorCount: number };
+    radioButtonGroup: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      validate: () => boolean;
+    };
+    atatTextInput: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      validate: () => boolean;
+    };
   }; 
 
   // props
@@ -137,15 +146,24 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: "" }) private otherValue!: string;
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
+  @Prop({ default: false }) private validateOtherNow?: boolean;
+  @Prop({ default: false}) private clearOtherValidation?: boolean;
+  @PropSync("validateOtherOnBlur") private _validateOtherOnBlur?: boolean;
 
   // data
   private errorMessages: string[] = [];
-  private validateOtherOnBlur = true;
   private hideOtherInput = false;
 
-  private otherRequiredRule = this.otherValueRequiredMessage 
+  private otherRequiredRule = this.otherValueRequiredMessage && this._validateOtherOnBlur
     ? [this.$validators.required(this.otherValueRequiredMessage)]
     : [];
+
+  @Watch("validateOtherOnBlur")
+  public validateOtherOnBlurChange(): void {
+    this.otherRequiredRule = this.otherValueRequiredMessage && this._validateOtherOnBlur
+      ? [this.$validators.required(this.otherValueRequiredMessage)]
+      : [];
+  }
 
   // methods
   private setErrorMessage(): void {
@@ -194,7 +212,7 @@ export default class ATATRadioGroup extends Vue {
   protected valueChange(newVal: string): void {
     this.$emit("radioButtonSelected", this._selectedValue);
     if (newVal === this.otherValue) {
-      this.validateOtherOnBlur = true;
+      this._validateOtherOnBlur = true;
       this.hideOtherInput = false;
       Vue.nextTick(() => {
         const id = this.otherEntryType === "textarea" 
@@ -203,11 +221,31 @@ export default class ATATRadioGroup extends Vue {
         document.getElementById(id)?.focus();
       });
     } else {
-      this.validateOtherOnBlur = false;
+      this._validateOtherOnBlur = false;
       this.hideOtherInput = true;
       this._otherValueEntered = "";
     }
   }
+
+  @Watch("validateOtherNow")
+  public async validateOtherNowChanged(): Promise<void> {
+    const id = this.otherEntryType === "textarea" 
+      ? this.otherId + "_text_area" 
+      : this.otherId + "_text_field";
+    document.getElementById(id)?.focus();
+    document.getElementById(id)?.blur();
+    const header = document.getElementsByClassName("page-header")[0] as HTMLElement;
+    header.focus();
+
+    this.setErrorMessage();
+  }
+
+  @Watch("clearOtherValidation")
+  public resetOtherValiation(): void {
+    this.$refs.atatTextInput.errorBucket = [];
+    this.$refs.atatTextInput.errorCount = 0;
+  }
+
 }
 
 </script>

@@ -178,8 +178,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           );
           if (computeData) {
             this.computeData = computeData;
+          } else {
+            const newComputeData 
+              = await DescriptionOfWork.getComputeInstance(0);
+            newComputeData.instanceNumber = currentComputeInstanceNumber;
+            this.computeData = newComputeData;
           }
-
         } else {
           this.computeData.instanceNumber = 1;
           DescriptionOfWork.setCurrentComputeInstanceNumber(1);
