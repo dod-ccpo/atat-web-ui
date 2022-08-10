@@ -158,6 +158,26 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
+export const ComputeOfferingDetailsPathResolver = (current: string, direction: string): string=>{
+
+  debugger;
+
+  if(current === routeNames.ServiceOfferings && direction === null){
+    return descriptionOfWorkSummaryPath;
+  }
+
+  const groupId = DescriptionOfWork.currentGroupId;
+  if (groupId.toLowerCase() === "compute") {
+    return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`
+  }
+  else{
+
+    return OfferingDetailsPathResolver(current, direction);
+  }
+
+     
+}
+
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
@@ -314,7 +334,7 @@ export const OfferGroupOfferingsPathResolver = (
 
   if (isCompute) {
     const currentInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
-    if (current !== routeNames.ServiceOfferingDetails) {
+    if (current !== routeNames.ComputeRequirements) {
       if (computeData && computeData.length) {
         return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`;
       }
@@ -331,17 +351,15 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
+  debugger;
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
     return "period-of-performance/period-of-performance";
   }
-  const groupId = DescriptionOfWork.currentGroupId;
-  if (groupId.toLowerCase() === "compute") {
-    return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`
-  }
 
+  const groupId = DescriptionOfWork.currentGroupId;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
   if ((missingClassification && DescriptionOfWork.returnToDOWSummary) 
@@ -411,7 +429,8 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
       : DescriptionOfWork.prevOfferingGroup;
   }
 
-  if (group) {
+  if (group && !(current === routeNames.ComputeRequirements 
+    && group === "COMPUTE")) {
     // send to group offerings page
     const serviceOffering = routeNames.ServiceOfferings
     DescriptionOfWork.setCurrentOfferingGroupId(group);
@@ -584,6 +603,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
 
 // add path resolvers here 
 const pathResolvers: Record<string, StepPathResolver> = {
+  ComputeOfferingDetailsPathResolver,
   OfferGroupOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
