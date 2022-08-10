@@ -238,10 +238,11 @@ Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,error
     }); 
 });
 
-Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,errorMessage) => {
+Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector, errorSelector, errorMessage) => {
   cy.findElement(textboxSelector).click({ force: true });
-  cy.clickSomethingElse(errorSelector);
-  cy.checkErrorMessage(errorSelector, errorMessage);
+  cy.clickSomethingElse(errorSelector).then(() => {
+    cy.checkErrorMessage(errorSelector, errorMessage);
+  })
 });
 
 Cypress.Commands.add("verifyRequiredCheckbox", (checkboxSelector, errorSelector, errorMessage) => {
@@ -715,12 +716,12 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
   cy.textExists(common.header, " Do you have a current contract for this effort? ");
   cy.radioBtn(radioSelector, value).click({ force: true });
   cy.findElement(background.activeRadioOption).then(($radioBtn) => {
-    const selectedOption = $radioBtn.text();
+    const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
     cy.btnExists(common.continueBtn, ' Continue ').click();
     if (selectedOption === "radio_button_checkedYes. There is a current contract for this effort.")
     {
-      //naviagtes to ACOR
+      //navigates to Current Contract
       cy.textExists(common.header, " Let’s gather some details about your current contract ");
     }
     else {
@@ -755,7 +756,7 @@ Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
   cy.findElement(sac.piiRadioOtionActive)
     .then(($radioBtn) => {      
-      const selectedOption = $radioBtn.text();
+      const selectedOption = cleanText($radioBtn.text());
       cy.log(selectedOption);
       cy.btnExists(common.continueBtn, ' Continue ').click();
       if (selectedOption === "radio_button_checkedYes." +
@@ -812,7 +813,7 @@ Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {
     .should("be.checked");
   cy.findElement(occ.trainingRadioOptionActive)
     .then(($radioBtn) => {
-      const selectedOption = $radioBtn.text();
+      const selectedOption =cleanText($radioBtn.text());
       cy.log(selectedOption);
       cy.btnExists(common.continueBtn, ' Continue ').click();
       if (selectedOption === "radio_button_checkedYes.") {
