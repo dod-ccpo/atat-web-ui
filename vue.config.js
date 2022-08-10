@@ -1,7 +1,5 @@
-// const path = require('path')
-// const HtmlWebPackPlugin = require('html-webpack-plugin')
 const servicenowConfig = require('./servicenow.config');
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 
 const DEFAULTS = {
   ASSET_SIZE_LIMIT: 10000
