@@ -37,7 +37,7 @@
 import { Component, Mixins } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox } from "../../../../types/Global";
-import { ClassificationLevelDTO, EnvironmentInstanceDTO } from "@/api/models";
+import { ClassificationLevelDTO } from "@/api/models";
 import classificationRequirements from "@/store/classificationRequirements";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";

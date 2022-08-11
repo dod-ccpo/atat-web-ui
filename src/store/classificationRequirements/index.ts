@@ -40,7 +40,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   ];
 
   @Mutation
-  private setClassifications(value: ClassificationLevelDTO[]) {
+  public setClassifications(value: ClassificationLevelDTO[]) {
     this.classificationLevels = value;
   }
 
@@ -142,7 +142,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   }
 
   @Mutation
-  private setInitialized(value: boolean) {
+  public setInitialized(value: boolean) {
     this.initialized = value;
   }
 

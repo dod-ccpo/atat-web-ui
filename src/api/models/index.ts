@@ -335,7 +335,7 @@ export interface EnvironmentInstanceDTO extends BaseTableDTO {
   storage_amount: string;
   storage_type: string;
   instance_name: string;
-  classification_level: string;
+  classification_level: string | ReferenceColumn;
   number_of_vcpus: string;
   data_egress_monthly_amount: string;
   performance_tier: string;
