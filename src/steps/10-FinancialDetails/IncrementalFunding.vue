@@ -60,7 +60,6 @@
 
               <hr class="my-6" />
               <transition-group name="funding-increments" tag="div">
-                  <!-- :key="fundingIncrement.text + '_' + fundingIncrement.order + '_' + index" -->
                 <div
                   v-for="(fundingIncrement, index) in fundingIncrements"
                   :key="fundingIncrement.text"
@@ -73,26 +72,22 @@
                         <v-btn
                           :id="'InsertIncrement' + index"
                           class="_icon-only _plus position-relative"
-                          v-show="fundingIncrement.hasPeriodGap"
+                          v-if="fundingIncrement.hasPeriodGap"
                           @click="insertIncrement(index)"
                         >
-                          gap: {{ fundingIncrement.hasPeriodGap }}
-                          <!-- <ATATSVGIcon color="base" :height="12" :width="12" name="plusSign" />
+                          <ATATSVGIcon color="base" :height="12" :width="12" name="plusSign" />
                           <div 
                             :id="'AddIncrementTooltipText' + index" 
                             class="_button-help"
                           >
                             Add increment below
-                          </div> -->
-
+                          </div>
                         </v-btn>
-
 
                       </span>
                       <span class="d-block font-weight-500 text-base mr-4 ml-1 font-size-14">
-                        <!-- {{ index + 1 }} -->
+                        {{ index + 1 }}
                       </span>
-                        <!-- :items="getFiscalQuarters(index)" -->
 
                       <ATATSelect
                         :id="'IncrementPeriod' + index"
