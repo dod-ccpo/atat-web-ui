@@ -62,7 +62,7 @@ describe("Testing ComputeForm Component", () => {
         },
       },
       propsData: {
-        // computeData: computeData
+        fundingIncrementData: fundingIncrements
       }
     });
   });
@@ -72,5 +72,28 @@ describe("Testing ComputeForm Component", () => {
       expect(wrapper.exists()).toBe(true);
     });
   });
+
+  describe("Method Testing...", () => {
+
+    it("quarterChange() - changes dropdown value for funding increment's " +
+    "selected quarter", async() => {
+      const args = {
+        newSelectedValue: {
+          multiSelectOrder: 2,
+          // text: "1st QTR FY23",
+          text: "bad text",
+        },
+        oldSelectedValue: {
+          multiSelectOrder: 1,
+          text: "4th QTR FY22",
+        }
+      }
+      wrapper.vm.quarterChange(args);
+      expect(wrapper.vm.$data.fundingIncrementData[0].text).toEqual("1st QTR FY23");
+
+      
+    });
+
+  })
 
 });

@@ -371,7 +371,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public quarterChange(args: Record<string, SelectData>): void {
-
     const newVal = args.newSelectedValue;
     const oldVal = args.selectedBeforeChange;
     const changedItemIndex = this.fundingIncrements.findIndex(
