@@ -124,7 +124,7 @@ export default class ATATSelect extends Vue {
     setTimeout(() => {
       this.errorMessages = this.$refs.atatSelect && Object.prototype.hasOwnProperty.call(
         this.$refs.atatSelect, "errorBucket"
-      ) ? this.errorMessages : [];
+      ) ? this.$refs.atatSelect.errorBucket : [];
     }, 0);
   }
 
