@@ -266,6 +266,14 @@ export default class Summary extends Mixins(SaveOnLeave) {
       DescriptionOfWork.addOfferingGroup(groupID);
       DescriptionOfWork.setAddGroupFromSummary(true);
     } else {
+      if(groupID !== "COMPUTE"){
+        const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
+
+        if (lastServiceOfferingForGroup === undefined) {
+          throw new Error(`unable to get last offering for group ${groupID}`);
+        }
+        DescriptionOfWork.setCurrentOffering(lastServiceOfferingForGroup);
+      }
       DescriptionOfWork.setReviewGroupFromSummary(true);
     }
 
