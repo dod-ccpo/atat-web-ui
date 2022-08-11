@@ -404,9 +404,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       this.fundingIncrements.sort((a, b) => a.qtrOrder > b.qtrOrder ? 1 : -1);
     }
 
-    this.fundingIncrements.map((incr, i) => {
-      incr.order = i + 1;
-    });
+    this.fundingIncrements.forEach((incr, i) => incr.order = i + 1);
 
     const newIncrIndex = this.fundingIncrements.findIndex(incr => incr.text === newVal.text);
     this.focusInput(newIncrIndex);
@@ -554,7 +552,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       order: 0,
     };
     this.fundingIncrements.splice(index +1, 0, nextIncrement);
-    this.fundingIncrements.map((incr, i) => incr.order = i + 1);
+    this.fundingIncrements.forEach((incr, i) => incr.order = i + 1);
     
     const nextSelectData: SelectData = {
       text: nextPeriod.text,
