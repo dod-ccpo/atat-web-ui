@@ -47,7 +47,7 @@
                 browse to upload
               </a>
             </p>
-            <p class="mt-3 mb-9 text-base" v-html="helpText"></p>
+            <p class="mt-3 mb-9 text-base" v-html="$sanitize(helpText)"></p>
           </div>
           <div
             v-else
@@ -72,7 +72,7 @@
                   browse to upload
                 </a>
               </p>
-              <p class="ml-auto mb-0 mt-2 text-base" v-html="helpText"></p>
+              <p class="ml-auto mb-0 mt-2 text-base" v-html="$sanitize(helpText)"></p>
             </div>
             
           </div>
