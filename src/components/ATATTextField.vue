@@ -144,10 +144,10 @@ export default class ATATTextField extends Vue  {
 
   //@Events
   private onBlur(e: FocusEvent) : void{
+    const input = e.target as HTMLInputElement;
+    this.$emit('blur', input.value, this.extraEmitVal);
     if (this.validateOnBlur) {
-      const input = e.target as HTMLInputElement;
       this.setErrorMessage();
-      this.$emit('blur', input.value, this.extraEmitVal);
       if (this.isCurrency) {
         this._value = toCurrencyString(currencyStringToNumber(input.value));
       }   
