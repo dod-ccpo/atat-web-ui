@@ -33,7 +33,6 @@
       :hide-details="counter === ''"
       :suffix="suffix"
       :style="'width: ' + width + 'px'"
-      :validate-on-blur="validateOnBlur"
       :rules="rules"
       :counter="counter"
       @blur="onBlur"
@@ -42,6 +41,7 @@
       :type="type"
       @keypress="filterNumbers($event)"
     >
+
       <template v-slot:prepend-inner>
         <ATATSVGIcon
           v-if="isCurrency"
@@ -131,8 +131,9 @@ export default class ATATTextField extends Vue  {
     }
   }
 
-  private setErrorMessage(): void {
+  public setErrorMessage(): void {
     if (this.validateOnBlur) {
+      console.log("baz")
       Vue.nextTick(()=>{
         this.errorMessages = this.$refs.atatTextField.errorBucket;
       });
@@ -143,9 +144,8 @@ export default class ATATTextField extends Vue  {
   private iconColor = "base-light";
 
   //@Events
-  private onBlur(e: FocusEvent) : void{
+  public onBlur(e: FocusEvent) : void{
     const input = e.target as HTMLInputElement;
-    this.$emit('blur', input.value, this.extraEmitVal);
     if (this.validateOnBlur) {
       this.setErrorMessage();
       if (this.isCurrency) {
@@ -154,6 +154,7 @@ export default class ATATTextField extends Vue  {
     } else {
       this.resetValidation();
     }
+    this.$emit('blur', input.value, this.extraEmitVal);
   }
 
   public resetValidation(): void {

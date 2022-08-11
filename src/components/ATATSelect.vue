@@ -103,11 +103,13 @@ export default class ATATSelect extends Vue {
 
   //data
   private rounded = false;
+  private selected: SelectData | string = "";
   private errorMessages: string[] = [];
   private selectedBeforeChange: SelectData | string = "";
 
   @Emit("onChange")
   private onChange(val: string | SelectData): void {
+    this.selected = val;
     this.setErrorMessage();
     this.$emit("selectValueChange", { 
       "newSelectedValue": val, 
