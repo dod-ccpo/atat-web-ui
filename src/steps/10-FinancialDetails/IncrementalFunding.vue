@@ -695,7 +695,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       this.costEstimateStr = toCurrencyString(this.costEstimate);
     }
 
-    await this.initializeIncrements();
+    this.initializeIncrements();
 
     const storeData = await FinancialDetails.loadIFPData();
     if (storeData) {
