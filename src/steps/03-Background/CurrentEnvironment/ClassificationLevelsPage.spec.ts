@@ -1,9 +1,9 @@
-import Vue, { computed } from "vue";
+import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 import ClassificationLevelsPage
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.vue";
-import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
+import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 
@@ -52,6 +52,26 @@ describe("Testing ComputeForm Component", () => {
       "classification": "U",
     }
   ]
+  const selectedClassifications = [
+    {
+      "classification": "U",
+      "impact_level": "IL4",
+      "sys_id": "class1",
+      "sys_mod_count": "0",
+    },
+    {
+      "classification": "U",
+      "impact_level": "IL5",
+      "sys_id": "class5",
+      "sys_mod_count": "0",
+    },
+    {
+      "classification": "U",
+      "impact_level": "IL2",
+      "sys_id": "class4",
+      "sys_mod_count": "0",
+    },
+  ]
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -66,6 +86,9 @@ describe("Testing ComputeForm Component", () => {
       expect(wrapper.exists()).toBe(true);
     });
 
+  });
+
+  describe("test functions....", () => {
     it("loadOnEnter() - is to set data.firstTimeHere to true ", async () => {
       wrapper.vm.loadOnEnter();
       expect(wrapper.vm.$data).toStrictEqual({
@@ -75,5 +98,14 @@ describe("Testing ComputeForm Component", () => {
         "selectedOptions": []
       });
     });
+
+    it('Test that saving selected works', async () => {
+      wrapper.vm.$data.classifications = allClassificationLevels
+      wrapper.vm.$data.selectedOptions = ["class1", "class5", "class4"]
+      const saved = wrapper.vm.saveSelected()
+      expect(saved).toStrictEqual(selectedClassifications);
+    })
+
   });
+
 })
