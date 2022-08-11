@@ -6,6 +6,7 @@ import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/ste
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import TaskOrder from "@/store/taskOrder";
+import { RouterLinkStub } from "@vue/test-utils";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -361,6 +362,36 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 
   const groupId = DescriptionOfWork.currentGroupId;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
+
+  if(current === routeNames.ComputeRequirements && 
+    groupId === "COMPUTE" && direction === "previous"){
+    if(DescriptionOfWork.returnToDOWSummary){
+      return descriptionOfWorkSummaryPath;
+    }
+    if(DescriptionOfWork.prevOfferingGroup){
+      const group = DescriptionOfWork.prevOfferingGroup
+      DescriptionOfWork.setCurrentOfferingGroupId(group);
+    }
+    else{
+      return descriptionOfWorkSummaryPath;
+    }
+  }
+
+  if(current === routeNames.ServiceOfferings && groupId === "COMPUTE" && direction === "next"){
+    if(DescriptionOfWork.returnToDOWSummary){
+      return descriptionOfWorkSummaryPath;
+    }
+    if(DescriptionOfWork.nextOfferingGroup){
+      const group = DescriptionOfWork.nextOfferingGroup;
+      if(group)
+      {
+        DescriptionOfWork.setCurrentOfferingGroupId(group);
+      }
+    }
+    else{
+      return descriptionOfWorkSummaryPath;
+    }
+  }
 
   if ((missingClassification && DescriptionOfWork.returnToDOWSummary) 
     || (DescriptionOfWork.currentGroupRemovedForNav && DescriptionOfWork.lastGroupRemoved)) {
