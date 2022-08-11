@@ -1,4 +1,4 @@
-const servicenowConfig = require('./servicenow.config')
+const servicenowConfig = require('./servicenow.config');
 
 
 const DEFAULTS = {
@@ -24,7 +24,6 @@ module.exports = {
       // }
 
       config.optimization = {
-        minimize: true,
         splitChunks: {
           cacheGroups: {
             vendors: {
