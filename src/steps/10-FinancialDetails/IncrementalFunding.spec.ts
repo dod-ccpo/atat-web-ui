@@ -12,7 +12,7 @@ import {
 import FinancialDetails from "@/store/financialDetails";
 Vue.use(Vuetify);
 
-describe("Testing ComputeForm Component", () => {
+describe("Testing Incremental Funding Plan", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
   localVue.use(Vuex);
@@ -80,8 +80,8 @@ describe("Testing ComputeForm Component", () => {
       const args = {
         newSelectedValue: {
           multiSelectOrder: 2,
-          // text: "1st QTR FY23",
-          text: "bad text",
+          text: "1st QTR FY23",
+          // text: "foobar",
         },
         oldSelectedValue: {
           multiSelectOrder: 1,
@@ -90,10 +90,6 @@ describe("Testing ComputeForm Component", () => {
       }
       wrapper.vm.quarterChange(args);
       expect(wrapper.vm.$data.fundingIncrementData[0].text).toEqual("1st QTR FY23");
-
-      
     });
-
   })
-
 });
