@@ -10,7 +10,7 @@ import validators from "../../../plugins/validation";
 
 Vue.use(Vuetify);
 
-describe("Testing ComputeForm Component", () => {
+describe("Testing Classification Level Page", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
   localVue.use(Vuex);
