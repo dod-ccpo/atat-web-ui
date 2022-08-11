@@ -8,7 +8,9 @@ module.exports = {
   collectCoverageFrom: [
     "<rootDir>/src/components/*.{vue,ts}",
     "<rootDir>/src/helpers/*.{vue,ts}",
-    
+    "<rootDir>/src/store/classificationRequirements/index.ts",
+
+
     //  "src/components/*.{js|vue}",
     // "src/components/**/*.{js|vue}",
     // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.{vue|js}",
@@ -60,7 +62,8 @@ module.exports = {
     "<rootDir>/src/steps/**/*.spec.ts",
     "<rootDir>/src/steps/**/**/*.spec.ts",
     "<rootDir>/src/helpers/index.spec.ts",
-    
+    "<rootDir>/src/store/classificationRequirements/__test__/index.spec.ts",
+
     // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.spec.ts",
   ],
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped

@@ -57,7 +57,7 @@ export const StoreProperties = {
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
-  CurrentEnvironment: "currentEnvironment"
+  CurrentEnvironment: "currentEnvironment",
 };
 
 const initialCurrentContract = ()=> {
@@ -285,7 +285,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   fundingRequestType: string | null =  null;
 
-  public initContact: ContactDTO = initialContact();
+  public initContact: ContactDTO = initialContact()
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
@@ -474,7 +474,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
-          this.setCurrentEnvironment(initialCurrentEnvironment())
+          this.setCurrentEnvironment(initialCurrentEnvironment());
           this.setAcquisitionPackage(acquisitionPackage);
           await TaskOrder.initialize(acquisitionPackage.sys_id || "");
           this.setInitialized(true);
@@ -483,7 +483,6 @@ export class AcquisitionPackageStore extends VuexModule {
         console.log(`error creating acquisition package ${error}`);
       }
     }
-
     await Periods.initialize();
   }
 
