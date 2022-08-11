@@ -108,7 +108,7 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
   @Prop({ default: "" }) private counter!: number;
-  @Prop({ default: false }) private validateOnBlur!: boolean;
+  @Prop({ default: true }) private validateOnBlur!: boolean;
   @Prop() private extraEmitVal!: string;
   @Prop({ default: ()=>[] }) private mask!: string[];
   @Prop({ default: false }) private isMaskRegex!: boolean;
@@ -132,20 +132,28 @@ export default class ATATTextField extends Vue  {
   }
 
   private setErrorMessage(): void {
-    Vue.nextTick(()=>{
-      this.errorMessages = this.$refs.atatTextField.errorBucket;
-    });
+    if (this.validateOnBlur) {
+      Vue.nextTick(()=>{
+        this.errorMessages = this.$refs.atatTextField.errorBucket;
+      });
+    } else {
+      this.resetValidation();
+    }
   }
   private iconColor = "base-light";
 
   //@Events
   private onBlur(e: FocusEvent) : void{
-    const input = e.target as HTMLInputElement;
-    this.setErrorMessage();
-    this.$emit('blur', input.value, this.extraEmitVal);
-    if (this.isCurrency) {
-      this._value = toCurrencyString(currencyStringToNumber(input.value));
-    }   
+    if (this.validateOnBlur) {
+      const input = e.target as HTMLInputElement;
+      this.setErrorMessage();
+      this.$emit('blur', input.value, this.extraEmitVal);
+      if (this.isCurrency) {
+        this._value = toCurrencyString(currencyStringToNumber(input.value));
+      }   
+    } else {
+      this.resetValidation();
+    }
   }
 
   public resetValidation(): void {

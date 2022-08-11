@@ -33,7 +33,7 @@ export interface SelectData {
   value?: string;
   multiSelectOrder?: number;
   disabled?: boolean;
-  errored?: boolean;
+  hidden?: boolean;
 }
 
 /**
