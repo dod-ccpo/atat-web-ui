@@ -161,7 +161,6 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 
 export const ComputeOfferingDetailsPathResolver = (current: string, direction: string): string=>{
 
-  debugger;
 
   if(current === routeNames.ServiceOfferingDetails && direction === "next"){
     return descriptionOfWorkSummaryPath;
@@ -352,7 +351,6 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
-  debugger;
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
   if (DescriptionOfWork.summaryBackToContractDetails) {
