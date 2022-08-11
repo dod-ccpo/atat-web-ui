@@ -383,24 +383,20 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
 
     const currentSort = this.selectedQuarters.map(qtr => qtr.multiSelectOrder);
-    let needsResorted = false;
     for (let i = 0; i < currentSort.length - 1; i++) {
       const a = currentSort[i] || 0;
       const b = currentSort[i+1] || 0;
       if (a > b) {
-        needsResorted = true;
+        this.fundingIncrements.sort((a, b) => a.qtrOrder > b.qtrOrder ? 1 : -1);
+        this.selectedQuarters.sort((a, b) => {
+          if (a.multiSelectOrder && b.multiSelectOrder) {
+            return a.multiSelectOrder > b.multiSelectOrder ? 1 : -1;
+          }
+          return 1;
+        });
+
         break;
       }
-    }
-
-    if (needsResorted) {
-      this.selectedQuarters.sort((a, b) => {
-        if (a.multiSelectOrder && b.multiSelectOrder) {
-          return a.multiSelectOrder > b.multiSelectOrder ? 1 : -1;
-        }
-        return 1;
-      });
-      this.fundingIncrements.sort((a, b) => a.qtrOrder > b.qtrOrder ? 1 : -1);
     }
 
     this.fundingIncrements.forEach((incr, i) => incr.order = i + 1);

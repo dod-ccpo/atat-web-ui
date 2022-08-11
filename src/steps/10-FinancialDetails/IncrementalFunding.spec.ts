@@ -54,16 +54,16 @@ describe("Testing Incremental Funding Plan", () => {
     wrapper = mount(IncrementalFunding, {
       localVue,
       vuetify,
-      mocks: {
-        $store: {
-          FinancialDetails: {
-            fundingIncrements: fundingIncrements,
-          }
-        },
-      },
-      propsData: {
-        fundingIncrementData: fundingIncrements
-      }
+      // mocks: {
+      //   $store: {
+      //     FinancialDetails: {
+      //       fundingIncrements: fundingIncrements,
+      //     }
+      //   },
+      // },
+      // propsData: {
+      //   fundingIncrements: fundingIncrements
+      // }
     });
   });
   
@@ -75,21 +75,28 @@ describe("Testing Incremental Funding Plan", () => {
 
   describe("Method Testing...", () => {
 
-    it("quarterChange() - changes dropdown value for funding increment's " +
+    it("quarterChange() - change dropdown value for funding increment's " +
     "selected quarter", async() => {
+      wrapper.setData({
+        fundingIncrements: fundingIncrements,
+        fiscalQuarters: fiscalQuarters,
+      })
       const args = {
         newSelectedValue: {
           multiSelectOrder: 2,
           text: "1st QTR FY23",
-          // text: "foobar",
         },
-        oldSelectedValue: {
+        selectedBeforeChange: {
           multiSelectOrder: 1,
           text: "4th QTR FY22",
         }
       }
+
+      console.log(wrapper.vm.$data.fundingIncrements);
+
       wrapper.vm.quarterChange(args);
-      expect(wrapper.vm.$data.fundingIncrementData[0].text).toEqual("1st QTR FY23");
+
+      expect(wrapper.vm.$data.fundingIncrements[0].text).toEqual("1st QTR FY23");
     });
   })
 });
