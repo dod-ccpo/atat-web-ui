@@ -127,6 +127,7 @@ describe("Testing Incremental Funding Plan", () => {
           text: "4th QTR FY22",
         }
       }
+      
       wrapper.vm.quarterChange(args);
       expect(wrapper.vm.$data.fundingIncrements[0].text).toEqual("1st QTR FY23");
       expect(wrapper.vm.$data.fundingIncrements[0].qtrOrder).toEqual(2);
