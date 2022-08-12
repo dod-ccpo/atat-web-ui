@@ -193,6 +193,52 @@ describe("Testing Incremental Funding Plan", () => {
     expect(wrapper.vm.$data.allowContinue).toBe(true);
 
   });
+  it("checkIfHasPeriodGap() - returns true or false if there is a gap ", async() => {
+    await wrapper.setData({
+      fundingIncrements: [
+        {
+          "text": "4th QTR FY22",
+          "amt": "1,000.00",
+          "order": 1,
+          "sysId": "",
+          "qtrOrder": 1,
+          "hasPeriodGap": false,
+        },
+        {
+          "text": "2nd QTR FY23",
+          "amt": "0.00",
+          "order": 2,
+          "sysId": "",
+          "qtrOrder": 3,
+          "hasPeriodGap": false,
+        },
+      ],
+    });
+    const trueTest = await wrapper.vm.checkIfHasPeriodGap(0);
+    expect(trueTest).toBe(true)
 
+    await wrapper.setData({
+      fundingIncrements: [
+        {
+          "text": "4th QTR FY22",
+          "amt": "1,000.00",
+          "order": 1,
+          "sysId": "",
+          "qtrOrder": 1,
+          "hasPeriodGap": false,
+        },
+        {
+          "text": "1st QTR FY23",
+          "amt": "0.00",
+          "order": 2,
+          "sysId": "",
+          "qtrOrder": 2,
+          "hasPeriodGap": false,
+        },
+      ],
+    });
 
+    const falseTest = await wrapper.vm.checkIfHasPeriodGap(0);
+    expect(falseTest).toBe(false)
+  });
 });

@@ -604,6 +604,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public checkIfHasPeriodGap(index: number): boolean {
     const thisIncrement = this.fundingIncrements[index];
     const fundingIncrementCount = this.fundingIncrements.length;
+    console.log('line 607', thisIncrement)
 
     // last 2 funding increments will never have a gap, so no + button
     if (index < fundingIncrementCount - 1) {
