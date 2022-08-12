@@ -333,7 +333,71 @@ describe("Testing Incremental Funding Plan", () => {
     expect(wrapper.vm.$data.selectedQuarters.length).toEqual(3);
     expect(await wrapper.vm.$data.fundingIncrements[1].text).toBe("1st QTR FY23");
     expect(await wrapper.vm.$data.fundingIncrements[1].qtrOrder).toBe(2);
-    
+
   });
 
+  it("getFiscalQuarters() gets fiscal quarters for funding increment dropdowns", async () => {
+    await wrapper.setData({
+      fundingIncrements: [],
+      fiscalQuarters: [],
+      selectedQuarters: [],
+    });
+    // await wrapper.vm.getFiscalQuarters(0);
+    await wrapper.vm.loadOnEnter();
+    expect(wrapper.vm.$data.quarterSelectData.length).toBe(1);
+    expect(wrapper.vm.$data.fundingIncrements.length).toBe(1);
+
+    let args = {
+      newSelectedValue: {
+        multiSelectOrder: 2,
+        text: "1st QTR FY23",
+      },
+      selectedBeforeChange: {
+        multiSelectOrder: 1,
+        text: "4th QTR FY22",
+      }
+    }
+
+    await wrapper.vm.quarterChange(args);
+    expect(wrapper.vm.$data.fundingIncrements[0].text).toEqual("1st QTR FY23");
+    expect(wrapper.vm.$data.fundingIncrements[0].qtrOrder).toEqual(2);
+
+    await wrapper.vm.addIncrement();
+    expect(wrapper.vm.$data.quarterSelectData.length).toBe(2);
+    expect(wrapper.vm.$data.fundingIncrements.length).toBe(2);
+
+    args = {
+      newSelectedValue: {
+        multiSelectOrder: 6,
+        text: "1st QTR FY24",
+      },
+      selectedBeforeChange: {
+        multiSelectOrder: 3,
+        text: "2nd QTR FY23",
+      }
+    }
+
+    await wrapper.vm.quarterChange(args);
+    expect(wrapper.vm.$data.fundingIncrements[1].text).toEqual("1st QTR FY24");
+    expect(wrapper.vm.$data.fundingIncrements[1].qtrOrder).toEqual(6);
+
+    args = {
+      newSelectedValue: {
+        multiSelectOrder: 1,
+        text: "4th QTR FY22",
+      },
+      selectedBeforeChange: {
+        multiSelectOrder: 2,
+        text: "1st QTR FY23",
+      }
+    }
+
+    await wrapper.vm.quarterChange(args);
+    expect(wrapper.vm.$data.fundingIncrements[0].text).toEqual("4th QTR FY22");
+    expect(wrapper.vm.$data.fundingIncrements[0].qtrOrder).toEqual(1);
+
+    // expect(await wrapper.vm.$data.outOfRangeIndex).toBe(0);
+
+  });
+  
 });
