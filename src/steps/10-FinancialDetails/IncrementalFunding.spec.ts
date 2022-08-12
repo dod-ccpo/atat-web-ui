@@ -91,12 +91,66 @@ describe("Testing Incremental Funding Plan", () => {
           text: "4th QTR FY22",
         }
       }
-
-      console.log(wrapper.vm.$data.fundingIncrements);
-
       wrapper.vm.quarterChange(args);
-
       expect(wrapper.vm.$data.fundingIncrements[0].text).toEqual("1st QTR FY23");
     });
-  })
+  });
+
+  it("validateOnContinue() - determine if form should validate on Continue based " + 
+  "on several factors", async() => {
+    await wrapper.setData({
+      initialAmountStr: "",
+      allowContinue: false,
+      hasValidatedOnContinue: false,
+      outOfRangeIndex: null,
+      costEstimate: 1000,
+      fundingIncrements: fundingIncrements
+    })
+
+    // if underfunded, do not allow to continue
+    await wrapper.vm.validateOnContinue();
+    expect(wrapper.vm.$data.allowContinue).toBe(false);
+
+    // if overfunded, do not allow to continue
+    wrapper.setData({
+      fundingIncrements: [
+        {
+          "text": "4th QTR FY22",
+          "amt": "2,000.00",
+          "order": 1,
+          "sysId": "",
+          "qtrOrder": 1,
+          "hasPeriodGap": false,
+        }
+      ],
+    });
+    await wrapper.vm.validateOnContinue();
+    expect(wrapper.vm.$data.allowContinue).toBe(false);
+    
+    // if last funding increment period is out of PoP range
+    await wrapper.setData({
+      outOfRangeIndex: 1,
+    });
+    await wrapper.vm.validateOnContinue();
+    expect(wrapper.vm.$data.allowContinue).toBe(false);
+
+    await wrapper.setData({
+      outOfRangeIndex: null,
+      fundingIncrements: [
+        {
+          "text": "4th QTR FY22",
+          "amt": "1,000.00",
+          "order": 1,
+          "sysId": "",
+          "qtrOrder": 1,
+          "hasPeriodGap": false,
+        }
+      ],
+    });
+    await wrapper.vm.validateOnContinue();
+    expect(wrapper.vm.$data.allowContinue).toBe(true);
+
+  });
+
+
 });
