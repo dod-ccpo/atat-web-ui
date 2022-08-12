@@ -1,15 +1,11 @@
-import Vue, { computed } from "vue";
+import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
+import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import IncrementalFunding from "./IncrementalFunding.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../plugins/validation";
 
-import {
-  SelectData,
-} from "../../../types/Global";
-import FinancialDetails from "@/store/financialDetails";
 Vue.use(Vuetify);
 
 describe("Testing Incremental Funding Plan", () => {
@@ -58,13 +54,22 @@ describe("Testing Incremental Funding Plan", () => {
     },
   ];
 
+  // const quarterSelectData = [
+  //   {"text":"4th QTR FY22","multiSelectOrder":1,"disabled":false,"hidden":false},
+  //   {"text":"1st QTR FY23","multiSelectOrder":2,"disabled":false,"hidden":false},
+  //   {"text":"2nd QTR FY23","multiSelectOrder":3,"disabled":false,"hidden":false},
+  //   {"text":"3rd QTR FY23","multiSelectOrder":4,"disabled":false,"hidden":false},
+  //   {"text":"4th QTR FY23","multiSelectOrder":5,"disabled":false,"hidden":false},
+  //   {"text":"1st QTR FY24","multiSelectOrder":6,"disabled":false,"hidden":false}
+  // ];
+
   const fiscalQuarters = [
-    {"text":"4th QTR FY22","multiSelectOrder":1,"disabled":false,"hidden":false},
-    {"text":"1st QTR FY23","multiSelectOrder":2,"disabled":false,"hidden":false},
-    {"text":"2nd QTR FY23","multiSelectOrder":3,"disabled":false,"hidden":false},
-    {"text":"3rd QTR FY23","multiSelectOrder":4,"disabled":false,"hidden":false},
-    {"text":"4th QTR FY23","multiSelectOrder":5,"disabled":false,"hidden":false},
-    {"text":"1st QTR FY24","multiSelectOrder":6,"disabled":false,"hidden":false},
+    {"text": "4th QTR FY22", "multiSelectOrder": 1, "disabled": false, "hidden": false},
+    {"text": "1st QTR FY23", "multiSelectOrder": 2, "disabled": false, "hidden": false},
+    {"text": "2nd QTR FY23", "multiSelectOrder": 3, "disabled": false, "hidden": false},
+    {"text": "3rd QTR FY23", "multiSelectOrder": 4, "disabled": false, "hidden": false},
+    {"text": "4th QTR FY23", "multiSelectOrder": 5, "disabled": false, "hidden": false},
+    {"text": "1st QTR FY24", "multiSelectOrder": 6, "disabled": false, "hidden": false},
   ];
 
 
@@ -85,7 +90,7 @@ describe("Testing Incremental Funding Plan", () => {
       // }
     });
   });
-  
+
   describe("Initialization....", () => {
     it("tests that component renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
@@ -99,7 +104,7 @@ describe("Testing Incremental Funding Plan", () => {
     });
 
     it("initializeIncrements() initializes funding increments (fiscal quarters) " +
-    "for dropdowns", async () => {
+        "for dropdowns", async () => {
       wrapper.setData({
         fiscalQuarters: [],
         ordinals: ["1st", "2nd", "3rd", "4th"],
@@ -108,10 +113,9 @@ describe("Testing Incremental Funding Plan", () => {
 
       expect(wrapper.vm.$data.fiscalQuarters.length).toBe(6);
     });
-  
 
     it("quarterChange() - change dropdown value for funding increment's " +
-    "selected quarter", async() => {
+        "selected quarter", async () => {
       wrapper.setData({
         fundingIncrements: fundingIncrements,
         fiscalQuarters: fiscalQuarters,
@@ -127,7 +131,7 @@ describe("Testing Incremental Funding Plan", () => {
           text: "4th QTR FY22",
         }
       }
-      
+
       wrapper.vm.quarterChange(args);
       expect(wrapper.vm.$data.fundingIncrements[0].text).toEqual("1st QTR FY23");
       expect(wrapper.vm.$data.fundingIncrements[0].qtrOrder).toEqual(2);
@@ -138,8 +142,8 @@ describe("Testing Incremental Funding Plan", () => {
     });
   });
 
-  it("validateOnContinue() - determine if form should validate on Continue based " + 
-  "on several factors", async() => {
+  it("validateOnContinue() - determine if form should validate on Continue based " +
+      "on several factors", async () => {
     await wrapper.setData({
       initialAmountStr: "",
       allowContinue: false,
@@ -168,7 +172,7 @@ describe("Testing Incremental Funding Plan", () => {
     });
     await wrapper.vm.validateOnContinue();
     expect(wrapper.vm.$data.allowContinue).toBe(false);
-    
+
     // if last funding increment period is out of PoP range
     await wrapper.setData({
       outOfRangeIndex: 1,
@@ -193,7 +197,7 @@ describe("Testing Incremental Funding Plan", () => {
     expect(wrapper.vm.$data.allowContinue).toBe(true);
 
   });
-  it("checkIfHasPeriodGap() - returns true or false if there is a gap ", async() => {
+  it("checkIfHasPeriodGap() - returns true if there is a gap ", async () => {
     await wrapper.setData({
       fundingIncrements: [
         {
@@ -214,9 +218,11 @@ describe("Testing Incremental Funding Plan", () => {
         },
       ],
     });
-    const trueTest = await wrapper.vm.checkIfHasPeriodGap(0);
-    expect(trueTest).toBe(true)
+    const result = await wrapper.vm.checkIfHasPeriodGap(0);
+    expect(result).toBe(true)
+  });
 
+  it("checkIfHasPeriodGap() - returns false if there is no gap ", async () => {
     await wrapper.setData({
       fundingIncrements: [
         {
@@ -238,7 +244,56 @@ describe("Testing Incremental Funding Plan", () => {
       ],
     });
 
-    const falseTest = await wrapper.vm.checkIfHasPeriodGap(0);
-    expect(falseTest).toBe(false)
+    const result = await wrapper.vm.checkIfHasPeriodGap(0);
+    expect(result).toBe(false)
+  });
+
+  it("shouldShowAddIncrementButton() determines if Add Increment button should display " +
+      "below funding increments", async () => {
+    await wrapper.setData({
+      quarterSelectData: fiscalQuarters,
+      selectedQuarters: [{"text": "4th QTR FY22", "multiSelectOrder": 1}]
+    });
+    expect(await wrapper.vm.$data.showAddIncrementButton).toBe(true);
+
+    await wrapper.setData({
+      quarterSelectData: [
+        {"text": "1st QTR FY24", "multiSelectOrder": 6, "disabled": false, "hidden": false}
+      ],
+      selectedQuarters: [{"text": "1st QTR FY24", "multiSelectOrder": 6}],
+      outOfRangeIndex: 1,
+    });
+    expect(await wrapper.vm.$data.showAddIncrementButton).toBe(false);
+  });
+
+  it("addIncrement() adds a funding increment", async () => {
+    await wrapper.setData({
+      fundingIncrements: [
+        {
+          "text": "4th QTR FY22",
+          "amt": "0.00",
+          "order": 1,
+          "sysId": "",
+          "qtrOrder": 1,
+          "hasPeriodGap": false,
+        },
+        {
+          "text": "1st QTR FY23",
+          "amt": "0.00",
+          "order": 2,
+          "sysId": "",
+          "qtrOrder": 2,
+          "hasPeriodGap": false,
+        },
+      ],
+      fiscalQuarters: fiscalQuarters,
+      selectedQuarters: [
+        {"text": "4th QTR FY22", "multiSelectOrder": 1},
+        {"text": "1st QTR FY23", "multiSelectOrder": 2}
+      ]
+    });
+    await wrapper.vm.addIncrement();
+    expect(await wrapper.vm.$data.fundingIncrements.length).toEqual(3);
+    expect(await wrapper.vm.$data.selectedQuarters.length).toBe(3);
   });
 });
