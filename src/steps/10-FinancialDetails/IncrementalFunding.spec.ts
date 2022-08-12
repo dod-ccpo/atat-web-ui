@@ -75,6 +75,22 @@ describe("Testing Incremental Funding Plan", () => {
 
   describe("Method Testing...", () => {
 
+    it("loadOnEnter() initializes data including funding increments", async () => {
+      wrapper.vm.loadOnEnter()
+    });
+
+    it("initializeIncrements() initializes funding increments (fiscal quarters) " +
+    "for dropdowns", async () => {
+      wrapper.setData({
+        fiscalQuarters: [],
+        ordinals: ["1st", "2nd", "3rd", "4th"],
+      })
+      wrapper.vm.initializeIncrements();
+      
+      expect(wrapper.vm.$data.fiscalQuarters.length).toBe(6);
+    });
+  
+
     it("quarterChange() - change dropdown value for funding increment's " +
     "selected quarter", async() => {
       wrapper.setData({
