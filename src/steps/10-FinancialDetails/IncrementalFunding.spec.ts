@@ -220,5 +220,35 @@ describe("Testing Incremental Funding Plan", () => {
     expect(await wrapper.vm.$data.showAddIncrementButton).toBe(false);
   });
 
+  it("addIncrement() adds a funding increment", async () => {
+    await wrapper.setData({
+      fundingIncrements: [    
+        {
+          "text": "4th QTR FY22",
+          "amt": "0.00",
+          "order": 1,
+          "sysId": "",
+          "qtrOrder": 1,
+          "hasPeriodGap": false,
+        },
+        {
+          "text": "1st QTR FY23",
+          "amt": "0.00",
+          "order": 2,
+          "sysId": "",
+          "qtrOrder": 2,
+          "hasPeriodGap": false,
+        },
+      ],
+      fiscalQuarters: fiscalQuarters,
+      selectedQuarters: [
+        {"text":"4th QTR FY22","multiSelectOrder":1},
+        {"text":"1st QTR FY23","multiSelectOrder":2}
+      ]
+    });
+    await wrapper.vm.addIncrement();
+    expect(await wrapper.vm.$data.fundingIncrements.length).toEqual(3);
+    expect(await wrapper.vm.$data.selectedQuarters.length).toBe(3);
+  });
 
 });
