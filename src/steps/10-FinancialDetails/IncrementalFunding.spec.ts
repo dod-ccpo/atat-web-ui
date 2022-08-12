@@ -58,6 +58,15 @@ describe("Testing Incremental Funding Plan", () => {
     },
   ];
 
+  // const quarterSelectData = [
+  //   {"text":"4th QTR FY22","multiSelectOrder":1,"disabled":false,"hidden":false},
+  //   {"text":"1st QTR FY23","multiSelectOrder":2,"disabled":false,"hidden":false},
+  //   {"text":"2nd QTR FY23","multiSelectOrder":3,"disabled":false,"hidden":false},
+  //   {"text":"3rd QTR FY23","multiSelectOrder":4,"disabled":false,"hidden":false},
+  //   {"text":"4th QTR FY23","multiSelectOrder":5,"disabled":false,"hidden":false},
+  //   {"text":"1st QTR FY24","multiSelectOrder":6,"disabled":false,"hidden":false}
+  // ];
+
   const fiscalQuarters = [
     {"text":"4th QTR FY22","multiSelectOrder":1,"disabled":false,"hidden":false},
     {"text":"1st QTR FY23","multiSelectOrder":2,"disabled":false,"hidden":false},
@@ -108,7 +117,6 @@ describe("Testing Incremental Funding Plan", () => {
 
       expect(wrapper.vm.$data.fiscalQuarters.length).toBe(6);
     });
-  
 
     it("quarterChange() - change dropdown value for funding increment's " +
     "selected quarter", async() => {
@@ -127,7 +135,7 @@ describe("Testing Incremental Funding Plan", () => {
           text: "4th QTR FY22",
         }
       }
-      
+
       wrapper.vm.quarterChange(args);
       expect(wrapper.vm.$data.fundingIncrements[0].text).toEqual("1st QTR FY23");
       expect(wrapper.vm.$data.fundingIncrements[0].qtrOrder).toEqual(2);
@@ -192,6 +200,24 @@ describe("Testing Incremental Funding Plan", () => {
     await wrapper.vm.validateOnContinue();
     expect(wrapper.vm.$data.allowContinue).toBe(true);
 
+  });
+
+  it("shouldShowAddIncrementButton() determines if Add Increment button should display " +
+  "below funding increments", async () => {
+    await wrapper.setData({
+      quarterSelectData: fiscalQuarters,
+      selectedQuarters: [{"text":"4th QTR FY22","multiSelectOrder":1}]
+    });
+    expect(await wrapper.vm.$data.showAddIncrementButton).toBe(true);
+
+    await wrapper.setData({
+      quarterSelectData: [
+        {"text":"1st QTR FY24","multiSelectOrder":6,"disabled":false,"hidden":false}
+      ],
+      selectedQuarters: [{"text":"1st QTR FY24","multiSelectOrder":6}],
+      outOfRangeIndex: 1,
+    });
+    expect(await wrapper.vm.$data.showAddIncrementButton).toBe(false);
   });
 
 
