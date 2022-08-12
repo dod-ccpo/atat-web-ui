@@ -296,4 +296,44 @@ describe("Testing Incremental Funding Plan", () => {
     expect(await wrapper.vm.$data.fundingIncrements.length).toEqual(3);
     expect(await wrapper.vm.$data.selectedQuarters.length).toBe(3);
   });
+
+  it("insertIncrement() adds a funding increment between increments with a gap " + 
+  "between fiscal periods", async () => {
+    await wrapper.setData({
+      fundingIncrements: [    
+        {
+          "text": "4th QTR FY22",
+          "amt": "0.00",
+          "order": 1,
+          "sysId": "",
+          "qtrOrder": 1,
+          "hasPeriodGap": true,
+        },
+        {
+          "text": "2nd QTR FY23",
+          "amt": "0.00",
+          "order": 2,
+          "sysId": "",
+          "qtrOrder": 3,
+          "hasPeriodGap": false,
+        },
+      ],
+      fiscalQuarters: [
+        {"text":"4th QTR FY22","multiSelectOrder":1,"disabled":false,"hidden":false},
+        {"text":"1st QTR FY23","multiSelectOrder":2,"disabled":false,"hidden":false},
+        {"text":"2nd QTR FY23","multiSelectOrder":3,"disabled":false,"hidden":false},    
+      ],
+      selectedQuarters: [
+        {"text":"4th QTR FY22","multiSelectOrder":1},
+        {"text":"2nd QTR FY23","multiSelectOrder":3}
+      ]
+    });
+    await wrapper.vm.insertIncrement(0);
+    expect(wrapper.vm.$data.fundingIncrements.length).toEqual(3);
+    expect(wrapper.vm.$data.selectedQuarters.length).toEqual(3);
+    expect(await wrapper.vm.$data.fundingIncrements[1].text).toBe("1st QTR FY23");
+    expect(await wrapper.vm.$data.fundingIncrements[1].qtrOrder).toBe(2);
+    
+  });
+
 });
