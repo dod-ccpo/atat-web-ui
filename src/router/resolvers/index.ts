@@ -6,7 +6,6 @@ import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/ste
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import TaskOrder from "@/store/taskOrder";
-import { RouterLinkStub } from "@vue/test-utils";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -138,7 +137,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   //if comming from Service Offerings and we have more
   // service offerings groups to navigate through
   if(current === routeNames.ServiceOfferings && 
-    !atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
+    !atBeginningOfOfferingGroups){
     const previousGroup = DescriptionOfWork.prevOfferingGroup;
 
     if(DescriptionOfWork.returnToDOWSummary)
@@ -211,6 +210,7 @@ export const OfferGroupOfferingsPathResolver = (
     ? false 
     : DescriptionOfWork.isEndOfServiceOfferings;
   DescriptionOfWork.setReviewGroupFromSummary(false);
+  
 
   const returnToDOWSummary = DescriptionOfWork.returnToDOWSummary;
   const addGroupFromSummary = DescriptionOfWork.addGroupFromSummary;
@@ -221,10 +221,12 @@ export const OfferGroupOfferingsPathResolver = (
     || atLastNoneApply 
     || lastGroupRemoved
 
+  const directionNext = direction ===  "next";
+
   if (!addGroupFromSummary 
     && ((currentGroupRemovedForNav && lastGroupRemoved) 
     || (currentGroupRemovedForNav && returnToDOWSummary)
-    || (returnToDOWSummary && atServicesEnd) 
+    || (returnToDOWSummary && atServicesEnd && directionNext)
     || nowhereToGo)
   ) {
     // return to summary
@@ -438,7 +440,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;   
   } 
-  if (!missingClassification) {
+  if (!missingClassification && current !== routeNames.ComputeRequirements) {
     const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
     if (offering) {
       return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
