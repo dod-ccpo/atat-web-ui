@@ -181,6 +181,10 @@ export const ComputeOfferingDetailsPathResolver = (current: string, direction: s
     return DowSummaryPathResolver(current, direction);
   }
 
+  if(current === routeNames.DOWSummary){
+    return OfferingDetailsPathResolver(current, direction);
+  }
+
   return descriptionOfWorkSummaryPath;
      
 }
