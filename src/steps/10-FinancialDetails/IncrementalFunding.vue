@@ -105,6 +105,7 @@
 
                       <ATATTextField
                         :id="'Amount' + index"
+                        :ref="'Amount' + index"
                         :value.sync="fundingIncrements[index].amt"
                         :alignRight="true"
                         :isCurrency="true"
