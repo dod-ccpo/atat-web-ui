@@ -47,6 +47,17 @@ describe("Testing Incremental Funding Plan", () => {
     },
   ];
 
+  const selectedQuarters = [
+    {
+      multiSelectOrder: 1,
+      text: "4th QTR FY22",
+    },
+    {
+      multiSelectOrder: 2,
+      text: "1st QTR FY23",
+    },
+  ];
+
   const fiscalQuarters = [
     {"text":"4th QTR FY22","multiSelectOrder":1,"disabled":false,"hidden":false},
     {"text":"1st QTR FY23","multiSelectOrder":2,"disabled":false,"hidden":false},
@@ -104,6 +115,7 @@ describe("Testing Incremental Funding Plan", () => {
       wrapper.setData({
         fundingIncrements: fundingIncrements,
         fiscalQuarters: fiscalQuarters,
+        selectedQuarters: selectedQuarters
       })
       const args = {
         newSelectedValue: {

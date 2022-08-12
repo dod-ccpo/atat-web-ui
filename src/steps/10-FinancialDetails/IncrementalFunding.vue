@@ -376,13 +376,12 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     const changedItemIndex = this.fundingIncrements.findIndex(
       incr => incr.text === oldVal.text
     );
-
+    
     this.fundingIncrements[changedItemIndex].text = newVal.text;
     if (newVal.multiSelectOrder) {
       this.fundingIncrements[changedItemIndex].qtrOrder = newVal.multiSelectOrder;
     }
-
-    const currentSort = this.selectedQuarters.map(qtr => qtr.multiSelectOrder);
+    const currentSort = this.fundingIncrements.map(incr => incr.qtrOrder);
     for (let i = 0; i < currentSort.length - 1; i++) {
       const a = currentSort[i] || 0;
       const b = currentSort[i+1] || 0;
