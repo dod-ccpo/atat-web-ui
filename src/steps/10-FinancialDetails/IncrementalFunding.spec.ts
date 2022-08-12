@@ -76,6 +76,7 @@ describe("Testing Incremental Funding Plan", () => {
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(IncrementalFunding, {
+      attachTo: document.body,
       localVue,
       vuetify,
       // mocks: {
@@ -398,6 +399,27 @@ describe("Testing Incremental Funding Plan", () => {
 
     // expect(await wrapper.vm.$data.outOfRangeIndex).toBe(0);
 
+  });
+
+  it("focusInput() puts focus into an increment amount text input", async () => {
+    wrapper.vm.focusInput(0);
+    const textbox = await wrapper.findComponent({ref: "Amount0"});
+    expect(textbox.exists()).toBe(true);
+  });
+
+  it("deleteFundingIncrement() removes selected funding increment", async() => {
+    await wrapper.setData({
+      fundingIncrements: [{ "text": "4th QTR FY22", "sysId": "bar"}],
+      selectedQuarters: [{"text":"4th QTR FY22","multiSelectOrder":1}],
+      quarterSelectData: [[{"text":"4th QTR FY22","multiSelectOrder":1}]],
+      savedData: { fundingIncrements: [{"text": "foo", "sysId": "bar"}]},
+      removedIncrements: [],
+    });
+    await wrapper.vm.deleteFundingIncrement(0);
+    expect(wrapper.vm.$data.fundingIncrements.length).toBe(0);
+    expect(wrapper.vm.$data.selectedQuarters.length).toBe(0);
+    expect(wrapper.vm.$data.quarterSelectData.length).toBe(0);
+    expect(wrapper.vm.$data.removedIncrements.length).toBe(1);
   });
   
 });
