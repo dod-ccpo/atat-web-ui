@@ -48,6 +48,16 @@
             :computeData.sync="computeData"
           />
         </v-col>
+
+        <v-col
+          v-else-if="isGeneral"
+        >
+          <GeneralXaaS
+            :generalXaaSData.sync="generalXaaSData"
+
+          />
+        </v-col>
+
       </v-row>
     </v-container>
   </div>
@@ -60,6 +70,7 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ComputeForm from "./ComputeForm.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import GeneralXaaS from "./GeneralXaaS.vue";
 import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 
@@ -73,6 +84,7 @@ import { getIdText } from "@/helpers";
     ATATCheckboxGroup,
     ComputeForm,
     DOWSubtleAlert,
+    GeneralXaaS,
   }
 })
 
@@ -121,6 +133,14 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
   }
+
+  public generalXaaSData: unknown = {
+    requirementTitle: "",
+    descriptionOfNeed: "",
+    entireDuration: null,
+    periodsNeeded: "",
+  };
+
   public showSubtleAlert = false;
   public isPeriodsDataMissing = false;
   public isClassificationDataMissing = false;
