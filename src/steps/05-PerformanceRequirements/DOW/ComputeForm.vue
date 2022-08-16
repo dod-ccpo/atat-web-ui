@@ -8,7 +8,7 @@
     </h1>
     <p 
       class="copy-max-width"
-      :class="showSubtleAlert ? 'mb-4' : 'mb-10'"
+      :class="isClassificationDataMissing || isPeriodsDataMissing ? 'mb-4' : 'mb-10'"
     >
       <span v-if="firstTimeHere">
         In this section, we’ll collect details about each compute instance that you need. 
@@ -16,7 +16,7 @@
 
       If you need multiple, we’ll walk through them one at a time. 
       <span v-if="avlClassificationLevelObjects.length === 1">
-        You previously specified <strong>{{ singleClassificationLevelName }} </strong> 
+        You previously specified <strong>{{ singleClassificationLevelName }}</strong> 
         as the classification level for all requirements. If you need any instances
         within a different level, 
         <a 
@@ -31,7 +31,7 @@
     </p>
     
     <DOWSubtleAlert
-      v-show="showSubtleAlert"
+      v-show="isClassificationDataMissing || isPeriodsDataMissing"
       :isClassificationDataMissing="isClassificationDataMissing"
       :isPeriodsDataMissing="isPeriodsDataMissing"
       class="copy-max-width"
@@ -70,7 +70,6 @@
       name="EnvironmnetType"
       class="mt-3 mb-8"
       :rules="[$validators.required('Please select a type of environment.')]"
-      
     />
 
     <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
@@ -141,7 +140,14 @@
       </v-col>
     </v-row>
 
-    <ATATRadioGroup
+    <EntireDuration
+      :entireDuration.sync="_computeData.entireDuration"
+      :periodsNeeded.sync="_computeData.periodsNeeded"
+      :isPeriodsDataMissing="isPeriodsDataMissing"
+      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+      index="1"
+    />
+    <!-- <ATATRadioGroup
       class="copy-max-width mb-10 mt-4"
       ref="NeededForEntireDuration"
       id="NeededForEntireDuration"
@@ -188,7 +194,7 @@
           </p>
         </template>
       </ATATAlert>
-    </div>
+    </div> -->
 
     <hr />
 
@@ -314,7 +320,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -326,8 +332,9 @@ import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import ClassificationsModal from "./ClassificationsModal.vue";
+import EntireDuration from "./EntireDuration.vue"
 
-import { routeNames } from "../../../router/stepper"
+// import { routeNames } from "../../../router/stepper"
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -346,7 +353,8 @@ import { ClassificationLevelDTO } from "@/api/models";
 
 import { 
   buildClassificationCheckboxList, 
-  buildClassificationLabel 
+  buildClassificationLabel,
+  createPeriodCheckboxItems,
 } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
@@ -361,6 +369,8 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
     ATATTooltip,
     ClassificationsModal,
     DOWSubtleAlert,
+    EntireDuration,
+
   }
 })
 
@@ -376,9 +386,12 @@ export default class ComputeForm extends Vue {
   };
 
   @PropSync("computeData") public _computeData!: ComputeData;
+  @Prop() public isPeriodsDataMissing!: boolean;
+  @Prop() public isClassificationDataMissing!: boolean;
+
   public firstTimeHere = false;
-  public showSubtleAlert = false;
-  public routeNames = routeNames;
+  // public showSubtleAlert = false;
+  // public routeNames = routeNames;
   public modalSelectionsOnOpen: string[] = [];
   public showDialog = false;
   public modalSelectedOptions: string[] = [];
@@ -447,23 +460,24 @@ export default class ComputeForm extends Vue {
   public otherRegionValue = "OtherRegion";
   public otherRegionValueRequiredMessage = "Please enter your other region(s).";
 
-  public requirementOptions: RadioButton[] = [
-    {
-      id: "Yes",
-      label: "Yes",
-      value: "YES",
-    },
-    {
-      id: "No",
-      label: "No",
-      value: "NO",
-    },
-  ];
+  // public requirementOptions: RadioButton[] = [
+  //   {
+  //     id: "Yes",
+  //     label: "Yes",
+  //     value: "YES",
+  //   },
+  //   {
+  //     id: "No",
+  //     label: "No",
+  //     value: "NO",
+  //   },
+  // ];
 
   // when user selects "YES", remove periods from needed array. 
   // when user selects "NO", pre-select base period
   @Watch("_computeData.entireDuration")
   public entireDurationChanged(newVal: string): void {
+    debugger;
     this._computeData.periodsNeeded = newVal === "NO"
       ? [this.availablePeriodCheckboxItems[0].value]
       : [];
@@ -472,8 +486,8 @@ export default class ComputeForm extends Vue {
   public availablePeriodCheckboxItems: Checkbox[] = [];
   public periodsDisabled = true;
 
-  public isPeriodsDataMissing = false;
-  public isClassificationDataMissing = false;
+  // public isPeriodsDataMissing = false;
+  // public isClassificationDataMissing = false;
 
   public storageTypes: SelectData[] = [
     { text: "General Purpose SSD", value: "General Purpose SSD" },
@@ -569,23 +583,23 @@ export default class ComputeForm extends Vue {
     Toast.setToast(this.classificationLevelToast);
   }
 
-  private createPeriodCheckboxItems(periods: PeriodDTO[]) {
-    // ensure sort order is correct
-    periods.sort((a, b) => a.option_order > b.option_order ? 1 : -1);
+  // private createPeriodCheckboxItems(periods: PeriodDTO[]) {
+  //   // ensure sort order is correct
+  //   periods.sort((a, b) => a.option_order > b.option_order ? 1 : -1);
     
-    const arr: Checkbox[] = [];
-    periods.forEach((period, i) => {
-      const label = i === 0 ? "Base period" : `Option period ${i}`;
-      const id = i === 0 ? "BASE" : `OPTION${i}`;
-      const option: Checkbox = {
-        id,
-        label,
-        value: period.sys_id || "",
-      };
-      arr.push(option);
-    })
-    return arr;
-  }
+  //   const arr: Checkbox[] = [];
+  //   periods.forEach((period, i) => {
+  //     const label = i === 0 ? "Base period" : `Option period ${i}`;
+  //     const id = i === 0 ? "BASE" : `OPTION${i}`;
+  //     const option: Checkbox = {
+  //       id,
+  //       label,
+  //       value: period.sys_id || "",
+  //     };
+  //     arr.push(option);
+  //   })
+  //   return arr;
+  // }
 
   private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";
@@ -626,25 +640,25 @@ export default class ComputeForm extends Vue {
     this.setAvlClassificationLevels();
     this.checkSingleClassification();
 
-    const periods = await Periods.loadPeriods();
-    if (periods && periods.length > 0) {
-      this.availablePeriodCheckboxItems = this.createPeriodCheckboxItems(periods);
-    } else {
-      this.availablePeriodCheckboxItems = [
-        {
-          id: "BaseDisabled",
-          label: "Base period",
-          value: "",
-        }
-      ];
-      this.isPeriodsDataMissing = true;
-    }
+    this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
+    // if (periods && periods.length > 0) {
+    //   this.availablePeriodCheckboxItems = createPeriodCheckboxItems(periods);
+    // } else {
+    //   this.availablePeriodCheckboxItems = [
+    //     {
+    //       id: "BaseDisabled",
+    //       label: "Base period",
+    //       value: "",
+    //     }
+    //   ];
+    //   this.isPeriodsDataMissing = true;
+    // }
     
-    const classifications = await classificationRequirements.getSelectedClassificationLevels();
-    this.isClassificationDataMissing = classifications.length === 0 ? true : false;
+    // const classifications = await classificationRequirements.getSelectedClassificationLevels();
+    // this.isClassificationDataMissing = classifications.length === 0 ? true : false;
 
-    this.showSubtleAlert 
-      = this.isPeriodsDataMissing || this.isClassificationDataMissing ? true : false;
+    // this.showSubtleAlert 
+    //   = this.isPeriodsDataMissing || this.isClassificationDataMissing ? true : false;
   }
   public formHasBeenTouched = false;
   public formHasErrors = false;

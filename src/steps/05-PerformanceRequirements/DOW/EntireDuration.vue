@@ -1,0 +1,104 @@
+<template>
+  <div>
+
+    <ATATRadioGroup
+      class="copy-max-width mb-10 mt-4"
+      ref="NeededForEntireDuration"
+      :id="'EntireDuration_' + (index + 1)"
+      legend="Is this instance needed for the entire duration of your task order?"
+      :items="entureDurationOptions"
+      :value.sync="_entireDuration"
+      :rules="[
+        $validators.required('Please select an option to specify your requirement’s duration.')
+      ]"
+    />
+    <div v-if="_entireDuration === 'NO'">
+      <p :id="'PeriodsLabel_' + (index + 1)" class="_checkbox-group-label">
+        In which base and/or option periods do you need this requirement?
+      </p>
+      <ATATCheckboxGroup
+        :id="'PeriodsCheckboxes_' + (index + 1)"
+        :aria-describedby="'PeriodsLabel_' + (index + 1)"
+        ref="periodsCheckboxes"
+        :value.sync="_periodsNeeded"
+        :items="availablePeriodCheckboxItems"
+        :card="false"
+        :disabled="isPeriodsDataMissing"
+        :rules="[
+          $validators.required('Please select at least one base or option period' +
+            ' to specify your requirement’s duration level.')
+        ]"
+        class="copy-max-width"
+      />
+      <ATATAlert
+        :id="'PeriodRequirementsAlert_' + (index + 1)"
+        v-show="isPeriodsDataMissing === true"
+        type="warning"
+        class="copy-max-width mb-10"
+      >
+        <template v-slot:content>
+          <p class="mb-0" :id="'PeriodIntro_' + (index + 1)">
+            Your period of performance details are missing. To select specific base or
+            option periods for this requirement,
+            <router-link
+              :id="'ContractDetailsLink_' + (index + 1)"
+              :to="{ name: routeNames.PeriodOfPerformance }"
+            >revisit the Contract Details section
+            </router-link>
+          </p>
+        </template>
+      </ATATAlert>
+    </div>
+  </div>
+
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import { Component, Prop, PropSync } from "vue-property-decorator";
+
+import ATATAlert from "@/components/ATATAlert.vue";
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+
+import { routeNames } from "../../../router/stepper"
+
+
+import { 
+  Checkbox, 
+  RadioButton,
+} from "../../../../types/Global";
+
+@Component({
+  components: {
+    ATATAlert,
+    ATATCheckboxGroup,
+    ATATRadioGroup,
+  }
+})
+
+export default class EntireDuration extends Vue {
+  @PropSync("periodsNeeded") public _periodsNeeded?: string[];
+  @PropSync("entireDuration") public _entireDuration?: string;
+  @Prop() public isPeriodsDataMissing!: boolean;
+  @Prop() public availablePeriodCheckboxItems!: Checkbox[];
+  @Prop() public index!: string;
+
+  public routeNames = routeNames;
+
+  public entureDurationOptions: RadioButton[] = [
+    {
+      id: "Yes",
+      label: "Yes",
+      value: "YES",
+    },
+    {
+      id: "No",
+      label: "No",
+      value: "NO",
+    },
+  ];
+
+}
+
+</script>

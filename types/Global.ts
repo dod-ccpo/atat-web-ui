@@ -208,6 +208,7 @@ export interface DOWClassificationInstance {
   selectedPeriods?: DOWPoP[];
   labelLong?: string;
   labelShort?: string;
+  requirementTitle?: string;
 }
 
 export interface DOWServiceOffering {
@@ -269,19 +270,19 @@ export interface lineChartData {
 export interface ComputeData {
   instanceNumber: number;
   environmentType: string;
-  classificationLevel?: string; // missing from AC
+  classificationLevel?: string;
   deployedRegions: string[];
   deployedRegionsOther: string;
   needOrUsageDescription: string;
   entireDuration: string;
-  periodsNeeded: string[]; // missing from AC
+  periodsNeeded: string[];
   operatingSystemAndLicensing: string;
   numberOfVCPUs: string;
   memory: string;
   storageType: string;
   storageAmount: string;
   performanceTier: string;
-  performanceTierOther: string; // missing from AC
+  performanceTierOther: string;
   numberOfInstancesNeeded: string;
 }
 
@@ -295,4 +296,15 @@ export interface ComputeInstanceTableData {
   storage: string;
   classification: string;
   performance: string;
+}
+
+export interface GeneralXaaSData {
+  sysId?: string;
+  classificationLevel?: string;
+  instanceNumber: number;
+  requirementTitle: string;
+  descriptionOfNeed: string;
+  entireDuration: string;
+  periodsNeeded: string[];
+
 }

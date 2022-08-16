@@ -15,7 +15,7 @@
             >
               <p>
                 In the previous section, you specified 
-                <strong>{{ singleClassificationLabel }}</strong> for the 
+                <strong>{{ singleClassificationLevelName }}</strong> for the 
                 classification level of all cloud resources and services. If you 
                 need this within a different level, 
                 <a 
@@ -140,6 +140,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   public classificationLevelsFromStore: ClassificationLevelDTO[] = [];
   public allClassificationLevels:ClassificationLevelDTO[] = [];
+  public singleClassificationLevelName: string | undefined = "";
 
   // used for checkboxes at top of form if multiple 
   public avlClassificationLevelObjects: ClassificationLevelDTO[] = [];
@@ -157,13 +158,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
     this.showDialog = true;
-  }
-
-  public get singleClassificationLabel(): string {
-    if (this.instancesFormData.length && this.instancesFormData[0].labelLong) {
-      return this.instancesFormData[0].labelLong;
-    }
-    return "";
   }
 
   public async buildNewClassificationInstances(): Promise<void> {
@@ -304,8 +298,13 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // if only one classification level selected in Contract Details, set
     // it as "selected" for instance forms
     if (this.avlInstancesLength === 1 && this.avlClassificationLevelObjects[0].sys_id) {
-      const sysId = this.avlClassificationLevelObjects[0].sys_id;
-      this.selectedHeaderLevelSysIds.push(sysId);
+      const classificationObj = this.avlClassificationLevelObjects[0];
+      const sysId = classificationObj.sys_id;
+      if(sysId) {
+        this.selectedHeaderLevelSysIds.push(sysId);
+      }
+      this.singleClassificationLevelName 
+        = buildClassificationLabel(classificationObj, "short");
     }
   }
 

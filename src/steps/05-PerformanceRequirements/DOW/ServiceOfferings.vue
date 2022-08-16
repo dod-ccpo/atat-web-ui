@@ -41,21 +41,17 @@
 
           </div>
         </v-col>
-        <v-col
-          v-else-if="isCompute"
-        >
-          <ComputeForm
-            :computeData.sync="computeData"
+        
+        <v-col v-else-if="isCompute">
+          <ComputeForm 
+            :computeData.sync="computeData" 
+            :isPeriodsDataMissing="isPeriodsDataMissing"
+            :isClassificationDataMissing="isClassificationDataMissing"
           />
         </v-col>
 
-        <v-col
-          v-else-if="isGeneral"
-        >
-          <GeneralXaaS
-            :generalXaaSData.sync="generalXaaSData"
-
-          />
+        <v-col v-else-if="isGeneral">
+          <GeneralXaaS :generalXaaSData.sync="generalXaaSData" />
         </v-col>
 
       </v-row>
@@ -76,7 +72,12 @@ import classificationRequirements from "@/store/classificationRequirements";
 
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 
-import { Checkbox, ComputeData, DOWServiceOffering } from "../../../../types/Global";
+import { 
+  Checkbox, 
+  ComputeData, 
+  DOWServiceOffering, 
+  GeneralXaaSData 
+} from "../../../../types/Global";
 import { getIdText } from "@/helpers";
 
 @Component({
@@ -134,11 +135,13 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     numberOfInstancesNeeded: "1",
   }
 
-  public generalXaaSData: unknown = {
+  public generalXaaSData: GeneralXaaSData = {
+    classificationLevel: "",
+    instanceNumber: 1,
     requirementTitle: "",
     descriptionOfNeed: "",
-    entireDuration: null,
-    periodsNeeded: "",
+    entireDuration: "",
+    periodsNeeded: [],
   };
 
   public showSubtleAlert = false;
