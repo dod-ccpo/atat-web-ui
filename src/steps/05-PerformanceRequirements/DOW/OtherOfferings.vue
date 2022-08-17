@@ -1,39 +1,42 @@
 <template>
-  <v-form ref="serviceOfferingForm">
-    <ComputeForm
-      v-if="isCompute"
-      :computeData.sync="_serviceOfferingData"
-      :firstTimeHere="firstTimeHere"
-      :isClassificationDataMissing="isClassificationDataMissing"
-      :isPeriodsDataMissing="isPeriodsDataMissing"
-      :avlClassificationLevelObjects="avlClassificationLevelObjects"
-      :singleClassificationLevelName="singleClassificationLevelName"
-      :formHasErrors="formHasErrors"
-      :formHasBeenTouched="formHasBeenTouched"
-      :classificationRadioOptions="classificationRadioOptions"
-      :classificationTooltipText="classificationTooltipText"
-      :otherRegionValue="otherRegionValue"
-      :otherPerformanceTierValue="otherPerformanceTierValue"
-      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-      :validateOtherTierNow="validateOtherTierNow"
-      :validateOtherTierOnBlur="validateOtherTierOnBlur"
-      :clearOtherTierValidation="clearOtherTierValidation"
-      @openModal="openModal"
-    />
+  <div>
+    <v-form ref="serviceOfferingForm">
+      <ComputeForm
+        v-if="isCompute"
+        :computeData.sync="_serviceOfferingData"
+        :firstTimeHere="firstTimeHere"
+        :isClassificationDataMissing="isClassificationDataMissing"
+        :isPeriodsDataMissing="isPeriodsDataMissing"
+        :avlClassificationLevelObjects="avlClassificationLevelObjects"
+        :singleClassificationLevelName="singleClassificationLevelName"
+        :formHasErrors="formHasErrors"
+        :formHasBeenTouched="formHasBeenTouched"
+        :classificationRadioOptions="classificationRadioOptions"
+        :classificationTooltipText="classificationTooltipText"
+        :otherRegionValue="otherRegionValue"
+        :otherPerformanceTierValue="otherPerformanceTierValue"
+        :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+        :validateOtherTierNow="validateOtherTierNow"
+        :validateOtherTierOnBlur="validateOtherTierOnBlur"
+        :clearOtherTierValidation="clearOtherTierValidation"
+        @openModal="openModal"
+      />
 
-    <GeneralXaaSForm 
-      v-if="isGeneral"
-      :generalXaaSData.sync="_serviceOfferingData"
-      :firstTimeHere="firstTimeHere"
-      :isClassificationDataMissing="isClassificationDataMissing"
-      :isPeriodsDataMissing="isPeriodsDataMissing"
-      :avlClassificationLevelObjects="avlClassificationLevelObjects"
-      :singleClassificationLevelName="singleClassificationLevelName"
-      :classificationRadioOptions="classificationRadioOptions"
-      :classificationTooltipText="classificationTooltipText"
-      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-      @openModal="openModal"
-    />
+      <GeneralXaaSForm 
+        v-if="isGeneral"
+        :generalXaaSData.sync="_serviceOfferingData"
+        :firstTimeHere="firstTimeHere"
+        :isClassificationDataMissing="isClassificationDataMissing"
+        :isPeriodsDataMissing="isPeriodsDataMissing"
+        :avlClassificationLevelObjects="avlClassificationLevelObjects"
+        :singleClassificationLevelName="singleClassificationLevelName"
+        :classificationRadioOptions="classificationRadioOptions"
+        :classificationTooltipText="classificationTooltipText"
+        :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+        @openModal="openModal"
+      />
+  
+    </v-form>
 
     <ClassificationsModal 
       :showDialog="showDialog"
@@ -46,7 +49,7 @@
       :isIL6Selected.sync="isIL6Selected"
     />
 
-  </v-form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -122,7 +125,7 @@ export default class OtherOfferings extends Vue {
   public otherRegionValue = "OtherRegion";
   public otherPerformanceTierValue = "OtherPerformance";
   public clearOtherTierValidation = false;
-  
+
   public classificationLevelToast: ToastObj = {
     type: "success",
     message: "Classification requirements updated",
@@ -130,16 +133,6 @@ export default class OtherOfferings extends Vue {
     hasUndo: false,
     hasIcon: true,
   };
-
-  // when user selects "YES", remove periods from needed array. 
-  // when user selects "NO", pre-select base period
-  @Watch("_serviceOfferingData.entireDuration")
-  public entireDurationChanged(newVal: string): void {
-    debugger;
-    this._serviceOfferingData.periodsNeeded = newVal === "NO"
-      ? [this.availablePeriodCheckboxItems[0].value]
-      : [];
-  }
 
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
@@ -287,11 +280,12 @@ export default class OtherOfferings extends Vue {
 
   private setErrorMessages(): void {
     this.errorBagValues = Object.values(this.$refs.serviceOfferingForm.errorBag);
-
-    const formChildren = this.$refs.serviceOfferingForm.$children;
+    const formChildren = this.$refs.serviceOfferingForm.$children[0].$children;
     const inputRefs = [
       "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
     ];
+
+    // EJY not validating onload in EntireDuration or DescriptionOfNeed components
 
     formChildren.forEach((child: any) => {
       const refs = child.$refs;
@@ -324,6 +318,7 @@ export default class OtherOfferings extends Vue {
           ) {
             if (this._serviceOfferingData.performanceTierOther === "") {
               this.validateOtherTierOnBlur = true;
+
               this.validateOtherTierNow = true;
             } else {
               this.validateOtherTierOnBlur = false;

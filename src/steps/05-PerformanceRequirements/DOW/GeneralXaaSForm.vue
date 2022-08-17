@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="generalXaaSForm">
+  <div>
     <h1 class="page-header mb-3" tabindex="-1">
       <span v-if="firstTimeHere">
         Let’s gather your requirements for general IaaS, PaaS and SaaS
@@ -87,7 +87,7 @@
       :index="1"
     />
 
-  </v-form>
+  </div>
 </template>
 
 <script lang="ts">

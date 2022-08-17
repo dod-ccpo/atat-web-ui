@@ -119,25 +119,11 @@
       otherEntryType="textfield"
     />
 
-    <v-row class="mt-8">
-      <v-col class="col-md-12 col-lg-9">
-        <ATATTextArea 
-          id="DescriptionOfNeed"
-          label="Description of your anticipated need or usage"
-          :value.sync="_computeData.needOrUsageDescription"
-          :rules="[
-            $validators.required(
-              'Please provide a description for this requirement.'
-            ),
-            $validators.maxLength(
-              300,
-              'Please limit your description to 300 characters or less.'
-            ),
-          ]"
-          maxChars="300"
-        />
-      </v-col>
-    </v-row>
+    <DescriptionOfNeed
+      :anticipatedNeedUsage.sync="_computeData.anticipatedNeedUsage"
+      :index="1"
+      :textAreaWithCounter="true"
+    />
 
     <EntireDuration
       :entireDuration.sync="_computeData.entireDuration"
@@ -270,6 +256,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 
+import DescriptionOfNeed from "./DescriptionOfNeed.vue"
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import EntireDuration from "./EntireDuration.vue"
 
@@ -282,7 +269,6 @@ import {
   SelectData,
 } from "../../../../types/Global";
 
-
 @Component({
   components: {
     ATATAlert,
@@ -292,6 +278,7 @@ import {
     ATATTextArea,
     ATATTextField,
     ATATTooltip,
+    DescriptionOfNeed,
     DOWSubtleAlert,
     EntireDuration,
   }

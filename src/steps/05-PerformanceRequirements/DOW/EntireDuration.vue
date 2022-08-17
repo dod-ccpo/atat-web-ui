@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -95,6 +95,15 @@ export default class EntireDuration extends Vue {
       value: "NO",
     },
   ];
+
+  // when user selects "YES", remove periods from needed array. 
+  // when user selects "NO", pre-select base period
+  @Watch("_entireDuration")
+  public entireDurationChanged(newVal: string): void {
+    this._periodsNeeded = newVal === "NO"
+      ? [this.availablePeriodCheckboxItems[0].value]
+      : [];
+  }
 
 }
 

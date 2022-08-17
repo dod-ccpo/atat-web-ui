@@ -113,7 +113,6 @@ import {
   hasChanges,
 } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import Periods from "@/store/periods";
 
 import _ from "lodash";
 
@@ -151,8 +150,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public headerCheckboxSelectedSysIds: string[] = [];
   public selectedHeaderLevelSysIds: string[] = [];
   public instancesFormData: DOWClassificationInstance[] = [];
-
-  public periods = [{}];
 
   public modalSelectionsOnOpen: string[] = [];
   public openModal(): void {
@@ -348,12 +345,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     }
 
     this.checkSingleClassification();
-
-    // set up PoP periods if not for entire duration
-    const periods = await Periods.loadPeriods();
-    if (periods && periods.length > 0) {
-      this.periods = periods
-    }
 
   }
 
