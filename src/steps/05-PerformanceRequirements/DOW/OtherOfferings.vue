@@ -33,7 +33,6 @@
       :classificationTooltipText="classificationTooltipText"
       :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
       @openModal="openModal"
-
     />
 
     <ClassificationsModal 
@@ -54,19 +53,9 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
-// import ATATAlert from "@/components/ATATAlert.vue";
-// import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-// import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-// import ATATSelect from "@/components/ATATSelect.vue";
-// import ATATTextArea from "@/components/ATATTextArea.vue";
-// import ATATTextField from "@/components/ATATTextField.vue";
-// import ATATTooltip from "@/components/ATATTooltip.vue"
-
-// import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeForm from "./ComputeForm.vue"
 import GeneralXaaSForm from "./GeneralXaaSForm.vue";
-// import EntireDuration from "./EntireDuration.vue"
 
 import Toast from "@/store/toast";
 
@@ -74,7 +63,6 @@ import {
   Checkbox, 
   OtherServiceOfferingData,
   RadioButton,
-  SelectData,
   ToastObj,
 } from "../../../../types/Global";
 
@@ -90,18 +78,9 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
-    // ATATAlert,
-    // ATATCheckboxGroup,
-    // ATATRadioGroup,
-    // ATATSelect,
-    // ATATTextArea,
-    // ATATTextField,
-    // ATATTooltip,
     ClassificationsModal,
     ComputeForm,
     GeneralXaaSForm,
-    // DOWSubtleAlert,
-    // EntireDuration,
   }
 })
 
@@ -121,8 +100,6 @@ export default class OtherOfferings extends Vue {
   @Prop() public isGeneral!: boolean;
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
-  @Prop() public otherOfferingName!: string;
-
 
   public firstTimeHere = false;
   public modalSelectionsOnOpen: string[] = [];
@@ -135,7 +112,17 @@ export default class OtherOfferings extends Vue {
   public avlClassificationLevelObjects: ClassificationLevelDTO[] = [];
   public classificationRadioOptions: RadioButton[] = [];
   public singleClassificationLevelName: string | undefined = "";
-
+  public availablePeriodCheckboxItems: Checkbox[] = [];
+  public formHasBeenTouched = false;
+  public formHasErrors = false;
+  public errorBagValues: boolean[] = []
+  public hasErrorsOnLoad = false;
+  public validateOtherTierNow = false;
+  public validateOtherTierOnBlur = false;
+  public otherRegionValue = "OtherRegion";
+  public otherPerformanceTierValue = "OtherPerformance";
+  public clearOtherTierValidation = false;
+  
   public classificationLevelToast: ToastObj = {
     type: "success",
     message: "Classification requirements updated",
@@ -143,7 +130,6 @@ export default class OtherOfferings extends Vue {
     hasUndo: false,
     hasIcon: true,
   };
-
 
   // when user selects "YES", remove periods from needed array. 
   // when user selects "NO", pre-select base period
@@ -154,12 +140,6 @@ export default class OtherOfferings extends Vue {
       ? [this.availablePeriodCheckboxItems[0].value]
       : [];
   }
-
-  public availablePeriodCheckboxItems: Checkbox[] = [];
-
-  public otherPerformanceTierValue = "OtherPerformance";
-
-  public clearOtherTierValidation = false;
 
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
@@ -264,15 +244,6 @@ export default class OtherOfferings extends Vue {
 
     this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
   }
-
-  public formHasBeenTouched = false;
-  public formHasErrors = false;
-  public errorBagValues: boolean[] = []
-  public hasErrorsOnLoad = false;
-  public validateOtherTierNow = false;
-  public validateOtherTierOnBlur = false;
-
-  public otherRegionValue = "OtherRegion";
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();

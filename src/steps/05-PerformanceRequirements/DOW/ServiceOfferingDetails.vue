@@ -376,13 +376,11 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    debugger;
     return hasChanges(this.instancesFormData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      debugger;
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {
           this.instancesFormData[index].selectedPeriods = [];

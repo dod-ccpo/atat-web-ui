@@ -208,7 +208,6 @@ export interface DOWClassificationInstance {
   selectedPeriods?: DOWPoP[];
   labelLong?: string;
   labelShort?: string;
-  requirementTitle?: string;
 }
 
 export interface DOWServiceOffering {
@@ -225,7 +224,7 @@ export interface DOWServiceOfferingGroup {
   serviceOfferingGroupId: string;
   sequence: number;
   serviceOfferings: DOWServiceOffering[];
-  computeData?: ComputeData[];
+  computeData?: OtherServiceOfferingData[];
 }
 
 export interface fundingIncrement {
