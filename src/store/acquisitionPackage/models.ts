@@ -13,7 +13,8 @@ import {
   RequiredServicesDTO,
   RequirementsCostEstimateDTO,
   SensitiveInformationDTO,
-  CurrentEnvironmentDTO
+  CurrentEnvironmentDTO,
+  EnvironmentInstanceDTO
 } from "@/api/models";
 
 export interface SessionData {
@@ -35,4 +36,5 @@ export interface SessionData {
   requirementsCostEstimate: RequirementsCostEstimateDTO;
   sensitiveInformation: SensitiveInformationDTO;
   currentEnvironment:CurrentEnvironmentDTO;
+  environmentInstance:EnvironmentInstanceDTO;
 }

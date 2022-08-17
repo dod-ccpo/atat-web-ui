@@ -32,6 +32,7 @@ import { ClinAPi } from "./clin";
 import { EDAApi } from "./eda";
 import { CurrentEnvironmentAPI } from "@/api/currentEnvironment";
 import { AggregateApi } from "./aggregate";
+import { EnvironmentInstanceAPI } from "@/api/EnvironmentInstance";
 
 
 export const api = {
@@ -69,6 +70,7 @@ export const api = {
   edaApi: new EDAApi(),
   currentEnvironmentTable: new CurrentEnvironmentAPI(),
   aggregate: new AggregateApi(),
+  environmentInstanceTable: new EnvironmentInstanceAPI(),
 }
 
 export default {

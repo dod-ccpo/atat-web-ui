@@ -29,6 +29,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   classification_level: string;
   required_services: string;
   current_environment: string;
+  environment_instance: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -328,4 +329,23 @@ export interface ClinDTO extends BaseTableDTO {
 export interface EDAResponse {
   success: boolean;
   message: string;
+}
+
+export interface EnvironmentInstanceDTO extends BaseTableDTO {
+  storage_amount: string;
+  storage_type: string;
+  instance_name: string;
+  classification_level: string | ReferenceColumn;
+  number_of_vcpus: string;
+  data_egress_monthly_amount: string;
+  performance_tier: string;
+  pricing_model_expiration: string;
+  csp_region: string;
+  memory_unit: string;
+  storage_unit: string;
+  pricing_model: string;
+  instance_location: string;
+  memory_amount: string;
+  operating_system_licensing: string;
+  data_egress_monthly_unit: string;
 }
