@@ -1,28 +1,22 @@
 import Vue from "vue";
-import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import IncrementalFunding from "./IncrementalFunding.vue";
+import FinancialDetails from "@/store/financialDetails";
+import Periods from "@/store/periods";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../plugins/validation";
+import { SelectData } from "../../../types/Global";
 
 Vue.use(Vuetify);
 
 describe("Testing Incremental Funding Plan", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
-  localVue.use(Vuex);
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
   config.showDeprecationWarnings = false
   Vue.config.silent = true;
-
-  const fundingPlan = {
-    "estimated_task_order_value": "100000",
-    "initial_amount": "0",
-    "remaining_amount": "100000",
-    "remaining_amount_increments": ""
-  };
 
   const fundingIncrements = [
     {
@@ -54,15 +48,6 @@ describe("Testing Incremental Funding Plan", () => {
     },
   ];
 
-  // const quarterSelectData = [
-  //   {"text":"4th QTR FY22","multiSelectOrder":1,"disabled":false,"hidden":false},
-  //   {"text":"1st QTR FY23","multiSelectOrder":2,"disabled":false,"hidden":false},
-  //   {"text":"2nd QTR FY23","multiSelectOrder":3,"disabled":false,"hidden":false},
-  //   {"text":"3rd QTR FY23","multiSelectOrder":4,"disabled":false,"hidden":false},
-  //   {"text":"4th QTR FY23","multiSelectOrder":5,"disabled":false,"hidden":false},
-  //   {"text":"1st QTR FY24","multiSelectOrder":6,"disabled":false,"hidden":false}
-  // ];
-
   const fiscalQuarters = [
     {"text": "4th QTR FY22", "multiSelectOrder": 1, "disabled": false, "hidden": false},
     {"text": "1st QTR FY23", "multiSelectOrder": 2, "disabled": false, "hidden": false},
@@ -79,17 +64,15 @@ describe("Testing Incremental Funding Plan", () => {
       attachTo: document.body,
       localVue,
       vuetify,
-      // mocks: {
-      //   $store: {
-      //     FinancialDetails: {
-      //       fundingIncrements: fundingIncrements,
-      //     }
-      //   },
-      // },
-      // propsData: {
-      //   fundingIncrements: fundingIncrements
-      // }
     });
+
+    //resetting store values that are Changed
+    //modified during tests
+    FinancialDetails.setEstimatedTaskOrderValue("");
+    FinancialDetails.setIFPData({
+      initialFundingIncrementStr: "",
+      fundingIncrements: []
+    })
   });
 
   describe("Initialization....", () => {
@@ -100,8 +83,72 @@ describe("Testing Incremental Funding Plan", () => {
 
   describe("Method Testing...", () => {
 
-    it("loadOnEnter() initializes data including funding increments", async () => {
-      wrapper.vm.loadOnEnter()
+    it("loadOnEnter() - sets store.FinancialDetails.setEstimatedTaskOrderValue to ensure " +
+        " store.FinancialDetails.setEstimatedTaskOrderValue === data.costEstimate", 
+    async () => {
+      const _costEstimate = "1000000";
+      // set necessary store data
+      FinancialDetails.setEstimatedTaskOrderValue(_costEstimate);
+      await wrapper.vm.loadOnEnter();
+      expect(wrapper.vm.$data.costEstimate).toBe(parseInt(_costEstimate));
+    });
+
+
+    it("loadOnEnter() - sets store.FinancialDetails.setIFPData so that the first selectedQuarter " +
+      " is present in store.FinancialDetails.setIFPData.fundingIncrements[]",
+    async () => {
+      //set necessary store data
+      FinancialDetails.setIFPData({
+        initialFundingIncrementStr: "1.00",
+        fundingIncrements: [
+          {
+            text: "4th QTR FY22",
+            amt: "1.01",
+            order: 1,
+            sysId: "id_01",
+            qtrOrder: 1, 
+            hasPeriodGap: false,            
+          }
+        ]
+      });
+      wrapper.setData({
+        fiscalQuarters: fiscalQuarters,
+      })
+
+      await wrapper.vm.loadOnEnter();
+
+      //retrieve $store.FinancialDetails.loadIFPData().fundingIncrements[0]
+      const _ifpFundingIncText = (await FinancialDetails.loadIFPData()).fundingIncrements[0].text;
+      expect(wrapper.vm.selectedQuarters[0].text).toBe(_ifpFundingIncText)
+    });
+
+    it("saveOnLeave() sets data.hasValidatedOnContinue===false to ensure that " + 
+       "data.validateOnContinue() is called " +
+       "and set data.hasValidatedOnContinue===true", async () => {
+      wrapper.setData({
+        hasValidatedOnContinue: false,
+      })
+      await wrapper.vm.saveOnLeave();
+      expect(wrapper.vm.$data.hasValidatedOnContinue).toBe(true);
+    });
+
+    it("saveOnLeave() sets data.hasValidatedOnContinue===true to ensure that " + 
+       "data.allowContinue===true", async () => {
+      wrapper.setData({
+        hasValidatedOnContinue: true,
+      })
+      await wrapper.vm.saveOnLeave();
+      expect(wrapper.vm.$data.allowContinue).toBe(true);
+    });
+
+    it("saveOnLeave() sets data.hasValidatedOnContinue===true && fundingIncrements " + 
+      "to set data.allowContinue===true && successfully sort fundingIncrements", async () => {
+      wrapper.setData({
+        hasValidatedOnContinue: true,
+        fundingIncrements: fundingIncrements
+      })
+      await wrapper.vm.saveOnLeave();
+      expect(wrapper.vm.$data.allowContinue).toBe(true);
     });
 
     it("initializeIncrements() initializes funding increments (fiscal quarters) " +
@@ -114,6 +161,57 @@ describe("Testing Incremental Funding Plan", () => {
 
       expect(wrapper.vm.$data.fiscalQuarters.length).toBe(6);
     });
+
+    it("hasChanges() - setting different currentData and savedData object" +
+        "to set hasChanges to true", async () => {
+      wrapper.setData({
+        currentData: {
+          initialFundingIncrementStr: "$1.00",
+          fundingIncrements: [
+            {
+              text: "text01",
+              amt: "1.01",
+              order: 1,
+              sysId: "id_01",
+              qtrOrder: 1, 
+              hasPeriodGap: false,            
+            }
+          ]
+        },
+        savedData: {
+          initialFundingIncrementStr: "$2.00",
+          fundingIncrements: [
+            {
+              text: "text01",
+              amt: "1.01",
+              order: 1,
+              sysId: "id_01",
+              qtrOrder: 1, 
+              hasPeriodGap: false,            
+            }
+          ]
+        }
+      });
+      const _hasChanged = wrapper.vm.hasChanged();
+      expect(_hasChanged).toBe(true);
+    });
+
+    it("hasChanges() - setting same currentData and savedData object" +
+        "to set hasChanges to false", async () => {
+      wrapper.setData({
+        currentData: {
+          initialFundingIncrementStr: "1.00",
+          fundingIncrements: []
+        },
+        savedData: {
+          initialFundingIncrementStr: "1.00",
+          fundingIncrements: []
+        }
+      });
+      const _hasChanged = wrapper.vm.hasChanged();
+      expect(_hasChanged).toBe(false);
+    });
+
 
     it("quarterChange() - change dropdown value for funding increment's " +
         "selected quarter", async () => {
@@ -207,61 +305,28 @@ describe("Testing Incremental Funding Plan", () => {
     });
   });
 
-  it("validateOnContinue() - determine if form should validate on Continue based " +
-      "on several factors", async () => {
+
+  it("validateOnContinue() - sets valid outOfRangeIndex with selectedQuarters " +
+      "so that data.allowContinue will set to false", async () => {
     await wrapper.setData({
-      initialAmountStr: "",
-      allowContinue: false,
       hasValidatedOnContinue: false,
-      outOfRangeIndex: null,
-      costEstimate: 1000,
-      fundingIncrements: fundingIncrements
-    })
-
-    // if underfunded, do not allow to continue
-    await wrapper.vm.validateOnContinue();
-    expect(wrapper.vm.$data.allowContinue).toBe(false);
-
-    // if overfunded, do not allow to continue
-    wrapper.setData({
-      fundingIncrements: [
-        {
-          "text": "4th QTR FY22",
-          "amt": "2,000.00",
-          "order": 1,
-          "sysId": "",
-          "qtrOrder": 1,
-          "hasPeriodGap": false,
-        }
-      ],
-    });
-    await wrapper.vm.validateOnContinue();
-    expect(wrapper.vm.$data.allowContinue).toBe(false);
-
-    // if last funding increment period is out of PoP range
-    await wrapper.setData({
       outOfRangeIndex: 1,
-    });
+      selectedQuarters: [
+        { multiSelectOrder: 1, text: "4th QTR FY22"},
+        { multiSelectOrder: 2, text: "2nd QTR FY23"},
+      ]
+    })
     await wrapper.vm.validateOnContinue();
     expect(wrapper.vm.$data.allowContinue).toBe(false);
+  });
 
-    await wrapper.setData({
-      outOfRangeIndex: null,
-      fundingIncrements: [
-        {
-          "text": "4th QTR FY22",
-          "amt": "1,000.00",
-          "order": 1,
-          "sysId": "",
-          "qtrOrder": 1,
-          "hasPeriodGap": false,
-        }
-      ],
-    });
+  it("validateOnContinue() - using default values so that  " +
+  "data.allowContinue will set to true", async () => {
     await wrapper.vm.validateOnContinue();
     expect(wrapper.vm.$data.allowContinue).toBe(true);
-
   });
+  
+
   it("checkIfHasPeriodGap() - returns true if there is a gap ", async () => {
     await wrapper.setData({
       fundingIncrements: [
@@ -401,74 +466,91 @@ describe("Testing Incremental Funding Plan", () => {
 
   });
 
-  it("getFiscalQuarters() gets fiscal quarters for funding increment dropdowns", async () => {
+  it("getFiscalQuarters() - sets data.fiscalQuarters=[] so that data.fiscalQuarters will be "+
+      "automatically populated with the 6 default options", async () => {
     await wrapper.setData({
-      fundingIncrements: [],
-      fiscalQuarters: [],
-      selectedQuarters: [],
+      fiscalQuarters: [
+        {"text": "4th QTR FY22", "multiSelectOrder": 1, "disabled": false, "hidden": false},
+      ],
     });
-    // await wrapper.vm.getFiscalQuarters(0);
-    await wrapper.vm.loadOnEnter();
-    expect(wrapper.vm.$data.quarterSelectData.length).toBe(1);
-    expect(wrapper.vm.$data.fundingIncrements.length).toBe(1);
-
-    let args = {
-      newSelectedValue: {
-        multiSelectOrder: 2,
-        text: "1st QTR FY23",
-      },
-      selectedBeforeChange: {
-        multiSelectOrder: 1,
-        text: "4th QTR FY22",
-      }
-    }
-
-    await wrapper.vm.quarterChange(args);
-    expect(wrapper.vm.$data.fundingIncrements[0].text).toEqual("1st QTR FY23");
-    expect(wrapper.vm.$data.fundingIncrements[0].qtrOrder).toEqual(2);
-
-    await wrapper.vm.addIncrement();
-    expect(wrapper.vm.$data.quarterSelectData.length).toBe(2);
-    expect(wrapper.vm.$data.fundingIncrements.length).toBe(2);
-
-    args = {
-      newSelectedValue: {
-        multiSelectOrder: 6,
-        text: "1st QTR FY24",
-      },
-      selectedBeforeChange: {
-        multiSelectOrder: 3,
-        text: "2nd QTR FY23",
-      }
-    }
-
-    await wrapper.vm.quarterChange(args);
-    expect(wrapper.vm.$data.fundingIncrements[1].text).toEqual("1st QTR FY24");
-    expect(wrapper.vm.$data.fundingIncrements[1].qtrOrder).toEqual(6);
-
-    args = {
-      newSelectedValue: {
-        multiSelectOrder: 1,
-        text: "4th QTR FY22",
-      },
-      selectedBeforeChange: {
-        multiSelectOrder: 2,
-        text: "1st QTR FY23",
-      }
-    }
-
-    await wrapper.vm.quarterChange(args);
-    expect(wrapper.vm.$data.fundingIncrements[0].text).toEqual("4th QTR FY22");
-    expect(wrapper.vm.$data.fundingIncrements[0].qtrOrder).toEqual(1);
-
-    // expect(await wrapper.vm.$data.outOfRangeIndex).toBe(0);
-
+    wrapper.vm.$data.fiscalQuarters = [];
+    await wrapper.vm.getFiscalQuarters(0);
+    expect(wrapper.vm.$data.fiscalQuarters.length).toBe(6);
   });
 
+  it("getFiscalQuarters() sets data.fundingIncrements=[] so that function returns clone of " +
+      "data.fiscalQuarters", async () => {
+    await wrapper.setData({
+      fundingIncrements: [],
+      fiscalQuarters: [
+        {"text": "4th QTR FY22", "multiSelectOrder": 1, "disabled": false, "hidden": false},
+      ],
+    });
+    const _getFiscalQuarters = await wrapper.vm.getFiscalQuarters(0);
+    expect(_getFiscalQuarters).toEqual(wrapper.vm.$data.quarterSelectData[0]);
+  });
+
+  it("getFiscalQuarters() sets appropriate data to ensure returned  " +
+      "fiscal quarter dropdown listing is next dropdown listing marked " +
+      "disabled===false" , async () => {
+    await wrapper.setData({
+      fundingIncrements: [
+        {"text": "4th QTR FY22"},
+        {"text": "1st QTR FY23"},
+        {"text": "2nd QTR FY23"},
+      ],
+      fiscalQuarters: [
+        {"text": "4th QTR FY22", "multiSelectOrder": 1, "disabled": false, "hidden": false},
+        {"text": "1st QTR FY23", "multiSelectOrder": 2, "disabled": false, "hidden": false},
+        {"text": "2nd QTR FY23", "multiSelectOrder": 3, "disabled": false, "hidden": false},
+      ],
+      maxAllowedIncrements: 4,
+    });
+    const _getFiscalQuarters = await wrapper.vm.getFiscalQuarters(1);
+    expect (_getFiscalQuarters.filter((item:SelectData)=>item.disabled===false)).toHaveLength(1);
+  });
+
+
+  it("calcAmounts() > sets necessary data to ensure data.isFundingMet === false " , 
+    async () => {
+      await wrapper.setData({
+        fundingIncrements: [
+          {"amt": "1.00"},
+          {"amt": "2.00"},
+          {"amt": "3.00"},
+        ],
+        costEstimate: "20.00",
+        initialAmountStr: "10.00"
+      });
+      await wrapper.vm.calcAmounts("");
+      // isFundingMet => 20 > 10 + 1 + 2 + 3
+      expect(wrapper.vm.isFundingMet).toBe(false);
+    });
+
+  it("calcAmounts() > sets necessary data to ensure data.isFundingMet === true " , 
+    async () => {
+      await wrapper.setData({
+        fundingIncrements: [
+          {"amt": "1.00"},
+          {"amt": "2.00"},
+          {"amt": "3.00"},
+        ],
+        costEstimate: "12.00",
+        initialAmountStr: "10.00"
+      });
+
+      await wrapper.vm.calcAmounts("");
+      // isFundingMet => 12 > 10 + 1 + 2 + 3
+      expect(wrapper.vm.isFundingMet).toBe(true);
+    });
+
   it("focusInput() puts focus into an increment amount text input", async () => {
-    wrapper.vm.focusInput(0);
-    const textbox = await wrapper.findComponent({ref: "Amount0"});
-    expect(textbox.exists()).toBe(true);
+    jest.useFakeTimers();
+    const idx = 0;
+    wrapper.vm.focusInput(idx);
+    jest.advanceTimersByTime(700);
+    const textbox = document.getElementById("Amount" + idx + "_text_field") as HTMLInputElement
+    expect(textbox).toBeInTheDocument();
   });
 
   it("deleteFundingIncrement() removes selected funding increment", async () => {
