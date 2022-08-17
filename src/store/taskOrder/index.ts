@@ -78,14 +78,13 @@ export class TaskOrderStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(acquisitionPackageId: string): Promise<void> {
-    if (this.initialized) {
-      const sessionRestored = retrieveSession(ATAT_TASK_ORDER_KEY);
-      if (sessionRestored) {
-        this.setStoreData(sessionRestored);
-        this.setInitialized(true);
-      }
-    }
-    if (!this.initialized) {
+
+    const sessionRestored = retrieveSession(ATAT_TASK_ORDER_KEY);
+    if (sessionRestored) {
+      this.setStoreData(sessionRestored);
+      this.setInitialized(true);
+      // this.setTaskOrder(sessionRestored);
+    }else{
       const taskOrder = {
         ...initial,
         acquisition_package: acquisitionPackageId,
@@ -124,6 +123,15 @@ export class TaskOrderStore extends VuexModule {
 
   @Action
   public async isIncrementallyFunded(): Promise<string> {
+    if (!this.value.sys_id) {
+      const sessionData = retrieveSession(ATAT_TASK_ORDER_KEY);
+      if (sessionData){
+        const TOObj = JSON.parse(sessionData);
+        if (Object.prototype.hasOwnProperty.call(TOObj, "taskOrder") && !this.taskOrder) {
+          this.setTaskOrder(TOObj.taskOrder);
+        }
+      }
+    }
     return this.value.incrementally_funded;
   }
 
