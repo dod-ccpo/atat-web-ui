@@ -1,7 +1,7 @@
 <template>
   <div>
     <ATATRadioGroup
-      class="copy-max-width mb-10 mt-4"
+      class="copy-max-width mb-10 mt-0"
       ref="NeededForEntireDuration"
       :id="'EntireDuration_' + (index + 1)"
       legend="Is this instance needed for the entire duration of your task order?"
@@ -79,7 +79,7 @@ export default class EntireDuration extends Vue {
   @PropSync("entireDuration") public _entireDuration?: string;
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public availablePeriodCheckboxItems!: Checkbox[];
-  @Prop() public index!: string;
+  @Prop() public index!: number;
 
   public routeNames = routeNames;
 

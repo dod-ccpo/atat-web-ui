@@ -21,7 +21,7 @@ import {
   DOWServiceOfferingGroup, 
   DOWServiceOffering, 
   DOWClassificationInstance,
-  ComputeData
+  OtherServiceOfferingData,
 } from "../../../types/Global";
 
 import _, { differenceWith, first, last } from "lodash";
@@ -572,7 +572,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   currentComputeInstanceNumber = 0;
 
-  emptyComputeInstance: ComputeData = {
+  emptyComputeInstance: OtherServiceOfferingData = {
     instanceNumber: this.currentComputeInstanceNumber,
     environmentType: "",
     classificationLevel: "",
@@ -589,6 +589,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     performanceTier: "",
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
+    requirementTitle: "",
+    descriptionOfNeed: "",  
   }
 
   @Action
@@ -617,7 +619,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action
-  public async getComputeInstance(instanceNumber: number): Promise<ComputeData> {
+  public async getComputeInstance(instanceNumber: number): Promise<OtherServiceOfferingData> {
     const computeData = this.computeObject.computeData;
     if (computeData && computeData.length) {
       const instance = computeData.find(
@@ -643,12 +645,12 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action
-  public async setComputeData(computeData: ComputeData): Promise<void> {
+  public async setComputeData(computeData: OtherServiceOfferingData): Promise<void> {
     this.doSetComputeData(computeData);
   }
 
   @Mutation
-  public async doSetComputeData(computeData: ComputeData): Promise<void> {
+  public async doSetComputeData(computeData: OtherServiceOfferingData): Promise<void> {
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
@@ -685,7 +687,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action
-  public async getComputeInstances(): Promise<ComputeData[]> {
+  public async getComputeInstances(): Promise<OtherServiceOfferingData[]> {
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );

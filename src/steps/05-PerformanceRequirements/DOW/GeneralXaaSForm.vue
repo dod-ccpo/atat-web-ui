@@ -11,7 +11,7 @@
 
     <p 
       class="copy-max-width"
-      :class="showSubtleAlert ? 'mb-4' : 'mb-10'"
+      :class="isClassificationDataMissing || isPeriodsDataMissing ? 'mb-4' : 'mb-10'"
     >
       <span v-if="firstTimeHere">
         In this section, we will collect details about any third-party marketplace 
@@ -36,19 +36,19 @@
     </p>
     
     <DOWSubtleAlert
-      v-show="showSubtleAlert"
+      v-show="isClassificationDataMissing || isPeriodsDataMissing"
       :isClassificationDataMissing="isClassificationDataMissing"
       :isPeriodsDataMissing="isPeriodsDataMissing"
       class="copy-max-width"
     />
 
     <ATATTextField 
-      :id="'RequirementTitle_' + (index + 1)"
+      :id="'RequirementTitle'"
       label="Requirement title"
       class="_input-max-width mb-10"
       tooltipText="Enter a title that briefly describes this IaaS, 
         PaaS or SaaS requirement."
-      :value="requirementTitle"
+      :value="_generalXaaSData.requirementTitle"
     />
 
     <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
@@ -73,38 +73,63 @@
       >Update your Classification Requirements</a>
     </div>
 
+    <DescriptionOfNeed
+      :anticipatedNeedUsage.sync="_generalXaaSData.anticipatedNeedUsage"
+      :index="1"
+      :textAreaWithCounter="true"
+    />
+
+    <EntireDuration
+      :entireDuration.sync="_generalXaaSData.entireDuration"
+      :periodsNeeded.sync="_generalXaaSData.periodsNeeded"
+      :isPeriodsDataMissing="isPeriodsDataMissing"
+      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+      :index="1"
+    />
 
   </v-form>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
+
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATTextArea from "@/components/ATATTextArea.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
+
+import DescriptionOfNeed from "./DescriptionOfNeed.vue"
+import DOWSubtleAlert from "./DOWSubtleAlert.vue";
+import EntireDuration from "./EntireDuration.vue"
 
 import { ClassificationLevelDTO } from "@/api/models";
 
-import { 
-  Checkbox, 
-  OtherServiceOfferingData,
-  RadioButton,
-} from "../../../../types/Global";
+import { Checkbox, OtherServiceOfferingData, RadioButton } from "../../../../types/Global";
 
-import { 
-  buildClassificationCheckboxList, 
-  buildClassificationLabel 
-} from "@/helpers";
-import DescriptionOfWork from "@/store/descriptionOfWork";
+@Component({
+  components: {
+    ATATRadioGroup,
+    ATATTextArea,
+    ATATTextField,
+    DescriptionOfNeed,
+    DOWSubtleAlert,
+    EntireDuration,
+  }
+})
 
-@Component({})
-
-
-export default class GeneralXaaS extends Vue {
+export default class GeneralXaaSForm extends Vue {
   @PropSync("generalXaaSData") public _generalXaaSData!: OtherServiceOfferingData;
-
-
-
-
-
+  @Prop() public firstTimeHere!: boolean;
+  @Prop() public isClassificationDataMissing!: boolean;
+  @Prop() public isPeriodsDataMissing!: boolean;
+  @Prop() public avlClassificationLevelObjects!: ClassificationLevelDTO[];
+  @Prop() public singleClassificationLevelName!: string | undefined;
+  @Prop() public classificationRadioOptions!: RadioButton[];
+  @Prop() public classificationTooltipText!: string;
+  @Prop() public availablePeriodCheckboxItems!: Checkbox[];
+  public openModal(): void {
+    this.$emit("openModal");
+  }
 
 }
 

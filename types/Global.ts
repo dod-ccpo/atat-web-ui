@@ -284,8 +284,8 @@ export interface OtherServiceOfferingData {
   performanceTier: string;
   performanceTierOther: string;
   numberOfInstancesNeeded: string;
-  requirementTitle: string;
-  descriptionOfNeed: string;  
+  requirementTitle?: string;
+  descriptionOfNeed?: string;  
 }
 
 export interface ComputeInstanceTableData {

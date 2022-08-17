@@ -64,7 +64,6 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import OtherOfferings from "./OtherOfferings.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import GeneralXaaS from "./GeneralXaaS.vue";
 import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 
@@ -81,7 +80,6 @@ import { getIdText } from "@/helpers";
   components: {
     ATATCheckboxGroup,
     DOWSubtleAlert,
-    GeneralXaaS,
     OtherOfferings,
   }
 })

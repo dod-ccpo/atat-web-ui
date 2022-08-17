@@ -125,7 +125,6 @@
           id="DescriptionOfNeed"
           label="Description of your anticipated need or usage"
           :value.sync="_computeData.needOrUsageDescription"
-          :textAreaWithCounter="true"
           :rules="[
             $validators.required(
               'Please provide a description for this requirement.'
@@ -145,7 +144,7 @@
       :periodsNeeded.sync="_computeData.periodsNeeded"
       :isPeriodsDataMissing="isPeriodsDataMissing"
       :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-      index="1"
+      :index="1"
     />
 
     <hr />
@@ -262,7 +261,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-import { ClassificationLevelDTO } from "@/api/models";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -274,6 +272,8 @@ import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import EntireDuration from "./EntireDuration.vue"
+
+import { ClassificationLevelDTO } from "@/api/models";
 
 import { 
   Checkbox, 
@@ -309,6 +309,7 @@ export default class ComputeForm extends Vue {
   @Prop() public formHasErrors!: boolean;
   @Prop() public formHasBeenTouched!: boolean;
   @Prop() public classificationRadioOptions!: RadioButton[];
+  @Prop() public classificationTooltipText!: string;
   @Prop() public availablePeriodCheckboxItems!: Checkbox[];
   @Prop() public validateOtherTierNow!: boolean;
   @Prop() public validateOtherTierOnBlur!: boolean;
@@ -403,9 +404,6 @@ export default class ComputeForm extends Vue {
     resources are located, e.g., within the continental U.S. (CONUS) or outside of the 
     continental U.S. (OCONUS). If you need a certain location, select Other and enter 
     your specifications.`;
-
-  public classificationTooltipText = `The levels listed below are based on the overall 
-    classification requirements you previously specified.`;
 
   public operatingSystemTooltipText = `Specify the type of OS you want to run your 
     instance on. Provide details about your licensing scenario, to include the number 

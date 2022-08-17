@@ -11,6 +11,7 @@
       :formHasErrors="formHasErrors"
       :formHasBeenTouched="formHasBeenTouched"
       :classificationRadioOptions="classificationRadioOptions"
+      :classificationTooltipText="classificationTooltipText"
       :otherRegionValue="otherRegionValue"
       :otherPerformanceTierValue="otherPerformanceTierValue"
       :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
@@ -18,6 +19,21 @@
       :validateOtherTierOnBlur="validateOtherTierOnBlur"
       :clearOtherTierValidation="clearOtherTierValidation"
       @openModal="openModal"
+    />
+
+    <GeneralXaaSForm 
+      v-if="isGeneral"
+      :generalXaaSData.sync="_serviceOfferingData"
+      :firstTimeHere="firstTimeHere"
+      :isClassificationDataMissing="isClassificationDataMissing"
+      :isPeriodsDataMissing="isPeriodsDataMissing"
+      :avlClassificationLevelObjects="avlClassificationLevelObjects"
+      :singleClassificationLevelName="singleClassificationLevelName"
+      :classificationRadioOptions="classificationRadioOptions"
+      :classificationTooltipText="classificationTooltipText"
+      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+      @openModal="openModal"
+
     />
 
     <ClassificationsModal 
@@ -49,6 +65,7 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 // import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeForm from "./ComputeForm.vue"
+import GeneralXaaSForm from "./GeneralXaaSForm.vue";
 // import EntireDuration from "./EntireDuration.vue"
 
 import Toast from "@/store/toast";
@@ -82,6 +99,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
     // ATATTooltip,
     ClassificationsModal,
     ComputeForm,
+    GeneralXaaSForm,
     // DOWSubtleAlert,
     // EntireDuration,
   }
@@ -214,6 +232,9 @@ export default class OtherOfferings extends Vue {
     if (this.isCompute) {
       const computeObj = DescriptionOfWork.computeObject;
       this.firstTimeHere = !computeObj.computeData || computeObj.computeData.length === 0;
+    } else if (this.isGeneral) {
+      // EJY need logic here
+      this.firstTimeHere = true;
     }
 
     // get classification levels selected in step 4 Contract Details
@@ -352,6 +373,9 @@ export default class OtherOfferings extends Vue {
       });
     });
   }
+
+  public classificationTooltipText = `The levels listed below are based on the overall 
+    classification requirements you previously specified.`;
 
 }
 
