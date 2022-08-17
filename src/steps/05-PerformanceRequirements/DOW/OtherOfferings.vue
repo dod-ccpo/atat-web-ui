@@ -1,0 +1,358 @@
+<template>
+  <v-form ref="serviceOfferingForm">
+    <ComputeForm
+      v-if="isCompute"
+      :computeData.sync="_serviceOfferingData"
+      :firstTimeHere="firstTimeHere"
+      :isClassificationDataMissing="isClassificationDataMissing"
+      :isPeriodsDataMissing="isPeriodsDataMissing"
+      :avlClassificationLevelObjects="avlClassificationLevelObjects"
+      :singleClassificationLevelName="singleClassificationLevelName"
+      :formHasErrors="formHasErrors"
+      :formHasBeenTouched="formHasBeenTouched"
+      :classificationRadioOptions="classificationRadioOptions"
+      :otherRegionValue="otherRegionValue"
+      :otherPerformanceTierValue="otherPerformanceTierValue"
+      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+      :validateOtherTierNow="validateOtherTierNow"
+      :validateOtherTierOnBlur="validateOtherTierOnBlur"
+      :clearOtherTierValidation="clearOtherTierValidation"
+      @openModal="openModal"
+    />
+
+    <ClassificationsModal 
+      :showDialog="showDialog"
+      @cancelClicked="modalCancelClicked"
+      @okClicked="classificationLevelsChanged"
+      :modalSelectedOptions.sync="modalSelectedOptions"
+      :modalSelectionsOnOpen="modalSelectionsOnOpen"
+      :modalCheckboxItems="modalCheckboxItems"
+      :IL6SysId="IL6SysId"
+      :isIL6Selected.sync="isIL6Selected"
+    />
+
+  </v-form>
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+
+// import ATATAlert from "@/components/ATATAlert.vue";
+// import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+// import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+// import ATATSelect from "@/components/ATATSelect.vue";
+// import ATATTextArea from "@/components/ATATTextArea.vue";
+// import ATATTextField from "@/components/ATATTextField.vue";
+// import ATATTooltip from "@/components/ATATTooltip.vue"
+
+// import DOWSubtleAlert from "./DOWSubtleAlert.vue";
+import ClassificationsModal from "./ClassificationsModal.vue";
+import ComputeForm from "./ComputeForm.vue"
+// import EntireDuration from "./EntireDuration.vue"
+
+import Toast from "@/store/toast";
+
+import { 
+  Checkbox, 
+  OtherServiceOfferingData,
+  RadioButton,
+  SelectData,
+  ToastObj,
+} from "../../../../types/Global";
+
+import ClassificationRequirements from "@/store/classificationRequirements";
+import { ClassificationLevelDTO } from "@/api/models";
+
+import { 
+  buildClassificationCheckboxList, 
+  buildClassificationLabel,
+  createPeriodCheckboxItems,
+} from "@/helpers";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+
+@Component({
+  components: {
+    // ATATAlert,
+    // ATATCheckboxGroup,
+    // ATATRadioGroup,
+    // ATATSelect,
+    // ATATTextArea,
+    // ATATTextField,
+    // ATATTooltip,
+    ClassificationsModal,
+    ComputeForm,
+    // DOWSubtleAlert,
+    // EntireDuration,
+  }
+})
+
+export default class OtherOfferings extends Vue {
+  $refs!: {
+    serviceOfferingForm: Vue & {
+      resetValidation: () => void;
+      errorBucket: string[];
+      reset: () => void;
+      validate: () => boolean;
+      errorBag: Record<number, boolean>;
+    },
+  };
+
+  @PropSync("serviceOfferingData") public _serviceOfferingData!: OtherServiceOfferingData;
+  @Prop() public isCompute!: boolean;
+  @Prop() public isGeneral!: boolean;
+  @Prop() public isPeriodsDataMissing!: boolean;
+  @Prop() public isClassificationDataMissing!: boolean;
+  @Prop() public otherOfferingName!: string;
+
+
+  public firstTimeHere = false;
+  public modalSelectionsOnOpen: string[] = [];
+  public showDialog = false;
+  public modalSelectedOptions: string[] = [];
+  public modalCheckboxItems: Checkbox[] = [];
+  public isIL6Selected = false;
+  public IL6SysId = "";
+  public allClassificationLevels:ClassificationLevelDTO[] = [];
+  public avlClassificationLevelObjects: ClassificationLevelDTO[] = [];
+  public classificationRadioOptions: RadioButton[] = [];
+  public singleClassificationLevelName: string | undefined = "";
+
+  public classificationLevelToast: ToastObj = {
+    type: "success",
+    message: "Classification requirements updated",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  };
+
+
+  // when user selects "YES", remove periods from needed array. 
+  // when user selects "NO", pre-select base period
+  @Watch("_serviceOfferingData.entireDuration")
+  public entireDurationChanged(newVal: string): void {
+    debugger;
+    this._serviceOfferingData.periodsNeeded = newVal === "NO"
+      ? [this.availablePeriodCheckboxItems[0].value]
+      : [];
+  }
+
+  public availablePeriodCheckboxItems: Checkbox[] = [];
+
+  public otherPerformanceTierValue = "OtherPerformance";
+
+  public clearOtherTierValidation = false;
+
+  public openModal(): void {
+    this.modalSelectionsOnOpen = this.modalSelectedOptions;
+    this.showDialog = true;
+  }
+
+  public modalCancelClicked(): void {
+    this.showDialog = false;
+  }
+
+  public setAvlClassificationLevels(): void {
+    this.classificationRadioOptions 
+      = this.createCheckboxOrRadioItems(this.avlClassificationLevelObjects, "Radio");
+  }
+
+  public checkSingleClassification(): void {
+    // if only one classification level selected in Contract Details or the 
+    // classifications modal, set it as the "selected" classification level
+    if (
+      this.avlClassificationLevelObjects.length === 1
+      && this.avlClassificationLevelObjects[0].sys_id
+    ) {
+      const classificationObj = this.avlClassificationLevelObjects[0];
+      this._serviceOfferingData.classificationLevel = classificationObj.sys_id;
+      this.singleClassificationLevelName 
+        = buildClassificationLabel(classificationObj, "short");
+    }
+  }
+
+  public async classificationLevelsChanged(): Promise<void> {
+    this.showDialog = false;
+    this.avlClassificationLevelObjects = [];
+    this.modalSelectedOptions.forEach((sysId) => {
+      const classififcationObj = this.allClassificationLevels.find(obj => obj.sys_id === sysId);
+      if (classififcationObj) {
+        this.avlClassificationLevelObjects.push(classififcationObj);
+      }
+    });
+    this.setAvlClassificationLevels();
+
+    if (this.avlClassificationLevelObjects.length === 1) {
+      this.checkSingleClassification();
+    } else if (this._serviceOfferingData.classificationLevel) {
+      // if the classification level that was selected was removed via the modal,
+      // clear out this._serviceOfferingData.classificationLevel
+      const selectedSysId = this._serviceOfferingData.classificationLevel;
+      if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
+        this._serviceOfferingData.classificationLevel = "";
+      }
+    }
+
+    await ClassificationRequirements.setSelectedClassificationLevels(
+      this.avlClassificationLevelObjects
+    );
+
+    Toast.setToast(this.classificationLevelToast);
+  }
+
+  private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
+    idSuffix = idSuffix || "";
+    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix, false, false) : [];
+  }
+
+  public async setAvailableClassificationLevels(): Promise<void> {
+    this.avlClassificationLevelObjects 
+      = await ClassificationRequirements.getSelectedClassificationLevels();
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    if (this.isCompute) {
+      const computeObj = DescriptionOfWork.computeObject;
+      this.firstTimeHere = !computeObj.computeData || computeObj.computeData.length === 0;
+    }
+
+    // get classification levels selected in step 4 Contract Details
+    this.avlClassificationLevelObjects 
+      = await ClassificationRequirements.getSelectedClassificationLevels();
+    // set checked items in modal to classification levels selected in step 4 Contract Details
+    if (this.avlClassificationLevelObjects) {
+      this.avlClassificationLevelObjects.forEach((val) => {
+        this.modalSelectedOptions.push(val.sys_id || "")
+      });
+      this.checkSingleClassification();
+    }
+
+    // set available classification levels for radio buttons if > 1 level selected
+    await this.setAvailableClassificationLevels();
+    // get list of all possible classification levels to generate checkbox list and labels
+    this.allClassificationLevels
+      = await ClassificationRequirements.getAllClassificationLevels();
+    this.modalCheckboxItems 
+      = this.createCheckboxOrRadioItems(this.allClassificationLevels, "Modal");
+    const IL6Checkbox 
+      = this.modalCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
+    this.IL6SysId = IL6Checkbox?.value || "";
+    
+    this.setAvlClassificationLevels();
+    this.checkSingleClassification();
+
+    this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
+  }
+
+  public formHasBeenTouched = false;
+  public formHasErrors = false;
+  public errorBagValues: boolean[] = []
+  public hasErrorsOnLoad = false;
+  public validateOtherTierNow = false;
+  public validateOtherTierOnBlur = false;
+
+  public otherRegionValue = "OtherRegion";
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+    if (this.isCompute) {
+      this.formHasBeenTouched = DescriptionOfWork.computeInstancesTouched.indexOf(
+        this._serviceOfferingData.instanceNumber) > -1;
+    }
+    if (this.formHasBeenTouched) {
+      // user is editing an existing instance, validate on load
+      await this.validate();
+      this.$nextTick(async () => {
+        this.setErrorMessages();
+      });
+    } else {
+      this.validateOtherTierOnBlur = true;
+    }
+  };
+
+  public updated(): void {
+    const eb = this.$refs.serviceOfferingForm.errorBag;
+    this.errorBagValues = Object.values(eb);
+  }
+
+  @Watch("errorBagValues")
+  public errorBagChange(): void {
+    this.$nextTick(() => {
+      const errorBag = Object.values(this.$refs.serviceOfferingForm.errorBag);
+      this.formHasErrors = errorBag.includes(true);
+    });
+  }
+  
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.serviceOfferingForm as Vue & { validate: () => boolean };
+  }
+
+  public async validate(): Promise<void> {
+    this.$nextTick(() => {
+      this.Form.validate();
+    });
+  }
+
+  private setErrorMessages(): void {
+    this.errorBagValues = Object.values(this.$refs.serviceOfferingForm.errorBag);
+
+    const formChildren = this.$refs.serviceOfferingForm.$children;
+    const inputRefs = [
+      "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
+    ];
+
+    formChildren.forEach((child: any) => {
+      const refs = child.$refs;
+      const keys = Object.keys(refs);
+      keys.forEach((key: string) => {
+
+        if (inputRefs.indexOf(key) > -1) {
+          const childRef: any = child.$refs[key];
+          if (childRef[0]) {
+            if (childRef[0].attrs$["data-group-id"] === "PeriodsCheckboxes_Group"
+              && this._serviceOfferingData.entireDuration.toLowerCase() === "no"
+              && this._serviceOfferingData.periodsNeeded.length === 0
+            ) {
+              child.errorMessages.push(`Please select at least one base or option 
+                period to specify your requirement’s duration level.`);
+            }
+            if (this.isCompute && childRef[0].attrs$["data-group-id"] === "Regions_Group"
+              && this._serviceOfferingData.deployedRegions.indexOf(this.otherRegionValue) > -1
+              && this._serviceOfferingData.deployedRegionsOther === ""
+            ) {
+              child.$refs["atatTextInput"][0].errorMessages.push(
+                'Please enter your other region(s).'
+              );
+            }
+          }
+
+          if (this.isCompute && key === "radioButtonGroup" 
+            && child.$el.attributes.id.value.indexOf("PerformanceTier")
+            && this._serviceOfferingData.performanceTier === this.otherPerformanceTierValue
+          ) {
+            if (this._serviceOfferingData.performanceTierOther === "") {
+              this.validateOtherTierOnBlur = true;
+              this.validateOtherTierNow = true;
+            } else {
+              this.validateOtherTierOnBlur = false;
+              this.clearOtherTierValidation = true;
+            }
+          }
+
+          if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")) {
+            const errorBucket: string[] = childRef.errorBucket;
+            if (errorBucket.length) {
+              this.hasErrorsOnLoad = true;
+              errorBucket.forEach((error) => {
+                child.errorMessages.push(error);
+              });
+            }
+          }
+        }
+      });
+    });
+  }
+
+}
+
+</script>

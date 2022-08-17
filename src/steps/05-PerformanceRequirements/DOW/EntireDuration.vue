@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <ATATRadioGroup
       class="copy-max-width mb-10 mt-4"
       ref="NeededForEntireDuration"
@@ -50,7 +49,6 @@
       </ATATAlert>
     </div>
   </div>
-
 </template>
 
 <script lang="ts">
@@ -62,7 +60,6 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
 import { routeNames } from "../../../router/stepper"
-
 
 import { 
   Checkbox, 

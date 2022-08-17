@@ -267,7 +267,7 @@ export interface lineChartData {
   datasets?: lineChartDataSet[];
 }
 
-export interface ComputeData {
+export interface OtherServiceOfferingData {
   instanceNumber: number;
   environmentType: string;
   classificationLevel?: string;
@@ -284,6 +284,8 @@ export interface ComputeData {
   performanceTier: string;
   performanceTierOther: string;
   numberOfInstancesNeeded: string;
+  requirementTitle: string;
+  descriptionOfNeed: string;  
 }
 
 export interface ComputeInstanceTableData {
@@ -296,15 +298,4 @@ export interface ComputeInstanceTableData {
   storage: string;
   classification: string;
   performance: string;
-}
-
-export interface GeneralXaaSData {
-  sysId?: string;
-  classificationLevel?: string;
-  instanceNumber: number;
-  requirementTitle: string;
-  descriptionOfNeed: string;
-  entireDuration: string;
-  periodsNeeded: string[];
-
 }
