@@ -117,7 +117,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     classificationLevel: "",
     deployedRegions: [],
     deployedRegionsOther: "",
-    needOrUsageDescription: "",
+    descriptionOfNeed: "",
     entireDuration: "",
     periodsNeeded: [],
     operatingSystemAndLicensing: "",
@@ -129,7 +129,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
     requirementTitle: "",
-    descriptionOfNeed: "",
   }
 
   public showSubtleAlert = false;

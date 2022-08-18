@@ -578,7 +578,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     classificationLevel: "",
     deployedRegions: [],
     deployedRegionsOther: "",
-    needOrUsageDescription: "",
+    descriptionOfNeed: "",
     entireDuration: "",
     periodsNeeded: [],
     operatingSystemAndLicensing: "",
@@ -590,7 +590,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
     requirementTitle: "",
-    descriptionOfNeed: "",  
   }
 
   @Action

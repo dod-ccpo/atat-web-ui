@@ -30,8 +30,9 @@
         class="copy-max-width"
       />
       <ATATAlert
+        :ref="'PeriodRequirementsAlert_' + (index + 1)"
         :id="'PeriodRequirementsAlert_' + (index + 1)"
-        v-show="isPeriodsDataMissing === true"
+        v-if="isPeriodsDataMissing === true"
         type="warning"
         class="copy-max-width mb-10"
       >

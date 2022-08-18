@@ -272,7 +272,7 @@ export interface OtherServiceOfferingData {
   classificationLevel?: string;
   deployedRegions: string[];
   deployedRegionsOther: string;
-  needOrUsageDescription: string;
+  descriptionOfNeed: string; // EJY
   entireDuration: string;
   periodsNeeded: string[];
   operatingSystemAndLicensing: string;
@@ -284,7 +284,6 @@ export interface OtherServiceOfferingData {
   performanceTierOther: string;
   numberOfInstancesNeeded: string;
   requirementTitle?: string;
-  descriptionOfNeed?: string;  
 }
 
 export interface ComputeInstanceTableData {

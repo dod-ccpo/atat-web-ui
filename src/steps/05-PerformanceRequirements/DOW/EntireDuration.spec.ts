@@ -23,16 +23,14 @@ describe("Testing ComputeForm Component", () => {
     wrapper = mount(EntireDuration, {
       localVue,
       vuetify,
-      mocks: {
-        // $store: {
-        //   DescriptionOfWork: {
-        //     computeObject: computeData,
-        //   }
-        // },
-
-      },
       propsData: {
-        // computeData: computeData
+        entireDuration: "YES",
+        index: 0,
+        isPeriodsDataMissing: false,
+        periodsNeeded: [],
+        availablePeriodCheckboxItems: [
+          { text: "Base Period", value: "1234" }
+        ]
       }
     });
   });
@@ -43,5 +41,27 @@ describe("Testing ComputeForm Component", () => {
     });
   });
 
+  describe("Validation....", () => {
+    it("tests that radio group required message is displayed", async () => {
+      const mockValidator = jest.spyOn(localVue.prototype.$validators, 'required')
+      await wrapper.setProps({ entireDuration: ""}); 
+      expect(mockValidator).toHaveBeenCalled();
+    });
+
+    it(`tests that PoP checkboxes are displayed if 'No' is selected for needed
+      for entire duration`, async () => {
+      const mockValidator = jest.spyOn(localVue.prototype.$validators, 'required');
+      await wrapper.setProps({ entireDuration: "NO", periodsNeeded: []}); 
+      expect(mockValidator).toHaveBeenCalled();    
+    });    
+
+    it(`checks that alert is shown if 'No' is selected for needed for entire duration
+      and no period of performance data saved`, async () => {
+      await wrapper.setProps({ entireDuration: "NO", index: 0, isPeriodsDataMissing: true});
+      const alert = wrapper.findComponent({ref: "PeriodRequirementsAlert_1"}) 
+      expect(alert.exists()).toBe(true);  
+    });    
+
+  });
 
 });
