@@ -5,20 +5,20 @@ module.exports = {
   collectCoverage: true,
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   //collectCoverageFrom: ["**/*.{js,vue}", "!**/node_modules/**"],
-  collectCoverageFrom: [
-    "<rootDir>/src/components/*.{vue,ts}",
-    "<rootDir>/src/helpers/*.{vue,ts}",
-    "<rootDir>/src/store/classificationRequirements/index.ts",
+  // collectCoverageFrom: [
+  //   "<rootDir>/src/components/*.{vue,ts}",
+  //   "<rootDir>/src/helpers/*.{vue,ts}",
+  //   "<rootDir>/src/store/classificationRequirements/index.ts",
 
 
-    //  "src/components/*.{js|vue}",
-    // "src/components/**/*.{js|vue}",
-    // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.{vue|js}",
-    // "!**/*.{ts}",
-    // "!**/src/steps/**/*.{ts|vue}",
-    // "!**/src/api/**/*.{ts|vue}",
-    // "src/steps/**/**/*.vue"
-  ],
+  //   //  "src/components/*.{js|vue}",
+  //   // "src/components/**/*.{js|vue}",
+  //   // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.{vue|js}",
+  //   // "!**/*.{ts}",
+  //   // "!**/src/steps/**/*.{ts|vue}",
+  //   // "!**/src/api/**/*.{ts|vue}",
+  //   // "src/steps/**/**/*.vue"
+  // ],
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
   //   "<rootDir>/src/store/",
@@ -27,16 +27,16 @@ module.exports = {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  //  coverageProvider: "babel",
+   coverageProvider: "babel",
 
   // A list of reporter names that Jest uses when writing coverage reports
-  coverageReporters: [
-    "json",
-    "text",
-    "lcov",
-    "clover",
-    "html"
-  ],
+  // coverageReporters: [
+  //   "json",
+  //   "text",
+  //   "lcov",
+  //   "clover",
+  //   "html"
+  // ],
   // A set of global variables that need to be available in all test environments
   // globals: {
   //   'ts-jest': {
@@ -61,6 +61,7 @@ module.exports = {
     "<rootDir>/src/components/*.spec.ts",
     "<rootDir>/src/steps/**/*.spec.ts",
     "<rootDir>/src/steps/**/**/*.spec.ts",
+    "<rootDir>/src/api/**/**/*.spec.ts",
     "<rootDir>/src/helpers/index.spec.ts",
     "<rootDir>/src/store/classificationRequirements/__test__/index.spec.ts",
 
@@ -75,10 +76,10 @@ module.exports = {
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
   testURL: "http://localhost/",
   // A map from regular expressions to paths to transformers
-  // transform: {
-  //   "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-  //   "^.+\\.ts$": ["ts-jest",{"sourceMaps": "inline"}]
-  // },
+  transform: {
+    "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+    "^.+\\.ts$": ["ts-jest",{"sourceMaps": "inline"}]
+  },
   // // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
     "/node_modules/(?!vuetify/)"
