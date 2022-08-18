@@ -273,7 +273,7 @@ export default class ComputeRequirements extends Vue {
       "classificationLevel",
       "entireDuration",
       "memory",
-      "needOrUsageDescription",
+      "anticipatedNeedUsage",
       "numberOfInstancesNeeded",
       "numberOfVCPUs",
       "operatingSystemAndLicensing",

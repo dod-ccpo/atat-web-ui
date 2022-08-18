@@ -121,7 +121,7 @@
 
     <DescriptionOfNeed
       :anticipatedNeedUsage.sync="_computeData.anticipatedNeedUsage"
-      :index="1"
+      :index="0"
       :textAreaWithCounter="true"
     />
 
@@ -130,7 +130,7 @@
       :periodsNeeded.sync="_computeData.periodsNeeded"
       :isPeriodsDataMissing="isPeriodsDataMissing"
       :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-      :index="1"
+      :index="0"
     />
 
     <hr />
@@ -304,6 +304,10 @@ export default class ComputeForm extends Vue {
 
   public openModal(): void {
     this.$emit("openModal");
+  }
+
+  public updated(): void {
+    this.$emit("formUpdate");
   }
 
   public EnvironmentTypeOptions: RadioButton[] = [

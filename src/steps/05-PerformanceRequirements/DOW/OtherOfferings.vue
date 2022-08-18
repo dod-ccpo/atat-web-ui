@@ -20,6 +20,7 @@
         :validateOtherTierOnBlur="validateOtherTierOnBlur"
         :clearOtherTierValidation="clearOtherTierValidation"
         @openModal="openModal"
+        @formUpdate="formComponentUpdate"
       />
 
       <GeneralXaaSForm 
@@ -255,7 +256,7 @@ export default class OtherOfferings extends Vue {
     }
   };
 
-  public updated(): void {
+  public formComponentUpdate(): void {
     const eb = this.$refs.serviceOfferingForm.errorBag;
     this.errorBagValues = Object.values(eb);
   }
@@ -288,24 +289,21 @@ export default class OtherOfferings extends Vue {
     formChildren.forEach((child: any) => {
       const refs = child.$refs;
       const keys = Object.keys(refs);
+
       keys.forEach((key: string) => {
         if (inputRefs.indexOf(key) > -1 || customComponentRefs.indexOf(key) > -1) {
           const childRef: any = child.$refs[key];
           if (childRef[0]) {
-            if (childRef[0].attrs$["data-group-id"] === "PeriodsCheckboxes_Group"
-              && this._serviceOfferingData.entireDuration.toLowerCase() === "no"
-              && this._serviceOfferingData.periodsNeeded.length === 0
-            ) {
-              child.errorMessages.push(`Please select at least one base or option 
-                period to specify your requirement’s duration level.`);
-            }
             if (this.isCompute && childRef[0].attrs$["data-group-id"] === "Regions_Group"
               && this._serviceOfferingData.deployedRegions.indexOf(this.otherRegionValue) > -1
               && this._serviceOfferingData.deployedRegionsOther === ""
             ) {
-              child.$refs["atatTextInput"][0].errorMessages.push(
-                'Please enter your other region(s).'
-              );
+              const otherIndex = child.$children.length - 2;
+              const eb = child.$children[otherIndex].$children[1].$children[0].errorBucket;
+              if (eb.length) {
+                this.hasErrorsOnLoad = true;
+                child.$refs["atatTextInput"][0].errorMessages.push(eb[0]);
+              }
             }
           }
           if (this.isCompute) {
@@ -327,6 +325,18 @@ export default class OtherOfferings extends Vue {
                 this.hasErrorsOnLoad = true;
                 errors.forEach((error) => {
                   child.$children[0].errorMessages.push(error);
+                })
+              }
+
+              if (key === "NeededForEntireDuration") {
+                child.$children.forEach((childChild: any, i: number) => {
+                  if (child.$children[i].$el.id.indexOf("PeriodsCheckboxes") > -1
+                    && this._serviceOfferingData.entireDuration.toLowerCase() === "no"
+                    && this._serviceOfferingData.periodsNeeded.length === 0
+                  ) {
+                    child.$children[i].errorMessages.push(`Please select at least one base 
+                      or option period to specify your requirement’s duration level.`);
+                  }                
                 })
               }
             }
