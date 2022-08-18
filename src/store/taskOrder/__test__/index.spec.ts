@@ -10,7 +10,7 @@ localVue.use(Vuex);
 // eslint-disable-next-line max-len
 
 const taskOrder = {
-  acquisition_package:"6bfcf683871d5910bc86b889cebb35f7",
+  acquisition_package:"",
   clins: "",
   funding_plan: "",
   funding_request: "",
