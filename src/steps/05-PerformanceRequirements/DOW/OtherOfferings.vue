@@ -284,15 +284,12 @@ export default class OtherOfferings extends Vue {
     const inputRefs = [
       "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
     ];
-
-    // EJY not validating onload in EntireDuration or DescriptionOfNeed components
-
+    const customComponentRefs = ["NeededForEntireDuration", "DescriptionOfNeed"];
     formChildren.forEach((child: any) => {
       const refs = child.$refs;
       const keys = Object.keys(refs);
       keys.forEach((key: string) => {
-
-        if (inputRefs.indexOf(key) > -1) {
+        if (inputRefs.indexOf(key) > -1 || customComponentRefs.indexOf(key) > -1) {
           const childRef: any = child.$refs[key];
           if (childRef[0]) {
             if (childRef[0].attrs$["data-group-id"] === "PeriodsCheckboxes_Group"
@@ -311,18 +308,27 @@ export default class OtherOfferings extends Vue {
               );
             }
           }
-
-          if (this.isCompute && key === "radioButtonGroup" 
-            && child.$el.attributes.id.value.indexOf("PerformanceTier")
-            && this._serviceOfferingData.performanceTier === this.otherPerformanceTierValue
-          ) {
-            if (this._serviceOfferingData.performanceTierOther === "") {
-              this.validateOtherTierOnBlur = true;
-
-              this.validateOtherTierNow = true;
-            } else {
-              this.validateOtherTierOnBlur = false;
-              this.clearOtherTierValidation = true;
+          if (this.isCompute) {
+            if (key === "radioButtonGroup" 
+              && child.$el.attributes.id.value.indexOf("PerformanceTier")
+              && this._serviceOfferingData.performanceTier === this.otherPerformanceTierValue
+            ) {
+              if (this._serviceOfferingData.performanceTierOther === "") {
+                this.validateOtherTierOnBlur = true;
+                this.validateOtherTierNow = true;
+              } else {
+                this.validateOtherTierOnBlur = false;
+                this.clearOtherTierValidation = true;
+              }
+            }
+            if (key === "NeededForEntireDuration" || key === "DescriptionOfNeed") {
+              const errors: string[] = child.$children[0].$children[0].errorBucket;
+              if (errors.length) {
+                this.hasErrorsOnLoad = true;
+                errors.forEach((error) => {
+                  child.$children[0].errorMessages.push(error);
+                })
+              }
             }
           }
 

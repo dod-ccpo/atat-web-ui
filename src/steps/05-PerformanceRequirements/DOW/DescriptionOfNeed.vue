@@ -2,6 +2,7 @@
   <ATATTextArea
     :value.sync="_anticipatedNeedUsage"
     :id="'AnticipatedNeedUsage_' + (index + 1)"
+    ref="DescriptionOfNeed"
     label="Describe the anticipated need and usage of this requirement"
     class="width-100 mb-10"
     :rows="5"
