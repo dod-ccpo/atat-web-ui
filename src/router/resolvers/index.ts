@@ -548,7 +548,6 @@ async function calcBasePeriod() {
     multiplier = 365;
     break;
   default:
-    multiplier;
   }
   basePeriod = Number(period[0].period_unit_count) * multiplier;
   return basePeriod
