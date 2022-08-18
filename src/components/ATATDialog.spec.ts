@@ -29,25 +29,17 @@ describe("Testing ATATDialog Component", () => {
     });
   })
 
-  describe("PROPS", () => {
-    it("optional", async () => {
-      await wrapper.setProps({
-        title: `Bacon ipsum dolor amet ball tip minim shoulder
-        buffalo t-bone eu.Strip steak nostrud pancetta ullamcotongue irure`
-      });
-      expect(wrapper.find(".modalDialogTitle")).toBeDefined();
-    });
-  });
+ 
 
-  describe("METHODS", () => {
-    it("fires off cancel event", async () => {
+  describe("tests.....", () => {
+    it("successfully executes cancel event", async () => {
       await wrapper.setProps({showDialog: true});
       jest.advanceTimersByTime(2500);
       expect(wrapper.find('#dialog_cancel')).toBeDefined();
-
+      console.log(wrapper.vm.$props.showDialog)
       const cancelBtn = wrapper.find('#dialog_cancel');
-      cancelBtn.trigger('click');
-      expect(wrapper.vm.onCancel).toBeDefined();
+      await cancelBtn.trigger('click');
+      expect(wrapper.vm.$props.showDialog).toBe(true);
     });
 
     it("fires off onOk event", async () => {
