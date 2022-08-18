@@ -83,7 +83,6 @@ export class TaskOrderStore extends VuexModule {
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
       this.setInitialized(true);
-      // this.setTaskOrder(sessionRestored);
     }else{
       const taskOrder = {
         ...initial,

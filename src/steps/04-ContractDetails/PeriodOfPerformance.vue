@@ -238,7 +238,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
 
   public oneYearCheck(period:PoP): string {
-    if(period && period.duration){
+    if(period.duration){
       switch(period.unitOfTime) {
       case "YEAR":
         if(period.duration > 1) {

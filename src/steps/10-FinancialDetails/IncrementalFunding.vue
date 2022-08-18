@@ -28,6 +28,7 @@
                   :showErrorMessages="false"
                   width="190"
                   class="mr-2"
+                  :class="[{ 'error--text': errorMissingInitialIncrement },]"
                   :rules="[$validators.required('', true)]"
                   @blur="calcAmounts('initialIncrement')"
                 />
@@ -130,7 +131,7 @@
                 v-if="fundingIncrements.length < maxPayments"
                 plain
                 text
-                class="_text-link mt-5"
+                class=" link-button no-border mt-5"
                 :ripple="false"
                 @click="addIncrement()"
               >
@@ -364,10 +365,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public async initializeIncrements(): Promise<void> {
     let qtr = await this.currentQuarter();
-    console.log("qtr " + qtr)
-    console.log("this.startDate " + this.startDate);
     let year = parseInt(format(this.startDate, "yy"));
-    console.log("year " + year);
     for (let i = 0; i < 6; i++) {
       const ordinal = this.ordinals[qtr-1];
       // increment year if at first quarter and not first in the loop
@@ -534,7 +532,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
           ? requestedPopStartDate : formatISO(new Date())
         ), 'MM/dd/yyyy')
       );
-    console.log(this.startDate)
     
     await this.initializeIncrements();
 

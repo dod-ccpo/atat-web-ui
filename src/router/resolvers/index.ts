@@ -548,7 +548,7 @@ async function calcBasePeriod() {
     multiplier = 365;
     break;
   default:
-    multiplier = 1;
+    multiplier;
   }
   basePeriod = Number(period[0].period_unit_count) * multiplier;
   return basePeriod
@@ -563,7 +563,6 @@ export const IncrementalFundingResolver = (current: string): string => {
     baseDuration = value
   })
 
-  // const totalDuration = AcquisitionPackage.totalBasePoPDuration;
   const isIncrementallyFunded = TaskOrder.value.incrementally_funded
 
   if (baseDuration && baseDuration < cutOff || isIncrementallyFunded === "NO") {
