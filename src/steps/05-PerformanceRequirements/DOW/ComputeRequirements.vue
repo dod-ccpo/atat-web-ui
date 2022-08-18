@@ -30,6 +30,7 @@
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
               <button
+                :id="'EditButton_' + item.instanceNumber"
                 @click="editInstance(item)"
                 class="mr-2"
               >
@@ -37,6 +38,7 @@
               </button>
 
               <button
+                :id="'DeleteButton_' + item.instanceNumber"
                 @click="confirmDeleteInstance(item)"
                 class="ml-2"
               >

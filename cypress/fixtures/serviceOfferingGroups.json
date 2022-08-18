@@ -2,7 +2,54 @@
   {
     "label": "Compute",
     "value": "COMPUTE",
-    "serviceOfferingCypressLabels": [
+    "environmentCypressLabels": [
+      "Dev/Testing",
+      "Pre-production/Staging",
+      "Production"
+    ],
+    "environmentMainLabels": [
+      "DevTesting",
+      "PreProdStaging",
+      "Production"
+    ],
+    "regionCypressLabels": [
+      "CONUS East",
+      "CONUS Central",
+      "CONUS West",
+      "OCONUS",
+      "Other"
+    ],
+    "regionMainLabels": [
+      "CONUSEast",
+      "CONUSCentral",
+      "CONUSWest",
+      "OCONUS",
+      "Other"
+    ],
+    "performanceTierCypressLabels": [
+      "High performance (Premium)",
+      "Medium performance (Standard)",
+      "Low performance (Basic)",
+      "Other"
+    ],
+    "performanceTierMainLabels": [
+      "PerformancePremium",
+      "PerformanceStandard",
+      "PerformanceBasic",
+      "Other"
+    ],
+    "storageTypeMainLabels": [
+      "GeneralPurposeSSD",
+      "ProvisionedIOPSSSD",
+      "Nearline",
+      "Offline",
+      "Other"
+    ],
+    "storageTypeCypressLabels": [
+      "General Purpose SSD",
+      "Provisioned IOPS SSD",
+      "Nearline",
+      "Offline",
       "Other"
     ]
   },
@@ -29,7 +76,6 @@
       "Cyber Tools",
       "Other"
     ]
-
   },
   {
     "label": "Applications",
@@ -91,7 +137,7 @@
     "serviceOfferingCypressLabels": [
       "Database services",
       "Horizontal (typical transaction database row manage)",
-      "Vertical (attribute database/column managed)",   
+      "Vertical (attribute database/column managed)",
       "Graph Database (node edge managed)",
       "Other"
     ]
@@ -103,7 +149,7 @@
       "Remotable Technology",
       "Mobile Technology",
       "Perimeter Technology",
-      "Conditional Flag indicating military hardening",   
+      "Conditional Flag indicating military hardening",
       "Other"
     ]
   },
@@ -112,15 +158,15 @@
     "value": "IOT",
     "serviceOfferingCypressLabels": [
       "IoT Edge",
-      "IoT Software as a Service (SaaS)",    
-      "IoT Platform as a Service (PaaS)",   
+      "IoT Software as a Service (SaaS)",
+      "IoT Platform as a Service (PaaS)",
       "Other"
     ]
   },
   {
     "label": "General Iaas, PaaS, and SaaS Including third party marketplace and any other XaaS resources not covered in the categories above",
     "value": "GENERALXAAS",
-    "serviceOfferingCypressLabels": [ 
+    "serviceOfferingCypressLabels": [
       "Other"
     ]
   },
@@ -131,20 +177,19 @@
   {
     "label": "Advisory and Assistance",
     "value": "ADVISORY",
-    "serviceOfferingCypressLabels": [ 
+    "serviceOfferingCypressLabels": [
       "Simple Challenge",
       "Moderate Challenge",
-      "Complex Challenge"  
+      "Complex Challenge"
     ]
   },
   {
     "label": "Training",
     "value": "TRAINING",
-    "serviceOfferingCypressLabels": [ 
-      "OCONUS",
-      "OCONUS Local CSP Facility",
-      "OCONUS Local Government Facility",
-      "OCONUS Web based Training"    
+    "serviceOfferingCypressLabels": [
+      "Local CSP Facility",
+      "Local Government Facility",
+      "Web-based Training"
     ]
   },
   {
