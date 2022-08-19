@@ -38,8 +38,8 @@ module.exports = {
         },
       }
 
-      config.output.filename = 'js/[name]-[hash]-js'
-      config.output.chunkFilename = 'js/[name]-[chunkhash]-js'
+      config.output.filename = 'js/[name]-[hash]-js.html'
+      config.output.chunkFilename = 'js/[name]-[chunkhash]-js.html'
 
     }
   },
@@ -71,7 +71,7 @@ module.exports = {
           fallback: {
             ...options.fallback,
             options: {
-              name: 'img/[name]-[hash:6]-[ext]',
+              name: 'img/[name]-[hash:6]-[ext].html',
             }
 
           }
@@ -83,7 +83,7 @@ module.exports = {
         .use("file-loader")
         .loader("file-loader")
         .tap(options => Object.assign(options, {
-              name: 'img/[name]-[hash:6]-[ext]',
+              name: 'img/[name]-[hash:6]-[ext].html',
         }));
 
       config.module
@@ -95,7 +95,7 @@ module.exports = {
           fallback: {
             ...options.fallback,
             options: {
-              name: 'other_assets/[name]-[hash:6]-[ext]',
+              name: 'other_assets/[name]-[hash:6]-[ext].html',
             }
 
           }

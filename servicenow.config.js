@@ -10,18 +10,18 @@ const servicenowConfig = {
    * Current configuration does not produce CSS files
    * CSS code will be embedded into javascript files
    */
-  JS_API_PATH: 'api/x_744337_vue_app/container/js/',
+  JS_API_PATH: 'api/x_g_dis_atat/vue_app_container/js/',
   /**
    * ServiceNow path to GET resource which serves
    * Image files (png, jpg, gif)
    * SVG files will be embedded into javascript files
    */
-  IMG_API_PATH: 'api/x_744337_vue_app/container/img/',
+  IMG_API_PATH: 'api/x_g_dis_atat/vue_app_container/img/',
   /**
    * ServiceNow path to GET resource which serves
    * other files, like fonts etc.
    */
-  ASSETS_API_PATH: 'api/x_744337_vue_app/container/other_assets/',
+  ASSETS_API_PATH: 'api/x_g_dis_atat/vue_app_container/other_assets/',
   /**
    * fonts and images below this size will be put inside
    * JS chunks, instead of being saved as separate files
