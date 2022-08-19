@@ -133,7 +133,6 @@ export default class ATATTextField extends Vue  {
 
   public setErrorMessage(): void {
     if (this.validateOnBlur) {
-      console.log("baz")
       Vue.nextTick(()=>{
         this.errorMessages = this.$refs.atatTextField.errorBucket;
       });

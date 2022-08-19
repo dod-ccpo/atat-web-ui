@@ -89,8 +89,6 @@ describe("Testing Incremental Funding Plan", () => {
       const _costEstimate = "1000000";
       // set necessary store data
       FinancialDetails.setEstimatedTaskOrderValue(_costEstimate);
-      jest.fn(FinancialDetails, 'setEstimatedTaskOrderValue').mock()
-        // .mockImplementation((_costEstimate));
       await wrapper.vm.loadOnEnter();
       expect(wrapper.vm.$data.costEstimate).toBe(parseInt(_costEstimate));
     });
