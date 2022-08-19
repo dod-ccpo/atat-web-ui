@@ -111,4 +111,41 @@ describe("Testing PeriodOfPerformance Component", () => {
     )
   })
 
+  describe("test setTotalPoP()- should change the value of PoP duration and base duration",() =>{
+    const period1 = {
+      duration: 1,
+      unitOfTime: "YEAR",
+      id: null,
+      order: 1,
+    }
+    const period2 = {
+      duration: 12,
+      unitOfTime: "MONTH",
+      id: null,
+      order: 1,
+    }
+    const period3 = {
+      duration: 0,
+      unitOfTime: "YEAR",
+      id: null,
+      order: 1,
+    }
+
+    it('should change the value base and total duration',() => {
+      wrapper.setData({optionPeriods:[period3,{}]})
+      wrapper.vm.setTotalPoP()
+      expect(wrapper.vm.$data.basePoPDuration).toBe(0)
+      expect(wrapper.vm.$data.totalPoPDuration).toBe(0)
+      expect(wrapper.vm.$data.basePeriodMissing).toBe(true)
+
+
+      wrapper.setData({optionPeriods:[period1,period2]})
+      wrapper.vm.setTotalPoP()
+      expect(wrapper.vm.$data.basePoPDuration).toBe(365)
+      expect(wrapper.vm.$data.totalPoPDuration).toBe(725)
+      expect(wrapper.vm.$data.basePeriodMissing).toBe(false)
+
+    })
+  })
+
 })
