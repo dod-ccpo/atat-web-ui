@@ -3,7 +3,6 @@ import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
 import {TaskOrderStore} from "@/store/taskOrder";
 import { getModule } from 'vuex-module-decorators';
-import { retrieveSession } from "@/store/helpers";
 const localVue = createLocalVue();
 localVue.use(Vuex);
 

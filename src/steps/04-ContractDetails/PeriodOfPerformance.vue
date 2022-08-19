@@ -478,7 +478,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
-
     this.savedData = periods.map(period=> {
 
       return {
