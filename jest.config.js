@@ -31,14 +31,14 @@ module.exports = {
   coverageProvider: "babel",
 
   // A list of reporter names that Jest uses when writing coverage reports
-  // coverageReporters: [
-  //   "default",
-  //   "json",
-  //   "text",
-  //   "lcov",
-  //   "clover",
-  //   "html"
-  // ],
+  coverageReporters: [
+    // "default",
+    // "json",
+    // "text",
+    "lcov",
+    // "clover",
+    // "html"
+  ],
   // A set of global variables that need to be available in all test environments
   // globals: {
   //   'ts-jest': {
