@@ -58,7 +58,11 @@
         </span>
       </template>
     </v-text-field>
-    <ATATErrorValidation :errorMessages="errorMessages" v-if="showErrorMessages" />
+    <ATATErrorValidation 
+      :errorMessages="errorMessages" 
+      v-if="showErrorMessages" 
+      :id="id"
+    />
     <div v-if="showHelpText()" class="help-text mt-2">
       {{ helpText }}
     </div>
@@ -131,7 +135,7 @@ export default class ATATTextField extends Vue  {
     }
   }
 
-  private setErrorMessage(): void {
+  public setErrorMessage(): void {
     Vue.nextTick(()=>{
       this.errorMessages = this.$refs.atatTextField.errorBucket;
     });
@@ -139,7 +143,7 @@ export default class ATATTextField extends Vue  {
   private iconColor = "base-light";
 
   //@Events
-  private onBlur(e: FocusEvent) : void{
+  public onBlur(e: FocusEvent) : void{
     const input = e.target as HTMLInputElement;
     this.setErrorMessage();
     this.$emit('blur', input.value, this.extraEmitVal);

@@ -43,21 +43,24 @@
     />
 
     <ATATTextField 
-      :id="'RequirementTitle'"
+      id="RequirementTitle"
+      ref="RequirementTitle"
       label="Requirement title"
       class="_input-max-width mb-10"
       tooltipText="Enter a title that briefly describes this IaaS, 
         PaaS or SaaS requirement."
       :value="_generalXaaSData.requirementTitle"
+      :rules="[$validators.required('Please provide a title for this requirement.')]"
     />
 
     <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
       <ATATRadioGroup
         id="ClassificationLevel"
+        ref="ClassificationLevel"
+        name="ClassificationLevel"
         legend="What classification level is this requirement deployed in?"
         :value="_generalXaaSData.classificationLevel"
         :items="classificationRadioOptions"
-        name="ClassificationLevel"
         class="mt-3 mb-2"
         :tooltipText="classificationTooltipText"
         tooltipLabel="Classification level for this requirement"

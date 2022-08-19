@@ -32,7 +32,7 @@ export default class ATATErrorValidation extends Vue {
 
   get showError(): boolean {
     if (!this.showAllErrors){
-      this._errorMsgs = this.errorMessages.length>0 ? [this.errorMessages[0]] : [];
+      this._errorMsgs = this.errorMessages.length > 0 ? [this.errorMessages[0]] : [];
     } else {
       this._errorMsgs = this.errorMessages;
     }

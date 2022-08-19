@@ -57,7 +57,7 @@ describe("Testing ComputeForm Component", () => {
 
     it(`checks that alert is shown if 'No' is selected for needed for entire duration
       and no period of performance data saved`, async () => {
-      await wrapper.setProps({ entireDuration: "NO", index: 0, isPeriodsDataMissing: true});
+      await wrapper.setProps({ entireDuration: "NO", isPeriodsDataMissing: true});
       const alert = wrapper.findComponent({ref: "PeriodRequirementsAlert_1"}) 
       expect(alert.exists()).toBe(true);  
     });    
