@@ -66,13 +66,16 @@ describe("Testing Incremental Funding Plan", () => {
       vuetify,
     });
 
+    
     //resetting store values that are Changed
     //modified during tests
-    FinancialDetails.setEstimatedTaskOrderValue("");
-    FinancialDetails.setIFPData({
-      initialFundingIncrementStr: "",
-      fundingIncrements: []
-    })
+   
+
+    // FinancialDetails.setEstimatedTaskOrderValue("");
+    // FinancialDetails.setIFPData({
+    //   initialFundingIncrementStr: "",
+    //   fundingIncrements: []
+    // })
   });
 
   describe("Initialization....", () => {
@@ -88,7 +91,12 @@ describe("Testing Incremental Funding Plan", () => {
     async () => {
       const _costEstimate = "1000000";
       // set necessary store data
+      
       FinancialDetails.setEstimatedTaskOrderValue(_costEstimate);
+      const value = "1000000";
+      jest.spyOn(FinancialDetails, "setEstimatedTaskOrderValue")
+        .mockImplementation(value)
+
       await wrapper.vm.loadOnEnter();
       expect(wrapper.vm.$data.costEstimate).toBe(parseInt(_costEstimate));
     });
@@ -189,6 +197,8 @@ describe("Testing Incremental Funding Plan", () => {
       " is present in store.FinancialDetails.setIFPData.fundingIncrements[]",
     async () => {
       //set necessary store data
+
+     
       FinancialDetails.setIFPData({
         initialFundingIncrementStr: "1.00",
         fundingIncrements: [
