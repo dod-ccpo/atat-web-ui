@@ -40,25 +40,6 @@ const avlClassificationLevelObjects = [
   { classification: "U", "impact_level": "IL2" }
 ]
 
-// async function validateInput(
-//   localVue: VueConstructor<Vue>, 
-//   wrapper: Wrapper<DefaultProps & Vue, Element>,
-//   validatorName: string,
-//   props: Record<string, string> | Record<string, Record<string, string>>,
-//   componentRef: string,
-//   errorCount?: number,
-// ) {
-//   const mockValidator = jest.spyOn(localVue.prototype.$validators, validatorName)
-//   await wrapper.setProps(props); 
-//   expect(mockValidator).toHaveBeenCalled();
-
-//   const reqTitle = await wrapper.findComponent({ref: componentRef});
-//   Vue.nextTick(async () => {
-//     const n = errorCount || 0;
-//     expect(reqTitle.vm.$data.errorMessages.length).toBeGreaterThan(n);
-//   });
-// }
-
 describe("Testing GeneralXaaSForm Component", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
@@ -109,6 +90,7 @@ describe("Testing GeneralXaaSForm Component", () => {
 
     });
    
+    // EJY MONDAY validate radio group
     // it("tests that radio group required message is displayed", async () => {
     //   const mockValidator = jest.spyOn(localVue.prototype.$validators, 'required')
     //   await wrapper.setProps({ classificationLevel: ""}); 
