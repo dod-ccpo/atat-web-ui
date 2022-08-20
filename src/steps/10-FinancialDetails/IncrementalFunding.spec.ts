@@ -310,23 +310,6 @@ describe("Testing Incremental Funding Plan", () => {
       expect(_hasChanged).toBe(true);
     });
 
-    it("hasChanges() - setting same currentData and savedData object" +
-        "to set hasChanges() to false", async () => {
-      wrapper.setData({
-        currentData: {
-          initialFundingIncrementStr: "1.00",
-          fundingIncrements: []
-        },
-        savedData: {
-          initialFundingIncrementStr: "1.00",
-          fundingIncrements: []
-        }
-      });
-      const _hasChanged = wrapper.vm.hasChanged();
-      expect(_hasChanged).toBe(false);
-    });
-
-
     it("quarterChange() - supplies correct args/data to successfully change  " +
         " data.fundingIncrements[]", async () => {
       wrapper.setData({
