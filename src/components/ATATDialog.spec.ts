@@ -3,6 +3,7 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import ATATDialog from "@/components/ATATDialog.vue";
 import { DefaultProps } from "vue/types/options";
+import { ok } from "assert";
 
 
 Vue.use(Vuetify);
@@ -29,35 +30,30 @@ describe("Testing ATATDialog Component", () => {
     });
   })
 
- 
-
   describe("METHODS", () => {
     it("onCancel() - sets props.showDialog===true, clicks cancel button " +
       "to test if !props.showDialog", async () => {
       await wrapper.setProps({ showDialog: true });
-      const cancelBtn = document.getElementById('#dialog_cancel');
+      wrapper.find('#dialog_cancel').trigger("click");
       Vue.nextTick(() => {
-          cancelBtn?.click();
-          expect(wrapper.vm.$props.showDialog).toBe(false);
+        expect(wrapper.vm.$props.showDialog).toBe(false);
       });
     });
 
     it("onCancel() - sets props.showDialog===true, clicks cancel button " +
       "to test if `cancelClicked` was emitted", async () => {
       await wrapper.setProps({ showDialog: true });
-      const cancelBtn = document.getElementById('#dialog_cancel');
+      wrapper.find('#dialog_cancel').trigger("click");
       Vue.nextTick(() => {
-          cancelBtn?.click();
-          expect(wrapper.emitted('cancelClicked')).tobeTruthy();
+        expect(wrapper.emitted('cancelClicked')).tobeTruthy();
       });
     });
 
     it("onOK() - sets props.showDialog===true, clicks OK button " +
     "to test if !props.showDialog", async () => {
       await wrapper.setProps({ showDialog: true });
-      const cancelBtn = document.getElementById('#dialog_ok');
+      wrapper.find('#dialog_ok').trigger("click");
       Vue.nextTick(() => {
-        cancelBtn?.click();
         expect(wrapper.vm.$props.showDialog).toBe(false);
       });
     });
@@ -65,9 +61,8 @@ describe("Testing ATATDialog Component", () => {
     it("onOK() - sets props.showDialog===true, clicks OK button " +
     "to test if `ok` was emitted", async () => {
       await wrapper.setProps({ showDialog: true });
-      const cancelBtn = document.getElementById('#dialog_ok');
+      wrapper.find('#dialog_ok').trigger("click");
       Vue.nextTick(() => {
-        cancelBtn?.click();
         expect(wrapper.emitted('ok')).tobeTruthy();
       });
     });
