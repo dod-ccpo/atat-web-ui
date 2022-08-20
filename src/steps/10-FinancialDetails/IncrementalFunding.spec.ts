@@ -57,26 +57,22 @@ describe("Testing Incremental Funding Plan", () => {
     {"text": "1st QTR FY24", "multiSelectOrder": 6, "disabled": false, "hidden": false},
   ];
 
-
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(IncrementalFunding, {
       attachTo: document.body,
       localVue,
       vuetify,
+      propsData:{
+        fundingIncrements:  []
+      }
     });
-
-    
-    //resetting store values that are Changed
-    //modified during tests
-   
-
-    // FinancialDetails.setEstimatedTaskOrderValue("");
-    // FinancialDetails.setIFPData({
-    //   initialFundingIncrementStr: "",
-    //   fundingIncrements: []
-    // })
   });
+
+  afterEach(()=>{
+    jest.clearAllMocks();
+    jest.clearAllTimers();
+  })
 
   describe("Initialization....", () => {
     it("tests that component renders successfully", async () => {
@@ -86,19 +82,15 @@ describe("Testing Incremental Funding Plan", () => {
 
   describe("Method Testing...", () => {
 
-    it("loadOnEnter() - sets store.FinancialDetails.setEstimatedTaskOrderValue to ensure " +
-        " store.FinancialDetails.setEstimatedTaskOrderValue === data.costEstimate", 
+    it("loadOnEnter() - mocks store.FinancialDetails.getEstimatedTaskOrderValue to ensure " +
+         " $data.costEstimate === store.FinancialDetails.getEstimatedTaskOrderValue", 
     async () => {
-      const _costEstimate = "1000000";
-      // set necessary store data
-      
-      FinancialDetails.setEstimatedTaskOrderValue(_costEstimate);
-      const value = "1000000";
-      jest.spyOn(FinancialDetails, "setEstimatedTaskOrderValue")
-        .mockImplementation(value)
-
+      jest.spyOn(FinancialDetails, 'getEstimatedTaskOrderValue').mockImplementation(
+        ()=>Promise.resolve(
+          "20"
+        ));
       await wrapper.vm.loadOnEnter();
-      expect(wrapper.vm.$data.costEstimate).toBe(parseInt(_costEstimate));
+      expect(wrapper.vm.$data.costEstimate).toBe(20);
     });
 
     it("loadOnEnter() - mock periods data so that data.maxAllowedIncrements for YEAR will be 5",
@@ -264,8 +256,7 @@ describe("Testing Incremental Funding Plan", () => {
           },
         ]
       })
-      expect(wrapper.vm.$data.fundingIncrements[0].text).toBe("1st QTR FY23");
-      expect(wrapper.vm.$data.fundingIncrements[1].text).toBe("4th QTR FY22");
+      jest.spyOn(FinancialDetails, "saveIFPData").mockImplementation();
       await wrapper.vm.saveOnLeave();
       expect(wrapper.vm.$data.allowContinue).toBe(true);
       // test successful sorting
@@ -380,6 +371,9 @@ describe("Testing Incremental Funding Plan", () => {
 
   it("validateOnContinue() - using default values so that  " +
       "data.allowContinue will set to true", async () => {
+    await wrapper.setData({
+      hasValidatedOnContinue: true
+    })
     await wrapper.vm.validateOnContinue();
     expect(wrapper.vm.$data.allowContinue).toBe(true);
   });
