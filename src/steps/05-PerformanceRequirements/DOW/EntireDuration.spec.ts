@@ -64,4 +64,31 @@ describe("Testing ComputeForm Component", () => {
 
   });
 
+  // EJY brought in from ComputeForm unit tests...
+  
+  // describe("tests validation on 'periodsCheckboxes(other option)' & " +
+  // "triggers error if ...", () => {
+  //   it("no data, then expect data.errorMessages.toHaveLength(1)", async () => {
+  //     serviceOfferingData.entireDuration = "NO";
+  //     serviceOfferingData.periodsNeeded = [];
+  //     console.log("serviceOfferingData", serviceOfferingData)
+  //     await wrapper.setData({
+  //       _serviceOfferingData: serviceOfferingData,
+  //       availablePeriodCheckboxItems: availablePeriodCheckboxItems
+  //     });
+
+  //     await wrapper.vm.setErrorMessages();
+
+  //     //updated wrapper.setData causes periodCheckboxList to display
+  //     const periodCheckboxes = await wrapper.findComponent(
+  //       { ref: "periodsCheckboxes" }
+  //     );
+  //     await periodCheckboxes.setData({
+  //       prevSelected: []
+  //     })
+  //     expect(periodCheckboxes.exists()).toBe(true);
+  //     expect(periodCheckboxes.vm.$data.errorMessages).toHaveLength(1);
+  //   });
+  // });  
+
 });

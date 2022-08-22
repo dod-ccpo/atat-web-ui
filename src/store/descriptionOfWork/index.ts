@@ -676,13 +676,22 @@ export class DescriptionOfWorkStore extends VuexModule {
           }
         }
         if (!(this.computeInstancesTouched.indexOf(computeData.instanceNumber) > -1)) {
-          this.computeInstancesTouched.push(computeData.instanceNumber);
+          this.pushTouchedComputeInstance(computeData.instanceNumber);
         }
 
       } else {
         throw new Error("Error saving Compute data to store");
       }
     }
+  }
+
+  @Mutation
+  public async pushTouchedComputeInstance(instanceNumber: number): Promise<void> {
+    this.computeInstancesTouched.push(instanceNumber);
+  }
+
+  @Action public async getTouchedComputeInstances(): Promise<number[]> {
+    return this.computeInstancesTouched;
   }
 
   @Action

@@ -107,16 +107,13 @@ export class PeriodsStore extends VuexModule {
 
   @Action({ rawError: true })
   public async loadPeriods(): Promise<PeriodDTO[]> {
-
     await this.ensureInitialized();
-
+    
     try {
-      
-      if(this.periodOfPerformance?.sys_id)
-      {
+      if (this.periodOfPerformance?.sys_id) {
 
-        const periodOfPerformance =  await 
-        api.periodOfPerformanceTable.retrieve(this.periodOfPerformance.sys_id);
+        const periodOfPerformance =  
+          await api.periodOfPerformanceTable.retrieve(this.periodOfPerformance.sys_id);
         this.setPeriodOfPerformance(periodOfPerformance);
         // we'll build a list of ids from the saved period of performance data
         let periods = "";

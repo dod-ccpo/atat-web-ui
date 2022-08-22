@@ -173,7 +173,6 @@ export default class OtherOfferings extends Vue {
       }
     });
     this.setAvlClassificationLevels();
-
     if (this.avlClassificationLevelObjects.length === 1) {
       this.checkSingleClassification();
     } else if (this._serviceOfferingData.classificationLevel) {
@@ -207,7 +206,7 @@ export default class OtherOfferings extends Vue {
       const computeObj = DescriptionOfWork.computeObject;
       this.firstTimeHere = !computeObj.computeData || computeObj.computeData.length === 0;
     } else if (this.isGeneral) {
-      // EJY need logic here
+      // TODO Add logic to determine if first time when completing AT-7824
       this.firstTimeHere = true;
     }
 
@@ -236,11 +235,13 @@ export default class OtherOfferings extends Vue {
     this.setAvlClassificationLevels();
     this.checkSingleClassification();
 
-    this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
+    // EJY need to mock an api call for Periods??
+    if (!this.availablePeriodCheckboxItems) {
+      this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
+    }
   }
 
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
+  public async setComponentSpecificData(): Promise<void> {
     if (this.isCompute) {
       this.formHasBeenTouched = DescriptionOfWork.computeInstancesTouched.indexOf(
         this._serviceOfferingData.instanceNumber) > -1;
@@ -254,6 +255,12 @@ export default class OtherOfferings extends Vue {
     } else {
       this.validateOtherTierOnBlur = true;
     }
+    return;
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+    await this.setComponentSpecificData();
   }
 
   public formComponentUpdate(): void {

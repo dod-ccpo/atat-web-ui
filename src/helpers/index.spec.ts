@@ -1,6 +1,10 @@
 import { ClassificationLevelDTO, SystemChoiceDTO } from "@/api/models";
 import { Checkbox, SelectData } from "types/Global";
-import { buildClassificationCheckboxList, buildClassificationLabel } from "./index";
+import { 
+  buildClassificationCheckboxList, 
+  buildClassificationLabel,
+  createPeriodCheckboxItems,
+} from "./index";
 import _ from "lodash";
 
 describe("testing src/helpers/index.ts", () => {
@@ -60,4 +64,42 @@ describe("testing src/helpers/index.ts", () => {
       )
       expect(classLabel).toBe('Secret/IL6');
     })
+
+  it("createPeriodCheckboxItems() - tests that unsorted SNOW data is successfully " +
+    "transformed to expected sorted datasource array for period checkbox items", async () => {
+    
+    // !!!!! createPeriodCheckboxItems NOW ACCEPTS NO ARGUMENTS
+
+    // const _createPeriodCheckboxItems = createPeriodCheckboxItems(
+    //   [
+    //     {
+    //       "period_unit": "YEAR",
+    //       "period_unit_count": "1",
+    //       "period_type": "OPTION",
+    //       "option_order": "2",
+    //       "sys_id": "period_02"
+    //     },
+    //     {
+    //       "period_unit": "YEAR",
+    //       "period_unit_count": "1",
+    //       "period_type": "BASE",
+    //       "option_order": "1",
+    //       "sys_id": "period_01"
+
+    //     },
+    //   ]
+    // );
+    // expect(_createPeriodCheckboxItems).toEqual([
+    //   {
+    //     "id": "BASE",
+    //     "label": "Base period",
+    //     "value": "period_01"
+    //   },
+    //   {
+    //     "id": "OPTION1",
+    //     "label": "Option period 1",
+    //     "value": "period_02"
+    //   }
+    // ])
+  });    
 });
