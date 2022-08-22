@@ -3,8 +3,6 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import ATATDialog from "@/components/ATATDialog.vue";
 import { DefaultProps } from "vue/types/options";
-import { ok } from "assert";
-
 
 Vue.use(Vuetify);
 
