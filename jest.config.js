@@ -5,23 +5,22 @@ module.exports = {
   collectCoverage: true,
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   //collectCoverageFrom: ["**/*.{js,vue}", "!**/node_modules/**"],
-  // collectCoverageFrom: [
-  //   "<rootDir>/src/components/*.{vue,ts}",
-  //   "<rootDir>/src/helpers/*.{vue,ts}",
-  //   "<rootDir>/src/store/taskOrder/index.ts",
-  //   "<rootDir>/src/router/resolvers/index.ts",
-  //   "<rootDir>/src/steps/04-ContractDetails/PeriodOfPerformance.{vue|js}",
-  //
-  //
-  //   //  "src/components/*.{js|vue}",
-  //   // "src/components/**/*.{js|vue}",
-  //   // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.{vue|js}",
-  //   // "!**/*.{ts}",
-  //   // "!**/src/steps/**/*.{ts|vue}",
-  //   // "!**/src/api/**/*.{ts|vue}",
-  //   // "src/steps/**/**/*.vue"
-  // ],
-  collectCoverageFrom: ["src/**/*.spec.ts", "src/**/*.vue"],
+  collectCoverageFrom: [
+    "<rootDir>/src/components/*.{vue,ts}",
+    "<rootDir>/src/helpers/*.{vue,ts}",
+    "<rootDir>/src/store/taskOrder/index.ts",
+    "<rootDir>/src/router/resolvers/index.ts",
+    "<rootDir>/src/steps/04-ContractDetails/PeriodOfPerformance.{vue|js}",
+
+
+    //  "src/components/*.{js|vue}",
+    // "src/components/**/*.{js|vue}",
+    // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.{vue|js}",
+    // "!**/*.{ts}",
+    // "!**/src/steps/**/*.{ts|vue}",
+    // "!**/src/api/**/*.{ts|vue}",
+    // "src/steps/**/**/*.vue"
+  ],
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
   //   "<rootDir>/src/store/",
