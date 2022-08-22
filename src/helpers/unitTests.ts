@@ -1,7 +1,6 @@
 import Vue, { VueConstructor } from "vue";
 import { Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import { forOwn } from "lodash";
 
 let wrapper: Wrapper<DefaultProps & Vue, Element>;
 let localVue: VueConstructor<Vue>;

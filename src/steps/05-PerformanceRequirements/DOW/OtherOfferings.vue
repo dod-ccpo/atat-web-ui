@@ -254,7 +254,7 @@ export default class OtherOfferings extends Vue {
     } else {
       this.validateOtherTierOnBlur = true;
     }
-  };
+  }
 
   public formComponentUpdate(): void {
     const eb = this.$refs.serviceOfferingForm.errorBag;

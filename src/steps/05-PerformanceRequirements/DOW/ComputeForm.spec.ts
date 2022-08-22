@@ -208,6 +208,14 @@ describe("Testing ComputeForm Component", () => {
     });
   });
 
+  describe("Method Testing...", () => {
+    it(`tests that 'openModal' is emitted when user clicks to update 
+      classification requirements`, async () => {
+      await wrapper.vm.openModal();
+      expect(wrapper.emitted().openModal).toBeTruthy();
+    });
+  });
+
   // describe("Vue Lifecyle Hook Testing...", () => {
   //   it("should set formHasBeenTouched to false when mounted", () => {
   //     expect(wrapper.vm.$data.formHasBeenTouched).toBe(false);
