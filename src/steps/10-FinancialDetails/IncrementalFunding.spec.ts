@@ -3,7 +3,8 @@ import Vuetify from "vuetify";
 import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import IncrementalFunding from "./IncrementalFunding.vue";
 import FinancialDetails from "@/store/financialDetails";
-import Periods from "../../store/periods";
+import Periods  from "../../store/periods";
+import PeriodOfPerformance from "../../store/periods"
 import { DefaultProps } from "vue/types/options";
 import validators from "../../plugins/validation";
 import { SelectData } from "../../../types/Global";
@@ -92,6 +93,47 @@ describe("Testing Incremental Funding Plan", () => {
       await wrapper.vm.loadOnEnter();
       expect(wrapper.vm.$data.costEstimate).toBe(20);
     });
+
+    it("loadOnEnter() - mocks store.FinancialDetails.setIFPData so that the  " +
+      " first selectedQuarter is present in store.FinancialDetails.setIFPData.fundingIncrements[]",
+    async () => {
+    //retrieve necessary store data
+      jest.spyOn(FinancialDetails, 'setIFPData').mockImplementation(
+        ()=>Promise.resolve({
+          initialFundingIncrementStr: "1.00",
+          fundingIncrements: [
+            {
+              text: "4th QTR FY22",
+              amt: "1.01",
+              order: 1,
+              sysId: "id_01",
+              qtrOrder: 1, 
+              hasPeriodGap: false,            
+            }
+          ]
+        }));
+      wrapper.setData({
+        fiscalQuarters: fiscalQuarters,
+      })
+      await wrapper.vm.loadOnEnter();
+      expect(wrapper.vm.selectedQuarters[0].text).toBe("4th QTR FY22")
+    });
+
+
+    it("loadOnEnter() - mocks store.PeriodOfPerformance data to ensure a start data is " +
+      "loads as expected",
+    async () => {
+      // set necessary store data
+      jest.spyOn(PeriodOfPerformance, 'loadPeriodOfPerformance').mockImplementation(
+        ()=>Promise.resolve(
+          {
+            "requested_pop_start_date": "2022-11-25",
+          },
+        ));
+      await wrapper.vm.loadOnEnter();
+      expect(wrapper.vm.$data.startDate).toEqual(new Date("11/25/2022 00:00:00.000"));
+    });
+
 
     it("loadOnEnter() - mock periods data so that data.maxAllowedIncrements for YEAR will be 5",
       async () => {
@@ -182,36 +224,6 @@ describe("Testing Incremental Funding Plan", () => {
         ));
       await wrapper.vm.loadOnEnter();
       expect(wrapper.vm.$data.maxAllowedIncrements).toBe(1);
-    });
-
-
-    it("loadOnEnter() - sets store.FinancialDetails.setIFPData so that the first selectedQuarter " +
-      " is present in store.FinancialDetails.setIFPData.fundingIncrements[]",
-    async () => {
-      //set necessary store data
-
-     
-      FinancialDetails.setIFPData({
-        initialFundingIncrementStr: "1.00",
-        fundingIncrements: [
-          {
-            text: "4th QTR FY22",
-            amt: "1.01",
-            order: 1,
-            sysId: "id_01",
-            qtrOrder: 1, 
-            hasPeriodGap: false,            
-          }
-        ]
-      });
-      wrapper.setData({
-        fiscalQuarters: fiscalQuarters,
-      })
-
-      await wrapper.vm.loadOnEnter();
-
-      const _ifpFundingIncText = (await FinancialDetails.loadIFPData()).fundingIncrements[0].text;
-      expect(wrapper.vm.selectedQuarters[0].text).toBe(_ifpFundingIncText)
     });
 
     it("saveOnLeave() sets data.hasValidatedOnContinue===false to ensure that " + 
@@ -308,6 +320,14 @@ describe("Testing Incremental Funding Plan", () => {
       });
       const _hasChanged = wrapper.vm.hasChanged();
       expect(_hasChanged).toBe(true);
+    });
+
+    it("currentQuarter() - supplies startDate that is to be in 1st quarter ", async () => {
+      wrapper.setData({
+        startDate: new Date("12/22/2022")
+      })
+      const _currentQuarter = wrapper.vm.currentQuarter();
+      expect(_currentQuarter).toBe(1);
     });
 
     it("quarterChange() - supplies correct args/data to successfully change  " +
