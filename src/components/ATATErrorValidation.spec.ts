@@ -11,6 +11,10 @@ describe("Testing ATATStepperNavigation", () => {
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
+  const errorMessages = [
+    "error message 00001",
+    "error message 00002",
+  ]
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(ATATErrorValidation, {
@@ -24,10 +28,37 @@ describe("Testing ATATStepperNavigation", () => {
     });
   });
 
-  describe("PROPS", () => {
-    it("errors.length > 0", async () => {
-      await wrapper.setProps({errorMessages: ['error1', 'error2']});
-      expect(wrapper.vm.$props.errorMessages.length).toBe(2);
+  describe("tests.....", () => {
+    it("showError() - set !data.showAllErrors to ensure single error is displayed", async () => {
+      await wrapper.setProps({
+        showAllErrors: false,
+        errorMessages
+      });
+      await wrapper.vm.showError;
+      expect(wrapper.vm._errorMsgs).toHaveLength(1);
     });
+
+    it("showError() - set !data.showAllErrors && props.errorMessages=[] to ensure NO " + 
+        "error is displayed", async () => {
+      await wrapper.setProps({
+        showAllErrors: false,
+        errorMessages: []
+      });
+      await wrapper.vm.showError;
+      expect(wrapper.vm._errorMsgs).toHaveLength(0);
+    });
+
+    it("showError() - set data.showAllErrors to ensure all errors are displayed", async () => {
+      await wrapper.setProps({
+        showAllErrors: true,
+        errorMessages
+      });
+      await wrapper.vm.showError;
+      expect(wrapper.vm._errorMsgs).toHaveLength(2);
+    });
+
   });
+
+
+  
 });
