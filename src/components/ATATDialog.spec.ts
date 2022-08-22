@@ -91,5 +91,16 @@ describe("Testing ATATDialog Component", () => {
         "Nam quis nulla. Integer malesuada. In in enim a arcu imperd"
       );
     });
+
+    it ("returnFocus() - provides id to mocked element and expects mocked element " + 
+    "to have focus",
+    async ()=>{
+      document.body.innerHTML = "<a name='mockedLink' id='mockedLink'>Mocked Link</a>";
+      jest.spyOn(document,"getElementById");
+      await wrapper.vm.returnFocus("mockedLink");
+      Vue.nextTick(()=>{
+        expect(document.getElementById("mockedLink")).toHaveFocus();
+      })
+    })
   });
 });
