@@ -9,7 +9,7 @@ module.exports = {
     "<rootDir>/src/components/*.{vue,ts}",
     "<rootDir>/src/helpers/*.{vue,ts}",
     "<rootDir>/src/store/taskOrder/index.ts",
-    "<rootDir>src/router/resolvers/index.ts",
+    "<rootDir>/src/router/resolvers/index.ts",
 
 
     //  "src/components/*.{js|vue}",
