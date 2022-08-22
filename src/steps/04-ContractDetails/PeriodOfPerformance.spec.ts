@@ -27,7 +27,6 @@ describe("Testing PeriodOfPerformance Component", () => {
 
   describe("Initialization....", () => {
     it("tests that component renders successfully", async () => {
-      console.log(wrapper)
       expect(wrapper.exists()).toBe(true);
     });
   });
@@ -57,26 +56,24 @@ describe("Testing PeriodOfPerformance Component", () => {
       id: null,
       order: 1,
     }
-    const emptyCase = {
-      duration: 0,
-      unitOfTime: "",
-      id: null,
-      order: 1,
-    }
-    const p1Result = "The length of this period must be 1 year or less."
-    const p2Result = "The length of this period must be 12 months or less."
-    const p3Result = "The length of this period must be 52 weeks or less."
-    const p4Result = "The length of this period must be 365 days or less."
-    // eslint-disable-next-line max-len
-    const cases = [[period1,p1Result],[period2,p2Result],[period3,p3Result],[period4,p4Result],[emptyCase,""]]
-    test.each(cases)(
-      'given values more than a year should return error message',(period,message) => {
-        const result = wrapper.vm.oneYearCheck(period);
-        expect(result).toEqual(message)
-      }
-    )
+    it('should return a string for period longer than a year', ()=>{
+      const result = wrapper.vm.oneYearCheck(period1);
+      expect(result.length).toBeGreaterThan(0)
+    })
+    it('should return a string for period longer than 12 month', ()=>{
+      const result = wrapper.vm.oneYearCheck(period2);
+      expect(result.length).toBeGreaterThan(0)
+    })
+    it('should return a string for period longer than 52 week', ()=>{
+      const result = wrapper.vm.oneYearCheck(period3);
+      expect(result.length).toBeGreaterThan(0)
+    })
+    it('should return a string for period longer than 365 days', ()=>{
+      const result = wrapper.vm.oneYearCheck(period4);
+      expect(result.length).toBeGreaterThan(0)
+    })
   })
-  describe("test oneYearCheck()- returns a string if the period is more than one year",() =>{
+  describe("test oneYearCheck()- returns a empty string if the period is one year or less",() =>{
     const period1 = {
       duration: 1,
       unitOfTime: "YEAR",
@@ -101,14 +98,33 @@ describe("Testing PeriodOfPerformance Component", () => {
       id: null,
       order: 1,
     }
-    const pResult = ""
-    const cases = [[period1,pResult],[period2,pResult],[period3,pResult],[period4,pResult]]
-    test.each(cases)(
-      'given values more than a year should return error message',(period,message) => {
-        const result = wrapper.vm.oneYearCheck(period);
-        expect(result).toEqual(message)
-      }
-    )
+    const emptyCase = {
+      duration: 0,
+      unitOfTime: "",
+      id: null,
+      order: 1,
+    }
+
+    it('should return an empty string for correct year', ()=>{
+      const result = wrapper.vm.oneYearCheck(period1);
+      expect(result.length).toEqual(0)
+    })
+    it('should return an empty string for correct month', ()=>{
+      const result = wrapper.vm.oneYearCheck(period2);
+      expect(result.length).toEqual(0)
+    })
+    it('should return an empty string for correct week', ()=>{
+      const result = wrapper.vm.oneYearCheck(period3);
+      expect(result.length).toEqual(0)
+    })
+    it('should return an empty string for correct days', ()=>{
+      const result = wrapper.vm.oneYearCheck(period4);
+      expect(result.length).toEqual(0)
+    })
+    it('should return an empty string ', ()=>{
+      const result = wrapper.vm.oneYearCheck(emptyCase);
+      expect(result.length).toEqual(0)
+    })
   })
 
   describe("test setTotalPoP()- should change the value of PoP duration and base duration",() =>{
@@ -125,17 +141,17 @@ describe("Testing PeriodOfPerformance Component", () => {
       order: 1,
     }
     const period3 = {
-      duration: 0,
-      unitOfTime: "YEAR",
+      duration: 52,
+      unitOfTime: "WEEK",
       id: null,
       order: 1,
     }
 
     it('should change the value base and total duration',() => {
-      wrapper.setData({optionPeriods:[period3,{}]})
+      wrapper.setData({optionPeriods:[{},period3]})
       wrapper.vm.setTotalPoP()
       expect(wrapper.vm.$data.basePoPDuration).toBe(0)
-      expect(wrapper.vm.$data.totalPoPDuration).toBe(0)
+      expect(wrapper.vm.$data.totalPoPDuration).toBe(364)
       expect(wrapper.vm.$data.basePeriodMissing).toBe(true)
 
 

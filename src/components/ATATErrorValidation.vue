@@ -24,6 +24,7 @@ export default class ATATErrorValidation extends Vue {
   @Prop({ default: () => [] }) private errorMessages!: string[];
   @Prop({ default: false }) private textAreaWithCounter!: boolean;
   @Prop({ default: false }) private showAllErrors!: boolean;
+  @Prop({default: "Error"}) private id?: string;
 
   private _errorMsgs = ['']; 
 

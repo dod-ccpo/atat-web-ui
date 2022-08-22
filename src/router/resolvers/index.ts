@@ -533,7 +533,7 @@ export const Upload7600Resolver = (current: string): string => {
     : routeNames.SeverabilityAndIncrementalFunding;
 }
 const cutOff = 270;
-async function calcBasePeriod() {
+export async function calcBasePeriod() {
   const period = await Periods.loadPeriods()
   let basePeriod = 0
   let multiplier = 1;
