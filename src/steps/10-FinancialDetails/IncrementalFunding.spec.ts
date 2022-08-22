@@ -338,8 +338,6 @@ describe("Testing Incremental Funding Plan", () => {
         selectedQuarters: selectedQuarters
       })
       const _fundingIncs = wrapper.vm.$data.fundingIncrements;
-      expect(_fundingIncs[0].text).toEqual("4th QTR FY22");
-      expect(_fundingIncs[1].text).toEqual("1st QTR FY23");
       const args = {
         newSelectedValue: {
           multiSelectOrder: 4,
