@@ -66,6 +66,7 @@ module.exports = {
     "<rootDir>/src/helpers/index.spec.ts",
     "<rootDir>/src/store/taskOrder/__test__/index.spec.ts",
     "<rootDir>/src/router/resolvers/__test__/index.spec.ts",
+    "<rootDir>/src/steps/04-ContractDetails/PeriodOfPerformance.spec.ts",
 
     // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.spec.ts",
   ],
