@@ -6,11 +6,10 @@ module.exports = {
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   //collectCoverageFrom: ["**/*.{js,vue}", "!**/node_modules/**"],
   // collectCoverageFrom: [
-  //   "<rootDir>/src/components/*.{vue,ts}",
-  //   "<rootDir>/src/helpers/*.{vue,ts}",
-  //   "<rootDir>/src/store/classificationRequirements/index.ts",
-
-
+  //   // "<rootDir>/src/components/*.{vue,ts}",
+  //   // "<rootDir>/src/helpers/*.{vue,ts}",
+  //   // "<rootDir>/src/steps/**/*.{vue,ts}",
+  //   // "<rootDir>/src/api/**/*.{vue,ts}",
   //   //  "src/components/*.{js|vue}",
   //   // "src/components/**/*.{js|vue}",
   //   // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.{vue|js}",
@@ -19,6 +18,8 @@ module.exports = {
   //   // "!**/src/api/**/*.{ts|vue}",
   //   // "src/steps/**/**/*.vue"
   // ],
+  collectCoverageFrom: ["src/**/*.spec.ts", "src/**/*.vue"],
+  
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
   //   "<rootDir>/src/store/",
@@ -27,16 +28,17 @@ module.exports = {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-   coverageProvider: "babel",
+  coverageProvider: "babel",
 
   // A list of reporter names that Jest uses when writing coverage reports
-  // coverageReporters: [
-  //   "json",
-  //   "text",
-  //   "lcov",
-  //   "clover",
-  //   "html"
-  // ],
+  coverageReporters: [
+    // "default",
+    // "json",
+    // "text",
+    "lcov",
+    // "clover",
+    // "html"
+  ],
   // A set of global variables that need to be available in all test environments
   // globals: {
   //   'ts-jest': {
@@ -73,6 +75,7 @@ module.exports = {
   //   "<rootDir>/src/store",
   //   "<rootDir>/src/api",
   // ],
+ 
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
   testURL: "http://localhost/",
   // A map from regular expressions to paths to transformers
