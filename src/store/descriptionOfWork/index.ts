@@ -135,6 +135,11 @@ export class DescriptionOfWorkStore extends VuexModule {
     nameofProperty(this, (x)=> x.DOWObject)
   ];
   
+  @Action 
+  public async getDOWObject(): Promise<DOWServiceOfferingGroup[]> {
+    return this.DOWObject;
+  }
+
   // getters
   public get currentOfferingGroupIndex(): number {
     return this.DOWObject
@@ -343,7 +348,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  private setServiceOfferingGroups(value: SystemChoiceDTO[]) {
+  public setServiceOfferingGroups(value: SystemChoiceDTO[]): void {
     value.forEach((value, index) => {
       // ensure "none apply" options are last in sequence
       value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index + 1;

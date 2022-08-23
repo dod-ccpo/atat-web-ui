@@ -30,6 +30,7 @@
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
               <button
+                :id="'EditButton_' + item.instanceNumber"
                 @click="editInstance(item)"
                 class="mr-2"
               >
@@ -37,6 +38,7 @@
               </button>
 
               <button
+                :id="'DeleteButton_' + item.instanceNumber"
                 @click="confirmDeleteInstance(item)"
                 class="ml-2"
               >
@@ -304,14 +306,14 @@ export default class ComputeRequirements extends Vue {
   public async loadOnEnter(): Promise<void> {
     await this.buildTableData();
 
-    const DOWObject = DescriptionOfWork.DOWObject;
+    const DOWObject = await DescriptionOfWork.getDOWObject();
     if (DOWObject && DOWObject.length > 1) {
       const computeIndex = DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() === "compute"
       );
       if (computeIndex < DOWObject.length - 1) {
         const nextOfferingGroupId = DOWObject[computeIndex + 1].serviceOfferingGroupId;
-        const offeringGroups = DescriptionOfWork.serviceOfferingGroups;
+        const offeringGroups = await DescriptionOfWork.getServiceOfferingGroups();
         const nextOfferingGroupObj = offeringGroups.find(
           obj => obj.value === nextOfferingGroupId
         );
