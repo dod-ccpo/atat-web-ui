@@ -13,8 +13,8 @@
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest",
-    "test-file:watch": "jest --watch --no-cache --onlyChanged --findRelatedTests src/components/ATATExpandableLink.spec.ts",
-    "test:coverage": "jest --coverage",
+    "test-file:watch": "jest --watch --coverage --no-cache --onlyChanged --findRelatedTests src/steps/10-FinancialDetails/IncrementalFunding.spec.ts",
+    "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
     "cypress:single-test": "npm run test:e2e --  --spec 'cypress/integration/ATATDevSnow/OtherContractConsiderations/Trainin*.spec.js'",
     "cypress:isolated-tests": "npx cypress run --env grepTags=-@iso-ignore"

@@ -35,7 +35,13 @@
         :menu-props="{ bottom: true, offsetY: true }"
       >
         <template v-slot:item="{ item, on }">
-          <v-list-item v-on="on">
+          <v-list-item 
+            v-on="on" 
+            :class="[
+              {'_item-disabled': item.disabled },
+              {'d-none': item.hidden }
+            ]"
+          >
             <v-list-item-content
               :id="id + '_DropdownListItem_' + item.text.replace(/[^A-Z0-9]/ig, '')"
               :item-value = item.value
@@ -97,13 +103,19 @@ export default class ATATSelect extends Vue {
 
   //data
   private rounded = false;
-  private selected = "";
+  private selected: SelectData | string = "";
   private errorMessages: string[] = [];
+  private selectedBeforeChange: SelectData | string = "";
 
   @Emit("onChange")
-  private onChange(val: string): void {
+  private onChange(val: string | SelectData): void {
     this.selected = val;
     this.setErrorMessage();
+    this.$emit("selectValueChange", { 
+      "newSelectedValue": val, 
+      "selectedBeforeChange": this.selectedBeforeChange 
+    });
+    this.selectedBeforeChange = val;
   }
 
   private onInput(v: string) {
@@ -111,8 +123,10 @@ export default class ATATSelect extends Vue {
   }
 
   private setErrorMessage(): void {
-    setTimeout(()=>{
-      this.errorMessages = this.$refs.atatSelect.errorBucket;
+    setTimeout(() => {
+      this.errorMessages = this.$refs.atatSelect && Object.prototype.hasOwnProperty.call(
+        this.$refs.atatSelect, "errorBucket"
+      ) ? this.$refs.atatSelect.errorBucket : [];
     }, 0);
   }
 
@@ -120,6 +134,10 @@ export default class ATATSelect extends Vue {
   private onBlur(value: string) : void {
     this.setErrorMessage();
     this.$emit('blur', value);
+  }
+
+  public mounted(): void {
+    this.selectedBeforeChange = this._selectedValue;
   }
 
 }
