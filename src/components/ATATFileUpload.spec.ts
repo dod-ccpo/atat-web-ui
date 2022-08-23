@@ -2,10 +2,10 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import {
-  AttachmentService,
-  AttachmentServiceFactory,
-} from "@/services/attachment";
+// import {
+//   AttachmentService,
+//   AttachmentServiceFactory,
+// } from "@/services/attachment";
 
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 Vue.use(Vuetify);
@@ -63,17 +63,18 @@ describe("Testing ATATTextField Component", () => {
   });
 
 
-  it("fileUploadClicked() - process event ", async () => {
-    wrapper.vm.setData({
-      maxNumberOfFiles: 2,
-      validFiles
+  it("fileUploadClicked() - process event target ", async () => {
+    wrapper.setData({
+      maxNumberOfFiles: 4
     });
-    const event: MouseEvent = {};
-    event.target?.classList
-
-    await wrapper.vm.fileUploadClicked(event);
-
-
-
+    wrapper.setProps({
+      validFiles
+    })
+    const link = await wrapper.find("#BrowseToUpload");
+    await link.trigger("mousedown", {
+      classList: jest.fn(() => ['_text_link'])
+    });
+    expect(await wrapper.vm.reset()).toHaveBeenCalled();
+    expect(await wrapper.vm.$data.isFullSize).toBe(true);
   })
 });
