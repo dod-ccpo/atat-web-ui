@@ -2,7 +2,7 @@
 import Vue, { computed } from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
-import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
+import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import PeriodOfPerformance from "@/steps/04-ContractDetails/PeriodOfPerformance.vue";
 import validators from "@/plugins/validation";
 import { DefaultProps } from "vue/types/options";
@@ -99,8 +99,8 @@ describe("Testing PeriodOfPerformance Component", () => {
       order: 1,
     }
     const emptyCase = {
-      duration: 0,
-      unitOfTime: "",
+      duration: 3,
+      unitOfTime: "today",
       id: null,
       order: 1,
     }
