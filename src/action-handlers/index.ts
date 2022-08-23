@@ -43,7 +43,7 @@ async function deleteServiceOfferingGroup() {
 
 // used in Compute when user clicks "I don't need compute resources" button
 async function confirmComputeDeletion() {
-  DescriptionOfWork.setConfirmComputeDelete(true);
+  DescriptionOfWork.setConfirmOtherOfferingDelete(true);
 }
 
 export default actionHandler;

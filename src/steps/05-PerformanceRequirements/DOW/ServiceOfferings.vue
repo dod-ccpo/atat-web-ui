@@ -180,23 +180,23 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         obj => obj.serviceOfferingGroupId.toLowerCase() === "compute"
       );
       if (computeIndex > -1) {
-        const computeDataArray = DescriptionOfWork.DOWObject[computeIndex].computeData;
+        const computeDataArray = DescriptionOfWork.DOWObject[computeIndex].otherOfferingData;
         if (computeDataArray && computeDataArray.length > 0) {
-          const currentComputeInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
+          const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
           const computeData = computeDataArray.find(
-            obj => obj.instanceNumber === currentComputeInstanceNumber
+            obj => obj.instanceNumber === currentInstanceNumber
           );
           if (computeData) {
             this.otherOfferingData = computeData;
           } else {
             const newComputeData 
-              = await DescriptionOfWork.getComputeInstance(0);
-            newComputeData.instanceNumber = currentComputeInstanceNumber;
+              = await DescriptionOfWork.getOtherOfferingInstance(0);
+            newComputeData.instanceNumber = currentInstanceNumber;
             this.otherOfferingData = newComputeData;
           }
         } else {
           this.otherOfferingData.instanceNumber = 1;
-          DescriptionOfWork.setCurrentComputeInstanceNumber(1);
+          DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(1);
         }
       }
     }
@@ -221,8 +221,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             await DescriptionOfWork.setSelectedOfferings(
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
-          } else if (this.isCompute) {
-            await DescriptionOfWork.setComputeData(this.otherOfferingData);
+          } else if (this.isCompute || this.isGeneral) {
+            await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
         }
 

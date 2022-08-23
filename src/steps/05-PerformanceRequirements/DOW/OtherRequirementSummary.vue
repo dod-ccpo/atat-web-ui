@@ -7,12 +7,13 @@
             Your Compute Requirements
           </h1>
           <p>
-            If you need more instances, add them below. You can also edit or delete 
-            any info from the instances that you have already entered. When you’re 
+            If you need more {{ widget }}s, add them below. You can also edit or delete 
+            any info from the {{ widget }}s that you have already entered. When you’re 
             done, click Continue and we will move on to your 
-            <span v-if="nextOfferingGroupStr">{{ nextOfferingGroupStr }}</span> 
-            <span v-else>performance requirements</span>
-            requirements.
+            <span v-if="nextOfferingGroupStr && !returnToDOWSummary">
+              {{ nextOfferingGroupStr }} requirements.
+            </span> 
+            <span v-else>performance requirements summary.</span>
           </p>
 
           <v-data-table
@@ -62,7 +63,7 @@
               name="control-point" 
               class="mr-2"
             />
-            Add <span v-if="tableData.length">another</span> instance
+            Add <span v-if="tableData.length">another</span> {{ widget }}
           </v-btn>  
         </v-col>
       </v-row>
@@ -79,20 +80,21 @@
     >
       <template #content>
         <p class="body">
-          This instance will be removed from your compute requirements. Any details 
-          about this instance will not be saved.
+          This {{ widget }} will be removed from your // compute \\  requirements. Any details 
+          about this {{ widget }} will not be saved.
         </p>
       </template>
     </ATATDialog>
 
+    <!-- EJY REPLACE "compute" below with service offering name -->
     <ATATDialog
-      :showDialog="showDeleteComputeDialog"
-      :title="'Delete all compute instances?'"
+      :showDialog="showDeleteOfferingDialog"
+      :title="'Delete all compute ' + widget + 's?'"
       no-click-animation
       okText="Delete compute"
       width="450"
-      @ok="deleteCompute"
-      @cancelClicked="cancelDeleteCompute"
+      @ok="deleteOffering"
+      @cancelClicked="cancelDeleteOffering"
     >
       <template #content>
         <p class="body">
@@ -115,7 +117,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { OtherServiceOfferingData, ComputeInstanceTableData } from "../../../../types/Global";
+import { OtherServiceOfferingData, OtherServiceSummaryTableData } from "../../../../types/Global";
 import { buildClassificationLabel } from "@/helpers";
 import _ from 'lodash';
 
@@ -126,8 +128,14 @@ import _ from 'lodash';
   }
 })
 
-export default class ComputeRequirements extends Vue {
-  public computeInstances: OtherServiceOfferingData[] = [];
+export default class OtherRequirementSummary extends Vue {
+  public isCompute = false;
+  public isGeneral = false;
+  public isDatabase = false;
+  public widget = "";
+
+
+  public offeringInstances: OtherServiceOfferingData[] = [];
 
   public tableHeaders = [
     { text: "", value: "instanceNumber", width: "50" },
@@ -142,25 +150,25 @@ export default class ComputeRequirements extends Vue {
     { text: "", value: "actions", width: "75" },
   ];
 
-  public tableData: ComputeInstanceTableData[] = [];
+  public tableData: OtherServiceSummaryTableData[] = [];
 
   public nextOfferingGroupStr = "";
   public showDeleteInstanceDialog = false;
   public instanceNumberToDelete = 0;
-  public showDeleteComputeDialog = false;
+  public showDeleteOfferingDialog = false;
   public missingEnvironmentType = false;
-
+  public returnToDOWSummary = false;
 
   get confirmComputeDelete(): boolean {
-    return DescriptionOfWork.confirmComputeDeleteVal;
+    return DescriptionOfWork.confirmOtherOfferingDeleteVal;
   }
 
   @Watch("confirmComputeDelete")
   public confirmComputeDeleteChanged(newVal: boolean): void {
     if (newVal && this.tableData.length > 0) {
-      this.showDeleteComputeDialog = newVal;
+      this.showDeleteOfferingDialog = newVal;
     } else if (newVal) {
-      this.deleteCompute();
+      this.deleteOffering();
     }
   }
 
@@ -176,43 +184,46 @@ export default class ComputeRequirements extends Vue {
   }
 
   public async addComputeInstance(): Promise<void> {
-    const lastInstanceNumber = await DescriptionOfWork.getLastComputeInstanceNumber();
-    await DescriptionOfWork.setCurrentComputeInstanceNumber(lastInstanceNumber + 1);
+    const lastInstanceNumber = await DescriptionOfWork.getLastOtherOfferingInstanceNumber();
+    await DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(lastInstanceNumber + 1);
     this.navigate();
   }
 
-  public editInstance(item: ComputeInstanceTableData): void {
-    DescriptionOfWork.setCurrentComputeInstanceNumber(item.instanceNumber);
+  public editInstance(item: OtherServiceSummaryTableData): void {
+    DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(item.instanceNumber);
     DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
     this.navigate();
   }
 
-  public confirmDeleteInstance(item: ComputeInstanceTableData): void {
+  public confirmDeleteInstance(item: OtherServiceSummaryTableData): void {
     this.instanceNumberToDelete = item.instanceNumber;
     this.showDeleteInstanceDialog = true;
   }
 
   public async deleteInstance(): Promise<void> {
-    await DescriptionOfWork.deleteComputeInstance(this.instanceNumberToDelete);
+    // EJY if compute or general... 
+    if (this.isCompute) {
+      await DescriptionOfWork.deleteOtherOfferingInstance(this.instanceNumberToDelete);
+    }
     await this.buildTableData();
     this.showDeleteInstanceDialog = false;
   }
 
-  public async deleteCompute(): Promise<void> {
-    await DescriptionOfWork.deleteCompute();
-    DescriptionOfWork.setConfirmComputeDelete(false);
+  public async deleteOffering(): Promise<void> {
+    await DescriptionOfWork.deleteOtherOffering();
+    DescriptionOfWork.setConfirmOtherOfferingDelete(false);
     this.navigate();
   }
 
-  public cancelDeleteCompute(): void {
-    this.showDeleteComputeDialog = false;
-    DescriptionOfWork.setConfirmComputeDelete(false);
+  public cancelDeleteOffering(): void {
+    this.showDeleteOfferingDialog = false;
+    DescriptionOfWork.setConfirmOtherOfferingDelete(false);
   }
 
   public async buildTableData(): Promise<void> {
     this.tableData = [];
-    this.computeInstances = await DescriptionOfWork.getComputeInstances();
-    this.computeInstances.forEach(async (instance) => {
+    this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
+    this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);
 
       const otherRegionIndex = instanceClone.deployedRegions.indexOf("OtherRegion");
@@ -250,7 +261,7 @@ export default class ComputeRequirements extends Vue {
         // eslint-disable-next-line max-len
         instanceClone.environmentType += `<div class="d-flex align-center"><svg viewBox="0 0 18 18" height="14px" width="14px" xmlns="http://www.w3.org/2000/svg"><path d="M9.83366 13.6641H10.3337V13.1641V11.4974V10.9974H9.83366H8.16699H7.66699V11.4974V13.1641V13.6641H8.16699H9.83366ZM9.83366 10.3307H10.3337V9.83073V4.83073V4.33073H9.83366H8.16699H7.66699V4.83073V9.83073V10.3307H8.16699H9.83366ZM1.16699 8.9974C1.16699 4.67354 4.67647 1.16406 9.00033 1.16406C13.3242 1.16406 16.8337 4.67354 16.8337 8.9974C16.8337 13.3213 13.3242 16.8307 9.00033 16.8307C4.67647 16.8307 1.16699 13.3213 1.16699 8.9974Z" fill="#c60634" stroke="#c60634"/></svg><span class="font-size-12 text-error d-inline-block ml-1">Missing info</span></div>`;
       }
-      const instanceData: ComputeInstanceTableData = {
+      const instanceData: OtherServiceSummaryTableData = {
         instanceNumber: instanceClone.instanceNumber,
         type: instanceClone.environmentType,
         location: deployedRegions,
@@ -304,6 +315,16 @@ export default class ComputeRequirements extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    this.returnToDOWSummary = await DescriptionOfWork.getReturnToDOWSummary();
+
+    const currentGroupId = await DescriptionOfWork.getCurrentOfferingGroupId();
+    this.isCompute = currentGroupId.toLowerCase() === "compute";
+    this.isGeneral = currentGroupId.toLowerCase() === "general_xaas";
+    this.isDatabase = currentGroupId.toLowerCase() === "database";
+
+    this.widget = this.isGeneral ? "requirement" : "instance"; 
+
+
     await this.buildTableData();
 
     const DOWObject = await DescriptionOfWork.getDOWObject();

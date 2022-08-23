@@ -227,7 +227,7 @@ export interface DOWServiceOfferingGroup {
   serviceOfferingGroupId: string;
   sequence: number;
   serviceOfferings: DOWServiceOffering[];
-  computeData?: OtherServiceOfferingData[];
+  otherOfferingData?: OtherServiceOfferingData[];
 }
 
 export interface fundingIncrement {
@@ -291,14 +291,28 @@ export interface OtherServiceOfferingData {
   requirementTitle?: string;
 }
 
-export interface ComputeInstanceTableData {
+// export interface ComputeInstanceTableData {
+//   instanceNumber: number;
+//   type: string;
+//   location: string;
+//   qty: string;
+//   vCPU: string;
+//   memory: string;
+//   storage: string;
+//   classification: string;
+//   performance: string;
+// }
+
+export interface OtherServiceSummaryTableData {
   instanceNumber: number;
-  type: string;
-  location: string;
-  qty: string;
-  vCPU: string;
-  memory: string;
-  storage: string;
-  classification: string;
-  performance: string;
+  type?: string;
+  location?: string;
+  qty?: string;
+  vCPU?: string;
+  memory?: string;
+  storage?: string;
+  classification?: string;
+  performance?: string;
+  requirementTitle?: string;
+  duration?: string;
 }

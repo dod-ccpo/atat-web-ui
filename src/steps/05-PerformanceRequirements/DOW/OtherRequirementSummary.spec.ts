@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
-import ComputeRequirements from "../DOW/ComputeRequirements.vue";
+import OtherRequirementSummary from "../DOW/OtherRequirementSummary.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 import DescriptionOfWork from "@/store/descriptionOfWork";
@@ -74,7 +74,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(ComputeRequirements, {
+    wrapper = mount(OtherRequirementSummary, {
       localVue,
       vuetify,
       propsData: {
@@ -98,7 +98,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
         ()=>Promise.resolve(
           serviceOfferingGroups
         ));
-      jest.spyOn(DescriptionOfWork, 'getComputeInstances').mockImplementation(
+      jest.spyOn(DescriptionOfWork, 'getOtherOfferingInstances').mockImplementation(
         ()=>Promise.resolve(
           computeData
         ));

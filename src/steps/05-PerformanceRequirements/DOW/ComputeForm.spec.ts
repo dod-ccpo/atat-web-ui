@@ -24,7 +24,7 @@ describe("Testing ComputeForm Component", () => {
   Vue.config.silent = true;
 
   //propsData
-  const computeData = {
+  const otherOfferingData = {
     "instanceNumber": 1,
     "environmentType": "Dev/Testing",
     // `pragma: allowlist secret`
@@ -174,13 +174,13 @@ describe("Testing ComputeForm Component", () => {
       mocks: {
         $store: {
           DescriptionOfWork: {
-            computeObject: computeData,
+            otherOfferingData: otherOfferingData,
           }
         },
 
       },
       propsData: {
-        computeData: computeData,
+        otherOfferingData: otherOfferingData,
         avlClassificationLevelObjects: avlClassificationLevelObjects,
         firstTimeHere: true,
         isClassificationDataMissing: false,
@@ -219,9 +219,9 @@ describe("Testing ComputeForm Component", () => {
   describe("testing form fields", () => {
     describe("testing `entire duration` radio button selection", () => {
       it("tests `YES` being selected then clears prop.computeData.periodsNeeded[]", async () => {
-        computeData.entireDuration = 'YES';
+        otherOfferingData.entireDuration = 'YES';
         await wrapper.setData({
-          _computeData: computeData,
+          _otherOfferingData: otherOfferingData,
           availablePeriodCheckboxItems: [
             {
               id: "BaseDisabled",
@@ -238,9 +238,9 @@ describe("Testing ComputeForm Component", () => {
 
       it("tests `NO` being selected then sets prop.computeData.periodsNeeded[] to ['Base']",
         async () => {
-          computeData.entireDuration = 'NO';
+          otherOfferingData.entireDuration = 'NO';
           await wrapper.setData({
-            _computeData: computeData,
+            _otherOfferingData: otherOfferingData,
             availablePeriodCheckboxItems: [
               {
                 id: "BaseDisabled",

@@ -312,16 +312,16 @@ export const OfferGroupOfferingsPathResolver = (
   });
 
   Steps.setAdditionalButtonHide(false);
-  const computeData = DescriptionOfWork.computeObject.computeData;
 
-  if (isCompute) { // TODO in task 7824 - add || isGeneral
-    const currentInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
+  if (isCompute || isGeneral) {
+    const otherOfferingData = DescriptionOfWork.otherOfferingObject.otherOfferingData;
+    const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
     if (current !== routeNames.ServiceOfferingDetails) {
-      if (computeData && computeData.length) {
-        return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`;
+      if (otherOfferingData && otherOfferingData.length) {
+        return `${basePerformanceRequirementsPath}/service-offerings/other/summary`;
       }
-    } else if (computeData && computeData.length > 0 
-      && !(currentInstanceNumber === 1 && computeData.length === 1) 
+    } else if (otherOfferingData && otherOfferingData.length > 0 
+      && !(currentInstanceNumber === 1 && otherOfferingData.length === 1) 
     ) {
       // if more than one compute instance, hide the "I don't need compute resources" button
       Steps.setAdditionalButtonHide(true);
@@ -341,7 +341,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   }
   const groupId = DescriptionOfWork.currentGroupId;
   if (groupId.toLowerCase() === "compute") {
-    return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`
+    return `${basePerformanceRequirementsPath}/service-offerings/other/summary`
   }
 
   const missingClassification = DescriptionOfWork.missingClassificationLevels;

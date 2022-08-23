@@ -421,10 +421,16 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   }
 
+  @Action
+  public async getReturnToDOWSummary(): Promise<boolean> {
+    return this.returnToDOWSummary;
+  }
+
   @Mutation
   public setReturnToDOWSummary(bool: boolean): void {
     this.returnToDOWSummary = bool;
   }
+
   @Mutation
   public setReviewGroupFromSummary(bool: boolean): void {
     this.reviewGroupFromSummary = bool;
@@ -573,12 +579,18 @@ export class DescriptionOfWorkStore extends VuexModule {
       = instancesData;
   }
 
-  // COMPUTE data/methods
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+  // COMPUTE/GENERAL_XAAS/DATABSE data/methods
 
-  currentComputeInstanceNumber = 0;
+  currentOtherServiceInstanceNumber = 0;
 
-  emptyComputeInstance: OtherServiceOfferingData = {
-    instanceNumber: this.currentComputeInstanceNumber,
+  emptyOtherOfferingInstance: OtherServiceOfferingData = {
+    instanceNumber: this.currentOtherServiceInstanceNumber,
     environmentType: "",
     classificationLevel: "",
     deployedRegions: [],
@@ -597,210 +609,260 @@ export class DescriptionOfWorkStore extends VuexModule {
     requirementTitle: "",
   }
 
-  @Action
-  public async getLastComputeInstanceNumber(): Promise<number> {
-    const computeIndex = this.DOWObject.findIndex(
-      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+  @Action // repurposed
+  public async getLastOtherOfferingInstanceNumber(): Promise<number> {
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
     );
-    if (computeIndex > -1) {
-      const computeData = this.DOWObject[computeIndex].computeData;
-      if (computeData && computeData.length > 0) {
-        const instanceNumbers = computeData.map(obj => obj.instanceNumber);
+    if (offeringIndex > -1) {
+      const otherOfferingData = this.DOWObject[offeringIndex].otherOfferingData;
+      if (otherOfferingData && otherOfferingData.length > 0) {
+        const instanceNumbers = otherOfferingData.map(obj => obj.instanceNumber);
         return  Math.max(...instanceNumbers);
       }
     }
     return 1;
   }
 
-  @Action
-  public async setCurrentComputeInstanceNumber(number: number): Promise<void> {
-    this.doSetCurrentComputeInstanceNumber(number);
+  @Action // repurposed
+  public async setCurrentOtherOfferingInstanceNumber(number: number): Promise<void> {
+    this.doSetCurrentOtherOfferingInstanceNumber(number);
   }
 
-  @Mutation
-  public async doSetCurrentComputeInstanceNumber(number: number): Promise<void> {
-    this.currentComputeInstanceNumber = number;
+  @Mutation // repurposed
+  public async doSetCurrentOtherOfferingInstanceNumber(number: number): Promise<void> {
+    this.currentOtherServiceInstanceNumber = number;
   }
 
   @Action
-  public async getComputeInstance(instanceNumber: number): Promise<OtherServiceOfferingData> {
-    const computeData = this.computeObject.computeData;
-    if (computeData && computeData.length) {
-      const instance = computeData.find(
+  public async getOtherOfferingInstance(instanceNumber: number): Promise<OtherServiceOfferingData> {
+    const otherOfferingData = this.otherOfferingObject.otherOfferingData;
+    if (otherOfferingData && otherOfferingData.length) {
+      const instance = otherOfferingData.find(
         obj => obj.instanceNumber === instanceNumber
       );
-      return instance || _.clone(this.emptyComputeInstance);
+      return instance || _.clone(this.emptyOtherOfferingInstance);
     }
-    return _.clone(this.emptyComputeInstance);
+    return _.clone(this.emptyOtherOfferingInstance);
   }
 
-  public get computeObject(): DOWServiceOfferingGroup {
-    const computeIndex = this.DOWObject.findIndex(
-      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+  public get otherOfferingObject(): DOWServiceOfferingGroup {
+    const currentOfferingId = this.currentGroupId.toLowerCase();
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === currentOfferingId
     );
-    if (computeIndex > -1) {
-      return this.DOWObject[computeIndex];
-    } 
-    return {
-      serviceOfferingGroupId: "",
-      sequence: 0,
-      serviceOfferings: []
-    };
+    return offeringIndex > -1
+      ? this.DOWObject[offeringIndex]
+      : { serviceOfferingGroupId: "", sequence: 0, serviceOfferings: [] };
   }
 
   @Action
-  public async pushTouchedComputeInstance(instanceNumber: number): Promise<void> {
-    this.doPushTouchedComputeInstance(instanceNumber);
+  public async pushTouchedOtherOfferingInstance(instanceNumber: number): Promise<void> {
+    this.doPushTouchedOtherOfferingInstance(instanceNumber);
   }
 
   @Mutation
-  public doPushTouchedComputeInstance(instanceNumber: number): void {
+  public doPushTouchedOtherOfferingInstance(instanceNumber: number): void {
+    const groupKey: string = this.currentGroupId.toLowerCase();
+    this.otherOfferingInstancesTouched[groupKey].push(instanceNumber);
+    // EJY can kill below if above works;
     this.computeInstancesTouched.push(instanceNumber);
   }
 
   @Action
-  public async setComputeData(computeData: OtherServiceOfferingData): Promise<void> {
-    this.doSetComputeData(computeData);
+  public async setOtherOfferingData(otherOfferingData: OtherServiceOfferingData): Promise<void> {
+    this.doSetOtherOfferingData(otherOfferingData);
   }
 
   @Mutation
-  public async doSetComputeData(computeData: OtherServiceOfferingData): Promise<void> {
-    const computeIndex = this.DOWObject.findIndex(
-      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+  public async doSetOtherOfferingData(
+    otherOfferingData: OtherServiceOfferingData
+  ): Promise<void> {
+    debugger;
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
     );
 
-    if (computeIndex > -1) {
+    if (offeringIndex > -1) {
       debugger;
-      const computeObj = this.DOWObject[computeIndex];
+      const otherOfferingObj = this.DOWObject[offeringIndex];
       if (
-        computeObj 
-        && Object.prototype.hasOwnProperty.call(computeObj, "serviceOfferingGroupId")
-        && computeObj.serviceOfferingGroupId
+        otherOfferingObj 
+        && Object.prototype.hasOwnProperty.call(otherOfferingObj, "serviceOfferingGroupId")
+        && otherOfferingObj.serviceOfferingGroupId
       ) {
-        if (!Object.prototype.hasOwnProperty.call(computeObj, "computeData")) {
-          computeObj.computeData = [];
-          computeObj.computeData?.push(computeData);
+        if (!Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")) {
+          otherOfferingObj.otherOfferingData = [];
+          otherOfferingObj.otherOfferingData?.push(otherOfferingData);
         } else {
-          const instanceNumber = computeData.instanceNumber;
-          const existingInstance = computeObj.computeData?.find(
+          const instanceNumber = otherOfferingData.instanceNumber;
+          const existingInstance = otherOfferingObj.otherOfferingData?.find(
             o => o.instanceNumber === instanceNumber
           );
           if (existingInstance ) {
-            Object.assign(existingInstance, computeData);
+            Object.assign(existingInstance, otherOfferingData);
           } else {
-            computeObj.computeData?.push(computeData);
+            otherOfferingObj.otherOfferingData?.push(otherOfferingData);
           }
         }
-        if (!(this.computeInstancesTouched.indexOf(computeData.instanceNumber) > -1)) {
-          this.computeInstancesTouched.push(computeData.instanceNumber);
+        // EJY EJY EJY EJY EJY EJY EJY EJY EJY 
+        // EJY need new function to add to new otherOfferingInstancesTouched array
+        const groupId: string = this.currentGroupId.toLowerCase();
+        if (!Object.prototype.hasOwnProperty.call(this.otherOfferingInstancesTouched, groupId)) {
+          this.otherOfferingInstancesTouched[groupId] = [];
+        }
+
+        if (!(this.otherOfferingInstancesTouched[groupId]
+          .indexOf(otherOfferingData.instanceNumber) > -1)
+        ) {
+          this.otherOfferingInstancesTouched[groupId].push(otherOfferingData.instanceNumber);
+      
+          this.computeInstancesTouched.push(otherOfferingData.instanceNumber);
           // EJY this results in throw catch when running unit test - function below not found
           // await this.pushTouchedComputeInstance(computeData.instanceNumber);
         }
+        // EJY EJY EJY EJY EJY EJY EJY EJY EJY 
+
 
       } else {
-        throw new Error("Error saving Compute data to store");
+        throw new Error(`Error saving ${this.currentGroupId} data to store`);
       }
     }
   }
 
 
-  @Action public async getTouchedComputeInstances(): Promise<number[]> {
-    return this.computeInstancesTouched;
+  @Action public async getTouchedOtherOfferingInstances(): Promise<number[]> {
+    // return this.computeInstancesTouched;
+    return this.otherOfferingInstancesTouched[this.currentGroupId.toLowerCase()];
   }
 
-  @Action
-  public async getComputeInstances(): Promise<OtherServiceOfferingData[]> {
-    const computeIndex = this.DOWObject.findIndex(
-      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+  @Action public async hasInstanceBeenTouched(instanceNo: number): Promise<boolean> {
+    const groupId = this.currentGroupId.toLowerCase();
+    if (!Object.prototype.hasOwnProperty.call(this.otherOfferingInstancesTouched, groupId)) {
+      this.otherOfferingInstancesTouched[groupId] = [];
+    }
+
+    return this.otherOfferingInstancesTouched[groupId].indexOf(instanceNo) > -1;
+  }
+
+  @Action // repurposed
+  public async getOtherOfferingInstances(): Promise<OtherServiceOfferingData[]> {
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
     );
-    if (computeIndex > -1) {
-      const computeObj = this.DOWObject[computeIndex];
+    if (offeringIndex > -1) {
+      const otherOfferingObj = this.DOWObject[offeringIndex];
       if (
-        Object.prototype.hasOwnProperty.call(computeObj, "computeData")
-        && computeObj.computeData
-        && computeObj.computeData.length > 0
+        Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")
+        && otherOfferingObj.otherOfferingData
+        && otherOfferingObj.otherOfferingData.length > 0
       ) {
-        return computeObj.computeData;
+        return otherOfferingObj.otherOfferingData;
       }
     }
     return [];
   }
 
+
+
   @Action
-  public async deleteComputeInstance(instanceNumber: number): Promise<void> {
-    this.doDeleteComputeInstance(instanceNumber);
+  public async deleteOtherOfferingInstance(instanceNumber: number): Promise<void> {
+    this.doDeleteOtherOfferingInstance(instanceNumber);
   }
 
   @Mutation
-  public doDeleteComputeInstance(instanceNumber: number): void {
-    const computeIndex = this.DOWObject.findIndex(
-      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+  public doDeleteOtherOfferingInstance(instanceNumber: number): void {
+    const otherOfferingId = this.currentGroupId.toLowerCase();
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === otherOfferingId
     );
-    if (computeIndex > -1) {
-      const computeObj = this.DOWObject[computeIndex];
+    if (offeringIndex > -1) {
+      const otherOfferingObj = this.DOWObject[offeringIndex];
       if (
-        computeObj 
-        && Object.prototype.hasOwnProperty.call(computeObj, "computeData")
-        && computeObj.computeData
+        otherOfferingObj 
+        && Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")
+        && otherOfferingObj.otherOfferingData
       ) {
         // 
-        const instanceIndex = computeObj.computeData.findIndex(
+        const instanceIndex = otherOfferingObj.otherOfferingData.findIndex(
           obj => obj.instanceNumber === instanceNumber
         );
-        computeObj.computeData.splice(instanceIndex, 1);
-        for (let i = instanceIndex; i < computeObj.computeData.length; i++) {
-          computeObj.computeData[i].instanceNumber = computeObj.computeData[i].instanceNumber - 1;
+        otherOfferingObj.otherOfferingData.splice(instanceIndex, 1);
+        for (let i = instanceIndex; i < otherOfferingObj.otherOfferingData.length; i++) {
+          otherOfferingObj.otherOfferingData[i].instanceNumber 
+            = otherOfferingObj.otherOfferingData[i].instanceNumber - 1;
         }
       }
     }
     // remove instanceNumber from touched ones - this.computeInstancesTouched
     // decrease each instance number after instanceNumber
+    
+    // EJY 
+    
     this.computeInstancesTouched.sort((a, b) => a > b ? 1 : -1);
     const deleteIndex = this.computeInstancesTouched.indexOf(instanceNumber);
     this.computeInstancesTouched.splice(deleteIndex, 1);
     this.computeInstancesTouched 
       = this.computeInstancesTouched.map(i => i >= deleteIndex + 1 ? i - 1 : i);
+
+    const touchedInstances = this.otherOfferingInstancesTouched[otherOfferingId];
+    touchedInstances.sort((a, b) => a > b ? 1 : -1);
+    const deleteIndex2 = touchedInstances.indexOf(instanceNumber);
+    touchedInstances.splice(deleteIndex, 1);
+    this.otherOfferingInstancesTouched[otherOfferingId] 
+      = touchedInstances.map(i => i >= deleteIndex2 + 1 ? i - 1 : i);
+  
   }
 
-  confirmComputeDelete = false;
+  confirmOtherOfferingDelete = false;
 
-  public get confirmComputeDeleteVal(): boolean {
-    return this.confirmComputeDelete;
+  public get confirmOtherOfferingDeleteVal(): boolean {
+    return this.confirmOtherOfferingDelete;
   }
 
   @Action
-  public setConfirmComputeDelete(bool: boolean): void {
-    this.doSetConfirmComputeDelete(bool);
+  public setConfirmOtherOfferingDelete(bool: boolean): void {
+    this.doSetConfirmOtherOfferingDelete(bool);
   }
   @Mutation
-  public doSetConfirmComputeDelete(bool: boolean): void {
-    this.confirmComputeDelete = bool;
+  public doSetConfirmOtherOfferingDelete(bool: boolean): void {
+    this.confirmOtherOfferingDelete = bool;
   }
 
   @Action
-  public async deleteCompute(): Promise<void> {
-    this.doDeleteCompute();
+  public async deleteOtherOffering(): Promise<void> {
+    this.doDeleteOtherOffering();
   }
 
   @Mutation
-  public doDeleteCompute(): void {
-    const computeIndex = this.DOWObject.findIndex(
-      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+  public doDeleteOtherOffering(): void {
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
     );
-    if (computeIndex > -1) {
-      this.DOWObject.splice(computeIndex, 1);
+    if (offeringIndex > -1) {
+      this.DOWObject.splice(offeringIndex, 1);
       if (this.DOWObject.length) {
 
-        const nextGroupId = this.DOWObject.length === computeIndex
-          ? this.DOWObject[computeIndex - 1].serviceOfferingGroupId
-          : this.DOWObject[computeIndex].serviceOfferingGroupId;
+        const nextGroupId = this.DOWObject.length === offeringIndex
+          ? this.DOWObject[offeringIndex - 1].serviceOfferingGroupId
+          : this.DOWObject[offeringIndex].serviceOfferingGroupId;
         this.currentGroupId = nextGroupId;
       }
     }
   }
 
   computeInstancesTouched: number[] = [];
+  otherOfferingInstancesTouched: Record<string, number[]> = {};
   // END COMPUTE data/methods
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+
+
 
   @Mutation
   public setCurrentOffering(value: { name: string, sysId: string }): void {
@@ -811,6 +873,11 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public setCurrentOfferingGroupId(value: string): void {
     this.currentGroupId = value;
+  }
+
+  @Action
+  public async getCurrentOfferingGroupId(): Promise<string> {
+    return this.currentGroupId;
   }
 
   @Action({ rawError: true })

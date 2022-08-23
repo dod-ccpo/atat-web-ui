@@ -177,10 +177,10 @@ describe("Testing OtherOfferings Component", () => {
       mocks: {
         $store: {
           DescriptionOfWork: {
-            computeObject: {
-              computeData: [serviceOfferingData]
+            otherOfferingObject: {
+              otherOfferingData: [serviceOfferingData]
             } ,
-            computeInstancesTouched: [],
+            otherOfferingInstancesTouched: [],
           },
           Periods: {
             periods: periodDTO,
@@ -231,9 +231,13 @@ describe("Testing OtherOfferings Component", () => {
 
     it(`Compute: loadOnEnter() - sets boolean formHasBeenTouched to true
       to trigger validation when returning to edit existing compute instance`, async () => {
+      // EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY 
+      // EJY refactor pushTouchedComputeInstance
       await DescriptionOfWork.pushTouchedComputeInstance(1);
+      // EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY 
+
       // jest.mock("@/store/descriptionOfWork", () => ({ computeInstancesTouched: [1] }));
-      // jest.spyOn(DescriptionOfWork, "getTouchedComputeInstances").mockImplementation(
+      // jest.spyOn(DescriptionOfWork, "getTouchedOtherOfferingInstances").mockImplementation(
       //   () => Promise.resolve([1]) 
       // );
 

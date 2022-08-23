@@ -47,8 +47,8 @@ import RequirementCategories
 import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
 import ServiceOfferingDetails 
   from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue";
-import ComputeRequirements 
-  from "../steps/05-PerformanceRequirements/DOW/ComputeRequirements.vue";
+import OtherRequirementSummary 
+  from "../steps/05-PerformanceRequirements/DOW/OtherRequirementSummary.vue";
 import DOWSummary 
   from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
 
@@ -137,7 +137,8 @@ export const routeNames = {
   RequirementCategories: "Requirement_Categories",
   ServiceOfferings: "Service_Offerings",
   ServiceOfferingDetails: "Service_Offering_Details",
-  ComputeRequirements: "Compute_Requirements",
+  OtherRequirementSummary: "Other_Requirement_Summary",
+  // ComputeRequirements: "Compute_Requirements",
   DOWSummary: "DOW_Summary",
   OptimizeCurrentEnvironment: "Optimize_Current_Environment",
   AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
@@ -468,12 +469,12 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: OfferingDetailsPathResolver,
       },
       {
-        menuText: "Compute Requirements",
-        path: "service-offerings/compute/requirements",
+        menuText: "Other Service Offering Summary",
+        path: "service-offerings/other/summary",
         excludeFromMenu: true,
         name: routeNames.ServiceOfferingDetails,
         completePercentageWeight: 1,
-        component: ComputeRequirements,
+        component: OtherRequirementSummary,
         routeResolver: OfferingDetailsPathResolver,
         additionalButtons: [
           {
