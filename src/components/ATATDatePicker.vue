@@ -79,7 +79,6 @@
         @click:date="datePickerClicked"
         scrollable
       ></v-date-picker>
-
     </v-menu>
     <ATATErrorValidation v-if="menu === false" :errorMessages="errorMessages" />
   </div>
@@ -114,7 +113,7 @@ export default class ATATDatePicker extends Vue {
   private dateFormatted = "";
   private menu = false;
   private errorMessages: string[] = [];
-  private activePicker = '';
+  private activePicker = "";
 
   // Flash of red border on date text field when validateOnBlur is true and user
   // clicks a date in the picker to be addressed in future milestone.
@@ -133,10 +132,9 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: Date;
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
-    private max!: Date;
-  @Prop({ default: ()=>[] }) private rules!: Array<unknown>;
+  private max!: Date;
+  @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: false }) private isRequired!: boolean;
-
 
   /**
    * WATCHERS
@@ -147,14 +145,14 @@ export default class ATATDatePicker extends Vue {
   }
 
   /**
-   * restores standar calendar view when popup menu is displayed 
+   * restores standar calendar view when popup menu is displayed
    * if previous view was month or year view
    */
 
   @Watch("menu")
   protected showStandardCalendar(val: boolean): void {
-    if (val){
-      setTimeout(()=> this.activePicker = 'DATE')
+    if (val) {
+      setTimeout(() => (this.activePicker = "DATE"));
     }
   }
 
@@ -164,9 +162,9 @@ export default class ATATDatePicker extends Vue {
 
   /**
    * onBlur event of the textbox.
-   * 
+   *
    * if textbox value is a valid date
-   * [x] reformat textbox value date for datepicker 
+   * [x] reformat textbox value date for datepicker
    * [x] update date value property
    * [x] remove any errors
    */
@@ -185,8 +183,8 @@ export default class ATATDatePicker extends Vue {
   /**
    * sets validateOnBlur to true while user is typing
    * so as validation occurs only onBlur
-   * 
-   * if textbox is cleared manually, resets necessary 
+   *
+   * if textbox is cleared manually, resets necessary
    * date attribs
    */
   private onInput(date: string): void {
@@ -210,9 +208,9 @@ export default class ATATDatePicker extends Vue {
     // saves selectedDate to necessary atatDatePickerMenu attribs
     this.$refs.atatDatePickerMenu.save(selectedDate);
 
-    Vue.nextTick(()=>{
+    Vue.nextTick(() => {
       this.updateDateValueProperty();
-    })
+    });
   }
 
   /**
@@ -226,7 +224,7 @@ export default class ATATDatePicker extends Vue {
   }
 
   /**
-   * utility function that removes errors from 
+   * utility function that removes errors from
    * Vuetify's errorBucket & this.errorMessages
    */
   private removeErrors(): void {
@@ -250,7 +248,7 @@ export default class ATATDatePicker extends Vue {
         outputFormat: "MM/DD/YYYY",
         nullable: true,
         min: format(add(new Date(this.min), { days: 1 }), "MM/dd/yyyy"),
-        max: format(add(new Date(this.max) , { days: 1 }), "MM/dd/yyyy"),
+        max: format(add(new Date(this.max), { days: 1 }), "MM/dd/yyyy"),
       }).mask(document.getElementById(tbId) as HTMLElement);
     });
   }
@@ -299,7 +297,9 @@ export default class ATATDatePicker extends Vue {
    */
   private mounted(): void {
     this.date = this.value;
-    this.addMasks();
+    this.$nextTick(() => {
+      this.addMasks();
+    });
     this.removeErrors();
   }
 }
