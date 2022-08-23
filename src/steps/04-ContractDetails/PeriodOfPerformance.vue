@@ -259,7 +259,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
         }
         break;
       default:
-        return ""
       }
     }
     return ""
