@@ -687,8 +687,9 @@ export class DescriptionOfWorkStore extends VuexModule {
           }
         }
         if (!(this.computeInstancesTouched.indexOf(computeData.instanceNumber) > -1)) {
-          // this.computeInstancesTouched.push(computeData.instanceNumber);
-          await this.pushTouchedComputeInstance(computeData.instanceNumber);
+          this.computeInstancesTouched.push(computeData.instanceNumber);
+          // EJY this results in throw catch when running unit test - function below not found
+          // await this.pushTouchedComputeInstance(computeData.instanceNumber);
         }
 
       } else {

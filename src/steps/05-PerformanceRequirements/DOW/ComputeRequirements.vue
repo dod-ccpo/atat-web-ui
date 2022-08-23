@@ -113,7 +113,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { ComputeData, ComputeInstanceTableData } from "../../../../types/Global";
+import { OtherServiceOfferingData, ComputeInstanceTableData } from "../../../../types/Global";
 import { buildClassificationLabel } from "@/helpers";
 import _ from 'lodash';
 
@@ -125,7 +125,7 @@ import _ from 'lodash';
 })
 
 export default class ComputeRequirements extends Vue {
-  public computeInstances: ComputeData[] = [];
+  public computeInstances: OtherServiceOfferingData[] = [];
 
   public tableHeaders = [
     { text: "", value: "instanceNumber", width: "50" },
@@ -265,7 +265,7 @@ export default class ComputeRequirements extends Vue {
     this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
   }
 
-  public async validateInstance(instance: ComputeData): Promise<boolean> {
+  public async validateInstance(instance: OtherServiceOfferingData): Promise<boolean> {
     const instanceData: Record<string, any> = _.clone(instance);
     let isValid = true;
     const requiredFields = [
