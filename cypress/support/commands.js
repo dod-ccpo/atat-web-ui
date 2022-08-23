@@ -718,15 +718,17 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
   cy.findElement(background.activeRadioOption).then(($radioBtn) => {
     const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
+    console.log("|" + selectedOption + "|")
     cy.btnExists(common.continueBtn, ' Continue ').click();
-    if (selectedOption === "radio_button_checkedYes. There is a current contract for this effort.")
+    const expectedOption = "radio_button_checkedYes. There is a current contract for this effort."
+    console.log("|"+expectedOption+"|")
+    if (selectedOption === expectedOption)
     {
-      //navigates to Current Contract
+      //navigates to current Contract details page
       cy.textExists(common.header, " Let’s gather some details about your current contract ");
     }
     else {
-      cy.findElement(common.stepContractDetailsText).contains(" Contract Details ")
-        .and('have.css', 'color', colors.primary);
+      cy.verifyPageHeader("Let’s gather some details about the duration of your task order")
     }          
   })
 });
@@ -1045,6 +1047,26 @@ Cypress.Commands.add("selectIncrementalFundingPlan", (radioSelector, value) => {
       } else {
         cy.textExists("div.mb-auto","future summary page");
         
+      }
+          
+    })
+});
+
+//This Command is used  to select the Exisitng Environment
+Cypress.Commands.add("selectExistingEnv", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(background.ceActiveRadioOption)
+    .then(($radioBtn) => {      
+      const selectedOption = cleanText($radioBtn.text());     
+      cy.log(selectedOption);
+      cy.btnClick(common.continueBtn, " Continue ");
+      const yesLabel= "radio_button_checkedYes." 
+      if (selectedOption === yesLabel) {
+        //naviagtes to "where is your Current Environment located?"
+        cy.verifyPageHeader("Where is your current environment located?");
+      } else {
+        //navigate to "Future Summary Page"
+        cy.textExists("div.mb-auto","Future Summary page");
       }
           
     })
