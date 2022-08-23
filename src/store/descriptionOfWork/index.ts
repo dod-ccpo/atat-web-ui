@@ -431,7 +431,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public addOfferingGroup(groupId: string): void {
+  public async addOfferingGroup(groupId: string): Promise<void> {
     const group = this.serviceOfferingGroups.find(e => e.value === groupId)
     const offeringGroup: DOWServiceOfferingGroup = {
       serviceOfferingGroupId: groupId,
@@ -644,6 +644,16 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action
+  public async pushTouchedComputeInstance(instanceNumber: number): Promise<void> {
+    this.doPushTouchedComputeInstance(instanceNumber);
+  }
+
+  @Mutation
+  public doPushTouchedComputeInstance(instanceNumber: number): void {
+    this.computeInstancesTouched.push(instanceNumber);
+  }
+
+  @Action
   public async setComputeData(computeData: OtherServiceOfferingData): Promise<void> {
     this.doSetComputeData(computeData);
   }
@@ -655,6 +665,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     );
 
     if (computeIndex > -1) {
+      debugger;
       const computeObj = this.DOWObject[computeIndex];
       if (
         computeObj 
@@ -676,7 +687,8 @@ export class DescriptionOfWorkStore extends VuexModule {
           }
         }
         if (!(this.computeInstancesTouched.indexOf(computeData.instanceNumber) > -1)) {
-          this.pushTouchedComputeInstance(computeData.instanceNumber);
+          // this.computeInstancesTouched.push(computeData.instanceNumber);
+          await this.pushTouchedComputeInstance(computeData.instanceNumber);
         }
 
       } else {
@@ -685,10 +697,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   }
 
-  @Mutation
-  public async pushTouchedComputeInstance(instanceNumber: number): Promise<void> {
-    this.computeInstancesTouched.push(instanceNumber);
-  }
 
   @Action public async getTouchedComputeInstances(): Promise<number[]> {
     return this.computeInstancesTouched;
