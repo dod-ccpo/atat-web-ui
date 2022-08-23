@@ -420,7 +420,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public initializeIncrements(): void {
     if (this.fiscalQuarters.length === 0) {
       let qtr = this.currentQuarter();
-    let year = parseInt(format(this.startDate, "yy"));
       let year = parseInt(format(this.startDate, "yy"));
       for (let i = 0; i < 6; i++) {
         const ordinal = this.ordinals[qtr-1];
