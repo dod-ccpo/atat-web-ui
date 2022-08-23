@@ -170,6 +170,7 @@ export const OfferGroupOfferingsPathResolver = (
   const DOWObject = DescriptionOfWork.DOWObject;
   const currentGroupId = DescriptionOfWork.currentGroupId;
   const isCompute = currentGroupId.toLowerCase() === "compute";
+  const isGeneral = currentGroupId.toLowerCase() === "general_xaas";
 
   const atLastNoneApply = currentGroupId === DescriptionOfWork.cloudNoneValue;
   const onlyNoneApplySelected = DOWObject.every((e) => {
@@ -179,7 +180,7 @@ export const OfferGroupOfferingsPathResolver = (
 
   // if reviewing service group from store, set "atServicesEnd" to false 
   const reviewGroupFromSummary = DescriptionOfWork.reviewGroupFromSummary;
-  const atServicesEnd = reviewGroupFromSummary || isCompute 
+  const atServicesEnd = reviewGroupFromSummary || isCompute || isGeneral
     ? false 
     : DescriptionOfWork.isEndOfServiceOfferings;
   DescriptionOfWork.setReviewGroupFromSummary(false);
@@ -299,10 +300,11 @@ export const OfferGroupOfferingsPathResolver = (
     }     
   }
   
-
   const dontNeedButtonText = isCompute
     ? "I don’t need compute resources"
-    : "I don’t need these cloud resources";
+    : isGeneral 
+      ? "I don’t have general XaaS requirements" 
+      : "I don’t need these cloud resources";
 
   Steps.setAdditionalButtonText({
     buttonText: dontNeedButtonText, 
@@ -312,7 +314,7 @@ export const OfferGroupOfferingsPathResolver = (
   Steps.setAdditionalButtonHide(false);
   const computeData = DescriptionOfWork.computeObject.computeData;
 
-  if (isCompute) {
+  if (isCompute) { // TODO in task 7824 - add || isGeneral
     const currentInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
     if (current !== routeNames.ServiceOfferingDetails) {
       if (computeData && computeData.length) {
