@@ -1,4 +1,6 @@
-// import { classificationRequirements, contractType, workflow } from "../helpers/mockedAPICalls/contractDetails";
+// import { classificationRequirements,
+//contractType,
+// workflow } from "../helpers/mockedAPICalls/contractDetails";
 import { acquisitionPackageDetails } from "../helpers/mockedAPICalls/acquisitionPackageDetails";
 import { contractDetails } from  "../helpers/mockedAPICalls/contractDetails";
 import { financialDetails } from "../helpers/mockedAPICalls/financialDetails";
@@ -98,7 +100,7 @@ const saveToSNOW = (testCase)=>{
   }
 
   /** background */ 
-  if (spec === "background"){
+  if (testSuite() === "background"){
     currentTestEndPoints = currentTestEndPoints.concat(
       filterTestCases(background(fixtureFolder)[spec], testCase)
     );

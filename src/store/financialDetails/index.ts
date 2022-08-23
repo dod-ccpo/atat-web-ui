@@ -16,7 +16,7 @@ const saveIncrement = async (increment: fundingIncrement): Promise<FundingIncrem
   try {
     const fundingIncrement = {
       amount: increment.amt,
-      description: increment.qtr,
+      description: increment.text,
       order: increment.order + "",
     }
     const incrementSysId = increment.sysId;
@@ -210,10 +210,11 @@ export class FinancialDetailsStore extends VuexModule {
 
       results.forEach((incr) => {
         const incrObj: fundingIncrement = {
-          qtr: incr.description,
+          text: incr.description,
           amt: incr.amount,
           order: parseInt(incr.order),
           sysId: incr.sys_id,
+          qtrOrder: 0,
         }
         this.fundingIncrements.push(incrObj);
       });

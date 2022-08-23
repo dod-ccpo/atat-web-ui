@@ -25,6 +25,7 @@ import Edit from "@/components/icons/Edit.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Pdf from "@/components/icons/Pdf.vue";
+import PlusSign from "@/components/icons/PlusSign.vue";
 import Remove from "@/components/icons/Remove.vue";
 import Search from "@/components/icons/Search.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
@@ -46,6 +47,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     FilePresent,
     MonetizationOn,
     Pdf,
+    PlusSign,
     Remove,
     Search,
     TriangleUp,
