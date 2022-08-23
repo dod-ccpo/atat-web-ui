@@ -17,9 +17,11 @@ module.exports = {
   //   // "!**/src/steps/**/*.{ts|vue}",
   //   // "!**/src/api/**/*.{ts|vue}",
   //   // "src/steps/**/**/*.vue"
-
+  // "<rootDir>/src/store/taskOrder/index.ts",
+  // "<rootDir>/src/router/resolvers/index.ts",
+  // "<rootDir>/src/steps/04-ContractDetails/PeriodOfPerformance.{vue|js}",
   // ],
-  collectCoverageFrom: ["src/**/*.spec.ts", "src/**/*.vue","**/__tests__/**"],
+  collectCoverageFrom: ["src/**/*.spec.ts", "src/**/*.vue"],
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
