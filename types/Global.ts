@@ -31,6 +31,9 @@ export interface StepperStep {
 export interface SelectData {
   text: string;
   value?: string;
+  multiSelectOrder?: number;
+  disabled?: boolean;
+  hidden?: boolean;
 }
 
 /**
@@ -228,10 +231,12 @@ export interface DOWServiceOfferingGroup {
 }
 
 export interface fundingIncrement {
-  qtr: string;
+  text: string;
   amt: string;
-  order: number;
+  order: number; // saved to database
   sysId?: string;
+  qtrOrder: number; // used for sorting on IFP page
+  hasPeriodGap?: boolean;
 }
 export interface IFPData {
   initialFundingIncrementStr: string;

@@ -57,7 +57,8 @@
                       <ATATTextField
                         :id="getIdText(getOptionPeriodLabel(index)) + 'Duration'"
                         class="mr-4"
-                        :class="[{ 'error--text': index === 0 && basePeriodMissing },{'error--text': oneYearCheck(optionPeriods[index])}]"
+                        :class="[{ 'error--text': index === 0 && basePeriodMissing },
+                        {'error--text': oneYearCheck(optionPeriods[index])}]"
                         width="178"
                         :value.sync="optionPeriods[index].duration"
                         type="number"
