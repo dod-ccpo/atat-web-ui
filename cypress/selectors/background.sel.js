@@ -22,4 +22,16 @@ module.exports = {
   selectDate:".v-date-picker-table button:not(.v-btn--disabled)",
   noExistingContractBtn: "#NoExistingContract" , 
 
+  //Current Environments
+  ceRadioButtonOptionError: "#ExistingEnvOptions_radio_group_control .field-error",
+  ceActiveRadioOption:"#ExistingEnvOptions_radio_group_control .v-item--active",
+  
+  //where is your current environment located?
+  envLocationButtonsgroup: "#EnvLocationButtons_radio_group_control",
+  cceRadiobutton: "#Radio_CloudComputingEnvironment",
+  opRadioButton: "#Radio_OnPremises",
+  hceRadioButton: "#Radio_HybridCloudEnvironment",
+  
+  //What classification level(s) are your instances deployed in?
+  topSecret:"#Checkbox_TS"
 }
