@@ -175,24 +175,26 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       this.selectedOptions.push(...validSelections);
 
       this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
-    } else if (this.isCompute) {
-      const computeIndex = DescriptionOfWork.DOWObject.findIndex(
-        obj => obj.serviceOfferingGroupId.toLowerCase() === "compute"
+    } else if (this.isCompute || this.isGeneral) {
+      const offeringIndex = DescriptionOfWork.DOWObject.findIndex(
+        obj => obj.serviceOfferingGroupId.toLowerCase() 
+          === DescriptionOfWork.currentGroupId.toLowerCase()
       );
-      if (computeIndex > -1) {
-        const computeDataArray = DescriptionOfWork.DOWObject[computeIndex].otherOfferingData;
-        if (computeDataArray && computeDataArray.length > 0) {
+      if (offeringIndex > -1) {
+        const otherOfferingDataArray = 
+          DescriptionOfWork.DOWObject[offeringIndex].otherOfferingData;
+        if (otherOfferingDataArray && otherOfferingDataArray.length > 0) {
           const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
-          const computeData = computeDataArray.find(
+          const otherOfferingData = otherOfferingDataArray.find(
             obj => obj.instanceNumber === currentInstanceNumber
           );
-          if (computeData) {
-            this.otherOfferingData = computeData;
+          if (otherOfferingData) {
+            this.otherOfferingData = otherOfferingData;
           } else {
-            const newComputeData 
+            const newOtherOfferingData 
               = await DescriptionOfWork.getOtherOfferingInstance(0);
-            newComputeData.instanceNumber = currentInstanceNumber;
-            this.otherOfferingData = newComputeData;
+            newOtherOfferingData.instanceNumber = currentInstanceNumber;
+            this.otherOfferingData = newOtherOfferingData;
           }
         } else {
           this.otherOfferingData.instanceNumber = 1;
