@@ -16,6 +16,10 @@ describe("Testing PeriodOfPerformance Component", () => {
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue>;
 
+  const period = {
+    duration: 0,
+    unitOfTime: ""
+  }
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -32,135 +36,62 @@ describe("Testing PeriodOfPerformance Component", () => {
   });
 
   describe("test oneYearCheck()- returns a string if the period is more than one year",() =>{
-    const period1 = {
-      duration: 2,
-      unitOfTime: "YEAR",
-      id: null,
-      order: 1,
-    }
-    const period2 = {
-      duration: 13,
-      unitOfTime: "MONTH",
-      id: null,
-      order: 1,
-    }
-    const period3 = {
-      duration: 53,
-      unitOfTime: "WEEK",
-      id: null,
-      order: 1,
-    }
-    const period4 = {
-      duration: 366,
-      unitOfTime: "DAY",
-      id: null,
-      order: 1,
-    }
-    it('should return a string for period longer than a year', ()=>{
-      const result = wrapper.vm.oneYearCheck(period1);
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it('should return a string for period longer than 12 month', ()=>{
-      const result = wrapper.vm.oneYearCheck(period2);
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it('should return a string for period longer than 52 week', ()=>{
-      const result = wrapper.vm.oneYearCheck(period3);
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it('should return a string for period longer than 365 days', ()=>{
-      const result = wrapper.vm.oneYearCheck(period4);
-      expect(result.length).toBeGreaterThan(0)
-    })
+    it('returns error msg string for period longer than a year', async ()=>{
+      period.duration= 2;
+      period.unitOfTime="YEAR";
+      expect((await wrapper.vm.oneYearCheck(period)).length).toBeGreaterThan(0);
+    });
+    it('returns error msg string for period longer than a year', async ()=>{
+      period.duration= 13;
+      period.unitOfTime="MONTH";
+      expect((await wrapper.vm.oneYearCheck(period)).length).toBeGreaterThan(0);
+    });
+    it('returns error msg string for period longer than a year', async ()=>{
+      period.duration= 53;
+      period.unitOfTime="WEEK";
+      expect((await wrapper.vm.oneYearCheck(period)).length).toBeGreaterThan(0);
+    });
+    it('returns error msg string for period longer than a year', async ()=>{
+      period.duration= 366;
+      period.unitOfTime="DAY";
+      expect((await wrapper.vm.oneYearCheck(period)).length).toBeGreaterThan(0);
+    });
+    it('accommodates the `switch` default statement to return an empty string', async ()=>{
+      period.duration= 365;
+      period.unitOfTime="DAYZZZZ";
+      expect((await wrapper.vm.oneYearCheck(period)).length).toBe(0);
+    });
+    it('returns an empty string for period <= than a year', async ()=>{
+      period.duration= 365;
+      period.unitOfTime="DAY";
+      expect((await wrapper.vm.oneYearCheck(period)).length).toBe(0);
+    });
   })
-  describe("test oneYearCheck()- returns a empty string if the period is one year or less",() =>{
-    const period1 = {
-      duration: 1,
-      unitOfTime: "YEAR",
-      id: null,
-      order: 1,
-    }
-    const period2 = {
-      duration: 12,
-      unitOfTime: "MONTH",
-      id: null,
-      order: 1,
-    }
-    const period3 = {
-      duration: 52,
-      unitOfTime: "WEEK",
-      id: null,
-      order: 1,
-    }
-    const period4 = {
-      duration: 365,
-      unitOfTime: "DAY",
-      id: null,
-      order: 1,
-    }
-    const emptyCase = {
-      duration: 3,
-      unitOfTime: "today",
-      id: null,
-      order: 1,
-    }
-
-    it('should return an empty string for correct year', ()=>{
-      const result = wrapper.vm.oneYearCheck(period1);
-      expect(result.length).toEqual(0)
-    })
-    it('should return an empty string for correct month', ()=>{
-      const result = wrapper.vm.oneYearCheck(period2);
-      expect(result.length).toEqual(0)
-    })
-    it('should return an empty string for correct week', ()=>{
-      const result = wrapper.vm.oneYearCheck(period3);
-      expect(result.length).toEqual(0)
-    })
-    it('should return an empty string for correct days', ()=>{
-      const result = wrapper.vm.oneYearCheck(period4);
-      expect(result.length).toEqual(0)
-    })
-    it('should return an empty string ', ()=>{
-      const result = wrapper.vm.oneYearCheck(emptyCase);
-      expect(result.length).toEqual(0)
-    })
-  })
+  
 
   describe("test setTotalPoP()- should change the value of PoP duration and base duration",() =>{
-    const period1 = {
-      duration: 1,
-      unitOfTime: "YEAR",
-      id: null,
-      order: 1,
-    }
-    const period2 = {
-      duration: 12,
-      unitOfTime: "MONTH",
-      id: null,
-      order: 1,
-    }
-    const period3 = {
-      duration: 52,
-      unitOfTime: "WEEK",
-      id: null,
-      order: 1,
-    }
+    it('setTotalPop() provides data to ensure data.basePeriodMissing===true',async () => {
+      period.duration = 52;
+      await wrapper.setData({optionPeriods:[{},period]})
+      await wrapper.vm.setTotalPoP()
+      expect(await wrapper.vm.$data.basePeriodMissing).toBe(true)
+    })
 
-    it('should change the value base and total duration',() => {
-      wrapper.setData({optionPeriods:[{},period3]})
-      wrapper.vm.setTotalPoP()
-      expect(wrapper.vm.$data.basePoPDuration).toBe(0)
-      expect(wrapper.vm.$data.totalPoPDuration).toBe(364)
-      expect(wrapper.vm.$data.basePeriodMissing).toBe(true)
-
-
-      wrapper.setData({optionPeriods:[period1,period2]})
-      wrapper.vm.setTotalPoP()
-      expect(wrapper.vm.$data.basePoPDuration).toBe(365)
-      expect(wrapper.vm.$data.totalPoPDuration).toBe(725)
-      expect(wrapper.vm.$data.basePeriodMissing).toBe(false)
-
+    it('setTotalPop() provides data to ensure data.basePeriodMissing===false',async () => {
+      await wrapper.setData({
+        optionPeriods:[
+          {
+            duration: 1,
+            unitOfTime: "YEAR"
+          },
+          {
+            duration: 12,
+            unitOfTime: "MONTH"
+          }
+        ]
+      })
+      await wrapper.vm.setTotalPoP()
+      expect(await wrapper.vm.$data.basePeriodMissing).toBe(false)
     })
   })
 
