@@ -111,11 +111,11 @@ export class PeriodsStore extends VuexModule {
     await this.ensureInitialized();
 
     try {
-
+      
       if(this.periodOfPerformance?.sys_id)
       {
 
-        const periodOfPerformance =  await
+        const periodOfPerformance =  await 
         api.periodOfPerformanceTable.retrieve(this.periodOfPerformance.sys_id);
         this.setPeriodOfPerformance(periodOfPerformance);
         // we'll build a list of ids from the saved period of performance data
