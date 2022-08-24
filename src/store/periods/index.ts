@@ -111,8 +111,10 @@ export class PeriodsStore extends VuexModule {
     await this.ensureInitialized();
 
     try {
+
       if(this.periodOfPerformance?.sys_id)
       {
+
         const periodOfPerformance =  await
         api.periodOfPerformanceTable.retrieve(this.periodOfPerformance.sys_id);
         this.setPeriodOfPerformance(periodOfPerformance);
