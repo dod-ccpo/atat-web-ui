@@ -203,7 +203,7 @@ function deleteFiles(directory, endsWithFilter) {
   console.log(`\nDeleting files in ${directory} ending with ${endsWithFilter}`);
   const files = fs.readdirSync(directory);
   files.forEach((file) => {
-    var filename = path.join(directory, file);
+    const filename = path.join(directory, file);
     if (filename.endsWith(endsWithFilter)) {
       console.log("-- found: ", filename);
       try {
