@@ -219,3 +219,52 @@ textarea {
 ._v-align-top {
   vertical-align: top !important;
 }
+
+.funding-increments-item {
+  transition: all 0.25s ease;
+  display: inline-block;
+}
+
+.funding-increments-enter, 
+.funding-increments-enter-active,
+.funding-increments-leave-to,
+.funding-increments-leave-active {
+  opacity: 0;
+}
+
+.funding-increments-leave-active {
+  position: absolute;
+}
+
+.funding-increments-move {
+  transition: transform 0.5s ease;
+}
+
+._insert-increment {
+  position: absolute;
+  top: 9px;
+  left: -28px;
+
+  ._button-help {
+    display: none !important;
+    position: absolute;
+    bottom: -40px;
+    left: -20px;
+    background-color: rgba($base-darkest, 0.9);
+    padding: 4px 10px !important;
+    line-height: 1.5em !important;
+    border-radius: 4px;
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: white;
+    z-index: 10;
+
+  }
+
+  &:hover {
+    ._button-help {
+      display: block !important;
+    }
+  }
+  
+}

@@ -31,21 +31,15 @@ describe("Testing ATATSelect Component", () => {
     });
   });
 
-  describe("PROPS", () => { 
-    it("ariaId", async()=>{
-      expect(wrapper.find("#Button_" + ariaId)).toBeDefined;
-    });
-  });
-
   describe("EVENTS", () => {
-    it("clicks to expand", async () => {
+    it("test click event to expand -- link class will contain open", async () => {
       wrapper.setData({ "open": true });
       wrapper.vm.$nextTick(async () => {
         expect(expandLink.classes()).toContain("open");
       });
     });
 
-    it("presses enter key to close", async () => {
+    it("test click event to expand -- link class will contain closed", async () => {
       wrapper.setData({ "open": true });
       expandLink.trigger("keydown.enter");
       wrapper.vm.$nextTick(async () => {

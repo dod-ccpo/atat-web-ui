@@ -13,8 +13,8 @@
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest",
-    "test-file:watch": "jest --watch --no-cache src/helpers/index.spec.ts",
-    "test:coverage": "jest",
+    "test-file:watch": "jest --watch --coverage --no-cache --onlyChanged --findRelatedTests src/steps/10-FinancialDetails/IncrementalFunding.spec.ts",
+    "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
     "cypress:single-test": "npm run test:e2e --  --spec 'cypress/integration/ATATDevSnow/OtherContractConsiderations/Trainin*.spec.js'",
     "cypress:isolated-tests": "npx cypress run --env grepTags=-@iso-ignore"
@@ -24,6 +24,7 @@
     "@types/node": "^17.0.16",
     "@vue/vue2-jest": "^27.0.0-alpha.4",
     "axios": "^0.26.0",
+    "axios-mock-adapter": "^1.21.2",
     "chart.js": "^3.8.0",
     "chartjs-plugin-datalabels": "^2.0.0",
     "clear": "^0.1.0",
