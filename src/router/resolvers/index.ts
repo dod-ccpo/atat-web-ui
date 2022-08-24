@@ -314,7 +314,7 @@ export const OfferGroupOfferingsPathResolver = (
   Steps.setAdditionalButtonHide(false);
   const computeData = DescriptionOfWork.computeObject.computeData;
 
-  if (isCompute) { // TODO in task 7824 - add || isGeneral
+  if (isCompute) {
     const currentInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
     if (current !== routeNames.ServiceOfferingDetails) {
       if (computeData && computeData.length) {

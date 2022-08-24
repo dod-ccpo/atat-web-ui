@@ -277,7 +277,7 @@ export interface OtherServiceOfferingData {
   classificationLevel?: string;
   deployedRegions: string[];
   deployedRegionsOther: string;
-  descriptionOfNeed: string; // EJY
+  descriptionOfNeed: string;
   entireDuration: string;
   periodsNeeded: string[];
   operatingSystemAndLicensing: string;
