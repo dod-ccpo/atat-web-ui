@@ -41,7 +41,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
     requirementTitle: "",
-  }]
+  }];
 
   const DOWObject: DOWServiceOfferingGroup[] = [
     {
