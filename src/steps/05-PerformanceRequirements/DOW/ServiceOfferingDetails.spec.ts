@@ -6,7 +6,6 @@ import ServiceOfferingDetails from "../DOW/ServiceOfferingDetails.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 
-import DescriptionOfWork from "@/store/descriptionOfWork";
 Vue.use(Vuetify);
 
 describe("Testing ServiceOfferingDetails Component", () => {
@@ -31,8 +30,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
       "impact_level": "IL2",
       "classification": "U",
     }
-  ]
-
+  ];
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -52,7 +50,6 @@ describe("Testing ServiceOfferingDetails Component", () => {
     });
   });
 
-
   describe("Methods...", () => {
     it("tests that single classification level label is set", async () => {
       await wrapper.setData({
@@ -64,10 +61,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
       expect(classLevelName).toContain(
         wrapper.vm.$data.avlClassificationLevelObjects[0].impact_level
       );
-      
     });
   });
-
-
 
 });

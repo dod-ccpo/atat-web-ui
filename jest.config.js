@@ -67,6 +67,7 @@ module.exports = {
     "<rootDir>/src/helpers/index.spec.ts",
     "<rootDir>/src/helpers/unitTest.spec.ts",
     "<rootDir>/src/store/classificationRequirements/__test__/index.spec.ts",
+    "<rootDir>/src/store/descriptionOfWork/*.spec.ts",
 
     // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.spec.ts",
   ],

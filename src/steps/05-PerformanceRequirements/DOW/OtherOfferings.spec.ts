@@ -5,10 +5,6 @@ import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
 import OtherOfferings from "../DOW/OtherOfferings.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
-import { 
-  buildClassificationCheckboxList, 
-  buildClassificationLabel,
-} from "@/helpers";
 
 import {
   Checkbox,
@@ -232,16 +228,11 @@ describe("Testing OtherOfferings Component", () => {
     it(`Compute: loadOnEnter() - sets boolean formHasBeenTouched to true
       to trigger validation when returning to edit existing compute instance`, async () => {
       await DescriptionOfWork.pushTouchedComputeInstance(1);
-      // jest.mock("@/store/descriptionOfWork", () => ({ computeInstancesTouched: [1] }));
-      // jest.spyOn(DescriptionOfWork, "getTouchedComputeInstances").mockImplementation(
-      //   () => Promise.resolve([1]) 
-      // );
 
       await wrapper.vm.loadOnEnter();
       console.log("data", await wrapper.vm.$props.serviceOfferingData.instanceNumber)
       expect(await wrapper.vm.$data.formHasBeenTouched).toBe(true);
     });
-
 
     it("GeneralXaaS: loadOnEnter() - is to set data.firstTimeHere to true ", async () => {
       await wrapper.setData({
@@ -250,7 +241,6 @@ describe("Testing OtherOfferings Component", () => {
       });
       wrapper.vm.loadOnEnter();
       expect(wrapper.vm.$data.firstTimeHere).toBe(true);
-
     });
 
     it("@Watch errorBagChange() - sets data.formHasErrors when errors occur ", async () => {
@@ -356,9 +346,7 @@ describe("Testing OtherOfferings Component", () => {
       expect(wrapper.vm.showDialog).toBe(false);
     });
 
-
-
-  }); // EJY END METHOD TESTING
+  });
 
   describe("testing modal functionality...", () => {
     it("if model opens, set data.showDialog=true", async () => {

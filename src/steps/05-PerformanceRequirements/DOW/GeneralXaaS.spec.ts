@@ -62,7 +62,6 @@ describe("Testing GeneralXaaSForm Component", () => {
 
     // needed for helper functions
     await init(wrapper, localVue);
-
   });
 
   describe("Initialization...", () => {
@@ -71,7 +70,6 @@ describe("Testing GeneralXaaSForm Component", () => {
     });
   });
 
-
   describe("Methods...", () => {
     it(`tests that 'openModal' is emitted when user clicks to update 
       classification requirements`, async () => {
@@ -79,7 +77,6 @@ describe("Testing GeneralXaaSForm Component", () => {
       expect(wrapper.emitted().openModal).toBeTruthy();
     });
   });
-
 
   describe("Validation....", () => {
 
@@ -90,14 +87,6 @@ describe("Testing GeneralXaaSForm Component", () => {
 
     });
    
-    // EJY MONDAY validate radio group
-    // it("tests that radio group required message is displayed", async () => {
-    //   const mockValidator = jest.spyOn(localVue.prototype.$validators, 'required')
-    //   await wrapper.setProps({ classificationLevel: ""}); 
-    //   expect(mockValidator).toHaveBeenCalled();
-
-    // });
-
   });
 
 });

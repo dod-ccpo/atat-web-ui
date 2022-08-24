@@ -47,7 +47,7 @@ describe("Testing ComputeForm Component", () => {
     "performanceTier": "Premium",
     "performanceTierOther": "",
     "numberOfInstancesNeeded": "1"
-  }
+  };
 
   const avlClassificationLevelObjects = [
     {
@@ -62,41 +62,7 @@ describe("Testing ComputeForm Component", () => {
       "impact_level": "IL2",
       "classification": "U",
     }
-  ]
-
-  const allClassificationLevels = [
-
-    {
-      "sys_id": "class1",
-      "sys_mod_count": "0",
-      "impact_level": "IL4",
-      "classification": "U",
-    },
-    {
-      "sys_id": "class2",
-      "sys_mod_count": "0",
-      "impact_level": "",
-      "classification": "TS",
-    },
-    {
-      "sys_id": "class3",
-      "sys_mod_count": "0",
-      "impact_level": "IL6",
-      "classification": "S",
-    },
-    {
-      "sys_id": "class4",
-      "sys_mod_count": "0",
-      "impact_level": "IL2",
-      "classification": "U",
-    },
-    {
-      "sys_id": "class5",
-      "sys_mod_count": "0",
-      "impact_level": "IL5",
-      "classification": "U",
-    }
-  ]
+  ];
 
   const availablePeriodCheckboxItems = [
     {
@@ -109,62 +75,12 @@ describe("Testing ComputeForm Component", () => {
       "label": "Option period 1",
       "value": "option_01"
     }
-  ]
-
-  const regionCheckboxOptions = [
-    {
-      id: "CONUSEast",
-      label: "CONUS East",
-      value: "CONUS East",
-    },
-    {
-      id: "CONUSCentral",
-      label: "CONUS Central",
-      value: "CONUS Central",
-    },
-    {
-      id: "CONUSWest",
-      label: "CONUS West",
-      value: "CONUS West",
-    },
-    {
-      id: "OCONUS",
-      label: "OCONUS",
-      value: "OCONUS",
-    },
-    {
-      id: "Other",
-      label: "Other",
-      value: "OtherRegion",
-    }];
-
-  const periodDTO = [
-    [
-      {
-        "period_unit": "YEAR",
-        "period_unit_count": "1",
-        "period_type": "BASE",
-        "option_order": "1"
-      },
-      {
-        "period_unit": "YEAR",
-        "period_unit_count": "1",
-        "period_type": "BASE",
-        "option_order": "2"
-      },
-      {
-        "period_unit": "YEAR",
-        "period_unit_count": "1",
-        "period_type": "BASE",
-        "option_order": "3"
-      }
-    ]
   ];
 
   const classificationRadioOptions: RadioButton[] = [
     { id: "Option1", label: "label1", value: "IL1" },
     { id: "Option2", label: "label2", value: "IL2" },
-  ]
+  ];
 
   beforeEach(() => {
     vuetify = new Vuetify();

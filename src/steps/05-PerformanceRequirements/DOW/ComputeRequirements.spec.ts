@@ -107,18 +107,11 @@ describe("Testing ServiceOfferingDetails Component", () => {
           DOWObject
         ));
   
-      // await DescriptionOfWork.addOfferingGroup("COMPUTE");
-      // await DescriptionOfWork.setComputeData(computeData);
-      // DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
-
-
       await wrapper.vm.loadOnEnter();
       console.log("computeDataArray", wrapper.vm.$data.computeDataArray);
 
     });
 
   });
-
-
 
 });

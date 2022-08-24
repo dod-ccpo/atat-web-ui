@@ -31,9 +31,9 @@ describe("Testing ComputeForm Component", () => {
         anticipatedNeedUsage: "test text",
       }
     });
+    
     // needed for helper functions
     await init(wrapper, localVue);
-
   });
 
   afterAll(() => {

@@ -79,18 +79,14 @@ describe("Testing OtherOfferings Component", () => {
     jest.clearAllTimers();
   })
 
-  // describe("Initialization....", () => {
-  //   it("tests that component renders successfully", async () => {
-  //     expect(wrapper.exists()).toBe(true);
-  //   });
-  // });
-
   describe("Methods...", () => {
     it("tests getting DOW Object", async () => {
-      jest.spyOn(DescriptionOfWork, 'getDOWObject').mockImplementation(
+      jest.spyOn(DOWStore, 'getDOWObject').mockImplementation(
         ()=>Promise.resolve(
           DOWObject
         ));
+      const returnedDOWObj = await DOWStore.getDOWObject();
+      expect(returnedDOWObj).toEqual(DOWObject);
     });
 
   });
