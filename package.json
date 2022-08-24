@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
+    "test:unit": "jest --coverage  --no-cache",
     "lint": "vue-cli-service lint",
     "postbuild": "node servicenow.postbuild.js",
     "postbuild:cypress": "node cypress.postbuild.js",

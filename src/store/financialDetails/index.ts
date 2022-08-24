@@ -304,6 +304,7 @@ export class FinancialDetailsStore extends VuexModule {
       if (taskOrder) {
         Object.assign(taskOrder, { funding_plan: fundingPlanSysId });
         if (IFPData.initial_amount === "" && IFPData.remaining_amount_increments === "") {
+          // check with Melissa if this logic is needed
           taskOrder.incrementally_funded = 'No';
         }
         const taskOrderSysId = taskOrder.sys_id;
