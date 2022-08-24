@@ -21,7 +21,10 @@ module.exports = {
   // "<rootDir>/src/router/resolvers/index.ts",
   // "<rootDir>/src/steps/04-ContractDetails/PeriodOfPerformance.{vue|js}",
   // ],
-  collectCoverageFrom: ["src/**/*.spec.ts", "src/**/*.vue"],
+  collectCoverageFrom: [
+    "src/**/index.ts",
+    "src/**/*.vue"
+  ],
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -68,7 +71,7 @@ module.exports = {
     "<rootDir>/src/steps/**/**/*.spec.ts",
     "<rootDir>/src/api/**/**/*.spec.ts",
     "<rootDir>/src/helpers/index.spec.ts",
-    "<rootDir>/src/store/taskOrder/__test__/index.spec.ts",
+    "<rootDir>/src/store/taskOrder/index.spec.ts",
     "<rootDir>/src/router/resolvers/__test__/index.spec.ts",
     "<rootDir>/src/steps/04-ContractDetails/PeriodOfPerformance.spec.ts",
     "<rootDir>/src/store/classificationRequirements/__test__/index.spec.ts",
