@@ -2,6 +2,7 @@
 <button style="outline:none" @blur="$emit('blur')">
   <v-form ref="atatFileUploadForm">
     <div
+      :id="id + 'EventDiv'"
       v-cloak
       @dragenter="onDragEnter"
       @drop.prevent="addDropFile"
@@ -10,6 +11,7 @@
     >
       <v-file-input
         ref="atatFileUpload"
+        :name="id + 'FileUpload'"
         :id="id + 'FileUpload'"
         :class="[
           { 'v-text-field--is-hovering': isHovering },
@@ -186,9 +188,10 @@ export default class ATATFileUpload extends Vue {
         event.preventDefault();
         event.stopPropagation();}
 
-      (document.getElementById(this.id + "FileUpload") as HTMLInputElement).click();
+      //todo make sure this works as expected
       this.reset();
       this.isFullSize = this._validFiles.length === 0;
+      (document.getElementById(this.id + "FileUpload") as HTMLInputElement).click();
     }
   }
 
@@ -249,9 +252,9 @@ export default class ATATFileUpload extends Vue {
    */
   private addDropFile(e: DragEvent): void {
     if (this.isFileUploadDisabled === false){
-      this.isHovering = false;
       const dt = e.dataTransfer as DataTransfer;
       this.removeInvalidFiles(dt.files as FileList);
+      this.isHovering = false;
     }
   }
 
@@ -272,13 +275,17 @@ export default class ATATFileUpload extends Vue {
       );
 
       const doesFileExist = this._validFiles.some((fileObj) => {
+        // console.log("name: "+ vFile.name);
+        // console.log(vFile.name === fileObj.file?.name)
+        // console.log(vFile.lastModified === fileObj.file.lastModified)
+        // console.log( vFile.size === fileObj.file.size)
+        
         return (
           vFile.name === fileObj.file?.name &&
           vFile.lastModified === fileObj.file.lastModified &&
           vFile.size === fileObj.file.size
         );
       });
-
       const isFileSizeValid = vFile.size < this.maxFileSizeInBytes;
 
       //log Invalid Files
@@ -291,10 +298,16 @@ export default class ATATFileUpload extends Vue {
       if (!isFileSizeValid) {
         this.logInvalidFiles(vFile, doesFileExist);
       }
+      
+      // console.log("isValidFormat: "+ isValidFormat);
+      // console.log("isFileSizeValid: "+ isFileSizeValid);
+      // console.log("!doesFileExist: "+ !doesFileExist);
 
       return isValidFormat && !doesFileExist && isFileSizeValid;
     });
-    
+
+    console.log("length" + _validFiles.length)
+   
     //allows for maxNumberOfFiles to be uploaded
     
     if(this.maxNumberOfFiles<_validFiles.length){
@@ -302,7 +315,6 @@ export default class ATATFileUpload extends Vue {
         return idx<this.maxNumberOfFiles
       })
     }
-
     this.createFileObjects(_validFiles);
   }
 
@@ -435,7 +447,7 @@ export default class ATATFileUpload extends Vue {
     this.fileUploadControl = document.getElementById(
       this.id + "FileUpload"
     ) as HTMLInputElement;
-
+    
     //prevents Browser from downloading the file if file is accidentally
     //dropped outside of dropzone
     window.addEventListener("drop", this.preventDrop, false);
