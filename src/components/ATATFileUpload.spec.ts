@@ -63,9 +63,11 @@ describe("Testing ATATTextField Component", () => {
   });
 
 
-  it("fileUploadClicked() - process event target ", async () => {
+  it("fileUploadClicked() - process `browse to upload` link event to " + 
+     "ensure data.isFullSize===true ", async () => {
     wrapper.setData({
-      maxNumberOfFiles: 4
+      maxNumberOfFiles: 4,
+      errorMessages: ["error 01"]
     });
     wrapper.setProps({
       validFiles
@@ -74,7 +76,47 @@ describe("Testing ATATTextField Component", () => {
     await link.trigger("mousedown", {
       classList: jest.fn(() => ['_text_link'])
     });
-    expect(await wrapper.vm.reset()).toHaveBeenCalled();
-    expect(await wrapper.vm.$data.isFullSize).toBe(true);
+
+    //ensure this.reset() has been called
+    Vue.nextTick(()=>{
+      expect(wrapper.vm.$data.errorMessages).toHaveLength(0);
+      expect(wrapper.vm.$data.isFullSize).toBe(true);
+    })
   })
+
+  it("fileUploadClicked() - process `browse to upload` link event to " + 
+  "ensure data.isFullSize===true ", async () => {
+    wrapper.setData({
+      maxNumberOfFiles: 4,
+      errorMessages: ["error 01"]
+    });
+    wrapper.setProps({
+      validFilesy
+      
+    })
+    console.log('from test 02')
+    const div = await wrapper.find("div.content")
+    await div.trigger("mousedown");
+
+    //ensure this.reset() has been called
+    Vue.nextTick(()=>{
+      expect(wrapper.vm.$data.errorMessages).toHaveLength(0);
+      expect(wrapper.vm.$data.isFullSize).toBe(true);
+    })
+  })
+
+  // it("fileUploadChanged() - process event target ", async () => {
+  //   wrapper.setData({
+  //     maxNumberOfFiles: 4
+  //   });
+  //   wrapper.setProps({
+  //     validFiles
+  //   })
+  //   const link = await wrapper.find("#BrowseToUpload");
+  //   await link.trigger("mousedown", {
+  //     classList: jest.fn(() => ['_text_link'])
+  //   });
+  //   expect(await wrapper.vm.reset()).toHaveBeenCalled();
+  //   expect(await wrapper.vm.$data.isFullSize).toBe(true);
+  // })
 });
