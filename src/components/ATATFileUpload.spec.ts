@@ -62,6 +62,23 @@ describe("Testing ATATTextField Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+  it("get isFileUploadDisplayed() - supply neceessary data to return true ", async () => {
+    wrapper.setData({
+      multiplesAllowed: true
+    });
+    const _isFileUploadDisplayed = await wrapper.vm.isFileUploadDisplayed;
+    expect(_isFileUploadDisplayed).toBe(true);
+  })
+
+  it("get isFileUploadDisplayed() - supply neceessary data to return true ", async () => {
+    await wrapper.setProps({
+      multiplesAllowed: false,
+      validFiles: [validFiles[0]]
+    })
+    const _isFileUploadDisplayed = await wrapper.vm.isFileUploadDisplayed;
+    expect(_isFileUploadDisplayed).toBe(false);
+  })
+
 
   it("fileUploadClicked() - process `browse to upload` link event to " + 
      "ensure data.isFullSize===true ", async () => {
@@ -84,26 +101,7 @@ describe("Testing ATATTextField Component", () => {
     })
   })
 
-  it("fileUploadClicked() - process `browse to upload` link event to " + 
-  "ensure data.isFullSize===true ", async () => {
-    wrapper.setData({
-      maxNumberOfFiles: 4,
-      errorMessages: ["error 01"]
-    });
-    wrapper.setProps({
-      validFilesy
-      
-    })
-    console.log('from test 02')
-    const div = await wrapper.find("div.content")
-    await div.trigger("mousedown");
-
-    //ensure this.reset() has been called
-    Vue.nextTick(()=>{
-      expect(wrapper.vm.$data.errorMessages).toHaveLength(0);
-      expect(wrapper.vm.$data.isFullSize).toBe(true);
-    })
-  })
+ 
 
   // it("fileUploadChanged() - process event target ", async () => {
   //   wrapper.setData({

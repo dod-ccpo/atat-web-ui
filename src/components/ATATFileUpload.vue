@@ -181,19 +181,14 @@ export default class ATATFileUpload extends Vue {
    */
   private fileUploadClicked(event: Event): void {
     if (this.isFileUploadDisabled === false){
-      
       const eventSrc = event.target as HTMLElement;
       if (eventSrc.classList.contains("_text-link")) {
         event.preventDefault();
-        event.stopPropagation();
-      }
+        event.stopPropagation();}
+
+      (document.getElementById(this.id + "FileUpload") as HTMLInputElement).click();
       this.reset();
       this.isFullSize = this._validFiles.length === 0;
-      /* *******************************************************
-       * to do - ensure this still works as expected
-      */
-      (document.getElementById(this.id + "FileUpload") as HTMLInputElement).click();
-      
     }
   }
 
@@ -446,9 +441,7 @@ export default class ATATFileUpload extends Vue {
     window.addEventListener("drop", this.preventDrop, false);
     window.addEventListener("dragover", this.preventDrop, false);
 
-
-    // *********************************************************************************************
-    // ************ todo ** todo ** todo ** todo ** todo ** todo ** todo ** todo *******************
+    // to do ...mock this
     //try to grab the attachment service via the service factory
     // this.fileAttachmentService = AttachmentServiceFactory(
     //   this.attachmentServiceName
