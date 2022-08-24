@@ -23,6 +23,7 @@ module.exports = {
   // ],
   collectCoverageFrom: [
     "src/**/index.ts",
+    "src/**/*.spec.ts",
     "src/**/*.vue"
   ],
 
