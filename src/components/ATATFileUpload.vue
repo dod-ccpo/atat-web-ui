@@ -181,14 +181,19 @@ export default class ATATFileUpload extends Vue {
    */
   private fileUploadClicked(event: Event): void {
     if (this.isFileUploadDisabled === false){
+      
       const eventSrc = event.target as HTMLElement;
       if (eventSrc.classList.contains("_text-link")) {
         event.preventDefault();
-        event.stopPropagation();}
-
-      (document.getElementById(this.id + "FileUpload") as HTMLInputElement).click();
+        event.stopPropagation();
+      }
       this.reset();
       this.isFullSize = this._validFiles.length === 0;
+      /* *******************************************************
+       * to do - ensure this still works as expected
+      */
+      (document.getElementById(this.id + "FileUpload") as HTMLInputElement).click();
+      
     }
   }
 
