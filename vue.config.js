@@ -75,7 +75,7 @@ module.exports = {
           fallback: {
             ...options.fallback,
             options: {
-              name: 'img/[name]-[hash:6]-[ext]',
+              name: 'img/[name]-[hash:6]-[ext].html',
             }
 
           }
@@ -99,7 +99,7 @@ module.exports = {
           fallback: {
             ...options.fallback,
             options: {
-              name: 'other_assets/[name]-[hash:6]-[ext]',
+              name: 'other_assets/[name]-[hash:6]-[ext].html',
             }
 
           }
