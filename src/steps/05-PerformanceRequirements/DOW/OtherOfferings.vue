@@ -233,17 +233,11 @@ export default class OtherOfferings extends Vue {
     this.setAvlClassificationLevels();
     this.checkSingleClassification();
 
-    // EJY need to mock an api call for Periods??
-    if (!this.availablePeriodCheckboxItems) {
-      this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
-    }
+    this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
   }
 
   public async setComponentSpecificData(): Promise<void> {
-    if (this.isCompute) {
-      // EJY update BELOW for instance touched
-      // this.formHasBeenTouched = DescriptionOfWork.computeInstancesTouched.indexOf(
-      //   this._serviceOfferingData.instanceNumber) > -1;
+    if (this.isCompute || this.isGeneral) {
       this.formHasBeenTouched 
         = await DescriptionOfWork.hasInstanceBeenTouched(this._serviceOfferingData.instanceNumber);
     }

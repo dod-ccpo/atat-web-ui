@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
-import OtherRequirementSummary from "../DOW/OtherRequirementSummary.vue";
+import OtherOfferingSummary from "../DOW/OtherOfferingSummary.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 import DescriptionOfWork from "@/store/descriptionOfWork";
@@ -23,7 +23,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
   config.showDeprecationWarnings = false
   Vue.config.silent = true;
 
-  const computeData: OtherServiceOfferingData[] = [{
+  const otherOfferingData: OtherServiceOfferingData[] = [{
     instanceNumber: 1,
     environmentType: "",
     classificationLevel: "",
@@ -45,7 +45,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
 
   const DOWObject: DOWServiceOfferingGroup[] = [
     {
-      computeData,
+      otherOfferingData,
       serviceOfferingGroupId: "COMPUTE",
       sequence: 1,
       serviceOfferings: [],
@@ -74,7 +74,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(OtherRequirementSummary, {
+    wrapper = mount(OtherOfferingSummary, {
       localVue,
       vuetify,
       propsData: {
@@ -100,7 +100,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
         ));
       jest.spyOn(DescriptionOfWork, 'getOtherOfferingInstances').mockImplementation(
         ()=>Promise.resolve(
-          computeData
+          otherOfferingData
         ));
       jest.spyOn(DescriptionOfWork, 'getDOWObject').mockImplementation(
         ()=>Promise.resolve(
@@ -113,6 +113,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
 
 
       await wrapper.vm.loadOnEnter();
+      // EJY check computeDataArray is still in data
       console.log("computeDataArray", wrapper.vm.$data.computeDataArray);
 
     });

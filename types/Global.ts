@@ -305,7 +305,7 @@ export interface OtherServiceOfferingData {
 
 export interface OtherServiceSummaryTableData {
   instanceNumber: number;
-  type?: string;
+  typeOrTitle?: string;
   location?: string;
   qty?: string;
   vCPU?: string;

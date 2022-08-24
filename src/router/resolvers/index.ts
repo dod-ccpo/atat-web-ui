@@ -109,8 +109,8 @@ const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
 const getOfferingGroupServicesPath = (groupId: string)=>
   `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
 
-export const RequirementsPathResolver = (current: string, direction: string): string =>
-{
+export const RequirementsPathResolver = (current: string, direction: string): string => {
+  debugger;
   const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
@@ -161,6 +161,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
+  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
 
@@ -314,6 +315,7 @@ export const OfferGroupOfferingsPathResolver = (
   Steps.setAdditionalButtonHide(false);
 
   if (isCompute || isGeneral) {
+    debugger;
     const otherOfferingData = DescriptionOfWork.otherOfferingObject.otherOfferingData;
     const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
     if (current !== routeNames.ServiceOfferingDetails) {
@@ -323,7 +325,8 @@ export const OfferGroupOfferingsPathResolver = (
     } else if (otherOfferingData && otherOfferingData.length > 0 
       && !(currentInstanceNumber === 1 && otherOfferingData.length === 1) 
     ) {
-      // if more than one compute instance, hide the "I don't need compute resources" button
+      // if more than one "Other" offering (Compute, General XaaS, Database) 
+      // instance/requirement, hide the "I don't need ____ resources" button
       Steps.setAdditionalButtonHide(true);
     }
   }
@@ -333,6 +336,7 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
+  debugger;
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
   if (DescriptionOfWork.summaryBackToContractDetails) {
@@ -340,7 +344,9 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     return "period-of-performance/period-of-performance";
   }
   const groupId = DescriptionOfWork.currentGroupId;
-  if (groupId.toLowerCase() === "compute") {
+  const otherOfferings = ["compute", "general_xaas", "database"];
+
+  if (otherOfferings.indexOf(groupId.toLowerCase()) > -1) {
     return `${basePerformanceRequirementsPath}/service-offerings/other/summary`
   }
 
@@ -425,6 +431,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+  debugger;
   DescriptionOfWork.setBackToContractDetails(current === routeNames.PropertyDetails);
   Steps.clearAltBackButtonText();
   if(current === routeNames.PropertyDetails){

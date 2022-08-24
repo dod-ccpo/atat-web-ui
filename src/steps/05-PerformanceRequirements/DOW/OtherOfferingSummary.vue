@@ -21,13 +21,14 @@
             :headers="tableHeaders"
             :items="tableData"
             :items-per-page="-1"
-            class="elevation-0 _compute-instances"
+            class="elevation-0 _offering-instances"
+            :class="{ '_first-col-nowrap': isCompute || isDatabase }"
             :hide-default-footer="true"
             no-data-text="You do not have any requirements yet."
           >
             <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.type="{ item }">
-              <span v-html="item.type"></span>
+            <template v-slot:item.typeOrTitle="{ item }">
+              <span v-html="item.typeOrTitle"></span>
             </template>
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
@@ -51,11 +52,11 @@
           </v-data-table>  
           <hr class="mt-0" /> 
           <v-btn
-            id="AddComputeInstance"
+            id="AddInstance"
             role="link" 
             class="secondary _normal _small-text mt-5"
             :ripple="false"
-            @click="addComputeInstance()"
+            @click="addInstance()"
           >
             <ATATSVGIcon 
               color="primary" 
@@ -64,7 +65,9 @@
               name="control-point" 
               class="mr-2"
             />
-            Add <span v-if="tableData.length">another</span> {{ requirementOrInstance }}
+            Add 
+            <span v-if="tableData.length">&nbsp;another&nbsp;</span> 
+            {{ requirementOrInstance }}
           </v-btn>  
         </v-col>
       </v-row>
@@ -72,9 +75,9 @@
 
     <ATATDialog
       :showDialog="showDeleteInstanceDialog"
-      :title="'Delete Instance #' + instanceNumberToDelete + '?'"
+      :title="deleteInstanceModalTitle"
       no-click-animation
-      okText="Delete instance"
+      :okText="'Delete ' + requirementOrInstance"
       width="450"
       @ok="deleteInstance"
       @cancelClicked="showDeleteInstanceDialog = false"
@@ -88,20 +91,20 @@
       </template>
     </ATATDialog>
 
-    <!-- EJY REPLACE "compute" below with service offering name -->
     <ATATDialog
       :showDialog="showDeleteOfferingDialog"
-      :title="'Delete all compute ' + requirementOrInstance + 's?'"
+      :title="'Delete all ' + serviceDescription + ' ' + requirementOrInstance + 's?'"
       no-click-animation
-      okText="Delete compute"
+      :okText="'Delete ' + serviceDescription"
       width="450"
       @ok="deleteOffering"
       @cancelClicked="cancelDeleteOffering"
     >
       <template #content>
         <p class="body">
-          This action will remove the "Compute" category from your performance requirements.
-          Any details about your instance<span v-if="tableData.length > 1">s</span> 
+          This action will remove the "{{ serviceDescription }}" category from your 
+          performance requirements. Any details about your 
+          {{ requirementOrInstance }}<span v-if="tableData.length > 1">s</span> 
           will not be saved.
         </p>
       </template>
@@ -131,12 +134,13 @@ import _ from 'lodash';
   }
 })
 
-export default class OtherRequirementSummary extends Vue {
+export default class OtherOfferingSummary extends Vue {
   public isCompute = false;
   public isGeneral = false;
   public isDatabase = false;
   public requirementOrInstance = "";
   public serviceDescription = "";
+  public deleteInstanceModalTitle = "";
 
   public offeringInstances: OtherServiceOfferingData[] = [];
 
@@ -150,12 +154,15 @@ export default class OtherRequirementSummary extends Vue {
   public missingEnvironmentType = false;
   public returnToDOWSummary = false;
 
-  get confirmComputeDelete(): boolean {
+  get confirmOfferingDelete(): boolean {
     return DescriptionOfWork.confirmOtherOfferingDeleteVal;
   }
 
-  @Watch("confirmComputeDelete")
-  public confirmComputeDeleteChanged(newVal: boolean): void {
+  // eslint-disable-next-line max-len
+  public rowErrorMessage = `<div class="d-flex align-center"><svg viewBox="0 0 18 18" height="14px" width="14px" xmlns="http://www.w3.org/2000/svg"><path d="M9.83366 13.6641H10.3337V13.1641V11.4974V10.9974H9.83366H8.16699H7.66699V11.4974V13.1641V13.6641H8.16699H9.83366ZM9.83366 10.3307H10.3337V9.83073V4.83073V4.33073H9.83366H8.16699H7.66699V4.83073V9.83073V10.3307H8.16699H9.83366ZM1.16699 8.9974C1.16699 4.67354 4.67647 1.16406 9.00033 1.16406C13.3242 1.16406 16.8337 4.67354 16.8337 8.9974C16.8337 13.3213 13.3242 16.8307 9.00033 16.8307C4.67647 16.8307 1.16699 13.3213 1.16699 8.9974Z" fill="#c60634" stroke="#c60634"/></svg><span class="font-size-12 text-error d-inline-block ml-1">Missing info</span></div>`;
+
+  @Watch("confirmOfferingDelete")
+  public confirmOfferingDeleteChanged(newVal: boolean): void {
     if (newVal && this.tableData.length > 0) {
       this.showDeleteOfferingDialog = newVal;
     } else if (newVal) {
@@ -174,7 +181,7 @@ export default class OtherRequirementSummary extends Vue {
     }).catch(() => console.log("avoiding redundant navigation"));
   }
 
-  public async addComputeInstance(): Promise<void> {
+  public async addInstance(): Promise<void> {
     const lastInstanceNumber = await DescriptionOfWork.getLastOtherOfferingInstanceNumber();
     await DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(lastInstanceNumber + 1);
     this.navigate();
@@ -182,20 +189,18 @@ export default class OtherRequirementSummary extends Vue {
 
   public editInstance(item: OtherServiceSummaryTableData): void {
     DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(item.instanceNumber);
-    DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
     this.navigate();
   }
-
   public confirmDeleteInstance(item: OtherServiceSummaryTableData): void {
     this.instanceNumberToDelete = item.instanceNumber;
+    this.deleteInstanceModalTitle = this.isGeneral
+      ? "Delete “" + item.requirementTitle +"?”"
+      : "Delete " + this.requirementOrInstance + ' #' + this.instanceNumberToDelete + '?'
     this.showDeleteInstanceDialog = true;
   }
 
   public async deleteInstance(): Promise<void> {
-    // EJY if compute or general... 
-    if (this.isCompute) {
-      await DescriptionOfWork.deleteOtherOfferingInstance(this.instanceNumberToDelete);
-    }
+    await DescriptionOfWork.deleteOtherOfferingInstance(this.instanceNumberToDelete);
     await this.buildTableData();
     this.showDeleteInstanceDialog = false;
   }
@@ -221,11 +226,12 @@ export default class OtherRequirementSummary extends Vue {
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
       let hasOtherRegion = false;
       let hasOtherPerformanceTier = false;
+      let isValid = true;
 
       if (this.isCompute) {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
-          { text: "Type", value: "type" },
+          { text: "Type", value: "typeOrTitle" },
           { text: "Location", value: "location" },
           { text: "Classification", value: "classification" },
           { text: "Quantity", value: "qty" },
@@ -266,15 +272,16 @@ export default class OtherRequirementSummary extends Vue {
         if (!instanceClone.environmentType) {
           instanceClone.environmentType = `<div class="text-error font-weight-500">Unknown</div>`;
         }
-        const isValid 
-          = await this.validateInstance(instanceClone, hasOtherRegion, hasOtherPerformanceTier);
+        isValid = await this.validateInstance(
+          instanceClone, hasOtherRegion, hasOtherPerformanceTier
+        );
         if (!isValid) {
-          // eslint-disable-next-line max-len
-          instanceClone.environmentType += `<div class="d-flex align-center"><svg viewBox="0 0 18 18" height="14px" width="14px" xmlns="http://www.w3.org/2000/svg"><path d="M9.83366 13.6641H10.3337V13.1641V11.4974V10.9974H9.83366H8.16699H7.66699V11.4974V13.1641V13.6641H8.16699H9.83366ZM9.83366 10.3307H10.3337V9.83073V4.83073V4.33073H9.83366H8.16699H7.66699V4.83073V9.83073V10.3307H8.16699H9.83366ZM1.16699 8.9974C1.16699 4.67354 4.67647 1.16406 9.00033 1.16406C13.3242 1.16406 16.8337 4.67354 16.8337 8.9974C16.8337 13.3213 13.3242 16.8307 9.00033 16.8307C4.67647 16.8307 1.16699 13.3213 1.16699 8.9974Z" fill="#c60634" stroke="#c60634"/></svg><span class="font-size-12 text-error d-inline-block ml-1">Missing info</span></div>`;
+          instanceClone.environmentType += this.rowErrorMessage
         }
+
         instanceData = {
           instanceNumber: instanceClone.instanceNumber,
-          type: instanceClone.environmentType,
+          typeOrTitle: instanceClone.environmentType,
           location: deployedRegions,
           classification: classificationLevel,
           qty: instanceClone.numberOfInstancesNeeded,
@@ -286,23 +293,48 @@ export default class OtherRequirementSummary extends Vue {
       } else if (this.isGeneral) {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
-          { text: "Requirement title", value: "requirementTitle" },
-          { text: "Duration", value: "entureDuration" },
+          { text: "Requirement title", value: "typeOrTitle", width: "50%" },
+          { text: "Duration", value: "duration", width: "50%" },
+          { text: "", value: "actions", width: "75" },
         ];
-        // need to parse out periods
 
-        let duration = ""
-        if (instanceClone.entireDuration === "NO") {
-          // EJY come back here!
+        let duration = "";
+        if (
+          instanceClone.entireDuration === "NO" 
+          && instanceClone.periodsNeeded.length 
+          && allPeriods?.length
+        ) {
+          const periodsNeeded: string[] = [];
+          instanceClone.periodsNeeded.forEach((sysId) => {
+            const periodObj = allPeriods.find((obj) => obj.sys_id === sysId);
+            if (periodObj) {
+              let periodText = periodObj?.period_type.indexOf("BASE") > -1 
+                ? "Base period" : "Option period " + (parseInt(periodObj.option_order) - 1);
+              periodsNeeded.push(periodText);
+            }
+          });
+          duration = periodsNeeded.join(", ");
+        } else if (instanceClone.entireDuration === "YES") {
+          duration = "Entire task order";
         }
+
+        let typeOrTitle = !instanceClone.requirementTitle 
+          ? `<div class="text-error font-weight-500">Untitled</div>`
+          : instanceClone.requirementTitle;
+
+        isValid = await this.validateInstance(instanceClone);
+        if (!isValid) {
+          typeOrTitle += this.rowErrorMessage;
+        }
+        
+        instanceClone.requirementTitle = instanceClone.requirementTitle || "Untitled";
 
         instanceData = {
           instanceNumber: instanceClone.instanceNumber,
+          typeOrTitle: typeOrTitle,
           requirementTitle: instanceClone.requirementTitle,
-          duration: instanceClone.entireDuration,
+          duration: duration,
         }
-
-
       }
 
       this.tableData.push(instanceData);
@@ -338,6 +370,16 @@ export default class OtherRequirementSummary extends Vue {
       if ((hasOtherPerformanceTier && instanceData.performanceTierOther === "")
         || (hasOtherRegion && instanceData.deployedRegionsOther === "")
       ) {
+        isValid = false;
+      }
+    } else if (this.isGeneral) {
+      requiredFields = [
+        "requirementTitle",
+        "classificationLevel",
+        "anticipatedNeedUsage",
+        "entireDuration",
+      ];
+      if (instanceData.entireDuration === "NO" && !instanceData.periodsNeeded.length) {
         isValid = false;
       }
     }
@@ -386,11 +428,11 @@ export default class OtherRequirementSummary extends Vue {
 
     const DOWObject = await DescriptionOfWork.getDOWObject();
     if (DOWObject && DOWObject.length > 1) {
-      const computeIndex = DOWObject.findIndex(
-        obj => obj.serviceOfferingGroupId.toLowerCase() === "compute"
+      const offeringIndex = DOWObject.findIndex(
+        obj => obj.serviceOfferingGroupId.toLowerCase() === offering
       );
-      if (computeIndex < DOWObject.length - 1) {
-        const nextOfferingGroupId = DOWObject[computeIndex + 1].serviceOfferingGroupId;
+      if (offeringIndex < DOWObject.length - 1) {
+        const nextOfferingGroupId = DOWObject[offeringIndex + 1].serviceOfferingGroupId;
         const offeringGroups = await DescriptionOfWork.getServiceOfferingGroups();
         const nextOfferingGroupObj = offeringGroups.find(
           obj => obj.value === nextOfferingGroupId
