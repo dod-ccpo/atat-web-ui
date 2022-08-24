@@ -231,15 +231,8 @@ describe("Testing OtherOfferings Component", () => {
 
     it(`Compute: loadOnEnter() - sets boolean formHasBeenTouched to true
       to trigger validation when returning to edit existing compute instance`, async () => {
-      // EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY 
-      // EJY refactor pushTouchedComputeInstance
-      await DescriptionOfWork.pushTouchedComputeInstance(1);
-      // EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY EJY 
-
-      // jest.mock("@/store/descriptionOfWork", () => ({ computeInstancesTouched: [1] }));
-      // jest.spyOn(DescriptionOfWork, "getTouchedOtherOfferingInstances").mockImplementation(
-      //   () => Promise.resolve([1]) 
-      // );
+      DescriptionOfWork.currentGroupId = "compute"
+      await DescriptionOfWork.pushTouchedOtherOfferingInstance(1);
 
       await wrapper.vm.loadOnEnter();
       console.log("data", await wrapper.vm.$props.serviceOfferingData.instanceNumber)

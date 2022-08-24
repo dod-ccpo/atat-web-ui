@@ -4,12 +4,13 @@
       <v-row>
         <v-col>
           <h1 class="page-header mb-3">
-            Your Compute Requirements
+            Your {{ serviceDescription }} requirements
           </h1>
           <p>
-            If you need more {{ widget }}s, add them below. You can also edit or delete 
-            any info from the {{ widget }}s that you have already entered. When you’re 
-            done, click Continue and we will move on to your 
+            If you need more {{ requirementOrInstance }}s, add them below. You can 
+            also edit or delete any info from the {{ requirementOrInstance }}s that 
+            you have already entered. When you’re done, click Continue and we will 
+            move on to your 
             <span v-if="nextOfferingGroupStr && !returnToDOWSummary">
               {{ nextOfferingGroupStr }} requirements.
             </span> 
@@ -63,7 +64,7 @@
               name="control-point" 
               class="mr-2"
             />
-            Add <span v-if="tableData.length">another</span> {{ widget }}
+            Add <span v-if="tableData.length">another</span> {{ requirementOrInstance }}
           </v-btn>  
         </v-col>
       </v-row>
@@ -80,8 +81,9 @@
     >
       <template #content>
         <p class="body">
-          This {{ widget }} will be removed from your // compute \\  requirements. Any details 
-          about this {{ widget }} will not be saved.
+          This {{ requirementOrInstance }} will be removed from your {{ serviceDescription }}
+          requirements. Any details about this {{ requirementOrInstance }} 
+          will not be saved.
         </p>
       </template>
     </ATATDialog>
@@ -89,7 +91,7 @@
     <!-- EJY REPLACE "compute" below with service offering name -->
     <ATATDialog
       :showDialog="showDeleteOfferingDialog"
-      :title="'Delete all compute ' + widget + 's?'"
+      :title="'Delete all compute ' + requirementOrInstance + 's?'"
       no-click-animation
       okText="Delete compute"
       width="450"
@@ -117,6 +119,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import Periods from "@/store/periods";
 import { OtherServiceOfferingData, OtherServiceSummaryTableData } from "../../../../types/Global";
 import { buildClassificationLabel } from "@/helpers";
 import _ from 'lodash';
@@ -132,24 +135,12 @@ export default class OtherRequirementSummary extends Vue {
   public isCompute = false;
   public isGeneral = false;
   public isDatabase = false;
-  public widget = "";
-
+  public requirementOrInstance = "";
+  public serviceDescription = "";
 
   public offeringInstances: OtherServiceOfferingData[] = [];
 
-  public tableHeaders = [
-    { text: "", value: "instanceNumber", width: "50" },
-    { text: "Type", value: "type" },
-    { text: "Location", value: "location" },
-    { text: "Classification", value: "classification" },
-    { text: "Quantity", value: "qty" },
-    { text: "vCPU", value: "vCPU" },
-    { text: "Memory", value: "memory" },
-    { text: "Storage", value: "storage" },
-    { text: "Performance", value: "performance" },
-    { text: "", value: "actions", width: "75" },
-  ];
-
+  public tableHeaders: Record<string, string>[] = [];
   public tableData: OtherServiceSummaryTableData[] = [];
 
   public nextOfferingGroupStr = "";
@@ -222,94 +213,140 @@ export default class OtherRequirementSummary extends Vue {
 
   public async buildTableData(): Promise<void> {
     this.tableData = [];
+    const allPeriods = await Periods.getAllPeriods();
+
     this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
     this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);
+      let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
+      let hasOtherRegion = false;
+      let hasOtherPerformanceTier = false;
 
-      const otherRegionIndex = instanceClone.deployedRegions.indexOf("OtherRegion");
-      if (otherRegionIndex > -1) {
-        instanceClone.deployedRegions.splice(otherRegionIndex, 1);
-        if (instanceClone.deployedRegionsOther) {
-          instanceClone.deployedRegions.push(instanceClone.deployedRegionsOther);
+      if (this.isCompute) {
+        this.tableHeaders = [    
+          { text: "", value: "instanceNumber", width: "50" },
+          { text: "Type", value: "type" },
+          { text: "Location", value: "location" },
+          { text: "Classification", value: "classification" },
+          { text: "Quantity", value: "qty" },
+          { text: "vCPU", value: "vCPU" },
+          { text: "Memory", value: "memory" },
+          { text: "Storage", value: "storage" },
+          { text: "Performance", value: "performance" },
+          { text: "", value: "actions", width: "75" },
+        ];
+        const otherRegionIndex = instanceClone.deployedRegions.indexOf("OtherRegion");
+        if (otherRegionIndex > -1) {
+          hasOtherRegion = true;
+          instanceClone.deployedRegions.splice(otherRegionIndex, 1);
+          if (instanceClone.deployedRegionsOther) {
+            instanceClone.deployedRegions.push(instanceClone.deployedRegionsOther);
+          }
         }
-      }
-      const deployedRegions = instanceClone.deployedRegions.join(", ");
+        const deployedRegions = instanceClone.deployedRegions.join(", ");
 
-      const performanceTier = instanceClone.performanceTier.indexOf("Other") > -1
-        ? instanceClone.performanceTierOther
-        : instanceClone.performanceTier;
+        hasOtherPerformanceTier = instanceClone.performanceTier.indexOf("Other") > -1;
+        const performanceTier = hasOtherPerformanceTier
+          ? instanceClone.performanceTierOther
+          : instanceClone.performanceTier;
 
-      const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
-      let classificationLevel = "";
-      if (classificationLevels.length > 1) {
-        const classificationObj = classificationLevels.find(
-          obj => obj.sys_id === instanceClone.classificationLevel
-        );
-        if (classificationObj) {
-          classificationLevel = buildClassificationLabel(classificationObj, "short");
+        const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
+        let classificationLevel = "";
+        if (classificationLevels.length > 1) {
+          const classificationObj = classificationLevels.find(
+            obj => obj.sys_id === instanceClone.classificationLevel
+          );
+          if (classificationObj) {
+            classificationLevel = buildClassificationLabel(classificationObj, "short");
+          }
+        } else {
+          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
         }
-      } else {
-        this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
+
+        if (!instanceClone.environmentType) {
+          instanceClone.environmentType = `<div class="text-error font-weight-500">Unknown</div>`;
+        }
+        const isValid 
+          = await this.validateInstance(instanceClone, hasOtherRegion, hasOtherPerformanceTier);
+        if (!isValid) {
+          // eslint-disable-next-line max-len
+          instanceClone.environmentType += `<div class="d-flex align-center"><svg viewBox="0 0 18 18" height="14px" width="14px" xmlns="http://www.w3.org/2000/svg"><path d="M9.83366 13.6641H10.3337V13.1641V11.4974V10.9974H9.83366H8.16699H7.66699V11.4974V13.1641V13.6641H8.16699H9.83366ZM9.83366 10.3307H10.3337V9.83073V4.83073V4.33073H9.83366H8.16699H7.66699V4.83073V9.83073V10.3307H8.16699H9.83366ZM1.16699 8.9974C1.16699 4.67354 4.67647 1.16406 9.00033 1.16406C13.3242 1.16406 16.8337 4.67354 16.8337 8.9974C16.8337 13.3213 13.3242 16.8307 9.00033 16.8307C4.67647 16.8307 1.16699 13.3213 1.16699 8.9974Z" fill="#c60634" stroke="#c60634"/></svg><span class="font-size-12 text-error d-inline-block ml-1">Missing info</span></div>`;
+        }
+        instanceData = {
+          instanceNumber: instanceClone.instanceNumber,
+          type: instanceClone.environmentType,
+          location: deployedRegions,
+          classification: classificationLevel,
+          qty: instanceClone.numberOfInstancesNeeded,
+          vCPU: instanceClone.numberOfVCPUs,
+          memory: instanceClone.memory ? `${instanceClone.memory} GB` : "",
+          storage: instanceClone.storageAmount ? `${instanceClone.storageAmount} GB` : "" ,
+          performance: performanceTier,
+        };
+      } else if (this.isGeneral) {
+        this.tableHeaders = [    
+          { text: "", value: "instanceNumber", width: "50" },
+          { text: "Requirement title", value: "requirementTitle" },
+          { text: "Duration", value: "entureDuration" },
+        ];
+        // need to parse out periods
+
+        let duration = ""
+        if (instanceClone.entireDuration === "NO") {
+          // EJY come back here!
+        }
+
+        instanceData = {
+          instanceNumber: instanceClone.instanceNumber,
+          requirementTitle: instanceClone.requirementTitle,
+          duration: instanceClone.entireDuration,
+        }
+
+
       }
 
-      if (!instanceClone.environmentType) {
-        instanceClone.environmentType = `<div class="text-error font-weight-500">Unknown</div>`;
-      }
-
-      const isValid = await this.validateInstance(instanceClone);
-      if (!isValid) {
-        // eslint-disable-next-line max-len
-        instanceClone.environmentType += `<div class="d-flex align-center"><svg viewBox="0 0 18 18" height="14px" width="14px" xmlns="http://www.w3.org/2000/svg"><path d="M9.83366 13.6641H10.3337V13.1641V11.4974V10.9974H9.83366H8.16699H7.66699V11.4974V13.1641V13.6641H8.16699H9.83366ZM9.83366 10.3307H10.3337V9.83073V4.83073V4.33073H9.83366H8.16699H7.66699V4.83073V9.83073V10.3307H8.16699H9.83366ZM1.16699 8.9974C1.16699 4.67354 4.67647 1.16406 9.00033 1.16406C13.3242 1.16406 16.8337 4.67354 16.8337 8.9974C16.8337 13.3213 13.3242 16.8307 9.00033 16.8307C4.67647 16.8307 1.16699 13.3213 1.16699 8.9974Z" fill="#c60634" stroke="#c60634"/></svg><span class="font-size-12 text-error d-inline-block ml-1">Missing info</span></div>`;
-      }
-      const instanceData: OtherServiceSummaryTableData = {
-        instanceNumber: instanceClone.instanceNumber,
-        type: instanceClone.environmentType,
-        location: deployedRegions,
-        classification: classificationLevel,
-        qty: instanceClone.numberOfInstancesNeeded,
-        vCPU: instanceClone.numberOfVCPUs,
-        memory: instanceClone.memory ? `${instanceClone.memory} GB` : "",
-        storage: instanceClone.storageAmount ? `${instanceClone.storageAmount} GB` : "" ,
-        performance: performanceTier,
-      };
       this.tableData.push(instanceData);
     })
     // ensure sorted by instance number
     this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
   }
 
-  public async validateInstance(instance: OtherServiceOfferingData): Promise<boolean> {
+  public async validateInstance(
+    instance: OtherServiceOfferingData, 
+    hasOtherRegion?: boolean,
+    hasOtherPerformanceTier?: boolean,
+  ): Promise<boolean> {
     const instanceData: Record<string, any> = _.clone(instance);
     let isValid = true;
-    const requiredFields = [
-      "environmentType",
-      "classificationLevel",
-      "entireDuration",
-      "memory",
-      "anticipatedNeedUsage",
-      "numberOfInstancesNeeded",
-      "numberOfVCPUs",
-      "operatingSystemAndLicensing",
-      "performanceTier",
-      "storageAmount",
-      "storageType",
-    ];
+    let requiredFields: string[] = [];
+
+    if (this.isCompute) {
+      requiredFields = [
+        "environmentType",
+        "classificationLevel",
+        "entireDuration",
+        "memory",
+        "anticipatedNeedUsage",
+        "numberOfInstancesNeeded",
+        "numberOfVCPUs",
+        "operatingSystemAndLicensing",
+        "performanceTier",
+        "storageAmount",
+        "storageType",
+      ];
+
+      if ((hasOtherPerformanceTier && instanceData.performanceTierOther === "")
+        || (hasOtherRegion && instanceData.deployedRegionsOther === "")
+      ) {
+        isValid = false;
+      }
+    }
+
     requiredFields.forEach((field) => {
       if (instanceData[field] === "") {
         isValid = false;
       }
     });
-    if (instanceData.performanceTier === "OtherPerformance" 
-      && instanceData.performanceTierOther === ""
-    ) {
-      isValid = false;
-    }
-
-    if (instanceData.performanceTier === "OtherRegion" 
-      && instanceData.deployedRegionsOther === ""
-    ) {
-      isValid = false;
-    }
 
     return isValid;
   }
@@ -318,12 +355,32 @@ export default class OtherRequirementSummary extends Vue {
     this.returnToDOWSummary = await DescriptionOfWork.getReturnToDOWSummary();
 
     const currentGroupId = await DescriptionOfWork.getCurrentOfferingGroupId();
-    this.isCompute = currentGroupId.toLowerCase() === "compute";
-    this.isGeneral = currentGroupId.toLowerCase() === "general_xaas";
-    this.isDatabase = currentGroupId.toLowerCase() === "database";
+    const offering = currentGroupId.toLowerCase();
+    this.isCompute = offering === "compute";
+    this.isGeneral = offering === "general_xaas";
+    this.isDatabase = offering === "database";
 
-    this.widget = this.isGeneral ? "requirement" : "instance"; 
-
+    this.requirementOrInstance = this.isGeneral ? "requirement" : "instance"; 
+    switch (offering) {
+    case "compute": 
+      this.isCompute = true;
+      this.requirementOrInstance = "instance";
+      this.serviceDescription = "compute";
+      break;
+    case "general_xaas":
+      this.isGeneral = true;
+      this.requirementOrInstance = "requirement";
+      this.serviceDescription = "general IaaS, PaaS, and SaaS";
+      break;
+    case "database":
+      this.isDatabase = true;
+      this.requirementOrInstance = "instance";
+      this.serviceDescription = "database service";
+      break;
+    default:
+      this.requirementOrInstance = "instance";
+      this.serviceDescription = "service"
+    }
 
     await this.buildTableData();
 

@@ -581,11 +581,9 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   // ******************************************************************
   // ******************************************************************
+  // BEGIN OtherServiceOfferings - COMPUTE/GENERAL_XAAS/DATABSE - data/methods
   // ******************************************************************
   // ******************************************************************
-  // ******************************************************************
-  // ******************************************************************
-  // COMPUTE/GENERAL_XAAS/DATABSE data/methods
 
   currentOtherServiceInstanceNumber = 0;
 
@@ -609,7 +607,9 @@ export class DescriptionOfWorkStore extends VuexModule {
     requirementTitle: "",
   }
 
-  @Action // repurposed
+  otherOfferingInstancesTouched: Record<string, number[]> = {};
+
+  @Action 
   public async getLastOtherOfferingInstanceNumber(): Promise<number> {
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
@@ -624,12 +624,12 @@ export class DescriptionOfWorkStore extends VuexModule {
     return 1;
   }
 
-  @Action // repurposed
+  @Action 
   public async setCurrentOtherOfferingInstanceNumber(number: number): Promise<void> {
     this.doSetCurrentOtherOfferingInstanceNumber(number);
   }
 
-  @Mutation // repurposed
+  @Mutation 
   public async doSetCurrentOtherOfferingInstanceNumber(number: number): Promise<void> {
     this.currentOtherServiceInstanceNumber = number;
   }
@@ -665,8 +665,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   public doPushTouchedOtherOfferingInstance(instanceNumber: number): void {
     const groupKey: string = this.currentGroupId.toLowerCase();
     this.otherOfferingInstancesTouched[groupKey].push(instanceNumber);
-    // EJY can kill below if above works;
-    this.computeInstancesTouched.push(instanceNumber);
   }
 
   @Action
@@ -705,8 +703,6 @@ export class DescriptionOfWorkStore extends VuexModule {
             otherOfferingObj.otherOfferingData?.push(otherOfferingData);
           }
         }
-        // EJY EJY EJY EJY EJY EJY EJY EJY EJY 
-        // EJY need new function to add to new otherOfferingInstancesTouched array
         const groupId: string = this.currentGroupId.toLowerCase();
         if (!Object.prototype.hasOwnProperty.call(this.otherOfferingInstancesTouched, groupId)) {
           this.otherOfferingInstancesTouched[groupId] = [];
@@ -716,23 +712,14 @@ export class DescriptionOfWorkStore extends VuexModule {
           .indexOf(otherOfferingData.instanceNumber) > -1)
         ) {
           this.otherOfferingInstancesTouched[groupId].push(otherOfferingData.instanceNumber);
-      
-          this.computeInstancesTouched.push(otherOfferingData.instanceNumber);
-          // EJY this results in throw catch when running unit test - function below not found
-          // await this.pushTouchedComputeInstance(computeData.instanceNumber);
         }
-        // EJY EJY EJY EJY EJY EJY EJY EJY EJY 
-
-
       } else {
         throw new Error(`Error saving ${this.currentGroupId} data to store`);
       }
     }
   }
 
-
   @Action public async getTouchedOtherOfferingInstances(): Promise<number[]> {
-    // return this.computeInstancesTouched;
     return this.otherOfferingInstancesTouched[this.currentGroupId.toLowerCase()];
   }
 
@@ -745,7 +732,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     return this.otherOfferingInstancesTouched[groupId].indexOf(instanceNo) > -1;
   }
 
-  @Action // repurposed
+  @Action 
   public async getOtherOfferingInstances(): Promise<OtherServiceOfferingData[]> {
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
@@ -762,8 +749,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
     return [];
   }
-
-
 
   @Action
   public async deleteOtherOfferingInstance(instanceNumber: number): Promise<void> {
@@ -794,24 +779,14 @@ export class DescriptionOfWorkStore extends VuexModule {
         }
       }
     }
-    // remove instanceNumber from touched ones - this.computeInstancesTouched
+    // remove instanceNumber from touched ones - this.otherOfferingInstancesTouched
     // decrease each instance number after instanceNumber
-    
-    // EJY 
-    
-    this.computeInstancesTouched.sort((a, b) => a > b ? 1 : -1);
-    const deleteIndex = this.computeInstancesTouched.indexOf(instanceNumber);
-    this.computeInstancesTouched.splice(deleteIndex, 1);
-    this.computeInstancesTouched 
-      = this.computeInstancesTouched.map(i => i >= deleteIndex + 1 ? i - 1 : i);
-
     const touchedInstances = this.otherOfferingInstancesTouched[otherOfferingId];
     touchedInstances.sort((a, b) => a > b ? 1 : -1);
-    const deleteIndex2 = touchedInstances.indexOf(instanceNumber);
+    const deleteIndex = touchedInstances.indexOf(instanceNumber);
     touchedInstances.splice(deleteIndex, 1);
     this.otherOfferingInstancesTouched[otherOfferingId] 
-      = touchedInstances.map(i => i >= deleteIndex2 + 1 ? i - 1 : i);
-  
+      = touchedInstances.map(i => i >= deleteIndex + 1 ? i - 1 : i);
   }
 
   confirmOtherOfferingDelete = false;
@@ -850,18 +825,11 @@ export class DescriptionOfWorkStore extends VuexModule {
       }
     }
   }
-
-  computeInstancesTouched: number[] = [];
-  otherOfferingInstancesTouched: Record<string, number[]> = {};
-  // END COMPUTE data/methods
   // ******************************************************************
   // ******************************************************************
+  // END OtherServiceOfferings - COMPUTE/GENERAL_XAAS/DATABSE - data/methods
   // ******************************************************************
   // ******************************************************************
-  // ******************************************************************
-  // ******************************************************************
-  // ******************************************************************
-
 
 
   @Mutation
