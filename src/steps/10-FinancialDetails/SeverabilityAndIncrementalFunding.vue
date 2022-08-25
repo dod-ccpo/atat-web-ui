@@ -264,6 +264,7 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
     this.savedFundOption = await TaskOrder.isIncrementallyFunded();
     this.selectedFundOption = this.savedFundOption;
     this.base = periods[0];
+
   }
 
   public async created(): Promise<void> {  
