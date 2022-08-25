@@ -6,6 +6,7 @@ import {
   createPeriodCheckboxItems,
 } from "./index";
 import _ from "lodash";
+import Periods from "@/store/periods";
 
 describe("testing src/helpers/index.ts", () => {
   test("buildClassificationCheckboxList - transform ClassificationLevelDTO to a Checkbox[]",
@@ -67,39 +68,39 @@ describe("testing src/helpers/index.ts", () => {
 
   it("createPeriodCheckboxItems() - tests that unsorted SNOW data is successfully " +
     "transformed to expected sorted datasource array for period checkbox items", async () => {
-    
-    // !!!!! createPeriodCheckboxItems NOW ACCEPTS NO ARGUMENTS
 
-    // const _createPeriodCheckboxItems = createPeriodCheckboxItems(
-    //   [
-    //     {
-    //       "period_unit": "YEAR",
-    //       "period_unit_count": "1",
-    //       "period_type": "OPTION",
-    //       "option_order": "2",
-    //       "sys_id": "period_02"
-    //     },
-    //     {
-    //       "period_unit": "YEAR",
-    //       "period_unit_count": "1",
-    //       "period_type": "BASE",
-    //       "option_order": "1",
-    //       "sys_id": "period_01"
-
-    //     },
-    //   ]
-    // );
-    // expect(_createPeriodCheckboxItems).toEqual([
-    //   {
-    //     "id": "BASE",
-    //     "label": "Base period",
-    //     "value": "period_01"
-    //   },
-    //   {
-    //     "id": "OPTION1",
-    //     "label": "Option period 1",
-    //     "value": "period_02"
-    //   }
-    // ])
+    jest.spyOn(Periods, "loadPeriods").mockImplementation(
+      () => Promise.resolve (
+        [
+          {
+            "period_unit": "YEAR",
+            "period_unit_count": "1",
+            "period_type": "OPTION",
+            "option_order": "2",
+            "sys_id": "period_02"
+          },
+          {
+            "period_unit": "YEAR",
+            "period_unit_count": "1",
+            "period_type": "BASE",
+            "option_order": "1",
+            "sys_id": "period_01"
+          },
+        ]
+      ));
+    const periodCheckboxes: Checkbox[] = await createPeriodCheckboxItems();
+    console.log("periodCheckboxes", periodCheckboxes);
+    expect(periodCheckboxes).toEqual([
+      {
+        "id": "BASE",
+        "label": "Base period",
+        "value": "period_01"
+      },
+      {
+        "id": "OPTION1",
+        "label": "Option period 1",
+        "value": "period_02"
+      }
+    ])
   });    
 });

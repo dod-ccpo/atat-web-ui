@@ -41,7 +41,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
     requirementTitle: "",
-  }]
+  }];
 
   const DOWObject: DOWServiceOfferingGroup[] = [
     {
@@ -107,11 +107,6 @@ describe("Testing ServiceOfferingDetails Component", () => {
           DOWObject
         ));
   
-      // await DescriptionOfWork.addOfferingGroup("COMPUTE");
-      // await DescriptionOfWork.setComputeData(computeData);
-      // DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
-
-
       await wrapper.vm.loadOnEnter();
       // EJY check computeDataArray is still in data
       console.log("computeDataArray", wrapper.vm.$data.computeDataArray);
@@ -119,7 +114,5 @@ describe("Testing ServiceOfferingDetails Component", () => {
     });
 
   });
-
-
 
 });

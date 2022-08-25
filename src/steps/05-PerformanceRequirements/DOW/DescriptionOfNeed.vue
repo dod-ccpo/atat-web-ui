@@ -4,7 +4,7 @@
     :id="'AnticipatedNeedUsage_' + (index + 1)"
     ref="DescriptionOfNeed"
     label="Describe the anticipated need and usage of this requirement"
-    class="width-100 mb-10"
+    class="width-100 mb-10 max-width-740"
     :rows="5"
     maxChars="500"
     :rules="[

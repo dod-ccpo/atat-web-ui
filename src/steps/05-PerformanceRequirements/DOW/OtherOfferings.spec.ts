@@ -5,10 +5,6 @@ import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
 import OtherOfferings from "../DOW/OtherOfferings.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
-import { 
-  buildClassificationCheckboxList, 
-  buildClassificationLabel,
-} from "@/helpers";
 
 import {
   Checkbox,
@@ -239,7 +235,6 @@ describe("Testing OtherOfferings Component", () => {
       expect(await wrapper.vm.$data.formHasBeenTouched).toBe(true);
     });
 
-
     it("GeneralXaaS: loadOnEnter() - is to set data.firstTimeHere to true ", async () => {
       await wrapper.setData({
         isCompute: false,
@@ -247,7 +242,6 @@ describe("Testing OtherOfferings Component", () => {
       });
       wrapper.vm.loadOnEnter();
       expect(wrapper.vm.$data.firstTimeHere).toBe(true);
-
     });
 
     it("@Watch errorBagChange() - sets data.formHasErrors when errors occur ", async () => {
@@ -353,9 +347,7 @@ describe("Testing OtherOfferings Component", () => {
       expect(wrapper.vm.showDialog).toBe(false);
     });
 
-
-
-  }); // EJY END METHOD TESTING
+  });
 
   describe("testing modal functionality...", () => {
     it("if model opens, set data.showDialog=true", async () => {

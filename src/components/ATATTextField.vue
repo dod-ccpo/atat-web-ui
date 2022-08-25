@@ -58,11 +58,7 @@
         </span>
       </template>
     </v-text-field>
-    <ATATErrorValidation 
-      :errorMessages="errorMessages" 
-      v-if="showErrorMessages" 
-      :id="id"
-    />
+    <ATATErrorValidation :errorMessages="errorMessages" v-if="showErrorMessages" />
     <div v-if="showHelpText()" class="help-text mt-2">
       {{ helpText }}
     </div>
