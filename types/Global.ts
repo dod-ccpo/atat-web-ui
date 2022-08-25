@@ -31,6 +31,9 @@ export interface StepperStep {
 export interface SelectData {
   text: string;
   value?: string;
+  multiSelectOrder?: number;
+  disabled?: boolean;
+  hidden?: boolean;
 }
 
 /**
@@ -224,14 +227,16 @@ export interface DOWServiceOfferingGroup {
   serviceOfferingGroupId: string;
   sequence: number;
   serviceOfferings: DOWServiceOffering[];
-  computeData?: ComputeData[];
+  computeData?: OtherServiceOfferingData[];
 }
 
 export interface fundingIncrement {
-  qtr: string;
+  text: string;
   amt: string;
-  order: number;
+  order: number; // saved to database
   sysId?: string;
+  qtrOrder: number; // used for sorting on IFP page
+  hasPeriodGap?: boolean;
 }
 export interface IFPData {
   initialFundingIncrementStr: string;
@@ -266,23 +271,24 @@ export interface lineChartData {
   datasets?: lineChartDataSet[];
 }
 
-export interface ComputeData {
+export interface OtherServiceOfferingData {
   instanceNumber: number;
   environmentType: string;
-  classificationLevel?: string; // missing from AC
+  classificationLevel?: string;
   deployedRegions: string[];
   deployedRegionsOther: string;
-  needOrUsageDescription: string;
+  descriptionOfNeed: string;
   entireDuration: string;
-  periodsNeeded: string[]; // missing from AC
+  periodsNeeded: string[];
   operatingSystemAndLicensing: string;
   numberOfVCPUs: string;
   memory: string;
   storageType: string;
   storageAmount: string;
   performanceTier: string;
-  performanceTierOther: string; // missing from AC
+  performanceTierOther: string;
   numberOfInstancesNeeded: string;
+  requirementTitle?: string;
 }
 
 export interface ComputeInstanceTableData {

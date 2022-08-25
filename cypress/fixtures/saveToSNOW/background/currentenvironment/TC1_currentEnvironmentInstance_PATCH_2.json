@@ -1,0 +1,30 @@
+  {
+    "result": {
+      "storage_amount": "",
+      "storage_type": "",
+      "instance_name": "",
+      "classification_level": {
+        "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_classification_level/0f5bd2af87970590ec3b777acebb35af",
+        "value": "0f5bd2af87970590ec3b777acebb35af"
+      },
+      "number_of_vcpus": "",
+      "data_egress_monthly_amount": "",
+      "sys_mod_count": "3",
+      "sys_updated_on": "2022-08-15 17:08:34",
+      "sys_tags": "",
+      "performance_tier": "",
+      "pricing_model_expiration": "",
+      "sys_id": "868c938e87511910ec3b777acebb352b",
+      "csp_region": "",
+      "memory_unit": "",
+      "sys_updated_by": "prasanthi.alaparthi-ctr@ccpo.mil",
+      "storage_unit": "",
+      "sys_created_on": "2022-08-15 16:24:04",
+      "pricing_model": "",
+      "instance_location": "",
+      "memory_amount": "",
+      "operating_system_licensing": "",
+      "data_egress_monthly_unit": "",
+      "sys_created_by": "prasanthi.alaparthi-ctr@ccpo.mil"
+    }
+  }

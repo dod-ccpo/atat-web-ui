@@ -1,9 +1,9 @@
-import background from "../../selectors/background.sel";
-import common from "../../selectors/common.sel"
-import { bootstrapMockApis,colors, randomAlphaNumeric, randomNumber} from "../../helpers";
+import background from "../../../selectors/background.sel";
+import common from "../../../selectors/common.sel"
+import { bootstrapMockApis,colors, randomAlphaNumeric, randomNumber} from "../../../helpers";
 
 
-describe("Test suite: Background", () => {
+describe("Test suite: Current Contract", () => {
 
 
   beforeEach(() => {
@@ -12,7 +12,7 @@ describe("Test suite: Background", () => {
         
   })
     
-  it("TC1: Background on the Vertical Stepper", () => {
+  it("TC1: Current Contract on the Vertical Stepper", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     //Verify the Substeps are  visible
     cy.textExists(common.substepCurrentContractLink, " Current Contract ");

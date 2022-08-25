@@ -76,9 +76,11 @@
               activity, or organization that has the authority to requisition, contract 
               for, or fund/pay bills for materials and services."
               :value.sync="dodAddressCode"
-              :rules="[$validators.required('Please enter your 6-character DoDAAC.'), 
-              $validators.minLength(6, 'Your DoDAAC must be 6 characters.'),
-              $validators.maxLength(6, 'Your DoDAAC must be 6 characters.')]"
+              :rules="[
+                $validators.required('Please enter your 6-character DoDAAC.'), 
+                $validators.minLength(6, 'Your DoDAAC must be 6 characters.'),
+                $validators.maxLength(6, 'Your DoDAAC must be 6 characters.')
+              ]"
             />
 
             <hr />

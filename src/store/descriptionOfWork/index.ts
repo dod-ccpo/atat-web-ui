@@ -21,7 +21,7 @@ import {
   DOWServiceOfferingGroup, 
   DOWServiceOffering, 
   DOWClassificationInstance,
-  ComputeData
+  OtherServiceOfferingData,
 } from "../../../types/Global";
 
 import _, { differenceWith, first, last } from "lodash";
@@ -135,6 +135,11 @@ export class DescriptionOfWorkStore extends VuexModule {
     nameofProperty(this, (x)=> x.DOWObject)
   ];
   
+  @Action 
+  public async getDOWObject(): Promise<DOWServiceOfferingGroup[]> {
+    return this.DOWObject;
+  }
+
   // getters
   public get currentOfferingGroupIndex(): number {
     return this.DOWObject
@@ -343,7 +348,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  private setServiceOfferingGroups(value: SystemChoiceDTO[]) {
+  public setServiceOfferingGroups(value: SystemChoiceDTO[]) {
     value.forEach((value, index) => {
       // ensure "none apply" options are last in sequence
       value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index + 1;
@@ -431,7 +436,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public addOfferingGroup(groupId: string): void {
+  public async addOfferingGroup(groupId: string): Promise<void> {
     const group = this.serviceOfferingGroups.find(e => e.value === groupId)
     const offeringGroup: DOWServiceOfferingGroup = {
       serviceOfferingGroupId: groupId,
@@ -572,13 +577,13 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   currentComputeInstanceNumber = 0;
 
-  emptyComputeInstance: ComputeData = {
+  emptyComputeInstance: OtherServiceOfferingData = {
     instanceNumber: this.currentComputeInstanceNumber,
     environmentType: "",
     classificationLevel: "",
     deployedRegions: [],
     deployedRegionsOther: "",
-    needOrUsageDescription: "",
+    descriptionOfNeed: "",
     entireDuration: "",
     periodsNeeded: [],
     operatingSystemAndLicensing: "",
@@ -589,6 +594,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     performanceTier: "",
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
+    requirementTitle: "",
   }
 
   @Action
@@ -617,7 +623,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action
-  public async getComputeInstance(instanceNumber: number): Promise<ComputeData> {
+  public async getComputeInstance(instanceNumber: number): Promise<OtherServiceOfferingData> {
     const computeData = this.computeObject.computeData;
     if (computeData && computeData.length) {
       const instance = computeData.find(
@@ -643,12 +649,22 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action
-  public async setComputeData(computeData: ComputeData): Promise<void> {
+  public async pushTouchedComputeInstance(instanceNumber: number): Promise<void> {
+    this.doPushTouchedComputeInstance(instanceNumber);
+  }
+
+  @Mutation
+  public doPushTouchedComputeInstance(instanceNumber: number): void {
+    this.computeInstancesTouched.push(instanceNumber);
+  }
+
+  @Action
+  public async setComputeData(computeData: OtherServiceOfferingData): Promise<void> {
     this.doSetComputeData(computeData);
   }
 
   @Mutation
-  public async doSetComputeData(computeData: ComputeData): Promise<void> {
+  public async doSetComputeData(computeData: OtherServiceOfferingData): Promise<void> {
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
@@ -684,8 +700,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   }
 
+
+  @Action public async getTouchedComputeInstances(): Promise<number[]> {
+    return this.computeInstancesTouched;
+  }
+
   @Action
-  public async getComputeInstances(): Promise<ComputeData[]> {
+  public async getComputeInstances(): Promise<OtherServiceOfferingData[]> {
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
