@@ -10,6 +10,7 @@ import {
   Checkbox,
   RadioButton,
   SelectData,
+  OtherServiceOfferingData
 } from "../../../../types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 Vue.use(Vuetify);
@@ -24,7 +25,7 @@ describe("Testing ComputeForm Component", () => {
   Vue.config.silent = true;
 
   //propsData
-  const otherOfferingData = {
+  const otherOfferingData: OtherServiceOfferingData  = {
     "instanceNumber": 1,
     "environmentType": "Dev/Testing",
     // `pragma: allowlist secret`
@@ -33,7 +34,7 @@ describe("Testing ComputeForm Component", () => {
       "CONUS East"
     ],
     "deployedRegionsOther": "",
-    "needOrUsageDescription": "sfsfsdfsad",
+    "descriptionOfNeed": "sfsfsdfsad",
     "entireDuration": "",
     "periodsNeeded": [
       "1",
@@ -95,7 +96,7 @@ describe("Testing ComputeForm Component", () => {
         },
       },
       propsData: {
-        otherOfferingData: otherOfferingData,
+        computeData: otherOfferingData,
         avlClassificationLevelObjects: avlClassificationLevelObjects,
         firstTimeHere: true,
         isClassificationDataMissing: false,
@@ -111,11 +112,9 @@ describe("Testing ComputeForm Component", () => {
         validateOtherTierNow: true,
         validateOtherTierOnBlur: true,
         clearOtherTierValidation: true,
-
       }
     });
   });
-
 
   describe("Initialization....", () => {
     it("tests that component renders successfully", async () => {
