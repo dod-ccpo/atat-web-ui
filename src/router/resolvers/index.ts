@@ -369,9 +369,10 @@ export const OfferGroupOfferingsPathResolver = (
   Steps.setAdditionalButtonHide(false);
 
   if (isOtherOffering) {
-    const otherOfferingData = DescriptionOfWork.otherOfferingObject.otherOfferingData;
     const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
-    if (current !== routeNames.ServiceOfferingDetails) {
+    const otherOfferingData = DescriptionOfWork.otherOfferingObject.otherOfferingData;
+    // if (current !== routeNames.ServiceOfferingDetails) {
+    if (current !== routeNames.OtherOfferingSummary) {
       if (otherOfferingData && otherOfferingData.length) {
         return otherServiceOfferingSummaryPath;
       }
@@ -476,6 +477,12 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;   
   } 
+  if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
+    const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
+    if (offering) {
+      return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
+    }
+  } 
 
   let nextOrPrevGroup;
   if (current === routeNames.DOWSummary) {
@@ -486,9 +493,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
       : DescriptionOfWork.prevOfferingGroup;
   }
 
-  // if (nextOrPrevGroup && otherServiceOfferings.indexOf(nextOrPrevGroup.toLowerCase()) > -1) { 
-  //   return otherServiceOfferingSummaryPath;
-  // }
   if (nextOrPrevGroup && !(current === routeNames.OtherOfferingSummary 
     && otherServiceOfferings.indexOf(nextOrPrevGroup.toLowerCase()) > -1)) {
     // send to group offerings page
@@ -496,31 +500,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setCurrentOfferingGroupId(nextOrPrevGroup);
     return OfferGroupOfferingsPathResolver(serviceOffering , direction);
   }
-
-  // if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
-  if (!missingClassification) {
-    const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
-    if (offering) {
-      return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
-    }
-  } 
-
-  // let group;
-  // if (current === routeNames.DOWSummary) {
-  //   group = DescriptionOfWork.lastOfferingGroup;
-  // } else {
-  //   group = direction === "next" 
-  //     ? DescriptionOfWork.nextOfferingGroup 
-  //     : DescriptionOfWork.prevOfferingGroup;
-  // }
-
-  // if (nextOrPrevGroup && !(current === routeNames.OtherOfferingSummary 
-  //   && otherServiceOfferings.indexOf(nextOrPrevGroup.toLowerCase()) > -1)) {
-  //   // send to group offerings page
-  //   const serviceOffering = routeNames.ServiceOfferings
-  //   DescriptionOfWork.setCurrentOfferingGroupId(nextOrPrevGroup);
-  //   return OfferGroupOfferingsPathResolver(serviceOffering , direction);
-  // }
 
   DescriptionOfWork.setReturnToDOWSummary(false);
   return descriptionOfWorkSummaryPath
