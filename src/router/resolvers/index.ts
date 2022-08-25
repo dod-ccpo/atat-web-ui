@@ -137,13 +137,25 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   //if comming from Service Offerings and we have more
   // service offerings groups to navigate through
   if(current === routeNames.ServiceOfferings && 
-    !atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
+    !atBeginningOfOfferingGroups){
     const previousGroup = DescriptionOfWork.prevOfferingGroup;
+
+    if(DescriptionOfWork.returnToDOWSummary)
+    {
+      return descriptionOfWorkSummaryPath;
+    }
+
     if(previousGroup === undefined)
     {
       throw new Error('unable to get previous group');
     }
     DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
+    
+    //COMPUTE doesn't have service offerings
+    if(previousGroup === "COMPUTE"){
+      return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`;
+    }
+
     const lastOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
 
     if(lastOfferingForGroup === undefined)
@@ -156,6 +168,25 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   }
     
   return basePerformanceRequirementsPath;
+}
+
+export const ComputeOfferingDetailsPathResolver = (current: string, direction: string): string=>{
+
+  const groupId = DescriptionOfWork.currentGroupId;
+  if (groupId.toLowerCase() === "compute") {
+    return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`
+  }
+
+  if(current === routeNames.ServiceOfferingDetails && direction === "next"){
+    return DowSummaryPathResolver(current, direction);
+  }
+
+  if(current === routeNames.DOWSummary){
+    return OfferingDetailsPathResolver(current, direction);
+  }
+
+  return descriptionOfWorkSummaryPath;
+     
 }
 
 export const OfferGroupOfferingsPathResolver = (
@@ -183,6 +214,7 @@ export const OfferGroupOfferingsPathResolver = (
     ? false 
     : DescriptionOfWork.isEndOfServiceOfferings;
   DescriptionOfWork.setReviewGroupFromSummary(false);
+  
 
   const returnToDOWSummary = DescriptionOfWork.returnToDOWSummary;
   const addGroupFromSummary = DescriptionOfWork.addGroupFromSummary;
@@ -193,10 +225,12 @@ export const OfferGroupOfferingsPathResolver = (
     || atLastNoneApply 
     || lastGroupRemoved
 
+  const directionNext = direction ===  "next";
+
   if (!addGroupFromSummary 
     && ((currentGroupRemovedForNav && lastGroupRemoved) 
     || (currentGroupRemovedForNav && returnToDOWSummary)
-    || (returnToDOWSummary && atServicesEnd) 
+    || (returnToDOWSummary && atServicesEnd && directionNext)
     || nowhereToGo)
   ) {
     // return to summary
@@ -314,7 +348,7 @@ export const OfferGroupOfferingsPathResolver = (
 
   if (isCompute) {
     const currentInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
-    if (current !== routeNames.ServiceOfferingDetails) {
+    if (current !== routeNames.ComputeRequirements) {
       if (computeData && computeData.length) {
         return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`;
       }
@@ -337,12 +371,27 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setBackToContractDetails(false);
     return "period-of-performance/period-of-performance";
   }
+
   const groupId = DescriptionOfWork.currentGroupId;
-  if (groupId.toLowerCase() === "compute") {
-    return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`
+  const missingClassification = DescriptionOfWork.missingClassificationLevels;
+
+  if(current === routeNames.ComputeRequirements && 
+    groupId === "COMPUTE" && direction === "previous"){
+    if(DescriptionOfWork.returnToDOWSummary){
+      return descriptionOfWorkSummaryPath;
+    }
+    if(DescriptionOfWork.prevOfferingGroup){
+      const group = DescriptionOfWork.prevOfferingGroup
+      DescriptionOfWork.setCurrentOfferingGroupId(group);
+    }
+    else{
+      return descriptionOfWorkSummaryPath;
+    }
   }
 
-  const missingClassification = DescriptionOfWork.missingClassificationLevels;
+  if(current === routeNames.ServiceOfferings && groupId === "COMPUTE" && direction === "next"){
+    return ComputeOfferingDetailsPathResolver(current, direction);
+  }
 
   if ((missingClassification && DescriptionOfWork.returnToDOWSummary) 
     || (DescriptionOfWork.currentGroupRemovedForNav && DescriptionOfWork.lastGroupRemoved)) {
@@ -395,7 +444,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;   
   } 
-  if (!missingClassification) {
+  if (!missingClassification && current !== routeNames.ComputeRequirements) {
     const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
     if (offering) {
       return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
@@ -411,7 +460,8 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
       : DescriptionOfWork.prevOfferingGroup;
   }
 
-  if (group) {
+  if (group && !(current === routeNames.ComputeRequirements 
+    && group === "COMPUTE")) {
     // send to group offerings page
     const serviceOffering = routeNames.ServiceOfferings
     DescriptionOfWork.setCurrentOfferingGroupId(group);
@@ -423,6 +473,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+
   DescriptionOfWork.setBackToContractDetails(current === routeNames.PropertyDetails);
   Steps.clearAltBackButtonText();
   if(current === routeNames.PropertyDetails){
@@ -584,6 +635,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
 
 // add path resolvers here 
 const pathResolvers: Record<string, StepPathResolver> = {
+  ComputeOfferingDetailsPathResolver,
   OfferGroupOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,

@@ -115,6 +115,7 @@ import {
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
+  ComputeOfferingDetailsPathResolver,
 
 } from "./resolvers";
 
@@ -471,10 +472,10 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Compute Requirements",
         path: "service-offerings/compute/requirements",
         excludeFromMenu: true,
-        name: routeNames.ServiceOfferingDetails,
+        name: routeNames.ComputeRequirements,
         completePercentageWeight: 1,
         component: ComputeRequirements,
-        routeResolver: OfferingDetailsPathResolver,
+        routeResolver: ComputeOfferingDetailsPathResolver,
         additionalButtons: [
           {
             buttonText: "I don’t need compute resources",

@@ -459,7 +459,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     cy.btnClick(common.continueBtn, " Continue ");
     //Navigates to the Gather your requirement screen
     cy.verifyPageHeader(
-      "Next, we’ll gather your requirements for " + labels[1]
+      "Next, we’ll gather your requirements for " + labels[0]
     ); 
     
     const expectedintroText = "In the previous section, you specified " +

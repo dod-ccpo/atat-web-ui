@@ -343,7 +343,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  private setServiceOfferingGroups(value: SystemChoiceDTO[]) {
+  public setServiceOfferingGroups(value: SystemChoiceDTO[]) {
     value.forEach((value, index) => {
       // ensure "none apply" options are last in sequence
       value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index + 1;
