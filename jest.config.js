@@ -1,54 +1,24 @@
 const { sassFalse } = require("sass");
 
 module.exports = {
+  testEnvironment: "jsdom",
+
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: true,
+
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  //collectCoverageFrom: ["**/*.{js,vue}", "!**/node_modules/**"],
-  // collectCoverageFrom: [
-  //   // "<rootDir>/src/components/*.{vue,ts}",
-  //   // "<rootDir>/src/helpers/*.{vue,ts}",
-  //   // "<rootDir>/src/steps/**/*.{vue,ts}",
-  //   // "<rootDir>/src/api/**/*.{vue,ts}",
-  //   //  "src/components/*.{js|vue}",
-  //   // "src/components/**/*.{js|vue}",
-  //   // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.{vue|js}",
-  //   // "!**/*.{ts}",
-  //   // "!**/src/steps/**/*.{ts|vue}",
-  //   // "!**/src/api/**/*.{ts|vue}",
-  //   // "src/steps/**/**/*.vue"
-  // ],
-  collectCoverageFrom: [
-    "src/**/index.ts",
-    "src/**/*.spec.ts",
-    "src/**/*.vue"
-  ],
+  collectCoverageFrom: [ "src/**/*.vue", "src/**/index.ts"],
   
   // An array of regexp pattern strings used to skip coverage collection
-  // coveragePathIgnorePatterns: [
-  //   "<rootDir>/src/store/",
-  //   "<rootDir>/src/api/",
-  //   "<rootDir>/src/steps/",
-  // ],
+  // coveragePathIgnorePatterns: [ ],
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: "babel",
 
   // A list of reporter names that Jest uses when writing coverage reports
   coverageReporters: [
-    // "default",
-    // "json",
-    // "text",
-    "lcov",
-    // "clover",
-    // "html"
+    "lcov"
   ],
-  // A set of global variables that need to be available in all test environments
-  // globals: {
-  //   'ts-jest': {
-  //     diagnostics: true
-  //   }
-  // },
   // An array of file extensions your modules use
   moduleFileExtensions: [
     "ts",
@@ -56,8 +26,8 @@ module.exports = {
     "vue"
   ],
   // A preset that is used as a base for Jest's configuration
-  // preset: "ts-jest",
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
+
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: [
     "<rootDir>/tests/setup.js"
@@ -66,34 +36,27 @@ module.exports = {
   testMatch: [
     "<rootDir>/src/components/*.spec.ts",
     "<rootDir>/src/steps/**/*.spec.ts",
-    "<rootDir>/src/steps/**/**/*.spec.ts",
-    "<rootDir>/src/api/**/**/*.spec.ts",
-    "<rootDir>/src/helpers/index.spec.ts",
-    "<rootDir>/src/router/resolvers/__test__/index.spec.ts",
-    "<rootDir>/src/store/classificationRequirements/__test__/index.spec.ts",
-
-    // "<rootDir>/src/steps/05-PerformanceRequirements/DOW/ComputeForm.spec.ts",
+    "<rootDir>/src/store/**/*.spec.ts",
+    "<rootDir>/src/router/**/*.spec.ts",
+    "<rootDir>/src/api/**/*.spec.ts",
+    "<rootDir>/src/action-handlers/**/*.spec.ts",
   ],
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  // testPathIgnorePatterns: [
-  //   "<rootDir>/node_modules",
-  //   "<rootDir>/src/store",
-  //   "<rootDir>/src/api",
-  // ],
+  // testPathIgnorePatterns: [  "<rootDir>/node_modules" ],
  
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
   testURL: "http://localhost/",
+
   // A map from regular expressions to paths to transformers
   transform: {
     "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-    "^.+\\.ts$": ["ts-jest",{"sourceMaps": "inline"}]
+    "^.+\\.ts$": "ts-jest",
+    "^.+\\.vue$": ["@vue/vue2-jest", {"sourceMaps": "inline"}]
   },
-  // // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
+  // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
     "/node_modules/(?!vuetify/)"
   ],
   // Indicates whether each individual test should be reported during the run
   verbose: true,
-  
- 
 }
