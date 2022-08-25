@@ -105,7 +105,8 @@
                     :id="'missingBase' + index"
                     class="atat-text-field-error ml-14"
                     :errorMessages="[
-                      `Please specify the length of your ${getOptionPeriodLabel(index)} period`
+                      `Please specify the length of your
+                      ${getOptionPeriodLabel(index).toLowerCase()} period`
                       ]"
                     v-if="!optionPeriods[index].duration &&
                     optionPeriods[index].unitOfTime != '' "
