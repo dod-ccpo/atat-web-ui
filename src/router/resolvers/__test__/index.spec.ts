@@ -1,5 +1,5 @@
 import {
-  ComputeOfferingDetailsPathResolver,
+  OtherOfferingSummaryPathResolver,
   OfferingDetailsPathResolver,
   RequirementsPathResolver,
   OfferGroupOfferingsPathResolver,
@@ -11,27 +11,27 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 
 describe("testing src/router/index.ts", () => {
 
-  describe('Testing ComputeOfferingDetailsPathResolver()', () => {
-    it("Test ComputeOfferingDetailsPathResolver()- should return the default path", () => {
-      const result = ComputeOfferingDetailsPathResolver("test", "testing")
+  describe('Testing OtherOfferingSummaryPathResolver()', () => {
+    it("Test OtherOfferingSummaryPathResolver()- should return the default path", () => {
+      const result = OtherOfferingSummaryPathResolver("test", "testing")
       expect(result).toBe('performance-requirements/dow-summary')
     })
 
-    it("Test ComputeOfferingDetailsPathResolver()- should return the performance path", () => {
-      const result = ComputeOfferingDetailsPathResolver("DOW_Summary", "next")
+    it("Test OtherOfferingSummaryPathResolver()- should return the performance path", () => {
+      const result = OtherOfferingSummaryPathResolver("DOW_Summary", "next")
       expect(result).toBe('performance-requirements')
     })
 
-    it("Test ComputeOfferingDetailsPathResolver()- should return the summary path", () => {
-      const result = ComputeOfferingDetailsPathResolver("Service_Offering_Details", "next")
+    it("Test OtherOfferingSummaryPathResolver()- should return the summary path", () => {
+      const result = OtherOfferingSummaryPathResolver("Service_Offering_Details", "next")
       expect(result).toBe('performance-requirements/dow-summary')
     })
 
-    it("Test ComputeOfferingDetailsPathResolver()- should return a path for Compute", () => {
-      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")
-      const result = ComputeOfferingDetailsPathResolver(
-        "Service_Offering_Details", "next")
-      expect(result).toBe('performance-requirements/service-offerings/compute/requirements')
+    it("Test OtherOfferingSummaryPathResolver()- should return a path for Compute", () => {
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
+      const result = OtherOfferingSummaryPathResolver("Service_Offering_Details", "next")
+      expect(result).toBe("performance-requirements/service-offerings/other/summary");
+
     })
   })
 
@@ -110,7 +110,9 @@ describe("testing src/router/index.ts", () => {
       DescriptionOfWork.addOfferingGroup('APPLICATIONS')
       DescriptionOfWork.addOfferingGroup('COMPUTE')
       const result = OfferingDetailsPathResolver("Service", "next")
-      expect(result).toBe('performance-requirements/service-offering-details/compute/test')
+      expect(result).toBe("performance-requirements/service-offerings/applications");
+      // EJY should never result in below
+      // expect(result).toBe('performance-requirements/service-offering-details/compute/test')
     })
   })
 

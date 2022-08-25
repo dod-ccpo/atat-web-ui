@@ -33,7 +33,7 @@ describe("Testing OtherOfferings Component", () => {
   const getters = DescriptionOfWorkStore.getters;
   const state = DescriptionOfWorkStore.state;
   
-  const computeData: OtherServiceOfferingData[] = [{
+  const otherOfferingData: OtherServiceOfferingData[] = [{
     instanceNumber: 1,
     environmentType: "",
     classificationLevel: "",
@@ -55,7 +55,7 @@ describe("Testing OtherOfferings Component", () => {
 
   const DOWObject: DOWServiceOfferingGroup[] = [
     {
-      computeData,
+      otherOfferingData,
       serviceOfferingGroupId: "COMPUTE",
       sequence: 1,
       serviceOfferings: [],
