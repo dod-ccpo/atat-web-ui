@@ -3,7 +3,7 @@ import {
   OfferingDetailsPathResolver,
   RequirementsPathResolver,
   OfferGroupOfferingsPathResolver,
-  // calcBasePeriod, 
+  calcBasePeriod, 
   IncrementalFundingResolver, 
   FinancialPOCResolver  
 } from '../index'
@@ -11,43 +11,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 
-const routeNames = {
-  SummaryPage: "SummaryPage"
-}
-
-describe("testing src/router/index.ts", () => {
-
-  describe("Testing calBasePeriod()", async () => {
-    it("should return the amount of days in a year", async () => {
-      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
-        () => Promise.resolve(
-          [
-            {
-              "period_unit": "YEAR",
-              "period_unit_count": "1",
-              "period_type": "BASE",
-              "option_order": "1"
-            },
-          ]
-        ));
-      const result = await calcBasePeriod();
-      expect(result).toBe(365)
-    })
-    it("should return the amount of days in a week", async () => {
-      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
-        () => Promise.resolve(
-          [
-            {
-              "period_unit": "WEEK",
-              "period_unit_count": "1",
-              "period_type": "BASE",
-              "option_order": "1"
-            },
-          ]
-        ));
-      const result = await calcBasePeriod();
-      expect(result).toBe(7)    
-  })
+describe("testing src/router/index.ts", async () => {
   
   describe('Testing OtherOfferingSummaryPathResolver()', () => {
     it("Test OtherOfferingSummaryPathResolver()- should return the default path", () => {
@@ -69,8 +33,8 @@ describe("testing src/router/index.ts", () => {
       DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
       const result = OtherOfferingSummaryPathResolver("Service_Offering_Details", "next")
       expect(result).toBe("performance-requirements/service-offerings/other/summary");
-
     })
+
   })
 
   describe('Testing OfferingDetailsPathResolver()', () => {
@@ -151,8 +115,9 @@ describe("testing src/router/index.ts", () => {
       expect(result).toBe("performance-requirements/service-offerings/applications");
       // EJY should never result in below
       // expect(result).toBe('performance-requirements/service-offering-details/compute/test')
-    })
-  })
+    });
+    
+  });
 
   describe('Testing OfferGroupOfferingsPathResolver()', () => {
     it("Test OfferGroupOfferingsPathResolver()- should return the default path for compute", () => {
@@ -170,6 +135,137 @@ describe("testing src/router/index.ts", () => {
       const result = RequirementsPathResolver("Service_Offerings", "next")
       expect(result).toBe('performance-requirements/dow-summary')
     })
-
   })
-})
+
+  describe("Testing calBasePeriod()", async () => {
+    it("should return the amount of days in a year", async () => {
+      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+        () => Promise.resolve(
+          [
+            {
+              "period_unit": "YEAR",
+              "period_unit_count": "1",
+              "period_type": "BASE",
+              "option_order": "1"
+            },
+          ]
+        ));
+      const result = await calcBasePeriod();
+      expect(result).toBe(365)
+    })
+    it("should return the amount of days in a week", async () => {
+      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+        () => Promise.resolve(
+          [
+            {
+              "period_unit": "WEEK",
+              "period_unit_count": "1",
+              "period_type": "BASE",
+              "option_order": "1"
+            },
+          ]
+        ));
+      const result = await calcBasePeriod();
+      expect(result).toBe(7)    
+    });
+
+    it("should return the amount of days in a year", async () => {
+      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+        () => Promise.resolve(
+          [
+            {
+              "period_unit": "YEAR",
+              "period_unit_count": "1",
+              "period_type": "BASE",
+              "option_order": "1"
+            },
+          ]
+        ));
+      const result = await calcBasePeriod();
+      expect(result).toBe(365)
+    })
+
+    it("should return the amount of days in a week", async () => {
+      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+        () => Promise.resolve(
+          [
+            {
+              "period_unit": "WEEK",
+              "period_unit_count": "1",
+              "period_type": "BASE",
+              "option_order": "1"
+            },
+          ]
+        ));
+      const result = await calcBasePeriod();
+      expect(result).toBe(7)
+    })
+
+    it("should return the amount of days in a month", async () => {
+      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+        () => Promise.resolve(
+          [
+            {
+              "period_unit": "MONTH",
+              "period_unit_count": "1",
+              "period_type": "BASE",
+              "option_order": "1"
+            },
+          ]
+        ));
+      const result = await calcBasePeriod();
+      expect(result).toBe(30)
+    })
+
+    it("should return the amount of days in a month", async () => {
+      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+        () => Promise.resolve(
+          [
+            {
+              "period_unit": "",
+              "period_unit_count": "",
+              "period_type": "",
+              "option_order": ""
+            },
+          ]
+        ));
+      const result = await calcBasePeriod();
+      expect(result).toBe(0)
+    })
+    
+    it("testing the resolver for IncrementalFunding()", () => {
+      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+        () => Promise.resolve(
+          [
+            {
+              "period_unit": "MONTH",
+              "period_unit_count": "1",
+              "period_type": "BASE",
+              "option_order": "1"
+            },
+          ]
+        ));
+      
+      const result = IncrementalFundingResolver("SummaryPage");
+      expect(result).toBe("Incremental_Funding")
+    })
+  });
+
+  it("testing the resolver for FinancialPOCResolver()", () => {
+    jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+      () => Promise.resolve(
+        [
+          {
+            "period_unit": "YEAR",
+            "period_unit_count": "1",
+            "period_type": "BASE",
+            "option_order": "1"
+          },
+        ]
+      ));
+
+    const result = FinancialPOCResolver("SummaryPage");
+    expect(result).toBe("Financial_POC_Form")
+  });
+
+});

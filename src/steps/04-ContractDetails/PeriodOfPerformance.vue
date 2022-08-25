@@ -15,9 +15,9 @@
               specify the length of time that each period will remain in effect.
               Add, duplicate or remove option periods as needed, up to 5 years
               total.
-              <a 
-                role="button" 
-                id="PopLearnMore" 
+              <a
+                role="button"
+                id="PopLearnMore"
                 class="_text-link"
                 tabindex="0"
                 @click="openSlideoutPanel"
@@ -31,7 +31,7 @@
             Period of Performance length
           </div>
           <div id="BaseAndOptionWrapper">
-            <draggable 
+            <draggable
               v-model="optionPeriods"
               ghost-class="ghost"
             >
@@ -57,9 +57,13 @@
                       <ATATTextField
                         :id="getIdText(getOptionPeriodLabel(index)) + 'Duration'"
                         class="mr-4"
+                        :class="[
+                          { 'error--text': !optionPeriods[index].duration &&
+                      optionPeriods[index].unitOfTime != ''  },
+                        {'error--text': oneYearCheck(optionPeriods[index])}]"
                         width="178"
-                        :rules="[$validators.integer()]"
                         :value.sync="optionPeriods[index].duration"
+                        type="number"
                       />
                     </div>
                     <div>
@@ -75,7 +79,6 @@
                       :id="getIdText(getOptionPeriodLabel(index)) + 'Buttons'"
                       class="d-flex align-center"
                     >
-                      <!-- copy button disabled - will be implemented in future ticket -->
                       <v-btn
                         icon
                         class="mr-1"
@@ -96,7 +99,24 @@
                         <v-icon> delete </v-icon>
                       </v-btn>
                     </div>
+
                   </div>
+                  <ATATErrorValidation
+                    :id="'missingBase' + index"
+                    class="atat-text-field-error ml-14"
+                    :errorMessages="[
+                      `Please specify the length of your
+                      ${getOptionPeriodLabel(index)} period`
+                      ]"
+                    v-if="!optionPeriods[index].duration &&
+                    optionPeriods[index].unitOfTime != '' "
+                  />
+                  <ATATErrorValidation
+                    :id="'MoreThanAYear' + index"
+                    class="atat-text-field-error ml-14"
+                    :errorMessages="[oneYearCheck(optionPeriods[index])]"
+                    v-if="oneYearCheck(optionPeriods[index])"
+                  />
                 </div>
             </draggable>
           </div>
@@ -106,7 +126,7 @@
             v-if="totalPoPDuration < maxTotalPoPDuration"
             plain
             text
-            class="_text-link mt-5"
+            class=" mt-5 link-button no-border"
             :ripple="false"
             @click="addOptionPeriod()"
           >
@@ -152,6 +172,7 @@ import Periods from "@/store/periods";
 import {hasChanges} from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import FinancialDetails from "@/store/financialDetails";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
 
 const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
@@ -172,6 +193,7 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
     ATATSelect,
     draggable,
     PopLearnMore,
+    ATATErrorValidation
   },
 })
 export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
@@ -216,10 +238,40 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     { text: "Day(s)", value: "DAY" },
   ];
 
+
+  public oneYearCheck(period:PoP): string {
+    if(period.duration){
+      switch(period.unitOfTime) {
+      case "YEAR":
+        if(period.duration > 1) {
+          return "The length of this period must be 1 year or less."
+        }
+        break;
+      case "MONTH":
+        if(period.duration > 12) {
+          return "The length of this period must be 12 months or less."
+        }
+        break;
+      case "WEEK":
+        if(period.duration > 52) {
+          return "The length of this period must be 52 weeks or less."
+        }
+        break;
+      case "DAY":
+        if(period.duration > 365) {
+          return "The length of this period must be 365 days or less."
+        }
+        break;
+      default:
+      }
+    }
+    return ""
+  }
+
   public addOptionPeriod(): void {
     const newOptionPeriod = {
       duration: null,
-      unitOfTime: "Year",
+      unitOfTime: "",
       id: null,
       order: this.optionPeriods.length + 1,
     };
@@ -252,6 +304,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
         this.totalPoPDuration += thisDays;
       }
     });
+
   }
 
   public deleteOptionPeriod(index: number): void {
@@ -369,7 +422,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
         draggableEl.addEventListener("dragend", () => {
           const imgFaker = document.getElementById("DragImgFaker");
           imgFaker?.parentNode?.removeChild(imgFaker);
-          
+
           // show the base/option label for the dragged element
           this.durationLabelEl.classList.remove("d-none");
 
@@ -379,7 +432,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
             const icon = row.getElementsByClassName("drag-icon")[0] as HTMLElement;
             icon.classList.remove("hide-icon");
           });
-          
+
           draggableEl.classList.remove("dragging");
 
           // hide the div that appears next to pointer when dragging
@@ -421,7 +474,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
- 
     this.savedData = periods.map(period=> {
 
       return {
@@ -432,11 +484,11 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
         sys_id: period.sys_id,
       }
     });
-  
+
     this.optionPeriods = periods.length ? periods.map(period=> {
 
       const optionPeriod: PoP = {
-            
+
         duration: Number(period.period_unit_count || ""),
         unitOfTime: period.period_unit,
         id: period.sys_id || "",
@@ -446,7 +498,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       return optionPeriod;
     }) : [ {
       duration:null ,
-      unitOfTime: "Year",
+      unitOfTime: "",
       id: null,
       order: 1,
     }];
@@ -457,7 +509,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-          
+
 
       const valid = this.optionPeriods.every(peroid=>peroid.duration);
       const cutOff = 270;

@@ -6,6 +6,7 @@ import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/ste
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import TaskOrder from "@/store/taskOrder";
+import Periods from "@/store/periods";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -636,16 +637,34 @@ export const Upload7600Resolver = (current: string): string => {
     : routeNames.SeverabilityAndIncrementalFunding;
 }
 const cutOff = 270;
+export async function calcBasePeriod() {
+  const period = await Periods.loadPeriods()
+  let basePeriod = 0
+  let multiplier = 1;
+  switch (period[0].period_unit) {
+  case "WEEK":
+    multiplier = 7;
+    break;
+  case "MONTH":
+    multiplier = 30;
+    break;
+  case "YEAR":
+    multiplier = 365;
+    break;
+  default:
+  }
+  basePeriod = Number(period[0].period_unit_count) * multiplier;
+  return basePeriod
+}
 export const IncrementalFundingResolver = (current: string): string => {
-  // currently not saving yes/no if need incremental funding.
-  // future ticket will have route resolve to either Incremental Funding Page
-  // or the Financial POC Form page
-  // for now, if either yes or no is selected, route to IFP page
+  let baseDuration
+  calcBasePeriod().then(value => {
+    baseDuration = value
+  })
 
-  const totalDuration = AcquisitionPackage.totalBasePoPDuration;
   const isIncrementallyFunded = TaskOrder.value.incrementally_funded
 
-  if (totalDuration < cutOff || isIncrementallyFunded === "NO") {
+  if (baseDuration && baseDuration < cutOff || isIncrementallyFunded === "NO") {
     return routeNames.SummaryPage;
   }
 
@@ -655,10 +674,12 @@ export const IncrementalFundingResolver = (current: string): string => {
 }
 
 export const FinancialPOCResolver =  (current: string): string => {
-  const totalDuration = AcquisitionPackage.totalBasePoPDuration;
   const isIncrementallyFunded = TaskOrder.value.incrementally_funded
-
-  if (current === routeNames.SummaryPage && totalDuration < cutOff ||
+  let baseDuration
+  calcBasePeriod().then(value => {
+    baseDuration = value
+  })
+  if (current === routeNames.SummaryPage && baseDuration && baseDuration < cutOff ||
       current === routeNames.SummaryPage && isIncrementallyFunded === "NO") {
     return routeNames.SeverabilityAndIncrementalFunding;
   }
