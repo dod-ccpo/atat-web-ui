@@ -476,7 +476,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ServiceOfferingDetails,
         completePercentageWeight: 1,
         component: OtherOfferingSummary,
-        routeResolver: OfferingDetailsPathResolver, // EJY should this be ComputeOfferingDetailsPathResolver ??
+        routeResolver: OfferingDetailsPathResolver, 
+        // EJY should routeResolver be ComputeOfferingDetailsPathResolver ??
         additionalButtons: [
           {
             buttonText: "I don’t need compute resources",
