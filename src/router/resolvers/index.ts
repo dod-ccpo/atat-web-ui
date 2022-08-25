@@ -604,10 +604,6 @@ export async function calcBasePeriod() {
   return basePeriod
 }
 export const IncrementalFundingResolver = (current: string): string => {
-  // currently not saving yes/no if need incremental funding.
-  // future ticket will have route resolve to either Incremental Funding Page
-  // or the Financial POC Form page
-  // for now, if either yes or no is selected, route to IFP page
   let baseDuration
   calcBasePeriod().then(value => {
     baseDuration = value
