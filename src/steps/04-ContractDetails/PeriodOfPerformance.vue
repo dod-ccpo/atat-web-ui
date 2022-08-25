@@ -106,7 +106,7 @@
                     class="atat-text-field-error ml-14"
                     :errorMessages="[
                       `Please specify the length of your
-                      ${getOptionPeriodLabel(index).toLowerCase()} period`
+                      ${getOptionPeriodLabel(index)} period`
                       ]"
                     v-if="!optionPeriods[index].duration &&
                     optionPeriods[index].unitOfTime != '' "
