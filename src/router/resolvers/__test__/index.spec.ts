@@ -5,6 +5,7 @@ import {
   OfferGroupOfferingsPathResolver,
 } from '../index'
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import ClassificationRequirements from "@/store/classificationRequirements";
 
 
 
@@ -34,7 +35,7 @@ describe("testing src/router/index.ts", () => {
     })
   })
 
-  describe('Testing OfferingDetailsPathResolver', () => {
+  describe('Testing OfferingDetailsPathResolver()', () => {
     it("Test OfferingDetailsPathResolver()- should return the default path", () => {
       const result = OfferingDetailsPathResolver("test", "testing")
       expect(result).toBe('performance-requirements/dow-summary')
@@ -46,15 +47,16 @@ describe("testing src/router/index.ts", () => {
       expect(result).toBe('performance-requirements/dow-summary')
     })
 
-    it("Test OfferingDetailsPathResolver()- should return DOW summary path", () => {
+    it("Test OfferingDetailsPathResolver()- should return DOW summary path with return set", () => {
       DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")
       DescriptionOfWork.setReturnToDOWSummary(true)
       const result = OfferingDetailsPathResolver("Compute_Requirements", "previous")
       expect(result).toBe('performance-requirements/dow-summary')
     })
 
-    it("Test OfferingDetailsPathResolver()- should set current group offering", () => {
+    it("Test OfferingDetailsPathResolver()- should change current group offering", () => {
       DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")
+      DescriptionOfWork.setReturnToDOWSummary(false)
       DescriptionOfWork.setServiceOfferingGroups([
         {
           name: 'test1',
@@ -69,18 +71,65 @@ describe("testing src/router/index.ts", () => {
           sequence: 2,
         },
       ])
-
       DescriptionOfWork.addOfferingGroup('APPLICATIONS')
       DescriptionOfWork.addOfferingGroup('COMPUTE')
-
       const group = DescriptionOfWork.prevOfferingGroup
-      expect(group).toBe('APPLICATIONS')
+      OfferingDetailsPathResolver("Compute_Requirements", "previous")
+      const id = DescriptionOfWork.currentGroupId
+      expect(id).toBe(group)
     })
 
-    it("Test OfferingDetailsPathResolver()- should return path to requirements", () => {
+    it("Test OfferingDetailsPathResolver()- should return path sanatized path", () => {
       DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")
-      const result = OfferingDetailsPathResolver("Service_Offerings", "next")
-      expect(result).toBe('performance-requirements/service-offerings/compute/requirements')
+      ClassificationRequirements.setSelectedClassificationLevels([{
+        // eslint-disable-next-line camelcase
+        impact_level: 'IL2',
+        classification: "U"}])
+      DescriptionOfWork.setCurrentOffering({name:'test',sysId:'testID'})
+      const result = OfferingDetailsPathResolver("Service", "next")
+      expect(result).toBe('performance-requirements/service-offering-details/compute/test')
     })
+
+    it("Test OfferingDetailsPathResolver()- should return to dow-summary", () => {
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")
+      DescriptionOfWork.setCurrentOffering({name:'test',sysId:'testID'})
+      DescriptionOfWork.setServiceOfferingGroups([
+        {
+          name: 'test1',
+          label: 'Compute',
+          value: 'COMPUTE',
+          sequence: 1,
+        },
+        {
+          name: 'test2',
+          label: 'Applications',
+          value: 'APPLICATIONS',
+          sequence: 2,
+        },
+      ])
+      DescriptionOfWork.addOfferingGroup('APPLICATIONS')
+      DescriptionOfWork.addOfferingGroup('COMPUTE')
+      const result = OfferingDetailsPathResolver("Service", "next")
+      expect(result).toBe('performance-requirements/service-offering-details/compute/test')
+    })
+  })
+
+  describe('Testing OfferGroupOfferingsPathResolver()', () => {
+    it("Test OfferGroupOfferingsPathResolver()- should return the default path for compute", () => {
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")
+      DescriptionOfWork.setAddGroupFromSummary(true)
+      const result = OfferGroupOfferingsPathResolver("test", "testing")
+      expect(result).toBe('performance-requirements/service-offerings/compute')
+    })
+  })
+
+  describe('Testing RequirementsPathResolver()', () => {
+    it("Test RequirementsPathResolver()- should return to DOW summary", () => {
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")
+      DescriptionOfWork.setReturnToDOWSummary(true)
+      const result = RequirementsPathResolver("Service_Offerings", "next")
+      expect(result).toBe('performance-requirements/dow-summary')
+    })
+
   })
 })
