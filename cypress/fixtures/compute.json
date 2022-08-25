@@ -3,7 +3,7 @@
   "contractDetailsLink": "revisiting the Contract Details section",
   "formSectionOneHeader": " 1.  Tell us about Instance #1 ",
   "classLevelLabel": " What classification level is this instance deployed in? ",
-  "descriptionLabelText": "Description of your anticipated need or usage",
+  "descriptionLabelText": " Describe the anticipated need and usage of this requirement",
   "formSectionTwoHeader": "2. Instance configurations",
   "operSysLicenLabel": " Operating system and licensing ",
   "regionTooltipTxt": "This is the geographic location where your public cloud resources are located, e.g., within the continental U.S. (CONUS) or outside of the continental U.S. (OCONUS). If you need a certain location, select Other and enter your specifications.",

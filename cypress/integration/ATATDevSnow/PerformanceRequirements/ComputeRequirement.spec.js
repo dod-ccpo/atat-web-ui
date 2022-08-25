@@ -50,7 +50,7 @@ describe("Test suite: Compute Requirements", () => {
     const selectedRegions = "CONUS West" + "," + " CONUS Central"
     const decriptionText = randomAlphaNumeric(10)
     cy.enterTextInTextField(
-      performanceReq.descriptionTextInputBox,
+      performanceReq.anticipatedTextBox1,
       decriptionText
     )
     cy.selectRadioBtn(
@@ -112,7 +112,7 @@ describe("Test suite: Compute Requirements", () => {
     cy.selectCheckBoxes([performanceReq.eastCheckbox, performanceReq.oconusCheckbox]);        
     const decriptionText = randomAlphaNumeric(12)
     cy.enterTextInTextField(
-      performanceReq.descriptionTextInputBox,
+      performanceReq.anticipatedTextBox1,
       decriptionText
     )
     cy.selectRadioBtn(
@@ -157,12 +157,12 @@ describe("Test suite: Compute Requirements", () => {
     cy.selectCheckBoxes([performanceReq.centralCheckBox]);
     const decriptionTextInsTwo = randomAlphaNumeric(12)
     cy.enterTextInTextField(
-      performanceReq.descriptionTextInputBox,
+      performanceReq.anticipatedTextBox1,
       decriptionTextInsTwo
     )
     cy.durationPeriodExists(
       performanceReq.durationNoRadioBtn,
-      performanceReq.neededDurationActiveRadioBtn,
+      performanceReq.entireDurationActiveBtn,
       performanceReq.baseCheckbox,
       "NO");
     cy.periodCount(periodCheckboxCount, performanceReq.baseCheckbox);
@@ -255,7 +255,7 @@ describe("Test suite: Compute Requirements", () => {
     
     const decriptionTextIns = randomAlphaNumeric(12)
     cy.enterTextInTextField(
-      performanceReq.descriptionTextInputBox,
+      performanceReq.anticipatedTextBox1,
       decriptionTextIns
     )
     cy.durationPeriodExists(

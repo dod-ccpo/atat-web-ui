@@ -73,18 +73,18 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
     cy.verifyRegionCheckBoxesLabels(categoryObj);
     cy.selectCheckBoxes([performanceReq.eastCheckbox, performanceReq.oconusCheckbox]);
     cy.textExists(
-      performanceReq.decriptionLabel,
+      performanceReq.anticipatedTextlabel1,
       compute.descriptionLabelText
     );
     const decriptionText = randomAlphaNumeric(10)
     cy.enterTextInTextField(
-      performanceReq.descriptionTextInputBox,
+      performanceReq.anticipatedTextBox1,
       decriptionText
     )
     cy.verifyPerformanceTierRadioLabels(categoryObj);
     cy.durationPeriodExists(
       performanceReq.durationNoRadioBtn,
-      performanceReq.neededDurationActiveRadioBtn,
+      performanceReq.entireDurationActiveBtn,
       performanceReq.baseCheckbox,
       "NO");
     cy.periodCount(periodCheckboxCount, performanceReq.baseCheckbox);
@@ -210,7 +210,7 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
     cy.selectRadioBtn(performanceReq.envPrepodStage, "Pre-production/Staging");
     cy.selectCheckBoxes([performanceReq.eastCheckbox, performanceReq.oconusCheckbox]);
     const decriptionText = randomAlphaNumeric(10)
-    cy.enterTextInTextField(performanceReq.descriptionTextInputBox, decriptionText)
+    cy.enterTextInTextField(performanceReq.anticipatedTextBox1, decriptionText)
     cy.selectRadioBtn(
       performanceReq.durationYesRadioBtn,
       "YES");
