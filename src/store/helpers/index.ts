@@ -33,3 +33,8 @@ export const retrieveSession = (sessionKey: string): string | null=> {
   const sessionData = sessionStorage.getItem(sessionKey);
   return sessionData;
 };
+
+const storeHelperFunctions = {
+  retrieveSession
+};
+export default storeHelperFunctions;
