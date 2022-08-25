@@ -282,6 +282,9 @@ export default class OtherOfferings extends Vue {
   }
 
   private setErrorMessages(): void {
+    if (!this.$refs.serviceOfferingForm) {
+      return;
+    }
     this.errorBagValues = Object.values(this.$refs.serviceOfferingForm.errorBag);
     const formChildren = this.$refs.serviceOfferingForm.$children[0].$children;
     const inputRefs = [
