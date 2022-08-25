@@ -5,7 +5,8 @@
     role="alertdialog"
     aria-labelledby="modalDialogTitle"
     aria-describedby="modalDialogMessage"
-
+    id="ATATDialog"
+    ref="atatDialog"
   >
     <v-card>
       <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">

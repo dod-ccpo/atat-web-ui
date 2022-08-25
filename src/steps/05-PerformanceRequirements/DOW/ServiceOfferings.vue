@@ -41,13 +41,17 @@
 
           </div>
         </v-col>
-        <v-col
-          v-else-if="isCompute"
-        >
-          <ComputeForm
-            :computeData.sync="computeData"
+        
+        <v-col v-else-if="isCompute || isGeneral">
+          <OtherOfferings 
+            :isCompute="isCompute"
+            :isGeneral="isGeneral"
+            :serviceOfferingData.sync="otherOfferingData" 
+            :isPeriodsDataMissing="isPeriodsDataMissing"
+            :isClassificationDataMissing="isClassificationDataMissing"
           />
         </v-col>
+
       </v-row>
     </v-container>
   </div>
@@ -58,21 +62,25 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import ComputeForm from "./ComputeForm.vue";
+import OtherOfferings from "./OtherOfferings.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 
-import { Checkbox, ComputeData, DOWServiceOffering } from "../../../../types/Global";
+import { 
+  Checkbox, 
+  OtherServiceOfferingData, 
+  DOWServiceOffering, 
+} from "../../../../types/Global";
 import { getIdText } from "@/helpers";
 
 @Component({
   components: {
     ATATCheckboxGroup,
-    ComputeForm,
     DOWSubtleAlert,
+    OtherOfferings,
   }
 })
 
@@ -103,13 +111,13 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public isGeneral = false;
   public isServiceOfferingList = true;
 
-  public computeData: ComputeData = {
+  public otherOfferingData: OtherServiceOfferingData = {
     instanceNumber: 1,
     environmentType: "",
     classificationLevel: "",
     deployedRegions: [],
     deployedRegionsOther: "",
-    needOrUsageDescription: "",
+    descriptionOfNeed: "",
     entireDuration: "",
     periodsNeeded: [],
     operatingSystemAndLicensing: "",
@@ -120,7 +128,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     performanceTier: "",
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
+    requirementTitle: "",
   }
+
   public showSubtleAlert = false;
   public isPeriodsDataMissing = false;
   public isClassificationDataMissing = false;
@@ -177,15 +187,15 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             obj => obj.instanceNumber === currentComputeInstanceNumber
           );
           if (computeData) {
-            this.computeData = computeData;
+            this.otherOfferingData = computeData;
           } else {
             const newComputeData 
               = await DescriptionOfWork.getComputeInstance(0);
             newComputeData.instanceNumber = currentComputeInstanceNumber;
-            this.computeData = newComputeData;
+            this.otherOfferingData = newComputeData;
           }
         } else {
-          this.computeData.instanceNumber = 1;
+          this.otherOfferingData.instanceNumber = 1;
           DescriptionOfWork.setCurrentComputeInstanceNumber(1);
         }
       }
@@ -212,7 +222,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
           } else if (this.isCompute) {
-            await DescriptionOfWork.setComputeData(this.computeData);
+            await DescriptionOfWork.setComputeData(this.otherOfferingData);
           }
         }
 

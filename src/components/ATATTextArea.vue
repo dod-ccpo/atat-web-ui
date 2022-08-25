@@ -54,6 +54,7 @@
       <ATATErrorValidation 
         :errorMessages="errorMessages" 
         :textAreaWithCounter="maxChars !== ''"
+        :id="id"
       />
     </div>
   </div>

@@ -38,6 +38,7 @@ module.exports = {
     "<rootDir>/src/steps/**/*.spec.ts",
     "<rootDir>/src/store/**/*.spec.ts",
     "<rootDir>/src/router/**/*.spec.ts",
+    "<rootDir>/src/helpers/*.spec.ts",
     "<rootDir>/src/api/**/*.spec.ts",
     "<rootDir>/src/action-handlers/**/*.spec.ts",
   ],

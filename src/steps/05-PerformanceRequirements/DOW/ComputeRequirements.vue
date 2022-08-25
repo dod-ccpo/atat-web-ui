@@ -30,6 +30,7 @@
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
               <button
+                :id="'EditButton_' + item.instanceNumber"
                 @click="editInstance(item)"
                 class="mr-2"
               >
@@ -37,6 +38,7 @@
               </button>
 
               <button
+                :id="'DeleteButton_' + item.instanceNumber"
                 @click="confirmDeleteInstance(item)"
                 class="ml-2"
               >
@@ -113,7 +115,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { ComputeData, ComputeInstanceTableData } from "../../../../types/Global";
+import { OtherServiceOfferingData, ComputeInstanceTableData } from "../../../../types/Global";
 import { buildClassificationLabel } from "@/helpers";
 import _ from 'lodash';
 
@@ -125,7 +127,7 @@ import _ from 'lodash';
 })
 
 export default class ComputeRequirements extends Vue {
-  public computeInstances: ComputeData[] = [];
+  public computeInstances: OtherServiceOfferingData[] = [];
 
   public tableHeaders = [
     { text: "", value: "instanceNumber", width: "50" },
@@ -265,7 +267,7 @@ export default class ComputeRequirements extends Vue {
     this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
   }
 
-  public async validateInstance(instance: ComputeData): Promise<boolean> {
+  public async validateInstance(instance: OtherServiceOfferingData): Promise<boolean> {
     const instanceData: Record<string, any> = _.clone(instance);
     let isValid = true;
     const requiredFields = [
@@ -273,7 +275,7 @@ export default class ComputeRequirements extends Vue {
       "classificationLevel",
       "entireDuration",
       "memory",
-      "needOrUsageDescription",
+      "anticipatedNeedUsage",
       "numberOfInstancesNeeded",
       "numberOfVCPUs",
       "operatingSystemAndLicensing",
@@ -304,14 +306,14 @@ export default class ComputeRequirements extends Vue {
   public async loadOnEnter(): Promise<void> {
     await this.buildTableData();
 
-    const DOWObject = DescriptionOfWork.DOWObject;
+    const DOWObject = await DescriptionOfWork.getDOWObject();
     if (DOWObject && DOWObject.length > 1) {
       const computeIndex = DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() === "compute"
       );
       if (computeIndex < DOWObject.length - 1) {
         const nextOfferingGroupId = DOWObject[computeIndex + 1].serviceOfferingGroupId;
-        const offeringGroups = DescriptionOfWork.serviceOfferingGroups;
+        const offeringGroups = await DescriptionOfWork.getServiceOfferingGroups();
         const nextOfferingGroupObj = offeringGroups.find(
           obj => obj.value === nextOfferingGroupId
         );
