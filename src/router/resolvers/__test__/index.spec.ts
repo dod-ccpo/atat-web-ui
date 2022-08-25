@@ -11,7 +11,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 
-describe("testing src/router/index.ts", async () => {
+describe("testing src/router/index.ts", () => {
   
   describe('Testing OtherOfferingSummaryPathResolver()', () => {
     it("Test OtherOfferingSummaryPathResolver()- should return the default path", () => {
@@ -116,7 +116,7 @@ describe("testing src/router/index.ts", async () => {
       // EJY should never result in below
       // expect(result).toBe('performance-requirements/service-offering-details/compute/test')
     });
-    
+
   });
 
   describe('Testing OfferGroupOfferingsPathResolver()', () => {
@@ -137,7 +137,7 @@ describe("testing src/router/index.ts", async () => {
     })
   })
 
-  describe("Testing calBasePeriod()", async () => {
+  describe("Testing calBasePeriod()", () => {
     it("should return the amount of days in a year", async () => {
       jest.spyOn(Periods, 'loadPeriods').mockImplementation(
         () => Promise.resolve(
