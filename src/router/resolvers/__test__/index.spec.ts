@@ -3,14 +3,52 @@ import {
   OfferingDetailsPathResolver,
   RequirementsPathResolver,
   OfferGroupOfferingsPathResolver,
+  // calcBasePeriod, 
+  IncrementalFundingResolver, 
+  FinancialPOCResolver  
 } from '../index'
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import Periods from "@/store/periods";
 
-
+const routeNames = {
+  SummaryPage: "SummaryPage"
+}
 
 describe("testing src/router/index.ts", () => {
 
+  describe("Testing calBasePeriod()", async () => {
+    it("should return the amount of days in a year", async () => {
+      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+        () => Promise.resolve(
+          [
+            {
+              "period_unit": "YEAR",
+              "period_unit_count": "1",
+              "period_type": "BASE",
+              "option_order": "1"
+            },
+          ]
+        ));
+      const result = await calcBasePeriod();
+      expect(result).toBe(365)
+    })
+    it("should return the amount of days in a week", async () => {
+      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+        () => Promise.resolve(
+          [
+            {
+              "period_unit": "WEEK",
+              "period_unit_count": "1",
+              "period_type": "BASE",
+              "option_order": "1"
+            },
+          ]
+        ));
+      const result = await calcBasePeriod();
+      expect(result).toBe(7)    
+  })
+  
   describe('Testing OtherOfferingSummaryPathResolver()', () => {
     it("Test OtherOfferingSummaryPathResolver()- should return the default path", () => {
       const result = OtherOfferingSummaryPathResolver("test", "testing")
