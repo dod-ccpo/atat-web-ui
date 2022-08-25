@@ -57,7 +57,9 @@
                       <ATATTextField
                         :id="getIdText(getOptionPeriodLabel(index)) + 'Duration'"
                         class="mr-4"
-                        :class="[{ 'error--text': index === 0 && basePeriodMissing },
+                        :class="[
+                          { 'error--text': !optionPeriods[index].duration &&
+                      optionPeriods[index].unitOfTime != ''  },
                         {'error--text': oneYearCheck(optionPeriods[index])}]"
                         width="178"
                         :value.sync="optionPeriods[index].duration"
@@ -102,8 +104,11 @@
                   <ATATErrorValidation
                     :id="'missingBase' + index"
                     class="atat-text-field-error ml-14"
-                    :errorMessages="[basePeriodMissingError]"
-                    v-if="basePeriodMissing && index === 0"
+                    :errorMessages="[
+                      `Please specify the length of your ${getOptionPeriodLabel(index)} period`
+                      ]"
+                    v-if="!optionPeriods[index].duration &&
+                    optionPeriods[index].unitOfTime != '' "
                   />
                   <ATATErrorValidation
                     :id="'MoreThanAYear' + index"
@@ -203,8 +208,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       order: 1,
     },
   ];
-  public basePeriodMissing = false
-  public basePeriodMissingError = `Please specify the length of your base period`
 
   @Watch("optionPeriods", {deep: true})
   protected optionPeriodsChange(): void {
@@ -267,7 +270,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public addOptionPeriod(): void {
     const newOptionPeriod = {
       duration: null,
-      unitOfTime: "Year",
+      unitOfTime: "",
       id: null,
       order: this.optionPeriods.length + 1,
     };
@@ -301,11 +304,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       }
     });
 
-    if(this.basePoPDuration === 0 && this.optionPeriods.length > 1) {
-      this.basePeriodMissing = true
-    }else{
-      this.basePeriodMissing = false
-    }
   }
 
   public deleteOptionPeriod(index: number): void {

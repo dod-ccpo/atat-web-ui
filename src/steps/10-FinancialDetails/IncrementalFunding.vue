@@ -115,6 +115,7 @@
                         :validateOnBlur="false"
                         width="190"
                         class="mr-2"
+                        :class="[{ 'error--text': errorMissingFirstIncrement && index === 0},]"
                         @blur="calcAmounts('increment' + index)"
                         :rules="[$validators.required('', true)]"
                       />
