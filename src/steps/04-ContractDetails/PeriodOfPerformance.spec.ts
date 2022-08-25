@@ -67,32 +67,5 @@ describe("Testing PeriodOfPerformance Component", () => {
       expect((await wrapper.vm.oneYearCheck(period)).length).toBe(0);
     });
   })
-  
-
-  describe("test setTotalPoP()- should change the value of PoP duration and base duration",() =>{
-    it('setTotalPop() provides data to ensure data.basePeriodMissing===true',async () => {
-      period.duration = 52;
-      await wrapper.setData({optionPeriods:[{},period]})
-      await wrapper.vm.setTotalPoP()
-      expect(await wrapper.vm.$data.basePeriodMissing).toBe(true)
-    })
-
-    it('setTotalPop() provides data to ensure data.basePeriodMissing===false',async () => {
-      await wrapper.setData({
-        optionPeriods:[
-          {
-            duration: 1,
-            unitOfTime: "YEAR"
-          },
-          {
-            duration: 12,
-            unitOfTime: "MONTH"
-          }
-        ]
-      })
-      await wrapper.vm.setTotalPoP()
-      expect(await wrapper.vm.$data.basePeriodMissing).toBe(false)
-    })
-  })
 
 })
