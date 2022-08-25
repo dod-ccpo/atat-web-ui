@@ -664,6 +664,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public doPushTouchedOtherOfferingInstance(instanceNumber: number): void {
     const groupKey: string = this.currentGroupId.toLowerCase();
+    if (!Object.prototype.hasOwnProperty.call(this.otherOfferingInstancesTouched, groupKey)) {
+      this.otherOfferingInstancesTouched[groupKey] = [];
+    }
     this.otherOfferingInstancesTouched[groupKey].push(instanceNumber);
   }
 
@@ -676,13 +679,11 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async doSetOtherOfferingData(
     otherOfferingData: OtherServiceOfferingData
   ): Promise<void> {
-    debugger;
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
     );
 
     if (offeringIndex > -1) {
-      debugger;
       const otherOfferingObj = this.DOWObject[offeringIndex];
       if (
         otherOfferingObj 

@@ -93,7 +93,6 @@ describe("Testing ComputeForm Component", () => {
             otherOfferingData: otherOfferingData,
           }
         },
-
       },
       propsData: {
         otherOfferingData: otherOfferingData,

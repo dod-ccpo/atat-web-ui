@@ -115,7 +115,7 @@ import {
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
-  ComputeOfferingDetailsPathResolver, // EJY look into this
+  OtherOfferingSummaryPathResolver, // EJY look into this
 
 } from "./resolvers";
 
@@ -477,7 +477,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: OtherOfferingSummary,
         routeResolver: OfferingDetailsPathResolver, 
-        // EJY should routeResolver be ComputeOfferingDetailsPathResolver ??
+        // routeResolver: OtherOfferingSummaryPathResolver, 
+        // EJY should routeResolver be OtherOfferingSummaryPathResolver ??
         additionalButtons: [
           {
             buttonText: "I don’t need compute resources",

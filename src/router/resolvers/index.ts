@@ -99,6 +99,9 @@ export const ContractTrainingReq = (current: string): string => {
 const basePerformanceRequirementsPath =  "performance-requirements";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 
+const otherServiceOfferings = ["compute", "general_xaas"] // future ticket - add "database"
+const otherServiceOfferingSummaryPath = "performance-requirements/service-offerings/other/summary";
+
 const baseOfferingDetailsPath =  `${basePerformanceRequirementsPath}/service-offering-details/`;
 const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
   let path = `${baseOfferingDetailsPath}${groupId.toLowerCase()}/`
@@ -109,9 +112,13 @@ const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
 const getOfferingGroupServicesPath = (groupId: string)=>
   `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
 
+
+
+// hit entering Performance Requirements main checklist first time
+// Hit leaving Applications offerings checklist -- is this right?
 export const RequirementsPathResolver = (current: string, direction: string): string => {
   debugger;
-  const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
+  // const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings; // EJY 
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
@@ -137,23 +144,22 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   //if comming from Service Offerings and we have more
   // service offerings groups to navigate through
   if(current === routeNames.ServiceOfferings && 
-    !atBeginningOfOfferingGroups){
+    !atBeginningOfOfferingGroups){ // EJY was && atBeginningOfSericeOfferings hereeeeeeeeeeeeee
     const previousGroup = DescriptionOfWork.prevOfferingGroup;
 
-    if(DescriptionOfWork.returnToDOWSummary)
-    {
+    if (DescriptionOfWork.returnToDOWSummary) {
       return descriptionOfWorkSummaryPath;
     }
 
-    if(previousGroup === undefined)
-    {
+    if (previousGroup === undefined) {
       throw new Error('unable to get previous group');
     }
+
     DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
     
-    //COMPUTE doesn't have service offerings
-    if(previousGroup === "COMPUTE"){
-      return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`;
+    //Compute, General XaaS, etc. don't have service offerings
+    if (otherServiceOfferings.indexOf(previousGroup.toLowerCase()) > -1) {
+      return otherServiceOfferingSummaryPath;
     }
 
     const lastOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
@@ -170,11 +176,13 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
-export const ComputeOfferingDetailsPathResolver = (current: string, direction: string): string=>{
-
+// hit leaving Compute details form - as expected
+// hit leaving Appliations offerings checklist page - NOT as expected???
+export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
+  debugger;
   const groupId = DescriptionOfWork.currentGroupId;
-  if (groupId.toLowerCase() === "compute") {
-    return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`
+  if (otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1) {
+    return otherServiceOfferingSummaryPath; 
   }
 
   if(current === routeNames.ServiceOfferingDetails && direction === "next"){
@@ -189,6 +197,10 @@ export const ComputeOfferingDetailsPathResolver = (current: string, direction: s
      
 }
 
+// hit leaving main Performance Requirements category page - as expected
+// hit leaving compute summary page on ADD ANOTHER INSTANCE  - as expected
+// hit leaving compute summary page on CONTINUE - as expected
+
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
@@ -201,8 +213,7 @@ export const OfferGroupOfferingsPathResolver = (
   // or if last group was removed, send to summary page
   const DOWObject = DescriptionOfWork.DOWObject;
   const currentGroupId = DescriptionOfWork.currentGroupId;
-  const isCompute = currentGroupId.toLowerCase() === "compute";
-  const isGeneral = currentGroupId.toLowerCase() === "general_xaas";
+  const isOtherOffering = otherServiceOfferings.indexOf(currentGroupId.toLowerCase()) > -1;
 
   const atLastNoneApply = currentGroupId === DescriptionOfWork.cloudNoneValue;
   const onlyNoneApplySelected = DOWObject.every((e) => {
@@ -212,12 +223,11 @@ export const OfferGroupOfferingsPathResolver = (
 
   // if reviewing service group from store, set "atServicesEnd" to false 
   const reviewGroupFromSummary = DescriptionOfWork.reviewGroupFromSummary;
-  const atServicesEnd = reviewGroupFromSummary || isCompute || isGeneral
+  const atServicesEnd = reviewGroupFromSummary || isOtherOffering
     ? false 
     : DescriptionOfWork.isEndOfServiceOfferings;
   DescriptionOfWork.setReviewGroupFromSummary(false);
   
-
   const returnToDOWSummary = DescriptionOfWork.returnToDOWSummary;
   const addGroupFromSummary = DescriptionOfWork.addGroupFromSummary;
   const currentGroupRemovedForNav = DescriptionOfWork.currentGroupRemovedForNav;
@@ -335,11 +345,20 @@ export const OfferGroupOfferingsPathResolver = (
     }     
   }
   
-  const dontNeedButtonText = isCompute
-    ? "I don’t need compute resources"
-    : isGeneral 
-      ? "I don’t have general XaaS requirements" 
-      : "I don’t need these cloud resources";
+  let dontNeedButtonText = "";
+  switch (currentGroupId.toLowerCase()) {
+  case "compute":
+    dontNeedButtonText = "I don’t need compute resources";
+    break;
+  case "general_xaas":
+    dontNeedButtonText = "I don’t have general XaaS requirements";
+    break;
+  // case "database": // stubbed in for future ticket
+  //   dontNeedButtonText = "I don’t need database services";
+  //   break;
+  default:
+    dontNeedButtonText = "I don’t need these cloud resources";
+  }
 
   Steps.setAdditionalButtonText({
     buttonText: dontNeedButtonText, 
@@ -348,12 +367,12 @@ export const OfferGroupOfferingsPathResolver = (
 
   Steps.setAdditionalButtonHide(false);
 
-  if (isCompute || isGeneral) {
+  if (isOtherOffering) {
     const otherOfferingData = DescriptionOfWork.otherOfferingObject.otherOfferingData;
     const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
     if (current !== routeNames.ServiceOfferingDetails) {
       if (otherOfferingData && otherOfferingData.length) {
-        return `${basePerformanceRequirementsPath}/service-offerings/other/summary`;
+        return otherServiceOfferingSummaryPath;
       }
     } else if (otherOfferingData && otherOfferingData.length > 0 
       && !(currentInstanceNumber === 1 && otherOfferingData.length === 1) 
@@ -368,6 +387,8 @@ export const OfferGroupOfferingsPathResolver = (
 }
 
 //this will always return the path for the current group and the current offering
+
+// hit leaving compute summary page
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   debugger;
   Steps.clearAltBackButtonText();
@@ -378,17 +399,16 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   }
 
   const groupId = DescriptionOfWork.currentGroupId;
-
-  const otherOfferings = ["compute", "general_xaas", "database"];
-
-  if (otherOfferings.indexOf(groupId.toLowerCase()) > -1) { 
-    // EJY check this and the below how they might work together
-    return `${basePerformanceRequirementsPath}/service-offerings/other/summary`
-  }
+  const isOtherOffering = otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1;
+  
+  // if (isOtherOffering) { 
+  //   // EJY check this and the below how they might work together
+  //   return otherServiceOfferingSummaryPath;
+  // }
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
   if(current === routeNames.OtherOfferingSummary && 
-    groupId === "COMPUTE" && direction === "previous"){
+    isOtherOffering && direction === "previous"){
     if(DescriptionOfWork.returnToDOWSummary){
       return descriptionOfWorkSummaryPath;
     }
@@ -401,8 +421,8 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     }
   }
 
-  if(current === routeNames.ServiceOfferings && groupId === "COMPUTE" && direction === "next"){
-    return ComputeOfferingDetailsPathResolver(current, direction);
+  if(current === routeNames.ServiceOfferings && isOtherOffering && direction === "next"){
+    return OtherOfferingSummaryPathResolver(current, direction);
   }
 
   if ((missingClassification && DescriptionOfWork.returnToDOWSummary) 
@@ -438,7 +458,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     // only "none apply" options selected.
     if (current === routeNames.DOWSummary) {
       return basePerformanceRequirementsPath;
-      // future todo: route to step 4 summary if user lands on DOW Summary from other step  
     } else {
       DescriptionOfWork.setLastGroupRemoved(false);
       DescriptionOfWork.setReturnToDOWSummary(false);
@@ -456,36 +475,58 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;   
   } 
-  if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
+
+  let nextOrPrevGroup;
+  if (current === routeNames.DOWSummary) {
+    nextOrPrevGroup = DescriptionOfWork.lastOfferingGroup;
+  } else {
+    nextOrPrevGroup = direction === "next" 
+      ? DescriptionOfWork.nextOfferingGroup 
+      : DescriptionOfWork.prevOfferingGroup;
+  }
+
+  // if (nextOrPrevGroup && otherServiceOfferings.indexOf(nextOrPrevGroup.toLowerCase()) > -1) { 
+  //   return otherServiceOfferingSummaryPath;
+  // }
+  if (nextOrPrevGroup && !(current === routeNames.OtherOfferingSummary 
+    && otherServiceOfferings.indexOf(nextOrPrevGroup.toLowerCase()) > -1)) {
+    // send to group offerings page
+    const serviceOffering = routeNames.ServiceOfferings
+    DescriptionOfWork.setCurrentOfferingGroupId(nextOrPrevGroup);
+    return OfferGroupOfferingsPathResolver(serviceOffering , direction);
+  }
+
+  // if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
+  if (!missingClassification) {
     const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
     if (offering) {
       return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
     }
   } 
 
-  let group;
-  if (current === routeNames.DOWSummary) {
-    group = DescriptionOfWork.lastOfferingGroup;
-  } else {
-    group = direction === "next" 
-      ? DescriptionOfWork.nextOfferingGroup 
-      : DescriptionOfWork.prevOfferingGroup;
-  }
+  // let group;
+  // if (current === routeNames.DOWSummary) {
+  //   group = DescriptionOfWork.lastOfferingGroup;
+  // } else {
+  //   group = direction === "next" 
+  //     ? DescriptionOfWork.nextOfferingGroup 
+  //     : DescriptionOfWork.prevOfferingGroup;
+  // }
 
-  if (group && !(current === routeNames.OtherOfferingSummary 
-    && group === "COMPUTE")) {
-    // send to group offerings page
-    const serviceOffering = routeNames.ServiceOfferings
-    DescriptionOfWork.setCurrentOfferingGroupId(group);
-    return OfferGroupOfferingsPathResolver(serviceOffering , direction);
-  }
+  // if (nextOrPrevGroup && !(current === routeNames.OtherOfferingSummary 
+  //   && otherServiceOfferings.indexOf(nextOrPrevGroup.toLowerCase()) > -1)) {
+  //   // send to group offerings page
+  //   const serviceOffering = routeNames.ServiceOfferings
+  //   DescriptionOfWork.setCurrentOfferingGroupId(nextOrPrevGroup);
+  //   return OfferGroupOfferingsPathResolver(serviceOffering , direction);
+  // }
 
   DescriptionOfWork.setReturnToDOWSummary(false);
   return descriptionOfWorkSummaryPath
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-
+  debugger;
   DescriptionOfWork.setBackToContractDetails(current === routeNames.PropertyDetails);
   Steps.clearAltBackButtonText();
   if(current === routeNames.PropertyDetails){
@@ -647,7 +688,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
 
 // add path resolvers here 
 const pathResolvers: Record<string, StepPathResolver> = {
-  ComputeOfferingDetailsPathResolver,
+  OtherOfferingSummaryPathResolver,
   OfferGroupOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,

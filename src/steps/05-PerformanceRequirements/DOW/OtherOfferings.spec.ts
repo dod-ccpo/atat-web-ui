@@ -227,9 +227,8 @@ describe("Testing OtherOfferings Component", () => {
 
     it(`Compute: loadOnEnter() - sets boolean formHasBeenTouched to true
       to trigger validation when returning to edit existing compute instance`, async () => {
-      DescriptionOfWork.currentGroupId = "compute"
+      DescriptionOfWork.setCurrentOfferingGroupId("compute");
       await DescriptionOfWork.pushTouchedOtherOfferingInstance(1);
-
       await wrapper.vm.loadOnEnter();
       console.log("data", await wrapper.vm.$props.serviceOfferingData.instanceNumber)
       expect(await wrapper.vm.$data.formHasBeenTouched).toBe(true);
