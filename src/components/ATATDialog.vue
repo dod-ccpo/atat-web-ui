@@ -5,7 +5,8 @@
     role="alertdialog"
     aria-labelledby="modalDialogTitle"
     aria-describedby="modalDialogMessage"
-
+    id="ATATDialog"
+    ref="atatDialog"
   >
     <v-card>
       <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">
@@ -59,7 +60,7 @@ export default class ATATDialog extends Vue {
   get getTitle(): string {
     if(this.truncate){
       if (this.title && this.title.length > 60) {
-        return this.title.substring(0, 60) + "...”?";
+        return this.title.substring(0, 60) + "...";
       }
     }
     return this.title;

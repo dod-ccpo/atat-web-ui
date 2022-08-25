@@ -21,6 +21,9 @@ function configureDefaults(){
       username,
       password,
     };
+    if(axios.defaults?.headers && axios.defaults.headers.common){
+      axios.defaults.headers.common['Access-Control-Allow-Methods'] = '*';
+    }
   } else {
     if (axios.defaults?.headers && axios.defaults.headers.common) {
       axios.defaults.headers.common['X-UserToken'] = window.sessionToken;

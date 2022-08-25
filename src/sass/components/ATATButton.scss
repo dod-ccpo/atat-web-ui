@@ -127,4 +127,30 @@
       }      
     }
   }
+  
+  &._icon-only {
+    background-color: transparent !important;
+    padding: 4px !important;
+    height: auto !important;
+    min-width: unset !important;
+    color: $base;
+
+    &:hover {
+      background-color: $icon-only-hover !important;
+    }
+    
+    &:active {
+      background-color: $icon-only-active !important;
+    }
+
+    &.v-btn--disabled.v-btn--has-bg {
+      background-color: transparent !important;
+    }
+
+    &._plus {
+      padding: 4px 5px 4px 3px !important; 
+      height: 24px !important; 
+      width: 24px !important;      
+    }
+  }
 }

@@ -1,6 +1,7 @@
-import { ClassificationLevelDTO, SystemChoiceDTO } from "@/api/models";
+import { ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@/api/models";
 import { Checkbox, SelectData } from "types/Global";
 import _ from "lodash";
+import Periods from "@/store/periods";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -154,3 +155,34 @@ export const roundTo100 = (numberArr: number[], withTenths?: boolean): number[] 
 
   return output;
 }
+
+
+export const createPeriodCheckboxItems = async (): Promise<Checkbox[]> => {
+  const periods: PeriodDTO[] = await Periods.loadPeriods();
+  // ensure sort order is correct
+  if (periods && periods.length > 0) {
+
+    periods.sort((a, b) => a.option_order > b.option_order ? 1 : -1);
+    
+    const arr: Checkbox[] = [];
+    periods.forEach((period, i) => {
+      const label = i === 0 ? "Base period" : `Option period ${i}`;
+      const id = i === 0 ? "BASE" : `OPTION${i}`;
+      const option: Checkbox = {
+        id,
+        label,
+        value: period.sys_id || "",
+      };
+      arr.push(option);
+    })
+    return arr;
+  }
+  return [
+    {
+      id: "BaseDisabled",
+      label: "Base period",
+      value: "",
+    }
+  ];
+}
+
