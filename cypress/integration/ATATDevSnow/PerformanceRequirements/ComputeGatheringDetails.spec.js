@@ -144,7 +144,7 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
     
     //click on Continue button,Navigates to next screen
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.verifyPageHeader("Your Compute Requirements");
+    cy.verifyPageHeader(' Your compute requirements ');
 
   });
   
@@ -170,7 +170,7 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
     cy.btnExists(performanceReq.reviewbtn, " Review ").click();
     
     //Navigates to Your Compute Requirements screen
-    cy.verifyPageHeader("Your Compute Requirements");
+    cy.verifyPageHeader(" Your compute requirements ");
     cy.findElement(performanceReq.tableWrapper).should("exist");
     cy.findElement(performanceReq.instanceOneEditBtn).should("exist")
       .and("not.disabled").click();
@@ -228,7 +228,7 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
     cy.selectRadioBtn(performanceReq.standardRadioBtn, "Standard");
     //click on Continue button,Navigates to next screen
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.verifyPageHeader("Your Compute Requirements");
+    cy.verifyPageHeader(" Your compute requirements ");
     cy.verifyColumnHeaders(2, "Type", "Pre-production/Staging");
     cy.verifyColumnHeaders(5, "vCPU", cpu);
     cy.findElement(performanceReq.instanceOneEditBtn).should("exist")
