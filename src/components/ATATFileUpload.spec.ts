@@ -10,6 +10,8 @@ import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { Verify } from "crypto";
 Vue.use(Vuetify);
 
+
+
 const validFiles = [
   {
     "file":  {
@@ -140,6 +142,7 @@ describe("Testing ATATTextField Component", () => {
       localVue,
       vuetify,
       propsData: {
+        attachmentServiceName: "x_g_dis_atat_funding_request_mipr",
         id: "test",
         validFileFormats: ["xls", "pdf"]
       }

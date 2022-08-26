@@ -443,9 +443,9 @@ export default class ATATFileUpload extends Vue {
     window.addEventListener("dragover", this.preventDrop, false);
 
     //try to grab the attachment service via the service factory
-    // this.fileAttachmentService = AttachmentServiceFactory(
-    //   this.attachmentServiceName
-    // );
+    this.fileAttachmentService = AttachmentServiceFactory(
+      this.attachmentServiceName
+    );
     
     this._invalidFiles = [];  
   }
