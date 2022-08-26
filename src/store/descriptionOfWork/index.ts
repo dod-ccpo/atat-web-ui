@@ -709,9 +709,8 @@ export class DescriptionOfWorkStore extends VuexModule {
           this.otherOfferingInstancesTouched[groupId] = [];
         }
 
-        if (!(this.otherOfferingInstancesTouched[groupId]
-          .indexOf(otherOfferingData.instanceNumber) > -1)
-        ) {
+        if (this.otherOfferingInstancesTouched[groupId]
+          .indexOf(otherOfferingData.instanceNumber) === -1) {
           this.otherOfferingInstancesTouched[groupId].push(otherOfferingData.instanceNumber);
         }
       } else {
@@ -769,7 +768,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         && Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")
         && otherOfferingObj.otherOfferingData
       ) {
-        // 
         const instanceIndex = otherOfferingObj.otherOfferingData.findIndex(
           obj => obj.instanceNumber === instanceNumber
         );

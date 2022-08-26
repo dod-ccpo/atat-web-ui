@@ -16,22 +16,15 @@ import {
   OtherServiceOfferingData,
 } from "../../../types/Global";
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
-Vue.use(Vuetify);
+const mutations = DescriptionOfWorkStore.mutations;
+const actions = DescriptionOfWorkStore.actions;
+const getters = DescriptionOfWorkStore.getters;
+const state = DescriptionOfWorkStore.state;
 
-describe("Testing OtherOfferings Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  config.showDeprecationWarnings = false
-  Vue.config.silent = true;
-
-
-  const mutations = DescriptionOfWorkStore.mutations;
-  const actions = DescriptionOfWorkStore.actions;
-  const getters = DescriptionOfWorkStore.getters;
-  const state = DescriptionOfWorkStore.state;
+describe("Testing Description of Work store", () => {
   
   const otherOfferingData: OtherServiceOfferingData[] = [{
     instanceNumber: 1,
@@ -55,7 +48,6 @@ describe("Testing OtherOfferings Component", () => {
 
   const DOWObject: DOWServiceOfferingGroup[] = [
     {
-      otherOfferingData,
       serviceOfferingGroupId: "COMPUTE",
       sequence: 1,
       serviceOfferings: [],
@@ -66,12 +58,22 @@ describe("Testing OtherOfferings Component", () => {
       serviceOfferings: [],  
     }
   ];
+
+  const instancesTouched: Record<string, number[]> = {
+    "compute": [1, 2, 3]
+  };
+
+
   let DOWStore: DescriptionOfWorkStore;
+  
   beforeEach(() => {
     const createStore = (storeOptions: any = {}):
-    Store<{ DOWObject: DOWServiceOfferingGroup[] }> => new Vuex.Store({ ...storeOptions });
+    Store<{ 
+      DOWObject: DOWServiceOfferingGroup[],
+      currentGroupId: string,
+      otherOfferingInstancesTouched: Record<string, number[]>,
+    }> => new Vuex.Store({ ...storeOptions });
     DOWStore = getModule(DescriptionOfWorkStore, createStore());    
-
   });
 
   afterEach(()=>{
@@ -88,6 +90,80 @@ describe("Testing OtherOfferings Component", () => {
       const returnedDOWObj = await DOWStore.getDOWObject();
       expect(returnedDOWObj).toEqual(DOWObject);
     });
+
+    it("tests getLastOtherOfferingInstanceNumber()", async () => {
+      jest.spyOn(DOWStore, 'getDOWObject').mockImplementation(
+        ()=>Promise.resolve(
+          DOWObject
+        ));
+      const instanceNumber = await DOWStore.getLastOtherOfferingInstanceNumber();
+      console.log("instanceNu", instanceNumber)
+      expect(instanceNumber).toEqual(1);
+    });
+
+    it("tests deleteOtherOfferingInstance()", async () => {
+      DescriptionOfWork.setSelectedOfferingGroups(["COMPUTE"]);
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
+      DescriptionOfWork.pushTouchedOtherOfferingInstance(1);
+      await DescriptionOfWork.setOtherOfferingData(otherOfferingData[0]);
+
+      console.log("DOWObject", DescriptionOfWork.DOWObject);
+      jest.spyOn(DOWStore, 'getDOWObject').mockImplementation(
+        ()=>Promise.resolve(
+          DOWObject
+        ));
+        
+      Vue.nextTick(async () => {
+        await DOWStore.deleteOtherOfferingInstance(1);
+      })
+    });
+
+    it("tests setOtherOfferingData()", async () => {
+      DescriptionOfWork.setSelectedOfferingGroups(["COMPUTE"]);
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
+
+      console.log("DOWObject", DescriptionOfWork.DOWObject);
+      jest.spyOn(DOWStore, 'getDOWObject').mockImplementation(
+        ()=>Promise.resolve(
+          DOWObject
+        ));
+      Vue.nextTick(() => {
+        DescriptionOfWork.setOtherOfferingData(otherOfferingData[0]);
+        Vue.nextTick(() => {
+          DescriptionOfWork.setOtherOfferingData(otherOfferingData[0]);
+          DescriptionOfWork.setSelectedOfferingGroups(["GENERAL_XAAS"]);
+          Vue.nextTick(() => {
+            DescriptionOfWork.setOtherOfferingData(otherOfferingData[0]);
+          
+          })
+        })
+      })
+    });
+    it("tests setOtherOfferingData()", async () => {
+      DescriptionOfWork.setSelectedOfferingGroups(["COMPUTE"]);
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
+      Vue.nextTick(async () => {
+        const otherInstances = await DescriptionOfWork.getOtherOfferingInstances();
+        console.log("otherInstances",otherInstances);  
+      })
+    });
+
+    it("tests hasInstanceBeenTouched()", async () => {
+      DescriptionOfWork.setSelectedOfferingGroups(["COMPUTE"]);
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
+      Vue.nextTick(async () => {
+        let touched = await DescriptionOfWork.hasInstanceBeenTouched(1);
+        expect(touched).toBeTruthy();
+        DescriptionOfWork.setCurrentOfferingGroupId("Not_a_Group");
+        Vue.nextTick(async ()=> {
+          touched = await DescriptionOfWork.hasInstanceBeenTouched(1);
+          expect(touched).toBeFalsy();  
+        })
+        
+
+      })
+    });
+
 
   });
 
