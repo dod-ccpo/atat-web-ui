@@ -131,7 +131,7 @@ describe("Testing OtherOfferingSummary Component", () => {
 
   })
 
-  describe('Testing OtherOfferingSummary with General as offering', () => {
+  describe('Testing OtherOfferingSummary with database as offering', () => {
     beforeEach(async () => {
       jest.spyOn(DescriptionOfWork, 'getCurrentOfferingGroupId').mockImplementation(
         ()=>Promise.resolve(
