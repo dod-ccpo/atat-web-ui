@@ -112,9 +112,8 @@ describe("testing src/router/index.ts", () => {
       DescriptionOfWork.addOfferingGroup('APPLICATIONS')
       DescriptionOfWork.addOfferingGroup('COMPUTE')
       const result = OfferingDetailsPathResolver("Service", "next")
-      expect(result).toBe("performance-requirements/service-offerings/applications");
-      // EJY should never result in below
-      // expect(result).toBe('performance-requirements/service-offering-details/compute/test')
+      console.log("result", result)
+      expect(result).toBe('performance-requirements/service-offering-details/compute/test')
     });
 
   });
