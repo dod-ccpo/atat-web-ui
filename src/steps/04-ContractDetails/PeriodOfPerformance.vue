@@ -498,7 +498,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       return optionPeriod;
     }) : [ {
       duration:null ,
-      unitOfTime: "Year",
+      unitOfTime: "",
       id: null,
       order: 1,
     }];
