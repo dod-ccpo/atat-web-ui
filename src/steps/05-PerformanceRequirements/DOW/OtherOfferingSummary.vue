@@ -188,6 +188,7 @@ export default class OtherOfferingSummary extends Vue {
   }
 
   public editInstance(item: OtherServiceSummaryTableData): void {
+    debugger
     DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(item.instanceNumber);
     this.navigate();
   }
@@ -222,6 +223,7 @@ export default class OtherOfferingSummary extends Vue {
 
     this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
     this.offeringInstances.forEach(async (instance) => {
+      debugger
       const instanceClone = _.cloneDeep(instance);
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
       let hasOtherRegion = false;
