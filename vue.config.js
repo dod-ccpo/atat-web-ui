@@ -46,6 +46,10 @@ module.exports = {
   chainWebpack: config => {
 
     let BASE_API_URL =  process.env.BASE_API_URL;
+    if (!BASE_API_URL) {
+      console.error("You must provide a value for property BASE_API_URL. Stopping.");
+      return process.exit(1);
+    }
     BASE_API_URL += BASE_API_URL.endsWith("/") ? "api" : "/api";
     let SNOWUSER = process.env.NODE_ENV === 'development' ? process.env.SNOWUSER :'';
     let SNOWPASS = process.env.NODE_ENV === 'development' ? process.env.SNOWPASS : '';

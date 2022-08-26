@@ -1,324 +1,261 @@
 /**
  * This script runs automatically right after the npm `build` script.
  */
- const servicenowConfig = require('./servicenow.config')
- const fs = require('fs')
- const dirTree = require('directory-tree')
- const clear = require('clear')
- const {
-   Console
- } = require('console')
- const PATH_TO_DIST_HTML = 'dist/index.html'
- const linkRelRegEx = /<\s*link[^>]*(.*?)>/g;
- const scriptTagRegEx = /<script\b[^>]*>[\s\S/]*?<\/script\b[^>]*>/g
- const metaTagRegEx = /<\s*meta[^>]*(.*?)>/g
- const materialIconsRegEx = /\s*other_assets\/MaterialIcons/g
- const robotoFontsRegex = /\s*other_assets\/roboto-/g
- const imgRegex =/\s*img\//g
- decorateIndexHTML(PATH_TO_DIST_HTML)
- updateAppAssetPaths()
- updateVendorAssetPaths()
- updateAppImgPaths()
- outputResults()
- 
- /**
-  * 
-  * @param {*} inputHTML 
-  * @returns all link rel tags
-  */
- function resolveLinks(inputHTML) {
-   return inputHTML.match(linkRelRegEx);
- }
- 
- // function transformCss(link, inputHTML) {
- //   const updatedLink = link.replace('/css/', servicenowConfig.CSS_API_PATH);
- //   return inputHTML.replace(link, updatedLink);
- // }
- 
- // function transformLinkJs(link, inputHTML) {
- //   const updatedLink = link.replace('/js/', servicenowConfig.JS_API_PATH);
- //   return inputHTML.replace(link, updatedLink);
- // }
- 
- function transformLinks(inputHTML) {
- 
-   console.log(`transformLinks`);
-   const links = resolveLinks(inputHTML);
-   console.table(links);
-   links.forEach(link => {
- 
-     // //service now requires link tags to be terminated with "</link>"
-     // const linkUpdate = link.substring(0, link.length- 1) + '</link>';
-     // inputHTML = inputHTML.replace(link, linkUpdate);
- 
-     // if (link.includes('/css/')) {
-     //   inputHTML = transformCss(link, inputHTML);
-     // }
- 
-     // if (link.includes('/js/')) {
-     //   inputHTML = transformLinkJs(link, inputHTML);
-     // }
- 
-     //for now we'll just remove the link tags
-     inputHTML = inputHTML.replace(link, '');
- 
-   });
-   return inputHTML;
- }
- 
- function resolveScriptTags(inputHTML) {
- 
-   return inputHTML.match(scriptTagRegEx);
- 
- }
- 
- function transformScripts(inputHTML) {
- 
-   const scriptTags = resolveScriptTags(inputHTML);
-   console.table(scriptTags);
-   scriptTags.forEach(scriptTag => inputHTML =
-     inputHTML.replace(scriptTag, scriptTag.replace('/js/', servicenowConfig.JS_API_PATH)))
- 
-   return inputHTML;
- }
- 
- function resolveMetaTags(inputHTML) {
-   return inputHTML.match(metaTagRegEx);
- }
- 
- function removeMetaTags(inputHTML) {
-   const metaTags = resolveMetaTags(inputHTML);
-   metaTags.forEach(metaTag => inputHTML = inputHTML.replace(metaTag, ''));
- 
-   return inputHTML;
- }
- 
- function injectJellyWrappers(inputHTML) {
-   console.log(`jelly wrapper`);
-   console.log(inputHTML);
-   const JELLY_WRAPPER_START = `
-   
-   <?xml version="1.0" encoding="utf-8" ?>
-    <j:jelly
-      trim="false"
-      xmlns:j="jelly:core"
-      xmlns:g="glide"
-      xmlns:j2="null"
-      xmlns:g2="null"
-    >`
- 
- 
- 
-   const JELLY_WRAPPER_END = `</j:jelly>`
- 
-   return JELLY_WRAPPER_START + inputHTML + JELLY_WRAPPER_END
- }
- 
- 
- function injectJellyDoctype(inputHTML) {
-   const DOCTYPE_JELLY = `
-   <g:evaluate> var docType = '&lt;!DOCTYPE HTML&gt;';
-   </g:evaluate>
-   <g2:no_escape>
-   $[docType]
-   </g2:no_escape>
-          <g:evaluate object="true">
-           var session = gs.getSession();
-   var token = session.getSessionToken();
-   </g:evaluate> 
-   <script>     
-            window.sessionToken = "$[token]"; 
-   </script>
-      `
- 
-   const headIndex = inputHTML.indexOf('<head')
- 
-   return (
-     inputHTML.substring(0, headIndex) +
-     DOCTYPE_JELLY +
-     inputHTML.substring(headIndex)
-   )
- }
- 
- function removeXmlTag(inputHTML) {
- 
-   const tag = '<?xml version="1.0" encoding="utf-8" ?>'
- 
-   return inputHTML.replace(tag, '');
- 
- }
- 
- // function injectJellyContent(varName, content){
- //   const CONTENT = `
- //   <g:evaluate> var ${varName} = '${content}'; 
- //   </g:evaluate> 
- //   <g2:no_escape> 
- //       $[${varName}] 
- //   </g2:no_escape>
- //     `
- //     return CONTENT;
- // }
- 
- // function injectJellySafeMetaTags(inputHTML){
- 
- //   const headStartTag = '<head>';
- //   const headIndex = inputHTML.indexOf(headStartTag);
- //   const metaTags =  injectJellyContent('metatags', `<meta charset="utf-8"><meta http-equiv="X-UA-Compatible"
- //    content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1">`);
- 
- //   return (
- //     inputHTML.substring(0, headIndex + headStartTag.length) +
- //     metaTags +
- //     inputHTML.substring(headIndex + headStartTag.length)
- //   )
- // }
- 
- function removeHtmlTags(inputHTML) {
-   return inputHTML.replace(/(<html>)|(<html.+>)/, '').replace('</html>', '')
- }
- 
- function removeDocType(inputHTML) {
-   return inputHTML.replace('<!DOCTYPE html>', '')
- }
- 
- function removeDoubleNewlines(inputHTML) {
-   return inputHTML.replace(/\s{2,}/gm, '\n')
- }
- 
- function decorateIndexHTML(pathToHTML) {
-   const indexHTMLContent = fs.readFileSync(pathToHTML, 'utf-8')
-   let decoratedHTML = indexHTMLContent
-   decoratedHTML = removeDocType(decoratedHTML)
-   decoratedHTML = injectJellyDoctype(decoratedHTML)
-   decoratedHTML = removeHtmlTags(decoratedHTML)
-   decoratedHTML = removeMetaTags(decoratedHTML)
-   decoratedHTML = removeDoubleNewlines(decoratedHTML)
-   decoratedHTML = transformLinks(decoratedHTML)
-   decoratedHTML = transformScripts(decoratedHTML)
-   decoratedHTML = injectJellyWrappers(decoratedHTML)
-   decoratedHTML = removeXmlTag(decoratedHTML);
-   // decoratedHTML = injectJellySafeMetaTags(decoratedHTML)
-   fs.writeFileSync(pathToHTML, decoratedHTML)
- }
- 
- function updateVendorAssetPaths() {
- 
-   clear();
- 
-   console.log('\n');
-   console.log("update assets path");
- 
-   const files = fs.readdirSync('./dist/js');
-   const vendorJsFile = files.find(file => file.includes('vendor'));
- 
-   if (vendorJsFile) {
- 
-     //replace all material icon paths with asset api path
-     const vendorJsPath = `./dist/js/${vendorJsFile}`;
-     const vendorJsContent = fs.readFileSync(vendorJsPath, 'utf-8');
-     let vendorJs = vendorJsContent;
-     vendorJs = vendorJs.replace(materialIconsRegEx,
-       `${servicenowConfig.ASSETS_API_PATH}MaterialIcons`);
- 
-     fs.writeFileSync(vendorJsPath, vendorJs, 'utf-8');
-   } else {
- 
-     console.error("unable to locate vendor js file");
-   }
- }
- 
- function updateAppAssetPaths() {
- 
-   clear();
- 
-   console.log('\n');
-   console.log("update assets path");
- 
-   const files = fs.readdirSync('./dist/js');
-   const appJsFile = files.find(file => file.includes('app'));
- 
-   if (appJsFile) {
- 
-     //replace all material icon paths with asset api path
-     const appJSPath = `./dist/js/${appJsFile}`;
-     const appJsContent = fs.readFileSync(appJSPath, 'utf-8');
-     let appJs = appJsContent;
-     appJs = appJsContent.replace(robotoFontsRegex,
-       `${servicenowConfig.ASSETS_API_PATH}roboto-`);
- 
-     fs.writeFileSync(appJSPath, appJs, 'utf-8');
-   } else {
- 
-     console.error("unable to locate app js file");
-   }
- }
- 
- function updateAppImgPaths() {
- 
-   clear();
- 
-   console.log('\n');
-   console.log("update img paths");
- 
-   const files = fs.readdirSync('./dist/js');
-   const appJsFile = files.find(file => file.includes('app'));
- 
-   if (appJsFile) {
- 
-     //replace all material icon paths with asset api path
-     const appJSPath = `./dist/js/${appJsFile}`;
-     const appJsContent = fs.readFileSync(appJSPath, 'utf-8');
-     let appJs = appJsContent;
-     appJs = appJsContent.replace(imgRegex,
-       `${servicenowConfig.IMG_API_PATH}`);
- 
-     fs.writeFileSync(appJSPath, appJs, 'utf-8');
-   } else {
- 
-     console.error("unable to locate app js file");
-   }
- }
- 
- 
- function bytesNumToKbsStr(bytesNum) {
-   return Math.round(bytesNum / 1000) + 'kB'
- }
- 
- function outputResults() {
- 
-   console.log('\n')
-   console.log(
-     'Find the production build in the dist/ directory.'
-   )
-   console.log('\n')
- 
-   try {
-     const tree = dirTree('./dist', {})
- 
-     const indexHtml = tree.children.find(child => child.name === 'index.html')
-     const roundedSizeKbs = bytesNumToKbsStr(indexHtml.size)
-     console.log(indexHtml.path.replace('/index.html', ''))
-     console.log('├── ' + indexHtml.name + ', ' + roundedSizeKbs)
-     console.log('\n')
- 
-     const totalSize = bytesNumToKbsStr(tree.size)
- 
-     console.log('Total bundle size: ' + totalSize)
-     console.log('See the build files above.')
-     console.log('\n')
- 
-     console.log(
- 
-       'Your app production build is ready for deployment in ServiceNow.'
- 
-     )
-     console.log('\n')
-   } catch (err) {
-     console.log(err.message)
-     console.log(
- 
-       'Something went wrong. There should be an error message above.'
- 
-     )
-   }
- }
+const servicenowConfig = require("./servicenow.config");
+const fs = require("fs");
+const path = require("path");
+const assert = require("node:assert").strict;
+
+const fileEncoding = "utf-8";
+const ourFakeExtension = ".html";
+// file paths
+const DIST_DIR = "./dist";
+const JS_DIR = path.join(DIST_DIR, "js");
+const IMG_DIR = path.join(DIST_DIR, "img");
+const ASSETS_DIR = path.join(DIST_DIR, "other_assets");
+const INDEX_HTML = path.join(DIST_DIR, "index.html");
+// regular expressions
+const linkRelRegEx = /<\s*link[^>]*(.*?)>/g;
+const scriptTagRegEx = /<script\b[^>]*>[\s\S\/]*?<\/script\b[^>]*>/g;
+const metaTagRegEx = /<\s*meta[^>]*(.*?)>/g;
+const materialIconsRegEx = /\s*other_assets\/MaterialIcons-/g;
+const robotoFontsRegex = /\s*other_assets\/roboto-/g;
+const imgRegex = /\s*img\//g;
+
+decorateIndexHTML(INDEX_HTML);
+updateAssetPaths(JS_DIR, "vendor-");
+deleteFiles(ASSETS_DIR, "-ttf");
+renameFiles(JS_DIR, ourFakeExtension);
+renameFiles(IMG_DIR, ourFakeExtension);
+renameFiles(ASSETS_DIR, ourFakeExtension);
+outputResults();
+
+/**
+ * Finds all matches in the given input using the specified regular expression.
+ * Specify the expected number of matches in the third parameter.
+ */
+function findMatches(input, regEx, expectedMatchCount) {
+  let actualMatchCount = 0;
+  const matches = input.match(regEx);
+  if (matches) {
+    console.log("Found these matches using expression " + regEx);
+    console.log(matches);
+    actualMatchCount = matches.length;
+  } else {
+    console.log("Found no matches using expression " + regEx);
+  }
+  assert.strictEqual(
+    actualMatchCount,
+    expectedMatchCount,
+    `Expected ${expectedMatchCount} matches to be found.  Check the input and regEx.`
+  );
+  return matches;
+}
+
+/**
+ * Removes standard HTML doctype from the given input
+ */
+function removeDocType(html) {
+  return html.replace("<!DOCTYPE html>", "");
+}
+
+/**
+ * Adds jelly tags for session info before <head> tag
+ */
+function injectJellyDoctype(html) {
+  const headIndex = html.indexOf("<head");
+  return `${html.substring(0, headIndex)}
+    <g:evaluate>var docType = '&lt;!DOCTYPE HTML&gt;';</g:evaluate>
+    <g2:no_escape>$[docType]</g2:no_escape>
+    <g:evaluate object="true">
+      var session = gs.getSession();
+      var token = session.getSessionToken();
+    </g:evaluate> 
+    <script>
+      window.sessionToken = "$[token]";
+    </script>
+    ${html.substring(headIndex)}`;
+}
+
+/**
+ * Removes root HTML tags from the given input
+ */
+function removeHtmlTags(html) {
+  return html.replace(/(<html>)|(<html.+>)/, "").replace("</html>", "");
+}
+
+/**
+ * Removes meta tags from the given input
+ * For example, this entire tag will be removed
+ * <meta charset="utf-8">
+ */
+function removeMetaTags(html) {
+  const metaTags = findMatches(html, metaTagRegEx, 3);
+  metaTags.forEach((metaTag) => (html = html.replace(metaTag, "")));
+  console.log("Removed <meta> tags from html.");
+  return html;
+}
+
+/**
+ * Removes double newlines from the given input
+ */
+function removeDoubleNewlines(html) {
+  return html.replace(/\s{2,}/gm, "\n");
+}
+
+/**
+ * Removes link tags from the given input
+ * For example, this entire tag will be removed
+ * <link href="/foo.js" rel="preload" as="script">
+ */
+function removeLinks(html) {
+  const links = findMatches(html, linkRelRegEx, 3);
+  links.forEach((link) => (html = html.replace(link, "")));
+  console.log("Removed <link> tags from html.");
+  return html;
+}
+
+/**
+ * Transforms script tags in the given input
+ * For example, this tag will be transformed
+ * from <script src="/js/foo.js"></script>
+ * to <script src="/some/new/path/foo.js"></script>
+ */
+function transformScripts(html) {
+  const scriptTags = findMatches(html, scriptTagRegEx, 3);
+  scriptTags.forEach(
+    (scriptTag) =>
+      (html = html.replace(
+        scriptTag,
+        scriptTag.replace("/js/", servicenowConfig.JS_API_PATH)
+      ))
+  );
+  console.log("Transformed <script> tags in html to the following...");
+  findMatches(html, scriptTagRegEx, 3);
+  return html;
+}
+
+/**
+ * Wraps the given input in j:jelly tags
+ */
+function injectJellyWrappers(html) {
+  return `<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">${html}</j:jelly>`;
+}
+
+/**
+ * Performs targeted transformations on the specified file
+ */
+function decorateIndexHTML(filePath) {
+  console.log(`\nDecorating HTML at ${filePath}`);
+  assert.ok(filePath);
+  let fileContent = fs.readFileSync(filePath, fileEncoding);
+  fileContent = removeDocType(fileContent);
+  fileContent = injectJellyDoctype(fileContent);
+  fileContent = removeHtmlTags(fileContent);
+  fileContent = removeMetaTags(fileContent);
+  fileContent = removeDoubleNewlines(fileContent);
+  fileContent = removeLinks(fileContent);
+  fileContent = transformScripts(fileContent);
+  fileContent = injectJellyWrappers(fileContent);
+  fs.writeFileSync(filePath, fileContent, fileEncoding);
+}
+
+/**
+ * Updates the contents of a single file in the specified directory.
+ * The filename must start with the specified filter.
+ * Replaces all material icons paths with ASSETS api path
+ * Replaces all roboto font paths with ASSETS api path
+ * Replaces all image paths with IMG api path
+ */
+function updateAssetPaths(directory, filenameFilter) {
+  const dir = fs.readdirSync(directory);
+  const filename = dir.find((file) => file.startsWith(filenameFilter));
+  const filePath = path.join(directory, filename);
+  assert.ok(filePath);
+  console.log(`\nUpdating paths in file ${filePath}`);
+  let fileContent = fs.readFileSync(filePath, fileEncoding);
+
+  // material icons
+  findMatches(fileContent, materialIconsRegEx, 4);
+  const newIconPath = `${servicenowConfig.ASSETS_API_PATH}MaterialIcons-`;
+  console.log(`Replacing the material icons paths with: ${newIconPath}`);
+  fileContent = fileContent.replace(materialIconsRegEx, newIconPath);
+
+  // roboto fonts
+  findMatches(fileContent, robotoFontsRegex, 18);
+  const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
+  console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
+  fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
+
+  // image paths
+  findMatches(fileContent, imgRegex, 7);
+  const newImagePath = servicenowConfig.IMG_API_PATH;
+  console.log(`Replacing the image paths with: ${newImagePath}`);
+  fileContent = fileContent.replace(imgRegex, newImagePath);
+
+  fs.writeFileSync(filePath, fileContent, fileEncoding);
+}
+
+/**
+ * Deletes files from the specified directory that match the filter
+ */
+function deleteFiles(directory, endsWithFilter) {
+  console.log(`\nDeleting files in ${directory} ending with ${endsWithFilter}`);
+  const files = fs.readdirSync(directory);
+  files.forEach((file) => {
+    const filename = path.join(directory, file);
+    if (filename.endsWith(endsWithFilter)) {
+      console.log("-- found: ", filename);
+      try {
+        fs.unlinkSync(filename);
+        console.log("-- deleted: ", filename);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  });
+}
+
+/**
+ * Renames all files in the specified directory by appending an extension
+ */
+function renameFiles(directory, extensionToAppend) {
+  console.log(
+    `\nRenaming files in ${directory} with extension ${extensionToAppend}`
+  );
+  const files = fs.readdirSync(directory);
+  files.forEach((file) => {
+    const oldFilename = path.join(directory, file);
+    console.log("-- found: ", oldFilename);
+    try {
+      const newFilename = oldFilename + ourFakeExtension;
+      fs.renameSync(oldFilename, newFilename);
+      console.log("-- renamed: ", newFilename);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
+
+/**
+ * Checks for expected output files and displays messages
+ */
+function outputResults() {
+  console.log(`\n\nPostbuild script complete.`);
+  const jsDir = fs.readdirSync(JS_DIR);
+  assert.ok(jsDir);
+  const appFile = jsDir.find((file) => file.includes("app"));
+  assert.ok(appFile);
+  const vendorFile = jsDir.find((file) => file.includes("vendor"));
+  assert.ok(vendorFile);
+  const imgDir = fs.readdirSync(IMG_DIR);
+  assert.ok(imgDir);
+  const assetsDir = fs.readdirSync(ASSETS_DIR);
+  assert.ok(assetsDir);
+  console.log(
+    `All expected files were found and all anticipated changes have been made.`
+  );
+  console.log(
+    `The build in the ${DIST_DIR} directory is ready for deployment in ServiceNow.`
+  );
+}
