@@ -188,7 +188,6 @@ export default class ATATFileUpload extends Vue {
         event.preventDefault();
         event.stopPropagation();}
 
-      //todo make sure this works as expected
       this.reset();
       this.isFullSize = this._validFiles.length === 0;
       (document.getElementById(this.id + "FileUpload") as HTMLInputElement).click();
@@ -275,11 +274,6 @@ export default class ATATFileUpload extends Vue {
       );
 
       const doesFileExist = this._validFiles.some((fileObj) => {
-        // console.log("name: "+ vFile.name);
-        // console.log(vFile.name === fileObj.file?.name)
-        // console.log(vFile.lastModified === fileObj.file.lastModified)
-        // console.log( vFile.size === fileObj.file.size)
-        
         return (
           vFile.name === fileObj.file?.name &&
           vFile.lastModified === fileObj.file.lastModified &&
@@ -299,14 +293,9 @@ export default class ATATFileUpload extends Vue {
         this.logInvalidFiles(vFile, doesFileExist);
       }
       
-      // console.log("isValidFormat: "+ isValidFormat);
-      // console.log("isFileSizeValid: "+ isFileSizeValid);
-      // console.log("!doesFileExist: "+ !doesFileExist);
-
       return isValidFormat && !doesFileExist && isFileSizeValid;
     });
 
-    console.log("length" + _validFiles.length)
    
     //allows for maxNumberOfFiles to be uploaded
     
@@ -453,7 +442,6 @@ export default class ATATFileUpload extends Vue {
     window.addEventListener("drop", this.preventDrop, false);
     window.addEventListener("dragover", this.preventDrop, false);
 
-    // to do ...mock this
     //try to grab the attachment service via the service factory
     // this.fileAttachmentService = AttachmentServiceFactory(
     //   this.attachmentServiceName
