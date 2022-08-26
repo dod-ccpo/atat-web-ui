@@ -3,8 +3,6 @@ import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import {DefaultProps} from "vue/types/options";
-import Inputmask from "inputmask";
-
 
 Vue.use(Vuetify);
 
