@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Vue, { computed } from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
@@ -6,11 +7,15 @@ import OtherOfferingSummary from "@/steps/05-PerformanceRequirements/DOW/OtherOf
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import VueRouter from 'vue-router'
+import ClassificationRequirements from "@/store/classificationRequirements";
+import Periods from "@/store/periods";
 
 describe("Testing OtherOfferingSummary Component", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
   localVue.use(Vuex);
+  localVue.use(VueRouter)
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
   config.showDeprecationWarnings = false
@@ -34,20 +39,61 @@ describe("Testing OtherOfferingSummary Component", () => {
             entireDuration: "YES",
             environmentType: "",
             instanceNumber: 1,
-            memory: "",
+            memory: "1",
             numberOfInstancesNeeded: "1",
+            numberOfVCPUs: "1",
+            operatingSystemAndLicensing: "",
+            performanceTier: "Other",
+            performanceTierOther: "",
+            periodsNeeded: [],
+            requirementTitle: "dw",
+            storageAmount: "1",
+            storageType: "",
+          },
+          {
+            anticipatedNeedUsage: "test2",
+            classificationLevel: "level2",
+            deployedRegions: [],
+            deployedRegionsOther: "",
+            descriptionOfNeed: "",
+            entireDuration: "NO",
+            environmentType: "",
+            instanceNumber: 2,
+            memory: "2",
+            numberOfInstancesNeeded: "2",
             numberOfVCPUs: "",
             operatingSystemAndLicensing: "",
             performanceTier: "",
             performanceTierOther: "",
             periodsNeeded: [],
             requirementTitle: "dw",
-            storageAmount: "",
+            storageAmount: "2",
             storageType: "",
           }
         ]
       ));
-
+    ClassificationRequirements.setSelectedClassificationLevels([
+      {
+        impact_level: "level1",
+        classification: "level1",
+        sys_id:"level1"
+      },
+      {
+        impact_level: "level2",
+        classification: "level2",
+        sys_id:"level2"
+      }
+    ])
+    jest.spyOn(Periods,'getAllPeriods').mockImplementation(
+      () => Promise.resolve([
+        {
+          option_order: "1",
+          period_type: "BASE",
+          period_unit: "YEAR",
+          period_unit_count: "1",
+        },
+      ])
+    )
     wrapper.vm.loadOnEnter();
   });
 
@@ -76,14 +122,23 @@ describe("Testing OtherOfferingSummary Component", () => {
       expect(wrapper.vm.addInstance).toHaveBeenCalled()
     })
 
-    // it('Testing function editInstance()',async () => {
-    //   console.log(wrapper.vm.$data.offeringInstances)
-    //   jest.spyOn(wrapper.vm,'editInstance')
-    //   wrapper.find('#EditButton_1').trigger('click')
-    //   await wrapper.vm.$nextTick()
-    //   expect(wrapper.vm.editInstance).toHaveBeenCalled()
-    // })
-    //
+    it('Testing function editInstance()',async () => {
+      const item = {
+        duration: "Entire task order",
+        instanceNumber: 1,
+        requirementTitle: "test",
+        typeOrTitle: "test",
+      }
+      jest.spyOn(wrapper.vm,'editInstance')
+      jest.spyOn(wrapper.vm, 'navigate').mockImplementation();
+      wrapper.vm.editInstance(item)
+      Vue.nextTick(async () => {
+        const editButton = await wrapper.find('#EditButton_1')
+        editButton.trigger('click')
+        Vue.nextTick(()=>{expect(wrapper.vm.editInstance).toHaveBeenCalled()})
+      })
+    })
+
     it('Testing confirmDeleteInstance() sets showDeleteInstanceDialog to true ',async () => {
       const item = {duration: "Entire task order",
         instanceNumber: 1,
@@ -96,6 +151,7 @@ describe("Testing OtherOfferingSummary Component", () => {
     it('Testing function deleteOffering()  ',async () => {
       jest.spyOn(DescriptionOfWork,'deleteOtherOffering').mockImplementation()
       jest.spyOn(wrapper.vm,'deleteOffering')
+      jest.spyOn(wrapper.vm, 'navigate').mockImplementation();
       wrapper.vm.deleteOffering()
       expect(wrapper.vm.deleteOffering).toHaveBeenCalled()
     })
