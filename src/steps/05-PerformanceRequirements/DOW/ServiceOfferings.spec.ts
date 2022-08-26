@@ -18,7 +18,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
   config.showDeprecationWarnings = false
   Vue.config.silent = true;
 
-  const computeData: OtherServiceOfferingData = {
+  const otherOfferingData: OtherServiceOfferingData = {
     instanceNumber: 1,
     environmentType: "",
     classificationLevel: "",
@@ -39,7 +39,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
   }
 
   const computeDOWObj = {
-    computeData,
+    otherOfferingData,
     serviceOfferingGroupId: "COMPUTE",
     sequence: 1,
     ServiceOfferings: [],
@@ -63,7 +63,6 @@ describe("Testing ServiceOfferingDetails Component", () => {
     });
   });
 
-
   describe("Methods...", () => {
     it("tests that isServiceOfferingList sets to true", async () => {
       await wrapper.vm.loadOnEnter();
@@ -83,7 +82,7 @@ describe("Testing ServiceOfferingDetails Component", () => {
       
       console.log("otherOfferingData", wrapper.vm.$data.otherOfferingData);
       await DescriptionOfWork.addOfferingGroup("COMPUTE");
-      await DescriptionOfWork.setComputeData(computeData);
+      await DescriptionOfWork.setOtherOfferingData(otherOfferingData);
       DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
       await wrapper.vm.loadOnEnter();
       console.log("computeDataArray", wrapper.vm.$data.computeDataArray);

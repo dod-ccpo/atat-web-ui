@@ -76,7 +76,6 @@ export default class RequirementsForm extends Vue {
   @PropSync("instances") private _instances!: DOWClassificationInstance[];
   @Prop() private avlInstancesLength!: number;
   @Prop() public isPeriodsDataMissing!: boolean;
-  @Prop() public isClassificationDataMissing!: boolean;
 
   private selectedOptions: string[] = [];
   private routeNames = routeNames;

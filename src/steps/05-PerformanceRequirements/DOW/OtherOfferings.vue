@@ -202,12 +202,10 @@ export default class OtherOfferings extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    if (this.isCompute) {
-      const computeObj = DescriptionOfWork.computeObject;
-      this.firstTimeHere = !computeObj.computeData || computeObj.computeData.length === 0;
-    } else if (this.isGeneral) {
-      // TODO Add logic to determine if first time when completing AT-7824
-      this.firstTimeHere = true;
+    if (this.isCompute || this.isGeneral) {
+      const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
+      this.firstTimeHere 
+        = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
     }
 
     // get classification levels selected in step 4 Contract Details
@@ -239,9 +237,9 @@ export default class OtherOfferings extends Vue {
   }
 
   public async setComponentSpecificData(): Promise<void> {
-    if (this.isCompute) {
-      this.formHasBeenTouched = DescriptionOfWork.computeInstancesTouched.indexOf(
-        this._serviceOfferingData.instanceNumber) > -1;
+    if (this.isCompute || this.isGeneral) {
+      this.formHasBeenTouched 
+        = await DescriptionOfWork.hasInstanceBeenTouched(this._serviceOfferingData.instanceNumber);
     }
     if (this.formHasBeenTouched) {
       // user is editing an existing instance, validate on load
@@ -284,6 +282,9 @@ export default class OtherOfferings extends Vue {
   }
 
   private setErrorMessages(): void {
+    if (!this.$refs.serviceOfferingForm) {
+      return;
+    }
     this.errorBagValues = Object.values(this.$refs.serviceOfferingForm.errorBag);
     const formChildren = this.$refs.serviceOfferingForm.$children[0].$children;
     const inputRefs = [

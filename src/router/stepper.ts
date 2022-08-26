@@ -47,8 +47,8 @@ import RequirementCategories
 import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
 import ServiceOfferingDetails 
   from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue";
-import ComputeRequirements 
-  from "../steps/05-PerformanceRequirements/DOW/ComputeRequirements.vue";
+import OtherOfferingSummary 
+  from "../steps/05-PerformanceRequirements/DOW/OtherOfferingSummary.vue";
 import DOWSummary 
   from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
 
@@ -115,7 +115,7 @@ import {
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
-  ComputeOfferingDetailsPathResolver,
+  OtherOfferingSummaryPathResolver, // EJY look into this
 
 } from "./resolvers";
 
@@ -138,7 +138,8 @@ export const routeNames = {
   RequirementCategories: "Requirement_Categories",
   ServiceOfferings: "Service_Offerings",
   ServiceOfferingDetails: "Service_Offering_Details",
-  ComputeRequirements: "Compute_Requirements",
+  OtherOfferingSummary: "Other_Offering_Summary",
+  // ComputeRequirements: "Compute_Requirements",
   DOWSummary: "DOW_Summary",
   OptimizeCurrentEnvironment: "Optimize_Current_Environment",
   AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
@@ -469,13 +470,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: OfferingDetailsPathResolver,
       },
       {
-        menuText: "Compute Requirements",
-        path: "service-offerings/compute/requirements",
+        menuText: "Other Service Offering Summary",
+        path: "service-offerings/other/summary",
         excludeFromMenu: true,
-        name: routeNames.ComputeRequirements,
+        // name: routeNames.ServiceOfferingDetails,
+        name: routeNames.OtherOfferingSummary,
         completePercentageWeight: 1,
-        component: ComputeRequirements,
-        routeResolver: ComputeOfferingDetailsPathResolver,
+        component: OtherOfferingSummary,
+        // routeResolver: OfferingDetailsPathResolver, 
+        routeResolver: OtherOfferingSummaryPathResolver, 
+        // EJY should routeResolver be OtherOfferingSummaryPathResolver ??
         additionalButtons: [
           {
             buttonText: "I don’t need compute resources",

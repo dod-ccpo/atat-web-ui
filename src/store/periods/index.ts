@@ -57,6 +57,11 @@ export class PeriodsStore extends VuexModule {
   periods: PeriodDTO[] | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
 
+  @Action
+  public async getAllPeriods(): Promise<PeriodDTO[] | null> {
+    return this.periods;
+  }
+
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.periods),
