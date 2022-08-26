@@ -81,7 +81,7 @@ describe("Test suite: Compute Requirements", () => {
     
     //click on Continue button navigates to next screen
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.verifyPageHeader("Your Compute Requirements");
+    cy.verifyPageHeader(" Your compute requirements ");
     cy.verifyColumnHeaders(2, "Type", "Pre-production/Staging");
     cy.verifyColumnHeaders(3, "Location", selectedRegions);
     cy.verifyColumnHeaders(4, "Classification", "Unclassified/IL4");
@@ -97,7 +97,7 @@ describe("Test suite: Compute Requirements", () => {
     cy.verifyPageHeader("Let’s gather some details for Compute Instance #1");
     cy.selectCheckBoxes([performanceReq.eastCheckbox, performanceReq.oconusCheckbox]);
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.verifyPageHeader("Your Compute Requirements");
+    cy.verifyPageHeader(" Your compute requirements ");
     //editted regions is updated in the table
     const updatedRegions = "CONUS West," + " CONUS Central," + " CONUS East," + " OCONUS"
     cy.verifyColumnHeaders(3, "Location", updatedRegions);
@@ -143,7 +143,7 @@ describe("Test suite: Compute Requirements", () => {
     
     //click on Continue button navigates to next screen
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.verifyPageHeader("Your Compute Requirements");
+    cy.verifyPageHeader(" Your compute requirements ");
     cy.verifyColumnHeaders(2, "Type", "Dev/Testing");
     
     //click on Add another instance
@@ -189,7 +189,7 @@ describe("Test suite: Compute Requirements", () => {
     
     //click on Continue button navigates to next screen
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.verifyPageHeader("Your Compute Requirements");
+    cy.verifyPageHeader(" Your compute requirements ");
     cy.verifyColumnHeaders(
       2,
       "Type",
@@ -244,7 +244,7 @@ describe("Test suite: Compute Requirements", () => {
     
     //click on Continue button navigates to next screen
     cy.btnClick(common.continueBtn, " Continue ");   
-    cy.verifyPageHeader("Your Compute Requirements");
+    cy.verifyPageHeader(" Your compute requirements ");
     cy.verifyColumnHeaders(2, "Type", "Production"+ "Missing info");
     
     //click on Edit Icon
@@ -267,7 +267,7 @@ describe("Test suite: Compute Requirements", () => {
     
     //click on Continue button navigates to next screen
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.verifyPageHeader("Your Compute Requirements");
+    cy.verifyPageHeader(" Your compute requirements ");
     
     //No missing icon next to instance type
     cy.verifyColumnHeaders(
