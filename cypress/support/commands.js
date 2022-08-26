@@ -289,6 +289,10 @@ Cypress.Commands.add("selectCheckBoxes", (checkBoxesSelectors) => {
   });
 });
 
+Cypress.Commands.add("selectRadioBtn", (selector, value) => {
+  cy.radioBtn(selector, value).click({ force: true })
+  
+});
 Cypress.Commands.add("verifyCheckBoxLabels", (selector,expectedLabels) => {
   const foundLabels = []
   const length= expectedLabels.length
@@ -302,6 +306,52 @@ Cypress.Commands.add("verifyCheckBoxLabels", (selector,expectedLabels) => {
     .then(() => {
       expect(foundLabels).to.deep.equal(expectedLabels)
     })
+  
+});
+
+Cypress.Commands.add("verifyRadioGroupLabels", (selector,expectedLabels) => {
+  const foundLabels = []
+  const length= expectedLabels.length
+  cy.findElement(selector)
+    .should('have.length', length)
+    .each(($radio) => {
+      cy.findElement(`label[for=${$radio.attr('id')}]`)
+        .invoke('text')
+        .then((text) => foundLabels.push(cleanText(text)))     
+    })
+    .then(() => {
+      expect(foundLabels).to.deep.equal(expectedLabels)
+    })
+  
+});
+
+Cypress.Commands.add("verifyDropdownList", (selector,expectedOptions) => {
+  //Verify the list 
+  cy.findElement(selector)
+    .then(($els) => {      
+      const foundText = Cypress.$.makeArray($els).map((el) => el.innerText)
+      const foundTextArray = cleanText(foundText[0]).split(/\r?\n/);
+      console.log("Actual:", foundTextArray)
+      return foundTextArray;
+
+    })
+    .should('deep.equal', expectedOptions);
+  console.log("expectedText:", expectedOptions); 
+});
+
+Cypress.Commands.add("verifyColumnHeaders", (columnIndex,headerText,expectedValue) => {
+  cy.findElement(".v-data-table-header  th:nth-child(" + columnIndex + ") span")
+    .invoke('text')
+    .as('foundHeaderText');
+
+  cy.get('@foundHeaderText').then(foundHeaderText => {
+    expect(headerText).equal(foundHeaderText)   
+  })
+  cy.findElement("tbody td:nth-child(" + columnIndex + ")").then(($el) => {
+    const value = $el.text()
+    expect(value).equal(expectedValue)
+  })
+  
   
 });
 
