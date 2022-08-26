@@ -113,13 +113,7 @@ const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
 const getOfferingGroupServicesPath = (groupId: string)=>
   `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
 
-
-
-// hit entering Performance Requirements main checklist first time
-// Hit leaving Applications offerings checklist -- is this right?
 export const RequirementsPathResolver = (current: string, direction: string): string => {
-  debugger;
-  // const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings; // EJY 
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
@@ -177,10 +171,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
-// hit leaving Compute details form - as expected
-// hit leaving Appliations offerings checklist page - NOT as expected???
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
-  debugger;
   const groupId = DescriptionOfWork.currentGroupId;
   if (otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1) {
     return otherServiceOfferingSummaryPath; 
@@ -198,14 +189,9 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
      
 }
 
-// hit leaving main Performance Requirements category page - as expected
-// hit leaving compute summary page on ADD ANOTHER INSTANCE  - as expected
-// hit leaving compute summary page on CONTINUE - as expected
-
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
-  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
 
@@ -371,7 +357,6 @@ export const OfferGroupOfferingsPathResolver = (
   if (isOtherOffering) {
     const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
     const otherOfferingData = DescriptionOfWork.otherOfferingObject.otherOfferingData;
-    // if (current !== routeNames.ServiceOfferingDetails) {
     if (current !== routeNames.OtherOfferingSummary) {
       if (otherOfferingData && otherOfferingData.length) {
         return otherServiceOfferingSummaryPath;
@@ -389,10 +374,7 @@ export const OfferGroupOfferingsPathResolver = (
 }
 
 //this will always return the path for the current group and the current offering
-
-// hit leaving compute summary page
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
-  debugger;
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
   if (DescriptionOfWork.summaryBackToContractDetails) {
@@ -403,10 +385,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   const groupId = DescriptionOfWork.currentGroupId;
   const isOtherOffering = otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1;
   
-  // if (isOtherOffering) { 
-  //   // EJY check this and the below how they might work together
-  //   return otherServiceOfferingSummaryPath;
-  // }
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
   if(current === routeNames.OtherOfferingSummary && 
@@ -506,7 +484,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-  debugger;
   DescriptionOfWork.setBackToContractDetails(current === routeNames.PropertyDetails);
   Steps.clearAltBackButtonText();
   if(current === routeNames.PropertyDetails){
