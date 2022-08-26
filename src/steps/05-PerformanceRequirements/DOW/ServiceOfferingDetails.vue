@@ -71,6 +71,7 @@
               <RequirementsForm
                 :instances="instancesFormData"
                 :avlInstancesLength="avlInstancesLength"
+                :isPeriodsDataMissing="isPeriodsDataMissing"
               />
             </div>
 
@@ -106,6 +107,8 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import Periods from "@/store/periods";
+
 import { ClassificationLevelDTO } from "@/api/models";
 import { 
   buildClassificationCheckboxList, 
@@ -150,6 +153,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public headerCheckboxSelectedSysIds: string[] = [];
   public selectedHeaderLevelSysIds: string[] = [];
   public instancesFormData: DOWClassificationInstance[] = [];
+  public isPeriodsDataMissing = false;
 
   public modalSelectionsOnOpen: string[] = [];
   public openModal(): void {
@@ -345,6 +349,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     }
 
     this.checkSingleClassification();
+
+    const periods = await Periods.loadPeriods();
+    this.isPeriodsDataMissing = periods.length === 0 ? true : false;
 
   }
 

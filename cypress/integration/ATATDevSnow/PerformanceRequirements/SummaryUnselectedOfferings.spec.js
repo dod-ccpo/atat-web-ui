@@ -210,7 +210,6 @@ describe("Test suite: Summary screen: Unselected Offerings ",{ tags: '@iso-ignor
       performanceReqs.periodCheckboxLabel1,
       "NO");
     cy.periodCount(periodCheckboxCount, performanceReqs.periodCheckboxRow1);
-    cy.selectCheckBoxes([performanceReqs.checkBoxBase]);    
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader(
       "Your Performance Requirements"

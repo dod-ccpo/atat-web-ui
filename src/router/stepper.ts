@@ -477,8 +477,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.OtherOfferingSummary,
         completePercentageWeight: 1,
         component: OtherOfferingSummary,
-        routeResolver: OfferingDetailsPathResolver, 
-        // routeResolver: OtherOfferingSummaryPathResolver, 
+        // routeResolver: OfferingDetailsPathResolver, 
+        routeResolver: OtherOfferingSummaryPathResolver, 
         // EJY should routeResolver be OtherOfferingSummaryPathResolver ??
         additionalButtons: [
           {

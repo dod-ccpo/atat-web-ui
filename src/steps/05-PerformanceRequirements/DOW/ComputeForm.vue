@@ -111,7 +111,7 @@
       :value.sync="_computeData.deployedRegions"
       :items="regionCheckboxOption"
       :card="false"
-      class="copy-max-width"
+      class="copy-max-width mb-10"
       :hasOtherValue="true"
       :otherValue="otherRegionValue"
       :otherValueEntered.sync="_computeData.deployedRegionsOther"

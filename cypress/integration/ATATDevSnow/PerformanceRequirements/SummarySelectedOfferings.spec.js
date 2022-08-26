@@ -87,7 +87,9 @@ describe("Test suite: Summary screen: Selected Offerings ", { tags: '@iso-ignore
       "NO");
     
     cy.periodCount(periodCheckboxCount, performanceReqs.periodCheckboxRow1);
-    cy.selectCheckBoxes([performanceReqs.checkBoxBase]);    
+    // BASE is preselected if only one PoP, so do not check this if expecting all required fields
+    // since it would UNcheck Base Period, resulting in Missing Info on DOW Summary page
+    // cy.selectCheckBoxes([performanceReqs.checkBoxBase]);
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader(
       "Your Performance Requirements"
