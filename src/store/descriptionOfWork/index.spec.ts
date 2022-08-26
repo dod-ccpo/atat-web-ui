@@ -92,13 +92,23 @@ describe("Testing Description of Work store", () => {
     });
 
     it("tests getLastOtherOfferingInstanceNumber()", async () => {
+      DescriptionOfWork.setCurrentOfferingGroupId("FOO");
+      const instanceNumber = await DOWStore.getLastOtherOfferingInstanceNumber();
+      expect(instanceNumber).toEqual(1);
+
+      DescriptionOfWork.setSelectedOfferingGroups(["COMPUTE"]);
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
+      DescriptionOfWork.pushTouchedOtherOfferingInstance(1);
+      await DescriptionOfWork.setOtherOfferingData(otherOfferingData[0]);
       jest.spyOn(DOWStore, 'getDOWObject').mockImplementation(
         ()=>Promise.resolve(
           DOWObject
         ));
-      const instanceNumber = await DOWStore.getLastOtherOfferingInstanceNumber();
-      console.log("instanceNu", instanceNumber)
-      expect(instanceNumber).toEqual(1);
+      Vue.nextTick(async () => {
+        const instanceNumber = await DOWStore.getLastOtherOfferingInstanceNumber();
+        console.log("instanceNu", instanceNumber)
+        expect(instanceNumber).toEqual(1);
+      })
     });
 
     it("tests deleteOtherOfferingInstance()", async () => {
@@ -139,13 +149,27 @@ describe("Testing Description of Work store", () => {
         })
       })
     });
-    it("tests setOtherOfferingData()", async () => {
+    it("tests getOtherOfferingInstances()", async () => {
       DescriptionOfWork.setSelectedOfferingGroups(["COMPUTE"]);
       DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
       Vue.nextTick(async () => {
         const otherInstances = await DescriptionOfWork.getOtherOfferingInstances();
         console.log("otherInstances",otherInstances);  
       })
+    });
+
+    it("tests getOtherOfferingInstance()", async () => {
+      DescriptionOfWork.setSelectedOfferingGroups(["COMPUTE"]);
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
+      Vue.nextTick(async () => {
+        let otherInstance = await DescriptionOfWork.getOtherOfferingInstance(1);
+        expect(otherInstance.instanceNumber).toEqual(0);
+        await DescriptionOfWork.setOtherOfferingData(otherOfferingData[0]);
+        Vue.nextTick(async () => {
+          otherInstance = await DescriptionOfWork.getOtherOfferingInstance(1);
+          expect(otherInstance.instanceNumber).toEqual(1);
+        });
+      });
     });
 
     it("tests hasInstanceBeenTouched()", async () => {
@@ -158,12 +182,9 @@ describe("Testing Description of Work store", () => {
         Vue.nextTick(async ()=> {
           touched = await DescriptionOfWork.hasInstanceBeenTouched(1);
           expect(touched).toBeFalsy();  
-        })
-        
-
-      })
+        });
+      });
     });
-
 
   });
 
