@@ -17,11 +17,19 @@
             <span v-else>performance requirements summary.</span>
           </p>
 
+          <div 
+            v-if="tableData.length === 0"
+            class="w-100 py-10 border1 border-rounded border-base-lighter text-center mb-10 mt-10" 
+          >
+            You do not have any requirements yet.
+          </div>
+
           <v-data-table
+            v-if="tableData.length"
             :headers="tableHeaders"
             :items="tableData"
             :items-per-page="-1"
-            class="elevation-0 _offering-instances"
+            class="elevation-0 _offering-instances mt-10"
             :class="{ '_first-col-nowrap': isCompute || isDatabase }"
             :hide-default-footer="true"
             no-data-text="You do not have any requirements yet."
@@ -50,7 +58,7 @@
             </template>
 
           </v-data-table>  
-          <hr class="mt-0" /> 
+          <hr class="mt-0" v-if="tableData.length" /> 
           <v-btn
             id="AddInstance"
             role="link" 
