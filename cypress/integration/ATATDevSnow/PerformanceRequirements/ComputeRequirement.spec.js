@@ -146,11 +146,8 @@ describe("Test suite: Compute Requirements", () => {
     cy.verifyPageHeader(" Your compute requirements ");
     cy.verifyColumnHeaders(2, "Type", "Dev/Testing");
     
-    //click on Add another instance
-    cy.btnClick(
-      performanceReq.addAnotherInstance,
-      " Add another instance "
-    );
+    //click on Add another instance    
+    cy.findElement(performanceReq.addAnotherInstance).click();
 
     //navigates to Let’s gather some details for Compute Instance #2
     cy.selectRadioBtn(performanceReq.envPrepodStage, "Pre-production/Staging");        
@@ -199,7 +196,7 @@ describe("Test suite: Compute Requirements", () => {
     cy.findElement(performanceReq.instanceTwoDeleteBtn).click()
       .then(() => {
         cy.findElement(performanceReq.dialogModal).should("exist");
-        cy.textExists(performanceReq.dialogTitle, " Delete Instance #2? ");
+        cy.textExists(performanceReq.dialogTitle, ' Delete instance #2? ');
         cy.btnExists(performanceReq.deleteInstBtn, " Delete instance ").click()
           .then(() => {
             cy.findElement(performanceReq.dialogModal).should("not.visible");

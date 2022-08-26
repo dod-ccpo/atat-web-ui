@@ -99,7 +99,7 @@ module.exports = {
   tableWrapper: ".v-data-table__wrapper",
   instanceOneEditBtn: "#EditButton_1",
   instanceOneDeleteBtn: "#DeleteButton_1",
-  addAnotherInstance: "#AddComputeInstance",
+  addAnotherInstance: "#AddInstance",
   instanceTwoEditBtn: "#EditButton_2",
   instanceTwoDeleteBtn: "#DeleteButton_2",
   dialogModal:".v-dialog",
