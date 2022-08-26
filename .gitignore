@@ -301,3 +301,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,vue,webstorm,pycharm,visualstudiocode
+
+atat-web-ui-dist.zip
