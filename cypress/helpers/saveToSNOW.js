@@ -1,6 +1,7 @@
-// import { classificationRequirements,
-//contractType,
-// workflow } from "../helpers/mockedAPICalls/contractDetails";
+// import {
+//classificationRequirements,
+//  contractType,
+//  workflow } from "../helpers/mockedAPICalls/contractDetails"; 
 import { acquisitionPackageDetails } from "../helpers/mockedAPICalls/acquisitionPackageDetails";
 import { contractDetails } from  "../helpers/mockedAPICalls/contractDetails";
 import { financialDetails } from "../helpers/mockedAPICalls/financialDetails";
@@ -9,7 +10,7 @@ import { standardsAndCompliance } from "./mockedAPICalls/standardsAndCompliance"
 import { background } from "./mockedAPICalls/background";
 import { common } from "./mockedAPICalls/common";
 import { fairOpportunityProcess } from "./mockedAPICalls/fairOpportunityProcess";
-
+import { performanceRequirements } from "./mockedAPICalls/performanceRequirements";
 
 
 const buildTableApiPath = (tableName)=> {
@@ -46,24 +47,7 @@ const spec = specPath[specPath.length-1].split(".")[0];
 const fixtureFolder = testSuite() + "/" + spec;
 const saveToSNOW = (testCase)=>{
   let currentTestEndPoints = [];
-  // let acquistionpackagedetails = [
-  //   {
-  //     'fixture': 'projectOverview',
-  //     'apiURL': 'x_g_dis_atat_project_overview',
-  //     'action': 'POST',
-  //   },  
-  //   {
-  //     'fixture': 'organization',
-  //     'apiURL': 'x_g_dis_atat_organization',
-  //     'action': 'POST',
-  //   },  
-  //   // {
-  //   //   'fixture': 'contacts',
-  //   //   'apiURL': 'x_g_dis_atat_contacts',
-  //   //   'action': 'POST',
-  //   // }
-  // ];
-
+  
   /** contract details */
   if (testSuite() === "acquisitionpackagedetails"){
     currentTestEndPoints = currentTestEndPoints.concat(
@@ -99,6 +83,13 @@ const saveToSNOW = (testCase)=>{
     );
   }
 
+  /** performancerequirements */
+  if (testSuite() === "performancerequirements") {    
+    currentTestEndPoints = currentTestEndPoints.concat(      
+      filterTestCases(performanceRequirements(fixtureFolder)[spec], testCase)
+    );
+  }
+
   /** background */ 
   if (testSuite() === "background"){
     currentTestEndPoints = currentTestEndPoints.concat(
@@ -127,6 +118,7 @@ const saveToSNOW = (testCase)=>{
      * middleware needed for routes to executed in 
      * the order listed
      */
+    
     const isAttachmentAPI = ep.apiURL.indexOf('attachment') > -1;
     const routeMatcher = {
       "method": ep.action,

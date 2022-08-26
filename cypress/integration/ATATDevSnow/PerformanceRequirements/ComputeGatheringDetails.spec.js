@@ -257,7 +257,6 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
     
   });
   
-  // skipping this Test it is UI Issue with the navigation
   it.skip("TC5: Navigation: Click on Back button", () => {
   
     let selectedClassifications = [contractDetails.level5, contractDetails.level6];

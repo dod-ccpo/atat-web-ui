@@ -103,7 +103,7 @@ describe("Test suite: Compute Requirements", () => {
     cy.verifyColumnHeaders(3, "Location", updatedRegions);
   });
   
-  it.only("TC2: Add New Instance Type & Delete", () => {
+  it("TC2: Add New Instance Type & Delete", () => {
     const periodCheckboxCount = 1
     let selectedClassifications = [contractDetails.level6];
     cy.selectCheckBoxes(selectedClassifications);
@@ -209,7 +209,7 @@ describe("Test suite: Compute Requirements", () => {
       });
   });
   
-  it("TC3: Complete missing details for Instance#1", () => {
+  it.only("TC3: Complete missing details for Instance#1", () => {
     const periodCount = 1
     let selectedClassifications = [contractDetails.level2,contractDetails.level5];
     cy.selectCheckBoxes(selectedClassifications);
