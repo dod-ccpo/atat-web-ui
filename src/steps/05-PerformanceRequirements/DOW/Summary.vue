@@ -48,7 +48,7 @@
                     <v-icon
                       class="icon-20 text-warning-dark2 pr-2"
                     >warning</v-icon>
-                    <p class="mb-0 pr-4 _semibold">Missing info</p>
+                    <p class="_missing-info mb-0 pr-4 _semibold">Missing info</p>
                   </div>
                   <v-btn
                     width="111"

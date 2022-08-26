@@ -177,34 +177,37 @@ textarea {
  }
 }
 
-._compute-instances.v-data-table > .v-data-table__wrapper > table > tbody {
-  > tr {
-    &.v-data-table__empty-wrapper {
-      height: 120px;
+._offering-instances.v-data-table {
+  > .v-data-table__wrapper > table > tbody {
+    > tr {
+      &.v-data-table__empty-wrapper {
+        height: 120px;
+        
+        td {
+          font-weight: normal !important;
+          font-size: 1.6rem;
+          color: $base-dark;
+        }
+      }
+  
+      > td {
+        font-size: 1.4rem;
+        padding: 8px;
       
-      td {
-        font-weight: normal !important;
-        font-size: 1.6rem;
-        color: $base-dark;
+        &:first-of-type {
+          font-weight: 500;
+        }
       }
     }
-
-    > td {
-      font-size: 1.4rem;
-      padding: 8px;
-    
-      &:first-of-type {
-        font-weight: 500;
-      }
-      
-      &:nth-of-type(2) {
-        white-space: nowrap;
-      }
+  }
+  &._first-col-nowrap .v-data-table__wrapper > table > tbody > tr > td {
+    &:nth-of-type(2) {
+      white-space: nowrap;
     }
   }
 }
 
-._compute-instances.v-data-table > .v-data-table__wrapper > table > thead > tr {
+._offering-instances.v-data-table > .v-data-table__wrapper > table > thead > tr {
   background-color: $base-lightest;
   & > th {
     font-size: 1.2rem;

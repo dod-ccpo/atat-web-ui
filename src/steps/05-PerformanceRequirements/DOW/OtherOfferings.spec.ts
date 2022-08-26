@@ -173,10 +173,10 @@ describe("Testing OtherOfferings Component", () => {
       mocks: {
         $store: {
           DescriptionOfWork: {
-            computeObject: {
-              computeData: [serviceOfferingData]
+            otherOfferingObject: {
+              otherOfferingData: [serviceOfferingData]
             } ,
-            computeInstancesTouched: [],
+            otherOfferingInstancesTouched: [],
           },
           Periods: {
             periods: periodDTO,
@@ -227,8 +227,8 @@ describe("Testing OtherOfferings Component", () => {
 
     it(`Compute: loadOnEnter() - sets boolean formHasBeenTouched to true
       to trigger validation when returning to edit existing compute instance`, async () => {
-      await DescriptionOfWork.pushTouchedComputeInstance(1);
-
+      DescriptionOfWork.setCurrentOfferingGroupId("compute");
+      await DescriptionOfWork.pushTouchedOtherOfferingInstance(1);
       await wrapper.vm.loadOnEnter();
       console.log("data", await wrapper.vm.$props.serviceOfferingData.instanceNumber)
       expect(await wrapper.vm.$data.formHasBeenTouched).toBe(true);

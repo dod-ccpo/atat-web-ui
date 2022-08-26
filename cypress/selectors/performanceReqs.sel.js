@@ -82,7 +82,7 @@ module.exports = {
   categoryNameHeader: "#SelectedGroups h3",
   serviceOfferingLabels: "#SelectedGroups p.mb-0._selectedOfferings",
   serviceOfferingSpans: "#SelectedGroups ._selectedOffering",
-  missingInfo: "#SelectedGroups ._semibold",
+  missingInfo: "#SelectedGroups ._missing-info",
   reviewbtn: "#SelectedGroups button",
   otherCategories: "#OtherAvlGroups h2",
   showMoreLink: "#ShowMoreLink",
