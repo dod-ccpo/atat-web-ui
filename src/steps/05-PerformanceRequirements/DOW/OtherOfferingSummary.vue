@@ -188,7 +188,6 @@ export default class OtherOfferingSummary extends Vue {
   }
 
   public editInstance(item: OtherServiceSummaryTableData): void {
-    debugger
     DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(item.instanceNumber);
     this.navigate();
   }
