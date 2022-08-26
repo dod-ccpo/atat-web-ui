@@ -186,6 +186,15 @@ describe("Testing Description of Work store", () => {
       });
     });
 
+    it("tests deleteOtherOffering()", async () => {
+      DescriptionOfWork.setSelectedOfferingGroups(["COMPUTE", "SomethingElse"]);
+      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
+      Vue.nextTick(async () => {
+        await DescriptionOfWork.deleteOtherOffering();
+        expect(DescriptionOfWork.DOWObject.length).toEqual(1);
+      });
+    });
+
   });
 
 });
