@@ -1,7 +1,3 @@
-// import {
-//classificationRequirements,
-//  contractType,
-//  workflow } from "../helpers/mockedAPICalls/contractDetails"; 
 import { acquisitionPackageDetails } from "../helpers/mockedAPICalls/acquisitionPackageDetails";
 import { contractDetails } from  "../helpers/mockedAPICalls/contractDetails";
 import { financialDetails } from "../helpers/mockedAPICalls/financialDetails";

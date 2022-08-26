@@ -32,8 +32,7 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.verifyPageHeader(" Let’s gather some details about the duration of your task order ");
     cy.dropDownClick(contractDetails.baseDropdownIcon);
-    cy.findElement(contractDetails.baseDropdownMonth).click({ force: true });
-    //Enter the Value for Base
+    cy.findElement(contractDetails.baseDropdownMonth).click({ force: true });    
     cy.findElement(contractDetails.baseInputTxtBox).type("12");
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader("Do you want to request a PoP start date?");
