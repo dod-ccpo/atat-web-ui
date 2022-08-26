@@ -163,7 +163,6 @@ export default class ATATTextField extends Vue  {
 
   private setMasks(): void {
     const maskObj: mask = {};
-
     if (this.isCurrency){
       maskObj.alias = "currency";
       maskObj.groupSeparator = ",";
@@ -193,6 +192,9 @@ export default class ATATTextField extends Vue  {
 
   private mounted(): void{
     this.setMasks();
+  }
+
+  private updated(): void{
     if (this.isCurrency) {
       this.iconColor = this._value || this.disabled ? "base-darkest" : "base-light";
     }

@@ -27,6 +27,8 @@
                   :isCurrency="true"
                   :showErrorMessages="false"
                   width="190"
+                  class="mr-2"
+                  :class="[{ 'error--text': errorMissingInitialIncrement },]"
                   style="margin-left: 39px;"
                   :validateOnBlur="false"
                   :rules="[$validators.required('', true)]"
@@ -76,8 +78,8 @@
                           @click="insertIncrement(index)"
                         >
                           <ATATSVGIcon color="base" :height="12" :width="12" name="plusSign" />
-                          <div 
-                            :id="'AddIncrementTooltipText' + index" 
+                          <div
+                            :id="'AddIncrementTooltipText' + index"
                             class="_button-help"
                           >
                             Add increment below
@@ -95,8 +97,8 @@
                         width="190"
                         :selectedValue.sync="selectedQuarters[index]"
                         class="mr-4"
-                        :class="{ 
-                          'customized-error-control error--text': index === outOfRangeIndex 
+                        :class="{
+                          'customized-error-control error--text': index === outOfRangeIndex
                         }"
                         :showErrorMessages="false"
                         @selectValueChange="quarterChange"
@@ -113,6 +115,7 @@
                         :validateOnBlur="false"
                         width="190"
                         class="mr-2"
+                        :class="[{ 'error--text': errorMissingFirstIncrement && index === 0},]"
                         @blur="calcAmounts('increment' + index)"
                         :rules="[$validators.required('', true)]"
                       />
@@ -150,7 +153,7 @@
                 v-if="showAddIncrementButton"
                 plain
                 text
-                class="_text-link mt-5"
+                class=" link-button no-border mt-5"
                 :ripple="false"
                 @click="addIncrement()"
               >
@@ -322,8 +325,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public errorMissingFirstIncrementMessage =
     "Please enter the amount of your first increment.";
   public outOfRangeIndex: number | null = null;
-  public outOfRangeErrorMessage = `Your funding plan exceeds your base period length. 
-    Remove this increment or adjust the 1st increment date to ensure your plan does 
+  public outOfRangeErrorMessage = `Your funding plan exceeds your base period length.
+    Remove this increment or adjust the 1st increment date to ensure your plan does
     not exceed 1 year.`;
 
   // use in future ticket for validation returning to page to show error messages
@@ -346,9 +349,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     fundingIncrements: [],
   };
 
-  public fiscalQuarters: { 
-    text: string; 
-    multiSelectOrder: number, 
+  public fiscalQuarters: {
+    text: string;
+    multiSelectOrder: number,
     disabled: false,
     hidden: false,
   }[] = [];
@@ -362,7 +365,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.isUnderfunded(); 
     this.isOverfunded();
 
-    if (!this.hasValidatedOnContinue && (this.outOfRangeIndex && this.outOfRangeIndex >= 0 
+    if (!this.hasValidatedOnContinue && (this.outOfRangeIndex && this.outOfRangeIndex >= 0
       || this.isIFPUnderfunded || this.isIFPOverfunded)
     ) {
       this.allowContinue = false;
@@ -377,7 +380,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     const changedItemIndex = this.fundingIncrements.findIndex(
       incr => incr.text === oldVal.text
     );
-    
+
     this.fundingIncrements[changedItemIndex].text = newVal.text;
     if (newVal.multiSelectOrder) {
       this.fundingIncrements[changedItemIndex].qtrOrder = newVal.multiSelectOrder;
@@ -406,7 +409,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
     this.shouldShowAddIncrementButton();
   }
-  
+
   public focusInput(index: number): void {
     setTimeout(() => {
       const id = "Amount" + index + "_text_field";
@@ -423,12 +426,12 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         const ordinal = this.ordinals[qtr-1];
         // increment year if at first quarter and not first in the loop
         year = qtr === 1 ? year + 1 : year;
-      
+
         // increment quarter
         qtr = qtr === 4 ? 1 : qtr + 1;
         const periodStr = ordinal + " QTR FY" + year;
-        this.fiscalQuarters.push({ 
-          text: periodStr, 
+        this.fiscalQuarters.push({
+          text: periodStr,
           multiSelectOrder: i + 1,
           disabled: false,
           hidden: false,
@@ -448,7 +451,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
             text: periodStr,
             multiSelectOrder: 1,
           });
-        } 
+        }
       }
     }
   }
@@ -481,14 +484,14 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public shouldShowAddIncrementButton(): void {
     if (this.quarterSelectData.length && this.selectedQuarters.length) {
-      const lastIncrementDropdown = this.quarterSelectData[this.quarterSelectData.length - 1]; 
+      const lastIncrementDropdown = this.quarterSelectData[this.quarterSelectData.length - 1];
       if (lastIncrementDropdown.length) {
         const lastIncrementQuarter = lastIncrementDropdown[lastIncrementDropdown.length - 1].text;
         const lastQuarterSelected = this.selectedQuarters[this.selectedQuarters.length - 1].text;
         const outOfRange = this.outOfRangeIndex && this.outOfRangeIndex >= 0;
-        this.showAddIncrementButton 
+        this.showAddIncrementButton
           = lastQuarterSelected !== lastIncrementQuarter && !outOfRange ? true : false;
-      }  
+      }
     }
   }
 
@@ -548,7 +551,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     };
     this.fundingIncrements.splice(index +1, 0, nextIncrement);
     this.fundingIncrements.forEach((incr, i) => incr.order = i + 1);
-    
+
     const nextSelectData: SelectData = {
       text: nextPeriod.text,
       multiSelectOrder: nextPeriod.multiSelectOrder,
@@ -675,7 +678,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
 
     this.fundingIncrements[index].hasPeriodGap = this.checkIfHasPeriodGap(index);
-   
+
     this.quarterSelectData[index] = optionsArr;
     this.shouldShowAddIncrementButton();
 
@@ -728,7 +731,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
           ? requestedPopStartDate : formatISO(new Date())
         ), 'MM/dd/yyyy')
       );
-    
+
     this.periods = await Periods.loadPeriods();
     if (this.periods) {
       const basePeriod = this.periods.find((p) => p.period_type === "BASE");
