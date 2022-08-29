@@ -256,7 +256,7 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
     
   });
   
-  it.skip("TC5: Navigation: Click on Back button", () => {
+  it("TC5: Navigation: Click on Back button", () => {
   
     let selectedClassifications = [contractDetails.level5, contractDetails.level6];
     cy.selectCheckBoxes(selectedClassifications);
