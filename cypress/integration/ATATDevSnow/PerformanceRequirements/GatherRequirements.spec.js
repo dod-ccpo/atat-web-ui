@@ -10,6 +10,11 @@ import common from "../../../selectors/common.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
+const durationLabelRequirement 
+  = "Is this requirement needed for the entire duration of your task order?";
+const needLabelRequirement = "Describe the anticipated need and usage of this requirement";
+const letsWorkOnItHeader = "Let’s work on your performance requirements";
+
 
 describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () => {
   let serviceOfferingGroups; 
@@ -37,13 +42,14 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.textExists(common.subStepClassReqsLink, " Classification Requirements ").click();
     const selectedClassLevelsLabels = ["Unclassified / Impact Level 5 (IL5)"];    
-    
+    const selectedClassLevelsLabelsShort = ["Unclassified/IL5"];
+
     cy.selectCheckBoxes([contractDetails.level5]);    
     
     cy.verifyCheckBoxLabels('input[type=checkbox]:checked', selectedClassLevelsLabels);
     
     cy.btnClick(common.continueBtn, " Continue ");    
-    cy.verifyPageHeader(" Let’s work on your performance requirements ");    
+    cy.verifyPageHeader(letsWorkOnItHeader);    
     const expectedLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       expectedLabels.push(obj.label);
@@ -73,7 +79,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     ); 
     
     const expectedintroText = "In the previous section, you specified " +
-      selectedClassLevelsLabels +
+      selectedClassLevelsLabelsShort[0] +
       " for the classification level of all cloud resources and services." +
       " If you need this within a different level," +
       " update your Classification Requirements."
@@ -81,10 +87,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     cy.textExists(performanceReqs.updateLink, "update your Classification Requirements");
 
     //verify the label for the anticipated package
-    cy.textExists(
-      performanceReqs.anticipatedTextlabel1,
-      "Describe the anticipated need and usage of this requirement"
-    );
+    cy.textExists(performanceReqs.anticipatedTextlabel1, needLabelRequirement);
 
     //enter the exist in the text box
     const anticipatedReqText = randomAlphaNumeric()
@@ -94,10 +97,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     );
 
     //Verify Duration label
-    cy.textExists(
-      performanceReqs.entireDurationRadioLabel1,
-      " Is this requirement for the entire duration of your task order? "
-    );
+    cy.textExists(performanceReqs.entireDurationRadioLabel1, durationLabelRequirement);
     cy.durationPeriodExists(performanceReqs.durationNoRadioBtn,
       performanceReqs.duration1ActiveRadioBtn,
       performanceReqs.periodCheckboxLabel1,
@@ -137,7 +137,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     cy.verifyCheckBoxLabels('input[type=checkbox]:checked', selectedClassLevelsLabels);
     
     cy.btnClick(common.continueBtn, " Continue ");    
-    cy.verifyPageHeader(" Let’s work on your performance requirements ");    
+    cy.verifyPageHeader(letsWorkOnItHeader);    
     const expectedLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       expectedLabels.push(obj.label);
@@ -200,10 +200,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
       "1. Tell us about the "  + selectedClassBox);
     
     //verify the label for the anticipated package
-    cy.textExists(
-      performanceReqs.anticipatedTextlabel1,
-      "Describe the anticipated need and usage of this requirement"
-    );
+    cy.textExists(performanceReqs.anticipatedTextlabel1, needLabelRequirement);
     //enter the exist in the text box
     const anticipatedReqText = randomAlphaNumeric(10)
     cy.enterTextInTextField(
@@ -211,10 +208,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
       anticipatedReqText
     );
     //Verify Duration label
-    cy.textExists(
-      performanceReqs.entireDurationRadioLabel1,
-      " Is this requirement for the entire duration of your task order? "
-    );
+    cy.textExists(performanceReqs.entireDurationRadioLabel1, durationLabelRequirement);
     cy.durationPeriodExists(
       performanceReqs.durationNoRadioBtn,
       performanceReqs.duration1ActiveRadioBtn,
@@ -228,8 +222,6 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     cy.verifyPageHeader(
       "Your Performance Requirements"
     ); 
-        
-    
   });
 
   it("TC3: Select multiple classification levels in Gather Requirement Screen ", () => {
@@ -261,7 +253,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     cy.verifyCheckBoxLabels('input[type=checkbox]:checked', selectedClassLevelsLabels);
     
     cy.btnClick(common.continueBtn, " Continue ");    
-    cy.verifyPageHeader(" Let’s work on your performance requirements ");    
+    cy.verifyPageHeader(letsWorkOnItHeader);    
     const expectedLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       expectedLabels.push(obj.label);
@@ -311,9 +303,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     
     //verify the label for the anticipated package
     cy.textExists(
-      performanceReqs.anticipatedTextlabel1,
-      "Describe the anticipated need and usage of this requirement"
-    );
+      performanceReqs.anticipatedTextlabel1, needLabelRequirement);
     //enter the exist in the text box
     const anticipatedReqText = randomAlphaNumeric(10)
     cy.enterTextInTextField(
@@ -321,10 +311,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
       anticipatedReqText
     );
     //Verify Duration label
-    cy.textExists(
-      performanceReqs.entireDurationRadioLabel1,
-      " Is this requirement for the entire duration of your task order? "
-    );
+    cy.textExists(performanceReqs.entireDurationRadioLabel1, durationLabelRequirement);
     cy.durationPeriodExists(
       performanceReqs.durationYesRadioBtn,
       performanceReqs.duration1ActiveRadioBtn,
@@ -335,10 +322,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
       "2. Tell us about the "  + selectedClassBox[0]);
     
     //verify the label for the anticipated package
-    cy.textExists(
-      performanceReqs.anticipatedTextlabel2,      
-      "Describe the anticipated need and usage of this requirement"
-    );
+    cy.textExists(performanceReqs.anticipatedTextlabel2, needLabelRequirement);
     //enter the exist in the text box
     const anticipatedReqText1 = randomAlphaNumeric(10)
     cy.enterTextInTextField(
@@ -346,10 +330,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
       anticipatedReqText1
     );
     //Verify Duration label
-    cy.textExists(
-      performanceReqs.entireDurationRadioLabel2,
-      " Is this requirement for the entire duration of your task order? "
-    );
+    cy.textExists(performanceReqs.entireDurationRadioLabel2, durationLabelRequirement);
     cy.durationPeriodExists(
       performanceReqs.duration2NoRadioBtn,
       performanceReqs.duration2ActiveRadioBtn,
@@ -383,7 +364,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader("Do you want to request a PoP start date?");
     cy.clickSideStepper(common.stepPerformanceReqText, " Performance Requirements ");
-    cy.verifyPageHeader(" Let’s work on your performance requirements ");   
+    cy.verifyPageHeader(letsWorkOnItHeader);   
     cy.textExists(
       performanceReqs.categoryAlertheading,
       "Your  classification requirements are  missing. ");
@@ -422,16 +403,15 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
   });
   it("TC5: No PoP exists in Gather Requirement Screen ", () => {
     cy.textExists(common.subStepClassReqsLink, " Classification Requirements ").click();
-    const selectedClassLevelsLabels = [
-      "Unclassified / Impact Level 4 (IL4)",      
-    ];    
+    const selectedClassLevelsLabels = ["Unclassified / Impact Level 4 (IL4)"];    
+    const selectedClassLevelsLabelsShort = ["Unclassified/IL4"];    
     
     cy.selectCheckBoxes([contractDetails.level4]);    
     
     cy.verifyCheckBoxLabels('input[type=checkbox]:checked', selectedClassLevelsLabels);
     
     cy.btnClick(common.continueBtn, " Continue ");    
-    cy.verifyPageHeader(" Let’s work on your performance requirements ");         
+    cy.verifyPageHeader(letsWorkOnItHeader);         
     cy.textExists(
       performanceReqs.categoryAlertheading,
       "Your  period of performance is  missing. "
@@ -463,7 +443,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     ); 
     
     const expectedintroText = "In the previous section, you specified " +
-      selectedClassLevelsLabels +
+      selectedClassLevelsLabelsShort[0] +
       " for the classification level of all cloud resources and services." +
       " If you need this within a different level," +
       " update your Classification Requirements."
@@ -471,10 +451,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     cy.textExists(performanceReqs.updateLink, "update your Classification Requirements");
 
     //verify the label for the anticipated package
-    cy.textExists(
-      performanceReqs.anticipatedTextlabel1,
-      "Describe the anticipated need and usage of this requirement"
-    );
+    cy.textExists(performanceReqs.anticipatedTextlabel1, needLabelRequirement);
 
     //enter the exist in the text box
     const anticipatedReqText = randomAlphaNumeric()
@@ -484,10 +461,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     );
 
     //Verify Duration label
-    cy.textExists(
-      performanceReqs.entireDurationRadioLabel1,
-      " Is this requirement for the entire duration of your task order? "
-    );
+    cy.textExists(performanceReqs.entireDurationRadioLabel1, durationLabelRequirement);
     cy.durationPeriodExists(performanceReqs.durationNoRadioBtn,
       performanceReqs.duration1ActiveRadioBtn,
       performanceReqs.periodCheckboxLabel1,
@@ -525,7 +499,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     cy.verifyCheckBoxLabels('input[type=checkbox]:checked', selectedClassLevelsLabels);
   
     cy.btnClick(common.continueBtn, " Continue ");    
-    cy.verifyPageHeader(" Let’s work on your performance requirements ");    
+    cy.verifyPageHeader(letsWorkOnItHeader);    
     const expectedLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       expectedLabels.push(obj.label);
@@ -573,7 +547,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
       .then(() => {
         cy.checkErrorMessage
         (performanceReqs.duration1Error,
-          "Please select an option to specify your requirements.");
+          "Please select an option to specify your requirement’s duration.");
       });
     cy.radioBtn(performanceReqs.durationNoRadioBtn, "NO").click({force:true}); 
     cy.verifyRequiredCheckbox(
