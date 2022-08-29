@@ -4,16 +4,19 @@
       class="copy-max-width mb-10 mt-0"
       ref="NeededForEntireDuration"
       :id="'EntireDuration_' + (index + 1)"
-      legend="Is this instance needed for the entire duration of your task order?"
+      :legend="'Is this ' + requirementOrInstance + 
+        ' needed for the entire duration of your task order?'"
       :items="entureDurationOptions"
       :value.sync="_entireDuration"
       :rules="[
-        $validators.required('Please select an option to specify your requirement’s duration.')
+        $validators.required(
+          'Please select an option to specify your ' + requirementOrInstance + '’s duration.'
+        )
       ]"
     />
     <div v-if="_entireDuration === 'NO'">
       <p :id="'PeriodsLabel_' + (index + 1)" class="_checkbox-group-label">
-        In which base and/or option periods do you need this requirement?
+        In which base and/or option periods do you need this {{ requirementOrInstance }}?
       </p>
       <ATATCheckboxGroup
         :id="'PeriodsCheckboxes_' + (index + 1)"
@@ -25,7 +28,7 @@
         :disabled="isPeriodsDataMissing"
         :rules="[
           $validators.required('Please select at least one base or option period' +
-            ' to specify your requirement’s duration level.')
+            ' to specify your ' + requirementOrInstance + '’s duration level.')
         ]"
         class="copy-max-width"
       />
@@ -39,7 +42,7 @@
         <template v-slot:content>
           <p class="mb-0" :id="'PeriodIntro_' + (index + 1)">
             Your period of performance details are missing. To select specific base or
-            option periods for this requirement,
+            option periods for this {{ requirementOrInstance }},
             <router-link
               :id="'ContractDetailsLink_' + (index + 1)"
               :to="{ name: routeNames.PeriodOfPerformance }"
@@ -81,6 +84,7 @@ export default class EntireDuration extends Vue {
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public availablePeriodCheckboxItems!: Checkbox[];
   @Prop() public index!: number;
+  @Prop({ default: "requirement" }) public requirementOrInstance?: string;
 
   public routeNames = routeNames;
 
