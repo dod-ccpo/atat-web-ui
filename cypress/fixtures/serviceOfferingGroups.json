@@ -187,9 +187,10 @@
     "label": "Training",
     "value": "TRAINING",
     "serviceOfferingCypressLabels": [
-      "Local CSP Facility",
-      "Local Government Facility",
-      "Web-based Training"
+      "OCONUS",
+      "OCONUS Local CSP Facility",
+      "OCONUS Local Government Facility",
+      "OCONUS Web based Training"
     ]
   },
   {

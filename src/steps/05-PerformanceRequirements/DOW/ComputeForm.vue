@@ -123,6 +123,7 @@
       :anticipatedNeedUsage.sync="_computeData.anticipatedNeedUsage"
       :index="0"
       :textAreaWithCounter="true"
+      requirementOrInstance="instance"
     />
 
     <EntireDuration
@@ -131,6 +132,7 @@
       :isPeriodsDataMissing="isPeriodsDataMissing"
       :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
       :index="0"
+      requirementOrInstance="instance"
     />
 
     <hr />
