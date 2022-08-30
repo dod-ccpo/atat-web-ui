@@ -174,11 +174,23 @@ Cypress.Commands.add("findElement", (selector) => {
   }
 });
 
-Cypress.Commands.add('textExists', (selector, textLabel) => {
-  textLabel = textLabel.trim();
+Cypress.Commands.add('textExists', (selector, expectedText) => {
+  // textLabel = textLabel.trim();
+  // cy.findElement(selector)
+  //   .should("be.visible")
+  //   .and("contain.text", textLabel);
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(100);
   cy.findElement(selector)
     .should("be.visible")
-    .and("contain.text", textLabel);
+    .then(($el) => {
+      let actualTxt = $el.text();
+      const formattedTxt = cleanText(actualTxt);
+      cy.log(formattedTxt);
+      const expectedTextCleaned = cleanText(expectedText);
+      expect(formattedTxt).contains(expectedTextCleaned);
+    });
+    
 });
 
 Cypress.Commands.add('enterTextInTextField', (selector, text) => {
