@@ -29,11 +29,12 @@ export interface StepperStep {
  * interface for select items
  */
 export interface SelectData {
-  text: string;
+  text?: string;
   value?: string;
   multiSelectOrder?: number;
   disabled?: boolean;
   hidden?: boolean;
+  header?: string;
 }
 
 /**
