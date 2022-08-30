@@ -209,6 +209,8 @@ function updateAssetPaths(directory, filenameFilter) {
   console.log(`Replacing the material icons paths with: ${newIconPath}`);
   fileContent = fileContent.replace(materialIconsRegEx, newIconPath);
 
+  fs.writeFileSync(filePath, fileContent, fileEncoding);
+
 }
 
 /**
