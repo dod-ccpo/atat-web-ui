@@ -85,6 +85,7 @@ export class PortfolioDataStore extends VuexModule {
     }
     this.setPortfolioData(obj);
   }
+
   @Mutation
   public setStoreData(sessionData: string):void{
     try {
@@ -96,6 +97,7 @@ export class PortfolioDataStore extends VuexModule {
       throw new Error('error restoring session for portfolio data store');
     }
   }
+
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     try {
