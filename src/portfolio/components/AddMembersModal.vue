@@ -22,13 +22,22 @@
       </p>
       <div class="d-flex">
         <div style="flex-grow: 1;" class="mr-5">
-          <ATATTextArea
+          <!-- <ATATTextArea
             id="EmailAddresses"
             label="Email addresses"
-            rows="3"
+            rows="4"
             class="pb-16"
             :autoGrow="false"
-          />
+          /> -->
+        <div
+          id="PillboxWrapper"
+          class="pa-2 _pillbox-wrapper"
+          tabindex="0"
+        >
+          <!-- @click="addEmail"
+          @focus="addEmail" -->
+
+
         </div>
         <div>
           <ATATSelect
@@ -82,6 +91,11 @@ export default class AddMembersModal extends Vue {
     { text: "Viewer", value: "Viewer" },
   ];
 
+  public emails: {
+    email: string;
+    isValid: boolean;
+    isExisting: boolean;
+  }[] = [];
 
 }
 </script>
