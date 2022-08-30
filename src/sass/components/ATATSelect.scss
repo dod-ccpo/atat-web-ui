@@ -15,6 +15,9 @@
       .v-list-item__title {
         font-weight: 700 !important;
       }
+      &:hover:before {
+        background-color: transparent;
+      }
     }
   }
   .v-list-item__content {
@@ -59,6 +62,9 @@
 }
 
 .atat-select {
+  &:hover {
+    cursor: pointer !important;
+  }
   ._dropdown-icon {
     width: 20px;
     height: 24px;
@@ -72,6 +78,7 @@
     font-weight: 500;
     padding-left: 16px;
   }
+
   &._small {
     .v-subheader {
       font-size: 1.2rem;
@@ -85,10 +92,12 @@
       min-height: 32px !important;
       height: 32px !important;
     }
-
     .v-text-field {
       input[type="text"] {
         padding: 0;
+        &:hover {
+          cursor: pointer;
+        }
       } 
     }
     .v-select__selections {
@@ -113,9 +122,16 @@
   &._alt-style {
     fieldset {
       border: none;
-      background-color: $primary-lighter;
+      background-color: $primary-10;
+    }
+
+    &:hover {
+      fieldset {
+        background-color: $primary-20;
+      }
     }
   }
+
   &._invite-members-modal {
     .v-menu__content {
       min-width: 180px !important;
