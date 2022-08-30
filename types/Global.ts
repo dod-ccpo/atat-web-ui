@@ -324,13 +324,13 @@ export interface User {
   role: string;
 }
 export interface Portfolio {
-  title: string;
-  description: string;
-  status: string;
-  csp: string;
-  serviceAgency: string;
-  createdBy: string;
-  provisioned: string;
-  members: User[];
-  updated: string;
+  title?: string;
+  description?: string;
+  status?: string;
+  csp?: string;
+  serviceAgency?: string;
+  createdBy?: string;
+  provisioned?: string;
+  members?: User[];
+  updated?: string;
 }

@@ -47,14 +47,14 @@ export class PortfolioDataStore extends VuexModule {
 
   @Mutation
   public setPortfolioData(value: Portfolio): void {
-    this.description = value.description
-    this.status = value.status
-    this.csp = value.csp
-    this.serviceAgency = value.serviceAgency
-    this.createdBy = value.createdBy
-    this.provisioned = value.provisioned
-    this.title = value.title;
-    this.members= value.members
+    this.description = value.description || ""
+    this.status = value.status || ""
+    this.csp = value.csp || ""
+    this.serviceAgency = value.serviceAgency || ""
+    this.createdBy = value.createdBy || ""
+    this.provisioned = value.provisioned || ""
+    this.title = value.title || ""
+    this.members= value.members || []
   }
 
 
