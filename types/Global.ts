@@ -323,7 +323,7 @@ export interface User {
   email: string;
   role: string;
 }
-export interface PortfolioData {
+export interface Portfolio {
   title: string;
   description: string;
   status: string;

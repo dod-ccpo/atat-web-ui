@@ -2,9 +2,9 @@
 import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
-import {User, PortfolioData} from "../../../types/Global"
+import {User, Portfolio} from "../../../types/Global"
 import Vue from "vue";
-import AcquisitionPackage, { AcquisitionPackageStore } from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 const ATAT_PORTFOLIO_DATA_KEY = 'ATAT_PORTFOLIO_DATA_KEY';
 
@@ -52,7 +52,7 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Mutation
-  public setPortfolioData(value: PortfolioData): void {
+  public setPortfolioData(value: Portfolio): void {
     this.description = value.description
     this.status = value.status
     this.csp = value.csp
@@ -67,7 +67,7 @@ export class PortfolioDataStore extends VuexModule {
   @Action({rawError: true})
   private async getPortfolioData():Promise<void>
   {
-    const obj: PortfolioData = {
+    const obj: Portfolio = {
       title: AcquisitionPackage.projectOverview?.title || "Mock Title",
       description: AcquisitionPackage.projectOverview?.scope || "Mock Description",
       status: "",
