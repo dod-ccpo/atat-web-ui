@@ -23,6 +23,7 @@ const robotoFontsRegex = /\s*other_assets\/roboto-/g;
 const imgRegex = /\s*img\//g;
 
 decorateIndexHTML(INDEX_HTML);
+updateAppAssetsPaths(JS_DIR);
 updateAssetPaths(JS_DIR, "vendor-");
 deleteFiles(ASSETS_DIR, "-ttf");
 renameFiles(JS_DIR, ourFakeExtension);
@@ -161,11 +162,38 @@ function decorateIndexHTML(filePath) {
 }
 
 /**
+ * Updates the contents app js file
+ * Replaces all roboto font paths with ASSETS api path
+ * Replaces all image paths with IMG api path
+ */
+function updateAppAssetsPaths(directory){
+  const dir = fs.readdirSync(directory);
+  const filename = dir.find((file) => file.startsWith("app-"));
+  const filePath = path.join(directory, filename);
+  assert.ok(filePath);
+  console.log(`\nUpdating paths in file ${filePath}`);
+  let fileContent = fs.readFileSync(filePath, fileEncoding);
+
+    // roboto fonts
+    console.log({fileContent});
+    findMatches(fileContent, robotoFontsRegex, 18);
+    const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
+    console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
+    fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
+
+  // image paths
+  findMatches(fileContent, imgRegex, 7);
+  const newImagePath = servicenowConfig.IMG_API_PATH;
+  console.log(`Replacing the image paths with: ${newImagePath}`);
+  fileContent = fileContent.replace(imgRegex, newImagePath);
+
+  fs.writeFileSync(filePath, fileContent, fileEncoding);
+}
+
+/**
  * Updates the contents of a single file in the specified directory.
  * The filename must start with the specified filter.
  * Replaces all material icons paths with ASSETS api path
- * Replaces all roboto font paths with ASSETS api path
- * Replaces all image paths with IMG api path
  */
 function updateAssetPaths(directory, filenameFilter) {
   const dir = fs.readdirSync(directory);
@@ -181,19 +209,6 @@ function updateAssetPaths(directory, filenameFilter) {
   console.log(`Replacing the material icons paths with: ${newIconPath}`);
   fileContent = fileContent.replace(materialIconsRegEx, newIconPath);
 
-  // roboto fonts
-  findMatches(fileContent, robotoFontsRegex, 18);
-  const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
-  console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
-  fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
-
-  // image paths
-  findMatches(fileContent, imgRegex, 7);
-  const newImagePath = servicenowConfig.IMG_API_PATH;
-  console.log(`Replacing the image paths with: ${newImagePath}`);
-  fileContent = fileContent.replace(imgRegex, newImagePath);
-
-  fs.writeFileSync(filePath, fileContent, fileEncoding);
 }
 
 /**
