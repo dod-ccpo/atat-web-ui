@@ -3,6 +3,8 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+
 Vue.use(Vuetify);
 
 describe("Testing AddMembersModal", () => {
@@ -19,7 +21,8 @@ describe("Testing AddMembersModal", () => {
   });
 
   it("renders successfully", async () => {
+    AcquisitionPackage.setProjectTitle("testing");
     expect(wrapper.exists()).toBe(true);
   });
 
-})
+});

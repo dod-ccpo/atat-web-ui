@@ -15,6 +15,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import Calendar from "@/components/icons/Calendar.vue";
+import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
@@ -37,6 +38,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
 @Component({
   components:{
     Calendar,
+    ChevronDown,
     ChevronRight,
     Close,
     ControlPoint,
