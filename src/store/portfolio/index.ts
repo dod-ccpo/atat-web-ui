@@ -2,7 +2,7 @@
 import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
-import {User, Portfolio} from "../../../types/Global"
+import { User,Portfolio} from "../../../types/Global"
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -17,25 +17,20 @@ const ATAT_PORTFOLIO_DATA_KEY = 'ATAT_PORTFOLIO_DATA_KEY';
 export class PortfolioDataStore extends VuexModule {
   //has the store been initialized
   initialized = false;
-  public title = ""
-  public description = ""
-  public status = ""
-  public csp = ""
-  public serviceAgency = ""
-  public createdBy = ""
-  public provisioned = ""
-  public members: User[] =[]
+  portfolio: Portfolio = { 
+    title: "",
+    description: "",
+    status: "",
+    csp: "",
+    serviceAgency: "",
+    createdBy: "",
+    provisioned: "",
+    members: [],
+  }
 
   // store session properties
   protected sessionProperties: string[] = [
-    nameofProperty(this,x=> x.title),
-    nameofProperty(this, x=> x.description),
-    nameofProperty(this, x=> x.status),
-    nameofProperty(this, x=> x.csp),
-    nameofProperty(this, x=> x.serviceAgency),
-    nameofProperty(this, x=> x.createdBy),
-    nameofProperty(this, x=> x.provisioned),
-    nameofProperty(this, x=> x.members),
+    nameofProperty(this,x=> x.portfolio),
   ];
 
 
@@ -47,14 +42,7 @@ export class PortfolioDataStore extends VuexModule {
 
   @Mutation
   public setPortfolioData(value: Portfolio): void {
-    this.description = value.description || ""
-    this.status = value.status || ""
-    this.csp = value.csp || ""
-    this.serviceAgency = value.serviceAgency || ""
-    this.createdBy = value.createdBy || ""
-    this.provisioned = value.provisioned || ""
-    this.title = value.title || ""
-    this.members= value.members || []
+    this.portfolio = {...this.portfolio, ...value}
   }
 
 

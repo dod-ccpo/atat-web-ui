@@ -4,7 +4,6 @@ import { createLocalVue } from '@vue/test-utils';
 import PortfolioData, {PortfolioDataStore} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
 import storeHelperFunctions  from "../helpers";
-import { User } from "../../../types/Global";
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -31,7 +30,7 @@ describe("Portfolio Store", () => {
     );
     await portfolioStore.initialize();
     expect(portfolioStore.initialized).toBe(true)
-    expect(portfolioStore.title).toBe("Mock Title")
+    expect(portfolioStore.portfolio.title).toBe("Mock Title")
   })
 
   it('Test setPortfolioData- sets portfolio to the passed in value', async () => {
@@ -45,10 +44,14 @@ describe("Portfolio Store", () => {
       provisioned: "today",
       members: []
     }
+    const updateEmailObj = {
+      members:[{email:"testemail@test.mil"}]
+    }
     
     await portfolioStore.setPortfolioData(mockData);
     expect(portfolioStore.initialized).toBe(true)
-    expect(portfolioStore.title).toBe("some title to test")
+    await portfolioStore.setPortfolioData(updateEmailObj);
+    expect(portfolioStore.portfolio.title).toBe("some title to test")
   })
 
 })
