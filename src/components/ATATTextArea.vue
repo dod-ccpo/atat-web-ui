@@ -49,6 +49,7 @@
         @update:error="setErrorMessage"
         :hide-details="maxChars === ''"
         :counter="maxChars"
+        :auto-grow="autoGrow"
       >
       </v-textarea>
       <ATATErrorValidation 
@@ -90,6 +91,7 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: true }) private noResize!: boolean;
   @Prop({ default: "" }) private maxChars!: string;
   @Prop({ default: true }) private validateItOnBlur!: boolean;
+  @Prop({ default: false }) private autoGrow!: boolean;
 
   //data
   private placeHolder = "";

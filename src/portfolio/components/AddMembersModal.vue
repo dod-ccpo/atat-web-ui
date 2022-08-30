@@ -25,8 +25,9 @@
           <ATATTextArea
             id="EmailAddresses"
             label="Email addresses"
-            rows="7"
+            rows="3"
             class="pb-16"
+            :autoGrow="false"
           />
         </div>
         <div>
