@@ -316,3 +316,21 @@ export interface OtherServiceSummaryTableData {
   requirementTitle?: string;
   duration?: string;
 }
+
+export interface User {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+}
+export interface PortfolioData {
+  title: string;
+  description: string;
+  status: string;
+  csp: string;
+  serviceAgency: string;
+  createdBy: string;
+  provisioned: string;
+  members: User[];
+  updated: string;
+}
