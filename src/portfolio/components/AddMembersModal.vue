@@ -20,12 +20,27 @@
           Learn more about portfolio roles
         </a>
       </p>
-      <ATATTextArea
-        id="EmailAddresses"
-        label="Email addresses"
-        rows="7"
-        class="pb-16"
-      />
+      <div class="d-flex">
+        <div style="flex-grow: 1;" class="mr-5">
+          <ATATTextArea
+            id="EmailAddresses"
+            label="Email addresses"
+            rows="7"
+            class="pb-16"
+          />
+        </div>
+        <div>
+          <ATATSelect
+            id="Role"
+            class="mt-8 _small _alt-style _invite-members-modal"
+            :items="roles"
+            width="105"
+            :selectedValue.sync="selectedRole"
+            iconType="chevron"
+          />
+        </div>
+
+      </div>
     </template>
   </ATATDialog>
 
@@ -37,11 +52,15 @@ import { Component, Prop } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import ATATDialog from "@/components/ATATDialog.vue";
+import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
+
+import { SelectData } from "../../../types/Global";
 
 @Component({
   components: {
     ATATDialog,
+    ATATSelect,
     ATATTextArea,
   }
 })
@@ -54,6 +73,14 @@ export default class AddMembersModal extends Vue {
       ? AcquisitionPackage.projectTitle
       : "New Acquisition";
   }
+
+  public selectedRole = "Manager";
+  public roles: SelectData[] = [
+    { header: "Roles" },
+    { text: "Manager", value: "Manager" },
+    { text: "Viewer", value: "Viewer" },
+  ];
+
 
 }
 </script>

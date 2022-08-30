@@ -39,7 +39,8 @@
             v-on="on" 
             :class="[
               {'_item-disabled': item.disabled },
-              {'d-none': item.hidden }
+              {'d-none': item.hidden },
+              {'_selected': item.value === _selectedValue || item === _selectedValue }
             ]"
           >
             <v-list-item-content
@@ -55,7 +56,18 @@
           </v-list-item>
         </template>
         <template v-slot:append>
-          <v-icon>arrow_drop_down</v-icon>
+          <v-icon v-if="iconType === 'standard'">arrow_drop_down</v-icon>
+          <div
+            class="_dropdown-icon"
+            v-if="iconType === 'chevron'"
+          >
+            <ATATSVGIcon 
+              name="chevronDown" 
+              color="base-darkest" 
+              :width="10" 
+              :height="7" 
+            />
+          </div>
         </template>
       </v-select>
   
@@ -70,12 +82,13 @@ import Vue from "vue";
 import { Component, Emit, Prop, PropSync } from "vue-property-decorator";
 
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
-
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { SelectData } from "../../types/Global";
 
 @Component({
   components: {
-    ATATErrorValidation
+    ATATErrorValidation,
+    ATATSVGIcon,
   }
 })
 export default class ATATSelect extends Vue {
@@ -100,6 +113,7 @@ export default class ATATSelect extends Vue {
   @Prop({ default: false }) private returnObject!: boolean;
   @Prop({ default: "" }) private width!: string;
   @Prop({ default: true }) private showErrorMessages?: boolean;
+  @Prop({ default: "standard" }) public iconType?: string;
 
   //data
   private rounded = false;
