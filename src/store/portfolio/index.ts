@@ -15,14 +15,8 @@ const ATAT_PORTFOLIO_DATA_KEY = 'ATAT_PORTFOLIO_DATA_KEY';
   store: rootStore,
 })
 export class PortfolioDataStore extends VuexModule {
-  // NOTE: Make sure data vars that are typed are assigned a default value.
-  // If left undefined, even when set with proper value, it will return undefined.
-  // Also do not use `| undefined` e.g., `private foo: SelectData | undefined;` as
-  // the undefined will be returned when getting the variable value.
-
   //has the store been initialized
   initialized = false;
-  //keeps track of project title for global display
   public title = ""
   public description = ""
   public status = ""
