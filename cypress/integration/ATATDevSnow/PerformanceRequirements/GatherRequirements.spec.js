@@ -342,7 +342,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     
     //Navigates to the Gather your requirement screen
     cy.verifyPageHeader(
-      "Next, we’ll gather your requirements for " + labels[1]
+      "Next, we’ll gather your requirements for " + labels[2]
     ); 
     
     

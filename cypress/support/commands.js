@@ -174,11 +174,19 @@ Cypress.Commands.add("findElement", (selector) => {
   }
 });
 
-Cypress.Commands.add('textExists', (selector, textLabel) => {
-  textLabel = textLabel.trim();
+Cypress.Commands.add('textExists', (selector, expectedText) => {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(100);
   cy.findElement(selector)
     .should("be.visible")
-    .and("contain.text", textLabel);
+    .then(($el) => {
+      let actualTxt = $el.text();
+      const formattedTxt = cleanText(actualTxt);
+      cy.log(formattedTxt);
+      const expectedTextCleaned = cleanText(expectedText);
+      expect(formattedTxt).contains(expectedTextCleaned);
+    });
+    
 });
 
 Cypress.Commands.add('enterTextInTextField', (selector, text) => {
@@ -254,10 +262,11 @@ Cypress.Commands.add("verifyRequiredCheckbox", (checkboxSelector, errorSelector,
 });
 
 Cypress.Commands.add("verifyPageHeader", (headerText) => {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(100);
   cy.findElement(common.header).scrollIntoView().then(() => {
     cy.textExists(common.header,headerText );
   });
-  
 });
 
 Cypress.Commands.add("verifyTextMatches", (selector,expectedText) => {  

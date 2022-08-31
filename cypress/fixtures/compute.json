@@ -1,5 +1,5 @@
 {
-  "alertMessage": "Your period of performance is missing, so we won’t be able to gather all details for your unique requirements at this time. To streamline this process, we recommend revisiting the Contract Details section before proceeding.",
+  "subtleClassAlert": "Your classification requirements are missing, so we won’t be able to gather all details for your unique requirements at this time. To streamline this process, we recommend revisiting the Contract Details section before proceeding.",
   "contractDetailsLink": "revisiting the Contract Details section",
   "formSectionOneHeader": " 1.  Tell us about Instance #1 ",
   "classLevelLabel": " What classification level is this instance deployed in? ",
