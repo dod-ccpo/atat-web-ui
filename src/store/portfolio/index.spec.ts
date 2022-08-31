@@ -18,6 +18,37 @@ describe("Portfolio Store", () => {
     const createStore = (storeOptions: any = {}):
         Store<{ portfolio: any }> => new Vuex.Store({ ...storeOptions });
     portfolioStore = getModule(PortfolioDataStore, createStore());
+    AcquisitionPackage.setProjectOverview({
+      title: "",
+      scope: "",
+      emergency_declaration:""
+    })
+    AcquisitionPackage.setOrganization({})
+    AcquisitionPackage.setAcquisitionPackage({
+      classification_level: "",
+      contact: "",
+      contract_considerations: "",
+      contract_type: "",
+      current_contract: "",
+      current_environment: "",
+      docusign_envelope_id: "",
+      environment_instance: "",
+      fair_opportunity: "",
+      funding_plans: "",
+      gfe_overview: "",
+      number: "",
+      organization: "",
+      period_of_performance: "",
+      periods: "",
+      project_overview: "",
+      required_services: "",
+      requirements_const_estimate: "",
+      sensitive_information: "",
+      status: "",
+      sys_created_by: "",
+      sys_created_on: "",
+      sys_updated_on: ""
+    })
   })
   afterEach(()=>{
     jest.clearAllMocks();
@@ -37,6 +68,7 @@ describe("Portfolio Store", () => {
   })
 
   it('Test initialize()- sets portfolio to the AcquisitionPackage data', async () => {
+
     AcquisitionPackage.setProjectOverview({
       title: "test title",
       scope: "testing scope",
