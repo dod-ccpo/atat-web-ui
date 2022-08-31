@@ -100,7 +100,7 @@ describe("Test suite: General XaaS Flows", () => {
     cy.textExists(performanceReq.noReqTxt,"You do not have any requirements yet.")
   });
 
-  it("TC2: Single Classifications exists - Edit General XaaS Requirment", () => {
+  it("TC2: Single Classifications exists - Edit General XaaS Requirement", () => {
     
     let selectedClassifications = [contractDetails.level2];
     cy.selectCheckBoxes(selectedClassifications);
@@ -158,7 +158,7 @@ describe("Test suite: General XaaS Flows", () => {
     );
   });
 
-  it("TC3: Add another General XaaS Requirment and update classification", () => {
+  it("TC3: Add another General XaaS Requirement and update classification", () => {
     
     let selectedClassifications = [contractDetails.level5];
     cy.selectCheckBoxes(selectedClassifications);
