@@ -34,7 +34,7 @@
     <ul>
       <li>
         <a
-          :href="fiscalServiceHref"
+          :href="$sanitize(fiscalServiceHref)"
           target="_blank"
           id="BFSLink"
         >
@@ -43,7 +43,7 @@
       </li>
       <li>
         <a
-          :href="gInvoiceLoginHref"
+          :href="$sanitize(gInvoiceLoginHref)"
           target="_blank"
           id="GInvoicingLoginLink"
         >
