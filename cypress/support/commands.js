@@ -266,10 +266,11 @@ Cypress.Commands.add("verifyRequiredCheckbox", (checkboxSelector, errorSelector,
 });
 
 Cypress.Commands.add("verifyPageHeader", (headerText) => {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(100);
   cy.findElement(common.header).scrollIntoView().then(() => {
     cy.textExists(common.header,headerText );
   });
-  
 });
 
 Cypress.Commands.add("verifyTextMatches", (selector,expectedText) => {  
