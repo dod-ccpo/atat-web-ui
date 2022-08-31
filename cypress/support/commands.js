@@ -175,10 +175,6 @@ Cypress.Commands.add("findElement", (selector) => {
 });
 
 Cypress.Commands.add('textExists', (selector, expectedText) => {
-  // textLabel = textLabel.trim();
-  // cy.findElement(selector)
-  //   .should("be.visible")
-  //   .and("contain.text", textLabel);
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(100);
   cy.findElement(selector)
