@@ -7,7 +7,7 @@
     no-click-animation
     okText="Invite"
     width="632"
-    :OKDisabled="true"
+    :OKDisabled="invalidEmailCount > 0 || !validEmailList.length"
   >
     <template #content>
       <p class="body">
@@ -24,15 +24,6 @@
         <div id="inputWidthFaker" ref="inputWidthFaker"></div>
 
         <div style="flex-grow: 1;" class="mr-5">
-          <!-- <ATATTextArea
-            id="EmailAddresses"
-            label="Email addresses"
-            rows="4"
-            class="pb-16"
-            :autoGrow="false"
-          /> -->
-          <!-- @click="addEmail"
-          @focus="addEmail" -->
 
           <div id="PillboxLabel" class="mb-2 body">
             Email Addresses
@@ -41,6 +32,7 @@
           <div
             id="PillboxWrapper"
             class="pa-2 _pillbox-wrapper"
+            :class="{ '_focused' : pillboxFocused }"
             tabindex="0"
             aria-labelledby="PillboxLabel"
             @click="addEmail"
@@ -65,6 +57,24 @@
 
 
           </div>
+          
+          <ATATErrorValidation
+            id="EmailError"
+            class="atat-text-field-error"
+            :errorMessages="[invalidEmailMessage]"
+            v-show="invalidEmailCount"
+          />
+
+          <v-btn
+            id="RemoveAllInvalidEntriesLink"
+            class="link-button pa-0"
+            @click="removeInvalidEmails"
+            style="height: 26px"
+            v-if="invalidEmailCount > 1"
+          >
+            Remove all emails with errors
+          </v-btn>
+
 
         </div>
         <div>
@@ -86,38 +96,40 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import ATATDialog from "@/components/ATATDialog.vue";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
 import { SelectData } from "../../../types/Global";
+import {PortfolioDataStore} from "@/store/portfolio/index";
 
 import { generateUid } from "@/helpers";
 
 @Component({
   components: {
     ATATDialog,
+    ATATErrorValidation,
     ATATSelect,
     ATATTextArea,
   }
 })
 // asdf@mail.mil, bar@masasfda.mil, fsfds, asdf@mail.mil
 export default class AddMembersModal extends Vue {
-  $refs!: {
-    inputWidthFaker: HTMLElement,
-  }
+  // $refs!: {
+  //   inputWidthFaker: HTMLElement,
+  // }
 
   @Prop({ default: false }) public showModal?: boolean;
-
   public formIsValid = true;
   public validEmailList: string[] = [];
   public pillboxFocused = false;
   public duplicatedEmail = "";
-  private emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+  public emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  public invalidEmailMessage = "";
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""
       ? AcquisitionPackage.projectTitle
@@ -138,14 +150,41 @@ export default class AddMembersModal extends Vue {
     isExisting: boolean | null;
   }[] = [];
 
+  @Watch("showModal")
+  public showModalChange(newVal: boolean): void {
+    if (newVal && !this.inputWidthFaker) {
+      this.$nextTick(() => {
+        this.inputWidthFaker = document.getElementById("inputWidthFaker");
+      });
+    }
+  }
+
+  /*
+
+  jacks@icloud.mil, bar@, lamprecht@optonline.gov, evans@verizon.gov
+andrewik@icloud.mil
+glenz@gmail.mil
+  qmacro@comcast.gov
+  subir@optonline.gov
+  fmerges@live.mil
+  isaacson@aol.mil
+  jaarnial@icloud.mil
+  noneme@mac.mil
+  kempsonc@me.mil
+
+  */
+
   // EJY use for validation - check entered emails against existing members list
   public existingMembers: Record<string, string>[] = [];
+
+  // get existingMembers from store, then map emails only 
   public existingMemberEmails: string[] = [];
 
-
-  get inputWidthFaker(): HTMLElement {
-    return this.$refs.inputWidthFaker as HTMLElement;
-  }
+  public inputWidthFaker: HTMLElement | null = null;
+  // get inputWidthFaker(): HTMLElement {
+  //   // return this.$refs.inputWidthFaker as HTMLElement;
+  //   return this.$refs.inputWidthFaker as HTMLElement;
+  // }
 
   get invalidEmailCount(): number {
     return this.enteredEmails.filter((obj) => obj.isValid === false).length;
@@ -165,9 +204,11 @@ export default class AddMembersModal extends Vue {
 
   public addInputEventListeners(vm: unknown, input: HTMLInputElement): void {
     input.addEventListener("input", () => {
-      this.inputWidthFaker.innerHTML = input.value;
-      const w = this.inputWidthFaker.offsetWidth + "px";
-      input.style.width = w;
+      if (this.inputWidthFaker) {
+        this.inputWidthFaker.innerHTML = input.value;
+        const w = this.inputWidthFaker.offsetWidth + "px";
+        input.style.width = w;
+      }
 
       this.duplicatedEmail =
         this.validEmailList.indexOf(input.value.toLowerCase()) > -1
@@ -212,8 +253,10 @@ export default class AddMembersModal extends Vue {
       e.preventDefault();
       const { clipboardData } = e;
       let pastedText = clipboardData ? clipboardData.getData("text/plain") : "";
+      pastedText = pastedText.replace(/['\r\n]/g, ",");
       pastedText = pastedText.replace(/['"\s]/g, "");
       pastedText = pastedText.replace(/;/g, ",");
+      debugger;
 
       const pastedValuesArray: string[] = pastedText.split(",");
       let uniqueValues = [...new Set(pastedValuesArray)];
@@ -265,10 +308,35 @@ export default class AddMembersModal extends Vue {
     }
   }
 
-  public validateEmail(email: string): boolean {
+  public invalidEmailFormat = "Please make sure that the address is properly formatted";
+  public invalidEmailDomain = "Please use an email that ends with “.mil” or “.gov.”";
+  public invalidEmailMultiple = `Multiple addresses were not recognized. Please ensure 
+    all emails are properly formatted, using “@domain.mil” or “@domain.gov.”`;
+    
+  public validateEmail(email: string, index?: number): boolean {
     const domain = email.slice(-3).toLowerCase();
     const isGovAddress = domain === "mil" || domain === "gov";
-    return isGovAddress && this.emailRegex.test(email);
+    const validEmail = this.emailRegex.test(email);
+
+    const isValid = isGovAddress && this.emailRegex.test(email);
+    debugger;
+    if (index !== undefined && index >= 0) {
+      this.enteredEmails[index].isValid = isValid;
+      debugger;
+      this.$nextTick(() => {
+        if (this.invalidEmailCount === 1) {
+          this.invalidEmailMessage = !validEmail ? this.invalidEmailFormat
+            : !isGovAddress ? this.invalidEmailDomain : "";
+        } else if (this.invalidEmailCount > 1) {
+          this.invalidEmailMessage = this.invalidEmailMultiple;
+        } else {
+          this.invalidEmailMessage = "";
+        }
+
+      })
+    }
+
+    return isValid;
   }
 
   public emailBlurred(e: Event): void {
@@ -294,8 +362,9 @@ export default class AddMembersModal extends Vue {
       }
 
       const emailIndex = this.enteredEmails.findIndex(e => e.key === emailKey);
-      const isValid = this.validateEmail(emailAddressEntered);
-      this.enteredEmails[emailIndex].isValid = isValid;
+      const isValid = this.validateEmail(emailAddressEntered, emailIndex);
+      debugger;
+      // this.enteredEmails[emailIndex].isValid = isValid;
 
       if (emailAddressEntered.toLowerCase() === this.duplicatedEmail) {
         this.enteredEmails.splice(emailIndex, 1);
@@ -312,10 +381,11 @@ export default class AddMembersModal extends Vue {
           this.enteredEmails[emailIndex].isExisting = true;
         }
       }
-
-      this.inputWidthFaker.innerHTML = emailAddressEntered;
-      const w = this.inputWidthFaker.offsetWidth + "px";
-      input.style.width = w;
+      if (this.inputWidthFaker) {
+        this.inputWidthFaker.innerHTML = emailAddressEntered;
+        const w = this.inputWidthFaker.offsetWidth + "px";
+        input.style.width = w;
+      }
     } else {
       this.removeEmailFromList(emailKey);
       this.setInputWidths();
@@ -342,17 +412,29 @@ export default class AddMembersModal extends Vue {
     this.setInputWidths();
   }
 
+  public removeInvalidEmails(): void {
+    this.enteredEmails = this.enteredEmails.filter(obj => obj.isValid === true);
+  }
+
   public setInputWidths(): void {
     this.enteredEmails.forEach((obj) => {
-      this.inputWidthFaker.innerHTML = obj.email;
-      const w = this.inputWidthFaker.offsetWidth + "px";
-      const emailInput = document.querySelector(
-        "[data-email-key='" + obj.key + "']"
-      ) as HTMLElement;
-      emailInput.style.width = w;
+      if (this.inputWidthFaker) {
+        this.inputWidthFaker.innerHTML = obj.email;
+        const w = this.inputWidthFaker.offsetWidth + "px";
+        const emailInput = document.querySelector(
+          "[data-email-key='" + obj.key + "']"
+        ) as HTMLElement;
+        emailInput.style.width = w;
+      }
     }, this);
   }
 
+  public async mounted(): Promise<void> {
+    // window.addEventListener('load', () => {
+    //   this.inputWidthFaker = document.getElementById("inputWidthFaker");
+    //   debugger;
+    // });
+  }
 
 }
 </script>

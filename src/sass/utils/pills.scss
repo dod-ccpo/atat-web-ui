@@ -17,9 +17,9 @@ div#inputWidthFaker {
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-  &.focused {
+  &._focused {
     border-color: $primary;
-    outline: 2px solid $primary;
+    outline: 1px solid $primary;
   }
 }
 
@@ -66,7 +66,7 @@ div#inputWidthFaker {
       font-family: 'Material Icons';
       content: "error";
       -webkit-font-feature-settings: 'liga';
-      color: $error-dark;
+      color: $error;
       position: absolute;
       top: 4px;
       left: 3px;
