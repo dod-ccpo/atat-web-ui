@@ -50,20 +50,20 @@ export class PortfolioDataStore extends VuexModule {
   private async getPortfolioData():Promise<void>
   {
     const obj: Portfolio = {
-      title: AcquisitionPackage.projectOverview?.title || "Mock Title",
-      description: AcquisitionPackage.projectOverview?.scope || "Mock Description",
+      title: await AcquisitionPackage.projectOverview?.title || "Mock Title",
+      description: await AcquisitionPackage.projectOverview?.scope || "Mock Description",
       status: "",
       csp: "",
-      serviceAgency: AcquisitionPackage.organization?.service_agency || "",
-      createdBy: AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
-      provisioned: AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
+      serviceAgency: await AcquisitionPackage.organization?.service_agency || "",
+      createdBy: await AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
+      provisioned: await AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
       members: [{
         firstName:"Maria",
         lastName: "Missionowner",
         email:"maria.missionowner@mail.mil",
         role: "Manager"
       }],
-      updated:AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
+      updated: await AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
     }
     this.setPortfolioData(obj);
   }
