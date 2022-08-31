@@ -28,7 +28,7 @@
       <span v-if="tooltipTitle" class="font-weight-bold d-block mb-1">
         {{ tooltipTitle }}
       </span>
-      <div v-html="tooltipText">
+      <div v-html="$sanitize(tooltipText)">
       </div>
     </div>
   </v-tooltip>
