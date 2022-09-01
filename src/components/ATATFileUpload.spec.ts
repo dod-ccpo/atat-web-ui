@@ -8,7 +8,9 @@ import {
 
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { Verify } from "crypto";
+import sanitize  from "@/plugins/sanitize";
 Vue.use(Vuetify);
+Vue.use(sanitize);
 
 
 
