@@ -42,6 +42,7 @@ module.exports = {
     "<rootDir>/src/api/**/*.spec.ts",
     "<rootDir>/src/action-handlers/**/*.spec.ts",
     "<rootDir>/src/portfolio/**/*.spec.ts",
+    "<rootDir>/src/plugins/**/*.spec.ts",
   ],
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [  "<rootDir>/node_modules" ],
