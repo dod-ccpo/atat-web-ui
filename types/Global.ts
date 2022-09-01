@@ -29,11 +29,12 @@ export interface StepperStep {
  * interface for select items
  */
 export interface SelectData {
-  text: string;
+  text?: string;
   value?: string;
   multiSelectOrder?: number;
   disabled?: boolean;
   hidden?: boolean;
+  header?: string;
 }
 
 /**
@@ -315,4 +316,22 @@ export interface OtherServiceSummaryTableData {
   performance?: string;
   requirementTitle?: string;
   duration?: string;
+}
+
+export interface User {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  role?: string;
+}
+export interface Portfolio {
+  title?: string;
+  description?: string;
+  status?: string;
+  csp?: string;
+  serviceAgency?: string;
+  createdBy?: string;
+  provisioned?: string;
+  members?: User[];
+  updated?: string;
 }

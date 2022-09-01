@@ -174,11 +174,19 @@ Cypress.Commands.add("findElement", (selector) => {
   }
 });
 
-Cypress.Commands.add('textExists', (selector, textLabel) => {
-  textLabel = textLabel.trim();
+Cypress.Commands.add('textExists', (selector, expectedText) => {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(100);
   cy.findElement(selector)
     .should("be.visible")
-    .and("contain.text", textLabel);
+    .then(($el) => {
+      let actualTxt = $el.text();
+      const formattedTxt = cleanText(actualTxt);
+      cy.log(formattedTxt);
+      const expectedTextCleaned = cleanText(expectedText);
+      expect(formattedTxt).contains(expectedTextCleaned);
+    });
+    
 });
 
 Cypress.Commands.add('enterTextInTextField', (selector, text) => {
@@ -254,10 +262,11 @@ Cypress.Commands.add("verifyRequiredCheckbox", (checkboxSelector, errorSelector,
 });
 
 Cypress.Commands.add("verifyPageHeader", (headerText) => {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(100);
   cy.findElement(common.header).scrollIntoView().then(() => {
     cy.textExists(common.header,headerText );
   });
-  
 });
 
 Cypress.Commands.add("verifyTextMatches", (selector,expectedText) => {  
@@ -999,6 +1008,15 @@ Cypress.Commands.add("notAvailableCategory", (categoryText) => {
     });
 });
 
+Cypress.Commands.add("otherAvailableCategory", (categoryText) => {
+  cy.findElement("#OtherAvlGroups .h3")
+    .each(($el) => {
+      const text = $el.text()
+      cy.log(text)
+    })
+    .should("contain",categoryText)
+});
+
 // This command is  used to select G-invoice for your funding request
 Cypress.Commands.add("selectGInvoiceFRequest", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
@@ -1120,4 +1138,29 @@ Cypress.Commands.add("selectExistingEnv", (radioSelector, value) => {
       }
           
     })
+});
+
+Cypress.Commands.add("deleteRequirement", (deleteSelector, titleTxt,deleteBtnText) => {
+  cy.findElement(deleteSelector).click()
+    .then(() => {
+      cy.findElement(performanceReqs.dialogModal).should("be.visible");
+      cy.textExists(performanceReqs.dialogTitle, titleTxt);
+      cy.btnExists(performanceReqs.deleteInstBtn, deleteBtnText).click()
+        .then(() => {
+          cy.findElement(performanceReqs.dialogModal).should("not.visible");          
+        });
+        
+    });
+});
+  
+
+Cypress.Commands.add("EditRequirement", (editSelector, text) => {
+  cy.findElement(editSelector).click();
+  
+  cy.verifyPageHeader(" Let’s gather some details for " +  text  )
+});
+
+Cypress.Commands.add("addAnotherRequirement", (addSelector, text) => {
+  cy.findElement(addSelector).click();  
+  cy.verifyPageHeader(" Let’s gather some details for " +  text )
 });

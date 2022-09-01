@@ -22,7 +22,7 @@
 
       <span v-if="avlClassificationLevelObjects.length === 1">
         This requirement will be within the 
-        <strong>{{ singleClassificationLevelName }}</strong> classification level.
+        <strong id="SingleClass">{{ singleClassificationLevelName }}</strong> classification level.
         If you need a different level, 
         <a 
           role="button" 
