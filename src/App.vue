@@ -1,5 +1,6 @@
 <template>
   <v-app id="app">
+    <ATATTopNavBar />
     <div v-if="appContentComponent">
       <component :is="appContentComponent" />
     </div>
@@ -15,19 +16,23 @@ import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
 import JWCCDashboard from "@/dashboards/JWCC.vue";
 import PortfolioDashboard from "@/dashboards/Portfolio.vue";
-
+import ATATTopNavBar from "./components/ATATTopNavBar.vue";
 import AppSections from "@/store/appSections";
 
-@Component({})
-
+@Component({
+  components: {
+    ATATTopNavBar,
+  },
+})
 export default class App extends Vue {
-
   public get activeAppSection(): string {
     return AppSections.activeAppSection;
   }
 
   @Watch("activeAppSection")
   public activeAppSectionChanged(newActiveSection: string): void {
+    console.log(newActiveSection);
+    debugger;
     switch (newActiveSection) {
     case this.sectionTitles.AcquisitionPackage:
       AppSections.setAppContentComponent(AppPackageBuilder);
@@ -64,7 +69,5 @@ export default class App extends Vue {
   public async beforeMount(): Promise<void> {
     await AppSections.setAppContentComponent(AppPackageBuilder);
   }
-
 }
-
 </script>

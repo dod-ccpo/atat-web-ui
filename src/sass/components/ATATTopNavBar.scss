@@ -1,0 +1,49 @@
+#navbar-height{
+  height: 60px !important;
+}
+
+#menu-text{
+  font-size: 1.4rem !important;
+  font-weight: 400;
+}
+
+
+#topNavBar{
+  @extend #navbar-height;
+  background-color: $nav-bar-background;
+  
+  button{
+    @extend #navbar-height;
+    padding: 0 15;
+    height: 60px !important;
+    background-color: transparent;
+    &:hover,
+    &:focus{
+      background-color: $nav-bar-item-hover;
+    }
+    .v-btn__content{
+      @extend #menu-text;
+    }
+  }
+
+  .v-menu{
+    .v-menu__content{
+      z-index: 100 !important;
+      border-radius: 0px !important;
+      .v-list{
+        padding: 0px;
+        .v-list-item{
+          &:hover{
+            background-color: $base-lightest !important;
+            cursor: pointer;
+          }
+          .v-list-item__title{
+            @extend #menu-text;
+          }
+        }
+        
+      }
+    }
+  }
+}
+

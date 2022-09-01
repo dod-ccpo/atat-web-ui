@@ -6,6 +6,18 @@ import {
 
 import { AdditionalButton } from "@/store/steps/types";
 
+export interface TopNavItems {
+  title: string;
+  component: Component;
+  icon?: boolean;
+  link?: string;
+}
+
+export interface TopNavMenuItems {
+  menu: TopNavItems[]
+}
+
+
 export interface StepperRouteHandlerParams {
   previous: string;
   next: string;
