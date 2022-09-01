@@ -49,7 +49,7 @@ function findMatches(input, regEx, expectedMatchCount) {
   } else {
     buildMatches[regEx] = {
       expected: expectedMatchCount,
-      found: matches? matches.length: 0
+      found: matches ? matches.length : 0
     }
   }
 
@@ -186,16 +186,20 @@ function updateAppAssetsPaths(directory) {
   let fileContent = fs.readFileSync(filePath, fileEncoding);
 
   // roboto fonts
-  findMatches(fileContent, robotoFontsRegex, 18);
-  const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
-  console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
-  fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
+  const robotoMatches = findMatches(fileContent, robotoFontsRegex, 18);
+  if (robotoMatches) {
+    const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
+    console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
+    fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
+  }
 
   // image paths
-  findMatches(fileContent, imgRegex, 7);
-  const newImagePath = servicenowConfig.IMG_API_PATH;
-  console.log(`Replacing the image paths with: ${newImagePath}`);
-  fileContent = fileContent.replace(imgRegex, newImagePath);
+  const imageMatches = findMatches(fileContent, imgRegex, 7);
+  if (imageMatches) {
+    const newImagePath = servicenowConfig.IMG_API_PATH;
+    console.log(`Replacing the image paths with: ${newImagePath}`);
+    fileContent = fileContent.replace(imgRegex, newImagePath);
+  }
 
   fs.writeFileSync(filePath, fileContent, fileEncoding);
 }
@@ -219,17 +223,22 @@ function updateAssetPaths(directory, filenameFilter) {
   console.log(`Replacing the material icons paths with: ${newIconPath}`);
   fileContent = fileContent.replace(materialIconsRegEx, newIconPath);
 
-// roboto fonts
-findMatches(fileContent, robotoFontsRegex, 18);
-const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
-console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
-fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
+  // roboto fonts
+  const robotoMatches = findMatches(fileContent, robotoFontsRegex, 18);
+  if (robotoMatches) {
+    const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
+    console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
+    fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
+  }
 
-// image paths
-findMatches(fileContent, imgRegex, 7);
-const newImagePath = servicenowConfig.IMG_API_PATH;
-console.log(`Replacing the image paths with: ${newImagePath}`);
-fileContent = fileContent.replace(imgRegex, newImagePath);
+  // image paths
+  const imageMatches = findMatches(fileContent, imgRegex, 7);
+  if (imageMatches) {
+    const newImagePath = servicenowConfig.IMG_API_PATH;
+    console.log(`Replacing the image paths with: ${newImagePath}`);
+    fileContent = fileContent.replace(imgRegex, newImagePath);
+  }
+
   fs.writeFileSync(filePath, fileContent, fileEncoding);
 
 }
@@ -275,14 +284,14 @@ function renameFiles(directory, extensionToAppend) {
   });
 }
 
-function reportMatchDiscrepancies(){
+function reportMatchDiscrepancies() {
   for (const key in buildMatches) {
-      const matches = buildMatches[key];
-      assert.strictEqual(
-        matches.expected,
-        matches.found,
-        `Expected ${matches.expected} matches to be found.  Check the input and ${key}`
-      );
+    const matches = buildMatches[key];
+    assert.strictEqual(
+      matches.expected,
+      matches.found,
+      `Expected ${matches.expected} matches to be found.  Check the input and ${key}`
+    );
   }
 }
 /**
