@@ -7,6 +7,7 @@
         class="_text-link"
         :href="$sanitize(gInvoiceHref)"
         target="_blank"
+        rel="noopener"
       >
         <span class="_external-link">Government Invoicing (G-Invoicing)</span>
       </a>
@@ -64,6 +65,7 @@
         :href="$sanitize(federalAcqHref)"
         target="_blank"
         id="FARLink"
+        rel="noopener"
       >
         Federal Acquisition Regulation (FAR) <span class="_external-link">253.208</span>
       </a>.
