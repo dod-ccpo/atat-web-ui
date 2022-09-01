@@ -49,7 +49,7 @@ function findMatches(input, regEx, expectedMatchCount) {
   } else {
     buildMatches[regEx] = {
       expected: expectedMatchCount,
-      found: matches.length || 0
+      found: matches? matches.length: 0
     }
   }
 
