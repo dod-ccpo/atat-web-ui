@@ -7,7 +7,7 @@ module.exports = {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: [ "src/**/*.vue", "src/**/index.ts"],
+  collectCoverageFrom: [ "src/**/*.vue", "src/**/index.ts", "src/plugins/*.ts", "src/main.ts"],
   
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [ ],
@@ -42,7 +42,7 @@ module.exports = {
     "<rootDir>/src/api/**/*.spec.ts",
     "<rootDir>/src/action-handlers/**/*.spec.ts",
     "<rootDir>/src/portfolio/**/*.spec.ts",
-    "<rootDir>/src/plugins/**/*.spec.ts",
+    "<rootDir>/src/plugins/*.spec.ts",
   ],
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [  "<rootDir>/node_modules" ],
