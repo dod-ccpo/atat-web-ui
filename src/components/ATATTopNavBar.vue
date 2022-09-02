@@ -6,7 +6,7 @@
                 :key="idx"
          :offset-y="true"
           nudge-left="0"
-          nudge-top="0"
+          nudge-top="3"
           :id="'topNavButton_' + idx"
           attach
           >
@@ -19,6 +19,14 @@
                 :id="'topNavBarItem_' + idx"
               >
                 {{ item.title }}
+              <ATATSVGIcon
+                v-show="item.menu"
+                name="chevronDown" 
+                color="white" 
+                class="ml-2"
+                :width="10" 
+                :height="7" 
+              />
               </v-btn>
             </template>
 
@@ -41,18 +49,23 @@
 import { TopNavItems } from "types/Global";
 import Vue from "vue";
 import { Component} from "vue-property-decorator";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-@Component({})
+@Component({
+  components: {
+    ATATSVGIcon,
+  },
+})
 
 export default class ATATTopNavBar extends Vue {
 
   private topNavMenuItems: TopNavItems = [
     {
       title: "Dashboard",
+      menuPosition: "center",
       menu:[
-        { title: "menu item 0001"},
-        { title: "menu item 0002"},
-        { title: "menu item 0003"}
+        { title: "My Packages"},
+        { title: "My Task Orders"},
       ]
     },
     {
@@ -63,9 +76,20 @@ export default class ATATTopNavBar extends Vue {
     },
     {
       title: "Portals",
+      menu:[
+        { title: "Global Service Desk"},
+        { title: "Mission Partner Portal"},
+      ]
     },
     {
       title: "Profile",
+      menuPosition: "right",
+      menu:[
+        { title: "Profile"},
+        { title: "Contact Support"},
+        { title: "Submit Feedback"},
+        { title: "Sign out"},
+      ]
     }
   ]
 

@@ -11,12 +11,9 @@ export interface TopNavItems {
   component: Component;
   icon?: boolean;
   link?: string;
+  menu?: TopNavItems[]
+  menuPosition?: string;
 }
-
-export interface TopNavMenuItems {
-  menu: TopNavItems[]
-}
-
 
 export interface StepperRouteHandlerParams {
   previous: string;
