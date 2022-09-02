@@ -8,7 +8,7 @@
     "test:unit": "jest --coverage  --no-cache",
     "lint": "vue-cli-service lint",
     "zip": "zip -r atat-web-ui-dist.zip dist",
-    "postbuild": "node servicenow.postbuild.js",
+    "postbuild": "node servicenow.postbuild.js && node minify.postbuild.js dist/js/",
     "postbuild:cypress": "node cypress.postbuild.js",
     "build:isolated_tests": "vue-cli-service build --dest dist_testing",
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
