@@ -30,6 +30,7 @@ import {
   ProjectOverviewDTO,
   SensitiveInformationDTO,
   CurrentEnvironmentDTO,
+  FundingRequestDTO,
 } from "@/api/models";
 
 import { SelectData } from "types/Global";
@@ -687,11 +688,11 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves data for a given TableDTO/store property
    */
-  async saveData<TableDTO>({
+  async saveData<BaseTableDTO>({
     data,
     storeProperty,
   }: {
-    data: TableDTO;
+    data: BaseTableDTO;
     storeProperty: string;
   }): Promise<void> {
     try {
@@ -881,6 +882,14 @@ export class AcquisitionPackageStore extends VuexModule {
   async saveCollection<TData extends BaseTableDTO>({collection, property}:
     {collection: TData[], property: string}): Promise<void> {
     this.updatePackageData({key: property, data: collection.map(item=>item.sys_id).join(",")});
+  }
+
+  @Action({rawError: true})
+  async setPackageFundingRequest(fundingRequest: FundingRequestDTO): Promise<void>{
+    if(this.acquisitionPackage){
+      this.acquisitionPackage.funding_request = fundingRequest.sys_id || "";
+      this.setAcquisitionPackage(this.acquisitionPackage);
+    }
   }
 }
 

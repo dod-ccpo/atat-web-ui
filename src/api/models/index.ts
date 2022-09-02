@@ -26,6 +26,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   requirements_const_estimate: string;
   contract_considerations: string;
   funding_plans: string;
+  funding_request: string;
   classification_level: string;
   required_services: string;
   current_environment: string;
