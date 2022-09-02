@@ -173,9 +173,34 @@ function decorateIndexHTML(filePath) {
 }
 
 /**
- * Updates the contents app js file
  * Replaces all roboto font paths with ASSETS api path
- * Replaces all image paths with IMG api path
+ * Replaces all image paths with IMG api path 
+ * * @param {*} fileContent 
+ * @returns string
+ */
+function resolveRobotoFontsAndImagePaths(fileContent){
+
+    // roboto fonts
+    const robotoMatches = findMatches(fileContent, robotoFontsRegex, 18);
+    if (robotoMatches) {
+      const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
+      console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
+      fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
+    }
+  
+    // image paths
+    const imageMatches = findMatches(fileContent, imgRegex, 7);
+    if (imageMatches) {
+      const newImagePath = servicenowConfig.IMG_API_PATH;
+      console.log(`Replacing the image paths with: ${newImagePath}`);
+      fileContent = fileContent.replace(imgRegex, newImagePath);
+    }
+
+    return fileContent;
+}
+
+/**
+ * Updates the contents app js file
  */
 function updateAppAssetsPaths(directory) {
   const dir = fs.readdirSync(directory);
@@ -184,22 +209,7 @@ function updateAppAssetsPaths(directory) {
   assert.ok(filePath);
   console.log(`\nUpdating paths in file ${filePath}`);
   let fileContent = fs.readFileSync(filePath, fileEncoding);
-
-  // roboto fonts
-  const robotoMatches = findMatches(fileContent, robotoFontsRegex, 18);
-  if (robotoMatches) {
-    const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
-    console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
-    fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
-  }
-
-  // image paths
-  const imageMatches = findMatches(fileContent, imgRegex, 7);
-  if (imageMatches) {
-    const newImagePath = servicenowConfig.IMG_API_PATH;
-    console.log(`Replacing the image paths with: ${newImagePath}`);
-    fileContent = fileContent.replace(imgRegex, newImagePath);
-  }
+  fileContent = resolveRobotoFontsAndImagePaths(fileContent);
 
   fs.writeFileSync(filePath, fileContent, fileEncoding);
 }
@@ -222,22 +232,7 @@ function updateAssetPaths(directory, filenameFilter) {
   const newIconPath = `${servicenowConfig.ASSETS_API_PATH}MaterialIcons-`;
   console.log(`Replacing the material icons paths with: ${newIconPath}`);
   fileContent = fileContent.replace(materialIconsRegEx, newIconPath);
-
-  // roboto fonts
-  const robotoMatches = findMatches(fileContent, robotoFontsRegex, 18);
-  if (robotoMatches) {
-    const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
-    console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
-    fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
-  }
-
-  // image paths
-  const imageMatches = findMatches(fileContent, imgRegex, 7);
-  if (imageMatches) {
-    const newImagePath = servicenowConfig.IMG_API_PATH;
-    console.log(`Replacing the image paths with: ${newImagePath}`);
-    fileContent = fileContent.replace(imgRegex, newImagePath);
-  }
+  fileContent = resolveRobotoFontsAndImagePaths(fileContent);
 
   fs.writeFileSync(filePath, fileContent, fileEncoding);
 
