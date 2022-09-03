@@ -12,6 +12,57 @@ header._atat-page-header {
     }
   }
 
+  &._portfolio-summary {
+    height: 8rem !important;
+    .v-toolbar__content {
+      height: 8rem !important;
+    }
+    ._header-tab {
+      .v-tabs-bar {
+        padding-top:2px;
+        height: 30px;
+      }
+      .v-tabs-slider-wrapper{
+        height: 4px !important;
+        .v-tabs-slider{
+          background-color: $primary !important;
+          &:focus {
+            background-color: $primary !important;
+          }
+        }
+      }
+      .v-tab{
+        &.v-tab--active{
+          color: $primary !important;
+        }
+        &:hover {
+        }
+      }
+    }
+    ._headerTextField {
+      border-radius: 4px;
+      border: 2px solid $white ;
+      &.v-input--is-focused{
+        border-radius: 4px;
+        border: 2px solid $primary;
+      }
+      &:hover{
+        border-radius: 4px;
+        border: 1px solid $base-lighter;
+
+      }
+      .v-input__slot {
+        padding: 4px;
+        &::before {
+          display: none
+        }
+        &::after {
+          display: none
+        }
+      }
+    }
+  }
+
   ._more-menu-button.v-btn.v-size--default {
     min-width: 36px;
     width: 36px;
@@ -57,4 +108,5 @@ header._atat-page-header {
       }
     }
   }
+
 }

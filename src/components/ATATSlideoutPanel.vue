@@ -8,6 +8,8 @@
     :width="panelWidth + 'px'"
     app
     right
+    :clipped="appSection === 'Portfolio Summary'"
+    :clipped-right="appSection === 'Portfolio Summary'"
     :temporary="showOverlay"
   >
     <div class="_panel-header">
@@ -36,6 +38,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import AppSections from "@/store/appSections";
 import { Component, Prop, Watch } from "vue-property-decorator";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
@@ -44,7 +47,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 
 export default class ATATSlideoutPanel extends Vue {
   @Prop({ default: "380" }) private panelWidth!: string;
-
+  public appSection = AppSections.activeAppSection;
   public transitionEnded(e: Event):void {
     const target = e.currentTarget as HTMLElement;
     if (target) {
