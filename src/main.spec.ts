@@ -1,6 +1,10 @@
 
 test('Can mount app', async () => {
   try {
+
+    //mock console log to prevent errors
+    console.log = jest.fn();
+
     document.body.innerHTML =
     '<div id="app">' +
     '</div>';
