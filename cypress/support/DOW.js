@@ -135,3 +135,24 @@ Cypress.Commands.add("verifyStorageTypeListItems", (categoryObj) => {
   });
   cy.verifyDropdownList(performanceReq.storageTypeDropdownList, storageTypeListItems);     
 });
+
+//This command is to verify the checkbox label and header for the Compute Category
+Cypress.Commands.add("verifyGeneralXaaSHeader", (categoryObj) => {
+  const categoryCheckBoxId = getCheckboxId(categoryObj.value);    
+  cy.selectServiceOfferingGroup([categoryCheckBoxId]);
+
+  cy.verifyPageHeader("Let’s gather your requirements for general IaaS, PaaS and SaaS");  
+  
+});
+
+//select generalXaaS option
+Cypress.Commands.add("selectGeneralXaaSOption", (categoryObj,serviceOfferingGroups) => {
+  cy.btnClick(common.continueBtn, " Continue ");
+  cy.verifyPageHeader(" Let’s work on your performance requirements ");
+  const categoryLabels = [];
+  serviceOfferingGroups.forEach((obj) => {
+    categoryLabels.push(obj.label);
+  });
+  cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);  
+  cy.verifyGeneralXaaSHeader(categoryObj);
+});

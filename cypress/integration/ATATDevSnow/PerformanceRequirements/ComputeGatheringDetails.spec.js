@@ -150,7 +150,7 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
   
   it("TC2: No Classification Levels selected", () => {
     cy.selectComputeOption(categoryObj, serviceOfferingGroups);
-    cy.verifyTextMatches(performanceReq.subAlertMessage, compute.alertMessage);
+    cy.verifyTextMatches(performanceReq.subAlertMessage, compute.subtleClassAlert);
     cy.selectRadioBtn(performanceReq.envProd, "Production");
     cy.findElement(performanceReq.classLevelRadioGroup).should("not.exist");
     cy.textExists(performanceReq.contractDetailsLink, compute.contractDetailsLink).click();

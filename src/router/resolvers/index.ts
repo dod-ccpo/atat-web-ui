@@ -593,25 +593,29 @@ export const Upload7600Resolver = (current: string): string => {
     : routeNames.SeverabilityAndIncrementalFunding;
 }
 const cutOff = 270;
-export async function calcBasePeriod() {
-  const period = await Periods.loadPeriods()
+export async function calcBasePeriod(): Promise<number> {
+  const periods = await Periods.loadPeriods()
   let basePeriod = 0
   let multiplier = 1;
-  switch (period[0].period_unit) {
-  case "WEEK":
-    multiplier = 7;
-    break;
-  case "MONTH":
-    multiplier = 30;
-    break;
-  case "YEAR":
-    multiplier = 365;
-    break;
-  default:
+  if (periods.length) {
+    switch (periods[0].period_unit) {
+    case "WEEK":
+      multiplier = 7;
+      break;
+    case "MONTH":
+      multiplier = 30;
+      break;
+    case "YEAR":
+      multiplier = 365;
+      break;
+    default:
+    }
+    basePeriod = Number(periods[0].period_unit_count) * multiplier;
+    return basePeriod
   }
-  basePeriod = Number(period[0].period_unit_count) * multiplier;
-  return basePeriod
+  return 0;
 }
+
 export const IncrementalFundingResolver = (current: string): string => {
   let baseDuration
   calcBasePeriod().then(value => {

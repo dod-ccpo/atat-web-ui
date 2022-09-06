@@ -36,7 +36,7 @@ describe("Test suite: No PoP and Classification Levels exists workflows ",
         "Your  period of performance and classification requirements are  missing. "
       );
       cy.verifyTextMatches(performanceReqs.categoryAlertInfoTxt, prAlertInfoMessage); 
-      cy.textExists(performanceReqs.contractDetailsLink, " revisiting the Contract Details section");
+      cy.textExists(performanceReqs.contractDetailsLink, "revisiting the Contract Details section");
     });  
   
     it("TC1: Navigation to summary without PoP and Classification levels ", () => {
@@ -79,7 +79,7 @@ describe("Test suite: No PoP and Classification Levels exists workflows ",
       cy.notAvailableCategory(edgeObj.label);
       cy.textExists(performanceReqs.contractDetailsLink, "Contract Details section").click();
       cy.verifyPageHeader("Let’s gather some details about the duration of your task order");
-      cy.findElement(contractDetails.baseInputTxtBox).type("24");
+      cy.findElement(contractDetails.baseInputTxtBox).type("12");
       cy.dropDownClick(contractDetails.baseDropdownIcon);
       cy.findElement(contractDetails.baseDropdownMonth).click({force: true});
       cy.btnClick(common.continueBtn, " Continue ");
@@ -103,7 +103,7 @@ describe("Test suite: No PoP and Classification Levels exists workflows ",
       cy.verifyPageHeader(
         "Your Performance Requirements"
       );
-      cy.findElement(performanceReqs.missingInfo).should("not.exist");
+      cy.findElement(performanceReqs.categoryAlertheading).should("not.exist");
 
     });
 
