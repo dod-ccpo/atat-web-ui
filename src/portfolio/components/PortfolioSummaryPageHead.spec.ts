@@ -37,6 +37,9 @@ describe("Testing Members Component", () => {
 
   test("test openSlideoutPanel()- should toggle the value of showDrawer to true",async ()=> {
     jest.spyOn(SlideoutPanel,'openSlideoutPanel').mockImplementation()
+    const eObject = {
+      currentTarget: 'test'
+    }
     const memberModal = wrapper.vm.showDrawer
     expect(memberModal).toBe(false)
     wrapper.vm.openSlideoutPanel()

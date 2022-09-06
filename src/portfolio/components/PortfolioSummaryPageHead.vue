@@ -27,7 +27,7 @@
             <v-tab
               v-for="tab in items"
               :key="tab"
-              class="font-size-14 pa-1  pb-4 mr-5">{{tab}}</v-tab>
+              class="font-size-14 pa-1 pt-2  pb-4 mr-5">{{tab}}</v-tab>
 
           </v-tabs>
         </div>
