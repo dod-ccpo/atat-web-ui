@@ -3,6 +3,7 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import PortfolioSummaryPageHead from "@/portfolio/components/PortfolioSummaryPageHead.vue";
+import SlideoutPanel from "@/store/slideoutPanel";
 Vue.use(Vuetify);
 
 describe("Testing Members Component", () => {
@@ -34,4 +35,20 @@ describe("Testing Members Component", () => {
     })
   })
 
+  test("test openSlideoutPanel()- should toggle the value of showDrawer to true",async ()=> {
+    jest.spyOn(SlideoutPanel,'openSlideoutPanel').mockImplementation()
+    const memberModal = wrapper.vm.showDrawer
+    expect(memberModal).toBe(false)
+    wrapper.vm.openSlideoutPanel()
+    wrapper.vm.$nextTick(()=> expect(memberModal).toBe(true))
+  })
+
+  test("test openSlideoutPanel()- should toggle the value of showDrawer to false",async ()=> {
+    jest.spyOn(SlideoutPanel,'openSlideoutPanel').mockImplementation()
+    wrapper.setData({showDrawer:true})
+    const memberModal = wrapper.vm.showDrawer
+    expect(memberModal).toBe(true)
+    wrapper.vm.openSlideoutPanel()
+    wrapper.vm.$nextTick(()=> expect(memberModal).toBe(false))
+  })
 })

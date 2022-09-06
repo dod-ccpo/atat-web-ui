@@ -10,7 +10,7 @@
         :items ="tabItems"
         :value.sync="tabIndex"
         :title.sync="title"
-        :portfolioStatus="portfolioStatus"
+        :portfolio="portfolio"
       />
       <v-container class="container-max-width bg-base-lightest">
             <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
