@@ -42,7 +42,7 @@ describe("Testing Members Component", () => {
     }
     const memberModal = wrapper.vm.showDrawer
     expect(memberModal).toBe(false)
-    wrapper.vm.openSlideoutPanel()
+    wrapper.vm.openSlideoutPanel(eObject)
     wrapper.vm.$nextTick(()=> expect(memberModal).toBe(true))
   })
 
