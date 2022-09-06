@@ -1,6 +1,7 @@
 module.exports = {
   introPText: "p.mb-10",
   learnMoreLink: "p.mb-10 a",
+  singleClassText:"#SingleClass",
   categoryAlertheading: "#CategoryPageAlert h3",
   categoryAlertInfoTxt: "p#AlertInfo",
   xaasLabelText: "#XaaSLabel",
@@ -106,6 +107,16 @@ module.exports = {
   dialogTitle: "#modalDialogTitle",
   deleteInstBtn: "#dialog_ok",
   
+  //Let’s gather your requirements for general IaaS, PaaS and SaaS
+  requirementTitleLabel: "#RequirementTitle_text_field_label",
+  requirementTitleTooltipBtn: "#TooltipButton_RequirementTitle",
+  requirementTitleTooltipText: "#TooltipText_RequirementTitle",
+  requirementTitleTxtBox: "#RequirementTitle_text_field",
+
+  //Your general IaaS, PaaS, and SaaS requirements  
+  noReqTxt: ".w-100",
+  optionOneCheckbox: "#Checkbox_OPTION1",
+  
   //Next, we’ll gather your requirements for Migration Tools
   singleClassIntro: "#SingleClassificationIntro",
   classTextInIntro: "#SingleClassificationIntro p",
@@ -158,6 +169,7 @@ module.exports = {
   modalCheckboxesError: "#ClassificationLevelCheckboxesModal .field-error",
   changeLevelBtn: "#dialog_ok",
   cancelBtn: "#dialog_cancel",
+  toastText:".v-snack__content",
   
   //Summary
   selectedGroups: "#SelectedGroups",

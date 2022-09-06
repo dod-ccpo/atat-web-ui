@@ -1008,6 +1008,15 @@ Cypress.Commands.add("notAvailableCategory", (categoryText) => {
     });
 });
 
+Cypress.Commands.add("otherAvailableCategory", (categoryText) => {
+  cy.findElement("#OtherAvlGroups .h3")
+    .each(($el) => {
+      const text = $el.text()
+      cy.log(text)
+    })
+    .should("contain",categoryText)
+});
+
 // This command is  used to select G-invoice for your funding request
 Cypress.Commands.add("selectGInvoiceFRequest", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
@@ -1129,4 +1138,29 @@ Cypress.Commands.add("selectExistingEnv", (radioSelector, value) => {
       }
           
     })
+});
+
+Cypress.Commands.add("deleteRequirement", (deleteSelector, titleTxt,deleteBtnText) => {
+  cy.findElement(deleteSelector).click()
+    .then(() => {
+      cy.findElement(performanceReqs.dialogModal).should("be.visible");
+      cy.textExists(performanceReqs.dialogTitle, titleTxt);
+      cy.btnExists(performanceReqs.deleteInstBtn, deleteBtnText).click()
+        .then(() => {
+          cy.findElement(performanceReqs.dialogModal).should("not.visible");          
+        });
+        
+    });
+});
+  
+
+Cypress.Commands.add("EditRequirement", (editSelector, text) => {
+  cy.findElement(editSelector).click();
+  
+  cy.verifyPageHeader(" Let’s gather some details for " +  text  )
+});
+
+Cypress.Commands.add("addAnotherRequirement", (addSelector, text) => {
+  cy.findElement(addSelector).click();  
+  cy.verifyPageHeader(" Let’s gather some details for " +  text )
 });
