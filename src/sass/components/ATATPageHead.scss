@@ -32,11 +32,13 @@ header._atat-page-header {
         }
       }
       .v-tab{
+        color: $base-dark;
         &.v-tab--active{
           color: $primary !important;
         }
         &:hover {
         }
+
       }
     }
     ._headerTextField {
@@ -47,6 +49,7 @@ header._atat-page-header {
         border: 2px solid $primary;
       }
       &:hover{
+        padding-bottom: 2px;
         border-radius: 4px;
         border: 1px solid $base-lighter;
 
@@ -58,6 +61,9 @@ header._atat-page-header {
         }
         &::after {
           display: none
+        }
+        .v-text-field input {
+          padding: 0px;
         }
       }
     }
@@ -105,6 +111,15 @@ header._atat-page-header {
 
       .v-list-item__title {
         font-size: 14px;
+      }
+    }
+    &._portfolio {
+      .v-menu__content {
+        .v-list-item {
+          &:last-child {
+            border-top: 1px solid $base-lighter;
+          }
+        }
       }
     }
   }

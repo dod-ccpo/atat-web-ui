@@ -9,9 +9,11 @@
         headline="Portfolio Summary"
         :items ="tabItems"
         :value.sync="tabIndex"
+        :title.sync="title"
       />
       <v-container class="container-max-width bg-base-lightest">
         {{ tabItems[tabIndex] }}
+        {{title}}
       </v-container>
     </v-main>
   </div>
@@ -47,7 +49,7 @@ export default class Portfolio extends Vue {
     "Task Order",
     "CSP Portal Access"
   ]
-
+  public title = ""
   public selectedTab = this.tabItems[this.tabIndex]
 
   public async mounted(): Promise<void>{

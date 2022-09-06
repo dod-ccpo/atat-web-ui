@@ -20,3 +20,4 @@ export default class Edit extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
 </script>
+

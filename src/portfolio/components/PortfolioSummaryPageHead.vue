@@ -7,7 +7,7 @@
   >
     <div class=" d-flex justify-space-between width-100 align-center">
 
-        <div id="NameHeader" tabindex="-1" class="h2 pt-1">
+        <div id="NameHeader" tabindex="-1" class=" pt-1">
           <v-text-field
             id="HeaderTextField"
             dense
@@ -15,16 +15,17 @@
             class=" h2 _headerTextField "
             hide-details
             autocomplete="off"
+            v-model="_title"
           >
           </v-text-field>
 
         <div>
-          <v-tabs class="_header-tab"
+          <v-tabs class="_header-tab ml-2"
           v-model="_selectedTab">
             <v-tab
               v-for="tab in items"
               :key="tab"
-              class="font-size-14 pa-0 mr-6">{{tab}}</v-tab>
+              class="font-size-14 pa-0 pb-2 mr-6">{{tab}}</v-tab>
 
           </v-tabs>
         </div>
@@ -45,7 +46,7 @@
           :offset-y="true"
           nudge-left="170"
           id="MoreMenu"
-          class="_more-menu _header-menu"
+          class="_more-menu _header-menu _portfolio"
           attach
         >
           <template v-slot:activator="{ on, attrs }">
@@ -63,10 +64,22 @@
             <v-list-item
               v-for="(item, index) in moreMenuItems"
               :key="index"
-              @click="moreMenuClick(index)"
-              :class="{active : item.title === activeAppSection}"
+              :disabled="item === 'Archive portfolio'"
+              @click="moreMenuClick(item)"
             >
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
+              <v-list-item-title
+              >{{ item }}
+                  <v-icon
+                    v-if="item === 'Login to the CSP console'"
+                    aria-hidden="true"
+                    class="
+                      pl-1
+                      inline-block
+                      text-primary"
+                    >
+                    launch
+                  </v-icon>
+              </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -80,7 +93,6 @@ import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
-import SlideoutPanel from "@/store/slideoutPanel";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 @Component({
@@ -93,16 +105,22 @@ export default class PortfolioSummaryPageHead extends Vue {
   @Prop({ default: "Headline" }) private headline!: string;
   @Prop({ default: [""], required: true }) private items!: string[];
   @PropSync("value") private _selectedTab = 0;
+  @PropSync("title") private _title = "";
+
 
   public moreMenuOpen = false;
-  public moreMenuItems = AppSections.appSectionMenuItems;
+  public moreMenuItems = [
+    "Invite members to portfolio",
+    "Rename portfolio",
+    "Leave this portfolio",
+    "Archive portfolio",
+    "Login to the CSP console"
+  ];
   public activeAppSection = AppSections.activeAppSection;
 
 
-  public async moreMenuClick(index: number): Promise<void> {
-    SlideoutPanel.closeSlideoutPanel()
-    const selectedSection = this.moreMenuItems[index].title;
-    AppSections.changeActiveSection(selectedSection);
+  public async moreMenuClick(item: string) {
+    return ""
   }
 
 }
