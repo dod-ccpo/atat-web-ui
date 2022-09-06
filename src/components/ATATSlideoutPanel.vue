@@ -9,11 +9,11 @@
     app
     right
     :clipped="appSection === 'Portfolio Summary'"
-    :clipped-right="appSection === 'Portfolio Summary'"
     :temporary="showOverlay"
   >
     <div class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
+
         {{ panelTitle }}
       </div>
       <v-btn

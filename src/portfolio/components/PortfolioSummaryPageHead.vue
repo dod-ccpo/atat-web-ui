@@ -4,6 +4,7 @@
     app
     flat
     class="_atat-page-header _portfolio-summary"
+    clipped-right
   >
     <div class=" d-flex justify-space-between width-100 align-center">
 
@@ -32,14 +33,13 @@
       </div>
       <div class="d-flex justify-end align-center">
         <v-btn
-          v-if="activeAppSection === 'Portfolio Summary'"
           icon
           class="mr-5 icon-24 _header-button"
-          id="Person_Button">
+          id="Info_Button"
+          @click="openSlideoutPanel"
+          @keydown.enter="openSlideoutPanel"
+          @keydown.space="openSlideoutPanel">
           <v-icon class="text-base-dark">info_outline</v-icon>
-        </v-btn>
-        <v-btn v-else icon class="mr-5 icon-24 _header-button" id="Person_Button">
-          <v-icon class="text-base-dark">person_add_alt_1</v-icon>
         </v-btn>
 
         <v-menu
@@ -84,6 +84,9 @@
           </v-list>
         </v-menu>
       </div>
+      <AddMembersModal
+        :showModal.sync="showMembersModal"
+      />
     </div>
   </v-app-bar>
 </template>
@@ -94,10 +97,13 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
+import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
+import SlideoutPanel from "@/store/slideoutPanel";
 
 @Component({
   components: {
-    ATATTextField
+    ATATTextField,
+    AddMembersModal,
   }
 })
 
@@ -106,6 +112,7 @@ export default class PortfolioSummaryPageHead extends Vue {
   @Prop({ default: [""], required: true }) private items!: string[];
   @PropSync("value") private _selectedTab = 0;
   @PropSync("title") private _title = "";
+
 
 
   public moreMenuOpen = false;
@@ -117,10 +124,26 @@ export default class PortfolioSummaryPageHead extends Vue {
     "Login to the CSP console"
   ];
   public activeAppSection = AppSections.activeAppSection;
+  public showMembersModal = false;
 
+  public openModal():void {
+    this.showMembersModal = true;
+  };
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
 
   public async moreMenuClick(item: string) {
-    return ""
+    switch(item) {
+    case "Invite members to portfolio":
+      this.openModal();
+      break;
+    default:
+      return
+    }
   }
 
 }
