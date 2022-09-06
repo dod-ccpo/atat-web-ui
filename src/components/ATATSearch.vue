@@ -209,7 +209,6 @@ export default class ATATSearch extends Vue {
       try {
 
         this.showLoader = true;
-        this.showLoader = true;
         this.showSuccessAlert = false;
         this.showErrorAlert = false;
         this.showHelpText = false;
@@ -247,6 +246,7 @@ export default class ATATSearch extends Vue {
   }
 
   private onBlur(e: FocusEvent) : void{
+    console.log("Hello Julius")
     const input = e.target as HTMLInputElement;
     this.setErrorMessage();
     this.$emit('blur', input.value);
