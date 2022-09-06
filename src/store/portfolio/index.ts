@@ -2,7 +2,7 @@
 import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
-import { User,Portfolio} from "../../../types/Global"
+import { MemberInvites, Portfolio, User } from "../../../types/Global"
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -33,8 +33,6 @@ export class PortfolioDataStore extends VuexModule {
     nameofProperty(this,x=> x.portfolio),
   ];
 
-
-
   @Mutation
   public setInitialized(value: boolean): void {
     this.initialized = value;
@@ -45,10 +43,8 @@ export class PortfolioDataStore extends VuexModule {
     this.portfolio = {...this.portfolio, ...value}
   }
 
-
   @Action({rawError: true})
-  private async getPortfolioData():Promise<void>
-  {
+  private async initPortfolioData():Promise<void> {
     const obj: Portfolio = {
       title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
       description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
@@ -68,6 +64,29 @@ export class PortfolioDataStore extends VuexModule {
     this.setPortfolioData(obj);
   }
 
+  @Action({rawError: true})
+  public async saveMembers(newMembers: MemberInvites): Promise<void> {
+    newMembers.emails.forEach((email) => {
+      const newMember: User = {
+        firstName: "",
+        lastName: "",
+        email,
+        role: newMembers.role,
+      };
+      this.portfolio.members?.push(newMember);
+    });
+    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
+    this.setInitialized(true);
+  }
+
+  @Action({rawError: true})
+  public async getPortfolioData(): Promise<Portfolio> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    return this.portfolio;
+  }
+
   @Mutation
   public setStoreData(sessionData: string):void{
     try {
@@ -82,18 +101,20 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-    try {
-      const sessionRestored= retrieveSession(ATAT_PORTFOLIO_DATA_KEY);
-      if(sessionRestored){
-        this.setStoreData(sessionRestored);
+    if (!this.initialized) {
+      try {
+        const sessionRestored= retrieveSession(ATAT_PORTFOLIO_DATA_KEY);
+        if(sessionRestored){
+          this.setStoreData(sessionRestored);
+        }
+        else{
+          await this.initPortfolioData();
+          this.setInitialized(true);
+          storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
+        }
+      } catch (error) {
+        console.log(`error occurred loading portfolio data ${error}`)
       }
-      else{
-        await this.getPortfolioData();
-        this.setInitialized(true);
-        storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
-      }
-    } catch (error) {
-      console.log(`error occurred loading portfolio data ${error}`)
     }
   }
 

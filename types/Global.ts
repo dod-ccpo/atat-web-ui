@@ -342,3 +342,8 @@ export interface EmailEntry {
   isValid: boolean | null;
   isExisting: boolean | null;
 }
+
+export interface MemberInvites {
+  emails: string[];
+  role: string;
+}

@@ -2,7 +2,7 @@
 <template>
 
   <ATATDialog
-    :showDialog.sync="showModal"
+    :showDialog.sync="_showModal"
     :title="'Invite people to “' + projectTitle + '”'"
     no-click-animation
     okText="Invite"
@@ -95,7 +95,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -103,8 +103,14 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
-import { EmailEntry, SelectData, ToastObj } from "../../../types/Global";
-import {PortfolioDataStore} from "@/store/portfolio/index";
+import { 
+  EmailEntry, 
+  Portfolio, 
+  SelectData, 
+  ToastObj, 
+  User 
+} from "../../../types/Global";
+import PortfolioData from "@/store/portfolio/index";
 
 import Toast from "@/store/toast";
 
@@ -124,7 +130,10 @@ export default class AddMembersModal extends Vue {
   //   inputWidthFaker: HTMLElement,
   // }
 
-  @Prop({ default: false }) public showModal?: boolean;
+  @PropSync("showModal") public _showModal?: boolean;
+  // can portfolioData be passed as a prop once modal is in slideout panel?
+  public portfolioData: Portfolio | null = null;
+
   public enteredEmails: EmailEntry[] = [];
   public formIsValid = true;
   public validEmailList: string[] = [];
@@ -159,27 +168,25 @@ export default class AddMembersModal extends Vue {
 
   public emailDeletedKey: string | undefined;
 
-  @Watch("showModal")
-  public showModalChange(newVal: boolean): void {
-    if (newVal && !this.inputWidthFaker) {
-      this.$nextTick(() => {
-        this.inputWidthFaker = document.getElementById("inputWidthFaker");
-      });
+  @Watch("_showModal")
+  public async showModalChange(newVal: boolean): Promise<void> {
+    if (newVal) {
+      this.validEmailList = [];
+      this.enteredEmails = [];
+      await this.setExistingMembers();
+      
+      if (!this.inputWidthFaker) {
+        this.$nextTick(() => {
+          this.inputWidthFaker = document.getElementById("inputWidthFaker");
+        });
+      }
     }
   }
 
-  /*
-jacks@icloud.mil bar@ "lamprecht@optonline.gov" "evans@verizon.gov"
-andrewik@icloud.mil glenz@gmail.mil
-  qmacro@comcast.gov
-  subir@optonline.gov
-  fmerges@live.mil
-  */
-
   // use for validation - check entered emails against existing members list
-  public existingMembers: Record<string, string>[] = [];
+  public existingMembers: User[] = [];
   // get existingMembers from store, then map emails only 
-  public existingMemberEmails: string[] = ["foo@mail.mil", "bar@mail.mil"];
+  public existingMemberEmails: string[] = [];
   // array of existing member emails entered for error message
   public get existingMemberEmailsEntered(): string[] {
     const existingEntries = this.enteredEmails.filter(obj => obj.isExisting === true);
@@ -281,8 +288,6 @@ andrewik@icloud.mil glenz@gmail.mil
         }, 0);
       }
     });
-
-
   }
 
   public addEmail(e: Event, override: boolean | null): void {
@@ -353,7 +358,6 @@ andrewik@icloud.mil glenz@gmail.mil
     const validEmail = this.emailRegex.test(email);
 
     const isValid = isGovtDomain && !missingAtSymbol && validEmail;
-    debugger;
     if (index !== undefined && index >= 0) {
       this.enteredEmails[index].isValid = isValid;
       this.$nextTick(() => {
@@ -375,7 +379,6 @@ andrewik@icloud.mil glenz@gmail.mil
             this.invalidEmailMessage = this.invalidEmailFormat;
           }
         } else {
-          debugger;
           // clear validation message
           this.invalidEmailMessage = "";
         }
@@ -423,7 +426,6 @@ andrewik@icloud.mil glenz@gmail.mil
           this.validEmailList.push(emailAddressEntered.toLowerCase());
           this.enteredEmails[emailIndex].isExisting = false;
         } else if (isExistingEmail) {
-          debugger;
           this.enteredEmails[emailIndex].isExisting = true;
           if (this.invalidEmailCount > 0) {
             this.invalidEmailMessage = this.invalidEmailMultiple;
@@ -455,9 +457,6 @@ andrewik@icloud.mil glenz@gmail.mil
   }
 
   public removeEmail(e: Event): void {
-    debugger;
-    // EJY tuesday come back here!!
-    // EJY this is not updating invalidEmailCount and error messages??
     this.pillboxFocused = false;
     const thisButton = e.target as HTMLButtonElement;
     const closestElement = thisButton.closest(".v-input__slot") as HTMLElement;
@@ -473,11 +472,9 @@ andrewik@icloud.mil glenz@gmail.mil
   }
 
   public removeInvalidEmails(): void {
-    debugger;
     this.enteredEmails = this.enteredEmails.filter(
       obj => obj.isValid === true && obj.isExisting === false
     );
-    // this.existingMemberEmailsEntered = [];
   }
 
   public setInputWidths(): void {
@@ -493,11 +490,32 @@ andrewik@icloud.mil glenz@gmail.mil
     }, this);
   }
 
-  public inviteMembers(): void {
-    debugger;
+  public async setExistingMembers(): Promise<void> {
+    this.portfolioData = await PortfolioData.getPortfolioData();
+    if (this.portfolioData.members) {
+      this.existingMemberEmails = [];
+      this.existingMembers = this.portfolioData.members;
+      this.existingMembers.forEach((member) => {
+        if (member.email) {
+          this.existingMemberEmails.push(member.email);
+        }
+      });
+    }
+  }
+
+  public async inviteMembers(): Promise<void> {
     const invitedCount = this.validEmailList.length;
-    this.membersInvitedToast.message = invitedCount + " members added";
+    const toastMsg = invitedCount > 1 
+      ? invitedCount + " members added" 
+      : invitedCount + " member added";
+    this.membersInvitedToast.message = toastMsg;
     Toast.setToast(this.membersInvitedToast);    
+    const newMembers = {
+      emails: this.validEmailList,
+      role: this.selectedRole,
+    }
+    await PortfolioData.saveMembers(newMembers);
+
   }
 
 }
