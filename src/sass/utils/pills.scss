@@ -54,6 +54,10 @@ div#inputWidthFaker {
       border-color: $primary;
     }
   }
+  &:focus {
+    border-color: $primary;
+    outline: none;
+  }
 
   &._invalid-entry:not(.v-input--is-focused) {
     background-color: $error-lighter;
@@ -89,6 +93,7 @@ div#inputWidthFaker {
     &:before, &:after {
       display: none;
     }
+    margin-bottom: 0 !important;
   }
   .v-input__control {
     background-color: transparent !important;
@@ -111,5 +116,8 @@ div#inputWidthFaker {
   }
   .v-icon.v-icon::after {
     transition: none !important;
+  }
+  .v-text-field__details {
+    display: none !important;
   }
 }
