@@ -34,18 +34,20 @@
     <ul>
       <li>
         <a
-          :href="fiscalServiceHref"
+          :href="$sanitize(fiscalServiceHref)"
           target="_blank"
           id="BFSLink"
+          rel="noopener"
         >
          Bureau of Fiscal Service, G-Invoicing
         </a>
       </li>
       <li>
         <a
-          :href="gInvoiceLoginHref"
+          :href="$sanitize(gInvoiceLoginHref)"
           target="_blank"
           id="GInvoicingLoginLink"
+          rel="noopener"
         >
           G-Invoicing Login
         </a>
