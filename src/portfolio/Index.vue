@@ -10,16 +10,14 @@
         :items ="tabItems"
         :value.sync="tabIndex"
         :title.sync="title"
+        :portfolioStatus="portfolioStatus"
       />
       <v-container class="container-max-width bg-base-lightest">
-        <v-row>
-          <v-col>
             <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
             <TaskOrder v-if="tabItems[tabIndex] === 'Task Order'"/>
             <CSPPortalAccess v-if="tabItems[tabIndex] === 'CSP Portal Access'" />
-          </v-col>
-        </v-row>
       </v-container>
+      <ATATFooter/>
     </v-main>
   </div>
 </template>
@@ -36,6 +34,7 @@ import FundingTracker from "@/portfolio/FundingTracker.vue";
 import TaskOrder from "@/portfolio/TaskOrder.vue";
 import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
 import { SlideoutPanelContent } from "../../types/Global";
+import PortfolioData from "@/store/portfolio";
 
 @Component({
   components: {
@@ -60,10 +59,18 @@ export default class Portfolio extends Vue {
     "CSP Portal Access"
   ]
   public title = ""
+  public portfolioStatus = ""
 
 
-  public loadOnEnter() {
+  public async loadOnEnter(): Promise<void>  {
     // grab data from store
+    await PortfolioData.initialize()
+    const portfolio = PortfolioData.portfolio
+    console.log(portfolio)
+    if(portfolio){
+      this.title = portfolio.title || "";
+      this.portfolioStatus = portfolio.status || "";
+    }
   }
   public async mounted(): Promise<void>{
     const slideoutPanelContent: SlideoutPanelContent = {

@@ -8,12 +8,12 @@
   >
     <div class=" d-flex justify-space-between width-100 align-center">
 
-        <div id="NameHeader" tabindex="-1" class=" pt-1">
+        <div id="NameHeader" tabindex="-1">
           <v-text-field
             id="HeaderTextField"
             dense
             placeholder="Portfolio Title"
-            class=" h2 _headerTextField "
+            class=" h2 _headerTextField my-1"
             hide-details
             autocomplete="off"
             v-model="_title"
@@ -21,12 +21,12 @@
           </v-text-field>
 
         <div>
-          <v-tabs class="_header-tab ml-2"
+          <v-tabs class="_header-tab ml-1 "
           v-model="_selectedTab">
             <v-tab
               v-for="tab in items"
               :key="tab"
-              class="font-size-14 pa-0 pb-2 mr-6">{{tab}}</v-tab>
+              class="font-size-14 pa-0 pb-4 mr-5">{{tab}}</v-tab>
 
           </v-tabs>
         </div>
@@ -109,6 +109,7 @@ import SlideoutPanel from "@/store/slideoutPanel";
 
 export default class PortfolioSummaryPageHead extends Vue {
   @Prop({ default: "Headline" }) private headline!: string;
+  @Prop() private portfolioStatus!: string;
   @Prop({ default: [""], required: true }) private items!: string[];
   @PropSync("value") private _selectedTab = 0;
   @PropSync("title") private _title = "";
@@ -129,11 +130,20 @@ export default class PortfolioSummaryPageHead extends Vue {
   public openModal():void {
     this.showMembersModal = true;
   };
+
+  public showDrawer = false
   public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      SlideoutPanel.openSlideoutPanel(opener.id);
+    if(this.showDrawer === false){
+      if (e && e.currentTarget) {
+        const opener = e.currentTarget as HTMLElement;
+        this.showDrawer = true;
+        SlideoutPanel.openSlideoutPanel(opener.id);
+      }
+    }else {
+      this.showDrawer = false
+      SlideoutPanel.closeSlideoutPanel()
     }
+
   }
 
   public async moreMenuClick(item: string) {

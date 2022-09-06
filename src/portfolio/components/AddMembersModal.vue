@@ -2,7 +2,7 @@
 <template>
 
   <ATATDialog
-    :showDialog.sync="showModal"
+    :showDialog.sync="_showModal"
     :title="'Invite people to “' + projectTitle + '”'"
     no-click-animation
     okText="Invite"
@@ -48,7 +48,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -66,7 +66,7 @@ import { SelectData } from "../../../types/Global";
 })
 
 export default class AddMembersModal extends Vue {
-  @Prop({ default: false }) public showModal?: boolean;
+  @PropSync('showModal') public _showModal?: boolean;
 
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""

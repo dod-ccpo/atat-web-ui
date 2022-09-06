@@ -11,7 +11,9 @@
     :clipped="appSection === 'Portfolio Summary'"
     :temporary="showOverlay"
   >
-    <div class="_panel-header">
+    <div
+      v-if="appSection !== 'Portfolio Summary'"
+      class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
 
         {{ panelTitle }}
