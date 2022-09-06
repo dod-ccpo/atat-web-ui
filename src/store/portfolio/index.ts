@@ -42,7 +42,9 @@ export class PortfolioDataStore extends VuexModule {
 
   @Mutation
   public setPortfolioData(value: Portfolio): void {
-    this.portfolio = {...this.portfolio, ...value}
+    // this.portfolio = {...this.portfolio, ...value}
+    Object.assign(this.portfolio,value)
+    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
 

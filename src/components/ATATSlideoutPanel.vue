@@ -15,7 +15,6 @@
       v-if="appSection !== 'Portfolio Summary'"
       class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
-
         {{ panelTitle }}
       </div>
       <v-btn

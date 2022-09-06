@@ -23,19 +23,29 @@ header._atat-page-header {
       }
       .v-tabs-slider-wrapper{
         height: 4px !important;
+        padding-left:4px;
+        padding-right:4px;
         .v-tabs-slider{
           background-color: $primary !important;
-          &:focus {
-            background-color: $primary !important;
-          }
         }
       }
       .v-tab{
         color: $base-dark !important;
         border: 1px solid transparent !important;
-        &:focus {
+        text-transform: none !important;
+        letter-spacing: .025rem !important;
+        &:focus-visible {
+          &:before{
+            background-color: transparent !important;
+          }
           background-color: transparent !important;
-          border: 1px solid $primary !important
+          border: 1px solid $primary !important;
+          border-radius: 4px 4px 0 0;
+        }
+        &:hover{
+          &:before{
+            background-color: transparent !important;
+          }
         }
         &.v-tab--active{
           color: $primary !important;

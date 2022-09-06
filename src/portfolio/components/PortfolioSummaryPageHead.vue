@@ -17,16 +17,17 @@
             hide-details
             autocomplete="off"
             v-model="_title"
+            @blur="saveTitle()"
           >
           </v-text-field>
 
         <div>
-          <v-tabs class="_header-tab ml-1 "
+          <v-tabs class="_header-tab "
           v-model="_selectedTab">
             <v-tab
               v-for="tab in items"
               :key="tab"
-              class="font-size-14 pa-0 pb-4 mr-5">{{tab}}</v-tab>
+              class="font-size-14 pa-1  pb-4 mr-5">{{tab}}</v-tab>
 
           </v-tabs>
         </div>
@@ -62,15 +63,33 @@
 
           <v-list>
             <v-list-item
-              v-for="(item, index) in moreMenuItems"
-              :key="index"
-              :disabled="item === 'Archive portfolio'"
-              @click="moreMenuClick(item)"
-            >
+              @click="openModal">
               <v-list-item-title
-              >{{ item }}
+              >Invite members to portfolio
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="moveToInput()">
+              <v-list-item-title
+              >Rename portfolio
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title>
+                Leave this portfolio
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item
+            disabled
+            >
+              <v-list-item-title>
+                Archive portfolio
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title
+              > Login to the CSP console
                   <v-icon
-                    v-if="item === 'Login to the CSP console'"
                     aria-hidden="true"
                     class="
                       pl-1
@@ -99,6 +118,7 @@ import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
 import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
+import PortfolioData from "@/store/portfolio";
 
 @Component({
   components: {
@@ -111,8 +131,8 @@ export default class PortfolioSummaryPageHead extends Vue {
   @Prop({ default: "Headline" }) private headline!: string;
   @Prop() private portfolioStatus!: string;
   @Prop({ default: [""], required: true }) private items!: string[];
-  @PropSync("value") private _selectedTab = 0;
-  @PropSync("title") private _title = "";
+  @PropSync("value") private _selectedTab!: number ;
+  @PropSync("title") private _title!: string;
 
 
 
@@ -129,11 +149,18 @@ export default class PortfolioSummaryPageHead extends Vue {
 
   public openModal():void {
     this.showMembersModal = true;
-  };
+  }
+
+  public saveTitle() {
+    const obj ={
+      title: this._title
+    }
+    PortfolioData.setPortfolioData(obj)
+  }
 
   public showDrawer = false
   public openSlideoutPanel(e: Event): void {
-    if(this.showDrawer === false){
+    if(!this.showDrawer ){
       if (e && e.currentTarget) {
         const opener = e.currentTarget as HTMLElement;
         this.showDrawer = true;
@@ -145,14 +172,10 @@ export default class PortfolioSummaryPageHead extends Vue {
     }
 
   }
-
-  public async moreMenuClick(item: string) {
-    switch(item) {
-    case "Invite members to portfolio":
-      this.openModal();
-      break;
-    default:
-      return
+  public moveToInput() {
+    const input = document.getElementById('HeaderTextField');
+    if(input){
+      input.focus()
     }
   }
 

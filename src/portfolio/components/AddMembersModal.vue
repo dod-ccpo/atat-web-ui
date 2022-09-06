@@ -48,7 +48,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, PropSync } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import ATATDialog from "@/components/ATATDialog.vue";

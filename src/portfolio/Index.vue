@@ -50,7 +50,7 @@ export default class Portfolio extends Vue {
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
-  };
+  }
 
   public tabIndex = 0;
   public tabItems = [
