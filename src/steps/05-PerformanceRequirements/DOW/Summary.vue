@@ -35,7 +35,7 @@
                 </h3>
                 <p 
                   class="mb-0 _selectedOfferings" 
-                  v-html="formattedOfferings(item.serviceOfferings)"
+                  v-html="formattedOfferings($sanitize(item.serviceOfferings))"
                 >
                 </p>
               </div>
