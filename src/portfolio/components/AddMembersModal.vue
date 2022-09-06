@@ -43,6 +43,7 @@
             <v-text-field
               v-for="email in enteredEmails"
               :key="email.key"
+              :ref="'key-' + email.key"
               class="_pill"
               :class="{ '_invalid-entry': isEmailInvalid(email) }"
               :data-email-key="email.key"
@@ -133,7 +134,7 @@ export default class AddMembersModal extends Vue {
   @PropSync("showModal") public _showModal?: boolean;
   // can portfolioData be passed as a prop once modal is in slideout panel?
   public portfolioData: Portfolio | null = null;
-
+  public projectTitle = "";
   public enteredEmails: EmailEntry[] = [];
   public formIsValid = true;
   public validEmailList: string[] = [];
@@ -153,11 +154,11 @@ export default class AddMembersModal extends Vue {
     hasIcon: true,
   };
 
-  public get projectTitle(): string {
-    return AcquisitionPackage.projectTitle !== ""
-      ? AcquisitionPackage.projectTitle
-      : "New Acquisition";
-  }
+  // public get projectTitle(): string {
+  //   return AcquisitionPackage.projectTitle !== ""
+  //     ? AcquisitionPackage.projectTitle
+  //     : "New Acquisition";
+  // }
 
   public selectedRole = "Manager";
   public roles: SelectData[] = [
@@ -173,6 +174,9 @@ export default class AddMembersModal extends Vue {
     if (newVal) {
       this.validEmailList = [];
       this.enteredEmails = [];
+      this.portfolioData = await PortfolioData.getPortfolioData();
+      this.projectTitle = this.portfolioData.title || "New Acquisition";
+      debugger;
       await this.setExistingMembers();
       
       if (!this.inputWidthFaker) {
@@ -214,18 +218,18 @@ export default class AddMembersModal extends Vue {
   public emailEdit(e: Event): void { // EJY for unit tests, look at file upload event test
     e.preventDefault();
     e.cancelBubble = true;
+    debugger;
     const input = e.currentTarget as HTMLInputElement;
     const i = this.validEmailList.indexOf(input.value.toLowerCase());
     if (i > -1) {
       this.validEmailList.splice(i, 1);
     }
     this.pillboxFocused = true;
-    this.addInputEventListeners(this, input); // EJY in unit test, pass wrapper.vm
+    this.addInputEventListeners(this, input); 
     // EJY for unit test, may need if passing wrapper.vm isn't working:
   }
 
-  
-  //  let wrapper: Wrapper<DefaultProps & Vue, Element>;
+  // EJY in unit test, pass wrapper.vm for "this"/vm
   public addInputEventListeners(vm: any, input: HTMLInputElement): void {
 
     input.addEventListener("paste", function (e: ClipboardEvent) {
@@ -299,20 +303,30 @@ export default class AddMembersModal extends Vue {
       (targetId === "PillboxWrapper" || override === true) &&
       (len === 0 || this.enteredEmails[len - 1].email !== "")
     ) {
-      const emailKey = generateUid();
+      const emailKey = generateUid(); 
+
       this.enteredEmails.push({
         key: emailKey,
         email: "",
         isValid: null,
         isExisting: false,
       });
+      console.log("THREE", this.enteredEmails)
+      
       this.$nextTick().then(() => {
+        console.log("FOUR", emailKey)
         let newInput = document.querySelector(
           "[data-email-key='" + emailKey + "']"
         ) as HTMLInputElement;
-        newInput.style.width = "40px";
-        newInput?.focus();
-        this.addInputEventListeners(this, newInput);
+
+        // NEW INPUT IS NULL IN UNIT TESTS
+        console.log("FIVE", newInput)
+
+        if (newInput) {
+          newInput.style.width = "40px";
+          newInput.focus();
+          this.addInputEventListeners(this, newInput);
+        }
       });
     }
   }
@@ -342,14 +356,17 @@ export default class AddMembersModal extends Vue {
      the email address.
   5. Existing Members --> “[Email address]” is already a portfolio member.
   */
-
+  public formatMsg = `Please ensure all emails are properly formatted, 
+    using “@domain.mil” or “@domain.gov”.`;
   public get invalidEmailMultiple(): string {
-    return this.invalidEmailCount + ` addresses were not recognized. 
-    Please ensure all emails are properly formatted, using “@domain.mil” or “@domain.gov”.`;
+    return this.invalidEmailCount + " addresses were not recognized." + this.formatMsg;
   }
   public invalidEmailDomain = "Please use an email that ends with “.mil” or “.gov”.";
   public invalidEmailMissingAtSymbol = "Please include an ‘@’ symbol in the email address";
   public invalidEmailFormat = "Please use a standard domain format, like “@domain.mil”.";
+  public invalidEmailGeneric = `Multiple addresses were not recognized or are existing members. ` 
+    + this.formatMsg;
+
     
   public async validateEmail(email: string, index?: number): Promise<boolean> {
     const domain = email.slice(-3).toLowerCase();
@@ -375,8 +392,6 @@ export default class AddMembersModal extends Vue {
             this.invalidEmailMessage = this.invalidEmailDomain;
           } else if (missingAtSymbol) {
             this.invalidEmailMessage = this.invalidEmailMissingAtSymbol;
-          } else {
-            this.invalidEmailMessage = this.invalidEmailFormat;
           }
         } else {
           // clear validation message
@@ -398,6 +413,7 @@ export default class AddMembersModal extends Vue {
     emailAddressEntered = emailAddressEntered.replace(/['"]/g, "");
 
     if (emailAddressEntered.length) {
+      
       const removeButton =
         input.parentElement?.nextElementSibling?.getElementsByTagName(
           "button"
@@ -408,11 +424,14 @@ export default class AddMembersModal extends Vue {
           "aria-label",
           "Remove email address " + emailAddressEntered
         );
+        removeButton.setAttribute(
+          "id",
+          "RemoveEmail" + emailKey
+        );
       }
 
       const emailIndex = this.enteredEmails.findIndex(e => e.key === emailKey);
       const isValid = await this.validateEmail(emailAddressEntered, emailIndex);
-
       if (emailAddressEntered.toLowerCase() === this.duplicatedEmail) {
         this.enteredEmails.splice(emailIndex, 1);
         this.duplicatedEmail = "";
@@ -428,7 +447,7 @@ export default class AddMembersModal extends Vue {
         } else if (isExistingEmail) {
           this.enteredEmails[emailIndex].isExisting = true;
           if (this.invalidEmailCount > 0) {
-            this.invalidEmailMessage = this.invalidEmailMultiple;
+            this.invalidEmailMessage = this.invalidEmailGeneric;
           } else {
             this.invalidEmailMessage = this.existingMemberEmailsEntered.length > 1
               ? "Multiple email addresses are already portfolio members."
@@ -436,6 +455,7 @@ export default class AddMembersModal extends Vue {
           }
         }
       }
+
       if (this.inputWidthFaker) {
         this.inputWidthFaker.innerHTML = emailAddressEntered;
         const w = this.inputWidthFaker.offsetWidth + "px";
@@ -491,8 +511,7 @@ export default class AddMembersModal extends Vue {
   }
 
   public async setExistingMembers(): Promise<void> {
-    this.portfolioData = await PortfolioData.getPortfolioData();
-    if (this.portfolioData.members) {
+    if (this.portfolioData && this.portfolioData.members) {
       this.existingMemberEmails = [];
       this.existingMembers = this.portfolioData.members;
       this.existingMembers.forEach((member) => {

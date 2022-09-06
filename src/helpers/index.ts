@@ -1,6 +1,6 @@
 import { ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@/api/models";
 import { Checkbox, SelectData } from "types/Global";
-import _ from "lodash";
+import _, { random } from "lodash";
 import Periods from "@/store/periods";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
@@ -193,11 +193,13 @@ interface ATATWindow extends Window {
 declare let window: ATATWindow;
 
 export function generateUid(): string {
-  const array = new Uint32Array(4);
-  const crypto = window.crypto || window.msCrypto;
-  const values = crypto
-    ? crypto.getRandomValues(array).map((value) => value)
-    : [""];
+  const randomNumber = Math.floor(100000000 + Math.random() * 900000000);
+  return String(randomNumber);
+  // const array = new Uint32Array(4);
+  // const crypto = window.crypto || window.msCrypto;
+  // const values = crypto
+  //   ? crypto.getRandomValues(array).map((value) => value)
+  //   : [""];
 
-  return values.join("-").toString();
+  // return values.join("-").toString();
 }
