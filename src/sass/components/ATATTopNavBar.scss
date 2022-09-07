@@ -7,15 +7,15 @@
   font-weight: 400;
 }
 
-
 #TopNavBar {
   @extend ._navbar-height;
   background-color: $nav-bar-background;
   
-  button {
+  button.v-btn {
     @extend ._navbar-height;
-    padding: 0 15;
-    height: 60px !important;
+    border-radius: 0;
+    padding: 0 15px !important;
+    height: 56px !important;
     background-color: transparent;
     &:hover,
     &:focus{
@@ -24,24 +24,39 @@
     .v-btn__content{
       @extend ._menu-text;
     }
+    &._profile {
+      .v-btn__content {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: $primary-lighter;
+        font-size: 1.1rem !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: $base-darker;
+      }
+    }
   }
 
-  .v-menu{
+  .v-menu {
     .v-menu__content{
       z-index: 100 !important;
       border-radius: 4px !important;
+      padding: 8px 0;
+
       .v-list{
         padding: 0px;
+        
         .v-list-item{
           &:hover{
             background-color: $base-lightest !important;
             cursor: pointer;
           }
+
           .v-list-item__title{
             @extend ._menu-text;
           }
         }
-        
       }
     }
   }

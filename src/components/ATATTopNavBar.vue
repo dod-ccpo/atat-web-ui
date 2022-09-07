@@ -13,9 +13,9 @@
         :key="idx"
         :offset-y="true"
         nudge-left="0"
-        nudge-top="3"
         :id="'TopNavButton_' + idx"
         attach
+        :left="item.align === 'left'"
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -24,10 +24,11 @@
             v-bind="attrs"
             v-on="on"
             :id="'TopNavBarItem_' + getIdText(item.title)"
+            :class="{ '_profile': item.isProfile }"
           >
-            {{ item.title }}
+          {{ item.title }}
           <ATATSVGIcon
-            v-show="item.menu"
+            v-if="item.menu && !item.isProfile"
             name="chevronDown" 
             color="white" 
             class="ml-2"
@@ -78,13 +79,12 @@ import { getIdText } from "@/helpers";
 
 export default class ATATTopNavBar extends Vue {
 
-  private topNavMenuItems: TopNavItems = [
+  private topNavMenuItems: TopNavItems[] = [
     {
       title: "Dashboard",
     },
     {
       title: "Acquisitions",
-      menuPosition: "center",
       menu:[
         { title: "My Packages" },
         { title: "My Task Orders" },
@@ -95,6 +95,7 @@ export default class ATATTopNavBar extends Vue {
     },
     {
       title: "Portals",
+      align: "left",
       menu:[
         { 
           title: "Global Service Desk",
@@ -117,8 +118,9 @@ export default class ATATTopNavBar extends Vue {
       ]
     },
     {
-      title: "Profile",
-      menuPosition: "right",
+      title: "MM",
+      isProfile: true,
+      align: "left",
       menu:[
         { title: "Profile"},
         { title: "Contact Support"},

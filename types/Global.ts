@@ -19,6 +19,8 @@ export interface TopNavItems {
   link?: string;
   menu?: TopNavItems[]
   menuPosition?: string;
+  align?: string;
+  isProfile?: boolean;
 }
 
 export interface StepperRouteHandlerParams {
