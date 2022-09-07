@@ -12,10 +12,13 @@
         :title.sync="title"
         :portfolioStatus="portfolioStatus"
       />
-      <v-container class="container-max-width bg-base-lightest">
-            <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
-            <TaskOrder v-if="tabItems[tabIndex] === 'Task Orders'"/>
-            <CSPPortalAccess v-if="tabItems[tabIndex] === 'CSP Portal Access'" />
+      <v-container
+        class="container-max-width bg-base-lightest "
+        style="margin-bottom:300px !important"
+      >
+          <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
+          <TaskOrder v-if="tabItems[tabIndex] === 'Task Orders'"/>
+          <CSPPortalAccess v-if="tabItems[tabIndex] === 'CSP Portal Access'" />
       </v-container>
       <ATATFooter/>
     </v-main>

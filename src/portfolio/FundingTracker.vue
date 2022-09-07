@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    Funding Tracker
+    Future Funding Tracker Page
   </div>
 </template>
 <script lang="ts">

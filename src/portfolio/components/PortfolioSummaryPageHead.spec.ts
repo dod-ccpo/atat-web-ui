@@ -18,6 +18,7 @@ describe("Testing Members Component", () => {
       vuetify,
       propsData: {
         title: "portfoliotest",
+        portfolioStatus:"Active"
       }
     });
   });
