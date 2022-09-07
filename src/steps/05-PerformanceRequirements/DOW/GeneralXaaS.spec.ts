@@ -8,7 +8,10 @@ import { init, validateInput } from "@/helpers/unitTests";
 
 import GeneralXaaSForm from "./GeneralXaaSForm.vue";
 
+import sanitize  from "@/plugins/sanitize";
 Vue.use(Vuetify);
+Vue.use(sanitize);
+
 
 const generalXaaSData = {
   "instanceNumber": 1,

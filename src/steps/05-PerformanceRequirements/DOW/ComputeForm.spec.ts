@@ -13,7 +13,10 @@ import {
   OtherServiceOfferingData
 } from "../../../../types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import sanitize  from "@/plugins/sanitize";
 Vue.use(Vuetify);
+Vue.use(sanitize);
+
 
 describe("Testing ComputeForm Component", () => {
   const localVue = createLocalVue();
