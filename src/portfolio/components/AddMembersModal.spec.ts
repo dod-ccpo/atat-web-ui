@@ -5,7 +5,6 @@ import { DefaultProps } from "vue/types/options";
 import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioData from "@/store/portfolio/index";
-import { nextTick } from "process";
 
 Vue.use(Vuetify);
 
@@ -131,11 +130,9 @@ describe("Testing AddMembersModal", () => {
     });
 
     const emailInput = await wrapper.find("input[data-email-key='123']");
-    // console.log("emailInput", emailInput)
 
     await emailInput.trigger("click");
     expect(wrapper.vm.$data.pillboxFocused).toBeTruthy();
-
   });
 
   it("blurs email address", async () => {
@@ -144,16 +141,13 @@ describe("Testing AddMembersModal", () => {
       enteredEmails: [
         { key: "123", email: "foo@mail.mil", isValid: true },
       ],
-      // validEmailList: ["foo@mail.mil"]
     })
 
     const emailInput = await wrapper.find("input[data-email-key='123']");
-    // console.log("emailInput", emailInput)
     Vue.nextTick(async () => {
       await emailInput.trigger("blur");
       expect(wrapper.vm.$data.pillboxFocused).toBeFalsy();  
     })
-
   });
 
   it("blurs email address - remove if duplicate (already entered)", async () => {
@@ -163,16 +157,13 @@ describe("Testing AddMembersModal", () => {
         { key: "123", email: "foo@mail.mil", isValid: true },
       ],
       duplicatedEmail: "foo@mail.mil",
-      // validEmailList: ["foo@mail.mil"],
     });
 
     const emailInput = await wrapper.find("input[data-email-key='123']");
-    // console.log("emailInput", emailInput)
 
     await emailInput.trigger("blur");
     expect(wrapper.vm.$data.pillboxFocused).toBeFalsy();
     expect(wrapper.vm.$data.duplicatedEmail).toBe("");
-
   });
 
   it("blurs email address - add valid email to this.validEmailList", async () => {
@@ -241,22 +232,17 @@ describe("Testing AddMembersModal", () => {
     await emailInput.trigger("blur");
     expect(wrapper.vm.$data.invalidEmailMessage)
       .toContain("were not recognized or are existing members");
-
   });
 
   it("blurs email address - removes email record if blurring and no text entered", async () => {
     await wrapper.setProps({showModal: true})
     await wrapper.setData({
-      enteredEmails: [
-        { key: "123", email: "" },
-      ],
+      enteredEmails: [{ key: "123", email: "" }],
     });
 
     const emailInput = await wrapper.find("input[data-email-key='123']");
     await emailInput.trigger("blur");
     expect(wrapper.vm.$data.enteredEmails.length).toBe(0);
-
-    
   });
 
   it("delete email address by clicking pill X", async () => {
@@ -270,13 +256,11 @@ describe("Testing AddMembersModal", () => {
     console.log("emailInput", emailInput)
     await emailInput.trigger("blur");
     Vue.nextTick(async () => {
-
       const emailDeleteButton = await wrapper.find("#RemoveEmail123");
       console.log("emailDeleteButton", emailDeleteButton)
       await emailDeleteButton.trigger("click");
       expect(wrapper.vm.$data.enteredEmails.length).toBe(0);
-        
-    })
+    });
   });
 
 
@@ -303,24 +287,8 @@ describe("Testing AddMembersModal", () => {
     });
   
     const pillboxWrapper = await wrapper.find("#PillboxWrapper");
-    console.log("pillboxWrapper", pillboxWrapper)
     await pillboxWrapper.trigger("click");
-    // expect(wrapper.vm.$data.enteredEmails.length).toEqual(1);
-
+    expect(wrapper.vm.$data.pillboxFocused).toBeTruthy();
   });
-
-
-  // it("sets event listeners", async () => {
-  //   await wrapper.setProps({showModal: true})
-  //   await wrapper.setData({
-  //     enteredEmails: [
-  //       { key: "123", email: "", isValid: true },
-  //     ],
-  //   })
-
-  //   const emailInput = await wrapper.find("input[data-email-key='123']");
-  //   // wrapper.vm.addInputEventListeners(wrapper.vm, emailInput);
-  // });
-
 
 });

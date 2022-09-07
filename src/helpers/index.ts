@@ -186,20 +186,7 @@ export const createPeriodCheckboxItems = async (): Promise<Checkbox[]> => {
   ];
 }
 
-interface ATATWindow extends Window {
-  msCrypto: Crypto;
-}
-
-declare let window: ATATWindow;
-
-export function generateUid(): string {
+export function generateRandomKey(): string {
   const randomNumber = Math.floor(100000000 + Math.random() * 900000000);
   return String(randomNumber);
-  // const array = new Uint32Array(4);
-  // const crypto = window.crypto || window.msCrypto;
-  // const values = crypto
-  //   ? crypto.getRandomValues(array).map((value) => value)
-  //   : [""];
-
-  // return values.join("-").toString();
 }

@@ -1,6 +1,4 @@
-
 <template>
-
   <ATATDialog
     :showDialog.sync="_showModal"
     :title="'Invite people to “' + projectTitle + '”'"
@@ -14,10 +12,7 @@
       <p class="body">
         Use “.mil” or “.gov” email addresses to ensure people can authenticate with 
         a CAC to access your portfolio. 
-        <a
-          id="LearnMoreLink" 
-          role="button"
-        >
+        <a id="LearnMoreLink" role="button">
           Learn more about portfolio roles
         </a>
       </p>
@@ -54,8 +49,6 @@
               @blur="emailBlurred"
               @click:append="removeEmail"
             />
-
-
           </div>
           
           <ATATErrorValidation
@@ -74,9 +67,8 @@
           >
             Remove all emails with errors
           </v-btn>
-
-
         </div>
+
         <div>
           <ATATSelect
             id="Role"
@@ -97,7 +89,6 @@
 import Vue from "vue";
 
 import { Component, PropSync, Watch } from "vue-property-decorator";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -115,7 +106,7 @@ import PortfolioData from "@/store/portfolio/index";
 
 import Toast from "@/store/toast";
 
-import { generateUid } from "@/helpers";
+import { generateRandomKey } from "@/helpers";
 
 @Component({
   components: {
@@ -125,14 +116,9 @@ import { generateUid } from "@/helpers";
     ATATTextArea,
   }
 })
-// asdf@mail.mil, bar@masasfda.mil, fsfds, asdf@mail.mil
-export default class AddMembersModal extends Vue {
-  // $refs!: {
-  //   inputWidthFaker: HTMLElement,
-  // }
 
+export default class AddMembersModal extends Vue {
   @PropSync("showModal") public _showModal?: boolean;
-  // can portfolioData be passed as a prop once modal is in slideout panel?
   public portfolioData: Portfolio | null = null;
   public projectTitle = "";
   public enteredEmails: EmailEntry[] = [];
@@ -140,7 +126,6 @@ export default class AddMembersModal extends Vue {
   public validEmailList: string[] = [];
   public pillboxFocused = false;
   public duplicatedEmail = "";
-  // public emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   /* eslint-disable-next-line */
   public emailRegex = /^(([^<>()[\]\\.,;:\s@\\"]+(\.[^<>()[\]\\.,;:\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\]\\.,;:\s@\\"]+\.)+[^<>()[\]\\.,;:\s@\\"]{2,})$/i;
 
@@ -153,12 +138,6 @@ export default class AddMembersModal extends Vue {
     hasUndo: false,
     hasIcon: true,
   };
-
-  // public get projectTitle(): string {
-  //   return AcquisitionPackage.projectTitle !== ""
-  //     ? AcquisitionPackage.projectTitle
-  //     : "New Acquisition";
-  // }
 
   public selectedRole = "Manager";
   public roles: SelectData[] = [
@@ -176,7 +155,6 @@ export default class AddMembersModal extends Vue {
       this.enteredEmails = [];
       this.portfolioData = await PortfolioData.getPortfolioData();
       this.projectTitle = this.portfolioData.title || "New Acquisition";
-      debugger;
       await this.setExistingMembers();
       
       if (!this.inputWidthFaker) {
@@ -203,9 +181,6 @@ export default class AddMembersModal extends Vue {
   // gets the characters entered into the input, then the div's width is given
   // to the input -- see event listener on input
   public inputWidthFaker: HTMLElement | null = null;
-  // get inputWidthFaker(): HTMLElement {
-  //   return this.$refs.inputWidthFaker as HTMLElement;
-  // }
 
   get invalidEmailCount(): number {
     return this.enteredEmails.filter((obj) => obj.isValid === false).length;
@@ -215,10 +190,9 @@ export default class AddMembersModal extends Vue {
     return this.enteredEmails.filter((obj) => obj.isExisting === true).length;
   }
 
-  public emailEdit(e: Event): void { // EJY for unit tests, look at file upload event test
+  public emailEdit(e: Event): void {
     e.preventDefault();
     e.cancelBubble = true;
-    debugger;
     const input = e.currentTarget as HTMLInputElement;
     const i = this.validEmailList.indexOf(input.value.toLowerCase());
     if (i > -1) {
@@ -226,10 +200,8 @@ export default class AddMembersModal extends Vue {
     }
     this.pillboxFocused = true;
     this.addInputEventListeners(this, input); 
-    // EJY for unit test, may need if passing wrapper.vm isn't working:
   }
 
-  // EJY in unit test, pass wrapper.vm for "this"/vm
   public addInputEventListeners(vm: any, input: HTMLInputElement): void {
 
     input.addEventListener("paste", function (e: ClipboardEvent) {
@@ -252,7 +224,7 @@ export default class AddMembersModal extends Vue {
 
         if (email && isValid && notAlreadyEntered) {
           vm.validEmailList.push(email.toLowerCase());
-          const emailKey = generateUid();
+          const emailKey = generateRandomKey();
           vm.enteredEmails.push({
             key: emailKey,
             email: email,
@@ -303,7 +275,7 @@ export default class AddMembersModal extends Vue {
       (targetId === "PillboxWrapper" || override === true) &&
       (len === 0 || this.enteredEmails[len - 1].email !== "")
     ) {
-      const emailKey = generateUid(); 
+      const emailKey = generateRandomKey(); 
 
       this.enteredEmails.push({
         key: emailKey,
@@ -311,16 +283,11 @@ export default class AddMembersModal extends Vue {
         isValid: null,
         isExisting: false,
       });
-      console.log("THREE", this.enteredEmails)
       
       this.$nextTick().then(() => {
-        console.log("FOUR", emailKey)
         let newInput = document.querySelector(
           "[data-email-key='" + emailKey + "']"
         ) as HTMLInputElement;
-
-        // NEW INPUT IS NULL IN UNIT TESTS
-        console.log("FIVE", newInput)
 
         if (newInput) {
           newInput.style.width = "40px";
@@ -366,7 +333,6 @@ export default class AddMembersModal extends Vue {
   public invalidEmailFormat = "Please use a standard domain format, like “@domain.mil”.";
   public invalidEmailGeneric = `Multiple addresses were not recognized or are existing members. ` 
     + this.formatMsg;
-
     
   public async validateEmail(email: string, index?: number): Promise<boolean> {
     const domain = email.slice(-3).toLowerCase();
@@ -382,10 +348,10 @@ export default class AddMembersModal extends Vue {
         const multipleErrors = this.invalidEmailCount > 1 
           || (this.existingEmailCount >= 1 && this.invalidEmailCount === 1);
         if (multipleErrors) {
+          // multiple errors message
           this.invalidEmailMessage = this.invalidEmailMultiple;
-
         } else if (this.invalidEmailCount === 1) {
-          // single error message
+          // single error messages
           if (!validEmail && missingAtSymbol && !isGovtDomain) {
             this.invalidEmailMessage = this.invalidEmailFormat;
           } else if (!isGovtDomain) {
@@ -413,7 +379,6 @@ export default class AddMembersModal extends Vue {
     emailAddressEntered = emailAddressEntered.replace(/['"]/g, "");
 
     if (emailAddressEntered.length) {
-      
       const removeButton =
         input.parentElement?.nextElementSibling?.getElementsByTagName(
           "button"
@@ -534,8 +499,8 @@ export default class AddMembersModal extends Vue {
       role: this.selectedRole,
     }
     await PortfolioData.saveMembers(newMembers);
-
   }
 
 }
+
 </script>
