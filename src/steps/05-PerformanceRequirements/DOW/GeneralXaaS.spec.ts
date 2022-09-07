@@ -7,10 +7,7 @@ import { DefaultProps } from "vue/types/options";
 import { init, validateInput } from "@/helpers/unitTests";
 
 import GeneralXaaSForm from "./GeneralXaaSForm.vue";
-
-import sanitize  from "@/plugins/sanitize";
 Vue.use(Vuetify);
-Vue.use(sanitize);
 
 
 const generalXaaSData = {
