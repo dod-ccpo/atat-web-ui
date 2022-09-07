@@ -1,7 +1,7 @@
 <template>
   <v-app-bar 
     id="PageHeader" 
-    app
+    app 
     flat 
     class="_atat-page-header"
   >
