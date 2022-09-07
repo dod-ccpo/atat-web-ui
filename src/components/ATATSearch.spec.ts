@@ -141,14 +141,16 @@ describe("Testing ATATSearch Component", () => {
     });
 
 
-    it("setErrorMessage()", async () => {
-      const errorMessage = ["error Message 001"]
-      await wrapper.setData({
-        errorMessage
+    it("setErrorMessage() - provides search.$data.errorBucket automatically to ensure " +
+        "$data.errorMessage === search.$data.errorBucket ", async () => {
+      const errorMessages = ["error Message 001"]
+      await search.setData({
+        errorBucket: errorMessages
       })
-      await wrapper.vm.setErrorMessage()     
+      
+      await wrapper.vm.setErrorMessage();  
       Vue.nextTick(()=>{
-        expect(wrapper.vm.$data.errorMessages).toBe(errorMessage);
+        expect(wrapper.vm.$data.errorMessages).toBe(errorMessages);
       })
     })
 
