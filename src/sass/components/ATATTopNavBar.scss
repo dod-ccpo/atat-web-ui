@@ -10,6 +10,7 @@
 #TopNavBar {
   @extend ._navbar-height;
   background-color: $nav-bar-background;
+  z-index: 101 !important;
   
   button.v-btn {
     @extend ._navbar-height;
@@ -43,6 +44,7 @@
       z-index: 100 !important;
       border-radius: 4px !important;
       padding: 8px 0;
+      background-color: white;
 
       .v-list{
         padding: 0px;
