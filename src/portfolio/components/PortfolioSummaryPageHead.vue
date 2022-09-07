@@ -80,13 +80,16 @@
               </v-list-item-title>
             </v-list-item>
             <v-list-item
+              class="pb-2"
             :disabled="portfolioStatus.toLowerCase() !== 'expired'"
             >
               <v-list-item-title>
                 Archive portfolio
               </v-list-item-title>
             </v-list-item>
-            <v-list-item>
+            <v-list-item
+              class="pt-2"
+            >
               <v-list-item-title
                 class="d-flex align-center"
               > Login to the CSP console
