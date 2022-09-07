@@ -136,9 +136,6 @@ header._atat-page-header {
         height: 273px;
         width: 280px;
         .v-list-item {
-          &:last-child {
-            border-top: 1px solid $base-lighter;
-          }
         }
       }
       .v-list-item__title {
