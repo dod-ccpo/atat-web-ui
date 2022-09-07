@@ -45,7 +45,7 @@
 
         <v-menu
           :offset-y="true"
-          nudge-left="190"
+          nudge-left="240"
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
