@@ -1,5 +1,5 @@
 <template>
-  <v-system-bar id="topNavBar" app flat>
+  <v-system-bar id="TopNavBar" app flat>
     <ATATSVGIcon 
       color="white"
       width="110"
@@ -37,14 +37,21 @@
           </v-btn>
         </template>
 
-        <v-list class="topNavMenu">
+        <v-list class="_top-nav-menu">
           <v-list-item
             v-for="(item, idx) in item.menu"
             :key="idx"
             :id="'TopNavBarMenuItem_' + getIdText(item.title)"            
           >
+            <div v-if="item.icon" class="text-center _menu-icon mr-2">
+              <ATATSVGIcon
+                :name="item.icon.name"
+                :color="item.icon.color"
+                :width="item.icon.width"
+                :height="item.icon.height"
+              />
+            </div>
             <v-list-item-title>
-
               {{ item.title }}
             </v-list-item-title>
           </v-list-item>
@@ -79,8 +86,8 @@ export default class ATATTopNavBar extends Vue {
       title: "Acquisitions",
       menuPosition: "center",
       menu:[
-        { title: "My Packages", },
-        { title: "My Task Orders"},
+        { title: "My Packages" },
+        { title: "My Task Orders" },
       ]
     },
     {
@@ -89,8 +96,24 @@ export default class ATATTopNavBar extends Vue {
     {
       title: "Portals",
       menu:[
-        { title: "Global Service Desk"},
-        { title: "Mission Partner Portal"},
+        { 
+          title: "Global Service Desk",
+          icon: {
+            name: "person",
+            width: "14",
+            height: "15",
+            color: "base-dark",
+          }        
+        },
+        { 
+          title: "Mission Partner Portal",
+          icon: {
+            name: "support",
+            width: "18",
+            height: "17",
+            color: "base-dark",
+          }                
+        },
       ]
     },
     {

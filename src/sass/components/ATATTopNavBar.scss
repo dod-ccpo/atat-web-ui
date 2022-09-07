@@ -8,11 +8,11 @@
 }
 
 
-#topNavBar {
+#TopNavBar {
   @extend ._navbar-height;
   background-color: $nav-bar-background;
   
-  button{
+  button {
     @extend ._navbar-height;
     padding: 0 15;
     height: 60px !important;
@@ -42,6 +42,15 @@
           }
         }
         
+      }
+    }
+  }
+  ._top-nav-menu {
+    ._menu-icon {
+      width: 20px;
+      text-align: center;
+      > div {
+        margin: 0 auto;
       }
     }
   }
