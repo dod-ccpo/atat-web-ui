@@ -46,7 +46,6 @@ export default class App extends Vue {
       AppSections.setAppContentComponent(PortfolioSummary);
       break;  
     }
-    // add portfoliosummary
   }
 
   public get appContentComponent(): VueComponent {

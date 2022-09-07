@@ -13,13 +13,13 @@ header._atat-page-header {
   }
 
   &._portfolio-summary {
-    height: 8rem !important;
+    height: 85px !important;
     .v-toolbar__content {
-      height: 8rem !important;
+      height: 85px !important;
     }
     ._header-tab {
       .v-tabs-bar {
-        height: 32px;
+        height: 33px;
       }
       .v-tabs-slider-wrapper{
         height: 4px !important;
@@ -57,15 +57,15 @@ header._atat-page-header {
       border-radius: 4px;
       border: 1px solid transparent;
       outline: 1px solid transparent;
+      &:hover{
+        border-radius: 4px;
+        border: 1px solid $base-lighter;
+
+      }
       &.v-input--is-focused{
         border-radius: 4px;
         border: 1px solid $primary;
         outline: 1px solid $primary;
-
-      }
-      &:hover{
-        border-radius: 4px;
-        border: 1px solid $base-lighter;
 
       }
       .v-input__slot {
@@ -128,12 +128,21 @@ header._atat-page-header {
       }
     }
     &._portfolio {
+      .v-list {
+        height: 100%;
+        padding:0px;
+      }
       .v-menu__content {
+        height: 273px;
         .v-list-item {
           &:last-child {
             border-top: 1px solid $base-lighter;
           }
         }
+      }
+      .v-list-item__title {
+        padding: 12px 0px;
+        font-size: 16px;
       }
     }
   }

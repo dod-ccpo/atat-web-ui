@@ -42,7 +42,6 @@ export class PortfolioDataStore extends VuexModule {
 
   @Mutation
   public setPortfolioData(value: Portfolio): void {
-    // this.portfolio = {...this.portfolio, ...value}
     Object.assign(this.portfolio,value)
     storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
@@ -54,7 +53,7 @@ export class PortfolioDataStore extends VuexModule {
     const obj: Portfolio = {
       title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
       description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
-      status: "",
+      status: "Active",
       csp: "",
       serviceAgency:  AcquisitionPackage.organization?.service_agency || "",
       createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",

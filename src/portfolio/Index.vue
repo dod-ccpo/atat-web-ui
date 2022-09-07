@@ -4,16 +4,17 @@
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
-    <v-main class="_dashboard bg-base-lightest">
+    <v-main class="_dashboard bg-base-off-white">
       <PortfolioSummaryPageHead
         headline="Portfolio Summary"
         :items ="tabItems"
         :value.sync="tabIndex"
         :title.sync="title"
+        :portfolioStatus="portfolioStatus"
       />
       <v-container class="container-max-width bg-base-lightest">
             <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
-            <TaskOrder v-if="tabItems[tabIndex] === 'Task Order'"/>
+            <TaskOrder v-if="tabItems[tabIndex] === 'Task Orders'"/>
             <CSPPortalAccess v-if="tabItems[tabIndex] === 'CSP Portal Access'" />
       </v-container>
       <ATATFooter/>
@@ -32,7 +33,7 @@ import CSPPortalAccess from "@/portfolio/CSPPortalAccess.vue";
 import FundingTracker from "@/portfolio/FundingTracker.vue";
 import TaskOrder from "@/portfolio/TaskOrder.vue";
 import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
-import { SlideoutPanelContent } from "../../types/Global";
+import { SlideoutPanelContent, Portfolio } from "../../types/Global";
 import PortfolioData from "@/store/portfolio";
 
 @Component({
@@ -45,7 +46,7 @@ import PortfolioData from "@/store/portfolio";
     ATATSlideoutPanel,
   }
 })
-export default class Portfolio extends Vue {
+export default class PortfolioSummary extends Vue {
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
@@ -54,18 +55,16 @@ export default class Portfolio extends Vue {
   public tabIndex = 0;
   public tabItems = [
     "Funding Tracker",
-    "Task Order",
+    "Task Orders",
     "CSP Portal Access"
   ]
   public title = ""
   public portfolioStatus = ""
 
-
   public async loadOnEnter(): Promise<void>  {
     // grab data from store
     await PortfolioData.initialize()
     const portfolio = PortfolioData.portfolio
-    console.log(portfolio)
     if(portfolio){
       this.title = portfolio.title || "";
       this.portfolioStatus = portfolio.status || "";

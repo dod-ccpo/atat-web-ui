@@ -8,7 +8,7 @@
   >
     <div class=" d-flex justify-space-between width-100 align-center">
 
-        <div id="NameHeader" tabindex="-1">
+        <div id="NameHeader" tabindex="-1" class="mt-1">
           <v-text-field
             id="HeaderTextField"
             dense
@@ -27,7 +27,7 @@
             <v-tab
               v-for="tab in items"
               :key="tab"
-              class="font-size-14 pa-1 pt-2  pb-4 mr-5">{{tab}}</v-tab>
+              class="font-size-14 pa-1 pt-2  pb-5 mr-3">{{tab}}</v-tab>
 
           </v-tabs>
         </div>
@@ -35,7 +35,7 @@
       <div class="d-flex justify-end align-center">
         <v-btn
           icon
-          class="mr-5 icon-24 _header-button"
+          class="mr-2 icon-24 _header-button"
           id="Info_Button"
           @click="openSlideoutPanel"
           @keydown.enter="openSlideoutPanel"
@@ -45,7 +45,7 @@
 
         <v-menu
           :offset-y="true"
-          nudge-left="170"
+          nudge-left="200"
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
@@ -80,7 +80,7 @@
               </v-list-item-title>
             </v-list-item>
             <v-list-item
-            disabled
+            :disabled="portfolioStatus.toLowerCase() !== 'expired'"
             >
               <v-list-item-title>
                 Archive portfolio
@@ -88,16 +88,18 @@
             </v-list-item>
             <v-list-item>
               <v-list-item-title
+                class="d-flex align-center"
               > Login to the CSP console
-                  <v-icon
-                    aria-hidden="true"
-                    class="
-                      pl-1
-                      inline-block
-                      text-primary"
-                    >
-                    launch
-                  </v-icon>
+                <div style="width:30px">
+                  <ATATSVGIcon
+                    class="pl-2"
+                    name="launch"
+                    width="15"
+                    height="15"
+                    color="primary"
+                  />
+                </div>
+
               </v-list-item-title>
             </v-list-item>
           </v-list>
@@ -119,11 +121,13 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
   components: {
     ATATTextField,
     AddMembersModal,
+    ATATSVGIcon
   }
 })
 
@@ -137,13 +141,6 @@ export default class PortfolioSummaryPageHead extends Vue {
 
 
   public moreMenuOpen = false;
-  public moreMenuItems = [
-    "Invite members to portfolio",
-    "Rename portfolio",
-    "Leave this portfolio",
-    "Archive portfolio",
-    "Login to the CSP console"
-  ];
   public activeAppSection = AppSections.activeAppSection;
   public showMembersModal = false;
 
