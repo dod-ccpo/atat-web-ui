@@ -9,7 +9,7 @@
 
 #TopNavBar {
   @extend ._navbar-height;
-  background-color: $nav-bar-background;
+  background-color: $base-darker;
   z-index: 101 !important;
   
   button.v-btn {
@@ -20,7 +20,7 @@
     background-color: transparent;
     &:hover,
     &:focus{
-      background-color: $nav-bar-item-hover;
+      background-color: $base-dark;
     }
     .v-btn__content{
       @extend ._menu-text;
@@ -49,7 +49,9 @@
       .v-list{
         padding: 0px;
         
-        .v-list-item{
+        .v-list-item {
+          min-height: 40px;
+          // height: 40px;
           &:hover{
             background-color: $base-lightest !important;
             cursor: pointer;
@@ -62,12 +64,29 @@
       }
     }
   }
+
   ._top-nav-menu {
     ._menu-icon {
       width: 20px;
       text-align: center;
       > div {
         margin: 0 auto;
+      }
+    }
+
+    &._profile-menu {
+      min-width: 280px;
+      ._initials {
+        width: 48px;
+        height: 48px;
+        line-height: 48px;
+        text-align: center;
+        border-radius: 50%;
+        background-color: $primary-lighter;
+        font-size: 1.6rem !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: $base-darker;
       }
     }
   }
