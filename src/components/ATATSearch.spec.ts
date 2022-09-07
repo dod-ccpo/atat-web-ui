@@ -2,206 +2,211 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import ATATSearch from "@/components/ATATSearch.vue";
-import { SelectData } from "types/Global";
 import { DefaultProps } from "vue/types/options";
-import { EDAApi } from "../api/eda"
 import api from "@/api";
 Vue.config.productionTip = false;
 Vue.use(Vuetify);
 
-const mockApiCall = () => ({success: true, message: "success"})
-// jest.mock('@/api', () => {
-//   return jest.fn().mockImplementation(() => {
-//     return { edaApi: jest.fn().mockImplementation(() => { 
-//       return { search: mockApiCall } 
-//     }) 
-//     }
-//   })
-// })
 
-// jest.mock("../api/eda", () => {
-//   return {
-//     EDAApi: {
-//       search: jest.fn().mockImplementation(() => ({success: true, message: "success message"})),
-//     }
-//   };
-// });
 
 
 describe("Testing ATATSearch Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
+  let search: Wrapper<DefaultProps & Vue, Element>; 
   
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(ATATSearch, {
       localVue,
       vuetify,
-      propsData: {
-        label: "Test Search Component",
-        rules: [(v: string) => !!v || "is required"],
-      }
     });
-
+    search = wrapper.findComponent({ref: "atatSearchInput"});
   });
-  
-  describe("INITIALIZATION", () => { 
+
+  afterEach(() => {
+    jest.clearAllTimers();
+  })
+
+  describe("testing ATATSearch", () => {
+
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
       expect(wrapper.find("SearchWrapper")).toBeDefined()
     });
-  });
 
-  describe("PROPS", () => { 
-    it("id", async () => {
-      expect(wrapper.find(".id")).toBeDefined();
-      expect(wrapper.vm.$props.id).toBe("Search");
-
-      const id = "Test Search"
-      await wrapper.setProps({ id });
-      expect(wrapper.vm.$props.id).toBe(id)
-    });
-    it("label", async () => {
-      expect(wrapper.find(".label")).toBeDefined()
-      expect(wrapper.vm.$props.searchType).toBe("G-Invoicing")
+    it("set rules props then ensure the select wrapper is equal to rules props", async () => {
+      expect(await search.vm.$props.rules).toEqual([])
     })
-    it("searchType", async () => {
-      expect(wrapper.find(".searchType")).toBeDefined()
-      expect(wrapper.vm.$props.searchType).toBe("G-Invoicing")
 
-      const type = "Test - EDA search type"
-      await wrapper.setProps({ searchType: type })
-      expect(wrapper.vm.$props.searchType).toBe(type)
+    it("@Watch errorMessagesChanged() - change $data.errorMessages to [] to " +
+    "display $data.showHelpText", async () => {
+      await wrapper.setData({
+        errorMessages: [],
+        showLoader: false
+      });
+      expect(await wrapper.vm.$data.showHelpText).toBe(true);
     })
-  });
 
-  describe("DATA", () => { 
-    it("rules", async () => {
-      expect(wrapper.vm.rules[0]()).toBe("is required")
+    it("@Watch errorMessagesChanged() - populate $data.errorMessages to not show " +
+    "$data.showHelpText", async () => {
+      await wrapper.setData({
+        errorMessages: ['error Message 001'],
+        showLoader: true
+      });
+      expect(await wrapper.vm.$data.showHelpText).toBe(false);
     })
-  });
- 
-  describe("EVENTS", () => {
-    it("onInput()", async () => {
-      // set Error to be cleared during onInput
-      const errorMessage = ["SearchInputError001"]
-      const searchInputComponent = wrapper.findComponent({ref: "atatSearchInput"})
-      await searchInputComponent.setData({ errorBucket: errorMessage })
-      expect(wrapper.vm.$data.errorMessages).toEqual([])
-      await wrapper.vm.setErrorMessage()
-      
-      const value = "O2101-900-900-000099";
-      // ! does not update the expected value even with nextTick() used
-      await wrapper.vm.onInput(value)
-      
-      Vue.nextTick(() => {
-        expect(wrapper.vm.$props.value).toBe(value) // ! the value could be anything and still pass
-        expect(wrapper.vm.$props.showErrorAlert).toBeFalsy()
-        expect(wrapper.vm.$props.showSuccessAlert).toBeFalsy()
+
+    it("onInput() - supply valid input with existing $data.errorMessages then  " +
+      " ensure errorMessage has been cleared", async () => {
+      const inputValue = "new inputted value";
+      await wrapper.setData({
+        errorMessages: ['error Message 001']
       })
-      
-      expect(wrapper.vm.$props.showHelpText).toBeFalsy()
-      expect(wrapper.vm.$data.errorMessages).toEqual([])
+      await wrapper.vm.onInput(inputValue);
+      Vue.nextTick(()=>{
+        // wrapper.vm.clearErrorMessages() has been called.
+        expect(wrapper.vm.$data.errorMessages.length).toBe(0);
+      })     
     })
+
+    it("onInput() - supply valid input then ensure $data.showHelpText===true", async () => {
+      const inputValue = "new inputted value";
+      await wrapper.vm.onInput(inputValue);
+      Vue.nextTick(()=>{
+        expect(wrapper.vm.$props.value).toBe(inputValue);
+        expect(wrapper.vm.$data.showHelpText).toBe(true);
+      })     
+    })
+
+    it("search() - $props.searchType !== `EDA` returns !$data.helpText", async () => {    
+      await wrapper.setProps({ 
+        searchType: "OtherType",
+        value: "dummyText"
+      })
+      await wrapper.vm.search();
+      Vue.nextTick(() => {
+        expect(wrapper.vm.$data.showHelpText).toBe(false);
+      })
+    })
+
+    it("search() - $props.searchType !== `EDA`, accommodates for setTimeout " +
+        "returns !$data.showLoader", async () => {    
+      jest.useFakeTimers();
+      await wrapper.setProps({ 
+        searchType: "OtherType",
+        value: "dummyText"
+      })
+      await wrapper.vm.search();
+      //accommodate for setTimeout
+      jest.advanceTimersByTime(3000);
+      Vue.nextTick(() => {
+        expect(wrapper.vm.$data.showLoader).toBe(false);
+      })
+    })
+
+    it("search() - supplies $props.searchType === `EDA` and successfully " +
+    " displays success alert", async () => {    
+      // craft mock search
+      jest.spyOn(api.edaApi, 'search').mockImplementation(
+        ()=>Promise.resolve({
+          success: true,
+          message: "success",
+        }
+        ));
+
+      await wrapper.setProps({ 
+        searchType: "EDA",
+      })
+      await wrapper.vm.search();
+      await expect(wrapper.vm.$data.showSuccessAlert).toBe(true);
+    })
+
+    it("search() - supplies $props.searchType === `EDA` and successfully " +
+    " displays error alert", async () => {    
+      // craft mock search
+      jest.spyOn(api.edaApi, 'search').mockImplementation(
+        ()=>Promise.resolve({
+          success: false,
+          message: "error",
+        }
+        ));
+
+      await wrapper.setProps({ 
+        searchType: "EDA",
+      })
+      await wrapper.vm.search();
+      await expect(wrapper.vm.$data.showErrorAlert).toBe(true);
+    });
+
+
     it("setErrorMessage()", async () => {
-      const errorMessage = ["SearchInputError001"]
-      const searchInputComponent = wrapper.findComponent({ref: "atatSearchInput"})
-      await searchInputComponent.setData({ errorBucket: errorMessage })
-      expect(wrapper.vm.$data.errorMessages).toEqual([])
-      await wrapper.vm.setErrorMessage()
-      expect(wrapper.vm.$data.errorMessages).toBe(errorMessage)
+      const errorMessage = ["error Message 001"]
+      await wrapper.setData({
+        errorMessage
+      })
+      await wrapper.vm.setErrorMessage()     
+      Vue.nextTick(()=>{
+        expect(wrapper.vm.$data.errorMessages).toBe(errorMessage);
+      })
     })
-    it("errorMessagesChanged() - show Help Text when no Error Messages", async () => {
-      const errorMessage = ["SearchInputError001"]
-      const searchInputComponent = wrapper.findComponent({ref: "atatSearchInput"})
-      await searchInputComponent.setData({ errorBucket: errorMessage })
-      await wrapper.vm.setErrorMessage([])
-      expect(wrapper.vm.$data.errorMessages).toEqual(errorMessage)
-      
-      // after error message no longer present
-      await wrapper.vm.clearErrorMessages([])
-      await wrapper.vm.errorMessagesChanged([])
-      expect(wrapper.vm.$data.errorMessages).toEqual([])
-      expect(wrapper.vm.$data.showHelpText).toBeTruthy()
-    })
-    it("resetValidation()", async () => {
-      const errorMessage = ["SearchInputError003"]
-      const searchInputComponent = wrapper.findComponent({ref: "atatSearchInput"})
-      await searchInputComponent.setData({ errorBucket: errorMessage })
-      await wrapper.vm.setErrorMessage()
+
+    it("onBlur() - call event and ensure `blur` event is emitted with $props.value ", 
+      async () => {
+        const value = "new input value";
+        await wrapper.setProps({
+          value
+        })
+        const tb = wrapper.find("input")
+        await tb.trigger("blur");
+        expect(await wrapper.emitted("blur")?.flat()[0]).toBe(value);
+      })
+    
+    it("resetValidation() - supply $data.errorMessage[] and ensure v-text-field " +
+      "errorBucket gets cleared ", async () => {
+      const errorMessage = ["error Message 001"]
+      await wrapper.setData({
+        errorMessage
+      })
       await wrapper.vm.resetValidation()
-      expect((wrapper.vm.$refs.atatSearchInput as any).errorBucket).toEqual([])
+      expect(search.vm.$data.errorBucket).toEqual([]);
     })
-    it("onBlur()", async () => {
-      expect(true)
-      // const value = "O2101-900-900-000099";
-      // const tbWrapper = await wrapper.find({
-      //   ref: "atatSearchInput"
-      // })
-      // // await tbWrapper.setProps({ value: value })
-      // console.log( await tbWrapper.vm.$props)
-      // const tb = tbWrapper.find("._search-input")
-      // tb.trigger("blur")
-    })
-    it("setMask() - regex mask", async () => {
+ 
+    it("setMask() - supply regex mask to ensure it populates $data.maskObj.regex", async () => {
       const mask = ['O[0-9]{4}-[0-9]{3}-[0-9]{3}-[0-9]{6}(.[0-9])?$']
       await wrapper.setProps({ 
         mask,
         isMaskRegex: true,
       })
       await wrapper.vm.setMask()
-      expect(wrapper.vm.$props.mask).toBe(mask)
-      expect(wrapper.vm.$props.isMaskRegex).toBeTruthy()
+      expect(await wrapper.vm.$props.mask).toBe(mask)
+      expect(await wrapper.vm.$data.maskObj.regex).toBe(mask[0]);
     })
-    it("setMask() - not a regex mask", async () => {
-      const mask = "word mask"
-      await wrapper.setProps({ mask })
-      await wrapper.vm.setMask()
-      expect(wrapper.vm.$props.mask).toBe(mask)
-      expect(wrapper.vm.$props.isMaskRegex).toBeFalsy()
-    })
-    it.skip("setMask() - regex mask empty", async () => {
-      // ? will this.mask ever be undefined or a falsy value?
-      // not sure this is will do what it is suppose to
-      // the code might have to be updated
-      const mask: any = []
-      await wrapper.setProps({ 
-        mask,
-        isMaskRegex: true,
-      })
-      await wrapper.vm.setMask()
-      expect(wrapper.vm.$props.mask).toBe("")
-      expect(wrapper.vm.$props.isMaskRegex).toBeTruthy()
-    })
-    it("search()", async () => {    
-      // ! needs the this._value (input value) to be a value other wise will not run
-      // TODO: mock api.edaApi.search() when searchType is EDA
-      // TODO: set value which will allow for the simulation to run
-      // TODO: success response x2 (EDA and other)
-      // TODO: separate test with error response x2 (EDA and other)
 
-      // await wrapper.vm.onInput("O2101-900-900-000009")
-      await wrapper.setProps({ 
-        searchType: "OtherType",
-      })
-      await wrapper.setData({
-        errorMessages: [],
-        _value: "dummyText"
-      })
-      await wrapper.vm.search()
-      Vue.nextTick(() => {
-        expect(wrapper.vm.$props.searchCount).toBe(1)
-        console.log(wrapper.vm.$props.searchCount)
-        console.log("NEXT TICK: ", wrapper.vm.$data.searchCount)
+    it("setMask() - supply empty regex mask to ensure it populates $data.maskObj ", 
+      async () => {
+        const mask = ['']
+        await wrapper.setProps({ 
+          isMaskRegex: true,
+          mask
+        })
+        await wrapper.vm.setMask()
+        expect(await wrapper.vm.$data.maskObj.regex).toBe(mask[0]);
       })
 
-      console.log("SuccessAlert", wrapper.vm.$data.showSuccessAlert);
-      // console.log("ErrorAlert", wrapper.vm.$data.showErrorAlert);
-      // console.log("helpTxt", wrapper.vm.$data.showHelpText);
-      // console.log("Loader", wrapper.vm.$data.showLoader);
-      console.log("Count", wrapper.vm.$data.searchCount);
-    })
+    it("setMask() - supply non-regex mask to ensure it populates $data.maskObj", 
+      async () => {
+        const mask = "word mask"
+        await wrapper.setProps({ 
+          isMaskRegex: false,
+          mask
+        })
+        await wrapper.vm.setMask()
+        expect(await wrapper.vm.$data.maskObj.mask).toBe(mask);
+      })
+
+  
   });
 
 });

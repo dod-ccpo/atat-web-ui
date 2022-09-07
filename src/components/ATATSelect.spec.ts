@@ -32,7 +32,6 @@ describe("Testing ATATSelect Component", () => {
 
     it("set rules props then ensure the select wrapper is equal to rules props", async () => {
       const select = await wrapper.find({ ref: "atatSelect" })
-      console.log(await select.vm.$props.rules)
       expect(await select.vm.$props.rules).toEqual([])
     })
 
