@@ -5,8 +5,9 @@
       We encourage your agency to use
       <a
         class="_text-link"
-        :href="gInvoiceHref"
+        :href="$sanitize(gInvoiceHref)"
         target="_blank"
+        rel="noopener"
       >
         <span class="_external-link">Government Invoicing (G-Invoicing)</span>
       </a>
@@ -61,9 +62,10 @@
       and may be accepted on a direct citation or reimbursable basis and is defined in the
       <a
         class="_text-link"
-        :href="federalAcqHref"
+        :href="$sanitize(federalAcqHref)"
         target="_blank"
         id="FARLink"
+        rel="noopener"
       >
         Federal Acquisition Regulation (FAR) <span class="_external-link">253.208</span>
       </a>.

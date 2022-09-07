@@ -25,6 +25,7 @@ import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
+import Launch from "@/components/icons/Launch.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Pdf from "@/components/icons/Pdf.vue";
 import Person from "@/components/icons/Person.vue";
@@ -51,6 +52,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     ExclamationMark,
     ExternalLink,
     FilePresent,
+    Launch,
     MonetizationOn,
     Pdf,
     Person,
