@@ -34,10 +34,10 @@ header._atat-page-header {
         border: 1px solid transparent !important;
         text-transform: none !important;
         letter-spacing: .025rem !important;
+        &:before{
+          background-color: transparent !important;
+        }
         &:focus-visible {
-          &:before{
-            background-color: transparent !important;
-          }
           background-color: transparent !important;
           border: 1px solid $primary !important;
           border-radius: 4px 4px 0 0;
@@ -135,8 +135,6 @@ header._atat-page-header {
       .v-menu__content {
         height: 273px;
         width: 280px;
-        .v-list-item {
-        }
       }
       .v-list-item__title {
         padding: 12px 0px;
