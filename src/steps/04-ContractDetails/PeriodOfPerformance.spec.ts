@@ -5,10 +5,8 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import PeriodOfPerformance from "@/steps/04-ContractDetails/PeriodOfPerformance.vue";
 import validators from "@/plugins/validation";
-import sanitize  from "@/plugins/sanitize";
 import { DefaultProps } from "vue/types/options";
 Vue.use(Vuetify);
-Vue.use(sanitize);
 
 
 describe("Testing PeriodOfPerformance Component", () => {
