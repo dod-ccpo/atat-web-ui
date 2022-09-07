@@ -7,7 +7,7 @@ module.exports = {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: [ "src/**/*.vue", "src/**/index.ts"],
+  collectCoverageFrom: [ "src/**/*.vue", "src/**/index.ts", "src/plugins/*.ts", "src/main.ts"],
   
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [ ],
@@ -25,6 +25,9 @@ module.exports = {
     "js",
     "vue"
   ],
+  moduleNameMapper:{
+    '.+\\.(css|styl|less|sass|scss)$': "<rootDir>/empty-module.js"
+  },
   // A preset that is used as a base for Jest's configuration
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
 
@@ -42,6 +45,8 @@ module.exports = {
     "<rootDir>/src/api/**/*.spec.ts",
     "<rootDir>/src/action-handlers/**/*.spec.ts",
     "<rootDir>/src/portfolio/**/*.spec.ts",
+    "<rootDir>/src/plugins/*.spec.ts",
+    "<rootDir>/src/*.spec.ts"
   ],
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [  "<rootDir>/node_modules" ],
@@ -53,7 +58,7 @@ module.exports = {
   transform: {
     "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
     "^.+\\.ts$": "ts-jest",
-    "^.+\\.vue$": ["@vue/vue2-jest", {"sourceMaps": "inline"}]
+    "^.+\\.vue$": ["@vue/vue2-jest", {"sourceMaps": "inline"}],
   },
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
