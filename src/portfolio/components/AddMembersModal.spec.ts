@@ -42,7 +42,6 @@ describe("Testing AddMembersModal", () => {
       .toContain("Please use a standard domain format");
   });
 
-
   it("validates email address - missing domain", async () => {
     wrapper.vm.$data.enteredEmails = [{ email: "", isValid: false }];
     const isValid = await wrapper.vm.validateEmail("foobar@mail", 0);

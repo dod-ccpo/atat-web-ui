@@ -203,7 +203,6 @@ export default class AddMembersModal extends Vue {
   }
 
   public addInputEventListeners(vm: any, input: HTMLInputElement): void {
-
     input.addEventListener("paste", function (e: ClipboardEvent) {
       e.preventDefault();
       const { clipboardData } = e;

@@ -1,6 +1,6 @@
 import { ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@/api/models";
 import { Checkbox, SelectData } from "types/Global";
-import _, { random } from "lodash";
+import _ from "lodash";
 import Periods from "@/store/periods";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
