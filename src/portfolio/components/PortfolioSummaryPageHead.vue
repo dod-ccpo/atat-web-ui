@@ -45,7 +45,7 @@
 
         <v-menu
           :offset-y="true"
-          nudge-left="200"
+          nudge-left="190"
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
@@ -88,21 +88,18 @@
               </v-list-item-title>
             </v-list-item>
             <v-list-item
-              class="pt-2"
+              class="pt-1"
             >
               <v-list-item-title
                 class="d-flex align-center"
               > Login to the CSP console
-                <div style="width:30px">
                   <ATATSVGIcon
-                    class="pl-2"
+                    class="ml-2"
                     name="launch"
                     width="15"
                     height="15"
                     color="primary"
                   />
-                </div>
-
               </v-list-item-title>
             </v-list-item>
           </v-list>
