@@ -335,3 +335,15 @@ export interface Portfolio {
   members?: User[];
   updated?: string;
 }
+
+export interface EmailEntry {
+  key: string;
+  email: string;
+  isValid: boolean | null;
+  isExisting: boolean | null;
+}
+
+export interface MemberInvites {
+  emails: string[];
+  role: string;
+}
