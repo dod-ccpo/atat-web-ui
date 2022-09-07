@@ -1,8 +1,8 @@
 <template>
-  <v-app-bar
+  <v-app-bar 
     id="PageHeader" 
-    flat 
     app
+    flat 
     class="_atat-page-header"
   >
     <div class="d-flex justify-space-between width-100 align-center">

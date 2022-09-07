@@ -60,17 +60,15 @@
                 <div class="font-size-12 text-base">
                   {{ currentUser.email }}
                 </div>
-
               </div>
-              
             </v-list-item>
+
             <hr v-if="menuItem.separatorBefore" :key="'separator'+ idx" class="my-2" />
 
             <v-list-item
               :key="idx"
               :id="'TopNavBarMenuItem_' + getIdText(menuItem.title)"
             >
-            
               <div v-if="menuItem.icon" class="text-center _menu-icon mr-2">
                 <ATATSVGIcon
                   :name="menuItem.icon.name"
@@ -87,7 +85,6 @@
         </v-list>
       </v-menu>
     </div>
-    
   </v-system-bar>
 </template>
 

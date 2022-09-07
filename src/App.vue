@@ -32,8 +32,6 @@ export default class App extends Vue {
 
   @Watch("activeAppSection")
   public activeAppSectionChanged(newActiveSection: string): void {
-    console.log(newActiveSection);
-    debugger;
     switch (newActiveSection) {
     case this.sectionTitles.AcquisitionPackage:
       AppSections.setAppContentComponent(AppPackageBuilder);
