@@ -6,10 +6,16 @@ import {
 
 import { AdditionalButton } from "@/store/steps/types";
 
+export interface SubmenuIcon {
+  name: string;
+  height: string;
+  width: string;
+  color: string;
+}
 export interface TopNavItems {
   title: string;
-  component: Component;
-  icon?: boolean;
+  component?: Component;
+  icon?: SubmenuIcon;
   link?: string;
   menu?: TopNavItems[]
   menuPosition?: string;

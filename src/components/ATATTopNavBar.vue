@@ -1,48 +1,58 @@
 <template>
   <v-system-bar id="topNavBar" app flat>
+    <ATATSVGIcon 
+      color="white"
+      width="110"
+      height="38"
+      name="disaLogo"
+      class="pl-4 pt-1"
+    />
     <div class="d-flex justify-end width-100">
       <v-menu
         v-for="(item, idx) in topNavMenuItems"
-                :key="idx"
-         :offset-y="true"
-          nudge-left="0"
-          nudge-top="3"
-          :id="'topNavButton_' + idx"
-          attach
+        :key="idx"
+        :offset-y="true"
+        nudge-left="0"
+        nudge-top="3"
+        :id="'TopNavButton_' + idx"
+        attach
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            text
+            dark
+            v-bind="attrs"
+            v-on="on"
+            :id="'TopNavBarItem_' + getIdText(item.title)"
           >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                text
-                dark
-                v-bind="attrs"
-                v-on="on"
-                :id="'topNavBarItem_' + idx"
-              >
-                {{ item.title }}
-              <ATATSVGIcon
-                v-show="item.menu"
-                name="chevronDown" 
-                color="white" 
-                class="ml-2"
-                :width="10" 
-                :height="7" 
-              />
-              </v-btn>
-            </template>
+            {{ item.title }}
+          <ATATSVGIcon
+            v-show="item.menu"
+            name="chevronDown" 
+            color="white" 
+            class="ml-2"
+            :width="10" 
+            :height="7" 
+          />
+          </v-btn>
+        </template>
 
-            <v-list class="topNavMenu">
-              <v-list-item
-                 v-for="(item, idx) in item.menu"
-                :key="idx"
-              >
-                <v-list-item-title :id="'topNavBarMenuItem_' + idx">
-                  {{ item.title }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-    </v-system-bar>
+        <v-list class="topNavMenu">
+          <v-list-item
+            v-for="(item, idx) in item.menu"
+            :key="idx"
+            :id="'TopNavBarMenuItem_' + getIdText(item.title)"            
+          >
+            <v-list-item-title>
+
+              {{ item.title }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
+    
+  </v-system-bar>
 </template>
 
 <script lang="ts">
@@ -50,6 +60,8 @@ import { TopNavItems } from "types/Global";
 import Vue from "vue";
 import { Component} from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
@@ -62,14 +74,14 @@ export default class ATATTopNavBar extends Vue {
   private topNavMenuItems: TopNavItems = [
     {
       title: "Dashboard",
-      menuPosition: "center",
-      menu:[
-        { title: "My Packages"},
-        { title: "My Task Orders"},
-      ]
     },
     {
       title: "Acquisitions",
+      menuPosition: "center",
+      menu:[
+        { title: "My Packages", },
+        { title: "My Task Orders"},
+      ]
     },
     {
       title: "Portfolios",
@@ -92,6 +104,10 @@ export default class ATATTopNavBar extends Vue {
       ]
     }
   ]
+
+  public getIdText(str: string): string {
+    return getIdText(str);
+  }
 
 }
 </script>

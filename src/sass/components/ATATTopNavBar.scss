@@ -1,19 +1,19 @@
-#navbar-height{
-  height: 60px !important;
+._navbar-height {
+  height: 56px !important;
 }
 
-#menu-text{
+._menu-text {
   font-size: 1.4rem !important;
   font-weight: 400;
 }
 
 
-#topNavBar{
-  @extend #navbar-height;
+#topNavBar {
+  @extend ._navbar-height;
   background-color: $nav-bar-background;
   
   button{
-    @extend #navbar-height;
+    @extend ._navbar-height;
     padding: 0 15;
     height: 60px !important;
     background-color: transparent;
@@ -22,7 +22,7 @@
       background-color: $nav-bar-item-hover;
     }
     .v-btn__content{
-      @extend #menu-text;
+      @extend ._menu-text;
     }
   }
 
@@ -38,7 +38,7 @@
             cursor: pointer;
           }
           .v-list-item__title{
-            @extend #menu-text;
+            @extend ._menu-text;
           }
         }
         

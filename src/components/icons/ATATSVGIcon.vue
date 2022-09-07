@@ -20,6 +20,7 @@ import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
+import DisaLogo from "@/components/icons/DisaLogo.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
@@ -43,6 +44,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     Close,
     ControlPoint,
     Currency,
+    DisaLogo,
     Edit,
     ExclamationMark,
     ExternalLink,
