@@ -36,7 +36,7 @@ import CSPPortalAccess from "@/portfolio/CSPPortalAccess.vue";
 import FundingTracker from "@/portfolio/FundingTracker.vue";
 import TaskOrder from "@/portfolio/TaskOrder.vue";
 import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
-import { SlideoutPanelContent, Portfolio } from "../../types/Global";
+import { SlideoutPanelContent } from "../../types/Global";
 import PortfolioData from "@/store/portfolio";
 
 @Component({
