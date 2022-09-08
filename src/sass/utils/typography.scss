@@ -284,6 +284,33 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
     background-color: $success;
   }
 }
+.tag {
+  border-radius: 4px;
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0 4px;
+  font-size: 1.4rem;
+
+  &.tag-blue {
+    background-color: $info-dark;
+  }
+  &.tag-green {
+    background-color: $success;
+  }
+  &.tag-warning {
+    background-color: $warning;
+  }
+  &.tag-error {
+    background-color: $error;
+  }
+  &.tag-base {
+    background-color: $base-dark;
+  }
+  &.tag-primary {
+    background-color: $primary;
+  }
+}
 
 ._semibold {
   font-weight: 500 !important;

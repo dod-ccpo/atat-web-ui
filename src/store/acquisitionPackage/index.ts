@@ -445,7 +445,6 @@ export class AcquisitionPackageStore extends VuexModule {
     await DescriptionOfWork.initialize();
     await Attachments.initialize();
     await FinancialDetails.initialize();
-    await Portfolio.initialize()
     
     if (this.initialized) {
       return;

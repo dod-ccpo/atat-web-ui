@@ -21,6 +21,7 @@
           <CSPPortalAccess v-if="tabItems[tabIndex] === 'CSP Portal Access'" />
       </v-container>
       <ATATFooter/>
+
     </v-main>
   </div>
 </template>
@@ -63,6 +64,7 @@ export default class PortfolioSummary extends Vue {
   ]
   public title = ""
   public portfolioStatus = ""
+  public portfolioDescription = ""
 
   public async loadOnEnter(): Promise<void>  {
     // grab data from store
@@ -71,6 +73,7 @@ export default class PortfolioSummary extends Vue {
     if(portfolio){
       this.title = portfolio.title || "";
       this.portfolioStatus = portfolio.status || "";
+      this.portfolioDescription = portfolio.description || "";
     }
   }
   public async mounted(): Promise<void>{

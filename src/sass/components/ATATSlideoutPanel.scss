@@ -27,4 +27,32 @@
     overflow-y: scroll;
     max-height: calc(100vh - 60px);
   }
+._portfolioDrawer {
+  font-size: 14px !important;
+  ._drawerTextArea {
+    .v-input__slot {
+      font-size: 14px !important;
+      &::before {
+        display: none
+      }
+      &::after {
+        display: none
+      }
+      textarea {
+        padding-top: 0px;
+      }
+    }
+  }
+  hr {
+    z-index: auto;
+  }
+  ._text-link {
+    text-decoration: underline;
+    color: $primary !important;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
 }
