@@ -13,7 +13,7 @@ import {stringObj } from "types/Global";
 import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
-import Aws from "@/components/icons/AWS.vue";
+import Aws from "@/components/icons/Aws.vue";
 import Azure from "@/components/icons/Azure.vue";
 import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
@@ -25,7 +25,7 @@ import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
-import Gcp from "@/components/icons/GCP.vue";
+import Gcp from "@/components/icons/Gcp.vue";
 import Launch from "@/components/icons/Launch.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Oracle from "@/components/icons/Oracle.vue";

@@ -1,8 +1,6 @@
 <template>
-  <!-- eslint-disable -->
-  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-       viewBox="0 0 40 40" style="enable-background:new 0 0 40 40;" xml:space="preserve">
-
+  <svg viewBox="0 0 40 40">
+    <!-- eslint-disable -->
       <path class="st0" d="M12.6,32.2C5.6,32.2,0,26.6,0,19.6C0,12.6,5.6,7,12.6,7h14.8c7,0,12.6,5.6,12.6,12.6c0,7-5.6,12.6-12.6,12.6
 	H12.6z" fill="#FFFFFF"/>
     <path class="st1" d="M12.6,32.2C5.6,32.2,0,26.6,0,19.6C0,12.6,5.6,7,12.6,7h14.8c7,0,12.6,5.6,12.6,12.6c0,7-5.6,12.6-12.6,12.6

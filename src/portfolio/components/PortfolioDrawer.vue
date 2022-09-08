@@ -25,7 +25,7 @@
           Cloud Service Provider
           <div class="d-flex align-center">
             <ATATSVGIcon
-            :name="portfolio.csp?.toLowerCase()"
+            :name="csp.toLowerCase()"
             width="20"
             height="16"
             class="mr-1"
@@ -69,21 +69,23 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import PortfolioData from "@/store/portfolio";
-import format from "date-fns/format"
+import { format, parseISO } from "date-fns"
 import { Portfolio } from "types/Global";
-import parseISO from "date-fns/parseISO";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 
 
 @Component({
-  components: {ATATSVGIcon}
+  components: {
+    ATATSVGIcon,
+  }
 })
 
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio= {}
   public provisionedTime = ""
   public updateTime = ""
+  public csp = ""
   public saveDescription(): void {
     PortfolioData.setPortfolioData(this.portfolio)
   }
@@ -110,12 +112,13 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const portfolio = await PortfolioData.getPortfolioData()
-    if (portfolio) {
-      this.portfolio = portfolio
-      if(portfolio.provisioned && portfolio.updated){
-        this.provisionedTime = this.formatDate(portfolio.provisioned)
-        this.updateTime = this.formatDate(portfolio.updated)
+    const storeData = await PortfolioData.getPortfolioData()
+    if (storeData) {
+      this.portfolio = storeData
+      if(storeData.provisioned && storeData.updated && storeData.csp){
+        this.provisionedTime = this.formatDate(storeData.provisioned)
+        this.updateTime = this.formatDate(storeData.updated)
+        this.csp = storeData.csp
       }
     }
   }

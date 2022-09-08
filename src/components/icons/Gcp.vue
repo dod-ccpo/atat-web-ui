@@ -1,8 +1,6 @@
 <template>
-  <!-- eslint-disable -->
-  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-       viewBox="0 0 40 40" style="enable-background:new 0 0 40 40;" xml:space="preserve">
-
+  <svg viewBox="0 0 40 40">
+    <!-- eslint-disable -->
  <path class="st0" d="M26.1,30.4l-4.1,7.1H11.3c-1,0-1.8-0.5-2.3-1.3L0.4,21.1c-0.5-0.8-0.5-1.8,0-2.7l3.3-5.8l4.1,7.1l6.1,10.7H26.1
 	L26.1,30.4z" fill="#F8BB16"/>
     <path class="st1" d="M39.7,21.1L31,36.2c-0.5,0.8-1.4,1.3-2.3,1.3h-6.6l4.1-7.1l6.1-10.7L26.1,9.1h8.2l5.4,9.3
@@ -10,7 +8,8 @@
     <path class="st2" d="M34.3,9.1H13.8L7.7,19.8l-4.1-7.1L9,3.3C9.5,2.5,10.4,2,11.3,2h17.3c1,0,1.8,0.5,2.3,1.3L34.3,9.1L34.3,9.1z" fill="#0074BC"/>
     <path class="st3" d="M26.1,9.1H13.8L7.7,19.8l6.1,10.7h12.3l6.2-10.7L26.1,9.1L26.1,9.1z M20,25.1c-3,0-5.3-2.4-5.3-5.3
 	c0-3,2.4-5.3,5.3-5.3c3,0,5.3,2.4,5.3,5.3C25.3,22.7,22.9,25.1,20,25.1L20,25.1z" fill="#E2E3E4"/>
-</svg>
+    <!-- eslint-enable -->
+  </svg>
 </template>
 
 <script lang='ts'>
