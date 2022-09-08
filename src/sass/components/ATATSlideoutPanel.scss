@@ -32,13 +32,31 @@
   ._portfolio-panel {
     padding: 16px 24px 0px;
     ._drawerTextArea {
+      border-radius: 4px;
+      border: 1px solid transparent;
+      outline: 1px solid transparent;
+      &:hover{
+        border-radius: 4px;
+        border: 1px solid $base-lighter;
+
+      }
+      &.v-input--is-focused{
+        border-radius: 4px;
+        border: 1px solid $primary;
+        outline: 1px solid $primary;
+
+      }
       .v-input__slot {
         font-size: 14px !important;
+        padding: 2px;
         &::before {
           display: none
         }
         &::after {
           display: none
+        }
+        .v-text-field input {
+          padding: 0px;
         }
         textarea {
           padding-top: 0px;

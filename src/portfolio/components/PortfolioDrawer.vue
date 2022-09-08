@@ -8,7 +8,7 @@
           v-model="portfolio.description"
           auto-grow
           autocomplete="off"
-          class="_drawerTextArea pt-0 mb-4"
+          class="_drawerTextArea pt-0 mb-4 ml-n1"
           dense
           hide-details
           placeholder="Add a description"
