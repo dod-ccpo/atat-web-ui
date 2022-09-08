@@ -47,7 +47,8 @@ describe("Portfolio Store", () => {
       status: "",
       sys_created_by: "",
       sys_created_on: "",
-      sys_updated_on: ""
+      sys_updated_on: "",
+      funding_request: ''
     })
   })
   afterEach(()=>{
@@ -98,7 +99,9 @@ describe("Portfolio Store", () => {
       status: "",
       sys_created_by: "Johnnny test",
       sys_created_on: "Today",
-      sys_updated_on: "Tomorrow"})
+      sys_updated_on: "Tomorrow",
+      funding_request: ''
+    })
 
     await portfolioStore.initialize();
     Vue.nextTick(() => {
