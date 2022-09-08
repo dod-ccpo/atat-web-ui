@@ -13,7 +13,7 @@ import {stringObj } from "types/Global";
 import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
-import AWS from "@/components/icons/AWS.vue";
+import Aws from "@/components/icons/AWS.vue";
 import Azure from "@/components/icons/Azure.vue";
 import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
@@ -25,8 +25,10 @@ import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
+import Gcp from "@/components/icons/GCP.vue";
 import Launch from "@/components/icons/Launch.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
+import Oracle from "@/components/icons/Oracle.vue";
 import Pdf from "@/components/icons/Pdf.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
 import Remove from "@/components/icons/Remove.vue";
@@ -39,7 +41,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 @Component({
   components:{
-    AWS,
+    Aws,
     Azure,
     Calendar,
     ChevronDown,
@@ -51,8 +53,10 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     ExclamationMark,
     ExternalLink,
     FilePresent,
+    Gcp,
     Launch,
     MonetizationOn,
+    Oracle,
     Pdf,
     PlusSign,
     Remove,
