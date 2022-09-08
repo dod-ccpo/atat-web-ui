@@ -688,7 +688,7 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves data for a given TableDTO/store property
    */
-  async saveData<BaseTableDTO>({
+  async saveData<TableDTO>({
     data,
     storeProperty,
   }: {
@@ -890,6 +890,21 @@ export class AcquisitionPackageStore extends VuexModule {
       this.acquisitionPackage.funding_request = fundingRequest.sys_id || "";
       this.setAcquisitionPackage(this.acquisitionPackage);
     }
+  }
+
+  @Action({rawError: true})
+  async saveAcquisitionPackage(data: AcquisitionPackageDTO):Promise<void>{
+       
+    try {
+      const sysId = data.sys_id || "";
+      const savedPackage = await api.acquisitionPackageTable.update(sysId, data);
+      this.setAcquisitionPackage(savedPackage);
+      
+    } catch (error) {
+      console.error('error occured saving acquisition package');
+    }
+
+    
   }
 }
 

@@ -9,6 +9,7 @@ import { FundingIncrementDTO, FundingPlanDTO, FundingRequestDTO, FundingRequestF
   FundingRequestMIPRFormDTO, TaskOrderDTO } from "@/api/models";
 import TaskOrder from "../taskOrder";
 import api from "@/api";
+import AcquisitionPackage, { AcquisitionPackageStore } from "../acquisitionPackage";
 
 const ATAT_FINANCIAL_DETAILS__KEY = "ATAT_FINANCIAL_DETAILS__KEY";
 
@@ -176,6 +177,11 @@ export class FinancialDetailsStore extends VuexModule {
 
     const savedForm = await this.saveFundingRequestFSForm(formToSave);
     this.setFundingRequestFSForm(savedForm);
+    const acquisition_package = AcquisitionPackage.acquisitionPackage;
+    if(acquisition_package){
+      acquisition_package.funding_request = savedForm.sys_id || "";
+      await AcquisitionPackage.saveAcquisitionPackage(acquisition_package);
+    }
   }
 
   @Action({ rawError: true })
@@ -461,6 +467,7 @@ export class FinancialDetailsStore extends VuexModule {
 
     const savedFundingRequest = await saveFundingRequestToDISA(fundingRequest);
     this.setFundingRequest(savedFundingRequest);
+
   }
 
   @Action({rawError: true})
