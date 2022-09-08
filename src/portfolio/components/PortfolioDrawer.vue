@@ -53,7 +53,7 @@
     <div class="pl-4">
       <h3>Portfolio Members</h3>
     </div>
-    <hr class="my-8" />
+    <hr class="mb-4 " />
     <div class="_portfolio-panel pt-0">
       <div>
         Provisioned on {{provisionedTime}}
