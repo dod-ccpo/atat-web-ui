@@ -4,6 +4,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { DefaultProps } from "vue/types/options";
 import { Checkbox } from "../../types/Global";
+import _ from "lodash";
 Vue.config.productionTip = false;
 Vue.use(Vuetify);
 
@@ -16,9 +17,27 @@ describe("Testing ATATSelect Component", () => {
     {
       id: "CheckboxOne",
       label: "CheckboxOne",
-      value: "CheckboxOne",
+      value: "1",
     },
+    {
+      id: "CheckboxTwo",
+      label: "CheckboxTwo",
+      value: "2",
+    },
+    {
+      id: "Other",
+      label: "Other",
+      value: "Other",
+    },
+    {
+      id: "NONE",
+      label: "NONE",
+      value: "NONE",
+    },
+
   ];  
+
+  const rules = [(v: string) => !!v || "is required"];
   
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -37,32 +56,70 @@ describe("Testing ATATSelect Component", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
-  });
 
-  describe("PROPS", () => { 
-    it("disables checkboxes", async()=>{
-      await wrapper.setProps({ disabled: true });
-      expect(wrapper.find(".v-input--is-disabled")).toBeDefined;
-
-      await wrapper.setProps({ disabled: false });
-      expect(wrapper.find(".v-input--is-disabled")).toBeUndefined;
+    it("@Watch validateCheckboxes - set $props.rules to ensure " +
+          "$data.checkboxRules === $props.rules", async ()=> {
+      await wrapper.setProps({rules})
+      wrapper.vm.$data.validateCheckboxes = true;
+      Vue.nextTick(()=>{
+        expect(wrapper.vm.$data.checkboxRules).toEqual(rules);
+      })
     });
 
-    it("adds error classes", async()=>{
-      await wrapper.setProps({ error: true });
-      expect(wrapper.find(".error--text")).toBeDefined;
+    it("otherId() - sets $props.otherValue to create id for `other` component  ", async()=>{
+      const _otherValue = "Other"
+      await wrapper.setProps({
+        otherValue: _otherValue
+      })
+      const _otherId = await wrapper.vm.otherId;
+      expect(_otherId).toBe(_otherValue);
+    })
 
-      await wrapper.setProps({ error: false });
-      expect(wrapper.find(".error--text")).toBeUndefined;
-    });
+    it("@Watch `selected` - sets $props.otherValue to ensure default " +
+      "#Other_text_field is displayed", async()=>{
+      const _otherValue = "Other";
+      await wrapper.setProps({
+        otherValue: _otherValue,
+        value: [_otherValue],
+        hasOtherValue: true
+      })
+      const otherCheckBox = await wrapper.find("#Checkbox_Other");
+      await otherCheckBox.trigger("click");
+      Vue.nextTick(()=> {
+        expect(wrapper.find("#Other_text_field").exists()).toBe(true)
+      })
+    })
 
-    it("styles items in a card", async()=>{
-      await wrapper.setProps({ card: true });
-      expect(wrapper.find("._checkbox-card")).toBeDefined;
+    it("@Watch `selected` - sets $props.otherValue & $props.otherEntryType === textarea " +
+    "to ensure Other_text_area is displayed", async()=>{
+      const _otherValue = "Other";
+      await wrapper.setProps({
+        otherValue: _otherValue,
+        value: [_otherValue],
+        hasOtherValue: true,
+        otherEntryType: "textarea"
+      })
+      const otherCheckBox = await wrapper.find("#Checkbox_Other");
+      await otherCheckBox.trigger("click");
+      Vue.nextTick(()=> {
+        expect(wrapper.find("#Other_text_area").exists()).toBe(true)
+      })
+    })
 
-      await wrapper.setProps({ card: false });
-      expect(wrapper.find("._checkbox-card")).toBeUndefined;
-    });
+    it("@Watch `selected` - ", async()=>{
+      await wrapper.setProps({
+        value: ["NONE"],
+        hasOtherValue: true,
+        otherEntryType: "textarea"
+      })
+      const otherCheckBox = await wrapper.find("#Checkbox_Other");
+      await otherCheckBox.trigger("click");
+      Vue.nextTick(()=> {
+        expect(wrapper.find("#Other_text_area").exists()).toBe(true)
+      })
+    })
+
+
   });
 
 });
