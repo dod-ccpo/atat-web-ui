@@ -11,15 +11,9 @@ describe("Testing ATATAutoComplete Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
+  let autoComplete: Wrapper<DefaultProps & Vue, Element>;
 
   const items: AutoCompleteItem[] =  [
-    {
-      Id: 1,
-      FullName: "Test Data01",
-      Email: "tony.civ@mail.mil",
-      Phone: "555-555-5555",
-      OrgName: "HQ1234 - Corresponding Organization Name"
-    },
     {
       Id: 2,
       FullName: "Carl Contractingofficerep",
@@ -27,112 +21,93 @@ describe("Testing ATATAutoComplete Component", () => {
       Phone: "555-555-5555",
       OrgName: "HQ1234 - Corresponding Organization Name"
     },
-    {
-      Id: 3,
-      FullName: "Selia Wentzel",
-      Email: "sel.wentz@acusage.net",
-      Phone: "444-444-4444",
-      OrgName: "HQ567 - Other Organization Name"
-    },
   ];
 
-  const searchFields = ['FullName'];
-  const id="dummyAutoComplete";
-  const label="Dummy Auto Complete";
-  
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(ATATAutoComplete, {
       localVue,
       vuetify,
       propsData: {
-        items,
-        searchFields,
-        id,
-        label,
-        rules: [(v: string) => !!v || "is required"],
+        searchFields: ['FullName']
       }
     });
+
+    autoComplete = wrapper.find({ref: "atatAutoComplete"})
   });
+
+  afterEach(()=>{
+    jest.clearAllTimers();
+  })
   describe("INITIALIZATION", () => { 
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
-  });
 
-  describe("PROPS", () => { 
-    it("optional", async()=>{
-      await wrapper.setProps({optional: true});
-      expect(wrapper.find(".optional")).toBeDefined;
+    it("inputClass() - sets $prop.icon===`search` to retrieve certain class Name", async()=> {
+      await wrapper.setProps({
+        icon: "search"
+      })
+      const _inputClass = await wrapper.vm.inputClass;
+      expect(_inputClass).toBe("is-search-icon icon-no-rotate");
+    })
+
+    it("customFilter() - supply params that do return an data item", async () => {
+      await wrapper.setProps({items})
+      expect(await wrapper.vm.customFilter(items[0], "car")).toBe(true);
+    });
+
+    it("customFilter() - supply params that don't return an data item", async () => {
+      await wrapper.setProps({items})
+      expect(await wrapper.vm.customFilter(items[0], "zjr")).toBe(false);
+    });
+
+    it("noResultsAction() - call function to ensure $data is set", async () => {
+      await wrapper.vm.noResultsAction();
+      expect(await wrapper.vm.$data.searchText).toBeNull();
+      expect(await wrapper.vm.$data.isReset).toBe(true);
+    });
+
+    it("setErrorMessage() - provides autoComplete.$data.errorBucket automatically to ensure " +
+    "$data.errorMessage === autoComplete.$data.errorBucket ", async () => {
+      jest.useFakeTimers();
+      const errorMessages = ["error Message 001"]
+      await autoComplete.setData({
+        errorBucket: errorMessages
+      })
+
+      await wrapper.vm.setErrorMessage(); 
+      jest.advanceTimersByTime(3000); 
+      expect(await wrapper.vm.$data.errorMessages).toBe(errorMessages);
       
-      await wrapper.setProps({optional: false});
-      expect(wrapper.find(".optional")).toBeUndefined;
-    });
-  });
+    })
 
-  describe("DATA", () => { 
-    it("items.length", async () => {
-      const select =  wrapper.find('.v-select');
-      const items = select.props('items');
-      expect(items.length).toBe(3);
-    }); 
-  });
+    it("onBlur() - pass param to ensure param is emitted ", async () => {
+      const value = "value";
+      await wrapper.vm.onBlur(value);
+      
+      const emittedEvent = await wrapper.emitted("blur");
+      expect(await emittedEvent?.flat()[0]).toBe(value);
+    });
+
+    it("onBlur() - pass param to ensure param is emitted ", async () => {
+      const value = "value";
+      await wrapper.vm.onBlur(value);
+      
+      const emittedEvent = await wrapper.emitted("blur");
+      expect(await emittedEvent?.flat()[0]).toBe(value);
+    });
+
  
-  describe("FUNCTIONS", () => {
-    it("updateSearchInput", async () => {
+    it("updateSearchInput() - set $data.isReset===true to ensure value is emitted", async () => {
       const isReset = true;
-      wrapper.setData({searchText: "__searchText"});
-      wrapper.setData({isReset: isReset});
-
-      wrapper.vm.updateSearchInput()
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.$data.searchText).toBeNull();
-      expect(wrapper.vm.$data.isReset).toBe(false);
+      await wrapper.setData({isReset: isReset});
+      await wrapper.vm.updateSearchInput()
+      
+      const emittedEvent = await wrapper.emitted("autocompleteInputUpdate");
+      expect(await emittedEvent?.flat()[0]).toBe(isReset);
     });
 
-    it("customFilter > returns true", async () => {
-      const item = {
-        Id: 2,
-        FullName: "Carl Contractingofficerep",
-        Email: "carl.contractingofficerrep.civ@mail.mil",
-        Phone: "555-555-5555",
-        OrgName: "HQ1234 - Corresponding Organization Name"
-      };
-      const queryText = "car";
-      expect(wrapper.vm.customFilter(item, queryText)).toBe(true);
-    });
-    it("customFilter > returns false", async () => {
-      const item =     {
-        Id: 3,
-        FullName: "Selia Wentzel",
-        Email: "sel.wentz@acusage.net",
-        Phone: "444-444-4444",
-        OrgName: "HQ567 - Other Organization Name"
-      };
-      const queryText = "bad-input-data";
-      expect(wrapper.vm.customFilter(item, queryText)).toBe(false);
-    });
-    it("noResultsAction", async () => {
-      const spy = jest.spyOn(wrapper.vm, "noResultsAction");
-      wrapper.vm.noResultsAction();
-      expect(spy).toHaveBeenCalled();
-    });
+ 
   })
-
-  describe("COMPUTED FIELDS", () => {
-    it("inputClass() > 'dummy-icon'", async () => {
-      const iconName = "dummy-icon";
-      const autoComplete = wrapper.find('.v-autocomplete');
-      await wrapper.setProps({icon: iconName});
-      expect(autoComplete.classes()).toContain("is-" + iconName + "-icon");
-    });
-    it("inputClass() > 'search'", async () => {
-      const iconName = "search";
-      const autoComplete = wrapper.find('.v-autocomplete');
-      await wrapper.setProps({icon: iconName});
-      expect(autoComplete.classes()).toContain("icon-no-rotate");
-    });
-  })
-
 });
