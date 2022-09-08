@@ -18,12 +18,13 @@
         </v-textarea>
         <div class="d-flex justify-space-between pb-4">
           Status
-          <span class="tag tag-green">{{ portfolio.status }}</span>
+          <span class="tag"
+          :class="getTag()">{{ portfolio.status }}</span>
         </div>
         <div class="d-flex justify-space-between pb-4">
           Cloud Service Provider
           <div>
-            <span class="badge badge-green">{{ portfolio.csp }}</span>
+            <span>{{ portfolio.csp }}</span>
             {{ portfolio.csp }}
           </div>
         </div>
@@ -89,6 +90,15 @@ export default class PortfolioDrawer extends Vue {
       return format(parseISO(this.portfolio.updated), 'MMM. d, Y, Hm')
     }
     return ""
+  }
+
+  public getTag(): string {
+    switch (this.portfolio.status?.toLowerCase()) {
+    case 'active':
+      return "tag-green";
+    default:
+      return "";
+    }
   }
 
   public async loadOnEnter(): Promise<void> {
