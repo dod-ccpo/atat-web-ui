@@ -50,7 +50,7 @@
       </div>
     </div>
     <hr class="my-8" />
-    <div>
+    <div class="pl-4">
       <h3>Portfolio Members</h3>
     </div>
     <hr class="my-8" />
