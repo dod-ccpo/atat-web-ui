@@ -23,9 +23,16 @@
         </div>
         <div class="d-flex justify-space-between pb-4">
           Cloud Service Provider
-          <div>
-            <span>{{ portfolio.csp }}</span>
-            {{ portfolio.csp }}
+          <div class="d-flex align-center">
+            <ATATSVGIcon
+            :name="portfolio.csp?.toLowerCase()"
+            width="20"
+            height="16"
+            class="mr-1"
+            />
+            <div>
+              {{ portfolio.csp }}
+            </div>
           </div>
         </div>
         <div class="d-flex justify-space-between pb-4">
@@ -49,10 +56,10 @@
     <hr class="my-8" />
     <div>
       <div>
-        Provisioned on {{provisionedDate()}}
+        Provisioned on {{provisionedTime}}
       </div>
       <div>
-        Last updated {{UpdatedDate()}}
+        Last updated {{updateTime}}
       </div>
     </div>
   </div>
@@ -65,37 +72,38 @@ import PortfolioData from "@/store/portfolio";
 import format from "date-fns/format"
 import { Portfolio } from "types/Global";
 import parseISO from "date-fns/parseISO";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 
 
 @Component({
-  components: {}
+  components: {ATATSVGIcon}
 })
 
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio= {}
-
+  public provisionedTime = ""
+  public updateTime = ""
   public saveDescription(): void {
     PortfolioData.setPortfolioData(this.portfolio)
   }
 
-  public provisionedDate():string {
-    if(this.portfolio.provisioned){
-      return format(parseISO(this.portfolio.provisioned), 'MMM. d, Y, Hm')
-    }
-    return ""
-  }
-  public UpdatedDate():string {
-    if(this.portfolio.updated){
-      return format(parseISO(this.portfolio.updated), 'MMM. d, Y, Hm')
-    }
-    return ""
+  public formatDate(date:string):string {
+    return format(parseISO(date), 'MMM. d, Y, Hm')
   }
 
   public getTag(): string {
     switch (this.portfolio.status?.toLowerCase()) {
     case 'active':
       return "tag-green";
+    case 'processing':
+      return "tag-blue";
+    case 'expiring pop':
+      return "tag-warning";
+    case 'expired':
+      return "tag-error";
+    case 'archived':
+      return "tag-base";
     default:
       return "";
     }
@@ -105,6 +113,10 @@ export default class PortfolioDrawer extends Vue {
     const portfolio = await PortfolioData.getPortfolioData()
     if (portfolio) {
       this.portfolio = portfolio
+      if(portfolio.provisioned && portfolio.updated){
+        this.provisionedTime = this.formatDate(portfolio.provisioned)
+        this.updateTime = this.formatDate(portfolio.updated)
+      }
     }
   }
 

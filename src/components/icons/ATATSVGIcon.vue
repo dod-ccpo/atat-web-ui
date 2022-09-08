@@ -13,7 +13,8 @@ import {stringObj } from "types/Global";
 import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
-
+import AWS from "@/components/icons/AWS.vue";
+import Azure from "@/components/icons/Azure.vue";
 import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
@@ -38,6 +39,8 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 @Component({
   components:{
+    AWS,
+    Azure,
     Calendar,
     ChevronDown,
     ChevronRight,
