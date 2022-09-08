@@ -12,12 +12,15 @@ export interface MenuIcon {
   width: string;
   color: string;
 }
-export interface TopNavItems {
+export interface TopNavItem {
   title: string;
+  parentTitle?: string;
   component?: Component;
+  spaSectionTitle?: string;
+  externalUrl?: string;
   icon?: MenuIcon;
   link?: string;
-  menu?: TopNavItems[]
+  menu?: TopNavItem[]
   menuPosition?: string;
   align?: string;
   isProfile?: boolean;

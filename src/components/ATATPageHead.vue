@@ -8,13 +8,13 @@
     <div class="d-flex justify-space-between width-100 align-center">
       <div id="PackageNameHeader" tabindex="-1" class="h3">{{ headline }}</div>
       <div class="d-flex justify-end align-center">
-        <v-btn icon class="mr-5 icon-24 _header-button" id="Person_Button">
-          <v-icon class="text-base-dark">person_add_alt_1</v-icon>
+        <v-btn icon class="mr-5 _header-button _add-user-button" id="Person_Button">
+          <v-icon class="icon-20 text-base-dark">person_add_alt_1</v-icon>
         </v-btn>
 
         <v-menu
           :offset-y="true"
-          nudge-left="170"
+          left
           id="MoreMenu"
           class="_more-menu _header-menu"
           attach

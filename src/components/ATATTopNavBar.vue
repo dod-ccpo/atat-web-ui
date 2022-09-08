@@ -17,6 +17,7 @@
         :attach="navItem.menu !== undefined"
         :left="navItem.align === 'left'"
       >
+        <!-- top nav bar items (buttons) -->
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             text
@@ -24,7 +25,11 @@
             v-bind="attrs"
             v-on="on"
             :id="'TopNavBarItem_' + getIdText(navItem.title)"
-            :class="{ '_profile': navItem.isProfile }"
+            :class="[
+              { '_profile': navItem.isProfile },
+              { '_active': isMenuItemActive(navItem) },
+            ]"
+            @click="navClicked(navItem)"
           >
           {{ navItem.title }}
           <ATATSVGIcon
@@ -38,12 +43,16 @@
           </v-btn>
         </template>
 
+        <!-- menu items (dropdown menu) -->
         <v-list 
+          attach
           v-if="navItem.menu"
           class="_top-nav-menu"
           :class="{ '_profile-menu': navItem.isProfile }"
         >
           <template v-for="(menuItem, idx) in navItem.menu">
+
+            <!-- top profile block with initials in circle, name, and email -->
             <v-list-item
               v-if="navItem.isProfile && idx === 0"
               :key="'ProfileBlock' + idx"
@@ -65,9 +74,12 @@
 
             <hr v-if="menuItem.separatorBefore" :key="'separator'+ idx" class="my-2" />
 
+            <!-- drop menu items -->
             <v-list-item
               :key="idx"
               :id="'TopNavBarMenuItem_' + getIdText(menuItem.title)"
+              @click="navClicked(menuItem)"
+              :class="[{ '_active': isMenuItemActive(menuItem) }]"
             >
               <div v-if="menuItem.icon" class="text-center _menu-icon mr-2">
                 <ATATSVGIcon
@@ -89,12 +101,13 @@
 </template>
 
 <script lang="ts">
-import { TopNavItems, User } from "types/Global";
+import { TopNavItem, User } from "types/Global";
 import Vue from "vue";
 import { Component} from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { getIdText } from "@/helpers";
+import AppSections from "@/store/appSections";
 
 @Component({
   components: {
@@ -112,6 +125,32 @@ export default class ATATTopNavBar extends Vue {
     role: "Manager",
   }
 
+  public activeMenuItems: string[] = []; // EJY use for hilite active
+
+  public isMenuItemActive(item: TopNavItem): boolean {
+    if (this.activeMenuItems.indexOf(item.title) > -1) {
+      return true;
+    }
+    return false;
+  }
+  private topNavMenuItems: TopNavItem[] = []
+
+  public navClicked(item: TopNavItem): void {
+    if (item.menu === undefined) {
+      if (item.spaSectionTitle) {
+        // only make menu item(s) active when navigating within the SPA
+        this.activeMenuItems = [item.title];
+        if (item.parentTitle) {
+          this.activeMenuItems.push(item.parentTitle);
+        }
+        AppSections.changeActiveSection(item.spaSectionTitle);
+      } else if (item.externalUrl) {
+        // open external URL in new tab
+        window.open(item.externalUrl, "_blank");
+      }
+    } 
+  }
+
   public getUserInitials(): string {
     const firstI = this.currentUser.firstName?.charAt(0);
     const lastI = this.currentUser.lastName?.charAt(0);
@@ -121,13 +160,13 @@ export default class ATATTopNavBar extends Vue {
     return initials.toUpperCase();
   }
 
-  private topNavMenuItems: TopNavItems[] = []
-
   public getIdText(str: string): string {
     return getIdText(str);
   }
 
   public async loadOnEnter(): Promise<void> {
+    const sectionData = await AppSections.getSectionData();
+
     this.topNavMenuItems = [
       {
         title: "Dashboard",
@@ -135,12 +174,20 @@ export default class ATATTopNavBar extends Vue {
       {
         title: "Acquisitions",
         menu:[
-          { title: "My Packages" },
-          { title: "My Task Orders" },
+          { 
+            title: "My Packages",
+            parentTitle: "Acquisitions",
+            spaSectionTitle: sectionData.sectionTitles.AcquisitionPackage,
+          },
+          { 
+            title: "My Task Orders",
+            parentTitle: "Acquisitions",
+          },
         ]
       },
       {
         title: "Portfolios",
+        spaSectionTitle: sectionData.sectionTitles.PortfolioSummary,
       },
       {
         title: "Portals",
