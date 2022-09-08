@@ -171,6 +171,7 @@ export default class ATATSearch extends Vue {
   private searchCount = 0;          // for search simulation
   private showSuccessAlert = false; // for search simulation
   private showErrorAlert = false;   // for search simulation
+  private maskObj: mask = {};
 
   @Watch("errorMessages")
   private errorMessagesChanged(newVal: Array<unknown>): void {
@@ -208,7 +209,6 @@ export default class ATATSearch extends Vue {
 
       try {
 
-        this.showLoader = true;
         this.showLoader = true;
         this.showSuccessAlert = false;
         this.showErrorAlert = false;
@@ -258,24 +258,24 @@ export default class ATATSearch extends Vue {
   }
 
   private setMask(): void {
-    const maskObj: mask = {};
+    this.maskObj = {};
 
     if (this.mask.length > 0) {
       if (this.isMaskRegex){
-        maskObj.regex = this.mask[0] || "";
+        this.maskObj.regex = this.mask[0] || "";
       } else {
-        maskObj.mask = this.mask || [];
+        this.maskObj.mask = this.mask || [];
       }
     }
 
-    if (Object.keys(maskObj).length > 0){
-      maskObj.placeholder = "";
-      maskObj.jitMasking = true;
+    if (Object.keys(this.maskObj).length > 0){
+      this.maskObj.placeholder = "";
+      this.maskObj.jitMasking = true;
       Vue.nextTick(() => {
         const inputField = document.getElementById(
           this.id + '_SearchInput'
         ) as HTMLInputElement;
-        Inputmask(maskObj).mask(inputField);
+        Inputmask(this.maskObj).mask(inputField);
       });
     }
   }

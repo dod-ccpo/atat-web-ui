@@ -7,8 +7,8 @@ import { DefaultProps } from "vue/types/options";
 import { init, validateInput } from "@/helpers/unitTests";
 
 import GeneralXaaSForm from "./GeneralXaaSForm.vue";
-
 Vue.use(Vuetify);
+
 
 const generalXaaSData = {
   "instanceNumber": 1,

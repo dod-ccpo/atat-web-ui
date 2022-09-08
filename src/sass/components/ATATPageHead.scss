@@ -12,6 +12,77 @@ header._atat-page-header {
     }
   }
 
+  &._portfolio-summary {
+    height: 85px !important;
+    .v-toolbar__content {
+      height: 85px !important;
+    }
+    ._header-tab {
+      .v-tabs-bar {
+        height: 33px;
+      }
+      .v-tabs-slider-wrapper{
+        height: 4px !important;
+        padding-left:4px;
+        padding-right:4px;
+        .v-tabs-slider{
+          background-color: $primary !important;
+        }
+      }
+      .v-tab{
+        color: $base-dark !important;
+        border: 1px solid transparent !important;
+        text-transform: none !important;
+        letter-spacing: .025rem !important;
+        &:before{
+          background-color: transparent !important;
+        }
+        &:focus-visible {
+          background-color: transparent !important;
+          border: 1px solid $primary !important;
+          border-radius: 4px 4px 0 0;
+        }
+        &:hover{
+          &:before{
+            background-color: transparent !important;
+          }
+        }
+        &.v-tab--active{
+          color: $primary !important;
+        }
+
+      }
+    }
+    ._headerTextField {
+      border-radius: 4px;
+      border: 1px solid transparent;
+      outline: 1px solid transparent;
+      &:hover{
+        border-radius: 4px;
+        border: 1px solid $base-lighter;
+
+      }
+      &.v-input--is-focused{
+        border-radius: 4px;
+        border: 1px solid $primary;
+        outline: 1px solid $primary;
+
+      }
+      .v-input__slot {
+        padding: 2px;
+        &::before {
+          display: none
+        }
+        &::after {
+          display: none
+        }
+        .v-text-field input {
+          padding: 0px;
+        }
+      }
+    }
+  }
+
   ._more-menu-button.v-btn.v-size--default {
     min-width: 36px;
     width: 36px;
@@ -56,5 +127,20 @@ header._atat-page-header {
         font-size: 14px;
       }
     }
+    &._portfolio {
+      .v-list {
+        height: 100%;
+        padding:8px 0px;
+      }
+      .v-menu__content {
+        height: 273px;
+        width: 280px;
+      }
+      .v-list-item__title {
+        padding: 12px 0px;
+        font-size: 16px;
+      }
+    }
   }
+
 }

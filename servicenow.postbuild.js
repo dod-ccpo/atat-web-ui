@@ -4,6 +4,9 @@
 const servicenowConfig = require("./servicenow.config");
 const fs = require("fs");
 const path = require("path");
+const {
+  match
+} = require("assert");
 const assert = require("node:assert").strict;
 
 const fileEncoding = "utf-8";
@@ -21,13 +24,16 @@ const metaTagRegEx = /<\s*meta[^>]*(.*?)>/g;
 const materialIconsRegEx = /\s*other_assets\/MaterialIcons-/g;
 const robotoFontsRegex = /\s*other_assets\/roboto-/g;
 const imgRegex = /\s*img\//g;
+const buildMatches = {};
 
 decorateIndexHTML(INDEX_HTML);
+updateAppAssetsPaths(JS_DIR);
 updateAssetPaths(JS_DIR, "vendor-");
 deleteFiles(ASSETS_DIR, "-ttf");
 renameFiles(JS_DIR, ourFakeExtension);
 renameFiles(IMG_DIR, ourFakeExtension);
 renameFiles(ASSETS_DIR, ourFakeExtension);
+reportMatchDiscrepancies();
 outputResults();
 
 /**
@@ -35,8 +41,18 @@ outputResults();
  * Specify the expected number of matches in the third parameter.
  */
 function findMatches(input, regEx, expectedMatchCount) {
-  let actualMatchCount = 0;
   const matches = input.match(regEx);
+  //record matches
+  if (buildMatches[regEx]) {
+    const bm = buildMatches[regEx];
+    bm.found = (matches && matches.length > bm.found) ? matches.length : bm.found;
+  } else {
+    buildMatches[regEx] = {
+      expected: expectedMatchCount,
+      found: matches ? matches.length : 0
+    }
+  }
+
   if (matches) {
     console.log("Found these matches using expression " + regEx);
     console.log(matches);
@@ -44,11 +60,7 @@ function findMatches(input, regEx, expectedMatchCount) {
   } else {
     console.log("Found no matches using expression " + regEx);
   }
-  assert.strictEqual(
-    actualMatchCount,
-    expectedMatchCount,
-    `Expected ${expectedMatchCount} matches to be found.  Check the input and regEx.`
-  );
+
   return matches;
 }
 
@@ -125,10 +137,10 @@ function transformScripts(html) {
   const scriptTags = findMatches(html, scriptTagRegEx, 3);
   scriptTags.forEach(
     (scriptTag) =>
-      (html = html.replace(
-        scriptTag,
-        scriptTag.replace("/js/", servicenowConfig.JS_API_PATH)
-      ))
+    (html = html.replace(
+      scriptTag,
+      scriptTag.replace("/js/", servicenowConfig.JS_API_PATH)
+    ))
   );
   console.log("Transformed <script> tags in html to the following...");
   findMatches(html, scriptTagRegEx, 3);
@@ -161,11 +173,51 @@ function decorateIndexHTML(filePath) {
 }
 
 /**
+ * Replaces all roboto font paths with ASSETS api path
+ * Replaces all image paths with IMG api path 
+ * * @param {*} fileContent 
+ * @returns string
+ */
+function resolveRobotoFontsAndImagePaths(fileContent){
+
+    // roboto fonts
+    const robotoMatches = findMatches(fileContent, robotoFontsRegex, 18);
+    if (robotoMatches) {
+      const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
+      console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
+      fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
+    }
+  
+    // image paths
+    const imageMatches = findMatches(fileContent, imgRegex, 7);
+    if (imageMatches) {
+      const newImagePath = servicenowConfig.IMG_API_PATH;
+      console.log(`Replacing the image paths with: ${newImagePath}`);
+      fileContent = fileContent.replace(imgRegex, newImagePath);
+    }
+
+    return fileContent;
+}
+
+/**
+ * Updates the contents app js file
+ */
+function updateAppAssetsPaths(directory) {
+  const dir = fs.readdirSync(directory);
+  const filename = dir.find((file) => file.startsWith("app-"));
+  const filePath = path.join(directory, filename);
+  assert.ok(filePath);
+  console.log(`\nUpdating paths in file ${filePath}`);
+  let fileContent = fs.readFileSync(filePath, fileEncoding);
+  fileContent = resolveRobotoFontsAndImagePaths(fileContent);
+
+  fs.writeFileSync(filePath, fileContent, fileEncoding);
+}
+
+/**
  * Updates the contents of a single file in the specified directory.
  * The filename must start with the specified filter.
  * Replaces all material icons paths with ASSETS api path
- * Replaces all roboto font paths with ASSETS api path
- * Replaces all image paths with IMG api path
  */
 function updateAssetPaths(directory, filenameFilter) {
   const dir = fs.readdirSync(directory);
@@ -180,20 +232,10 @@ function updateAssetPaths(directory, filenameFilter) {
   const newIconPath = `${servicenowConfig.ASSETS_API_PATH}MaterialIcons-`;
   console.log(`Replacing the material icons paths with: ${newIconPath}`);
   fileContent = fileContent.replace(materialIconsRegEx, newIconPath);
-
-  // roboto fonts
-  findMatches(fileContent, robotoFontsRegex, 18);
-  const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
-  console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
-  fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
-
-  // image paths
-  findMatches(fileContent, imgRegex, 7);
-  const newImagePath = servicenowConfig.IMG_API_PATH;
-  console.log(`Replacing the image paths with: ${newImagePath}`);
-  fileContent = fileContent.replace(imgRegex, newImagePath);
+  fileContent = resolveRobotoFontsAndImagePaths(fileContent);
 
   fs.writeFileSync(filePath, fileContent, fileEncoding);
+
 }
 
 /**
@@ -237,6 +279,16 @@ function renameFiles(directory, extensionToAppend) {
   });
 }
 
+function reportMatchDiscrepancies() {
+  for (const key in buildMatches) {
+    const matches = buildMatches[key];
+    assert.strictEqual(
+      matches.expected,
+      matches.found,
+      `Expected ${matches.expected} matches to be found.  Check the input and ${key}`
+    );
+  }
+}
 /**
  * Checks for expected output files and displays messages
  */
