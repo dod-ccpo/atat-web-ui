@@ -1,6 +1,6 @@
 <template>
   <div class="_portfolioDrawer">
-    <div>
+    <div class="_portfolio-panel">
       <h3 class="mb-4 mt-6">About Portfolio</h3>
       <div>
         <v-textarea
@@ -41,7 +41,7 @@
             {{ portfolio.serviceAgency }}
           </div>
         </div>
-        <div class="d-flex justify-space-between pb-4">
+        <div class="d-flex justify-space-between">
           Created by
           <div class="_text-link">
             Maria Missionowner
@@ -54,7 +54,7 @@
       <h3>Portfolio Members</h3>
     </div>
     <hr class="my-8" />
-    <div>
+    <div class="_portfolio-panel pt-0">
       <div>
         Provisioned on {{provisionedTime}}
       </div>
