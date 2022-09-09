@@ -118,9 +118,14 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
 import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
+import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
+
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+
+import { SlideoutPanelContent } from "../../../types/Global";
+
 
 @Component({
   components: {
@@ -137,17 +142,15 @@ export default class PortfolioSummaryPageHead extends Vue {
   @PropSync("value") private _selectedTab!: number ;
   @PropSync("title") private _title!: string;
 
-
-
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public showMembersModal = false;
 
-  public openModal():void {
+  public openModal(): void {
     this.showMembersModal = true;
   }
 
-  public saveTitle() {
+  public saveTitle(): void {
     const obj ={
       title: this._title
     }
@@ -155,10 +158,15 @@ export default class PortfolioSummaryPageHead extends Vue {
   }
 
   public showDrawer = false
-  public openSlideoutPanel(e: Event): void {
+  public async openSlideoutPanel(e: Event): Promise<void> {
     if(!this.showDrawer ){
       if (e && e.currentTarget) {
         const opener = e.currentTarget as HTMLElement;
+        const slideoutPanelContent: SlideoutPanelContent = {
+          component: PortfolioDrawer,
+        }
+        await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+
         this.showDrawer = true;
         SlideoutPanel.openSlideoutPanel(opener.id);
       }
@@ -168,7 +176,8 @@ export default class PortfolioSummaryPageHead extends Vue {
     }
 
   }
-  public moveToInput() {
+
+  public moveToInput(): void {
     const input = document.getElementById('HeaderTextField');
     if(input){
       input.focus()

@@ -12,7 +12,7 @@
     :temporary="showOverlay"
   >
     <div
-      v-if="appSection !== 'Portfolio Summary'"
+      v-if="panelTitle"
       class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
         {{ panelTitle }}
@@ -33,7 +33,7 @@
 
     <div id="PanelWrap"
       :class="[appSection === 'Portfolio Summary' ?'_portfolio-panel': '_panel-content-wrap']"
-       v-if="panelTitle">
+       >
       <slot></slot>
     </div>
 

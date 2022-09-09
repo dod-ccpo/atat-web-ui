@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h2 class="mb-5">About ATAT Funding Tracker</h2>
+  <div class="pa-5">
+    <h2 class="mb-5 mt-5">About ATAT Funding Tracker</h2>
     <p>
       Each portfolio has a Funding Tracker to help Mission Owners and Contracting Officer's
       Representatives (CORs) gauge how much cloud they are using and how much money they have
