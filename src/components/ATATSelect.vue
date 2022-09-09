@@ -123,13 +123,23 @@ export default class ATATSelect extends Vue {
 
   @Emit("onChange")
   private onChange(val: string | SelectData): void {
-    this.selected = val;
-    this.setErrorMessage();
-    this.$emit("selectValueChange", { 
-      "newSelectedValue": val, 
-      "selectedBeforeChange": this.selectedBeforeChange 
-    });
-    this.selectedBeforeChange = val;
+    const isString = typeof val === "string";
+    const isObject = typeof val === "object"
+    let isSelectable = true;
+    if (isObject && Object.prototype.hasOwnProperty.call(val, "isSelectable")
+      && val.isSelectable !== undefined) {
+      isSelectable = val.isSelectable;
+    }
+    debugger;
+    if (isString || isSelectable) {
+      this.selected = val;
+      this.setErrorMessage();
+      this.$emit("selectValueChange", { 
+        "newSelectedValue": val, 
+        "selectedBeforeChange": this.selectedBeforeChange 
+      });
+      this.selectedBeforeChange = val;
+    }
   }
 
   private onInput(v: string) {
