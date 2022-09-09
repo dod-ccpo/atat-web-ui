@@ -94,12 +94,12 @@
               :id="'Role' + index"
               class="_small _alt-style-clean _invite-members-modal align-self-end"
               :items="memberRoles"
-              :returnObject="true"
               width="105"
               :selectedValue.sync="portfolioMembers[index].role"
               iconType="chevron"
               @onChange="(value)=>onSelectedMemberRoleChanged(value, index)"
             />
+              <!-- :returnObject="true" -->
           </div>
         </div>
       </div>
@@ -158,7 +158,7 @@ export default class PortfolioDrawer extends Vue {
     { divider: true },
     { text: "Remove from portfolio", value: "Remove", isSelectable: false },
     { text: "About Roles", value: "AboutRoles", isSelectable: false },
-  ];;
+  ];
 
   public saveDescription(): void {
     PortfolioData.setPortfolioData(this.portfolio);
@@ -194,7 +194,8 @@ export default class PortfolioDrawer extends Vue {
         this.updateTime = this.formatDate(storeData.updated);
         this.csp = storeData.csp;
       }
-      this.portfolioMembers = _.clone(storeData.members) || [];
+      this.portfolioMembers = _.cloneDeep(storeData.members) || [];
+      debugger;
     }
   }
 
@@ -231,28 +232,25 @@ export default class PortfolioDrawer extends Vue {
   }
 
   private async onSelectedMemberRoleChanged(
-    selectedItem: SelectData, index: number
+    val: string, index: number
   ): Promise<void> {
-    const foobar = await PortfolioData.getPortfolioData();
+    const storeData = await PortfolioData.getPortfolioData();
     debugger;
     if (this.portfolio && this.portfolio.members ) {
-
-      if (selectedItem.value === "Manager" || selectedItem.value == "Viewer") {
-        var member = this.portfolio.members[index];
-        member.role = selectedItem.value;
+      const memberRoles = ["Manager", "Viewer"]
+      if (memberRoles.indexOf(val) > -1) {
+        this.portfolio.members[index].role = val;
         PortfolioData.setPortfolioData(this.portfolio);
       } else {
-        const foo = this.portfolioMembers[index].role;
-        debugger;
-        
-        this.portfolioMembers[index].role = "";
+        const foo = storeData.members?.[index].role;
         this.portfolioMembers[index].role = foo;
-
-        if (selectedItem.value === "Remove") {
-          // debugger;
-          alert("remove member")
+        debugger;
+        if (val === "Remove" && this.portfolio.members && this.portfolio.members.length > 1) {
+          this.portfolio.members.splice(index, 1);
+          PortfolioData.setPortfolioData(this.portfolio);
+          await this.loadPortfolio();
          
-        } else if (selectedItem.value === "AboutRoles") {
+        } else if (val === "AboutRoles") {
           alert("open slideout")
           // Open the slideout panel -- future ticket
         }
