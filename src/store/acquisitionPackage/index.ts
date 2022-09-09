@@ -42,7 +42,6 @@ import { PeriodOfPerformanceApi } from "@/api/contractDetails";
 import Periods from "../periods";
 import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
-import Portfolio from "../portfolio"
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -445,7 +444,6 @@ export class AcquisitionPackageStore extends VuexModule {
     await DescriptionOfWork.initialize();
     await Attachments.initialize();
     await FinancialDetails.initialize();
-    await Portfolio.initialize()
     
     if (this.initialized) {
       return;

@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "jest --coverage  --no-cache",
+    "test:unit": "jest --coverage  --no-cache ",
     "lint": "vue-cli-service lint",
     "zip": "zip -r atat-web-ui-dist.zip dist",
     "postbuild": "node servicenow.postbuild.js && node minify.postbuild.js dist/js/",

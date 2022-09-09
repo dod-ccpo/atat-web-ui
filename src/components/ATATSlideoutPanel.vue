@@ -8,9 +8,12 @@
     :width="panelWidth + 'px'"
     app
     right
+    :clipped="appSection === 'Portfolio Summary'"
     :temporary="showOverlay"
   >
-    <div class="_panel-header">
+    <div
+      v-if="appSection !== 'Portfolio Summary'"
+      class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
         {{ panelTitle }}
       </div>
@@ -28,7 +31,9 @@
       </v-btn>
     </div>
 
-    <div id="PanelWrap" class="_panel-content-wrap" v-if="panelTitle">
+    <div id="PanelWrap"
+      :class="[appSection === 'Portfolio Summary' ?'_portfolio-panel': '_panel-content-wrap']"
+       v-if="panelTitle">
       <slot></slot>
     </div>
 
@@ -36,6 +41,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import AppSections from "@/store/appSections";
 import { Component, Prop, Watch } from "vue-property-decorator";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
@@ -44,7 +50,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 
 export default class ATATSlideoutPanel extends Vue {
   @Prop({ default: "380" }) private panelWidth!: string;
-
+  public appSection = AppSections.activeAppSection;
   public transitionEnded(e: Event):void {
     const target = e.currentTarget as HTMLElement;
     if (target) {

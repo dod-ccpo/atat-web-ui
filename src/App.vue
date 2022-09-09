@@ -13,6 +13,7 @@ import { Component as VueComponent } from "vue";
 
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
+import PortfolioSummary from "../src/portfolio/Index.vue"
 import JWCCDashboard from "@/dashboards/JWCC.vue";
 import PortfolioDashboard from "@/dashboards/Portfolio.vue";
 
@@ -41,6 +42,9 @@ export default class App extends Vue {
     case this.sectionTitles.TOLookup:
       AppSections.setAppContentComponent(TaskOrderLookup);
       break;
+    case this.sectionTitles.PortfolioSummary:
+      AppSections.setAppContentComponent(PortfolioSummary);
+      break;  
     }
   }
 

@@ -1,0 +1,179 @@
+<template>
+  <v-app-bar
+    id="PageHeader"
+    app
+    flat
+    class="_atat-page-header _portfolio-summary"
+    clipped-right
+  >
+    <div class=" d-flex justify-space-between width-100 align-center">
+
+        <div id="NameHeader" tabindex="-1" class="mt-1">
+          <v-text-field
+            id="HeaderTextField"
+            dense
+            placeholder="Portfolio Title"
+            class=" h2 _headerTextField my-1"
+            hide-details
+            autocomplete="off"
+            v-model="_title"
+            @blur="saveTitle()"
+          >
+          </v-text-field>
+
+        <div>
+          <v-tabs class="_header-tab "
+          v-model="_selectedTab">
+            <v-tab
+              v-for="tab in items"
+              :key="tab"
+              class="font-size-14 pa-1 pt-2  pb-5 mr-3">{{tab}}</v-tab>
+
+          </v-tabs>
+        </div>
+      </div>
+      <div class="d-flex justify-end align-center">
+        <v-btn
+          icon
+          class="mr-2 icon-24 _header-button"
+          id="Info_Button"
+          @click="openSlideoutPanel"
+          @keydown.enter="openSlideoutPanel"
+          @keydown.space="openSlideoutPanel">
+          <v-icon class="text-base-dark">info_outline</v-icon>
+        </v-btn>
+
+        <v-menu
+          :offset-y="true"
+          nudge-left="240"
+          id="MoreMenu"
+          class="_more-menu _header-menu _portfolio"
+          attach
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              id="MoreMenuButton"
+              class="_more-menu-button _header-button"
+            >
+              <v-icon class="text-base-dark">more_horiz</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item
+              @click="openModal">
+              <v-list-item-title
+              >Invite members to portfolio
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="moveToInput()">
+              <v-list-item-title
+              >Rename portfolio
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title>
+                Leave this portfolio
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item
+            :disabled="portfolioStatus.toLowerCase() !== 'expired'"
+            >
+              <v-list-item-title>
+                Archive portfolio
+              </v-list-item-title>
+            </v-list-item>
+            <hr class="my-2" />
+            <v-list-item
+            >
+              <v-list-item-title
+                class="d-flex align-center"
+              > Login to the CSP console
+                  <ATATSVGIcon
+                    class="ml-2"
+                    name="launch"
+                    width="15"
+                    height="15"
+                    color="primary"
+                  />
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
+      <AddMembersModal
+        :showModal.sync="showMembersModal"
+      />
+    </div>
+  </v-app-bar>
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import { Component, Prop, PropSync } from "vue-property-decorator";
+
+import AppSections from "@/store/appSections";
+import ATATTextField from "@/components/ATATTextField.vue";
+import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
+import SlideoutPanel from "@/store/slideoutPanel";
+import PortfolioData from "@/store/portfolio";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+
+@Component({
+  components: {
+    ATATTextField,
+    AddMembersModal,
+    ATATSVGIcon
+  }
+})
+
+export default class PortfolioSummaryPageHead extends Vue {
+  @Prop({ default: "Headline" }) private headline!: string;
+  @Prop() private portfolioStatus!: string;
+  @Prop({ default: [""], required: true }) private items!: string[];
+  @PropSync("value") private _selectedTab!: number ;
+  @PropSync("title") private _title!: string;
+
+
+
+  public moreMenuOpen = false;
+  public activeAppSection = AppSections.activeAppSection;
+  public showMembersModal = false;
+
+  public openModal():void {
+    this.showMembersModal = true;
+  }
+
+  public saveTitle() {
+    const obj ={
+      title: this._title
+    }
+    PortfolioData.setPortfolioData(obj)
+  }
+
+  public showDrawer = false
+  public openSlideoutPanel(e: Event): void {
+    if(!this.showDrawer ){
+      if (e && e.currentTarget) {
+        const opener = e.currentTarget as HTMLElement;
+        this.showDrawer = true;
+        SlideoutPanel.openSlideoutPanel(opener.id);
+      }
+    }else {
+      this.showDrawer = false
+      SlideoutPanel.closeSlideoutPanel()
+    }
+
+  }
+  public moveToInput() {
+    const input = document.getElementById('HeaderTextField');
+    if(input){
+      input.focus()
+    }
+  }
+
+}
+</script>

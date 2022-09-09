@@ -50,7 +50,7 @@
               @click:append="removeEmail"
             />
           </div>
-          
+
           <ATATErrorValidation
             id="EmailError"
             class="atat-text-field-error"
@@ -95,12 +95,12 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
-import { 
-  EmailEntry, 
-  Portfolio, 
-  SelectData, 
-  ToastObj, 
-  User 
+import {
+  EmailEntry,
+  Portfolio,
+  SelectData,
+  ToastObj,
+  User
 } from "../../../types/Global";
 import PortfolioData from "@/store/portfolio/index";
 
@@ -156,7 +156,7 @@ export default class AddMembersModal extends Vue {
       this.portfolioData = await PortfolioData.getPortfolioData();
       this.projectTitle = this.portfolioData.title || "New Acquisition";
       await this.setExistingMembers();
-      
+
       if (!this.inputWidthFaker) {
         this.$nextTick(() => {
           this.inputWidthFaker = document.getElementById("inputWidthFaker");
@@ -167,7 +167,7 @@ export default class AddMembersModal extends Vue {
 
   // use for validation - check entered emails against existing members list
   public existingMembers: User[] = [];
-  // get existingMembers from store, then map emails only 
+  // get existingMembers from store, then map emails only
   public existingMemberEmails: string[] = [];
   // array of existing member emails entered for error message
   public get existingMemberEmailsEntered(): string[] {
@@ -177,7 +177,7 @@ export default class AddMembersModal extends Vue {
   };
 
   // inputWidthFaker is used to dynamically adjust the width of the input
-  // based on the characters entered - the "hidden" (abs pos off-screen) div 
+  // based on the characters entered - the "hidden" (abs pos off-screen) div
   // gets the characters entered into the input, then the div's width is given
   // to the input -- see event listener on input
   public inputWidthFaker: HTMLElement | null = null;
@@ -199,7 +199,7 @@ export default class AddMembersModal extends Vue {
       this.validEmailList.splice(i, 1);
     }
     this.pillboxFocused = true;
-    this.addInputEventListeners(this, input); 
+    this.addInputEventListeners(this, input);
   }
 
   public addInputEventListeners(vm: any, input: HTMLInputElement): void {
@@ -208,9 +208,9 @@ export default class AddMembersModal extends Vue {
       const { clipboardData } = e;
       let pastedText = clipboardData ? clipboardData.getData("text/plain") : "";
       // remove single and double quotes
-      pastedText = pastedText.replace(/['"]/g, ""); 
+      pastedText = pastedText.replace(/['"]/g, "");
       // replace line breaks, spaces, semicolons with commas for splitting entries to array
-      pastedText = pastedText.replace(/[;\s\r\n]/g, ","); 
+      pastedText = pastedText.replace(/[;\s\r\n]/g, ",");
 
       const pastedValuesArray: string[] = pastedText.split(",");
       // ...new Set - automatically removes all duplicates
@@ -233,7 +233,7 @@ export default class AddMembersModal extends Vue {
         }
       });
       input.blur();
-    });    
+    });
 
     input.addEventListener("input", () => {
       // inputWidthFaker dynamically adjusts width of the input based on chars entered
@@ -274,7 +274,7 @@ export default class AddMembersModal extends Vue {
       (targetId === "PillboxWrapper" || override === true) &&
       (len === 0 || this.enteredEmails[len - 1].email !== "")
     ) {
-      const emailKey = generateRandomKey(); 
+      const emailKey = generateRandomKey();
 
       this.enteredEmails.push({
         key: emailKey,
@@ -282,7 +282,7 @@ export default class AddMembersModal extends Vue {
         isValid: null,
         isExisting: false,
       });
-      
+
       this.$nextTick().then(() => {
         let newInput = document.querySelector(
           "[data-email-key='" + emailKey + "']"
@@ -313,16 +313,16 @@ export default class AddMembersModal extends Vue {
   /*
   Validation rules:
   Invite button should be disabled until a valid email is entered.
-  
-  1. Multiple errors --> [# of errors] addresses were not recognized. Please ensure all emails 
+
+  1. Multiple errors --> [# of errors] addresses were not recognized. Please ensure all emails
      are properly formatted, using “@domain.mil” or “@domain.gov.”
   2. Missing @ and .mil/.gov --> Please use a standard domain format, like “@domain.mil.”
   3. Email not ending in “.mil” or “.gov” --> Please use an email that ends with “.mil” or “.gov.”
-  4. Email ends in “.mil” or “.gov”, but is missing @ symbol --> Please include an ‘@’ symbol in 
+  4. Email ends in “.mil” or “.gov”, but is missing @ symbol --> Please include an ‘@’ symbol in
      the email address.
   5. Existing Members --> “[Email address]” is already a portfolio member.
   */
-  public formatMsg = `Please ensure all emails are properly formatted, 
+  public formatMsg = `Please ensure all emails are properly formatted,
     using “@domain.mil” or “@domain.gov”.`;
   public get invalidEmailMultiple(): string {
     return this.invalidEmailCount + " addresses were not recognized." + this.formatMsg;
@@ -330,9 +330,9 @@ export default class AddMembersModal extends Vue {
   public invalidEmailDomain = "Please use an email that ends with “.mil” or “.gov”.";
   public invalidEmailMissingAtSymbol = "Please include an ‘@’ symbol in the email address";
   public invalidEmailFormat = "Please use a standard domain format, like “@domain.mil”.";
-  public invalidEmailGeneric = `Multiple addresses were not recognized or are existing members. ` 
+  public invalidEmailGeneric = `Multiple addresses were not recognized or are existing members. `
     + this.formatMsg;
-    
+
   public async validateEmail(email: string, index?: number): Promise<boolean> {
     const domain = email.slice(-3).toLowerCase();
     const isGovtDomain = domain === "mil" || domain === "gov";
@@ -344,7 +344,7 @@ export default class AddMembersModal extends Vue {
       this.enteredEmails[index].isValid = isValid;
       this.$nextTick(() => {
 
-        const multipleErrors = this.invalidEmailCount > 1 
+        const multipleErrors = this.invalidEmailCount > 1
           || (this.existingEmailCount >= 1 && this.invalidEmailCount === 1);
         if (multipleErrors) {
           // multiple errors message
@@ -488,11 +488,11 @@ export default class AddMembersModal extends Vue {
 
   public async inviteMembers(): Promise<void> {
     const invitedCount = this.validEmailList.length;
-    const toastMsg = invitedCount > 1 
-      ? invitedCount + " members added" 
+    const toastMsg = invitedCount > 1
+      ? invitedCount + " members added"
       : invitedCount + " member added";
     this.membersInvitedToast.message = toastMsg;
-    Toast.setToast(this.membersInvitedToast);    
+    Toast.setToast(this.membersInvitedToast);
     const newMembers = {
       emails: this.validEmailList,
       role: this.selectedRole,

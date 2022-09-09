@@ -53,7 +53,7 @@
                 v-html="item.label"
               ></div>
 
-              <div v-if="item.description" class="mb-0" v-html="$sanitize(item.description)"></div>
+              <div v-if="item.description" class="mb-0" v-html="item.description"></div>
               
               <ATATTextArea
                 v-if="otherEntryType === 'textarea'"
@@ -241,7 +241,7 @@ export default class ATATRadioGroup extends Vue {
   }
 
   @Watch("clearOtherValidation")
-  public resetOtherValiation(): void {
+  public resetOtherValidation(): void {
     this.$refs.atatTextInput.errorBucket = [];
     this.$refs.atatTextInput.errorCount = 0;
   }
