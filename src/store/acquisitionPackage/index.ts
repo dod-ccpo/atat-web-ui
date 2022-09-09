@@ -209,7 +209,7 @@ const initialCurrentEnvironment = () => {
   }
 }
 
-const saveSessionData = (store: AcquisitionPackageStore) => {
+export const saveSessionData = (store: AcquisitionPackageStore): void => {
   sessionStorage.setItem(
     ATAT_ACQUISTION_PACKAGE_KEY,
     JSON.stringify({
