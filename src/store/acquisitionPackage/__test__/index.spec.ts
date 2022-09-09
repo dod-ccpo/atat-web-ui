@@ -5,7 +5,7 @@ import { createLocalVue } from "@vue/test-utils";
 import { AcquisitionPackageStore, saveSessionData } from "..";
 import { getModule } from "vuex-module-decorators";
 import {
-    AcquisitionPackageDTO,
+  AcquisitionPackageDTO,
   ClassificationLevelDTO,
   ContactDTO,
   CurrentContractDTO,
@@ -23,59 +23,52 @@ import { FairOpportunityApi } from "@/api/fairOpportunity";
 import exp from "constants";
 import api from "@/api";
 
-jest.mock('@/api', () => ({
-    ...jest.requireActual('@/api'),
-    acquisitionPackageTable: {
-        create: ():Promise<AcquisitionPackageDTO>=>{
-            
-            return new Promise(resolve=>{
-                 return {
-                    sys_id: "acquisitionPackage_1234556677",
-                    status: "",
-                    number: "",
-                    project_overview: "",
-                    organization: "",
-                    contact: "",
-                    fair_opportunity: "",
-                    current_contract: "",
-                    docusign_envelope_id: "",
-                    sensitive_information: "",
-                    period_of_performance: "",
-                    periods: "",
-                    gfe_overview: "",
-                    contract_type: "",
-                    requirements_const_estimate: "",
-                    contract_considerations: "",
-                    funding_plans: "",
-                    funding_request: "",
-                    classification_level: "",
-                    required_services: "",
-                    current_environment: "",
-                    environment_instance: ""
-                }
-            })
-     },
-        update:(sysId: string, data: AcquisitionPackageDTO): Promise<AcquisitionPackageDTO>=>{
+jest.mock("@/api", () => ({
+  ...jest.requireActual("@/api"),
+  acquisitionPackageTable: {
+    create: (): Promise<AcquisitionPackageDTO> => {
+      return new Promise((resolve) =>
+        resolve({
+          sys_id: "acquisitionPackage_1234556677",
+          status: "",
+          number: "",
+          project_overview: "",
+          organization: "",
+          contact: "",
+          fair_opportunity: "",
+          current_contract: "",
+          docusign_envelope_id: "",
+          sensitive_information: "",
+          period_of_performance: "",
+          periods: "",
+          gfe_overview: "",
+          contract_type: "",
+          requirements_const_estimate: "",
+          contract_considerations: "",
+          funding_plans: "",
+          funding_request: "",
+          classification_level: "",
+          required_services: "",
+          current_environment: "",
+          environment_instance: "",
+        })
+      );
+    },
+    update: (
+      sysId: string,
+      data: AcquisitionPackageDTO
+    ): Promise<AcquisitionPackageDTO> => {
+      return new Promise((resolve) => resolve(data));
+    },
+  },
+}));
 
-             return new Promise(resolve=> data);
-        }
-        }
-  }));
-
-jest.mock('@/store/attachments');
-jest.mock('@/store/contactData');
-jest.mock('@/store/descriptionOfWork');
-jest.mock('@/store/financialDetails');
-jest.mock('@/store/portfolio');
+jest.mock("@/store/attachments");
+jest.mock("@/store/contactData");
+jest.mock("@/store/descriptionOfWork");
+jest.mock("@/store/financialDetails");
+jest.mock("@/store/portfolio");
 jest.mock("@/store/organizationData");
-
-
-//   await ContactData.initialize();
-//   await OrganiationData.initialize();
-//   await DescriptionOfWork.initialize();
-//   await Attachments.initialize();
-//   await FinancialDetails.initialize();
-//   await Portfolio.initialize()
 
 const currentContract: CurrentContractDTO = {
   current_contract_exists: "",
@@ -202,13 +195,7 @@ describe("Acquistition Packages Store", () => {
 
   beforeAll(() => {
     console.log = jest.fn;
-
-    // sessionStorage = new MockSessionStorage();
-    api.acquisitionPackageTable.update = jest.fn((sys_id: string, 
-        acquisition: AcquisitionPackageDTO)=> new Promise(()=>{
-            return acquisition;
-        }));
-    });
+  });
 
   beforeEach(() => {
     const createStore = (
@@ -224,7 +211,7 @@ describe("Acquistition Packages Store", () => {
 
   test("Test setCurrentContract", () => {
     AcquisitionStore.setCurrentContract(currentContract);
-    expect(AcquisitionStore.currentContract).toBe(currentContract);
+    expect(AcquisitionStore.currentContract).toStrictEqual(currentContract);
   });
 
   test("Test setProjectOverview", () => {
@@ -239,12 +226,12 @@ describe("Acquistition Packages Store", () => {
 
   test("Test setSenstiveInformation", () => {
     AcquisitionStore.setSensitiveInformation(sensitiveInformation);
-    expect(AcquisitionStore.sensitiveInformation).toBe(sensitiveInformation);
+    expect(AcquisitionStore.sensitiveInformation).toStrictEqual(sensitiveInformation);
   });
 
-  test("Test setPeriods", () => {
+  test("Test setPeriodofPerformance", () => {
     AcquisitionStore.setPeriodOfPerformance(periodOfPerformance);
-    expect(AcquisitionStore.periodOfPerformance).toBe(periodOfPerformance);
+    expect(AcquisitionStore.periodOfPerformance).toStrictEqual(periodOfPerformance);
   });
 
   test("Test setClassificationLevel", () => {
@@ -254,322 +241,305 @@ describe("Acquistition Packages Store", () => {
 
   test("Test setContactConsiderations", () => {
     AcquisitionStore.setContractConsiderations(contractConsiderations);
-    expect(AcquisitionStore.contractConsiderations).toBe(
-      contractConsiderations
-    );
-  });
-
-  test("Test setContactConsiderations", () => {
-    AcquisitionStore.setContractConsiderations(contractConsiderations);
-    expect(AcquisitionStore.contractConsiderations).toBe(
+    expect(AcquisitionStore.contractConsiderations).toStrictEqual(
       contractConsiderations
     );
   });
 
   test("Test setProjectTitle", () => {
     AcquisitionStore.setProjectTitle("TestTitle");
-    expect(AcquisitionStore.projectTitle).toBe(
-      "TestTitle"
-    );
-
+    expect(AcquisitionStore.projectTitle).toBe("TestTitle");
   });
 
   test("Test setContractType", () => {
     AcquisitionStore.setContractType(contractType);
-    expect(AcquisitionStore.contractType).toBe(
-      contractType
-    );
+    expect(AcquisitionStore.contractType).toStrictEqual(contractType);
   });
 
-  test("Test setDataFromSession", async ()=> {
-
-      const acquisitionPackage: AcquisitionPackageDTO = {
-          status: "",
-          number: "",
-          project_overview: "",
-          organization: "",
-          contact: "",
-          fair_opportunity: "",
-          current_contract: "",
-          docusign_envelope_id: "",
-          sensitive_information: "",
-          period_of_performance: "",
-          periods: "",
-          gfe_overview: "",
-          contract_type: "",
-          requirements_const_estimate: "",
-          contract_considerations: "",
-          funding_plans: "",
-          funding_request: "",
-          classification_level: "",
-          required_services: "",
-          current_environment: "",
-          environment_instance: ""
-      }
-
-      const acorInfo: ContactDTO = {
-          type: "",
-          role: "",
-          rank_components: "",
-          salutation: "",
-          first_name: "",
-          last_name: "",
-          middle_name: "",
-          suffix: "",
-          title: "",
-          phone: "",
-          phone_extension: "",
-          email: "",
-          grade_civ: "",
-          dodaac: "",
-          can_access_package: "",
-          manually_entered: ""
-      }
-
-      const contactData:ContactDTO = {
-          type: "",
-          role: "",
-          rank_components: "",
-          salutation: "",
-          first_name: "",
-          last_name: "",
-          middle_name: "",
-          suffix: "",
-          title: "",
-          phone: "",
-          phone_extension: "",
-          email: "",
-          grade_civ: "",
-          dodaac: "",
-          can_access_package: "",
-          manually_entered: ""
-      }
-
-      const fairOpportunity: FairOpportunityDTO = {
-          exception_to_fair_opportunity: ""
-      }
-
-      const projectOverview: ProjectOverviewDTO = {
-          title: "",
-          scope: "",
-          emergency_declaration: ""
-      }
-
-      const requiredServices: RequiredServicesDTO = {
-          usage_description: "",
-          applicable_classification_levels: "",
-          need_for_entire_to_duration: "",
-          applicable_periods: "",
-          select_service_offerings: "",
-          other_service_offering: ""
-      }
-
-      const environmentInstance: EnvironmentInstanceDTO = {
-          storage_amount: "",
-          storage_type: "",
-          instance_name: "",
-          classification_level: "",
-          number_of_vcpus: "",
-          data_egress_monthly_amount: "",
-          performance_tier: "",
-          pricing_model_expiration: "",
-          csp_region: "",
-          memory_unit: "",
-          storage_unit: "",
-          pricing_model: "",
-          instance_location: "",
-          memory_amount: "",
-          operating_system_licensing: "",
-          data_egress_monthly_unit: ""
-      }
-      
-      const sessionData: SessionData=  {
-          acquisitionPackage:  acquisitionPackage,
-          acorInfo: acorInfo,
-          classificationLevel: classificationLevel,
-          contactInfo: contactData,
-          contractConsiderations: {},
-          corInfo: acorInfo,
-          contractType: contractType,
-          currentContract: currentContract,
-          fairOpportunity: fairOpportunity,
-          gfeOverview: {},
-          organization: {},
-          periodOfPerformance: {},
-          periods: "",
-          projectOverview: projectOverview,
-          requiredServices: requiredServices,
-          requirementsCostEstimate: {},
-          sensitiveInformation: {},
-          currentEnvironment: {},
-          environmentInstance: environmentInstance
-      }
-
-      AcquisitionStore.setDataFromSession(sessionData);
-      expect(AcquisitionStore.acquisitionPackage).toBe(acquisitionPackage);
-      
-  })
-
-  
-//   test("Test saveAcquisitionPackage", async () => {
-   
-//     const acquisitionPackage: AcquisitionPackageDTO = {
-//         sys_id: "acquisitionPackage_1234556677",
-//         status: "",
-//         number: "",
-//         project_overview: "",
-//         organization: "",
-//         contact: "",
-//         fair_opportunity: "",
-//         current_contract: "",
-//         docusign_envelope_id: "",
-//         sensitive_information: "",
-//         period_of_performance: "",
-//         periods: "",
-//         gfe_overview: "",
-//         contract_type: "",
-//         requirements_const_estimate: "",
-//         contract_considerations: "",
-//         funding_plans: "",
-//         funding_request: "",
-//         classification_level: "",
-//         required_services: "",
-//         current_environment: "",
-//         environment_instance: ""
-//     }
-//     await AcquisitionStore.saveAcquisitionPackage(acquisitionPackage);
-//     expect(AcquisitionStore.acquisitionPackage).toBe(acquisitionPackage);
-//   });
-
-
-test("Test initializeFromSession", async ()=> {
-
+  test("Test setDataFromSession", async () => {
     const acquisitionPackage: AcquisitionPackageDTO = {
-        status: "",
-        number: "",
-        project_overview: "",
-        organization: "",
-        contact: "",
-        fair_opportunity: "",
-        current_contract: "",
-        docusign_envelope_id: "",
-        sensitive_information: "",
-        period_of_performance: "",
-        periods: "",
-        gfe_overview: "",
-        contract_type: "",
-        requirements_const_estimate: "",
-        contract_considerations: "",
-        funding_plans: "",
-        funding_request: "",
-        classification_level: "",
-        required_services: "",
-        current_environment: "",
-        environment_instance: ""
-    }
+      status: "",
+      number: "",
+      project_overview: "",
+      organization: "",
+      contact: "",
+      fair_opportunity: "",
+      current_contract: "",
+      docusign_envelope_id: "",
+      sensitive_information: "",
+      period_of_performance: "",
+      periods: "",
+      gfe_overview: "",
+      contract_type: "",
+      requirements_const_estimate: "",
+      contract_considerations: "",
+      funding_plans: "",
+      funding_request: "",
+      classification_level: "",
+      required_services: "",
+      current_environment: "",
+      environment_instance: "",
+    };
 
     const acorInfo: ContactDTO = {
-        type: "",
-        role: "",
-        rank_components: "",
-        salutation: "",
-        first_name: "",
-        last_name: "",
-        middle_name: "",
-        suffix: "",
-        title: "",
-        phone: "",
-        phone_extension: "",
-        email: "",
-        grade_civ: "",
-        dodaac: "",
-        can_access_package: "",
-        manually_entered: ""
-    }
+      type: "",
+      role: "",
+      rank_components: "",
+      salutation: "",
+      first_name: "",
+      last_name: "",
+      middle_name: "",
+      suffix: "",
+      title: "",
+      phone: "",
+      phone_extension: "",
+      email: "",
+      grade_civ: "",
+      dodaac: "",
+      can_access_package: "",
+      manually_entered: "",
+    };
 
-    const contactData:ContactDTO = {
-        type: "",
-        role: "",
-        rank_components: "",
-        salutation: "",
-        first_name: "",
-        last_name: "",
-        middle_name: "",
-        suffix: "",
-        title: "",
-        phone: "",
-        phone_extension: "",
-        email: "",
-        grade_civ: "",
-        dodaac: "",
-        can_access_package: "",
-        manually_entered: ""
-    }
+    const contactData: ContactDTO = {
+      type: "",
+      role: "",
+      rank_components: "",
+      salutation: "",
+      first_name: "",
+      last_name: "",
+      middle_name: "",
+      suffix: "",
+      title: "",
+      phone: "",
+      phone_extension: "",
+      email: "",
+      grade_civ: "",
+      dodaac: "",
+      can_access_package: "",
+      manually_entered: "",
+    };
 
     const fairOpportunity: FairOpportunityDTO = {
-        exception_to_fair_opportunity: ""
-    }
+      exception_to_fair_opportunity: "",
+    };
 
     const projectOverview: ProjectOverviewDTO = {
-        title: "",
-        scope: "",
-        emergency_declaration: ""
-    }
+      title: "",
+      scope: "",
+      emergency_declaration: "",
+    };
 
     const requiredServices: RequiredServicesDTO = {
-        usage_description: "",
-        applicable_classification_levels: "",
-        need_for_entire_to_duration: "",
-        applicable_periods: "",
-        select_service_offerings: "",
-        other_service_offering: ""
-    }
+      usage_description: "",
+      applicable_classification_levels: "",
+      need_for_entire_to_duration: "",
+      applicable_periods: "",
+      select_service_offerings: "",
+      other_service_offering: "",
+    };
 
     const environmentInstance: EnvironmentInstanceDTO = {
-        storage_amount: "",
-        storage_type: "",
-        instance_name: "",
-        classification_level: "",
-        number_of_vcpus: "",
-        data_egress_monthly_amount: "",
-        performance_tier: "",
-        pricing_model_expiration: "",
-        csp_region: "",
-        memory_unit: "",
-        storage_unit: "",
-        pricing_model: "",
-        instance_location: "",
-        memory_amount: "",
-        operating_system_licensing: "",
-        data_egress_monthly_unit: ""
-    }
-    
-    const sessionData: SessionData=  {
-        acquisitionPackage:  acquisitionPackage,
-        acorInfo: acorInfo,
-        classificationLevel: classificationLevel,
-        contactInfo: contactData,
-        contractConsiderations: {},
-        corInfo: acorInfo,
-        contractType: contractType,
-        currentContract: currentContract,
-        fairOpportunity: fairOpportunity,
-        gfeOverview: {},
-        organization: {},
-        periodOfPerformance: {},
-        periods: "",
-        projectOverview: projectOverview,
-        requiredServices: requiredServices,
-        requirementsCostEstimate: {},
-        sensitiveInformation: {},
-        currentEnvironment: {},
-        environmentInstance: environmentInstance
-    }
+      storage_amount: "",
+      storage_type: "",
+      instance_name: "",
+      classification_level: "",
+      number_of_vcpus: "",
+      data_egress_monthly_amount: "",
+      performance_tier: "",
+      pricing_model_expiration: "",
+      csp_region: "",
+      memory_unit: "",
+      storage_unit: "",
+      pricing_model: "",
+      instance_location: "",
+      memory_amount: "",
+      operating_system_licensing: "",
+      data_egress_monthly_unit: "",
+    };
+
+    const sessionData: SessionData = {
+      acquisitionPackage: acquisitionPackage,
+      acorInfo: acorInfo,
+      classificationLevel: classificationLevel,
+      contactInfo: contactData,
+      contractConsiderations: {},
+      corInfo: acorInfo,
+      contractType: contractType,
+      currentContract: currentContract,
+      fairOpportunity: fairOpportunity,
+      gfeOverview: {},
+      organization: {},
+      periodOfPerformance: {},
+      periods: "",
+      projectOverview: projectOverview,
+      requiredServices: requiredServices,
+      requirementsCostEstimate: {},
+      sensitiveInformation: {},
+      currentEnvironment: {},
+      environmentInstance: environmentInstance,
+    };
+
+    AcquisitionStore.setDataFromSession(sessionData);
+    expect(AcquisitionStore.acquisitionPackage).toBe(acquisitionPackage);
+  });
+
+  test("Test saveAcquisitionPackage", async () => {
+    const acquisitionPackage: AcquisitionPackageDTO = {
+      sys_id: "acquisitionPackage_1234556677",
+      status: "",
+      number: "",
+      project_overview: "",
+      organization: "",
+      contact: "",
+      fair_opportunity: "",
+      current_contract: "",
+      docusign_envelope_id: "",
+      sensitive_information: "",
+      period_of_performance: "",
+      periods: "",
+      gfe_overview: "",
+      contract_type: "",
+      requirements_const_estimate: "",
+      contract_considerations: "",
+      funding_plans: "",
+      funding_request: "",
+      classification_level: "",
+      required_services: "",
+      current_environment: "",
+      environment_instance: "",
+    };
+    await AcquisitionStore.saveAcquisitionPackage(acquisitionPackage);
+    expect(AcquisitionStore.acquisitionPackage).toBe(acquisitionPackage);
+  });
+
+  test("Test initializeFromSession", async () => {
+    const acquisitionPackage: AcquisitionPackageDTO ={
+      sys_id: "acquisitionPackage_1234556677",
+      status: "",
+      number: "",
+      project_overview: "",
+      organization: "",
+      contact: "",
+      fair_opportunity: "",
+      current_contract: "",
+      docusign_envelope_id: "",
+      sensitive_information: "",
+      period_of_performance: "",
+      periods: "",
+      gfe_overview: "",
+      contract_type: "",
+      requirements_const_estimate: "",
+      contract_considerations: "",
+      funding_plans: "",
+      funding_request: "",
+      classification_level: "",
+      required_services: "",
+      current_environment: "",
+      environment_instance: "",
+    };
+
+    const acorInfo: ContactDTO = {
+      type: "",
+      role: "",
+      rank_components: "",
+      salutation: "",
+      first_name: "",
+      last_name: "",
+      middle_name: "",
+      suffix: "",
+      title: "",
+      phone: "",
+      phone_extension: "",
+      email: "",
+      grade_civ: "",
+      dodaac: "",
+      can_access_package: "",
+      manually_entered: "",
+    };
+
+    const contactData: ContactDTO = {
+      type: "",
+      role: "",
+      rank_components: "",
+      salutation: "",
+      first_name: "",
+      last_name: "",
+      middle_name: "",
+      suffix: "",
+      title: "",
+      phone: "",
+      phone_extension: "",
+      email: "",
+      grade_civ: "",
+      dodaac: "",
+      can_access_package: "",
+      manually_entered: "",
+    };
+
+    const fairOpportunity: FairOpportunityDTO = {
+      exception_to_fair_opportunity: "",
+    };
+
+    const projectOverview: ProjectOverviewDTO = {
+      title: "",
+      scope: "",
+      emergency_declaration: "",
+    };
+
+    const requiredServices: RequiredServicesDTO = {
+      usage_description: "",
+      applicable_classification_levels: "",
+      need_for_entire_to_duration: "",
+      applicable_periods: "",
+      select_service_offerings: "",
+      other_service_offering: "",
+    };
+
+    const environmentInstance: EnvironmentInstanceDTO = {
+      storage_amount: "",
+      storage_type: "",
+      instance_name: "",
+      classification_level: "",
+      number_of_vcpus: "",
+      data_egress_monthly_amount: "",
+      performance_tier: "",
+      pricing_model_expiration: "",
+      csp_region: "",
+      memory_unit: "",
+      storage_unit: "",
+      pricing_model: "",
+      instance_location: "",
+      memory_amount: "",
+      operating_system_licensing: "",
+      data_egress_monthly_unit: "",
+    };
+
+    const sessionData: SessionData = {
+      acquisitionPackage: acquisitionPackage,
+      acorInfo: acorInfo,
+      classificationLevel: classificationLevel,
+      contactInfo: contactData,
+      contractConsiderations: {},
+      corInfo: acorInfo,
+      contractType: contractType,
+      currentContract: currentContract,
+      fairOpportunity: fairOpportunity,
+      gfeOverview: {},
+      organization: {},
+      periodOfPerformance: {},
+      periods: "",
+      projectOverview: projectOverview,
+      requiredServices: requiredServices,
+      requirementsCostEstimate: {},
+      sensitiveInformation: {},
+      currentEnvironment: {},
+      environmentInstance: environmentInstance,
+    };
 
     saveSessionData(AcquisitionStore);
     await AcquisitionStore.initialize();
-    expect(AcquisitionStore.acquisitionPackage).toStrictEqual(acquisitionPackage);
-    
-})
-
+    expect(AcquisitionStore.acquisitionPackage).toStrictEqual(
+      acquisitionPackage
+    );
+  });
 });
