@@ -1,45 +1,53 @@
 <template>
   <div class="pa-5">
-    <ATATPageHead :headline="projectTitle"/>
-    <div class="v-main__wrap">
-      <div id="app-content" class="d-flex flex-column">
-        <div class="mb-auto" style="padding-bottom: 200px;">
-          <v-row class="mt-10">
-            <v-col class="col-12">
-              <h1 class="page-header mb-3">
-                Import funding details for your awarded Task Order
-              </h1>
-              <div class="copy-max-width">
-                <p class="mb-10">
-                  Please verify a few details about your awarded task order and we will import the
-                  CLIN funding info from Electronic Data Access (EDA).
-                </p>
-                <ATATSearch
-                  id="TaskOrderNumber"
-                  helpText="Format: Must be either 13 or 17 digits"
-                  label="Task Order Number"
-                  placeHolder="Find your task order in EDA"
-                  :tooltipText="toolTipText"
-                  searchType="EDA"
-                  :hideHelpTextOnError="true"
-                  :validate-on-blur="true"
-                  :value.sync="taskOrder"
-                  :rules="[
-                    $validators.required('Please enter your awarded task order number.'),
-                    $validators.isMaskValid(
-                      ['^([0-9A-Z]{13})([0-9A-Z]{4})?$'],
-                      `Your task order number must be either 13 or 17 characters.`,
-                      true
-                    )
-                  ]"
-                />
-              </div>
-            </v-col>
-          </v-row>
-        </div>
-      </div>
-      <ATATFooter/>
-    </div>
+    <v-main>
+      <ATATPageHead :headline="projectTitle"/>
+        <v-container class="container-max-width">
+          <v-row>
+            <v-col>      
+              <div class="v-main__wrap">
+                <div id="app-content" class="d-flex flex-column">
+                  <div class="mb-auto" style="padding-bottom: 200px;">
+                    <v-row class="">
+                      <v-col class="col-12">
+                        <h1 class="page-header mb-3">
+                          Import funding details for your awarded Task Order
+                        </h1>
+                        <div class="copy-max-width">
+                          <p class="mb-10">
+                            Please verify a few details about your awarded task order and we will 
+                            import the CLIN funding info from Electronic Data Access (EDA).
+                          </p>
+                          <ATATSearch
+                            id="TaskOrderNumber"
+                            helpText="Format: Must be either 13 or 17 digits"
+                            label="Task Order Number"
+                            placeHolder="Find your task order in EDA"
+                            :tooltipText="toolTipText"
+                            searchType="EDA"
+                            :hideHelpTextOnError="true"
+                            :validate-on-blur="true"
+                            :value.sync="taskOrder"
+                            :rules="[
+                              $validators.required('Please enter your awarded task order number.'),
+                              $validators.isMaskValid(
+                                ['^([0-9A-Z]{13})([0-9A-Z]{4})?$'],
+                                `Your task order number must be either 13 or 17 characters.`,
+                                true
+                              )
+                            ]"
+                          />
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </div>
+                </div>
+              <ATATFooter/>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
   </div>
 </template>
 

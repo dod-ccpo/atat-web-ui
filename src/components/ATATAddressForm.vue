@@ -192,7 +192,7 @@ export default class ATATAddressForm extends Vue {
   @Prop() public requiredFields?: stringObj[];
   @Prop() public isValidRules?: isValidObj[];
 
-  
+  public maskObj: mask = {};
 
 
   // methods
@@ -239,16 +239,16 @@ export default class ATATAddressForm extends Vue {
         inputID + "_text_field"
       ) as HTMLInputElement;
       if(inputField !== null) {
-        const maskObj: mask ={
+        this.maskObj ={
           placeholder: "",
           jitMasking: true
         }
         if (rule.isMaskRegex && rule.isMaskRegex===true){
-          maskObj.regex =  rule.mask[0] || "";
+          this.maskObj.regex =  rule.mask[0] || "";
         } else {
-          maskObj.mask = rule.mask || [];
+          this.maskObj.mask = rule.mask || [];
         }
-        Inputmask(maskObj).mask(inputField);
+        Inputmask(this.maskObj).mask(inputField);
       }
     })
   }

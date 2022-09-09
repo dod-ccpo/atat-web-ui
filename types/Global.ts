@@ -6,6 +6,27 @@ import {
 
 import { AdditionalButton } from "@/store/steps/types";
 
+export interface MenuIcon {
+  name: string;
+  height: string;
+  width: string;
+  color: string;
+}
+export interface TopNavItem {
+  title: string;
+  parentTitle?: string;
+  component?: Component;
+  spaSectionTitle?: string;
+  externalUrl?: string;
+  icon?: MenuIcon;
+  link?: string;
+  menu?: TopNavItem[]
+  menuPosition?: string;
+  align?: string;
+  isProfile?: boolean;
+  separatorBefore?: boolean;
+}
+
 export interface StepperRouteHandlerParams {
   previous: string;
   next: string;
