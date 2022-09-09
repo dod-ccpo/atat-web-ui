@@ -31,7 +31,9 @@
       </v-btn>
     </div>
 
-    <div id="PanelWrap" class="_panel-content-wrap" v-if="panelTitle">
+    <div id="PanelWrap"
+      :class="[appSection === 'Portfolio Summary' ?'_portfolio-panel': '_panel-content-wrap']"
+       v-if="panelTitle">
       <slot></slot>
     </div>
 
