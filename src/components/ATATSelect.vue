@@ -130,7 +130,6 @@ export default class ATATSelect extends Vue {
       && val.isSelectable !== undefined) {
       isSelectable = val.isSelectable;
     }
-    debugger;
     if (isString || isSelectable) {
       this.selected = val;
       this.setErrorMessage();
