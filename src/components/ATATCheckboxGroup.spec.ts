@@ -60,7 +60,7 @@ describe("Testing ATATSelect Component", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
-
+    
     it("@Watch validateCheckboxes - set $props.rules to ensure " +
           "$data.checkboxRules === $props.rules", async ()=> {
       await wrapper.setProps({rules})
@@ -227,48 +227,56 @@ describe("Testing ATATSelect Component", () => {
       expect(await wrapper.vm.$data.errorMessages).toEqual(_errorMessages);
     })
 
-    // it("setEventListener() - ", async ()=>{
-    //   await wrapper.vm.setEventListeners();
-    //   const checkbox = await wrapper.find('input[type="checkbox"]');
-    //   await checkbox.trigger("blur");
-    // })
 
-    it("@Watch items - ", async ()=>{
-      const checkbox = wrapper.find('input[type="checkbox"]');
-     
-      // checkbox.dispatchEvent(new Event('blur'));
-      
-      await wrapper.setProps({
-        items:[  {
+    it("@Watch items - supply new item set to ensure blur event " +
+      "listeners have been added", async ()=>{
+      wrapper.vm.$props.items=[
+        {
           id: "CheckboxOne",
           label: "CheckboxOne",
           value: "1",
-        }]
-      })
-      // const _setEventListeners = jest.spyOn(wrapper.vm, "setEventListeners")
-      
+        }
+      ]
+      const _setEventListeners = jest.spyOn(wrapper.vm, "setEventListeners")
       Vue.nextTick(()=>{
-        // expect(_setEventListeners).toHaveBeenCalled()
-        checkbox.trigger("click");
-        checkbox.trigger("blur");
+        Vue.nextTick(()=>{
+          expect(_setEventListeners).toHaveBeenCalled()
+        });
+      });
+    })
+
+    it("setCheckboxEventListeners() - stub in 2 checkboxes, " +
+      "add blur event listeners, dispatch blur event, to ensure " +
+      "$data.blurredCheckboxes[] contains id of blurred checkbox", async ()=>{
+
+      await wrapper.setData({
+        id: "CB",
+        validateCheckboxes: false
       })
-      
-    })
 
-    it("setCheckboxEventListeners() - ", async ()=>{
-      const checkbox = await wrapper.find({ref: "checkboxGroup"});
-      
-      await checkbox.trigger("blur");
-      // await checkbox.trigger("blur");
-      //   await wrapper.vm.setEventListeners();
-      //   const checkbox = await wrapper.find('input[type="checkbox"]');
-      //   await checkbox.trigger("blur");
-    })
+      const cb01 = document.createElement("input");
+      cb01.setAttribute("type", "checkbox");
+      cb01.setAttribute("id", "Checkbox_CheckboxOne");
+      cb01.setAttribute("data-group-id", "CB_Group")
 
+      const cb02 = document.createElement("input");
+      cb02.setAttribute("type", "checkbox");
+      cb02.setAttribute("id", "Checkbox_CheckboxTwo");
+      cb02.setAttribute("data-group-id", "CB_Group")
 
+      await document.body.appendChild(cb01);
+      await document.body.appendChild(cb02);
+      await wrapper.vm.setEventListeners();
+      await cb02.dispatchEvent(new FocusEvent("blur"));
+
+      expect(await wrapper.vm.$data.blurredCheckboxes.CB_Group[0]).toBe(
+        "Checkbox_CheckboxTwo"
+      )
     
-
-
-  });
+    })
+  
+  })
 
 });
+
+

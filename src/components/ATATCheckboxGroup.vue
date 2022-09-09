@@ -245,7 +245,6 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {
-    console.log('hi there')
     const thisCheckbox = event.currentTarget as HTMLInputElement;
     const id = thisCheckbox.id;
     const groupId: string = thisCheckbox.dataset.groupId || "CheckboxGroup";
