@@ -120,6 +120,29 @@
       :showModal.sync="showMembersModal" 
       @members-invited="membersInvited"
     />
+
+    <ATATDialog
+      :showDialog="showDeleteMemberDialog"
+      :title="'Remove ' + deleteMemberName + ' from portfolio?'" 
+      no-click-animation
+      okText="Remove member"
+      width="450"
+      @ok="deleteMember"
+      @cancelClicked="cancelDeleteMember"
+    >    
+      <template #content>
+        <p class="body">
+          {{ deleteMemberName }} will be removed from your portfolio members list. 
+          This individual will no longer have access to view portfolio details or 
+          track funds spent. 
+        </p>
+        <p class="body">
+          NOTE: A portfolio manager can restore their access to this portfolio 
+          at any time.
+        </p>
+      </template>
+    </ATATDialog>
+
   </div>
 </template>
 
@@ -129,6 +152,7 @@ import { Component } from "vue-property-decorator";
 import PortfolioData from "@/store/portfolio";
 import { format, parseISO } from "date-fns";
 import { Portfolio, SelectData } from "types/Global";
+import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
@@ -138,6 +162,7 @@ import _ from "lodash";
 
 @Component({
   components: {
+    ATATDialog,
     ATATSVGIcon,
     ATATSelect,
     AddMembersModal,
@@ -150,6 +175,9 @@ export default class PortfolioDrawer extends Vue {
   public csp = "";
 
   public showMembersModal = false;
+  public showDeleteMemberDialog = false;
+  public deleteMemberName = "";
+  public deleteMemberIndex = -1;
 
   public memberRoles: SelectData[] = [
     { header: "Roles" },
@@ -195,7 +223,6 @@ export default class PortfolioDrawer extends Vue {
         this.csp = storeData.csp;
       }
       this.portfolioMembers = _.cloneDeep(storeData.members) || [];
-      debugger;
     }
   }
 
@@ -222,43 +249,43 @@ export default class PortfolioDrawer extends Vue {
       : 0;
   }
 
-  // public getPortfolioMembers(): User[] {
-  //   return this.portfolio?.members?.length ? this.portfolio?.members : [];
-  // }
-
-
   public openMembersModal(): void {
     this.showMembersModal = true;
   }
 
-  private async onSelectedMemberRoleChanged(
-    val: string, index: number
-  ): Promise<void> {
-    const storeData = await PortfolioData.getPortfolioData();
-    debugger;
+  private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
     if (this.portfolio && this.portfolio.members ) {
       const memberRoles = ["Manager", "Viewer"]
       if (memberRoles.indexOf(val) > -1) {
         this.portfolio.members[index].role = val;
         PortfolioData.setPortfolioData(this.portfolio);
       } else {
-        const foo = storeData.members?.[index].role;
-        this.portfolioMembers[index].role = foo;
-        debugger;
+        // reset role back to saved value in store
+        const storeData = await PortfolioData.getPortfolioData();
+        this.portfolioMembers[index].role = storeData.members?.[index].role;
         if (val === "Remove" && this.portfolio.members && this.portfolio.members.length > 1) {
-          this.portfolio.members.splice(index, 1);
-          PortfolioData.setPortfolioData(this.portfolio);
-          await this.loadPortfolio();
-         
+          this.deleteMemberName = this.displayName(this.portfolioMembers[index]);
+          this.showDeleteMemberDialog = true;         
         } else if (val === "AboutRoles") {
-          alert("open slideout")
+          alert("open slideout in future ticket")
           // Open the slideout panel -- future ticket
         }
-
       }
-
     }
+  }
 
+  public async deleteMember(): Promise<void> {
+    this.showDeleteMemberDialog = false;
+    if (this.portfolio.members) {
+      this.portfolio.members.splice(this.deleteMemberIndex, 1);
+      PortfolioData.setPortfolioData(this.portfolio);
+      await this.loadPortfolio();
+    }
+  }
+
+  public cancelDeleteMember(): void {
+    this.showDeleteMemberDialog = false;
+    this.deleteMemberIndex = -1;
   }
 }
 </script>
