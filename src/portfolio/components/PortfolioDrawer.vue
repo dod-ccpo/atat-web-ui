@@ -50,6 +50,7 @@
       </div>
     </div>
     <hr class="my-8" />
+
     <div id="PortfolioMembersSection" class="px-6">
       <div
         id="PortfolioMembersHeader"
@@ -85,7 +86,9 @@
       >
         <div class="d-flex flex-columm justify-space-between" 
         v-for="(member, index) in getPortfolioMembers()" :key="member.email">
-          <a  class="pt-1" id="MemberName" role="button"> Maria Missionowner </a>
+          <a  class="pt-1" id="MemberName" role="button">
+            {{ displayName(member) }}
+          </a>
           <div>
             <ATATSelect
               @onChange="(value)=>onSelectedMemberRoleChanged(value, index)"
@@ -100,6 +103,7 @@
         </div>
       </div>
     </div>
+
     <hr class="mb-4" />
     <div id="DatesSection" class="_portfolio-panel pt-0">
       <div>
@@ -111,7 +115,10 @@
         <span id="LastUpdatedDate">{{ updateTime }}</span>
       </div>
     </div>
-    <AddMembersModal :showModal.sync="showMembersModal" />
+    <AddMembersModal 
+      :showModal.sync="showMembersModal" 
+      @members-invited="membersInvited"
+    />
   </div>
 </template>
 
@@ -191,6 +198,12 @@ export default class PortfolioDrawer extends Vue {
     await this.loadOnEnter();
   }
 
+  public displayName(member: User): string {
+    return member.firstName && member.lastName 
+      ? member.firstName + " " + member.lastName
+      : member.email || "";
+  }
+
   public getPortfolioMembersCount(): number {
     return this.portfolio?.members?.length
       ? this.portfolio?.members?.length
@@ -199,6 +212,12 @@ export default class PortfolioDrawer extends Vue {
 
   public getPortfolioMembers(): User[] {
     return this.portfolio?.members?.length ? this.portfolio?.members : [];
+  }
+
+  public async membersInvited(): Promise<void> {
+    // debugger;
+    await this.loadOnEnter();
+    debugger;
   }
 
   public openMembersModal(): void {

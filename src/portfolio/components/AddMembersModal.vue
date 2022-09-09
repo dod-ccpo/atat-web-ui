@@ -498,6 +498,7 @@ export default class AddMembersModal extends Vue {
       role: this.selectedRole,
     }
     await PortfolioData.saveMembers(newMembers);
+    this.$emit("members-invited")
   }
 
 }
