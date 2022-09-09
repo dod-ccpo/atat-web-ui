@@ -4,7 +4,7 @@ import { createLocalVue, mount } from "@vue/test-utils";
 import ATATFooter from "@/components/ATATFooter.vue";
 Vue.use(Vuetify);
 
-describe("Testing ATATTextField Component", () => {
+describe("Testing Footer Component", () => {
   const localVue = createLocalVue();
   let vuetify: any;
   let wrapper: any;

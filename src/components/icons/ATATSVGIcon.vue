@@ -19,11 +19,14 @@ import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
+import ContactSupport from "@/components/icons/ContactSupport.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
+import DisaLogo from "@/components/icons/DisaLogo.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
+import Feedback from "@/components/icons/Feedback.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import Gcp from "@/components/icons/Gcp.vue";
 import Launch from "@/components/icons/Launch.vue";
@@ -31,9 +34,12 @@ import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Oracle from "@/components/icons/Oracle.vue";
 import Pdf from "@/components/icons/Pdf.vue";
 import PersonAddAlt from "@/components/icons/PersonAddAlt.vue";
+import Person from "@/components/icons/Person.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
 import Remove from "@/components/icons/Remove.vue";
 import Search from "@/components/icons/Search.vue";
+import SignOut from "@/components/icons/SignOut.vue";
+import Support from "@/components/icons/Support.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
@@ -48,11 +54,14 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     ChevronDown,
     ChevronRight,
     Close,
+    ContactSupport,
     ControlPoint,
     Currency,
+    DisaLogo,
     Edit,
     ExclamationMark,
     ExternalLink,
+    Feedback,
     FilePresent,
     Gcp,
     Launch,
@@ -60,9 +69,12 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     Oracle,
     Pdf,
     PersonAddAlt,
+    Person,
     PlusSign,
     Remove,
     Search,
+    SignOut,
+    Support,
     TriangleUp,
     TriangleDown,
     TrendingDown,
