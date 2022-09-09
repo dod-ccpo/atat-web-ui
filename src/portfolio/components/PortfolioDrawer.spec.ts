@@ -121,8 +121,17 @@ describe("Testing Portfolio Drawer component", () => {
     await wrapper.setData({
       portfolio
     })
-    const currentNumberOfMembers = PortfolioData.portfolio.members?.length || 1
     await wrapper.vm.onSelectedMemberRoleChanged(newRole, idx)
+    expect (await wrapper.vm.$data.showDeleteMemberDialog).toBe(true);
+   
+  })
+
+  it("deleteMember() - pass params to successfully change roles ", async()=>{
+    await wrapper.setData({
+      portfolio
+    })
+    const currentNumberOfMembers = PortfolioData.portfolio.members?.length || 1
+    await wrapper.vm.deleteMember();
     expect(await PortfolioData.portfolio.members?.length).toBe(
       currentNumberOfMembers - 1
     )
