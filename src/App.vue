@@ -1,5 +1,6 @@
 <template>
   <v-app id="app">
+    <ATATTopNavBar />
     <div v-if="appContentComponent">
       <component :is="appContentComponent" />
     </div>
@@ -16,13 +17,15 @@ import TaskOrderLookup from "@/TaskOrderLookup.vue";
 import PortfolioSummary from "../src/portfolio/Index.vue"
 import JWCCDashboard from "@/dashboards/JWCC.vue";
 import PortfolioDashboard from "@/dashboards/Portfolio.vue";
-
+import ATATTopNavBar from "./components/ATATTopNavBar.vue";
 import AppSections from "@/store/appSections";
 
-@Component({})
-
+@Component({
+  components: {
+    ATATTopNavBar,
+  },
+})
 export default class App extends Vue {
-
   public get activeAppSection(): string {
     return AppSections.activeAppSection;
   }
@@ -68,7 +71,5 @@ export default class App extends Vue {
   public async beforeMount(): Promise<void> {
     await AppSections.setAppContentComponent(AppPackageBuilder);
   }
-
 }
-
 </script>
