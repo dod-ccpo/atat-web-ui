@@ -164,6 +164,18 @@ export class FinancialDetailsStore extends VuexModule {
 
   }
 
+
+  @Action({rawError:true})
+  public async updateAcquisitionPackageFundingRequest(data: FundingRequestFSFormDTO): Promise<void>{
+
+    const acquisition_package = AcquisitionPackage.acquisitionPackage;
+    if(acquisition_package){
+      acquisition_package.funding_request = data.sys_id || "";
+      await AcquisitionPackage.saveAcquisitionPackage(acquisition_package);
+    }
+  }
+
+
   @Action
   public async saveGInvoiceData(data: baseGInvoiceData): Promise<void> {
     const fsForm: FundingRequestFSFormDTO = this.fundingRequestFSForm
@@ -177,11 +189,7 @@ export class FinancialDetailsStore extends VuexModule {
 
     const savedForm = await this.saveFundingRequestFSForm(formToSave);
     this.setFundingRequestFSForm(savedForm);
-    const acquisition_package = AcquisitionPackage.acquisitionPackage;
-    if(acquisition_package){
-      acquisition_package.funding_request = savedForm.sys_id || "";
-      await AcquisitionPackage.saveAcquisitionPackage(acquisition_package);
-    }
+    await this.updateAcquisitionPackageFundingRequest(savedForm);
   }
 
   @Action({ rawError: true })
