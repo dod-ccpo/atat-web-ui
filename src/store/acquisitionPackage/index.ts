@@ -439,15 +439,21 @@ export class AcquisitionPackageStore extends VuexModule {
     this.currentEnvironment = sessionData.currentEnvironment;
   }
 
-  @Action({ rawError: true })
-  public async initialize(): Promise<void> {
+  @Action({rawError: true})
+  public async initializeModules(): Promise<void> {
     await ContactData.initialize();
     await OrganiationData.initialize();
     await DescriptionOfWork.initialize();
     await Attachments.initialize();
     await FinancialDetails.initialize();
     await Portfolio.initialize()
-    
+  }
+
+  @Action({ rawError: true })
+  public async initialize(): Promise<void> {
+
+    await this.initializeModules();
+
     if (this.initialized) {
       return;
     }
