@@ -72,7 +72,6 @@
         >
           <ATATSVGIcon
             @click="openMembersModal"
-            class="pt-1"
             name="PersonAddAlt"
             color="base"
             :width="22"
@@ -265,6 +264,7 @@ export default class PortfolioDrawer extends Vue {
         this.portfolioMembers[index].role = storeData.members?.[index].role;
         if (val === "Remove" && this.portfolio.members && this.portfolio.members.length > 1) {
           this.deleteMemberName = this.displayName(this.portfolioMembers[index]);
+          this.deleteMemberIndex = index;
           this.showDeleteMemberDialog = true;         
         } else if (val === "AboutRoles") {
           alert("open slideout in future ticket")
