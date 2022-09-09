@@ -57,6 +57,7 @@ export interface SelectData {
   hidden?: boolean;
   header?: string;
   divider?: boolean;
+  isSelectable?: boolean;
 }
 
 /**

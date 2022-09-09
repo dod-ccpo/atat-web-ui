@@ -67,7 +67,7 @@
         </div>
         <v-btn
           id="AddPortfolioMember"
-          class="_icon-only position-relative"
+          class="_icon-only"
           @click="openMembersModal()"
         >
           <ATATSVGIcon
@@ -85,19 +85,20 @@
         class="pt-6"
       >
         <div class="d-flex flex-columm justify-space-between" 
-        v-for="(member, index) in getPortfolioMembers()" :key="member.email">
+        v-for="(member, index) in portfolioMembers" :key="member.email">
           <a  class="pt-1" id="MemberName" role="button">
             {{ displayName(member) }}
           </a>
           <div>
             <ATATSelect
-              @onChange="(value)=>onSelectedMemberRoleChanged(value, index)"
-              id="Role"
+              :id="'Role' + index"
               class="_small _alt-style-clean _invite-members-modal align-self-end"
               :items="memberRoles"
+              :returnObject="true"
               width="105"
-              :selectedValue="member.role"
+              :selectedValue.sync="portfolioMembers[index].role"
               iconType="chevron"
+              @onChange="(value)=>onSelectedMemberRoleChanged(value, index)"
             />
           </div>
         </div>
@@ -133,6 +134,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
 import { User } from "../../../types/Global";
 
+import _ from "lodash";
+
 @Component({
   components: {
     ATATSVGIcon,
@@ -153,8 +156,8 @@ export default class PortfolioDrawer extends Vue {
     { text: "Manager", value: "Manager" },
     { text: "Viewer", value: "Viewer" },
     { divider: true },
-    { text: "Remove from portfolio", value: "Remove" },
-    { text: "About Roles", value: "Roles" },
+    { text: "Remove from portfolio", value: "Remove", isSelectable: false },
+    { text: "About Roles", value: "AboutRoles", isSelectable: false },
   ];;
 
   public saveDescription(): void {
@@ -182,7 +185,7 @@ export default class PortfolioDrawer extends Vue {
     }
   }
 
-  public async loadOnEnter(): Promise<void> {
+  public async loadPortfolio(): Promise<void> {
     const storeData = await PortfolioData.getPortfolioData();
     if (storeData) {
       this.portfolio = storeData;
@@ -191,11 +194,17 @@ export default class PortfolioDrawer extends Vue {
         this.updateTime = this.formatDate(storeData.updated);
         this.csp = storeData.csp;
       }
+      this.portfolioMembers = _.clone(storeData.members) || [];
     }
   }
 
   public async mounted(): Promise<void> {
-    await this.loadOnEnter();
+    await this.loadPortfolio();
+  }
+
+  public async membersInvited(): Promise<void> {
+    // update "Portfolio members" in side panel when invited from modal
+    await this.loadPortfolio();
   }
 
   public displayName(member: User): string {
@@ -204,35 +213,52 @@ export default class PortfolioDrawer extends Vue {
       : member.email || "";
   }
 
+  public portfolioMembers: User[] = [];
+
   public getPortfolioMembersCount(): number {
     return this.portfolio?.members?.length
       ? this.portfolio?.members?.length
       : 0;
   }
 
-  public getPortfolioMembers(): User[] {
-    return this.portfolio?.members?.length ? this.portfolio?.members : [];
-  }
+  // public getPortfolioMembers(): User[] {
+  //   return this.portfolio?.members?.length ? this.portfolio?.members : [];
+  // }
 
-  public async membersInvited(): Promise<void> {
-    // debugger;
-    await this.loadOnEnter();
-    debugger;
-  }
 
   public openMembersModal(): void {
     this.showMembersModal = true;
   }
 
-  private onSelectedMemberRoleChanged(role: string, index: number): void {
+  private async onSelectedMemberRoleChanged(
+    selectedItem: SelectData, index: number
+  ): Promise<void> {
+    const foobar = await PortfolioData.getPortfolioData();
     debugger;
+    if (this.portfolio && this.portfolio.members ) {
 
-    if(this.portfolio && this.portfolio.members ){
-
-      if( role === "Manager" || role == "Viewer"){
+      if (selectedItem.value === "Manager" || selectedItem.value == "Viewer") {
         var member = this.portfolio.members[index];
-        member.role = role;
+        member.role = selectedItem.value;
+        PortfolioData.setPortfolioData(this.portfolio);
+      } else {
+        const foo = this.portfolioMembers[index].role;
+        debugger;
+        
+        this.portfolioMembers[index].role = "";
+        this.portfolioMembers[index].role = foo;
+
+        if (selectedItem.value === "Remove") {
+          // debugger;
+          alert("remove member")
+         
+        } else if (selectedItem.value === "AboutRoles") {
+          alert("open slideout")
+          // Open the slideout panel -- future ticket
+        }
+
       }
+
     }
 
   }
