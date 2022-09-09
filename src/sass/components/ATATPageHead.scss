@@ -1,6 +1,7 @@
 header._atat-page-header {
   height: 6rem !important;
   background-color: $white !important;
+  z-index: 100 !important;
   
   .v-toolbar__content {
     height: 6rem !important;
@@ -83,16 +84,27 @@ header._atat-page-header {
     }
   }
 
-  ._more-menu-button.v-btn.v-size--default {
-    min-width: 36px;
-    width: 36px;
-    
-    &:hover {
-      background-color: $base-lightest !important;
-    }
+  ._more-menu-button, ._add-user-button {
+    &.v-btn.v-size--default {
+      min-width: 28px;
+      width: 28px;
+      height: 28px;
+      padding: 0 !important;
+      border-radius: 4px;
+      &:hover {
+        background-color: $base-lightest !important;
+      }
 
-    &[aria-expanded=true] {
-      background-color: $primary-lighter !important;
+      &[aria-expanded=true] {
+        background-color: $primary-lighter !important;
+      }
+    }
+  }
+  ._add-user-button {
+    .v-icon {
+      font-size: 2rem;
+      width: 20px;
+      height: 20px;
     }
   }
 
@@ -103,14 +115,14 @@ header._atat-page-header {
   ._header-menu {
     .v-menu__content {
       .v-list-item {
-
+        border-top: 1px solid white;
         &:hover {
           background-color: $base-lightest;
           cursor: pointer !important;
         }
 
         &.active {
-          background-color: $base-lightest;
+          background-color: $primary-lighter;
           font-weight: 700;
 
           &:hover {
