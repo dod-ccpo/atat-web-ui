@@ -1,14 +1,14 @@
 <template>
-  <div class="_portfolioDrawer">
-    <div class="_portfolio-panel">
-      <h3 class="mb-4 mt-6">About Portfolio</h3>
+  <div class="_portfolio-drawer">
+    <div id="AboutPortfolioSection" class="_portfolio-panel">
+      <h3 id="AboutSectionHeader" class="mb-4 mt-6">About Portfolio</h3>
       <div>
         <v-textarea
           id="DrawerTextArea"
           v-model="portfolio.description"
           auto-grow
           autocomplete="off"
-          class="_drawerTextArea pt-0 mb-4 ml-n1"
+          class="_drawer-text-area pt-0 mb-4 ml-n1"
           dense
           hide-details
           placeholder="Add a description"
@@ -17,18 +17,24 @@
         >
         </v-textarea>
         <div class="d-flex justify-space-between pb-4">
-          Status
-          <span class="tag"
-          :class="getTag()">{{ portfolio.status }}</span>
+          <span id="StatusLabel">Status</span>
+          <v-chip
+            id="StatusChip"
+            :color="getBgColor(portfolio.status)"
+            label
+          >
+            {{ portfolio.status }}
+          </v-chip>
         </div>
         <div class="d-flex justify-space-between pb-4">
-          Cloud Service Provider
-          <div class="d-flex align-center">
+          <span id="CSPLabel">Cloud Service Provider</span>
+          <div id="CSP" class="d-flex align-center">
             <ATATSVGIcon
-            :name="csp.toLowerCase()"
-            width="20"
-            height="16"
-            class="mr-1"
+              :name="csp.toLowerCase()"
+              color="azure-blue"
+              width="20"
+              height="16"
+              class="mr-1"
             />
             <div>
               {{ portfolio.csp }}
@@ -36,30 +42,32 @@
           </div>
         </div>
         <div class="d-flex justify-space-between pb-4">
-          Service/Agency
-          <div>
+          <span id="ServiceAgencyLabel">Service/Agency</span>
+          <div id="ServiceAgency">
             {{ portfolio.serviceAgency }}
           </div>
         </div>
         <div class="d-flex justify-space-between">
-          Created by
-          <div class="_text-link">
+          <span id="CreatedByLabel">Created by</span>
+          <div id="CreatedBy" class="_text-link">
             Maria Missionowner
           </div>
         </div>
       </div>
     </div>
     <hr class="my-8" />
-    <div class="pl-4">
-      <h3>Portfolio Members</h3>
+    <div id="PortfolioMembersSection" class="px-6">
+      <h3 id="PortfolioMembersHeader">Portfolio Members</h3>
     </div>
     <hr class="mb-4 " />
-    <div class="_portfolio-panel pt-0">
+    <div id="DatesSection" class="_portfolio-panel pt-0">
       <div>
-        Provisioned on {{provisionedTime}}
+        <span id="ProvisionedOnLabel">Provisioned on&nbsp;</span>
+        <span id="ProvisionedOnDate">{{provisionedTime}}</span>
       </div>
       <div>
-        Last updated {{updateTime}}
+        <span id="LastUpdatedLabel">Last updated&nbsp;</span>
+        <span id="LastUpdatedDate">{{updateTime}}</span>
       </div>
     </div>
   </div>
@@ -72,8 +80,6 @@ import PortfolioData from "@/store/portfolio";
 import { format, parseISO } from "date-fns"
 import { Portfolio } from "types/Global";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-
-
 
 @Component({
   components: {
@@ -94,18 +100,18 @@ export default class PortfolioDrawer extends Vue {
     return format(parseISO(date), 'MMM. d, Y, Hm')
   }
 
-  public getTag(): string {
+  public getBgColor(): string {
     switch (this.portfolio.status?.toLowerCase()) {
     case 'active':
-      return "tag-green";
+      return "bg-success";
     case 'processing':
-      return "tag-blue";
+      return "bg-info-dark";
     case 'expiring pop':
-      return "tag-warning";
+      return "bg-warning";
     case 'expired':
-      return "tag-error";
+      return "bg-error";
     case 'archived':
-      return "tag-base";
+      return "bg-base-dark";
     default:
       return "";
     }

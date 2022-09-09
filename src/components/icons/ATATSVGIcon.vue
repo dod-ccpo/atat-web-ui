@@ -103,6 +103,7 @@ export default class ATATSVGIcon extends Vue {
     { "disabled": "c9c9c9" },
     { "disabled-dark": "adadad"},
     { "white": "ffffff" },
+    { "azure-blue": "0089D6" },
   ]
 
   private mounted(): void{
