@@ -419,7 +419,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  private setDataFromSession(sessionData: SessionData) {
+  public setDataFromSession(sessionData: SessionData): void {
     this.acquisitionPackage = sessionData.acquisitionPackage;
     this.acorInfo = sessionData.acorInfo;
     this.contactInfo = sessionData.contactInfo;

@@ -5,10 +5,23 @@ import { createLocalVue } from "@vue/test-utils";
 import { AcquisitionPackageStore } from "..";
 import { getModule } from "vuex-module-decorators";
 import {
+    AcquisitionPackageDTO,
+  ClassificationLevelDTO,
+  ContactDTO,
   CurrentContractDTO,
+  EnvironmentInstanceDTO,
+  FairOpportunityDTO,
   OrganizationDTO,
   ProjectOverviewDTO,
+  RequiredServicesDTO,
 } from "@/api/models";
+import { SessionData } from "../models";
+import { AcquisitionPackagesApi } from "@/api/acquisitionPackages";
+import { ClassificationLevelApi } from "@/api/classificationLevels";
+import ContactData from "@/store/contactData";
+import { FairOpportunityApi } from "@/api/fairOpportunity";
+import exp from "constants";
+import api from "@/api";
 
 const currentContract: CurrentContractDTO = {
   current_contract_exists: "",
@@ -20,7 +33,7 @@ const currentContract: CurrentContractDTO = {
 
 const projectOverview: ProjectOverviewDTO = {
   sys_id: "123u5u5u4u5",
-  title: "",
+  title: "TestOverview",
   scope: "",
   emergency_declaration: "",
 };
@@ -137,7 +150,11 @@ describe("Classification Requirements Store", () => {
     console.log = jest.fn;
 
     // sessionStorage = new MockSessionStorage();
-  });
+    api.acquisitionPackageTable.update = jest.fn((sys_id: string, 
+        acquisition: AcquisitionPackageDTO)=> new Promise(()=>{
+            return acquisition;
+        }));
+    });
 
   beforeEach(() => {
     const createStore = (
@@ -200,5 +217,174 @@ describe("Classification Requirements Store", () => {
     expect(AcquisitionStore.projectTitle).toBe(
       "TestTitle"
     );
+
   });
+
+  test("Test setContractType", () => {
+    AcquisitionStore.setContractType(contractType);
+    expect(AcquisitionStore.contractType).toBe(
+      contractType
+    );
+  });
+
+  test("Test setDataFromSession", async ()=> {
+
+      const acquisitionPackage: AcquisitionPackageDTO = {
+          status: "",
+          number: "",
+          project_overview: "",
+          organization: "",
+          contact: "",
+          fair_opportunity: "",
+          current_contract: "",
+          docusign_envelope_id: "",
+          sensitive_information: "",
+          period_of_performance: "",
+          periods: "",
+          gfe_overview: "",
+          contract_type: "",
+          requirements_const_estimate: "",
+          contract_considerations: "",
+          funding_plans: "",
+          funding_request: "",
+          classification_level: "",
+          required_services: "",
+          current_environment: "",
+          environment_instance: ""
+      }
+
+      const acorInfo: ContactDTO = {
+          type: "",
+          role: "",
+          rank_components: "",
+          salutation: "",
+          first_name: "",
+          last_name: "",
+          middle_name: "",
+          suffix: "",
+          title: "",
+          phone: "",
+          phone_extension: "",
+          email: "",
+          grade_civ: "",
+          dodaac: "",
+          can_access_package: "",
+          manually_entered: ""
+      }
+
+      const contactData:ContactDTO = {
+          type: "",
+          role: "",
+          rank_components: "",
+          salutation: "",
+          first_name: "",
+          last_name: "",
+          middle_name: "",
+          suffix: "",
+          title: "",
+          phone: "",
+          phone_extension: "",
+          email: "",
+          grade_civ: "",
+          dodaac: "",
+          can_access_package: "",
+          manually_entered: ""
+      }
+
+      const fairOpportunity: FairOpportunityDTO = {
+          exception_to_fair_opportunity: ""
+      }
+
+      const projectOverview: ProjectOverviewDTO = {
+          title: "",
+          scope: "",
+          emergency_declaration: ""
+      }
+
+      const requiredServices: RequiredServicesDTO = {
+          usage_description: "",
+          applicable_classification_levels: "",
+          need_for_entire_to_duration: "",
+          applicable_periods: "",
+          select_service_offerings: "",
+          other_service_offering: ""
+      }
+
+      const environmentInstance: EnvironmentInstanceDTO = {
+          storage_amount: "",
+          storage_type: "",
+          instance_name: "",
+          classification_level: "",
+          number_of_vcpus: "",
+          data_egress_monthly_amount: "",
+          performance_tier: "",
+          pricing_model_expiration: "",
+          csp_region: "",
+          memory_unit: "",
+          storage_unit: "",
+          pricing_model: "",
+          instance_location: "",
+          memory_amount: "",
+          operating_system_licensing: "",
+          data_egress_monthly_unit: ""
+      }
+      
+      const sessionData: SessionData=  {
+          acquisitionPackage:  acquisitionPackage,
+          acorInfo: acorInfo,
+          classificationLevel: classificationLevel,
+          contactInfo: contactData,
+          contractConsiderations: {},
+          corInfo: acorInfo,
+          contractType: contractType,
+          currentContract: currentContract,
+          fairOpportunity: fairOpportunity,
+          gfeOverview: {},
+          organization: {},
+          periodOfPerformance: {},
+          periods: "",
+          projectOverview: projectOverview,
+          requiredServices: requiredServices,
+          requirementsCostEstimate: {},
+          sensitiveInformation: {},
+          currentEnvironment: {},
+          environmentInstance: environmentInstance
+      }
+
+      AcquisitionStore.setDataFromSession(sessionData);
+      expect(AcquisitionStore.acquisitionPackage).toBe(acquisitionPackage);
+      
+  })
+
+  
+//   test("Test saveAcquisitionPackage", async () => {
+   
+//     const acquisitionPackage: AcquisitionPackageDTO = {
+//         sys_id: "acquisitionPackage_1234556677",
+//         status: "",
+//         number: "",
+//         project_overview: "",
+//         organization: "",
+//         contact: "",
+//         fair_opportunity: "",
+//         current_contract: "",
+//         docusign_envelope_id: "",
+//         sensitive_information: "",
+//         period_of_performance: "",
+//         periods: "",
+//         gfe_overview: "",
+//         contract_type: "",
+//         requirements_const_estimate: "",
+//         contract_considerations: "",
+//         funding_plans: "",
+//         funding_request: "",
+//         classification_level: "",
+//         required_services: "",
+//         current_environment: "",
+//         environment_instance: ""
+//     }
+//     await AcquisitionStore.saveAcquisitionPackage(acquisitionPackage);
+//     expect(AcquisitionStore.acquisitionPackage).toBe(acquisitionPackage);
+//   });
+
 });
