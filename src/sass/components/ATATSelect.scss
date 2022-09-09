@@ -1,5 +1,9 @@
 .v-select-list {
+  hr {
+     margin: 8px 0;
+  }
   .v-list-item {
+
     min-height: unset;
     &._item-disabled {
       @extend .text-disabled;
@@ -40,6 +44,7 @@
 }
 
 .v-select {
+
   &.v-text-field--outlined fieldset {
     border-color: $base !important;
   }
@@ -123,6 +128,20 @@
     fieldset {
       border: none;
       background-color: $primary-10;
+    }
+
+    &:hover {
+      fieldset {
+        background-color: $primary-20;
+      }
+    }
+  }
+
+  &._alt-style-clean {
+
+    fieldset {
+      border: none;
+      background-color: transparent;
     }
 
     &:hover {

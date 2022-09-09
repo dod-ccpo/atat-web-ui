@@ -34,6 +34,7 @@ import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Oracle from "@/components/icons/Oracle.vue";
 import Pdf from "@/components/icons/Pdf.vue";
 import Person from "@/components/icons/Person.vue";
+import PersonAddAlt from "@/components/icons/PersonAddAlt.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
 import Remove from "@/components/icons/Remove.vue";
 import Search from "@/components/icons/Search.vue";
@@ -68,6 +69,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     Oracle,
     Pdf,
     Person,
+    PersonAddAlt,
     PlusSign,
     Remove,
     Search,
