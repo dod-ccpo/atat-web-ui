@@ -115,6 +115,19 @@ describe("Testing Portfolio Drawer component", () => {
     expect(await wrapper.vm.$data.portfolio.members[3].role).toEqual(newRole);
   })
 
+  it("onSelectedMemberRoleChanged() - pass params to successfully change roles ", async()=>{
+    const newRole = "Remove";
+    const idx = 3
+    await wrapper.setData({
+      portfolio
+    })
+    const currentNumberOfMembers = PortfolioData.portfolio.members?.length || 1
+    await wrapper.vm.onSelectedMemberRoleChanged(newRole, idx)
+    expect(await PortfolioData.portfolio.members?.length).toBe(
+      currentNumberOfMembers - 1
+    )
+  })
+
   describe("getTag function with different inputs",()=> {
 
     it("Test getTag(processing)- showed return tags based on Portfolio.status",()=>{
