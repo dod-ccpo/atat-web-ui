@@ -33,11 +33,8 @@ import Launch from "@/components/icons/Launch.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Oracle from "@/components/icons/Oracle.vue";
 import Pdf from "@/components/icons/Pdf.vue";
-<<<<<<< HEAD
-import PersonAddAlt from "@/components/icons/PersonAddAlt.vue";
-=======
 import Person from "@/components/icons/Person.vue";
->>>>>>> 12996a5e1e0a2adfd41aaa711fb6aaefd2089b4c
+import PersonAddAlt from "@/components/icons/PersonAddAlt.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
 import Remove from "@/components/icons/Remove.vue";
 import Search from "@/components/icons/Search.vue";
@@ -71,11 +68,8 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     MonetizationOn,
     Oracle,
     Pdf,
-<<<<<<< HEAD
-    PersonAddAlt,
-=======
     Person,
->>>>>>> 12996a5e1e0a2adfd41aaa711fb6aaefd2089b4c
+    PersonAddAlt,
     PlusSign,
     Remove,
     Search,
