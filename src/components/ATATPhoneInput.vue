@@ -16,7 +16,7 @@
           <v-select
             ref="atatPhoneDropdown"
             attach
-            id="CountryCodeDropdown'"
+            id="CountryCodeDropdown"
             class="_country-select"
             :items="searchResults"
             outlined

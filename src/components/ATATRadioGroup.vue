@@ -241,7 +241,7 @@ export default class ATATRadioGroup extends Vue {
   }
 
   @Watch("clearOtherValidation")
-  public resetOtherValiation(): void {
+  public resetOtherValidation(): void {
     this.$refs.atatTextInput.errorBucket = [];
     this.$refs.atatTextInput.errorCount = 0;
   }
