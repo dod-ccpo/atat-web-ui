@@ -102,7 +102,8 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
       label: "Fiscal Service Forms (7600A and 7600B)",
       value: "FS_FORM",
       description: `Import from G-Invoicing or manually upload your completed forms.
-        <div class='badge badge-blue d-inline-block mt-1'>Recommended</div>`
+        <v-chip class="v-chip v-chip--label theme--light v-size--default bg-info-dark
+        mr-2"><span class="v-chip__content">Recommended</span></v-chip>`
     },
     {
       id: "MIPRCheckbox",

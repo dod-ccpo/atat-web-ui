@@ -13,7 +13,8 @@ import {stringObj } from "types/Global";
 import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
-
+import Aws from "@/components/icons/Aws.vue";
+import Azure from "@/components/icons/Azure.vue";
 import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
@@ -27,8 +28,10 @@ import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Feedback from "@/components/icons/Feedback.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
+import Gcp from "@/components/icons/Gcp.vue";
 import Launch from "@/components/icons/Launch.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
+import Oracle from "@/components/icons/Oracle.vue";
 import Pdf from "@/components/icons/Pdf.vue";
 import Person from "@/components/icons/Person.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
@@ -44,6 +47,8 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 @Component({
   components:{
+    Aws,
+    Azure,
     Calendar,
     ChevronDown,
     ChevronRight,
@@ -57,8 +62,10 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     ExternalLink,
     Feedback,
     FilePresent,
+    Gcp,
     Launch,
     MonetizationOn,
+    Oracle,
     Pdf,
     Person,
     PlusSign,
@@ -108,6 +115,7 @@ export default class ATATSVGIcon extends Vue {
     { "disabled": "c9c9c9" },
     { "disabled-dark": "adadad"},
     { "white": "ffffff" },
+    { "azure-blue": "0089D6" },
   ]
 
   private mounted(): void{

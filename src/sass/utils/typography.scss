@@ -269,19 +269,19 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
   @extend .copy-max-width;
 }
 
-.badge {
-  border-radius: 2px;
-  color: white;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 0 4px;
-  font-size: 1.4rem;
-
-  &.badge-blue {
-    background-color: $info-dark;
+.v-chip {
+  padding: 2px 4px;
+  height: auto !important;
+  .v-chip__content {
+    color: white;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.4rem;
   }
-  &.badge-green {
-    background-color: $success;
+  &.bg-warning {
+    .v-chip__content {
+      color: $base-darkest;
+    }
   }
 }
 
