@@ -72,7 +72,6 @@
         >
           <ATATSVGIcon
             @click="openMembersModal"
-            class="pt-1"
             name="PersonAddAlt"
             color="base"
             :width="22"
