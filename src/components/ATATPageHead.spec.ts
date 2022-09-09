@@ -6,7 +6,7 @@ import { DefaultProps } from "vue/types/options";
 Vue.config.productionTip = false;
 Vue.use(Vuetify);
 
-describe("Testing ATATSelect Component", () => {
+describe("Testing ATATPageHead Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
@@ -23,32 +23,56 @@ describe("Testing ATATSelect Component", () => {
     });
   });
 
-  describe("INITIALIZATION", () => { 
-    it("renders successfully", async () => {
-      expect(wrapper.exists()).toBe(true);
-    });
+  it("renders successfully", async () => {
+    const header = wrapper.findComponent(ATATPageHead)
+    expect(header.exists()).toBe(true);
+    expect(header.classes()).toContain("_atat-page-header")
+    expect(header.classes()).toContain("v-app-bar")
   });
 
-  describe("PROPS", () => { 
-    it("headline", async()=>{
-      const headerSpan = wrapper.find(".h3");
-      expect(headerSpan).toBeDefined;
-      expect(headerSpan.text()).toBe(headline)
-    });
+  it("headline display correctly", async () => {
+    const headerSpan = wrapper.find(".h3");
+    expect(headerSpan.exists()).toBe(true);
+    expect(headerSpan.text()).toBe(headline)
   });
 
-  describe("CONTENT", () => { 
-    it("has expected buttons", async()=>{
-      const personButton = wrapper.find("#Person_Button");
-      expect(personButton).toBeDefined;
-      const personIcon = personButton.find(".v-icon");
-      expect (personIcon.text()).toBe("person_add_alt_1");
-
-      const moreButton = wrapper.find("#MoreMenuButton");
-      expect(moreButton).toBeDefined;
-      const moreIcon = moreButton.find(".v-icon");
-      expect (moreIcon.text()).toBe("more_horiz");
-    });
+  it("expected person button display in page head", async () => {
+    const personButton = wrapper.find("#Person_Button");
+    expect(personButton.exists()).toBe(true);
+    const personIcon = personButton.find(".v-icon");
+    expect (personIcon.text()).toBe("person_add_alt_1");
   });
 
+  it("expected more button display in page head", async () => {
+    const moreButton = wrapper.find("#MoreMenuButton");
+    expect(moreButton.exists()).toBe(true);
+    const moreIcon = moreButton.find(".v-icon");
+    expect (moreIcon.text()).toBe("more_horiz");
+  });
+
+  it("moreMenuButton - menu is collapsed before being clicked", async () => {
+    const moreMenuButton = wrapper.find("#MoreMenuButton")
+    expect(moreMenuButton.attributes("aria-expanded")).toBe("false")
+  })
+
+  it("moreMenuButton - dropdown menu expands after button is clicked", async () => {
+    const moreMenuButton = wrapper.find("#MoreMenuButton")
+    await moreMenuButton.trigger("click")
+    expect(moreMenuButton.attributes("aria-expanded")).toBe("true")
+    expect(moreMenuButton.emitted("click")).toBeDefined()
+  })
+
+  it("moreMenuClick() - calls method, clicks on moreMenu to expand v-list menu " +
+    "click a .v-list-item in the v-list to trigger method", async () => {
+    const moreMenuButton = wrapper.find("#MoreMenuButton")
+    await moreMenuButton.trigger("click") // expand menu
+
+    const listItems = wrapper.findAll(".v-list-item")
+    expect(listItems.length).toEqual(5)
+
+    await listItems.at(2).trigger("click") // Portfolio Dashboard list-item
+    Vue.nextTick(() => {
+      expect(wrapper.vm.$data.activeAppSection).toEqual("Portfolio Dashboard")
+    })
+  })
 });

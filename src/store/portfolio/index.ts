@@ -50,8 +50,8 @@ export class PortfolioDataStore extends VuexModule {
       title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
       description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
       status: "Active",
-      csp: "",
-      serviceAgency:  AcquisitionPackage.organization?.service_agency || "",
+      csp: "Azure",
+      serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
       createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
       provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
       members: [{

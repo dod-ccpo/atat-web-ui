@@ -26,7 +26,7 @@ module.exports = {
     "vue"
   ],
   moduleNameMapper:{
-    '.+\\.(css|styl|less|sass|scss)$': "<rootDir>/empty-module.js"
+    '.+\\.(css|styl|less|sass|scss|svg)$': "<rootDir>/empty-module.js"
   },
   // A preset that is used as a base for Jest's configuration
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',

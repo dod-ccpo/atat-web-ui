@@ -35,6 +35,7 @@ export interface SelectData {
   disabled?: boolean;
   hidden?: boolean;
   header?: string;
+  divider?: boolean;
 }
 
 /**

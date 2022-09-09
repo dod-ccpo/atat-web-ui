@@ -420,10 +420,12 @@
                                   </div>
                                 </td>
                                 <td id="ClinStatus" class="_v-align-top">
-                                  <span class=
-                                   "badge badge-green d-inline-block d-flex align-center">
+                                  <v-chip
+                                    color="bg-success"
+                                    label
+                                  >
                                     {{ item.clinStatus }}
-                                  </span>
+                                  </v-chip>
                                 </td>
                                 <td id="ClinPoP">
                                   <div class=" d-flex flex-column ">
