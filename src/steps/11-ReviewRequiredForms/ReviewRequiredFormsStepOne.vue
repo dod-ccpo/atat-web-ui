@@ -1,20 +1,12 @@
 
 <template>
   <div>
-    Future Review Required Forms page
-    <p class="my-10">
-      <a 
-        role="button"
-        @click="openModal"
-      >      
-        Temporary open "Invite Members" modal link
-      </a>
-    </p>
-
-    <AddMembersModal 
-      :showModal.sync="showModal"
-    />
-
+    <EmergencyDeclarationSupport
+      :isForm="false"
+      legend="1.  Emergency: This requirement is in support of an Emergency Declaration.">
+    </EmergencyDeclarationSupport>
+    <ProjectTitle :isForm="false"></ProjectTitle>
+    <ProjectScope :isForm="false"></ProjectScope>
   </div>
 </template>
 <script lang="ts">
@@ -22,19 +14,22 @@ import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
 
-import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
+import EmergencyDeclarationSupport from 
+  "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue"
+import ProjectTitle from
+  "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue"
+import ProjectScope from 
+  "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue"
 
 @Component({
   components: {
-    AddMembersModal,
+    EmergencyDeclarationSupport,
+    ProjectTitle,
+    ProjectScope
   }
 })
 export default class ReviewRequiredFormsStepOne extends Vue {
-  public showModal = false;
 
-  public openModal(): void {
-    this.showModal = true;
-  }
 }
 </script>
 

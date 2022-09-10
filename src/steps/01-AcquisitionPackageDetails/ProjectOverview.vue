@@ -14,27 +14,24 @@
             process.
           </p>
           <div class="mt-10">
-            <ATATTextField
-              id="ProjectTitle"
+            <ProjectTitle
               label="Project/Requirement Title"
               :rules="[
                 $validators.required('Please enter your project title'),
                 $validators.maxLength(60, 'Title cannot exceed 60 characters'),
               ]"
-              class="_input-max-width"
-              tooltipText="Provide a short, descriptive title of the work to
-              be performed. This will be used to refer to this project within 
-              ATAT and across all acquisition forms."
-              :value.sync="currentTitle"
+              :currentTitle.sync="currentTitle"
               @blur="onTitleChanged"
-            />
+            ></ProjectTitle>
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
-            <ATATTextArea
-              id="ProjectScope"
+            <ProjectScope
               label="What is the scope of your requirement?"
-              class="width-100"
-              :rows="7"
+              :projectScope.sync="projectScope"
+              helpText="Briefly describe the type of resources and services to be
+                acquired, and what is necessary to achieve mission specific
+                outcomes for this particular requirement (e.g., move DITCO’s contract
+                writing system to a cloud environment)."
               :rules="[
                 $validators.required(
                   'Please describe the scope of your requirement'
@@ -44,25 +41,15 @@
                   'Please limit your description to 300 characters or less'
                 ),
               ]"
-              helpText="Briefly describe the type of resources and services to be
-              acquired, and what is necessary to achieve mission specific
-              outcomes for this particular requirement (e.g., move DITCO’s contract
-              writing system to a cloud environment)."
-              :value.sync="projectScope"
-              maxChars="300"
-            />
+            ></ProjectScope>
           </div>
           <div class="d-flex align-start flex-column mt-6">
-            <ATATRadioGroup
-              id="emergency-declaration-support-requirement"
+            <EmergencyDeclarationSupport
               legend="Is this requirement in support of an emergency declaration?"
-              :value.sync="emergencyDeclaration"
-              :items="radioGroupItems"
-              name="emergency-declaration-support-requirement-radio-group"
-              class="mt-3"
+              :emergencyDeclaration.sync="emergencyDeclaration"
               :rules="[$validators.required('Please select an option')]"
             >
-            </ATATRadioGroup>
+            </EmergencyDeclarationSupport>
           </div>
         </v-col>
       </v-row>
@@ -75,40 +62,30 @@
 import Vue from "vue";
 import { Component, Mixins } from "vue-property-decorator";
 
-import ATATTextField from "../../components/ATATTextField.vue";
-import ATATTextArea from "../../components/ATATTextArea.vue";
-import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
+import ProjectTitle from "./components/ProjectTitle.vue"
+import ProjectScope from "./components/ProjectScope.vue";
+import EmergencyDeclarationSupport from "./components/EmergencyDeclarationSupport.vue";
 
-import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
+import AcquisitionPackage, {
+  StoreProperties,
+} from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { RadioButton } from "types/Global";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
-
 @Component({
   components: {
-    ATATTextField,
-    ATATTextArea,
-    ATATRadioGroup,
+    ProjectTitle,
+    ProjectScope,
+    EmergencyDeclarationSupport,
   },
 })
 export default class ProjectOverview extends Mixins(SaveOnLeave) {
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";
-  private radioGroupItems: RadioButton[] = [
-    {
-      id: "Yes",
-      label: "Yes",
-      value: "yes",
-    },
-    {
-      id: "No",
-      label: "No",
-      value: "no",
-    },
-  ];
+  // private emergencyDeclarationSupportRules =
+  //   [$validators.required('Please select an option')]
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -158,16 +135,19 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = 
-    await AcquisitionPackage
-      .loadData<ProjectOverviewDTO>({storeProperty: StoreProperties.ProjectOverview });
+    const storeData = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
+      storeProperty: StoreProperties.ProjectOverview,
+    });
 
     if (storeData) {
       this.currentTitle = storeData.title;
       this.projectScope = storeData.scope;
-      if(storeData.emergency_declaration && storeData.emergency_declaration.length > 0)
-      {
-        this.emergencyDeclaration = storeData.emergency_declaration === "true" ? "yes" : "no";
+      if (
+        storeData.emergency_declaration &&
+        storeData.emergency_declaration.length > 0
+      ) {
+        this.emergencyDeclaration =
+          storeData.emergency_declaration === "true" ? "yes" : "no";
       }
     }
   }
@@ -180,8 +160,10 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         // await AcquisitionPackage.saveProjectOverview(this.currentData);
-        await AcquisitionPackage.saveData({ data: this.currentData, 
-          storeProperty: StoreProperties.ProjectOverview});
+        await AcquisitionPackage.saveData({
+          data: this.currentData,
+          storeProperty: StoreProperties.ProjectOverview,
+        });
       }
     } catch (error) {
       console.log(error);
