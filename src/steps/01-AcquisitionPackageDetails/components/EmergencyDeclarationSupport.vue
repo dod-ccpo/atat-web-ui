@@ -1,7 +1,6 @@
 <template>
   <div class="d-flex align-start flex-column mt-6">
     <ATATRadioGroup
-      readonly="true" 
       id="emergency-declaration-support-requirement"
       :legend="legend"
       :value.sync="_emergencyDeclaration"
@@ -37,13 +36,13 @@ export default class EmergencyDeclarationSupport extends Vue {
       id: "Yes",
       label: "Yes",
       value: "yes",
-      readonly: this.isForm
+      readonly: !this.isForm
     },
     {
       id: "No",
       label: "No",
       value: "no",
-      readonly: this.isForm
+      readonly: !this.isForm
     },
   ];
 }
