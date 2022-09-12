@@ -104,11 +104,11 @@ export default class ATATAlert extends Vue {
 
   public get getClasses(): string {
     if (this.type === "callout") {
-      return this.maxHeight ? "_callout _scrollable py-0 pr-0 " : "_callout";
+      return this.maxHeight ? "_callout _scrollable py-0 pr-0" : "_callout";
     }
     let alertClasses = "_" + this.type + "-alert";
-    alertClasses = this.borderLeft ? alertClasses + " _border-left-thick " : alertClasses;
-    alertClasses = this.maxHeight ? alertClasses + " py-0 pr-0 " : alertClasses;
+    alertClasses = this.borderLeft ? alertClasses + " _border-left-thick" : alertClasses;
+    alertClasses = this.maxHeight ? alertClasses + " py-0 pr-0" : alertClasses;
     return alertClasses;
   }
 
