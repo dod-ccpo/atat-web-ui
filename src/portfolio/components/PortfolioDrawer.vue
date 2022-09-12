@@ -99,7 +99,6 @@
               iconType="chevron"
               @onChange="(value)=>onSelectedMemberRoleChanged(value, index)"
             />
-              <!-- :returnObject="true" -->
           </div>
         </div>
       </div>
@@ -152,12 +151,13 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import PortfolioData from "@/store/portfolio";
 import { format, parseISO } from "date-fns";
-import { Portfolio, SelectData } from "types/Global";
+import { Portfolio, SelectData, SlideoutPanelContent, User } from "types/Global";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
-import { User } from "../../../types/Global";
+import PortfolioRolesLearnMore from "@/portfolio/components/PortfolioRolesLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import _ from "lodash";
 
@@ -167,6 +167,7 @@ import _ from "lodash";
     ATATSVGIcon,
     ATATSelect,
     AddMembersModal,
+    PortfolioRolesLearnMore,
   },
 })
 export default class PortfolioDrawer extends Vue {
@@ -269,8 +270,16 @@ export default class PortfolioDrawer extends Vue {
           this.deleteMemberIndex = index;
           this.showDeleteMemberDialog = true;         
         } else if (val === "AboutRoles") {
-          alert("open slideout in future ticket")
+
+          // alert("open slideout in future ticket")
           // Open the slideout panel -- future ticket
+
+          const panelContent: SlideoutPanelContent = {
+            component: PortfolioRolesLearnMore,
+            title: "Learn More",
+          }
+          SlideoutPanel.setSlideoutPanelComponent(panelContent);
+
         }
       }
     }
