@@ -32,8 +32,9 @@
     </div>
 
     <div id="PanelWrap"
-      :class="[appSection === 'Portfolio Summary' ?'_portfolio-panel': '_panel-content-wrap']"
-       >
+      class="_panel-content-wrap"
+    >
+      <!-- :class="[{'_portfolio-panel': appSection === 'Portfolio Summary'}]" -->
       <slot></slot>
     </div>
 

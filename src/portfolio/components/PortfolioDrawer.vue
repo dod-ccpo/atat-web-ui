@@ -1,7 +1,7 @@
 <template>
   <div class="_portfolio-drawer">
-    <div id="AboutPortfolioSection" class="_portfolio-panel">
-      <h3 id="AboutSectionHeader" class="mb-4 mt-6">About Portfolio</h3>
+    <div id="AboutPortfolioSection" class="_portfolio-panel _panel-padding">
+      <h3 id="AboutSectionHeader" class="mb-4">About Portfolio</h3>
       <div>
         <v-textarea
           id="DrawerTextArea"
@@ -49,9 +49,10 @@
         </div>
       </div>
     </div>
-    <hr class="my-8" />
 
-    <div id="PortfolioMembersSection" class="px-6">
+    <hr class="my-0" />
+
+    <div id="PortfolioMembersSection" class="_portfolio-panel _panel-padding">
       <div
         id="PortfolioMembersHeader"
         class="d-flex flex-columm justify-space-between"
@@ -104,8 +105,9 @@
       </div>
     </div>
 
-    <hr class="mb-4" />
-    <div id="DatesSection" class="_portfolio-panel pt-0">
+    <hr class="my-0" />
+
+    <div id="DatesSection" class="_portfolio-panel _portfolio-panel _panel-padding">
       <div>
         <span id="ProvisionedOnLabel">Provisioned on&nbsp;</span>
         <span id="ProvisionedOnDate">{{ provisionedTime }}</span>

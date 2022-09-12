@@ -5,6 +5,7 @@
     flat
     class="_atat-page-header _portfolio-summary"
     clipped-right
+    height="83"
   >
     <div class=" d-flex justify-space-between width-100 align-center">
 
@@ -45,7 +46,7 @@
 
         <v-menu
           :offset-y="true"
-          nudge-left="240"
+          left
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
@@ -145,6 +146,7 @@ export default class PortfolioSummaryPageHead extends Vue {
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public showMembersModal = false;
+  public showDrawer = false;
 
   public openModal(): void {
     this.showMembersModal = true;
@@ -156,10 +158,10 @@ export default class PortfolioSummaryPageHead extends Vue {
     }
     PortfolioData.setPortfolioData(obj)
   }
-
-  public showDrawer = false
+  
   public async openSlideoutPanel(e: Event): Promise<void> {
-    if(!this.showDrawer ){
+    const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
+    if(!this.showDrawer || currentSlideoutComponent !== PortfolioDrawer){
       if (e && e.currentTarget) {
         const opener = e.currentTarget as HTMLElement;
         const slideoutPanelContent: SlideoutPanelContent = {
