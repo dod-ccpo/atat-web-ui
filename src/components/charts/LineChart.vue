@@ -16,27 +16,31 @@ export default class LineChart extends Vue {
   @Prop({ required: false }) public toggleDataset!: boolean;
   @Prop({ required: false, default: false }) public hasProjected?: boolean;
   @Prop({ required: false }) public tooltipHeaderData!: Record<string, string>;
-  private myChart!: Chart;
+  private myChart: Chart | null = null;
 
   @Watch("chartData", { deep: true })
   public chartDataUpdate(newData: ChartData): void {
-    this.myChart.data = newData;
-    this.myChart.update();
+    if (this.myChart) {
+      this.myChart.data = newData;
+      this.myChart.update();
+    }      
   }
 
   @Watch("toggleDataset")
   protected doToggleDataset(): void {
-    const i = this.datasetToToggle;
-    const isDatasetVisible = this.myChart.isDatasetVisible(i);
-    if (isDatasetVisible) {
-      this.myChart.hide(i); // actual spend (solid)
-      if (this.hasProjected) {
-        this.myChart.hide(i + 1); // burndown (dashed)
-      }
-    } else {
-      this.myChart.show(i);
-      if (this.hasProjected) {
-        this.myChart.show(i + 1);
+    if (this.myChart) {
+      const i = this.datasetToToggle;
+      const isDatasetVisible = this.myChart.isDatasetVisible(i);
+      if (isDatasetVisible) {
+        this.myChart.hide(i); // actual spend (solid)
+        if (this.hasProjected) {
+          this.myChart.hide(i + 1); // burndown (dashed)
+        }
+      } else {
+        this.myChart.show(i);
+        if (this.hasProjected) {
+          this.myChart.show(i + 1);
+        }
       }
     }
   }
@@ -71,13 +75,22 @@ export default class LineChart extends Vue {
 
   public createChart(): void {
     if (this.chartId) {
+      console.log("LINE CHART chartId", this.chartId);
+      // console.log("myChart PRE new Chart", this.myChart);
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
+      if (this.myChart != null) {
+        console.log("DESTROY LINE CHART " + this.chartId)
+        this.myChart.destroy();
+      }
+      console.log("ctx!!!!!!!!", ctx); // THIS IS NULL! JEST TEST FAILING
       this.myChart = new Chart(ctx, {
         type: "line",
         data: this.chartData,
         options: this.chartOptions,
         plugins: [this.currentMonthLine],
       });
+      // console.log("myChart POST new Chart", this.myChart);
+
     }
   }
 

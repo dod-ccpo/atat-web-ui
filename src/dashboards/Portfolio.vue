@@ -289,7 +289,7 @@
                     </p>
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">
-                        <donut-chart
+                        <DonutChart
                           chart-id="SpendDonutChart"
                           :chart-data="donutChartData"
                           :chart-options="donutChartOptions"

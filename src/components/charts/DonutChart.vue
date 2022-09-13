@@ -24,12 +24,14 @@ export default class DonutChart extends Vue {
   @Prop({ required: false, default: "" }) public individualAmtsArr!: {[key:string]:number} ;
 
 
-  private myChart!: Chart;
+  private myChart: Chart | null = null;
 
   @Watch("chartData", { deep: true })
   public chartDataUpdate(newData: ChartData): void {
-    this.myChart.data = newData;
-    this.myChart.update();
+    if (this.myChart) {
+      this.myChart.data = newData;
+      this.myChart.update();
+    }
   }
 
   private mounted() {
@@ -49,11 +51,18 @@ export default class DonutChart extends Vue {
   public createChart(): void {
     const centertext = this.centertext(this);
     if (this.chartId) {
+      console.log("DONUT CHART chartId", this.chartId);
+
       let plugins: any = [centertext];
       if (this.useChartDataLabels) {
         plugins.push(ChartDataLabels);
       }
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
+      if (this.myChart != null) {
+        console.log("DESTROY DONUT " + this.chartId)
+        this.myChart.destroy();
+      }
+
       this.myChart = new Chart(ctx, {
         type: "doughnut",
         data: this.chartData,
