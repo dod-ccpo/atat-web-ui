@@ -2,7 +2,8 @@
 /* eslint-disable camelcase */
 import Vuex, { Store } from "vuex";
 import { createLocalVue } from "@vue/test-utils";
-import { AcquisitionPackageStore, getStoreDataTableProperty, saveSessionData } from "..";
+import { AcquisitionPackageStore, getStoreDataTableProperty, 
+  saveSessionData, StoreProperties } from "..";
 import { getModule } from "vuex-module-decorators";
 import {
   AcquisitionPackageDTO,
@@ -15,12 +16,15 @@ import {
   OrganizationDTO,
   ProjectOverviewDTO,
   RequiredServicesDTO,
+  SensitiveInformationDTO,
 } from "@/api/models";
 import { SessionData } from "../models";
 import { AcquisitionPackagesApi } from "@/api/acquisitionPackages";
 import { ClassificationLevelApi } from "@/api/classificationLevels";
 import ContactData from "@/store/contactData";
 import { FairOpportunityApi } from "@/api/fairOpportunity";
+import { SelectData } from "types/Global";
+import { SensitiveInformationApi } from "@/api/sensitiveInformation";
 
 jest.mock("@/api", () => ({
   ...jest.requireActual("@/api"),
@@ -60,6 +64,12 @@ jest.mock("@/api", () => ({
       return new Promise((resolve) => resolve(data));
     },
   },
+  sensitiveInformationTable: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    retrieve: (sysId: string): Promise<SensitiveInformationDTO> => {
+       return new Promise((resolve)=> resolve (sensitiveInformation));
+    }
+  }
 }));
 
 jest.mock("@/store/attachments");
@@ -233,6 +243,41 @@ describe("Acquistition Packages Store", () => {
     AcquisitionStore.setSensitiveInformation(sensitiveInformation);
     expect(AcquisitionStore.sensitiveInformation).toStrictEqual(sensitiveInformation);
   });
+
+  test("Test setSelectedServiceOrAgency", () => {
+    const data:SelectData = {
+       value: "value",
+       text: "Text"
+
+    };
+
+    AcquisitionStore.doSetSelectedServiceOrAgency(data);
+    expect(AcquisitionStore.selectedServiceOrAgency).toStrictEqual(data);
+  });
+
+  test("Test setSelectedServiceOrAgency", () => {
+    const data:SelectData = {
+       value: "value",
+       text: "Text"
+
+    };
+
+    AcquisitionStore.doSetSelectedServiceOrAgency(data);
+    expect(AcquisitionStore.selectedServiceOrAgency).toStrictEqual(data);
+  });
+
+  test("Test setSelectedContactBranch", () => {
+    const data:SelectData = {
+       value: "value",
+       text: "Text"
+
+    };
+
+    AcquisitionStore.doSetSelectedContactBranch(data);
+    expect(AcquisitionStore.selectedContactBranch).toStrictEqual(data);
+  });
+
+
 
   test("Test setPeriodofPerformance", () => {
     AcquisitionStore.setPeriodOfPerformance(periodOfPerformance);
@@ -598,6 +643,16 @@ describe("Acquistition Packages Store", () => {
       
   });
 
+  test("Test setStoreData", async ()=>{
+    await AcquisitionStore.initialize();
+    AcquisitionStore.setStoreData({data: organization, 
+      storeProperty: StoreProperties.Organization});
+     const org = getStoreDataTableProperty('organization', AcquisitionStore);
+     expect(org).toBe(organization);
+     
+ });
+
+
   test("Test getStoreProperty", async ()=>{
     await AcquisitionStore.initialize();
     AcquisitionStore.setOrganization(organization);
@@ -628,6 +683,14 @@ describe("Acquistition Packages Store", () => {
     expect(AcquisitionStore.acquisitionPackage?.funding_request).toBe(fundingRequest.sys_id);
 
  });
+
+ test("Test loadSensativeInformation", async ()=>{
+  await AcquisitionStore.initialize();
+  AcquisitionStore.setSensitiveInformation(sensitiveInformation);
+  await AcquisitionStore.loadSensitiveInformation();
+  expect(AcquisitionStore.sensitiveInformation).toStrictEqual(sensitiveInformation);
+
+});
 
 
 
