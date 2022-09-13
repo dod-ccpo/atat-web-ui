@@ -30,7 +30,7 @@ import {
   ProjectOverviewDTO,
   SensitiveInformationDTO,
   CurrentEnvironmentDTO,
-  FundingRequestDTO,
+  FundingRequestDTO
 } from "@/api/models";
 
 import { SelectData } from "types/Global";
@@ -39,12 +39,10 @@ import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
-import { PeriodOfPerformanceApi } from "@/api/contractDetails";
 import Periods from "../periods";
-import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
 
-export const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
+const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
   CurrentContract: "currentContract",
