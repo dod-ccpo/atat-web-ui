@@ -8,6 +8,7 @@ import { getModule } from "vuex-module-decorators";
 import {
   AcquisitionPackageDTO,
   ContactDTO,
+  ContractConsiderationsDTO,
   CurrentContractDTO,
   EnvironmentInstanceDTO,
   FairOpportunityDTO,
@@ -71,8 +72,19 @@ jest.mock("@/api", () => ({
     retrieve: (sysId: string): Promise<SensitiveInformationDTO> => {
        return new Promise((resolve)=> resolve (sensitiveInformation));
     }
+  },
+  contractConsiderationsTable: {
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  retrieve: (sysId: string): Promise<ContractConsiderationsDTO> => {
+     return new Promise((resolve)=> resolve (contractConsiderations));
+  }},
+  contactsTable: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    retrieve: (sysId: string): Promise<ContactDTO> => {
+      return new Promise((resolve)=> resolve (contact));
+   }}
   }
-}));
+));
 
 jest.mock("@/store/attachments");
 jest.mock("@/store/contactData");
@@ -739,6 +751,42 @@ describe("Acquistition Packages Store", () => {
   expect(AcquisitionStore.sensitiveInformation).toStrictEqual(sensitiveInformation);
 
 });
+
+test("Test loadContractConsiderations", async ()=>{
+  await AcquisitionStore.initialize();
+  AcquisitionStore.setContractConsiderations(contractConsiderations);
+  await AcquisitionStore.loadContractConsiderations();
+  expect(AcquisitionStore.contractConsiderations).toStrictEqual(contractConsiderations);
+
+});
+
+test("Test loadContactInfo", async ()=>{
+  await AcquisitionStore.initialize();
+  const data:ContactDTO ={
+    type: "",
+    role: "",
+    rank_components: "",
+    salutation: "",
+    first_name: "",
+    last_name: "",
+    middle_name: "",
+    suffix: "",
+    title: "",
+    phone: "",
+    phone_extension: "",
+    email: "",
+    grade_civ: "",
+    dodaac: "",
+    can_access_package: "",
+    manually_entered: ""
+  } 
+  AcquisitionStore.setContact({ data:data, type: "Mission Owner"});
+  expect(AcquisitionStore.contactInfo).toStrictEqual(data);
+  await AcquisitionStore.loadContactInfo("");
+  expect(AcquisitionStore.contactInfo).toStrictEqual(contact);
+
+});
+
 
 
 
