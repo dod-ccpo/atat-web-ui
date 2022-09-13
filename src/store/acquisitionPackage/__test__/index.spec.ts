@@ -849,60 +849,9 @@ test("Test saveContractConsiderations", async ()=>{
 
 });
 
-test("Test saveContactInfo", async ()=>{
-  await AcquisitionStore.initialize();
-  const data:ContactDTO ={
-    type: "",
-    role: "",
-    rank_components: "",
-    salutation: "",
-    first_name: "",
-    last_name: "",
-    middle_name: "",
-    suffix: "",
-    title: "",
-    phone: "",
-    phone_extension: "",
-    email: "",
-    grade_civ: "",
-    dodaac: "",
-    can_access_package: "",
-    manually_entered: "",
-    sys_id:"contact_123456"
-  } 
-  await AcquisitionStore.saveContactInfo({ data:data, type: "Mission Owner"});
-  expect(AcquisitionStore.contactInfo).toStrictEqual(data);
+test("Test canGetStoreProperties", async ()=>{
+  expect(StoreProperties.ClassificationLevel).toStrictEqual("ClassificationRequirements");
 
 });
-
-test("Test loadContactInfo", async ()=>{
-  await AcquisitionStore.initialize();
-  const data:ContactDTO ={
-    type: "",
-    role: "",
-    rank_components: "",
-    salutation: "",
-    first_name: "",
-    last_name: "",
-    middle_name: "",
-    suffix: "",
-    title: "",
-    phone: "",
-    phone_extension: "",
-    email: "",
-    grade_civ: "",
-    dodaac: "",
-    can_access_package: "",
-    manually_entered: ""
-  } 
-  AcquisitionStore.setContact({ data:data, type: "Mission Owner"});
-  expect(AcquisitionStore.contactInfo).toStrictEqual(data);
-  await AcquisitionStore.loadContactInfo("");
-  expect(AcquisitionStore.contactInfo).toStrictEqual(contact);
-
-});
-
-
-
 
 });
