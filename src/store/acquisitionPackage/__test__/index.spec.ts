@@ -19,15 +19,8 @@ import {
   RequiredServicesDTO,
   SensitiveInformationDTO,
 } from "@/api/models";
-import { SessionData } from "../models";
-import { AcquisitionPackagesApi } from "@/api/acquisitionPackages";
-import { ClassificationLevelApi } from "@/api/classificationLevels";
-import ContactData from "@/store/contactData";
-import { FairOpportunityApi } from "@/api/fairOpportunity";
 import { SelectData } from "types/Global";
-import { SensitiveInformationApi } from "@/api/sensitiveInformation";
-import api from "@/api";
-import { reject } from "lodash";
+import { SessionData } from "../models";
 
 jest.mock("@/api", () => ({
   ...jest.requireActual("@/api"),
@@ -68,21 +61,75 @@ jest.mock("@/api", () => ({
     },
   },
   sensitiveInformationTable: {
+    create: ():Promise<SensitiveInformationDTO> => {
+
+      return new Promise(resolve=> resolve(
+        sensitiveInformation
+      ));
+    },
+    update: (
+      sysId: string,
+      data: SensitiveInformationDTO
+    ): Promise<SensitiveInformationDTO> => {
+      return new Promise((resolve) => resolve(data));
+    },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     retrieve: (sysId: string): Promise<SensitiveInformationDTO> => {
        return new Promise((resolve)=> resolve (sensitiveInformation));
     }
   },
   contractConsiderationsTable: {
+    create: ():Promise<ContractConsiderationsDTO> => {
+
+      return new Promise(resolve=> resolve(
+        contractConsiderations
+      ));
+    },
+    update: (
+      sysId: string,
+      data: ContractConsiderationsDTO
+    ): Promise<ContractConsiderationsDTO> => {
+      return new Promise((resolve) => resolve(data));
+    },
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   retrieve: (sysId: string): Promise<ContractConsiderationsDTO> => {
      return new Promise((resolve)=> resolve (contractConsiderations));
   }},
   contactsTable: {
+    create: (): Promise<ContactDTO> => {
+      
+      return new Promise(resolve=> resolve(
+     {
+          type: "",
+          role: "",
+          rank_components: "",
+          salutation: "",
+          first_name: "",
+          last_name: "",
+          middle_name: "",
+          suffix: "",
+          title: "",
+          phone: "",
+          phone_extension: "",
+          email: "",
+          grade_civ: "",
+          dodaac: "",
+          can_access_package: "",
+          manually_entered: "",
+          sys_id:"contact_123456"
+        } 
+      ))
+    },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     retrieve: (sysId: string): Promise<ContactDTO> => {
       return new Promise((resolve)=> resolve (contact));
-   }}
+   }},
+   update: (
+    sysId: string,
+    data: ContactDTO
+  ): Promise<ContactDTO> => {
+    return new Promise((resolve) => resolve(data));
+  },
   }
 ));
 
@@ -150,7 +197,7 @@ const contact = {
   manually_entered: "",
 };
 
-const contractConsiderations = {
+const contractConsiderations: ContractConsiderationsDTO = {
   packaging_shipping_other: "false",
   contractor_required_training: "",
   packaging_shipping_other_explanation: "",
@@ -159,6 +206,7 @@ const contractConsiderations = {
   required_training_courses: "",
   packaging_shipping_none_apply: "false",
   contractor_provided_transfer: "false",
+  sys_id: "contract_considerations_123455"
 };
 
 const initialFairOpportunity = {
@@ -279,7 +327,7 @@ describe("Acquistition Packages Store", () => {
     expect(AcquisitionStore.sensitiveInformation).toStrictEqual(sensitiveInformation);
   });
 
-  test("Test setSelectedServiceOrAgency", () => {
+  test("Test doSetSelectedServiceOrAgency", () => {
     const data:SelectData = {
        value: "value",
        text: "Text"
@@ -290,18 +338,18 @@ describe("Acquistition Packages Store", () => {
     expect(AcquisitionStore.selectedServiceOrAgency).toStrictEqual(data);
   });
 
-  test("Test setSelectedServiceOrAgency", () => {
+  test("Test setSelectedServiceOrAgency", async () => {
     const data:SelectData = {
        value: "value",
        text: "Text"
 
     };
 
-    AcquisitionStore.doSetSelectedServiceOrAgency(data);
+    await AcquisitionStore.setSelectedServiceOrAgency(data);
     expect(AcquisitionStore.selectedServiceOrAgency).toStrictEqual(data);
   });
 
-  test("Test setSelectedContactBranch", () => {
+  test("Test doSetSelectedContactBranch", () => {
     const data:SelectData = {
        value: "value",
        text: "Text"
@@ -311,6 +359,19 @@ describe("Acquistition Packages Store", () => {
     AcquisitionStore.doSetSelectedContactBranch(data);
     expect(AcquisitionStore.selectedContactBranch).toStrictEqual(data);
   });
+
+  test("Test setSelectedContactBranch", async () => {
+    const data:SelectData = {
+       value: "value",
+       text: "Text"
+
+    };
+
+    await AcquisitionStore.setSelectedContactBranch(data);
+    expect(AcquisitionStore.selectedContactBranch).toStrictEqual(data);
+  });
+
+
 
 
 
@@ -389,7 +450,8 @@ describe("Acquistition Packages Store", () => {
       grade_civ: "",
       dodaac: "",
       can_access_package: "",
-      manually_entered: ""
+      manually_entered: "",
+      sys_id: "contact_123456"
     } 
     AcquisitionStore.setContact({ data:data, type: "Mission Owner"});
     expect(AcquisitionStore.contactInfo).toStrictEqual(data);
@@ -751,12 +813,50 @@ describe("Acquistition Packages Store", () => {
   expect(AcquisitionStore.sensitiveInformation).toStrictEqual(sensitiveInformation);
 
 });
+test("Test saveSensativeInformation", async ()=>{
+  await AcquisitionStore.initialize();
+  await AcquisitionStore.saveSensitiveInformation(sensitiveInformation);
+  expect(AcquisitionStore.sensitiveInformation).toStrictEqual(sensitiveInformation);
+
+});
 
 test("Test loadContractConsiderations", async ()=>{
   await AcquisitionStore.initialize();
   AcquisitionStore.setContractConsiderations(contractConsiderations);
   await AcquisitionStore.loadContractConsiderations();
   expect(AcquisitionStore.contractConsiderations).toStrictEqual(contractConsiderations);
+
+});
+test("Test saveContractConsiderations", async ()=>{
+  await AcquisitionStore.initialize();
+  await AcquisitionStore.saveContractConsiderations(contractConsiderations);
+  expect(AcquisitionStore.contractConsiderations).toStrictEqual(contractConsiderations);
+
+});
+
+test("Test saveContactInfo", async ()=>{
+  await AcquisitionStore.initialize();
+  const data:ContactDTO ={
+    type: "",
+    role: "",
+    rank_components: "",
+    salutation: "",
+    first_name: "",
+    last_name: "",
+    middle_name: "",
+    suffix: "",
+    title: "",
+    phone: "",
+    phone_extension: "",
+    email: "",
+    grade_civ: "",
+    dodaac: "",
+    can_access_package: "",
+    manually_entered: "",
+    sys_id:"contact_123456"
+  } 
+  await AcquisitionStore.saveContactInfo({ data:data, type: "Mission Owner"});
+  expect(AcquisitionStore.contactInfo).toStrictEqual(data);
 
 });
 
