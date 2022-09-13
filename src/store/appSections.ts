@@ -23,7 +23,8 @@ export class AppSectionsStore extends VuexModule {
     JWCCDashboard: "JWCC Dashboard",
     PortfolioDashboard: "Portfolio Dashboard",
     TOLookup: "Lookup TO in EDA",
-    PortfolioSummary: "Portfolio Summary"
+    PortfolioSummary: "Portfolio Summary",
+    DocumentReview: "Document Review"
   }
 
   activeAppSection = this.sectionTitles.AcquisitionPackage;
@@ -34,6 +35,7 @@ export class AppSectionsStore extends VuexModule {
     { title: this.sectionTitles.PortfolioDashboard },
     { title: this.sectionTitles.TOLookup },
     { title: this.sectionTitles.PortfolioSummary },
+    { title: this.sectionTitles.DocumentReview }
   ];
 
   @Mutation

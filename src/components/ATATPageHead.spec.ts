@@ -68,7 +68,7 @@ describe("Testing ATATPageHead Component", () => {
     await moreMenuButton.trigger("click") // expand menu
 
     const listItems = wrapper.findAll(".v-list-item")
-    expect(listItems.length).toEqual(5)
+    expect(listItems.length).toEqual(6)
 
     await listItems.at(2).trigger("click") // Portfolio Dashboard list-item
     Vue.nextTick(() => {
