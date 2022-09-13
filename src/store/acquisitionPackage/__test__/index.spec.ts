@@ -212,6 +212,8 @@ describe("Acquistition Packages Store", () => {
   test("Test ensure modules initialized", async () => {
     await AcquisitionStore.initializeModules();
     expect(AcquisitionStore.modules_initialized).toBe(true);
+    AcquisitionStore.setModulesInitialized(false);
+    expect(AcquisitionStore.modules_initialized).toBe(false);
   });
 
   test("Test setCurrentContract", () => {

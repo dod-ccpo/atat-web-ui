@@ -394,10 +394,9 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setProjectTitle(value: string): void {
-    if(this.projectOverview == null){
-      this.projectOverview =initialProjectOverview();
+    if(this.projectOverview){
+      this.projectOverview.title = value;
     }
-    this.projectOverview.title = value;
   }
 
   @Mutation
@@ -469,8 +468,6 @@ export class AcquisitionPackageStore extends VuexModule {
     if (this.initialized) {
       return;
     }
-
-    debugger;
     
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
