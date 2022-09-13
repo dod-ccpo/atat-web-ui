@@ -40,6 +40,20 @@
 
   ._portfolio-drawer {
     font-size: 14px !important;
+    .v-menu__content, .v-list .v-list-item {
+      min-width: 200px !important;
+    }
+    .v-menu__content {
+      left: -95px !important;
+    }
+    .v-list-item__title span {
+      white-space: nowrap !important;
+    }
+    .v-select__selection {
+      width: 100%;
+      text-align: right;
+      padding-right: 4px;
+    }
 
     // ._portfolio-panel {
     //   padding: 16px 24px 0px;

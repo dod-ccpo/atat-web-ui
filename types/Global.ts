@@ -347,6 +347,9 @@ export interface User {
   email?: string;
   role?: string;
 }
+export interface PortfolioMember extends User {
+  menuDisabled?: boolean;
+}
 export interface Portfolio {
   title?: string;
   description?: string;

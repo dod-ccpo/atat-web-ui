@@ -17,6 +17,7 @@ export class SlideoutPanelStore extends VuexModule {
   slideoutPanelOpenerId = ""; 
   slideoutPanelTitle = "";
   slideoutPanelComponent: Component = {};
+  slideoutPanelHasComponent = false;
 
   @Action
   async setSlideoutPanelComponent(panelContent: SlideoutPanelContent): Promise<void> {
@@ -26,6 +27,7 @@ export class SlideoutPanelStore extends VuexModule {
   @Mutation
   public doSetSlideoutPanelComponent(panelContent: SlideoutPanelContent): void {
     this.slideoutPanelComponent = panelContent.component;
+    this.slideoutPanelHasComponent = true;
     this.slideoutPanelTitle = panelContent.title || "";
     const wrapper = document.getElementById("PanelWrap");
     if (wrapper) {

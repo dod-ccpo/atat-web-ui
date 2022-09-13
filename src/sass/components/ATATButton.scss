@@ -133,8 +133,12 @@
     padding: 4px !important;
     height: auto !important;
     min-width: unset !important;
+    height: 32px !important;
+    width: 32px !important;
     color: $base;
-
+    .v-btn__content > div {
+      display: flex;
+    }
     &:hover {
       background-color: $icon-only-hover !important;
     }
@@ -148,9 +152,12 @@
     }
 
     &._plus {
-      padding: 4px 5px 4px 3px !important; 
       height: 24px !important; 
       width: 24px !important;      
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary;
     }
   }
 }

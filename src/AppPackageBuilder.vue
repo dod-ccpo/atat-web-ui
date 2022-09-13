@@ -85,7 +85,8 @@ export default class AppPackageBuilder extends Vue {
   };
 
   private get panelContent() {
-    return SlideoutPanel.slideoutPanelComponent;
+    const currentPanel = SlideoutPanel.slideoutPanelComponent;
+    return currentPanel || undefined;
   };
 
   private stepperData = buildStepperData();
