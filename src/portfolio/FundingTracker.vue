@@ -1,11 +1,8 @@
 
 <template>
   <div>
-    <!-- Foo -->
     <PortfolioDashboard />
-
   </div>
-
 </template>
 <script lang="ts">
 import Vue from "vue";

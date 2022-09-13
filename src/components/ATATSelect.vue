@@ -12,7 +12,6 @@
         </span>
       </label>
     </v-flex>
-
     <v-flex>
       <v-select
         ref="atatSelect"

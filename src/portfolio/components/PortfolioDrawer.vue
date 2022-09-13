@@ -188,7 +188,6 @@ import Toast from "@/store/toast";
 
 import { 
   Portfolio, 
-  PortfolioMember,
   SelectData, 
   SlideoutPanelContent, 
   ToastObj, 
@@ -218,7 +217,6 @@ export default class PortfolioDrawer extends Vue {
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
-  // public managerCount = 0;
 
   public accessRemovedToast: ToastObj = {
     type: "success",
@@ -237,13 +235,12 @@ export default class PortfolioDrawer extends Vue {
     { text: "About Roles", value: "AboutRoles", isSelectable: false },
   ];
 
-  public getMemberMenuItems(member: User): SelectData[] { // EJY this can't be async
+  public getMemberMenuItems(member: User): SelectData[] {
     const menuItems = _.cloneDeep(this.memberMenuItems);
     if (member.email === this.currentUser.email) {
       const removeIndex = menuItems.findIndex((obj) => obj.value === "Remove");
       menuItems[removeIndex].text = "Leave this portfolio";
     }
-    this.checkForLastManager();
     return menuItems;
   }
 
@@ -290,9 +287,6 @@ export default class PortfolioDrawer extends Vue {
       email: "maria.missionowner.civ@mail.mil",
       role: "Manager",
     }
-    // const managers = this.portfolioMembers.filter(obj => obj.role?.toLowerCase() === "manager")
-    // this.managerCount = managers.length;
-    this.checkForLastManager();
   }
 
   public async mounted(): Promise<void> {
@@ -310,7 +304,7 @@ export default class PortfolioDrawer extends Vue {
       : member.email || "";
   }
 
-  public portfolioMembers: PortfolioMember[] = [];
+  public portfolioMembers: User[] = [];
 
   public getPortfolioMembersCount(): number {
     return this.portfolio?.members?.length
@@ -323,17 +317,6 @@ export default class PortfolioDrawer extends Vue {
     return managers.length;
   }
 
-  public checkForLastManager(): void {
-    if (this.managerCount === 1) {
-      const lastManagerIndex = this.portfolioMembers.findIndex(
-        obj => obj.role?.toLowerCase() === "manager"
-      );
-      this.portfolioMembers[lastManagerIndex].menuDisabled = true;
-    } else {
-      this.portfolioMembers.forEach(obj => obj.menuDisabled = false);
-    }
-  }
-
   public openMembersModal(): void {
     this.showMembersModal = true;
   }
@@ -344,7 +327,6 @@ export default class PortfolioDrawer extends Vue {
       if (memberMenuItems.indexOf(val) > -1) {
         this.portfolio.members[index].role = val;
         PortfolioData.setPortfolioData(this.portfolio);
-        this.checkForLastManager();
       } else {
         // reset role back to saved value in store
         const storeData = await PortfolioData.getPortfolioData();
