@@ -183,6 +183,12 @@ export default class ATATTopNavBar extends Vue {
             title: "My Task Orders",
             parentTitle: "Acquisitions",
           },
+          { 
+            title: "Document Review", 
+            separatorBefore: true,
+            parentTitle: "Acquisitions",
+            spaSectionTitle: sectionData.sectionTitles.DocumentReview,
+          },
         ]
       },
       {
