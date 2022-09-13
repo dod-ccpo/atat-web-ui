@@ -6,7 +6,6 @@ import { AcquisitionPackageStore, saveSessionData } from "..";
 import { getModule } from "vuex-module-decorators";
 import {
   AcquisitionPackageDTO,
-  ClassificationLevelDTO,
   ContactDTO,
   CurrentContractDTO,
   EnvironmentInstanceDTO,
@@ -20,8 +19,8 @@ import { AcquisitionPackagesApi } from "@/api/acquisitionPackages";
 import { ClassificationLevelApi } from "@/api/classificationLevels";
 import ContactData from "@/store/contactData";
 import { FairOpportunityApi } from "@/api/fairOpportunity";
-import exp from "constants";
 import api from "@/api";
+import exp from "constants";
 
 jest.mock("@/api", () => ({
   ...jest.requireActual("@/api"),
@@ -33,7 +32,7 @@ jest.mock("@/api", () => ({
           status: "",
           number: "",
           project_overview: "",
-          organization: "",
+          organization: organization.sys_id || "",
           contact: "",
           fair_opportunity: "",
           current_contract: "",
@@ -69,6 +68,8 @@ jest.mock("@/store/descriptionOfWork");
 jest.mock("@/store/financialDetails");
 jest.mock("@/store/portfolio");
 jest.mock("@/store/organizationData");
+jest.mock("@/store/taskOrder");
+jest.mock("@/store/periods");
 
 const currentContract: CurrentContractDTO = {
   current_contract_exists: "",
@@ -202,11 +203,15 @@ describe("Acquistition Packages Store", () => {
       storeOptions: any = {}
     ): Store<{ AcquisitionStore: any }> => new Vuex.Store({ ...storeOptions });
     AcquisitionStore = getModule(AcquisitionPackageStore, createStore());
-    // AcquisitionStore.initializeModules = jest.fn();
   });
-  test("Test ensureInitialized ", () => {
-    AcquisitionStore.ensureInitialized();
-    expect(AcquisitionStore.initialized).toBe(false);
+  test("Test Initialized ", async () => {
+   await AcquisitionStore.initialize();
+    expect(AcquisitionStore.initialized).toBe(true);
+  });
+
+  test("Test ensure modules initialized", async () => {
+    await AcquisitionStore.initializeModules();
+    expect(AcquisitionStore.modules_initialized).toBe(true);
   });
 
   test("Test setCurrentContract", () => {
@@ -247,13 +252,43 @@ describe("Acquistition Packages Store", () => {
   });
 
   test("Test setProjectTitle", () => {
+    AcquisitionStore.setProjectOverview(projectOverview);
     AcquisitionStore.setProjectTitle("TestTitle");
-    expect(AcquisitionStore.projectTitle).toBe("TestTitle");
+    expect(AcquisitionStore).not.toBeNull();
+    expect(AcquisitionStore.projectOverview?.title).toBe("TestTitle");
   });
 
   test("Test setContractType", () => {
     AcquisitionStore.setContractType(contractType);
     expect(AcquisitionStore.contractType).toStrictEqual(contractType);
+  });
+
+  test("Test setClassficiationLevel", () => {
+    AcquisitionStore.setClassificationLevel(classificationLevel);
+    expect(AcquisitionStore.classificationLevel).toStrictEqual(classificationLevel);
+  });
+
+  test("Test setBasePop", () => {
+    AcquisitionStore.setBasePoPDuration(2);
+    expect(AcquisitionStore.totalBasePoPDuration).toStrictEqual(2);
+  });
+
+  test("Test setHasAltCor", () => {
+    AcquisitionStore.setHasAlternateCOR(true);
+    expect(AcquisitionStore.hasAlternativeContactRep).toStrictEqual(true);
+  });
+
+  test("Test setGFEOverview", () => {
+    const gfe_overview = {
+      dpas_unit_identification_code: "",
+      gfe_gfp_furnished: "",
+      dpas_custodian_number: "",
+      property_accountable: "",
+      property_custodian_name: "",
+    };
+
+    AcquisitionStore.setGFEOverview(gfe_overview);
+    expect(AcquisitionStore.gfeOverview).toStrictEqual(gfe_overview);
   });
 
   test("Test setDataFromSession", async () => {
@@ -382,6 +417,19 @@ describe("Acquistition Packages Store", () => {
     AcquisitionStore.setDataFromSession(sessionData);
     expect(AcquisitionStore.acquisitionPackage).toBe(acquisitionPackage);
   });
+
+  test("Test setRequirementsCostEstimate", () => {
+    const rce= { surge_capabilities: "", estimatedTaskOrderValue: "" };
+    AcquisitionStore.setRequirementsCostEstimate(rce);
+    expect(AcquisitionStore.requirementsCostEstimate).toStrictEqual(rce);
+  });
+
+  test("Test setCurrentEnvironment", () => {
+    AcquisitionStore.setCurrentEnvironment(initialCurrentEnvironment());
+    expect(AcquisitionStore.currentEnvironment).toStrictEqual(initialCurrentEnvironment());
+  });
+
+
 
   test("Test saveAcquisitionPackage", async () => {
     const acquisitionPackage: AcquisitionPackageDTO = {
@@ -542,4 +590,16 @@ describe("Acquistition Packages Store", () => {
       acquisitionPackage
     );
   });
+
+  test("Test getPackageData", async ()=>{
+     AcquisitionStore.setInitialized(false);
+     sessionStorage.clear();
+      const org = await AcquisitionStore.
+      getPackageData<OrganizationDTO>({property : 'organization'}); 
+      expect(org).toBe(organization.sys_id);
+      
+
+  });
+
+
 });

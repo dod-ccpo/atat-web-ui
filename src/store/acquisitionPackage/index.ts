@@ -44,7 +44,7 @@ import Periods from "../periods";
 import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
 
-const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
+export const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
   CurrentContract: "currentContract",
@@ -262,6 +262,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   //has the store been initialized
   initialized = false;
+  modules_initialized = false;
   //keeps track of project title for global display
   projectTitle = "";
   acquisitionPackage: AcquisitionPackageDTO | null = null;
@@ -288,8 +289,10 @@ export class AcquisitionPackageStore extends VuexModule {
 
   public initContact: ContactDTO = initialContact()
 
+  
   public getTitle(): string {
-    return this.projectOverview?.title || "";
+    return this.projectOverview != null && this.projectOverview.title.length > 0 ?
+      this.projectOverview.title:  "";
   }
 
   @Mutation
@@ -301,6 +304,12 @@ export class AcquisitionPackageStore extends VuexModule {
   public setInitialized(value: boolean): void {
     this.initialized = value;
   }
+
+  @Mutation
+  public setModulesInitialized(value: boolean): void {
+    this.modules_initialized = value;
+  }
+
 
   @Mutation
   public setHasAlternateCOR(value: boolean): void {
@@ -385,7 +394,10 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setProjectTitle(value: string): void {
-    this.projectTitle = value;
+    if(this.projectOverview == null){
+      this.projectOverview =initialProjectOverview();
+    }
+    this.projectOverview.title = value;
   }
 
   @Mutation
@@ -445,6 +457,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await DescriptionOfWork.initialize();
     await Attachments.initialize();
     await FinancialDetails.initialize();
+    this.setModulesInitialized(true);
   }
 
   @Action({ rawError: true })
@@ -457,6 +470,8 @@ export class AcquisitionPackageStore extends VuexModule {
       return;
     }
 
+    debugger;
+    
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
