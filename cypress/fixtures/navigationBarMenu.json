@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "menuText": "Dashboard"
+  },
+  "acquisitions": {
+    "menuText": "Acquisitions",
+    "dropdownList": [
+      "My Packages",
+      "My Task Orders"
+    ]
+  },
+  "portfolios": {
+    "menuText": "Portfolios"
+  },
+  "portals": {
+    "menuText": "Portals",
+    "dropdownList": [
+      "Global Service Desk",
+      "Mission Partner Portal"
+    ]
+  },
+  "user": {
+    "menuText": "User",
+    "dropdownList": [
+      "Profile",
+      "Contact Support",
+      "Submit Feedback",
+      "Sign out"
+    ]
+  }
+}
