@@ -3,20 +3,6 @@ import { BaseTableDTO } from "@/api/models";
 import { TableApiBase } from "@/api/tableApiBase";
 import { StoreProperties } from "./storeproperties";
 
-//mapping of store properties to api endpoints 
-//   private apiEndpointMap: Record<string, TableApiBase<BaseTableDTO>> = {
-//     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
-//     [StoreProperties.GFEOverview]: api.gfeOverviewTable,
-//     [StoreProperties.Organization]: api.organizationTable,
-//     [StoreProperties.Periods]: api.periodTable,
-//     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
-//     [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
-//     [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
-//     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
-//     [StoreProperties.CurrentEnvironment]: api.currentEnvironmentTable,
-//     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
-//   }
-
 export const getApiService = (serviceKey: string): TableApiBase<BaseTableDTO> => {
     
   switch(serviceKey){
