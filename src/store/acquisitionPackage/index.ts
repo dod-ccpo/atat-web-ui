@@ -285,8 +285,6 @@ export class AcquisitionPackageStore extends VuexModule {
   currentEnvironment: CurrentEnvironmentDTO | null = null;
   totalBasePoPDuration = 0;
 
-  fundingRequestType: string | null =  null;
-
   public initContact: ContactDTO = initialContact()
 
   
@@ -904,8 +902,10 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   async setPackageFundingRequest(fundingRequest: FundingRequestDTO): Promise<void>{
     if(this.acquisitionPackage){
-      this.acquisitionPackage.funding_request = fundingRequest.sys_id || "";
-      this.setAcquisitionPackage(this.acquisitionPackage);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        funding_request: fundingRequest.sys_id || "" 
+      });
     }
   }
 

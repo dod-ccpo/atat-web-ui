@@ -10,6 +10,8 @@ import {
   CurrentContractDTO,
   EnvironmentInstanceDTO,
   FairOpportunityDTO,
+  FundingRequestDTO,
+  FundingRequestFSFormDTO,
   OrganizationDTO,
   ProjectOverviewDTO,
   RequiredServicesDTO,
@@ -19,8 +21,6 @@ import { AcquisitionPackagesApi } from "@/api/acquisitionPackages";
 import { ClassificationLevelApi } from "@/api/classificationLevels";
 import ContactData from "@/store/contactData";
 import { FairOpportunityApi } from "@/api/fairOpportunity";
-import api from "@/api";
-import exp from "constants";
 
 jest.mock("@/api", () => ({
   ...jest.requireActual("@/api"),
@@ -431,8 +431,6 @@ describe("Acquistition Packages Store", () => {
     expect(AcquisitionStore.currentEnvironment).toStrictEqual(initialCurrentEnvironment());
   });
 
-
-
   test("Test saveAcquisitionPackage", async () => {
     const acquisitionPackage: AcquisitionPackageDTO = {
       sys_id: "acquisitionPackage_1234556677",
@@ -600,8 +598,25 @@ describe("Acquistition Packages Store", () => {
       getPackageData<OrganizationDTO>({property : 'organization'}); 
       expect(org).toBe(organization.sys_id);
       
-
   });
+
+  test("Test setPackageFundingRequest", async ()=>{
+
+    
+    await AcquisitionStore.initialize();
+
+    const fundingRequest: FundingRequestDTO = {
+      fs_form: "",
+      funding_request_type: "",
+      mipr: "",
+      sys_id: "fundingRequest_123456"
+    }
+
+    await AcquisitionStore.setPackageFundingRequest(fundingRequest);
+    expect(AcquisitionStore.acquisitionPackage?.funding_request).toBe(fundingRequest.sys_id);
+
+ });
+
 
 
 });
