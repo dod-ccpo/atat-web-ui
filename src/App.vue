@@ -19,6 +19,7 @@ import JWCCDashboard from "@/dashboards/JWCC.vue";
 import PortfolioDashboard from "@/dashboards/Portfolio.vue";
 import ATATTopNavBar from "./components/ATATTopNavBar.vue";
 import AppSections from "@/store/appSections";
+import DocumentReview from "@/documentReview/Index.vue";
 
 @Component({
   components: {
@@ -47,6 +48,9 @@ export default class App extends Vue {
       break;
     case this.sectionTitles.PortfolioSummary:
       AppSections.setAppContentComponent(PortfolioSummary);
+      break;
+    case this.sectionTitles.DocumentReview:
+      AppSections.setAppContentComponent(DocumentReview);
       break;  
     }
   }
