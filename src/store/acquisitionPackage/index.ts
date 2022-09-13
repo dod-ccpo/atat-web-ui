@@ -230,7 +230,7 @@ export const saveSessionData = (store: AcquisitionPackageStore): void => {
   );
 };
 
-const getStoreDataTableProperty = (
+export const getStoreDataTableProperty = (
   storeProperty: string,
   store: AcquisitionPackageStore
 ): BaseTableDTO => {

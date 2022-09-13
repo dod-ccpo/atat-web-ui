@@ -2,7 +2,7 @@
 /* eslint-disable camelcase */
 import Vuex, { Store } from "vuex";
 import { createLocalVue } from "@vue/test-utils";
-import { AcquisitionPackageStore, saveSessionData } from "..";
+import { AcquisitionPackageStore, getStoreDataTableProperty, saveSessionData } from "..";
 import { getModule } from "vuex-module-decorators";
 import {
   AcquisitionPackageDTO,
@@ -598,8 +598,22 @@ describe("Acquistition Packages Store", () => {
       
   });
 
-  test("Test setPackageFundingRequest", async ()=>{
+  test("Test getStoreProperty", async ()=>{
+    await AcquisitionStore.initialize();
+    AcquisitionStore.setOrganization(organization);
+     const org = getStoreDataTableProperty('organization', AcquisitionStore);
+     expect(org).toBe(organization);
+     
+ });
 
+ test("Test getStoreProperty_ShouldErrorForNoneExistentProperty", async ()=>{
+  await AcquisitionStore.initialize();
+  expect(() => {
+    const org = getStoreDataTableProperty('o', AcquisitionStore);
+  }).toThrow(new Error(`unable to locate store property : o`));
+});
+
+  test("Test setPackageFundingRequest", async ()=>{
     
     await AcquisitionStore.initialize();
 
