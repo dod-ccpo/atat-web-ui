@@ -142,6 +142,15 @@ export interface CountryObj {
   mask?: string[];
 }
 
+export interface BreadCrumbItem {
+    disabled?: boolean,
+    exact?: boolean,
+    href?: string,
+    link?: boolean,
+    text?: string | number,
+    to?: string;
+}
+
 export interface ToastObj {
   isOpen: boolean;
   type: "success" | "info";
