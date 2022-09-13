@@ -823,51 +823,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  async removeAttachment({
-    key,
-    attachmentId,
-    recordId,
-  }: {
-    key: string;
-    attachmentId: string;
-    recordId: string;
-  }): Promise<void> {
-    const storeData = this as unknown as Record<string, unknown>;
-
-    try {
-      // attachment table data is stored as a comma separated
-      // string list on the acquisition package object and in the store
-      const tableIdList = storeData[key] as string;
-      const tableIds = tableIdList.length ? tableIdList.split(",") : [];
-
-      // convert first letter of key to uppercase because the file attachment
-      // service factory expects keys in CamelCased upper case starting letters
-      const convertedKey = key[0].toUpperCase() + key.substring(1);
-      // locate attachment service
-      const attachmentService = AttachmentServiceFactory(convertedKey);
-
-      // remove attachment
-      await attachmentService.remove({
-        sys_id: attachmentId,
-        table_sys_id: recordId,
-      } as AttachmentDTO);
-
-      //remove attachment record from
-      const recordIndex = tableIds.findIndex((record) => record === recordId);
-      if (recordIndex > -1) {
-        tableIds.splice(recordIndex, 1);
-        //update store data
-        const data = tableIds.join(",");
-        this.updatePackageData({ key, data });
-      }
-    } catch (error) {
-      console.error(
-        `error ocurred removing attachment data for ${key} error: ${error}`
-      );
-    }
-  }
-
-  @Action({ rawError: true })
   async updatePackageData<TData>({
     key, data}: { key: string; data: TData;}): Promise<void> {
     this.setStoreData({data: data, storeProperty: key});
