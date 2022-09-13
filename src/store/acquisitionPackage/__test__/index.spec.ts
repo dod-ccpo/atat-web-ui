@@ -1,9 +1,8 @@
 /* eslint-disable indent */
 /* eslint-disable camelcase */
 import Vuex, { Store } from "vuex";
-import { createLocalVue } from "@vue/test-utils";
 import { AcquisitionPackageStore, ATAT_ACQUISTION_PACKAGE_KEY, getStoreDataTableProperty, 
-  saveSessionData, StoreProperties } from "..";
+  saveSessionData} from "..";
 import { getModule } from "vuex-module-decorators";
 import {
   AcquisitionPackageDTO,
@@ -13,7 +12,6 @@ import {
   EnvironmentInstanceDTO,
   FairOpportunityDTO,
   FundingRequestDTO,
-  FundingRequestFSFormDTO,
   OrganizationDTO,
   ProjectOverviewDTO,
   RequiredServicesDTO,
@@ -21,6 +19,7 @@ import {
 } from "@/api/models";
 import { SelectData } from "types/Global";
 import { SessionData } from "../models";
+import { StoreProperties } from "../storeproperties";
 
 jest.mock("@/api", () => ({
   ...jest.requireActual("@/api"),
@@ -783,12 +782,28 @@ describe("Acquistition Packages Store", () => {
      
  });
 
+ test("Test loadStoreData", async ()=>{
+  await AcquisitionStore.initialize();
+  AcquisitionStore.setSensitiveInformation(sensitiveInformation)
+  const data = await AcquisitionStore.
+  loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
+  expect(data).toBe(sensitiveInformation);
+});
+
+test("Test saveStoreData", async ()=>{
+  await AcquisitionStore.initialize();
+  await AcquisitionStore.saveData<SensitiveInformationDTO>({data: sensitiveInformation, 
+    storeProperty: StoreProperties.SensitiveInformation});
+  expect(AcquisitionStore.sensitiveInformation).toBe(sensitiveInformation);
+});
+
  test("Test getStoreProperty_ShouldErrorForNoneExistentProperty", async ()=>{
   await AcquisitionStore.initialize();
   expect(() => {
     const org = getStoreDataTableProperty('o', AcquisitionStore);
   }).toThrow(new Error(`unable to locate store property : o`));
 });
+
 
   test("Test setPackageFundingRequest", async ()=>{
     

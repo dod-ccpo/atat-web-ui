@@ -14,7 +14,6 @@ import OrganiationData from "../organizationData";
 import { TableApiBase } from "@/api/tableApiBase";
 import {
   AcquisitionPackageDTO,
-  AttachmentDTO,
   BaseTableDTO,
   ClassificationLevelDTO,
   ContactDTO,
@@ -40,24 +39,11 @@ import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
 import Periods from "../periods";
-import { AttachmentServiceFactory } from "@/services/attachment";
+import { StoreProperties } from "./storeproperties";
+import { getApiService } from "./apiServiceBinder";
 
 export const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
-export const StoreProperties = {
-  CurrentContract: "currentContract",
-  ContractType: "contractType",
-  Periods: "periods",
-  ProjectOverview: "projectOverview",
-  Organization: "organization",
-  FairOpportunity: "fairOpportunity",
-  GFEOverview:"gfeOverview",
-  PeriodOfPerformance: "periodOfPerformance",
-  RequirementsCostEstimate:"requirementsCostEstimate",
-  SensitiveInformation: "sensitiveInformation",
-  ClassificationLevel: "ClassificationRequirements",
-  CurrentEnvironment: "currentEnvironment",
-};
 
 const initialCurrentContract = ()=> {
   return {
@@ -525,21 +511,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.selectedContactBranch = value;
   }
 
-  //mapping of store properties to api endpoints 
-  private apiEndpointMap: Record<string, TableApiBase<BaseTableDTO>> = {
-    [StoreProperties.ContractType]: api.contractTypeTable,
-    [StoreProperties.CurrentContract]: api.currentContractTable,
-    [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
-    [StoreProperties.GFEOverview]: api.gfeOverviewTable,
-    [StoreProperties.Organization]: api.organizationTable,
-    [StoreProperties.Periods]: api.periodTable,
-    [StoreProperties.ProjectOverview]: api.projectOverviewTable,
-    [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
-    [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
-    [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
-    [StoreProperties.CurrentEnvironment]: api.currentEnvironmentTable,
-    [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
-  }
 
   //mapping store propertties name to acquisition package properties
   private acquisitionPackagePropertyMap: Record<string, string> = {
@@ -631,7 +602,7 @@ export class AcquisitionPackageStore extends VuexModule {
    */
   @Action({rawError: true})
   getApiEndPoint(apiKey: string): TableApiBase<BaseTableDTO> {
-    const endPoint = this.apiEndpointMap[`${apiKey}`];
+    const endPoint = getApiService(`${apiKey}`);
     if(endPoint === undefined){
       throw new Error(`unable to find api endpoint with key ${apiKey}`);
     }

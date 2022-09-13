@@ -15,12 +15,13 @@ import {
   ReferenceColumn,
 } from "@/api/models";
 import Vue from "vue";
-import AcquisitionPackage, { StoreProperties } from "../acquisitionPackage";
+import AcquisitionPackage from "../acquisitionPackage";
 import {
   nameofProperty,
   retrieveSession,
   storeDataToSession,
 } from "../helpers";
+import { StoreProperties } from "../acquisitionPackage/storeproperties";
 
 const ATAT_PERIODS_DATA_KEY = "ATAT_PERIODS_DATA_KEY";
 
