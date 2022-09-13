@@ -5,10 +5,20 @@ import { StoreProperties } from "../storeproperties";
 
 describe("API Service Binder", () => {
 
-  test("can locate service", ()=>{
+  test("service exists", ()=>{
+    expect(getApiService).toBeDefined();
+  });
 
-    const service = getApiService(StoreProperties.ClassificationLevel);
-    expect(service).toBe(api.classificationLevelTable);
+  test("can locate service", () => {
+    for (const [key] of Object.entries(StoreProperties)) {
+      const storeProps = StoreProperties as Record<string, string>;
+      const service = getApiService(storeProps[key]);
+      expect(service).toBeDefined();
+    }
+  });
+
+  test("should throw for none existing service", () => {
+    expect(()=> {getApiService('stun')}).toThrow('unable to locate service for key stun');
   });
 
 });

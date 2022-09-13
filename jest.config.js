@@ -7,7 +7,8 @@ module.exports = {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: [ "src/**/*.vue", "src/**/index.ts", "src/plugins/*.ts", "src/main.ts"],
+  collectCoverageFrom: [ "src/**/*.vue", "src/**/index.ts", "src/plugins/*.ts", "src/main.ts",
+  "src/store/acquisitionPackage/apiServiceBinder.ts"],
   
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [ ],
