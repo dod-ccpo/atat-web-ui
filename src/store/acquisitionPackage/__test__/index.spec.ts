@@ -2,7 +2,7 @@
 /* eslint-disable camelcase */
 import Vuex, { Store } from "vuex";
 import { createLocalVue } from "@vue/test-utils";
-import { AcquisitionPackageStore, getStoreDataTableProperty, 
+import { AcquisitionPackageStore, ATAT_ACQUISTION_PACKAGE_KEY, getStoreDataTableProperty, 
   saveSessionData, StoreProperties } from "..";
 import { getModule } from "vuex-module-decorators";
 import {
@@ -25,6 +25,8 @@ import ContactData from "@/store/contactData";
 import { FairOpportunityApi } from "@/api/fairOpportunity";
 import { SelectData } from "types/Global";
 import { SensitiveInformationApi } from "@/api/sensitiveInformation";
+import api from "@/api";
+import { reject } from "lodash";
 
 jest.mock("@/api", () => ({
   ...jest.requireActual("@/api"),
@@ -224,6 +226,27 @@ describe("Acquistition Packages Store", () => {
     expect(AcquisitionStore.modules_initialized).toBe(true);
   });
 
+  test("Test Initialized Sets Store Data", async () => {
+    await AcquisitionStore.initialize();
+    expect(AcquisitionStore.initialized).toBe(true);
+    const storeData = sessionStorage.getItem(ATAT_ACQUISTION_PACKAGE_KEY);
+    await AcquisitionStore.initialize();
+    expect(storeData?.length).toBeGreaterThan(0);
+  });
+
+  //  test("Test Initialized Should throw error when API calls fails", async () => {
+  //      api.acquisitionPackageTable.create = 
+  //      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //      (data?:AcquisitionPackageDTO | undefined)=>
+  //       {return new Promise(reject=>{throw new Error('')});}
+  //       sessionStorage.clear();
+  //       expect(async ()=> {
+  //         await AcquisitionStore.initialize();
+  //       }).toThrow();
+
+  //  });
+ 
+
   test("Test setCurrentContract", () => {
     AcquisitionStore.setCurrentContract(currentContract);
     expect(AcquisitionStore.currentContract).toStrictEqual(currentContract);
@@ -335,6 +358,31 @@ describe("Acquistition Packages Store", () => {
     AcquisitionStore.setGFEOverview(gfe_overview);
     expect(AcquisitionStore.gfeOverview).toStrictEqual(gfe_overview);
   });
+
+  
+  test("Test setContact", () => {
+    const data:ContactDTO ={
+      type: "",
+      role: "",
+      rank_components: "",
+      salutation: "",
+      first_name: "",
+      last_name: "",
+      middle_name: "",
+      suffix: "",
+      title: "",
+      phone: "",
+      phone_extension: "",
+      email: "",
+      grade_civ: "",
+      dodaac: "",
+      can_access_package: "",
+      manually_entered: ""
+    } 
+    AcquisitionStore.setContact({ data:data, type: "Mission Owner"});
+    expect(AcquisitionStore.contactInfo).toStrictEqual(data);
+  });
+
 
   test("Test setDataFromSession", async () => {
     const acquisitionPackage: AcquisitionPackageDTO = {

@@ -42,7 +42,7 @@ import FinancialDetails from "../financialDetails";
 import Periods from "../periods";
 import { AttachmentServiceFactory } from "@/services/attachment";
 
-const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
+export const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
   CurrentContract: "currentContract",
@@ -188,13 +188,6 @@ const initialSensitiveInformation = ()=> {
     foia_zip_postal_code: "",
     foia_country: "",
     section_508_sufficient: "",
-  }
-}
-
-const initialClassificationLevel = () => {
-  return {
-    impact_level: "",
-    classification: "",
   }
 }
 
