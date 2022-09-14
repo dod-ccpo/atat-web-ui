@@ -63,7 +63,7 @@
                 />
                 <a
                   class="font-size-14 ml-3"
-                  :href="'mailto:'+ member.email"
+                  :href="emailLink"
                 >
                   {{member.email}}
                 </a>
@@ -106,6 +106,7 @@ export default class MemberCard extends Vue {
   public member:User = {}
   public initials = ""
   public formattedPhone = ""
+  public emailLink = ""
 
   public getUserInitials(member:User): string {
     const firstI = member.firstName?.charAt(0);
@@ -131,7 +132,7 @@ export default class MemberCard extends Vue {
       this.member = storeData.members[this.index]
       this.initials = this.getUserInitials(this.member)
       this.formattedPhone = this.formatPhoneNumber(this.member)
-
+      this.emailLink = `mailto:${this.member.email}`
     }
   }
 }
