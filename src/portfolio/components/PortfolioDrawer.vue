@@ -172,7 +172,6 @@ export default class PortfolioDrawer extends Vue {
   public provisionedTime = "";
   public updateTime = "";
   public csp = "";
-  public userOne:User = {}
 
   public showMembersModal = false;
   public showDeleteMemberDialog = false;
@@ -217,16 +216,10 @@ export default class PortfolioDrawer extends Vue {
     const storeData = await PortfolioData.getPortfolioData();
     if (storeData) {
       this.portfolio = storeData;
-      if (
-        storeData.provisioned &&
-        storeData.updated &&
-        storeData.csp &&
-        storeData.members
-      ) {
+      if (storeData.provisioned && storeData.updated && storeData.csp) {
         this.provisionedTime = this.formatDate(storeData.provisioned);
         this.updateTime = this.formatDate(storeData.updated);
         this.csp = storeData.csp;
-        this.userOne = storeData.members[0]
 
       }
       this.portfolioMembers = _.cloneDeep(storeData.members) || [];
