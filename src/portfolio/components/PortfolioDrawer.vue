@@ -37,15 +37,15 @@
             </div>
           </div>
         </div>
-        <div class="d-flex justify-space-between pb-4">
+        <div class="d-flex justify-space-between pb-2">
           <span id="ServiceAgencyLabel">Service/Agency</span>
           <div id="ServiceAgency">
             {{ portfolio.serviceAgency }}
           </div>
         </div>
-        <div class="d-flex justify-space-between">
+        <div class="d-flex justify-space-between align-center">
           <span id="CreatedByLabel">Created by</span>
-          <div id="CreatedBy" class="_text-link">Maria Missionowner</div>
+          <MemberCard id="CreatedBy" :index="0" />
         </div>
       </div>
     </div>
@@ -87,26 +87,24 @@
         class="pt-6"
       >
 
-        <div class="d-flex flex-columm justify-space-between" 
+        <div class="d-flex flex-columm justify-space-between"
         v-for="(member, index) in portfolioMembers" :key="member.email">
-          <a  class="pt-1" id="MemberName" role="button">
-            {{ displayName(member) }}
-          </a>
+          <MemberCard :id="'MemberName' + index" :index="index" />
           <div v-if="managerCount === 1 && member.role.toLowerCase() === 'manager'">
             <v-tooltip left nudge-right="30">
             <template v-slot:activator="{ on }">
-              <div 
-                v-on="on" 
-                class="py-1 d-flex" 
+              <div
+                v-on="on"
+                class="py-1 d-flex"
                 style="width: 105px; letter-spacing: normal; cursor: default;"
               >
-                <div class="width-100 text-right pr-4">Manager</div>   
+                <div class="width-100 text-right pr-4">Manager</div>
                 <div style="width: 24px; height: 20px;"></div>
               </div>
             </template>
             <div class="_tooltip-content-wrap _left" style="width: 250px;">
               <div>
-                You are the last manager of this portfolio. There must be at least 
+                You are the last manager of this portfolio. There must be at least
                 one other manager for you to leave this portfolio or change roles.
               </div>
             </div>
@@ -186,15 +184,16 @@ import PortfolioData from "@/store/portfolio";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import Toast from "@/store/toast";
 
-import { 
-  Portfolio, 
-  SelectData, 
-  SlideoutPanelContent, 
-  ToastObj, 
-  User 
+import {
+  Portfolio,
+  SelectData,
+  SlideoutPanelContent,
+  ToastObj,
+  User
 } from "types/Global";
 import { format, parseISO } from "date-fns";
 import _ from "lodash";
+import MemberCard from "@/portfolio/components/MemberCard.vue";
 
 @Component({
   components: {
@@ -203,6 +202,7 @@ import _ from "lodash";
     ATATSelect,
     AddMembersModal,
     PortfolioRolesLearnMore,
+    MemberCard,
   },
 })
 
@@ -277,6 +277,7 @@ export default class PortfolioDrawer extends Vue {
         this.provisionedTime = this.formatDate(storeData.provisioned);
         this.updateTime = this.formatDate(storeData.updated);
         this.csp = storeData.csp;
+
       }
       this.portfolioMembers = _.cloneDeep(storeData.members) || [];
     }
@@ -334,7 +335,7 @@ export default class PortfolioDrawer extends Vue {
         if (val === "Remove" && this.portfolio.members && this.portfolio.members.length > 1) {
           this.deleteMemberName = this.displayName(this.portfolioMembers[index]);
           this.deleteMemberIndex = index;
-          this.showDeleteMemberDialog = true;       
+          this.showDeleteMemberDialog = true;
         } else if (val === "AboutRoles") {
           const panelContent: SlideoutPanelContent = {
             component: PortfolioRolesLearnMore,
