@@ -1,78 +1,63 @@
 <template>
-
-
   <div class="_document-review">
-    
-    <ATATSlideoutPanel 
-        v-if="panelContent"
-        :alwaysOpen="true"
-        :showHeader="false">
+    <ATATSlideoutPanel
+      v-if="isForm"
+      :alwaysOpen="true"
+      :showHeader="false"
+    >
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
-
-    <v-main class="bg-base-off-white">
-      <div class="mainDiv">
-        <v-breadcrumbs
-          class="pa-0 mb-3"
-          :items="breadCrumbItems"
-          divider="-"
-        ></v-breadcrumbs>
-        <h1>Requirements Checklist</h1>
-        <div id="FormDiv">
-          <v-form id="reviewForm">
-            <h2>Part I. Requirements Owner Information</h2>
-          </v-form>
+    <div class="_document-review">
+      <v-main class="bg-base-off-white">
+        <div class="mainDiv">
+          <router-view></router-view>
         </div>
-      </div>
-    </v-main>
+      </v-main>
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { BreadCrumbItem, SlideoutPanelContent } from "types/Global";
+import { SlideoutPanelContent } from "types/Global";
 import Vue from "vue";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import Form from "./Form.vue";
+import Preview from "./Preview.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import CommentsPanel from "./components/CommentsPanel.vue";
-
 import { Component } from "vue-property-decorator";
+
 @Component({
-  components:{
+  components: {
     ATATSVGIcon,
-    ATATSlideoutPanel,  
-    CommentsPanel
-  }
+    ATATSlideoutPanel,
+    CommentsPanel,
+  },
 })
 export default class DocumentReview extends Vue {
-  public breadCrumbItems: BreadCrumbItem[] = [
-    {
-      text: "Acquisitions",
-      disabled: false,
-      href: "#",
-    },
-    {
-      text: "Demo Package",
-      disabled: false,
-      href: "#",
-    },
-    {
-      text: "Requirements Checklist",
-      disabled: true,
-      href: "#",
-    },
+
+  get isForm(): boolean {
+    return this.$route.path.toLowerCase().indexOf('form') > 0 
+  }
+  
+  private docReviewRoutes = [
+    { path: "/docReviewForm", component: Form },
+    { path: "/docReviewPreview", component: Preview },
   ];
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
-  };
+  }
 
   public async mounted(): Promise<void> {
     const slideoutPanelContent: SlideoutPanelContent = {
       component: CommentsPanel,
-      title: "" 
+      title: "",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     SlideoutPanel.openSlideoutPanel("");
+    this.$router.addRoutes(this.docReviewRoutes);
   }
+
 }
 </script>

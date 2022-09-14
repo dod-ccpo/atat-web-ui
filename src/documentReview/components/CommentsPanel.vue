@@ -1,5 +1,5 @@
 <template>
-  <div id="CommentsDiv" class="">
+  <div id="CommentsDiv" class="" ref="CommentsPanel">
     <div class="content-header">
       <v-btn color="primary" class="d-flex align-center" id="inReviewButton">
         <div class="d-flex align-center">
@@ -14,30 +14,32 @@
           />
         </div>
       </v-btn>
-      <v-btn class="link-button no-hover mt-3">
-        Preview Form
-        <ATATSVGIcon
-          class="ml-2"
-          name="launch"
-          width="15"
-          height="15"
-          color="primary"
-        />
-      </v-btn>
+      <router-link to="/docReviewPreview">
+        <v-btn class="link-button no-hover mt-3">
+          Preview Form
+          <ATATSVGIcon
+            class="ml-2"
+            name="launch"
+            width="15"
+            height="15"
+            color="primary"
+          />
+        </v-btn>
+      </router-link>
     </div>
     <hr class="ma-0" />
     <div class="content-comments">
       <h3 class="mb-4">Comments</h3>
       <dl>
         <dt>
-        <v-btn text x-small class="pa-2 comment-button">
-          <ATATSVGIcon
-            name="commentBubble"
-            class="comment-icon"
-            width="16"
-            height="16"
-          />
-        </v-btn>
+          <v-btn text x-small class="pa-2 comment-button">
+            <ATATSVGIcon
+              name="commentBubble"
+              class="comment-icon"
+              width="16"
+              height="16"
+            />
+          </v-btn>
         </dt>
         <dd class="body-sm">
           Share your feedback or ask a question by hovering over a field and

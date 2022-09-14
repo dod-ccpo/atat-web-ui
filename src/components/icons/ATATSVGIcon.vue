@@ -13,6 +13,7 @@ import {stringObj } from "types/Global";
 import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
+import ArrowLeft from "@/components/icons/ArrowLeft.vue"
 import Aws from "@/components/icons/Aws.vue";
 import Azure from "@/components/icons/Azure.vue";
 import Calendar from "@/components/icons/Calendar.vue";
@@ -49,6 +50,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 @Component({
   components:{
+    ArrowLeft,
     Aws,
     Azure,
     Calendar,
