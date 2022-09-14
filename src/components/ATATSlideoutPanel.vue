@@ -12,7 +12,7 @@
     :temporary="showOverlay"
   >
     <div
-      v-if="appSection !== 'Portfolio Summary'"
+      v-if="isHeaderDisplayed"
       class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
         {{ panelTitle }}
@@ -33,7 +33,7 @@
 
     <div id="PanelWrap"
       :class="[appSection === 'Portfolio Summary' ?'_portfolio-panel': '_panel-content-wrap']"
-       v-if="panelTitle">
+      >
       <slot></slot>
     </div>
 
@@ -50,6 +50,9 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 
 export default class ATATSlideoutPanel extends Vue {
   @Prop({ default: "380" }) private panelWidth!: string;
+  @Prop({ default: false }) private alwaysOpen!: boolean;
+  @Prop({ default: true }) private showHeader!: boolean;
+  
   public appSection = AppSections.activeAppSection;
   public transitionEnded(e: Event):void {
     const target = e.currentTarget as HTMLElement;
@@ -59,13 +62,24 @@ export default class ATATSlideoutPanel extends Vue {
     }
   }
 
+  get isHeaderDisplayed(): boolean {
+    if (!this.showHeader){
+      return this.showHeader;
+    }
+    else if (this.appSection !== 'Portfolio Summary')
+    {
+      return true;
+    }
+    return true;
+  }
+
   get panelTitle(): string {
     return SlideoutPanel.slideoutPanelTitle;
   }
 
   private isOpen = false;
   set isSlideoutPanelOpen(isOpen: boolean) {
-    this.isOpen = isOpen;
+    this.isOpen = this.alwaysOpen ? this.alwaysOpen : isOpen;
   }
   /*
    * adds click event listener to overlay if Displayed

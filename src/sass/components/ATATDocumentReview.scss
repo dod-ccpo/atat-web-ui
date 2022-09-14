@@ -1,5 +1,16 @@
 ._document-review{
+
   .v-main__wrap{
-    padding: 56px 0px 0px 40px;
+    padding: 40px 0px 0px 56px;
+    display: flex;
+
+    #FormDiv{
+      padding: 40px 0px 0px 12px
+    }
+
+    #CommentsDiv{
+      width: 380px;
+      border-left: #acacac 1px solid;
+    }
   }
 }
