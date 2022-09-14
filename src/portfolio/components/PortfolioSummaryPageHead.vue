@@ -153,11 +153,11 @@ export default class PortfolioSummaryPageHead extends Vue {
   public showMembersModal = false;
   public showDrawer = false;
 
-  public openModal(): void {
+  public openModal():void {
     this.showMembersModal = true;
   }
 
-  public saveTitle(): void {
+  public saveTitle() {
     const obj ={
       title: this._title
     }
@@ -186,7 +186,6 @@ export default class PortfolioSummaryPageHead extends Vue {
       SlideoutPanel.closeSlideoutPanel()
     }
   }
-
   public moveToInput(): void {
     const input = document.getElementById('HeaderTextField');
     if(input){

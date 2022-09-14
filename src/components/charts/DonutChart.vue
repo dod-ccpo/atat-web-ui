@@ -43,9 +43,9 @@ export default class DonutChart extends Vue {
         position: "nearest",
         external: this.externalTooltipHandler,
       };
-      Chart.register(
-        DoughnutController,
-      )
+      // Chart.register(
+      //   DoughnutController,
+      // )
 
       this.chartOptions.plugins.tooltip = toolTipExternalOptions;
     }
@@ -64,7 +64,7 @@ export default class DonutChart extends Vue {
       }
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
       if (this.myChart != null) {
-        console.log("DESTROY DONUT " + this.chartId)
+        console.log("DESTROY!!!!! DONUT " + this.chartId)
         this.myChart.destroy();
       }
 
