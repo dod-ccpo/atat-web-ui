@@ -57,7 +57,7 @@ export class PortfolioDataStore extends VuexModule {
       members: [{
         firstName:"Maria",
         lastName: "Missionowner",
-        email:"maria.missionowner@mail.mil",
+        email:"maria.missionowner.civ@mail.mil",
         role: "Manager",
         phoneNumber:"5555555555",
         title: "optional title"

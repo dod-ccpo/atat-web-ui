@@ -2,18 +2,10 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import FundingTracker from "@/portfolio/FundingTracker.vue";
-import { nextTick } from "process";
-
-import Chart, { ChartData } from "chart.js/auto";
+import AppPackageBuilder from "@/AppPackageBuilder.vue";
+import SlideoutPanel from "@/store/slideoutPanel/index";
 
 Vue.use(Vuetify);
-
-// let chart: Chart;
-
-// jest.mock('Chart', () => ({
-//   Doughnut: () => null,
-// }))
 
 describe("Testing FundingTracker Component", () => {
   const localVue = createLocalVue();
@@ -22,15 +14,19 @@ describe("Testing FundingTracker Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(FundingTracker, {
+    wrapper = mount(AppPackageBuilder, {
       localVue,
       vuetify,
     });
   });
 
   it("renders successfully", async () => {
-
     expect(wrapper.exists()).toBe(true);
   });
 
+  it("method panelContent() - tests undefined", async () => {
+    const panelContent = wrapper.vm.panelContent;
+    expect(panelContent).not.toBe(undefined);
+  });
+ 
 })
