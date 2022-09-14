@@ -5,9 +5,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Chart, { 
-  ChartData, ChartOptions, DoughnutController, DoughnutDataPoint 
-} from "chart.js/auto";
+import Chart, { ChartData, ChartOptions } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { toCurrencyString } from "@/helpers";
 
@@ -26,14 +24,12 @@ export default class DonutChart extends Vue {
   @Prop({ required: false, default: "" }) public individualAmtsArr!: {[key:string]:number} ;
 
 
-  private myChart: Chart | null = null;
+  private myChart!: Chart;
 
   @Watch("chartData", { deep: true })
   public chartDataUpdate(newData: ChartData): void {
-    if (this.myChart) {
-      this.myChart.data = newData;
-      this.myChart.update();
-    }
+    this.myChart.data = newData;
+    this.myChart.update();
   }
 
   private mounted() {
@@ -43,10 +39,6 @@ export default class DonutChart extends Vue {
         position: "nearest",
         external: this.externalTooltipHandler,
       };
-      // Chart.register(
-      //   DoughnutController,
-      // )
-
       this.chartOptions.plugins.tooltip = toolTipExternalOptions;
     }
 
@@ -56,27 +48,19 @@ export default class DonutChart extends Vue {
   public createChart(): void {
     const centertext = this.centertext(this);
     if (this.chartId) {
-      console.log("DONUT CHART chartId", this.chartId);
 
       let plugins: any = [centertext];
       if (this.useChartDataLabels) {
         plugins.push(ChartDataLabels);
       }
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
-      if (this.myChart != null) {
-        console.log("DESTROY!!!!! DONUT " + this.chartId)
-        this.myChart.destroy();
-      }
-
+      ctx.id = this.chartId;
       this.myChart = new Chart(ctx, {
         type: "doughnut",
         data: this.chartData,
         options: this.chartOptions,
         plugins: plugins,
       });
-      console.log("myChart DONUT - POST new Chart", this.myChart);
-      console.log("myChart DONUT - POST new Chart ID", this.myChart.id);
-
     }
   }
 

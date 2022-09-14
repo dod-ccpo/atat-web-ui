@@ -5,7 +5,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Chart, { ChartData, LineController, LineElement } from "chart.js/auto";
+import Chart, { ChartData } from "chart.js/auto";
 
 @Component({})
 export default class LineChart extends Vue {
@@ -17,31 +17,27 @@ export default class LineChart extends Vue {
   @Prop({ required: false, default: false }) public hasProjected?: boolean;
   @Prop({ required: false }) public tooltipHeaderData!: Record<string, string>;
   
-  private myChart: Chart | null = null;
+  private myChart!: Chart;
 
   @Watch("chartData", { deep: true })
   public chartDataUpdate(newData: ChartData): void {
-    if (this.myChart) {
-      this.myChart.data = newData;
-      this.myChart.update();
-    }      
+    this.myChart.data = newData;
+    this.myChart.update();
   }
 
   @Watch("toggleDataset")
   protected doToggleDataset(): void {
-    if (this.myChart) {
-      const i = this.datasetToToggle;
-      const isDatasetVisible = this.myChart.isDatasetVisible(i);
-      if (isDatasetVisible) {
-        this.myChart.hide(i); // actual spend (solid)
-        if (this.hasProjected) {
-          this.myChart.hide(i + 1); // burndown (dashed)
-        }
-      } else {
-        this.myChart.show(i);
-        if (this.hasProjected) {
-          this.myChart.show(i + 1);
-        }
+    const i = this.datasetToToggle;
+    const isDatasetVisible = this.myChart.isDatasetVisible(i);
+    if (isDatasetVisible) {
+      this.myChart.hide(i); // actual spend (solid)
+      if (this.hasProjected) {
+        this.myChart.hide(i + 1); // burndown (dashed)
+      }
+    } else {
+      this.myChart.show(i);
+      if (this.hasProjected) {
+        this.myChart.show(i + 1);
       }
     }
   }
@@ -64,43 +60,26 @@ export default class LineChart extends Vue {
     },
   };
 
-  private async mounted(): Promise<void> {
+  private mounted(): void {
     const toolTipExternalOptions = {
       enabled: false,
       position: "nearest",
       external: this.externalTooltipHandler,
     };
-    
-    Chart.register(
-      LineElement,
-      LineController,
-    )
     this.chartOptions.plugins.tooltip = toolTipExternalOptions;
-    await this.createChart();
+    this.createChart();
   }
 
   public async createChart(): Promise<void> {
-    console.log("createChart() - LINE CHART - id:", this.chartId);
-
     if (this.chartId) {
-      console.log("LINE CHART if (this.chartId)", this.chartId);
-      // console.log("myChart PRE new Chart", this.myChart);
-
-      if (this.myChart != null) {
-        console.log("DESTROY LINE CHART " + this.chartId)
-        this.myChart.destroy();
-      } 
-      const ctx = await document.getElementById(this.chartId) as HTMLCanvasElement;
-      console.log("ctx!!!!!!!!", ctx); // in JEST this IS NULL
-      
+      const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
+      ctx.id = this.chartId;
       this.myChart = new Chart(ctx, {
         type: "line",
         data: this.chartData,
         options: this.chartOptions,
         plugins: [this.currentMonthLine],
       });
-      console.log("myChart LINE - POST new Chart", this.myChart);
-      console.log("myChart LINE - POST new Chart ID", this.myChart.id);
     }
   }
 
