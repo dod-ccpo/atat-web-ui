@@ -3,6 +3,7 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import MemberCard from "@/portfolio/components/MemberCard.vue";
+import PortfolioData from "@/store/portfolio";
 Vue.use(Vuetify);
 
 describe("Testing MemberCard Component", () => {
@@ -15,33 +16,34 @@ describe("Testing MemberCard Component", () => {
     wrapper = mount(MemberCard, {
       localVue,
       vuetify,
+      propsData: {
+        index:0
+      }
     });
+    const _portfolio = {
+      csp: "Azure",
+      description:"just testfefseffdsfd",
+      members: [{
+        firstName:"Maria",
+        lastName: "Missionowner",
+        email:"maria.missionowner@mail.mil",
+        role: "Manager",
+        phoneNumber:"5555555555",
+        title: "optional title"
+      }],
+      provisioned: "2022-09-08 18:12:12",
+      serviceAgency:"DISA",
+      status: "Active",
+      title: "test title",
+      updated: "2022-09-08 18:12:12"
+    }
+    jest.spyOn(PortfolioData, "getPortfolioData").mockImplementation(
+      ()=>Promise.resolve( _portfolio ));
   });
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  describe("Testing MemberCard Component Functions", () => {
-    wrapper.setProps({
-      members: {
-        email: "maria.missionowner@mail.mil",
-        firstName: "Maria",
-        lastName: "Missionowner",
-        phoneNumber: "5555555555",
-        role: "Manager",
-        title: "optinal title",
-      }
-    })
 
-    it('it should return the initials of the user', ()=>{
-      const initialResults = wrapper.vm.getUserInitials();
-      expect(initialResults).toBe("MM")
-    })
-    it('it should return the phoneNumber formated (123) 456-7890', ()=>{
-      const phoneNumerResults = wrapper.vm.formatPhoneNumber();
-      expect(phoneNumerResults).toBe("(555) 555-5555")
-    })
-
-  })
 })

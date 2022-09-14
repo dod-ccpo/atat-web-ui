@@ -9,14 +9,14 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-          v-if="member?.firstName"
+          v-if="member.firstName"
           plain
           text
           v-bind="attrs"
           v-on="on"
           class="font-size-14 _member-button"
         >
-          {{member?.firstName}} {{ member?.lastName}}
+          {{member.firstName}} {{ member.lastName}}
         </v-btn>
         <v-btn
           v-else
@@ -26,12 +26,12 @@
           v-on="on"
           class="font-size-14 _member-button"
         >
-          {{member?.email}}
+          {{member.email}}
         </v-btn>
       </template>
 
       <v-card class="_member-card">
-        <v-list  v-if="member?.firstName && member?.lastName"
+        <v-list  v-if="member.firstName && member.lastName"
         >
           <v-list-item
             class="py-4 px-6"
@@ -41,9 +41,9 @@
               </div>
             <v-list-item-content class="ml-4">
               <v-list-item-title class="h3">
-                {{member?.firstName}} {{member?.lastName}}
+                {{member.firstName}} {{member.lastName}}
               </v-list-item-title>
-              <v-list-item-title class="font-size-14">{{member?.title}}</v-list-item-title>
+              <v-list-item-title class="font-size-14">{{member.title}}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <hr class="my-0" />
@@ -51,7 +51,7 @@
         <v-list>
           <v-list-item
             class="px-6"
-            :class="[member?.phoneNumber? 'py-4': 'py-0']"
+            :class="[member.phoneNumber? 'py-4': 'py-0']"
           >
             <v-list-item-content>
               <div class="d-flex align-center ">
@@ -63,14 +63,14 @@
                 />
                 <a
                   class="font-size-14 ml-3"
-                  :href="'mailto:'+ member?.email"
+                  :href="'mailto:'+ member.email"
                 >
-                  {{member?.email}}
+                  {{member.email}}
                 </a>
               </div>
               <div
                 class="d-flex align-center mt-3"
-                v-if="member?.phoneNumber"
+                v-if="member.phoneNumber"
               >
                 <ATATSVGIcon
                   width="16"
