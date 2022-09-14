@@ -39,6 +39,7 @@ import Person from "@/components/icons/Person.vue";
 import PersonAddAlt from "@/components/icons/PersonAddAlt.vue";
 import Phone from "@/components/icons/Phone.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
+import Role from "@/components/icons/Role.vue";
 import Remove from "@/components/icons/Remove.vue";
 import Search from "@/components/icons/Search.vue";
 import Service from "@/components/icons/Service.vue";
@@ -51,7 +52,7 @@ import TriangleUp from "@/components/icons/TriangleUp.vue";
 import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 @Component({
-  components:{
+  components: {
     Aws,
     Azure,
     Calendar,
@@ -78,6 +79,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     PersonAddAlt,
     Phone,
     PlusSign,
+    Role,
     Remove,
     Search,
     Service,

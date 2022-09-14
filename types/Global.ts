@@ -347,7 +347,9 @@ export interface User {
   email?: string;
   role?: string;
   phoneNumber?: string;
-  title?:string;
+  phoneExt?: string;
+  designation?: string;
+  serviceAgency?: string;
 }
 
 export interface Portfolio {

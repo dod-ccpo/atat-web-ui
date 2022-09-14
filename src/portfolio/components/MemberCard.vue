@@ -81,6 +81,36 @@
                 <span class="font-size-14 ml-3">
                   {{formattedPhone}}
                 </span>
+                <span class="pl-4 font-size-14">Ext.</span>
+                <span class="pl-1 font-size-14">{{member.phoneExt}}</span>
+              </div>
+              <div
+                class="d-flex align-center mt-3"
+                v-if="member.serviceAgency"
+              >
+                <ATATSVGIcon
+                  width="16"
+                  height="13"
+                  name="service"
+                  color="base-light"
+                />
+                <span class="font-size-14 ml-3">
+                  {{member.serviceAgency}}
+                </span>
+              </div>
+              <div
+                class="d-flex align-center mt-3"
+                v-if="member.designation"
+              >
+                <ATATSVGIcon
+                  width="16"
+                  height="13"
+                  name="role"
+                  color="base-light"
+                />
+                <span class="font-size-14 ml-3">
+                  {{member.designation}}
+                </span>
               </div>
             </v-list-item-content>
           </v-list-item>
