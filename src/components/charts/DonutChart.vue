@@ -54,7 +54,6 @@ export default class DonutChart extends Vue {
         plugins.push(ChartDataLabels);
       }
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
-      ctx.id = this.chartId;
       this.myChart = new Chart(ctx, {
         type: "doughnut",
         data: this.chartData,
