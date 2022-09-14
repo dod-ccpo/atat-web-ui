@@ -133,7 +133,7 @@ Cypress.Commands.add("verifyStorageTypeListItems", (categoryObj) => {
   categoryObj.storageTypeCypressLabels.forEach((list) => {
     storageTypeListItems.push(list);
   });
-  cy.verifyDropdownList(performanceReq.storageTypeDropdownList, storageTypeListItems);     
+  cy.verifyStringArray(performanceReq.storageTypeDropdownList, storageTypeListItems);     
 });
 
 //This command is to verify the checkbox label and header for the Compute Category

@@ -334,7 +334,7 @@ Cypress.Commands.add("verifyRadioGroupLabels", (selector,expectedLabels) => {
   
 });
 
-Cypress.Commands.add("verifyDropdownList", (selector,expectedOptions) => {
+Cypress.Commands.add("verifyStringArray", (selector,expectedOptions) => {
   //Verify the list 
   cy.findElement(selector)
     .then(($els) => {      

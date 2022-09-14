@@ -4,6 +4,9 @@
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
+
+    <ATATToast />
+
     <v-main class="_dashboard bg-base-off-white">
       <PortfolioSummaryPageHead
         headline="Portfolio Summary"
@@ -32,6 +35,7 @@ import { Component } from "vue-property-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
+import ATATToast from "@/components/ATATToast.vue";
 import PortfolioSummaryPageHead from "@/portfolio/components/PortfolioSummaryPageHead.vue";
 import CSPPortalAccess from "@/portfolio/CSPPortalAccess.vue";
 import FundingTracker from "@/portfolio/FundingTracker.vue";
@@ -46,6 +50,7 @@ import PortfolioData from "@/store/portfolio";
     PortfolioSummaryPageHead,
     ATATFooter,
     ATATSlideoutPanel,
+    ATATToast,
   }
 })
 export default class PortfolioSummary extends Vue {

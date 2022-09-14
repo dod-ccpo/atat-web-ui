@@ -73,7 +73,6 @@ export default class LineChart extends Vue {
   public async createChart(): Promise<void> {
     if (this.chartId) {
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
-      ctx.id = this.chartId;
       this.myChart = new Chart(ctx, {
         type: "line",
         data: this.chartData,
