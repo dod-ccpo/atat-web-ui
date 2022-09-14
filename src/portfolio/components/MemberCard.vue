@@ -90,7 +90,7 @@
               >
                 <ATATSVGIcon
                   width="16"
-                  height="13"
+                  height="16"
                   name="service"
                   color="base-light"
                 />
@@ -104,7 +104,7 @@
               >
                 <ATATSVGIcon
                   width="16"
-                  height="13"
+                  height="16"
                   name="role"
                   color="base-light"
                 />
