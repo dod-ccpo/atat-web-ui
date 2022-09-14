@@ -60,14 +60,14 @@ export default class LineChart extends Vue {
     },
   };
 
-  private mounted(): void {
+  private async mounted(): Promise<void> {
     const toolTipExternalOptions = {
       enabled: false,
       position: "nearest",
       external: this.externalTooltipHandler,
     };
     this.chartOptions.plugins.tooltip = toolTipExternalOptions;
-    this.createChart();
+    await this.createChart();
   }
 
   public async createChart(): Promise<void> {

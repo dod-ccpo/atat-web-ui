@@ -60,7 +60,7 @@
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Funding Status</h3>
-                    <!-- <DonutChart
+                    <DonutChart
                       chart-id="FundingStatusArcChart"
                       :chart-data="arcGuageChartData"
                       :chart-options="arcGuageChartOptions"
@@ -69,7 +69,7 @@
                       center-text2="Funds Spent"
                       :aria-label="'Chart displaying '+ fundsSpentPercent +'% of Funds Spent'"
                       :show-label-on-hover="false"
-                    /> -->
+                    />
                     <v-divider class="my-4" />
                     <p class="mb-0 font-size-14">
                       At your current rate of spending, you will run out of funds by
@@ -289,7 +289,7 @@
                     </p>
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">
-                        <!-- <DonutChart
+                        <DonutChart
                           chart-id="SpendDonutChart"
                           :chart-data="donutChartData"
                           :chart-options="donutChartOptions"
@@ -299,7 +299,7 @@
                           :amount="totalPortfolioFunds"
                           :individualAmtsArr="portfolioFundsObj"
 
-                        /> -->
+                        />
                       </v-col>
                       <v-col class="col-sm-6 d-flex align-center">
                         <div class="width-100">
