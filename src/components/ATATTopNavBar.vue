@@ -1,6 +1,6 @@
 <template>
   <v-system-bar id="TopNavBar" app flat>
-    <ATATSVGIcon 
+    <ATATSVGIcon
       color="white"
       width="110"
       height="38"
@@ -13,7 +13,7 @@
         :key="navIdx"
         :offset-y="true"
         nudge-left="0"
-        :id="'TopNavButton_' + navIdx"
+        :id="'TopNavBarMenu_' + (!navItem.isProfile ? getIdText(navItem.title) : 'User')"
         :attach="navItem.menu !== undefined"
         :left="navItem.align === 'left'"
       >
@@ -24,34 +24,33 @@
             dark
             v-bind="attrs"
             v-on="on"
-            :id="'TopNavBarItem_' + getIdText(navItem.title)"
+            :id="'TopNavButton_' + (!navItem.isProfile ? getIdText(navItem.title) : 'User')"
             :class="[
-              { '_profile': navItem.isProfile },
-              { '_active': isMenuItemActive(navItem) },
+              { _profile: navItem.isProfile },
+              { _active: isMenuItemActive(navItem) },
             ]"
             @click="navClicked(navItem)"
           >
-          {{ navItem.title }}
-          <ATATSVGIcon
-            v-if="navItem.menu && !navItem.isProfile"
-            name="chevronDown" 
-            color="white" 
-            class="ml-2"
-            :width="10" 
-            :height="7" 
-          />
+            {{ navItem.title }}
+            <ATATSVGIcon
+              v-if="navItem.menu && !navItem.isProfile"
+              name="chevronDown"
+              color="white"
+              class="ml-2"
+              :width="10"
+              :height="7"
+            />
           </v-btn>
         </template>
 
         <!-- menu items (dropdown menu) -->
-        <v-list 
+        <v-list
           attach
           v-if="navItem.menu"
           class="_top-nav-menu"
           :class="{ '_profile-menu': navItem.isProfile }"
         >
           <template v-for="(menuItem, idx) in navItem.menu">
-
             <!-- top profile block with initials in circle, name, and email -->
             <v-list-item
               v-if="navItem.isProfile && idx === 0"
@@ -72,14 +71,18 @@
               </div>
             </v-list-item>
 
-            <hr v-if="menuItem.separatorBefore" :key="'separator'+ idx" class="my-2" />
+            <hr
+              v-if="menuItem.separatorBefore"
+              :key="'separator' + idx"
+              class="my-2"
+            />
 
             <!-- drop menu items -->
             <v-list-item
               :key="idx"
               :id="'TopNavBarMenuItem_' + getIdText(menuItem.title)"
               @click="navClicked(menuItem)"
-              :class="[{ '_active': isMenuItemActive(menuItem) }]"
+              :class="[{ _active: isMenuItemActive(menuItem) }]"
             >
               <div v-if="menuItem.icon" class="text-center _menu-icon mr-2">
                 <ATATSVGIcon
@@ -103,7 +106,7 @@
 <script lang="ts">
 import { TopNavItem, User } from "types/Global";
 import Vue from "vue";
-import { Component} from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { getIdText } from "@/helpers";
@@ -114,16 +117,14 @@ import AppSections from "@/store/appSections";
     ATATSVGIcon,
   },
 })
-
 export default class ATATTopNavBar extends Vue {
-
   // TEMP hardcoded current user
   public currentUser: User = {
     firstName: "Maria",
     lastName: "Missionowner",
     email: "maria.missionowner.civ@mail.mil",
     role: "Manager",
-  }
+  };
 
   public activeMenuItems: string[] = []; // EJY use for hilite active
 
@@ -133,7 +134,7 @@ export default class ATATTopNavBar extends Vue {
     }
     return false;
   }
-  private topNavMenuItems: TopNavItem[] = []
+  private topNavMenuItems: TopNavItem[] = [];
 
   public navClicked(item: TopNavItem): void {
     if (item.menu === undefined) {
@@ -148,15 +149,13 @@ export default class ATATTopNavBar extends Vue {
         // open external URL in new tab
         window.open(item.externalUrl, "_blank");
       }
-    } 
+    }
   }
 
   public getUserInitials(): string {
     const firstI = this.currentUser.firstName?.charAt(0);
     const lastI = this.currentUser.lastName?.charAt(0);
-    const initials = firstI && lastI 
-      ? firstI + lastI
-      : "XX";
+    const initials = firstI && lastI ? firstI + lastI : "XX";
     return initials.toUpperCase();
   }
 
@@ -173,21 +172,15 @@ export default class ATATTopNavBar extends Vue {
       },
       {
         title: "Acquisitions",
-        menu:[
-          { 
+        menu: [
+          {
             title: "My Packages",
             parentTitle: "Acquisitions",
             spaSectionTitle: sectionData.sectionTitles.AcquisitionPackage,
           },
-          { 
+          {
             title: "My Task Orders",
             parentTitle: "Acquisitions",
-          },
-          { 
-            title: "Document Review", 
-            separatorBefore: true,
-            parentTitle: "Acquisitions",
-            spaSectionTitle: sectionData.sectionTitles.DocumentReview,
           },
         ]
       },
@@ -199,32 +192,32 @@ export default class ATATTopNavBar extends Vue {
         title: "Portals",
         align: "left",
         menu: [
-          { 
+          {
             title: "Global Service Desk",
             icon: {
               name: "person",
               width: "14",
               height: "15",
               color: "base-dark",
-            }        
+            },
           },
-          { 
+          {
             title: "Mission Partner Portal",
             icon: {
               name: "support",
               width: "18",
               height: "17",
               color: "base-dark",
-            }                
+            },
           },
-        ]
+        ],
       },
       {
         title: this.getUserInitials(),
         isProfile: true,
         align: "left",
-        menu:[
-          { 
+        menu: [
+          {
             title: "Profile",
             separatorBefore: true,
             icon: {
@@ -232,44 +225,43 @@ export default class ATATTopNavBar extends Vue {
               width: "14",
               height: "15",
               color: "base-dark",
-            }        
+            },
           },
-          { 
+          {
             title: "Contact Support",
             icon: {
               name: "contactSupport",
               width: "17",
               height: "20",
               color: "base-dark",
-            }        
+            },
           },
-          { 
+          {
             title: "Submit Feedback",
             icon: {
               name: "feedback",
               width: "18",
               height: "17",
               color: "base-dark",
-            }        
+            },
           },
-          { 
-            title: "Sign out", 
+          {
+            title: "Sign out",
             separatorBefore: true,
             icon: {
               name: "signOut",
               width: "18",
               height: "15",
               color: "base-dark",
-            }        
+            },
           },
-        ]
-      }      
+        ],
+      },
     ];
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
 }
 </script>
