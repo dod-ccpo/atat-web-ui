@@ -63,7 +63,7 @@
                 />
                 <a
                   class="font-size-14 ml-3"
-                  :href="$sanitize('mailto:'+ member.email)"
+                  :href="'mailto:'+ member.email"
                 >
                   {{member.email}}
                 </a>
