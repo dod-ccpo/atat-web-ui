@@ -35,13 +35,18 @@
       </div>
       <div class="d-flex justify-end align-center">
         <v-btn
-          icon
-          class="mr-2 icon-24 _header-button"
+          class="_icon-only mr-2"
           id="Info_Button"
           @click="openSlideoutPanel"
           @keydown.enter="openSlideoutPanel"
-          @keydown.space="openSlideoutPanel">
-          <v-icon class="text-base-dark">info_outline</v-icon>
+          @keydown.space="openSlideoutPanel"
+        >
+          <ATATSVGIcon
+            name="infoOutline"
+            width="20"
+            height="20"
+            color="base-dark"
+          />
         </v-btn>
 
         <v-menu
@@ -56,7 +61,7 @@
               v-bind="attrs"
               v-on="on"
               id="MoreMenuButton"
-              class="_more-menu-button _header-button"
+              class="_more-menu-button _header-button _icon-only"
             >
               <v-icon class="text-base-dark">more_horiz</v-icon>
             </v-btn>
@@ -148,11 +153,11 @@ export default class PortfolioSummaryPageHead extends Vue {
   public showMembersModal = false;
   public showDrawer = false;
 
-  public openModal(): void {
+  public openModal():void {
     this.showMembersModal = true;
   }
 
-  public saveTitle(): void {
+  public saveTitle() {
     const obj ={
       title: this._title
     }
@@ -161,24 +166,26 @@ export default class PortfolioSummaryPageHead extends Vue {
   
   public async openSlideoutPanel(e: Event): Promise<void> {
     const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
-    if(!this.showDrawer || currentSlideoutComponent !== PortfolioDrawer){
+    if (e && e.currentTarget) {
+      e.preventDefault();
+      e.cancelBubble = true;
+    }
+
+    if (!this.showDrawer || currentSlideoutComponent !== PortfolioDrawer) {
       if (e && e.currentTarget) {
         const opener = e.currentTarget as HTMLElement;
         const slideoutPanelContent: SlideoutPanelContent = {
           component: PortfolioDrawer,
         }
         await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-
         this.showDrawer = true;
         SlideoutPanel.openSlideoutPanel(opener.id);
       }
-    }else {
+    } else {
       this.showDrawer = false
       SlideoutPanel.closeSlideoutPanel()
     }
-
   }
-
   public moveToInput(): void {
     const input = document.getElementById('HeaderTextField');
     if(input){

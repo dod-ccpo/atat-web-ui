@@ -356,6 +356,7 @@ export interface User {
   email?: string;
   role?: string;
 }
+
 export interface Portfolio {
   title?: string;
   description?: string;

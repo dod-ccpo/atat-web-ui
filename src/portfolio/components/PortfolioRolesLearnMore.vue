@@ -8,7 +8,7 @@
       be able to authenticate with a CAC to access ATAT.
     </p>
     <ul>
-      <li>
+      <li class="mb-2">
         <strong>Manager:</strong> In addition to viewing a portfolio’s reporting 
         data within the Funding Tracker, managers can edit all portfolio details. 
         This includes modifying task orders, adding new task orders, adding 

@@ -1,22 +1,14 @@
 <template>
-  <!-- <div  style="overflow: hidden;"> -->
-    <!-- <ATATSlideoutPanel v-if="panelContent">
-      <component :is="panelContent"></component>
-    </ATATSlideoutPanel> -->
   <div class="_dashboard bg-base-lightest">
-    <!-- <ATATPageHead :headline="projectTitle"  /> -->
     <v-container class="container-max-width bg-base-lightest">
       <v-row>
         <v-col>
-
           <div id="app-content" class="d-flex flex-column">
             <div class="mb-auto" style="padding-bottom: 80px;">
-
               <div class="d-flex justify-space-between width-100 mb-6">
                 <h2>Overview</h2>
                 <span class="text-base-dark">Last Sync: Nov. 15, 0100</span>
               </div>
-
               <v-row>
                 <v-col class="col-sm-6 col-md-8">
                   <v-card
@@ -297,7 +289,7 @@
                     </p>
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">
-                        <donut-chart
+                        <DonutChart
                           chart-id="SpendDonutChart"
                           :chart-data="donutChartData"
                           :chart-options="donutChartOptions"
@@ -575,8 +567,6 @@
       </v-row>
     </v-container>
   </div>
-  <!-- </div> -->
-
 </template>
 
 <script lang="ts">
@@ -1147,11 +1137,6 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async mounted(): Promise<void>{
-    // const slideoutPanelContent: SlideoutPanelContent = {
-    //   component: FinancialDataLearnMore,
-    //   title: "Learn More",
-    // }
-    // await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }
 
