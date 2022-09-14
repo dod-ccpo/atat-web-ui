@@ -70,24 +70,31 @@
 
           <v-list>
             <v-list-item
-              @click="openModal">
+              @click="openModal"
+              id="InviteMembers_MenuItem"
+            >
               <v-list-item-title
               >Invite members to portfolio
               </v-list-item-title>
             </v-list-item>
             <v-list-item
-              @click="moveToInput()">
+              @click="moveToInput()"
+              id="RenamePortfolio_MenuItem"            
+            >
               <v-list-item-title
               >Rename portfolio
               </v-list-item-title>
             </v-list-item>
-            <v-list-item>
+            <v-list-item
+              id="LeavePortfolio_MenuItem"            
+            >
               <v-list-item-title>
                 Leave this portfolio
               </v-list-item-title>
             </v-list-item>
             <v-list-item
-            :disabled="portfolioStatus.toLowerCase() !== 'expired'"
+              :disabled="portfolioStatus.toLowerCase() !== 'expired'"
+              id="ArchivePortfolio_MenuItem"            
             >
               <v-list-item-title>
                 Archive portfolio
@@ -95,6 +102,7 @@
             </v-list-item>
             <hr class="my-2" />
             <v-list-item
+              id="LoginToCSPConsole_MenuItem"            
             >
               <v-list-item-title
                 class="d-flex align-center"
