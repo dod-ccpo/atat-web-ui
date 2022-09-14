@@ -31,19 +31,17 @@ describe("Testing ATATTopNavBar Component", () => {
   });
 
   it("sets current user initials for profile menu", async () => {
-    await wrapper.setData({
-      currentUser: {
-        firstName: "Foo",
-        lastName: "Bar"
-      }
-    });
-    let initials = wrapper.vm.getUserInitials();
+    const currentUser ={
+      firstName: "Foo",
+      lastName: "Bar"
+    }
+    let initials = wrapper.vm.getUserInitials(currentUser);
     expect(initials).toEqual("FB");
 
     await wrapper.setData({
       currentUser: {}
     });
-    initials = wrapper.vm.getUserInitials();
+    initials = wrapper.vm.getUserInitials({});
     expect(initials).toEqual("XX");
 
   });
