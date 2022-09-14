@@ -45,7 +45,7 @@
         </div>
         <div class="d-flex justify-space-between align-center">
           <span id="CreatedByLabel">Created by</span>
-          <MemberCard id="CreatedBy" :member="portfolioMembers[0]" />
+          <MemberCard id="CreatedBy" :index="0" />
         </div>
       </div>
     </div>
@@ -85,7 +85,7 @@
       >
         <div class="d-flex flex-columm justify-space-between" 
         v-for="(member, index) in portfolioMembers" :key="member.email">
-          <MemberCard id="MemberName" :member="member" />
+          <MemberCard id="MemberName" :index="index" />
           <div>
             <ATATSelect
               :id="'Role' + index"
@@ -172,6 +172,7 @@ export default class PortfolioDrawer extends Vue {
   public provisionedTime = "";
   public updateTime = "";
   public csp = "";
+  public userOne:User = {}
 
   public showMembersModal = false;
   public showDeleteMemberDialog = false;
@@ -216,10 +217,17 @@ export default class PortfolioDrawer extends Vue {
     const storeData = await PortfolioData.getPortfolioData();
     if (storeData) {
       this.portfolio = storeData;
-      if (storeData.provisioned && storeData.updated && storeData.csp) {
+      if (
+        storeData.provisioned &&
+        storeData.updated &&
+        storeData.csp &&
+        storeData.members
+      ) {
         this.provisionedTime = this.formatDate(storeData.provisioned);
         this.updateTime = this.formatDate(storeData.updated);
         this.csp = storeData.csp;
+        this.userOne = storeData.members[0]
+
       }
       this.portfolioMembers = _.cloneDeep(storeData.members) || [];
     }

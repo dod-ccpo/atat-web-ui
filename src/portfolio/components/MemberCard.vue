@@ -37,7 +37,7 @@
             class="py-4 px-6"
           >
               <div class="_initials mr-2">
-                {{ getUserInitials() }}
+                {{ initials }}
               </div>
             <v-list-item-content class="ml-4">
               <v-list-item-title class="h3">
@@ -79,7 +79,7 @@
                   color="base-light"
                 />
                 <span class="font-size-14 ml-3">
-                  {{formatPhoneNumber()}}
+                  {{formattedPhone}}
                 </span>
               </div>
             </v-list-item-content>
@@ -95,27 +95,28 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { User } from "../../../types/Global";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import PortfolioData from "@/store/portfolio";
 @Component({
   components: {
     ATATSVGIcon
   }
 })
 export default class MemberCard extends Vue {
-  @Prop({required: true}) private member!: User;
-
-
-
-  public getUserInitials(): string {
-    const firstI = this.member.firstName?.charAt(0);
-    const lastI = this.member.lastName?.charAt(0);
+  @Prop({required: true}) private index!:number;
+  public member:User = {}
+  public initials = ""
+  public formattedPhone = ""
+  public getUserInitials(member:User): string {
+    const firstI = member.firstName?.charAt(0);
+    const lastI = member.lastName?.charAt(0);
     const initials = firstI && lastI
       ? firstI + lastI
       : "XX";
     return initials.toUpperCase();
   }
 
-  public formatPhoneNumber(): string {
-    const phoneNumberString = this.member?.phoneNumber
+  public formatPhoneNumber(member:User): string {
+    const phoneNumberString = member?.phoneNumber
     const cleaned = ('' + phoneNumberString).replace(/\D/g, '');
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
     if (match) {
@@ -123,6 +124,13 @@ export default class MemberCard extends Vue {
     }
     return "";
   }
-
+  public async mounted(): Promise<void> {
+    const storeData = await PortfolioData.getPortfolioData();
+    if(storeData.members){
+      this.member = storeData.members[this.index]
+      this.initials = this.getUserInitials(this.member)
+      this.formattedPhone = this.formatPhoneNumber(this.member)
+    }
+  }
 }
 </script>
