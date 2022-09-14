@@ -34,6 +34,7 @@
             <v-list-item
               v-for="(item, index) in moreMenuItems"
               :key="index"
+              :id="getIdText(item.title) + '_MenuItem'"
               @click="moreMenuClick(index)"
               :class="{active : item.title === activeAppSection}"
             >
@@ -52,6 +53,7 @@ import { Component, Prop } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";
+import { getIdText } from "@/helpers";
 
 @Component({})
 
@@ -66,6 +68,10 @@ export default class ATATPageHead extends Vue {
     await SlideoutPanel.closeSlideoutPanel()
     const selectedSection = this.moreMenuItems[index].title;
     AppSections.changeActiveSection(selectedSection);
+  }
+
+  private getIdText(string: string) {
+    return getIdText(string);
   }
 
 }

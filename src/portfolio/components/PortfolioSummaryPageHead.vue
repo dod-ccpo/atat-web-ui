@@ -28,6 +28,7 @@
             <v-tab
               v-for="tab in items"
               :key="tab"
+              :id="getIdText(tab) + '_Tab'"
               class="font-size-14 pa-1 pt-2  pb-5 mr-3">{{tab}}</v-tab>
 
           </v-tabs>
@@ -131,7 +132,7 @@ import PortfolioData from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { SlideoutPanelContent } from "../../../types/Global";
-
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
@@ -191,6 +192,10 @@ export default class PortfolioSummaryPageHead extends Vue {
     if(input){
       input.focus()
     }
+  }
+
+  private getIdText(string: string) {
+    return getIdText(string);
   }
 
 }

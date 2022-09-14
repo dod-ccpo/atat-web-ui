@@ -9,6 +9,8 @@ import {
 import { Component } from "vue";
 import rootStore from "./index";
 
+import SlideoutPanel from "@/store/slideoutPanel"; 
+
 @Module({
   name: "AppSectionsStore",
   namespaced: true,
@@ -63,6 +65,7 @@ export class AppSectionsStore extends VuexModule {
   @Mutation
   doSetAppContentComponent(contentComponent: Component): void {
     this.appContentComponent = contentComponent;
+    SlideoutPanel.closeSlideoutPanel();
   }
 
 }
