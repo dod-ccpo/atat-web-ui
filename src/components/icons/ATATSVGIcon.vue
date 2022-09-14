@@ -19,6 +19,7 @@ import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
+import CommentBubble from "@/components/icons/CommentBubble.vue";
 import ContactSupport from "@/components/icons/ContactSupport.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
@@ -54,6 +55,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     ChevronDown,
     ChevronRight,
     Close,
+    CommentBubble,
     ContactSupport,
     ControlPoint,
     Currency,

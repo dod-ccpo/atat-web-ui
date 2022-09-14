@@ -1,16 +1,39 @@
-._document-review{
-
-  .v-main__wrap{
+._document-review {
+  .v-main__wrap {
     padding: 40px 0px 0px 56px;
     display: flex;
 
-    #FormDiv{
+    #FormDiv {
       padding: 40px 0px 0px 12px
     }
+  }
 
-    #CommentsDiv{
-      width: 380px;
-      border-left: #acacac 1px solid;
+  ._slideout-panel {
+    color: $base-darkest !important;
+    .content-header {
+      padding: 24px;
+    }
+
+    .content-comments{
+      padding: 16px 24px;
+    }
+
+    .v-btn.link-button {
+      padding: 0px !important;
+    }
+    .comment-button{
+      height: 36px !important;
+      width: 36px !important;
+      border: 1px solid $base-lighter;
+     
+    }
+
+    dl{
+      display:flex;
+      align-items: start;
+      dt{
+        margin-right: 16px;
+      }
     }
   }
 }

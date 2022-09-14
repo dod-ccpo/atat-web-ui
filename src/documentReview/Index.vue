@@ -1,7 +1,7 @@
 <template>
 
 
-  <div style="">
+  <div class="_document-review">
     
     <ATATSlideoutPanel 
         v-if="panelContent"
@@ -10,7 +10,7 @@
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
 
-    <v-main class="_document-review bg-base-off-white">
+    <v-main class="bg-base-off-white">
       <div class="mainDiv">
         <v-breadcrumbs
           class="pa-0 mb-3"
