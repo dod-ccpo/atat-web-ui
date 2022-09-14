@@ -43,7 +43,6 @@
               <v-list-item-title class="h3">
                 {{member.firstName}} {{member.lastName}}
               </v-list-item-title>
-              <v-list-item-title class="font-size-14">{{member.title}}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <hr class="my-0" />
@@ -85,7 +84,7 @@
                 <span class="pl-1 font-size-14">{{member.phoneExt}}</span>
               </div>
               <div
-                class="d-flex align-center mt-3"
+                class="d-flex mt-3"
                 v-if="member.serviceAgency"
               >
                 <ATATSVGIcon
@@ -99,7 +98,7 @@
                 </span>
               </div>
               <div
-                class="d-flex align-center mt-3"
+                class="d-flex mt-3"
                 v-if="member.designation"
               >
                 <ATATSVGIcon
