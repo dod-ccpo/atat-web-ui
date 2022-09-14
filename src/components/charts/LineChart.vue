@@ -5,7 +5,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Chart, { ChartData } from "chart.js/auto";
+import Chart, { ChartData, LineController, LineElement } from "chart.js/auto";
 
 @Component({})
 export default class LineChart extends Vue {
@@ -16,6 +16,7 @@ export default class LineChart extends Vue {
   @Prop({ required: false }) public toggleDataset!: boolean;
   @Prop({ required: false, default: false }) public hasProjected?: boolean;
   @Prop({ required: false }) public tooltipHeaderData!: Record<string, string>;
+  
   private myChart: Chart | null = null;
 
   @Watch("chartData", { deep: true })
@@ -63,34 +64,43 @@ export default class LineChart extends Vue {
     },
   };
 
-  private mounted() {
+  private async mounted(): Promise<void> {
     const toolTipExternalOptions = {
       enabled: false,
       position: "nearest",
       external: this.externalTooltipHandler,
     };
+    
+    Chart.register(
+      LineElement,
+      LineController,
+    )
     this.chartOptions.plugins.tooltip = toolTipExternalOptions;
-    this.createChart();
+    await this.createChart();
   }
 
-  public createChart(): void {
+  public async createChart(): Promise<void> {
+    console.log("createChart() - LINE CHART - id:", this.chartId);
+
     if (this.chartId) {
-      console.log("LINE CHART chartId", this.chartId);
+      console.log("LINE CHART if (this.chartId)", this.chartId);
       // console.log("myChart PRE new Chart", this.myChart);
-      const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
+
       if (this.myChart != null) {
         console.log("DESTROY LINE CHART " + this.chartId)
         this.myChart.destroy();
-      }
-      console.log("ctx!!!!!!!!", ctx); // THIS IS NULL! JEST TEST FAILING
+      } 
+      const ctx = await document.getElementById(this.chartId) as HTMLCanvasElement;
+      console.log("ctx!!!!!!!!", ctx); // in JEST this IS NULL
+      
       this.myChart = new Chart(ctx, {
         type: "line",
         data: this.chartData,
         options: this.chartOptions,
         plugins: [this.currentMonthLine],
       });
-      // console.log("myChart POST new Chart", this.myChart);
-
+      console.log("myChart LINE - POST new Chart", this.myChart);
+      console.log("myChart LINE - POST new Chart ID", this.myChart.id);
     }
   }
 

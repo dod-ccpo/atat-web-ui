@@ -5,7 +5,9 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Chart, { ChartData, ChartOptions } from "chart.js/auto";
+import Chart, { 
+  ChartData, ChartOptions, DoughnutController, DoughnutDataPoint 
+} from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { toCurrencyString } from "@/helpers";
 
@@ -41,6 +43,9 @@ export default class DonutChart extends Vue {
         position: "nearest",
         external: this.externalTooltipHandler,
       };
+      Chart.register(
+        DoughnutController,
+      )
 
       this.chartOptions.plugins.tooltip = toolTipExternalOptions;
     }
@@ -69,6 +74,9 @@ export default class DonutChart extends Vue {
         options: this.chartOptions,
         plugins: plugins,
       });
+      console.log("myChart DONUT - POST new Chart", this.myChart);
+      console.log("myChart DONUT - POST new Chart ID", this.myChart.id);
+
     }
   }
 

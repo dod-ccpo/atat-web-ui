@@ -120,7 +120,7 @@
                         Current Period: {{ popStart }}&ndash;{{ popEnd }}
                       </v-col>
                     </v-row>
-                    <!-- <LineChart
+                    <LineChart
                       chart-id="LineChart1"
                       ref="lineChart"
                       :chart-data="burnChartData"
@@ -129,7 +129,7 @@
                       :toggle-dataset="toggleDataset"
                       :tooltipHeaderData="tooltipHeaderData"
                       :hasProjected="true"
-                    /> -->
+                    />
                     <div class="d-block text-center">
                       <v-radio-group
                         row
@@ -289,7 +289,7 @@
                     </p>
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">
-                        <DonutChart
+                        <!-- <DonutChart
                           chart-id="SpendDonutChart"
                           :chart-data="donutChartData"
                           :chart-options="donutChartOptions"
@@ -299,7 +299,7 @@
                           :amount="totalPortfolioFunds"
                           :individualAmtsArr="portfolioFundsObj"
 
-                        />
+                        /> -->
                       </v-col>
                       <v-col class="col-sm-6 d-flex align-center">
                         <div class="width-100">
