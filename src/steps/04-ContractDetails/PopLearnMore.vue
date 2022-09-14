@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_panel-padding">
     <h2 class="mb-5">
       Understanding Periods of Performance (PoP) for task orders on the JWCC contract
     </h2>

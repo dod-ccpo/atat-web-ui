@@ -36,8 +36,8 @@ import PortfolioSummaryPageHead from "@/portfolio/components/PortfolioSummaryPag
 import CSPPortalAccess from "@/portfolio/CSPPortalAccess.vue";
 import FundingTracker from "@/portfolio/FundingTracker.vue";
 import TaskOrder from "@/portfolio/TaskOrder.vue";
-import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
-import { SlideoutPanelContent } from "../../types/Global";
+// import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
+// import { SlideoutPanelContent } from "../../types/Global";
 import PortfolioData from "@/store/portfolio";
 
 @Component({
@@ -77,11 +77,11 @@ export default class PortfolioSummary extends Vue {
     }
   }
   public async mounted(): Promise<void>{
-    const slideoutPanelContent: SlideoutPanelContent = {
-      component: PortfolioDrawer,
-      title: "Learn More",
-    }
-    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    // const slideoutPanelContent: SlideoutPanelContent = {
+    //   component: PortfolioDrawer,
+    //   title: "Learn More",
+    // }
+    // await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }
 }

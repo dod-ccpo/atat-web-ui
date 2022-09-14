@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_panel-padding">
     <h2 class="mb-5">
       JWCC offerings for cloud services and support services
     </h2>

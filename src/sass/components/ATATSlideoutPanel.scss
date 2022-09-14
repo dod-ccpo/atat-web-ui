@@ -1,4 +1,8 @@
 ._slideout-panel {
+  .v-navigation-drawer__content {
+    overflow-y: hidden;
+    overflow-x: hidden;
+  }
   ._panel-title {
     font-weight: 700;
     font-size: 14px;
@@ -23,58 +27,71 @@
   }
   
   ._panel-content-wrap {
-    padding: 16px 16px 24px;
-    overflow-y: scroll;
-    max-height: calc(100vh - 60px);
+    // padding: 16px 16px 24px;
+    // padding: 0;
+    overflow-y: auto;
+    max-height: calc(100vh - 120px); // EJY this needs to vary?
+    height: calc(100vh - 120px); // EJY this needs to vary?
   }
-._portfolio-drawer {
-  font-size: 14px !important;
-  ._portfolio-panel {
-    padding: 16px 24px 0px;
-    ._drawer-text-area {
-      border-radius: 4px;
-      border: 1px solid transparent;
-      outline: 1px solid transparent;
-      &:hover{
+
+  ._panel-padding {
+    padding: 24px;
+  }
+
+  ._portfolio-drawer {
+    font-size: 14px !important;
+
+    // ._portfolio-panel {
+    //   padding: 16px 24px 0px;
+
+      ._drawer-text-area {
         border-radius: 4px;
-        border: 1px solid $base-lighter;
+        border: 1px solid transparent;
+        outline: 1px solid transparent;
+        &:hover{
+          border-radius: 4px;
+          border: 1px solid $base-lighter;
+        }
 
-      }
-      &.v-input--is-focused{
-        border-radius: 4px;
-        border: 1px solid $primary;
-        outline: 1px solid $primary;
+        &.v-input--is-focused{
+          border-radius: 4px;
+          border: 1px solid $primary;
+          outline: 1px solid $primary;
 
+        }
+
+        .v-input__slot {
+          font-size: 14px !important;
+          padding: 2px;
+          &::before {
+            display: none
+          }
+          &::after {
+            display: none
+          }
+
+          .v-text-field input {
+            padding
+            : 0px;
+          }
+          textarea {
+            padding-top: 0px;
+          }
+        }
       }
-      .v-input__slot {
-        font-size: 14px !important;
-        padding: 2px;
-        &::before {
-          display: none
-        }
-        &::after {
-          display: none
-        }
-        .v-text-field input {
-          padding: 0px;
-        }
-        textarea {
-          padding-top: 0px;
+
+      ._text-link {
+        text-decoration: underline;
+        color: $primary !important;
+        &:hover {
+          cursor: pointer;
         }
       }
-    }
-    ._text-link {
-      text-decoration: underline;
-      color: $primary !important;
-      &:hover {
-        cursor: pointer;
-      }
+    // }
+
+    hr {
+      z-index: auto;
     }
   }
-
-  hr {
-    z-index: auto;
-  }
-}
 
 }

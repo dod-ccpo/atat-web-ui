@@ -1,7 +1,7 @@
 <template>
   <div class="_portfolio-drawer">
-    <div id="AboutPortfolioSection" class="_portfolio-panel">
-      <h3 id="AboutSectionHeader" class="mb-4 mt-6">About Portfolio</h3>
+    <div id="AboutPortfolioSection" class="_portfolio-panel _panel-padding">
+      <h3 id="AboutSectionHeader" class="mb-4">About Portfolio</h3>
       <div>
         <v-textarea
           id="DrawerTextArea"
@@ -49,9 +49,10 @@
         </div>
       </div>
     </div>
-    <hr class="my-8" />
 
-    <div id="PortfolioMembersSection" class="px-6">
+    <hr class="my-0" />
+
+    <div id="PortfolioMembersSection" class="_portfolio-panel _panel-padding">
       <div
         id="PortfolioMembersHeader"
         class="d-flex flex-columm justify-space-between"
@@ -98,14 +99,14 @@
               iconType="chevron"
               @onChange="(value)=>onSelectedMemberRoleChanged(value, index)"
             />
-              <!-- :returnObject="true" -->
           </div>
         </div>
       </div>
     </div>
 
-    <hr class="mb-4" />
-    <div id="DatesSection" class="_portfolio-panel pt-0">
+    <hr class="my-0" />
+
+    <div id="DatesSection" class="_portfolio-panel _portfolio-panel _panel-padding">
       <div>
         <span id="ProvisionedOnLabel">Provisioned on&nbsp;</span>
         <span id="ProvisionedOnDate">{{ provisionedTime }}</span>
@@ -150,12 +151,13 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import PortfolioData from "@/store/portfolio";
 import { format, parseISO } from "date-fns";
-import { Portfolio, SelectData } from "types/Global";
+import { Portfolio, SelectData, SlideoutPanelContent, User } from "types/Global";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
-import { User } from "../../../types/Global";
+import PortfolioRolesLearnMore from "@/portfolio/components/PortfolioRolesLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import _ from "lodash";
 
@@ -165,6 +167,7 @@ import _ from "lodash";
     ATATSVGIcon,
     ATATSelect,
     AddMembersModal,
+    PortfolioRolesLearnMore,
   },
 })
 export default class PortfolioDrawer extends Vue {
@@ -267,8 +270,16 @@ export default class PortfolioDrawer extends Vue {
           this.deleteMemberIndex = index;
           this.showDeleteMemberDialog = true;         
         } else if (val === "AboutRoles") {
-          alert("open slideout in future ticket")
+
+          // alert("open slideout in future ticket")
           // Open the slideout panel -- future ticket
+
+          const panelContent: SlideoutPanelContent = {
+            component: PortfolioRolesLearnMore,
+            title: "Learn More",
+          }
+          SlideoutPanel.setSlideoutPanelComponent(panelContent);
+
         }
       }
     }

@@ -130,7 +130,7 @@ export interface Checkbox {
 
 export interface SlideoutPanelContent {
   component: Component;
-  title: string | undefined;
+  title?: string;
 }
 
 export interface CountryObj {

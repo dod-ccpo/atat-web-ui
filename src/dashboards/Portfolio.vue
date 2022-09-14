@@ -1,10 +1,10 @@
 <template>
-  <div  style="overflow: hidden;">
-    <ATATSlideoutPanel v-if="panelContent">
+  <!-- <div  style="overflow: hidden;"> -->
+    <!-- <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
-    </ATATSlideoutPanel>
-  <v-main class="_dashboard bg-base-lightest">
-    <ATATPageHead :headline="projectTitle"  />
+    </ATATSlideoutPanel> -->
+  <div class="_dashboard bg-base-lightest">
+    <!-- <ATATPageHead :headline="projectTitle"  /> -->
     <v-container class="container-max-width bg-base-lightest">
       <v-row>
         <v-col>
@@ -574,8 +574,8 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-main>
   </div>
+  <!-- </div> -->
 
 </template>
 
@@ -983,9 +983,15 @@ export default class PortfolioDashboard extends Vue {
     this.burnChartData.datasets = burnChartDataSets;
     return;
   }
-  public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
+  public async openSlideoutPanel(e: Event): Promise<void> {
+    if (e && e.currentTarget) {    
       const opener = e.currentTarget as HTMLElement;
+      const slideoutPanelContent: SlideoutPanelContent = {
+        component: FinancialDataLearnMore,
+        title: "Learn More",
+      }
+      await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
   }
@@ -1141,11 +1147,11 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async mounted(): Promise<void>{
-    const slideoutPanelContent: SlideoutPanelContent = {
-      component: FinancialDataLearnMore,
-      title: "Learn More",
-    }
-    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    // const slideoutPanelContent: SlideoutPanelContent = {
+    //   component: FinancialDataLearnMore,
+    //   title: "Learn More",
+    // }
+    // await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }
 

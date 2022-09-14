@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_panel-padding">
     <h2 class="mb-5">What is G-Invoicing?</h2>
     <p>
       Government Invoicing (G-Invoicing) is a Fiscal Service application used by Federal Program
