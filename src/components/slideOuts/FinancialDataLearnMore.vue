@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_panel-padding">
     <h2 class="mb-5">About ATAT Funding Tracker</h2>
     <p>
       Each portfolio has a Funding Tracker to help Mission Owners and Contracting Officer's

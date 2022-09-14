@@ -5,6 +5,7 @@
     flat
     class="_atat-page-header _portfolio-summary"
     clipped-right
+    height="83"
   >
     <div class=" d-flex justify-space-between width-100 align-center">
 
@@ -27,6 +28,7 @@
             <v-tab
               v-for="tab in items"
               :key="tab"
+              :id="getIdText(tab) + '_Tab'"
               class="font-size-14 pa-1 pt-2  pb-5 mr-3">{{tab}}</v-tab>
 
           </v-tabs>
@@ -34,18 +36,23 @@
       </div>
       <div class="d-flex justify-end align-center">
         <v-btn
-          icon
-          class="mr-2 icon-24 _header-button"
+          class="_icon-only mr-2"
           id="Info_Button"
           @click="openSlideoutPanel"
           @keydown.enter="openSlideoutPanel"
-          @keydown.space="openSlideoutPanel">
-          <v-icon class="text-base-dark">info_outline</v-icon>
+          @keydown.space="openSlideoutPanel"
+        >
+          <ATATSVGIcon
+            name="infoOutline"
+            width="20"
+            height="20"
+            color="base-dark"
+          />
         </v-btn>
 
         <v-menu
           :offset-y="true"
-          nudge-left="240"
+          left
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
@@ -55,7 +62,7 @@
               v-bind="attrs"
               v-on="on"
               id="MoreMenuButton"
-              class="_more-menu-button _header-button"
+              class="_more-menu-button _header-button _icon-only"
             >
               <v-icon class="text-base-dark">more_horiz</v-icon>
             </v-btn>
@@ -63,24 +70,31 @@
 
           <v-list>
             <v-list-item
-              @click="openModal">
+              @click="openModal"
+              id="InviteMembers_MenuItem"
+            >
               <v-list-item-title
               >Invite members to portfolio
               </v-list-item-title>
             </v-list-item>
             <v-list-item
-              @click="moveToInput()">
+              @click="moveToInput()"
+              id="RenamePortfolio_MenuItem"            
+            >
               <v-list-item-title
               >Rename portfolio
               </v-list-item-title>
             </v-list-item>
-            <v-list-item>
+            <v-list-item
+              id="LeavePortfolio_MenuItem"            
+            >
               <v-list-item-title>
                 Leave this portfolio
               </v-list-item-title>
             </v-list-item>
             <v-list-item
-            :disabled="portfolioStatus.toLowerCase() !== 'expired'"
+              :disabled="portfolioStatus.toLowerCase() !== 'expired'"
+              id="ArchivePortfolio_MenuItem"            
             >
               <v-list-item-title>
                 Archive portfolio
@@ -88,6 +102,7 @@
             </v-list-item>
             <hr class="my-2" />
             <v-list-item
+              id="LoginToCSPConsole_MenuItem"            
             >
               <v-list-item-title
                 class="d-flex align-center"
@@ -118,9 +133,14 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
 import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
+import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
+
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+
+import { SlideoutPanelContent } from "../../../types/Global";
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
@@ -137,11 +157,10 @@ export default class PortfolioSummaryPageHead extends Vue {
   @PropSync("value") private _selectedTab!: number ;
   @PropSync("title") private _title!: string;
 
-
-
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public showMembersModal = false;
+  public showDrawer = false;
 
   public openModal():void {
     this.showMembersModal = true;
@@ -153,26 +172,38 @@ export default class PortfolioSummaryPageHead extends Vue {
     }
     PortfolioData.setPortfolioData(obj)
   }
+  
+  public async openSlideoutPanel(e: Event): Promise<void> {
+    const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
+    if (e && e.currentTarget) {
+      e.preventDefault();
+      e.cancelBubble = true;
+    }
 
-  public showDrawer = false
-  public openSlideoutPanel(e: Event): void {
-    if(!this.showDrawer ){
+    if (!this.showDrawer || currentSlideoutComponent !== PortfolioDrawer) {
       if (e && e.currentTarget) {
         const opener = e.currentTarget as HTMLElement;
+        const slideoutPanelContent: SlideoutPanelContent = {
+          component: PortfolioDrawer,
+        }
+        await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
         this.showDrawer = true;
         SlideoutPanel.openSlideoutPanel(opener.id);
       }
-    }else {
+    } else {
       this.showDrawer = false
       SlideoutPanel.closeSlideoutPanel()
     }
-
   }
-  public moveToInput() {
+  public moveToInput(): void {
     const input = document.getElementById('HeaderTextField');
     if(input){
       input.focus()
     }
+  }
+
+  private getIdText(string: string) {
+    return getIdText(string);
   }
 
 }

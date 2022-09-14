@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_panel-padding">
     <h2 class="mb-5">Understanding Business Associate Agreements (BAA)</h2>
     <h3 class="mb-4">What is a business associate?</h3>
     <p> 

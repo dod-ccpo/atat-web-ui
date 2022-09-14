@@ -4,7 +4,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
 import PortfolioData from "@/store/portfolio";
-import { User } from "types/Global";
+import { SelectData, User } from "types/Global";
 Vue.use(Vuetify);
 
 describe("Testing Portfolio Drawer component", () => {
@@ -136,6 +136,20 @@ describe("Testing Portfolio Drawer component", () => {
       currentNumberOfMembers - 1
     )
   })
+
+  it(`getMemberMenuItems() - changes menu item from "Remove from portfolio" to
+    "Leave this portfolio" for current user`, async() => {
+    await wrapper.setData({
+      currentUser: {
+        email: "foo@mail.mil"
+      }
+    });
+    const member = { email: "foo@mail.mil" }
+    const menuItems: SelectData[] = wrapper.vm.getMemberMenuItems(member);
+    const removeIdx = menuItems.findIndex(obj => obj.value === "Remove");
+    const removeMenuItem = menuItems[removeIdx];
+    expect(removeMenuItem.text).toBe("Leave this portfolio");
+  });
 
   describe("getTag function with different inputs",()=> {
 

@@ -33,6 +33,7 @@
         :style="'width: ' + width + 'px'"
         :rules="rules"
         :menu-props="{ bottom: true, offsetY: true }"
+        :disabled="menuDisabled"
       >
         <template v-slot:item="{ item, on }">
           <v-list-item 
@@ -114,6 +115,7 @@ export default class ATATSelect extends Vue {
   @Prop({ default: "" }) private width!: string;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: "standard" }) public iconType?: string;
+  @Prop({ default: false }) private menuDisabled?: boolean;
 
   //data
   private rounded = false;

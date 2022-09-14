@@ -130,7 +130,7 @@ export interface Checkbox {
 
 export interface SlideoutPanelContent {
   component: Component;
-  title: string;
+  title?: string;
 }
 
 export interface CountryObj {
@@ -347,6 +347,7 @@ export interface User {
   email?: string;
   role?: string;
 }
+
 export interface Portfolio {
   title?: string;
   description?: string;

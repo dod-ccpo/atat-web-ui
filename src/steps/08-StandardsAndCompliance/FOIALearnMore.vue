@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_panel-padding">
     <h2 class="mb-5">Understanding the Freedom of Information Act (FOIA)</h2>
     <p> 
       Since 1967, the FOIA has provided the public the right to request access to records 
