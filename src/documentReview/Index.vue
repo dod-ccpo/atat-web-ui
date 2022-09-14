@@ -1,18 +1,10 @@
 <template>
   <div class="_document-review">
-    <ATATSlideoutPanel
-      v-if="isForm"
-      :alwaysOpen="true"
-      :showHeader="false"
-    >
+    <ATATSlideoutPanel v-if="isForm" :alwaysOpen="true" :showHeader="false">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
-    <div class="_document-review">
-      <v-main class="bg-base-off-white">
-        <div class="mainDiv">
-          <router-view></router-view>
-        </div>
-      </v-main>
+    <div class="bg-base-off-white main-div">
+       <router-view></router-view>
     </div>
   </div>
 </template>
@@ -35,14 +27,29 @@ import { Component } from "vue-property-decorator";
   },
 })
 export default class DocumentReview extends Vue {
+  
+  private docTitle = "Requirements Checklist";
 
   get isForm(): boolean {
-    return this.$route.path.toLowerCase().indexOf('form') > 0 
+    return this.$route.path.toLowerCase().indexOf("form") > 0;
   }
-  
+
   private docReviewRoutes = [
-    { path: "/docReviewForm", component: Form },
-    { path: "/docReviewPreview", component: Preview },
+    { 
+      path: "/docReviewForm", 
+      component: Form, 
+      name: "docReviewForm",
+      props: {
+        docTitle: this.docTitle
+      }},
+    { 
+      path: "/docReviewPreview", 
+      component: Preview, 
+      name: "docReviewPreview",
+      props: {
+        docTitle: this.docTitle
+      },
+    },
   ];
 
   private get panelContent() {
@@ -57,7 +64,7 @@ export default class DocumentReview extends Vue {
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     SlideoutPanel.openSlideoutPanel("");
     this.$router.addRoutes(this.docReviewRoutes);
+    this.$router.push("docReviewForm");
   }
-
 }
 </script>

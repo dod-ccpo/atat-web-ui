@@ -5,34 +5,35 @@
       :items="breadCrumbItems"
       divider="-"
     ></v-breadcrumbs>
-    <h1>Requirements Checklist</h1>
+    <h1>{{ docTitle }}</h1>
   </div>
 </template>
 
 <script lang="ts">
 import { BreadCrumbItem } from "types/Global";
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 
 @Component({})
 export default class DocReviewHead extends Vue {
-     public breadCrumbItems: BreadCrumbItem[] = [
-       {
-         text: "Acquisitions",
-         disabled: false,
-         href: "#",
-       },
-       {
-         text: "Demo Package",
-         disabled: false,
-         href: "#",
-       },
-       {
-         text: "Requirements Checklist",
-         disabled: true,
-         href: "#",
-       },
-     ];
+    @Prop({ default: "" }) private docTitle!: string;
+    public breadCrumbItems: BreadCrumbItem[] = [
+      {
+        text: "Acquisitions",
+        disabled: false,
+        href: "#",
+      },
+      {
+        text: "Demo Package",
+        disabled: false,
+        href: "#",
+      },
+      {
+        text: "Requirements Checklist",
+        disabled: true,
+        href: "#",
+      },
+    ];
 }
 </script>
