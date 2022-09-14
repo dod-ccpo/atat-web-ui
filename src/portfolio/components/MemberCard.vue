@@ -80,7 +80,7 @@
                 <span class="font-size-14 ml-3">
                   {{formattedPhone}}
                 </span>
-                <span class="pl-4 font-size-14">Ext.</span>
+                <span class="pl-4 font-size-14" v-if="member.phoneExt">Ext.</span>
                 <span class="pl-1 font-size-14">{{member.phoneExt}}</span>
               </div>
               <div
@@ -120,7 +120,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-
+import { getUserInitials } from "../../helpers/index"
 import { Component, Prop } from "vue-property-decorator";
 import { User } from "../../../types/Global";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -138,12 +138,7 @@ export default class MemberCard extends Vue {
   public emailLink = ""
 
   public getUserInitials(member:User): string {
-    const firstI = member.firstName?.charAt(0);
-    const lastI = member.lastName?.charAt(0);
-    const initials = firstI && lastI
-      ? firstI + lastI
-      : "XX";
-    return initials.toUpperCase();
+    return getUserInitials(member)
   }
 
   public formatPhoneNumber(member:User): string {
