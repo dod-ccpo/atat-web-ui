@@ -10,7 +10,15 @@
         />
       </div>
       <div>
-        <h3>Accessing your {{cloudServiceProvider}}</h3>
+        <h3>Accessing your {{title[cloudServiceProvider]}}:</h3>
+        <div class="d-flex align-center">
+          <a>
+            {{link[cloudServiceProvider]}}
+          </a>
+          <span class="pl-2 d-flex">
+            <ATATSVGIcon width="15" height="15" name="launch" color="primary"/>
+          </span>
+        </div>
       </div>
 
     </div>
@@ -30,9 +38,19 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 export default class CSPCard extends Vue {
   @Prop() private cloudServiceProvider!: string;
 
-  // public getTitle(): string{
-  //
-  // }
+  public title = {
+    "Azure": "Azure Portal",
+    "AWS": "AWS Management Console",
+    "Google Cloud": "Google Cloud Console",
+    "Oracle Cloud": "Oracle Cloud Console"
+  }
+
+  public link = {
+    "Azure": "https://portal.azure.com/abc123",
+    "AWS": "https://signin.amazonaws-us-gov.com",
+    "Google Cloud": "https://console.cloud.google.com",
+    "Oracle Cloud": "https://console.oraclecloud.com"
+  }
 
 
 

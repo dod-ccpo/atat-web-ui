@@ -11,7 +11,6 @@ import Vue from "vue";
 
 import { Component, Prop } from "vue-property-decorator";
 import CSPCard from "@/portfolio/components/CSPCard.vue";
-import { Portfolio } from "../../types/Global";
 @Component({
   components: {
     CSPCard,
