@@ -18,7 +18,10 @@
       >
           <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
           <TaskOrder v-if="tabItems[tabIndex] === 'Task Orders'"/>
-          <CSPPortalAccess v-if="tabItems[tabIndex] === 'CSP Portal Access'" />
+          <CSPPortalAccess
+            v-if="tabItems[tabIndex] === 'CSP Portal Access'"
+            :portfolioCSP="portfolioCSP"
+          />
       </v-container>
       <ATATFooter/>
 
@@ -65,6 +68,7 @@ export default class PortfolioSummary extends Vue {
   public title = ""
   public portfolioStatus = ""
   public portfolioDescription = ""
+  public portfolioCSP = ""
 
   public async loadOnEnter(): Promise<void>  {
     // grab data from store
@@ -74,6 +78,7 @@ export default class PortfolioSummary extends Vue {
       this.title = portfolio.title || "";
       this.portfolioStatus = portfolio.status || "";
       this.portfolioDescription = portfolio.description || "";
+      this.portfolioCSP = portfolio.csp || "";
     }
   }
   public async mounted(): Promise<void>{
