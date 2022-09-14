@@ -40,6 +40,7 @@ import Phone from "@/components/icons/Phone.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
 import Remove from "@/components/icons/Remove.vue";
 import Search from "@/components/icons/Search.vue";
+import Service from "@/components/icons/Service.vue";
 import SignOut from "@/components/icons/SignOut.vue";
 import Support from "@/components/icons/Support.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
@@ -77,6 +78,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     PlusSign,
     Remove,
     Search,
+    Service,
     SignOut,
     Support,
     TriangleUp,
