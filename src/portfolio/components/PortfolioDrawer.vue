@@ -37,15 +37,15 @@
             </div>
           </div>
         </div>
-        <div class="d-flex justify-space-between pb-4">
+        <div class="d-flex justify-space-between pb-2">
           <span id="ServiceAgencyLabel">Service/Agency</span>
           <div id="ServiceAgency">
             {{ portfolio.serviceAgency }}
           </div>
         </div>
-        <div class="d-flex justify-space-between">
+        <div class="d-flex justify-space-between align-center">
           <span id="CreatedByLabel">Created by</span>
-          <div id="CreatedBy" class="_text-link">Maria Missionowner</div>
+          <MemberCard id="CreatedBy" :member="portfolioMembers[0]" />
         </div>
       </div>
     </div>
@@ -85,9 +85,7 @@
       >
         <div class="d-flex flex-columm justify-space-between" 
         v-for="(member, index) in portfolioMembers" :key="member.email">
-          <a  class="pt-1" id="MemberName" role="button">
-            {{ displayName(member) }}
-          </a>
+          <MemberCard id="MemberName" :member="member" />
           <div>
             <ATATSelect
               :id="'Role' + index"
@@ -158,6 +156,7 @@ import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
 import { User } from "../../../types/Global";
 
 import _ from "lodash";
+import MemberCard from "@/portfolio/components/MemberCard.vue";
 
 @Component({
   components: {
@@ -165,6 +164,7 @@ import _ from "lodash";
     ATATSVGIcon,
     ATATSelect,
     AddMembersModal,
+    MemberCard,
   },
 })
 export default class PortfolioDrawer extends Vue {

@@ -346,6 +346,8 @@ export interface User {
   lastName?: string;
   email?: string;
   role?: string;
+  phoneNumber?: string;
+  title?:string;
 }
 export interface Portfolio {
   title?: string;

@@ -71,10 +71,46 @@
       }
     }
   }
-
-  hr {
-    z-index: auto;
-  }
 }
 
+}
+._member-card {
+  width: 360px;
+  .v-list {
+    padding: 0px !important;
+    .v-list-item {
+      //padding: 12px 24px;
+      .v-list-item__content {
+        padding: 0px;
+
+      }
+      ._initials {
+        width: 48px;
+        height: 48px;
+        line-height: 48px;
+        text-align: center;
+        border-radius: 50%;
+        background-color: $primary-lighter;
+        font-size: 1.6rem !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: $base-darker;
+      }
+    }
+  }
+}
+._member-button {
+  &.v-btn {
+    padding: 0px !important;
+    padding-left: 4px !important;
+    span{
+      color: $primary !important;
+      text-decoration: underline !important;
+      font-weight: normal;
+      opacity: 1 !important;
+    }
+    &:hover {
+      background-color: transparent !important;
+    }
+  }
 }

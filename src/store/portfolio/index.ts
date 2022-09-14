@@ -58,7 +58,9 @@ export class PortfolioDataStore extends VuexModule {
         firstName:"Maria",
         lastName: "Missionowner",
         email:"maria.missionowner@mail.mil",
-        role: "Manager"
+        role: "Manager",
+        phoneNumber:"5555555555",
+        title: "optional title"
       }],
       updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
     }
