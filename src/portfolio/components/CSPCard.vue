@@ -3,6 +3,7 @@
     <div class="d-flex pa-8">
       <div class="pr-6">
         <ATATSVGIcon
+          id="CSPIcon"
           class="d-flex align-center"
           :name="providers[cloudServiceProvider].img.name"
           :width="providers[cloudServiceProvider].img.width"
@@ -12,13 +13,14 @@
       </div>
       <div>
         <div>
-          <h3>Accessing your {{providers[cloudServiceProvider].title}}:</h3>
+          <h3 id="CSPTitle">Accessing your {{providers[cloudServiceProvider].title}}:</h3>
           <div class="d-flex align-center">
-            <a>
+            <a id="CSPLink">
               {{providers[cloudServiceProvider].link}}
             </a>
             <span class="pl-2 d-flex">
             <ATATSVGIcon
+              id="LinkIcon"
               width="15"
               height="15"
               name="launch"
@@ -32,10 +34,11 @@
         <div>
           <p
             class="font-size-14 mb-0 text-base"
+            id="CSPDescription"
           >
             {{providers[cloudServiceProvider].description}}
 
-            <a>
+            <a id="LearnMoreLink">
               Learn more about accessing your CSP portal
             </a>
           </p>
