@@ -38,7 +38,6 @@ describe("Testing index Component", () => {
   });
 
   it("get isForm() - set route so that isForm===true", async () => {
-    wrapper.vm.$router.replace("/docReviewForm");
     expect(wrapper.vm.isForm).toBe(true);
   });
 
@@ -48,7 +47,6 @@ describe("Testing index Component", () => {
   });
 
   it("get panelContent() - ensure panelContent returns component", async () => {
-    wrapper.vm.$router.replace("/docReviewForm");
     const loadedComponent = await wrapper.vm.panelContent as Vue.Component;
     expect(loadedComponent.name).toBe("CommentsPanel");
   });

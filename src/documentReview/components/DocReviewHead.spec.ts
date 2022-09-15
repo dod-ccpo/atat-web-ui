@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import header  from "@/documentReview/components/DocReviewHead.spec";
+import header  from "@/documentReview/components/DocReviewHead.vue";
 Vue.use(Vuetify);
 
 describe("Testing index Component", () => {

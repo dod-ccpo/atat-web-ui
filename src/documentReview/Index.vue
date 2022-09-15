@@ -63,8 +63,12 @@ export default class DocumentReview extends Vue {
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     SlideoutPanel.openSlideoutPanel("");
-    this.$router.addRoutes(this.docReviewRoutes);
-    this.$router.push("docReviewForm");
+    this.docReviewRoutes.forEach((route)=>{
+      this.$router.addRoute(route);
+    })
+    if (!this.isForm){
+      this.$router.push("docReviewForm");
+    }
   }
 }
 </script>
