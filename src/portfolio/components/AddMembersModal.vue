@@ -7,16 +7,19 @@
     width="632"
     :OKDisabled="invalidEmailCount > 0 || !validEmailList.length"
     @ok="inviteMembers"
+    :modalSlideoutComponent="modalSlidoutComponent"
+    modalSlideoutTitle="Learn more about portfolio roles"
+    :modalDrawerIsOpen.sync="modalDrawerIsOpen"
   >
     <template #content>
       <p class="body">
         Use “.mil” or “.gov” email addresses to ensure people can authenticate with 
         a CAC to access your portfolio. 
-        <a id="LearnMoreLink" role="button">
+        <a id="LearnMoreLink" role="button" @click="openLearnMoreDrawer">
           Learn more about portfolio roles
         </a>
       </p>
-      <v-form class="d-flex" ref="form" v-model="formIsValid" lazy-validation>
+      <v-form class="d-flex mb-8 pb-8" ref="form" v-model="formIsValid" lazy-validation>
         <div id="inputWidthFaker" ref="inputWidthFaker"></div>
 
         <div style="flex-grow: 1;" class="mr-5">
@@ -94,6 +97,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import AddMembersModalLearnMore from "./AddMembersModalLearnMore.vue"
 
 import {
   EmailEntry,
@@ -114,6 +118,7 @@ import { generateRandomKey } from "@/helpers";
     ATATErrorValidation,
     ATATSelect,
     ATATTextArea,
+    AddMembersModalLearnMore,
   }
 })
 
@@ -128,7 +133,7 @@ export default class AddMembersModal extends Vue {
   public duplicatedEmail = "";
   /* eslint-disable-next-line */
   public emailRegex = /^(([^<>()[\]\\.,;:\s@\\"]+(\.[^<>()[\]\\.,;:\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\]\\.,;:\s@\\"]+\.)+[^<>()[\]\\.,;:\s@\\"]{2,})$/i;
-
+  public modalSlidoutComponent = AddMembersModalLearnMore;
   public invalidEmailMessage = "";
 
   public membersInvitedToast: ToastObj = {
@@ -147,6 +152,7 @@ export default class AddMembersModal extends Vue {
   ];
 
   public emailDeletedKey: string | undefined;
+  private modalDrawerIsOpen = false;
 
   @Watch("_showModal")
   public async showModalChange(newVal: boolean): Promise<void> {
@@ -500,6 +506,11 @@ export default class AddMembersModal extends Vue {
     await PortfolioData.saveMembers(newMembers);
     this.$emit("members-invited")
   }
+
+  public openLearnMoreDrawer(): void {
+    this.modalDrawerIsOpen = true;
+  }
+
 
 }
 
