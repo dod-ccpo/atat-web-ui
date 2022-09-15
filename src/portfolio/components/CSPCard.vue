@@ -1,5 +1,5 @@
 <template>
-  <v-card class="_cspCard">
+  <v-card class="border1 border-base-lighter" elevation="0">
     <div class="d-flex pa-8">
       <div class="pr-6">
         <ATATSVGIcon
@@ -14,9 +14,7 @@
         <div>
           <h3>Accessing your {{providers[cloudServiceProvider].title}}:</h3>
           <div class="d-flex align-center">
-            <a
-              :href="providers[cloudServiceProvider].link"
-            >
+            <a>
               {{providers[cloudServiceProvider].link}}
             </a>
             <span class="pl-2 d-flex">
