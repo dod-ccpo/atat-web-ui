@@ -75,7 +75,6 @@ export default class CSPCard extends Vue {
         name:"azure",
         width:"80",
         height:"62",
-        color:"azure-blue"
       }
     },
     "AWS":{
