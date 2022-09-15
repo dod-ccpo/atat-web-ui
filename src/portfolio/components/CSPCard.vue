@@ -3,21 +3,44 @@
     <div class="d-flex pa-8">
       <div class="pr-6">
         <ATATSVGIcon
-          name="azure"
-          width="80"
-          height="62"
-          color="azure-blue"
+          class="d-flex align-center"
+          :name="providers[cloudServiceProvider].img.name"
+          :width="providers[cloudServiceProvider].img.width"
+          :height="providers[cloudServiceProvider].img.height"
+          :color="providers[cloudServiceProvider].img.color"
         />
       </div>
       <div>
-        <h3>Accessing your {{title[cloudServiceProvider]}}:</h3>
-        <div class="d-flex align-center">
-          <a>
-            {{link[cloudServiceProvider]}}
-          </a>
-          <span class="pl-2 d-flex">
-            <ATATSVGIcon width="15" height="15" name="launch" color="primary"/>
+        <div>
+          <h3>Accessing your {{providers[cloudServiceProvider].title}}:</h3>
+          <div class="d-flex align-center">
+            <a
+              :href="providers[cloudServiceProvider].link"
+            >
+              {{providers[cloudServiceProvider].link}}
+            </a>
+            <span class="pl-2 d-flex">
+            <ATATSVGIcon
+              width="15"
+              height="15"
+              name="launch"
+              color="primary"
+            />
           </span>
+        </div>
+
+        </div>
+        <hr class="my-4" />
+        <div>
+          <p
+            class="font-size-14 mb-0 text-base"
+          >
+            {{providers[cloudServiceProvider].description}}
+
+            <a>
+              Learn more about accessing your CSP portal
+            </a>
+          </p>
         </div>
       </div>
 
@@ -38,22 +61,61 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 export default class CSPCard extends Vue {
   @Prop() private cloudServiceProvider!: string;
 
-  public title = {
-    "Azure": "Azure Portal",
-    "AWS": "AWS Management Console",
-    "Google Cloud": "Google Cloud Console",
-    "Oracle Cloud": "Oracle Cloud Console"
+  public providers = {
+    "Azure":{
+      title: "Azure Portal",
+      link: "https://portal.azure.com/abc123",
+      description: "To login to your cloud resources, you must have an Azure account. As a" +
+        " portfolio manager, you can add administrators to grant full access to your CSP portal." +
+        " Administrators will be able to manage all user access and permissions directly within" +
+        " Azure.",
+      img: {
+        name:"azure",
+        width:"80",
+        height:"62",
+        color:"azure-blue"
+      }
+    },
+    "AWS":{
+      title: "AWS Management Console",
+      link: "https://signin.amazonaws-us-gov.com",
+      description: "To login to the cloud resources for this portfolio, you must have an AWS" +
+        " account. As a portfolio manager, you can add administrators to grant access to the CSP" +
+        " portal within ATAT. Administrators will be able to manage team access and permissions" +
+        " directly within AWS.",
+      img: {
+        name:"aws",
+        width:"80",
+        height:"48"
+      }
+    },
+    "Google Cloud":{
+      title: "Google Cloud Console",
+      link: "https://console.cloud.google.com",
+      description: "To login to the cloud resources for this portfolio, you must have an Google" +
+        " Cloud account. As a portfolio manager, you can add administrators to grant access to" +
+        " the CSP portal within ATAT. Administrators will be able to manage team access and" +
+        " permissions directly within GCP.",
+      img: {
+        name:"gcp",
+        width:"80",
+        height:"71"
+      }
+    },
+    "Oracle Cloud":{
+      title: "Oracle Cloud Console",
+      link: "https://console.oraclecloud.com",
+      description: "To login to the cloud resources for this portfolio, you must have an OCI" +
+        " account. As a portfolio manager, you can add administrators to grant access to the CSP" +
+        " portal within ATAT. Administrators will be able to manage team access and permissions" +
+        " directly within Oracle.",
+      img: {
+        name:"oracle",
+        width:"80",
+        height:"50"
+      }
+    },
+
   }
-
-  public link = {
-    "Azure": "https://portal.azure.com/abc123",
-    "AWS": "https://signin.amazonaws-us-gov.com",
-    "Google Cloud": "https://console.cloud.google.com",
-    "Oracle Cloud": "https://console.oraclecloud.com"
-  }
-
-
-
-
 }
 </script>
