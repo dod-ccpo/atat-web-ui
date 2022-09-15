@@ -108,7 +108,7 @@ import { TopNavItem, User } from "types/Global";
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import SlideoutPanel from "@/store/slideoutPanel/index";
+import { getUserInitials } from "@/helpers";
 
 import { getIdText } from "@/helpers";
 import AppSections from "@/store/appSections";
@@ -156,11 +156,8 @@ export default class ATATTopNavBar extends Vue {
     } 
   }
 
-  public getUserInitials(): string {
-    const firstI = this.currentUser.firstName?.charAt(0);
-    const lastI = this.currentUser.lastName?.charAt(0);
-    const initials = firstI && lastI ? firstI + lastI : "XX";
-    return initials.toUpperCase();
+  public getUserInitials(member:User): string {
+    return getUserInitials(member)
   }
 
   public getIdText(str: string): string {
@@ -223,7 +220,7 @@ export default class ATATTopNavBar extends Vue {
         ],
       },
       {
-        title: this.getUserInitials(),
+        title: this.getUserInitials(this.currentUser),
         isProfile: true,
         align: "left",
         menu: [

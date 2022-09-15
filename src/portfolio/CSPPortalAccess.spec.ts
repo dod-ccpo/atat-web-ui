@@ -15,6 +15,9 @@ describe("Testing CSPPortalAccess Component", () => {
     wrapper = mount(CSPPortalAccess, {
       localVue,
       vuetify,
+      propsData:{
+        portfolioCSP: "Azure"
+      }
     });
   });
 

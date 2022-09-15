@@ -356,6 +356,10 @@ export interface User {
   lastName?: string;
   email?: string;
   role?: string;
+  phoneNumber?: string;
+  phoneExt?: string;
+  designation?: string;
+  serviceAgency?: string;
 }
 
 export interface Portfolio {
