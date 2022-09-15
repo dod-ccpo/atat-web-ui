@@ -7,7 +7,10 @@
 
     <ATATToast />
 
-    <v-main class="_dashboard bg-base-off-white">
+    <v-main
+      class="_dashboard"
+      :class="[tabItems[tabIndex] === 'Funding Tracker'? '_funding-dashboard':'']"
+    >
       <PortfolioSummaryPageHead
         headline="Portfolio Summary"
         :items ="tabItems"
@@ -16,7 +19,7 @@
         :portfolioStatus="portfolioStatus"
       />
       <v-container
-        class="container-max-width bg-base-lightest "
+        class="container-max-width"
         style="margin-bottom:300px !important"
       >
           <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
