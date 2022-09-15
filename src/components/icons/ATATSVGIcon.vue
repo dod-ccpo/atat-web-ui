@@ -23,21 +23,26 @@ import ContactSupport from "@/components/icons/ContactSupport.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
 import DisaLogo from "@/components/icons/DisaLogo.vue";
+import Email from "@/components/icons/Email.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Feedback from "@/components/icons/Feedback.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import Gcp from "@/components/icons/Gcp.vue";
+import InfoOutline from "@/components/icons/InfoOutline.vue";
 import Launch from "@/components/icons/Launch.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Oracle from "@/components/icons/Oracle.vue";
 import Pdf from "@/components/icons/Pdf.vue";
 import Person from "@/components/icons/Person.vue";
 import PersonAddAlt from "@/components/icons/PersonAddAlt.vue";
+import Phone from "@/components/icons/Phone.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
+import Role from "@/components/icons/Role.vue";
 import Remove from "@/components/icons/Remove.vue";
 import Search from "@/components/icons/Search.vue";
+import Service from "@/components/icons/Service.vue";
 import SignOut from "@/components/icons/SignOut.vue";
 import Support from "@/components/icons/Support.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
@@ -47,7 +52,7 @@ import TriangleUp from "@/components/icons/TriangleUp.vue";
 import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 @Component({
-  components:{
+  components: {
     Aws,
     Azure,
     Calendar,
@@ -59,20 +64,25 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     Currency,
     DisaLogo,
     Edit,
+    Email,
     ExclamationMark,
     ExternalLink,
     Feedback,
     FilePresent,
     Gcp,
+    InfoOutline,
     Launch,
     MonetizationOn,
     Oracle,
     Pdf,
     Person,
     PersonAddAlt,
+    Phone,
     PlusSign,
+    Role,
     Remove,
     Search,
+    Service,
     SignOut,
     Support,
     TriangleUp,

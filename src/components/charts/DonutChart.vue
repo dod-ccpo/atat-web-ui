@@ -32,23 +32,23 @@ export default class DonutChart extends Vue {
     this.myChart.update();
   }
 
-  private mounted() {
+  private async mounted(): Promise<void> {
     if (this.showLabelOnHover) {
       const toolTipExternalOptions = {
         enabled: false,
         position: "nearest",
         external: this.externalTooltipHandler,
       };
-
       this.chartOptions.plugins.tooltip = toolTipExternalOptions;
     }
 
-    this.createChart();
+    await this.createChart();
   }
 
-  public createChart(): void {
+  public async createChart(): Promise<void> {
     const centertext = this.centertext(this);
     if (this.chartId) {
+
       let plugins: any = [centertext];
       if (this.useChartDataLabels) {
         plugins.push(ChartDataLabels);

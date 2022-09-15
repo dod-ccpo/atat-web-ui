@@ -16,6 +16,7 @@ export default class LineChart extends Vue {
   @Prop({ required: false }) public toggleDataset!: boolean;
   @Prop({ required: false, default: false }) public hasProjected?: boolean;
   @Prop({ required: false }) public tooltipHeaderData!: Record<string, string>;
+  
   private myChart!: Chart;
 
   @Watch("chartData", { deep: true })
@@ -59,17 +60,17 @@ export default class LineChart extends Vue {
     },
   };
 
-  private mounted() {
+  private async mounted(): Promise<void> {
     const toolTipExternalOptions = {
       enabled: false,
       position: "nearest",
       external: this.externalTooltipHandler,
     };
     this.chartOptions.plugins.tooltip = toolTipExternalOptions;
-    this.createChart();
+    await this.createChart();
   }
 
-  public createChart(): void {
+  public async createChart(): Promise<void> {
     if (this.chartId) {
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
       this.myChart = new Chart(ctx, {

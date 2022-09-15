@@ -12,7 +12,7 @@
     :temporary="showOverlay"
   >
     <div
-      v-if="appSection !== 'Portfolio Summary'"
+      v-if="panelTitle"
       class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
         {{ panelTitle }}
@@ -31,10 +31,8 @@
       </v-btn>
     </div>
 
-    <div id="PanelWrap"
-      :class="[appSection === 'Portfolio Summary' ?'_portfolio-panel': '_panel-content-wrap']"
-       v-if="panelTitle">
-      <slot></slot>
+    <div id="PanelWrap" class="_panel-content-wrap">
+      <slot v-if="currentPanelDefined"></slot>
     </div>
 
   </v-navigation-drawer>
@@ -61,6 +59,10 @@ export default class ATATSlideoutPanel extends Vue {
 
   get panelTitle(): string {
     return SlideoutPanel.slideoutPanelTitle;
+  }
+
+  get currentPanelDefined(): boolean {
+    return SlideoutPanel.slideoutPanelHasComponent;
   }
 
   private isOpen = false;

@@ -1,7 +1,7 @@
 <template>
   <div class="_portfolio-drawer">
-    <div id="AboutPortfolioSection" class="_portfolio-panel">
-      <h3 id="AboutSectionHeader" class="mb-4 mt-6">About Portfolio</h3>
+    <div id="AboutPortfolioSection" class="_portfolio-panel _panel-padding">
+      <h3 id="AboutSectionHeader" class="mb-4">About Portfolio</h3>
       <div>
         <v-textarea
           id="DrawerTextArea"
@@ -37,21 +37,22 @@
             </div>
           </div>
         </div>
-        <div class="d-flex justify-space-between pb-4">
+        <div class="d-flex justify-space-between pb-2">
           <span id="ServiceAgencyLabel">Service/Agency</span>
           <div id="ServiceAgency">
             {{ portfolio.serviceAgency }}
           </div>
         </div>
-        <div class="d-flex justify-space-between">
+        <div class="d-flex justify-space-between align-center">
           <span id="CreatedByLabel">Created by</span>
-          <div id="CreatedBy" class="_text-link">Maria Missionowner</div>
+          <MemberCard id="CreatedBy" :index="0" />
         </div>
       </div>
     </div>
-    <hr class="my-8" />
 
-    <div id="PortfolioMembersSection" class="px-6">
+    <hr class="my-0" />
+
+    <div id="PortfolioMembersSection" class="_portfolio-panel _panel-padding">
       <div
         id="PortfolioMembersHeader"
         class="d-flex flex-columm justify-space-between"
@@ -68,7 +69,9 @@
         <v-btn
           id="AddPortfolioMember"
           class="_icon-only"
-          @click="openMembersModal()"
+          @click="openMembersModal"
+          @keydown.enter="openMembersModal"
+          @keydown.space="openMembersModal"
         >
           <ATATSVGIcon
             @click="openMembersModal"
@@ -83,29 +86,51 @@
         id="PortfolioMembersList"
         class="pt-6"
       >
-        <div class="d-flex flex-columm justify-space-between" 
+
+        <div class="d-flex flex-columm justify-space-between"
         v-for="(member, index) in portfolioMembers" :key="member.email">
-          <a  class="pt-1" id="MemberName" role="button">
-            {{ displayName(member) }}
-          </a>
-          <div>
+          <MemberCard :id="'MemberName' + index" :index="index" />
+          <div v-if="managerCount === 1 && member.role.toLowerCase() === 'manager'">
+            <v-tooltip left nudge-right="30">
+            <template v-slot:activator="{ on }">
+              <div
+                v-on="on"
+                class="py-1 d-flex"
+                style="width: 105px; letter-spacing: normal; cursor: default;"
+              >
+                <div class="width-100 text-right pr-4">Manager</div>
+                <div style="width: 24px; height: 20px;"></div>
+              </div>
+            </template>
+            <div class="_tooltip-content-wrap _left" style="width: 250px;">
+              <div>
+                You are the last manager of this portfolio. There must be at least
+                one other manager for you to leave this portfolio or change roles.
+              </div>
+            </div>
+            </v-tooltip>
+
+          </div>
+          <div v-else>
             <ATATSelect
               :id="'Role' + index"
               class="_small _alt-style-clean _invite-members-modal align-self-end"
-              :items="memberRoles"
+              :items="getMemberMenuItems(member)"
               width="105"
               :selectedValue.sync="portfolioMembers[index].role"
               iconType="chevron"
               @onChange="(value)=>onSelectedMemberRoleChanged(value, index)"
+              :menuDisabled="member.menuDisabled"
             />
-              <!-- :returnObject="true" -->
+
           </div>
         </div>
       </div>
     </div>
 
-    <hr class="mb-4" />
-    <div id="DatesSection" class="_portfolio-panel pt-0">
+    <hr class="my-0" />
+
+    <div id="DatesSection" class="_portfolio-panel _portfolio-panel _panel-padding">
       <div>
         <span id="ProvisionedOnLabel">Provisioned on&nbsp;</span>
         <span id="ProvisionedOnDate">{{ provisionedTime }}</span>
@@ -148,16 +173,27 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import PortfolioData from "@/store/portfolio";
-import { format, parseISO } from "date-fns";
-import { Portfolio, SelectData } from "types/Global";
+
+import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
-import { User } from "../../../types/Global";
+import PortfolioRolesLearnMore from "@/portfolio/components/PortfolioRolesLearnMore.vue";
 
+import PortfolioData from "@/store/portfolio";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+import Toast from "@/store/toast";
+
+import {
+  Portfolio,
+  SelectData,
+  SlideoutPanelContent,
+  ToastObj,
+  User
+} from "types/Global";
+import { format, parseISO } from "date-fns";
 import _ from "lodash";
+import MemberCard from "@/portfolio/components/MemberCard.vue";
 
 @Component({
   components: {
@@ -165,20 +201,32 @@ import _ from "lodash";
     ATATSVGIcon,
     ATATSelect,
     AddMembersModal,
+    PortfolioRolesLearnMore,
+    MemberCard,
   },
 })
+
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio = {};
   public provisionedTime = "";
   public updateTime = "";
   public csp = "";
+  public currentUser: User = {};
 
   public showMembersModal = false;
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
 
-  public memberRoles: SelectData[] = [
+  public accessRemovedToast: ToastObj = {
+    type: "success",
+    message: "Access removed",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  };
+
+  public memberMenuItems: SelectData[] = [
     { header: "Roles" },
     { text: "Manager", value: "Manager" },
     { text: "Viewer", value: "Viewer" },
@@ -186,6 +234,15 @@ export default class PortfolioDrawer extends Vue {
     { text: "Remove from portfolio", value: "Remove", isSelectable: false },
     { text: "About Roles", value: "AboutRoles", isSelectable: false },
   ];
+
+  public getMemberMenuItems(member: User): SelectData[] {
+    const menuItems = _.cloneDeep(this.memberMenuItems);
+    if (member.email === this.currentUser.email) {
+      const removeIndex = menuItems.findIndex((obj) => obj.value === "Remove");
+      menuItems[removeIndex].text = "Leave this portfolio";
+    }
+    return menuItems;
+  }
 
   public saveDescription(): void {
     PortfolioData.setPortfolioData(this.portfolio);
@@ -220,8 +277,16 @@ export default class PortfolioDrawer extends Vue {
         this.provisionedTime = this.formatDate(storeData.provisioned);
         this.updateTime = this.formatDate(storeData.updated);
         this.csp = storeData.csp;
+
       }
       this.portfolioMembers = _.cloneDeep(storeData.members) || [];
+    }
+    // TEMP hardcoded current user
+    this.currentUser = {
+      firstName: "Maria",
+      lastName: "Missionowner",
+      email: "maria.missionowner.civ@mail.mil",
+      role: "Manager",
     }
   }
 
@@ -248,14 +313,19 @@ export default class PortfolioDrawer extends Vue {
       : 0;
   }
 
+  public get managerCount(): number {
+    const managers = this.portfolioMembers.filter(obj => obj.role?.toLowerCase() === "manager")
+    return managers.length;
+  }
+
   public openMembersModal(): void {
     this.showMembersModal = true;
   }
 
   private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
     if (this.portfolio && this.portfolio.members ) {
-      const memberRoles = ["Manager", "Viewer"]
-      if (memberRoles.indexOf(val) > -1) {
+      const memberMenuItems = ["Manager", "Viewer"]
+      if (memberMenuItems.indexOf(val) > -1) {
         this.portfolio.members[index].role = val;
         PortfolioData.setPortfolioData(this.portfolio);
       } else {
@@ -265,10 +335,13 @@ export default class PortfolioDrawer extends Vue {
         if (val === "Remove" && this.portfolio.members && this.portfolio.members.length > 1) {
           this.deleteMemberName = this.displayName(this.portfolioMembers[index]);
           this.deleteMemberIndex = index;
-          this.showDeleteMemberDialog = true;         
+          this.showDeleteMemberDialog = true;
         } else if (val === "AboutRoles") {
-          alert("open slideout in future ticket")
-          // Open the slideout panel -- future ticket
+          const panelContent: SlideoutPanelContent = {
+            component: PortfolioRolesLearnMore,
+            title: "Learn More",
+          }
+          SlideoutPanel.setSlideoutPanelComponent(panelContent);
         }
       }
     }
@@ -280,6 +353,7 @@ export default class PortfolioDrawer extends Vue {
       this.portfolio.members.splice(this.deleteMemberIndex, 1);
       PortfolioData.setPortfolioData(this.portfolio);
       await this.loadPortfolio();
+      Toast.setToast(this.accessRemovedToast);
     }
   }
 
