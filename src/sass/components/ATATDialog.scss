@@ -49,8 +49,13 @@
 
   .v-navigation-drawer {
     .v-card__title {
+      position: sticky;
+      top: 0;
       padding: 32px 40px;
       border-bottom: 1px solid $base-lighter;
+      background-color: white;
+      flex-wrap: nowrap;
+      align-items: flex-start;
     }
   }
 }

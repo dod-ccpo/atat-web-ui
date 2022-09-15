@@ -48,7 +48,7 @@
         transition="slide-x-reverse-transition"
       >
         <v-card elevation="0">
-          <v-card-title v-if="modalSlideoutTitle">
+          <v-card-title v-if="modalSlideoutTitle" class="d-flex">
             <v-btn 
               id="ModalSlideoutCloser"
               class="_icon-only mr-2"
