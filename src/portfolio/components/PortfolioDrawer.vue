@@ -27,7 +27,6 @@
           <div id="CSP" class="d-flex align-center">
             <ATATSVGIcon
               :name="csp.toLowerCase()"
-              color="azure-blue"
               width="20"
               height="16"
               class="mr-1"
