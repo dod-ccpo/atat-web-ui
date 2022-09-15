@@ -95,7 +95,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 export default class ATATSVGIcon extends Vue {
   // props
-  @Prop({default: "base"}) private color!: string; // DISA Base
+  @Prop({ required: false }) private color?: string; // DISA Base
   @PropSync("width", {default: 0, required: true}) private _width!: number;
   @PropSync("height",{default: 0, required: true}) private _height!: number;
   @Prop({default: "", required: true}) private name!: string;
@@ -109,9 +109,10 @@ export default class ATATSVGIcon extends Vue {
         "line-height: 0px";
     });
   }
-  
+
   private getColor(): string {
-    return (this.standardColors.find((sc)=> sc[this.color]) as stringObj)[this.color];
+    const colorName = this.color || "base-darkest";
+    return (this.standardColors.find((sc)=> sc[colorName]) as stringObj)[colorName];
   }
 
   private standardColors: stringObj[] = [
@@ -127,7 +128,6 @@ export default class ATATSVGIcon extends Vue {
     { "disabled": "c9c9c9" },
     { "disabled-dark": "adadad"},
     { "white": "ffffff" },
-    { "azure-blue": "0089D6" },
   ]
 
   private mounted(): void{
