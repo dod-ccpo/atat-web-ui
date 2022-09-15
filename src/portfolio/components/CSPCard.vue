@@ -35,8 +35,12 @@
             class="font-size-14 mb-0 text-base"
             id="CSPDescription"
           >
-            {{providers[cloudServiceProvider].description}}
-
+            To login to your cloud resources, you must have
+            {{providers[cloudServiceProvider].accountName}} account.
+            As a portfolio manager, you can add administrators to grant full
+            access to your CSP portal. Administrators will be able to manage
+            all user access and permissions directly within
+            {{providers[cloudServiceProvider].withinName}}.
             <a id="LearnMoreLink">
               Learn more about accessing your CSP portal
             </a>
@@ -65,10 +69,8 @@ export default class CSPCard extends Vue {
     "Azure":{
       title: "Azure Portal",
       link: "https://portal.azure.com/abc123",
-      description: "To login to your cloud resources, you must have an Azure account. As a" +
-        " portfolio manager, you can add administrators to grant full access to your CSP portal." +
-        " Administrators will be able to manage all user access and permissions directly within" +
-        " Azure.",
+      accountName:"an Azure",
+      withinName:"Azure",
       img: {
         name:"azure",
         width:"80",
@@ -79,43 +81,36 @@ export default class CSPCard extends Vue {
     "AWS":{
       title: "AWS Management Console",
       link: "https://signin.amazonaws-us-gov.com",
-      description: "To login to the cloud resources for this portfolio, you must have an AWS" +
-        " account. As a portfolio manager, you can add administrators to grant access to the CSP" +
-        " portal within ATAT. Administrators will be able to manage team access and permissions" +
-        " directly within AWS.",
+      accountName:"an AWS",
+      withinName:"AWS",
       img: {
         name:"aws",
         width:"80",
         height:"48"
       }
     },
-    "Google Cloud":{
+    "Google":{
       title: "Google Cloud Console",
       link: "https://console.cloud.google.com",
-      description: "To login to the cloud resources for this portfolio, you must have an Google" +
-        " Cloud account. As a portfolio manager, you can add administrators to grant access to" +
-        " the CSP portal within ATAT. Administrators will be able to manage team access and" +
-        " permissions directly within GCP.",
+      accountName:"a Google Cloud",
+      withinName:"GCP",
       img: {
         name:"gcp",
         width:"80",
         height:"71"
       }
     },
-    "Oracle Cloud":{
+    "Oracle":{
       title: "Oracle Cloud Console",
       link: "https://console.oraclecloud.com",
-      description: "To login to the cloud resources for this portfolio, you must have an OCI" +
-        " account. As a portfolio manager, you can add administrators to grant access to the CSP" +
-        " portal within ATAT. Administrators will be able to manage team access and permissions" +
-        " directly within Oracle.",
+      accountName:"an OCI",
+      withinName:"Oracle",
       img: {
         name:"oracle",
         width:"80",
         height:"50"
       }
     },
-
   }
 }
 </script>
