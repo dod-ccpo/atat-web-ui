@@ -8,7 +8,6 @@
           :name="providers[cloudServiceProvider].img.name"
           :width="providers[cloudServiceProvider].img.width"
           :height="providers[cloudServiceProvider].img.height"
-          :color="providers[cloudServiceProvider].img.color"
         />
       </div>
       <div>
