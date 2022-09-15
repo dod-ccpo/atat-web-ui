@@ -38,6 +38,7 @@
 
       <!-- modal slideout -->
       <v-navigation-drawer
+        id="ModalSlideout"
         v-if="modalSlideoutComponent"
         v-model="_modalDrawerIsOpen"
         absolute
@@ -49,6 +50,7 @@
         <v-card elevation="0">
           <v-card-title v-if="modalSlideoutTitle">
             <v-btn 
+              id="ModalSlideoutCloser"
               class="_icon-only mr-2"
               @click="closeModalDrawer"
               @keydown.enter="closeModalDrawer"
@@ -60,9 +62,9 @@
                 height="16"
               />
             </v-btn>
-            <h2>{{ modalSlideoutTitle}}</h2>
+            <h2 id="ModalSlideoutTitle">{{ modalSlideoutTitle}}</h2>
           </v-card-title>
-          <v-card-text class="body text-base-darker pt-6">
+          <v-card-text id="ModalSlideoutContent" class="body text-base-darker pt-6">
             <component :is="modalSlideoutComponent" />
           </v-card-text>
         </v-card>
@@ -98,20 +100,9 @@ export default class ATATDialog extends Vue {
 
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;
-  @PropSync("modalDrawerIsOpen") public _modalDrawerIsOpen!: boolean;
 
   @PropSync("showDialog") private _showDialog!: boolean;
-
-  // @Watch("modalDrawerIsOpen")
-
-
-  private isOpen = false;
-  set isModalSlideoutOpen(isOpen: boolean) {
-    this.isOpen = isOpen;
-  }
-  get isModalSlideoutOpen(): boolean {
-    return this.isOpen;
-  }
+  @PropSync("modalDrawerIsOpen") public _modalDrawerIsOpen!: boolean;
 
   get getTitle(): string {
     if(this.truncate){
@@ -144,10 +135,7 @@ export default class ATATDialog extends Vue {
   }
 
   private closeModalDrawer(): void {
-    debugger;
-    this.isOpen = false;
     this._modalDrawerIsOpen = false;
-    debugger;
   }
 }
 </script>
