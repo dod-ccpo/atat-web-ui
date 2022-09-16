@@ -11,21 +11,6 @@
   @extend %body;
 }
 
-.v-btn {
-  box-shadow: none !important;
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: center !important;
-  align-items: center !important;
-  padding: 7px 20px 8px !important;
-  @extend %v-btn-text;
-
-  // removes the default darker opacity assigned by vuetify
-  &:hover::before, &:focus::before {
-    opacity: 0 !important;
-  }
-}
-  
 .v-btn{
   box-shadow: none !important;
   display: flex !important;
@@ -38,6 +23,11 @@
   }
   @extend %v-btn-text;
 
+  // removes the default darker opacity assigned by vuetify
+  &:hover::before, &:focus::before {
+    opacity: 0 !important;
+  }
+  
   &.primary.theme--light{
     background-color:  $primary !important;
     color: #fff !important;

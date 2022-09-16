@@ -23,9 +23,13 @@ body {
 
 .v-main__wrap {
   background-color: $white;
-  padding: 28px 56px 0px 44px;
   overflow-y: scroll;
   max-height: calc(100vh - 60px);
+  padding: 28px 56px 0px 44px;
+
+  // ._document-review & {
+  //   padding-left: 40px; // hover for comments will have gray bg with 16px left padding
+  // }
 
   #app-content{
     height: 100%;

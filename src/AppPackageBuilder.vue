@@ -10,7 +10,7 @@
 
     <ATATPageHead :headline="projectTitle" />
 
-    <v-main id="app" >
+    <v-main>
       <div id="app-content" class="d-flex flex-column">
         <div  class="mb-auto">
           <router-view></router-view>

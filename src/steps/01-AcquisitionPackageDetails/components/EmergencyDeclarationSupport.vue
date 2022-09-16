@@ -1,12 +1,11 @@
 <template>
-  <div :class="topMarginClass + ' d-flex align-start flex-column'">
+  <div class="d-flex align-start flex-column">
     <ATATRadioGroup
       :id="id"
       :legend="legend" 
       :value.sync="_emergencyDeclaration"
       :items="radioGroupItems"
       name="emergency-declaration-support-requirement-radio-group"
-      class="mt-3"
       :rules="_rules"
     >
     </ATATRadioGroup>
@@ -31,7 +30,6 @@ export default class EmergencyDeclarationSupport extends Vue {
   @Prop({default: "emergency-declaration-support-requirement"}) private id!: string;
   @Prop({default: true}) private isForm!: boolean;
   @Prop({default: ""}) private legend!: string;
-  @Prop({default: "mt-6"}) private topMarginClass!: string;
   @PropSync("rules") private _rules!: "";
   private radioGroupItems: RadioButton[] = [
     {

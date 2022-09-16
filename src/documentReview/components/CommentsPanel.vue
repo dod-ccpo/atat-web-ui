@@ -36,8 +36,9 @@
             <ATATSVGIcon
               name="commentBubble"
               class="comment-icon"
-              width="16"
-              height="16"
+              width="18"
+              height="18"
+              color="base"
             />
           </v-btn>
         </dt>

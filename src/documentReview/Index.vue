@@ -1,16 +1,25 @@
 <template>
-  <div class="_document-review">
+  <div :class="isForm ? '_document-review' : '_document-preview'">
     <ATATSlideoutPanel v-if="isForm" :alwaysOpen="true" :showHeader="false">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
-    <div class="bg-base-off-white main-div">
-       <router-view></router-view>
-    </div>
+
+    <v-main >
+      <div id="app-content" class="d-flex flex-column">
+        <div class="mb-auto">
+          <router-view></router-view>
+        </div>
+
+        <ATATFooter/>
+
+      </div>
+    </v-main>
   </div>
 </template>
 <script lang="ts">
 import { SlideoutPanelContent } from "types/Global";
 import Vue from "vue";
+import ATATFooter from "@/components/ATATFooter.vue";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import Form from "./Form.vue";
@@ -21,6 +30,7 @@ import { Component } from "vue-property-decorator";
 
 @Component({
   components: {
+    ATATFooter,
     ATATSVGIcon,
     ATATSlideoutPanel,
     CommentsPanel,
