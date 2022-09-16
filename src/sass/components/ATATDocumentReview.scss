@@ -21,6 +21,13 @@
       padding: 40px 0px 0px 56px;
       width: calc(100% - 380px);
       padding-right: 56px;
+      .v-breadcrumbs li:nth-child(even){
+        padding: 0px 8px;
+        margin-top: 1px;
+        div{
+          text-align:center;
+        }
+      }
     }
 
     #PreviewForm{

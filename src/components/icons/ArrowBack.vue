@@ -14,7 +14,7 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
-export default class ArrowLeft extends Vue {
+export default class ArrowBack extends Vue {
   @Prop({default: "61686c", required: true}) private color!:string;
 }
 </script>

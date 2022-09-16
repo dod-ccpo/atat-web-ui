@@ -6,7 +6,7 @@
       class="no-text-decoration d-flex align-center py-3"
     >
       <v-btn class="plain bg-transparent pa-0">
-        <ATATSVGIcon class="mr-2" name="arrowLeft" width="16" height="16" />
+        <ATATSVGIcon class="mr-2" name="arrowBack" width="16" height="16" />
       </v-btn>
       <h3>Document Preview: {{ docTitle }}</h3>
     </router-link>
