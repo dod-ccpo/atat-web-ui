@@ -1,6 +1,12 @@
 <template>
   <div class="_dashboard bg-base-lightest">
     <v-container class="container-max-width bg-base-lightest">
+      <v-row v-if="fundingAlertType.length > 0">
+        <v-col>
+          <funding-alert :fundingAlertType="fundingAlertType"
+          :timeRemaining="expirationTimeRemaining" />
+        </v-col>
+      </v-row>
       <v-row>
         <v-col>
           <div id="app-content" class="d-flex flex-column">
@@ -47,9 +53,22 @@
                         <span id="PoPDates" class="h3 mb-0">
                           {{ popStart }}&ndash;{{ popEnd }}
                         </span>
-                        <p class="text--base-dark mb-0 font-size-14">
+                        <p class="text--base-dark mb-0 font-size-14" 
+                        v-if="fundingAlertType.length === 0">
                           {{ timeToExpiration }} to expiration
                         </p>
+                         <div class=" d-flex
+                  justify-start
+                  align-top
+                  atat-text-field-error text-error mb-0 font-size-14"
+                  v-if="fundingAlertType === popExpired"
+                  >
+                          <strong>{{ daysPastExpiration() }} days past expiration</strong>
+                          <ATATSVGIcon style="margin: 2px 0 0 8px" name="exclamationMark"
+                           :width="18"
+                           :height="18"
+                           color="error"/>
+                         </div>
                       </v-col>
                     </v-row>
                   </v-card>
@@ -573,7 +592,7 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { DashboardService } from "../services/dashboards";
-
+import { AlertService} from "../services/alerts";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
@@ -587,17 +606,25 @@ import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
 import { toCurrencyString, getIdText, roundTo100 } from "@/helpers";
-import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
+import { CostsDTO, TaskOrderDTO, ClinDTO, AlertDTO } from "@/api/models";
 
 import { add, startOfMonth, subDays } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
-import { lineChartData, lineChartDataSet, SlideoutPanelContent } from "types/Global";
+import {lineChartData, lineChartDataSet, SlideoutPanelContent } from "types/Global";
 import _ from 'lodash';
 import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
+import FundingAlert, { FundingAlertTypes } from "@/dashboards/FundingAlert.vue";
+
+
+
+export const AlertTypes =  {
+  SPENDING_ACTUAL:"SPENDING_ACTUAL",
+  TIME_REMAINING: "TIME_REMAINING"
+}
 
 @Component({
   components: {
@@ -609,12 +636,18 @@ import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMor
     ATATTooltip,
     DonutChart,
     LineChart,
+    FundingAlert
   }
 })
 
 export default class PortfolioDashboard extends Vue {
 
+  private popExpires30DaysNoTOClin = FundingAlertTypes.POPExpiresThirtyDaysNoTOClin;
+  private popExpires30DaysWithTOClin = FundingAlertTypes.POPExpiresThirtyDaysWithTOClin;
+  private popExpired = FundingAlertTypes.POPExpired;
+
   dashboardService: DashboardService = new DashboardService();
+  alertsService: AlertService = new AlertService();
 
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""
@@ -661,6 +694,14 @@ export default class PortfolioDashboard extends Vue {
   public burnChartYStepSize = 0;
   public burnChartYLabelSuffix = "k";
   public tooltipHeaderData: Record<string, string> = {}
+
+  // Alerts
+  public alerts: AlertDTO[] = [];
+  public fundingAlertType = "";
+  public expirationTimeRemaining = 0;
+  private daysPastExpiration():number {
+    return Math.abs(this.expirationTimeRemaining);
+  }
 
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
@@ -1101,7 +1142,7 @@ export default class PortfolioDashboard extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.dashboardService.getdata('1000000001234');
-
+    
     this.taskOrder = data.taskOrder
     this.costs = data.costs;
     this.costs.sort((a, b) => (a.clin > b.clin) ? 1 : -1);
@@ -1134,6 +1175,8 @@ export default class PortfolioDashboard extends Vue {
 
     this.calculateBurnDown();
     this.createTableItems();
+
+    await this.processAlerts();
   }
 
   public async mounted(): Promise<void>{
@@ -1351,6 +1394,56 @@ export default class PortfolioDashboard extends Vue {
 
   public getCurrencyString(value: number, decimals?: boolean): string {
     return "$" + toCurrencyString(value, decimals);
+  }
+
+  public getFundingTrackerAlerts(): void {
+    throw new Error("not implemented");
+  }
+
+  private thresholdAtOrAbove(threshold: string): boolean {
+    let stringVal = threshold.replace('%', '');
+    let numVal = Number(stringVal);
+    return numVal != Number.NaN && numVal >=100;
+  }
+
+  public async processAlerts():Promise<void> {
+    debugger;
+
+    const alerts = await this.alertsService.getAlerts('1000000001234');
+    
+    alerts.forEach(alert=>{
+      if(alert.alert_type == AlertTypes.SPENDING_ACTUAL){
+        if(!this.alerts.some(alert=>alert.alert_type == AlertTypes.SPENDING_ACTUAL)){
+          this.alerts.push(alert);
+        } 
+      }
+      if(alert.alert_type == AlertTypes.TIME_REMAINING){
+        if(!this.alerts.some(alert=>alert.alert_type == AlertTypes.TIME_REMAINING)){
+          this.alerts.push(alert);
+        } 
+      }
+    });
+
+    // does alert type spending actual exist and if it does, does the threshold meet or exceeed 100%
+    // if spending alert and threshold is at or above 100% show expiration alert
+    let spendingThresholdExceedsFunding = this.alerts.some(alert=>alert.alert_type 
+    === AlertTypes.SPENDING_ACTUAL && this.thresholdAtOrAbove(alert.threshold_violation_amount));
+
+    if(spendingThresholdExceedsFunding){
+      this.fundingAlertType = FundingAlertTypes.POPExpired;
+    }
+ 
+    // does time remaining alert exist
+    let expiry = this.alerts.find(alert=>alert.alert_type == AlertTypes.TIME_REMAINING);
+    this.expirationTimeRemaining = expiry ? 
+      Number(expiry.threshold_violation_amount.replace('days','')): 0;
+
+    //if expiration and time remaining show warning alert
+    if(expiry && this.expirationTimeRemaining > 0){
+      this.fundingAlertType = FundingAlertTypes.POPExpiresThirtyDaysNoTOClin;
+    }
+    
+
   }
 }
 
