@@ -1,15 +1,15 @@
 <template>
   <div>
     <div
-      id="goBackLink"
-      class="no-text-decoration d-flex align-center py-3"
+      class="no-text-decoration d-flex align-center "
     >
       <v-btn 
-        class="plain bg-transparent pa-0" 
+        class="plain bg-transparent mx-7 my-4 pa-0" 
         @click="$emit('showView', 'form')" >
           <ATATSVGIcon class="mr-2" name="arrowBack" width="16" height="16" />
-      </v-btn>
+      
       <h3>Document Preview: {{ docTitle }}</h3>
+      </v-btn>
     </div>
     <hr class="ma-0 bg-base-lighter" />
     <div id="PreviewForm">
