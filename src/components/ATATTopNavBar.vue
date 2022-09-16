@@ -150,9 +150,6 @@ export default class ATATTopNavBar extends Vue {
         // open external URL in new tab
         window.open(item.externalUrl, "_blank");
       }
-
-      //closes slideoutpanel if necesssary
-      SlideoutPanel.closeSlideoutPanel();
     } 
   }
 

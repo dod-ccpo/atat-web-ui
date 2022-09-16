@@ -49,7 +49,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 export default class ATATSlideoutPanel extends Vue {
   @Prop({ default: "380" }) private panelWidth!: string;
   @Prop({ default: false }) private alwaysOpen!: boolean;
-  @Prop({ default: true }) private showHeader!: boolean;
+
   
   public appSection = AppSections.activeAppSection;
   public transitionEnded(e: Event):void {
@@ -60,16 +60,6 @@ export default class ATATSlideoutPanel extends Vue {
     }
   }
 
-  get isHeaderDisplayed(): boolean {
-    if (!this.showHeader){
-      return this.showHeader;
-    }
-    else if (this.appSection !== 'Portfolio Summary')
-    {
-      return true;
-    }
-    return true;
-  }
 
   get panelTitle(): string {
     return SlideoutPanel.slideoutPanelTitle;
