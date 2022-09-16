@@ -4,7 +4,8 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import ProjectOverview from "@/steps/01-AcquisitionPackageDetails/ProjectOverview.vue";
 import validators from "../../plugins/validation";
-import AcquisitionPackage,{ AcquisitionPackageStore, StoreProperties} from "@/store/acquisitionPackage";
+import AcquisitionPackage,{ StoreProperties}
+  from "@/store/acquisitionPackage";
 import { off } from "process";
 import { convertSystemChoiceToSelect } from "@/helpers";
 import { ProjectOverviewDTO } from "@/api/models";
