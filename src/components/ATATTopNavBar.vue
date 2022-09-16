@@ -150,7 +150,7 @@ export default class ATATTopNavBar extends Vue {
         // open external URL in new tab
         window.open(item.externalUrl, "_blank");
       }
-    } 
+    }
   }
 
   public getUserInitials(member:User): string {

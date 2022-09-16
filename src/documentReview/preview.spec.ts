@@ -22,23 +22,6 @@ describe("Testing index Component", () => {
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
-  it("loadOnEnter - returns storeData successfully", async()=>{
-    
-    jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
-      ()=>Promise.resolve({
-        "scope": "scope goes here",
-        "title": "title goes here",
-        "emergency_declaration": "true"
-      })
-    );
-
-    jest.mock("@/store/acquisitionPackage", () => ({
-      initialize: ()=>Promise.resolve(),
-      ensureInitialized: ()=>Promise.resolve(),
-    }));
-    await AcquisitionPackage.setInitialized(true);
-    await wrapper.vm.loadOnEnter();  
-    expect(await wrapper.vm.$data.currentTitle).toBe("title goes here");
-  })
+ 
 
 })

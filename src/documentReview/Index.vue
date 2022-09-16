@@ -10,9 +10,11 @@
     </ATATSlideoutPanel>
     <div class="bg-base-off-white main-div">
        <Form 
+          :docTitle="docTitle"
           v-if="displayView==='form'"
        ></Form>
        <Preview v-if="displayView==='preview'"
+          :docTitle="docTitle"
           @showView="showView" 
        ></Preview>
     </div>  
@@ -48,52 +50,23 @@ export default class DocumentReview extends Vue {
   private emergencyDeclaration = "";
   private displayView = ""
   
- 
-  get showDocReviewComponent(): boolean {
-    return this.$route.path.toLowerCase().indexOf("form") > 0;
-  }
-
   public showView(view?: string): void {
     this.displayView = view ? view : "form";
   }
-
-  private docReviewRoutes = [
-    { 
-      path: "/docReviewForm", 
-      component: Form, 
-      name: "docReviewForm",
-      props: {
-        docTitle: this.docTitle
-      }},
-    { 
-      path: "/docReviewPreview", 
-      component: Preview, 
-      name: "docReviewPreview",
-      props: {
-        docTitle: this.docTitle
-      },
-    },
-  ];
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
   }
 
   public async mounted(): Promise<void> {
+    this.showView("form")
     const slideoutPanelContent: SlideoutPanelContent = {
       component: CommentsPanel,
       title: "",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     SlideoutPanel.openSlideoutPanel("");
-    this.docReviewRoutes.forEach((route)=>{
-      this.$router.addRoute(route);
-    })
-    if (!this.showDocReviewComponent){
-      this.$router.push("docReviewForm");
-    }
     await this.loadOnEnter();
-    this.showView("form")
   }
 
   public async loadOnEnter(): Promise<void> {
