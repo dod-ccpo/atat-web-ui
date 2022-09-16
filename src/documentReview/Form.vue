@@ -1,6 +1,7 @@
 <template>
   <div id="FormDiv">
-    <PageHead :docTitle="docTitle"></PageHead>
+    <PageHead 
+      :docTitle="docTitle"></PageHead>
     <div>
       <v-form id="reviewForm">
         <h2>Part I. Requirements Owner Information</h2>
@@ -34,8 +35,7 @@ import ProjectTitle
   from "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue";
 import ProjectScope
   from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import { ProjectOverviewDTO } from "@/api/models";
+
 
 @Component({
   components: {
@@ -47,31 +47,6 @@ import { ProjectOverviewDTO } from "@/api/models";
 })
 export default class DocumentReviewForm extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-
-  private currentTitle = "";
-  private projectScope = "";
-  private emergencyDeclaration = "";
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
-
-  public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
-      storeProperty: StoreProperties.ProjectOverview,
-    });
-
-    if (storeData) {
-      this.currentTitle = storeData.title;
-      this.projectScope = storeData.scope;
-      if (
-        storeData.emergency_declaration &&
-        storeData.emergency_declaration.length > 0
-      ) {
-        this.emergencyDeclaration =
-          storeData.emergency_declaration === "true" ? "yes" : "no";
-      }
-    }
-  }
+  
 }
 </script>

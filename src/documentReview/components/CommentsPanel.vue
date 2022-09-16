@@ -14,18 +14,19 @@
           />
         </div>
       </v-btn>
-      <router-link to="/docReviewPreview">
-        <v-btn class="link-button no-hover mt-3">
-          Preview Form
-          <ATATSVGIcon
-            class="ml-2"
-            name="launch"
-            width="15"
-            height="15"
-            color="primary"
-          />
-        </v-btn>
-      </router-link>
+      <v-btn 
+        @click="$emit('showView', 'preview')" 
+        class="link-button no-hover mt-3">
+        Preview Form
+        <ATATSVGIcon
+          class="ml-2"
+          name="launch"
+          width="15"
+          height="15"
+          color="primary"
+         
+        />
+      </v-btn>
     </div>
     <hr class="ma-0" />
     <div class="content-comments">
@@ -47,7 +48,7 @@
         </dd>
       </dl>
     </div>
-    
+
     <hr class="ma-0" />
   </div>
 </template>

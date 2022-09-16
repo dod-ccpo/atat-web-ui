@@ -1,15 +1,16 @@
 <template>
   <div>
-    <router-link
-      to="/docReviewForm"
+    <div
       id="goBackLink"
       class="no-text-decoration d-flex align-center py-3"
     >
-      <v-btn class="plain bg-transparent pa-0">
-        <ATATSVGIcon class="mr-2" name="arrowBack" width="16" height="16" />
+      <v-btn 
+        class="plain bg-transparent pa-0" 
+        @click="$emit('showView', 'form')" >
+          <ATATSVGIcon class="mr-2" name="arrowBack" width="16" height="16" />
       </v-btn>
       <h3>Document Preview: {{ docTitle }}</h3>
-    </router-link>
+    </div>
     <hr class="ma-0 bg-base-lighter" />
     <div id="PreviewForm">
       <h1>{{ docTitle }}</h1>
@@ -52,10 +53,7 @@ import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/Projec
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
 
 import { Component, Prop } from "vue-property-decorator";
-import AcquisitionPackage, {
-  StoreProperties,
-} from "@/store/acquisitionPackage";
-import { ProjectOverviewDTO } from "@/api/models";
+
 @Component({
   components: {
     ATATSVGIcon,
@@ -66,30 +64,5 @@ import { ProjectOverviewDTO } from "@/api/models";
 })
 export default class DocumentReviewPreview extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  private currentTitle = "";
-  private projectScope = "";
-  private emergencyDeclaration = "";
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
-
-  public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
-      storeProperty: StoreProperties.ProjectOverview,
-    });
-
-    if (storeData) {
-      this.currentTitle = storeData.title;
-      this.projectScope = storeData.scope;
-      if (
-        storeData.emergency_declaration &&
-        storeData.emergency_declaration.length > 0
-      ) {
-        this.emergencyDeclaration =
-          storeData.emergency_declaration === "true" ? "yes" : "no";
-      }
-    }
-  }
 }
 </script>
