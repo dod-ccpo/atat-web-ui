@@ -3,7 +3,6 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import preview  from "@/documentReview/Preview.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 Vue.use(Vuetify);
 
 describe("Testing index Component", () => {
