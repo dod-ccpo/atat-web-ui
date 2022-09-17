@@ -8,17 +8,18 @@
         <EmergencyDeclarationSupport
           legend="Is this requirement in support of an emergency declaration?"
           topMarginClass="mt-2"
-          :emergencyDeclaration.sync="emergencyDeclaration"
+          :emergencyDeclaration.sync="_docData.emergency_declaration"
         ></EmergencyDeclarationSupport>
+     
         <ProjectTitle
           class="mt-9"
           label="Project/Requirements Title"
-          :currentTitle.sync = "currentTitle"
+          :currentTitle.sync = "_docData.title"
         ></ProjectTitle>
         <ProjectScope
           class="mt-10"
           label="What is the scope of your requirement?"
-          :projectScope.sync="projectScope"
+          :projectScope.sync="_docData.scope"
         ></ProjectScope>
       </v-form>
     </div>
@@ -28,7 +29,7 @@
 import Vue from "vue";
 
 import PageHead from "./components/DocReviewHead.vue"
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import EmergencyDeclarationSupport 
   from "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue";
 import ProjectTitle
@@ -47,6 +48,6 @@ import ProjectScope
 })
 export default class DocumentReviewForm extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  
+  @PropSync("docData") private _docData!: Record<string, unknown>;
 }
 </script>

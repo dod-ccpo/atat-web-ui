@@ -11,10 +11,12 @@
     <div class="bg-base-off-white main-div">
        <Form 
           :docTitle="docTitle"
+          :docData="docData"
           v-if="displayView==='form'"
        ></Form>
        <Preview v-if="displayView==='preview'"
           :docTitle="docTitle"
+          :docData="docData"
           @showView="showView" 
        ></Preview>
     </div>  
@@ -48,7 +50,8 @@ export default class DocumentReview extends Vue {
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";
-  private displayView = ""
+  private displayView = "";
+  private docData = {};
   
   public showView(view?: string): void {
     this.displayView = view ? view : "form";
@@ -73,18 +76,7 @@ export default class DocumentReview extends Vue {
     const storeData = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
       storeProperty: StoreProperties.ProjectOverview,
     });
-    console.log(storeData);
-    if (storeData) {
-      this.currentTitle = storeData.title;
-      this.projectScope = storeData.scope;
-      if (
-        storeData.emergency_declaration &&
-        storeData.emergency_declaration.length > 0
-      ) {
-        this.emergencyDeclaration =
-          storeData.emergency_declaration === "true" ? "yes" : "no";
-      }
-    }
+    this.docData = Object.assign({},storeData);
   }
 }
 </script>

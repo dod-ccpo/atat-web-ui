@@ -17,6 +17,14 @@ describe("Testing index Component", () => {
       localVue,
       vuetify,
     });
+
+    jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
+      ()=>Promise.resolve({
+        "scope": "scope goes here",
+        "title": "title goes here",
+        "emergency_declaration": "true"
+      })
+    );
   });
 
   it("renders successfully", async () => {
@@ -40,26 +48,13 @@ describe("Testing index Component", () => {
   });
 
   it("mounted() - ensure $data.displayView===form", async()=>{
-    console.log('hi tony')
     expect(await wrapper.vm.$data.displayView).toBe('form');
   })
 
   it("loadOnEnter - returns storeData successfully", async()=>{
-    jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
-      ()=>Promise.resolve({
-        "scope": "scope goes here",
-        "title": "title goes here",
-        "emergency_declaration": "true"
-      })
-    );
-
-    jest.mock("@/store/acquisitionPackage", () => ({
-      initialize: jest.fn(),
-      ensureInitialized: jest.fn()
-    }));
     await wrapper.vm.loadOnEnter();  
-    expect(await wrapper.vm.$data.currentTitle).toBe("title goes here");
-    expect(await wrapper.vm.$data.emergencyDeclaration ).toBe("yes");
+    expect(await wrapper.vm.$data.docData.title).toBe("title goes here");
+    expect(await wrapper.vm.$data.docData.emergency_declaration ).toBe("true");
   })
 
 });
