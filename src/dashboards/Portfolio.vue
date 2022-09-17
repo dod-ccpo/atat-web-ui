@@ -4,7 +4,7 @@
       <v-row v-if="fundingAlertType.length > 0">
         <v-col>
           <funding-alert :fundingAlertType="fundingAlertType"
-          :timeRemaining="expirationTimeRemaining" />
+          :timeRemaining="daysRemaining" />
         </v-col>
       </v-row>
       <v-row>
@@ -57,11 +57,39 @@
                         v-if="fundingAlertType.length === 0">
                           {{ timeToExpiration }} to expiration
                         </p>
-                         <div class=" d-flex
+                       <div
+                          class="d-flex justify-start align-top mb-0 font-size-14"
+                          v-if="fundingAlertType.length > 0 && 
+                          daysRemaining <= 60 && daysRemaining > 30"
+                        >
+                          <strong
+                            >{{ daysRemaining }} days to expiration</strong
+                          >
+                          <i
+                            aria-hidden="true"
+                            class="v-icon ml-2 text-warning-dark2 
+                            notranslate material-icons theme--light"
+                          >
+                            warning
+                          </i>
+                        </div>
+                  <div class=" d-flex
                   justify-start
                   align-top
                   atat-text-field-error text-error mb-0 font-size-14"
-                  v-if="fundingAlertType === popExpired"
+                  v-if="fundingAlertType.length > 0 && daysRemaining <=30"
+                  >
+                          <strong>{{ daysPastExpiration() }} days past expiration</strong>
+                          <ATATSVGIcon style="margin: 2px 0 0 8px" name="exclamationMark"
+                           :width="18"
+                           :height="18"
+                           color="error"/>
+                         </div>
+                  <div class=" d-flex
+                  justify-start
+                  align-top
+                  atat-text-field-error text-error mb-0 font-size-14"
+                  v-if="fundingAlertType.length > 0 && daysRemaining <=0"
                   >
                           <strong>{{ daysPastExpiration() }} days past expiration</strong>
                           <ATATSVGIcon style="margin: 2px 0 0 8px" name="exclamationMark"
@@ -642,8 +670,8 @@ export const AlertTypes =  {
 
 export default class PortfolioDashboard extends Vue {
 
-  private popExpires30DaysNoTOClin = FundingAlertTypes.POPExpiresThirtyDaysNoTOClin;
-  private popExpires30DaysWithTOClin = FundingAlertTypes.POPExpiresThirtyDaysWithTOClin;
+  private popExpiresSoonNoTOClin = FundingAlertTypes.POPExpiresSoonNoTOClin;
+  private popExpiresSoonWithTOClin = FundingAlertTypes.POPExpiresSoonWithTOClin;
   private popExpired = FundingAlertTypes.POPExpired;
 
   dashboardService: DashboardService = new DashboardService();
@@ -698,9 +726,9 @@ export default class PortfolioDashboard extends Vue {
   // Alerts
   public alerts: AlertDTO[] = [];
   public fundingAlertType = "";
-  public expirationTimeRemaining = 0;
+  public daysRemaining = 0;
   private daysPastExpiration():number {
-    return Math.abs(this.expirationTimeRemaining);
+    return Math.abs(this.daysRemaining);
   }
 
   public async calculateFundsSpent(): Promise<void> {
@@ -1400,10 +1428,10 @@ export default class PortfolioDashboard extends Vue {
     throw new Error("not implemented");
   }
 
-  private thresholdAtOrAbove(threshold: string): boolean {
-    let stringVal = threshold.replace('%', '');
+  private thresholdAtOrAbove(value: string, threshold: number): boolean {
+    let stringVal = value.replace('%', '');
     let numVal = Number(stringVal);
-    return numVal != Number.NaN && numVal >=100;
+    return numVal != Number.NaN && numVal >=threshold;
   }
 
   public async processAlerts():Promise<void> {
@@ -1426,21 +1454,27 @@ export default class PortfolioDashboard extends Vue {
 
     // does alert type spending actual exist and if it does, does the threshold meet or exceeed 100%
     // if spending alert and threshold is at or above 100% show expiration alert
-    let spendingThresholdExceedsFunding = this.alerts.some(alert=>alert.alert_type 
-    === AlertTypes.SPENDING_ACTUAL && this.thresholdAtOrAbove(alert.threshold_violation_amount));
+    let fundsDepleted = this.alerts.some(alert=>alert.alert_type 
+    === AlertTypes.SPENDING_ACTUAL 
+    && this.thresholdAtOrAbove(alert.threshold_violation_amount, 100));
 
-    if(spendingThresholdExceedsFunding){
+    let lowFundsThreshold = this.alerts.some(alert=>alert.alert_type 
+    === AlertTypes.SPENDING_ACTUAL 
+    && this.thresholdAtOrAbove(alert.threshold_violation_amount, 75));
+
+    if(fundsDepleted){
       this.fundingAlertType = FundingAlertTypes.POPExpired;
     }
  
     // does time remaining alert exist
-    let expiry = this.alerts.find(alert=>alert.alert_type == AlertTypes.TIME_REMAINING);
-    this.expirationTimeRemaining = expiry ? 
-      Number(expiry.threshold_violation_amount.replace('days','')): 0;
+    let timeremainingalert = this.alerts.find(alert=>alert.alert_type == AlertTypes.TIME_REMAINING);
+    this.daysRemaining = timeremainingalert ? 
+      Number(timeremainingalert.threshold_violation_amount.replace('days','')): 0;
 
     //if expiration and time remaining show warning alert
-    if(expiry && this.expirationTimeRemaining > 0){
-      this.fundingAlertType = FundingAlertTypes.POPExpiresThirtyDaysNoTOClin;
+    if(timeremainingalert && this.daysRemaining > 0 && !fundsDepleted){
+      this.fundingAlertType = lowFundsThreshold ?  FundingAlertTypes.POPExpiresSoonWithLowFunds :
+        FundingAlertTypes.POPExpiresSoonNoTOClin;
     }
     
 

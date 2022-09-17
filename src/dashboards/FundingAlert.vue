@@ -4,16 +4,23 @@
       class="mt-5"
     >
       <template v-slot:content>
-        <div class="mb-0" v-if="fundingAlertType === popExpires30DaysNoTOClin">
+        <div class="mb-0" v-if="fundingAlertType === pOPExpiresSoonNoTOClin">
          The current period of performance is <strong>expiring in {{timeRemaining}} days. </strong> 
          <a role="button">Modify your existing task order</a> to extend the current PoP 
          or to exercise an option period. You can also <a role="button">add a new task order</a> 
          to continue working with this portfolio.
         </div>
-         <div class="mb-0" v-if="fundingAlertType === popExpires30DaysWithTOClin">
+         <div class="mb-0" v-if="fundingAlertType === popExpiresSoonWithTOClin">
          The current period of performance is <strong>expiring in {{timeRemaining}} days.</strong> 
          You have obligated funds in an upcoming CLIN, so there will be no gap in 
          funding for this portfolio.
+        </div>
+         <div class="mb-0" v-if="fundingAlertType === popExpiresSoonWithLowFunds">
+         This portoflio is almost out of funds and is <strong>expiring in 
+          {{timeRemaining}} days. </strong>  
+         <a role="button">Modify your existing task order</a> or 
+         <a role="button">add a new task order</a> 
+         to ensure there are no gaps in funding for this portfolio.
         </div>
          <div class="mb-0" v-if="fundingAlertType === popExpired">
          <div class="h3">This portfolio is out of funds.</div>
@@ -31,8 +38,9 @@ import { Component, Prop } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 export const FundingAlertTypes = {
-  POPExpiresThirtyDaysNoTOClin: "POPExpiresThirtyDaysNoTOClin",
-  POPExpiresThirtyDaysWithTOClin: "POPExpiresThirtyDaysWithTOClin",
+  POPExpiresSoonNoTOClin: "POPExpiresSoonDaysNoTOClin",
+  POPExpiresSoonWithTOClin: "POPExpiresSoonWithTOClin",
+  POPExpiresSoonWithLowFunds: "POPExpiresSoonWithLowFunds",
   POPExpired:"POPExpired"
 }
 
@@ -42,13 +50,14 @@ export const FundingAlertTypes = {
   }
 })
 export default class FundingAlert extends Vue { 
-  @Prop({default: FundingAlertTypes.POPExpiresThirtyDaysNoTOClin}) 
+  @Prop({default: FundingAlertTypes.POPExpiresSoonNoTOClin}) 
   private fundingAlertType?: string;
   @Prop({default: 0}) 
   private timeRemaining?: number;
 
-  private popExpires30DaysNoTOClin = FundingAlertTypes.POPExpiresThirtyDaysNoTOClin;
-  private popExpires30DaysWithTOClin = FundingAlertTypes.POPExpiresThirtyDaysWithTOClin;
+  private pOPExpiresSoonNoTOClin = FundingAlertTypes.POPExpiresSoonNoTOClin;
+  private popExpiresSoonWithTOClin = FundingAlertTypes.POPExpiresSoonWithTOClin;
+  private popExpiresSoonWithLowFunds = FundingAlertTypes.POPExpiresSoonWithLowFunds;
   private popExpired = FundingAlertTypes.POPExpired;
 
   get alertType():string {
@@ -58,7 +67,7 @@ export default class FundingAlert extends Vue {
       alert = "error";
     }
 
-    if(this.fundingAlertType === this.popExpires30DaysWithTOClin){
+    if(this.fundingAlertType === this.popExpiresSoonWithTOClin){
       alert = "info";
     }
 
