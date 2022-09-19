@@ -3,25 +3,24 @@
     <PageHead 
       :docTitle="docTitle"></PageHead>
     <div>
-      <v-form id="reviewForm">
+      <v-form id="reviewForm" v-if="_docData['acqPackage']">
         <h2>Part I. Requirements Owner Information</h2>
-        {{ JSON.stringify(_docData) }}
-        <!-- <EmergencyDeclarationSupport
+        <EmergencyDeclarationSupport
           legend="Is this requirement in support of an emergency declaration?"
           topMarginClass="mt-2"
-          :emergencyDeclaration.sync="docData.acqPackage.emergency_declaration"
-        ></EmergencyDeclarationSupport> -->
+          :emergencyDeclaration.sync="_docData.acqPackage.emergency_declaration"
+        ></EmergencyDeclarationSupport> 
      
-        <!-- <ProjectTitle
+        <ProjectTitle
           class="mt-9"
           label="Project/Requirements Title"
-          :currentTitle.sync="docData.acqPackage.title"
-        ></ProjectTitle> -->
-        <!-- <ProjectScope
+          :currentTitle.sync="_docData.acqPackage.title"
+        ></ProjectTitle>
+        <ProjectScope
           class="mt-10"
           label="What is the scope of your requirement?"
-          :projectScope.sync="_data.scope"
-        ></ProjectScope> -->
+          :projectScope.sync="_docData.acqPackage.scope"
+        ></ProjectScope>
       </v-form>
     </div>
   </div>
@@ -49,10 +48,6 @@ import ProjectScope
 })
 export default class DocumentReviewForm extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  @PropSync("docData") private _docData!: Record<string, Record<string,unknown>>;
-  private mounted():void{
-    console.log(this)
-    console.log( this._docData.acqPackage);
-  }
+  @PropSync("docData") private _docData!: Record<string, Record<string, unknown>>;
 }
 </script>

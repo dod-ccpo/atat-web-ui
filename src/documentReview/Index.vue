@@ -16,10 +16,11 @@
       <Preview
         v-if="displayView === 'preview'"
         :docTitle="docTitle"
-        :docData.sync="docData"
+        :docData="docData"
         @showView="showView"
       ></Preview>
     </div>
+    <v-btn @click="saveOnLeave">Save</v-btn>
   </div>
 </template>
 <script lang="ts">
@@ -32,7 +33,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import CommentsPanel from "./components/CommentsPanel.vue";
 import { Component, Mixins } from "vue-property-decorator";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import { ProjectOverviewDTO } from "@/api/models";
+import { OrganizationDTO, ProjectOverviewDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import _ from "lodash";
@@ -53,10 +54,17 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
   private projectScope = "";
   private emergencyDeclaration = "";
   private displayView = "";
-  private docData: Record<string, unknown> = {};
+  // private docData: Record<string, Record<string, unknown>>[] = [];
+  private docData: Record<string, Record<string, unknown>> = {
+    "acqPackage":{},
+    "org": {}
+  }
+  
+  private savedData:Record<string, Record<string, unknown>> = {
+    "acqPackage":{},
+    "org": {}
+  }
   private docDataSectionsToSave: string[] = [];
-  private savedData:Record<string, unknown> = {};
- 
   
   public showView(view?: string): void {
     this.displayView = view ? view : "form";
@@ -78,19 +86,26 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
   }
 
   public async loadOnEnter(): Promise<void> {
-    this.docData["acqPackage"] = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
+    this.docData.acqPackage = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
       storeProperty: StoreProperties.ProjectOverview,
-    });
-    this.savedData = _.cloneDeep(this.docData);
+    }) as unknown as Record<string, string | unknown>;
+    this.docData.org = await AcquisitionPackage.loadData<OrganizationDTO>({
+      storeProperty: StoreProperties.Organization
+    })as Record<string, string>;
+
+    console.log(this.docData);
+    this.savedData = _.cloneDeep(this.docData)
   }
+
 
   public hasChanged(): void {
     for (const section in this.docData){
+      debugger;
       if (hasChanges(this.docData[section], this.savedData[section])){
         this.docDataSectionsToSave.push(section);
       };
     }
-  }
+  } 
 
   protected async saveOnLeave(): Promise<boolean> {
     await this.hasChanged()

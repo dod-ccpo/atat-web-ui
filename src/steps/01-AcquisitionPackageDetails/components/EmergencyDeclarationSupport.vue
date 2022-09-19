@@ -36,15 +36,15 @@ export default class EmergencyDeclarationSupport extends Vue {
 
   private radioGroupItems: RadioButton[] = [
     {
-      id: "Yes",
-      label: "Yes",
-      value: "yes",
+      id: "Yes_EmergencyDeclaration",
+      label: "Yes.",
+      value: "YES",
       readonly: !this.isForm,
     },
     {
-      id: "No",
-      label: "No",
-      value: "no",
+      id: "No_EmergencyDeclaration",
+      label: "No.",
+      value: "NO",
       readonly: !this.isForm,
     },
   ];
