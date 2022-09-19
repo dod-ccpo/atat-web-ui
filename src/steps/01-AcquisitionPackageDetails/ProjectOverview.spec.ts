@@ -6,8 +6,8 @@ import ProjectOverview from "@/steps/01-AcquisitionPackageDetails/ProjectOvervie
 import validators from "../../plugins/validation";
 import AcquisitionPackage,{ StoreProperties}
   from "@/store/acquisitionPackage";
-import { off } from "process";
-import { convertSystemChoiceToSelect } from "@/helpers";
+// import { off } from "process";
+// import { convertSystemChoiceToSelect } from "@/helpers";
 import { ProjectOverviewDTO } from "@/api/models";
 Vue.use(Vuetify);
 
@@ -20,13 +20,13 @@ describe("Testing index Component", () => {
   const mockProjectOverviewDTO = {
     "scope": "Scope From Store",
     "title": "Title From Store",
-    "emergency_declaration": "true"
+    "emergency_declaration": "yes"
   }; 
 
   const mockProjectOverviewDTOCurrent = {
     "scope": "current scope",
     "title": "current title",
-    "emergency_declaration": "true"
+    "emergency_declaration": "yes"
   }; 
 
 
@@ -91,14 +91,14 @@ describe("Testing index Component", () => {
     })
 
   it("currentData() - set emergencyDeclaration to ensure currentData.emergencyDeclaration " +
-      "is updated", 
+    "is updated", 
   async ()=>{
     const emergencyDeclaration = "yes"
     await wrapper.setData({
       emergencyDeclaration
     })
     const currentData =  await wrapper.vm.currentData;
-    expect(currentData.emergency_declaration).toBe("true")
+    expect(currentData.emergency_declaration).toBe("yes")
   })
 
   it("currentData() - set emergencyDeclaration to ensure currentData.emergencyDeclaration " +
@@ -109,7 +109,7 @@ describe("Testing index Component", () => {
       emergencyDeclaration
     })
     const currentData =  await wrapper.vm.currentData;
-    expect(currentData.emergency_declaration).toBe("false")
+    expect(currentData.emergency_declaration).toBe("no")
   })
 
   it("savedData() - set title to ensure savedData.title " +
@@ -120,7 +120,7 @@ describe("Testing index Component", () => {
       {
         "scope": "scope goes here",
         "title": title,
-        "emergency_declaration": "true"
+        "emergency_declaration": "yes"
       }
     )
     const savedData =  await wrapper.vm.savedData;
@@ -135,12 +135,12 @@ describe("Testing index Component", () => {
         currentData:{
           "scope": "currentScope",
           "title": "currentTitle",
-          "emergency_declaration": "true"
+          "emergency_declaration": "yes"
         },
         savedData:{
           "scope": "savedScope",
           "title": "savedTitle",
-          "emergency_declaration": "true"
+          "emergency_declaration": "yes"
         }
       }
     )

@@ -61,7 +61,6 @@ export default class ATATSlideoutPanel extends Vue {
     }
   }
 
-
   get panelTitle(): string {
     return SlideoutPanel.slideoutPanelTitle;
   }

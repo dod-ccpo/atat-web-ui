@@ -35,7 +35,6 @@ export default class App extends Vue {
   public activeAppSectionChanged(newActiveSection: string): void {
     switch (newActiveSection) {
     case this.sectionTitles.AcquisitionPackage:
-      this.$router.push("/");
       AppSections.setAppContentComponent(AppPackageBuilder);
       break;
     case this.sectionTitles.JWCCDashboard:

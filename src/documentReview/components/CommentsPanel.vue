@@ -24,7 +24,6 @@
           width="15"
           height="15"
           color="primary"
-         
         />
       </v-btn>
     </div>
@@ -48,7 +47,6 @@
         </dd>
       </dl>
     </div>
-
     <hr class="ma-0" />
   </div>
 </template>
