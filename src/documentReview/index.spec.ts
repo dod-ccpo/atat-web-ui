@@ -25,18 +25,26 @@ describe("Testing index Component", () => {
         "emergency_declaration": "true"
       })
     );
+
+    jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
+      ()=>Promise.resolve()
+    );
   });
+
+  afterEach(()=>{
+    jest.clearAllMocks();
+  })
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("showView('form') - set $displayView to `form`", async () => {
+  it("showView('form') - set $data.displayView to `form`", async () => {
     await wrapper.vm.showView('form')
     expect(wrapper.vm.$data.displayView).toBe('form');
   });
 
-  it("showView('') - set $displayView to `form`", async () => {
+  it("showView('') - set $data.displayView to `form`", async () => {
     await wrapper.vm.showView('')
     expect(wrapper.vm.$data.displayView).toBe('form');
   });
@@ -53,8 +61,40 @@ describe("Testing index Component", () => {
 
   it("loadOnEnter - returns storeData successfully", async()=>{
     await wrapper.vm.loadOnEnter();  
-    expect(await wrapper.vm.$data.docData.title).toBe("title goes here");
-    expect(await wrapper.vm.$data.docData.emergency_declaration ).toBe("true");
+    expect(await wrapper.vm.$data.docData.acqPackage.title).toBe("title goes here");
+    expect(await wrapper.vm.$data.docData.acqPackage.emergency_declaration ).toBe("true");
   })
+
+  it("saveOnLeave() - compare a diff $data.docData and $doc.savedData " +
+    "to ensure section is in $data.docDataSectonsToSave", async()=>{
+    await wrapper.setData({
+      docData:{
+        "acqPackage":{
+          "dummyAttribute": "dummyValue"
+        }
+      },
+      savedData:{
+        "acqPackage":{
+          "dummyAttribute": ""
+        }
+      }
+    })
+    await wrapper.vm.saveOnLeave();
+    expect(await wrapper.vm.$data.docDataSectionsToSave.some(
+      (section: string) => section === "acqPackage"
+    )).toBe(true)
+  })
+
+  it("saveOnLeave() - trigger switch() default", async()=>{
+    await wrapper.setData({
+      docDataSectionsToSave:['dummy doc data section']
+    })
+    const _saveOnLeave = await wrapper.vm.saveOnLeave();
+    expect(_saveOnLeave).toBe(true)
+  })
+
+
+
+
 
 });

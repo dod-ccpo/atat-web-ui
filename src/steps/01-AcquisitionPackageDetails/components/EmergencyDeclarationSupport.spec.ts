@@ -23,10 +23,5 @@ describe("Testing index Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("watch() ensuring $data.tempValue changes $prop._emergencyDeclaration", 
-    async () => {
-      await wrapper.setProps({ emergencyDeclaration: "true"})
-      expect(await wrapper.vm.tempValue).toBe("yes");
-    });
-
+ 
 })

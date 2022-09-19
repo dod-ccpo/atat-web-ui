@@ -3,7 +3,7 @@
     <PageHead 
       :docTitle="docTitle"></PageHead>
     <div>
-      <v-form id="reviewForm" v-if="_docData['acqPackage']">
+      <v-form id="reviewForm">
         <h2>Part I. Requirements Owner Information</h2>
         <EmergencyDeclarationSupport
           legend="Is this requirement in support of an emergency declaration?"

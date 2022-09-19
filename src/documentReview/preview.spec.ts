@@ -15,7 +15,18 @@ describe("Testing index Component", () => {
     wrapper = mount(preview, {
       localVue,
       vuetify,
+      propsData:{
+        docData:{
+          acqPackage:{
+            title: "title",
+            scope: "scope",
+            // eslint-disable-next-line camelcase
+            emergency_declaration: "Yes"
+          }
+        }
+      }
     });
+
   });
 
   it("renders successfully", async () => {

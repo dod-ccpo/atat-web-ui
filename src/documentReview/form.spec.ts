@@ -10,16 +10,27 @@ describe("Testing index Component", () => {
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vuetify = new Vuetify();
     wrapper = mount(form, {
       localVue,
       vuetify,
+      propsData:{
+        docData:{
+          acqPackage:{
+            title: "title",
+            scope: "scope",
+            // eslint-disable-next-line camelcase
+            emergency_declaration: "Yes"
+          }
+        }
+      }
     });
+   
   });
 
   it("renders successfully", async () => {
-    expect(wrapper.exists()).toBe(true);
+    expect(await wrapper.exists()).toBe(true);
   });
 
 })
