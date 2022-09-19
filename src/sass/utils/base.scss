@@ -173,6 +173,7 @@ textarea {
  }
 }
 
+
 ._offering-instances.v-data-table {
   > .v-data-table__wrapper > table > tbody {
     > tr {
@@ -266,4 +267,51 @@ textarea {
     }
   }
 
+}
+
+._administrator-log.v-data-table {
+  > .v-data-table__wrapper > table > tbody {
+    > tr {
+      &.v-data-table__empty-wrapper {
+        height: 120px;
+
+        td {
+          font-weight: normal !important;
+          font-size: 1.6rem;
+          color: $base-dark;
+        }
+      }
+
+      > td {
+        font-size: 1.4rem;
+        padding: 8px 8px 8px 24px;
+
+        &:first-of-type {
+          font-weight: 500;
+        }
+      }
+    }
+  }
+  > .v-data-table__wrapper > table > thead > tr {
+    background-color: $base-lightest;
+
+    & > th {
+      padding-left:24px !important;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: $base-dark;
+      border-bottom: none !important;
+      white-space: nowrap;
+      padding: 8px;
+    }
+  }
+}
+._icon-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
 }
