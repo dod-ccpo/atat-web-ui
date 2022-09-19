@@ -21,7 +21,7 @@
           <ol>
             <li>
               <EmergencyDeclarationSupport
-                :isForm="false"
+                :isForm="isForm"
                 :emergencyDeclaration="emergencyDeclaration"
                 legend="Emergency: This requirement is in support of an Emergency Declaration."
               >
@@ -33,12 +33,12 @@
               <div aria-describedby="ReqInfo">
                 <ProjectTitle
                   class="mb-2"
-                  :isForm="false"
+                  :isForm="isForm"
                   :currentTitle="currentTitle"
                 ></ProjectTitle>
 
                 <ProjectScope
-                  :isForm="false" 
+                  :isForm="isForm" 
                   :projectScope="projectScope"
                 ></ProjectScope>
               </div>
@@ -50,19 +50,17 @@
           <ol>
             <li>
               <CurrentContractOptions 
-                :isForm="false"
-                :isCard="false"
-                :isWizard="false"
+                :isForm="isForm"
                 legend="Do you have a current contract for this effort?"
                 :selectedOption="currentContractExists"
               />
             </li>
             <li>
               <FairOppExceptions 
-                :isForm="false"
+                :isForm="isForm"
                 legend="Does your market research indicate an exception to the fair 
                   opportunity process (Federal Acquisition Regulation (FAR) 16.505(b)(2))?"
-                :selectedException.sync="fairOpportunityException"
+                :selectedException="fairOpportunityException"
               />
             </li>
           </ol>
@@ -112,6 +110,8 @@ import {
 })
 export default class DocumentReviewPreview extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
+
+  private isForm = false;
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";

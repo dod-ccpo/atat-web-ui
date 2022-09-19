@@ -35,8 +35,6 @@
         <div class="_comment-wrap">
           <CommentButton id="ProjectScope" />
           <CurrentContractOptions 
-            :isCard="false"
-            :isWizard="false"
             legend="Do you have a current contract for this effort?"
             :selectedOption.sync="currentContractExists"
           />
