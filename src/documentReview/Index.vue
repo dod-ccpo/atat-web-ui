@@ -92,15 +92,12 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
     this.docData.org = await AcquisitionPackage.loadData<OrganizationDTO>({
       storeProperty: StoreProperties.Organization
     })as Record<string, string>;
-
-    console.log(this.docData);
     this.savedData = _.cloneDeep(this.docData)
   }
 
 
   public hasChanged(): void {
     for (const section in this.docData){
-      debugger;
       if (hasChanges(this.docData[section], this.savedData[section])){
         this.docDataSectionsToSave.push(section);
       };
