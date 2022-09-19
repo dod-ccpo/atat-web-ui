@@ -145,6 +145,7 @@
     />
 
     <ATATDialog
+      id="RemoveMemberModal"
       :showDialog="showDeleteMemberDialog"
       :title="'Remove ' + deleteMemberName + ' from portfolio?'" 
       no-click-animation

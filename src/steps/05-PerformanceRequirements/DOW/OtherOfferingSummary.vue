@@ -82,6 +82,7 @@
     </v-container>
 
     <ATATDialog
+      id="DeleteInstanceModal"
       :showDialog="showDeleteInstanceDialog"
       :title="deleteInstanceModalTitle"
       no-click-animation
@@ -100,6 +101,7 @@
     </ATATDialog>
 
     <ATATDialog
+      id="DeleteAllInstancesModal"
       :showDialog="showDeleteOfferingDialog"
       :title="'Delete all ' + serviceDescription + ' ' + requirementOrInstance + 's?'"
       no-click-animation
