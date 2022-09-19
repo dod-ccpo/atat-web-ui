@@ -1,5 +1,6 @@
 <template>
   <ATATDialog
+    id="AddMembersModal"
     :showDialog.sync="_showModal"
     :title="'Invite people to “' + projectTitle + '”'"
     no-click-animation

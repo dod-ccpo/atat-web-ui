@@ -1,5 +1,6 @@
 <template>
   <ATATDialog
+    id="UpdateClassificationsModal"
     :showDialog.sync="_showModal"
     title="What classification level(s) are required for your
       cloud resources and/or services?"

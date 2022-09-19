@@ -8,7 +8,7 @@
     id="ATATDialog"
     ref="atatDialog"
   >
-    <v-card>
+    <v-card :id="id">
       <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">
         {{ getTitle }}
       </v-card-title>
@@ -46,7 +46,7 @@ import Vue from "vue";
 export default class ATATDialog extends Vue {
   @Prop() private message!: string;
   @Prop({default: "Dialog-Title"}) private title!: string;
-  @Prop() private id!: string;
+  @Prop({ default: "ATATModalContent"}) private id!: string;
   @Prop({default: "500px"}) private width!: string;
   @Prop({default: "Cancel"}) private cancelText!: string;
   @Prop({default: "OK"}) private okText!: string;
