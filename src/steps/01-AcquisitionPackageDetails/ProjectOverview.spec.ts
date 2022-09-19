@@ -37,8 +37,12 @@ describe("Testing index Component", () => {
       vuetify,
     });
 
-    jest.spyOn(AcquisitionPackage, 'loadData').mockImplementationOnce(
+    jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
       ()=>Promise.resolve(mockProjectOverviewDTO)
+    );
+
+    jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
+      ()=>Promise.resolve()
     );
   });
 
@@ -48,30 +52,23 @@ describe("Testing index Component", () => {
   })
 
   it("renders successfully", async () => {
-    expect(wrapper.exists()).toBe(true);
+    expect(await wrapper.exists()).toBe(true);
   });
 
   it("loadOnEnter - returns storeData successfully", async()=>{
-    
-
-    jest.mock("@/store/acquisitionPackage", () => ({
-      initialize: jest.fn(),
-      ensureInitialized: jest.fn()
-    }));
     await wrapper.vm.loadOnEnter();  
     expect(await wrapper.vm.$data.currentTitle).toBe("Title From Store");
   })
 
   it("getForm() returns Vue component with validate() function", async() =>{
     const vueComponent = await wrapper.vm.Form;
-    console.log(await vueComponent.type);
     expect(await vueComponent.validate()).toBe(false);
   })
 
   it("validateForm() returns Vue component", async() =>{
     await wrapper.vm.Form;
     const isValidated =  await wrapper.vm.validateForm();
-    expect(isValidated).toBe(true);
+    expect(isValidated).toBe(false);
   })
 
   it("projectTitle() - set projtitle in the store then successfully retrieve it", 
@@ -179,10 +176,5 @@ describe("Testing index Component", () => {
       const saveOnLeave = await wrapper.vm.saveOnLeave();
       expect(saveOnLeave).toBe(true)
     })
-
-
-
-
-
 })
 
