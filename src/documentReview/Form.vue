@@ -5,22 +5,23 @@
     <div>
       <v-form id="reviewForm">
         <h2>Part I. Requirements Owner Information</h2>
-        <EmergencyDeclarationSupport
+        {{ JSON.stringify(_docData) }}
+        <!-- <EmergencyDeclarationSupport
           legend="Is this requirement in support of an emergency declaration?"
           topMarginClass="mt-2"
-          :emergencyDeclaration.sync="_docData.emergency_declaration"
-        ></EmergencyDeclarationSupport>
+          :emergencyDeclaration.sync="docData.acqPackage.emergency_declaration"
+        ></EmergencyDeclarationSupport> -->
      
-        <ProjectTitle
+        <!-- <ProjectTitle
           class="mt-9"
           label="Project/Requirements Title"
-          :currentTitle.sync = "_docData.title"
-        ></ProjectTitle>
-        <ProjectScope
+          :currentTitle.sync="docData.acqPackage.title"
+        ></ProjectTitle> -->
+        <!-- <ProjectScope
           class="mt-10"
           label="What is the scope of your requirement?"
-          :projectScope.sync="_docData.scope"
-        ></ProjectScope>
+          :projectScope.sync="_data.scope"
+        ></ProjectScope> -->
       </v-form>
     </div>
   </div>
@@ -48,6 +49,10 @@ import ProjectScope
 })
 export default class DocumentReviewForm extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  @PropSync("docData") private _docData!: Record<string, unknown>;
+  @PropSync("docData") private _docData!: Record<string, Record<string,unknown>>;
+  private mounted():void{
+    console.log(this)
+    console.log( this._docData.acqPackage);
+  }
 }
 </script>

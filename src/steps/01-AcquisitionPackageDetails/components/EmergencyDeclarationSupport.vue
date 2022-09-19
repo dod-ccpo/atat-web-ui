@@ -3,7 +3,7 @@
     <ATATRadioGroup
       :id="id"
       :legend="legend" 
-      :value.sync="tempValue"
+      :value.sync="_emergencyDeclaration"
       :items="radioGroupItems"
       name="emergency-declaration-support-requirement-radio-group"
       class="mt-3"
@@ -12,11 +12,11 @@
     </ATATRadioGroup>
   </div>
 </template>
-
+ 
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync} from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 
@@ -34,9 +34,6 @@ export default class EmergencyDeclarationSupport extends Vue {
   @Prop({default: "mt-6"}) private topMarginClass!: string;
   @PropSync("rules") private _rules!: "";
 
-  get tempValue(): string {
-    return this._emergencyDeclaration === "true" ? "yes" : "no"
-  }
   private radioGroupItems: RadioButton[] = [
     {
       id: "Yes",
@@ -51,11 +48,5 @@ export default class EmergencyDeclarationSupport extends Vue {
       readonly: !this.isForm,
     },
   ];
-
-  @Watch("tempValue",{immediate: true})
-  protected valueChanged(newVal: string): void{
-    this._emergencyDeclaration = newVal === "yes" ? "true" : "false"
-  }
-
 }
 </script>

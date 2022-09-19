@@ -18,7 +18,7 @@
         <li>
           <EmergencyDeclarationSupport
             :isForm="false"
-            :emergencyDeclaration="emergencyDeclaration"
+            :emergencyDeclaration="docData.emergency_declaration"
             legend="Emergency: This requirement is in support of an Emergency Declaration."
           >
           </EmergencyDeclarationSupport>
@@ -30,12 +30,12 @@
             <ProjectTitle
               class="mb-2"
               :isForm="false"
-              :currentTitle="currentTitle"
+              :currentTitle="docData.title"
             ></ProjectTitle>
 
             <ProjectScope
               :isForm="false" 
-              :projectScope="projectScope"
+              :projectScope="docData.scope"
             ></ProjectScope>
           </div>
         </li>
@@ -64,5 +64,6 @@ import { Component, Prop } from "vue-property-decorator";
 })
 export default class DocumentReviewPreview extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
+  @Prop() private docData!: Record<string, unknown>
 }
 </script>
