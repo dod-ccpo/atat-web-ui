@@ -4,18 +4,17 @@
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
 
-    <v-main >
+    <v-main>
       <div id="app-content" class="d-flex flex-column">
         <div class="mb-auto">
           <router-view></router-view>
         </div>
-
         <ATATFooter/>
-
       </div>
     </v-main>
   </div>
 </template>
+
 <script lang="ts">
 import { SlideoutPanelContent } from "types/Global";
 import Vue from "vue";

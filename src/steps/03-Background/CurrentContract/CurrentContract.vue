@@ -7,15 +7,15 @@
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              If your acquisition is a follow-on requirement, 
-              we’ll gather some details about your contract next.
+              If your acquisition is a follow-on requirement, we’ll gather some 
+              details about your contract next. Your procurement history will serve 
+              as a background on multiple documents within your final acquisition 
+              package, including the Requirements Checklist and Description of Work.
             </p>
-            <ATATRadioGroup                                  
-              class="copy-max-width mb-10 max-width-740"
-              id="currentContractOptions"
+            <CurrentContractOptions                                  
               :card="true"
               :items="currentContractOptions" 
-              :value.sync="currentContractExists"
+              :selectedOption.sync="currentContractExists"
               :rules="[$validators.required('Please select an option')]"            
             />
           </div>
@@ -28,33 +28,20 @@
 /* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 
-import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
+import CurrentContractOptions from "./components/CurrentContractOptions.vue"
 
-import { RadioButton } from "../../../../types/Global";
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { ContractTypeDTO, CurrentContractDTO } from "@/api/models";
+import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
-    ATATRadioGroup,
+    CurrentContractOptions,
   },
 })
 
 export default class CurrentContract extends Mixins(SaveOnLeave) {
-  private currentContractOptions: RadioButton[] = [
-    {
-      id: "Yes",
-      label: "Yes. There is a current contract for this effort.",
-      value: "YES",
-    },
-    {
-      id: "No",
-      label: "No. This is a new requirement.",
-      value: "NO",
-    },
-  ];
 
   public currentContractExists 
     = AcquisitionPackage.currentContract?.current_contract_exists || "";
