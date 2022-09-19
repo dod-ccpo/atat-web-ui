@@ -21,7 +21,6 @@
                 $validators.maxLength(60, 'Title cannot exceed 60 characters'),
               ]"
               :currentTitle.sync="currentTitle"
-              @blur="onTitleChanged"
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
@@ -59,7 +58,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";
@@ -121,8 +120,9 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
     };
   }
 
-  public onTitleChanged(): void {
-    this.projectTitle = this.currentTitle;
+  @Watch("currentTitle")
+  public projectTitleChange(newTitle: string): void {
+    this.projectTitle = newTitle;
   }
 
   public async mounted(): Promise<void> {
