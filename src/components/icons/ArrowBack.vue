@@ -1,11 +1,10 @@
 <template>
-  <svg viewBox="0 0 16 16">
-    <!-- eslint-disable -->
-    <path d="M16 7.5H3.83L9.42 1.91L8 0.5L0 8.5L8 16.5L9.41 15.09L3.83 9.5H16V7.5Z"
-	:fill="'#' + color"
+  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <!-- eslint-disable -->
+    <path d="M16 7H3.83L9.42 1.41L8 0L0 8L8 16L9.41 14.59L3.83 9H16V7Z" 
+      :fill="'#' + color"
     />
-    <!-- eslint-enable -->
-
+  <!-- eslint-enable -->
   </svg>
 </template>
 
@@ -14,7 +13,8 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
+
 export default class ArrowBack extends Vue {
-  @Prop({default: "61686c", required: true}) private color!:string;
+  @Prop({ default: "161B1E", required: false }) private color?:string;
 }
 </script>
