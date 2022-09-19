@@ -31,19 +31,19 @@ describe("Testing index Component", () => {
 
 
   beforeEach(() => {
+    
+    jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
+      ()=>Promise.resolve(mockProjectOverviewDTO));
+
+    jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
+      ()=>Promise.resolve());
+
     vuetify = new Vuetify();
     wrapper = mount(ProjectOverview, {
       localVue,
       vuetify,
     });
 
-    jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
-      ()=>Promise.resolve(mockProjectOverviewDTO)
-    );
-
-    jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
-      ()=>Promise.resolve()
-    );
   });
 
   afterEach(()=>{
@@ -62,22 +62,14 @@ describe("Testing index Component", () => {
 
   it("getForm() returns Vue component with validate() function", async() =>{
     const vueComponent = await wrapper.vm.Form;
-    expect(await vueComponent.validate()).toBe(false);
+    expect(await vueComponent.validate()).toBe(true);
   })
 
   it("validateForm() returns Vue component", async() =>{
     await wrapper.vm.Form;
     const isValidated =  await wrapper.vm.validateForm();
-    expect(isValidated).toBe(false);
+    expect(isValidated).toBe(true);
   })
-
-  it("projectTitle() - set projtitle in the store then successfully retrieve it", 
-    async ()=>{
-      const title = "dummy Project Title";
-      AcquisitionPackage.getTitle = ()=> title;
-      await wrapper.vm.onTitleChanged();
-      expect(await wrapper.vm.projectTitle).toBe(title);
-    })
 
   it("currentData() - set title to ensure currentData.title is updated", 
     async ()=>{
