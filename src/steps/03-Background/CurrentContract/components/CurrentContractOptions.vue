@@ -1,6 +1,6 @@
 <template>
   <ATATRadioGroup                                  
-    class="max-width-540"
+    class="max-width-500"
     id="currentContractOptions"
     :card="isCard"
     :items="currentContractOptions" 

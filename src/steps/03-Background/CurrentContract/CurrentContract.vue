@@ -6,7 +6,7 @@
             Do you have a current contract for this effort?
           </h1>
           <div class="copy-max-width">
-            <p class="mb-10">
+            <p class="mb-8">
               If your acquisition is a follow-on requirement, we’ll gather some 
               details about your contract next. Your procurement history will serve 
               as a background on multiple documents within your final acquisition 
@@ -43,8 +43,7 @@ import { hasChanges } from "@/helpers";
 
 export default class CurrentContract extends Mixins(SaveOnLeave) {
 
-  public currentContractExists 
-    = AcquisitionPackage.currentContract?.current_contract_exists || "";
+  public currentContractExists = "";
 
   private get currentData(): CurrentContractDTO {
     return {
@@ -68,6 +67,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         this.savedData = {
           current_contract_exists: storeData.current_contract_exists,
         }
+        this.currentContractExists = storeData.current_contract_exists || "";
       }
     } else {
       AcquisitionPackage.setCurrentContract(this.currentData);
