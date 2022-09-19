@@ -34,6 +34,42 @@
           {{ okText }}
         </v-btn>
       </v-card-actions>
+
+      <!-- modal slideout -->
+      <v-navigation-drawer
+        id="ModalSlideout"
+        v-if="modalSlideoutComponent"
+        v-model="_modalDrawerIsOpen"
+        absolute
+        temporary
+        right
+        width="100%"
+        transition="slide-x-reverse-transition"
+      >
+        <v-card elevation="0">
+          <v-card-title v-if="modalSlideoutTitle" class="d-flex">
+            <v-btn 
+              id="ModalSlideoutCloser"
+              class="_icon-only mr-2"
+              @click="closeModalDrawer"
+              @keydown.enter="closeModalDrawer"
+              @keydown.space="closeModalDrawer"
+            >
+              <ATATSVGIcon
+                name="arrowBack"
+                width="16"
+                height="16"
+              />
+            </v-btn>
+            <h2 id="ModalSlideoutTitle">{{ modalSlideoutTitle}}</h2>
+          </v-card-title>
+          <v-card-text id="ModalSlideoutContent" class="body text-base-darker pt-6">
+            <component :is="modalSlideoutComponent" />
+          </v-card-text>
+        </v-card>
+      </v-navigation-drawer>
+      <!-- end modal slideout -->   
+
     </v-card>
   </v-dialog>
 </template>
@@ -41,8 +77,16 @@
 <script lang="ts">
 import {Component, Prop, PropSync} from "vue-property-decorator";
 import Vue from "vue";
+import { Component as VueComponent } from "vue";
 
-@Component({})
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
+
+@Component({
+  components: {
+    ATATSVGIcon,
+  }
+})
+
 export default class ATATDialog extends Vue {
   @Prop() private message!: string;
   @Prop({default: "Dialog-Title"}) private title!: string;
@@ -55,7 +99,11 @@ export default class ATATDialog extends Vue {
   @Prop({ default: false }) private OKDisabled!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
 
+  @Prop() private modalSlideoutTitle?: string;
+  @Prop() modalSlideoutComponent?: VueComponent;
+
   @PropSync("showDialog") private _showDialog!: boolean;
+  @PropSync("modalDrawerIsOpen") public _modalDrawerIsOpen!: boolean;
 
   get getTitle(): string {
     if(this.truncate){
@@ -85,6 +133,10 @@ export default class ATATDialog extends Vue {
         document.getElementsByTagName("h1")[0];
       focusEl?.focus();
     });
+  }
+
+  private closeModalDrawer(): void {
+    this._modalDrawerIsOpen = false;
   }
 }
 </script>

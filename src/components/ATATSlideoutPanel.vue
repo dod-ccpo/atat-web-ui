@@ -10,6 +10,7 @@
     right
     :clipped="appSection === 'Portfolio Summary'"
     :temporary="showOverlay"
+    disable-resize-watcher
   >
     <div
       v-if="panelTitle"

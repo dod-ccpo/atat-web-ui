@@ -1,4 +1,5 @@
 .v-dialog {
+  overflow-x: hidden;
   .v-card {
     .v-card__title {
       padding: 40px 40px 8px 40px;
@@ -31,9 +32,6 @@
             background-color: $primary-lighter !important;
 
           }
-          // &:active span {
-          //   color: $primary-darken !important;
-          // }
           &.no-border{
             span{
               text-decoration: none !important;
@@ -46,6 +44,18 @@
           }
         }
       }
+    }
+  }
+
+  .v-navigation-drawer {
+    .v-card__title {
+      position: sticky;
+      top: 0;
+      padding: 32px 40px;
+      border-bottom: 1px solid $base-lighter;
+      background-color: white;
+      flex-wrap: nowrap;
+      align-items: flex-start;
     }
   }
 }

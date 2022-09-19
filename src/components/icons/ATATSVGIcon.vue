@@ -13,6 +13,7 @@ import {stringObj } from "types/Global";
 import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
+import ArrowBack from "@/components/icons/ArrowBack.vue";
 import Aws from "@/components/icons/Aws.vue";
 import Azure from "@/components/icons/Azure.vue";
 import Calendar from "@/components/icons/Calendar.vue";
@@ -53,6 +54,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 @Component({
   components: {
+    ArrowBack,
     Aws,
     Azure,
     Calendar,
@@ -95,7 +97,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 export default class ATATSVGIcon extends Vue {
   // props
-  @Prop({ required: false }) private color?: string; // DISA Base
+  @Prop({ required: false }) private color?: string;
   @PropSync("width", {default: 0, required: true}) private _width!: number;
   @PropSync("height",{default: 0, required: true}) private _height!: number;
   @Prop({default: "", required: true}) private name!: string;
