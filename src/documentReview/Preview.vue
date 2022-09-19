@@ -47,13 +47,25 @@
 
           <hr />
           <h2 class="mb-5">Part II. Requirement Information</h2>
-          <FairOppExceptions 
-            :isForm="false"
-            legend="Does your market research indicate an exception to the fair 
-              opportunity process (Federal Acquisition Regulation (FAR) 16.505(b)(2))?"
-            :selectedException.sync="fairOpportunityException"
-          />
-
+          <ol>
+            <li>
+              <CurrentContractOptions 
+                :isForm="false"
+                :isCard="false"
+                :isWizard="false"
+                legend="Do you have a current contract for this effort?"
+                :selectedOption="currentContractExists"
+              />
+            </li>
+            <li>
+              <FairOppExceptions 
+                :isForm="false"
+                legend="Does your market research indicate an exception to the fair 
+                  opportunity process (Federal Acquisition Regulation (FAR) 16.505(b)(2))?"
+                :selectedException.sync="fairOpportunityException"
+              />
+            </li>
+          </ol>
         </div>
       </div>
     </div>
@@ -63,24 +75,39 @@
 import Vue from "vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
+// Step 1 Components
 import EmergencyDeclarationSupport 
   from "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue";
 import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue";
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
+
+// Step 2 Components
 import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
+
+// Step 3 Components
+import CurrentContractOptions 
+  from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
+
 
 import { Component, Prop } from "vue-property-decorator";
 import AcquisitionPackage, {
   StoreProperties,
 } from "@/store/acquisitionPackage";
-import { ProjectOverviewDTO, FairOpportunityDTO } from "@/api/models";
+
+import { 
+  CurrentContractDTO, 
+  FairOpportunityDTO,
+  ProjectOverviewDTO,
+} from "@/api/models";
+
 @Component({
   components: {
     ATATSVGIcon,
+    CurrentContractOptions,
     EmergencyDeclarationSupport,
     FairOppExceptions,
-    ProjectTitle,
     ProjectScope,
+    ProjectTitle,
   },
 })
 export default class DocumentReviewPreview extends Vue {
@@ -89,6 +116,13 @@ export default class DocumentReviewPreview extends Vue {
   private projectScope = "";
   private emergencyDeclaration = "";
   private fairOpportunityException = "";
+  private currentContractExists = "";
+
+  private docData = {
+    acqPackage: {},
+    fairOpp: {},
+    background: {},
+  }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -118,6 +152,17 @@ export default class DocumentReviewPreview extends Vue {
       this.fairOpportunityException = storeDataFairOpp.exception_to_fair_opportunity;
     }
 
+    const bkgStoreData = await AcquisitionPackage.
+      loadData<CurrentContractDTO>({storeProperty: StoreProperties.CurrentContract})
+    if (bkgStoreData) {
+      if (Object.prototype.hasOwnProperty.call(bkgStoreData, 'current_contract_exists')) {
+        this.docData.background = {
+          // eslint-disable-next-line camelcase
+          current_contract_exists: bkgStoreData.current_contract_exists,
+        }
+        this.currentContractExists = bkgStoreData.current_contract_exists || "";
+      }
+    }
 
   }
 }

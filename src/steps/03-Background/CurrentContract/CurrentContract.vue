@@ -14,7 +14,7 @@
             </p>
             <CurrentContractOptions                                  
               :card="true"
-              :items="currentContractOptions" 
+              :isWizard="true"
               :selectedOption.sync="currentContractExists"
               :rules="[$validators.required('Please select an option')]"            
             />

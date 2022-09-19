@@ -35,11 +35,12 @@
         <div class="_comment-wrap">
           <CommentButton id="ProjectScope" />
           <CurrentContractOptions 
+            :isCard="false"
+            :isWizard="false"
             legend="Do you have a current contract for this effort?"
             :selectedOption.sync="currentContractExists"
           />
         </div>
-
 
         <div class="_comment-wrap">
           <CommentButton id="ProjectScope" />
@@ -76,7 +77,6 @@ import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/Fair
 // Step 3 Components
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
-
 
 
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
