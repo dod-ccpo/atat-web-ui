@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div
-      class="no-text-decoration d-flex align-center "
-    >
+    <div class="no-text-decoration d-flex align-center">
       <v-btn 
         class="plain bg-transparent mx-7 my-4 pa-0" 
         @click="$emit('showView', 'form')" >
@@ -20,23 +18,20 @@
             :isForm="false"
             :emergencyDeclaration="docData.acqPackage.emergency_declaration"
             legend="Emergency: This requirement is in support of an Emergency Declaration."
-          >
-          </EmergencyDeclarationSupport>
+          />
         </li>
         <li>
-          <div id="ReqInfo" class="mb-4">
-            <strong>Requirements Information</strong></div>
+          <strong id="ReqInfo" class="mb-4 d-block">Requirements Information</strong>
           <div aria-describedby="ReqInfo">
             <ProjectTitle
               class="mb-2"
               :isForm="false"
               :currentTitle="docData.acqPackage.title"
-            ></ProjectTitle>
-
+            />
             <ProjectScope
               :isForm="false" 
               :projectScope="docData.acqPackage.scope"
-            ></ProjectScope>
+            />
           </div>
         </li>
       </ol>

@@ -12,15 +12,15 @@
         :docTitle="docTitle"
         :docData.sync="docData"
         v-if="displayView === 'form'"
-      ></Form>
+      />
       <Preview
         v-if="displayView === 'preview'"
         :docTitle="docTitle"
         :docData="docData"
+        :isForm="false"
         @showView="showView"
-      ></Preview>
+      />
     </div>
-    <v-btn @click="saveOnLeave">Save</v-btn>
   </div>
 </template>
 <script lang="ts">
@@ -54,7 +54,7 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
   private projectScope = "";
   private emergencyDeclaration = "";
   private displayView = "";
-  // private docData: Record<string, Record<string, unknown>>[] = [];
+
   private docData: Record<string, Record<string, unknown>> = {
     "acqPackage":{},
     "org": {}
@@ -94,7 +94,6 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
     })as Record<string, string>;
     this.savedData = _.cloneDeep(this.docData)
   }
-
 
   public hasChanged(): void {
     for (const section in this.docData){
