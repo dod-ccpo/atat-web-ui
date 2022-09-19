@@ -111,7 +111,7 @@ export default class ATATSVGIcon extends Vue {
         "line-height: 0px";
     });
   }
-  
+
   private getColor(): string {
     const colorName = this.color || "base-darkest";
     return (this.standardColors.find((sc)=> sc[colorName]) as stringObj)[colorName];
@@ -130,7 +130,6 @@ export default class ATATSVGIcon extends Vue {
     { "disabled": "c9c9c9" },
     { "disabled-dark": "adadad"},
     { "white": "ffffff" },
-    { "azure-blue": "0089D6" },
   ]
 
   private mounted(): void{

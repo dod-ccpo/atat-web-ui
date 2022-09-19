@@ -7,9 +7,8 @@
     aria-describedby="modalDialogMessage"
     id="ATATDialog"
     ref="atatDialog"
-    style="background-color: red !important;"
   >
-    <v-card>
+    <v-card :id="id">
       <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">
         {{ getTitle }}
       </v-card-title>
@@ -89,7 +88,9 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 })
 
 export default class ATATDialog extends Vue {
-  @Prop() private title!: string;
+  @Prop() private message!: string;
+  @Prop({default: "Dialog-Title"}) private title!: string;
+  @Prop({ default: "ATATModalContent"}) private id!: string;
   @Prop({default: "500px"}) private width!: string;
   @Prop({default: "Cancel"}) private cancelText!: string;
   @Prop({default: "OK"}) private okText!: string;
