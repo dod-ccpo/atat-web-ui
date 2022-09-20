@@ -73,6 +73,7 @@
     >Remove {{ corOrAcor }} info
     </a>
     <ATATDialog
+      id="ChangeContactInfoModal"
       :showDialog.sync="showDialog"
       :title="'Request change to ' + corOrAcor + '’s contact information'"
       no-click-animation

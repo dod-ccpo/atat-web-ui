@@ -143,6 +143,7 @@
     </v-row>
 
     <ATATDialog
+      id="AddAgencyModal"
       :showDialog.sync="showDialog"
       title="Request to add your agency"
       persistent

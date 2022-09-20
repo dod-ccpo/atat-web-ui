@@ -13,12 +13,14 @@ import {stringObj } from "types/Global";
 import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
+import ArrowBack from "@/components/icons/ArrowBack.vue";
 import Aws from "@/components/icons/Aws.vue";
 import Azure from "@/components/icons/Azure.vue";
 import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
+import CommentBubble from "@/components/icons/CommentBubble.vue";
 import ContactSupport from "@/components/icons/ContactSupport.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
@@ -57,12 +59,14 @@ import ManageAccount from "@/components/icons/ManageAccount.vue";
 
 @Component({
   components: {
+    ArrowBack,
     Aws,
     Azure,
     Calendar,
     ChevronDown,
     ChevronRight,
     Close,
+    CommentBubble,
     ContactSupport,
     ControlPoint,
     Currency,
@@ -103,7 +107,7 @@ import ManageAccount from "@/components/icons/ManageAccount.vue";
 
 export default class ATATSVGIcon extends Vue {
   // props
-  @Prop({ required: false }) private color?: string; // DISA Base
+  @Prop({ required: false }) private color?: string;
   @PropSync("width", {default: 0, required: true}) private _width!: number;
   @PropSync("height",{default: 0, required: true}) private _height!: number;
   @Prop({default: "", required: true}) private name!: string;

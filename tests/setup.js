@@ -12,7 +12,7 @@ import '@testing-library/jest-dom/extend-expect'
 
 global.console = {
   ...console,
-  // log: jest.fn(),
+  //log: jest.fn(),
   debug: jest.fn(),
   info: jest.fn(),
   warn: jest.fn(),
