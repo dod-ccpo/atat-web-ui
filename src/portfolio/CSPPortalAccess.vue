@@ -104,75 +104,40 @@ export default class CSPPortalAccess extends Vue {
 
   public tableData: {
     email:string,status:string,createdBy:string,created:string
-  }[] = [
-    {
-      email:"willie.jennings@example.mil",
-      status:"Processing",
-      createdBy: "Maria Missionowner",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"deanna.curtis@example.mil",
-      status:"Provisioned",
-      createdBy: "Carl Contractor",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"kenzi.lawson@example.mil",
-      status:"Failed",
-      createdBy: "Maria Missionowner",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"curtis.weaver@example.mil",
-      status:"Failed",
-      createdBy: "Carl Contractor",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"tim.welch@example.mil",
-      status:"Provisioned",
-      createdBy: "Maria Missionowner",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"cleetus.king@example.mil",
-      status:"Processing",
-      createdBy: "Sam Something",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"bob.reynolds@example.mil",
-      status:"Provisioned",
-      createdBy: "Maria Missionowner",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"travis.keelce@example.mil",
-      status:"Provisioned",
-      createdBy: "Sam Something",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"burt.baxter@example.mil",
-      status:"Provisioned",
-      createdBy: "Maria Missionowner",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"kim.bryant@example.mil",
-      status:"Provisioned",
-      createdBy: "Carl Contractor",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"tyrone.brown@example.mil",
-      status:"Provisioned",
-      createdBy: "Maria Missionowner",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-  ];
+  }[] = [];
   public maxPerPage = 10;
+  public emails = [
+    "tyrone.brown@example.mil",
+    "kim.bryant@example.mil",
+    "burt.baxter@example.mil",
+  ]
+  public statuses = [
+    "Provisioned",
+    "Processing",
+    "Failed",
+  ]
+  public createdBy = [
+    "Maria Missionowner",
+    "Sam Something",
+    "Carl Contractor",
+  ]
+  public createTableData(): void {
+    for(let i = 0; i < 11; i++){
+      const admin = {
+        email:"",
+        status:"",
+        createdBy:"",
+        created:""
+      }
+      let idx = Math.floor(Math.random()*3)
+      admin.email = this.emails[idx]
+      admin.status = this.statuses[idx]
+      admin.createdBy = this.createdBy[idx]
+      admin.created = format(this.today,"MMM. dd, yyy hhmm")
+      this.tableData.push(admin)
+    }
+
+  }
 
   public statusImg = {
     "Failed":{
@@ -197,7 +162,12 @@ export default class CSPPortalAccess extends Vue {
       bgColor:"bg-info-lighter"
     }
   };
-
+  public loadOnEnter(): void {
+    this.createTableData();
+  }
+  public  mounted(): void {
+    this.loadOnEnter();
+  }
 }
 </script>
 
