@@ -116,19 +116,19 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
   public async loadOnEnter(): Promise<void> {
     this.docData.projectOverview = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
       storeProperty: StoreProperties.ProjectOverview,
-    }) as ProjectOverviewDTO;
+    });
 
     this.docData.organization = await AcquisitionPackage.loadData<OrganizationDTO>({
       storeProperty: StoreProperties.Organization
-    }) as OrganizationDTO;
+    });
 
     this.docData.fairOpportunity = await AcquisitionPackage.loadData<FairOpportunityDTO>({
       storeProperty: StoreProperties.FairOpportunity
-    }) as FairOpportunityDTO;
+    });
 
     this.docData.currentContract = await AcquisitionPackage.loadData<CurrentContractDTO>({
       storeProperty: StoreProperties.CurrentContract
-    }) as CurrentContractDTO;
+    });
 
     // create a copy of data as it was on page load for comparison on page leave for 
     // what to save to store and database
