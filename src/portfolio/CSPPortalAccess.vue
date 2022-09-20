@@ -61,7 +61,7 @@
           <template v-slot:footer>
             <div class="_table-pagination">
               <span class="mr-11 font-weight-400 font-size-14">
-              showing 1-{{maxPerPage}} of {{tableData.length}}
+              Showing 1-{{maxPerPage}} of {{tableData.length}}
             </span>
               <v-pagination
                 v-model="page"
@@ -135,8 +135,44 @@ export default class CSPPortalAccess extends Vue {
       createdBy: "Maria Missionowner",
       created: format(this.today,"MMM. dd, yyy hhmm")
     },
+    {
+      email:"willie.jennings@example.mil",
+      status:"Processing",
+      createdBy: "Maria Missionowner",
+      created: format(this.today,"MMM. dd, yyy hhmm")
+    },
+    {
+      email:"deanna.curtis@example.mil",
+      status:"Provisioned",
+      createdBy: "Maria Missionowner",
+      created: format(this.today,"MMM. dd, yyy hhmm")
+    },
+    {
+      email:"kenzi.lawson@example.mil",
+      status:"Failed",
+      createdBy: "Maria Missionowner",
+      created: format(this.today,"MMM. dd, yyy hhmm")
+    },
+    {
+      email:"curtis.weaver@example.mil",
+      status:"Failed",
+      createdBy: "Maria Missionowner",
+      created: format(this.today,"MMM. dd, yyy hhmm")
+    },
+    {
+      email:"tim.jennings@example.mil",
+      status:"Provisioned",
+      createdBy: "Maria Missionowner",
+      created: format(this.today,"MMM. dd, yyy hhmm")
+    },
+    {
+      email:"kenzi.lawson@example.mil",
+      status:"Failed",
+      createdBy: "Maria Missionowner",
+      created: format(this.today,"MMM. dd, yyy hhmm")
+    },
   ];
-  public maxPerPage = 5;
+  public maxPerPage = 10;
 
   public statusImg = {
     "Failed":{
@@ -164,11 +200,11 @@ export default class CSPPortalAccess extends Vue {
 
   public loadOnEnter(): void {
     console.log(this.tableData.length)
-  };
+  }
 
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  };
-};
+  public  mounted(): void {
+    this.loadOnEnter();
+  }
+}
 </script>
 
