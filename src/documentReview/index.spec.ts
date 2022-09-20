@@ -61,27 +61,27 @@ describe("Testing index Component", () => {
 
   it("loadOnEnter - returns storeData successfully", async()=>{
     await wrapper.vm.loadOnEnter();  
-    expect(await wrapper.vm.$data.docData.acqPackage.title).toBe("title goes here");
-    expect(await wrapper.vm.$data.docData.acqPackage.emergency_declaration ).toBe("true");
+    expect(await wrapper.vm.$data.docData.projectOverview.title).toBe("title goes here");
+    expect(await wrapper.vm.$data.docData.projectOverview.emergency_declaration ).toBe("true");
   })
 
   it("saveOnLeave() - compare a diff $data.docData and $doc.savedData " +
     "to ensure section is in $data.docDataSectonsToSave", async()=>{
     await wrapper.setData({
       docData:{
-        "acqPackage":{
+        "projectOverview":{
           "dummyAttribute": "dummyValue"
         }
       },
       savedData:{
-        "acqPackage":{
+        "projectOverview":{
           "dummyAttribute": ""
         }
       }
     })
     await wrapper.vm.saveOnLeave();
     expect(await wrapper.vm.$data.docDataSectionsToSave.some(
-      (section: string) => section === "acqPackage"
+      (section: string) => section === "projectOverview"
     )).toBe(true)
   })
 

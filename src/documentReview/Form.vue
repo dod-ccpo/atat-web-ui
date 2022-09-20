@@ -73,6 +73,8 @@ import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/Fair
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
 
+import { DocReviewData } from "types/Global";
+
 @Component({
   components: {
     ATATSVGIcon,
@@ -88,6 +90,7 @@ import CurrentContractOptions
 
 export default class DocumentReviewForm extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  @PropSync("docData") private _docData!: Record<string, Record<string, unknown>>;  
+  @PropSync("docData") private _docData!: DocReviewData;  
 }
+
 </script>

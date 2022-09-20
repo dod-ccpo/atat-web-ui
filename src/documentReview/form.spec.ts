@@ -10,6 +10,8 @@ describe("Testing index Component", () => {
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
+  /* eslint-disable camelcase */
+
   beforeEach(async () => {
     vuetify = new Vuetify();
     wrapper = mount(form, {
@@ -17,11 +19,17 @@ describe("Testing index Component", () => {
       vuetify,
       propsData:{
         docData:{
-          acqPackage:{
+          projectOverview:{
             title: "title",
             scope: "scope",
-            // eslint-disable-next-line camelcase
             emergency_declaration: "Yes"
+          },
+          organization: {},
+          fairOpportunity: {
+            exception_to_fair_opportunity: "",
+          },      
+          currentContract: {
+            current_contract_exists: "true"
           }
         }
       }

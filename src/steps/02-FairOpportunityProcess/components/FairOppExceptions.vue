@@ -82,13 +82,13 @@ export default class FairOppExceptions extends Vue {
 
   public exceptionOptionsReadOnly: RadioButton[] =  [
     {
-      id: "YesFOException",
+      id: "Yes_FOException",
       label: "Yes, a Justification & Approval is required.",
       value: "YES",
       readonly: true,
     },
     {
-      id: "NoFOException",
+      id: "No_FOException",
       label: "No.",
       value: "NO",
       readonly: true,

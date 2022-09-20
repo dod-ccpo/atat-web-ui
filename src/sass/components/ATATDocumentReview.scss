@@ -15,6 +15,11 @@
 }
 
 ._document-preview {
+  label:not(.v-label),
+  legend {
+    font-weight: 700 !important;
+  }
+
   ._preview-header {
     border-bottom: 1px solid $base-lighter;
     width: 100%;
@@ -92,11 +97,6 @@
 }
 
 ._document-review, ._document-preview {
-  label:not(.v-label),
-  legend{
-    font-weight: 700 !important;
-  }
-
   ol{
     li{
       margin-bottom: 40px;

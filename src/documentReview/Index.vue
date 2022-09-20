@@ -34,16 +34,18 @@
 </template>
 
 <script lang="ts">
-import { DocReviewData, SlideoutPanelContent } from "types/Global";
+import { Component, Mixins } from "vue-property-decorator";
+
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import CommentsPanel from "./components/CommentsPanel.vue";
 import Form from "./Form.vue";
 import Preview from "./Preview.vue";
+
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import CommentsPanel from "./components/CommentsPanel.vue";
-import { Component, Mixins } from "vue-property-decorator";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import { DocReviewData, SlideoutPanelContent } from "types/Global";
 
 import { 
   CurrentContractDTO, 

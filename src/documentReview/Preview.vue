@@ -83,17 +83,9 @@ import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/Fair
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
 
-
 import { Component, Prop } from "vue-property-decorator";
-import AcquisitionPackage, {
-  StoreProperties,
-} from "@/store/acquisitionPackage";
 
-import { 
-  CurrentContractDTO, 
-  FairOpportunityDTO,
-  ProjectOverviewDTO,
-} from "@/api/models";
+import { DocReviewData } from "types/Global";
 
 @Component({
   components: {
@@ -108,7 +100,7 @@ import {
 
 export default class DocumentReviewPreview extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  @Prop() private docData!:  Record<string, Record<string, unknown>>;
+  @Prop() private docData!: DocReviewData;
   @Prop() private isForm!: boolean;
 }
 
