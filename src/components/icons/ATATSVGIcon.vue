@@ -29,6 +29,7 @@ import Email from "@/components/icons/Email.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
+import Failed from "@/components/icons/Failed.vue";
 import Feedback from "@/components/icons/Feedback.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import Gcp from "@/components/icons/Gcp.vue";
@@ -41,6 +42,8 @@ import Person from "@/components/icons/Person.vue";
 import PersonAddAlt from "@/components/icons/PersonAddAlt.vue";
 import Phone from "@/components/icons/Phone.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
+import Processing from "@/components/icons/Processing.vue";
+import Provisioned from "@/components/icons/Provisioned.vue";
 import Role from "@/components/icons/Role.vue";
 import Remove from "@/components/icons/Remove.vue";
 import Search from "@/components/icons/Search.vue";
@@ -52,6 +55,7 @@ import TrendingUp from "@/components/icons/TrendingUp.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
 import TriangleUp from "@/components/icons/TriangleUp.vue";
 import TriangleDown from "@/components/icons/TriangleDown.vue";
+import ManageAccount from "@/components/icons/ManageAccount.vue";
 
 @Component({
   components: {
@@ -71,11 +75,13 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     Email,
     ExclamationMark,
     ExternalLink,
+    Failed,
     Feedback,
     FilePresent,
     Gcp,
     InfoOutline,
     Launch,
+    ManageAccount,
     MonetizationOn,
     Oracle,
     Pdf,
@@ -83,6 +89,8 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     PersonAddAlt,
     Phone,
     PlusSign,
+    Processing,
+    Provisioned,
     Role,
     Remove,
     Search,
@@ -126,6 +134,7 @@ export default class ATATSVGIcon extends Vue {
     { "base-light": "959a9d"},
     { "primary": "544496" },
     { "info": "009ddd" },
+    {"info-dark":"0076A6"},
     { "success": "62bd59" },
     { "success-dark": "498e43" },    
     { "error": "c60634" },
