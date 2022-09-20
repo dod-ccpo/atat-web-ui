@@ -114,7 +114,7 @@ export default class CSPPortalAccess extends Vue {
     {
       email:"deanna.curtis@example.mil",
       status:"Provisioned",
-      createdBy: "Maria Missionowner",
+      createdBy: "Carl Contractor",
       created: format(this.today,"MMM. dd, yyy hhmm")
     },
     {
@@ -126,48 +126,48 @@ export default class CSPPortalAccess extends Vue {
     {
       email:"curtis.weaver@example.mil",
       status:"Failed",
-      createdBy: "Maria Missionowner",
+      createdBy: "Carl Contractor",
       created: format(this.today,"MMM. dd, yyy hhmm")
     },
     {
-      email:"tim.jennings@example.mil",
+      email:"tim.welch@example.mil",
       status:"Provisioned",
       createdBy: "Maria Missionowner",
       created: format(this.today,"MMM. dd, yyy hhmm")
     },
     {
-      email:"cleetus.jennings@example.mil",
+      email:"cleetus.king@example.mil",
       status:"Processing",
-      createdBy: "Maria Missionowner",
+      createdBy: "Sam Something",
       created: format(this.today,"MMM. dd, yyy hhmm")
     },
     {
-      email:"bob.curtis@example.mil",
+      email:"bob.reynolds@example.mil",
       status:"Provisioned",
       createdBy: "Maria Missionowner",
       created: format(this.today,"MMM. dd, yyy hhmm")
     },
     {
-      email:"travis.lawson@example.mil",
-      status:"Failed",
-      createdBy: "Maria Missionowner",
+      email:"travis.keelce@example.mil",
+      status:"Provisioned",
+      createdBy: "Sam Something",
       created: format(this.today,"MMM. dd, yyy hhmm")
     },
     {
-      email:"burt.weaver@example.mil",
-      status:"Failed",
-      createdBy: "Maria Missionowner",
-      created: format(this.today,"MMM. dd, yyy hhmm")
-    },
-    {
-      email:"kim.jennings@example.mil",
+      email:"burt.baxter@example.mil",
       status:"Provisioned",
       createdBy: "Maria Missionowner",
       created: format(this.today,"MMM. dd, yyy hhmm")
     },
     {
-      email:"tyrone.lawson@example.mil",
-      status:"Failed",
+      email:"kim.bryant@example.mil",
+      status:"Provisioned",
+      createdBy: "Carl Contractor",
+      created: format(this.today,"MMM. dd, yyy hhmm")
+    },
+    {
+      email:"tyrone.brown@example.mil",
+      status:"Provisioned",
       createdBy: "Maria Missionowner",
       created: format(this.today,"MMM. dd, yyy hhmm")
     },
@@ -198,13 +198,6 @@ export default class CSPPortalAccess extends Vue {
     }
   };
 
-  public loadOnEnter(): void {
-    console.log(this.tableData.length)
-  }
-
-  public  mounted(): void {
-    this.loadOnEnter();
-  }
 }
 </script>
 
