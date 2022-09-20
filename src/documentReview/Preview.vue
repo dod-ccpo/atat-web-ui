@@ -1,46 +1,39 @@
 <template>
   <div class="_preview-wrap">
     <v-app-bar app flat v-if="!isForm" class="_preview-header d-flex align-center bg-white">
-      <router-link
-        to="/docReviewForm"
-        id="GoBackLink"
-        class="no-text-decoration d-flex align-center py-3"
-      >
-        <v-btn class="plain bg-transparent pa-0">
-          <ATATSVGIcon class="mr-2" name="arrowLeft" width="16" height="16" />
-        </v-btn>
-      </router-link>
+      <v-btn 
+        class="plain bg-transparent mx-7 my-4 pa-0" 
+        @click="$emit('showView', 'form')" >
+          <ATATSVGIcon class="mr-2" name="arrowBack" width="16" height="16" />
+      
       <h3>Document Preview: {{ docTitle }}</h3>
+      </v-btn>
     </v-app-bar>    
 
     <div class="_document-wrap">
       <div class="_sheet">
         <div id="PreviewForm">
-          <h1 class="mb-10">{{ docTitle }}</h1>
-          <h2 class="mb-5">PART I. REQUIREMENT OWNER INFORMATION</h2>
+          <h1>{{ docTitle }}</h1>
           <ol>
             <li>
               <EmergencyDeclarationSupport
-                :isForm="isForm"
-                :emergencyDeclaration="emergencyDeclaration"
+                :isForm="false"
+                :emergencyDeclaration="docData.acqPackage.emergency_declaration"
                 legend="Emergency: This requirement is in support of an Emergency Declaration."
-              >
-              </EmergencyDeclarationSupport>
+              />
             </li>
             <li>
-              <div id="ReqInfo" class="mb-4">
-                <strong>Requirements Information</strong></div>
+              <strong id="ReqInfo" class="mb-4 d-block">Requirements Information</strong>
               <div aria-describedby="ReqInfo">
                 <ProjectTitle
                   class="mb-2"
-                  :isForm="isForm"
-                  :currentTitle="currentTitle"
-                ></ProjectTitle>
-
+                  :isForm="false"
+                  :currentTitle="docData.acqPackage.title"
+                />
                 <ProjectScope
-                  :isForm="isForm" 
-                  :projectScope="projectScope"
-                ></ProjectScope>
+                  :isForm="false" 
+                  :projectScope="docData.acqPackage.scope"
+                />
               </div>
             </li>
           </ol>
@@ -53,7 +46,7 @@
                 :isForm="isForm"
                 legend="Do you have a current contract for this effort?"
                 :selectedOption="currentContractExists"
-              />
+              /><!-- EJY FIX SYNC -->
             </li>
             <li>
               <FairOppExceptions 
@@ -61,9 +54,9 @@
                 legend="Does your market research indicate an exception to the fair 
                   opportunity process (Federal Acquisition Regulation (FAR) 16.505(b)(2))?"
                 :selectedException="fairOpportunityException"
-              />
+              /><!-- EJY FIX SYNC -->
             </li>
-          </ol>
+          </ol>          
         </div>
       </div>
     </div>
@@ -110,7 +103,9 @@ import {
 })
 export default class DocumentReviewPreview extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
+  @Prop() private docData!:  Record<string, Record<string, unknown>>;
 
+  // EJY probably don't need this - data load should be in index.vue
   private isForm = false;
   private currentTitle = "";
   private projectScope = "";

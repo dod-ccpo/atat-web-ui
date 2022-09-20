@@ -109,7 +109,6 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { getUserInitials } from "@/helpers";
-import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { getIdText } from "@/helpers";
 import AppSections from "@/store/appSections";
@@ -151,10 +150,7 @@ export default class ATATTopNavBar extends Vue {
         // open external URL in new tab
         window.open(item.externalUrl, "_blank");
       }
-
-      //closes slideoutpanel if necesssary
-      SlideoutPanel.closeSlideoutPanel();
-    } 
+    }
   }
 
   public getUserInitials(member:User): string {

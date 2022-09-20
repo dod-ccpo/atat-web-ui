@@ -1,55 +1,52 @@
 <template>
   <div id="FormDiv" class="container-max-width">
-    <PageHead :docTitle="docTitle" class="ml-4"></PageHead>
+    <PageHead :docTitle="docTitle" class="ml-4" />
     <div class="mt-10">
       <v-form id="ReviewForm">
         <h2 class="ml-4">Part I. Requirements Owner Information</h2>
-        
+
         <div class="_comment-wrap">
           <CommentButton id="EmergencyDeclaration" />
-          <EmergencyDeclarationSupport
-            legend="Is this requirement in support of an emergency declaration?"
-            :emergencyDeclaration.sync="emergencyDeclaration"
-          ></EmergencyDeclarationSupport>
+            <EmergencyDeclarationSupport
+              legend="Is this requirement in support of an emergency declaration?"
+              :emergencyDeclaration.sync="_docData.acqPackage.emergency_declaration"
+            />
         </div>
 
         <div class="_comment-wrap">
           <CommentButton id="ProjectTitle" />
           <ProjectTitle
             label="Project/Requirements Title"
-            :currentTitle.sync = "currentTitle"
-          ></ProjectTitle>
+            :currentTitle.sync="_docData.acqPackage.title"
+          />
         </div>
-
         <div class="_comment-wrap">
           <CommentButton id="ProjectScope" />
           <ProjectScope
             label="What is the scope of your requirement?"
-            :projectScope.sync="projectScope"
-          ></ProjectScope>
+            :projectScope.sync="_docData.acqPackage.scope"
+          />
         </div>
-        <hr />
 
         <h2 class="mb-5 ml-4">Part II. Requirement Information</h2>
 
         <div class="_comment-wrap">
-          <CommentButton id="ProjectScope" />
+          <CommentButton id="CurrentContract" />
           <CurrentContractOptions 
             legend="Do you have a current contract for this effort?"
             :selectedOption.sync="currentContractExists"
-          />
+          /><!-- EJY FIX SYNC -->
         </div>
 
         <div class="_comment-wrap">
-          <CommentButton id="ProjectScope" />
+          <CommentButton id="FairOpportunity" />
           <FairOppExceptions 
             legend="Based on your market research, do any of the following exceptions to fair 
               opportunity apply to your acquisition?"
             classes=""
             :selectedException.sync="fairOpportunityException"
-          />
-        </div>
-
+          /><!-- EJY FIX SYNC -->
+        </div>        
       </v-form>
     </div>
   </div>
@@ -58,7 +55,7 @@
 import Vue from "vue";
 
 import PageHead from "./components/DocReviewHead.vue"
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CommentButton from "./components/CommentButton.vue";
@@ -76,7 +73,7 @@ import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/Fair
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
 
-
+// EJY may not need AcqPkg and API Models
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { 
   CurrentContractDTO, 
@@ -99,6 +96,7 @@ import {
 export default class DocumentReviewForm extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
 
+  // EJY MOVE ALL DATA TO INDEX
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";

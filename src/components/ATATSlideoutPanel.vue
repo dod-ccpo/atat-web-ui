@@ -10,6 +10,7 @@
     right
     :clipped="appSection === 'Portfolio Summary'"
     :temporary="showOverlay"
+    disable-resize-watcher
   >
     <div
       v-if="panelTitle"
@@ -49,7 +50,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 export default class ATATSlideoutPanel extends Vue {
   @Prop({ default: "380" }) private panelWidth!: string;
   @Prop({ default: false }) private alwaysOpen!: boolean;
-  @Prop({ default: true }) private showHeader!: boolean;
+
   
   public appSection = AppSections.activeAppSection;
   public transitionEnded(e: Event):void {
@@ -58,17 +59,6 @@ export default class ATATSlideoutPanel extends Vue {
       const isOpen = target.classList.contains('v-navigation-drawer--open');
       isOpen ? SlideoutPanel.openSlideoutPanel("") : SlideoutPanel.closeSlideoutPanel();
     }
-  }
-
-  get isHeaderDisplayed(): boolean {
-    if (!this.showHeader){
-      return this.showHeader;
-    }
-    else if (this.appSection !== 'Portfolio Summary')
-    {
-      return true;
-    }
-    return true;
   }
 
   get panelTitle(): string {

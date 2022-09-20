@@ -72,6 +72,13 @@
         width: 26px !important;
         height: 26px !important;
       }
+      .v-breadcrumbs li:nth-child(even){
+        padding: 0px 8px;
+        margin-top: 1px;
+        div{
+          text-align:center;
+        }
+      }
     }
 
     &:hover {

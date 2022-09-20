@@ -21,8 +21,7 @@
                 $validators.maxLength(60, 'Title cannot exceed 60 characters'),
               ]"
               :currentTitle.sync="currentTitle"
-              @blur="onTitleChanged"
-            ></ProjectTitle>
+            />
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectScope
@@ -41,15 +40,14 @@
                   'Please limit your description to 300 characters or less'
                 ),
               ]"
-            ></ProjectScope>
+            />
           </div>
           <div class="d-flex align-start flex-column mt-6">
             <EmergencyDeclarationSupport
               legend="Is this requirement in support of an emergency declaration?"
               :emergencyDeclaration.sync="emergencyDeclaration"
               :rules="[$validators.required('Please select an option')]"
-            >
-            </EmergencyDeclarationSupport>
+            />
           </div>
         </v-col>
       </v-row>
@@ -60,7 +58,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";
@@ -84,8 +82,6 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";
-  // private emergencyDeclarationSupportRules =
-  //   [$validators.required('Please select an option')]
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -112,8 +108,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
     return {
       title: this.currentTitle,
       scope: this.projectScope,
-      emergency_declaration:
-        this.emergencyDeclaration === "yes" ? "true" : "false",
+      emergency_declaration: this.emergencyDeclaration,
     };
   }
 
@@ -121,13 +116,13 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
     return {
       title: AcquisitionPackage.projectOverview?.title || "",
       scope: AcquisitionPackage.projectOverview?.scope || "",
-      emergency_declaration:
-        AcquisitionPackage.projectOverview?.emergency_declaration || "false",
+      emergency_declaration: AcquisitionPackage.projectOverview?.emergency_declaration || "",
     };
   }
 
-  public onTitleChanged(): void {
-    this.projectTitle = this.currentTitle;
+  @Watch("currentTitle")
+  public projectTitleChange(newTitle: string): void {
+    this.projectTitle = newTitle;
   }
 
   public async mounted(): Promise<void> {
@@ -146,8 +141,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
         storeData.emergency_declaration &&
         storeData.emergency_declaration.length > 0
       ) {
-        this.emergencyDeclaration =
-          storeData.emergency_declaration === "true" ? "yes" : "no";
+        this.emergencyDeclaration = storeData.emergency_declaration;
       }
     }
   }
@@ -159,7 +153,6 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        // await AcquisitionPackage.saveProjectOverview(this.currentData);
         await AcquisitionPackage.saveData({
           data: this.currentData,
           storeProperty: StoreProperties.ProjectOverview,

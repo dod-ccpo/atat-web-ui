@@ -11,11 +11,11 @@
     </ATATRadioGroup>
   </div>
 </template>
-
+ 
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync} from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 
@@ -31,6 +31,7 @@ export default class EmergencyDeclarationSupport extends Vue {
   @Prop({default: true}) private isForm!: boolean;
   @Prop({default: ""}) private legend!: string;
   @PropSync("rules") private _rules!: "";
+
   private radioGroupItems: RadioButton[] = [
     {
       id: "Yes_EmergencyDeclaration",
