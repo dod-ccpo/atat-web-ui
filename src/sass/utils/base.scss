@@ -305,6 +305,39 @@ textarea {
       padding: 8px;
     }
   }
+  ._table-pagination{
+    display:flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-top: 4px solid $base-lighter;
+    height:64px;
+    padding-right:15px;
+    .v-pagination__navigation {
+      box-shadow: none;
+      margin: 0px;
+      i {
+       color: $primary;
+      }
+      &.v-pagination__navigation--disabled {
+        i {
+          color: $base-light;
+        }
+      }
+    }
+
+    .v-pagination__item {
+      font-size: 14px;
+      font-weight: 400;
+      box-shadow: none;
+      color: $primary;
+
+      &.v-pagination__item--active {
+        color: $white;
+        background-color: $primary !important;
+      }
+    }
+  }
+
 }
 ._icon-circle {
   width: 32px;

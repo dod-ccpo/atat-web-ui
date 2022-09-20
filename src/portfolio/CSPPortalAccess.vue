@@ -28,6 +28,7 @@
         <v-data-table
           :headers="tableHeaders"
           :items="tableData"
+          :page.sync="page"
           hide-default-footer
           class="_administrator-log border1 border-base-lighter"
         >
@@ -58,12 +59,13 @@
           </template>
           <!-- eslint-disable vue/valid-v-slot -->
           <template v-slot:footer>
-            <div class="d-flex justify-end align-center pb-5">
-              <span class="mr-11">
+            <div class="_table-pagination">
+              <span class="mr-11 font-weight-400 font-size-14">
               showing 1-{{maxPerPage}} of {{tableData.length}}
             </span>
               <v-pagination
-                :length="1"
+                v-model="page"
+                :length="2"
                 circle
               ></v-pagination>
             </div>
@@ -90,7 +92,8 @@ import format from "date-fns/format"
 export default class CSPPortalAccess extends Vue {
   @Prop({ default: "" }) private portfolioCSP!: string;
 
-  public today = new Date()
+  public page = 1;
+  public today = new Date();
 
   public tableHeaders: Record<string, string>[] = [
     { text: "Administrator email", value: "email" },
@@ -132,8 +135,8 @@ export default class CSPPortalAccess extends Vue {
       createdBy: "Maria Missionowner",
       created: format(this.today,"MMM. dd, yyy hhmm")
     },
-  ]
-  public maxPerPage = 5
+  ];
+  public maxPerPage = 5;
 
   public statusImg = {
     "Failed":{
@@ -157,15 +160,15 @@ export default class CSPPortalAccess extends Vue {
       color: "info-dark",
       bgColor:"bg-info-lighter"
     }
-  }
+  };
 
   public loadOnEnter(): void {
     console.log(this.tableData.length)
-  }
+  };
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   };
-}
+};
 </script>
 
