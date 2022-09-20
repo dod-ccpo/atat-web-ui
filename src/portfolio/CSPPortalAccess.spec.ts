@@ -24,5 +24,4 @@ describe("Testing CSPPortalAccess Component", () => {
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
-
 })
