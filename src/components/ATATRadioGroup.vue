@@ -40,6 +40,7 @@
           :style="{ width: width + 'px' }"
           :name="name"
           :disabled="item.disabled || disabled"
+          :readonly="item.readonly"
           @blur="onBlur"
           @click="onClick"
         >

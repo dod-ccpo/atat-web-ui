@@ -49,6 +49,9 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 
 export default class ATATSlideoutPanel extends Vue {
   @Prop({ default: "380" }) private panelWidth!: string;
+  @Prop({ default: false }) private alwaysOpen!: boolean;
+
+  
   public appSection = AppSections.activeAppSection;
   public transitionEnded(e: Event):void {
     const target = e.currentTarget as HTMLElement;
@@ -68,7 +71,7 @@ export default class ATATSlideoutPanel extends Vue {
 
   private isOpen = false;
   set isSlideoutPanelOpen(isOpen: boolean) {
-    this.isOpen = isOpen;
+    this.isOpen = this.alwaysOpen ? this.alwaysOpen : isOpen;
   }
   /*
    * adds click event listener to overlay if Displayed

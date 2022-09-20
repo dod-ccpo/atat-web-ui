@@ -97,8 +97,16 @@
     &:focus,
     &:active {
       background-color: $primary-lighter !important;
-
     }
+
+    &.no-hover{
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: transparent !important;
+      }
+    }
+   
 
     &.no-border {
       span {
@@ -159,4 +167,5 @@
       outline: 2px solid $primary;
     }
   }
+ 
 }
