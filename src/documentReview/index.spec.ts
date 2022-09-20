@@ -105,7 +105,12 @@ describe("Testing index Component", () => {
 
   it("saveOnLeave() - trigger switch() default", async()=>{
     await wrapper.setData({
-      docDataSectionsToSave:['dummy doc data section']
+      docDataSectionsToSave:[
+        "projectOverview", 
+        "organization", 
+        "fairOpportunity", 
+        "currentContract"
+      ]
     })
     const _saveOnLeave = await wrapper.vm.saveOnLeave();
     expect(_saveOnLeave).toBe(true)
