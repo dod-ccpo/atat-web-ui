@@ -4,7 +4,7 @@
       <v-row v-if="fundingAlertType.length > 0">
         <v-col>
           <funding-alert :fundingAlertType="fundingAlertType"
-          :timeRemaining="daysRemaining" />
+          :timeRemaining="daysRemaining"/>
         </v-col>
       </v-row>
       <v-row>
@@ -78,18 +78,6 @@
                   align-top
                   atat-text-field-error text-error mb-0 font-size-14"
                   v-if="fundingAlertType.length > 0 && daysRemaining <=30"
-                  >
-                          <strong>{{ daysPastExpiration() }} days past expiration</strong>
-                          <ATATSVGIcon style="margin: 2px 0 0 8px" name="exclamationMark"
-                           :width="18"
-                           :height="18"
-                           color="error"/>
-                         </div>
-                  <div class=" d-flex
-                  justify-start
-                  align-top
-                  atat-text-field-error text-error mb-0 font-size-14"
-                  v-if="fundingAlertType.length > 0 && daysRemaining <=0"
                   >
                           <strong>{{ daysPastExpiration() }} days past expiration</strong>
                           <ATATSVGIcon style="margin: 2px 0 0 8px" name="exclamationMark"
@@ -1424,20 +1412,22 @@ export default class PortfolioDashboard extends Vue {
     return "$" + toCurrencyString(value, decimals);
   }
 
-  public getFundingTrackerAlerts(): void {
-    throw new Error("not implemented");
-  }
-
   private thresholdAtOrAbove(value: string, threshold: number): boolean {
     let stringVal = value.replace('%', '');
     let numVal = Number(stringVal);
     return numVal != Number.NaN && numVal >=threshold;
   }
 
+  public async getAlerts():Promise<AlertDTO[]>{
+    const alerts = await this.alertsService.getAlerts('1000000001234');
+    return alerts;
+  }
+
   public async processAlerts():Promise<void> {
+
     debugger;
 
-    const alerts = await this.alertsService.getAlerts('1000000001234');
+    const alerts = await this.getAlerts();
     
     alerts.forEach(alert=>{
       if(alert.alert_type == AlertTypes.SPENDING_ACTUAL){
@@ -1461,10 +1451,6 @@ export default class PortfolioDashboard extends Vue {
     let lowFundsThreshold = this.alerts.some(alert=>alert.alert_type 
     === AlertTypes.SPENDING_ACTUAL 
     && this.thresholdAtOrAbove(alert.threshold_violation_amount, 75));
-
-    if(fundsDepleted){
-      this.fundingAlertType = FundingAlertTypes.POPExpired;
-    }
  
     // does time remaining alert exist
     let timeremainingalert = this.alerts.find(alert=>alert.alert_type == AlertTypes.TIME_REMAINING);
@@ -1475,6 +1461,10 @@ export default class PortfolioDashboard extends Vue {
     if(timeremainingalert && this.daysRemaining > 0 && !fundsDepleted){
       this.fundingAlertType = lowFundsThreshold ?  FundingAlertTypes.POPExpiresSoonWithLowFunds :
         FundingAlertTypes.POPExpiresSoonNoTOClin;
+    }
+
+    if(timeremainingalert && this.daysRemaining <=0){
+      this.fundingAlertType = FundingAlertTypes.POPExpired;
     }
     
 
