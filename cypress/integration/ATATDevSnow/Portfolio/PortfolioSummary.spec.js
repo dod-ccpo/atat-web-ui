@@ -50,7 +50,7 @@ describe("Test suite: Portfolio summary", () => {
     
   });
 
-  it("TC2: Invite members to portfolio from sub menu", () => {    
+  it("TC2: Invite members to portfolio from sub menu", () => {
     cy.selectMenu(
       ps.moreMenubtn,
       ps.moreMenuList,
@@ -74,12 +74,13 @@ describe("Test suite: Portfolio summary", () => {
         cy.dialogModalNotExist("1 member added");
       });
       // verify of email is already a portfolio Member
-      cy.dropDownClick(ps.moreMenubtn); 
+      cy.dropDownClick(ps.moreMenubtn);
       cy.textExists(ps.inviteMemMenu, "Invite members to portfolio").click()
-      cy.findElement(ps.emailInputbox).type(email).focus().blur({ force: true }).then(() => {
-        cy.checkErrorMessage(ps.emailinputBoxError, email + " is already a portfolio member.");
-      }); 
-    })
-  });  
+      cy.findElement(ps.emailInputbox).type(email).focus()      
+        .then(() => {
+          cy.checkErrorMessage(ps.emailinputBoxError, email + " is already a portfolio member.");
+        });
+    });
+  })
 
 });
