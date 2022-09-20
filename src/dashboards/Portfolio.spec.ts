@@ -6,7 +6,7 @@ import {DefaultProps} from "vue/types/options";
 import Portfolio from "./Portfolio.vue";
 import { AlertDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
-import {mockDashboardData} from "./__tests__/dashboardMocks";
+import mockDashboardData from "./__tests__/dashboardMocks..json"
 import { DashboardService, PortFolioDashBoardDTO } from "@/services/dashboards";
 import { AlertService } from "@/services/alerts";
 
