@@ -30,7 +30,7 @@ Cypress.Commands.add("dialogModalNotExist", (toastText) => {
 
 Cypress.Commands.add('editInputField', (selector, textValue,editText,editTextValue) => {
   cy.findElement(selector).should("have.value", textValue)
-    .clear().type(editText).focus().blur().should("have.value", editTextValue);
+    .clear().type(editText).focus().click().should("have.value", editTextValue);
 });
 
 Cypress.Commands.add('verifyHasText', (selector) => {

@@ -94,7 +94,7 @@ describe("Test suite: Portfolio info Drawer", () => {
     });
   });
 
-  it.only("TC4: Remove the portfolio member role in info drawer", () => {
+  it("TC4: Remove the portfolio member role in info drawer", () => {
   
     cy.textExists(ps.portMemTitle, "Portfolio members");
     cy.textExists(ps.portMemCount, 1);
