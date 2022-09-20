@@ -21,7 +21,7 @@
             <li>
               <EmergencyDeclarationSupport
                 :isForm="false"
-                :emergencyDeclaration="docData.acqPackage.emergency_declaration"
+                :emergencyDeclaration="docData.projectOverview.emergency_declaration"
                 legend="Emergency: This requirement is in support of an Emergency Declaration."
               />
             </li>
@@ -31,11 +31,11 @@
                 <ProjectTitle
                   class="mb-2"
                   :isForm="false"
-                  :currentTitle="docData.acqPackage.title"
+                  :currentTitle="docData.projectOverview.title"
                 />
                 <ProjectScope
                   :isForm="false" 
-                  :projectScope="docData.acqPackage.scope"
+                  :projectScope="docData.projectOverview.scope"
                 />
               </div>
             </li>
@@ -57,7 +57,7 @@
                 :isForm="isForm"
                 legend="Does your market research indicate an exception to the fair 
                   opportunity process (Federal Acquisition Regulation (FAR) 16.505(b)(2))?"
-                :selectedException="docData.fairOpp.exception_to_fair_opportunity"
+                :selectedException="docData.fairOpportunity.exception_to_fair_opportunity"
               />
             </li>
           </ol>          

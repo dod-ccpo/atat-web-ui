@@ -82,21 +82,18 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    debugger;
     return hasChanges(this.currentData, this.savedData);
   }
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage
       .loadData<FairOpportunityDTO>({storeProperty: StoreProperties.FairOpportunity});
-    debugger;
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity;
     }
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger;
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage

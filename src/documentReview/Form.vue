@@ -9,7 +9,7 @@
           <CommentButton id="EmergencyDeclaration" />
             <EmergencyDeclarationSupport
               legend="Is this requirement in support of an emergency declaration?"
-              :emergencyDeclaration.sync="_docData.acqPackage.emergency_declaration"
+              :emergencyDeclaration.sync="_docData.projectOverview.emergency_declaration"
             />
         </div>
 
@@ -17,7 +17,7 @@
           <CommentButton id="ProjectTitle" />
           <ProjectTitle
             label="Project/Requirements Title"
-            :currentTitle.sync="_docData.acqPackage.title"
+            :currentTitle.sync="_docData.projectOverview.title"
           />
         </div>
         
@@ -25,7 +25,7 @@
           <CommentButton id="ProjectScope" />
           <ProjectScope
             label="What is the scope of your requirement?"
-            :projectScope.sync="_docData.acqPackage.scope"
+            :projectScope.sync="_docData.projectOverview.scope"
           />
         </div>
 
@@ -44,7 +44,7 @@
           <FairOppExceptions 
             legend="Based on your market research, do any of the following exceptions to fair 
               opportunity apply to your acquisition?"
-            :selectedException.sync="_docData.fairOpp.exception_to_fair_opportunity"
+            :selectedException.sync="_docData.fairOpportunity.exception_to_fair_opportunity"
           />
         </div>        
       </v-form>
