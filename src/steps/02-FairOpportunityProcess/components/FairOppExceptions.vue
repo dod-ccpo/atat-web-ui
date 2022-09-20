@@ -1,15 +1,27 @@
 <template>
-  <ATATRadioGroup
-    id="ExceptionRadioOptions"
-    :legend="legend" 
-    :value.sync="_selectedException"
-    :items="isForm ? exceptionOptions : exceptionOptionsPreview"
-    name="fair-opportunity-exceptions-radio-group"
-    :class="classes"
-    :rules="rules"
-    :isForm="isForm"
-  >
-  </ATATRadioGroup>
+  <div>
+    <ATATRadioGroup
+      v-if="isForm"
+      id="ExceptionRadioOptions"
+      :legend="legend" 
+      :value.sync="_selectedException"
+      :items="exceptionOptions"
+      name="fair-opportunity-exceptions-radio-group"
+      :class="classes"
+      :rules="rules"
+      :isForm="true"
+    />
+    <ATATRadioGroup
+      v-if="!isForm"
+      id="ExceptionRadioOptions"
+      :legend="legend" 
+      :value="selectedExceptionReadOnly"
+      :items="exceptionOptionsReadOnly"
+      name="fair-opportunity-exceptions-radio-group"
+      :class="classes"
+      :isForm="false"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -28,9 +40,11 @@ export default class FairOppExceptions extends Vue {
   @Prop({default: true}) private isForm!: boolean;
   @Prop({default: ""}) private legend!: string;
   @Prop({default: ""}) private classes!: string;
-  @PropSync("selectedException", { default: "" }) private _selectedException!: string | null;
+  @PropSync("selectedException", { default: "" }) public _selectedException!: string | null;
   @Prop() private rules?: [];
   
+  private selectedExceptionReadOnly = "";
+
   private exceptionOptions: RadioButton[] = [
     {
       id: "OnlyOneCSPCapable",
@@ -66,35 +80,27 @@ export default class FairOppExceptions extends Vue {
     },
   ];
 
-  public exceptionOptionsPreview: RadioButton[] =  [
+  public exceptionOptionsReadOnly: RadioButton[] =  [
     {
       id: "YesFOException",
       label: "Yes, a Justification & Approval is required.",
       value: "YES",
-      readonly: !this.isForm,
+      readonly: true,
     },
     {
       id: "NoFOException",
       label: "No.",
-      value: "NO_NONE",
-      readonly: !this.isForm,
+      value: "NO",
+      readonly: true,
     }
   ];
 
-  @Watch("selectedException")
-  public exceptionChange(value: string): void {
-    debugger;
-    if (!this.isForm && value !== "YES" && this._selectedException !== "NO_NONE") {
-      this._selectedException = "YES";
+  public async mounted(): Promise<void> {
+    if (!this.isForm) {
+      this.selectedExceptionReadOnly = this._selectedException !== "NO_NONE" 
+        ? "YES"
+        : "NO";
     }
-
   }
-
-  // public async mounted(): Promise<void> {
-  //   debugger;
-  //   if (!this.isForm && this._selectedException !== "NO_NONE") {
-  //     this._selectedException = "YES";
-  //   }
-  // }
 }
 </script>

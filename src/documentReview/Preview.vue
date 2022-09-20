@@ -13,7 +13,10 @@
     <div class="_document-wrap">
       <div class="_sheet">
         <div id="PreviewForm">
-          <h1>{{ docTitle }}</h1>
+          <h1 class="mb-10">{{ docTitle }}</h1>
+
+          <h2 class="mb-5">Part I. Requirement Owner Information</h2>
+
           <ol>
             <li>
               <EmergencyDeclarationSupport
@@ -40,21 +43,22 @@
 
           <hr />
           <h2 class="mb-5">Part II. Requirement Information</h2>
+
           <ol>
             <li>
               <CurrentContractOptions 
                 :isForm="isForm"
                 legend="Do you have a current contract for this effort?"
-                :selectedOption="currentContractExists"
-              /><!-- EJY FIX SYNC -->
+                :selectedOption="docData.currentContract.current_contract_exists"
+              />
             </li>
             <li>
               <FairOppExceptions 
                 :isForm="isForm"
                 legend="Does your market research indicate an exception to the fair 
                   opportunity process (Federal Acquisition Regulation (FAR) 16.505(b)(2))?"
-                :selectedException="fairOpportunityException"
-              /><!-- EJY FIX SYNC -->
+                :selectedException="docData.fairOpp.exception_to_fair_opportunity"
+              />
             </li>
           </ol>          
         </div>
@@ -101,64 +105,11 @@ import {
     ProjectTitle,
   },
 })
+
 export default class DocumentReviewPreview extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
   @Prop() private docData!:  Record<string, Record<string, unknown>>;
-
-  // EJY probably don't need this - data load should be in index.vue
-  private isForm = false;
-  private currentTitle = "";
-  private projectScope = "";
-  private emergencyDeclaration = "";
-  private fairOpportunityException = "";
-  private currentContractExists = "";
-
-  private docData = {
-    acqPackage: {},
-    fairOpp: {},
-    background: {},
-  }
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
-
-  public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
-      storeProperty: StoreProperties.ProjectOverview,
-    });
-
-    if (storeData) {
-      this.currentTitle = storeData.title;
-      this.projectScope = storeData.scope;
-      if (
-        storeData.emergency_declaration &&
-        storeData.emergency_declaration.length > 0
-      ) {
-        this.emergencyDeclaration =
-          storeData.emergency_declaration === "true" ? "yes" : "no";
-      }
-    }
-
-    const storeDataFairOpp = await AcquisitionPackage
-      .loadData<FairOpportunityDTO>({storeProperty: StoreProperties.FairOpportunity});
-    if (storeDataFairOpp) {
-      debugger;
-      this.fairOpportunityException = storeDataFairOpp.exception_to_fair_opportunity;
-    }
-
-    const bkgStoreData = await AcquisitionPackage.
-      loadData<CurrentContractDTO>({storeProperty: StoreProperties.CurrentContract})
-    if (bkgStoreData) {
-      if (Object.prototype.hasOwnProperty.call(bkgStoreData, 'current_contract_exists')) {
-        this.docData.background = {
-          // eslint-disable-next-line camelcase
-          current_contract_exists: bkgStoreData.current_contract_exists,
-        }
-        this.currentContractExists = bkgStoreData.current_contract_exists || "";
-      }
-    }
-
-  }
+  @Prop() private isForm!: boolean;
 }
+
 </script>

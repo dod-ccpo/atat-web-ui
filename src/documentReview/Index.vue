@@ -41,7 +41,14 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import CommentsPanel from "./components/CommentsPanel.vue";
 import { Component, Mixins } from "vue-property-decorator";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import { OrganizationDTO, ProjectOverviewDTO } from "@/api/models";
+
+import { 
+  CurrentContractDTO, 
+  FairOpportunityDTO,
+  OrganizationDTO, 
+  ProjectOverviewDTO 
+} from "@/api/models";
+
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import _ from "lodash";
@@ -63,20 +70,27 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
   private projectScope = "";
   private emergencyDeclaration = "";
   private displayView = "";
+  private isForm = true;
 
   private docData: Record<string, Record<string, unknown>> = {
     "acqPackage":{},
-    "org": {}
+    "org": {},
+    "currentContract": {},
+    "fairOpp": {},
   }
   
   private savedData:Record<string, Record<string, unknown>> = {
     "acqPackage":{},
-    "org": {}
+    "org": {},
+    "currentContract": {},
+    "fairOpp": {},
   }
+
   private docDataSectionsToSave: string[] = [];
   
   public showView(view?: string): void {
     this.displayView = view ? view : "form";
+    this.isForm = view === "form";
   }
 
   private get panelContent() {
@@ -98,10 +112,22 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
     this.docData.acqPackage = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
       storeProperty: StoreProperties.ProjectOverview,
     }) as unknown as Record<string, string | unknown>;
+
     this.docData.org = await AcquisitionPackage.loadData<OrganizationDTO>({
       storeProperty: StoreProperties.Organization
-    })as Record<string, string>;
-    this.savedData = _.cloneDeep(this.docData)
+    }) as Record<string, string>;
+
+    this.docData.currentContract = await AcquisitionPackage.loadData<CurrentContractDTO>({
+      storeProperty: StoreProperties.CurrentContract
+    }) as Record<string, string>;
+
+    this.docData.fairOpp = await AcquisitionPackage.loadData<FairOpportunityDTO>({
+      storeProperty: StoreProperties.FairOpportunity
+    }) as unknown as Record<string, string>;
+
+
+    this.savedData = _.cloneDeep(this.docData);
+    debugger;
   }
 
   public hasChanged(): void {
@@ -113,7 +139,8 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
   } 
 
   protected async saveOnLeave(): Promise<boolean> {
-    await this.hasChanged()
+    await this.hasChanged();
+    debugger;
     this.docDataSectionsToSave.forEach(async(section)=>{
       switch(section){
       case "acqPackage":

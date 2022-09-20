@@ -6,7 +6,8 @@
     "menuText": "Acquisitions",
     "dropdownList": [
       "My Packages",
-      "My Task Orders"
+      "My Task Orders",
+      "Document Review"
     ]
   },
   "portfolios": {

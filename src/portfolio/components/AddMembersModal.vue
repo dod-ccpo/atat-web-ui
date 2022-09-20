@@ -8,7 +8,7 @@
     width="632"
     :OKDisabled="invalidEmailCount > 0 || !validEmailList.length"
     @ok="inviteMembers"
-    :modalSlideoutComponent="modalSlidoutComponent"
+    :modalSlideoutComponent="modalSlideoutComponent"
     modalSlideoutTitle="Learn more about portfolio roles"
     :modalDrawerIsOpen.sync="modalDrawerIsOpen"
   >
@@ -134,7 +134,7 @@ export default class AddMembersModal extends Vue {
   public duplicatedEmail = "";
   /* eslint-disable-next-line */
   public emailRegex = /^(([^<>()[\]\\.,;:\s@\\"]+(\.[^<>()[\]\\.,;:\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\]\\.,;:\s@\\"]+\.)+[^<>()[\]\\.,;:\s@\\"]{2,})$/i;
-  public modalSlidoutComponent = AddMembersModalLearnMore;
+  public modalSlideoutComponent = AddMembersModalLearnMore;
   public invalidEmailMessage = "";
 
   public membersInvitedToast: ToastObj = {
