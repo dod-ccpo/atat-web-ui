@@ -41,7 +41,12 @@
             access to your CSP portal. Administrators will be able to manage
             all user access and permissions directly within
             {{providers[cloudServiceProvider].withinName}}.
-            <a id="LearnMoreLink">
+            <a role="button" id="LearnMoreLink"
+               tabindex="0"
+               @click="openSlideoutPanel"
+               @keydown.enter="openSlideoutPanel"
+               @keydown.space="openSlideoutPanel"
+            >
               Learn more about accessing your CSP portal
             </a>
           </p>
@@ -57,6 +62,9 @@ import Vue from "vue";
 
 import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import { SlideoutPanelContent } from "../../../types/Global";
+import SlideoutPanel from "@/store/slideoutPanel";
+import AccessingCSPLearnMore from "@/portfolio/components/AccessingCSPLearnMore.vue";
 @Component({
   components: {
     ATATSVGIcon,
@@ -110,6 +118,18 @@ export default class CSPCard extends Vue {
         height:"50"
       }
     },
+  }
+  public async openSlideoutPanel(e: Event): Promise<void> {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      const slideoutPanelContent: SlideoutPanelContent = {
+        component: AccessingCSPLearnMore,
+        title: "Learn More",
+      }
+      await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
   }
 }
 </script>
