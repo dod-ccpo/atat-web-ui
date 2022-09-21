@@ -46,6 +46,7 @@
       </a>
 
       <CorAcorContactInfoForm
+        :isWizard="true"
         :corOrAcor="corOrAcor"
         v-show="showContactForm && !haveSelectedContact"
         :showAccessRadioButtons.sync="showAccessRadioButtons"
@@ -338,9 +339,7 @@ export default class COR_ACOR extends Vue {
       this.firstName = newSelectedContact.firstName;
       this.lastName = newSelectedContact.lastName;
       this.email = newSelectedContact.email;
-      // TODO phone needs refinement in next milestone when not using dummy data
       this.phone = "+1" + newSelectedContact.phone;
-      // TODO set all data i.e., fields in currentData/ContactDTO with real data when avl.
     } else {
       this.selectedRole = "";
       this.selectedSalutation = "";

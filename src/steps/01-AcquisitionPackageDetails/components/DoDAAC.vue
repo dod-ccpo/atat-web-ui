@@ -2,7 +2,7 @@
   <div v-if="isForm">
     <ATATTextField
       id="DoDAAC"
-      label="DoD Activity Address Code (DoDAAC)"
+      :label="label"
       class="_input-max-width"
       :tooltipText="tooltipText"
       :value.sync="_dodaac"

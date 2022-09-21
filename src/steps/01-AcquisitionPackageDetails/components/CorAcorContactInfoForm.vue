@@ -148,7 +148,7 @@
 
         <DoDAAC 
           :isForm="true"
-          :isWizard="true"
+          :isWizard="isWizard"
           :dodaac.sync="_dodaac"
           label="DoD Activity Address Code (DoDAAC)"
           tooltipText="A DoDAAC is a 6-character code that uniquely identifies a 
@@ -200,6 +200,7 @@ export default class CorAcorContactInfoForm extends Vue {
   @Prop() private branchData!: SelectData[];
   @Prop() private selectedBranchRanksData!: SelectData[];
   @Prop() private contactRoles!: RadioButton[];
+  @Prop() private isWizard!: boolean;
 
   @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
   @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
