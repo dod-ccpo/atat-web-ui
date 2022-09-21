@@ -29,6 +29,21 @@
           />
         </div>
 
+        <!-- placeholder for ORGANIZATION agency/DISA org components -->
+        <p class="ml-4">What service or agency is this contracting effort for? </p>
+        <p class="ml-4">DISA Organization</p>
+        <!-- END placeholder from ORGANIZATION -->
+
+        <hr />
+        
+        <h3 class="mb-5 ml-4">Contracting Officer Representative (COR) nominee</h3>
+
+
+
+
+        <hr />
+
+
         <h2 class="mb-5 ml-4">Part II. Requirement Information</h2>
 
         <div class="_comment-wrap">

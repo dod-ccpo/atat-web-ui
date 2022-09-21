@@ -146,23 +146,18 @@
           ]"
         />
 
-        <ATATTextField
-          id="DoDAAC"
+        <DoDAAC 
+          :isForm="true"
+          :isWizard="true"
+          :dodaac.sync="_dodaac"
           label="DoD Activity Address Code (DoDAAC)"
-          class="_input-max-width"
           tooltipText="A DoDAAC is a 6-character code that uniquely identifies a 
           unit, activity, or organization that has the authority to requisition, 
           contract for, or fund/pay bills for materials and services."
-          :value.sync="_dodaac"
-          :mask="['^[0-9A-Za-z]{1,6}$']"
-          :isMaskRegex=true
-          :rules="[
-            $validators.required(
-              'Please enter your ' + corOrAcor + '’s 6-character DoDAAC.'
-            ),
+          :rules="[ 
+            $validators.required('Please enter your ' + corOrAcor + '’s 6-character DoDAAC.'),
           ]"
         />
-       
       </div>
     </v-form>
   </section>
@@ -177,6 +172,8 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
+import DoDAAC from "../components/DoDAAC.vue";
+
 import { RadioButton, SelectData, RankData } from "../../../../types/Global";
 
 @Component({
@@ -186,9 +183,10 @@ import { RadioButton, SelectData, RankData } from "../../../../types/Global";
     ATATRadioGroup,
     ATATSelect,
     ATATTextField,
+    DoDAAC,
   },
 })
-export default class ContactInfoForm extends Vue {
+export default class CorAcorContactInfoForm extends Vue {
   $refs!: {
     CORACORContactForm: Vue & {
       resetValidation: () => void;

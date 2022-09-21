@@ -52,9 +52,6 @@ export default class CorInfo extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      // EJY - Saving every time bc savedData contains the extended sys columns
-      // where currentData does not. Meets AC, but need to only check non-sys cols
-      // for diffs to determine whether to patch to SNOW
       if (this.hasChanged()) {
         await AcquisitionPackage.saveContactInfo(
           { data: this.currentContactData, type: "COR" }

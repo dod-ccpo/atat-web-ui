@@ -45,7 +45,7 @@
         Manually enter your {{ corOrAcor }}’s contact information
       </a>
 
-      <ContactInfoForm
+      <CorAcorContactInfoForm
         :corOrAcor="corOrAcor"
         v-show="showContactForm && !haveSelectedContact"
         :showAccessRadioButtons.sync="showAccessRadioButtons"
@@ -93,7 +93,7 @@ import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import ContactInfoForm from "./ContactInfoForm.vue";
+import CorAcorContactInfoForm from "../components/CorAcorContactInfoForm.vue";
 import PersonCard from "./PersonCard.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -115,7 +115,7 @@ import {
   components: {
     ATATAutoComplete,
     ATATRadioGroup,
-    ContactInfoForm,
+    CorAcorContactInfoForm,
     PersonCard,
   }
 })
