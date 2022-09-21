@@ -40,6 +40,13 @@
         </div>
 
         <div class="_comment-wrap">
+          <CommentButton id="IncumbentContractorName" />
+            <IncumbentContractorName
+                :value.sync="_docData.currentContract.incumbent_contractor_name"
+            />
+        </div>
+
+        <div class="_comment-wrap">
           <CommentButton id="FairOpportunity" />
           <FairOppExceptions 
             legend="Based on your market research, do any of the following exceptions to fair 
@@ -72,7 +79,7 @@ import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/Fair
 // Step 3 Components
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
-
+import IncumbentContractorName from "@/steps/03-Background/components/IncumbentContractorName.vue";
 import { DocReviewData } from "types/Global";
 
 @Component({
@@ -82,6 +89,7 @@ import { DocReviewData } from "types/Global";
     CurrentContractOptions,
     EmergencyDeclarationSupport,
     FairOppExceptions,
+    IncumbentContractorName,
     PageHead,
     ProjectScope,
     ProjectTitle,

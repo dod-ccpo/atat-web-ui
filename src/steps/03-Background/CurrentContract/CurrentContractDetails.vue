@@ -6,7 +6,7 @@
           Let’s gather some details about your current contract
         </h1>
         <div class="copy-max-width">
-          <ATATTextField
+          <IncumbentContractorName
             id="IncumbentContractorName"
             :rules="[
               $validators.required(
@@ -67,7 +67,7 @@ import { Component, Mixins } from "vue-property-decorator";
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-
+import IncumbentContractorName from "@/steps/03-Background/components/IncumbentContractorName.vue";
 import AcquisitionPackage, { StoreProperties, } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
@@ -77,6 +77,7 @@ import { add, format } from "date-fns";
 @Component({
   components: {
     ATATDatePicker,
+    IncumbentContractorName,
     ATATTextField,
   },
 })

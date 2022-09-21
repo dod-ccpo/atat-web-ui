@@ -60,7 +60,12 @@
                 :selectedException="docData.fairOpportunity.exception_to_fair_opportunity"
               />
             </li>
-          </ol>          
+          </ol>
+
+          <IncumbentContractorName
+              :isForm="isForm"
+              :value.sync="docData.currentContract.incumbent_contractor_name"
+          />
         </div>
       </div>
     </div>
@@ -78,6 +83,7 @@ import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/Projec
 
 // Step 2 Components
 import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
+import IncumbentContractorName from "@/steps/03-Background/components/IncumbentContractorName.vue";
 
 // Step 3 Components
 import CurrentContractOptions 
@@ -93,6 +99,7 @@ import { DocReviewData } from "types/Global";
     CurrentContractOptions,
     EmergencyDeclarationSupport,
     FairOppExceptions,
+    IncumbentContractorName,
     ProjectScope,
     ProjectTitle,
   },
