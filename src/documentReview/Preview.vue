@@ -66,6 +66,16 @@
               :isForm="isForm"
               :value.sync="docData.currentContract.incumbent_contractor_name"
           />
+
+          <ContractNumber
+              :isForm="isForm"
+              :value.sync="docData.currentContract.contract_number"
+          />
+
+          <TaskOrderNumber
+              :isForm="isForm"
+              :value.sync="docData.currentContract.task_delivery_order_number"
+          />
         </div>
       </div>
     </div>
@@ -86,16 +96,20 @@ import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/Fair
 import IncumbentContractorName from "@/steps/03-Background/components/IncumbentContractorName.vue";
 
 // Step 3 Components
+import ContractNumber from "@/steps/03-Background/components/ContractNumber.vue";
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
 
 import { Component, Prop } from "vue-property-decorator";
 
 import { DocReviewData } from "types/Global";
+import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 
 @Component({
   components: {
+    TaskOrderNumber,
     ATATSVGIcon,
+    ContractNumber,
     CurrentContractOptions,
     EmergencyDeclarationSupport,
     FairOppExceptions,
