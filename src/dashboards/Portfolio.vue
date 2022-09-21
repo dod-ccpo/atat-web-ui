@@ -60,7 +60,7 @@
                        <div
                           class="d-flex justify-start align-top mb-0 font-size-14"
                           v-if="hasTimeSensativeAlert() && 
-                          daysRemaining() <= 60 && daysRemaining() > 30"
+                          daysRemaining() <= 60 && daysRemaining() > 0"
                         >
                           <strong
                             >{{ daysRemaining() }} days to expiration</strong
@@ -77,7 +77,7 @@
                   justify-start
                   align-top
                   atat-text-field-error text-error mb-0 font-size-14"
-                  v-if="hasTimeSensativeAlert() && daysRemaining() <=30"
+                  v-if="hasTimeSensativeAlert() && daysRemaining() <=0"
                   >
                           <strong>{{ daysPastExpiration() }} days past expiration</strong>
                           <ATATSVGIcon style="margin: 2px 0 0 8px" name="exclamationMark"
@@ -96,7 +96,7 @@
                   >
                     <div id="fundingStatusHeader" class="d-flex justify-space-between">
                       <div  class="mb-6 h3">Funding Status</div>
-                      <div v-if="fundsSpentPercent >=75 && fundsSpentPercent <90">
+                      <div v-if="fundsSpentPercent >=75 && fundsSpentPercent <100">
                          <i
                             aria-hidden="true"
                             class="v-icon ml-2 text-warning-dark2 
@@ -105,7 +105,8 @@
                             warning
                           </i>
                       </div>
-                       <div v-if="fundsSpentPercent >=90">
+                       <div v-if="hasSpendingThresholdAlert() && 
+                      fundingAlertData.spendingViolation >=100">
                        
 						    <ATATSVGIcon style="margin: 2px 0 0 8px" name="exclamationMark"
                            :width="18"
@@ -126,7 +127,14 @@
                       fundingAlertData.spendingViolation >=100"
                     />
                     <v-divider class="my-4" />
-                    <p class="mb-0 font-size-14">
+                    <p class="mb-0 font-size-14" v-if="hasSpendingThresholdAlert() && 
+                    fundingAlertData.spendingViolation >=90">
+                      You've spent <strong>{{fundingAlertData.spendingViolation}} %</strong> of
+                      your portfolio's funds and there are {{daysRemaining()}} days remaining
+                      until your next period of performance.
+                      <span class="nowrap font-weight-700">{{ runOutOfFundsDate }}.</span>
+                    </p>
+                    <p class="mb-0 font-size-14" v-else>
                       At your current rate of spending, you will run out of funds by
                       <span class="nowrap font-weight-700">{{ runOutOfFundsDate }}.</span>
                     </p>
@@ -342,7 +350,7 @@
                       available in this portfolio. The data includes money spent
                       on all active task orders during this period of performance.
                     </p>
-                    <funding-alert :fundingAlertType="popFundsDepleted" 
+                    <funding-alert :fundingAlertType="popFundsAt100Percent" 
                     v-if="hasSpendingThresholdAlert() && fundingAlertData.spendingViolation >=100"/>
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">
@@ -679,6 +687,7 @@ export default class PortfolioDashboard extends Vue {
   private popExpiresSoonWithTOClin = FundingAlertTypes.POPExpiresSoonWithTOClin;
   private popExpired = FundingAlertTypes.POPExpired;
   private popFundsDepleted = FundingAlertTypes.POPFundsDepleted;
+  private popFundsAt100Percent = FundingAlertTypes.POPFundsAt100Percent;
 
   dashboardService: DashboardService = new DashboardService();
 
@@ -1463,7 +1472,7 @@ export default class PortfolioDashboard extends Vue {
     //live data that matches the alerts
     if(this.fundingAlertData.hasLowFundingAlert && this.fundingAlertData.spendingViolation >= 75){
       this.fundsSpentPercent = this.fundingAlertData.spendingViolation;
-      const arcColor = this.fundingAlertData.spendingViolation < 90 ? 
+      const arcColor = this.fundingAlertData.spendingViolation <=90 ? 
         this.chartDataColors["warning-dark-2"] :
         this.chartDataColors.error;
       this.arcGuageChartData.datasets[0].data

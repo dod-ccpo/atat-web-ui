@@ -266,6 +266,8 @@ export default class PortfolioDrawer extends Vue {
       return "bg-warning";
     case PortFolioStatusTypes.Delinquent:
       return "bg-error";
+    case PortFolioStatusTypes.Expired:
+      return "bg-error";
     case "archived":
       return "bg-base-dark";
     default:

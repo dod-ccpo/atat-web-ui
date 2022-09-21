@@ -28,6 +28,7 @@ export const FundingAlertTypes = {
   POPExpiresSoonNoTOClin: "POPExpiresSoonDaysNoTOClin",
   POPExpiresSoonWithTOClin: "POPExpiresSoonWithTOClin",
   POPExpiresSoonWithLowFunds: "POPExpiresSoonWithLowFunds",
+  POPLowFunds: "POPLowFunds",
   POPFundsAt100Percent: "POPFundsAt100Percent",
   POPFundsDepleted: "POPFundsDepleted",
   POPExpired: "POPExpired",
@@ -236,7 +237,6 @@ export class PortfolioDataStore extends VuexModule {
     && thresholdAtOrAbove(alert.threshold_violation_amount, 75));
     const currentSpendingViolation = lowFundsAlert ? 
       getThresholdAmount(lowFundsAlert.threshold_violation_amount): 0;
-    const fundsDepleted = lowFundsAlert && currentSpendingViolation >=100;
 
     fundingAlertData.hasLowFundingAlert = lowFundsAlert !== undefined;
     fundingAlertData.spendingViolation = lowFundsAlert !== undefined 
@@ -248,25 +248,48 @@ export class PortfolioDataStore extends VuexModule {
     fundingAlertData.daysRemaining = timeremainingalert ? 
       Number(timeremainingalert.threshold_violation_amount.replace('days','')): 0;
 
-    //if expiration and time remaining show warning alert
-    if(timeremainingalert && fundingAlertData.daysRemaining > 0 && !fundsDepleted){
-      fundingAlertData.fundingAlertType = (lowFundsAlert && currentSpendingViolation < 90) ?  
-        FundingAlertTypes.POPExpiresSoonWithLowFunds :
-        FundingAlertTypes.POPExpiresSoonNoTOClin;
-      this.setStatus(PortFolioStatusTypes.AtRisk);
+    debugger;
+
+    if(timeremainingalert){
+      fundingAlertData.fundingAlertType =  fundingAlertData.daysRemaining <=0 ?
+        FundingAlertTypes.POPExpired : (fundingAlertData.daysRemaining > 60 ? 
+          fundingAlertData.fundingAlertType : FundingAlertTypes.POPExpiresSoonNoTOClin);
+      if(fundingAlertData.daysRemaining <= 60){
+        this.setStatus(PortFolioStatusTypes.AtRisk);
+      }
+      if(fundingAlertData.daysRemaining <=0){
+        this.setStatus(PortFolioStatusTypes.Expired);
+      }
+  
+    }
+
+    if(fundingAlertData){
+      fundingAlertData.fundingAlertType = 
+       fundingAlertData.spendingViolation < 100 ? 
+         (fundingAlertData.spendingViolation < 90 ? fundingAlertData.fundingAlertType :
+           FundingAlertTypes.POPLowFunds): FundingAlertTypes.POPFundsDepleted;
+
+      if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPLowFunds){
+        this.setStatus(PortFolioStatusTypes.AtRisk);
+      }
+      if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPFundsDepleted){
+        this.setStatus(PortFolioStatusTypes.Delinquent);
+      }
     }
     
-    if(timeremainingalert && fundingAlertData.daysRemaining <=0){
-      fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpired;
-    }
+    if(timeremainingalert && lowFundsAlert){
+      if(fundingAlertData.daysRemaining > 0 && fundingAlertData.spendingViolation < 100){
+        fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpiresSoonWithLowFunds;
 
-    if(lowFundsAlert && currentSpendingViolation >=100 ){
-      fundingAlertData.fundingAlertType = FundingAlertTypes.POPFundsAt100Percent;
+        if(fundingAlertData.daysRemaining <= 60){
+          this.setStatus(PortFolioStatusTypes.AtRisk);
+        }
+        if(fundingAlertData.spendingViolation >=90){
+          this.setStatus(PortFolioStatusTypes.AtRisk)
+        }
+      }
     }
-
-    if(fundsDepleted){
-      this.setStatus(PortFolioStatusTypes.Delinquent);
-    }
+    
 
     return fundingAlertData;
   }
