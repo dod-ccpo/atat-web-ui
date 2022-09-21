@@ -87,6 +87,8 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
       exception_to_fair_opportunity: "",
     },
     currentContract: {},
+    cor: null,
+    acor: null,
   }
 
   private docData: DocReviewData = this.docDataInitial;
@@ -129,6 +131,11 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
     this.docData.currentContract = await AcquisitionPackage.loadData<CurrentContractDTO>({
       storeProperty: StoreProperties.CurrentContract
     });
+
+    this.docData.cor = await AcquisitionPackage.loadContactInfo("COR");
+    this.docData.acor = await AcquisitionPackage.loadContactInfo("ACOR");
+    
+    debugger;
 
     // create a copy of data as it was on page load for comparison on page leave for 
     // what to save to store and database

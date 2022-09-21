@@ -406,7 +406,7 @@ export default class COR_ACOR extends Vue {
           this.savedData.rank_components = rankComp.value;
         }
 
-        const emptyBranch: { text: ""; value: "" } = {text: "", value: ""};
+        const emptyBranch: Record<string, string> = {text: "", value: ""};
 
         //retrieve selected Military Rank from rank component
         const rank = await ContactData.GetMilitaryRank(rankComp.value || "");

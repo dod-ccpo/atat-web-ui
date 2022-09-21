@@ -10,7 +10,8 @@ import {
   CurrentContractDTO, 
   FairOpportunityDTO,
   OrganizationDTO, 
-  ProjectOverviewDTO 
+  ProjectOverviewDTO,
+  ContactDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -18,6 +19,8 @@ export interface DocReviewData {
   organization: OrganizationDTO;
   fairOpportunity: FairOpportunityDTO;
   currentContract: CurrentContractDTO;
+  cor: ContactDTO | null,
+  acor: ContactDTO | null,
 }
 
 export interface MenuIcon {

@@ -80,6 +80,10 @@ import EmergencyDeclarationSupport
   from "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue";
 import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue";
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
+import CorAcorContactInfoForm 
+  from "@/steps/01-AcquisitionPackageDetails/components/CorAcorContactInfoForm.vue";
+import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
+
 
 // Step 2 Components
 import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
@@ -94,7 +98,9 @@ import { DocReviewData } from "types/Global";
   components: {
     ATATSVGIcon,
     CommentButton,
+    CorAcorContactInfoForm,
     CurrentContractOptions,
+    DoDAAC,
     EmergencyDeclarationSupport,
     FairOppExceptions,
     PageHead,
