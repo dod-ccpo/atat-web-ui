@@ -2,7 +2,7 @@ import { AlertDTO } from "@/api/models";
 import api  from "@/api";
 import { AxiosRequestConfig } from "axios";
 
-export class AlertService {
+export default class AlertService {
 
   async getAlerts(taskOrderNumber: string): Promise<AlertDTO[]>{
     let fields =  'active,alert_type,clin,last_notification_date';

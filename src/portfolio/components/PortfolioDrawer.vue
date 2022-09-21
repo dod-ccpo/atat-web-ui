@@ -18,8 +18,8 @@
         </v-textarea>
         <div class="d-flex justify-space-between pb-4">
           <span id="StatusLabel">Status</span>
-          <v-chip id="StatusChip" :color="getBgColor(portfolio.status)" label>
-            {{ portfolio.status }}
+          <v-chip id="StatusChip" :color="getBgColor()" label>
+            {{ portfolioStatus }}
           </v-chip>
         </div>
         <div class="d-flex justify-space-between pb-4">
@@ -179,7 +179,7 @@ import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PortfolioRolesLearnMore from "@/portfolio/components/PortfolioRolesLearnMore.vue";
 
-import PortfolioData from "@/store/portfolio";
+import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import Toast from "@/store/toast";
 
@@ -207,6 +207,7 @@ import MemberCard from "@/portfolio/components/MemberCard.vue";
 
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio = {};
+  public portfolioStatus: string = PortFolioStatusTypes.Active;
   public provisionedTime = "";
   public updateTime = "";
   public csp = "";
@@ -252,14 +253,14 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public getBgColor(): string {
-    switch (this.portfolio.status?.toLowerCase()) {
-    case "active":
+    switch (this.portfolioStatus) {
+    case PortFolioStatusTypes.Active:
       return "bg-success";
-    case "processing":
+    case PortFolioStatusTypes.Processing:
       return "bg-info-dark";
-    case "expiring pop":
+    case PortFolioStatusTypes.AtRisk:
       return "bg-warning";
-    case "expired":
+    case PortFolioStatusTypes.Delinquent:
       return "bg-error";
     case "archived":
       return "bg-base-dark";
@@ -279,6 +280,7 @@ export default class PortfolioDrawer extends Vue {
 
       }
       this.portfolioMembers = _.cloneDeep(storeData.members) || [];
+      this.portfolioStatus = PortfolioData.getStatus;
     }
     // TEMP hardcoded current user
     this.currentUser = {

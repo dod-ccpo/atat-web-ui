@@ -1,10 +1,10 @@
 <template>
   <div class="_dashboard bg-base-lightest">
     <v-container class="container-max-width bg-base-lightest">
-      <v-row v-if="fundingAlertType.length > 0">
+      <v-row v-if="fundingAlertType().length > 0">
         <v-col>
-          <funding-alert :fundingAlertType="fundingAlertType"
-          :timeRemaining="daysRemaining"/>
+          <funding-alert :fundingAlertType="fundingAlertType()"
+          :timeRemaining="daysRemaining()"/>
         </v-col>
       </v-row>
       <v-row>
@@ -54,16 +54,16 @@
                           {{ popStart }}&ndash;{{ popEnd }}
                         </span>
                         <p class="text--base-dark mb-0 font-size-14" 
-                        v-if="fundingAlertType.length === 0">
+                        v-if="!hasTimeSensativeAlert()">
                           {{ timeToExpiration }} to expiration
                         </p>
                        <div
                           class="d-flex justify-start align-top mb-0 font-size-14"
-                          v-if="fundingAlertType.length > 0 && 
-                          daysRemaining <= 60 && daysRemaining > 30"
+                          v-if="hasTimeSensativeAlert() && 
+                          daysRemaining() <= 60 && daysRemaining() > 30"
                         >
                           <strong
-                            >{{ daysRemaining }} days to expiration</strong
+                            >{{ daysRemaining() }} days to expiration</strong
                           >
                           <i
                             aria-hidden="true"
@@ -77,7 +77,7 @@
                   justify-start
                   align-top
                   atat-text-field-error text-error mb-0 font-size-14"
-                  v-if="fundingAlertType.length > 0 && daysRemaining <=30"
+                  v-if="hasTimeSensativeAlert() && daysRemaining() <=30"
                   >
                           <strong>{{ daysPastExpiration() }} days past expiration</strong>
                           <ATATSVGIcon style="margin: 2px 0 0 8px" name="exclamationMark"
@@ -94,7 +94,25 @@
                     id="FundingStatusCard"
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
-                    <h3 class="mb-6">Funding Status</h3>
+                    <div id="fundingStatusHeader" class="d-flex justify-space-between">
+                      <div  class="mb-6 h3">Funding Status</div>
+                      <div v-if="fundsSpentPercent >=75 && fundsSpentPercent <90">
+                         <i
+                            aria-hidden="true"
+                            class="v-icon ml-2 text-warning-dark2 
+                            notranslate material-icons theme--light"
+                          >
+                            warning
+                          </i>
+                      </div>
+                       <div v-if="fundsSpentPercent >=90">
+                       
+						    <ATATSVGIcon style="margin: 2px 0 0 8px" name="exclamationMark"
+                           :width="18"
+                           :height="18"
+                           color="error"/>
+                      </div>
+                    </div>
                     <DonutChart
                       chart-id="FundingStatusArcChart"
                       :chart-data="arcGuageChartData"
@@ -322,6 +340,8 @@
                       available in this portfolio. The data includes money spent
                       on all active task orders during this period of performance.
                     </p>
+                    <funding-alert :fundingAlertType="popFundsDepleted" 
+                    v-if="hasSpendingThresholdAlert() && fundingAlertData.spendingViolation >=100"/>
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">
                         <DonutChart
@@ -608,7 +628,6 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { DashboardService } from "../services/dashboards";
-import { AlertService} from "../services/alerts";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
@@ -621,8 +640,10 @@ import LineChart from "../components/charts/LineChart.vue";
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
+import Portfolio, { AlertTypes, FundingAlertData, FundingAlertTypes } from "@/store/portfolio";
+
 import { toCurrencyString, getIdText, roundTo100 } from "@/helpers";
-import { CostsDTO, TaskOrderDTO, ClinDTO, AlertDTO } from "@/api/models";
+import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
 import { add, startOfMonth, subDays } from "date-fns";
 import parseISO from "date-fns/parseISO";
@@ -633,14 +654,8 @@ import {lineChartData, lineChartDataSet, SlideoutPanelContent } from "types/Glob
 import _ from 'lodash';
 import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
-import FundingAlert, { FundingAlertTypes } from "@/dashboards/FundingAlert.vue";
+import FundingAlert from "@/dashboards/FundingAlert.vue";
 
-
-
-export const AlertTypes =  {
-  SPENDING_ACTUAL:"SPENDING_ACTUAL",
-  TIME_REMAINING: "TIME_REMAINING"
-}
 
 @Component({
   components: {
@@ -661,9 +676,9 @@ export default class PortfolioDashboard extends Vue {
   private popExpiresSoonNoTOClin = FundingAlertTypes.POPExpiresSoonNoTOClin;
   private popExpiresSoonWithTOClin = FundingAlertTypes.POPExpiresSoonWithTOClin;
   private popExpired = FundingAlertTypes.POPExpired;
+  private popFundsDepleted = FundingAlertTypes.POPFundsDepleted;
 
   dashboardService: DashboardService = new DashboardService();
-  alertsService: AlertService = new AlertService();
 
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""
@@ -712,11 +727,32 @@ export default class PortfolioDashboard extends Vue {
   public tooltipHeaderData: Record<string, string> = {}
 
   // Alerts
-  public alerts: AlertDTO[] = [];
-  public fundingAlertType = "";
-  public daysRemaining = 0;
+  private fundingAlertData:FundingAlertData = {
+    alerts: [],
+    daysRemaining: 0,
+    spendingViolation: 0,
+    fundingAlertType: "",
+    hasLowFundingAlert: false,
+  };
+
+  private hasTimeSensativeAlert():boolean {
+    return this.fundingAlertData.alerts.some(alert=>alert.alert_type === AlertTypes.TIME_REMAINING)
+  }
+  private hasSpendingThresholdAlert():boolean {
+    return  this.fundingAlertData.alerts
+      .some(alert=> alert.alert_type === AlertTypes.SPENDING_ACTUAL 
+    && this.fundingAlertData.spendingViolation >=75);
+  }
   private daysPastExpiration():number {
-    return Math.abs(this.daysRemaining);
+    return Math.abs(this.fundingAlertData.daysRemaining);
+  }
+
+  private fundingAlertType():string {
+    return this.fundingAlertData.fundingAlertType;
+  }
+
+  private daysRemaining(): number{
+    return this.fundingAlertData.daysRemaining;
   }
 
   public async calculateFundsSpent(): Promise<void> {
@@ -1211,6 +1247,7 @@ export default class PortfolioDashboard extends Vue {
         circumference: 180,
         rotation: -90,
         cutout: "80%",
+        color: "#fff"
       },
     ],
   };
@@ -1412,62 +1449,29 @@ export default class PortfolioDashboard extends Vue {
     return "$" + toCurrencyString(value, decimals);
   }
 
-  private thresholdAtOrAbove(value: string, threshold: number): boolean {
-    let stringVal = value.replace('%', '');
-    let numVal = Number(stringVal);
-    return numVal != Number.NaN && numVal >=threshold;
-  }
-
-  public async getAlerts():Promise<AlertDTO[]>{
-    const alerts = await this.alertsService.getAlerts('1000000001234');
-    return alerts;
+  public async getAlerts():Promise<FundingAlertData>{
+    return await Portfolio.getFundingTrackerAlert('1000000001234');
   }
 
   public async processAlerts():Promise<void> {
 
-    debugger;
-
-    const alerts = await this.getAlerts();
-    
-    alerts.forEach(alert=>{
-      if(alert.alert_type == AlertTypes.SPENDING_ACTUAL){
-        if(!this.alerts.some(alert=>alert.alert_type == AlertTypes.SPENDING_ACTUAL)){
-          this.alerts.push(alert);
-        } 
+    this.fundingAlertData = await this.getAlerts();
+    //some of this functionality is temporary until we get
+    //live data that matches the alerts
+    if(this.fundingAlertData.hasLowFundingAlert && this.fundingAlertData.spendingViolation >= 75){
+      this.fundsSpentPercent = this.fundingAlertData.spendingViolation;
+      const arcColor = this.fundingAlertData.spendingViolation < 90 ? 
+        this.chartDataColors["warning-dark-2"] :
+        this.chartDataColors.error;
+      this.arcGuageChartData.datasets[0].data
+       = [this.fundsSpentPercent, 100 - this.fundsSpentPercent];
+      this.arcGuageChartData.datasets[0].backgroundColor =
+        [arcColor, this.chartDataColors.gray];
+      
+      if(this.fundingAlertData.spendingViolation >=100){
+        this.arcGuageChartData.datasets[0].color = "#c60634";
       }
-      if(alert.alert_type == AlertTypes.TIME_REMAINING){
-        if(!this.alerts.some(alert=>alert.alert_type == AlertTypes.TIME_REMAINING)){
-          this.alerts.push(alert);
-        } 
-      }
-    });
-
-    // does alert type spending actual exist and if it does, does the threshold meet or exceeed 100%
-    // if spending alert and threshold is at or above 100% show expiration alert
-    let fundsDepleted = this.alerts.some(alert=>alert.alert_type 
-    === AlertTypes.SPENDING_ACTUAL 
-    && this.thresholdAtOrAbove(alert.threshold_violation_amount, 100));
-
-    let lowFundsThreshold = this.alerts.some(alert=>alert.alert_type 
-    === AlertTypes.SPENDING_ACTUAL 
-    && this.thresholdAtOrAbove(alert.threshold_violation_amount, 75));
- 
-    // does time remaining alert exist
-    let timeremainingalert = this.alerts.find(alert=>alert.alert_type == AlertTypes.TIME_REMAINING);
-    this.daysRemaining = timeremainingalert ? 
-      Number(timeremainingalert.threshold_violation_amount.replace('days','')): 0;
-
-    //if expiration and time remaining show warning alert
-    if(timeremainingalert && this.daysRemaining > 0 && !fundsDepleted){
-      this.fundingAlertType = lowFundsThreshold ?  FundingAlertTypes.POPExpiresSoonWithLowFunds :
-        FundingAlertTypes.POPExpiresSoonNoTOClin;
-    }
-
-    if(timeremainingalert && this.daysRemaining <=0){
-      this.fundingAlertType = FundingAlertTypes.POPExpired;
-    }
-    
-
+    }      
   }
 }
 

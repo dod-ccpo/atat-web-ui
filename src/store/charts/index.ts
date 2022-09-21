@@ -27,6 +27,8 @@ export class ChartsStore extends VuexModule {
     "mint-cool": "#7EFBE1",
     "orange-warm": "#914734",
     "gray": "#dfe1e2",
+    "warning-dark-2":"#e9a514",
+    "error": "#c60634",
   };
 
   public chartDataColors20 = {

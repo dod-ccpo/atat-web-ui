@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { AlertDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
-import { AlertService } from "./alerts";
+import AlertService from "./alerts";
 
 const mockAlerts: AlertDTO[] = [
   {

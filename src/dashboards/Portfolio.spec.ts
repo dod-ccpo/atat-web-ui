@@ -5,10 +5,10 @@ import {createLocalVue, mount, shallowMount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import Portfolio from "./Portfolio.vue";
 import { AlertDTO } from "@/api/models";
-import { AxiosRequestConfig } from "axios";
 import mockDashboardData from "./__tests__/dashboardMocks..json"
 import { DashboardService, PortFolioDashBoardDTO } from "@/services/dashboards";
-import { AlertService } from "@/services/alerts";
+import  AlertService from "@/services/alerts";
+import { FundingAlertData } from "@/store/portfolio";
 
 const FundingAlertTypes = {
   POPExpiresSoonNoTOClin: "POPExpiresSoonDaysNoTOClin",
@@ -66,59 +66,44 @@ describe("Testing Portfolio", () => {
     },
   ];
 
-  const getMockAlerts = ()=> {
 
-    let mockAlerts:AlertDTO[] = [];
-        
+  const getFundingTrackerAlertMock = ()=> {
+    const fundingAlertData:FundingAlertData = {
+      alerts: [],
+      daysRemaining: 0,
+      spendingViolation: 0,
+      fundingAlertType: "",
+      hasLowFundingAlert: false
+    }
+
     switch(alertsKey){
     case alertKeys.SixtyDaysSeventyFivePercent:
-      mockAlerts = alerts_60days_75percent;
+      fundingAlertData.alerts  = alerts_60days_75percent;
+      fundingAlertData.daysRemaining = 60;
+      fundingAlertData.spendingViolation = 75;
+      fundingAlertData.hasLowFundingAlert = true;
+      fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpiresSoonWithLowFunds;
       break;
     case alertKeys.Expired:
-      mockAlerts = alerts_expired
-      break;
+      fundingAlertData.alerts = alerts_expired;
+      fundingAlertData.daysRemaining = -30;
+      fundingAlertData.spendingViolation = 0;
+      fundingAlertData.hasLowFundingAlert = false;
+      fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpired;
     }
-    return mockAlerts;
+
+    return fundingAlertData;
   }
 
-
-  class MockDashboardService extends DashboardService{
-
-    public async getdata(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      taskOrderNumber: string
-    ): Promise<PortFolioDashBoardDTO> {
-      return new Promise((resolve) => resolve(dashboardMock()));
-    }
-       
-  }
-
-  class MockAlertService extends AlertService{
+  jest.mock("@/store/portfolio", ()=>({
+    ...jest.requireMock("@/store/portfolio"),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getAlerts(taskOrderNumber: string): Promise<AlertDTO[]>{
-      return new Promise((resolve=>resolve(getMockAlerts())));
+    getFundingTrackerAlert: (taskOrderNumber: string): Promise<FundingAlertData> =>{
+      return new Promise(resolve=>resolve(getFundingTrackerAlertMock()));
     }
-  }
-
-  const dashboardMock = ()=> mockDashboardData;
-  jest.mock("@/services/dashboards", () => ({
-    MockDashboardService: MockDashboardService
   }));
 
-  jest.mock("@/services/alerts", ()=>({
-    MockAlertService: MockAlertService
-  }));
-
-  jest.mock("@/api", () => ({
-    ...jest.requireActual("@/api"),
-    alertsTable: {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      getQuery: (config?: AxiosRequestConfig): Promise<AlertDTO[]> => {
-        return new Promise((resolve) => resolve(getMockAlerts()));
-      },
-    },
-  }));
-
+  
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -159,27 +144,24 @@ describe("Testing Portfolio", () => {
         vuetify,
         localVue,
       });
-  
-      jest.spyOn(wrapper.vm, 'getAlerts').mockImplementation(()=> 
-        new Promise((resolve=>resolve(alerts_60days_75percent))));
+      jest.spyOn(wrapper.vm, 'getAlerts').mockImplementation(()=> getFundingTrackerAlertMock())
       await wrapper.vm.processAlerts();
-      expect(wrapper.vm.fundingAlertType)
+      expect(wrapper.vm.fundingAlertType())
         .toEqual(FundingAlertTypes.POPExpiresSoonWithLowFunds)
-  
     });
   
     it("if expired sets right alert", async () => {
       vuetify = new Vuetify();
     
+      alertsKey = alertKeys.Expired;
       wrapper = shallowMount(Portfolio, {
         vuetify,
         localVue,
       });
     
-      jest.spyOn(wrapper.vm, 'getAlerts').mockImplementation(()=> 
-        new Promise((resolve=>resolve(alerts_expired))));
+      jest.spyOn(wrapper.vm, 'getAlerts').mockImplementation(()=> getFundingTrackerAlertMock());
       await wrapper.vm.processAlerts();
-      expect(wrapper.vm.fundingAlertType)
+      expect(wrapper.vm.fundingAlertType())
         .toEqual(FundingAlertTypes.POPExpired)
     
     });
