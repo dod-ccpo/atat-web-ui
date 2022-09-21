@@ -59,6 +59,7 @@
         <div id="PortfolioTitle" class="d-flex">
           <div class="h3 mr-2">Portfolio members</div>
           <div
+            id="MemberCount"
             class="color-base font-size-20"
             v-if="getPortfolioMembersCount() > 0"
           >
@@ -85,9 +86,11 @@
         id="PortfolioMembersList"
         class="pt-6"
       >
-
-        <div class="d-flex flex-columm justify-space-between"
-        v-for="(member, index) in portfolioMembers" :key="member.email">
+        <div 
+          class="d-flex flex-columm justify-space-between"
+          v-for="(member, index) in portfolioMembers" 
+          :key="member.email"
+        >
           <MemberCard :id="'MemberName' + index" :index="index" />
           <div v-if="managerCount === 1 && member.role.toLowerCase() === 'manager'">
             <v-tooltip left nudge-right="30">
@@ -97,7 +100,7 @@
                 class="py-1 d-flex"
                 style="width: 105px; letter-spacing: normal; cursor: default;"
               >
-                <div class="width-100 text-right pr-4">Manager</div>
+                <div id="LastManager" class="width-100 text-right pr-4">Manager</div>
                 <div style="width: 24px; height: 20px;"></div>
               </div>
             </template>
@@ -145,6 +148,7 @@
     />
 
     <ATATDialog
+      id="RemoveMemberModal"
       :showDialog="showDeleteMemberDialog"
       :title="'Remove ' + deleteMemberName + ' from portfolio?'" 
       no-click-animation

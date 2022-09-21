@@ -33,13 +33,11 @@
             </template>
           </ATATAlert>
 
-          <ATATRadioGroup
-            class="copy-max-width mb-10"
-            id="ExceptionRadioOptions"
+          <FairOppExceptions 
             legend="Based on your market research, do any of the following exceptions to fair 
               opportunity apply to your acquisition?"
-            :items="exceptionOptions"
-            :value.sync="selectedException"
+            classes="copy-max-width mb-10 mt-3"
+            :selectedException.sync="selectedException"
             :rules="[$validators.required('Please select an option')]"            
           />
 
@@ -53,9 +51,8 @@
 /* eslint-disable camelcase */
 import {Component, Mixins} from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
-import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
+import FairOppExceptions from "./components/FairOppExceptions.vue"
 
-import { RadioButton } from "../../../types/Global";
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -64,34 +61,13 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 @Component({
   components: {
     ATATAlert,
-    ATATRadioGroup,
+    FairOppExceptions,
   },
 })
 
 export default class Exceptions extends Mixins(SaveOnLeave) {
   private selectedException = "";
-  private exceptionOptions: RadioButton[] = [
-    {
-      id: "OnlyOneCSPCapable",
-      label: `Only one CSP is capable of providing the supplies or services required at the level 
-        of quality required because the supplies or services ordered are unique or highly 
-        specialized. <span class="text-base">FAR 16.505(b)(2)(i)(B)</span>`,
-      value: "YES_FAR_16_505_B_2_I_B",
-    },
-    {
-      id: "AllFair",
-      label: `The order must be issued on a sole-source basis in the interest of economy and 
-        efficiency because it is a logical follow-on to an order already issued under the JWCC 
-        contracts, provided that all awardees were given a fair opportunity to be considered for 
-        the original order. <span class="text-base">FAR 16.505(b)(2)(i)(C)</span>`,
-      value: "YES_FAR_16_505_B_2_I_C",
-    },
-    {
-      id: "NoneApply",
-      label: "None of these exceptions apply to this acquisition.",
-      value: "NO_NONE",
-    },
-  ];
+  
   private get currentData(): FairOpportunityDTO {
     return {
       exception_to_fair_opportunity: this.selectedException,

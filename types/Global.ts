@@ -6,6 +6,20 @@ import {
 
 import { AdditionalButton } from "@/store/steps/types";
 
+import { 
+  CurrentContractDTO, 
+  FairOpportunityDTO,
+  OrganizationDTO, 
+  ProjectOverviewDTO 
+} from "@/api/models";
+
+export interface DocReviewData {
+  projectOverview: ProjectOverviewDTO;
+  organization: OrganizationDTO;
+  fairOpportunity: FairOpportunityDTO;
+  currentContract: CurrentContractDTO;
+}
+
 export interface MenuIcon {
   name: string;
   height: string;
@@ -119,6 +133,7 @@ export interface RadioButton {
   value: string;
   description?: string;
   disabled?: boolean;
+  readonly?: boolean;
 }
 
 export interface Checkbox {
@@ -140,6 +155,15 @@ export interface CountryObj {
   active: boolean;
   suggested?: boolean;
   mask?: string[];
+}
+
+export interface BreadCrumbItem {
+    disabled?: boolean,
+    exact?: boolean,
+    href?: string,
+    link?: boolean,
+    text?: string | number,
+    to?: string;
 }
 
 export interface ToastObj {

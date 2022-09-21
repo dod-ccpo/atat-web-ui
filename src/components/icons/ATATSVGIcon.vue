@@ -13,12 +13,14 @@ import {stringObj } from "types/Global";
 import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
+import ArrowBack from "@/components/icons/ArrowBack.vue";
 import Aws from "@/components/icons/Aws.vue";
 import Azure from "@/components/icons/Azure.vue";
 import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
+import CommentBubble from "@/components/icons/CommentBubble.vue";
 import ContactSupport from "@/components/icons/ContactSupport.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
@@ -27,6 +29,7 @@ import Email from "@/components/icons/Email.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
+import Failed from "@/components/icons/Failed.vue";
 import Feedback from "@/components/icons/Feedback.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import Gcp from "@/components/icons/Gcp.vue";
@@ -39,6 +42,8 @@ import Person from "@/components/icons/Person.vue";
 import PersonAddAlt from "@/components/icons/PersonAddAlt.vue";
 import Phone from "@/components/icons/Phone.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
+import Processing from "@/components/icons/Processing.vue";
+import Provisioned from "@/components/icons/Provisioned.vue";
 import Role from "@/components/icons/Role.vue";
 import Remove from "@/components/icons/Remove.vue";
 import Search from "@/components/icons/Search.vue";
@@ -50,15 +55,18 @@ import TrendingUp from "@/components/icons/TrendingUp.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
 import TriangleUp from "@/components/icons/TriangleUp.vue";
 import TriangleDown from "@/components/icons/TriangleDown.vue";
+import ManageAccount from "@/components/icons/ManageAccount.vue";
 
 @Component({
   components: {
+    ArrowBack,
     Aws,
     Azure,
     Calendar,
     ChevronDown,
     ChevronRight,
     Close,
+    CommentBubble,
     ContactSupport,
     ControlPoint,
     Currency,
@@ -67,11 +75,13 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     Email,
     ExclamationMark,
     ExternalLink,
+    Failed,
     Feedback,
     FilePresent,
     Gcp,
     InfoOutline,
     Launch,
+    ManageAccount,
     MonetizationOn,
     Oracle,
     Pdf,
@@ -79,6 +89,8 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     PersonAddAlt,
     Phone,
     PlusSign,
+    Processing,
+    Provisioned,
     Role,
     Remove,
     Search,
@@ -95,7 +107,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 export default class ATATSVGIcon extends Vue {
   // props
-  @Prop({ required: false }) private color?: string; // DISA Base
+  @Prop({ required: false }) private color?: string;
   @PropSync("width", {default: 0, required: true}) private _width!: number;
   @PropSync("height",{default: 0, required: true}) private _height!: number;
   @Prop({default: "", required: true}) private name!: string;
@@ -122,6 +134,7 @@ export default class ATATSVGIcon extends Vue {
     { "base-light": "959a9d"},
     { "primary": "544496" },
     { "info": "009ddd" },
+    {"info-dark":"0076A6"},
     { "success": "62bd59" },
     { "success-dark": "498e43" },    
     { "error": "c60634" },

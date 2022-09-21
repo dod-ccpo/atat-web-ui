@@ -10,16 +10,36 @@ describe("Testing index Component", () => {
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
+  /* eslint-disable camelcase */
+
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(preview, {
       localVue,
       vuetify,
+      propsData:{
+        docData:{
+          projectOverview:{
+            title: "title",
+            scope: "scope",
+            emergency_declaration: "Yes"
+          },
+          organization: {},
+          fairOpportunity: {
+            exception_to_fair_opportunity: "",
+          },      
+          currentContract: {
+            current_contract_exists: "true"
+          }
+        }
+      }
     });
+
   });
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
-
+ 
 })
+  
