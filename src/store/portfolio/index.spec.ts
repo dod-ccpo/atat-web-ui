@@ -2,11 +2,12 @@
 
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
-import {PortfolioDataStore} from "@/store/portfolio/index";
+import {FundingAlertTypes, PortfolioDataStore} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
 import storeHelperFunctions  from "../helpers";
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { AlertDTO } from '@/api/models';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -141,6 +142,40 @@ describe("Portfolio Store", () => {
     await portfolioStore.setStoreData(JSON.stringify(mockData));
     Vue.nextTick(() => {
       expect(portfolioStore.portfolio.title).toBe("some title to test")
+    })
+  })
+
+  it('Test getFundingTrackerAlerts', async () => {
+    const mockAlerts: AlertDTO[] = [
+      {
+        clin: "",
+        task_order: "tsk_12345678",
+        active: "true",
+        alert_type: "SPENDING_ACTUAL",
+        threshold_violation_amount: "75",
+        last_notification_date: "",
+        portfolio: "",
+      },
+      {
+        clin: "",
+        task_order: "tsk_12345678919",
+        active: "true",
+        alert_type: "TIME_REMAINING",
+        threshold_violation_amount: "60",
+        last_notification_date: "",
+        portfolio: "",
+      },
+    ];
+    
+    jest.spyOn(portfolioStore, "getAlerts").mockReturnValue(
+      new Promise(resolve=>resolve(mockAlerts))
+    );
+    const fundingAlertData = await portfolioStore.getFundingTrackerAlert('');
+    Vue.nextTick(() => {
+      expect(fundingAlertData.fundingAlertType).toBe(FundingAlertTypes.POPExpiresSoonWithLowFunds);
+      expect(fundingAlertData.hasLowFundingAlert).toBe(true);
+      expect(fundingAlertData.daysRemaining).toBe(60);
+      expect(fundingAlertData.spendingViolation).toBe(75);
     })
   })
 
