@@ -248,8 +248,6 @@ export class PortfolioDataStore extends VuexModule {
     fundingAlertData.daysRemaining = timeremainingalert ? 
       Number(timeremainingalert.threshold_violation_amount.replace('days','')): 0;
 
-    debugger;
-
     if(timeremainingalert){
       fundingAlertData.fundingAlertType =  fundingAlertData.daysRemaining <=0 ?
         FundingAlertTypes.POPExpired : (fundingAlertData.daysRemaining > 60 ? 
