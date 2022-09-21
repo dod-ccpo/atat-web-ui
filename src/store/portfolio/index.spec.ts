@@ -2,7 +2,7 @@
 
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
-import {FundingAlertTypes, PortfolioDataStore} from "@/store/portfolio/index";
+import {FundingAlertTypes, PortfolioDataStore, PortFolioStatusTypes} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
 import storeHelperFunctions  from "../helpers";
 import Vue from "vue";
@@ -178,6 +178,41 @@ describe("Portfolio Store", () => {
       expect(fundingAlertData.spendingViolation).toBe(75);
     })
   })
+
+  it('Test setStatus- sets portfolio status to the passed in value', async () => {
+    portfolioStore.setStatus(PortFolioStatusTypes.Delinquent);
+    Vue.nextTick(() => {
+      expect(portfolioStore.status).toBe(PortFolioStatusTypes.Delinquent);
+    })
+  })
+
+  it('Test setAlerts- sets alerts to the passed in value', async () => {
+    const mockAlerts: AlertDTO[] = [
+      {
+        clin: "",
+        task_order: "tsk_12345678",
+        active: "true",
+        alert_type: "SPENDING_ACTUAL",
+        threshold_violation_amount: "75",
+        last_notification_date: "",
+        portfolio: "",
+      },
+      {
+        clin: "",
+        task_order: "tsk_12345678919",
+        active: "true",
+        alert_type: "TIME_REMAINING",
+        threshold_violation_amount: "60",
+        last_notification_date: "",
+        portfolio: "",
+      },
+    ];
+    portfolioStore.setAlerts(mockAlerts);
+    Vue.nextTick(() => {
+      expect(portfolioStore.alerts).toBe(mockAlerts);
+    })
+  })
+
 
 })
 
