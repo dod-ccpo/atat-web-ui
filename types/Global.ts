@@ -6,6 +6,20 @@ import {
 
 import { AdditionalButton } from "@/store/steps/types";
 
+import { 
+  CurrentContractDTO, 
+  FairOpportunityDTO,
+  OrganizationDTO, 
+  ProjectOverviewDTO 
+} from "@/api/models";
+
+export interface DocReviewData {
+  projectOverview: ProjectOverviewDTO;
+  organization: OrganizationDTO;
+  fairOpportunity: FairOpportunityDTO;
+  currentContract: CurrentContractDTO;
+}
+
 export interface MenuIcon {
   name: string;
   height: string;

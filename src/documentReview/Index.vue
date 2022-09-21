@@ -1,5 +1,5 @@
 <template>
-  <div class="_document-review">
+  <div :class="isForm ? '_document-review' : '_document-preview'">
     <ATATSlideoutPanel
       v-if="displayView === 'form'"
       :alwaysOpen="true"
@@ -7,39 +7,60 @@
     >
       <component @showView="showView" :is="panelContent"></component>
     </ATATSlideoutPanel>
-    <div class="bg-base-off-white main-div">
-      <Form
-        :docTitle="docTitle"
-        :docData.sync="docData"
-        v-if="displayView === 'form'"
-      />
-      <Preview
-        v-if="displayView === 'preview'"
-        :docTitle="docTitle"
-        :docData="docData"
-        :isForm="false"
-        @showView="showView"
-      />
-    </div>
+
+    <v-main>
+      <div id="app-content" class="d-flex flex-column">
+        <div class="mb-auto">
+          <Form
+            :docTitle="docTitle"
+            :docData.sync="docData"
+            v-if="displayView === 'form'"
+          />
+          <Preview
+            v-if="displayView === 'preview'"
+            :docTitle="docTitle"
+            :docData="docData"
+            :isForm="false"
+            @showView="showView"
+          />
+
+          <v-btn @click="saveOnLeave" class="my-10">Temp Save Button</v-btn>
+
+        </div>
+        <ATATFooter/>
+      </div>
+    </v-main>
   </div>
 </template>
+
 <script lang="ts">
-import { SlideoutPanelContent } from "types/Global";
+import { Component, Mixins } from "vue-property-decorator";
+
+import ATATFooter from "@/components/ATATFooter.vue";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import CommentsPanel from "./components/CommentsPanel.vue";
 import Form from "./Form.vue";
 import Preview from "./Preview.vue";
+
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import CommentsPanel from "./components/CommentsPanel.vue";
-import { Component, Mixins } from "vue-property-decorator";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import { OrganizationDTO, ProjectOverviewDTO } from "@/api/models";
+import { DocReviewData, SlideoutPanelContent } from "types/Global";
+
+import { 
+  CurrentContractDTO, 
+  FairOpportunityDTO,
+  OrganizationDTO, 
+  ProjectOverviewDTO 
+} from "@/api/models";
+
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import _ from "lodash";
 
 @Component({
   components: {
+    ATATFooter,
     ATATSVGIcon,
     ATATSlideoutPanel,
     CommentsPanel,
@@ -50,24 +71,31 @@ import _ from "lodash";
 export default class DocumentReview extends Mixins(SaveOnLeave){
   
   private docTitle = "Requirements Checklist";
-  private currentTitle = "";
-  private projectScope = "";
-  private emergencyDeclaration = "";
   private displayView = "";
+  private isForm = true;
 
-  private docData: Record<string, Record<string, unknown>> = {
-    "acqPackage":{},
-    "org": {}
+  /* eslint-disable camelcase */
+
+  private docDataInitial: DocReviewData = {
+    projectOverview: {
+      title: "",
+      scope: "",
+      emergency_declaration: "",
+    },
+    organization: {},
+    fairOpportunity: {
+      exception_to_fair_opportunity: "",
+    },
+    currentContract: {},
   }
-  
-  private savedData:Record<string, Record<string, unknown>> = {
-    "acqPackage":{},
-    "org": {}
-  }
+
+  private docData: DocReviewData = this.docDataInitial;
+  private savedDocData: DocReviewData = this.docDataInitial;
   private docDataSectionsToSave: string[] = [];
   
   public showView(view?: string): void {
     this.displayView = view ? view : "form";
+    this.isForm = view === "form";
   }
 
   private get panelContent() {
@@ -86,33 +114,67 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
   }
 
   public async loadOnEnter(): Promise<void> {
-    this.docData.acqPackage = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
+    this.docData.projectOverview = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
       storeProperty: StoreProperties.ProjectOverview,
-    }) as unknown as Record<string, string | unknown>;
-    this.docData.org = await AcquisitionPackage.loadData<OrganizationDTO>({
+    });
+
+    this.docData.organization = await AcquisitionPackage.loadData<OrganizationDTO>({
       storeProperty: StoreProperties.Organization
-    })as Record<string, string>;
-    this.savedData = _.cloneDeep(this.docData)
+    });
+
+    this.docData.fairOpportunity = await AcquisitionPackage.loadData<FairOpportunityDTO>({
+      storeProperty: StoreProperties.FairOpportunity
+    });
+
+    this.docData.currentContract = await AcquisitionPackage.loadData<CurrentContractDTO>({
+      storeProperty: StoreProperties.CurrentContract
+    });
+
+    // create a copy of data as it was on page load for comparison on page leave for 
+    // what to save to store and database
+    this.savedDocData = _.cloneDeep(this.docData);
   }
 
-  public hasChanged(): void {
-    for (const section in this.docData){
-      if (hasChanges(this.docData[section], this.savedData[section])){
-        this.docDataSectionsToSave.push(section);
+  public async hasChanged(): Promise<void> {
+    const docData = this.docData as unknown as Record<string, unknown> ;
+    const savedDocData = this.docData as unknown as Record<string, unknown> ;
+    const keys = Object.keys(docData);
+
+    keys.forEach((key: string) => {
+      if (hasChanges(docData[key], savedDocData[key])){
+        this.docDataSectionsToSave.push(key);
       };
-    }
+    });
   } 
 
   protected async saveOnLeave(): Promise<boolean> {
-    await this.hasChanged()
+    await this.hasChanged();
     this.docDataSectionsToSave.forEach(async(section)=>{
-      switch(section){
-      case "acqPackage":
+      switch(section) {
+      case "projectOverview":
         await AcquisitionPackage.saveData({
-          data: this.docData.acqPackage,
+          data: this.docData.projectOverview,
           storeProperty: StoreProperties.ProjectOverview,
         });
         break;
+      case "organization": 
+        // future ticket
+        break;
+
+      case "fairOpportunity":
+        await AcquisitionPackage.saveData<FairOpportunityDTO>({
+          data: this.docData.fairOpportunity,
+          storeProperty: StoreProperties.FairOpportunity
+        });
+        break;
+      
+      case "currentContract":
+        await AcquisitionPackage.saveData<CurrentContractDTO>({
+          data: this.docData.currentContract,
+          storeProperty: StoreProperties.CurrentContract
+        });
+        break;
+
       default:
         break;
       }

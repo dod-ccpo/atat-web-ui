@@ -682,6 +682,7 @@ export default class PortfolioDashboard extends Vue {
     spendTrend: number;
     idiqClin: string
   }[] = []
+  
   public createDateStr(dateStr: string, period: boolean): string {
     const parsedDate = parseISO(dateStr, { additionalDigits: 1 })
     const date = new Date(parsedDate.setHours(0,0,0,0));

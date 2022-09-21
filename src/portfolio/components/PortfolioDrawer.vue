@@ -86,9 +86,11 @@
         id="PortfolioMembersList"
         class="pt-6"
       >
-
-        <div class="d-flex flex-columm justify-space-between"
-        v-for="(member, index) in portfolioMembers" :key="member.email">
+        <div 
+          class="d-flex flex-columm justify-space-between"
+          v-for="(member, index) in portfolioMembers" 
+          :key="member.email"
+        >
           <MemberCard :id="'MemberName' + index" :index="index" />
           <div v-if="managerCount === 1 && member.role.toLowerCase() === 'manager'">
             <v-tooltip left nudge-right="30">

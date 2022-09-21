@@ -3,7 +3,7 @@
     <ATATTextArea
       :id="id"
       :label="label"
-      class="width-100"
+      class="max-width-740"
       :rows="7"
       :rules="rules"
       :helpText="helpText"
