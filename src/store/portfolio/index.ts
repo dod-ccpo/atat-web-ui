@@ -13,7 +13,7 @@ const ATAT_PORTFOLIO_DATA_KEY = 'ATAT_PORTFOLIO_DATA_KEY';
 export const PortFolioStatusTypes = {
   Processing: "Processing",
   Active: "Active",
-  AtRisk: "AtRisk",
+  AtRisk: "At-Risk",
   Delinquent: "Delinquent",
   Expired: "Expired",
   Archived: "Archived",
@@ -44,12 +44,12 @@ export interface FundingAlertData {
 }
 
 
-const getThresholdAmount = (value: string): number => {
+export const getThresholdAmount = (value: string): number => {
   const stringVal = value.replace('%', '');
   const numVal = Number(stringVal);
   return numVal;
 }
-const thresholdAtOrAbove = (value: string, threshold: number): boolean => {
+export const thresholdAtOrAbove = (value: string, threshold: number): boolean => {
   const numVal = getThresholdAmount(value);
   return !Number.isNaN(numVal) && numVal >=threshold;
 }
@@ -255,14 +255,15 @@ export class PortfolioDataStore extends VuexModule {
       fundingAlertData.fundingAlertType = (lowFundsAlert && currentSpendingViolation < 90) ?  
         FundingAlertTypes.POPExpiresSoonWithLowFunds :
         FundingAlertTypes.POPExpiresSoonNoTOClin;
+      this.setStatus(PortFolioStatusTypes.AtRisk);
     }
-
-    if(timeremainingalert === undefined && lowFundsAlert && currentSpendingViolation >=100 ){
-      fundingAlertData.fundingAlertType = FundingAlertTypes.POPFundsAt100Percent;
-    }
-
-    if(timeremainingalert !== undefined && fundingAlertData.daysRemaining <=0){
+    
+    if(timeremainingalert && fundingAlertData.daysRemaining <=0){
       fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpired;
+    }
+
+    if(lowFundsAlert && currentSpendingViolation >=100 ){
+      fundingAlertData.fundingAlertType = FundingAlertTypes.POPFundsAt100Percent;
     }
 
     if(fundsDepleted){

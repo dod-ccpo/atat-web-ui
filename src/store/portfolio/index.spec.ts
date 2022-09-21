@@ -2,7 +2,8 @@
 
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
-import {FundingAlertTypes, PortfolioDataStore, PortFolioStatusTypes} from "@/store/portfolio/index";
+import {FundingAlertTypes, PortfolioDataStore, PortFolioStatusTypes,
+   getThresholdAmount, thresholdAtOrAbove} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
 import storeHelperFunctions  from "../helpers";
 import Vue from "vue";
@@ -257,6 +258,19 @@ describe("Portfolio Store", () => {
       expect(fundingAlertData.fundingAlertType).toBe(FundingAlertTypes.POPExpired);
       expect(fundingAlertData.hasLowFundingAlert).toBe(true);
     })
+  })
+
+  it('Test getThreshold Amount', async () => {
+    const spendingViolation = "75%";
+    const amount = getThresholdAmount(spendingViolation);
+    expect(amount).toBe(75);
+  })
+
+  
+  it('Test thresholdAtOrAbove or above Amount', async () => {
+    const spendingViolation = "75%";
+    const metThreshold = thresholdAtOrAbove(spendingViolation, 75);
+    expect(metThreshold).toBe(true);
   })
 
 })
