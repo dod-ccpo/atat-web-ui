@@ -132,7 +132,6 @@
                       You&#8217;ve spent <strong>{{fundingAlertData.spendingViolation}}%</strong> of
                       your portfolio&#8217;s funds and there are {{daysRemaining()}} days remaining
                       until your next period of performance.
-                      <span class="nowrap font-weight-700">{{ runOutOfFundsDate }}.</span>
                     </p>
                     <p class="mb-0 font-size-14" v-else>
                       At your current rate of spending, you will run out of funds by
