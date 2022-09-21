@@ -213,6 +213,51 @@ describe("Portfolio Store", () => {
     })
   })
 
+  it('Test getFundingTrackerAlerts Alerts Detect Delinquint', async () => {
+    const mockAlerts: AlertDTO[] = [
+      {
+        clin: "",
+        task_order: "tsk_12345678",
+        active: "true",
+        alert_type: "SPENDING_ACTUAL",
+        threshold_violation_amount: "100",
+        last_notification_date: "",
+        portfolio: "",
+      }
+    ];
+    
+    jest.spyOn(portfolioStore, "getAlerts").mockReturnValue(
+      new Promise(resolve=>resolve(mockAlerts))
+    );
+    const fundingAlertData = await portfolioStore.getFundingTrackerAlert('');
+    Vue.nextTick(() => {
+      expect(fundingAlertData.fundingAlertType).toBe(FundingAlertTypes.POPFundsAt100Percent);
+      expect(fundingAlertData.hasLowFundingAlert).toBe(true);
+    })
+  })
+
+  it('Test getFundingTrackerAlerts Alerts Detect Expired', async () => {
+    const mockAlerts: AlertDTO[] = [
+      {
+        clin: "",
+        task_order: "tsk_12345678919",
+        active: "true",
+        alert_type: "TIME_REMAINING",
+        threshold_violation_amount: "-30",
+        last_notification_date: "",
+        portfolio: "",
+      },
+    ];
+    
+    jest.spyOn(portfolioStore, "getAlerts").mockReturnValue(
+      new Promise(resolve=>resolve(mockAlerts))
+    );
+    const fundingAlertData = await portfolioStore.getFundingTrackerAlert('');
+    Vue.nextTick(() => {
+      expect(fundingAlertData.fundingAlertType).toBe(FundingAlertTypes.POPExpired);
+      expect(fundingAlertData.hasLowFundingAlert).toBe(true);
+    })
+  })
 
 })
 
