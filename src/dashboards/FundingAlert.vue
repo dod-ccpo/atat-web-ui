@@ -28,7 +28,7 @@
         class="mb-0"
         v-if="fundingAlertType === popExpiresSoonWithLowFunds"
       >
-        This portoflio is almost out of funds and is
+        This portfolio is almost out of funds and is
         <strong>expiring in {{ timeRemaining }} days. </strong>
         <a role="button">Modify your existing task order</a> or
         <a role="button">add a new task order</a>
@@ -39,7 +39,7 @@
         class="mb-0"
         v-if="fundingAlertType === popLowFunds"
       >
-        This portoflio is almost out of funds.
+        This portfolio is almost out of funds.
         <a role="button">Review your task order details</a>
         to ensure your portfolio is funded until the end of the
         period of performance. You can request a modification
@@ -72,7 +72,7 @@
       </div>
       <div id="popExpired" class="mb-0" v-if="fundingAlertType === popExpired">
         <div class="h3">
-          This portfolio's period of performance has expired.
+          This portfolio&#8217;s period of performance has expired.
         </div>
         <p class="mb-0">
           <a role="button">Exercise an option on your existing task order</a> or

@@ -130,7 +130,8 @@
                     <p class="mb-0 font-size-14" v-if="hasSpendingThresholdAlert() && 
                     fundingAlertData.spendingViolation >=100">
                       You&#8217;ve spent <strong>{{fundingAlertData.spendingViolation}}%</strong> of
-                      your portfolio&#8217;s funds and there are {{daysRemaining()}} days remaining
+                      your portfolio&#8217;s funds and there are 
+                      <strong>{{daysRemaining()}} days remaining</strong>
                       until your next period of performance.
                     </p>
                     <p class="mb-0 font-size-14" v-else>
