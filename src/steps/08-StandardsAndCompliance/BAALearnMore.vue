@@ -80,9 +80,8 @@ import { Component } from "vue-property-decorator";
 @Component({})
 
 export default class BAALearnMore extends Vue {
-  private moreInfoHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/
-  sample-business-associate-agreement-provisions/index.html`
-  private title45Href= `https://www.ecfr.gov/current/title-45/
-  subtitle-A/subchapter-C/part-160/subpart-A/section-160.103`
+  /* eslint-disable max-len */
+  private moreInfoHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html`;
+  private title45Href= `https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-160/subpart-A/section-160.103`;
 }
 </script>

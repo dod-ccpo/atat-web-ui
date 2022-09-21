@@ -11,6 +11,32 @@
   opacity: 1 !important;
 }
 
+._radio-button:not(._readonly) {
+  &.v-radio--is-focused,
+  .v-input--selection-controls__input:hover {
+    .v-input--selection-controls__ripple {
+      &:before {
+        @extend ._radio-focus;
+      }
+    }
+  }
+}
+
+._radio-button._readonly {
+  cursor: default;
+  .v-label, .v-input--selection-controls__ripple {
+    cursor: default;
+  }
+  &.v-radio--is-focused,
+  .v-input--selection-controls__input:hover {
+    .v-input--selection-controls__ripple {
+      &:before {
+        background: transparent !important;
+      }
+    }
+  }
+}
+
 ._radio-button {
   align-items: flex-start;
 
@@ -28,12 +54,6 @@
 
   &.v-radio--is-focused {
     color: $primary !important;
-
-    .v-input--selection-controls__ripple {
-      &:before {
-        @extend ._radio-focus;
-      }
-    }
   }
 
   label {
@@ -56,13 +76,6 @@
 
   .v-input--selection-controls__input {
     margin-right: 12px !important;
-    &:hover {
-      .v-input--selection-controls__ripple {
-        &:before {
-          @extend ._radio-focus;
-        }
-      }
-    }
 
     &:after {
       content: '';
@@ -77,6 +90,7 @@
       z-index: 1;
     }
   }
+
   &.v-radio--is-disabled {
     .v-input--selection-controls__input {
       &:after {

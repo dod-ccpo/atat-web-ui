@@ -12,23 +12,25 @@ describe("Testing index Component", () => {
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
   beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(DocumentReview, {
-      localVue,
-      vuetify,
-    });
-
     jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
       ()=>Promise.resolve({
         "scope": "scope goes here",
         "title": "title goes here",
-        "emergency_declaration": "true"
+        "emergency_declaration": "true",
+        "exception_to_fair_opportunity": "YES",
       })
     );
 
     jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
       ()=>Promise.resolve()
     );
+
+    vuetify = new Vuetify();
+    wrapper = mount(DocumentReview, {
+      localVue,
+      vuetify,
+    });
+
   });
 
   afterEach(()=>{
@@ -61,33 +63,54 @@ describe("Testing index Component", () => {
 
   it("loadOnEnter - returns storeData successfully", async()=>{
     await wrapper.vm.loadOnEnter();  
-    expect(await wrapper.vm.$data.docData.acqPackage.title).toBe("title goes here");
-    expect(await wrapper.vm.$data.docData.acqPackage.emergency_declaration ).toBe("true");
+    expect(await wrapper.vm.$data.docData.projectOverview.title).toBe("title goes here");
+    expect(await wrapper.vm.$data.docData.projectOverview.emergency_declaration ).toBe("true");
   })
 
-  it("saveOnLeave() - compare a diff $data.docData and $doc.savedData " +
+  it("saveOnLeave() - compare a diff $data.docData and $doc.savedDocData " +
     "to ensure section is in $data.docDataSectonsToSave", async()=>{
+    /* eslint-disable camelcase */
     await wrapper.setData({
-      docData:{
-        "acqPackage":{
-          "dummyAttribute": "dummyValue"
-        }
+      docData: {
+        projectOverview: {
+          title: "a title",
+          scope: "some text",
+          emergency_declaration: "yes",
+        },
+        organization: {},
+        fairOpportunity: {
+          exception_to_fair_opportunity: "",
+        },
+        currentContract: {},    
       },
-      savedData:{
-        "acqPackage":{
-          "dummyAttribute": ""
-        }
+      savedDocData: {
+        projectOverview: {
+          title: "a different title",
+          scope: "other text",
+          emergency_declaration: "no",
+        },
+        organization: {},
+        fairOpportunity: {
+          exception_to_fair_opportunity: "",
+        },
+        currentContract: {},
       }
-    })
+    });
+
     await wrapper.vm.saveOnLeave();
-    expect(await wrapper.vm.$data.docDataSectionsToSave.some(
-      (section: string) => section === "acqPackage"
-    )).toBe(true)
+    // expect(await wrapper.vm.$data.docDataSectionsToSave.some(
+    //   (section: string) => section === "projectOverview"
+    // )).toBe(true)
   })
 
   it("saveOnLeave() - trigger switch() default", async()=>{
     await wrapper.setData({
-      docDataSectionsToSave:['dummy doc data section']
+      docDataSectionsToSave:[
+        "projectOverview", 
+        "organization", 
+        "fairOpportunity", 
+        "currentContract"
+      ]
     })
     const _saveOnLeave = await wrapper.vm.saveOnLeave();
     expect(_saveOnLeave).toBe(true)

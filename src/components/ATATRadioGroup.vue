@@ -33,7 +33,8 @@
           :class="[
             radioClasses,
             { '_has-other': item.value === otherValue },
-            { '_other-selected': showOtherEntry(item.value) }
+            { '_other-selected': showOtherEntry(item.value) },
+            { '_readonly' : item.readonly}
           ]"
           :key="item.id"
           :value="item.value"
