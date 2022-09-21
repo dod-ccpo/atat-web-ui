@@ -3,7 +3,7 @@
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
 import {FundingAlertTypes, PortfolioDataStore, PortFolioStatusTypes,
-   getThresholdAmount, thresholdAtOrAbove} from "@/store/portfolio/index";
+  getThresholdAmount, thresholdAtOrAbove} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
 import storeHelperFunctions  from "../helpers";
 import Vue from "vue";

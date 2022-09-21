@@ -21,7 +21,9 @@ export default class DonutChart extends Vue {
   @Prop({ required: false, default: "" }) public centerText2!: string;
   @Prop({ required: false, default: "" }) public amount!: number;
   @Prop({ required: false, default: true}) showLabelOnHover!: boolean;
-  @Prop({ required: false, default: "" }) public individualAmtsArr!: {[key:string]:number} ;
+  @Prop({ required: false, default: "" }) public individualAmtsArr!: {[key:string]:number};
+  @Prop({ required: false, default: false }) public isError!: boolean;
+
 
 
   private myChart!: Chart;
@@ -31,6 +33,12 @@ export default class DonutChart extends Vue {
     this.myChart.data = newData;
     this.myChart.update();
   }
+
+  //   @Watch("isError", { deep: true })
+  // public async onIsError(): Promise<void> {
+  //   this.myChart.destroy();
+  //   await this.createChart();
+  // }
 
   private async mounted(): Promise<void> {
     if (this.showLabelOnHover) {
@@ -79,6 +87,8 @@ export default class DonutChart extends Vue {
           : { fontSize: 350, textY: 1.75 };
 
         ctx.restore();
+        
+        ctx.fillStyle = self.isError ? "#c60634" : ctx.fillStyle;
         let fontSize = (height / text1divisors.fontSize).toFixed(2);
         ctx.font = "bold " + fontSize + "em 'Roboto Condensed'";
         ctx.textBaseline = "middle";

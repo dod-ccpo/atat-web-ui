@@ -218,15 +218,13 @@ export class PortfolioDataStore extends VuexModule {
     const alerts = await this.getAlerts(taskOrderNumber);
    
     alerts.forEach(alert=>{
-      if(alert.alert_type == AlertTypes.SPENDING_ACTUAL){
-        if(!fundingAlertData.alerts.some(alert=>alert.alert_type == AlertTypes.SPENDING_ACTUAL)){
-          fundingAlertData.alerts.push(alert);
-        } 
+      if(alert.alert_type == AlertTypes.SPENDING_ACTUAL &&
+        !fundingAlertData.alerts.some(alert=>alert.alert_type == AlertTypes.SPENDING_ACTUAL) ){
+        fundingAlertData.alerts.push(alert);
       }
-      if(alert.alert_type == AlertTypes.TIME_REMAINING){
-        if(!fundingAlertData.alerts.some(alert=>alert.alert_type == AlertTypes.TIME_REMAINING)){
-          fundingAlertData.alerts.push(alert);
-        } 
+      if(alert.alert_type == AlertTypes.TIME_REMAINING && 
+        !fundingAlertData.alerts.some(alert=>alert.alert_type == AlertTypes.TIME_REMAINING)){
+        fundingAlertData.alerts.push(alert);
       }
     });
 

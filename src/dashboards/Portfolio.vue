@@ -122,6 +122,8 @@
                       center-text2="Funds Spent"
                       :aria-label="'Chart displaying '+ fundsSpentPercent +'% of Funds Spent'"
                       :show-label-on-hover="false"
+                      :isError="hasSpendingThresholdAlert() && 
+                      fundingAlertData.spendingViolation >=100"
                     />
                     <v-divider class="my-4" />
                     <p class="mb-0 font-size-14">
@@ -1451,7 +1453,7 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async getAlerts():Promise<FundingAlertData>{
-    return await Portfolio.getFundingTrackerAlert('1000000001234');
+    return Portfolio.getFundingTrackerAlert('1000000001234');
   }
 
   public async processAlerts():Promise<void> {
