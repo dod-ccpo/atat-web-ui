@@ -5,9 +5,10 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Chart, { ChartData, ChartOptions } from "chart.js/auto";
+import Chart, { ChartData } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { toCurrencyString } from "@/helpers";
+import ATATCharts from "@/store/charts";
 
 @Component({})
 export default class DonutChart extends Vue {
@@ -21,8 +22,8 @@ export default class DonutChart extends Vue {
   @Prop({ required: false, default: "" }) public centerText2!: string;
   @Prop({ required: false, default: "" }) public amount!: number;
   @Prop({ required: false, default: true}) showLabelOnHover!: boolean;
-  @Prop({ required: false, default: "" }) public individualAmtsArr!: {[key:string]:number} ;
-
+  @Prop({ required: false, default: "" }) public individualAmtsArr!: {[key:string]:number};
+  @Prop({ required: false, default: false }) public isError!: boolean;
 
   private myChart!: Chart;
 
@@ -44,6 +45,8 @@ export default class DonutChart extends Vue {
 
     await this.createChart();
   }
+  
+  public chartAuxColors = ATATCharts.chartAuxColors;
 
   public async createChart(): Promise<void> {
     const centertext = this.centertext(this);
@@ -79,6 +82,10 @@ export default class DonutChart extends Vue {
           : { fontSize: 350, textY: 1.75 };
 
         ctx.restore();
+        
+        if(self.isError){
+          ctx.fillStyle = self.chartAuxColors.error;
+        }
         let fontSize = (height / text1divisors.fontSize).toFixed(2);
         ctx.font = "bold " + fontSize + "em 'Roboto Condensed'";
         ctx.textBaseline = "middle";
