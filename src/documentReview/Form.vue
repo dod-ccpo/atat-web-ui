@@ -37,7 +37,7 @@
         <hr />
         
         <div class="_comment-wrap">
-          <CommentButton id="CORContact" />
+          <CommentButton id="COR_Contact" />
           <CommonCorAcor
             :isACOR="false"
             :isWizard="false"
@@ -45,16 +45,39 @@
           />
         </div>
 
+        <div class="_comment-wrap">
+          <CommentButton id="COR_DoDAAC" />
+          <DoDAAC 
+            :isForm="true"
+            :isWizard="false"
+            :dodaac="_docData.cor ? _docData.cor.dodaac : ''"
+            corOrAcor="COR"
+            @valueChange="dodaacChange"
+          />
+        </div>
+
         <hr />
 
         <div class="_comment-wrap">
-          <CommentButton id="ACORContact" />
+          <CommentButton id="ACOR_Contact" />
           <CommonCorAcor
             :isACOR="true"
             :isWizard="false"
             :currentContactData.sync="_docData.acor"
           />
         </div>
+
+        <div class="_comment-wrap">
+          <CommentButton id="ACOR_DoDAAC" />
+          <DoDAAC 
+            :isForm="true"
+            :isWizard="false"
+            :dodaac="_docData.acor ? _docData.acor.dodaac : ''"
+            corOrAcor="ACOR"
+            @valueChange="dodaacChange"
+          />
+        </div>
+
 
         <hr />
 
@@ -126,7 +149,15 @@ import { DocReviewData } from "types/Global";
 
 export default class DocumentReviewForm extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  @PropSync("docData") private _docData!: DocReviewData;  
+  @PropSync("docData") private _docData!: DocReviewData; 
+  
+  private dodaacChange(val: string, corOrAcor: string): void {
+    if (corOrAcor === "COR" && this._docData.cor !== null) {
+      this._docData.cor.dodaac = val;
+    } else if (this._docData.acor !== null) {
+      this._docData.acor.dodaac = val;
+    }
+  }
 }
 
 </script>

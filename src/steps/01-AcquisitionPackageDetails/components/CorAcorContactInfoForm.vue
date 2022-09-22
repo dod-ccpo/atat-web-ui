@@ -143,7 +143,8 @@
         <ATATTextField
           :id="corOrAcor + '_EmailAddress'"
           label="Email address"
-          class="_input-max-width mb-10"
+          class="_input-max-width"
+          :class="{ 'mb-10': isWizard }"
           helpText="Enter a .mil or .gov email address."
           :value.sync="_email"
           :rules="[
@@ -160,10 +161,6 @@
           :isWizard="isWizard"
           :dodaac.sync="_dodaac"
           :corOrAcor="corOrAcor"
-          label="DoD Activity Address Code (DoDAAC)"
-          tooltipText="A DoDAAC is a 6-character code that uniquely identifies a 
-          unit, activity, or organization that has the authority to requisition, 
-          contract for, or fund/pay bills for materials and services."
           :rules="[ 
             $validators.required('Please enter your ' + corOrAcor + '’s 6-character DoDAAC.'),
           ]"
