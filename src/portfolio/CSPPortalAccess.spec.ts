@@ -55,7 +55,7 @@ describe("Testing CSPPortalAccess Component", () => {
 
   it("testing validateEmail()- with missing '@' symbol",async ()=>{
     wrapper.setData({
-      adminEmail: "testwrong.domain"
+      adminEmail: "testwrong.gov"
     })
     const result =await wrapper.vm.validateEmail()
     expect(result).toBe(false);
