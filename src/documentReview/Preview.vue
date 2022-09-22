@@ -37,6 +37,11 @@
                   :isForm="false" 
                   :projectScope="docData.projectOverview.scope"
                 />
+
+                <RequestingServiceAgency 
+                :isForm="false"
+                :selectedServiceOrAgency="docData.organization.service_agency"
+                />
               </div>
             </li>
           </ol>
@@ -75,6 +80,8 @@ import EmergencyDeclarationSupport
   from "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue";
 import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue";
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
+import RequestingServiceAgency from 
+  "@/steps/01-AcquisitionPackageDetails/components/RequestingServiceAgency.vue"
 
 // Step 2 Components
 import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
@@ -95,6 +102,7 @@ import { DocReviewData } from "types/Global";
     FairOppExceptions,
     ProjectScope,
     ProjectTitle,
+    RequestingServiceAgency,
   },
 })
 

@@ -23,6 +23,14 @@
         
         <div class="_comment-wrap">
           <CommentButton id="ProjectScope" />
+          <RequestingServiceAgency
+            label="What service or agency is this contracting effort for?"
+            :selectedServiceOrAgency.sync="_docData.organization.service_agency"
+          />
+        </div>
+
+          <div class="_comment-wrap">
+          <CommentButton id="SelectedServiceOrAgency" />
           <ProjectScope
             label="What is the scope of your requirement?"
             :projectScope.sync="_docData.projectOverview.scope"
@@ -65,6 +73,8 @@ import EmergencyDeclarationSupport
   from "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue";
 import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue";
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
+import RequestingServiceAgency from 
+  "@/steps/01-AcquisitionPackageDetails/components/RequestingServiceAgency.vue";
 
 // Step 2 Components
 import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
@@ -85,6 +95,7 @@ import { DocReviewData } from "types/Global";
     PageHead,
     ProjectScope,
     ProjectTitle,
+    RequestingServiceAgency,
   },
 })
 

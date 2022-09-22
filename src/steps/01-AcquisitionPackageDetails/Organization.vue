@@ -6,20 +6,11 @@
         <h1 class="page-header">
           Next, we’ll gather information about your organization
         </h1>
-
-        <ATATAutoComplete
-          id="ServiceOrAgency"
-          class="_input-max-width mb-2"
-          label="What service or agency do you work for?"
-          :label-sr-only="false"
-          titleKey="text"
-          :searchFields="['text']"
-          :items="serviceOrAgencyData"
-          :selectedItem.sync="selectedServiceOrAgency"
-          :rules="[$validators.required('Please select your service or agency.')]"
-          placeholder="Find your service/agency"
-          icon="arrow_drop_down"
-        />
+       <RequestingServiceAgency 
+       :selectedServiceOrAgency.sync="selectedServiceOrAgency"
+       :rules="[$validators.required('Please select your service or agency.')]"
+       />
+        
 
         <a
           role="button"
@@ -186,6 +177,7 @@ import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
+import RequestingServiceAgency from "./components/RequestingServiceAgency.vue";
 
 
 @Component({
@@ -194,6 +186,7 @@ import ContactData from "@/store/contactData";
     ATATAutoComplete,
     ATATDialog,
     ATATTextField,
+    RequestingServiceAgency,
   },
 })
 

@@ -50,5 +50,9 @@ export default class RequestingServiceAgency extends Vue {
       OrganizationData.service_agency_data
     );
   }
+
+  public async mounted():Promise<void> {
+    await this.loadOnEnter();
+  }
 }
 </script>
