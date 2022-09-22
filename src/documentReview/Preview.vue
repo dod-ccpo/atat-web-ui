@@ -56,16 +56,19 @@
                   :currentContactData="docData.cor"
                 />
               </div>
-              <strong id="ACORInfo" class="mb-4 mt-10 d-block">
-                Alternate TO COR nominee, if applicable
-              </strong>
-              <div aria-describedby="ACORInfo">
-                <CommonCorAcor
-                  :isACOR="true"
-                  :isWizard="false"
-                  :isForm="false"
-                  :currentContactData="docData.acor"
-                />
+
+              <div v-if="hasACOR">
+                <strong id="ACORInfo" class="mb-4 mt-10 d-block">
+                  Alternate TO COR nominee, if applicable
+                </strong>
+                <div aria-describedby="ACORInfo">
+                  <CommonCorAcor
+                    :isACOR="true"
+                    :isWizard="false"
+                    :isForm="false"
+                    :currentContactData="docData.acor"
+                  />
+                </div>
               </div>
 
             </li>
@@ -119,6 +122,7 @@ import CurrentContractOptions
 import { Component, Prop } from "vue-property-decorator";
 
 import { DocReviewData } from "types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -137,6 +141,8 @@ export default class DocumentReviewPreview extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
   @Prop() private docData!: DocReviewData;
   @Prop() private isForm!: boolean;
+
+  private hasACOR = AcquisitionPackage.hasAlternativeContactRep;
 }
 
 </script>

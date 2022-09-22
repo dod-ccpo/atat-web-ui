@@ -250,7 +250,7 @@ export class ContactDataStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public GetMilitaryRank(rankComponentId: string):MilitaryRankDTO | undefined {
+  public async GetMilitaryRank(rankComponentId: string): Promise<MilitaryRankDTO | undefined> {
     return this.militaryRanks.find(rank=> rank.sys_id === rankComponentId);
   }
 
