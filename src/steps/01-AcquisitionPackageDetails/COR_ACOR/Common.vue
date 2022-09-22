@@ -1,7 +1,7 @@
 <template>
   <v-form ref="form" lazy-validation>
     <div class="pt-0">
-      <div class="max-width-640">
+      <div class="max-width-640" v-if="isWizard">
         <ATATAutoComplete
           id="SearchContact"
           :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
@@ -34,7 +34,7 @@
 
       <a
         id="ContactFormToggle"
-        v-show="!haveSelectedContact"
+        v-show="!haveSelectedContact && isWizard"
         role="button"
         class="expandable-content-opener"
         :class="showContactForm ? 'open' : 'closed'"
@@ -46,10 +46,11 @@
       </a>
 
       <CorAcorContactInfoForm
-        :isWizard="true"
+        :isWizard="isWizard"
         :corOrAcor="corOrAcor"
-        v-show="showContactForm && !haveSelectedContact"
-        :showAccessRadioButtons.sync="showAccessRadioButtons"
+        v-show="!isWizard || (showContactForm && !haveSelectedContact)"
+        :sectionHeader="sectionHeader"
+        
         :selectedRole.sync="selectedRole"
         :selectedBranch.sync="selectedBranch"
         :selectedRank.sync="selectedRank"
@@ -71,7 +72,7 @@
 
       <section
         id="AccessRadioButtons"
-        v-show="(showContactForm && showAccessRadioButtons) || haveSelectedContact"
+        v-show="isWizard && ((showContactForm && showAccessRadioButtons) || haveSelectedContact)"
       >
         <hr/>
         <ATATRadioGroup
@@ -121,14 +122,23 @@ import {
   }
 })
 
-export default class COR_ACOR extends Vue {
+export default class CommonCorAcor extends Vue {
   // props
 
+  @Prop({default: false}) private isWizard!: boolean;
   @Prop({default: false}) private isACOR!: boolean;
   @PropSync("currentContactData") private _currentContactData!: ContactDTO;
   @PropSync("savedContactData") private _savedContactData!: ContactDTO;
 
   // computed
+
+  get sectionHeader(): string {
+    return this.isWizard 
+      ? "Your "+ this.corOrAcor + "’s Contact Information"
+      : this.corOrAcor === "COR"
+        ? "Contracting Officer Representative (COR) nominee"
+        : "Alternate Contracting Officer Representative (ACOR) nominee";
+  }
 
   get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";

@@ -36,10 +36,25 @@
 
         <hr />
         
-        <h3 class="mb-5 ml-4">Contracting Officer Representative (COR) nominee</h3>
+        <div class="_comment-wrap">
+          <CommentButton id="CORContact" />
+          <CommonCorAcor
+            :isACOR="false"
+            :isWizard="false"
+            :currentContactData.sync="_docData.cor"
+          />
+        </div>
 
+        <hr />
 
-
+        <div class="_comment-wrap">
+          <CommentButton id="ACORContact" />
+          <CommonCorAcor
+            :isACOR="true"
+            :isWizard="false"
+            :currentContactData.sync="_docData.acor"
+          />
+        </div>
 
         <hr />
 
@@ -80,8 +95,8 @@ import EmergencyDeclarationSupport
   from "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue";
 import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue";
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
-import CorAcorContactInfoForm 
-  from "@/steps/01-AcquisitionPackageDetails/components/CorAcorContactInfoForm.vue";
+import CommonCorAcor 
+  from "@/steps/01-AcquisitionPackageDetails/COR_ACOR/Common.vue";
 import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
 
 
@@ -98,7 +113,7 @@ import { DocReviewData } from "types/Global";
   components: {
     ATATSVGIcon,
     CommentButton,
-    CorAcorContactInfoForm,
+    CommonCorAcor,
     CurrentContractOptions,
     DoDAAC,
     EmergencyDeclarationSupport,

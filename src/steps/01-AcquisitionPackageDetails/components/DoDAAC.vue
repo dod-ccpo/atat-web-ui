@@ -1,7 +1,7 @@
 <template>
   <div v-if="isForm">
     <ATATTextField
-      id="DoDAAC"
+      :id="corOrAcor + '_DoDAAC'"
       :label="label"
       class="_input-max-width"
       :tooltipText="tooltipText"
@@ -32,6 +32,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 })
 export default class DoDAAC extends Vue {
   @PropSync("dodaac") private _dodaac!: string;
+  @Prop() private corOrAcor!: string;
   @Prop() private label!: string;
   @Prop() private tooltipText!: string;
   @Prop({ default: true}) private isForm!: boolean;

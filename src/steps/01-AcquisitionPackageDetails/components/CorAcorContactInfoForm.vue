@@ -1,12 +1,21 @@
 
 <template>
-  <section class="mt-10">
-    <hr />
-    <h2 id="ContactInfoHeader" class="form-section-heading">
-      Your {{ corOrAcor }}’s Contact Information
+  <section :class="{'mt-10' : isWizard}">
+    <hr v-if="isWizard" />
+    <h2 v-if="isWizard" :id="corOrAcor +'_ContactInfoHeader'" class="form-section-heading">
+      {{ sectionHeader }}
     </h2>
 
+    <h3 
+      v-else 
+      :id="corOrAcor +'_ContactInfoHeader'" 
+      class="mb-5 form-section-heading"
+    >
+      {{ sectionHeader }}
+    </h3>
+
     <ATATRadioGroup
+      v-show="isWizard"
       id="ContactAffiliation"
       :legend="
         'What role best describes your ' +
@@ -24,7 +33,7 @@
 
     <v-form ref="CORACORContactForm">
       <ATATSelect
-        id="Branch"
+        :id="corOrAcor + '_Branch'"
         v-show="_selectedRole === 'MILITARY'"
         v-model="_selectedBranch"
         class="_input-max-width mb-10"
@@ -32,7 +41,6 @@
         placeholder=""
         :items="branchData"
         :selectedValue.sync="_selectedBranch"
-        :showAccessRadioButtons.sync="_showAccessRadioButtons"
         :returnObject="true"
         :rules="[
           $validators.required(
@@ -43,7 +51,7 @@
 
       <div v-show="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
         <ATATAutoComplete
-          id="Rank"
+          :id="corOrAcor + '_Rank'"
           v-show="_selectedRole === 'MILITARY'"
           label="Rank"
           titleKey="name"
@@ -60,7 +68,7 @@
         />
 
         <ATATSelect
-          id="Salutation"
+          :id="corOrAcor + '_Salutation'"
           v-show="_selectedRole === 'CIVILIAN'"
           class="_input-max-width mb-7"
           label="Salutation"
@@ -74,7 +82,7 @@
           <v-col class="col-12 col-lg-3">
             <ATATTextField
               label="First name"
-              id="FirstName"
+              :id="corOrAcor + '_FirstName'"
               class="_input-max-width"
               :value.sync="_firstName"
               :rules="[
@@ -87,7 +95,7 @@
           <v-col class="col-12 col-lg-3">
             <ATATTextField
               label="Middle name"
-              id="MiddleName"
+              :id="corOrAcor + '_MiddleName'"
               :optional="true"
               class="_input-max-width"
               :value.sync="_middleName"
@@ -96,7 +104,7 @@
           <v-col class="col-12 col-lg-3">
             <ATATTextField
               label="Last name"
-              id="LastName"
+              :id="corOrAcor + '_LastName'"
               class="_input-max-width"
               :value.sync="_lastName"
               :rules="[
@@ -109,7 +117,7 @@
           <v-col class="col-12 col-lg-3">
             <ATATTextField
               label="Suffix"
-              id="Suffix"
+              :id="corOrAcor + '_Suffix'"
               :optional="true"
               width="80"
               :value.sync="_suffix"
@@ -118,7 +126,7 @@
         </v-row>
 
         <ATATPhoneInput
-          id="PhoneNumber"
+          :id="corOrAcor + '_PhoneNumber'"
           label="Phone number"
           class="width-100 mb-10"
           :value.sync="_phone"
@@ -133,7 +141,7 @@
         />
 
         <ATATTextField
-          id="EmailAddress"
+          :id="corOrAcor + '_EmailAddress'"
           label="Email address"
           class="_input-max-width mb-10"
           helpText="Enter a .mil or .gov email address."
@@ -147,9 +155,11 @@
         />
 
         <DoDAAC 
+          v-if="isWizard"
           :isForm="true"
           :isWizard="isWizard"
           :dodaac.sync="_dodaac"
+          :corOrAcor="corOrAcor"
           label="DoD Activity Address Code (DoDAAC)"
           tooltipText="A DoDAAC is a 6-character code that uniquely identifies a 
           unit, activity, or organization that has the authority to requisition, 
@@ -201,8 +211,8 @@ export default class CorAcorContactInfoForm extends Vue {
   @Prop() private selectedBranchRanksData!: SelectData[];
   @Prop() private contactRoles!: RadioButton[];
   @Prop() private isWizard!: boolean;
+  @Prop() private sectionHeader!: string;
 
-  @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
   @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
 
   @PropSync("selectedRole") private _selectedRole?: string;
