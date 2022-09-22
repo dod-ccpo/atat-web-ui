@@ -12,6 +12,9 @@
         <v-btn
           depressed
           color="primary"
+          @click="openMembersModal"
+          @keydown.enter="openMembersModal"
+          @keydown.space="openMembersModal"
         >
           <ATATSVGIcon
             class="mr-2"
@@ -33,29 +36,44 @@
           class="_administrator-log border1 border-base-lighter"
         >
           <!-- eslint-disable vue/valid-v-slot -->
-          <template v-slot:item.status="{ item }">
-            <div class="d-flex align-center">
-              <div
-                class="_icon-circle"
-                :class="statusImg[item.status].bgColor"
+          <template v-slot:body="props">
+            <tbody>
+            <template >
+              <tr
+                :class="{'bg-info-lighter': item.status === 'Processing'}"
+                  v-for="(item, index) in props.items" :key="index"
               >
-                <ATATSVGIcon
-                  :name="statusImg[item.status].name"
-                  :width="statusImg[item.status].width"
-                  :height="statusImg[item.status].height"
-                  :color="statusImg[item.status].color"
-                />
-              </div>
-              <div class="d-flex flex-column font-weight-500">
-                {{item.status}}
-                <span
-                  v-if="item.status === 'Failed'"
-                  class="font-size-12 text-base"
-                >
-                  CSP account already exist
-                </span>
-              </div>
-            </div>
+                <td>{{item.email}}</td>
+                <td>
+                  <div class="d-flex align-center">
+                    <div
+                      class="_icon-circle"
+                      :class="statusImg[item.status].bgColor"
+                    >
+                      <ATATSVGIcon
+                        :name="statusImg[item.status].name"
+                        :width="statusImg[item.status].width"
+                        :height="statusImg[item.status].height"
+                        :color="statusImg[item.status].color"
+                      />
+                    </div>
+                    <div class="d-flex flex-column font-weight-500">
+                      {{item.status}}
+                      <span
+                        v-if="item.status === 'Failed'"
+                        class="font-size-12 text-base"
+                      >
+                        CSP account already exist
+                      </span>
+                    </div>
+                  </div>
+
+                </td>
+                <td>{{item.createdBy}}</td>
+                <td>{{item.created}}</td>
+              </tr>
+            </template>
+            </tbody>
           </template>
           <!-- eslint-disable vue/valid-v-slot -->
           <template v-slot:footer>
@@ -74,6 +92,50 @@
         </v-data-table>
       </div>
     </div>
+    <ATATDialog
+      id="AddCSPMember"
+      title="Add a CSP Administrator"
+      width="632"
+      okText="Add administrator"
+      :OKDisabled="!isValid"
+      :showDialog.sync="showCSPModal"
+      @ok="addCSPMember"
+
+    >
+      <template #content>
+        <p class="body">
+          This individual will be granted full access to your cloud resources within the
+          selected {{portfolioCSP}} portal, enabling them to manage user accounts and configure
+          workspace settings.
+        </p>
+        <div class="mb-10">
+          <ATATTextField
+            id="AdministratorEmail"
+            label="Adminstrator's email address"
+            helpText="Must use a .mil or .gov email address."
+            width="416"
+            :class="{'error--text':showErrorMessage}"
+            :value.sync="adminEmail"
+            @blur="validateEmail()"
+          />
+          <ATATErrorValidation
+            id="EmailError"
+            class="atat-text-field-error"
+            :errorMessages="[invalidEmailMessage]"
+            v-show="showErrorMessage"
+          />
+        </div>
+       
+        <ATATTextField
+          id="AdministratorDODID"
+          label="Administrator’s DoD ID"
+          :tooltipText="toolTipText"
+          :value.sync="doDID"
+          class="mb-15"
+          width="416"
+        />
+      </template>
+    </ATATDialog>
   </div>
 </template>
 <script lang="ts">
@@ -83,8 +145,14 @@ import { Component, Prop } from "vue-property-decorator";
 import CSPCard from "@/portfolio/components/CSPCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import format from "date-fns/format"
+import ATATTextField from "@/components/ATATTextField.vue";
+import ATATDialog from "@/components/ATATDialog.vue";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 @Component({
   components: {
+    ATATDialog,
+    ATATErrorValidation,
+    ATATTextField,
     ATATSVGIcon,
     CSPCard,
   }
@@ -94,6 +162,17 @@ export default class CSPPortalAccess extends Vue {
 
   public page = 1;
   public today = new Date();
+  public showCSPModal = false;
+  /* eslint-disable-next-line */
+  public emailRegex = /^(([^<>()[\]\\.,;:\s@\\"]+(\.[^<>()[\]\\.,;:\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\]\\.,;:\s@\\"]+\.)+[^<>()[\]\\.,;:\s@\\"]{2,})$/i;
+  public invalidEmailDomain = "Please use a .mil or .gov email address.";
+  public invalidEmailMissingAtSymbol = "Please include an ‘@’ symbol in the email address";
+  public invalidEmailFormat = "Please use a standard domain format, like “@domain.mil”.";
+  public invalidEmailMessage = "";
+  public showErrorMessage = false;
+  public adminEmail = "";
+  public doDID = "";
+  public isValid = false
 
   public tableHeaders: Record<string, string>[] = [
     { text: "Administrator email", value: "email" },
@@ -138,6 +217,17 @@ export default class CSPPortalAccess extends Vue {
     }
 
   }
+  public openMembersModal(): void {
+    this.showCSPModal = true;
+  }
+
+  public toolTipText = `
+    <p>
+        This 10-digit number is printed on the back of your administrator's Common Access Card (CAC)
+        . You may also ask your administrator to log into
+         <span class="text-decoration-underline">DoD ID Card Office Online</span>
+         and locate it under "My Profile."
+    </p>`
 
   public statusImg = {
     "Failed":{
@@ -162,6 +252,52 @@ export default class CSPPortalAccess extends Vue {
       bgColor:"bg-info-lighter"
     }
   };
+
+  public addCSPMember():void {
+    const member = {
+      email:this.adminEmail,
+      status: "Processing",
+      createdBy:"Maria Missionowner",
+      created:""
+    }
+    this.tableData.unshift(member)
+    this.adminEmail = "";
+    this.doDID = "";
+  }
+
+
+  public async validateEmail(): Promise<boolean> {
+    const email = this.adminEmail;
+    const domain = email.slice(-3).toLowerCase();
+    const isGovtDomain = domain === "mil" || domain === "gov";
+    const missingAtSymbol = email.indexOf("@") === -1;
+    const validEmail = this.emailRegex.test(email);
+
+    const isValid = isGovtDomain && !missingAtSymbol && validEmail;
+    this.$nextTick(() => {
+      // single error messages
+      if (!validEmail && missingAtSymbol && !isGovtDomain) {
+        this.invalidEmailMessage = this.invalidEmailFormat;
+        this.isValid= false
+        this.showErrorMessage = true
+      } else if (!isGovtDomain) {
+        this.invalidEmailMessage = this.invalidEmailDomain;
+        this.showErrorMessage = true
+        this.isValid= false
+      } else if (missingAtSymbol) {
+        this.invalidEmailMessage = this.invalidEmailMissingAtSymbol;
+        this.showErrorMessage = true
+        this.isValid= false
+      } else {
+        // clear validation message
+        this.invalidEmailMessage = "";
+        this.showErrorMessage = false
+        this.isValid= true
+      }
+    });
+    return isValid;
+  }
+  
   public loadOnEnter(): void {
     this.createTableData();
   }
