@@ -3,10 +3,12 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import CSPPortalAccess from "@/portfolio/CSPPortalAccess.vue";
+import validators from "@/plugins/validation";
 Vue.use(Vuetify);
 
 describe("Testing CSPPortalAccess Component", () => {
   const localVue = createLocalVue();
+  localVue.use(validators);
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
@@ -14,10 +16,12 @@ describe("Testing CSPPortalAccess Component", () => {
     vuetify = new Vuetify();
     wrapper = mount(CSPPortalAccess, {
       localVue,
+
       vuetify,
       propsData:{
         portfolioCSP: "Azure"
       }
+
     });
   });
 
