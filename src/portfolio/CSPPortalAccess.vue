@@ -105,8 +105,11 @@
       <template #content>
         <p class="body">
           This individual will be granted full access to your cloud resources within the
-          selected {{portfolioCSP}} portal, enabling them to manage user accounts and configure
-          workspace settings.
+          selected {{serviceProvider[portfolioCSP]}} portal, enabling them to manage user accounts
+          and configure workspace settings.
+          <a id="LearnMoreLink">
+            Learn more about CSP administrators
+          </a>
         </p>
         <div class="mb-10">
           <ATATTextField
@@ -180,6 +183,13 @@ export default class CSPPortalAccess extends Vue {
     { text: "Added by", value: "createdBy" },
     { text: "Processed on", value: "created" },
   ];
+
+  public serviceProvider = {
+    Azure:"Azure",
+    AWS:"AWS",
+    Google:"Google Cloud",
+    Oracle:"Oracle Cloud"
+  }
 
   public tableData: {
     email:string,status:string,createdBy:string,created:string
