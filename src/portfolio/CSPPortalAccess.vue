@@ -40,6 +40,7 @@
             <tbody name="fade" is="transition-group">
             <template >
               <tr
+                class="row-item"
                 :class="{'bg-info-lighter': item.status === 'Processing'}"
                   v-for="(item, index) in props.items" :key="index"
               >
@@ -97,7 +98,7 @@
       title="Add a CSP Administrator"
       width="632"
       okText="Add administrator"
-      :OKDisabled="!isValid"
+      :OKDisabled="!okDisabled"
       :showDialog.sync="showCSPModal"
       @ok="addCSPMember"
 
@@ -111,32 +112,44 @@
             Learn more about CSP administrators
           </a>
         </p>
-        <div class="mb-10">
-          <ATATTextField
-            id="AdministratorEmail"
-            label="Adminstrator's email address"
-            helpText="Must use a .mil or .gov email address."
-            width="416"
-            :class="{'error--text':showErrorMessage}"
-            :value.sync="adminEmail"
-            @blur="validateEmail()"
-          />
-          <ATATErrorValidation
-            id="EmailError"
-            class="atat-text-field-error"
-            :errorMessages="[invalidEmailMessage]"
-            v-show="showErrorMessage"
-          />
-        </div>
-       
-        <ATATTextField
-          id="AdministratorDODID"
-          label="Administrator’s DoD ID"
-          :tooltipText="toolTipText"
-          :value.sync="doDID"
-          class="mb-15"
-          width="416"
-        />
+        <v-form ref="form" v-model="formIsValid" lazy-validation>
+          <div class="mb-10">
+            <ATATTextField
+              id="AdministratorEmail"
+              label="Adminstrator's email address"
+              helpText="Must use a .mil or .gov email address."
+              width="416"
+              :class="{'error--text':showErrorMessage}"
+              :value.sync="adminEmail"
+              @blur="validateEmail()"
+            />
+            <ATATErrorValidation
+              id="EmailError"
+              class="atat-text-field-error"
+              :errorMessages="[invalidEmailMessage]"
+              v-show="showErrorMessage"
+            />
+          </div>
+          <div>
+            <ATATTextField
+              id="AdministratorDODID"
+              label="Administrator’s DoD ID"
+              :tooltipText="toolTipText"
+              :value.sync="doDID"
+              class="mb-15"
+              width="416"
+              :mask="['^[0-9]{10}$']"
+              :isMaskRegex=true
+              :rules="[
+                $validators.required(
+                `Please enter your administrator's 10-digit DOD ID`
+                  ),
+                 $validators.minLength(10,`The DOD ID must be 10 digits`)
+               ]"
+            />
+          </div>
+        </v-form>
+
       </template>
     </ATATDialog>
   </div>
@@ -175,7 +188,9 @@ export default class CSPPortalAccess extends Vue {
   public showErrorMessage = false;
   public adminEmail = "";
   public doDID = "";
-  public isValid = false
+  public isValid = false;
+  public formIsValid = false;
+
 
   public tableHeaders: Record<string, string>[] = [
     { text: "Administrator email", value: "email" },
@@ -226,6 +241,12 @@ export default class CSPPortalAccess extends Vue {
       this.tableData.push(admin)
     }
 
+  }
+  get okDisabled(): boolean {
+    if(this.isValid === true && this.formIsValid === true){
+      return true
+    }
+    return false
   }
   public openCSPModal(): void {
     this.showCSPModal = true;
