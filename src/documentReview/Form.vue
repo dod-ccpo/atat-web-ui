@@ -57,7 +57,7 @@
         </div>
 
         <hr />
-        
+
         <div v-if="hasACOR">
           <div class="_comment-wrap">
             <CommentButton id="ACOR_Contact" />

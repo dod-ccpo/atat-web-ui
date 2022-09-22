@@ -182,7 +182,9 @@
         <span v-if="_phoneExt">ext. {{ _phoneExt }}</span>
       </div>
       <div class="mb-2">
-        <strong class="mr-2">Department of Defense Activity Address Code (DoDAAC):</strong> 
+        <strong class="mr-2">
+          Department of Defense Activity Address Code &#40;DoDAAC&#41;:
+        </strong> 
         {{ _dodaac }}
       </div>
     </div>
