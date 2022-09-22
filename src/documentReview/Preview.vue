@@ -39,6 +39,36 @@
                 />
               </div>
             </li>
+
+            <li>
+              <strong>Mission Owner Agency/Organization Information</strong>
+            </li>
+
+            <li>
+              <strong id="CORInfo" class="mb-4 d-block">
+                Task Order Contracting Officer Representative (TO COR) nominee
+              </strong>
+              <div aria-describedby="CORInfo">
+                <CommonCorAcor
+                  :isACOR="false"
+                  :isWizard="false"
+                  :isForm="false"
+                  :currentContactData="docData.cor"
+                />
+              </div>
+              <strong id="ACORInfo" class="mb-4 mt-10 d-block">
+                Alternate TO COR nominee, if applicable
+              </strong>
+              <div aria-describedby="ACORInfo">
+                <CommonCorAcor
+                  :isACOR="true"
+                  :isWizard="false"
+                  :isForm="false"
+                  :currentContactData="docData.acor"
+                />
+              </div>
+
+            </li>
           </ol>
 
           <hr />
@@ -75,6 +105,9 @@ import EmergencyDeclarationSupport
   from "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue";
 import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue";
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
+import CommonCorAcor 
+  from "@/steps/01-AcquisitionPackageDetails/COR_ACOR/Common.vue";
+import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
 
 // Step 2 Components
 import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
@@ -90,7 +123,9 @@ import { DocReviewData } from "types/Global";
 @Component({
   components: {
     ATATSVGIcon,
+    CommonCorAcor,
     CurrentContractOptions,
+    DoDAAC,
     EmergencyDeclarationSupport,
     FairOppExceptions,
     ProjectScope,

@@ -57,30 +57,30 @@
         </div>
 
         <hr />
+        
+        <div v-if="hasACOR">
+          <div class="_comment-wrap">
+            <CommentButton id="ACOR_Contact" />
+            <CommonCorAcor
+              :isACOR="true"
+              :isWizard="false"
+              :currentContactData.sync="_docData.acor"
+            />
+          </div>
 
-        <div class="_comment-wrap">
-          <CommentButton id="ACOR_Contact" />
-          <CommonCorAcor
-            :isACOR="true"
-            :isWizard="false"
-            :currentContactData.sync="_docData.acor"
-          />
+          <div class="_comment-wrap">
+            <CommentButton id="ACOR_DoDAAC" />
+            <DoDAAC 
+              :isForm="true"
+              :isWizard="false"
+              :dodaac="_docData.acor ? _docData.acor.dodaac : ''"
+              corOrAcor="ACOR"
+              @valueChange="dodaacChange"
+            />
+          </div>
+
+          <hr />
         </div>
-
-        <div class="_comment-wrap">
-          <CommentButton id="ACOR_DoDAAC" />
-          <DoDAAC 
-            :isForm="true"
-            :isWizard="false"
-            :dodaac="_docData.acor ? _docData.acor.dodaac : ''"
-            corOrAcor="ACOR"
-            @valueChange="dodaacChange"
-          />
-        </div>
-
-
-        <hr />
-
 
         <h2 class="mb-5 ml-4">Part II. Requirement Information</h2>
 
@@ -112,6 +112,8 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CommentButton from "./components/CommentButton.vue";
+
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 // Step 1 Components
 import EmergencyDeclarationSupport 
@@ -151,6 +153,8 @@ export default class DocumentReviewForm extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
   @PropSync("docData") private _docData!: DocReviewData; 
   
+  private hasACOR = AcquisitionPackage.hasAlternativeContactRep;
+
   private dodaacChange(val: string, corOrAcor: string): void {
     if (corOrAcor === "COR" && this._docData.cor !== null) {
       this._docData.cor.dodaac = val;

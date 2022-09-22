@@ -47,6 +47,7 @@
 
       <CorAcorContactInfoForm
         :isWizard="isWizard"
+        :isForm="isForm"
         :corOrAcor="corOrAcor"
         v-show="!isWizard || (showContactForm && !haveSelectedContact)"
         :sectionHeader="sectionHeader"
@@ -59,6 +60,7 @@
         :middleName.sync="middleName"
         :lastName.sync="lastName"
         :suffix.sync="suffix"
+        :formalName="formalName"
         :email.sync="email"
         :phone.sync="phone"
         :selectedPhoneCountry.sync="selectedPhoneCountry"
@@ -126,6 +128,7 @@ export default class CommonCorAcor extends Vue {
   // props
 
   @Prop({default: false}) private isWizard!: boolean;
+  @Prop({default: true}) private isForm!: boolean;
   @Prop({default: false}) private isACOR!: boolean;
   @PropSync("currentContactData") private _currentContactData!: ContactDTO;
   @PropSync("savedContactData") private _savedContactData!: ContactDTO;
@@ -137,7 +140,7 @@ export default class CommonCorAcor extends Vue {
       ? "Your "+ this.corOrAcor + "’s Contact Information"
       : this.corOrAcor === "COR"
         ? "Contracting Officer Representative (COR) nominee"
-        : "Alternate Contracting Officer Representative (ACOR) nominee";
+        : "Alternate Contracting Officer Representative (ACOR) nominee"
   }
 
   get corOrAcor(): string {
@@ -256,6 +259,7 @@ export default class CommonCorAcor extends Vue {
   private middleName = "";
   private lastName = "";
   private suffix = "";
+  private formalName = "";
   private email = "";
   private phone = "";
   private phoneExt = "";
@@ -436,6 +440,7 @@ export default class CommonCorAcor extends Vue {
       this.middleName = storeData.middle_name;
       this.lastName = storeData.last_name;
       this.suffix = storeData.suffix;
+      this.formalName = storeData.formal_name || "";
 
       this.email = storeData.email;
 

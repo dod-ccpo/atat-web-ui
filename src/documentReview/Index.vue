@@ -12,9 +12,9 @@
       <div id="app-content" class="d-flex flex-column">
         <div class="mb-auto">
           <Form
+            v-if="displayView === 'form'"
             :docTitle="docTitle"
             :docData.sync="docData"
-            v-if="displayView === 'form'"
           />
           <Preview
             v-if="displayView === 'preview'"
@@ -24,7 +24,9 @@
             @showView="showView"
           />
 
-          <v-btn @click="saveOnLeave" class="my-10">Temp Save Button</v-btn>
+          <v-btn v-if="displayView === 'form'" @click="saveOnLeave" class="my-10">
+            Temp Save Button
+          </v-btn>
 
         </div>
         <ATATFooter/>
