@@ -98,7 +98,7 @@
       title="Add a CSP Administrator"
       width="632"
       okText="Add administrator"
-      :OKDisabled="!okDisabled"
+      :OKDisabled="okDisabled"
       :showDialog.sync="showCSPModal"
       @ok="addCSPMember"
 
@@ -148,6 +148,7 @@
                ]"
             />
           </div>
+          {{formIsValid}}
         </v-form>
 
       </template>
@@ -174,6 +175,12 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
   }
 })
 export default class CSPPortalAccess extends Vue {
+  $refs!: {
+    form: Vue & {
+      resetValidation: () => void;
+      reset: () => void;
+    };
+  };
   @Prop({ default: "" }) private portfolioCSP!: string;
 
   public page = 1;
@@ -243,10 +250,10 @@ export default class CSPPortalAccess extends Vue {
 
   }
   get okDisabled(): boolean {
-    if(this.isValid === true && this.formIsValid === true){
-      return true
+    if(this.isValid && this.formIsValid){
+      return false
     }
-    return false
+    return true
   }
   public openCSPModal(): void {
     this.showCSPModal = true;
@@ -295,10 +302,15 @@ export default class CSPPortalAccess extends Vue {
     this.adminEmail = "";
     this.doDID = "";
     this.isValid = false;
+    this.$refs.form.reset();
+    this.$refs.form.resetValidation();
   }
 
 
   public async validateEmail(): Promise<boolean> {
+    if(!this.adminEmail){
+      return false
+    }
     const email = this.adminEmail;
     const domain = email.slice(-3).toLowerCase();
     const isGovtDomain = domain === "mil" || domain === "gov";
