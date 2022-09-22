@@ -16,11 +16,10 @@ describe("Testing CSPPortalAccess Component", () => {
     vuetify = new Vuetify();
     wrapper = mount(CSPPortalAccess, {
       localVue,
-
       vuetify,
       propsData:{
         portfolioCSP: "Azure"
-      }
+      },
 
     });
   });
@@ -38,16 +37,6 @@ describe("Testing CSPPortalAccess Component", () => {
       expect(modal).toBe(true);
     })
   });
-
-  it("test addCSPMember", ()=> {
-    const members = wrapper.vm.$data.tableData.length
-    expect(members).toBe(11);
-
-    wrapper.vm.addCSPMember()
-    Vue.nextTick(() => {
-      expect(members).toBe(12);
-    })
-  })
 
   it("testing validateEmail()- with invalid email domain",async ()=>{
     wrapper.setData({

@@ -148,7 +148,6 @@
                ]"
             />
           </div>
-          {{formIsValid}}
         </v-form>
 
       </template>
@@ -195,7 +194,7 @@ export default class CSPPortalAccess extends Vue {
   public showErrorMessage = false;
   public adminEmail = "";
   public doDID = "";
-  public isValid = false;
+  public emailIsValid = false;
   public formIsValid = false;
 
 
@@ -250,7 +249,7 @@ export default class CSPPortalAccess extends Vue {
 
   }
   get okDisabled(): boolean {
-    if(this.isValid && this.formIsValid){
+    if(this.emailIsValid && this.formIsValid && this.doDID){
       return false
     }
     return true
@@ -301,7 +300,7 @@ export default class CSPPortalAccess extends Vue {
     this.tableData.unshift(member)
     this.adminEmail = "";
     this.doDID = "";
-    this.isValid = false;
+    this.emailIsValid = false;
     this.$refs.form.reset();
     this.$refs.form.resetValidation();
   }
@@ -322,21 +321,21 @@ export default class CSPPortalAccess extends Vue {
       // single error messages
       if (!validEmail && missingAtSymbol && !isGovtDomain) {
         this.invalidEmailMessage = this.invalidEmailFormat;
-        this.isValid= false
+        this.emailIsValid= false
         this.showErrorMessage = true
       } else if (!isGovtDomain) {
         this.invalidEmailMessage = this.invalidEmailDomain;
         this.showErrorMessage = true
-        this.isValid= false
+        this.emailIsValid= false
       } else if (missingAtSymbol) {
         this.invalidEmailMessage = this.invalidEmailMissingAtSymbol;
         this.showErrorMessage = true
-        this.isValid= false
+        this.emailIsValid= false
       } else {
         // clear validation message
         this.invalidEmailMessage = "";
         this.showErrorMessage = false
-        this.isValid= true
+        this.emailIsValid= true
       }
     });
     return isValid;
