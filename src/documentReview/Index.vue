@@ -135,8 +135,6 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
     this.docData.cor = await AcquisitionPackage.loadContactInfo("COR");
     this.docData.acor = await AcquisitionPackage.loadContactInfo("ACOR");
     
-    debugger;
-
     // create a copy of data as it was on page load for comparison on page leave for 
     // what to save to store and database
     this.savedDocData = _.cloneDeep(this.docData);
@@ -144,7 +142,7 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
 
   public async hasChanged(): Promise<void> {
     const docData = this.docData as unknown as Record<string, unknown> ;
-    const savedDocData = this.docData as unknown as Record<string, unknown> ;
+    const savedDocData = this.savedDocData as unknown as Record<string, unknown> ;
     const keys = Object.keys(docData);
 
     keys.forEach((key: string) => {
@@ -166,6 +164,22 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
         break;
       case "organization": 
         // future ticket
+        break;
+
+      case "cor":
+        if (this.docData.cor !== null) {
+          await AcquisitionPackage.saveContactInfo(
+            { data: this.docData.cor, type: "COR" }
+          );
+        }
+        break;
+
+      case "acor":
+        if (this.docData.acor !== null) {
+          await AcquisitionPackage.saveContactInfo(
+            { data: this.docData.acor, type: "ACOR" }
+          );
+        }
         break;
 
       case "fairOpportunity":
