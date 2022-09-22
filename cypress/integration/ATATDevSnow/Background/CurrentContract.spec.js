@@ -29,18 +29,18 @@ describe("Test suite: Current Contract", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     cy.textExists(common.header, " Do you have a current contract for this effort? ");
     //assert radio button options
-    cy.radioBtn(background.yesRadioOption, "YES").not("[disabled]");
-    cy.radioBtn(background.noRadioOpion, "NO").not("[disabled]");
+    cy.radioBtn(background.currentYesRadioOption, "YES").not("[disabled]");
+    cy.radioBtn(background.currentNoRadioOption, "NO").not("[disabled]");
             
   });
 
   it("TC3: Current Contract: Validations", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     //validation message for the radio options
-    cy.findElement(background.yesRadioOption).focus().tab().tab().then(() => {
+    cy.findElement(background.currentYesRadioOption).focus().tab().tab().then(() => {
       cy.checkErrorMessage(background.radioOptionError, "Please select an option");
     });
-    cy.contractOption(background.yesRadioOption, "YES");
+    cy.contractOption(background.currentYesRadioOption, "YES");
 
     //Navigates to the current contract substep
     cy.textExists(common.header, "Let’s gather some details about your current contract"); 
@@ -68,7 +68,7 @@ describe("Test suite: Current Contract", () => {
     () => {
       cy.clickSideStepper(common.stepBackgroundLink, " Background ");
       //assert radio button options    
-      cy.contractOption(background.yesRadioOption, "YES");
+      cy.contractOption(background.currentYesRadioOption, "YES");
       cy.textExists(common.header, "Let’s gather some details about your current contract");
 
       //assert all the field labels
@@ -99,7 +99,7 @@ describe("Test suite: Current Contract", () => {
 
   it("TC5: Click on I don't have an existing contract button ", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
-    cy.contractOption(background.yesRadioOption, "YES");
+    cy.contractOption(background.currentYesRadioOption, "YES");
     cy.btnExists(background.noExistingContractBtn, " I don’t have an existing contract ")
       .not("[disabled]").click();
     cy.findElement(common.stepContractDetailsText).contains(" Contract Details ")
@@ -109,7 +109,7 @@ describe("Test suite: Current Contract", () => {
         
   it("TC6: Current Contract: Option No", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
-    cy.contractOption(background.noRadioOpion, "NO");
+    cy.contractOption(background.currentNoRadioOption, "NO");
     
   });
   
