@@ -399,3 +399,7 @@ export interface MemberInvites {
   emails: string[];
   role: string;
 }
+
+export interface FundingTrackerAlert {
+   alertType: string;
+}

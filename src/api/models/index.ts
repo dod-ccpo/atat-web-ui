@@ -9,6 +9,16 @@ export interface BaseTableDTO {
   sys_created_by?: string;
 }
 
+export interface AlertDTO extends BaseTableDTO {
+  active: string;
+  alert_type: string;
+  clin: string;
+  last_notification_date: string;
+  portfolio: string;
+  task_order: string;
+  threshold_violation_amount: string;
+}
+
 export interface AcquisitionPackageDTO extends BaseTableDTO {
   status: string;
   number: string;
@@ -299,6 +309,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
 export interface CostsDTO extends BaseTableDTO {
   clin: string;
   csp: string;
+  "csp.name"?:string;
   year_month: string;
   task_order_number: string;
   portfolio: string;
