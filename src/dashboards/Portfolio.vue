@@ -832,7 +832,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { DashboardService } from "../services/dashboards";
+import { DashboardService, PortFolioDashBoardDTO } from "../services/dashboards";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
@@ -1470,9 +1470,12 @@ export default class PortfolioDashboard extends Vue {
     this.lineChartOptions.scales.y.ticks.stepSize = this.burnChartYStepSize;
   }
 
-  public async loadOnEnter(): Promise<void> {
-    const data = await this.dashboardService.getdata("1000000001234");
+  public async getDashboardData():Promise<PortFolioDashBoardDTO>{
+    return this.dashboardService.getdata("1000000001234");
+  }
 
+  public async loadOnEnter(): Promise<void> {
+    const data = await this.getDashboardData();
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
     this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
