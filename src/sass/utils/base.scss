@@ -358,6 +358,9 @@ textarea {
       }
     }
   }
+  .fade-move {
+    transition: transform 1.5s;
+  }
 }
 ._icon-circle {
   width: 32px;

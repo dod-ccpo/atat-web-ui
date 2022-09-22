@@ -12,9 +12,9 @@
         <v-btn
           depressed
           color="primary"
-          @click="openMembersModal"
-          @keydown.enter="openMembersModal"
-          @keydown.space="openMembersModal"
+          @click="openCSPModal"
+          @keydown.enter="openCSPModal"
+          @keydown.space="openCSPModal"
         >
           <ATATSVGIcon
             class="mr-2"
@@ -37,7 +37,7 @@
         >
           <!-- eslint-disable vue/valid-v-slot -->
           <template v-slot:body="props">
-            <tbody>
+            <tbody name="fade" is="transition-group">
             <template >
               <tr
                 :class="{'bg-info-lighter': item.status === 'Processing'}"
@@ -217,7 +217,7 @@ export default class CSPPortalAccess extends Vue {
     }
 
   }
-  public openMembersModal(): void {
+  public openCSPModal(): void {
     this.showCSPModal = true;
   }
 
@@ -263,6 +263,7 @@ export default class CSPPortalAccess extends Vue {
     this.tableData.unshift(member)
     this.adminEmail = "";
     this.doDID = "";
+    this.isValid = false;
   }
 
 

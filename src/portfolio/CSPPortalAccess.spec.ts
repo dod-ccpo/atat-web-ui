@@ -24,4 +24,57 @@ describe("Testing CSPPortalAccess Component", () => {
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
+
+  it("test openCSPModal", async () => {
+    const modal = wrapper.vm.$data.showCSPModal;
+    expect(modal).toBe(false);
+
+    wrapper.vm.openCSPModal();
+    Vue.nextTick(() => {
+      expect(modal).toBe(true);
+    })
+  });
+
+  it("test addCSPMember", ()=> {
+    const members = wrapper.vm.$data.tableData.length
+    expect(members).toBe(11);
+
+    wrapper.vm.addCSPMember()
+    Vue.nextTick(() => {
+      expect(members).toBe(12);
+    })
+  })
+
+  it("testing validateEmail()- with invalid email domain",async ()=>{
+    wrapper.setData({
+      adminEmail: "test@wrong.domain"
+    })
+    const result =await wrapper.vm.validateEmail()
+    expect(result).toBe(false);
+  })
+
+  it("testing validateEmail()- with missing '@' symbol",async ()=>{
+    wrapper.setData({
+      adminEmail: "testwrong.domain"
+    })
+    const result =await wrapper.vm.validateEmail()
+    expect(result).toBe(false);
+  })
+
+  it("testing validateEmail()- with missing email",async ()=>{
+    wrapper.setData({
+      adminEmail: ""
+    })
+    const result =await wrapper.vm.validateEmail()
+    expect(result).toBe(false);
+  })
+
+  it("testing validateEmail()- correct email ",async ()=>{
+    wrapper.setData({
+      adminEmail: "Correctemail@test.mil"
+    })
+    const result =await wrapper.vm.validateEmail()
+    expect(result).toBe(true);
+  })
+
 })
