@@ -1,6 +1,8 @@
 ._dashboard {
-  .v-main__wrap {
-    background-color: $base-lightest;
+  &._funding-dashboard{
+    .v-main__wrap {
+      background-color: $base-lightest;
+    }
   }
   .container-max-width {
     margin: 0 auto !important;

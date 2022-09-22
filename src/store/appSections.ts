@@ -9,6 +9,8 @@ import {
 import { Component } from "vue";
 import rootStore from "./index";
 
+import SlideoutPanel from "@/store/slideoutPanel"; 
+
 @Module({
   name: "AppSectionsStore",
   namespaced: true,
@@ -21,7 +23,6 @@ export class AppSectionsStore extends VuexModule {
   sectionTitles: Record<string, string> = {
     AcquisitionPackage: "Acquisition Package Builder",
     JWCCDashboard: "JWCC Dashboard",
-    PortfolioDashboard: "Portfolio Dashboard",
     TOLookup: "Lookup TO in EDA",
     PortfolioSummary: "Portfolio Summary",
     DocumentReview: "Document Review"
@@ -32,7 +33,6 @@ export class AppSectionsStore extends VuexModule {
   appSectionMenuItems: { title: string }[] = [
     { title: this.sectionTitles.AcquisitionPackage },
     { title: this.sectionTitles.JWCCDashboard },
-    { title: this.sectionTitles.PortfolioDashboard },
     { title: this.sectionTitles.TOLookup },
     { title: this.sectionTitles.PortfolioSummary },
     { title: this.sectionTitles.DocumentReview }
@@ -65,6 +65,7 @@ export class AppSectionsStore extends VuexModule {
   @Mutation
   doSetAppContentComponent(contentComponent: Component): void {
     this.appContentComponent = contentComponent;
+    SlideoutPanel.closeSlideoutPanel();
   }
 
 }

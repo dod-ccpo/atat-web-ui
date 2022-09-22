@@ -334,7 +334,7 @@ Cypress.Commands.add("verifyRadioGroupLabels", (selector,expectedLabels) => {
   
 });
 
-Cypress.Commands.add("verifyDropdownList", (selector,expectedOptions) => {
+Cypress.Commands.add("verifyStringArray", (selector,expectedOptions) => {
   //Verify the list 
   cy.findElement(selector)
     .then(($els) => {      
@@ -450,7 +450,7 @@ Cypress.Commands.add("completePercent", () => {
 Cypress.Commands.add("fillNewAcquisition", (projectTitle, scope) => {    
   cy.enterTextInTextField(projectOverview.projectTitleTxtBox, projectTitle);
   cy.enterTextInTextField(projectOverview.scopeTxtBox, scope);
-  cy.findElement(projectOverview.radioBtnYes).should("have.value", "yes")
+  cy.findElement(projectOverview.radioBtnYes).should("have.value", "YES")
     .click({ force: true });
   cy.btnExists(common.continueBtn, " Continue ").click();  
 });

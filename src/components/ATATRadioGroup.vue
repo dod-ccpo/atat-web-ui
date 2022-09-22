@@ -33,13 +33,15 @@
           :class="[
             radioClasses,
             { '_has-other': item.value === otherValue },
-            { '_other-selected': showOtherEntry(item.value) }
+            { '_other-selected': showOtherEntry(item.value) },
+            { '_readonly' : item.readonly}
           ]"
           :key="item.id"
           :value="item.value"
           :style="{ width: width + 'px' }"
           :name="name"
           :disabled="item.disabled || disabled"
+          :readonly="item.readonly"
           @blur="onBlur"
           @click="onClick"
         >

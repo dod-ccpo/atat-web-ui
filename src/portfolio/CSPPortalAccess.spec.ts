@@ -15,11 +15,13 @@ describe("Testing CSPPortalAccess Component", () => {
     wrapper = mount(CSPPortalAccess, {
       localVue,
       vuetify,
+      propsData:{
+        portfolioCSP: "Azure"
+      }
     });
   });
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
-
 })

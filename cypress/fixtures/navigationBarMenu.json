@@ -1,0 +1,49 @@
+{
+  "dashboard": {
+    "menuText": "Dashboard"
+  },
+  "acquisitions": {
+    "menuText": "Acquisitions",
+    "dropdownList": [
+      "My Packages",
+      "My Task Orders",
+      "Document Review"
+    ]
+  },
+  "portfolios": {
+    "menuText": "Portfolios",
+    "submenu": [
+      "Invite members to portfolio",
+      "Rename portfolio",
+      "Leave this portfolio",
+      "Archive portfolio",
+      "Login to the CSP console"
+    ],
+    "tabs": [
+      "Funding Tracker",
+      "Task Orders",
+      "CSP Portal Access"
+    ],
+    "roles": [
+      "ROLES",
+      "Manager",
+      "Viewer"
+    ]
+  },
+  "portals": {
+    "menuText": "Portals",
+    "dropdownList": [
+      "Global Service Desk",
+      "Mission Partner Portal"
+    ]
+  },
+  "user": {
+    "menuText": "User",
+    "dropdownList": [
+      "Profile",
+      "Contact Support",
+      "Submit Feedback",
+      "Sign out"
+    ]
+  }
+}
