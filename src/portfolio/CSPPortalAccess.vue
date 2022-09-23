@@ -101,14 +101,16 @@
       :OKDisabled="okDisabled"
       :showDialog.sync="showCSPModal"
       @ok="addCSPMember"
-
+      :modalSlideoutComponent="modalSlideoutComponent"
+      modalSlideoutTitle="Learn more about CSP administrators"
+      :modalDrawerIsOpen.sync="modalDrawerIsOpen"
     >
       <template #content>
         <p class="body">
           This individual will be granted full access to your cloud resources within the
           selected {{serviceProvider[portfolioCSP]}} portal, enabling them to manage user accounts
           and configure workspace settings.
-          <a id="LearnMoreLink">
+          <a id="LearnMoreLink" role="button" @click="openLearnMoreDrawer">
             Learn more about CSP administrators
           </a>
         </p>
@@ -164,6 +166,7 @@ import format from "date-fns/format"
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import AddAdminSlideOut from "@/portfolio/components/AddAdminSlideOut.vue";
 @Component({
   components: {
     ATATDialog,
@@ -196,7 +199,8 @@ export default class CSPPortalAccess extends Vue {
   public dodID = "";
   public emailIsValid = false;
   public formIsValid = false;
-
+  public modalSlideoutComponent = AddAdminSlideOut
+  private modalDrawerIsOpen = false
 
   public tableHeaders: Record<string, string>[] = [
     { text: "Administrator email", value: "email" },
@@ -305,6 +309,9 @@ export default class CSPPortalAccess extends Vue {
     this.$refs.form.resetValidation();
   }
 
+  public openLearnMoreDrawer(): void {
+    this.modalDrawerIsOpen = true;
+  }
 
   public async validateEmail(): Promise<boolean> {
     if(!this.adminEmail){
