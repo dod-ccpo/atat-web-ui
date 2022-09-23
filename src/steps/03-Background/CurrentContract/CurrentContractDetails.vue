@@ -6,7 +6,7 @@
           Let’s gather some details about your current contract
         </h1>
         <div class="copy-max-width">
-          <ATATTextField
+          <IncumbentContractorName
             id="IncumbentContractorName"
             :rules="[
               $validators.required(
@@ -18,7 +18,7 @@
             label="Incumbent contractor name"
           />
 
-          <ATATTextField
+          <ContractNumber
             id="ContractNumber"
             :rules="[
               $validators.required('Please enter your contract number.'),
@@ -28,13 +28,13 @@
             label="Contract number"
           />
 
-          <ATATTextField
-            id="TaskDeliveryOrderNumber"
-            :value.sync="taskDeliveryOrderNumber"
-            :optional="true"
-            class="_input-max-width mb-10"
-            label="Task/Delivery order number"
-            tooltipText="Leave this field empty if your previous acquisition
+          <TaskOrderNumber
+              id="TaskDeliveryOrderNumber"
+              :value.sync="taskDeliveryOrderNumber"
+              :optional="true"
+              class="_input-max-width mb-10"
+              label="Task/Delivery order number"
+              tooltipText="Leave this field empty if your previous acquisition
              was only a contract, not an order placed under a contract."
           />
 
@@ -67,16 +67,21 @@ import { Component, Mixins } from "vue-property-decorator";
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-
+import ContractNumber from "@/steps/03-Background/components/ContractNumber.vue";
+import IncumbentContractorName from "@/steps/03-Background/components/IncumbentContractorName.vue";
 import AcquisitionPackage, { StoreProperties, } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { add, format } from "date-fns";
+import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 
 @Component({
   components: {
     ATATDatePicker,
+    ContractNumber,
+    IncumbentContractorName,
+    TaskOrderNumber,
     ATATTextField,
   },
 })

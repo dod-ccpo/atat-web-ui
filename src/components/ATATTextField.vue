@@ -36,6 +36,7 @@
       :rules="rules"
       :counter="counter"
       @blur="onBlur"
+      @focus="onFocus"
       @update:error="setErrorMessage"
       autocomplete="off"
       :type="type"
@@ -154,6 +155,11 @@ export default class ATATTextField extends Vue  {
       this.resetValidation();
     }
     this.$emit('blur', input.value, this.extraEmitVal);
+  }
+
+  public onFocus(e: FocusEvent): void {
+    const input = e.target as HTMLInputElement;
+    this.$emit('focus', input.value, this.extraEmitVal);
   }
 
   public resetValidation(): void {

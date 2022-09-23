@@ -550,6 +550,9 @@ export class AcquisitionPackageStore extends VuexModule {
       const sys_id = this[dataKey]?.sys_id || "";
 
       if (sys_id.length > 0) {
+        if (dataKey === "acorInfo") {
+          this.setHasAlternateCOR(true);
+        }
         const contactInfo = await api.contactsTable.retrieve(sys_id as string);
         this.setContact({ data: contactInfo, type: contactType });
         this.setAcquisitionPackage({

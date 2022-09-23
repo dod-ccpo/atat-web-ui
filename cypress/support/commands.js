@@ -38,6 +38,7 @@ import contractDetails from '../selectors/contractDetails.sel';
 import { 
   cleanText, 
   colors,   
+  prefixId,
 } from "../helpers";
 import sac from '../selectors/standComp.sel';
 import occ from '../selectors/occ.sel';
@@ -240,7 +241,7 @@ Cypress.Commands.add("checkErrorMessage", (selector, errorMessage) => {
 });
 
 Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,errorMessage) => {
-  cy.findElement(textboxSelector).should("be.visible").clear()
+  cy.findElement(textboxSelector).scrollIntoView().should("be.visible").clear()
     .focus().blur({ force: true }).then(() => {
       cy.checkErrorMessage(errorSelector, errorMessage);
     }); 
@@ -619,20 +620,35 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value,sbSelector) =>
     });  
 });
 
-Cypress.Commands.add("enterContactInformation", (contactInformation ) => {    
-  cy.enterTextInTextField(contactInformation.firstNameSelector,contactInformation.firstName);
-  cy.enterTextInTextField(contactInformation.mNameSelector,contactInformation.mName);
-  cy.enterTextInTextField(contactInformation.lastNameSelector,contactInformation.lastName);    
-  cy.enterTextInTextField(contactInformation.emailSelector,contactInformation.email);
+Cypress.Commands.add("enterContactInformation", (contactInformation, prefix) => {  
+  let selector = prefixId(contactInformation.firstNameSelector, prefix);
+  cy.enterTextInTextField(selector,contactInformation.firstName);
+  selector = prefixId(contactInformation.mNameSelector, prefix);
+  cy.enterTextInTextField(selector,contactInformation.mName);
+  selector = prefixId(contactInformation.lastNameSelector, prefix);
+  cy.enterTextInTextField(selector,contactInformation.lastName);
+  selector = prefixId(contactInformation.emailSelector, prefix);
+  cy.enterTextInTextField(selector,contactInformation.email);
   if (contactInformation.cor) {
         
     const expectedText =
         "A DoDAAC is a 6-character code that uniquely identifies a unit," +
         " activity, or organization that has the authority to requisition," +
         " contract for, or fund/pay bills for materials and services.";
-    cy.hoverToolTip(commonCorAcor.toolTipBtnDodaac, commonCorAcor.toolTipTxtDodaac, expectedText);
+
+    const tooltipButton = prefix === "COR_" 
+      ? commonCorAcor.toolTipBtnDodaacCOR 
+      : commonCorAcor.toolTipBtnDodaacACOR;
+    const tooltipText = prefix === "COR_" 
+      ? commonCorAcor.toolTipTxtDodaacCOR 
+      : commonCorAcor.toolTipTxtDodaacACOR;
+
+    console.log("TOOLTIP SELECTOR", selector);
+    cy.hoverToolTip(tooltipButton, tooltipText, expectedText);
+
     //Assert the labels
-    cy.textExists(commonCorAcor.dodaacLabel, " DoD Activity Address Code (DoDAAC) ");
+    selector = prefixId(commonCorAcor.dodaacLabel, prefix);
+    cy.textExists(selector, " DoD Activity Address Code (DoDAAC) ");
     const accessEditText = "Does this individual need access to help" +
           " you create this acquisition package in ATAT?"
     cy.findElement(commonCorAcor.accessRadioGroup).then(($e) => {
@@ -640,10 +656,11 @@ Cypress.Commands.add("enterContactInformation", (contactInformation ) => {
       cy.log(actualTxt);
       const formattedTxt = cleanText(actualTxt)
       expect(formattedTxt).equal(accessEditText);
-
     });
+
     //enter DoDAAC
-    cy.enterTextInTextField(commonCorAcor.dodaacTxtBox, contactInformation.dodText);
+    selector = prefixId(commonCorAcor.dodaacTxtBox, prefix);
+    cy.enterTextInTextField(selector, contactInformation.dodText);
     //radio buttons
     cy.radioBtn(commonCorAcor.accessYesRadioBtn, "YES");
     cy.radioBtn(commonCorAcor.accessNoRadioBtn, "NO");
@@ -691,36 +708,45 @@ Cypress.Commands.add("checkIfCorOrAcor", (headerSelector, headerText, contactNam
 });
 
 Cypress.Commands.add("manuallyEnterContactInformation",
-  (manualEnterText, nameText, contactAffiliationText, radioSelector, radioValue) => {
+  (corOrAcor, manualEnterText, nameText, contactAffiliationText, radioSelector, radioValue) => {
     cy.btnExists(commonCorAcor.contactFormToggle, manualEnterText).click();
-    cy.textExists(commonCorAcor.contactHeaderTxt, nameText);
+    let selector = prefixId(commonCorAcor.contactHeaderTxt, corOrAcor);
+    cy.textExists(selector, nameText);
     cy.textExists(commonCorAcor.contactAffRadioGroupTxt, contactAffiliationText)
     cy.radioBtn(radioSelector, radioValue).click({ force: true });
-    cy.findElement(commonCorAcor.serviceBranchDropdown).click({ force: true });
-    cy.findElement(commonCorAcor.serviceBranchDropdownList).first().click();
+    selector = prefixId(commonCorAcor.serviceBranchDropdown, corOrAcor);
+    cy.findElement(selector).click({ force: true });
+    selector = prefixId(commonCorAcor.serviceBranchDropdownList, corOrAcor);
+    cy.findElement(selector).first().click();
     cy.findElement(commonCorAcor.contactAffRadioActive)
       .then(($radioBtn) => {
         cy.log($radioBtn.text());
         const selectedOption = $radioBtn.text();
         if (selectedOption === "radio_button_checkedMilitary") {
-          cy.findElement(commonCorAcor.rankAutoWrapper)
+          selector = prefixId(commonCorAcor.rankAutoWrapper, corOrAcor);
+          cy.findElement(selector)
             .should("exist")
             .and("be.visible")
             .and("contain", "Rank");
-          cy.findElement(commonCorAcor.salutationLabel)
+          selector = prefixId(commonCorAcor.salutationLabel, corOrAcor);
+          cy.findElement(selector)
             .should("exist")
             .and("not.visible");
           //Click Rank dropdown
-          cy.dropDownClick(commonCorAcor.rankInput);
+          selector = prefixId(commonCorAcor.rankInput, corOrAcor);
+          cy.dropDownClick(selector);
           //select the value from Rank Dropdown
-          cy.findElement(commonCorAcor.rankAutoCompleteList)
+          selector = prefixId(commonCorAcor.rankAutoCompleteList, corOrAcor);
+          cy.findElement(selector)
             .first().click({ force: true });
         } else if (selectedOption === "radio_button_checkedContractor") {
-          cy.findElement(commonCorAcor.salutationDropDownControl)
+          selector = prefixId(commonCorAcor.salutationDropDownControl, corOrAcor);
+          cy.findElement(selector)
             .should("exist")
             .and("be.visible")
             .and("contain", "Salutation");
-          cy.findElement(commonCorAcor.rankAutoWrapper)
+          selector = prefixId(commonCorAcor.rankAutoWrapper, corOrAcor);
+          cy.findElement(selector)
             .should("exist")
             .and("not.visible");
         }
