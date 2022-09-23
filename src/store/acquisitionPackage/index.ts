@@ -703,6 +703,7 @@ export class AcquisitionPackageStore extends VuexModule {
         apiEndPoint.create(data);
       const savedData = await saveAction;
 
+      // updates the store state data
       this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
       if(acquisitionPackageProp === undefined)

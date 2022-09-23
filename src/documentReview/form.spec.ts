@@ -20,22 +20,9 @@ describe("Testing index Component", () => {
   beforeEach(async () => {
 
     jest.spyOn(ContactData, 'LoadMilitaryBranches').mockImplementation(
-      ()=>Promise.resolve(
-        [{
-          name: "foo",
-          label: "bar",
-          value: "baz"
-        }]
-      )
-    );
+      ()=>Promise.resolve([{ name: "foo", label: "bar", value: "baz"}]));
 
-    const rank: MilitaryRankDTO = 
-      {
-        name: "this",
-        grade: "that",
-        branch: "other"
-      };
-      
+    const rank: MilitaryRankDTO = { name: "this", grade: "that", branch: "other" };     
     jest.spyOn(ContactData, 'GetMilitaryRank').mockReturnValue(
       new Promise(resolve => resolve(rank))
     );
