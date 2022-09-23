@@ -1,7 +1,7 @@
 <template>
   <v-form ref="form" lazy-validation>
     <div class="pt-0">
-      <div class="max-width-640">
+      <div class="max-width-640" v-if="isWizard">
         <ATATAutoComplete
           id="SearchContact"
           :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
@@ -34,7 +34,7 @@
 
       <a
         id="ContactFormToggle"
-        v-show="!haveSelectedContact"
+        v-show="!haveSelectedContact && isWizard"
         role="button"
         class="expandable-content-opener"
         :class="showContactForm ? 'open' : 'closed'"
@@ -45,10 +45,13 @@
         Manually enter your {{ corOrAcor }}’s contact information
       </a>
 
-      <ContactInfoForm
+      <CorAcorContactInfoForm
+        :isWizard="isWizard"
+        :isForm="isForm"
         :corOrAcor="corOrAcor"
-        v-show="showContactForm && !haveSelectedContact"
-        :showAccessRadioButtons.sync="showAccessRadioButtons"
+        v-show="!isWizard || (showContactForm && !haveSelectedContact)"
+        :sectionHeader="sectionHeader"
+        
         :selectedRole.sync="selectedRole"
         :selectedBranch.sync="selectedBranch"
         :selectedRank.sync="selectedRank"
@@ -57,6 +60,7 @@
         :middleName.sync="middleName"
         :lastName.sync="lastName"
         :suffix.sync="suffix"
+        :formalName="formalName"
         :email.sync="email"
         :phone.sync="phone"
         :selectedPhoneCountry.sync="selectedPhoneCountry"
@@ -70,7 +74,7 @@
 
       <section
         id="AccessRadioButtons"
-        v-show="(showContactForm && showAccessRadioButtons) || haveSelectedContact"
+        v-show="isWizard && ((showContactForm && showAccessRadioButtons) || haveSelectedContact)"
       >
         <hr/>
         <ATATRadioGroup
@@ -93,7 +97,7 @@ import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import ContactInfoForm from "./ContactInfoForm.vue";
+import CorAcorContactInfoForm from "./ContactInfoForm.vue";
 import PersonCard from "./PersonCard.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -115,19 +119,29 @@ import {
   components: {
     ATATAutoComplete,
     ATATRadioGroup,
-    ContactInfoForm,
+    CorAcorContactInfoForm,
     PersonCard,
   }
 })
 
-export default class COR_ACOR extends Vue {
+export default class CommonCorAcor extends Vue {
   // props
 
+  @Prop({default: false}) private isWizard!: boolean;
+  @Prop({default: true}) private isForm!: boolean;
   @Prop({default: false}) private isACOR!: boolean;
   @PropSync("currentContactData") private _currentContactData!: ContactDTO;
   @PropSync("savedContactData") private _savedContactData!: ContactDTO;
 
   // computed
+
+  get sectionHeader(): string {
+    return this.isWizard 
+      ? "Your "+ this.corOrAcor + "’s Contact Information"
+      : this.corOrAcor === "COR"
+        ? "Contracting Officer Representative (COR) nominee"
+        : "Alternate Contracting Officer Representative (ACOR) nominee"
+  }
 
   get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";
@@ -245,6 +259,7 @@ export default class COR_ACOR extends Vue {
   private middleName = "";
   private lastName = "";
   private suffix = "";
+  private formalName = "";
   private email = "";
   private phone = "";
   private phoneExt = "";
@@ -338,9 +353,7 @@ export default class COR_ACOR extends Vue {
       this.firstName = newSelectedContact.firstName;
       this.lastName = newSelectedContact.lastName;
       this.email = newSelectedContact.email;
-      // TODO phone needs refinement in next milestone when not using dummy data
       this.phone = "+1" + newSelectedContact.phone;
-      // TODO set all data i.e., fields in currentData/ContactDTO with real data when avl.
     } else {
       this.selectedRole = "";
       this.selectedSalutation = "";
@@ -407,7 +420,7 @@ export default class COR_ACOR extends Vue {
           this.savedData.rank_components = rankComp.value;
         }
 
-        const emptyBranch: { text: ""; value: "" } = {text: "", value: ""};
+        const emptyBranch: Record<string, string> = {text: "", value: ""};
 
         //retrieve selected Military Rank from rank component
         const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
@@ -427,6 +440,7 @@ export default class COR_ACOR extends Vue {
       this.middleName = storeData.middle_name;
       this.lastName = storeData.last_name;
       this.suffix = storeData.suffix;
+      this.formalName = storeData.formal_name || "";
 
       this.email = storeData.email;
 

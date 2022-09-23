@@ -10,7 +10,7 @@ describe("Test suite: Current Environment ", () => {
     bootstrapMockApis();
     cy.launchATAT();
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
-    cy.contractOption(background.yesRadioOption, "YES");
+    cy.contractOption(background.currentYesRadioOption, "YES");
     cy.verifyPageHeader("Let’s gather some details about your current contract");
     //enter Values in the input fields
     const inputText = randomAlphaNumeric(8);
@@ -41,7 +41,7 @@ describe("Test suite: Current Environment ", () => {
         " but you’ll have an opportunity to tell us about your performance" +
         " requirements later."
       cy.verifyTextMatches(common.introText, introTextInfo);
-      cy.selectExistingEnv(background.yesRadioOption, "true");
+      cy.selectExistingEnv(background.existYesRadioOption, "true");
       const introText = "If you have instances in a hybrid environment," +
         " then we will gather details about the location for each instance later."
       cy.verifyTextMatches(common.introText, introText);
@@ -61,7 +61,7 @@ describe("Test suite: Current Environment ", () => {
   it("TC2: Select Radio Option No on existing environment screen",
     () => {
             
-      cy.selectExistingEnv(background.noRadioOpion, "false");      
+      cy.selectExistingEnv(background.existNoRadioOption, "false");      
     
     });
   

@@ -1,8 +1,7 @@
-import { bootstrapMockApis,randomNumber,randomString} from "../../../helpers";
+import { bootstrapMockApis,randomNumber,randomString, prefixId} from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import contact from "../../../selectors/contact.sel";
 import commonCorAcor from "../../../selectors/commonCorAcor.sel";
-
 
 describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
     
@@ -152,6 +151,7 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
         
     //manually enter the information
     cy.manuallyEnterContactInformation(
+      "COR_",
       " Manually enter your COR’s contact information ",
       " Your COR’s Contact Information ",
       " What role best describes your COR’s affiliation with the DoD? ",
@@ -170,13 +170,14 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
       cor: "cor",
       dodText:"D0DCCA"
     };
-    cy.enterContactInformation(contactDetails);
+    cy.enterContactInformation(contactDetails, "COR_");
+    const phoneInputSelector = prefixId(commonCorAcor.phoneInputBox, "COR_");
     cy.enterPhoneNumber(
       contact.phoneControlIcon,
       contact.phoneDropdown,
       "Cro",
       contact.countryListItems,
-      commonCorAcor.phoneInputBox,
+      phoneInputSelector,
       "521136541"
     );
 
@@ -218,71 +219,90 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
     cy.btnExists(commonCorAcor.contactFormToggle, " Manually enter your COR’s contact information ")
       .click();
     cy.findElement(commonCorAcor.contactAffRadioGroupTxt).scrollIntoView();
-    //Validation message for  COR’s role
+    //Validation message for COR’s role
     cy.findElement(contact.militaryRadioBtn).tab().tab()
       .then(() => {
         cy.checkErrorMessage(commonCorAcor.contactRoleError, "Please enter your COR’s role.");
       });
     cy.findElement(contact.militaryRadioBtn).click({ force: true });
+
     //Validation message for Service Agency
-    cy.findElement(commonCorAcor.serviceBranchDropdown).focus()
+    let selector, errorSelector;
+    const prefix = "COR_";
+    const branchDropdown = prefixId(commonCorAcor.serviceBranchDropdown, prefix);
+    cy.findElement(branchDropdown).focus()
       .tab().then(() => {
-        cy.checkErrorMessage(
-          commonCorAcor.serviceBranchError,
-          "Please select your COR’s service branch.");
+        selector = prefixId(commonCorAcor.serviceBranchError, prefix);
+        cy.checkErrorMessage(selector, "Please select your COR’s service branch.");
       })
-    cy.findElement(commonCorAcor.serviceBranchDropdown).click({ force: true });
-    cy.findElement(commonCorAcor.serviceBranchDropdownList).first().click();
+    cy.findElement(branchDropdown).click({ force: true });
+    selector = prefixId(commonCorAcor.serviceBranchDropdownList, prefix);
+    cy.findElement(selector).first().click();
     //Validation message for Rank
+
+    selector = prefixId(commonCorAcor.rankInput, prefix);
+    errorSelector = prefixId(commonCorAcor.rankError, prefix);
     cy.verifyRequiredDropdown(
-      commonCorAcor.rankInput,
-      commonCorAcor.rankError,
+      selector,
+      errorSelector,
       "Please select your COR’s rank."
     );
     // FirstName is blank
+    selector = prefixId(contact.fNameTxtBox, prefix);
+    errorSelector = prefixId(contact.fNameError, prefix);
     cy.verifyRequiredInput(
-      contact.fNameTxtBox,
-      contact.fNameError,
+      selector,
+      errorSelector,
       "Please enter your COR’s first name."
     );
     //LastName is blank
+    selector = prefixId(contact.lNameTxtBox, prefix);
+    errorSelector = prefixId(contact.lNameError, prefix);
     cy.verifyRequiredInput(
-      contact.lNameTxtBox,
-      contact.lNameError,
+      selector,
+      errorSelector,
       "Please enter your COR’s last name."
     );
     //Phone Number field is blank
-    cy.findElement(contact.lNameTxtBox).tab().tab().tab().tab().then(() => {
-      cy.checkErrorMessage(contact.phoneError, "Please enter your COR’s phone number");
-    });
+    const phoneSelector = prefixId(commonCorAcor.phoneInputBox, prefix);
+    const phoneErrorSelector = contact.phoneError;
+    cy.verifyRequiredInput(
+      phoneSelector,
+      phoneErrorSelector,
+      "Please enter your COR’s phone number"
+    );
     //US phone Number is not in standard format
     const phoneNumber = randomNumber(8)
-    cy.findElement(contact.lNameTxtBox).tab().tab().tab().type(phoneNumber)
-      .focus().blur({ force: true })
+    cy.findElement(phoneSelector).type(phoneNumber)
+      .blur({ force: true })
       .then(() => {
         cy.checkErrorMessage(
-          contact.phoneError,
+          phoneErrorSelector,
           "Please enter a number using the format for  United States (e.g., 999-999-9999).");
       });
     //email address is blank
+    const emailSelector = prefixId(commonCorAcor.emailTxtBox, prefix);
+    const emailErrorSelector = prefixId(commonCorAcor.emailError, prefix);
     cy.verifyRequiredInput(
-      commonCorAcor.emailTxtBox,
-      commonCorAcor.emailError,
+      emailSelector,
+      emailErrorSelector,
       "Please enter your COR’s email address."
     );
-    //email in standard email format
+    // email in standard email format
     const email = randomString(5) + "@test.com"
-    cy.findElement(commonCorAcor.emailTxtBox).should("be.visible").clear()
+    cy.findElement(emailSelector).should("be.visible").clear()
       .type(email).blur({ force: true }).then(() => {
         cy.checkErrorMessage(
-          commonCorAcor.emailError,
+          emailErrorSelector,
           "Please use your .mil or .gov email address."
         );
       });
     //DoDAAC field is blank 
+    const dodaacSelector = prefixId(commonCorAcor.dodaacTxtBox, prefix);
+    const dodaacErrorSelector = prefixId(commonCorAcor.dodaacError, prefix);
     cy.verifyRequiredInput(
-      commonCorAcor.dodaacTxtBox,
-      commonCorAcor.dodaacError,
+      dodaacSelector,
+      dodaacErrorSelector,
       "Please enter your COR’s 6-character DoDAAC."
     );
   });
