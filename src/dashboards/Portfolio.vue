@@ -111,7 +111,7 @@
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <div
-                      id="fundingStatusHeader"
+                      id="FundingStatusHeader"
                       class="d-flex justify-space-between"
                     >
                       <div class="mb-6 h3">Funding Status</div>

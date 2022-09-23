@@ -37,7 +37,7 @@
             :selectedServiceOrAgency.sync="_docData.organization.service_agency"
           />
         </div>
-
+    <hr/>
         <h2 class="mb-5 ml-4">Part II. Requirement Information</h2>
 
         <div class="_comment-wrap">

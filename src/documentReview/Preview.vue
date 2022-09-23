@@ -66,6 +66,35 @@
                 />
               </div>
             </li>
+
+            <li>
+              <strong id="CORInfo" class="mb-4 d-block">
+                Task Order Contracting Officer Representative (TO COR) nominee
+              </strong>
+              <div aria-describedby="CORInfo">
+                <CommonCorAcor
+                  :isACOR="false"
+                  :isWizard="false"
+                  :isForm="false"
+                  :currentContactData="docData.cor"
+                />
+              </div>
+
+              <div v-if="hasACOR">
+                <strong id="ACORInfo" class="mb-4 mt-10 d-block">
+                  Alternate TO COR nominee
+                </strong>
+                <div aria-describedby="ACORInfo">
+                  <CommonCorAcor
+                    :isACOR="true"
+                    :isWizard="false"
+                    :isForm="false"
+                    :currentContactData="docData.acor"
+                  />
+                </div>
+              </div>
+
+            </li>
           </ol>
 
           <hr />
@@ -79,6 +108,19 @@
                 :selectedOption="
                   docData.currentContract.current_contract_exists
                 "
+              />
+              <IncumbentContractorName
+                  v-if="docData.currentContract.current_contract_exists === 'YES'"
+                  :isForm="isForm"
+                  :value.sync="docData.currentContract.incumbent_contractor_name"
+              />
+              <ContractNumber v-if="docData.currentContract.current_contract_exists === 'YES'"
+                  :isForm="isForm"
+                  :value.sync="docData.currentContract.contract_number"
+              />
+              <TaskOrderNumber v-if="docData.currentContract.current_contract_exists === 'YES'"
+                  :isForm="isForm"
+                  :value.sync="docData.currentContract.task_delivery_order_number"
               />
             </li>
             <li>
@@ -108,24 +150,36 @@ import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/Projec
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
 import RequestingServiceAgency from 
   "@/steps/01-AcquisitionPackageDetails/components/RequestingServiceAgency.vue";
+import CommonCorAcor 
+  from "@/steps/01-AcquisitionPackageDetails/COR_ACOR/Common.vue";
+import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
 
 // Step 2 Components
 import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
+import IncumbentContractorName from "@/steps/03-Background/components/IncumbentContractorName.vue";
 
 // Step 3 Components
-import CurrentContractOptions from 
-  "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
+import ContractNumber from "@/steps/03-Background/components/ContractNumber.vue";
+import CurrentContractOptions 
+  from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
 
 import { Component, Prop } from "vue-property-decorator";
 
 import { DocReviewData } from "types/Global";
+import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
+    TaskOrderNumber,
     ATATSVGIcon,
+    ContractNumber,
+    CommonCorAcor,
     CurrentContractOptions,
+    DoDAAC,
     EmergencyDeclarationSupport,
     FairOppExceptions,
+    IncumbentContractorName,
     ProjectScope,
     ProjectTitle,
     RequestingServiceAgency,
@@ -135,5 +189,7 @@ export default class DocumentReviewPreview extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
   @Prop() private docData!: DocReviewData;
   @Prop() private isForm!: boolean;
+
+  private hasACOR = AcquisitionPackage.hasAlternativeContactRep;
 }
 </script>

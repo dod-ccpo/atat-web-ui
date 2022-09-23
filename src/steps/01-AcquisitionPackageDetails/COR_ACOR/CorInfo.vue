@@ -15,8 +15,9 @@
           </a>
         </p>
 
-        <common 
-          :isACOR="false" 
+        <CommonCorAcor 
+          :isACOR="false"
+          :isWizard="true"
           :currentContactData.sync="currentContactData"
           :savedContactData.sync="savedContactData"
         />
@@ -28,7 +29,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
-import Common from "./Common.vue";
+import CommonCorAcor from "./Common.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ContactDTO } from "@/api/models";
@@ -37,7 +38,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
-    Common,
+    CommonCorAcor,
   }
 })
 
@@ -52,9 +53,6 @@ export default class CorInfo extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      // EJY - Saving every time bc savedData contains the extended sys columns
-      // where currentData does not. Meets AC, but need to only check non-sys cols
-      // for diffs to determine whether to patch to SNOW
       if (this.hasChanged()) {
         await AcquisitionPackage.saveContactInfo(
           { data: this.currentContactData, type: "COR" }
