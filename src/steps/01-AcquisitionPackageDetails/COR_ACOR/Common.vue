@@ -97,7 +97,7 @@ import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import CorAcorContactInfoForm from "../components/CorAcorContactInfoForm.vue";
+import CorAcorContactInfoForm from "./ContactInfoForm.vue";
 import PersonCard from "./PersonCard.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
