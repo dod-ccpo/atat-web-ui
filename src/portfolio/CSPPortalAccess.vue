@@ -245,7 +245,6 @@ export default class CSPPortalAccess extends Vue {
   public maxPages = Math.ceil(this.emails.length/this.maxPerPage)
   public startingNumber = (this.page - 1) * this.maxPerPage + 1;
 
-  @Watch("this.emails")
   get endingNumber(): number {
     const ending = this.page * this.maxPerPage
     if(ending > this.tableData.length){
