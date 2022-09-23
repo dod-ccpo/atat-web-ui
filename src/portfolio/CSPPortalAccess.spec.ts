@@ -75,6 +75,16 @@ describe("Testing CSPPortalAccess Component", () => {
     expect(result).toBe(true);
   })
 
+  it("testing openLearnMoreDrawer() ",async ()=>{
+    const result =await wrapper.vm.$data.modalDrawerIsOpen
+    expect(result).toBe(false);
+
+    wrapper.vm.openLearnMoreDrawer()
+    Vue.nextTick(() => {
+      expect(result).toBe(true);
+    })
+  })
+
   it("testing okDisabled()- correct email ",async ()=>{
     wrapper.setData({
       emailIsValid: true,
