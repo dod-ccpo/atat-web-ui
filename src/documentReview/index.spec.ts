@@ -4,14 +4,52 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import DocumentReview from "@/documentReview/Index.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import validators from "../plugins/validation";
+import ContactData from "@/store/contactData";
+import { ContactDTO, MilitaryRankDTO } from "@/api/models";
 
 describe("Testing index Component", () => {
   const localVue = createLocalVue();
   localVue.use(Vuetify);
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
+  localVue.use(validators);
 
   beforeEach(() => {
+
+    jest.spyOn(ContactData, 'LoadMilitaryBranches').mockImplementation(
+      ()=>Promise.resolve([{ name: "foo", label: "bar", value: "baz"}]));
+
+    const rank: MilitaryRankDTO = { name: "this", grade: "that", branch: "other" };     
+    jest.spyOn(ContactData, 'GetMilitaryRank').mockReturnValue(
+      new Promise(resolve => resolve(rank))
+    );
+  
+    /* eslint-disable camelcase */
+
+    const contact: ContactDTO = {
+      type: "",
+      role: "",
+      rank_components: "",
+      salutation: "",
+      first_name: "",
+      last_name: "",
+      middle_name: "",
+      formal_name: "",
+      suffix: "",
+      title: "",
+      phone: "",
+      phone_extension: "",
+      email: "",
+      grade_civ: "",
+      dodaac: "",
+      can_access_package: "",
+      manually_entered: "",    
+    }
+
+    jest.spyOn(AcquisitionPackage, 'loadContactInfo').mockImplementation(
+      () => Promise.resolve(contact)); 
+
     jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
       ()=>Promise.resolve({
         "scope": "scope goes here",
@@ -98,9 +136,9 @@ describe("Testing index Component", () => {
     });
 
     await wrapper.vm.saveOnLeave();
-    // expect(await wrapper.vm.$data.docDataSectionsToSave.some(
-    //   (section: string) => section === "projectOverview"
-    // )).toBe(true)
+    expect(await wrapper.vm.$data.docDataSectionsToSave.some(
+      (section: string) => section === "projectOverview"
+    )).toBe(true)
   })
 
   it("saveOnLeave() - trigger switch() default", async()=>{
@@ -115,9 +153,5 @@ describe("Testing index Component", () => {
     const _saveOnLeave = await wrapper.vm.saveOnLeave();
     expect(_saveOnLeave).toBe(true)
   })
-
-
-
-
 
 });
