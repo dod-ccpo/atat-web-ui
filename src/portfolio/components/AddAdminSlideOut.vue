@@ -13,7 +13,7 @@
     <p>
       Upon submission, ATAT will send your administrator’s information to the CSP to create
       a new user account or connect an existing account to your portfolio’s resources.
-      This process could take up to<span class="error--text">XX hours</span>.
+      This process could take up to <span class="error--text">XX hours</span>.
     </p>
     <p>
       Once processed, your administrator will receive an email from the CSP with login credentials.
