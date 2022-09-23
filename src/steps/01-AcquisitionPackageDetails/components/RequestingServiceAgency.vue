@@ -37,7 +37,7 @@ export default class RequestingServiceAgency extends Vue {
   @Prop({ default: "title goes here" }) private helpText!: string;
   @Prop({ default: true }) private isForm!: boolean;
   @PropSync("rules") private _rules!: "";
-  @PropSync("selectedServiceOrAgency", {default: emptySelectData}) 
+  @PropSync("selectedServiceOrAgency", {default: ()=> emptySelectData}) 
     private _selectedServiceOrAgency!: SelectData;
 
   private emptySelectData: SelectData = { text: "", value: "" };
