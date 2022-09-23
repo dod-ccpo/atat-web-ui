@@ -1,17 +1,25 @@
 <template>
-  <ATATAutoComplete
-    :id="id"
-    :label="label"
-    :rules="rules"
-    class="_input-max-width mb-2"
-    :label-sr-only="false"
-    titleKey="text"
-    :searchFields="['text']"
-    :items="serviceOrAgencyData"
-    :selectedItem.sync="_selectedServiceOrAgency"
-    placeholder="Find your service/agency"
-    icon="arrow_drop_down"
-  />
+  <div v-if="isForm">
+    <ATATAutoComplete
+      :id="id"
+      :label="label"
+      :rules="rules"
+      class="_input-max-width mb-2"
+      :label-sr-only="false"
+      titleKey="text"
+      :searchFields="['text']"
+      :items="serviceOrAgencyData"
+      :selectedItem.sync="_selectedServiceOrAgency"
+      placeholder="Find your service/agency"
+      icon="arrow_drop_down"
+    />
+  </div>
+  <div v-else>
+    <dl>
+      <dt>Agency:</dt>
+      <dd>{{ selectedServiceAgencyText }}</dd>
+    </dl>
+  </div>
 </template>
 
 <script lang="ts">
@@ -37,13 +45,16 @@ export default class RequestingServiceAgency extends Vue {
   @Prop({ default: "title goes here" }) private helpText!: string;
   @Prop({ default: true }) private isForm!: boolean;
   @PropSync("rules") private _rules!: "";
-  @PropSync("selectedServiceOrAgency", {default: ()=> emptySelectData}) 
-    private _selectedServiceOrAgency!: SelectData;
+  @PropSync("selectedServiceOrAgency", { default: () => emptySelectData })
+  private _selectedServiceOrAgency!: SelectData;
 
   private emptySelectData: SelectData = { text: "", value: "" };
   private DisaOrgName = "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
   private serviceOrAgencyData: SelectData[] = [];
 
+  public get selectedServiceAgencyText(): string {
+    return this._selectedServiceOrAgency.text || "";
+  }
 
   public async loadOnEnter(): Promise<void> {
     this.serviceOrAgencyData = convertSystemChoiceToSelect(
@@ -51,7 +62,7 @@ export default class RequestingServiceAgency extends Vue {
     );
   }
 
-  public async mounted():Promise<void> {
+  public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
 }
