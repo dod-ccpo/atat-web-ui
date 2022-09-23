@@ -135,7 +135,7 @@
               id="AdministratorDODID"
               label="Administrator’s DoD ID"
               :tooltipText="toolTipText"
-              :value.sync="doDID"
+              :value.sync="dodID"
               class="mb-15"
               width="416"
               :mask="['^[0-9]{10}$']"
@@ -193,7 +193,7 @@ export default class CSPPortalAccess extends Vue {
   public invalidEmailMessage = "";
   public showErrorMessage = false;
   public adminEmail = "";
-  public doDID = "";
+  public dodID = "";
   public emailIsValid = false;
   public formIsValid = false;
 
@@ -249,7 +249,7 @@ export default class CSPPortalAccess extends Vue {
 
   }
   get okDisabled(): boolean {
-    if(this.emailIsValid && this.formIsValid && this.doDID){
+    if(this.emailIsValid && this.formIsValid && this.dodID){
       return false
     }
     return true
@@ -299,7 +299,7 @@ export default class CSPPortalAccess extends Vue {
     }
     this.tableData.unshift(member)
     this.adminEmail = "";
-    this.doDID = "";
+    this.dodID = "";
     this.emailIsValid = false;
     this.$refs.form.reset();
     this.$refs.form.resetValidation();

@@ -11,8 +11,8 @@ describe("Testing CSPPortalAccess Component", () => {
   localVue.use(validators);
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
-  beforeEach(() => {
+  let form: Wrapper<DefaultProps & Vue, Element>
+  beforeEach( async () => {
     vuetify = new Vuetify();
     wrapper = mount(CSPPortalAccess, {
       localVue,
@@ -20,7 +20,6 @@ describe("Testing CSPPortalAccess Component", () => {
       propsData:{
         portfolioCSP: "Azure"
       },
-
     });
   });
 
@@ -41,6 +40,13 @@ describe("Testing CSPPortalAccess Component", () => {
   it("testing validateEmail()- with invalid email domain",async ()=>{
     wrapper.setData({
       adminEmail: "test@wrong.domain"
+    })
+    const result =await wrapper.vm.validateEmail()
+    expect(result).toBe(false);
+  })
+  it("testing validateEmail()- with invalid email domain",async ()=>{
+    wrapper.setData({
+      adminEmail: "testemailk"
     })
     const result =await wrapper.vm.validateEmail()
     expect(result).toBe(false);
@@ -68,6 +74,15 @@ describe("Testing CSPPortalAccess Component", () => {
     })
     const result =await wrapper.vm.validateEmail()
     expect(result).toBe(true);
+  })
+
+  it("testing okDisabled()- correct email ",async ()=>{
+    wrapper.setData({
+      emailIsValid: true,
+      formIsValid: true,
+      dodID: true,
+    })
+    expect(wrapper.exists()).toBe(true);
   })
 
 })
