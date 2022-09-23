@@ -93,6 +93,27 @@
         </div>
 
         <div class="_comment-wrap">
+          <CommentButton id="IncumbentContractorName" />
+            <IncumbentContractorName
+                :value.sync="_docData.currentContract.incumbent_contractor_name"
+            />
+        </div>
+
+        <div class="_comment-wrap">
+          <CommentButton id="ContractNumber" />
+          <ContractNumber
+              :value.sync="_docData.currentContract.contract_number"
+          />
+        </div>
+
+        <div class="_comment-wrap">
+          <CommentButton id="TaskOrderNumber" />
+          <TaskOrderNumber
+              :value.sync="_docData.currentContract.task_delivery_order_number"
+          />
+        </div>
+
+        <div class="_comment-wrap">
           <CommentButton id="FairOpportunity" />
           <FairOppExceptions 
             legend="Based on your market research, do any of the following exceptions to fair 
@@ -129,23 +150,28 @@ import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
 import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
 
 // Step 3 Components
+import ContractNumber from "@/steps/03-Background/components/ContractNumber.vue";
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
-
+import IncumbentContractorName from "@/steps/03-Background/components/IncumbentContractorName.vue";
 import { DocReviewData } from "types/Global";
+import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 
 @Component({
   components: {
     ATATSVGIcon,
     CommentButton,
     CommonCorAcor,
+    ContractNumber,
     CurrentContractOptions,
     DoDAAC,
     EmergencyDeclarationSupport,
     FairOppExceptions,
+    IncumbentContractorName,
     PageHead,
     ProjectScope,
     ProjectTitle,
+    TaskOrderNumber
   },
 })
 
