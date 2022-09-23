@@ -51,6 +51,19 @@
                 legend="Do you have a current contract for this effort?"
                 :selectedOption="docData.currentContract.current_contract_exists"
               />
+              <IncumbentContractorName
+                  v-if="docData.currentContract.current_contract_exists === 'YES'"
+                  :isForm="isForm"
+                  :value.sync="docData.currentContract.incumbent_contractor_name"
+              />
+              <ContractNumber v-if="docData.currentContract.current_contract_exists === 'YES'"
+                  :isForm="isForm"
+                  :value.sync="docData.currentContract.contract_number"
+              />
+              <TaskOrderNumber v-if="docData.currentContract.current_contract_exists === 'YES'"
+                  :isForm="isForm"
+                  :value.sync="docData.currentContract.task_delivery_order_number"
+              />
             </li>
             <li>
               <FairOppExceptions 
@@ -61,21 +74,6 @@
               />
             </li>
           </ol>
-
-          <IncumbentContractorName
-              :isForm="isForm"
-              :value.sync="docData.currentContract.incumbent_contractor_name"
-          />
-
-          <ContractNumber
-              :isForm="isForm"
-              :value.sync="docData.currentContract.contract_number"
-          />
-
-          <TaskOrderNumber
-              :isForm="isForm"
-              :value.sync="docData.currentContract.task_delivery_order_number"
-          />
         </div>
       </div>
     </div>

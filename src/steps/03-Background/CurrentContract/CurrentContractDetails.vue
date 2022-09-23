@@ -38,16 +38,6 @@
              was only a contract, not an order placed under a contract."
           />
 
-<!--          <ATATTextField
-            id="TaskDeliveryOrderNumber"
-            :value.sync="taskDeliveryOrderNumber"
-            :optional="true"
-            class="_input-max-width mb-10"
-            label="Task/Delivery order number"
-            tooltipText="Leave this field empty if your previous acquisition
-             was only a contract, not an order placed under a contract."
-          />-->
-
           <!-- NOTE: max date to be determined -->
           <ATATDatePicker
             id="Expiration"
