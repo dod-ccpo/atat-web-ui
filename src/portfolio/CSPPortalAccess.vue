@@ -80,16 +80,15 @@
           <template v-slot:footer>
             <div class="_table-pagination">
               <span class="mr-11 font-weight-400 font-size-14">
-              Showing 1-{{maxPerPage}} of {{tableData.length}}
+              Showing {{startingNumber}}-{{endingNumber}} of {{tableData.length}}
             </span>
               <v-pagination
                 v-model="page"
-                :length="2"
+                :length="maxPages"
                 circle
               ></v-pagination>
             </div>
           </template>
-
         </v-data-table>
       </div>
     </div>
@@ -168,7 +167,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import CSPCard from "@/portfolio/components/CSPCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import format from "date-fns/format"
@@ -226,7 +225,6 @@ export default class CSPPortalAccess extends Vue {
   public tableData: {
     email:string,status:string,createdBy:string,created:string
   }[] = [];
-  public maxPerPage = 10;
   public emails = [
     "tyrone.brown@example.mil",
     "kim.bryant@example.mil",
@@ -242,6 +240,19 @@ export default class CSPPortalAccess extends Vue {
     "Sam Something",
     "Carl Contractor",
   ]
+
+  public maxPerPage = 10;
+  public maxPages = Math.ceil(this.emails.length/this.maxPerPage)
+  public startingNumber = (this.page - 1) * this.maxPerPage + 1;
+
+  @Watch("this.emails")
+  get endingNumber(): number {
+    const ending = this.page * this.maxPerPage
+    if(ending > this.tableData.length){
+      return this.tableData.length
+    }
+    return ending
+  }
   public createTableData(): void {
     for(let i = 0; i < this.emails.length; i++){
       const admin = {
