@@ -59,7 +59,7 @@
 
               <div v-if="hasACOR">
                 <strong id="ACORInfo" class="mb-4 mt-10 d-block">
-                  Alternate TO COR nominee, if applicable
+                  Alternate TO COR nominee
                 </strong>
                 <div aria-describedby="ACORInfo">
                   <CommonCorAcor
