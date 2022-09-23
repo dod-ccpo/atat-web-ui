@@ -37,7 +37,7 @@
             <h2 class="form-section-heading">
               1. Tell us more about your organization
             </h2>
-            <ATATAutoComplete
+            <!-- <ATATAutoComplete
               id="DisaOrg"
               v-show="
                 selectedServiceOrAgency &&
@@ -53,6 +53,16 @@
               :rules="[$validators.required('Please select your DISA Organization.')]"
               placeholder="Find your DISA organization"
               icon="arrow_drop_down"
+            /> -->
+
+            <DisaOrganization
+              id="DisaOrg"
+              v-show="
+                selectedServiceOrAgency &&
+                selectedServiceOrAgency.value === this.DisaOrgName
+              "
+              :selectedDisaOrg.sync="selectedDisaOrg"
+              :rules="[$validators.required('Please select your DISA Organization.')]"
             />
 
             <ATATTextField
@@ -186,6 +196,7 @@ import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
+import DisaOrganization from "./components/DisaOrganization.vue";
 
 
 @Component({
@@ -194,6 +205,7 @@ import ContactData from "@/store/contactData";
     ATATAutoComplete,
     ATATDialog,
     ATATTextField,
+    DisaOrganization,
   },
 })
 
