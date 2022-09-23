@@ -68,12 +68,8 @@ describe("Testing index Component", () => {
           currentContract: {
             current_contract_exists: "true"
           },
-          cor: {
-            dodaac: "123456"
-          },
-          acor: {
-            dodaac: "987654"
-          },
+          cor: contact,
+          acor: contact,
         }
       }
     });
@@ -83,6 +79,20 @@ describe("Testing index Component", () => {
   it("renders successfully", async () => {
     expect(await wrapper.exists()).toBe(true);
   });
+
+  // it("sets COR dodaac value", async () => {
+  //   wrapper.vm.$data._docData = {};
+  //   wrapper.vm.$data._docData.cor = {};
+  //   wrapper.vm.$data._docData.cor.dodaac = "bar";
+  //   await wrapper.vm.dodaacChange("foo", "COR");
+  //   expect(await wrapper.vm.$data._docData.cor.dodaac).toBe("foo");
+  // });
+
+  // it("sets ACOR dodaac value", async () => {
+  //   await wrapper.vm.dodaacChange("foo", "ACOR");
+  //   expect(wrapper.vm.$data._docData.acor.dodaac).toBe("foo");
+  // });
+
 
 })
 
