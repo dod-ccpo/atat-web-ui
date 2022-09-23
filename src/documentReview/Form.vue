@@ -29,6 +29,14 @@
           />
         </div>
 
+        <div class="_comment-wrap">
+          <CommentButton id="DisaOrg" />
+          <DisaOrganization
+            label="DISA Organization"
+            :projectScope.sync="_docData.organization.disa_organization"
+          />
+        </div>
+
         <h2 class="mb-5 ml-4">Part II. Requirement Information</h2>
 
         <div class="_comment-wrap">
@@ -65,6 +73,7 @@ import EmergencyDeclarationSupport
   from "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue";
 import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue";
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
+import DisaOrganization from "@/steps/01-AcquisitionPackageDetails/components/DisaOrganization.vue";
 
 // Step 2 Components
 import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
@@ -85,6 +94,7 @@ import { DocReviewData } from "types/Global";
     PageHead,
     ProjectScope,
     ProjectTitle,
+    DisaOrganization
   },
 })
 

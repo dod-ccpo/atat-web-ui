@@ -37,23 +37,6 @@
             <h2 class="form-section-heading">
               1. Tell us more about your organization
             </h2>
-            <!-- <ATATAutoComplete
-              id="DisaOrg"
-              v-show="
-                selectedServiceOrAgency &&
-                selectedServiceOrAgency.value === this.DisaOrgName
-              "
-              class="_input-max-width mb-10"
-              label="DISA Organization"
-              :label-sr-only="false"
-              titleKey="text"
-              :searchFields="['text']"
-              :items="disaOrgData"
-              :selectedItem.sync="selectedDisaOrg"
-              :rules="[$validators.required('Please select your DISA Organization.')]"
-              placeholder="Find your DISA organization"
-              icon="arrow_drop_down"
-            /> -->
 
             <DisaOrganization
               id="DisaOrg"
