@@ -644,10 +644,9 @@ Cypress.Commands.add("enterContactInformation", (contactInformation, prefix) => 
       : commonCorAcor.toolTipTxtDodaacACOR;
 
     console.log("TOOLTIP SELECTOR", selector);
-    // EJY HERE! 
     cy.hoverToolTip(tooltipButton, tooltipText, expectedText);
-    //Assert the labels
 
+    //Assert the labels
     selector = prefixId(commonCorAcor.dodaacLabel, prefix);
     cy.textExists(selector, " DoD Activity Address Code (DoDAAC) ");
     const accessEditText = "Does this individual need access to help" +
@@ -657,8 +656,8 @@ Cypress.Commands.add("enterContactInformation", (contactInformation, prefix) => 
       cy.log(actualTxt);
       const formattedTxt = cleanText(actualTxt)
       expect(formattedTxt).equal(accessEditText);
-
     });
+
     //enter DoDAAC
     selector = prefixId(commonCorAcor.dodaacTxtBox, prefix);
     cy.enterTextInTextField(selector, contactInformation.dodText);
