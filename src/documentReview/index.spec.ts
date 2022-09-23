@@ -63,10 +63,45 @@ describe("Testing index Component", () => {
       ()=>Promise.resolve()
     );
 
+    jest.spyOn(AcquisitionPackage, 'saveContactInfo').mockImplementation(
+      ()=>Promise.resolve()
+    );
+
     vuetify = new Vuetify();
     wrapper = mount(DocumentReview, {
       localVue,
       vuetify,
+      propsData: {
+        docData: {
+          projectOverview: {
+            title: "",
+            scope: "",
+            emergency_declaration: "",
+          },
+          organization: {},
+          fairOpportunity: {
+            exception_to_fair_opportunity: "",
+          },
+          currentContract: {},
+          cor: contact,    
+          acor: contact    
+        },
+        savedDocData: {
+          projectOverview: {
+            title: "",
+            scope: "",
+            emergency_declaration: "",
+          },
+          organization: {},
+          fairOpportunity: {
+            exception_to_fair_opportunity: "",
+          },
+          currentContract: {},
+          cor: contact,    
+          acor: contact    
+        }
+  
+      }
     });
 
   });
@@ -105,41 +140,50 @@ describe("Testing index Component", () => {
     expect(await wrapper.vm.$data.docData.projectOverview.emergency_declaration ).toBe("true");
   })
 
-  it("saveOnLeave() - compare a diff $data.docData and $doc.savedDocData " +
+  it("saveOnLeave() - projectOverview - compare a diff $data.docData and $doc.savedDocData " +
     "to ensure section is in $data.docDataSectonsToSave", async()=>{
-    /* eslint-disable camelcase */
-    await wrapper.setData({
-      docData: {
-        projectOverview: {
-          title: "a title",
-          scope: "some text",
-          emergency_declaration: "yes",
-        },
-        organization: {},
-        fairOpportunity: {
-          exception_to_fair_opportunity: "",
-        },
-        currentContract: {},    
-      },
-      savedDocData: {
-        projectOverview: {
-          title: "a different title",
-          scope: "other text",
-          emergency_declaration: "no",
-        },
-        organization: {},
-        fairOpportunity: {
-          exception_to_fair_opportunity: "",
-        },
-        currentContract: {},
-      }
-    });
+    wrapper.vm.$data.docData.projectOverview.title = "foo";
+    wrapper.vm.$data.savedDocData.projectOverview.title = "bar";
 
     await wrapper.vm.saveOnLeave();
     expect(await wrapper.vm.$data.docDataSectionsToSave.some(
       (section: string) => section === "projectOverview"
     )).toBe(true)
   })
+
+  it("saveOnLeave() - COR - compare a diff $data.docData and $doc.savedDocData " +
+  "to ensure section is in $data.docDataSectonsToSave", async()=>{
+    wrapper.vm.$data.docData.cor.dodaac = "foo";
+    wrapper.vm.$data.savedDocData.cor.dodaac = "bar";
+
+    await wrapper.vm.saveOnLeave();
+    expect(await wrapper.vm.$data.docDataSectionsToSave.some(
+      (section: string) => section === "cor"
+    )).toBe(true)
+  })
+  it("saveOnLeave() - ACOR - compare a diff $data.docData and $doc.savedDocData " +
+  "to ensure section is in $data.docDataSectonsToSave", async()=>{
+    wrapper.vm.$data.docData.acor.dodaac = "foo";
+    wrapper.vm.$data.savedDocData.acor.dodaac = "bar";
+
+    await wrapper.vm.saveOnLeave();
+    expect(await wrapper.vm.$data.docDataSectionsToSave.some(
+      (section: string) => section === "acor"
+    )).toBe(true)
+  })
+
+
+  it("saveOnLeave() - COR - compare a diff $data.docData and $doc.savedDocData " +
+  "to ensure section is in $data.docDataSectonsToSave", async()=>{
+    wrapper.vm.$data.docData.cor.dodaac = "foo";
+    wrapper.vm.$data.savedDocData.cor.dodaac = "bar";
+
+    await wrapper.vm.saveOnLeave();
+    expect(await wrapper.vm.$data.docDataSectionsToSave.some(
+      (section: string) => section === "cor"
+    )).toBe(true)
+  })
+
 
   it("saveOnLeave() - trigger switch() default", async()=>{
     await wrapper.setData({
