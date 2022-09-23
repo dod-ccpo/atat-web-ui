@@ -1,4 +1,4 @@
-import { bootstrapMockApis,randomNumber,randomString} from "../../../helpers";
+import { bootstrapMockApis,randomNumber,randomString, prefixId} from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import contact from "../../../selectors/contact.sel";
 import commonCorAcor from "../../../selectors/commonCorAcor.sel";
@@ -89,6 +89,7 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
 
     //manually enter the information
     cy.manuallyEnterContactInformation(
+      "ACOR_",
       " Manually enter your ACOR’s contact information ",
       " Your ACOR’s Contact Information ",
       " What role best describes your ACOR’s affiliation with the DoD? ",
@@ -107,13 +108,14 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
       cor: "cor",
       dodText:"D0DCCA"
     };
-    cy.enterContactInformation(contactDetails);
+    cy.enterContactInformation(contactDetails, "ACOR_");
+    const phoneInputSelector = prefixId(commonCorAcor.phoneInputBox, "ACOR_");
     cy.enterPhoneNumber(
       contact.phoneControlIcon,
       contact.phoneDropdown,
       "Cana",
       contact.countryListItems,
-      commonCorAcor.phoneInputBox,
+      phoneInputSelector,
       "56987412564");
 
     //radio butttons        
@@ -181,71 +183,94 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
       " Manually enter your ACOR’s contact information ")
       .click();
     cy.findElement(commonCorAcor.contactAffRadioGroupTxt).scrollIntoView();
-    //Validation message for  COR’s role
+    //Validation message for ACOR’s role
     cy.findElement(contact.militaryRadioBtn).tab().tab()
       .then(() => {
         cy.checkErrorMessage(commonCorAcor.contactRoleError, "Please enter your ACOR’s role.");
       });
     cy.findElement(contact.militaryRadioBtn).click({ force: true });
+
     //Validation message for Service Agency
-    cy.findElement(commonCorAcor.serviceBranchDropdown).focus()
+    let selector, errorSelector;
+    const prefix = "ACOR_";
+    const branchDropdown = prefixId(commonCorAcor.serviceBranchDropdown, prefix);
+
+    cy.findElement(branchDropdown).focus()
       .tab().then(() => {
+        selector = prefixId(commonCorAcor.serviceBranchError, prefix);
         cy.checkErrorMessage(
-          commonCorAcor.serviceBranchError,
+          selector,
           "Please select your ACOR’s service branch.");
       })
         
-    cy.findElement(commonCorAcor.serviceBranchDropdown).click({ force: true });
-    cy.findElement(commonCorAcor.serviceBranchDropdownList).first().click();
+    cy.findElement(branchDropdown).click({ force: true });
+    selector = prefixId(commonCorAcor.serviceBranchDropdownList, prefix);
+    cy.findElement(selector).first().click();
     //Validation message for Rank
+    selector = prefixId(commonCorAcor.rankInput, prefix);
+    errorSelector = prefixId(commonCorAcor.rankError, prefix);
     cy.verifyRequiredDropdown(
-      commonCorAcor.rankInput,
-      commonCorAcor.rankError,
+      selector,
+      errorSelector,
       "Please select your ACOR’s rank."); 
     // FirstName is blank
+    selector = prefixId(contact.fNameTxtBox, prefix);
+    errorSelector = prefixId(contact.fNameError, prefix);
     cy.verifyRequiredInput(
-      contact.fNameTxtBox,
-      contact.fNameError,
-      "Please enter your ACOR’s first name.");
+      selector,
+      errorSelector,
+      "Please enter your ACOR’s first name."
+    );
     //LastName is blank
+    selector = prefixId(contact.lNameTxtBox, prefix);
+    errorSelector = prefixId(contact.lNameError, prefix);
     cy.verifyRequiredInput(
-      contact.lNameTxtBox,
-      contact.lNameError,
-      "Please enter your ACOR’s last name.");
+      selector,
+      errorSelector,
+      "Please enter your ACOR’s last name."
+    );
     //Phone Number field is blank
-    cy.findElement(contact.lNameTxtBox).tab().tab().tab().tab().then(() => {
-      cy.checkErrorMessage(
-        contact.phoneError,
-        "Please enter your ACOR’s phone number");
-    });
+    const phoneSelector = prefixId(commonCorAcor.phoneInputBox, prefix);
+    const phoneErrorSelector = contact.phoneError;
+    cy.verifyRequiredInput(
+      phoneSelector,
+      phoneErrorSelector,
+      "Please enter your ACOR’s phone number"
+    );
     //US phone Number is not in standard format
     const phoneNumber = randomNumber(8)
-    cy.findElement(contact.lNameTxtBox).tab().tab().tab().type(phoneNumber)
-      .focus().blur({ force: true })
+    cy.findElement(phoneSelector).type(phoneNumber)
+      .blur({ force: true })
       .then(() => {
         cy.checkErrorMessage(
-          contact.phoneError,
-          "Please enter a number using the format for  United States (e.g., 999-999-9999)."
-        );
+          phoneErrorSelector,
+          "Please enter a number using the format for  United States (e.g., 999-999-9999).");
       });
     //email address is blank
+    const emailSelector = prefixId(commonCorAcor.emailTxtBox, prefix);
+    const emailErrorSelector = prefixId(commonCorAcor.emailError, prefix);
     cy.verifyRequiredInput(
-      commonCorAcor.emailTxtBox,
-      commonCorAcor.emailError,
-      "Please enter your ACOR’s email address.");
-    //email in standard email format
-    const email = randomString(5)+"@test.com"
-    cy.findElement(commonCorAcor.emailTxtBox).should("be.visible").clear()
+      emailSelector,
+      emailErrorSelector,
+      "Please enter your ACOR’s email address."
+    );
+    // email in standard email format
+    const email = randomString(5) + "@test.com"
+    cy.findElement(emailSelector).should("be.visible").clear()
       .type(email).blur({ force: true }).then(() => {
         cy.checkErrorMessage(
-          commonCorAcor.emailError,
-          "Please use your .mil or .gov email address.");
+          emailErrorSelector,
+          "Please use your .mil or .gov email address."
+        );
       });
     //DoDAAC field is blank 
+    const dodaacSelector = prefixId(commonCorAcor.dodaacTxtBox, prefix);
+    const dodaacErrorSelector = prefixId(commonCorAcor.dodaacError, prefix);
     cy.verifyRequiredInput(
-      commonCorAcor.dodaacTxtBox,
-      commonCorAcor.dodaacError,
-      "Please enter your ACOR’s 6-character DoDAAC.");
+      dodaacSelector,
+      dodaacErrorSelector,
+      "Please enter your ACOR’s 6-character DoDAAC."
+    );
     
   });
 });      
