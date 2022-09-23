@@ -1,6 +1,8 @@
 module.exports = {
-  yesRadioOption:"#Radio_Yes",
-  noRadioOpion: "#Radio_No",
+  existYesRadioOption:"#Radio_Yes",
+  existNoRadioOption: "#Radio_No",
+  currentYesRadioOption:"#Radio_YesCurrentContract",
+  currentNoRadioOption: "#Radio_NoCurrentContract",
   activeRadioOption: "#currentContractOptions_radio_group_control .v-item--active",
   radioOptionError: "#currentContractOptions_radio_group_control .field-error",
   currentContractOptionsTxt: ".copy-max-width p",
