@@ -35,7 +35,7 @@ export default class CurrentContractOptions extends Vue {
   private currentContractOptions: RadioButton[] = [
     {
       id: "Yes_CurrentContract",
-      label: this.isWizard ? "Yes. There is a previous contract for this effort." : "Yes.",
+      label: this.isWizard ? "Yes. There is a current contract for this effort." : "Yes.",
       value: "YES",
       readonly: !this.isForm,
     },
