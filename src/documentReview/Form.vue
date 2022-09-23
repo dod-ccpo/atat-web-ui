@@ -21,19 +21,20 @@
           />
         </div>
         
-        <div class="_comment-wrap">
-          <CommentButton id="ProjectScope" />
-          <RequestingServiceAgency
-            label="What service or agency is this contracting effort for?"
-            :selectedServiceOrAgency.sync="_docData.organization.service_agency"
-          />
-        </div>
 
           <div class="_comment-wrap">
           <CommentButton id="SelectedServiceOrAgency" />
           <ProjectScope
             label="What is the scope of your requirement?"
             :projectScope.sync="_docData.projectOverview.scope"
+          />
+        </div>
+
+        <div class="_comment-wrap">
+          <CommentButton id="ProjectScope" />
+          <RequestingServiceAgency
+            label="What service or agency is this contracting effort for?"
+            :selectedServiceOrAgency.sync="_docData.organization.service_agency"
           />
         </div>
 

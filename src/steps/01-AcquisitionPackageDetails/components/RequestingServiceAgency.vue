@@ -51,10 +51,7 @@ export default class RequestingServiceAgency extends Vue {
   private emptySelectData: SelectData = { text: "", value: "" };
   private DisaOrgName = "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
   private serviceOrAgencyData: SelectData[] = [];
-
-  public get selectedServiceAgencyText(): string {
-    return this._selectedServiceOrAgency.text || "";
-  }
+  private  selectedServiceAgencyText = "";
 
   public async loadOnEnter(): Promise<void> {
     this.serviceOrAgencyData = convertSystemChoiceToSelect(
@@ -64,6 +61,14 @@ export default class RequestingServiceAgency extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+
+    const organizationObj = this.serviceOrAgencyData.find(
+      (obj) => obj.value === this._selectedServiceOrAgency
+    );
+
+    this.selectedServiceAgencyText = organizationObj
+      ? organizationObj.text || ""
+      : "";
   }
 }
 </script>
