@@ -37,7 +37,7 @@
         >
           <!-- eslint-disable vue/valid-v-slot -->
           <template v-slot:body="props">
-            <tbody name="expand" is="transition-group">
+            <tbody name="expand" :is="transitionGroup">
             <template >
               <tr
                 class="row-item"
@@ -84,7 +84,7 @@
             </span>
               <v-pagination
                 v-model="page"
-                :length="maxPages"
+                :length="numberOfPages"
                 circle
               ></v-pagination>
             </div>
@@ -115,7 +115,7 @@
           <div class="mb-10">
             <ATATTextField
               id="AdministratorEmail"
-              label="Adminstrator's email address"
+              label="Administrator’s email address"
               helpText="Must use a .mil or .gov email address."
               width="416"
               :class="{'error--text':showErrorMessage}"
@@ -206,7 +206,7 @@ export default class CSPPortalAccess extends Vue {
   public dodID = "";
   public emailIsValid = false;
   public formIsValid = false;
-
+  public transitionGroup = ""
 
   public tableHeaders: Record<string, string>[] = [
     { text: "Administrator email", value: "email" },
@@ -242,8 +242,11 @@ export default class CSPPortalAccess extends Vue {
   ]
 
   public maxPerPage = 10;
-  public maxPages = Math.ceil(this.emails.length/this.maxPerPage)
-  public startingNumber = (this.page - 1) * this.maxPerPage + 1;
+  public numberOfPages = Math.ceil(this.emails.length/this.maxPerPage)
+  @Watch("tableData")
+  public tableDataUpdated(): void {
+    this.numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage)
+  }
 
   get endingNumber(): number {
     const ending = this.page * this.maxPerPage
@@ -251,6 +254,10 @@ export default class CSPPortalAccess extends Vue {
       return this.tableData.length
     }
     return ending
+  }
+  get startingNumber():number {
+    const starting = (this.page - 1) * this.maxPerPage + 1
+    return starting
   }
   public createTableData(): void {
     for(let i = 0; i < this.emails.length; i++){
@@ -280,12 +287,11 @@ export default class CSPPortalAccess extends Vue {
   }
 
   public toolTipText = `
-    <p>
-        This 10-digit number is printed on the back of your administrator's Common Access Card (CAC)
-        . You may also ask your administrator to log into
+        This 10-digit number is printed on the back of your administrator's
+        Common Access Card (CAC). You may also ask your administrator to log into
          <span class="text-decoration-underline">DoD ID Card Office Online</span>
          and locate it under "My Profile."
-    </p>`
+`
 
   public statusImg = {
     "Failed":{
@@ -362,8 +368,9 @@ export default class CSPPortalAccess extends Vue {
     return isValid;
   }
   
-  public loadOnEnter(): void {
-    this.createTableData();
+  public async loadOnEnter(): Promise<void> {
+    await this.createTableData();
+    this.transitionGroup = "transition-group";
   }
   public  mounted(): void {
     this.loadOnEnter();

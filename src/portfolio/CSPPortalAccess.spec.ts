@@ -11,7 +11,6 @@ describe("Testing CSPPortalAccess Component", () => {
   localVue.use(validators);
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  let form: Wrapper<DefaultProps & Vue, Element>
   beforeEach( async () => {
     vuetify = new Vuetify();
     wrapper = mount(CSPPortalAccess, {
