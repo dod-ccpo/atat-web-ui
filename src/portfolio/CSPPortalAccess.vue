@@ -156,6 +156,7 @@
 </template>
 
 <style >
+   .expand-move,
   .expand-enter-active, .expand-leave-active {
      transition: all 1s ease;
 }
