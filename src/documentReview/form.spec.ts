@@ -7,6 +7,7 @@ import validators from "../plugins/validation";
 import ContactData from "@/store/contactData";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ContactDTO, MilitaryRankDTO } from "@/api/models";
+import { DocReviewData } from "types/Global";
 Vue.use(Vuetify);
 
 describe("Testing index Component", () => {
@@ -16,6 +17,43 @@ describe("Testing index Component", () => {
   localVue.use(validators);
 
   /* eslint-disable camelcase */
+  const contact: ContactDTO = {
+    type: "",
+    role: "",
+    rank_components: "",
+    salutation: "",
+    first_name: "",
+    last_name: "",
+    middle_name: "",
+    formal_name: "",
+    suffix: "",
+    title: "",
+    phone: "",
+    phone_extension: "",
+    email: "",
+    grade_civ: "",
+    dodaac: "",
+    can_access_package: "",
+    manually_entered: "",    
+  };
+
+  const docData: DocReviewData = {
+    projectOverview:{
+      title: "title",
+      scope: "scope",
+      emergency_declaration: "Yes"
+    },
+    organization: {},
+    fairOpportunity: {
+      exception_to_fair_opportunity: "",
+    },      
+    currentContract: {
+      current_contract_exists: "true"
+    },
+    cor: contact,
+    acor: contact,
+  }
+
 
   beforeEach(async () => {
 
@@ -27,25 +65,7 @@ describe("Testing index Component", () => {
       new Promise(resolve => resolve(rank))
     );
 
-    const contact: ContactDTO = {
-      type: "",
-      role: "",
-      rank_components: "",
-      salutation: "",
-      first_name: "",
-      last_name: "",
-      middle_name: "",
-      formal_name: "",
-      suffix: "",
-      title: "",
-      phone: "",
-      phone_extension: "",
-      email: "",
-      grade_civ: "",
-      dodaac: "",
-      can_access_package: "",
-      manually_entered: "",    
-    }
+
 
     jest.spyOn(AcquisitionPackage, 'loadContactInfo').mockImplementation(
       () => Promise.resolve(contact)); 
@@ -55,22 +75,7 @@ describe("Testing index Component", () => {
       localVue,
       vuetify,
       propsData:{
-        docData:{
-          projectOverview:{
-            title: "title",
-            scope: "scope",
-            emergency_declaration: "Yes"
-          },
-          organization: {},
-          fairOpportunity: {
-            exception_to_fair_opportunity: "",
-          },      
-          currentContract: {
-            current_contract_exists: "true"
-          },
-          cor: contact,
-          acor: contact,
-        }
+        docData: docData
       }
     });
    
@@ -80,19 +85,15 @@ describe("Testing index Component", () => {
     expect(await wrapper.exists()).toBe(true);
   });
 
-  // it("sets COR dodaac value", async () => {
-  //   wrapper.vm.$data._docData = {};
-  //   wrapper.vm.$data._docData.cor = {};
-  //   wrapper.vm.$data._docData.cor.dodaac = "bar";
-  //   await wrapper.vm.dodaacChange("foo", "COR");
-  //   expect(await wrapper.vm.$data._docData.cor.dodaac).toBe("foo");
-  // });
+  it("sets COR dodaac value", async () => {
+    await wrapper.vm.dodaacChange("foo", "COR");
+    expect(await wrapper.vm.$props.docData.cor.dodaac).toBe("foo");
+  });
 
-  // it("sets ACOR dodaac value", async () => {
-  //   await wrapper.vm.dodaacChange("foo", "ACOR");
-  //   expect(wrapper.vm.$data._docData.acor.dodaac).toBe("foo");
-  // });
-
+  it("sets ACOR dodaac value", async () => {
+    await wrapper.vm.dodaacChange("foo", "ACOR");
+    expect(await wrapper.vm.$props.docData.acor.dodaac).toBe("foo");
+  });
 
 })
 
