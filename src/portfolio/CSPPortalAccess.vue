@@ -37,12 +37,12 @@
         >
           <!-- eslint-disable vue/valid-v-slot -->
           <template v-slot:body="props">
-            <tbody name="fade" is="transition-group">
+            <tbody name="expand" is="transition-group">
             <template >
               <tr
                 class="row-item"
                 :class="{'bg-info-lighter': item.status === 'Processing'}"
-                  v-for="(item, index) in props.items" :key="index"
+                  v-for="item in props.items" :key="item.email"
               >
                 <td>{{item.email}}</td>
                 <td>
@@ -154,6 +154,16 @@
     </ATATDialog>
   </div>
 </template>
+
+<style >
+  .expand-enter-active, .expand-leave-active {
+     transition: all 1s ease;
+}
+.expand-enter, .expand-leave-to {
+   opacity: 0;
+    transform: translateY(-100%);
+}
+</style>
 <script lang="ts">
 import Vue from "vue";
 
@@ -232,14 +242,14 @@ export default class CSPPortalAccess extends Vue {
     "Carl Contractor",
   ]
   public createTableData(): void {
-    for(let i = 0; i < 11; i++){
+    for(let i = 0; i < this.emails.length; i++){
       const admin = {
         email:"",
         status:"",
         createdBy:"",
         created:""
       }
-      let idx = Math.floor(Math.random()*3)
+      let idx = i
       admin.email = this.emails[idx]
       admin.status = this.statuses[idx]
       admin.createdBy = this.createdBy[idx]
