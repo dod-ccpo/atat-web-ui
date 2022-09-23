@@ -47,12 +47,19 @@
                   :isForm="false"
                   :projectScope="docData.projectOverview.scope"
                 />
-                <DisaOrganization
-                  :isForm="false"
-                  :projectScope.sync="_docData.organization.disa_organization"
-                />
               </div>
             </li>
+
+                <li> <strong id="MissionOwner" class="mb-4 d-block"
+                >Mission Owner Agency/Organization Information</strong>
+                 <div aria-describedby="MissionOwner">
+                  
+                <DisaOrganization
+                  :isForm="false"
+                  :selectedDisaOrg="docData.organization.disa_organization"
+                />
+              </div>
+                </li>
           </ol>
 
           <hr />

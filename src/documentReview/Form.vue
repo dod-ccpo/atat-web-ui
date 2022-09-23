@@ -33,7 +33,7 @@
           <CommentButton id="DisaOrg" />
           <DisaOrganization
             label="DISA Organization"
-            :projectScope.sync="_docData.organization.disa_organization"
+            :selectedDisaOrg="_docData.organization.disa_organization"
           />
         </div>
 
