@@ -33,6 +33,7 @@
         :style="'width: ' + width + 'px'"
         :rules="rules"
         :menu-props="{ bottom: true, offsetY: true }"
+        :disabled="menuDisabled"
       >
         <template v-slot:item="{ item, on }">
           <v-list-item 
@@ -114,6 +115,7 @@ export default class ATATSelect extends Vue {
   @Prop({ default: "" }) private width!: string;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: "standard" }) public iconType?: string;
+  @Prop({ default: false }) private menuDisabled?: boolean;
 
   //data
   private rounded = false;
@@ -123,13 +125,22 @@ export default class ATATSelect extends Vue {
 
   @Emit("onChange")
   private onChange(val: string | SelectData): void {
-    this.selected = val;
-    this.setErrorMessage();
-    this.$emit("selectValueChange", { 
-      "newSelectedValue": val, 
-      "selectedBeforeChange": this.selectedBeforeChange 
-    });
-    this.selectedBeforeChange = val;
+    const isString = typeof val === "string";
+    const isObject = typeof val === "object"
+    let isSelectable = true;
+    if (isObject && Object.prototype.hasOwnProperty.call(val, "isSelectable")
+      && val.isSelectable !== undefined) {
+      isSelectable = val.isSelectable;
+    }
+    if (isString || isSelectable) {
+      this.selected = val;
+      this.setErrorMessage();
+      this.$emit("selectValueChange", { 
+        "newSelectedValue": val, 
+        "selectedBeforeChange": this.selectedBeforeChange 
+      });
+      this.selectedBeforeChange = val;
+    }
   }
 
   private onInput(v: string) {

@@ -6,6 +6,23 @@ import {
 
 import { AdditionalButton } from "@/store/steps/types";
 
+import { 
+  CurrentContractDTO, 
+  FairOpportunityDTO,
+  OrganizationDTO, 
+  ProjectOverviewDTO,
+  ContactDTO,
+} from "@/api/models";
+
+export interface DocReviewData {
+  projectOverview: ProjectOverviewDTO;
+  organization: OrganizationDTO;
+  fairOpportunity: FairOpportunityDTO;
+  currentContract: CurrentContractDTO;
+  cor: ContactDTO | null,
+  acor: ContactDTO | null,
+}
+
 export interface MenuIcon {
   name: string;
   height: string;
@@ -57,6 +74,7 @@ export interface SelectData {
   hidden?: boolean;
   header?: string;
   divider?: boolean;
+  isSelectable?: boolean;
 }
 
 /**
@@ -118,6 +136,7 @@ export interface RadioButton {
   value: string;
   description?: string;
   disabled?: boolean;
+  readonly?: boolean;
 }
 
 export interface Checkbox {
@@ -129,7 +148,7 @@ export interface Checkbox {
 
 export interface SlideoutPanelContent {
   component: Component;
-  title: string;
+  title?: string;
 }
 
 export interface CountryObj {
@@ -139,6 +158,15 @@ export interface CountryObj {
   active: boolean;
   suggested?: boolean;
   mask?: string[];
+}
+
+export interface BreadCrumbItem {
+    disabled?: boolean,
+    exact?: boolean,
+    href?: string,
+    link?: boolean,
+    text?: string | number,
+    to?: string;
 }
 
 export interface ToastObj {
@@ -345,7 +373,12 @@ export interface User {
   lastName?: string;
   email?: string;
   role?: string;
+  phoneNumber?: string;
+  phoneExt?: string;
+  designation?: string;
+  serviceAgency?: string;
 }
+
 export interface Portfolio {
   title?: string;
   description?: string;
@@ -368,4 +401,8 @@ export interface EmailEntry {
 export interface MemberInvites {
   emails: string[];
   role: string;
+}
+
+export interface FundingTrackerAlert {
+   alertType: string;
 }

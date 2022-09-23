@@ -1,5 +1,5 @@
 import { ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@/api/models";
-import { Checkbox, SelectData } from "types/Global";
+import { Checkbox, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
 
@@ -189,4 +189,11 @@ export const createPeriodCheckboxItems = async (): Promise<Checkbox[]> => {
 export function generateRandomKey(): string {
   const randomNumber = Math.floor(100000000 + Math.random() * 900000000);
   return String(randomNumber);
+}
+
+export function getUserInitials(member:User): string {
+  const firstI = member.firstName?.charAt(0);
+  const lastI = member.lastName?.charAt(0);
+  const initials = firstI && lastI ? firstI + lastI : "XX";
+  return initials.toUpperCase();
 }

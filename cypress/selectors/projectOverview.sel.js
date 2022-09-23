@@ -13,7 +13,7 @@ module.exports = {
   emergencyDeclarationControl: "#emergency-declaration-support-requirement_radio_group_control",
   emergencyDeclarationerror: "#emergency-declaration-support-requirement_radio_group_control" +
     " .field-error",
-  radioBtnYes:"#Radio_Yes",
-  radioBtnNo: "#Radio_No",  
+  radioBtnYes:"#Radio_YesEmergencyDeclaration",
+  radioBtnNo: "#Radio_NoEmergencyDeclaration",  
   cancelBtn:"#CancelButton"
 }

@@ -33,10 +33,12 @@ import { EDAApi } from "./eda";
 import { CurrentEnvironmentAPI } from "@/api/currentEnvironment";
 import { AggregateApi } from "./aggregate";
 import { EnvironmentInstanceAPI } from "@/api/EnvironmentInstance";
+import { AlertApi } from "./alerts";
 
 
 export const api = {
 
+  alertsTable: new AlertApi(),
   attachments: new AttachmentApi(),
   systemChoices: new SystemChoicesApi(),
   acquisitionPackageTable: new AcquisitionPackagesApi(),

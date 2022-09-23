@@ -570,6 +570,9 @@ export class AcquisitionPackageStore extends VuexModule {
       const sys_id = this[dataKey]?.sys_id || "";
 
       if (sys_id.length > 0) {
+        if (dataKey === "acorInfo") {
+          this.setHasAlternateCOR(true);
+        }
         const contactInfo = await api.contactsTable.retrieve(sys_id as string);
         this.setContact({ data: contactInfo, type: contactType });
         this.setAcquisitionPackage({
@@ -700,6 +703,7 @@ export class AcquisitionPackageStore extends VuexModule {
         apiEndPoint.create(data);
       const savedData = await saveAction;
 
+      // updates the store state data
       this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
       if(acquisitionPackageProp === undefined)

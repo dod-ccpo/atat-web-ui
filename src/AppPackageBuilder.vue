@@ -10,7 +10,7 @@
 
     <ATATPageHead :headline="projectTitle" />
 
-    <v-main id="app" >
+    <v-main>
       <div id="app-content" class="d-flex flex-column">
         <div  class="mb-auto">
           <router-view></router-view>
@@ -85,7 +85,7 @@ export default class AppPackageBuilder extends Vue {
   };
 
   private get panelContent() {
-    return SlideoutPanel.slideoutPanelComponent;
+    return SlideoutPanel.slideoutPanelComponent || undefined;
   };
 
   private stepperData = buildStepperData();

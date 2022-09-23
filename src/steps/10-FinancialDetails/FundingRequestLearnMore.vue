@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_panel-padding">
     <h2 class="mb-5">Understanding funding requests</h2>
     <p>
       We encourage your agency to use

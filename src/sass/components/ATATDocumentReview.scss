@@ -1,0 +1,134 @@
+
+%list{ 
+  dl{
+    &:not(.vertical){
+      display:flex;
+      align-items: start;
+      align-content: center;
+    }
+    margin-bottom: 8px;
+    dt{
+      margin-right: 16px;
+      font-weight: 700 !important;
+    }
+  } 
+}
+
+._document-preview {
+  label:not(.v-label),
+  legend {
+    font-weight: 700 !important;
+  }
+
+  ._preview-header {
+    border-bottom: 1px solid $base-lighter;
+    width: 100%;
+    z-index: 1;
+  }
+  .v-main__wrap {
+    padding: 0 !important;
+    padding-right: 0 !important;
+  }  
+  ._document-wrap {
+    background-color: $offwhite;
+    width: 100%;    
+    padding: 40px 0;
+    border-bottom: 1px solid $base-lighter;
+  }
+  ._sheet {
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    box-shadow: 0px 4px 10px rgba(194, 194, 194, 0.5);
+    max-width: 1000px;
+  }
+  .atat-page-footer {
+    margin: 0 auto;
+    border: none !important; 
+  }
+
+}
+
+
+._document-review {
+  .v-main__wrap {
+    padding-left: 40px; // hover for comments will have gray bg with 16px left padding
+  }  
+  ._comment-wrap {
+    padding: 16px 32px 16px 16px;
+    border-radius: 4px;
+    position: relative;
+    margin-top: 8px;
+
+    ._comment-button {
+      position: absolute;
+      right: -18px;
+      top: 8px;
+      display: none !important;
+      @extend ._icon-only;
+      border: 1px solid $base-lighter;
+      background-color: white !important;
+      padding: 4px;
+      border-radius: 6px;
+      width: 36px;
+      height: 36px;
+
+      ._icon-only {
+        width: 26px !important;
+        height: 26px !important;
+      }
+      .v-breadcrumbs li:nth-child(even){
+        padding: 0px 8px;
+        margin-top: 1px;
+        div{
+          text-align:center;
+        }
+      }
+    }
+
+    &:hover {
+      background: $base-lightest;
+
+      ._comment-button {
+        display: block !important;
+      }
+    }
+  }
+}
+
+._document-review, ._document-preview {
+  ol{
+    li{
+      margin-bottom: 40px;
+    }
+  }
+
+  @extend %list;
+ 
+  ._slideout-panel {
+    color: $base-darkest !important;
+    .content-header {
+      padding: 24px;
+    }
+
+    .content-comments{
+      padding: 16px 24px;
+    }
+
+    .v-btn.link-button {
+      padding: 0px !important;
+    }
+    .comment-button{
+      height: 36px !important;
+      width: 36px !important;
+      border: 1px solid $base-lighter;
+     
+    }
+    @extend %list;
+   
+  }
+  h3 {
+    font-weight: 400 !important;
+    font-family: $base-font;
+  }
+}

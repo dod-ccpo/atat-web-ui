@@ -1,171 +1,194 @@
 
 <template>
-  <section class="mt-10">
-    <hr />
-    <h2 id="ContactInfoHeader" class="form-section-heading">
-      Your {{ corOrAcor }}’s Contact Information
-    </h2>
+  <div>
+    <section v-if="isForm" :class="{'mt-10' : isWizard}">
+      <hr v-if="isWizard" />
+      <h2 v-if="isWizard" :id="corOrAcor +'_ContactInfoHeader'" class="form-section-heading">
+        {{ sectionHeader }}
+      </h2>
 
-    <ATATRadioGroup
-      id="ContactAffiliation"
-      :legend="
-        'What role best describes your ' +
-        corOrAcor +
-        '’s affiliation with the DoD?'
-      "
-      :items="contactRoles"
-      :value.sync="_selectedRole"
-      :rules="[
-        $validators.required('Please enter your ' + corOrAcor + '’s role.'),
-      ]"
-      class="mb-10"
-      @radioButtonSelected="contactTypeChange"
-    />
+      <h3 
+        v-else 
+        :id="corOrAcor +'_ContactInfoHeader'" 
+        class="mb-5 form-section-heading"
+      >
+        {{ sectionHeader }}
+      </h3>
 
-    <v-form ref="CORACORContactForm">
-      <ATATSelect
-        id="Branch"
-        v-show="_selectedRole === 'MILITARY'"
-        v-model="_selectedBranch"
-        class="_input-max-width mb-10"
-        label="Service Branch"
-        placeholder=""
-        :items="branchData"
-        :selectedValue.sync="_selectedBranch"
-        :showAccessRadioButtons.sync="_showAccessRadioButtons"
-        :returnObject="true"
+      <ATATRadioGroup
+        v-show="isWizard"
+        id="ContactAffiliation"
+        :legend="
+          'What role best describes your ' +
+          corOrAcor +
+          '’s affiliation with the DoD?'
+        "
+        :items="contactRoles"
+        :value.sync="_selectedRole"
         :rules="[
-          $validators.required(
-            'Please select your ' + corOrAcor + '’s service branch.'
-          ),
+          $validators.required('Please enter your ' + corOrAcor + '’s role.'),
         ]"
+        class="mb-10"
+        @radioButtonSelected="contactTypeChange"
       />
 
-      <div v-show="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
-        <ATATAutoComplete
-          id="Rank"
-          v-show="_selectedRole === 'MILITARY'"
-          label="Rank"
-          titleKey="name"
-          :items="selectedBranchRanksData"
-          :searchFields="['name', 'grade']"
-          :selectedItem.sync="_selectedRank"
-          :rules="[
-            $validators.required(
-              'Please select your ' + corOrAcor + '’s rank.'
-            ),
-          ]"
-          class="_input-max-width mb-7"
-          icon="arrow_drop_down"
-        />
-
+      <v-form ref="CORACORContactForm">
         <ATATSelect
-          id="Salutation"
-          v-show="_selectedRole === 'CIVILIAN'"
-          class="_input-max-width mb-7"
-          label="Salutation"
-          :optional="true"
-          placeholder=""
-          :items="salutationData"
-          :selectedValue.sync="_selectedSalutation"
-        />
-
-        <v-row class="form-section mb-7">
-          <v-col class="col-12 col-lg-3">
-            <ATATTextField
-              label="First name"
-              id="FirstName"
-              class="_input-max-width"
-              :value.sync="_firstName"
-              :rules="[
-                $validators.required(
-                  'Please enter your ' + corOrAcor + '’s first name.'
-                ),
-              ]"
-            />
-          </v-col>
-          <v-col class="col-12 col-lg-3">
-            <ATATTextField
-              label="Middle name"
-              id="MiddleName"
-              :optional="true"
-              class="_input-max-width"
-              :value.sync="_middleName"
-            />
-          </v-col>
-          <v-col class="col-12 col-lg-3">
-            <ATATTextField
-              label="Last name"
-              id="LastName"
-              class="_input-max-width"
-              :value.sync="_lastName"
-              :rules="[
-                $validators.required(
-                  'Please enter your ' + corOrAcor + '’s last name.'
-                ),
-              ]"
-            />
-          </v-col>
-          <v-col class="col-12 col-lg-3">
-            <ATATTextField
-              label="Suffix"
-              id="Suffix"
-              :optional="true"
-              width="80"
-              :value.sync="_suffix"
-            />
-          </v-col>
-        </v-row>
-
-        <ATATPhoneInput
-          id="PhoneNumber"
-          label="Phone number"
-          class="width-100 mb-10"
-          :value.sync="_phone"
-          :country.sync="_selectedPhoneCountry"
-          :extensionValue.sync="_phoneExt"
-          :rules="[
-            $validators.required(
-              'Please enter your ' + corOrAcor + '’s phone number'
-            ),
-            $validators.isPhoneNumberValid(this._selectedPhoneCountry),
-          ]"
-        />
-
-        <ATATTextField
-          id="EmailAddress"
-          label="Email address"
+          :id="corOrAcor + '_Branch'"
+          v-show="_selectedRole === 'MILITARY'"
+          v-model="_selectedBranch"
           class="_input-max-width mb-10"
-          helpText="Enter a .mil or .gov email address."
-          :value.sync="_email"
+          label="Service Branch"
+          placeholder=""
+          :items="branchData"
+          :selectedValue.sync="_selectedBranch"
+          :returnObject="true"
           :rules="[
             $validators.required(
-              'Please enter your ' + corOrAcor + '’s email address.'
+              'Please select your ' + corOrAcor + '’s service branch.'
             ),
-            $validators.isEmail(),
           ]"
         />
 
-        <ATATTextField
-          id="DoDAAC"
-          label="DoD Activity Address Code (DoDAAC)"
-          class="_input-max-width"
-          tooltipText="A DoDAAC is a 6-character code that uniquely identifies a 
-          unit, activity, or organization that has the authority to requisition, 
-          contract for, or fund/pay bills for materials and services."
-          :value.sync="_dodaac"
-          :mask="['^[0-9A-Za-z]{1,6}$']"
-          :isMaskRegex=true
-          :rules="[
-            $validators.required(
-              'Please enter your ' + corOrAcor + '’s 6-character DoDAAC.'
-            ),
-          ]"
-        />
-       
+        <div v-show="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
+          <ATATAutoComplete
+            :id="corOrAcor + '_Rank'"
+            v-show="_selectedRole === 'MILITARY'"
+            label="Rank"
+            titleKey="name"
+            :items="selectedBranchRanksData"
+            :searchFields="['name', 'grade']"
+            :selectedItem.sync="_selectedRank"
+            :rules="[
+              $validators.required(
+                'Please select your ' + corOrAcor + '’s rank.'
+              ),
+            ]"
+            class="_input-max-width mb-7"
+            icon="arrow_drop_down"
+          />
+
+          <ATATSelect
+            :id="corOrAcor + '_Salutation'"
+            v-show="_selectedRole === 'CIVILIAN'"
+            class="_input-max-width mb-7"
+            label="Salutation"
+            :optional="true"
+            placeholder=""
+            :items="salutationData"
+            :selectedValue.sync="_selectedSalutation"
+          />
+
+          <v-row class="form-section mb-7">
+            <v-col class="col-12 col-lg-3">
+              <ATATTextField
+                label="First name"
+                :id="corOrAcor + '_FirstName'"
+                class="_input-max-width"
+                :value.sync="_firstName"
+                :rules="[
+                  $validators.required(
+                    'Please enter your ' + corOrAcor + '’s first name.'
+                  ),
+                ]"
+              />
+            </v-col>
+            <v-col class="col-12 col-lg-3">
+              <ATATTextField
+                label="Middle name"
+                :id="corOrAcor + '_MiddleName'"
+                :optional="true"
+                class="_input-max-width"
+                :value.sync="_middleName"
+              />
+            </v-col>
+            <v-col class="col-12 col-lg-3">
+              <ATATTextField
+                label="Last name"
+                :id="corOrAcor + '_LastName'"
+                class="_input-max-width"
+                :value.sync="_lastName"
+                :rules="[
+                  $validators.required(
+                    'Please enter your ' + corOrAcor + '’s last name.'
+                  ),
+                ]"
+              />
+            </v-col>
+            <v-col class="col-12 col-lg-3">
+              <ATATTextField
+                label="Suffix"
+                :id="corOrAcor + '_Suffix'"
+                :optional="true"
+                width="80"
+                :value.sync="_suffix"
+              />
+            </v-col>
+          </v-row>
+
+          <ATATPhoneInput
+            :id="corOrAcor + '_PhoneNumber'"
+            label="Phone number"
+            class="width-100 mb-10"
+            :value.sync="_phone"
+            :country.sync="_selectedPhoneCountry"
+            :extensionValue.sync="_phoneExt"
+            :rules="[
+              $validators.required(
+                'Please enter your ' + corOrAcor + '’s phone number'
+              ),
+              $validators.isPhoneNumberValid(this._selectedPhoneCountry),
+            ]"
+          />
+
+          <ATATTextField
+            :id="corOrAcor + '_EmailAddress'"
+            label="Email address"
+            class="_input-max-width"
+            :class="{ 'mb-10': isWizard }"
+            helpText="Enter a .mil or .gov email address."
+            :value.sync="_email"
+            :rules="[
+              $validators.required(
+                'Please enter your ' + corOrAcor + '’s email address.'
+              ),
+              $validators.isEmail(),
+            ]"
+          />
+
+          <DoDAAC 
+            v-if="isWizard"
+            :isForm="true"
+            :isWizard="isWizard"
+            :dodaac.sync="_dodaac"
+            :corOrAcor="corOrAcor"
+            :rules="[ 
+              $validators.required('Please enter your ' + corOrAcor + '’s 6-character DoDAAC.'),
+            ]"
+          />
+        </div>
+      </v-form>
+    </section>
+    
+    <div v-else>
+      <div class="mb-2">
+        <strong class="mr-2">Name:</strong> {{ formalName }}
       </div>
-    </v-form>
-  </section>
+      <div class="mb-2">
+        <strong class="mr-2">Email:</strong>  {{ _email }}
+      </div>
+      <div class="mb-2">
+        <strong class="mr-2">Phone Number:</strong> {{ _phone }} 
+        <span v-if="_phoneExt">ext. {{ _phoneExt }}</span>
+      </div>
+      <div class="mb-2">
+        <strong class="mr-2">
+          Department of Defense Activity Address Code &#40;DoDAAC&#41;:
+        </strong> 
+        {{ _dodaac }}
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -177,6 +200,8 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
+import DoDAAC from "../components/DoDAAC.vue";
+
 import { RadioButton, SelectData, RankData } from "../../../../types/Global";
 
 @Component({
@@ -186,9 +211,10 @@ import { RadioButton, SelectData, RankData } from "../../../../types/Global";
     ATATRadioGroup,
     ATATSelect,
     ATATTextField,
+    DoDAAC,
   },
 })
-export default class ContactInfoForm extends Vue {
+export default class CorAcorContactInfoForm extends Vue {
   $refs!: {
     CORACORContactForm: Vue & {
       resetValidation: () => void;
@@ -202,8 +228,10 @@ export default class ContactInfoForm extends Vue {
   @Prop() private branchData!: SelectData[];
   @Prop() private selectedBranchRanksData!: SelectData[];
   @Prop() private contactRoles!: RadioButton[];
+  @Prop() private isWizard!: boolean;
+  @Prop() private isForm!: boolean;
+  @Prop() private sectionHeader!: string;
 
-  @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
   @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
 
   @PropSync("selectedRole") private _selectedRole?: string;
@@ -214,6 +242,7 @@ export default class ContactInfoForm extends Vue {
   @PropSync("middleName") private _middleName?: string;
   @PropSync("lastName") private _lastName?: string;
   @PropSync("suffix") private _suffix?: string;
+  @Prop() private formalName?: string;
   @PropSync("email") private _email?: string;
   @PropSync("phone") private _phone?: string;
   @PropSync("phoneExt") private _phoneExt?: string;

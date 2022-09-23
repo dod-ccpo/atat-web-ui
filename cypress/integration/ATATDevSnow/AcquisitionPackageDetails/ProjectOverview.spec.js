@@ -84,10 +84,10 @@ describe("Test suite: Acquisition Package ", () => {
     });
         
     //Assert radio button
-    cy.radioBtn(projectOverview.radioBtnNo, "no").not("[disabled]");
+    cy.radioBtn(projectOverview.radioBtnNo, "NO").not("[disabled]");
         
     //select radio button
-    cy.radioBtn(projectOverview.radioBtnYes, "yes").not("[disabled]")
+    cy.radioBtn(projectOverview.radioBtnYes, "YES").not("[disabled]")
       .click({ force: true });        
         
     //buttons that exists on the view

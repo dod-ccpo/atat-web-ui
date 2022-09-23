@@ -4,7 +4,13 @@
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
-    <v-main class="_dashboard bg-base-off-white">
+
+    <ATATToast />
+
+    <v-main
+      class="_dashboard"
+      :class="[tabItems[tabIndex] === 'Funding Tracker'? '_funding-dashboard':'']"
+    >
       <PortfolioSummaryPageHead
         headline="Portfolio Summary"
         :items ="tabItems"
@@ -13,12 +19,15 @@
         :portfolioStatus="portfolioStatus"
       />
       <v-container
-        class="container-max-width bg-base-lightest "
+        class="container-max-width"
         style="margin-bottom:300px !important"
       >
           <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
           <TaskOrder v-if="tabItems[tabIndex] === 'Task Orders'"/>
-          <CSPPortalAccess v-if="tabItems[tabIndex] === 'CSP Portal Access'" />
+          <CSPPortalAccess
+            v-if="tabItems[tabIndex] === 'CSP Portal Access'"
+            :portfolioCSP="portfolioCSP"
+          />
       </v-container>
       <ATATFooter/>
 
@@ -32,12 +41,11 @@ import { Component } from "vue-property-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
+import ATATToast from "@/components/ATATToast.vue";
 import PortfolioSummaryPageHead from "@/portfolio/components/PortfolioSummaryPageHead.vue";
 import CSPPortalAccess from "@/portfolio/CSPPortalAccess.vue";
 import FundingTracker from "@/portfolio/FundingTracker.vue";
 import TaskOrder from "@/portfolio/TaskOrder.vue";
-import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
-import { SlideoutPanelContent } from "../../types/Global";
 import PortfolioData from "@/store/portfolio";
 
 @Component({
@@ -48,6 +56,7 @@ import PortfolioData from "@/store/portfolio";
     PortfolioSummaryPageHead,
     ATATFooter,
     ATATSlideoutPanel,
+    ATATToast,
   }
 })
 export default class PortfolioSummary extends Vue {
@@ -65,6 +74,7 @@ export default class PortfolioSummary extends Vue {
   public title = ""
   public portfolioStatus = ""
   public portfolioDescription = ""
+  public portfolioCSP = ""
 
   public async loadOnEnter(): Promise<void>  {
     // grab data from store
@@ -74,14 +84,10 @@ export default class PortfolioSummary extends Vue {
       this.title = portfolio.title || "";
       this.portfolioStatus = portfolio.status || "";
       this.portfolioDescription = portfolio.description || "";
+      this.portfolioCSP = portfolio.csp || "";
     }
   }
   public async mounted(): Promise<void>{
-    const slideoutPanelContent: SlideoutPanelContent = {
-      component: PortfolioDrawer,
-      title: "Learn More",
-    }
-    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }
 }

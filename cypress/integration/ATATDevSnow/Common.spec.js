@@ -1,12 +1,17 @@
-import { bootstrapMockApis } from "../../helpers";
+import { bootstrapMockApis, cleanText, capitalizeFirstLetter } from "../../helpers";
 import common from "../../selectors/common.sel";
 
 describe("Test suite: Common SPA functionality", () => { 
-  const isTestingLocally = Cypress.env("isTestingLocally") === "true";
-  const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
-    
+  
+  let menus;
+
   beforeEach(() => {
     bootstrapMockApis();
+    cy.fixture("navigationBarMenu").then((data) => {
+      menus = data;
+      
+      
+    });
     cy.launchATAT();
   });
     
@@ -59,63 +64,66 @@ describe("Test suite: Common SPA functionality", () => {
         
   });
 
-  it("TC3: Menu tabs on the rightcorner", () => {
-    if (runTestsInIframe && !isTestingLocally) {
-      const expectedMenuItems = ["Dashboard", "MyPackages", "Resources", "Portals", "UserTab"]
-      let foundMenuItems = 0
-            
-      //Verifying the Menu tabs at the top right corner
-      cy.get(common.rightMenuTab).children().each(($el) => {
-        const text = $el.text()
-        if (expectedMenuItems.indexOf(text) > -1) {
-          foundMenuItems++
-        }
-      })
-      return foundMenuItems === expectedMenuItems.length;
-    } else {
-      cy.log('Test not necessary on localhost')
-    }
-  });
-
-  it("TC4: Portal Dropdown", () => {
-    //Portal dropdown
-    if (runTestsInIframe && !isTestingLocally) {
-      cy.get(common.portal).should("exist").click({ force: true });          
-      const expectedValues = ["Global Service Desk", " Mission Partner Portal"]
-      let foundValues = 0
-      cy.get(common.portal).children().each(($el) => {
-        const text = $el.text()
-        if (expectedValues.indexOf(text) > -1) {
-          foundValues++
-        }
-      })
-      return foundValues === expectedValues.length;
-    } else {
-      cy.log('Test not necessary on localhost')
-    }
-  });                                      
+  it("TC3: Menu tabs on the navigation bar", () => {
     
-  it("TC5: User Tab", () => {
-    if (runTestsInIframe && !isTestingLocally) {
-      //Verifying the Usertab tab at the top right corner
-      cy.get(common.userAvatar).then(($loginUserName) => {
-                
-        const username = $loginUserName.text(); 
-        var email =Cypress.env("snowUser");                       
-        var names = email.split('-ctr')[0].split('.');
-        var firstName = names[0];
-        let firstNameChar = firstName.charAt(0);
-        var lastName = names[1];
-        let firstlastNameChar = lastName.charAt(0);
-        expect(username).to.deep.eq(firstNameChar.toUpperCase() + firstlastNameChar.toUpperCase());
-                
-      });
-    } else {
-      cy.log('Test not necessary on localhost')
-    }
-  })
+    const expectedEmail = "maria.missionowner.civ@mail.mil";
+    const expectedNames = expectedEmail.split('.civ')[0].split('.');
+    const expectedFirstName = expectedNames[0];
+    const firstName = capitalizeFirstLetter(expectedFirstName);
+    const expectedLastName = expectedNames[1]
+    const lastName = capitalizeFirstLetter(expectedLastName);
+    let firstNameChar = firstName.charAt(0);
+    let firstlastNameChar = lastName.charAt(0);
 
-  it("TC6: Footer Components", () => {
+    const menuText = [];
+    const keys = Object.keys(menus)
+    keys.forEach((key) => {
+      menuText.push(menus[key].menuText);
+    });
+    menuText.pop();
+    cy.findElement(common.userTab).then(($el) => {
+      const foundInitials = $el.text();
+      const initials = cleanText(foundInitials);
+      menuText.push(initials);
+      
+    });
+    // verifying the main Menus
+    cy.verifyStringArray(common.navigationBar, menuText);
+
+    //Acquisition submenu
+    cy.dropDownClick(common.acquisitionsTab);
+    cy.verifyStringArray(common.acquisitionDropdownList, menus.acquisitions.dropdownList);
+    
+    //Portals submenu
+    cy.dropDownClick(common.portalsTab);
+    cy.verifyStringArray(common.portalsDropdownList, menus.portals.dropdownList);
+
+    //User submenu
+    cy.dropDownClick(common.userTab);
+    cy.findElement(common.userEmail).then(($el) => {
+      const foundEmail = $el.text();
+      const userEmail = cleanText(foundEmail);
+      menus.user.dropdownList.unshift(userEmail);
+      expect(userEmail).to.deep.eq(expectedEmail);
+    });
+    cy.findElement(common.userName).then(($el) => {
+      const foundName = $el.text();
+      const userName = cleanText(foundName);
+      menus.user.dropdownList.unshift(userName);
+      expect(userName).to.deep.eq(firstName + ' ' + lastName);
+    });
+    cy.findElement(common.userIntials).then(($el) => {
+      const founduserInitals = $el.text();
+      const userInitials = cleanText(founduserInitals);
+      menus.user.dropdownList.unshift(userInitials);
+      expect(userInitials).to.deep.eq(firstNameChar + firstlastNameChar);
+    });
+  
+    cy.verifyStringArray(common.userDropdownList, menus.user.dropdownList);
+    
+  });  
+
+  it("TC4: Footer Components", () => {
 
     //Verifying the footer at the bottom
     const footerItems = ["Security Notice", "Privacy", "Accessibility"];
