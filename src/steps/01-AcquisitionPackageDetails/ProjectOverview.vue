@@ -64,9 +64,9 @@ import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";
 import EmergencyDeclarationSupport from "./components/EmergencyDeclarationSupport.vue";
 
-import AcquisitionPackage, {
-  StoreProperties,
-} from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { StoreProperties } from "@/store/acquisitionPackage/storeproperties";
+
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
