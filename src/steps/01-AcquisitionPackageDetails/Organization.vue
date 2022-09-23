@@ -7,19 +7,10 @@
           Next, we’ll gather information about your organization
         </h1>
 
-        <ATATAutoComplete
-          id="ServiceOrAgency"
-          class="_input-max-width mb-2"
-          label="What service or agency do you work for?"
-          :label-sr-only="false"
-          titleKey="text"
-          :searchFields="['text']"
-          :items="serviceOrAgencyData"
-          :selectedItem.sync="selectedServiceOrAgency"
-          :rules="[$validators.required('Please select your service or agency.')]"
-          placeholder="Find your service/agency"
-          icon="arrow_drop_down"
-        />
+       <RequestingServiceAgency 
+       :selectedServiceOrAgency.sync="selectedServiceOrAgency"
+       :rules="[$validators.required('Please select your service or agency.')]"
+       />
 
         <a
           role="button"
@@ -37,22 +28,14 @@
             <h2 class="form-section-heading">
               1. Tell us more about your organization
             </h2>
-            <ATATAutoComplete
+             <DisaOrganization
               id="DisaOrg"
               v-show="
                 selectedServiceOrAgency &&
                 selectedServiceOrAgency.value === this.DisaOrgName
               "
-              class="_input-max-width mb-10"
-              label="DISA Organization"
-              :label-sr-only="false"
-              titleKey="text"
-              :searchFields="['text']"
-              :items="disaOrgData"
-              :selectedItem.sync="selectedDisaOrg"
+              :selectedDisaOrg.sync="selectedDisaOrg"
               :rules="[$validators.required('Please select your DISA Organization.')]"
-              placeholder="Find your DISA organization"
-              icon="arrow_drop_down"
             />
 
             <ATATTextField
@@ -186,6 +169,8 @@ import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
+import DisaOrganization from "./components/DisaOrganization.vue";
+import RequestingServiceAgency from "./components/RequestingServiceAgency.vue";
 
 
 @Component({
@@ -194,6 +179,8 @@ import ContactData from "@/store/contactData";
     ATATAutoComplete,
     ATATDialog,
     ATATTextField,
+    DisaOrganization,
+    RequestingServiceAgency,
   },
 })
 

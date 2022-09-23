@@ -29,10 +29,23 @@
           />
         </div>
 
-        <!-- placeholder for ORGANIZATION agency/DISA org components -->
-        <p class="ml-4">What service or agency is this contracting effort for? </p>
-        <p class="ml-4">DISA Organization</p>
-        <!-- END placeholder from ORGANIZATION -->
+        <div class="_comment-wrap">
+          <CommentButton id="RequestedServiceAgency" />
+          <RequestingServiceAgency
+            label="What service or agency is this contracting effort for?"
+            :selectedServiceOrAgency.sync="_docData.organization.service_agency"
+          />
+        </div>
+
+        <div class="_comment-wrap">
+          <CommentButton id="DisaOrg" />
+          <DisaOrganization
+            label="DISA Organization"
+            :selectedDisaOrg="_docData.organization.disa_organization"
+          />
+        </div>
+      
+
 
         <hr />
         
@@ -144,6 +157,9 @@ import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/Projec
 import CommonCorAcor 
   from "@/steps/01-AcquisitionPackageDetails/COR_ACOR/Common.vue";
 import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
+import DisaOrganization from "@/steps/01-AcquisitionPackageDetails/components/DisaOrganization.vue";
+import RequestingServiceAgency from 
+  "@/steps/01-AcquisitionPackageDetails/components/RequestingServiceAgency.vue";
 
 
 // Step 2 Components
@@ -164,6 +180,7 @@ import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vu
     CommonCorAcor,
     ContractNumber,
     CurrentContractOptions,
+    DisaOrganization,
     DoDAAC,
     EmergencyDeclarationSupport,
     FairOppExceptions,
@@ -171,7 +188,8 @@ import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vu
     PageHead,
     ProjectScope,
     ProjectTitle,
-    TaskOrderNumber
+    RequestingServiceAgency,
+    TaskOrderNumber,
   },
 })
 

@@ -41,7 +41,19 @@
             </li>
 
             <li>
-              <strong>Mission Owner Agency/Organization Information</strong>
+              <strong id="MissionOwner" class="mb-4 d-block"
+                >Mission Owner Agency/Organization Information</strong
+              >
+              <div aria-describedby="MissionOwner">
+                <RequestingServiceAgency
+                  :isForm="false"
+                  :selectedServiceOrAgency="docData.organization.service_agency"
+                />
+                <DisaOrganization
+                  :isForm="false"
+                  :selectedDisaOrg="docData.organization.disa_organization"
+                />
+              </div>
             </li>
 
             <li>
@@ -121,6 +133,9 @@ import EmergencyDeclarationSupport
   from "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue";
 import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue";
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
+import DisaOrganization from "@/steps/01-AcquisitionPackageDetails/components/DisaOrganization.vue";
+import RequestingServiceAgency from 
+  "@/steps/01-AcquisitionPackageDetails/components/RequestingServiceAgency.vue";
 import CommonCorAcor 
   from "@/steps/01-AcquisitionPackageDetails/COR_ACOR/Common.vue";
 import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
@@ -147,12 +162,14 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ContractNumber,
     CommonCorAcor,
     CurrentContractOptions,
+    DisaOrganization,
     DoDAAC,
     EmergencyDeclarationSupport,
     FairOppExceptions,
     IncumbentContractorName,
     ProjectScope,
     ProjectTitle,
+    RequestingServiceAgency,
   },
 })
 
