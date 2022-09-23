@@ -69,6 +69,7 @@ export interface ContactDTO extends BaseTableDTO {
   first_name: string;
   last_name: string;
   middle_name: string;
+  formal_name?: string;
   suffix: string;
   title: string;
   phone: string;

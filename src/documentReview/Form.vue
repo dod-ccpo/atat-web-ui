@@ -29,6 +29,59 @@
           />
         </div>
 
+        <!-- placeholder for ORGANIZATION agency/DISA org components -->
+        <p class="ml-4">What service or agency is this contracting effort for? </p>
+        <p class="ml-4">DISA Organization</p>
+        <!-- END placeholder from ORGANIZATION -->
+
+        <hr />
+        
+        <div class="_comment-wrap">
+          <CommentButton id="COR_Contact" />
+          <CommonCorAcor
+            :isACOR="false"
+            :isWizard="false"
+            :currentContactData.sync="_docData.cor"
+          />
+        </div>
+
+        <div class="_comment-wrap">
+          <CommentButton id="COR_DoDAAC" />
+          <DoDAAC 
+            :isForm="true"
+            :isWizard="false"
+            :dodaac="_docData.cor ? _docData.cor.dodaac : ''"
+            corOrAcor="COR"
+            @valueChange="dodaacChange"
+          />
+        </div>
+
+        <hr />
+
+        <div v-if="hasACOR">
+          <div class="_comment-wrap">
+            <CommentButton id="ACOR_Contact" />
+            <CommonCorAcor
+              :isACOR="true"
+              :isWizard="false"
+              :currentContactData.sync="_docData.acor"
+            />
+          </div>
+
+          <div class="_comment-wrap">
+            <CommentButton id="ACOR_DoDAAC" />
+            <DoDAAC 
+              :isForm="true"
+              :isWizard="false"
+              :dodaac="_docData.acor ? _docData.acor.dodaac : ''"
+              corOrAcor="ACOR"
+              @valueChange="dodaacChange"
+            />
+          </div>
+
+          <hr />
+        </div>
+
         <h2 class="mb-5 ml-4">Part II. Requirement Information</h2>
 
         <div class="_comment-wrap">
@@ -81,11 +134,17 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CommentButton from "./components/CommentButton.vue";
 
+import AcquisitionPackage from "@/store/acquisitionPackage";
+
 // Step 1 Components
 import EmergencyDeclarationSupport 
   from "@/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.vue";
 import ProjectTitle from "@/steps/01-AcquisitionPackageDetails/components/ProjectTitle.vue";
 import ProjectScope from "@/steps/01-AcquisitionPackageDetails/components/ProjectScope.vue";
+import CommonCorAcor 
+  from "@/steps/01-AcquisitionPackageDetails/COR_ACOR/Common.vue";
+import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
+
 
 // Step 2 Components
 import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
@@ -102,8 +161,10 @@ import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vu
   components: {
     ATATSVGIcon,
     CommentButton,
+    CommonCorAcor,
     ContractNumber,
     CurrentContractOptions,
+    DoDAAC,
     EmergencyDeclarationSupport,
     FairOppExceptions,
     IncumbentContractorName,
@@ -116,7 +177,17 @@ import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vu
 
 export default class DocumentReviewForm extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  @PropSync("docData") private _docData!: DocReviewData;  
+  @PropSync("docData") private _docData!: DocReviewData; 
+  
+  private hasACOR = AcquisitionPackage.hasAlternativeContactRep;
+
+  private dodaacChange(val: string, corOrAcor: string): void {
+    if (corOrAcor === "COR" && this._docData.cor !== null) {
+      this._docData.cor.dodaac = val;
+    } else if (this._docData.acor !== null) {
+      this._docData.acor.dodaac = val;
+    }
+  }
 }
 
 </script>

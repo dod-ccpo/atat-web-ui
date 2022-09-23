@@ -127,4 +127,8 @@
     @extend %list;
    
   }
+  h3 {
+    font-weight: 400 !important;
+    font-family: $base-font;
+  }
 }
