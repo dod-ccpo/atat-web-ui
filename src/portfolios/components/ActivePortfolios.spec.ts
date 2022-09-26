@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import ActivePortfolios  from "@/portfolios/ActivePortfolios.vue";
+import ActivePortfolios  from "@/portfolios/components/ActivePortfolios.vue";
 Vue.use(Vuetify);
 
 describe("Testing index Component", () => {

@@ -50,6 +50,9 @@ export default class App extends Vue {
     case this.sectionTitles.Portfolios:
       AppSections.setAppContentComponent(Portfolios);
       break;
+    case this.sectionTitles.PortfolioSummary:
+      AppSections.setAppContentComponent(PortfolioSummary);
+      break;
     case this.sectionTitles.DocumentReview:
       AppSections.setAppContentComponent(DocumentReview);
       break;  
