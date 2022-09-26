@@ -94,4 +94,22 @@ describe("Testing CSPPortalAccess Component", () => {
     expect(wrapper.exists()).toBe(true);
   })
 
+  it("addCSPMember() - adds CSP member from modal form",async ()=>{
+    wrapper.setData({
+      adminEmail: "foo@bar.mil",
+      dodId: "1234567890",
+      tableData: [],
+      emailIsValid: true,
+
+    })
+    wrapper.vm.addCSPMember();
+    Vue.nextTick(() => {
+      expect(wrapper.vm.$data.tableData.length).toBe(1);
+      expect(wrapper.vm.$data.adminEmail).toBe("");
+      expect(wrapper.vm.$data.dodID).toBe("");
+      expect(wrapper.vm.$data.emailIsValid).toBeFalsy();
+    });
+  });
+
+  
 })
