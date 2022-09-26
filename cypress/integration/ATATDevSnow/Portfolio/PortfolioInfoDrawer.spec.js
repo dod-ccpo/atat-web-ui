@@ -22,7 +22,7 @@ describe("Test suite: Portfolio info Drawer", () => {
     });
   });
     
-  it("TC1: Rename the portfolio description in info drawer", () => {
+  it.skip("TC1: Rename the portfolio description in info drawer", () => {
     const descValue = "Mock Description"
     const editdescText = "Edit Mock Description"
     cy.editInputField(
@@ -45,7 +45,7 @@ describe("Test suite: Portfolio info Drawer", () => {
 
   });
 
-  it("TC2: Add portfolio member in info drawer", () => {
+  it.skip("TC2: Add portfolio member in info drawer", () => {
   
     cy.textExists(ps.portMemTitle, "Portfolio members");
     cy.textExists(ps.portMemCount, 1);
@@ -67,7 +67,7 @@ describe("Test suite: Portfolio info Drawer", () => {
     });
   });
 
-  it("TC3: Edit the portfolio member role in info drawer", () => {
+  it.skip("TC3: Edit the portfolio member role in info drawer", () => {
   
     cy.textExists(ps.portMemTitle, "Portfolio members");
     cy.textExists(ps.portMemCount, 1);
@@ -94,7 +94,7 @@ describe("Test suite: Portfolio info Drawer", () => {
     });
   });
 
-  it("TC4: Remove the portfolio member role in info drawer", () => {
+  it.skip("TC4: Remove the portfolio member role in info drawer", () => {
   
     cy.textExists(ps.portMemTitle, "Portfolio members");
     cy.textExists(ps.portMemCount, 1);
@@ -129,7 +129,7 @@ describe("Test suite: Portfolio info Drawer", () => {
     });
   });  
   
-  it("TC5: About roles in info drawer", () => {
+  it.skip("TC5: About roles in info drawer", () => {
   
     cy.textExists(ps.portMemTitle, "Portfolio members");
     cy.textExists(ps.portMemCount, 1);

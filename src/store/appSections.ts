@@ -24,6 +24,7 @@ export class AppSectionsStore extends VuexModule {
     AcquisitionPackage: "Acquisition Package Builder",
     JWCCDashboard: "JWCC Dashboard",
     TOLookup: "Lookup TO in EDA",
+    Portfolios: "Portfolios",
     PortfolioSummary: "Portfolio Summary",
     DocumentReview: "Document Review"
   }
@@ -34,7 +35,7 @@ export class AppSectionsStore extends VuexModule {
     { title: this.sectionTitles.AcquisitionPackage },
     { title: this.sectionTitles.JWCCDashboard },
     { title: this.sectionTitles.TOLookup },
-    { title: this.sectionTitles.PortfolioSummary },
+    { title: this.sectionTitles.Portfolios },
     { title: this.sectionTitles.DocumentReview }
   ];
 
