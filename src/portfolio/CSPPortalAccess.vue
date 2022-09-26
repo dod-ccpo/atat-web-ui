@@ -8,9 +8,9 @@
     </div>
     <div>
       <div class="d-flex justify-space-between mt-11 mb-6">
-        <h2>CSP administrator log</h2>
+        <h1 class="h2 font-weight-500" id="TableHeader">CSP administrator log</h1>
         <v-btn
-          depressed
+          id="AddCSPAdmin"
           color="primary"
           @click="openCSPModal"
           @keydown.enter="openCSPModal"
@@ -33,7 +33,7 @@
           :items="tableData"
           :page.sync="page"
           hide-default-footer
-          class="_administrator-log border1 border-base-lighter"
+          class="_csp-admin-log border1 border-base-lighter"
         >
           <!-- eslint-disable vue/valid-v-slot -->
           <template v-slot:body="props">
@@ -97,6 +97,7 @@
       title="Add a CSP Administrator"
       width="632"
       okText="Add administrator"
+      eager
       :OKDisabled="okDisabled"
       :showDialog.sync="showCSPModal"
       @ok="addCSPMember"
@@ -113,14 +114,14 @@
             Learn more about CSP administrators
           </a>
         </p>
-        <v-form ref="form" v-model="formIsValid" lazy-validation>
+        <v-form ref="modalForm" v-model="formIsValid" lazy-validation>
           <div class="mb-10">
             <ATATTextField
               id="AdministratorEmail"
               label="Administrator’s email address"
               helpText="Must use a .mil or .gov email address."
               width="416"
-              :class="{'error--text':showErrorMessage}"
+              :class="{'error--text':showEmailErrorMessage}"
               :value.sync="adminEmail"
               @blur="validateEmail()"
             />
@@ -128,24 +129,23 @@
               id="EmailError"
               class="atat-text-field-error"
               :errorMessages="[invalidEmailMessage]"
-              v-show="showErrorMessage"
+              v-show="showEmailErrorMessage"
             />
           </div>
           <div>
             <ATATTextField
               id="AdministratorDODID"
+              ref="DoDIDInput"
               label="Administrator’s DoD ID"
               :tooltipText="toolTipText"
               :value.sync="dodID"
               class="mb-15"
               width="416"
               :mask="['^[0-9]{10}$']"
-              :isMaskRegex=true
+              :isMaskRegex="true"
               :rules="[
-                $validators.required(
-                `Please enter your administrator's 10-digit DOD ID`
-                  ),
-                 $validators.minLength(10,`The DOD ID must be 10 digits`)
+                $validators.required('Please enter your administrator’s 10-digit DOD ID'),
+                 $validators.minLength(10, 'The DOD ID must be 10 digits')
                ]"
             />
           </div>
@@ -156,16 +156,6 @@
   </div>
 </template>
 
-<style >
-   .expand-move,
-  .expand-enter-active, .expand-leave-active {
-     transition: all 1s ease;
-}
-.expand-enter, .expand-leave-to {
-   opacity: 0;
-    transform: translateY(-100%);
-}
-</style>
 <script lang="ts">
 import Vue from "vue";
 
@@ -177,6 +167,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AddAdminSlideOut from "@/portfolio/components/AddAdminSlideOut.vue";
+
 @Component({
   components: {
     ATATDialog,
@@ -186,13 +177,19 @@ import AddAdminSlideOut from "@/portfolio/components/AddAdminSlideOut.vue";
     CSPCard,
   }
 })
+
 export default class CSPPortalAccess extends Vue {
   $refs!: {
-    form: Vue & {
+    modalForm: Vue & {
       resetValidation: () => void;
       reset: () => void;
     };
+    DoDIDInput: Vue & {
+      resetValidation: () => void;
+      setErrorMessage: () => void;
+    }
   };
+
   @Prop({ default: "" }) private portfolioCSP!: string;
 
   public page = 1;
@@ -204,7 +201,7 @@ export default class CSPPortalAccess extends Vue {
   public invalidEmailMissingAtSymbol = "Please include an ‘@’ symbol in the email address";
   public invalidEmailFormat = "Please use a standard domain format, like “@domain.mil”.";
   public invalidEmailMessage = "";
-  public showErrorMessage = false;
+  public showEmailErrorMessage = false;
   public adminEmail = "";
   public dodID = "";
   public emailIsValid = false;
@@ -234,69 +231,80 @@ export default class CSPPortalAccess extends Vue {
     "tyrone.brown@example.mil",
     "kim.bryant@example.mil",
     "burt.baxter@example.mil",
-  ]
+  ];
   public statuses = [
-    "Provisioned",
     "Processing",
+    "Provisioned",
     "Failed",
-  ]
+  ];
   public createdBy = [
     "Maria Missionowner",
     "Sam Something",
     "Carl Contractor",
-  ]
+  ];
 
   public maxPerPage = 10;
-  public numberOfPages = Math.ceil(this.emails.length/this.maxPerPage)
+  public numberOfPages = Math.ceil(this.emails.length/this.maxPerPage);
+
   @Watch("tableData")
   public tableDataUpdated(): void {
-    this.numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage)
+    this.numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage);
   }
 
   get endingNumber(): number {
-    const ending = this.page * this.maxPerPage
-    if(ending > this.tableData.length){
-      return this.tableData.length
+    const ending = this.page * this.maxPerPage;
+    if (ending > this.tableData.length) {
+      return this.tableData.length;
     }
-    return ending
+    return ending;
   }
   get startingNumber():number {
-    const starting = (this.page - 1) * this.maxPerPage + 1
-    return starting
+    const starting = (this.page - 1) * this.maxPerPage + 1;
+    return starting;
   }
   public createTableData(): void {
-    for(let i = 0; i < this.emails.length; i++){
+    for (let i = 0; i < this.emails.length; i++) {
       const admin = {
         email:"",
         status:"",
         createdBy:"",
         created:""
-      }
-      let idx = i
-      admin.email = this.emails[idx]
-      admin.status = this.statuses[idx]
-      admin.createdBy = this.createdBy[idx]
-      admin.created = format(this.today,"MMM. dd, yyy hhmm")
-      this.tableData.push(admin)
+      };
+      let idx = i;
+      admin.email = this.emails[idx];
+      admin.status = this.statuses[idx];
+      admin.createdBy = this.createdBy[idx];
+      admin.created = admin.status !== "Processing" ? format(this.today,"MMM. dd, yyy hhmm") : "";
+      this.tableData.push(admin);
     }
-
   }
+
   get okDisabled(): boolean {
-    if(this.emailIsValid && this.formIsValid && this.dodID){
-      return false
+    if (this.emailIsValid && this.formIsValid && this.dodID) {
+      return false;
     }
-    return true
-  }
-  public openCSPModal(): void {
-    this.showCSPModal = true;
+    return true;
   }
 
-  public toolTipText = `
-        This 10-digit number is printed on the back of your administrator's
-        Common Access Card (CAC). You may also ask your administrator to log into
-         <span class="text-decoration-underline">DoD ID Card Office Online</span>
-         and locate it under "My Profile."
-`
+  public openCSPModal(): void {
+    this.adminEmail = "";
+    this.dodID = "";
+    this.invalidEmailMessage = "";
+    this.showEmailErrorMessage = false;
+    this.showCSPModal = true;
+    this.$refs.modalForm.reset();
+    this.$refs.modalForm.resetValidation();
+
+    this.$refs.DoDIDInput.resetValidation();
+    this.$refs.DoDIDInput.setErrorMessage();
+    
+    debugger;
+  }
+
+  public toolTipText = `This 10-digit number is printed on the back of your administrator's
+    Common Access Card (CAC). You may also ask your administrator to log into
+    <span class="text-decoration-underline">DoD ID Card Office Online</span>
+    and locate it under "My Profile."`;
 
   public statusImg = {
     "Failed":{
@@ -328,13 +336,12 @@ export default class CSPPortalAccess extends Vue {
       status: "Processing",
       createdBy:"Maria Missionowner",
       created:""
-    }
-    this.tableData.unshift(member)
+    };
+    this.tableData.unshift(member);
     this.adminEmail = "";
     this.dodID = "";
     this.emailIsValid = false;
-    this.$refs.form.reset();
-    this.$refs.form.resetValidation();
+    this.$refs.modalForm.reset();
   }
 
   public openLearnMoreDrawer(): void {
@@ -342,10 +349,14 @@ export default class CSPPortalAccess extends Vue {
   }
 
   public async validateEmail(): Promise<boolean> {
-    if(!this.adminEmail){
-      return false
-    }
     const email = this.adminEmail;
+    if (!email) {
+      this.invalidEmailMessage = "Please enter your administrator’s email address."
+      this.emailIsValid = false;
+      this.showEmailErrorMessage = true;
+      return false;
+    }
+
     const domain = email.slice(-3).toLowerCase();
     const isGovtDomain = domain === "mil" || domain === "gov";
     const missingAtSymbol = email.indexOf("@") === -1;
@@ -353,25 +364,20 @@ export default class CSPPortalAccess extends Vue {
 
     const isValid = isGovtDomain && !missingAtSymbol && validEmail;
     this.$nextTick(() => {
-      // single error messages
+      this.emailIsValid = true;
+      this.invalidEmailMessage = "";
+      if (!isGovtDomain || missingAtSymbol || !validEmail) {
+        this.emailIsValid = false;
+      }
       if (!validEmail && missingAtSymbol && !isGovtDomain) {
         this.invalidEmailMessage = this.invalidEmailFormat;
-        this.emailIsValid= false
-        this.showErrorMessage = true
       } else if (!isGovtDomain) {
         this.invalidEmailMessage = this.invalidEmailDomain;
-        this.showErrorMessage = true
-        this.emailIsValid= false
       } else if (missingAtSymbol) {
         this.invalidEmailMessage = this.invalidEmailMissingAtSymbol;
-        this.showErrorMessage = true
-        this.emailIsValid= false
-      } else {
-        // clear validation message
-        this.invalidEmailMessage = "";
-        this.showErrorMessage = false
-        this.emailIsValid= true
       }
+      this.showEmailErrorMessage = !this.emailIsValid;
+
     });
     return isValid;
   }
