@@ -22,6 +22,5 @@ describe("Testing index Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("test ")
 
 })
