@@ -2,6 +2,7 @@
   <v-dialog
     :max-width="width + 'px'"
     v-model="_showDialog"
+    eager
     role="alertdialog"
     aria-labelledby="modalDialogTitle"
     aria-describedby="modalDialogMessage"
