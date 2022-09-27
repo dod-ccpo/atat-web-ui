@@ -5,7 +5,7 @@
     elevation="0"
   >
     <div class="pr-5">
-      <div class="logo">{{ cardData.csp }} logo</div>
+      <div class="font-size-10 text-base-light">CSP logo</div>
     </div>
     <div class="pr-5 flex-grow-1">
       <div
@@ -51,22 +51,25 @@
         <span class="nowrap">{{ cardData.lastModified }}</span>
       </div>
 
-      <v-row v-if="cardData.status === portfolioStatuses.Active">
+      <div 
+        v-if="cardData.status === portfolioStatuses.Active"
+        class="d-flex"
+      >
 
-        <v-col class="col-12 col-md-4 col-lg-6">
+        <div class="mr-15">
           <span class="_data-header">Current Period of Performance</span>
           <span class="_data-primary d-block">
             {{ cardData.currentPoP }}
           </span>
-        </v-col>
+        </div>
 
-        <v-col class="col-12 col-md-4 col-lg-3 col-xl-2">
+        <div class="mr-15">
           <span class="_data-header">Total Obligated</span>
           <span class="_data-primary d-block nowrap">
             {{ cardData.totalObligated }}
           </span>
-        </v-col>
-        <v-col class="col-12 col-md-4 col-lg-3">
+        </div>
+        <div class="flex-grow-1">
           <span class="_data-header">Funds Spent (%)</span>
           <span class="_data-primary d-block">
             <span class="mr-1 nowrap">{{ cardData.fundsSpent }}</span>
@@ -74,39 +77,41 @@
               ({{ cardData.fundsSpentPercent }}%)
             </span>
           </span>
-        </v-col>
+        </div>
 
-      </v-row>
+      </div>
     </div>
     <div>
-      <!-- <v-menu
-        transition="slide-y-transition"
-        offset-y
-        nudge-left="192"
-        nudge-top="1"
+
+      <v-menu
+        :offset-y="true"
+        left
+        id="MoreMenu"
+        class="_meatball-menu"
+        attach
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            :id="moreButtonId(card.id)"
             v-bind="attrs"
             v-on="on"
-            class="meatball-menu-button mt-n1 width-auto pa-0"
+            id="MoreMenuButton"
+            class="_meatball-menu-button"
           >
-            <v-icon class="width-auto">more_horiz</v-icon>
+            <v-icon class="text-base-dark">more_horiz</v-icon>
           </v-btn>
         </template>
-        <v-list class="meatball-menu pa-0">
+  
+        <v-list>
           <v-list-item
-            v-for="(menuOptionText, index) in menuOptions"
+            v-for="(item, index) in moreMenuItems"
             :key="index"
-            @click="handleMenuClick(menuOptionText, $event, card)"
+            :id="getIdText(item.title) + '_MenuItem'"
           >
-            <v-list-item-title class="body-lg py-2">
-              {{ menuOptionText }}
-            </v-list-item-title>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
-      </v-menu> -->
+      </v-menu>         
+
     </div>
   </v-card>
 </template>
@@ -118,7 +123,8 @@ import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { PortfolioCardData } from "types/Global";
-import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
+import { PortFolioStatusTypes } from "@/store/portfolio";
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
@@ -132,6 +138,19 @@ export default class PortfolioCard extends Vue {
   @Prop() private isLastCard!: boolean;
 
   public portfolioStatuses = PortFolioStatusTypes;
+
+  public moreMenuItems = [
+    {
+      title: "Item 1",
+    },
+    {
+      title: "Item 2",
+    },
+  ];
+
+  private getIdText(string: string) {
+    return getIdText(string);
+  }
 
 }
 
