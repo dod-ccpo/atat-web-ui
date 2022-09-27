@@ -304,7 +304,7 @@ export default class CSPPortalAccess extends Vue {
   public toolTipText = `This 10-digit number is printed on the back of your administrator's
     Common Access Card (CAC). You may also ask your administrator to log into
     <span class="text-decoration-underline">DoD ID Card Office Online</span>
-    and locate it under "My Profile."`;
+    and locate it under “My Profile.”`;
 
   public statusImg = {
     "Failed":{

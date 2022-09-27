@@ -135,7 +135,7 @@ import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { PortfolioCardData } from "types/Global";
-import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
+import { PortFolioStatusTypes } from "@/store/portfolio";
 import { getIdText, getStatusChipBgColor } from "@/helpers";
 
 @Component({

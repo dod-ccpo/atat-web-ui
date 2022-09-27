@@ -169,7 +169,7 @@ describe("Testing Portfolio Drawer component", () => {
       expect(result.length).toBeGreaterThan(0)
     })
     it("Test getTag(archived)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = "archived"
+      wrapper.vm.$data.portfolioStatus = PortFolioStatusTypes.Archived
       const result = wrapper.vm.getBgColor()
       expect(result.length).toBeGreaterThan(0)
     })
