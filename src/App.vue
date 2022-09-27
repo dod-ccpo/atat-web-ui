@@ -20,6 +20,7 @@ import PortfolioDashboard from "@/dashboards/Portfolio.vue";
 import ATATTopNavBar from "./components/ATATTopNavBar.vue";
 import AppSections from "@/store/appSections";
 import DocumentReview from "@/documentReview/Index.vue";
+import Portfolios from "@/portfolios/Index.vue";
 
 @Component({
   components: {
@@ -45,6 +46,9 @@ export default class App extends Vue {
       break;
     case this.sectionTitles.TOLookup:
       AppSections.setAppContentComponent(TaskOrderLookup);
+      break;
+    case this.sectionTitles.Portfolios:
+      AppSections.setAppContentComponent(Portfolios);
       break;
     case this.sectionTitles.PortfolioSummary:
       AppSections.setAppContentComponent(PortfolioSummary);

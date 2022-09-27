@@ -190,7 +190,7 @@ export default class ATATTopNavBar extends Vue {
       },
       {
         title: "Portfolios",
-        spaSectionTitle: sectionData.sectionTitles.PortfolioSummary,
+        spaSectionTitle: sectionData.sectionTitles.Portfolios,
       },
       {
         title: "Portals",
