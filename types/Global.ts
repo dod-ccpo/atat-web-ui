@@ -392,12 +392,12 @@ export interface Portfolio {
 }
 
 export interface PortfolioCardData extends Portfolio {
-  branch: string;
-  lastModified: string;
-  currentPoP: string;
-  totalObligated: string;
-  fundsSpent: string;
-  fundsSpentPercent: string;
+  branch?: string;
+  lastModified?: string;
+  currentPoP?: string;
+  totalObligated?: string;
+  fundsSpent?: string;
+  fundsSpentPercent?: string;
 }
 
 export interface EmailEntry {
