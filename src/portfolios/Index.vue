@@ -1,5 +1,8 @@
 <template>
   <div>
+    <ATATSlideoutPanel v-if="panelContent">
+      <component :is="panelContent"></component>
+    </ATATSlideoutPanel>
     <v-main>
       <v-app-bar
         id="PageHeader"
@@ -10,7 +13,7 @@
         height="83"
       >
         <div id="NameHeader" tabindex="-1" class="mt-1">
-          <h1>Portfolios</h1>
+          <h1 class="mb-2 mt-5">Portfolios</h1>
           <div>
             <v-tabs class="_header-tab "
               v-model="tabIndex">
@@ -18,7 +21,7 @@
                 v-for="tab in tabItems"
                 :key="tab"
                 :id="getIdText(tab) + '_Tab'"
-                class="font-size-14 pa-1 pt-2  pb-5 mr-3">{{tab}}</v-tab>
+                class="font-size-14 pa-1 pt-2 pb-4 mr-3">{{tab}}</v-tab>
 
             </v-tabs>
           </div>
@@ -29,18 +32,15 @@
         class="container-max-width"
         style="margin-bottom:300px !important"
       >
+        <v-btn @click="changeSection">
+          link portfolio Summary
+        </v-btn>
         <AllPortfolios v-if="tabItems[tabIndex] === 'All portfolios'" />
         <ProcessingPortfolios v-if="tabItems[tabIndex] === 'Processing'"/>
         <ActivePortfolios
           v-if="tabItems[tabIndex] === 'Active'"
         />
       </v-container>
-      <div>
-        Future Portfolios page
-      </div>
-      <v-btn @click="changeSection">
-        link portfolio Summary
-      </v-btn>
       <ATATFooter/>
     </v-main>
 
