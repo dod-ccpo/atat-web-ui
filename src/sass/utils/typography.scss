@@ -278,9 +278,6 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
       color: $base-darkest;
     }
   }
-  &._processing {
-    background-color: $info-dark !important;
-  }
 }
 
 ._semibold {

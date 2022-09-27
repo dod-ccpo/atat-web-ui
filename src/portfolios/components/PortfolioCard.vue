@@ -1,12 +1,12 @@
 <template>
   <v-card
-    class="_portfolio-summary-card-wrapper width-100 py-5 px-6 d-flex"
+    class="_portfolio-summary-card-wrapper"
     :class="{ '_first': index === 0, '_last': isLastCard }"
     elevation="0"
   >
 
     <div class="pr-5">
-      <div class="d-flex align-center" style="width: 48px; height: 48px;">
+      <div class="_csp-icon-wrap">
         <v-tooltip
           transition="slide-y-reverse-transition"
           color="rgba(0,0,0,1)"
@@ -32,10 +32,8 @@
         </v-tooltip>
       </div>
     </div>
-    <div class="pr-5 flex-grow-1">
-      <div
-        class="d-flex flex-row-reverse flex-md-row flex-column-reverse"
-      >
+    <div class="pr-8 flex-grow-1">
+      <div class="d-flex">
         <div class="card-header flex-grow-1">
           <a
             role="button"
@@ -45,18 +43,13 @@
             {{ cardData.title }}
           </a>
         </div>
-        <div
-          v-if="cardData.status !== portfolioStatuses.Active"
-          class="
-            status-alert-banner-wrapper
-            ml-md-5
-            text-md-right
-            mb-2 mb-md-0
-          "
-        >
+        <div v-if="cardData.status !== portfolioStatuses.Active">
           <v-chip 
             :id="'StatusChip' + index" 
-            :class="'_' + cardData.status.toLowerCase()" 
+            :class="[
+              '_' + cardData.status.toLowerCase(),
+              statusChipBgColor
+            ]" 
             label
           >
             {{ cardData.status }}
@@ -65,22 +58,18 @@
         </div>
       </div>
       <div class="text-base-dark">
-        <span>{{ cardData.branch }}</span>
+        {{ cardData.branch }}
         <ATATSVGIcon 
           name="bullet" 
           color="base-light" 
           :width="9" 
           :height="9" 
-          class="d-inline-block ml-2 mr-3" 
+          class="d-inline-block mx-1" 
         />
-        <span class="nowrap">{{ cardData.lastModified }}</span>
+        {{ cardData.lastModified }}
       </div>
 
-      <div 
-        v-if="cardData.status === portfolioStatuses.Active"
-        class="d-flex"
-      >
-
+      <div v-if="cardData.status === portfolioStatuses.Active" class="d-flex">
         <div class="mr-15">
           <span class="_data-header">Current Period of Performance</span>
           <span class="_data-primary d-block">
@@ -106,38 +95,36 @@
 
       </div>
     </div>
-    <div>
 
-      <v-menu
-        :offset-y="true"
-        left
-        id="MoreMenu"
-        class="_meatball-menu"
-        attach
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-bind="attrs"
-            v-on="on"
-            id="MoreMenuButton"
-            class="_meatball-menu-button"
-          >
-            <v-icon class="text-base-dark">more_horiz</v-icon>
-          </v-btn>
-        </template>
-  
-        <v-list>
-          <v-list-item
-            v-for="(item, index) in moreMenuItems"
-            :key="index"
-            :id="getIdText(item.title) + '_MenuItem'"
-          >
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>         
+    <v-menu
+      :offset-y="true"
+      left
+      id="MoreMenu"
+      class="_meatball-menu"
+      attach
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          v-bind="attrs"
+          v-on="on"
+          id="MoreMenuButton"
+          class="_meatball-menu-button"
+        >
+          <v-icon class="text-base-dark">more_horiz</v-icon>
+        </v-btn>
+      </template>
 
-    </div>
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in moreMenuItems"
+          :key="index"
+          :id="getIdText(item.title) + '_MenuItem'"
+        >
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>         
+
   </v-card>
 </template>
 
@@ -148,8 +135,8 @@ import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { PortfolioCardData } from "types/Global";
-import { PortFolioStatusTypes } from "@/store/portfolio";
-import { getIdText } from "@/helpers";
+import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
+import { getIdText, getStatusChipBgColor } from "@/helpers";
 
 @Component({
   components: {
@@ -165,16 +152,16 @@ export default class PortfolioCard extends Vue {
   public portfolioStatuses = PortFolioStatusTypes;
 
   public moreMenuItems = [
-    {
-      title: "Item 1",
-    },
-    {
-      title: "Item 2",
-    },
+    { title: "Item 1" },
+    { title: "Item 2" },
   ];
 
   private getIdText(string: string) {
     return getIdText(string);
+  }
+
+  public get statusChipBgColor(): string {
+    return getStatusChipBgColor(this.cardData.status ? this.cardData.status : "");
   }
 
   public CSPs = {
@@ -182,32 +169,32 @@ export default class PortfolioCard extends Vue {
       title: "Amazon Web Services",
       img: {
         name:"aws",
-        width:"48",
-        height:"29"
+        width:"40",
+        height:"24"
       }
     },
     azure: {
       title: "Azure",
       img: {
         name:"azure",
-        width:"48",
-        height:"37",
+        width:"40",
+        height:"31",
       }
     },
     google: {
       title: "Google Cloud Platform",
       img: {
         name:"gcp",
-        width:"48",
-        height:"47"
+        width:"40",
+        height:"39"
       }
     },
     oracle: {
       title: "Oracle",
       img: {
         name:"oracle",
-        width:"48",
-        height:"30"
+        width:"40",
+        height:"25"
       }
     },
   }

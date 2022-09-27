@@ -1,5 +1,5 @@
 <template>
-  <v-main>
+  <v-main class="pb-20">
     <div>
       Future Portfolios page
     </div>
@@ -7,7 +7,7 @@
       link portfolio Summary
     </v-btn>
 
-    <div class="mt-10">
+    <div class="mt-10" style="padding-bottom: 100px;">
       <PortfolioCard
         v-for="(cardData, index) in portfolioCardData"
         :key="index"
@@ -16,6 +16,7 @@
         :isLastCard="index === portfolioCardData.length - 1"
       />
     </div>
+
   </v-main>
 </template>
 <script lang="ts">
@@ -63,7 +64,7 @@ export default class Portfolios extends Vue {
     },
     {
       title: "DEF456 portfolio",
-      status: "Processing",
+      status: "At-Risk",
       csp: "google",
       branch: "Navy",
       lastModified: "Last modified Sept. 1, 2022",
@@ -74,7 +75,7 @@ export default class Portfolios extends Vue {
     },
     {
       title: "GHI789 portfolio",
-      status: "Processing",
+      status: "Delinquent",
       csp: "oracle",
       branch: "Marine Corps",
       lastModified: "Last modified Sept. 1, 2022",
