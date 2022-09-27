@@ -58,12 +58,14 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import { getIdText } from "@/helpers";
 import SlideoutPanel from "@/store/slideoutPanel";
+import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 
 @Component({
   components: {
     AllPortfolios,
     ActivePortfolios,
     ProcessingPortfolios,
+    ATATSlideoutPanel,
     ATATFooter,
     ATATToast,
   }

@@ -8,7 +8,7 @@
     :width="panelWidth + 'px'"
     app
     right
-    :clipped="appSection === 'Portfolio Summary' || 'Portfolios'"
+    :clipped="appSection === 'Portfolio Summary' || appSection === 'Portfolios'"
     :temporary="showOverlay"
     disable-resize-watcher
   >
