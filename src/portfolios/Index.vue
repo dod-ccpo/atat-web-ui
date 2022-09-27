@@ -42,7 +42,7 @@ export default class Portfolios extends Vue {
     {
       title: "ABC123 portfolio",
       status: "Processing",
-      csp: "azure",
+      csp: "aws",
       branch: "Joint Force",
       lastModified: "Started 23 minutes ago",
       currentPoP: "",
@@ -53,14 +53,37 @@ export default class Portfolios extends Vue {
     {
       title: "Army-Navy Game",
       status: "Active",
-      csp: "aws",
+      csp: "azure",
       branch: "Army",
       lastModified: "Last modified Sept. 1, 2022",
       currentPoP: "Oct. 1, 2022 - Sept. 31, 2023",
       totalObligated: "$1,000,000.00",
       fundsSpent: "$500,000",
       fundsSpentPercent: "50",
-    }
+    },
+    {
+      title: "DEF456 portfolio",
+      status: "Processing",
+      csp: "google",
+      branch: "Navy",
+      lastModified: "Last modified Sept. 1, 2022",
+      currentPoP: "",
+      totalObligated: "",
+      fundsSpent: "",
+      fundsSpentPercent: "",
+    },
+    {
+      title: "GHI789 portfolio",
+      status: "Processing",
+      csp: "oracle",
+      branch: "Marine Corps",
+      lastModified: "Last modified Sept. 1, 2022",
+      currentPoP: "",
+      totalObligated: "",
+      fundsSpent: "",
+      fundsSpentPercent: "",
+    },
+
   ];
 
 

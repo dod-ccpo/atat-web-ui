@@ -4,8 +4,33 @@
     :class="{ '_first': index === 0, '_last': isLastCard }"
     elevation="0"
   >
+
     <div class="pr-5">
-      <div class="font-size-10 text-base-light">CSP logo</div>
+      <div class="d-flex align-center" style="width: 48px; height: 48px;">
+        <v-tooltip
+          transition="slide-y-reverse-transition"
+          color="rgba(0,0,0,1)"
+          top
+          :open-on-hover="true"
+          :open-delay="500"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <span
+              v-bind="attrs"
+              v-on="on"
+            >
+              <ATATSVGIcon 
+                :name="CSPs[cardData.csp].img.name" 
+                :width="CSPs[cardData.csp].img.width" 
+                :height="CSPs[cardData.csp].img.height" 
+              />
+            </span>
+          </template>
+          <div class="_tooltip-content-wrap">
+            {{ CSPs[cardData.csp].title }}
+          </div>
+        </v-tooltip>
+      </div>
     </div>
     <div class="pr-5 flex-grow-1">
       <div
@@ -150,6 +175,41 @@ export default class PortfolioCard extends Vue {
 
   private getIdText(string: string) {
     return getIdText(string);
+  }
+
+  public CSPs = {
+    aws: {
+      title: "Amazon Web Services",
+      img: {
+        name:"aws",
+        width:"48",
+        height:"29"
+      }
+    },
+    azure: {
+      title: "Azure",
+      img: {
+        name:"azure",
+        width:"48",
+        height:"37",
+      }
+    },
+    google: {
+      title: "Google Cloud Platform",
+      img: {
+        name:"gcp",
+        width:"48",
+        height:"47"
+      }
+    },
+    oracle: {
+      title: "Oracle",
+      img: {
+        name:"oracle",
+        width:"48",
+        height:"30"
+      }
+    },
   }
 
 }
