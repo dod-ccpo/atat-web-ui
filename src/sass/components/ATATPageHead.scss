@@ -13,6 +13,50 @@ header._atat-page-header {
     }
   }
 
+  &._portfolios{
+    height: 118px !important;
+    .v-toolbar__content {
+      height: 118px !important;
+      padding: 24px 56px !important;
+    }
+    ._header-tab {
+      .v-tabs-bar {
+        height: 41px;
+      }
+      .v-tabs-slider-wrapper{
+        height: 4px !important;
+        padding-left:4px;
+        padding-right:4px;
+        .v-tabs-slider{
+          background-color: $primary !important;
+        }
+      }
+      .v-tab{
+        color: $base-dark !important;
+        border: 1px solid transparent !important;
+        text-transform: none !important;
+        letter-spacing: .025rem !important;
+        &:before{
+          background-color: transparent !important;
+        }
+        &:focus-visible {
+          background-color: transparent !important;
+          border: 1px solid $primary !important;
+          border-radius: 4px 4px 0 0;
+        }
+        &:hover{
+          &:before{
+            background-color: transparent !important;
+          }
+        }
+        &.v-tab--active{
+          color: $primary !important;
+        }
+
+      }
+    }
+  }
+
   &._portfolio-summary {
     height: 85px !important;
     .v-toolbar__content {

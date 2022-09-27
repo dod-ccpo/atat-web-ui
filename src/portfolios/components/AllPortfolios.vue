@@ -1,7 +1,7 @@
 <template>
-  <v-main>
+  <div>
     Future page for All Portfolios
-  </v-main>
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
