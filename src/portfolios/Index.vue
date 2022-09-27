@@ -1,93 +1,89 @@
 <template>
-  <v-main class="pb-20">
-    <div>
-      Future Portfolios page
-    </div>
-    <v-btn @click="changeSection">
-      link portfolio Summary
-    </v-btn>
+  <div>
+    <ATATSlideoutPanel v-if="panelContent">
+      <component :is="panelContent"></component>
+    </ATATSlideoutPanel>
+    <v-main>
+      <v-app-bar
+        id="PageHeader"
+        app
+        flat
+        class="_atat-page-header _portfolios"
+        clipped-right
+        height="83"
+      >
+        <div id="NameHeader" tabindex="-1" class="mt-1">
+          <h1 class="mb-2 mt-5 pl-1">Portfolios</h1>
+          <div>
+            <v-tabs class="_header-tab "
+              v-model="tabIndex">
+              <v-tab
+                v-for="tab in tabItems"
+                :key="tab"
+                :id="getIdText(tab) + '_Tab'"
+                class="font-size-14 pa-1 pt-2 pb-4 mr-3">{{tab}}</v-tab>
 
-    <div class="mt-10" style="padding-bottom: 100px;">
-      <PortfolioCard
-        v-for="(cardData, index) in portfolioCardData"
-        :key="index"
-        :cardData="cardData"
-        :index="index"
-        :isLastCard="index === portfolioCardData.length - 1"
-      />
-    </div>
+            </v-tabs>
+          </div>
+        </div>
+        <div class="d-flex justify-end align-center"></div>
+      </v-app-bar>
+      <v-container
+        class="container-max-width"
+        style="margin-bottom:300px !important"
+      >
+        <v-btn @click="changeSection">
+          link portfolio Summary
+        </v-btn>
+        <AllPortfolios v-if="tabItems[tabIndex] === 'All portfolios'" />
+        <ProcessingPortfolios v-if="tabItems[tabIndex] === 'Processing'"/>
+        <ActivePortfolios
+          v-if="tabItems[tabIndex] === 'Active'"
+        />
+      </v-container>
+      <ATATFooter/>
+    </v-main>
 
-  </v-main>
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-
-import PortfolioCard from "./components/PortfolioCard.vue";
-
 import AppSections from "@/store/appSections";
-import { PortfolioCardData } from "types/Global";
+import AllPortfolios from "@/portfolios/components/AllPortfolios.vue";
+import ActivePortfolios from "@/portfolios/components/ActivePortfolios.vue";
+import ProcessingPortfolios from "@/portfolios/components/ProcessingPortfolios.vue";
+import ATATFooter from "@/components/ATATFooter.vue";
+import { getIdText } from "@/helpers";
+import SlideoutPanel from "@/store/slideoutPanel";
+import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 
 @Component({
   components: {
-    PortfolioCard
+    AllPortfolios,
+    ActivePortfolios,
+    ProcessingPortfolios,
+    ATATSlideoutPanel,
+    ATATFooter,
   }
 })
 
 export default class Portfolios extends Vue {
+  public tabIndex = 0;
+  public tabItems = [
+    "All portfolios",
+    "Processing",
+    "Active"
+  ]
   public async changeSection(): Promise<void> {
     AppSections.changeActiveSection("Portfolio Summary")
   }
-
-  public portfolioCardData: PortfolioCardData[] = [
-    {
-      title: "ABC123 portfolio",
-      status: "Processing",
-      csp: "aws",
-      branch: "Joint Force",
-      lastModified: "Started 23 minutes ago",
-      currentPoP: "",
-      totalObligated: "",
-      fundsSpent: "",
-      fundsSpentPercent: "",
-    },
-    {
-      title: "Army-Navy Game",
-      status: "Active",
-      csp: "azure",
-      branch: "Army",
-      lastModified: "Last modified Sept. 1, 2022",
-      currentPoP: "Oct. 1, 2022 - Sept. 31, 2023",
-      totalObligated: "$1,000,000.00",
-      fundsSpent: "$500,000",
-      fundsSpentPercent: "50",
-    },
-    {
-      title: "DEF456 portfolio",
-      status: "At-Risk",
-      csp: "google",
-      branch: "Navy",
-      lastModified: "Last modified Sept. 1, 2022",
-      currentPoP: "",
-      totalObligated: "",
-      fundsSpent: "",
-      fundsSpentPercent: "",
-    },
-    {
-      title: "GHI789 portfolio",
-      status: "Delinquent",
-      csp: "oracle",
-      branch: "Marine Corps",
-      lastModified: "Last modified Sept. 1, 2022",
-      currentPoP: "",
-      totalObligated: "",
-      fundsSpent: "",
-      fundsSpentPercent: "",
-    },
-
-  ];
-
-
+  private getIdText(string: string) {
+    return getIdText(string);
+  }
+  private get panelContent() {
+    return SlideoutPanel.slideoutPanelComponent;
+  }
 }
 
 </script>
