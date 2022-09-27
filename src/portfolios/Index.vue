@@ -32,14 +32,16 @@
         class="container-max-width"
         style="margin-bottom:300px !important"
       >
-        <v-btn @click="changeSection">
-          link portfolio Summary
-        </v-btn>
         <AllPortfolios v-if="tabItems[tabIndex] === 'All portfolios'" />
         <ProcessingPortfolios v-if="tabItems[tabIndex] === 'Processing'"/>
         <ActivePortfolios
           v-if="tabItems[tabIndex] === 'Active'"
         />
+
+        <v-btn @click="changeSection" class="my-10">
+          link portfolio Summary
+        </v-btn>
+
       </v-container>
       <ATATFooter/>
     </v-main>
