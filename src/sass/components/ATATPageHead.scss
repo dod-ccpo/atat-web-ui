@@ -2,7 +2,7 @@ header._atat-page-header {
   height: 6rem !important;
   background-color: $white !important;
   z-index: 100 !important;
-  
+
   .v-toolbar__content {
     height: 6rem !important;
     border-bottom: $base-lighter solid 1px !important;
@@ -10,6 +10,42 @@ header._atat-page-header {
 
     ._dashboard & {
       padding: 16px 54px !important;
+    }
+  }
+
+  &._portfolio-summary, &._portfolios {
+    ._header-tab {
+      .v-tabs-slider-wrapper{
+        height: 4px !important;
+        padding-left:4px;
+        padding-right:4px;
+        .v-tabs-slider{
+          background-color: $primary !important;
+        }
+      }
+      .v-tab{
+        color: $base-dark !important;
+        border: 1px solid transparent !important;
+        text-transform: none !important;
+        letter-spacing: .025rem !important;
+        min-width: unset;
+        &:before{
+          background-color: transparent !important;
+        }
+        &:focus-visible {
+          background-color: transparent !important;
+          border: 1px solid $primary !important;
+          border-radius: 4px 4px 0 0;
+        }
+        &:hover{
+          &:before{
+            background-color: transparent !important;
+          }
+        }
+        &.v-tab--active{
+          color: $primary !important;
+        }
+      }
     }
   }
 
@@ -23,37 +59,6 @@ header._atat-page-header {
       .v-tabs-bar {
         height: 41px;
       }
-      .v-tabs-slider-wrapper{
-        height: 4px !important;
-        padding-left:4px;
-        padding-right:4px;
-        .v-tabs-slider{
-          background-color: $primary !important;
-        }
-      }
-      .v-tab{
-        color: $base-dark !important;
-        border: 1px solid transparent !important;
-        text-transform: none !important;
-        letter-spacing: .025rem !important;
-        &:before{
-          background-color: transparent !important;
-        }
-        &:focus-visible {
-          background-color: transparent !important;
-          border: 1px solid $primary !important;
-          border-radius: 4px 4px 0 0;
-        }
-        &:hover{
-          &:before{
-            background-color: transparent !important;
-          }
-        }
-        &.v-tab--active{
-          color: $primary !important;
-        }
-
-      }
     }
   }
 
@@ -66,38 +71,8 @@ header._atat-page-header {
       .v-tabs-bar {
         height: 33px;
       }
-      .v-tabs-slider-wrapper{
-        height: 4px !important;
-        padding-left:4px;
-        padding-right:4px;
-        .v-tabs-slider{
-          background-color: $primary !important;
-        }
-      }
-      .v-tab{
-        color: $base-dark !important;
-        border: 1px solid transparent !important;
-        text-transform: none !important;
-        letter-spacing: .025rem !important;
-        &:before{
-          background-color: transparent !important;
-        }
-        &:focus-visible {
-          background-color: transparent !important;
-          border: 1px solid $primary !important;
-          border-radius: 4px 4px 0 0;
-        }
-        &:hover{
-          &:before{
-            background-color: transparent !important;
-          }
-        }
-        &.v-tab--active{
-          color: $primary !important;
-        }
-
-      }
     }
+
     ._headerTextField {
       border-radius: 4px;
       border: 1px solid transparent;
@@ -155,7 +130,7 @@ header._atat-page-header {
   ._header-button.theme--light.v-btn.v-btn--has-bg {
     background-color: transparent;
   }
-  
+
   ._header-menu {
     .v-menu__content {
       .v-list-item {

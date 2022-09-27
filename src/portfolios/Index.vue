@@ -55,7 +55,6 @@ import AllPortfolios from "@/portfolios/components/AllPortfolios.vue";
 import ActivePortfolios from "@/portfolios/components/ActivePortfolios.vue";
 import ProcessingPortfolios from "@/portfolios/components/ProcessingPortfolios.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
-import ATATToast from "@/components/ATATToast.vue";
 import { getIdText } from "@/helpers";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
@@ -67,7 +66,6 @@ import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
     ProcessingPortfolios,
     ATATSlideoutPanel,
     ATATFooter,
-    ATATToast,
   }
 })
 export default class Portfolios extends Vue {
@@ -78,7 +76,6 @@ export default class Portfolios extends Vue {
     "Active"
   ]
   public async changeSection(): Promise<void> {
-    const sectionData = await AppSections.getSectionData();
     AppSections.changeActiveSection("Portfolio Summary")
   }
   private getIdText(string: string) {
