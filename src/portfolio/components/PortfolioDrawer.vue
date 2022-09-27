@@ -183,7 +183,7 @@ import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PortfolioRolesLearnMore from "@/portfolio/components/PortfolioRolesLearnMore.vue";
 
-import PortfolioData, { PortfolioDataStore, PortFolioStatusTypes } from "@/store/portfolio";
+import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import Toast from "@/store/toast";
 
