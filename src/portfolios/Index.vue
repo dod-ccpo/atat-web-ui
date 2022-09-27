@@ -32,14 +32,16 @@
         class="container-max-width"
         style="margin-bottom:300px !important"
       >
-        <v-btn @click="changeSection">
-          link portfolio Summary
-        </v-btn>
         <AllPortfolios v-if="tabItems[tabIndex] === 'All portfolios'" />
         <ProcessingPortfolios v-if="tabItems[tabIndex] === 'Processing'"/>
         <ActivePortfolios
           v-if="tabItems[tabIndex] === 'Active'"
         />
+
+        <v-btn @click="changeSection" class="my-10">
+          link portfolio Summary
+        </v-btn>
+
       </v-container>
       <ATATFooter/>
     </v-main>
@@ -48,7 +50,6 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-
 import { Component } from "vue-property-decorator";
 import AppSections from "@/store/appSections";
 import AllPortfolios from "@/portfolios/components/AllPortfolios.vue";
@@ -68,6 +69,7 @@ import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
     ATATFooter,
   }
 })
+
 export default class Portfolios extends Vue {
   public tabIndex = 0;
   public tabItems = [
@@ -85,5 +87,6 @@ export default class Portfolios extends Vue {
     return SlideoutPanel.slideoutPanelComponent;
   }
 }
+
 </script>
 

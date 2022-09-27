@@ -43,24 +43,24 @@
                         </div>
                       </v-col>
                       <v-col>
-                        <p class="text--base-darkest pt-1 mb-0">
+                        <p class="text-base-darkest pt-1 mb-0">
                           Total Portfolio Funds
                         </p>
                         <span id="TotalPortfolioFunds" class="h2 mb-0">
                           {{ getCurrencyString(totalPortfolioFunds) }}
                         </span>
-                        <p class="text--base-dark mb-0 font-size-14">
+                        <p class="text-base-dark mb-0 font-size-14">
                           Total value of your active task orders
                         </p>
                         <v-divider class="my-4" />
-                        <p class="text--base-darkest mb-0 font-size-14">
+                        <p class="text-base-darkest mb-0 font-size-14">
                           Current Period of Performance
                         </p>
                         <span id="PoPDates" class="h3 mb-0">
                           {{ popStart }}&ndash;{{ popEnd }}
                         </span>
                         <p
-                          class="text--base-dark mb-0 font-size-14"
+                          class="text-base-dark mb-0 font-size-14"
                           v-if="!hasTimeSensativeAlert()"
                         >
                           {{ timeToExpiration }} to expiration
@@ -218,7 +218,7 @@
                 <v-col>
                   <v-card class="_no-shadow v-sheet--outlined pa-8">
                     <h3 class="mb-4">Actual and Projected Burn Rate</h3>
-                    <p class="text--base-dark font-size-14">
+                    <p class="text-base-dark font-size-14">
                       Track your rate of spend and available funds throughout
                       the current period of performance. Forecasted future costs
                       are based on historical trends and show approximately when

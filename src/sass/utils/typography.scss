@@ -174,7 +174,7 @@ hr, .hr {
   }
 }
 
-.text-decoration-none {
+._text-decoration-none {
   text-decoration: none !important;
 }
 
@@ -235,11 +235,6 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
     box-shadow: none;
     color: $primary;
   }
-}
-
-.separator-bullet {
-  display: inline-block;
-  font-size: 20px;
 }
 
 .text-clamp {

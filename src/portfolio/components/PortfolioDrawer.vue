@@ -197,6 +197,7 @@ import {
 import { format, parseISO } from "date-fns";
 import _ from "lodash";
 import MemberCard from "@/portfolio/components/MemberCard.vue";
+import { getStatusChipBgColor } from "@/helpers";
 
 @Component({
   components: {
@@ -257,21 +258,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public getBgColor(): string {
-    switch (this.portfolioStatus) {
-    case PortFolioStatusTypes.Active:
-      return "bg-success";
-    case PortFolioStatusTypes.Processing:
-      return "bg-info-dark";
-    case PortFolioStatusTypes.AtRisk:
-      return "bg-warning";
-    case PortFolioStatusTypes.Delinquent:
-    case PortFolioStatusTypes.Expired:
-      return "bg-error";
-    case "archived":
-      return "bg-base-dark";
-    default:
-      return "";
-    }
+    return getStatusChipBgColor(this.portfolioStatus);
   }
 
   public async loadPortfolio(): Promise<void> {
