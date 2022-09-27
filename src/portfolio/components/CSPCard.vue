@@ -12,7 +12,9 @@
       </div>
       <div>
         <div>
-          <h3 id="CSPTitle">Accessing your {{providers[cloudServiceProvider].title}}:</h3>
+          <div class="h3" id="CSPTitle">
+            Accessing your {{providers[cloudServiceProvider].title}}:
+          </div>
           <div class="d-flex align-center">
             <a id="CSPLink">
               {{providers[cloudServiceProvider].link}}

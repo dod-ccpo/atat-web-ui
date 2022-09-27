@@ -269,7 +269,7 @@ textarea {
 
 }
 
-._administrator-log.v-data-table {
+._csp-admin-log.v-data-table {
   > .v-data-table__wrapper > table > tbody {
     > tr {
       &.v-data-table__empty-wrapper {
@@ -358,7 +358,17 @@ textarea {
       }
     }
   }
+
+  .expand-move, .expand-enter-active, .expand-leave-active {
+     transition: all 1s ease;
+  }
+  .expand-enter, .expand-leave-to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
 }
+
 ._icon-circle {
   width: 32px;
   height: 32px;

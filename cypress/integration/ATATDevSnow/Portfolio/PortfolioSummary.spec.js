@@ -19,7 +19,7 @@ describe("Test suite: Portfolio summary", () => {
     cy.findElement(ps.headerPortofilioTextfield).should("have.value", portfolioName);
   });
     
-  it("TC1: Funding Tracker", () => {    
+  it.skip("TC1: Funding Tracker", () => {
     cy.findElement(ps.fundingTrackerTab).should('have.attr', 'aria-selected', 'true'); 
     cy.selectMenu(
       ps.moreMenubtn,
@@ -50,7 +50,7 @@ describe("Test suite: Portfolio summary", () => {
     
   });
 
-  it("TC2: Invite members to portfolio from sub menu", () => {
+  it.skip("TC2: Invite members to portfolio from sub menu", () => {
     cy.selectMenu(
       ps.moreMenubtn,
       ps.moreMenuList,
