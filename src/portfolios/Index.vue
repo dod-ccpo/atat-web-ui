@@ -13,7 +13,7 @@
         height="83"
       >
         <div id="NameHeader" tabindex="-1" class="mt-1">
-          <h1 class="mb-2 mt-5">Portfolios</h1>
+          <h1 class="mb-2 mt-5 pl-1">Portfolios</h1>
           <div>
             <v-tabs class="_header-tab "
               v-model="tabIndex">
@@ -57,6 +57,7 @@ import ProcessingPortfolios from "@/portfolios/components/ProcessingPortfolios.v
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import { getIdText } from "@/helpers";
+import SlideoutPanel from "@/store/slideoutPanel";
 
 @Component({
   components: {
@@ -80,6 +81,9 @@ export default class Portfolios extends Vue {
   }
   private getIdText(string: string) {
     return getIdText(string);
+  }
+  private get panelContent() {
+    return SlideoutPanel.slideoutPanelComponent;
   }
 }
 </script>
