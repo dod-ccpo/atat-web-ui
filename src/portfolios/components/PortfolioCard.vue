@@ -189,7 +189,7 @@ export default class PortfolioCard extends Vue {
   }
 
   public cspConsoleURLs: Record<string, string> = {
-    azure: "https://portal.azure.com/abc123",
+    azure: "https://portal.azure.com/abc123", // EJY need URLs in store somewhere
     aws: "https://signin.amazonaws-us-gov.com",
     google: "https://console.cloud.google.com",
     oracle: "https://console.oraclecloud.com",

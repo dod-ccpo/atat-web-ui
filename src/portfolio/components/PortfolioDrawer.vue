@@ -147,6 +147,7 @@
       @members-invited="membersInvited"
     />
 
+    <!-- EJY - COMPONENTIZE THIS FOR RE-USE ON PORTFOLIO LIST PAGE -->
     <ATATDialog
       id="RemoveMemberModal"
       :showDialog="showDeleteMemberDialog"

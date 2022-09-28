@@ -78,7 +78,7 @@ export default class CSPCard extends Vue {
   public providers = {
     "Azure":{
       title: "Azure Portal",
-      link: "https://portal.azure.com/abc123",
+      link: "https://portal.azure.com/abc123", // EJY need URLs in store somewhere
       accountName:"an Azure",
       withinName:"Azure",
       img: {
