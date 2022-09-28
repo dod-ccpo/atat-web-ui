@@ -16,7 +16,7 @@ import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
 import PortfolioSummary from "./portfolios/portfolio/components/Index.vue"
 import JWCCDashboard from "@/dashboards/JWCC.vue";
-import PortfolioDashboard from "@/dashboards/Portfolio.vue";
+import PortfolioDashboard from "@/portfolios/portfolio/Portfolio.vue";
 import ATATTopNavBar from "./components/ATATTopNavBar.vue";
 import AppSections from "@/store/appSections";
 import DocumentReview from "@/documentReview/Index.vue";

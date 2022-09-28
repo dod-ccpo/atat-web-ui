@@ -832,15 +832,15 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { DashboardService, PortFolioDashBoardDTO } from "../services/dashboards";
+import { DashboardService, PortFolioDashBoardDTO } from "../../services/dashboards";
 import ATATAlert from "@/components/ATATAlert.vue";
-import ATATFooter from "../components/ATATFooter.vue";
-import ATATPageHead from "../components/ATATPageHead.vue";
+import ATATFooter from "../../components/ATATFooter.vue";
+import ATATPageHead from "../../components/ATATPageHead.vue";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
-import ATATSVGIcon from "../components/icons/ATATSVGIcon.vue";
+import ATATSVGIcon from "../../components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
-import DonutChart from "../components/charts/DonutChart.vue";
-import LineChart from "../components/charts/LineChart.vue";
+import DonutChart from "../../components/charts/DonutChart.vue";
+import LineChart from "../../components/charts/LineChart.vue";
 
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -867,7 +867,7 @@ import {
 import _ from "lodash";
 import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
-import FundingAlert from "@/dashboards/FundingAlert.vue";
+import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
 
 @Component({
   components: {
