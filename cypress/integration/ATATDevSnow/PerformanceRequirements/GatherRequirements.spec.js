@@ -167,7 +167,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
       performanceReqs.classLevelsLabel,
       " What classification level(s) do you need? "
     );
-    cy.verifyCheckBoxLabels('input[type=checkbox]', selectedClassLevelsLabels);
+    cy.verifyCheckBoxLabels(performanceReqs.classCheckboxes, selectedClassLevelsLabels);
     cy.textExists(
       performanceReqs.contentAboutClass,
       " I need this requirement within a different classification level. What do I do? "
@@ -283,7 +283,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
       performanceReqs.classLevelsLabel,
       " What classification level(s) do you need? "
     );
-    cy.verifyCheckBoxLabels('input[type=checkbox]', selectedClassLevelsLabels);
+    cy.verifyCheckBoxLabels(performanceReqs.classCheckboxes, selectedClassLevelsLabels);
     
     cy.findElement(performanceReqs.contentAboutClass).click();
     //check the classifiation check boxes
