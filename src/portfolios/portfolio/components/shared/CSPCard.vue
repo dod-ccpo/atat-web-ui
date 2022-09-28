@@ -66,7 +66,8 @@ import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { SlideoutPanelContent } from "../../../../../types/Global";
 import SlideoutPanel from "@/store/slideoutPanel";
-import AccessingCSPLearnMore from "@/portfolios/portfolio/components/shared/AccessingCSPLearnMore.vue";
+import AccessingCSPLearnMore from
+  "@/portfolios/portfolio/components/shared/AccessingCSPLearnMore.vue";
 @Component({
   components: {
     ATATSVGIcon,

@@ -181,7 +181,8 @@ import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembers
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import PortfolioRolesLearnMore from "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
+import PortfolioRolesLearnMore from
+  "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
 
 import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
 import SlideoutPanel from "@/store/slideoutPanel";
