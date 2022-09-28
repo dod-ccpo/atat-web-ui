@@ -412,6 +412,7 @@ export interface PortfolioCardData extends Portfolio {
   totalObligated?: string;
   fundsSpent?: string;
   fundsSpentPercent?: string;
+  managerEmails?: string,
 }
 
 export interface EmailEntry {

@@ -188,44 +188,26 @@ export default class PortfolioCard extends Vue {
     loginToCSP: "loginToCSP",
   }
 
-  public portfolioCardMenuItems: MeatballMenuItem[] = [
-    { 
-      title: "View funding tracker",
-      action: this.menuActions.viewFundingTracker
-    },
-    { 
-      title: "View task orders",
-      action: this.menuActions.viewTaskOrders
-    },
-    { 
-      title: "Leave this portfolio",
-      action: this.menuActions.leavePortfolio
-    },
-    { 
-      title: "Email portfolio managers",
-      action: this.menuActions.emailManagers,
-    },    
-    { 
-      title: "Archive portfolio",
-      action: this.menuActions.archivePortfolio,
-      disabled: true,
-    },
-    { 
-      title: "Login to the CSP console",
-      action: this.menuActions.loginToCSP,
-      icon: {
-        name: "launch",
-        width: "15",
-        height: "15",
-        color: "primary",
-      },
-      separatorBefore: true,
-    },
-  ];
+  public cspConsoleURLs: Record<string, string> = {
+    azure: "https://portal.azure.com/abc123",
+    aws: "https://signin.amazonaws-us-gov.com",
+    google: "https://console.cloud.google.com",
+    oracle: "https://console.oraclecloud.com",
+  }
+
+  // DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
+  public currentUserEmail = "haac-admin@mail.mil";
+
+  public getCSPConsoleURL(): string {
+    return this.cardData.csp ? this.cspConsoleURLs[this.cardData.csp] : "";
+  }
+
+  public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
+      await AppSections.setActiveTabIndex(0);
       AppSections.setAppContentComponent(PortfolioSummary);
       debugger;
       break; 
@@ -235,12 +217,20 @@ export default class PortfolioCard extends Vue {
       break; 
     case this.menuActions.leavePortfolio: 
       break; 
-    case this.menuActions.emailManagers:
+    case this.menuActions.emailManagers: {
+      window.location.href 
+        = "mailto:" + this.cardData.managerEmails + "?cc=" + this.currentUserEmail;
       break; 
+    }
     case this.menuActions.archivePortfolio:
       break; 
-    case this.menuActions.loginToCSP:
+    case this.menuActions.loginToCSP: {
+      if (menuItem.url) {
+        window.open(menuItem.url, "_blank");
+      }
       break; 
+    }
+
     default:
       break; 
 
@@ -284,6 +274,48 @@ export default class PortfolioCard extends Vue {
         height:"25"
       }
     },
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    this.portfolioCardMenuItems = [
+      { 
+        title: "View funding tracker",
+        action: this.menuActions.viewFundingTracker
+      },
+      { 
+        title: "View task orders",
+        action: this.menuActions.viewTaskOrders
+      },
+      { 
+        title: "Leave this portfolio",
+        action: this.menuActions.leavePortfolio
+      },
+      { 
+        title: "Email portfolio managers",
+        action: this.menuActions.emailManagers,
+      },    
+      { 
+        title: "Archive portfolio",
+        action: this.menuActions.archivePortfolio,
+        disabled: true,
+      },
+      { 
+        title: "Login to the CSP console",
+        action: this.menuActions.loginToCSP,
+        icon: {
+          name: "launch",
+          width: "15",
+          height: "15",
+          color: "primary",
+        },
+        url: this.getCSPConsoleURL(), 
+        separatorBefore: true,
+      },
+    ];    
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 
 }

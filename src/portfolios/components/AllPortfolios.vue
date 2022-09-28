@@ -36,6 +36,7 @@ export default class AllPortfolios extends Vue {
     title?: string,
     status?: string,
     csp?: string,
+    managerEmails?: string,
     branch?: string,
     lastModified?: string,
     currentPoP?: string,
@@ -44,7 +45,7 @@ export default class AllPortfolios extends Vue {
     fundsSpentPercent?: string,
   ): Promise<PortfolioCardData> {
     return {
-      title, status, csp, branch, lastModified, currentPoP, 
+      title, status, csp, managerEmails, branch, lastModified, currentPoP, 
       totalObligated, fundsSpent, fundsSpentPercent
     }
   }
@@ -52,11 +53,12 @@ export default class AllPortfolios extends Vue {
   // delete this function when backend hooked up with actual data
   public async generateDummyData(): Promise<void> {
     const cardObjValues = [
-      ["ABC123 portfolio", "Processing", "aws", "Joint Force", "Started 23 minutes ago"],
-      // eslint-disable-next-line max-len
-      ["Army-Navy Game", "Active", "azure", "Army", "Last modified Sept. 1, 2022", "Oct. 1, 2022 - Sept. 31, 2023", "$1,000,000.00", "$500,000", "50"],
-      ["DEF456 portfolio", "At-Risk", "google", "Navy", "Last modified Sept. 2, 2022"],
-      ["GHI789 portfolio", "Delinquent", "oracle", "Marine Corps", "Last modified Sept. 3, 2022"]
+      /* eslint-disable max-len */
+      ["ABC123 portfolio", "Processing", "aws", "foo@mail.mil,bar@mail.mil", "Joint Force", "Started 23 minutes ago"],
+      ["Army-Navy Game", "Active", "azure", "foo@mail.mil,bar@mail.mil,baz@mail.mil", "Army", "Last modified Sept. 1, 2022", "Oct. 1, 2022 - Sept. 31, 2023", "$1,000,000.00", "$500,000", "50"],
+      ["DEF456 portfolio", "At-Risk", "google", "foo@mail.mil", "Navy", "Last modified Sept. 2, 2022"],
+      ["GHI789 portfolio", "Delinquent", "oracle", "qux@mail.mil", "Marine Corps", "Last modified Sept. 3, 2022"]
+      /* eslint-enable max-len */
     ]
     cardObjValues.forEach(async (values) => {
       const obj = await this.generateDummyObj(...values);
