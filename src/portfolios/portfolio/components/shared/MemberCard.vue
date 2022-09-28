@@ -120,9 +120,9 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { getUserInitials } from "../../helpers/index"
+import { getUserInitials } from "../../../../helpers"
 import { Component, Prop } from "vue-property-decorator";
-import { User } from "../../../types/Global";
+import { User } from "../../../../../types/Global";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PortfolioData from "@/store/portfolio";
 @Component({

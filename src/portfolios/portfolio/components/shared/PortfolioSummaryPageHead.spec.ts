@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import PortfolioSummaryPageHead from "@/portfolio/components/PortfolioSummaryPageHead.vue";
+import PortfolioSummaryPageHead from "@/portfolios/portfolio/components/shared/PortfolioSummaryPageHead.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 Vue.use(Vuetify);
 

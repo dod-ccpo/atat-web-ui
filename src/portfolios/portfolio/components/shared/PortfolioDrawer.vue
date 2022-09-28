@@ -177,14 +177,14 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
+import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembersModal.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import PortfolioRolesLearnMore from "@/portfolio/components/PortfolioRolesLearnMore.vue";
+import PortfolioRolesLearnMore from "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
 
 import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
-import SlideoutPanel from "@/store/slideoutPanel/index";
+import SlideoutPanel from "@/store/slideoutPanel";
 import Toast from "@/store/toast";
 
 import {
@@ -196,7 +196,7 @@ import {
 } from "types/Global";
 import { format, parseISO } from "date-fns";
 import _ from "lodash";
-import MemberCard from "@/portfolio/components/MemberCard.vue";
+import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import { getStatusChipBgColor } from "@/helpers";
 
 @Component({

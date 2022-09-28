@@ -106,8 +106,8 @@ import {
   SelectData,
   ToastObj,
   User
-} from "../../../types/Global";
-import PortfolioData from "@/store/portfolio/index";
+} from "../../../../../types/Global";
+import PortfolioData from "@/store/portfolio";
 
 import Toast from "@/store/toast";
 

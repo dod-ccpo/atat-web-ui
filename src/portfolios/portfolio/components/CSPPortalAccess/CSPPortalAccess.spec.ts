@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import CSPPortalAccess from "@/portfolio/CSPPortalAccess.vue";
+import CSPPortalAccess from "@/portfolios/portfolio/components/CSPPortalAccess/CSPPortalAccess.vue";
 import validators from "@/plugins/validation";
 Vue.use(Vuetify);
 
