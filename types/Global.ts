@@ -44,6 +44,20 @@ export interface TopNavItem {
   separatorBefore?: boolean;
 }
 
+export interface MeatballMenuItem {
+  title: string;
+  action?: string;
+  url?: string;
+  disabled?: boolean;
+  separatorBefore?: boolean;
+  icon?: MenuIcon;
+}
+export interface MeatballMenu {
+  id: string;
+  left: boolean;
+  menuItems: MeatballMenuItem[];
+}
+
 export interface StepperRouteHandlerParams {
   previous: string;
   next: string;

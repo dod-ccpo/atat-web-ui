@@ -96,10 +96,10 @@
       </div>
     </div>
 
-    <v-menu
+    <!-- <v-menu
       :offset-y="true"
-      left
-      id="MoreMenu"
+      :left="true"
+      :id="'PortfolioCardMenu' + index"
       class="_meatball-menu"
       attach
     >
@@ -107,7 +107,7 @@
         <v-btn
           v-bind="attrs"
           v-on="on"
-          id="MoreMenuButton"
+          :id="'PortfolioCardMenuButton' + index"
           class="_meatball-menu-button"
         >
           <v-icon class="text-base-dark">more_horiz</v-icon>
@@ -116,14 +116,37 @@
 
       <v-list>
         <v-list-item
-          v-for="(item, index) in moreMenuItems"
-          :key="index"
-          :id="getIdText(item.title) + '_MenuItem'"
+          v-for="(item, idx) in PortfolioCardMenuItems"
+          :key="idx"
+          :id="getIdText(item.title) + '_MenuItem' + index"
+          :class="[
+            { '_separator-before': item.separatorBefore },
+            { '_disabled': item.disabled }
+          ]"
+          @click="cardMenuClick(item.action)"
+          :disabled="item.disabled"
         >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
+          <v-list-item-title>
+            {{ item.title }}
+            <ATATSVGIcon
+              v-if="item.icon"
+              :name="item.icon.name"
+              :color="item.icon.color"
+              :width="item.icon.width"
+              :height="item.icon.height"           
+            />
+          </v-list-item-title>
         </v-list-item>
       </v-list>
-    </v-menu>         
+    </v-menu>    -->
+
+    <ATATMeatballMenu 
+      id="PortfolioCardMenu"
+      :left="true"
+      :menuIndex="index"
+      :menuItems="portfolioCardMenuItems"
+      @menuItemClick="cardMenuClick"
+    />
 
   </v-card>
 </template>
@@ -133,14 +156,19 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
-import { PortfolioCardData } from "types/Global";
+
+import { MeatballMenuItem, PortfolioCardData } from "types/Global";
 import { PortFolioStatusTypes } from "@/store/portfolio";
-import { getIdText, getStatusChipBgColor } from "@/helpers";
+import { getStatusChipBgColor } from "@/helpers";
+import AppSections from "@/store/appSections";
+import PortfolioSummary from "@/portfolio/Index.vue";
 
 @Component({
   components: {
     ATATSVGIcon,
+    ATATMeatballMenu,
   }
 })
 
@@ -151,13 +179,72 @@ export default class PortfolioCard extends Vue {
 
   public portfolioStatuses = PortFolioStatusTypes;
 
-  public moreMenuItems = [
-    { title: "Item 1" },
-    { title: "Item 2" },
+  public menuActions = {
+    viewFundingTracker: "navToFundingTracker",
+    viewTaskOrders: "navToTaskOrders",
+    leavePortfolio: "leavePortfolio",
+    emailManagers: "emailManagers",
+    archivePortfolio: "archivePortfolio",
+    loginToCSP: "loginToCSP",
+  }
+
+  public portfolioCardMenuItems: MeatballMenuItem[] = [
+    { 
+      title: "View funding tracker",
+      action: this.menuActions.viewFundingTracker
+    },
+    { 
+      title: "View task orders",
+      action: this.menuActions.viewTaskOrders
+    },
+    { 
+      title: "Leave this portfolio",
+      action: this.menuActions.leavePortfolio
+    },
+    { 
+      title: "Email portfolio managers",
+      action: this.menuActions.emailManagers,
+    },    
+    { 
+      title: "Archive portfolio",
+      action: this.menuActions.archivePortfolio,
+      disabled: true,
+    },
+    { 
+      title: "Login to the CSP console",
+      action: this.menuActions.loginToCSP,
+      icon: {
+        name: "launch",
+        width: "15",
+        height: "15",
+        color: "primary",
+      },
+      separatorBefore: true,
+    },
   ];
 
-  private getIdText(string: string) {
-    return getIdText(string);
+  public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
+    switch(menuItem.action) {
+    case this.menuActions.viewFundingTracker:
+      AppSections.setAppContentComponent(PortfolioSummary);
+      debugger;
+      break; 
+    case this.menuActions.viewTaskOrders: 
+      await AppSections.setActiveTabIndex(1);
+      AppSections.setAppContentComponent(PortfolioSummary);
+      break; 
+    case this.menuActions.leavePortfolio: 
+      break; 
+    case this.menuActions.emailManagers:
+      break; 
+    case this.menuActions.archivePortfolio:
+      break; 
+    case this.menuActions.loginToCSP:
+      break; 
+    default:
+      break; 
+
+    }
   }
 
   public get statusChipBgColor(): string {
