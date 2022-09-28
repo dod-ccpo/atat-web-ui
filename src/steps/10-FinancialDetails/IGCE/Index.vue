@@ -1,6 +1,8 @@
-
 <template>
-    <router-view/>
+  <div>
+    Future page for Index IGCE
+    <router-view />
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -8,7 +10,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({
 })
-export default class ContractDetails extends Vue {
+export default class IGCE extends Vue {
 }
 </script>
 

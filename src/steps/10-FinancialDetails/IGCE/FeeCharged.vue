@@ -1,6 +1,7 @@
-
 <template>
-    <router-view/>
+  <div>
+    Future page for Fee Charged
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -8,7 +9,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({
 })
-export default class ContractDetails extends Vue {
+export default class FeeCharged extends Vue {
 }
 </script>
 
