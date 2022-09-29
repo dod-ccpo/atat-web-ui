@@ -177,14 +177,15 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
+import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembersModal.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import PortfolioRolesLearnMore from "@/portfolio/components/PortfolioRolesLearnMore.vue";
+import PortfolioRolesLearnMore from
+  "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
 
 import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
-import SlideoutPanel from "@/store/slideoutPanel/index";
+import SlideoutPanel from "@/store/slideoutPanel";
 import Toast from "@/store/toast";
 
 import {
@@ -196,7 +197,8 @@ import {
 } from "types/Global";
 import { format, parseISO } from "date-fns";
 import _ from "lodash";
-import MemberCard from "@/portfolio/components/MemberCard.vue";
+import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
+import { getStatusChipBgColor } from "@/helpers";
 
 @Component({
   components: {
@@ -257,21 +259,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public getBgColor(): string {
-    switch (this.portfolioStatus) {
-    case PortFolioStatusTypes.Active:
-      return "bg-success";
-    case PortFolioStatusTypes.Processing:
-      return "bg-info-dark";
-    case PortFolioStatusTypes.AtRisk:
-      return "bg-warning";
-    case PortFolioStatusTypes.Delinquent:
-    case PortFolioStatusTypes.Expired:
-      return "bg-error";
-    case "archived":
-      return "bg-base-dark";
-    default:
-      return "";
-    }
+    return getStatusChipBgColor(this.portfolioStatus);
   }
 
   public async loadPortfolio(): Promise<void> {

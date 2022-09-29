@@ -160,13 +160,13 @@
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
-import CSPCard from "@/portfolio/components/CSPCard.vue";
+import CSPCard from "@/portfolios/portfolio/components/shared/CSPCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import format from "date-fns/format"
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
-import AddAdminSlideOut from "@/portfolio/components/AddAdminSlideOut.vue";
+import AddAdminSlideOut from "@/portfolios/portfolio/components/shared/AddAdminSlideOut.vue";
 
 @Component({
   components: {
@@ -304,7 +304,7 @@ export default class CSPPortalAccess extends Vue {
   public toolTipText = `This 10-digit number is printed on the back of your administrator's
     Common Access Card (CAC). You may also ask your administrator to log into
     <span class="text-decoration-underline">DoD ID Card Office Online</span>
-    and locate it under "My Profile."`;
+    and locate it under “My Profile.”`;
 
   public statusImg = {
     "Failed":{

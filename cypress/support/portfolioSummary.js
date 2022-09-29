@@ -62,3 +62,20 @@ Cypress.Commands.add('clickBtnOnModal', (btnSelector,btnText,toastText) => {
   
 });
 
+Cypress.Commands.add('getRowCount', () => {
+  cy.findElement('.row-item').then(($el) => {
+    const length = $el.length;
+    cy.log("length:", length)
+    cy.findElement('table tbody tr').should('have.length', length);
+  });
+    
+});
+
+Cypress.Commands.add('columnRowsExists', (selector,expectedValues) => {
+  cy.findElement(selector).then(($els) => {
+    const foundText = Cypress.$.makeArray($els).map((el) => el.innerText);
+    return foundText;
+  })   
+    .should('deep.equal', expectedValues);  
+  cy.log("expectedValues:",expectedValues)
+});

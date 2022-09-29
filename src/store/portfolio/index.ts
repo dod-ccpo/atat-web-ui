@@ -33,17 +33,14 @@ export const FundingAlertTypes = {
   POPFundsDepleted: "POPFundsDepleted",
   POPExpired: "POPExpired",
 };
-  
 
 export interface FundingAlertData {
-
-     alerts: AlertDTO[],
-     daysRemaining: number,
-     spendingViolation: number;
-     fundingAlertType: string;
-     hasLowFundingAlert: boolean;
+  alerts: AlertDTO[],
+  daysRemaining: number,
+  spendingViolation: number;
+  fundingAlertType: string;
+  hasLowFundingAlert: boolean;
 }
-
 
 export const getThresholdAmount = (value: string): number => {
   const stringVal = value.replace('%', '');
