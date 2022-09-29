@@ -473,13 +473,10 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Other Service Offering Summary",
         path: "service-offerings/other/summary",
         excludeFromMenu: true,
-        // name: routeNames.ServiceOfferingDetails,
         name: routeNames.OtherOfferingSummary,
         completePercentageWeight: 1,
         component: OtherOfferingSummary,
-        // routeResolver: OfferingDetailsPathResolver, 
         routeResolver: OtherOfferingSummaryPathResolver, 
-        // EJY should routeResolver be OtherOfferingSummaryPathResolver ??
         additionalButtons: [
           {
             buttonText: "I don’t need compute resources",

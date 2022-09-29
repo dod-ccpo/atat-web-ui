@@ -297,8 +297,6 @@ export default class CSPPortalAccess extends Vue {
 
     this.$refs.DoDIDInput.resetValidation();
     this.$refs.DoDIDInput.setErrorMessage();
-    
-    debugger;
   }
 
   public toolTipText = `This 10-digit number is printed on the back of your administrator's

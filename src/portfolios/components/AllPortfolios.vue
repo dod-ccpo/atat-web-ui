@@ -33,7 +33,6 @@ export default class AllPortfolios extends Vue {
   public portfolioCardData: PortfolioCardData[] = []
 
   public leavePortfolio(sysId: string): void {
-    debugger;
     this.portfolioCardData = this.portfolioCardData.filter(
       obj => obj.sys_id !== sysId
     );

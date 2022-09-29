@@ -71,19 +71,24 @@ describe("Testing index Component", () => {
   });
 
   it("clicks meatball menu - Leave portfolio", async () => {
+    await wrapper.setData({ showLeavePortfolioModal: false })
     await wrapper.vm.cardMenuClick({action: menuActions.leavePortfolio});
-    expect(wrapper.vm.$data.showLeavePortfolioModal).toBeTruthy();
+    expect(await wrapper.vm.$data.showLeavePortfolioModal).toBeTruthy();
   });
 
   it("clicks meatball menu - Email portfolio managers", async () => {
+    window.open = jest.fn();
     await wrapper.vm.cardMenuClick({action: menuActions.emailManagers});
+    expect(window.open).toHaveBeenCalled();
   });
 
   it("clicks meatball menu - Log into CSP console", async () => {
-    await wrapper.vm.cardMenuClick({action: menuActions.loginToCSP, url: "https://google.com"});
+    window.open = jest.fn();
+    await wrapper.vm.cardMenuClick({action: menuActions.loginToCSP, url: "foo"});
+    expect(window.open).toHaveBeenCalledWith("foo", "_blank");
   });
 
-  it("clicks meatball menu - Log into CSP console", async () => {
+  it("clicks meatball menu - no action taken", async () => {
     await wrapper.vm.cardMenuClick({action: "foo"});
   });
 

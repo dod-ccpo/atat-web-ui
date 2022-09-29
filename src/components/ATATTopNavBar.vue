@@ -127,7 +127,7 @@ export default class ATATTopNavBar extends Vue {
     role: "Manager",
   };
 
-  public activeMenuItems: string[] = []; // EJY use for hilite active
+  public activeMenuItems: string[] = [];
 
   public isMenuItemActive(item: TopNavItem): boolean {
     if (this.activeMenuItems.indexOf(item.title) > -1) {
@@ -146,7 +146,6 @@ export default class ATATTopNavBar extends Vue {
           this.activeMenuItems.push(item.parentTitle);
         }
         AppSections.changeActiveSection(item.spaSectionTitle);
-        debugger;
       } else if (item.externalUrl) {
         // open external URL in new tab
         window.open(item.externalUrl, "_blank");

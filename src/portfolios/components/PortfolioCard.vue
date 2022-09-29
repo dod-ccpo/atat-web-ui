@@ -120,9 +120,8 @@ import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
-
 import { MeatballMenuItem, PortfolioCardData } from "types/Global";
-import { PortFolioStatusTypes } from "@/store/portfolio";
+import { cspConsoleURLs, PortFolioStatusTypes } from "@/store/portfolio";
 import { getStatusChipBgColor } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
@@ -150,23 +149,16 @@ export default class PortfolioCard extends Vue {
     emailManagers: "emailManagers",
     loginToCSP: "loginToCSP",
   }
-
-  public cspConsoleURLs: Record<string, string> = {
-    azure: "https://portal.azure.com/abc123", // EJY need URLs in store somewhere
-    aws: "https://signin.amazonaws-us-gov.com",
-    google: "https://console.cloud.google.com",
-    oracle: "https://console.oraclecloud.com",
-  }
  
   // DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
   public currentUserEmail = "sample-haac-admin@mail.mil";
-  public async getManagerEmails(): Promise<string> {
+  public get managerEmails(): string {
     // Return dummy emails until API call wired up to get portfolio managers
     return "foo@mail.mil, bar@mail.mil";
   }
 
   public getCSPConsoleURL(): string {
-    return this.cardData.csp ? this.cspConsoleURLs[this.cardData.csp] : "";
+    return this.cardData.csp ? cspConsoleURLs[this.cardData.csp] : "";
   }
 
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
@@ -185,9 +177,9 @@ export default class PortfolioCard extends Vue {
       this.showLeavePortfolioModal = true;
       break; 
     case this.menuActions.emailManagers: {
-      const managerEmails = await this.getManagerEmails();
-      window.location.href 
-        = "mailto:" + managerEmails + "?cc=" + this.currentUserEmail;
+      const managerEmails = await this.managerEmails;
+      const mailStr = "mailto:" + managerEmails + "?cc=" + this.currentUserEmail;
+      window.open(mailStr, "_blank");
       break; 
     }
     case this.menuActions.loginToCSP: {
