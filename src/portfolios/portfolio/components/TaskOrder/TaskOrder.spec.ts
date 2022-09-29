@@ -2,17 +2,17 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import Members from "@/portfolio/components/Members.vue";
+import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
 Vue.use(Vuetify);
 
-describe("Testing Members Component", () => {
+describe("Testing TaskOrder Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(Members, {
+    wrapper = mount(TaskOrder, {
       localVue,
       vuetify,
     });

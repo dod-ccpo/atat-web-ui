@@ -42,10 +42,11 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATToast from "@/components/ATATToast.vue";
-import PortfolioSummaryPageHead from "@/portfolio/components/PortfolioSummaryPageHead.vue";
-import CSPPortalAccess from "@/portfolio/CSPPortalAccess.vue";
-import FundingTracker from "@/portfolio/FundingTracker.vue";
-import TaskOrder from "@/portfolio/TaskOrder.vue";
+import PortfolioSummaryPageHead from
+  "@/portfolios/portfolio/components/shared/PortfolioSummaryPageHead.vue";
+import CSPPortalAccess from "@/portfolios/portfolio/components/CSPPortalAccess/CSPPortalAccess.vue";
+import FundingTracker from "@/portfolios/portfolio/components/FundingTracker/FundingTracker.vue";
+import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
 import PortfolioData from "@/store/portfolio";
 
 @Component({

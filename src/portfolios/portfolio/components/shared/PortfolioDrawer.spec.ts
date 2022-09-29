@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
+import PortfolioDrawer from "@/portfolios/portfolio/components/shared/PortfolioDrawer.vue";
 import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
 import { SelectData, User } from "types/Global";
 Vue.use(Vuetify);
