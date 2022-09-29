@@ -38,7 +38,7 @@
           v-if="tabItems[tabIndex] === 'Active'"
         />
 
-        <v-btn @click="changeSection" class="my-10">
+        <v-btn id="TempPortfolioLink" @click="changeSection" class="my-10">
           link portfolio Summary
         </v-btn>
 

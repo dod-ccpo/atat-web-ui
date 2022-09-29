@@ -2,9 +2,9 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
+import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembersModal.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import PortfolioData from "@/store/portfolio/index";
+import PortfolioData from "@/store/portfolio";
 
 Vue.use(Vuetify);
 

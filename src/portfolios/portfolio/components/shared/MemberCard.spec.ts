@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import MemberCard from "@/portfolio/components/MemberCard.vue";
+import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import PortfolioData from "@/store/portfolio";
 Vue.use(Vuetify);
 
