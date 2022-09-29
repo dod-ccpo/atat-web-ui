@@ -160,13 +160,13 @@
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
-import CSPCard from "@/portfolio/components/CSPCard.vue";
+import CSPCard from "@/portfolios/portfolio/components/shared/CSPCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import format from "date-fns/format"
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
-import AddAdminSlideOut from "@/portfolio/components/AddAdminSlideOut.vue";
+import AddAdminSlideOut from "@/portfolios/portfolio/components/shared/AddAdminSlideOut.vue";
 
 @Component({
   components: {
