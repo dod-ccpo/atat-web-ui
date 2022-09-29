@@ -12,6 +12,7 @@ import {
   OrganizationDTO, 
   ProjectOverviewDTO,
   ContactDTO,
+  BaseTableDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -356,18 +357,6 @@ export interface OtherServiceOfferingData {
   requirementTitle?: string;
 }
 
-// export interface ComputeInstanceTableData {
-//   instanceNumber: number;
-//   type: string;
-//   location: string;
-//   qty: string;
-//   vCPU: string;
-//   memory: string;
-//   storage: string;
-//   classification: string;
-//   performance: string;
-// }
-
 export interface OtherServiceSummaryTableData {
   instanceNumber: number;
   typeOrTitle?: string;
@@ -393,7 +382,7 @@ export interface User {
   serviceAgency?: string;
 }
 
-export interface Portfolio {
+export interface Portfolio extends BaseTableDTO {
   title?: string;
   description?: string;
   status?: string;
@@ -412,7 +401,6 @@ export interface PortfolioCardData extends Portfolio {
   totalObligated?: string;
   fundsSpent?: string;
   fundsSpentPercent?: string;
-  managerEmails?: string,
 }
 
 export interface EmailEntry {

@@ -96,56 +96,18 @@
       </div>
     </div>
 
-    <!-- <v-menu
-      :offset-y="true"
-      :left="true"
-      :id="'PortfolioCardMenu' + index"
-      class="_meatball-menu"
-      attach
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          v-bind="attrs"
-          v-on="on"
-          :id="'PortfolioCardMenuButton' + index"
-          class="_meatball-menu-button"
-        >
-          <v-icon class="text-base-dark">more_horiz</v-icon>
-        </v-btn>
-      </template>
-
-      <v-list>
-        <v-list-item
-          v-for="(item, idx) in PortfolioCardMenuItems"
-          :key="idx"
-          :id="getIdText(item.title) + '_MenuItem' + index"
-          :class="[
-            { '_separator-before': item.separatorBefore },
-            { '_disabled': item.disabled }
-          ]"
-          @click="cardMenuClick(item.action)"
-          :disabled="item.disabled"
-        >
-          <v-list-item-title>
-            {{ item.title }}
-            <ATATSVGIcon
-              v-if="item.icon"
-              :name="item.icon.name"
-              :color="item.icon.color"
-              :width="item.icon.width"
-              :height="item.icon.height"           
-            />
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>    -->
-
     <ATATMeatballMenu 
       id="PortfolioCardMenu"
       :left="true"
       :menuIndex="index"
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
+    />
+
+    <LeavePortfolioModal
+      :showModal.sync="showLeavePortfolioModal" 
+      :portfolioName="cardData.title"
+      @okClicked="leavePortfolio"
     />
 
   </v-card>
@@ -163,12 +125,14 @@ import { MeatballMenuItem, PortfolioCardData } from "types/Global";
 import { PortFolioStatusTypes } from "@/store/portfolio";
 import { getStatusChipBgColor } from "@/helpers";
 import AppSections from "@/store/appSections";
-import PortfolioSummary from "@/portfolio/Index.vue";
+import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue";
+import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
 
 @Component({
   components: {
     ATATSVGIcon,
     ATATMeatballMenu,
+    LeavePortfolioModal,
   }
 })
 
@@ -178,6 +142,7 @@ export default class PortfolioCard extends Vue {
   @Prop() private isLastCard!: boolean;
 
   public portfolioStatuses = PortFolioStatusTypes;
+  public showLeavePortfolioModal = false;
 
   public menuActions = {
     viewFundingTracker: "navToFundingTracker",
@@ -196,7 +161,11 @@ export default class PortfolioCard extends Vue {
   }
 
   // DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
-  public currentUserEmail = "haac-admin@mail.mil";
+  public currentUserEmail = "sample-haac-admin@mail.mil";
+  public async getManagerEmails(): Promise<string> {
+    // Return dummy emails until API call wired up to get portfolio managers
+    return "foo@mail.mil, bar@mail.mil";
+  }
 
   public getCSPConsoleURL(): string {
     return this.cardData.csp ? this.cspConsoleURLs[this.cardData.csp] : "";
@@ -216,29 +185,31 @@ export default class PortfolioCard extends Vue {
       AppSections.setAppContentComponent(PortfolioSummary);
       break; 
     case this.menuActions.leavePortfolio: 
+      this.showLeavePortfolioModal = true;
       break; 
     case this.menuActions.emailManagers: {
+      const managerEmails = await this.getManagerEmails();
       window.location.href 
-        = "mailto:" + this.cardData.managerEmails + "?cc=" + this.currentUserEmail;
+        = "mailto:" + managerEmails + "?cc=" + this.currentUserEmail;
       break; 
     }
-    case this.menuActions.archivePortfolio:
-      break; 
     case this.menuActions.loginToCSP: {
       if (menuItem.url) {
         window.open(menuItem.url, "_blank");
       }
       break; 
     }
-
     default:
       break; 
-
     }
   }
 
   public get statusChipBgColor(): string {
     return getStatusChipBgColor(this.cardData.status ? this.cardData.status : "");
+  }
+
+  public leavePortfolio(): void {
+    this.$emit("leavePortfolio", this.cardData.sys_id);
   }
 
   public CSPs = {
@@ -294,11 +265,6 @@ export default class PortfolioCard extends Vue {
         title: "Email portfolio managers",
         action: this.menuActions.emailManagers,
       },    
-      { 
-        title: "Archive portfolio",
-        action: this.menuActions.archivePortfolio,
-        disabled: true,
-      },
       { 
         title: "Login to the CSP console",
         action: this.menuActions.loginToCSP,

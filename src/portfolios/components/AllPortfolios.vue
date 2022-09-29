@@ -10,6 +10,7 @@
         :cardData="cardData"
         :index="index"
         :isLastCard="index === portfolioCardData.length - 1"
+        @leavePortfolio="leavePortfolio"
       />
     </div>
 
@@ -31,12 +32,23 @@ import { PortfolioCardData } from "types/Global";
 export default class AllPortfolios extends Vue {
   public portfolioCardData: PortfolioCardData[] = []
 
+  public leavePortfolio(sysId: string): void {
+    debugger;
+    this.portfolioCardData = this.portfolioCardData.filter(
+      obj => obj.sys_id !== sysId
+    );
+    // future ticket, remove member from portfolio table in snow
+    // after removed, make new call to reload portfolio list if > 10 portfolios
+    // to ensure 10 listed on page
+  }
+
   // delete this function when backend hooked up with actual data
   public async generateDummyObj(
+    // eslint-disable-next-line camelcase
+    sys_id?: string,
     title?: string,
     status?: string,
     csp?: string,
-    managerEmails?: string,
     branch?: string,
     lastModified?: string,
     currentPoP?: string,
@@ -45,7 +57,8 @@ export default class AllPortfolios extends Vue {
     fundsSpentPercent?: string,
   ): Promise<PortfolioCardData> {
     return {
-      title, status, csp, managerEmails, branch, lastModified, currentPoP, 
+      // eslint-disable-next-line camelcase
+      sys_id, title, status, csp, branch, lastModified, currentPoP, 
       totalObligated, fundsSpent, fundsSpentPercent
     }
   }
@@ -54,10 +67,10 @@ export default class AllPortfolios extends Vue {
   public async generateDummyData(): Promise<void> {
     const cardObjValues = [
       /* eslint-disable max-len */
-      ["ABC123 portfolio", "Processing", "aws", "foo@mail.mil,bar@mail.mil", "Joint Force", "Started 23 minutes ago"],
-      ["Army-Navy Game", "Active", "azure", "foo@mail.mil,bar@mail.mil,baz@mail.mil", "Army", "Last modified Sept. 1, 2022", "Oct. 1, 2022 - Sept. 31, 2023", "$1,000,000.00", "$500,000", "50"],
-      ["DEF456 portfolio", "At-Risk", "google", "foo@mail.mil", "Navy", "Last modified Sept. 2, 2022"],
-      ["GHI789 portfolio", "Delinquent", "oracle", "qux@mail.mil", "Marine Corps", "Last modified Sept. 3, 2022"]
+      ["1234567890", "ABC123 portfolio", "Processing", "aws", "Joint Force", "Started 23 minutes ago"],
+      ["2345678901", "Army-Navy Game", "Active", "azure", "Army", "Last modified Sept. 1, 2022", "Oct. 1, 2022 - Sept. 31, 2023", "$1,000,000.00", "$500,000", "50"],
+      ["3456789012", "DEF456 portfolio", "At-Risk", "google", "Navy", "Last modified Sept. 2, 2022"],
+      ["4567890123", "GHI789 portfolio", "Delinquent", "oracle", "Marine Corps", "Last modified Sept. 3, 2022"]
       /* eslint-enable max-len */
     ]
     cardObjValues.forEach(async (values) => {
