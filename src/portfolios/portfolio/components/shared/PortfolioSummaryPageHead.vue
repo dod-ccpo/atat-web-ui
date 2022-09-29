@@ -132,14 +132,14 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
-import AddMembersModal from "@/portfolio/components/AddMembersModal.vue";
-import PortfolioDrawer from "@/portfolio/components/PortfolioDrawer.vue";
+import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembersModal.vue";
+import PortfolioDrawer from "@/portfolios/portfolio/components/shared/PortfolioDrawer.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-import { SlideoutPanelContent } from "../../../types/Global";
+import { SlideoutPanelContent } from "../../../../../types/Global";
 import { getIdText } from "@/helpers";
 
 @Component({

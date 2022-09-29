@@ -391,6 +391,15 @@ export interface Portfolio {
   updated?: string;
 }
 
+export interface PortfolioCardData extends Portfolio {
+  branch?: string;
+  lastModified?: string;
+  currentPoP?: string;
+  totalObligated?: string;
+  fundsSpent?: string;
+  fundsSpentPercent?: string;
+}
+
 export interface EmailEntry {
   key: string;
   email: string;

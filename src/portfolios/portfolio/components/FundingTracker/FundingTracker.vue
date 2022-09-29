@@ -9,7 +9,7 @@ import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
 
-import PortfolioDashboard from "@/dashboards/Portfolio.vue";
+import PortfolioDashboard from "@/portfolios/portfolio/Portfolio.vue";
 
 @Component({
   components: {

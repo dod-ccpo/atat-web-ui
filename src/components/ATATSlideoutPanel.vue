@@ -19,7 +19,7 @@
         {{ panelTitle }}
       </div>
       <v-btn
-        class="text--base-darkest pa-0 icon-24"
+        class="text-base-darkest pa-0 icon-24"
         text
         small
         @click.stop="closeSlideoutPanel"

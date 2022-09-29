@@ -43,24 +43,24 @@
                         </div>
                       </v-col>
                       <v-col>
-                        <p class="text--base-darkest pt-1 mb-0">
+                        <p class="text-base-darkest pt-1 mb-0">
                           Total Portfolio Funds
                         </p>
                         <span id="TotalPortfolioFunds" class="h2 mb-0">
                           {{ getCurrencyString(totalPortfolioFunds) }}
                         </span>
-                        <p class="text--base-dark mb-0 font-size-14">
+                        <p class="text-base-dark mb-0 font-size-14">
                           Total value of your active task orders
                         </p>
                         <v-divider class="my-4" />
-                        <p class="text--base-darkest mb-0 font-size-14">
+                        <p class="text-base-darkest mb-0 font-size-14">
                           Current Period of Performance
                         </p>
                         <span id="PoPDates" class="h3 mb-0">
                           {{ popStart }}&ndash;{{ popEnd }}
                         </span>
                         <p
-                          class="text--base-dark mb-0 font-size-14"
+                          class="text-base-dark mb-0 font-size-14"
                           v-if="!hasTimeSensativeAlert()"
                         >
                           {{ timeToExpiration }} to expiration
@@ -218,7 +218,7 @@
                 <v-col>
                   <v-card class="_no-shadow v-sheet--outlined pa-8">
                     <h3 class="mb-4">Actual and Projected Burn Rate</h3>
-                    <p class="text--base-dark font-size-14">
+                    <p class="text-base-dark font-size-14">
                       Track your rate of spend and available funds throughout
                       the current period of performance. Forecasted future costs
                       are based on historical trends and show approximately when
@@ -832,15 +832,15 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { DashboardService, PortFolioDashBoardDTO } from "../services/dashboards";
+import { DashboardService, PortFolioDashBoardDTO } from "../../services/dashboards";
 import ATATAlert from "@/components/ATATAlert.vue";
-import ATATFooter from "../components/ATATFooter.vue";
-import ATATPageHead from "../components/ATATPageHead.vue";
+import ATATFooter from "../../components/ATATFooter.vue";
+import ATATPageHead from "../../components/ATATPageHead.vue";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
-import ATATSVGIcon from "../components/icons/ATATSVGIcon.vue";
+import ATATSVGIcon from "../../components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
-import DonutChart from "../components/charts/DonutChart.vue";
-import LineChart from "../components/charts/LineChart.vue";
+import DonutChart from "../../components/charts/DonutChart.vue";
+import LineChart from "../../components/charts/LineChart.vue";
 
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -867,7 +867,7 @@ import {
 import _ from "lodash";
 import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
-import FundingAlert from "@/dashboards/FundingAlert.vue";
+import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
 
 @Component({
   components: {

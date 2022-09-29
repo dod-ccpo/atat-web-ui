@@ -2,6 +2,8 @@ import { ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@/api/models
 import { Checkbox, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
+import { PortFolioStatusTypes } from "@/store/portfolio";
+
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -197,3 +199,23 @@ export function getUserInitials(member:User): string {
   const initials = firstI && lastI ? firstI + lastI : "XX";
   return initials.toUpperCase();
 }
+
+export function getStatusChipBgColor(status: string): string {
+  switch (status) {
+  case PortFolioStatusTypes.Active:
+    return "bg-success";
+  case PortFolioStatusTypes.Processing:
+    return "bg-info-dark";
+  case PortFolioStatusTypes.AtRisk:
+    return "bg-warning";
+  case PortFolioStatusTypes.Delinquent:
+  case PortFolioStatusTypes.Expired:
+    return "bg-error";
+  case PortFolioStatusTypes.Archived:
+    return "bg-base-dark";
+  default:
+    return "";
+  }
+
+}
+
