@@ -95,7 +95,6 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    debugger
     const storeData = await AcquisitionPackage.
       loadData<RequirementsCostEstimateDTO>({storeProperty: 
       StoreProperties.RequirementsCostEstimate});
