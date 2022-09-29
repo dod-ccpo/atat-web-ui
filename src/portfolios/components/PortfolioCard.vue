@@ -125,7 +125,6 @@ import { MeatballMenuItem, PortfolioCardData } from "types/Global";
 import { PortFolioStatusTypes } from "@/store/portfolio";
 import { getStatusChipBgColor } from "@/helpers";
 import AppSections from "@/store/appSections";
-import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
 
 @Component({
@@ -149,7 +148,6 @@ export default class PortfolioCard extends Vue {
     viewTaskOrders: "navToTaskOrders",
     leavePortfolio: "leavePortfolio",
     emailManagers: "emailManagers",
-    archivePortfolio: "archivePortfolio",
     loginToCSP: "loginToCSP",
   }
 
@@ -159,7 +157,7 @@ export default class PortfolioCard extends Vue {
     google: "https://console.cloud.google.com",
     oracle: "https://console.oraclecloud.com",
   }
-
+ 
   // DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
   public currentUserEmail = "sample-haac-admin@mail.mil";
   public async getManagerEmails(): Promise<string> {
@@ -177,12 +175,11 @@ export default class PortfolioCard extends Vue {
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
       await AppSections.setActiveTabIndex(0);
-      AppSections.setAppContentComponent(PortfolioSummary);
-      debugger;
+      await AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
       break; 
     case this.menuActions.viewTaskOrders: 
       await AppSections.setActiveTabIndex(1);
-      AppSections.setAppContentComponent(PortfolioSummary);
+      await AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
       break; 
     case this.menuActions.leavePortfolio: 
       this.showLeavePortfolioModal = true;

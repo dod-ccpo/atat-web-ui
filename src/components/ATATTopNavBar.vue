@@ -146,6 +146,7 @@ export default class ATATTopNavBar extends Vue {
           this.activeMenuItems.push(item.parentTitle);
         }
         AppSections.changeActiveSection(item.spaSectionTitle);
+        debugger;
       } else if (item.externalUrl) {
         // open external URL in new tab
         window.open(item.externalUrl, "_blank");
