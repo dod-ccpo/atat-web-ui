@@ -1,6 +1,5 @@
 <template>
   <div>
-    Future page for Index IGCE
     <router-view />
   </div>
 </template>
