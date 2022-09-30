@@ -1,4 +1,6 @@
 /* eslint-disable camelcase */
+import {User} from "../../../types/Global";
+
 export interface BaseTableDTO {
   sys_id?: string;
   sys_updated_by?: string;
@@ -360,4 +362,22 @@ export interface EnvironmentInstanceDTO extends BaseTableDTO {
   memory_amount: string;
   operating_system_licensing: string;
   data_egress_monthly_unit: string;
+}
+
+export interface PortfolioSummaryDTO {
+  title: string;
+  description: string;
+  status: string;
+  csp: string;
+  serviceAgency: string;
+  createdBy: string;
+  provisioned: string;
+  members: User[];
+  updated: string;
+  branch: string;
+  lastModified: string;
+  currentPoP: string;
+  totalObligated: string;
+  fundsSpent: string;
+  fundsSpentPercent: string;
 }
