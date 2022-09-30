@@ -88,10 +88,15 @@ export default class ATATAlert extends Vue {
   /**
    * type: 1) info, 2) error, 3) warning, 4) success, 5) callout
    * NOTE:
-   * type "callout" will never have an icon or border, always light blue background - general info
+   * type "callout" will never have an icon or border - general info
    * all other types are alerts and will always have an icon and border
    */
   @Prop({default: "error"}) private type?: string;
+
+  /**
+   * default is info-lighter
+   */
+  @Prop({default: "info_lighter"}) private calloutBackground?: string;
 
   /**
    * size: 1) large or 2)small
@@ -103,10 +108,12 @@ export default class ATATAlert extends Vue {
   @Prop({default: false}) private closeButton?: boolean;
 
   public get getClasses(): string {
+    let alertClasses = ""
     if (this.type === "callout") {
-      return this.maxHeight ? "_callout _scrollable py-0 pr-0" : "_callout";
+      alertClasses = this.maxHeight ? "_callout _scrollable py-0 pr-0" : "_callout";
+      return alertClasses + " bg-" + this.calloutBackground;
     }
-    let alertClasses = "_" + this.type + "-alert";
+    alertClasses = "_" + this.type + "-alert";
     alertClasses = this.borderLeft ? alertClasses + " _border-left-thick" : alertClasses;
     alertClasses = this.maxHeight ? alertClasses + " py-0 pr-0" : alertClasses;
     return alertClasses;
