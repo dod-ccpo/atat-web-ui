@@ -41,10 +41,6 @@
           v-if="tabItems[tabIndex] === 'Active'"
         />
 
-        <v-btn id="TempPortfolioLink" @click="changeSection" class="my-10">
-          link portfolio Summary
-        </v-btn>
-
       </v-container>
       <ATATFooter/>
     </v-main>
@@ -81,10 +77,8 @@ export default class Portfolios extends Vue {
     "All portfolios",
     "Processing",
     "Active"
-  ]
-  public async changeSection(): Promise<void> {
-    AppSections.changeActiveSection("Portfolio Summary")
-  }
+  ];
+
   private getIdText(string: string) {
     return getIdText(string);
   }
