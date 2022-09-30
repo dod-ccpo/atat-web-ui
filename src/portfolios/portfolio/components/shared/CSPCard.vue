@@ -68,18 +68,22 @@ import { SlideoutPanelContent } from "../../../../../types/Global";
 import SlideoutPanel from "@/store/slideoutPanel";
 import AccessingCSPLearnMore from
   "@/portfolios/portfolio/components/shared/AccessingCSPLearnMore.vue";
+import { cspConsoleURLs } from "@/store/portfolio";
+
+
 @Component({
   components: {
     ATATSVGIcon,
   }
 })
+
 export default class CSPCard extends Vue {
   @Prop() private cloudServiceProvider!: string;
 
   public providers = {
     "Azure":{
       title: "Azure Portal",
-      link: "https://portal.azure.com/abc123",
+      link: cspConsoleURLs.azure,
       accountName:"an Azure",
       withinName:"Azure",
       img: {
@@ -90,7 +94,7 @@ export default class CSPCard extends Vue {
     },
     "AWS":{
       title: "AWS Management Console",
-      link: "https://signin.amazonaws-us-gov.com",
+      link: cspConsoleURLs.aws,
       accountName:"an AWS",
       withinName:"AWS",
       img: {
@@ -101,7 +105,7 @@ export default class CSPCard extends Vue {
     },
     "Google":{
       title: "Google Cloud Console",
-      link: "https://console.cloud.google.com",
+      link: cspConsoleURLs.google,
       accountName:"a Google Cloud",
       withinName:"GCP",
       img: {
@@ -112,7 +116,7 @@ export default class CSPCard extends Vue {
     },
     "Oracle":{
       title: "Oracle Cloud Console",
-      link: "https://console.oraclecloud.com",
+      link: cspConsoleURLs.oracle,
       accountName:"an OCI",
       withinName:"Oracle",
       img: {

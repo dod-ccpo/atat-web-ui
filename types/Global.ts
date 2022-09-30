@@ -12,6 +12,7 @@ import {
   OrganizationDTO, 
   ProjectOverviewDTO,
   ContactDTO,
+  BaseTableDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -42,6 +43,20 @@ export interface TopNavItem {
   align?: string;
   isProfile?: boolean;
   separatorBefore?: boolean;
+}
+
+export interface MeatballMenuItem {
+  title: string;
+  action?: string;
+  url?: string;
+  disabled?: boolean;
+  separatorBefore?: boolean;
+  icon?: MenuIcon;
+}
+export interface MeatballMenu {
+  id: string;
+  left: boolean;
+  menuItems: MeatballMenuItem[];
 }
 
 export interface StepperRouteHandlerParams {
@@ -342,18 +357,6 @@ export interface OtherServiceOfferingData {
   requirementTitle?: string;
 }
 
-// export interface ComputeInstanceTableData {
-//   instanceNumber: number;
-//   type: string;
-//   location: string;
-//   qty: string;
-//   vCPU: string;
-//   memory: string;
-//   storage: string;
-//   classification: string;
-//   performance: string;
-// }
-
 export interface OtherServiceSummaryTableData {
   instanceNumber: number;
   typeOrTitle?: string;
@@ -379,7 +382,7 @@ export interface User {
   serviceAgency?: string;
 }
 
-export interface Portfolio {
+export interface Portfolio extends BaseTableDTO {
   title?: string;
   description?: string;
   status?: string;

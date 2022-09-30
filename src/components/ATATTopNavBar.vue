@@ -127,7 +127,7 @@ export default class ATATTopNavBar extends Vue {
     role: "Manager",
   };
 
-  public activeMenuItems: string[] = []; // EJY use for hilite active
+  public activeMenuItems: string[] = [];
 
   public isMenuItemActive(item: TopNavItem): boolean {
     if (this.activeMenuItems.indexOf(item.title) > -1) {

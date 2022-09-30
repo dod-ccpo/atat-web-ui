@@ -3,6 +3,9 @@
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
+
+    <ATATToast />
+
     <v-main>
       <v-app-bar
         id="PageHeader"
@@ -38,10 +41,6 @@
           v-if="tabItems[tabIndex] === 'Active'"
         />
 
-        <v-btn id="TempPortfolioLink" @click="changeSection" class="my-10">
-          link portfolio Summary
-        </v-btn>
-
       </v-container>
       <ATATFooter/>
     </v-main>
@@ -59,6 +58,7 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import { getIdText } from "@/helpers";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
+import ATATToast from "@/components/ATATToast.vue";
 
 @Component({
   components: {
@@ -67,6 +67,7 @@ import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
     ProcessingPortfolios,
     ATATSlideoutPanel,
     ATATFooter,
+    ATATToast,
   }
 })
 
@@ -76,10 +77,8 @@ export default class Portfolios extends Vue {
     "All portfolios",
     "Processing",
     "Active"
-  ]
-  public async changeSection(): Promise<void> {
-    AppSections.changeActiveSection("Portfolio Summary")
-  }
+  ];
+
   private getIdText(string: string) {
     return getIdText(string);
   }
