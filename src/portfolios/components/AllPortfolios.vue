@@ -1,8 +1,31 @@
 <template>
   <div>
   
-    <div class="bg-base-lightest mt-10">
-      toolbar
+    <div class="
+      bg-base-lightest mt-10 pa-4 border-rounded 
+      d-flex justify-space-between align-center
+    ">
+      <ATATSearch 
+        id="SearchPortfolios"
+        placeHolder="Search portfolios"
+        width="450"
+      />
+      <div class="d-flex align-center">
+        <div>
+          <ATATSelect
+            id="PortfolioSort"
+            class="_small _alt-style _invite-members-modal"
+            :items="sortOptions"
+            width="170"
+            :selectedValue.sync="selectedSort"
+            iconType="chevron"
+          />
+        </div>
+        <div>
+          Filter
+        </div>
+      </div>
+
     </div>
     
     <div class="mt-10">
@@ -21,17 +44,29 @@
 import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
+import ATATSearch from "@/components/ATATSearch.vue"
+import ATATSelect from "@/components/ATATSelect.vue"
 import PortfolioCard from "./PortfolioCard.vue";
-import { PortfolioCardData } from "types/Global";
+
+import { PortfolioCardData, SelectData } from "types/Global";
 
 @Component({
   components: {
-    PortfolioCard
+    ATATSearch,
+    ATATSelect,
+    PortfolioCard,
   }
 })
 
 export default class AllPortfolios extends Vue {
   public portfolioCardData: PortfolioCardData[] = []
+
+  public selectedSort = "alpha";
+  public sortOptions: SelectData[] = [
+    { text: "Portfolio name A-Z", value: "alpha" },
+    { text: "Recently modified", value: "modified" },
+  ];
+
 
   // delete this function when backend hooked up with actual data
   public async generateDummyObj(
