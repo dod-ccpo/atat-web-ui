@@ -28,7 +28,7 @@ describe("Testing index Component", () => {
       // eslint-disable-next-line camelcase
       sys_id: "1234567890",
       title: "ABC123 portfolio",
-      status: "Processing",
+      status: "Active",
       csp: "aws",
       branch: "Joint Force",
       lastModified: "Started 23 minutes ago",
@@ -47,6 +47,7 @@ describe("Testing index Component", () => {
         cardData,
         index: 0,
         isLastCard: false,
+        isHaCCAdmin: true,
       })      
     });
   });
@@ -80,6 +81,7 @@ describe("Testing index Component", () => {
     window.open = jest.fn();
     await wrapper.vm.cardMenuClick({action: menuActions.emailManagers});
     expect(window.open).toHaveBeenCalled();
+
   });
 
   it("clicks meatball menu - Log into CSP console", async () => {
