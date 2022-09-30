@@ -138,6 +138,7 @@ export default class PortfolioCard extends Vue {
   @Prop() private cardData!: PortfolioCardData;
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
+  @Prop() private isHaCCAdmin!: boolean;
 
   public portfolioStatuses = PortFolioStatusTypes;
   public showLeavePortfolioModal = false;
@@ -167,11 +168,11 @@ export default class PortfolioCard extends Vue {
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
       await AppSections.setActiveTabIndex(0);
-      await AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
+      AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
       break; 
     case this.menuActions.viewTaskOrders: 
       await AppSections.setActiveTabIndex(1);
-      await AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
+      AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
       break; 
     case this.menuActions.leavePortfolio: 
       this.showLeavePortfolioModal = true;
@@ -246,27 +247,44 @@ export default class PortfolioCard extends Vue {
         title: "View task orders",
         action: this.menuActions.viewTaskOrders
       },
+    ]; 
+
+    if (this.isHaCCAdmin) {
+      this.portfolioCardMenuItems.push(
+        { 
+          title: "Email portfolio managers",
+          action: this.menuActions.emailManagers,
+        },    
+      );
+    }
+
+    // future ticket - when have data from backend, only include the menu
+    // option below if user is 1) a viewer, or 2) is manager and at least
+    // one other manager exists for this portfolio. 
+    // NOTE: Do not show for HaCC admin. Included currently for testing.
+    this.portfolioCardMenuItems.push(
       { 
         title: "Leave this portfolio",
         action: this.menuActions.leavePortfolio
       },
-      { 
-        title: "Email portfolio managers",
-        action: this.menuActions.emailManagers,
-      },    
-      { 
-        title: "Login to the CSP console",
-        action: this.menuActions.loginToCSP,
-        icon: {
-          name: "launch",
-          width: "15",
-          height: "15",
-          color: "primary",
-        },
-        url: this.getCSPConsoleURL(), 
-        separatorBefore: true,
-      },
-    ];    
+    );
+
+    if (this.cardData.status !== this.portfolioStatuses.Processing) {
+      this.portfolioCardMenuItems.push(
+        { 
+          title: "Login to the CSP console",
+          action: this.menuActions.loginToCSP,
+          icon: {
+            name: "launch",
+            width: "15",
+            height: "15",
+            color: "primary",
+          },
+          url: this.getCSPConsoleURL(), 
+          separatorBefore: true,
+        }
+      );
+    }
   }
 
   public async mounted(): Promise<void> {

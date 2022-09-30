@@ -3,6 +3,9 @@
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
+
+    <ATATToast />
+
     <v-main>
       <v-app-bar
         id="PageHeader"
@@ -59,6 +62,7 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import { getIdText } from "@/helpers";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
+import ATATToast from "@/components/ATATToast.vue";
 
 @Component({
   components: {
@@ -67,6 +71,7 @@ import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
     ProcessingPortfolios,
     ATATSlideoutPanel,
     ATATFooter,
+    ATATToast,
   }
 })
 
