@@ -4,6 +4,7 @@ import rootStore from "@/store";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import Vue from "vue";
 import {api} from "@/api";
+import {AxiosRequestConfig} from "axios";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
@@ -90,9 +91,18 @@ export class PortfolioSummaryStore extends VuexModule {
   public async loadPortfolioSummaryList(loggedInUserId: string): Promise<PortfolioSummaryDTO[]> {
     await this.ensureInitialized();
     try {
-      // TODO construct the query using the loggedInUserId
-      // const portfolioSummaryList = await api.portfolioTable.getQuery();
-      const portfolioSummaryList = await api.portfolioTable.all();
+      const query =
+        `portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356`; // TODO use loggedInUserId
+      const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
+        params: {
+          // eslint-disable-next-line camelcase
+          // sysparm_fields: fields, // ??? does not passing this return all fields?
+          // eslint-disable-next-line camelcase
+          sysparm_query: query,
+        },
+      };
+      const portfolioSummaryList =
+        await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
       return portfolioSummaryList ? portfolioSummaryList : [];
     } catch (error) {
       throw new Error(`error occurred loading portfolio summary list :${error}`);
