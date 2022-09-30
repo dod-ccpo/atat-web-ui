@@ -14,7 +14,7 @@
         <div>
           <ATATSelect
             id="PortfolioSort"
-            class="_small _alt-style _invite-members-modal"
+            class="_small _alt-style-clean _invite-members-modal"
             :items="sortOptions"
             width="170"
             :selectedValue.sync="selectedSort"
@@ -22,7 +22,21 @@
           />
         </div>
         <div>
-          Filter
+          <v-btn
+            class="_icon-only mr-2"
+            id="FilterButton"
+            @click="openFilterSlideout"
+            @keydown.enter="openFilterSlideout"
+            @keydown.space="openFilterSlideout"
+          >
+            <ATATSVGIcon
+              name="filters"
+              width="14"
+              height="14"
+              color="base-dark"
+            />
+          </v-btn>
+          
         </div>
       </div>
 
@@ -46,14 +60,18 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ATATSearch from "@/components/ATATSearch.vue"
 import ATATSelect from "@/components/ATATSelect.vue"
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import FilterSlideout from "./FiltersSlideout.vue";
 import PortfolioCard from "./PortfolioCard.vue";
 
-import { PortfolioCardData, SelectData } from "types/Global";
+import { PortfolioCardData, SelectData, SlideoutPanelContent } from "types/Global";
+import SlideoutPanel from "@/store/slideoutPanel";
 
 @Component({
   components: {
     ATATSearch,
     ATATSelect,
+    ATATSVGIcon,
     PortfolioCard,
   }
 })
@@ -66,7 +84,19 @@ export default class AllPortfolios extends Vue {
     { text: "Portfolio name A-Z", value: "alpha" },
     { text: "Recently modified", value: "modified" },
   ];
-
+  public showFilters = false;
+  public async openFilterSlideout(e: Event): Promise<void> {
+    debugger;
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      const slideoutPanelContent: SlideoutPanelContent = {
+        component: FilterSlideout,
+      }
+      await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+      this.showFilters = true;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
 
   // delete this function when backend hooked up with actual data
   public async generateDummyObj(

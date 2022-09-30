@@ -31,6 +31,7 @@ import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Failed from "@/components/icons/Failed.vue";
+import Filters from "@/components/icons/Filters.vue";
 import Feedback from "@/components/icons/Feedback.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import Gcp from "@/components/icons/Gcp.vue";
@@ -78,6 +79,7 @@ import ManageAccount from "@/components/icons/ManageAccount.vue";
     ExclamationMark,
     ExternalLink,
     Failed,
+    Filters,
     Feedback,
     FilePresent,
     Gcp,
