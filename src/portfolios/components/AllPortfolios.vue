@@ -14,11 +14,12 @@
         <div>
           <ATATSelect
             id="PortfolioSort"
-            class="_small _alt-style-clean _invite-members-modal"
+            class="_small _alt-style-clean _portfolio-sort"
             :items="sortOptions"
-            width="170"
+            width="167"
             :selectedValue.sync="selectedSort"
             iconType="chevron"
+            @selectValueChange="sortPortfolios"
           />
         </div>
         <div>
@@ -82,6 +83,37 @@ export default class AllPortfolios extends Vue {
   public portfolioCardData: PortfolioCardData[] = []
   public isHaCCAdmin = false;
 
+  public selectedSort = "alpha";
+  public sortOptions: SelectData[] = [
+    { text: "Portfolio name A-Z", value: "alpha" },
+    { text: "Recently modified", value: "modified" },
+  ];
+
+  public sortPortfolios(val: Record<string, string>): void {
+    if (val.newSelectedValue === "alpha") {
+      // sort by portfolio name A-Z
+    } else {
+      // sort by modified date
+      // this.portfolioCardData.sort((a,b) => {
+      //   // EJY come back here Monday
+      //   const dateA = new Date(a.lastModifiedDate)
+      // })
+    }
+  }
+
+  public showFilters = false;
+  public async openFilterSlideout(e: Event): Promise<void> {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      const slideoutPanelContent: SlideoutPanelContent = {
+        component: FilterSlideout,
+      }
+      await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+      this.showFilters = true;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
   public leavePortfolio(sysId: string): void {
     this.portfolioCardData = this.portfolioCardData.filter(
       obj => obj.sys_id !== sysId
@@ -101,24 +133,6 @@ export default class AllPortfolios extends Vue {
     // to ensure 10 listed on page
   }
 
-  public selectedSort = "alpha";
-  public sortOptions: SelectData[] = [
-    { text: "Portfolio name A-Z", value: "alpha" },
-    { text: "Recently modified", value: "modified" },
-  ];
-  public showFilters = false;
-  public async openFilterSlideout(e: Event): Promise<void> {
-    if (e && e.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      const slideoutPanelContent: SlideoutPanelContent = {
-        component: FilterSlideout,
-      }
-      await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-      this.showFilters = true;
-      SlideoutPanel.openSlideoutPanel(opener.id);
-    }
-  }
-
   // delete this function when backend hooked up with actual data
   public async generateDummyObj(
     // eslint-disable-next-line camelcase
@@ -127,7 +141,7 @@ export default class AllPortfolios extends Vue {
     status?: string,
     csp?: string,
     branch?: string,
-    lastModified?: string,
+    lastModifiedStr?: string,
     currentPoP?: string,
     totalObligated?: string,
     fundsSpent?: string,
@@ -135,7 +149,7 @@ export default class AllPortfolios extends Vue {
   ): Promise<PortfolioCardData> {
     return {
       // eslint-disable-next-line camelcase
-      sys_id, title, status, csp, branch, lastModified, currentPoP, 
+      sys_id, title, status, csp, branch, lastModifiedStr, currentPoP, 
       totalObligated, fundsSpent, fundsSpentPercent
     }
   }
@@ -144,10 +158,10 @@ export default class AllPortfolios extends Vue {
   public async generateDummyData(): Promise<void> {
     const cardObjValues = [
       /* eslint-disable max-len */
-      ["1234567890", "ABC123 portfolio", "Processing", "aws", "Joint Force", "Started 23 minutes ago"],
-      ["2345678901", "Army-Navy Game", "Active", "azure", "Army", "Last modified Sept. 1, 2022", "Oct. 1, 2022 - Sept. 31, 2023", "$1,000,000.00", "$500,000", "50"],
-      ["3456789012", "DEF456 portfolio", "At-Risk", "google", "Navy", "Last modified Sept. 2, 2022"],
-      ["4567890123", "GHI789 portfolio", "Delinquent", "oracle", "Marine Corps", "Last modified Sept. 3, 2022"]
+      ["1234567890", "ABC123 portfolio", "Processing", "aws", "Joint Force", "Started 23 minutes ago", "09/30/2022"],
+      ["2345678901", "Army-Navy Game", "Active", "azure", "Army", "Last modified Sept. 1, 2022", "09/01/2022", "Oct. 1, 2022 - Sept. 31, 2023", "$1,000,000.00", "$500,000", "50"],
+      ["3456789012", "DEF456 portfolio", "At-Risk", "google", "Navy", "Last modified Sept. 2, 2022", "09/02/2022"],
+      ["4567890123", "GHI789 portfolio", "Delinquent", "oracle", "Marine Corps", "Last modified Sept. 3, 2022", "09/03/2022"]
       /* eslint-enable max-len */
     ]
     cardObjValues.forEach(async (values) => {
