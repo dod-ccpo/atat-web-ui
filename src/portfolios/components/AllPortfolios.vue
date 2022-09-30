@@ -1,8 +1,10 @@
 <template>
   <div>
   
-    Future page for All Portfolios
-
+    <div class="bg-base-lightest mt-10">
+      toolbar
+    </div>
+    
     <div class="mt-10">
       <PortfolioCard
         v-for="(cardData, index) in portfolioCardData"
