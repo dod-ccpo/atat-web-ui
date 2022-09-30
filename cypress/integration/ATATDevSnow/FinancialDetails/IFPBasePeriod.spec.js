@@ -19,7 +19,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
         
     });
     
-    it("TC1: Let’s create an incremental funding plan for your base period", () => {
+    it.skip("TC1: Let’s create an incremental funding plan for your base period", () => {
       cy.findElement(contractDetails.baseDropdownMonth).click();
       //Enter the Value for Base      
       const baseValue= "11"
@@ -75,7 +75,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
       cy.verifyPageHeader("Tell us about your financial POC ")
     }); 
   
-    it("TC2: Add funding increment & Delete", () => {
+    it.skip("TC2: Add funding increment & Delete", () => {
       cy.findElement(contractDetails.baseDropdownYear).click();
       //Enter the Value for Base
       const baseValue=randomNumberBetween(1,1)
@@ -108,7 +108,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
     
     }); 
 
-    it("TC3: Validations: Incremental Funding Plan", () => {
+    it.skip("TC3: Validations: Incremental Funding Plan", () => {
       cy.findElement(contractDetails.baseDropdownWeek).click();
       //Enter the Value for Base
       const baseValue=randomNumberBetween(50,52)
@@ -137,7 +137,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
     
     }); 
 
-    it("TC4: If PoP length is less than 9 months", () => {
+    it.skip("TC4: If PoP length is less than 9 months", () => {
       cy.findElement(contractDetails.baseDropdownMonth).click();
       //Enter the Value for Base
       const baseValue=randomNumberBetween(1,8)

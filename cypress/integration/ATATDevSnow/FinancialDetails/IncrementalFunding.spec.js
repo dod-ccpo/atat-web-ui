@@ -12,7 +12,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
   
   });
     
-  it("TC1: Incremental Funding on the Vertical Stepper is active", () => {
+  it.skip("TC1: Incremental Funding on the Vertical Stepper is active", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     cy.activeStep(common.stepFinancialDetailsText)
 
@@ -22,7 +22,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
       
   });
   
-  it("TC2: Asserts: Are you requesting to incrementally fund this requirement? ", () => {
+  it.skip("TC2: Asserts: Are you requesting to incrementally fund this requirement? ", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepIFLink, " Severability and Incremental Funding ").click();
@@ -85,7 +85,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
     
   });
   
-  it("TC3: Warning Message,if PoP & Cost estimate are missing", () => {
+  it.skip("TC3: Warning Message,if PoP & Cost estimate are missing", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepIFLink, " Severability and Incremental Funding ").click();
@@ -110,7 +110,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
       
   });
   
-  it("TC4: Warning Message,if PoP missing", () => {
+  it.skip("TC4: Warning Message,if PoP missing", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");    
     cy.verifyPageHeader(" Temporary Financial Details Page "); 
     const value = randomNumber(5)
@@ -147,7 +147,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
       
   });
 
-  it("TC5: Warning Message,if Cost estimate missing", () => {
+  it.skip("TC5: Warning Message,if Cost estimate missing", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.verifyPageHeader(" Let’s gather some details about the duration of your task order ");
     cy.dropDownClick(contractDetails.baseDropdownIcon);
@@ -173,7 +173,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
       
   });
   
-  it("TC6: Validations: Severability and Incremental Funding Substep ", () => {
+  it.skip("TC6: Validations: Severability and Incremental Funding Substep ", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepIFLink, " Severability and Incremental Funding ").click();

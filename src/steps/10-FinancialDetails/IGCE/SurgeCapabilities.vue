@@ -56,8 +56,8 @@ import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage"
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import ATATAlert from "../../components/ATATAlert.vue";
-import ATATTextField from "../../components/ATATTextField.vue";
+import ATATAlert from "../../../components/ATATAlert.vue";
+import ATATTextField from "../../../components/ATATTextField.vue";
 
 @Component({
   components: {

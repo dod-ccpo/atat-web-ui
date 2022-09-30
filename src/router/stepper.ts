@@ -81,9 +81,17 @@ import EvaluationCriteria
   from "../steps/09-EvaluationCriteria/EvaluationCriteria.vue";
 
 // step 10 - Financial Details
-import RequirementsCostForm from "@/steps/10-FinancialDetails/RequirementsCostForm.vue";
-import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
-import SurgeCapabilities from "../steps/10-FinancialDetails/SurgeCapabilities.vue";
+import IGCE from "@/steps/10-FinancialDetails/IGCE/Index.vue";
+import CreatePriceEstimate from "@/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.vue";
+import CannotProceed from "@/steps/10-FinancialDetails/IGCE/CannotProceed.vue";
+import GatherPriceEstimates from "@/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.vue";
+import TravelEstimates from "@/steps/10-FinancialDetails/IGCE/TravelEstimates.vue";
+import SurgeCapacity from "@/steps/10-FinancialDetails/IGCE/SurgeCapacity.vue";
+import FeeCharged from "@/steps/10-FinancialDetails/IGCE/FeeCharged.vue";
+import CostSummary from "@/steps/10-FinancialDetails/IGCE/CostSummary.vue";
+import SupportingDocumentation from "@/steps/10-FinancialDetails/IGCE/SupportingDocumentation.vue";
+import EstimatesDeveloped from "@/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.vue";
+import SurgeCapabilities from "../steps/10-FinancialDetails/IGCE/SurgeCapabilities.vue";
 import MIPR from "../steps/10-FinancialDetails/MIPR.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
@@ -182,6 +190,16 @@ export const routeNames = {
   ClassificationLevels: "Classification_Levels",
   BackgroundSummary: "Background_Summary",
   EnvironmentDetailsPage:"Environment_Details_Page",
+  IGCE:"IGCE",
+  CreatePriceEstimate:"Create_Price_Estimate",
+  CannotProceed:"Cannot_Proceed",
+  GatherPriceEstimates:"Gather_Price_Estimates",
+  TravelEstimates:"Travel_Estimates",
+  SurgeCapacity:"Surge_Capacity",
+  FeeCharged:"Fee_Charged",
+  CostSummary:"Cost_Summary",
+  EstimatesDeveloped:"Estimates_Developed",
+  SupportingDocumentation:"Supporting_Documentation",
 };
 
 /**
@@ -654,22 +672,86 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     completePercentageWeight: 7,
     menuText: "Financial Details",
     path: "/requirements-cost-estimate",
-    component: FinancialDetails,
+    component: IGCE,
     children: [
       {
-        menuText: "temporary page",
-        path: "requirements-cost-form",
-        excludeFromMenu: true,
-        name: routeNames.RequirementsCostForm,
+        menuText: "Requirements Cost Estimates",
+        path: "create-price-estimate",
+        name: routeNames.CreatePriceEstimate,
         completePercentageWeight: 1,
-        component: RequirementsCostForm,
+        component: CreatePriceEstimate,
       },
       {
-        menuText: "Requirements Cost Estimate",
-        path: "requirements-cost-estimate",
+        menuText: "Cannot Proceed",
+        excludeFromMenu: true,
+        path: "cannot-proceed",
+        name: routeNames.CannotProceed,
+        completePercentageWeight: 1,
+        component: CannotProceed,
+      },
+      {
+        menuText: "Gather Price Estimates",
+        excludeFromMenu: true,
+        path: "gather-price-estimates",
+        name: routeNames.GatherPriceEstimates,
+        completePercentageWeight: 1,
+        component: GatherPriceEstimates,
+      },
+      {
+        menuText: "Travel Estimates",
+        excludeFromMenu: true,
+        path: "travel-estimate",
+        name: routeNames.TravelEstimates,
+        completePercentageWeight: 1,
+        component: TravelEstimates,
+      },
+      {
+        menuText: "Surge Capacity",
+        excludeFromMenu: true,
+        path: "surge-capacity",
+        name: routeNames.SurgeCapacity,
+        completePercentageWeight: 1,
+        component: SurgeCapacity,
+      },
+      {
+        menuText: "Surge Capabilities",
+        excludeFromMenu: true,
+        path: "surge-capabilities",
         name: routeNames.SurgeCapabilities,
         completePercentageWeight: 1,
         component: SurgeCapabilities,
+      },
+      {
+        menuText: "Fee Charged",
+        excludeFromMenu: true,
+        path: "fee-charged",
+        name: routeNames.FeeCharged,
+        completePercentageWeight: 1,
+        component: FeeCharged,
+      },
+      {
+        menuText: "Cost Summary",
+        excludeFromMenu: true,
+        path: "cost-summary",
+        name: routeNames.CostSummary,
+        completePercentageWeight: 1,
+        component: CostSummary,
+      },
+      {
+        menuText: "Estimates Developed",
+        excludeFromMenu: true,
+        path: "estimates-developed",
+        name: routeNames.EstimatesDeveloped,
+        completePercentageWeight: 1,
+        component: EstimatesDeveloped,
+      },
+      {
+        menuText: "Supporting Documentation",
+        excludeFromMenu: true,
+        path: "supporting-documentation",
+        name: routeNames.SupportingDocumentation,
+        completePercentageWeight: 1,
+        component: SupportingDocumentation,
       },
       {
         menuText: "Funding Plan",
