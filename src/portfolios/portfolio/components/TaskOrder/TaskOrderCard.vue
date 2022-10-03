@@ -12,6 +12,7 @@
           <a
             role="button"
             tabindex="0"
+            :id="'TaskOrderLink'+ index"
             class="h3 _text-decoration-none"
           >
           Task Order  {{ cardData.taskOrderNumber }}
@@ -36,36 +37,37 @@
           </v-chip>
         </div>
         <ATATMeatballMenu
-        class="ml-4"
+          class="ml-4"
+          :id="'MeatballMenu' + index"
         />
       </div>
       <div class="d-flex">
-        <div class="mr-15 pb-5">
+        <div class="mr-15 pb-5" :id="'PoP'+ index">
           <span class="_title">Period of Performance</span>
           <span class="_title-value d-block nowrap">
             {{ cardData.periodOfPerformance }}
           </span>
         </div>
 
-        <div class="mr-15">
+        <div class="mr-15" :id="'ObligatedFunds'+ index">
           <span class="_title">Total Obligated</span>
           <span class="_title-value d-block nowrap">
             {{ cardData.totalObligated }}
           </span>
         </div>
-        <div class="mr-15">
+        <div class="mr-15" :id="'TotalValue'+index">
           <span class="_title">Total Value</span>
           <span class="_title-value d-block nowrap">
             {{ cardData.totalValue }}
           </span>
         </div>
-        <div class="mr-15">
+        <div class="mr-15" :id="'TotalLifecycle'+index">
           <span class="_title">Total Lifecyle</span>
           <span class="_title-value d-block nowrap">
             {{ cardData.totalLifeCycle }}
           </span>
         </div>
-        <div class="flex-grow-1">
+        <div class="flex-grow-1" :id="'FundsSpent'+index">
           <span class="_title">Total Funds Spent</span>
           <span class="_title-value d-block">
            {{ cardData.totalFundsSpent }}
