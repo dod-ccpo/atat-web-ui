@@ -9,7 +9,7 @@ import {AxiosRequestConfig} from "axios";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
-const initialPortfolioSummary: PortfolioSummaryDTO = {
+/*const initialPortfolioSummary: PortfolioSummaryDTO = {
   name: '',
   csp: {
     link: '',
@@ -25,8 +25,9 @@ const initialPortfolioSummary: PortfolioSummaryDTO = {
   funds_obligated: 0,
   portfolio_status: '',
   portfolio_managers: '',
-  funds_spent: 0
-}
+  funds_spent: 0,
+  task_orders: []
+}*/
 
 @Module({
   name: "PortfolioSummaryStore",
@@ -95,21 +96,73 @@ export class PortfolioSummaryStore extends VuexModule {
    * 'csp_display' property of each portfolio is set.
    */
   @Action({rawError: true})
-  private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]):
+  private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    const cspSysIds = portfolioSummaryList.map(portfolio => portfolio.csp.value);
+    console.log(cspSysIds);
+    const allCspList = await api.cloudServiceProviderTable.getQuery(
+      {
+        params:
+          {
+            sysparm_fields: 'sys_id,name',
+            sysparm_query: `sys_idIN` + cspSysIds
+          }
+      }
+    )
+    portfolioSummaryList.forEach(portfolio => {
+      // @ts-ignore
+      portfolio.csp_display =
+        allCspList.find(csp => portfolio.csp.value === csp.sys_id)?.name;
+    });
+  }
+
+  /**
+   * Given a list of portfolios, compiles the api calls and returns the portfolio list
+   * with task orders populated.
+   */
+  @Action({rawError: true})
+  private async setTaskOrdersForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]):
     Promise<PortfolioSummaryDTO[]> {
-    const cspRequests = portfolioSummaryList
-      .map(portfolio => api.cloudServiceProviderTable.retrieve(portfolio.csp?.value));
-    const cspList = await Promise.all(cspRequests);
-    portfolioSummaryList = portfolioSummaryList
-      .map(portfolio => {
-        portfolio.dod_component = 'ARMY' // FIXME: delete this line after API starts returning
-        const csp = cspList.find(csp => csp.sys_id === portfolio.csp?.value)
-        if (csp?.name != null) {
-          portfolio.csp_display = csp?.name;
+    const taskOrderRequests = portfolioSummaryList
+      .map(portfolio => api.taskOrderTable.getQuery(
+        {
+          params:
+            {
+              sysparm_fields:
+                'sys_id,clins,task_order_number,task_order_status,pop_end_date,pop_start_date',
+              sysparm_query: `GOTOportfolio.name>=` + portfolio.sys_id
+            }
         }
-        return portfolio;
-      })
+      ));
+    const allTaskOrderList = await Promise.all(taskOrderRequests); // task orders for all portfolios
+    portfolioSummaryList.forEach((portfolio, index) => {
+      portfolio.task_orders = allTaskOrderList[index]; // works because Promise.all preserves order
+    });
     return portfolioSummaryList;
+  }
+
+  /**
+   * Constructs a single query that get all the clins records across all the task orders. Parses
+   * the response and sets the clins to the respective task order.
+   */
+  @Action({rawError: true})
+  private async setClinsToPortfolioTaskOrders(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    const clins = portfolioSummaryList.map(portfolio => portfolio.task_orders
+      .map(taskOrder => taskOrder.clins));
+    const allClinList = await api.clinTable.getQuery(
+      {
+        params:
+          {
+            sysparm_fields: 'sys_id,clin_number,clin_status,funds_obligated',
+            sysparm_query: `sys_idIN` + clins
+          }
+      }
+    )
+    portfolioSummaryList.forEach(portfolio => {
+      portfolio.task_orders.forEach(taskOrder => {
+        taskOrder.clin_records =
+          allClinList.filter(clin => (taskOrder.clins.indexOf(<string>clin.sys_id) !== -1));
+      })
+    })
   }
 
   @Action({rawError: true})
@@ -124,12 +177,14 @@ export class PortfolioSummaryStore extends VuexModule {
           sysparm_query: query
         },
       };
-      let portfolioSummaryList =
+      const portfolioSummaryList =
         await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
       if (portfolioSummaryList && portfolioSummaryList.length > 0) {
         // call out to set the cloud service provider
-        portfolioSummaryList = await this.setCspDisplay(portfolioSummaryList);
+        await this.setCspDisplay(portfolioSummaryList);
         // todo: call outs to other functions to set data from other tables
+        await this.setTaskOrdersForPortfolios(portfolioSummaryList);
+        await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
         this.setPortfolioSummaryList(portfolioSummaryList); // caches the list
         return portfolioSummaryList;
       } else {

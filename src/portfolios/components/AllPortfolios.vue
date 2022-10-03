@@ -76,7 +76,7 @@ export default class AllPortfolios extends Vue {
   public async loadOnEnter(): Promise<void> {
     const storeData = await PortfolioSummary.loadPortfolioSummaryList(''); // todo: pass user
     console.log('Store data in AllPortfolios Vue');
-    console.log(storeData);
+    console.log(JSON.stringify(storeData));
   }
 }
 </script>

@@ -297,12 +297,13 @@ export interface FundingIncrementDTO extends BaseTableDTO{
 }
 export interface TaskOrderDTO extends BaseTableDTO {
     clins: string;
+    clin_records?: ClinDTO[],
     incrementally_funded: string;
     funds_obligated: string;
     acquisition_package: string;
     task_order_number: string;
     task_order_status: string;
-    portfolio: string;
+    portfolio: string | ReferenceColumn;
     funding_plan: string;
     pop_end_date: string;
     pop_start_date: string;
@@ -378,6 +379,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
+  task_orders: TaskOrderDTO[];
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
