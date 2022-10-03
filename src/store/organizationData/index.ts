@@ -3,8 +3,9 @@ import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-dec
 import rootStore from "../index";
 
 import api from "@/api";
+import { AxiosRequestConfig } from "axios"
 import {TABLENAME as OrganizationTable} from "@/api/organization";
-import { SystemChoiceDTO } from "@/api/models";
+import { AgencyDTO, SystemChoiceDTO } from "@/api/models";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
 import Vue from "vue";
 
@@ -25,12 +26,12 @@ export class OrganizationDataStore extends VuexModule {
   //has the store been initialized
   initialized = false;
   //keeps track of project title for global display
-  public service_agency_data: SystemChoiceDTO[] = [];
+  public agency_data: AgencyDTO[] = [];
   public disa_org_data: SystemChoiceDTO[] = [];
 
     // store session properties
     protected sessionProperties: string[] = [
-      nameofProperty(this,x=> x.service_agency_data),
+      nameofProperty(this,x=> x.agency_data),
       nameofProperty(this, x=> x.disa_org_data),
     ];
   
@@ -42,20 +43,21 @@ export class OrganizationDataStore extends VuexModule {
     }
 
   @Mutation
-  public setServiceAgencyData(value: SystemChoiceDTO[]): void {
-
-    this.service_agency_data = value;
-
+  public setAgencyData(value: AgencyDTO[]): void {
+    this.agency_data = value;
   }
 
   @Action({rawError: true})
-  private async getServiceAgencyData():Promise<void>
+  private async getAgencyData():Promise<void>
   {
-    const service_agency_data = await api.systemChoices.getChoices(
-      OrganizationTable,
-      "service_agency"
-    );
-    this.setServiceAgencyData(service_agency_data);
+    const agencyRequestConfig: AxiosRequestConfig = {
+      params: {
+        // eslint-disable-next-line camelcase
+        sysparm_fields: "label,title,acronym,css_id",
+      },
+    };
+    const agency_data = await api.agencyTable.all(agencyRequestConfig)
+    this.setAgencyData(agency_data)
   }
 
   @Mutation
@@ -99,7 +101,7 @@ export class OrganizationDataStore extends VuexModule {
       }
       else{
 
-        await this.getServiceAgencyData();
+        await this.getAgencyData();
         await this.getDisaOrgData();
         this.setInitialized(true);
         storeDataToSession(this, this.sessionProperties, ATAT_ORGANIZATION_DATA_KEY);
