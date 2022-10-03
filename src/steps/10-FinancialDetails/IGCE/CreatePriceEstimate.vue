@@ -5,49 +5,52 @@
         <h1 class="page-header">
           Let’s work on a price estimate for your cloud requirements
         </h1>
-
         <ATATAlert
           type="callout"
           :showIcon="false"
-          class="mt-10"
-          calloutBackground="primary-lighter"
+          class="mt-10 pa-8"
+          calloutBackground="primary-lighter" 
         >
           <template v-slot:content>
             <h2>Getting started with your price estimate</h2>
             <v-list class="ATATStepper">
-              <v-list-item-group>
+              <v-list-item-group >
                 <v-list-item>
                   <span class="step-circle">1</span>
                   <v-list-item-content>
                     Choose one or more of the CSP pricing calculators below to
                     help you calculate your estimated price for JWCC cloud
                     services and support.
-                    <div class="d-flex ">
                     <v-card v-for="(csp,idx) in csps" :key="idx" 
                         class=
-                          "calculator-card d-flex flex-column align-center justify-space-between"
+                          "calculator-card"
                      >
+                      <div class="svg-icon-div">
                       <ATATSVGIcon 
                         id="Azure" 
                         :name="csp.iconName"
                         class="svg-icon"
                         :width="csp.width" 
                         :height="csp.height" />
+                      </div>
                       <h3 class="csp-name"> {{ csp.name }}</h3>
-                      <div class="csp-link-div d-flex justify-center mt-auto">
-                        <a id="csp-link"> View calculator</a>
-                        <span class="pl-2 d-flex">
+                      <div class="csp-link-div">
+                        <a :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
+                          class="csp-link"
+                          @click="showAlert(csp.name)"> 
+                          View calculator
+                          <span class="_text-decoration-none ml-1">
                           <ATATSVGIcon
-                            id="LinkIcon"
+                            :id="csp.iconName.toUpperCase() + 'LaunchIcon'"
                             width="15"
                             height="15"
                             name="launch"
                             color="primary"
                           />
-                        </span>
+                          </span>
+                        </a>
                       </div>
                     </v-card>
-                    </div>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
@@ -90,7 +93,7 @@ import { Component } from "vue-property-decorator";
   },
 })
 export default class CreatePriceEstimate extends Vue {
-
+  public selectedCSP = "";
   public csps = [
     {
       name: "Amazon Web Services (AWS)",
@@ -117,6 +120,10 @@ export default class CreatePriceEstimate extends Vue {
       height: "41" 
     }
   ]
+  public showAlert(csp: string):void {
+    alert("Calculator link for " + csp + " to be provided in near future");
+    this.selectedCSP = csp;
+  }
 
 }
 </script>

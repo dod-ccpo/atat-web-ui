@@ -22,4 +22,14 @@ describe("Testing CreatePriceEstimate Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+ 
+  it("should mock window alert function", async() => {
+    //temporary unit test until showAlert() is removed
+    jest.spyOn(window, 'alert').mockReturnValue();
+    const link = await wrapper.find("#AZURECalculatorLink");
+    link.trigger("click");
+    expect(wrapper.vm.$data.selectedCSP).toBe('Microsoft Azure');
+  });
+  
+
 })

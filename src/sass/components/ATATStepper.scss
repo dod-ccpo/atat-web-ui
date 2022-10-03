@@ -42,23 +42,53 @@
       background-color: $white;
       z-index: 2;
     }
-    .calculator-card{
-      width: 169px !important;
-      height: 205px;
-      max-width: 169px;
-      .svg-icon{
-        margin-top: 23px;
-      }
-      .csp-name{
-        display: block;
-        font-weight: 500;
-        text-align: center;
-        font-family: $heading-font;
-        margin-top: 16px;
-      }
-      .csp-link-div{
-        margin-bottom: 16px;
-      }
+    
+  }
+}
+
+
+// requirements cost estimate csp cards
+.calculator-card{
+  width: 169px !important;
+  height: 205px;
+  max-width: 169px;
+  margin: 10px 16px 20px 0px;
+  box-sizing: border-box;
+  align-self: stretch;
+  flex-grow: 1;
+  background: #FFFFFF;
+  border: 1px solid $base-light !important;
+  border-radius: 4px;
+  box-shadow: none !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+
+  .svg-icon-div{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 45%;
+  }
+  .csp-name{
+    position: absolute;
+    top: 45%;
+    font-weight: 500;
+    text-align: center;
+    font-family: $heading-font;
+   
+  }
+  .csp-link-div{
+    .csp-link{
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center;
     }
+    width: 100%;
+    margin-top: auto !important;
+    position: absolute;
+    bottom: 16px;
   }
 }
