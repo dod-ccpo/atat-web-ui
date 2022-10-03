@@ -96,34 +96,19 @@
       </div>
     </div>
 
-    <v-menu
-      :offset-y="true"
-      left
-      id="MoreMenu"
-      class="_meatball-menu"
-      attach
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          v-bind="attrs"
-          v-on="on"
-          id="MoreMenuButton"
-          class="_meatball-menu-button"
-        >
-          <v-icon class="text-base-dark">more_horiz</v-icon>
-        </v-btn>
-      </template>
+    <ATATMeatballMenu 
+      id="PortfolioCardMenu"
+      :left="true"
+      :menuIndex="index"
+      :menuItems="portfolioCardMenuItems"
+      @menuItemClick="cardMenuClick"
+    />
 
-      <v-list>
-        <v-list-item
-          v-for="(item, index) in moreMenuItems"
-          :key="index"
-          :id="getIdText(item.title) + '_MenuItem'"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>         
+    <LeavePortfolioModal
+      :showModal.sync="showLeavePortfolioModal" 
+      :portfolioName="cardData.title"
+      @okClicked="leavePortfolio"
+    />
 
   </v-card>
 </template>
@@ -133,14 +118,19 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
-import { PortfolioCardData } from "types/Global";
-import { PortFolioStatusTypes } from "@/store/portfolio";
-import { getIdText, getStatusChipBgColor } from "@/helpers";
+import { MeatballMenuItem, PortfolioCardData } from "types/Global";
+import { cspConsoleURLs, PortFolioStatusTypes } from "@/store/portfolio";
+import { getStatusChipBgColor } from "@/helpers";
+import AppSections from "@/store/appSections";
+import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
 
 @Component({
   components: {
     ATATSVGIcon,
+    ATATMeatballMenu,
+    LeavePortfolioModal,
   }
 })
 
@@ -148,20 +138,68 @@ export default class PortfolioCard extends Vue {
   @Prop() private cardData!: PortfolioCardData;
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
+  @Prop() private isHaCCAdmin!: boolean;
 
   public portfolioStatuses = PortFolioStatusTypes;
+  public showLeavePortfolioModal = false;
 
-  public moreMenuItems = [
-    { title: "Item 1" },
-    { title: "Item 2" },
-  ];
+  public menuActions = {
+    viewFundingTracker: "navToFundingTracker",
+    viewTaskOrders: "navToTaskOrders",
+    leavePortfolio: "leavePortfolio",
+    emailManagers: "emailManagers",
+    loginToCSP: "loginToCSP",
+  }
+ 
+  // DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
+  public currentUserEmail = "sample-haac-admin@mail.mil";
+  public get managerEmails(): string {
+    // Return dummy emails until API call wired up to get portfolio managers
+    return "foo@mail.mil, bar@mail.mil";
+  }
 
-  private getIdText(string: string) {
-    return getIdText(string);
+  public getCSPConsoleURL(): string {
+    return this.cardData.csp ? cspConsoleURLs[this.cardData.csp] : "";
+  }
+
+  public portfolioCardMenuItems: MeatballMenuItem[] = [];
+
+  public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
+    switch(menuItem.action) {
+    case this.menuActions.viewFundingTracker:
+      await AppSections.setActiveTabIndex(0);
+      AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
+      break; 
+    case this.menuActions.viewTaskOrders: 
+      await AppSections.setActiveTabIndex(1);
+      AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
+      break; 
+    case this.menuActions.leavePortfolio: 
+      this.showLeavePortfolioModal = true;
+      break; 
+    case this.menuActions.emailManagers: {
+      const managerEmails = await this.managerEmails;
+      const mailStr = "mailto:" + managerEmails + "?cc=" + this.currentUserEmail;
+      window.open(mailStr, "_blank");
+      break; 
+    }
+    case this.menuActions.loginToCSP: {
+      if (menuItem.url) {
+        window.open(menuItem.url, "_blank");
+      }
+      break; 
+    }
+    default:
+      break; 
+    }
   }
 
   public get statusChipBgColor(): string {
     return getStatusChipBgColor(this.cardData.status ? this.cardData.status : "");
+  }
+
+  public leavePortfolio(): void {
+    this.$emit("leavePortfolio", this.cardData.sys_id);
   }
 
   public CSPs = {
@@ -197,6 +235,60 @@ export default class PortfolioCard extends Vue {
         height:"25"
       }
     },
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    this.portfolioCardMenuItems = [
+      { 
+        title: "View funding tracker",
+        action: this.menuActions.viewFundingTracker
+      },
+      { 
+        title: "View task orders",
+        action: this.menuActions.viewTaskOrders
+      },
+    ]; 
+
+    if (this.isHaCCAdmin) {
+      this.portfolioCardMenuItems.push(
+        { 
+          title: "Email portfolio managers",
+          action: this.menuActions.emailManagers,
+        },    
+      );
+    }
+
+    // future ticket - when have data from backend, only include the menu
+    // option below if user is 1) a viewer, or 2) is manager and at least
+    // one other manager exists for this portfolio. 
+    // NOTE: Do not show for HaCC admin. Included currently for testing.
+    this.portfolioCardMenuItems.push(
+      { 
+        title: "Leave this portfolio",
+        action: this.menuActions.leavePortfolio
+      },
+    );
+
+    if (this.cardData.status !== this.portfolioStatuses.Processing) {
+      this.portfolioCardMenuItems.push(
+        { 
+          title: "Login to the CSP console",
+          action: this.menuActions.loginToCSP,
+          icon: {
+            name: "launch",
+            width: "15",
+            height: "15",
+            color: "primary",
+          },
+          url: this.getCSPConsoleURL(), 
+          separatorBefore: true,
+        }
+      );
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 
 }

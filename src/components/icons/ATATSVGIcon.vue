@@ -1,5 +1,5 @@
 <template>
-  <div :style="divStyle">
+  <div :style="divStyle" class="_svg-icon">
     <component :is="name" 
       :color="getColor()" 
       :height="_height" 

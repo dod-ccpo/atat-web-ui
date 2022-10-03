@@ -48,6 +48,7 @@ import CSPPortalAccess from "@/portfolios/portfolio/components/CSPPortalAccess/C
 import FundingTracker from "@/portfolios/portfolio/components/FundingTracker/FundingTracker.vue";
 import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
 import PortfolioData from "@/store/portfolio";
+import AppSections from "@/store/appSections";
 
 @Component({
   components: {
@@ -90,6 +91,11 @@ export default class PortfolioSummary extends Vue {
   }
   public async mounted(): Promise<void>{
     await this.loadOnEnter();
+    const activeTabIndex = AppSections.activeTabIndex;
+    if (activeTabIndex > 0) {
+      this.tabIndex = activeTabIndex;
+      await AppSections.setActiveTabIndex(0);
+    }
   }
 }
 </script>
