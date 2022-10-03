@@ -3,6 +3,7 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import CreatePriceEstimate from "@/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.vue";
+import SlideoutPanel from "@/store/slideoutPanel";
 Vue.use(Vuetify);
 
 describe("Testing CreatePriceEstimate Component", () => {
@@ -30,6 +31,13 @@ describe("Testing CreatePriceEstimate Component", () => {
     link.trigger("click");
     expect(wrapper.vm.$data.selectedCSP).toBe('Microsoft Azure');
   });
+
+  it("openSlideoutPanel() - ensure slideoutpanel opens when `LearnMoreIGCE` link is clicked",
+    async()=>{
+      await wrapper.find("#LearnMoreIGCE").trigger("click");
+      expect(SlideoutPanel.slideoutPanelComponent.name).toBe('ICGELearnMore');
+    }
+  )
   
 
 })

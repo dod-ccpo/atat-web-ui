@@ -10,7 +10,15 @@
               In the Performance Requirements section, you told us about all of the cloud 
               services and support that are needed for this project. Now, we’ll dive into 
               calculating the estimated prices to help you generate an Independent 
-              Government Cost Estimate (IGCE). Learn more about IGCE.
+              Government Cost Estimate (IGCE). 
+              <a id="LearnMoreIGCE"
+                role="button"
+                tabindex="0"
+                @click="openSlideoutPanel"
+                @keydown.enter="openSlideoutPanel"
+                @keydown.space="openSlideoutPanel">
+              <span class="">Learn more about IGCE.</span>
+              </a>
             </p>
           </div>
         <ATATAlert
@@ -94,10 +102,14 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { Component } from "vue-property-decorator";
+import SlideoutPanel from "@/store/slideoutPanel";
+import { SlideoutPanelContent } from "types/Global";
+import IGCELearnMore from "./components/ICGELearnMore.vue";
 @Component({
   components: {
     ATATAlert,
     ATATSVGIcon,
+    IGCELearnMore
   },
 })
 export default class CreatePriceEstimate extends Vue {
@@ -133,6 +145,18 @@ export default class CreatePriceEstimate extends Vue {
     this.selectedCSP = csp;
   }
 
+  public async openSlideoutPanel(e: Event): Promise<void> {
+    const opener = e.currentTarget as HTMLElement;
+    SlideoutPanel.openSlideoutPanel(opener.id);
+  };
+
+  public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: IGCELearnMore,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  };
 
 }
 </script>
