@@ -37,9 +37,9 @@
           </div>
         </div>
         <div class="d-flex justify-space-between pb-2">
-          <span id="ServiceAgencyLabel">Service/Agency</span>
-          <div id="ServiceAgency">
-            {{ portfolio.serviceAgency }}
+          <span id="AgencyLabel">Agency</span>
+          <div id="Agency">
+            {{ portfolio.agency }}
           </div>
         </div>
         <div class="d-flex justify-space-between align-center">
