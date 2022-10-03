@@ -64,10 +64,10 @@ export default class TaskOrder extends Vue {
     "$1,000,000.00"
   ];
   public fundsSpent = [
-    "$5000,000.00",
-    "$5000,000.00",
-    "$5000,000.00",
-    "$5000,000.00"
+    "$500,000.00",
+    "$500,000.00",
+    "$500,000.00",
+    "$500,000.00"
   ];
   public status = [
     "On Track",
