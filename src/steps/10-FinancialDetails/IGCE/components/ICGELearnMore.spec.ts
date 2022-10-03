@@ -2,8 +2,8 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import SlideOutLearnMoreAboutIGCE
-  from "@/steps/10-FinancialDetails/IGCE/components/SlideOut_LearnMoreAboutIGCE.vue";
+import IGCELearnMore
+  from "@/steps/10-FinancialDetails/IGCE/components/ICGELearnMore.vue";
 Vue.use(Vuetify);
 
 describe("Testing SlideOutLearnMoreAboutIGCE Component", () => {
@@ -13,7 +13,7 @@ describe("Testing SlideOutLearnMoreAboutIGCE Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(SlideOutLearnMoreAboutIGCE, {
+    wrapper = mount(IGCELearnMore, {
       localVue,
       vuetify,
     });
