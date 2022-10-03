@@ -10,13 +10,13 @@
         <ATATAutoComplete
           id="Agency"
           class="_input-max-width mb-2"
-          label="What service or agency do you work for?"
+          label="What agency do you work for?"
           :label-sr-only="false"
           titleKey="text"
           :searchFields="['text']"
           :items="agencyData"
           :selectedItem.sync="selectedAgency"
-          :rules="[$validators.required('Please select your service or agency.')]"
+          :rules="[$validators.required('Please select your agency.')]"
           placeholder="Find your agency"
           icon="arrow_drop_down"
         />
@@ -155,7 +155,7 @@
       <template #content>
         <p class="body">
           The agency list is intended to represent activities at the highest
-          level. If you would like to add your service or agency, please send us
+          level. If you would like to add your agency, please send us
           the following information for consideration.
         </p>
         <ATATTextField
@@ -209,7 +209,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // data
   private emptySelectData: SelectData = { text: "", value: "" };
 
-  private DisaOrgName = "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
+  private DisaOrgName = "DEFENSE INFORMATION SYSTEMS AGENCY (DISA)";
 
   private addressTypes = {
     USA: "US",
@@ -351,7 +351,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
   // watchers
   @Watch("selectedAgency")
-  protected gencyChanged(newVal: SelectData): void {
+  protected agencyChanged(newVal: SelectData): void {
     AcquisitionPackage.setSelectedAgency(newVal);
   }
 
