@@ -2,13 +2,21 @@
   <v-container fluid class="container-max-width mb-7">
     <v-row>
       <v-col class="col-12">
-        <h1 class="page-header">
+        <h1 class="page-header mb-3">
           Let’s work on a price estimate for your cloud requirements
         </h1>
+         <div class="copy-max-width">
+            <p id="IntroP" class="mb-10">
+              In the Performance Requirements section, you told us about all of the cloud 
+              services and support that are needed for this project. Now, we’ll dive into 
+              calculating the estimated prices to help you generate an Independent 
+              Government Cost Estimate (IGCE). Learn more about IGCE.
+            </p>
+          </div>
         <ATATAlert
           type="callout"
           :showIcon="false"
-          class="mt-10 pa-8"
+          class="pa-8"
           calloutBackground="primary-lighter" 
         >
           <template v-slot:content>
@@ -124,6 +132,7 @@ export default class CreatePriceEstimate extends Vue {
     alert("Calculator link for " + csp + " to be provided in near future");
     this.selectedCSP = csp;
   }
+
 
 }
 </script>
