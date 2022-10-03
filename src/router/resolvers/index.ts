@@ -139,7 +139,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   //if comming from Service Offerings and we have more
   // service offerings groups to navigate through
   if(current === routeNames.ServiceOfferings && 
-    !atBeginningOfOfferingGroups){ // EJY was && atBeginningOfSericeOfferings hereeeeeeeeeeeeee
+    !atBeginningOfOfferingGroups){ 
     const previousGroup = DescriptionOfWork.prevOfferingGroup;
 
     if (DescriptionOfWork.returnToDOWSummary) {
