@@ -42,12 +42,12 @@ describe("Test suite: Government Furnished Equipment", () => {
       
   });
 
-  it("TC3: Blue Info message displays only when user previously select DISA ServiceAgency", () => {
+  it("TC3: Blue Info message displays only when user previously select DISA Agency", () => {
     cy.clickSideStepper(common.subStepOrganizationLink, " Organization ");
     // Navigates to "Organization"
     cy.textExists(common.header, " Next, we’ll gather information about your organization ");
-    // Serviceagency is DISA
-    cy.serviceOrAgency("Defense Information Systems");
+    // Agency is DISA
+    cy.agency("Defense Information Systems");
     cy.textExists(org.disaDropDownLabel," DISA Organization ");
     cy.autoCompleteSelection(org.disaOrgInput, "Assistan",org.disaAutoComplete);
     cy.textExists(org.activityAddressCodeLabel, " DoD Activity Address Code (DoDAAC) ");

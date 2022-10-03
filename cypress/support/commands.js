@@ -126,7 +126,7 @@ Cypress.Commands.add("launchATAT", () => {
   //       .then(() => cy.window().wait(1000).its("sessionStorage")
   //         .invoke("getItem", "ATAT_ORGANIZATION_DATA_KEY")
   //         .then(data => {
-  //           cy.wrap(JSON.parse(data)).its("service_agency_data").should("exist")
+  //           cy.wrap(JSON.parse(data)).its("agency_data").should("exist")
   //             // eslint-disable-next-line cypress/no-unnecessary-waiting
   //             .then(() => cy.window().wait(1000).its("sessionStorage")
   //               .invoke("getItem", "ATAT_DESCRIPTION_OF_WORK_KEY")
@@ -482,10 +482,10 @@ Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
   };         
 });
 
-Cypress.Commands.add("serviceOrAgency", (inputText) => {
-  cy.dropDownClick(org.serviceAgencyDropDownIcon);
-  cy.autoCompleteSelection(org.serviceAgencyInput, inputText, org.serviceAgencyAutoListItems);
-  cy.findElement(org.serviceAgencyInput)
+Cypress.Commands.add("agency", (inputText) => {
+  cy.dropDownClick(org.agencyDropDownIcon);
+  cy.autoCompleteSelection(org.agencyInput, inputText, org.agencyAutoListItems);
+  cy.findElement(org.agencyInput)
     .then(($option) => {
       const selectedOption = $option.val();
       cy.log(selectedOption);
