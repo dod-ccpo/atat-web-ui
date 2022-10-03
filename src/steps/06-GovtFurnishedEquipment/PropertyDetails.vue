@@ -72,8 +72,8 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
   ];
 
   public get isDISA(): boolean {
-    return AcquisitionPackage.selectedServiceOrAgency.value?.toUpperCase() 
-      === "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
+    return AcquisitionPackage.selectedAgency.value?.toUpperCase()
+      === "DEFENSE INFORMATION SYSTEMS AGENCY (DISA)";
   }
 
   private get currentData(): GFEOverviewDTO {
