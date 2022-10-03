@@ -364,20 +364,23 @@ export interface EnvironmentInstanceDTO extends BaseTableDTO {
   data_egress_monthly_unit: string;
 }
 
-export interface PortfolioSummaryDTO {
-  title: string;
-  description: string;
-  status: string;
-  csp: string;
-  serviceAgency: string;
-  createdBy: string;
-  provisioned: string;
-  members: User[];
-  updated: string;
-  branch: string;
-  lastModified: string;
-  currentPoP: string;
-  totalObligated: string;
-  fundsSpent: string;
-  fundsSpentPercent: string;
+export interface PortfolioSummaryDTO extends BaseTableDTO{
+  name: string; // "Porfolio Name << portfolio.name >>",
+  csp: ReferenceColumn;
+  csp_display: string; // "<<cloud_service_package.name >>"
+  dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
+  task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
+  sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
+  task_order_status: string; // "EXPIRED << task_order.task_order_status >>",
+  pop_end_date: string; // "2022-12-31 << task_order.pop_end_date >>",
+  pop_start_date: string; // "2022-01-01 << task_order.pop_start_date >>",
+  funds_obligated: number; // "<< sum of obligated values in all qualifying clins >>",
+  portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
+  portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
+  funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
+}
+
+export interface CloudServiceProviderDTO extends BaseTableDTO{
+  name:string;
+  // other columns as needed
 }

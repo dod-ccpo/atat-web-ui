@@ -21,6 +21,9 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import PortfolioCard from "./PortfolioCard.vue";
 import { PortfolioCardData } from "types/Global";
+import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
+import {PortfolioSummaryDTO, ProjectOverviewDTO} from "@/api/models";
+import PortfolioSummary, {PortfolioSummaryStore} from "@/store/portfolioSummary";
 
 @Component({
   components: {
@@ -67,6 +70,13 @@ export default class AllPortfolios extends Vue {
   public async mounted(): Promise<void> {
     // delete next line when backend hooked up with actual data
     await this.generateDummyData();
+    await this.loadOnEnter();
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await PortfolioSummary.loadPortfolioSummaryList(''); // todo: pass user
+    console.log('Store data in AllPortfolios Vue');
+    console.log(storeData);
   }
 }
 </script>
