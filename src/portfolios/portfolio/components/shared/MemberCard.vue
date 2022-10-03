@@ -85,7 +85,7 @@
               </div>
               <div
                 class="d-flex mt-3"
-                v-if="member.serviceAgency"
+                v-if="member.agency"
               >
                 <ATATSVGIcon
                   width="16"
@@ -94,7 +94,7 @@
                   color="base-light"
                 />
                 <span class="font-size-14 ml-3">
-                  {{member.serviceAgency}}
+                  {{member.agency}}
                 </span>
               </div>
               <div

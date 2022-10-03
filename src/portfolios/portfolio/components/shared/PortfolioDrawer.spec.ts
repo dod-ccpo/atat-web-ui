@@ -46,7 +46,7 @@ describe("Testing Portfolio Drawer component", () => {
     description:"just testfefseffdsfd",
     members: members,
     provisioned: "2022-09-08 18:12:12",
-    serviceAgency:"DISA",
+    agency: "DISA",
     status: "Active",
     title: "test title",
     updated: "2022-09-08 18:12:12"
@@ -94,7 +94,7 @@ describe("Testing Portfolio Drawer component", () => {
       description:"just testfefseffdsfd",
       members: [],
       provisioned: "2022-09-08 18:12:12",
-      serviceAgency:"DISA",
+      agency: "DISA",
       status: "Active",
       title: "test title",
       updated: "2022-09-08 18:12:12"
