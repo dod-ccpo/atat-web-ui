@@ -19,7 +19,7 @@
         {{ panelTitle }}
       </div>
       <v-btn
-        class="text-base-darkest pa-0 icon-24"
+        class="text-base-darkest pa-0 icon-24 _panel-closer"
         text
         small
         @click.stop="closeSlideoutPanel"
@@ -110,7 +110,9 @@ export default class ATATSlideoutPanel extends Vue {
   slideoutPanelToggle(isOpen: boolean): void {
     this.$nextTick(() => {
       if (isOpen) {
-        document.getElementById("PanelTitle")?.focus();
+        setTimeout(()=> {
+          document.getElementById("PanelTitle")?.focus();
+        }, 100)
         const wrapper = document.getElementById("PanelWrap");
         if (wrapper) {
           wrapper.scrollTop = 0;
