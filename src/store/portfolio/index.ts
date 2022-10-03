@@ -11,10 +11,12 @@ import AlertService from "@/services/alerts";
 const ATAT_PORTFOLIO_DATA_KEY = 'ATAT_PORTFOLIO_DATA_KEY';
 
 export const PortFolioStatusTypes = {
+  OnTrack: "On track",
   Processing: "Processing",
   Active: "Active",
   AtRisk: "At-Risk",
   Delinquent: "Delinquent",
+  ExpiringSoon: "Expiring soon",
   Expired: "Expired",
   Archived: "Archived",
 }
