@@ -173,6 +173,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public allServiceGroups: SystemChoiceDTO[] = [];
   public selectedServiceGroups: DOWServiceOfferingGroup[] = [];
   public showMore = false;
+  public isDataComplete = true;
 
   public alternateGroupNames = [
     {
@@ -324,7 +325,11 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public missingData(value: string): boolean {
-    return this.serviceGroupsMissingData.includes(value) ? true : false;
+    const isDataMissing = this.serviceGroupsMissingData.includes(value) ? true : false;
+    if (isDataMissing){
+      this.isDataComplete = false;
+    }
+    return isDataMissing;
   };
 
   public async loadOnEnter(): Promise<void> {

@@ -52,6 +52,14 @@ export const thresholdAtOrAbove = (value: string, threshold: number): boolean =>
   return !Number.isNaN(numVal) && numVal >=threshold;
 }
 
+export const cspConsoleURLs: Record<string, string> = {
+  azure: "https://portal.azure.com/abc123",
+  aws: "https://signin.amazonaws-us-gov.com",
+  google: "https://console.cloud.google.com",
+  oracle: "https://console.oraclecloud.com",
+}
+
+
 @Module({
   name: "PortfolioData",
   namespaced: true,
@@ -75,8 +83,7 @@ export class PortfolioDataStore extends VuexModule {
     members: [],
   }
   public status = PortFolioStatusTypes.Active;
-  
-  
+    
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this,x=> x.portfolio),
@@ -100,42 +107,42 @@ export class PortfolioDataStore extends VuexModule {
     storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
-    @Mutation
+  @Mutation
   public setStatus(value: string): void {
     this.status = value;
     storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
-   @Mutation
-    public setAlerts(value: AlertDTO[]): void {
-      this.alerts = value;
-      storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
-    }
+  @Mutation
+  public setAlerts(value: AlertDTO[]): void {
+    this.alerts = value;
+    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
+  }
 
   @Action({rawError: true})
-   private async initPortfolioData():Promise<void> {
-     const obj: Portfolio = {
-       title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
-       description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
-       status: "Active",
-       csp: "Azure",
-       serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
-       createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
-       provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
-       members: [{
-         firstName:"Maria",
-         lastName: "Missionowner",
-         email:"maria.missionowner.civ@mail.mil",
-         role: "Manager",
-         phoneNumber:"5555555555",
-         phoneExt:"1234",
-         designation: "Civilian",
-         serviceAgency: "U.S Army"
-       }],
-       updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
-     }
-     this.setPortfolioData(obj);
-   }
+  private async initPortfolioData():Promise<void> {
+    const obj: Portfolio = {
+      title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
+      description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
+      status: "Active",
+      csp: "Azure",
+      serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
+      createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
+      provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
+      members: [{
+        firstName:"Maria",
+        lastName: "Missionowner",
+        email:"maria.missionowner.civ@mail.mil",
+        role: "Manager",
+        phoneNumber:"5555555555",
+        phoneExt:"1234",
+        designation: "Civilian",
+        serviceAgency: "U.S Army"
+      }],
+      updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
+    }
+    this.setPortfolioData(obj);
+  }
 
   @Action({rawError: true})
   public async saveMembers(newMembers: MemberInvites): Promise<void> {
@@ -190,6 +197,7 @@ export class PortfolioDataStore extends VuexModule {
       }
     }
   }
+
   @Action({ rawError: true })
   public async getAlerts(taskOrderNumber: string): Promise<AlertDTO[]> {
     const alerts = await this.alertService.getAlerts(taskOrderNumber);
@@ -203,7 +211,6 @@ export class PortfolioDataStore extends VuexModule {
     //just set the status to active for now
     //in the future this logic will be more complex
     this.setStatus(PortFolioStatusTypes.Active);
-
 
     const fundingAlertData: FundingAlertData = {
       alerts: [],

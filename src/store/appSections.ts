@@ -39,6 +39,18 @@ export class AppSectionsStore extends VuexModule {
     { title: this.sectionTitles.DocumentReview }
   ];
 
+  activeTabIndex = 0;
+
+  @Action
+  public async setActiveTabIndex(idx: number): Promise<void> {
+    this.doSetActiveTabIndex(idx);
+  }
+  
+  @Mutation
+  public async doSetActiveTabIndex(idx: number): Promise<void> {
+    this.activeTabIndex = idx;
+  }
+
   @Mutation
   public changeActiveSection(section: string): void {
     this.activeAppSection = section;
