@@ -11,6 +11,13 @@ export interface BaseTableDTO {
   sys_created_by?: string;
 }
 
+export interface AgencyDTO extends BaseTableDTO {
+  label: string;
+  title: string;
+  acronym: string;
+  css_id: number;
+}
+
 export interface AlertDTO extends BaseTableDTO {
   active: string;
   alert_type: string;
@@ -103,7 +110,7 @@ export interface OrganizationDTO extends BaseTableDTO {
   street_address_2?: string;
   organization_name?: string;
   disa_organization?: string;
-  service_agency?: string;
+  agency?: string;
   state?: string;
   zip_code?: string;
   country?: string;
@@ -322,7 +329,7 @@ export interface CostsDTO extends BaseTableDTO {
   task_order_number: string;
   portfolio: string;
   organization: string;
-  service_agency: string;
+  agency: string;
   is_actual: string;
   value: number;
 }
