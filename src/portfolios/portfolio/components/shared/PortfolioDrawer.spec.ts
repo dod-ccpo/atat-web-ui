@@ -3,8 +3,9 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import PortfolioDrawer from "@/portfolios/portfolio/components/shared/PortfolioDrawer.vue";
-import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
+import PortfolioData from "@/store/portfolio";
 import { SelectData, User } from "types/Global";
+import { StatusTypes } from "@/store/acquisitionPackage";
 Vue.use(Vuetify);
 
 describe("Testing Portfolio Drawer component", () => {
@@ -154,22 +155,22 @@ describe("Testing Portfolio Drawer component", () => {
   describe("getTag function with different inputs",()=> {
 
     it("Test getTag(processing)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = PortFolioStatusTypes.Active;
+      wrapper.vm.$data.portfolioStatus = StatusTypes.Active;
       const result = wrapper.vm.getBgColor()
       expect(result.length).toBeGreaterThan(0)
     })
     it("Test getTag(expiring pop)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = PortFolioStatusTypes.AtRisk;
+      wrapper.vm.$data.portfolioStatus = StatusTypes.AtRisk;
       const result = wrapper.vm.getBgColor()
       expect(result.length).toBeGreaterThan(0)
     })
     it("Test getTag(expired)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus =  PortFolioStatusTypes.Delinquent;
+      wrapper.vm.$data.portfolioStatus =  StatusTypes.Delinquent;
       const result = wrapper.vm.getBgColor()
       expect(result.length).toBeGreaterThan(0)
     })
     it("Test getTag(archived)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = PortFolioStatusTypes.Archived
+      wrapper.vm.$data.portfolioStatus = StatusTypes.Archived
       const result = wrapper.vm.getBgColor()
       expect(result.length).toBeGreaterThan(0)
     })
