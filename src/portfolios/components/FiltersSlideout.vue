@@ -42,7 +42,7 @@
         <v-btn
           id="ApplyFilters"
           class="primary"
-          @click="applyFilters"
+          @click="setFilters"
         >
           Apply filters
         </v-btn>
@@ -60,6 +60,7 @@ import { Component } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { Checkbox, RadioButton } from "types/Global";
+import PortfolioData from "@/store/portfolio";
 
 @Component({
   components: {
@@ -137,16 +138,20 @@ export default class FilterSlideout extends Vue {
       && this.selectedFundingStatuses.length === 0;
   }
 
-  public applyFilters(): void {
-    // EJY - make api call to retrieve new records
-  }
-
-  public resetFilters(): void {
+  public async resetFilters(): Promise<void> {
     //
     this.selectedPortfolioRole = "all";
     this.selectedFundingStatuses = [];
     this.selectedCSPs = [];
-    // EJY - make api call to retrieve new records
+    this.setFilters();
+  }
+
+  public async setFilters(): Promise<void> {
+    PortfolioData.setPortfolioListQueryParams({
+      role: this.selectedPortfolioRole,
+      fundingStatuses: this.selectedFundingStatuses,
+      csps: this.selectedCSPs,
+    })
   }
 
 }

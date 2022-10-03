@@ -2,7 +2,7 @@
 import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
-import { MemberInvites, Portfolio, User } from "../../../types/Global"
+import { MemberInvites, Portfolio, PortfolioListQueryParams, User } from "../../../types/Global"
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { AlertDTO } from "@/api/models";
@@ -86,6 +86,31 @@ export class PortfolioDataStore extends VuexModule {
   }
   public status = PortFolioStatusTypes.Active;
     
+  public portfolioListQueryParams: PortfolioListQueryParams = {
+    role: "all", // all, managed
+    fundingStatuses: [],
+    portfolioStatus: "all", // all, processing, active
+    csps: [],
+    sort: "alpha",
+    searchString: "",
+  }
+
+  @Action
+  public async setPortfolioListQueryParams(params: PortfolioListQueryParams): Promise<void> {
+    await this.doSetPortfolioListQueryParams(params);
+  }
+
+  @Mutation
+  public async doSetPortfolioListQueryParams(params: PortfolioListQueryParams): Promise<void> {
+    Object.assign(this.portfolioListQueryParams, params);
+  }
+
+  @Action
+  public async queryPortfolioList(): Promise<void> {
+    // make API call based on this.portfolioListQueryParams values
+    
+  }
+
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this,x=> x.portfolio),

@@ -404,6 +404,15 @@ export interface PortfolioCardData extends Portfolio {
   fundsSpentPercent?: string;
 }
 
+export interface PortfolioListQueryParams {
+  role?: string;
+  fundingStatuses?: string[];
+  csps?: string[];
+  portfolioStatus?: string;
+  sort?: string;
+  searchString?: string;
+}
+
 export interface EmailEntry {
   key: string;
   email: string;
