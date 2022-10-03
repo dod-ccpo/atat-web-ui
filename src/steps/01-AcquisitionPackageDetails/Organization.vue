@@ -8,16 +8,16 @@
         </h1>
 
         <ATATAutoComplete
-          id="ServiceOrAgency"
+          id="Agency"
           class="_input-max-width mb-2"
           label="What service or agency do you work for?"
           :label-sr-only="false"
           titleKey="text"
           :searchFields="['text']"
-          :items="serviceOrAgencyData"
-          :selectedItem.sync="selectedServiceOrAgency"
+          :items="agencyData"
+          :selectedItem.sync="selectedAgency"
           :rules="[$validators.required('Please select your service or agency.')]"
-          placeholder="Find your service/agency"
+          placeholder="Find your agency"
           icon="arrow_drop_down"
         />
 
@@ -25,13 +25,13 @@
           role="button"
           id="RequestAgencyAdded"
           class="_text-link"
-          :class="{ 'mb-10 d-inline-block': !selectedServiceOrAgency }"
+          :class="{ 'mb-10 d-inline-block': !selectedAgency }"
           @click="showDialog = true"
         >
           Request to have your agency added
         </a>
 
-        <div v-show="selectedServiceOrAgency" class="mt-10">
+        <div v-show="selectedAgency" class="mt-10">
           <hr />
           <section id="Section1">
             <h2 class="form-section-heading">
@@ -40,8 +40,8 @@
             <ATATAutoComplete
               id="DisaOrg"
               v-show="
-                selectedServiceOrAgency &&
-                selectedServiceOrAgency.value === this.DisaOrgName
+                selectedAgency &&
+                selectedAgency.value === this.DisaOrgName
               "
               class="_input-max-width mb-10"
               label="DISA Organization"
@@ -58,8 +58,8 @@
             <ATATTextField
               id="OrgName"
               v-show="
-                selectedServiceOrAgency &&
-                selectedServiceOrAgency.value !== this.DisaOrgName
+                selectedAgency &&
+                selectedAgency.value !== this.DisaOrgName
               "
               label="Organization name"
               class="_input-max-width mb-10"
@@ -172,7 +172,7 @@
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import {convertSystemChoiceToSelect} from "@/helpers";
+import {convertSystemChoiceToSelect, convertAgencyRecordToSelect } from "@/helpers";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -198,7 +198,7 @@ import ContactData from "@/store/contactData";
 })
 
 export default class OrganizationInfo extends Mixins(SaveOnLeave) {
-  // // computed
+  // computed
 
   get inputClass(): string {
     return this.$vuetify.breakpoint.mdAndDown
@@ -255,8 +255,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
   private selectedDisaOrg: SelectData = this.emptySelectData;
   private disaOrgData: SelectData[] = [];
-  private selectedServiceOrAgency: SelectData = this.emptySelectData;
-  private serviceOrAgencyData: SelectData[] = [];
+  private selectedAgency: SelectData = this.emptySelectData;
+  private agencyData: SelectData[] = [];
 
   private selectedStateCode: SelectData = this.emptySelectData;
   private stateCodeListData: SelectData[] = [
@@ -323,7 +323,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       disa_organization: this.selectedDisaOrg.value || "",
       organization_name: this.organizationName,
       dodaac: this.dodAddressCode,
-      service_agency: this.selectedServiceOrAgency.value || "",
+      agency: this.selectedAgency.value || "",
       address_type: this.selectedAddressType,
       street_address_1: this.streetAddress1,
       street_address_2: this.streetAddress2,
@@ -338,7 +338,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     disa_organization: "",
     organization_name: "",
     dodaac: "",
-    service_agency: "",
+    agency: "",
     address_type: "",
     street_address_1: "",
     street_address_2: "",
@@ -350,15 +350,15 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
 
   // watchers
-  @Watch("selectedServiceOrAgency")
-  protected serviceOrAgencyChanged(newVal: SelectData): void {
-    AcquisitionPackage.setSelectedServiceOrAgency(newVal);
+  @Watch("selectedAgency")
+  protected gencyChanged(newVal: SelectData): void {
+    AcquisitionPackage.setSelectedAgency(newVal);
   }
 
   // methods
 
   public async loadOnEnter(): Promise<void> {
-    this.serviceOrAgencyData = convertSystemChoiceToSelect(OrganizationData.service_agency_data);
+    this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data);
     this.disaOrgData = convertSystemChoiceToSelect(OrganizationData.disa_org_data);
     this.stateListData = ContactData.stateChoices;
     const storeData = await AcquisitionPackage
@@ -370,7 +370,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
         "disa_organization",
         "organization_name",
         "dodaac",
-        "service_agency",
+        "agency",
         "address_type",
         "street_address_1",
         "street_address_2",
@@ -385,13 +385,13 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
         }
       });
 
-      const selectedAgencyIndex = this.serviceOrAgencyData.findIndex(
-        (svc) => svc.value === storeData.service_agency
+      const selectedAgencyIndex = this.agencyData.findIndex(
+        (svc) => svc.value === storeData.agency
       );
 
       if (selectedAgencyIndex > -1) {
-        this.selectedServiceOrAgency =
-          this.serviceOrAgencyData[selectedAgencyIndex];
+        this.selectedAgency =
+          this.agencyData[selectedAgencyIndex];
       }
 
       const selectedDisaOrgIndx = this.disaOrgData.findIndex(

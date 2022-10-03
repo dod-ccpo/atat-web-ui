@@ -1,4 +1,4 @@
-import { ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@/api/models";
+import { AgencyDTO, ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@/api/models";
 import { Checkbox, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
@@ -16,6 +16,14 @@ export const toTitleCase = (string: string): string => {
   return _.startCase(_.toLower(string));
 }
 
+export const convertAgencyRecordToSelect =
+    (data: AgencyDTO[]): SelectData[] => data.map(choice => {
+      const { label, title } = choice;
+      return {
+        text: label,
+        value: title
+      }
+    });
 export const convertSystemChoiceToSelect =
     (data: SystemChoiceDTO[]): SelectData[] => data.map(choice => {
       const {value} = choice;
