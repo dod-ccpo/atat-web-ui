@@ -94,9 +94,12 @@ export default class AllPortfolios extends Vue {
       // sort by portfolio name A-Z
     } else {
       // sort by modified date
-      // this.portfolioCardData.sort((a,b) => {
-      //   // EJY come back here Monday
-      //   const dateA = new Date(a.lastModifiedDate)
+      // this.portfolioCardData.sort((a, b) => {
+      //   if (a.lastModifiedDate && b.lastModifiedDate) {
+      //     const dateA = new Date(a.lastModifiedDate)
+      //     const dateB = new Date(b.lastModifiedDate)
+      //     return Number(dateA) - Number(dateB);
+      //   }
       // })
     }
   }
@@ -142,6 +145,7 @@ export default class AllPortfolios extends Vue {
     csp?: string,
     branch?: string,
     lastModifiedStr?: string,
+    lastModifiedDate?: string,
     currentPoP?: string,
     totalObligated?: string,
     fundsSpent?: string,
@@ -149,7 +153,7 @@ export default class AllPortfolios extends Vue {
   ): Promise<PortfolioCardData> {
     return {
       // eslint-disable-next-line camelcase
-      sys_id, title, status, csp, branch, lastModifiedStr, currentPoP, 
+      sys_id, title, status, csp, branch, lastModifiedStr, lastModifiedDate, currentPoP, 
       totalObligated, fundsSpent, fundsSpentPercent
     }
   }
