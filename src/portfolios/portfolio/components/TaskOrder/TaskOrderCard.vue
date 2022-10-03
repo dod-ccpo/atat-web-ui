@@ -25,7 +25,7 @@
           color="primary"
           :width="8"
           :height="13"
-          class="d-inline-block mx-3" />
+          class="d-inline-block mx-2" />
         </div>
         <div>
           <v-chip
