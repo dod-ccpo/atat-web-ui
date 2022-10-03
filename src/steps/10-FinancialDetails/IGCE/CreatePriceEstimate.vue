@@ -21,19 +21,20 @@
         >
           <template v-slot:content>
             <h2>Getting started with your price estimate</h2>
-            <v-list class="ATATStepper">
+            <v-list class="_atat-stepper">
               <v-list-item-group >
                 <v-list-item>
-                  <span class="step-circle">1</span>
+                  <span class="_step-circle">1</span>
                   <v-list-item-content>
                     Choose one or more of the CSP pricing calculators below to
                     help you calculate your estimated price for JWCC cloud
                     services and support.
-                    <v-card v-for="(csp,idx) in csps" :key="idx" 
-                        class=
-                          "calculator-card"
+                    <v-card 
+                      v-for="(csp,idx) in csps" 
+                      :key="idx" 
+                      class="_calculator-card"
                      >
-                      <div class="svg-icon-div">
+                      <div class="_svg-icon-div">
                       <ATATSVGIcon 
                         id="Azure" 
                         :name="csp.iconName"
@@ -41,10 +42,10 @@
                         :width="csp.width" 
                         :height="csp.height" />
                       </div>
-                      <h3 class="csp-name"> {{ csp.name }}</h3>
-                      <div class="csp-link-div">
+                      <h3 class="_csp-name"> {{ csp.name }}</h3>
+                      <div class="_csp-link-div">
                         <a :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
-                          class="csp-link"
+                          class="_csp-link"
                           @click="showAlert(csp.name)"> 
                           View calculator
                           <span class="_text-decoration-none ml-1">
@@ -62,7 +63,7 @@
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
-                  <span class="step-circle">2</span>
+                  <span class="_step-circle">2</span>
                   <v-list-item-content>
                     From one or more of the pricing calculator websites, add
                     products and services to fit your unique requirements, in
@@ -71,12 +72,12 @@
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
-                  <span class="step-circle">3</span>
-                  <v-list-item-content>
+                  <span class="_step-circle">3</span>
+                  <v-list-item-content class="pb-0">
                     Export a copy of your estimate or save a unique link to
                     revisit it directly through your browser. You will need to
-                    refer to this report throughout the remaining "Requirements
-                    Cost Estimate" interview questions.
+                    refer to this report throughout the remaining “Requirements
+                    Cost Estimate” interview questions.
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
