@@ -45,10 +45,10 @@ describe("Test suite: Acquisition Package: Organization ", () => {
       cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
       //text Label
-      cy.textExists(org.serviceAgencyLabel, " What service or agency do you work for? ");
+      cy.textExists(org.agencyLabel, " What agency do you work for? ");
 
       //Select the Value from Service or agency dropdown
-      cy.serviceOrAgency("Defense");
+      cy.agency("Defense");
 
       //section One
       cy.textExists(org.sectionOneHeaderText, "1. Tell us more about your organization");
@@ -108,7 +108,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
     // Serviceagency is DISA
-    cy.serviceOrAgency("Defense Information Systems");
+    cy.agency("Defense Information Systems");
     cy.textExists(org.disaDropDownLabel," DISA Organization ");
     cy.autoCompleteSelection(org.disaOrgInput, "Assistan",org.disaAutoComplete);
     cy.textExists(org.activityAddressCodeLabel, " DoD Activity Address Code (DoDAAC) ");
@@ -144,7 +144,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
     //Service Agency is not DISA
-    cy.serviceOrAgency("Communications");
+    cy.agency("Communications");
     cy.enterTextInTextField(org.orgNameTxtBox, "TestDepartmentof Defense");
     cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDCEC");
     cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
@@ -182,11 +182,11 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     cy.verifyPageHeader(" Next, we’ll gather information about your organization ");
     //Service Agency is DISA
     cy.verifyRequiredDropdown(
-      org.serviceAgencyInput,
-      org.serviceAgencyError,
-      "Please select your service or agency."
+      org.agencyInput,
+      org.agencyError,
+      "Please select your agency."
     );    
-    cy.serviceOrAgency("Defense Information Systems");
+    cy.agency("Defense Information Systems");
     // DISA dropdown is blank
     cy.verifyRequiredInput(
       org.disaOrgInput,
@@ -240,7 +240,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
   it("TC7: Validations: Not DISA & Foreign address", () => {
     cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
     cy.textExists(common.header, " Next, we’ll gather information about your organization ");
-    cy.serviceOrAgency("Communications");
+    cy.agency("Communications");
     // Organization Name  is blank
     cy.verifyRequiredInput(
       org.orgNameTxtBox,

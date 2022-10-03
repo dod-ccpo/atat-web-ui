@@ -35,8 +35,8 @@ describe("Test suite: Portfolio info Drawer", () => {
     cy.verifyHasText(ps.statusChip);
     cy.textExists(ps.cspLabel, "Cloud Service Provider");
     cy.verifyHasText(ps.cspName);
-    cy.textExists(ps.serviceAgencyLabel, "Service/Agency");
-    cy.verifyHasText(ps.serviceAgencyName);
+    cy.textExists(ps.agencyLabel, "Agency");
+    cy.verifyHasText(ps.agencyName);
     cy.textExists(ps.createdbyLabel, "Created by");
     cy.verifyHasText(ps.createdbyName);
     cy.textExists(ps.portMemTitle, "Portfolio members");
