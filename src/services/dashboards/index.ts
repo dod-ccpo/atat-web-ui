@@ -138,7 +138,7 @@ export class DashboardService {
 
       const fields =
         "clin,csp,csp.name,year_month," +
-        "task_order_number,portfolio,organization,service_agency,is_actual,value";
+        "task_order_number,portfolio,organization,agency,is_actual,value";
 
       const costsRequestConfig: AxiosRequestConfig = {
         params: {
@@ -192,7 +192,7 @@ export class DashboardService {
 
     const costFields =
       "clin,csp,csp.name,year_month," +
-      "task_order_number,portfolio,organization,service_agency,is_actual,value";
+      "task_order_number,portfolio,organization,agency,is_actual,value";
 
     const costsRequestConfig: AxiosRequestConfig = {
       params: {
@@ -271,7 +271,7 @@ export class DashboardService {
       costGroups,
       fundsSpentToDate: getCostsTotalActual(costGroups),
       fundsSpentByCSP: getEntityTotals(costs, "csp.name"),
-      fundsSpentByServiceAgency: getEntityTotals(costs, "service_agency"),
+      fundsSpentByAgency: getEntityTotals(costs, "agency"),
     };
   }
 }
