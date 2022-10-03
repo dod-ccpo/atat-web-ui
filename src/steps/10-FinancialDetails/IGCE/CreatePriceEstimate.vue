@@ -17,7 +17,7 @@
                 @click="openSlideoutPanel"
                 @keydown.enter="openSlideoutPanel"
                 @keydown.space="openSlideoutPanel">
-              <span class="">Learn more about IGCE.</span>
+              <span class="">Learn more about IGCE</span>
               </a>
             </p>
           </div>
