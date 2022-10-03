@@ -110,6 +110,7 @@ export default class AllPortfolios extends Vue {
       const opener = e.currentTarget as HTMLElement;
       const slideoutPanelContent: SlideoutPanelContent = {
         component: FilterSlideout,
+        title: "Filter your results",
       }
       await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
       this.showFilters = true;
