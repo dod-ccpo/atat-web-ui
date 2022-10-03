@@ -6,13 +6,9 @@
     <div
       v-for="(cardData, index) in taskOrders"
       :key="index"
-      :class="[{
-        'pt-8': index === 0,
-        'pb-8': index === taskOrders.length - 1
-      }]"
       class="flex-grow-1">
       <div class="d-flex pb-1">
-        <div class="card-header flex-grow-1">
+        <div class="card-header flex-grow-1 align-center">
           <a
             role="button"
             tabindex="0"
@@ -25,7 +21,7 @@
           color="primary"
           :width="8"
           :height="13"
-          class="d-inline-block mx-2" />
+          class="d-inline-block mx-2 " />
         </div>
         <div>
           <v-chip
