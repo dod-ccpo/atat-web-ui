@@ -587,8 +587,7 @@ export const IGCESupportingDocumentationResolver = (current: string): string => 
   const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
   const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
   const validToProceed = hasLegitPeriods && isCompleteDOW;
-
-  return current === routeNames.SupportingDocumentation && validToProceed
+  return current === routeNames.FundingPlanType && validToProceed
     ? routeNames.EstimatesDeveloped
     : routeNames.CannotProceed;
 };
