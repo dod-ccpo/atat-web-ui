@@ -197,6 +197,7 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private computeAllAggregations(portfolioSummaryList: PortfolioSummaryDTO[]) {
     portfolioSummaryList.forEach(portfolio => {
+      portfolio.dod_component = 'ARMY' // FIXME: delete this line after API starts returning
       let totalObligatedForPortfolio = 0;
       let totalFundsSpentForPortfolio = 0;
       portfolio.task_orders.forEach(taskOrder => {
