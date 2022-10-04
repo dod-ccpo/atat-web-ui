@@ -101,29 +101,29 @@ export default class TaskOrderCard extends Vue {
   @Prop() private taskOrders!:TaskOrderCardData;
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
 
-  public dropDownItems = [
-    {
-      title: "View task order details",
-      action: 'showTaskOrderDetails',
-    },
-    {
-      title: "Download task order (PDF)",
-      hidden: true
-    },
-    {
-      title: "View acquisition details",
-      hidden: true
-    },
-  ]
-  public menuItems(status:string):MeatballMenuItem[]
-  {
-    if(status == 'Expired') {
-      return this.dropDownItems
+
+  public menuItems(status:string):MeatballMenuItem[] {
+    const dropDownItems: MeatballMenuItem[] = [
+      {
+        title: "View task order details",
+        action: 'showTaskOrderDetails',
+      },
+      {
+        title: "Download task order (PDF)",
+        hidden: true
+      },
+      {
+        title: "View acquisition details",
+        hidden: true
+      },
+    ];
+    if (status !== "Expired") {
+      dropDownItems.splice(1,0, {
+        title: "Request to modify task order",
+        hidden: false
+      });
     }
-    return this.dropDownItems.splice(1,0, {
-      title: "Request to modify task order",
-      hidden:false
-    })
+    return dropDownItems;
   }
 
   public async handleClick(menuItem: MeatballMenuItem): Promise<void> {
