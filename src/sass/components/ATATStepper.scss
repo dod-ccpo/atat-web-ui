@@ -1,22 +1,32 @@
-.ATATStepper{
+._atat-stepper {
   background-color: transparent !important;
+
   .v-list-item{
     display: flex;
     align-items:flex-start;
     padding: 0px;
-    &:hover{
+
+    &:hover {
       background-color: transparent !important;
     }
-    &.v-list-item--link:before{
-      background-color: transparent !important;
+
+    &.v-list-item--link {
+      &:hover {
+        cursor: default;
+      }
+      &:before{ 
+        background-color: transparent !important;
+      }
       &:after {
         // vertical line
         background-color: $primary;
       }
     }
+
     .v-list-item__content{
       padding-top: 2px;
     }
+
     &:after {  //verical line
       position: absolute;
       top: 0px;
@@ -29,7 +39,7 @@
     &:last-child::after{
       display: none;
     }
-    .step-circle {
+    ._step-circle {
       font-size: 2.0rem;
       font-weight: 500;
       border: 4px solid $primary;
@@ -48,7 +58,7 @@
 
 
 // requirements cost estimate csp cards
-.calculator-card{
+._calculator-card {
   width: 169px !important;
   height: 205px;
   max-width: 169px;
@@ -65,14 +75,14 @@
   flex-direction: column !important;
   align-items: center !important;
 
-  .svg-icon-div{
+  ._svg-icon-div {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     height: 45%;
   }
-  .csp-name{
+  ._csp-name {
     position: absolute;
     top: 45%;
     font-weight: 500;
@@ -80,11 +90,15 @@
     font-family: $heading-font;
    
   }
-  .csp-link-div{
-    .csp-link{
+  ._csp-link-div {
+    ._csp-link{
       display: flex !important;
       justify-content: center !important;
       align-items: center;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
     }
     width: 100%;
     margin-top: auto !important;
