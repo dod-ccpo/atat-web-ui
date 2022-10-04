@@ -91,14 +91,12 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   /**
-   * Takes in the portfolio list and makes the necessary API call(s) to set the
-   * cloud service provider for each portfolio. At the time of writing this only the
-   * 'csp_display' property of each portfolio is set.
+   * Constructs a single query that gets all the CSP records across all the portfolis. Parses
+   * the response and sets the 'csp_display' to the respective portfolio.
    */
   @Action({rawError: true})
   private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
     const cspSysIds = portfolioSummaryList.map(portfolio => portfolio.csp.value);
-    console.log(cspSysIds);
     const allCspList = await api.cloudServiceProviderTable.getQuery(
       {
         params:
@@ -122,21 +120,27 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private async setTaskOrdersForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]):
     Promise<PortfolioSummaryDTO[]> {
-    const taskOrderRequests = portfolioSummaryList
-      .map(portfolio => api.taskOrderTable.getQuery(
-        {
-          params:
-            {
-              sysparm_fields:
-                'sys_id,clins,task_order_number,task_order_status,pop_end_date,pop_start_date',
-              sysparm_query: `GOTOportfolio.name>=` + portfolio.sys_id
-            }
-        }
-      ));
-    const allTaskOrderList = await Promise.all(taskOrderRequests); // task orders for all portfolios
-    portfolioSummaryList.forEach((portfolio, index) => {
-      portfolio.task_orders = allTaskOrderList[index]; // works because Promise.all preserves order
-    });
+    const allTaskOrderList = await api.taskOrderTable.getQuery(
+      {
+        params:
+          {
+            sysparm_fields:
+              'sys_id,clins,portfolio,task_order_number,task_order_status,' +
+              'pop_end_date,pop_start_date',
+            sysparm_query: `portfolio.nameIN` + portfolioSummaryList
+              .map(portfolio => portfolio.name)
+          }
+      }
+    )
+    portfolioSummaryList.forEach(portfolio => {
+      // @ts-ignore
+      portfolio.task_orders = allTaskOrderList
+        // @ts-ignore
+        .filter(taskOrder => taskOrder.portfolio.value === portfolio.sys_id);
+      if(!portfolio.task_orders) {
+        portfolio.task_orders = [];
+      }
+    })
     return portfolioSummaryList;
   }
 
@@ -165,6 +169,44 @@ export class PortfolioSummaryStore extends VuexModule {
     })
   }
 
+  /**
+   * Constructs a single query that gets all the cost records across all the clins. Parses
+   * the response and sets the costs to the respective clin.
+   */
+  @Action({rawError: true})
+  private async setCostsToTaskOrderClins(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    const clinNumbers: string[] = [];
+    portfolioSummaryList.forEach(portfolio => {
+      portfolio.task_orders.forEach(taskOrder => {
+        taskOrder.clin_records?.forEach(clinRecord => {
+          clinNumbers.push(clinRecord.clin_number);
+        })
+      })
+    });
+    const allCostList = await api.costsTable.getQuery(
+      {
+        params:
+          {
+            sysparm_fields: 'sys_id,clin,task_order_number,is_actual,value',
+            sysparm_query: `clinIN` + clinNumbers
+          }
+      }
+    )
+    portfolioSummaryList.forEach(portfolio => {
+      portfolio.task_orders.forEach(taskOrder => {
+        taskOrder.clin_records?.forEach(clinRecord => {
+          clinRecord.cost_records =
+            // @ts-ignore
+            allCostList.filter(cost => cost.clin === clinRecord.clin_number &&
+              cost.task_order_number === taskOrder.task_order_number); // FIXME temp code
+          // allCostList.filter(cost => cost.clin?.value === clinRecord.sys_id);//FIXME correct code
+        })
+      })
+    })// GOTOportfolio...INbbdd861387141d10bc86b889cebb35aa
+    console.log('All costs');
+    console.log(allCostList);
+  }
+
   @Action({rawError: true})
   public async loadPortfolioSummaryList(loggedInUserId: string): Promise<PortfolioSummaryDTO[]> {
     await this.ensureInitialized();
@@ -185,6 +227,7 @@ export class PortfolioSummaryStore extends VuexModule {
         // todo: call outs to other functions to set data from other tables
         await this.setTaskOrdersForPortfolios(portfolioSummaryList);
         await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
+        await this.setCostsToTaskOrderClins(portfolioSummaryList);
         this.setPortfolioSummaryList(portfolioSummaryList); // caches the list
         return portfolioSummaryList;
       } else {
