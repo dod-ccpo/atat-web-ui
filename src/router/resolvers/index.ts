@@ -580,7 +580,7 @@ export const IGCEGatherPriceEstimatesResolver = (current: string): string => {
 
   return current === routeNames.GatherPriceEstimates && validToProceed
     ? routeNames.CreatePriceEstimate
-    : routeNames.CannotProceed;
+    : routeNames.FundingPlanType;
 };
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {

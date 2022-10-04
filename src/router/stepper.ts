@@ -126,7 +126,7 @@ import {
   OtherOfferingSummaryPathResolver,
   IGCEGatherPriceEstimatesResolver,
   IGCECannotProceedResolver,
-  IGCESupportingDocumentationResolver, // EJY look into this
+  IGCESupportingDocumentationResolver
 
 } from "./resolvers";
 
