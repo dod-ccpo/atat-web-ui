@@ -25,7 +25,7 @@
         :id="id + '_SearchInput'"
         class="_search-input"
         clearable
-        @change="onInput"
+        @input="onInput"
         outlined
         dense
         :height="40"
@@ -160,8 +160,10 @@ export default class ATATSearch extends Vue {
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop({ default: "G-Invoicing" }) private searchType?: string;
-  @Prop({ default: false} ) private isSimulation?: boolean;
   @PropSync("value", { default: "" }) public _value!: string;
+
+  // remove isSimulation and all other simulation code when G-Invoicing search is actual
+  @Prop({ default: false} ) private isSimulation?: boolean;
 
   private error = false;
   private errorMessages: string[] = [];
@@ -180,7 +182,6 @@ export default class ATATSearch extends Vue {
   }
 
   public onInput(v: string): void {
-    debugger;
     this._value = v;
     if (this.errorMessages.length > 0) {
       this.clearErrorMessages();
@@ -231,10 +232,8 @@ export default class ATATSearch extends Vue {
         this.showLoader = false;
       }
     }
-    this.$nextTick(() => {
-      debugger;
-      this.$emit("search", this.$refs.atatSearchInput.value);
-    });
+
+    this.$emit("search");
 
   }
 
@@ -265,7 +264,7 @@ export default class ATATSearch extends Vue {
   private setMask(): void {
     this.maskObj = {};
 
-    if (this.mask.length > 0) {
+    if (this.mask && this.mask.length > 0) {
       if (this.isMaskRegex){
         this.maskObj.regex = this.mask[0] || "";
       } else {

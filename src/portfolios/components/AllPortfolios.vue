@@ -1,10 +1,6 @@
 <template>
   <div>
-  
-    <div class="
-      bg-base-lightest mt-10 pa-4 border-rounded 
-      d-flex justify-space-between align-center
-    ">
+    <div class="bg-base-lightest pa-4 border-rounded d-flex justify-space-between align-center">
       <ATATSearch 
         id="SearchPortfolios"
         placeHolder="Search portfolios"
@@ -95,9 +91,8 @@ export default class AllPortfolios extends Vue {
     this.setQueryParams("sort", valObj.newSelectedValue);
   }
 
-  public searchPortfolios(value: string): void {
-    debugger;
-    this.setQueryParams("searchString", value);
+  public searchPortfolios(): void {
+    this.setQueryParams("searchString", this.searchString);
   }
 
   public async setQueryParams(key: string, value: string): Promise<void> {
