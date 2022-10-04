@@ -44,11 +44,12 @@ describe("testing route resolvers", () => {
       expect(newRoute).toBe("Create_Price_Estimate");
     });
 
-    it("IGCEGatherPriceEstimatesResolver('Gather_Price_Estimates') returns routeNames.CannotProceed", 
-      async () => {
-        const newRoute = await IGCEGatherPriceEstimatesResolver("Create_Price_Estimate");
-        expect(newRoute).toBe("Cannot_Proceed");
-      });
+    it("IGCEGatherPriceEstimatesResolver('Gather_Price_Estimates') returns " +
+        "routeNames.CannotProceed", 
+    async () => {
+      const newRoute = await IGCEGatherPriceEstimatesResolver("Create_Price_Estimate");
+      expect(newRoute).toBe("Cannot_Proceed");
+    });
 
     it("IGCECannotProceedResolver('Gather_Price_Estimates') with expected criteria to return " +
         "routeNames.GatherPriceEstimates", async () => {
