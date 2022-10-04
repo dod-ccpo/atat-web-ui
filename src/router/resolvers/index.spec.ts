@@ -1,15 +1,16 @@
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
-import { IGCEResolver } from "../resolvers/index"
+import { IGCECannotProceedResolver } from "../resolvers/index"
 
 describe("testing route resolvers", () => {
 
-  it("IGCE('CurrentPriceEstimate') returns routeNames.CannotProceed", async () => {
-    const newRoute = await IGCEResolver("Create_Price_Estimate");
-    expect(newRoute).toBe("Cannot_Proceed");
-  });
+  it("IGCECannotProceedResolver('CurrentPriceEstimate') returns routeNames.CannotProceed", 
+    async () => {
+      const newRoute = await IGCECannotProceedResolver("Create_Price_Estimate");
+      expect(newRoute).toBe("Cannot_Proceed");
+    });
 
-  it("IGCE('CurrentPriceEstimate') with expected criteria to return " +
+  it("IGCECannotProceedResolver('CurrentPriceEstimate') with expected criteria to return " +
   "routeNames.GatherPriceEstimates", async () => {
     Periods.setPeriods([
       {
@@ -20,7 +21,7 @@ describe("testing route resolvers", () => {
       }
     ])
     DescriptionOfWork.setIsIncomplete(false);
-    const newRoute = await IGCEResolver("Create_Price_Estimate");
+    const newRoute = await IGCECannotProceedResolver("Create_Price_Estimate");
     expect(newRoute).toBe("Gather_Price_Estimates");
   });
 })
