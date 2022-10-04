@@ -1,13 +1,14 @@
 <template>
   <v-card
     elevation="0"
-    class="_task-order-container"
+    class=""
   >
     <div
       v-for="(cardData, index) in taskOrders"
       :key="index"
-      class="flex-grow-1">
-      <div class="d-flex pb-1">
+      :class="{ '_first': index === 0, '_last': index === taskOrders.length -1 }"
+      class="d-flex flex-column flex-grow-1 _task-order-container">
+      <div class="d-flex pb-1 ">
         <div class="card-header flex-grow-1 align-center">
           <a
             role="button"
@@ -40,11 +41,13 @@
           class="ml-4"
           :left="true"
           :id="'MeatballMenu' + index"
+          :menuIndex="index"
           :menuItems="menuItems(cardData.status)"
+          @menuItemClick="handleClick"
         />
       </div>
       <div class="d-flex">
-        <div class="mr-15 pb-5" :id="'PoP'+ index">
+        <div class="mr-15 pb-4" :id="'PoP'+ index">
           <span class="_title">Period of Performance</span>
           <span class="_title-value d-block nowrap">
             {{ cardData.periodOfPerformance }}
@@ -76,10 +79,6 @@
           </span>
         </div>
       </div>
-      <hr
-        v-if="index != taskOrders.length -1"
-        class="my-6"
-      />
     </div>
 
   </v-card>
@@ -88,7 +87,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import { MeatballMenuItem, TaskOrderCardData } from "../../../../../types/Global";
 import { getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -101,45 +100,51 @@ import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 })
 export default class TaskOrderCard extends Vue {
   @Prop() private taskOrders!:TaskOrderCardData;
+  @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
 
-  public TaskOrderCardMenuItems: MeatballMenuItem[] = [];
-
-  public menuItems(status:string):
-    ({ title: string } | { title: string } |
-      { disabled: boolean; title: string } |
-      { disabled: boolean; title: string })[]
+  public menuItems(status:string):MeatballMenuItem[]
   {
     if(status != 'Expired') {
       return [
         {
           title: "View task order details",
+          action: 'showTaskOrderDetails',
         },
         {
           title: "Request to modify task order",
         },
         {
           title: "Download task order (PDF)",
-          disabled: true
+          hidden: true
         },
         {
           title: "View acquisition details",
-          disabled: true
+          hidden: true
         },
       ]
     }
     return [
       {
         title: "View task order details",
+        action: 'showTaskOrderDetails',
       },
       {
         title: "Download task order",
-        disabled: true
+        hidden: true
       },
       {
         title: "View acquisition details",
-        disabled: true
+        hidden: true
       },
     ]
+  }
+  public async handleClick(menuItem: MeatballMenuItem): Promise<void> {
+    debugger
+    if(menuItem.action == 'showTaskOrderDetails'){
+      console.log('clicked',menuItem.action)
+      this._showDetails = true
+    }
+    console.log('foo')
   }
   public statusChipBgColor(status:string): string {
     return getStatusChipBgColor(status);
