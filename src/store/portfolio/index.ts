@@ -85,6 +85,10 @@ export class PortfolioDataStore extends VuexModule {
     searchString: "",
   }
 
+  public get portfolioListQPs(): PortfolioListQueryParams {
+    return this.portfolioListQueryParams;
+  }
+
   @Action
   public async setPortfolioListQueryParams(params: PortfolioListQueryParams): Promise<void> {
     debugger;

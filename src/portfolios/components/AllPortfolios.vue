@@ -1,42 +1,56 @@
 <template>
   <div>
-    <div class="bg-base-lightest pa-4 border-rounded d-flex justify-space-between align-center">
-      <ATATSearch 
-        id="SearchPortfolios"
-        placeHolder="Search portfolios"
-        width="450"
-        @search="searchPortfolios"
-        :value.sync="searchString"
-      />
-      <div class="d-flex align-center">
-        <div>
-          <ATATSelect
-            id="PortfolioSort"
-            class="_small _alt-style-clean _portfolio-sort"
-            :items="sortOptions"
-            width="167"
-            :selectedValue.sync="selectedSort"
-            iconType="chevron"
-            @selectValueChange="sortPortfolios"
-          />
-        </div>
-        <div>
-          <v-btn
-            class="_icon-only mr-2"
-            id="FilterButton"
-            @click="openFilterSlideout"
-            @keydown.enter="openFilterSlideout"
-            @keydown.space="openFilterSlideout"
-          >
-            <ATATSVGIcon
-              name="filters"
-              width="14"
-              height="14"
-              color="base-dark"
+    <div class="bg-base-lightest pa-4 border-rounded">
+      <div class="d-flex justify-space-between align-center">
+        <ATATSearch 
+          id="SearchPortfolios"
+          placeHolder="Search portfolios"
+          width="450"
+          @search="searchPortfolios"
+          @clear="clearSearch"
+          :value.sync="searchString"
+        />
+        <div class="d-flex align-center">
+          <div>
+            <ATATSelect
+              id="PortfolioSort"
+              class="_small _alt-style-clean _portfolio-sort"
+              :items="sortOptions"
+              width="167"
+              :selectedValue.sync="selectedSort"
+              iconType="chevron"
+              @selectValueChange="sortPortfolios"
             />
-          </v-btn>
-          
+          </div>
+          <div>
+            <v-btn
+              class="_icon-only mr-2"
+              id="FilterButton"
+              @click="openFilterSlideout"
+              @keydown.enter="openFilterSlideout"
+              @keydown.space="openFilterSlideout"
+            >
+              <ATATSVGIcon
+                name="filters"
+                width="14"
+                height="14"
+                color="base-dark"
+              />
+            </v-btn>
+            
+          </div>
         </div>
+      </div>
+      <div class="mt-2" v-show="hasFilters">
+        chips
+        <v-chip
+          v-for="(chip, index) in filterChips"
+          :key="index"
+          close
+        >
+          {{ chip }}
+        </v-chip>
+
       </div>
     </div>
     
@@ -63,7 +77,14 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FilterSlideout from "./FiltersSlideout.vue";
 import PortfolioCard from "./PortfolioCard.vue";
 
-import { PortfolioCardData, ToastObj, SelectData, SlideoutPanelContent } from "types/Global";
+import { 
+  PortfolioCardData,  
+  PortfolioListQueryParams,
+  SelectData, 
+  SlideoutPanelContent,
+  ToastObj,  
+} from "types/Global";
+
 import Toast from "@/store/toast";
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
@@ -87,6 +108,23 @@ export default class AllPortfolios extends Vue {
     { text: "Recently modified", value: "modified" },
   ];
 
+  public filterChips = ["foo", "bar", "baz"];
+
+  public get hasFilters(): boolean {
+    // const 
+    return true;
+  }
+
+  public get queryParams(): PortfolioListQueryParams {
+    return PortfolioData.portfolioListQueryParams;
+  }
+
+  @Watch("queryParams", { deep: true })
+  public queryParamsChange(newVal: PortfolioListQueryParams): void {
+    debugger;
+    // check pills
+  }
+
   public sortPortfolios(valObj: Record<string, string>): void {
     this.setQueryParams("sort", valObj.newSelectedValue);
   }
@@ -95,11 +133,18 @@ export default class AllPortfolios extends Vue {
     this.setQueryParams("searchString", this.searchString);
   }
 
+  public clearSearch(): void {
+    this.setQueryParams("searchString", "");
+  }
+
   public async setQueryParams(key: string, value: string): Promise<void> {
     debugger;
-    PortfolioData.setPortfolioListQueryParams({
+    await PortfolioData.setPortfolioListQueryParams({
       [key]: value
-    })
+    });
+
+    // make API call to load portfolios based on search/sort/filter params
+    await PortfolioData.queryPortfolioList();
   }
 
   public showFilters = false;

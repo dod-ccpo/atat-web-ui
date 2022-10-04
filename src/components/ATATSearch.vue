@@ -34,7 +34,7 @@
         :rules="rules"
         :validate-on-blur="validateOnBlur"
         @update:error="setErrorMessage"
-        @click:clear="clearErrorMessages"
+        @click:clear="clear"
         @blur="onBlur"
         autocomplete="off"
         @keydown.enter="search"
@@ -184,7 +184,7 @@ export default class ATATSearch extends Vue {
   public onInput(v: string): void {
     this._value = v;
     if (this.errorMessages.length > 0) {
-      this.clearErrorMessages();
+      this.clear();
     }
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
@@ -243,11 +243,12 @@ export default class ATATSearch extends Vue {
     });
   }
 
-  private clearErrorMessages(): void {
+  private clear(): void {
     Vue.nextTick(()=>{
       this.$refs.atatSearchInput.errorBucket = [];
       this.errorMessages = [];
     });
+    this.$emit("clear");
   }
 
   private onBlur(e: FocusEvent) : void{
