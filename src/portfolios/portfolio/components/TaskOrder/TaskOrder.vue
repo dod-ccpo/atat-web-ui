@@ -1,5 +1,4 @@
 <template>
-  <div>
     <div class="pt-5">
       <div v-if="!showTaskOrderDetails">
         <h2 class="pb-3">All task orders</h2>
@@ -18,11 +17,10 @@
         </div>
         <TaskOrderCard :taskOrders="taskOrderData" :showDetails.sync="showTaskOrderDetails"/>
       </div>
-      <div>
-        <TaskOrderBuildPage v-if="showTaskOrderDetails"/>
+      <div v-if="showTaskOrderDetails">
+        <TaskOrderBuildPage />
       </div>
     </div>
-  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";

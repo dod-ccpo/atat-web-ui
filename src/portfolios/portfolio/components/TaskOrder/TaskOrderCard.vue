@@ -1,7 +1,6 @@
 <template>
   <v-card
     elevation="0"
-    class=""
   >
     <div
       v-for="(cardData, index) in taskOrders"
@@ -102,49 +101,35 @@ export default class TaskOrderCard extends Vue {
   @Prop() private taskOrders!:TaskOrderCardData;
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
 
+  public dropDownItems = [
+    {
+      title: "View task order details",
+      action: 'showTaskOrderDetails',
+    },
+    {
+      title: "Download task order (PDF)",
+      hidden: true
+    },
+    {
+      title: "View acquisition details",
+      hidden: true
+    },
+  ]
   public menuItems(status:string):MeatballMenuItem[]
   {
-    if(status != 'Expired') {
-      return [
-        {
-          title: "View task order details",
-          action: 'showTaskOrderDetails',
-        },
-        {
-          title: "Request to modify task order",
-        },
-        {
-          title: "Download task order (PDF)",
-          hidden: true
-        },
-        {
-          title: "View acquisition details",
-          hidden: true
-        },
-      ]
+    if(status == 'Expired') {
+      return this.dropDownItems
     }
-    return [
-      {
-        title: "View task order details",
-        action: 'showTaskOrderDetails',
-      },
-      {
-        title: "Download task order",
-        hidden: true
-      },
-      {
-        title: "View acquisition details",
-        hidden: true
-      },
-    ]
+    return this.dropDownItems.splice(1,0, {
+      title: "Request to modify task order",
+      hidden:false
+    })
   }
+
   public async handleClick(menuItem: MeatballMenuItem): Promise<void> {
-    debugger
-    if(menuItem.action == 'showTaskOrderDetails'){
-      console.log('clicked',menuItem.action)
+    if(menuItem.action == "showTaskOrderDetails"){
       this._showDetails = true
     }
-    console.log('foo')
   }
   public statusChipBgColor(status:string): string {
     return getStatusChipBgColor(status);
