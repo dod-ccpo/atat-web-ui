@@ -52,7 +52,9 @@ export class SlideoutPanelStore extends VuexModule {
   @Mutation
   public doOpenSlideoutPanel(openerId: string): void {
     this.slideoutPanelIsOpen = true;
-    this.slideoutPanelOpenerId = openerId;
+    if (openerId) {
+      this.slideoutPanelOpenerId = openerId;
+    }
   }
 
 }

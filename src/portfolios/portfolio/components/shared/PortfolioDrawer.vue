@@ -184,7 +184,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PortfolioRolesLearnMore from
   "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
 
-import PortfolioData, { PortFolioStatusTypes } from "@/store/portfolio";
+import PortfolioData from "@/store/portfolio";
 import SlideoutPanel from "@/store/slideoutPanel";
 import Toast from "@/store/toast";
 
@@ -199,6 +199,7 @@ import { format, parseISO } from "date-fns";
 import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import { getStatusChipBgColor } from "@/helpers";
+import { StatusTypes } from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -213,7 +214,7 @@ import { getStatusChipBgColor } from "@/helpers";
 
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio = {};
-  public portfolioStatus: string = PortFolioStatusTypes.Active;
+  public portfolioStatus: string = StatusTypes.Active;
   public provisionedTime = "";
   public updateTime = "";
   public csp = "";

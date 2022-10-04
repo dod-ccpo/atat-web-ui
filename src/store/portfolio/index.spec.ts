@@ -2,12 +2,12 @@
 
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
-import {FundingAlertTypes, PortfolioDataStore, PortFolioStatusTypes,
+import {FundingAlertTypes, PortfolioDataStore,
   getThresholdAmount, thresholdAtOrAbove} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
 import storeHelperFunctions  from "../helpers";
 import Vue from "vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StatusTypes } from "@/store/acquisitionPackage";
 import { AlertDTO } from '@/api/models';
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -181,9 +181,9 @@ describe("Portfolio Store", () => {
   })
 
   it('Test setStatus- sets portfolio status to the passed in value', async () => {
-    portfolioStore.setStatus(PortFolioStatusTypes.Delinquent);
+    portfolioStore.setStatus(StatusTypes.Delinquent);
     Vue.nextTick(() => {
-      expect(portfolioStore.status).toBe(PortFolioStatusTypes.Delinquent);
+      expect(portfolioStore.status).toBe(StatusTypes.Delinquent);
     })
   })
 
