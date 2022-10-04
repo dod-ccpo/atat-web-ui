@@ -139,7 +139,6 @@ export default class FilterSlideout extends Vue {
   }
 
   public async resetFilters(): Promise<void> {
-    //
     this.selectedPortfolioRole = "all";
     this.selectedFundingStatuses = [];
     this.selectedCSPs = [];

@@ -9,6 +9,7 @@
         id="SearchPortfolios"
         placeHolder="Search portfolios"
         width="450"
+        :value="searchString"
       />
       <div class="d-flex align-center">
         <div>
@@ -40,7 +41,6 @@
           
         </div>
       </div>
-
     </div>
     
     <div class="mt-10">
@@ -59,7 +59,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import ATATSearch from "@/components/ATATSearch.vue"
 import ATATSelect from "@/components/ATATSelect.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -69,6 +69,7 @@ import PortfolioCard from "./PortfolioCard.vue";
 import { PortfolioCardData, ToastObj, SelectData, SlideoutPanelContent } from "types/Global";
 import Toast from "@/store/toast";
 import SlideoutPanel from "@/store/slideoutPanel";
+import PortfolioData from "@/store/portfolio";
 
 @Component({
   components: {
@@ -80,28 +81,29 @@ import SlideoutPanel from "@/store/slideoutPanel";
 })
 
 export default class AllPortfolios extends Vue {
-  public portfolioCardData: PortfolioCardData[] = []
+  public portfolioCardData: PortfolioCardData[] = [];
   public isHaCCAdmin = false;
-
+  public searchString = "foobar";
   public selectedSort = "alpha";
   public sortOptions: SelectData[] = [
     { text: "Portfolio name A-Z", value: "alpha" },
     { text: "Recently modified", value: "modified" },
   ];
 
-  public sortPortfolios(val: Record<string, string>): void {
-    if (val.newSelectedValue === "alpha") {
-      // sort by portfolio name A-Z
-    } else {
-      // sort by modified date
-      // this.portfolioCardData.sort((a, b) => {
-      //   if (a.lastModifiedDate && b.lastModifiedDate) {
-      //     const dateA = new Date(a.lastModifiedDate)
-      //     const dateB = new Date(b.lastModifiedDate)
-      //     return Number(dateA) - Number(dateB);
-      //   }
-      // })
-    }
+  public sortPortfolios(valObj: Record<string, string>): void {
+    this.setQueryParams("sort", valObj.newSelectedValue);
+  }
+
+  public searchPortfolios(value: string): void {
+    debugger;
+    this.setQueryParams("searchString", value);
+  }
+
+  public async setQueryParams(key: string, value: string): Promise<void> {
+    debugger;
+    PortfolioData.setPortfolioListQueryParams({
+      [key]: value
+    })
   }
 
   public showFilters = false;

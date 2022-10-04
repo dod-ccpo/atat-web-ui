@@ -43,6 +43,8 @@
         :id="id + '_SearchButton'" 
         class="primary _search-button"
         @click="search"
+        @keydown.enter="search"
+        @keydown.space="search"
 
       >
         <ATATSVGIcon 
@@ -157,10 +159,7 @@ export default class ATATSearch extends Vue {
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop({ default: "G-Invoicing" }) private searchType!: string;
-
-
-
-  @PropSync("value", { default: "" }) private _value!: string;
+  @PropSync("value", { default: "" }) public _value!: string;
 
   private error = false;
   private errorMessages: string[] = [];
@@ -178,8 +177,9 @@ export default class ATATSearch extends Vue {
     this.showHelpText = newVal.length === 0 && !this.showLoader;
   }
 
-  private onInput(v: string) {
+  public onInput(v: string): void {
     this._value = v;
+    debugger;
     if (this.errorMessages.length > 0) {
       this.clearErrorMessages();
     }
@@ -228,8 +228,9 @@ export default class ATATSearch extends Vue {
 
         this.showLoader = false;
       }
-
     }
+    debugger;
+    this.$emit("search", this._value);
 
   }
 

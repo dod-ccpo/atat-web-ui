@@ -97,6 +97,7 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action
   public async setPortfolioListQueryParams(params: PortfolioListQueryParams): Promise<void> {
+    debugger;
     await this.doSetPortfolioListQueryParams(params);
   }
 

@@ -36,6 +36,7 @@
       <div class="d-flex">
         <div class="card-header flex-grow-1">
           <a
+            id="PortfolioName"
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none"
@@ -70,20 +71,20 @@
       </div>
 
       <div v-if="cardData.status === portfolioStatuses.Active" class="d-flex">
-        <div class="mr-15">
+        <div class="mr-15" :id="'PoP' + index">
           <span class="_data-header">Current Period of Performance</span>
           <span class="_data-primary d-block">
             {{ cardData.currentPoP }}
           </span>
         </div>
 
-        <div class="mr-15">
+        <div class="mr-15" :id="'TotalObligated' + index">
           <span class="_data-header">Total Obligated</span>
           <span class="_data-primary d-block nowrap">
             {{ cardData.totalObligated }}
           </span>
         </div>
-        <div class="flex-grow-1">
+        <div class="flex-grow-1" :id="'FundsSpent' + index">
           <span class="_data-header">Funds Spent (%)</span>
           <span class="_data-primary d-block">
             <span class="mr-1 nowrap">{{ cardData.fundsSpent }}</span>
