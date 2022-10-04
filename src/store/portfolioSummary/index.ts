@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import {PortfolioSummaryDTO} from "@/api/models";
+import {CloudServiceProviderDTO, PortfolioSummaryDTO, ReferenceColumn} from "@/api/models";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
@@ -87,9 +87,9 @@ export class PortfolioSummaryStore extends VuexModule {
       }
     )
     portfolioSummaryList.forEach(portfolio => {
-      // @ts-ignore
-      portfolio.csp_display =
-        allCspList.find(csp => portfolio.csp.value === csp.sys_id)?.name;
+      portfolio.csp_display = 
+        (allCspList.find(
+          (csp: CloudServiceProviderDTO) => portfolio.csp.value === csp.sys_id)?.name) || "";
     });
   }
 
@@ -113,10 +113,12 @@ export class PortfolioSummaryStore extends VuexModule {
       }
     )
     portfolioSummaryList.forEach(portfolio => {
-      // @ts-ignore
       portfolio.task_orders = allTaskOrderList
-        // @ts-ignore
-        .filter(taskOrder => taskOrder.portfolio.value === portfolio.sys_id);
+        .filter((taskOrder) => 
+        {
+          const portfolioSysId  = (taskOrder.portfolio as ReferenceColumn).value;
+          return portfolioSysId === portfolio.sys_id});
+          
       if (!portfolio.task_orders) {
         portfolio.task_orders = [];
       }
@@ -176,9 +178,12 @@ export class PortfolioSummaryStore extends VuexModule {
       portfolio.task_orders.forEach(taskOrder => {
         taskOrder.clin_records?.forEach(clinRecord => {
           clinRecord.cost_records =
-            // @ts-ignore
-            allCostList.filter(cost => cost.clin === clinRecord.clin_number &&
-              cost.task_order_number === taskOrder.task_order_number); // FIXME temp code
+            allCostList.filter(cost => {
+              const clinNumber = cost.clin as unknown as string;
+              return clinNumber === clinRecord.clin_number &&
+              cost.task_order_number === taskOrder.task_order_number
+            
+            }); // FIXME temp code
           // allCostList.filter(cost => cost.clin?.value === clinRecord.sys_id);//FIXME correct code
         })
       })

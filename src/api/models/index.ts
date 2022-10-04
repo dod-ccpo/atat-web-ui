@@ -311,7 +311,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
 }
 
 export interface CostsDTO extends BaseTableDTO {
-  clin: ReferenceColumn;
+  clin: ReferenceColumn | string;
   csp: string;
   "csp.name"?:string;
   year_month: string;
