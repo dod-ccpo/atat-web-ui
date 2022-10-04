@@ -38,7 +38,9 @@
         </div>
         <ATATMeatballMenu
           class="ml-4"
+          :left="true"
           :id="'MeatballMenu' + index"
+          :menuItems="menuItems(cardData.status)"
         />
       </div>
       <div class="d-flex">
@@ -87,7 +89,7 @@
 import Vue from "vue";
 
 import { Component, Prop } from "vue-property-decorator";
-import { TaskOrderCardData } from "../../../../../types/Global";
+import { MeatballMenuItem, TaskOrderCardData } from "../../../../../types/Global";
 import { getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
@@ -100,9 +102,49 @@ import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 export default class TaskOrderCard extends Vue {
   @Prop() private taskOrders!:TaskOrderCardData;
 
+  public TaskOrderCardMenuItems: MeatballMenuItem[] = [];
+
+  public menuItems(status:string):
+    ({ title: string } | { title: string } |
+      { disabled: boolean; title: string } |
+      { disabled: boolean; title: string })[]
+  {
+    if(status != 'Expired') {
+      return [
+        {
+          title: "View task order details",
+        },
+        {
+          title: "Request to modify task order",
+        },
+        {
+          title: "Download task order (PDF)",
+          disabled: true
+        },
+        {
+          title: "View acquisition details",
+          disabled: true
+        },
+      ]
+    }
+    return [
+      {
+        title: "View task order details",
+      },
+      {
+        title: "Download task order",
+        disabled: true
+      },
+      {
+        title: "View acquisition details",
+        disabled: true
+      },
+    ]
+  }
   public statusChipBgColor(status:string): string {
     return getStatusChipBgColor(status);
   }
+
 }
 </script>
 
