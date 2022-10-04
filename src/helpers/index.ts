@@ -66,7 +66,7 @@ export const buildClassificationCheckboxList = (
 };
 
 export const buildClassificationLabel
-    = (classLevel: ClassificationLevelDTO, type: string): string => {
+    = (classLevel: ClassificationLevelDTO, type: string | null): string => {
       type = type || "long";
       const classificationString = classLevel.classification === "U"
         ? "Unclassified"
@@ -87,14 +87,14 @@ export const buildClassificationDescription
     = (classLevel: ClassificationLevelDTO): string => {
       switch (classLevel.impact_level) {
       case "IL2":
-        return `Accommodates DoD information that has been approved for public 
-        release (Low Confidentiality and Moderate Integrity)`
+        return "Accommodates DoD information that has been approved for public "
+         + "release (Low Confidentiality and Moderate Integrity)"
       case "IL4":
-        return `Accommodates DoD Controlled Unclassified Information (CUI)`
+        return "Accommodates DoD Controlled Unclassified Information (CUI)"
       case "IL5":
-        return `Accommodates DoD CUI and National Security Systems`
+        return "Accommodates DoD CUI and National Security Systems"
       case "IL6":
-        return `Accommodates DoD Classified Information up to SECRET`
+        return "Accommodates DoD Classified Information up to SECRET"
       default:
         return ""
       }
