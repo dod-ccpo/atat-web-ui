@@ -418,3 +418,13 @@ export interface MemberInvites {
 export interface FundingTrackerAlert {
    alertType: string;
 }
+
+export interface TaskOrderCardData {
+  taskOrderNumber:string,
+  periodOfPerformance:string,
+  totalObligated:string,
+  totalValue:string,
+  totalLifeCycle:string,
+  totalFundsSpent:string,
+  status:string,
+}

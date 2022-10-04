@@ -96,7 +96,7 @@ export default class ATATAlert extends Vue {
   /**
    * default is info-lighter
    */
-  @Prop({default: "info_lighter"}) private calloutBackground?: string;
+  @Prop({default: "info-lighter"}) private calloutBackground?: string;
 
   /**
    * size: 1) large or 2)small

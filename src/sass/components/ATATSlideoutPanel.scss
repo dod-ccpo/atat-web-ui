@@ -8,6 +8,17 @@
     font-size: 14px;
     text-transform: uppercase;
     color: $base-dark;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    &:focus {
+      outline: 2px solid $primary;
+    }
+  }
+
+  ._panel-closer {
+    &:focus, &:hover {
+      background-color: $primary-lighter;
+    }
   }
   
   ._panel-header {
