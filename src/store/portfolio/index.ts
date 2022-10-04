@@ -5,19 +5,11 @@ import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
 import { MemberInvites, Portfolio, User } from "../../../types/Global"
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import {StatusTypes} from "@/store/acquisitionPackage";
 import { AlertDTO } from "@/api/models";
 import AlertService from "@/services/alerts";
 
 const ATAT_PORTFOLIO_DATA_KEY = 'ATAT_PORTFOLIO_DATA_KEY';
-
-export const PortFolioStatusTypes = {
-  Processing: "Processing",
-  Active: "Active",
-  AtRisk: "At-Risk",
-  Delinquent: "Delinquent",
-  Expired: "Expired",
-  Archived: "Archived",
-}
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -52,6 +44,14 @@ export const thresholdAtOrAbove = (value: string, threshold: number): boolean =>
   return !Number.isNaN(numVal) && numVal >=threshold;
 }
 
+export const cspConsoleURLs: Record<string, string> = {
+  azure: "https://portal.azure.com/abc123",
+  aws: "https://signin.amazonaws-us-gov.com",
+  google: "https://console.cloud.google.com",
+  oracle: "https://console.oraclecloud.com",
+}
+
+
 @Module({
   name: "PortfolioData",
   namespaced: true,
@@ -74,9 +74,8 @@ export class PortfolioDataStore extends VuexModule {
     provisioned: "",
     members: [],
   }
-  public status = PortFolioStatusTypes.Active;
-  
-  
+  public status = StatusTypes.Active;
+    
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this,x=> x.portfolio),
@@ -100,42 +99,42 @@ export class PortfolioDataStore extends VuexModule {
     storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
-    @Mutation
+  @Mutation
   public setStatus(value: string): void {
     this.status = value;
     storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
-   @Mutation
-    public setAlerts(value: AlertDTO[]): void {
-      this.alerts = value;
-      storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
-    }
+  @Mutation
+  public setAlerts(value: AlertDTO[]): void {
+    this.alerts = value;
+    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
+  }
 
   @Action({rawError: true})
-   private async initPortfolioData():Promise<void> {
-     const obj: Portfolio = {
-       title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
-       description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
-       status: "Active",
-       csp: "Azure",
-       serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
-       createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
-       provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
-       members: [{
-         firstName:"Maria",
-         lastName: "Missionowner",
-         email:"maria.missionowner.civ@mail.mil",
-         role: "Manager",
-         phoneNumber:"5555555555",
-         phoneExt:"1234",
-         designation: "Civilian",
-         serviceAgency: "U.S Army"
-       }],
-       updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
-     }
-     this.setPortfolioData(obj);
-   }
+  private async initPortfolioData():Promise<void> {
+    const obj: Portfolio = {
+      title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
+      description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
+      status: "Active",
+      csp: "Azure",
+      serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
+      createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
+      provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
+      members: [{
+        firstName:"Maria",
+        lastName: "Missionowner",
+        email:"maria.missionowner.civ@mail.mil",
+        role: "Manager",
+        phoneNumber:"5555555555",
+        phoneExt:"1234",
+        designation: "Civilian",
+        serviceAgency: "U.S Army"
+      }],
+      updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
+    }
+    this.setPortfolioData(obj);
+  }
 
   @Action({rawError: true})
   public async saveMembers(newMembers: MemberInvites): Promise<void> {
@@ -190,6 +189,7 @@ export class PortfolioDataStore extends VuexModule {
       }
     }
   }
+
   @Action({ rawError: true })
   public async getAlerts(taskOrderNumber: string): Promise<AlertDTO[]> {
     const alerts = await this.alertService.getAlerts(taskOrderNumber);
@@ -202,8 +202,7 @@ export class PortfolioDataStore extends VuexModule {
 
     //just set the status to active for now
     //in the future this logic will be more complex
-    this.setStatus(PortFolioStatusTypes.Active);
-
+    this.setStatus(StatusTypes.Active);
 
     const fundingAlertData: FundingAlertData = {
       alerts: [],
@@ -250,10 +249,10 @@ export class PortfolioDataStore extends VuexModule {
         FundingAlertTypes.POPExpired : (fundingAlertData.daysRemaining > 60 ? 
           fundingAlertData.fundingAlertType : FundingAlertTypes.POPExpiresSoonNoTOClin);
       if(fundingAlertData.daysRemaining <= 60){
-        this.setStatus(PortFolioStatusTypes.AtRisk);
+        this.setStatus(StatusTypes.AtRisk);
       }
       if(fundingAlertData.daysRemaining <=0){
-        this.setStatus(PortFolioStatusTypes.Expired);
+        this.setStatus(StatusTypes.Expired);
       }
   
     }
@@ -265,10 +264,10 @@ export class PortfolioDataStore extends VuexModule {
            FundingAlertTypes.POPLowFunds): FundingAlertTypes.POPFundsDepleted;
 
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPLowFunds){
-        this.setStatus(PortFolioStatusTypes.AtRisk);
+        this.setStatus(StatusTypes.AtRisk);
       }
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPFundsDepleted){
-        this.setStatus(PortFolioStatusTypes.Delinquent);
+        this.setStatus(StatusTypes.Delinquent);
       }
     }
     
@@ -277,10 +276,10 @@ export class PortfolioDataStore extends VuexModule {
         fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpiresSoonWithLowFunds;
 
         if(fundingAlertData.daysRemaining <= 60){
-          this.setStatus(PortFolioStatusTypes.AtRisk);
+          this.setStatus(StatusTypes.AtRisk);
         }
         if(fundingAlertData.spendingViolation >=90){
-          this.setStatus(PortFolioStatusTypes.AtRisk)
+          this.setStatus(StatusTypes.AtRisk)
         }
       }
     }

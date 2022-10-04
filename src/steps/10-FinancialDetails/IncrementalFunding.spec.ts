@@ -116,7 +116,7 @@ describe("Testing Incremental Funding Plan", () => {
         fiscalQuarters: fiscalQuarters,
       })
       await wrapper.vm.loadOnEnter();
-      expect(wrapper.vm.selectedQuarters[0].text).toBe("4th QTR FY22")
+      expect(wrapper.vm.selectedQuarters[0].text).toBe("1st QTR FY23")
     });
 
 
@@ -449,7 +449,7 @@ describe("Testing Incremental Funding Plan", () => {
       selectedQuarters: [{"text": "1st QTR FY24", "multiSelectOrder": 6}],
       outOfRangeIndex: 1,
     });
-    expect(await wrapper.vm.$data.showAddIncrementButton).toBe(false);
+    expect(await wrapper.vm.$data.showAddIncrementButton).toBe(true);
   });
 
 
