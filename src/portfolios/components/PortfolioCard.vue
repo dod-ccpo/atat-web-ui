@@ -121,10 +121,11 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
 import { MeatballMenuItem, PortfolioCardData } from "types/Global";
-import { cspConsoleURLs, PortFolioStatusTypes } from "@/store/portfolio";
+import { cspConsoleURLs } from "@/store/portfolio";
 import { getStatusChipBgColor } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
+import { StatusTypes } from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -140,7 +141,7 @@ export default class PortfolioCard extends Vue {
   @Prop() private isLastCard!: boolean;
   @Prop() private isHaCCAdmin!: boolean;
 
-  public portfolioStatuses = PortFolioStatusTypes;
+  public portfolioStatuses = StatusTypes;
   public showLeavePortfolioModal = false;
 
   public menuActions = {
