@@ -2,7 +2,7 @@ import { ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@/api/models
 import { Checkbox, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
-import { PortFolioStatusTypes } from "@/store/portfolio";
+import { StatusTypes } from "@/store/acquisitionPackage";
 
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
@@ -202,16 +202,18 @@ export function getUserInitials(member:User): string {
 
 export function getStatusChipBgColor(status: string): string {
   switch (status) {
-  case PortFolioStatusTypes.Active:
+  case StatusTypes.Active:
+  case StatusTypes.OnTrack:
     return "bg-success";
-  case PortFolioStatusTypes.Processing:
+  case StatusTypes.Processing:
+  case StatusTypes.Upcoming:
     return "bg-info-dark";
-  case PortFolioStatusTypes.AtRisk:
+  case StatusTypes.AtRisk:
     return "bg-warning";
-  case PortFolioStatusTypes.Delinquent:
-  case PortFolioStatusTypes.Expired:
+  case StatusTypes.Delinquent:
+  case StatusTypes.Expired:
     return "bg-error";
-  case PortFolioStatusTypes.Archived:
+  case StatusTypes.Archived:
     return "bg-base-dark";
   default:
     return "";

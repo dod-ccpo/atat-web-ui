@@ -5,19 +5,11 @@ import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
 import { MemberInvites, Portfolio, User } from "../../../types/Global"
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import {StatusTypes} from "@/store/acquisitionPackage";
 import { AlertDTO } from "@/api/models";
 import AlertService from "@/services/alerts";
 
 const ATAT_PORTFOLIO_DATA_KEY = 'ATAT_PORTFOLIO_DATA_KEY';
-
-export const PortFolioStatusTypes = {
-  Processing: "Processing",
-  Active: "Active",
-  AtRisk: "At-Risk",
-  Delinquent: "Delinquent",
-  Expired: "Expired",
-  Archived: "Archived",
-}
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -82,7 +74,7 @@ export class PortfolioDataStore extends VuexModule {
     provisioned: "",
     members: [],
   }
-  public status = PortFolioStatusTypes.Active;
+  public status = StatusTypes.Active;
     
   // store session properties
   protected sessionProperties: string[] = [
@@ -210,7 +202,7 @@ export class PortfolioDataStore extends VuexModule {
 
     //just set the status to active for now
     //in the future this logic will be more complex
-    this.setStatus(PortFolioStatusTypes.Active);
+    this.setStatus(StatusTypes.Active);
 
     const fundingAlertData: FundingAlertData = {
       alerts: [],
@@ -257,10 +249,10 @@ export class PortfolioDataStore extends VuexModule {
         FundingAlertTypes.POPExpired : (fundingAlertData.daysRemaining > 60 ? 
           fundingAlertData.fundingAlertType : FundingAlertTypes.POPExpiresSoonNoTOClin);
       if(fundingAlertData.daysRemaining <= 60){
-        this.setStatus(PortFolioStatusTypes.AtRisk);
+        this.setStatus(StatusTypes.AtRisk);
       }
       if(fundingAlertData.daysRemaining <=0){
-        this.setStatus(PortFolioStatusTypes.Expired);
+        this.setStatus(StatusTypes.Expired);
       }
   
     }
@@ -272,10 +264,10 @@ export class PortfolioDataStore extends VuexModule {
            FundingAlertTypes.POPLowFunds): FundingAlertTypes.POPFundsDepleted;
 
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPLowFunds){
-        this.setStatus(PortFolioStatusTypes.AtRisk);
+        this.setStatus(StatusTypes.AtRisk);
       }
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPFundsDepleted){
-        this.setStatus(PortFolioStatusTypes.Delinquent);
+        this.setStatus(StatusTypes.Delinquent);
       }
     }
     
@@ -284,10 +276,10 @@ export class PortfolioDataStore extends VuexModule {
         fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpiresSoonWithLowFunds;
 
         if(fundingAlertData.daysRemaining <= 60){
-          this.setStatus(PortFolioStatusTypes.AtRisk);
+          this.setStatus(StatusTypes.AtRisk);
         }
         if(fundingAlertData.spendingViolation >=90){
-          this.setStatus(PortFolioStatusTypes.AtRisk)
+          this.setStatus(StatusTypes.AtRisk)
         }
       }
     }

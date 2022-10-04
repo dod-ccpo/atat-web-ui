@@ -60,6 +60,18 @@ export const StoreProperties = {
   CurrentEnvironment: "currentEnvironment",
 };
 
+
+export const StatusTypes = {
+  Upcoming: "Upcoming",
+  OnTrack: "On Track",
+  Processing: "Processing",
+  Active: "Active",
+  AtRisk: "At-Risk",
+  Delinquent: "Delinquent",
+  Expired: "Expired",
+  Archived: "Archived",
+}
+
 const initialCurrentContract = ()=> {
   return {
     current_contract_exists: "",
