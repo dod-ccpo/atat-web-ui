@@ -558,13 +558,38 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   return OfferingDetailsPathResolver(current, direction);
 };
 
-export const IGCEResolver = (current: string): string => {
+export const IGCECannotProceedResolver = (current: string): string => {
   const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
   const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
   const validToProceed = hasLegitPeriods && isCompleteDOW;
-  debugger;
-  return current === routeNames.CreatePriceEstimate && validToProceed
-    ? routeNames.GatherPriceEstimates
+ 
+  if (validToProceed){
+    if (current ===  routeNames.CreatePriceEstimate){
+      return routeNames.GatherPriceEstimates;
+    } else if (current == routeNames.GatherPriceEstimates) {
+      return routeNames.CreatePriceEstimate;
+    }
+  }
+  return routeNames.CannotProceed;
+};
+
+export const IGCEGatherPriceEstimatesResolver = (current: string): string => {
+  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
+  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
+  const validToProceed = hasLegitPeriods && isCompleteDOW;
+
+  return current === routeNames.GatherPriceEstimates && validToProceed
+    ? routeNames.CreatePriceEstimate
+    : routeNames.CannotProceed;
+};
+
+export const IGCESupportingDocumentationResolver = (current: string): string => {
+  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
+  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
+  const validToProceed = hasLegitPeriods && isCompleteDOW;
+
+  return current === routeNames.SupportingDocumentation && validToProceed
+    ? routeNames.EstimatesDeveloped
     : routeNames.CannotProceed;
 };
 
@@ -670,7 +695,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FOIARecordResolver,
   A11yRequirementResolver,
   ContractTrainingReq,
-  IGCEResolver,
+  IGCECannotProceedResolver,
+  IGCEGatherPriceEstimatesResolver,
+  IGCESupportingDocumentationResolver,
   MIPRResolver,
   GInvoicingResolver,
   Upload7600Resolver,
