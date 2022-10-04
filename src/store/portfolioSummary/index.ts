@@ -9,26 +9,6 @@ import {AxiosRequestConfig} from "axios";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
-/*const initialPortfolioSummary: PortfolioSummaryDTO = {
-  name: '',
-  csp: {
-    link: '',
-    value: ''
-  },
-  csp_display: '',
-  dod_component: '', // todo: set this to 'ARMY' until the api starts returning this
-  task_order_number: '',
-  sys_updated_on: '',
-  task_order_status: '',
-  pop_end_date: '',
-  pop_start_date: '',
-  funds_obligated: 0,
-  portfolio_status: '',
-  portfolio_managers: '',
-  funds_spent: 0,
-  task_orders: []
-}*/
-
 @Module({
   name: "PortfolioSummaryStore",
   namespaced: true,
@@ -137,7 +117,7 @@ export class PortfolioSummaryStore extends VuexModule {
       portfolio.task_orders = allTaskOrderList
         // @ts-ignore
         .filter(taskOrder => taskOrder.portfolio.value === portfolio.sys_id);
-      if(!portfolio.task_orders) {
+      if (!portfolio.task_orders) {
         portfolio.task_orders = [];
       }
     })
@@ -202,9 +182,38 @@ export class PortfolioSummaryStore extends VuexModule {
           // allCostList.filter(cost => cost.clin?.value === clinRecord.sys_id);//FIXME correct code
         })
       })
-    })// GOTOportfolio...INbbdd861387141d10bc86b889cebb35aa
-    console.log('All costs');
-    console.log(allCostList);
+    })
+  }
+
+  /**
+   * Performs the 'Total Obligated' and 'Funds Spent' for all the portfolios in the list
+   *
+   * NOTE: Instead of computing here if we were to make the aggregate API call, it would take
+   * as many calls as the number of portfolios to get, for example, the 'Total Obligated' from
+   * the CLINS table. The reason for this is, the aggregate query response does not have any
+   * reference to what portfolio the aggregate belongs to and so a call for each portfolio.
+   * Computing here will eliminate all these calls.
+   */
+  @Action({rawError: true})
+  private computeAllAggregations(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    portfolioSummaryList.forEach(portfolio => {
+      let totalObligatedForPortfolio = 0;
+      let totalFundsSpentForPortfolio = 0;
+      portfolio.task_orders.forEach(taskOrder => {
+        taskOrder.clin_records?.forEach(clinRecord => {
+          if (clinRecord.clin_status === 'ACTIVE' ||
+            clinRecord.clin_status === 'OPTION_EXERCISED') { // TODO: double check the statuses
+            totalObligatedForPortfolio =
+              totalObligatedForPortfolio + Number(clinRecord.funds_obligated);
+          }
+          clinRecord.cost_records?.forEach(costRecord => {
+            totalFundsSpentForPortfolio = totalFundsSpentForPortfolio + Number(costRecord.value);
+          })
+        })
+      })
+      portfolio.funds_obligated = totalObligatedForPortfolio;
+      portfolio.funds_spent = totalFundsSpentForPortfolio;
+    })
   }
 
   @Action({rawError: true})
@@ -228,6 +237,8 @@ export class PortfolioSummaryStore extends VuexModule {
         await this.setTaskOrdersForPortfolios(portfolioSummaryList);
         await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
         await this.setCostsToTaskOrderClins(portfolioSummaryList);
+        // all asynchronous calls are done before this step & data is available for aggregation
+        this.computeAllAggregations(portfolioSummaryList);
         this.setPortfolioSummaryList(portfolioSummaryList); // caches the list
         return portfolioSummaryList;
       } else {

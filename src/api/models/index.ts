@@ -320,7 +320,7 @@ export interface CostsDTO extends BaseTableDTO {
   organization: string;
   service_agency: string;
   is_actual: string;
-  value: string;
+  value: number;
 }
 
 export interface CostGroupDTO {
@@ -331,7 +331,7 @@ export interface CostGroupDTO {
 }
 
 export interface ClinDTO extends BaseTableDTO {
-  funds_obligated: string;
+  funds_obligated: number;
   clin_number: string;
   idiq_clin: string;
   idiq_clin_label?: string;
