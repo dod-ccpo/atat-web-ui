@@ -98,7 +98,7 @@
     </div>
 
     <ATATMeatballMenu 
-      id="PortfolioCardMenu"
+      :id="'PortfolioCardMenu' + index"
       :left="true"
       :menuIndex="index"
       :menuItems="portfolioCardMenuItems"
@@ -166,6 +166,7 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
+    debugger;
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
       await AppSections.setActiveTabIndex(0);

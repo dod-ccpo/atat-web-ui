@@ -25,7 +25,7 @@
         :id="id + '_SearchInput'"
         class="_search-input"
         clearable
-        @input="onInput"
+        @change="onInput"
         outlined
         dense
         :height="40"
@@ -141,24 +141,26 @@ export default class ATATSearch extends Vue {
   $refs!: {
     atatSearchInput: Vue & { 
       errorBucket: string[]; 
-      errorCount: number 
-      resetValidation(): void
+      errorCount: number;
+      resetValidation(): void;
+      value: string;
     };
   }; 
 
   @Prop({ default: "Search" }) private id!: string;
-  @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: "320" }) private width!: string;
-  @Prop({ default: "" }) private label!: string;
-  @Prop({ default: "" }) private tooltipTitle!: string;
-  @Prop({ default: "" }) private tooltipText!: string;
-  @Prop({ default: "" }) private helpText!: string;
-  @Prop({ default: ()=>[] }) private mask!: string[];
-  @Prop({ default: false }) private isMaskRegex!: boolean;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: "" }) private placeHolder?: string;
+  @Prop({ default: "320" }) private width?: string;
+  @Prop({ default: "" }) private label?: string;
+  @Prop({ default: "" }) private tooltipTitle?: string;
+  @Prop({ default: "" }) private tooltipText?: string;
+  @Prop({ default: "" }) private helpText?: string;
+  @Prop({ default: ()=>[] }) private mask?: string[];
+  @Prop({ default: false }) private isMaskRegex?: boolean;
+  @Prop({ default: () => [] }) private rules?: Array<unknown>;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
-  @Prop({ default: "G-Invoicing" }) private searchType!: string;
+  @Prop({ default: "G-Invoicing" }) private searchType?: string;
+  @Prop({ default: false} ) private isSimulation?: boolean;
   @PropSync("value", { default: "" }) public _value!: string;
 
   private error = false;
@@ -178,8 +180,8 @@ export default class ATATSearch extends Vue {
   }
 
   public onInput(v: string): void {
-    this._value = v;
     debugger;
+    this._value = v;
     if (this.errorMessages.length > 0) {
       this.clearErrorMessages();
     }
@@ -189,7 +191,7 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
-    if (this.searchType !=="EDA" && this.errorMessages.length === 0 && this._value) {
+    if (this.isSimulation && this.errorMessages.length === 0 && this._value) {
 
       // simulate success on first search, error on second.
       this.showLoader = true;
@@ -229,8 +231,10 @@ export default class ATATSearch extends Vue {
         this.showLoader = false;
       }
     }
-    debugger;
-    this.$emit("search", this._value);
+    this.$nextTick(() => {
+      debugger;
+      this.$emit("search", this.$refs.atatSearchInput.value);
+    });
 
   }
 

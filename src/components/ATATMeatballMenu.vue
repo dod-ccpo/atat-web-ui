@@ -61,7 +61,7 @@ import { getIdText } from "@/helpers";
 export default class ATATMeatballMenu extends Vue {
   @Prop() public id!: string;
   @Prop({ default: false }) public left?: boolean;
-  @Prop({ default: "" }) public menuIndex?: number | string;
+  @Prop({ default: "" }) public menuIndex!: number | string;
   @Prop() public menuItems!: MeatballMenuItem[];
 
   private getIdText(string: string) {

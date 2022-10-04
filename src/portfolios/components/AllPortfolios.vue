@@ -9,7 +9,8 @@
         id="SearchPortfolios"
         placeHolder="Search portfolios"
         width="450"
-        :value="searchString"
+        @search="searchPortfolios"
+        :value.sync="searchString"
       />
       <div class="d-flex align-center">
         <div>
@@ -83,7 +84,7 @@ import PortfolioData from "@/store/portfolio";
 export default class AllPortfolios extends Vue {
   public portfolioCardData: PortfolioCardData[] = [];
   public isHaCCAdmin = false;
-  public searchString = "foobar";
+  public searchString = "";
   public selectedSort = "alpha";
   public sortOptions: SelectData[] = [
     { text: "Portfolio name A-Z", value: "alpha" },
