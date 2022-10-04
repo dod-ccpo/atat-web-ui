@@ -123,7 +123,8 @@ import {
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
-  OtherOfferingSummaryPathResolver, // EJY look into this
+  OtherOfferingSummaryPathResolver,
+  IGCEResolver, // EJY look into this
 
 } from "./resolvers";
 
@@ -677,6 +678,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CreatePriceEstimate,
         completePercentageWeight: 1,
         component: CreatePriceEstimate,
+        routeResolver: IGCEResolver
       },
       {
         menuText: "Cannot Proceed",

@@ -558,6 +558,16 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   return OfferingDetailsPathResolver(current, direction);
 };
 
+export const IGCEResolver = (current: string): string => {
+  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
+  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
+  const validToProceed = hasLegitPeriods && isCompleteDOW;
+  debugger;
+  return current === routeNames.CreatePriceEstimate && validToProceed
+    ? routeNames.GatherPriceEstimates
+    : routeNames.CannotProceed;
+};
+
 export const MIPRResolver = (current: string): string => {
   const fundingType = FinancialDetails.fundingRequestType;
   if (fundingType === "MIPR") {
@@ -660,6 +670,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FOIARecordResolver,
   A11yRequirementResolver,
   ContractTrainingReq,
+  IGCEResolver,
   MIPRResolver,
   GInvoicingResolver,
   Upload7600Resolver,

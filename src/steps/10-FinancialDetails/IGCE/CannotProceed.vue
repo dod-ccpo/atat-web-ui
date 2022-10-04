@@ -21,7 +21,7 @@
               gather pricing estimates, we need to know about your unique
               requirements first.
             </p>
-            <p v-show="showLastParagraph">
+            <p>
               In order to start the Requirements Cost Estimate section, you need
               to:
             <ul>
@@ -66,13 +66,8 @@ export default class CannotProceed extends Vue {
   }
 
   get isPerformanceReqsIncomplete(): boolean{
-    return DescriptionOfWork.isIncomplete === true;
+    return DescriptionOfWork.isIncomplete;
   }
-
-  get showLastParagraph(): boolean{
-    return this.isPoPIncomplete || this.isPerformanceReqsIncomplete;
-  }
-
 }
 </script>
 

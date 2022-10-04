@@ -325,11 +325,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public missingData(value: string): boolean {
-    const isDataMissing = this.serviceGroupsMissingData.includes(value) ? true : false;
-    if (isDataMissing){
-      DescriptionOfWork.setIsIncomplete(true);
-    }
-    return isDataMissing;
+    return this.serviceGroupsMissingData.includes(value) ? true : false;
   };
 
   public async loadOnEnter(): Promise<void> {
@@ -378,7 +374,14 @@ export default class Summary extends Mixins(SaveOnLeave) {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    this.setIsIncomplete();
   };
+
+  public setIsIncomplete(): void {
+    DescriptionOfWork.setIsIncomplete(
+      this.serviceGroupsMissingData.length>0
+    );
+  }
 
   protected async saveOnLeave(): Promise<boolean> {
     Steps.clearAltBackButtonText();

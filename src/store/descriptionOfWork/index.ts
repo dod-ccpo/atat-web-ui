@@ -107,7 +107,7 @@ const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
 })
 export class DescriptionOfWorkStore extends VuexModule {
   initialized = false;
-  isIncomplete = false;
+  isIncomplete = true;
   serviceOfferings: ServiceOfferingDTO[] = [];
   serviceOfferingGroups: SystemChoiceDTO[] = [];
 
