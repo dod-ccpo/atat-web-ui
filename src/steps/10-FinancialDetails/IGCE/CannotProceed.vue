@@ -21,22 +21,22 @@
               gather pricing estimates, we need to know about your unique
               requirements first.
             </p>
-            <p class="mb-2">
+            <p v-show="showLastParagraph">
               In order to start the Requirements Cost Estimate section, you need
               to:
-            </p>
-            <ul class="mb-2">
-              <li class="mb-2">
+            <ul>
+              <li v-show="isPoPIncomplete" class="my-2">
                 <a href="/#/period-of-performance/period-of-performance">
                   Complete your period of performance
                 </a>
               </li>
-              <li v-show="isPopIncomplete">
+              <li v-show="isPerformanceReqsIncomplete">
                 <a href="/#/performance-requirements/">
                   Complete your performance requirements
                 </a>
               </li>
             </ul>
+             </p>
           </template>
         </ATATAlert>
       </v-col>
@@ -56,13 +56,21 @@ import { Component } from "vue-property-decorator";
   },
 })
 export default class CannotProceed extends Vue {
-  public isPopIncomplete = true;
-  public isPerformanceReqsIncomplete = true;
 
-  public async mounted(): Promise<void> {
-    this.isPopIncomplete = 
-      Periods.periods && Periods.periods.length>0 ? false : true;
-    // DescriptionOfWork.LoadServiceOfferingGroups()
+  get isPoPIncomplete(): boolean{
+    if (Periods.periods){
+      return Periods.periods.length === 0; 
+    } else {
+      return true;
+    }
+  }
+
+  get isPerformanceReqsIncomplete(): boolean{
+    return DescriptionOfWork.isIncomplete === true;
+  }
+
+  get showLastParagraph(): boolean{
+    return this.isPoPIncomplete || this.isPerformanceReqsIncomplete;
   }
 
 }

@@ -327,7 +327,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public missingData(value: string): boolean {
     const isDataMissing = this.serviceGroupsMissingData.includes(value) ? true : false;
     if (isDataMissing){
-      this.isDataComplete = false;
+      DescriptionOfWork.setIsIncomplete(true);
     }
     return isDataMissing;
   };
