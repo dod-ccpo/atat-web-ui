@@ -226,7 +226,7 @@ export class PortfolioSummaryStore extends VuexModule {
     await this.ensureInitialized();
     try {
       const query =
-        "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // TODO get session of user
+        "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
       const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
         params: {
           sysparm_query: query
