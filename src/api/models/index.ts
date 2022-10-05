@@ -179,6 +179,7 @@ export interface ContractTypeDTO extends BaseTableDTO {
 export interface RequirementsCostEstimateDTO extends BaseTableDTO {
     surge_capabilities?: string;
     estimatedTaskOrderValue?: string;
+    surge_capacity?: string;
 }
 
 export interface RequiredServicesDTO extends BaseTableDTO {
