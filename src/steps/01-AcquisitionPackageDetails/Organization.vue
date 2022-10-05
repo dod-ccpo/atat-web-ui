@@ -246,26 +246,26 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     },
   ];
 
-  private selectedMilitaryPO: SelectData = this.emptySelectData;
+  private selectedMilitaryPO: SelectData = { text: "", value: ""};
   private militaryPostOfficeOptions: SelectData[] = [
     { text: "Army Post Office (APO)", value: "APO" },
     { text: "Fleet Post Office (FPO)", value: "FPO" },
     { text: "Diplomatic Post Office (DPO)", value: "DPO" },
   ];
 
-  private selectedDisaOrg: SelectData = this.emptySelectData;
+  private selectedDisaOrg: SelectData = { text: "", value: ""};
   private disaOrgData: SelectData[] = [];
-  private selectedAgency: SelectData = this.emptySelectData;
+  private selectedAgency: SelectData = { text: "", value: ""};
   private agencyData: SelectData[] = [];
 
-  private selectedStateCode: SelectData = this.emptySelectData;
+  private selectedStateCode: SelectData = { text: "", value: ""};
   private stateCodeListData: SelectData[] = [
     { text: "AA - Armed Forces Americas", value: "AA" },
     { text: "AE - Armed Forces Europe", value: "AE" },
     { text: "AP - Armed Forces Pacific", value: "AP" },
   ];
 
-  private selectedState: SelectData = this.emptySelectData;
+  private selectedState: SelectData = { text: "", value: ""};
   private stateListData: SelectData[] = [];
   private setSelectedData(): void {
     // Foreign addresses set country obj
@@ -296,9 +296,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     }
   }
 
-  private selectedCountry: SelectData = this.emptySelectData;
+  private selectedCountry: SelectData = {text: "", value: ""};
 
-  public countryListData: SelectData[] = [this.emptySelectData];
+  public countryListData: SelectData[] = [{text: "", value: ""}];
   public async mounted(): Promise<void> {
     this.countryListData = ContactData.countryListData(["US"]);
     await this.loadOnEnter();
