@@ -66,9 +66,12 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
  }
 
  public async loadOnEnter(): Promise<void> {
-   const storeData = await AcquisitionPackage.
-     loadData<RequirementsCostEstimateDTO>({storeProperty: 
-        StoreProperties.RequirementsCostEstimate});
+   //  const storeData = await AcquisitionPackage.
+   //    loadData<RequirementsCostEstimateDTO>({storeProperty: 
+   //       StoreProperties.RequirementsCostEstimate});
+   const storeData = 
+      await AcquisitionPackage.requirementsCostEstimate;
+   console.log(storeData);
    if (storeData) {
      this.savedData.surge_capacity = storeData.surge_capacity as string;
      this.surgeCapacity = storeData.surge_capacity || "";
@@ -82,9 +85,12 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
  protected async saveOnLeave(): Promise<boolean> {
    try {
      if (this.hasChanged()) {
-       await AcquisitionPackage
-         .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
-           storeProperty: StoreProperties.RequirementsCostEstimate});
+       //  await AcquisitionPackage
+       //    .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
+       //      storeProperty: StoreProperties.RequirementsCostEstimate});
+       await AcquisitionPackage.setRequirementsCostEstimate(
+         this.currentData
+       );
      }
    } catch (error) {
      console.log(error);

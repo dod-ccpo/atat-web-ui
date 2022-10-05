@@ -123,7 +123,8 @@ import {
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
-  OtherOfferingSummaryPathResolver, // EJY look into this
+  OtherOfferingSummaryPathResolver,
+  IGCESurgeCapabilities, // EJY look into this
 
 } from "./resolvers";
 
@@ -717,6 +718,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SurgeCapabilities,
         completePercentageWeight: 1,
         component: SurgeCapabilities,
+        routeResolver: IGCESurgeCapabilities
       },
       {
         menuText: "Fee Charged",

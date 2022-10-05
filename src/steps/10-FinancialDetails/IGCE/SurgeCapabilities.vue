@@ -60,6 +60,7 @@ import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATAlert from "../../../components/ATATAlert.vue";
 import ATATTextField from "../../../components/ATATTextField.vue";
+import { RequirementsCostEstimateApi } from "@/api/requirementsCostEstimate";
 
 @Component({
   components: {
@@ -97,9 +98,11 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.
-      loadData<RequirementsCostEstimateDTO>({storeProperty: 
-      StoreProperties.RequirementsCostEstimate});
+    // const storeData = await AcquisitionPackage.
+    //   loadData<RequirementsCostEstimateDTO>({storeProperty: 
+    //   StoreProperties.RequirementsCostEstimate});
+    const storeData = 
+      await AcquisitionPackage.requirementsCostEstimate;
     if (storeData) {
       this.savedData.surge_capabilities = storeData.surge_capabilities;
       this.surgeCapabilities = storeData.surge_capabilities || "";
@@ -109,9 +112,13 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage
-          .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
-            storeProperty: StoreProperties.RequirementsCostEstimate});
+      //   await AcquisitionPackage
+      //     .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
+      //       storeProperty: StoreProperties.RequirementsCostEstimate});
+        await AcquisitionPackage.setRequirementsCostEstimate(
+          this.currentData
+        );
+        
       }
     } catch (error) {
       console.log(error);
