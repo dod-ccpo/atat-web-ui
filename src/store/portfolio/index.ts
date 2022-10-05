@@ -2,7 +2,16 @@
 import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
-import { MemberInvites, Portfolio, PortfolioListQueryParams, User } from "../../../types/Global"
+
+import { 
+  Checkbox,
+  FilterOption, 
+  MemberInvites, 
+  Portfolio, 
+  PortfolioSummaryQueryParams, 
+  User,
+} from "../../../types/Global"
+
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {StatusTypes} from "@/store/acquisitionPackage";
@@ -75,34 +84,100 @@ export class PortfolioDataStore extends VuexModule {
     members: [],
   }
   public status = StatusTypes.Active;
-    
-  public portfolioListQueryParams: PortfolioListQueryParams = {
-    role: "all", // all, managed
-    fundingStatuses: [],
+   
+  public summaryFilterRoles: FilterOption[] = [
+    {
+      label: "All of my portfolios",
+      value: "all",
+      id: "All",
+    },
+    {
+      label: "Managed by me",
+      value: "managed",
+      id: "Managed",
+    },
+  ];  
+
+  public summaryFilterFundingStatuses: FilterOption[] = [
+    {
+      label: "On track",
+      value: "OnTrack",
+      id: "OnTrack",
+    },
+    {
+      label: "Expiring soon",
+      value: "ExpiringSoon",
+      id: "ExpiringSoon",
+    },
+    {
+      label: "Funding at-risk",
+      value: "AtRisk",
+      id: "AtRisk",
+    },
+    {
+      label: "Delinquent",
+      value: "Delinquent",
+      id: "Delinquent",
+    },
+  ];
+
+  public summaryFilterCSPs: FilterOption[] = [
+    {
+      label: "Amazon Web Services (AWS)",
+      value: "aws",
+      id: "Amazon",
+      abbreviation: "AWS",
+    },
+    {
+      label: "Azure",
+      value: "azure",
+      id: "Azure",
+    },
+    {
+      label: "Google Cloud Platform (GCP)",
+      value: "google",
+      id: "GoogleCloud",
+      abbreviation: "GCP",
+    },
+    {
+      label: "Oracle",
+      value: "oracle",
+      id: "Oracle",
+    },
+  ];
+
+
+  public portfolioSummaryQueryParams: PortfolioSummaryQueryParams = {
     portfolioStatus: "all", // all, processing, active
-    csps: [],
     sort: "alpha",
     searchString: "",
+    role: "all", // all, managed
+    fundingStatuses: [],
+    csps: [],
   }
 
-  public get portfolioListQPs(): PortfolioListQueryParams {
-    return this.portfolioListQueryParams;
+  public get portfolioSummaryQPs(): PortfolioSummaryQueryParams {
+    return this.portfolioSummaryQueryParams;
   }
 
   @Action
-  public async setPortfolioListQueryParams(params: PortfolioListQueryParams): Promise<void> {
+  public async setportfolioSummaryQueryParams(
+    params: PortfolioSummaryQueryParams
+  ): Promise<void> {
     debugger;
-    await this.doSetPortfolioListQueryParams(params);
+    await this.doSetportfolioSummaryQueryParams(params);
   }
 
   @Mutation
-  public async doSetPortfolioListQueryParams(params: PortfolioListQueryParams): Promise<void> {
-    Object.assign(this.portfolioListQueryParams, params);
+  public async doSetportfolioSummaryQueryParams(
+    params: PortfolioSummaryQueryParams
+  ): Promise<void> {
+    Object.assign(this.portfolioSummaryQueryParams, params);
   }
 
   @Action
   public async queryPortfolioList(): Promise<void> {
-    // make API call based on this.portfolioListQueryParams values
+    // make API call based on this.portfolioSummaryQueryParams values
     
   }
 

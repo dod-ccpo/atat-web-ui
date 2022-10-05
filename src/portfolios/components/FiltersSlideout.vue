@@ -42,7 +42,7 @@
         <v-btn
           id="ApplyFilters"
           class="primary"
-          @click="setFilters"
+          @click="applyFilters"
         >
           Apply filters
         </v-btn>
@@ -55,11 +55,11 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { Checkbox, RadioButton } from "types/Global";
+import { FilterOption, PortfolioSummaryQueryParams } from "types/Global";
 import PortfolioData from "@/store/portfolio";
 
 @Component({
@@ -71,66 +71,11 @@ import PortfolioData from "@/store/portfolio";
 
 export default class FilterSlideout extends Vue {  
   public selectedPortfolioRole = "all";
-  public portfolioRoles: RadioButton[] = [
-    {
-      label: "All of my portfolios",
-      value: "all",
-      id: "All",
-    },
-    {
-      label: "Managed by me",
-      value: "managed",
-      id: "Managed"
-    },
-  ];
-
+  public portfolioRoles: FilterOption[] = PortfolioData.summaryFilterRoles;
   public selectedFundingStatuses: string[] = []; 
-  private fundingStatuses: Checkbox[] = [
-    {
-      label: "On track",
-      value: "OnTrack",
-      id: "OnTrack"
-    },
-    {
-      label: "Expiring soon",
-      value: "ExpiringSoon",
-      id: "ExpiringSoon",
-    },
-    {
-      label: "Funding at-risk",
-      value: "AtRisk",
-      id: "AtRisk",
-    },
-    {
-      label: "Delinquent",
-      value: "Delinquent",
-      id: "Delinquent",
-    },
-  ];
-
+  private fundingStatuses: FilterOption[] = PortfolioData.summaryFilterFundingStatuses;
   public selectedCSPs: string[] = []; 
-  private cspOptions: Checkbox[] = [
-    {
-      label: "Amazon Web Services",
-      value: "aws",
-      id: "Amazon"
-    },
-    {
-      label: "Azure",
-      value: "azure",
-      id: "Azure"
-    },
-    {
-      label: "Google Cloud Platform",
-      value: "google",
-      id: "GoogleCloud"
-    },
-    {
-      label: "Oracle",
-      value: "oracle",
-      id: "Oracle"
-    },
-  ];
+  private cspOptions: FilterOption[] = PortfolioData.summaryFilterCSPs;
 
   public get resetDisabled(): boolean {
     return this.selectedPortfolioRole === "all"
@@ -138,18 +83,33 @@ export default class FilterSlideout extends Vue {
       && this.selectedFundingStatuses.length === 0;
   }
 
+  public portfolioSummaryQueryParams = PortfolioData.portfolioSummaryQPs;
+
+  @Watch("portfolioSummaryQueryParams", { deep: true })
+  public queryParamsUpdated(newParams: PortfolioSummaryQueryParams): void {
+    this.selectedPortfolioRole = newParams.role || "all";
+    this.selectedFundingStatuses = newParams.fundingStatuses?.map(obj => obj.value) || [];
+    this.selectedCSPs = newParams.csps?.map(obj => obj.value) || [];
+  }
+
   public async resetFilters(): Promise<void> {
     this.selectedPortfolioRole = "all";
     this.selectedFundingStatuses = [];
     this.selectedCSPs = [];
-    this.setFilters();
+    this.applyFilters();
   }
 
-  public async setFilters(): Promise<void> {
-    PortfolioData.setPortfolioListQueryParams({
+  public async applyFilters(): Promise<void> {
+    const selectedFundingStatusObjs = this.fundingStatuses.filter(
+      obj => this.selectedFundingStatuses.includes(obj.value)
+    );
+    const selectedCSPObjs = this.cspOptions.filter(
+      obj => this.selectedCSPs.includes(obj.value)
+    );
+    PortfolioData.setportfolioSummaryQueryParams({
       role: this.selectedPortfolioRole,
-      fundingStatuses: this.selectedFundingStatuses,
-      csps: this.selectedCSPs,
+      fundingStatuses: selectedFundingStatusObjs,
+      csps: selectedCSPObjs,
     })
   }
 

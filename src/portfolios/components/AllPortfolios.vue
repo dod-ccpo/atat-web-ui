@@ -43,19 +43,18 @@
       </div>
       <div class="mt-3" v-show="hasFilters">
         <v-chip
-          class="_pill"
-          :id="'FilterChip' + index"
           v-for="(chip, index) in filterChips"
           :key="index"
+          :id="'FilterChip_' + chip.id"
+          class="_pill"
           close
           close-icon="close"
           @click:close="removeFilter(index)"
           @keydown.enter="removeFilter(index)"
           @keydown.space="removeFilter(index)"
-
-          z-index="0"
+          :aria-label="'Filtered by ' + chip.label"
         >
-          {{ chip }}
+          {{ chip.abbreviation || chip.label }}
         </v-chip>
 
         <a 
@@ -94,7 +93,7 @@ import PortfolioCard from "./PortfolioCard.vue";
 
 import { 
   PortfolioCardData,  
-  PortfolioListQueryParams,
+  portfolioSummaryQueryParams,
   SelectData, 
   SlideoutPanelContent,
   ToastObj,  
@@ -123,7 +122,21 @@ export default class AllPortfolios extends Vue {
     { text: "Recently modified", value: "modified" },
   ];
 
-  public filterChips = ["foo", "bar", "baz"];
+  public filterChips = [
+    {
+      type: "fundingStatus",
+      label: "On track",
+      value: "OnTrack",
+      id: "OnTrack",
+    },
+    {
+      type: "CSP",
+      label: "Amazon Web Services (AWS)",
+      value: "aws",
+      id: "Amazon",
+      abbreviation: "AWS"
+    },
+  ]
 
   public get hasFilters(): boolean {
     return this.filterChips.length > 0;
@@ -138,14 +151,14 @@ export default class AllPortfolios extends Vue {
     debugger;
   }
 
-  public get queryParams(): PortfolioListQueryParams {
-    return PortfolioData.portfolioListQueryParams;
+  public get queryParams(): portfolioSummaryQueryParams {
+    return PortfolioData.portfolioSummaryQueryParams;
   }
 
   @Watch("queryParams", { deep: true })
-  public queryParamsChange(newVal: PortfolioListQueryParams): void {
+  public queryParamsChange(newVal: portfolioSummaryQueryParams): void {
     debugger;
-    // check pills
+    // check pills to see if any updates needed
   }
 
   public sortPortfolios(valObj: Record<string, string>): void {
@@ -162,7 +175,7 @@ export default class AllPortfolios extends Vue {
 
   public async setQueryParams(key: string, value: string): Promise<void> {
     debugger;
-    await PortfolioData.setPortfolioListQueryParams({
+    await PortfolioData.setportfolioSummaryQueryParams({
       [key]: value
     });
 
