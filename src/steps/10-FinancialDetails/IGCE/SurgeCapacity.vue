@@ -27,7 +27,7 @@
   </v-container>
 </template>
 <script lang="ts">
-
+/* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { RequirementsCostEstimateDTO } from "@/api/models";
@@ -54,44 +54,47 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
        value: "NO",
      }
    ]
+  
+ private savedData: RequirementsCostEstimateDTO = {
+   surge_capacity: "",
+ };
 
-  private savedData: string = 
-    AcquisitionPackage.requirementsCostEstimate?.surge_capacity as string;
+ private get currentData(): RequirementsCostEstimateDTO {
+   return {
+     surge_capacity: this.surgeCapacity,
+   };
+ }
 
-  private get currentData(): string {
-    return AcquisitionPackage.requirementsCostEstimate?.surge_capacity as string;
-  }
-
-  public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.
-      loadData<RequirementsCostEstimateDTO>({storeProperty: 
+ public async loadOnEnter(): Promise<void> {
+   const storeData = await AcquisitionPackage.
+     loadData<RequirementsCostEstimateDTO>({storeProperty: 
         StoreProperties.RequirementsCostEstimate});
-    if (storeData) {
-      this.savedData = storeData.surge_capacity as string;
-      this.surgeCapacity = storeData.surge_capacity || "";
-    }
-  }
+   if (storeData) {
+     this.savedData.surge_capacity = storeData.surge_capacity as string;
+     this.surgeCapacity = storeData.surge_capacity || "";
+   }
+ }
 
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
-  }
+ private hasChanged(): boolean {
+   return hasChanges(this.currentData, this.savedData);
+ }
 
-  // protected async saveOnLeave(): Promise<boolean> {
-  //   try {
-  //     if (this.hasChanged()) {
-  //       await AcquisitionPackage
-  //         .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
-  //           storeProperty: StoreProperties.RequirementsCostEstimate});
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
+ protected async saveOnLeave(): Promise<boolean> {
+   try {
+     if (this.hasChanged()) {
+       await AcquisitionPackage
+         .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
+           storeProperty: StoreProperties.RequirementsCostEstimate});
+     }
+   } catch (error) {
+     console.log(error);
+   }
 
-  //   return true;
-  // }
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
+   return true;
+ }
+ public async mounted(): Promise<void> {
+   await this.loadOnEnter();
+ }
 }
 </script>
 

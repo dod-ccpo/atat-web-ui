@@ -481,7 +481,11 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setFairOpportunity(initialFairOpportunity());
-          this.setRequirementsCostEstimate({ surge_capabilities: "", estimatedTaskOrderValue: "" });
+          this.setRequirementsCostEstimate(
+            { surge_capabilities: "", 
+              estimatedTaskOrderValue: "",
+              surge_capacity: ""
+            });
           this.setGFEOverview(initialGFE());
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
