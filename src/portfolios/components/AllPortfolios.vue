@@ -41,16 +41,31 @@
           </div>
         </div>
       </div>
-      <div class="mt-2" v-show="hasFilters">
-        chips
+      <div class="mt-3" v-show="hasFilters">
         <v-chip
+          class="_pill"
+          :id="'FilterChip' + index"
           v-for="(chip, index) in filterChips"
           :key="index"
           close
+          close-icon="close"
+          @click:close="removeFilter(index)"
+          @keydown.enter="removeFilter(index)"
+          @keydown.space="removeFilter(index)"
+
+          z-index="0"
         >
           {{ chip }}
         </v-chip>
 
+        <a 
+          role="button" 
+          tabindex="0"
+          @click="clearAllFilters"
+          @keydown.enter="clearAllFilters"
+          @keydown.space="clearAllFilters"
+          class="font-size-14 ml-2 _text-decoration-none _hover-underline"
+        >Clear all filters</a>
       </div>
     </div>
     
@@ -111,8 +126,16 @@ export default class AllPortfolios extends Vue {
   public filterChips = ["foo", "bar", "baz"];
 
   public get hasFilters(): boolean {
-    // const 
-    return true;
+    return this.filterChips.length > 0;
+  }
+
+  public removeFilter(index: number): void {
+    debugger;
+    this.filterChips.splice(index, 1)
+  }
+
+  public clearAllFilters(): void {
+    debugger;
   }
 
   public get queryParams(): PortfolioListQueryParams {
