@@ -95,7 +95,7 @@ export default class AllPortfolios extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await PortfolioSummary.loadPortfolioSummaryList(''); // todo: pass user
+    const storeData = await PortfolioSummary.loadPortfolioSummaryList();
     console.log('Store data in AllPortfolios Vue');
     console.log(JSON.stringify(storeData));
     // future ticket - set isHaCCAdmin value with data from backend when implemented

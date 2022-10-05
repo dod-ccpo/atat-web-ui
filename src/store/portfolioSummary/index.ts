@@ -81,8 +81,8 @@ export class PortfolioSummaryStore extends VuexModule {
       {
         params:
           {
-            sysparm_fields: 'sys_id,name',
-            sysparm_query: `sys_idIN` + cspSysIds
+            sysparm_fields: "sys_id,name",
+            sysparm_query: "sys_idIN" + cspSysIds
           }
       }
     )
@@ -105,9 +105,9 @@ export class PortfolioSummaryStore extends VuexModule {
         params:
           {
             sysparm_fields:
-              'sys_id,clins,portfolio,task_order_number,task_order_status,' +
-              'pop_end_date,pop_start_date',
-            sysparm_query: `portfolio.nameIN` + portfolioSummaryList
+              "sys_id,clins,portfolio,task_order_number,task_order_status," +
+              "pop_end_date,pop_start_date",
+            sysparm_query: "portfolio.nameIN" + portfolioSummaryList
               .map(portfolio => portfolio.name)
           }
       }
@@ -138,8 +138,8 @@ export class PortfolioSummaryStore extends VuexModule {
       {
         params:
           {
-            sysparm_fields: 'sys_id,clin_number,clin_status,funds_obligated',
-            sysparm_query: `sys_idIN` + clins
+            sysparm_fields: "sys_id,clin_number,clin_status,funds_obligated",
+            sysparm_query: "sys_idIN" + clins
           }
       }
     )
@@ -169,8 +169,8 @@ export class PortfolioSummaryStore extends VuexModule {
       {
         params:
           {
-            sysparm_fields: 'sys_id,clin,task_order_number,is_actual,value',
-            sysparm_query: `clinIN` + clinNumbers
+            sysparm_fields: "sys_id,clin,task_order_number,is_actual,value",
+            sysparm_query: "clinIN" + clinNumbers
           }
       }
     )
@@ -222,21 +222,20 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async loadPortfolioSummaryList(loggedInUserId: string): Promise<PortfolioSummaryDTO[]> {
+  public async loadPortfolioSummaryList(): Promise<PortfolioSummaryDTO[]> {
     await this.ensureInitialized();
     try {
       const query =
-        `portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356`; // TODO use loggedInUserId
+        "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // TODO get session of user
       const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
         params: {
-          // sysparm_fields: fields, // ??? does not passing this return all fields?
           sysparm_query: query
-        },
+        }
       };
       const portfolioSummaryList =
         await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
       if (portfolioSummaryList && portfolioSummaryList.length > 0) {
-        // call outs to other functions to set data from other tables
+        // callouts to other functions to set data from other tables
         await this.setCspDisplay(portfolioSummaryList);
         await this.setTaskOrdersForPortfolios(portfolioSummaryList);
         await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
@@ -249,7 +248,7 @@ export class PortfolioSummaryStore extends VuexModule {
         return [];
       }
     } catch (error) {
-      throw new Error(`error occurred loading portfolio summary list :${error}`);
+      throw new Error("error occurred loading portfolio summary list :" + error);
     }
   }
 }
