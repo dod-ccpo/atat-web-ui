@@ -560,11 +560,13 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
 export const IGCESurgeCapabilities = (current:string): string =>{
   const surgeCapacity = AcquisitionPackage.requirementsCostEstimate?.surge_capacity;
-  console.log(AcquisitionPackage.requirementsCostEstimate)
-  if (surgeCapacity?.toUpperCase() === "YES" && current === routeNames.SurgeCapabilities){
+  if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
     return routeNames.FeeCharged;
   }
-  return routeNames.SurgeCapacity;
+  if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.FeeCharged){
+    return routeNames.SurgeCapacity;
+  }
+  return routeNames.SurgeCapabilities;
 }
 
 export const MIPRResolver = (current: string): string => {
