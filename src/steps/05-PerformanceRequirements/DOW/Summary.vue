@@ -173,6 +173,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public allServiceGroups: SystemChoiceDTO[] = [];
   public selectedServiceGroups: DOWServiceOfferingGroup[] = [];
   public showMore = false;
+  public isDataComplete = true;
 
   public alternateGroupNames = [
     {
@@ -373,7 +374,14 @@ export default class Summary extends Mixins(SaveOnLeave) {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    this.setIsIncomplete();
   };
+
+  public setIsIncomplete(): void {
+    DescriptionOfWork.setIsIncomplete(
+      this.serviceGroupsMissingData.length>0
+    );
+  }
 
   protected async saveOnLeave(): Promise<boolean> {
     Steps.clearAltBackButtonText();
