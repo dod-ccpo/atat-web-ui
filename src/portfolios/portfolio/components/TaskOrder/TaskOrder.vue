@@ -16,6 +16,7 @@
           </v-btn>
         </div>
         <TaskOrderCard
+          :isHistory="false"
           :taskOrders="taskOrderData"
           :showBuild.sync="showBuildPage"
           :showDetails.sync="showDetails"

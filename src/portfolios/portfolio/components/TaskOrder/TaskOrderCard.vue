@@ -19,13 +19,17 @@
             Task Order {{ cardData.taskOrderNumber }}
           </a>
           <ATATSVGIcon
-          name="chevronRight"
-          color="primary"
-          :width="8"
-          :height="13"
-          class="d-inline-block mx-2 " />
+            v-if="isHistory=== false"
+            name="chevronRight"
+            color="primary"
+            :width="8"
+            :height="13"
+            class="d-inline-block mx-2 "
+          />
         </div>
-        <div>
+        <div
+          v-if="isHistory=== false"
+        >
           <v-chip
             :id="'StatusChip' + index"
             :class="[
@@ -38,6 +42,7 @@
           </v-chip>
         </div>
         <ATATMeatballMenu
+          v-if="isHistory=== false"
           class="ml-4"
           :left="true"
           :id="'MeatballMenu' + index"
@@ -72,7 +77,11 @@
             {{ cardData.totalLifeCycle }}
           </span>
         </div>
-        <div class="flex-grow-1" :id="'FundsSpent'+index">
+        <div
+          v-if="isHistory=== false"
+          class="flex-grow-1"
+          :id="'FundsSpent'+index"
+        >
           <span class="_title">Total Funds Spent</span>
           <span class="_title-value d-block">
            {{ cardData.totalFundsSpent }}
@@ -100,9 +109,10 @@ import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 })
 export default class TaskOrderCard extends Vue {
   @Prop() private taskOrders!:TaskOrderCardData[];
+  @Prop() private isHistory!:boolean
   @PropSync("showBuild",{default: false}) private _showBuild!: boolean;
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
-  @PropSync("selectedTaskOrder",{default: {}}) private _selectedTaskOrder!: TaskOrderCardData;
+  @PropSync("selectedTaskOrder",{default:()=> ({})}) private _selectedTaskOrder!: TaskOrderCardData;
 
 
   public menuItems(status:string):MeatballMenuItem[] {

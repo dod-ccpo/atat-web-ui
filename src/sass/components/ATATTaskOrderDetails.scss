@@ -1,0 +1,17 @@
+._task-order-details {
+  ._task-order-card {
+    min-width:270px;
+    padding: 32px;
+    border: 1px solid $base-lighter;
+    margin-right:20px;
+    &._last {
+      margin-right: 0;
+    }
+  }
+
+  .v-expansion-panel {
+    &:before {
+      box-shadow: none !important;
+    }
+  }
+}
