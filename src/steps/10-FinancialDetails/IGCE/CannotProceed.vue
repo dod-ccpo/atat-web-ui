@@ -2,9 +2,13 @@
   <v-container fluid class="container-max-width mb-7">
     <v-row>
       <v-col class="col-12">
-        <h1 class="page-header mb-3">
+        <h1 v-if="isPoPIncomplete && isPerformanceReqsIncomplete" class="page-header mb-3">
           To accurately complete your price estimate, you need to revisit the
           Contract Details and Performance Requirements sections
+        </h1>
+         <h1 v-else-if="isPerformanceReqsIncomplete" class="page-header mb-3">
+          To accurately complete your cost estimate, you need to revisit the 
+          Performance Requirements sections
         </h1>
         <ATATAlert
           type="callout"
@@ -21,22 +25,29 @@
               gather pricing estimates, we need to know about your unique
               requirements first.
             </p>
-            <p class="mb-2">
+            <p>
               In order to start the Requirements Cost Estimate section, you need
               to:
-            </p>
-            <ul class="mb-2">
-              <li class="mb-2">
-                <a href="/#/period-of-performance/period-of-performance">
+            <ul>
+              <li v-show="isPoPIncomplete" class="my-2">
+                <router-link 
+                    id="CompletePOP"
+                    :to="{ name: routeNames.PeriodOfPerformance }"
+                  >
                   Complete your period of performance
-                </a>
+                  </router-link>
               </li>
-              <li v-show="isPopIncomplete">
-                <a href="/#/performance-requirements/">
+              <li v-show="isPerformanceReqsIncomplete">
+                  <router-link 
+                    id="CompletePeformanceReqs"
+                    :to="{ name: routeNames.RequirementCategories }"
+                  >
                   Complete your performance requirements
-                </a>
+                  </router-link>
+               
               </li>
             </ul>
+             </p>
           </template>
         </ATATAlert>
       </v-col>
@@ -48,6 +59,7 @@ import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import { routeNames } from "../../../router/stepper"
 
 import { Component } from "vue-property-decorator";
 @Component({
@@ -56,15 +68,18 @@ import { Component } from "vue-property-decorator";
   },
 })
 export default class CannotProceed extends Vue {
-  public isPopIncomplete = true;
-  public isPerformanceReqsIncomplete = true;
-
-  public async mounted(): Promise<void> {
-    this.isPopIncomplete = 
-      Periods.periods && Periods.periods.length>0 ? false : true;
-    // DescriptionOfWork.LoadServiceOfferingGroups()
+  public routeNames = routeNames;
+  get isPoPIncomplete(): boolean {
+    if (Periods.periods) {
+      return Periods.periods.length === 0;
+    } else {
+      return true;
+    }  
   }
 
+  get isPerformanceReqsIncomplete(): boolean {
+    return DescriptionOfWork.isIncomplete;
+  }
 }
 </script>
 
