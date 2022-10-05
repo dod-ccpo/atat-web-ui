@@ -568,6 +568,39 @@ export const IGCESurgeCapabilities = (current:string): string =>{
   }
   return routeNames.SurgeCapabilities;
 }
+export const IGCECannotProceedResolver = (current: string): string => {
+  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
+  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
+  const validToProceed = hasLegitPeriods && isCompleteDOW;
+ 
+  if (validToProceed){
+    if (current ===  routeNames.CreatePriceEstimate){
+      return routeNames.GatherPriceEstimates;
+    } else if (current == routeNames.GatherPriceEstimates) {
+      return routeNames.CreatePriceEstimate;
+    }
+  }
+  return routeNames.CannotProceed;
+};
+
+export const IGCEGatherPriceEstimatesResolver = (current: string): string => {
+  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
+  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
+  const validToProceed = hasLegitPeriods && isCompleteDOW;
+
+  return current === routeNames.GatherPriceEstimates && validToProceed
+    ? routeNames.CreatePriceEstimate
+    : routeNames.FundingPlanType;
+};
+
+export const IGCESupportingDocumentationResolver = (current: string): string => {
+  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
+  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
+  const validToProceed = hasLegitPeriods && isCompleteDOW;
+  return current === routeNames.FundingPlanType && validToProceed
+    ? routeNames.EstimatesDeveloped
+    : routeNames.CannotProceed;
+};
 
 export const MIPRResolver = (current: string): string => {
   const fundingType = FinancialDetails.fundingRequestType;
@@ -671,6 +704,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FOIARecordResolver,
   A11yRequirementResolver,
   ContractTrainingReq,
+  IGCECannotProceedResolver,
+  IGCEGatherPriceEstimatesResolver,
+  IGCESupportingDocumentationResolver,
   MIPRResolver,
   IGCESurgeCapabilities,
   GInvoicingResolver,
