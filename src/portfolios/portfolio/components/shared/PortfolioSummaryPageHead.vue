@@ -162,7 +162,7 @@ export default class PortfolioSummaryPageHead extends Vue {
     PortfolioData.setShowAddMembersModal(true);
   }
 
-  public saveTitle() {
+  public saveTitle(): void {
     const obj ={
       title: this._title
     }
