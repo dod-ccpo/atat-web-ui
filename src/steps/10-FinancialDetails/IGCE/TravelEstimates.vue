@@ -37,7 +37,7 @@
                 @blur="sanitizeValue(0, Amounts[0])"
                 width="190"
                 class="mr-2"
-                :rules="[$validators.required('', true)]"
+                :rules="[$validators.required('Enter your estimated travel price.', true)]"
               />
             </template>
             <template v-if="travelFormFields === 'multiple'">
@@ -60,7 +60,7 @@
                     @blur="sanitizeValue(idx, Amounts[idx])"
                     width="190"
                     class="ml-5"
-                    :rules="[$validators.required('', true)]"
+                    :rules="[$validators.required('Enter your estimated travel price.', true)]"
                   />
                 </div>
               </div>
