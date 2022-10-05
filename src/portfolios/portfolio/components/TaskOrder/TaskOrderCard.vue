@@ -14,8 +14,9 @@
             tabindex="0"
             :id="'TaskOrderLink'+ index"
             class="h3 _text-decoration-none"
+            @click="taskOrderClicked"
           >
-          Task Order  {{ cardData.taskOrderNumber }}
+          Task Order {{ cardData.taskOrderNumber }}
           </a>
           <ATATSVGIcon
           name="chevronRight"
@@ -98,8 +99,10 @@ import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
   }
 })
 export default class TaskOrderCard extends Vue {
-  @Prop() private taskOrders!:TaskOrderCardData;
+  @Prop() private taskOrders!:TaskOrderCardData[];
+  @PropSync("showBuild",{default: false}) private _showBuild!: boolean;
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
+  @PropSync("selectedTaskOrder",{default: {}}) private _selectedTaskOrder!: TaskOrderCardData;
 
 
   public menuItems(status:string):MeatballMenuItem[] {
@@ -128,8 +131,13 @@ export default class TaskOrderCard extends Vue {
 
   public async handleClick(menuItem: MeatballMenuItem): Promise<void> {
     if(menuItem.action == "showTaskOrderDetails"){
-      this._showDetails = true
+      this._showBuild = true
     }
+  }
+  public async taskOrderClicked(e: PointerEvent): Promise<void> {
+    console.log(e.target);
+    // this._selectedTaskOrder = taskOrder
+    // this._showDetails = true
   }
   public statusChipBgColor(status:string): string {
     return getStatusChipBgColor(status);
