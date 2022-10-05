@@ -42,11 +42,31 @@ describe("Testing TaskOrderCard Component", () => {
 
   describe("Testing functions",()=>{
     it("test handleClick()",()=>{
-      const showDetails = wrapper.vm.$props.showDetails
-      expect(showDetails).toBe(false);
+      const showBuild = wrapper.vm.$props.showBuild
+      expect(showBuild).toBe(false);
       wrapper.vm.handleClick({action:"showTaskOrderDetails"})
       Vue.nextTick(() => {
+        expect(showBuild).toBe(true);
+      })
+    })
+    it("test taskOrderClicked()",()=>{
+      const taskOrder = {
+        taskOrderNumber:"#HC1028-22-F-0141",
+        periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
+        totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
+        totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
+        status:"On Track"
+      }
+      const mockEvent = {
+        preventDefault:jest.fn()
+      }
+      const showDetails = wrapper.vm.$props.showDetails
+      const selectedTaskOrder = wrapper.vm.$props.selectedTaskOrder
+      expect(showDetails).toBe(false);
+      wrapper.vm.taskOrderClicked(mockEvent,taskOrder)
+      Vue.nextTick(() => {
         expect(showDetails).toBe(true);
+        expect(selectedTaskOrder).toBe(taskOrder);
       })
     })
   })

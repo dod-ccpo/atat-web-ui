@@ -14,9 +14,9 @@
             tabindex="0"
             :id="'TaskOrderLink'+ index"
             class="h3 _text-decoration-none"
-            @click="taskOrderClicked"
+            @click="taskOrderClicked($event,cardData)"
           >
-          Task Order {{ cardData.taskOrderNumber }}
+            Task Order {{ cardData.taskOrderNumber }}
           </a>
           <ATATSVGIcon
           name="chevronRight"
@@ -134,10 +134,10 @@ export default class TaskOrderCard extends Vue {
       this._showBuild = true
     }
   }
-  public async taskOrderClicked(e: PointerEvent): Promise<void> {
-    console.log(e.target);
-    // this._selectedTaskOrder = taskOrder
-    // this._showDetails = true
+  public async taskOrderClicked(e: Event, taskOrder:TaskOrderCardData): Promise<void> {
+    e.preventDefault()
+    this._selectedTaskOrder = taskOrder
+    this._showDetails = true
   }
   public statusChipBgColor(status:string): string {
     return getStatusChipBgColor(status);
