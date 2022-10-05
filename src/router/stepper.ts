@@ -123,7 +123,10 @@ import {
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
-  OtherOfferingSummaryPathResolver, // EJY look into this
+  OtherOfferingSummaryPathResolver,
+  IGCEGatherPriceEstimatesResolver,
+  IGCECannotProceedResolver,
+  IGCESupportingDocumentationResolver
 
 } from "./resolvers";
 
@@ -676,7 +679,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "create-price-estimate",
         name: routeNames.CreatePriceEstimate,
         completePercentageWeight: 1,
-        component: CreatePriceEstimate,
+        component: CreatePriceEstimate
       },
       {
         menuText: "Cannot Proceed",
@@ -685,6 +688,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CannotProceed,
         completePercentageWeight: 1,
         component: CannotProceed,
+        routeResolver: IGCECannotProceedResolver
       },
       {
         menuText: "Gather Price Estimates",
@@ -693,6 +697,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GatherPriceEstimates,
         completePercentageWeight: 1,
         component: GatherPriceEstimates,
+        routeResolver: IGCEGatherPriceEstimatesResolver,
       },
       {
         menuText: "Travel Estimates",
@@ -700,7 +705,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "travel-estimate",
         name: routeNames.TravelEstimates,
         completePercentageWeight: 1,
-        component: TravelEstimates,
+        component: TravelEstimates
       },
       {
         menuText: "Surge Capacity",
@@ -708,7 +713,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "surge-capacity",
         name: routeNames.SurgeCapacity,
         completePercentageWeight: 1,
-        component: SurgeCapacity,
+        component: SurgeCapacity
       },
       {
         menuText: "Surge Capabilities",
@@ -716,7 +721,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "surge-capabilities",
         name: routeNames.SurgeCapabilities,
         completePercentageWeight: 1,
-        component: SurgeCapabilities,
+        component: SurgeCapabilities
       },
       {
         menuText: "Fee Charged",
@@ -724,7 +729,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "fee-charged",
         name: routeNames.FeeCharged,
         completePercentageWeight: 1,
-        component: FeeCharged,
+        component: FeeCharged
       },
       {
         menuText: "Cost Summary",
@@ -732,7 +737,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "cost-summary",
         name: routeNames.CostSummary,
         completePercentageWeight: 1,
-        component: CostSummary,
+        component: CostSummary
       },
       {
         menuText: "Estimates Developed",
@@ -740,7 +745,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "estimates-developed",
         name: routeNames.EstimatesDeveloped,
         completePercentageWeight: 1,
-        component: EstimatesDeveloped,
+        component: EstimatesDeveloped
       },
       {
         menuText: "Supporting Documentation",
@@ -749,13 +754,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SupportingDocumentation,
         completePercentageWeight: 1,
         component: SupportingDocumentation,
+        routeResolver: IGCESupportingDocumentationResolver
       },
       {
         menuText: "Funding Plan",
         path: "funding-plan",
         name: routeNames.FundingPlanType,
         completePercentageWeight: 1,
-        component: FundingPlanType,
+        component: FundingPlanType
       },
       {
         menuText: "MIPR",
