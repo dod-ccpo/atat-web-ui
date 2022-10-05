@@ -182,8 +182,7 @@ export class PortfolioSummaryStore extends VuexModule {
               const clinNumber = cost.clin as unknown as string;
               return clinNumber === clinRecord.clin_number &&
               cost.task_order_number === taskOrder.task_order_number
-            
-            }); // FIXME temp code
+            }); // FIXME temp code above
           // allCostList.filter(cost => cost.clin?.value === clinRecord.sys_id);//FIXME correct code
         })
       })
@@ -237,9 +236,8 @@ export class PortfolioSummaryStore extends VuexModule {
       const portfolioSummaryList =
         await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
       if (portfolioSummaryList && portfolioSummaryList.length > 0) {
-        // call out to set the cloud service provider
+        // call outs to other functions to set data from other tables
         await this.setCspDisplay(portfolioSummaryList);
-        // todo: call outs to other functions to set data from other tables
         await this.setTaskOrdersForPortfolios(portfolioSummaryList);
         await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
         await this.setCostsToTaskOrderClins(portfolioSummaryList);
