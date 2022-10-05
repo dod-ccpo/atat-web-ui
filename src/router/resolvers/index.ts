@@ -587,6 +587,9 @@ export const IGCEGatherPriceEstimatesResolver = (current: string): string => {
   const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
   const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
   const validToProceed = hasLegitPeriods && isCompleteDOW;
+  if (current === routeNames.TravelEstimates && validToProceed){
+    return routeNames.GatherPriceEstimates;
+  }
 
   return current === routeNames.GatherPriceEstimates && validToProceed
     ? routeNames.CreatePriceEstimate
