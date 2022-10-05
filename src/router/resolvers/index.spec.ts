@@ -48,7 +48,7 @@ describe("testing route resolvers", () => {
         "routeNames.CannotProceed", 
     async () => {
       const newRoute = await IGCEGatherPriceEstimatesResolver("Create_Price_Estimate");
-      expect(newRoute).toBe("Cannot_Proceed");
+      expect(newRoute).toBe("Funding_Plan_Type");
     });
 
     it("IGCECannotProceedResolver('Gather_Price_Estimates') with expected criteria to return " +
