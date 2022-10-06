@@ -69,7 +69,10 @@
         {{ cardData.lastModified }}
       </div>
 
-      <div v-if="cardData.status === portfolioStatuses.Active" class="d-flex">
+      <div 
+        v-if="cardData.status.toLowerCase() === portfolioStatuses.Active.toLowerCase()" 
+        class="d-flex"
+      >
         <div class="mr-15">
           <span class="_data-header">Current Period of Performance</span>
           <span class="_data-primary d-block">

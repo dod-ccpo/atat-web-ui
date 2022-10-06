@@ -23,10 +23,8 @@ import PortfolioSummary, {PortfolioSummaryStore} from "@/store/portfolioSummary"
 import Toast from "@/store/toast";
 import { StatusTypes } from "@/store/acquisitionPackage";
 
-import { createDateStr } from "@/helpers";
+import { createDateStr, toCurrencyString } from "@/helpers";
 import { formatDistanceToNow } from "date-fns";
-
-
 
 @Component({
   components: {
@@ -96,7 +94,7 @@ export default class PortfoliosSummary extends Vue {
 
   public async mounted(): Promise<void> {
     // delete next line when backend hooked up with actual data
-    await this.generateDummyData();
+    // await this.generateDummyData();
     await this.loadOnEnter();
   }
 
@@ -109,25 +107,43 @@ export default class PortfoliosSummary extends Vue {
     const csps = ["aws", "azure", "google", "oracle", "oracle"];
 
     storeData.forEach((portfolio) => {
-      let cardData: PortfolioCardData = {};
-      cardData.csp = csps[cspStubs.indexOf(portfolio.csp_display)];
-      cardData.sysId = portfolio.sys_id;
-      cardData.title = portfolio.name;
-      cardData.status = portfolio.portfolio_status;
-      cardData.branch = portfolio.dod_component;
-      // lastModified - if status is "Processing" use "Started ... ago" string
-      if (cardData.status.toLowerCase() === StatusTypes.Processing.toLowerCase()) {
-        const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
-        cardData.lastModified = "Started " + agoString + " ago";
-      } else {
-        const updatedDate = createDateStr(portfolio.sys_updated_on, true);
-        cardData.lastModified = "Last modified " + updatedDate;
-      }
-      if (portfolio.task_orders && portfolio.task_orders.length) {
-        cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
-      }
+      // NOTE: ARCHIVED status is post MVP
+      if (portfolio.portfolio_status.toLowerCase() !== StatusTypes.Archived.toLowerCase()) {
+        let cardData: PortfolioCardData = {};
+        cardData.csp = csps[cspStubs.indexOf(portfolio.csp_display)];
+        cardData.sysId = portfolio.sys_id;
+        cardData.title = portfolio.name;
+        cardData.status = portfolio.portfolio_status;
+        cardData.branch = portfolio.dod_component;
+        // lastModified - if status is "Processing" use "Started ... ago" string
+        if (cardData.status.toLowerCase() === StatusTypes.Processing.toLowerCase()) {
+          const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
+          cardData.lastModified = "Started " + agoString + " ago";
+        } else {
+          const updatedDate = createDateStr(portfolio.sys_updated_on, true);
+          cardData.lastModified = "Last modified " + updatedDate;
+        }
+        if (portfolio.task_orders && portfolio.task_orders.length) {
+          cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
 
-      this.portfolioCardData.push(cardData);
+          // EJY need this at top level
+          const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
+          const popEnd = createDateStr(portfolio.task_orders[0].pop_end_date, true);
+          cardData.currentPoP = popStart + " - " + popEnd;
+
+        }
+        if (portfolio.portfolio_status.toLowerCase() !== StatusTypes.Processing.toLowerCase()) {
+          // EJY need this at top level
+          // const popStart = createDateStr(portfolio.pop_start_date, true);
+          // const popEnd = createDateStr(portfolio.pop_end_date, true);
+          // cardData.currentPoP = popStart + " - " + popEnd; 
+          cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
+          cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
+        }
+
+
+        this.portfolioCardData.push(cardData);
+      }
 
     });
 
