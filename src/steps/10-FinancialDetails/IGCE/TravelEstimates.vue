@@ -14,7 +14,7 @@
         </p>
         <div class="copy-max-width">
           <ATATRadioGroup
-            class="copy-max-width mb-10 max-width-740"
+            class="copy-max-width max-width-740"
             id="TravelEstimates"
             :card="true"
             :items="travelEstimateOptions"
@@ -23,10 +23,11 @@
             :rules="[$validators.required('Please select an option')]"
           />
         </div>
-
+        <hr class="mt-8" v-if="travelFormFields !==''" />
       
          <fieldset class="no-border" v-if="travelFormFields !==''">
-            <legend class="mb-4"><strong>Estimated travel costs per period</strong></legend>
+            <legend :class="[{'font-weight-500': travelFormFields==='multiple'}, ' mb-4']">
+              Estimated travel costs per period</legend>
             <template v-if="travelFormFields === 'single'">
               <ATATTextField
                 id="SingleAmount"
@@ -47,7 +48,7 @@
                 :class="[(idx < periods.length-1 ? 'pb-5': ''), ' pl-2 d-flex align-start']"
                 style="border-left: #544496 4px solid;"
               >
-                <div class="text-right my-3" style="width: 75px">
+                <div class="text-right mt-2" style="width: 75px">
                   {{ getOption(idx) }}
                 </div>
                 <div>
