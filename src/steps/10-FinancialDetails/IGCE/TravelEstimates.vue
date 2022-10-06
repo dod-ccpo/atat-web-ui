@@ -5,7 +5,7 @@
         <h1 class="page-header">
           How do you want to estimate your travel needs?
         </h1>
-        <p>
+        <p class="page-intro">
           Consider the travel requirements that you previously outlined (e.g.,
           location, duration, quantity, attendance, etc.). You may choose to set
           a ceiling price and apply it to all periods. Or, if you know that your
@@ -44,10 +44,10 @@
               <div
                 v-for="(period, idx) in periods"
                 :key="idx"
-                :class="[(idx < periods.length-1 ? 'pb-5': ''), ' d-flex align-center']"
+                :class="[(idx < periods.length-1 ? 'pb-5': ''), ' pl-2 d-flex align-start']"
                 style="border-left: #544496 4px solid;"
               >
-                <div class="text-right" style="width: 75px">
+                <div class="text-right my-3" style="width: 75px">
                   {{ getOption(idx) }}
                 </div>
                 <div>
