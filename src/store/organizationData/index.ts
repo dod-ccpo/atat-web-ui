@@ -52,7 +52,6 @@ export class OrganizationDataStore extends VuexModule {
   {
     const agencyRequestConfig: AxiosRequestConfig = {
       params: {
-        // eslint-disable-next-line camelcase
         sysparm_fields: "label,title,acronym,css_id",
       },
     };
@@ -94,13 +93,12 @@ export class OrganizationDataStore extends VuexModule {
   public async initialize(): Promise<void> {
     try {
 
-      const sessionRestored= retrieveSession(ATAT_ORGANIZATION_DATA_KEY);
+      const sessionRestored = retrieveSession(ATAT_ORGANIZATION_DATA_KEY);
 
       if(sessionRestored){
         this.setStoreData(sessionRestored);
       }
       else{
-
         await this.getAgencyData();
         await this.getDisaOrgData();
         this.setInitialized(true);
