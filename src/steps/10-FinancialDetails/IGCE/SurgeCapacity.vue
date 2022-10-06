@@ -20,7 +20,7 @@
           :items="items"
           name="surge-capacity"
           card="true"
-          :error="true"
+          :rules="[$validators.required('Please select an option for your surge capacity.')]"
         >
         </ATATRadioGroup>
       </v-col>
