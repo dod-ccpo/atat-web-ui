@@ -255,8 +255,6 @@ export class PortfolioSummaryStore extends VuexModule {
 
   /**
    * Compiles a search query string for the optional search parameters of 'portfolio' table.
-   * TODO: This function should only handle optional search fields. Sort & role should not
-   *  be handled in this function to enable cached data usage more often.
    */
   @Action({rawError: true})
   private async getOptionalSearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
@@ -275,6 +273,10 @@ export class PortfolioSummaryStore extends VuexModule {
     return query;
   }
 
+  /**
+   * Compiles a search query string for the mandatory search parameters of 'portfolio' table. For
+   * each search parameter, no need to check if the value exists since the value is mandatory.
+   */
   @Action({rawError: true})
   private async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
     Promise<string> {
