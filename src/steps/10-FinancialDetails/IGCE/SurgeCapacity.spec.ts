@@ -64,7 +64,7 @@ describe("Testing SurgeCapacity Component", () => {
     expect(wrapper.vm.surgeCapacity).toBe(surgeCap);
   });
 
-  it("loadOnEnter() retrieves expected boolean value with valid " +
+  it("loadOnEnter() retrieves expected boolean value with undefined surge_capacity " +
   "AcquisitionPackage.requirementsCostEstimate", async () => {
     jest.spyOn(AcquisitionPackage, "getRequirementsCostEstimate").mockImplementation(
       ()=>({
