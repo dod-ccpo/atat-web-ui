@@ -139,6 +139,9 @@ export default class PortfoliosSummary extends Vue {
           // cardData.currentPoP = popStart + " - " + popEnd; 
           cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
           cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
+          cardData.fundsSpentPercent = String(Math.round(
+            portfolio.funds_spent / portfolio.funds_obligated * 100
+          ));
         }
 
 
