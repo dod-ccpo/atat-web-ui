@@ -6,12 +6,14 @@ import { DefaultProps } from "vue/types/options";
 import SurgeCapacity from "@/steps/10-FinancialDetails/IGCE/SurgeCapacity.vue";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import validators from "../../../plugins/validation"
 Vue.use(Vuetify);
 
 describe("Testing SurgeCapacity Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
+  localVue.use(validators)
 
   beforeEach(() => {
     vuetify = new Vuetify();
