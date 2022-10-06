@@ -389,7 +389,7 @@ export interface CloudServiceProviderDTO extends BaseTableDTO{
 }
 
 export interface PortfolioSummarySearchDTO {
-  role?: string;
+  role: "ALL" | "MANAGED"; // one of these two values should always exist
   fundingStatuses?: string[];
   csps: string[]; // to not search for specific csps, send empty array
   portfolioStatus?: "ACTIVE" | "PROCESSING"; // if populated, the value needs to be one of these 2

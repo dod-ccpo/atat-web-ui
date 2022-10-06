@@ -281,26 +281,34 @@ export class PortfolioSummaryStore extends VuexModule {
   private async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
     Promise<string> {
     let query = "";
-    query = query +
-      "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
-    // TODO: handle 'role' remove hardcoded above - QUESTION: Manager option is clear (go against
-    //  'portfolio_managers' and search using user's session. However 'All of my portfolios' is
-    //  unclear on what column to go after.
+    if (searchDTO.role === "ALL") {
+      query = query +
+        "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356^OR" + // pragma: allowlist secret
+        "portfolio_viewersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+    } else { // "MANAGED"
+      query = query +
+        "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+    }
     query = query + "^ORDERBY" + searchDTO.sort;
     return query;
   }
 
   /**
-   * Makes a callout to get the portfolio search query and determines if a search
-   * needs to be performed or if the default portfolio list can be loaded. Doing
-   * this check helps in using the cached list for default portfolio list.
+   * Makes a callout to get the portfolio search queries and then loads the portfolio list
+   * by concatenating the search queries
+   *
+   * TODO: In a future story performance can be improved by eliminating the calls to all
+   *  the referenced tables on each search variable change. Strategy is to load all the
+   *  portfolios the user can view OR manage and cache the data. On subsequence searches
+   *  just make one call to the portfolio table using the search values and use the
+   *  response to filter the results from the cached portfolio list. Since the cached results
+   *  already have the referenced data, no further call needs to be made.
+   *  Clubbing this story into the existing story will increase the scope and delay the testing
+   *  of this story.
    */
   @Action({rawError: true})
   public async searchPortfolioSummaryList(searchDTO: PortfolioSummarySearchDTO):
     Promise<PortfolioSummaryDTO[]> {
-    // TODO: after the search and pagination stories are done need to look into
-    //  any caching strategies in a separate story. For now both if and else
-    //  blocks callout the same function.
     const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
     const mandatorySearchQuery = await this.getMandatorySearchParameterQuery(searchDTO)
     if (optionalSearchQuery.length > 0) {
