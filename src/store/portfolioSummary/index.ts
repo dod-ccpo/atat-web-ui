@@ -276,7 +276,7 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  private async getDefaultSearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
+  private async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
     Promise<string> {
     let query = "";
     query = query +
@@ -300,12 +300,12 @@ export class PortfolioSummaryStore extends VuexModule {
     //  any caching strategies in a separate story. For now both if and else
     //  blocks callout the same function.
     const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
-    const searchQuery = await this.getDefaultSearchParameterQuery(searchDTO)
+    const mandatorySearchQuery = await this.getMandatorySearchParameterQuery(searchDTO)
     if (optionalSearchQuery.length > 0) {
       return this.loadPortfolioSummaryList(
-        optionalSearchQuery + searchQuery);
+        optionalSearchQuery + mandatorySearchQuery);
     } else {
-      return this.loadPortfolioSummaryList(searchQuery);
+      return this.loadPortfolioSummaryList(mandatorySearchQuery);
     }
   }
 }
