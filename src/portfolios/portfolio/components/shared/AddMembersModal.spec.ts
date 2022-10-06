@@ -34,6 +34,33 @@ describe("Testing AddMembersModal", () => {
     expect(wrapper.vm.$data.enteredEmails.length).toEqual(0);  
   });
 
+  it("sets PorfolioData.setShowAddMembersModal to false when modal closes", async () => {
+    wrapper.setProps({showModal: false})
+    expect(PortfolioData.showAddMembersModal).toEqual(false);
+  });
+
+  it("sets PorfolioData.title to ensure $data.projectTitle is set correctly", async () => {
+    const dummyTitle = "dummy Title";
+    PortfolioData.setPortfolioData({
+      title: dummyTitle
+    })
+    await wrapper.vm.showModalChange(true);
+    expect(await wrapper.vm.$data.projectTitle).toBe(
+      dummyTitle
+    );
+  });
+
+  it("sets PorfolioData.title='' to ensure $data.projectTitle is set correctly", async () => {
+    const noTitle = "";
+    PortfolioData.setPortfolioData({
+      title: noTitle
+    })
+    await wrapper.vm.showModalChange(true);
+    expect(await wrapper.vm.$data.projectTitle).toBe(
+      "New Acquisition"
+    );
+  });
+
   it("validates email address - missing domain and @ symbol", async () => {
     wrapper.vm.$data.enteredEmails = [{ email: "", isValid: false }];
     const isValid = await wrapper.vm.validateEmail("foo", 0);
@@ -252,11 +279,9 @@ describe("Testing AddMembersModal", () => {
       ],
     });
     const emailInput = await wrapper.find("input[data-email-key='123']");
-    console.log("emailInput", emailInput)
     await emailInput.trigger("blur");
     Vue.nextTick(async () => {
       const emailDeleteButton = await wrapper.find("#RemoveEmail123");
-      console.log("emailDeleteButton", emailDeleteButton)
       await emailDeleteButton.trigger("click");
       expect(wrapper.vm.$data.enteredEmails.length).toBe(0);
     });

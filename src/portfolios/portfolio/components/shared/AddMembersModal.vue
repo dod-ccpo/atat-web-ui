@@ -169,6 +169,8 @@ export default class AddMembersModal extends Vue {
           this.inputWidthFaker = document.getElementById("inputWidthFaker");
         });
       }
+    } else {
+      PortfolioData.setShowAddMembersModal(false);
     }
   }
 
