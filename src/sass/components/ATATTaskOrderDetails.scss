@@ -13,5 +13,17 @@
     &:before {
       box-shadow: none !important;
     }
+    .v-expansion-panel-header {
+      margin-bottom: 24px;
+      &:hover {
+        background-color: transparent !important;
+      }
+      &:focus {
+        background-color: transparent !important;
+      }
+    }
+    .v-expansion-panel-content__wrap {
+      padding: 0 !important;
+    }
   }
 }

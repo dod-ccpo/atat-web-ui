@@ -81,10 +81,9 @@
         <div class="h1 font-weight-700">{{_selectedTaskOrder.totalFundsSpent}}</div>
       </v-card>
     </div>
-    <div class="mt-10">
+    <div v-if="!isAlertClosed" class="mt-10">
       <ATATAlert
         id="TaskOrderDetailsAlert"
-        :showIcon="false"
         type="info"
         closeButton="true"
       >
@@ -111,7 +110,7 @@
           <v-expansion-panel-content>
             <TaskOrderCard
               :isHistory="true"
-              :taskOrders="taskOrderHistory"
+              :taskOrders="[_selectedTaskOrder]"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -129,6 +128,7 @@ import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import _ from "lodash"
+import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components: {
     TaskOrderCard,
@@ -151,18 +151,8 @@ export default class TaskOrderDetails extends Vue {
   public totalFundsToolTip = "Total amount of the task order that has been spent and invoiced;" +
     " your expended obligations. Spend data is provided by your CSP, as of the last" +
     " monthly invoice.";
-
-  public taskOrderHistory:TaskOrderCardData[] = []
-
-  public async loadOnEnter(): Promise<void> {
-    if(this._selectedTaskOrder.taskOrderNumber != ""){
-      const taskOrder = _.cloneDeep(this._selectedTaskOrder)
-      this.taskOrderHistory.push(taskOrder)
-    }
-
-  }
-  public  mounted(): void {
-    this.loadOnEnter();
+  get isAlertClosed(): boolean {
+    return AcquisitionPackage.taskOrderDetailsAlertClosed
   }
 
 }
