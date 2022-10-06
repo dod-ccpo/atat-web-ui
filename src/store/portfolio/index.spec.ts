@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
 import Vuex, { Store } from 'vuex';
-import { createLocalVue } from '@vue/test-utils';
+import { createLocalVue, createWrapper } from '@vue/test-utils';
 import {FundingAlertTypes, PortfolioDataStore,
   getThresholdAmount, thresholdAtOrAbove} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
@@ -9,6 +9,7 @@ import storeHelperFunctions  from "../helpers";
 import Vue from "vue";
 import AcquisitionPackage, { StatusTypes } from "@/store/acquisitionPackage";
 import { AlertDTO } from '@/api/models';
+import { MemberInvites } from 'types/Global';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -128,6 +129,19 @@ describe("Portfolio Store", () => {
     expect(portfolioStore.portfolio.title).toBe("some title to test")
   })
 
+  it('getStatus() returns default result', async()=>{
+    expect(await portfolioStore.getStatus).toBe(StatusTypes.Active);
+  })
+
+  it('getShowAddMembersModal() returns default result', async()=>{
+    expect(await portfolioStore.getShowAddMembersModal).toBe(false);
+  })
+
+  it('setShowAddMembersModal() returns default result', async()=>{
+    await portfolioStore.setShowAddMembersModal(false)
+    expect(await portfolioStore.showAddMembersModal).toBe(false);
+  })
+
   it('Test setStoreData- sets portfolio to the passed in value', async () => {
     const mockData = {
       title: "some title to test",
@@ -235,6 +249,27 @@ describe("Portfolio Store", () => {
       expect(fundingAlertData.fundingAlertType).toBe(FundingAlertTypes.POPFundsAt100Percent);
       expect(fundingAlertData.hasLowFundingAlert).toBe(true);
     })
+  })
+
+  it('saveMembers() add members to Portfolio.portflio.members', async()=>{
+    const memberInvites: MemberInvites = {
+      emails:["dummyemail01@mail.mil", "dummyemail02@mail.mil"],
+      role: "Viewer"
+    } 
+    portfolioStore.portfolio.members = [];
+    await portfolioStore.saveMembers(memberInvites)
+    expect(portfolioStore.portfolio.members?.length).toBe(2)
+  })
+
+  it('getPortolioData()', async()=>{
+    const dummyTitle = "dummy Title";
+    portfolioStore.setPortfolioData(
+      {
+        title: dummyTitle
+      }
+    )
+    const portfolio = await portfolioStore.getPortfolioData();
+    expect(portfolio.title).toBe(dummyTitle)
   })
 
   it('Test getFundingTrackerAlerts Alerts Detect Expired', async () => {
