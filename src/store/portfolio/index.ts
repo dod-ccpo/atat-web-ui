@@ -63,6 +63,9 @@ export class PortfolioDataStore extends VuexModule {
   private alertService = new AlertService();
   //has the store been initialized
   initialized = false;
+
+  public activeTaskOrderNumber = "";
+
   public alerts: AlertDTO[]= [];
   portfolio: Portfolio = { 
     title: "",
@@ -92,6 +95,18 @@ export class PortfolioDataStore extends VuexModule {
   public get getShowAddMembersModal(): boolean {
     return this.showAddMembersModal;
   }
+
+  @Action
+  public setActiveTaskOrderNumber(taskOrderNum: string | undefined): void {
+    if (taskOrderNum) {
+      this.doSetActiveTaskOrderNumber(taskOrderNum);
+    }
+  }
+  @Mutation
+  public doSetActiveTaskOrderNumber(taskOrderNum: string): void {
+    this.activeTaskOrderNumber = taskOrderNum;
+  }
+
 
   @Action
   public setShowAddMembersModal(show: boolean): void {

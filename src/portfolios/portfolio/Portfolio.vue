@@ -868,6 +868,7 @@ import _ from "lodash";
 import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
+import PortfolioData from "@/store/portfolio";
 
 @Component({
   components: {
@@ -1471,10 +1472,12 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async getDashboardData():Promise<PortFolioDashBoardDTO>{
-    return this.dashboardService.getdata("1000000001234");
+    // return this.dashboardService.getdata("1000000001234");
+    return this.dashboardService.getdata(this.activeTaskOrderNumber);
   }
-
+  public activeTaskOrderNumber = "";
   public async loadOnEnter(): Promise<void> {
+    this.activeTaskOrderNumber = PortfolioData.activeTaskOrderNumber;
     const data = await this.getDashboardData();
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
@@ -1735,7 +1738,8 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async getAlerts(): Promise<FundingAlertData> {
-    return Portfolio.getFundingTrackerAlert("1000000001234");
+    // return Portfolio.getFundingTrackerAlert("1000000001234");
+    return Portfolio.getFundingTrackerAlert(this.activeTaskOrderNumber);
   }
 
   public async processAlerts(): Promise<void> {

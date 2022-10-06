@@ -43,7 +43,7 @@
             {{ cardData.title }}
           </a>
         </div>
-        <div v-if="cardData.status !== portfolioStatuses.Active">
+        <div v-if="cardData.status.toLowerCase() !== portfolioStatuses.Active.toLowerCase()">
           <v-chip 
             :id="'StatusChip' + index" 
             :class="[
@@ -121,7 +121,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
 import { MeatballMenuItem, PortfolioCardData } from "types/Global";
-import { cspConsoleURLs } from "@/store/portfolio";
+import PortfolioData, { cspConsoleURLs } from "@/store/portfolio";
 import { getStatusChipBgColor } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
@@ -168,6 +168,8 @@ export default class PortfolioCard extends Vue {
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
+      debugger;
+      await PortfolioData.setActiveTaskOrderNumber(this.cardData.taskOrderNumber)
       await AppSections.setActiveTabIndex(0);
       AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
       break; 
@@ -196,7 +198,7 @@ export default class PortfolioCard extends Vue {
   }
 
   public get statusChipBgColor(): string {
-    return getStatusChipBgColor(this.cardData.status ? this.cardData.status : "");
+    return getStatusChipBgColor(this.cardData.status ? this.cardData.status.toLowerCase() : "");
   }
 
   public leavePortfolio(): void {

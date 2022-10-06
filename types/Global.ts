@@ -384,6 +384,7 @@ export interface User {
 }
 
 export interface Portfolio extends BaseTableDTO {
+  sysId?: string;
   title?: string;
   description?: string;
   status?: string;
@@ -393,6 +394,7 @@ export interface Portfolio extends BaseTableDTO {
   provisioned?: string;
   members?: User[];
   updated?: string;
+  taskOrderNumber?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {

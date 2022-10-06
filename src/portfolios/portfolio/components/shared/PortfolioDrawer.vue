@@ -267,7 +267,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public getBgColor(): string {
-    return getStatusChipBgColor(this.portfolioStatus);
+    return getStatusChipBgColor(this.portfolioStatus.toLowerCase());
   }
 
   public async loadPortfolio(): Promise<void> {

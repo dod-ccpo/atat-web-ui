@@ -47,8 +47,6 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
-import ActivePortfolios from "@/portfolios/components/ActivePortfolios.vue";
-import ProcessingPortfolios from "@/portfolios/components/ProcessingPortfolios.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import { getIdText } from "@/helpers";
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -58,8 +56,6 @@ import ATATToast from "@/components/ATATToast.vue";
 @Component({
   components: {
     PortfoliosSummary,
-    ActivePortfolios,
-    ProcessingPortfolios,
     ATATSlideoutPanel,
     ATATFooter,
     ATATToast,
