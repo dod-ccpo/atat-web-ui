@@ -95,7 +95,7 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   /**
-   * Given a list of portfolios, compiles the api calls and returns the portfolio list
+   * Given a list of portfolios, compiles a single API call and returns the portfolio list
    * with task orders populated.
    */
   @Action({rawError: true})
@@ -123,6 +123,30 @@ export class PortfolioSummaryStore extends VuexModule {
       if (!portfolio.task_orders) {
         portfolio.task_orders = [];
       }
+    })
+    return portfolioSummaryList;
+  }
+
+  /**
+   * Constructs a single API call that gets all the alerts across all the portfolios. Parses
+   * the response and sets the 'alerts' to the respective portfolio.
+   */
+  @Action({rawError: true})
+  private async setAlertsForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    const allAlertsList = await api.alertsTable.getQuery(
+      {
+        params:
+          { // bring all field
+            sysparm_query: "portfolio.nameIN" + portfolioSummaryList
+              .map(portfolio => portfolio.name)
+          }
+      }
+    )
+    portfolioSummaryList.forEach(portfolio => {
+      portfolio.alert = allAlertsList
+        .find((alert) => {
+          return (alert.portfolio as ReferenceColumn).value === portfolio.sys_id
+        });
     })
     return portfolioSummaryList;
   }
@@ -239,6 +263,7 @@ export class PortfolioSummaryStore extends VuexModule {
         // callouts to other functions to set data from other tables
         await this.setCspDisplay(portfolioSummaryList);
         await this.setTaskOrdersForPortfolios(portfolioSummaryList);
+        await this.setAlertsForPortfolios(portfolioSummaryList);
         await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
         await this.setCostsToTaskOrderClins(portfolioSummaryList);
         // all asynchronous calls are done before this step & data is available for aggregation

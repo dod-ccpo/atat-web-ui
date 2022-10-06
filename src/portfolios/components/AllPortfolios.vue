@@ -98,9 +98,10 @@ export default class AllPortfolios extends Vue {
   public async loadOnEnter(): Promise<void> {
     let portfolioSearchDTO: PortfolioSummarySearchDTO = {
       role: "ALL",
-      csps: ['CSP_D'],
+      // csps: ['CSP_D'],
+      csps: [],
       sort: "name",
-      portfolioStatus: "ACTIVE"
+      // portfolioStatus: "ACTIVE"
     }
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(portfolioSearchDTO);
     console.log("Store data in AllPortfolios Vue");

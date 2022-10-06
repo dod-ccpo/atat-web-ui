@@ -16,7 +16,7 @@ export interface AlertDTO extends BaseTableDTO {
   alert_type: string;
   clin: string;
   last_notification_date: string;
-  portfolio: string;
+  portfolio: string | ReferenceColumn;
   task_order: string;
   threshold_violation_amount: string;
 }
@@ -381,6 +381,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
+  alert?: AlertDTO;
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
