@@ -21,6 +21,9 @@
       &:focus {
         background-color: transparent !important;
       }
+      .v-expansion-panel-header__icon {
+        top:10px !important;
+      }
     }
     .v-expansion-panel-content__wrap {
       padding: 0 !important;
