@@ -183,6 +183,7 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO {
     estimatedTaskOrderValue?: string;
     feePercentage?: string;
     feeCharged?: string;
+    surge_capacity?: string;
 }
 
 export interface RequiredServicesDTO extends BaseTableDTO {

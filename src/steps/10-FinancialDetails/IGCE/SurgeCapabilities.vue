@@ -3,34 +3,32 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header">
-          Tell us more about the scope of your project
+          Tell us more about your potential surge capacity
         </h1>
 
         <ATATAlert
           type="callout"
           :showIcon="false"
-          class="copy-max-width mt-10"
+          class="copy-max-width pa-6"
+          calloutBackground="primary-lighter" 
         >
           <template v-slot:content>
-            <h2>Surge Capabilities</h2>
-            <p class="mt-2">
-              The Government may require surge capabilities during the base or
-              any option period, and surge modifications will be within the
-              scope of the contract for the defined task areas in the
-              description of work.
-            </p>
-            <p class="mb-0">
-              Surge capabilities over the life of the task order cannot exceed
-              between 1-50% of the contractor’s total proposed price for the
-              base and all option periods, excluding any six-month extension of
-              services pursuant to Federal Acquisition Regulation (FAR)
-              52.217-8.
+            <h2 class="mb-2">Surge Capabilities</h2>
+            <p class="ma-0">
+             Surge capabilities over the life of the task order can be between 
+             1-50% of the contractor’s total proposed price for the base and 
+             all option periods, excluding any six-month extension of services 
+             pursuant to 
+                <a id="FARlink"
+                target="_blank"
+                href="https://www.acquisition.gov/far/52.217-8">
+              <span class="_external-link">Federal Acquisition Regulation (FAR) 52.217-8</span>
+              </a> 
             </p>
           </template>
         </ATATAlert>
-        <p class="mt-8 mb-2">
-          If surge capabilities are required, what percentage of the
-          contractor’s total proposed price will not be exceeded?
+        <p class="mt-8 mb-2 font-weight-500">
+            What percentage of surge would you like to estimate for your requirement?
         </p>
         <ATATTextField
           label=""
@@ -52,7 +50,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -67,18 +65,6 @@ import ATATTextField from "../../../components/ATATTextField.vue";
 })
 export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   private surgeCapabilities = "";
-
-  get contractPricePercentageRules(): unknown[] {
-    const validationRules = [];
-    validationRules.push(
-      (v: number) => (v > 0 && v <= 50) || "Enter a number between 1-50"
-    );
-    validationRules.push(
-      (v: string) => /[0-9]/.test(v) || "Enter a number between 1-50"
-    );
-
-    return validationRules;
-  }
 
   private get currentData(): RequirementsCostEstimateDTO {
     return {
@@ -95,9 +81,11 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.
-      loadData<RequirementsCostEstimateDTO>({storeProperty: 
-      StoreProperties.RequirementsCostEstimate});
+    //const storeData = await AcquisitionPackage.
+    //loadData<RequirementsCostEstimateDTO>({storeProperty: 
+    //StoreProperties.RequirementsCostEstimate});
+    const storeData = 
+    await AcquisitionPackage.getRequirementsCostEstimate();
     if (storeData) {
       this.savedData.surge_capabilities = storeData.surge_capabilities;
       this.surgeCapabilities = storeData.surge_capabilities || "";
@@ -105,16 +93,15 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    try {
-      if (this.hasChanged()) {
-        await AcquisitionPackage
-          .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
-            storeProperty: StoreProperties.RequirementsCostEstimate});
-      }
-    } catch (error) {
-      console.log(error);
+    if (this.hasChanged()) {
+      //await AcquisitionPackage
+      //     .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
+      //     storeProperty: StoreProperties.RequirementsCostEstimate});
+      await AcquisitionPackage.setRequirementsCostEstimate(
+        this.currentData
+      );
+        
     }
-
     return true;
   }
   public async mounted(): Promise<void> {
