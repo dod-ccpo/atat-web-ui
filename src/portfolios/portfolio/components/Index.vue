@@ -19,7 +19,9 @@
         :portfolioStatus="portfolioStatus"
       />
       <v-container
-        class="container-max-width"
+        :class="[tabItems[tabIndex] === 'Task Orders'?
+         'container-max-width-wide':'container-max-width'
+         ]"
         style="margin-bottom:300px !important"
       >
           <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />

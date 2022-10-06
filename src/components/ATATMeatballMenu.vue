@@ -64,13 +64,14 @@ export default class ATATMeatballMenu extends Vue {
   @Prop({ default: false }) public left?: boolean;
   @Prop({ default: "" }) public menuIndex!: number | string;
   @Prop() public menuItems!: MeatballMenuItem[];
+  @Prop() public cardIndex?: number | string;
 
   private getIdText(string: string) {
     return getIdText(string);
   }
 
   public menuItemClick(item: MeatballMenuItem): void {
-    this.$emit("menuItemClick", item);
+    this.$emit("menuItemClick", item, this.cardIndex);
   }
 
 }

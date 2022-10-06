@@ -1,6 +1,6 @@
 <template>
-    <div class="pt-5">
-      <div v-if="!showTaskOrderDetails">
+    <div >
+      <div v-if="!showDetails">
         <h2 class="pb-3">All task orders</h2>
         <div class="d-flex justify-space-between ">
           <p class="mr-10">View details about the task orders associated with your portfolio below.
@@ -15,10 +15,18 @@
             Add a new task order
           </v-btn>
         </div>
-        <TaskOrderCard :taskOrders="taskOrderData" :showDetails.sync="showTaskOrderDetails"/>
+        <TaskOrderCard
+          :isHistory="false"
+          :taskOrders="taskOrderData"
+          :showDetails.sync="showDetails"
+          :selectedTaskOrder.sync="selectedTaskOrder"
+        />
       </div>
-      <div v-if="showTaskOrderDetails">
-        <TaskOrderBuildPage />
+      <div v-if="showDetails">
+        <TaskOrderDetails
+          :selectedTaskOrder="selectedTaskOrder"
+          :showDetails.sync="showDetails"
+        />
       </div>
     </div>
 </template>
@@ -28,17 +36,26 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import { TaskOrderCardData } from "../../../../../types/Global";
-import TaskOrderBuildPage from "@/portfolios/portfolio/components/TaskOrder/TaskOrderBuildPage.vue";
+import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 
 @Component({
   components: {
     TaskOrderCard,
-    TaskOrderBuildPage
+    TaskOrderDetails
   }
 })
 export default class TaskOrder extends Vue {
   public taskOrderData:TaskOrderCardData[] = [];
-  public showTaskOrderDetails = false
+  public showDetails = false
+  public selectedTaskOrder:TaskOrderCardData = {
+    taskOrderNumber: "",
+    periodOfPerformance: "",
+    totalObligated: "",
+    totalValue: "",
+    totalLifeCycle: "",
+    totalFundsSpent: "",
+    status: "",
+  }
   public orderNames = [
     "#HC1028-22-F-0141",
     "#HC1028-22-F-0131",
