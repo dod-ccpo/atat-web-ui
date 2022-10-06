@@ -119,9 +119,6 @@
           </v-list>
         </v-menu>
       </div>
-      <AddMembersModal
-        :showModal.sync="showMembersModal"
-      />
     </div>
   </v-app-bar>
 </template>
@@ -159,14 +156,13 @@ export default class PortfolioSummaryPageHead extends Vue {
 
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
-  public showMembersModal = false;
   public showDrawer = false;
 
   public openModal():void {
-    this.showMembersModal = true;
+    PortfolioData.setShowAddMembersModal(true);
   }
 
-  public saveTitle() {
+  public saveTitle(): void {
     const obj ={
       title: this._title
     }
@@ -204,6 +200,13 @@ export default class PortfolioSummaryPageHead extends Vue {
 
   private getIdText(string: string) {
     return getIdText(string);
+  }
+
+  public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: PortfolioDrawer,
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
 
 }

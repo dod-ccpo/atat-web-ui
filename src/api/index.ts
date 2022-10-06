@@ -34,6 +34,8 @@ import { CurrentEnvironmentAPI } from "@/api/currentEnvironment";
 import { AggregateApi } from "./aggregate";
 import { EnvironmentInstanceAPI } from "@/api/EnvironmentInstance";
 import { AlertApi } from "./alerts";
+import {PortfolioApi} from "@/api/portfolio";
+import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 
 
 export const api = {
@@ -73,6 +75,8 @@ export const api = {
   currentEnvironmentTable: new CurrentEnvironmentAPI(),
   aggregate: new AggregateApi(),
   environmentInstanceTable: new EnvironmentInstanceAPI(),
+  portfolioTable: new PortfolioApi(),
+  cloudServiceProviderTable: new CloudServiceProviderApi()
 }
 
 export default {

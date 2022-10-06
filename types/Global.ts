@@ -52,6 +52,7 @@ export interface MeatballMenuItem {
   disabled?: boolean;
   separatorBefore?: boolean;
   icon?: MenuIcon;
+  hidden?:boolean;
 }
 export interface MeatballMenu {
   id: string;

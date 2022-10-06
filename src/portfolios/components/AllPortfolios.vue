@@ -100,6 +100,8 @@ import {
   ToastObj,  
 } from "types/Global";
 
+import PortfolioSummary, {PortfolioSummaryStore} from "@/store/portfolioSummary";
+
 import Toast from "@/store/toast";
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
@@ -275,11 +277,16 @@ export default class AllPortfolios extends Vue {
   public async mounted(): Promise<void> {
     // delete next line when backend hooked up with actual data
     await this.generateDummyData();
+    await this.loadOnEnter();
+    await this.generateFilterChips();    
+  }
 
-    await this.generateFilterChips();
-
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await PortfolioSummary.loadPortfolioSummaryList();
+    console.log('Store data in AllPortfolios Vue');
+    console.log(JSON.stringify(storeData));
     // future ticket - set isHaCCAdmin value with data from backend when implemented
-    this.isHaCCAdmin = true; 
+    this.isHaCCAdmin = true;
   }
 }
 </script>

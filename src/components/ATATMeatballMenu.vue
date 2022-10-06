@@ -24,7 +24,8 @@
         :id="getIdText(item.title) + '_MenuItem' + menuIndex"
         :class="[
           { '_separator-before': item.separatorBefore },
-          { '_disabled': item.disabled }
+          { '_disabled': item.disabled },
+          {'d-none': item.hidden },
         ]"
         @click="menuItemClick(item)"
         :disabled="item.disabled"

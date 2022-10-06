@@ -124,6 +124,7 @@ import {
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
   OtherOfferingSummaryPathResolver,
+  IGCESurgeCapabilities,
   IGCEGatherPriceEstimatesResolver,
   IGCECannotProceedResolver,
   IGCESupportingDocumentationResolver
@@ -721,7 +722,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "surge-capabilities",
         name: routeNames.SurgeCapabilities,
         completePercentageWeight: 1,
-        component: SurgeCapabilities
+        component: SurgeCapabilities,
+        routeResolver: IGCESurgeCapabilities
       },
       {
         menuText: "Fee Charged",

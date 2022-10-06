@@ -1,9 +1,12 @@
+/* eslint-disable camelcase */
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
 import { 
   IGCECannotProceedResolver, 
   IGCEGatherPriceEstimatesResolver, 
-  IGCESupportingDocumentationResolver 
+  IGCESupportingDocumentationResolver, 
+  IGCESurgeCapabilities
 } from "../resolvers/index"
 
 
@@ -22,6 +25,34 @@ describe("testing route resolvers", () => {
     DescriptionOfWork.setIsIncomplete(true);
   })
   describe("IGCE Resolvers", ()=>{
+    it("IGCESurgeCapabilities('Create_Price_Estimate') returns routeNames.FeeCharged", 
+      async () => {
+        AcquisitionPackage.setRequirementsCostEstimate({
+          surge_capacity: "NO"
+        });
+        const newRoute = await IGCESurgeCapabilities("Surge_Capacity");
+        expect(newRoute).toBe("Fee_Charged");
+      });
+
+    it("IGCESurgeCapabilities('Fee_Charged') returns routeNames.SurgeCapacity", 
+      async () => {
+        AcquisitionPackage.setRequirementsCostEstimate({
+          surge_capacity: "NO"
+        });
+        const newRoute = await IGCESurgeCapabilities("Fee_Charged");
+        expect(newRoute).toBe("Surge_Capacity");
+      });
+
+    it("IGCESurgeCapabilities('Fee_Charged') returns routeNames.SurgeCapabilities", 
+      async () => {
+        AcquisitionPackage.setRequirementsCostEstimate({
+          surge_capacity: "YES"
+        });
+        const newRoute = await IGCESurgeCapabilities("Fee_Charged");
+        expect(newRoute).toBe("SurgeCapabilities");
+      });
+
+
     it("IGCECannotProceedResolver('Create_Price_Estimate') returns routeNames.CannotProceed", 
       async () => {
         const newRoute = await IGCECannotProceedResolver("Create_Price_Estimate");

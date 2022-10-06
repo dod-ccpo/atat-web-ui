@@ -193,6 +193,20 @@ export class PortfolioDataStore extends VuexModule {
     return this.status;
   }
 
+  public showAddMembersModal = false;
+  public get getShowAddMembersModal(): boolean {
+    return this.showAddMembersModal;
+  }
+
+  @Action
+  public setShowAddMembersModal(show: boolean): void {
+    this.doSetShowAddMembersModal(show);
+  }
+  @Mutation
+  public doSetShowAddMembersModal(show: boolean): void {
+    this.showAddMembersModal = show;
+  }
+
   @Mutation
   public setInitialized(value: boolean): void {
     this.initialized = value;
