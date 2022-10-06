@@ -43,6 +43,7 @@ import { hasChanges } from "@/helpers";
 })
 export default class SurgeCapacity extends Mixins(SaveOnLeave) {
   private surgeCapacity = "";
+  private surgeCapabilities = "";
   private items = [
     {
       id: "YES",
@@ -59,6 +60,7 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
   private get currentData(): RequirementsCostEstimateDTO {
     return {
       surge_capacity: this.surgeCapacity,
+      surge_capabilities: this.surgeCapacity === "YES" ? this.surgeCapabilities: ""
     };
   }
 
@@ -87,9 +89,6 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
       //  await AcquisitionPackage
       //    .saveData<RequirementsCostEstimateDTO>({data: this.currentData,
       //    storeProperty: StoreProperties.RequirementsCostEstimate});
-
-  
-
       await AcquisitionPackage.setRequirementsCostEstimate(this.currentData);
     }
     return true;

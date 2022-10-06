@@ -33,12 +33,27 @@ describe("Testing SurgeCapacity Component", () => {
 
   it("currentData() retrieves expected object", async () => {
     const surgeCap = "YES";
+    const surgeCapabilities="15"
     wrapper.setData({
-      surgeCapacity: surgeCap
+      surgeCapacity: surgeCap,
+      surgeCapabilities
     })
     const currentData: RequirementsCostEstimateDTO = 
       wrapper.vm.currentData;
     expect(currentData.surge_capacity).toBe(surgeCap);
+    expect(currentData.surge_capabilities).toBe(surgeCapabilities)
+  });
+
+  it("currentData() retrieves expected object", async () => {
+    const surgeCap = "NO";
+    const surgeCapabilities="15"
+    wrapper.setData({
+      surgeCapacity: surgeCap,
+      surgeCapabilities
+    })
+    const currentData: RequirementsCostEstimateDTO = 
+      wrapper.vm.currentData;
+    expect(currentData.surge_capabilities).toBe("");
   });
 
   it("hasChanged() retrieves expected boolean value", async () => {
