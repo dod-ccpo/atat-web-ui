@@ -20,19 +20,15 @@
              all option periods, excluding any six-month extension of services 
              pursuant to 
                 <a id="FARlink"
-                role="button"
                 target="_blank"
-                tabindex="0"
                 href="https://www.acquisition.gov/far/52.217-8">
-              <span class="">Federal Acquisition Regulation (FAR) 52.217-8</span>
+              <span class="_external-link">Federal Acquisition Regulation (FAR) 52.217-8</span>
               </a> 
             </p>
           </template>
         </ATATAlert>
-        <p class="mt-8 mb-2">
-          <strong>
+        <p class="mt-8 mb-2 font-weight-500">
             What percentage of surge would you like to estimate for your requirement?
-          </strong>
         </p>
         <ATATTextField
           label=""
