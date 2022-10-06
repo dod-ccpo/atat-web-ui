@@ -31,6 +31,17 @@ export interface EntitySpending {
   total: number;
 }
 
+export interface AggregateResults {
+  result: {
+    stats: {
+      sum: {
+        funds_obligated: string;
+        funds_total: string;
+      };
+    };
+  };
+}
+
 const buildCostGroups = (costs: CostsDTO[]): CostGroup[] => {
   costs.sort((a, b) => Date.parse(a.year_month) - Date.parse(b.year_month));
   const groups = groupBy(costs, "year_month");
@@ -226,7 +237,7 @@ export class DashboardService {
     const aggregate = await api.aggregate.makeRequest(
       TaskOrderTable,
       aggregateRequestConfig
-    );
+    ) as AggregateResults;
 
     const taskOrderData = await api.taskOrderTable.all({
       params: {
@@ -238,18 +249,7 @@ export class DashboardService {
       taskOrderData.length > 0 ? await this.getCostsData(taskOrderData) : [];
     const costGroups = buildCostGroups(costs);
 
-    interface AggregateResults {
-      result: {
-        stats: {
-          sum: {
-            funds_obligated: string;
-            funds_total: string;
-          };
-        };
-      };
-    }
-
-    const aggregateResults = aggregate as AggregateResults;
+    const aggregateResults = aggregate;
     const totalObligatedFunds = Number(
       aggregateResults.result.stats.sum.funds_obligated
     );
