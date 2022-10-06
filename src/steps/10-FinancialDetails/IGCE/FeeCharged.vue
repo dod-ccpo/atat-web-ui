@@ -1,5 +1,4 @@
 <!-- eslint-disable camelcase -->
-<!-- eslint-disable camelcase -->
 <template>
   <v-container fluid class="container-max-width mb-7">
     <v-row>
@@ -8,7 +7,7 @@
           Does your contracting office charge a fee for processing task orders?
         </h1>
         <div class="copy-max-width">
-          <p id="IntroP" class="mb-10">
+          <p id="IntroP" class="mb-7">
             Based on what you previously told us, your cost estimate will
             include a 1% external ordering agency fee. If there is an additional
             fee associated with using your contracting office, then we will
@@ -17,6 +16,7 @@
         </div>
         <ATATRadioGroup
           id="isFeeChargedOptions"
+          width="180"
           :value.sync="feeCharged"
           :items="items"
           name="is-fee-charged"
@@ -24,7 +24,7 @@
           :rules="[$validators.required('Please select an option')]"
         >
         </ATATRadioGroup>
-        <hr v-if="feeCharged==='YES'" />
+        <hr class="mt-7" v-if="feeCharged==='YES'" />
         <ATATTextField
           v-if="feeCharged==='YES'"
           label="What percentage of the total price does your contracting office charge?"
