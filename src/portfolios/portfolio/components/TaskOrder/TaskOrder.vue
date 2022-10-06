@@ -1,6 +1,6 @@
 <template>
     <div >
-      <div v-if="!showBuildPage && !showDetails">
+      <div v-if="!showDetails">
         <h2 class="pb-3">All task orders</h2>
         <div class="d-flex justify-space-between ">
           <p class="mr-10">View details about the task orders associated with your portfolio below.
@@ -18,13 +18,9 @@
         <TaskOrderCard
           :isHistory="false"
           :taskOrders="taskOrderData"
-          :showBuild.sync="showBuildPage"
           :showDetails.sync="showDetails"
           :selectedTaskOrder.sync="selectedTaskOrder"
         />
-      </div>
-      <div v-if="showBuildPage">
-        <TaskOrderBuildPage />
       </div>
       <div v-if="showDetails">
         <TaskOrderDetails

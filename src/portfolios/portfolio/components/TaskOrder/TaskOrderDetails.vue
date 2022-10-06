@@ -2,8 +2,15 @@
   <div class="_task-order-details">
     <div class="d-flex align-center">
       <a
-      @click="handleClick"
-      >Task Orders</a>
+        id="LinkToTaskOrders"
+        role="button"
+        tabindex="0"
+        @keydown.space="handleClick"
+        @keydown.enter="handleClick"
+        @click="handleClick"
+      >
+        Task Orders
+      </a>
       <ATATSVGIcon
         class="mx-4"
         name="chevronRight"
@@ -13,6 +20,7 @@
       />
       <span
        class="text-base"
+       id="TaskOrderNumber"
       >
         {{_selectedTaskOrder.taskOrderNumber}}
       </span>
@@ -20,6 +28,7 @@
     <div class="pt-3 d-flex justify-space-between pb-5">
       <h1>{{_selectedTaskOrder.taskOrderNumber}}</h1>
       <v-btn
+        id="ModifyTaskOrderButtono"
         outlined
         class="secondary"
       >
@@ -41,7 +50,7 @@
             id="ObligatedFundsToolTip"
           />
         </div>
-        <div class="h1 font-weight-700">{{_selectedTaskOrder.totalObligated}}</div>
+        <div class="h1">{{_selectedTaskOrder.totalObligated}}</div>
       </v-card>
       <v-card
         class="_task-order-card"
@@ -54,7 +63,7 @@
             id="TotalValueToolTip"
           />
         </div>
-        <div class="h1 font-weight-700">{{_selectedTaskOrder.totalValue}}</div>
+        <div class="h1">{{_selectedTaskOrder.totalValue}}</div>
       </v-card>
       <v-card
         class="_task-order-card"
@@ -67,7 +76,7 @@
             id="LifecycleToolTip"
           />
         </div>
-        <div class="h1 font-weight-700">{{_selectedTaskOrder.totalLifeCycle}}</div>
+        <div class="h1">{{_selectedTaskOrder.totalLifeCycle}}</div>
       </v-card>
       <v-card
         class="_task-order-card _last"
@@ -80,7 +89,7 @@
             id="TotalFundsToolTip"
           />
         </div>
-        <div class="h1 font-weight-700">{{_selectedTaskOrder.totalFundsSpent}}</div>
+        <div class="h1">{{_selectedTaskOrder.totalFundsSpent}}</div>
       </v-card>
     </div>
     <div v-if="!isAlertClosed" class="mt-10">
@@ -103,11 +112,14 @@
     <div>
       <v-expansion-panels class="pt-6" ripple="false" elevation="0">
         <v-expansion-panel>
-          <v-expansion-panel-header class="d-flex align-center">
-            <div class="font-size-24 font-weight-500 ">
+          <v-expansion-panel-header class="d-flex">
+            <h2>
               Task Order
-            </div>
-            <span class="text-base font-size-20 pl-2">1</span>
+            </h2>
+            <span
+              class="text-base font-size-20 pl-2"
+              id="TaskOrderHistoryNumber"
+            >1</span>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <TaskOrderCard

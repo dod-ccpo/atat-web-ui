@@ -42,11 +42,11 @@ describe("Testing TaskOrderCard Component", () => {
 
   describe("Testing functions",()=>{
     it("test handleClick()",()=>{
-      const showBuild = wrapper.vm.$props.showBuild
-      expect(showBuild).toBe(false);
+      const showDetails = wrapper.vm.$props.showDetails
+      expect(showDetails).toBe(false);
       wrapper.vm.handleClick({action:"showTaskOrderDetails"})
       Vue.nextTick(() => {
-        expect(showBuild).toBe(true);
+        expect(showDetails).toBe(true);
       })
     })
     it("test taskOrderClicked()",()=>{

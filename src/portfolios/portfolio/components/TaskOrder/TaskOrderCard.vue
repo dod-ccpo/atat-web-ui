@@ -15,6 +15,8 @@
             :id="'TaskOrderLink'+ index"
             class="h3 _text-decoration-none"
             @click="taskOrderClicked($event,cardData)"
+            @keydown.space="taskOrderClicked($event,cardData)"
+            @keydown.enter="taskOrderClicked($event,cardData)"
           >
             Task Order {{ cardData.taskOrderNumber }}
           </a>
@@ -47,6 +49,7 @@
           :left="true"
           :id="'MeatballMenu' + index"
           :menuIndex="index"
+          :cardIndex="index"
           :menuItems="menuItems(cardData.status)"
           @menuItemClick="handleClick"
         />
@@ -110,7 +113,6 @@ import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 export default class TaskOrderCard extends Vue {
   @Prop() private taskOrders!:TaskOrderCardData[];
   @Prop() private isHistory!:boolean
-  @PropSync("showBuild",{default: false}) private _showBuild!: boolean;
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
   @PropSync("selectedTaskOrder",{default:()=> ({})}) private _selectedTaskOrder!: TaskOrderCardData;
 
@@ -139,19 +141,20 @@ export default class TaskOrderCard extends Vue {
     return dropDownItems;
   }
 
-  public async handleClick(menuItem: MeatballMenuItem): Promise<void> {
+  public async handleClick(menuItem: MeatballMenuItem,index:number): Promise<void> {
     if(menuItem.action == "showTaskOrderDetails"){
-      this._showBuild = true
+      this._showDetails = true
+      this._selectedTaskOrder = this.taskOrders[index]
     }
-  }
+  };
   public async taskOrderClicked(e: Event, taskOrder:TaskOrderCardData): Promise<void> {
     e.preventDefault()
     this._selectedTaskOrder = taskOrder
     this._showDetails = true
-  }
+  };
   public statusChipBgColor(status:string): string {
     return getStatusChipBgColor(status);
-  }
+  };
 
 }
 </script>
