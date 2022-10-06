@@ -36,19 +36,16 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import { TaskOrderCardData } from "../../../../../types/Global";
-import TaskOrderBuildPage from "@/portfolios/portfolio/components/TaskOrder/TaskOrderBuildPage.vue";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 
 @Component({
   components: {
     TaskOrderCard,
-    TaskOrderBuildPage,
     TaskOrderDetails
   }
 })
 export default class TaskOrder extends Vue {
   public taskOrderData:TaskOrderCardData[] = [];
-  public showBuildPage = false
   public showDetails = false
   public selectedTaskOrder:TaskOrderCardData = {
     taskOrderNumber: "",
