@@ -83,6 +83,11 @@ describe("Testing Portfolio Drawer component", () => {
     expect(name).toBe(members[1].email);
   })
 
+  it("showMembersModal()", async()=>{
+    const showMembersModal = await wrapper.vm.showMembersModal;
+    expect(showMembersModal).toBe(false)
+  })
+
   it("membersInvited()", async () => {
     const _portfolio = {
       csp: "Azure",
@@ -101,9 +106,9 @@ describe("Testing Portfolio Drawer component", () => {
 
   });
 
-  it("openMembersModal() - call functionensure $data.showMembersModal===true", async()=>{
+  it("openMembersModal() - call function ensure $data.showMembersModal===true", async()=>{
     await wrapper.vm.openMembersModal()
-    expect(wrapper.vm.$data.showMembersModal).toBe(true);
+    expect(await wrapper.vm.showMembersModal).toBe(true);
   })
 
   it("onSelectedMemberRoleChanged() - pass params to successfully change roles ", async()=>{
