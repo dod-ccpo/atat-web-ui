@@ -29,6 +29,7 @@
       <div v-if="showDetails">
         <TaskOrderDetails
           :selectedTaskOrder="selectedTaskOrder"
+          :showDetails.sync="showDetails"
         />
       </div>
     </div>

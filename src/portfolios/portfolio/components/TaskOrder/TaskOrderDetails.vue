@@ -1,7 +1,9 @@
 <template>
   <div class="_task-order-details">
     <div class="d-flex align-center">
-      <a>Task Orders</a>
+      <a
+      @click="handleClick"
+      >Task Orders</a>
       <ATATSVGIcon
         class="mx-4"
         name="chevronRight"
@@ -139,6 +141,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 export default class TaskOrderDetails extends Vue {
   @PropSync("selectedTaskOrder",{default: {}}) private _selectedTaskOrder!: TaskOrderCardData;
+  @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
 
   public obligatedFundsToolTip = "Total of all obligations (i.e. funded CLINs) in the base period" +
     " and exercised option periods. This may represent 100% of your total task order value, or a" +
@@ -153,6 +156,9 @@ export default class TaskOrderDetails extends Vue {
     " monthly invoice.";
   get isAlertClosed(): boolean {
     return AcquisitionPackage.taskOrderDetailsAlertClosed
+  }
+  public handleClick(): void {
+    this._showDetails = false
   }
 
 }
