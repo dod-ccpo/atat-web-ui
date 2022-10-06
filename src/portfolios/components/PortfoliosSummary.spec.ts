@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import AllPortfolios from "@/portfolios/components/AllPortfolios.vue";
+import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 Vue.use(Vuetify);
 
 describe("Testing index Component", () => {
@@ -12,7 +12,7 @@ describe("Testing index Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(AllPortfolios, {
+    wrapper = mount(PortfoliosSummary, {
       localVue,
       vuetify,
     });

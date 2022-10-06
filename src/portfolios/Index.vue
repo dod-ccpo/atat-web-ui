@@ -21,11 +21,12 @@
             <v-tabs class="_header-tab "
               v-model="tabIndex">
               <v-tab
-                v-for="tab in tabItems"
-                :key="tab"
-                :id="getIdText(tab) + '_Tab'"
-                class="font-size-14 pa-1 pt-2 pb-4 mr-3">{{tab}}</v-tab>
-
+                v-for="(tab, index) in tabItems"
+                :key="index"
+                :id="getIdText(tab.text) + '_Tab'"
+                @click="tabClicked(tab.type)"
+                class="font-size-14 pa-1 pt-2 pb-4 mr-3"
+              >{{ tab.text }}</v-tab>
             </v-tabs>
           </div>
         </div>
@@ -33,13 +34,8 @@
       </v-app-bar>
       <v-container
         class="container-max-width"
-        style="margin-bottom:300px !important"
       >
-        <AllPortfolios v-if="tabItems[tabIndex] === 'All portfolios'" />
-        <ProcessingPortfolios v-if="tabItems[tabIndex] === 'Processing'"/>
-        <ActivePortfolios
-          v-if="tabItems[tabIndex] === 'Active'"
-        />
+        <PortfoliosSummary :active-tab="activeTab" />
 
       </v-container>
       <ATATFooter/>
@@ -50,8 +46,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import AppSections from "@/store/appSections";
-import AllPortfolios from "@/portfolios/components/AllPortfolios.vue";
+import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ActivePortfolios from "@/portfolios/components/ActivePortfolios.vue";
 import ProcessingPortfolios from "@/portfolios/components/ProcessingPortfolios.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
@@ -62,7 +57,7 @@ import ATATToast from "@/components/ATATToast.vue";
 
 @Component({
   components: {
-    AllPortfolios,
+    PortfoliosSummary,
     ActivePortfolios,
     ProcessingPortfolios,
     ATATSlideoutPanel,
@@ -73,18 +68,34 @@ import ATATToast from "@/components/ATATToast.vue";
 
 export default class Portfolios extends Vue {
   public tabIndex = 0;
-  public tabItems = [
-    "All portfolios",
-    "Processing",
-    "Active"
+  public tabItems: Record<string, string>[] = [
+    {
+      type: "ALL",
+      text: "All portfolios",
+    },
+    {
+      type: "PROCESSING",
+      text: "Processing",
+    },
+    {
+      type: "ACTIVE",
+      text: "Active",
+    },
   ];
+  public activeTab = this.tabItems[0].type;
 
   private getIdText(string: string) {
     return getIdText(string);
   }
+
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
   }
+
+  public tabClicked(tabType: string): void {
+    this.activeTab = tabType;
+  }
+
 }
 
 </script>

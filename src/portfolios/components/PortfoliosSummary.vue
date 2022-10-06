@@ -28,7 +28,7 @@ import Toast from "@/store/toast";
   }
 })
 
-export default class AllPortfolios extends Vue {
+export default class PortfoliosSummary extends Vue {
   public portfolioCardData: PortfolioCardData[] = []
   public isHaCCAdmin = false;
 
@@ -96,7 +96,7 @@ export default class AllPortfolios extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await PortfolioSummary.loadPortfolioSummaryList();
-    console.log('Store data in AllPortfolios Vue');
+    console.log('Store data in PortfoliosSummary Vue');
     console.log(JSON.stringify(storeData));
     // future ticket - set isHaCCAdmin value with data from backend when implemented
     this.isHaCCAdmin = true;
