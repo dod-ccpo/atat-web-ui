@@ -164,6 +164,24 @@ export class ValidationPlugin {
   };
 
   /**
+ * Validator that validates if input is a valid Date
+ * Returns the error message otherwise.
+ *
+ * @param (string) date as "MM/dd/yyyy"
+ * @param {string} message
+ * @returns {function(*): (boolean|string)}
+ */
+  isURL(
+    message?: string
+  ):((v: string) => string | true | undefined){
+    message = message || 'Invalid URL'
+    return (v: string) => {
+      // eslint-disable-next-line max-len
+      return(/^$|(http(s)?:\/\/.)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)/g.test(v)===false) || message
+    }
+  };
+
+  /**
   * @returns {function(*): (boolean|string)}
   */
   isEmail = (): ((v: string) => string | true | undefined) => {
@@ -178,6 +196,7 @@ export class ValidationPlugin {
       return true;
     };
   };
+
 
   /**
   * Returns the error message otherwise.
