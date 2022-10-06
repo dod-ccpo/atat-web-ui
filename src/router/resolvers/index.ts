@@ -558,6 +558,16 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   return OfferingDetailsPathResolver(current, direction);
 };
 
+export const IGCESurgeCapabilities = (current:string): string =>{
+  const surgeCapacity = AcquisitionPackage.requirementsCostEstimate?.surge_capacity;
+  if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
+    return routeNames.FeeCharged;
+  }
+  if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.FeeCharged){
+    return routeNames.SurgeCapacity;
+  }
+  return routeNames.SurgeCapabilities;
+}
 export const IGCECannotProceedResolver = (current: string): string => {
   const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
   const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
@@ -701,6 +711,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   IGCEGatherPriceEstimatesResolver,
   IGCESupportingDocumentationResolver,
   MIPRResolver,
+  IGCESurgeCapabilities,
   GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,
