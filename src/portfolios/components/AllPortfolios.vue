@@ -19,6 +19,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import PortfolioCard from "./PortfolioCard.vue";
 import { PortfolioCardData, ToastObj } from "types/Global";
+import PortfolioSummary, {PortfolioSummaryStore} from "@/store/portfolioSummary";
 import Toast from "@/store/toast";
 
 @Component({
@@ -90,9 +91,15 @@ export default class AllPortfolios extends Vue {
   public async mounted(): Promise<void> {
     // delete next line when backend hooked up with actual data
     await this.generateDummyData();
-    
+    await this.loadOnEnter();
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await PortfolioSummary.loadPortfolioSummaryList();
+    console.log('Store data in AllPortfolios Vue');
+    console.log(JSON.stringify(storeData));
     // future ticket - set isHaCCAdmin value with data from backend when implemented
-    this.isHaCCAdmin = true; 
+    this.isHaCCAdmin = true;
   }
 }
 </script>
