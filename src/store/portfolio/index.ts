@@ -90,11 +90,13 @@ export class PortfolioDataStore extends VuexModule {
       label: "All of my portfolios",
       value: "all",
       id: "All",
+      type: "role",
     },
     {
       label: "Managed by me",
       value: "managed",
       id: "Managed",
+      type: "role",
     },
   ];  
 
@@ -103,21 +105,25 @@ export class PortfolioDataStore extends VuexModule {
       label: "On track",
       value: "OnTrack",
       id: "OnTrack",
+      type: "fundingStatuses",
     },
     {
       label: "Expiring soon",
       value: "ExpiringSoon",
       id: "ExpiringSoon",
+      type: "fundingStatuses",
     },
     {
       label: "Funding at-risk",
       value: "AtRisk",
       id: "AtRisk",
+      type: "fundingStatuses",
     },
     {
       label: "Delinquent",
       value: "Delinquent",
       id: "Delinquent",
+      type: "fundingStatuses",
     },
   ];
 
@@ -127,22 +133,26 @@ export class PortfolioDataStore extends VuexModule {
       value: "aws",
       id: "Amazon",
       abbreviation: "AWS",
+      type: "csps",
     },
     {
       label: "Azure",
       value: "azure",
       id: "Azure",
+      type: "csps",
     },
     {
       label: "Google Cloud Platform (GCP)",
       value: "google",
       id: "GoogleCloud",
       abbreviation: "GCP",
+      type: "csps",
     },
     {
       label: "Oracle",
       value: "oracle",
       id: "Oracle",
+      type: "csps",
     },
   ];
 

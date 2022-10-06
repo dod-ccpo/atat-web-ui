@@ -126,18 +126,6 @@ export default class AllPortfolios extends Vue {
   ];
 
   public filterChips: FilterOption[] = []
-  //   {
-  //     label: "On track",
-  //     value: "OnTrack",
-  //     id: "OnTrack",
-  //   },
-  //   {
-  //     label: "Amazon Web Services (AWS)",
-  //     value: "aws",
-  //     id: "Amazon",
-  //     abbreviation: "AWS"
-  //   },
-  // ]
 
   public roles = PortfolioData.summaryFilterRoles;
 
@@ -162,12 +150,35 @@ export default class AllPortfolios extends Vue {
   }
 
   public removeFilter(index: number): void {
-    debugger;
-    this.filterChips.splice(index, 1)
+    this.filterChips.splice(index, 0);
+    const removedFilter = this.filterChips[index];
+    const key = removedFilter.type;
+    switch (key) {
+    case "role":
+      this.setQueryParams("role", "all");
+      break;
+    case "fundingStatuses": 
+    case "csps": {
+      if (this.queryParams) {
+        const filters = this.queryParams[key]?.filter(
+          obj => obj.value !== removedFilter.value
+        ) || [];
+        PortfolioData.setportfolioSummaryQueryParams({[key]: filters });
+      }
+      break;
+    }
+    }
   }
 
   public clearAllFilters(): void {
-    debugger;
+    this.filterChips = [];
+    this.setQueryParams("role", "all");
+    PortfolioData.setportfolioSummaryQueryParams(
+      {
+        fundingStatuses: [],
+        csps: [],
+      }
+    );
   }
 
   public get queryParams(): PortfolioSummaryQueryParams {
@@ -175,10 +186,8 @@ export default class AllPortfolios extends Vue {
   }
 
   @Watch("queryParams", { deep: true })
-  public queryParamsChange(newVal: PortfolioSummaryQueryParams): void {
-    // debugger;
+  public queryParamsChange(): void {
     this.generateFilterChips();
-    // check pills to see if any updates needed
   }
 
   public sortPortfolios(valObj: Record<string, string>): void {
@@ -194,7 +203,6 @@ export default class AllPortfolios extends Vue {
   }
 
   public async setQueryParams(key: string, value: string): Promise<void> {
-    debugger;
     await PortfolioData.setportfolioSummaryQueryParams({
       [key]: value
     });

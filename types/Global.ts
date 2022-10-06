@@ -160,6 +160,7 @@ export interface RadioButton extends Checkbox {
 
 export interface FilterOption extends RadioButton {
   abbreviation?: string;
+  type?: string;
 }
 export interface SlideoutPanelContent {
   component: Component;
