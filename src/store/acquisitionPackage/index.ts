@@ -415,6 +415,10 @@ export class AcquisitionPackageStore extends VuexModule {
       ? Object.assign(this.requirementsCostEstimate, value)
       : value;
   }
+  @Action({rawError: true})
+  public getRequirementsCostEstimate(): RequirementsCostEstimateDTO | null{
+    return this.requirementsCostEstimate;
+  }
 
   @Mutation
   public setCurrentEnvironment(value: CurrentEnvironmentDTO): void {
