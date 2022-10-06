@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
@@ -18,18 +19,19 @@ describe("Testing JWCC Component", () => {
       vuetify,
     });
 
-    jest.spyOn(api.aggregate, 'makeRequest').mockImplementation(async (): Promise<AggregateResults> => {
-      return {
-        result: {
-          stats: {
-            sum: {
-              funds_obligated: "100_000.0000",
-              funds_total: "500_000.000"
+    jest.spyOn(api.aggregate, 'makeRequest').mockImplementation(
+      async (): Promise<AggregateResults> => {
+        return {
+          result: {
+            stats: {
+              sum: {
+                funds_obligated: "100_000.0000",
+                funds_total: "500_000.000"
+              }
             }
           }
         }
-      }
-    });
+      });
 
     jest.spyOn(api.taskOrderTable, 'all').mockImplementation(async (): Promise<any> => {
       return {
@@ -40,7 +42,8 @@ describe("Testing JWCC Component", () => {
             funds_obligated: "100000",
             sys_mod_count: "1",
             acquisition_package: {
-              link: "https://dev00000.service-now.com/api/now/table/x_g_dis_atat_acquisition_package/package-sys_id",
+              link: "https://dev00000.service-now.com/api/now/table/"
+              + "x_g_dis_atat_acquisition_package/package-sys_id",
               value: "package-sys_id"
             },
             task_order_number: "9999999999999",
