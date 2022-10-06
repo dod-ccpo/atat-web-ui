@@ -92,8 +92,9 @@ import FilterSlideout from "./FiltersSlideout.vue";
 import PortfolioCard from "./PortfolioCard.vue";
 
 import { 
+  FilterOption,
   PortfolioCardData,  
-  portfolioSummaryQueryParams,
+  PortfolioSummaryQueryParams,
   SelectData, 
   SlideoutPanelContent,
   ToastObj,  
@@ -122,21 +123,37 @@ export default class AllPortfolios extends Vue {
     { text: "Recently modified", value: "modified" },
   ];
 
-  public filterChips = [
-    {
-      type: "fundingStatus",
-      label: "On track",
-      value: "OnTrack",
-      id: "OnTrack",
-    },
-    {
-      type: "CSP",
-      label: "Amazon Web Services (AWS)",
-      value: "aws",
-      id: "Amazon",
-      abbreviation: "AWS"
-    },
-  ]
+  public filterChips: FilterOption[] = []
+  //   {
+  //     label: "On track",
+  //     value: "OnTrack",
+  //     id: "OnTrack",
+  //   },
+  //   {
+  //     label: "Amazon Web Services (AWS)",
+  //     value: "aws",
+  //     id: "Amazon",
+  //     abbreviation: "AWS"
+  //   },
+  // ]
+
+  public roles = PortfolioData.summaryFilterRoles;
+
+  public async generateFilterChips(): Promise<void> {
+    this.filterChips = [];
+    if (this.queryParams.role && this.queryParams.role !== "all") {
+      const role = this.roles.find(obj => obj.value === this.queryParams.role);
+      if (role) {
+        this.filterChips.push(role);
+      }
+    }
+    if (this.queryParams.fundingStatuses) {
+      this.filterChips = [...this.filterChips, ...this.queryParams.fundingStatuses];
+    }
+    if (this.queryParams.csps) {
+      this.filterChips = [...this.filterChips, ...this.queryParams.csps];
+    }
+  }
 
   public get hasFilters(): boolean {
     return this.filterChips.length > 0;
@@ -151,13 +168,14 @@ export default class AllPortfolios extends Vue {
     debugger;
   }
 
-  public get queryParams(): portfolioSummaryQueryParams {
+  public get queryParams(): PortfolioSummaryQueryParams {
     return PortfolioData.portfolioSummaryQueryParams;
   }
 
   @Watch("queryParams", { deep: true })
-  public queryParamsChange(newVal: portfolioSummaryQueryParams): void {
-    debugger;
+  public queryParamsChange(newVal: PortfolioSummaryQueryParams): void {
+    // debugger;
+    this.generateFilterChips();
     // check pills to see if any updates needed
   }
 
@@ -257,7 +275,9 @@ export default class AllPortfolios extends Vue {
   public async mounted(): Promise<void> {
     // delete next line when backend hooked up with actual data
     await this.generateDummyData();
-    
+
+    await this.generateFilterChips();
+
     // future ticket - set isHaCCAdmin value with data from backend when implemented
     this.isHaCCAdmin = true; 
   }
