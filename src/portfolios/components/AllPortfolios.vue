@@ -21,6 +21,7 @@ import PortfolioCard from "./PortfolioCard.vue";
 import { PortfolioCardData, ToastObj } from "types/Global";
 import PortfolioSummary, {PortfolioSummaryStore} from "@/store/portfolioSummary";
 import Toast from "@/store/toast";
+import {PortfolioSummarySearchDTO} from "@/api/models";
 
 @Component({
   components: {
@@ -95,8 +96,13 @@ export default class AllPortfolios extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await PortfolioSummary.loadPortfolioSummaryList();
-    console.log('Store data in AllPortfolios Vue');
+    let portfolioSearchDTO: PortfolioSummarySearchDTO = {
+      csps: [],
+      sort: "name",
+      portfolioStatus: "ACTIVE"
+    }
+    const storeData = await PortfolioSummary.searchPortfolioSummaryList(portfolioSearchDTO);
+    console.log("Store data in AllPortfolios Vue");
     console.log(JSON.stringify(storeData));
     // future ticket - set isHaCCAdmin value with data from backend when implemented
     this.isHaCCAdmin = true;

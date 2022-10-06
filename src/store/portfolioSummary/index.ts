@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import {CloudServiceProviderDTO, PortfolioSummaryDTO, ReferenceColumn} from "@/api/models";
+import {CloudServiceProviderDTO, PortfolioSummaryDTO, PortfolioSummarySearchDTO,
+  ReferenceColumn} from "@/api/models";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
@@ -87,7 +88,7 @@ export class PortfolioSummaryStore extends VuexModule {
       }
     )
     portfolioSummaryList.forEach(portfolio => {
-      portfolio.csp_display = 
+      portfolio.csp_display =
         (allCspList.find(
           (csp: CloudServiceProviderDTO) => portfolio.csp.value === csp.sys_id)?.name) || "";
     });
@@ -114,11 +115,11 @@ export class PortfolioSummaryStore extends VuexModule {
     )
     portfolioSummaryList.forEach(portfolio => {
       portfolio.task_orders = allTaskOrderList
-        .filter((taskOrder) => 
-        {
-          const portfolioSysId  = (taskOrder.portfolio as ReferenceColumn).value;
-          return portfolioSysId === portfolio.sys_id});
-          
+        .filter((taskOrder) => {
+          const portfolioSysId = (taskOrder.portfolio as ReferenceColumn).value;
+          return portfolioSysId === portfolio.sys_id
+        });
+
       if (!portfolio.task_orders) {
         portfolio.task_orders = [];
       }
@@ -181,7 +182,7 @@ export class PortfolioSummaryStore extends VuexModule {
             allCostList.filter(cost => {
               const clinNumber = cost.clin as unknown as string;
               return clinNumber === clinRecord.clin_number &&
-              cost.task_order_number === taskOrder.task_order_number
+                cost.task_order_number === taskOrder.task_order_number
             }); // FIXME temp code above
           // allCostList.filter(cost => cost.clin?.value === clinRecord.sys_id);//FIXME correct code
         })
@@ -222,14 +223,14 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async loadPortfolioSummaryList(): Promise<PortfolioSummaryDTO[]> {
+  private async loadPortfolioSummaryList(searchQuery: string): Promise<PortfolioSummaryDTO[]> {
     await this.ensureInitialized();
     try {
-      const query =
-        "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+      // const query =
+      //   "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
       const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
         params: {
-          sysparm_query: query
+          sysparm_query: searchQuery
         }
       };
       const portfolioSummaryList =
@@ -249,6 +250,62 @@ export class PortfolioSummaryStore extends VuexModule {
       }
     } catch (error) {
       throw new Error("error occurred loading portfolio summary list :" + error);
+    }
+  }
+
+  /**
+   * Compiles a search query string for the optional search parameters of 'portfolio' table.
+   * TODO: This function should only handle optional search fields. Sort & role should not
+   *  be handled in this function to enable cached data usage more often.
+   */
+  @Action({rawError: true})
+  private async getOptionalSearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
+    Promise<string> {
+    let query = "";
+    if (searchDTO.portfolioStatus) {
+      query = query + "^portfolio_statusIN" + searchDTO.portfolioStatus;
+    }
+    if (searchDTO.searchString) {
+      query = query + "^nameLIKE" + searchDTO.searchString;
+    }
+    if (searchDTO.csps?.length > 0) {
+      query = query + "^csp.nameIN" + searchDTO.csps;
+    }
+    // TODO: handle 'fundingstatuses' - QUESTION: Is the column for this in portfolio table
+    return query;
+  }
+
+  @Action({rawError: true})
+  private async getDefaultSearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
+    Promise<string> {
+    let query = "";
+    query = query +
+      "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+    // TODO: handle 'role' remove hardcoded above - QUESTION: Manager option is clear (go against
+    //  'portfolio_managers' and search using user's session. However 'All of my portfolios' is
+    //  unclear on what column to go after.
+    query = query + "^ORDERBY" + searchDTO.sort;
+    return query;
+  }
+
+  /**
+   * Makes a callout to get the portfolio search query and determines if a search
+   * needs to be performed or if the default portfolio list can be loaded. Doing
+   * this check helps in using the cached list for default portfolio list.
+   */
+  @Action({rawError: true})
+  public async searchPortfolioSummaryList(searchDTO: PortfolioSummarySearchDTO):
+    Promise<PortfolioSummaryDTO[]> {
+    // TODO: after the search and pagination stories are done need to look into
+    //  any caching strategies in a separate story. For now both if and else
+    //  blocks callout the same function.
+    const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
+    const searchQuery = await this.getDefaultSearchParameterQuery(searchDTO)
+    if (optionalSearchQuery.length > 0) {
+      return this.loadPortfolioSummaryList(
+        optionalSearchQuery + searchQuery);
+    } else {
+      return this.loadPortfolioSummaryList(searchQuery);
     }
   }
 }

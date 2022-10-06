@@ -387,3 +387,12 @@ export interface CloudServiceProviderDTO extends BaseTableDTO{
   name:string;
   // other columns as needed
 }
+
+export interface PortfolioSummarySearchDTO {
+  role?: string;
+  fundingStatuses?: string[];
+  csps: string[]; // to not search for specific csps, send empty array
+  portfolioStatus?: "ACTIVE" | "PROCESSING"; // if populated, the value needs to be one of these 2
+  sort: "name" | "sys_updated_on"; // one of these two values should always exist
+  searchString?: string;
+}
