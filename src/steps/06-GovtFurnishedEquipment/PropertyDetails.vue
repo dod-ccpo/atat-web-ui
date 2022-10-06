@@ -72,7 +72,7 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
   ];
 
   public get isDISA(): boolean {
-    return AcquisitionPackage.selectedAgency.value?.toUpperCase()
+    return AcquisitionPackage.selectedAgency.value
       === "DEFENSE INFORMATION SYSTEMS AGENCY (DISA)";
   }
 
