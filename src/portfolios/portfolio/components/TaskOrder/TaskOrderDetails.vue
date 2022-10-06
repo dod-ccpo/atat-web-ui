@@ -141,7 +141,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
-import _ from "lodash"
+
 import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components: {
