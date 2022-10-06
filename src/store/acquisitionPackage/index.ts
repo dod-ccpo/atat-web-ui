@@ -487,12 +487,12 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setFairOpportunity(initialFairOpportunity());
 
           this.setRequirementsCostEstimate({ 
-              estimatedTaskOrderValue: "",
-              feePercentage: "",
-              feeCharged: "" , 
-              surge_capabilities: "", 
-              surge_capacity: ""
-            });
+            estimatedTaskOrderValue: "",
+            feePercentage: "",
+            feeCharged: "" ,
+            surge_capabilities: "",
+            surge_capacity: ""
+          });
 
           this.setGFEOverview(initialGFE());
           this.setPeriods([]);
