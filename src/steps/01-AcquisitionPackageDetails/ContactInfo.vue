@@ -408,7 +408,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
         const emptyBranch: { text: ""; value: "" } = { text: "", value: "" };
 
         //retrieve selected Military Rank from rank component
-        const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
+        const rank = await ContactData.GetMilitaryRank(rankComp && rankComp.value || "");
 
         this.selectedBranch =
           rank !== undefined
