@@ -97,7 +97,7 @@ export default class AllPortfolios extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     let portfolioSearchDTO: PortfolioSummarySearchDTO = {
-      csps: [],
+      csps: ['CSP_D'],
       sort: "name",
       portfolioStatus: "ACTIVE"
     }
