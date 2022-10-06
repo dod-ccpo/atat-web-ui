@@ -558,6 +558,53 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   return OfferingDetailsPathResolver(current, direction);
 };
 
+export const IGCESurgeCapabilities = (current:string): string =>{
+  const surgeCapacity = AcquisitionPackage.requirementsCostEstimate?.surge_capacity;
+  if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
+    return routeNames.FeeCharged;
+  }
+  if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.FeeCharged){
+    return routeNames.SurgeCapacity;
+  }
+  return routeNames.SurgeCapabilities;
+}
+export const IGCECannotProceedResolver = (current: string): string => {
+  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
+  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
+  const validToProceed = hasLegitPeriods && isCompleteDOW;
+ 
+  if (validToProceed){
+    if (current ===  routeNames.CreatePriceEstimate){
+      return routeNames.GatherPriceEstimates;
+    } else if (current == routeNames.GatherPriceEstimates) {
+      return routeNames.CreatePriceEstimate;
+    }
+  }
+  return routeNames.CannotProceed;
+};
+
+export const IGCEGatherPriceEstimatesResolver = (current: string): string => {
+  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
+  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
+  const validToProceed = hasLegitPeriods && isCompleteDOW;
+  if (current === routeNames.TravelEstimates && validToProceed){
+    return routeNames.GatherPriceEstimates;
+  }
+
+  return current === routeNames.GatherPriceEstimates && validToProceed
+    ? routeNames.CreatePriceEstimate
+    : routeNames.FundingPlanType;
+};
+
+export const IGCESupportingDocumentationResolver = (current: string): string => {
+  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
+  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
+  const validToProceed = hasLegitPeriods && isCompleteDOW;
+  return current === routeNames.FundingPlanType && validToProceed
+    ? routeNames.EstimatesDeveloped
+    : routeNames.CannotProceed;
+};
+
 export const MIPRResolver = (current: string): string => {
   const fundingType = FinancialDetails.fundingRequestType;
   if (fundingType === "MIPR") {
@@ -660,7 +707,11 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FOIARecordResolver,
   A11yRequirementResolver,
   ContractTrainingReq,
+  IGCECannotProceedResolver,
+  IGCEGatherPriceEstimatesResolver,
+  IGCESupportingDocumentationResolver,
   MIPRResolver,
+  IGCESurgeCapabilities,
   GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,

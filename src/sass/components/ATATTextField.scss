@@ -1,4 +1,8 @@
 .v-text-field {
+
+  .v-input__prepend-inner{
+    z-index: 1;
+  }
   
   fieldset {
     border: 1px solid $base;

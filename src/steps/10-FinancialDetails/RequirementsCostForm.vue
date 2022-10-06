@@ -53,7 +53,8 @@ export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    const estimatedTaskOrderValue = await FinancialDetails.getEstimatedTaskOrderValue();
+    const estimatedTaskOrderValue = 
+      await FinancialDetails.getEstimatedTaskOrderValue();
     if (estimatedTaskOrderValue) {
       this.costEstimate = estimatedTaskOrderValue;
       this.savedData.estimatedTaskOrderValue = estimatedTaskOrderValue;

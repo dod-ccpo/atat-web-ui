@@ -420,6 +420,10 @@ export class AcquisitionPackageStore extends VuexModule {
       ? Object.assign(this.requirementsCostEstimate, value)
       : value;
   }
+  @Action({rawError: true})
+  public getRequirementsCostEstimate(): RequirementsCostEstimateDTO | null{
+    return this.requirementsCostEstimate;
+  }
 
   @Mutation
   public setCurrentEnvironment(value: CurrentEnvironmentDTO): void {
@@ -486,7 +490,11 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setFairOpportunity(initialFairOpportunity());
-          this.setRequirementsCostEstimate({ surge_capabilities: "", estimatedTaskOrderValue: "" });
+          this.setRequirementsCostEstimate(
+            { surge_capabilities: "", 
+              estimatedTaskOrderValue: "",
+              surge_capacity: ""
+            });
           this.setGFEOverview(initialGFE());
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
