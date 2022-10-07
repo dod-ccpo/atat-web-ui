@@ -70,7 +70,7 @@ describe("Testing Portfolio Drawer component", () => {
       portfolio
     })
     await wrapper.vm.saveDescription(portfolio);
-    expect(PortfolioData.portfolio).toEqual(portfolio);
+    expect(PortfolioData.currentPortfolio).toEqual(portfolio);
   })
 
   it("displayName() - enter member with full name to return full name ",async () => {
@@ -136,9 +136,9 @@ describe("Testing Portfolio Drawer component", () => {
     await wrapper.setData({
       portfolio
     })
-    const currentNumberOfMembers = PortfolioData.portfolio.members?.length || 1
+    const currentNumberOfMembers = PortfolioData.currentPortfolio.members?.length || 1
     await wrapper.vm.deleteMember();
-    expect(await PortfolioData.portfolio.members?.length).toBe(
+    expect(await PortfolioData.currentPortfolio.members?.length).toBe(
       currentNumberOfMembers - 1
     )
   })

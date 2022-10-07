@@ -79,9 +79,7 @@ export default class PortfolioSummary extends Vue {
   public portfolioCSP = ""
 
   public async loadOnEnter(): Promise<void>  {
-    // grab data from store
-    await PortfolioData.initialize()
-    const portfolio = PortfolioData.portfolio
+    const portfolio = PortfolioData.currentPortfolio;
     if(portfolio){
       this.title = portfolio.title || "";
       this.portfolioStatus = portfolio.status || "";

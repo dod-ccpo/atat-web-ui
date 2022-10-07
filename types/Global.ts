@@ -398,8 +398,7 @@ export interface Portfolio extends BaseTableDTO {
 }
 
 export interface PortfolioCardData extends Portfolio {
-  branch?: string;
-  lastModified?: string;
+  lastModifiedStr?: string;
   currentPoP?: string;
   totalObligated?: string;
   fundsSpent?: string;

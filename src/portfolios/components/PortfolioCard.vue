@@ -43,7 +43,7 @@
             {{ cardData.title }}
           </a>
         </div>
-        <div v-if="cardData.status.toLowerCase() !== portfolioStatuses.Active.toLowerCase()">
+        <div v-if="isActive">
           <v-chip 
             :id="'StatusChip' + index" 
             :class="[
@@ -58,7 +58,7 @@
         </div>
       </div>
       <div class="text-base-dark">
-        {{ cardData.branch }}
+        {{ cardData.serviceAgency }}
         <ATATSVGIcon 
           name="bullet" 
           color="base-light" 
@@ -66,11 +66,11 @@
           :height="9" 
           class="d-inline-block mx-1" 
         />
-        {{ cardData.lastModified }}
+        {{ cardData.lastModifiedStr }}
       </div>
 
       <div 
-        v-if="cardData.status.toLowerCase() === portfolioStatuses.Active.toLowerCase()" 
+        v-if="isActive" 
         class="d-flex"
       >
         <div class="mr-15">
@@ -162,6 +162,10 @@ export default class PortfolioCard extends Vue {
     return "foo@mail.mil, bar@mail.mil";
   }
 
+  public get isActive(): boolean {
+    return this.cardData.status?.toLowerCase() === this.portfolioStatuses.Active.toLowerCase();
+  }
+
   public getCSPConsoleURL(): string {
     return this.cardData.csp ? cspConsoleURLs[this.cardData.csp] : "";
   }
@@ -169,10 +173,9 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
+    await PortfolioData.setCurrentPortfolio(this.cardData);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
-      debugger;
-      await PortfolioData.setActiveTaskOrderNumber(this.cardData.taskOrderNumber)
       await AppSections.setActiveTabIndex(0);
       AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
       break; 
