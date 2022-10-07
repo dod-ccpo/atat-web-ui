@@ -73,7 +73,6 @@ describe("Testing Portfolio Drawer component", () => {
       portfolio
     })
     await wrapper.vm.saveDescription(portfolio);
-    console.log(PortfolioData.currentPortfolio);
     expect(PortfolioData.currentPortfolio).toEqual(portfolio);
   })
 
