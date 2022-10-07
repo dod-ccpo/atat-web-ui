@@ -43,7 +43,7 @@
             {{ cardData.title }}
           </a>
         </div>
-        <div v-if="cardData.status !== portfolioStatuses.Active">
+        <div v-if="!isActive">
           <v-chip 
             :id="'StatusChip' + index" 
             :class="[
@@ -58,7 +58,7 @@
         </div>
       </div>
       <div class="text-base-dark">
-        {{ cardData.branch }}
+        {{ cardData.serviceAgency }}
         <ATATSVGIcon 
           name="bullet" 
           color="base-light" 
@@ -66,10 +66,13 @@
           :height="9" 
           class="d-inline-block mx-1" 
         />
-        {{ cardData.lastModified }}
+        {{ cardData.lastModifiedStr }}
       </div>
 
-      <div v-if="cardData.status === portfolioStatuses.Active" class="d-flex">
+      <div 
+        v-if="isActive" 
+        class="d-flex"
+      >
         <div class="mr-15">
           <span class="_data-header">Current Period of Performance</span>
           <span class="_data-primary d-block">
@@ -121,7 +124,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
 import { MeatballMenuItem, PortfolioCardData } from "types/Global";
-import { cspConsoleURLs } from "@/store/portfolio";
+import PortfolioData, { cspConsoleURLs } from "@/store/portfolio";
 import { getStatusChipBgColor } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
@@ -159,6 +162,10 @@ export default class PortfolioCard extends Vue {
     return "foo@mail.mil, bar@mail.mil";
   }
 
+  public get isActive(): boolean {
+    return this.cardData.status?.toLowerCase() === this.portfolioStatuses.Active.toLowerCase();
+  }
+
   public getCSPConsoleURL(): string {
     return this.cardData.csp ? cspConsoleURLs[this.cardData.csp] : "";
   }
@@ -166,6 +173,7 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
+    await PortfolioData.setCurrentPortfolio(this.cardData);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
       await AppSections.setActiveTabIndex(0);

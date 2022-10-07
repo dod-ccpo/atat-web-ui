@@ -67,7 +67,7 @@ describe("Portfolio Store", () => {
     );
     await portfolioStore.initialize();
     expect(portfolioStore.initialized).toBe(true)
-    expect(portfolioStore.portfolio.title).toBe("Mock Title")
+    expect(portfolioStore.currentPortfolio.title).toBe("Mock Title")
   })
 
   it('Test initialize()- sets portfolio to the AcquisitionPackage data', async () => {
@@ -105,7 +105,7 @@ describe("Portfolio Store", () => {
 
     await portfolioStore.initialize();
     Vue.nextTick(() => {
-      expect(portfolioStore.portfolio.createdBy).toBe("Johnnny test")
+      expect(portfolioStore.currentPortfolio.createdBy).toBe("Johnnny test")
     })
   })
 
@@ -126,7 +126,7 @@ describe("Portfolio Store", () => {
     
     await portfolioStore.setPortfolioData(mockData);
     await portfolioStore.setPortfolioData(updateEmailObj);
-    expect(portfolioStore.portfolio.title).toBe("some title to test")
+    expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
   })
 
   it('getStatus() returns default result', async()=>{
@@ -156,7 +156,7 @@ describe("Portfolio Store", () => {
 
     await portfolioStore.setStoreData(JSON.stringify(mockData));
     Vue.nextTick(() => {
-      expect(portfolioStore.portfolio.title).toBe("some title to test")
+      expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
     })
   })
 
@@ -256,9 +256,9 @@ describe("Portfolio Store", () => {
       emails:["dummyemail01@mail.mil", "dummyemail02@mail.mil"],
       role: "Viewer"
     } 
-    portfolioStore.portfolio.members = [];
+    portfolioStore.currentPortfolio.members = [];
     await portfolioStore.saveMembers(memberInvites)
-    expect(portfolioStore.portfolio.members?.length).toBe(2)
+    expect(portfolioStore.currentPortfolio.members?.length).toBe(2)
   })
 
   it('getPortolioData()', async()=>{
