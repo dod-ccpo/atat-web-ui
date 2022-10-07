@@ -259,6 +259,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public saveDescription(): void {
+    console.log("portfolio in DRAWER", this.portfolio);
     PortfolioData.setPortfolioData(this.portfolio);
   }
 
