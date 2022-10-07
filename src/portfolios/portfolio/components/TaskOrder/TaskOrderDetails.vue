@@ -92,6 +92,65 @@
         <div class="h1">{{_selectedTaskOrder.totalFundsSpent}}</div>
       </v-card>
     </div>
+    <div>
+      <v-data-table
+        :headers="tableHeaders"
+        :items="tableData"
+        hide-default-footer
+        class="_csp-admin-log border1 border-base-lighter"
+      >
+        <!-- eslint-disable vue/valid-v-slot -->
+        <template v-slot:body="props">
+          <tbody name="expand" :is="transitionGroup">
+          <template >
+            <tr
+              class="row-item"
+              :class="{'bg-info-lighter': item.status === 'Processing'}"
+              v-for="item in props.items" :key="item.email"
+            >
+              <td>{{item.email}}</td>
+              <td>
+                <div class="d-flex align-center">
+                  <div
+                    class="_icon-circle"
+                    :class="statusImg[item.status].bgColor"
+                  >
+                    <ATATSVGIcon
+                      :name="statusImg[item.status].name"
+                      :width="statusImg[item.status].width"
+                      :height="statusImg[item.status].height"
+                      :color="statusImg[item.status].color"
+                    />
+                  </div>
+                  <div class="d-flex flex-column font-weight-500">
+                    {{item.status}}
+                    <span
+                      v-if="item.status === 'Failed'"
+                      class="font-size-12 text-base"
+                    >
+                        CSP account already exist
+                      </span>
+                  </div>
+                </div>
+
+              </td>
+              <td>{{item.createdBy}}</td>
+              <td>{{item.created}}</td>
+            </tr>
+          </template>
+          </tbody>
+        </template>
+        <!-- eslint-disable vue/valid-v-slot -->
+        <template v-slot:footer>
+          <div class="_table-pagination">
+              <span class="mr-11 font-weight-400 font-size-14">
+              Showing
+            </span>
+          </div>
+        </template>
+      </v-data-table>
+    </div>
+
     <div v-if="!isAlertClosed" class="mt-10">
       <ATATAlert
         id="TaskOrderDetailsAlert"
@@ -155,6 +214,9 @@ export default class TaskOrderDetails extends Vue {
   @PropSync("selectedTaskOrder",{default: {}}) private _selectedTaskOrder!: TaskOrderCardData;
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
 
+  public transitionGroup = ""
+
+
   public obligatedFundsToolTip = "Total of all obligations (i.e. funded CLINs) in the base period" +
     " and exercised option periods. This may represent 100% of your total task order value, or a" +
     " portion of it.";
@@ -173,6 +235,21 @@ export default class TaskOrderDetails extends Vue {
     this._showDetails = false
   }
 
+  public tableHeaders: Record<string, string>[] = [
+    { text: "CLIN", value: "clin" },
+    { text: "Status", value: "status" },
+    { text: "Period of performance", value: "PoP" },
+    { text: "Total CLIN value", value: "totalCLINValue" },
+    { text: "Obligated funds", value: "obligatedFunds" },
+    { text: "Total funds spent", value: "totalFundsSpent" },
+  ];
+
+  public async loadOnEnter(): Promise<void> {
+    this.transitionGroup = "transition-group";
+  }
+  public  mounted(): void {
+    this.loadOnEnter();
+  }
 }
 </script>
 

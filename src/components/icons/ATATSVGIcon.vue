@@ -36,7 +36,9 @@ import FilePresent from "@/components/icons/FilePresent.vue";
 import Gcp from "@/components/icons/Gcp.vue";
 import InfoOutline from "@/components/icons/InfoOutline.vue";
 import Launch from "@/components/icons/Launch.vue";
+import ManageAccount from "@/components/icons/ManageAccount.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
+import OptionPending from "@/components/icons/OptionPending.vue";
 import Oracle from "@/components/icons/Oracle.vue";
 import Pdf from "@/components/icons/Pdf.vue";
 import Person from "@/components/icons/Person.vue";
@@ -47,16 +49,20 @@ import Processing from "@/components/icons/Processing.vue";
 import Provisioned from "@/components/icons/Provisioned.vue";
 import Role from "@/components/icons/Role.vue";
 import Remove from "@/components/icons/Remove.vue";
+import RequestQuote from "@/components/icons/RequestQuote.vue";
 import Search from "@/components/icons/Search.vue";
 import Service from "@/components/icons/Service.vue";
 import SignOut from "@/components/icons/SignOut.vue";
 import Support from "@/components/icons/Support.vue";
+import TaskAlt from "@/components/icons/TaskAlt.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
-import UploadFile from "@/components/icons/UploadFile.vue";
 import TriangleUp from "@/components/icons/TriangleUp.vue";
 import TriangleDown from "@/components/icons/TriangleDown.vue";
-import ManageAccount from "@/components/icons/ManageAccount.vue";
+import UploadFile from "@/components/icons/UploadFile.vue";
+import Warning from "@/components/icons/Warning.vue";
+import WarningAmber from "@/components/icons/WarningAmber.vue";
+
 
 @Component({
   components: {
@@ -85,6 +91,7 @@ import ManageAccount from "@/components/icons/ManageAccount.vue";
     Launch,
     ManageAccount,
     MonetizationOn,
+    OptionPending,
     Oracle,
     Pdf,
     Person,
@@ -93,17 +100,21 @@ import ManageAccount from "@/components/icons/ManageAccount.vue";
     PlusSign,
     Processing,
     Provisioned,
+    RequestQuote,
     Role,
     Remove,
     Search,
     Service,
     SignOut,
     Support,
+    TaskAlt,
     TriangleUp,
     TriangleDown,
     TrendingDown,
     TrendingUp,
     UploadFile,
+    Warning,
+    WarningAmber,
   }
 })
 
