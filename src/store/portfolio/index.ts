@@ -163,14 +163,8 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true})
   private async initPortfolioData():Promise<void> {
-    const obj: Portfolio = {
-      title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
-      description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
-      status: "Active",
-      csp: "Azure",
-      serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
-      createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
-      provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
+    const portfolioObj: Portfolio = {
+      // temp add Maria Missionowner until have members from backend
       members: [{
         firstName:"Maria",
         lastName: "Missionowner",
@@ -181,9 +175,23 @@ export class PortfolioDataStore extends VuexModule {
         designation: "Civilian",
         serviceAgency: "U.S Army"
       }],
-      updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
+    };
+
+    if (!this.currentPortfolio.sysId) {
+      const obj: Portfolio = {
+        title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
+        description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
+        status: "Active",
+        csp: "Azure",
+        serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
+        createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
+        provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
+        updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
+      };
+      Object.assign(portfolioObj, obj); 
     }
-    this.setPortfolioData(obj);
+    
+    this.setPortfolioData(portfolioObj);
   }
 
   @Action({rawError: true})
@@ -230,6 +238,7 @@ export class PortfolioDataStore extends VuexModule {
           this.setStoreData(sessionRestored);
         }
         else{
+          debugger;
           await this.initPortfolioData();
           this.setInitialized(true);
           storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
