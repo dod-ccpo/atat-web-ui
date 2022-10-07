@@ -1459,7 +1459,6 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async getDashboardData():Promise<PortFolioDashBoardDTO>{
-    // return this.dashboardService.getdata("1000000001234");
     return this.dashboardService.getdata(this.activeTaskOrderNumber);
   }
   public activeTaskOrderNumber = "";
@@ -1725,7 +1724,6 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async getAlerts(): Promise<FundingAlertData> {
-    // return Portfolio.getFundingTrackerAlert("1000000001234");
     return Portfolio.getFundingTrackerAlert(this.activeTaskOrderNumber);
   }
 
