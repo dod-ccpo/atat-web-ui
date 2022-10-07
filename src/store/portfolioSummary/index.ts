@@ -148,6 +148,47 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   /**
+   * Filters portfolios based on the alerts of a portfolio and funding statuses selected by the user
+   */
+  @Action({rawError: true})
+  private async filterPortfoliosByFundingStatuses(filterObject: {
+    portfolioSummaryList: PortfolioSummaryDTO[],
+    searchDTO: PortfolioSummarySearchDTO
+  }):
+    Promise<PortfolioSummaryDTO[]> {
+    const portfolioSummaryList = filterObject.portfolioSummaryList;
+    const searchDTO = filterObject.searchDTO;
+    return portfolioSummaryList.filter(portfolio => {
+      if (searchDTO.fundingStatuses.indexOf("ON_TRACK") !== -1 && portfolio.alerts.length === 0) {
+        // on track portfolios do not have any alerts
+        return true;
+      }
+      const spendingAlert =
+        portfolio.alerts.find(alert => alert.alert_type === "SPENDING_ACTUAL");
+      if (spendingAlert) {
+        const threshold = Number(spendingAlert.threshold_violation_amount
+          .replace("%", ""));
+        if (searchDTO.fundingStatuses.indexOf("AT_RISK") !== -1) {
+          return threshold > 90 && threshold <= 100; // TODO: double check number 90 and 100
+        }
+        if (searchDTO.fundingStatuses.indexOf("DELINQUENT") !== -1) {
+          return threshold > 100; // TODO: double check 100
+        }
+      }
+      if (searchDTO.fundingStatuses.indexOf("EXPIRING_SOON") !== -1) {
+        const timeRemainingAlert =
+          portfolio.alerts.find(alert => alert.alert_type === "TIME_REMAINING");
+        if (timeRemainingAlert) {
+          const threshold = Number(timeRemainingAlert.threshold_violation_amount
+            .replace(" days", ""));
+          return threshold <= 30; // TODO: double check the number 30
+        }
+      }
+      return false;
+    })
+  }
+
+  /**
    * Constructs a single query that get all the clins records across all the task orders. Parses
    * the response and sets the clins to the respective task order.
    */
@@ -159,7 +200,8 @@ export class PortfolioSummaryStore extends VuexModule {
       {
         params:
           {
-            sysparm_fields: "sys_id,clin_number,clin_status,funds_obligated",
+            sysparm_fields: "sys_id,clin_number,idiq_clin,clin_status,funds_obligated," +
+              "funds_total,pop_start_date,pop_end_date",
             sysparm_query: "sys_idIN" + clins
           }
       }
@@ -225,9 +267,11 @@ export class PortfolioSummaryStore extends VuexModule {
     portfolioSummaryList.forEach(portfolio => {
       portfolio.dod_component = 'ARMY' // FIXME: delete this line after API starts returning
       let totalObligatedForPortfolio = 0;
-      let totalFundsSpentForPortfolio = 0;
+      let fundsSpentForPortfolio = 0;
       portfolio.task_orders.forEach(taskOrder => {
+        let fundsSpentForTaskOrder = 0;
         taskOrder.clin_records?.forEach(clinRecord => {
+          let fundsSpentForClin = 0;
           if (clinRecord.clin_status === 'ACTIVE' ||
             clinRecord.clin_status === 'OPTION_EXERCISED' ||
             clinRecord.clin_status === 'ON_TRACK' ||
@@ -239,49 +283,37 @@ export class PortfolioSummaryStore extends VuexModule {
               totalObligatedForPortfolio + Number(clinRecord.funds_obligated);
           }
           clinRecord.cost_records?.forEach(costRecord => {
-            totalFundsSpentForPortfolio = totalFundsSpentForPortfolio + Number(costRecord.value);
-          })
+            if (costRecord.is_actual) { // only add up costs with is_actual=true towards total spent
+              const costValue = Number(costRecord.value);
+              fundsSpentForPortfolio = fundsSpentForPortfolio + costValue;
+              fundsSpentForClin = fundsSpentForClin + costValue;
+              fundsSpentForTaskOrder = fundsSpentForTaskOrder + costValue;
+            }
+          });
+          clinRecord.funds_spent_clin = fundsSpentForClin;
         })
         if (taskOrder.sys_id === portfolio.active_task_order.value) { // uses dates of active task
           portfolio.pop_start_date = taskOrder.pop_start_date;
           portfolio.pop_end_date = taskOrder.pop_end_date;
         }
+        taskOrder.funds_spent_task_order = fundsSpentForTaskOrder;
       })
       portfolio.funds_obligated = totalObligatedForPortfolio;
-      portfolio.funds_spent = totalFundsSpentForPortfolio;
+      portfolio.funds_spent = fundsSpentForPortfolio;
     })
   }
 
   @Action({rawError: true})
-  private async loadPortfolioSummaryList(searchQuery: string): Promise<PortfolioSummaryDTO[]> {
+  private async getPortfolioSummaryList(searchQuery: string): Promise<PortfolioSummaryDTO[]> {
     await this.ensureInitialized();
-    try {
-      // const query =
-      //   "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
-      const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
-        params: {
-          sysparm_query: searchQuery
-        }
-      };
-      const portfolioSummaryList =
-        await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
-      if (portfolioSummaryList && portfolioSummaryList.length > 0) {
-        // callouts to other functions to set data from other tables
-        await this.setCspDisplay(portfolioSummaryList);
-        await this.setTaskOrdersForPortfolios(portfolioSummaryList);
-        await this.setAlertsForPortfolios(portfolioSummaryList);
-        await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
-        await this.setCostsToTaskOrderClins(portfolioSummaryList);
-        // all asynchronous calls are done before this step & data is available for aggregation
-        this.computeAllAggregationsAndPopRollup(portfolioSummaryList);
-        this.setPortfolioSummaryList(portfolioSummaryList); // caches the list
-        return portfolioSummaryList;
-      } else {
-        return [];
+    // const query =
+    //   "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+    const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: searchQuery
       }
-    } catch (error) {
-      throw new Error("error occurred loading portfolio summary list :" + error);
-    }
+    };
+    return await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
   }
 
   /**
@@ -340,13 +372,33 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   public async searchPortfolioSummaryList(searchDTO: PortfolioSummarySearchDTO):
     Promise<PortfolioSummaryDTO[]> {
-    const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
-    const mandatorySearchQuery = await this.getMandatorySearchParameterQuery(searchDTO)
-    if (optionalSearchQuery.length > 0) {
-      return this.loadPortfolioSummaryList(
-        optionalSearchQuery + mandatorySearchQuery);
-    } else {
-      return this.loadPortfolioSummaryList(mandatorySearchQuery);
+    try {
+      const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
+      let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO)
+      if (optionalSearchQuery.length > 0) {
+        searchQuery = optionalSearchQuery + searchQuery;
+      }
+      let portfolioSummaryList = await this.getPortfolioSummaryList(searchQuery);
+      if (portfolioSummaryList && portfolioSummaryList.length > 0) {
+        // callouts to other functions to set data from other tables
+        await this.setAlertsForPortfolios(portfolioSummaryList);
+        if (searchDTO.fundingStatuses.length > 0) {
+          portfolioSummaryList =
+            await this.filterPortfoliosByFundingStatuses({portfolioSummaryList, searchDTO});
+        }
+        await this.setCspDisplay(portfolioSummaryList);
+        await this.setTaskOrdersForPortfolios(portfolioSummaryList);
+        await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
+        await this.setCostsToTaskOrderClins(portfolioSummaryList);
+        // all asynchronous calls are done before this step & data is available for aggregation
+        this.computeAllAggregationsAndPopRollup(portfolioSummaryList);
+        this.setPortfolioSummaryList(portfolioSummaryList); // caches the list
+        return portfolioSummaryList;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      throw new Error("error occurred searching portfolio summary list :" + error);
     }
   }
 }

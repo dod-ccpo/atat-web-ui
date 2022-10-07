@@ -101,7 +101,8 @@ export default class AllPortfolios extends Vue {
       // csps: ['CSP_D'],
       csps: [],
       sort: "name",
-      // portfolioStatus: "ACTIVE"
+      // portfolioStatus: "ACTIVE",
+      fundingStatuses: ["AT_RISK","DELINQUENT","ON_TRACK"]
     }
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(portfolioSearchDTO);
     console.log("Store data in AllPortfolios Vue");

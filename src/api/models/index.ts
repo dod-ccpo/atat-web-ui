@@ -311,6 +311,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
     pop_end_date: string;
     pop_start_date: string;
     funds_total: string;
+    funds_spent_task_order?: number; // total of is_actual=true costs across all clins of task order
 }
 
 export interface CostsDTO extends BaseTableDTO {
@@ -343,6 +344,7 @@ export interface ClinDTO extends BaseTableDTO {
   clin_status: string;
   funds_total: string;
   cost_records?: CostsDTO[]
+  funds_spent_clin?: number; // total of all is_actual=true costs of the clin
 }
 
 export interface EDAResponse {
@@ -395,7 +397,7 @@ export interface CloudServiceProviderDTO extends BaseTableDTO{
 
 export interface PortfolioSummarySearchDTO {
   role: "ALL" | "MANAGED"; // one of these two values should always exist
-  fundingStatuses?: string[];
+  fundingStatuses: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT')[];
   csps: string[]; // to not search for specific csps, send empty array
   portfolioStatus?: "ACTIVE" | "PROCESSING"; // if populated, the value needs to be one of these 2
   sort: "name" | "sys_updated_on"; // one of these two values should always exist
