@@ -202,7 +202,7 @@ export function getUserInitials(member:User): string {
 }
 
 export function getStatusChipBgColor(status: string): string {
-  switch (status) {
+  switch (status.toLowerCase()) {
   case StatusTypes.Active.toLowerCase():
   case StatusTypes.OnTrack.toLowerCase():
     return "bg-success";

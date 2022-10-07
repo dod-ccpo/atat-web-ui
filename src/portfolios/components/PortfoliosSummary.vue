@@ -1,16 +1,14 @@
 <template>
-  <div>
-    <div class="mt-10">
-      <PortfolioCard
-        v-for="(cardData, index) in portfolioCardData"
-        :key="index"
-        :cardData="cardData"
-        :index="index"
-        :isLastCard="index === portfolioCardData.length - 1"
-        :isHaCCAdmin="isHaCCAdmin"
-        @leavePortfolio="leavePortfolio"
-      />
-    </div>
+  <div class="mt-10">
+    <PortfolioCard
+      v-for="(cardData, index) in portfolioCardData"
+      :key="index"
+      :cardData="cardData"
+      :index="index"
+      :isLastCard="index === portfolioCardData.length - 1"
+      :isHaCCAdmin="isHaCCAdmin"
+      @leavePortfolio="leavePortfolio"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -19,7 +17,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import PortfolioCard from "./PortfolioCard.vue";
 import { PortfolioCardData, ToastObj } from "types/Global";
-import PortfolioSummary, {PortfolioSummaryStore} from "@/store/portfolioSummary";
+import PortfolioSummary from "@/store/portfolioSummary";
 import Toast from "@/store/toast";
 import { StatusTypes } from "@/store/acquisitionPackage";
 
@@ -62,7 +60,7 @@ export default class PortfoliosSummary extends Vue {
   public async loadOnEnter(): Promise<void> {
     const storeData = await PortfolioSummary.loadPortfolioSummaryList();
     
-    // below used to map stub CSPs to actual CSPs until have actual data
+    // below used to map stub CSPs to actual CSPs until have actual CSP data
     const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
     const csps = ["aws", "azure", "google", "oracle", "oracle"];
 
@@ -86,17 +84,12 @@ export default class PortfoliosSummary extends Vue {
         if (portfolio.task_orders && portfolio.task_orders.length) {
           cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
 
-          // EJY need this at top level
           const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
           const popEnd = createDateStr(portfolio.task_orders[0].pop_end_date, true);
           cardData.currentPoP = popStart + " - " + popEnd;
-
         }
+
         if (portfolio.portfolio_status.toLowerCase() !== StatusTypes.Processing.toLowerCase()) {
-          // EJY need this at top level
-          // const popStart = createDateStr(portfolio.pop_start_date, true);
-          // const popEnd = createDateStr(portfolio.pop_end_date, true);
-          // cardData.currentPoP = popStart + " - " + popEnd; 
           cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
           cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
           cardData.fundsSpentPercent = String(Math.round(
@@ -104,14 +97,10 @@ export default class PortfoliosSummary extends Vue {
           ));
         }
 
-
         this.portfolioCardData.push(cardData);
       }
-
     });
 
-    console.log('Store data in PortfoliosSummary Vue');
-    console.log(JSON.stringify(storeData));
     // future ticket - set isHaCCAdmin value with data from backend when implemented
     this.isHaCCAdmin = true;
   }

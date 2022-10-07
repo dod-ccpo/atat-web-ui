@@ -43,7 +43,7 @@
             {{ cardData.title }}
           </a>
         </div>
-        <div v-if="isActive">
+        <div v-if="!isActive">
           <v-chip 
             :id="'StatusChip' + index" 
             :class="[
@@ -204,7 +204,7 @@ export default class PortfolioCard extends Vue {
   }
 
   public get statusChipBgColor(): string {
-    return getStatusChipBgColor(this.cardData.status ? this.cardData.status.toLowerCase() : "");
+    return getStatusChipBgColor(this.cardData.status ? this.cardData.status : "");
   }
 
   public leavePortfolio(): void {
