@@ -14,17 +14,24 @@
             tabindex="0"
             :id="'TaskOrderLink'+ index"
             class="h3 _text-decoration-none"
+            @click="taskOrderClicked($event,cardData)"
+            @keydown.space="taskOrderClicked($event,cardData)"
+            @keydown.enter="taskOrderClicked($event,cardData)"
           >
-          Task Order  {{ cardData.taskOrderNumber }}
+            Task Order {{ cardData.taskOrderNumber }}
           </a>
           <ATATSVGIcon
-          name="chevronRight"
-          color="primary"
-          :width="8"
-          :height="13"
-          class="d-inline-block mx-2 " />
+            v-if="isHistory=== false"
+            name="chevronRight"
+            color="primary"
+            :width="8"
+            :height="13"
+            class="d-inline-block mx-2 "
+          />
         </div>
-        <div>
+        <div
+          v-if="isHistory=== false"
+        >
           <v-chip
             :id="'StatusChip' + index"
             :class="[
@@ -37,10 +44,12 @@
           </v-chip>
         </div>
         <ATATMeatballMenu
+          v-if="isHistory=== false"
           class="ml-4"
           :left="true"
           :id="'MeatballMenu' + index"
           :menuIndex="index"
+          :cardIndex="index"
           :menuItems="menuItems(cardData.status)"
           @menuItemClick="handleClick"
         />
@@ -71,7 +80,11 @@
             {{ cardData.totalLifeCycle }}
           </span>
         </div>
-        <div class="flex-grow-1" :id="'FundsSpent'+index">
+        <div
+          v-if="isHistory=== false"
+          class="flex-grow-1"
+          :id="'FundsSpent'+index"
+        >
           <span class="_title">Total Funds Spent</span>
           <span class="_title-value d-block">
            {{ cardData.totalFundsSpent }}
@@ -98,8 +111,10 @@ import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
   }
 })
 export default class TaskOrderCard extends Vue {
-  @Prop() private taskOrders!:TaskOrderCardData;
+  @Prop() private taskOrders!:TaskOrderCardData[];
+  @Prop() private isHistory!:boolean
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
+  @PropSync("selectedTaskOrder",{default:()=> ({})}) private _selectedTaskOrder!: TaskOrderCardData;
 
 
   public menuItems(status:string):MeatballMenuItem[] {
@@ -126,11 +141,17 @@ export default class TaskOrderCard extends Vue {
     return dropDownItems;
   }
 
-  public async handleClick(menuItem: MeatballMenuItem): Promise<void> {
+  public async handleClick(menuItem: MeatballMenuItem,index:number): Promise<void> {
     if(menuItem.action == "showTaskOrderDetails"){
       this._showDetails = true
+      this._selectedTaskOrder = this.taskOrders[index]
     }
-  }
+  };
+  public async taskOrderClicked(e: Event, taskOrder:TaskOrderCardData): Promise<void> {
+    e.preventDefault()
+    this._selectedTaskOrder = taskOrder
+    this._showDetails = true
+  };
   public statusChipBgColor(status:string): string {
     return getStatusChipBgColor(status.toLowerCase());
   }

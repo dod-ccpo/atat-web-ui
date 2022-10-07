@@ -294,6 +294,7 @@ export class AcquisitionPackageStore extends VuexModule {
   classificationLevel: ClassificationLevelDTO | null = null;
   currentEnvironment: CurrentEnvironmentDTO | null = null;
   totalBasePoPDuration = 0;
+  taskOrderDetailsAlertClosed = false;
 
   fundingRequestType: string | null =  null;
 
@@ -306,6 +307,10 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setBasePoPDuration(value: number): void {
     this.totalBasePoPDuration = value;
+  }
+  @Mutation
+  public setTaskOrderDetailsAlertClosed(value: boolean): void {
+    this.taskOrderDetailsAlertClosed = value;
   }
 
   @Mutation

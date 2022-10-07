@@ -37,6 +37,10 @@ body {
   max-width: 1040px;
   margin-left: 0;
 }
+.container-max-width-wide {
+  // max page width for very wide screens - wraps all page content
+  max-width: 1164px;
+}
 
 .copy-max-width {
   // used for longer paragraphs of text that wrap to more than 1 line
