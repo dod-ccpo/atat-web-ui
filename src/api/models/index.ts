@@ -372,6 +372,7 @@ export interface EnvironmentInstanceDTO extends BaseTableDTO {
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
   csp: ReferenceColumn;
+  active_task_order: ReferenceColumn;
   csp_display: string; // "<<cloud_service_package.name >>"
   dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
@@ -384,7 +385,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
-  alert?: AlertDTO;
+  alerts: AlertDTO[];
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{

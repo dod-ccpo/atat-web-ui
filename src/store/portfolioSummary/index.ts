@@ -119,9 +119,6 @@ export class PortfolioSummaryStore extends VuexModule {
           const portfolioSysId = (taskOrder.portfolio as ReferenceColumn).value;
           return portfolioSysId === portfolio.sys_id
         });
-      if (!portfolio.task_orders) {
-        portfolio.task_orders = [];
-      }
     })
     return portfolioSummaryList;
   }
@@ -142,8 +139,8 @@ export class PortfolioSummaryStore extends VuexModule {
       }
     )
     portfolioSummaryList.forEach(portfolio => {
-      portfolio.alert = allAlertsList
-        .find((alert) => {
+      portfolio.alerts = allAlertsList
+        .filter((alert) => {
           return (alert.portfolio as ReferenceColumn).value === portfolio.sys_id
         });
     })
@@ -214,7 +211,8 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   /**
-   * Performs the 'Total Obligated' and 'Funds Spent' for all the portfolios in the list
+   * Aggregates the 'Total Obligated' and 'Funds Spent' for all the portfolios in the list.
+   * Also rolls up the pop dates using the values of the active task order.
    *
    * NOTE: Instead of computing here if we were to make the aggregate API call, it would take
    * as many calls as the number of portfolios to get, for example, the 'Total Obligated' from
@@ -223,7 +221,7 @@ export class PortfolioSummaryStore extends VuexModule {
    * Computing here will eliminate all these calls.
    */
   @Action({rawError: true})
-  private computeAllAggregations(portfolioSummaryList: PortfolioSummaryDTO[]) {
+  private computeAllAggregationsAndPopRollup(portfolioSummaryList: PortfolioSummaryDTO[]) {
     portfolioSummaryList.forEach(portfolio => {
       portfolio.dod_component = 'ARMY' // FIXME: delete this line after API starts returning
       let totalObligatedForPortfolio = 0;
@@ -231,7 +229,12 @@ export class PortfolioSummaryStore extends VuexModule {
       portfolio.task_orders.forEach(taskOrder => {
         taskOrder.clin_records?.forEach(clinRecord => {
           if (clinRecord.clin_status === 'ACTIVE' ||
-            clinRecord.clin_status === 'OPTION_EXERCISED') { // TODO: double check the statuses
+            clinRecord.clin_status === 'OPTION_EXERCISED' ||
+            clinRecord.clin_status === 'ON_TRACK' ||
+            clinRecord.clin_status === 'AT_RISK' ||
+            clinRecord.clin_status === 'EXPIRING_POP' ||
+            clinRecord.clin_status === 'DELINQUENT' ||
+            clinRecord.clin_status === 'FUNDING_AT_RISK') { // TODO: double check the statuses
             totalObligatedForPortfolio =
               totalObligatedForPortfolio + Number(clinRecord.funds_obligated);
           }
@@ -239,6 +242,10 @@ export class PortfolioSummaryStore extends VuexModule {
             totalFundsSpentForPortfolio = totalFundsSpentForPortfolio + Number(costRecord.value);
           })
         })
+        if (taskOrder.sys_id === portfolio.active_task_order.value) { // uses dates of active task
+          portfolio.pop_start_date = taskOrder.pop_start_date;
+          portfolio.pop_end_date = taskOrder.pop_end_date;
+        }
       })
       portfolio.funds_obligated = totalObligatedForPortfolio;
       portfolio.funds_spent = totalFundsSpentForPortfolio;
@@ -266,7 +273,7 @@ export class PortfolioSummaryStore extends VuexModule {
         await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
         await this.setCostsToTaskOrderClins(portfolioSummaryList);
         // all asynchronous calls are done before this step & data is available for aggregation
-        this.computeAllAggregations(portfolioSummaryList);
+        this.computeAllAggregationsAndPopRollup(portfolioSummaryList);
         this.setPortfolioSummaryList(portfolioSummaryList); // caches the list
         return portfolioSummaryList;
       } else {
