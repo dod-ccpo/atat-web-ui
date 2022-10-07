@@ -23,6 +23,7 @@ import { StatusTypes } from "@/store/acquisitionPackage";
 
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { formatDistanceToNow } from "date-fns";
+import {PortfolioSummarySearchDTO} from "@/api/models";
 
 @Component({
   components: {
@@ -58,7 +59,15 @@ export default class PortfoliosSummary extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await PortfolioSummary.loadPortfolioSummaryList();
+    let portfolioSearchDTO: PortfolioSummarySearchDTO = {
+      role: "ALL",
+      // csps: ['CSP_D'],
+      csps: [],
+      sort: "name",
+      // portfolioStatus: "ACTIVE",
+      fundingStatuses: ["AT_RISK","DELINQUENT","ON_TRACK", "EXPIRING_SOON"]
+    }
+    const storeData = await PortfolioSummary.searchPortfolioSummaryList(portfolioSearchDTO);
     
     // below used to map stub CSPs to actual CSPs until have actual CSP data
     const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
