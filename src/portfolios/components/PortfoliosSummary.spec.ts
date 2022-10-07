@@ -82,7 +82,8 @@ describe("Testing index Component", () => {
   it("tests loadOnEnter()", async () => {
     jest.spyOn(PortfolioSummaryStore, "loadPortfolioSummaryList").mockImplementation(
       () => Promise.resolve(portfolios));
-    wrapper.vm.loadOnEnter();
+    await wrapper.vm.loadOnEnter();
+    expect(wrapper.vm.$data.portfolioCardData.length).toBe(2);
   });
 
 })
