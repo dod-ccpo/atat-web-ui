@@ -6,6 +6,7 @@ import PortfolioDrawer from "@/portfolios/portfolio/components/shared/PortfolioD
 import PortfolioData from "@/store/portfolio";
 import { SelectData, User } from "types/Global";
 import { StatusTypes } from "@/store/acquisitionPackage";
+import TaskOrder from "@/store/taskOrder";
 Vue.use(Vuetify);
 
 describe("Testing Portfolio Drawer component", () => {
@@ -41,6 +42,7 @@ describe("Testing Portfolio Drawer component", () => {
   ]
 
   const portfolio = {
+    sysId: "12345",
     createdBy: "test-ctr@ccpo.mil",
     csp: "Azure",
     description:"just testfefseffdsfd",
@@ -49,7 +51,8 @@ describe("Testing Portfolio Drawer component", () => {
     serviceAgency:"DISA",
     status: "Active",
     title: "test title",
-    updated: "2022-09-08 18:12:12"
+    updated: "2022-09-08 18:12:12",
+    taskOrderNumber: "987654"
   }
 
   beforeEach(() => {
@@ -70,7 +73,7 @@ describe("Testing Portfolio Drawer component", () => {
       portfolio
     })
     await wrapper.vm.saveDescription(portfolio);
-    expect(PortfolioData.portfolio).toEqual(portfolio);
+    expect(PortfolioData.currentPortfolio).toEqual(portfolio);
   })
 
   it("displayName() - enter member with full name to return full name ",async () => {
@@ -136,9 +139,9 @@ describe("Testing Portfolio Drawer component", () => {
     await wrapper.setData({
       portfolio
     })
-    const currentNumberOfMembers = PortfolioData.portfolio.members?.length || 1
+    const currentNumberOfMembers = PortfolioData.currentPortfolio.members?.length || 1
     await wrapper.vm.deleteMember();
-    expect(await PortfolioData.portfolio.members?.length).toBe(
+    expect(await PortfolioData.currentPortfolio.members?.length).toBe(
       currentNumberOfMembers - 1
     )
   })

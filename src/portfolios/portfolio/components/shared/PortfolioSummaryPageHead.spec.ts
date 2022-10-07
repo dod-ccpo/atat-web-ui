@@ -64,7 +64,7 @@ describe("Testing Members Component", () => {
         title: dummyTitle
       })
       await wrapper.vm.saveTitle();
-      expect(PortfolioData.portfolio.title).toBe(dummyTitle);
+      expect(PortfolioData.currentPortfolio.title).toBe(dummyTitle);
     })
 
 
