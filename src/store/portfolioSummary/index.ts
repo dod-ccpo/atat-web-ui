@@ -119,7 +119,6 @@ export class PortfolioSummaryStore extends VuexModule {
           const portfolioSysId = (taskOrder.portfolio as ReferenceColumn).value;
           return portfolioSysId === portfolio.sys_id
         });
-
       if (!portfolio.task_orders) {
         portfolio.task_orders = [];
       }

@@ -220,7 +220,6 @@ export default class PortfolioDrawer extends Vue {
   public csp = "";
   public currentUser: User = {};
 
-  public showMembersModal = false;
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
@@ -241,6 +240,14 @@ export default class PortfolioDrawer extends Vue {
     { text: "Remove from portfolio", value: "Remove", isSelectable: false },
     { text: "About Roles", value: "AboutRoles", isSelectable: false },
   ];
+
+  public get showMembersModal(): boolean {
+    return PortfolioData.getShowAddMembersModal;
+  }
+
+  public set showMembersModal(value: boolean) {
+    PortfolioData.setShowAddMembersModal(value);
+  }
 
   public getMemberMenuItems(member: User): SelectData[] {
     const menuItems = _.cloneDeep(this.memberMenuItems);
@@ -314,7 +321,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public openMembersModal(): void {
-    this.showMembersModal = true;
+    PortfolioData.setShowAddMembersModal(true);
   }
 
   private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
