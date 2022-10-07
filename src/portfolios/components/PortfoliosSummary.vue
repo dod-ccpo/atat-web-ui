@@ -64,8 +64,9 @@ export default class PortfoliosSummary extends Vue {
       // csps: ['CSP_D'],
       csps: [],
       sort: "name",
-      // portfolioStatus: "ACTIVE",
-      fundingStatuses: ["AT_RISK","DELINQUENT","ON_TRACK", "EXPIRING_SOON"]
+      portfolioStatus: "",
+      fundingStatuses: ["AT_RISK","DELINQUENT","ON_TRACK", "EXPIRING_SOON"],
+      searchString: ""
     }
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(portfolioSearchDTO);
     
