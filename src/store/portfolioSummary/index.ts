@@ -72,55 +72,55 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   /**
-   * Constructs a single query that gets all the CSP records across all the portfolis. Parses
-   * the response and sets the 'csp_display' to the respective portfolio.
+   * Compiles a search query string for the optional search parameters of 'portfolio' table.
    */
   @Action({rawError: true})
-  private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    const cspSysIds = portfolioSummaryList.map(portfolio => portfolio.csp.value);
-    const allCspList = await api.cloudServiceProviderTable.getQuery(
-      {
-        params:
-          {
-            sysparm_fields: "sys_id,name",
-            sysparm_query: "sys_idIN" + cspSysIds
-          }
-      }
-    )
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.csp_display =
-        (allCspList.find(
-          (csp: CloudServiceProviderDTO) => portfolio.csp.value === csp.sys_id)?.name) || "";
-    });
+  private async getOptionalSearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
+    Promise<string> {
+    let query = "";
+    if (searchDTO.portfolioStatus) {
+      query = query + "^portfolio_statusIN" + searchDTO.portfolioStatus;
+    }
+    if (searchDTO.searchString) {
+      query = query + "^nameLIKE" + searchDTO.searchString;
+    }
+    if (searchDTO.csps?.length > 0) {
+      query = query + "^csp.nameIN" + searchDTO.csps;
+    }
+    return query;
   }
 
   /**
-   * Given a list of portfolios, compiles a single API call and returns the portfolio list
-   * with task orders populated.
+   * Compiles a search query string for the mandatory search parameters of 'portfolio' table. For
+   * each search parameter, no need to check if the value exists since the value is mandatory.
    */
   @Action({rawError: true})
-  private async setTaskOrdersForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]):
-    Promise<PortfolioSummaryDTO[]> {
-    const allTaskOrderList = await api.taskOrderTable.getQuery(
-      {
-        params:
-          {
-            sysparm_fields:
-              "sys_id,clins,portfolio,task_order_number,task_order_status," +
-              "pop_end_date,pop_start_date",
-            sysparm_query: "portfolio.nameIN" + portfolioSummaryList
-              .map(portfolio => portfolio.name)
-          }
+  private async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
+    Promise<string> {
+    let query = "";
+    if (searchDTO.role === "ALL") {
+      query = query +
+        "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356^OR" + // pragma: allowlist secret
+        "portfolio_viewersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+    } else { // "MANAGED"
+      query = query +
+        "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+    }
+    query = query + "^ORDERBY" + searchDTO.sort;
+    return query;
+  }
+
+  @Action({rawError: true})
+  private async getPortfolioSummaryList(searchQuery: string): Promise<PortfolioSummaryDTO[]> {
+    await this.ensureInitialized();
+    // const query =
+    //   "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+    const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: searchQuery
       }
-    )
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.task_orders = allTaskOrderList
-        .filter((taskOrder) => {
-          const portfolioSysId = (taskOrder.portfolio as ReferenceColumn).value;
-          return portfolioSysId === portfolio.sys_id
-        });
-    })
-    return portfolioSummaryList;
+    };
+    return await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
   }
 
   /**
@@ -132,7 +132,7 @@ export class PortfolioSummaryStore extends VuexModule {
     const allAlertsList = await api.alertsTable.getQuery(
       {
         params:
-          { // bring all field
+          { // bring all fields
             sysparm_query: "portfolio.nameIN" + portfolioSummaryList
               .map(portfolio => portfolio.name)
           }
@@ -186,6 +186,58 @@ export class PortfolioSummaryStore extends VuexModule {
       }
       return false;
     })
+  }
+
+  /**
+   * Constructs a single query that gets all the CSP records across all the portfolis. Parses
+   * the response and sets the 'csp_display' to the respective portfolio.
+   */
+  @Action({rawError: true})
+  private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    const cspSysIds = portfolioSummaryList.map(portfolio => portfolio.csp.value);
+    const allCspList = await api.cloudServiceProviderTable.getQuery(
+      {
+        params:
+          {
+            sysparm_fields: "sys_id,name",
+            sysparm_query: "sys_idIN" + cspSysIds
+          }
+      }
+    )
+    portfolioSummaryList.forEach(portfolio => {
+      portfolio.csp_display =
+        (allCspList.find(
+          (csp: CloudServiceProviderDTO) => portfolio.csp.value === csp.sys_id)?.name) || "";
+    });
+  }
+
+  /**
+   * Given a list of portfolios, compiles a single API call and returns the portfolio list
+   * with task orders populated.
+   */
+  @Action({rawError: true})
+  private async setTaskOrdersForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]):
+    Promise<PortfolioSummaryDTO[]> {
+    const allTaskOrderList = await api.taskOrderTable.getQuery(
+      {
+        params:
+          {
+            sysparm_fields:
+              "sys_id,clins,portfolio,task_order_number,task_order_status," +
+              "pop_end_date,pop_start_date",
+            sysparm_query: "portfolio.nameIN" + portfolioSummaryList
+              .map(portfolio => portfolio.name)
+          }
+      }
+    )
+    portfolioSummaryList.forEach(portfolio => {
+      portfolio.task_orders = allTaskOrderList
+        .filter((taskOrder) => {
+          const portfolioSysId = (taskOrder.portfolio as ReferenceColumn).value;
+          return portfolioSysId === portfolio.sys_id
+        });
+    })
+    return portfolioSummaryList;
   }
 
   /**
@@ -301,59 +353,6 @@ export class PortfolioSummaryStore extends VuexModule {
       portfolio.funds_obligated = totalObligatedForPortfolio;
       portfolio.funds_spent = fundsSpentForPortfolio;
     })
-  }
-
-  @Action({rawError: true})
-  private async getPortfolioSummaryList(searchQuery: string): Promise<PortfolioSummaryDTO[]> {
-    await this.ensureInitialized();
-    // const query =
-    //   "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
-    const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
-      params: {
-        sysparm_query: searchQuery
-      }
-    };
-    return await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
-  }
-
-  /**
-   * Compiles a search query string for the optional search parameters of 'portfolio' table.
-   */
-  @Action({rawError: true})
-  private async getOptionalSearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
-    Promise<string> {
-    let query = "";
-    if (searchDTO.portfolioStatus) {
-      query = query + "^portfolio_statusIN" + searchDTO.portfolioStatus;
-    }
-    if (searchDTO.searchString) {
-      query = query + "^nameLIKE" + searchDTO.searchString;
-    }
-    if (searchDTO.csps?.length > 0) {
-      query = query + "^csp.nameIN" + searchDTO.csps;
-    }
-    // TODO: handle 'fundingstatuses' - QUESTION: Is the column for this in portfolio table
-    return query;
-  }
-
-  /**
-   * Compiles a search query string for the mandatory search parameters of 'portfolio' table. For
-   * each search parameter, no need to check if the value exists since the value is mandatory.
-   */
-  @Action({rawError: true})
-  private async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
-    Promise<string> {
-    let query = "";
-    if (searchDTO.role === "ALL") {
-      query = query +
-        "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356^OR" + // pragma: allowlist secret
-        "portfolio_viewersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
-    } else { // "MANAGED"
-      query = query +
-        "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
-    }
-    query = query + "^ORDERBY" + searchDTO.sort;
-    return query;
   }
 
   /**
