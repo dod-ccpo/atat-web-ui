@@ -49,6 +49,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   required_services: string;
   current_environment: string;
   environment_instance: string;
+  selected_service_offerings: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -282,7 +283,7 @@ export interface ReferenceColumn {
 export interface SelectedServiceOfferingDTO extends BaseTableDTO {
   classification_instances: string;
   other_service_offering: string;
-  service_offering: string;
+  service_offering: string; 
 }
 
 export interface ClassificationInstanceDTO extends BaseTableDTO {
@@ -395,3 +396,15 @@ export interface CloudServiceProviderDTO extends BaseTableDTO{
   name:string;
   // other columns as needed
 }
+
+export interface IGCEDataDTO extends BaseTableDTO{
+  classification_instances: ClassificationInstanceDTO[];
+  classification_levels: ClassificationLevelDTO[];
+  classification_level_id: string;
+  classification_instance_id: string;
+  estimated_environment_instances?: string;
+  service_offering_id: string;
+  service_offering: ServiceOfferingDTO[];
+}
+
+// todo map out the data based on the page
