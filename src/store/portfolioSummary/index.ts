@@ -106,6 +106,7 @@ export class PortfolioSummaryStore extends VuexModule {
       query = query +
         "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
     }
+    query = query + "^portfolio_status!=ARCHIVED"
     query = query + "^ORDERBY" + searchDTO.sort;
     return query;
   }
@@ -169,10 +170,10 @@ export class PortfolioSummaryStore extends VuexModule {
         const threshold = Number(spendingAlert.threshold_violation_amount
           .replace("%", ""));
         if (searchDTO.fundingStatuses.indexOf("AT_RISK") !== -1) {
-          return threshold > 90 && threshold <= 100; // TODO: double check number 90 and 100
+          return threshold > 75 && threshold <= 99;
         }
         if (searchDTO.fundingStatuses.indexOf("DELINQUENT") !== -1) {
-          return threshold > 100; // TODO: double check 100
+          return threshold >= 100;
         }
       }
       if (searchDTO.fundingStatuses.indexOf("EXPIRING_SOON") !== -1) {
@@ -181,7 +182,7 @@ export class PortfolioSummaryStore extends VuexModule {
         if (timeRemainingAlert) {
           const threshold = Number(timeRemainingAlert.threshold_violation_amount
             .replace(" days", ""));
-          return threshold <= 30; // TODO: double check the number 30
+          return threshold <= 60;
         }
       }
       return false;
