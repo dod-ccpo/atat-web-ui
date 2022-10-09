@@ -2,7 +2,7 @@
 import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
-import { MemberInvites, Portfolio, User } from "../../../types/Global"
+import { MemberInvites, Portfolio, PortfolioCardData, User } from "../../../types/Global"
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {StatusTypes} from "@/store/acquisitionPackage";
@@ -63,8 +63,12 @@ export class PortfolioDataStore extends VuexModule {
   private alertService = new AlertService();
   //has the store been initialized
   initialized = false;
+
+  public activeTaskOrderNumber = "";
+  
   public alerts: AlertDTO[]= [];
-  portfolio: Portfolio = { 
+  currentPortfolio: Portfolio = { 
+    sysId: "",
     title: "",
     description: "",
     status: "",
@@ -73,12 +77,13 @@ export class PortfolioDataStore extends VuexModule {
     createdBy: "",
     provisioned: "",
     members: [],
+    taskOrderNumber: "",
   }
   public status = StatusTypes.Active;
     
   // store session properties
   protected sessionProperties: string[] = [
-    nameofProperty(this,x=> x.portfolio),
+    nameofProperty(this,x=> x.currentPortfolio),
     nameofProperty(this,x=> x.status),
     nameofProperty(this,x=> x.alerts),
   ];
@@ -91,6 +96,37 @@ export class PortfolioDataStore extends VuexModule {
   public showAddMembersModal = false;
   public get getShowAddMembersModal(): boolean {
     return this.showAddMembersModal;
+  }
+
+  @Action
+  public async setCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
+    this.doSetCurrentPortfolio(portfolioData);
+  }
+
+  @Mutation
+  public async doSetCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
+    const dataFromSummaryCard = {
+      sysId: portfolioData.sysId,
+      title: portfolioData.title,
+      status: portfolioData.status,
+      csp: portfolioData.csp,
+      serviceAgency: portfolioData.serviceAgency,
+      taskOrderNumber: portfolioData.taskOrderNumber,
+    };
+    Object.assign(this.currentPortfolio, dataFromSummaryCard);
+    this.activeTaskOrderNumber = portfolioData.taskOrderNumber 
+      ? portfolioData.taskOrderNumber : "";
+  }
+
+  @Action
+  public setActiveTaskOrderNumber(taskOrderNum: string | undefined): void {
+    if (taskOrderNum) {
+      this.doSetActiveTaskOrderNumber(taskOrderNum);
+    }
+  }
+  @Mutation
+  public doSetActiveTaskOrderNumber(taskOrderNum: string): void {
+    this.activeTaskOrderNumber = taskOrderNum;
   }
 
   @Action
@@ -109,7 +145,7 @@ export class PortfolioDataStore extends VuexModule {
 
   @Mutation
   public setPortfolioData(value: Portfolio): void {
-    Object.assign(this.portfolio,value)
+    Object.assign(this.currentPortfolio,value)
     storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
@@ -127,14 +163,8 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true})
   private async initPortfolioData():Promise<void> {
-    const obj: Portfolio = {
-      title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
-      description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
-      status: "Active",
-      csp: "Azure",
-      serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
-      createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
-      provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
+    const portfolioObj: Portfolio = {
+      // temp add Maria Missionowner until have members from backend
       members: [{
         firstName:"Maria",
         lastName: "Missionowner",
@@ -145,9 +175,23 @@ export class PortfolioDataStore extends VuexModule {
         designation: "Civilian",
         serviceAgency: "U.S Army"
       }],
-      updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
+    };
+
+    if (!this.currentPortfolio.sysId) {
+      const obj: Portfolio = {
+        title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
+        description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
+        status: "Active",
+        csp: "Azure",
+        serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
+        createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
+        provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
+        updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
+      };
+      Object.assign(portfolioObj, obj); 
     }
-    this.setPortfolioData(obj);
+    
+    this.setPortfolioData(portfolioObj);
   }
 
   @Action({rawError: true})
@@ -159,7 +203,7 @@ export class PortfolioDataStore extends VuexModule {
         email,
         role: newMembers.role,
       };
-      this.portfolio.members?.push(newMember);
+      this.currentPortfolio.members?.push(newMember);
     });
     storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
     this.setInitialized(true);
@@ -170,7 +214,7 @@ export class PortfolioDataStore extends VuexModule {
     if (!this.initialized) {
       await this.initialize();
     }
-    return this.portfolio;
+    return this.currentPortfolio;
   }
 
   @Mutation
@@ -194,6 +238,7 @@ export class PortfolioDataStore extends VuexModule {
           this.setStoreData(sessionRestored);
         }
         else{
+          debugger;
           await this.initPortfolioData();
           this.setInitialized(true);
           storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);

@@ -154,7 +154,7 @@ export default class TaskOrderCard extends Vue {
   };
   public statusChipBgColor(status:string): string {
     return getStatusChipBgColor(status);
-  };
+  }
 
 }
 </script>

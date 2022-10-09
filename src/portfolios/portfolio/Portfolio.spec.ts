@@ -256,20 +256,6 @@ describe("Testing Portfolio", () => {
       );
     });
 
-    it("Test createDateStr", async () => {
-      vuetify = new Vuetify();
-
-      alertsKey = alertKeys.Expired;
-      wrapper = shallowMount(Portfolio, {
-        vuetify,
-        localVue,
-      });
-
-      const value = await wrapper.vm.createDateStr('2022-12-31', true);
-      expect(value).toBe("Dec. 31, 2022");
-
-    });
-
     it("Test calculateTimeToExpiration", async () => {
       vuetify = new Vuetify();
 
@@ -310,15 +296,8 @@ describe("Testing Portfolio", () => {
         );
 
       await wrapper.vm.loadOnEnter();
-      const popStart = await wrapper.vm.
-        createDateStr(dashboardMocks.taskOrder.pop_start_date, true);
-      const popEnd = await wrapper.vm.
-        createDateStr(dashboardMocks.taskOrder.pop_end_date, true);
-      expect(wrapper.vm.$data.popStart).toBe(popStart);
-      expect(wrapper.vm.$data.popEnd).toBe(popEnd);
  
     });
-
-
   });
+
 });

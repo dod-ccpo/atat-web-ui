@@ -3,7 +3,8 @@ import { Checkbox, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import { StatusTypes } from "@/store/acquisitionPackage";
-
+import ATATCharts from "@/store/charts";
+import parseISO from "date-fns/parseISO";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -201,23 +202,38 @@ export function getUserInitials(member:User): string {
 }
 
 export function getStatusChipBgColor(status: string): string {
-  switch (status) {
-  case StatusTypes.Active:
-  case StatusTypes.OnTrack:
+  switch (status.toLowerCase()) {
+  case StatusTypes.Active.toLowerCase():
+  case StatusTypes.OnTrack.toLowerCase():
     return "bg-success";
-  case StatusTypes.Processing:
-  case StatusTypes.Upcoming:
+  case StatusTypes.Processing.toLowerCase():
+  case StatusTypes.Upcoming.toLowerCase():
     return "bg-info-dark";
-  case StatusTypes.AtRisk:
+  case StatusTypes.AtRisk.toLowerCase():
     return "bg-warning";
-  case StatusTypes.Delinquent:
-  case StatusTypes.Expired:
+  case StatusTypes.Delinquent.toLowerCase():
+  case StatusTypes.Expired.toLowerCase():
     return "bg-error";
-  case StatusTypes.Archived:
+  case StatusTypes.Archived.toLowerCase():
     return "bg-base-dark";
   default:
     return "";
   }
 
 }
+
+const monthAbbreviations = ATATCharts.monthAbbreviations;
+
+export function createDateStr(dateStr: string, period: boolean): string {
+  const parsedDate = parseISO(dateStr, { additionalDigits: 1 });
+  const date = new Date(parsedDate.setHours(0, 0, 0, 0));
+  const m = monthAbbreviations[date.getMonth()];
+  const y = date.getFullYear();
+  const d = date.getUTCDate();
+  const neverPeriodMonths = ["March", "April", "May", "June", "July"];
+  const noPeriodMonth = neverPeriodMonths.indexOf(m) !== -1;
+  const p = period && !noPeriodMonth ? "." : "";
+  return m + p + " " + d + ", " + y;
+}
+
 
