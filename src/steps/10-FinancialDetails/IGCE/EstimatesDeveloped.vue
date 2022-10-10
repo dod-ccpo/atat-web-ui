@@ -21,7 +21,7 @@
             :hasOtherValue="true"
             otherValue="Other"
             :otherValueEntered.sync="otherValueEntered"
-            otherValueRequiredMessage="Please enter your other type of information or tool"
+            otherValueRequiredMessage="Please enter your other type of information or tool."
             :items="toolsOptions"
             name="checkboxes"
             :card="false"
@@ -30,7 +30,6 @@
                 or tool used to estimate your costs.`)
             ]"
             otherEntryType="textfield"
-
           />
 
           <ATATTextArea
@@ -39,9 +38,9 @@
             class="max-width-740 mb-7"
             rows="7"
             :rules="[
-              $validators.required('Please describe how your cost estimate was made'),
+              $validators.required('Please describe how your cost estimate was made.'),
               $validators.maxLength(1000, 
-                'Please limit your description to 1,000 characters or less')
+                'Please limit your description to 1,000 characters or less.')
             ]"
             helpText="Briefly explain the rationale used to formulate your projected 
               prices, and identify any and all assumptions used (e.g., schedule or 
@@ -109,7 +108,6 @@ export default class EstimatesDeveloped extends Vue {
       resetValidation(): void
     };
   };
-
 
   public selectedPriceComparison = "";
   public howEstimateMade = "";
@@ -188,7 +186,7 @@ export default class EstimatesDeveloped extends Vue {
     return this.selectedPriceComparison === "More" ? "overestimated" : "underestimated";
   }
 
-  public percentageRules = [this.$validators.required(this.percentRequiredMessage)]
+  public percentageRules: unknown[] = []
 
   @Watch("selectedPriceComparison")
   public async selectedPriceComparisonChanged(): Promise<void> {
