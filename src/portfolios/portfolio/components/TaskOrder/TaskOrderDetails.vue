@@ -101,11 +101,15 @@
       >
         <!-- eslint-disable vue/valid-v-slot -->
         <template v-slot:body="props">
-          <tbody name="expand" :is="transitionGroup">
+          <tbody name="expand" >
           <template >
             <tr
               class="row-item"
-              :class="{'bg-info-lighter': item.status === 'Processing'}"
+              :class="[
+                {'bg-info-lighter': item.status === 'Processing'},
+                {'d-none': item.status === 'Expired PoP' && !showInactive },
+                {'d-none': item.status === 'Option pending' && !showInactive },
+              ]"
               v-for="item in props.items" :key="item.CLINNumber"
             >
               <td>
@@ -225,10 +229,70 @@
                   ({{inActiveCount}})
                 </span>
               </div>
-            <div>Total obligated funds</div>
-            <div>Total Clin Value</div>
-            <div>Total</div>
-            <div>Hide inactive Clins</div>
+            <div
+              style="min-width: 160px"
+              class="d-flex font-weight-700 text-base-dark ml-auto justify-end">
+              Total
+            </div>
+            <div
+              style="min-width: 160px"
+              class="d-flex font-weight-700 text-base-darkest justify-end">
+              <span v-if="!showInactive">
+                ${{convertToString(totalFundingObj.totalCLINValue)}}
+              </span>
+              <span v-else>
+                ${{convertToString(totalFundingObj.withInactiveTotal)}}
+              </span>
+            </div>
+            <div
+              style="min-width: 155px"
+              class="d-flex font-weight-700 text-base-darkest mr-6 justify-end"
+            >
+              <span v-if="!showInactive">
+                ${{convertToString(totalFundingObj.totalObligatedFunds)}}
+              </span>
+              <span v-else>
+                ${{convertToString(totalFundingObj.withInactiveObligatedFunds)}}
+              </span>
+            </div>
+            <div
+              style="min-width: 216px">
+               <div v-if="!showInactive">
+                 <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
+                   ${{convertToString(totalFundingObj.totalFundsSpent)}}
+                   <span class="font-size-12 text-base ml-3 font-weight-500">
+                     ({{
+                       Math.round(
+                         (totalFundingObj.totalFundsSpent / totalFundingObj.totalObligatedFunds)
+                         * 100)
+                     }}%)
+                   </span>
+                 </div>
+                 <span class="d-flex font-size-12 text-base justify-end">
+                 ${{convertToString(
+                   totalFundingObj.totalObligatedFunds - totalFundingObj.totalFundsSpent
+                 )}} remaining
+                </span>
+              </div>
+              <div v-else>
+                <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
+                  ${{convertToString(totalFundingObj.withInactiveFundsSpent)}}
+                  <span class="font-size-12 text-base ml-3 font-weight-500 ">
+                     ({{
+                      Math.round(
+                        (totalFundingObj.withInactiveFundsSpent
+                          / totalFundingObj.withInactiveObligatedFunds)
+                        * 100)
+                    }}%)
+                   </span>
+                </div>
+                <span class="d-flex font-size-12 text-base justify-end">
+                 ${{convertToString(
+                 totalFundingObj.withInactiveObligatedFunds - totalFundingObj.withInactiveFundsSpent
+                )}} remaining
+                </span>
+              </div>
+            </div>
           </div>
         </template>
       </v-data-table>
@@ -301,7 +365,6 @@ export default class TaskOrderDetails extends Vue {
   @PropSync("selectedTaskOrder",{default: {}}) private _selectedTaskOrder!: TaskOrderCardData;
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
 
-  public transitionGroup = ""
   public tableData:{
     CLINNumber:string,
     CLINTitle:string,
@@ -313,9 +376,26 @@ export default class TaskOrderDetails extends Vue {
     status:string
   }[] = [];
   public showInactive = false
+
   @Watch("showInactive")
   public showHide():string {
     return this.showInactive? 'Hide':'Show'
+  }
+
+  public totalFundingObj: {
+    totalCLINValue:number,
+    withInactiveTotal:number,
+    totalObligatedFunds:number,
+    withInactiveObligatedFunds:number,
+    totalFundsSpent:number,
+    withInactiveFundsSpent:number,
+  } = {
+    totalCLINValue:0,
+    withInactiveTotal:0,
+    totalObligatedFunds:0,
+    withInactiveObligatedFunds:0,
+    totalFundsSpent:0,
+    withInactiveFundsSpent:0,
   }
   public inActiveCount = 0;
   public statusImg = {
@@ -395,6 +475,10 @@ export default class TaskOrderDetails extends Vue {
   }
   public handleClick(): void {
     this._showDetails = false
+  }
+
+  public convertToString(value: number): string {
+    return toCurrencyString(value)
   }
 
   public tableHeaders: Record<string, string>[] = [
@@ -490,7 +574,6 @@ export default class TaskOrderDetails extends Vue {
   }
   public fundsRemaining(obligatedFunds:string, fundsSpent:string):
     {percent:string,fundsRemaining:string} {
-    console.log(Number(fundsSpent),Number(obligatedFunds))
     if(obligatedFunds == "0" && fundsSpent == "0"){
       return {
         percent: "0",
@@ -542,8 +625,20 @@ export default class TaskOrderDetails extends Vue {
         status:""
       };
       let idx = i;
+
+
       if(this.status[idx] === 'Option pending' || this.status[idx] === 'Expired PoP') {
         this.inActiveCount++
+        this.totalFundingObj.withInactiveTotal += Number(this.totalCLINValue[idx])
+        this.totalFundingObj.withInactiveObligatedFunds += Number(this.obligatedFunds[idx])
+        this.totalFundingObj.withInactiveFundsSpent += Number(this.totalFundsSpent[idx])
+      } else {
+        this.totalFundingObj.totalCLINValue += Number(this.totalCLINValue[idx])
+        this.totalFundingObj.withInactiveTotal += Number(this.totalCLINValue[idx])
+        this.totalFundingObj.totalObligatedFunds += Number(this.obligatedFunds[idx])
+        this.totalFundingObj.withInactiveObligatedFunds += Number(this.obligatedFunds[idx])
+        this.totalFundingObj.totalFundsSpent += Number(this.totalFundsSpent[idx])
+        this.totalFundingObj.withInactiveFundsSpent += Number(this.totalFundsSpent[idx])
       }
       CLIN.CLINNumber = this.CLINNumber[idx];
       CLIN.CLINTitle = this.CLINTitle[idx];
@@ -559,7 +654,6 @@ export default class TaskOrderDetails extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.createTableData()
-    this.transitionGroup = "transition-group";
   }
   public  mounted(): void {
     this.loadOnEnter();
