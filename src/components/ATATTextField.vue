@@ -41,6 +41,7 @@
       autocomplete="off"
       :type="type"
       @keypress="filterNumbers($event)"
+      :validate-on-blur="validateOnBlur"
     >
 
       <template v-slot:prepend-inner>

@@ -22,6 +22,11 @@
             :tooltipText="cspLinkTooltip"
             :value.sync="cspCalculatorLink"
             placeHolder="https://example.com"
+            @blur="checkProtocol"
+            :validateOnBlur="true"
+            :rules="[
+              $validators.isURL('Please enter a valid URL.')            
+            ]"
           />
 
           <ATATDivider badgeText="AND/OR" />
@@ -103,6 +108,13 @@ export default class SupportingDocumentation extends Vue {
   public cspLinkTooltip = `If available, enter your share link from the CSP 
     calculator website, so a contracting officer can access your custom cost 
     estimate report.`;
+
+  public checkProtocol(): void {
+    this.cspCalculatorLink = this.cspCalculatorLink.trim();
+    if (this.cspCalculatorLink.length && this.cspCalculatorLink.indexOf("http") !== 0) {
+      this.cspCalculatorLink = "https://" + this.cspCalculatorLink;
+    }    
+  }
 
   async onRemoveAttachment(file: uploadingFile): Promise<void> {
     try {
