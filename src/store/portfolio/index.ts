@@ -238,7 +238,6 @@ export class PortfolioDataStore extends VuexModule {
           this.setStoreData(sessionRestored);
         }
         else{
-          debugger;
           await this.initPortfolioData();
           this.setInitialized(true);
           storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
