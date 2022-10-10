@@ -24,4 +24,34 @@ describe("Testing EstimatesDeveloped Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+  it("checks getter overUnderStr string 'overestimated'", async () => {
+    await wrapper.setData({
+      selectedPriceComparison: "More"
+    });
+    const str = wrapper.vm.overUnderStr;
+    expect(str).toBe("overestimated");
+  });
+
+  it("checks getter overUnderStr string 'underestimated'", async () => {
+    await wrapper.setData({
+      selectedPriceComparison: "Less"
+    });
+    const str = wrapper.vm.overUnderStr;
+    expect(str).toBe("underestimated");
+  });
+
+  it("toggles percentage input", async () => {
+    await wrapper.setData({
+      selectedPriceComparison: "Same"
+    });
+    expect(wrapper.vm.showPercentage).toBeFalsy;
+
+    await wrapper.setData({
+      selectedPriceComparison: "More"
+    });
+    expect(wrapper.vm.showPercentage).toBeTruthy;
+
+  });
+
+
 })
