@@ -8,6 +8,7 @@ import {
   FilterOption, 
   MemberInvites, 
   Portfolio, 
+  PortfolioCardData, 
   PortfolioSummaryQueryParams, 
   User,
 } from "../../../types/Global"
