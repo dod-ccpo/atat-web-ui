@@ -20,7 +20,6 @@
           <ATATCheckboxGroup
             id="ClassificationLevelCheckboxes"
             :value.sync="selectedOptions"
-            :hasOtherValue="true"
             :items="checkboxItems"
             name="checkboxes"
             :card="false"
