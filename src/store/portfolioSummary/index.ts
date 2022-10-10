@@ -148,6 +148,36 @@ export class PortfolioSummaryStore extends VuexModule {
     return portfolioSummaryList;
   }
 
+  @Action({rawError: true})
+  private async setFundingStatusForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    return portfolioSummaryList.forEach(portfolio => {
+      portfolio.funding_status = [];
+      if (portfolio.alerts.length === 0) {
+        portfolio.funding_status.push("ON_TRACK");// on track portfolios do not have any alerts
+      } else {
+        const spendingAlert =
+          portfolio.alerts.find(alert => alert.alert_type === "SPENDING_ACTUAL");
+        if (spendingAlert) {
+          const threshold = Number(spendingAlert.threshold_violation_amount
+            .replace("%", ""));
+          // TODO: check if there can be more spending alerts outside of these 2 for a portfolio
+          //  If there can be more, the if-else block needs to be updated two if blocks
+          if (threshold > 75 && threshold <= 99) {
+            portfolio.funding_status.push("AT_RISK");
+          } else { // threshold >= 100;
+            portfolio.funding_status.push("DELINQUENT");
+          }
+        }
+        const timeRemainingAlert =
+          portfolio.alerts.find(alert => alert.alert_type === "TIME_REMAINING");
+        if (timeRemainingAlert && Number(timeRemainingAlert.threshold_violation_amount
+          .replace(" days", ""))) {
+          portfolio.funding_status.push("EXPIRING_SOON")
+        }
+      }
+    })
+  }
+
   /**
    * Filters portfolios based on the alerts of a portfolio and funding statuses selected by the user
    */
@@ -155,37 +185,12 @@ export class PortfolioSummaryStore extends VuexModule {
   private async filterPortfoliosByFundingStatuses(filterObject: {
     portfolioSummaryList: PortfolioSummaryDTO[],
     searchDTO: PortfolioSummarySearchDTO
-  }):
-    Promise<PortfolioSummaryDTO[]> {
+  }): Promise<PortfolioSummaryDTO[]> {
     const portfolioSummaryList = filterObject.portfolioSummaryList;
     const searchDTO = filterObject.searchDTO;
     return portfolioSummaryList.filter(portfolio => {
-      if (searchDTO.fundingStatuses.indexOf("ON_TRACK") !== -1 && portfolio.alerts.length === 0) {
-        // on track portfolios do not have any alerts
-        return true;
-      }
-      const spendingAlert =
-        portfolio.alerts.find(alert => alert.alert_type === "SPENDING_ACTUAL");
-      if (spendingAlert) {
-        const threshold = Number(spendingAlert.threshold_violation_amount
-          .replace("%", ""));
-        if (searchDTO.fundingStatuses.indexOf("AT_RISK") !== -1) {
-          return threshold > 75 && threshold <= 99;
-        }
-        if (searchDTO.fundingStatuses.indexOf("DELINQUENT") !== -1) {
-          return threshold >= 100;
-        }
-      }
-      if (searchDTO.fundingStatuses.indexOf("EXPIRING_SOON") !== -1) {
-        const timeRemainingAlert =
-          portfolio.alerts.find(alert => alert.alert_type === "TIME_REMAINING");
-        if (timeRemainingAlert) {
-          const threshold = Number(timeRemainingAlert.threshold_violation_amount
-            .replace(" days", ""));
-          return threshold <= 60;
-        }
-      }
-      return false;
+      return portfolio.funding_status.filter(portfolioFundingStatus =>
+        searchDTO.fundingStatuses.indexOf(portfolioFundingStatus) !== -1).length > 0
     })
   }
 
@@ -382,6 +387,7 @@ export class PortfolioSummaryStore extends VuexModule {
       if (portfolioSummaryList && portfolioSummaryList.length > 0) {
         // callouts to other functions to set data from other tables
         await this.setAlertsForPortfolios(portfolioSummaryList);
+        await this.setFundingStatusForPortfolios(portfolioSummaryList);
         if (searchDTO.fundingStatuses.length > 0) {
           portfolioSummaryList =
             await this.filterPortfoliosByFundingStatuses({portfolioSummaryList, searchDTO});
