@@ -92,12 +92,12 @@
         <div class="h1">{{_selectedTaskOrder.totalFundsSpent}}</div>
       </v-card>
     </div>
-    <div>
+    <div class="mt-10">
       <v-data-table
         :headers="tableHeaders"
         :items="tableData"
         hide-default-footer
-        class="_csp-admin-log border1 border-base-lighter"
+        class="_clin-table border1 border-base-lighter"
       >
         <!-- eslint-disable vue/valid-v-slot -->
         <template v-slot:body="props">
@@ -106,9 +106,16 @@
             <tr
               class="row-item"
               :class="{'bg-info-lighter': item.status === 'Processing'}"
-              v-for="item in props.items" :key="item.email"
+              v-for="item in props.items" :key="item.CLINNumber"
             >
-              <td>{{item.email}}</td>
+              <td>
+                <div class="d-flex flex-column font-weight-400">
+                  {{item.CLINNumber}}
+                  <span class="font-size-12 text-base">
+                    {{item.CLINTitle}}
+                  </span>
+                </div>
+              </td>
               <td>
                 <div class="d-flex align-center">
                   <div
@@ -124,18 +131,82 @@
                   </div>
                   <div class="d-flex flex-column font-weight-500">
                     {{item.status}}
-                    <span
-                      v-if="item.status === 'Failed'"
-                      class="font-size-12 text-base"
-                    >
-                        CSP account already exist
-                      </span>
                   </div>
                 </div>
 
               </td>
-              <td>{{item.createdBy}}</td>
-              <td>{{item.created}}</td>
+              <td>
+                <div class="d-flex flex-column">
+                  {{item.PoP.PoP}}
+                  <span
+                    v-if="item.status !== 'Option pending'
+                    || item.status !== 'Option exercised'"
+                    class="font-size-12 text-base d-flex"
+                  >
+                    <ATATSVGIcon
+                      v-if="item.status === 'At-Risk'
+                      || item.status === 'Expiring PoP'"
+                      width="14"
+                      height="16"
+                      name="warning"
+                      color="warning-dark2"
+                      class="mr-1"
+                    />
+                    {{item.PoP.expiration}}
+                  </span>
+                </div>
+              </td>
+              <td>{{item.totalCLINValue}}</td>
+              <td>{{item.obligatedFunds}}</td>
+              <td>
+                <div
+                  class="d-flex flex-column">
+                  <div
+                    :class="{'text-error font-weight-500': item.status === 'Delinquent'}"
+                    class="d-flex align-center justify-end"
+                  >
+                    {{item.totalFundsSpent}}
+                    <span
+                      :class="{'text-error font-weight-500': item.status === 'Delinquent'}"
+                      class="font-size-12 text-base ml-3">
+                    ({{item.fundsRemaining.percent}}%)
+                  </span>
+                  </div>
+                  <div
+                    v-if="item.status === 'Delinquent'"
+                    class="d-flex justify-end font-size-12 text-error
+                     font-weight-500 align-center justify-end"
+                  >
+                    <ATATSVGIcon
+                      v-if="item.status === 'Delinquent'"
+                      name="errorFilled"
+                      width="13"
+                      height="13"
+                      color="error"
+                      class="mr-1"
+                    />
+                    Overspent
+                  </div>
+                    <div
+                      v-else
+                      class="d-flex font-size-12 align-center justify-end"
+                      :class="{
+                      'text-base-darkest': item.status === 'Funding At-Risk',
+                      'text-base': item.status !== 'Funding At-Risk',
+                      }"
+                    >
+                      <ATATSVGIcon
+                        v-if="item.status === 'Funding At-Risk'"
+                        name="warning"
+                        width="14"
+                        height="12"
+                        color="warning-dark2"
+                        class="mr-1"
+                      />
+                      {{item.fundsRemaining.fundsRemaining}}
+                    </div>
+                </div>
+              </td>
             </tr>
           </template>
           </tbody>
@@ -143,9 +214,21 @@
         <!-- eslint-disable vue/valid-v-slot -->
         <template v-slot:footer>
           <div class="_table-pagination">
-              <span class="mr-11 font-weight-400 font-size-14">
-              Showing
-            </span>
+              <div class="mr-auto pl-6 font-weight-400 font-size-14">
+                <a
+                  @click="toggle"
+                  role="button"
+                >
+                  {{ showHide() }} inactive CLINs
+                </a>
+                <span class="font-size-14 text-base ml-2">
+                  ({{inActiveCount}})
+                </span>
+              </div>
+            <div>Total obligated funds</div>
+            <div>Total Clin Value</div>
+            <div>Total</div>
+            <div>Hide inactive Clins</div>
           </div>
         </template>
       </v-data-table>
@@ -194,14 +277,18 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-property-decorator";
 import { TaskOrderCardData } from "../../../../../types/Global";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
+import { toCurrencyString } from "@/helpers";
+
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import format from "date-fns/format";
+import { differenceInDays } from "date-fns";
 @Component({
   components: {
     TaskOrderCard,
@@ -215,6 +302,81 @@ export default class TaskOrderDetails extends Vue {
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
 
   public transitionGroup = ""
+  public tableData:{
+    CLINNumber:string,
+    CLINTitle:string,
+    PoP: { PoP:string,expiration:string },
+    obligatedFunds:string,
+    totalCLINValue:string,
+    totalFundsSpent:string,
+    fundsRemaining: {percent:string, fundsRemaining:string},
+    status:string
+  }[] = [];
+  public showInactive = false
+  @Watch("showInactive")
+  public showHide():string {
+    return this.showInactive? 'Hide':'Show'
+  }
+  public inActiveCount = 0;
+  public statusImg = {
+    "On Track":{
+      name: "taskAlt",
+      width: "17",
+      height: "17",
+      color: "success-dark",
+      bgColor:"bg-success-lighter"
+    },
+    "Option exercised":{
+      name: "requestQuote",
+      width: "13",
+      height: "16",
+      color: "info-dark",
+      bgColor:"bg-info-lighter"
+    },
+    "Option pending":{
+      name: "optionPending",
+      width: "16",
+      height: "16",
+      color: "info-dark",
+      bgColor:"bg-info-lighter"
+    },
+    "At-Risk":{
+      name: "warningAmber",
+      width: "18",
+      height: "15",
+      color: "warning-dark2",
+      bgColor:"bg-warning-lighter"
+    },
+    "Funding At-Risk":{
+      name: "warningAmber",
+      width: "18",
+      height: "15",
+      color: "warning-dark2",
+      bgColor:"bg-warning-lighter"
+    },
+    "Expiring PoP":{
+      name: "warningAmber",
+      width: "18",
+      height: "15",
+      color: "warning-dark2",
+      bgColor:"bg-warning-lighter"
+    },
+    "Expired PoP":{
+      name: "failed",
+      width: "16",
+      height: "16",
+      color: "error",
+      bgColor:"bg-error-lighter"
+    },
+    "Delinquent":{
+      name: "failed",
+      width: "16",
+      height: "16",
+      color: "error",
+      bgColor:"bg-error-lighter"
+    }
+  };
+
 
 
   public obligatedFundsToolTip = "Total of all obligations (i.e. funded CLINs) in the base period" +
@@ -236,15 +398,167 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public tableHeaders: Record<string, string>[] = [
-    { text: "CLIN", value: "clin" },
+    { text: "CLIN", value: "CLINNumber" },
     { text: "Status", value: "status" },
     { text: "Period of performance", value: "PoP" },
     { text: "Total CLIN value", value: "totalCLINValue" },
     { text: "Obligated funds", value: "obligatedFunds" },
-    { text: "Total funds spent", value: "totalFundsSpent" },
+    { text: "Total funds spent (%)", value: "totalFundsSpent" },
   ];
 
+  public CLINNumber = [
+    "1001",
+    "1002",
+    "1003",
+    "1004",
+    "1005",
+    "1006",
+    "1007",
+    "1008",
+  ];
+  public CLINTitle = [
+    "Cloud Unclassified",
+    "Cloud Support",
+    "Cloud Support",
+    "Cloud Support",
+    "Travel",
+    "Travel",
+    "Classified",
+    "Classified"
+  ];
+  public PoPStart = [
+    "2022-01-01",
+    "2022-01-01",
+    "2022-01-01",
+    "2022-11-01",
+    "2022-01-01",
+    "2022-12-20",
+    "2022-01-01",
+    "2022-01-01"
+  ];public PoPEnd = [
+    "2022-12-31",
+    "2022-12-31",
+    "2022-12-31",
+    "2022-12-31",
+    "2022-12-31",
+    "2022-12-31",
+    "2022-12-31",
+    "2022-12-31"
+  ];
+  public obligatedFunds = [
+    "1000000",
+    "0",
+    "0",
+    "1000000",
+    "1000000",
+    "1000000",
+    "1000000",
+    "1000000",
+  ];
+  public totalCLINValue = [
+    "1000000",
+    "1000000",
+    "1000000",
+    "1000000",
+    "1000000",
+    "1000000",
+    "1000000",
+    "1000000",
+  ];
+  public totalFundsSpent = [
+    "500000",
+    "0",
+    "0",
+    "500000",
+    "500000",
+    "500000",
+    "500000",
+    "1000000"
+  ];
+  public status = [
+    "On Track",
+    "Option exercised",
+    "Option pending",
+    "At-Risk",
+    "Funding At-Risk",
+    "Expiring PoP",
+    "Expired PoP",
+    "Delinquent"
+  ];
+  public toggle():void {
+    this.showInactive = !this.showInactive
+  }
+  public fundsRemaining(obligatedFunds:string, fundsSpent:string):
+    {percent:string,fundsRemaining:string} {
+    console.log(Number(fundsSpent),Number(obligatedFunds))
+    if(obligatedFunds == "0" && fundsSpent == "0"){
+      return {
+        percent: "0",
+        fundsRemaining: ""
+      }
+    }
+    let percent = Math.round((Number(fundsSpent) / Number(obligatedFunds)) * 100)
+    let remaining = Number(obligatedFunds)-Number(fundsSpent)
+    return {
+      percent: String(percent),
+      fundsRemaining:"$" + toCurrencyString(remaining) + " remaining"
+    }
+  }
+
+  public monthsToExpiration(start:string,end:string): { PoP:string, expiration:string } {
+    let expiration = "";
+    const [sYear,sMonth,sDay] = start.split("-")
+    const [eYear,eMonth,eDay] = end.split("-")
+    const startDate = format(new Date(Number(sYear),Number(sMonth)-1,Number(sDay)),"MMM dd, yyyy")
+    const endDate = format(new Date(Number(eYear),Number(eMonth)-1,Number(eDay)),"MMM dd, yyyy")
+    const daysOrMonthDiffernce = differenceInDays(
+      new Date(Number(eYear),Number(eMonth)-1,Number(eDay)),
+      new Date(Number(sYear),Number(sMonth)-1,Number(sDay))
+    )
+    if(daysOrMonthDiffernce < 90){
+      expiration = `${daysOrMonthDiffernce} days to expiration`
+    }
+    else {
+      expiration = `${Math.ceil(daysOrMonthDiffernce / 30)} months to expiration`
+    }
+    return {
+      PoP: `${startDate} - ${endDate}`,
+      expiration,
+    }
+  }
+  public createTableData(): void {
+    for (let i = 0; i < this.CLINNumber.length; i++) {
+      const CLIN = {
+        CLINNumber:"",
+        CLINTitle:"",
+        PoP:{
+          PoP:"",
+          expiration:""
+        },
+        obligatedFunds:"",
+        totalCLINValue:"",
+        totalFundsSpent:"",
+        fundsRemaining: {percent:"", fundsRemaining:""},
+        status:""
+      };
+      let idx = i;
+      if(this.status[idx] === 'Option pending' || this.status[idx] === 'Expired PoP') {
+        this.inActiveCount++
+      }
+      CLIN.CLINNumber = this.CLINNumber[idx];
+      CLIN.CLINTitle = this.CLINTitle[idx];
+      CLIN.PoP = this.monthsToExpiration(this.PoPStart[idx],this.PoPEnd[idx])
+      CLIN.obligatedFunds = "$" + toCurrencyString(Number(this.obligatedFunds[idx]));
+      CLIN.totalCLINValue = "$" + toCurrencyString(Number(this.totalCLINValue[idx]));
+      CLIN.totalFundsSpent = "$" + toCurrencyString(Number(this.totalFundsSpent[idx]));
+      CLIN.status = this.status[idx];
+      CLIN.fundsRemaining = this.fundsRemaining(this.obligatedFunds[idx],this.totalFundsSpent[idx])
+      this.tableData.push(CLIN);
+    }
+  }
+
   public async loadOnEnter(): Promise<void> {
+    this.createTableData()
     this.transitionGroup = "transition-group";
   }
   public  mounted(): void {

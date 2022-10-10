@@ -27,6 +27,7 @@ import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
 import DisaLogo from "@/components/icons/DisaLogo.vue";
 import Email from "@/components/icons/Email.vue";
+import ErrorFilled from "@/components/icons/ErrorFilled.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
@@ -81,6 +82,7 @@ import WarningAmber from "@/components/icons/WarningAmber.vue";
     DisaLogo,
     Edit,
     Email,
+    ErrorFilled,
     ExclamationMark,
     ExternalLink,
     Failed,
@@ -154,6 +156,7 @@ export default class ATATSVGIcon extends Vue {
     { "disabled": "c9c9c9" },
     { "disabled-dark": "adadad"},
     { "white": "ffffff" },
+    { "warning-dark2": "e9a514" },
   ]
 
   private mounted(): void{

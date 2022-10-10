@@ -37,6 +37,8 @@ import { Component } from "vue-property-decorator";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import { TaskOrderCardData } from "../../../../../types/Global";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
+import PortfolioData from "@/store/portfolio";
+import PortfolioSummary from "@/store/portfolioSummary";
 
 @Component({
   components: {
@@ -124,6 +126,16 @@ export default class TaskOrder extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    // this will be needed to map the data to the taskOrders
+    // const currentPortfolio = await PortfolioData.getPortfolioData()
+    // const portfolioList = await PortfolioSummary.portfolioSummaryList
+    // if(portfolioList){
+    //   const currentPortfolioData = portfolioList.filter(
+    //     (portfolio)=> portfolio.sys_id == currentPortfolio.sysId
+    //   )
+    //   console.log(currentPortfolioData[0].task_orders)
+    //
+    // }
     this.createCardData();
   }
   public  mounted(): void {
