@@ -112,13 +112,20 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  private async getPortfolioSummaryList(searchQuery: string): Promise<PortfolioSummaryDTO[]> {
+  private async getPortfolioSummaryList(filterObject: {
+    searchQuery: string,
+    searchDTO: PortfolioSummarySearchDTO
+  }): Promise<PortfolioSummaryDTO[]> {
+    const searchQuery = filterObject.searchQuery;
+    const searchDTO = filterObject.searchDTO;
     await this.ensureInitialized();
     // const query =
     //   "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
     const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_query: searchQuery
+        sysparm_query: searchQuery,
+        sysparm_limit: searchDTO.limit,
+        sysparm_offset: searchDTO.offset
       }
     };
     return await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
@@ -383,7 +390,7 @@ export class PortfolioSummaryStore extends VuexModule {
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
       }
-      let portfolioSummaryList = await this.getPortfolioSummaryList(searchQuery);
+      let portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
       if (portfolioSummaryList && portfolioSummaryList.length > 0) {
         // callouts to other functions to set data from other tables
         await this.setAlertsForPortfolios(portfolioSummaryList);
