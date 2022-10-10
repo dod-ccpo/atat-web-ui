@@ -127,10 +127,10 @@
                     :class="statusImg[item.status].bgColor"
                   >
                     <ATATSVGIcon
-                      :name="statusImg[item.status].name"
-                      :width="statusImg[item.status].width"
-                      :height="statusImg[item.status].height"
-                      :color="statusImg[item.status].color"
+                      :name="statusImgs[item.status].name"
+                      :width="Number(statusImgs[item.status].width)"
+                      :height="Number(statusImgs[item.status].height)"
+                      :color="statusImgs[item.status].color"
                     />
                   </div>
                   <div class="d-flex flex-column font-weight-500">
@@ -398,66 +398,6 @@ export default class TaskOrderDetails extends Vue {
     withInactiveFundsSpent:0,
   }
   public inActiveCount = 0;
-  public statusImg = {
-    "On Track":{
-      name: "taskAlt",
-      width: "17",
-      height: "17",
-      color: "success-dark",
-      bgColor:"bg-success-lighter"
-    },
-    "Option exercised":{
-      name: "requestQuote",
-      width: "13",
-      height: "16",
-      color: "info-dark",
-      bgColor:"bg-info-lighter"
-    },
-    "Option pending":{
-      name: "optionPending",
-      width: "16",
-      height: "16",
-      color: "info-dark",
-      bgColor:"bg-info-lighter"
-    },
-    "At-Risk":{
-      name: "warningAmber",
-      width: "18",
-      height: "15",
-      color: "warning-dark2",
-      bgColor:"bg-warning-lighter"
-    },
-    "Funding At-Risk":{
-      name: "warningAmber",
-      width: "18",
-      height: "15",
-      color: "warning-dark2",
-      bgColor:"bg-warning-lighter"
-    },
-    "Expiring PoP":{
-      name: "warningAmber",
-      width: "18",
-      height: "15",
-      color: "warning-dark2",
-      bgColor:"bg-warning-lighter"
-    },
-    "Expired PoP":{
-      name: "failed",
-      width: "16",
-      height: "16",
-      color: "error",
-      bgColor:"bg-error-lighter"
-    },
-    "Delinquent":{
-      name: "failed",
-      width: "16",
-      height: "16",
-      color: "error",
-      bgColor:"bg-error-lighter"
-    }
-  };
-
-
 
   public obligatedFundsToolTip = "Total of all obligations (i.e. funded CLINs) in the base period" +
     " and exercised option periods. This may represent 100% of your total task order value, or a" +
@@ -651,9 +591,38 @@ export default class TaskOrderDetails extends Vue {
       this.tableData.push(CLIN);
     }
   }
+  public statusImgs: Record<string, Record<string, string | undefined>> = {};
+
+  public generateStatusImgs(
+    key?: string,
+    name?: string,
+    width?: string,
+    height?: string,
+    color?: string,
+    bgColor?: string
+  ): void {
+    const imgKey = key || "";
+    this.statusImgs[imgKey] = {
+      name, width, height, color, bgColor
+    }
+  }
 
   public async loadOnEnter(): Promise<void> {
     this.createTableData()
+    const statusImgValues = [
+      ["Delinquent", "failed", "16", "16", "error", "bg-error-lighter"],
+      ["Expired PoP","failed", "16", "16", "error", "bg-error-lighter"],
+      ["Expiring PoP","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
+      ["Funding At-Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
+      ["At-Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
+      ["Option pending","optionPending", "16", "16", "info-dark", "bg-info-lighter"],
+      ["Option exercised","requestQuote", "13", "16", "info-dark", "bg-info-lighter"],
+      ["On Track","taskAlt", "17", "17", "success-dark", "bg-success-lighter"],
+
+    ];
+    statusImgValues.forEach((values) => {
+      this.generateStatusImgs(...values);
+    });
   }
   public  mounted(): void {
     this.loadOnEnter();
