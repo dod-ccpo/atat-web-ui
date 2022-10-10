@@ -217,7 +217,7 @@
         </template>
         <!-- eslint-disable vue/valid-v-slot -->
         <template v-slot:footer>
-          <div class="_table-pagination">
+          <div class="_table-pagination pr-6">
               <div class="mr-auto pl-6 font-weight-400 font-size-14">
                 <a
                   @click="toggle"
@@ -246,7 +246,7 @@
             </div>
             <div
               style="min-width: 155px"
-              class="d-flex font-weight-700 text-base-darkest mr-6 justify-end"
+              class="d-flex font-weight-700 text-base-darkest mr-5 justify-end"
             >
               <span v-if="!showInactive">
                 ${{convertToString(totalFundingObj.totalObligatedFunds)}}
@@ -256,7 +256,7 @@
               </span>
             </div>
             <div
-              style="min-width: 216px">
+              style="min-width: 210px">
                <div v-if="!showInactive">
                  <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
                    ${{convertToString(totalFundingObj.totalFundsSpent)}}
