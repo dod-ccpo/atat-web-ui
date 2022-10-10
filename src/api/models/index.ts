@@ -16,7 +16,7 @@ export interface AlertDTO extends BaseTableDTO {
   alert_type: string;
   clin: string;
   last_notification_date: string;
-  portfolio: string;
+  portfolio: string | ReferenceColumn;
   task_order: string;
   threshold_violation_amount: string;
 }
@@ -311,6 +311,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
     pop_end_date: string;
     pop_start_date: string;
     funds_total: string;
+    funds_spent_task_order?: number; // total of is_actual=true costs across all clins of task order
 }
 
 export interface CostsDTO extends BaseTableDTO {
@@ -343,6 +344,7 @@ export interface ClinDTO extends BaseTableDTO {
   clin_status: string;
   funds_total: string;
   cost_records?: CostsDTO[]
+  funds_spent_clin?: number; // total of all is_actual=true costs of the clin
 }
 
 export interface EDAResponse {
@@ -372,6 +374,7 @@ export interface EnvironmentInstanceDTO extends BaseTableDTO {
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
   csp: ReferenceColumn;
+  active_task_order: ReferenceColumn;
   csp_display: string; // "<<cloud_service_package.name >>"
   dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
@@ -381,12 +384,25 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   pop_start_date: string; // "2022-01-01 << task_order.pop_start_date >>",
   funds_obligated: number; // "<< sum of obligated values in all qualifying clins >>",
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
+  funding_status: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT')[]; //DERIVED from alerts
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
+  alerts: AlertDTO[];
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
   name:string;
   // other columns as needed
+}
+
+export interface PortfolioSummarySearchDTO {
+  role: "ALL" | "MANAGED"; // one of these two values should always exist
+  fundingStatuses: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT')[];
+  csps: string[]; // to not search for specific csps, send empty array
+  portfolioStatus: "ACTIVE" | "PROCESSING" | ""; // empty string for both statuses
+  sort: "name" | "sys_updated_on"; // one of these two values should always exist
+  searchString?: string;
+  limit?: number;
+  offset?: number;
 }
