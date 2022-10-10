@@ -850,8 +850,7 @@ import Portfolio, {
   FundingAlertData,
   FundingAlertTypes,
 } from "@/store/portfolio";
-
-import { toCurrencyString, getIdText, roundTo100 } from "@/helpers";
+import { createDateStr, toCurrencyString, getIdText, roundTo100 } from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
 import { add, startOfMonth, subDays } from "date-fns";
@@ -868,6 +867,7 @@ import _ from "lodash";
 import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
+import PortfolioData from "@/store/portfolio";
 
 @Component({
   components: {
@@ -992,18 +992,6 @@ export default class PortfolioDashboard extends Vue {
     idiqClin: string;
   }[] = [];
 
-  public createDateStr(dateStr: string, period: boolean): string {
-    const parsedDate = parseISO(dateStr, { additionalDigits: 1 });
-    const date = new Date(parsedDate.setHours(0, 0, 0, 0));
-    const m = this.monthAbbreviations[date.getMonth()];
-    const y = date.getFullYear();
-    const d = date.getUTCDate();
-    const neverPeriodMonths = ["March", "April", "May", "June", "July"];
-    const noPeriodMonth = neverPeriodMonths.indexOf(m) !== -1;
-    const p = period && !noPeriodMonth ? "." : "";
-    return m + p + " " + d + ", " + y;
-  }
-
   public calculateTimeToExpiration(): void {
     const popEndDate = parseISO(this.taskOrder.pop_end_date, {
       additionalDigits: 1,
@@ -1046,7 +1034,7 @@ export default class PortfolioDashboard extends Vue {
     const runOutISODate = formatISO(runOutOfFundsDate, {
       representation: "date",
     });
-    this.runOutOfFundsDate = this.createDateStr(runOutISODate, true);
+    this.runOutOfFundsDate = createDateStr(runOutISODate, true);
   }
 
   public donutChartPercentages: number[] = [];
@@ -1385,8 +1373,8 @@ export default class PortfolioDashboard extends Vue {
       const idiqClinNo = idiqClin.idiq_clin;
       obj.clinStatus = idiqClin.clin_status;
       obj.clinLabel = idiqClin.idiq_clin_label || "";
-      obj.popStart = this.createDateStr(idiqClin.pop_start_date, true);
-      obj.popEnd = this.createDateStr(idiqClin.pop_end_date, true);
+      obj.popStart = createDateStr(idiqClin.pop_start_date, true);
+      obj.popEnd = createDateStr(idiqClin.pop_end_date, true);
 
       obj.totalFundsSpent = toCurrencyString(
         this.idiqClinSpendData[idiqClinNo].idiqClinTotalSpend,
@@ -1471,10 +1459,11 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async getDashboardData():Promise<PortFolioDashBoardDTO>{
-    return this.dashboardService.getdata("1000000001234");
+    return this.dashboardService.getdata(this.activeTaskOrderNumber);
   }
-
+  public activeTaskOrderNumber = "";
   public async loadOnEnter(): Promise<void> {
+    this.activeTaskOrderNumber = PortfolioData.activeTaskOrderNumber;
     const data = await this.getDashboardData();
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
@@ -1503,8 +1492,8 @@ export default class PortfolioDashboard extends Vue {
       100 - this.fundsSpentPercent,
     ];
 
-    this.popStart = this.createDateStr(this.taskOrder.pop_start_date, true);
-    this.popEnd = this.createDateStr(this.taskOrder.pop_end_date, true);
+    this.popStart = createDateStr(this.taskOrder.pop_start_date, true);
+    this.popEnd = createDateStr(this.taskOrder.pop_end_date, true);
 
     this.calculateTimeToExpiration();
 
@@ -1735,7 +1724,7 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async getAlerts(): Promise<FundingAlertData> {
-    return Portfolio.getFundingTrackerAlert("1000000001234");
+    return Portfolio.getFundingTrackerAlert(this.activeTaskOrderNumber);
   }
 
   public async processAlerts(): Promise<void> {

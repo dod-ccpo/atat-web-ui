@@ -4,6 +4,7 @@ import {
   buildClassificationCheckboxList, 
   buildClassificationLabel,
   createPeriodCheckboxItems,
+  createDateStr,
 } from "./index";
 import _ from "lodash";
 import Periods from "@/store/periods";
@@ -102,5 +103,11 @@ describe("testing src/helpers/index.ts", () => {
         "value": "period_02"
       }
     ])
-  });    
+  }); 
+  
+  it("Test createDateStr", async () => {
+    const value = await createDateStr('2022-12-31', true);
+    expect(value).toBe("Dec. 31, 2022");
+  })
+  
 });
