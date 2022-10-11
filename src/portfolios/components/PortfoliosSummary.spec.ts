@@ -24,6 +24,12 @@ const portfolios: PortfolioSummaryDTO[] = [
     portfolio_managers: "",
     funds_spent: 5000,
     task_orders: [],
+    active_task_order: {
+      link: "",
+      value: ""
+    },
+    alerts: [],
+    funding_status: []
     /* eslint-enable camelcase */
   },
   {
@@ -57,6 +63,12 @@ const portfolios: PortfolioSummaryDTO[] = [
         funds_total: "10000",    
       }
     ],
+    active_task_order: {
+      link: "",
+      value: ""
+    },
+    alerts: [],
+    funding_status: []
     /* eslint-enable camelcase */
   }
 
@@ -80,8 +92,12 @@ describe("Testing index Component", () => {
   });
 
   it("tests loadOnEnter()", async () => {
-    jest.spyOn(PortfolioSummaryStore, "loadPortfolioSummaryList").mockImplementation(
-      () => Promise.resolve(portfolios));
+    jest.spyOn(PortfolioSummaryStore, "searchPortfolioSummaryList").mockImplementation(
+      () => Promise.resolve({
+        // eslint-disable-next-line camelcase
+        total_count: 2,
+        portfolioSummaryList: portfolios
+      }));
     await wrapper.vm.loadOnEnter();
     expect(wrapper.vm.$data.portfolioCardData.length).toBe(2);
   });
