@@ -20,7 +20,6 @@ import { PortfolioCardData, ToastObj } from "types/Global";
 import PortfolioSummary from "@/store/portfolioSummary";
 import Toast from "@/store/toast";
 import { StatusTypes } from "@/store/acquisitionPackage";
-
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { formatDistanceToNow } from "date-fns";
 

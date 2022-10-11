@@ -89,6 +89,7 @@ export default class Portfolios extends Vue {
   }
 
   public tabClicked(tabType: string): void {
+    console.log(tabType)
     this.activeTab = tabType;
   }
 
