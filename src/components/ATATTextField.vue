@@ -5,8 +5,8 @@
         :id="id + '_text_field_label'"
         class="form-field-label mr-1"
         :for="id + '_text_field'"
-      >
-        {{ label }}
+      > 
+        <span v-html="label"></span>
         <span v-if="optional" class="optional">
           Optional
         </span>
@@ -163,6 +163,7 @@ export default class ATATTextField extends Vue  {
   }
 
   public resetValidation(): void {
+    this.errorMessages = [];
     this.$refs.atatTextField.errorBucket = [];
     this.$refs.atatTextField.resetValidation();
   }
