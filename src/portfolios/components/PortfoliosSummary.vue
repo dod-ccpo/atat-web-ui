@@ -170,7 +170,7 @@ export default class PortfoliosSummary extends Vue {
         const filters = this.queryParams[key]?.filter(
           obj => obj.value !== removedFilter.value
         ) || [];
-        PortfolioData.setportfolioSummaryQueryParams({[key]: filters });
+        PortfolioData.setPortfolioSummaryQueryParams({[key]: filters });
       }
       break;
     }
@@ -180,7 +180,7 @@ export default class PortfoliosSummary extends Vue {
 
   public async clearAllFilters(): Promise<void> {
     this.filterChips = [];
-    await PortfolioData.resetQueryParams();
+    PortfolioData.resetFilters();
   }
 
   public get queryParams(): PortfolioSummaryQueryParams {
@@ -217,8 +217,8 @@ export default class PortfoliosSummary extends Vue {
     await this.setPortfolioSummaryDTO();
   }
 
-  public sortPortfolios(valObj: Record<string, string>): void {
-    this.setQueryParams("sort", valObj.newSelectedValue);
+  public async sortPortfolios(valObj: Record<string, string>): Promise<void> {
+    await this.setQueryParams("sort", valObj.newSelectedValue);
   }
 
   public searchPortfolios(): void {
@@ -230,10 +230,9 @@ export default class PortfoliosSummary extends Vue {
   }
 
   public async setQueryParams(key: string, value: string): Promise<void> {
-    await PortfolioData.setportfolioSummaryQueryParams({
+    await PortfolioData.setPortfolioSummaryQueryParams({
       [key]: value
     });
-    await this.setPortfolioSummaryDTO();
   }
 
   public showFilters = false;
@@ -285,7 +284,6 @@ export default class PortfoliosSummary extends Vue {
   public async loadPortfolioData(): Promise<void> {
     this.portfolioCardData = [];
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
-    debugger;
     // below used to map stub CSPs to actual CSPs until have actual CSP data
     const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
     const csps = ["aws", "azure", "google", "oracle", "oracle"];

@@ -180,20 +180,31 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Action
+  public async resetFilters(): Promise<void> {
+    await this.setPortfolioSummaryQueryParams(
+      {
+        role: "ALL",
+        fundingStatuses: [],
+        csps: [],
+      }
+    );  
+
+  }
+
+  @Action
   public async resetQueryParams(): Promise<void> {
     await this.doResetQueryParams();
   }
 
   @Mutation
   public async doResetQueryParams(): Promise<void> {
-    this.portfolioSummaryQueryParams = _.cloneDeep(this.defaultQueryParams);
+    Object.assign(this.portfolioSummaryQueryParams, this.defaultQueryParams);
   }
 
   @Action
-  public async setportfolioSummaryQueryParams(
+  public async setPortfolioSummaryQueryParams(
     params: PortfolioSummaryQueryParams
   ): Promise<void> {
-    debugger;
     await this.doSetportfolioSummaryQueryParams(params);
   }
 

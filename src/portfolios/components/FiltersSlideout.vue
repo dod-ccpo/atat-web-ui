@@ -93,10 +93,7 @@ export default class FilterSlideout extends Vue {
   }
 
   public async resetFilters(): Promise<void> {
-    this.selectedPortfolioRole = "ALL";
-    this.selectedFundingStatuses = [];
-    this.selectedCSPs = [];
-    this.applyFilters();
+    PortfolioData.resetFilters();
   }
 
   public async applyFilters(): Promise<void> {
@@ -106,7 +103,7 @@ export default class FilterSlideout extends Vue {
     const selectedCSPObjs = this.cspOptions.filter(
       obj => this.selectedCSPs.includes(obj.value)
     );
-    PortfolioData.setportfolioSummaryQueryParams({
+    PortfolioData.setPortfolioSummaryQueryParams({
       role: this.selectedPortfolioRole,
       fundingStatuses: selectedFundingStatusObjs,
       csps: selectedCSPObjs,
