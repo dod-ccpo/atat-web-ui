@@ -81,6 +81,8 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
+import Steps from "@/store/steps";
+import { routeNames } from "@/router/stepper";
 @Component({
   components: {
     PortfoliosSummary,
@@ -114,6 +116,7 @@ export default class Packages extends Vue {
     this.activeTab = tabType;
   }
   public toAcquisitions(): void {
+    this.$router.push({name: routeNames.ProjectOverview })
     AppSections.changeActiveSection("Acquisition Package Builder");
   }
   private getIdText(string: string) {
