@@ -196,7 +196,7 @@ export class PortfolioSummaryStore extends VuexModule {
     const portfolioSummaryList = filterObject.portfolioSummaryList;
     const searchDTO = filterObject.searchDTO;
     return portfolioSummaryList.filter(portfolio => {
-      return portfolio.portfolio_status !== "PROCESSING" &&
+      return portfolio.portfolio_status !== "PROCESSING" && // processing folios do not have alerts
         (portfolio.funding_status.filter(portfolioFundingStatus =>
           searchDTO.fundingStatuses.indexOf(portfolioFundingStatus) !== -1).length > 0)
     })
