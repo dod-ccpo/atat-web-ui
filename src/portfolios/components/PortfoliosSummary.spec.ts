@@ -98,7 +98,7 @@ describe("Testing index Component", () => {
         total_count: 2,
         portfolioSummaryList: portfolios
       }));
-    await wrapper.vm.loadOnEnter();
+    await wrapper.vm.loadPortfolioData();
     expect(wrapper.vm.$data.portfolioCardData.length).toBe(2);
   });
 
