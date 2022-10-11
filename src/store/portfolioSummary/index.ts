@@ -1,6 +1,9 @@
 /* eslint-disable camelcase */
-import {CloudServiceProviderDTO, PortfolioSummaryDTO, PortfolioSummarySearchDTO,
-  ReferenceColumn} from "@/api/models";
+import {
+  CloudServiceProviderDTO, PortfolioSummaryDTO, PortfolioSummaryMetadataAndDataDTO,
+  PortfolioSummarySearchDTO,
+  ReferenceColumn
+} from "@/api/models";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
@@ -111,6 +114,27 @@ export class PortfolioSummaryStore extends VuexModule {
     return query;
   }
 
+  /**
+   * Returns the count of all portfolios WITHOUT using the offset and limit parameters BUT
+   * using all the other search parameters. This count is expected to be used for pagination.
+   */
+  @Action({rawError: true})
+  private async getPortfolioSummaryCount(searchQuery: string): Promise<number> {
+    await this.ensureInitialized();
+    const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_fields: 'name',
+        sysparm_query: searchQuery
+      }
+    };
+    const portfolioList = await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
+    return portfolioList.length;
+  }
+
+  /**
+   * Returns a list of all portfolios that match the search query. The results are limited to
+   * offset and limit parameters of the pagination.
+   */
   @Action({rawError: true})
   private async getPortfolioSummaryList(filterObject: {
     searchQuery: string,
@@ -119,8 +143,6 @@ export class PortfolioSummaryStore extends VuexModule {
     const searchQuery = filterObject.searchQuery;
     const searchDTO = filterObject.searchDTO;
     await this.ensureInitialized();
-    // const query =
-    //   "portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
     const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
       params: {
         sysparm_query: searchQuery,
@@ -167,8 +189,8 @@ export class PortfolioSummaryStore extends VuexModule {
         if (spendingAlert) {
           const threshold = Number(spendingAlert.threshold_violation_amount
             .replace("%", ""));
-          // TODO: check if there can be more spending alerts outside of these 2 for a portfolio
-          //  If there can be more, the if-else block needs to be updated two if blocks
+          // TODO: check if there can be more SPENDING_ACTUAL alerts outside of these 2 for a
+          //  portfolio. If there can be more, the if-else block needs to be updated two if blocks
           if (threshold > 75 && threshold <= 99) {
             portfolio.funding_status.push("AT_RISK");
           } else { // threshold >= 100;
@@ -196,7 +218,7 @@ export class PortfolioSummaryStore extends VuexModule {
     const portfolioSummaryList = filterObject.portfolioSummaryList;
     const searchDTO = filterObject.searchDTO;
     return portfolioSummaryList.filter(portfolio => {
-      return portfolio.portfolio_status !== "PROCESSING" && // processing folios do not have alerts
+      return portfolio.portfolio_status === "ACTIVE" && // processing folios do not have alerts
         (portfolio.funding_status.filter(portfolioFundingStatus =>
           searchDTO.fundingStatuses.indexOf(portfolioFundingStatus) !== -1).length > 0)
     })
@@ -384,15 +406,17 @@ export class PortfolioSummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   public async searchPortfolioSummaryList(searchDTO: PortfolioSummarySearchDTO):
-    Promise<PortfolioSummaryDTO[]> {
+    Promise<PortfolioSummaryMetadataAndDataDTO> {
     try {
       const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
       let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO)
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
       }
-      let portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
-      if (portfolioSummaryList && portfolioSummaryList.length > 0) {
+      const portfolioSummaryCount = await this.getPortfolioSummaryCount(searchQuery);
+      let portfolioSummaryList: PortfolioSummaryDTO[];
+      if (portfolioSummaryCount > 0) {
+        portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
         // callouts to other functions to set data from other tables
         await this.setAlertsForPortfolios(portfolioSummaryList);
         await this.setFundingStatusForPortfolios(portfolioSummaryList);
@@ -407,10 +431,13 @@ export class PortfolioSummaryStore extends VuexModule {
         // all asynchronous calls are done before this step & data is available for aggregation
         this.computeAllAggregationsAndPopRollup(portfolioSummaryList);
         this.setPortfolioSummaryList(portfolioSummaryList); // caches the list
-        return portfolioSummaryList;
       } else {
-        return [];
+        portfolioSummaryList = [];
       }
+      return {
+        total_count: portfolioSummaryCount,
+        portfolioSummaryList: portfolioSummaryList
+      };
     } catch (error) {
       throw new Error("error occurred searching portfolio summary list :" + error);
     }

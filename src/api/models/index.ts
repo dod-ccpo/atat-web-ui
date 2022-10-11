@@ -391,6 +391,11 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   alerts: AlertDTO[];
 }
 
+export interface PortfolioSummaryMetadataAndDataDTO {
+  total_count: number;
+  portfolioSummaryList: PortfolioSummaryDTO[];
+}
+
 export interface CloudServiceProviderDTO extends BaseTableDTO{
   name:string;
   // other columns as needed
