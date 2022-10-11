@@ -96,6 +96,7 @@
       <v-data-table
         :headers="tableHeaders"
         :items="tableData"
+        :disable-sort="true"
         hide-default-footer
         class="_clin-table border1 border-base-lighter"
       >
@@ -106,6 +107,7 @@
             <tr
               class="row-item"
               :class="[
+                { '_new-clin-group' : item.startNewClinGroup},
                 {'bg-info-lighter': item.status === 'Processing'},
                 {'d-none': item.status === 'Expired PoP' && !showInactive },
                 {'d-none': item.status === 'Option pending' && !showInactive },
@@ -124,7 +126,7 @@
                 <div class="d-flex align-center">
                   <div
                     class="_icon-circle"
-                    :class="statusImg[item.status].bgColor"
+                    :class="statusImgs[item.status].bgColor"
                   >
                     <ATATSVGIcon
                       :name="statusImgs[item.status].name"
@@ -143,8 +145,7 @@
                 <div class="d-flex flex-column">
                   {{item.PoP.PoP}}
                   <span
-                    v-if="item.status !== 'Option pending'
-                    || item.status !== 'Option exercised'"
+                    v-if="item.isActive"
                     class="font-size-12 text-base d-flex"
                   >
                     <ATATSVGIcon
@@ -160,8 +161,8 @@
                   </span>
                 </div>
               </td>
-              <td>{{item.totalCLINValue}}</td>
-              <td>{{item.obligatedFunds}}</td>
+              <td align="right">{{item.totalCLINValue}}</td>
+              <td align="right">{{item.obligatedFunds}}</td>
               <td>
                 <div
                   class="d-flex flex-column">
@@ -256,7 +257,7 @@
               </span>
             </div>
             <div
-              style="min-width: 210px">
+              style="min-width: 180px">
                <div v-if="!showInactive">
                  <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
                    ${{convertToString(totalFundingObj.totalFundsSpent)}}
@@ -352,7 +353,7 @@ import { toCurrencyString } from "@/helpers";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import format from "date-fns/format";
-import { differenceInDays } from "date-fns";
+import { differenceInDays, differenceInMonths } from "date-fns";
 @Component({
   components: {
     TaskOrderCard,
@@ -433,12 +434,12 @@ export default class TaskOrderDetails extends Vue {
   public CLINNumber = [
     "1001",
     "1002",
-    "1003",
     "1004",
     "1005",
     "1006",
-    "1007",
     "1008",
+    "2001",
+    "0001",
   ];
   public CLINTitle = [
     "Cloud Unclassified",
@@ -453,11 +454,11 @@ export default class TaskOrderDetails extends Vue {
   public PoPStart = [
     "2022-01-01",
     "2022-01-01",
-    "2022-01-01",
+    "2022-12-20",
     "2022-11-01",
     "2022-01-01",
-    "2022-12-20",
     "2022-01-01",
+    "2022-12-20",
     "2022-01-01"
   ];public PoPEnd = [
     "2022-12-31",
@@ -471,12 +472,12 @@ export default class TaskOrderDetails extends Vue {
   ];
   public obligatedFunds = [
     "1000000",
+    "1000000",
+    "1000000",
+    "1000000",
+    "1000000",
+    "1000000",
     "0",
-    "0",
-    "1000000",
-    "1000000",
-    "1000000",
-    "1000000",
     "1000000",
   ];
   public totalCLINValue = [
@@ -491,23 +492,22 @@ export default class TaskOrderDetails extends Vue {
   ];
   public totalFundsSpent = [
     "500000",
+    "500000",
+    "500000",
+    "500000",
+    "500000",
+    "1000000",
     "0",
-    "0",
     "500000",
-    "500000",
-    "500000",
-    "500000",
-    "1000000"
   ];
   public status = [
     "On Track",
-    "Option exercised",
-    "Option pending",
-    "At-Risk",
+    "Option exercised", "At-Risk",
     "Funding At-Risk",
     "Expiring PoP",
+    "Delinquent",
+    "Option pending",
     "Expired PoP",
-    "Delinquent"
   ];
   public toggle():void {
     this.showInactive = !this.showInactive
@@ -542,7 +542,7 @@ export default class TaskOrderDetails extends Vue {
       expiration = `${daysOrMonthDiffernce} days to expiration`
     }
     else {
-      expiration = `${Math.ceil(daysOrMonthDiffernce / 30)} months to expiration`
+      expiration = `${differenceInMonths(new Date(end), new Date())} months to expiration`
     }
     return {
       PoP: `${startDate} - ${endDate}`,
@@ -550,8 +550,11 @@ export default class TaskOrderDetails extends Vue {
     }
   }
   public createTableData(): void {
+    let prevClinNo = "";
+    const inactiveStatuses = ["Option pending", "Option exercised", "Expired PoP"]
     for (let i = 0; i < this.CLINNumber.length; i++) {
       const CLIN = {
+        isActive: !(inactiveStatuses.includes(this.status[i])),
         CLINNumber:"",
         CLINTitle:"",
         PoP:{
@@ -562,13 +565,16 @@ export default class TaskOrderDetails extends Vue {
         totalCLINValue:"",
         totalFundsSpent:"",
         fundsRemaining: {percent:"", fundsRemaining:""},
-        status:""
+        status:"",
+        startNewClinGroup:false
       };
       let idx = i;
 
-
-      if(this.status[idx] === 'Option pending' || this.status[idx] === 'Expired PoP') {
-        this.inActiveCount++
+      CLIN.status = this.status[idx];
+      if(!CLIN.isActive) {
+        if(CLIN.status !== 'Option exercised'){
+          this.inActiveCount++
+        }
         this.totalFundingObj.withInactiveTotal += Number(this.totalCLINValue[idx])
         this.totalFundingObj.withInactiveObligatedFunds += Number(this.obligatedFunds[idx])
         this.totalFundingObj.withInactiveFundsSpent += Number(this.totalFundsSpent[idx])
@@ -586,9 +592,15 @@ export default class TaskOrderDetails extends Vue {
       CLIN.obligatedFunds = "$" + toCurrencyString(Number(this.obligatedFunds[idx]));
       CLIN.totalCLINValue = "$" + toCurrencyString(Number(this.totalCLINValue[idx]));
       CLIN.totalFundsSpent = "$" + toCurrencyString(Number(this.totalFundsSpent[idx]));
-      CLIN.status = this.status[idx];
       CLIN.fundsRemaining = this.fundsRemaining(this.obligatedFunds[idx],this.totalFundsSpent[idx])
+
+      // double-check logic for new groups - first 2 numbers?
+      if (prevClinNo && CLIN.CLINNumber.charAt(0) !== prevClinNo.charAt(0)) {
+        CLIN.startNewClinGroup = true;
+      }
+
       this.tableData.push(CLIN);
+      prevClinNo = CLIN.CLINNumber;
     }
   }
   public statusImgs: Record<string, Record<string, string | undefined>> = {};
