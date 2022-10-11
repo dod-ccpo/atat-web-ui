@@ -77,22 +77,22 @@ const getEntityTotals = (
   costs: CostsDTO[],
   entityName: string
 ): Record<string, EntitySpending> => {
-  const cspGroups = groupBy(costs, entityName);
-  const cspSpendings: Record<string, EntitySpending> = {};
-  for (const [key, value] of Object.entries(cspGroups)) {
+  const entityGroups = groupBy(costs, entityName);
+  const entitySpendings: Record<string, EntitySpending> = {};
+  for (const [key, value] of Object.entries(entityGroups)) {
     const total = value.reduce<number>((prev, current) => {
       const cost = current.is_actual === "true" ? Number(current.value) : 0;
       const total = prev + cost;
       return total;
     }, 0);
 
-    cspSpendings[key] = {
+    entitySpendings[key] = {
       name: key,
       total,
     };
   }
 
-  return cspSpendings;
+  return entitySpendings;
 };
 
 export class DashboardService {
