@@ -289,11 +289,12 @@ export default class PortfoliosSummary extends Vue {
 
   public async loadPortfolioData(): Promise<void> {
     this.portfolioCardData = [];
-    const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
+
     // below used to map stub CSPs to actual CSPs until have actual CSP data
     const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
     const csps = ["aws", "azure", "google", "oracle", "oracle"];
-    debugger;
+
+    const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
     storeData.portfolioSummaryList.forEach((portfolio) => {
       let cardData: PortfolioCardData = {};
       cardData.csp = csps[cspStubs.indexOf(portfolio.csp_display)];
