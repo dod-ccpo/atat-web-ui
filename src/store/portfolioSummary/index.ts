@@ -117,6 +117,8 @@ export class PortfolioSummaryStore extends VuexModule {
   /**
    * Returns the count of all portfolios WITHOUT using the offset and limit parameters BUT
    * using all the other search parameters. This count is expected to be used for pagination.
+   *
+   * TODO: this call can be avoided if server exposes "x-Total-Count" from the backend
    */
   @Action({rawError: true})
   private async getPortfolioSummaryCount(searchQuery: string): Promise<number> {
