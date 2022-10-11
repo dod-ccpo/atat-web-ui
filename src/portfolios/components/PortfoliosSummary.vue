@@ -74,7 +74,7 @@ export default class PortfoliosSummary extends Vue {
     const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
     const csps = ["aws", "azure", "google", "oracle", "oracle"];
 
-    storeData.forEach((portfolio) => {
+    storeData.portfolioSummaryList.forEach((portfolio) => {
       // NOTE: ARCHIVED status is post MVP
       if (portfolio.portfolio_status.toLowerCase() !== StatusTypes.Archived.toLowerCase()) {
         let cardData: PortfolioCardData = {};
