@@ -84,7 +84,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 
 import ATATSearch from "@/components/ATATSearch.vue"
 import ATATSelect from "@/components/ATATSelect.vue"
@@ -122,6 +122,8 @@ import { PortfolioSummarySearchDTO } from "@/api/models";
 })
 
 export default class PortfoliosSummary extends Vue {
+  @Prop({ default: "ALL" }) public activeTab!: string;
+
   public portfolioCardData: PortfolioCardData[] = [];
   public isHaCCAdmin = false;
 
@@ -208,6 +210,11 @@ export default class PortfoliosSummary extends Vue {
     };
     Object.assign(this.portfolioSearchDTO, newQPs);
     await this.loadPortfolioData();
+  }
+
+  @Watch("activeTab")
+  public async activeTabChanged(newVal: string): Promise<void> {
+    await this.setQueryParams("portfolioStatus", newVal !== "ALL" ? newVal : "");
   }
 
   @Watch("queryParams", { deep: true })
