@@ -70,7 +70,7 @@ import PortfolioData from "@/store/portfolio";
 })
 
 export default class FilterSlideout extends Vue {  
-  public selectedPortfolioRole = "all";
+  public selectedPortfolioRole = "ALL";
   public portfolioRoles: FilterOption[] = PortfolioData.summaryFilterRoles;
   public selectedFundingStatuses: string[] = []; 
   private fundingStatuses: FilterOption[] = PortfolioData.summaryFilterFundingStatuses;
@@ -78,7 +78,7 @@ export default class FilterSlideout extends Vue {
   private cspOptions: FilterOption[] = PortfolioData.summaryFilterCSPs;
 
   public get resetDisabled(): boolean {
-    return this.selectedPortfolioRole === "all"
+    return this.selectedPortfolioRole === "ALL"
       && this.selectedCSPs.length === 0
       && this.selectedFundingStatuses.length === 0;
   }
@@ -87,13 +87,13 @@ export default class FilterSlideout extends Vue {
 
   @Watch("portfolioSummaryQueryParams", { deep: true })
   public queryParamsUpdated(newParams: PortfolioSummaryQueryParams): void {
-    this.selectedPortfolioRole = newParams.role || "all";
+    this.selectedPortfolioRole = newParams.role || "ALL";
     this.selectedFundingStatuses = newParams.fundingStatuses?.map(obj => obj.value) || [];
     this.selectedCSPs = newParams.csps?.map(obj => obj.value) || [];
   }
 
   public async resetFilters(): Promise<void> {
-    this.selectedPortfolioRole = "all";
+    this.selectedPortfolioRole = "ALL";
     this.selectedFundingStatuses = [];
     this.selectedCSPs = [];
     this.applyFilters();

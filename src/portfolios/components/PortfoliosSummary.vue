@@ -110,7 +110,7 @@ import { StatusTypes } from "@/store/acquisitionPackage";
 
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { formatDistanceToNow } from "date-fns";
-import {PortfolioSummarySearchDTO} from "@/api/models";
+import {PortfolioSummaryDTO, PortfolioSummarySearchDTO} from "@/api/models";
 
 @Component({
   components: {
@@ -138,7 +138,7 @@ export default class PortfoliosSummary extends Vue {
 
   public async generateFilterChips(): Promise<void> {
     this.filterChips = [];
-    if (this.queryParams.role && this.queryParams.role !== "all") {
+    if (this.queryParams.role && this.queryParams.role !== "ALL") {
       const role = this.roles.find(obj => obj.value === this.queryParams.role);
       if (role) {
         this.filterChips.push(role);
@@ -162,7 +162,7 @@ export default class PortfoliosSummary extends Vue {
     const key = removedFilter.type;
     switch (key) {
     case "role":
-      this.setQueryParams("role", "all");
+      this.setQueryParams("role", "ALL");
       break;
     case "fundingStatuses": 
     case "csps": {
@@ -175,26 +175,46 @@ export default class PortfoliosSummary extends Vue {
       break;
     }
     }
+
   }
 
-  public clearAllFilters(): void {
+  public async clearAllFilters(): Promise<void> {
     this.filterChips = [];
-    this.setQueryParams("role", "all");
-    PortfolioData.setportfolioSummaryQueryParams(
-      {
-        fundingStatuses: [],
-        csps: [],
-      }
-    );
+    await PortfolioData.resetQueryParams();
   }
 
   public get queryParams(): PortfolioSummaryQueryParams {
     return PortfolioData.portfolioSummaryQueryParams;
   }
 
+  public getValuesFromFilterOptions(objects: FilterOption[] | undefined): string[] {
+    const values: string[] = [];
+    if (objects && objects.length) {
+      objects.forEach(obj => values.push(obj.value));
+    }
+    return values;
+  }
+
+  public async setPortfolioSummaryDTO(): Promise<void> {
+    const params = this.queryParams;
+    const fundingStatuses = this.getValuesFromFilterOptions(params.fundingStatuses);
+    const csps = this.getValuesFromFilterOptions(params.csps);
+    const newQPs: Record<string, string | string[] | undefined> = {
+      role: params.role,
+      sort: params.sort,
+      portfolioStatus: params.portfolioStatus,
+      searchString: params.searchString,
+      fundingStatuses: fundingStatuses,
+      csps: csps,
+    };
+    Object.assign(this.portfolioSearchDTO, newQPs);
+    await this.loadPortfolioData();
+  }
+
   @Watch("queryParams", { deep: true })
-  public queryParamsChange(): void {
+  public async queryParamsChange(): Promise<void> {
     this.generateFilterChips();
+    await this.setPortfolioSummaryDTO();
   }
 
   public sortPortfolios(valObj: Record<string, string>): void {
@@ -213,9 +233,7 @@ export default class PortfoliosSummary extends Vue {
     await PortfolioData.setportfolioSummaryQueryParams({
       [key]: value
     });
-
-    // make API call to load portfolios based on search/sort/filter params
-    await PortfolioData.queryPortfolioList();
+    await this.setPortfolioSummaryDTO();
   }
 
   public showFilters = false;
@@ -252,21 +270,22 @@ export default class PortfoliosSummary extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    await this.loadOnEnter();
+    await this.loadPortfolioData();
   }
 
-  public async loadOnEnter(): Promise<void> {
-    let portfolioSearchDTO: PortfolioSummarySearchDTO = {
-      role: "ALL",
-      // csps: ['CSP_D'],
-      csps: [],
-      sort: "name",
-      portfolioStatus: "",
-      fundingStatuses: ["AT_RISK","DELINQUENT","ON_TRACK", "EXPIRING_SOON"],
-      searchString: ""
-    }
-    const storeData = await PortfolioSummary.searchPortfolioSummaryList(portfolioSearchDTO);
-    
+  public portfolioSearchDTO: PortfolioSummarySearchDTO = {
+    role: "ALL",
+    sort: "name",
+    portfolioStatus: "",
+    searchString: "",
+    fundingStatuses: [],
+    csps: [],
+  }
+
+  public async loadPortfolioData(): Promise<void> {
+    this.portfolioCardData = [];
+    const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
+    debugger;
     // below used to map stub CSPs to actual CSPs until have actual CSP data
     const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
     const csps = ["aws", "azure", "google", "oracle", "oracle"];

@@ -18,6 +18,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import {StatusTypes} from "@/store/acquisitionPackage";
 import { AlertDTO } from "@/api/models";
 import AlertService from "@/services/alerts";
+import _ from "lodash";
 
 const ATAT_PORTFOLIO_DATA_KEY = 'ATAT_PORTFOLIO_DATA_KEY';
 
@@ -94,13 +95,13 @@ export class PortfolioDataStore extends VuexModule {
   public summaryFilterRoles: FilterOption[] = [
     {
       label: "All of my portfolios",
-      value: "all",
+      value: "ALL",
       id: "All",
       type: "role",
     },
     {
       label: "Managed by me",
-      value: "managed",
+      value: "MANAGED",
       id: "Managed",
       type: "role",
     },
@@ -109,25 +110,25 @@ export class PortfolioDataStore extends VuexModule {
   public summaryFilterFundingStatuses: FilterOption[] = [
     {
       label: "On track",
-      value: "OnTrack",
+      value: "ON_TRACK",
       id: "OnTrack",
       type: "fundingStatuses",
     },
     {
       label: "Expiring soon",
-      value: "ExpiringSoon",
+      value: "EXPIRING_SOON",
       id: "ExpiringSoon",
       type: "fundingStatuses",
     },
     {
       label: "Funding at-risk",
-      value: "AtRisk",
+      value: "AT_RISK",
       id: "AtRisk",
       type: "fundingStatuses",
     },
     {
       label: "Delinquent",
-      value: "Delinquent",
+      value: "DELINQUENT",
       id: "Delinquent",
       type: "fundingStatuses",
     },
@@ -136,44 +137,56 @@ export class PortfolioDataStore extends VuexModule {
   public summaryFilterCSPs: FilterOption[] = [
     {
       label: "Amazon Web Services (AWS)",
-      value: "aws",
+      value: "CSP_A",
       id: "Amazon",
       abbreviation: "AWS",
       type: "csps",
     },
     {
       label: "Azure",
-      value: "azure",
+      value: "CSP_B",
       id: "Azure",
       type: "csps",
     },
     {
       label: "Google Cloud Platform (GCP)",
-      value: "google",
+      value: "CSP_C",
       id: "GoogleCloud",
       abbreviation: "GCP",
       type: "csps",
     },
     {
       label: "Oracle",
-      value: "oracle",
+      value: "CSP_D",
       id: "Oracle",
       type: "csps",
     },
   ];
 
-
-  public portfolioSummaryQueryParams: PortfolioSummaryQueryParams = {
-    portfolioStatus: "all", // all, processing, active
-    sort: "alpha",
+  public defaultQueryParams: PortfolioSummaryQueryParams = {
+    portfolioStatus: "", // empty string for ALL ... "ACTIVE" | "PROCESSING" | ""
+    sort: "name", // "name" | "sys_updated_on"
     searchString: "",
-    role: "all", // all, managed
-    fundingStatuses: [],
+    role: "ALL", // all, managed
+    fundingStatuses: [], // 'ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT'
     csps: [],
   }
 
+  public portfolioSummaryQueryParams: PortfolioSummaryQueryParams 
+    = _.cloneDeep(this.defaultQueryParams);
+
   public get portfolioSummaryQPs(): PortfolioSummaryQueryParams {
     return this.portfolioSummaryQueryParams;
+  }
+
+  @Action
+  public async resetQueryParams(): Promise<void> {
+    await this.doResetQueryParams();
+  }
+
+  @Mutation
+  public async doResetQueryParams(): Promise<void> {
+    this.portfolioSummaryQueryParams = _.cloneDeep(this.defaultQueryParams);
   }
 
   @Action
@@ -189,12 +202,6 @@ export class PortfolioDataStore extends VuexModule {
     params: PortfolioSummaryQueryParams
   ): Promise<void> {
     Object.assign(this.portfolioSummaryQueryParams, params);
-  }
-
-  @Action
-  public async queryPortfolioList(): Promise<void> {
-    // make API call based on this.portfolioSummaryQueryParams values
-    
   }
 
   // store session properties
