@@ -246,8 +246,8 @@
               </span>
             </div>
             <div
-              style="min-width: 155px"
-              class="d-flex font-weight-700 text-base-darkest mr-5 justify-end"
+              style="min-width: 144px"
+              class="d-flex font-weight-700 text-base-darkest mr-6 justify-end"
             >
               <span v-if="!showInactive">
                 ${{convertToString(totalFundingObj.totalObligatedFunds)}}
