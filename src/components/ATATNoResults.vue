@@ -29,7 +29,7 @@
       Please
       <span v-if="searchString">try another search term</span>
       <span v-if="hasBoth"> or </span>
-      <span v-if="hasFilters"> modify filters to be less specific.</span>
+      <span v-if="hasFilters"> modify filters to be less specific</span>.
     </p>
 
     <v-btn 
