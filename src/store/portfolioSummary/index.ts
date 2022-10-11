@@ -107,7 +107,7 @@ export class PortfolioSummaryStore extends VuexModule {
         "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
     }
     query = query + "^portfolio_status!=ARCHIVED"
-    query = query + "^ORDERBY" + searchDTO.sort;
+    query = query + "^ORDERBYDESC" + searchDTO.sort;
     return query;
   }
 

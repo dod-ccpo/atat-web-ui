@@ -128,10 +128,10 @@ export default class PortfoliosSummary extends Vue {
   public isHaCCAdmin = false;
 
  public searchString = "";
-  public selectedSort = "alpha";
+  public selectedSort = "name";
   public sortOptions: SelectData[] = [
-    { text: "Portfolio name A-Z", value: "alpha" },
-    { text: "Recently modified", value: "modified" },
+    { text: "Portfolio name A-Z", value: "name" },
+    { text: "Recently modified", value: "sys_updated_on" },
   ];
 
   public filterChips: FilterOption[] = []
