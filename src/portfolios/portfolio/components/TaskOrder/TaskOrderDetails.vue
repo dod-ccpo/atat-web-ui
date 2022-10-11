@@ -262,35 +262,22 @@
                  <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
                    ${{convertToString(totalFundingObj.totalFundsSpent)}}
                    <span class="font-size-12 text-base ml-3 font-weight-500">
-                     ({{
-                       Math.round(
-                         (totalFundingObj.totalFundsSpent / totalFundingObj.totalObligatedFunds)
-                         * 100)
-                     }}%)
+                     ({{totals.percent }}%)
                    </span>
                  </div>
                  <span class="d-flex font-size-12 text-base justify-end">
-                 ${{convertToString(
-                   totalFundingObj.totalObligatedFunds - totalFundingObj.totalFundsSpent
-                 )}} remaining
+                 {{totals.fundsRemaining}}
                 </span>
               </div>
               <div v-else>
                 <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
                   ${{convertToString(totalFundingObj.withInactiveFundsSpent)}}
                   <span class="font-size-12 text-base ml-3 font-weight-500 ">
-                     ({{
-                      Math.round(
-                        (totalFundingObj.withInactiveFundsSpent
-                          / totalFundingObj.withInactiveObligatedFunds)
-                        * 100)
-                    }}%)
+                     ({{totalsWithInactive.percent}}%)
                    </span>
                 </div>
                 <span class="d-flex font-size-12 text-base justify-end">
-                 ${{convertToString(
-                 totalFundingObj.withInactiveObligatedFunds - totalFundingObj.withInactiveFundsSpent
-                )}} remaining
+                 {{totalsWithInactive.fundsRemaining}}
                 </span>
               </div>
             </div>
@@ -398,6 +385,9 @@ export default class TaskOrderDetails extends Vue {
     totalFundsSpent:0,
     withInactiveFundsSpent:0,
   }
+
+  public totalsWithInactive = {percent:"",fundsRemaining:""}
+  public totals = {percent:"",fundsRemaining:""}
   public inActiveCount = 0;
 
   public obligatedFundsToolTip = "Total of all obligations (i.e. funded CLINs) in the base period" +
@@ -512,7 +502,7 @@ export default class TaskOrderDetails extends Vue {
   public toggle():void {
     this.showInactive = !this.showInactive
   }
-  public fundsRemaining(obligatedFunds:string, fundsSpent:string):
+  public fundsRemaining(obligatedFunds:string | number, fundsSpent:string | number):
     {percent:string,fundsRemaining:string} {
     if(obligatedFunds == "0" && fundsSpent == "0"){
       return {
@@ -598,10 +588,15 @@ export default class TaskOrderDetails extends Vue {
       if (prevClinNo && CLIN.CLINNumber.charAt(0) !== prevClinNo.charAt(0)) {
         CLIN.startNewClinGroup = true;
       }
-
       this.tableData.push(CLIN);
       prevClinNo = CLIN.CLINNumber;
     }
+    this.totalsWithInactive = this.fundsRemaining(
+      this.totalFundingObj.withInactiveObligatedFunds, this.totalFundingObj.withInactiveFundsSpent
+    )
+    this.totals = this.fundsRemaining(
+      this.totalFundingObj.totalObligatedFunds, this.totalFundingObj.totalFundsSpent
+    )
   }
   public statusImgs: Record<string, Record<string, string | undefined>> = {};
 
