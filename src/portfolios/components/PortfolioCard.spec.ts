@@ -36,6 +36,7 @@ describe("Testing index Component", () => {
       totalObligated: "",
       fundsSpent: "",
       fundsSpentPercent: "",
+      fundingAlertChipString: "expired"
     };
 
   beforeEach(() => {

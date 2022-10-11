@@ -407,6 +407,7 @@ export interface PortfolioCardData extends Portfolio {
   totalObligated?: string;
   fundsSpent?: string;
   fundsSpentPercent?: string;
+  isManager?: boolean;
 }
 
 export interface PortfolioSummaryQueryParams {

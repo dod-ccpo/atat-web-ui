@@ -27,7 +27,6 @@
             </span>
           </template>
           <div class="_tooltip-content-wrap">
-            {{ CSPs[cardData.csp].title }}
           </div>
         </v-tooltip>
       </div>
@@ -39,9 +38,18 @@
             id="PortfolioName"
             role="button"
             tabindex="0"
-            class="h3 _text-decoration-none"
+            class="h3 _text-decoration-none d-flex align-center"
           >
             {{ cardData.title }}
+            <ATATSVGIcon 
+              v-if="cardData.isManager"
+              name="manageAccount"
+              width="20"
+              height="17"
+              color="base"
+              class="ml-3"
+            />
+
           </a>
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">

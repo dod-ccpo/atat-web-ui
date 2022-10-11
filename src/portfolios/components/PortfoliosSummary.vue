@@ -286,6 +286,9 @@ export default class PortfoliosSummary extends Vue {
     fundingStatuses: [],
     csps: [],
   }
+  
+  // TEMP hard-coded logged-in user Maria Missionowner
+  public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
 
   public async loadPortfolioData(): Promise<void> {
     this.portfolioCardData = [];
@@ -295,8 +298,10 @@ export default class PortfoliosSummary extends Vue {
     const csps = ["aws", "azure", "google", "oracle", "oracle"];
 
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
+    
     storeData.portfolioSummaryList.forEach((portfolio) => {
       let cardData: PortfolioCardData = {};
+      cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
       cardData.csp = csps[cspStubs.indexOf(portfolio.csp_display)];
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
