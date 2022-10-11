@@ -355,8 +355,8 @@ export default class JWCCDashboard extends Vue {
     "U.S. ARMY": "Army",
     "U.S. MARINE CORPS": "Marine Corps",
     "U.S. NAVY": "Navy",
-    "U.S. SPACE FORCE": "Space Force",
-    "DEFENSE INFORMATION SYSTEMS AGENCY (DISA)": "Other",
+    "UNITED STATES SPACE FORCE": "Space Force",
+    [this.disaKey]: "Other",
   };
   public agencyLabels: string[] = [];
   public agencyChecked: boolean[] = [];
@@ -423,16 +423,13 @@ export default class JWCCDashboard extends Vue {
 
       const agencyMonthlySpendTotals: number[] = [0];
 
-      // for demo only, cost data uses USAF but we are showing as Space Force
-      agency = agency === "US_SPACE_FORCE" ? "US_AIR_FORCE_EUROPE" : agency;
-
       this.costGroups.forEach((costGroup, index) => {
         // last costGroup is projected costs. do not use for line chart data
         if (index !== this.costGroups.length - 1) {
-          const thisAgencyCosts = costGroup.costs.filter((obj) => {
-            return obj.agency === agency;
+          const thisAgencyCosts = costGroup.costs.filter((obj: CostsDTO) => {
+            return obj["agency.title"] === agency;
           });
-          const monthTotal = thisAgencyCosts.reduce((a, obj) => {
+          const monthTotal = thisAgencyCosts.reduce((a, obj: CostsDTO) => {
             const amt = obj.value ? parseInt(obj.value) : 0;
             return a + amt;
           }, 0);
@@ -440,9 +437,6 @@ export default class JWCCDashboard extends Vue {
           agencyMonthlySpendTotals.push(total);
         }
       });
-
-      // for demo only - swap key back to space force
-      agency = agency === "US_AIR_FORCE_EUROPE" ? "US_SPACE_FORCE" : agency;
 
       this.agencySpendData[agency] = agencyMonthlySpendTotals;
 
@@ -537,13 +531,6 @@ export default class JWCCDashboard extends Vue {
 
     this.fundsSpentByAgency = data.fundsSpentByAgency;
     const spendByAgency = Object.values(this.fundsSpentByAgency);
-
-    // Space Force temporarily using USAF Europe for demo purposes only since
-    // space force has no key currently in SNOW data
-    const spaceForceIndex = spendByAgency.findIndex(
-      o => o.name.toString() === "US_AIR_FORCE_EUROPE"
-    );
-    spendByAgency[spaceForceIndex].name = "US_SPACE_FORCE";
 
     // DISA/Fourth Estate should always be last in array
     const disaIndex = spendByAgency.findIndex(o => o.name.toString() === this.disaKey);

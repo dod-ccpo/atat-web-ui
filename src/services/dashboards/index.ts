@@ -102,7 +102,6 @@ export class DashboardService {
     try {
       const taskOrderRequestConfig: AxiosRequestConfig = {
         params: {
-          // eslint-disable-next-line camelcase
           sysparm_query: `task_order_number=${taskOrderNumber}`,
         },
       };
@@ -121,19 +120,16 @@ export class DashboardService {
       const clinRequests = clinIds.map((clin) => api.clinTable.retrieve(clin));
       let clins = await Promise.all(clinRequests);
 
-      // eslint-disable-next-line camelcase
       const clin_labels = await api.systemChoices.getChoices(
         ClinTable,
         "idiq_clin"
       );
 
       clins = clins.map((clin) => {
-        // eslint-disable-next-line camelcase
         const label = clin_labels.find(
           (label) => label.value === clin.idiq_clin
         );
         if (label) {
-          // eslint-disable-next-line camelcase
           clin.idiq_clin_label = label.label;
         }
 
@@ -149,13 +145,11 @@ export class DashboardService {
 
       const fields =
         "clin,csp,csp.name,year_month," +
-        "task_order_number,portfolio,organization,agency,is_actual,value";
+        "task_order_number,portfolio,organization,agency.title,is_actual,value";
 
       const costsRequestConfig: AxiosRequestConfig = {
         params: {
-          // eslint-disable-next-line camelcase
           sysparm_query: costsQuery,
-          // eslint-disable-next-line camelcase
           sysparm_fields: fields,
         },
       };
@@ -203,13 +197,11 @@ export class DashboardService {
 
     const costFields =
       "clin,csp,csp.name,year_month," +
-      "task_order_number,portfolio,organization,agency,is_actual,value";
+      "task_order_number,portfolio,organization,agency.title,is_actual,value";
 
     const costsRequestConfig: AxiosRequestConfig = {
       params: {
-        // eslint-disable-next-line camelcase
         sysparm_query: costsQuery,
-        // eslint-disable-next-line camelcase
         sysparm_fields: costFields,
       },
     };
@@ -271,7 +263,7 @@ export class DashboardService {
       costGroups,
       fundsSpentToDate: getCostsTotalActual(costGroups),
       fundsSpentByCSP: getEntityTotals(costs, "csp.name"),
-      fundsSpentByAgency: getEntityTotals(costs, "agency"),
+      fundsSpentByAgency: getEntityTotals(costs, "agency.title"),
     };
   }
 }

@@ -323,15 +323,15 @@ export interface TaskOrderDTO extends BaseTableDTO {
 
 export interface CostsDTO extends BaseTableDTO {
   clin: ReferenceColumn | string;
-  csp: string;
+  csp: ReferenceColumn | string;
   "csp.name"?:string;
   year_month: string;
   task_order_number: string;
-  portfolio: string;
-  organization: string;
-  agency: string;
+  portfolio: ReferenceColumn | string;
+  organization: ReferenceColumn | string;
+  "agency.title"?: string;
   is_actual: string;
-  value: number;
+  value: string;
 }
 
 export interface CostGroupDTO {
