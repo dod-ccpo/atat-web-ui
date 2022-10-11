@@ -401,7 +401,7 @@ export interface PortfolioSummarySearchDTO {
   fundingStatuses: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT')[];
   csps: string[]; // to not search for specific csps, send empty array
   portfolioStatus: "ACTIVE" | "PROCESSING" | ""; // empty string for both statuses
-  sort: "name" | "sys_updated_on"; // one of these two values should always exist
+  sort: "name" | "DESCsys_updated_on"; // one of these two values should always exist
   searchString?: string;
   limit?: number;
   offset?: number;
