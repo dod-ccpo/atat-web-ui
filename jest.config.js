@@ -53,6 +53,7 @@ module.exports = {
     "<rootDir>/src/api/**/*.spec.ts",
     "<rootDir>/src/action-handlers/**/*.spec.ts",
     "<rootDir>/src/portfolio/**/*.spec.ts",
+    "<rootDir>/src/packages/**/*.spec.ts",
     "<rootDir>/src/portfolios/**/*.spec.ts",
     "<rootDir>/src/documentReview/**/*.spec.ts",
     "<rootDir>/src/plugins/*.spec.ts",

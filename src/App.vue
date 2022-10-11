@@ -21,6 +21,7 @@ import ATATTopNavBar from "./components/ATATTopNavBar.vue";
 import AppSections from "@/store/appSections";
 import DocumentReview from "@/documentReview/Index.vue";
 import Portfolios from "@/portfolios/Index.vue";
+import Packages from "@/packages/Index.vue";
 
 @Component({
   components: {
@@ -56,6 +57,9 @@ export default class App extends Vue {
     case this.sectionTitles.DocumentReview:
       AppSections.setAppContentComponent(DocumentReview);
       break;  
+    case this.sectionTitles.Packages:
+      AppSections.setAppContentComponent(Packages);
+      break;
     }
   }
 
