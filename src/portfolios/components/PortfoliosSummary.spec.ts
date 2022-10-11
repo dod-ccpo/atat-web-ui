@@ -91,14 +91,14 @@ describe("Testing index Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("tests loadOnEnter()", async () => {
+  it("tests loadPortfolioData()", async () => {
     jest.spyOn(PortfolioSummaryStore, "searchPortfolioSummaryList").mockImplementation(
       () => Promise.resolve({
         // eslint-disable-next-line camelcase
         total_count: 2,
         portfolioSummaryList: portfolios
       }));
-    await wrapper.vm.loadOnEnter();
+    await wrapper.vm.loadPortfolioData();
     expect(wrapper.vm.$data.portfolioCardData.length).toBe(2);
   });
 
