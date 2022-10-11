@@ -131,7 +131,7 @@ export default class PortfoliosSummary extends Vue {
   public selectedSort = "name";
   public sortOptions: SelectData[] = [
     { text: "Portfolio name A-Z", value: "name" },
-    { text: "Recently modified", value: "sys_updated_on" },
+    { text: "Recently modified", value: "DESCsys_updated_on" },
   ];
 
   public filterChips: FilterOption[] = []
