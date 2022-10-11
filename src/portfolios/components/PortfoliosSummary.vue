@@ -288,40 +288,38 @@ export default class PortfoliosSummary extends Vue {
     const csps = ["aws", "azure", "google", "oracle", "oracle"];
 
     storeData.forEach((portfolio) => {
-      // NOTE: ARCHIVED status is post MVP
-      if (portfolio.portfolio_status.toLowerCase() !== StatusTypes.Archived.toLowerCase()) {
-        let cardData: PortfolioCardData = {};
-        cardData.csp = csps[cspStubs.indexOf(portfolio.csp_display)];
-        cardData.sysId = portfolio.sys_id;
-        cardData.title = portfolio.name;
-        cardData.status = portfolio.portfolio_status;
-        cardData.serviceAgency = portfolio.dod_component;
-        // lastModified - if status is "Processing" use "Started ... ago" string
-        if (cardData.status.toLowerCase() === StatusTypes.Processing.toLowerCase()) {
-          const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
-          cardData.lastModifiedStr = "Started " + agoString + " ago";
-        } else {
-          const updatedDate = createDateStr(portfolio.sys_updated_on, true);
-          cardData.lastModifiedStr = "Last modified " + updatedDate;
-        }
-        if (portfolio.task_orders && portfolio.task_orders.length) {
-          cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
-
-          const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
-          const popEnd = createDateStr(portfolio.task_orders[0].pop_end_date, true);
-          cardData.currentPoP = popStart + " - " + popEnd;
-        }
-
-        if (portfolio.portfolio_status.toLowerCase() !== StatusTypes.Processing.toLowerCase()) {
-          cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
-          cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
-          cardData.fundsSpentPercent = String(Math.round(
-            portfolio.funds_spent / portfolio.funds_obligated * 100
-          ));
-        }
-
-        this.portfolioCardData.push(cardData);
+      let cardData: PortfolioCardData = {};
+      cardData.csp = csps[cspStubs.indexOf(portfolio.csp_display)];
+      cardData.sysId = portfolio.sys_id;
+      cardData.title = portfolio.name;
+      cardData.status = portfolio.portfolio_status;
+      cardData.fundingStatus = portfolio.funding_status;
+      cardData.serviceAgency = portfolio.dod_component;
+      // lastModified - if status is "Processing" use "Started ... ago" string
+      if (cardData.status.toLowerCase() === StatusTypes.Processing.toLowerCase()) {
+        const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
+        cardData.lastModifiedStr = "Started " + agoString + " ago";
+      } else {
+        const updatedDate = createDateStr(portfolio.sys_updated_on, true);
+        cardData.lastModifiedStr = "Last modified " + updatedDate;
       }
+      if (portfolio.task_orders && portfolio.task_orders.length) {
+        cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
+
+        const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
+        const popEnd = createDateStr(portfolio.task_orders[0].pop_end_date, true);
+        cardData.currentPoP = popStart + " - " + popEnd;
+      }
+
+      if (portfolio.portfolio_status.toLowerCase() !== StatusTypes.Processing.toLowerCase()) {
+        cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
+        cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
+        cardData.fundsSpentPercent = String(Math.round(
+          portfolio.funds_spent / portfolio.funds_obligated * 100
+        ));
+      }
+
+      this.portfolioCardData.push(cardData);
     });
 
     // future ticket - set isHaCCAdmin value with data from backend when implemented

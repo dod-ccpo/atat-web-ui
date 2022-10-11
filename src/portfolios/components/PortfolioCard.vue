@@ -44,7 +44,7 @@
             {{ cardData.title }}
           </a>
         </div>
-        <div v-if="!isActive">
+        <div v-if="!isActive || cardData.fundingAlertChipString">
           <v-chip 
             :id="'StatusChip' + index" 
             :class="[
@@ -53,7 +53,7 @@
             ]" 
             label
           >
-            {{ cardData.status }}
+            {{ !isActive ? cardData.status : cardData.fundingAlertChipString }}
           </v-chip>
 
         </div>
@@ -126,7 +126,7 @@ import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
 import { MeatballMenuItem, PortfolioCardData } from "types/Global";
 import PortfolioData, { cspConsoleURLs } from "@/store/portfolio";
-import { getStatusChipBgColor } from "@/helpers";
+import { getStatusChipBgColor, toTitleCase } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
 import { StatusTypes } from "@/store/acquisitionPackage";
@@ -167,6 +167,10 @@ export default class PortfolioCard extends Vue {
     return this.cardData.status?.toLowerCase() === this.portfolioStatuses.Active.toLowerCase();
   }
 
+  public get hasFundingStatus(): boolean {
+    return (this.cardData.fundingStatus !== undefined && this.cardData.fundingStatus.length > 0);
+  }
+
   public getCSPConsoleURL(): string {
     return this.cardData.csp ? cspConsoleURLs[this.cardData.csp] : "";
   }
@@ -205,7 +209,10 @@ export default class PortfolioCard extends Vue {
   }
 
   public get statusChipBgColor(): string {
-    return getStatusChipBgColor(this.cardData.status ? this.cardData.status : "");
+    const status = this.cardData.status?.toLowerCase() === StatusTypes.Processing.toLowerCase()
+      ? this.cardData.status
+      : this.cardData.fundingAlertChipString;
+    return getStatusChipBgColor(status ? status : "");
   }
 
   public leavePortfolio(): void {
@@ -248,6 +255,19 @@ export default class PortfolioCard extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    if (this.cardData.fundingStatus && this.cardData.fundingStatus[0] !== "ON_TRACK") {
+      switch(this.cardData.fundingStatus[0]) {
+      case "AT_RISK":
+        this.cardData.fundingAlertChipString = StatusTypes.AtRisk;
+        break;
+      case "EXPIRING_SOON":
+        this.cardData.fundingAlertChipString = StatusTypes.ExpiringSoon;
+        break;
+      default:
+        this.cardData.fundingAlertChipString = toTitleCase(this.cardData.fundingStatus[0] || "")
+      }
+    }
+
     this.portfolioCardMenuItems = [
       { 
         title: "View funding tracker",
