@@ -110,7 +110,7 @@ import { StatusTypes } from "@/store/acquisitionPackage";
 
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { formatDistanceToNow } from "date-fns";
-import {PortfolioSummaryDTO, PortfolioSummarySearchDTO} from "@/api/models";
+import { PortfolioSummarySearchDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -175,7 +175,6 @@ export default class PortfoliosSummary extends Vue {
       break;
     }
     }
-
   }
 
   public async clearAllFilters(): Promise<void> {
@@ -330,4 +329,3 @@ export default class PortfoliosSummary extends Vue {
   }
 }
 </script>
-
