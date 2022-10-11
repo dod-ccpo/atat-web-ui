@@ -5,19 +5,19 @@
         <ATATSVGIcon
           id="CSPIcon"
           class="d-flex align-center"
-          :name="providers[cloudServiceProvider].img.name"
-          :width="providers[cloudServiceProvider].img.width"
-          :height="providers[cloudServiceProvider].img.height"
+          :name="providers[cloudServiceProvider.toLowerCase()].img.name"
+          :width="providers[cloudServiceProvider.toLowerCase()].img.width"
+          :height="providers[cloudServiceProvider.toLowerCase()].img.height"
         />
       </div>
       <div>
         <div>
           <div class="h3" id="CSPTitle">
-            Accessing your {{providers[cloudServiceProvider].title}}:
+            Accessing your {{providers[cloudServiceProvider.toLowerCase()].title}}:
           </div>
           <div class="d-flex align-center">
             <a id="CSPLink">
-              {{providers[cloudServiceProvider].link}}
+              {{providers[cloudServiceProvider.toLowerCase()].link}}
             </a>
             <span class="pl-2 d-flex">
             <ATATSVGIcon
@@ -28,7 +28,7 @@
               color="primary"
             />
           </span>
-        </div>
+          </div>
 
         </div>
         <hr class="my-4" />
@@ -38,11 +38,11 @@
             id="CSPDescription"
           >
             To login to your cloud resources, you must have
-            {{providers[cloudServiceProvider].accountName}} account.
+            {{providers[cloudServiceProvider.toLowerCase()].accountName}} account.
             As a portfolio manager, you can add administrators to grant full
             access to your CSP portal. Administrators will be able to manage
             all user access and permissions directly within
-            {{providers[cloudServiceProvider].withinName}}.
+            {{providers[cloudServiceProvider.toLowerCase()].withinName}}.
             <a role="button" id="LearnMoreLink"
                tabindex="0"
                @click="openSlideoutPanel"
@@ -81,7 +81,7 @@ export default class CSPCard extends Vue {
   @Prop() private cloudServiceProvider!: string;
 
   public providers = {
-    "Azure":{
+    "azure":{
       title: "Azure Portal",
       link: cspConsoleURLs.azure,
       accountName:"an Azure",
@@ -92,7 +92,7 @@ export default class CSPCard extends Vue {
         height:"62",
       }
     },
-    "AWS":{
+    "aws":{
       title: "AWS Management Console",
       link: cspConsoleURLs.aws,
       accountName:"an AWS",
@@ -103,7 +103,7 @@ export default class CSPCard extends Vue {
         height:"48"
       }
     },
-    "Google":{
+    "google":{
       title: "Google Cloud Console",
       link: cspConsoleURLs.google,
       accountName:"a Google Cloud",
@@ -114,7 +114,7 @@ export default class CSPCard extends Vue {
         height:"71"
       }
     },
-    "Oracle":{
+    "oracle":{
       title: "Oracle Cloud Console",
       link: cspConsoleURLs.oracle,
       accountName:"an OCI",

@@ -16,6 +16,7 @@
 
           <ATATCheckboxGroup
             id="UsedForEstimatingCheckboxes"
+            groupLabel="What information and/or tools were used to generate your estimated prices?"
             class="copy-max-width mb-10"
             :value.sync="selectedTools"
             :hasOtherValue="true"
