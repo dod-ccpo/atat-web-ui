@@ -163,7 +163,7 @@ export default class AppPackageBuilder extends Vue {
   }
 
   private setNavButtons(step: StepInfo): void {
-    this.noPrevious = !step.prev;
+    this.noPrevious = false;
     this.backButtonText = step.backButtonText || "Back";
     this.continueButtonText = step.continueButtonText || "Continue";
     if (step.additionalButtons) {

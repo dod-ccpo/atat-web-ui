@@ -111,7 +111,6 @@ export default class Packages extends Vue {
   public activeTab = this.tabItems[0].type;
 
   public tabClicked(tabType: string): void {
-    console.log(tabType)
     this.activeTab = tabType;
   }
   public toAcquisitions(): void {
