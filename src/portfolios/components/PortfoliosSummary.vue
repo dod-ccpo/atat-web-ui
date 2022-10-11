@@ -68,7 +68,7 @@
       </div>
     </div>
     
-    <div class="mt-10" v-show="portfolioCardData.length">
+    <div class="mt-10" id="PortfolioCards" v-show="portfolioCardData.length">
       <PortfolioCard
         v-for="(cardData, index) in portfolioCardData"
         :key="index"
@@ -143,7 +143,7 @@ export default class PortfoliosSummary extends Vue {
   public selectedSort = "name";
   public sortOptions: SelectData[] = [
     { text: "Portfolio name A-Z", value: "name" },
-    { text: "Recently modified", value: "sys_updated_on" },
+    { text: "Recently modified", value: "DESCsys_updated_on" },
   ];
 
   public filterChips: FilterOption[] = []
@@ -321,12 +321,13 @@ export default class PortfoliosSummary extends Vue {
   public async loadPortfolioData(): Promise<void> {
     this.isLoading = true;
     this.portfolioCardData = [];
-    const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
+
     // below used to map stub CSPs to actual CSPs until have actual CSP data
     const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
     const csps = ["aws", "azure", "google", "oracle", "oracle"];
 
-    storeData.forEach((portfolio) => {
+    const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
+    storeData.portfolioSummaryList.forEach((portfolio) => {
       let cardData: PortfolioCardData = {};
       cardData.csp = csps[cspStubs.indexOf(portfolio.csp_display)];
       cardData.sysId = portfolio.sys_id;
