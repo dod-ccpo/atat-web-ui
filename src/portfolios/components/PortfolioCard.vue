@@ -299,7 +299,7 @@ export default class PortfolioCard extends Vue {
       },
     );
 
-    if (this.cardData.status !== this.portfolioStatuses.Processing) {
+    if (this.cardData.status?.toLowerCase() !== this.portfolioStatuses.Processing.toLowerCase()) {
       this.portfolioCardMenuItems.push(
         { 
           title: "Login to the CSP console",
