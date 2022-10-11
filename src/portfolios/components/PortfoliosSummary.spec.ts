@@ -5,6 +5,8 @@ import { DefaultProps } from "vue/types/options";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import PortfolioSummaryStore from "@/store/portfolioSummary"
 import { PortfolioSummaryDTO } from "@/api/models";
+import { toNumber } from "lodash";
+import PortfolioData from "@/store/portfolio";
 Vue.use(Vuetify);
 
 const portfolios: PortfolioSummaryDTO[] = [
@@ -100,6 +102,12 @@ describe("Testing index Component", () => {
       }));
     await wrapper.vm.loadPortfolioData();
     expect(wrapper.vm.$data.portfolioCardData.length).toBe(2);
+  });
+
+  it("tests generateFilterChips() - generates a filter chip for managed role", async () => {
+    await wrapper.vm.setQueryParams("role", "MANAGED");
+    await wrapper.vm.generateFilterChips();
+    expect(wrapper.vm.$data.filterChips.length).toBe(1);
   });
 
 })

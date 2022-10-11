@@ -140,8 +140,10 @@ export default class PortfoliosSummary extends Vue {
 
   public async generateFilterChips(): Promise<void> {
     this.filterChips = [];
-    if (this.queryParams.role && this.queryParams.role !== "ALL") {
-      const role = this.roles.find(obj => obj.value === this.queryParams.role);
+    if (this.queryParams.role && this.queryParams.role.toLowerCase() !== "all") {
+      const role = this.roles.find(
+        obj => obj.value.toLowerCase() === this.queryParams.role?.toLowerCase()
+      );
       if (role) {
         this.filterChips.push(role);
       }
