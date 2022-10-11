@@ -52,6 +52,7 @@ export class OrganizationDataStore extends VuexModule {
   {
     const agencyRequestConfig: AxiosRequestConfig = {
       params: {
+        sysparm_query: "ORDERBYlabel",
         sysparm_fields: "label,title,acronym,css_id",
       },
     };
