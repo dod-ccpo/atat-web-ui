@@ -5,6 +5,7 @@ import { DefaultProps } from "vue/types/options";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import PortfolioSummaryStore from "@/store/portfolioSummary"
 import { PortfolioSummaryDTO } from "@/api/models";
+
 Vue.use(Vuetify);
 
 const portfolios: PortfolioSummaryDTO[] = [
@@ -91,7 +92,7 @@ describe("Testing index Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("tests loadOnEnter()", async () => {
+  it("tests loadPortfolioData()", async () => {
     jest.spyOn(PortfolioSummaryStore, "searchPortfolioSummaryList").mockImplementation(
       () => Promise.resolve({
         // eslint-disable-next-line camelcase
@@ -102,4 +103,56 @@ describe("Testing index Component", () => {
     expect(wrapper.vm.$data.portfolioCardData.length).toBe(2);
   });
 
-})
+  it("tests generateFilterChips() - generates a filter chip for managed role", async () => {
+    await wrapper.vm.setQueryParams("role", "MANAGED");
+    await wrapper.vm.generateFilterChips();
+    expect(wrapper.vm.$data.filterChips.length).toBe(1);
+  });
+
+  it("tests openSlideoutPanel with an event", async () => {
+    const eObject = {
+      currentTarget: 'test',
+      preventDefault: jest.fn(),
+      cancelBubble: false,
+    }
+    await wrapper.vm.openFilterSlideout(eObject);
+    expect(await wrapper.vm.$data.showFilters).toBeTruthy();
+
+  });
+
+  it("changes active tab", async () => {
+    wrapper.vm.$props.activeTab = "PROCESSING";
+    Vue.nextTick(async () => {
+      expect(await wrapper.vm.queryParams.portfolioStatus).toBe("PROCESSING");
+      wrapper.vm.$props.activeTab = "ALL";
+      Vue.nextTick(async () => {
+        expect(await wrapper.vm.queryParams.portfolioStatus).toBe("");
+      });
+    });
+  });
+
+  it("sortPortfolios()", async () => {
+    wrapper.vm.sortPortfolios(
+      {newSelectedValue: 'DESCsys_updated_on', selectedBeforeChange: 'name'}
+    );
+    expect(await wrapper.vm.queryParams.sort).toBe("DESCsys_updated_on");
+  });
+
+  it("searchPortfolios()", async () => {
+    wrapper.vm.$data.searchString = "testing";
+    await wrapper.vm.searchPortfolios();
+    expect(await wrapper.vm.queryParams.searchString).toBe("testing");
+  });
+
+  it("clearSearch()", async () => {
+    await wrapper.vm.clearSearch();
+    expect(await wrapper.vm.queryParams.searchString).toBe("");
+  });
+
+
+  it("clearAllFilters()", async () => {
+    await wrapper.vm.clearAllFilters();
+    expect(await wrapper.vm.$data.filterChips.length).toBe(0);
+  });
+
+});
