@@ -1,21 +1,23 @@
 <template>
-  <div class="_hero-banner">
+  <!-- <div class="_hero-banner"> -->
     <!-- <div class="_hero-banner">
     </div> -->
 
-    <v-main class="_home">
+    <v-main class="_home _hero-banner">
       <div class="_home-content">
-        
-        <div 
-          class="bg-white border-rounded py-6 px-8 mx-auto container-max-width
+        <div class="container-max-width">
+
+          <div class="bg-white border-rounded py-6 px-8
             d-flex justify-space-between align-center"
-        >
-          <h1 class="text-primary">Hi Maria! How can we help you?</h1>
-          <v-btn 
-            :class="isNewUser ? 'secondary' : 'primary'"
           >
-            Helpful Resources
-          </v-btn>
+            <h1 class="text-primary">Hi Maria! How can we help you?</h1>
+            <v-btn 
+              :class="isNewUser ? 'secondary' : 'primary'"
+              @click="scrollToResources"
+            >
+              Helpful Resources
+            </v-btn>
+          </div>
         </div>
 
         <div class="container-max-width mx-auto">
@@ -32,38 +34,31 @@
             Toggle new/existing for testing
           </a>
 
-          <p>asdf</p>
-          <p>asdf</p>
-          <p>asdf</p>
-          <p>asdf</p>
-        <p>asdf</p>
-        <p>asdf</p>
-        <p>asdf</p>
-        <p>asdf</p>
-        <p>asdf</p>
-        <p>asdf</p>
-        <p>asdf</p>
-        <p>asdf</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
+          <p>content to test scrolling</p>
 
         </div>
 
-        <!-- <HelpfulResourcesCards :isNewUser="isNewUser" /> -->
-        <div class="bg-base-lightest py-10">
-          <div class="container-max-width mx-auto">
-            <h3>Helpful Resources</h3>
-            foobar
-          </div>
-        </div>
+        <HelpfulResourcesCards :isNewUser="isNewUser" />
+
         <div class="bg-white">
           <ATATFooter class="mx-auto pt-10" />
-
         </div>
-
 
       </div>
 
     </v-main>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script lang="ts">
@@ -87,6 +82,15 @@ import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 
 export default class Home extends Vue {
   public isNewUser = true;
+
+  public scrollToResources(): void {
+    const resourcesEl = document.getElementById("HelpfulResourcesCards");
+    if (resourcesEl) {
+      resourcesEl.scrollIntoView({
+        behavior: "smooth"
+      });    
+    }
+  }
 
 }
 
