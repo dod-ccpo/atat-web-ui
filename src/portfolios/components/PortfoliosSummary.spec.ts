@@ -5,8 +5,7 @@ import { DefaultProps } from "vue/types/options";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import PortfolioSummaryStore from "@/store/portfolioSummary"
 import { PortfolioSummaryDTO } from "@/api/models";
-import { toNumber } from "lodash";
-import PortfolioData from "@/store/portfolio";
+
 Vue.use(Vuetify);
 
 const portfolios: PortfolioSummaryDTO[] = [
@@ -156,14 +155,4 @@ describe("Testing index Component", () => {
     expect(await wrapper.vm.$data.filterChips.length).toBe(0);
   });
 
-  // it("xxxxxx", async () => {
-
-  // });
-
-  // it("xxxxxx", async () => {
-
-  // });
-
-
-
-})
+});
