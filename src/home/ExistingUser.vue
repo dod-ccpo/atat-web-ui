@@ -7,7 +7,7 @@
           alert and package/portfolio accordions (future ticket)
         </v-col>
         <v-col class="col-sm-12 col-md-5">
-          <v-card class="py-7 px-5">
+          <v-card class="py-7 px-5 _simple-border">
             <h3 class="text-primary mb-4d">Do you already have an awarded task order?</h3>
             <p>
               Provide a few details about your awarded task order and we’ll import 

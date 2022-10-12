@@ -49,13 +49,17 @@
     }
 
     .v-card {
-      border: 1px solid $base-light;
       padding: 24px;
       p {
         margin-bottom: 0;
         margin-top: 5px;
         color: $base;
       }
+    }
+  }
+  .v-card {
+    &._simple-border {
+      border: 1px solid $base-light;
     }
   }
 
