@@ -27,6 +27,7 @@
 
         <ExistingUser v-else class="mt-15" />
 
+        <HelpfulResourcesCards :isNewUser="isNewUser" />
 
         <div class="bg-white">
           <div class="container-max-width pt-5">
@@ -38,23 +39,8 @@
               Toggle new/existing for testing
             </a>
 
-            <p>content to test scrolling</p>
-            <p>content to test scrolling</p>
-            <p>content to test scrolling</p>
-            <p>content to test scrolling</p>
-            <p>content to test scrolling</p>
-            <p>content to test scrolling</p>
-            <p>content to test scrolling</p>
-            <p>content to test scrolling</p>
-            <p>content to test scrolling</p>
-            <p>content to test scrolling</p>
-            <p>content to test scrolling</p>
-            <p class="mb-0">content to test scrolling</p>
           </div>
-        </div>
-
-
-        <HelpfulResourcesCards :isNewUser="isNewUser" />
+        </div>        
 
         <div class="bg-white">
           <ATATFooter class="mx-auto pt-10" />

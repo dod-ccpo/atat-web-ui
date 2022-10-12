@@ -1,5 +1,5 @@
 <template>
-  <v-card class="text-center">
+  <v-card id="StartBuildingPackageCard" class="text-center">
     <h2 class="h1 text-primary mb-3">
       Start building your JWCC acquisition package
     </h2>
@@ -15,6 +15,7 @@
       Start a new acquisition
     </v-btn>
     <v-btn 
+      id="LearnMoreBuilding"
       class="secondary"
       @click="scrollToLearnMore"
     >
