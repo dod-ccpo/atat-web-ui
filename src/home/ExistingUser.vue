@@ -1,7 +1,7 @@
 <template>
-  <v-main>
-    Future Existing User component
-  </v-main>
+  <div class="my-10">
+    <h3>Future Existing User component</h3>
+  </div>
 </template>
 
 <script lang="ts">
