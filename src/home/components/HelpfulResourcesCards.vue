@@ -4,19 +4,19 @@
       <h3 class="mb-4">Helpful Resources</h3>
       <v-row>
         <v-col>
-          <v-card flat>
+          <v-card flat id="Card1">
             <h3>JWCC</h3>
             <p>Short description of the resource topic</p> 
           </v-card>
         </v-col>
         <v-col>
-          <v-card flat>
+          <v-card flat id="Card2">
             <h3>DAPPS</h3>
             <p>Short description of the resource topic</p> 
           </v-card>
         </v-col>
         <v-col>
-          <v-card flat>
+          <v-card flat id="Card3">
             <h3>ATAT</h3>
             <p>Short description of the resource topic</p> 
           </v-card>

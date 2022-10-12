@@ -12,6 +12,7 @@
           >
             <h1 class="text-primary">Hi Maria! How can we help you?</h1>
             <v-btn 
+              id="HelpfulResourcesButton"
               :class="isNewUser ? 'secondary' : 'primary'"
               @click="scrollToResources"
             >
@@ -29,7 +30,7 @@
           <a 
             role="button" 
             @click="isNewUser = !isNewUser" 
-            class="mt-10 font-size-12 d-block mt-10"
+            class="mt-10 font-size-12 d-block my-10"
           >
             Toggle new/existing for testing
           </a>
