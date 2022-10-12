@@ -3,7 +3,6 @@
 
   &.v-main {
     padding-top: 0 !important;
-    // height: calc(100vh - 56px);
     height: 100vh;
   }
   
@@ -11,8 +10,19 @@
     position: relative;
     background-color: transparent;
     padding: 0;
-    // max-height: calc(100vh - 56px);
     max-height: 100vh;
+  }
+
+  ._welcome-bar {
+    background-color: white;
+    border-radius: 4px;
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 12px 24px rgba(27, 27, 27, 0.2);
+
+
   }
 
   .container-max-width {
@@ -82,15 +92,22 @@
 
 }
 
-._hero-banner {
-  background-image: url("./assets/images/jedi-banner.png");
-  // background-size: 100% auto;
-  background-size: cover;
-  background-position: center top;
-  // height: 100vh;
-  height: 600px;
-  max-height: 600px;
-  width: 100%;
-  margin-top: 56px;
-  position: absolute;
+._home-wrapper {
+  ._hero-banner {
+    background-image: url("./assets/images/jedi-banner.png");
+    background-size: cover;
+    background-position: center top;
+    height: 300px;
+    max-height: 300px;
+    width: 100%;
+    margin-top: 56px;
+    position: absolute;
+  }
+  
+  &._is-new-user {
+    ._hero-banner {
+      height: 600px;
+      max-height: 600px;
+      }
+  }
 }

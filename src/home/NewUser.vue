@@ -28,7 +28,7 @@
               documents specific to your requirements.
             </p>
             <v-btn
-              id="StartNewAcquisition"
+              id="StartNewAcquisitionButton"
               class="primary mb-4 mt-4"
               @click="startNewAcquisition"
             >
@@ -85,7 +85,7 @@
               spending throughout the duration of your task order.
             </p>
             <v-btn
-              id="StartNewAcquisition"
+              id="ProvisionResourcesButton"
               class="primary mb-4 mt-4"
             >
               Provision new cloud resources

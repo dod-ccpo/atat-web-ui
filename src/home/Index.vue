@@ -1,16 +1,14 @@
 <template>
-  <div>
-    <div class="_hero-banner">
-    </div>
-
-    <!-- <v-main class="_home _hero-banner"> -->
+  <div 
+    class="_home-wrapper"
+    :class="{'_is-new-user' : isNewUser }"  
+  >
+    <div class="_hero-banner"></div>
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
 
-          <div class="bg-white border-rounded py-6 px-8
-            d-flex justify-space-between align-center"
-          >
+          <div class="_welcome-bar">
             <h1 class="text-primary">Hi Maria! How can we help you?</h1>
             <v-btn 
               id="HelpfulResourcesButton"
@@ -21,7 +19,6 @@
             </v-btn>
           </div>
         </div>
-
 
         <NewUser v-if="isNewUser" class="mt-15" />
 
