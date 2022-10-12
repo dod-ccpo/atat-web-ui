@@ -1,6 +1,6 @@
 <template>
   <v-main>
-    Future landing page (home) - Index.vue
+    Future landing page home - Index.vue
   </v-main>
 </template>
 
