@@ -82,6 +82,7 @@ import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import Steps from "@/store/steps";
+import PackageSummaryStore from "@/store/packageSummary";
 import { routeNames } from "@/router/stepper";
 @Component({
   components: {
@@ -121,6 +122,15 @@ export default class Packages extends Vue {
   }
   private getIdText(string: string) {
     return getIdText(string);
+  }
+
+  private async loadOnEnter(){
+    const storeData = await PackageSummaryStore.getPackageData()
+    console.log(storeData)
+  }
+
+  public mounted():void{
+    this.loadOnEnter();
   }
 
 }

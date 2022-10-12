@@ -42,6 +42,9 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   required_services: string;
   current_environment: string;
   environment_instance: string;
+  secondary_reviewers?: string[];
+  mission_owners?: string[],
+  contract_award: ReferenceColumn,
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -411,3 +414,15 @@ export interface PortfolioSummarySearchDTO {
   limit?: number;
   offset?: number;
 }
+
+export interface PackageSummaryDTO {
+  
+    project_overview?: ReferenceColumn["value"]
+    title?: string, //proj overview
+    secondary_reviewers?: string[],
+    package_status?: string,
+    sys_updated_on?: string,
+    sys_created_by?: string,
+    mission_owners?: string[],
+    contract_award?: ReferenceColumn["value"]
+  }
