@@ -1,65 +1,60 @@
 <template>
-  <!-- <div class="_hero-banner"> -->
-    <!-- <div class="_hero-banner">
-    </div> -->
+  <v-main class="_home _hero-banner">
+    <div class="_home-content">
+      <div class="container-max-width">
 
-    <v-main class="_home _hero-banner">
-      <div class="_home-content">
-        <div class="container-max-width">
-
-          <div class="bg-white border-rounded py-6 px-8
-            d-flex justify-space-between align-center"
+        <div class="bg-white border-rounded py-6 px-8
+          d-flex justify-space-between align-center"
+        >
+          <h1 class="text-primary">Hi Maria! How can we help you?</h1>
+          <v-btn 
+            id="HelpfulResourcesButton"
+            :class="isNewUser ? 'secondary' : 'primary'"
+            @click="scrollToResources"
           >
-            <h1 class="text-primary">Hi Maria! How can we help you?</h1>
-            <v-btn 
-              id="HelpfulResourcesButton"
-              :class="isNewUser ? 'secondary' : 'primary'"
-              @click="scrollToResources"
-            >
-              Helpful Resources
-            </v-btn>
-          </div>
+            Helpful Resources
+          </v-btn>
         </div>
+      </div>
 
-        <div class="container-max-width mx-auto">
+      <div class="container-max-width mx-auto">
 
-          <NewUser v-if="isNewUser" class="mt-15" />
+        <NewUser v-if="isNewUser" class="mt-15" />
 
-          <ExistingUser v-else class="mt-15" />
+        <ExistingUser v-else class="mt-15" />
 
-          <a 
-            role="button" 
-            @click="isNewUser = !isNewUser" 
-            class="mt-10 font-size-12 d-block my-10"
-          >
-            Toggle new/existing for testing
-          </a>
+        <a 
+          role="button" 
+          @click="isNewUser = !isNewUser" 
+          class="mt-10 font-size-12 d-block my-10"
+        >
+          Toggle new/existing for testing
+        </a>
 
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-
-        </div>
-
-        <HelpfulResourcesCards :isNewUser="isNewUser" />
-
-        <div class="bg-white">
-          <ATATFooter class="mx-auto pt-10" />
-        </div>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
+        <p>content to test scrolling</p>
 
       </div>
 
-    </v-main>
-  <!-- </div> -->
+      <HelpfulResourcesCards :isNewUser="isNewUser" />
+
+      <div class="bg-white">
+        <ATATFooter class="mx-auto pt-10" />
+      </div>
+
+    </div>
+
+  </v-main>
 </template>
 
 <script lang="ts">

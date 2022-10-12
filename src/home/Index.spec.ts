@@ -24,6 +24,11 @@ describe("Testing Landing Page", () => {
       expect(wrapper.exists()).toBe(true);
     });
 
+    it("scrollToResources()", async () => {
+      wrapper.vm.scrollToResources();
+    });
+
   });
+
 
 });
