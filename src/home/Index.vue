@@ -18,6 +18,7 @@
         Toggle new/existing for testing
       </a>
 
+      <ATATFooter class="mx-auto mt-10" />
     </v-main>
   </div>
 </template>
@@ -26,11 +27,13 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
+import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 
 @Component({
   components: {
+    ATATFooter,
     ExistingUser,
     NewUser,
   }
