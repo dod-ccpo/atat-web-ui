@@ -108,10 +108,10 @@ export class PackageSummaryStore extends VuexModule {
         project_overview: (p.project_overview as unknown as ReferenceColumn).value,
         title: "",
         secondary_reviewers: p.secondary_reviewers,
-        package_status: p.status,
         sys_updated_on: p.sys_updated_on,
         sys_created_by: p.sys_created_by,
         mission_owners: p.mission_owners,
+        package_status: p.package_status,
         contract_award: (p.contract_award as ReferenceColumn).value
       })
     })
@@ -122,7 +122,6 @@ export class PackageSummaryStore extends VuexModule {
     const packageSysIdQuery = 'sys_id=' +
       this.packageList.filter((item)=>item.project_overview!==undefined)
         .flatMap((item)=>item.project_overview).join('^ORsys_id=')
-    console.log(packageSysIdQuery);
 
     const projectOverviewRequestConfig: AxiosRequestConfig = {
       params: {
@@ -132,7 +131,6 @@ export class PackageSummaryStore extends VuexModule {
     };
     const packages = 
       await api.projectOverviewTable.getQuery(projectOverviewRequestConfig);
-    console.log(packages);
     this.packageList.forEach((pkge)=>{
       const projOverview = packages.filter(
         (p)=>p.sys_id === pkge.project_overview)[0];

@@ -52,6 +52,7 @@ import Search from "@/components/icons/Search.vue";
 import Service from "@/components/icons/Service.vue";
 import SignOut from "@/components/icons/SignOut.vue";
 import Support from "@/components/icons/Support.vue";
+import TaskAlt from "@/components/icons/TaskAlt.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
@@ -101,6 +102,7 @@ import ManageAccount from "@/components/icons/ManageAccount.vue";
     Service,
     SignOut,
     Support,
+    TaskAlt,
     TriangleUp,
     TriangleDown,
     TrendingDown,

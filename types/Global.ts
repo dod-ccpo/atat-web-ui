@@ -444,3 +444,4 @@ export interface TaskOrderCardData {
   totalFundsSpent:string,
   status:string,
 }
+
