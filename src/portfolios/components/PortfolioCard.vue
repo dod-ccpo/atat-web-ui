@@ -218,8 +218,6 @@ export default class PortfolioCard extends Vue {
   }
 
   public get statusChipBgColor(): string {
-    console.log("this.cardData.status", this.cardData.status);
-    console.log("this.cardData.fundingAlertChipString", this.cardData.fundingAlertChipString)
     const status = this.cardData.status?.toLowerCase() === StatusTypes.Processing.toLowerCase()
       ? this.cardData.status
       : this.cardData.fundingAlertChipString;

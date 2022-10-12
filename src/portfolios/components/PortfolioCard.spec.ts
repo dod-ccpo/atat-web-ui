@@ -97,7 +97,6 @@ describe("Testing index Component", () => {
 
   it("gets status chip background color", async () => {
     const bgColor = wrapper.vm.statusChipBgColor;
-    console.log(bgColor);
     expect(bgColor.length).toBeGreaterThan(0);
   });
 
