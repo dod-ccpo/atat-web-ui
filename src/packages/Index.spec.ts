@@ -6,7 +6,7 @@ import Packages from "./Index.vue";
 
 Vue.use(Vuetify);
 
-describe("Testing Card Component", () => {
+describe("Testing Packages Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
@@ -19,11 +19,11 @@ describe("Testing Card Component", () => {
     });
   });
 
-  describe("testing Funding Alert", () => {
+  describe("testing tabClicked()", () => {
     it("renders successfully", async () => {
-      expect(wrapper.exists()).toBe(true);
+      wrapper.vm.tabClicked("ALL");
+      const activeTab = wrapper.vm.$data.activeTab
+      expect(activeTab).toBe("ALL");
     });
-
-
   });
 });
