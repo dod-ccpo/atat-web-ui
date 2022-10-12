@@ -22,7 +22,7 @@
 
         <NewUser v-if="isNewUser" class="mt-15" />
 
-        <ExistingUser v-else class="mt-15" />
+        <ExistingUser v-else class="mt-8" />
 
         <HelpfulResourcesCards :isNewUser="isNewUser" />
 

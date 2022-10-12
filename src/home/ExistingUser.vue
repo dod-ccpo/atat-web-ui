@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white pt-4">
+  <div class="bg-white pt-8 pb-10">
     <div class="container-max-width">
 
       <v-row>    
@@ -7,8 +7,8 @@
           alert and package/portfolio accordions (future ticket)
         </v-col>
         <v-col class="col-sm-12 col-md-5">
-          <v-card class="py-7 px-5 _simple-border">
-            <h3 class="text-primary mb-4d">Do you already have an awarded task order?</h3>
+          <v-card flat class="py-7 mb-10 px-5 _simple-border">
+            <h3 class="text-primary mb-4">Do you already have an awarded task order?</h3>
             <p>
               Provide a few details about your awarded task order and we’ll import 
               your info to provision your cloud resources.
@@ -17,9 +17,16 @@
               buttonText="Search"
               placeholder="Search Task Order Number"
               class="mb-4 d-inline-block"
+              width="auto"
+              wrapperWidth="100%"
             />
+          </v-card>
+
+          <v-card flat class="py-7 mb-10 px-5 _simple-border">
+            <h3 class="text-primary mb-4">What else could we help you with?</h3>
 
           </v-card>
+
         </v-col>
       </v-row>
     </div>
