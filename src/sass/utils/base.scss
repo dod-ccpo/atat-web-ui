@@ -409,13 +409,19 @@ textarea {
     padding: 24px;
     p {
       margin-bottom: 0;
+      margin-top: 5px;
       color: $base;
+
 
     }
   }
   ._resources {
     background-color: $base-lightest;
-    padding: 40px 0;
+    padding: 60px 0;
+    h3.large {
+      font-weight: 700 !important;
+      font-size: 2.4rem !important;
+    }
     .container-max-width {
       max-width: 1248px;
       padding: 0 24px;

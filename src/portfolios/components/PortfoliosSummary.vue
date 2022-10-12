@@ -68,7 +68,7 @@
       </div>
     </div>
     
-    <div class="mt-10" id="PortfolioCards">
+    <div class="mt-10" id="PortfolioCards" style="margin-bottom: 200px;">
       <PortfolioCard
         v-for="(cardData, index) in portfolioCardData"
         :key="index"
