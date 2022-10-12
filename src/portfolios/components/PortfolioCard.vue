@@ -27,6 +27,7 @@
             </span>
           </template>
           <div class="_tooltip-content-wrap">
+            {{ CSPs[cardData.csp].title }}
           </div>
         </v-tooltip>
       </div>
