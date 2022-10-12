@@ -155,4 +155,66 @@ describe("Testing index Component", () => {
     expect(await wrapper.vm.$data.filterChips.length).toBe(0);
   });
 
+  it("clearSearchOrFilters() both search and filters", async () => {
+    wrapper.vm.$data.searchString = "test";
+    wrapper.vm.$data.filterChips.push("test");
+    await wrapper.vm.clearSearchOrFilters("both");
+    expect(await wrapper.vm.$data.filterChips.length).toBe(0);
+    expect(await wrapper.vm.$data.searchString).toBe("");
+  });
+
+  it("clearSearchOrFilters() search only", async () => {
+    wrapper.vm.$data.searchString = "test";
+    await wrapper.vm.clearSearchOrFilters("search");
+    expect(await wrapper.vm.$data.searchString).toBe("");
+  });
+
+  it("clearSearchOrFilters() filter only", async () => {
+    wrapper.vm.$data.filterChips.push("test");
+    await wrapper.vm.clearSearchOrFilters("filters");
+    expect(await wrapper.vm.$data.filterChips.length).toBe(0);
+  });
+
+  it("removeFilter() removes role filter with chip close X ", async () => {
+    wrapper.vm.$data.filterChips.push({
+      label: "Managed by me",
+      value: "MANAGED",
+      id: "Managed",
+      type: "role",
+    })
+
+    await wrapper.vm.removeFilter(0);
+    Vue.nextTick(async () => {
+      expect(await wrapper.vm.$data.filterChips.length).toBe(0);
+    });
+  });
+
+  it("removeFilter() removes funding status filter with chip close X ", async () => {
+    wrapper.vm.$data.filterChips.push({
+      label: "On track",
+      value: "ON_TRACK",
+      id: "OnTrack",
+      type: "fundingStatuses",
+    })
+    await wrapper.vm.removeFilter(0);
+    Vue.nextTick(async () => {
+      expect(await wrapper.vm.$data.filterChips.length).toBe(0);
+    });
+  });
+
+  it("removeFilter() removes CSP filter with chip close X ", async () => {
+    wrapper.vm.$data.filterChips.push(  {
+      label: "Amazon Web Services (AWS)",
+      value: "CSP_A",
+      id: "Amazon",
+      abbreviation: "AWS",
+      type: "csps",
+    });
+    await wrapper.vm.removeFilter(0);
+    Vue.nextTick(async () => {
+      expect(await wrapper.vm.$data.filterChips.length).toBe(0);
+    })
+  });
+
+
 });

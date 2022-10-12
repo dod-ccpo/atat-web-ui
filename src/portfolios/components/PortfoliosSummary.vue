@@ -171,13 +171,13 @@ export default class PortfoliosSummary extends Vue {
     return this.filterChips.length > 0;
   }
 
-  public removeFilter(index: number): void {
-    this.filterChips.splice(index, 0);
+  public async removeFilter(index: number): Promise<void> {
     const removedFilter = this.filterChips[index];
+    this.filterChips.splice(index,1);
     const key = removedFilter.type;
     switch (key) {
     case "role":
-      this.setQueryParams("role", "ALL");
+      await this.setQueryParams("role", "ALL");
       break;
     case "fundingStatuses": 
     case "csps": {
@@ -185,7 +185,7 @@ export default class PortfoliosSummary extends Vue {
         const filters = this.queryParams[key]?.filter(
           obj => obj.value !== removedFilter.value
         ) || [];
-        PortfolioData.setPortfolioSummaryQueryParams({[key]: filters });
+        await PortfolioData.setPortfolioSummaryQueryParams({[key]: filters });
       }
       break;
     }
