@@ -31,14 +31,16 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import { scrollToId } from "@/helpers";
+import Steps from "@/store/steps";
 
 @Component({})
 
 export default class NewAcquisitionCard extends Vue {
 
-  public startNewAcquisition(): void {
-    this.$router.push({name: routeNames.ProjectOverview })
-    AppSections.changeActiveSection("Acquisition Package Builder");
+  public async startNewAcquisition(): Promise<void> {
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    this.$router.push({name: routeNames.ProjectOverview });
+    AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
   public scrollToLearnMore(): void {
