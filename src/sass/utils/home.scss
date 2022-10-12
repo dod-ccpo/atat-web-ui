@@ -1,0 +1,89 @@
+._home {
+  position: relative;
+
+  &.v-main {
+    padding-top: 0 !important;
+    // height: calc(100vh - 56px);
+    height: 100vh;
+  }
+  
+  .v-main__wrap {
+    position: relative;
+    background-color: transparent;
+    padding: 0;
+    // max-height: calc(100vh - 56px);
+    max-height: 100vh;
+  }
+
+  .container-max-width {
+    margin: 0 auto;
+    max-width: 1088px;
+    padding: 0 24px;
+  }
+
+  ._home-content {
+    margin: 306px auto 0;
+  }
+  ._resources {
+    background-color: $base-lightest;
+    padding: 60px 0;
+
+    h3.large {
+      font-weight: 700 !important;
+      font-size: 2.4rem !important;
+    }
+
+    .container-max-width {
+      max-width: 1248px;
+      padding: 0 24px;
+    }
+
+    .v-card {
+      border: 1px solid $base-light;
+      padding: 24px;
+      p {
+        margin-bottom: 0;
+        margin-top: 5px;
+        color: $base;
+      }
+    }
+  }
+
+  ._new-user-cards {
+    .v-card {
+      max-width: 466px;
+      padding: 40px 32px;
+      border-top: 20px solid $primary;
+      border-radius: 8px;
+      box-shadow: 0px 12px 24px rgba(27, 27, 27, 0.2);
+    }
+    .v-btn {
+      margin: 0 auto;
+    }
+  }
+
+  ._mt-80 {
+    margin-top: 80px !important
+  }
+  ._mb-80 {
+    margin-bottom: 80px !important;
+  }
+  ._py-80 {
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+  }
+
+}
+
+._hero-banner {
+  background-image: url("./assets/images/jedi-banner.png");
+  // background-size: 100% auto;
+  background-size: cover;
+  background-position: center top;
+  // height: 100vh;
+  height: 600px;
+  max-height: 600px;
+  width: 100%;
+  margin-top: 56px;
+  position: absolute;
+}

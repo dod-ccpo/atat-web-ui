@@ -1,9 +1,10 @@
 <template>
-  <!-- <div class="_hero-banner"> -->
-    <!-- <div class="_hero-banner">
-    </div> -->
+  <div>
+    <div class="_hero-banner">
+    </div>
 
-    <v-main class="_home _hero-banner">
+    <!-- <v-main class="_home _hero-banner"> -->
+    <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
 
@@ -21,34 +22,37 @@
           </div>
         </div>
 
-        <div class="container-max-width mx-auto">
 
-          <NewUser v-if="isNewUser" class="mt-15" />
+        <NewUser v-if="isNewUser" class="mt-15" />
 
-          <ExistingUser v-else class="mt-15" />
+        <ExistingUser v-else class="mt-15" />
 
+
+        <div class="bg-white">
+          <div class="container-max-width pt-5">
           <a 
-            role="button" 
-            @click="isNewUser = !isNewUser" 
-            class="mt-10 font-size-12 d-block my-10"
-          >
-            Toggle new/existing for testing
-          </a>
+              role="button" 
+              @click="isNewUser = !isNewUser" 
+              class="font-size-12 d-block mb-10"
+            >
+              Toggle new/existing for testing
+            </a>
 
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-          <p>content to test scrolling</p>
-
+            <p>content to test scrolling</p>
+            <p>content to test scrolling</p>
+            <p>content to test scrolling</p>
+            <p>content to test scrolling</p>
+            <p>content to test scrolling</p>
+            <p>content to test scrolling</p>
+            <p>content to test scrolling</p>
+            <p>content to test scrolling</p>
+            <p>content to test scrolling</p>
+            <p>content to test scrolling</p>
+            <p>content to test scrolling</p>
+            <p class="mb-0">content to test scrolling</p>
+          </div>
         </div>
+
 
         <HelpfulResourcesCards :isNewUser="isNewUser" />
 
@@ -59,7 +63,7 @@
       </div>
 
     </v-main>
-  <!-- </div> -->
+  </div>
 </template>
 
 <script lang="ts">
@@ -71,6 +75,8 @@ import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
+
+import { scrollToId } from "@/helpers";
 
 @Component({
   components: {
@@ -85,12 +91,7 @@ export default class Home extends Vue {
   public isNewUser = true;
 
   public scrollToResources(): void {
-    const resourcesEl = document.getElementById("HelpfulResourcesCards");
-    if (resourcesEl) {
-      resourcesEl.scrollIntoView({
-        behavior: "smooth"
-      });    
-    }
+    scrollToId("HelpfulResourcesCards");
   }
 
 }
