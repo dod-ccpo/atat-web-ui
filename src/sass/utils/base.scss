@@ -382,3 +382,18 @@ textarea {
   justify-content: center;
   margin-right: 8px;
 }
+
+._home {
+  .v-main__wrap {
+    text-align: center; // TEMPORARY
+  }
+}
+
+._hero-banner {
+  background-image: url("./assets/images/jedi-banner.png");
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+
+
+}
