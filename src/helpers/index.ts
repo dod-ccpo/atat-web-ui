@@ -210,6 +210,7 @@ export function getStatusChipBgColor(status: string): string {
   case StatusTypes.Upcoming.toLowerCase():
     return "bg-info-dark";
   case StatusTypes.AtRisk.toLowerCase():
+  case StatusTypes.ExpiringSoon.toLowerCase():
     return "bg-warning";
   case StatusTypes.Delinquent.toLowerCase():
   case StatusTypes.Expired.toLowerCase():

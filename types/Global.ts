@@ -146,15 +146,6 @@ export interface StepperRouteMultipleConfig extends StepperRouteBase, RouteConfi
  */
 export type StepperRouteConfig = StepperRouteSingleConfig | StepperRouteMultipleConfig;
 
-export interface RadioButton {
-  id: string;
-  label: string;
-  value: string;
-  description?: string;
-  disabled?: boolean;
-  readonly?: boolean;
-}
-
 export interface Checkbox {
   id: string;
   label: string;
@@ -162,6 +153,15 @@ export interface Checkbox {
   description?: string;
 }
 
+export interface RadioButton extends Checkbox {
+  disabled?: boolean;
+  readonly?: boolean;
+}
+
+export interface FilterOption extends RadioButton {
+  abbreviation?: string;
+  type?: string;
+}
 export interface SlideoutPanelContent {
   component: Component;
   title?: string;
@@ -398,11 +398,25 @@ export interface Portfolio extends BaseTableDTO {
 }
 
 export interface PortfolioCardData extends Portfolio {
+  fundingStatus?: ("ON_TRACK"|"EXPIRING_SOON"|"AT_RISK"|"DELINQUENT")[];
+  fundingAlertChipString?: string;
+  branch?: string;
   lastModifiedStr?: string;
+  lastModifiedDate?: string;
   currentPoP?: string;
   totalObligated?: string;
   fundsSpent?: string;
   fundsSpentPercent?: string;
+  isManager?: boolean;
+}
+
+export interface PortfolioSummaryQueryParams {
+  role?: string;
+  fundingStatuses?: FilterOption[];
+  csps?: FilterOption[];
+  portfolioStatus?: string;
+  sort?: string;
+  searchString?: string;
 }
 
 export interface EmailEntry {

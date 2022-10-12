@@ -69,6 +69,7 @@ export const StatusTypes = {
   AtRisk: "At-Risk",
   Delinquent: "Delinquent",
   Expired: "Expired",
+  ExpiringSoon: "Expiring Soon",
   Archived: "Archived",
 }
 

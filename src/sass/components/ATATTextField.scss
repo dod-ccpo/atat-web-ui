@@ -1,4 +1,13 @@
 .v-text-field {
+  
+  .v-text-field__suffix {
+    color: $base-light;
+  }
+  &.v-input--is-dirty {
+    .v-text-field__suffix {
+      color: $base-darkest;
+    }
+  }
 
   .v-input__prepend-inner{
     z-index: 1;
