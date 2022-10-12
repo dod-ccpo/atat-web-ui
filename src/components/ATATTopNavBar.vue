@@ -174,7 +174,7 @@ export default class ATATTopNavBar extends Vue {
           {
             title: "My Packages",
             parentTitle: "Acquisitions",
-            spaSectionTitle: sectionData.sectionTitles.AcquisitionPackage,
+            spaSectionTitle: sectionData.sectionTitles.Packages,
           },
           {
             title: "My Task Orders",

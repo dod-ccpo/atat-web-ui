@@ -26,7 +26,8 @@ export class AppSectionsStore extends VuexModule {
     TOLookup: "Lookup TO in EDA",
     Portfolios: "Portfolios",
     PortfolioSummary: "Portfolio Summary",
-    DocumentReview: "Document Review"
+    DocumentReview: "Document Review",
+    Packages: "Packages",
   }
 
   activeAppSection = this.sectionTitles.AcquisitionPackage;
@@ -36,7 +37,8 @@ export class AppSectionsStore extends VuexModule {
     { title: this.sectionTitles.JWCCDashboard },
     { title: this.sectionTitles.TOLookup },
     { title: this.sectionTitles.Portfolios },
-    { title: this.sectionTitles.DocumentReview }
+    { title: this.sectionTitles.DocumentReview },
+    { title: this.sectionTitles.Packages }
   ];
 
   activeTabIndex = 0;
