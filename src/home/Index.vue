@@ -1,24 +1,67 @@
 <template>
-  <div>
-    <div class="_hero-banner">
-    </div>
+  <div class="_hero-banner">
+    <!-- <div class="_hero-banner">
+    </div> -->
 
     <v-main class="_home">
-      Future landing page home - Index.vue
+      <div class="_home-content">
+        
+        <div 
+          class="bg-white border-rounded py-6 px-8 mx-auto container-max-width
+            d-flex justify-space-between align-center"
+        >
+          <h1 class="text-primary">Hi Maria! How can we help you?</h1>
+          <v-btn 
+            :class="isNewUser ? 'secondary' : 'primary'"
+          >
+            Helpful Resources
+          </v-btn>
+        </div>
 
-      <NewUser v-if="isNewUser" />
+        <div class="container-max-width mx-auto">
 
-      <ExistingUser v-else />
+          <NewUser v-if="isNewUser" class="mt-15" />
 
-      <a 
-        role="button" 
-        @click="isNewUser = !isNewUser" 
-        class="mt-10 font-size-12 d-block mt-10"
-      >
-        Toggle new/existing for testing
-      </a>
+          <ExistingUser v-else class="mt-15" />
 
-      <ATATFooter class="mx-auto mt-10" />
+          <a 
+            role="button" 
+            @click="isNewUser = !isNewUser" 
+            class="mt-10 font-size-12 d-block mt-10"
+          >
+            Toggle new/existing for testing
+          </a>
+
+          <p>asdf</p>
+          <p>asdf</p>
+          <p>asdf</p>
+          <p>asdf</p>
+        <p>asdf</p>
+        <p>asdf</p>
+        <p>asdf</p>
+        <p>asdf</p>
+        <p>asdf</p>
+        <p>asdf</p>
+        <p>asdf</p>
+        <p>asdf</p>
+
+        </div>
+
+        <!-- <HelpfulResourcesCards :isNewUser="isNewUser" /> -->
+        <div class="bg-base-lightest py-10">
+          <div class="container-max-width mx-auto">
+            <h3>Helpful Resources</h3>
+            foobar
+          </div>
+        </div>
+        <div class="bg-white">
+          <ATATFooter class="mx-auto pt-10" />
+
+        </div>
+
+
+      </div>
+
     </v-main>
   </div>
 </template>
@@ -31,10 +74,13 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 
+import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
+
 @Component({
   components: {
     ATATFooter,
     ExistingUser,
+    HelpfulResourcesCards,
     NewUser,
   }
 })

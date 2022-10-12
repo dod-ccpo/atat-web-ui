@@ -384,16 +384,26 @@ textarea {
 }
 
 ._home {
+  &.v-main {
+    padding-top: 0 !important;
+  }
   .v-main__wrap {
-    text-align: center; // TEMPORARY
+    position: relative;
+    overflow-y: scroll;
+    background-color: transparent;
+    padding: 0;
+  }
+
+  position: relative;
+  ._home-content {
+    margin: 200px auto 0;
   }
 }
 
 ._hero-banner {
   background-image: url("./assets/images/jedi-banner.png");
-  background-size: cover;
-  background-position: center;
-  height: 400px;
-
-
+  background-size: contain;
+  background-position: top;
+  height: 100vh;
+  margin-top: 56px;
 }
