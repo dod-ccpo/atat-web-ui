@@ -34,7 +34,7 @@
         :rules="rules"
         :validate-on-blur="validateOnBlur"
         @update:error="setErrorMessage"
-        @click:clear="clearErrorMessages"
+        @click:clear="clear"
         @blur="onBlur"
         autocomplete="off"
         @keydown.enter="search"
@@ -43,6 +43,8 @@
         :id="id + '_SearchButton'" 
         class="primary _search-button"
         @click="search"
+        @keydown.enter="search"
+        @keydown.space="search"
 
       >
         <ATATSVGIcon 
@@ -139,28 +141,29 @@ export default class ATATSearch extends Vue {
   $refs!: {
     atatSearchInput: Vue & { 
       errorBucket: string[]; 
-      errorCount: number 
-      resetValidation(): void
+      errorCount: number;
+      resetValidation(): void;
+      value: string;
     };
   }; 
 
   @Prop({ default: "Search" }) private id!: string;
-  @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: "320" }) private width!: string;
-  @Prop({ default: "" }) private label!: string;
-  @Prop({ default: "" }) private tooltipTitle!: string;
-  @Prop({ default: "" }) private tooltipText!: string;
-  @Prop({ default: "" }) private helpText!: string;
-  @Prop({ default: ()=>[] }) private mask!: string[];
-  @Prop({ default: false }) private isMaskRegex!: boolean;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: "" }) private placeHolder?: string;
+  @Prop({ default: "320" }) private width?: string;
+  @Prop({ default: "" }) private label?: string;
+  @Prop({ default: "" }) private tooltipTitle?: string;
+  @Prop({ default: "" }) private tooltipText?: string;
+  @Prop({ default: "" }) private helpText?: string;
+  @Prop({ default: ()=>[] }) private mask?: string[];
+  @Prop({ default: false }) private isMaskRegex?: boolean;
+  @Prop({ default: () => [] }) private rules?: Array<unknown>;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
-  @Prop({ default: "G-Invoicing" }) private searchType!: string;
+  @Prop({ default: "G-Invoicing" }) private searchType?: string;
+  @PropSync("value", { default: "" }) public _value!: string;
 
-
-
-  @PropSync("value", { default: "" }) private _value!: string;
+  // remove isSimulation and all other simulation code when G-Invoicing search is actual
+  @Prop({ default: false} ) private isSimulation?: boolean;
 
   private error = false;
   private errorMessages: string[] = [];
@@ -178,10 +181,10 @@ export default class ATATSearch extends Vue {
     this.showHelpText = newVal.length === 0 && !this.showLoader;
   }
 
-  private onInput(v: string) {
+  public onInput(v: string): void {
     this._value = v;
     if (this.errorMessages.length > 0) {
-      this.clearErrorMessages();
+      this.clear();
     }
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
@@ -189,7 +192,7 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
-    if (this.searchType !=="EDA" && this.errorMessages.length === 0 && this._value) {
+    if (this.isSimulation && this.errorMessages.length === 0 && this._value) {
 
       // simulate success on first search, error on second.
       this.showLoader = true;
@@ -228,8 +231,9 @@ export default class ATATSearch extends Vue {
 
         this.showLoader = false;
       }
-
     }
+
+    this.$emit("search");
 
   }
 
@@ -239,11 +243,12 @@ export default class ATATSearch extends Vue {
     });
   }
 
-  private clearErrorMessages(): void {
+  private clear(): void {
     Vue.nextTick(()=>{
       this.$refs.atatSearchInput.errorBucket = [];
       this.errorMessages = [];
     });
+    this.$emit("clear");
   }
 
   private onBlur(e: FocusEvent) : void{
@@ -260,7 +265,7 @@ export default class ATATSearch extends Vue {
   private setMask(): void {
     this.maskObj = {};
 
-    if (this.mask.length > 0) {
+    if (this.mask && this.mask.length > 0) {
       if (this.isMaskRegex){
         this.maskObj.regex = this.mask[0] || "";
       } else {

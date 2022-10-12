@@ -121,3 +121,54 @@ div#inputWidthFaker {
     display: none !important;
   }
 }
+
+._pill.v-chip.theme--light {
+  background-color: $primary-lighter !important;
+  margin: 2px 8px 2px 0;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+
+  &:hover {
+    background-color: $primary-lighter !important;
+    border-color: $primary;
+    &:before {
+      opacity: 0;
+    }
+  }
+
+  .v-chip__content {
+    text-transform: none;
+    color: $base-darker;
+    font-weight: normal;
+    padding-left: 4px;
+    font-size: 1.6rem;
+  }
+
+  button {
+    border-radius: 50%;
+    background-color: transparent;
+    color: $base-darker;
+    border: 1px solid transparent;
+    max-width: none;
+    max-height: none;
+    width: 20px;
+    height: 20px;
+    &:hover, &:focus {
+      background-color: white;
+      color: $base-darker;
+      opacity: 1;
+    }
+    &:focus-visible {
+      border-color: $primary;
+    }
+  }
+  .v-icon {
+    &:hover {
+      opacity: 1;
+    }
+    &.v-icon::after {
+      opacity: 0 !important;
+    }
+  
+  }
+}

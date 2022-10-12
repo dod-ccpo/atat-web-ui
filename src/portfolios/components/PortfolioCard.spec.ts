@@ -36,6 +36,7 @@ describe("Testing index Component", () => {
       totalObligated: "",
       fundsSpent: "",
       fundsSpentPercent: "",
+      fundingAlertChipString: "expired"
     };
 
   beforeEach(() => {
@@ -101,6 +102,7 @@ describe("Testing index Component", () => {
 
   it("gets NO status chip background color", async () => {
     wrapper.vm.$props.cardData.status = undefined;
+    wrapper.vm.$props.cardData.fundingAlertChipString = undefined;
     const bgColor = wrapper.vm.statusChipBgColor;
     expect(bgColor.length).toEqual(0);
   });
