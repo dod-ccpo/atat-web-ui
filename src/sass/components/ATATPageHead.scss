@@ -13,7 +13,7 @@ header._atat-page-header {
     }
   }
 
-  &._portfolio-summary, &._portfolios {
+  &._portfolio-summary, &._portfolios, &._acquisitions {
     ._header-tab {
       .v-tabs-slider-wrapper{
         height: 4px !important;
@@ -49,7 +49,7 @@ header._atat-page-header {
     }
   }
 
-  &._portfolios{
+  &._portfolios, &._acquisitions{
     height: 118px !important;
     .v-toolbar__content {
       height: 118px !important;

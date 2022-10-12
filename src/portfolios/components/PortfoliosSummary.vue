@@ -107,7 +107,6 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
 
 import { StatusTypes } from "@/store/acquisitionPackage";
-
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { formatDistanceToNow } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
