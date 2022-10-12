@@ -106,6 +106,22 @@
       }
     }
   }
+  ._has-sticky-footer {
+    margin-bottom: 180px;
+  }
+
+  ._sticky-slideout-footer {
+    position: absolute;
+    border-top: 1px solid $base-lighter;
+    border-left: 1px solid $base-lighter;
+    background-color: white;
+    padding: 16px 24px;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+  }
+
 }
 
   hr {

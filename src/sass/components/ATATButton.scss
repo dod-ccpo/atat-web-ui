@@ -63,8 +63,17 @@
     font-size: 1.4rem !important;
   }
 
-  &.link-button, &.tertirary {
+  &.link-button, &.tertirary.theme--light  {
     padding: 6px 12px !important;
+  
+    &.v-btn--disabled {
+      background-color: transparent !important;
+      .v-btn__content {
+        text-decoration: none;
+        color: $disabled !important;
+      }
+
+    }
 
     &.tooltip-button {
       padding: 12px !important;

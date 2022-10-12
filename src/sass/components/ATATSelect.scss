@@ -157,4 +157,10 @@
       left: -75px !important;
     }
   }
+  &._portfolio-sort {
+    .v-menu__content {
+      min-width: 220px !important;
+      left: -50px !important;
+    }
+  }
 }
