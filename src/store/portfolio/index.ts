@@ -84,7 +84,7 @@ export class PortfolioDataStore extends VuexModule {
     description: "",
     status: "",
     csp: "",
-    serviceAgency: "",
+    agency: "",
     createdBy: "",
     provisioned: "",
     members: [],
@@ -244,7 +244,7 @@ export class PortfolioDataStore extends VuexModule {
       title: portfolioData.title,
       status: portfolioData.status,
       csp: portfolioData.csp,
-      serviceAgency: portfolioData.serviceAgency,
+      agency: portfolioData.agency,
       taskOrderNumber: portfolioData.taskOrderNumber,
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
@@ -298,7 +298,13 @@ export class PortfolioDataStore extends VuexModule {
   @Action({rawError: true})
   private async initPortfolioData():Promise<void> {
     const portfolioObj: Portfolio = {
-      // temp add Maria Missionowner until have members from backend
+      title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
+      description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
+      status: "Active",
+      csp: "Azure",
+      agency:  AcquisitionPackage.organization?.agency || "DISA",
+      createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
+      provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
       members: [{
         firstName:"Maria",
         lastName: "Missionowner",
@@ -307,7 +313,7 @@ export class PortfolioDataStore extends VuexModule {
         phoneNumber:"5555555555",
         phoneExt:"1234",
         designation: "Civilian",
-        serviceAgency: "U.S Army"
+        agency: "U.S. Army"
       }],
     };
 
@@ -317,7 +323,7 @@ export class PortfolioDataStore extends VuexModule {
         description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
         status: "Active",
         csp: "Azure",
-        serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
+        agency:  AcquisitionPackage.organization?.agency || "DISA",
         createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
         provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
         updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""

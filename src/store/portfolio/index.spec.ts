@@ -81,7 +81,7 @@ describe("Portfolio Store", () => {
       scope: "testing scope",
       emergency_declaration:""
     })
-    AcquisitionPackage.setOrganization({service_agency: "FBI"})
+    AcquisitionPackage.setOrganization({agency: "FBI"})
     AcquisitionPackage.setAcquisitionPackage({
       contract_award: {
         link:"",
@@ -123,7 +123,7 @@ describe("Portfolio Store", () => {
       description: "a description",
       status: "active",
       csp: "",
-      serviceAgency: "mock Agency",
+      agency: "mock Agency",
       createdBy: "jefferey tester",
       provisioned: "today",
       members: []
@@ -156,7 +156,7 @@ describe("Portfolio Store", () => {
       description: "a description",
       status: "active",
       csp: "",
-      serviceAgency: "mock Agency",
+      agency: "mock Agency",
       createdBy: "jefferey tester",
       provisioned: "today",
       members: []

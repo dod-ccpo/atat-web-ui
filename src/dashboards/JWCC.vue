@@ -342,21 +342,21 @@ export default class JWCCDashboard extends Vue {
   public today = new Date(new Date().setHours(0,0,0,0));
   public currentYear = this.today.getFullYear();
 
-  public fundsSpentByServiceAgency: { name: string;  total: number; }[] = [];
+  public fundsSpentByAgency: { name: string;  total: number; }[] = [];
   public agencySpendData: Record<string, number[]> = {}
   private agencySpendLineChartData: lineChartData = {
     labels: [],
     datasets: [],
   };
 
-  public disaKey = "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
+  public disaKey = "DEFENSE INFORMATION SYSTEMS AGENCY (DISA)";
   public agencyLabelKeys: Record<string, string> = {
-    "US_AIR_FORCE": "Air Force",
-    "US_ARMY": "Army",
-    "US_MARINE_CORPS": "Marine Corps",
-    "US_NAVY": "Navy",
-    "US_SPACE_FORCE": "Space Force",
-    "DEFENSE_INFORMATION_SYSTEMS_AGENCY": "Other",
+    "U.S. AIR FORCE": "Air Force",
+    "U.S. ARMY": "Army",
+    "U.S. MARINE CORPS": "Marine Corps",
+    "U.S. NAVY": "Navy",
+    "UNITED STATES SPACE FORCE": "Space Force",
+    [this.disaKey]: "Other",
   };
   public agencyLabels: string[] = [];
   public agencyChecked: boolean[] = [];
@@ -412,7 +412,7 @@ export default class JWCCDashboard extends Vue {
   public getCurrencyString = getCurrencyString;
 
   public async calculateSpendRateLineChartData(): Promise<void> {
-    const agencies = this.fundsSpentByServiceAgency.map(a => a.name);
+    const agencies = this.fundsSpentByAgency.map(a => a.name);
 
     // loop thru costGroups and sum up each month's costs by agency
     // add them to previous month value for current month total
@@ -423,16 +423,13 @@ export default class JWCCDashboard extends Vue {
 
       const agencyMonthlySpendTotals: number[] = [0];
 
-      // for demo only, cost data uses USAF but we are showing as Space Force
-      agency = agency === "US_SPACE_FORCE" ? "US_AIR_FORCE_EUROPE" : agency;
-
       this.costGroups.forEach((costGroup, index) => {
         // last costGroup is projected costs. do not use for line chart data
         if (index !== this.costGroups.length - 1) {
-          const thisAgencyCosts = costGroup.costs.filter((obj) => {
-            return obj.service_agency === agency;
+          const thisAgencyCosts = costGroup.costs.filter((obj: CostsDTO) => {
+            return obj["agency.title"] === agency;
           });
-          const monthTotal = thisAgencyCosts.reduce((a, obj) => {
+          const monthTotal = thisAgencyCosts.reduce((a, obj: CostsDTO) => {
             const amt = obj.value ? parseInt(obj.value) : 0;
             return a + amt;
           }, 0);
@@ -440,9 +437,6 @@ export default class JWCCDashboard extends Vue {
           agencyMonthlySpendTotals.push(total);
         }
       });
-
-      // for demo only - swap key back to space force
-      agency = agency === "US_AIR_FORCE_EUROPE" ? "US_SPACE_FORCE" : agency;
 
       this.agencySpendData[agency] = agencyMonthlySpendTotals;
 
@@ -535,15 +529,8 @@ export default class JWCCDashboard extends Vue {
     this.costs = data.costs;
     this.costGroups = data.costGroups;
 
-    this.fundsSpentByServiceAgency = data.fundsSpentByServiceAgency;
-    const spendByAgency = Object.values(this.fundsSpentByServiceAgency);
-
-    // Space Force temporarily using USAF Europe for demo purposes only since
-    // space force has no key currently in SNOW data
-    const spaceForceIndex = spendByAgency.findIndex(
-      o => o.name.toString() === "US_AIR_FORCE_EUROPE"
-    );
-    spendByAgency[spaceForceIndex].name = "US_SPACE_FORCE";
+    this.fundsSpentByAgency = data.fundsSpentByAgency;
+    const spendByAgency = Object.values(this.fundsSpentByAgency);
 
     // DISA/Fourth Estate should always be last in array
     const disaIndex = spendByAgency.findIndex(o => o.name.toString() === this.disaKey);
@@ -553,8 +540,8 @@ export default class JWCCDashboard extends Vue {
     if (disaObj) {
       spendByAgency.push(disaObj);
     }
-    this.fundsSpentByServiceAgency = spendByAgency;
-    this.fundsSpentByServiceAgency.forEach((agency)=>{
+    this.fundsSpentByAgency = spendByAgency;
+    this.fundsSpentByAgency.forEach((agency)=>{
       this.agencyNames.push(this.agencyLabelKeys[agency.name as string])
       this.agencyAmounts.push(agency.total)
       this.agencyObj[this.agencyLabelKeys[agency.name as string]] = agency.total;
