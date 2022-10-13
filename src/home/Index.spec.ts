@@ -54,6 +54,14 @@ describe("Testing Landing Page", () => {
     it("scrollToResources()", async () => {
       await wrapper.vm.scrollToResources();
     });
+
+    it("TEMP METHOD toggleUserType()", async () => {
+      wrapper.vm.$data.isNewUser = true;
+      await wrapper.vm.toggleUserType();
+      expect(wrapper.vm.$data.isNewUser).toBeFalsy();
+
+    });
+
   });
 
 });
