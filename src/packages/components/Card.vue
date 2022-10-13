@@ -114,6 +114,11 @@
       :menuIndex="index"
       :menuItems="cardMenuItems"
     />
+    <DeletePackageModal
+      :showModal.sync="showDeleteModal"
+      :portfolioName="cardData.title"
+      @okClicked="deletePackage"
+    />
   </v-card>
 </template>
 
@@ -125,10 +130,12 @@ import { MeatballMenuItem } from "../../../types/Global";
 import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
+import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 @Component({
   components:{
     ATATSVGIcon,
-    ATATMeatballMenu
+    ATATMeatballMenu,
+    DeletePackageModal
   }
 })
 export default class Card extends Vue {
@@ -138,6 +145,8 @@ export default class Card extends Vue {
   
   public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
   public isOwner = this.cardData.mission_owners.indexOf(this.currentUserSysId) > -1;
+  public isWaitingForSignatures = false
+  public showDeleteModal = false
   public lastModifiedStr = "";
   public modifiedData: {
     contractAward: string;
@@ -181,6 +190,10 @@ export default class Card extends Vue {
 
   }
 
+  public deletePackage():void {
+    console.log('delete')
+  }
+
   public async loadOnEnter(): Promise<void> {
     this.reformatData(this.cardData)
     if(this.cardData.package_status === 'DRAFT'){
@@ -208,6 +221,7 @@ export default class Card extends Vue {
       }
     }
     if(this.cardData.package_status === 'WAITING_FOR_SIGNATURES'){
+      this.isWaitingForSignatures = true
       this.cardMenuItems = [
         {
           title: "View completed package",
