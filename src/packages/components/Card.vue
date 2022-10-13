@@ -113,6 +113,7 @@
       :left="true"
       :menuIndex="index"
       :menuItems="cardMenuItems"
+      @menuItemClick="cardMenuClick"
     />
     <DeletePackageModal
       :showModal.sync="showDeleteModal"
@@ -137,6 +138,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
+import AppSections from "@/store/appSections";
 @Component({
   components:{
     ATATSVGIcon,
@@ -205,28 +207,44 @@ export default class Card extends Vue {
     console.log('delete')
   }
 
+  public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
+    switch (menuItem.action) {
+    case "Archive acquisition":
+      this.showArchiveModal = true
+      break;
+    case "Delete acquisition package":
+      this.showDeleteModal = true
+      break;
+    case "Restore package to draft":
+      this.modifiedData.packageStatus = "DRAFT"
+      // eslint-disable-next-line camelcase
+      this.cardData.package_status = "DRAFT"
+      break;
+    }
+  }
+
   public async loadOnEnter(): Promise<void> {
     this.reformatData(this.cardData)
     if(this.cardData.package_status === 'DRAFT'){
       this.cardMenuItems = [
         {
           title: "Edit draft package",
-          action: ""
+          action: "Edit draft package"
         },
         {
           title: "Invite contributors",
-          action: ""
+          action: "Invite contributors"
         },
       ]
       if(this.isOwner) {
         this.cardMenuItems.push(
           {
             title: "Archive acquisition",
-            action: ""
+            action: "Archive acquisition"
           },
           {
             title: "Delete acquisition package",
-            action: ""
+            action: "Delete acquisition package"
           },
         )
       }
@@ -236,23 +254,26 @@ export default class Card extends Vue {
       this.cardMenuItems = [
         {
           title: "View completed package",
-          action: ""
+          action: "View completed package",
+          disabled:true
         },
       ]
       if(this.isOwner){
         this.cardMenuItems.push(
           {
             title: "Resend signature request",
-            action: ""
+            action: "Resend signature request",
+            disabled:true
           },{
             title: "Cancel signature request",
-            action: ""
+            action: "Cancel signature request",
+            disabled:true
           },{
             title: "Archive acquisition",
-            action: ""
+            action: "Archive acquisition"
           },{
             title: "Delete acquisition package",
-            action: ""
+            action: "Delete acquisition package"
           },
         )
       }
@@ -261,20 +282,22 @@ export default class Card extends Vue {
       this.cardMenuItems = [
         {
           title: "Add awarded task order",
-          action: ""
+          action: "Add awarded task order",
+          disabled:true
         },{
           title: "View completed package",
-          action: ""
+          action: "View completed package",
+          disabled:true
         },
       ]
       if(this.isOwner){
         this.cardMenuItems.push(
           {
             title: "Archive acquisition",
-            action: ""
+            action: "Archive acquisition"
           },{
             title: "Delete acquisition package",
-            action: ""
+            action: "Delete acquisition package"
           }
         )
       }
@@ -283,13 +306,16 @@ export default class Card extends Vue {
       this.cardMenuItems = [
         {
           title: "View task order CLIN summary",
-          action: ""
+          action: "View task order CLIN summary",
+          disabled: true
         },{
           title: "Access provisioned portfolio",
-          action: ""
+          action: "Access provisioned portfolio",
+          disabled: true
         },{
           title: "View completed package",
-          action: ""
+          action: "View completed package",
+          disabled: true
         },
       ]
     }
@@ -297,13 +323,13 @@ export default class Card extends Vue {
       this.cardMenuItems = [
         {
           title: "Restore package to draft",
-          action: ""
+          action: "Restore package to draft"
         },{
           title: "Access provisioned portfolio",
-          action: ""
+          action: "Access provisioned portfolio"
         },{
           title: "View completed packages",
-          action: ""
+          action: "View completed packages"
         },
       ]
     }
