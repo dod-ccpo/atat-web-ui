@@ -245,4 +245,12 @@ export function createDateStr(dateStr: string, period: boolean): string {
   return m + p + " " + d + ", " + y;
 }
 
+export function scrollToId(id: string): void {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({
+      behavior: "smooth"
+    });    
+  }
+}
 

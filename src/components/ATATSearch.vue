@@ -45,14 +45,15 @@
         @click="search"
         @keydown.enter="search"
         @keydown.space="search"
-
       >
         <ATATSVGIcon 
+          v-if="!buttonText"
           name="search"
           color="white"
           width="18"
           height="18"
         />
+        <span v-else>{{ buttonText }}</span>
       </v-btn>
     </div>
 
@@ -160,6 +161,8 @@ export default class ATATSearch extends Vue {
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop({ default: "G-Invoicing" }) private searchType?: string;
+  @Prop({ default: "" }) private buttonText?: string;
+
   @PropSync("value", { default: "" }) public _value!: string;
 
   // remove isSimulation and all other simulation code when G-Invoicing search is actual
