@@ -13,7 +13,7 @@
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center"
           >
-            {{ modifiedData.title }} {{isOwner}}
+            {{ modifiedData.title }}
           </a>
         </div>
           <v-chip

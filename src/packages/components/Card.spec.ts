@@ -15,7 +15,21 @@ describe("Testing Card Component", () => {
     vuetify = new Vuetify();
     wrapper = mount(Card, {
       vuetify,
-      localVue
+      localVue,
+      propsData: {
+        cardData : {
+          /* eslint-disable camelcase */
+          contract_award: "904e37c6870c9110bc86b889cebb3595",
+          // eslint-disable-next-line max-len
+          mission_owners: "62826bf03710200044e0bfc8bcbe5df1,0e826bf03710200044e0bfc8bcbe5d6a,bd1585b21bf901107b782f84604bcb40",
+          package_status: "TASK_ORDER_AWARDED",
+          project_overview: "bc29fea287e19150bc86b889cebb355b",
+          secondary_reviewers: "",
+          sys_created_by: "julius.fitzhugh-ctr@ccpo.mil",
+          sys_updated_on: "2022-08-29 13:52:43",
+          title: "Sprint 40 Demo",
+        }
+      }
     });
   });
 
