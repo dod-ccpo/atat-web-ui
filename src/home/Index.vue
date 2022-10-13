@@ -4,7 +4,6 @@
     :class="[
       {'_is-new-user' : isNewUser },
       {'_is-existing-user' : !isNewUser }
-    
     ]"  
   >
     <div class="_hero-banner"></div>
@@ -40,7 +39,8 @@
 
         <div class="bg-white">
           <div class="container-max-width pt-5">
-          <a 
+            <a 
+              id="TempUserTypeToggle"
               role="button" 
               @click="toggleUserType" 
               class="font-size-12 d-block mb-10"
@@ -73,7 +73,6 @@ import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
-
 
 import { scrollToId } from "@/helpers";
 

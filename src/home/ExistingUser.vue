@@ -40,11 +40,10 @@
             >
               View all portfolios
             </a>
-
-
           </div>
 
         </v-col>
+
         <v-col class="col-sm-12 col-md-5 pl-5">
           <v-card flat class="py-7 mb-10 px-5 _simple-border">
             <h3 class="text-primary mb-4">Do you already have an awarded task order?</h3>
@@ -83,6 +82,7 @@
 
         </v-col>
       </v-row>
+      
     </div>
   </div>
 </template>
