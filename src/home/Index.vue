@@ -3,7 +3,6 @@
     <div class="_hero-banner">
     </div>
 
-    <!-- <v-main class="_home _hero-banner"> -->
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
@@ -46,7 +45,7 @@
           <ATATFooter class="mx-auto pt-10" />
         </div>
 
-    </div>
+      </div>
 
     </v-main>
   </div>
