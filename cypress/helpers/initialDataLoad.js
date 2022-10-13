@@ -46,9 +46,9 @@ export function loadInitialData(){
                 'name=x_g_dis_atat_contacts&element=salutation'
     },
     {
-      'fixture': 'serviceAgency',
+      'fixture': 'agency',
       'apiURL': 'sys_choice?sysparm_fields=label,value,name&name=x_g_dis_atat_organization' +
-                '&element=service_agency'
+                '&element=agency'
     },
     {
       'fixture': 'serviceOffering',

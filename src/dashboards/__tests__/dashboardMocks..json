@@ -80,7 +80,7 @@
       "csp.name": "CSP_B",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "6500"
@@ -92,7 +92,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "2000"
@@ -104,7 +104,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "12000"
@@ -116,7 +116,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "1800"
@@ -128,7 +128,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "34320"
@@ -140,7 +140,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "12148"
@@ -152,7 +152,7 @@
       "csp.name": "CSP_B",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "5800"
@@ -164,7 +164,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "1600"
@@ -176,7 +176,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "10120"
@@ -188,7 +188,7 @@
       "csp.name": "CSP_B",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "7500"
@@ -200,7 +200,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "1800"
@@ -212,7 +212,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "26137"
@@ -224,7 +224,7 @@
       "csp.name": "CSP_B",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "8000"
@@ -236,7 +236,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "1000"
@@ -248,7 +248,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "true",
       "value": "24165"
@@ -260,7 +260,7 @@
       "csp.name": "CSP_B",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "false",
       "value": "5000"
@@ -272,7 +272,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "false",
       "value": "1500"
@@ -284,7 +284,7 @@
       "csp.name": "CSP_A",
       "portfolio":"portfolio_123456",
       "organization":"org_123456",
-      "service_agency": "US_NAVY",
+      "agency": "U.S. NAVY",
       "task_order_number": "1000000001234",
       "is_actual": "false",
       "value": "14510"
