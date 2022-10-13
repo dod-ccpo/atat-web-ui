@@ -94,6 +94,14 @@
     padding-bottom: 80px !important;
   }
 
+  .v-expansion-panel-header {
+    width: 100%;
+  }
+
+  .v-expansion-panels {
+    border: 1px solid $base-lighter;
+  }
+
 }
 
 ._home-wrapper {
