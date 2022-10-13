@@ -13,7 +13,7 @@
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center"
           >
-            {{ modifiedData.title }}
+            {{ modifiedData.title }} {{isOwner}}
           </a>
         </div>
           <v-chip
@@ -27,26 +27,85 @@
             {{modifiedData.packageStatus}}
           </v-chip>
       </div>
-      <div class="text-base-dark">
+      <div class="text-base -size-14 d-flex align-center">
         <div
           v-if="modifiedData.packageStatus.toLowerCase() === 'draft'"
-          class="base d-flex">
+          class=" d-flex align-center">
           <ATATSVGIcon
             name="taskAlt"
             width="16"
             height="16"
             color="base"
+            class="mr-1"
           />
           30% complete
+          <ATATSVGIcon
+            name="bullet"
+            color="base-light"
+            :width="9"
+            :height="9"
+            class="d-inline-block mx-1"
+          />
         </div>
-        <ATATSVGIcon
-          name="bullet"
-          color="base-light"
-          :width="9"
-          :height="9"
-          class="d-inline-block mx-1"
-        />
-        {{ cardData.lastModifiedStr }}
+        <div
+          v-if="modifiedData.packageStatus.toLowerCase() === 'waiting for signature'"
+          class=" d-flex align-center ">
+          <ATATSVGIcon
+            name="taskAlt"
+            width="16"
+            height="16"
+            color="base"
+            class="mr-1"
+          />
+          100% complete
+          <ATATSVGIcon
+            name="bullet"
+            color="base-light"
+            :width="9"
+            :height="9"
+            class="d-inline-block mx-1"
+          />
+        </div>
+        <div
+          v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
+          class=" d-flex align-center">
+          <a>
+            TO# HC1028-22-f-0141
+          </a>
+          <ATATSVGIcon
+            name="bullet"
+            color="base-light"
+            :width="9"
+            :height="9"
+            class="d-inline-block mx-1"
+          />
+        </div>
+        <div class=" d-flex align-center">
+          {{modifiedData.createdBy}}
+          <ATATSVGIcon
+            name="bullet"
+            color="base-light"
+            :width="9"
+            :height="9"
+            class="d-inline-block mx-1"
+          />
+        </div>
+        <div
+          v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
+          class="base d-flex align-center">
+          Reviewer: Contracting Specialist
+          <ATATSVGIcon
+            name="bullet"
+            color="base-light"
+            :width="9"
+            :height="9"
+            class="d-inline-block mx-1"
+          />
+        </div>
+        <div
+          class="base d-flex align-center">
+          {{lastModifiedStr}}
+        </div>
       </div>
       </div>
     <ATATMeatballMenu
@@ -63,10 +122,7 @@ import Vue from "vue";
 
 import { Component, Prop } from "vue-property-decorator";
 import { MeatballMenuItem, PortfolioCardData } from "../../../types/Global";
-import { StatusTypes } from "@/store/acquisitionPackage";
-import PortfolioData, { cspConsoleURLs } from "@/store/portfolio";
-import AppSections from "@/store/appSections";
-import { getStatusChipBgColor, toTitleCase } from "@/helpers";
+import { createDateStr, getStatusChipBgColor, toTitleCase } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 @Component({
@@ -82,7 +138,7 @@ export default class Card extends Vue {
   
   public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
   public isOwner = this.cardData.mission_owners.indexOf(this.currentUserSysId) > -1;
-  
+  public lastModifiedStr = "";
   public modifiedData: {
     contractAward: string;
     missionOwners: string;
@@ -102,41 +158,13 @@ export default class Card extends Vue {
     updated: "",
     title: "",
   }
-  public draftMenu = {
-    editDraftPackage: "Edit draft package",
-    inviteContributors: "Invite contributors",
-    archiveAcquisition: "Archive acquisition",
-    deleteAcquisition: "Delete acquisition package",
-  }
-  public waitingForSignatures = {
-    viewCompletedPackage: "View completed package",
-    resendSignatureRequest: "resend signature request",
-    cancelSignatureRequest: "Cancel signature request",
-    archiveAcquisition: "Archive acquisition",
-    deleteAcquisition: "Delete acquisition package",
-  }
-  public WaitingForTaskOrder = {
-    addAwardedTaskOrder: "Add awarded task order",
-    viewCompletedPackage: "View completed package",
-    archiveAcquisition: "Archive acquisition",
-    deleteAcquisition: "Delete acquisition package",
-  }
-  public taskOrderAwarded = {
-    viewTaskOrderCLIN: "View task order CLIN summary",
-    accessProvisionedPortfolio: "Access provisioned portfolio",
-    viewCompletedPackage: "View completed packages",
-  }
-  public archivedMenu = {
-    restorePackage: "Restore package to draft",
-    accessProvisionedPortfolio: "Access provisioned portfolio",
-    viewCompletedPackage: "View completed packages",
-  }
+
   public cardMenuItems: MeatballMenuItem[] = [];
 
 
   public get statusChipBgColor(): string {
     const status = this.modifiedData.packageStatus
-    console.log(status)
+
     return getStatusChipBgColor(status ? status : "");
   }
 
@@ -147,7 +175,7 @@ export default class Card extends Vue {
     this.modifiedData.packageStatus = cardData.package_status.replace(/[^a-zA-Z0-9 ]/g, ' ')
     this.modifiedData.projectOverview = cardData.project_overview
     this.modifiedData.secondaryReviewers = cardData.secondary_reviewers
-    this.modifiedData.createdBy = cardData.sys_created_by
+    this.modifiedData.createdBy = this.isOwner? "Maria Missionowner" : "Jack Ryan"
     this.modifiedData.updated = cardData.sys_updated_on
     this.modifiedData.title = cardData.title
 
@@ -253,6 +281,16 @@ export default class Card extends Vue {
           action: ""
         },
       ]
+    }
+    if (this.cardData.package_status === 'TASK_ORDER_AWARDED') {
+      const agoString = createDateStr(this.cardData.sys_updated_on, true);
+      this.lastModifiedStr = "Awarded on " + agoString;
+    } else if(this.cardData.package_status === 'ARCHIVED') {
+      const archivedDate = createDateStr(this.cardData.sys_updated_on, true);
+      this.lastModifiedStr = "Archived on" + archivedDate;
+    }else {
+      const updatedDate = createDateStr(this.cardData.sys_updated_on, true);
+      this.lastModifiedStr = "Last modified " + updatedDate;
     }
   }
   public async mounted(): Promise<void> {
