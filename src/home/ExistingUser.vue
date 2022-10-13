@@ -5,12 +5,12 @@
       <v-row>    
         <v-col class="col-sm-12 col-md-7">
 
-          <v-expansion-panels flat>
-            <v-expansion-panel>
+          <v-expansion-panels flat v-model="portfolioPanel">
+            <v-expansion-panel expand>
               <v-expansion-panel-header>
                 <div class="d-flex justify-space-between">
                   <div>
-                    Porfolios Yo!
+                    Porfolios
                   </div>
                   <div>
                     X portfolio(s)
@@ -38,7 +38,7 @@
             </p>
             <ATATSearch 
               buttonText="Search"
-              placeholder="Search Task Order Number"
+              placeHolder="Search Task Order Number"
               class="mb-4 d-inline-block"
               width="auto"
               wrapperWidth="100%"
@@ -87,6 +87,8 @@ export default class ExistingUser extends Vue {
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
   }
+
+  public portfolioPanel = 0; // open by default
 
 }
 
