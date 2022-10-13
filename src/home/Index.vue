@@ -1,7 +1,11 @@
 <template>
   <div 
     class="_home-wrapper"
-    :class="{'_is-new-user' : isNewUser }"  
+    :class="[
+      {'_is-new-user' : isNewUser },
+      {'_is-existing-user' : !isNewUser }
+    
+    ]"  
   >
     <div class="_hero-banner"></div>
     <v-main class="_home">
@@ -38,7 +42,7 @@
           <div class="container-max-width pt-5">
           <a 
               role="button" 
-              @click="isNewUser = !isNewUser" 
+              @click="toggleUserType" 
               class="font-size-12 d-block mb-10"
             >
               Toggle new/existing for testing
@@ -100,6 +104,14 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
+  // temporary method to swap New vs Existing users
+  public toggleUserType(): void {
+    this.isNewUser = !this.isNewUser;
+    const el = document.querySelector(".v-main__wrap");
+    if (el) {
+      el.scrollTop = 0;
+    }
+  }
 
 }
 
