@@ -68,7 +68,12 @@
       </div>
     </div>
     
-    <div class="mt-10" id="PortfolioCards" v-show="portfolioCardData.length">
+    <div 
+      class="mt-10" 
+      id="PortfolioCards" 
+      v-show="portfolioCardData.length" 
+      style="margin-bottom: 200px;"
+    >
       <PortfolioCard
         v-for="(cardData, index) in portfolioCardData"
         :key="index"
