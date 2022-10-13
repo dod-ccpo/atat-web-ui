@@ -285,6 +285,11 @@ export interface ReferenceColumn {
   value: string;
 }
 
+export interface DisplayColumn {
+  display_value: string;
+  value: string;
+}
+
 export interface SelectedServiceOfferingDTO extends BaseTableDTO {
   classification_instances: string;
   other_service_offering: string;
@@ -322,6 +327,8 @@ export interface TaskOrderDTO extends BaseTableDTO {
     pop_end_date: string;
     pop_start_date: string;
     funds_total: string;
+    total_task_order_value?: number; // total clin values that don't have expired/ option pending
+    total_lifecycle_amount?: number; // total clin values irrespective of status
     funds_spent_task_order?: number; // total of is_actual=true costs across all clins of task order
 }
 
@@ -346,16 +353,30 @@ export interface CostGroupDTO {
 }
 
 export interface ClinDTO extends BaseTableDTO {
-  funds_obligated: number;
+  sys_id: string;
   clin_number: string;
   idiq_clin: string;
   idiq_clin_label?: string;
+  idiq_clin_display?: DisplayColumn;
   pop_end_date: string;
   pop_start_date: string;
   clin_status: string;
-  funds_total: string;
+  clin_status_display?: DisplayColumn;
+  funds_obligated: number;
+  funds_total: number;
   cost_records?: CostsDTO[]
   funds_spent_clin?: number; // total of all is_actual=true costs of the clin
+}
+
+export interface ClinDisplayDTO {
+  sys_id: DisplayColumn;
+  clin_number: DisplayColumn;
+  idiq_clin: DisplayColumn;
+  pop_start_date: DisplayColumn;
+  pop_end_date: DisplayColumn;
+  clin_status: DisplayColumn;
+  funds_obligated: DisplayColumn;
+  funds_total: DisplayColumn;
 }
 
 export interface EDAResponse {

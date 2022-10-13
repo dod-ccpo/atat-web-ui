@@ -125,9 +125,15 @@ export default class Packages extends Vue {
   public tabClicked(tabType: string): void {
     this.activeTab = tabType;
   }
-  public toAcquisitions(): void {
-    this.$router.push({name: routeNames.ProjectOverview })
-    AppSections.changeActiveSection("Acquisition Package Builder");
+  public async toAcquisitions(): Promise<void> {
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
+    this.$router.push({
+      name: routeNames.ProjectOverview,
+      params: {
+        direction: "next"
+      }
+    }).catch(() => console.log("avoiding redundant navigation"));
+    AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
   private getIdText(string: string) {
     return getIdText(string);

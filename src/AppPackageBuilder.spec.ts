@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
+import VueRouter from "vue-router";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
@@ -9,6 +10,19 @@ Vue.use(Vuetify);
 
 describe("Testing FundingTracker Component", () => {
   const localVue = createLocalVue();
+  localVue.use(VueRouter);
+
+  const routes = [
+    {
+      name: "Project_Overview",
+      path: "/"
+    }
+  ];
+
+  const router = new VueRouter({
+    routes
+  });
+
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
@@ -17,8 +31,9 @@ describe("Testing FundingTracker Component", () => {
     wrapper = mount(AppPackageBuilder, {
       localVue,
       vuetify,
+      router,
     });
-  });
+  })
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
@@ -29,4 +44,16 @@ describe("Testing FundingTracker Component", () => {
     expect(panelContent).not.toBe(undefined);
   });
  
+  it("navigate() - tests back to home", async () => {
+    wrapper.vm.$data.altBackDestination = "Home";
+    await wrapper.vm.navigate("previous");
+    expect(router.app.$route.name).toBe("home");
+  });
+
+  it("navigates() tests back to packages", async () => {
+    wrapper.vm.$data.altBackDestination = "Packages";
+    await wrapper.vm.navigate("previous");    
+    expect(router.app.$route.name).toBe("home");
+  });
+
 })

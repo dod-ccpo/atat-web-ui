@@ -29,7 +29,7 @@ import { CostsApi } from "./costs";
 import { FundingRequestApi } from "./fundingRequest";
 import { FundingRequestFSFormApi } from "./fundingRequestFSForm";
 import { FundingRequestMIPRFormApi } from "./fundingRequestMIPRForm";
-import { ClinAPi } from "./clin";
+import {ClinAPi, ClinDisplayAPi} from "./clin";
 import { EDAApi } from "./eda";
 import { CurrentEnvironmentAPI } from "@/api/currentEnvironment";
 import { AggregateApi } from "./aggregate";
@@ -73,6 +73,7 @@ export const api = {
   taskOrderTable: new TaskOrderApi(),
   costsTable: new CostsApi(),
   clinTable: new ClinAPi(),
+  clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),
   currentEnvironmentTable: new CurrentEnvironmentAPI(),
   aggregate: new AggregateApi(),
