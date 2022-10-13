@@ -31,6 +31,8 @@
               id="StartNewAcquisitionButton"
               class="primary mb-4 mt-4"
               @click="startNewAcquisition"
+              @keydown.enter="startNewAcquisition"
+              @keydown.space="startNewAcquisition"
             >
               Start your new acquisition package
             </v-btn>
@@ -126,9 +128,6 @@ import { Component } from "vue-property-decorator";
 
 import NewAcquisitionCard from "./components/NewAcquisitionCard.vue";
 import ExistingTaskOrderCard from "./components/ExistingTaskOrderCard.vue";
-import Steps from "@/store/steps";
-import AppSections from "@/store/appSections";
-import { routeNames } from "@/router/stepper";
 
 @Component({
   components: {
@@ -138,11 +137,9 @@ import { routeNames } from "@/router/stepper";
 })
 
 export default class NewUser extends Vue {
-
-  public async startNewAcquisition(): Promise<void> {
-    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
-    this.$router.push({name: routeNames.ProjectOverview });
-    AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
+ 
+  public startNewAcquisition(): void {
+    this.$emit("startNewAcquisition");
   }
 
   public prepareStepsText = [
@@ -164,7 +161,7 @@ export default class NewUser extends Vue {
      creation with your CSP.`,
     `Track your cloud usage and manage spending throughout the duration of 
      the task order`,
-  ]
+  ];
 
 }
 

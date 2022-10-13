@@ -24,6 +24,21 @@
 
           <v-card flat class="py-7 mb-10 px-5 _simple-border">
             <h3 class="text-primary mb-4">What else could we help you with?</h3>
+            <v-btn
+              id="StartNewAcquisitionButton"
+              class="primary mb-4 mt-4 width-100"
+              @click="startNewAcquisition"
+              @keydown.enter="startNewAcquisition"
+              @keydown.space="startNewAcquisition"
+            >
+              Start your new acquisition package
+            </v-btn>
+            <v-btn
+              id="StartNewAcquisitionButton"
+              class="secondary mt-4 width-100"
+            >
+              Create a new portfolio
+            </v-btn>
 
           </v-card>
 
@@ -45,6 +60,11 @@ import ATATSearch from "@/components/ATATSearch.vue";
   }
 })
 
-export default class ExistingUser extends Vue {}
+export default class ExistingUser extends Vue {
+  public startNewAcquisition(): void {
+    this.$emit("startNewAcquisition");
+  }
+
+}
 
 </script>

@@ -11,6 +11,8 @@
       id="StartNewAcquisition"
       class="primary mb-4"
       @click="startNewAcquisition"
+      @keydown.enter="startNewAcquisition"
+      @keydown.space="startNewAcquisition"
     >
       Start a new acquisition
     </v-btn>
@@ -26,22 +28,17 @@
 </template>
 
 <script lang="ts">
-import { routeNames } from "@/router/stepper";
-import AppSections from "@/store/appSections";
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import { scrollToId } from "@/helpers";
-import Steps from "@/store/steps";
 
 @Component({})
 
 export default class NewAcquisitionCard extends Vue {
 
   public async startNewAcquisition(): Promise<void> {
-    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
-    this.$router.push({name: routeNames.ProjectOverview });
-    AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
+    this.$emit("startNewAcquisition");
   }
 
   public scrollToLearnMore(): void {

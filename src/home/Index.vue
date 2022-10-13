@@ -20,9 +20,17 @@
           </div>
         </div>
 
-        <NewUser v-if="isNewUser" class="mt-15" />
+        <NewUser 
+          v-if="isNewUser" 
+          class="mt-15" 
+          @startNewAcquisition="startNewAcquisition" 
+        />
 
-        <ExistingUser v-else class="mt-8" />
+        <ExistingUser 
+          v-else 
+          class="mt-8" 
+          @startNewAcquisition="startNewAcquisition" 
+        />
 
         <HelpfulResourcesCards :isNewUser="isNewUser" />
 
@@ -58,6 +66,10 @@ import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
+import Steps from "@/store/steps";
+import AppSections from "@/store/appSections";
+import { routeNames } from "@/router/stepper";
+
 
 import { scrollToId } from "@/helpers";
 
@@ -76,6 +88,13 @@ export default class Home extends Vue {
   public scrollToResources(): void {
     scrollToId("HelpfulResourcesCards");
   }
+
+  public async startNewAcquisition(): Promise<void> {
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    this.$router.push({name: routeNames.ProjectOverview });
+    AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
+  }
+
 
 }
 
