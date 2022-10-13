@@ -495,10 +495,8 @@ Cypress.Commands.add("agency", (inputText) => {
           .and("be.visible")
           .and("contain", "DISA Organization");
       } else {
-        cy.findElement(org.orgNameControl)
-          .should("exist")
-          .and("be.visible")
-          .and("contain", " Organization name ");
+        cy.textExists(org.orgNameControl, "Organization name")
+          .should("exist");
       };
     }); 
 });

@@ -2,8 +2,14 @@ import VueRouter from "vue-router";
 import {stepperRoutes} from "./stepper";
 import PathResolver from "./resolvers/PathResolver.vue";
 import RouteResolver from "./resolvers/RouteResolver.vue";
+import Home from "../home/Index.vue";
 
 const routes = [
+  {
+    name: "home",
+    component: Home,
+    path: "/"
+  },
   ...stepperRoutes,
   {
     name: 'routeResolver',
