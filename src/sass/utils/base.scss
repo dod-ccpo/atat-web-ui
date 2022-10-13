@@ -382,3 +382,57 @@ textarea {
   justify-content: center;
   margin-right: 8px;
 }
+
+._home {
+  &.v-main {
+    padding-top: 0 !important;
+    height: calc(100vh - 56px);
+  }
+  .v-main__wrap {
+    position: relative;
+    background-color: transparent;
+    padding: 0;
+    max-height: calc(100vh - 56px);
+  }
+  .container-max-width {
+    margin: 0 auto;
+    max-width: 1088px;
+    padding: 0 24px;
+  }
+
+  position: relative;
+  ._home-content {
+    margin: 200px auto 0;
+  }
+  .v-card {
+    border: 1px solid $base-light;
+    padding: 24px;
+    p {
+      margin-bottom: 0;
+      margin-top: 5px;
+      color: $base;
+
+
+    }
+  }
+  ._resources {
+    background-color: $base-lightest;
+    padding: 60px 0;
+    h3.large {
+      font-weight: 700 !important;
+      font-size: 2.4rem !important;
+    }
+    .container-max-width {
+      max-width: 1248px;
+      padding: 0 24px;
+    }
+  }
+}
+
+._hero-banner {
+  background-image: url("./assets/images/jedi-banner.png");
+  background-size: 100% auto;
+  background-position: center top;
+  height: 100vh;
+  margin-top: 56px;
+}

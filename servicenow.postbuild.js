@@ -189,7 +189,7 @@ function resolveRobotoFontsAndImagePaths(fileContent){
     }
   
     // image paths
-    const imageMatches = findMatches(fileContent, imgRegex, 7);
+    const imageMatches = findMatches(fileContent, imgRegex, 8);
     if (imageMatches) {
       const newImagePath = servicenowConfig.IMG_API_PATH;
       console.log(`Replacing the image paths with: ${newImagePath}`);
@@ -283,8 +283,8 @@ function reportMatchDiscrepancies() {
   for (const key in buildMatches) {
     const matches = buildMatches[key];
     assert.strictEqual(
-      matches.expected,
       matches.found,
+      matches.expected,
       `Expected ${matches.expected} matches to be found.  Check the input and ${key}`
     );
   }
