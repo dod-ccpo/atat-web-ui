@@ -1,6 +1,7 @@
 import { AcquisitionPackagesApi } from "./acquisitionPackages";
 import { ProjectOverviewApi } from "./projectOverview";
 import { OrganizationApi } from "./organization";
+import { AgencyApi } from "./agency";
 import { ContactsApi } from "./contacts";
 import { FairOpportunityApi } from "./fairOpportunity";
 import { CurrentContractApi } from "./background";
@@ -40,6 +41,7 @@ import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 
 export const api = {
 
+  agencyTable: new AgencyApi(),
   alertsTable: new AlertApi(),
   attachments: new AttachmentApi(),
   systemChoices: new SystemChoicesApi(),

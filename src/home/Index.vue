@@ -1,60 +1,60 @@
 <template>
-  <v-main class="_home _hero-banner">
-    <div class="_home-content">
-      <div class="container-max-width">
+  <div 
+    class="_home-wrapper"
+    :class="{'_is-new-user' : isNewUser }"  
+  >
+    <div class="_hero-banner"></div>
+    <v-main class="_home">
+      <div class="_home-content">
+        <div class="container-max-width">
 
-        <div class="bg-white border-rounded py-6 px-8
-          d-flex justify-space-between align-center"
-        >
-          <h1 class="text-primary">Hi Maria! How can we help you?</h1>
-          <v-btn 
-            id="HelpfulResourcesButton"
-            :class="isNewUser ? 'secondary' : 'primary'"
-            @click="scrollToResources"
-          >
-            Helpful Resources
-          </v-btn>
+          <div class="_welcome-bar">
+            <h1 class="text-primary">Hi Maria! How can we help you?</h1>
+            <v-btn 
+              id="HelpfulResourcesButton"
+              :class="isNewUser ? 'secondary' : 'primary'"
+              @click="scrollToResources"
+            >
+              Helpful Resources
+            </v-btn>
+          </div>
         </div>
+
+        <NewUser 
+          v-if="isNewUser" 
+          class="mt-15" 
+          @startNewAcquisition="startNewAcquisition" 
+        />
+
+        <ExistingUser 
+          v-else 
+          class="mt-8" 
+          @startNewAcquisition="startNewAcquisition" 
+        />
+
+        <HelpfulResourcesCards :isNewUser="isNewUser" />
+
+        <div class="bg-white">
+          <div class="container-max-width pt-5">
+          <a 
+              role="button" 
+              @click="isNewUser = !isNewUser" 
+              class="font-size-12 d-block mb-10"
+            >
+              Toggle new/existing for testing
+            </a>
+
+          </div>
+        </div>        
+
+        <div class="bg-white">
+          <ATATFooter class="mx-auto pt-10" />
+        </div>
+
       </div>
 
-      <div class="container-max-width mx-auto">
-
-        <NewUser v-if="isNewUser" class="mt-15" />
-
-        <ExistingUser v-else class="mt-15" />
-
-        <a 
-          role="button" 
-          @click="isNewUser = !isNewUser" 
-          class="mt-10 font-size-12 d-block my-10"
-        >
-          Toggle new/existing for testing
-        </a>
-
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-        <p>content to test scrolling</p>
-
-      </div>
-
-      <HelpfulResourcesCards :isNewUser="isNewUser" />
-
-      <div class="bg-white">
-        <ATATFooter class="mx-auto pt-10" />
-      </div>
-
-    </div>
-
-  </v-main>
+    </v-main>
+  </div>
 </template>
 
 <script lang="ts">
@@ -66,6 +66,12 @@ import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
+import Steps from "@/store/steps";
+import AppSections from "@/store/appSections";
+import { routeNames } from "@/router/stepper";
+
+
+import { scrollToId } from "@/helpers";
 
 @Component({
   components: {
@@ -80,13 +86,20 @@ export default class Home extends Vue {
   public isNewUser = true;
 
   public scrollToResources(): void {
-    const resourcesEl = document.getElementById("HelpfulResourcesCards");
-    if (resourcesEl) {
-      resourcesEl.scrollIntoView({
-        behavior: "smooth"
-      });    
-    }
+    scrollToId("HelpfulResourcesCards");
   }
+
+  public async startNewAcquisition(): Promise<void> {
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    this.$router.push({
+      name: routeNames.ProjectOverview,
+      params: {
+        direction: "next"
+      }
+    }).catch(() => console.log("avoiding redundant navigation"));
+    AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
+  }
+
 
 }
 

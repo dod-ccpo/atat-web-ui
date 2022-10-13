@@ -40,7 +40,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
     //Service Agency is not DISA
-    cy.serviceOrAgency("Communications");
+    cy.agency("Communications");
     cy.enterTextInTextField(org.orgNameTxtBox,  "TestDepartmentof Defense");
     cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDCEC");
     const orgAddress= {
@@ -318,7 +318,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     //Navigates to Contact information
     cy.verifyPageHeader("Let’s confirm your contact information");
     
-    //service Agency is blank
+    //Agency is blank
     cy.findElement(contact.militaryRadioBtn).click({ force: true });
 
     //Validation message for Service Agency

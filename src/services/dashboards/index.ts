@@ -31,6 +31,17 @@ export interface EntitySpending {
   total: number;
 }
 
+export interface AggregateResults {
+  result: {
+    stats: {
+      sum: {
+        funds_obligated: string;
+        funds_total: string;
+      };
+    };
+  };
+}
+
 const buildCostGroups = (costs: CostsDTO[]): CostGroup[] => {
   costs.sort((a, b) => Date.parse(a.year_month) - Date.parse(b.year_month));
   const groups = groupBy(costs, "year_month");
@@ -66,22 +77,22 @@ const getEntityTotals = (
   costs: CostsDTO[],
   entityName: string
 ): Record<string, EntitySpending> => {
-  const cspGroups = groupBy(costs, entityName);
-  const cspSpendings: Record<string, EntitySpending> = {};
-  for (const [key, value] of Object.entries(cspGroups)) {
+  const entityGroups = groupBy(costs, entityName);
+  const entitySpendings: Record<string, EntitySpending> = {};
+  for (const [key, value] of Object.entries(entityGroups)) {
     const total = value.reduce<number>((prev, current) => {
       const cost = current.is_actual === "true" ? Number(current.value) : 0;
       const total = prev + cost;
       return total;
     }, 0);
 
-    cspSpendings[key] = {
+    entitySpendings[key] = {
       name: key,
       total,
     };
   }
 
-  return cspSpendings;
+  return entitySpendings;
 };
 
 export class DashboardService {
@@ -91,7 +102,6 @@ export class DashboardService {
     try {
       const taskOrderRequestConfig: AxiosRequestConfig = {
         params: {
-          // eslint-disable-next-line camelcase
           sysparm_query: `task_order_number=${taskOrderNumber}`,
         },
       };
@@ -110,19 +120,16 @@ export class DashboardService {
       const clinRequests = clinIds.map((clin) => api.clinTable.retrieve(clin));
       let clins = await Promise.all(clinRequests);
 
-      // eslint-disable-next-line camelcase
       const clin_labels = await api.systemChoices.getChoices(
         ClinTable,
         "idiq_clin"
       );
 
       clins = clins.map((clin) => {
-        // eslint-disable-next-line camelcase
         const label = clin_labels.find(
           (label) => label.value === clin.idiq_clin
         );
         if (label) {
-          // eslint-disable-next-line camelcase
           clin.idiq_clin_label = label.label;
         }
 
@@ -138,13 +145,11 @@ export class DashboardService {
 
       const fields =
         "clin,csp,csp.name,year_month," +
-        "task_order_number,portfolio,organization,service_agency,is_actual,value";
+        "task_order_number,portfolio,organization,agency.title,is_actual,value";
 
       const costsRequestConfig: AxiosRequestConfig = {
         params: {
-          // eslint-disable-next-line camelcase
           sysparm_query: costsQuery,
-          // eslint-disable-next-line camelcase
           sysparm_fields: fields,
         },
       };
@@ -192,13 +197,11 @@ export class DashboardService {
 
     const costFields =
       "clin,csp,csp.name,year_month," +
-      "task_order_number,portfolio,organization,service_agency,is_actual,value";
+      "task_order_number,portfolio,organization,agency.title,is_actual,value";
 
     const costsRequestConfig: AxiosRequestConfig = {
       params: {
-        // eslint-disable-next-line camelcase
         sysparm_query: costsQuery,
-        // eslint-disable-next-line camelcase
         sysparm_fields: costFields,
       },
     };
@@ -226,7 +229,7 @@ export class DashboardService {
     const aggregate = await api.aggregate.makeRequest(
       TaskOrderTable,
       aggregateRequestConfig
-    );
+    ) as AggregateResults;
 
     const taskOrderData = await api.taskOrderTable.all({
       params: {
@@ -238,18 +241,7 @@ export class DashboardService {
       taskOrderData.length > 0 ? await this.getCostsData(taskOrderData) : [];
     const costGroups = buildCostGroups(costs);
 
-    interface AggregateResults {
-      result: {
-        stats: {
-          sum: {
-            funds_obligated: string;
-            funds_total: string;
-          };
-        };
-      };
-    }
-
-    const aggregateResults = aggregate as AggregateResults;
+    const aggregateResults = aggregate;
     const totalObligatedFunds = Number(
       aggregateResults.result.stats.sum.funds_obligated
     );
@@ -271,7 +263,7 @@ export class DashboardService {
       costGroups,
       fundsSpentToDate: getCostsTotalActual(costGroups),
       fundsSpentByCSP: getEntityTotals(costs, "csp.name"),
-      fundsSpentByServiceAgency: getEntityTotals(costs, "service_agency"),
+      fundsSpentByAgency: getEntityTotals(costs, "agency.title"),
     };
   }
 }
