@@ -41,7 +41,7 @@
         class="container-max-width"
       >
         <div v-if="activeTab === 'OPEN'">
-          <div class="d-flex flex-column align-center">
+          <div class="d-flex flex-column align-center pt-5">
             <Card
               v-for="(cardData, index) in packageData"
               :key="index"
