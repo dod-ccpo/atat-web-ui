@@ -5,28 +5,7 @@
       <v-row>    
         <v-col class="col-sm-12 col-md-7">
 
-          <v-expansion-panels flat v-model="portfolioPanel">
-            <v-expansion-panel expand>
-              <v-expansion-panel-header>
-                <div class="d-flex justify-space-between">
-                  <div>
-                    Porfolios
-                  </div>
-                  <div>
-                    X portfolio(s)
-                  </div>
-                </div>
-
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                sed do eiusmod tempor incididunt ut labore et dolore magna 
-                aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-                ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
+          package and portfolio accordions
 
         </v-col>
         <v-col class="col-sm-12 col-md-5">
@@ -39,7 +18,7 @@
             <ATATSearch 
               buttonText="Search"
               placeHolder="Search Task Order Number"
-              class="mb-4 d-inline-block"
+              class="d-inline-block"
               width="auto"
               wrapperWidth="100%"
             />
