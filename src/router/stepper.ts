@@ -232,6 +232,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 4,
         completed: true,
         component: ProjectOverview,
+        // KEEP THIS FOR REFERENCE
         // additionalButtons: [
         //   {
         //     name: routeNames.ProjectOverview,

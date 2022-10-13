@@ -85,6 +85,8 @@ export default class AppPackageBuilder extends Vue {
     sideStepper: ATATSideStepper;
   };
 
+  public routeNames: Record<string, string> = {};
+
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent || undefined;
   };
@@ -97,6 +99,7 @@ export default class AppPackageBuilder extends Vue {
   private altBackDestination = "";
 
   async mounted(): Promise<void> {
+    this.routeNames = routeNames;
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
@@ -122,6 +125,12 @@ export default class AppPackageBuilder extends Vue {
   }
 
   async navigate(direction: string): Promise<void> {
+    console.log("this.altBackDestination", this.altBackDestination);
+    console.log("direction", direction)
+    console.log("this.routeNames.ProjectOverview", this.routeNames.ProjectOverview);
+    console.log("AppSections.sectionTitles.Packages", AppSections.sectionTitles.Packages);
+    console.log("this.$route.name", this.$route.name)
+
     const nextStepName = direction === "next" 
       ? await Steps.getNext() 
       : await Steps.getPrevious();
@@ -157,7 +166,8 @@ export default class AppPackageBuilder extends Vue {
       this.$router.push({ name: nextStepName as string });
 
     } else if (direction === "previous" && this.altBackDestination) { 
-      if (this.$route.name === routeNames.ProjectOverview) {
+
+      if (this.$route.name === this.routeNames.ProjectOverview) {
         Steps.setAltBackDestination("");
 
         switch (this.altBackDestination) {

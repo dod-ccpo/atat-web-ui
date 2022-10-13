@@ -32,7 +32,7 @@ describe("Testing MemberCard Component", () => {
         title: "optional title"
       }],
       provisioned: "2022-09-08 18:12:12",
-      serviceAgency:"DISA",
+      agency: "DISA",
       status: "Active",
       title: "test title",
       updated: "2022-09-08 18:12:12"

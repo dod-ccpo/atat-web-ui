@@ -6,6 +6,7 @@ import Home from "./Index.vue";
 
 Vue.use(Vuetify);
 
+
 describe("Testing Landing Page", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
@@ -17,6 +18,12 @@ describe("Testing Landing Page", () => {
       vuetify,
       localVue
     });
+
+    const el = document.createElement("div");
+    el.setAttribute("id", "HelpfulResourcesCards");
+    el.scrollIntoView = jest.fn();
+    document.body.appendChild(el);
+
   });
 
   describe("testing Landing Page (Home)", () => {
@@ -24,6 +31,9 @@ describe("Testing Landing Page", () => {
       expect(wrapper.exists()).toBe(true);
     });
 
+    it("scrollToResources()", async () => {
+      await wrapper.vm.scrollToResources();
+    });
   });
 
 });

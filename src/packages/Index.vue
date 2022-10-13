@@ -117,7 +117,12 @@ export default class Packages extends Vue {
   }
   public async toAcquisitions(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
-    this.$router.push({name: routeNames.ProjectOverview })
+    this.$router.push({
+      name: routeNames.ProjectOverview,
+      params: {
+        direction: "next"
+      }
+    }).catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
   private getIdText(string: string) {

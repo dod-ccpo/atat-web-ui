@@ -1,77 +1,178 @@
-import { ClassificationLevelDTO, SystemChoiceDTO } from "@/api/models";
-import { Checkbox, SelectData } from "types/Global";
-import { 
-  buildClassificationCheckboxList, 
+/* eslint-disable camelcase */
+import { ClassificationLevelDTO, SystemChoiceDTO, AgencyDTO } from "@/api/models";
+import { Checkbox } from "types/Global";
+import {
+  buildClassificationCheckboxList,
+  buildClassificationDescription,
   buildClassificationLabel,
   createPeriodCheckboxItems,
   createDateStr,
+  getCurrencyString,
+  roundDecimal,
+  toCurrencyString,
+  toTitleCase,
 } from "./index";
 import _ from "lodash";
 import Periods from "@/store/periods";
+import { convertAgencyRecordToSelect, convertSystemChoiceToSelect} from "@/helpers"
 
 describe("testing src/helpers/index.ts", () => {
-  test("buildClassificationCheckboxList - transform ClassificationLevelDTO to a Checkbox[]",
-    async()=>{
-      const classlevelDTOResults = [
-        {
-          "sys_id": "class1",
-          "sys_mod_count": "0",
-          "impact_level": "IL4",
-          "classification": "U",
-        },
-        {
-          "sys_id": "class2",
-          "sys_mod_count": "0",
-          "impact_level": "",
-          "classification": "TS",
-        },
-        {
-          "sys_id": "class3",
-          "sys_mod_count": "0",
-          "impact_level": "IL6",
-          "classification": "S",
-        },
-      ]
-      const arr:Checkbox[] = await buildClassificationCheckboxList(
-        classlevelDTOResults, "radio", false, false
+  const classlevelDTOResults = [
+    {
+      "sys_id": "class1",
+      "sys_mod_count": "0",
+      "impact_level": "IL4",
+      "classification": "U",
+    },
+    {
+      "sys_id": "class2",
+      "sys_mod_count": "0",
+      "impact_level": "",
+      "classification": "TS",
+    },
+    {
+      "sys_id": "class3",
+      "sys_mod_count": "0",
+      "impact_level": "IL6",
+      "classification": "S",
+    },
+  ]
+  it("buildClassificationCheckboxList() - transform (No Description) ClassificationLevelDTO "
+  + "to a Checkbox[]",
+  async () => {
+    const props = { idSuffix: "radio", descriptionNeeded: false, includeTS: false}
+    const arr = buildClassificationCheckboxList(
+      classlevelDTOResults, props.idSuffix, props.descriptionNeeded, props.includeTS
+    )
+    expect(arr).toEqual([
+      {
+        id: 'IL4radio',
+        value: 'class1',
+        label: 'Unclassified / Impact Level 4 (IL4)',
+        description: ''
+      },
+      {
+        id: 'IL6radio',
+        value: 'class3',
+        label: 'Secret / Impact Level 6 (IL6)',
+        description: ''
+      }
+    ]);
+  })
+  it("buildClassificationCheckboxList() - transform ClassificationLevelDTO to a Checkbox[]",
+    async () => {
+      const props = { idSuffix: "radio", descriptionNeeded: true, includeTS: false}
+      const arr: Checkbox[] = await buildClassificationCheckboxList(
+        classlevelDTOResults, props.idSuffix, props.descriptionNeeded, props.includeTS
       )
-      expect(arr).toEqual( [
+      expect(arr).toEqual([
         {
           id: 'IL4radio',
           value: 'class1',
           label: 'Unclassified / Impact Level 4 (IL4)',
-          description: ''
+          description: buildClassificationDescription(classlevelDTOResults[0])
         },
         {
           id: 'IL6radio',
           value: 'class3',
           label: 'Secret / Impact Level 6 (IL6)',
-          description: ''
+          description: buildClassificationDescription(classlevelDTOResults[2])
         }
       ]);
     })
-
-  test("buildClassificationLabel - transform ClassificationLevelDTO to a Checkbox[]",
-    async()=>{
-      const classLevel = 
-        {
-          "sys_id": "1",
-          "sys_mod_count": "0",
-          "impact_level": "IL6",
-          "classification": "S",
-        };
-      
-      const classLabel:string = await buildClassificationLabel(
-        classLevel, 'short'
-      )
-      expect(classLabel).toBe('Secret/IL6');
+  it.each([
+    { 
+      classLevel:  { classification: "", impact_level: "IL2" }, 
+      description: "Accommodates DoD information that has been approved for public "
+       + "release (Low Confidentiality and Moderate Integrity)"
+    },
+    {
+      classLevel:  { classification: "", impact_level: "IL4" },
+      description: "Accommodates DoD Controlled Unclassified Information (CUI)"
+    },
+    {
+      classLevel:   { classification: "", impact_level: "IL5" },
+      description: "Accommodates DoD CUI and National Security Systems"
+    },
+    {
+      classLevel:  { classification: "", impact_level: "IL6" },
+      description: "Accommodates DoD Classified Information up to SECRET"
+    },
+    {
+      classLevel: "",
+      description: ""
+    },
+  ])("buildClassificationDescription() - return description based on impact level", 
+    async (input) => {
+      expect(buildClassificationDescription(input.classLevel as ClassificationLevelDTO))
+        .toBe(input.description)
     })
+  it("toTitleCase() - returns capitalized first letter in word", async () => {
+    const title = "testing title"
+    const convertedTitle = toTitleCase(title)
+    expect(convertedTitle).toEqual("Testing Title")
+  })
+  it("convertAgencyRecordToSelect() - transform Agency records to Select input", async () => {
+    const agencyRecords: AgencyDTO[] = [
+      {
+        label: "Test Agency (TA)",
+        title: "TEST AGENCY",
+        acronym: "TA",
+        // eslint-disable-next-line camelcase
+        css_id: 999999999
+      }
+    ]
+    const agencySelectList = convertAgencyRecordToSelect(agencyRecords)
+    expect(agencySelectList).toEqual([
+      { text: agencyRecords[0].label, value: agencyRecords[0].title}
+    ])
+  })
+  it("convertSystemChoiceToSelect() - transform choice records to Select input", async () => {
+    const choiceRecords: SystemChoiceDTO[] = [
+      {
+        name: "Test Choice (TC)",
+        label: "TEST CHOICE",
+        value: "TC",
+        sequence: 1, 
+      }
+    ]
+    const choiceSelectList = convertSystemChoiceToSelect(choiceRecords)
+    expect(choiceSelectList).toEqual([
+      { text: choiceRecords[0].label, value: choiceRecords[0].value}
+    ])
+  })
+
+  it("buildClassificationLabel - transform Secret ClassificationLevelDTO to a Checkbox[]",
+    async () => {
+      const classLevel = {
+        "sys_id": "1",
+        "sys_mod_count": "0",
+        "impact_level": "IL6",
+        "classification": "S",
+      }
+      const labelName =`Secret/${classLevel.impact_level}`
+      const classLabel = await buildClassificationLabel(classLevel, "short")
+      expect(classLabel).toBe(labelName);
+    }
+  )
+  it("buildClassificationLabel - transform Top Secret ClassificationLevelDTO to a Checkbox[]",
+    async () => {
+      const classLevel = {
+        "sys_id": "2",
+        "sys_mod_count": "0",
+        "impact_level": "IL6",
+        "classification": "TS",
+      }
+      const classLabel = await buildClassificationLabel(classLevel, "short")
+      expect(classLabel).toBe("Top Secret");
+    }
+  )
 
   it("createPeriodCheckboxItems() - tests that unsorted SNOW data is successfully " +
     "transformed to expected sorted datasource array for period checkbox items", async () => {
 
     jest.spyOn(Periods, "loadPeriods").mockImplementation(
-      () => Promise.resolve (
+      () => Promise.resolve(
         [
           {
             "period_unit": "YEAR",
@@ -110,4 +211,19 @@ describe("testing src/helpers/index.ts", () => {
     expect(value).toBe("Dec. 31, 2022");
   })
   
+  it.each([
+    { amount: 294.399, isDecimal: true },
+    { amount: 3694, isDecimal: false },
+  ])("getCurrencyString() - convert number into currency string", async (input) => {
+    const currencyString = `$${toCurrencyString(input.amount, input.isDecimal)}`
+    expect(getCurrencyString(input.amount, input.isDecimal)).toEqual(currencyString)
+  })
+
+  it.each([
+    { amount: 393.3439, decimalPlaces: 3 },
+    { amount: 4958.3439, decimalPlaces: 2 },
+  ])("roundDecimal() - return rounded float number", async (input) => {
+    const roundedNumber = parseFloat(input.amount.toFixed(input.decimalPlaces))
+    expect(roundDecimal(input.amount, input.decimalPlaces)).toBe(roundedNumber)
+  })
 });
