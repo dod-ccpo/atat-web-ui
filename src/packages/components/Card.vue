@@ -268,7 +268,7 @@ export default class Card extends Vue {
         },
       ]
     }
-    if(this.cardData.package_status === 'ARCHIVED'){
+    if(this.cardData.package_status === 'ARCHIVED' && this.isOwner){
       this.cardMenuItems = [
         {
           title: "Restore package to draft",
