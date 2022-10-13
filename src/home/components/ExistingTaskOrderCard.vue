@@ -10,7 +10,7 @@
 
     <ATATSearch 
       buttonText="Search"
-      placeholder="Search Task Order Number"
+      placeHolder="Search Task Order Number"
       class="mb-4 d-inline-block"
     />
 
