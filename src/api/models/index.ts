@@ -45,6 +45,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   secondary_reviewers?: string[];
   mission_owners?: string[],
   contract_award: ReferenceColumn,
+  package_status?: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
