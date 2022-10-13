@@ -90,6 +90,7 @@ import Steps from "@/store/steps";
 import PackageSummaryStore from "@/store/packageSummary";
 import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
+import { PackageSummaryDTO } from "@/api/models";
 @Component({
   components: {
     PortfoliosSummary,
@@ -100,7 +101,7 @@ import Card from "@/packages/components/Card.vue";
 })
 export default class Packages extends Vue {
   public tabIndex = 0;
-  public packageData:Record<string, string>[] = []
+  public packageData:PackageSummaryDTO[] = []
   public tabItems: Record<string, string>[] = [
     {
       type: "OPEN",
@@ -134,7 +135,6 @@ export default class Packages extends Vue {
 
   private async loadOnEnter(){
     this.packageData = await PackageSummaryStore.getPackageData()
-    console.log(this.packageData)
   }
 
   public mounted():void{

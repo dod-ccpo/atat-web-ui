@@ -121,8 +121,8 @@
 import Vue from "vue";
 
 import { Component, Prop } from "vue-property-decorator";
-import { MeatballMenuItem, PortfolioCardData } from "../../../types/Global";
-import { createDateStr, getStatusChipBgColor, toTitleCase } from "@/helpers";
+import { MeatballMenuItem } from "../../../types/Global";
+import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 @Component({
