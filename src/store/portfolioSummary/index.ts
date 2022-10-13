@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
 import {
-  CloudServiceProviderDTO, PortfolioSummaryDTO, PortfolioSummaryMetadataAndDataDTO,
+  CloudServiceProviderDTO,
+  PortfolioSummaryDTO,
+  PortfolioSummaryMetadataAndDataDTO,
   PortfolioSummarySearchDTO,
   ReferenceColumn
 } from "@/api/models";
@@ -286,12 +288,13 @@ export class PortfolioSummaryStore extends VuexModule {
   private async setClinsToPortfolioTaskOrders(portfolioSummaryList: PortfolioSummaryDTO[]) {
     const clins = portfolioSummaryList.map(portfolio => portfolio.task_orders
       .map(taskOrder => taskOrder.clins));
-    const allClinList = await api.clinTable.getQuery(
+    const allClinList = await api.clinDisplayTable.getQuery(
       {
         params:
           {
             sysparm_fields: "sys_id,clin_number,idiq_clin,clin_status,funds_obligated," +
               "funds_total,pop_start_date,pop_end_date",
+            sysparm_display_value: "all",
             sysparm_query: "sys_idIN" + clins
           }
       }
@@ -299,7 +302,21 @@ export class PortfolioSummaryStore extends VuexModule {
     portfolioSummaryList.forEach(portfolio => {
       portfolio.task_orders.forEach(taskOrder => {
         taskOrder.clin_records =
-          allClinList.filter(clin => (taskOrder.clins.indexOf(<string>clin.sys_id) !== -1));
+          allClinList.filter(clin => (taskOrder.clins.indexOf(<string>clin.sys_id.value) !== -1))
+            .map(clinDisplay => {
+              return {
+                sys_id: clinDisplay.sys_id.value,
+                clin_number: clinDisplay.clin_number.value,
+                idiq_clin: clinDisplay.idiq_clin.value,
+                idiq_clin_display: clinDisplay.idiq_clin,
+                pop_end_date: clinDisplay.pop_end_date.value,
+                pop_start_date: clinDisplay.pop_start_date.value,
+                clin_status: clinDisplay.clin_status.value,
+                clin_status_display: clinDisplay.clin_status,
+                funds_obligated: Number(clinDisplay.funds_obligated.value),
+                funds_total: Number(clinDisplay.funds_total.value)
+              }
+            });
       })
     })
   }
@@ -359,7 +376,10 @@ export class PortfolioSummaryStore extends VuexModule {
       let totalObligatedForPortfolio = 0;
       let fundsSpentForPortfolio = 0;
       portfolio.task_orders.forEach(taskOrder => {
+        let fundsObligatedTaskOrder = 0;
         let fundsSpentForTaskOrder = 0;
+        let totalTaskOrderValue = 0;
+        let totalLifecycleAmount = 0;
         taskOrder.clin_records?.forEach(clinRecord => {
           let fundsSpentForClin = 0;
           if (clinRecord.clin_status === 'ACTIVE' ||
@@ -371,7 +391,12 @@ export class PortfolioSummaryStore extends VuexModule {
             clinRecord.clin_status === 'FUNDING_AT_RISK') { // TODO: double check the statuses
             totalObligatedForPortfolio =
               totalObligatedForPortfolio + Number(clinRecord.funds_obligated);
+            fundsObligatedTaskOrder = fundsObligatedTaskOrder +
+              Number(clinRecord.funds_obligated); // TODO:check if this should be outside if block
+            totalTaskOrderValue = totalTaskOrderValue + Number(clinRecord.funds_total);
           }
+          // totalLifecycleAmount is calculated using all clins of a TO irrespective of status
+          totalLifecycleAmount = totalLifecycleAmount + Number(clinRecord.funds_total);
           clinRecord.cost_records?.forEach(costRecord => {
             if (costRecord.is_actual) { // only add up costs with is_actual=true towards total spent
               const costValue = Number(costRecord.value);
@@ -386,6 +411,9 @@ export class PortfolioSummaryStore extends VuexModule {
           portfolio.pop_start_date = taskOrder.pop_start_date;
           portfolio.pop_end_date = taskOrder.pop_end_date;
         }
+        taskOrder.funds_obligated = fundsObligatedTaskOrder + "";
+        taskOrder.total_task_order_value = totalTaskOrderValue;
+        taskOrder.total_lifecycle_amount = totalLifecycleAmount;
         taskOrder.funds_spent_task_order = fundsSpentForTaskOrder;
       })
       portfolio.funds_obligated = totalObligatedForPortfolio;
