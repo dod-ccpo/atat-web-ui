@@ -41,9 +41,14 @@
         class="container-max-width"
       >
         <div v-if="activeTab === 'OPEN'">
-          <div class="d-flex flex-column align-center">
-            <h1>No open packages</h1>
-            <p>Acquisitions that have been open will appear here</p>
+          <div class="d-flex flex-column align-center pt-5">
+            <Card
+              v-for="(cardData, index) in packageData"
+              :key="index"
+              :cardData="cardData"
+              :index="index"
+              :isLastCard="index === packageData.length - 1"
+            />
           </div>
         </div>
         <div v-if="activeTab === 'AWARDEDTASKORDERS'">
@@ -82,16 +87,21 @@ import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import Steps from "@/store/steps";
+import PackageSummaryStore from "@/store/packageSummary";
 import { routeNames } from "@/router/stepper";
+import Card from "@/packages/components/Card.vue";
+import { PackageSummaryDTO } from "@/api/models";
 @Component({
   components: {
     PortfoliosSummary,
     ATATFooter,
     ATATToast,
+    Card,
   }
 })
 export default class Packages extends Vue {
   public tabIndex = 0;
+  public packageData:PackageSummaryDTO[] = []
   public tabItems: Record<string, string>[] = [
     {
       type: "OPEN",
@@ -127,6 +137,14 @@ export default class Packages extends Vue {
   }
   private getIdText(string: string) {
     return getIdText(string);
+  }
+
+  private async loadOnEnter(){
+    this.packageData = await PackageSummaryStore.getPackageData()
+  }
+
+  public mounted():void{
+    this.loadOnEnter();
   }
 
 }

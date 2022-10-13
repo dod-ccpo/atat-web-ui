@@ -71,6 +71,11 @@ export const StatusTypes = {
   Expired: "Expired",
   ExpiringSoon: "Expiring Soon",
   Archived: "Archived",
+  Draft: "Draft",
+  WaitingForSignatures: "Waiting For Signatures",
+  TaskOrderAwarded: "Task Order Awarded",
+  WaitingForTaskOrder: "Waiting For Task Order",
+
 }
 
 const initialCurrentContract = ()=> {
