@@ -220,14 +220,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "01",
     menuText: "Acquisition Package Details",
-    path: "/", // should be same as first substep route
+    path: "/project-overview", // should be same as first substep route
     completePercentageWeight: 14,
     component: AcquisitionPackageDetails,
     completed: true,
     children: [
       {
         menuText: "Project Overview",
-        path: "/", // should be same as parent route
+        path: "/project-overview", // should be same as parent route
         name: routeNames.ProjectOverview,
         completePercentageWeight: 4,
         completed: true,

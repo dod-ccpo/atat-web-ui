@@ -68,7 +68,12 @@
       </div>
     </div>
     
-    <div class="mt-10" id="PortfolioCards">
+    <div 
+      class="mt-10" 
+      id="PortfolioCards" 
+      v-show="portfolioCardData.length" 
+      style="margin-bottom: 200px;"
+    >
       <PortfolioCard
         v-for="(cardData, index) in portfolioCardData"
         :key="index"
@@ -79,6 +84,14 @@
         @leavePortfolio="leavePortfolio"
       />
     </div>
+
+    <ATATNoResults 
+      v-show="portfolioCardData.length === 0 && !isLoading" 
+      :searchString="searchedString"
+      :hasFilters="hasFilters"
+      @clear="clearSearchOrFilters"
+    />
+
   </div>
 </template>
 <script lang="ts">
@@ -86,6 +99,7 @@ import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
 
+import ATATNoResults from "@/components/ATATNoResults.vue";
 import ATATSearch from "@/components/ATATSearch.vue"
 import ATATSelect from "@/components/ATATSelect.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -113,6 +127,7 @@ import { PortfolioSummarySearchDTO } from "@/api/models";
 
 @Component({
   components: {
+    ATATNoResults,
     ATATSearch,
     ATATSelect,
     ATATSVGIcon,
@@ -123,10 +138,12 @@ import { PortfolioSummarySearchDTO } from "@/api/models";
 export default class PortfoliosSummary extends Vue {
   @Prop({ default: "ALL" }) public activeTab!: string;
 
-  public portfolioCardData: PortfolioCardData[] = [];
   public isHaCCAdmin = false;
 
- public searchString = "";
+  public portfolioCardData: PortfolioCardData[] = [];
+  public isLoading = false;
+  public searchString = "";
+  public searchedString = "";
   public selectedSort = "name";
   public sortOptions: SelectData[] = [
     { text: "Portfolio name A-Z", value: "name" },
@@ -159,13 +176,13 @@ export default class PortfoliosSummary extends Vue {
     return this.filterChips.length > 0;
   }
 
-  public removeFilter(index: number): void {
-    this.filterChips.splice(index, 0);
+  public async removeFilter(index: number): Promise<void> {
     const removedFilter = this.filterChips[index];
+    this.filterChips.splice(index,1);
     const key = removedFilter.type;
     switch (key) {
     case "role":
-      this.setQueryParams("role", "ALL");
+      await this.setQueryParams("role", "ALL");
       break;
     case "fundingStatuses": 
     case "csps": {
@@ -173,10 +190,25 @@ export default class PortfoliosSummary extends Vue {
         const filters = this.queryParams[key]?.filter(
           obj => obj.value !== removedFilter.value
         ) || [];
-        PortfolioData.setPortfolioSummaryQueryParams({[key]: filters });
+        await PortfolioData.setPortfolioSummaryQueryParams({[key]: filters });
       }
       break;
     }
+    }
+  }
+
+  public async clearSearchOrFilters(whatToClear: string): Promise<void> {
+    switch(whatToClear) {
+    case "both":
+      await PortfolioData.resetQueryParams();
+      this.searchString = "";
+      this.searchedString = "";
+      break;
+    case "search":
+      await this.clearSearch();
+      break;
+    case "filters":
+      await this.clearAllFilters();
     }
   }
 
@@ -211,6 +243,8 @@ export default class PortfoliosSummary extends Vue {
     };
     Object.assign(this.portfolioSearchDTO, newQPs);
     await this.loadPortfolioData();
+    this.isLoading = false;
+    this.searchedString = this.searchString;
   }
 
   @Watch("activeTab")
@@ -228,12 +262,14 @@ export default class PortfoliosSummary extends Vue {
     await this.setQueryParams("sort", valObj.newSelectedValue);
   }
 
-  public searchPortfolios(): void {
-    this.setQueryParams("searchString", this.searchString);
+  public async searchPortfolios(): Promise<void> {
+    await this.setQueryParams("searchString", this.searchString);
   }
 
-  public clearSearch(): void {
-    this.setQueryParams("searchString", "");
+  public async clearSearch(): Promise<void> {
+    await this.setQueryParams("searchString", "");
+    this.searchString = "";
+    this.searchedString = "";
   }
 
   public async setQueryParams(key: string, value: string): Promise<void> {
@@ -277,6 +313,7 @@ export default class PortfoliosSummary extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadPortfolioData();
+    this.isLoading = false;
   }
 
   public portfolioSearchDTO: PortfolioSummarySearchDTO = {
@@ -292,6 +329,7 @@ export default class PortfoliosSummary extends Vue {
   public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
 
   public async loadPortfolioData(): Promise<void> {
+    this.isLoading = true;
     this.portfolioCardData = [];
 
     // below used to map stub CSPs to actual CSPs until have actual CSP data

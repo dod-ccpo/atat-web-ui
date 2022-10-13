@@ -21,6 +21,7 @@ import SlideoutPanel from "@/store/slideoutPanel";
 export class AppSectionsStore extends VuexModule {
 
   sectionTitles: Record<string, string> = {
+    Home: "Home",
     AcquisitionPackage: "Acquisition Package Builder",
     JWCCDashboard: "JWCC Dashboard",
     TOLookup: "Lookup TO in EDA",
@@ -30,7 +31,7 @@ export class AppSectionsStore extends VuexModule {
     Packages: "Packages",
   }
 
-  activeAppSection = this.sectionTitles.AcquisitionPackage;
+  activeAppSection = this.sectionTitles.Home;
 
   appSectionMenuItems: { title: string }[] = [
     { title: this.sectionTitles.AcquisitionPackage },
