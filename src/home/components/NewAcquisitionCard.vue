@@ -40,7 +40,12 @@ export default class NewAcquisitionCard extends Vue {
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
-    this.$router.push({name: routeNames.ProjectOverview });
+    this.$router.push({
+      name: routeNames.ProjectOverview,
+      params: {
+        direction: "next"
+      }
+    }).catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
