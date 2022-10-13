@@ -380,7 +380,7 @@ export interface User {
   phoneNumber?: string;
   phoneExt?: string;
   designation?: string;
-  serviceAgency?: string;
+  agency?: string;
 }
 
 export interface Portfolio extends BaseTableDTO {
@@ -389,7 +389,7 @@ export interface Portfolio extends BaseTableDTO {
   description?: string;
   status?: string;
   csp?: string;
-  serviceAgency?: string;
+  agency?: string;
   createdBy?: string;
   provisioned?: string;
   members?: User[];
@@ -436,11 +436,11 @@ export interface FundingTrackerAlert {
 }
 
 export interface TaskOrderCardData {
-  taskOrderNumber:string,
-  periodOfPerformance:string,
-  totalObligated:string,
-  totalValue:string,
-  totalLifeCycle:string,
-  totalFundsSpent:string,
-  status:string,
+  taskOrderNumber: string,
+  periodOfPerformance: string,
+  totalObligated: string,
+  totalValue: string,
+  totalLifeCycle: string,
+  totalFundsSpent: string,
+  status: string,
 }
