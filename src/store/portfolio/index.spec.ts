@@ -28,6 +28,10 @@ describe("Portfolio Store", () => {
     })
     AcquisitionPackage.setOrganization({})
     AcquisitionPackage.setAcquisitionPackage({
+      contract_award: {
+        link:"",
+        value:"",
+      },
       classification_level: "",
       contact: "",
       contract_considerations: "",
@@ -79,6 +83,10 @@ describe("Portfolio Store", () => {
     })
     AcquisitionPackage.setOrganization({agency: "FBI"})
     AcquisitionPackage.setAcquisitionPackage({
+      contract_award: {
+        link:"",
+        value:"",
+      },
       classification_level: "",
       contact: "",
       contract_considerations: "",

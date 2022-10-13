@@ -213,11 +213,15 @@ export function getStatusChipBgColor(status: string): string {
   switch (status.toLowerCase()) {
   case StatusTypes.Active.toLowerCase():
   case StatusTypes.OnTrack.toLowerCase():
+  case StatusTypes.TaskOrderAwarded.toLowerCase():
     return "bg-success";
   case StatusTypes.Processing.toLowerCase():
   case StatusTypes.Upcoming.toLowerCase():
+  case StatusTypes.Draft.toLowerCase():
+  case StatusTypes.WaitingForSignatures.toLowerCase():
     return "bg-info-dark";
   case StatusTypes.AtRisk.toLowerCase():
+  case StatusTypes.WaitingForTaskOrder.toLowerCase():
   case StatusTypes.ExpiringSoon.toLowerCase():
     return "bg-warning";
   case StatusTypes.Delinquent.toLowerCase():
