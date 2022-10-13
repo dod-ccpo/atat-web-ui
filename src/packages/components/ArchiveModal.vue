@@ -1,11 +1,10 @@
 <template>
   <ATATDialog
-    id="DeletePackageModal"
+    id="AeletePackageModal"
     :showDialog.sync="_showModal"
-    title="Delete this acquisition package?"
-    buttonColor="error"
+    title="Archive this acquisition package?"
     no-click-animation
-    okText="Delete permanently"
+    okText="Archive"
     cancelText="Keep acquisition"
     width="450"
     @ok="okClicked"
@@ -14,23 +13,23 @@
     <template #content>
       <div v-if="waitingForSignature">
         <p v-if="!hasContributor" class="body">
-          “{{packageName}}” will be permanently deleted. Any details added to
-          your package will not be saved.
+          “{{packageName}}” will be moved to your archive. Your document signature request will be
+          voided within DocuSign. You can restore it to a draft at any time.
         </p>
         <p v-else class="body">
-          “{{packageName}}” will be permanently deleted. Your document signature request
-          will be voided within DocuSign. Contributors will no longer have access to view
-          or edit package details. Any details added to your package will not be saved.
+          “{{packageName}}” will be moved to your archive. Your document signature request will be
+          voided within DocuSign. Contributors will no longer have access to view or edit package
+          details. You can restore it to a draft at any time.
         </p>
       </div>
       <div v-else>
         <p v-if="!hasContributor" class="body">
-          “{{packageName}}” will be permanently deleted. Your document signature request will be
-          voided within DocuSign. Any details added to your package will not be saved.
+          “{{packageName}}” will be moved to your archive. You can restore it
+          to a draft at any time.
         </p>
         <p v-else class="body">
-          "{{ packageName }}" will be permanently deleted. Contributors will no longer have access
-          to view or edit package details. Any details added to your package will not be saved.
+          "{{ packageName }}"  will be moved to your archive. Contributors will no longer have
+          access to view or edit package details. You can restore it to a draft at any time.
         </p>
       </div>
 
@@ -50,7 +49,7 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
   }
 })
 
-export default class DeletePackageModal extends Vue {
+export default class ArchiveModal extends Vue {
   @PropSync("showModal") public _showModal?: boolean;
   @Prop() public packageName!: string;
   @Prop() public hasContributor!: boolean;

@@ -119,6 +119,11 @@
       :portfolioName="cardData.title"
       @okClicked="deletePackage"
     />
+    <ArchiveModal
+      :showModal.sync="showArchiveModal"
+      :portfolioName="cardData.title"
+      @okClicked="archivePackage"
+    />
   </v-card>
 </template>
 
@@ -131,11 +136,13 @@ import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
+import ArchiveModal from "@/packages/components/ArchiveModal.vue";
 @Component({
   components:{
     ATATSVGIcon,
     ATATMeatballMenu,
-    DeletePackageModal
+    DeletePackageModal,
+    ArchiveModal
   }
 })
 export default class Card extends Vue {
@@ -147,6 +154,7 @@ export default class Card extends Vue {
   public isOwner = this.cardData.mission_owners.indexOf(this.currentUserSysId) > -1;
   public isWaitingForSignatures = false
   public showDeleteModal = false
+  public showArchiveModal = false
   public lastModifiedStr = "";
   public modifiedData: {
     contractAward: string;
@@ -191,6 +199,9 @@ export default class Card extends Vue {
   }
 
   public deletePackage():void {
+    console.log('delete')
+  }
+  public archivePackage():void {
     console.log('delete')
   }
 
