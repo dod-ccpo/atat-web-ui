@@ -104,7 +104,7 @@ const initialOrganization = () => {
     sys_id: "",
     disa_organization: "",
     organization_name: "",
-    service_agency: "",
+    agency: "",
     state: "",
   };
 };
@@ -517,20 +517,20 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   // service or agency selected on Organiation page
-  selectedServiceOrAgency: SelectData = { text: "", value: "" };
+  selectedAgency: SelectData = { text: "", value: "" };
 
-  public getSelectedServiceOrAgency(): SelectData {
-    return this.selectedServiceOrAgency;
+  public getSelectedAgency(): SelectData {
+    return this.selectedAgency;
   }
 
   @Action({ rawError: true })
-  public setSelectedServiceOrAgency(value: SelectData): void {
-    this.doSetSelectedServiceOrAgency(value);
+  public setSelectedAgency(value: SelectData): void {
+    this.doSetSelectedAgency(value);
   }
 
   @Mutation
-  public doSetSelectedServiceOrAgency(value: SelectData): void {
-    this.selectedServiceOrAgency = value;
+  public doSetSelectedAgency(value: SelectData): void {
+    this.selectedAgency = value;
   }
 
   // military branch selected on Contact Info page

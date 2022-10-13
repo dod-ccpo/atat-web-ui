@@ -223,7 +223,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   protected roleChange(newRole: string): void {
     if (newRole === "MILITARY") {
       const branch = this.branchData.filter((branchObj) => {
-        return branchObj.value === this.selectedServiceOrAgency.value;
+        return branchObj.value === this.selectedAgency.value;
       });
       if (branch.length) {
         this.selectedBranch = branch[0];
@@ -251,8 +251,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     mask: ["999-999-9999"],
   };
 
-  public selectedServiceOrAgency: SelectData =
-    AcquisitionPackage.selectedServiceOrAgency;
+  public selectedAgency: SelectData =
+    AcquisitionPackage.selectedAgency;
 
   private selectedBranch: SelectData = { text: "", value: "" };
   private branchData: SelectData[] = [];
@@ -408,7 +408,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
         const emptyBranch: { text: ""; value: "" } = { text: "", value: "" };
 
         //retrieve selected Military Rank from rank component
-        const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
+        const rank = await ContactData.GetMilitaryRank(rankComp && rankComp.value || "");
 
         this.selectedBranch =
           rank !== undefined
