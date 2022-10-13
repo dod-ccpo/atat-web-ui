@@ -48,7 +48,7 @@
           />
         </div>
         <div
-          v-if="modifiedData.packageStatus.toLowerCase() === 'waiting for signature'"
+          v-if="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
           class=" d-flex align-center ">
           <ATATSVGIcon
             name="taskAlt"
