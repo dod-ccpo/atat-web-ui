@@ -1,15 +1,14 @@
 <template>
-  <div>
-    <div class="_hero-banner">
-    </div>
-
+  <div 
+    class="_home-wrapper"
+    :class="{'_is-new-user' : isNewUser }"  
+  >
+    <div class="_hero-banner"></div>
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
 
-          <div class="bg-white border-rounded py-6 px-8
-            d-flex justify-space-between align-center"
-          >
+          <div class="_welcome-bar">
             <h1 class="text-primary">Hi Maria! How can we help you?</h1>
             <v-btn 
               id="HelpfulResourcesButton"
@@ -21,9 +20,17 @@
           </div>
         </div>
 
-        <NewUser v-if="isNewUser" class="mt-15" />
+        <NewUser 
+          v-if="isNewUser" 
+          class="mt-15" 
+          @startNewAcquisition="startNewAcquisition" 
+        />
 
-        <ExistingUser v-else class="mt-15" />
+        <ExistingUser 
+          v-else 
+          class="mt-8" 
+          @startNewAcquisition="startNewAcquisition" 
+        />
 
         <HelpfulResourcesCards :isNewUser="isNewUser" />
 
@@ -59,6 +66,10 @@ import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
+import Steps from "@/store/steps";
+import AppSections from "@/store/appSections";
+import { routeNames } from "@/router/stepper";
+
 
 import { scrollToId } from "@/helpers";
 
@@ -77,6 +88,18 @@ export default class Home extends Vue {
   public scrollToResources(): void {
     scrollToId("HelpfulResourcesCards");
   }
+
+  public async startNewAcquisition(): Promise<void> {
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    this.$router.push({
+      name: routeNames.ProjectOverview,
+      params: {
+        direction: "next"
+      }
+    }).catch(() => console.log("avoiding redundant navigation"));
+    AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
+  }
+
 
 }
 

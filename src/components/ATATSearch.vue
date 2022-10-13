@@ -1,5 +1,5 @@
 <template>
-  <div id="SearchWrapper">
+  <div id="SearchWrapper" :style="'width: ' + wrapperWidth">
 
     <div class="d-flex align-center mb-2" v-if="label">
       <label
@@ -18,7 +18,7 @@
     </div>
     <div 
       class="d-flex"
-      :style="'width: ' + width + 'px'"
+      :style="'width: ' + width"
     >
       <v-text-field
         ref="atatSearchInput"
@@ -150,7 +150,8 @@ export default class ATATSearch extends Vue {
 
   @Prop({ default: "Search" }) private id!: string;
   @Prop({ default: "" }) private placeHolder?: string;
-  @Prop({ default: "320" }) private width?: string;
+  @Prop({ default: "320px" }) private width?: string;
+  @Prop({ default: "auto" }) private wrapperWidth?: string;
   @Prop({ default: "" }) private label?: string;
   @Prop({ default: "" }) private tooltipTitle?: string;
   @Prop({ default: "" }) private tooltipText?: string;

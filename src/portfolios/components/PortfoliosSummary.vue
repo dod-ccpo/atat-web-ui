@@ -5,7 +5,7 @@
         <ATATSearch 
           id="SearchPortfolios"
           placeHolder="Search portfolios"
-          width="450"
+          width="450px"
           @search="searchPortfolios"
           @clear="clearSearch"
           :value.sync="searchString"
