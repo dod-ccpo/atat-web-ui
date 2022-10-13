@@ -20,7 +20,13 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
 
-                package list
+                <PackageCards
+                  v-for="(cardData, index) in packageData"
+                  :key="index"
+                  :cardData="cardData"
+                  :index="index"
+                  :isLastCard="index === packageData.length - 1"
+                />
 
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -128,18 +134,25 @@ import ATATSearch from "@/components/ATATSearch.vue";
 import AppSections from "@/store/appSections";
 
 import Packages from "@/packages/Index.vue";
+import Card from "@/packages/components/Card.vue";
 
 import Portfolios from "../portfolios/Index.vue";
 import PortfoliosSummary from "../portfolios/components/PortfoliosSummary.vue"
+import { PackageSummaryDTO } from "@/api/models";
+import PackageSummary from "@/store/packageSummary";
 
 @Component({
   components: {
     ATATSearch,
     PortfoliosSummary,
+    "PackageCards": Card,
   }
 })
 
 export default class ExistingUser extends Vue {
+
+  public packageData:PackageSummaryDTO[] = []
+
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
   }
@@ -160,6 +173,14 @@ export default class ExistingUser extends Vue {
 
   public viewAllPackages(): void {
     AppSections.setAppContentComponent(Packages);
+  }
+
+  private async loadOnEnter(){
+    this.packageData = await PackageSummary.getPackageData()
+  }
+
+  public mounted():void{
+    this.loadOnEnter();
   }
 
 
