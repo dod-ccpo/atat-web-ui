@@ -3,7 +3,6 @@
 
   &.v-main {
     padding-top: 0 !important;
-    // height: calc(100vh - 56px);
     height: 100vh;
   }
   
@@ -11,7 +10,6 @@
     position: relative;
     background-color: transparent;
     padding: 0;
-    // max-height: calc(100vh - 56px);
     max-height: 100vh;
   }
 
@@ -84,10 +82,8 @@
 
 ._hero-banner {
   background-image: url("./assets/images/jedi-banner.png");
-  // background-size: 100% auto;
   background-size: cover;
   background-position: center top;
-  // height: 100vh;
   height: 600px;
   max-height: 600px;
   width: 100%;

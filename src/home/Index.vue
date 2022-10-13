@@ -7,20 +7,19 @@
       <div class="_home-content">
         <div class="container-max-width">
 
-        <div class="bg-white border-rounded py-6 px-8
-          d-flex justify-space-between align-center"
-        >
-          <h1 class="text-primary">Hi Maria! How can we help you?</h1>
-          <v-btn 
-            id="HelpfulResourcesButton"
-            :class="isNewUser ? 'secondary' : 'primary'"
-            @click="scrollToResources"
+          <div class="bg-white border-rounded py-6 px-8
+            d-flex justify-space-between align-center"
           >
-            Helpful Resources
-          </v-btn>
+            <h1 class="text-primary">Hi Maria! How can we help you?</h1>
+            <v-btn 
+              id="HelpfulResourcesButton"
+              :class="isNewUser ? 'secondary' : 'primary'"
+              @click="scrollToResources"
+            >
+              Helpful Resources
+            </v-btn>
+          </div>
         </div>
-      </div>
-
 
         <NewUser v-if="isNewUser" class="mt-15" />
 
