@@ -287,7 +287,7 @@ export default class Card extends Vue {
       this.lastModifiedStr = "Awarded on " + agoString;
     } else if(this.cardData.package_status === 'ARCHIVED') {
       const archivedDate = createDateStr(this.cardData.sys_updated_on, true);
-      this.lastModifiedStr = "Archived on" + archivedDate;
+      this.lastModifiedStr = "Archived on " + archivedDate;
     }else {
       const updatedDate = createDateStr(this.cardData.sys_updated_on, true);
       this.lastModifiedStr = "Last modified " + updatedDate;
