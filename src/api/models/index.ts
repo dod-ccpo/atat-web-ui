@@ -453,5 +453,6 @@ export interface PackageSummaryDTO {
     sys_updated_on?: string,
     sys_created_by?: string,
     mission_owners?: string[],
-    contract_award?: ReferenceColumn["value"]
+    contract_award?: ReferenceColumn["value"],
+    sys_id?: string,
   }

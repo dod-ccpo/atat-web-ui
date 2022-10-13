@@ -2,6 +2,7 @@
   <v-card
     class="_portfolio-summary-card-wrapper"
     :class="{ '_first': index === 0, '_last': isLastCard }"
+    :id="'Package'+ index"
     elevation="0"
   >
     <div class="pr-8 flex-grow-1">
@@ -29,7 +30,9 @@
       </div>
       <div class="text-base -size-14 d-flex align-center">
         <div
-          v-if="modifiedData.packageStatus.toLowerCase() === 'draft'"
+          :id="'Percentage'+ index"
+          v-if="modifiedData.packageStatus.toLowerCase() === 'draft' ||
+           modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
           class=" d-flex align-center">
           <ATATSVGIcon
             name="taskAlt"
@@ -38,26 +41,12 @@
             color="base"
             class="mr-1"
           />
-          30% complete
-          <ATATSVGIcon
-            name="bullet"
-            color="base-light"
-            :width="9"
-            :height="9"
-            class="d-inline-block mx-1"
-          />
-        </div>
-        <div
-          v-if="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
-          class=" d-flex align-center ">
-          <ATATSVGIcon
-            name="taskAlt"
-            width="16"
-            height="16"
-            color="base"
-            class="mr-1"
-          />
-          100% complete
+          <span v-if="modifiedData.packageStatus.toLowerCase() === 'draft'" >
+            30% complete
+          </span>
+          <span v-else>
+            100% complete
+          </span>
           <ATATSVGIcon
             name="bullet"
             color="base-light"
@@ -69,7 +58,8 @@
         <div
           v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
           class=" d-flex align-center">
-          <a>
+          <a
+          :id="'TaskOrder' + index">
             TO# HC1028-22-f-0141
           </a>
           <ATATSVGIcon
@@ -80,7 +70,7 @@
             class="d-inline-block mx-1"
           />
         </div>
-        <div class=" d-flex align-center">
+        <div :id="'CreatedBy'+ index" class=" d-flex align-center">
           {{modifiedData.createdBy}}
           <ATATSVGIcon
             name="bullet"
@@ -91,6 +81,7 @@
           />
         </div>
         <div
+          :id="'Modified/Archived'+ index"
           class="base d-flex align-center">
           {{lastModifiedStr}}
         </div>
