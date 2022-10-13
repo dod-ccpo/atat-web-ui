@@ -8,19 +8,19 @@
       <div class="_home-content">
         <div class="container-max-width">
 
-          <div class="bg-white border-rounded py-6 px-8
-            d-flex justify-space-between align-center"
+        <div class="bg-white border-rounded py-6 px-8
+          d-flex justify-space-between align-center"
+        >
+          <h1 class="text-primary">Hi Maria! How can we help you?</h1>
+          <v-btn 
+            id="HelpfulResourcesButton"
+            :class="isNewUser ? 'secondary' : 'primary'"
+            @click="scrollToResources"
           >
-            <h1 class="text-primary">Hi Maria! How can we help you?</h1>
-            <v-btn 
-              id="HelpfulResourcesButton"
-              :class="isNewUser ? 'secondary' : 'primary'"
-              @click="scrollToResources"
-            >
-              Helpful Resources
-            </v-btn>
-          </div>
+            Helpful Resources
+          </v-btn>
         </div>
+      </div>
 
 
         <NewUser v-if="isNewUser" class="mt-15" />
@@ -46,7 +46,7 @@
           <ATATFooter class="mx-auto pt-10" />
         </div>
 
-      </div>
+    </div>
 
     </v-main>
   </div>
