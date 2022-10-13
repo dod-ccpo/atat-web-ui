@@ -30,7 +30,7 @@ describe("Testing index Component", () => {
       title: "ABC123 portfolio",
       status: "Active",
       csp: "aws",
-      serviceAgency: "Joint Force",
+      agency: "Joint Force",
       lastModifiedStr: "Started 23 minutes ago",
       currentPoP: "",
       totalObligated: "",

@@ -28,6 +28,17 @@ export class StepsStore extends VuexModule implements StepsState {
     additionalButtonId = "";
     additionalButtonHide = false;
 
+    altBackDestination = "";
+
+    @Action 
+    public async setAltBackDestination(text: string): Promise<void> {
+      this.doSetAltBackDestination(text);
+    }
+    @Mutation
+    public async doSetAltBackDestination(text: string): Promise<void> {
+      this.altBackDestination = text;
+    }
+
     @Mutation
     public setAltBackButtonText(text: string): void {
       this.altBackButtonText = text;

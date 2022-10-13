@@ -1,5 +1,5 @@
 <template>
-  <div id="SearchWrapper">
+  <div id="SearchWrapper" :style="'width: ' + wrapperWidth">
 
     <div class="d-flex align-center mb-2" v-if="label">
       <label
@@ -18,7 +18,7 @@
     </div>
     <div 
       class="d-flex"
-      :style="'width: ' + width + 'px'"
+      :style="'width: ' + width"
     >
       <v-text-field
         ref="atatSearchInput"
@@ -45,14 +45,15 @@
         @click="search"
         @keydown.enter="search"
         @keydown.space="search"
-
       >
         <ATATSVGIcon 
+          v-if="!buttonText"
           name="search"
           color="white"
           width="18"
           height="18"
         />
+        <span v-else>{{ buttonText }}</span>
       </v-btn>
     </div>
 
@@ -149,7 +150,8 @@ export default class ATATSearch extends Vue {
 
   @Prop({ default: "Search" }) private id!: string;
   @Prop({ default: "" }) private placeHolder?: string;
-  @Prop({ default: "320" }) private width?: string;
+  @Prop({ default: "320px" }) private width?: string;
+  @Prop({ default: "auto" }) private wrapperWidth?: string;
   @Prop({ default: "" }) private label?: string;
   @Prop({ default: "" }) private tooltipTitle?: string;
   @Prop({ default: "" }) private tooltipText?: string;
@@ -160,6 +162,8 @@ export default class ATATSearch extends Vue {
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop({ default: "G-Invoicing" }) private searchType?: string;
+  @Prop({ default: "" }) private buttonText?: string;
+
   @PropSync("value", { default: "" }) public _value!: string;
 
   // remove isSimulation and all other simulation code when G-Invoicing search is actual
