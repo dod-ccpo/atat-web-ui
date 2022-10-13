@@ -91,18 +91,6 @@
           />
         </div>
         <div
-          v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
-          class="base d-flex align-center">
-          Reviewer: Contracting Specialist
-          <ATATSVGIcon
-            name="bullet"
-            color="base-light"
-            :width="9"
-            :height="9"
-            class="d-inline-block mx-1"
-          />
-        </div>
-        <div
           class="base d-flex align-center">
           {{lastModifiedStr}}
         </div>
@@ -274,12 +262,9 @@ export default class Card extends Vue {
           title: "Restore package to draft",
           action: ""
         },{
-          title: "Access provisioned portfolio",
+          title: "Delete acquisition package",
           action: ""
-        },{
-          title: "View completed packages",
-          action: ""
-        },
+        }
       ]
     }
     if (this.cardData.package_status === 'TASK_ORDER_AWARDED') {
