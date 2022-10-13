@@ -33,12 +33,14 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import {Component} from "vue-property-decorator";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
-import { TaskOrderCardData } from "../../../../../types/Global";
+import {TaskOrderCardData} from "../../../../../types/Global";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
-import PortfolioData from "@/store/portfolio";
+import Portfolio from "@/store/portfolio";
 import PortfolioSummary from "@/store/portfolioSummary";
+import {TaskOrderDTO} from "@/api/models";
+import {createDateStr, toCurrencyString} from "@/helpers";
 
 @Component({
   components: {
@@ -48,7 +50,8 @@ import PortfolioSummary from "@/store/portfolioSummary";
 })
 export default class TaskOrder extends Vue {
   public taskOrderData:TaskOrderCardData[] = [];
-  public showDetails = false
+  public showDetails = false;
+  public isLoading = false;
   public selectedTaskOrder:TaskOrderCardData = {
     taskOrderNumber: "",
     periodOfPerformance: "",
@@ -58,88 +61,39 @@ export default class TaskOrder extends Vue {
     totalFundsSpent: "",
     status: "",
   }
-  public orderNames = [
-    "#HC1028-22-F-0141",
-    "#HC1028-22-F-0131",
-    "#HC1028-22-F-0151",
-    "#HC1028-22-F-0161"
-  ];
-  public performancePeriod = [
-    "Oct. 1, 2021 - Sept. 30, 2022",
-    "Oct. 1, 2021 - Sept. 29, 2022",
-    "Oct. 1, 2021 - Sept. 28, 2022",
-    "Oct. 1, 2021 - Sept. 27, 2022"
-  ];
-  public obligatedValue = [
-    "$1,000,000.00",
-    "$1,000,000.00",
-    "$1,000,000.00",
-    "$1,000,000.00"
-  ];
-  public totalValue = [
-    "$1,000,000.00",
-    "$1,000,000.00",
-    "$1,000,000.00",
-    "$1,000,000.00"
-  ];
-  public lifeCycle = [
-    "$1,000,000.00",
-    "$1,000,000.00",
-    "$1,000,000.00",
-    "$1,000,000.00"
-  ];
-  public fundsSpent = [
-    "$500,000.00",
-    "$500,000.00",
-    "$500,000.00",
-    "$500,000.00"
-  ];
-  public status = [
-    "On Track",
-    "At-Risk",
-    "Upcoming",
-    "Expired",
-  ];
 
-  public createCardData(): void {
-    for (let i = 0; i < this.orderNames.length; i++) {
-      const taskOrder: TaskOrderCardData = {
-        taskOrderNumber: "",
-        periodOfPerformance: "",
-        totalObligated: "",
-        totalValue: "",
-        totalLifeCycle: "",
-        totalFundsSpent: "",
-        status: "",
-      };
-      let idx = i;
-      taskOrder.taskOrderNumber = this.orderNames[idx];
-      taskOrder.periodOfPerformance = this.performancePeriod[idx];
-      taskOrder.totalObligated = this.obligatedValue[idx];
-      taskOrder.totalValue = this.totalValue[idx];
-      taskOrder.totalLifeCycle = this.lifeCycle[idx];
-      taskOrder.totalFundsSpent = this.fundsSpent[idx];
-      taskOrder.status = this.status[idx]
-      this.taskOrderData.push(taskOrder);
-
+  /**
+   * Uses 2 stores to get the portfolio summary list. Then filters the list to
+   * get the portfolio and maps the task order data from the store to how the
+   * data is expected by this component.
+   */
+  public async loadPortfolioDetailData(): Promise<void> {
+    this.isLoading = true;
+    const portfolioSysId = await Portfolio.currentPortfolio.sysId;
+    const portfolioSummaryList = await PortfolioSummary.getAllPortfolioSummaryList();
+    let toDTOList: TaskOrderDTO[] = [];
+    const portfolioSummaryDTO = portfolioSummaryList?.find(portfolioSummary =>
+      portfolioSummary.sys_id === portfolioSysId);
+    if(portfolioSummaryDTO) {
+      toDTOList = portfolioSummaryDTO.task_orders;
     }
+    this.taskOrderData = toDTOList.map(toDTO => {
+      const popStart = createDateStr(toDTO.pop_start_date, true);
+      const popEnd = createDateStr(toDTO.pop_end_date, true);
+      return {
+        taskOrderNumber: toDTO.task_order_number,
+        periodOfPerformance: popStart + " - " + popEnd,
+        totalObligated: "$" + toCurrencyString(Number(toDTO.funds_obligated)),
+        totalValue: "$" + toCurrencyString(Number(toDTO.total_task_order_value)),
+        totalLifeCycle: "$" + toCurrencyString(Number(toDTO.total_lifecycle_amount)),
+        totalFundsSpent: "$" + toCurrencyString(Number(toDTO.funds_spent_task_order)),
+        status: toDTO.task_order_status
+      }
+    });
   }
 
-  public async loadOnEnter(): Promise<void> {
-    // this will be needed to map the data to the taskOrders
-    // const currentPortfolio = await PortfolioData.getPortfolioData()
-    // const portfolioList = await PortfolioSummary.portfolioSummaryList
-    // if(portfolioList){
-    //   const currentPortfolioData = portfolioList.filter(
-    //     (portfolio)=> portfolio.sys_id == currentPortfolio.sysId
-    //   )
-    //   console.log(currentPortfolioData[0].task_orders)
-    //
-    // }
-    this.createCardData();
-  }
   public  mounted(): void {
-    this.loadOnEnter();
+    this.loadPortfolioDetailData();
   }
 }
 </script>
