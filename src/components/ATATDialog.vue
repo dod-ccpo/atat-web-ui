@@ -26,7 +26,7 @@
         >{{ cancelText }}
         </v-btn>
         <v-btn
-          color="primary"
+          :color="buttonColor"
           :ripple="false"
           id="dialog_ok"
           :disabled="OKDisabled"
@@ -99,6 +99,7 @@ export default class ATATDialog extends Vue {
   @Prop() private focusOnOk!: string;
   @Prop({ default: false }) private OKDisabled!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
+  @Prop({ default: "primary" }) private buttonColor?: string;
 
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;
