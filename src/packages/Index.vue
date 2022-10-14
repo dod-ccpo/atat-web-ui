@@ -48,6 +48,8 @@
               :cardData="cardData"
               :index="index"
               :isLastCard="index === packageData.length - 1"
+              @updateStatus="updateStatus"
+
             />
           </div>
         </div>
@@ -90,6 +92,9 @@ import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
 import Steps from "@/store/steps";
 import { PackageSummaryDTO } from "@/api/models";
+import { ToastObj } from "../../types/Global";
+import Toast from "@/store/toast";
+
 @Component({
   components: {
     PortfoliosSummary,
@@ -137,6 +142,37 @@ export default class Packages extends Vue {
   private getIdText(string: string) {
     return getIdText(string);
   }
+
+  public async updateStatus(sysId: string,newStatus: string): Promise<void> {
+    let message = "";
+    switch(newStatus){
+    case 'DELETE':
+      message = "Acquisition package deleted"
+      break;
+    case 'ARCHIVED':
+      message = "Acquisition package archived"
+      break;
+    case 'DRAFT':
+      message = "Acquisition package restored to draft"
+      break;
+    }
+    await PackageSummaryStore
+      .updateAcquisitionPackageStatus({
+        acquisitionPackageSysId: sysId,
+        newStatus
+      });
+
+    const toastObj: ToastObj = {
+      type: "success",
+      message,
+      isOpen: true,
+      hasUndo: false,
+      hasIcon: true,
+    };
+
+    Toast.setToast(toastObj);
+  }
+
 
   private async loadOnEnter(){
     this.packageData = await PackageSummaryStore.getPackageData()
