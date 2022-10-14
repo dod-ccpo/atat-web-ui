@@ -2,6 +2,7 @@
   <nav class="stepper-nav container-max-width">
     <hr class="base-lighter mt-10 mb-8" />
     <div class="d-flex">
+
       <v-btn
         v-if="!noPrevious"
         @click="$emit('previous')"

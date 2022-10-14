@@ -25,7 +25,7 @@ describe("Testing Card Component", () => {
           package_status: "DRAFT",
           project_overview: "",
           secondary_reviewers: "",
-          sys_created_by: "julius.fitzhugh-ctr@ccpo.mil",
+          sys_created_by: "test@.mil",
           sys_updated_on: "2022-08-29 13:52:43",
           title: "Sprint 40 Demo",
         }

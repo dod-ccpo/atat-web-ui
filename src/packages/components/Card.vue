@@ -2,6 +2,7 @@
   <v-card
     class="_portfolio-summary-card-wrapper"
     :class="{ '_first': index === 0, '_last': isLastCard }"
+    :id="'Package'+ index"
     elevation="0"
   >
     <div class="pr-8 flex-grow-1">
@@ -29,7 +30,9 @@
       </div>
       <div class="text-base -size-14 d-flex align-center">
         <div
-          v-if="modifiedData.packageStatus.toLowerCase() === 'draft'"
+          :id="'Percentage'+ index"
+          v-if="modifiedData.packageStatus.toLowerCase() === 'draft' ||
+           modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
           class=" d-flex align-center">
           <ATATSVGIcon
             name="taskAlt"
@@ -38,26 +41,12 @@
             color="base"
             class="mr-1"
           />
-          30% complete
-          <ATATSVGIcon
-            name="bullet"
-            color="base-light"
-            :width="9"
-            :height="9"
-            class="d-inline-block mx-1"
-          />
-        </div>
-        <div
-          v-if="modifiedData.packageStatus.toLowerCase() === 'waiting for signature'"
-          class=" d-flex align-center ">
-          <ATATSVGIcon
-            name="taskAlt"
-            width="16"
-            height="16"
-            color="base"
-            class="mr-1"
-          />
-          100% complete
+          <span v-if="modifiedData.packageStatus.toLowerCase() === 'draft'" >
+            30% complete
+          </span>
+          <span v-else>
+            100% complete
+          </span>
           <ATATSVGIcon
             name="bullet"
             color="base-light"
@@ -69,7 +58,8 @@
         <div
           v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
           class=" d-flex align-center">
-          <a>
+          <a
+          :id="'TaskOrder' + index">
             TO# HC1028-22-f-0141
           </a>
           <ATATSVGIcon
@@ -80,7 +70,7 @@
             class="d-inline-block mx-1"
           />
         </div>
-        <div class=" d-flex align-center">
+        <div :id="'CreatedBy'+ index" class=" d-flex align-center">
           {{modifiedData.createdBy}}
           <ATATSVGIcon
             name="bullet"
@@ -91,18 +81,7 @@
           />
         </div>
         <div
-          v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
-          class="base d-flex align-center">
-          Reviewer: Contracting Specialist
-          <ATATSVGIcon
-            name="bullet"
-            color="base-light"
-            :width="9"
-            :height="9"
-            class="d-inline-block mx-1"
-          />
-        </div>
-        <div
+          :id="'Modified/Archived'+ index"
           class="base d-flex align-center">
           {{lastModifiedStr}}
         </div>
@@ -117,12 +96,14 @@
     />
     <DeletePackageModal
       :showModal.sync="showDeleteModal"
-      :portfolioName="cardData.title"
+      :packageName="modifiedData.title"
+      :hasContributor="hasContributor"
       @okClicked="deletePackage"
     />
     <ArchiveModal
       :showModal.sync="showArchiveModal"
-      :portfolioName="cardData.title"
+      :hasContributor="hasContributor"
+      :packageName="modifiedData.title"
       @okClicked="archivePackage"
     />
   </v-card>
@@ -138,7 +119,6 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
-import AppSections from "@/store/appSections";
 @Component({
   components:{
     ATATSVGIcon,
@@ -154,6 +134,7 @@ export default class Card extends Vue {
   
   public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
   public isOwner = this.cardData.mission_owners.indexOf(this.currentUserSysId) > -1;
+  public hasContributor = this.cardData.contributors.length > 0;
   public isWaitingForSignatures = false
   public showDeleteModal = false
   public showArchiveModal = false
@@ -213,6 +194,7 @@ export default class Card extends Vue {
       this.showArchiveModal = true
       break;
     case "Delete acquisition package":
+      console.log("hello")
       this.showDeleteModal = true
       break;
     case "Restore package to draft":
@@ -319,18 +301,15 @@ export default class Card extends Vue {
         },
       ]
     }
-    if(this.cardData.package_status === 'ARCHIVED'){
+    if(this.cardData.package_status === 'ARCHIVED' && this.isOwner){
       this.cardMenuItems = [
         {
           title: "Restore package to draft",
           action: "Restore package to draft"
         },{
-          title: "Access provisioned portfolio",
-          action: "Access provisioned portfolio"
-        },{
-          title: "View completed packages",
-          action: "View completed packages"
-        },
+          title: "Delete acquisition package",
+          action: "Delete acquisition package"
+        }
       ]
     }
     if (this.cardData.package_status === 'TASK_ORDER_AWARDED') {
@@ -338,7 +317,7 @@ export default class Card extends Vue {
       this.lastModifiedStr = "Awarded on " + agoString;
     } else if(this.cardData.package_status === 'ARCHIVED') {
       const archivedDate = createDateStr(this.cardData.sys_updated_on, true);
-      this.lastModifiedStr = "Archived on" + archivedDate;
+      this.lastModifiedStr = "Archived on " + archivedDate;
     }else {
       const updatedDate = createDateStr(this.cardData.sys_updated_on, true);
       this.lastModifiedStr = "Last modified " + updatedDate;

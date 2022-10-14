@@ -26,11 +26,10 @@
         >{{ cancelText }}
         </v-btn>
         <v-btn
-          color="primary"
+          :color="buttonColor"
           :ripple="false"
           id="dialog_ok"
           :disabled="OKDisabled"
-          :class="[{'bg-error':buttonColor === 'error'}]"
           @click="onOK"
         >
           {{ okText }}

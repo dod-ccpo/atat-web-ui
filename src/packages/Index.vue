@@ -41,7 +41,7 @@
         class="container-max-width"
       >
         <div v-if="activeTab === 'OPEN'">
-          <div class="d-flex flex-column align-center">
+          <div class="d-flex flex-column align-center pt-5">
             <Card
               v-for="(cardData, index) in packageData"
               :key="index"
@@ -88,6 +88,7 @@ import AppSections from "@/store/appSections";
 import PackageSummaryStore from "@/store/packageSummary";
 import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
+import Steps from "@/store/steps";
 import { PackageSummaryDTO } from "@/api/models";
 @Component({
   components: {
@@ -123,9 +124,15 @@ export default class Packages extends Vue {
   public tabClicked(tabType: string): void {
     this.activeTab = tabType;
   }
-  public toAcquisitions(): void {
-    this.$router.push({name: routeNames.ProjectOverview })
-    AppSections.changeActiveSection("Acquisition Package Builder");
+  public async toAcquisitions(): Promise<void> {
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
+    this.$router.push({
+      name: routeNames.ProjectOverview,
+      params: {
+        direction: "next"
+      }
+    }).catch(() => console.log("avoiding redundant navigation"));
+    AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
   private getIdText(string: string) {
     return getIdText(string);
