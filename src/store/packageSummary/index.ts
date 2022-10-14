@@ -94,28 +94,31 @@ export class PackageSummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async getAcqPackageData(): Promise<void>{
-    const packageSummaryListRequestConfig: AxiosRequestConfig = {
-      params: {
-        sysparm_fields: 'project_overview,sys_created_by,sys_updated_on,mission_owners,' +
-                          'secondary_reviewers,package_status, contract_award, sys_id',
-        sysparm_query: 'package_status!=DRAFT^ORmission_ownersISNOTEMPTY'
-      }
-    };
-    const packages = 
-      await api.acquisitionPackageTable.getQuery(packageSummaryListRequestConfig);
-    packages.forEach((p: AcquisitionPackageDTO)=>{
-      this.packageList.push({
-        project_overview: (p.project_overview as unknown as ReferenceColumn).value,
-        title: "",
-        secondary_reviewers: p.secondary_reviewers,
-        sys_updated_on: p.sys_updated_on,
-        sys_created_by: p.sys_created_by,
-        mission_owners: p.mission_owners,
-        package_status: p.package_status,
-        contract_award: (p.contract_award as ReferenceColumn).value,
-        sys_id: p.sys_id
+    if (this.packageList.length === 0) { // TEMP until initialized and set in session
+      const packageSummaryListRequestConfig: AxiosRequestConfig = {
+        params: {
+          sysparm_fields: 'project_overview,sys_created_by,sys_updated_on,mission_owners,' +
+                        'secondary_reviewers,package_status, contract_award, sys_id, contributors',
+          sysparm_query: 'package_status!=DRAFT^ORmission_ownersISNOTEMPTY'
+        }
+      };
+      const packages =
+        await api.acquisitionPackageTable.getQuery(packageSummaryListRequestConfig);
+      packages.forEach((p: AcquisitionPackageDTO)=>{
+        this.packageList.push({
+          project_overview: (p.project_overview as unknown as ReferenceColumn).value,
+          title: "",
+          secondary_reviewers: p.secondary_reviewers,
+          sys_updated_on: p.sys_updated_on,
+          sys_created_by: p.sys_created_by,
+          mission_owners: p.mission_owners,
+          package_status: p.package_status,
+          contributors: p.contributors,
+          contract_award: (p.contract_award as ReferenceColumn).value,
+          sys_id: p.sys_id
+        })
       })
-    })
+    }
   }
 
   @Action({rawError: true})

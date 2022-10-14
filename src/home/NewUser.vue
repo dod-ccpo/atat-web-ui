@@ -2,7 +2,7 @@
   <div>
     <section id="SectionCards" class="container-max-width mx-auto _mt-80 _mb-80">
       <div class="_new-user-cards d-flex justify-space-between">
-        <NewAcquisitionCard />
+        <NewAcquisitionCard @startNewAcquisition="startNewAcquisition" />
         <ExistingTaskOrderCard />
       </div>
     </section>

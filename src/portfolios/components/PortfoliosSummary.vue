@@ -138,7 +138,7 @@ import { PortfolioSummarySearchDTO } from "@/api/models";
 export default class PortfoliosSummary extends Vue {
   @Prop({ default: "ALL" }) public activeTab!: "ALL" | "ACTIVE" | "PROCESSING";
   @Prop({ default: false }) public isHomeView?: boolean;
-
+  @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
   public isHaCCAdmin = false;
 
   public portfolioCardData: PortfolioCardData[] = [];
@@ -341,6 +341,10 @@ export default class PortfoliosSummary extends Vue {
 
     if (this.activeTab) {
       this.portfolioSearchDTO.portfolioStatus = this.activeTab === "ALL" ? "" : this.activeTab;
+    }
+
+    if (this.defaultSort) {
+      this.portfolioSearchDTO.sort = this.defaultSort;
     }
 
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);

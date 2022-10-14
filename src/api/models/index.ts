@@ -53,6 +53,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   mission_owners?: string[],
   contract_award: ReferenceColumn,
   package_status?: string;
+  contributors?: string[],
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -454,5 +455,6 @@ export interface PackageSummaryDTO {
     sys_created_by?: string,
     mission_owners?: string[],
     contract_award?: ReferenceColumn["value"],
+    contributors?: string[],
     sys_id?: string,
   }
