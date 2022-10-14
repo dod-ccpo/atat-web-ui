@@ -40,6 +40,7 @@
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center"
+            @click="cardMenuClick(portfolioCardMenuItems[0])"
           >
             {{ cardData.title }}
             <ATATSVGIcon 
@@ -187,6 +188,7 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
+    debugger;
     await PortfolioData.setCurrentPortfolio(this.cardData);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:

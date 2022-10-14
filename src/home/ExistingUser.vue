@@ -5,6 +5,20 @@
       <v-row>    
         <v-col class="col-sm-12 col-md-7 pr-5">
 
+          <ATATAlert 
+            v-if="showAlert"
+            type="warning"
+            :closeButton="true"
+            class="mb-10"
+          >
+            <template slot="content">
+              You have {{ draftPackageCount }} 
+              draft<span v-if="draftPackageCount !== 1">s</span>
+              in progress.
+            </template>
+
+          </ATATAlert>
+
           <v-expansion-panels id="PackagesAccordion" flat v-model="packagesPanel">
             <v-expansion-panel expand>
               <v-expansion-panel-header>
@@ -31,7 +45,7 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
-          <div class="_view-all mb-5">
+          <div class="_view-all mb-10">
             <a
               id="viewAllPackagesLink"
               role="button"
@@ -130,6 +144,7 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import AppSections from "@/store/appSections";
 
@@ -143,25 +158,31 @@ import PackageSummary from "@/store/packageSummary";
 
 @Component({
   components: {
+    ATATAlert,
     ATATSearch,
-    PortfoliosSummary,
     "PackageCards": Card,
+    PortfoliosSummary,
   }
 })
 
 export default class ExistingUser extends Vue {
 
   public packageData:PackageSummaryDTO[] = []
-
-  public startNewAcquisition(): void {
-    this.$emit("startNewAcquisition");
-  }
+  public draftPackageCount = 0;
 
   public packagesPanel = 0; // open by default
   public packageCount = 0;
 
   public portfolioPanel = 0; // open by default
   public portfolioCount = 0;
+
+  public get showAlert(): boolean {
+    return this.draftPackageCount > 0
+  }
+
+  public startNewAcquisition(): void {
+    this.$emit("startNewAcquisition");
+  }
 
   public updateTotalPortfolios(totalCount: number): void {
     this.portfolioCount = totalCount;
@@ -176,14 +197,16 @@ export default class ExistingUser extends Vue {
   }
 
   private async loadOnEnter(){
-    this.packageData = await PackageSummary.getPackageData()
+    this.packageData = await PackageSummary.getPackageData();
+    this.packageCount = this.packageData.length;
+    this.packageData = this.packageData.slice(0, 10);
+    const draftPackages = this.packageData.filter(obj => obj.package_status === "DRAFT");
+    this.draftPackageCount = draftPackages?.length || 0;
   }
 
   public mounted():void{
     this.loadOnEnter();
   }
-
-
 
 }
 
