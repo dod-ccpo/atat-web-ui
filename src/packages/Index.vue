@@ -40,6 +40,7 @@
       <v-container
         class="container-max-width"
       >
+        <Search />
         <div v-if="activeTab === 'OPEN'">
           <div class="d-flex flex-column align-center pt-5">
             <Card
@@ -90,12 +91,14 @@ import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
 import Steps from "@/store/steps";
 import { PackageSummaryDTO } from "@/api/models";
+import Search from "@/packages/components/Search.vue";
 @Component({
   components: {
     PortfoliosSummary,
     ATATFooter,
     ATATToast,
     Card,
+    Search
   }
 })
 export default class Packages extends Vue {
