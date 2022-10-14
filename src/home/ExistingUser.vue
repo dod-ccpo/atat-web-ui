@@ -74,7 +74,7 @@
               <v-expansion-panel-content>
 
                 <PortfoliosSummary 
-                  active-tab="ALL" 
+                  active-tab="ACTIVE" 
                   :isHomeView="true" 
                   @totalCount="updateTotalPortfolios"
                 />

@@ -103,6 +103,18 @@ describe("Testing index Component", () => {
     expect(wrapper.vm.$data.portfolioCardData.length).toBe(2);
   });
 
+  it("tests loadPortfolioData() - filters by active only", async () => {
+    jest.spyOn(PortfolioSummaryStore, "searchPortfolioSummaryList").mockImplementation(
+      () => Promise.resolve({
+        // eslint-disable-next-line camelcase
+        total_count: 2,
+        portfolioSummaryList: portfolios
+      }));
+    wrapper.vm.$data.activeTab = "ACTIVE"
+    await wrapper.vm.loadPortfolioData();
+    expect(await wrapper.vm.$data.portfolioSearchDTO.portfolioStatus).toBe("");
+  });
+
   it("tests generateFilterChips() - generates a filter chip for managed role", async () => {
     await wrapper.vm.setQueryParams("role", "MANAGED");
     await wrapper.vm.generateFilterChips();
