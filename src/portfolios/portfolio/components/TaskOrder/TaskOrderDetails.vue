@@ -124,7 +124,7 @@
               </td>
               <td>
                 <div class="d-flex align-center">
-                  <!-- <div
+                  <div
                     class="_icon-circle"
                     :class="statusImgs[item.status].bgColor"
                   >
@@ -135,7 +135,7 @@
                       :color="statusImgs[item.status].color"
                     />
                      
-                  </div> -->
+                  </div>
                   <div class="d-flex flex-column font-weight-500">
                     {{item.status}}
                   </div>
@@ -343,6 +343,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import format from "date-fns/format";
 import { differenceInDays, differenceInMonths } from "date-fns";
 import { ClinDTO } from "@/api/models";
+import { formatDiagnostics } from "typescript";
 @Component({
   components: {
     TaskOrderCard,
@@ -458,12 +459,19 @@ export default class TaskOrderDetails extends Vue {
     }
   }
   public createTableData(): void {
+    let prevClinNo = "";
+    const inactiveStatuses = ["Option Pending", "Option Exercised", "Expired PoP"]
+    
     this.clins.forEach((clin)=>{
-      this.tableData.push({
+      const formattedStatus = capitalizeFirstLetter(clin.clin_status).replaceAll("_", " " )
+        .replaceAll("Pop", "PoP")
+      const isClinActive = !(inactiveStatuses.includes(formattedStatus));
+      const tableRowData: ClinTableRowData = {
+        isActive: isClinActive,
         CLINNumber: clin.clin_number,
         CLINTitle: clin.clin_title,
         PoP: this.monthsToExpiration(clin.pop_start_date,clin.pop_end_date),
-        status: capitalizeFirstLetter(clin.clin_status),
+        status: formattedStatus,
         obligatedFunds: '$' + toCurrencyString(clin.funds_obligated),
         totalCLINValue: '$' + toCurrencyString(clin.funds_total),
         totalFundsSpent: '$' + toCurrencyString(clin.funds_spent_clin || 0),
@@ -471,24 +479,36 @@ export default class TaskOrderDetails extends Vue {
           clin.funds_obligated,
           clin.funds_total
         ),
-      })
+        startNewClinGroup: 
+          prevClinNo && clin.clin_number.charAt(0) !== prevClinNo.charAt(0) || false
+      }
+      this.tableData.push(tableRowData)
+
+      this.calculateTotalFundingObj(tableRowData);
+      // double-check logic for new groups - first 2 numbers?
+      prevClinNo = clin.clin_number;
     }
     )
-     
-    // double-check logic for new groups - first 2 numbers?
-    // if (prevClinNo && CLIN.CLINNumber.charAt(0) !== prevClinNo.charAt(0)) {
-    //   CLIN.startNewClinGroup = true;
-    // }
-    // this.tableData.push(CLIN);
-    // prevClinNo = CLIN.CLINNumber;
-    // this.totalsWithInactive = this.fundsRemaining(
-    //   this.totalFundingObj.withInactiveObligatedFunds, 
-    // this.totalFundingObj.withInactiveFundsSpent
-    // )
-    // this.totals = this.fundsRemaining(
-    //   this.totalFundingObj.totalObligatedFunds, this.totalFundingObj.totalFundsSpent
-    // )
   }
+     
+  public calculateTotalFundingObj(clin: ClinTableRowData): void{
+    if(clin.isActive) {
+      this.totalFundingObj.totalCLINValue += Number(clin.totalCLINValue)
+      this.totalFundingObj.withInactiveTotal += Number(clin.totalCLINValue)
+      this.totalFundingObj.totalObligatedFunds += Number(clin.obligatedFunds)
+      this.totalFundingObj.withInactiveObligatedFunds += Number(clin.obligatedFunds)
+      this.totalFundingObj.totalFundsSpent += Number(clin.totalFundsSpent)
+      this.totalFundingObj.withInactiveFundsSpent += Number(clin.totalFundsSpent)
+    } else {
+      if(clin.status !== 'Option exercised'){
+        this.inActiveCount++
+      }
+      this.totalFundingObj.withInactiveTotal += Number(clin.totalCLINValue)
+      this.totalFundingObj.withInactiveObligatedFunds += Number(clin.obligatedFunds)
+      this.totalFundingObj.withInactiveFundsSpent += Number(clin.totalFundsSpent)
+    }
+  }
+
   public statusImgs: Record<string, Record<string, string | undefined>> = {};
 
   public generateStatusImgs(
@@ -510,13 +530,14 @@ export default class TaskOrderDetails extends Vue {
     this.createTableData()
     const statusImgValues = [
       ["Delinquent", "failed", "16", "16", "error", "bg-error-lighter"],
+      ["Expired","failed", "16", "16", "error", "bg-error-lighter"],
       ["Expired PoP","failed", "16", "16", "error", "bg-error-lighter"],
       ["Expiring PoP","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
-      ["Funding At-Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
-      ["At-Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
+      ["Funding At Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
+      ["At Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
       ["Option pending","optionPending", "16", "16", "info-dark", "bg-info-lighter"],
       ["Option exercised","requestQuote", "13", "16", "info-dark", "bg-info-lighter"],
-      ["On_Track","taskAlt", "17", "17", "success-dark", "bg-success-lighter"],
+      ["On Track","taskAlt", "17", "17", "success-dark", "bg-success-lighter"],
 
     ];
     statusImgValues.forEach((values) => {

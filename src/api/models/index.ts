@@ -362,7 +362,7 @@ export interface ClinDTO extends BaseTableDTO {
   funds_total: number;
   cost_records?: CostsDTO[]
   funds_spent_clin?: number; // total of all is_actual=true costs of the clin
-  clin_title: string;
+  clin_title?: string;
 }
 
 export interface ClinDisplayDTO {

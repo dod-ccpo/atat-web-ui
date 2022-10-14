@@ -450,6 +450,7 @@ export interface TaskOrderCardData {
 }
 
 export interface ClinTableRowData {
+  isActive?: boolean,
   CLINNumber?:string,
   CLINTitle?:string,
   PoP?: { PoP:string,expiration:string },
@@ -457,5 +458,6 @@ export interface ClinTableRowData {
   totalCLINValue?:string,
   totalFundsSpent?:string,
   fundsRemaining?: {percent:string, fundsRemaining:string},
-  status?:string
+  status?:string,
+  startNewClinGroup?: boolean
 }

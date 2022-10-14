@@ -62,6 +62,7 @@ export default class TaskOrder extends Vue {
         .flatMap( portfolio=>portfolio.task_orders.filter((
           (taskOrder)=>taskOrder.task_order_number===this.activeTaskOrderNumber
         )))
+      
         .map((to)=>{
           console.log(to);
           return{
