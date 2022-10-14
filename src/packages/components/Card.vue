@@ -15,6 +15,8 @@
             class="h3 _text-decoration-none d-flex align-center"
           >
             {{ modifiedData.title }}
+            <!-- for testing only -->
+            <span v-if="modifiedData.contributors">&nbsp;(C)</span>
           </a>
         </div>
           <v-chip
@@ -148,6 +150,7 @@ export default class Card extends Vue {
     createdBy: string;
     updated: string;
     title: string;
+    contributors:string;
   } = {
     contractAward: "",
     missionOwners: "",
@@ -157,6 +160,7 @@ export default class Card extends Vue {
     createdBy: "",
     updated: "",
     title: "",
+    contributors:"",
   }
 
   public cardMenuItems: MeatballMenuItem[] = [];
@@ -178,6 +182,7 @@ export default class Card extends Vue {
     this.modifiedData.createdBy = this.isOwner? "Maria Missionowner" : "Jack Ryan"
     this.modifiedData.updated = cardData.sys_updated_on
     this.modifiedData.title = cardData.title
+    this.modifiedData.contributors = cardData.contributors
 
   }
 
