@@ -85,6 +85,9 @@ describe("Testing index Component", () => {
     wrapper = mount(PortfoliosSummary, {
       localVue,
       vuetify,
+      propsData: {
+        isHomeView: true,
+      }
     });
   });
 
@@ -227,6 +230,5 @@ describe("Testing index Component", () => {
       expect(await wrapper.vm.$data.filterChips.length).toBe(0);
     })
   });
-
 
 });
