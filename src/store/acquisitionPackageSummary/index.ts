@@ -2,15 +2,14 @@
 import {
   AcquisitionPackageSummaryDTO,
   AcquisitionPackageSummaryMetadataAndDataDTO,
-  AcquisitionPackageSummarySearchDTO, DisplayColumn, FundingIncrementDTO
+  AcquisitionPackageSummarySearchDTO, DisplayColumn
 } from "@/api/models";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
-import Vue from "vue";
+import Vue from "vue"
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
-import {fundingIncrement} from "../../../types/Global";
 
 const ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY = "ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY";
 
@@ -102,7 +101,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   private async getMandatorySearchParameterQuery(searchDTO: AcquisitionPackageSummarySearchDTO):
     Promise<string> {
     let query = "";
-    // query = query + "^status!=DRAFT^ORmission_ownersISNOTEMPTY" // TODO: is this needed
+    // query = query + "^package_status!=DRAFT^ORmission_ownersISNOTEMPTY" // TODO: is this needed
     query = query + "^mission_ownersISNOTEMPTY" // TODO: should mission owners be in the query
     query = query + "^ORDERBY" + searchDTO.sort;
     return query;
@@ -217,7 +216,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         .update(packageStatus.acquisitionPackageSysId, status);
       return true;
     } catch (error) {
-      throw new Error(`an error occurred saving acquisition package status ${error}`);
+      throw new Error(`an error occurred updating acquisition package status ${error}`);
     }
   }
 }
