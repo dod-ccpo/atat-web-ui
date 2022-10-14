@@ -82,6 +82,7 @@
         :isLastCard="index === portfolioCardData.length - 1"
         :isHaCCAdmin="isHaCCAdmin"
         @leavePortfolio="leavePortfolio"
+        :isHomeView="isHomeView"
       />
     </div>
 
@@ -348,6 +349,9 @@ export default class PortfoliosSummary extends Vue {
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
     this.$emit("totalCount", storeData.total_count);
 
+    if (this.isHomeView) {
+      storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
+    }
     storeData.portfolioSummaryList.forEach((portfolio) => {
       let cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;

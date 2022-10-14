@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white pt-8 pb-10">
+  <div class="pt-8 pb-10">
     <div class="container-max-width">
 
       <v-row>    
@@ -26,7 +26,7 @@
                   <div class="h3">
                     Open Acquisition Packages
                   </div>
-                  <div class="h3 text-base-light _item-count pr-4">
+                  <div class="h3 _item-count pr-4">
                     {{ packageCount }} package<span v-if="packageCount !== 1">s</span>
                   </div>
                 </div>
@@ -99,8 +99,8 @@
         </v-col>
 
         <v-col class="col-sm-12 col-md-5 pl-5">
-          <v-card flat class="py-7 mb-10 px-5 _simple-border">
-            <h3 class="text-primary mb-4">Do you already have an awarded task order?</h3>
+          <v-card flat class="pa-6 mb-10 _simple-border">
+            <h3 class="text-primary mb-2">Do you already have an awarded task order?</h3>
             <p>
               Provide a few details about your awarded task order and we’ll import 
               your info to provision your cloud resources.
@@ -114,7 +114,7 @@
             />
           </v-card>
 
-          <v-card flat class="py-7 mb-10 px-5 _simple-border">
+          <v-card flat class="pa-6 mb-10 _simple-border">
             <h3 class="text-primary mb-4">What else could we help you with?</h3>
             <v-btn
               id="StartNewAcquisitionButton"
@@ -200,7 +200,7 @@ export default class ExistingUser extends Vue {
   private async loadOnEnter(){
     this.packageData = await PackageSummary.getPackageData();
     this.packageCount = this.packageData.length;
-    this.packageData = this.packageData.slice(0, 10);
+    this.packageData = this.packageData.slice(0, 5);
     const draftPackages = this.packageData.filter(obj => obj.package_status === "DRAFT");
     this.draftPackageCount = draftPackages?.length || 0;
   }
