@@ -136,7 +136,7 @@ import { PortfolioSummarySearchDTO } from "@/api/models";
 })
 
 export default class PortfoliosSummary extends Vue {
-  @Prop({ default: "ALL" }) public activeTab!: string;
+  @Prop({ default: "ALL" }) public activeTab!: "ALL" | "ACTIVE" | "PROCESSING";
   @Prop({ default: false }) public isHomeView?: boolean;
 
   public isHaCCAdmin = false;
@@ -336,6 +336,10 @@ export default class PortfoliosSummary extends Vue {
     // below used to map stub CSPs to actual CSPs until have actual CSP data
     const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
     const csps = ["aws", "azure", "google", "oracle", "oracle"];
+
+    if (this.activeTab) {
+      this.portfolioSearchDTO.portfolioStatus = this.activeTab === "ALL" ? "" : this.activeTab;
+    }
 
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
     this.$emit("totalCount", storeData.total_count);
