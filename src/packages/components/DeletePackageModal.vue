@@ -12,28 +12,16 @@
     @cancelClicked="cancelClicked"
   >
     <template #content>
-      <div v-if="waitingForSignature">
-        <p v-if="!hasContributor" class="body">
-          “{{packageName}}” will be permanently deleted. Any details added to
-          your package will not be saved.
-        </p>
-        <p v-else class="body">
-          “{{packageName}}” will be permanently deleted. Your document signature request
-          will be voided within DocuSign. Contributors will no longer have access to view
-          or edit package details. Any details added to your package will not be saved.
-        </p>
+      <div class="body">
+        “{{packageName}}” will be permanently deleted.
+        <span v-if="waitingForSignature">
+          Your document signature request will be voided within DocuSign.
+        </span>
+        <span v-if="hasContributor">
+          Contributors will no longer have access to view or edit package details.
+        </span>
+        Any details added to your package will not be saved.
       </div>
-      <div v-else>
-        <p v-if="!hasContributor" class="body">
-          “{{packageName}}” will be permanently deleted. Your document signature request will be
-          voided within DocuSign. Any details added to your package will not be saved.
-        </p>
-        <p v-else class="body">
-          "{{ packageName }}" will be permanently deleted. Contributors will no longer have access
-          to view or edit package details. Any details added to your package will not be saved.
-        </p>
-      </div>
-
     </template>
   </ATATDialog>
 

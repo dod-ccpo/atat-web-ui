@@ -160,7 +160,9 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         secondary_reviewers: acqPackageSummary.secondary_reviewers,
         package_status: acqPackageSummary.package_status as DisplayColumn,
         mission_owners: acqPackageSummary.mission_owners,
-        contract_award: acqPackageSummary.contract_award
+
+        contract_award: acqPackageSummary.contract_award,
+        contributors: acqPackageSummary.contributors,
       }
     })
   }

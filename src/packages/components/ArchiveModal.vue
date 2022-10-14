@@ -11,28 +11,16 @@
     @cancelClicked="cancelClicked"
   >
     <template #content>
-      <div v-if="waitingForSignature">
-        <p v-if="!hasContributor" class="body">
-          “{{packageName}}” will be moved to your archive. Your document signature request will be
-          voided within DocuSign. You can restore it to a draft at any time.
-        </p>
-        <p v-else class="body">
-          “{{packageName}}” will be moved to your archive. Your document signature request will be
-          voided within DocuSign. Contributors will no longer have access to view or edit package
-          details. You can restore it to a draft at any time.
-        </p>
+      <div class="body">
+        “{{packageName}}” will be moved to your archive.
+        <span v-if="waitingForSignature">
+          Your document signature request will be voided within DocuSign.
+        </span>
+        <span v-if="hasContributor">
+          Contributors will no longer have access to view or edit package details.
+        </span>
+        You can restore it to a draft at any time.
       </div>
-      <div v-else>
-        <p v-if="!hasContributor" class="body">
-          “{{packageName}}” will be moved to your archive. You can restore it
-          to a draft at any time.
-        </p>
-        <p v-else class="body">
-          "{{ packageName }}"  will be moved to your archive. Contributors will no longer have
-          access to view or edit package details. You can restore it to a draft at any time.
-        </p>
-      </div>
-
     </template>
   </ATATDialog>
 
