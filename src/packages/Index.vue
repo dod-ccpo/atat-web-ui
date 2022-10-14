@@ -140,7 +140,6 @@ export default class Packages extends Vue {
 
   private async loadOnEnter(){
     this.packageData = await PackageSummaryStore.getPackageData()
-    console.log(this.packageData)
   }
 
   public mounted():void{

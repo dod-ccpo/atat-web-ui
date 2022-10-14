@@ -100,13 +100,11 @@
       :showModal.sync="showDeleteModal"
       :packageName="modifiedData.title"
       :hasContributor="hasContributor"
-      @okClicked="deletePackage"
     />
     <ArchiveModal
       :showModal.sync="showArchiveModal"
       :hasContributor="hasContributor"
       :packageName="modifiedData.title"
-      @okClicked="archivePackage"
     />
   </v-card>
 </template>
@@ -186,26 +184,13 @@ export default class Card extends Vue {
 
   }
 
-  public deletePackage():void {
-    console.log('delete')
-  }
-  public archivePackage():void {
-    console.log('delete')
-  }
-
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
     switch (menuItem.action) {
     case "Archive acquisition":
       this.showArchiveModal = true
       break;
     case "Delete acquisition package":
-      console.log("hello")
       this.showDeleteModal = true
-      break;
-    case "Restore package to draft":
-      this.modifiedData.packageStatus = "DRAFT"
-      // eslint-disable-next-line camelcase
-      this.cardData.package_status = "DRAFT"
       break;
     }
   }

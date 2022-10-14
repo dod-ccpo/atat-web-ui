@@ -61,5 +61,27 @@ describe("Testing Card Component", () => {
       expect(status4).toBe("ARCHIVED");
     })
 
+    it('test cardMenuClick()',()=>{
+      const archiveItem={
+        action: "Archive acquisition"
+      }
+      const deleteItem={
+        action: "Delete acquisition package"
+      }
+      const showArchive = wrapper.vm.$data.showArchiveModal
+      expect(showArchive).toBe(false);
+      wrapper.vm.cardMenuClick(archiveItem)
+      Vue.nextTick(()=>{
+        expect(showArchive).toBe(true);
+      })
+
+      const showDelete = wrapper.vm.$data.showDeleteModal
+      expect(showDelete).toBe(false);
+      wrapper.vm.cardMenuClick(deleteItem)
+      Vue.nextTick(()=>{
+        expect(showDelete).toBe(true);
+      })
+    })
+
   });
 });
