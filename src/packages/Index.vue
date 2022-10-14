@@ -41,37 +41,48 @@
       <v-container
         class="container-max-width"
       >
-        <div v-if="activeTab === 'OPEN'">
-          <div class="d-flex flex-column align-center pt-5">
-            <Card
-              v-for="(cardData, index) in packageData"
-              :key="index"
-              :cardData="cardData"
-              :index="index"
-              :isLastCard="index === packageData.length - 1"
-              @updateStatus="updateStatus"
+        <div class="d-flex flex-column align-center pt-5">
+          <Card
+            v-for="(cardData, index) in packageData"
+            :key="cardData.sys_id"
+            :cardData="cardData"
+            :index="index"
+            :isLastCard="index === packageData.length - 1"
+            @updateStatus="updateStatus"
 
-            />
-          </div>
+          />
         </div>
-        <div v-if="activeTab === 'AWARDEDTASKORDERS'">
-          <div class="d-flex flex-column align-center">
-            <h1>No packages with awarded task orders.</h1>
-            <p>Acquisitions that have been awarded task orders will appear here</p>
-          </div>
-        </div>
-        <div v-if="activeTab === 'ARCHIVE'">
-          <div class="d-flex flex-column align-center">
-            <h1>No archived packages.</h1>
-            <p>Acquisitions that have been archived will appear here</p>
-          </div>
-        </div>
-        <div v-if="activeTab === 'ALL'">
-          <div class="d-flex flex-column align-center">
-            <h1>No packages.</h1>
-            <p>Acquisitions will appear here</p>
-          </div>
-        </div>
+<!--        <div v-if="activeTab === 'OPEN'">-->
+<!--          <div class="d-flex flex-column align-center pt-5">-->
+<!--            <Card-->
+<!--              v-for="(cardData, index) in packageData"-->
+<!--              :key="index"-->
+<!--              :cardData="cardData"-->
+<!--              :index="index"-->
+<!--              :isLastCard="index === packageData.length - 1"-->
+<!--              @updateStatus="updateStatus"-->
+
+<!--            />-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div v-if="activeTab === 'AWARDEDTASKORDERS'">-->
+<!--          <div class="d-flex flex-column align-center">-->
+<!--            <h1>No packages with awarded task orders.</h1>-->
+<!--            <p>Acquisitions that have been awarded task orders will appear here</p>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div v-if="activeTab === 'ARCHIVE'">-->
+<!--          <div class="d-flex flex-column align-center">-->
+<!--            <h1>No archived packages.</h1>-->
+<!--            <p>Acquisitions that have been archived will appear here</p>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div v-if="activeTab === 'ALL'">-->
+<!--          <div class="d-flex flex-column align-center">-->
+<!--            <h1>No packages.</h1>-->
+<!--            <p>Acquisitions will appear here</p>-->
+<!--          </div>-->
+<!--        </div>-->
 
       </v-container>
       <ATATFooter/>
@@ -82,7 +93,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import { getIdText } from "@/helpers";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
@@ -96,6 +107,7 @@ import { AcquisitionPackageSummarySearchDTO, PackageSummaryDTO } from "@/api/mod
 import { ToastObj } from "../../types/Global";
 import Toast from "@/store/toast";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import _ from "lodash"
 
 @Component({
   components: {
@@ -106,8 +118,26 @@ import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
   }
 })
 export default class Packages extends Vue {
+  @Watch('tabIndex')
+  public tabIndexChanged(newVal:number):void {
+    let filteredData = _.cloneDeep(this.allPackageData)
+    debugger
+    switch(newVal){
+    case 0:
+      filteredData = filteredData.filter(obj => obj.package_status !== 'ARCHIVED')
+      break
+    case 1:
+      filteredData = filteredData.filter(obj => obj.package_status === 'TASK_ORDER_AWARDED')
+      break
+    case 2:
+      filteredData = filteredData.filter(obj => obj.package_status === 'ARCHIVED')
+      break
+    }
+    this.packageData = filteredData
+  }
   public tabIndex = 0;
   public packageData:PackageSummaryDTO[] = []
+  public allPackageData:PackageSummaryDTO[] = []
   public tabItems: Record<string, string>[] = [
     {
       type: "OPEN",
@@ -181,8 +211,9 @@ export default class Packages extends Vue {
 
 
   private async loadOnEnter(){
-    this.packageData = await PackageSummaryStore.getPackageData()
-    console.log(await PackageSummaryStore.getPackageData())
+    this.allPackageData = await PackageSummaryStore.getPackageData()
+    this.packageData = _.cloneDeep(this.allPackageData)
+      .filter(obj => obj.package_status !== 'ARCHIVED')
     // const acqPackageSearchDTO: AcquisitionPackageSummarySearchDTO = {
     //acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER", // for ACTIVE
     //   searchString: "",
