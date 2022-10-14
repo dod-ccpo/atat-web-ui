@@ -15,6 +15,8 @@
             class="h3 _text-decoration-none d-flex align-center"
           >
             {{ modifiedData.title }}
+            <!-- for testing only -->
+            <span v-if="modifiedData.contributors">&nbsp;(C)</span>
           </a>
         </div>
           <v-chip
@@ -92,6 +94,17 @@
       :left="true"
       :menuIndex="index"
       :menuItems="cardMenuItems"
+      @menuItemClick="cardMenuClick"
+    />
+    <DeletePackageModal
+      :showModal.sync="showDeleteModal"
+      :packageName="modifiedData.title"
+      :hasContributor="hasContributor"
+    />
+    <ArchiveModal
+      :showModal.sync="showArchiveModal"
+      :hasContributor="hasContributor"
+      :packageName="modifiedData.title"
     />
   </v-card>
 </template>
@@ -104,10 +117,14 @@ import { MeatballMenuItem } from "../../../types/Global";
 import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
+import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
+import ArchiveModal from "@/packages/components/ArchiveModal.vue";
 @Component({
   components:{
     ATATSVGIcon,
-    ATATMeatballMenu
+    ATATMeatballMenu,
+    DeletePackageModal,
+    ArchiveModal
   }
 })
 export default class Card extends Vue {
@@ -117,6 +134,10 @@ export default class Card extends Vue {
   
   public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
   public isOwner = this.cardData.mission_owners.indexOf(this.currentUserSysId) > -1;
+  public hasContributor = this.cardData.contributors.length > 0;
+  public isWaitingForSignatures = false
+  public showDeleteModal = false
+  public showArchiveModal = false
   public lastModifiedStr = "";
   public modifiedData: {
     contractAward: string;
@@ -127,6 +148,7 @@ export default class Card extends Vue {
     createdBy: string;
     updated: string;
     title: string;
+    contributors:string;
   } = {
     contractAward: "",
     missionOwners: "",
@@ -136,6 +158,7 @@ export default class Card extends Vue {
     createdBy: "",
     updated: "",
     title: "",
+    contributors:"",
   }
 
   public cardMenuItems: MeatballMenuItem[] = [];
@@ -157,7 +180,19 @@ export default class Card extends Vue {
     this.modifiedData.createdBy = this.isOwner? "Maria Missionowner" : "Jack Ryan"
     this.modifiedData.updated = cardData.sys_updated_on
     this.modifiedData.title = cardData.title
+    this.modifiedData.contributors = cardData.contributors
 
+  }
+
+  public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
+    switch (menuItem.action) {
+    case "Archive acquisition":
+      this.showArchiveModal = true
+      break;
+    case "Delete acquisition package":
+      this.showDeleteModal = true
+      break;
+    }
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -166,47 +201,51 @@ export default class Card extends Vue {
       this.cardMenuItems = [
         {
           title: "Edit draft package",
-          action: ""
+          action: "Edit draft package"
         },
         {
           title: "Invite contributors",
-          action: ""
+          action: "Invite contributors"
         },
       ]
       if(this.isOwner) {
         this.cardMenuItems.push(
           {
             title: "Archive acquisition",
-            action: ""
+            action: "Archive acquisition"
           },
           {
             title: "Delete acquisition package",
-            action: ""
+            action: "Delete acquisition package"
           },
         )
       }
     }
     if(this.cardData.package_status === 'WAITING_FOR_SIGNATURES'){
+      this.isWaitingForSignatures = true
       this.cardMenuItems = [
         {
           title: "View completed package",
-          action: ""
+          action: "View completed package",
+          disabled:true
         },
       ]
       if(this.isOwner){
         this.cardMenuItems.push(
           {
             title: "Resend signature request",
-            action: ""
+            action: "Resend signature request",
+            disabled:true
           },{
             title: "Cancel signature request",
-            action: ""
+            action: "Cancel signature request",
+            disabled:true
           },{
             title: "Archive acquisition",
-            action: ""
+            action: "Archive acquisition"
           },{
             title: "Delete acquisition package",
-            action: ""
+            action: "Delete acquisition package"
           },
         )
       }
@@ -215,20 +254,22 @@ export default class Card extends Vue {
       this.cardMenuItems = [
         {
           title: "Add awarded task order",
-          action: ""
+          action: "Add awarded task order",
+          disabled:true
         },{
           title: "View completed package",
-          action: ""
+          action: "View completed package",
+          disabled:true
         },
       ]
       if(this.isOwner){
         this.cardMenuItems.push(
           {
             title: "Archive acquisition",
-            action: ""
+            action: "Archive acquisition"
           },{
             title: "Delete acquisition package",
-            action: ""
+            action: "Delete acquisition package"
           }
         )
       }
@@ -237,13 +278,16 @@ export default class Card extends Vue {
       this.cardMenuItems = [
         {
           title: "View task order CLIN summary",
-          action: ""
+          action: "View task order CLIN summary",
+          disabled: true
         },{
           title: "Access provisioned portfolio",
-          action: ""
+          action: "Access provisioned portfolio",
+          disabled: true
         },{
           title: "View completed package",
-          action: ""
+          action: "View completed package",
+          disabled: true
         },
       ]
     }
@@ -251,10 +295,10 @@ export default class Card extends Vue {
       this.cardMenuItems = [
         {
           title: "Restore package to draft",
-          action: ""
+          action: "Restore package to draft"
         },{
           title: "Delete acquisition package",
-          action: ""
+          action: "Delete acquisition package"
         }
       ]
     }
