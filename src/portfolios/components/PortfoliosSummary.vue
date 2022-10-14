@@ -142,6 +142,7 @@ export default class PortfoliosSummary extends Vue {
   public isHaCCAdmin = false;
 
   public portfolioCardData: PortfolioCardData[] = [];
+  public totalPortfolioCount = 0;
   public isLoading = false;
   public searchString = "";
   public searchedString = "";
@@ -324,6 +325,7 @@ export default class PortfoliosSummary extends Vue {
     searchString: "",
     fundingStatuses: [],
     csps: [],
+    limit: 5,
   }
   
   // TEMP hard-coded logged-in user Maria Missionowner
@@ -342,7 +344,9 @@ export default class PortfoliosSummary extends Vue {
     }
 
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
+    this.totalPortfolioCount = storeData.total_count;
     this.$emit("totalCount", storeData.total_count);
+  
 
     storeData.portfolioSummaryList.forEach((portfolio) => {
       let cardData: PortfolioCardData = {};
