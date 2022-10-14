@@ -199,18 +199,22 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   }
 
   /**
-   *
-   * @param acquisitionPackageSysId sys_id of acquisition package
-   * @param newStatus: value property from the DisplayColumn type
+   * Updates the status of an acquisition package and returns a boolean.
+   * @param packageStatus - because of store restriction of just one parameter, a new local
+   * type specific to this function is created.
    */
   @Action({rawError: true})
-  public async updateAcquisitionPackageStatus(acquisitionPackageSysId: string,
-    newStatus: string): Promise<boolean> {
+  public async updateAcquisitionPackageStatus(
+    packageStatus: {
+      acquisitionPackageSysId: string,
+      newStatus: string
+    }): Promise<boolean> {
     try {
       const status = {
-        package_status: newStatus
+        package_status: packageStatus.newStatus
       }
-      await api.acquisitionPackagesSummaryTable.update(acquisitionPackageSysId, status);
+      await api.acquisitionPackagesSummaryTable
+        .update(packageStatus.acquisitionPackageSysId, status);
       return true;
     } catch (error) {
       throw new Error(`an error occurred saving acquisition package status ${error}`);
