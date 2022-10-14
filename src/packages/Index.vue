@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ATATToast />
     <v-main>
       <v-app-bar
         id="PageHeader"
@@ -91,9 +92,10 @@ import PackageSummaryStore from "@/store/packageSummary";
 import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
 import Steps from "@/store/steps";
-import { PackageSummaryDTO } from "@/api/models";
+import { AcquisitionPackageSummarySearchDTO, PackageSummaryDTO } from "@/api/models";
 import { ToastObj } from "../../types/Global";
 import Toast from "@/store/toast";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 
 @Component({
   components: {
@@ -156,7 +158,7 @@ export default class Packages extends Vue {
       message = "Acquisition package restored to draft"
       break;
     }
-    await PackageSummaryStore
+    await AcquisitionPackageSummary
       .updateAcquisitionPackageStatus({
         acquisitionPackageSysId: sysId,
         newStatus
@@ -171,11 +173,26 @@ export default class Packages extends Vue {
     };
 
     Toast.setToast(toastObj);
+    this.packageData = [];
+    Vue.nextTick(async()=>{
+      this.packageData = await PackageSummaryStore.getPackageData()
+    })
   }
 
 
   private async loadOnEnter(){
     this.packageData = await PackageSummaryStore.getPackageData()
+    console.log(await PackageSummaryStore.getPackageData())
+    // const acqPackageSearchDTO: AcquisitionPackageSummarySearchDTO = {
+    //acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER", // for ACTIVE
+    //   searchString: "",
+    //   sort: "DESCsys_updated_on",
+    //   limit: 10,
+    //   offset: 0
+    // }
+    // const acqPackageStoreData = await AcquisitionPackageSummary
+    //   .searchAcquisitionPackageSummaryList(acqPackageSearchDTO);
+    // console.log(JSON.stringify(acqPackageStoreData));
   }
 
   public mounted():void{

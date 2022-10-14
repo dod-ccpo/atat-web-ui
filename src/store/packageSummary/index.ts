@@ -22,7 +22,10 @@ import { isTemplateElement } from "@babel/types";
 export class PackageSummaryStore extends VuexModule {
   // initialized = false;
   packageList: PackageSummaryDTO[] = [];
-
+  @Mutation
+  public async clearPackageList(): Promise<void> {
+    this.packageList = [];
+  }
 
 
   // @Action
@@ -94,6 +97,7 @@ export class PackageSummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async getAcqPackageData(): Promise<void>{
+    await this.clearPackageList();
     if (this.packageList.length === 0) { // TEMP until initialized and set in session
       const packageSummaryListRequestConfig: AxiosRequestConfig = {
         params: {
