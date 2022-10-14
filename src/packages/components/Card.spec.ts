@@ -26,6 +26,7 @@ describe("Testing Card Component", () => {
           project_overview: "",
           secondary_reviewers: "",
           sys_created_by: "test@.mil",
+          contributors: "",
           sys_updated_on: "2022-08-29 13:52:43",
           title: "Sprint 40 Demo",
         }
@@ -33,7 +34,7 @@ describe("Testing Card Component", () => {
     });
   });
 
-  describe("testing Funding Alert", () => {
+  describe("testing Card component", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
@@ -58,6 +59,28 @@ describe("Testing Card Component", () => {
       wrapper.vm.loadOnEnter()
       const status4 = wrapper.vm.$data.modifiedData.packageStatus;
       expect(status4).toBe("ARCHIVED");
+    })
+
+    it('test cardMenuClick()',()=>{
+      const archiveItem={
+        action: "Archive acquisition"
+      }
+      const deleteItem={
+        action: "Delete acquisition package"
+      }
+      const showArchive = wrapper.vm.$data.showArchiveModal
+      expect(showArchive).toBe(false);
+      wrapper.vm.cardMenuClick(archiveItem)
+      Vue.nextTick(()=>{
+        expect(showArchive).toBe(true);
+      })
+
+      const showDelete = wrapper.vm.$data.showDeleteModal
+      expect(showDelete).toBe(false);
+      wrapper.vm.cardMenuClick(deleteItem)
+      Vue.nextTick(()=>{
+        expect(showDelete).toBe(true);
+      })
     })
 
   });
