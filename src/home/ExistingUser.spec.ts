@@ -4,6 +4,9 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import ExistingUser from "./ExistingUser.vue";
 import VueRouter from "vue-router";
+import { PackageSummaryDTO } from "@/api/models";
+import PackageSummary from "@/store/packageSummary";
+import { resolve } from "path";
 
 Vue.use(Vuetify);
 
@@ -13,6 +16,13 @@ describe("Existing User Component", () => {
 
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
+
+  const packages: PackageSummaryDTO[] = [
+    {
+      // eslint-disable-next-line camelcase
+      sys_id: "123456"
+    }
+  ]
 
   const routes = [
     {
@@ -36,6 +46,9 @@ describe("Existing User Component", () => {
 
   describe("testing Existing User", () => {
     it("renders successfully", async () => {
+      jest.spyOn(PackageSummary, "getPackageData").mockImplementation(
+        async(): Promise<PackageSummaryDTO[]> => packages
+      )
       expect(wrapper.exists()).toBe(true);
     });
 
@@ -51,6 +64,11 @@ describe("Existing User Component", () => {
 
     it("startNewAcquisition()", async () => {
       wrapper.vm.startNewAcquisition();
+      expect(router.app.$route.name).toBe("Project_Overview");
+    });
+
+    it("viewAllPackages()", async () => {
+      wrapper.vm.viewAllPackages();
       expect(router.app.$route.name).toBe("Project_Overview");
     });
 

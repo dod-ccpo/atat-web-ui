@@ -40,6 +40,7 @@
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center"
+            @click="cardMenuClick(portfolioCardMenuItems[0])"
           >
             {{ cardData.title }}
             <ATATSVGIcon 
