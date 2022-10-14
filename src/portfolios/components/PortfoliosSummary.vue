@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="bg-base-lightest pa-4 border-rounded">
+    <div v-if="!isHomeView" class="bg-base-lightest pa-4 border-rounded">
       <div class="d-flex justify-space-between align-center">
         <ATATSearch 
           id="SearchPortfolios"
@@ -69,10 +69,10 @@
     </div>
     
     <div 
-      class="mt-10" 
+      :class="{ 'mt-10' : !isHomeView }" 
       id="PortfolioCards" 
       v-show="portfolioCardData.length" 
-      style="margin-bottom: 200px;"
+      :style="{ 'margin-bottom: 200px;' : !isHomeView }"
     >
       <PortfolioCard
         v-for="(cardData, index) in portfolioCardData"
@@ -86,7 +86,7 @@
     </div>
 
     <ATATNoResults 
-      v-show="portfolioCardData.length === 0 && !isLoading" 
+      v-show="portfolioCardData.length === 0 && !isLoading && !isHomeView" 
       :searchString="searchedString"
       :hasFilters="hasFilters"
       @clear="clearSearchOrFilters"
@@ -137,6 +137,7 @@ import { PortfolioSummarySearchDTO } from "@/api/models";
 
 export default class PortfoliosSummary extends Vue {
   @Prop({ default: "ALL" }) public activeTab!: string;
+  @Prop({ default: false }) public isHomeView?: boolean;
 
   public isHaCCAdmin = false;
 
@@ -337,7 +338,8 @@ export default class PortfoliosSummary extends Vue {
     const csps = ["aws", "azure", "google", "oracle", "oracle"];
 
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
-    
+    this.$emit("totalCount", storeData.total_count);
+
     storeData.portfolioSummaryList.forEach((portfolio) => {
       let cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;

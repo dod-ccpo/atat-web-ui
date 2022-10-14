@@ -32,12 +32,12 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
-import { TaskOrderCardData } from "../../../../../types/Global";
+import {TaskOrderCardData} from "../../../../../types/Global";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
-import PortfolioData from "@/store/portfolio";
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
 import { createDateStr, toCurrencyString } from "@/helpers";
+import PortfolioData from "@/store/portfolio";
 
 @Component({
   components: {
