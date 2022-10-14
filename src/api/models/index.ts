@@ -329,7 +329,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
 }
 
 export interface CostsDTO extends BaseTableDTO {
-  clin: ReferenceColumn | string;
+  clin: ReferenceColumn["value"];
   csp: ReferenceColumn | string;
   "csp.name"?:string;
   year_month: string;
@@ -362,6 +362,7 @@ export interface ClinDTO extends BaseTableDTO {
   funds_total: number;
   cost_records?: CostsDTO[]
   funds_spent_clin?: number; // total of all is_actual=true costs of the clin
+  clin_title: string;
 }
 
 export interface ClinDisplayDTO {

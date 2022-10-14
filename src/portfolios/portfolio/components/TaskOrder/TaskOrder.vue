@@ -35,7 +35,7 @@ import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrder
 import {TaskOrderCardData} from "../../../../../types/Global";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
-import { PortfolioSummaryDTO } from "@/api/models";
+import { PortfolioSummaryDTO, TaskOrderDTO } from "@/api/models";
 import { createDateStr, toCurrencyString } from "@/helpers";
 import PortfolioData from "@/store/portfolio";
 
@@ -59,19 +59,22 @@ export default class TaskOrder extends Vue {
     this.activeTaskOrderNumber = await PortfolioData.activeTaskOrderNumber;
     this.taskOrders  = 
       (await PortfolioSummary.getAllPortfolioSummaryList() as PortfolioSummaryDTO[])
-        .flatMap( portfolio=>portfolio.task_orders)
-        .filter((taskOrder)=>taskOrder.task_order_number===this.activeTaskOrderNumber)
+        .flatMap( portfolio=>portfolio.task_orders.filter((
+          (taskOrder)=>taskOrder.task_order_number===this.activeTaskOrderNumber
+        )))
         .map((to)=>{
+          console.log(to);
           return{
             sys_id: to.sys_id,
             taskOrderNumber: to.task_order_number,
             periodOfPerformance: createDateStr(to.pop_start_date, true) + " - " +
-              createDateStr(to.pop_end_date, true),
+          createDateStr(to.pop_end_date, true),
             status: to.task_order_status,
             totalObligated: '$' + toCurrencyString(parseInt(to.funds_obligated)),
             totalValue: '$' + toCurrencyString(to.total_task_order_value || 0),
             totalLifeCycle: '$' + toCurrencyString(to.total_lifecycle_amount || 0),
-            totalFundsSpent: '$' + toCurrencyString(to.funds_spent_task_order || 0)
+            totalFundsSpent: '$' + toCurrencyString(to.funds_spent_task_order || 0),
+            clins: to.clin_records
           }}
         )
   }

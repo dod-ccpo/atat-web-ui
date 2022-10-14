@@ -14,6 +14,7 @@ import {
   ProjectOverviewDTO,
   ContactDTO,
   BaseTableDTO,
+  ClinDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -445,4 +446,16 @@ export interface TaskOrderCardData {
   totalFundsSpent?: string,
   status?: string,
   sys_id?: string,
+  clins?:ClinDTO[],
+}
+
+export interface ClinTableRowData {
+  CLINNumber?:string,
+  CLINTitle?:string,
+  PoP?: { PoP:string,expiration:string },
+  obligatedFunds?:string,
+  totalCLINValue?:string,
+  totalFundsSpent?:string,
+  fundsRemaining?: {percent:string, fundsRemaining:string},
+  status?:string
 }

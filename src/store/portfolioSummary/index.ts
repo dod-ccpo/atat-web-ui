@@ -331,10 +331,11 @@ export class PortfolioSummaryStore extends VuexModule {
     portfolioSummaryList.forEach(portfolio => {
       portfolio.task_orders.forEach(taskOrder => {
         taskOrder.clin_records?.forEach(clinRecord => {
-          clinNumbers.push(clinRecord.clin_number);
+          clinNumbers.push(clinRecord.sys_id);
         })
       })
     });
+    console.log(portfolioSummaryList);
     const allCostList = await api.costsTable.getQuery(
       {
         params:
@@ -349,9 +350,8 @@ export class PortfolioSummaryStore extends VuexModule {
         taskOrder.clin_records?.forEach(clinRecord => {
           clinRecord.cost_records =
             allCostList.filter(cost => {
-              const clinNumber = cost.clin as unknown as string;
-              return clinNumber === clinRecord.clin_number &&
-                cost.task_order_number === taskOrder.task_order_number
+              const clinNumber = cost.clin as unknown as ReferenceColumn;
+              return clinNumber.value === clinRecord.sys_id
             }); // FIXME temp code above
           // allCostList.filter(cost => cost.clin?.value === clinRecord.sys_id);//FIXME correct code
         })

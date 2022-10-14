@@ -254,3 +254,21 @@ export function scrollToId(id: string): void {
   }
 }
 
+/**
+ * 
+ * @param phrase = phrase of word(s
+ * @returns the phrase with capping of first letter and the capping of first 
+ *          letters after _ or - or other separators
+ */
+
+export function capitalizeFirstLetter(phrase: string): string{
+  const charArray = phrase.toLowerCase().split('');
+  for (let i=0;i< charArray.length-1;i++){
+    if (i===0 || /[A-Za-z]/.test(charArray[i-1])===false){
+      charArray[i] = charArray[i].toUpperCase();
+    }
+  }
+  return charArray.join("");
+
+}
+
