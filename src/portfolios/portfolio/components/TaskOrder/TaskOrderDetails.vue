@@ -358,8 +358,10 @@ export default class TaskOrderDetails extends Vue {
 
   public clins: ClinDTO[] = this.selectedTaskOrder.clins || [];
   public tableData: ClinTableRowData[] = [];
-
+  public expiredClins: ClinTableRowData[] = [];
+  public optionPendingClins: ClinTableRowData[] = []
   public showInactive = false
+
 
   @Watch("showInactive")
   public showHide():string {
@@ -461,7 +463,7 @@ export default class TaskOrderDetails extends Vue {
   public createTableData(): void {
     let prevClinNo = "";
     const inactiveStatuses = ["Option Pending", "Option Exercised", "Expired PoP"]
-    
+ 
     this.clins.forEach((clin)=>{
       const formattedStatus = capitalizeFirstLetter(clin.clin_status).replaceAll("_", " " )
         .replaceAll("Pop", "PoP")
@@ -471,6 +473,7 @@ export default class TaskOrderDetails extends Vue {
         CLINNumber: clin.clin_number,
         CLINTitle: clin.clin_title,
         PoP: this.monthsToExpiration(clin.pop_start_date,clin.pop_end_date),
+        popStartDate: clin.pop_start_date,
         status: formattedStatus,
         obligatedFunds: '$' + toCurrencyString(clin.funds_obligated),
         totalCLINValue: '$' + toCurrencyString(clin.funds_total),
@@ -482,15 +485,48 @@ export default class TaskOrderDetails extends Vue {
         startNewClinGroup: 
           prevClinNo && clin.clin_number.charAt(0) !== prevClinNo.charAt(0) || false
       }
-      this.tableData.push(tableRowData)
+     
+      if (clin.clin_status.toUpperCase() === "EXPIRED" ){
+        this.expiredClins.push(tableRowData)
+      } else if (clin.clin_status.toUpperCase() === "OPTION_PENDING" ){
+        this.optionPendingClins.push(tableRowData)
+      } else {
+        this.tableData.push(tableRowData)
+      }
+
 
       this.calculateTotalFundingObj(tableRowData);
+      // this.tableData.push(tableRowData)
       // double-check logic for new groups - first 2 numbers?
       prevClinNo = clin.clin_number;
-    }
-    )
+
+      this.totalsWithInactive = this.fundsRemaining(
+        this.totalFundingObj.withInactiveObligatedFunds, this.totalFundingObj.withInactiveFundsSpent
+      )
+      this.totals = this.fundsRemaining(
+        this.totalFundingObj.totalObligatedFunds, this.totalFundingObj.totalFundsSpent
+      )
+    })
+
+    this.tableData = [
+      ...this.tableData.sort((a, b) => (a.CLINNumber || "") > (b.CLINNumber || "") ? 1 : -1), 
+      ...this.optionPendingClins.sort(
+        (a, b) => (new Date(a.popStartDate) > new Date(b.popStartDate) ? 1 : -1)), 
+      ...this.expiredClins.sort(
+        (a, b) => (new Date(a.popStartDate) > new Date(b.popStartDate) ? 1 : -1)),
+    ]
   }
-     
+
+  public addSeparators() : void {
+    const firstOptionPendingIdx = this.tableData.findIndex(
+      (clin)=>clin.status === "Option Pending");
+    this.tableData[firstOptionPendingIdx].startNewClinGroup = true;
+    
+    const firstExpiredIdx = this.tableData.findIndex(
+      (clin)=> clin.status === "Expired");
+    this.tableData[firstExpiredIdx]
+  }
+
   public calculateTotalFundingObj(clin: ClinTableRowData): void{
     if(clin.isActive) {
       this.totalFundingObj.totalCLINValue += Number(clin.totalCLINValue)
@@ -526,19 +562,16 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    debugger;
     this.createTableData()
     const statusImgValues = [
       ["Delinquent", "failed", "16", "16", "error", "bg-error-lighter"],
       ["Expired","failed", "16", "16", "error", "bg-error-lighter"],
-      ["Expired PoP","failed", "16", "16", "error", "bg-error-lighter"],
       ["Expiring PoP","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
       ["Funding At Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
       ["At Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
-      ["Option pending","optionPending", "16", "16", "info-dark", "bg-info-lighter"],
-      ["Option exercised","requestQuote", "13", "16", "info-dark", "bg-info-lighter"],
+      ["Option Pending","optionPending", "16", "16", "info-dark", "bg-info-lighter"],
+      ["Option Exercised","requestQuote", "13", "16", "info-dark", "bg-info-lighter"],
       ["On Track","taskAlt", "17", "17", "success-dark", "bg-success-lighter"],
-
     ];
     statusImgValues.forEach((values) => {
       this.generateStatusImgs(...values);
