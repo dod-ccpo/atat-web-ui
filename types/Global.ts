@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Component } from "vue";
 import { 
   RouteConfigMultipleViews,
@@ -436,11 +437,12 @@ export interface FundingTrackerAlert {
 }
 
 export interface TaskOrderCardData {
-  taskOrderNumber: string,
-  periodOfPerformance: string,
-  totalObligated: string,
-  totalValue: string,
-  totalLifeCycle: string,
-  totalFundsSpent: string,
-  status: string,
+  taskOrderNumber?: string,
+  periodOfPerformance?: string,
+  totalObligated?: string,
+  totalValue?: string,
+  totalLifeCycle?: string,
+  totalFundsSpent?: string,
+  status?: string,
+  sys_id?: string,
 }

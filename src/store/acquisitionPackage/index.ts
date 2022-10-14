@@ -63,7 +63,7 @@ export const StoreProperties = {
 
 export const StatusTypes = {
   Upcoming: "Upcoming",
-  OnTrack: "On Track",
+  OnTrack: "On_Track",
   Processing: "Processing",
   Active: "Active",
   AtRisk: "At-Risk",
