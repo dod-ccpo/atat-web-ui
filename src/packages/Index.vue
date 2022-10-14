@@ -85,11 +85,10 @@ import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
-import AppPackageBuilder from "@/AppPackageBuilder.vue";
-import Steps from "@/store/steps";
 import PackageSummaryStore from "@/store/packageSummary";
 import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
+import Steps from "@/store/steps";
 import { PackageSummaryDTO } from "@/api/models";
 @Component({
   components: {

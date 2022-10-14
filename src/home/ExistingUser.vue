@@ -24,7 +24,7 @@
               <v-expansion-panel-header>
                 <div class="d-flex justify-space-between">
                   <div class="h3">
-                    Open Acquisistion Packages
+                    Open Acquisition Packages
                   </div>
                   <div class="h3 _item-count pr-4">
                     {{ packageCount }} package<span v-if="packageCount !== 1">s</span>
@@ -53,7 +53,7 @@
               @keydown.enter="viewAllPackages"
               @keydown.space="viewAllPackages"
             >
-              View all packages
+              View all open packages
             </a>
           </div>
 
@@ -74,7 +74,8 @@
               <v-expansion-panel-content>
 
                 <PortfoliosSummary 
-                  active-tab="ACTIVE" 
+                  active-tab="ALL" 
+                  default-sort="DESCsys_updated_on"
                   :isHomeView="true" 
                   @totalCount="updateTotalPortfolios"
                 />
