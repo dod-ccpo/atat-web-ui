@@ -445,7 +445,7 @@ export interface PortfolioSummarySearchDTO {
   offset?: number;
 }
 
-export interface PackageSummaryDTO {
+export interface PackageSummaryDTO { // TODO: delete this interface after acq package summary impl
   
     project_overview?: ReferenceColumn["value"]
     title?: string, //proj overview
@@ -458,3 +458,37 @@ export interface PackageSummaryDTO {
     contributors?: string[],
     sys_id?: string,
   }
+
+export interface AcquisitionPackageSummarySearchDTO {
+  acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER" | // open
+  "TASK_ORDER_AWARDED" | "ARCHIVED" | ""; // empty string for all statuses including deleted
+  sort: "project_overview" | "DESCsys_updated_on"; // one of these two values should always exist
+  searchString?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface AcquisitionPackageSummaryDisplay{
+  sys_id?: DisplayColumn;
+  sys_created_by?: DisplayColumn;
+  sys_updated_on?: DisplayColumn;
+  project_overview?: DisplayColumn; // no need for a title property since the title is inside this
+  secondary_reviewers?: DisplayColumn;
+  package_status?: DisplayColumn | string;
+  mission_owners?: DisplayColumn;
+  contract_award?: DisplayColumn;
+  contributors?: DisplayColumn;
+}
+
+export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
+  project_overview?: DisplayColumn; // no need for a title property since the title is inside this
+  secondary_reviewers?: DisplayColumn;
+  package_status?: DisplayColumn;
+  mission_owners?: DisplayColumn;
+  contract_award?: DisplayColumn;
+}
+
+export interface AcquisitionPackageSummaryMetadataAndDataDTO {
+  total_count: number;
+  acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
+}

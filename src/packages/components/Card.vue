@@ -100,11 +100,13 @@
       :showModal.sync="showDeleteModal"
       :packageName="modifiedData.title"
       :hasContributor="hasContributor"
+      @okClicked="updateStatus('DELETE')"
     />
     <ArchiveModal
       :showModal.sync="showArchiveModal"
       :hasContributor="hasContributor"
       :packageName="modifiedData.title"
+      @okClicked="updateStatus('ARCHIVED')"
     />
   </v-card>
 </template>
@@ -183,6 +185,10 @@ export default class Card extends Vue {
     this.modifiedData.contributors = cardData.contributors
 
   }
+  public updateStatus(newStatus: string): void {
+    this.$emit("updateStatus", this.cardData.sys_id, newStatus);
+  }
+
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
     switch (menuItem.action) {
@@ -191,6 +197,9 @@ export default class Card extends Vue {
       break;
     case "Delete acquisition package":
       this.showDeleteModal = true
+      break;
+    case "Restore package to draft":
+      this.updateStatus('DRAFT')
       break;
     }
   }
