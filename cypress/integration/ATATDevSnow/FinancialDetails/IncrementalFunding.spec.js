@@ -9,7 +9,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
-  
+    cy.homePageClickAcquisitionPackBtn();
   });
     
   it.skip("TC1: Incremental Funding on the Vertical Stepper is active", () => {

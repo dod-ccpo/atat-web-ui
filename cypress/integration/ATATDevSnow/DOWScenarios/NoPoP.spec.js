@@ -22,6 +22,7 @@ describe("Test suite: No PoP Workflow Scenarios ", { tags: '@iso-ignore' },  () 
     });
     
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.verifyPageHeader(" Let’s gather some details about the duration of your task order "); 
     cy.textExists(common.subStepClassReqsLink, " Classification Requirements ").click();

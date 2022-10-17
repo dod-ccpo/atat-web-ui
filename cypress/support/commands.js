@@ -27,6 +27,7 @@ import 'cypress-iframe';
 import '@4tw/cypress-drag-drop';
 import 'cypress-file-upload';
 import common from '../selectors/common.sel';
+import lp from '../selectors/landingPage.sel'
 import projectOverview from '../selectors/projectOverview.sel.js';
 import contact from '../selectors/contact.sel';
 import org from '../selectors/org.sel';
@@ -96,6 +97,41 @@ Cypress.Commands.add("launchATAT", () => {
     cy.frameLoaded(common.app);
   }
 
+});
+
+Cypress.Commands.add("clearSession", () => {
+  if (isTestingLocally || isTestingIsolated) {
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+    });      
+  } else {
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+      const iframe = win.document.querySelector('iframe');
+      iframe.contentWindow.sessionStorage.clear();
+    });
+  }
+});
+
+Cypress.Commands.add('login', (user, password) => {  
+  cy.get('#username').type(user);
+  cy.get('#password').type(password);
+  cy.contains('button', 'Log in').click();   
+});
+
+Cypress.Commands.add("findElement", (selector) => {
+  if (runTestsInIframe && !hopOutOfIframe) {
+    cy.iframe(common.app).find(selector)       
+  } else {
+    cy.get(selector);
+  }
+});
+
+Cypress.Commands.add('homePageClickAcquisitionPackBtn', () => {
+  
+  cy.textExists(lp.startSectionHeader, "Start building your JWCC acquisition package");
+  cy.textExists(lp.startAcqPackBtn, "Start a new acquisition").should("be.enabled").click();
+  cy.verifyPageHeader("Let’s start with basic info about your new acquisition");
   cy.window()
     .its("sessionStorage")
     .invoke("getItem", "ATAT_CONTACT_DATA_KEY")
@@ -144,35 +180,6 @@ Cypress.Commands.add("launchATAT", () => {
   //         })
   //       )
   //   })
-
-});
-
-Cypress.Commands.add("clearSession", () => {
-  if (isTestingLocally || isTestingIsolated) {
-    cy.window().then((win) => {
-      win.sessionStorage.clear();
-    });      
-  } else {
-    cy.window().then((win) => {
-      win.sessionStorage.clear();
-      const iframe = win.document.querySelector('iframe');
-      iframe.contentWindow.sessionStorage.clear();
-    });
-  }
-});
-
-Cypress.Commands.add('login', (user, password) => {  
-  cy.get('#username').type(user);
-  cy.get('#password').type(password);
-  cy.contains('button', 'Log in').click();   
-});
-
-Cypress.Commands.add("findElement", (selector) => {
-  if (runTestsInIframe && !hopOutOfIframe) {
-    cy.iframe(common.app).find(selector)       
-  } else {
-    cy.get(selector);
-  }
 });
 
 Cypress.Commands.add('textExists', (selector, expectedText) => {

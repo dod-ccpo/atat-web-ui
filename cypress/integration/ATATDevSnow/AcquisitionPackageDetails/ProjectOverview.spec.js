@@ -15,6 +15,7 @@ describe("Test suite: Acquisition Package ", () => {
     });
     
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
 
   it("TC1: Acquisition Package Substeps on the Vertical Stepper", () => {
@@ -92,7 +93,7 @@ describe("Test suite: Acquisition Package ", () => {
         
     //buttons that exists on the view
     cy.btnExists(common.continueBtn, " Continue ");
-    cy.btnExists(projectOverview.cancelBtn, " Cancel ");
+    cy.btnExists(common.backBtn, "Back");
   });
 
   it("TC4: Validations on ProjectOverView", () => {

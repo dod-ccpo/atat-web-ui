@@ -8,6 +8,7 @@ describe("Test suite: OCC: PPS substep", () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
     
   it("TC1: PPS on the Vertical Stepper is active", () => {
