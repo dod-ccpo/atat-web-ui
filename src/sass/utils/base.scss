@@ -308,60 +308,6 @@ textarea {
       padding-left:24px !important;
     }
   }
-  ._table-pagination{
-    display:flex;
-    justify-content: flex-end;
-    align-items: center;
-    border-top: 4px solid $base-lighter;
-    height:64px;
-    padding-right:15px;
-    .v-pagination__navigation {
-      box-shadow: none;
-      margin: 0px;
-      border: 2px solid transparent !important;
-      i {
-       color: $primary;
-      }
-      &:hover {
-        background-color: $primary-lighter !important;
-        border: 2px solid $primary-lighter !important;
-
-      }
-      &:focus-within {
-        border: 2px solid $primary !important;
-        outline: none;
-      }
-      &.v-pagination__navigation--disabled {
-        i {
-          color: $base-light;
-        }
-      }
-    }
-
-    .v-pagination__item {
-      font-size: 14px;
-      font-weight: 400;
-      box-shadow: none;
-      color: $primary;
-      border: 2px solid transparent !important;
-
-      &:hover {
-        background-color: $primary-lighter !important;
-        border: 2px solid $primary-lighter !important;
-
-      }
-      &.v-pagination__item--active {
-        color: $white;
-        background-color: $primary !important;
-        border: 2px solid $primary !important;
-      }
-
-      &:focus-within {
-        border: 2px solid $primary !important;
-        outline: none;
-      }
-    }
-  }
 
   .expand-move, .expand-enter-active, .expand-leave-active {
      transition: all 1s ease;
@@ -372,6 +318,62 @@ textarea {
   }
 
 }
+
+._table-pagination{
+  display:flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-top: 4px solid $base-lighter;
+  height:64px;
+  padding-right:15px;
+  .v-pagination__navigation {
+    box-shadow: none;
+    margin: 0px;
+    border: 2px solid transparent !important;
+    i {
+     color: $primary;
+    }
+    &:hover {
+      background-color: $primary-lighter !important;
+      border: 2px solid $primary-lighter !important;
+
+    }
+    &:focus-within {
+      border: 2px solid $primary !important;
+      outline: none;
+    }
+    &.v-pagination__navigation--disabled {
+      i {
+        color: $base-light;
+      }
+    }
+  }
+
+  .v-pagination__item {
+    font-size: 14px;
+    font-weight: 400;
+    box-shadow: none;
+    color: $primary;
+    border: 2px solid transparent !important;
+
+    &:hover {
+      background-color: $primary-lighter !important;
+      border: 2px solid $primary-lighter !important;
+
+    }
+    &.v-pagination__item--active {
+      color: $white;
+      background-color: $primary !important;
+      border: 2px solid $primary !important;
+    }
+
+    &:focus-within {
+      border: 2px solid $primary !important;
+      outline: none;
+    }
+  }
+}
+
 
 ._icon-circle {
   width: 32px;
