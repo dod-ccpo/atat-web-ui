@@ -81,7 +81,7 @@
       </div>
 
       <div 
-        v-if="isActive" 
+        v-if="isActive && !isHomeView" 
         class="d-flex"
       >
         <div class="mr-15" :id="'PoP' + index">
@@ -154,6 +154,7 @@ export default class PortfolioCard extends Vue {
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
   @Prop() private isHaCCAdmin!: boolean;
+  @Prop({ default: false }) public isHomeView?: boolean;
 
   public portfolioStatuses = StatusTypes;
   public showLeavePortfolioModal = false;

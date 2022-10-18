@@ -1,4 +1,4 @@
-import { AcquisitionPackagesApi } from "./acquisitionPackages";
+import {AcquisitionPackagesApi, AcquisitionPackagesSummaryApi} from "./acquisitionPackages";
 import { ProjectOverviewApi } from "./projectOverview";
 import { OrganizationApi } from "./organization";
 import { AgencyApi } from "./agency";
@@ -46,6 +46,7 @@ export const api = {
   attachments: new AttachmentApi(),
   systemChoices: new SystemChoicesApi(),
   acquisitionPackageTable: new AcquisitionPackagesApi(),
+  acquisitionPackagesSummaryTable: new AcquisitionPackagesSummaryApi(),
   projectOverviewTable: new ProjectOverviewApi(),
   organizationTable: new OrganizationApi(),
   classificationInstanceTable: new ClassificationInstanceApi(),
