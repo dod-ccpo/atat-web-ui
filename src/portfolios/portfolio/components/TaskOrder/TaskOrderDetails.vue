@@ -460,7 +460,7 @@ export default class TaskOrderDetails extends Vue {
       expiration,
     }
   }
-  public createTableData(): void {
+  public async collectTableData(): Promise<void> {
     let prevClinNo = "";
     const inactiveStatuses = ["Option Pending", "Option Exercised", "Expired PoP"]
  
@@ -482,10 +482,10 @@ export default class TaskOrderDetails extends Vue {
           clin.funds_obligated,
           clin.funds_total
         ),
-        startNewClinGroup: 
-          prevClinNo && clin.clin_number.charAt(0) !== prevClinNo.charAt(0) || false
+        startNewClinGroup: false
       }
      
+      //add row to appropriate temporary table
       if (clin.clin_status.toUpperCase() === "EXPIRED" ){
         this.expiredClins.push(tableRowData)
       } else if (clin.clin_status.toUpperCase() === "OPTION_PENDING" ){
@@ -494,12 +494,7 @@ export default class TaskOrderDetails extends Vue {
         this.tableData.push(tableRowData)
       }
 
-
       this.calculateTotalFundingObj(tableRowData);
-      // this.tableData.push(tableRowData)
-      // double-check logic for new groups - first 2 numbers?
-      prevClinNo = clin.clin_number;
-
       this.totalsWithInactive = this.fundsRemaining(
         this.totalFundingObj.withInactiveObligatedFunds, this.totalFundingObj.withInactiveFundsSpent
       )
@@ -507,25 +502,38 @@ export default class TaskOrderDetails extends Vue {
         this.totalFundingObj.totalObligatedFunds, this.totalFundingObj.totalFundsSpent
       )
     })
-
-    this.tableData = [
-      ...this.tableData.sort((a, b) => (a.CLINNumber || "") > (b.CLINNumber || "") ? 1 : -1), 
-      ...this.optionPendingClins.sort(
-        (a, b) => (new Date(a.popStartDate) > new Date(b.popStartDate) ? 1 : -1)), 
-      ...this.expiredClins.sort(
-        (a, b) => (new Date(a.popStartDate) > new Date(b.popStartDate) ? 1 : -1)),
-    ]
   }
 
-  public addSeparators() : void {
-    const firstOptionPendingIdx = this.tableData.findIndex(
-      (clin)=>clin.status === "Option Pending");
-    this.tableData[firstOptionPendingIdx].startNewClinGroup = true;
-    
-    const firstExpiredIdx = this.tableData.findIndex(
-      (clin)=> clin.status === "Expired");
-    this.tableData[firstExpiredIdx]
+  public async addSeparators() : Promise<void> {
+    this.tableData[0].startNewClinGroup = true;
+    this.optionPendingClins[0].startNewClinGroup = true;
+    this.expiredClins[0].startNewClinGroup = true;
   }
+
+  public async sortRows() : Promise<void>{
+    this.tableData.sort((a, b) => (a.CLINNumber || "") > (b.CLINNumber || "") ? 1 : -1) 
+    this.sortArrayByDateThenNumber(this.optionPendingClins);
+    this.sortArrayByDateThenNumber(this.expiredClins);
+  }
+
+  public sortArrayByDateThenNumber(array: ClinTableRowData[]): void{
+    array.sort((a, b)=> {
+      if (a.popStartDate === b.popStartDate){
+        return (a.CLINNumber || "") > (b.CLINNumber || "") ? 1 : -1
+      } else {
+        return a.popStartDate > b.popStartDate ? -1 : 1
+      }
+    })
+  }
+
+  public async createTableData(): Promise<void>{
+    await this.collectTableData();
+    await this.sortRows();
+    await this.addSeparators();
+    /// create table data
+    this.tableData = [...this.tableData,...this.optionPendingClins, ...this.expiredClins]
+  }
+
 
   public calculateTotalFundingObj(clin: ClinTableRowData): void{
     if(clin.isActive) {
@@ -577,7 +585,7 @@ export default class TaskOrderDetails extends Vue {
       this.generateStatusImgs(...values);
     });
   }
-  public  mounted(): void {
+  public mounted(): void {
     this.loadOnEnter();
   }
 }
