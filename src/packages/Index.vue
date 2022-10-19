@@ -105,29 +105,22 @@ import ATATNoResults from "@/components/ATATNoResults.vue";
 export default class Packages extends Vue {
   @Watch('tabIndex')
   public async tabIndexChanged(newVal:number): Promise<void> {
-    let acquisitionPackageStatus = {}
+    let acquisitionPackageStatus = ""
     switch(newVal){
     case 0:
-      acquisitionPackageStatus =
-        {"acquisitionPackageStatus":"DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER"}
+      acquisitionPackageStatus = "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER"
       break
     case 1:
-      acquisitionPackageStatus =
-        {"acquisitionPackageStatus":"TASK_ORDER_AWARDED"}
+      acquisitionPackageStatus = "TASK_ORDER_AWARDED"
       break
     case 2:
-      acquisitionPackageStatus =
-        {"acquisitionPackageStatus":"ARCHIVED"}
+      acquisitionPackageStatus = "ARCHIVED"
       break
     case 3:
-      acquisitionPackageStatus =
-        {"acquisitionPackageStatus":""}
+      acquisitionPackageStatus = ""
       break
     }
-    const tabFilter = Object.assign(this.searchDTO,acquisitionPackageStatus)
-    const filteredData = await AcquisitionPackageSummary
-      .searchAcquisitionPackageSummaryList(tabFilter)
-    this.packageData = filteredData.acquisitionPackageSummaryList
+    await this.updateSearchDTO('acquisitionPackageStatus',acquisitionPackageStatus)
   }
   public tabIndex = 0;
   public searchString = ""
@@ -141,10 +134,7 @@ export default class Packages extends Vue {
   }
   @Watch('selectedSort')
   public async sortingChanged(newVal:string): Promise<void> {
-    const sortedSearch = Object.assign(this.searchDTO,{'sort':newVal})
-    const sortedData = await AcquisitionPackageSummary
-      .searchAcquisitionPackageSummaryList(sortedSearch)
-    this.packageData = sortedData.acquisitionPackageSummaryList
+    await this.updateSearchDTO('sort',newVal)
   }
 
   public searchDTO:AcquisitionPackageSummarySearchDTO = {
@@ -154,6 +144,13 @@ export default class Packages extends Vue {
     limit: 10,
     offset: 0
   };
+
+  public async updateSearchDTO(key:string, value:string): Promise<void> {
+    this.searchDTO = Object.assign(this.searchDTO,{[key]:value})
+    const packageResults = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(this.searchDTO)
+    this.packageData = packageResults.acquisitionPackageSummaryList
+  }
   public tabItems: Record<string, string>[] = [
     {
       type: "OPEN",
@@ -220,23 +217,19 @@ export default class Packages extends Vue {
 
     Toast.setToast(toastObj);
     this.packageData = [];
-    this.tabIndex = 0
     Vue.nextTick(async()=>{
       this.packageData = this.allPackageData.acquisitionPackageSummaryList
     })
   }
 
   public async search(): Promise<void> {
-    const stringSearch = Object.assign(this.searchDTO,{'searchString':this.searchString})
-    const sortedData = await AcquisitionPackageSummary
-      .searchAcquisitionPackageSummaryList(stringSearch)
-    this.packageData = sortedData.acquisitionPackageSummaryList
+    await this.updateSearchDTO('searchString',this.searchString)
     this.searchedString = this.searchString
   }
 
   public async clear(): Promise<void> {
     this.searchString = "";
-    this.packageData = this.allPackageData.acquisitionPackageSummaryList
+    await this.updateSearchDTO('searchString',this.searchString)
   }
 
   private async loadOnEnter(){
