@@ -2,7 +2,7 @@ import { bootstrapMockApis, randomString,randomNumber} from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import ps from "../../../selectors/portfolioSummary.sel"
 
-describe("Test suite: Portfolios CSP Portaltab", () => {
+describe.skip("Test suite: Portfolios CSP Portaltab", () => {
 
   const fName = randomString(4);
   const lName = randomString(4);

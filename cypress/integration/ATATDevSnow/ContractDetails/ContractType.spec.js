@@ -8,7 +8,7 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
-        
+    cy.homePageClickAcquisitionPackBtn();   
   });
     
   it("TC1: Contract Type on the Vertical Stepper is active", () => {

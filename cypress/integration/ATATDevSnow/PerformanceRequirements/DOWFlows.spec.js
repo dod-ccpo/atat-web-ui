@@ -17,6 +17,7 @@ describe("Test suite: DOW Workflows for each Category option", { tags: '@iso-ign
     });
 
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.verifyPageHeader(" Let’s gather some details about the duration of your task order ");
     cy.dropDownClick(contractDetails.baseDropdownIcon);
