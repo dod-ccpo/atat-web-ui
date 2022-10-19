@@ -5,9 +5,9 @@
         id="SearchPackages"
         placeHolder="Search packages"
         width="450px"
-        @search="searchPortfolios"
+        @search="searchPackages"
         @clear="clearSearch"
-        :value.sync="searchString"
+        :value.sync="_searchString"
       />
       <div class="d-flex align-center">
         <div>
@@ -16,6 +16,8 @@
             class="_small _alt-style-clean _portfolio-sort"
             width="167"
             iconType="chevron"
+            :items="sortOptions"
+            :selectedValue.sync="_selectedSort"
           />
         </div>
       </div>
@@ -26,10 +28,11 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, PropSync } from "vue-property-decorator";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import { PackageSummaryStore } from "@/store/packageSummary";
+import { SelectData } from "../../../types/Global";
 @Component({
   components:{
     ATATSearch,
@@ -37,23 +40,22 @@ import { PackageSummaryStore } from "@/store/packageSummary";
   }
 })
 export default class Search extends Vue {
+  @PropSync("searchString") private _searchString!: string;
+  @PropSync("selectedSort") private _selectedSort!: 'project_overview' | 'DESCsys_updated_on';
 
-  // public async searchPortfolios(): Promise<void> {
-  //   await this.setQueryParams("searchString", this.searchString);
-  // }
-  // public async sortPortfolios(valObj: Record<string, string>): Promise<void> {
-  //   await this.setQueryParams("sort", valObj.newSelectedValue);
-  // }
-  // public async clearSearch(): Promise<void> {
-  //   await this.setQueryParams("searchString", "");
-  //   this.searchString = "";
-  //   this.searchedString = "";
-  // }
-  // public async setQueryParams(key: string, value: string): Promise<void> {
-  //   await PackageSummaryStore.setPortfolioSummaryQueryParams({
-  //     [key]: value
-  //   });
-  // }
+  public sortOptions: SelectData[] = [
+    { text: "Package name A-Z", value: "project_overview" },
+    { text: "Recently modified", value: "DESCsys_updated_on" },
+  ];
+
+  public clearSearch(): void {
+    this._searchString = "";
+    this.$emit("clear");
+  }
+
+  public searchPackages(): void {
+    this.$emit("search");
+  }
 }
 </script>
 

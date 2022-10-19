@@ -41,8 +41,12 @@
       <v-container
         class="container-max-width"
       >
-        <Search />
-        <div v-if="activeTab === 'OPEN'">
+        <Search
+          :searchString.sync="searchString"
+          :selectedSort.sync="selectedSort"
+          @search="search"
+          @clear="clear"
+        />
         <div class="d-flex flex-column align-center pt-5">
           <Card
             v-for="(cardData, index) in packageData"
@@ -54,38 +58,6 @@
 
           />
         </div>
-<!--        <div v-if="activeTab === 'OPEN'">-->
-<!--          <div class="d-flex flex-column align-center pt-5">-->
-<!--            <Card-->
-<!--              v-for="(cardData, index) in packageData"-->
-<!--              :key="index"-->
-<!--              :cardData="cardData"-->
-<!--              :index="index"-->
-<!--              :isLastCard="index === packageData.length - 1"-->
-<!--              @updateStatus="updateStatus"-->
-
-<!--            />-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div v-if="activeTab === 'AWARDEDTASKORDERS'">-->
-<!--          <div class="d-flex flex-column align-center">-->
-<!--            <h1>No packages with awarded task orders.</h1>-->
-<!--            <p>Acquisitions that have been awarded task orders will appear here</p>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div v-if="activeTab === 'ARCHIVE'">-->
-<!--          <div class="d-flex flex-column align-center">-->
-<!--            <h1>No archived packages.</h1>-->
-<!--            <p>Acquisitions that have been archived will appear here</p>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div v-if="activeTab === 'ALL'">-->
-<!--          <div class="d-flex flex-column align-center">-->
-<!--            <h1>No packages.</h1>-->
-<!--            <p>Acquisitions will appear here</p>-->
-<!--          </div>-->
-<!--        </div>-->
-
       </v-container>
       <ATATFooter/>
     </v-main>
@@ -101,15 +73,17 @@ import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
-import PackageSummaryStore from "@/store/packageSummary";
 import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
 import Steps from "@/store/steps";
-import { AcquisitionPackageSummarySearchDTO, PackageSummaryDTO } from "@/api/models";
+import {
+  AcquisitionPackageSummaryDTO,
+  AcquisitionPackageSummaryMetadataAndDataDTO,
+  AcquisitionPackageSummarySearchDTO,
+} from "@/api/models";
 import { ToastObj } from "../../types/Global";
 import Toast from "@/store/toast";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import _ from "lodash"
 import Search from "@/packages/components/Search.vue";
 @Component({
   components: {
@@ -122,25 +96,56 @@ import Search from "@/packages/components/Search.vue";
 })
 export default class Packages extends Vue {
   @Watch('tabIndex')
-  public tabIndexChanged(newVal:number):void {
-    let filteredData = _.cloneDeep(this.allPackageData)
-    debugger
+  public async tabIndexChanged(newVal:number): Promise<void> {
+    let acquisitionPackageStatus = {}
     switch(newVal){
     case 0:
-      filteredData = filteredData.filter(obj => obj.package_status !== 'ARCHIVED')
+      acquisitionPackageStatus =
+        {"acquisitionPackageStatus":"DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER"}
       break
     case 1:
-      filteredData = filteredData.filter(obj => obj.package_status === 'TASK_ORDER_AWARDED')
+      acquisitionPackageStatus =
+        {"acquisitionPackageStatus":"TASK_ORDER_AWARDED"}
       break
     case 2:
-      filteredData = filteredData.filter(obj => obj.package_status === 'ARCHIVED')
+      acquisitionPackageStatus =
+        {"acquisitionPackageStatus":"ARCHIVED"}
+      break
+    case 3:
+      acquisitionPackageStatus =
+        {"acquisitionPackageStatus":""}
       break
     }
-    this.packageData = filteredData
+    const tabFilter = Object.assign(this.searchDTO,acquisitionPackageStatus)
+    const filteredData = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(tabFilter)
+    this.packageData = filteredData.acquisitionPackageSummaryList
   }
   public tabIndex = 0;
-  public packageData:PackageSummaryDTO[] = []
-  public allPackageData:PackageSummaryDTO[] = []
+  public searchString = ""
+  public searchedString = ""
+  public selectedSort: 'DESCsys_updated_on'| 'project_overview' = "project_overview"
+  public packageData:AcquisitionPackageSummaryDTO[] = []
+  public allPackageData:AcquisitionPackageSummaryMetadataAndDataDTO = {
+    // eslint-disable-next-line camelcase
+    total_count:0,
+    acquisitionPackageSummaryList:[]
+  }
+  @Watch('selectedSort')
+  public async sortingChanged(newVal:string): Promise<void> {
+    const sortedSearch = Object.assign(this.searchDTO,{'sort':newVal})
+    const sortedData = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(sortedSearch)
+    this.packageData = sortedData.acquisitionPackageSummaryList
+  }
+
+  public searchDTO:AcquisitionPackageSummarySearchDTO = {
+    acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER",
+    searchString: "",
+    sort: this.selectedSort,
+    limit: 10,
+    offset: 0
+  };
   public tabItems: Record<string, string>[] = [
     {
       type: "OPEN",
@@ -207,26 +212,29 @@ export default class Packages extends Vue {
 
     Toast.setToast(toastObj);
     this.packageData = [];
+    this.tabIndex = 0
     Vue.nextTick(async()=>{
-      this.packageData = await PackageSummaryStore.getPackageData()
+      this.packageData = this.allPackageData.acquisitionPackageSummaryList
     })
   }
 
+  public async search(): Promise<void> {
+    const stringSearch = Object.assign(this.searchDTO,{'searchString':this.searchString})
+    const sortedData = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(stringSearch)
+    this.packageData = sortedData.acquisitionPackageSummaryList
+    this.searchedString = this.searchString
+  }
+
+  public async clear(): Promise<void> {
+    this.searchString = "";
+    this.packageData = this.allPackageData.acquisitionPackageSummaryList
+  }
 
   private async loadOnEnter(){
-    this.allPackageData = await PackageSummaryStore.getPackageData()
-    this.packageData = _.cloneDeep(this.allPackageData)
-      .filter(obj => obj.package_status !== 'ARCHIVED')
-    // const acqPackageSearchDTO: AcquisitionPackageSummarySearchDTO = {
-    //acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER", // for ACTIVE
-    //   searchString: "",
-    //   sort: "DESCsys_updated_on",
-    //   limit: 10,
-    //   offset: 0
-    // }
-    // const acqPackageStoreData = await AcquisitionPackageSummary
-    //   .searchAcquisitionPackageSummaryList(acqPackageSearchDTO);
-    // console.log(JSON.stringify(acqPackageStoreData));
+    this.allPackageData = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(this.searchDTO);
+    this.packageData = this.allPackageData.acquisitionPackageSummaryList
   }
 
   public mounted():void{

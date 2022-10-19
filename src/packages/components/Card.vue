@@ -14,7 +14,7 @@
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center"
           >
-            {{ modifiedData.title }}
+            {{ modifiedData.projectOverview || 'Test'}}
             <!-- for testing only -->
             <span v-if="modifiedData.contributors">&nbsp;(C)</span>
           </a>
@@ -98,14 +98,14 @@
     />
     <DeletePackageModal
       :showModal.sync="showDeleteModal"
-      :packageName="modifiedData.title"
+      :packageName="modifiedData.projectOverview"
       :hasContributor="hasContributor"
       @okClicked="updateStatus('DELETE')"
     />
     <ArchiveModal
       :showModal.sync="showArchiveModal"
       :hasContributor="hasContributor"
-      :packageName="modifiedData.title"
+      :packageName="modifiedData.projectOverview"
       @okClicked="updateStatus('ARCHIVED')"
     />
   </v-card>
@@ -121,6 +121,10 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
+import {
+  AcquisitionPackageSummaryDTO,
+  AcquisitionPackageSummaryMetadataAndDataDTO
+} from "@/api/models";
 @Component({
   components:{
     ATATSVGIcon,
@@ -130,13 +134,13 @@ import ArchiveModal from "@/packages/components/ArchiveModal.vue";
   }
 })
 export default class Card extends Vue {
-  @Prop() private cardData!: Record<string, string>;
+  @Prop() private cardData!: AcquisitionPackageSummaryDTO;
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
   
   public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
-  public isOwner = this.cardData.mission_owners.indexOf(this.currentUserSysId) > -1;
-  public hasContributor = this.cardData.contributors.length > 0;
+  public isOwner = false;
+  public hasContributor = false;
   public isWaitingForSignatures = false
   public showDeleteModal = false
   public showArchiveModal = false
@@ -173,17 +177,21 @@ export default class Card extends Vue {
   }
 
 
-  public reformatData(cardData:Record<string, string>): void {
-    this.modifiedData.contractAward = cardData.contract_award
-    this.modifiedData.missionOwners = cardData.mission_owners
-    this.modifiedData.packageStatus = cardData.package_status.replace(/[^a-zA-Z0-9 ]/g, ' ')
-    this.modifiedData.projectOverview = cardData.project_overview
-    this.modifiedData.secondaryReviewers = cardData.secondary_reviewers
+  public reformatData(cardData:AcquisitionPackageSummaryDTO): void {
+    if(cardData && cardData.contributors){
+      this.hasContributor = cardData.contributors?.value.length > 0
+    }
+    if(cardData && cardData.mission_owners) {
+      this.isOwner = cardData.mission_owners?.value.indexOf(this.currentUserSysId) > -1
+    }
+    this.modifiedData.contractAward = cardData.contract_award?.value || ""
+    this.modifiedData.missionOwners = cardData.mission_owners?.value || ""
+    this.modifiedData.packageStatus = cardData.package_status?.display_value || ""
+    this.modifiedData.projectOverview = cardData.project_overview?.display_value || ""
+    this.modifiedData.secondaryReviewers = cardData.secondary_reviewers?.value || ""
     this.modifiedData.createdBy = this.isOwner? "Maria Missionowner" : "Jack Ryan"
-    this.modifiedData.updated = cardData.sys_updated_on
-    this.modifiedData.title = cardData.title
-    this.modifiedData.contributors = cardData.contributors
-
+    this.modifiedData.updated = cardData.sys_updated_on || ""
+    this.modifiedData.contributors = cardData.contributors?.value || ""
   }
   public updateStatus(newStatus: string): void {
     this.$emit("updateStatus", this.cardData.sys_id, newStatus);
@@ -206,7 +214,7 @@ export default class Card extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.reformatData(this.cardData)
-    if(this.cardData.package_status === 'DRAFT'){
+    if(this.cardData.package_status?.value === 'DRAFT'){
       this.cardMenuItems = [
         {
           title: "Edit draft package",
@@ -230,7 +238,7 @@ export default class Card extends Vue {
         )
       }
     }
-    if(this.cardData.package_status === 'WAITING_FOR_SIGNATURES'){
+    if(this.cardData.package_status?.value === 'WAITING_FOR_SIGNATURES'){
       this.isWaitingForSignatures = true
       this.cardMenuItems = [
         {
@@ -259,7 +267,7 @@ export default class Card extends Vue {
         )
       }
     }
-    if(this.cardData.package_status === 'WAITING_FOR_TASK_ORDER'){
+    if(this.cardData.package_status?.value === 'WAITING_FOR_TASK_ORDER'){
       this.cardMenuItems = [
         {
           title: "Add awarded task order",
@@ -283,7 +291,7 @@ export default class Card extends Vue {
         )
       }
     }
-    if(this.cardData.package_status === 'TASK_ORDER_AWARDED'){
+    if(this.cardData.package_status?.value  === 'TASK_ORDER_AWARDED'){
       this.cardMenuItems = [
         {
           title: "View task order CLIN summary",
@@ -300,7 +308,7 @@ export default class Card extends Vue {
         },
       ]
     }
-    if(this.cardData.package_status === 'ARCHIVED' && this.isOwner){
+    if(this.cardData.package_status?.value  === 'ARCHIVED' && this.isOwner){
       this.cardMenuItems = [
         {
           title: "Restore package to draft",
@@ -311,15 +319,17 @@ export default class Card extends Vue {
         }
       ]
     }
-    if (this.cardData.package_status === 'TASK_ORDER_AWARDED') {
-      const agoString = createDateStr(this.cardData.sys_updated_on, true);
-      this.lastModifiedStr = "Awarded on " + agoString;
-    } else if(this.cardData.package_status === 'ARCHIVED') {
-      const archivedDate = createDateStr(this.cardData.sys_updated_on, true);
-      this.lastModifiedStr = "Archived on " + archivedDate;
-    }else {
-      const updatedDate = createDateStr(this.cardData.sys_updated_on, true);
-      this.lastModifiedStr = "Last modified " + updatedDate;
+    if(this.cardData.sys_updated_on){
+      if (this.cardData.package_status?.value  === 'TASK_ORDER_AWARDED') {
+        const agoString = createDateStr(this.cardData.sys_updated_on, true);
+        this.lastModifiedStr = "Awarded on " + agoString;
+      } else if(this.cardData.package_status?.value  === 'ARCHIVED') {
+        const archivedDate = createDateStr(this.cardData.sys_updated_on, true);
+        this.lastModifiedStr = "Archived on " + archivedDate;
+      }else {
+        const updatedDate = createDateStr(this.cardData.sys_updated_on, true);
+        this.lastModifiedStr = "Last modified " + updatedDate;
+      }
     }
   }
   public async mounted(): Promise<void> {
