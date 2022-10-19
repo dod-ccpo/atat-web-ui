@@ -8,7 +8,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep",() => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
-        
+    cy.homePageClickAcquisitionPackBtn();    
   });
     
   it("TC1: Funding Plan on the Vertical Stepper is active", () => {

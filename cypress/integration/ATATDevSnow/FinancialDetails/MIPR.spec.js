@@ -7,6 +7,7 @@ describe("Test suite: Funding Plan substep: MIPR work flow",  () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
@@ -70,6 +71,7 @@ describe("Test suite: Funding Plan substep: MIPR work flow",  () => {
 
   it("TC3: Upload file with drag and drop mode & Remove Uploaded file", () => {
     cy.hopOutOfIframe(true, true);
+    cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();

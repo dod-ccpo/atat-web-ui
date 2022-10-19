@@ -29,6 +29,7 @@ describe("Test suite: No PoP and Classification Levels exists workflows ",
         serviceOfferingGroups = data;
       });
       cy.launchATAT();
+      cy.homePageClickAcquisitionPackBtn();
       cy.clickSideStepper(common.stepPerformanceReqText, " Performance Requirements ");
       cy.verifyPageHeader(" Let’s work on your performance requirements ");         
       cy.textExists(

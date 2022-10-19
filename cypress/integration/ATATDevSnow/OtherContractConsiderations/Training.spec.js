@@ -8,6 +8,7 @@ describe("Test suite: OCC: Training substep", () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
     
   it("TC1: Training on the Vertical Stepper is active", () => {

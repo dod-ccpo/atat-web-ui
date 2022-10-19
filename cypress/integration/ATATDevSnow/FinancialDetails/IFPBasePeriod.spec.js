@@ -13,6 +13,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
     beforeEach(() => {
       bootstrapMockApis();
       cy.launchATAT();
+      cy.homePageClickAcquisitionPackBtn();
       cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
       cy.textExists(common.subStepPopText, " Period of Performance ");
       cy.dropDownClick(contractDetails.baseDropdownIcon);

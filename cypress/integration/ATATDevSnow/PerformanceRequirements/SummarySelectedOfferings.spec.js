@@ -22,7 +22,8 @@ describe("Test suite: Summary screen: Selected Offerings ", { tags: '@iso-ignore
       serviceOfferingGroups = data;
     });
     
-    cy.launchATAT();   
+    cy.launchATAT();  
+    cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.verifyPageHeader(" Let’s gather some details about the duration of your task order ");     
     cy.findElement(contractDetails.baseInputTxtBox).type("12");

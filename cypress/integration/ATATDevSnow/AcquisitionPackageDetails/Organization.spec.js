@@ -18,6 +18,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     });
     
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
 
   it("TC1: Organization substep is active", () => {
