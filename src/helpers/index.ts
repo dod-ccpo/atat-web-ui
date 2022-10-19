@@ -120,7 +120,10 @@ export const toCurrencyString = (num: number, decimals?: boolean): string => {
 
 // converts a formatted currency string back to a number
 export const currencyStringToNumber = (str: string): number => {
-  return str ? parseFloat(str.replaceAll(",", "")) : 0;
+  str = str.charAt(0) === "$" ? str.substring(1) : str;
+  const foo = str ? parseFloat(str.replaceAll(",", "")) : 0;
+  debugger;
+  return foo;
 }
 
 
@@ -210,6 +213,7 @@ export function getUserInitials(member:User): string {
 }
 
 export function getStatusChipBgColor(status: string): string {
+  debugger;
   switch (status.toLowerCase()) {
   case StatusTypes.Active.toLowerCase():
   case StatusTypes.OnTrack.toLowerCase():
@@ -223,6 +227,7 @@ export function getStatusChipBgColor(status: string): string {
   case StatusTypes.AtRisk.toLowerCase():
   case StatusTypes.WaitingForTaskOrder.toLowerCase():
   case StatusTypes.ExpiringSoon.toLowerCase():
+  case StatusTypes.ExpiringPoP.toLowerCase():
     return "bg-warning";
   case StatusTypes.Delinquent.toLowerCase():
   case StatusTypes.Expired.toLowerCase():

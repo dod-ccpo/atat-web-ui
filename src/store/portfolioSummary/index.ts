@@ -341,7 +341,8 @@ export class PortfolioSummaryStore extends VuexModule {
         params:
           {
             sysparm_fields: "sys_id,clin,task_order_number,is_actual,value",
-            sysparm_query: "clinIN" + clinNumbers
+            sysparm_query: "clinIN" + clinNumbers,
+            limit: -1,
           }
       }
     )

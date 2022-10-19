@@ -70,6 +70,7 @@ export const StatusTypes = {
   Delinquent: "Delinquent",
   Expired: "Expired",
   ExpiringSoon: "Expiring Soon",
+  ExpiringPoP: "Expiring PoP",
   Archived: "Archived",
   Draft: "Draft",
   WaitingForSignatures: "Waiting For Signatures",

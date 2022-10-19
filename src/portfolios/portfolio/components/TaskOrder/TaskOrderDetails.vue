@@ -94,9 +94,11 @@
     </div>
     <div class="mt-10">
       <v-data-table
+        id="CLINDataTable"
         :headers="tableHeaders"
         :items="tableData"
         :disable-sort="true"
+        :items-per-page="-1"
         hide-default-footer
         class="_clin-table border1 border-base-lighter"
       >
@@ -109,11 +111,13 @@
               :class="[
                 { '_new-clin-group' : item.startNewClinGroup},
                 {'bg-info-lighter': item.status === 'Processing'},
-                {'d-none': item.status === 'Expired PoP' && !showInactive },
-                {'d-none': item.status === 'Option pending' && !showInactive },
+                {'d-none': item.isExpired && !showInactive },
+                {'d-none': item.isPending && !showInactive },
               ]"
-              v-for="item in props.items" :key="item.CLINNumber"
+              v-for="item in props.items" 
+              :key="item.CLINNumber"
             >
+
               <td>
                 <div class="d-flex flex-column font-weight-400">
                   {{item.CLINNumber}}
@@ -150,7 +154,7 @@
                     class="font-size-12 text-base d-flex"
                   >
                     <ATATSVGIcon
-                      v-if="item.status === 'At-Risk'
+                      v-if="item.status === 'At Risk'
                       || item.status === 'Expiring PoP'"
                       width="14"
                       height="16"
@@ -179,12 +183,11 @@
                   </span>
                   </div>
                   <div
-                    v-if="item.status === 'Delinquent'"
+                    v-if="item.status === 'Delinquent' || item.isOverspent"
                     class="d-flex justify-end font-size-12 text-error
                      font-weight-500 align-center justify-end"
                   >
                     <ATATSVGIcon
-                      v-if="item.status === 'Delinquent'"
                       name="errorFilled"
                       width="13"
                       height="13"
@@ -193,24 +196,27 @@
                     />
                     Overspent
                   </div>
-                    <div
-                      v-else
-                      class="d-flex font-size-12 align-center justify-end"
-                      :class="{
-                      'text-base-darkest': item.status === 'Funding At-Risk',
-                      'text-base': item.status !== 'Funding At-Risk',
-                      }"
-                    >
-                      <ATATSVGIcon
-                        v-if="item.status === 'Funding At-Risk'"
-                        name="warning"
-                        width="14"
-                        height="12"
-                        color="warning-dark2"
-                        class="mr-1"
-                      />
-                      {{item.fundsRemaining.fundsRemaining}}
-                    </div>
+                  <div
+                    v-else-if="item.isActive"
+                    class="d-flex font-size-12 align-center justify-end"
+                    :class="[
+                      'nowrap',
+                      {'text-base-darkest': item.status === 'Funding At-Risk'},
+                      {'text-base': item.status !== 'Funding At-Risk'},
+                    ]"
+                  >
+                    <ATATSVGIcon
+                      v-if="item.status === 'Funding At-Risk' 
+                        || item.status.indexOf('At Risk') > -1
+                      "
+                      name="warning"
+                      width="14"
+                      height="12"
+                      color="warning-dark2"
+                      class="mr-1"
+                    />
+                    {{item.fundsRemaining.fundsRemaining}}
+                  </div>
                 </div>
               </td>
             </tr>
@@ -222,13 +228,13 @@
           <div class="_table-pagination pr-6">
               <div class="mr-auto pl-6 font-weight-400 font-size-14">
                 <a
-                  @click="toggle"
+                  @click="toggleInactive"
                   role="button"
                 >
                   {{ showHide() }} inactive CLINs
                 </a>
                 <span class="font-size-14 text-base ml-2">
-                  ({{inActiveCount}})
+                  ({{ inactiveCount }})
                 </span>
               </div>
             <div
@@ -336,14 +342,18 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
-import { capitalizeFirstLetter, toCurrencyString } from "@/helpers";
+import { 
+  capitalizeFirstLetter, 
+  createDateStr, 
+  currencyStringToNumber, 
+  toCurrencyString 
+} from "@/helpers";
 
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import format from "date-fns/format";
 import { differenceInDays, differenceInMonths } from "date-fns";
 import { ClinDTO } from "@/api/models";
-import { formatDiagnostics } from "typescript";
+
 @Component({
   components: {
     TaskOrderCard,
@@ -386,7 +396,7 @@ export default class TaskOrderDetails extends Vue {
 
   public totalsWithInactive = {percent:"",fundsRemaining:""}
   public totals = {percent:"",fundsRemaining:""}
-  public inActiveCount = 0;
+  public inactiveCount = 0;
 
   public obligatedFundsToolTip = "Total of all obligations (i.e. funded CLINs) in the base period" +
     " and exercised option periods. This may represent 100% of your total task order value, or a" +
@@ -420,9 +430,11 @@ export default class TaskOrderDetails extends Vue {
   ];
 
  
-  public toggle():void {
+  public toggleInactive():void {
+    debugger;
     this.showInactive = !this.showInactive
   }
+
   public fundsRemaining(obligatedFunds:string | number, fundsSpent:string | number):
     {percent:string,fundsRemaining:string} {
     if(obligatedFunds == "0" && fundsSpent == "0"){
@@ -431,56 +443,58 @@ export default class TaskOrderDetails extends Vue {
         fundsRemaining: ""
       }
     }
-    let percent = Math.round((Number(fundsSpent) / Number(obligatedFunds)) * 100)
-    let remaining = Number(obligatedFunds)-Number(fundsSpent)
+    let percent = Math.round((Number(fundsSpent) / Number(obligatedFunds)) * 100);
+    let remaining = Number(obligatedFunds) - Number(fundsSpent);
     return {
       percent: String(percent),
       fundsRemaining:"$" + toCurrencyString(remaining) + " remaining"
     }
   }
 
-  public monthsToExpiration(start:string,end:string): { PoP:string, expiration:string } {
-    let expiration = "";
-    const [sYear,sMonth,sDay] = start.split("-")
-    const [eYear,eMonth,eDay] = end.split("-")
-    const startDate = format(new Date(Number(sYear),Number(sMonth)-1,Number(sDay)),"MMM dd, yyyy")
-    const endDate = format(new Date(Number(eYear),Number(eMonth)-1,Number(eDay)),"MMM dd, yyyy")
-    const daysOrMonthDiffernce = differenceInDays(
-      new Date(Number(eYear),Number(eMonth)-1,Number(eDay)),
-      new Date(Number(sYear),Number(sMonth)-1,Number(sDay))
-    )
-    if(daysOrMonthDiffernce < 90){
-      expiration = `${daysOrMonthDiffernce} days to expiration`
+  public timeToExpiration(start:string,end:string): { PoP:string, expiration:string } {
+    const formattedStartDate = createDateStr(start, true);
+    const formattedEndDate = createDateStr(end, true);
+    const difInDays = differenceInDays(new Date(end), new Date());
+    const difInMonths = differenceInMonths(new Date(end), new Date());
+
+    const useDays = difInDays <= 60;
+    const numberOfTimeUnits = useDays ? difInDays : difInMonths;
+    let unitOfTime = useDays ? "day" : "month";
+    if (numberOfTimeUnits !== 1) {
+      unitOfTime = unitOfTime + "s";
     }
-    else {
-      expiration = `${differenceInMonths(new Date(end), new Date())} months to expiration`
-    }
+
     return {
-      PoP: `${startDate} - ${endDate}`,
-      expiration,
+      PoP: `${formattedStartDate} - ${formattedEndDate}`,
+      expiration: `${numberOfTimeUnits} ${unitOfTime} to expiration`
     }
   }
+
   public async collectTableData(): Promise<void> {
-    let prevClinNo = "";
-    const inactiveStatuses = ["Option Pending", "Option Exercised", "Expired PoP"]
- 
+    const inactiveStatuses = ["Option Pending", "Expired"]
+
     this.clins.forEach((clin)=>{
-      const formattedStatus = capitalizeFirstLetter(clin.clin_status).replaceAll("_", " " )
-        .replaceAll("Pop", "PoP")
-      const isClinActive = !(inactiveStatuses.includes(formattedStatus));
+      const formattedStatus = capitalizeFirstLetter(clin.clin_status)
+        .replaceAll("_", " " ).replaceAll("Pop", "PoP");
+      const isClinActive = !(inactiveStatuses.includes(formattedStatus)) 
+        && formattedStatus !== "Option Exercised";
       const tableRowData: ClinTableRowData = {
         isActive: isClinActive,
+        isExercised: formattedStatus === "Option Exercised",
+        isPending: formattedStatus === "Option Pending",
+        isExpired: formattedStatus === "Expired",
         CLINNumber: clin.clin_number,
         CLINTitle: clin.clin_title,
-        PoP: this.monthsToExpiration(clin.pop_start_date,clin.pop_end_date),
+        PoP: this.timeToExpiration(clin.pop_start_date,clin.pop_end_date),
         popStartDate: clin.pop_start_date,
         status: formattedStatus,
         obligatedFunds: '$' + toCurrencyString(clin.funds_obligated),
         totalCLINValue: '$' + toCurrencyString(clin.funds_total),
         totalFundsSpent: '$' + toCurrencyString(clin.funds_spent_clin || 0),
+        isOverspent: clin.funds_spent_clin ? clin.funds_spent_clin > clin.funds_obligated : false,
         fundsRemaining: this.fundsRemaining(
           clin.funds_obligated,
-          clin.funds_total
+          String(clin.funds_spent_clin)
         ),
         startNewClinGroup: false
       }
@@ -501,7 +515,9 @@ export default class TaskOrderDetails extends Vue {
       this.totals = this.fundsRemaining(
         this.totalFundingObj.totalObligatedFunds, this.totalFundingObj.totalFundsSpent
       )
-    })
+    });
+    this.inactiveCount = this.expiredClins.length + this.optionPendingClins.length;
+
   }
 
   public async addSeparators() : Promise<void> {
@@ -536,21 +552,20 @@ export default class TaskOrderDetails extends Vue {
 
 
   public calculateTotalFundingObj(clin: ClinTableRowData): void{
-    if(clin.isActive) {
-      this.totalFundingObj.totalCLINValue += Number(clin.totalCLINValue)
-      this.totalFundingObj.withInactiveTotal += Number(clin.totalCLINValue)
-      this.totalFundingObj.totalObligatedFunds += Number(clin.obligatedFunds)
-      this.totalFundingObj.withInactiveObligatedFunds += Number(clin.obligatedFunds)
-      this.totalFundingObj.totalFundsSpent += Number(clin.totalFundsSpent)
-      this.totalFundingObj.withInactiveFundsSpent += Number(clin.totalFundsSpent)
-    } else {
-      if(clin.status !== 'Option exercised'){
-        this.inActiveCount++
-      }
-      this.totalFundingObj.withInactiveTotal += Number(clin.totalCLINValue)
-      this.totalFundingObj.withInactiveObligatedFunds += Number(clin.obligatedFunds)
-      this.totalFundingObj.withInactiveFundsSpent += Number(clin.totalFundsSpent)
-    }
+    const totalCLINValue = currencyStringToNumber(clin.totalCLINValue || "0");
+    const obligatedFunds = currencyStringToNumber(clin.obligatedFunds || "0");
+    const totalFundsSpent = currencyStringToNumber(clin.totalFundsSpent || "0");
+    debugger;
+
+    if (clin.isActive || clin.isExercised) {
+      this.totalFundingObj.totalCLINValue += totalCLINValue;
+      this.totalFundingObj.totalObligatedFunds += obligatedFunds;
+      this.totalFundingObj.totalFundsSpent += (totalFundsSpent);
+    } 
+
+    this.totalFundingObj.withInactiveTotal += totalCLINValue;
+    this.totalFundingObj.withInactiveObligatedFunds += obligatedFunds;
+    this.totalFundingObj.withInactiveFundsSpent += totalFundsSpent;
   }
 
   public statusImgs: Record<string, Record<string, string | undefined>> = {};
@@ -564,19 +579,23 @@ export default class TaskOrderDetails extends Vue {
     bgColor?: string
   ): void {
     const imgKey = key || "";
+
     this.statusImgs[imgKey] = {
       name, width, height, color, bgColor
     }
   }
 
   public async loadOnEnter(): Promise<void> {
-    this.createTableData()
+    this.createTableData();
     const statusImgValues = [
       ["Delinquent", "failed", "16", "16", "error", "bg-error-lighter"],
       ["Expired","failed", "16", "16", "error", "bg-error-lighter"],
       ["Expiring PoP","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
       ["Funding At Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
+      
       ["At Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
+      // EJY "At Risk" needs hyphen per Melissa
+
       ["Option Pending","optionPending", "16", "16", "info-dark", "bg-info-lighter"],
       ["Option Exercised","requestQuote", "13", "16", "info-dark", "bg-info-lighter"],
       ["On Track","taskAlt", "17", "17", "success-dark", "bg-success-lighter"],
