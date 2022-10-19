@@ -8,7 +8,7 @@ describe("Test suite: SAC step: BAA", () => {
 
     bootstrapMockApis();
     cy.launchATAT();
-        
+    cy.homePageClickAcquisitionPackBtn();    
   });
     
   it("TC1: SAC: BAA is active on the Vertical Stepper", () => {

@@ -9,6 +9,7 @@ describe("Test suite: Current Environment ", () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     cy.contractOption(background.currentYesRadioOption, "YES");
     cy.verifyPageHeader("Let’s gather some details about your current contract");

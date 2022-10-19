@@ -8,6 +8,7 @@ describe("Test suite: Funding Plan substep: G-Invoicing work flow", () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;

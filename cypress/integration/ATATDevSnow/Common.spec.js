@@ -13,6 +13,7 @@ describe("Test suite: Common SPA functionality", () => {
       
     });
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
     
   it("TC1: Vertical Stepper", () => {

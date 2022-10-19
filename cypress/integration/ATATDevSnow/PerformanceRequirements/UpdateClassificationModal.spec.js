@@ -23,6 +23,7 @@ describe("Test suite: Gather Requirements-Update Classification modal ",
       });
     
       cy.launchATAT();
+      cy.homePageClickAcquisitionPackBtn();
       cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
       cy.verifyPageHeader(" Let’s gather some details about the duration of your task order ");
       //Enter the Value for Base

@@ -9,6 +9,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
     
   it("TC1: Period of Perfomance on the Vertical Stepper is active", () => {
@@ -112,6 +113,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
 
   it("TC5: Duplicate: Drag and Drop", () => {
     cy.hopOutOfIframe(true, true);
+    cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.findElement(contractDetails.baseDropdownIcon).click();
     cy.findElement(contractDetails.baseDropdownMonth).click();

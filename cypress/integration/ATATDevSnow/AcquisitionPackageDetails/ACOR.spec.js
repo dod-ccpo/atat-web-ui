@@ -16,6 +16,7 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
     });
 
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
 
   it("TC1: ACOR: Option is Yes: Selected Contact Information", () => {

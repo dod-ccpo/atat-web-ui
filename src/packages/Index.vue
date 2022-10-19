@@ -58,6 +58,11 @@
 
           />
         </div>
+        <ATATNoResults
+          v-show="packageData.length === 0 && searchString"
+          :searchString="searchedString"
+          @clear="clear"
+        />
       </v-container>
       <ATATFooter/>
     </v-main>
@@ -85,11 +90,14 @@ import { ToastObj } from "../../types/Global";
 import Toast from "@/store/toast";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Search from "@/packages/components/Search.vue";
+import ATATNoResults from "@/components/ATATNoResults.vue";
+
 @Component({
   components: {
     PortfoliosSummary,
     ATATFooter,
     ATATToast,
+    ATATNoResults,
     Card,
     Search
   }

@@ -123,7 +123,6 @@ import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
 import {
   AcquisitionPackageSummaryDTO,
-  AcquisitionPackageSummaryMetadataAndDataDTO
 } from "@/api/models";
 @Component({
   components:{
