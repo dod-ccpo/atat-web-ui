@@ -155,7 +155,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     };
     const acqPackageSummaryList = await api.acquisitionPackagesSummaryTable
       .getQuery(acquisitionPackageSummaryListRequestConfig);
-    console.log(JSON.stringify(acqPackageSummaryList));
     return acqPackageSummaryList.map(acqPackageSummary => {
       return {
         sys_id: acqPackageSummary.sys_id?.value,
