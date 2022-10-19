@@ -28,8 +28,8 @@ describe("AcquisitionPackageSummary Store",
       acquisitionPackageSummaryStore = getModule(AcquisitionPackageSummaryStore, createStore());
       aqPackageSummaryDisplay1 = {
         "sys_id": {
-          "display_value": "0924638987e25110bc86b889cebb35ca",
-          "value": "0924638987e25110bc86b889cebb35ca"
+          "display_value": "12",
+          "value": "12"
         },
         "sys_created_by": {
           "display_value": "tony.sumner-ctr@ccpo.mil",
@@ -41,7 +41,7 @@ describe("AcquisitionPackageSummary Store",
         },
         "project_overview": {
           "display_value": "Alpha Project",
-          "value": "d1efbf1987ee5110bc86b889cebb3559"
+          "value": "13"
         },
         "secondary_reviewers": {
           "display_value": "",
@@ -53,7 +53,7 @@ describe("AcquisitionPackageSummary Store",
         },
         "mission_owners": {
           "display_value": "Maria Missionowner ",
-          "value": "e0c4c728875ed510ec3b777acebb356f"
+          "value": "14"
         },
         "contract_award": {
           "display_value": "",
@@ -63,12 +63,12 @@ describe("AcquisitionPackageSummary Store",
       aqPackageSummaryDisplayList = [aqPackageSummaryDisplay1];
 
       aqPackageSummary1 = {
-        "sys_id": "0924638987e25110bc86b889cebb35ca",
+        "sys_id": "12",
         "sys_created_by": "tony.sumner-ctr@ccpo.mil",
         "sys_updated_on": "2022-10-14 14:32:04",
         "project_overview": {
           "display_value": "Alpha Project",
-          "value": "d1efbf1987ee5110bc86b889cebb3559"
+          "value": "13"
         },
         "secondary_reviewers": {
           "display_value": "",
@@ -80,7 +80,7 @@ describe("AcquisitionPackageSummary Store",
         },
         "mission_owners": {
           "display_value": "Maria Missionowner ",
-          "value": "e0c4c728875ed510ec3b777acebb356f"
+          "value": "14"
         },
         "contract_award": {
           "display_value": "",
@@ -191,7 +191,7 @@ describe("AcquisitionPackageSummary Store",
       )
       const isUpdateSuccessful =
         await acquisitionPackageSummaryStore.updateAcquisitionPackageStatus({
-          acquisitionPackageSysId: "0924638987e25110bc86b889cebb35ca",
+          acquisitionPackageSysId: "12",
           newStatus: "ARCHIVED"
         });
       expect(isUpdateSuccessful).toBe(true);
