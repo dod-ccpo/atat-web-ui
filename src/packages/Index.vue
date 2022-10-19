@@ -216,10 +216,7 @@ export default class Packages extends Vue {
     };
 
     Toast.setToast(toastObj);
-    this.packageData = [];
-    Vue.nextTick(async()=>{
-      this.packageData = this.allPackageData.acquisitionPackageSummaryList
-    })
+    await this.updateSearchDTO("","")
   }
 
   public async search(): Promise<void> {
