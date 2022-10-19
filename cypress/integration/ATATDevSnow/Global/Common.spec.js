@@ -1,5 +1,5 @@
-import { bootstrapMockApis, cleanText, capitalizeFirstLetter } from "../../helpers";
-import common from "../../selectors/common.sel";
+import { bootstrapMockApis, cleanText, capitalizeFirstLetter } from "../../../helpers";
+import common from "../../../selectors/common.sel";
 
 describe("Test suite: Common SPA functionality", () => { 
   

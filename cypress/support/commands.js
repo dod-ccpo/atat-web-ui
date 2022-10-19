@@ -342,6 +342,15 @@ Cypress.Commands.add("verifyRadioGroupLabels", (selector,expectedLabels) => {
   
 });
 
+Cypress.Commands.add("verifyElementTextArray", (selector,expectedText) => {  
+  cy.findElement(selector).each((card, index) => {
+    const cardText = Cypress.$(card).text();            
+    const actualCard = cleanText(cardText);      
+    console.log(actualCard);            
+    expect(actualCard).equal(expectedText[index]);        
+  });
+});
+
 Cypress.Commands.add("verifyStringArray", (selector,expectedOptions) => {
   //Verify the list 
   cy.findElement(selector)
