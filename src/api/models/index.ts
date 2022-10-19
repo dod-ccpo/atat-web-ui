@@ -49,6 +49,11 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   required_services: string;
   current_environment: string;
   environment_instance: string;
+  secondary_reviewers?: string[];
+  mission_owners?: string[],
+  contract_award: ReferenceColumn,
+  package_status?: string;
+  contributors?: string[],
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -439,4 +444,52 @@ export interface PortfolioSummarySearchDTO {
   searchString?: string;
   limit?: number;
   offset?: number;
+}
+
+export interface PackageSummaryDTO { // TODO: delete this interface after acq package summary impl
+  
+    project_overview?: ReferenceColumn["value"]
+    title?: string, //proj overview
+    secondary_reviewers?: string[],
+    package_status?: string,
+    sys_updated_on?: string,
+    sys_created_by?: string,
+    mission_owners?: string[],
+    contract_award?: ReferenceColumn["value"],
+    contributors?: string[],
+    sys_id?: string,
+  }
+
+export interface AcquisitionPackageSummarySearchDTO {
+  acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER" | // open
+  "TASK_ORDER_AWARDED" | "ARCHIVED" | ""; // empty string for all statuses including deleted
+  sort: "project_overview" | "DESCsys_updated_on"; // one of these two values should always exist
+  searchString?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface AcquisitionPackageSummaryDisplay{
+  sys_id?: DisplayColumn;
+  sys_created_by?: DisplayColumn;
+  sys_updated_on?: DisplayColumn;
+  project_overview?: DisplayColumn; // no need for a title property since the title is inside this
+  secondary_reviewers?: DisplayColumn;
+  package_status?: DisplayColumn | string;
+  mission_owners?: DisplayColumn;
+  contract_award?: DisplayColumn;
+  contributors?: DisplayColumn;
+}
+
+export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
+  project_overview?: DisplayColumn; // no need for a title property since the title is inside this
+  secondary_reviewers?: DisplayColumn;
+  package_status?: DisplayColumn;
+  mission_owners?: DisplayColumn;
+  contract_award?: DisplayColumn;
+}
+
+export interface AcquisitionPackageSummaryMetadataAndDataDTO {
+  total_count: number;
+  acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
 }

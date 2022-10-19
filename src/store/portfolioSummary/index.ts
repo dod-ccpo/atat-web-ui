@@ -352,8 +352,7 @@ export class PortfolioSummaryStore extends VuexModule {
             allCostList.filter(cost => {
               const clinNumber = cost.clin as unknown as ReferenceColumn;
               return clinNumber.value === clinRecord.sys_id
-            }); // FIXME temp code above
-          // allCostList.filter(cost => cost.clin?.value === clinRecord.sys_id);//FIXME correct code
+            });
         })
       })
     })

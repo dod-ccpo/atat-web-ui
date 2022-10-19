@@ -1,11 +1,64 @@
 <template>
-  <div class="bg-white pt-8 pb-10">
+  <div class="pt-8 pb-10">
     <div class="container-max-width">
 
       <v-row>    
         <v-col class="col-sm-12 col-md-7 pr-5">
 
-          <v-expansion-panels flat v-model="portfolioPanel">
+          <ATATAlert 
+            v-if="showAlert"
+            type="warning"
+            :closeButton="true"
+            class="mb-10"
+          >
+            <template slot="content">
+              You have {{ draftPackageCount }} 
+              draft<span v-if="draftPackageCount !== 1">s</span>
+              in progress.
+            </template>
+
+          </ATATAlert>
+
+          <v-expansion-panels id="PackagesAccordion" flat v-model="packagesPanel">
+            <v-expansion-panel expand>
+              <v-expansion-panel-header>
+                <div class="d-flex justify-space-between">
+                  <div class="h3">
+                    Open Acquisition Packages
+                  </div>
+                  <div class="h3 _item-count pr-4">
+                    {{ packageCount }} package<span v-if="packageCount !== 1">s</span>
+                  </div>
+                </div>
+
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+
+                <PackageCards
+                  v-for="(cardData, index) in packageData"
+                  :key="index"
+                  :cardData="cardData"
+                  :index="index"
+                  :isLastCard="index === packageData.length - 1"
+                />
+
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+          <div class="_view-all mb-10">
+            <a
+              id="viewAllPackagesLink"
+              role="button"
+              @click="viewAllPackages"
+              @keydown.enter="viewAllPackages"
+              @keydown.space="viewAllPackages"
+            >
+              View all open packages
+            </a>
+          </div>
+
+
+          <v-expansion-panels id="PortfoliosAccordion" flat v-model="portfolioPanel">
             <v-expansion-panel expand>
               <v-expansion-panel-header>
                 <div class="d-flex justify-space-between">
@@ -13,7 +66,7 @@
                     Porfolios
                   </div>
                   <div class="h3 text-base-light _item-count pr-4">
-                    {{ portfolioCount }} portfolios
+                    {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>
                   </div>
                 </div>
 
@@ -22,6 +75,7 @@
 
                 <PortfoliosSummary 
                   active-tab="ALL" 
+                  default-sort="DESCsys_updated_on"
                   :isHomeView="true" 
                   @totalCount="updateTotalPortfolios"
                 />
@@ -32,7 +86,7 @@
 
           <div class="_view-all">
             <a
-              id="ViewAllPortfoliosButton"
+              id="ViewAllPortfoliosLink"
               role="button"
               @click="viewAllPortfolios"
               @keydown.enter="viewAllPortfolios"
@@ -45,8 +99,8 @@
         </v-col>
 
         <v-col class="col-sm-12 col-md-5 pl-5">
-          <v-card flat class="py-7 mb-10 px-5 _simple-border">
-            <h3 class="text-primary mb-4">Do you already have an awarded task order?</h3>
+          <v-card flat class="pa-6 mb-10 _simple-border">
+            <h3 class="text-primary mb-2">Do you already have an awarded task order?</h3>
             <p>
               Provide a few details about your awarded task order and we’ll import 
               your info to provision your cloud resources.
@@ -60,7 +114,7 @@
             />
           </v-card>
 
-          <v-card flat class="py-7 mb-10 px-5 _simple-border">
+          <v-card flat class="pa-6 mb-10 _simple-border">
             <h3 class="text-primary mb-4">What else could we help you with?</h3>
             <v-btn
               id="StartNewAcquisitionButton"
@@ -91,25 +145,45 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import AppSections from "@/store/appSections";
+
+import Packages from "@/packages/Index.vue";
+import Card from "@/packages/components/Card.vue";
+
 import Portfolios from "../portfolios/Index.vue";
 import PortfoliosSummary from "../portfolios/components/PortfoliosSummary.vue"
+import { PackageSummaryDTO } from "@/api/models";
+import PackageSummary from "@/store/packageSummary";
 
 @Component({
   components: {
+    ATATAlert,
     ATATSearch,
+    "PackageCards": Card,
     PortfoliosSummary,
   }
 })
 
 export default class ExistingUser extends Vue {
-  public startNewAcquisition(): void {
-    this.$emit("startNewAcquisition");
-  }
+
+  public packageData:PackageSummaryDTO[] = []
+  public draftPackageCount = 0;
+
+  public packagesPanel = 0; // open by default
+  public packageCount = 0;
 
   public portfolioPanel = 0; // open by default
   public portfolioCount = 0;
+
+  public get showAlert(): boolean {
+    return this.draftPackageCount > 0
+  }
+
+  public startNewAcquisition(): void {
+    this.$emit("startNewAcquisition");
+  }
 
   public updateTotalPortfolios(totalCount: number): void {
     this.portfolioCount = totalCount;
@@ -117,6 +191,22 @@ export default class ExistingUser extends Vue {
 
   public viewAllPortfolios(): void {
     AppSections.setAppContentComponent(Portfolios);
+  }
+
+  public viewAllPackages(): void {
+    AppSections.setAppContentComponent(Packages);
+  }
+
+  private async loadOnEnter(){
+    this.packageData = await PackageSummary.getPackageData();
+    this.packageCount = this.packageData.length;
+    this.packageData = this.packageData.slice(0, 5);
+    const draftPackages = this.packageData.filter(obj => obj.package_status === "DRAFT");
+    this.draftPackageCount = draftPackages?.length || 0;
+  }
+
+  public mounted():void{
+    this.loadOnEnter();
   }
 
 }

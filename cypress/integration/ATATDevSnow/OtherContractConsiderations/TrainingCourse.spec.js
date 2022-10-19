@@ -8,6 +8,7 @@ describe("Test suite: Training substep: Training Course", () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
       
   it("TC1: Training Courses", () => {

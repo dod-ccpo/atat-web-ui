@@ -12,7 +12,7 @@ describe("Test suite: Financial Details:Requirements Cost Estimate",
         projectDetails = details;
       });
       cy.launchATAT();
-        
+      cy.homePageClickAcquisitionPackBtn();  
     });
     it.skip("TC1: Requirements Cost Estimate substep is active on the Vertical Stepper", () => {
       cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");

@@ -8,7 +8,7 @@ describe("Test suite: Fair Opportunity Process",  () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
-        
+    cy.homePageClickAcquisitionPackBtn();    
   });
     
   it("TC1: Fair Opportunity Process on the Vertical Stepper", () => {

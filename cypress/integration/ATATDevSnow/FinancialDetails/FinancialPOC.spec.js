@@ -17,6 +17,7 @@ describe("Test suite: Financial Details Step: Financial POC",() => {
       contactInfo = info;
     });
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.textExists(common.subStepPopText, " Period of Performance ");
     cy.dropDownClick(contractDetails.baseDropdownIcon);    

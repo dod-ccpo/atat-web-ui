@@ -8,6 +8,7 @@ describe("Test suite: Contract Details: E2E work flow",  () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });  
 
   it("TC1: E2E flow", () => {

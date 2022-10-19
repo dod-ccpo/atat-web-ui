@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ATATToast />
     <v-main>
       <v-app-bar
         id="PageHeader"
@@ -41,9 +42,16 @@
         class="container-max-width"
       >
         <div v-if="activeTab === 'OPEN'">
-          <div class="d-flex flex-column align-center">
-            <h1>No open packages</h1>
-            <p>Acquisitions that have been open will appear here</p>
+          <div class="d-flex flex-column align-center pt-5">
+            <Card
+              v-for="(cardData, index) in packageData"
+              :key="index"
+              :cardData="cardData"
+              :index="index"
+              :isLastCard="index === packageData.length - 1"
+              @updateStatus="updateStatus"
+
+            />
           </div>
         </div>
         <div v-if="activeTab === 'AWARDEDTASKORDERS'">
@@ -80,18 +88,26 @@ import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
-import AppPackageBuilder from "@/AppPackageBuilder.vue";
-import Steps from "@/store/steps";
+import PackageSummaryStore from "@/store/packageSummary";
 import { routeNames } from "@/router/stepper";
+import Card from "@/packages/components/Card.vue";
+import Steps from "@/store/steps";
+import { AcquisitionPackageSummarySearchDTO, PackageSummaryDTO } from "@/api/models";
+import { ToastObj } from "../../types/Global";
+import Toast from "@/store/toast";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+
 @Component({
   components: {
     PortfoliosSummary,
     ATATFooter,
     ATATToast,
+    Card,
   }
 })
 export default class Packages extends Vue {
   public tabIndex = 0;
+  public packageData:PackageSummaryDTO[] = []
   public tabItems: Record<string, string>[] = [
     {
       type: "OPEN",
@@ -127,6 +143,60 @@ export default class Packages extends Vue {
   }
   private getIdText(string: string) {
     return getIdText(string);
+  }
+
+  public async updateStatus(sysId: string,newStatus: string): Promise<void> {
+    let message = "";
+    switch(newStatus){
+    case 'DELETE':
+      message = "Acquisition package deleted"
+      break;
+    case 'ARCHIVED':
+      message = "Acquisition package archived"
+      break;
+    case 'DRAFT':
+      message = "Acquisition package restored to draft"
+      break;
+    }
+    await AcquisitionPackageSummary
+      .updateAcquisitionPackageStatus({
+        acquisitionPackageSysId: sysId,
+        newStatus
+      });
+
+    const toastObj: ToastObj = {
+      type: "success",
+      message,
+      isOpen: true,
+      hasUndo: false,
+      hasIcon: true,
+    };
+
+    Toast.setToast(toastObj);
+    this.packageData = [];
+    Vue.nextTick(async()=>{
+      this.packageData = await PackageSummaryStore.getPackageData()
+    })
+  }
+
+
+  private async loadOnEnter(){
+    this.packageData = await PackageSummaryStore.getPackageData()
+    console.log(await PackageSummaryStore.getPackageData())
+    // const acqPackageSearchDTO: AcquisitionPackageSummarySearchDTO = {
+    //acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER", // for ACTIVE
+    //   searchString: "",
+    //   sort: "DESCsys_updated_on",
+    //   limit: 10,
+    //   offset: 0
+    // }
+    // const acqPackageStoreData = await AcquisitionPackageSummary
+    //   .searchAcquisitionPackageSummaryList(acqPackageSearchDTO);
+    // console.log(JSON.stringify(acqPackageStoreData));
+  }
+
+  public mounted():void{
+    this.loadOnEnter();
   }
 
 }
