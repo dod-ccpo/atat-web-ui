@@ -43,21 +43,25 @@ describe("Testing Card Component", () => {
 
     it('test different statuses',()=>{
       wrapper.vm.$props.cardData.package_status.display_value = 'WAITING FOR SIGNATURES';
+      wrapper.vm.$props.cardData.package_status.value = 'WAITING_FOR_SIGNATURES';
       wrapper.vm.loadOnEnter()
       const status1 = wrapper.vm.$data.modifiedData.packageStatus;
       expect(status1).toBe("WAITING FOR SIGNATURES");
 
       wrapper.vm.$props.cardData.package_status.display_value = 'WAITING FOR TASK ORDER';
+      wrapper.vm.$props.cardData.package_status.value = 'WAITING_FOR_TASK_ORDER';
       wrapper.vm.loadOnEnter()
       const status2 = wrapper.vm.$data.modifiedData.packageStatus;
       expect(status2).toBe("WAITING FOR TASK ORDER");
 
       wrapper.vm.$props.cardData.package_status.display_value = 'TASK ORDER AWARDED';
+      wrapper.vm.$props.cardData.package_status.value = 'TASK_ORDER_AWARDED';
       wrapper.vm.loadOnEnter()
       const status3 = wrapper.vm.$data.modifiedData.packageStatus;
       expect(status3).toBe("TASK ORDER AWARDED");
 
       wrapper.vm.$props.cardData.package_status.display_value = 'ARCHIVED';
+      wrapper.vm.$props.cardData.package_status.value = 'ARCHIVED';
       wrapper.vm.loadOnEnter()
       const status4 = wrapper.vm.$data.modifiedData.packageStatus;
       expect(status4).toBe("ARCHIVED");
