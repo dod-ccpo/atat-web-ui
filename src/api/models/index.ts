@@ -487,6 +487,7 @@ export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
   package_status?: DisplayColumn;
   mission_owners?: DisplayColumn;
   contract_award?: DisplayColumn;
+  contributors?: DisplayColumn;
 }
 
 export interface AcquisitionPackageSummaryMetadataAndDataDTO {

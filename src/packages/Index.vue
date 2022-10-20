@@ -41,38 +41,28 @@
       <v-container
         class="container-max-width"
       >
-        <div v-if="activeTab === 'OPEN'">
-          <div class="d-flex flex-column align-center pt-5">
-            <Card
-              v-for="(cardData, index) in packageData"
-              :key="index"
-              :cardData="cardData"
-              :index="index"
-              :isLastCard="index === packageData.length - 1"
-              @updateStatus="updateStatus"
+        <Search
+          :searchString.sync="searchString"
+          :selectedSort.sync="selectedSort"
+          @search="search"
+          @clear="clear"
+        />
+        <div class="d-flex flex-column align-center pt-5">
+          <Card
+            v-for="(cardData, index) in packageData"
+            :key="cardData.sys_id"
+            :cardData="cardData"
+            :index="index"
+            :isLastCard="index === packageData.length - 1"
+            @updateStatus="updateStatus"
 
-            />
-          </div>
+          />
         </div>
-        <div v-if="activeTab === 'AWARDEDTASKORDERS'">
-          <div class="d-flex flex-column align-center">
-            <h1>No packages with awarded task orders.</h1>
-            <p>Acquisitions that have been awarded task orders will appear here</p>
-          </div>
-        </div>
-        <div v-if="activeTab === 'ARCHIVE'">
-          <div class="d-flex flex-column align-center">
-            <h1>No archived packages.</h1>
-            <p>Acquisitions that have been archived will appear here</p>
-          </div>
-        </div>
-        <div v-if="activeTab === 'ALL'">
-          <div class="d-flex flex-column align-center">
-            <h1>No packages.</h1>
-            <p>Acquisitions will appear here</p>
-          </div>
-        </div>
-
+        <ATATNoResults
+          v-show="packageData.length === 0 && searchString"
+          :searchString="searchedString"
+          @clear="clear"
+        />
       </v-container>
       <ATATFooter/>
     </v-main>
@@ -82,32 +72,85 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import { getIdText } from "@/helpers";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
-import PackageSummaryStore from "@/store/packageSummary";
 import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
 import Steps from "@/store/steps";
-import { AcquisitionPackageSummarySearchDTO, PackageSummaryDTO } from "@/api/models";
+import {
+  AcquisitionPackageSummaryDTO,
+  AcquisitionPackageSummaryMetadataAndDataDTO,
+  AcquisitionPackageSummarySearchDTO,
+} from "@/api/models";
 import { ToastObj } from "../../types/Global";
 import Toast from "@/store/toast";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import Search from "@/packages/components/Search.vue";
+import ATATNoResults from "@/components/ATATNoResults.vue";
 
 @Component({
   components: {
     PortfoliosSummary,
     ATATFooter,
     ATATToast,
+    ATATNoResults,
     Card,
+    Search
   }
 })
 export default class Packages extends Vue {
+  @Watch('tabIndex')
+  public async tabIndexChanged(newVal:number): Promise<void> {
+    let acquisitionPackageStatus = ""
+    switch(newVal){
+    case 0:
+      acquisitionPackageStatus = "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER"
+      break
+    case 1:
+      acquisitionPackageStatus = "TASK_ORDER_AWARDED"
+      break
+    case 2:
+      acquisitionPackageStatus = "ARCHIVED"
+      break
+    case 3:
+      acquisitionPackageStatus = ""
+      break
+    }
+    await this.updateSearchDTO('acquisitionPackageStatus',acquisitionPackageStatus)
+  }
   public tabIndex = 0;
-  public packageData:PackageSummaryDTO[] = []
+  public searchString = ""
+  public searchedString = ""
+  public selectedSort: 'DESCsys_updated_on'| 'project_overview' = "project_overview"
+  public packageData:AcquisitionPackageSummaryDTO[] = []
+  public allPackageData:AcquisitionPackageSummaryMetadataAndDataDTO = {
+    // eslint-disable-next-line camelcase
+    total_count:0,
+    acquisitionPackageSummaryList:[]
+  }
+  @Watch('selectedSort')
+  public async sortingChanged(newVal:string): Promise<void> {
+    await this.updateSearchDTO('sort',newVal)
+  }
+
+  public searchDTO:AcquisitionPackageSummarySearchDTO = {
+    acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER",
+    searchString: "",
+    sort: this.selectedSort,
+    limit: 10,
+    offset: 0
+  };
+
+  public async updateSearchDTO(key:string, value:string): Promise<void> {
+    this.searchDTO = Object.assign(this.searchDTO,{[key]:value})
+    const packageResults = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(this.searchDTO)
+    this.packageData = packageResults.acquisitionPackageSummaryList
+  }
   public tabItems: Record<string, string>[] = [
     {
       type: "OPEN",
@@ -173,26 +216,23 @@ export default class Packages extends Vue {
     };
 
     Toast.setToast(toastObj);
-    this.packageData = [];
-    Vue.nextTick(async()=>{
-      this.packageData = await PackageSummaryStore.getPackageData()
-    })
+    await this.updateSearchDTO("","")
   }
 
+  public async search(): Promise<void> {
+    await this.updateSearchDTO('searchString',this.searchString)
+    this.searchedString = this.searchString
+  }
+
+  public async clear(): Promise<void> {
+    this.searchString = "";
+    await this.updateSearchDTO('searchString',this.searchString)
+  }
 
   private async loadOnEnter(){
-    this.packageData = await PackageSummaryStore.getPackageData()
-    console.log(await PackageSummaryStore.getPackageData())
-    // const acqPackageSearchDTO: AcquisitionPackageSummarySearchDTO = {
-    //acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER", // for ACTIVE
-    //   searchString: "",
-    //   sort: "DESCsys_updated_on",
-    //   limit: 10,
-    //   offset: 0
-    // }
-    // const acqPackageStoreData = await AcquisitionPackageSummary
-    //   .searchAcquisitionPackageSummaryList(acqPackageSearchDTO);
-    // console.log(JSON.stringify(acqPackageStoreData));
+    this.allPackageData = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(this.searchDTO);
+    this.packageData = this.allPackageData.acquisitionPackageSummaryList
   }
 
   public mounted():void{

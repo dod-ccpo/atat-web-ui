@@ -63,11 +63,15 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  async initialize(): Promise<void> {
-    const sessionRestored = retrieveSession(ATAT_PORTFOLIO_SUMMARY_KEY);
-    if (sessionRestored) {
-      this.setStoreData(sessionRestored);
-      this.setInitialized(true);
+  public async initialize(): Promise<void> {
+    if(!this.initialized) {
+      const sessionRestored = retrieveSession(ATAT_PORTFOLIO_SUMMARY_KEY);
+      if (sessionRestored) {
+        this.setStoreData(sessionRestored);
+      } else {
+        this.setInitialized(true);
+        storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_SUMMARY_KEY);
+      }
     }
   }
 

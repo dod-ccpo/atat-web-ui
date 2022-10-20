@@ -10,21 +10,34 @@ describe("Test suite: Portfolio info Drawer", () => {
   const lName = randomString(4);
   const email = (fName + "." + lName + "-ctr@mail.gov").toLowerCase();
 
+  let card;
+  let menus;  
+  const portfolioName = "Air Force Portfolio";
+
   beforeEach(() => {
+    cy.fixture("navigationBarMenu").then((data) => {
+      menus = data 
+      card = {
+        headingSelector: ps.portfolioCards,
+        cardHeaderText: portfolioName,
+        cardMenuSelector: ps.portfolioCardOne,
+        menuListSelector: ps.card0MenuListItem,
+        menuListText: menus.portfolios.activePortfolioCardSubmenu,
+        menuSelector: ps.ftOne,
+        selectedMenuText: "View funding tracker",        
+      };
+      
+    });   
     bootstrapMockApis();
     cy.launchATAT();
     cy.textExists(common.portfolioBtn, "Portfolios").click();
-    const portfolioName = "Mock Title"
-    cy.findElement(ps.headerPortofilioTextfield).should("have.value", portfolioName);
-    cy.findElement(ps.infoBtn).click().then(() => {
-      cy.findElement(ps.slideoutPanel).should("be.visible");
-      cy.textExists(ps.aboutPortHeader, "About Portfolio");
-    });
+    cy.searchPortfolio("air", portfolioName);    
   });
     
-  it.skip("TC1: Rename the portfolio description in info drawer", () => {
+  it("TC1: Rename the portfolio description in info drawer", () => {
+    cy.clickPortfolioDrawer(card, portfolioName);
     const descValue = "Mock Description"
-    const editdescText = "Edit Mock Description"
+    const editdescText = "Air Force Portfolio"
     cy.editInputField(
       ps.descriptionTextArea,
       descValue,
@@ -45,8 +58,8 @@ describe("Test suite: Portfolio info Drawer", () => {
 
   });
 
-  it.skip("TC2: Add portfolio member in info drawer", () => {
-  
+  it("TC2: Add portfolio member in info drawer", () => {
+    cy.clickPortfolioDrawer(card, portfolioName);
     cy.textExists(ps.portMemTitle, "Portfolio members");
     cy.textExists(ps.portMemCount, 1);
     //click on Add Member Icon
@@ -67,8 +80,8 @@ describe("Test suite: Portfolio info Drawer", () => {
     });
   });
 
-  it.skip("TC3: Edit the portfolio member role in info drawer", () => {
-  
+  it("TC3: Edit the portfolio member role in info drawer", () => {
+    cy.clickPortfolioDrawer(card, portfolioName);
     cy.textExists(ps.portMemTitle, "Portfolio members");
     cy.textExists(ps.portMemCount, 1);
     //click on Add Member Icon
@@ -94,8 +107,8 @@ describe("Test suite: Portfolio info Drawer", () => {
     });
   });
 
-  it.skip("TC4: Remove the portfolio member role in info drawer", () => {
-  
+  it("TC4: Remove the portfolio member role in info drawer", () => {
+    cy.clickPortfolioDrawer(card, portfolioName);
     cy.textExists(ps.portMemTitle, "Portfolio members");
     cy.textExists(ps.portMemCount, 1);
     //click on Add Member Icon
@@ -129,8 +142,8 @@ describe("Test suite: Portfolio info Drawer", () => {
     });
   });  
   
-  it.skip("TC5: About roles in info drawer", () => {
-  
+  it("TC5: About roles in info drawer", () => {
+    cy.clickPortfolioDrawer(card, portfolioName);
     cy.textExists(ps.portMemTitle, "Portfolio members");
     cy.textExists(ps.portMemCount, 1);
     //click on Add Member Icon

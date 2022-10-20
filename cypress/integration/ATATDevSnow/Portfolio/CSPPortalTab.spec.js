@@ -2,26 +2,44 @@ import { bootstrapMockApis, randomString,randomNumber} from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import ps from "../../../selectors/portfolioSummary.sel"
 
-describe.skip("Test suite: Portfolios CSP Portaltab", () => {
+describe("Test suite: Portfolios CSP Portaltab", () => {
 
   const fName = randomString(4);
   const lName = randomString(4);
   const email = (fName + "." + lName + "@example.mil").toLowerCase();
-  const dodID = randomNumber(10)
+  const dodID = randomNumber(10);
+
+  let card;
+  let menus;  
+  const portfolioName = "Army Portfolio";
 
   beforeEach(() => {
     bootstrapMockApis();
+    cy.fixture("navigationBarMenu").then((data) => {
+      menus = data 
+      card = {
+        headingSelector: ps.portfolioCards,
+        cardHeaderText: portfolioName,
+        cardMenuSelector: ps.portfolioCardOne,
+        menuListSelector: ps.card0MenuListItem,
+        menuListText: menus.portfolios.activePortfolioCardSubmenu,
+        menuSelector: ps.ftOne,
+        selectedMenuText: "View funding tracker",
+        
+      };
+      
+    });    
+    
     cy.launchATAT();
     cy.textExists(common.portfolioBtn, "Portfolios").click();
-    cy.findElement("#TempPortfolioLink").click();
-    const portfolioName = "Mock Title"
-    cy.findElement(ps.headerPortofilioTextfield).should("have.value", portfolioName);
-    cy.findElement(ps.cspPortalAccessTab).click();
-    cy.findElement(ps.cspPortalAccessTab).should('have.attr', 'aria-selected', 'true');
+    cy.searchPortfolio("army", portfolioName); 
   });
 
   it("TC1:Asserts: CSP Portal Access view", () => {
-    
+    cy.clickPortfolioMenu(card);
+    cy.findElement(ps.headerPortfolioTextfield).should("have.value", portfolioName); 
+    cy.portfolioTab(ps.cspPortalAccessTab);
+
     const csp = "Azure"
     cy.textExists(ps.cspTitle, "Accessing your " + csp + " " + "Portal:");
     const cspDes = "To login to your cloud resources, you must have an " + csp + " account." +
@@ -68,6 +86,9 @@ describe.skip("Test suite: Portfolios CSP Portaltab", () => {
   });
 
   it("TC2: Add a CSP Administrator", () => {
+    cy.clickPortfolioMenu(card);
+    cy.findElement(ps.headerPortfolioTextfield).should("have.value", portfolioName); 
+    cy.portfolioTab(ps.cspPortalAccessTab);
     cy.getRowCount();
     cy.textExists(ps.addCSPAdminBtn, "Add a CSP Administrator").click().then(() => {
       cy.dialogModalExist(
@@ -87,6 +108,9 @@ describe.skip("Test suite: Portfolios CSP Portaltab", () => {
   });
 
   it("TC3:Validations : Add a CSP Administrator Modal", () => {
+    cy.clickPortfolioMenu(card);
+    cy.findElement(ps.headerPortfolioTextfield).should("have.value", portfolioName); 
+    cy.portfolioTab(ps.cspPortalAccessTab);
     cy.textExists(ps.addCSPAdminBtn, "Add a CSP Administrator").click()
     cy.verifyRequiredInput(
       ps.adminEmailAddressTextBox,
