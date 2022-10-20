@@ -35,8 +35,8 @@ import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrder
 import {TaskOrderCardData} from "../../../../../types/Global";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
-import { PortfolioSummaryDTO, TaskOrderDTO } from "@/api/models";
-import { createDateStr, toCurrencyString } from "@/helpers";
+import { PortfolioSummaryDTO } from "@/api/models";
+import { createDateStr, getStatusLabelFromValue, toCurrencyString } from "@/helpers";
 import PortfolioData from "@/store/portfolio";
 
 @Component({
@@ -64,13 +64,13 @@ export default class TaskOrder extends Vue {
         )))
       
         .map((to)=>{
-          console.log(to);
           return{
             sys_id: to.sys_id,
             taskOrderNumber: to.task_order_number,
             periodOfPerformance: createDateStr(to.pop_start_date, true) + " - " +
-          createDateStr(to.pop_end_date, true),
+              createDateStr(to.pop_end_date, true),
             status: to.task_order_status,
+            statusLabel: getStatusLabelFromValue(to.task_order_status),
             totalObligated: '$' + toCurrencyString(parseInt(to.funds_obligated)),
             totalValue: '$' + toCurrencyString(to.total_task_order_value || 0),
             totalLifeCycle: '$' + toCurrencyString(to.total_lifecycle_amount || 0),

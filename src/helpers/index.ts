@@ -2,7 +2,7 @@ import { AgencyDTO, ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@
 import { Checkbox, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
-import { StatusTypes } from "@/store/acquisitionPackage";
+import { Statuses } from "@/store/acquisitionPackage";
 import ATATCharts from "@/store/charts";
 import parseISO from "date-fns/parseISO";
 
@@ -212,29 +212,42 @@ export function getUserInitials(member:User): string {
 
 export function getStatusChipBgColor(status: string): string {
   switch (status.toLowerCase()) {
-  case StatusTypes.Active.toLowerCase():
-  case StatusTypes.OnTrack.toLowerCase():
-  case StatusTypes.TaskOrderAwarded.toLowerCase():
+  case Statuses.Active.value.toLowerCase():
+  case Statuses.OnTrack.value.toLowerCase():
+  case Statuses.OnTrack.label.toLowerCase():
+  case Statuses.TaskOrderAwarded.value.toLowerCase():
+  case Statuses.TaskOrderAwarded.label.toLowerCase():
     return "bg-success";
-  case StatusTypes.Processing.toLowerCase():
-  case StatusTypes.Upcoming.toLowerCase():
-  case StatusTypes.Draft.toLowerCase():
-  case StatusTypes.WaitingForSignatures.toLowerCase():
+  case Statuses.Processing.value.toLowerCase():
+  case Statuses.Upcoming.value.toLowerCase():
+  case Statuses.Draft.value.toLowerCase():
+  case Statuses.WaitingForSignatures.value.toLowerCase():
+  case Statuses.WaitingForSignatures.label.toLowerCase():
+  case Statuses.OptionExercised.value.toLowerCase():
+  case Statuses.OptionExercised.label.toLowerCase():
+  case Statuses.OptionPending.value.toLowerCase():
+  case Statuses.OptionPending.label.toLowerCase():
     return "bg-info-dark";
-  case StatusTypes.AtRisk.toLowerCase():
-  case StatusTypes.WaitingForTaskOrder.toLowerCase():
-  case StatusTypes.ExpiringSoon.toLowerCase():
-  case StatusTypes.ExpiringPoP.toLowerCase():
+  case Statuses.AtRisk.value.toLowerCase():
+  case Statuses.AtRisk.label.toLowerCase():
+  case Statuses.WaitingForTaskOrder.value.toLowerCase():
+  case Statuses.WaitingForTaskOrder.label.toLowerCase():
+  case Statuses.ExpiringSoon.value.toLowerCase():
+  case Statuses.ExpiringSoon.label.toLowerCase():
+  case Statuses.ExpiringPop.value.toLowerCase():
+  case Statuses.ExpiringPop.label.toLowerCase():
+  case Statuses.FundingAtRisk.value.toLowerCase():
+  case Statuses.FundingAtRisk.label.toLowerCase():
     return "bg-warning";
-  case StatusTypes.Delinquent.toLowerCase():
-  case StatusTypes.Expired.toLowerCase():
+  case Statuses.Deleted.value.toLowerCase():
+  case Statuses.Delinquent.value.toLowerCase():
+  case Statuses.Expired.value.toLowerCase():
     return "bg-error";
-  case StatusTypes.Archived.toLowerCase():
+  case Statuses.Archived.value.toLowerCase():
     return "bg-base-dark";
   default:
     return "";
   }
-
 }
 
 const monthAbbreviations = ATATCharts.monthAbbreviations;
@@ -260,21 +273,9 @@ export function scrollToId(id: string): void {
   }
 }
 
-/**
- * 
- * @param phrase = phrase of word(s
- * @returns the phrase with capping of first letter and the capping of first 
- *          letters after _ or - or other separators
- */
-
-export function capitalizeFirstLetter(phrase: string): string{
-  const charArray = phrase.toLowerCase().split('');
-  for (let i=0;i< charArray.length-1;i++){
-    if (i===0 || /[A-Za-z]/.test(charArray[i-1])===false){
-      charArray[i] = charArray[i].toUpperCase();
-    }
-  }
-  return charArray.join("");
-
+export function getStatusLabelFromValue(value: string): string {
+  const statusKey = _.startCase(value.replaceAll("_", " ").toLowerCase()).replaceAll(" ", "");
+  return Statuses[statusKey] ? Statuses[statusKey].label : "";
 }
+
 

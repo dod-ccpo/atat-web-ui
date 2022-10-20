@@ -463,6 +463,7 @@ export interface ClinTableRowData {
   fundsRemaining?: {percent:string, fundsRemaining:string},
   isOverspent?: boolean,
   status?:string,
+  statusLabel?: string;
   startNewClinGroup?: boolean,
   popStartDate: string
 }

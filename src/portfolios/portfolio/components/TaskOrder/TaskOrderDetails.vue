@@ -133,7 +133,7 @@
                     :class="statusImgs[item.status].bgColor"
                   >
                     <ATATSVGIcon
-                      :name="statusImgs[item.status].name"
+                      :name="statusImgs[item.status].svgName"
                       :width="Number(statusImgs[item.status].width)"
                       :height="Number(statusImgs[item.status].height)"
                       :color="statusImgs[item.status].color"
@@ -141,12 +141,12 @@
                      
                   </div>
                   <div class="d-flex flex-column font-weight-500">
-                    {{item.status}}
+                    {{ item.statusLabel }}
                   </div>
                 </div>
 
               </td>
-              <td valign="top">
+              <td :valign="getValign(item)">
                 <div class="d-flex flex-column">
                   <span class="nowrap">{{ item.PoP.startDate }}&ndash;{{ item.PoP.endDate }}</span>
                   <span
@@ -166,9 +166,9 @@
                   </span>
                 </div>
               </td>
-              <td align="right" valign="top">{{item.totalCLINValue}}</td>
-              <td align="right" valign="top">{{item.obligatedFunds}}</td>
-              <td valign="top">
+              <td align="right" :valign="getValign(item)">{{item.totalCLINValue}}</td>
+              <td align="right" :valign="getValign(item)">{{item.obligatedFunds}}</td>
+              <td :valign="getValign(item)">
                 <div
                   class="d-flex flex-column">
                   <div
@@ -335,14 +335,14 @@ import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import { 
-  capitalizeFirstLetter, 
   createDateStr, 
   currencyStringToNumber, 
+  getStatusLabelFromValue, 
   toCurrencyString 
 } from "@/helpers";
 
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { differenceInDays, differenceInMonths } from "date-fns";
 import { ClinDTO } from "@/api/models";
 
@@ -404,6 +404,11 @@ export default class TaskOrderDetails extends Vue {
   get isAlertClosed(): boolean {
     return AcquisitionPackage.taskOrderDetailsAlertClosed
   }
+
+  public getValign(item: ClinTableRowData): string {
+    return item.isPending || (item.isExpired && !item.isOverspent) ? "middle" : "top"
+  }
+
   public handleClick(): void {
     this._showDetails = false
   }
@@ -464,25 +469,21 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public async collectTableData(): Promise<void> {
-    const inactiveStatuses = ["Option Pending", "Expired"]
+    const inactiveStatuses = [Statuses.OptionPending.value, Statuses.Expired.value]
 
     this.clins.forEach((clin)=>{
-      const formattedStatus = capitalizeFirstLetter(clin.clin_status)
-        .replaceAll("_", " " ).replaceAll("Pop", "PoP");
-      const isClinActive = !(inactiveStatuses.includes(formattedStatus)) 
-        && formattedStatus !== "Option Exercised";
-      debugger;
-
+      const isClinActive = !(inactiveStatuses.includes(clin.clin_status));
       const tableRowData: ClinTableRowData = {
         isActive: isClinActive,
-        isExercised: formattedStatus === "Option Exercised",
-        isPending: formattedStatus === "Option Pending",
-        isExpired: formattedStatus === "Expired",
+        isExercised: clin.clin_status === Statuses.OptionExercised.value,
+        isPending: clin.clin_status === Statuses.OptionPending.value,
+        isExpired: clin.clin_status === Statuses.Expired.value,
         CLINNumber: clin.clin_number,
         CLINTitle: clin.idiq_clin_display?.display_value,
         PoP: this.timeToExpiration(clin.pop_start_date,clin.pop_end_date),
         popStartDate: clin.pop_start_date,
-        status: formattedStatus,
+        status: clin.clin_status,
+        statusLabel: getStatusLabelFromValue(clin.clin_status),
         obligatedFunds: '$' + toCurrencyString(clin.funds_obligated),
         totalCLINValue: '$' + toCurrencyString(clin.funds_total),
         totalFundsSpent: '$' + toCurrencyString(clin.funds_spent_clin || 0),
@@ -495,9 +496,9 @@ export default class TaskOrderDetails extends Vue {
       }
      
       //add row to appropriate temporary table
-      if (clin.clin_status.toUpperCase() === "EXPIRED" ){
+      if (clin.clin_status === Statuses.Expired.value ){
         this.expiredClins.push(tableRowData)
-      } else if (clin.clin_status.toUpperCase() === "OPTION_PENDING" ){
+      } else if (clin.clin_status === Statuses.OptionPending.value){
         this.optionPendingClins.push(tableRowData)
       } else {
         this.tableData.push(tableRowData)
@@ -516,7 +517,7 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public async addSeparators() : Promise<void> {
-    this.tableData[0].startNewClinGroup = true;
+    // this.tableData[0].startNewClinGroup = true;
     this.optionPendingClins[0].startNewClinGroup = true;
     this.expiredClins[0].startNewClinGroup = true;
   }
@@ -562,11 +563,11 @@ export default class TaskOrderDetails extends Vue {
     this.totalFundingObj.withInactiveFundsSpent += totalFundsSpent;
   }
 
-  public statusImgs: Record<string, Record<string, string | undefined>> = {};
+  public statusImgs: Record<string, Record<string, string | unknown>> = {};
 
-  public generateStatusImgs(
+  public getStatusImgObjs(
     key?: string,
-    name?: string,
+    svgName?: string,
     width?: string,
     height?: string,
     color?: string,
@@ -575,29 +576,32 @@ export default class TaskOrderDetails extends Vue {
     const imgKey = key || "";
 
     this.statusImgs[imgKey] = {
-      name, width, height, color, bgColor
+      svgName, width, height, color, bgColor
     }
   }
 
-  public async loadOnEnter(): Promise<void> {
-    this.createTableData();
+  public async generateStatusImages(): Promise<void> {
     const statusImgValues = [
-      ["Delinquent", "failed", "16", "16", "error", "bg-error-lighter"],
-      ["Expired","failed", "16", "16", "error", "bg-error-lighter"],
-      ["Expiring PoP","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
-      ["Funding At Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
-      
-      ["At Risk","warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
-      // EJY "At Risk" needs hyphen per Melissa
+      [Statuses.Delinquent.value, "failed", "16", "16", "error", "bg-error-lighter"],
+      [Statuses.Expired.value, "failed", "16", "16", "error", "bg-error-lighter"],
+      [Statuses.ExpiringPop.value,"warningAmber","18","15","warning-dark2","bg-warning-lighter"],
+      [Statuses.FundingAtRisk.value,"warningAmber","18","15","warning-dark2","bg-warning-lighter"],
+      [Statuses.AtRisk.value, "warningAmber", "18", "15", "warning-dark2", "bg-warning-lighter"],
+      [Statuses.OptionPending.value, "optionPending", "16", "16", "info-dark", "bg-info-lighter"],
+      [Statuses.OptionExercised.value, "requestQuote", "13", "16", "info-dark", "bg-info-lighter"],
+      [Statuses.OnTrack.value, "taskAlt", "17", "17", "success-dark", "bg-success-lighter"],
+    ];    
 
-      ["Option Pending","optionPending", "16", "16", "info-dark", "bg-info-lighter"],
-      ["Option Exercised","requestQuote", "13", "16", "info-dark", "bg-info-lighter"],
-      ["On Track","taskAlt", "17", "17", "success-dark", "bg-success-lighter"],
-    ];
     statusImgValues.forEach((values) => {
-      this.generateStatusImgs(...values);
+      this.getStatusImgObjs(...values);
     });
   }
+
+  public async loadOnEnter(): Promise<void> {
+    await this.generateStatusImages();
+    await this.createTableData();
+  }
+
   public mounted(): void {
     this.loadOnEnter();
   }

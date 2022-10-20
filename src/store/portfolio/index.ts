@@ -4,7 +4,6 @@ import rootStore from "../index";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
 
 import { 
-  Checkbox,
   FilterOption, 
   MemberInvites, 
   Portfolio, 
@@ -14,8 +13,7 @@ import {
 } from "../../../types/Global"
 
 import Vue from "vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import {StatusTypes} from "@/store/acquisitionPackage";
+import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { AlertDTO } from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
@@ -73,7 +71,7 @@ export class PortfolioDataStore extends VuexModule {
   
   private alertService = new AlertService();
   //has the store been initialized
-  initialized = false;
+  // initialized = false;
 
   public activeTaskOrderNumber = "";
   
@@ -90,7 +88,6 @@ export class PortfolioDataStore extends VuexModule {
     members: [],
     taskOrderNumber: "",
   }
-  public status = StatusTypes.Active;
    
   public summaryFilterRoles: FilterOption[] = [
     {
@@ -216,21 +213,29 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   // store session properties
-  protected sessionProperties: string[] = [
-    nameofProperty(this,x=> x.currentPortfolio),
-    nameofProperty(this,x=> x.status),
-    nameofProperty(this,x=> x.alerts),
-  ];
+  // protected sessionProperties: string[] = [
+  //   nameofProperty(this,x=> x.currentPortfolio),
+  //   nameofProperty(this,x=> x.alerts),
+  // ];
 
   //getter for portfolio status
   public get getStatus():string {
-    return this.status;
+    return this.currentPortfolio.status ? this.currentPortfolio.status : "";
   }
 
   public showAddMembersModal = false;
   public get getShowAddMembersModal(): boolean {
     return this.showAddMembersModal;
   }
+
+  // @Action({rawError: true})
+  // async setInitialized(value: boolean): Promise<void> {
+  //   this.doSetInitialized(value);
+  // }
+  // @Mutation
+  // public async doSetInitialized(value: boolean): Promise<void> {
+  //   this.initialized = value;
+  // }
 
   @Action
   public async setCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
@@ -273,27 +278,33 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Mutation
-  public setInitialized(value: boolean): void {
-    this.initialized = value;
-  }
-
-  @Mutation
   public setPortfolioData(value: Portfolio): void {
     Object.assign(this.currentPortfolio,value)
-    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
+    // storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
   @Mutation
   public setStatus(value: string): void {
-    this.status = value;
-    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
+    this.currentPortfolio.status = value;
+    // storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
   @Mutation
   public setAlerts(value: AlertDTO[]): void {
     this.alerts = value;
-    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
+    // storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
+
+  public placeholderMember = {
+    firstName:"Maria",
+    lastName: "Missionowner",
+    email:"maria.missionowner.civ@mail.mil",
+    role: "Manager",
+    phoneNumber:"5555555555",
+    phoneExt:"1234",
+    designation: "Civilian",
+    agency: "U.S. Army"
+  };
 
   @Action({rawError: true})
   private async initPortfolioData():Promise<void> {
@@ -305,16 +316,7 @@ export class PortfolioDataStore extends VuexModule {
       agency:  AcquisitionPackage.organization?.agency || "DISA",
       createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
       provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
-      members: [{
-        firstName:"Maria",
-        lastName: "Missionowner",
-        email:"maria.missionowner.civ@mail.mil",
-        role: "Manager",
-        phoneNumber:"5555555555",
-        phoneExt:"1234",
-        designation: "Civilian",
-        agency: "U.S. Army"
-      }],
+      members: [this.placeholderMember],
     };
 
     if (!this.currentPortfolio.sysId) {
@@ -345,48 +347,51 @@ export class PortfolioDataStore extends VuexModule {
       };
       this.currentPortfolio.members?.push(newMember);
     });
-    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
-    this.setInitialized(true);
+    // storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
+    // await this.setInitialized(true);
   }
 
   @Action({rawError: true})
   public async getPortfolioData(): Promise<Portfolio> {
-    if (!this.initialized) {
-      await this.initialize();
+    // if (!this.initialized) {
+    //   await this.initialize();
+    // }
+    if (this.currentPortfolio.members?.length === 0) {
+      this.currentPortfolio.members = [this.placeholderMember];
     }
     return this.currentPortfolio;
   }
 
-  @Mutation
-  public setStoreData(sessionData: string):void{
-    try {
-      const sessionDataObject = JSON.parse(sessionData);
-      Object.keys(sessionDataObject).forEach((property) => {
-        Vue.set(this, property, sessionDataObject[property]);
-      });
-    } catch (error) {
-      throw new Error('error restoring session for portfolio data store');
-    }
-  }
+  // @Mutation
+  // public setStoreData(sessionData: string):void{
+  //   try {
+  //     const sessionDataObject = JSON.parse(sessionData);
+  //     Object.keys(sessionDataObject).forEach((property) => {
+  //       Vue.set(this, property, sessionDataObject[property]);
+  //     });
+  //   } catch (error) {
+  //     throw new Error('error restoring session for portfolio data store');
+  //   }
+  // }
 
-  @Action({ rawError: true })
-  public async initialize(): Promise<void> {
-    if (!this.initialized) {
-      try {
-        const sessionRestored= retrieveSession(ATAT_PORTFOLIO_DATA_KEY);
-        if(sessionRestored){
-          this.setStoreData(sessionRestored);
-        }
-        else{
-          await this.initPortfolioData();
-          this.setInitialized(true);
-          storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
-        }
-      } catch (error) {
-        console.log(`error occurred loading portfolio data ${error}`)
-      }
-    }
-  }
+  // @Action({ rawError: true })
+  // public async initialize(): Promise<void> {
+  //   if (!this.initialized) {
+  //     try {
+  //       const sessionRestored= retrieveSession(ATAT_PORTFOLIO_DATA_KEY);
+  //       if(sessionRestored){
+  //         this.setStoreData(sessionRestored);
+  //       }
+  //       else{
+  //         await this.initPortfolioData();
+  //         await this.setInitialized(true);
+  //         storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
+  //       }
+  //     } catch (error) {
+  //       console.log(`error occurred loading portfolio data ${error}`)
+  //     }
+  //   }
+  // }
 
   @Action({ rawError: true })
   public async getAlerts(taskOrderNumber: string): Promise<AlertDTO[]> {
@@ -400,7 +405,7 @@ export class PortfolioDataStore extends VuexModule {
 
     //just set the status to active for now
     //in the future this logic will be more complex
-    this.setStatus(StatusTypes.Active);
+    this.setStatus(Statuses.Active.value);
 
     const fundingAlertData: FundingAlertData = {
       alerts: [],
@@ -447,10 +452,10 @@ export class PortfolioDataStore extends VuexModule {
         FundingAlertTypes.POPExpired : (fundingAlertData.daysRemaining > 60 ? 
           fundingAlertData.fundingAlertType : FundingAlertTypes.POPExpiresSoonNoTOClin);
       if(fundingAlertData.daysRemaining <= 60){
-        this.setStatus(StatusTypes.AtRisk);
+        this.setStatus(Statuses.AtRisk.value);
       }
       if(fundingAlertData.daysRemaining <=0){
-        this.setStatus(StatusTypes.Expired);
+        this.setStatus(Statuses.Expired.value);
       }
   
     }
@@ -462,10 +467,10 @@ export class PortfolioDataStore extends VuexModule {
            FundingAlertTypes.POPLowFunds): FundingAlertTypes.POPFundsDepleted;
 
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPLowFunds){
-        this.setStatus(StatusTypes.AtRisk);
+        this.setStatus(Statuses.AtRisk.value);
       }
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPFundsDepleted){
-        this.setStatus(StatusTypes.Delinquent);
+        this.setStatus(Statuses.Delinquent.value);
       }
     }
     
@@ -473,11 +478,8 @@ export class PortfolioDataStore extends VuexModule {
       if(fundingAlertData.daysRemaining > 0 && fundingAlertData.spendingViolation < 100){
         fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpiresSoonWithLowFunds;
 
-        if(fundingAlertData.daysRemaining <= 60){
-          this.setStatus(StatusTypes.AtRisk);
-        }
-        if(fundingAlertData.spendingViolation >=90){
-          this.setStatus(StatusTypes.AtRisk)
+        if (fundingAlertData.daysRemaining <= 60 || fundingAlertData.spendingViolation >= 90){
+          this.setStatus(Statuses.AtRisk.value);
         }
       }
     }
