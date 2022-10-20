@@ -1,0 +1,33 @@
+[
+  {
+    "csp": {
+      "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_cloud_service_provider/72",
+      "value": "72"
+    },
+    "portfolio_managers": "71",
+    "active_task_order": {
+      "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_task_order/21",
+      "value": "21"
+    },
+    "sys_mod_count": "6",
+    "sys_updated_on": "2022-09-29 16:24:07",
+    "sys_tags": "",
+    "sys_id": "11",
+    "sys_updated_by": "jason.burkert-ctr@ccpo.mil",
+    "sys_created_on": "2022-07-14 20:36:35",
+    "name": "Air Force Portfolio",
+    "portfolio_status": "ACTIVE",
+    "sys_created_by": "julius.fitzhugh-ctr@ccpo.mil",
+    "alerts": [],
+    "funding_status": [],
+    "csp_display": "CSP_A",
+    "task_order_number": "1000000008765",
+    "task_order_status": "ACTIVE",
+    "task_orders": [],
+    "dod_component": "ARMY",
+    "pop_start_date": "2022-01-01",
+    "pop_end_date": "2022-12-31",
+    "funds_obligated": 1250000,
+    "funds_spent": 286917
+  }
+]
