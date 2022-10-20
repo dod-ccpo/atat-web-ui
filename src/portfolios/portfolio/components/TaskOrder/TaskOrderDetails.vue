@@ -109,7 +109,7 @@
             <tr
               class="row-item"
               :class="[
-                { '_new-clin-group' : item.startNewClinGroup},
+                { '_section-divider' : item.startNewClinGroup},
                 {'bg-info-lighter': item.status === 'Processing'},
                 {'d-none': item.isExpired && !showInactive },
                 {'d-none': item.isPending && !showInactive },
@@ -146,9 +146,9 @@
                 </div>
 
               </td>
-              <td>
+              <td valign="top">
                 <div class="d-flex flex-column">
-                  {{item.PoP.PoP}}
+                  <span class="nowrap">{{ item.PoP.startDate }}&ndash;{{ item.PoP.endDate }}</span>
                   <span
                     v-if="item.isActive"
                     class="font-size-12 text-base d-flex"
@@ -166,9 +166,9 @@
                   </span>
                 </div>
               </td>
-              <td align="right">{{item.totalCLINValue}}</td>
-              <td align="right">{{item.obligatedFunds}}</td>
-              <td>
+              <td align="right" valign="top">{{item.totalCLINValue}}</td>
+              <td align="right" valign="top">{{item.obligatedFunds}}</td>
+              <td valign="top">
                 <div
                   class="d-flex flex-column">
                   <div
@@ -221,14 +221,13 @@
               </td>
             </tr>
           </template>
-          </tbody>
-        </template>
-        <!-- eslint-disable vue/valid-v-slot -->
-        <template v-slot:footer>
-          <div class="_table-pagination pr-6">
-              <div class="mr-auto pl-6 font-weight-400 font-size-14">
+            <tr class="_section-divider">
+              <td colspan="2" class="font-weight-400">
                 <a
+                  id="InactiveToggle"
                   @click="toggleInactive"
+                  @keydown.enter="toggleInactive"
+                  @keydown.space="toggleInactive"
                   role="button"
                 >
                   {{ showHide() }} inactive CLINs
@@ -236,38 +235,30 @@
                 <span class="font-size-14 text-base ml-2">
                   ({{ inactiveCount }})
                 </span>
-              </div>
-            <div
-              style="min-width: 160px"
-              class="d-flex font-weight-700 text-base-dark ml-auto justify-end">
-              Total
-            </div>
-            <div
-              style="min-width: 160px"
-              class="d-flex font-weight-700 text-base-darkest justify-end">
-              <span v-if="!showInactive">
-                ${{convertToString(totalFundingObj.totalCLINValue)}}
-              </span>
-              <span v-else>
-                ${{convertToString(totalFundingObj.withInactiveTotal)}}
-              </span>
-            </div>
-            <div
-              style="min-width: 144px"
-              class="d-flex font-weight-700 text-base-darkest mr-6 justify-end"
-            >
-              <span v-if="!showInactive">
-                ${{convertToString(totalFundingObj.totalObligatedFunds)}}
-              </span>
-              <span v-else>
-                ${{convertToString(totalFundingObj.withInactiveObligatedFunds)}}
-              </span>
-            </div>
-            <div
-              style="min-width: 180px">
+              </td>
+              <td align="right" class="font-weight-700">
+                Total
+              </td>
+              <td align="right" class="font-weight-700">
+                <span v-if="!showInactive">
+                  ${{toCurrencyString(totalFundingObj.totalCLINValue)}}
+                </span>
+                <span v-else>
+                  ${{toCurrencyString(totalFundingObj.withInactiveTotal)}}
+                </span>
+              </td>
+              <td align="right" class="font-weight-700">
+                <span v-if="!showInactive">
+                  ${{toCurrencyString(totalFundingObj.totalObligatedFunds)}}
+                </span>
+                <span v-else>
+                  ${{toCurrencyString(totalFundingObj.withInactiveObligatedFunds)}}
+                </span>
+              </td>
+              <td align="right">
                <div v-if="!showInactive">
                  <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
-                   ${{convertToString(totalFundingObj.totalFundsSpent)}}
+                   ${{toCurrencyString(totalFundingObj.totalFundsSpent)}}
                    <span class="font-size-12 text-base ml-3 font-weight-500">
                      ({{totals.percent }}%)
                    </span>
@@ -278,7 +269,7 @@
               </div>
               <div v-else>
                 <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
-                  ${{convertToString(totalFundingObj.withInactiveFundsSpent)}}
+                  ${{toCurrencyString(totalFundingObj.withInactiveFundsSpent)}}
                   <span class="font-size-12 text-base ml-3 font-weight-500 ">
                      ({{totalsWithInactive.percent}}%)
                    </span>
@@ -287,8 +278,9 @@
                  {{totalsWithInactive.fundsRemaining}}
                 </span>
               </div>
-            </div>
-          </div>
+              </td>
+            </tr>
+          </tbody>
         </template>
       </v-data-table>
     </div>
@@ -416,7 +408,7 @@ export default class TaskOrderDetails extends Vue {
     this._showDetails = false
   }
 
-  public convertToString(value: number): string {
+  public toCurrencyString(value: number): string {
     return toCurrencyString(value)
   }
 
@@ -431,7 +423,6 @@ export default class TaskOrderDetails extends Vue {
 
  
   public toggleInactive():void {
-    debugger;
     this.showInactive = !this.showInactive
   }
 
@@ -451,7 +442,7 @@ export default class TaskOrderDetails extends Vue {
     }
   }
 
-  public timeToExpiration(start:string,end:string): { PoP:string, expiration:string } {
+  public timeToExpiration(start:string,end:string): Record<string, string> {
     const formattedStartDate = createDateStr(start, true);
     const formattedEndDate = createDateStr(end, true);
     const difInDays = differenceInDays(new Date(end), new Date());
@@ -460,12 +451,14 @@ export default class TaskOrderDetails extends Vue {
     const useDays = difInDays <= 60;
     const numberOfTimeUnits = useDays ? difInDays : difInMonths;
     let unitOfTime = useDays ? "day" : "month";
+
     if (numberOfTimeUnits !== 1) {
       unitOfTime = unitOfTime + "s";
     }
 
     return {
-      PoP: `${formattedStartDate} - ${formattedEndDate}`,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
       expiration: `${numberOfTimeUnits} ${unitOfTime} to expiration`
     }
   }
@@ -478,13 +471,15 @@ export default class TaskOrderDetails extends Vue {
         .replaceAll("_", " " ).replaceAll("Pop", "PoP");
       const isClinActive = !(inactiveStatuses.includes(formattedStatus)) 
         && formattedStatus !== "Option Exercised";
+      debugger;
+
       const tableRowData: ClinTableRowData = {
         isActive: isClinActive,
         isExercised: formattedStatus === "Option Exercised",
         isPending: formattedStatus === "Option Pending",
         isExpired: formattedStatus === "Expired",
         CLINNumber: clin.clin_number,
-        CLINTitle: clin.clin_title,
+        CLINTitle: clin.idiq_clin_display?.display_value,
         PoP: this.timeToExpiration(clin.pop_start_date,clin.pop_end_date),
         popStartDate: clin.pop_start_date,
         status: formattedStatus,
@@ -555,7 +550,6 @@ export default class TaskOrderDetails extends Vue {
     const totalCLINValue = currencyStringToNumber(clin.totalCLINValue || "0");
     const obligatedFunds = currencyStringToNumber(clin.obligatedFunds || "0");
     const totalFundsSpent = currencyStringToNumber(clin.totalFundsSpent || "0");
-    debugger;
 
     if (clin.isActive || clin.isExercised) {
       this.totalFundingObj.totalCLINValue += totalCLINValue;

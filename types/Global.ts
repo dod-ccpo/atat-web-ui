@@ -456,7 +456,7 @@ export interface ClinTableRowData {
   isPending?: boolean,
   CLINNumber?:string,
   CLINTitle?:string,
-  PoP?: { PoP:string,expiration:string },
+  PoP?: Record<string, string>,
   obligatedFunds?:string,
   totalCLINValue?:string,
   totalFundsSpent?:string,
