@@ -208,7 +208,7 @@ export default class ExistingUser extends Vue {
     offset: 0
   };
 
-  private async loadOnEnter(){
+  public async loadOnEnter(): Promise<void>{
     try {
       const packageData = await AcquisitionPackageSummary
         .searchAcquisitionPackageSummaryList(this.searchDTO);
@@ -221,6 +221,7 @@ export default class ExistingUser extends Vue {
     catch {
       console.log("Error loading acquisition package data");
     }
+
   }
 
   public mounted():void{

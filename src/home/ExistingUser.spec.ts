@@ -55,9 +55,8 @@ describe("Existing User Component", () => {
   describe("testing Existing User", () => {
     it("renders successfully", async () => {
       jest.spyOn(AcquisitionPackageSummary, "searchAcquisitionPackageSummaryList")
-        .mockReturnValue(
-          new Promise((resolve) => resolve(packageData))
-        );
+        .mockImplementation(async () => Promise.resolve(packageData));
+
       expect(wrapper.exists()).toBe(true);
     });
 
