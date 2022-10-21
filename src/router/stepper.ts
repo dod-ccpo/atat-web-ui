@@ -11,10 +11,10 @@ import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/Alterna
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Fair Opportunity Process
-import FairOpportunityProcess from "../steps/02-FairOpportunityProcess/Index.vue"
-import Exceptions from "../steps/02-FairOpportunityProcess/Exceptions.vue";
+import FairOpportunityProcess from "../steps/02-EvaluationCriteria/Index.vue"
+import Exceptions from "../steps/02-EvaluationCriteria/Exceptions.vue";
 import JustificationAndApproval
-  from "../steps/02-FairOpportunityProcess/JustificationAndApproval.vue";
+  from "../steps/02-EvaluationCriteria/JustificationAndApproval.vue";
 
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
@@ -298,14 +298,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "02",
-    menuText: "Fair Opportunity Process",
+    menuText: "Evaluation Criteria",
     path: "/exceptions",
     completePercentageWeight: 10,
     component: FairOpportunityProcess,
     completed: false,
     children: [
       {
-        menuText: "Exceptions",
+        menuText: "Exception to Fair Opportunity",
         path: "exceptions",
         name: routeNames.Exceptions,
         component: Exceptions,

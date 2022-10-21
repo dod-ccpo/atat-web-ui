@@ -1,13 +1,16 @@
-<template>
-$END$
-</template>
 
-<script>
-export default {
-name: "Summary"
+<template>
+  <div>
+    Future Summary page
+  </div>
+</template>
+<script lang="ts">
+import Vue from "vue";
+
+import { Component } from "vue-property-decorator";
+@Component({
+})
+export default class Summary extends Vue {
 }
 </script>
 
-<style scoped>
-
-</style>

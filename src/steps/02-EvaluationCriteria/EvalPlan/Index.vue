@@ -1,13 +1,16 @@
-<template>
-$END$
-</template>
 
-<script>
-export default {
-name: "Index"
+<template>
+  <div>
+    <router-view/>
+  </div>
+</template>
+<script lang="ts">
+import Vue from "vue";
+
+import { Component } from "vue-property-decorator";
+@Component({
+})
+export default class EvalPlan extends Vue {
 }
 </script>
 
-<style scoped>
-
-</style>
