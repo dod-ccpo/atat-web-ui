@@ -18,10 +18,7 @@
         height="12"
         color="base"
       />
-      <span
-       class="text-base"
-       id="TaskOrderNumber"
-      >
+      <span class="text-base" id="TaskOrderNumber">
         {{selectedTaskOrder.taskOrderNumber}}
       </span>
     </div>
@@ -35,10 +32,7 @@
         Request to modify task order
       </v-btn>
     </div>
-    <div class="
-    pt-5
-    d-flex
-    ">
+    <div class="pt-5 d-flex">
       <v-card
         class="_task-order-card"
         elevation="0"
@@ -166,7 +160,7 @@
                   </span>
                 </div>
               </td>
-              <td class="text-right foobar" :style="{ verticalAlign: getValign(item)}">
+              <td class="text-right" :style="{ verticalAlign: getValign(item)}">
                   {{item.totalCLINValue}}
               </td>
               <td class="text-right" :style="{ verticalAlign: getValign(item)}">

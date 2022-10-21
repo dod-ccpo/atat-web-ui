@@ -339,21 +339,23 @@ export class PortfolioDataStore extends VuexModule {
     // does alert type spending actual exist and if it does, does the threshold
     // meet or exceeed 100% if spending alert and threshold is at or 
     // above 100% show expiration alert
-    const lowFundsAlert = this.alerts.find(alert=>alert.alert_type 
-    === AlertTypes.SPENDING_ACTUAL 
-    && thresholdAtOrAbove(alert.threshold_violation_amount, 75));
+    const lowFundsAlert = this.alerts.find(alert => alert.alert_type 
+      === AlertTypes.SPENDING_ACTUAL && thresholdAtOrAbove(alert.threshold_violation_amount, 75)
+    );
     const currentSpendingViolation = lowFundsAlert ? 
-      getThresholdAmount(lowFundsAlert.threshold_violation_amount): 0;
+      getThresholdAmount(lowFundsAlert.threshold_violation_amount) : 0;
 
     fundingAlertData.hasLowFundingAlert = lowFundsAlert !== undefined;
     fundingAlertData.spendingViolation = lowFundsAlert !== undefined 
       ? currentSpendingViolation : 0;
 
     // does time remaining alert exist
-    const timeremainingalert = this.alerts.find(alert=>alert.alert_type == 
-    AlertTypes.TIME_REMAINING);
+    const timeremainingalert = this.alerts.find(
+      alert => alert.alert_type === AlertTypes.TIME_REMAINING
+    );
+
     fundingAlertData.daysRemaining = timeremainingalert ? 
-      Number(timeremainingalert.threshold_violation_amount.replace('days','')): 0;
+      Number(timeremainingalert.threshold_violation_amount.replace('days','')) : 0;
 
     if(timeremainingalert){
       fundingAlertData.fundingAlertType =  fundingAlertData.daysRemaining <=0 ?
