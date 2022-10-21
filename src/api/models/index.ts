@@ -492,3 +492,46 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
   total_count: number;
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
 }
+
+export interface  EvalPlanTechProposalNotRequired {
+  custom_compliant_standards: string[];
+}
+
+export interface EvalPlanTechProposalRequired {
+  lpta: {
+    selected: boolean;
+    custom_differentiators: string[];
+  };
+  bvto: {
+    selected: boolean;
+    differentiators: string[];
+    custom_differentiators: string[];
+  }
+}
+
+export interface EvalPlanOfferingsFromCsp {
+  best_use: {
+    selected: boolean;
+    other_assessment_areas: string[],
+    custom_assessment_areas: string[]
+  };
+  lowest_risk: {
+    selected: boolean;
+    other_assessment_areas: string[],
+    custom_assessment_areas: string[]
+  };
+}
+
+export interface EvalPlanOfferingsFromEachCspEqually {
+  selected: boolean;
+}
+
+export interface EvaluationPlanDTO extends BaseTableDTO{
+  selected: EvalPlanTechProposalNotRequired | EvalPlanTechProposalRequired |
+    EvalPlanOfferingsFromCsp | EvalPlanOfferingsFromEachCspEqually
+}
+
+export interface EvaluationCriteriaDTO {
+  evaluation_plan: EvaluationPlanDTO
+  fair_opportunity: FairOpportunityDTO
+}
