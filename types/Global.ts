@@ -445,3 +445,11 @@ export interface TaskOrderCardData {
   status: string,
 }
 
+export interface IGCE {
+  travelEstimateNeeds: boolean,
+  estimatedTravelCosts: string[],
+  surgeCapacity: boolean,
+  surgeCapabilities: string,
+  
+}
+

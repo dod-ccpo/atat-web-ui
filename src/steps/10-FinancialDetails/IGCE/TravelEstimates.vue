@@ -18,8 +18,8 @@
             id="TravelEstimates"
             :card="true"
             :items="travelEstimateOptions"
-            @click="travelFormFields"
-            :value.sync="selectedTravelEstimate"
+            @radioButtonSelected="selectTravelEstimate"
+            :value.sync="currentData.setCeilingPrice"
             :rules="[$validators.required('Please select an option')]"
           />
         </div>
@@ -31,11 +31,11 @@
             <template v-if="travelFormFields === 'single'">
               <ATATTextField
                 id="SingleAmount"
-                :value.sync="Amounts[0]"
+                :value.sync="currentData.estimatedTravelCosts[0]"
                 :alignRight="true"
                 :isCurrency="true"
                 :showErrorMessages="true"
-                @blur="sanitizeValue(0, Amounts[0])"
+                @blur="sanitizeValue(0, currentData.estimatedTravelCosts[0])"
                 width="190"
                 class="mr-2"
                 :rules="[$validators.required('Enter your estimated travel price.', true)]"
@@ -54,11 +54,11 @@
                 <div>
                   <ATATTextField
                     :id="period.period_type"
-                    :value.sync="Amounts[idx]"
+                    :value.sync="currentData.estimatedTravelCosts[idx]"
                     :alignRight="true"
                     :isCurrency="true"
                     :showErrorMessages="true"
-                    @blur="sanitizeValue(idx, Amounts[idx])"
+                    @blur="sanitizeValue(idx, currentData.estimatedTravelCosts[idx])"
                     width="190"
                     class="ml-5"
                     :rules="[$validators.required('Enter your estimated travel price.', true)]"
@@ -78,9 +78,13 @@ import Vue from "vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
+import IGCEStore, { TravelEstimateNeeds } from "@/store/IGCE";
+import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+
 
 @Component({
   components: {
@@ -89,32 +93,52 @@ import { PeriodDTO } from "@/api/models";
     ATATErrorValidation
   },
 })
-export default class TravelEstimates extends Vue {
-  private selectedTravelEstimate = "";
-  private Amounts: (string | null)[] = [];
+export default class TravelEstimates extends Mixins(SaveOnLeave) {
   private periods: PeriodDTO[] | null = [];
+  private savedData: TravelEstimateNeeds = {
+    setCeilingPrice: "",
+    estimatedTravelCosts: []
+  };
+
+
   private travelEstimateOptions: RadioButton[] = [
     {
-      id: "SingleEstimates",
+      id: "SinglePrice",
       label:
         "I want to set a ceiling price and apply the same estimate to all base and option periods.",
       value: "single",
     },
     {
-      id: "MultipleEstimates",
+      id: "MultiplePrices",
       label:
         "I want to customize my travel estimates for the base and each option period.",
       value: "multiple",
     },
   ];
 
+  private currentData: TravelEstimateNeeds = {
+    setCeilingPrice: "",
+    estimatedTravelCosts: [""],
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
   get travelFormFields(): string {
-    return this.selectedTravelEstimate;
+    return this.currentData.setCeilingPrice;
+  }
+
+  public selectTravelEstimate(): void {
+    const clickedElement = window.event?.currentTarget as HTMLDivElement;
+    if (clickedElement.classList?.contains("v-radio")){
+      this.currentData.estimatedTravelCosts=[""];
+    }
   }
 
   public sanitizeValue(idx: number, val: string): void{
     if (parseInt(val)===0){
-      this.Amounts[idx]="";
+      this.currentData.estimatedTravelCosts[idx]="";
     }
   }
 
@@ -122,8 +146,22 @@ export default class TravelEstimates extends Vue {
     return idx === 0 ? "Base" : ("Option " + idx)
   }
 
-  private mounted(): void {
+  private async mounted(): Promise<void> {
+    await this.loadOnEnter();
     this.periods = Periods.periods;
+  }
+
+  private async loadOnEnter(): Promise<void>{
+    const store = await IGCEStore.getTravelEstimateNeeds();
+    this.savedData = store;
+    this.currentData = store;
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    if (this.hasChanged()) {
+      await IGCEStore.setTravelEstimateNeeds(this.currentData);
+    }
+    return true;
   }
 }
 </script>
