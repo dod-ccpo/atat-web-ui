@@ -135,7 +135,7 @@ describe("AcquisitionPackageSummary Store",
 
     it('Test searchAcquisitionPackageSummaryList()- should return empty array', async () => {
       const searchDTO: AcquisitionPackageSummarySearchDTO = {
-        acquisitionPackageStatus: "",
+        acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER",
         sort: "project_overview",
         searchString: ""
       }

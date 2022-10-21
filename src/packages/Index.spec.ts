@@ -69,14 +69,15 @@ describe("Testing Packages Component", () => {
       })
       wrapper.vm.tabIndexChanged(3)
       Vue.nextTick(()=>{
-        expect(apStatus).toBe("");
+        expect(apStatus).toBe(
+          "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER,TASK_ORDER_AWARDED,ARCHIVED");
       })
     })
 
     it("test updateStatus()",()=>{
       const spy = jest.spyOn(AcquisitionPackageSummary,"updateAcquisitionPackageStatus")
         .mockImplementation()
-      wrapper.vm.updateStatus("testsysID","DELETE")
+      wrapper.vm.updateStatus("testsysID","DELETED")
       wrapper.vm.updateStatus("testsysID","ARCHIVED")
       wrapper.vm.updateStatus("testsysID","DRAFT")
       expect(spy).toBeCalled();
