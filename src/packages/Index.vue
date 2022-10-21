@@ -117,7 +117,8 @@ export default class Packages extends Vue {
       acquisitionPackageStatus = "ARCHIVED"
       break
     case 3:
-      acquisitionPackageStatus = ""
+      acquisitionPackageStatus =
+        "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER,TASK_ORDER_AWARDED,ARCHIVED"
       break
     }
     await this.updateSearchDTO('acquisitionPackageStatus',acquisitionPackageStatus)
@@ -191,7 +192,7 @@ export default class Packages extends Vue {
   public async updateStatus(sysId: string,newStatus: string): Promise<void> {
     let message = "";
     switch(newStatus){
-    case 'DELETE':
+    case 'DELETED':
       message = "Acquisition package deleted"
       break;
     case 'ARCHIVED':

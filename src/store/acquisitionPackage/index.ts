@@ -68,6 +68,7 @@ export const StatusTypes = {
   Active: "Active",
   AtRisk: "At-Risk",
   Delinquent: "Delinquent",
+  Deleted: "Deleted",
   Expired: "Expired",
   ExpiringSoon: "Expiring Soon",
   Archived: "Archived",
