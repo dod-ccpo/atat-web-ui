@@ -595,8 +595,13 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    await this.generateStatusImages();
-    await this.createTableData();
+    try {
+      await this.generateStatusImages();
+      await this.createTableData();
+    } 
+    catch {
+      console.log("Error loading Task Order Details")
+    }
   }
 
   public mounted(): void {
