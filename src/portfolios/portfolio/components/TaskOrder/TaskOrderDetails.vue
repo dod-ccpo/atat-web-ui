@@ -154,8 +154,8 @@
                     class="font-size-12 text-base d-flex"
                   >
                     <ATATSVGIcon
-                      v-if="item.status === 'At Risk'
-                      || item.status === 'Expiring PoP'"
+                      v-if="item.status === statuses.AtRisk.value
+                       || item.status === statuses.ExpiringPop.value"
                       width="14"
                       height="16"
                       name="warning"
@@ -210,9 +210,8 @@
                     ]"
                   >
                     <ATATSVGIcon
-                      v-if="item.status === 'Funding At-Risk' 
-                        || item.status.indexOf('At Risk') > -1
-                      "
+                      v-if="item.status === statuses.FundingAtRisk.value 
+                        || item.status === statuses.AtRisk.value"
                       name="warning"
                       width="14"
                       height="12"
@@ -367,7 +366,7 @@ export default class TaskOrderDetails extends Vue {
   public expiredClins: ClinTableRowData[] = [];
   public optionPendingClins: ClinTableRowData[] = []
   public showInactive = false
-
+  public statuses = Statuses;
 
   @Watch("showInactive")
   public showHide():string {

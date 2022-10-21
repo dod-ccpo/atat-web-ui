@@ -341,7 +341,6 @@ export class PortfolioSummaryStore extends VuexModule {
         })
       })
     });
-    console.log(portfolioSummaryList);
     const allCostList = await api.costsTable.getQuery(
       {
         params:
