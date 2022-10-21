@@ -154,8 +154,11 @@ import Card from "@/packages/components/Card.vue";
 
 import Portfolios from "../portfolios/Index.vue";
 import PortfoliosSummary from "../portfolios/components/PortfoliosSummary.vue"
-import { PackageSummaryDTO } from "@/api/models";
-import PackageSummary from "@/store/packageSummary";
+import { 
+  AcquisitionPackageSummaryDTO,
+  AcquisitionPackageSummarySearchDTO, 
+} from "@/api/models";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 
 @Component({
   components: {
@@ -168,7 +171,7 @@ import PackageSummary from "@/store/packageSummary";
 
 export default class ExistingUser extends Vue {
 
-  public packageData:PackageSummaryDTO[] = []
+  public packageData:AcquisitionPackageSummaryDTO[] = []
   public draftPackageCount = 0;
 
   public packagesPanel = 0; // open by default
@@ -197,11 +200,21 @@ export default class ExistingUser extends Vue {
     AppSections.setAppContentComponent(Packages);
   }
 
+  public searchDTO:AcquisitionPackageSummarySearchDTO = {
+    acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER",
+    searchString: "",
+    sort: "DESCsys_updated_on",
+    limit: 5,
+    offset: 0
+  };
+
   private async loadOnEnter(){
-    this.packageData = await PackageSummary.getPackageData();
+    const packageData = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(this.searchDTO);
+    this.packageData = packageData.acquisitionPackageSummaryList;
+
     this.packageCount = this.packageData.length;
-    this.packageData = this.packageData.slice(0, 5);
-    const draftPackages = this.packageData.filter(obj => obj.package_status === "DRAFT");
+    const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
     this.draftPackageCount = draftPackages?.length || 0;
   }
 
