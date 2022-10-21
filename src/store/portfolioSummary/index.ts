@@ -391,7 +391,7 @@ export class PortfolioSummaryStore extends VuexModule {
           const validStatusesForTotalObligated = [
             Statuses.Active.value, Statuses.OptionExercised.value, Statuses.OnTrack.value,
             Statuses.AtRisk.value, Statuses.ExpiringPop.value, Statuses.Delinquent.value, 
-            Statuses.FundingAtRisk.value
+            Statuses.FundingAtRisk.value, Statuses.Expired.value
           ]
           if (validStatusesForTotalObligated.includes(clinRecord.clin_status)) {
             totalObligatedForPortfolio =

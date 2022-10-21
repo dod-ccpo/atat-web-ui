@@ -61,7 +61,12 @@ describe("Testing Portfolio Drawer component", () => {
       localVue,
       vuetify,
     });
-    PortfolioData.setPortfolioData(portfolio)
+    PortfolioData.setPortfolioData(portfolio);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.clearAllTimers();
   });
 
   it("renders successfully", async () => {
@@ -124,12 +129,37 @@ describe("Testing Portfolio Drawer component", () => {
     expect(await wrapper.vm.$data.portfolio.members[3].role).toEqual(newRole);
   })
 
-  it("onSelectedMemberRoleChanged() - pass params to successfully change roles ", async()=>{
+  it("onSelectedMemberRoleChanged() - pass params to remove from portfolio ", async()=>{
     const newRole = "Remove";
-    const idx = 3
+    const idx = 0
     await wrapper.setData({
-      portfolio
+      portfolio, 
+      portfolioMembers: [{
+        firstName: "FirstName",
+        lastName: "LastName",
+        email: "firstNameLastName@mail.mil",
+        role: "Manager"
+      }]
     })
+
+    const _portfolio = {
+      csp: "Azure",
+      description:"just testfefseffdsfd",
+      members: [{
+        firstName: "FirstName",
+        lastName: "LastName",
+        email: "firstNameLastName@mail.mil",
+        role: "Manager"
+      }],
+      provisioned: "2022-09-08 18:12:12",
+      agency: "DISA",
+      status: "Active",
+      title: "test title",
+      updated: "2022-09-08 18:12:12"
+    }
+    jest.spyOn(PortfolioData, "getPortfolioData").mockImplementation(
+      ()=>Promise.resolve( _portfolio ));
+
     await wrapper.vm.onSelectedMemberRoleChanged(newRole, idx)
     expect (await wrapper.vm.$data.showDeleteMemberDialog).toBe(true);
    

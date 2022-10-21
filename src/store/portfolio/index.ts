@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
-import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
 
 import { 
   FilterOption, 
@@ -12,13 +11,10 @@ import {
   User,
 } from "../../../types/Global"
 
-import Vue from "vue";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { AlertDTO } from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
-
-const ATAT_PORTFOLIO_DATA_KEY = 'ATAT_PORTFOLIO_DATA_KEY';
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -68,11 +64,7 @@ export const cspConsoleURLs: Record<string, string> = {
   store: rootStore,
 })
 export class PortfolioDataStore extends VuexModule {
-  
   private alertService = new AlertService();
-  //has the store been initialized
-  // initialized = false;
-
   public activeTaskOrderNumber = "";
   
   public alerts: AlertDTO[]= [];
@@ -212,12 +204,6 @@ export class PortfolioDataStore extends VuexModule {
     Object.assign(this.portfolioSummaryQueryParams, params);
   }
 
-  // store session properties
-  // protected sessionProperties: string[] = [
-  //   nameofProperty(this,x=> x.currentPortfolio),
-  //   nameofProperty(this,x=> x.alerts),
-  // ];
-
   //getter for portfolio status
   public get getStatus():string {
     return this.currentPortfolio.status ? this.currentPortfolio.status : "";
@@ -227,15 +213,6 @@ export class PortfolioDataStore extends VuexModule {
   public get getShowAddMembersModal(): boolean {
     return this.showAddMembersModal;
   }
-
-  // @Action({rawError: true})
-  // async setInitialized(value: boolean): Promise<void> {
-  //   this.doSetInitialized(value);
-  // }
-  // @Mutation
-  // public async doSetInitialized(value: boolean): Promise<void> {
-  //   this.initialized = value;
-  // }
 
   @Action
   public async setCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
@@ -278,21 +255,18 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Mutation
-  public setPortfolioData(value: Portfolio): void {
+  public async setPortfolioData(value: Portfolio): Promise<void> {
     Object.assign(this.currentPortfolio,value)
-    // storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
   @Mutation
   public setStatus(value: string): void {
     this.currentPortfolio.status = value;
-    // storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
   @Mutation
   public setAlerts(value: AlertDTO[]): void {
     this.alerts = value;
-    // storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
   public placeholderMember = {
@@ -307,36 +281,6 @@ export class PortfolioDataStore extends VuexModule {
   };
 
   @Action({rawError: true})
-  private async initPortfolioData():Promise<void> {
-    const portfolioObj: Portfolio = {
-      title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
-      description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
-      status: "Active",
-      csp: "Azure",
-      agency:  AcquisitionPackage.organization?.agency || "DISA",
-      createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
-      provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
-      members: [this.placeholderMember],
-    };
-
-    if (!this.currentPortfolio.sysId) {
-      const obj: Portfolio = {
-        title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
-        description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
-        status: "Active",
-        csp: "Azure",
-        agency:  AcquisitionPackage.organization?.agency || "DISA",
-        createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
-        provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
-        updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
-      };
-      Object.assign(portfolioObj, obj); 
-    }
-    
-    this.setPortfolioData(portfolioObj);
-  }
-
-  @Action({rawError: true})
   public async saveMembers(newMembers: MemberInvites): Promise<void> {
     newMembers.emails.forEach((email) => {
       const newMember: User = {
@@ -347,51 +291,15 @@ export class PortfolioDataStore extends VuexModule {
       };
       this.currentPortfolio.members?.push(newMember);
     });
-    // storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
-    // await this.setInitialized(true);
   }
 
   @Action({rawError: true})
   public async getPortfolioData(): Promise<Portfolio> {
-    // if (!this.initialized) {
-    //   await this.initialize();
-    // }
     if (this.currentPortfolio.members?.length === 0) {
       this.currentPortfolio.members = [this.placeholderMember];
     }
     return this.currentPortfolio;
   }
-
-  // @Mutation
-  // public setStoreData(sessionData: string):void{
-  //   try {
-  //     const sessionDataObject = JSON.parse(sessionData);
-  //     Object.keys(sessionDataObject).forEach((property) => {
-  //       Vue.set(this, property, sessionDataObject[property]);
-  //     });
-  //   } catch (error) {
-  //     throw new Error('error restoring session for portfolio data store');
-  //   }
-  // }
-
-  // @Action({ rawError: true })
-  // public async initialize(): Promise<void> {
-  //   if (!this.initialized) {
-  //     try {
-  //       const sessionRestored= retrieveSession(ATAT_PORTFOLIO_DATA_KEY);
-  //       if(sessionRestored){
-  //         this.setStoreData(sessionRestored);
-  //       }
-  //       else{
-  //         await this.initPortfolioData();
-  //         await this.setInitialized(true);
-  //         storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
-  //       }
-  //     } catch (error) {
-  //       console.log(`error occurred loading portfolio data ${error}`)
-  //     }
-  //   }
-  // }
 
   @Action({ rawError: true })
   public async getAlerts(taskOrderNumber: string): Promise<AlertDTO[]> {
@@ -483,7 +391,6 @@ export class PortfolioDataStore extends VuexModule {
         }
       }
     }
-    
 
     return fundingAlertData;
   }

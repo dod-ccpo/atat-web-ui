@@ -56,7 +56,7 @@ export default class TaskOrder extends Vue {
    */
 
   public async loadOnEnter(): Promise<void> {
-    this.activeTaskOrderNumber = await PortfolioData.activeTaskOrderNumber;
+    this.activeTaskOrderNumber = PortfolioData.activeTaskOrderNumber;
     this.taskOrders  = 
       (await PortfolioSummary.getAllPortfolioSummaryList() as PortfolioSummaryDTO[])
         .flatMap( portfolio=>portfolio.task_orders.filter((

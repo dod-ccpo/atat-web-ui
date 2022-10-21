@@ -1,15 +1,14 @@
 /* eslint-disable camelcase */
 
 import Vuex, { Store } from 'vuex';
-import { createLocalVue, createWrapper } from '@vue/test-utils';
+import { createLocalVue } from '@vue/test-utils';
 import {FundingAlertTypes, PortfolioDataStore,
   getThresholdAmount, thresholdAtOrAbove} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
-import storeHelperFunctions  from "../helpers";
 import Vue from "vue";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { AlertDTO } from '@/api/models';
-import { MemberInvites } from 'types/Global';
+import { MemberInvites, Portfolio } from 'types/Global';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -62,66 +61,11 @@ describe("Portfolio Store", () => {
     jest.clearAllTimers();
   })
 
-  it('Test setInitialized()- sets initialized to true', async () => {
-    //mocks sessionStorage retrieval
-    jest.spyOn(storeHelperFunctions, "retrieveSession").mockReturnValue(
-      JSON.stringify({
-        "clins": "",
-      })
-    );
-    await portfolioStore.initialize();
-    expect(portfolioStore.initialized).toBe(true)
-    expect(portfolioStore.currentPortfolio.title).toBe("Mock Title")
-  })
-
-  it('Test initialize()- sets portfolio to the AcquisitionPackage data', async () => {
-
-    AcquisitionPackage.setProjectOverview({
-      title: "test title",
-      scope: "testing scope",
-      emergency_declaration:""
-    })
-    AcquisitionPackage.setOrganization({agency: "FBI"})
-    AcquisitionPackage.setAcquisitionPackage({
-      contract_award: {
-        link:"",
-        value:"",
-      },
-      classification_level: "",
-      contact: "",
-      contract_considerations: "",
-      contract_type: "",
-      current_contract: "",
-      current_environment: "",
-      docusign_envelope_id: "",
-      environment_instance: "",
-      fair_opportunity: "",
-      funding_plans: "",
-      gfe_overview: "",
-      number: "",
-      organization: "",
-      period_of_performance: "",
-      periods: "",
-      project_overview: "",
-      required_services: "",
-      requirements_const_estimate: "",
-      sensitive_information: "",
-      status: "",
-      sys_created_by: "Johnnny test",
-      sys_created_on: "Today",
-      sys_updated_on: "Tomorrow"})
-
-    await portfolioStore.initialize();
-    Vue.nextTick(() => {
-      expect(portfolioStore.currentPortfolio.createdBy).toBe("Johnnny test")
-    })
-  })
-
   it('Test setPortfolioData- sets portfolio to the passed in value', async () => {
     const mockData = {
       title: "some title to test",
       description: "a description",
-      status: "active",
+      status: Statuses.Active.value,
       csp: "",
       agency: "mock Agency",
       createdBy: "jefferey tester",
@@ -151,7 +95,7 @@ describe("Portfolio Store", () => {
   })
 
   it('Test setStoreData- sets portfolio to the passed in value', async () => {
-    const mockData = {
+    const mockData: Portfolio = {
       title: "some title to test",
       description: "a description",
       status: "active",
@@ -162,7 +106,7 @@ describe("Portfolio Store", () => {
       members: []
     }
 
-    await portfolioStore.setStoreData(JSON.stringify(mockData));
+    await portfolioStore.setPortfolioData(mockData);
     Vue.nextTick(() => {
       expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
     })
@@ -202,12 +146,6 @@ describe("Portfolio Store", () => {
     })
   })
 
-  // it('Test setStatus- sets portfolio status to the passed in value', async () => {
-  //   portfolioStore.setStatus(Statuses.Delinquent.value);
-  //   Vue.nextTick(() => {
-  //     expect(portfolioStore.status).toBe(Statuses.Delinquent.value);
-  //   })
-  // })
 
   it('Test setAlerts- sets alerts to the passed in value', async () => {
     const mockAlerts: AlertDTO[] = [

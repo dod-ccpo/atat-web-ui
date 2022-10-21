@@ -146,7 +146,7 @@
                 </div>
 
               </td>
-              <td :valign="getValign(item)">
+              <td :style="{ verticalAlign: getValign(item)}">
                 <div class="d-flex flex-column">
                   <span class="nowrap">{{ item.PoP.startDate }}&ndash;{{ item.PoP.endDate }}</span>
                   <span
@@ -166,9 +166,13 @@
                   </span>
                 </div>
               </td>
-              <td align="right" :valign="getValign(item)">{{item.totalCLINValue}}</td>
-              <td align="right" :valign="getValign(item)">{{item.obligatedFunds}}</td>
-              <td :valign="getValign(item)">
+              <td class="text-right foobar" :style="{ verticalAlign: getValign(item)}">
+                  {{item.totalCLINValue}}
+              </td>
+              <td class="text-right" :style="{ verticalAlign: getValign(item)}">
+                {{item.obligatedFunds}}
+              </td>
+              <td :style="{ verticalAlign: getValign(item)}">
                 <div
                   class="d-flex flex-column">
                   <div
