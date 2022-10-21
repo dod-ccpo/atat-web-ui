@@ -4,6 +4,9 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 import { ClinTableRowData } from "types/Global";
+import { add, formatISO } from "date-fns";
+import { ClinDTO } from "@/api/models";
+import { Statuses } from "@/store/acquisitionPackage";
 
 Vue.use(Vuetify);
 
@@ -11,6 +14,118 @@ describe("Testing TaskOrderDetails Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
+
+  /* eslint-disable camelcase */
+  const clins: ClinDTO[] = [
+    {
+      sys_id: "1234",
+      clin_number: "1001",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "",
+      clin_status: Statuses.OnTrack.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 50,
+    },    
+    {
+      sys_id: "1234",
+      clin_number: "1002",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "",
+      clin_status: Statuses.OnTrack.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 0,
+    },
+    {
+      sys_id: "1234",
+      clin_number: "1003",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "",
+      clin_status: Statuses.OnTrack.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 110,
+    },
+    {
+      sys_id: "2345",
+      clin_number: "1004",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "",
+      clin_status: Statuses.OptionExercised.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 50,
+    },
+  ];
+
+  const pendingClins: ClinDTO[] = [
+    {
+      sys_id: "3456",
+      clin_number: "2002",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "2022-02-01",
+      clin_status: Statuses.OptionPending.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 50,
+    },
+    {
+      sys_id: "3456",
+      clin_number: "2001",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "2022-01-01",
+      clin_status: Statuses.OptionPending.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 50,
+    },
+    {
+      sys_id: "3456",
+      clin_number: "2003",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "2022-01-01",
+      clin_status: Statuses.OptionPending.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 50,
+    },
+  ];
+
+  const expiredClins: ClinDTO[] = [
+    {
+      sys_id: "4567",
+      clin_number: "0002",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "2022-01-01",
+      clin_status: Statuses.Expired.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 200,
+    },     
+    {
+      sys_id: "4567",
+      clin_number: "0001",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "2022-01-01",
+      clin_status: Statuses.Expired.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 200,
+    },   
+  ];
+  /* eslint-enable camelcase */
+
+  const allClins: ClinDTO[] = clins.concat(pendingClins, expiredClins);
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -26,7 +141,7 @@ describe("Testing TaskOrderDetails Component", () => {
             totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
             status:"On Track"
           },
-        ]
+        ],
       }
     });
   });
@@ -86,9 +201,71 @@ describe("Testing TaskOrderDetails Component", () => {
     });    
 
     it("fundsRemaining() - sets object with remaining $ and %", async () => {
-      const fundsObj = wrapper.vm.fundsRemaining("1000", "500");
+      let fundsObj = wrapper.vm.fundsRemaining("1000", "500");
       expect(fundsObj.percent).toBe("50");
       expect(fundsObj.fundsRemaining).toBe("$500.00 remaining");
+      fundsObj = wrapper.vm.fundsRemaining("0", "0")
+    });    
+
+    it("timeToExpiration() - creates string of days or months remaining", async () => {
+      let endDate = formatISO(add(new Date(), {months: 1}));
+      let dateInfo = wrapper.vm.timeToExpiration("2022-01-01", endDate);
+      expect(dateInfo.expiration).toBe("30 days to expiration");
+
+      endDate = formatISO(add(new Date(), {months: 4, days: 15}));
+      dateInfo = wrapper.vm.timeToExpiration("2022-01-01", endDate);
+      expect(dateInfo.expiration).toBe("4 months to expiration");
+
+      endDate = formatISO(add(new Date(), {days: 1, hours: 12}));
+      dateInfo = wrapper.vm.timeToExpiration("2022-01-01", endDate);
+      expect(dateInfo.expiration).toBe("1 day to expiration");
+    });    
+
+    it("collectTableData() - builds CLIN data for the table", async () => {
+      await wrapper.setData({
+        clins: allClins
+      });
+      await wrapper.vm.collectTableData();
+      expect(wrapper.vm.$data.inactiveCount).toBe(5);
+      expect(wrapper.vm.$data.totals.percent).toBe("53");
+      expect(wrapper.vm.$data.totals.fundsRemaining).toBe("$190.00 remaining");
+    });    
+
+    it("addSeparators() - adds wider border to top of new clin sections", async () => {
+      await wrapper.setData({
+        optionPendingClins: pendingClins,
+        expiredClins: expiredClins,
+      })
+      await wrapper.vm.addSeparators();
+      Vue.nextTick(() => {
+        expect(wrapper.vm.$data.optionPendingClins[0].startnewClinGroup).toBeTruthy();
+        expect(wrapper.vm.$data.expiredClins[0].startnewClinGroup).toBeTruthy();  
+      })
+    });    
+
+    it("sortRows() - orders clins for the table", async () => {
+      const tableData: ClinTableRowData[] = [
+        {
+          CLINNumber: "1002",
+          popStartDate: "",
+        },
+        {
+          CLINNumber: "1001",
+          popStartDate: "",
+        }
+      ];
+      await wrapper.setData({
+        tableData,
+        optionPendingClins: pendingClins,
+        expiredClins: expiredClins,
+      });
+      await wrapper.vm.sortRows();
+      Vue.nextTick(() => {
+        expect(wrapper.vm.$data.tableData[0].CLINNumber).toBe("1001");
+        expect(wrapper.vm.$data.optionPendingClins[0].CLINNumber).toBe("2001");
+        expect(wrapper.vm.$data.expiredClins[0].CLINNumber).toBe("0001");
+      })
+      
     });    
 
     // it("xxx", async () => {

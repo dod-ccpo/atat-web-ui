@@ -338,7 +338,6 @@ import {
   toCurrencyString 
 } from "@/helpers";
 
-
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { differenceInDays, differenceInMonths } from "date-fns";
 import { ClinDTO } from "@/api/models";
@@ -351,6 +350,7 @@ import { ClinDTO } from "@/api/models";
     ATATAlert
   }
 })
+
 export default class TaskOrderDetails extends Vue {
   @Prop() private selectedTaskOrder!: TaskOrderCardData;
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
@@ -514,7 +514,6 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public async addSeparators() : Promise<void> {
-    // this.tableData[0].startNewClinGroup = true;
     this.optionPendingClins[0].startNewClinGroup = true;
     this.expiredClins[0].startNewClinGroup = true;
   }
