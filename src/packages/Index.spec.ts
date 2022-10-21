@@ -5,9 +5,12 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import Packages from "./Index.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import { AcquisitionPackageSummarySearchDTO } from "@/api/models";
 
 Vue.use(Vuetify);
 
+jest.spyOn(AcquisitionPackageSummary,'searchAcquisitionPackageSummaryList')
+  .mockImplementation()
 describe("Testing Packages Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
@@ -72,11 +75,29 @@ describe("Testing Packages Component", () => {
 
     it("test updateStatus()",()=>{
       const spy = jest.spyOn(AcquisitionPackageSummary,"updateAcquisitionPackageStatus")
+        .mockImplementation()
       wrapper.vm.updateStatus("testsysID","DELETE")
       wrapper.vm.updateStatus("testsysID","ARCHIVED")
       wrapper.vm.updateStatus("testsysID","DRAFT")
       expect(spy).toBeCalled();
     })
-  
+
+    it("test search()",()=>{
+      wrapper.vm.$data.searchString = 'hello'
+      wrapper.vm.search()
+      const searchedString = wrapper.vm.$data.searchedString
+      Vue.nextTick(()=>{
+        expect(searchedString).toBe("hello");
+      })
+    })
+
+    it("test clear()",()=>{
+      wrapper.vm.$data.searchString = 'Hello'
+      wrapper.vm.clear()
+      const searchString = wrapper.vm.$data.searchString
+      Vue.nextTick(()=>{
+        expect(searchString).toBe("");
+      })
+    })
   });
 });
