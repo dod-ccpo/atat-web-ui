@@ -1,0 +1,27 @@
+{
+  "role": {
+    "filterOptions": "Role",
+    "radioOptions": [
+      "All of my portfolios",
+      "Managed by me"
+    ]
+  },
+  "fundingStatus": {
+    "filterOptions": "Funding Status",
+    "checkBoxOptions": [
+      "On track",
+      "Expiring soon",
+      "Funding at-risk",
+      "Delinquent"
+    ]
+  },
+  "csp": {
+    "filterOptions": "Cloud Service Provider",
+    "checkBoxOptions": [
+      "Amazon Web Services (AWS)",
+      "Azure",
+      "Google Cloud Platform (GCP)",
+      "Oracle"
+    ]
+  }
+}
