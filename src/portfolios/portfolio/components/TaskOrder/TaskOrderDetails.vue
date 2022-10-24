@@ -238,41 +238,41 @@
               </td>
               <td align="right" class="font-weight-700">
                 <span v-if="!showInactive">
-                  ${{toCurrencyString(totalFundingObj.totalCLINValue)}}
+                  ${{ toCurrencyString(totalFundingObj.totalCLINValue) }}
                 </span>
                 <span v-else>
-                  ${{toCurrencyString(totalFundingObj.withInactiveTotal)}}
+                  {{ selectedTaskOrder.totalLifeCycle }}
                 </span>
               </td>
               <td align="right" class="font-weight-700">
                 <span v-if="!showInactive">
-                  ${{toCurrencyString(totalFundingObj.totalObligatedFunds)}}
+                  ${{ toCurrencyString(totalFundingObj.totalObligatedFunds) }}
                 </span>
                 <span v-else>
-                  ${{toCurrencyString(totalFundingObj.withInactiveObligatedFunds)}}
+                  {{ selectedTaskOrder.totalObligated }}
                 </span>
               </td>
               <td align="right">
                <div v-if="!showInactive">
                  <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
-                   ${{toCurrencyString(totalFundingObj.totalFundsSpent)}}
+                   ${{ toCurrencyString(totalFundingObj.totalFundsSpent) }}
                    <span class="font-size-12 text-base ml-3 font-weight-500">
-                     ({{totals.percent }}%)
+                     ({{ totals.percent }}%)
                    </span>
                  </div>
                  <span class="d-flex font-size-12 text-base justify-end">
-                 {{totals.fundsRemaining}}
+                 {{ totals.fundsRemaining }}
                 </span>
               </div>
               <div v-else>
                 <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
-                  ${{toCurrencyString(totalFundingObj.withInactiveFundsSpent)}}
+                  {{ selectedTaskOrder.totalFundsSpent }}
                   <span class="font-size-12 text-base ml-3 font-weight-500 ">
-                     ({{totalsWithInactive.percent}}%)
+                     ({{ taskOrderRemainingFunds.percent }}%)
                    </span>
                 </div>
                 <span class="d-flex font-size-12 text-base justify-end">
-                 {{totalsWithInactive.fundsRemaining}}
+                 {{ taskOrderRemainingFunds.fundsRemaining }}
                 </span>
               </div>
               </td>
@@ -369,21 +369,15 @@ export default class TaskOrderDetails extends Vue {
 
   public totalFundingObj: {
     totalCLINValue:number,
-    withInactiveTotal:number,
     totalObligatedFunds:number,
-    withInactiveObligatedFunds:number,
     totalFundsSpent:number,
-    withInactiveFundsSpent:number,
   } = {
     totalCLINValue:0,
-    withInactiveTotal:0,
     totalObligatedFunds:0,
-    withInactiveObligatedFunds:0,
     totalFundsSpent:0,
-    withInactiveFundsSpent:0,
   }
 
-  public totalsWithInactive = {percent:"",fundsRemaining:""}
+  public taskOrderRemainingFunds = {percent:"",fundsRemaining:""}
   public totals = {percent:"",fundsRemaining:""}
   public inactiveCount = 0;
 
@@ -422,14 +416,13 @@ export default class TaskOrderDetails extends Vue {
     { text: "Obligated funds", value: "obligatedFunds" },
     { text: "Total funds spent (%)", value: "totalFundsSpent" },
   ];
-
  
   public toggleInactive():void {
     this.showInactive = !this.showInactive
   }
 
   public fundsRemaining(obligatedFunds:string | number, fundsSpent:string | number):
-    {percent:string,fundsRemaining:string} {
+    { percent:string, fundsRemaining:string } {
     if(obligatedFunds == "0" && fundsSpent == "0"){
       return {
         percent: "0",
@@ -502,9 +495,7 @@ export default class TaskOrderDetails extends Vue {
       }
 
       this.calculateTotalFundingObj(tableRowData);
-      this.totalsWithInactive = this.fundsRemaining(
-        this.totalFundingObj.withInactiveObligatedFunds, this.totalFundingObj.withInactiveFundsSpent
-      )
+
       this.totals = this.fundsRemaining(
         this.totalFundingObj.totalObligatedFunds, this.totalFundingObj.totalFundsSpent
       )
@@ -544,19 +535,14 @@ export default class TaskOrderDetails extends Vue {
 
 
   public calculateTotalFundingObj(clin: ClinTableRowData): void{
-    const totalCLINValue = currencyStringToNumber(clin.totalCLINValue || "0");
-    const obligatedFunds = currencyStringToNumber(clin.obligatedFunds || "0");
-    const totalFundsSpent = currencyStringToNumber(clin.totalFundsSpent || "0");
-
     if (clin.isActive || clin.isExercised) {
+      const totalCLINValue = currencyStringToNumber(clin.totalCLINValue || "0");
+      const obligatedFunds = currencyStringToNumber(clin.obligatedFunds || "0");
+      const totalFundsSpent = currencyStringToNumber(clin.totalFundsSpent || "0");
       this.totalFundingObj.totalCLINValue += totalCLINValue;
       this.totalFundingObj.totalObligatedFunds += obligatedFunds;
-      this.totalFundingObj.totalFundsSpent += (totalFundsSpent);
+      this.totalFundingObj.totalFundsSpent += totalFundsSpent;
     } 
-
-    this.totalFundingObj.withInactiveTotal += totalCLINValue;
-    this.totalFundingObj.withInactiveObligatedFunds += obligatedFunds;
-    this.totalFundingObj.withInactiveFundsSpent += totalFundsSpent;
   }
 
   public statusImgs: Record<string, Record<string, string | unknown>> = {};
@@ -597,6 +583,14 @@ export default class TaskOrderDetails extends Vue {
     try {
       await this.generateStatusImages();
       await this.createTableData();
+
+      if (this.selectedTaskOrder.totalObligated && this.selectedTaskOrder.totalFundsSpent) {
+        this.taskOrderRemainingFunds = this.fundsRemaining(
+          currencyStringToNumber(this.selectedTaskOrder.totalObligated), 
+          currencyStringToNumber(this.selectedTaskOrder.totalFundsSpent),
+        );
+      }
+
     } 
     catch {
       console.log("Error loading Task Order Details")
