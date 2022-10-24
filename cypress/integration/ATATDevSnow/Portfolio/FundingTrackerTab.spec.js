@@ -2,24 +2,35 @@ import { bootstrapMockApis, randomAlphaNumeric } from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import ps from "../../../selectors/portfolioSummary.sel"
 
-describe("Test suite: Portfolio summary", () => { 
+describe("Test suite: Portfolios Funding Tracker tab", () => { 
   
   let menus;
   const title = "“Mock Title”";
+  let portfolioName = "Army Portfolio";
+  let card;
 
   beforeEach(() => {
     bootstrapMockApis();
     cy.fixture("navigationBarMenu").then((data) => {
-      menus = data;          
+      menus = data; 
+      card = {          
+        headingSelector: ps.portfolioCards,
+        cardHeaderText: portfolioName,
+        cardMenuSelector: ps.portfolioCardOne,       
+        menuListSelector:ps.card0MenuListItem,
+        menuListText: menus.portfolios.activePortfolioCardSubmenu,
+        menuSelector: ps.ftOne,
+        selectedMenuText:"View funding tracker"
+      }
     });
 
     cy.launchATAT();
     cy.textExists(common.portfolioBtn, "Portfolios").click();
-    const portfolioName = "Mock Title"
-    cy.findElement(ps.headerPortofilioTextfield).should("have.value", portfolioName);
+    cy.searchPortfolio("army", portfolioName);
   });
     
-  it.skip("TC1: Funding Tracker", () => {
+  it("TC1: Funding Tracker", () => {
+    cy.clickPortfolioMenu(card);
     cy.findElement(ps.fundingTrackerTab).should('have.attr', 'aria-selected', 'true'); 
     cy.selectMenu(
       ps.moreMenubtn,
@@ -27,14 +38,19 @@ describe("Test suite: Portfolio summary", () => {
       menus.portfolios.submenu,
       ps.renamePortMenu,
       "Rename portfolio"
-    ).then(() => {
-      const titleValue = "Mock Title"
-      const editTitleText = "Edit MockTitle"
+    ).then(() => {      
+      const editTitleText = "Edit-"+ portfolioName
       cy.editInputField(
-        ps.headerPortofilioTextfield,
-        titleValue,
+        ps.headerPortfolioTextfield,
+        portfolioName,
         editTitleText,
         editTitleText
+      );
+      cy.editInputField(
+        ps.headerPortfolioTextfield,
+        editTitleText,
+        portfolioName,
+        portfolioName
       );
     });
     cy.textExists(ps.portfoliodetailsTitle, "Portfolio Details");    
@@ -50,7 +66,8 @@ describe("Test suite: Portfolio summary", () => {
     
   });
 
-  it.skip("TC2: Invite members to portfolio from sub menu", () => {
+  it("TC2: Invite members to portfolio from sub menu", () => {
+    cy.clickPortfolioMenu(card);  
     cy.selectMenu(
       ps.moreMenubtn,
       ps.moreMenuList,

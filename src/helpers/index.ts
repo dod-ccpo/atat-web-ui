@@ -225,6 +225,7 @@ export function getStatusChipBgColor(status: string): string {
   case StatusTypes.ExpiringSoon.toLowerCase():
     return "bg-warning";
   case StatusTypes.Delinquent.toLowerCase():
+  case StatusTypes.Deleted.toLowerCase():
   case StatusTypes.Expired.toLowerCase():
     return "bg-error";
   case StatusTypes.Archived.toLowerCase():

@@ -1,5 +1,5 @@
-import { bootstrapMockApis, cleanText, capitalizeFirstLetter } from "../../helpers";
-import common from "../../selectors/common.sel";
+import { bootstrapMockApis, cleanText, capitalizeFirstLetter } from "../../../helpers";
+import common from "../../../selectors/common.sel";
 
 describe("Test suite: Common SPA functionality", () => { 
   
@@ -13,6 +13,7 @@ describe("Test suite: Common SPA functionality", () => {
       
     });
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
     
   it("TC1: Vertical Stepper", () => {

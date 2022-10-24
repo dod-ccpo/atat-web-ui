@@ -23,6 +23,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     });
 
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
 
   it("TC1: Contact Information step is active", () => {

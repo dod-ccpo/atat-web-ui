@@ -7,7 +7,7 @@ describe("Test suite: SAC: Section 508 Standards", () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
-        
+    cy.homePageClickAcquisitionPackBtn();    
   });    
     
   it("TC1: SAC: Section508 Standards is active on the Vertical Stepper", () => {

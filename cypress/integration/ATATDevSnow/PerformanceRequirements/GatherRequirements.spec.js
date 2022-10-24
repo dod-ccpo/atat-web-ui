@@ -27,6 +27,7 @@ describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () 
     });
     
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.verifyPageHeader(" Let’s gather some details about the duration of your task order ");    
   });

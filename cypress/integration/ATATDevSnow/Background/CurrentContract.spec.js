@@ -9,7 +9,7 @@ describe("Test suite: Current Contract", () => {
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
-        
+    cy.homePageClickAcquisitionPackBtn();    
   })
     
   it("TC1: Current Contract on the Vertical Stepper", () => {
