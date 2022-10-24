@@ -254,9 +254,14 @@ const getStoreDataTableProperty = (
   store: AcquisitionPackageStore
 ): BaseTableDTO => {
   // get specific property
+  console.log("getStoreDataTableProperty - storeProperty:", storeProperty)
+  // console.log("store", store);
+
   const dataProperty = (store as unknown as Record<string, BaseTableDTO>)[
     storeProperty
   ];
+
+  console.log("dataProperty", dataProperty)
 
   if (!dataProperty) {
     throw new Error(`unable to locate store property : ${storeProperty}`);
@@ -741,7 +746,6 @@ export class AcquisitionPackageStore extends VuexModule {
         apiEndPoint.update(storeDataProperty.sys_id || "", data) :
         apiEndPoint.create(data);
       const savedData = await saveAction;
-
       // updates the store state data
       this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
