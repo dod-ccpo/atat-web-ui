@@ -13,8 +13,16 @@ import Summary from "../steps/Summary.vue";
 // Step 2 - Fair Opportunity Process
 import FairOpportunityProcess from "../steps/02-EvaluationCriteria/Index.vue"
 import Exceptions from "../steps/02-EvaluationCriteria/Exceptions.vue";
-import JustificationAndApproval
-  from "../steps/02-EvaluationCriteria/JustificationAndApproval.vue";
+// KEEP JustificationAndApproval for future ticket
+// import JustificationAndApproval
+//   from "../steps/02-EvaluationCriteria/JustificationAndApproval.vue";
+import CreateEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.vue";
+import NoProposalRequired from "../steps/02-EvaluationCriteria/EvalPlan/NoProposalRequired.vue";
+import ProposalRequired from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequired.vue";
+import ProposalRequiredBVTO from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequiredBVTO.vue";
+import LumpSum from "../steps/02-EvaluationCriteria/EvalPlan/LumpSum.vue";
+import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
+import NoEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.vue";
 
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
@@ -127,7 +135,8 @@ import {
   IGCESurgeCapabilities,
   IGCEGatherPriceEstimatesResolver,
   IGCECannotProceedResolver,
-  IGCESupportingDocumentationResolver
+  IGCESupportingDocumentationResolver,
+  EvalPlanRouteResolver,
 
 } from "./resolvers";
 
@@ -139,10 +148,20 @@ export const routeNames = {
   AlternateCor: "Alternate_Cor",
   AcorInformation: "Acor_Information",
   ExistingContractBackground: "Existing_Contract_Background",
-  Summary: "Summary",
+  AcqPackageSummary: "Acquisition_Package_Summary",
   FairOpportunity: "Fair_Opportunity",
   Exceptions: "Exceptions",
-  JustificationAndApproval: "Justification_and_Approval",
+  EvaluationPlan: "Evaluation_Plan",
+  CreateEvalPlan: "Create_Eval_Plan",
+  NoProposalRequired: "No_Proposal_Required",
+  ProposalRequired: "Proposal_Required",
+  ProposalRequiredBVTO: "Proposal_Required_BVTO",
+  LumpSum: "Lump_Sum",
+  EvalPlanSummary: "Eval_Plan_Summary",
+  NoEvalPlan: "No_Eval_Plan",
+  // KEEP JustificationAndApproval for future ticket
+  // JustificationAndApproval: "Justification_and_Approval",
+
   Background: "Background",
   CurrentContract: "Current_Contract",
   CurrentContractDetails: "Current_Contract_Details",
@@ -288,7 +307,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Summary",
         path: "summary",
-        name: routeNames.Summary,
+        name: routeNames.AcqPackageSummary,
         excludeFromMenu: true,
         completePercentageWeight: 5,
         component: Summary,
@@ -313,13 +332,81 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
       },
       {
-        menuText: "Justification and Approval",
-        path: "justification-and-approval",
-        name: routeNames.JustificationAndApproval,
-        component: JustificationAndApproval,
+        menuText: "Evaluation Plan",
+        path: "evaluation-plan",
+        // name: routeNames.EvaluationPlan,
+        name: routeNames.CreateEvalPlan,
+        component: CreateEvalPlan,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: EvalPlanRouteResolver,
       },
+
+      {
+        menuText: "No Proposal Required",
+        path: "no-proposal-required",
+        name: routeNames.NoProposalRequired,
+        component: NoProposalRequired,
+        completePercentageWeight: 5,
+        completed: false,
+        excludeFromMenu: true,
+      },
+      {
+        menuText: "Proposal Required",
+        path: "proposal-required",
+        name: routeNames.ProposalRequired,
+        component: ProposalRequired,
+        completePercentageWeight: 5,
+        completed: false,
+        excludeFromMenu: true,
+      },
+      {
+        menuText: "Proposal Required BVTO",
+        path: "proposal-required-bvto",
+        name: routeNames.ProposalRequiredBVTO,
+        component: ProposalRequiredBVTO,
+        completePercentageWeight: 5,
+        completed: false,
+        excludeFromMenu: true,
+      },
+      {
+        menuText: "Lump Sum",
+        path: "lump-sum",
+        name: routeNames.LumpSum,
+        component: LumpSum,
+        completePercentageWeight: 5,
+        completed: false,
+        excludeFromMenu: true,
+      },
+      {
+        menuText: "Evaluation Plan Summary",
+        path: "eval-plan-summary",
+        name: routeNames.EvalPlanSummary,
+        component: EvalPlanSummary,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+      },
+      {
+        menuText: "No Evaluation Plan",
+        path: "no-eval-plan",
+        name: routeNames.NoEvalPlan,
+        component: NoEvalPlan,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+      },
+
+      // KEEP JustificationAndApproval for future ticket
+      // {
+      //   menuText: "Justification and Approval",
+      //   path: "justification-and-approval",
+      //   name: routeNames.JustificationAndApproval,
+      //   component: JustificationAndApproval,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      //   excludeFromMenu: true,
+      // },
     ],
   },
   {

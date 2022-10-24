@@ -12,21 +12,30 @@ import Periods from "@/store/periods";
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
 
-  //routing from alternate cor and the user does not have
-  //and alternatative contact rep
-  if (
-    current === routeNames.AlternateCor &&
-    hasAlternativeContactRep === false
-  ) {
-    return routeNames.Summary;
+  //routing from alternate cor and the user does not have an ACOR
+  if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
+    return routeNames.AcqPackageSummary;
   }
 
-  //routing from summary and user does not have
-  if (current === routeNames.Summary && hasAlternativeContactRep === false) {
+  //routing from summary and user does not have ACOR
+  if (current === routeNames.AcqPackageSummary && hasAlternativeContactRep === false) {
     return routeNames.AlternateCor;
   }
 
   return routeNames.AcorInformation;
+};
+
+
+export const EvalPlanRouteResolver = (current: string): string => {
+  const noExceptions 
+    = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
+  debugger;
+  if (noExceptions) {
+    return routeNames.CreateEvalPlan;
+  }
+  return current === routeNames.Exceptions
+    ? routeNames.NoEvalPlan
+    : routeNames.Exceptions;
 };
 
 
@@ -716,6 +725,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
+  EvalPlanRouteResolver,
 };
 
 // add path resolvers here 
