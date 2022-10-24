@@ -7,6 +7,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import TaskOrder from "@/store/taskOrder";
 import Periods from "@/store/periods";
+import IGCEStore from "@/store/IGCE";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -558,15 +559,15 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   return OfferingDetailsPathResolver(current, direction);
 };
 
-export const IGCESurgeCapabilities = (current:string): string =>{
-  const surgeCapacity = AcquisitionPackage.requirementsCostEstimate?.surge_capacity;
-  if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
+export const IGCESurgeCapabilities =  (current:string): string =>{
+  const surgeCapacity = IGCEStore.surgeRequirements.capacity;
+  if (surgeCapacity.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
     return routeNames.FeeCharged;
   }
   if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.FeeCharged){
     return routeNames.SurgeCapacity;
   }
-  return routeNames.SurgeCapabilities;
+  return routeNames.SurgeCapabilities
 }
 export const IGCECannotProceedResolver = (current: string): string => {
   const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;

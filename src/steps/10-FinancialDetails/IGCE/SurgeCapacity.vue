@@ -16,7 +16,7 @@
         </div>
         <ATATRadioGroup
           id="SurgeCapacity"
-          :value.sync="currentData.surgeCapacity"
+          :value.sync="currentData.capacity"
           :items="items"
           name="surge-capacity"
           card="true"
@@ -31,7 +31,6 @@
 /* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import IGCEStore, { SurgeRequirements } from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
@@ -56,13 +55,13 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
   ];
 
   private currentData: SurgeRequirements = {
-    surgeCapacity: "",
-    surgeCapabilities: ""
+    capacity: "",
+    capabilities: ""
   }
 
   private savedData: SurgeRequirements = {
-    surgeCapacity: "",
-    surgeCapabilities: ""
+    capacity: "",
+    capabilities: ""
   };
   
   private hasChanged(): boolean {
@@ -70,10 +69,10 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getRequirementsCostEstimate();
+    const storeData = await IGCEStore.getSurgeRequirements();
     if (storeData) {
       this.savedData = storeData;
-      this.currentData.surgeCapacity = storeData.surge_capacity || "";
+      this.currentData = storeData;
     }
   }
 
@@ -83,7 +82,7 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     if (this.hasChanged()) {
-      await IGCEStore.setSurgeCapacity(this.currentData);
+      await IGCEStore.setSurgeRequirements(this.currentData);
     }
     return true;
   }

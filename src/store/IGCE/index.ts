@@ -8,8 +8,8 @@ export interface TravelEstimateNeeds {
 };
 
 export interface SurgeRequirements {
-  surgeCapacity: string,
-  surgeCapabilities: string
+  capacity: string,
+  capabilities: string
 }
 
 @Module({
@@ -23,9 +23,9 @@ export class IGCEStore extends VuexModule {
     setCeilingPrice: "",
     estimatedTravelCosts: []
   }
-  surgeCapacity: SurgeRequirements = {
-    surgeCapacity: "",
-    surgeCapabilities: ""
+  surgeRequirements: SurgeRequirements = {
+    capacity: "",
+    capabilities: ""
   }
   
   @Mutation
@@ -35,9 +35,9 @@ export class IGCEStore extends VuexModule {
   }
 
   @Mutation
-  public setSurgeCapacity(surgeCap: SurgeRequirements): void {
-    this.surgeCapacity.surgeCapacity = surgeCap.surgeCapacity;
-    this.surgeCapacity.surgeCapabilities = surgeCap.surgeCapabilities;
+  public setSurgeRequirements(surgeCap: SurgeRequirements): void {
+    this.surgeRequirements.capacity = surgeCap.capacity;
+    this.surgeRequirements.capabilities = surgeCap.capabilities;
   }
 
   @Action({ rawError: true })
@@ -46,8 +46,8 @@ export class IGCEStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public async getSurgeCapacity(): Promise<SurgeRequirements> {
-    return this.surgeCapacity;
+  public async getSurgeRequirements(): Promise<SurgeRequirements> {
+    return this.surgeRequirements;
   }
 
 }
