@@ -415,6 +415,10 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = value;
   }
 
+  public get exceptionToFairOpportunity(): string | undefined {
+    return this.fairOpportunity?.exception_to_fair_opportunity;
+  }
+
   @Mutation
   public setGFEOverview(value: GFEOverviewDTO): void {
     this.gfeOverview = value;

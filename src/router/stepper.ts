@@ -136,7 +136,9 @@ import {
   IGCEGatherPriceEstimatesResolver,
   IGCECannotProceedResolver,
   IGCESupportingDocumentationResolver,
-  EvalPlanRouteResolver,
+  CreateEvalPlanRouteResolver,
+  EvalPlanSummaryRouteResolver,
+  NoEvalPlanRouteResolver,
 
 } from "./resolvers";
 
@@ -332,14 +334,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
       },
       {
-        menuText: "Evaluation Plan",
-        path: "evaluation-plan",
+        menuText: "Create Evaluation Plan",
+        path: "create-eval-plan",
         // name: routeNames.EvaluationPlan,
         name: routeNames.CreateEvalPlan,
         component: CreateEvalPlan,
         completePercentageWeight: 5,
         completed: false,
-        routeResolver: EvalPlanRouteResolver,
+        routeResolver: CreateEvalPlanRouteResolver,
       },
 
       {
@@ -386,6 +388,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
+        routeResolver: EvalPlanSummaryRouteResolver,
       },
       {
         menuText: "No Evaluation Plan",
@@ -395,6 +398,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
+        routeResolver: NoEvalPlanRouteResolver,
       },
 
       // KEEP JustificationAndApproval for future ticket

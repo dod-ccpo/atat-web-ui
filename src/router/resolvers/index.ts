@@ -25,12 +25,13 @@ export const AcorsRouteResolver = (current: string): string => {
   return routeNames.AcorInformation;
 };
 
+const evalPlanRequired = (): boolean => {
+  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
+}
 
-export const EvalPlanRouteResolver = (current: string): string => {
-  const noExceptions 
-    = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
+export const CreateEvalPlanRouteResolver = (current: string): string => {
   debugger;
-  if (noExceptions) {
+  if (evalPlanRequired()) {
     return routeNames.CreateEvalPlan;
   }
   return current === routeNames.Exceptions
@@ -38,6 +39,20 @@ export const EvalPlanRouteResolver = (current: string): string => {
     : routeNames.Exceptions;
 };
 
+export const EvalPlanSummaryRouteResolver = (current: string): string => {
+  return current === routeNames.NoEvalPlan && !evalPlanRequired()
+    ? routeNames.Exceptions
+    : routeNames.EvalPlanSummary;
+};
+
+export const NoEvalPlanRouteResolver = (current: string): string => {
+  if (current === routeNames.EvalPlanSummary) {
+    return routeNames.CurrentContract;
+  }
+  return current === routeNames.CurrentContract && !evalPlanRequired()
+    ? routeNames.NoEvalPlan
+    : routeNames.EvalPlanSummary;
+};
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
@@ -725,7 +740,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
-  EvalPlanRouteResolver,
+  CreateEvalPlanRouteResolver,
+  EvalPlanSummaryRouteResolver,
+  NoEvalPlanRouteResolver,
 };
 
 // add path resolvers here 
