@@ -100,12 +100,14 @@
       :showModal.sync="showDeleteModal"
       :packageName="modifiedData.projectOverview"
       :hasContributor="hasContributor"
-      @okClicked="updateStatus('DELETE')"
+      :waitingForSignature = "modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
+      @okClicked="updateStatus('DELETED')"
     />
     <ArchiveModal
       :showModal.sync="showArchiveModal"
       :hasContributor="hasContributor"
       :packageName="modifiedData.projectOverview"
+      :waitingForSignature = "modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
       @okClicked="updateStatus('ARCHIVED')"
     />
   </v-card>
