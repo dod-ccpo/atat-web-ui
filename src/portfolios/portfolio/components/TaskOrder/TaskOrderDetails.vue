@@ -238,7 +238,7 @@
               </td>
               <td align="right" class="font-weight-700">
                 <span v-if="!showInactive">
-                  ${{ toCurrencyString(totalFundingObj.totalCLINValue) }}
+                  ${{ toCurrencyString(currentPeriodFundingTotals.CLINValue) }}
                 </span>
                 <span v-else>
                   {{ selectedTaskOrder.totalLifeCycle }}
@@ -246,7 +246,7 @@
               </td>
               <td align="right" class="font-weight-700">
                 <span v-if="!showInactive">
-                  ${{ toCurrencyString(totalFundingObj.totalObligatedFunds) }}
+                  ${{ toCurrencyString(currentPeriodFundingTotals.obligatedFunds) }}
                 </span>
                 <span v-else>
                   {{ selectedTaskOrder.totalObligated }}
@@ -255,7 +255,7 @@
               <td align="right">
                <div v-if="!showInactive">
                  <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
-                   ${{ toCurrencyString(totalFundingObj.totalFundsSpent) }}
+                   ${{ toCurrencyString(currentPeriodFundingTotals.fundsSpent) }}
                    <span class="font-size-12 text-base ml-3 font-weight-500">
                      ({{ totals.percent }}%)
                    </span>
@@ -332,14 +332,13 @@ import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import { 
-  createDateStr, 
   currencyStringToNumber, 
+  differenceInDaysOrMonths, 
   getStatusLabelFromValue, 
   toCurrencyString 
 } from "@/helpers";
 
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
-import { differenceInDays, differenceInMonths } from "date-fns";
 import { ClinDTO } from "@/api/models";
 
 @Component({
@@ -367,14 +366,14 @@ export default class TaskOrderDetails extends Vue {
     return this.showInactive? 'Hide':'Show'
   }
 
-  public totalFundingObj: {
-    totalCLINValue:number,
-    totalObligatedFunds:number,
-    totalFundsSpent:number,
+  public currentPeriodFundingTotals: {
+    CLINValue:number,
+    obligatedFunds:number,
+    fundsSpent:number,
   } = {
-    totalCLINValue:0,
-    totalObligatedFunds:0,
-    totalFundsSpent:0,
+    CLINValue:0,
+    obligatedFunds:0,
+    fundsSpent:0,
   }
 
   public taskOrderRemainingFunds = {percent:"",fundsRemaining:""}
@@ -437,27 +436,6 @@ export default class TaskOrderDetails extends Vue {
     }
   }
 
-  public timeToExpiration(start:string,end:string): Record<string, string> {
-    const formattedStartDate = createDateStr(start, true);
-    const formattedEndDate = createDateStr(end, true);
-    const difInDays = differenceInDays(new Date(end), new Date());
-    const difInMonths = differenceInMonths(new Date(end), new Date());
-
-    const useDays = difInDays <= 60;
-    const numberOfTimeUnits = useDays ? difInDays : difInMonths;
-    let unitOfTime = useDays ? "day" : "month";
-
-    if (numberOfTimeUnits !== 1) {
-      unitOfTime = unitOfTime + "s";
-    }
-
-    return {
-      startDate: formattedStartDate,
-      endDate: formattedEndDate,
-      expiration: `${numberOfTimeUnits} ${unitOfTime} to expiration`
-    }
-  }
-
   public async collectTableData(): Promise<void> {
     const inactiveStatuses = [Statuses.OptionPending.value, Statuses.Expired.value]
 
@@ -470,7 +448,7 @@ export default class TaskOrderDetails extends Vue {
         isExpired: clin.clin_status === Statuses.Expired.value,
         CLINNumber: clin.clin_number,
         CLINTitle: clin.idiq_clin_display?.display_value,
-        PoP: this.timeToExpiration(clin.pop_start_date,clin.pop_end_date),
+        PoP: differenceInDaysOrMonths(clin.pop_start_date,clin.pop_end_date),
         popStartDate: clin.pop_start_date,
         status: clin.clin_status,
         statusLabel: getStatusLabelFromValue(clin.clin_status),
@@ -494,10 +472,11 @@ export default class TaskOrderDetails extends Vue {
         this.tableData.push(tableRowData)
       }
 
-      this.calculateTotalFundingObj(tableRowData);
+      this.calculateCurrentPeriodTotals(tableRowData);
 
       this.totals = this.fundsRemaining(
-        this.totalFundingObj.totalObligatedFunds, this.totalFundingObj.totalFundsSpent
+        this.currentPeriodFundingTotals.obligatedFunds, 
+        this.currentPeriodFundingTotals.fundsSpent
       )
     });
     this.inactiveCount = this.expiredClins.length + this.optionPendingClins.length;
@@ -534,14 +513,14 @@ export default class TaskOrderDetails extends Vue {
   }
 
 
-  public calculateTotalFundingObj(clin: ClinTableRowData): void{
+  public calculateCurrentPeriodTotals(clin: ClinTableRowData): void{
     if (clin.isActive || clin.isExercised) {
-      const totalCLINValue = currencyStringToNumber(clin.totalCLINValue || "0");
+      const CLINValue = currencyStringToNumber(clin.totalCLINValue || "0");
       const obligatedFunds = currencyStringToNumber(clin.obligatedFunds || "0");
-      const totalFundsSpent = currencyStringToNumber(clin.totalFundsSpent || "0");
-      this.totalFundingObj.totalCLINValue += totalCLINValue;
-      this.totalFundingObj.totalObligatedFunds += obligatedFunds;
-      this.totalFundingObj.totalFundsSpent += totalFundsSpent;
+      const fundsSpent = currencyStringToNumber(clin.totalFundsSpent || "0");
+      this.currentPeriodFundingTotals.CLINValue += CLINValue;
+      this.currentPeriodFundingTotals.obligatedFunds += obligatedFunds;
+      this.currentPeriodFundingTotals.fundsSpent += fundsSpent;
     } 
   }
 

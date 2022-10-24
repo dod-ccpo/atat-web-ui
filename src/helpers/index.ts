@@ -4,7 +4,7 @@ import _ from "lodash";
 import Periods from "@/store/periods";
 import { Statuses } from "@/store/acquisitionPackage";
 import ATATCharts from "@/store/charts";
-import parseISO from "date-fns/parseISO";
+import { differenceInDays, differenceInMonths, parseISO } from "date-fns";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -264,6 +264,30 @@ export function createDateStr(dateStr: string, period: boolean): string {
   return m + p + " " + d + ", " + y;
 }
 
+export function differenceInDaysOrMonths(
+  start:string, end:string, daysCutoff?: number
+): Record<string, string> {
+  daysCutoff = daysCutoff || 60;
+  const formattedStartDate = createDateStr(start, true);
+  const formattedEndDate = createDateStr(end, true);
+  const difInDays = differenceInDays(new Date(end), new Date());
+  const difInMonths = differenceInMonths(new Date(end), new Date());
+
+  const useDays = difInDays <= daysCutoff;
+  const numberOfTimeUnits = useDays ? difInDays : difInMonths;
+  let unitOfTime = useDays ? "day" : "month";
+
+  if (numberOfTimeUnits !== 1) {
+    unitOfTime = unitOfTime + "s";
+  }
+
+  return {
+    startDate: formattedStartDate,
+    endDate: formattedEndDate,
+    expiration: `${numberOfTimeUnits} ${unitOfTime} to expiration`
+  }
+}
+
 export function scrollToId(id: string): void {
   const el = document.getElementById(id);
   if (el) {
@@ -277,5 +301,3 @@ export function getStatusLabelFromValue(value: string): string {
   const statusKey = _.startCase(value.replaceAll("_", " ").toLowerCase()).replaceAll(" ", "");
   return Statuses[statusKey] ? Statuses[statusKey].label : "";
 }
-
-

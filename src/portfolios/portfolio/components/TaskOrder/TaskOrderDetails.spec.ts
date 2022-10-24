@@ -4,7 +4,6 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 import { ClinTableRowData } from "types/Global";
-import { add, formatISO } from "date-fns";
 import { ClinDTO } from "@/api/models";
 import { Statuses } from "@/store/acquisitionPackage";
 
@@ -205,20 +204,6 @@ describe("Testing TaskOrderDetails Component", () => {
       expect(fundsObj.percent).toBe("50");
       expect(fundsObj.fundsRemaining).toBe("$500.00 remaining");
       fundsObj = wrapper.vm.fundsRemaining("0", "0")
-    });    
-
-    it("timeToExpiration() - creates string of days or months remaining", async () => {
-      let endDate = formatISO(add(new Date(), {months: 1}));
-      let dateInfo = wrapper.vm.timeToExpiration("2022-01-01", endDate);
-      expect(dateInfo.expiration).toBe("30 days to expiration");
-
-      endDate = formatISO(add(new Date(), {months: 4, days: 15}));
-      dateInfo = wrapper.vm.timeToExpiration("2022-01-01", endDate);
-      expect(dateInfo.expiration).toBe("4 months to expiration");
-
-      endDate = formatISO(add(new Date(), {days: 1, hours: 12}));
-      dateInfo = wrapper.vm.timeToExpiration("2022-01-01", endDate);
-      expect(dateInfo.expiration).toBe("1 day to expiration");
     });    
 
     it("collectTableData() - builds CLIN data for the table", async () => {
