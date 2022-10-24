@@ -64,7 +64,7 @@
         elevation="0"
       >
         <div class="d-flex">
-          <span class="pr-2 font-weight-500">Total Lifecycle amount</span>
+          <span class="pr-2 font-weight-500">Total lifecycle amount</span>
           <ATATTooltip
             :tooltipText="lifecycleTooltip"
             id="LifecycleToolTip"
