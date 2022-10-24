@@ -88,8 +88,10 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage
       .loadData<FairOpportunityDTO>({storeProperty: StoreProperties.FairOpportunity});
+    console.log("storeData", storeData);
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity;
+      console.log("this.selectedException", this.selectedException)
     }
   }
 
