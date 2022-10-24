@@ -255,14 +255,9 @@ const getStoreDataTableProperty = (
   store: AcquisitionPackageStore
 ): BaseTableDTO => {
   // get specific property
-  console.log("getStoreDataTableProperty - storeProperty:", storeProperty)
-  // console.log("store", store);
-
   const dataProperty = (store as unknown as Record<string, BaseTableDTO>)[
     storeProperty
   ];
-
-  console.log("dataProperty", dataProperty)
 
   if (!dataProperty) {
     throw new Error(`unable to locate store property : ${storeProperty}`);

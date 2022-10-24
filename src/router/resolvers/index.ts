@@ -30,7 +30,6 @@ const evalPlanRequired = (): boolean => {
 }
 
 export const CreateEvalPlanRouteResolver = (current: string): string => {
-  debugger;
   if (evalPlanRequired()) {
     return routeNames.CreateEvalPlan;
   }
