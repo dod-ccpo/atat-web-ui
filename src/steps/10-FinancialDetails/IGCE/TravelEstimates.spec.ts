@@ -4,6 +4,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import TravelEstimates from "@/steps/10-FinancialDetails/IGCE/TravelEstimates.vue";
 import validators from "@/plugins/validation";
+import IGCEStore from "@/store/IGCE";
 Vue.use(Vuetify);
 
 describe("Testing TravelEstimates Component", () => {
@@ -27,16 +28,30 @@ describe("Testing TravelEstimates Component", () => {
   it("travelFormFields() - set $data.selectedTravelEstimate to return expected value ", 
     async () => {
       const estimate = "single";
-      wrapper.setData({
-        selectedTravelEstimate: estimate
+      wrapper.vm.currentData.setCeilingPrice = estimate;
+      Vue.nextTick(()=>{
+        expect(wrapper.vm.travelFormFields).toBe(estimate);
       })
-      expect(wrapper.vm.travelFormFields).toBe(estimate)
     });
 
+  
+  it("changeSelection() - sets $data.estimatedTravelCosts to [] if !pageLoad ", 
+    async () => {
+      const estimate = "single";
+      await wrapper.setData({
+        setCeilingPrice: estimate,
+        savedData: {
+          setCeilingPrice: "multiple",
+          estimatedTravelCosts: ["1,234.56, 2,345,67"],
+        },
+      })
+      expect(wrapper.vm.$data.estimatedTravelCosts).toEqual([]);
+    });
+    
   it("santizeValue() - set $data.selectedTravelEstimate to return expected value ", 
     async () => {
       wrapper.vm.sanitizeValue(0,"0.00")
-      expect(wrapper.vm.$data.Amounts[0]).toBe("")
+      expect(wrapper.vm.currentData.estimatedTravelCosts[0]).toBe("")
     });
 
   it("getOption('0') - sends param to return formatted string like `Base`, `Option 1` ", 
@@ -50,6 +65,24 @@ describe("Testing TravelEstimates Component", () => {
       const getOption = wrapper.vm.getOption(1);
       expect(getOption).toBe("Option 1");
     });
+
+  it("saveOnLeave() - if data has changed, ensure data saved to store ", 
+    async () => {
+
+      wrapper.setData({
+        savedData: {
+          setCeilingPrice: "multiple",
+          estimatedTravelCosts: ["1,234.56, 2,345,67"],
+        },
+      })
+      const rdo = await wrapper.find("#Radio_SinglePrice");
+      await rdo.trigger("mousedown");
+      wrapper.vm.currentData.setCeilingPrice = "single"
+      
+      await wrapper.vm.saveOnLeave();
+      expect(await IGCEStore.travelEstimateNeeds.setCeilingPrice).toBe("single");
+    });
+
 
 
 

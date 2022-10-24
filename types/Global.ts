@@ -450,6 +450,4 @@ export interface IGCE {
   estimatedTravelCosts: string[],
   surgeCapacity: boolean,
   surgeCapabilities: string,
-  
 }
-

@@ -564,10 +564,10 @@ export const IGCESurgeCapabilities =  (current:string): string =>{
   if (surgeCapacity.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
     return routeNames.FeeCharged;
   }
-  if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.FeeCharged){
+  if (surgeCapacity.toUpperCase() !== "YES" && current === routeNames.FeeCharged){
     return routeNames.SurgeCapacity;
   }
-  return routeNames.SurgeCapabilities
+  return routeNames.SurgeCapabilities;
 }
 export const IGCECannotProceedResolver = (current: string): string => {
   const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
