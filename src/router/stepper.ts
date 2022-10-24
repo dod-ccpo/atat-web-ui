@@ -336,7 +336,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Create Evaluation Plan",
         path: "create-eval-plan",
-        // name: routeNames.EvaluationPlan,
         name: routeNames.CreateEvalPlan,
         component: CreateEvalPlan,
         completePercentageWeight: 5,

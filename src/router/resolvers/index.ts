@@ -26,7 +26,7 @@ export const AcorsRouteResolver = (current: string): string => {
 };
 
 const evalPlanRequired = (): boolean => {
-  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
+  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
 }
 
 export const CreateEvalPlanRouteResolver = (current: string): string => {
@@ -39,7 +39,7 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
 };
 
 export const EvalPlanSummaryRouteResolver = (current: string): string => {
-  return current === routeNames.NoEvalPlan && !evalPlanRequired()
+  return current === routeNames.NoEvalPlan
     ? routeNames.Exceptions
     : routeNames.EvalPlanSummary;
 };
@@ -48,9 +48,9 @@ export const NoEvalPlanRouteResolver = (current: string): string => {
   if (current === routeNames.EvalPlanSummary) {
     return routeNames.CurrentContract;
   }
-  return current === routeNames.CurrentContract && !evalPlanRequired()
-    ? routeNames.NoEvalPlan
-    : routeNames.EvalPlanSummary;
+  return current === routeNames.CurrentContract && evalPlanRequired()
+    ? routeNames.EvalPlanSummary
+    : routeNames.NoEvalPlan;
 };
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
