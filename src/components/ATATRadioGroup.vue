@@ -17,6 +17,19 @@
             v-html="legend"
           >
           </legend>
+          
+          <span v-if="legendLink">
+            <a 
+              role="button"
+              tabindex="0"
+              :id="legendLink.id"
+              @click="legendLinkClicked"
+              @keydown.enter="legendLinkClicked"
+              @keydown.space="legendLinkClicked"
+            >
+              {{ legendLink.linkText }}
+            </a>
+          </span>
 
           <ATATTooltip 
             v-if="tooltipText"
@@ -151,6 +164,7 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: false }) private validateOtherNow?: boolean;
   @Prop({ default: false}) private clearOtherValidation?: boolean;
   @PropSync("validateOtherOnBlur") private _validateOtherOnBlur?: boolean;
+  @Prop() public legendLink?: Record<string, string>
 
   // data
   private errorMessages: string[] = [];
@@ -246,6 +260,13 @@ export default class ATATRadioGroup extends Vue {
   public resetOtherValidation(): void {
     this.$refs.atatTextInput.errorBucket = [];
     this.$refs.atatTextInput.errorCount = 0;
+  }
+
+  public legendLinkClicked(e: Event): void {
+    debugger;
+    if (this.legendLink) {
+      this.$emit(this.legendLink.emitText, e)
+    }
   }
 
 }

@@ -17,8 +17,9 @@
 
       <ATATRadioGroup 
         id="EvalPlanOptions"
-        legend="Which source selection process is applicable to your requirement?
-          <a role='button' class='font-weight-400'>Learn more</a>"
+        legend="Which source selection process is applicable to your requirement?"
+        :legend-link="legendLink"
+        @openSlideoutPanel="openSlideoutPanel"
         :value.sync="selectedOption"
         :items="evalOptions"
         :rules="[
@@ -34,11 +35,14 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
-import { RadioButton } from "types/Global"
+import { RadioButton, SlideoutPanelContent } from "types/Global"
+import SlideoutPanel from "@/store/slideoutPanel";
+import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
 
 @Component({
   components: {
     ATATRadioGroup,
+    CreateEvalPlanSlideOut,
   }
 })
 
@@ -71,5 +75,29 @@ export default class CreateEvalPlan extends Vue {
       value: "LumpSumMultiCSP",
     }
   ];
+
+  public legendLink: Record<string, string> = {
+    id: "LearnMore",
+    linkText: "Learn more",
+    emitText: "openSlideoutPanel"
+  }
+
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: CreateEvalPlanSlideOut,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+
+  }
+
 }
+
 </script>
