@@ -3,12 +3,18 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
 import { 
+  AcorsRouteResolver,
+  CreateEvalPlanRouteResolver,
+  EvalPlanSummaryRouteResolver,
   IGCECannotProceedResolver, 
   IGCEGatherPriceEstimatesResolver, 
   IGCESupportingDocumentationResolver, 
-  IGCESurgeCapabilities
-} from "../resolvers/index"
+  IGCESurgeCapabilities,
+  NoEvalPlanRouteResolver,
 
+} from "../resolvers/index"
+import { routeNames } from "@/router/stepper"
+import Vue from "vue";
 
 describe("testing route resolvers", () => {
   const legitPeriod = [
@@ -24,6 +30,90 @@ describe("testing route resolvers", () => {
     Periods.setPeriods([]);
     DescriptionOfWork.setIsIncomplete(true);
   })
+
+  describe("ACORs Resolvers", () => {
+    it ("AcorsRouteResolver() - routes to acquisition package summary", async () => {
+      await AcquisitionPackage.setHasAlternateCOR(false);
+      const route = AcorsRouteResolver(routeNames.AlternateCor);
+      expect(route).toBe(routeNames.AcqPackageSummary);
+    });
+
+    it ("AcorsRouteResolver() - routes to 'has ACOR' question page", async () => {
+      await AcquisitionPackage.setHasAlternateCOR(false);
+      const route = AcorsRouteResolver(routeNames.AcqPackageSummary);
+      expect(route).toBe(routeNames.AlternateCor);
+    });
+
+    it ("AcorsRouteResolver() - routes to ACOR info form", async () => {
+      await AcquisitionPackage.setHasAlternateCOR(true);
+      const route = AcorsRouteResolver(routeNames.AcqPackageSummary);
+      Vue.nextTick(() => {
+        expect(route).toBe(routeNames.AcorInformation);
+      })
+    });
+  });
+
+  describe("Evaluation Plan Resolvers", () => {
+    it ("CreateEvalPlanRouteResolver() - routes to Create Eval Plan page", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "NO_NONE" }
+      );
+      const route = CreateEvalPlanRouteResolver(routeNames.Exceptions);
+      expect(route).toBe(routeNames.CreateEvalPlan);
+    });
+
+    it ("CreateEvalPlanRouteResolver() - routes to No Eval Plan Needed page", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "foo" }
+      );
+      const route = CreateEvalPlanRouteResolver(routeNames.Exceptions);
+      expect(route).toBe(routeNames.NoEvalPlan);
+    });
+
+    it ("CreateEvalPlanRouteResolver() - routes to Fair Opportunity Exceptions page", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "foo" }
+      );
+      const route = CreateEvalPlanRouteResolver(routeNames.NoEvalPlan);
+      expect(route).toBe(routeNames.Exceptions);
+    });
+
+    it ("EvalPlanSummaryRouteResolver() - routes to Fair Opportunity Exceptions page", async () => {
+      const route = EvalPlanSummaryRouteResolver(routeNames.NoEvalPlan);
+      expect(route).toBe(routeNames.Exceptions);
+    });
+
+    it ("EvalPlanSummaryRouteResolver() - routes to Eval Plan Summary page", async () => {
+      const route = EvalPlanSummaryRouteResolver("foo");
+      expect(route).toBe(routeNames.EvalPlanSummary);
+    });
+
+    it ("NoEvalPlanRouteResolver() - routes to Current Contract", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "NO_NONE" }
+      );
+      const route = NoEvalPlanRouteResolver(routeNames.EvalPlanSummary);
+      expect(route).toBe(routeNames.CurrentContract);
+    });
+
+    it ("NoEvalPlanRouteResolver() - routes to Eval Plan Summary page", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "NO_NONE" }
+      );
+      const route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
+      expect(route).toBe(routeNames.EvalPlanSummary);
+    });
+
+    it ("NoEvalPlanRouteResolver() - routes to No Eval Plan Needed page", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "foo" }
+      );
+      const route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
+      expect(route).toBe(routeNames.NoEvalPlan);
+    });
+
+  });
+
   describe("IGCE Resolvers", ()=>{
     it("IGCESurgeCapabilities('Create_Price_Estimate') returns routeNames.FeeCharged", 
       async () => {
