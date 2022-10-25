@@ -28,7 +28,7 @@ describe("Testing TravelEstimates Component", () => {
   it("travelFormFields() - set $data.selectedTravelEstimate to return expected value ", 
     async () => {
       const estimate = "single";
-      wrapper.vm.currentData.setCeilingPrice = estimate;
+      wrapper.vm.currentData.ceilingPrice = estimate;
       Vue.nextTick(()=>{
         expect(wrapper.vm.travelFormFields).toBe(estimate);
       })
@@ -39,9 +39,9 @@ describe("Testing TravelEstimates Component", () => {
     async () => {
       const estimate = "single";
       await wrapper.setData({
-        setCeilingPrice: estimate,
+        ceilingPrice: estimate,
         savedData: {
-          setCeilingPrice: "multiple",
+          ceilingPrice: "multiple",
           estimatedTravelCosts: ["1,234.56, 2,345,67"],
         },
       })
@@ -71,14 +71,14 @@ describe("Testing TravelEstimates Component", () => {
 
       wrapper.setData({
         savedData: {
-          setCeilingPrice: "multiple",
+          ceilingPrice: "multiple",
           estimatedTravelCosts: ["1,234.56, 2,345,67"],
         },
       })
-      wrapper.vm.currentData.setCeilingPrice = "single"
+      wrapper.vm.currentData.ceilingPrice = "single"
       
       await wrapper.vm.saveOnLeave();
-      expect(await IGCEStore.travelEstimateNeeds.setCeilingPrice).toBe("single");
+      expect(await IGCEStore.travelEstimateNeeds.ceilingPrice).toBe("single");
     });
 
 

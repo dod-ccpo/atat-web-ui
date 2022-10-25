@@ -13,7 +13,7 @@ describe("Organization Store", () => {
   let igceStore: IGCEStore;
 
   const travelEstimateNeeds: TravelEstimateNeeds = {
-    setCeilingPrice: 'single',
+    ceilingPrice: 'single',
     estimatedTravelCosts: ['1234.56']
   }
 
@@ -35,7 +35,7 @@ describe("Organization Store", () => {
   describe("IGCE Store", ()=>{
     it("setTravelEstimateNeeds(needs) to set store properties", async()=>{
       igceStore.setTravelEstimateNeeds(travelEstimateNeeds);
-      expect(igceStore.travelEstimateNeeds.setCeilingPrice).toBe(
+      expect(igceStore.travelEstimateNeeds.ceilingPrice).toBe(
         "single"
       )
     });
@@ -50,7 +50,7 @@ describe("Organization Store", () => {
     it("getTravelEstimateNeeds(needs) and successfully retrieve store properties", async()=>{
       igceStore.setTravelEstimateNeeds(travelEstimateNeeds);
       const teNeeds = await igceStore.getTravelEstimateNeeds();
-      expect(teNeeds.setCeilingPrice).toBe('single');
+      expect(teNeeds.ceilingPrice).toBe('single');
     })
 
     it("getSurgeRequirements(needs) and successfully retrieve store properties", async()=>{

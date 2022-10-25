@@ -32,10 +32,12 @@
         </p>
         <ATATTextField
           label=""
+          ref="PercentageTextbox"
           id="ContractPricePercentage"
           placeHolder="1-50"
           suffix="%"
           width="150"
+          @blur="hasErrorMessages"
           :value.sync="capabilities"
           :rules="[
             $validators.isBetween(1, 50, 'Please enter a number between 1-50'),
@@ -49,6 +51,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
+import Vue from "vue";
 import { Component, Mixins } from "vue-property-decorator";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -63,9 +66,14 @@ import IGCEStore, {SurgeRequirements } from "@/store/IGCE";
   },
 })
 export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
+   $refs!: {
+    PercentageTextbox: Vue & {
+      errorMessages: [];
+    };
+  };
+
   private capabilities = "";
   private capacity = "";
-
   private get currentData(): SurgeRequirements {
     return {
       capabilities: this.capabilities,
@@ -82,6 +90,10 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 
+  public hasErrorMessages(): boolean {
+    return this.$refs.PercentageTextbox.errorMessages.length>0;
+  }
+
   public async loadOnEnter(): Promise<void> {
     const storeData = await IGCEStore.getSurgeRequirements();
     if (storeData) {
@@ -92,13 +104,15 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    if (this.hasErrorMessages()){
+      this.capabilities = "";
+    }
     if (this.hasChanged()) {
-      if (this.hasChanged()) {
-        await IGCEStore.setSurgeRequirements(this.currentData);
-      }
+      await IGCEStore.setSurgeRequirements(this.currentData);
     }
     return true;
   }
+
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }

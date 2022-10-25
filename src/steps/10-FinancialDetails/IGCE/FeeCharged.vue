@@ -17,22 +17,24 @@
         <ATATRadioGroup
           id="isFeeChargedOptions"
           width="180"
-          :value.sync="feeCharged"
+          :value.sync="isCharged"
           :items="items"
           name="is-fee-charged"
           card="true"
           :rules="[$validators.required('Please select an option')]"
         >
         </ATATRadioGroup>
-        <hr class="mt-7" v-if="feeCharged==='YES'" />
+        <hr class="mt-7" v-if="isCharged==='YES'" />
         <ATATTextField
-          v-if="feeCharged==='YES'"
+          v-if="isCharged==='YES'"
+          ref = "PercentageTextbox"
           label="What percentage of the total price does your contracting office charge?"
           id="ContractPricePercentage"
           placeHolder="1-20"
           suffix="%"
           width="150"
-          :value.sync="feePercentage"
+          @blur="hasErrorMessages"
+          :value.sync="percentage"
           :rules="[
              $validators.required('Please enter your contracting office’s fee.'),
              $validators.isBetween(1, 20, 'The percentage must be less than or equal to 20%.'),
@@ -44,14 +46,12 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-
 import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"
-import { RequirementsCostEstimateDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import IGCEStore, { Fee } from "@/store/IGCE";
 
 @Component({
   components: {
@@ -60,8 +60,15 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 export default class FeeCharged  extends Mixins(SaveOnLeave)  {
-  private feeCharged = "";
-  private feePercentage = "";
+  $refs!: {
+    PercentageTextbox: Vue & {
+      errorMessages: () => [];
+    };
+  };
+
+
+  private isCharged = "";
+  private percentage = "";
   private items = [
     {
       id: "YES",
@@ -75,53 +82,51 @@ export default class FeeCharged  extends Mixins(SaveOnLeave)  {
     },
   ];
 
-  private get currentData(): RequirementsCostEstimateDTO {
+  private get currentData(): Fee {
     return {
-      feePercentage: this.feeCharged==="YES" ? this.feePercentage : "",
-      feeCharged: this.feeCharged
+      percentage: this.isCharged==="YES" ? this.percentage : "",
+      isCharged: this.isCharged
     };
   }
 
-   private savedData: RequirementsCostEstimateDTO = {
-     feePercentage: "",
-     feeCharged: ""
+   private savedData: Fee = {
+     percentage: "",
+     isCharged: ""
    };
-
 
    private hasChanged(): boolean {
      return hasChanges(this.currentData, this.savedData);
    }
    
+   public hasErrorMessages(): boolean {
+     if (this.$refs.PercentageTextbox){
+       return this.$refs.PercentageTextbox.errorMessages.length>0;
+     }
+     return false;
+   }
+
    public async loadOnEnter(): Promise<void> {
-     //const storeData = await AcquisitionPackage.
-     //loadData<RequirementsCostEstimateDTO>({storeProperty: 
-     //StoreProperties.RequirementsCostEstimate});
-     const storeData = 
-    await AcquisitionPackage.getRequirementsCostEstimate();
+     const storeData: Fee = await IGCEStore.getFeeSpecs();
      if (storeData) {
-       this.savedData.feePercentage = storeData.feePercentage;
-       this.savedData.feeCharged = storeData.feeCharged;
-       this.feePercentage = storeData.feePercentage || "";
-       this.feeCharged = storeData.feeCharged || ""
+       this.savedData = storeData;
+       this.percentage = storeData.percentage;
+       this.isCharged = storeData.isCharged;
      }
    }
 
    protected async saveOnLeave(): Promise<boolean> {
      if (this.hasChanged()) {
-       //await AcquisitionPackage
-       //     .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
-       //     storeProperty: StoreProperties.RequirementsCostEstimate});
-       await AcquisitionPackage.setRequirementsCostEstimate(
-         this.currentData
-       );
-        
+       if (this.hasErrorMessages()){
+         this.percentage = "";
+       }
+       await IGCEStore.setFeeSpecs(this.currentData)    
      }
      return true;
    }
+
    public async mounted(): Promise<void> {
      await this.loadOnEnter();
    }
-
 
 }
 </script>

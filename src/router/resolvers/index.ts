@@ -570,11 +570,7 @@ export const IGCESurgeCapabilities =  (current:string): string =>{
   return routeNames.SurgeCapabilities;
 }
 export const IGCECannotProceedResolver = (current: string): string => {
-  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
-  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
-  const validToProceed = hasLegitPeriods && isCompleteDOW;
- 
-  if (validToProceed){
+  if (IGCEStore.hasDOWandPoP){
     if (current ===  routeNames.CreatePriceEstimate){
       return routeNames.GatherPriceEstimates;
     } else if (current == routeNames.GatherPriceEstimates) {
@@ -585,23 +581,17 @@ export const IGCECannotProceedResolver = (current: string): string => {
 };
 
 export const IGCEGatherPriceEstimatesResolver = (current: string): string => {
-  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
-  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
-  const validToProceed = hasLegitPeriods && isCompleteDOW;
-  if (current === routeNames.TravelEstimates && validToProceed){
+  if (current === routeNames.TravelEstimates && IGCEStore.hasDOWandPoP){
     return routeNames.GatherPriceEstimates;
   }
 
-  return current === routeNames.GatherPriceEstimates && validToProceed
+  return current === routeNames.GatherPriceEstimates && IGCEStore.hasDOWandPoP
     ? routeNames.CreatePriceEstimate
     : routeNames.FundingPlanType;
 };
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {
-  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
-  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
-  const validToProceed = hasLegitPeriods && isCompleteDOW;
-  return current === routeNames.FundingPlanType && validToProceed
+  return current === routeNames.FundingPlanType && IGCEStore.hasDOWandPoP
     ? routeNames.EstimatesDeveloped
     : routeNames.CannotProceed;
 };

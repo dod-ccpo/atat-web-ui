@@ -19,22 +19,22 @@
             :card="true"
             :items="travelEstimateOptions"
             @mousedown="selectTravelEstimate"
-            :value.sync="setCeilingPrice"
+            :value.sync="ceilingPrice"
             :rules="[$validators.required('Please select an option')]"
           />
         </div>
-        <hr class="mt-8" v-if="setCeilingPrice !== ''" />
+        <hr class="mt-8" v-if="ceilingPrice !== ''" />
 
-        <fieldset class="no-border" v-if="setCeilingPrice !== ''">
+        <fieldset class="no-border" v-if="ceilingPrice !== ''">
           <legend
             :class="[
-              { 'font-weight-500': setCeilingPrice === 'multiple' },
+              { 'font-weight-500': ceilingPrice === 'multiple' },
               ' mb-4',
             ]"
           >
             Estimated travel costs per period
           </legend>
-          <template v-if="setCeilingPrice === 'single'">
+          <template v-if="ceilingPrice === 'single'">
             <ATATTextField
               id="SingleAmount"
               :value.sync="estimatedTravelCosts[0]"
@@ -52,7 +52,7 @@
               ]"
             />
           </template>
-          <template v-if="currentData.setCeilingPrice === 'multiple'">
+          <template v-if="currentData.ceilingPrice === 'multiple'">
             <div
               v-for="(period, idx) in periods"
               :key="idx"
@@ -113,10 +113,10 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 export default class TravelEstimates extends Mixins(SaveOnLeave) {
   private periods: PeriodDTO[] | null = [];
-  private setCeilingPrice = "";
+  private ceilingPrice = "";
   private estimatedTravelCosts = [""];
   public savedData: TravelEstimateNeeds = {
-    setCeilingPrice: "",
+    ceilingPrice: "",
     estimatedTravelCosts: [],
   };
 
@@ -137,14 +137,14 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
 
   get currentData(): TravelEstimateNeeds {
     return{
-      setCeilingPrice: this.setCeilingPrice,
+      ceilingPrice: this.ceilingPrice,
       estimatedTravelCosts: this.estimatedTravelCosts,
     }
   };
 
-  @Watch("setCeilingPrice")
+  @Watch("ceilingPrice")
   protected changeSelection(newVal: string): void{
-    if (newVal !== this.savedData.setCeilingPrice){
+    if (newVal !== this.savedData.ceilingPrice){
       this.estimatedTravelCosts = [];
     }
   }
@@ -171,7 +171,7 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   private async loadOnEnter(): Promise<void> {
     const store = await IGCEStore.getTravelEstimateNeeds();
     this.savedData = store;
-    this.setCeilingPrice = store.setCeilingPrice;
+    this.ceilingPrice = store.ceilingPrice;
     this.estimatedTravelCosts = store.estimatedTravelCosts;
   }
 

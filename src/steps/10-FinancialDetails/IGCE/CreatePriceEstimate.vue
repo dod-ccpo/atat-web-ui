@@ -106,6 +106,7 @@ import { Component } from "vue-property-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { SlideoutPanelContent } from "types/Global";
 import IGCELearnMore from "./components/ICGELearnMore.vue";
+import IGCEStore from "@/store/IGCE";
 @Component({
   components: {
     ATATAlert,
@@ -157,6 +158,7 @@ export default class CreatePriceEstimate extends Vue {
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    
   };
 
 }
