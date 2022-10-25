@@ -334,7 +334,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
 }
 
 export interface CostsDTO extends BaseTableDTO {
-  clin: ReferenceColumn | string;
+  clin: ReferenceColumn["value"];
   csp: ReferenceColumn | string;
   "csp.name"?:string;
   year_month: string;
@@ -367,6 +367,7 @@ export interface ClinDTO extends BaseTableDTO {
   funds_total: number;
   cost_records?: CostsDTO[]
   funds_spent_clin?: number; // total of all is_actual=true costs of the clin
+  clin_title?: string;
 }
 
 export interface ClinDisplayDTO {
@@ -461,7 +462,8 @@ export interface PackageSummaryDTO { // TODO: delete this interface after acq pa
 
 export interface AcquisitionPackageSummarySearchDTO {
   acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER" | // open
-  "TASK_ORDER_AWARDED" | "ARCHIVED" | ""; // empty string for all statuses including deleted
+  "TASK_ORDER_AWARDED" | "ARCHIVED" |
+  "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER,TASK_ORDER_AWARDED,ARCHIVED";
   sort: "project_overview" | "DESCsys_updated_on"; // one of these two values should always exist
   searchString?: string;
   limit?: number;

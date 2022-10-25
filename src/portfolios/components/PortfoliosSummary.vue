@@ -121,7 +121,7 @@ import Toast from "@/store/toast";
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
 
-import { StatusTypes } from "@/store/acquisitionPackage";
+import { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { formatDistanceToNow } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
@@ -154,13 +154,13 @@ export default class PortfoliosSummary extends Vue {
 
   public filterChips: FilterOption[] = []
 
-  public roles = PortfolioData.summaryFilterRoles;
+  public roles = PortfolioData.summaryFilterRoles; // EJY figure this out
 
   public async generateFilterChips(): Promise<void> {
     this.filterChips = [];
     if (this.queryParams.role && this.queryParams.role.toLowerCase() !== "all") {
       const role = this.roles.find(
-        obj => obj.value.toLowerCase() === this.queryParams.role?.toLowerCase()
+        (obj: FilterOption) => obj.value.toLowerCase() === this.queryParams.role?.toLowerCase()
       );
       if (role) {
         this.filterChips.push(role);
@@ -360,9 +360,10 @@ export default class PortfoliosSummary extends Vue {
       cardData.title = portfolio.name;
       cardData.status = portfolio.portfolio_status;
       cardData.fundingStatus = portfolio.funding_status;
-      cardData.serviceAgency = portfolio.dod_component;
+      cardData.agency = portfolio.dod_component;
       // lastModified - if status is "Processing" use "Started ... ago" string
-      if (cardData.status.toLowerCase() === StatusTypes.Processing.toLowerCase()) {
+
+      if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
         const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
         cardData.lastModifiedStr = "Started " + agoString + " ago";
       } else {
@@ -377,7 +378,7 @@ export default class PortfoliosSummary extends Vue {
         cardData.currentPoP = popStart + " - " + popEnd;
       }
 
-      if (portfolio.portfolio_status.toLowerCase() !== StatusTypes.Processing.toLowerCase()) {
+      if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
         cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
         cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
         cardData.fundsSpentPercent = String(Math.round(

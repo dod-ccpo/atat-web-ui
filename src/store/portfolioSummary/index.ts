@@ -12,6 +12,7 @@ import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpe
 import Vue from "vue";
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
+import AcquisitionPackage, { Statuses } from "../acquisitionPackage";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
@@ -199,7 +200,7 @@ export class PortfolioSummaryStore extends VuexModule {
             .replace("%", ""));
           // TODO: check if there can be more SPENDING_ACTUAL alerts outside of these 2 for a
           //  portfolio. If there can be more, the if-else block needs to be updated two if blocks
-          if (threshold > 75 && threshold <= 99) {
+          if (threshold > 75 && threshold < 100) {
             portfolio.funding_status.push("AT_RISK");
           } else { // threshold >= 100;
             portfolio.funding_status.push("DELINQUENT");
@@ -226,7 +227,8 @@ export class PortfolioSummaryStore extends VuexModule {
     const portfolioSummaryList = filterObject.portfolioSummaryList;
     const searchDTO = filterObject.searchDTO;
     return portfolioSummaryList.filter(portfolio => {
-      return portfolio.portfolio_status === "ACTIVE" && // processing folios do not have alerts
+      // processing folios do not have alerts
+      return portfolio.portfolio_status === Statuses.Active.value && 
         (portfolio.funding_status.filter(portfolioFundingStatus =>
           searchDTO.fundingStatuses.indexOf(portfolioFundingStatus) !== -1).length > 0)
     })
@@ -344,7 +346,8 @@ export class PortfolioSummaryStore extends VuexModule {
         params:
           {
             sysparm_fields: "sys_id,clin,task_order_number,is_actual,value",
-            sysparm_query: "clinIN" + clinNumbers
+            sysparm_query: "clinIN" + clinNumbers,
+            limit: -1,
           }
       }
     )
@@ -384,13 +387,12 @@ export class PortfolioSummaryStore extends VuexModule {
         let totalLifecycleAmount = 0;
         taskOrder.clin_records?.forEach(clinRecord => {
           let fundsSpentForClin = 0;
-          if (clinRecord.clin_status === 'ACTIVE' ||
-            clinRecord.clin_status === 'OPTION_EXERCISED' ||
-            clinRecord.clin_status === 'ON_TRACK' ||
-            clinRecord.clin_status === 'AT_RISK' ||
-            clinRecord.clin_status === 'EXPIRING_POP' ||
-            clinRecord.clin_status === 'DELINQUENT' ||
-            clinRecord.clin_status === 'FUNDING_AT_RISK') { // TODO: double check the statuses
+          const validStatusesForTotalObligated = [
+            Statuses.Active.value, Statuses.OptionExercised.value, Statuses.OnTrack.value,
+            Statuses.AtRisk.value, Statuses.ExpiringPop.value, Statuses.Delinquent.value, 
+            Statuses.FundingAtRisk.value, Statuses.Expired.value
+          ]
+          if (validStatusesForTotalObligated.includes(clinRecord.clin_status)) {
             totalObligatedForPortfolio =
               totalObligatedForPortfolio + Number(clinRecord.funds_obligated);
             fundsObligatedTaskOrder = fundsObligatedTaskOrder +

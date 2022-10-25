@@ -2,9 +2,9 @@ import { AgencyDTO, ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@
 import { Checkbox, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
-import { StatusTypes } from "@/store/acquisitionPackage";
+import { Statuses } from "@/store/acquisitionPackage";
 import ATATCharts from "@/store/charts";
-import parseISO from "date-fns/parseISO";
+import { differenceInDays, differenceInMonths, parseISO } from "date-fns";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -120,6 +120,7 @@ export const toCurrencyString = (num: number, decimals?: boolean): string => {
 
 // converts a formatted currency string back to a number
 export const currencyStringToNumber = (str: string): number => {
+  str = str.charAt(0) === "$" ? str.substring(1) : str;
   return str ? parseFloat(str.replaceAll(",", "")) : 0;
 }
 
@@ -211,28 +212,42 @@ export function getUserInitials(member:User): string {
 
 export function getStatusChipBgColor(status: string): string {
   switch (status.toLowerCase()) {
-  case StatusTypes.Active.toLowerCase():
-  case StatusTypes.OnTrack.toLowerCase():
-  case StatusTypes.TaskOrderAwarded.toLowerCase():
+  case Statuses.Active.value.toLowerCase():
+  case Statuses.OnTrack.value.toLowerCase():
+  case Statuses.OnTrack.label.toLowerCase():
+  case Statuses.TaskOrderAwarded.value.toLowerCase():
+  case Statuses.TaskOrderAwarded.label.toLowerCase():
     return "bg-success";
-  case StatusTypes.Processing.toLowerCase():
-  case StatusTypes.Upcoming.toLowerCase():
-  case StatusTypes.Draft.toLowerCase():
-  case StatusTypes.WaitingForSignatures.toLowerCase():
+  case Statuses.Processing.value.toLowerCase():
+  case Statuses.Upcoming.value.toLowerCase():
+  case Statuses.Draft.value.toLowerCase():
+  case Statuses.WaitingForSignatures.value.toLowerCase():
+  case Statuses.WaitingForSignatures.label.toLowerCase():
+  case Statuses.OptionExercised.value.toLowerCase():
+  case Statuses.OptionExercised.label.toLowerCase():
+  case Statuses.OptionPending.value.toLowerCase():
+  case Statuses.OptionPending.label.toLowerCase():
     return "bg-info-dark";
-  case StatusTypes.AtRisk.toLowerCase():
-  case StatusTypes.WaitingForTaskOrder.toLowerCase():
-  case StatusTypes.ExpiringSoon.toLowerCase():
+  case Statuses.AtRisk.value.toLowerCase():
+  case Statuses.AtRisk.label.toLowerCase():
+  case Statuses.WaitingForTaskOrder.value.toLowerCase():
+  case Statuses.WaitingForTaskOrder.label.toLowerCase():
+  case Statuses.ExpiringSoon.value.toLowerCase():
+  case Statuses.ExpiringSoon.label.toLowerCase():
+  case Statuses.ExpiringPop.value.toLowerCase():
+  case Statuses.ExpiringPop.label.toLowerCase():
+  case Statuses.FundingAtRisk.value.toLowerCase():
+  case Statuses.FundingAtRisk.label.toLowerCase():
     return "bg-warning";
-  case StatusTypes.Delinquent.toLowerCase():
-  case StatusTypes.Expired.toLowerCase():
+  case Statuses.Deleted.value.toLowerCase():
+  case Statuses.Delinquent.value.toLowerCase():
+  case Statuses.Expired.value.toLowerCase():
     return "bg-error";
-  case StatusTypes.Archived.toLowerCase():
+  case Statuses.Archived.value.toLowerCase():
     return "bg-base-dark";
   default:
     return "";
   }
-
 }
 
 const monthAbbreviations = ATATCharts.monthAbbreviations;
@@ -249,6 +264,30 @@ export function createDateStr(dateStr: string, period: boolean): string {
   return m + p + " " + d + ", " + y;
 }
 
+export function differenceInDaysOrMonths(
+  start:string, end:string, daysCutoff?: number
+): Record<string, string> {
+  daysCutoff = daysCutoff || 60;
+  const formattedStartDate = createDateStr(start, true);
+  const formattedEndDate = createDateStr(end, true);
+  const difInDays = differenceInDays(new Date(end), new Date());
+  const difInMonths = differenceInMonths(new Date(end), new Date());
+
+  const useDays = difInDays <= daysCutoff;
+  const numberOfTimeUnits = useDays ? difInDays : difInMonths;
+  let unitOfTime = useDays ? "day" : "month";
+
+  if (numberOfTimeUnits !== 1) {
+    unitOfTime = unitOfTime + "s";
+  }
+
+  return {
+    startDate: formattedStartDate,
+    endDate: formattedEndDate,
+    expiration: `${numberOfTimeUnits} ${unitOfTime} to expiration`
+  }
+}
+
 export function scrollToId(id: string): void {
   const el = document.getElementById(id);
   if (el) {
@@ -258,3 +297,7 @@ export function scrollToId(id: string): void {
   }
 }
 
+export function getStatusLabelFromValue(value: string): string {
+  const statusKey = _.startCase(value.replaceAll("_", " ").toLowerCase()).replaceAll(" ", "");
+  return Statuses[statusKey] ? Statuses[statusKey].label : "";
+}

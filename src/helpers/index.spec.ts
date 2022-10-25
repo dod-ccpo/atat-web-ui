@@ -7,6 +7,7 @@ import {
   buildClassificationLabel,
   createPeriodCheckboxItems,
   createDateStr,
+  differenceInDaysOrMonths,
   getCurrencyString,
   roundDecimal,
   toCurrencyString,
@@ -15,6 +16,7 @@ import {
 import _ from "lodash";
 import Periods from "@/store/periods";
 import { convertAgencyRecordToSelect, convertSystemChoiceToSelect} from "@/helpers"
+import { add, formatISO } from "date-fns";
 
 describe("testing src/helpers/index.ts", () => {
   const classlevelDTOResults = [
@@ -211,6 +213,21 @@ describe("testing src/helpers/index.ts", () => {
     expect(value).toBe("Dec. 31, 2022");
   })
   
+
+  it("differenceInDaysOrMonths() - creates string of days or months remaining", async () => {
+    let endDate = formatISO(add(new Date(), {months: 1}));
+    let dateInfo = differenceInDaysOrMonths("2022-01-01", endDate);
+    expect(dateInfo.expiration).toBe("30 days to expiration");
+
+    endDate = formatISO(add(new Date(), {months: 4, days: 15}));
+    dateInfo = differenceInDaysOrMonths("2022-01-01", endDate);
+    expect(dateInfo.expiration).toBe("4 months to expiration");
+
+    endDate = formatISO(add(new Date(), {days: 1, hours: 12}));
+    dateInfo = differenceInDaysOrMonths("2022-01-01", endDate);
+    expect(dateInfo.expiration).toBe("1 day to expiration");
+  });    
+
   it.each([
     { amount: 294.399, isDecimal: true },
     { amount: 3694, isDecimal: false },
