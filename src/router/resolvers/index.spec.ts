@@ -3,12 +3,18 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
 import { 
+  AcorsRouteResolver,
+  CreateEvalPlanRouteResolver,
+  EvalPlanSummaryRouteResolver,
   IGCECannotProceedResolver, 
   IGCEGatherPriceEstimatesResolver, 
   IGCESupportingDocumentationResolver, 
-  IGCESurgeCapabilities
-} from "../resolvers/index"
+  IGCESurgeCapabilities,
+  NoEvalPlanRouteResolver,
 
+} from "../resolvers/index"
+import { routeNames } from "@/router/stepper"
+import Vue from "vue";
 
 describe("testing route resolvers", () => {
   const legitPeriod = [
@@ -24,6 +30,75 @@ describe("testing route resolvers", () => {
     Periods.setPeriods([]);
     DescriptionOfWork.setIsIncomplete(true);
   })
+
+  describe("ACORs Resolvers", () => {
+    it ("return appropriate route names", async () => {
+      await AcquisitionPackage.setHasAlternateCOR(false);
+      let route = AcorsRouteResolver(routeNames.AlternateCor);
+      expect(route).toBe(routeNames.AcqPackageSummary);
+
+      route = AcorsRouteResolver(routeNames.AcqPackageSummary);
+      expect(route).toBe(routeNames.AlternateCor);
+
+      await AcquisitionPackage.setHasAlternateCOR(true);
+      route = AcorsRouteResolver(routeNames.AcqPackageSummary);
+      Vue.nextTick(() => {
+        expect(route).toBe(routeNames.AcorInformation);
+      })
+
+    });
+  });
+
+  describe("Evaluation Plan Resolvers", () => {
+    it ("CreateEvalPlanRouteResolver() - returns appropriate route names", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "NO_NONE" }
+      );
+      let route = CreateEvalPlanRouteResolver(routeNames.Exceptions);
+      expect(route).toBe(routeNames.CreateEvalPlan);
+
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "foo" }
+      );
+
+      route = CreateEvalPlanRouteResolver(routeNames.Exceptions);
+      expect(route).toBe(routeNames.NoEvalPlan);
+      
+      route = CreateEvalPlanRouteResolver(routeNames.NoEvalPlan);
+      expect(route).toBe(routeNames.Exceptions);
+    });
+
+
+    it ("EvalPlanSummaryRouteResolver() - returns appropriate route names", async () => {
+      let route = EvalPlanSummaryRouteResolver(routeNames.NoEvalPlan);
+      expect(route).toBe(routeNames.Exceptions);
+
+      route = EvalPlanSummaryRouteResolver("foo");
+      expect(route).toBe(routeNames.EvalPlanSummary);
+    });
+
+
+    it ("NoEvalPlanRouteResolver() - returns appropriate route names", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "NO_NONE" }
+      );
+      let route = NoEvalPlanRouteResolver(routeNames.EvalPlanSummary);
+      expect(route).toBe(routeNames.CurrentContract);
+
+      route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
+      expect(route).toBe(routeNames.EvalPlanSummary);
+
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "foo" }
+      );
+
+      route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
+      expect(route).toBe(routeNames.NoEvalPlan);
+    });
+
+
+  });
+
   describe("IGCE Resolvers", ()=>{
     it("IGCESurgeCapabilities('Create_Price_Estimate') returns routeNames.FeeCharged", 
       async () => {
