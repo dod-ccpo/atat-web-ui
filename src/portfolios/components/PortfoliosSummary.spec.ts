@@ -30,7 +30,7 @@ const portfolios: PortfolioSummaryDTO[] = [
       value: ""
     },
     alerts: [],
-    funding_status: []
+    portfolio_funding_status: ""
     /* eslint-enable camelcase */
   },
   {
@@ -69,7 +69,7 @@ const portfolios: PortfolioSummaryDTO[] = [
       value: ""
     },
     alerts: [],
-    funding_status: []
+    portfolio_funding_status: ""
     /* eslint-enable camelcase */
   }
 
