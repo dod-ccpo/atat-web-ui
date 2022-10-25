@@ -6,7 +6,7 @@
   >
 
     <div class="pr-5">
-      <div class="_csp-icon-wrap">
+      <div class="_csp-icon-wrap" :data-csp="CSPs[cardData.csp].title">
         <v-tooltip
           transition="slide-y-reverse-transition"
           color="rgba(0,0,0,1)"
