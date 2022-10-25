@@ -95,12 +95,16 @@ export default class FairOppExceptions extends Vue {
     }
   ];
 
-  public async mounted(): Promise<void> {
+  public async setReadOnly(): Promise<void> {
     if (!this.isForm) {
       this.selectedExceptionReadOnly = this._selectedException !== "NO_NONE" 
         ? "YES"
         : "NO";
     }
+  }
+
+  public async mounted(): Promise<void> {
+    await this.setReadOnly();
   }
 }
 </script>
