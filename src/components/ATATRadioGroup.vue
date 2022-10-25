@@ -14,8 +14,8 @@
             v-if="legend"
             class="form-field-label pb-0 mr-2"
             :class="{ 'd-sr-only': legendSrOnly }"
+            v-html="legend"
           >
-            {{ legend }}
           </legend>
 
           <ATATTooltip 
