@@ -12,23 +12,46 @@ import Periods from "@/store/periods";
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
 
-  //routing from alternate cor and the user does not have
-  //and alternatative contact rep
-  if (
-    current === routeNames.AlternateCor &&
-    hasAlternativeContactRep === false
-  ) {
-    return routeNames.Summary;
+  //routing from alternate cor and the user does not have an ACOR
+  if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
+    return routeNames.AcqPackageSummary;
   }
 
-  //routing from summary and user does not have
-  if (current === routeNames.Summary && hasAlternativeContactRep === false) {
+  //routing from summary and user does not have ACOR
+  if (current === routeNames.AcqPackageSummary && hasAlternativeContactRep === false) {
     return routeNames.AlternateCor;
   }
 
   return routeNames.AcorInformation;
 };
 
+const evalPlanRequired = (): boolean => {
+  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
+}
+
+export const CreateEvalPlanRouteResolver = (current: string): string => {
+  if (evalPlanRequired()) {
+    return routeNames.CreateEvalPlan;
+  }
+  return current === routeNames.Exceptions
+    ? routeNames.NoEvalPlan
+    : routeNames.Exceptions;
+};
+
+export const EvalPlanSummaryRouteResolver = (current: string): string => {
+  return current === routeNames.NoEvalPlan
+    ? routeNames.Exceptions
+    : routeNames.EvalPlanSummary;
+};
+
+export const NoEvalPlanRouteResolver = (current: string): string => {
+  if (current === routeNames.EvalPlanSummary) {
+    return routeNames.CurrentContract;
+  }
+  return current === routeNames.CurrentContract && evalPlanRequired()
+    ? routeNames.EvalPlanSummary
+    : routeNames.NoEvalPlan;
+};
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
@@ -716,6 +739,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
+  CreateEvalPlanRouteResolver,
+  EvalPlanSummaryRouteResolver,
+  NoEvalPlanRouteResolver,
 };
 
 // add path resolvers here 

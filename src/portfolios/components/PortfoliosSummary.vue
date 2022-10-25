@@ -146,7 +146,7 @@ export default class PortfoliosSummary extends Vue {
   public isLoading = false;
   public searchString = "";
   public searchedString = "";
-  public selectedSort = "name";
+  public selectedSort = "";
   public sortOptions: SelectData[] = [
     { text: "Portfolio name A-Z", value: "name" },
     { text: "Recently modified", value: "DESCsys_updated_on" },
@@ -342,7 +342,8 @@ export default class PortfoliosSummary extends Vue {
       this.portfolioSearchDTO.portfolioStatus = this.activeTab === "ALL" ? "" : this.activeTab;
     }
 
-    if (this.defaultSort) {
+    if (!this.selectedSort && this.defaultSort) {
+      this.selectedSort = this.defaultSort;
       this.portfolioSearchDTO.sort = this.defaultSort;
     }
 

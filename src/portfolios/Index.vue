@@ -35,7 +35,7 @@
       <v-container
         class="container-max-width"
       >
-        <PortfoliosSummary :active-tab="activeTab" />
+        <PortfoliosSummary :active-tab="activeTab" default-sort="name" />
 
       </v-container>
       <ATATFooter/>
