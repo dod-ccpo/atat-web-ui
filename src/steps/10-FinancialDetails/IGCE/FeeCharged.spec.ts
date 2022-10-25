@@ -76,7 +76,7 @@ describe("Testing FeeCharged Component", () => {
     expect(reqCostEst.isCharged).toBe(isCharged);
   });
 
-  it("saveOnLeave() if data has changed, and there are errorMessages, then set new data to " +
+  it("saveOnLeave() if data has changed, and there are errorMessages, then save new data to " +
   "IGCEStore.setFeeSpecs and don't save percentage", async () => {
     const isCharged = "YES";
     const percentage= "15";
