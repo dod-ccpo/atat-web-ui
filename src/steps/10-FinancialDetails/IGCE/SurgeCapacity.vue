@@ -91,7 +91,7 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
 
    protected async saveOnLeave(): Promise<boolean> {
      if (this.hasChanged()) {
-       await IGCEStore.setSurgeRequirements(this.currentData);
+       IGCEStore.setSurgeRequirements(this.currentData);
      }
      return true;
    }

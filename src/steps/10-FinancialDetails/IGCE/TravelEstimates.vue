@@ -177,7 +177,7 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     if (this.hasChanged()) {
-      await IGCEStore.setTravelEstimateNeeds(this.currentData);
+      IGCEStore.setTravelEstimateNeeds(this.currentData);
     }
     return true;
   }

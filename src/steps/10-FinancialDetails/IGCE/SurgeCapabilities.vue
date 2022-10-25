@@ -108,7 +108,7 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
       this.capabilities = "";
     }
     if (this.hasChanged()) {
-      await IGCEStore.setSurgeRequirements(this.currentData);
+      IGCEStore.setSurgeRequirements(this.currentData);
     }
     return true;
   }

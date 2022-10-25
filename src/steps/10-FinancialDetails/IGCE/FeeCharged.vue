@@ -126,7 +126,7 @@ export default class FeeCharged  extends Mixins(SaveOnLeave)  {
        if (this.hasErrorMessages()){
          this.percentage = "";
        }
-       await IGCEStore.setFeeSpecs(this.currentData)    
+       IGCEStore.setFeeSpecs(this.currentData)    
      }
      return true;
    }

@@ -3,7 +3,6 @@ import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-dec
 import rootStore from "@/store";
 import Periods from "../periods";
 import DescriptionOfWork from "../descriptionOfWork";
-import { PeriodDTO } from "@/api/models";
 
 export interface TravelEstimateNeeds {
   ceilingPrice: string,
