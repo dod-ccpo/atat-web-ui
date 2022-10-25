@@ -131,7 +131,8 @@ describe("PortfolioSummary Store",
       expect(api.portfolioTable.getQuery).toHaveBeenCalledWith({
         "params": {
           "sysparm_fields": "name",
-          "sysparm_query": "^nameLIKEAir Force^portfolio_managersLIKE" +
+          "sysparm_query": "^portfolio_funding_statusINAT_RISK,EXPIRING_SOON" +
+            "^nameLIKEAir Force^portfolio_managersLIKE" +
             "e0c4c728875ed510ec3b777acebb356^ORportfolio_viewersLIKEe0c4c728875ed510ec3b777" +
             "acebb356^portfolio_status!=ARCHIVED^ORDERBYname",
         }
@@ -181,8 +182,8 @@ describe("PortfolioSummary Store",
       expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].funds_obligated)
         .toBe(1000);
       expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].funds_spent).toBe(267004);
-      expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].funding_status)
-        .toStrictEqual(["AT_RISK", "EXPIRING_SOON"]);
+      expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].portfolio_funding_status)
+        .toStrictEqual("EXPIRING_SOON");
     })
 
   })

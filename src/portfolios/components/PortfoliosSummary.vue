@@ -359,7 +359,7 @@ export default class PortfoliosSummary extends Vue {
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
       cardData.status = portfolio.portfolio_status;
-      cardData.fundingStatus = portfolio.funding_status;
+      cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.agency = portfolio.dod_component;
       // lastModified - if status is "Processing" use "Started ... ago" string
 
