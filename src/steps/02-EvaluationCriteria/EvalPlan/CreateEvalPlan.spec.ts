@@ -3,10 +3,13 @@ import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import CreateEvalPlan from "@/steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.vue";
+import validators from "@/plugins/validation";
+
 Vue.use(Vuetify);
 
 describe("Testing CreateEvalPlan Component", () => {
   const localVue = createLocalVue();
+  localVue.use(validators);
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 

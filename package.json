@@ -14,6 +14,7 @@
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest --no-cache",
+
     "test-file:watch": "jest --watch --no-cache src/store/IGCE/index.spec.ts",
     "test:coverage": "jest --coverage",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
