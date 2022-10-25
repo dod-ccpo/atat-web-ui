@@ -201,7 +201,9 @@ export class PortfolioDataStore extends VuexModule {
   public async doSetportfolioSummaryQueryParams(
     params: PortfolioSummaryQueryParams
   ): Promise<void> {
+    debugger;
     Object.assign(this.portfolioSummaryQueryParams, params);
+    debugger;
   }
 
   //getter for portfolio status
