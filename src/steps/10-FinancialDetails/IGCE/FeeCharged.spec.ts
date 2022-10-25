@@ -58,6 +58,15 @@ describe("Testing FeeCharged Component", () => {
     expect(hasErrorMessages).toBe(false);
   });
 
+  it("evalIsCharged() removes $data.percentage value is user selects $data.isCharged==='NO' ", 
+    async () => {
+      await wrapper.setData({
+        isCharged: "YES",
+        percentage: "12",
+      })
+      await wrapper.vm.evalIsCharged("NO");
+      expect(await wrapper.vm.$data.percentage).toBe("");
+    });
 
   it("saveOnLeave() if data has changed, and NO errorMessages set new data to " +
   "IGCEStore.setFeeSpecs", async () => {
@@ -97,6 +106,8 @@ describe("Testing FeeCharged Component", () => {
     const reqCostEst = await IGCEStore.getFeeSpecs()
     expect(reqCostEst.percentage).not.toBe(percentage);
   });
+
+
 
 
 

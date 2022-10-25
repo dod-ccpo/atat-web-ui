@@ -46,7 +46,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"
 import { hasChanges } from "@/helpers";
@@ -93,6 +93,13 @@ export default class FeeCharged  extends Mixins(SaveOnLeave)  {
      percentage: "",
      isCharged: ""
    };
+
+   @Watch("isCharged")
+   protected evalIsCharged(newVal: string): void {
+     if (newVal === "NO"){
+       this.percentage = "";
+     }
+   }
 
    private hasChanged(): boolean {
      return hasChanges(this.currentData, this.savedData);
