@@ -175,7 +175,7 @@ describe("PortfolioSummary Store",
       jest.spyOn(api.clinDisplayTable, "getQuery").mockReturnValue(Promise.resolve(
         clinListMock as ClinDisplayDTO[]));
       jest.spyOn(api.costsTable, "getQuery").mockReturnValue(Promise.resolve(
-        costListMock as CostsDTO[]));
+        costListMock as unknown as CostsDTO[]));
       const portfolioSummaryMetadataAndDataDTO = await portfolioSummaryStore
         .searchPortfolioSummaryList(searchDTO);
       expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].funds_obligated)
