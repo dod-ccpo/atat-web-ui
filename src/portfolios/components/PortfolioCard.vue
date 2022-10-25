@@ -55,10 +55,10 @@
           </a>
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
-          <v-chip 
+          <v-chip
             :id="'StatusChip' + index" 
             :class="[
-              '_' + cardData.status.toLowerCase(),
+              '_' + (cardData.status ? cardData.status.toLowerCase() : ''),
               statusChipBgColor
             ]" 
             label
@@ -265,16 +265,19 @@ export default class PortfolioCard extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    if (this.cardData.fundingStatus && this.cardData.fundingStatus[0] !== Statuses.OnTrack.value) {
-      switch(this.cardData.fundingStatus[0]) {
+    if (this.cardData.fundingStatus && this.cardData.fundingStatus !== Statuses.OnTrack.value) {
+      switch(this.cardData.fundingStatus) {
       case Statuses.AtRisk.value:
         this.cardData.fundingAlertChipString = Statuses.AtRisk.label;
+        break;
+      case Statuses.FundingAtRisk.value:
+        this.cardData.fundingAlertChipString = Statuses.FundingAtRisk.label;
         break;
       case Statuses.ExpiringSoon.value:
         this.cardData.fundingAlertChipString = Statuses.ExpiringSoon.label;
         break;
       default:
-        this.cardData.fundingAlertChipString = toTitleCase(this.cardData.fundingStatus[0] || "")
+        this.cardData.fundingAlertChipString = toTitleCase(this.cardData.fundingStatus || "")
       }
     }
 

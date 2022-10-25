@@ -418,7 +418,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   pop_start_date: string; // "2022-01-01 << task_order.pop_start_date >>",
   funds_obligated: number; // "<< sum of obligated values in all qualifying clins >>",
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
-  funding_status: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT')[]; //DERIVED from alerts
+  portfolio_funding_status: string;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
@@ -437,7 +437,7 @@ export interface CloudServiceProviderDTO extends BaseTableDTO{
 
 export interface PortfolioSummarySearchDTO {
   role: "ALL" | "MANAGED"; // one of these two values should always exist
-  fundingStatuses: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT')[];
+  fundingStatuses: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT' | 'FUNDING_AT_RISK')[];
   csps: string[]; // to not search for specific csps, send empty array
   portfolioStatus: "ACTIVE" | "PROCESSING" | ""; // empty string for both statuses
   sort: "name" | "DESCsys_updated_on"; // one of these two values should always exist

@@ -107,4 +107,28 @@ describe("Testing index Component", () => {
     expect(bgColor.length).toEqual(0);
   });
 
+  it("Test loadOnEnter()- should set funding alert chip string based on the " +
+    "portfolio's funding status", async () => {
+    wrapper.vm.$props.cardData.fundingStatus = "ON_TRACK";
+    wrapper.vm.$props.cardData.fundingAlertChipString = "";
+    await wrapper.vm.loadOnEnter();
+    expect(wrapper.vm.$props.cardData.fundingAlertChipString).toEqual("");
+    wrapper.vm.$props.cardData.fundingStatus = "AT_RISK";
+    await wrapper.vm.loadOnEnter();
+    expect(wrapper.vm.$props.cardData.fundingAlertChipString).toEqual("At-Risk");
+    wrapper.vm.$props.cardData.fundingStatus = "FUNDING_AT_RISK";
+    await wrapper.vm.loadOnEnter();
+    expect(wrapper.vm.$props.cardData.fundingAlertChipString).toEqual("Funding At-Risk");
+    wrapper.vm.$props.cardData.fundingStatus = "EXPIRING_SOON";
+    await wrapper.vm.loadOnEnter();
+    expect(wrapper.vm.$props.cardData.fundingAlertChipString).toEqual("Expiring Soon");
+  });
+
+  it("Test loadOnEnter()- should set funding status chip string to title case " +
+    "for any status that is not configured", async () => {
+    wrapper.vm.$props.cardData.fundingStatus = "UNEXPECTED_FUNDING_STATUS";
+    await wrapper.vm.loadOnEnter();
+    expect(wrapper.vm.$props.cardData.fundingAlertChipString).toEqual("Unexpected Funding Status");
+  });
+
 });
