@@ -233,7 +233,7 @@ export default class Packages extends Vue {
   private async loadOnEnter(){
     this.allPackageData = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO);
-    this.packageData = this.allPackageData?.acquisitionPackageSummaryList
+    this.packageData = this.allPackageData.acquisitionPackageSummaryList
   }
 
   public mounted():void{

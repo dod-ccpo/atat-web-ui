@@ -495,4 +495,3 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
   total_count: number;
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
 }
-
