@@ -55,10 +55,10 @@
           </a>
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
-          <v-chip 
+          <v-chip
             :id="'StatusChip' + index" 
             :class="[
-              '_' + cardData.status.toLowerCase(),
+              '_' + (cardData.status ? cardData.status.toLowerCase() : ''),
               statusChipBgColor
             ]" 
             label
