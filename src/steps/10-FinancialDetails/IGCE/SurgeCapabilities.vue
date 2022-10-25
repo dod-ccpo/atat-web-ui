@@ -37,7 +37,6 @@
           placeHolder="1-50"
           suffix="%"
           width="150"
-          @blur="hasErrorMessages"
           :value.sync="capabilities"
           :rules="[
             $validators.isBetween(1, 50, 'Please enter a number between 1-50'),

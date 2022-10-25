@@ -18,7 +18,6 @@
             id="TravelEstimates"
             :card="true"
             :items="travelEstimateOptions"
-            @mousedown="selectTravelEstimate"
             :value.sync="ceilingPrice"
             :rules="[$validators.required('Please select an option')]"
           />

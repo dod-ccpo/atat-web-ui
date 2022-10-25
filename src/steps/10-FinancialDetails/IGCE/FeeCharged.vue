@@ -33,7 +33,6 @@
           placeHolder="1-20"
           suffix="%"
           width="150"
-          @blur="hasErrorMessages"
           :value.sync="percentage"
           :rules="[
              $validators.required('Please enter your contracting office’s fee.'),
