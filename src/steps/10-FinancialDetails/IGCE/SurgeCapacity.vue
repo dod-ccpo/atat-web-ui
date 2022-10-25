@@ -29,7 +29,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import IGCEStore, { SurgeRequirements } from "@/store/IGCE";
@@ -41,6 +41,8 @@ import { hasChanges } from "@/helpers";
   },
 })
 export default class SurgeCapacity extends Mixins(SaveOnLeave) {
+  public capacity = "";
+  public capabilities = "";
   private items = [
     {
       id: "YES",
@@ -54,38 +56,45 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
     },
   ];
 
-  private currentData: SurgeRequirements = {
-    capacity: "",
-    capabilities: ""
+  get currentData(): SurgeRequirements {
+    return{
+      capacity: this.capacity,
+      capabilities: ""
+    }
   }
 
   private savedData: SurgeRequirements = {
     capacity: "",
     capabilities: ""
   };
+
+   @Watch("capacity")
+  protected changeSelection(): void{
+    this.capabilities = "";
+  }
   
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
-  }
+   private hasChanged(): boolean {
+     return hasChanges(this.currentData, this.savedData);
+   }
 
-  public async loadOnEnter(): Promise<void> {
-    const storeData = await IGCEStore.getSurgeRequirements();
-    if (storeData) {
-      this.savedData = storeData;
-      this.currentData = storeData;
-    }
-  }
+   public async loadOnEnter(): Promise<void> {
+     const storeData = await IGCEStore.getSurgeRequirements();
+     if (storeData) {
+       this.savedData = storeData;
+       this.capacity = storeData.capacity;
+     }
+   }
 
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
+   public async mounted(): Promise<void> {
+     await this.loadOnEnter();
+   }
 
-  protected async saveOnLeave(): Promise<boolean> {
-    if (this.hasChanged()) {
-      await IGCEStore.setSurgeRequirements(this.currentData);
-    }
-    return true;
-  }
+   protected async saveOnLeave(): Promise<boolean> {
+     if (this.hasChanged()) {
+       await IGCEStore.setSurgeRequirements(this.currentData);
+     }
+     return true;
+   }
 
 }
 </script>

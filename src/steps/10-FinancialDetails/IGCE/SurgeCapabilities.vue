@@ -36,7 +36,7 @@
           placeHolder="1-50"
           suffix="%"
           width="150"
-          :value.sync="surgeCapabilities"
+          :value.sync="capabilities"
           :rules="[
             $validators.isBetween(1, 50, 'Please enter a number between 1-50'),
             $validators.required('Please enter a number between 1-50'),
@@ -50,12 +50,11 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import { RequirementsCostEstimateDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATAlert from "../../../components/ATATAlert.vue";
 import ATATTextField from "../../../components/ATATTextField.vue";
+import IGCEStore, {SurgeRequirements } from "@/store/IGCE";
 
 @Component({
   components: {
@@ -64,43 +63,39 @@ import ATATTextField from "../../../components/ATATTextField.vue";
   },
 })
 export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
-  private surgeCapabilities = "";
+  private capabilities = "";
+  private capacity = "";
 
-  private get currentData(): RequirementsCostEstimateDTO {
+  private get currentData(): SurgeRequirements {
     return {
-      surge_capabilities: this.surgeCapabilities,
+      capabilities: this.capabilities,
+      capacity: this.capacity
     };
   }
 
-  private savedData: RequirementsCostEstimateDTO = {
-    surge_capabilities: "",
-  };
+  private savedData : SurgeRequirements = {
+    capabilities: this.capabilities,
+    capacity: this.capacity
+  }
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
 
   public async loadOnEnter(): Promise<void> {
-    //const storeData = await AcquisitionPackage.
-    //loadData<RequirementsCostEstimateDTO>({storeProperty: 
-    //StoreProperties.RequirementsCostEstimate});
-    const storeData = 
-    await AcquisitionPackage.getRequirementsCostEstimate();
+    const storeData = await IGCEStore.getSurgeRequirements();
     if (storeData) {
-      this.savedData.surge_capabilities = storeData.surge_capabilities;
-      this.surgeCapabilities = storeData.surge_capabilities || "";
+      this.savedData = storeData;
+      this.capabilities = storeData.capabilities;
+      this.capacity = storeData.capacity;
     }
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     if (this.hasChanged()) {
-      //await AcquisitionPackage
-      //     .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
-      //     storeProperty: StoreProperties.RequirementsCostEstimate});
-      await AcquisitionPackage.setRequirementsCostEstimate(
-        this.currentData
-      );
-        
+      if (this.hasChanged()) {
+        await IGCEStore.setSurgeRequirements(this.currentData);
+      }
     }
     return true;
   }

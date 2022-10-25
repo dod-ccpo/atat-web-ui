@@ -75,8 +75,6 @@ describe("Testing TravelEstimates Component", () => {
           estimatedTravelCosts: ["1,234.56, 2,345,67"],
         },
       })
-      const rdo = await wrapper.find("#Radio_SinglePrice");
-      await rdo.trigger("mousedown");
       wrapper.vm.currentData.setCeilingPrice = "single"
       
       await wrapper.vm.saveOnLeave();
