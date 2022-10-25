@@ -468,3 +468,9 @@ export interface ClinTableRowData {
   popStartDate: string
 }
 
+export interface LegendLink {
+  id: string;
+  linkText: string;
+  emitText: string;
+}
+

@@ -35,7 +35,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
-import { RadioButton, SlideoutPanelContent } from "types/Global"
+import { LegendLink, RadioButton, SlideoutPanelContent } from "types/Global"
 import SlideoutPanel from "@/store/slideoutPanel";
 import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
 
@@ -76,7 +76,7 @@ export default class CreateEvalPlan extends Vue {
     }
   ];
 
-  public legendLink: Record<string, string> = {
+  public legendLink: LegendLink = {
     id: "LearnMore",
     linkText: "Learn more",
     emitText: "openSlideoutPanel"
@@ -95,7 +95,6 @@ export default class CreateEvalPlan extends Vue {
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-
   }
 
 }

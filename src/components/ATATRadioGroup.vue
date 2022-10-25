@@ -113,7 +113,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 
-import { RadioButton } from "../../types/Global";
+import { LegendLink, RadioButton } from "../../types/Global";
 import { getIdText } from "@/helpers";
 
 @Component({
@@ -164,7 +164,7 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: false }) private validateOtherNow?: boolean;
   @Prop({ default: false}) private clearOtherValidation?: boolean;
   @PropSync("validateOtherOnBlur") private _validateOtherOnBlur?: boolean;
-  @Prop() public legendLink?: Record<string, string>
+  @Prop() public legendLink?: LegendLink;
 
   // data
   private errorMessages: string[] = [];
