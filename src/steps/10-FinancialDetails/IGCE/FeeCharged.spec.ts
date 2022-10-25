@@ -4,8 +4,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation"
 import FeeCharged from "@/steps/10-FinancialDetails/IGCE/FeeCharged.vue";
-import { RequirementsCostEstimateDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import IGCEStore from "@/store/IGCE";
 Vue.use(Vuetify);
 
 describe("Testing FeeCharged Component", () => {
@@ -26,81 +25,79 @@ describe("Testing FeeCharged Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("currentData() retrieves expected object", async () => {
-    const feeCharged = "YES";
-    wrapper.setData({
-      feePercentage: "12",
-      feeCharged: feeCharged
-    })
-    const currentData: RequirementsCostEstimateDTO = 
-      wrapper.vm.currentData;
-    expect(currentData.feeCharged).toBe(feeCharged);
-  });
-
-  it("currentData() with feeCharged==='NO' to delete $data.feePercentage", async () => {
-    const feeCharged = "NO";
-    wrapper.setData({
-      feePercentage: "12",
-      feeCharged: feeCharged
-    })
-    const currentData: RequirementsCostEstimateDTO = 
-      wrapper.vm.currentData;
-    expect(currentData.feePercentage).toBe("");
-  });
-
   it("hasChanged() retrieves expected boolean value", async () => {
-    const feeCharged = "YES";
+    const isCharged = "YES";
     wrapper.setData({
-      feeCharged: feeCharged,
+      isCharged,
       savedData:{
-        feeCharged: "NO"
+        isCharged: "NO"
       }
     })
     const hasChanged: boolean = wrapper.vm.hasChanged();
     expect(hasChanged).toBe(true);
   });
 
-  it("loadOnEnter() retrieves expected boolean value with valid " +
-  "AcquisitionPackage.requirementsCostEstimate", async () => {
-    const feeCharged = "YES";
-    jest.spyOn(AcquisitionPackage, "getRequirementsCostEstimate").mockImplementation(
-      ()=>({
-        feeCharged: feeCharged
-      })
-    )
-    await wrapper.vm.loadOnEnter();
-    expect(wrapper.vm.$data.savedData.feeCharged).toBe(feeCharged);
-    expect(wrapper.vm.$data.feeCharged).toBe(feeCharged);
+  it("hasErrorMessages() returns errorMessages array ", async () => {
+    await wrapper.setData({
+      isCharged: "YES"
+    })
+
+    const textBox = await wrapper.find({ref: "PercentageTextbox"});
+    textBox.vm.$data.errorMessages =["Required"]
+    
+    const hasErrorMessages = await wrapper.vm.hasErrorMessages();
+    expect(hasErrorMessages).toBe(true);
   });
 
-  it("loadOnEnter() retrieves expected boolean value with undefined " +
-  "AcquisitionPackage.requirementsCostEstimate", async () => {
-    jest.spyOn(AcquisitionPackage, "getRequirementsCostEstimate").mockImplementation(
-      ()=>({
-        feeCharged: undefined
-      })
-    )
-    await wrapper.vm.loadOnEnter();
-    expect(wrapper.vm.feeCharged).toBe("");
+  it("hasErrorMessages() doesnt returns errorMessages array ", async () => {
+    await wrapper.setData({
+      isCharged: "NO"
+    })
+    
+    const hasErrorMessages = await wrapper.vm.hasErrorMessages();
+    expect(hasErrorMessages).toBe(false);
   });
 
-  it("saveOnLeave() if data has changed, set new data to " +
-  "AcquisitionPackage.setRequirementsCostEstimate", async () => {
-    const feeCharged = "YES";
-    const feePercentage="15";
-    // setData results in hasChanged() === true
+
+  it("saveOnLeave() if data has changed, and NO errorMessages set new data to " +
+  "IGCEStore.setFeeSpecs", async () => {
+    const isCharged = "YES";
+    const percentage= "15";
     wrapper.setData({
-      feeCharged,
-      feePercentage,
+      isCharged,
+      percentage,
       savedData:{
-        feeCharged: 'NO',
-        feePercentage: ''
+        isCharged: 'NO',
+        percentage: ''
       }
     })
     await wrapper.vm.saveOnLeave();
-    const reqCostEst = await AcquisitionPackage.requirementsCostEstimate;
-    expect(reqCostEst?.feeCharged).toBe(feeCharged);
+    const reqCostEst = await IGCEStore.getFeeSpecs()
+    expect(reqCostEst.isCharged).toBe(isCharged);
   });
+
+  it("saveOnLeave() if data has changed, and there are errorMessages, then set new data to " +
+  "IGCEStore.setFeeSpecs and don't save percentage", async () => {
+    const isCharged = "YES";
+    const percentage= "15";
+    wrapper.setData({
+      isCharged,
+      percentage,
+      savedData:{
+        isCharged: 'NO',
+        percentage: ''
+      }
+    })
+
+    //add error message
+    const textBox = await wrapper.find({ref: "PercentageTextbox"});
+    textBox.vm.$data.errorMessages =["Required"]
+
+    await wrapper.vm.saveOnLeave();
+    const reqCostEst = await IGCEStore.getFeeSpecs()
+    expect(reqCostEst.percentage).not.toBe(percentage);
+  });
+
 
 
 })

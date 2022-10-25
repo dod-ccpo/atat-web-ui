@@ -84,7 +84,7 @@ export default class FeeCharged  extends Mixins(SaveOnLeave)  {
 
   private get currentData(): Fee {
     return {
-      percentage: this.isCharged==="YES" ? this.percentage : "",
+      percentage: this.percentage,
       isCharged: this.isCharged
     };
   }

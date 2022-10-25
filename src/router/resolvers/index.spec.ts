@@ -58,6 +58,7 @@ describe("testing route resolvers", () => {
         "routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCECannotProceedResolver("Create_Price_Estimate");
       expect(newRoute).toBe("Gather_Price_Estimates");
     });
@@ -66,6 +67,7 @@ describe("testing route resolvers", () => {
         "routeNames.CreatePriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCECannotProceedResolver("Gather_Price_Estimates");
       expect(newRoute).toBe("Create_Price_Estimate");
     });
@@ -75,6 +77,7 @@ describe("testing route resolvers", () => {
     async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCEGatherPriceEstimatesResolver("Travel_Estimates");
       expect(newRoute).toBe("Gather_Price_Estimates");
     });
@@ -83,6 +86,7 @@ describe("testing route resolvers", () => {
         "expected criteria to return routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCEGatherPriceEstimatesResolver("Gather_Price_Estimates");
       expect(newRoute).toBe("Create_Price_Estimate");
     });
@@ -91,6 +95,7 @@ describe("testing route resolvers", () => {
     "expected criteria to return routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(true);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCEGatherPriceEstimatesResolver("Gather_Price_Estimates");
       expect(newRoute).toBe("Funding_Plan_Type");
     });
@@ -106,6 +111,7 @@ describe("testing route resolvers", () => {
         "criteria to return routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCESupportingDocumentationResolver("Funding_Plan_Type");
       expect(newRoute).toBe("Estimates_Developed");
     });
@@ -113,6 +119,7 @@ describe("testing route resolvers", () => {
     "criteria to return routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCESupportingDocumentationResolver("Funding_Plan_Type");
       expect(newRoute).toBe("Estimates_Developed");
     });
