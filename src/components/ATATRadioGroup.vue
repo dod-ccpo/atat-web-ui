@@ -14,22 +14,22 @@
             v-if="legend"
             class="form-field-label pb-0 mr-2"
             :class="{ 'd-sr-only': legendSrOnly }"
-            v-html="legend"
           >
+            {{ legend }}
+            <span v-if="legendLink">
+              <a 
+                role="button"
+                tabindex="0"
+                class="ml-1 font-weight-400"
+                :id="legendLink.id"
+                @click="legendLinkClicked"
+                @keydown.enter="legendLinkClicked"
+                @keydown.space="legendLinkClicked"
+              >
+                {{ legendLink.linkText }}
+              </a>
+            </span>
           </legend>
-          
-          <span v-if="legendLink">
-            <a 
-              role="button"
-              tabindex="0"
-              :id="legendLink.id"
-              @click="legendLinkClicked"
-              @keydown.enter="legendLinkClicked"
-              @keydown.space="legendLinkClicked"
-            >
-              {{ legendLink.linkText }}
-            </a>
-          </span>
 
           <ATATTooltip 
             v-if="tooltipText"
@@ -263,7 +263,6 @@ export default class ATATRadioGroup extends Vue {
   }
 
   public legendLinkClicked(e: Event): void {
-    debugger;
     if (this.legendLink) {
       this.$emit(this.legendLink.emitText, e)
     }
