@@ -419,6 +419,10 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = value;
   }
 
+  public get exceptionToFairOpportunity(): string | undefined {
+    return this.fairOpportunity?.exception_to_fair_opportunity;
+  }
+
   @Mutation
   public setGFEOverview(value: GFEOverviewDTO): void {
     this.gfeOverview = value;
@@ -741,7 +745,6 @@ export class AcquisitionPackageStore extends VuexModule {
         apiEndPoint.update(storeDataProperty.sys_id || "", data) :
         apiEndPoint.create(data);
       const savedData = await saveAction;
-
       // updates the store state data
       this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];

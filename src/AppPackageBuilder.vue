@@ -125,12 +125,6 @@ export default class AppPackageBuilder extends Vue {
   }
 
   async navigate(direction: string): Promise<void> {
-    console.log("this.altBackDestination", this.altBackDestination);
-    console.log("direction", direction)
-    console.log("this.routeNames.ProjectOverview", this.routeNames.ProjectOverview);
-    console.log("AppSections.sectionTitles.Packages", AppSections.sectionTitles.Packages);
-    console.log("this.$route.name", this.$route.name)
-
     const nextStepName = direction === "next" 
       ? await Steps.getNext() 
       : await Steps.getPrevious();
