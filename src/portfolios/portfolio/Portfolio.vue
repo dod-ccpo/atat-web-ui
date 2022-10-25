@@ -1141,7 +1141,7 @@ export default class PortfolioDashboard extends Vue {
           : 0;
 
         if (fundsAvailable) {
-          const thisclinCosts = clinCosts[costClinNo];
+          const thisclinCosts = clinCosts;
           const actual: (number | null)[] = [
             parseFloat(thisIdiqClin.funds_obligated),
           ];
@@ -1210,9 +1210,9 @@ export default class PortfolioDashboard extends Vue {
       );
 
       const len = costClinsForThisIdiqClin.length;
-      const lastMonthSpend = parseFloat(
+      const lastMonthSpend = len > 0 ? parseFloat(
         costClinsForThisIdiqClin[len - 1].value
-      );
+      ) : 0;
       const avgMonthlySpend =
         Math.round((idiqClinTotalSpend / this.monthsIntoPoP) * 100) / 100;
 

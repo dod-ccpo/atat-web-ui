@@ -60,24 +60,27 @@ export const StoreProperties = {
   CurrentEnvironment: "currentEnvironment",
 };
 
-
-export const StatusTypes = {
-  Upcoming: "Upcoming",
-  OnTrack: "On Track",
-  Processing: "Processing",
-  Active: "Active",
-  AtRisk: "At-Risk",
-  Delinquent: "Delinquent",
-  Deleted: "Deleted",
-  Expired: "Expired",
-  ExpiringSoon: "Expiring Soon",
-  Archived: "Archived",
-  Draft: "Draft",
-  WaitingForSignatures: "Waiting For Signatures",
-  TaskOrderAwarded: "Task Order Awarded",
-  WaitingForTaskOrder: "Waiting For Task Order",
-
+export const Statuses: Record<string, Record<string, string>> = {
+  Active: { label: "Active", value: "ACTIVE" }, // PORT
+  AtRisk: { label: "At-Risk", value: "AT_RISK" }, // CLIN, TO
+  Archived: { label: "Archived", value: "ARCHIVED" }, // ACQ, PORT
+  Deleted: { label: "Deleted", value: "DELETED" }, // ACQ
+  Delinquent: { label: "Delinquent", value: "DELINQUENT" }, // CLIN
+  Draft: { label: "Draft", value: "DRAFT" }, // ACQ
+  Expired: { label: "Expired", value: "EXPIRED" }, // CLIN, TO
+  ExpiringPop: { label: "Expiring PoP", value: "EXPIRING_POP" }, // CLIN
+  ExpiringSoon: { label: "Expiring Soon", value: "EXPIRING_SOON" },
+  FundingAtRisk: { label: "Funding At-Risk", value: "FUNDING_AT_RISK" }, // CLIN
+  OnTrack: { label: "On Track", value: "ON_TRACK" }, // CLIN, TO
+  OptionExercised: { label: "Option Exercised", value: "OPTION_EXERCISED" }, // CLIN
+  OptionPending: { label: "Option Pending", value: "OPTION_PENDING" }, // CLIN  
+  Processing: { label: "Processing", value: "PROCESSING" }, // PORT
+  TaskOrderAwarded: { label: "Task Order Awarded", value: "TASK_ORDER_AWARDED" }, // ACQ
+  Upcoming: { label: "Upcoming", value: "UPCOMING" }, // TO
+  WaitingForSignatures: { label: "Waiting For Signatures", value: "WAITING_FOR_SIGNATURES" }, // ACQ
+  WaitingForTaskOrder: { label: "Waiting For Task Order", value: "WAITING_FOR_TASK_ORDER" }, // ACQ
 }
+
 
 const initialCurrentContract = ()=> {
   return {
