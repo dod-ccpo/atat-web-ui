@@ -14,8 +14,21 @@
             v-if="legend"
             class="form-field-label pb-0 mr-2"
             :class="{ 'd-sr-only': legendSrOnly }"
-            v-html="legend"
           >
+            {{ legend }}
+            <span v-if="legendLink">
+              <a 
+                role="button"
+                tabindex="0"
+                class="ml-1 font-weight-400"
+                :id="legendLink.id"
+                @click="legendLinkClicked"
+                @keydown.enter="legendLinkClicked"
+                @keydown.space="legendLinkClicked"
+              >
+                {{ legendLink.linkText }}
+              </a>
+            </span>
           </legend>
 
           <ATATTooltip 
@@ -100,7 +113,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 
-import { RadioButton } from "../../types/Global";
+import { LegendLink, RadioButton } from "../../types/Global";
 import { getIdText } from "@/helpers";
 
 @Component({
@@ -151,6 +164,7 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: false }) private validateOtherNow?: boolean;
   @Prop({ default: false}) private clearOtherValidation?: boolean;
   @PropSync("validateOtherOnBlur") private _validateOtherOnBlur?: boolean;
+  @Prop() public legendLink?: LegendLink;
 
   // data
   private errorMessages: string[] = [];
@@ -246,6 +260,12 @@ export default class ATATRadioGroup extends Vue {
   public resetOtherValidation(): void {
     this.$refs.atatTextInput.errorBucket = [];
     this.$refs.atatTextInput.errorCount = 0;
+  }
+
+  public legendLinkClicked(e: Event): void {
+    if (this.legendLink) {
+      this.$emit(this.legendLink.emitText, e)
+    }
   }
 
 }
