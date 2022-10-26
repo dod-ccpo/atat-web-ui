@@ -93,12 +93,10 @@ export class EvaluationCriteriaStore extends VuexModule {
       // FIXME: delete below code after the api hookup
       const evaluationCriteria: EvaluationCriteriaDTO = {
         evaluation_plan: {
-          selected: {
-            "custom_compliant_standards": [
-              "standard 1",
-              "standard 2"
-            ]
-          }
+          source_selection: "NoTechProposal",
+          method: "BVTO",
+          standard_criteria_or_differentiators: ["Test BVTO differentiators"],
+          custom_criteria_or_differentiators: []
         },
         fair_opportunity: {
           exception_to_fair_opportunity: "Test exception to fair opportunity"

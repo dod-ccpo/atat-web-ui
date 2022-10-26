@@ -496,42 +496,11 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
 }
 
-export interface  EvalPlanTechProposalNotRequired {
-  custom_compliant_standards: string[];
-}
-
-export interface EvalPlanTechProposalRequired {
-  lpta: {
-    selected: boolean;
-    custom_differentiators: string[];
-  };
-  bvto: {
-    selected: boolean;
-    differentiators: string[];
-    custom_differentiators: string[];
-  }
-}
-
-export interface EvalPlanOfferingsFromCsp {
-  best_use: {
-    selected: boolean;
-    other_assessment_areas: string[],
-    custom_assessment_areas: string[]
-  };
-  lowest_risk: {
-    selected: boolean;
-    other_assessment_areas: string[],
-    custom_assessment_areas: string[]
-  };
-}
-
-export interface EvalPlanOfferingsFromEachCspEqually {
-  selected: boolean;
-}
-
 export interface EvaluationPlanDTO extends BaseTableDTO{
-  selected: EvalPlanTechProposalNotRequired | EvalPlanTechProposalRequired |
-    EvalPlanOfferingsFromCsp | EvalPlanOfferingsFromEachCspEqually
+  source_selection: "NoTechProposal" | "TechProposal" | "SetLumpSum" | "EqualSetLumpSum";
+  method?: "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
+  standard_criteria_or_differentiators?: string[];
+  custom_criteria_or_differentiators?: string[];
 }
 
 export interface EvaluationCriteriaDTO {
