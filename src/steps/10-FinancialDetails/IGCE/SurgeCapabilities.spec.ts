@@ -6,7 +6,7 @@ import { DefaultProps } from "vue/types/options";
 import SurgeCapabilities from "@/steps/10-FinancialDetails/IGCE/SurgeCapabilities.vue";
 import validators from "@/plugins/validation"
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { RequirementsCostEstimateDTO } from "@/api/models";
+import IGCEStore  from "@/store/IGCE";
 Vue.use(Vuetify);
 
 describe("Testing SurgeCapabilities Component", () => {
@@ -34,71 +34,58 @@ describe("Testing SurgeCapabilities Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("currentData() retrieves expected object", async () => {
-    const surgeCap = "30";
-    wrapper.setData({
-      surgeCapabilities: surgeCap
-    })
-    const currentData: RequirementsCostEstimateDTO = 
-      wrapper.vm.currentData;
-    expect(currentData.surge_capabilities).toBe(surgeCap);
-  });
-
   it("hasChanged() retrieves expected boolean value", async () => {
-    const surgeCap = "30";
+    const capabilities = "30";
     wrapper.setData({
-      surgeCapabilities: surgeCap,
+      capabilities,
       savedData:{
-        surgeCapabilities: "40"
+        capabilities: "40"
       }
     })
     const hasChanged: boolean = wrapper.vm.hasChanged();
     expect(hasChanged).toBe(true);
   });
 
-  it("loadOnEnter() retrieves expected boolean value with valid " +
-    "AcquisitionPackage.requirementsCostEstimate", async () => {
-    const surgeCap = "45";
-    jest.spyOn(AcquisitionPackage, "getRequirementsCostEstimate").mockImplementation(
-      ()=>({
-        surge_capabilities: surgeCap
-      })
-    )
-    await wrapper.vm.loadOnEnter();
-    expect(wrapper.vm.$data.savedData.surge_capabilities).toBe(surgeCap);
-    expect(wrapper.vm.surgeCapabilities).toBe(surgeCap);
+  it("hasErrorMessages() returns errorMessages array ", async () => {
+    const textBox = await wrapper.find({ref: "PercentageTextbox"});
+    textBox.vm.$data.errorMessages =["Required"]
+    
+    const hasErrorMessages = await wrapper.vm.hasErrorMessages();
+    expect(hasErrorMessages).toBe(true);
   });
 
-  it("loadOnEnter() retrieves expected boolean value with undefined surge_capabilities" +
-  "AcquisitionPackage.requirementsCostEstimate", async () => {
-    jest.spyOn(AcquisitionPackage, "getRequirementsCostEstimate").mockImplementation(
-      ()=>({
-        surge_capabilities: undefined
-      })
-    )
-    await wrapper.vm.loadOnEnter();
-    expect(wrapper.vm.surgeCapabilities).toBe("");
-  });
-
-  it("saveOnLeave() if data has changed, set new data to " +
-  "AcquisitionPackage.setRequirementsCostEstimate", async () => {
-    const surgeCap = "30";
-    // setData results in hasChanged() === true
+  it("saveOnLeave() if data has changed, and there are errorMessages, then don't " +
+  "save $data.capabilities to IGCEStore.setSurgeRequirements()", async () => {
+    const capabilities = "30";
     wrapper.setData({
-      surgeCapabilities: surgeCap,
+      capabilities,
       savedData:{
-        surgeCapabilities: "40"
+        capabilities: "40"
+      }
+    })
+
+    //add error message
+    const textBox = await wrapper.find({ref: "PercentageTextbox"});
+    textBox.vm.$data.errorMessages =["Required"]
+
+    await wrapper.vm.saveOnLeave();
+    const reqCostEst = await IGCEStore.getSurgeRequirements();
+    expect(reqCostEst.capabilities).not.toBe(capabilities);
+  });
+
+  it("saveOnLeave() if data has changed, and there are NO errorMessages, then " +
+  "save $data.capabilities to IGCEStore.setSurgeRequirements()", async () => {
+    const capabilities = "30";
+    wrapper.setData({
+      capabilities,
+      savedData:{
+        capabilities: "40"
       }
     })
     await wrapper.vm.saveOnLeave();
-    const reqCostEst = await AcquisitionPackage.requirementsCostEstimate;
-    expect(reqCostEst?.surge_capabilities).toBe(surgeCap);
+    const reqCostEst = await IGCEStore.getSurgeRequirements();
+    expect(reqCostEst.capabilities).toBe(capabilities);
   });
-
-
-
-
-
 
 
 
