@@ -14,7 +14,7 @@
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest --no-cache",
-    "test-file:watch": "jest --watch --no-cache src/steps/10-FinancialDetails/IGCE/FeeCharged.spec.ts",
+    "test-file:watch": "jest --watch --no-cache src/components/ATATToast.spec.ts",
     "test:coverage": "jest --coverage",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
     "cypress:single-test": "npm run test:e2e --  --spec 'cypress/integration/ATATDevSnow/OtherContractConsiderations/Trainin*.spec.js'",
