@@ -120,14 +120,17 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   @Action({rawError: true})
   private async getAcquisitionPackageSummaryCount(searchQuery: string): Promise<number> {
     await this.ensureInitialized();
+    console.log("A-1")
     const acquisitionPackageSummaryListRequestConfig: AxiosRequestConfig = {
       params: {
         sysparm_fields: 'package_status',
         sysparm_query: searchQuery
       }
     };
+    console.log("A-2")
     const acquisitionPackageList = await api.acquisitionPackagesSummaryTable
       .getQuery(acquisitionPackageSummaryListRequestConfig);
+    console.log("A-3")
     return acquisitionPackageList.length;
   }
 
@@ -178,14 +181,21 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   public async searchAcquisitionPackageSummaryList(searchDTO: AcquisitionPackageSummarySearchDTO):
     Promise<AcquisitionPackageSummaryMetadataAndDataDTO> {
     try {
+      console.log("1")
       const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
+      console.log("2")
       let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO);
+      console.log("3")
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
+        console.log("4")
       }
+      console.log("5 searchQuery", searchQuery)
       const acquisitionPackageSummaryCount =
         await this.getAcquisitionPackageSummaryCount(searchQuery);
+      console.log("6")
       let acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
+      console.log("7")
       if (acquisitionPackageSummaryCount > 0) {
         acquisitionPackageSummaryList =
           await this.getAcquisitionPackageSummaryList({searchQuery, searchDTO});
