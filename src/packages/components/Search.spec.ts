@@ -19,11 +19,26 @@ describe("Testing Search Component", () => {
     });
   });
 
-  describe("testing Funding Alert", () => {
+  describe("testing Search functions", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
 
+    it("test clearSearch()", async () => {
+      wrapper.vm.$props._searchString = "hello"
+      expect(wrapper.vm.$props._searchString).toBe("hello");
 
+      wrapper.vm.clearSearch()
+      Vue.nextTick(() => {
+        expect(wrapper.vm.$props._searchString).toBe("");
+      })
+    });
+
+    it("test searchPackages emits value",()=>{
+      wrapper.vm.searchPackages()
+      Vue.nextTick(() => {
+        expect(wrapper.vm.emitted().search).toBeTruthy();
+      })
+    })
   });
 });

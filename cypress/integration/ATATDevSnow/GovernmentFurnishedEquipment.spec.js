@@ -9,7 +9,7 @@ describe("Test suite: Government Furnished Equipment", () => {
 
     bootstrapMockApis();
     cy.launchATAT();
-    
+    cy.homePageClickAcquisitionPackBtn();
   });
     
   it("TC1: Government Furnished Equipment on the Vertical Stepper", () => {

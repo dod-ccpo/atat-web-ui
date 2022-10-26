@@ -15,5 +15,5 @@ module.exports = {
     " .field-error",
   radioBtnYes:"#Radio_YesEmergencyDeclaration",
   radioBtnNo: "#Radio_NoEmergencyDeclaration",  
-  cancelBtn:"#CancelButton"
+  
 }

@@ -63,10 +63,14 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
 
   @Action({rawError: true})
   async initialize(): Promise<void> {
-    const sessionRestored = retrieveSession(ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY);
-    if (sessionRestored) {
-      this.setStoreData(sessionRestored);
-      this.setInitialized(true);
+    if(!this.initialized) {
+      const sessionRestored = retrieveSession(ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY);
+      if (sessionRestored) {
+        this.setStoreData(sessionRestored);
+      } else {
+        this.setInitialized(true);
+        storeDataToSession(this, this.sessionProperties, ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY);
+      }
     }
   }
 
@@ -144,7 +148,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         sysparm_query: searchQuery,
         sysparm_display_value: "all",
         sysparm_fields: "project_overview,mission_owners,secondary_reviewers," +
-          "package_status,contract_award,sys_id,sys_created_by,sys_updated_on",
+          "package_status,contract_award,sys_id,sys_created_by,sys_updated_on,contributors",
         sysparm_limit: searchDTO.limit,
         sysparm_offset: searchDTO.offset
       }
@@ -160,7 +164,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         secondary_reviewers: acqPackageSummary.secondary_reviewers,
         package_status: acqPackageSummary.package_status as DisplayColumn,
         mission_owners: acqPackageSummary.mission_owners,
-
         contract_award: acqPackageSummary.contract_award,
         contributors: acqPackageSummary.contributors,
       }
@@ -176,7 +179,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     Promise<AcquisitionPackageSummaryMetadataAndDataDTO> {
     try {
       const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
-      let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO)
+      let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO);
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
       }
@@ -186,10 +189,10 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
       if (acquisitionPackageSummaryCount > 0) {
         acquisitionPackageSummaryList =
           await this.getAcquisitionPackageSummaryList({searchQuery, searchDTO});
-        this.setAcquisitionPackageSummaryList(acquisitionPackageSummaryList); // caches the list
       } else {
         acquisitionPackageSummaryList = [];
       }
+      this.setAcquisitionPackageSummaryList(acquisitionPackageSummaryList); // caches the list
       return {
         total_count: acquisitionPackageSummaryCount,
         acquisitionPackageSummaryList: acquisitionPackageSummaryList

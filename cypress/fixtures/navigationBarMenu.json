@@ -12,6 +12,24 @@
   },
   "portfolios": {
     "menuText": "Portfolios",
+    "portfolioTabs": [
+      "All portfolios",
+      "Processing",
+      "Active"
+    ],
+    "processingPortfolioCardSubmenu": [
+      "View funding tracker",
+      "View task orders",
+      "Email portfolio managers",
+      "Leave this portfolio"
+    ],
+    "activePortfolioCardSubmenu": [
+      "View funding tracker",
+      "View task orders",
+      "Email portfolio managers",
+      "Leave this portfolio",
+      "Login to the CSP console"
+    ],
     "submenu": [
       "Invite members to portfolio",
       "Rename portfolio",

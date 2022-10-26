@@ -11,7 +11,9 @@
 <script lang='ts'>
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
+
 @Component({})
+
 export default class TaskAlt extends Vue {
   @Prop({ default: "161B1E", required: false }) private color?:string;
 }
