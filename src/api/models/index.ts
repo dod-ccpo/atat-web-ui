@@ -499,8 +499,8 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
 export interface EvaluationPlanDTO extends BaseTableDTO{
   source_selection: "NoTechProposal" | "TechProposal" | "SetLumpSum" | "EqualSetLumpSum";
   method?: "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
-  standard_criteria_or_differentiators?: string[];
-  custom_criteria_or_differentiators?: string[];
+  standard_specifications?: string[];
+  custom_specifications?: string[];
 }
 
 export interface EvaluationCriteriaDTO {

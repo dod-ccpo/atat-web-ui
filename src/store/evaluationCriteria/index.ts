@@ -95,8 +95,8 @@ export class EvaluationCriteriaStore extends VuexModule {
         evaluation_plan: {
           source_selection: "NoTechProposal",
           method: "BVTO",
-          standard_criteria_or_differentiators: ["Test BVTO differentiators"],
-          custom_criteria_or_differentiators: []
+          standard_specifications: ["Test BVTO differentiators"],
+          custom_specifications: []
         },
         fair_opportunity: {
           exception_to_fair_opportunity: "Test exception to fair opportunity"
