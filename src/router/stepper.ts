@@ -17,10 +17,12 @@ import Exceptions from "../steps/02-EvaluationCriteria/Exceptions.vue";
 // import JustificationAndApproval
 //   from "../steps/02-EvaluationCriteria/JustificationAndApproval.vue";
 import CreateEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.vue";
-import NoProposalRequired from "../steps/02-EvaluationCriteria/EvalPlan/NoProposalRequired.vue";
-import ProposalRequired from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequired.vue";
+import EvalPlanDetails from "../steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.vue";
+
+// import NoProposalRequired from "../steps/02-EvaluationCriteria/EvalPlan/NoProposalRequired.vue";
+// import ProposalRequired from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequired.vue";
 import ProposalRequiredBVTO from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequiredBVTO.vue";
-import LumpSum from "../steps/02-EvaluationCriteria/EvalPlan/LumpSum.vue";
+// import LumpSum from "../steps/02-EvaluationCriteria/EvalPlan/LumpSum.vue";
 import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
 import NoEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.vue";
 
@@ -137,6 +139,7 @@ import {
   IGCECannotProceedResolver,
   IGCESupportingDocumentationResolver,
   CreateEvalPlanRouteResolver,
+  BVTOResolver,
   EvalPlanSummaryRouteResolver,
   NoEvalPlanRouteResolver,
 
@@ -155,10 +158,11 @@ export const routeNames = {
   Exceptions: "Exceptions",
   EvaluationPlan: "Evaluation_Plan",
   CreateEvalPlan: "Create_Eval_Plan",
-  NoProposalRequired: "No_Proposal_Required",
-  ProposalRequired: "Proposal_Required",
+  EvalPlanDetails: "Eval_Plan_Details",
+  // NoProposalRequired: "No_Proposal_Required",
+  // ProposalRequired: "Proposal_Required",
   ProposalRequiredBVTO: "Proposal_Required_BVTO",
-  LumpSum: "Lump_Sum",
+  // LumpSum: "Lump_Sum",
   EvalPlanSummary: "Eval_Plan_Summary",
   NoEvalPlan: "No_Eval_Plan",
   // KEEP JustificationAndApproval for future ticket
@@ -342,24 +346,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         routeResolver: CreateEvalPlanRouteResolver,
       },
-
       {
-        menuText: "No Proposal Required",
-        path: "no-proposal-required",
-        name: routeNames.NoProposalRequired,
-        component: NoProposalRequired,
+        menuText: "Evaluation Plan Details",
+        path: "eval-plan-details",
+        name: routeNames.EvalPlanDetails,
+        component: EvalPlanDetails,
         completePercentageWeight: 5,
-        completed: false,
         excludeFromMenu: true,
-      },
-      {
-        menuText: "Proposal Required",
-        path: "proposal-required",
-        name: routeNames.ProposalRequired,
-        component: ProposalRequired,
-        completePercentageWeight: 5,
         completed: false,
-        excludeFromMenu: true,
       },
       {
         menuText: "Proposal Required BVTO",
@@ -369,16 +363,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
         excludeFromMenu: true,
-      },
-      {
-        menuText: "Lump Sum",
-        path: "lump-sum",
-        name: routeNames.LumpSum,
-        component: LumpSum,
-        completePercentageWeight: 5,
-        completed: false,
-        excludeFromMenu: true,
-      },
+        routeResolver: BVTOResolver,
+      },   
       {
         menuText: "Evaluation Plan Summary",
         path: "eval-plan-summary",
