@@ -100,7 +100,7 @@ describe("Test suite: List of Portfolios", () => {
       const cardText = Cypress.$(card).text();
       const actualCard = cleanText(cardText);
       cy.log(actualCard);
-    }).should("contain", "PROCESSING").and("not.contain", "At-Risk");    
+    }).should("contain", "PROCESSING");    
 
     cy.clickFilterIcon();
     cy.selectCheckBoxes([ps.fundingRiskCheckbox]);
@@ -125,9 +125,26 @@ describe("Test suite: List of Portfolios", () => {
       const actualCard = cleanText(cardText);
       cy.log(actualCard);
     })
-      .should("not.contain", "Processing")
-      .and("contain", "Expiring Soon");
+      .should("not.contain", "Processing");
     
   });
   
+  it("TC6: Filter options for CSP", () => {
+
+    cy.clickFilterIcon();
+    cy.selectCheckBoxes([ps.awsCheckbox]);
+    cy.textExists(ps.applyFiltersLink, "Apply filters").should("be.enabled").click()
+      .then(() => {
+        cy.findElement(ps.awsFilterChip).should("exist");
+        cy.findElement('._portfolio-summary-card-wrapper').each((card) => {
+          const cardText = Cypress.$(card).text();
+          const actualCard = cleanText(cardText);
+          console.log(actualCard)
+          cy.findElement("._csp-icon-wrap").should("exist").invoke('attr', 'data-csp')
+            .and('equal', 'Amazon Web Services');
+          
+        });              
+          
+      });
+  });
 });
