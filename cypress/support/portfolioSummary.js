@@ -92,12 +92,6 @@ Cypress.Commands.add('clickPortfolioMenu', (card) => {
   
 });
 
-Cypress.Commands.add('portfolioTabStatus', (tabSelector,boolean) => {    
-      
-  cy.findElement(tabSelector).click()
-    .should('have.attr', 'aria-selected', boolean);
-});
-
 Cypress.Commands.add('verifyPortfolioCardDetails',
   (portfolioCardSelector, expectedOptions, length) => {
     cy.findElement(portfolioCardSelector).then(($els) => {
