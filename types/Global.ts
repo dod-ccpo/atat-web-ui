@@ -468,3 +468,9 @@ export interface ClinTableRowData {
   popStartDate: string
 }
 
+export interface IGCE {
+  travelEstimateNeeds: boolean,
+  estimatedTravelCosts: string[],
+  surgeCapacity: boolean,
+  surgeCapabilities: string,
+}
