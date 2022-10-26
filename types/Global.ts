@@ -400,7 +400,7 @@ export interface Portfolio extends BaseTableDTO {
 }
 
 export interface PortfolioCardData extends Portfolio {
-  fundingStatus?: ("ON_TRACK"|"EXPIRING_SOON"|"AT_RISK"|"DELINQUENT")[];
+  fundingStatus?: string;
   fundingAlertChipString?: string;
   branch?: string;
   lastModifiedStr?: string;
@@ -468,3 +468,15 @@ export interface ClinTableRowData {
   popStartDate: string
 }
 
+export interface LegendLink {
+  id: string;
+  linkText: string;
+  emitText: string;
+}
+
+export interface IGCE {
+  travelEstimateNeeds: boolean,
+  estimatedTravelCosts: string[],
+  surgeCapacity: boolean,
+  surgeCapabilities: string,
+}

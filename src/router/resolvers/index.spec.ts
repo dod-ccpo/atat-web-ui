@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import IGCEStore from "@/store/IGCE";
 import Periods from "@/store/periods";
 import { 
   AcorsRouteResolver,
@@ -32,97 +33,106 @@ describe("testing route resolvers", () => {
   })
 
   describe("ACORs Resolvers", () => {
-    it ("return appropriate route names", async () => {
+    it ("AcorsRouteResolver() - routes to acquisition package summary", async () => {
       await AcquisitionPackage.setHasAlternateCOR(false);
-      let route = AcorsRouteResolver(routeNames.AlternateCor);
+      const route = AcorsRouteResolver(routeNames.AlternateCor);
       expect(route).toBe(routeNames.AcqPackageSummary);
+    });
 
-      route = AcorsRouteResolver(routeNames.AcqPackageSummary);
+    it ("AcorsRouteResolver() - routes to 'has ACOR' question page", async () => {
+      await AcquisitionPackage.setHasAlternateCOR(false);
+      const route = AcorsRouteResolver(routeNames.AcqPackageSummary);
       expect(route).toBe(routeNames.AlternateCor);
+    });
 
+    it ("AcorsRouteResolver() - routes to ACOR info form", async () => {
       await AcquisitionPackage.setHasAlternateCOR(true);
-      route = AcorsRouteResolver(routeNames.AcqPackageSummary);
+      const route = AcorsRouteResolver(routeNames.AcqPackageSummary);
       Vue.nextTick(() => {
         expect(route).toBe(routeNames.AcorInformation);
       })
-
     });
   });
 
   describe("Evaluation Plan Resolvers", () => {
-    it ("CreateEvalPlanRouteResolver() - returns appropriate route names", async () => {
+    it ("CreateEvalPlanRouteResolver() - routes to Create Eval Plan page", async () => {
       await AcquisitionPackage.setFairOpportunity(
         { exception_to_fair_opportunity: "NO_NONE" }
       );
-      let route = CreateEvalPlanRouteResolver(routeNames.Exceptions);
+      const route = CreateEvalPlanRouteResolver(routeNames.Exceptions);
       expect(route).toBe(routeNames.CreateEvalPlan);
+    });
 
+    it ("CreateEvalPlanRouteResolver() - routes to No Eval Plan Needed page", async () => {
       await AcquisitionPackage.setFairOpportunity(
         { exception_to_fair_opportunity: "foo" }
       );
-
-      route = CreateEvalPlanRouteResolver(routeNames.Exceptions);
+      const route = CreateEvalPlanRouteResolver(routeNames.Exceptions);
       expect(route).toBe(routeNames.NoEvalPlan);
-      
-      route = CreateEvalPlanRouteResolver(routeNames.NoEvalPlan);
+    });
+
+    it ("CreateEvalPlanRouteResolver() - routes to Fair Opportunity Exceptions page", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "foo" }
+      );
+      const route = CreateEvalPlanRouteResolver(routeNames.NoEvalPlan);
       expect(route).toBe(routeNames.Exceptions);
     });
 
-
-    it ("EvalPlanSummaryRouteResolver() - returns appropriate route names", async () => {
-      let route = EvalPlanSummaryRouteResolver(routeNames.NoEvalPlan);
+    it ("EvalPlanSummaryRouteResolver() - routes to Fair Opportunity Exceptions page", async () => {
+      const route = EvalPlanSummaryRouteResolver(routeNames.NoEvalPlan);
       expect(route).toBe(routeNames.Exceptions);
+    });
 
-      route = EvalPlanSummaryRouteResolver("foo");
+    it ("EvalPlanSummaryRouteResolver() - routes to Eval Plan Summary page", async () => {
+      const route = EvalPlanSummaryRouteResolver("foo");
       expect(route).toBe(routeNames.EvalPlanSummary);
     });
 
-
-    it ("NoEvalPlanRouteResolver() - returns appropriate route names", async () => {
+    it ("NoEvalPlanRouteResolver() - routes to Current Contract", async () => {
       await AcquisitionPackage.setFairOpportunity(
         { exception_to_fair_opportunity: "NO_NONE" }
       );
-      let route = NoEvalPlanRouteResolver(routeNames.EvalPlanSummary);
+      const route = NoEvalPlanRouteResolver(routeNames.EvalPlanSummary);
       expect(route).toBe(routeNames.CurrentContract);
+    });
 
-      route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
+    it ("NoEvalPlanRouteResolver() - routes to Eval Plan Summary page", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "NO_NONE" }
+      );
+      const route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
       expect(route).toBe(routeNames.EvalPlanSummary);
+    });
 
+    it ("NoEvalPlanRouteResolver() - routes to No Eval Plan Needed page", async () => {
       await AcquisitionPackage.setFairOpportunity(
         { exception_to_fair_opportunity: "foo" }
       );
-
-      route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
+      const route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
       expect(route).toBe(routeNames.NoEvalPlan);
     });
-
 
   });
 
   describe("IGCE Resolvers", ()=>{
     it("IGCESurgeCapabilities('Create_Price_Estimate') returns routeNames.FeeCharged", 
       async () => {
-        AcquisitionPackage.setRequirementsCostEstimate({
-          surge_capacity: "NO"
-        });
+        IGCEStore.surgeRequirements.capacity = "NO";
         const newRoute = await IGCESurgeCapabilities("Surge_Capacity");
         expect(newRoute).toBe("Fee_Charged");
       });
 
     it("IGCESurgeCapabilities('Fee_Charged') returns routeNames.SurgeCapacity", 
       async () => {
-        AcquisitionPackage.setRequirementsCostEstimate({
-          surge_capacity: "NO"
-        });
+        IGCEStore.surgeRequirements.capacity = "NO";
         const newRoute = await IGCESurgeCapabilities("Fee_Charged");
         expect(newRoute).toBe("Surge_Capacity");
       });
 
     it("IGCESurgeCapabilities('Fee_Charged') returns routeNames.SurgeCapabilities", 
       async () => {
-        AcquisitionPackage.setRequirementsCostEstimate({
-          surge_capacity: "YES"
-        });
+        IGCEStore.surgeRequirements.capacity = "YES";
         const newRoute = await IGCESurgeCapabilities("Fee_Charged");
         expect(newRoute).toBe("SurgeCapabilities");
       });
@@ -138,6 +148,7 @@ describe("testing route resolvers", () => {
         "routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCECannotProceedResolver("Create_Price_Estimate");
       expect(newRoute).toBe("Gather_Price_Estimates");
     });
@@ -146,23 +157,37 @@ describe("testing route resolvers", () => {
         "routeNames.CreatePriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCECannotProceedResolver("Gather_Price_Estimates");
       expect(newRoute).toBe("Create_Price_Estimate");
     });
 
-    it("IGCEGatherPriceEstimatesResolver('Gather_Price_Estimates') returns " +
+    it("IGCEGatherPriceEstimatesResolver('Travel_Estimates') returns " +
         "routeNames.CannotProceed", 
     async () => {
-      const newRoute = await IGCEGatherPriceEstimatesResolver("Create_Price_Estimate");
-      expect(newRoute).toBe("Funding_Plan_Type");
-    });
-
-    it("IGCECannotProceedResolver('Gather_Price_Estimates') with expected criteria to return " +
-        "routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
+      const newRoute = await IGCEGatherPriceEstimatesResolver("Travel_Estimates");
+      expect(newRoute).toBe("Gather_Price_Estimates");
+    });
+
+    it("IGCEGatherPriceEstimatesResolver('Gather_Price_Estimates') with " +
+        "expected criteria to return routeNames.GatherPriceEstimates", async () => {
+      Periods.setPeriods(legitPeriod)
+      DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCEGatherPriceEstimatesResolver("Gather_Price_Estimates");
       expect(newRoute).toBe("Create_Price_Estimate");
+    });
+
+    it("IGCEGatherPriceEstimatesResolver('Gather_Price_Estimates') with  " +
+    "expected criteria to return routeNames.GatherPriceEstimates", async () => {
+      Periods.setPeriods(legitPeriod)
+      DescriptionOfWork.setIsIncomplete(true);
+      IGCEStore.setHasDOWandPop();
+      const newRoute = await IGCEGatherPriceEstimatesResolver("Gather_Price_Estimates");
+      expect(newRoute).toBe("Funding_Plan_Type");
     });
 
     it("IGCESupportingDocumentationResolver('Funding_Plan_Type') " +
@@ -176,9 +201,20 @@ describe("testing route resolvers", () => {
         "criteria to return routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCESupportingDocumentationResolver("Funding_Plan_Type");
       expect(newRoute).toBe("Estimates_Developed");
     });
+    it("IGCESupportingDocumentationResolver('Funding_Plan_Type') with expected " +
+    "criteria to return routeNames.GatherPriceEstimates", async () => {
+      Periods.setPeriods(legitPeriod)
+      DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
+      const newRoute = await IGCESupportingDocumentationResolver("Funding_Plan_Type");
+      expect(newRoute).toBe("Estimates_Developed");
+    });
+
+
   })
 
 })
