@@ -85,7 +85,7 @@
         :isHomeView="isHomeView"
       />
 
-      <div class="_table-pagination mt-5">
+      <div class="_table-pagination mt-5" v-show="portfolioCount > recordsPerPage">
         <span class="mr-11 font-weight-400 font-size-14">
           Showing {{ startingNumber }}-{{ endingNumber }} of {{ portfolioCount }}
         </span>
@@ -159,8 +159,6 @@ export default class PortfoliosSummary extends Vue {
   public recordsPerPage = 3;
   public numberOfPages = 0;
   public portfolioCount = 0;
-  // public startingNumber = 1;
-  // public endingNumber = 1;
   public offset = 0;
   public paging = false;
 
@@ -396,7 +394,6 @@ export default class PortfoliosSummary extends Vue {
       this.portfolioSearchDTO.sort = this.defaultSort;
     }
     
-    debugger;
     this.page = !this.paging ? 1 : this.page;
     this.offset = (this.page - 1) * this.recordsPerPage;
     this.portfolioSearchDTO.offset = this.offset;
@@ -405,8 +402,6 @@ export default class PortfoliosSummary extends Vue {
     this.portfolioCount = storeData.total_count;
     this.$emit("totalCount", storeData.total_count);
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
-
-
 
     if (this.isHomeView) {
       storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
