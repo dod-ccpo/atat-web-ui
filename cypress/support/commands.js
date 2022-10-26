@@ -959,7 +959,7 @@ Cypress.Commands.add("select508Option", (radioSelector, value) => {
         cy.verifyPageHeader("Tell us more about your Section 508 Accessibility requirements");
       } else {
         //navigates to next step in the workflow
-        cy.findElement(common.stepEvaluationCriteriaText)
+        cy.findElement(common.stepFinancialDetailsText)
           .should("be.visible")
           .and('have.css', 'color', colors.primary)
       }
