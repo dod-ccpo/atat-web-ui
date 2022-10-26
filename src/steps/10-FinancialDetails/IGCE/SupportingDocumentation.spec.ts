@@ -2,17 +2,17 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import CardRequirement from "@/steps/09-FinancialDetails/IGCE/components/Card_Requirement.vue";
+import SupportingDocumentation from "@/steps/10-FinancialDetails/IGCE/SupportingDocumentation.vue";
 Vue.use(Vuetify);
 
-describe("Testing CreatePriceEstimate Component", () => {
+describe("Testing SupportingDocumentation Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(CardRequirement, {
+    wrapper = mount(SupportingDocumentation, {
       localVue,
       vuetify,
     });

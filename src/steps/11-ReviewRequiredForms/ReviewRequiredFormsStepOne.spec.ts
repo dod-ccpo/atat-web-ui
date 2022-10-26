@@ -2,17 +2,17 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import CostSummary from "@/steps/09-FinancialDetails/IGCE/CostSummary.vue";
+import lab  from "@/steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
 Vue.use(Vuetify);
 
-describe("Testing CostSummary Component", () => {
+describe("Testing index Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(CostSummary, {
+    wrapper = mount(lab, {
       localVue,
       vuetify,
     });

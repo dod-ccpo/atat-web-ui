@@ -67,7 +67,7 @@
 import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
-import GInvoiceLearnMore from "@/steps/09-FinancialDetails/GInvoiceLearnMore.vue";
+import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { 

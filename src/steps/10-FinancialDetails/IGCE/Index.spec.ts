@@ -2,17 +2,17 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import SupportingDocumentation from "@/steps/09-FinancialDetails/IGCE/SupportingDocumentation.vue";
+import IGCE from "@/steps/10-FinancialDetails/IGCE/Index.vue";
 Vue.use(Vuetify);
 
-describe("Testing SupportingDocumentation Component", () => {
+describe("Testing index Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(SupportingDocumentation, {
+    wrapper = mount(IGCE, {
       localVue,
       vuetify,
     });
