@@ -495,3 +495,15 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
   total_count: number;
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
 }
+
+export interface EvaluationPlanDTO extends BaseTableDTO{
+  source_selection: "NoTechProposal" | "TechProposal" | "SetLumpSum" | "EqualSetLumpSum";
+  method?: "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
+  standard_specifications?: string[];
+  custom_specifications?: string[];
+}
+
+export interface EvaluationCriteriaDTO {
+  evaluation_plan: EvaluationPlanDTO
+  fair_opportunity: FairOpportunityDTO
+}
