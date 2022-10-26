@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import {User} from "../../../types/Global";
+import { EvalPlanMethod, EvalPlanSourceSelection } from "../../../types/Global";
 
 export interface BaseTableDTO {
   sys_id?: string;
@@ -497,13 +497,8 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
 }
 
 export interface EvaluationPlanDTO extends BaseTableDTO{
-  source_selection: "NoTechProposal" | "TechProposal" | "SetLumpSum" | "EqualSetLumpSum";
-  method?: "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
+  source_selection: EvalPlanSourceSelection;
+  method?: EvalPlanMethod;
   standard_specifications?: string[];
   custom_specifications?: string[];
-}
-
-export interface EvaluationCriteriaDTO {
-  evaluation_plan: EvaluationPlanDTO
-  fair_opportunity: FairOpportunityDTO
 }

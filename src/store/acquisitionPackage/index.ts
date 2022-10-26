@@ -21,7 +21,8 @@ import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CurrentContractDTO,
-  FairOpportunityDTO,
+  FairOpportunityDTO, // EJY
+  EvaluationPlanDTO,
   GFEOverviewDTO,
   RequirementsCostEstimateDTO,
   OrganizationDTO,
@@ -32,13 +33,12 @@ import {
   CurrentEnvironmentDTO,
 } from "@/api/models";
 
-import { SelectData } from "types/Global";
+import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
 import { SessionData } from "./models";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
-import { PeriodOfPerformanceApi } from "@/api/contractDetails";
 import Periods from "../periods";
 import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
@@ -51,7 +51,8 @@ export const StoreProperties = {
   Periods: "periods",
   ProjectOverview: "projectOverview",
   Organization: "organization",
-  FairOpportunity: "fairOpportunity",
+  FairOpportunity: "fairOpportunity", // EJY
+  EvaluationPlan: "evaluationPlan",
   GFEOverview:"gfeOverview",
   PeriodOfPerformance: "periodOfPerformance",
   RequirementsCostEstimate:"requirementsCostEstimate",
@@ -148,9 +149,7 @@ const initialContact = () => {
 };
 
 const initialContractConsiderations = ()=> {
-
   return {
-
     packaging_shipping_other: "false",
     contractor_required_training: "",
     packaging_shipping_other_explanation: "",
@@ -162,11 +161,21 @@ const initialContractConsiderations = ()=> {
   }
 }
 
+// EJY
 const initialFairOpportunity = () => {
   return {
     exception_to_fair_opportunity: "",
   };
 };
+
+const initialEvaluationPlan = () => {
+  return {
+    source_selection: "" as EvalPlanSourceSelection,
+    method: "" as EvalPlanMethod,
+    standard_specifications: [],
+    custom_specifications: [],
+  }
+}
 
 const initialGFE = () => {
   return {
@@ -242,7 +251,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       acorInfo: store.acorInfo,
       contractType: store.contractType,
       currentContract: store.currentContract,
-      fairOpportunity: store.fairOpportunity,
+      fairOpportunity: store.fairOpportunity, // EJY
+      evaluationPlan: store.evaluationPlan,
       gfeOverview: store.gfeOverview,
       periods: store.periods,
       periodOfPerformance: store.periodOfPerformance,
@@ -293,7 +303,8 @@ export class AcquisitionPackageStore extends VuexModule {
   corInfo: ContactDTO | null = null;
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
-  fairOpportunity: FairOpportunityDTO | null = null;
+  fairOpportunity: FairOpportunityDTO | null = null; // EJY
+  evaluationPlan: EvaluationPlanDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periods: string | null = null;
@@ -423,6 +434,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectTitle = value;
   }
 
+  // EJY
   @Mutation
   public setFairOpportunity(value: FairOpportunityDTO): void {
     this.fairOpportunity = value;
@@ -431,6 +443,16 @@ export class AcquisitionPackageStore extends VuexModule {
   public get exceptionToFairOpportunity(): string | undefined {
     return this.fairOpportunity?.exception_to_fair_opportunity;
   }
+
+  @Mutation
+  public setEvaluationPlan(value: EvaluationPlanDTO): void {
+    this.evaluationPlan = value;
+  }
+
+  public get getEvaluationPlan(): EvaluationPlanDTO | null {
+    return this.evaluationPlan;
+  }
+
 
   @Mutation
   public setGFEOverview(value: GFEOverviewDTO): void {
@@ -469,7 +491,8 @@ export class AcquisitionPackageStore extends VuexModule {
     this.corInfo = sessionData.corInfo;
     this.contractType = sessionData.contractType;
     this.currentContract = sessionData.currentContract;
-    this.fairOpportunity = sessionData.fairOpportunity;
+    this.fairOpportunity = sessionData.fairOpportunity; // EJY
+    this.evaluationPlan = sessionData.evaluationPlan;
     this.organization = sessionData.organization;
     this.periods = sessionData.periods;
     this.projectOverview = sessionData.projectOverview;
@@ -513,6 +536,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setFairOpportunity(initialFairOpportunity());
+          this.setEvaluationPlan(initialEvaluationPlan());
 
           this.setRequirementsCostEstimate({ 
             estimatedTaskOrderValue: "",
@@ -572,7 +596,8 @@ export class AcquisitionPackageStore extends VuexModule {
   private apiEndpointMap: Record<string, TableApiBase<BaseTableDTO>> = {
     [StoreProperties.ContractType]: api.contractTypeTable,
     [StoreProperties.CurrentContract]: api.currentContractTable,
-    [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
+    [StoreProperties.FairOpportunity]: api.fairOpportunityTable, // EJY
+    // [StoreProperties.EvaluationPlan]: api.evaluationPlanTable, // EJY FUTURE TICKET
     [StoreProperties.GFEOverview]: api.gfeOverviewTable,
     [StoreProperties.Organization]: api.organizationTable,
     [StoreProperties.Periods]: api.periodTable,
@@ -588,7 +613,8 @@ export class AcquisitionPackageStore extends VuexModule {
   private acquisitionPackagePropertyMap: Record<string, string> = {
     [StoreProperties.ContractType]: "contract_type",
     [StoreProperties.CurrentContract]: "current_contract",
-    [StoreProperties.FairOpportunity]: "fair_opportunity",
+    [StoreProperties.FairOpportunity]: "fair_opportunity", // EJY
+    [StoreProperties.EvaluationPlan]: "evaluation_plan", // EJY
     [StoreProperties.GFEOverview]: "gfe_overview",
     [StoreProperties.Organization]:  "organization",
     [StoreProperties.ProjectOverview]: "project_overview",

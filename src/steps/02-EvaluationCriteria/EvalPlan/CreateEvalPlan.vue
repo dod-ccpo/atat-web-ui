@@ -20,7 +20,7 @@
         legend="Which source selection process is applicable to your requirement?"
         :legend-link="legendLink"
         @openSlideoutPanel="openSlideoutPanel"
-        :value.sync="selectedOption"
+        :value.sync="selectedEvalOption"
         :items="evalOptions"
         :rules="[
           $validators.required('Please select an option.'),
@@ -38,6 +38,8 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { LegendLink, RadioButton, SlideoutPanelContent } from "types/Global"
 import SlideoutPanel from "@/store/slideoutPanel";
 import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
+import { EvaluationPlanDTO, EvalPlanMethod, EvalPlanSourceSelection } from "@/api/models";
+import EvaluationCriteria from "@/store/evaluationCriteria";
 
 @Component({
   components: {
@@ -47,34 +49,69 @@ import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
 })
 
 export default class CreateEvalPlan extends Vue {
-  public selectedOption = "";
+
+  public selectedEvalOption: EvalPlanSourceSelection = "";
   public evalOptions: RadioButton[] = [
     {
       label: `I do not require a technical proposal. Award will be made on a 
         Lowest Price, Technically Acceptable (LPTA) basis.`,
-      id: "LPTA",
-      value: "LPTA"
+      id: "NoTechProposal",
+      value: "NoTechProposal"
     },
     {
       label: `I require a technical proposal. Award will be made on either a 
         LPTA or Best Value Trade-Off (BVTO) basis.`,
-      id: "LPTAorBVTO",
-      value: "LPTAorBVTO",
+      id: "TechProposal",
+      value: "TechProposal",
     },
     {
       label: `I would like to purchase a set lump sum dollar amount of offerings 
         from any one CSP. Award will be made to the CSP offering either the 
         “best use” or “lowest risk” solution.`,
-      id: "LumpSumOneCSP",
-      value: "LumpSumOneCSP",
+      id: "SetLumpSum",
+      value: "SetLumpSum",
     },
     {
       label: `I would like to purchase an equal set lump sum dollar amount of 
         offerings from each CSP. The Government will issue equal awards to each CSP.`,
-      id: "LumpSumMultiCSP",
-      value: "LumpSumMultiCSP",
+      id: "EqualSetLumpSum",
+      value: "EqualSetLumpSum",
     }
   ];
+
+  // KEEP FOR TICKET IN UPCOMING SPRINT
+  // public selectedMethod: EvalPlanMethod = "";
+  // public techProposalOptions: RadioButton[] = [
+  //   {
+  //     label: "Lowest Price Technically Acceptable (LPTA)",
+  //     id: "LPTA",
+  //     value: "LPTA",
+  //     description: `Award will be made to the lowest priced offeror meeting the
+  //       compliance standards.`
+  //   },
+  //   {
+  //     label: "Best Value Trade-Off (BVTO)",
+  //     id: "BVTO",
+  //     value: "BVTO",
+  //     description: "Award will be made to the CSP providing the best value."
+  //   },
+  // ];
+
+  // KEEP FOR TICKET IN UPCOMING SPRINT
+  // public lumpSumOptions: RadioButton[] = [
+  //   {
+  //     label: "“Best use” solution",
+  //     id: "BestUse",
+  //     value: "BestUse",
+  //     description: "Award will be made to the CSP offering the “best use.”"
+  //   },
+  //   {
+  //     label: "“Lowest risk” solution",
+  //     id: "LowestRisk",
+  //     value: "LowestRisk",
+  //     description: "Award will be made to the CSP providing the lowest risk."
+  //   },
+  // ];
 
   public legendLink: LegendLink = {
     id: "LearnMore",
@@ -89,12 +126,28 @@ export default class CreateEvalPlan extends Vue {
     }
   }
 
+  public get currentData(): EvaluationPlanDTO {
+    return {
+      // eslint-disable-next-line camelcase
+      source_selection: this.selectedEvalOption,
+      // KEEP FOR TICKET IN UPCOMING SPRINT
+      // method: this.selectedMethod,
+    }
+  }
+
+
   public async mounted(): Promise<void> {
     const slideoutPanelContent: SlideoutPanelContent = {
       component: CreateEvalPlanSlideOut,
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    await this.loadOnEnter();
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await EvaluationCriteria.getEvaluationCriteria();
+    debugger;
   }
 
 }
