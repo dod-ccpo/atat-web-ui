@@ -148,7 +148,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         sysparm_query: searchQuery,
         sysparm_display_value: "all",
         sysparm_fields: "project_overview,mission_owners,secondary_reviewers," +
-          "package_status,contract_award,sys_id,sys_created_by,sys_updated_on",
+          "package_status,contract_award,sys_id,sys_created_by,sys_updated_on,contributors",
         sysparm_limit: searchDTO.limit,
         sysparm_offset: searchDTO.offset
       }

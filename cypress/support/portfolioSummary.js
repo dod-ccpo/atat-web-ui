@@ -83,7 +83,7 @@ Cypress.Commands.add('columnRowsExists', (selector,expectedValues) => {
 });
 
 Cypress.Commands.add('clickPortfolioMenu', (card) => { 
-  cy.findElement(card.headingSelector).should("contain", card.cardHeaderText).within(() => {      
+  cy.findElement(card.headingSelector).should("contain", card.cardHeaderText).then(() => {      
     cy.findElement(card.cardMenuSelector).click();   
     cy.verifyStringArray(card.menuListSelector, card.menuListText);
     cy.textExists(card.menuSelector, card.selectedMenuText).click()
