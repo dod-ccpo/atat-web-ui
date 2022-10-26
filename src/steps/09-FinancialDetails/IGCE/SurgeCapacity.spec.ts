@@ -3,7 +3,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import SurgeCapacity from "@/steps/10-FinancialDetails/IGCE/SurgeCapacity.vue";
+import SurgeCapacity from "@/steps/09-FinancialDetails/IGCE/SurgeCapacity.vue";
 import validators from "../../../plugins/validation"
 import IGCEStore from "@/store/IGCE";
 Vue.use(Vuetify);

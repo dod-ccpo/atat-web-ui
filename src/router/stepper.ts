@@ -10,7 +10,7 @@ import AcorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AcorInfo.vu
 import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import Summary from "../steps/Summary.vue";
 
-// Step 2 - Fair Opportunity Process
+// Step 2 - Evaluation Criteria
 import FairOpportunityProcess from "../steps/02-EvaluationCriteria/Index.vue"
 import Exceptions from "../steps/02-EvaluationCriteria/Exceptions.vue";
 // KEEP JustificationAndApproval for future ticket
@@ -83,36 +83,33 @@ import Section508Standards from "../steps/08-StandardsAndCompliance/Section508St
 import Section508AccessibilityRequirements
   from "../steps/08-StandardsAndCompliance/Section508AccessibilityRequirements.vue";
 
-// Step 9 - Evaluation Criteria
-import EvaluationCriteriaIndex from "../steps/09-EvaluationCriteria/Index.vue";
-import EvaluationCriteria
-  from "../steps/09-EvaluationCriteria/EvaluationCriteria.vue";
-
-// step 10 - Financial Details
-import IGCE from "@/steps/10-FinancialDetails/IGCE/Index.vue";
-import CreatePriceEstimate from "@/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.vue";
-import CannotProceed from "@/steps/10-FinancialDetails/IGCE/CannotProceed.vue";
-import GatherPriceEstimates from "@/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.vue";
-import TravelEstimates from "@/steps/10-FinancialDetails/IGCE/TravelEstimates.vue";
-import SurgeCapacity from "@/steps/10-FinancialDetails/IGCE/SurgeCapacity.vue";
-import FeeCharged from "@/steps/10-FinancialDetails/IGCE/FeeCharged.vue";
-import CostSummary from "@/steps/10-FinancialDetails/IGCE/CostSummary.vue";
-import SupportingDocumentation from "@/steps/10-FinancialDetails/IGCE/SupportingDocumentation.vue";
-import EstimatesDeveloped from "@/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.vue";
-import SurgeCapabilities from "../steps/10-FinancialDetails/IGCE/SurgeCapabilities.vue";
-import MIPR from "../steps/10-FinancialDetails/MIPR.vue";
+// step 09 - Financial Details
+import IGCE from "@/steps/09-FinancialDetails/IGCE/Index.vue";
+import CreatePriceEstimate from "@/steps/09-FinancialDetails/IGCE/CreatePriceEstimate.vue";
+import CannotProceed from "@/steps/09-FinancialDetails/IGCE/CannotProceed.vue";
+import GatherPriceEstimates from "@/steps/09-FinancialDetails/IGCE/GatherPriceEstimates.vue";
+import TravelEstimates from "@/steps/09-FinancialDetails/IGCE/TravelEstimates.vue";
+import SurgeCapacity from "@/steps/09-FinancialDetails/IGCE/SurgeCapacity.vue";
+import FeeCharged from "@/steps/09-FinancialDetails/IGCE/FeeCharged.vue";
+import CostSummary from "@/steps/09-FinancialDetails/IGCE/CostSummary.vue";
+import SupportingDocumentation from "@/steps/09-FinancialDetails/IGCE/SupportingDocumentation.vue";
+import EstimatesDeveloped from "@/steps/09-FinancialDetails/IGCE/EstimatesDeveloped.vue";
+import SurgeCapabilities from "../steps/09-FinancialDetails/IGCE/SurgeCapabilities.vue";
+import MIPR from "../steps/09-FinancialDetails/MIPR.vue";
 import SeverabilityAndIncrementalFunding 
-  from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
+  from "../steps/09-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
 import IncrementalFunding 
-  from "../steps/10-FinancialDetails/IncrementalFunding.vue";
-import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
-import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
-import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
-import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
+  from "../steps/09-FinancialDetails/IncrementalFunding.vue";
+import FundingPlanType from "@/steps/09-FinancialDetails/FundingRequest.vue";
+import GInvoicing from "@/steps/09-FinancialDetails/GInvoicing.vue";
+import Upload7600 from "@/steps/09-FinancialDetails/Upload7600.vue";
+import FinancialPOCForm from "@/steps/09-FinancialDetails/FinancialPOCForm.vue";
+import SummaryPage from "@/steps/09-FinancialDetails/SummaryPage.vue";
+
+// step 10 - Review Required Forms
+import ReviewRequiredForms from "../steps/10-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
-  from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
-import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
-import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
+  from "../steps/10-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
 
 import {
   AcorsRouteResolver,
@@ -194,8 +191,8 @@ export const routeNames = {
   FOIA: "FOIA",
   FOIACoordinator: "FOIA_Coordinator",
   Section508Standards: "Section_508_Standards",
-  EvaluationCriteriaIndex: "Evaluation_Criteria_Index",
-  EvaluationCriteria: "Evaluation_Criteria",
+  // EvaluationCriteriaIndex: "Evaluation_Criteria_Index",
+  // EvaluationCriteria: "Evaluation_Criteria",
   ClassificationRequirements: "Classification_Requirements",
   SurgeCapabilities: "SurgeCapabilities",
   RequirementsCostForm: "Requirements_Cost_Form",
@@ -745,23 +742,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "09",
     completePercentageWeight: 7,
-    menuText: "Evaluation Criteria",
-    path: "/evaluation-criteria",
-    component: EvaluationCriteriaIndex,
-    children: [
-      {
-        menuText: "Evaluation Criteria",
-        path: "evaluation-criteria",
-        excludeFromMenu: true,
-        name: routeNames.EvaluationCriteria,
-        completePercentageWeight: 1,
-        component: EvaluationCriteria,
-      },
-    ],
-  },
-  {
-    stepNumber: "10",
-    completePercentageWeight: 7,
     menuText: "Financial Details",
     path: "/requirements-cost-estimate",
     component: IGCE,
@@ -921,7 +901,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    stepNumber: "11",
+    stepNumber: "10",
     completePercentageWeight: 7,
     menuText: "Review Required Forms",
     path: "/review-required-forms",

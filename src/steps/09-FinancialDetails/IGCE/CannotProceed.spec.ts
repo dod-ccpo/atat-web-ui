@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import CannotProceed from "@/steps/10-FinancialDetails/IGCE/CannotProceed.vue";
+import CannotProceed from "@/steps/09-FinancialDetails/IGCE/CannotProceed.vue";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 Vue.use(Vuetify);

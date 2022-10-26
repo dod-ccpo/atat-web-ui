@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import CreatePriceEstimate from "@/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.vue";
+import CreatePriceEstimate from "@/steps/09-FinancialDetails/IGCE/CreatePriceEstimate.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 Vue.use(Vuetify);
 

@@ -75,9 +75,9 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
-import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
+import FundingRequestLearnMore from "@/steps/09-FinancialDetails/FundingRequestLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
+import GInvoiceLearnMore from "@/steps/09-FinancialDetails/GInvoiceLearnMore.vue";
 import { hasChanges } from "@/helpers";
 import FinancialDetails from "@/store/financialDetails";
 import SaveOnLeave from "@/mixins/saveOnLeave";

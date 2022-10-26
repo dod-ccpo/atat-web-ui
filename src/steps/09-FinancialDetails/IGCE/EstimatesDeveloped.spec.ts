@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import EstimatesDeveloped from "@/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.vue";
+import EstimatesDeveloped from "@/steps/09-FinancialDetails/IGCE/EstimatesDeveloped.vue";
 import validators from "@/plugins/validation";
 Vue.use(Vuetify);
 

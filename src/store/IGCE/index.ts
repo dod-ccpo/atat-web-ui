@@ -27,7 +27,7 @@ export interface Fee{
 })
 export class IGCEStore extends VuexModule {
   // flag to show/skip `CannotProceed` page 
-  // found at src\steps\10-FinancialDetails\IGCE\CannotProceed.vue
+  // found at src\steps\09-FinancialDetails\IGCE\CannotProceed.vue
   hasDOWandPoP = false;
 
   travelEstimateNeeds: TravelEstimateNeeds =  {
