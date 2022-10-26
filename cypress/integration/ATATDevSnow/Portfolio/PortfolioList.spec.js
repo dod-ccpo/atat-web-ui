@@ -136,12 +136,12 @@ describe("Test suite: List of Portfolios", () => {
     cy.textExists(ps.applyFiltersLink, "Apply filters").should("be.enabled").click()
       .then(() => {
         cy.findElement(ps.awsFilterChip).should("exist");
-        cy.findElement('._portfolio-summary-card-wrapper').each((card) => {
+        cy.findElement(ps.summaryCardWrapper).each((card) => {
           const cardText = Cypress.$(card).text();
           const actualCard = cleanText(cardText);
           console.log(actualCard)
-          cy.findElement("._csp-icon-wrap").should("exist").invoke('attr', 'data-csp')
-            .and('equal', 'Amazon Web Services');
+          cy.findElement(ps.cspOption).should("exist").invoke('attr', 'data-csp')
+            .and('equal', "Amazon Web Services");
           
         });              
           
