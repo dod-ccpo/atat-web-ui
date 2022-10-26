@@ -31,15 +31,23 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
-import { LegendLink, RadioButton, SlideoutPanelContent } from "types/Global"
+import { 
+  EvalPlanSourceSelection,
+  // EvalPlanMethod, // KEEP FOR FUTURE TICKET
+  LegendLink, 
+  RadioButton, 
+  SlideoutPanelContent
+   
+} from "types/Global"
 import SlideoutPanel from "@/store/slideoutPanel";
 import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
-import { EvaluationPlanDTO, EvalPlanMethod, EvalPlanSourceSelection } from "@/api/models";
-import EvaluationCriteria from "@/store/evaluationCriteria";
+import { EvaluationPlanDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -48,7 +56,7 @@ import EvaluationCriteria from "@/store/evaluationCriteria";
   }
 })
 
-export default class CreateEvalPlan extends Vue {
+export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
 
   public selectedEvalOption: EvalPlanSourceSelection = "";
   public evalOptions: RadioButton[] = [
@@ -135,6 +143,11 @@ export default class CreateEvalPlan extends Vue {
     }
   }
 
+  public savedData: EvaluationPlanDTO = {
+    // eslint-disable-next-line camelcase
+    source_selection: "",
+  }
+
 
   public async mounted(): Promise<void> {
     const slideoutPanelContent: SlideoutPanelContent = {
@@ -146,9 +159,36 @@ export default class CreateEvalPlan extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await EvaluationCriteria.getEvaluationCriteria();
-    debugger;
+    const storeData = AcquisitionPackage.getEvaluationPlan;
+    if (storeData) {
+      this.selectedEvalOption = storeData.source_selection;
+      // eslint-disable-next-line camelcase
+      this.savedData.source_selection = storeData.source_selection;
+    }
   }
+  
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+  public async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        // KEEP FOR FUTURE TICKET when API hooked up for saving to SNOW
+        // await AcquisitionPackage.saveData({
+        //   data: this.currentData,
+        //   storeProperty: StoreProperties.EvaluationPlan,
+        // });
+        // REMOVE line below after above hooked up
+        await AcquisitionPackage.setEvaluationPlan(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+
+  }
+
 
 }
 

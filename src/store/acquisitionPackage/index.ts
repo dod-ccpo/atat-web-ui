@@ -445,8 +445,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setEvaluationPlan(value: EvaluationPlanDTO): void {
-    this.evaluationPlan = value;
+  public async setEvaluationPlan(value: EvaluationPlanDTO): Promise<void> {
+    if (this.evaluationPlan) {
+      this.evaluationPlan = Object.assign(this.evaluationPlan, value);
+    } else {
+      this.evaluationPlan = value;
+    }
   }
 
   public get getEvaluationPlan(): EvaluationPlanDTO | null {
@@ -766,7 +770,7 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves data for a given TableDTO/store property
    */
-  async saveData<TableDTO>({
+  async saveData<TableDTO extends BaseTableDTO>({
     data,
     storeProperty,
   }: {
