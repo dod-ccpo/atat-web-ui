@@ -147,7 +147,7 @@ import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
 
 
 // Step 2 Components
-import FairOppExceptions from "@/steps/02-FairOpportunityProcess/components/FairOppExceptions.vue";
+import FairOppExceptions from "@/steps/02-EvaluationCriteria/components/FairOppExceptions.vue";
 
 // Step 3 Components
 import ContractNumber from "@/steps/03-Background/components/ContractNumber.vue";
