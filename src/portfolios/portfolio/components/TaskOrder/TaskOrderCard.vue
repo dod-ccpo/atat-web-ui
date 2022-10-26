@@ -40,7 +40,7 @@
             ]"
             label
           >
-            {{ cardData.status }}
+            {{ cardData.statusLabel }}
           </v-chip>
         </div>
         <ATATMeatballMenu

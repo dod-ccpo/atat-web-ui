@@ -16,7 +16,7 @@
         </div>
         <ATATRadioGroup
           id="SurgeCapacity"
-          :value.sync="surgeCapacity"
+          :value.sync="currentData.capacity"
           :items="items"
           name="surge-capacity"
           card="true"
@@ -29,11 +29,10 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { RequirementsCostEstimateDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import IGCEStore, { SurgeRequirements } from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
 
 @Component({
@@ -42,8 +41,8 @@ import { hasChanges } from "@/helpers";
   },
 })
 export default class SurgeCapacity extends Mixins(SaveOnLeave) {
-  private surgeCapacity = "";
-  private surgeCapabilities = "";
+  public capacity = "";
+  public capabilities = "";
   private items = [
     {
       id: "YES",
@@ -57,46 +56,46 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
     },
   ];
 
-  private get currentData(): RequirementsCostEstimateDTO {
-    return {
-      surge_capacity: this.surgeCapacity,
-      surge_capabilities: this.surgeCapacity === "YES" ? this.surgeCapabilities: ""
-    };
+  get currentData(): SurgeRequirements {
+    return{
+      capacity: this.capacity,
+      capabilities: ""
+    }
   }
 
-  private savedData: RequirementsCostEstimateDTO = {
-    surge_capacity: "",
+  private savedData: SurgeRequirements = {
+    capacity: "",
+    capabilities: ""
   };
+
+   @Watch("capacity")
+  protected changeSelection(): void{
+    this.capabilities = "";
+  }
   
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
-  }
+   private hasChanged(): boolean {
+     return hasChanges(this.currentData, this.savedData);
+   }
 
-  public async loadOnEnter(): Promise<void> {
-    // const storeData = await AcquisitionPackage.
-    // loadData<RequirementsCostEstimateDTO>({storeProperty:
-    // StoreProperties.RequirementsCostEstimate});
-    const storeData = await AcquisitionPackage.getRequirementsCostEstimate();
-    if (storeData) {
-      this.savedData.surge_capacity = storeData.surge_capacity as string;
-      this.surgeCapacity = storeData.surge_capacity || "";
-    }
-  }
+   public async loadOnEnter(): Promise<void> {
+     const storeData = await IGCEStore.getSurgeRequirements();
+     if (storeData) {
+       this.savedData = storeData;
+       this.capacity = storeData.capacity;
+     }
+   }
 
+   public async mounted(): Promise<void> {
+     await this.loadOnEnter();
+   }
 
-  protected async saveOnLeave(): Promise<boolean> {
-    if (this.hasChanged()) {
-      //  await AcquisitionPackage
-      //    .saveData<RequirementsCostEstimateDTO>({data: this.currentData,
-      //    storeProperty: StoreProperties.RequirementsCostEstimate});
-      await AcquisitionPackage.setRequirementsCostEstimate(this.currentData);
-    }
-    return true;
-  }
+   protected async saveOnLeave(): Promise<boolean> {
+     if (this.hasChanged()) {
+       IGCEStore.setSurgeRequirements(this.currentData);
+     }
+     return true;
+   }
 
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
 }
 </script>
 

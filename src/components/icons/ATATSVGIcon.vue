@@ -27,6 +27,7 @@ import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
 import DisaLogo from "@/components/icons/DisaLogo.vue";
 import Email from "@/components/icons/Email.vue";
+import ErrorFilled from "@/components/icons/ErrorFilled.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import Edit from "@/components/icons/Edit.vue";
@@ -37,7 +38,9 @@ import FilePresent from "@/components/icons/FilePresent.vue";
 import Gcp from "@/components/icons/Gcp.vue";
 import InfoOutline from "@/components/icons/InfoOutline.vue";
 import Launch from "@/components/icons/Launch.vue";
+import ManageAccount from "@/components/icons/ManageAccount.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
+import OptionPending from "@/components/icons/OptionPending.vue";
 import Oracle from "@/components/icons/Oracle.vue";
 import Pdf from "@/components/icons/Pdf.vue";
 import Person from "@/components/icons/Person.vue";
@@ -48,6 +51,7 @@ import Processing from "@/components/icons/Processing.vue";
 import Provisioned from "@/components/icons/Provisioned.vue";
 import Role from "@/components/icons/Role.vue";
 import Remove from "@/components/icons/Remove.vue";
+import RequestQuote from "@/components/icons/RequestQuote.vue";
 import Search from "@/components/icons/Search.vue";
 import Service from "@/components/icons/Service.vue";
 import SignOut from "@/components/icons/SignOut.vue";
@@ -55,10 +59,12 @@ import Support from "@/components/icons/Support.vue";
 import TaskAlt from "@/components/icons/TaskAlt.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
-import UploadFile from "@/components/icons/UploadFile.vue";
 import TriangleUp from "@/components/icons/TriangleUp.vue";
 import TriangleDown from "@/components/icons/TriangleDown.vue";
-import ManageAccount from "@/components/icons/ManageAccount.vue";
+import UploadFile from "@/components/icons/UploadFile.vue";
+import Warning from "@/components/icons/Warning.vue";
+import WarningAmber from "@/components/icons/WarningAmber.vue";
+
 
 @Component({
   components: {
@@ -77,6 +83,7 @@ import ManageAccount from "@/components/icons/ManageAccount.vue";
     DisaLogo,
     Edit,
     Email,
+    ErrorFilled,
     ExclamationMark,
     ExternalLink,
     Failed,
@@ -88,6 +95,7 @@ import ManageAccount from "@/components/icons/ManageAccount.vue";
     Launch,
     ManageAccount,
     MonetizationOn,
+    OptionPending,
     Oracle,
     Pdf,
     Person,
@@ -96,6 +104,7 @@ import ManageAccount from "@/components/icons/ManageAccount.vue";
     PlusSign,
     Processing,
     Provisioned,
+    RequestQuote,
     Role,
     Remove,
     Search,
@@ -108,6 +117,8 @@ import ManageAccount from "@/components/icons/ManageAccount.vue";
     TrendingDown,
     TrendingUp,
     UploadFile,
+    Warning,
+    WarningAmber,
   }
 })
 
@@ -147,6 +158,7 @@ export default class ATATSVGIcon extends Vue {
     { "disabled": "c9c9c9" },
     { "disabled-dark": "adadad"},
     { "white": "ffffff" },
+    { "warning-dark2": "e9a514" },
   ]
 
   private mounted(): void{

@@ -5,7 +5,7 @@ import { DefaultProps } from "vue/types/options";
 import PortfolioDrawer from "@/portfolios/portfolio/components/shared/PortfolioDrawer.vue";
 import PortfolioData from "@/store/portfolio";
 import { SelectData, User } from "types/Global";
-import { StatusTypes } from "@/store/acquisitionPackage";
+import { Statuses } from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
 Vue.use(Vuetify);
 
@@ -61,7 +61,12 @@ describe("Testing Portfolio Drawer component", () => {
       localVue,
       vuetify,
     });
-    PortfolioData.setPortfolioData(portfolio)
+    PortfolioData.setPortfolioData(portfolio);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.clearAllTimers();
   });
 
   it("renders successfully", async () => {
@@ -124,12 +129,37 @@ describe("Testing Portfolio Drawer component", () => {
     expect(await wrapper.vm.$data.portfolio.members[3].role).toEqual(newRole);
   })
 
-  it("onSelectedMemberRoleChanged() - pass params to successfully change roles ", async()=>{
+  it("onSelectedMemberRoleChanged() - pass params to remove from portfolio ", async()=>{
     const newRole = "Remove";
-    const idx = 3
+    const idx = 0
     await wrapper.setData({
-      portfolio
+      portfolio, 
+      portfolioMembers: [{
+        firstName: "FirstName",
+        lastName: "LastName",
+        email: "firstNameLastName@mail.mil",
+        role: "Manager"
+      }]
     })
+
+    const _portfolio = {
+      csp: "Azure",
+      description:"just testfefseffdsfd",
+      members: [{
+        firstName: "FirstName",
+        lastName: "LastName",
+        email: "firstNameLastName@mail.mil",
+        role: "Manager"
+      }],
+      provisioned: "2022-09-08 18:12:12",
+      agency: "DISA",
+      status: "Active",
+      title: "test title",
+      updated: "2022-09-08 18:12:12"
+    }
+    jest.spyOn(PortfolioData, "getPortfolioData").mockImplementation(
+      ()=>Promise.resolve( _portfolio ));
+
     await wrapper.vm.onSelectedMemberRoleChanged(newRole, idx)
     expect (await wrapper.vm.$data.showDeleteMemberDialog).toBe(true);
    
@@ -163,22 +193,22 @@ describe("Testing Portfolio Drawer component", () => {
   describe("getTag function with different inputs",()=> {
 
     it("Test getTag(processing)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = StatusTypes.Active;
+      wrapper.vm.$data.portfolioStatus = Statuses.Active.value;
       const result = wrapper.vm.getBgColor()
       expect(result.length).toBeGreaterThan(0)
     })
     it("Test getTag(expiring pop)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = StatusTypes.AtRisk;
+      wrapper.vm.$data.portfolioStatus = Statuses.AtRisk.value;
       const result = wrapper.vm.getBgColor()
       expect(result.length).toBeGreaterThan(0)
     })
     it("Test getTag(expired)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus =  StatusTypes.Delinquent;
+      wrapper.vm.$data.portfolioStatus =  Statuses.Delinquent.value;
       const result = wrapper.vm.getBgColor()
       expect(result.length).toBeGreaterThan(0)
     })
     it("Test getTag(archived)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = StatusTypes.Archived
+      wrapper.vm.$data.portfolioStatus = Statuses.Archived.value
       const result = wrapper.vm.getBgColor()
       expect(result.length).toBeGreaterThan(0)
     })

@@ -199,7 +199,7 @@ import { format, parseISO } from "date-fns";
 import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import { getStatusChipBgColor } from "@/helpers";
-import { StatusTypes } from "@/store/acquisitionPackage";
+import { Statuses } from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -214,7 +214,7 @@ import { StatusTypes } from "@/store/acquisitionPackage";
 
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio = {};
-  public portfolioStatus: string = StatusTypes.Active;
+  public portfolioStatus: string = Statuses.Active.label;
   public provisionedTime = "";
   public updateTime = "";
   public csp = "";
@@ -271,9 +271,9 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async loadPortfolio(): Promise<void> {
-    const storeData = await PortfolioData.getPortfolioData();
+    const storeData = _.cloneDeep(await PortfolioData.getPortfolioData());
     if (storeData) {
-      this.portfolio = storeData;
+      this.portfolio = _.cloneDeep(storeData);
       if (storeData.provisioned && storeData.updated && storeData.csp) {
         this.provisionedTime = this.formatDate(storeData.provisioned);
         this.updateTime = this.formatDate(storeData.updated);

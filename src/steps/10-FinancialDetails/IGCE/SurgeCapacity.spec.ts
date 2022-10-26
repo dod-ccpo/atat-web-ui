@@ -4,9 +4,8 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import SurgeCapacity from "@/steps/10-FinancialDetails/IGCE/SurgeCapacity.vue";
-import { RequirementsCostEstimateDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import validators from "../../../plugins/validation"
+import IGCEStore from "@/store/IGCE";
 Vue.use(Vuetify);
 
 describe("Testing SurgeCapacity Component", () => {
@@ -31,80 +30,33 @@ describe("Testing SurgeCapacity Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("currentData() retrieves expected object", async () => {
-    const surgeCap = "YES";
-    const surgeCapabilities="15"
-    wrapper.setData({
-      surgeCapacity: surgeCap,
-      surgeCapabilities
-    })
-    const currentData: RequirementsCostEstimateDTO = 
-      wrapper.vm.currentData;
-    expect(currentData.surge_capacity).toBe(surgeCap);
-    expect(currentData.surge_capabilities).toBe(surgeCapabilities)
-  });
-
-  it("currentData() retrieves expected object", async () => {
-    const surgeCap = "NO";
-    const surgeCapabilities="15"
-    wrapper.setData({
-      surgeCapacity: surgeCap,
-      surgeCapabilities
-    })
-    const currentData: RequirementsCostEstimateDTO = 
-      wrapper.vm.currentData;
-    expect(currentData.surge_capabilities).toBe("");
-  });
 
   it("hasChanged() retrieves expected boolean value", async () => {
-    const surgeCap = "YES";
-    wrapper.setData({
-      surgeCapacity: surgeCap,
+    await wrapper.setData({
+      currentData:{
+        capacity: "YES",
+      },
       savedData:{
-        surgeCapacity: "NO"
+        capacity: "NO"
       }
     })
-    const hasChanged: boolean = wrapper.vm.hasChanged();
+    const hasChanged: boolean = await wrapper.vm.hasChanged();
     expect(hasChanged).toBe(true);
   });
 
-  it("loadOnEnter() retrieves expected boolean value with valid " +
-  "AcquisitionPackage.requirementsCostEstimate", async () => {
-    const surgeCap = "YES";
-    jest.spyOn(AcquisitionPackage, "getRequirementsCostEstimate").mockImplementation(
-      ()=>({
-        surge_capacity: surgeCap
-      })
-    )
-    await wrapper.vm.loadOnEnter();
-    expect(wrapper.vm.$data.savedData.surge_capacity).toBe(surgeCap);
-    expect(wrapper.vm.surgeCapacity).toBe(surgeCap);
-  });
-
-  it("loadOnEnter() retrieves expected boolean value with undefined surge_capacity " +
-  "AcquisitionPackage.requirementsCostEstimate", async () => {
-    jest.spyOn(AcquisitionPackage, "getRequirementsCostEstimate").mockImplementation(
-      ()=>({
-        surge_capacity: undefined
-      })
-    )
-    await wrapper.vm.loadOnEnter();
-    expect(wrapper.vm.surgeCapacity).toBe("");
-  });
-
-  it("saveOnLeave() if data has changed, set new data to " +
-  "AcquisitionPackage.setRequirementsCostEstimate", async () => {
+  it("saveOnLeave() if data has changed, ensure data has saved to store by calling  " +
+  "IGCEStore.setSurgeRequirements", async () => {
     const surgeCap = "YES";
     // setData results in hasChanged() === true
     wrapper.setData({
-      surgeCapacity: surgeCap,
+      capacity: "YES",
       savedData:{
-        surgeCapacity: "NO"
+        capacity: "NO"
       }
     })
     await wrapper.vm.saveOnLeave();
-    const reqCostEst = await AcquisitionPackage.requirementsCostEstimate;
-    expect(reqCostEst?.surge_capacity).toBe(surgeCap);
+    const reqCostEst = await IGCEStore.getSurgeRequirements();
+    expect(reqCostEst.capacity).toBe(surgeCap);
   });
 
 
