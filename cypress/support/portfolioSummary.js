@@ -112,10 +112,29 @@ Cypress.Commands.add('searchPortfolio', (searchItem,portfolioName) => {
   cy.findElement(ps.portfolioCards).should("contain", portfolioName); 
 });
 
-Cypress.Commands.add('portfolioTab', (tabSelector) => {    
+Cypress.Commands.add('noPortfolioSearchResult', (searchItem,searchText) => {
+  cy.findElement(ps.searchInput).should("exist").type(searchItem);
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.findElement(ps.searchBtn).should("exist").wait(1000).click();
+  cy.textExists(ps.noSearchResultHeader, "No results"); 
+  cy.textExists(ps.searchString,  "for"+" "+searchText )
+});
+
+Cypress.Commands.add('clickFilterIcon', () => {
+  cy.findElement(ps.filterBtn).should("exist").click().then(() => {
+    cy.findElement(ps.filterSlideout).should("be.visible");
+    cy.textExists(ps.panelTitle, "Filter your results");
+    cy.findElement(ps.radioAll).should("be.checked").then(() => {
+      cy.findElement(ps.resetFiltersLink).should("be.disabled");
+    });
+  });
+});
+
+
+Cypress.Commands.add('tabStatus', (tabSelector,boolean) => {    
       
-  cy.findElement(tabSelector).click()
-    .should('have.attr', 'aria-selected', 'true');
+  cy.findElement(tabSelector)
+    .should('have.attr', 'aria-selected', boolean);
 });
 Cypress.Commands.add('clickRoleDropdown', (selector,roleSelector) => {
   cy.dropDownClick(selector);
