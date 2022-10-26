@@ -191,8 +191,6 @@ export const routeNames = {
   FOIA: "FOIA",
   FOIACoordinator: "FOIA_Coordinator",
   Section508Standards: "Section_508_Standards",
-  // EvaluationCriteriaIndex: "Evaluation_Criteria_Index",
-  // EvaluationCriteria: "Evaluation_Criteria",
   ClassificationRequirements: "Classification_Requirements",
   SurgeCapabilities: "SurgeCapabilities",
   RequirementsCostForm: "Requirements_Cost_Form",
