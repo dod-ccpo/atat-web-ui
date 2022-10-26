@@ -474,3 +474,9 @@ export interface LegendLink {
   emitText: string;
 }
 
+export interface IGCE {
+  travelEstimateNeeds: boolean,
+  estimatedTravelCosts: string[],
+  surgeCapacity: boolean,
+  surgeCapabilities: string,
+}
