@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import IGCEStore from "@/store/IGCE";
 import Periods from "@/store/periods";
 import { 
   AcorsRouteResolver,
@@ -117,27 +118,21 @@ describe("testing route resolvers", () => {
   describe("IGCE Resolvers", ()=>{
     it("IGCESurgeCapabilities('Create_Price_Estimate') returns routeNames.FeeCharged", 
       async () => {
-        AcquisitionPackage.setRequirementsCostEstimate({
-          surge_capacity: "NO"
-        });
+        IGCEStore.surgeRequirements.capacity = "NO";
         const newRoute = await IGCESurgeCapabilities("Surge_Capacity");
         expect(newRoute).toBe("Fee_Charged");
       });
 
     it("IGCESurgeCapabilities('Fee_Charged') returns routeNames.SurgeCapacity", 
       async () => {
-        AcquisitionPackage.setRequirementsCostEstimate({
-          surge_capacity: "NO"
-        });
+        IGCEStore.surgeRequirements.capacity = "NO";
         const newRoute = await IGCESurgeCapabilities("Fee_Charged");
         expect(newRoute).toBe("Surge_Capacity");
       });
 
     it("IGCESurgeCapabilities('Fee_Charged') returns routeNames.SurgeCapabilities", 
       async () => {
-        AcquisitionPackage.setRequirementsCostEstimate({
-          surge_capacity: "YES"
-        });
+        IGCEStore.surgeRequirements.capacity = "YES";
         const newRoute = await IGCESurgeCapabilities("Fee_Charged");
         expect(newRoute).toBe("SurgeCapabilities");
       });
@@ -153,6 +148,7 @@ describe("testing route resolvers", () => {
         "routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCECannotProceedResolver("Create_Price_Estimate");
       expect(newRoute).toBe("Gather_Price_Estimates");
     });
@@ -161,23 +157,37 @@ describe("testing route resolvers", () => {
         "routeNames.CreatePriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCECannotProceedResolver("Gather_Price_Estimates");
       expect(newRoute).toBe("Create_Price_Estimate");
     });
 
-    it("IGCEGatherPriceEstimatesResolver('Gather_Price_Estimates') returns " +
+    it("IGCEGatherPriceEstimatesResolver('Travel_Estimates') returns " +
         "routeNames.CannotProceed", 
     async () => {
-      const newRoute = await IGCEGatherPriceEstimatesResolver("Create_Price_Estimate");
-      expect(newRoute).toBe("Funding_Plan_Type");
-    });
-
-    it("IGCECannotProceedResolver('Gather_Price_Estimates') with expected criteria to return " +
-        "routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
+      const newRoute = await IGCEGatherPriceEstimatesResolver("Travel_Estimates");
+      expect(newRoute).toBe("Gather_Price_Estimates");
+    });
+
+    it("IGCEGatherPriceEstimatesResolver('Gather_Price_Estimates') with " +
+        "expected criteria to return routeNames.GatherPriceEstimates", async () => {
+      Periods.setPeriods(legitPeriod)
+      DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCEGatherPriceEstimatesResolver("Gather_Price_Estimates");
       expect(newRoute).toBe("Create_Price_Estimate");
+    });
+
+    it("IGCEGatherPriceEstimatesResolver('Gather_Price_Estimates') with  " +
+    "expected criteria to return routeNames.GatherPriceEstimates", async () => {
+      Periods.setPeriods(legitPeriod)
+      DescriptionOfWork.setIsIncomplete(true);
+      IGCEStore.setHasDOWandPop();
+      const newRoute = await IGCEGatherPriceEstimatesResolver("Gather_Price_Estimates");
+      expect(newRoute).toBe("Funding_Plan_Type");
     });
 
     it("IGCESupportingDocumentationResolver('Funding_Plan_Type') " +
@@ -191,9 +201,20 @@ describe("testing route resolvers", () => {
         "criteria to return routeNames.GatherPriceEstimates", async () => {
       Periods.setPeriods(legitPeriod)
       DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
       const newRoute = await IGCESupportingDocumentationResolver("Funding_Plan_Type");
       expect(newRoute).toBe("Estimates_Developed");
     });
+    it("IGCESupportingDocumentationResolver('Funding_Plan_Type') with expected " +
+    "criteria to return routeNames.GatherPriceEstimates", async () => {
+      Periods.setPeriods(legitPeriod)
+      DescriptionOfWork.setIsIncomplete(false);
+      IGCEStore.setHasDOWandPop();
+      const newRoute = await IGCESupportingDocumentationResolver("Funding_Plan_Type");
+      expect(newRoute).toBe("Estimates_Developed");
+    });
+
+
   })
 
 })

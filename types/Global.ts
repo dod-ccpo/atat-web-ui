@@ -468,3 +468,15 @@ export interface ClinTableRowData {
   popStartDate: string
 }
 
+export interface LegendLink {
+  id: string;
+  linkText: string;
+  emitText: string;
+}
+
+export interface IGCE {
+  travelEstimateNeeds: boolean,
+  estimatedTravelCosts: string[],
+  surgeCapacity: boolean,
+  surgeCapabilities: string,
+}
