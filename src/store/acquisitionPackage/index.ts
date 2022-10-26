@@ -338,6 +338,15 @@ export class AcquisitionPackageStore extends VuexModule {
     this.acquisitionPackage = value;
     saveSessionData(this);
   }
+  @Action
+  public async getAcquisitionPackage(): Promise<AcquisitionPackageDTO | null> {
+    return this.acquisitionPackage;
+  }
+
+  @Action
+  public getAcquisitionPackageSysId(): string {
+    return this.acquisitionPackage?.sys_id || "";
+  }
 
   @Mutation
   public setProjectOverview(value: ProjectOverviewDTO): void {

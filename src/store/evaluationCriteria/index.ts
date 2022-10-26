@@ -4,6 +4,7 @@ import rootStore from "@/store";
 import {EvaluationCriteriaDTO} from "@/api/models";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import Vue from "vue";
+import AcquisitionPackage from "../acquisitionPackage";
 
 const ATAT_EVALUATION_CRITERIA_KEY = "ATAT_EVALUATION_CRITERIA_KEY";
 
@@ -44,31 +45,37 @@ export class EvaluationCriteriaStore extends VuexModule {
     }
   }
 
-  @Mutation
-  public setInitialized(value: boolean): void {
-    this.initialized = value;
-  }
+  // @Mutation
+  // public setInitialized(value: boolean): void {
+  //   this.initialized = value;
+  // }
 
   @Mutation
   public setEvaluationCriteria(value: EvaluationCriteriaDTO): void {
     this.evaluationCriteria = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_EVALUATION_CRITERIA_KEY
-    );
+    // storeDataToSession(
+    //   this,
+    //   this.sessionProperties,
+    //   ATAT_EVALUATION_CRITERIA_KEY
+    // );
+  }
+
+  get acquisitionPackageSysId(): string {
+    return AcquisitionPackage.getAcquisitionPackageSysId();
   }
 
   @Action({rawError: true})
   async initialize(): Promise<void> {
     if (!this.initialized) {
-      const sessionRestored = retrieveSession(ATAT_EVALUATION_CRITERIA_KEY);
-      if (sessionRestored) {
-        this.setStoreData(sessionRestored);
-      } else {
-        this.setInitialized(true);
-        storeDataToSession(this, this.sessionProperties, ATAT_EVALUATION_CRITERIA_KEY);
-      }
+      // const sessionRestored = retrieveSession(ATAT_EVALUATION_CRITERIA_KEY);
+      // if (sessionRestored) {
+      //   this.setStoreData(sessionRestored);
+      // } else {
+      //   this.setInitialized(true);
+      //   storeDataToSession(this, this.sessionProperties, ATAT_EVALUATION_CRITERIA_KEY);
+      // }
+      await this.loadEvaluationCriteria(this.acquisitionPackageSysId) 
+      this.initialized = true;
     }
   }
 
@@ -95,8 +102,8 @@ export class EvaluationCriteriaStore extends VuexModule {
         evaluation_plan: {
           source_selection: "NoTechProposal",
           method: "BVTO",
-          standard_criteria_or_differentiators: ["Test BVTO differentiators"],
-          custom_criteria_or_differentiators: []
+          standard_specifications: ["Test BVTO differentiators"],
+          custom_specifications: []
         },
         fair_opportunity: {
           exception_to_fair_opportunity: "Test exception to fair opportunity"
