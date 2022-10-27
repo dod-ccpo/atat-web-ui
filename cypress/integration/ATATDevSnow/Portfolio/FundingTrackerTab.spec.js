@@ -5,7 +5,7 @@ import ps from "../../../selectors/portfolioSummary.sel"
 describe("Test suite: Portfolios Funding Tracker tab", () => { 
   
   let menus;
-  const title = "“Mock Title”";
+  const title = "“Army Portfolio”";
   let portfolioName = "Army Portfolio";
   let card;
 

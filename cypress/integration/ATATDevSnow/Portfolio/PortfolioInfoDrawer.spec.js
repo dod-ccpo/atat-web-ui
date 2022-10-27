@@ -5,7 +5,7 @@ import ps from "../../../selectors/portfolioSummary.sel"
 describe("Test suite: Portfolio info Drawer", () => {
   
   
-  const title = "“Mock Title”";
+  const title = "“Air Force Portfolio”";
   const fName = randomString(4);
   const lName = randomString(4);
   const email = (fName + "." + lName + "-ctr@mail.gov").toLowerCase();
@@ -36,7 +36,7 @@ describe("Test suite: Portfolio info Drawer", () => {
     
   it("TC1: Rename the portfolio description in info drawer", () => {
     cy.clickPortfolioDrawer(card, portfolioName);
-    const descValue = "Mock Description"
+    const descValue = "";
     const editdescText = "Air Force Portfolio"
     cy.editInputField(
       ps.descriptionTextArea,
