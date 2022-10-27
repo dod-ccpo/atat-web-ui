@@ -20,9 +20,9 @@
         :id="'CustomSpec' + index" 
         class="width-100"
         :value.sync="_customSpecifications[index]"
-        :rules="[
-          $validators.required('Please enter a custom ' + specificationType + '.'),
-        ]"
+        :rules="!isOptional
+          ? [$validators.required('Please enter a custom ' + specificationType + '.')]
+          : []"
       />
 
       <v-btn
@@ -87,6 +87,12 @@ export default class CustomSpecifications extends Vue {
     }
     return this.isStandards ? "compliance standard" : "assessment area";
   }
+
+  // public get rules(): unknown[] {
+  //   return !this.isOptional
+  //     ? [this.$validators.required('Please enter a custom ' + this.specificationType + '.')]
+  //     : [];
+  // }
 
   public addCustomSpec(): void {
     this._customSpecifications.push("");
