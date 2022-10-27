@@ -1,6 +1,7 @@
 <template>
   <div>
     Future page for Gather Price Estimates
+
   </div>
 </template>
 <script lang="ts">

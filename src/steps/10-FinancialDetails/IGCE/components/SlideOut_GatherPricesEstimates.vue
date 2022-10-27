@@ -50,10 +50,20 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
           of the CSP calculators below as a tool for developing your cost
           estimate.
         </p>
-        <p>
-          The CSP shall map each quoted or proposed catalog item number/SKU to
-          the specific requirement element(s).
-        </p>
+        <span>
+        <ATATSVGIcon
+          name="bullet"
+          color="primary"
+          :width="9"
+          :height="9"
+          class="d-inline-block mx-1"
+        />
+        <a
+        href="https://calculator.aws/#/addService?nc2=h_ql_pr_calc"
+        >
+            AWS Pricing Calculator
+        </a>
+        </span>
         <p>
           Depending on your basis of evaluation, the KO may request the CSPs
           propose a technical solution.
