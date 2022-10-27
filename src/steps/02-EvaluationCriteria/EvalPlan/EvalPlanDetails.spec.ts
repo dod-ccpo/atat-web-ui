@@ -25,7 +25,8 @@ describe("Testing NoEvalPlan Component", () => {
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await AcquisitionPackage.setEvaluationPlan(evalPlanPopulated);
     vuetify = new Vuetify();
     wrapper = mount(EvalPlanDetails, {
       vuetify,
@@ -41,10 +42,47 @@ describe("Testing NoEvalPlan Component", () => {
 
   describe("testing methods", () => {
     it("loadOnEnter() - gets eval plan data from store", async () => {
-      await AcquisitionPackage.setEvaluationPlan(evalPlanPopulated);
       await wrapper.vm.loadOnEnter();
       expect(wrapper.vm.$data.evalPlan.source_selection).toBe("TechProposal")
     });
-  })
+
+  });
+
+  describe("testing getters", () => {
+    it ("gets header for tech proposal required", async () => {
+      expect(wrapper.vm.isStandards).toBeTruthy();
+      expect(wrapper.vm.header).toContain("proposals are required")  
+    });
+    it ("gets header for no proposal required", async () => {
+      await wrapper.setData({
+        // eslint-disable-next-line camelcase
+        evalPlan: { source_selection: "NoTechProposal" }
+      })
+
+      expect(wrapper.vm.isStandards).toBeTruthy();
+      expect(wrapper.vm.header).toContain("no technical proposal is required")    
+    });
+
+    it ("gets header for lump sum one CSP", async () => {
+      await wrapper.setData({
+        // eslint-disable-next-line camelcase
+        evalPlan: { source_selection: "SetLumpSum" }
+      })
+
+      expect(wrapper.vm.isStandards).toBeFalsy();
+      expect(wrapper.vm.header).toContain("assessment criteria")    
+    });
+
+    it ("gets header for lump sum multiple CSPs", async () => {
+      await wrapper.setData({
+        // eslint-disable-next-line camelcase
+        evalPlan: { source_selection: "EqualSetLumpSum" }
+      });
+
+      expect(wrapper.vm.isStandards).toBeFalsy();
+      expect(wrapper.vm.header).toContain("assessment criteria")    
+    });
+
+  });
 
 })
