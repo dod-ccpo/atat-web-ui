@@ -209,18 +209,17 @@ export default class ExistingUser extends Vue {
   };
 
   public async loadOnEnter(): Promise<void>{
-    try {
-      const packageData = await AcquisitionPackageSummary
-        .searchAcquisitionPackageSummaryList(this.searchDTO);
-      this.packageData = packageData.acquisitionPackageSummaryList;
-
-      this.packageCount = this.packageData.length;
-      const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
-      this.draftPackageCount = draftPackages?.length || 0;
-    }
-    catch {
-      console.log("Error loading acquisition package data");
-    }
+    // try {
+    const packageData = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(this.searchDTO);
+    this.packageData = packageData.acquisitionPackageSummaryList;
+    this.packageCount = this.packageData.length;
+    const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
+    this.draftPackageCount = draftPackages?.length || 0;
+    //}
+    // catch {
+    //   console.log("Error loading acquisition package data");
+    // }
 
   }
 
