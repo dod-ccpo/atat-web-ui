@@ -10,11 +10,19 @@ import AcorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AcorInfo.vu
 import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import Summary from "../steps/Summary.vue";
 
-// Step 2 - Fair Opportunity Process
-import FairOpportunityProcess from "../steps/02-FairOpportunityProcess/Index.vue"
-import Exceptions from "../steps/02-FairOpportunityProcess/Exceptions.vue";
-import JustificationAndApproval
-  from "../steps/02-FairOpportunityProcess/JustificationAndApproval.vue";
+// Step 2 - Evaluation Criteria
+import FairOpportunityProcess from "../steps/02-EvaluationCriteria/Index.vue"
+import Exceptions from "../steps/02-EvaluationCriteria/Exceptions.vue";
+// KEEP JustificationAndApproval for future ticket
+// import JustificationAndApproval
+//   from "../steps/02-EvaluationCriteria/JustificationAndApproval.vue";
+import CreateEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.vue";
+import NoProposalRequired from "../steps/02-EvaluationCriteria/EvalPlan/NoProposalRequired.vue";
+import ProposalRequired from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequired.vue";
+import ProposalRequiredBVTO from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequiredBVTO.vue";
+import LumpSum from "../steps/02-EvaluationCriteria/EvalPlan/LumpSum.vue";
+import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
+import NoEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.vue";
 
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
@@ -75,12 +83,7 @@ import Section508Standards from "../steps/08-StandardsAndCompliance/Section508St
 import Section508AccessibilityRequirements
   from "../steps/08-StandardsAndCompliance/Section508AccessibilityRequirements.vue";
 
-// Step 9 - Evaluation Criteria
-import EvaluationCriteriaIndex from "../steps/09-EvaluationCriteria/Index.vue";
-import EvaluationCriteria
-  from "../steps/09-EvaluationCriteria/EvaluationCriteria.vue";
-
-// step 10 - Financial Details
+// step 09 - Financial Details
 import IGCE from "@/steps/10-FinancialDetails/IGCE/Index.vue";
 import CreatePriceEstimate from "@/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.vue";
 import CannotProceed from "@/steps/10-FinancialDetails/IGCE/CannotProceed.vue";
@@ -100,11 +103,13 @@ import IncrementalFunding
 import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
 import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
+import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
+import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
+
+// step 10 - Review Required Forms
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
-import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
-import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 
 import {
   AcorsRouteResolver,
@@ -127,7 +132,10 @@ import {
   IGCESurgeCapabilities,
   IGCEGatherPriceEstimatesResolver,
   IGCECannotProceedResolver,
-  IGCESupportingDocumentationResolver
+  IGCESupportingDocumentationResolver,
+  CreateEvalPlanRouteResolver,
+  EvalPlanSummaryRouteResolver,
+  NoEvalPlanRouteResolver,
 
 } from "./resolvers";
 
@@ -139,10 +147,20 @@ export const routeNames = {
   AlternateCor: "Alternate_Cor",
   AcorInformation: "Acor_Information",
   ExistingContractBackground: "Existing_Contract_Background",
-  Summary: "Summary",
+  AcqPackageSummary: "Acquisition_Package_Summary",
   FairOpportunity: "Fair_Opportunity",
   Exceptions: "Exceptions",
-  JustificationAndApproval: "Justification_and_Approval",
+  EvaluationPlan: "Evaluation_Plan",
+  CreateEvalPlan: "Create_Eval_Plan",
+  NoProposalRequired: "No_Proposal_Required",
+  ProposalRequired: "Proposal_Required",
+  ProposalRequiredBVTO: "Proposal_Required_BVTO",
+  LumpSum: "Lump_Sum",
+  EvalPlanSummary: "Eval_Plan_Summary",
+  NoEvalPlan: "No_Eval_Plan",
+  // KEEP JustificationAndApproval for future ticket
+  // JustificationAndApproval: "Justification_and_Approval",
+
   Background: "Background",
   CurrentContract: "Current_Contract",
   CurrentContractDetails: "Current_Contract_Details",
@@ -173,8 +191,6 @@ export const routeNames = {
   FOIA: "FOIA",
   FOIACoordinator: "FOIA_Coordinator",
   Section508Standards: "Section_508_Standards",
-  EvaluationCriteriaIndex: "Evaluation_Criteria_Index",
-  EvaluationCriteria: "Evaluation_Criteria",
   ClassificationRequirements: "Classification_Requirements",
   SurgeCapabilities: "SurgeCapabilities",
   RequirementsCostForm: "Requirements_Cost_Form",
@@ -220,29 +236,30 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "01",
     menuText: "Acquisition Package Details",
-    path: "/", // should be same as first substep route
+    path: "/package-details",
     completePercentageWeight: 14,
     component: AcquisitionPackageDetails,
     completed: true,
     children: [
       {
         menuText: "Project Overview",
-        path: "/", // should be same as parent route
+        path: "project-overview",
         name: routeNames.ProjectOverview,
         completePercentageWeight: 4,
         completed: true,
         component: ProjectOverview,
-        additionalButtons: [
-          {
-            name: routeNames.ProjectOverview,
-            buttonText: "Cancel",
-            buttonId: "CancelButton",
-            buttonClass: "tertirary",
-            emitText: "sampleEmitText",
-            actionName: "sampleAdditionalButtonAction",
-            actionArgs: ["foo", "bar"],
-          },
-        ],
+        // KEEP THIS FOR REFERENCE
+        // additionalButtons: [
+        //   {
+        //     name: routeNames.ProjectOverview,
+        //     buttonText: "Cancel",
+        //     buttonId: "CancelButton",
+        //     buttonClass: "tertirary",
+        //     emitText: "sampleEmitText",
+        //     actionName: "sampleAdditionalButtonAction",
+        //     actionArgs: ["foo", "bar"],
+        //   },
+        // ],
       },
       {
         menuText: "Organization",
@@ -287,7 +304,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Summary",
         path: "summary",
-        name: routeNames.Summary,
+        name: routeNames.AcqPackageSummary,
         excludeFromMenu: true,
         completePercentageWeight: 5,
         component: Summary,
@@ -297,14 +314,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "02",
-    menuText: "Fair Opportunity Process",
+    menuText: "Evaluation Criteria",
     path: "/exceptions",
     completePercentageWeight: 10,
     component: FairOpportunityProcess,
     completed: false,
     children: [
       {
-        menuText: "Exceptions",
+        menuText: "Exception to Fair Opportunity",
         path: "exceptions",
         name: routeNames.Exceptions,
         component: Exceptions,
@@ -312,13 +329,82 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
       },
       {
-        menuText: "Justification and Approval",
-        path: "justification-and-approval",
-        name: routeNames.JustificationAndApproval,
-        component: JustificationAndApproval,
+        menuText: "Create Evaluation Plan",
+        path: "create-eval-plan",
+        name: routeNames.CreateEvalPlan,
+        component: CreateEvalPlan,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: CreateEvalPlanRouteResolver,
       },
+
+      {
+        menuText: "No Proposal Required",
+        path: "no-proposal-required",
+        name: routeNames.NoProposalRequired,
+        component: NoProposalRequired,
+        completePercentageWeight: 5,
+        completed: false,
+        excludeFromMenu: true,
+      },
+      {
+        menuText: "Proposal Required",
+        path: "proposal-required",
+        name: routeNames.ProposalRequired,
+        component: ProposalRequired,
+        completePercentageWeight: 5,
+        completed: false,
+        excludeFromMenu: true,
+      },
+      {
+        menuText: "Proposal Required BVTO",
+        path: "proposal-required-bvto",
+        name: routeNames.ProposalRequiredBVTO,
+        component: ProposalRequiredBVTO,
+        completePercentageWeight: 5,
+        completed: false,
+        excludeFromMenu: true,
+      },
+      {
+        menuText: "Lump Sum",
+        path: "lump-sum",
+        name: routeNames.LumpSum,
+        component: LumpSum,
+        completePercentageWeight: 5,
+        completed: false,
+        excludeFromMenu: true,
+      },
+      {
+        menuText: "Evaluation Plan Summary",
+        path: "eval-plan-summary",
+        name: routeNames.EvalPlanSummary,
+        component: EvalPlanSummary,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        routeResolver: EvalPlanSummaryRouteResolver,
+      },
+      {
+        menuText: "No Evaluation Plan",
+        path: "no-eval-plan",
+        name: routeNames.NoEvalPlan,
+        component: NoEvalPlan,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        routeResolver: NoEvalPlanRouteResolver,
+      },
+
+      // KEEP JustificationAndApproval for future ticket
+      // {
+      //   menuText: "Justification and Approval",
+      //   path: "justification-and-approval",
+      //   name: routeNames.JustificationAndApproval,
+      //   component: JustificationAndApproval,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      //   excludeFromMenu: true,
+      // },
     ],
   },
   {
@@ -654,23 +740,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "09",
     completePercentageWeight: 7,
-    menuText: "Evaluation Criteria",
-    path: "/evaluation-criteria",
-    component: EvaluationCriteriaIndex,
-    children: [
-      {
-        menuText: "Evaluation Criteria",
-        path: "evaluation-criteria",
-        excludeFromMenu: true,
-        name: routeNames.EvaluationCriteria,
-        completePercentageWeight: 1,
-        component: EvaluationCriteria,
-      },
-    ],
-  },
-  {
-    stepNumber: "10",
-    completePercentageWeight: 7,
     menuText: "Financial Details",
     path: "/requirements-cost-estimate",
     component: IGCE,
@@ -830,7 +899,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    stepNumber: "11",
+    stepNumber: "10",
     completePercentageWeight: 7,
     menuText: "Review Required Forms",
     path: "/review-required-forms",

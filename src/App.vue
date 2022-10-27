@@ -21,6 +21,8 @@ import ATATTopNavBar from "./components/ATATTopNavBar.vue";
 import AppSections from "@/store/appSections";
 import DocumentReview from "@/documentReview/Index.vue";
 import Portfolios from "@/portfolios/Index.vue";
+import Packages from "@/packages/Index.vue";
+import Home from "@/home/Index.vue";
 
 @Component({
   components: {
@@ -35,6 +37,9 @@ export default class App extends Vue {
   @Watch("activeAppSection")
   public activeAppSectionChanged(newActiveSection: string): void {
     switch (newActiveSection) {
+    case this.sectionTitles.Home:
+      AppSections.setAppContentComponent(Home);
+      break;
     case this.sectionTitles.AcquisitionPackage:
       AppSections.setAppContentComponent(AppPackageBuilder);
       break;
@@ -56,6 +61,9 @@ export default class App extends Vue {
     case this.sectionTitles.DocumentReview:
       AppSections.setAppContentComponent(DocumentReview);
       break;  
+    case this.sectionTitles.Packages:
+      AppSections.setAppContentComponent(Packages);
+      break;
     }
   }
 
@@ -77,7 +85,7 @@ export default class App extends Vue {
   }
 
   public async beforeMount(): Promise<void> {
-    await AppSections.setAppContentComponent(AppPackageBuilder);
+    await AppSections.setAppContentComponent(Home);
   }
 }
 </script>

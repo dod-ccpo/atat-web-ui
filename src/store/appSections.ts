@@ -21,22 +21,25 @@ import SlideoutPanel from "@/store/slideoutPanel";
 export class AppSectionsStore extends VuexModule {
 
   sectionTitles: Record<string, string> = {
+    Home: "Home",
     AcquisitionPackage: "Acquisition Package Builder",
     JWCCDashboard: "JWCC Dashboard",
     TOLookup: "Lookup TO in EDA",
     Portfolios: "Portfolios",
     PortfolioSummary: "Portfolio Summary",
-    DocumentReview: "Document Review"
+    DocumentReview: "Document Review",
+    Packages: "Packages",
   }
 
-  activeAppSection = this.sectionTitles.AcquisitionPackage;
+  activeAppSection = this.sectionTitles.Home;
 
   appSectionMenuItems: { title: string }[] = [
     { title: this.sectionTitles.AcquisitionPackage },
     { title: this.sectionTitles.JWCCDashboard },
     { title: this.sectionTitles.TOLookup },
     { title: this.sectionTitles.Portfolios },
-    { title: this.sectionTitles.DocumentReview }
+    { title: this.sectionTitles.DocumentReview },
+    { title: this.sectionTitles.Packages }
   ];
 
   activeTabIndex = 0;

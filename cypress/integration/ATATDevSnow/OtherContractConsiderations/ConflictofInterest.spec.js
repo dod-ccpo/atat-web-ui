@@ -8,7 +8,7 @@ describe("Test suite: OCC: Conflict of Interest substep", () => {
 
     bootstrapMockApis();
     cy.launchATAT();
-
+    cy.homePageClickAcquisitionPackBtn();
   });
     
   it("TC1: COI on the Vertical Stepper is active", () => {

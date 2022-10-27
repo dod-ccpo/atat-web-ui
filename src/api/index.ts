@@ -1,6 +1,7 @@
-import { AcquisitionPackagesApi } from "./acquisitionPackages";
+import {AcquisitionPackagesApi, AcquisitionPackagesSummaryApi} from "./acquisitionPackages";
 import { ProjectOverviewApi } from "./projectOverview";
 import { OrganizationApi } from "./organization";
+import { AgencyApi } from "./agency";
 import { ContactsApi } from "./contacts";
 import { FairOpportunityApi } from "./fairOpportunity";
 import { CurrentContractApi } from "./background";
@@ -28,7 +29,7 @@ import { CostsApi } from "./costs";
 import { FundingRequestApi } from "./fundingRequest";
 import { FundingRequestFSFormApi } from "./fundingRequestFSForm";
 import { FundingRequestMIPRFormApi } from "./fundingRequestMIPRForm";
-import { ClinAPi } from "./clin";
+import {ClinAPi, ClinDisplayAPi} from "./clin";
 import { EDAApi } from "./eda";
 import { CurrentEnvironmentAPI } from "@/api/currentEnvironment";
 import { AggregateApi } from "./aggregate";
@@ -40,10 +41,12 @@ import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 
 export const api = {
 
+  agencyTable: new AgencyApi(),
   alertsTable: new AlertApi(),
   attachments: new AttachmentApi(),
   systemChoices: new SystemChoicesApi(),
   acquisitionPackageTable: new AcquisitionPackagesApi(),
+  acquisitionPackagesSummaryTable: new AcquisitionPackagesSummaryApi(),
   projectOverviewTable: new ProjectOverviewApi(),
   organizationTable: new OrganizationApi(),
   classificationInstanceTable: new ClassificationInstanceApi(),
@@ -71,6 +74,7 @@ export const api = {
   taskOrderTable: new TaskOrderApi(),
   costsTable: new CostsApi(),
   clinTable: new ClinAPi(),
+  clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),
   currentEnvironmentTable: new CurrentEnvironmentAPI(),
   aggregate: new AggregateApi(),

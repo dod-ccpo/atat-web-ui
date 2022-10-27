@@ -1,5 +1,7 @@
 import common from '../selectors/common.sel';
 import 'cypress-iframe';
+import ps from "../selectors/portfolioSummary.sel";
+import { cleanText } from "../helpers";
 
 Cypress.Commands.add("dialogModalExist", (dialogModalSelector,modalTitleSelector,modalTitle) => {
   cy.findElement(dialogModalSelector)
@@ -79,3 +81,72 @@ Cypress.Commands.add('columnRowsExists', (selector,expectedValues) => {
     .should('deep.equal', expectedValues);  
   cy.log("expectedValues:",expectedValues)
 });
+
+Cypress.Commands.add('clickPortfolioMenu', (card) => { 
+  cy.findElement(card.headingSelector).should("contain", card.cardHeaderText).then(() => {      
+    cy.findElement(card.cardMenuSelector).click();   
+    cy.verifyStringArray(card.menuListSelector, card.menuListText);
+    cy.textExists(card.menuSelector, card.selectedMenuText).click()
+    
+  })
+  
+});
+
+Cypress.Commands.add('verifyPortfolioCardDetails',
+  (portfolioCardSelector, expectedOptions, length) => {
+    cy.findElement(portfolioCardSelector).then(($els) => {
+      const foundText = Cypress.$.makeArray($els).map((el) => el.innerText)
+      const foundTextArray = cleanText(foundText[0]).split(/\r?\n/);
+      console.log("Actual:", foundTextArray)
+      return foundTextArray;
+    })
+      .should('deep.equal', expectedOptions)
+      .and("have.length", length);  
+
+  });
+
+Cypress.Commands.add('searchPortfolio', (searchItem,portfolioName) => {
+  cy.findElement(ps.searchInput).should("exist").type(searchItem);
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.findElement(ps.searchBtn).should("exist").wait(1000).click();
+  cy.findElement(ps.portfolioCards).should("contain", portfolioName); 
+});
+
+Cypress.Commands.add('noPortfolioSearchResult', (searchItem,searchText) => {
+  cy.findElement(ps.searchInput).should("exist").type(searchItem);
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.findElement(ps.searchBtn).should("exist").wait(1000).click();
+  cy.textExists(ps.noSearchResultHeader, "No results"); 
+  cy.textExists(ps.searchString,  "for"+" "+searchText )
+});
+
+Cypress.Commands.add('clickFilterIcon', () => {
+  cy.findElement(ps.filterBtn).should("exist").click().then(() => {
+    cy.findElement(ps.filterSlideout).should("be.visible");
+    cy.textExists(ps.panelTitle, "Filter your results");
+    cy.findElement(ps.radioAll).should("be.checked").then(() => {
+      cy.findElement(ps.resetFiltersLink).should("be.disabled");
+    });
+  });
+});
+
+
+Cypress.Commands.add('tabStatus', (tabSelector,boolean) => {    
+      
+  cy.findElement(tabSelector)
+    .should('have.attr', 'aria-selected', boolean);
+});
+Cypress.Commands.add('clickRoleDropdown', (selector,roleSelector) => {
+  cy.dropDownClick(selector);
+  cy.findElement(roleSelector).click();
+  
+});
+
+Cypress.Commands.add('clickPortfolioDrawer', (card,portfolioName) => {
+  cy.clickPortfolioMenu(card);    
+  cy.findElement(ps.headerPortfolioTextfield).should("have.value", portfolioName);
+  cy.findElement(ps.infoBtn).click().then(() => {
+    cy.findElement(ps.slideoutPanel).should("be.visible");
+    cy.textExists(ps.aboutPortHeader, "About Portfolio");
+  });
+})

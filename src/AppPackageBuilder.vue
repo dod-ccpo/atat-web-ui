@@ -65,8 +65,9 @@ import {
   isPathResolver
 } from "@/store/steps/helpers";
 
-import { buildStepperData } from "./router/stepper";
+import { buildStepperData, routeNames } from "./router/stepper";
 import actionHandler from "./action-handlers/index";
+import AppSections from "./store/appSections";
 
 @Component({
   components: {
@@ -84,6 +85,8 @@ export default class AppPackageBuilder extends Vue {
     sideStepper: ATATSideStepper;
   };
 
+  public routeNames: Record<string, string> = {};
+
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent || undefined;
   };
@@ -93,8 +96,10 @@ export default class AppPackageBuilder extends Vue {
   private noPrevious = false;
   private backButtonText = "Back";
   private continueButtonText = "Continue";
+  private altBackDestination = "";
 
   async mounted(): Promise<void> {
+    this.routeNames = routeNames;
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
@@ -109,7 +114,6 @@ export default class AppPackageBuilder extends Vue {
   async onRouteChanged(): Promise<void> {
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
-
     if (routeName && step) {
       const { stepName, stepNumber } = step;
       Steps.setCurrentStep(stepName);
@@ -151,8 +155,29 @@ export default class AppPackageBuilder extends Vue {
 
         return ;
       }
-    
+
+      Steps.setAltBackDestination("");   
       this.$router.push({ name: nextStepName as string });
+
+    } else if (direction === "previous" && this.altBackDestination) { 
+
+      if (this.$route.name === this.routeNames.ProjectOverview) {
+        Steps.setAltBackDestination("");
+
+        switch (this.altBackDestination) {
+        case AppSections.sectionTitles.Home: {
+          this.$router.push({name: "home" })
+          AppSections.changeActiveSection(AppSections.sectionTitles.Home);
+          break;
+        }
+        case AppSections.sectionTitles.Packages: {
+          this.$router.push({name: "home" })
+          AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
+          break;
+        }
+        }
+
+      }
     }
   }
 
@@ -163,7 +188,8 @@ export default class AppPackageBuilder extends Vue {
   }
 
   private setNavButtons(step: StepInfo): void {
-    this.noPrevious = !step.prev;
+    this.altBackDestination = Steps.altBackDestination;
+    this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
     this.continueButtonText = step.continueButtonText || "Continue";
     if (step.additionalButtons) {

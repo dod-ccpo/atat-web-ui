@@ -11,12 +11,19 @@ export interface BaseTableDTO {
   sys_created_by?: string;
 }
 
+export interface AgencyDTO extends BaseTableDTO {
+  label: string;
+  title: string;
+  acronym: string;
+  css_id: number;
+}
+
 export interface AlertDTO extends BaseTableDTO {
   active: string;
   alert_type: string;
   clin: string;
   last_notification_date: string;
-  portfolio: string;
+  portfolio: string | ReferenceColumn;
   task_order: string;
   threshold_violation_amount: string;
 }
@@ -42,6 +49,11 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   required_services: string;
   current_environment: string;
   environment_instance: string;
+  secondary_reviewers?: string[];
+  mission_owners?: string[],
+  contract_award: ReferenceColumn,
+  package_status?: string;
+  contributors?: string[],
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -103,7 +115,7 @@ export interface OrganizationDTO extends BaseTableDTO {
   street_address_2?: string;
   organization_name?: string;
   disa_organization?: string;
-  service_agency?: string;
+  agency?: string;
   state?: string;
   zip_code?: string;
   country?: string;
@@ -274,6 +286,11 @@ export interface ReferenceColumn {
   value: string;
 }
 
+export interface DisplayColumn {
+  display_value: string;
+  value: string;
+}
+
 export interface SelectedServiceOfferingDTO extends BaseTableDTO {
   classification_instances: string;
   other_service_offering: string;
@@ -311,19 +328,22 @@ export interface TaskOrderDTO extends BaseTableDTO {
     pop_end_date: string;
     pop_start_date: string;
     funds_total: string;
+    total_task_order_value?: number; // total clin values that don't have expired/ option pending
+    total_lifecycle_amount?: number; // total clin values irrespective of status
+    funds_spent_task_order?: number; // total of is_actual=true costs across all clins of task order
 }
 
 export interface CostsDTO extends BaseTableDTO {
-  clin: ReferenceColumn | string;
-  csp: string;
+  clin: ReferenceColumn["value"];
+  csp: ReferenceColumn | string;
   "csp.name"?:string;
   year_month: string;
   task_order_number: string;
-  portfolio: string;
-  organization: string;
-  service_agency: string;
+  portfolio: ReferenceColumn | string;
+  organization: ReferenceColumn | string;
+  "agency.title"?: string;
   is_actual: string;
-  value: number;
+  value: string;
 }
 
 export interface CostGroupDTO {
@@ -334,15 +354,31 @@ export interface CostGroupDTO {
 }
 
 export interface ClinDTO extends BaseTableDTO {
-  funds_obligated: number;
+  sys_id: string;
   clin_number: string;
   idiq_clin: string;
   idiq_clin_label?: string;
+  idiq_clin_display?: DisplayColumn;
   pop_end_date: string;
   pop_start_date: string;
   clin_status: string;
-  funds_total: string;
+  clin_status_display?: DisplayColumn;
+  funds_obligated: number;
+  funds_total: number;
   cost_records?: CostsDTO[]
+  funds_spent_clin?: number; // total of all is_actual=true costs of the clin
+  clin_title?: string;
+}
+
+export interface ClinDisplayDTO {
+  sys_id: DisplayColumn;
+  clin_number: DisplayColumn;
+  idiq_clin: DisplayColumn;
+  pop_start_date: DisplayColumn;
+  pop_end_date: DisplayColumn;
+  clin_status: DisplayColumn;
+  funds_obligated: DisplayColumn;
+  funds_total: DisplayColumn;
 }
 
 export interface EDAResponse {
@@ -372,6 +408,7 @@ export interface EnvironmentInstanceDTO extends BaseTableDTO {
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
   csp: ReferenceColumn;
+  active_task_order: ReferenceColumn;
   csp_display: string; // "<<cloud_service_package.name >>"
   dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
@@ -381,12 +418,92 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   pop_start_date: string; // "2022-01-01 << task_order.pop_start_date >>",
   funds_obligated: number; // "<< sum of obligated values in all qualifying clins >>",
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
+  portfolio_funding_status: string;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
+  alerts: AlertDTO[];
+}
+
+export interface PortfolioSummaryMetadataAndDataDTO {
+  total_count: number;
+  portfolioSummaryList: PortfolioSummaryDTO[];
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
   name:string;
   // other columns as needed
+}
+
+export interface PortfolioSummarySearchDTO {
+  role: "ALL" | "MANAGED"; // one of these two values should always exist
+  fundingStatuses: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT' | 'FUNDING_AT_RISK')[];
+  csps: string[]; // to not search for specific csps, send empty array
+  portfolioStatus: "ACTIVE" | "PROCESSING" | ""; // empty string for both statuses
+  sort: "name" | "DESCsys_updated_on"; // one of these two values should always exist
+  searchString?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface PackageSummaryDTO { // TODO: delete this interface after acq package summary impl
+  
+    project_overview?: ReferenceColumn["value"]
+    title?: string, //proj overview
+    secondary_reviewers?: string[],
+    package_status?: string,
+    sys_updated_on?: string,
+    sys_created_by?: string,
+    mission_owners?: string[],
+    contract_award?: ReferenceColumn["value"],
+    contributors?: string[],
+    sys_id?: string,
+  }
+
+export interface AcquisitionPackageSummarySearchDTO {
+  acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER" | // open
+  "TASK_ORDER_AWARDED" | "ARCHIVED" |
+  "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER,TASK_ORDER_AWARDED,ARCHIVED";
+  sort: "project_overview" | "DESCsys_updated_on"; // one of these two values should always exist
+  searchString?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface AcquisitionPackageSummaryDisplay{
+  sys_id?: DisplayColumn;
+  sys_created_by?: DisplayColumn;
+  sys_updated_on?: DisplayColumn;
+  project_overview?: DisplayColumn; // no need for a title property since the title is inside this
+  secondary_reviewers?: DisplayColumn;
+  package_status?: DisplayColumn | string;
+  mission_owners?: DisplayColumn;
+  contract_award?: DisplayColumn;
+  contributors?: DisplayColumn;
+}
+
+export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
+  project_overview?: DisplayColumn; // no need for a title property since the title is inside this
+  secondary_reviewers?: DisplayColumn;
+  package_status?: DisplayColumn;
+  mission_owners?: DisplayColumn;
+  contract_award?: DisplayColumn;
+  contributors?: DisplayColumn;
+}
+
+export interface AcquisitionPackageSummaryMetadataAndDataDTO {
+  total_count: number;
+  acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
+}
+
+export interface EvaluationPlanDTO extends BaseTableDTO{
+  source_selection: "NoTechProposal" | "TechProposal" | "SetLumpSum" | "EqualSetLumpSum";
+  method?: "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
+  standard_specifications?: string[];
+  custom_specifications?: string[];
+}
+
+export interface EvaluationCriteriaDTO {
+  evaluation_plan: EvaluationPlanDTO
+  fair_opportunity: FairOpportunityDTO
 }

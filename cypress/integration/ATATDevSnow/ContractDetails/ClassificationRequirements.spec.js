@@ -8,6 +8,7 @@ describe("Test suite: Contract Details Step:Classification Requirements substep"
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
+    cy.homePageClickAcquisitionPackBtn();
   });
     
   it("TC1: ClassificationReq on the Vertical Stepper is active", () => {

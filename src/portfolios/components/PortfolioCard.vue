@@ -6,7 +6,7 @@
   >
 
     <div class="pr-5">
-      <div class="_csp-icon-wrap">
+      <div class="_csp-icon-wrap" :data-csp="CSPs[cardData.csp].title">
         <v-tooltip
           transition="slide-y-reverse-transition"
           color="rgba(0,0,0,1)"
@@ -36,29 +36,40 @@
       <div class="d-flex">
         <div class="card-header flex-grow-1">
           <a
+            id="PortfolioName"
             role="button"
             tabindex="0"
-            class="h3 _text-decoration-none"
+            class="h3 _text-decoration-none d-flex align-center"
+            @click="cardMenuClick(portfolioCardMenuItems[0])"
           >
             {{ cardData.title }}
+            <ATATSVGIcon 
+              v-if="cardData.isManager"
+              name="manageAccount"
+              width="20"
+              height="17"
+              color="base"
+              class="ml-3"
+            />
+
           </a>
         </div>
-        <div v-if="!isActive">
-          <v-chip 
+        <div v-if="!isActive || cardData.fundingAlertChipString">
+          <v-chip
             :id="'StatusChip' + index" 
             :class="[
-              '_' + cardData.status.toLowerCase(),
+              '_' + (cardData.status ? cardData.status.toLowerCase() : ''),
               statusChipBgColor
             ]" 
             label
           >
-            {{ cardData.status }}
+            {{ !isActive ? cardData.status : cardData.fundingAlertChipString }}
           </v-chip>
 
         </div>
       </div>
       <div class="text-base-dark">
-        {{ cardData.serviceAgency }}
+        {{ cardData.agency }}
         <ATATSVGIcon 
           name="bullet" 
           color="base-light" 
@@ -70,23 +81,23 @@
       </div>
 
       <div 
-        v-if="isActive" 
+        v-if="isActive && !isHomeView" 
         class="d-flex"
       >
-        <div class="mr-15">
+        <div class="mr-15" :id="'PoP' + index">
           <span class="_data-header">Current Period of Performance</span>
           <span class="_data-primary d-block">
             {{ cardData.currentPoP }}
           </span>
         </div>
 
-        <div class="mr-15">
+        <div class="mr-15" :id="'TotalObligated' + index">
           <span class="_data-header">Total Obligated</span>
           <span class="_data-primary d-block nowrap">
             {{ cardData.totalObligated }}
           </span>
         </div>
-        <div class="flex-grow-1">
+        <div class="flex-grow-1" :id="'FundsSpent' + index">
           <span class="_data-header">Funds Spent (%)</span>
           <span class="_data-primary d-block">
             <span class="mr-1 nowrap">{{ cardData.fundsSpent }}</span>
@@ -100,7 +111,7 @@
     </div>
 
     <ATATMeatballMenu 
-      id="PortfolioCardMenu"
+      :id="'PortfolioCardMenu' + index"
       :left="true"
       :menuIndex="index"
       :menuItems="portfolioCardMenuItems"
@@ -125,10 +136,10 @@ import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
 import { MeatballMenuItem, PortfolioCardData } from "types/Global";
 import PortfolioData, { cspConsoleURLs } from "@/store/portfolio";
-import { getStatusChipBgColor } from "@/helpers";
+import { getStatusChipBgColor, toTitleCase } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
-import { StatusTypes } from "@/store/acquisitionPackage";
+import { Statuses } from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -143,8 +154,8 @@ export default class PortfolioCard extends Vue {
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
   @Prop() private isHaCCAdmin!: boolean;
+  @Prop({ default: false }) public isHomeView?: boolean;
 
-  public portfolioStatuses = StatusTypes;
   public showLeavePortfolioModal = false;
 
   public menuActions = {
@@ -163,7 +174,11 @@ export default class PortfolioCard extends Vue {
   }
 
   public get isActive(): boolean {
-    return this.cardData.status?.toLowerCase() === this.portfolioStatuses.Active.toLowerCase();
+    return this.cardData.status?.toLowerCase() === Statuses.Active.value.toLowerCase();
+  }
+
+  public get hasFundingStatus(): boolean {
+    return (this.cardData.fundingStatus !== undefined && this.cardData.fundingStatus.length > 0);
   }
 
   public getCSPConsoleURL(): string {
@@ -204,7 +219,10 @@ export default class PortfolioCard extends Vue {
   }
 
   public get statusChipBgColor(): string {
-    return getStatusChipBgColor(this.cardData.status ? this.cardData.status : "");
+    const status = this.cardData.status?.toLowerCase() === Statuses.Processing.value.toLowerCase()
+      ? this.cardData.status
+      : this.cardData.fundingAlertChipString;
+    return getStatusChipBgColor(status ? status : "");
   }
 
   public leavePortfolio(): void {
@@ -247,6 +265,22 @@ export default class PortfolioCard extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    if (this.cardData.fundingStatus && this.cardData.fundingStatus !== Statuses.OnTrack.value) {
+      switch(this.cardData.fundingStatus) {
+      case Statuses.AtRisk.value:
+        this.cardData.fundingAlertChipString = Statuses.AtRisk.label;
+        break;
+      case Statuses.FundingAtRisk.value:
+        this.cardData.fundingAlertChipString = Statuses.FundingAtRisk.label;
+        break;
+      case Statuses.ExpiringSoon.value:
+        this.cardData.fundingAlertChipString = Statuses.ExpiringSoon.label;
+        break;
+      default:
+        this.cardData.fundingAlertChipString = toTitleCase(this.cardData.fundingStatus || "")
+      }
+    }
+
     this.portfolioCardMenuItems = [
       { 
         title: "View funding tracker",
@@ -278,7 +312,7 @@ export default class PortfolioCard extends Vue {
       },
     );
 
-    if (this.cardData.status !== this.portfolioStatuses.Processing) {
+    if (this.cardData.status?.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
       this.portfolioCardMenuItems.push(
         { 
           title: "Login to the CSP console",

@@ -190,6 +190,10 @@ hr, .hr {
   text-decoration: none !important;
 }
 
+._hover-underline:hover {
+  text-decoration: underline !important;
+}
+
 $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
 @each $size in $sizes {
   %icon-#{$size},

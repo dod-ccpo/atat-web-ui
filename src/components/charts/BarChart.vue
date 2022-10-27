@@ -23,7 +23,8 @@ export default class BarChart extends Vue {
     this.myChart.update();
   }
 
-  private mounted() {
+  private async mounted() {
+    // it appears the 'await' is not needed, but without it the JWCC unit tests fail
     this.createChart();
   }
 

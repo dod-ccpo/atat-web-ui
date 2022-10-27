@@ -12,6 +12,20 @@ describe("Testing AddMembersModal", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
+  
+  const portfolio = {
+    sysId: "12345",
+    createdBy: "test-ctr@ccpo.mil",
+    csp: "Azure",
+    description:"just testfefseffdsfd",
+    members: [],
+    provisioned: "2022-09-08 18:12:12",
+    agency: "DISA",
+    status: "Active",
+    title: "test title",
+    updated: "2022-09-08 18:12:12",
+    taskOrderNumber: "987654"
+  }
 
   beforeEach(async () => {
     vuetify = new Vuetify();
@@ -19,8 +33,15 @@ describe("Testing AddMembersModal", () => {
       localVue,
       vuetify,
     });
-    PortfolioData.setInitialized(false);
-    await PortfolioData.initialize();
+    PortfolioData.setPortfolioData(portfolio);
+    await wrapper.setData({
+      existingMemberEmails: []
+    })
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.clearAllTimers();
   });
 
   it("renders successfully", async () => {
@@ -196,7 +217,7 @@ describe("Testing AddMembersModal", () => {
     await wrapper.setProps({showModal: true})
     await wrapper.setData({
       enteredEmails: [
-        { key: "123", email: "foo@mail.mil", isValid: true },
+        { key: "123", email: "baz@mail.mil", isValid: true },
       ],
       duplicatedEmail: "",
       validEmailList: [],

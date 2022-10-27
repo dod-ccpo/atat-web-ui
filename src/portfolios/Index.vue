@@ -13,7 +13,7 @@
         flat
         class="_atat-page-header _portfolios"
         clipped-right
-        height="83"
+        height="118"
       >
         <div id="NameHeader" tabindex="-1" class="mt-1">
           <h1 class="mb-2 mt-5 pl-1">Portfolios</h1>
@@ -35,7 +35,7 @@
       <v-container
         class="container-max-width"
       >
-        <PortfoliosSummary :active-tab="activeTab" />
+        <PortfoliosSummary :active-tab="activeTab" default-sort="name" />
 
       </v-container>
       <ATATFooter/>

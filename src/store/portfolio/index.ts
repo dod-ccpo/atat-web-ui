@@ -1,15 +1,20 @@
 /* eslint-disable camelcase */
 import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
-import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
-import { MemberInvites, Portfolio, PortfolioCardData, User } from "../../../types/Global"
-import Vue from "vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import {StatusTypes} from "@/store/acquisitionPackage";
+
+import { 
+  FilterOption, 
+  MemberInvites, 
+  Portfolio, 
+  PortfolioCardData, 
+  PortfolioSummaryQueryParams, 
+  User,
+} from "../../../types/Global"
+
+import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { AlertDTO } from "@/api/models";
 import AlertService from "@/services/alerts";
-
-const ATAT_PORTFOLIO_DATA_KEY = 'ATAT_PORTFOLIO_DATA_KEY';
+import _ from "lodash";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -59,11 +64,7 @@ export const cspConsoleURLs: Record<string, string> = {
   store: rootStore,
 })
 export class PortfolioDataStore extends VuexModule {
-  
   private alertService = new AlertService();
-  //has the store been initialized
-  initialized = false;
-
   public activeTaskOrderNumber = "";
   
   public alerts: AlertDTO[]= [];
@@ -73,24 +74,139 @@ export class PortfolioDataStore extends VuexModule {
     description: "",
     status: "",
     csp: "",
-    serviceAgency: "",
+    agency: "",
     createdBy: "",
     provisioned: "",
     members: [],
     taskOrderNumber: "",
   }
-  public status = StatusTypes.Active;
-    
-  // store session properties
-  protected sessionProperties: string[] = [
-    nameofProperty(this,x=> x.currentPortfolio),
-    nameofProperty(this,x=> x.status),
-    nameofProperty(this,x=> x.alerts),
+   
+  public summaryFilterRoles: FilterOption[] = [
+    {
+      label: "All of my portfolios",
+      value: "ALL",
+      id: "All",
+      type: "role",
+    },
+    {
+      label: "Managed by me",
+      value: "MANAGED",
+      id: "Managed",
+      type: "role",
+    },
+  ];  
+
+  public summaryFilterFundingStatuses: FilterOption[] = [
+    {
+      label: "On track",
+      value: "ON_TRACK",
+      id: "OnTrack",
+      type: "fundingStatuses",
+    },
+    {
+      label: "Expiring soon",
+      value: "EXPIRING_SOON",
+      id: "ExpiringSoon",
+      type: "fundingStatuses",
+    },
+    {
+      label: "Funding at-risk",
+      value: "AT_RISK",
+      id: "AtRisk",
+      type: "fundingStatuses",
+    },
+    {
+      label: "Delinquent",
+      value: "DELINQUENT",
+      id: "Delinquent",
+      type: "fundingStatuses",
+    },
   ];
+
+  public summaryFilterCSPs: FilterOption[] = [
+    {
+      label: "Amazon Web Services (AWS)",
+      value: "CSP_A",
+      id: "Amazon",
+      abbreviation: "AWS",
+      type: "csps",
+    },
+    {
+      label: "Azure",
+      value: "CSP_B",
+      id: "Azure",
+      type: "csps",
+    },
+    {
+      label: "Google Cloud Platform (GCP)",
+      value: "CSP_C",
+      id: "GoogleCloud",
+      abbreviation: "GCP",
+      type: "csps",
+    },
+    {
+      label: "Oracle",
+      value: "CSP_D",
+      id: "Oracle",
+      type: "csps",
+    },
+  ];
+
+  public defaultQueryParams: PortfolioSummaryQueryParams = {
+    portfolioStatus: "", // empty string for ALL ... "ACTIVE" | "PROCESSING" | ""
+    sort: "name", // "name" | "sys_updated_on"
+    searchString: "",
+    role: "ALL", // all, managed
+    fundingStatuses: [], // 'ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT'
+    csps: [],
+  }
+
+  public portfolioSummaryQueryParams: PortfolioSummaryQueryParams 
+    = _.cloneDeep(this.defaultQueryParams);
+
+  public get portfolioSummaryQPs(): PortfolioSummaryQueryParams {
+    return this.portfolioSummaryQueryParams;
+  }
+
+  @Action
+  public async resetFilters(): Promise<void> {
+    await this.setPortfolioSummaryQueryParams(
+      {
+        role: "ALL",
+        fundingStatuses: [],
+        csps: [],
+      }
+    );  
+
+  }
+
+  @Action
+  public async resetQueryParams(): Promise<void> {
+    await this.doResetQueryParams();
+  }
+
+  @Mutation
+  public async doResetQueryParams(): Promise<void> {
+    Object.assign(this.portfolioSummaryQueryParams, this.defaultQueryParams);
+  }
+
+  @Action
+  public async setPortfolioSummaryQueryParams(
+    params: PortfolioSummaryQueryParams
+  ): Promise<void> {
+    await this.doSetportfolioSummaryQueryParams(params);
+  }
+
+  @Mutation
+  public async doSetportfolioSummaryQueryParams(
+    params: PortfolioSummaryQueryParams
+  ): Promise<void> {
+    Object.assign(this.portfolioSummaryQueryParams, params);
+  }
 
   //getter for portfolio status
   public get getStatus():string {
-    return this.status;
+    return this.currentPortfolio.status ? this.currentPortfolio.status : "";
   }
 
   public showAddMembersModal = false;
@@ -110,7 +226,7 @@ export class PortfolioDataStore extends VuexModule {
       title: portfolioData.title,
       status: portfolioData.status,
       csp: portfolioData.csp,
-      serviceAgency: portfolioData.serviceAgency,
+      agency: portfolioData.agency,
       taskOrderNumber: portfolioData.taskOrderNumber,
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
@@ -139,60 +255,30 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Mutation
-  public setInitialized(value: boolean): void {
-    this.initialized = value;
-  }
-
-  @Mutation
-  public setPortfolioData(value: Portfolio): void {
+  public async setPortfolioData(value: Portfolio): Promise<void> {
     Object.assign(this.currentPortfolio,value)
-    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
   @Mutation
   public setStatus(value: string): void {
-    this.status = value;
-    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
+    this.currentPortfolio.status = value;
   }
 
   @Mutation
   public setAlerts(value: AlertDTO[]): void {
     this.alerts = value;
-    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
   }
 
-  @Action({rawError: true})
-  private async initPortfolioData():Promise<void> {
-    const portfolioObj: Portfolio = {
-      // temp add Maria Missionowner until have members from backend
-      members: [{
-        firstName:"Maria",
-        lastName: "Missionowner",
-        email:"maria.missionowner.civ@mail.mil",
-        role: "Manager",
-        phoneNumber:"5555555555",
-        phoneExt:"1234",
-        designation: "Civilian",
-        serviceAgency: "U.S Army"
-      }],
-    };
-
-    if (!this.currentPortfolio.sysId) {
-      const obj: Portfolio = {
-        title:  AcquisitionPackage.projectOverview?.title || "Mock Title",
-        description:  AcquisitionPackage.projectOverview?.scope || "Mock Description",
-        status: "Active",
-        csp: "Azure",
-        serviceAgency:  AcquisitionPackage.organization?.service_agency || "DISA",
-        createdBy:  AcquisitionPackage.acquisitionPackage?.sys_created_by || "",
-        provisioned:  AcquisitionPackage.acquisitionPackage?.sys_created_on || "",
-        updated:  AcquisitionPackage.acquisitionPackage?.sys_updated_on || ""
-      };
-      Object.assign(portfolioObj, obj); 
-    }
-    
-    this.setPortfolioData(portfolioObj);
-  }
+  public placeholderMember = {
+    firstName:"Maria",
+    lastName: "Missionowner",
+    email:"maria.missionowner.civ@mail.mil",
+    role: "Manager",
+    phoneNumber:"5555555555",
+    phoneExt:"1234",
+    designation: "Civilian",
+    agency: "U.S. Army"
+  };
 
   @Action({rawError: true})
   public async saveMembers(newMembers: MemberInvites): Promise<void> {
@@ -205,46 +291,14 @@ export class PortfolioDataStore extends VuexModule {
       };
       this.currentPortfolio.members?.push(newMember);
     });
-    storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
-    this.setInitialized(true);
   }
 
   @Action({rawError: true})
   public async getPortfolioData(): Promise<Portfolio> {
-    if (!this.initialized) {
-      await this.initialize();
+    if (this.currentPortfolio.members?.length === 0) {
+      this.currentPortfolio.members = [this.placeholderMember];
     }
     return this.currentPortfolio;
-  }
-
-  @Mutation
-  public setStoreData(sessionData: string):void{
-    try {
-      const sessionDataObject = JSON.parse(sessionData);
-      Object.keys(sessionDataObject).forEach((property) => {
-        Vue.set(this, property, sessionDataObject[property]);
-      });
-    } catch (error) {
-      throw new Error('error restoring session for portfolio data store');
-    }
-  }
-
-  @Action({ rawError: true })
-  public async initialize(): Promise<void> {
-    if (!this.initialized) {
-      try {
-        const sessionRestored= retrieveSession(ATAT_PORTFOLIO_DATA_KEY);
-        if(sessionRestored){
-          this.setStoreData(sessionRestored);
-        } else {
-          await this.initPortfolioData();
-          this.setInitialized(true);
-          storeDataToSession(this, this.sessionProperties, ATAT_PORTFOLIO_DATA_KEY);
-        }
-      } catch (error) {
-        console.log(`error occurred loading portfolio data ${error}`)
-      }
-    }
   }
 
   @Action({ rawError: true })
@@ -259,7 +313,7 @@ export class PortfolioDataStore extends VuexModule {
 
     //just set the status to active for now
     //in the future this logic will be more complex
-    this.setStatus(StatusTypes.Active);
+    this.setStatus(Statuses.Active.value);
 
     const fundingAlertData: FundingAlertData = {
       alerts: [],
@@ -285,31 +339,33 @@ export class PortfolioDataStore extends VuexModule {
     // does alert type spending actual exist and if it does, does the threshold
     // meet or exceeed 100% if spending alert and threshold is at or 
     // above 100% show expiration alert
-    const lowFundsAlert = this.alerts.find(alert=>alert.alert_type 
-    === AlertTypes.SPENDING_ACTUAL 
-    && thresholdAtOrAbove(alert.threshold_violation_amount, 75));
+    const lowFundsAlert = this.alerts.find(alert => alert.alert_type 
+      === AlertTypes.SPENDING_ACTUAL && thresholdAtOrAbove(alert.threshold_violation_amount, 75)
+    );
     const currentSpendingViolation = lowFundsAlert ? 
-      getThresholdAmount(lowFundsAlert.threshold_violation_amount): 0;
+      getThresholdAmount(lowFundsAlert.threshold_violation_amount) : 0;
 
     fundingAlertData.hasLowFundingAlert = lowFundsAlert !== undefined;
     fundingAlertData.spendingViolation = lowFundsAlert !== undefined 
       ? currentSpendingViolation : 0;
 
     // does time remaining alert exist
-    const timeremainingalert = this.alerts.find(alert=>alert.alert_type == 
-    AlertTypes.TIME_REMAINING);
+    const timeremainingalert = this.alerts.find(
+      alert => alert.alert_type === AlertTypes.TIME_REMAINING
+    );
+
     fundingAlertData.daysRemaining = timeremainingalert ? 
-      Number(timeremainingalert.threshold_violation_amount.replace('days','')): 0;
+      Number(timeremainingalert.threshold_violation_amount.replace('days','')) : 0;
 
     if(timeremainingalert){
       fundingAlertData.fundingAlertType =  fundingAlertData.daysRemaining <=0 ?
         FundingAlertTypes.POPExpired : (fundingAlertData.daysRemaining > 60 ? 
           fundingAlertData.fundingAlertType : FundingAlertTypes.POPExpiresSoonNoTOClin);
       if(fundingAlertData.daysRemaining <= 60){
-        this.setStatus(StatusTypes.AtRisk);
+        this.setStatus(Statuses.AtRisk.value);
       }
       if(fundingAlertData.daysRemaining <=0){
-        this.setStatus(StatusTypes.Expired);
+        this.setStatus(Statuses.Expired.value);
       }
   
     }
@@ -321,10 +377,10 @@ export class PortfolioDataStore extends VuexModule {
            FundingAlertTypes.POPLowFunds): FundingAlertTypes.POPFundsDepleted;
 
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPLowFunds){
-        this.setStatus(StatusTypes.AtRisk);
+        this.setStatus(Statuses.AtRisk.value);
       }
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPFundsDepleted){
-        this.setStatus(StatusTypes.Delinquent);
+        this.setStatus(Statuses.Delinquent.value);
       }
     }
     
@@ -332,15 +388,11 @@ export class PortfolioDataStore extends VuexModule {
       if(fundingAlertData.daysRemaining > 0 && fundingAlertData.spendingViolation < 100){
         fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpiresSoonWithLowFunds;
 
-        if(fundingAlertData.daysRemaining <= 60){
-          this.setStatus(StatusTypes.AtRisk);
-        }
-        if(fundingAlertData.spendingViolation >=90){
-          this.setStatus(StatusTypes.AtRisk)
+        if (fundingAlertData.daysRemaining <= 60 || fundingAlertData.spendingViolation >= 90){
+          this.setStatus(Statuses.AtRisk.value);
         }
       }
     }
-    
 
     return fundingAlertData;
   }
