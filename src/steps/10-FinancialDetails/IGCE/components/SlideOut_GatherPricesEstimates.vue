@@ -8,10 +8,6 @@
       Use the following Frequently Asked Questions (FAQs) to help you complete
       the Requirements Cost Estimate section.
     </p>
-    <p class="mb-3">
-      The following methods of evaluation are available under the JWCC Contract.
-    </p>
-
     <v-expansion-panels accordion flat>
       <v-expansion-panel
         v-for="(item, index) in expansionPanelData"
@@ -57,8 +53,9 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
           of the CSP calculators below as a tool for developing your cost
           estimate.
         </p>
-        <h4 class="mb-2">CSP Pricing Calculators</h4>
-        <div class="d-flex align-center">
+        <div class="mb-2 font-weight-500">CSP Pricing Calculators</div>
+        <div class="pl-3">
+        <div class="d-flex align-center mb-2">
         <svg viewBox="0 0 9 9" height="8px" width="8px"  xmlns="http://www.w3.org/2000/svg">
          <circle cx="4.3" cy="4.3" r="4.3" fill="transparent"/>
          <circle cx="4.15" cy="4.15" r="2.15" fill="#544496"/></svg>
@@ -84,7 +81,7 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
             Google Cloud
         </a>
         </div>
-       <div class="d-flex align-center mb-2">
+        <div class="d-flex align-center mb-2">
         <svg viewBox="0 0 9 9" height="8px" width="8px"  xmlns="http://www.w3.org/2000/svg">
          <circle cx="4.3" cy="4.3" r="4.3" fill="transparent"/>
          <circle cx="4.15" cy="4.15" r="2.15" fill="#544496"/></svg>
@@ -109,6 +106,7 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
         >
             Oracle Cloud
         </a>
+        </div>
         </div>
         <p>
           From each pricing calculator website you will be able to add
