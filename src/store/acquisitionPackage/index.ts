@@ -21,7 +21,7 @@ import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CurrentContractDTO,
-  FairOpportunityDTO, // EJY
+  FairOpportunityDTO,
   EvaluationPlanDTO,
   GFEOverviewDTO,
   RequirementsCostEstimateDTO,
@@ -51,7 +51,7 @@ export const StoreProperties = {
   Periods: "periods",
   ProjectOverview: "projectOverview",
   Organization: "organization",
-  FairOpportunity: "fairOpportunity", // EJY
+  FairOpportunity: "fairOpportunity",
   EvaluationPlan: "evaluationPlan",
   GFEOverview:"gfeOverview",
   PeriodOfPerformance: "periodOfPerformance",
@@ -161,14 +161,13 @@ const initialContractConsiderations = ()=> {
   }
 }
 
-// EJY
 const initialFairOpportunity = () => {
   return {
     exception_to_fair_opportunity: "",
   };
 };
 
-const initialEvaluationPlan = () => {
+export const initialEvaluationPlan = (): EvaluationPlanDTO => {
   return {
     source_selection: "" as EvalPlanSourceSelection,
     method: "" as EvalPlanMethod,
@@ -251,7 +250,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       acorInfo: store.acorInfo,
       contractType: store.contractType,
       currentContract: store.currentContract,
-      fairOpportunity: store.fairOpportunity, // EJY
+      fairOpportunity: store.fairOpportunity,
       evaluationPlan: store.evaluationPlan,
       gfeOverview: store.gfeOverview,
       periods: store.periods,
@@ -303,7 +302,7 @@ export class AcquisitionPackageStore extends VuexModule {
   corInfo: ContactDTO | null = null;
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
-  fairOpportunity: FairOpportunityDTO | null = null; // EJY
+  fairOpportunity: FairOpportunityDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
@@ -434,7 +433,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectTitle = value;
   }
 
-  // EJY
   @Mutation
   public setFairOpportunity(value: FairOpportunityDTO): void {
     this.fairOpportunity = value;
@@ -495,7 +493,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.corInfo = sessionData.corInfo;
     this.contractType = sessionData.contractType;
     this.currentContract = sessionData.currentContract;
-    this.fairOpportunity = sessionData.fairOpportunity; // EJY
+    this.fairOpportunity = sessionData.fairOpportunity;
     this.evaluationPlan = sessionData.evaluationPlan;
     this.organization = sessionData.organization;
     this.periods = sessionData.periods;
@@ -600,8 +598,8 @@ export class AcquisitionPackageStore extends VuexModule {
   private apiEndpointMap: Record<string, TableApiBase<BaseTableDTO>> = {
     [StoreProperties.ContractType]: api.contractTypeTable,
     [StoreProperties.CurrentContract]: api.currentContractTable,
-    [StoreProperties.FairOpportunity]: api.fairOpportunityTable, // EJY
-    // [StoreProperties.EvaluationPlan]: api.evaluationPlanTable, // EJY FUTURE TICKET
+    [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
+    // [StoreProperties.EvaluationPlan]: api.evaluationPlanTable, // FUTURE TICKET
     [StoreProperties.GFEOverview]: api.gfeOverviewTable,
     [StoreProperties.Organization]: api.organizationTable,
     [StoreProperties.Periods]: api.periodTable,
@@ -617,8 +615,8 @@ export class AcquisitionPackageStore extends VuexModule {
   private acquisitionPackagePropertyMap: Record<string, string> = {
     [StoreProperties.ContractType]: "contract_type",
     [StoreProperties.CurrentContract]: "current_contract",
-    [StoreProperties.FairOpportunity]: "fair_opportunity", // EJY
-    [StoreProperties.EvaluationPlan]: "evaluation_plan", // EJY
+    [StoreProperties.FairOpportunity]: "fair_opportunity",
+    [StoreProperties.EvaluationPlan]: "evaluation_plan",
     [StoreProperties.GFEOverview]: "gfe_overview",
     [StoreProperties.Organization]:  "organization",
     [StoreProperties.ProjectOverview]: "project_overview",

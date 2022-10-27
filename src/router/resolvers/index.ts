@@ -42,7 +42,6 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
 export const BVTOResolver = (current: string): string => {
   const evalPlan = AcquisitionPackage.getEvaluationPlan;
   const isBVTO = evalPlan?.method === "BVTO";
-  debugger;
   if (isBVTO) {
     return routeNames.ProposalRequiredBVTO;
   }

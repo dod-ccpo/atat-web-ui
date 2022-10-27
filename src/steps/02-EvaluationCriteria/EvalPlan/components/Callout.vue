@@ -16,26 +16,24 @@
       <p class="font-weight-700 mb-2" id="Subhead">
         {{ calloutData.subhead }}
       </p>
-      <table 
-        class="border-collapse"
-        style="border-left: 4px solid #544496"
-      >
-        <tr 
+      <div style="border-left: 4px solid #544496">
+        <div 
           v-for="(item, index) in calloutData.listItems"
           :key="index"
           class="d-flex"
         >
-          <td 
-            class="font-weight-700 nowrap pr-4 pl-3 align-top"
+          <div 
+            class="font-weight-700 nowrap mr-4 pl-3 align-top"
             :class="{ 'pb-2' : index < calloutData.listItems.length - 1 }"
+            style="width: 100px;"
           >
             {{ calloutData.listType }} #{{ index + 1 }}
-          </td>
-          <td class="align-top">
+          </div>
+          <div class="align-top">
             {{ item }}
-          </td>
-        </tr>
-      </table>
+          </div>
+        </div>
+      </div>
 
 
     </template>
