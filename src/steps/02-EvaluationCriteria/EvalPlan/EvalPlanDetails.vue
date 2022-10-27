@@ -12,6 +12,7 @@
     <ATATRadioGroup
       v-if="isStandards"
       id="CustomStandards"
+      class="copy-max-width"
       :items="standardsRadioGroupItems"
       :legend="radioGroupLegend"
       :value.sync="selectedStandardsRadioItem"
@@ -20,29 +21,36 @@
       ]"
     />
 
-    <section id="CustomSpecifications" v-show="selectedRadioItem === 'YES'">
-      <hr>
-      ... to be completed in AT-8135 ...
-    </section>
+    <CustomSpecifications 
+      id="CustomSpecEntry"
+      v-show="selectedStandardsRadioItem === 'YES'"
+      :sourceSelection="evalPlan.source_selection"
+      :isDifferentiator="false"
+      :isOptional="true"
+      :customSpecifications.sync="evalPlan.custom_specifications"
+    />
 
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import Callout from "./components/Callout.vue";
+import CustomSpecifications from "./components/CustomSpecifications.vue"
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { EvaluationPlanDTO } from "@/api/models";
 import { RadioButton } from "types/Global";
+import { scrollToId } from "@/helpers";
 
 @Component({
   components: {
     ATATRadioGroup,
     Callout,
+    CustomSpecifications,
   }
 })
 
@@ -96,6 +104,23 @@ export default class EvalPlanDetails extends Vue {
   public savedData: EvaluationPlanDTO = {
     // eslint-disable-next-line camelcase
     source_selection: "",
+  }
+
+  @Watch("selectedStandardsRadioItem")
+  public selectedStandardsRadioItemChange(newVal: string): void {
+    if (newVal === "YES") {
+      const customSpecs = this.evalPlan.custom_specifications;
+      if (customSpecs && customSpecs.length === 0) {
+        customSpecs.push("");
+      }
+      this.$nextTick(() => {
+        scrollToId("CustomSpecEntry");
+      })
+    } else {
+      // eslint-disable-next-line camelcase
+      this.evalPlan.custom_specifications = [];
+    }
+
   }
 
   public async loadOnEnter(): Promise<void> {

@@ -2,8 +2,8 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
-import CustomDifferentiator 
-  from "@/steps/02-EvaluationCriteria/EvalPlan/components/CustomDifferentiator.vue";
+import CustomSpecifications 
+  from "@/steps/02-EvaluationCriteria/EvalPlan/components/CustomSpecifications.vue";
 
 Vue.use(Vuetify);
 
@@ -14,7 +14,7 @@ describe("Testing CreateEvalPlan Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(CustomDifferentiator, {
+    wrapper = mount(CustomSpecifications, {
       vuetify,
       localVue
     });
