@@ -35,11 +35,13 @@
               :disable-sort="true"
               :items-per-page="-1"
               hide-default-footer
+              hide-default-header
               class="_clin-table"
             >
-                <template v-slot:header="headers">
+
+                <template v-slot:header="{ props }">
                 <tr>
-                  <th v-for="(header,hdrIdx) in headers.items" :key="hdrIdx">
+                  <th v-for="(header,hdrIdx) in props.headers" :key="hdrIdx">
                     <div 
                       :class="[
                         'py-4 d-flex font-size-14',
@@ -47,25 +49,41 @@
                         {'justify-end': hdrIdx > 0},
                         
                       ], ">
-                    {{ header }}
+                    {{ header.text }}
                     </div>
                   </th>
-                </tr>
+                  </tr>
               </template>
+
+
               <template v-slot:body="props">
                 <tr v-for="(item,rowIdx) in props.items" :key="rowIdx"
-                    class="row-item border-base-lighter"
+                    class="row-item border-base-lighter font-size-14 text-right"
                     style="border-bottom: 1px solid">
-                  <td v-for="(item,cellIdx) in props.items[rowIdx]" :key="cellIdx">
-                    <div 
-                      :class="[
-                        'py-4 d-flex font-size-14',
-                        {'align-left pl-6': cellIdx===0},
-                        {'justify-end': cellIdx > 0},
-                        
-                      ], ">
-                    {{ item }}
-                    </div>
+                  <td>
+                    <div :class="[
+                          'text-left py-4 pl-6',
+                          {'font-weight-bold text-right': 
+                            isItemAggregate(item.CLINTypeClassAggregate)}
+                          ]">{{ item.CLINTypeClassAggregate }}</div>
+                  </td>
+                   <td>
+                    <div>{{ item.BasePeriod }}</div>
+                  </td>
+                  <td>
+                    <div>{{ item.OptionOne }}</div>
+                  </td>
+                  <td>
+                    <div>{{ item.OptionTwo }}</div>
+                  </td>
+                  <td>
+                    <div>{{ item.OptionThree }}</div>
+                  </td>
+                  <td>
+                    <div>{{ item.OptionFour }}</div>
+                  </td>
+                  <td>
+                    <div>{{ item.Total }}</div>
                   </td>
                 </tr>
               </template>
@@ -78,107 +96,152 @@
 import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { Component } from "vue-property-decorator";
+import { isTypeOnlyImportOrExportDeclaration } from "typescript";
+
+export interface IGCECostSummaryItem {
+    CLINTypeClassAggregate:string,
+    BasePeriod?: string,
+    OptionOne?: string,
+    OptionTwo?: string,
+    OptionThree?: string,
+    OptionFour?: string,
+    Total?: string,
+}
+
+
 @Component({
   components: {
     ATATAlert,
   },
 })
+
 export default class CostSummary extends Vue {
 public tableHeaders = [
 
-  { text: "CLIN Type & Classification"},
-  { text: "Base Period"},
-  { text: "Option 1"},
-  { text: "Option 2"},
-  { text: "Option 3"},
-  { text: "Option 4"},
-  { text: "Total"},
+  { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate"},
+  { text: "Base Period", value: "BasePeriod"},
+  { text: "Option 1", value: "OptionOne"},
+  { text: "Option 2", value: "OptionTwo"},
+  { text: "Option 3", value: "OptionThree"},
+  { text: "Option 4", value: "OptionFour"},
+  { text: "Total", value: "Total"},
 ]
 
-public tableData = [
-  [
-    "Cloud UNCLASSIFIED",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$5,000.00",
-  ],
-  [
-    "Cloud Support UNCLASSIFIED",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$5,000.00",
-  ],
-  [
-    "Cloud SECRET",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$5,000.00",
-  ],
-  [
-    "Cloud Support SECRET",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$5,000.00",
-  ],
-  [
-    "Cloud Support Travel",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$1,000.00",
-    "$5,000.00",
-  ], 
-  [
-    "External ordering agency fee (1%)",
-    "$50.00",
-    "$50.00",
-    "$50.00",
-    "$50.00",
-    "$50.00",
-    "$250.00",
-  ],
-  [
-    "Subtotal",
-    "$5,050.00",
-    "$5,050.00",
-    "$5,050.00",
-    "$5,050.00",
-    "$5,050.00",
-    "$25,250.00",
-  ],
-  [
-    "5% Surge",
-    "$252.50",
-    "$252.50",
-    "$252.50",
-    "$252.50",
-    "$252.50",
-    "$1,262.50",
-  ],
-  [
-    "Total Price",
-    "$5,302.50",
-    "$5,302.50",
-    "$5,302.50",
-    "$5,302.50",
-    "$5,302.50",
-    "$26,512.50",
-  ]
+
+
+public tableData: IGCECostSummaryItem[] = [
+  
+  {
+    CLINTypeClassAggregate:"Cloud UNCLASSIFIED",
+    BasePeriod: "$1,000.00",
+    OptionOne:"$1,000.00",
+    OptionTwo: "$1,000.00",
+    OptionThree: "$1,000.00",
+    OptionFour: "$1,000.00",
+    Total:"$5,000.00",
+  },
+
+  {
+    CLINTypeClassAggregate:"Cloud Support UNCLASSIFIED",
+    BasePeriod: "$1,000.00",
+    OptionOne:"$1,000.00",
+    OptionTwo: "$1,000.00",
+    OptionThree: "$1,000.00",
+    OptionFour: "$1,000.00",
+    Total:"$5,000.00",
+  },
+  {
+    CLINTypeClassAggregate:"Cloud SECRET",
+    BasePeriod: "$1,000.00",
+    OptionOne:"$1,000.00",
+    OptionTwo: "$1,000.00",
+    OptionThree: "$1,000.00",
+    OptionFour: "$1,000.00",
+    Total:"$5,000.00",
+  },   
+  {
+    CLINTypeClassAggregate:"Cloud Support SECRET",
+    BasePeriod: "$1,000.00",
+    OptionOne:"$1,000.00",
+    OptionTwo: "$1,000.00",
+    OptionThree: "$1,000.00",
+    OptionFour: "$1,000.00",
+    Total:"$5,000.00",
+  },
+  {
+    CLINTypeClassAggregate:"Cloud Support Travel",
+    BasePeriod: "$1,000.00",
+    OptionOne:"$1,000.00",
+    OptionTwo: "$1,000.00",
+    OptionThree: "$1,000.00",
+    OptionFour: "$1,000.00",
+    Total:"$5,000.00",
+  },
+  {
+    CLINTypeClassAggregate:"External ordering agency fee (1%)",
+    BasePeriod: "$50.00",
+    OptionOne:"$50.00",
+    OptionTwo: "$50.00",
+    OptionThree: "$50.00",
+    OptionFour: "$50.00",
+    Total:"$250.00",
+  },
+  {
+    CLINTypeClassAggregate:"Subtotal",
+    BasePeriod:"$5,050.00",
+    OptionOne:"$5,050.00",
+    OptionTwo:"$5,050.00",
+    OptionThree:"$5,050.00",
+    OptionFour:"$5,050.00",
+    Total: "$25,250.00",
+  },
+  {
+    CLINTypeClassAggregate:"5% Surge",
+    BasePeriod:"$252.50",
+    OptionOne:"$252.50",
+    OptionTwo:"$252.50",
+    OptionThree:"$252.50",
+    OptionFour:"$252.50",
+    Total:"$1,262.50",
+  },
+  {
+    CLINTypeClassAggregate:"Total Price",
+    BasePeriod:"$5,302.50",
+    OptionOne:"$5,302.50",
+    OptionTwo:"$5,302.50",
+    OptionThree:"$5,302.50",
+    OptionFour:"$5,302.50",
+    Total:"$26,512.50",
+  }
 
 ]
+
+public isItemAggregate(label: string): boolean {
+  return ['total', 'surge'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+}
+
+  // public getItemTotal(item: IGCECostSummaryItem): void {
+  //   const tony = Object.values(item).filter(
+  //     (val: string)=>{
+  //         return{
+  //           if(val.indexOf("$")>-1){
+  //             return val.replace(/,/g,"");
+  //           }
+  //         }
+  // });
+  
+
+
+  //   // .reduce((prev: string, curr: string)=>{
+  //   //   console.log(prev + " : " + curr)
+  //   //   let previous = !isNaN(prev) ? parseInt(prev.replace(/,/g,"").substring(1)) : "0";
+  //   //   return parseInt(prev.replace(/,/g,"").substring(1)) + 
+  //   //           parseInt(curr.replaceAll(/,/g,"").substring(1));
+  //   // });
+  //   console.log(tony);
+
+  // }
+
 
 }
 </script>
