@@ -85,4 +85,26 @@ describe("Testing NoEvalPlan Component", () => {
 
   });
 
-})
+  describe("testing watchers", () => {
+
+    it("testing watchers - click `Yes` radio option", async () => {
+      await wrapper.setData({
+        selectedStandardsRadioItem: "YES"
+      });
+      Vue.nextTick(() => {
+        expect(wrapper.vm.$data.evalPlan.custom_specifications.length).toBe(1);
+        expect(wrapper.vm.scrollToId).toBeCalled();
+      });
+    });
+
+    it("testing watchers - click `NO` radio option", async () => {
+      await wrapper.setData({
+        selectedStandardsRadioItem: "NO"
+      });
+      Vue.nextTick(() => {
+        expect(wrapper.vm.$data.evalPlan.custom_specifications.length).toBe(0);
+      })
+    });
+  });
+
+});
