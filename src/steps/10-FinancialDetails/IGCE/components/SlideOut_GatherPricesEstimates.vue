@@ -32,11 +32,18 @@
 import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import { routeNames} from "@/router/stepper";
+
 @Component({
-  components: {},
+  components: {
+    ATATSVGIcon
+  },
 })
 // eslint-disable-next-line camelcase
 export default class SlideOut_GatherPricesEstimates extends Vue {
+  private route = routeNames.RequirementCategories
+
   public expansionPanelData: Record<string, string>[] = [
     {
       headerText: " How do I determine a monthly price for each of my cloud" +
@@ -50,7 +57,8 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
           of the CSP calculators below as a tool for developing your cost
           estimate.
         </p>
-        <span>
+        <h4 class="mb-2">CSP Pricing Calculators</h4>
+        <div>
         <ATATSVGIcon
           name="bullet"
           color="primary"
@@ -59,82 +67,118 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
           class="d-inline-block mx-1"
         />
         <a
-        href="https://calculator.aws/#/addService?nc2=h_ql_pr_calc"
+           id="OpenAWSPricing"
+           tabindex="0"
+           href="https://calculator.aws/#/addService?nc2=h_ql_pr_calc"
         >
             AWS Pricing Calculator
         </a>
-        </span>
+        </div>
+        <div>
+        <ATATSVGIcon
+          name="bullet"
+          color="primary"
+          :width="9"
+          :height="9"
+          class="d-inline-block mx-1"
+        />
+        <a
+           id="OpenGooglePricing"
+           tabindex="0"
+           href="https://cloud.google.com/products/calculator"
+        >
+            Google Cloud
+        </a>
+        </div>
+        <div>
+        <ATATSVGIcon
+          name="bullet"
+          color="primary"
+          :width="9"
+          :height="9"
+          class="d-inline-block mx-1"
+        />
+        <a
+           id="OpenAzurePricing"
+           tabindex="0"
+           href="https://azure.microsoft.com/en-us/pricing/calculator/"
+        >
+            Microsoft Azure
+        </a>
+        </div>
+        <div>
+        <ATATSVGIcon
+          name="bullet"
+          color="primary"
+          :width="9"
+          :height="9"
+          class="d-inline-block mx-1"
+        />
+        <a
+           id="OpenOraclePricing"
+           tabindex="0"
+           href="https://www.oracle.com/cloud/costestimator.html"
+        >
+            Oracle Cloud
+        </a>
+        </div>
         <p>
-          Depending on your basis of evaluation, the KO may request the CSPs
-          propose a technical solution.
+          From each pricing calculator website you will be able to add
+          CSP-specific offerings and customize configurations that fit your
+          unique project requirements. This will generate a report of your
+          projected monthly prices for each configuration.
         </p>
-        <p class="font-weight-700 mb-2">
-          Award will be made to the lowest priced offeror meeting the
-          compliance standards.
+        <p class="mb-2">
+          Be sure to export a copy of your estimate or save a unique link to
+          revisit it directly through your browser. You will use this report
+          throughout this section to complete a cost estimate and provide
+          supporting documentation for how your estimate was developed.
         </p>
       `
     },
     {
-      headerText: "Best Value Trade-Off (BVTO)",
-      id: "BVTO",
+      headerText: "Will changes to my estimate titles and descriptions affect" +
+        " my performance requirements?",
+      id: "ChangeEstimates",
       content: `
         <p>
-          Your KO will request the CSPs propose a technical solution and
-          provide a price proposal that includes the total price and a complete
-          list of cloud service offerings with catalog item numbers/SKUs, the
-          unit price, unit of issue, and quantities calculated on a monthly
-          basis for each catalog item number/SKU.
+          No. Details that you provided in the Performance Requirements section
+          will be used to generate your Description of Work, which helps CSPs
+          to prepare an adequate proposal for your project’s unique requirements.
         </p>
-        <p class="font-weight-700 mb-2">
-          Award will be made to the CSP providing the best value.
+        <p>
+          Any details provided in your IGCE will be used internally by your
+          office for budgeting purposes and by the contracting office to assist
+          in proposal evaluations and price reasonableness determinations.
+        </p>
+        <p>
+          We encourage you to edit any of the pre-filled details to provide a
+          more accurate description about each requirement that you estimate.
+          For example, you may choose to enter the name of a CSP-specific
+          product, or copy and paste the configuration summary generated by a
+          CSP’s pricing calculator.
+        </p>
+        <p class="mb-2">
+          Remember, this is for estimating purposes only and unless an exception
+          to fair opportunity is approved, your actual requirement will be
+          competed amongst all JWCC CSPs.
         </p>
       `
     },
     {
-      headerText: "“Best Use” Solution",
-      id: "BestUse",
+      headerText: "How do I add or remove an item from my IGCE?",
+      id: "AddMore",
       content: `
         <p>
-          Your KO will request CSPs submit a white paper identifying a strategy
-          and approach that will meet or exceed the requirements within the proposed
-          costs; must provide a price proposal which includes a complete list of
-          cloud service offerings with catalog item numbers/SKUs and quantities to
-          meet the requirements.
-        </p>
-        <p class="font-weight-700 mb-2">
-          Award will be made to the CSP whose white paper offers the “best use” solution.
-        </p>
-      `
-    },
-    {
-      headerText: "“Lowest Risk” Solution",
-      id: "LowestRisk",
-      content: `
-        <p>
-          Your KO will request CSPs submit a white paper identifying a strategy
-          and approach that will meet or exceed the requirements within the
-          proposed costs; must provide a price proposal which includes a complete
-          list of cloud service offerings with catalog item numbers/SKUs and
-          quantities to meet the requirements.
-        </p>
-        <p class="font-weight-700 mb-2">
-          Award will be made to the CSP whose white paper offers the “lowest risk” solution.
-        </p>
-      `
-    },
-    {
-      headerText: "Equal award to all interested CSPs",
-      id: "EqualAward",
-      content: `
-        <p>
-          Your KO will issue a Request for Quote (RFQ) and ask CSPs to respond
-          if they are “interested” or “not interested.” Task orders will be issued
-          to all interested CSPs.
-        </p>
-        <p class="font-weight-700 mb-2">
-          Award will be made in equal parts to each CSP that responded to the RFQ as “interested.”
-        </p>
-      `
+          Your IGCE should mirror the performance requirements outlined in the
+          Description of Work as much as possible. If you need to add or remove
+          items from this cost estimate breakdown, then you will need to
+          <router-link
+            id="Step4Link"
+            :to="{name:route}"
+          >revisit the Performance Requirements</router-link>
+           section to make any changes to your required cloud services and support packages.
+        </p>`
     },
   ];
 

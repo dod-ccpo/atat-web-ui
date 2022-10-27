@@ -1,7 +1,14 @@
 <template>
   <div>
     Future page for Gather Price Estimates
-
+    <a role="button"
+       id="OpenLearnMore"
+       tabindex="0"
+       @click="openSlideoutPanel"
+       @keydown.enter="openSlideoutPanel"
+       @keydown.space="openSlideoutPanel">
+      Learn more.
+    </a>
   </div>
 </template>
 <script lang="ts">
