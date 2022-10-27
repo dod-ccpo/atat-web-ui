@@ -16,7 +16,13 @@ describe("Testing CreateEvalPlan Component", () => {
     vuetify = new Vuetify();
     wrapper = mount(CustomSpecifications, {
       vuetify,
-      localVue
+      localVue,
+      propsData: {
+        customSpecifications: [],
+        sourceSelection: "NoTechProposal",
+        isDifferentiator: false,
+        isOptional: true,
+      }
     });
   });
 
@@ -24,6 +30,43 @@ describe("Testing CreateEvalPlan Component", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
+  });
 
-  })
+  describe("testing getters", () => {
+    it("isStandards() - to be 'compliance standard'", async () => {
+      expect(wrapper.vm.specificationType).toBe("compliance standard");
+    });
+
+    it("isStandards() - to be 'assessment area'", async () => {
+      await wrapper.setProps({
+        sourceSelection: "foo"
+      });
+      expect(wrapper.vm.specificationType).toBe("assessment area");
+    });
+
+    it("isStandards() - to be 'differentiator'", async () => {
+      await wrapper.setProps({
+        isDifferentiator: true
+      });
+      expect(wrapper.vm.specificationType).toBe("differentiator");
+    });
+  });
+
+  describe("testing methods", () => {
+    it("addCustomSpec() - adds a custom specification row", async () => {
+      wrapper.vm.addCustomSpec();
+      expect(wrapper.vm.$props.customSpecifications.length).toBe(1);
+    });
+
+    it("deleteCustomSpec() - removes a custom specification row", async () => {
+      await wrapper.setProps({
+        customSpecifications: ["foo", "bar"]
+      });
+      wrapper.vm.deleteCustomSpec();
+      expect(wrapper.vm.$props.customSpecifications.length).toBe(1);
+    });
+
+  });
+
+
 })
