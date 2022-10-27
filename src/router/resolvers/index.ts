@@ -7,28 +7,52 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import TaskOrder from "@/store/taskOrder";
 import Periods from "@/store/periods";
+import IGCEStore from "@/store/IGCE";
 
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
 
-  //routing from alternate cor and the user does not have
-  //and alternatative contact rep
-  if (
-    current === routeNames.AlternateCor &&
-    hasAlternativeContactRep === false
-  ) {
-    return routeNames.Summary;
+  //routing from alternate cor and the user does not have an ACOR
+  if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
+    return routeNames.AcqPackageSummary;
   }
 
-  //routing from summary and user does not have
-  if (current === routeNames.Summary && hasAlternativeContactRep === false) {
+  //routing from summary and user does not have ACOR
+  if (current === routeNames.AcqPackageSummary && hasAlternativeContactRep === false) {
     return routeNames.AlternateCor;
   }
 
   return routeNames.AcorInformation;
 };
 
+const evalPlanRequired = (): boolean => {
+  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
+}
+
+export const CreateEvalPlanRouteResolver = (current: string): string => {
+  if (evalPlanRequired()) {
+    return routeNames.CreateEvalPlan;
+  }
+  return current === routeNames.Exceptions
+    ? routeNames.NoEvalPlan
+    : routeNames.Exceptions;
+};
+
+export const EvalPlanSummaryRouteResolver = (current: string): string => {
+  return current === routeNames.NoEvalPlan
+    ? routeNames.Exceptions
+    : routeNames.EvalPlanSummary;
+};
+
+export const NoEvalPlanRouteResolver = (current: string): string => {
+  if (current === routeNames.EvalPlanSummary) {
+    return routeNames.CurrentContract;
+  }
+  return current === routeNames.CurrentContract && evalPlanRequired()
+    ? routeNames.EvalPlanSummary
+    : routeNames.NoEvalPlan;
+};
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
@@ -82,7 +106,7 @@ export const A11yRequirementResolver = (current: string): string => {
     return routeNames.Section508AccessibilityRequirements;
   }
   return current === routeNames.Section508Standards
-    ? routeNames.EvaluationCriteria
+    ? routeNames.CreatePriceEstimate
     : routeNames.Section508Standards;
 };
 
@@ -558,22 +582,18 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   return OfferingDetailsPathResolver(current, direction);
 };
 
-export const IGCESurgeCapabilities = (current:string): string =>{
-  const surgeCapacity = AcquisitionPackage.requirementsCostEstimate?.surge_capacity;
-  if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
+export const IGCESurgeCapabilities =  (current:string): string =>{
+  const surgeCapacity = IGCEStore.surgeRequirements.capacity;
+  if (surgeCapacity.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
     return routeNames.FeeCharged;
   }
-  if (surgeCapacity?.toUpperCase() !== "YES" && current === routeNames.FeeCharged){
+  if (surgeCapacity.toUpperCase() !== "YES" && current === routeNames.FeeCharged){
     return routeNames.SurgeCapacity;
   }
   return routeNames.SurgeCapabilities;
 }
 export const IGCECannotProceedResolver = (current: string): string => {
-  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
-  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
-  const validToProceed = hasLegitPeriods && isCompleteDOW;
- 
-  if (validToProceed){
+  if (IGCEStore.hasDOWandPoP){
     if (current ===  routeNames.CreatePriceEstimate){
       return routeNames.GatherPriceEstimates;
     } else if (current == routeNames.GatherPriceEstimates) {
@@ -584,23 +604,17 @@ export const IGCECannotProceedResolver = (current: string): string => {
 };
 
 export const IGCEGatherPriceEstimatesResolver = (current: string): string => {
-  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
-  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
-  const validToProceed = hasLegitPeriods && isCompleteDOW;
-  if (current === routeNames.TravelEstimates && validToProceed){
+  if (current === routeNames.TravelEstimates && IGCEStore.hasDOWandPoP){
     return routeNames.GatherPriceEstimates;
   }
 
-  return current === routeNames.GatherPriceEstimates && validToProceed
+  return current === routeNames.GatherPriceEstimates && IGCEStore.hasDOWandPoP
     ? routeNames.CreatePriceEstimate
     : routeNames.FundingPlanType;
 };
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {
-  const hasLegitPeriods =  Periods.periods && Periods.periods.length > 0;
-  const isCompleteDOW = DescriptionOfWork.isIncomplete === false;
-  const validToProceed = hasLegitPeriods && isCompleteDOW;
-  return current === routeNames.FundingPlanType && validToProceed
+  return current === routeNames.FundingPlanType && IGCEStore.hasDOWandPoP
     ? routeNames.EstimatesDeveloped
     : routeNames.CannotProceed;
 };
@@ -716,6 +730,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
+  CreateEvalPlanRouteResolver,
+  EvalPlanSummaryRouteResolver,
+  NoEvalPlanRouteResolver,
 };
 
 // add path resolvers here 

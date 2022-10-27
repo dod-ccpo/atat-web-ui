@@ -38,7 +38,7 @@ describe("Test suite: Portfolios CSP Portaltab", () => {
   it("TC1:Asserts: CSP Portal Access view", () => {
     cy.clickPortfolioMenu(card);
     cy.findElement(ps.headerPortfolioTextfield).should("have.value", portfolioName); 
-    cy.portfolioTab(ps.cspPortalAccessTab);
+    cy.tabStatus(ps.cspPortalAccessTab,"false").click();
 
     const csp = "Azure"
     cy.textExists(ps.cspTitle, "Accessing your " + csp + " " + "Portal:");
@@ -88,7 +88,7 @@ describe("Test suite: Portfolios CSP Portaltab", () => {
   it("TC2: Add a CSP Administrator", () => {
     cy.clickPortfolioMenu(card);
     cy.findElement(ps.headerPortfolioTextfield).should("have.value", portfolioName); 
-    cy.portfolioTab(ps.cspPortalAccessTab);
+    cy.tabStatus(ps.cspPortalAccessTab,"false").click();
     cy.getRowCount();
     cy.textExists(ps.addCSPAdminBtn, "Add a CSP Administrator").click().then(() => {
       cy.dialogModalExist(
@@ -110,7 +110,7 @@ describe("Test suite: Portfolios CSP Portaltab", () => {
   it("TC3:Validations : Add a CSP Administrator Modal", () => {
     cy.clickPortfolioMenu(card);
     cy.findElement(ps.headerPortfolioTextfield).should("have.value", portfolioName); 
-    cy.portfolioTab(ps.cspPortalAccessTab);
+    cy.tabStatus(ps.cspPortalAccessTab,"false").click();
     cy.textExists(ps.addCSPAdminBtn, "Add a CSP Administrator").click()
     cy.verifyRequiredInput(
       ps.adminEmailAddressTextBox,

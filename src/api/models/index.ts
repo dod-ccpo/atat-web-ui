@@ -334,7 +334,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
 }
 
 export interface CostsDTO extends BaseTableDTO {
-  clin: ReferenceColumn | string;
+  clin: ReferenceColumn["value"];
   csp: ReferenceColumn | string;
   "csp.name"?:string;
   year_month: string;
@@ -367,6 +367,7 @@ export interface ClinDTO extends BaseTableDTO {
   funds_total: number;
   cost_records?: CostsDTO[]
   funds_spent_clin?: number; // total of all is_actual=true costs of the clin
+  clin_title?: string;
 }
 
 export interface ClinDisplayDTO {
@@ -417,7 +418,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   pop_start_date: string; // "2022-01-01 << task_order.pop_start_date >>",
   funds_obligated: number; // "<< sum of obligated values in all qualifying clins >>",
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
-  funding_status: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT')[]; //DERIVED from alerts
+  portfolio_funding_status: string;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
@@ -436,7 +437,7 @@ export interface CloudServiceProviderDTO extends BaseTableDTO{
 
 export interface PortfolioSummarySearchDTO {
   role: "ALL" | "MANAGED"; // one of these two values should always exist
-  fundingStatuses: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT')[];
+  fundingStatuses: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT' | 'FUNDING_AT_RISK')[];
   csps: string[]; // to not search for specific csps, send empty array
   portfolioStatus: "ACTIVE" | "PROCESSING" | ""; // empty string for both statuses
   sort: "name" | "DESCsys_updated_on"; // one of these two values should always exist
@@ -493,4 +494,16 @@ export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
 export interface AcquisitionPackageSummaryMetadataAndDataDTO {
   total_count: number;
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
+}
+
+export interface EvaluationPlanDTO extends BaseTableDTO{
+  source_selection: "NoTechProposal" | "TechProposal" | "SetLumpSum" | "EqualSetLumpSum";
+  method?: "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
+  standard_specifications?: string[];
+  custom_specifications?: string[];
+}
+
+export interface EvaluationCriteriaDTO {
+  evaluation_plan: EvaluationPlanDTO
+  fair_opportunity: FairOpportunityDTO
 }

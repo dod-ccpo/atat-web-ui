@@ -84,6 +84,19 @@
         @leavePortfolio="leavePortfolio"
         :isHomeView="isHomeView"
       />
+
+      <div class="_table-pagination mt-5" v-show="portfolioCount > recordsPerPage">
+        <span class="mr-11 font-weight-400 font-size-14">
+          Showing {{ startingNumber }}-{{ endingNumber }} of {{ portfolioCount }}
+        </span>
+
+        <v-pagination
+          v-model="page"
+          :length="numberOfPages"
+          circle
+        ></v-pagination>     
+      </div>
+
     </div>
 
     <ATATNoResults 
@@ -121,7 +134,7 @@ import Toast from "@/store/toast";
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
 
-import { StatusTypes } from "@/store/acquisitionPackage";
+import { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { formatDistanceToNow } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
@@ -142,25 +155,33 @@ export default class PortfoliosSummary extends Vue {
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
   public isHaCCAdmin = false;
 
+  public page = 1;
+  public recordsPerPage = 3;
+  public numberOfPages = 0;
+  public portfolioCount = 0;
+  public offset = 0;
+  public paging = false;
+
   public portfolioCardData: PortfolioCardData[] = [];
   public isLoading = false;
   public searchString = "";
   public searchedString = "";
-  public selectedSort = "name";
+  public selectedSort = "";
   public sortOptions: SelectData[] = [
     { text: "Portfolio name A-Z", value: "name" },
     { text: "Recently modified", value: "DESCsys_updated_on" },
   ];
+  public isSearchSortFilter = false;
 
   public filterChips: FilterOption[] = []
 
-  public roles = PortfolioData.summaryFilterRoles;
+  public roles = PortfolioData.summaryFilterRoles; // EJY figure this out
 
   public async generateFilterChips(): Promise<void> {
     this.filterChips = [];
     if (this.queryParams.role && this.queryParams.role.toLowerCase() !== "all") {
       const role = this.roles.find(
-        obj => obj.value.toLowerCase() === this.queryParams.role?.toLowerCase()
+        (obj: FilterOption) => obj.value.toLowerCase() === this.queryParams.role?.toLowerCase()
       );
       if (role) {
         this.filterChips.push(role);
@@ -244,9 +265,20 @@ export default class PortfoliosSummary extends Vue {
       csps: csps,
     };
     Object.assign(this.portfolioSearchDTO, newQPs);
-    await this.loadPortfolioData();
+    this.paging = false;
+    this. isSearchSortFilter = true;
+    await this.loadPortfolioData(); // 
+    this. isSearchSortFilter = false;
     this.isLoading = false;
     this.searchedString = this.searchString;
+  }
+
+  @Watch("page")
+  public paged(): void {
+    if (!this.isSearchSortFilter) {
+      this.paging = true;
+      this.loadPortfolioData();
+    }
   }
 
   @Watch("activeTab")
@@ -315,8 +347,20 @@ export default class PortfoliosSummary extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadPortfolioData();
-    this.isLoading = false;
   }
+
+  get endingNumber(): number {
+    const ending = this.page * this.recordsPerPage;
+    if (ending > this.portfolioCount) {
+      return this.portfolioCount;
+    }
+    return ending;
+  }
+  get startingNumber():number {
+    const starting = (this.page - 1) * this.recordsPerPage + 1;
+    return starting;
+  }
+
 
   public portfolioSearchDTO: PortfolioSummarySearchDTO = {
     role: "ALL",
@@ -325,12 +369,15 @@ export default class PortfoliosSummary extends Vue {
     searchString: "",
     fundingStatuses: [],
     csps: [],
+    limit: this.recordsPerPage,
+    offset: this.offset,
   }
   
   // TEMP hard-coded logged-in user Maria Missionowner
   public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
 
   public async loadPortfolioData(): Promise<void> {
+    
     this.isLoading = true;
     this.portfolioCardData = [];
 
@@ -342,12 +389,19 @@ export default class PortfoliosSummary extends Vue {
       this.portfolioSearchDTO.portfolioStatus = this.activeTab === "ALL" ? "" : this.activeTab;
     }
 
-    if (this.defaultSort) {
+    if (!this.selectedSort && this.defaultSort) {
+      this.selectedSort = this.defaultSort;
       this.portfolioSearchDTO.sort = this.defaultSort;
     }
+    
+    this.page = !this.paging ? 1 : this.page;
+    this.offset = (this.page - 1) * this.recordsPerPage;
+    this.portfolioSearchDTO.offset = this.offset;
 
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
+    this.portfolioCount = storeData.total_count;
     this.$emit("totalCount", storeData.total_count);
+    this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
     if (this.isHomeView) {
       storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
@@ -359,10 +413,11 @@ export default class PortfoliosSummary extends Vue {
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
       cardData.status = portfolio.portfolio_status;
-      cardData.fundingStatus = portfolio.funding_status;
-      cardData.serviceAgency = portfolio.dod_component;
+      cardData.fundingStatus = portfolio.portfolio_funding_status;
+      cardData.agency = portfolio.dod_component;
       // lastModified - if status is "Processing" use "Started ... ago" string
-      if (cardData.status.toLowerCase() === StatusTypes.Processing.toLowerCase()) {
+
+      if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
         const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
         cardData.lastModifiedStr = "Started " + agoString + " ago";
       } else {
@@ -377,7 +432,7 @@ export default class PortfoliosSummary extends Vue {
         cardData.currentPoP = popStart + " - " + popEnd;
       }
 
-      if (portfolio.portfolio_status.toLowerCase() !== StatusTypes.Processing.toLowerCase()) {
+      if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
         cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
         cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
         cardData.fundsSpentPercent = String(Math.round(
@@ -386,6 +441,9 @@ export default class PortfoliosSummary extends Vue {
       }
 
       this.portfolioCardData.push(cardData);
+      this.isLoading = false;
+      this.paging = false;
+      this. isSearchSortFilter = false;
     });
 
     // future ticket - set isHaCCAdmin value with data from backend when implemented

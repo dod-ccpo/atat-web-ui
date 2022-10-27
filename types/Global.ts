@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Component } from "vue";
 import { 
   RouteConfigMultipleViews,
@@ -13,6 +14,7 @@ import {
   ProjectOverviewDTO,
   ContactDTO,
   BaseTableDTO,
+  ClinDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -398,7 +400,7 @@ export interface Portfolio extends BaseTableDTO {
 }
 
 export interface PortfolioCardData extends Portfolio {
-  fundingStatus?: ("ON_TRACK"|"EXPIRING_SOON"|"AT_RISK"|"DELINQUENT")[];
+  fundingStatus?: string;
   fundingAlertChipString?: string;
   branch?: string;
   lastModifiedStr?: string;
@@ -436,12 +438,45 @@ export interface FundingTrackerAlert {
 }
 
 export interface TaskOrderCardData {
-  taskOrderNumber: string,
-  periodOfPerformance: string,
-  totalObligated: string,
-  totalValue: string,
-  totalLifeCycle: string,
-  totalFundsSpent: string,
-  status: string,
+  taskOrderNumber?: string,
+  periodOfPerformance?: string,
+  totalObligated?: string,
+  totalValue?: string,
+  totalLifeCycle?: string,
+  totalFundsSpent?: string,
+  status?: string,
+  sys_id?: string,
+  clins?:ClinDTO[],
 }
 
+export interface ClinTableRowData {
+  isActive?: boolean,
+  isExercised?: boolean,
+  isExpired?: boolean,
+  isPending?: boolean,
+  CLINNumber?:string,
+  CLINTitle?:string,
+  PoP?: Record<string, string>,
+  obligatedFunds?:string,
+  totalCLINValue?:string,
+  totalFundsSpent?:string,
+  fundsRemaining?: {percent:string, fundsRemaining:string},
+  isOverspent?: boolean,
+  status?:string,
+  statusLabel?: string;
+  startNewClinGroup?: boolean,
+  popStartDate: string
+}
+
+export interface LegendLink {
+  id: string;
+  linkText: string;
+  emitText: string;
+}
+
+export interface IGCE {
+  travelEstimateNeeds: boolean,
+  estimatedTravelCosts: string[],
+  surgeCapacity: boolean,
+  surgeCapabilities: string,
+}

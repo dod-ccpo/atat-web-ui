@@ -117,7 +117,7 @@
           <v-card flat class="pa-6 mb-10 _simple-border">
             <h3 class="text-primary mb-4">What else could we help you with?</h3>
             <v-btn
-              id="StartNewAcquisitionButton"
+              id="StartNewAcquisitionButton2"
               class="primary mb-4 mt-4 width-100"
               @click="startNewAcquisition"
               @keydown.enter="startNewAcquisition"

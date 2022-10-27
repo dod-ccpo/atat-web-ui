@@ -6,7 +6,7 @@
   >
 
     <div class="pr-5">
-      <div class="_csp-icon-wrap">
+      <div class="_csp-icon-wrap" :data-csp="CSPs[cardData.csp].title">
         <v-tooltip
           transition="slide-y-reverse-transition"
           color="rgba(0,0,0,1)"
@@ -55,10 +55,10 @@
           </a>
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
-          <v-chip 
+          <v-chip
             :id="'StatusChip' + index" 
             :class="[
-              '_' + cardData.status.toLowerCase(),
+              '_' + (cardData.status ? cardData.status.toLowerCase() : ''),
               statusChipBgColor
             ]" 
             label
@@ -69,7 +69,7 @@
         </div>
       </div>
       <div class="text-base-dark">
-        {{ cardData.serviceAgency }}
+        {{ cardData.agency }}
         <ATATSVGIcon 
           name="bullet" 
           color="base-light" 
@@ -139,7 +139,7 @@ import PortfolioData, { cspConsoleURLs } from "@/store/portfolio";
 import { getStatusChipBgColor, toTitleCase } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
-import { StatusTypes } from "@/store/acquisitionPackage";
+import { Statuses } from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -156,7 +156,6 @@ export default class PortfolioCard extends Vue {
   @Prop() private isHaCCAdmin!: boolean;
   @Prop({ default: false }) public isHomeView?: boolean;
 
-  public portfolioStatuses = StatusTypes;
   public showLeavePortfolioModal = false;
 
   public menuActions = {
@@ -175,7 +174,7 @@ export default class PortfolioCard extends Vue {
   }
 
   public get isActive(): boolean {
-    return this.cardData.status?.toLowerCase() === this.portfolioStatuses.Active.toLowerCase();
+    return this.cardData.status?.toLowerCase() === Statuses.Active.value.toLowerCase();
   }
 
   public get hasFundingStatus(): boolean {
@@ -220,7 +219,7 @@ export default class PortfolioCard extends Vue {
   }
 
   public get statusChipBgColor(): string {
-    const status = this.cardData.status?.toLowerCase() === StatusTypes.Processing.toLowerCase()
+    const status = this.cardData.status?.toLowerCase() === Statuses.Processing.value.toLowerCase()
       ? this.cardData.status
       : this.cardData.fundingAlertChipString;
     return getStatusChipBgColor(status ? status : "");
@@ -266,16 +265,19 @@ export default class PortfolioCard extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    if (this.cardData.fundingStatus && this.cardData.fundingStatus[0] !== "ON_TRACK") {
-      switch(this.cardData.fundingStatus[0]) {
-      case "AT_RISK":
-        this.cardData.fundingAlertChipString = StatusTypes.AtRisk;
+    if (this.cardData.fundingStatus && this.cardData.fundingStatus !== Statuses.OnTrack.value) {
+      switch(this.cardData.fundingStatus) {
+      case Statuses.AtRisk.value:
+        this.cardData.fundingAlertChipString = Statuses.AtRisk.label;
         break;
-      case "EXPIRING_SOON":
-        this.cardData.fundingAlertChipString = StatusTypes.ExpiringSoon;
+      case Statuses.FundingAtRisk.value:
+        this.cardData.fundingAlertChipString = Statuses.FundingAtRisk.label;
+        break;
+      case Statuses.ExpiringSoon.value:
+        this.cardData.fundingAlertChipString = Statuses.ExpiringSoon.label;
         break;
       default:
-        this.cardData.fundingAlertChipString = toTitleCase(this.cardData.fundingStatus[0] || "")
+        this.cardData.fundingAlertChipString = toTitleCase(this.cardData.fundingStatus || "")
       }
     }
 
@@ -310,7 +312,7 @@ export default class PortfolioCard extends Vue {
       },
     );
 
-    if (this.cardData.status?.toLowerCase() !== this.portfolioStatuses.Processing.toLowerCase()) {
+    if (this.cardData.status?.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
       this.portfolioCardMenuItems.push(
         { 
           title: "Login to the CSP console",
