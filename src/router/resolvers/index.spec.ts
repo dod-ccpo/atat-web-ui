@@ -121,6 +121,13 @@ describe("testing route resolvers", () => {
       const route = BVTOResolver(routeNames.EvalPlanDetails);
       expect(route).toBe(routeNames.ProposalRequiredBVTO);
     });
+    it ("BVTOResolver() - routes to Summary page when not BVTO method", async () => {
+      await AcquisitionPackage.setEvaluationPlan(
+        { source_selection: "", method: "LPTA" }
+      );
+      const route = BVTOResolver(routeNames.EvalPlanDetails);
+      expect(route).toBe(routeNames.EvalPlanSummary);
+    });
 
     it ("BVTOResolver() - routes to EvalPlanSummary page", async () => {
       await AcquisitionPackage.setEvaluationPlan(
