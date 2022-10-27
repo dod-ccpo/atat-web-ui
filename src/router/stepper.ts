@@ -18,11 +18,7 @@ import Exceptions from "../steps/02-EvaluationCriteria/Exceptions.vue";
 //   from "../steps/02-EvaluationCriteria/JustificationAndApproval.vue";
 import CreateEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.vue";
 import EvalPlanDetails from "../steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.vue";
-
-// import NoProposalRequired from "../steps/02-EvaluationCriteria/EvalPlan/NoProposalRequired.vue";
-// import ProposalRequired from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequired.vue";
 import ProposalRequiredBVTO from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequiredBVTO.vue";
-// import LumpSum from "../steps/02-EvaluationCriteria/EvalPlan/LumpSum.vue";
 import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
 import NoEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.vue";
 
@@ -156,10 +152,7 @@ export const routeNames = {
   EvaluationPlan: "Evaluation_Plan",
   CreateEvalPlan: "Create_Eval_Plan",
   EvalPlanDetails: "Eval_Plan_Details",
-  // NoProposalRequired: "No_Proposal_Required",
-  // ProposalRequired: "Proposal_Required",
   ProposalRequiredBVTO: "Proposal_Required_BVTO",
-  // LumpSum: "Lump_Sum",
   EvalPlanSummary: "Eval_Plan_Summary",
   NoEvalPlan: "No_Eval_Plan",
   // KEEP JustificationAndApproval for future ticket
