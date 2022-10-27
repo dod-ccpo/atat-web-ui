@@ -96,7 +96,6 @@
 import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { Component } from "vue-property-decorator";
-import { isTypeOnlyImportOrExportDeclaration } from "typescript";
 
 export interface IGCECostSummaryItem {
     CLINTypeClassAggregate:string,
@@ -219,29 +218,6 @@ public tableData: IGCECostSummaryItem[] = [
 public isItemAggregate(label: string): boolean {
   return ['total', 'surge'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
 }
-
-  // public getItemTotal(item: IGCECostSummaryItem): void {
-  //   const tony = Object.values(item).filter(
-  //     (val: string)=>{
-  //         return{
-  //           if(val.indexOf("$")>-1){
-  //             return val.replace(/,/g,"");
-  //           }
-  //         }
-  // });
-  
-
-
-  //   // .reduce((prev: string, curr: string)=>{
-  //   //   console.log(prev + " : " + curr)
-  //   //   let previous = !isNaN(prev) ? parseInt(prev.replace(/,/g,"").substring(1)) : "0";
-  //   //   return parseInt(prev.replace(/,/g,"").substring(1)) + 
-  //   //           parseInt(curr.replaceAll(/,/g,"").substring(1));
-  //   // });
-  //   console.log(tony);
-
-  // }
-
 
 }
 </script>
