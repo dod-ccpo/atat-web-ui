@@ -145,7 +145,6 @@ describe("Test suite: No Classification Levels Workflow Scenarios",
         performanceReqs.periodCheckboxLabel1,
         "NO");
       cy.periodCount(periodCount, performanceReqs.periodCheckboxRow1);
-      cy.selectCheckBoxes([performanceReqs.checkBoxBase]);    
       cy.btnClick(common.continueBtn, " Continue "); 
       //navigate to Summary page
       cy.verifyPageHeader(
