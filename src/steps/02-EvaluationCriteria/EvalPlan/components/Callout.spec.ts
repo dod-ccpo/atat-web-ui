@@ -15,14 +15,72 @@ describe("Testing CreateEvalPlan Component", () => {
     vuetify = new Vuetify();
     wrapper = mount(Callout, {
       vuetify,
-      localVue
+      localVue,
+      propsData: {
+        sourceSelection: "TechProposal",
+        method: "",
+      }
     });
   });
 
-  describe("testing Callout component", () => {
+  describe("Rendering Callout component", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
+  });
+
+  describe("testing getters for eval plan variations", () => {
+    it("testing no-tech-proposal required", async () => {
+      await wrapper.setProps({
+        sourceSelection: "NoTechProposal"
+      });
+      expect(wrapper.vm.isStandards).toBeTruthy();
+      expect(wrapper.vm.heading).toBe("Compliance Standards");
+      expect(wrapper.vm.listType).toBe("Standard");
+      expect(wrapper.vm.introP).toContain("to provide a price quote");
+      expect(wrapper.vm.subhead).toContain("compliance standards");
+      expect(wrapper.vm.listItems).toHaveLength(2);
+    });
+
+    it("testing tech-proposal required", async () => {
+      await wrapper.setProps({
+        sourceSelection: "TechProposal"
+      });
+      expect(wrapper.vm.isStandards).toBeTruthy();
+      expect(wrapper.vm.heading).toBe("Compliance Standards");
+      expect(wrapper.vm.listType).toBe("Standard");
+      expect(wrapper.vm.introP).toContain("propose a technical solution");
+      expect(wrapper.vm.subhead).toContain("compliance standards");
+      expect(wrapper.vm.listItems).toHaveLength(3);
+    });
+
+    it("testing set lump sum one CSP - Best Use method", async () => {
+      await wrapper.setProps({
+        sourceSelection: "SetLumpSum",
+        method: "BestUse"
+      });
+      expect(wrapper.vm.isStandards).toBeFalsy();
+      expect(wrapper.vm.heading).toBe("Assessment Areas");
+      expect(wrapper.vm.listType).toBe("Criteria");
+      expect(wrapper.vm.introP).toContain("white paper");
+      expect(wrapper.vm.subhead).toContain("best use");
+      expect(wrapper.vm.listItems).toHaveLength(4);
+    });
+
+    it("testing set lump sum one CSP - Lowest Risk method", async () => {
+      await wrapper.setProps({
+        sourceSelection: "SetLumpSum",
+        method: "LowestRisk"
+      });
+      expect(wrapper.vm.isStandards).toBeFalsy();
+      expect(wrapper.vm.heading).toBe("Assessment Areas");
+      expect(wrapper.vm.listType).toBe("Criteria");
+      expect(wrapper.vm.introP).toContain("white paper");
+      expect(wrapper.vm.subhead).toContain("lowest risk");
+      expect(wrapper.vm.listItems).toHaveLength(5);
+    });
+
 
   })
+
 })
