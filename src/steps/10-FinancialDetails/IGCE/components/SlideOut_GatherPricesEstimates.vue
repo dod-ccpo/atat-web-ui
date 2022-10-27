@@ -58,66 +58,54 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
           estimate.
         </p>
         <h4 class="mb-2">CSP Pricing Calculators</h4>
-        <div>
-        <ATATSVGIcon
-          name="bullet"
-          color="primary"
-          :width="9"
-          :height="9"
-          class="d-inline-block mx-1"
-        />
+        <div class="d-flex align-center">
+        <svg viewBox="0 0 9 9" height="8px" width="8px"  xmlns="http://www.w3.org/2000/svg">
+         <circle cx="4.3" cy="4.3" r="4.3" fill="transparent"/>
+         <circle cx="4.15" cy="4.15" r="2.15" fill="#544496"/></svg>
         <a
            id="OpenAWSPricing"
            tabindex="0"
            href="https://calculator.aws/#/addService?nc2=h_ql_pr_calc"
+           class="ml-1"
         >
             AWS Pricing Calculator
         </a>
         </div>
-        <div>
-        <ATATSVGIcon
-          name="bullet"
-          color="primary"
-          :width="9"
-          :height="9"
-          class="d-inline-block mx-1"
-        />
+        <div class="d-flex align-center mb-2">
+        <svg viewBox="0 0 9 9" height="8px" width="8px"  xmlns="http://www.w3.org/2000/svg">
+         <circle cx="4.3" cy="4.3" r="4.3" fill="transparent"/>
+         <circle cx="4.15" cy="4.15" r="2.15" fill="#544496"/></svg>
         <a
            id="OpenGooglePricing"
            tabindex="0"
            href="https://cloud.google.com/products/calculator"
+           class="ml-1"
         >
             Google Cloud
         </a>
         </div>
-        <div>
-        <ATATSVGIcon
-          name="bullet"
-          color="primary"
-          :width="9"
-          :height="9"
-          class="d-inline-block mx-1"
-        />
+       <div class="d-flex align-center mb-2">
+        <svg viewBox="0 0 9 9" height="8px" width="8px"  xmlns="http://www.w3.org/2000/svg">
+         <circle cx="4.3" cy="4.3" r="4.3" fill="transparent"/>
+         <circle cx="4.15" cy="4.15" r="2.15" fill="#544496"/></svg>
         <a
            id="OpenAzurePricing"
            tabindex="0"
            href="https://azure.microsoft.com/en-us/pricing/calculator/"
+           class="ml-1"
         >
             Microsoft Azure
         </a>
         </div>
-        <div>
-        <ATATSVGIcon
-          name="bullet"
-          color="primary"
-          :width="9"
-          :height="9"
-          class="d-inline-block mx-1"
-        />
+        <div class="d-flex align-center mb-2">
+        <svg viewBox="0 0 9 9" height="8px" width="8px"  xmlns="http://www.w3.org/2000/svg">
+         <circle cx="4.3" cy="4.3" r="4.3" fill="transparent"/>
+         <circle cx="4.15" cy="4.15" r="2.15" fill="#544496"/></svg>
         <a
            id="OpenOraclePricing"
            tabindex="0"
            href="https://www.oracle.com/cloud/costestimator.html"
+           class="ml-1"
         >
             Oracle Cloud
         </a>
@@ -173,10 +161,12 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
           Your IGCE should mirror the performance requirements outlined in the
           Description of Work as much as possible. If you need to add or remove
           items from this cost estimate breakdown, then you will need to
-          <router-link
-            id="Step4Link"
-            :to="{name:route}"
-          >revisit the Performance Requirements</router-link>
+          <a
+            id="LinkToStep5"
+            href="/#/performance-requirements"
+          >
+            revisit the Performance Requirements
+          </a>
            section to make any changes to your required cloud services and support packages.
         </p>`
     },
