@@ -36,36 +36,44 @@
               :items-per-page="-1"
               hide-default-footer
               hide-default-header
-              class="_clin-table"
+              class="_data-table _has-total-col"
             >
 
-                <template v-slot:header="{ props }">
+              <template v-slot:header="{ props }">
                 <tr>
                   <th v-for="(header,hdrIdx) in props.headers" :key="hdrIdx">
                     <div 
                       :class="[
                         'py-4 d-flex font-size-14',
-                        {'align-left pl-6': hdrIdx===0},
+                        {'align-left': hdrIdx === 0},
                         {'justify-end': hdrIdx > 0},
                         
                       ], ">
                     {{ header.text }}
                     </div>
                   </th>
-                  </tr>
+                </tr>
               </template>
 
 
               <template v-slot:body="props">
                 <tr v-for="(item,rowIdx) in props.items" :key="rowIdx"
-                    class="row-item border-base-lighter font-size-14 text-right"
-                    style="border-bottom: 1px solid">
+                  class="row-item font-size-14 text-right"
+                  :class="[{ 
+                    '_subtotal' : item.CLINTypeClassAggregate === 'Subtotal',
+                    '_total' : item.CLINTypeClassAggregate === 'Total Price',
+                    '_border-bottom' : item.isCLINAmount === 'true',
+                  }]"
+                >
                   <td>
                     <div :class="[
-                          'text-left py-4 pl-6',
-                          {'font-weight-bold text-right': 
-                            isItemAggregate(item.CLINTypeClassAggregate)}
-                          ]">{{ item.CLINTypeClassAggregate }}</div>
+                      'text-left py-4',
+                      {'font-weight-bold text-right': 
+                        isItemAggregate(item.CLINTypeClassAggregate)}
+                      ]"
+                    >
+                      {{ item.CLINTypeClassAggregate }}
+                    </div>
                   </td>
                    <td>
                     <div>{{ item.BasePeriod }}</div>
@@ -105,8 +113,8 @@ export interface IGCECostSummaryItem {
     OptionThree?: string,
     OptionFour?: string,
     Total?: string,
+    isCLINAmount?: string,
 }
-
 
 @Component({
   components: {
@@ -134,25 +142,26 @@ export default class CostSummary extends Vue {
     OptionTwo?: string,
     OptionThree?: string,
     OptionFour?: string,
-    Total?: string
-  ): Record<string, string | undefined> {
-    
+    Total?: string,
+    isCLINAmount?: boolean
+  ): Record<string, string | boolean |undefined> {
     return {
-      CLINTypeClassAggregate, BasePeriod, OptionOne, OptionTwo, OptionThree, OptionFour, Total
+      // eslint-disable-next-line max-len
+      CLINTypeClassAggregate, BasePeriod, OptionOne, OptionTwo, OptionThree, OptionFour, Total, isCLINAmount
     }
   }
 
   /* eslint-disable max-len */
   public dummyData = [
-    ["Cloud UNCLASSIFIED", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00"],
-    ["Cloud Support UNCLASSIFIED", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00"],
-    ["Cloud SECRET", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00"],
-    ["Cloud Support SECRET", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00"],
-    ["Cloud Support Travel", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00"],
-    ["External ordering agency fee (1%)", "50.00", "50.00", "50.00", "50.00", "50.00", "250.00"],
-    ["Subtotal", "$5,050.00", "$5,050.00", "$5,050.00", "$5,050.00", "$5,050.00", "$25,250.00"],
-    ["5% Surge", "$252.50", "$252.50", "$252.50", "$252.50", "$252.50", "$1,262.50"],
-    ["Total Price", "$5,302.50", "$5,302.50", "$5,302.50", "$5,302.50", "$5,302.50", "$5,302.50", "$26,512.50"]
+    ["Cloud UNCLASSIFIED", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00", "true"],
+    ["Cloud Support UNCLASSIFIED", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00", "true"],
+    ["Cloud SECRET", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00", "true"],
+    ["Cloud Support SECRET", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00", "true"],
+    ["Travel", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00", "true"],
+    ["External ordering agency fee (1%)", "$50.00", "$50.00", "$50.00", "$50.00", "$50.00", "$250.00", "false"],
+    ["Subtotal", "$5,050.00", "$5,050.00", "$5,050.00", "$5,050.00", "$5,050.00", "$25,250.00", "false"],
+    ["5% Surge", "$252.50", "$252.50", "$252.50", "$252.50", "$252.50", "$1,262.50", "false"],
+    ["Total Price", "$5,302.50", "$5,302.50", "$5,302.50", "$5,302.50", "$5,302.50", "$5,302.50", "$26,512.50", "false"]
   ];
   /* eslint-enable max-len */
 
