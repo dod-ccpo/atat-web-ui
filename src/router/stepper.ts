@@ -133,8 +133,8 @@ import {
   IGCESupportingDocumentationResolver,
   CreateEvalPlanRouteResolver,
   BVTOResolver,
-  EvalPlanSummaryRouteResolver,
   NoEvalPlanRouteResolver,
+  EvalPlanDetailsRouteResolver,
 
 } from "./resolvers";
 
@@ -326,6 +326,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
       },
       {
+        menuText: "No Evaluation Plan",
+        path: "no-eval-plan",
+        name: routeNames.NoEvalPlan,
+        component: NoEvalPlan,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        routeResolver: NoEvalPlanRouteResolver,
+      },
+      {
         menuText: "Create Evaluation Plan",
         path: "create-eval-plan",
         name: routeNames.CreateEvalPlan,
@@ -342,6 +352,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         excludeFromMenu: true,
         completed: false,
+        routeResolver: EvalPlanDetailsRouteResolver
       },
       {
         menuText: "Proposal Required BVTO",
@@ -361,19 +372,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
-        routeResolver: EvalPlanSummaryRouteResolver,
       },
-      {
-        menuText: "No Evaluation Plan",
-        path: "no-eval-plan",
-        name: routeNames.NoEvalPlan,
-        component: NoEvalPlan,
-        completePercentageWeight: 0,
-        completed: false,
-        excludeFromMenu: true,
-        routeResolver: NoEvalPlanRouteResolver,
-      },
-
       // KEEP JustificationAndApproval for future ticket
       // {
       //   menuText: "Justification and Approval",
