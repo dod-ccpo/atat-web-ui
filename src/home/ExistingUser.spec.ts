@@ -162,9 +162,6 @@ describe("Existing User Component", () => {
         )
       expect(wrapper.vm.$data.draftPackageCount).toBe(1);
     })
-
-  
-
     it("testing @keydown.space to trigger viewAllPortfolios() ", async () => {
       const anchorLink = await wrapper.find("#ViewAllPortfoliosLink");
       anchorLink.trigger('keydown.space'); // trigger viewAllPortfolios();
