@@ -12,6 +12,7 @@ import {
   IGCESupportingDocumentationResolver, 
   IGCESurgeCapabilities,
   NoEvalPlanRouteResolver,
+  EvalPlanDetailsRouteResolver
 
 } from "../resolvers/index"
 import { routeNames } from "@/router/stepper"
@@ -68,23 +69,23 @@ describe("testing route resolvers", () => {
         { exception_to_fair_opportunity: "foo" }
       );
       const route = CreateEvalPlanRouteResolver(routeNames.Exceptions);
-      expect(route).toBe(routeNames.NoEvalPlan);
+      expect(route).toBe(routeNames.CreateEvalPlan);
     });
 
-    it ("CreateEvalPlanRouteResolver() - routes to Fair Opportunity Exceptions page", async () => {
+    it ("CreateEvalPlanRouteResolver() - routes to Summary page", async () => {
       await AcquisitionPackage.setFairOpportunity(
         { exception_to_fair_opportunity: "foo" }
       );
       const route = CreateEvalPlanRouteResolver(routeNames.NoEvalPlan);
-      expect(route).toBe(routeNames.Exceptions);
+      expect(route).toBe(routeNames.EvalPlanSummary);
     });
 
-    it ("NoEvalPlanRouteResolver() - routes to Current Contract", async () => {
+    it ("NoEvalPlanRouteResolver() - routes to Create Eval Plan", async () => {
       await AcquisitionPackage.setFairOpportunity(
         { exception_to_fair_opportunity: "NO_NONE" }
       );
       const route = NoEvalPlanRouteResolver(routeNames.EvalPlanSummary);
-      expect(route).toBe(routeNames.CurrentContract);
+      expect(route).toBe(routeNames.CreateEvalPlan);
     });
 
     it ("NoEvalPlanRouteResolver() - routes to Eval Plan Summary page", async () => {
@@ -92,15 +93,15 @@ describe("testing route resolvers", () => {
         { exception_to_fair_opportunity: "NO_NONE" }
       );
       const route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
-      expect(route).toBe(routeNames.EvalPlanSummary);
+      expect(route).toBe(routeNames.CreateEvalPlan);
     });
 
-    it ("NoEvalPlanRouteResolver() - routes to No Eval Plan Needed page", async () => {
+    it ("NoEvalPlanRouteResolver() - routes to Exceptions page", async () => {
       await AcquisitionPackage.setFairOpportunity(
         { exception_to_fair_opportunity: "foo" }
       );
       const route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
-      expect(route).toBe(routeNames.NoEvalPlan);
+      expect(route).toBe(routeNames.Exceptions);
     });
 
     it ("BVTOResolver() - routes to BVTO page", async () => {
@@ -131,7 +132,7 @@ describe("testing route resolvers", () => {
         { source_selection: "", method: "" }
       );
       const route = BVTOResolver(routeNames.EvalPlanSummary);
-      expect(route).toBe(routeNames.EvalPlanDetails);
+      expect(route).toBe(routeNames.NoEvalPlan);
     });
 
   });
