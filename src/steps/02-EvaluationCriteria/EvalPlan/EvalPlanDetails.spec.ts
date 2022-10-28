@@ -80,7 +80,7 @@ describe("Testing NoEvalPlan Component", () => {
       });
 
       expect(wrapper.vm.isStandards).toBeFalsy();
-      expect(wrapper.vm.header).toContain("assessment criteria")    
+      expect(wrapper.vm.header).toContain("there are no required compliance")    
     });
 
   });
