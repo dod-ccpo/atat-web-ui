@@ -136,7 +136,7 @@ import PortfolioData from "@/store/portfolio";
 
 import { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
 
 @Component({
@@ -156,7 +156,7 @@ export default class PortfoliosSummary extends Vue {
   public isHaCCAdmin = false;
 
   public page = 1;
-  public recordsPerPage = 3;
+  public recordsPerPage = 10;
   public numberOfPages = 0;
   public portfolioCount = 0;
   public offset = 0;
@@ -423,13 +423,21 @@ export default class PortfoliosSummary extends Vue {
       } else {
         const updatedDate = createDateStr(portfolio.sys_updated_on, true);
         cardData.lastModifiedStr = "Last modified " + updatedDate;
-      }
-      if (portfolio.task_orders && portfolio.task_orders.length) {
-        cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
+        if (portfolio.task_orders && portfolio.task_orders.length) {
+          cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
 
-        const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
-        const popEnd = createDateStr(portfolio.task_orders[0].pop_end_date, true);
-        cardData.currentPoP = popStart + " - " + popEnd;
+          const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
+          const popEndISO = portfolio.task_orders[0].pop_end_date;
+          const popEnd = createDateStr(popEndISO, true);
+          cardData.currentPoP = popStart + " - " + popEnd;
+
+          debugger;
+
+          const difToEndDate = formatDistanceToNow(new Date(popEndISO));
+          const isExpired = isAfter(new Date(), new Date(popEndISO));
+          cardData.expiration = difToEndDate + (isExpired ? " past" : " to") + " expiration";
+        }
+
       }
 
       if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
@@ -438,6 +446,10 @@ export default class PortfoliosSummary extends Vue {
         cardData.fundsSpentPercent = String(Math.round(
           portfolio.funds_spent / portfolio.funds_obligated * 100
         ));
+        const remainingAmt = portfolio.funds_obligated - portfolio.funds_spent;
+        cardData.fundsRemaining 
+          = "$" + toCurrencyString(Math.abs(remainingAmt)) 
+          + (remainingAmt < 0 ? " overspent" : " remaining");
       }
 
       this.portfolioCardData.push(cardData);

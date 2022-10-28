@@ -406,9 +406,11 @@ export interface PortfolioCardData extends Portfolio {
   lastModifiedStr?: string;
   lastModifiedDate?: string;
   currentPoP?: string;
+  expiration?: string;
   totalObligated?: string;
   fundsSpent?: string;
   fundsSpentPercent?: string;
+  fundsRemaining?: string;
   isManager?: boolean;
 }
 

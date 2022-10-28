@@ -80,14 +80,18 @@
         {{ cardData.lastModifiedStr }}
       </div>
 
-      <div 
-        v-if="isActive && !isHomeView" 
-        class="d-flex"
-      >
-        <div class="mr-15" :id="'PoP' + index">
+      <div v-if="isActive && !isHomeView" class="d-flex">
+
+        <div 
+          :id="'PoP' + index"
+          class="mr-15"  
+          :class="[{'_alert' : isPopAlert}, errorClass()]">
           <span class="_data-header">Current Period of Performance</span>
           <span class="_data-primary d-block">
             {{ cardData.currentPoP }}
+          </span>
+          <span v-if="isPopAlert">
+            {{ cardData.expiration }}
           </span>
         </div>
 
@@ -97,7 +101,12 @@
             {{ cardData.totalObligated }}
           </span>
         </div>
-        <div class="flex-grow-1" :id="'FundsSpent' + index">
+
+        <div 
+          :id="'FundsSpent' + index" 
+          class="flex-grow-1" 
+          :class="[{'_alert' : isFundingAlert}, errorClass()]"
+        >
           <span class="_data-header">Funds Spent (%)</span>
           <span class="_data-primary d-block">
             <span class="mr-1 nowrap">{{ cardData.fundsSpent }}</span>
@@ -105,6 +114,9 @@
               ({{ cardData.fundsSpentPercent }}%)
             </span>
           </span>
+          <div v-if="isFundingAlert">
+            {{ cardData.fundsRemaining }}
+          </div>
         </div>
 
       </div>
@@ -179,6 +191,39 @@ export default class PortfolioCard extends Vue {
 
   public get hasFundingStatus(): boolean {
     return (this.cardData.fundingStatus !== undefined && this.cardData.fundingStatus.length > 0);
+  }
+
+  public popAlertStatuses: string[] = [
+    Statuses.ExpiringSoon.value, Statuses.Expired.value 
+  ];
+  public fundingAlertStatuses: string[] = [
+    Statuses.FundingAtRisk.value, Statuses.Delinquent.value
+  ];
+  public redAlertStatuses: string[] = [
+    Statuses.Expired.value, Statuses.Delinquent.value
+  ];
+
+  public get isPopAlert(): boolean {
+    if (this.cardData.fundingStatus) {
+      return this.popAlertStatuses.includes(this.cardData.fundingStatus)
+    }
+    return false;
+  }
+
+  public get isFundingAlert(): boolean {
+    if (this.cardData.fundingStatus) {
+      return this.fundingAlertStatuses.includes(this.cardData.fundingStatus)
+    }
+    return false;
+  }
+
+  public errorClass(): string {
+    let alertClass = "";
+    const status = this.cardData.fundingStatus;
+    if (status && this.redAlertStatuses.includes(status)) {
+      alertClass = "_error";
+    } 
+    return alertClass;
   }
 
   public getCSPConsoleURL(): string {
