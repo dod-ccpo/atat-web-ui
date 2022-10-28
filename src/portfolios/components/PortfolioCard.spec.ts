@@ -118,7 +118,7 @@ describe("Testing index Component", () => {
     expect(wrapper.vm.$props.cardData.fundingAlertChipString).toEqual("At-Risk");
     wrapper.vm.$props.cardData.fundingStatus = "FUNDING_AT_RISK";
     await wrapper.vm.loadOnEnter();
-    expect(wrapper.vm.$props.cardData.fundingAlertChipString).toEqual("Funding At-Risk");
+    expect(wrapper.vm.$props.cardData.fundingAlertChipString).toEqual("At-Risk");
     wrapper.vm.$props.cardData.fundingStatus = "EXPIRING_SOON";
     await wrapper.vm.loadOnEnter();
     expect(wrapper.vm.$props.cardData.fundingAlertChipString).toEqual("Expiring Soon");
