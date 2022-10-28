@@ -138,13 +138,7 @@ export default class CostSummary extends Vue {
   ): Record<string, string | undefined> {
     
     return {
-      "CLINTypeClassAggregate": CLINTypeClassAggregate,
-      "BasePeriod": BasePeriod,
-      "OptionOne": OptionOne,
-      "OptionTwo": OptionTwo,
-      "OptionThree": OptionThree,
-      "OptionFour": OptionFour,
-      "Total": Total,
+      CLINTypeClassAggregate, BasePeriod, OptionOne, OptionTwo, OptionThree, OptionFour, Total
     }
   }
 
