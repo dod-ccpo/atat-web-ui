@@ -2,16 +2,19 @@
 <template>
   <div class="container-max-width">
     <h1 class="page-header">
-      Now let’s review compliance standards when no technical proposal is required
+      {{ header }}
     </h1>
     <Callout 
+      :sourceSelection="evalPlan.source_selection"
+      :method="evalPlan.method"
     />
     
     <ATATRadioGroup
+      v-if="isStandards"
       id="CustomStandards"
-      :items="radioGroupItems"
+      :items="standardsRadioGroupItems"
       :legend="radioGroupLegend"
-      :value.sync="selectedRadioItem"
+      :value.sync="selectedStandardsRadioItem"
       :rules="[
         $validators.required('Please select an option.'),
       ]"
@@ -43,7 +46,25 @@ import { RadioButton } from "types/Global";
   }
 })
 
-export default class LumpSum extends Vue {
+export default class EvalPlanDetails extends Vue {
+
+  public get isStandards(): boolean {
+    return this.evalPlan.source_selection.indexOf("TechProposal") > -1;
+  }
+
+  public get header(): string {
+    switch(this.evalPlan.source_selection) {
+    case "NoTechProposal":
+      return "Now let’s review compliance standards when no technical proposal is required";
+    case "TechProposal":
+      return "Now let’s review compliance standards when technical proposals are required";
+    case "SetLumpSum":
+    case "EqualSetLumpSum":
+      return "Now let’s review assessment criteria required for white papers";
+    default:
+      return ""
+    }
+  }
 
   public evalPlan: EvaluationPlanDTO = {
     /* eslint-disable camelcase */
@@ -55,8 +76,8 @@ export default class LumpSum extends Vue {
     /* eslint-enable camelcase */
   }
 
-  public selectedRadioItem = "";
-  public radioGroupItems: RadioButton[] = [
+  public selectedStandardsRadioItem = "";
+  public standardsRadioGroupItems: RadioButton[] = [
     {
       id: "Yes",
       label: "Yes, I want to write my own custom compliance standard(s).",
@@ -88,7 +109,6 @@ export default class LumpSum extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
 
 }
 </script>
