@@ -39,6 +39,18 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
     : routeNames.Exceptions;
 };
 
+export const BVTOResolver = (current: string): string => {
+  const evalPlan = AcquisitionPackage.getEvaluationPlan;
+  const isBVTO = evalPlan?.method === "BVTO";
+  if (isBVTO) {
+    return routeNames.ProposalRequiredBVTO;
+  }
+  return current === routeNames.EvalPlanDetails
+    ? routeNames.EvalPlanSummary
+    : routeNames.EvalPlanDetails;
+};
+
+
 export const EvalPlanSummaryRouteResolver = (current: string): string => {
   return current === routeNames.NoEvalPlan
     ? routeNames.Exceptions
@@ -731,6 +743,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   IncrementalFundingResolver,
   FinancialPOCResolver,
   CreateEvalPlanRouteResolver,
+  BVTOResolver,
   EvalPlanSummaryRouteResolver,
   NoEvalPlanRouteResolver,
 };

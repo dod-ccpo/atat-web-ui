@@ -5,7 +5,8 @@ import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CurrentContractDTO,
-  FairOpportunityDTO,
+  FairOpportunityDTO, // EJY
+  EvaluationPlanDTO,
   GFEOverviewDTO,
   OrganizationDTO,
   PeriodOfPerformanceDTO,
@@ -26,7 +27,8 @@ export interface SessionData {
   corInfo: ContactDTO;
   contractType: ContractTypeDTO;
   currentContract: CurrentContractDTO;
-  fairOpportunity: FairOpportunityDTO;
+  fairOpportunity: FairOpportunityDTO; // EJY
+  evaluationPlan: EvaluationPlanDTO;
   gfeOverview: GFEOverviewDTO;
   organization: OrganizationDTO;
   periodOfPerformance: PeriodOfPerformanceDTO;
