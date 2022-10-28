@@ -67,8 +67,10 @@ export default class EvalPlanDetails extends Vue {
     case "TechProposal":
       return "Now let’s review compliance standards when technical proposals are required";
     case "SetLumpSum":
-    case "EqualSetLumpSum":
       return "Now let’s review assessment criteria required for white papers";
+    case "EqualSetLumpSum":
+      return `Based on your evaluation method, there are no required compliance 
+        standards, differentiators, or assessment areas.`
     default:
       return ""
     }

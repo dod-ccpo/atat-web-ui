@@ -13,10 +13,15 @@
       <p id="IntroP" class="mb-4">
          {{ introP }}
       </p>
-      <p class="font-weight-700 mb-2" id="Subhead">
+      <p 
+        v-if="subhead" 
+        class="font-weight-700" 
+        :class="listItems.length ? 'mb-2' : 'mb-0'"
+        id="Subhead"
+      >
         {{ subhead }}
       </p>
-      <div style="border-left: 4px solid #544496">
+      <div v-if="listItems.length" style="border-left: 4px solid #544496">
         <div 
           v-for="(item, index) in listItems"
           :key="index"
@@ -55,7 +60,14 @@ export default class Callout extends Vue {
     return this.sourceSelection.indexOf("TechProposal") > -1;
   }
 
+  public get noRequiredStandards(): boolean {
+    return this.sourceSelection === "EqualSetLumpSum";
+  }
+
   public get heading(): string {
+    if (this.noRequiredStandards) {
+      return "Why are there no required standards?";
+    }
     return this.isStandards ? "Compliance Standards" : "Assessment Areas"
   }
 
@@ -65,11 +77,17 @@ export default class Callout extends Vue {
 
   public get introP(): string {
     if (!this.isStandards) {
-      return `Your Contracting Officer (KO) will request CSPs submit a white paper
-        identifying a strategy and approach that will meet or exceed the requirements 
-        within the proposed costs. CSPs must also provide a price proposal which 
-        includes a complete list of cloud service offerings with catalog item 
-        numbers/SKUs and quantities to meet the requirements.`
+      if (this.sourceSelection === "SetLumpSum") {
+        return `Your Contracting Officer (KO) will request CSPs submit a white paper
+          identifying a strategy and approach that will meet or exceed the requirements 
+          within the proposed costs. CSPs must also provide a price proposal which 
+          includes a complete list of cloud service offerings with catalog item 
+          numbers/SKUs and quantities to meet the requirements.`
+      }
+      return `Since you would like to purchase an equal dollar amount from each CSP,
+        your Contracting Officer (KO) will issue a Request for Quote (RFQ) and ask 
+        CSPs to respond if they are “interested” or “not interested.” Task orders 
+        will be issued to all interested CSPs.`
     }
     const substr1 = this.sourceSelection === "NoTechProposal"
       ? "to provide a price quote"
@@ -87,14 +105,17 @@ export default class Callout extends Vue {
     if (this.isStandards) {
       return `Award will be made to the lowest priced offeror meeting the following 
         compliance standards:`;
+    } else if (this.sourceSelection === "SetLumpSum") {  
+      const methodStr = this.method === "LowestRisk" ? "lowest risk" : "best use";
+      return `Award will be made to the CSP whose white paper offers the “${ methodStr }” 
+        solution and meets the following assessment areas:`;
     }
-    const methodStr = this.method === "LowestRisk" ? "lowest risk" : "best use";
-    return `Award will be made to the CSP whose white paper offers the “${ methodStr }” 
-      solution and meets the following assessment areas:`;
+    return `Award will be made in equal parts to each CSP that responds to the 
+      RFQ as “interested.”`
   }
 
   public get listItems(): string[] {
-    let listItems = [];
+    let listItems: string[] = [];
     switch (this.sourceSelection) {
     case "NoTechProposal":
       listItems = [
@@ -111,7 +132,7 @@ export default class Callout extends Vue {
           of how the item will contribute to the solution is provided.`
       ];
       break;
-    default:
+    case "SetLumpSum":
       listItems = [
         `Solution adequately addresses each requirement element or identifies any 
           requirement elements which are not explicitly identified in the strategy 
