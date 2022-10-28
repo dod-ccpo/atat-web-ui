@@ -31,17 +31,34 @@ const evalPlanRequired = (): boolean => {
 }
 
 export const CreateEvalPlanRouteResolver = (current: string): string => {
-  if (evalPlanRequired()) {
-    return routeNames.CreateEvalPlan;
+  if (current === routeNames.NoEvalPlan) {
+    return routeNames.EvalPlanSummary;
+  }
+  if(current === routeNames.EvalPlanDetails){
+    return routeNames.CreateEvalPlan
   }
   return current === routeNames.Exceptions
-    ? routeNames.NoEvalPlan
+    ? routeNames.CreateEvalPlan
     : routeNames.Exceptions;
 };
+
+export const EvalPlanDetailsRouteResolver = (current: string): string => {
+  if (current === routeNames.EvalPlanSummary) {
+    return routeNames.NoEvalPlan;
+  }
+
+  return current === routeNames.CreateEvalPlan
+    ? routeNames.EvalPlanDetails
+    : routeNames.CreateEvalPlan;
+};
+
 
 export const BVTOResolver = (current: string): string => {
   const evalPlan = AcquisitionPackage.getEvaluationPlan;
   const isBVTO = evalPlan?.method === "BVTO";
+  if(current === routeNames.EvalPlanSummary && !evalPlanRequired()){
+    return routeNames.NoEvalPlan
+  }
   if (isBVTO) {
     return routeNames.ProposalRequiredBVTO;
   }
@@ -50,20 +67,16 @@ export const BVTOResolver = (current: string): string => {
     : routeNames.EvalPlanDetails;
 };
 
-
-export const EvalPlanSummaryRouteResolver = (current: string): string => {
-  return current === routeNames.NoEvalPlan
-    ? routeNames.Exceptions
-    : routeNames.EvalPlanSummary;
-};
-
 export const NoEvalPlanRouteResolver = (current: string): string => {
-  if (current === routeNames.EvalPlanSummary) {
-    return routeNames.CurrentContract;
+  if(current === routeNames.CreateEvalPlan){
+    return routeNames.Exceptions
   }
-  return current === routeNames.CurrentContract && evalPlanRequired()
-    ? routeNames.EvalPlanSummary
-    : routeNames.NoEvalPlan;
+  if (evalPlanRequired()) {
+    return routeNames.CreateEvalPlan;
+  }
+  return current === routeNames.Exceptions
+    ? routeNames.NoEvalPlan
+    : routeNames.Exceptions;
 };
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
@@ -744,8 +757,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FinancialPOCResolver,
   CreateEvalPlanRouteResolver,
   BVTOResolver,
-  EvalPlanSummaryRouteResolver,
   NoEvalPlanRouteResolver,
+  EvalPlanDetailsRouteResolver,
 };
 
 // add path resolvers here 

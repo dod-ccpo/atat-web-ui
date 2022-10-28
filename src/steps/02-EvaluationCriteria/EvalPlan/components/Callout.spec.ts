@@ -80,7 +80,18 @@ describe("Testing CreateEvalPlan Component", () => {
       expect(wrapper.vm.listItems).toHaveLength(5);
     });
 
+    it("testing equal set lump sum all CSPs", async () => {
+      await wrapper.setProps({
+        sourceSelection: "EqualSetLumpSum",
+        method: ""
+      });
+      expect(wrapper.vm.isStandards).toBeFalsy();
+      expect(wrapper.vm.heading).toBe("Why are there no required standards?");
+      expect(wrapper.vm.introP).toContain("equal dollar amount");
+      expect(wrapper.vm.subhead).toContain("equal parts to each CSP");
+      expect(wrapper.vm.listItems).toHaveLength(0);
+    });
 
-  })
+  });
 
-})
+});

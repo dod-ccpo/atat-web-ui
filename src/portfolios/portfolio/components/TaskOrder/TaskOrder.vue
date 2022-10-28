@@ -57,9 +57,11 @@ export default class TaskOrder extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioData.activeTaskOrderNumber;
-    this.taskOrders  = 
-      (await PortfolioSummary.getAllPortfolioSummaryList() as PortfolioSummaryDTO[])
-        .flatMap( portfolio=>portfolio.task_orders.filter((
+    const portfolioSummaryList = 
+      await PortfolioSummary.getAllPortfolioSummaryList() as unknown as PortfolioSummaryDTO[];
+    if (portfolioSummaryList !== null){
+      this.taskOrders = portfolioSummaryList.flatMap(
+        portfolio=>portfolio.task_orders.filter((
           (taskOrder)=>taskOrder.task_order_number===this.activeTaskOrderNumber
         )))
       
@@ -78,6 +80,7 @@ export default class TaskOrder extends Vue {
             clins: to.clin_records
           }}
         )
+    }
   }
 
   public async mounted(): Promise<void> {

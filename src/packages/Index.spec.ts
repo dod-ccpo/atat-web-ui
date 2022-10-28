@@ -5,7 +5,6 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import Packages from "./Index.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import { AcquisitionPackageSummarySearchDTO } from "@/api/models";
 
 Vue.use(Vuetify);
 
