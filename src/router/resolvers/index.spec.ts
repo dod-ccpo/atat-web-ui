@@ -5,6 +5,7 @@ import IGCEStore from "@/store/IGCE";
 import Periods from "@/store/periods";
 import { 
   AcorsRouteResolver,
+  BVTOResolver,
   CreateEvalPlanRouteResolver,
   EvalPlanSummaryRouteResolver,
   IGCECannotProceedResolver, 
@@ -111,6 +112,37 @@ describe("testing route resolvers", () => {
       );
       const route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
       expect(route).toBe(routeNames.NoEvalPlan);
+    });
+
+    it ("BVTOResolver() - routes to BVTO page", async () => {
+      await AcquisitionPackage.setEvaluationPlan(
+        { source_selection: "", method: "BVTO" }
+      );
+      const route = BVTOResolver(routeNames.EvalPlanDetails);
+      expect(route).toBe(routeNames.ProposalRequiredBVTO);
+    });
+    it ("BVTOResolver() - routes to Summary page when not BVTO method", async () => {
+      await AcquisitionPackage.setEvaluationPlan(
+        { source_selection: "", method: "LPTA" }
+      );
+      const route = BVTOResolver(routeNames.EvalPlanDetails);
+      expect(route).toBe(routeNames.EvalPlanSummary);
+    });
+
+    it ("BVTOResolver() - routes to EvalPlanSummary page", async () => {
+      await AcquisitionPackage.setEvaluationPlan(
+        { source_selection: "", method: "" }
+      );
+      const route = BVTOResolver(routeNames.EvalPlanDetails);
+      expect(route).toBe(routeNames.EvalPlanSummary);
+    });
+
+    it ("BVTOResolver() - routes to EvalPlanDetails page", async () => {
+      await AcquisitionPackage.setEvaluationPlan(
+        { source_selection: "", method: "" }
+      );
+      const route = BVTOResolver(routeNames.EvalPlanSummary);
+      expect(route).toBe(routeNames.EvalPlanDetails);
     });
 
   });

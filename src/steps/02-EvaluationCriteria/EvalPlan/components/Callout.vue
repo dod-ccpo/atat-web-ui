@@ -1,16 +1,134 @@
 
 <template>
-  <div>
-    Future CallOut page
-  </div>
+  <ATATAlert 
+    id="Callout"
+    type="callout"
+    calloutBackground="primary-lighter"
+    class="max-width-840 mb-10"
+  >
+    <template v-slot:content>
+      <h2 class="mb-2">
+        {{ heading }}
+      </h2>
+      <p id="IntroP" class="mb-4">
+         {{ introP }}
+      </p>
+      <p class="font-weight-700 mb-2" id="Subhead">
+        {{ subhead }}
+      </p>
+      <div style="border-left: 4px solid #544496">
+        <div 
+          v-for="(item, index) in listItems"
+          :key="index"
+          class="d-flex"
+          :class="{ 'pb-3' : index < listItems.length - 1 }"
+        >
+          <div class="font-weight-700 nowrap pl-4 align-top">
+            {{ listType }} #{{ index + 1 }}
+          </div>
+          <div class="align-top pl-6 width-100">
+            {{ item }}
+          </div>
+        </div>
+      </div>
+    </template>
+  </ATATAlert>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
+import { Component, Prop } from "vue-property-decorator";
 
-import { Component } from "vue-property-decorator";
+import ATATAlert from "@/components/ATATAlert.vue";
+
 @Component({
+  components: {
+    ATATAlert,
+  }
 })
+
 export default class Callout extends Vue {
+  @Prop() public sourceSelection!: string;
+  @Prop() public method?: string;
+
+  public get isStandards(): boolean {
+    return this.sourceSelection.indexOf("TechProposal") > -1;
+  }
+
+  public get heading(): string {
+    return this.isStandards ? "Compliance Standards" : "Assessment Areas"
+  }
+
+  public get listType(): string {
+    return this.isStandards ? "Standard" : "Criteria"
+  }
+
+  public get introP(): string {
+    if (!this.isStandards) {
+      return `Your Contracting Officer (KO) will request CSPs submit a white paper
+        identifying a strategy and approach that will meet or exceed the requirements 
+        within the proposed costs. CSPs must also provide a price proposal which 
+        includes a complete list of cloud service offerings with catalog item 
+        numbers/SKUs and quantities to meet the requirements.`
+    }
+    const substr1 = this.sourceSelection === "NoTechProposal"
+      ? "to provide a price quote"
+      : "propose a technical solution and provide a price proposal"
+    const substr2 = this.sourceSelection === "NoTechProposal"
+      ? " required to meet the criteria in your Description of Work"
+      : "";
+    return `Your Contracting Officer (KO) will request CSPs ${substr1} that 
+      includes the total price and a complete list of cloud service offerings 
+      with catalog item numbers/SKUs, the unit price, unit of issue, and quantities 
+      calculated on a monthly basis for each catalog item number/SKU${substr2}.`
+  }
+
+  public get subhead(): string {
+    if (this.isStandards) {
+      return `Award will be made to the lowest priced offeror meeting the following 
+        compliance standards:`;
+    }
+    const methodStr = this.method === "LowestRisk" ? "lowest risk" : "best use";
+    return `Award will be made to the CSP whose white paper offers the “${ methodStr }” 
+      solution and meets the following assessment areas:`;
+  }
+
+  public get listItems(): string[] {
+    let listItems = [];
+    switch (this.sourceSelection) {
+    case "NoTechProposal":
+      listItems = [
+        "Each requirement element has one or more specific catalog item number/SKU specified.",
+        "The CSP mapped the catalog item numbers/SKUs to the requirement element(s)."
+      ];
+      break;
+    case "TechProposal":
+      listItems = [
+        "The proposed solution fully addresses each requirement element.",
+        `The proposed solution identifies all catalog items (and quantity) necessary 
+          to meet the requirements.`,
+        `Each catalog item is mapped to a specific requirement and an explanation 
+          of how the item will contribute to the solution is provided.`
+      ];
+      break;
+    default:
+      listItems = [
+        `Solution adequately addresses each requirement element or identifies any 
+          requirement elements which are not explicitly identified in the strategy 
+          or approach.`,
+        `The proposed solution identifies all cloud service offerings with catalog 
+          item numbers/SKUs (and quantities) that are required.`,
+        `Each catalog item is mapped to a specific requirement and an explanation 
+          of how the item will contribute to the solution is provided.`,
+        `The proposed solution addresses how the Contractor will facilitate the described need.`
+      ];
+    }
+    if (this.method === "LowestRisk") {
+      listItems.push("Risk to the Government.")
+    }
+    return listItems;
+  }
+
 }
 </script>
 

@@ -22,6 +22,7 @@ import {
   ContractTypeDTO,
   CurrentContractDTO,
   FairOpportunityDTO,
+  EvaluationPlanDTO,
   GFEOverviewDTO,
   RequirementsCostEstimateDTO,
   OrganizationDTO,
@@ -32,13 +33,12 @@ import {
   CurrentEnvironmentDTO,
 } from "@/api/models";
 
-import { SelectData } from "types/Global";
+import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
 import { SessionData } from "./models";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
-import { PeriodOfPerformanceApi } from "@/api/contractDetails";
 import Periods from "../periods";
 import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
@@ -52,6 +52,7 @@ export const StoreProperties = {
   ProjectOverview: "projectOverview",
   Organization: "organization",
   FairOpportunity: "fairOpportunity",
+  EvaluationPlan: "evaluationPlan",
   GFEOverview:"gfeOverview",
   PeriodOfPerformance: "periodOfPerformance",
   RequirementsCostEstimate:"requirementsCostEstimate",
@@ -148,9 +149,7 @@ const initialContact = () => {
 };
 
 const initialContractConsiderations = ()=> {
-
   return {
-
     packaging_shipping_other: "false",
     contractor_required_training: "",
     packaging_shipping_other_explanation: "",
@@ -167,6 +166,15 @@ const initialFairOpportunity = () => {
     exception_to_fair_opportunity: "",
   };
 };
+
+export const initialEvaluationPlan = (): EvaluationPlanDTO => {
+  return {
+    source_selection: "" as EvalPlanSourceSelection,
+    method: "" as EvalPlanMethod,
+    standard_specifications: [],
+    custom_specifications: [],
+  }
+}
 
 const initialGFE = () => {
   return {
@@ -243,6 +251,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       contractType: store.contractType,
       currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
+      evaluationPlan: store.evaluationPlan,
       gfeOverview: store.gfeOverview,
       periods: store.periods,
       periodOfPerformance: store.periodOfPerformance,
@@ -294,6 +303,7 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
+  evaluationPlan: EvaluationPlanDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periods: string | null = null;
@@ -337,6 +347,15 @@ export class AcquisitionPackageStore extends VuexModule {
   public setAcquisitionPackage(value: AcquisitionPackageDTO): void {
     this.acquisitionPackage = value;
     saveSessionData(this);
+  }
+  @Action
+  public async getAcquisitionPackage(): Promise<AcquisitionPackageDTO | null> {
+    return this.acquisitionPackage;
+  }
+
+  @Action
+  public getAcquisitionPackageSysId(): string {
+    return this.acquisitionPackage?.sys_id || "";
   }
 
   @Mutation
@@ -424,6 +443,20 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public async setEvaluationPlan(value: EvaluationPlanDTO): Promise<void> {
+    if (this.evaluationPlan) {
+      this.evaluationPlan = Object.assign(this.evaluationPlan, value);
+    } else {
+      this.evaluationPlan = value;
+    }
+  }
+
+  public get getEvaluationPlan(): EvaluationPlanDTO | null {
+    return this.evaluationPlan;
+  }
+
+
+  @Mutation
   public setGFEOverview(value: GFEOverviewDTO): void {
     this.gfeOverview = value;
   }
@@ -461,6 +494,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.contractType = sessionData.contractType;
     this.currentContract = sessionData.currentContract;
     this.fairOpportunity = sessionData.fairOpportunity;
+    this.evaluationPlan = sessionData.evaluationPlan;
     this.organization = sessionData.organization;
     this.periods = sessionData.periods;
     this.projectOverview = sessionData.projectOverview;
@@ -504,6 +538,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setFairOpportunity(initialFairOpportunity());
+          this.setEvaluationPlan(initialEvaluationPlan());
 
           this.setRequirementsCostEstimate({ 
             estimatedTaskOrderValue: "",
@@ -564,6 +599,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractType]: api.contractTypeTable,
     [StoreProperties.CurrentContract]: api.currentContractTable,
     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
+    // [StoreProperties.EvaluationPlan]: api.evaluationPlanTable, // FUTURE TICKET
     [StoreProperties.GFEOverview]: api.gfeOverviewTable,
     [StoreProperties.Organization]: api.organizationTable,
     [StoreProperties.Periods]: api.periodTable,
@@ -580,6 +616,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractType]: "contract_type",
     [StoreProperties.CurrentContract]: "current_contract",
     [StoreProperties.FairOpportunity]: "fair_opportunity",
+    [StoreProperties.EvaluationPlan]: "evaluation_plan",
     [StoreProperties.GFEOverview]: "gfe_overview",
     [StoreProperties.Organization]:  "organization",
     [StoreProperties.ProjectOverview]: "project_overview",
@@ -731,7 +768,7 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves data for a given TableDTO/store property
    */
-  async saveData<TableDTO>({
+  async saveData<TableDTO extends BaseTableDTO>({
     data,
     storeProperty,
   }: {

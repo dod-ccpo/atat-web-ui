@@ -480,3 +480,9 @@ export interface IGCE {
   surgeCapacity: boolean,
   surgeCapabilities: string,
 }
+
+export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
+
+export type EvalPlanSourceSelection = "" | "NoTechProposal" | "TechProposal" 
+  | "SetLumpSum" | "EqualSetLumpSum";
+
