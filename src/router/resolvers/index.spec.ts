@@ -80,6 +80,22 @@ describe("testing route resolvers", () => {
       expect(route).toBe(routeNames.EvalPlanSummary);
     });
 
+    it ("CreateEvalPlanRouteResolver() - routes to CreateEval page", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "foo" }
+      );
+      const route = CreateEvalPlanRouteResolver(routeNames.EvalPlanDetails);
+      expect(route).toBe(routeNames.CreateEvalPlan);
+    });
+
+    it ("CreateEvalPlanRouteResolver() - routes to CreateEval page", async () => {
+      await AcquisitionPackage.setFairOpportunity(
+        { exception_to_fair_opportunity: "NO_NONE" }
+      );
+      const route = CreateEvalPlanRouteResolver(routeNames.Exceptions);
+      expect(route).toBe(routeNames.CreateEvalPlan);
+    });
+
     it ("NoEvalPlanRouteResolver() - routes to Create Eval Plan", async () => {
       await AcquisitionPackage.setFairOpportunity(
         { exception_to_fair_opportunity: "NO_NONE" }
@@ -133,6 +149,19 @@ describe("testing route resolvers", () => {
       );
       const route = BVTOResolver(routeNames.EvalPlanSummary);
       expect(route).toBe(routeNames.NoEvalPlan);
+    });
+
+    it ("EvalPlanDetailsRouteResolver() - routes to NoEvalPlan page", async () => {
+      await AcquisitionPackage.setEvaluationPlan(
+        { source_selection: "", method: "" }
+      );
+      const route = EvalPlanDetailsRouteResolver(routeNames.EvalPlanSummary);
+      expect(route).toBe(routeNames.NoEvalPlan);
+    });
+
+    it ("EvalPlanDetailsRouteResolver() - routes to EvalPlan page", async () => {
+      const route = EvalPlanDetailsRouteResolver(routeNames.CreateEvalPlan);
+      expect(route).toBe(routeNames.EvalPlanDetails);
     });
 
   });
