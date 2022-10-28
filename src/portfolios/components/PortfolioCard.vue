@@ -90,11 +90,24 @@
           <div class="_data-primary d-block">
             {{ cardData.currentPoP }}
           </div>
-          <div v-if="isPopAlert" class="_data-secondary">
+          <div v-if="isPopAlert" class="_data-secondary d-flex">
             {{ cardData.expiration }}
-            <!-- <ATATSVGIcon
-
-            /> -->
+            <ATATSVGIcon
+              class="ml-1"
+              v-if="isPopAlertError"
+              name="errorFilled"
+              width="13"
+              height="13"
+              color="error"
+            />
+            <ATATSVGIcon
+              v-else
+              class="ml-1"
+              name="warning"
+              width="15"
+              height="13"
+              color="warning-dark2"
+            />
           </div>
         </div>
 
@@ -112,13 +125,35 @@
         >
           <div class="_data-header">Funds Spent (%)</div>
           <div class="_data-primary d-block">
-            <div class="mr-1 nowrap d-inline-block">{{ cardData.fundsSpent }}</div>
+            <div 
+              class="mr-1 nowrap d-inline-block" 
+              :class="{'font-weight-700' : isFundingAlertError}"
+            >
+              {{ cardData.fundsSpent }}
+            </div>
             <div class="text-base  d-inline-block font-size-12 nowrap">
               ({{ cardData.fundsSpentPercent }}%)
             </div>
           </div>
-          <div v-if="isFundingAlert" class="_data-secondary">
+          <div v-if="isFundingAlert" class="_data-secondary d-flex">
             {{ cardData.fundsRemaining }}
+            <ATATSVGIcon
+              class="ml-1"
+              v-if="isFundingAlertError"
+              name="errorFilled"
+              width="13"
+              height="13"
+              color="error"
+            />
+            <ATATSVGIcon
+              v-else
+              class="ml-1"
+              name="warning"
+              width="15"
+              height="13"
+              color="warning-dark2"
+            />
+
           </div>
         </div>
 
