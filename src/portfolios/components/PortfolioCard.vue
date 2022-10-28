@@ -68,7 +68,7 @@
 
         </div>
       </div>
-      <div class="text-base-dark">
+      <div class="text-base-dark mb-3">
         {{ cardData.agency }}
         <ATATSVGIcon 
           name="bullet" 
@@ -85,36 +85,39 @@
         <div 
           :id="'PoP' + index"
           class="mr-15"  
-          :class="[{'_alert' : isPopAlert}, errorClass()]">
-          <span class="_data-header">Current Period of Performance</span>
-          <span class="_data-primary d-block">
+          :class="[{'_alert' : isPopAlert, '_error' : isPopAlertError}]">
+          <div class="_data-header">Current Period of Performance</div>
+          <div class="_data-primary d-block">
             {{ cardData.currentPoP }}
-          </span>
-          <span v-if="isPopAlert">
+          </div>
+          <div v-if="isPopAlert" class="_data-secondary">
             {{ cardData.expiration }}
-          </span>
+            <!-- <ATATSVGIcon
+
+            /> -->
+          </div>
         </div>
 
         <div class="mr-15" :id="'TotalObligated' + index">
-          <span class="_data-header">Total Obligated</span>
-          <span class="_data-primary d-block nowrap">
+          <div class="_data-header">Total Obligated</div>
+          <div class="_data-primary d-block nowrap">
             {{ cardData.totalObligated }}
-          </span>
+          </div>
         </div>
 
         <div 
           :id="'FundsSpent' + index" 
           class="flex-grow-1" 
-          :class="[{'_alert' : isFundingAlert}, errorClass()]"
+          :class="[{'_alert' : isFundingAlert, '_error' : isFundingAlertError}]"
         >
-          <span class="_data-header">Funds Spent (%)</span>
-          <span class="_data-primary d-block">
-            <span class="mr-1 nowrap">{{ cardData.fundsSpent }}</span>
-            <span class="text-base font-size-12 nowrap">
+          <div class="_data-header">Funds Spent (%)</div>
+          <div class="_data-primary d-block">
+            <div class="mr-1 nowrap d-inline-block">{{ cardData.fundsSpent }}</div>
+            <div class="text-base  d-inline-block font-size-12 nowrap">
               ({{ cardData.fundsSpentPercent }}%)
-            </span>
-          </span>
-          <div v-if="isFundingAlert">
+            </div>
+          </div>
+          <div v-if="isFundingAlert" class="_data-secondary">
             {{ cardData.fundsRemaining }}
           </div>
         </div>
@@ -199,31 +202,22 @@ export default class PortfolioCard extends Vue {
   public fundingAlertStatuses: string[] = [
     Statuses.FundingAtRisk.value, Statuses.Delinquent.value
   ];
+
   public redAlertStatuses: string[] = [
     Statuses.Expired.value, Statuses.Delinquent.value
   ];
 
   public get isPopAlert(): boolean {
-    if (this.cardData.fundingStatus) {
-      return this.popAlertStatuses.includes(this.cardData.fundingStatus)
-    }
-    return false;
+    return this.popAlertStatuses.includes(this.cardData.fundingStatus || "");
   }
-
+  public get isPopAlertError(): boolean {
+    return this.cardData.fundingStatus === Statuses.Expired.value;
+  }
   public get isFundingAlert(): boolean {
-    if (this.cardData.fundingStatus) {
-      return this.fundingAlertStatuses.includes(this.cardData.fundingStatus)
-    }
-    return false;
+    return this.fundingAlertStatuses.includes(this.cardData.fundingStatus || "");
   }
-
-  public errorClass(): string {
-    let alertClass = "";
-    const status = this.cardData.fundingStatus;
-    if (status && this.redAlertStatuses.includes(status)) {
-      alertClass = "_error";
-    } 
-    return alertClass;
+  public get isFundingAlertError(): boolean {
+    return this.cardData.fundingStatus === Statuses.Delinquent.value;
   }
 
   public getCSPConsoleURL(): string {
@@ -313,10 +307,8 @@ export default class PortfolioCard extends Vue {
     if (this.cardData.fundingStatus && this.cardData.fundingStatus !== Statuses.OnTrack.value) {
       switch(this.cardData.fundingStatus) {
       case Statuses.AtRisk.value:
-        this.cardData.fundingAlertChipString = Statuses.AtRisk.label;
-        break;
       case Statuses.FundingAtRisk.value:
-        this.cardData.fundingAlertChipString = Statuses.FundingAtRisk.label;
+        this.cardData.fundingAlertChipString = Statuses.AtRisk.label;
         break;
       case Statuses.ExpiringSoon.value:
         this.cardData.fundingAlertChipString = Statuses.ExpiringSoon.label;

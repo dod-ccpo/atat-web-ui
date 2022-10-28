@@ -43,12 +43,28 @@
     font-size: 1rem;
     font-weight: 700;
     color: $base-dark;
-    line-height: 1.1rem;
+    line-height: 1rem;
   }
 
   ._data-primary {
     color: $base-darkest;
+  }
+  
+  ._data-secondary {
+    font-size: 12px;
     line-height: 1;
+  }
+
+  ._alert {
+    padding-left: 12px;
+    border-left: 4px solid $warning;
+    &._error {
+      border-left-color: $error;
+      color: $error !important;
+      ._data-header, ._data-primary, .text-base {
+        color: $error !important;
+      }
+    }
   }
 }
 

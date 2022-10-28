@@ -138,6 +138,7 @@ import { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -435,7 +436,8 @@ export default class PortfoliosSummary extends Vue {
 
           const difToEndDate = formatDistanceToNow(new Date(popEndISO));
           const isExpired = isAfter(new Date(), new Date(popEndISO));
-          cardData.expiration = difToEndDate + (isExpired ? " past" : " to") + " expiration";
+          cardData.expiration 
+            = _.capitalize(difToEndDate + (isExpired ? " past" : " to") + " expiration");
         }
 
       }
