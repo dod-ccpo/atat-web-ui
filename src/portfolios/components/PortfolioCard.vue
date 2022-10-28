@@ -68,7 +68,7 @@
 
         </div>
       </div>
-      <div class="text-base-dark">
+      <div class="text-base-dark mb-3">
         {{ cardData.agency }}
         <ATATSVGIcon 
           name="bullet" 
@@ -80,31 +80,81 @@
         {{ cardData.lastModifiedStr }}
       </div>
 
-      <div 
-        v-if="isActive && !isHomeView" 
-        class="d-flex"
-      >
-        <div class="mr-15" :id="'PoP' + index">
-          <span class="_data-header">Current Period of Performance</span>
-          <span class="_data-primary d-block">
+      <div v-if="isActive && !isHomeView" class="d-flex">
+
+        <div 
+          :id="'PoP' + index"
+          class="mr-15"  
+          :class="[{'_alert' : isPopAlert, '_error' : isPopAlertError}]">
+          <div class="_data-header">Current Period of Performance</div>
+          <div class="_data-primary d-block">
             {{ cardData.currentPoP }}
-          </span>
+          </div>
+          <div v-if="isPopAlert" class="_data-secondary d-flex">
+            {{ cardData.expiration }}
+            <ATATSVGIcon
+              class="ml-1"
+              v-if="isPopAlertError"
+              name="errorFilled"
+              width="13"
+              height="13"
+              color="error"
+            />
+            <ATATSVGIcon
+              v-else
+              class="ml-1"
+              name="warning"
+              width="15"
+              height="13"
+              color="warning-dark2"
+            />
+          </div>
         </div>
 
         <div class="mr-15" :id="'TotalObligated' + index">
-          <span class="_data-header">Total Obligated</span>
-          <span class="_data-primary d-block nowrap">
+          <div class="_data-header">Total Obligated</div>
+          <div class="_data-primary d-block nowrap">
             {{ cardData.totalObligated }}
-          </span>
+          </div>
         </div>
-        <div class="flex-grow-1" :id="'FundsSpent' + index">
-          <span class="_data-header">Funds Spent (%)</span>
-          <span class="_data-primary d-block">
-            <span class="mr-1 nowrap">{{ cardData.fundsSpent }}</span>
-            <span class="text-base font-size-12 nowrap">
+
+        <div 
+          :id="'FundsSpent' + index" 
+          class="flex-grow-1" 
+          :class="[{'_alert' : isFundingAlert, '_error' : isFundingAlertError}]"
+        >
+          <div class="_data-header">Funds Spent (%)</div>
+          <div class="_data-primary d-block">
+            <div 
+              class="mr-1 nowrap d-inline-block" 
+              :class="{'font-weight-700' : isFundingAlertError}"
+            >
+              {{ cardData.fundsSpent }}
+            </div>
+            <div class="text-base  d-inline-block font-size-12 nowrap">
               ({{ cardData.fundsSpentPercent }}%)
-            </span>
-          </span>
+            </div>
+          </div>
+          <div v-if="isFundingAlert" class="_data-secondary d-flex">
+            {{ cardData.fundsRemaining }}
+            <ATATSVGIcon
+              class="ml-1"
+              v-if="isFundingAlertError"
+              name="errorFilled"
+              width="13"
+              height="13"
+              color="error"
+            />
+            <ATATSVGIcon
+              v-else
+              class="ml-1"
+              name="warning"
+              width="15"
+              height="13"
+              color="warning-dark2"
+            />
+
+          </div>
         </div>
 
       </div>
@@ -179,6 +229,30 @@ export default class PortfolioCard extends Vue {
 
   public get hasFundingStatus(): boolean {
     return (this.cardData.fundingStatus !== undefined && this.cardData.fundingStatus.length > 0);
+  }
+
+  public popAlertStatuses: string[] = [
+    Statuses.ExpiringSoon.value, Statuses.Expired.value 
+  ];
+  public fundingAlertStatuses: string[] = [
+    Statuses.FundingAtRisk.value, Statuses.Delinquent.value
+  ];
+
+  public redAlertStatuses: string[] = [
+    Statuses.Expired.value, Statuses.Delinquent.value
+  ];
+
+  public get isPopAlert(): boolean {
+    return this.popAlertStatuses.includes(this.cardData.fundingStatus || "");
+  }
+  public get isPopAlertError(): boolean {
+    return this.cardData.fundingStatus === Statuses.Expired.value;
+  }
+  public get isFundingAlert(): boolean {
+    return this.fundingAlertStatuses.includes(this.cardData.fundingStatus || "");
+  }
+  public get isFundingAlertError(): boolean {
+    return this.cardData.fundingStatus === Statuses.Delinquent.value;
   }
 
   public getCSPConsoleURL(): string {
@@ -268,10 +342,8 @@ export default class PortfolioCard extends Vue {
     if (this.cardData.fundingStatus && this.cardData.fundingStatus !== Statuses.OnTrack.value) {
       switch(this.cardData.fundingStatus) {
       case Statuses.AtRisk.value:
-        this.cardData.fundingAlertChipString = Statuses.AtRisk.label;
-        break;
       case Statuses.FundingAtRisk.value:
-        this.cardData.fundingAlertChipString = Statuses.FundingAtRisk.label;
+        this.cardData.fundingAlertChipString = Statuses.AtRisk.label;
         break;
       case Statuses.ExpiringSoon.value:
         this.cardData.fundingAlertChipString = Statuses.ExpiringSoon.label;
