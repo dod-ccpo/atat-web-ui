@@ -41,7 +41,11 @@
 
               <template v-slot:header="{ props }">
                 <tr>
-                  <th v-for="(header,hdrIdx) in props.headers" :key="hdrIdx">
+                  <th 
+                    v-for="(header,hdrIdx) in props.headers" 
+                    :key="hdrIdx"
+                    :id="getIdText(header.text)"
+                  >
                     <div 
                       :class="[
                         'py-4 d-flex font-size-14',
@@ -105,6 +109,8 @@ import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { Component } from "vue-property-decorator";
 
+import { getIdText } from "@/helpers"
+
 export interface IGCECostSummaryItem {
     CLINTypeClassAggregate:string,
     BasePeriod?: string,
@@ -133,7 +139,11 @@ export default class CostSummary extends Vue {
     { text: "Option 3", value: "OptionThree"},
     { text: "Option 4", value: "OptionFour"},
     { text: "Total", value: "Total"},
-  ]
+  ];
+
+  public getIdText(str: string): string {
+    return getIdText(str);
+  }
 
   public generateDummyDataObj(
     CLINTypeClassAggregate?: string,

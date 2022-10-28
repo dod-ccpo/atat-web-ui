@@ -406,7 +406,10 @@ textarea {
 }
 
 .theme--light.v-application ._data-table {
-  border-collapse: collapse;
+  table {
+    border-collapse: collapse !important;
+  }
+  
   tr {
     &._border-bottom {
       border-bottom: 1px solid $base-lighter !important;
