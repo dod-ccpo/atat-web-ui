@@ -6,7 +6,6 @@ import ExistingUser from "./ExistingUser.vue";
 import VueRouter from "vue-router";
 import { 
   AcquisitionPackageSummaryDTO,
-  AcquisitionPackageSummarySearchDTO, 
   AcquisitionPackageSummaryMetadataAndDataDTO
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
@@ -105,19 +104,6 @@ describe("Existing User Component", () => {
     });
   });
   
-  afterEach(()=>{
-    // console.log("showAlert");
-    // console.log(wrapper.vm.showAlert)
-    // console.log("draftPackageCount")
-    // console.log(wrapper.vm.$data.draftPackageCount)
-    // console.log("packageCount")
-    // console.log(wrapper.vm.$data.packageCount)
-    console.log("portfolioCount")
-    console.log(wrapper.vm.$data.portfolioCount)
-  })
- 
-
-
   describe("testing Existing User", () => {
     it("renders successfully", async () => {
       expect(await wrapper.exists()).toBe(true);
@@ -125,112 +111,96 @@ describe("Existing User Component", () => {
 
     it("showAlert() - set $data.draftPackageCount>0 to return true", async ()=>{
       await wrapper.setData({
-        draftPackageCount: 4
+        draftPackageCount: 4,
+        showAlert: true
       })
-      expect(await wrapper.vm.showAlert).toBe(true);
-      
+      const showAlert = await wrapper.vm.showAlert;
+      expect(showAlert).toBe(true);
     })
 
 
     it("showAlert() - set $data.draftPackageCount===0 to return false", async ()=>{
       await wrapper.setData({
-        draftPackageCount: 0
+        draftPackageCount: 0,
+        showAlert: false
       })
-      expect(await wrapper.vm.showAlert).toBe(false);
+      const showAlert = await wrapper.vm.showAlert;
+      expect(showAlert).toBe(false);
+
     })
 
-    it("updateTotalPortfolios()", async () => {
+    it("updateTotalPortfolios() to return accurate $data.portfolioCount", async () => {
       wrapper.vm.$data.portfolioCount = 0;
       await wrapper.vm.updateTotalPortfolios(5);
       expect(await wrapper.vm.$data.portfolioCount).toBe(5);
     });
 
-    it("loadOnEnter()", async()=>{
+    it("loadOnEnter() to return rejected value and execute catch block", async()=>{
+      jest.spyOn(console, 'log');
+      jest.spyOn(AcquisitionPackageSummary,'searchAcquisitionPackageSummaryList')
+        .mockRejectedValueOnce(
+        {
+          acquisitionPackageSummaryList: ['string'],
+          // eslint-disable-next-line camelcase
+          total_count: 1
+        } as unknown as Promise<AcquisitionPackageSummaryMetadataAndDataDTO>
+        )
+      await wrapper.vm.loadOnEnter();
+      expect(console.log).toHaveBeenCalledWith(expect.stringContaining(
+        "Error loading acquisition package data"
+      ));
+    })
+
+    it("loadOnEnter() to return accurate $data.draftPackageCount", async()=>{
       jest.spyOn(AcquisitionPackageSummary,'searchAcquisitionPackageSummaryList')
         .mockReturnValue(
         {
           acquisitionPackageSummaryList: [acqPackageSummaryList[0]],
           // eslint-disable-next-line camelcase
           total_count: 1
-        } as unknown as Promise<AcquisitionPackageSummaryMetadataAndDataDTO>)
+        } as unknown as Promise<AcquisitionPackageSummaryMetadataAndDataDTO>
+        )
+      expect(wrapper.vm.$data.draftPackageCount).toBe(1);
     })
 
-    it("viewAllPortfolios()", async () => {
-      await wrapper.vm.viewAllPortfolios();
+  
+
+    it("testing @keydown.space to trigger viewAllPortfolios() ", async () => {
+      const anchorLink = await wrapper.find("#ViewAllPortfoliosLink");
+      anchorLink.trigger('keydown.space'); // trigger viewAllPortfolios();
+      expect(wrapper.vm.$route.name).toBe("Project_Overview")
     });
 
-    it("startNewAcquisition()", async () => {
-      await wrapper.vm.startNewAcquisition();
-      expect(wrapper.emitted("startNewAcquisition")).toBeTruthy();
-      expect(router.app.$route.name).toBe("Project_Overview");
+    it("testing @keydown.enter to trigger viewAllPortfolios() ", async () => {
+      const anchorLink = await wrapper.find("#ViewAllPortfoliosLink");
+      anchorLink.trigger('keydown.enter'); // trigger viewAllPortfolios();
+      expect(wrapper.vm.$route.name).toBe("Project_Overview")
+    });
+ 
+    it("testing @keydown.space to trigger startNewAcquisition()", async () => {
+      const btn = await wrapper.find("#StartNewAcquisitionButton2");
+      btn.trigger('keydown.space'); // trigger viewAllPortfolios();
+      expect(await wrapper.emitted("startNewAcquisition")).toBeTruthy();
+      expect(wrapper.vm.$route.name).toBe("Project_Overview");
     });
 
-    it("viewAllPackages()", async () => {
-      await wrapper.vm.viewAllPackages();
-      expect(router.app.$route.name).toBe("Project_Overview");
+    it("testing @keydown.enter to trigger startNewAcquisition()", async () => {
+      const btn = await wrapper.find("#StartNewAcquisitionButton2");
+      btn.trigger('keydown.enter'); // trigger viewAllPortfolios();
+      expect(await wrapper.emitted("startNewAcquisition")).toBeTruthy();
+      expect(wrapper.vm.$route.name).toBe("Project_Overview");
     });
 
-  });
-
-});
-
-describe("Existing User Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(VueRouter);
-
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
-  const routes = [
-    {
-      name: "Project_Overview",
-      path: "/"
-    }
-  ];
-
-  const router = new VueRouter({
-    routes
-  });
-
-  jest.spyOn(AcquisitionPackageSummary,'searchAcquisitionPackageSummaryList')
-    .mockReturnValue(
-    {
-      acquisitionPackageSummaryList: acqPackageSummaryList,
-      // eslint-disable-next-line camelcase
-      total_count: 3
-    } as unknown as Promise<AcquisitionPackageSummaryMetadataAndDataDTO>)
-
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(ExistingUser, {
-      vuetify,
-      localVue,
-      router,
-      data:{
-        portfolioCount: 1,
-        packageCount: 3,
-        packagesPanel: 1,
-        portfolioPanel: 1
-      }
+    it("testing @keydown.space to trigger viewAllPackages() ", async () => {
+      const anchorLink = await wrapper.find("#viewAllPackagesLink");
+      anchorLink.trigger('keydown.space'); // trigger viewAllPackages();
+      expect(wrapper.vm.$route.name).toBe("Project_Overview");
     });
-  });
 
-  afterEach(()=>{
-    // console.log("showAlert");
-    // console.log(wrapper.vm.showAlert)
-    // console.log("draftPackageCount")
-    // console.log(wrapper.vm.$data.draftPackageCount)
-    // console.log("packageCount")
-    // console.log(wrapper.vm.$data.packageCount)
-    console.log("portfolioCount")
-    console.log(wrapper.vm.$data.portfolioCount)
-  })
-
-
-  describe("testing Existing User", () => {
-    it("renders successfully", async () => {
-      await wrapper.vm.updateTotalPortfolios(1);
-      expect(await wrapper.exists()).toBe(true);
+    it("testing @keydown.enter to trigger viewAllPackages() ", async () => {
+      const anchorLink = await wrapper.find("#viewAllPackagesLink");
+      anchorLink.trigger('keydown.enter'); // trigger viewAllPackages();
+      expect(wrapper.vm.$route.name).toBe("Project_Overview");
     });
   });
 });
