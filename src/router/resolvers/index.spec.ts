@@ -7,7 +7,6 @@ import {
   AcorsRouteResolver,
   BVTOResolver,
   CreateEvalPlanRouteResolver,
-  EvalPlanSummaryRouteResolver,
   IGCECannotProceedResolver, 
   IGCEGatherPriceEstimatesResolver, 
   IGCESupportingDocumentationResolver, 
@@ -78,16 +77,6 @@ describe("testing route resolvers", () => {
       );
       const route = CreateEvalPlanRouteResolver(routeNames.NoEvalPlan);
       expect(route).toBe(routeNames.Exceptions);
-    });
-
-    it ("EvalPlanSummaryRouteResolver() - routes to Fair Opportunity Exceptions page", async () => {
-      const route = EvalPlanSummaryRouteResolver(routeNames.NoEvalPlan);
-      expect(route).toBe(routeNames.Exceptions);
-    });
-
-    it ("EvalPlanSummaryRouteResolver() - routes to Eval Plan Summary page", async () => {
-      const route = EvalPlanSummaryRouteResolver("foo");
-      expect(route).toBe(routeNames.EvalPlanSummary);
     });
 
     it ("NoEvalPlanRouteResolver() - routes to Current Contract", async () => {
