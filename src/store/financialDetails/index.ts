@@ -149,9 +149,7 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
-    if (!this.initialized) {
       await this.initialize();
-    }
   }
 
   @Action({ rawError: true })
@@ -475,8 +473,6 @@ export class FinancialDetailsStore extends VuexModule {
       if(this.requirementsCostEstimate == null){
         return initialRequirementsCostEstimate;
       }
-      console.log("Loading requirements cost estimates");
-      console.log(this.requirementsCostEstimate);
       const requirementsCostEstimate = await api.requirementsCostEstimateTable
         .retrieve(this.requirementsCostEstimate.sys_id);
       this.setRequirementsCostEstimate(requirementsCostEstimate);
