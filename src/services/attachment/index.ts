@@ -4,9 +4,12 @@ import { AttachmentDTO, BaseTableDTO } from "@/api/models";
 import api from "@/api";
 import { TABLENAME as FundingRequestFSFormTableName } from "@/api/fundingRequestFSForm";
 import { TABLENAME as FundingRequestMIPRFormTableName } from "@/api/fundingRequestMIPRForm";
+import { TABLENAME as RequirementsCostEstimateTableName } from "@/api/requirementsCostEstimate";
 import { FundingRequestFSAttachmentService } from "./fundingRequestFSForm";
 import { AttachmentServiceBase } from "./base";
 import { FundingRequestMIPRAttachmentService } from "./fundingRequestMIPRForm";
+import {RequirementsCostEstimateAttachmentService}
+  from "@/services/attachment/reqCostEstimateSupportingDocs";
 
 export const AttachmentServiceCallbacks = (() => {
   const uploadCallbacks: Record<
@@ -85,6 +88,7 @@ export const AttachmentServiceTypes = {
   FundingPlans: "FundingPlans",
   FundingRequestFSForm: FundingRequestFSFormTableName,
   FundingRequestMIPRForm: FundingRequestMIPRFormTableName,
+  RequirementsCostEstimate: RequirementsCostEstimateTableName
 };
 export const AttachmentServiceFactory = (
   attachmentServiceType: string
@@ -103,6 +107,13 @@ export const AttachmentServiceFactory = (
       FundingRequestMIPRFormTableName,
       api.fundingRequestMIPRFormTable
     )
+
+  case AttachmentServiceTypes.RequirementsCostEstimate:
+    return new RequirementsCostEstimateAttachmentService(
+      attachmentServiceType,
+      RequirementsCostEstimateTableName,
+      api.requirementsCostEstimateTable
+    );
   
   default:
     throw new Error(

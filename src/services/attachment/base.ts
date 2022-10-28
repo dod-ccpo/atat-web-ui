@@ -40,6 +40,8 @@ export class AttachmentServiceBase<
       this.recordManager != null
         ? await this.recordManager.retrieveOrCreate()
         : await this.tableApi.create();
+    console.log("In attachment base");
+    console.log(record);
 
     if (!record) {
       throw new Error("failed to create record to associate attachment with");

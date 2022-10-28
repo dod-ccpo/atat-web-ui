@@ -73,9 +73,9 @@ import ATATFileUpload from "../../../components/ATATFileUpload.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 // EJY file upload from Upload7600.vue
-import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
+import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
-import { FundingRequestFSFormDTO } from "@/api/models";
+import {AttachmentDTO, RequirementsCostEstimateDTO} from "@/api/models";
 import FinancialDetails from "@/store/financialDetails";
 import { invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
@@ -91,8 +91,8 @@ import Attachments from "@/store/attachments";
 
 export default class SupportingDocumentation extends Vue {
   public validFileFormats = ["csv","xls","xlsx","pdf","jpg","png","doc","docx"];
-  private attachmentServiceName = FUNDING_REQUEST_FSFORM_TABLE;
-  private loaded: FundingRequestFSFormDTO | null = null;
+  private attachmentServiceName = REQUIREMENTS_COST_ESTIMATE_TABLE;
+  private loaded: RequirementsCostEstimateDTO | null = null;
   private saved: {gtcNumber: string, orderNumber: string} = {
     gtcNumber: "",
     orderNumber: ""
@@ -125,7 +125,7 @@ export default class SupportingDocumentation extends Vue {
         await Attachments.removeAttachment({
           key,
           attachmentId,
-          recordId,
+          recordId, // recordId is the "table_sys_id" in the context of ATTACHMENT API
         });
 
         //get updated data
@@ -142,9 +142,46 @@ export default class SupportingDocumentation extends Vue {
     //   this.uploadedFiles.length > 0 && this.uploadedFiles.length < 2;
   }
 
-  async loadFundingRequestData(): Promise<void>{
-    this.loaded = await FinancialDetails.loadFundingRequestFSForm();
-    this.saved = await FinancialDetails.load7600();
+  /**
+   * Since this function may not have an existing "Requirements Cost Estimate" record because
+   * this may be the first component that uses the data from Requirements Cost... As a result,
+   * a save operation may need t obe done immediately after the component gets mounted, so that
+   * the user can start adding attachments. The call to this function may also be moved to the
+   * code that uploads the attachment.
+   */
+  async saveFundingRequestData(): Promise<void> {
+    const requirementsCostEstimate = await FinancialDetails.loadRequirementsCostEstimate();
+    this.loaded = await FinancialDetails.saveRequirementsCostEstimate(requirementsCostEstimate);
+  }
+
+  async loadRequirementsCostEstimateData(): Promise<void>{
+    this.loaded = await FinancialDetails.loadRequirementsCostEstimate();
+  }
+
+  /**
+   * TODO: this function may not be needed, since it is loading all attachments for all
+   * the records of requirements cost estimate table.
+   */
+  async loadAttachments(): Promise<void>{
+    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
+    const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
+      const file = new File([], attachment.file_name, {
+        lastModified: Date.parse(attachment.sys_created_on || "")
+      });
+      const upload: uploadingFile = {
+        attachmentId: attachment.sys_id || "",
+        fileName: attachment.file_name,
+        file: file,
+        created: file.lastModified,
+        progressStatus: 100,
+        link: attachment.download_link || "",
+        recordId: attachment.table_sys_id,
+        isErrored: false,
+        isUploaded: true
+      }
+      return upload;
+    });
+    this.uploadedFiles = [...uploadedFiles];
   }
 
   private onFileUploadChanged(): void {
@@ -177,14 +214,26 @@ export default class SupportingDocumentation extends Vue {
     return rulesArr;
   }
 
+  /**
+   *
+   */
+  async loadOnEnter(): Promise<void> {
+    try {
+      await this.saveFundingRequestData(); // TODO: loadRequirementsCostEstimateData call instead?
+      await this.loadAttachments();
+    } catch (error) {
+      throw new Error("an error occurred loading supporting documentation");
+    }
+  }
 
   public async mounted(): Promise<void> {
+    await this.loadOnEnter();
     //listen for attachment service upload callbacks
     //and update attachments
     AttachmentServiceCallbacks.registerUploadCallBack(
-      FUNDING_REQUEST_FSFORM_TABLE,
+      REQUIREMENTS_COST_ESTIMATE_TABLE,
       async () => {
-        await this.loadFundingRequestData();
+        await this.loadRequirementsCostEstimateData();
       }
     );
   }
