@@ -18,10 +18,10 @@
           An evaluation plan is used to establish the basis for how your
           acquisition will be evaluated during the source selection process.
         </p>
-        <p id="SecondP" class="mb-4">
+        <p id="SecondP">
           Since your requirement qualifies for an exception to the fair
           opportunity process, your evaluation team will assess the CSP’s entire
-          solicitation response for technical acceptability.. A task order award
+          solicitation response for technical acceptability. A task order award
           will be issued on a sole-source basis to the CSP that you specified in
           the previous section.
         </p>
