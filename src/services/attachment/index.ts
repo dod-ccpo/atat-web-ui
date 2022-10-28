@@ -9,7 +9,7 @@ import { FundingRequestFSAttachmentService } from "./fundingRequestFSForm";
 import { AttachmentServiceBase } from "./base";
 import { FundingRequestMIPRAttachmentService } from "./fundingRequestMIPRForm";
 import {RequirementsCostEstimateAttachmentService} from
-    "@/services/attachment/reqCostEstimateSupportingDocs";
+  "@/services/attachment/reqCostEstimateSupportingDocs";
 
 export const AttachmentServiceCallbacks = (() => {
   const uploadCallbacks: Record<

@@ -149,7 +149,7 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
-      await this.initialize();
+    await this.initialize();
   }
 
   @Action({ rawError: true })

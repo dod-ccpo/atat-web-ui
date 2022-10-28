@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import {RequirementsCostEstimateDTO} from "@/api/models";
-import { RecordManager } from "..";
+import {AttachmentDTO, RequirementsCostEstimateDTO} from "@/api/models";
+import {AttachmentServiceCallbacks, RecordManager} from "..";
 import { AttachmentServiceBase } from "../base";
 import FinancialDetails from "@/store/financialDetails";
 import {RequirementsCostEstimateApi} from "@/api/requirementsCostEstimate";
@@ -31,6 +31,26 @@ export class RequirementsCostEstimateAttachmentService extends
 
   protected recordManager: RecordManager<RequirementsCostEstimateDTO> = recordManager;
 
-  // "remove" function does not need to be overriden in the context of removing an attachment
-  // from a requirements cost estimate record.
+  /**
+   * The function in the super class (base attachment) deletes both the attachment and the
+   * base record. This works for some use cases where the primary base record is about
+   * the attachment. But for requirements cost estimate, the base record should remain
+   * intact irrespective or the attachments because
+   * 1. The base record could have one or more attachments
+   * 2. The base record will have other pieces of information not specific to attachments.
+   *
+   * For the above reasons, we need to override the "remove" function.
+   * @param attachment: Attachment that needs to be removed.
+   */
+  async remove(attachment: AttachmentDTO): Promise<void> {
+    if (!attachment) {
+      throw new Error("invalid request, attachment required");
+    }
+    //only delete the attachment
+    await this.attachmentApi.remove(attachment.sys_id || "");
+    AttachmentServiceCallbacks.invokeRemoveCallbacks(
+      this.serviceKey,
+      attachment
+    );
+  }
 }
