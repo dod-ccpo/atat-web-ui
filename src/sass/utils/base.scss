@@ -395,7 +395,6 @@ textarea {
   }
 }
 
-
 ._icon-circle {
   width: 32px;
   height: 32px;
@@ -404,4 +403,51 @@ textarea {
   align-items: center;
   justify-content: center;
   margin-right: 8px;
+}
+
+.theme--light.v-application ._data-table {
+  table {
+    border-collapse: collapse !important;
+  }
+  
+  tr {
+    &._border-bottom {
+      border-bottom: 1px solid $base-lighter !important;
+    }
+
+    &._subtotal, &._total {
+      td {
+        @extend .bg-primary-5;
+      }
+      td:last-of-type {
+        background-color: rgb(236 236 240) !important;
+      }
+    }
+    &._total {
+      border-top: 4px solid $base-lighter;
+    }
+  }
+
+  th, td {
+    padding: 0 16px;
+    &:last-of-type {
+      font-weight: 700;
+      border-left: 1px solid $base-lighter;
+      @extend .bg-primary-5;
+    }
+  }
+  th {
+    background-color: $base-lightest;
+    color: $base;
+    &:last-of-type {
+      padding-right: 12px;
+    }
+  }
+  &._has-total-col {
+    th:last-of-type {
+      background-color: rgb(236 236 240) !important;
+
+    }
+  }
+
 }
