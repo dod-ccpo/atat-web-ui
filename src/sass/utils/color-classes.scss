@@ -6,6 +6,8 @@
   .bg-primary-dark    { background-color: $primary-dark !important; }
   .bg-primary-darker  { background-color: $primary-darker !important; }
 
+  .bg-primary-5 { background-color: rgba($primary, 0.05) !important };
+
   .text-primary-lighter  { color: $primary-lighter !important; }
   .text-primary-light    { color: $primary-light !important; }
   .text-primary          { color: $primary !important; }
@@ -13,7 +15,6 @@
   .text-primary-darker   { color: $primary-darker !important; }
 
   .text-warning-dark2    { color: $warning-dark2 !important; }
-
 
   .bg-base-darkest  { background-color: $base-darkest !important; }
   .bg-base-darker   { background-color: $base-darker !important; }
