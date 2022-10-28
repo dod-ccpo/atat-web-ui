@@ -115,109 +115,68 @@ export interface IGCECostSummaryItem {
 })
 
 export default class CostSummary extends Vue {
-public tableHeaders = [
+  public tableData: IGCECostSummaryItem[] = []
 
-  { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate"},
-  { text: "Base Period", value: "BasePeriod"},
-  { text: "Option 1", value: "OptionOne"},
-  { text: "Option 2", value: "OptionTwo"},
-  { text: "Option 3", value: "OptionThree"},
-  { text: "Option 4", value: "OptionFour"},
-  { text: "Total", value: "Total"},
-]
+  public tableHeaders = [
+    { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate"},
+    { text: "Base Period", value: "BasePeriod"},
+    { text: "Option 1", value: "OptionOne"},
+    { text: "Option 2", value: "OptionTwo"},
+    { text: "Option 3", value: "OptionThree"},
+    { text: "Option 4", value: "OptionFour"},
+    { text: "Total", value: "Total"},
+  ]
 
-
-
-public tableData: IGCECostSummaryItem[] = [
-  
-  {
-    CLINTypeClassAggregate:"Cloud UNCLASSIFIED",
-    BasePeriod: "$1,000.00",
-    OptionOne:"$1,000.00",
-    OptionTwo: "$1,000.00",
-    OptionThree: "$1,000.00",
-    OptionFour: "$1,000.00",
-    Total:"$5,000.00",
-  },
-
-  {
-    CLINTypeClassAggregate:"Cloud Support UNCLASSIFIED",
-    BasePeriod: "$1,000.00",
-    OptionOne:"$1,000.00",
-    OptionTwo: "$1,000.00",
-    OptionThree: "$1,000.00",
-    OptionFour: "$1,000.00",
-    Total:"$5,000.00",
-  },
-  {
-    CLINTypeClassAggregate:"Cloud SECRET",
-    BasePeriod: "$1,000.00",
-    OptionOne:"$1,000.00",
-    OptionTwo: "$1,000.00",
-    OptionThree: "$1,000.00",
-    OptionFour: "$1,000.00",
-    Total:"$5,000.00",
-  },   
-  {
-    CLINTypeClassAggregate:"Cloud Support SECRET",
-    BasePeriod: "$1,000.00",
-    OptionOne:"$1,000.00",
-    OptionTwo: "$1,000.00",
-    OptionThree: "$1,000.00",
-    OptionFour: "$1,000.00",
-    Total:"$5,000.00",
-  },
-  {
-    CLINTypeClassAggregate:"Cloud Support Travel",
-    BasePeriod: "$1,000.00",
-    OptionOne:"$1,000.00",
-    OptionTwo: "$1,000.00",
-    OptionThree: "$1,000.00",
-    OptionFour: "$1,000.00",
-    Total:"$5,000.00",
-  },
-  {
-    CLINTypeClassAggregate:"External ordering agency fee (1%)",
-    BasePeriod: "$50.00",
-    OptionOne:"$50.00",
-    OptionTwo: "$50.00",
-    OptionThree: "$50.00",
-    OptionFour: "$50.00",
-    Total:"$250.00",
-  },
-  {
-    CLINTypeClassAggregate:"Subtotal",
-    BasePeriod:"$5,050.00",
-    OptionOne:"$5,050.00",
-    OptionTwo:"$5,050.00",
-    OptionThree:"$5,050.00",
-    OptionFour:"$5,050.00",
-    Total: "$25,250.00",
-  },
-  {
-    CLINTypeClassAggregate:"5% Surge",
-    BasePeriod:"$252.50",
-    OptionOne:"$252.50",
-    OptionTwo:"$252.50",
-    OptionThree:"$252.50",
-    OptionFour:"$252.50",
-    Total:"$1,262.50",
-  },
-  {
-    CLINTypeClassAggregate:"Total Price",
-    BasePeriod:"$5,302.50",
-    OptionOne:"$5,302.50",
-    OptionTwo:"$5,302.50",
-    OptionThree:"$5,302.50",
-    OptionFour:"$5,302.50",
-    Total:"$26,512.50",
+  public generateDummyDataObj(
+    CLINTypeClassAggregate?: string,
+    BasePeriod?: string,
+    OptionOne?: string,
+    OptionTwo?: string,
+    OptionThree?: string,
+    OptionFour?: string,
+    Total?: string
+  ): Record<string, string | undefined> {
+    
+    return {
+      "CLINTypeClassAggregate": CLINTypeClassAggregate,
+      "BasePeriod": BasePeriod,
+      "OptionOne": OptionOne,
+      "OptionTwo": OptionTwo,
+      "OptionThree": OptionThree,
+      "OptionFour": OptionFour,
+      "Total": Total,
+    }
   }
 
-]
+  /* eslint-disable max-len */
+  public dummyData = [
+    ["Cloud UNCLASSIFIED", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00"],
+    ["Cloud Support UNCLASSIFIED", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00"],
+    ["Cloud SECRET", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00"],
+    ["Cloud Support SECRET", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00"],
+    ["Cloud Support Travel", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$1,000.00", "$5,000.00"],
+    ["External ordering agency fee (1%)", "50.00", "50.00", "50.00", "50.00", "50.00", "250.00"],
+    ["Subtotal", "$5,050.00", "$5,050.00", "$5,050.00", "$5,050.00", "$5,050.00", "$25,250.00"],
+    ["5% Surge", "$252.50", "$252.50", "$252.50", "$252.50", "$252.50", "$1,262.50"],
+    ["Total Price", "$5,302.50", "$5,302.50", "$5,302.50", "$5,302.50", "$5,302.50", "$5,302.50", "$26,512.50"]
+  ];
+  /* eslint-enable max-len */
 
-public isItemAggregate(label: string): boolean {
-  return ['total', 'surge'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
-}
+  public async generateDummyData(): Promise<void> {
+    this.dummyData.forEach(async (values) => {
+      const obj = this.generateDummyDataObj(...values) as unknown as IGCECostSummaryItem;
+      this.tableData.push(obj);
+    });
+  }
+
+  public async mounted(): Promise<void> {
+    await this.generateDummyData()
+  }
+
+  public isItemAggregate(label: string): boolean {
+    return ['total', 'surge'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+  }
+
 
 }
 </script>
