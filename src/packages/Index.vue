@@ -150,7 +150,7 @@ export default class Packages extends Vue {
     this.searchDTO = Object.assign(this.searchDTO,{[key]:value})
     const packageResults = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO)
-    this.packageData = packageResults.acquisitionPackageSummaryList
+    this.packageData = packageResults?.acquisitionPackageSummaryList || []
   }
   public tabItems: Record<string, string>[] = [
     {
@@ -233,7 +233,7 @@ export default class Packages extends Vue {
   private async loadOnEnter(){
     this.allPackageData = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO);
-    this.packageData = this.allPackageData.acquisitionPackageSummaryList
+    this.packageData = this.allPackageData?.acquisitionPackageSummaryList || []
   }
 
   public mounted():void{
