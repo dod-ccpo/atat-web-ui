@@ -8,8 +8,8 @@ import { TABLENAME as RequirementsCostEstimateTableName } from "@/api/requiremen
 import { FundingRequestFSAttachmentService } from "./fundingRequestFSForm";
 import { AttachmentServiceBase } from "./base";
 import { FundingRequestMIPRAttachmentService } from "./fundingRequestMIPRForm";
-import {RequirementsCostEstimateAttachmentService}
-  from "@/services/attachment/reqCostEstimateSupportingDocs";
+import {RequirementsCostEstimateAttachmentService} from
+    "@/services/attachment/reqCostEstimateSupportingDocs";
 
 export const AttachmentServiceCallbacks = (() => {
   const uploadCallbacks: Record<

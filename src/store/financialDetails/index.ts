@@ -107,7 +107,8 @@ export class FinancialDetailsStore extends VuexModule {
     nameofProperty(this, (x)=>x.fundingRequest),
     nameofProperty(this, (x)=>x.fundingRequestFSForm),
     nameofProperty(this, (x)=>x.fundingRequestMIPRForm),
-    nameofProperty(this, (x)=>x.requirementsCostEstimate),
+    // TODO below line sets the estimate automatically from session, which is undesirable during dev
+    // nameofProperty(this, (x)=>x.requirementsCostEstimate),
     nameofProperty(this, (x)=> x.initialFundingIncrementStr),
     nameofProperty(this, (x)=> x.fundingIncrements),
     nameofProperty(this, (x)=> x.fundingPlan),
@@ -472,8 +473,10 @@ export class FinancialDetailsStore extends VuexModule {
 
     try {
       if(this.requirementsCostEstimate == null){
-        return initialFundingRequestFSForm;
+        return initialRequirementsCostEstimate;
       }
+      console.log("Loading requirements cost estimates");
+      console.log(this.requirementsCostEstimate);
       const requirementsCostEstimate = await api.requirementsCostEstimateTable
         .retrieve(this.requirementsCostEstimate.sys_id);
       this.setRequirementsCostEstimate(requirementsCostEstimate);

@@ -129,7 +129,7 @@ export default class SupportingDocumentation extends Vue {
         });
 
         //get updated data
-        await this.loadFundingRequestData();
+        await this.loadRequirementsCostEstimateData();
       }
     } catch (error) {
       console.error(`error removing attachment with id ${file?.attachmentId}`);
@@ -149,7 +149,7 @@ export default class SupportingDocumentation extends Vue {
    * the user can start adding attachments. The call to this function may also be moved to the
    * code that uploads the attachment.
    */
-  async saveFundingRequestData(): Promise<void> {
+  async saveRequirementCostEstimateData(): Promise<void> {
     const requirementsCostEstimate = await FinancialDetails.loadRequirementsCostEstimate();
     this.loaded = await FinancialDetails.saveRequirementsCostEstimate(requirementsCostEstimate);
   }
@@ -219,7 +219,7 @@ export default class SupportingDocumentation extends Vue {
    */
   async loadOnEnter(): Promise<void> {
     try {
-      await this.saveFundingRequestData(); // TODO: loadRequirementsCostEstimateData call instead?
+      await this.saveRequirementCostEstimateData(); //TODO:loadRequirementsCostEstimateData instead?
       await this.loadAttachments();
     } catch (error) {
       throw new Error("an error occurred loading supporting documentation");
