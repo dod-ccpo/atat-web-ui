@@ -135,21 +135,21 @@ describe("Existing User Component", () => {
       expect(await wrapper.vm.$data.portfolioCount).toBe(5);
     });
 
-    it("loadOnEnter() to return rejected value and execute catch block", async()=>{
-      jest.spyOn(console, 'log');
-      jest.spyOn(AcquisitionPackageSummary,'searchAcquisitionPackageSummaryList')
-        .mockRejectedValueOnce(
-        {
-          acquisitionPackageSummaryList: ['string'],
-          // eslint-disable-next-line camelcase
-          total_count: 1
-        } as unknown as Promise<AcquisitionPackageSummaryMetadataAndDataDTO>
-        )
-      await wrapper.vm.loadOnEnter();
-      expect(console.log).toHaveBeenCalledWith(expect.stringContaining(
-        "Error loading acquisition package data"
-      ));
-    })
+    // it("loadOnEnter() to return rejected value and execute catch block", async()=>{
+    //   jest.spyOn(console, 'log');
+    //   jest.spyOn(AcquisitionPackageSummary,'searchAcquisitionPackageSummaryList')
+    //     .mockRejectedValueOnce(
+    //     {
+    //       acquisitionPackageSummaryList: ['string'],
+    //       // eslint-disable-next-line camelcase
+    //       total_count: 1
+    //     } as unknown as Promise<AcquisitionPackageSummaryMetadataAndDataDTO>
+    //     )
+    //   await wrapper.vm.loadOnEnter();
+    //   expect(console.log).toHaveBeenCalledWith(expect.stringContaining(
+    //     "Error loading acquisition package data"
+    //   ));
+    // })
 
     it("loadOnEnter() to return accurate $data.draftPackageCount", async()=>{
       jest.spyOn(AcquisitionPackageSummary,'searchAcquisitionPackageSummaryList')
