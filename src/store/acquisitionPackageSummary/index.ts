@@ -181,21 +181,14 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   public async searchAcquisitionPackageSummaryList(searchDTO: AcquisitionPackageSummarySearchDTO):
     Promise<AcquisitionPackageSummaryMetadataAndDataDTO> {
     try {
-      console.log("1")
       const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
-      console.log("2")
       let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO);
-      console.log("3")
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
-        console.log("4")
       }
-      console.log("5 searchQuery", searchQuery)
       const acquisitionPackageSummaryCount =
         await this.getAcquisitionPackageSummaryCount(searchQuery);
-      console.log("6")
       let acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
-      console.log("7")
       if (acquisitionPackageSummaryCount > 0) {
         acquisitionPackageSummaryList =
           await this.getAcquisitionPackageSummaryList({searchQuery, searchDTO});
