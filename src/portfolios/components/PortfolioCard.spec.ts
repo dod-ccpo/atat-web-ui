@@ -131,4 +131,21 @@ describe("Testing index Component", () => {
     expect(wrapper.vm.$props.cardData.fundingAlertChipString).toEqual("Unexpected Funding Status");
   });
 
+  it("tests getter - hasFundingStatus() - false from undefined", async () => {
+    await wrapper.vm.loadOnEnter();
+    wrapper.vm.$props.cardData.fundingStatus = undefined;
+    Vue.nextTick(() => {
+      const foo = wrapper.vm.hasFundingStatus;
+      expect(foo).toBeFalsy();  
+    })
+  })
+  it("tests getter - hasFundingStatus() - true", async () => {
+    await wrapper.vm.loadOnEnter();
+    wrapper.vm.$props.cardData.fundingStatus = "foo";
+    Vue.nextTick(() => {
+      const foo = wrapper.vm.hasFundingStatus;
+      expect(foo).toBeTruthy();  
+    })
+  })
+
 });
