@@ -220,7 +220,8 @@ export default class SupportingDocumentation extends Vue {
   async loadOnEnter(): Promise<void> {
     try {
       await this.saveRequirementCostEstimateData(); //TODO:loadRequirementsCostEstimateData instead?
-      await this.loadAttachments();
+      // await this.loadAttachments(); // this will be needed when the requirements cost estimate
+      // record is tied with acquisition
     } catch (error) {
       throw new Error("an error occurred loading supporting documentation");
     }
