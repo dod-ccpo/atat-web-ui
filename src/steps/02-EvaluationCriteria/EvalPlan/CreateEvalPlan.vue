@@ -26,17 +26,33 @@
           $validators.required('Please select an option.'),
         ]"
       />
+
+      <section v-show="showMethod" id="MethodSelectionSection">
+        <hr>
+        <ATATRadioGroup 
+          id="MethodSelection"
+          :legend="methodLegend"
+          :value.sync="selectedMethod"
+          :items="methodOptions"
+          :rules="[
+            $validators.required(methodRequiredMessage),
+          ]"
+          :clearErrorMessages.sync="clearMethodErrors"
+        />
+
+      </section>
+
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { 
   EvalPlanSourceSelection,
-  // EvalPlanMethod, // KEEP FOR FUTURE TICKET
+  EvalPlanMethod,
   LegendLink, 
   RadioButton, 
   SlideoutPanelContent
@@ -57,8 +73,15 @@ import { hasChanges } from "@/helpers";
 })
 
 export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
-
+  public clearMethodErrors = false;
   public selectedEvalOption: EvalPlanSourceSelection = "";
+
+  @Watch("selectedEvalOption")
+  public newSelectedEvalOption(): void {
+    this.selectedMethod === "";
+    this.clearMethodErrors = true;
+  }
+
   public evalOptions: RadioButton[] = [
     {
       label: `I do not require a technical proposal. Award will be made on a 
@@ -87,39 +110,62 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
     }
   ];
 
-  // KEEP FOR TICKET IN UPCOMING SPRINT
-  // public selectedMethod: EvalPlanMethod = "";
-  // public techProposalOptions: RadioButton[] = [
-  //   {
-  //     label: "Lowest Price Technically Acceptable (LPTA)",
-  //     id: "LPTA",
-  //     value: "LPTA",
-  //     description: `Award will be made to the lowest priced offeror meeting the
-  //       compliance standards.`
-  //   },
-  //   {
-  //     label: "Best Value Trade-Off (BVTO)",
-  //     id: "BVTO",
-  //     value: "BVTO",
-  //     description: "Award will be made to the CSP providing the best value."
-  //   },
-  // ];
+  public selectedMethod: EvalPlanMethod = "";
 
-  // KEEP FOR TICKET IN UPCOMING SPRINT
-  // public lumpSumOptions: RadioButton[] = [
-  //   {
-  //     label: "“Best use” solution",
-  //     id: "BestUse",
-  //     value: "BestUse",
-  //     description: "Award will be made to the CSP offering the “best use.”"
-  //   },
-  //   {
-  //     label: "“Lowest risk” solution",
-  //     id: "LowestRisk",
-  //     value: "LowestRisk",
-  //     description: "Award will be made to the CSP providing the lowest risk."
-  //   },
-  // ];
+  public get methodOptions(): RadioButton[] {
+    return this.selectedEvalOption === "TechProposal" 
+      ? this.techProposalOptions
+      : this.lumpSumOptions;
+  }
+
+  public get methodMessagingSubstr(): string {
+    return this.selectedEvalOption === "TechProposal" 
+      ? "method of evaluation" : "technique";
+  }
+
+  public get methodLegend(): string {
+    return `Based on your selection above, which 
+      ${this.methodMessagingSubstr} is applicable to your requirement?`;
+  }
+
+  public get methodRequiredMessage(): string {
+    return "Please select a " + this.methodMessagingSubstr;
+  }
+
+  public techProposalOptions: RadioButton[] = [
+    {
+      label: "Lowest Price Technically Acceptable (LPTA)",
+      id: "LPTA",
+      value: "LPTA",
+      description: `Award will be made to the lowest priced offeror meeting the
+        compliance standards.`
+    },
+    {
+      label: "Best Value Trade-Off (BVTO)",
+      id: "BVTO",
+      value: "BVTO",
+      description: "Award will be made to the CSP providing the best value."
+    },
+  ];
+
+  public lumpSumOptions: RadioButton[] = [
+    {
+      label: "“Best use” solution",
+      id: "BestUse",
+      value: "BestUse",
+      description: "Award will be made to the CSP offering the “best use.”"
+    },
+    {
+      label: "“Lowest risk” solution",
+      id: "LowestRisk",
+      value: "LowestRisk",
+      description: "Award will be made to the CSP providing the lowest risk."
+    },
+  ];
+
+  public get showMethod(): boolean {
+    return this.selectedEvalOption === "TechProposal" || this.selectedEvalOption === "SetLumpSum";
+  }
 
   public legendLink: LegendLink = {
     id: "LearnMore",
@@ -138,8 +184,7 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
     return {
       // eslint-disable-next-line camelcase
       source_selection: this.selectedEvalOption,
-      // KEEP FOR TICKET IN UPCOMING SPRINT
-      // method: this.selectedMethod,
+      method: this.selectedMethod,
     }
   }
 
@@ -147,7 +192,6 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
     // eslint-disable-next-line camelcase
     source_selection: "",
   }
-
 
   public async mounted(): Promise<void> {
     const slideoutPanelContent: SlideoutPanelContent = {
@@ -162,8 +206,10 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
     const storeData = AcquisitionPackage.getEvaluationPlan;
     if (storeData) {
       this.selectedEvalOption = storeData.source_selection;
+      this.selectedMethod = storeData.method || "";
       // eslint-disable-next-line camelcase
       this.savedData.source_selection = storeData.source_selection;
+      this.savedData.method = storeData.method;
     }
   }
   
