@@ -96,7 +96,7 @@ export class AttachmentStore extends VuexModule {
 
       //remove attachment record from
       const attachments = storeData[key] as AttachmentDTO[];
-      const attachmentsAfterRemoval = attachments.filter(
+      const attachmentsAfterRemoval = attachments?.filter(
         (attachment) => attachment.sys_id !== attachmentId
       );
       this.updateAttachments({ key, attachments: attachmentsAfterRemoval });
