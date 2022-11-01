@@ -6,10 +6,18 @@ import EvalPlanDetails from "@/steps/02-EvaluationCriteria/EvalPlan/EvalPlanDeta
 import validators from "@/plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { EvaluationPlanDTO } from "@/api/models";
+import { Checkbox } from "types/Global";
 
 Vue.use(Vuetify);
 
 /* eslint-disable camelcase */
+const initialEvalPlan: EvaluationPlanDTO = {
+  source_selection: "",
+  method: "",
+  standard_specifications: [],
+  custom_specifications: [],    
+};
+
 const evalPlanPopulated: EvaluationPlanDTO = {
   source_selection: "TechProposal",
   method: "BVTO",
@@ -53,13 +61,33 @@ describe("Testing NoEvalPlan Component", () => {
       Vue.nextTick(() => {
         expect(wrapper.vm.$data.evalPlan.custom_specifications).toBe([]);
       });
+    });
 
+    it("saveOnLeave() - saves eval plan data to store", async () => {
+      await AcquisitionPackage.setEvaluationPlan(initialEvalPlan);
+      await wrapper.vm.loadOnEnter();
+      await wrapper.setData({
+        sourceSelection: "TechProposal",
+        method: "BVTO",
+        savedData: {
+          // eslint-disable-next-line camelcase
+          source_selection: "foo",
+          method: "LPTA",
+        }
+      });
+      Vue.nextTick(async () => {
+        await wrapper.vm.saveOnLeave();
+        const hasChanged = wrapper.vm.hasChanged;
+        expect(hasChanged).toBeTruthy();
+      })
     });
 
   });
 
   describe("testing getters", () => {
     it ("gets header for tech proposal required", async () => {
+      // eslint-disable-next-line camelcase
+      wrapper.vm.$data.evalPlan.source_selection = "TechProposal";
       expect(wrapper.vm.isStandards).toBeTruthy();
       expect(wrapper.vm.header).toContain("proposals are required")  
     });
@@ -121,6 +149,30 @@ describe("Testing NoEvalPlan Component", () => {
         expect(wrapper.vm.$data.evalPlan.custom_specifications.length).toBe(0);
       })
     });
+
+    it("watch selectedSetLumpSumOptions - initializes custom specs", async () => {
+      wrapper.vm.$data.isLoading = false;
+      wrapper.vm.$data.selectedSetLumpSumOptions.push("foo");
+      Vue.nextTick(() => {
+        let specs = wrapper.vm.$data.evalPlan.standard_specifications;
+        const hasFoo = specs.includes("foo");
+        expect(hasFoo).toBeTruthy();
+        wrapper.vm.$data.selectedSetLumpSumOptions.push("CustomAssessment");
+        Vue.nextTick(() => {
+          specs = wrapper.vm.$data.evalPlan.standard_specifications;
+          const hasCustomAssessment = specs.includes("CustomAssessment");
+          expect(hasCustomAssessment).toBeTruthy();
+        });
+      })
+
+    });
+
+    it("watch setLumpSumCheckboxOptions - includes risk to govt option", async () => {
+      wrapper.vm.$data.evalPlan.method = "BestUse";
+      const options = wrapper.vm.setLumpSumCheckboxOptions;
+      const riskToGovtIndex = options.findIndex((obj: Checkbox) => obj.id === "RiskToGovt");
+      expect(riskToGovtIndex).not.toBe(-1);
+    })
   });
 
 });

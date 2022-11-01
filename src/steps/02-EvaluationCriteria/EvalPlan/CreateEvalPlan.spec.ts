@@ -76,7 +76,7 @@ describe("Testing CreateEvalPlan Component", () => {
 
     it("saveOnLeave() - saves eval plan data to store", async () => {
       await AcquisitionPackage.setEvaluationPlan(initialEvalPlan);
-      await wrapper.vm.loadOnEnter();
+      // await wrapper.vm.loadOnEnter();
       await wrapper.setData({
         sourceSelection: "TechProposal",
         selectedMethod: "BVTO",
@@ -89,11 +89,14 @@ describe("Testing CreateEvalPlan Component", () => {
       Vue.nextTick(async () => {
         await wrapper.vm.saveOnLeave();
         const hasChanged = wrapper.vm.hasChanged;
+        console.log("FOOOO")
         expect(hasChanged).toBeTruthy();
+        console.log("BAAARRR")
         const evalPlanDataFromStore = AcquisitionPackage.getEvaluationPlan;
+        console.log("BAZZZZ")
         expect(evalPlanDataFromStore?.source_selection).toBe("TechProposal")  
+        console.log("QUXXXX")
       })
-
     });
     it("Watcher - sourceSelection - resets current method", async () => {
       wrapper.vm.$data.sourceSelection = "TechProposal";

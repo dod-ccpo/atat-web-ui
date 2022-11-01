@@ -135,8 +135,6 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   }
 
   public initCustomSpecs(): void {  
-    console.log("this.evalPlan.custom_specifications", this.evalPlan.custom_specifications)
-
     this.evalPlan.custom_specifications = this.evalPlan.custom_specifications || [];
     this.evalPlan.custom_specifications.push("");
     this.$nextTick(() => {
@@ -157,7 +155,7 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
       newVal === "YES" ? this.initCustomSpecs() : this.clearCustomSpecs();
     }
   }
-  
+
   @Watch("selectedSetLumpSumOptions")
   public selectedSetLumpSumOptionsChange(newVal: string[], oldVal: string[]): void {
     if (!this.isLoading) {
@@ -214,13 +212,13 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
     this.isLoading = false;
   }
 
-  private hasChanged(): boolean {
+  private get hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
 
   public async saveOnLeave(): Promise<boolean> {
     try {
-      if (this.hasChanged()) {
+      if (this.hasChanged) {
         // KEEP FOR FUTURE TICKET when API hooked up for saving to SNOW
         // await AcquisitionPackage.saveData({
         //   data: this.currentData,
