@@ -26,7 +26,7 @@
         ]"
       />
 
-      <section v-show="showMethod" id="MethodSelectionSection">
+      <section v-show="showMethods" id="MethodSelectionSection">
         <hr>
         <ATATRadioGroup 
           id="MethodSelection"
@@ -162,7 +162,7 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
     },
   ];
 
-  public get showMethod(): boolean {
+  public get showMethods(): boolean {
     return this.sourceSelection === "TechProposal" 
       || this.sourceSelection === "SetLumpSum";
   }

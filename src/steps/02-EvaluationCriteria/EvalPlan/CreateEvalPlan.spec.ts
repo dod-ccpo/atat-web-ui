@@ -60,32 +60,32 @@ describe("Testing CreateEvalPlan Component", () => {
       wrapper.vm.$nextTick(()=> expect(isSlideOutOpen).toBe(true))       
     });
 
-    it("get currentData() - returns current data object", async () => {
-      await wrapper.setData({
-        selectedEvalOption: "TechProposal"
-      });
-      const data = wrapper.vm.currentData;
-      expect(data.source_selection).toBe("TechProposal");
-    });
+    // it("get currentData() - returns current data object", async () => {
+    //   await wrapper.setData({
+    //     selectedEvalOption: "TechProposal"
+    //   });
+    //   const data = wrapper.vm.currentData;
+    //   expect(data.source_selection).toBe("TechProposal");
+    // });
 
-    it("loadOnEnter() - gets eval plan data from store", async () => {
-      await AcquisitionPackage.setEvaluationPlan(evalPlanPopulated);
-      await wrapper.vm.loadOnEnter();
-      expect(wrapper.vm.$data.selectedEvalOption).toBe("TechProposal")
-    });
+    // it("loadOnEnter() - gets eval plan data from store", async () => {
+    //   await AcquisitionPackage.setEvaluationPlan(evalPlanPopulated);
+    //   await wrapper.vm.loadOnEnter();
+    //   expect(wrapper.vm.$data.selectedEvalOption).toBe("TechProposal")
+    // });
 
-    it("saveOnLeave() - saves eval plan data to store", async () => {
-      await AcquisitionPackage.setEvaluationPlan(initialEvalPlan);
-      await wrapper.vm.loadOnEnter();
-      await wrapper.setData({
-        selectedEvalOption: "TechProposal",
-      });
-      await wrapper.vm.saveOnLeave();
-      const hasChanged = wrapper.vm.hasChanged();
-      expect(hasChanged).toBeTruthy();
-      const evalPlanDataFromStore = AcquisitionPackage.getEvaluationPlan;
-      expect(evalPlanDataFromStore?.source_selection).toBe("TechProposal")  
-    });
+    // it("saveOnLeave() - saves eval plan data to store", async () => {
+    //   await AcquisitionPackage.setEvaluationPlan(initialEvalPlan);
+    //   await wrapper.vm.loadOnEnter();
+    //   await wrapper.setData({
+    //     selectedEvalOption: "TechProposal",
+    //   });
+    //   await wrapper.vm.saveOnLeave();
+    //   const hasChanged = wrapper.vm.hasChanged();
+    //   expect(hasChanged).toBeTruthy();
+    //   const evalPlanDataFromStore = AcquisitionPackage.getEvaluationPlan;
+    //   expect(evalPlanDataFromStore?.source_selection).toBe("TechProposal")  
+    // });
 
   });
 

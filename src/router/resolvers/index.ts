@@ -55,25 +55,18 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = AcquisitionPackage.getEvaluationPlan;
-  debugger;
   if (missingEvalPlanMethod(evalPlan)) {
     return routeNames.EvalPlanSummary;
   }
-  // if (current === routeNames.EvalPlanSummary) {
-  //   return routeNames.NoEvalPlan;
-  // }
 
-  return current === routeNames.CreateEvalPlan
+  return current === routeNames.CreateEvalPlan || routeNames.ProposalRequiredBVTO
     ? routeNames.EvalPlanDetails
     : routeNames.CreateEvalPlan;
 };
 
-
-
 export const BVTOResolver = (current: string): string => {
   const evalPlan = AcquisitionPackage.getEvaluationPlan;
-  const isBVTO = evalPlan?.method === "BVTO";
-  if(current === routeNames.EvalPlanSummary){
+  if (current === routeNames.EvalPlanSummary){
     if (!evalPlanRequired()) {
       return routeNames.NoEvalPlan;
     }
@@ -81,9 +74,11 @@ export const BVTOResolver = (current: string): string => {
       return routeNames.CreateEvalPlan;
     }
   }
-  if (isBVTO) {
+
+  if (evalPlan?.method === "BVTO") {
     return routeNames.ProposalRequiredBVTO;
   }
+  
   return current === routeNames.EvalPlanDetails
     ? routeNames.EvalPlanSummary
     : routeNames.EvalPlanDetails;

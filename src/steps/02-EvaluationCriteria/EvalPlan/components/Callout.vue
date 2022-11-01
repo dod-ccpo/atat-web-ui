@@ -102,9 +102,12 @@ export default class Callout extends Vue {
   }
 
   public get subhead(): string {
-    if (this.isStandards) {
+    if (this.sourceSelection === "NoTechProposal" || this.method === "LPTA") {
       return `Award will be made to the lowest priced offeror meeting the following 
         compliance standards:`;
+    } else if (this.method === "BVTO") {
+      return `Award will be made to the CSP providing the best value and meets the 
+        following compliance standards:`;
     } else if (this.sourceSelection === "SetLumpSum") {  
       const methodStr = this.method === "LowestRisk" ? "lowest risk" : "best use";
       return `Award will be made to the CSP whose white paper offers the “${ methodStr }” 
@@ -146,6 +149,10 @@ export default class Callout extends Vue {
     }
     if (this.method === "LowestRisk") {
       listItems.push("Risk to the Government.")
+    }
+    if (this.method === "BVTO") {
+      listItems[1] = `The proposed solution identifies all catalog items (and quantity) 
+        that are required.`
     }
     return listItems;
   }

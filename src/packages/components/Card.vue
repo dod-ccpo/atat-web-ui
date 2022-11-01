@@ -116,7 +116,7 @@ import Vue from "vue";
 
 import { Component, Prop } from "vue-property-decorator";
 import { MeatballMenuItem } from "../../../types/Global";
-import { createDateStr, getStatusChipBgColor, getIdText } from "@/helpers";
+import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";

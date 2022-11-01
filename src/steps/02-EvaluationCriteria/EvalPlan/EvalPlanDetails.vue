@@ -217,7 +217,6 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
 
   public async saveOnLeave(): Promise<boolean> {
     try {
-      debugger;
       if (this.hasChanged()) {
         // KEEP FOR FUTURE TICKET when API hooked up for saving to SNOW
         // await AcquisitionPackage.saveData({
