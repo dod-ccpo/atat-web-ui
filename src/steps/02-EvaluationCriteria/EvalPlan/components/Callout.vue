@@ -147,10 +147,10 @@ export default class Callout extends Vue {
         `The proposed solution addresses how the Contractor will facilitate the described need.`
       ];
     }
-    if (this.method === "LowestRisk") {
+    if (this.method === "LowestRisk" && this.sourceSelection === "SetLumpSum") {
       listItems.push("Risk to the Government.")
     }
-    if (this.method === "BVTO") {
+    if (this.method === "BVTO" && this.sourceSelection === "TechProposal") {
       listItems[1] = `The proposed solution identifies all catalog items (and quantity) 
         that are required.`
     }

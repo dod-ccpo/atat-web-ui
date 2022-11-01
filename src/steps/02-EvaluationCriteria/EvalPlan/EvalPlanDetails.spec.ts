@@ -46,6 +46,16 @@ describe("Testing NoEvalPlan Component", () => {
       expect(wrapper.vm.$data.evalPlan.source_selection).toBe("TechProposal")
     });
 
+    it("initCustomSpecs", async () => {
+      // eslint-disable-next-line camelcase
+      wrapper.vm.$data.evalPlan.custom_specifications = null;
+      wrapper.vm.initCustomSpecs();
+      Vue.nextTick(() => {
+        expect(wrapper.vm.$data.evalPlan.custom_specifications).toBe([]);
+      });
+
+    });
+
   });
 
   describe("testing getters", () => {
@@ -81,6 +91,12 @@ describe("Testing NoEvalPlan Component", () => {
 
       expect(wrapper.vm.isStandards).toBeFalsy();
       expect(wrapper.vm.header).toContain("there are no required compliance")    
+    });
+
+    it ("gets currentData", async () => {
+      wrapper.vm.$data.evalPlan = "foo";
+      const currentData = wrapper.vm.currentData;
+      expect(currentData).toBe("foo")
     });
 
   });

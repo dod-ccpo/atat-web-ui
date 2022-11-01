@@ -135,6 +135,8 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   }
 
   public initCustomSpecs(): void {  
+    console.log("this.evalPlan.custom_specifications", this.evalPlan.custom_specifications)
+
     this.evalPlan.custom_specifications = this.evalPlan.custom_specifications || [];
     this.evalPlan.custom_specifications.push("");
     this.$nextTick(() => {
@@ -155,6 +157,7 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
       newVal === "YES" ? this.initCustomSpecs() : this.clearCustomSpecs();
     }
   }
+  
   @Watch("selectedSetLumpSumOptions")
   public selectedSetLumpSumOptionsChange(newVal: string[], oldVal: string[]): void {
     if (!this.isLoading) {

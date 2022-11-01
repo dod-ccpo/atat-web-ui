@@ -68,7 +68,12 @@
                 v-html="item.label"
               ></div>
 
-              <div v-if="item.description" class="mb-0" v-html="item.description"></div>
+              <div 
+                v-if="item.description" 
+                class="mb-0" 
+                :class="{'_description-small' : !card }"
+                v-html="item.description"
+              ></div>
               
               <ATATTextArea
                 v-if="otherEntryType === 'textarea'"
