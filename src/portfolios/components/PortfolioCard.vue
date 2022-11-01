@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="_portfolio-summary-card-wrapper"
+    class="_summary-card-wrapper"
     :class="{ '_first': index === 0, '_last': isLastCard }"
     elevation="0"
   >
@@ -36,10 +36,10 @@
       <div class="d-flex">
         <div class="card-header flex-grow-1">
           <a
-            id="PortfolioName"
+            :id="'PortfolioName' + index"
             role="button"
             tabindex="0"
-            class="h3 _text-decoration-none d-flex align-center"
+            class="h3 _text-decoration-none d-flex align-center _portfolio-name"
             @click="cardMenuClick(portfolioCardMenuItems[0])"
           >
             {{ cardData.title }}
@@ -51,16 +51,12 @@
               color="base"
               class="ml-3"
             />
-
           </a>
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
           <v-chip
             :id="'StatusChip' + index" 
-            :class="[
-              '_' + (cardData.status ? cardData.status.toLowerCase() : ''),
-              statusChipBgColor
-            ]" 
+            :class="statusChipBgColor" 
             label
           >
             {{ !isActive ? cardData.status : cardData.fundingAlertChipString }}
@@ -69,13 +65,13 @@
         </div>
       </div>
       <div class="text-base-dark mb-3">
-        {{ cardData.agency }}
+        <span class="_agency">{{ cardData.agency }}</span>
         <ATATSVGIcon 
           name="bullet" 
           color="base-light" 
           :width="9" 
           :height="9" 
-          class="d-inline-block mx-1" 
+          class="d-inline-block mx-1 _last-modified" 
         />
         {{ cardData.lastModifiedStr }}
       </div>
@@ -84,7 +80,7 @@
 
         <div 
           :id="'PoP' + index"
-          class="mr-15"  
+          class="mr-15 _current-pop"  
           :class="[{'_alert' : isPopAlert, '_error' : isPopAlertError}]">
           <div class="_data-header">Current Period of Performance</div>
           <div class="_data-primary d-block">
@@ -111,7 +107,7 @@
           </div>
         </div>
 
-        <div class="mr-15" :id="'TotalObligated' + index">
+        <div class="mr-15 _total-obligated" :id="'TotalObligated' + index">
           <div class="_data-header">Total Obligated</div>
           <div class="_data-primary d-block nowrap">
             {{ cardData.totalObligated }}
@@ -120,7 +116,7 @@
 
         <div 
           :id="'FundsSpent' + index" 
-          class="flex-grow-1" 
+          class="flex-grow-1 _funds-spent" 
           :class="[{'_alert' : isFundingAlert, '_error' : isFundingAlertError}]"
         >
           <div class="_data-header">Funds Spent (%)</div>

@@ -47,7 +47,7 @@
           @search="search"
           @clear="clear"
         />
-        <div class="d-flex flex-column align-center pt-5">
+        <div id="PackageCards" class="d-flex flex-column align-center pt-5">
           <Card
             v-for="(cardData, index) in packageData"
             :key="cardData.sys_id"

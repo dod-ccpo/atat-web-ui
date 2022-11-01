@@ -8,6 +8,7 @@ import Steps from "@/store/steps";
 import TaskOrder from "@/store/taskOrder";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
+import { EvaluationPlanDTO } from "@/api/models";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -30,6 +31,16 @@ const evalPlanRequired = (): boolean => {
   return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
 }
 
+const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
+  // if user selected either the required tech proposal (LPTA or BVTO options) or 
+  // the set lump sum for one CSP ("best use" or "lowest risk" options), and
+  // does not select an option, send to summary page.
+  const source = evalPlan.source_selection;
+  const method = evalPlan.method;
+  debugger;
+  return (source === "TechProposal" || source === "SetLumpSum") && !method ? true : false;
+}
+
 export const CreateEvalPlanRouteResolver = (current: string): string => {
   if (current === routeNames.NoEvalPlan) {
     return routeNames.EvalPlanSummary;
@@ -43,9 +54,14 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
 };
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
-  if (current === routeNames.EvalPlanSummary) {
-    return routeNames.NoEvalPlan;
+  const evalPlan = AcquisitionPackage.getEvaluationPlan;
+  debugger;
+  if (missingEvalPlanMethod(evalPlan)) {
+    return routeNames.EvalPlanSummary;
   }
+  // if (current === routeNames.EvalPlanSummary) {
+  //   return routeNames.NoEvalPlan;
+  // }
 
   return current === routeNames.CreateEvalPlan
     ? routeNames.EvalPlanDetails
@@ -53,11 +69,17 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 };
 
 
+
 export const BVTOResolver = (current: string): string => {
   const evalPlan = AcquisitionPackage.getEvaluationPlan;
   const isBVTO = evalPlan?.method === "BVTO";
-  if(current === routeNames.EvalPlanSummary && !evalPlanRequired()){
-    return routeNames.NoEvalPlan
+  if(current === routeNames.EvalPlanSummary){
+    if (!evalPlanRequired()) {
+      return routeNames.NoEvalPlan;
+    }
+    if (missingEvalPlanMethod(evalPlan)) {
+      return routeNames.CreateEvalPlan;
+    }
   }
   if (isBVTO) {
     return routeNames.ProposalRequiredBVTO;

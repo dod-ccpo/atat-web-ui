@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="_portfolio-summary-card-wrapper"
+    class="_summary-card-wrapper"
     :class="{ '_first': index === 0, '_last': isLastCard }"
     :id="'Package'+ index"
     elevation="0"
@@ -9,22 +9,17 @@
       <div class="d-flex">
         <div class="card-header flex-grow-1">
           <a
-            id="PortfolioName"
+            :id="'Portfolio' + index"
             role="button"
             tabindex="0"
-            class="h3 _text-decoration-none d-flex align-center"
+            class="h3 _text-decoration-none d-flex align-center _package-title"
           >
             {{ modifiedData.projectOverview || 'Test'}}
-            <!-- for testing only -->
-            <span v-if="modifiedData.contributors">&nbsp;(C)</span>
           </a>
         </div>
           <v-chip
             :id="'StatusChip' + index"
-            :class="[
-              '_' + modifiedData.packageStatus,
-              statusChipBgColor
-            ]"
+            :class="statusChipBgColor"
             label
           >
             {{modifiedData.packageStatus}}
@@ -35,7 +30,8 @@
           :id="'Percentage'+ index"
           v-if="modifiedData.packageStatus.toLowerCase() === 'draft' ||
            modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
-          class=" d-flex align-center">
+          class=" d-flex align-center _percent-complete"
+        >
           <ATATSVGIcon
             name="taskAlt"
             width="16"
@@ -61,7 +57,9 @@
           v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
           class=" d-flex align-center">
           <a
-          :id="'TaskOrder' + index">
+            :id="'TaskOrder' + index"
+            class="_taskorder-link"
+          >
             TO# HC1028-22-f-0141
           </a>
           <ATATSVGIcon
@@ -72,7 +70,7 @@
             class="d-inline-block mx-1"
           />
         </div>
-        <div :id="'CreatedBy'+ index" class=" d-flex align-center">
+        <div :id="'CreatedBy'+ index" class="d-flex align-center _created-by">
           {{modifiedData.createdBy}}
           <ATATSVGIcon
             name="bullet"
@@ -83,8 +81,8 @@
           />
         </div>
         <div
-          :id="'Modified/Archived'+ index"
-          class="base d-flex align-center">
+          :id="'ModifiedOrArchived'+ index"
+          class="base d-flex align-center _last-modified">
           {{lastModifiedStr}}
         </div>
       </div>
@@ -118,7 +116,7 @@ import Vue from "vue";
 
 import { Component, Prop } from "vue-property-decorator";
 import { MeatballMenuItem } from "../../../types/Global";
-import { createDateStr, getStatusChipBgColor } from "@/helpers";
+import { createDateStr, getStatusChipBgColor, getIdText } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
