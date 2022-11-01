@@ -58,6 +58,17 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
   if (missingEvalPlanMethod(evalPlan)) {
     return routeNames.EvalPlanSummary;
   }
+  debugger;
+  Steps.setAdditionalButtonText({
+    buttonText: "I don’t need other assessment areas", 
+    buttonId: "NoOtherAssessmentAreas"
+  });
+
+  if (evalPlan.source_selection === "SetLumpSum") {
+    Steps.setAdditionalButtonHide(false);
+  } else {
+    Steps.setAdditionalButtonHide(true);
+  }
 
   return current === routeNames.CreateEvalPlan || routeNames.ProposalRequiredBVTO
     ? routeNames.EvalPlanDetails
@@ -78,7 +89,7 @@ export const BVTOResolver = (current: string): string => {
   if (evalPlan?.method === "BVTO") {
     return routeNames.ProposalRequiredBVTO;
   }
-  
+
   return current === routeNames.EvalPlanDetails
     ? routeNames.EvalPlanSummary
     : routeNames.EvalPlanDetails;

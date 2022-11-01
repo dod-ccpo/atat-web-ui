@@ -270,8 +270,8 @@ export function differenceInDaysOrMonths(
   daysCutoff = daysCutoff || 60;
   const formattedStartDate = createDateStr(start, true);
   const formattedEndDate = createDateStr(end, true);
-  const difInDays = differenceInDays(new Date(end), new Date());
-  const difInMonths = differenceInMonths(new Date(end), new Date());
+  const difInDays = differenceInDays(new Date(end), new Date().setHours(0,0,0,0));
+  const difInMonths = differenceInMonths(new Date(end), new Date().setHours(0,0,0,0));
 
   const useDays = difInDays <= daysCutoff;
   const numberOfTimeUnits = useDays ? difInDays : difInMonths;
