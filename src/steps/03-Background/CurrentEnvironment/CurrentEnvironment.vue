@@ -3,7 +3,7 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          Do you have an existing environment?
+          Do you have a current environment to rehost?
         </h1>
         <div class="copy-max-width">
           <p class="mb-10">
