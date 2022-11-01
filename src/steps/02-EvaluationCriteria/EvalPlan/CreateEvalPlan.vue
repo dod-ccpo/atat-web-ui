@@ -79,7 +79,7 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
 
   @Watch("sourceSelection")
   public sourceSelectionChanged(): void {
-    this.currentData.method === "";
+    this.currentData.method = "";
     this.clearMethodErrors = true;
   }
 
@@ -218,12 +218,12 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
     }
   }
   
-  private hasChanged(): boolean {
+  public get hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
   public async saveOnLeave(): Promise<boolean> {
     try {
-      if (this.hasChanged()) {
+      if (this.hasChanged) {
         if (this.sourceSelection !== this.savedData.source_selection
           || this.selectedMethod !== this.savedData.method
         ) {
