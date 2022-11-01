@@ -37,7 +37,6 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   // does not select an option, send to summary page.
   const source = evalPlan.source_selection;
   const method = evalPlan.method;
-  debugger;
   return (source === "TechProposal" || source === "SetLumpSum") && !method ? true : false;
 }
 
@@ -58,7 +57,6 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
   if (missingEvalPlanMethod(evalPlan)) {
     return routeNames.EvalPlanSummary;
   }
-  debugger;
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
     buttonId: "NoOtherAssessmentAreas"
