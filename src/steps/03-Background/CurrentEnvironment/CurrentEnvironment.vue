@@ -20,7 +20,7 @@
             :rules="[$validators.required('Please select an option')]"
             :value.sync="currentEnvironmentExists"
             class="copy-max-width mb-10 max-width-740"
-            width="180"
+            width="380"
 
           />
         </div>
@@ -52,7 +52,7 @@ export default class CurrentEnvironment extends Mixins(SaveOnLeave) {
     },
     {
       id: "No",
-      label: "No.",
+      label: "No, current environment does not exist.",
       value: "false",
     },
   ];
