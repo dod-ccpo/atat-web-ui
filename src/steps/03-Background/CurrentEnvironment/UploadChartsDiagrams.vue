@@ -28,10 +28,9 @@
                 tabindex="-1"
                 :invalidFiles.sync="invalidFiles"
                 :maxFileSizeInBytes="maxFileSizeInBytes"
-                :maxNumberOfFiles="1"
                 :validFileFormats="validFileFormats"
                 :validFiles.sync="uploadedFiles"
-                :multiplesAllowed="false"
+                :multiplesAllowed="true"
                 :attachmentServiceName="attachmentServiceName"
              />
           </div>
