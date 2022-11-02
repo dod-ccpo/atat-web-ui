@@ -20,7 +20,8 @@
         card ? '_checkbox-card' : '_checkbox',
         color ? '_checkbox-' + color : '',
         { 'flex-column _has-other': item.value === otherValue },
-        { '_other-selected': showOtherEntry(item.value) }
+        { '_other-selected': showOtherEntry(item.value) },
+        { '_no-description': noDescriptions}
       ]"
       :key="item.value"
       :label="item.label"
@@ -40,7 +41,8 @@
             v-if="item.label" 
             :class="[
               {'card-label': item.label}, 
-              {'mb-0': item.value === otherValue}
+              {'mb-0': item.value === otherValue},
+              {'_no-description': noDescriptions}
             ]"
           >
             {{ item.label }}
@@ -133,6 +135,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private tooltipText?: string;
   @Prop() private tooltipTitle?: string;
   @Prop() private tooltipLabel?: string;
+  @Prop({ default: false }) private noDescriptions?: boolean;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
