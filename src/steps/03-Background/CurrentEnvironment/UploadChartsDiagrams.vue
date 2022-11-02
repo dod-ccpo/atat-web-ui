@@ -9,7 +9,8 @@
         <div class="copy-max-width">
           <p class="mb-10">
             If available, you can upload this supporting documentation, and we will attach it to
-            your Description of Work.
+            your Description of Work to be shared with the CSPs for proposal purposes. Please do not
+            upload any classified documents.
           </p>
           <ATATRadioGroup
             id="ExistingEnvOptions"
