@@ -68,7 +68,12 @@
                 v-html="item.label"
               ></div>
 
-              <div v-if="item.description" class="mb-0" v-html="item.description"></div>
+              <div 
+                v-if="item.description" 
+                class="mb-0" 
+                :class="{'_description-small' : !card }"
+                v-html="item.description"
+              ></div>
               
               <ATATTextArea
                 v-if="otherEntryType === 'textarea'"
@@ -133,6 +138,7 @@ export default class ATATRadioGroup extends Vue {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
+      resetValidation: () => boolean;
     };
     atatTextInput: Vue & { 
       errorBucket: string[]; 
@@ -165,6 +171,7 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: false}) private clearOtherValidation?: boolean;
   @PropSync("validateOtherOnBlur") private _validateOtherOnBlur?: boolean;
   @Prop() public legendLink?: LegendLink;
+  @PropSync("clearErrorMessages") public _clearErrorMessages?: boolean;
 
   // data
   private errorMessages: string[] = [];
@@ -187,7 +194,15 @@ export default class ATATRadioGroup extends Vue {
   } 
   private clearErrorMessage(): void {
     this.errorMessages = [];
+    this._clearErrorMessages = false;
+    this.$refs.radioButtonGroup.resetValidation();
   } 
+  @Watch("clearErrorMessages")
+  public clearErrorMessagesChanged(newVal: boolean): void {
+    if (newVal) {
+      this.clearErrorMessage();
+    }
+  }
 
   private getIdText(string: string) {
     return getIdText(string);

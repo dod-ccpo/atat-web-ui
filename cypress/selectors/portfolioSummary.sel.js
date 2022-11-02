@@ -48,7 +48,7 @@ module.exports = {
   onTrackFilterChip: "#FilterChip_On track",
   deinquentFilterChip: "#FilterChip_Delinquent",  
   portfolioStatusChip: "#PortfolioCards .v-chip--label",  
-  summaryCardWrapper: "._portfolio-summary-card-wrapper",
+  summaryCardWrapper: "._summary-card-wrapper",
   cspOption:"._csp-icon-wrap",
   card0MenuListItem:"#PortfolioCardMenu0_0  .v-list",
   portfolioCardOne: "#PortfolioCardMenu0Button_0",

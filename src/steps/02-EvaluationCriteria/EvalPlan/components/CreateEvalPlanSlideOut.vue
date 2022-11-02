@@ -2,12 +2,12 @@
 <template>
   <div class="_panel-padding">
     <h2 class="mb-5">
-      Understanding evaluation methods for the JWCC source selection process
+      Understanding the source selection process for JWCC task orders
     </h2>
     <p>
-      As part of a competitive acquisition strategy, it is important to
-      establish a basis for evaluating quotes or proposals during the source
-      selection process.
+      As part of a competitive acquisition strategy, it is important to establish
+      criteria for selecting a source based on submission of a 
+      quote/proposal/white paper.
     </p>
     <p class="mb-3">
       The following methods of evaluation are available under the JWCC Contract.

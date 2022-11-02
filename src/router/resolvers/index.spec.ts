@@ -151,13 +151,13 @@ describe("testing route resolvers", () => {
       expect(route).toBe(routeNames.NoEvalPlan);
     });
 
-    it ("EvalPlanDetailsRouteResolver() - routes to NoEvalPlan page", async () => {
-      await AcquisitionPackage.setEvaluationPlan(
-        { source_selection: "", method: "" }
-      );
-      const route = EvalPlanDetailsRouteResolver(routeNames.EvalPlanSummary);
-      expect(route).toBe(routeNames.NoEvalPlan);
-    });
+    // it ("EvalPlanDetailsRouteResolver() - routes to NoEvalPlan page", async () => {
+    //   await AcquisitionPackage.setEvaluationPlan(
+    //     { source_selection: "", method: "" }
+    //   );
+    //   const route = EvalPlanDetailsRouteResolver(routeNames.EvalPlanSummary);
+    //   expect(route).toBe(routeNames.NoEvalPlan);
+    // });
 
     it ("EvalPlanDetailsRouteResolver() - routes to EvalPlan page", async () => {
       const route = EvalPlanDetailsRouteResolver(routeNames.CreateEvalPlan);

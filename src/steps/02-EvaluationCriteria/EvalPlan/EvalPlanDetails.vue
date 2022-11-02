@@ -21,9 +21,19 @@
       ]"
     />
 
+    <ATATCheckboxGroup 
+      v-if="evalPlan.source_selection === 'SetLumpSum'"
+      id="SetLumpSumCheckboxes"
+      groupLabel="In addition to the required criteria listed above, what other 
+        assessment areas would you like to evaluate?"
+      groupLabelId="OtherAssessmentAreasLabel"
+      :items="setLumpSumCheckboxOptions"
+      :value.sync="selectedSetLumpSumOptions"
+    />
+
     <CustomSpecifications 
       id="CustomSpecEntry"
-      v-show="selectedStandardsRadioItem === 'YES'"
+      v-show="showCustomSpecifications"
       :sourceSelection="evalPlan.source_selection"
       :isDifferentiator="false"
       :isOptional="true"
@@ -34,28 +44,31 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import Callout from "./components/Callout.vue";
 import CustomSpecifications from "./components/CustomSpecifications.vue"
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { EvaluationPlanDTO } from "@/api/models";
-import { RadioButton } from "types/Global";
-import { scrollToId } from "@/helpers";
+import { Checkbox, RadioButton } from "types/Global";
+import { hasChanges, scrollToId } from "@/helpers";
+import _ from "lodash";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
+    ATATCheckboxGroup,
     ATATRadioGroup,
     Callout,
     CustomSpecifications,
   }
 })
 
-export default class EvalPlanDetails extends Vue {
-
+export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
+  public isLoading = false;
   public get isStandards(): boolean {
     return this.evalPlan.source_selection.indexOf("TechProposal") > -1;
   }
@@ -80,10 +93,15 @@ export default class EvalPlanDetails extends Vue {
     /* eslint-disable camelcase */
     source_selection: "",
     method: "",
-    has_custom_specifications: false,
+    has_custom_specifications: "",
     standard_specifications: [],
     custom_specifications: [],
     /* eslint-enable camelcase */
+  }
+
+  public get showCustomSpecifications(): boolean {
+    return this.selectedStandardsRadioItem === 'YES'
+      || this.selectedSetLumpSumOptions.includes("CustomAssessment");
   }
 
   public selectedStandardsRadioItem = "";
@@ -103,39 +121,120 @@ export default class EvalPlanDetails extends Vue {
     do you want to include any custom compliance standards that CSPs must meet to 
     be determined technically acceptable?`;
 
-  public savedData: EvaluationPlanDTO = {
-    // eslint-disable-next-line camelcase
-    source_selection: "",
+  public get currentData(): EvaluationPlanDTO {
+    return this.evalPlan;
   }
+
+  /* eslint-disable camelcase */
+  public savedData: EvaluationPlanDTO = {
+    source_selection: "",
+    method: "",
+    has_custom_specifications: "",
+    standard_specifications: [],
+    custom_specifications: [],
+  }
+
+  public initCustomSpecs(): void {  
+    this.evalPlan.custom_specifications = this.evalPlan.custom_specifications || [];
+    this.evalPlan.custom_specifications.push("");
+    this.$nextTick(() => {
+      scrollToId("CustomSpecEntry");
+    });
+    this.evalPlan.has_custom_specifications = "YES";
+  }
+
+  public clearCustomSpecs(): void {
+    this.evalPlan.custom_specifications = [];
+    this.evalPlan.has_custom_specifications = "NO";
+  }
+  /* eslint-enable camelcase */
 
   @Watch("selectedStandardsRadioItem")
   public selectedStandardsRadioItemChange(newVal: string): void {
-    if (newVal === "YES") {
-      const customSpecs = this.evalPlan.custom_specifications;
-      if (customSpecs && customSpecs.length === 0) {
-        customSpecs.push("");
-      }
-      this.$nextTick(() => {
-        scrollToId("CustomSpecEntry");
-      })
-    } else {
-      // eslint-disable-next-line camelcase
-      this.evalPlan.custom_specifications = [];
+    if (!this.isLoading) {
+      newVal === "YES" ? this.initCustomSpecs() : this.clearCustomSpecs();
     }
+  }
 
+  @Watch("selectedSetLumpSumOptions")
+  public selectedSetLumpSumOptionsChange(newVal: string[], oldVal: string[]): void {
+    if (!this.isLoading) {
+      // eslint-disable-next-line camelcase
+      this.evalPlan.standard_specifications = newVal;
+      if (newVal.includes("CustomAssessment") && !oldVal.includes("CustomAssessment")) {
+        this.initCustomSpecs();
+      } else if (!newVal.includes("CustomAssessment")) {
+        this.clearCustomSpecs();
+      }      
+    }
+  }
+
+  public selectedSetLumpSumOptions: string[] = [];
+  public get setLumpSumCheckboxOptions(): Checkbox[] {
+    const options: Checkbox[] = [
+      {
+        id: "AutomationCapability",
+        label: "Any automation capability proposed to improve reliability and reduce human-error",
+        value: "AutomationCapability",
+      },
+      {
+        id: "CustomAssessmentOption",
+        label: "I want to write my own custom assessment area(s)",
+        value: "CustomAssessment",
+      },
+    ];
+    if (this.evalPlan.method === "BestUse") {
+      options.unshift( {
+        id: "RiskToGovt",
+        label: "Risk to the Government",
+        value: "RiskToGovt"
+      });
+    }
+    return options;
   }
 
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage.getEvaluationPlan;
     if (storeData) {
-      this.evalPlan = storeData;
-      this.savedData = storeData;
+      this.evalPlan = _.cloneDeep(storeData);
+      this.savedData = _.cloneDeep(storeData);
+      if (this.evalPlan.source_selection === "SetLumpSum") {
+        this.selectedSetLumpSumOptions = this.evalPlan.standard_specifications || [];
+      }
+      this.selectedStandardsRadioItem = this.evalPlan.has_custom_specifications || "";
+
     }
   }
 
   public async mounted(): Promise<void> {
+    this.isLoading = true;
     await this.loadOnEnter();
+    this.isLoading = false;
   }
+
+  private get hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged) {
+        // KEEP FOR FUTURE TICKET when API hooked up for saving to SNOW
+        // await AcquisitionPackage.saveData({
+        //   data: this.currentData,
+        //   storeProperty: StoreProperties.EvaluationPlan,
+        // });
+        // REMOVE line below after above hooked up
+        await AcquisitionPackage.setEvaluationPlan(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+
+  }
+
 
 }
 </script>
