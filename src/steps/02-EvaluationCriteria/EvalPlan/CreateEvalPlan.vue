@@ -71,7 +71,7 @@ import { hasChanges } from "@/helpers";
 })
 
 export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
-
+  public isLoading = false;
   public sourceSelection: EvalPlanSourceSelection = "";
   public selectedMethod: EvalPlanMethod = "";
 
@@ -79,8 +79,10 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
 
   @Watch("sourceSelection")
   public sourceSelectionChanged(): void {
-    this.currentData.method = "";
-    this.clearMethodErrors = true;
+    if (!this.isLoading) {
+      this.currentData.method = "";
+      this.clearMethodErrors = true;
+    }
   }
 
   public evalOptions: RadioButton[] = [
@@ -188,6 +190,8 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
       has_custom_specifications: this.savedData.has_custom_specifications,
       standard_specifications: this.savedData.standard_specifications,
       custom_specifications: this.savedData.custom_specifications,
+      standard_differentiators: this.savedData.standard_differentiators,
+      custom_differentiators: this.savedData.custom_differentiators,
     }
   }
 
@@ -197,24 +201,30 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
     has_custom_specifications: "",
     standard_specifications: [],
     custom_specifications: [],
+    standard_differentiators: [],
+    custom_differentiators: [],
   }
   /* eslint-enable camelcase */
 
   public async mounted(): Promise<void> {
+    this.isLoading = true;
     const slideoutPanelContent: SlideoutPanelContent = {
       component: CreateEvalPlanSlideOut,
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
+    this.isLoading = false;
   }
 
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage.getEvaluationPlan;
+    debugger;
     if (storeData) {
       this.savedData = storeData;
       this.sourceSelection = storeData.source_selection;
       this.selectedMethod = storeData.method || "";
+      debugger;
     }
   }
   
@@ -224,6 +234,7 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
   public async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged) {
+        debugger;
         if (this.sourceSelection !== this.savedData.source_selection
           || this.selectedMethod !== this.savedData.method
         ) {
@@ -232,6 +243,8 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
           this.currentData.has_custom_specifications = undefined;
           this.currentData.standard_specifications = [];
           this.currentData.custom_specifications = [];
+          this.currentData.standard_differentiators = [];
+          this.currentData.custom_differentiators = [];
           /* eslint-enable camelcase */
         }
 

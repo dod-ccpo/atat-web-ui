@@ -38,14 +38,19 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
 
-import { Component, Watch } from "vue-property-decorator";
+<script lang="ts">
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import CustomSpecifications from "./components/CustomSpecifications.vue"
 import { Checkbox } from "types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { EvaluationPlanDTO } from "@/api/models";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { hasChanges } from "@/helpers";
+
+import _ from "lodash";
 
 @Component({
   components: {
@@ -54,7 +59,21 @@ import { Checkbox } from "types/Global";
   }
 })
 
-export default class Differentiators extends Vue {
+export default class Differentiators extends Mixins(SaveOnLeave) {
+
+  /* eslint-disable camelcase */
+  public evalPlan: EvaluationPlanDTO = {
+    source_selection: "",
+  }
+  public savedData: EvaluationPlanDTO = {
+    source_selection: "",
+  }
+  /* eslint-enable camelcase */
+
+  public get currentData(): EvaluationPlanDTO {
+    return this.evalPlan;
+  }
+
   public customDifferentiators: string[] = [];
   public selectedDifferentiators: string[] = [];
   public differentiators: Checkbox[] = [
@@ -99,7 +118,6 @@ export default class Differentiators extends Vue {
   public showCustomDifferentiators = false;
   public customDiffsOptional = true;
 
-
   @Watch("selectedDifferentiators")
   public selectedDifferentiatorsChange(newVal: string[], oldVal: string[]): void {
     this.showCustomDifferentiators = newVal.includes("CustomDifferentiators");
@@ -111,6 +129,49 @@ export default class Differentiators extends Vue {
       this.customDifferentiators.push("");
     }
   }
-}
-</script>
 
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = AcquisitionPackage.getEvaluationPlan;
+    if (storeData) {
+      this.evalPlan = _.cloneDeep(storeData);
+      this.savedData = _.cloneDeep(storeData);
+      this.selectedDifferentiators = this.evalPlan.standard_differentiators || [];
+      this.customDifferentiators = this.evalPlan.custom_differentiators || [];
+    }
+  }
+
+  private get hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async saveOnLeave(): Promise<boolean> {
+    try {
+      /* eslint-disable camelcase */
+      this.evalPlan.standard_differentiators = this.selectedDifferentiators;
+      this.evalPlan.custom_differentiators = this.customDifferentiators;
+      /* eslint-enable camelcase */
+
+      if (this.hasChanged) {
+        // KEEP FOR FUTURE TICKET when API hooked up for saving to SNOW
+        // await AcquisitionPackage.saveData({
+        //   data: this.currentData,
+        //   storeProperty: StoreProperties.EvaluationPlan,
+        // });
+        // REMOVE line below after above hooked up
+        await AcquisitionPackage.setEvaluationPlan(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+
+  }  
+
+}
+
+</script>

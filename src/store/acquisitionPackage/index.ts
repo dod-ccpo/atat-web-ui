@@ -445,6 +445,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public async setEvaluationPlan(value: EvaluationPlanDTO): Promise<void> {
+    debugger;
     if (this.evaluationPlan) {
       this.evaluationPlan = Object.assign(this.evaluationPlan, value);
     } else {
