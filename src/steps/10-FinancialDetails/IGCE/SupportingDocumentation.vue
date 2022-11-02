@@ -158,32 +158,6 @@ export default class SupportingDocumentation extends Vue {
     this.loaded = await FinancialDetails.loadRequirementsCostEstimate();
   }
 
-  /**
-   * TODO: this function may not be needed, since it is loading all attachments for all
-   * the records of requirements cost estimate table.
-   */
-  async loadAttachments(): Promise<void>{
-    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
-    const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
-      const file = new File([], attachment.file_name, {
-        lastModified: Date.parse(attachment.sys_created_on || "")
-      });
-      const upload: uploadingFile = {
-        attachmentId: attachment.sys_id || "",
-        fileName: attachment.file_name,
-        file: file,
-        created: file.lastModified,
-        progressStatus: 100,
-        link: attachment.download_link || "",
-        recordId: attachment.table_sys_id,
-        isErrored: false,
-        isUploaded: true
-      }
-      return upload;
-    });
-    this.uploadedFiles = [...uploadedFiles];
-  }
-
   private onFileUploadChanged(): void {
     if (this.uploadedFiles.length == 0) {
       // todo do something
@@ -220,8 +194,6 @@ export default class SupportingDocumentation extends Vue {
   async loadOnEnter(): Promise<void> {
     try {
       await this.saveRequirementCostEstimateData(); //TODO:loadRequirementsCostEstimateData instead?
-      // await this.loadAttachments(); // this will be needed when the requirements cost estimate
-      // record is tied with acquisition
     } catch (error) {
       throw new Error("an error occurred loading supporting documentation");
     }
