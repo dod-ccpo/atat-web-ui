@@ -60,8 +60,7 @@ export const initialFundingRequestMIPRForm: FundingRequestMIPRFormDTO = {
 }
 
 export const initialRequirementsCostEstimate: RequirementsCostEstimateDTO = {
-  surge_capabilities: "Test SC " +
-    Math.floor(100 + Math.random() * 900), // TODO: remove after tying to surge capabilities
+  surge_capabilities: "Test SC" + (new Date()).toDateString(),
   estimatedTaskOrderValue: "",
   feePercentage: "",
   feeCharged: "",
