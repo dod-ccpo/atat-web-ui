@@ -42,17 +42,32 @@ describe("Testing CreateEvalPlan Component", () => {
       expect(wrapper.vm.listItems).toHaveLength(2);
     });
 
-    it("testing tech-proposal required", async () => {
+    it("testing tech-proposal required - BVTO", async () => {
       await wrapper.setProps({
-        sourceSelection: "TechProposal"
+        sourceSelection: "TechProposal",
+        method: "BVTO"
       });
       expect(wrapper.vm.isStandards).toBeTruthy();
       expect(wrapper.vm.heading).toBe("Compliance Standards");
       expect(wrapper.vm.listType).toBe("Standard");
       expect(wrapper.vm.introP).toContain("propose a technical solution");
-      expect(wrapper.vm.subhead).toContain("compliance standards");
+      expect(wrapper.vm.subhead).toContain("CSP providing the best value");
       expect(wrapper.vm.listItems).toHaveLength(3);
     });
+
+    it("testing tech-proposal required - LPTA", async () => {
+      await wrapper.setProps({
+        sourceSelection: "TechProposal",
+        method: "LPTA"
+      });
+      expect(wrapper.vm.isStandards).toBeTruthy();
+      expect(wrapper.vm.heading).toBe("Compliance Standards");
+      expect(wrapper.vm.listType).toBe("Standard");
+      expect(wrapper.vm.introP).toContain("propose a technical solution");
+      expect(wrapper.vm.subhead).toContain("lowest priced offeror meeting");
+      expect(wrapper.vm.listItems).toHaveLength(3);
+    });
+
 
     it("testing set lump sum one CSP - Best Use method", async () => {
       await wrapper.setProps({

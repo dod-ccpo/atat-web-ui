@@ -1,6 +1,6 @@
 <template>
   <ATATDialog
-    id="AeletePackageModal"
+    id="ArchivePackageModal"
     :showDialog.sync="_showModal"
     title="Archive this acquisition package?"
     no-click-animation
@@ -9,6 +9,8 @@
     width="450"
     @ok="okClicked"
     @cancelClicked="cancelClicked"
+    okButtonId="ArchiveButton_OK"
+    cancelButtonId="ArchiveButton_Cancel"
   >
     <template #content>
       <div class="body">
