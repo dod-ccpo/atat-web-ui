@@ -11,7 +11,7 @@
 }
 
 ._checkbox {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 
   ._description {
     font-size: 1.4rem;
@@ -86,8 +86,16 @@
   .v-input__slot {
     align-items: start;
     margin-bottom: 16px;
-    transition: none;
+    transition: none;    
   }
+
+  &._has-text-entry {
+    margin-bottom: 4px;
+    .v-input__slot {
+      align-items: center !important;
+    }
+  }
+
 
   &._has-other {
     &._other-selected {

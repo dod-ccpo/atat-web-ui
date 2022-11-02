@@ -9,6 +9,8 @@
       groupLabel="In which region(s) is this instance deployed?"
       :optional="true"
       tooltipText="testing 123 testing"
+      :hasTextEntry="true"
+      :labelWidth="130"
     />
   </div>
 </template>

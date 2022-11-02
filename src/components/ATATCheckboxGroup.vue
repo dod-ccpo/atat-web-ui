@@ -21,7 +21,8 @@
         color ? '_checkbox-' + color : '',
         { 'flex-column _has-other': item.value === otherValue },
         { '_other-selected': showOtherEntry(item.value) },
-        { '_no-description': noDescriptions}
+        { '_no-description': noDescriptions },
+        { '_has-text-entry' : hasTextEntry }
       ]"
       :key="item.value"
       :label="item.label"
@@ -29,14 +30,23 @@
       :error="error"
       :disabled="disabled"
       :rules="checkboxRules"
-      @mousedown="checkBoxClicked(item.value)"
+      @mouseup="checkBoxClicked(item.value)"
       multiple
       :hide-details="true"
       :ref="index === 0 ? 'checkboxGroup' : ''"
       :data-group-id="id + '_Group'"
     >
-      <template v-if="card || item.description || item.value === otherValue" v-slot:label>
-        <div class="d-flex flex-column width-100">
+      <template 
+        v-if="card || item.description || item.value === otherValue || hasTextEntry" 
+        v-slot:label
+      >
+        <div 
+          class="d-flex "
+          :class="[
+            { 'flex-column width-100' : !hasTextEntry },
+            { 'align-center foobar' : hasTextEntry }
+          ]"
+        >
           <div 
             v-if="item.label" 
             :class="[
@@ -44,6 +54,7 @@
               {'mb-0': item.value === otherValue},
               {'_no-description': noDescriptions}
             ]"
+            :style="labelStyles"
           >
             {{ item.label }}
           </div>
@@ -51,6 +62,10 @@
             v-if="item.description"
             class="mb-0 _description" v-html="item.description"
           ></div>
+          <div v-if="hasTextEntry">
+            <ATATTextField id="" />
+          </div>
+
         </div>
       </template>
       <template v-slot:append v-if="showOtherEntry(item.value)">
@@ -113,6 +128,7 @@ export default class ATATCheckboxGroup extends Vue {
     atatTextInput: (Vue & { errorBucket: string[]; errorCount: number })[];
   }; 
 
+
   // props
   @PropSync("value") private _selected!: string[];
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
@@ -136,6 +152,8 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private tooltipTitle?: string;
   @Prop() private tooltipLabel?: string;
   @Prop({ default: false }) private noDescriptions?: boolean;
+  @Prop({ default: false }) private hasTextEntry?: boolean;
+  @Prop() private labelWidth?: string;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -256,6 +274,10 @@ export default class ATATCheckboxGroup extends Vue {
     }
   }
   
+  public get labelStyles(): string {
+    return this.labelWidth ? `width: ${this.labelWidth}px;` : "";
+  }
+
   public mounted(): void {
     this.setEventListeners();
   }
