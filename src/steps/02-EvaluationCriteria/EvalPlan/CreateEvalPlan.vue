@@ -219,12 +219,10 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage.getEvaluationPlan;
-    debugger;
     if (storeData) {
       this.savedData = storeData;
       this.sourceSelection = storeData.source_selection;
       this.selectedMethod = storeData.method || "";
-      debugger;
     }
   }
   
@@ -234,7 +232,6 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
   public async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged) {
-        debugger;
         if (this.sourceSelection !== this.savedData.source_selection
           || this.selectedMethod !== this.savedData.method
         ) {
