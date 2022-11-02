@@ -154,9 +154,16 @@
   }
   &.error--text {
     background-color: $base-lightest !important;
-    border: solid 2px $error;
+    border: solid 1px $error;
+    outline: solid 1px $error;
     border-radius: 4px !important;
-    padding: 12px 0px 0px 12px;
+    padding: 12px 0px 0px 12px; // EJY HERE
+    &:hover {
+      outline: solid 1px $primary;
+    }
+    &._no-description {
+      padding-bottom: 12px;
+    }
     label {
       color: $error-dark !important;
     }
@@ -172,6 +179,10 @@
     font-weight:700 !important;
     font-size:1.6rem;
     margin-bottom:4px !important;
+    &._no-description {
+      font-weight: 400 !important;
+      margin-bottom: 0 !important;
+    }
   }
   label {
     color: $base-darkest !important;

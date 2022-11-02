@@ -125,7 +125,7 @@ describe("testing route resolvers", () => {
         { source_selection: "", method: "BVTO" }
       );
       const route = BVTOResolver(routeNames.EvalPlanDetails);
-      expect(route).toBe(routeNames.ProposalRequiredBVTO);
+      expect(route).toBe(routeNames.Differentiators);
     });
     it ("BVTOResolver() - routes to Summary page when not BVTO method", async () => {
       await AcquisitionPackage.setEvaluationPlan(
