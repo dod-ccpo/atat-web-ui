@@ -2,7 +2,7 @@
   <div :id="id">
 
     <p v-if="groupLabel" :id="groupLabelId" class="_checkbox-group-label">
-      {{ groupLabel }}
+      {{ groupLabel }} <span class="optional" v-if="optional">Optional</span>
     </p>
 
     <v-checkbox
@@ -83,6 +83,7 @@ import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import {Checkbox} from "../../types/Global";
 import { getIdText } from "@/helpers";
@@ -92,6 +93,7 @@ import { getIdText } from "@/helpers";
     ATATTextArea,
     ATATTextField,
     ATATErrorValidation,
+    ATATTooltip,
   }
 })
 
@@ -120,6 +122,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: () => []}) private rules!: Array<unknown>;
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @Prop({ default: "" }) private color!: string;
+  @Prop({ default: false }) private optional?: boolean;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
