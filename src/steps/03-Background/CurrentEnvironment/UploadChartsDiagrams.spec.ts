@@ -5,6 +5,7 @@ import {DefaultProps} from "vue/types/options";
 import UploadChartsDiagrams
   from "@/steps/03-Background/CurrentEnvironment/UploadChartsDiagrams.vue";
 import validators from "../../../plugins/validation";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 
 Vue.use(Vuetify);
@@ -27,6 +28,23 @@ describe("Testing UploadChartsDiagrams Component", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
+
+    it("test hasChanged()", async () => {
+      wrapper.vm.$data.currentData = 'test'
+      wrapper.vm.$data.savedData = 'test2'
+      expect(wrapper.vm.hasChanged()).toBe(true);
+    });
+
+    it("test saveOnLeave()", async () => {
+      wrapper.vm.$data.hasChanged = true
+      wrapper.vm.$data.currentData = {diagramChartDocumentation: 'test'}
+      const result = AcquisitionPackage.currentEnv.diagramChartDocumentation
+      jest.spyOn(AcquisitionPackage,"setCurrentEnv")
+      wrapper.vm.saveOnLeave()
+      Vue.nextTick(()=>{
+        expect(result).toBe('test');
+      })
+    })
   })
 
 
