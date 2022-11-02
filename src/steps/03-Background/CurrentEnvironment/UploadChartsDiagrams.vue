@@ -74,7 +74,7 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   ];
   private invalidFiles: invalidFile[] = [];
   private maxFileSizeInBytes = 1073741824;
-  private validFileFormats = ["xlsx", "xls", "pdf"];
+  private validFileFormats = ["csv","xlsx","pdf","jpg","png","docx"];
   private uploadedFiles: uploadingFile[] = [];
 
   public selectedUpload
