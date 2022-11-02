@@ -17,7 +17,7 @@
       <ATATCheckboxGroup
         id="DifferentiatorOptions"
         :card="true"
-        :boldLabel="false"
+        :noDescriptions="true"
         :items="differentiators"
         :value.sync="selectedDifferentiators"
         :rules="[
