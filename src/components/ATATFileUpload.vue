@@ -168,9 +168,6 @@ export default class ATATFileUpload extends Vue {
   private fileAttachmentService?: AttachmentService;
   private errorMessages: string[] = [];
   private validateOnBlur = true;
-  private fileUploadHelpText = `Supported file types: .csv, .xls(x), .pdf, .jpg,
-   .png, .doc&nbsp;&nbsp;•&nbsp;&nbsp;Max file size: 1GB`;
-  
   get isFileUploadDisabled():boolean{
     return this.maxNumberOfFiles<=this._validFiles.length;
   }
