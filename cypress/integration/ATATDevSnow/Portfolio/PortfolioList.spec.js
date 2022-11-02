@@ -1,7 +1,7 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 import { bootstrapMockApis,cleanText} from "../../../helpers";
 import common from "../../../selectors/common.sel";
-import ps from "../../../selectors/portfolioSummary.sel"
+import ps from "../../../selectors/portfolioSummary.sel";
 
 describe("Test suite: List of Portfolios", () => {
   
@@ -34,8 +34,29 @@ describe("Test suite: List of Portfolios", () => {
       const sortDropdownItems = [
         "Portfolio name A-Z",
         "Recently modified"
-      ]
-      cy.verifyStringArray(ps.portSortListItems, sortDropdownItems)
+      ];
+      cy.verifyStringArray(ps.portSortListItems, sortDropdownItems);
+    });
+    let portfolioNames = [];  
+    let alphaSortedPortfolio = [];
+    cy.findElement(ps.portfolioName).each(($el, index) => {
+      portfolioNames[index] = $el.text();
+      cy.wrap(portfolioNames);
+    }).then(() => {
+      alphaSortedPortfolio = portfolioNames.sort();
+      expect(portfolioNames).to.deep.equal(alphaSortedPortfolio);
+        
+    });
+    let lastModified=[]
+    cy.dropDownClick(ps.portSortDowndrop).then(() => {
+      cy.findElement(ps.recentlymod).click();
+      cy.wait(1000);
+      cy.findElement(ps.portfolioName).each(($el, index) => {
+        lastModified[index] = $el.text();
+        cy.wrap(lastModified);
+      }).then(() => {
+        expect(lastModified).to.not.equal(alphaSortedPortfolio);
+      });
     });
     
   }); 
@@ -71,8 +92,16 @@ describe("Test suite: List of Portfolios", () => {
   it("TC3: No Search results found", () => {
 
     //search without filters selected
-    const searchText = "“foo”";    
-    cy.noPortfolioSearchResult("foo", searchText);
+    const searchTextString = "“foo”";    
+    const search = {
+      searchInput: ps.searchInput,
+      searchItem: "foo",
+      searchBtn: ps.searchBtn,
+      noSearchResultHeader: ps.noSearchResultHeader,
+      searchString: ps.searchString,
+      searchText: searchTextString
+    };    
+    cy.noSearchResult(search);    
     cy.textExists(ps.clearSearchBtn, "Clear search").click().then(() => {
       cy.findElement(ps.noSearchResultHeader).should("not.exist");
       cy.findElement(ps.searchInput).should('be.empty');
@@ -85,7 +114,7 @@ describe("Test suite: List of Portfolios", () => {
       .then(() => {
         cy.findElement(ps.azureFilterChip).should("exist");        
       });
-    cy.noPortfolioSearchResult("foo", searchText);
+    cy.noSearchResult(search);
     cy.textExists(ps.withFilterString, "with selected filters");
   });  
 
