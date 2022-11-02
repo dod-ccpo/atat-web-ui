@@ -15,7 +15,9 @@ const initialEvalPlan: EvaluationPlanDTO = {
   source_selection: "",
   method: "",
   standard_specifications: [],
-  custom_specifications: [],    
+  custom_specifications: [],  
+  standard_differentiators: [],
+  custom_differentiators: [],  
 };
 
 const evalPlanPopulated: EvaluationPlanDTO = {
@@ -23,6 +25,8 @@ const evalPlanPopulated: EvaluationPlanDTO = {
   method: "BVTO",
   standard_specifications: [],
   custom_specifications: [],    
+  standard_differentiators: [],
+  custom_differentiators: [],  
 };
 /* eslint-enable camelcase */
 

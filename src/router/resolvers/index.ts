@@ -68,7 +68,7 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
     Steps.setAdditionalButtonHide(true);
   }
 
-  return current === routeNames.CreateEvalPlan || routeNames.ProposalRequiredBVTO
+  return current === routeNames.CreateEvalPlan || routeNames.Differentiators
     ? routeNames.EvalPlanDetails
     : routeNames.CreateEvalPlan;
 };
@@ -85,7 +85,7 @@ export const BVTOResolver = (current: string): string => {
   }
 
   if (evalPlan?.method === "BVTO") {
-    return routeNames.ProposalRequiredBVTO;
+    return routeNames.Differentiators;
   }
 
   return current === routeNames.EvalPlanDetails
@@ -120,7 +120,7 @@ export const CurrentContractEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
     = AcquisitionPackage.currentEnvironment?.current_environment_exists === "true";
   if (hasCurrentEnv) {
-    return routeNames.CurrentEnvironmentLocation;
+    return routeNames.UploadChartsDiagrams;
   }
   return current === routeNames.CurrentEnvironment
     ? routeNames.BackgroundSummary

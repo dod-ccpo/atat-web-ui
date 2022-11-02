@@ -18,7 +18,7 @@ import Exceptions from "../steps/02-EvaluationCriteria/Exceptions.vue";
 //   from "../steps/02-EvaluationCriteria/JustificationAndApproval.vue";
 import CreateEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.vue";
 import EvalPlanDetails from "../steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.vue";
-import ProposalRequiredBVTO from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequiredBVTO.vue";
+import Differentiators from "../steps/02-EvaluationCriteria/EvalPlan/Differentiators.vue";
 import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
 import NoEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.vue";
 
@@ -36,6 +36,8 @@ import ClassificationLevels
 import EnvironmentDetailsPage
   from "@/steps/03-Background/CurrentEnvironment/EnvironmentDetailsPage.vue";
 import BackgroundSummary from "../steps/03-Background/Summary.vue"
+import UploadChartsDiagrams
+  from "@/steps/03-Background/CurrentEnvironment/UploadChartsDiagrams.vue";
 
 // Step 4 - Contract Details
 /* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
@@ -152,7 +154,7 @@ export const routeNames = {
   EvaluationPlan: "Evaluation_Plan",
   CreateEvalPlan: "Create_Eval_Plan",
   EvalPlanDetails: "Eval_Plan_Details",
-  ProposalRequiredBVTO: "Proposal_Required_BVTO",
+  Differentiators: "Proposal_Required_BVTO",
   EvalPlanSummary: "Eval_Plan_Summary",
   NoEvalPlan: "No_Eval_Plan",
   // KEEP JustificationAndApproval for future ticket
@@ -217,6 +219,7 @@ export const routeNames = {
   CostSummary:"Cost_Summary",
   EstimatesDeveloped:"Estimates_Developed",
   SupportingDocumentation:"Supporting_Documentation",
+  UploadChartsDiagrams:"Upload_Charts_Diagrams",
 };
 
 /**
@@ -365,8 +368,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Proposal Required BVTO",
         path: "proposal-required-bvto",
-        name: routeNames.ProposalRequiredBVTO,
-        component: ProposalRequiredBVTO,
+        name: routeNames.Differentiators,
+        component: Differentiators,
         completePercentageWeight: 5,
         completed: false,
         excludeFromMenu: true,
@@ -436,6 +439,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
       },
       {
+        menuText: "Upload Charts",
+        path: "upload-charts",
+        excludeFromMenu: true,
+        name: routeNames.UploadChartsDiagrams,
+        component: UploadChartsDiagrams,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: CurrentContractEnvRouteResolver,
+      },
+      {
         menuText: "Current Environment Location",
         path: "current-environment-location",
         excludeFromMenu: true,
@@ -443,7 +456,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CurrentEnvironmentLocation,
         completePercentageWeight: 5,
         completed: false,
-        routeResolver: CurrentContractEnvRouteResolver,
       },
       {
         menuText: "Classification Levels",
