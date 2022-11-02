@@ -31,6 +31,7 @@
                 :validFileFormats="validFileFormats"
                 :validFiles.sync="uploadedFiles"
                 :multiplesAllowed="false"
+                :attachmentServiceName="attachmentServiceName"
              />
           </div>
         </div>
@@ -48,6 +49,7 @@ import { CurrentEnvironmentDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
+import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
 
 @Component({
   components: {
@@ -56,6 +58,7 @@ import ATATFileUpload from "@/components/ATATFileUpload.vue";
   },
 })
 export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
+  private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
   private uploadOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -74,7 +77,7 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   private uploadedFiles: uploadingFile[] = [];
 
   public selectedUpload
-    = AcquisitionPackage.currentEnvironment?.diagramChartDocumentation || ""
+    = AcquisitionPackage.currentEnv?.diagramChartDocumentation || ""
   private get currentData(): CurrentEnvironmentDTO {
     return {
       diagramChartDocumentation: this.selectedUpload || "",
@@ -90,10 +93,11 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<CurrentEnvironmentDTO>(
-        { storeProperty: StoreProperties.CurrentEnvironment }
-      );
+    const storeData = AcquisitionPackage
+      .currentEnv
+      // .loadData<CurrentEnvironmentDTO>(
+      //   { storeProperty: StoreProperties.CurrentEnvironment }
+      // );
     if (storeData) {
       this.savedData = {
         // eslint-disable-next-line camelcase
@@ -105,10 +109,12 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-          data: this.currentData,
-          storeProperty: StoreProperties.CurrentEnvironment
-        });
+        AcquisitionPackage.setCurrentEnv(this.currentData)
+        // will be used when SNOW store has been wired
+        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
+        //   data: this.currentData,
+        //   storeProperty: StoreProperties.CurrentEnvironment
+        // });
       }
     } catch (error) {
       console.log(error);
