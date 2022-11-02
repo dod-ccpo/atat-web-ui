@@ -171,6 +171,7 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
   return {
     source_selection: "" as EvalPlanSourceSelection,
     method: "" as EvalPlanMethod,
+    has_custom_specifications: undefined,
     standard_specifications: [],
     custom_specifications: [],
   }
@@ -452,8 +453,8 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  public get getEvaluationPlan(): EvaluationPlanDTO | null {
-    return this.evaluationPlan;
+  public get getEvaluationPlan(): EvaluationPlanDTO {
+    return this.evaluationPlan || initialEvaluationPlan();
   }
 
 

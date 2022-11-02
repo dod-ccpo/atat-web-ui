@@ -501,7 +501,7 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
 export interface EvaluationPlanDTO extends BaseTableDTO{
   source_selection: EvalPlanSourceSelection;
   method?: EvalPlanMethod;
-  has_custom_specifications?: boolean;
+  has_custom_specifications?: string;
   standard_specifications?: string[];
   custom_specifications?: string[];
 }

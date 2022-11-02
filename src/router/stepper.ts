@@ -355,7 +355,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         excludeFromMenu: true,
         completed: false,
-        routeResolver: EvalPlanDetailsRouteResolver
+        routeResolver: EvalPlanDetailsRouteResolver,
+        additionalButtons: [
+          {
+            buttonText: "I don’t need other assessment areas",
+            buttonId: "NoOtherAssessmentAreas",
+            buttonClass: "secondary",
+            name: routeNames.EvalPlanSummary,
+          },
+        ]
       },
       {
         menuText: "Proposal Required BVTO",
