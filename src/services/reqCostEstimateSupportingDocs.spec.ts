@@ -5,7 +5,7 @@ import {RequirementsCostEstimateApi} from "@/api/requirementsCostEstimate";
 import {AttachmentServiceCallbacks} from "@/services/attachment";
 
 const serviceKeyMock = "test_service_key";
-const tableName = "x_g_dis_atat_requirements_cost_estimate";
+const tableName = "estimate";
 let tableApi: RequirementsCostEstimateApi;
 
 describe("RequirementsCostEstimateAttachmentService", () => {
