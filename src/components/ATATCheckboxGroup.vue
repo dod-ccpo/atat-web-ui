@@ -33,7 +33,8 @@
             v-if="item.label" 
             :class="[
               {'card-label': item.label}, 
-              {'mb-0': item.value === otherValue}
+              {'mb-0': item.value === otherValue},
+              {'font-weight-normal': !boldLabel}
             ]"
           >
             {{ item.label }}
@@ -120,6 +121,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: () => []}) private rules!: Array<unknown>;
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @Prop({ default: "" }) private color!: string;
+  @Prop({ default: true }) private boldLabel?: boolean;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;

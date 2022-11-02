@@ -172,6 +172,9 @@
     font-weight:700 !important;
     font-size:1.6rem;
     margin-bottom:4px !important;
+    &.font-weight-normal {
+      font-weight: 400 !important;
+    }
   }
   label {
     color: $base-darkest !important;
