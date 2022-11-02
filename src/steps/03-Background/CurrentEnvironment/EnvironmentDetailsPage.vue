@@ -9,8 +9,11 @@
       groupLabel="In which region(s) is this instance deployed?"
       :optional="true"
       tooltipText="testing 123 testing"
-      :hasTextEntry="true"
+      :hasTextFields="true"
+      textFieldAppendText="users"
+      :textFieldWidth="164"
       :labelWidth="130"
+      :value.sync="selectedRegions"
     />
   </div>
 </template>
@@ -29,6 +32,7 @@ import { Checkbox } from "types/Global";
 })
 export default class EnvironmentDetails extends Vue {
 
+  public selectedRegions: string[] = [];
   public regions: Checkbox[] = [
     {
       id: "CONUSEast",

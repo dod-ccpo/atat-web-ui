@@ -22,7 +22,7 @@
         { 'flex-column _has-other': item.value === otherValue },
         { '_other-selected': showOtherEntry(item.value) },
         { '_no-description': noDescriptions },
-        { '_has-text-entry' : hasTextEntry }
+        { '_has-text-fields' : hasTextFields }
       ]"
       :key="item.value"
       :label="item.label"
@@ -30,21 +30,21 @@
       :error="error"
       :disabled="disabled"
       :rules="checkboxRules"
-      @mouseup="checkBoxClicked(item.value)"
+      @mouseup="checkBoxClicked(item.value, index)"
       multiple
       :hide-details="true"
       :ref="index === 0 ? 'checkboxGroup' : ''"
       :data-group-id="id + '_Group'"
     >
       <template 
-        v-if="card || item.description || item.value === otherValue || hasTextEntry" 
+        v-if="card || item.description || item.value === otherValue || hasTextFields" 
         v-slot:label
       >
         <div 
           class="d-flex "
           :class="[
-            { 'flex-column width-100' : !hasTextEntry },
-            { 'align-center foobar' : hasTextEntry }
+            { 'flex-column width-100' : !hasTextFields },
+            { 'align-center foobar' : hasTextFields }
           ]"
         >
           <div 
@@ -62,8 +62,13 @@
             v-if="item.description"
             class="mb-0 _description" v-html="item.description"
           ></div>
-          <div v-if="hasTextEntry">
-            <ATATTextField id="" />
+          <div v-if="hasTextFields">
+            <ATATTextField 
+              :appendText="textFieldAppendText"
+              :width="textFieldWidth"
+              v-show="showTextField(index)"
+
+            />
           </div>
 
         </div>
@@ -128,7 +133,6 @@ export default class ATATCheckboxGroup extends Vue {
     atatTextInput: (Vue & { errorBucket: string[]; errorCount: number })[];
   }; 
 
-
   // props
   @PropSync("value") private _selected!: string[];
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
@@ -152,8 +156,10 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private tooltipTitle?: string;
   @Prop() private tooltipLabel?: string;
   @Prop({ default: false }) private noDescriptions?: boolean;
-  @Prop({ default: false }) private hasTextEntry?: boolean;
+  @Prop({ default: false }) private hasTextFields?: boolean;
+  @Prop() private textFieldAppendText?: string;
   @Prop() private labelWidth?: string;
+  @Prop() private textFieldWidth?: number;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -179,8 +185,26 @@ export default class ATATCheckboxGroup extends Vue {
     return getIdText(this.otherValue);
   }
 
+  private selectedIndices: number[] = [];
+
+  public getSelectedIndex(value: string) {
+    return this.items.findIndex(obj => obj.value === value);
+  }
+
   @Watch("_selected")
-  protected selectedOptionsChanged(newVal: string[]): void {
+  protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
+    if (newVal.length > oldVal.length) {
+      // new checkbox checked - get the index, push to this.selectedIndices
+      const checkedVal = newVal.find(val => !oldVal.includes(val)) || "";
+      const checkedIndex = this.getSelectedIndex(checkedVal);
+      this.selectedIndices.push(checkedIndex);
+    } else {
+      // checkbox UNchecked - get the index from oldVal, remove from this.selectedIndices
+      const uncheckedVal = oldVal.find(val => !newVal.includes(val)) || "";
+      const uncheckedIndex = this.getSelectedIndex(uncheckedVal);
+      this.selectedIndices = this.selectedIndices.filter(idx => idx !== uncheckedIndex);
+    }
+
     const otherIndex = newVal.indexOf(this.otherValue) > -1;
     const otherPrevSelectedIndex = this.prevSelected.indexOf(this.otherValue) > -1;
     if (otherIndex && !otherPrevSelectedIndex) {
@@ -219,6 +243,10 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   private hideOtherTextarea = false;
+
+  private showTextField(index: number): boolean {
+    return this.selectedIndices.includes(index);
+  }
 
   private checkBoxClicked(value: string): void {
     if (this.checkboxRules.length === 0) {

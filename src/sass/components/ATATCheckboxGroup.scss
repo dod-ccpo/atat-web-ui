@@ -89,7 +89,11 @@
     transition: none;    
   }
 
-  &._has-text-entry {
+  &._has-text-fields {
+    height: 42px;
+    .v-input__control, .v-input__slot {
+      height: 42px;
+    }
     margin-bottom: 4px;
     .v-input__slot {
       align-items: center !important;
