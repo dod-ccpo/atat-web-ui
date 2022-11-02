@@ -42,7 +42,7 @@ export class RequirementsCostEstimateAttachmentService extends
    * For the above reasons, we need to override the "remove" function.
    * @param attachment: Attachment that needs to be removed.
    */
-  async remove(attachment: AttachmentDTO): Promise<void> {
+  async remove(attachment: AttachmentDTO | undefined): Promise<void> {
     if (!attachment) {
       throw new Error("invalid request, attachment required");
     }
