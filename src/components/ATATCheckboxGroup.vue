@@ -1,8 +1,15 @@
 <template>
   <div :id="id">
 
-    <p v-if="groupLabel" :id="groupLabelId" class="_checkbox-group-label">
-      {{ groupLabel }} <span class="optional" v-if="optional">Optional</span>
+    <p v-if="groupLabel" :id="groupLabelId" class="_checkbox-group-label d-flex align-center">
+      <span :class="{'mr-2' : !optional}">{{ groupLabel }}</span> 
+      <span class="optional mr-2" v-if="optional">Optional</span>
+      <ATATTooltip 
+        v-if="tooltipText"
+        :tooltipText="tooltipText"
+        :tooltipTitle="tooltipTitle"
+        :id="id"
+      />
     </p>
 
     <v-checkbox
@@ -123,6 +130,9 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @Prop({ default: "" }) private color!: string;
   @Prop({ default: false }) private optional?: boolean;
+  @Prop() private tooltipText?: string;
+  @Prop() private tooltipTitle?: string;
+  @Prop() private tooltipLabel?: string;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
