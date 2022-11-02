@@ -218,7 +218,6 @@ describe("testing src/helpers/index.ts", () => {
     let endDate = formatISO(add(new Date().setHours(0,0,0,0), {months: 1}));
     console.log(endDate);
     let dateInfo = differenceInDaysOrMonths("2022-01-01", endDate);
-
     expect(dateInfo.expiration).toBe("30 days to expiration");
 
     endDate = formatISO(add(new Date().setHours(0,0,0,0), {months: 4, days: 15}));

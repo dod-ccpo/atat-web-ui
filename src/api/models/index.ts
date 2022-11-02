@@ -498,10 +498,12 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
 }
 
-export interface EvaluationPlanDTO extends BaseTableDTO{
+export interface EvaluationPlanDTO extends BaseTableDTO {
   source_selection: EvalPlanSourceSelection;
   method?: EvalPlanMethod;
   has_custom_specifications?: string;
   standard_specifications?: string[];
   custom_specifications?: string[];
+  standard_differentiators?: string[];
+  custom_differentiators?: string[];
 }

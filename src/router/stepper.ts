@@ -18,7 +18,7 @@ import Exceptions from "../steps/02-EvaluationCriteria/Exceptions.vue";
 //   from "../steps/02-EvaluationCriteria/JustificationAndApproval.vue";
 import CreateEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.vue";
 import EvalPlanDetails from "../steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.vue";
-import ProposalRequiredBVTO from "../steps/02-EvaluationCriteria/EvalPlan/ProposalRequiredBVTO.vue";
+import Differentiators from "../steps/02-EvaluationCriteria/EvalPlan/Differentiators.vue";
 import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
 import NoEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.vue";
 
@@ -154,7 +154,7 @@ export const routeNames = {
   EvaluationPlan: "Evaluation_Plan",
   CreateEvalPlan: "Create_Eval_Plan",
   EvalPlanDetails: "Eval_Plan_Details",
-  ProposalRequiredBVTO: "Proposal_Required_BVTO",
+  Differentiators: "Proposal_Required_BVTO",
   EvalPlanSummary: "Eval_Plan_Summary",
   NoEvalPlan: "No_Eval_Plan",
   // KEEP JustificationAndApproval for future ticket
@@ -368,8 +368,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Proposal Required BVTO",
         path: "proposal-required-bvto",
-        name: routeNames.ProposalRequiredBVTO,
-        component: ProposalRequiredBVTO,
+        name: routeNames.Differentiators,
+        component: Differentiators,
         completePercentageWeight: 5,
         completed: false,
         excludeFromMenu: true,
