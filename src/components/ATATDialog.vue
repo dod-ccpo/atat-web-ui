@@ -94,7 +94,9 @@ export default class ATATDialog extends Vue {
   @Prop({ default: "ATATModalContent"}) private id!: string;
   @Prop({default: "500px"}) private width!: string;
   @Prop({default: "Cancel"}) private cancelText!: string;
+  @Prop({default: "dialog_cancel"}) private cancelButtonId?: string;
   @Prop({default: "OK"}) private okText!: string;
+  @Prop({default: "dialog_ok"}) private okButtonId?: string;
   @Prop() private focusOnCancel!: string;
   @Prop() private focusOnOk!: string;
   @Prop({ default: false }) private OKDisabled!: boolean;

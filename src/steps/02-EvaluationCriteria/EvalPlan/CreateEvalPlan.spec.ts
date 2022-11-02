@@ -60,9 +60,9 @@ describe("Testing CreateEvalPlan Component", () => {
       wrapper.vm.$nextTick(()=> expect(isSlideOutOpen).toBe(true))       
     });
 
-    it("get currentData() - returns current data object", async () => {
+    it("getter - currentData() - returns current data object", async () => {
       await wrapper.setData({
-        selectedEvalOption: "TechProposal"
+        sourceSelection: "TechProposal"
       });
       const data = wrapper.vm.currentData;
       expect(data.source_selection).toBe("TechProposal");
@@ -71,21 +71,71 @@ describe("Testing CreateEvalPlan Component", () => {
     it("loadOnEnter() - gets eval plan data from store", async () => {
       await AcquisitionPackage.setEvaluationPlan(evalPlanPopulated);
       await wrapper.vm.loadOnEnter();
-      expect(wrapper.vm.$data.selectedEvalOption).toBe("TechProposal")
+      expect(wrapper.vm.$data.sourceSelection).toBe("TechProposal")
     });
 
     it("saveOnLeave() - saves eval plan data to store", async () => {
       await AcquisitionPackage.setEvaluationPlan(initialEvalPlan);
-      await wrapper.vm.loadOnEnter();
+      // await wrapper.vm.loadOnEnter();
       await wrapper.setData({
-        selectedEvalOption: "TechProposal",
+        sourceSelection: "TechProposal",
+        selectedMethod: "BVTO",
+        savedData: {
+          // eslint-disable-next-line camelcase
+          source_selection: "foo",
+          method: "LPTA",
+        }
       });
-      await wrapper.vm.saveOnLeave();
-      const hasChanged = wrapper.vm.hasChanged();
-      expect(hasChanged).toBeTruthy();
-      const evalPlanDataFromStore = AcquisitionPackage.getEvaluationPlan;
-      expect(evalPlanDataFromStore?.source_selection).toBe("TechProposal")  
+      Vue.nextTick(async () => {
+        await wrapper.vm.saveOnLeave();
+        const hasChanged = wrapper.vm.hasChanged;
+        console.log("FOOOO")
+        expect(hasChanged).toBeTruthy();
+        console.log("BAAARRR")
+        const evalPlanDataFromStore = AcquisitionPackage.getEvaluationPlan;
+        console.log("BAZZZZ")
+        expect(evalPlanDataFromStore?.source_selection).toBe("TechProposal")  
+        console.log("QUXXXX")
+      })
     });
+    it("Watcher - sourceSelection - resets current method", async () => {
+      wrapper.vm.$data.sourceSelection = "TechProposal";
+      wrapper.vm.$data.selectedMethod = "LPTA";
+      expect(wrapper.vm.currentData.method).toBe("LPTA");
+      Vue.nextTick(() => {
+        wrapper.vm.$data.sourceSelection = "NoTechProposal";
+        expect(wrapper.vm.currentData.method).toBe("");  
+      })
+    });
+
+    it("getters - methodOptions() - returns options for TechProposal required", async () => {
+      wrapper.vm.$data.techProposalOptions = ["A"];
+      wrapper.vm.$data.lumpSumOptions = ["B", "C"];
+      wrapper.vm.$data.sourceSelection = "TechProposal";
+      const options = wrapper.vm.methodOptions;
+      expect(options.length).toBe(1);
+    });
+
+    it("getters - methodOptions() - returns options for SetLumpSum", async () => {
+      wrapper.vm.$data.techProposalOptions = ["A"];
+      wrapper.vm.$data.lumpSumOptions = ["B", "C"];
+      wrapper.vm.$data.sourceSelection = "SetLumpSum";
+      const options = wrapper.vm.methodOptions;
+      expect(options.length).toBe(2);
+    });
+
+    it("getters - methodMessagingSubstr() - returns substring for TechProposal", async () => {
+      wrapper.vm.$data.sourceSelection = "TechProposal";
+      const substr = wrapper.vm.methodMessagingSubstr;
+      expect(substr).toBe("method of evaluation");
+    })
+
+    it("getters - methodMessagingSubstr() - returns substring for NOT TechProposal", async () => {
+      wrapper.vm.$data.sourceSelection = "NoTechProposal";
+      const substr = wrapper.vm.methodMessagingSubstr;
+      expect(substr).toBe("technique");
+    })
+
 
   });
 

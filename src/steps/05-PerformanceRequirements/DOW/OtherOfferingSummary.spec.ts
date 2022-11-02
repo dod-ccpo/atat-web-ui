@@ -122,6 +122,7 @@ describe("Testing OtherOfferingSummary Component", () => {
       expect(wrapper.vm.addInstance).toHaveBeenCalled()
     })
 
+    // Errors with: ERR_UNHANDLED_REJECTION
     it('Testing function editInstance()',async () => {
       const item = {
         duration: "Entire task order",
@@ -131,12 +132,10 @@ describe("Testing OtherOfferingSummary Component", () => {
       }
       jest.spyOn(wrapper.vm,'editInstance')
       jest.spyOn(wrapper.vm, 'navigate').mockImplementation();
-      wrapper.vm.editInstance(item)
-      Vue.nextTick(async () => {
-        const editButton = await wrapper.find('#EditButton_1')
-        editButton.trigger('click')
-        Vue.nextTick(()=>{expect(wrapper.vm.editInstance).toHaveBeenCalled()})
-      })
+      await wrapper.vm.editInstance(item)
+
+      const instanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
+      expect(instanceNumber).toBe(1);
     })
 
     it('Testing confirmDeleteInstance() sets showDeleteInstanceDialog to true ',async () => {

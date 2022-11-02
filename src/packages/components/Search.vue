@@ -12,8 +12,8 @@
       <div class="d-flex align-center">
         <div>
           <ATATSelect
-            id="PortfolioSort"
-            class="_small _alt-style-clean _portfolio-sort"
+            id="PackageSort"
+            class="_small _alt-style-clean _search-bar-sort"
             width="167"
             iconType="chevron"
             :items="sortOptions"

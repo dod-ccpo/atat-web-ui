@@ -14,7 +14,7 @@
           <div>
             <ATATSelect
               id="PortfolioSort"
-              class="_small _alt-style-clean _portfolio-sort"
+              class="_small _alt-style-clean _search-bar-sort"
               :items="sortOptions"
               width="167"
               :selectedValue.sync="selectedSort"

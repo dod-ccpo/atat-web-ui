@@ -6,13 +6,12 @@
     </h1>
     <div class="copy-max-width">
       <p class="page-intro">
-        In this section, we’ll establish the basis for how your acquisition will 
-        be evaluated to assist you and your Contracting Officer (KO) during the 
-        source selection process. To begin, select the most applicable evaluation 
-        method below. In the following screens, we’ll identify any compliance standards, 
-        differentiators, or assessment areas that CSPs must address in their response 
-        to the solicitation. You’ll have an opportunity to customize these standards 
-        for your specific needs.
+        In this section, we'll develop the basis for how your acquisition will be 
+        evaluated. To begin, select the applicable evaluation method below. In the 
+        following screens, we’ll identify any compliance standards, differentiators,
+        or assessment areas that CSPs must address in their response to the 
+        solicitation. You’ll have an opportunity to customize these standards for 
+        your specific needs.
       </p>
 
       <ATATRadioGroup 
@@ -20,27 +19,42 @@
         legend="Which source selection process is applicable to your requirement?"
         :legend-link="legendLink"
         @openSlideoutPanel="openSlideoutPanel"
-        :value.sync="selectedEvalOption"
+        :value.sync="sourceSelection"
         :items="evalOptions"
         :rules="[
           $validators.required('Please select an option.'),
         ]"
       />
+
+      <section v-show="showMethods" id="MethodSelectionSection">
+        <hr>
+        <ATATRadioGroup 
+          id="MethodSelection"
+          :legend="methodLegend"
+          :value.sync="selectedMethod"
+          :items="methodOptions"
+          :rules="[
+            $validators.required(methodRequiredMessage),
+          ]"
+          :clearErrorMessages.sync="clearMethodErrors"
+        />
+
+      </section>
+
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { 
+  EvalPlanMethod,
   EvalPlanSourceSelection,
-  // EvalPlanMethod, // KEEP FOR FUTURE TICKET
   LegendLink, 
   RadioButton, 
   SlideoutPanelContent
-   
 } from "types/Global"
 import SlideoutPanel from "@/store/slideoutPanel";
 import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
@@ -58,7 +72,17 @@ import { hasChanges } from "@/helpers";
 
 export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
 
-  public selectedEvalOption: EvalPlanSourceSelection = "";
+  public sourceSelection: EvalPlanSourceSelection = "";
+  public selectedMethod: EvalPlanMethod = "";
+
+  public clearMethodErrors = false;
+
+  @Watch("sourceSelection")
+  public sourceSelectionChanged(): void {
+    this.currentData.method = "";
+    this.clearMethodErrors = true;
+  }
+
   public evalOptions: RadioButton[] = [
     {
       label: `I do not require a technical proposal. Award will be made on a 
@@ -87,39 +111,61 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
     }
   ];
 
-  // KEEP FOR TICKET IN UPCOMING SPRINT
-  // public selectedMethod: EvalPlanMethod = "";
-  // public techProposalOptions: RadioButton[] = [
-  //   {
-  //     label: "Lowest Price Technically Acceptable (LPTA)",
-  //     id: "LPTA",
-  //     value: "LPTA",
-  //     description: `Award will be made to the lowest priced offeror meeting the
-  //       compliance standards.`
-  //   },
-  //   {
-  //     label: "Best Value Trade-Off (BVTO)",
-  //     id: "BVTO",
-  //     value: "BVTO",
-  //     description: "Award will be made to the CSP providing the best value."
-  //   },
-  // ];
+  public get methodOptions(): RadioButton[] {
+    return this.sourceSelection === "TechProposal" 
+      ? this.techProposalOptions
+      : this.lumpSumOptions;
+  }
 
-  // KEEP FOR TICKET IN UPCOMING SPRINT
-  // public lumpSumOptions: RadioButton[] = [
-  //   {
-  //     label: "“Best use” solution",
-  //     id: "BestUse",
-  //     value: "BestUse",
-  //     description: "Award will be made to the CSP offering the “best use.”"
-  //   },
-  //   {
-  //     label: "“Lowest risk” solution",
-  //     id: "LowestRisk",
-  //     value: "LowestRisk",
-  //     description: "Award will be made to the CSP providing the lowest risk."
-  //   },
-  // ];
+  public get methodMessagingSubstr(): string {
+    return this.sourceSelection === "TechProposal" 
+      ? "method of evaluation" : "technique";
+  }
+
+  public get methodLegend(): string {
+    return `Based on your selection above, which 
+      ${this.methodMessagingSubstr} is applicable to your requirement?`;
+  }
+
+  public get methodRequiredMessage(): string {
+    return "Please select a " + this.methodMessagingSubstr;
+  }
+
+  public techProposalOptions: RadioButton[] = [
+    {
+      label: "Lowest Price Technically Acceptable (LPTA)",
+      id: "LPTA",
+      value: "LPTA",
+      description: `Award will be made to the lowest priced offeror meeting the
+        compliance standards.`
+    },
+    {
+      label: "Best Value Trade-Off (BVTO)",
+      id: "BVTO",
+      value: "BVTO",
+      description: "Award will be made to the CSP providing the best value."
+    },
+  ];
+
+  public lumpSumOptions: RadioButton[] = [
+    {
+      label: "“Best use” solution",
+      id: "BestUse",
+      value: "BestUse",
+      description: "Award will be made to the CSP offering the “best use.”"
+    },
+    {
+      label: "“Lowest risk” solution",
+      id: "LowestRisk",
+      value: "LowestRisk",
+      description: "Award will be made to the CSP providing the lowest risk."
+    },
+  ];
+
+  public get showMethods(): boolean {
+    return this.sourceSelection === "TechProposal" 
+      || this.sourceSelection === "SetLumpSum";
+  }
 
   public legendLink: LegendLink = {
     id: "LearnMore",
@@ -134,20 +180,25 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
     }
   }
 
+  /* eslint-disable camelcase */
   public get currentData(): EvaluationPlanDTO {
     return {
-      // eslint-disable-next-line camelcase
-      source_selection: this.selectedEvalOption,
-      // KEEP FOR TICKET IN UPCOMING SPRINT
-      // method: this.selectedMethod,
+      source_selection: this.sourceSelection,
+      method: this.selectedMethod,
+      has_custom_specifications: this.savedData.has_custom_specifications,
+      standard_specifications: this.savedData.standard_specifications,
+      custom_specifications: this.savedData.custom_specifications,
     }
   }
 
   public savedData: EvaluationPlanDTO = {
-    // eslint-disable-next-line camelcase
     source_selection: "",
+    method: "",
+    has_custom_specifications: "",
+    standard_specifications: [],
+    custom_specifications: [],
   }
-
+  /* eslint-enable camelcase */
 
   public async mounted(): Promise<void> {
     const slideoutPanelContent: SlideoutPanelContent = {
@@ -161,24 +212,36 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage.getEvaluationPlan;
     if (storeData) {
-      this.selectedEvalOption = storeData.source_selection;
-      // eslint-disable-next-line camelcase
-      this.savedData.source_selection = storeData.source_selection;
+      this.savedData = storeData;
+      this.sourceSelection = storeData.source_selection;
+      this.selectedMethod = storeData.method || "";
     }
   }
   
-  private hasChanged(): boolean {
+  public get hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
   public async saveOnLeave(): Promise<boolean> {
     try {
-      if (this.hasChanged()) {
+      if (this.hasChanged) {
+        if (this.sourceSelection !== this.savedData.source_selection
+          || this.selectedMethod !== this.savedData.method
+        ) {
+          // reset specification data if either source or method changed
+          /* eslint-disable camelcase */
+          this.currentData.has_custom_specifications = undefined;
+          this.currentData.standard_specifications = [];
+          this.currentData.custom_specifications = [];
+          /* eslint-enable camelcase */
+        }
+
         // KEEP FOR FUTURE TICKET when API hooked up for saving to SNOW
         // await AcquisitionPackage.saveData({
         //   data: this.currentData,
         //   storeProperty: StoreProperties.EvaluationPlan,
         // });
         // REMOVE line below after above hooked up
+        
         await AcquisitionPackage.setEvaluationPlan(this.currentData);
       }
     } catch (error) {
@@ -188,7 +251,6 @@ export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
     return true;
 
   }
-
 
 }
 
