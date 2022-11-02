@@ -49,7 +49,7 @@
                 browse to upload
               </a>
             </p>
-            <p class="mt-3 mb-9 text-base" v-html="helpText"></p>
+            <p class="mt-3 mb-9 text-base" v-html="fileUploadHelpText"></p>
           </div>
           <div
             v-else
@@ -74,7 +74,7 @@
                   browse to upload
                 </a>
               </p>
-              <p class="ml-auto mb-0 mt-2 text-base" v-html="helpText"></p>
+              <p class="ml-auto mb-0 mt-2 text-base" v-html="fileUploadHelpText"></p>
             </div>
             
           </div>
@@ -136,7 +136,6 @@ export default class ATATFileUpload extends Vue {
   // props
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
-  @Prop({ default: "Use a PDF file with a max size of 1 GB." }) helpText!: string;
   @Prop({ default: true}) private multiplesAllowed!: boolean;
   @Prop({ default: "required"}) private requiredMessage!: string;
   @Prop({ default: 20 }) private maxNumberOfFiles!: number;
@@ -164,7 +163,8 @@ export default class ATATFileUpload extends Vue {
   private fileAttachmentService?: AttachmentService;
   private errorMessages: string[] = [];
   private validateOnBlur = true;
-  
+  private fileUploadHelpText = `Supported file types: .csv, .xls(x), .pdf, .jpg,
+   .png, .doc&nbsp;&nbsp;•&nbsp;&nbsp;Max file size: 1GB`;
   
   get isFileUploadDisabled():boolean{
     return this.maxNumberOfFiles<=this._validFiles.length;

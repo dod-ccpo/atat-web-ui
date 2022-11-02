@@ -234,6 +234,7 @@ const initialCurrentEnvironment = () => {
     current_environment_exists: "",
     environment_instances: "",
     additional_information: "",
+    diagramChartDocumentation: "",
   }
 }
 
