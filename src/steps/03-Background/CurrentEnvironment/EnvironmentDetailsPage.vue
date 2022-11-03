@@ -12,6 +12,7 @@
       :hasTextFields="true"
       textFieldAppendText="users"
       :textFieldWidth="164"
+      textFieldType="number"
       :labelWidth="130"
       :value.sync="selectedRegions"
     />
