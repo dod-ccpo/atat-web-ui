@@ -52,7 +52,7 @@ export default class CurrentEnvironment extends Mixins(SaveOnLeave) {
     },
     {
       id: "No",
-      label: "No.",
+      label: "No, current environment does not exist.",
       value: "false",
     },
   ];
