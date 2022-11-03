@@ -93,7 +93,7 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
 
   @Watch('selectedUpload')
   private onValueChange(): void{
-    if(this.selectedUpload === "No"){
+    if(this.selectedUpload === "NO"){
       this.uploadedFiles = []
       this.removeAll = true
     }

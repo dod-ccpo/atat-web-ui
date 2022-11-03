@@ -127,7 +127,7 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
 
   @Watch('selectedUpload')
   private selectedUploadChange(): void{
-    if(this.selectedUpload === "No"){
+    if(this.selectedUpload === "NO"){
       this.uploadedFiles = []
       this.removeAll = true
     }
