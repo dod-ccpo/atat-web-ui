@@ -235,6 +235,7 @@ const initialCurrentEnvironment = () => {
     current_environment_exists: "",
     environment_instances: "",
     additional_information: "",
+    diagramChartDocumentation: "",
   }
 }
 
@@ -318,11 +319,19 @@ export class AcquisitionPackageStore extends VuexModule {
   taskOrderDetailsAlertClosed = false;
 
   fundingRequestType: string | null =  null;
-
+  currentEnv = {
+    diagramChartDocumentation:"",
+    assessmentAnalysisDocumentation:"",
+  }
   public initContact: ContactDTO = initialContact()
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
+  }
+
+  @Mutation
+  public setCurrentEnv(value: CurrentEnvironmentDTO): void {
+    this.currentEnv = Object.assign(this.currentEnv, value);
   }
 
   @Mutation
