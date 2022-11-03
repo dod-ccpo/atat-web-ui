@@ -73,6 +73,8 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   current_environment_exists?: string;
   environment_instances?: string;
   additional_information?: string;
+  diagramChartDocumentation?: string;
+
 }
 
 export interface ContactDTO extends BaseTableDTO {
