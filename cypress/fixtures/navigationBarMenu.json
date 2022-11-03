@@ -8,6 +8,40 @@
       "My Packages",
       "My Task Orders",
       "Document Review"
+    ],
+    "acquisitionsTabs": [
+      "Open packages",
+      "Awarded task orders",
+      "Archive",
+      "All packages"
+    ],
+    "draftSubmenu": [
+      "Edit draft package",
+      "Invite contributors",
+      "Archive acquisition",
+      "Delete acquisition package"
+    ],
+    "waitingForTaskOrderSubmenu": [
+      "Add awarded task order",
+      "View completed package",
+      "Archive acquisition",
+      "Delete acquisition package"
+    ],
+    "waitingForSigSubmenu": [
+      "View completed package",
+      "Resend signature request",
+      "Cancel signature request",
+      "Archive acquisition",
+      "Delete acquisition package"
+    ],
+    "taskorderAwarded": [
+      "View task order CLIN summary",
+      "Access provisioned portfolio",
+      "View completed package"
+    ],
+    "archived": [
+      "Restore package to draft",
+      "Delete acquisition package"
     ]
   },
   "portfolios": {
