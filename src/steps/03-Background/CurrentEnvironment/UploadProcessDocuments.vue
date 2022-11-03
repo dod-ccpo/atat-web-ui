@@ -21,7 +21,7 @@
             class="copy-max-width mb-10 max-width-740"
             width="180"
           />
-          <div v-show="selectedUpload === 'Yes'">
+          <div v-show="selectedUpload === 'YES'">
             <hr />
             <ATATFileUpload
               id="FundingPlan"
