@@ -98,6 +98,7 @@
       :isFullSize.sync="isFullSize"
       :multiplesAllowed="multiplesAllowed"
       :title="fileListTitle"
+      :removeAll.sync="_removeAll"
       @delete="(file) => $emit('delete', file)"
     />
   </v-form>
@@ -147,6 +148,7 @@ export default class ATATFileUpload extends Vue {
   
   @Prop({ default: () => [] }) private validFileFormats!: string[];
   @PropSync("invalidFiles", { default: () => [] })
+  @PropSync("removeAll") private _removeAll?: boolean
   private _invalidFiles!: invalidFile[];
   @Prop({ default: "", required: true }) private attachmentServiceName!: string;
   @PropSync("rules", { default: () => [] }) private _rules!: ((

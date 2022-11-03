@@ -21,6 +21,7 @@
             class="copy-max-width mb-10 max-width-740"
             width="180"
           />
+          {{uploadedFiles}}
           <div v-show="selectedUpload === 'Yes'">
             <hr />
              <ATATFileUpload
@@ -32,6 +33,7 @@
                 :validFiles.sync="uploadedFiles"
                 :multiplesAllowed="true"
                 :attachmentServiceName="attachmentServiceName"
+                :removeAll.sync="removeAll"
              />
           </div>
         </div>
@@ -41,7 +43,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import { invalidFile, RadioButton, uploadingFile } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
@@ -90,6 +92,15 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
+  }
+  public removeAll = false
+
+  @Watch('selectedUpload')
+  private onValueChange(): void{
+    if(this.selectedUpload === "No"){
+      this.uploadedFiles = []
+      this.removeAll = true
+    }
   }
 
   public async loadOnEnter(): Promise<void> {
