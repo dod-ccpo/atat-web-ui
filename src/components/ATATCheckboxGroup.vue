@@ -110,7 +110,7 @@
           :key="'textfield' + index"  
         >
           <ATATTextField 
-            :id="'TextArea' + index"
+            :id="'TextField' + index"
             :appendText="textFieldAppendText"
             :width="textFieldWidth"
             v-show="showTextField(index)"
@@ -138,6 +138,7 @@ import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import {Checkbox} from "../../types/Global";
 import { getIdText } from "@/helpers";
+import { text } from "stream/consumers";
 
 @Component({
   components: {
@@ -183,6 +184,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private textFieldAppendText?: string;
   @Prop() private textFieldWidth?: number;
   @Prop({ default: "text" }) private textFieldType?: string;
+  @PropSync("checkboxTextfieldValues") public _checkboxTextfieldValues?: Record<string, string>[];
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -209,7 +211,13 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   public textFieldBlur(index: number): void {
-    // EJY get value of text field, put into array of objects with checked values?
+    // EJY maybe propsync items????
+    // get value of text field, put into array of objects with checked values
+    const checkboxVal = this.items[index].value;
+    const textfield = document.getElementById(`TextField${index}_text_field`) as HTMLInputElement;
+    if (textfield) {
+      const val = textfield.value;
+    }
   }
 
   private selectedIndices: number[] = [];
