@@ -21,7 +21,6 @@
             class="copy-max-width mb-10 max-width-740"
             width="180"
           />
-          {{uploadedFiles}}
           <div v-show="selectedUpload === 'Yes'">
             <hr />
              <ATATFileUpload
