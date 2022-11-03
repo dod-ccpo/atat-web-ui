@@ -14,7 +14,7 @@
     <div class="d-flex _checkbox-wrapper">
       <div class="_checkboxes">
         <v-checkbox
-          v-for="(item, index) in items"
+          v-for="(item, index) in _items"
           v-model="_selected"
           :id="'Checkbox_' + getIdText(item.id)"
           :class="[
@@ -103,20 +103,22 @@
 
         </v-checkbox>
       </div>
-      <div class="_text-fields">
+      <div class="_text-fields" v-if="hasTextFields">
         <div 
           class="_checkbox-text-field-wrap"
-          v-for="(item, index) in items"
+          v-for="(item, index) in _items"
           :key="'textfield' + index"  
         >
+            <!-- :value.sync="_items[index].textfieldValue" -->
           <ATATTextField 
             :id="'TextField' + index"
             :appendText="textFieldAppendText"
             :width="textFieldWidth"
             v-show="showTextField(index)"
             :type="textFieldType"
-            @blur="textFieldBlur(index)"
+            @blur="textFieldBlur(index)"            
           />
+            <!-- @blur="textFieldBlur(index)" -->
 
         </div>
       </div>
@@ -160,7 +162,7 @@ export default class ATATCheckboxGroup extends Vue {
   @PropSync("value") private _selected!: string[];
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
 
-  @Prop({ default: [""], required: true }) private items!: Checkbox[];
+  @PropSync("items") private _items!: Checkbox[];
   @Prop({ default: false }) private card!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private disabled!: boolean;
@@ -184,7 +186,6 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private textFieldAppendText?: string;
   @Prop() private textFieldWidth?: number;
   @Prop({ default: "text" }) private textFieldType?: string;
-  @PropSync("checkboxTextfieldValues") public _checkboxTextfieldValues?: Record<string, string>[];
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -211,19 +212,16 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   public textFieldBlur(index: number): void {
-    // EJY maybe propsync items????
-    // get value of text field, put into array of objects with checked values
-    const checkboxVal = this.items[index].value;
     const textfield = document.getElementById(`TextField${index}_text_field`) as HTMLInputElement;
     if (textfield) {
-      const val = textfield.value;
+      this._items[index].textfieldValue = textfield.value;
     }
   }
 
   private selectedIndices: number[] = [];
 
   public getSelectedIndex(value: string): number {
-    return this.items.findIndex(obj => obj.value === value);
+    return this._items.findIndex(obj => obj.value === value);
   }
 
   @Watch("_selected")
@@ -238,6 +236,13 @@ export default class ATATCheckboxGroup extends Vue {
       const uncheckedVal = oldVal.find(val => !newVal.includes(val)) || "";
       const uncheckedIndex = this.getSelectedIndex(uncheckedVal);
       this.selectedIndices = this.selectedIndices.filter(idx => idx !== uncheckedIndex);
+      this._items[uncheckedIndex].textfieldValue = "";
+      const textfield 
+        = document.getElementById(`TextField${uncheckedIndex}_text_field`) as HTMLInputElement;
+      if (textfield) {
+        textfield.value = "";
+      }
+     
     }
 
     const otherIndex = newVal.indexOf(this.otherValue) > -1;
@@ -330,7 +335,7 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("items")
   protected checkboxItemsChange(): void {
-    if (this.items.length) {
+    if (this._items.length) {
       this.$nextTick(() => {
         this.setEventListeners();
       })
@@ -361,7 +366,7 @@ export default class ATATCheckboxGroup extends Vue {
         this.blurredCheckboxes[groupId].push(id);
       }
 
-      if (this.blurredCheckboxes[groupId].length === this.items.length) {
+      if (this.blurredCheckboxes[groupId].length === this._items.length) {
         if (this.checkboxRules.length === 0) {
           this.validateCheckboxes = true;
         }

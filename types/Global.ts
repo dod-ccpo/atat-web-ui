@@ -153,7 +153,7 @@ export interface Checkbox {
   label: string;
   value: string;
   description?: string;
-  // textfieldValue?: string; // EJY use this?
+  textfieldValue?: string; // EJY use this?
 }
 
 export interface RadioButton extends Checkbox {
