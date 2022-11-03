@@ -38,6 +38,7 @@ export default class ATATFileList extends Vue {
   @Prop({ default: "61686c" }) private color!: string;
   @Prop({ default: () => [] }) private validFiles!: uploadingFile[];
   @PropSync("isFullSize", {default: true}) private _isFullSize!: boolean;
+  @PropSync("removeAll", {default: false}) public _removeAll?: boolean
   @Prop({ default: true }) private multiplesAllowed!: boolean;
   @Prop({ default: "" }) private title!: string;
   private uploadingFiles: uploadingFile[] = [];
@@ -56,6 +57,16 @@ export default class ATATFileList extends Vue {
       return "Your Upload" + (this.uploadingFiles.length > 1 ? "s" : "");
     }
     return ''
+  }
+  @Watch("_removeAll")
+  public removeAllChange(newVal:boolean):void {
+    if(newVal){
+      for (let index = 0; index < this.uploadingFiles.length; index++) {
+        this.removeFiles(0);
+      }
+      this._removeAll = false;
+    }
+
   }
 
   /**
