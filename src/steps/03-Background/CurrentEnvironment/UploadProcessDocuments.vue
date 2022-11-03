@@ -64,17 +64,17 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
     {
       id: "Yes",
       label: "Yes.",
-      value: "Yes",
+      value: "YES",
     },
     {
       id: "No",
       label: "No.",
-      value: "No",
+      value: "NO",
     },
   ];
   private invalidFiles: invalidFile[] = [];
   private maxFileSizeInBytes = 1073741824;
-  private validFileFormats = ["csv","xls(x)","pdf","jpg","png","doc(x)"];
+  private validFileFormats = ["csv","xlsx","pdf","jpg","png","docx"];
   private uploadedFiles: uploadingFile[] = [];
 
   public selectedUpload

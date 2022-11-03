@@ -65,12 +65,12 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
     {
       id: "Yes",
       label: "Yes.",
-      value: "Yes",
+      value: "YES",
     },
     {
       id: "No",
       label: "No.",
-      value: "No",
+      value: "NO",
     },
   ];
   private invalidFiles: invalidFile[] = [];

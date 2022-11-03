@@ -46,7 +46,7 @@ describe("Testing UploadProcessDocuments Component", () => {
       })
     })
     it("test onValueChange",()=>{
-      wrapper.vm.$data.selectedUpload = "No";
+      wrapper.vm.$data.selectedUpload = "NO";
       const result = wrapper.vm.$data.removeAll
       wrapper.vm.onValueChange()
       Vue.nextTick(()=>{
