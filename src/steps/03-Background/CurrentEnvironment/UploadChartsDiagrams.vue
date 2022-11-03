@@ -95,11 +95,10 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage
-      .currentEnv
-      // .loadData<CurrentEnvironmentDTO>(
-      //   { storeProperty: StoreProperties.CurrentEnvironment }
-      // );
+    const storeData = AcquisitionPackage.currentEnv
+    // .loadData<CurrentEnvironmentDTO>(
+    //   { storeProperty: StoreProperties.CurrentEnvironment }
+    // );
     if (storeData) {
       this.savedData = {
         // eslint-disable-next-line camelcase

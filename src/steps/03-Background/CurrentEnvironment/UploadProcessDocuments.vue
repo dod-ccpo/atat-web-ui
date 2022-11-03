@@ -107,8 +107,7 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage
-      .currentEnv
+    const storeData = AcquisitionPackage.currentEnv
     if (storeData) {
       this.savedData = {
         assessmentAnalysisDocumentation: storeData.assessmentAnalysisDocumentation,
