@@ -45,7 +45,7 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { invalidFile, RadioButton, uploadingFile } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage, from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
