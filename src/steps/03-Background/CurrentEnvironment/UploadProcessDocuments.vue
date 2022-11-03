@@ -45,7 +45,7 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { invalidFile, RadioButton, uploadingFile } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import AcquisitionPackage, from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -109,12 +109,8 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage
       .currentEnv
-    // .loadData<CurrentEnvironmentDTO>(
-    //   { storeProperty: StoreProperties.CurrentEnvironment }
-    // );
     if (storeData) {
       this.savedData = {
-        // eslint-disable-next-line camelcase
         assessmentAnalysisDocumentation: storeData.assessmentAnalysisDocumentation,
       }
     }
