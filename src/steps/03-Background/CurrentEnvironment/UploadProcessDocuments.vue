@@ -32,6 +32,7 @@
               :validFiles.sync="uploadedFiles"
               :multiplesAllowed="true"
               :attachmentServiceName="attachmentServiceName"
+              @delete="deleteFile"
             />
           </div>
         </div>
@@ -91,7 +92,9 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
-
+  public async deleteFile(file: uploadingFile): Promise<void> {
+    // todo future ticket - delete attachment
+  }
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage
       .currentEnv

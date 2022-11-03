@@ -34,6 +34,7 @@
                 :multiplesAllowed="true"
                 :attachmentServiceName="attachmentServiceName"
                 :removeAll.sync="removeAll"
+                @delete="deleteFile"
              />
           </div>
         </div>
@@ -102,7 +103,9 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
       this.removeAll = true
     }
   }
-
+  public async deleteFile(file: uploadingFile): Promise<void> {
+    // todo future ticket - delete attachment
+  }
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage
       .currentEnv
