@@ -1,7 +1,12 @@
 <template>
   <div :id="id">
 
-    <p v-if="groupLabel" :id="groupLabelId" class="_checkbox-group-label d-flex align-center">
+    <p 
+      v-if="groupLabel" 
+      :id="groupLabelId" 
+      class="_checkbox-group-label d-flex align-center"
+      :class="{ 'mb-0' : groupLabelHelpText }"
+    >
       <span :class="{'mr-2' : !optional}">{{ groupLabel }}</span> 
       <span class="optional mr-2" v-if="optional">Optional</span>
       <ATATTooltip 
@@ -10,6 +15,9 @@
         :tooltipTitle="tooltipTitle"
         :id="id"
       />
+    </p>
+    <p v-if="groupLabelHelpText" class="text-base font-size-14 mb-3">
+      {{ groupLabelHelpText }}
     </p>
     <div class="d-flex _checkbox-wrapper">
       <div class="_checkboxes">
@@ -63,16 +71,6 @@
                 v-if="item.description"
                 class="mb-0 _description" v-html="item.description"
               ></div>
-
-              <!-- <div v-if="hasTextFields">
-                <ATATTextField 
-                  :appendText="textFieldAppendText"
-                  :width="textFieldWidth"
-                  v-show="showTextField(index)"
-                  :type="textFieldType"
-                />
-              </div> -->
-
             </div>
           </template>
           <template v-slot:append v-if="showOtherEntry(item.value)">
@@ -173,6 +171,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: "CheckboxGroup" }) private id!: string;
   @Prop({ default: "CheckboxGroupLabel" }) private groupLabelId!: string;
   @Prop() private groupLabel!: string;
+  @Prop() private groupLabelHelpText?: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @Prop({ default: "" }) private color!: string;
@@ -213,8 +212,11 @@ export default class ATATCheckboxGroup extends Vue {
 
   public textFieldBlur(index: number): void {
     const textfield = document.getElementById(`TextField${index}_text_field`) as HTMLInputElement;
+    debugger;
     if (textfield) {
       this._items[index].textfieldValue = textfield.value;
+      debugger;
+      this.$emit("checkboxTextfieldDataUpdate", this._items)
     }
   }
 

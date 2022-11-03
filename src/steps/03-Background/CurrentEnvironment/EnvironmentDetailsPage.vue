@@ -1,26 +1,16 @@
 
 <template>
   <div>
-    Future Environment Details page
+    <h1 class="mb-10">
+      Future env details page
+    </h1>
 
-    <!-- <ATATCheckboxGroup
-      id="RegionsDeployed"
-      :items.sync="regions"
-      groupLabel="In which region(s) is this instance deployed?"
-      :optional="true"
-      tooltipText="testing 123 testing"
-      :hasTextFields="true"
-      textFieldAppendText="users"
-      :textFieldWidth="164"
-      textFieldType="number"
-      :labelWidth="130"
-      :value.sync="selectedRegions"
-    /> -->
     <RegionsDeployedAndUserCount 
       :hasTextFields="false"
+      groupLabelId="RegionsDeployedLabel"
       groupLabel="In which region(s) is this instance deployed?"
       @selectedRegionsUpdate="regionsDeployedUpdate"
-      tooltipText="testing 123 testing"
+      :tooltipText="regionsDeployedTooltipText"
       :optional="true"
     />
     
@@ -29,7 +19,9 @@
     <RegionsDeployedAndUserCount 
       :hasTextFields="true"
       :optional="false"
+      groupLabelId="RegionUsersLabel"
       groupLabel="Where are your users located?"
+      groupLabelHelpText="Enter the approximate number of users for each selected region."
       @regionUserDataUpdate="regionUserDataUpdate"
     />
 
@@ -39,16 +31,13 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-// import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
-
 
 import { Checkbox } from "types/Global";
 
 @Component({
   components: {
     RegionsDeployedAndUserCount,
-    // ATATCheckboxGroup
   }
 })
 export default class EnvironmentDetails extends Vue {
@@ -64,54 +53,9 @@ export default class EnvironmentDetails extends Vue {
     this.regionUserData = data;
   }
 
-  // public selectedRegions: string[] = [];
-  // public regions: Checkbox[] = [
-  //   {
-  //     id: "CONUSEast",
-  //     label: "CONUS East",
-  //     value: "CONUSEast",
-  //   },
-  //   {
-  //     id: "CONUSCentral",
-  //     label: "CONUS Central",
-  //     value: "CONUSCentral",
-  //   },
-  //   {
-  //     id: "CONUSWest",
-  //     label: "CONUS West",
-  //     value: "CONUSWest",
-  //   },
-  //   {
-  //     id: "AFRICOM",
-  //     label: "AFRICOM",
-  //     value: "AFRICOM",
-  //   },
-  //   {
-  //     id: "CENTCOM",
-  //     label: "CENTCOM",
-  //     value: "CENTCOM"
-  //   },
-  //   {
-  //     id: "EUCOM",
-  //     label: "EUCOM",
-  //     value: "EUCOM"
-  //   },
-  //   {
-  //     id: "INDOPACOM",
-  //     label: "INDOPACOM",
-  //     value: "INDOPACOM"
-  //   },
-  //   {
-  //     id: "PACCOM",
-  //     label: "PACCOM",
-  //     value: "PACCOM"
-  //   },
-  //   {
-  //     id: "SOUTHCOM",
-  //     label: "SOUTHCOM",
-  //     value: "SOUTHCOM"
-  //   },
-  // ];
+  public regionsDeployedTooltipText = `This is the geographic location where your 
+    public cloud resources are located, e.g., within the continental U.S. (CONUS) 
+    or outside of the continental U.S. (OCONUS).`
 
 }
 </script>

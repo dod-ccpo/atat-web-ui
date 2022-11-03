@@ -4,6 +4,8 @@
     id="RegionsDeployed"
     :items.sync="regions"
     :groupLabel="groupLabel"
+    :groupLabelId="groupLabelId"
+    :groupLabelHelpText="groupLabelHelpText"
     :optional="optional"
     :tooltipText="tooltipText"
     :hasTextFields="hasTextFields"
@@ -12,6 +14,7 @@
     textFieldType="number"
     :labelWidth="130"
     :value.sync="selectedRegions"
+    @checkboxTextfieldDataUpdate="regionsUserDateUpdate"
   />
 </template>
 
@@ -30,6 +33,8 @@ import { Checkbox } from "types/Global";
 export default class RegionsDeployedAndUserCount extends Vue {
   @Prop({ default: false }) hasTextFields?: boolean;
   @Prop() groupLabel?: string;
+  @Prop() groupLabelId?: string;
+  @Prop() groupLabelHelpText?: string;
   @Prop() optional!: boolean;
   @Prop() tooltipText?: string;
 
@@ -82,14 +87,20 @@ export default class RegionsDeployedAndUserCount extends Vue {
     },
   ];
 
-  @Watch("regions", {deep: true})
-  public regionsChanged(): void {
-    debugger;
-    this.$emit("regionUserDataUpdate", this.regions);
-  }
+  // @Watch("regions", {deep: true})
+  // public regionsChanged(): void {
+  //   debugger;
+  //   this.$emit("regionUserDataUpdate", this.regions);
+  // }
+
   @Watch("selectedRegions")
   public selectedRegionsChanged(): void {
     this.$emit("selectedRegionsUpdate", this.selectedRegions);
+  }
+
+  public regionsUserDateUpdate(): void {
+    debugger;
+    this.$emit("regionUserDataUpdate", this.regions);
   }
 
 }
