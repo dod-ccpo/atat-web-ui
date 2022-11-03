@@ -49,7 +49,7 @@ describe("Testing UploadChartsDiagrams Component", () => {
     it("test onValueChange",()=>{
       wrapper.vm.$data.selectedUpload = "No";
       const result = wrapper.vm.$data.removeAll
-      wrapper.vm.onValueChange()
+      wrapper.vm.selectedUploadChange()
       Vue.nextTick(()=>{
         expect(result).toBe(true);
       })

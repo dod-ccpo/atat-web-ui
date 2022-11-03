@@ -33,7 +33,7 @@
                 :multiplesAllowed="true"
                 :attachmentServiceName="attachmentServiceName"
                 :removeAll.sync="removeAll"
-                @delete="deleteFile"
+                @delete="removeFile"
              />
           </div>
         </div>
@@ -93,18 +93,7 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
-  public removeAll = false
 
-  @Watch('selectedUpload')
-  private onValueChange(): void{
-    if(this.selectedUpload === "No"){
-      this.uploadedFiles = []
-      this.removeAll = true
-    }
-  }
-  public async deleteFile(file: uploadingFile): Promise<void> {
-    // todo future ticket - delete attachment
-  }
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage
       .currentEnv
@@ -134,6 +123,18 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
     }
 
     return true;
+  }
+  public removeAll = false
+
+  @Watch('selectedUpload')
+  private selectedUploadChange(): void{
+    if(this.selectedUpload === "No"){
+      this.uploadedFiles = []
+      this.removeAll = true
+    }
+  }
+  public async removeFile(file: uploadingFile): Promise<void> {
+    // todo future ticket - delete attachment
   }
 
   public async mounted(): Promise<void> {

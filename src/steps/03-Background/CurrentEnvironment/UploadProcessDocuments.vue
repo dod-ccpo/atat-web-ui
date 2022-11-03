@@ -89,9 +89,6 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
     assessmentAnalysisDocumentation: "",
   }
 
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
-  }
   public removeAll = false
 
   @Watch('selectedUpload')
@@ -104,6 +101,10 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
 
   public async deleteFile(file: uploadingFile): Promise<void> {
     // todo future ticket - delete attachment
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
   }
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage
