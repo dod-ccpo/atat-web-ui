@@ -74,6 +74,7 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   environment_instances?: string;
   additional_information?: string;
   diagramChartDocumentation?: string;
+  assessmentAnalysisDocumentation?: string;
 
 }
 
