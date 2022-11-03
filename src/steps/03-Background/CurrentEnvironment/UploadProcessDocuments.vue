@@ -32,6 +32,7 @@
               :validFiles.sync="uploadedFiles"
               :multiplesAllowed="true"
               :attachmentServiceName="attachmentServiceName"
+              :removeAll.sync="removeAll"
               @delete="deleteFile"
             />
           </div>
