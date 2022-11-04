@@ -29,21 +29,21 @@
 
   </div>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-import ATATTextField from "@/components/ATATTextField.vue";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 
 import { Checkbox } from "types/Global";
 
 @Component({
   components: {
-    ATATTextField,
     RegionsDeployedAndUserCount,
   }
 })
+
 export default class EnvironmentDetails extends Vue {
 
   public regionsDeployed: string [] = [];
@@ -58,7 +58,7 @@ export default class EnvironmentDetails extends Vue {
 
   public regionsDeployedTooltipText = `This is the geographic location where your 
     public cloud resources are located, e.g., within the continental U.S. (CONUS) 
-    or outside of the continental U.S. (OCONUS).`
+    or outside of the continental U.S. (OCONUS).`;
 
 }
 </script>

@@ -1,6 +1,5 @@
 <template>
   <div :id="id">
-
     <p 
       v-if="groupLabel" 
       :id="groupLabelId" 
@@ -98,16 +97,15 @@
               :rules="otherRequiredRule"
             />
           </template>
-
         </v-checkbox>
       </div>
+
       <div class="_text-fields" v-if="hasTextFields">
         <div 
           class="_checkbox-text-field-wrap"
           v-for="(item, index) in _items"
           :key="'textfield' + index"  
         >
-            <!-- :value.sync="_items[index].textfieldValue" -->
           <ATATTextField 
             :id="id + '_TextField' + index"
             :appendText="textFieldAppendText"
@@ -117,10 +115,9 @@
             @blur="textFieldBlur(index)"   
             :isFormattedNumber="isFormattedNumber"         
           />
-            <!-- @blur="textFieldBlur(index)" -->
-
         </div>
       </div>
+
     </div>
 
     <ATATErrorValidation :errorMessages="errorMessages" />
@@ -213,7 +210,7 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   public textFieldBlur(index: number): void {
-    const textfield = document.getElementById(`TextField${index}_text_field`) as HTMLInputElement;
+    const textfield = this.getTextField(index);
     if (textfield) {
       this._items[index].textfieldValue = textfield.value;
       this.$emit("checkboxTextfieldDataUpdate", this._items)
