@@ -7,6 +7,7 @@
 
     <RegionsDeployedAndUserCount 
       :hasTextFields="false"
+      id="RegionsDeployed"
       groupLabelId="RegionsDeployedLabel"
       groupLabel="In which region(s) is this instance deployed?"
       @selectedRegionsUpdate="regionsDeployedUpdate"
@@ -18,6 +19,7 @@
 
     <RegionsDeployedAndUserCount 
       :hasTextFields="true"
+      id="RegionsUsers"
       :optional="false"
       groupLabelId="RegionUsersLabel"
       groupLabel="Where are your users located?"
@@ -31,12 +33,14 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
+import ATATTextField from "@/components/ATATTextField.vue";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 
 import { Checkbox } from "types/Global";
 
 @Component({
   components: {
+    ATATTextField,
     RegionsDeployedAndUserCount,
   }
 })

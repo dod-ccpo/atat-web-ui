@@ -109,12 +109,13 @@
         >
             <!-- :value.sync="_items[index].textfieldValue" -->
           <ATATTextField 
-            :id="'TextField' + index"
+            :id="id + '_TextField' + index"
             :appendText="textFieldAppendText"
             :width="textFieldWidth"
-            v-show="showTextField(index)"
-            :type="textFieldType"
-            @blur="textFieldBlur(index)"            
+            v-if="showTextField(index)"
+            type="text"
+            @blur="textFieldBlur(index)"   
+            :isFormattedNumber="isFormattedNumber"         
           />
             <!-- @blur="textFieldBlur(index)" -->
 
@@ -185,6 +186,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private textFieldAppendText?: string;
   @Prop() private textFieldWidth?: number;
   @Prop({ default: "text" }) private textFieldType?: string;
+  @Prop({ default: false }) private isFormattedNumber?: boolean;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;

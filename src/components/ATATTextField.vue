@@ -114,6 +114,7 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: ()=>[] }) private mask!: string[];
   @Prop({ default: false }) private isMaskRegex!: boolean;
   @Prop({ default: false }) private isCurrency!: boolean;
+  @Prop({ default: false }) private isFormattedNumber!: boolean;
   @Prop({ default: false }) private alignRight?: boolean;
   @Prop({ default: false }) private disabled?: boolean;
   @Prop({ default: true }) private showErrorMessages?: boolean;
@@ -169,32 +170,50 @@ export default class ATATTextField extends Vue  {
   }
 
   private setMasks(): void {
-    const maskObj: mask = {};
-    if (this.isCurrency){
-      maskObj.alias = "currency";
-      maskObj.groupSeparator = ",";
-      maskObj.digits = 2;
-      maskObj.autoGroup = true;
-      maskObj.digitsOptional = false;
-      maskObj.rightAlign=false;
-    } else if (this.mask.length > 0){
-      if (this.isMaskRegex){
-        maskObj.regex = this.mask[0] || "";
-      } else {
-        maskObj.mask = this.mask || [];
+    setTimeout(() => {
+
+      const maskObj: mask = {};
+      debugger;
+
+      if (this.isCurrency){
+        maskObj.alias = "currency";
+        maskObj.groupSeparator = ",";
+        maskObj.digits = 2;
+        maskObj.autoGroup = true;
+        maskObj.digitsOptional = false;
+        maskObj.rightAlign=false;
+
+      } else if (this.isFormattedNumber) {
+        // maskObj.mask = ["/B(?=(d{3})+(?!d))/g"]
+        maskObj.alias = "decimal";
+        maskObj.groupSeparator = ",";
+        maskObj.digits = 0;
+        maskObj.autoGroup = true;
+        maskObj.digitsOptional = true;
+        maskObj.rightAlign=false;
+        // maskObj.regex = "/B(?=(d{3})+(?!d))/g";
+      } else if (this.mask.length > 0){
+        if (this.isMaskRegex){
+          maskObj.regex = this.mask[0] || "";
+        } else {
+          maskObj.mask = this.mask || [];
+        }
       }
-    }
-    
-    if (Object.keys(maskObj).length>0){
-      maskObj.placeholder="";
-      maskObj.jitMasking=true;
-      Vue.nextTick(()=>{
-        const inputField = document.getElementById(
-          this.id + '_text_field'
-        ) as HTMLInputElement;
-        Inputmask(maskObj).mask(inputField);
-      });
-    }
+      
+
+
+      if (Object.keys(maskObj).length>0){
+        maskObj.placeholder="";
+        maskObj.jitMasking=true;
+        Vue.nextTick(()=>{
+          debugger;
+          const inputField = document.getElementById(
+            this.id + '_text_field'
+          ) as HTMLInputElement;
+          Inputmask(maskObj).mask(inputField);
+        });
+      }
+    }, 0);
   }
 
   private mounted(): void{

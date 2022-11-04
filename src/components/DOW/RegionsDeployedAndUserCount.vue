@@ -1,7 +1,7 @@
 
 <template>
   <ATATCheckboxGroup
-    id="RegionsDeployed"
+    :id="id"
     :items.sync="regions"
     :groupLabel="groupLabel"
     :groupLabelId="groupLabelId"
@@ -15,6 +15,7 @@
     :labelWidth="130"
     :value.sync="selectedRegions"
     @checkboxTextfieldDataUpdate="regionsUserDateUpdate"
+    :isFormattedNumber="true"
   />
 </template>
 
@@ -31,6 +32,7 @@ import { Checkbox } from "types/Global";
   }
 })
 export default class RegionsDeployedAndUserCount extends Vue {
+  @Prop({ default: "Regions" }) id!: string;
   @Prop({ default: false }) hasTextFields?: boolean;
   @Prop() groupLabel?: string;
   @Prop() groupLabelId?: string;
