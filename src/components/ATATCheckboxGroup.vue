@@ -18,132 +18,97 @@
     <p v-if="groupLabelHelpText" class="text-base font-size-14 mb-3">
       {{ groupLabelHelpText }}
     </p>
-    <!-- <div class="d-flex _checkbox-wrapper"> -->
-      <div class="_checkboxes">
-        <v-checkbox
-          v-for="(item, index) in _items"
-          v-model="_selected"
-          :id="'Checkbox_' + getIdText(item.id)"
-          :class="[
-            card ? '_checkbox-card' : '_checkbox',
-            color ? '_checkbox-' + color : '',
-            { 'flex-column _has-other': item.value === otherValue },
-            { '_other-selected': showOtherEntry(item.value) },
-            { '_no-description': noDescriptions },
-            { '_has-text-fields' : hasTextFields }
-          ]"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-          :error="error"
-          :disabled="disabled"
-          :rules="checkboxRules"
-          @mouseup="checkBoxClicked(item.value, index)"
-          multiple
-          :hide-details="true"
-          :ref="index === 0 ? 'checkboxGroup' : ''"
-          :data-group-id="id + '_Group'"
+    <div class="_checkboxes">
+      <v-checkbox
+        v-for="(item, index) in _items"
+        v-model="_selected"
+        :id="'Checkbox_' + getIdText(item.id)"
+        :class="[
+          card ? '_checkbox-card' : '_checkbox',
+          color ? '_checkbox-' + color : '',
+          { 'flex-column _has-other': item.value === otherValue },
+          { '_other-selected': showOtherEntry(item.value) },
+          { '_no-description': noDescriptions },
+          { '_has-text-fields' : hasTextFields }
+        ]"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+        :error="error"
+        :disabled="disabled"
+        :rules="checkboxRules"
+        @mouseup="checkBoxClicked(item.value, index)"
+        multiple
+        :hide-details="true"
+        :ref="index === 0 ? 'checkboxGroup' : ''"
+        :data-group-id="id + '_Group'"
+      >
+        <template 
+          v-if="card || item.description || item.value === otherValue || hasTextFields" 
+          v-slot:label
         >
-          <template 
-            v-if="card || item.description || item.value === otherValue || hasTextFields" 
-            v-slot:label
+          <div 
+            class="d-flex "
+            :class="[
+              { 'flex-column width-100' : !hasTextFields },
+              { 'align-center foobar' : hasTextFields }
+            ]"
           >
             <div 
-              class="d-flex "
+              v-if="item.label" 
               :class="[
-                { 'flex-column width-100' : !hasTextFields },
-                { 'align-center foobar' : hasTextFields }
+                {'card-label': item.label}, 
+                {'mb-0': item.value === otherValue},
+                {'_no-description': noDescriptions}
               ]"
+              :style="labelStyles"
             >
-              <div 
-                v-if="item.label" 
-                :class="[
-                  {'card-label': item.label}, 
-                  {'mb-0': item.value === otherValue},
-                  {'_no-description': noDescriptions}
-                ]"
-                :style="labelStyles"
-              >
-                {{ item.label }}
-              </div>
-              <div
-                v-if="item.description"
-                class="mb-0 _description" v-html="item.description"
-              ></div>
+              {{ item.label }}
             </div>
-          </template>
-          <template v-slot:append v-if="showOtherEntry(item.value) || hasTextFields">
-            <ATATTextArea
-              v-if="otherEntryType === 'textarea' && showOtherEntry(item.value)"
-              ref="atatTextInput"
-              name="otherTextArea"
-              v-show="showOtherEntry(item.value)"
-              :id="otherId"
-              class="width-100 ml-5 mb-6"
-              :rows="3"
-              :validateItOnBlur="validateOtherOnBlur"
-              :value.sync="_otherValueEntered"
-              :rules="otherRequiredRule"
-            />
-            <ATATTextField
-              v-if="otherEntryType === 'textfield' && showOtherEntry(item.value)"
-              ref="atatTextInput"
-              name="otherTextField"
-              v-show="showOtherEntry(item.value)"
-              :id="otherId"
-              class="ml-5 mb-6 mt-2 _input-wrapper-max-width"
-              :validateItOnBlur="validateOtherOnBlur"
-              :value.sync="_otherValueEntered"
-              :rules="otherRequiredRule"
-            />
+            <div
+              v-if="item.description"
+              class="mb-0 _description" v-html="item.description"
+            ></div>
+          </div>
+        </template>
+        <template v-slot:append v-if="showOtherEntry(item.value) || hasTextFields">
+          <ATATTextArea
+            v-if="otherEntryType === 'textarea' && showOtherEntry(item.value)"
+            ref="atatTextInput"
+            name="otherTextArea"
+            v-show="showOtherEntry(item.value)"
+            :id="otherId"
+            class="width-100 ml-5 mb-6"
+            :rows="3"
+            :validateItOnBlur="validateOtherOnBlur"
+            :value.sync="_otherValueEntered"
+            :rules="otherRequiredRule"
+          />
+          <ATATTextField
+            v-if="otherEntryType === 'textfield' && showOtherEntry(item.value)"
+            ref="atatTextInput"
+            name="otherTextField"
+            v-show="showOtherEntry(item.value)"
+            :id="otherId"
+            class="ml-5 mb-6 mt-2 _input-wrapper-max-width"
+            :validateItOnBlur="validateOtherOnBlur"
+            :value.sync="_otherValueEntered"
+            :rules="otherRequiredRule"
+          />
 
-            <ATATTextField 
-              v-if="hasTextFields && showTextField(index)"
-              :id="id + '_TextField' + index"
-              :appendText="textFieldAppendText"
-              :width="textFieldWidth"
-              type="text"
-              @blur="textFieldBlur(index)"   
-              :isFormattedNumber="isFormattedNumber" 
-              :rules="textfieldRules"        
-            /> 
-
-          </template>
-          <!-- <template v-slot:prepend v-if="hasTextFields">
-            <ATATTextField 
-              :id="id + '_TextField' + index"
-              :appendText="textFieldAppendText"
-              :width="textFieldWidth"
-              v-if="showTextField(index)"
-              type="text"
-              @blur="textFieldBlur(index)"   
-              :isFormattedNumber="isFormattedNumber" 
-              :rules="textfieldRules"        
-            /> 
-
-          </template>-->
-        </v-checkbox>
-      <!-- </div> -->
-
-      <!-- <div class="_text-fields" v-if="hasTextFields">
-        <div 
-          class="_checkbox-text-field-wrap"
-          v-for="(item, index) in _items"
-          :key="'textfield' + index"  
-        >
           <ATATTextField 
+            v-if="hasTextFields && showTextField(index)"
             :id="id + '_TextField' + index"
             :appendText="textFieldAppendText"
             :width="textFieldWidth"
-            v-if="showTextField(index)"
             type="text"
             @blur="textFieldBlur(index)"   
             :isFormattedNumber="isFormattedNumber" 
             :rules="textfieldRules"        
-          />
-        </div>
-      </div> -->
+          /> 
 
+        </template>
+      </v-checkbox>
     </div>
 
     <ATATErrorValidation :errorMessages="errorMessages" />
