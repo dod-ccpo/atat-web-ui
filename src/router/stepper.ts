@@ -40,6 +40,13 @@ import UploadChartsDiagrams
   from "@/steps/03-Background/CurrentEnvironment/UploadChartsDiagrams.vue";
 import UploadProcessDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadProcessDocuments.vue";
+import ReplicateAndOptimize
+  from "@/steps/03-Background/CurrentEnvironment/ReplicateAndOptimize.vue";
+import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/ReplicateDetails.vue";
+import ArchitecturalDesign from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesign.vue";
+import ArchitecturalDesignDetails
+  from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesignDetails.vue";
+import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/EnvironmentSummary.vue";
 
 // Step 4 - Contract Details
 /* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
@@ -138,7 +145,7 @@ import {
   CreateEvalPlanRouteResolver,
   BVTOResolver,
   NoEvalPlanRouteResolver,
-  EvalPlanDetailsRouteResolver,
+  EvalPlanDetailsRouteResolver, ArchitecturalDesignDetailsRouteResolver,
 
 } from "./resolvers";
 
@@ -222,7 +229,12 @@ export const routeNames = {
   EstimatesDeveloped:"Estimates_Developed",
   SupportingDocumentation:"Supporting_Documentation",
   UploadChartsDiagrams:"Upload_Charts_Diagrams",
-  UploadProcessDocuments:"Upload_Process_Documents"
+  UploadProcessDocuments:"Upload_Process_Documents",
+  ReplicateAndOptimize:"Replicate_And_Optimize",
+  ReplicateDetails:"Replicate_Details",
+  ArchitecturalDesign:"Architectural_Design",
+  ArchitecturalDesignDetails:"Architectural_Design_Details",
+  EnvironmentSummary:"Environment_Summary",
 };
 
 /**
@@ -487,7 +499,52 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
       },
-
+      {
+        menuText: "Environment Summary",
+        path: "environment-summary",
+        excludeFromMenu: true,
+        name: routeNames.EnvironmentSummary,
+        component: EnvironmentSummary,
+        completePercentageWeight: 5,
+        completed: false,
+      },
+      {
+        menuText: "Replicate And Optimize",
+        path: "replicate-and-optimize",
+        excludeFromMenu: true,
+        name: routeNames.ReplicateAndOptimize,
+        component: ReplicateAndOptimize,
+        completePercentageWeight: 5,
+        completed: false,
+      },
+      {
+        menuText: "Replicate Details",
+        path: "replicate-details",
+        excludeFromMenu: true,
+        name: routeNames.ReplicateDetails,
+        component: ReplicateDetails,
+        completePercentageWeight: 5,
+        completed: false,
+      },
+      {
+        menuText: "Architectural Design",
+        path: "architectural-design",
+        excludeFromMenu: true,
+        name: routeNames.ArchitecturalDesign,
+        component: ArchitecturalDesign,
+        completePercentageWeight: 5,
+        completed: false,
+      },
+      {
+        menuText: "Architectural Design Details",
+        path: "architectural-design-details",
+        excludeFromMenu: true,
+        name: routeNames.ArchitecturalDesignDetails,
+        component: ArchitecturalDesignDetails,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: ArchitecturalDesignDetailsRouteResolver
+      },
       {
         menuText: "Summary",
         path: "background-summary",
