@@ -2,15 +2,15 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
-import UploadChartsDiagrams
-  from "@/steps/03-Background/CurrentEnvironment/UploadChartsDiagrams.vue";
 import validators from "../../../plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import UploadProcessDocuments
+  from "@/steps/03-Background/CurrentEnvironment/UploadProcessDocuments.vue";
 
 
 Vue.use(Vuetify);
 
-describe("Testing UploadChartsDiagrams Component", () => {
+describe("Testing UploadProcessDocuments Component", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
   let vuetify: Vuetify;
@@ -18,13 +18,13 @@ describe("Testing UploadChartsDiagrams Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(UploadChartsDiagrams, {
+    wrapper = mount(UploadProcessDocuments, {
       vuetify,
       localVue
     });
   });
 
-  describe("testing UploadChartsDiagrams render", () => {
+  describe("testing UploadProcessDocuments render", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
@@ -37,19 +37,18 @@ describe("Testing UploadChartsDiagrams Component", () => {
 
     it("test saveOnLeave()", async () => {
       wrapper.vm.$data.hasChanged = true
-      wrapper.vm.$data.currentData = {diagramChartDocumentation: 'test'}
-      const result = AcquisitionPackage.currentEnv.diagramChartDocumentation
+      wrapper.vm.$data.currentData = {assessmentAnalysisDocumentation: 'test'}
+      const result = AcquisitionPackage.currentEnv.assessmentAnalysisDocumentation
       jest.spyOn(AcquisitionPackage,"setCurrentEnv")
       wrapper.vm.saveOnLeave()
       Vue.nextTick(()=>{
         expect(result).toBe('test');
       })
     })
-
     it("test onValueChange",()=>{
       wrapper.vm.$data.selectedUpload = "NO";
       const result = wrapper.vm.$data.removeAll
-      wrapper.vm.selectedUploadChange()
+      wrapper.vm.onValueChange()
       Vue.nextTick(()=>{
         expect(result).toBe(true);
       })
