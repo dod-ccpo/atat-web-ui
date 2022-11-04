@@ -162,7 +162,6 @@ import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import {Checkbox} from "../../types/Global";
 import { getIdText } from "@/helpers";
-import { text } from "stream/consumers";
 
 @Component({
   components: {
