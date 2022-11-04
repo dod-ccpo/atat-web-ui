@@ -36,6 +36,7 @@
       <v-card
         class="_task-order-card"
         elevation="0"
+        id="Card_TotalObligatedFunds"
       >
         <div class="d-flex">
           <span class="pr-2 font-weight-500">Total obligated funds</span>
@@ -49,6 +50,7 @@
       <v-card
         class="_task-order-card"
         elevation="0"
+        id="Card_TotalTaskOrderValue"
       >
         <div class="d-flex">
           <span class="pr-2 font-weight-500">Total task order value</span>
@@ -62,6 +64,7 @@
       <v-card
         class="_task-order-card"
         elevation="0"
+        id="Card_TotalLifecycleAmount"
       >
         <div class="d-flex">
           <span class="pr-2 font-weight-500">Total lifecycle amount</span>
@@ -75,6 +78,7 @@
       <v-card
         class="_task-order-card _last"
         elevation="0"
+        id="Card_TotalFundsSpent"
       >
         <div class="d-flex">
           <span class="pr-2 font-weight-500">Total funds spent</span>
@@ -173,10 +177,10 @@
                     :class="{'text-error font-weight-500': item.status === 'Delinquent'}"
                     class="d-flex align-center justify-end"
                   >
-                    {{item.totalFundsSpent}}
+                    <span class="_total-funds-spent">{{item.totalFundsSpent}}</span>
                     <span
                       :class="{'text-error font-weight-500': item.status === 'Delinquent'}"
-                      class="font-size-12 text-base ml-3">
+                      class="font-size-12 text-base ml-3 _funds-spent-percent">
                     ({{item.fundsRemaining.percent}}%)
                   </span>
                   </div>
