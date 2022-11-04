@@ -53,7 +53,6 @@ export default class EnvironmentDetails extends Vue {
 
   public regionUserData: Checkbox[] = [];
   public regionUserDataUpdate(data: Checkbox[]): void {
-    debugger;
     this.regionUserData = data;
   }
 

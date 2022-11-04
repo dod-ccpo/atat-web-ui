@@ -214,10 +214,8 @@ export default class ATATCheckboxGroup extends Vue {
 
   public textFieldBlur(index: number): void {
     const textfield = document.getElementById(`TextField${index}_text_field`) as HTMLInputElement;
-    debugger;
     if (textfield) {
       this._items[index].textfieldValue = textfield.value;
-      debugger;
       this.$emit("checkboxTextfieldDataUpdate", this._items)
     }
   }

@@ -89,19 +89,12 @@ export default class RegionsDeployedAndUserCount extends Vue {
     },
   ];
 
-  // @Watch("regions", {deep: true})
-  // public regionsChanged(): void {
-  //   debugger;
-  //   this.$emit("regionUserDataUpdate", this.regions);
-  // }
-
   @Watch("selectedRegions")
   public selectedRegionsChanged(): void {
     this.$emit("selectedRegionsUpdate", this.selectedRegions);
   }
 
   public regionsUserDateUpdate(): void {
-    debugger;
     this.$emit("regionUserDataUpdate", this.regions);
   }
 
