@@ -12,10 +12,12 @@
     textFieldAppendText="users"
     :textFieldWidth="164"
     textFieldType="number"
-    :labelWidth="130"
+    :labelWidth="180"
     :value.sync="selectedRegions"
     @checkboxTextfieldDataUpdate="regionsUserDateUpdate"
     :isFormattedNumber="true"
+    :rules="rules"
+    :textfieldRules="textfieldRules"
   />
 </template>
 
@@ -39,6 +41,8 @@ export default class RegionsDeployedAndUserCount extends Vue {
   @Prop() groupLabelHelpText?: string;
   @Prop() optional!: boolean;
   @Prop() tooltipText?: string;
+  @Prop({ default: () => []}) private rules!: Array<unknown>;
+  @Prop({ default: () => []}) private textfieldRules!: Array<unknown>;
 
   public selectedRegions: string[] = [];
   public regions: Checkbox[] = [

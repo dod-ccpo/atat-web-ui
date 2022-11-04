@@ -90,16 +90,27 @@
   }
 
   &._has-text-fields {
-    height: 42px;
+    min-height: 42px;
     .v-input__control, .v-input__slot {
-      height: 42px;
+      min-height: 42px;
     }
     margin-bottom: 4px;
     .v-input__slot {
       align-items: center !important;
     }
+    > .v-input__control {
+      max-width: 180px;
+    }
+    .v-input__prepend-outer {
+      width: 100%;
+      flex-grow: 1;
+    }
+    .atat-text-field {
+      .atat-text-field-error {
+        margin-bottom: 12px;
+      }
+    }
   }
-
 
   &._has-other {
     &._other-selected {

@@ -18,7 +18,7 @@
     <p v-if="groupLabelHelpText" class="text-base font-size-14 mb-3">
       {{ groupLabelHelpText }}
     </p>
-    <div class="d-flex _checkbox-wrapper">
+    <!-- <div class="d-flex _checkbox-wrapper"> -->
       <div class="_checkboxes">
         <v-checkbox
           v-for="(item, index) in _items"
@@ -72,9 +72,9 @@
               ></div>
             </div>
           </template>
-          <template v-slot:append v-if="showOtherEntry(item.value)">
+          <template v-slot:append v-if="showOtherEntry(item.value) || hasTextFields">
             <ATATTextArea
-              v-if="otherEntryType === 'textarea'"
+              v-if="otherEntryType === 'textarea' && showOtherEntry(item.value)"
               ref="atatTextInput"
               name="otherTextArea"
               v-show="showOtherEntry(item.value)"
@@ -86,7 +86,7 @@
               :rules="otherRequiredRule"
             />
             <ATATTextField
-              v-if="otherEntryType === 'textfield'"
+              v-if="otherEntryType === 'textfield' && showOtherEntry(item.value)"
               ref="atatTextInput"
               name="otherTextField"
               v-show="showOtherEntry(item.value)"
@@ -96,11 +96,36 @@
               :value.sync="_otherValueEntered"
               :rules="otherRequiredRule"
             />
-          </template>
-        </v-checkbox>
-      </div>
 
-      <div class="_text-fields" v-if="hasTextFields">
+            <ATATTextField 
+              v-if="hasTextFields && showTextField(index)"
+              :id="id + '_TextField' + index"
+              :appendText="textFieldAppendText"
+              :width="textFieldWidth"
+              type="text"
+              @blur="textFieldBlur(index)"   
+              :isFormattedNumber="isFormattedNumber" 
+              :rules="textfieldRules"        
+            /> 
+
+          </template>
+          <!-- <template v-slot:prepend v-if="hasTextFields">
+            <ATATTextField 
+              :id="id + '_TextField' + index"
+              :appendText="textFieldAppendText"
+              :width="textFieldWidth"
+              v-if="showTextField(index)"
+              type="text"
+              @blur="textFieldBlur(index)"   
+              :isFormattedNumber="isFormattedNumber" 
+              :rules="textfieldRules"        
+            /> 
+
+          </template>-->
+        </v-checkbox>
+      <!-- </div> -->
+
+      <!-- <div class="_text-fields" v-if="hasTextFields">
         <div 
           class="_checkbox-text-field-wrap"
           v-for="(item, index) in _items"
@@ -113,10 +138,11 @@
             v-if="showTextField(index)"
             type="text"
             @blur="textFieldBlur(index)"   
-            :isFormattedNumber="isFormattedNumber"         
+            :isFormattedNumber="isFormattedNumber" 
+            :rules="textfieldRules"        
           />
         </div>
-      </div>
+      </div> -->
 
     </div>
 
@@ -171,6 +197,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private groupLabel!: string;
   @Prop() private groupLabelHelpText?: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
+  @Prop({ default: () => []}) private textfieldRules!: Array<unknown>;
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @Prop({ default: "" }) private color!: string;
   @Prop({ default: false }) private optional?: boolean;
@@ -352,7 +379,7 @@ export default class ATATCheckboxGroup extends Vue {
   }
   
   public get labelStyles(): string {
-    return this.labelWidth ? `width: ${this.labelWidth}px;` : "";
+    return this.labelWidth ? `min-width: ${this.labelWidth}px;` : "";
   }
 
   public mounted(): void {

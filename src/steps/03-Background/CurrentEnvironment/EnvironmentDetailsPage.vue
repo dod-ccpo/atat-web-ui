@@ -25,6 +25,8 @@
       groupLabel="Where are your users located?"
       groupLabelHelpText="Enter the approximate number of users for each selected region."
       @regionUserDataUpdate="regionUserDataUpdate"
+      :rules="[$validators.required('Select at least one region.'),]"
+      :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
     />
 
   </div>
