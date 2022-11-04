@@ -46,6 +46,7 @@ import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/Replicate
 import ArchitecturalDesign from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesign.vue";
 import ArchitecturalDesignDetails
   from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesignDetails.vue";
+import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/EnvironmentSummary.vue";
 
 // Step 4 - Contract Details
 /* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
@@ -144,7 +145,7 @@ import {
   CreateEvalPlanRouteResolver,
   BVTOResolver,
   NoEvalPlanRouteResolver,
-  EvalPlanDetailsRouteResolver,
+  EvalPlanDetailsRouteResolver, ArchitecturalDesignDetailsRouteResolver,
 
 } from "./resolvers";
 
@@ -232,7 +233,8 @@ export const routeNames = {
   ReplicateAndOptimize:"Replicate_And_Optimize",
   ReplicateDetails:"Replicate_Details",
   ArchitecturalDesign:"Architectural_Design",
-  ArchitecturalDesignDetails:"Architectural_Design_Details"
+  ArchitecturalDesignDetails:"Architectural_Design_Details",
+  EnvironmentSummary:"Environment_Summary",
 };
 
 /**
@@ -498,11 +500,11 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
       },
       {
-        menuText: "Summary",
-        path: "background-summary",
+        menuText: "Environment Summary",
+        path: "environment-summary",
         excludeFromMenu: true,
-        name: routeNames.BackgroundSummary,
-        component: BackgroundSummary,
+        name: routeNames.EnvironmentSummary,
+        component: EnvironmentSummary,
         completePercentageWeight: 5,
         completed: false,
       },
@@ -539,6 +541,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         name: routeNames.ArchitecturalDesignDetails,
         component: ArchitecturalDesignDetails,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: ArchitecturalDesignDetailsRouteResolver
+      },
+      {
+        menuText: "Summary",
+        path: "background-summary",
+        excludeFromMenu: true,
+        name: routeNames.BackgroundSummary,
+        component: BackgroundSummary,
         completePercentageWeight: 5,
         completed: false,
       },
