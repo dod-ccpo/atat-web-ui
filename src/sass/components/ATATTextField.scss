@@ -1,93 +1,97 @@
-.atat-text-field:not(.atat-textarea) {
-
-  .v-text-field {
-    
+.v-text-field {
+  
+  .v-text-field__suffix {
+    color: $base-light;
+  }
+  &.v-input--is-dirty {
     .v-text-field__suffix {
-      color: $base-light;
+      color: $base-darkest;
     }
-    &.v-input--is-dirty {
-      .v-text-field__suffix {
+  }
+
+  .v-input__prepend-inner, .v-input__append-inner {
+    margin-top: 6px !important;
+    z-index: 1;
+  }
+
+
+  fieldset {
+    max-height: 40px;
+    margin-top: 4px;
+    border: 1px solid $base;
+    border-radius: 4px;
+    background-color: white;
+    legend {
+      display: none;
+    }
+
+    &:focus {
+      border-width: 2px;
+      border-color: $primary;
+    }
+  }
+
+  &.error--text {
+    fieldset,
+    fieldset:focus {
+      border-color: $error !important;
+      border-width: 2px;
+    }
+
+    .v-text-field__suffix {
+      color: $error;
+    }
+  }
+
+  .atat-text-field-error {
+    i {
+      margin-top: 1px;
+    }
+  }
+  
+  &.text-right {
+    input {
+      text-align: right !important;
+    }
+  }
+
+  &.v-input--is-disabled {
+    .v-input__control {
+      background-color: $base-lightest;
+      input {
         color: $base-darkest;
       }
     }
+  }
 
-    .v-input__prepend-inner, .v-input__append-inner {
-      margin-top: 6px !important;
-      z-index: 1;
-    }
-
-
-    .v-text-field__slot {
-      max-height: 38px;
-    }
-    fieldset {
-      max-height: 40px;
-      margin-top: 4px;
-      border: 1px solid $base;
-      border-radius: 4px;
-      background-color: white;
-      legend {
-        display: none;
-      }
-
-      &:focus {
-        border-width: 2px;
-        border-color: $primary;
-      }
-    }
-
-    &.error--text {
-      fieldset,
-      fieldset:focus {
-        border-color: $error !important;
-        border-width: 2px;
-      }
-
-      .v-text-field__suffix {
-        color: $error;
-      }
-    }
-
-    .atat-text-field-error {
-      i {
-        margin-top: 1px;
-      }
-    }
-    
-    &.text-right {
-      input {
-        text-align: right !important;
-      }
-    }
-
-    &.v-input--is-disabled {
-      .v-input__control {
-        background-color: $base-lightest;
-        input {
-          color: $base-darkest;
-        }
-      }
-    }
-
+  ._append-text {
+    color: $base-light;
+    line-height: 1.67em;
+    margin-right: 2px;
+    z-index: 1;
+  }
+  &.v-input--is-focused {
     ._append-text {
-      color: $base-light;
-      line-height: 1.67em;
-      margin-right: 2px;
-      z-index: 1;
+      color: $primary;
     }
   }
+}
 
 
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.v-text-field:not(.v-textarea) {
+  .v-text-field__slot {
+    max-height: 38px;
   }
-
-  /* Firefox */
-  input[type=number] {
-    -moz-appearance: textfield;
-  }
-
 }

@@ -228,6 +228,12 @@ export default class ATATCheckboxGroup extends Vue {
     return this._items.findIndex(obj => obj.value === value);
   }
 
+  public getTextField(index: number): HTMLInputElement {
+    return document.getElementById(
+      `${this.id}_TextField${index}_text_field`
+    ) as HTMLInputElement;
+  }
+
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
     if (newVal.length > oldVal.length) {
@@ -235,18 +241,22 @@ export default class ATATCheckboxGroup extends Vue {
       const checkedVal = newVal.find(val => !oldVal.includes(val)) || "";
       const checkedIndex = this.getSelectedIndex(checkedVal);
       this.selectedIndices.push(checkedIndex);
+      this.$nextTick(() => {
+        const textfieldToFocus = this.getTextField(checkedIndex);
+        if (textfieldToFocus) {
+          textfieldToFocus.focus();
+        }
+      });
     } else {
       // checkbox UNchecked - get the index from oldVal, remove from this.selectedIndices
       const uncheckedVal = oldVal.find(val => !newVal.includes(val)) || "";
       const uncheckedIndex = this.getSelectedIndex(uncheckedVal);
       this.selectedIndices = this.selectedIndices.filter(idx => idx !== uncheckedIndex);
       this._items[uncheckedIndex].textfieldValue = "";
-      const textfield 
-        = document.getElementById(`TextField${uncheckedIndex}_text_field`) as HTMLInputElement;
-      if (textfield) {
-        textfield.value = "";
+      const textfieldToReset = this.getTextField(uncheckedIndex);
+      if (textfieldToReset) {
+        textfieldToReset.value = "";
       }
-     
     }
 
     const otherIndex = newVal.indexOf(this.otherValue) > -1;
