@@ -2,6 +2,7 @@ import common from '../selectors/common.sel';
 import 'cypress-iframe';
 import ps from "../selectors/portfolioSummary.sel";
 import { cleanText } from "../helpers";
+import al from "../selectors/acquisitionList.sel";
 
 Cypress.Commands.add("dialogModalExist", (dialogModalSelector,modalTitleSelector,modalTitle) => {
   cy.findElement(dialogModalSelector)
@@ -112,12 +113,12 @@ Cypress.Commands.add('searchPortfolio', (searchItem,portfolioName) => {
   cy.findElement(ps.portfolioCards).should("contain", portfolioName); 
 });
 
-Cypress.Commands.add('noPortfolioSearchResult', (searchItem,searchText) => {
-  cy.findElement(ps.searchInput).should("exist").type(searchItem);
+Cypress.Commands.add('noSearchResult', (search) => {
+  cy.findElement(search.searchInput).should("exist").type(search.searchItem);
   // eslint-disable-next-line cypress/no-unnecessary-waiting
-  cy.findElement(ps.searchBtn).should("exist").wait(1000).click();
-  cy.textExists(ps.noSearchResultHeader, "No results"); 
-  cy.textExists(ps.searchString,  "for"+" "+searchText )
+  cy.findElement(search.searchBtn).should("exist").wait(1000).click();
+  cy.textExists(search.noSearchResultHeader, "No results"); 
+  cy.textExists(search.searchString,  "for"+" "+search.searchText )
 });
 
 Cypress.Commands.add('clickFilterIcon', () => {
@@ -130,7 +131,6 @@ Cypress.Commands.add('clickFilterIcon', () => {
   });
 });
 
-
 Cypress.Commands.add('tabStatus', (tabSelector,boolean) => {    
       
   cy.findElement(tabSelector)
@@ -142,11 +142,51 @@ Cypress.Commands.add('clickRoleDropdown', (selector,roleSelector) => {
   
 });
 
-Cypress.Commands.add('clickPortfolioDrawer', (card,portfolioName) => {
-  cy.clickPortfolioMenu(card);    
+Cypress.Commands.add('clickPortfolioDrawer', (card, portfolioName) => {
+  cy.clickPortfolioMenu(card);
   cy.findElement(ps.headerPortfolioTextfield).should("have.value", portfolioName);
   cy.findElement(ps.infoBtn).click().then(() => {
     cy.findElement(ps.slideoutPanel).should("be.visible");
     cy.textExists(ps.aboutPortHeader, "About Portfolio");
   });
-})
+});
+
+Cypress.Commands.add('verifyAcquisitionCardDetails', () => {
+  cy.findElement(al.package0).then(() => {
+    cy.verifyHasText(al.packagecardName);
+    cy.findElement(al.statusChip0).then(($el) => {
+      const status = $el.text();
+      const actualStatus = cleanText(status);
+      cy.log(status);
+      if (actualStatus === "Draft") {
+        cy.verifyHasText(al.percent0);        
+      } else if (actualStatus == "Waiting for Task Order") {
+        cy.findElement(al.percent0).should("not.exist");
+      } else if (actualStatus == "Task Order Awarded") {        
+        cy.findElement(al.taskorderNo0).should("be.visible");
+        cy.verifyHasText(al.modified0).should("contain","Awarded");
+      }else if (actualStatus === "Waiting for Signatures") {
+        cy.verifyHasText(al.percent0).should("contain",100);
+      }
+    });     
+    cy.verifyHasText(al.createdBy0);
+    cy.verifyHasText(al.modified0);
+  });
+});
+
+Cypress.Commands.add('searchList', (search) => {
+  cy.findElement(search.searchSelector).should("exist").type(search.searchItem);
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.findElement(search.searchBtn).should("exist").wait(1000).click();
+  cy.findElement(search.searchResultSelector).should("contain", search.searchResultListName); 
+});
+
+Cypress.Commands.add("verifyAwardedTaskOrderCardDetails", () => {
+  cy.findElement(al.package0).then(() => {
+    cy.verifyHasText(al.packagecardName);
+    cy.verifyHasText(al.statusChip0);
+    cy.verifyHasText(al.percent0);
+    cy.verifyHasText(al.createdBy0);
+    cy.verifyHasText(al.modified0);
+  });
+});

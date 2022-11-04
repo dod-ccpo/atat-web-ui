@@ -38,6 +38,8 @@ import EnvironmentDetailsPage
 import BackgroundSummary from "../steps/03-Background/Summary.vue"
 import UploadChartsDiagrams
   from "@/steps/03-Background/CurrentEnvironment/UploadChartsDiagrams.vue";
+import UploadProcessDocuments
+  from "@/steps/03-Background/CurrentEnvironment/UploadProcessDocuments.vue";
 
 // Step 4 - Contract Details
 /* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
@@ -220,6 +222,7 @@ export const routeNames = {
   EstimatesDeveloped:"Estimates_Developed",
   SupportingDocumentation:"Supporting_Documentation",
   UploadChartsDiagrams:"Upload_Charts_Diagrams",
+  UploadProcessDocuments:"Upload_Process_Documents"
 };
 
 /**
@@ -447,6 +450,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
         routeResolver: CurrentContractEnvRouteResolver,
+      },
+      {
+        menuText: "Upload Process",
+        path: "upload-process",
+        excludeFromMenu: true,
+        name: routeNames.UploadProcessDocuments,
+        component: UploadProcessDocuments,
+        completePercentageWeight: 5,
+        completed: false,
       },
       {
         menuText: "Current Environment Location",

@@ -6,12 +6,11 @@
           Do you have a current environment to rehost?
         </h1>
         <div class="copy-max-width">
-          <p class="mb-10">
-            If you select “Yes” below, we’ll gather details about your current compute resources
-            next. This info will be included in your Description of Work to provide CSPs with a
-            better understanding of what currently exists. This environment may not align with your
-            current needs for this acquisition, but you’ll have an opportunity to tell us about your
-            performance requirements later.
+          <p class="mb-0">
+            If you select “Yes” below, we’ll gather details about your current environment next.
+            This info will be included in your Description of Work to provide CSPs with a better
+            understanding of what currently exists. This environment may not align with your current
+            needs that you outlined in Contract Details.
           </p>
           <ATATRadioGroup
             id="ExistingEnvOptions"
@@ -52,7 +51,7 @@ export default class CurrentEnvironment extends Mixins(SaveOnLeave) {
     },
     {
       id: "No",
-      label: "No.",
+      label: "No, current environment does not exist.",
       value: "false",
     },
   ];

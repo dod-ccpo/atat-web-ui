@@ -3,14 +3,14 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          Do you have system diagrams, data architecture diagrams, charts, or other relevant
-          information for your current environment?
+          Has a migration assessment, analysis, or process occurred to identify the cloud services
+          and tools needed?
         </h1>
         <div class="copy-max-width">
           <p class="mb-0">
             If available, you can upload this supporting documentation, and we will attach it to
-            your Description of Work to be shared with the CSPs for proposal purposes. Please do not
-            upload any classified documents.
+            your Description of Work to be shared with the CSPs for proposal purposes. Please do
+            not upload any classified documents.
           </p>
           <ATATRadioGroup
             id="ExistingEnvOptions"
@@ -23,18 +23,18 @@
           />
           <div v-show="selectedUpload === 'YES'">
             <hr />
-             <ATATFileUpload
-                id="FundingPlan"
-                tabindex="-1"
-                :invalidFiles.sync="invalidFiles"
-                :maxFileSizeInBytes="maxFileSizeInBytes"
-                :validFileFormats="validFileFormats"
-                :validFiles.sync="uploadedFiles"
-                :multiplesAllowed="true"
-                :attachmentServiceName="attachmentServiceName"
-                :removeAll.sync="removeAll"
-                @delete="removeFile"
-             />
+            <ATATFileUpload
+              id="FundingPlan"
+              tabindex="-1"
+              :invalidFiles.sync="invalidFiles"
+              :maxFileSizeInBytes="maxFileSizeInBytes"
+              :validFileFormats="validFileFormats"
+              :validFiles.sync="uploadedFiles"
+              :multiplesAllowed="true"
+              :attachmentServiceName="attachmentServiceName"
+              :removeAll.sync="removeAll"
+              @delete="deleteFile"
+            />
           </div>
         </div>
       </v-col>
@@ -46,7 +46,7 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { invalidFile, RadioButton, uploadingFile } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -59,7 +59,7 @@ import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingReques
     ATATRadioGroup,
   },
 })
-export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
+export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
   private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
   private uploadOptions: RadioButton[] = [
     {
@@ -79,30 +79,39 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   private uploadedFiles: uploadingFile[] = [];
 
   public selectedUpload
-    = AcquisitionPackage.currentEnv?.diagramChartDocumentation || ""
+    = AcquisitionPackage.currentEnv?.assessmentAnalysisDocumentation || ""
   private get currentData(): CurrentEnvironmentDTO {
     return {
-      diagramChartDocumentation: this.selectedUpload || "",
+      assessmentAnalysisDocumentation: this.selectedUpload || "",
     };
   }
 
   private savedData: CurrentEnvironmentDTO = {
-    diagramChartDocumentation: "",
+    assessmentAnalysisDocumentation: "",
+  }
+
+  public removeAll = false
+
+  @Watch('selectedUpload')
+  private onValueChange(): void{
+    if(this.selectedUpload === "NO"){
+      this.uploadedFiles = []
+      this.removeAll = true
+    }
+  }
+
+  public async deleteFile(file: uploadingFile): Promise<void> {
+    // todo future ticket - delete attachment
   }
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
-
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage.currentEnv
-    // .loadData<CurrentEnvironmentDTO>(
-    //   { storeProperty: StoreProperties.CurrentEnvironment }
-    // );
     if (storeData) {
       this.savedData = {
-        // eslint-disable-next-line camelcase
-        diagramChartDocumentation: storeData.diagramChartDocumentation,
+        assessmentAnalysisDocumentation: storeData.assessmentAnalysisDocumentation,
       }
     }
   }
@@ -111,29 +120,12 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         AcquisitionPackage.setCurrentEnv(this.currentData)
-        // will be used when SNOW store has been wired
-        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.CurrentEnvironment
-        // });
       }
     } catch (error) {
       console.log(error);
     }
 
     return true;
-  }
-  public removeAll = false
-
-  @Watch('selectedUpload')
-  private selectedUploadChange(): void{
-    if(this.selectedUpload === "NO"){
-      this.uploadedFiles = []
-      this.removeAll = true
-    }
-  }
-  public async removeFile(file: uploadingFile): Promise<void> {
-    // todo future ticket - delete attachment
   }
 
   public async mounted(): Promise<void> {
