@@ -36,6 +36,10 @@ import ClassificationLevels
 import EnvironmentDetailsPage
   from "@/steps/03-Background/CurrentEnvironment/EnvironmentDetailsPage.vue";
 import BackgroundSummary from "../steps/03-Background/Summary.vue"
+import UploadChartsDiagrams
+  from "@/steps/03-Background/CurrentEnvironment/UploadChartsDiagrams.vue";
+import UploadProcessDocuments
+  from "@/steps/03-Background/CurrentEnvironment/UploadProcessDocuments.vue";
 
 // Step 4 - Contract Details
 /* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
@@ -217,6 +221,8 @@ export const routeNames = {
   CostSummary:"Cost_Summary",
   EstimatesDeveloped:"Estimates_Developed",
   SupportingDocumentation:"Supporting_Documentation",
+  UploadChartsDiagrams:"Upload_Charts_Diagrams",
+  UploadProcessDocuments:"Upload_Process_Documents"
 };
 
 /**
@@ -436,6 +442,25 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
       },
       {
+        menuText: "Upload Charts",
+        path: "upload-charts",
+        excludeFromMenu: true,
+        name: routeNames.UploadChartsDiagrams,
+        component: UploadChartsDiagrams,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: CurrentContractEnvRouteResolver,
+      },
+      {
+        menuText: "Upload Process",
+        path: "upload-process",
+        excludeFromMenu: true,
+        name: routeNames.UploadProcessDocuments,
+        component: UploadProcessDocuments,
+        completePercentageWeight: 5,
+        completed: false,
+      },
+      {
         menuText: "Current Environment Location",
         path: "current-environment-location",
         excludeFromMenu: true,
@@ -443,7 +468,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CurrentEnvironmentLocation,
         completePercentageWeight: 5,
         completed: false,
-        routeResolver: CurrentContractEnvRouteResolver,
       },
       {
         menuText: "Classification Levels",

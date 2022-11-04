@@ -35,6 +35,7 @@ module.exports = {
   resetFiltersLink: "#ResetFilters",
   applyFiltersLink:"#ApplyFilters",
   portfolioCards: "#PortfolioCards",
+  portfolioName:"#PortfolioCards ._portfolio-name",
   noSearchResultHeader: "#NoResultsFound #NoResultsHeader",
   searchString: "#NoResultsFound #SearchString",
   withFilterString:"#WithFilters",

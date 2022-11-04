@@ -49,7 +49,9 @@
                 browse to upload
               </a>
             </p>
-            <p class="mt-3 mb-9 text-base" v-html="helpText"></p>
+            <p class="mt-3 mb-9 text-base">
+              Supported file types: {{formatFileTypes}}  • Max file size: {{fileSizeConversion}}GB
+            </p>
           </div>
           <div
             v-else
@@ -74,7 +76,10 @@
                   browse to upload
                 </a>
               </p>
-              <p class="ml-auto mb-0 mt-2 text-base" v-html="helpText"></p>
+              <p class="ml-auto mb-0 mt-2 text-base">
+                Supported file types: {{formatFileTypes}}  • Max file size: {{fileSizeConversion}}GB
+              </p>
+
             </div>
             
           </div>
@@ -93,6 +98,7 @@
       :isFullSize.sync="isFullSize"
       :multiplesAllowed="multiplesAllowed"
       :title="fileListTitle"
+      :removeAll.sync="_removeAll"
       @delete="(file) => $emit('delete', file)"
     />
   </v-form>
@@ -136,15 +142,14 @@ export default class ATATFileUpload extends Vue {
   // props
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
-  @Prop({ default: "Use a PDF file with a max size of 1 GB." }) helpText!: string;
   @Prop({ default: true}) private multiplesAllowed!: boolean;
   @Prop({ default: "required"}) private requiredMessage!: string;
   @Prop({ default: 20 }) private maxNumberOfFiles!: number;
   
   @Prop({ default: () => [] }) private validFileFormats!: string[];
-  @PropSync("invalidFiles", { default: () => [] })
-  private _invalidFiles!: invalidFile[];
+  @PropSync("invalidFiles", { default: () => [] }) private _invalidFiles!: invalidFile[];
   @Prop({ default: "", required: true }) private attachmentServiceName!: string;
+  @PropSync("removeAll") public _removeAll?: boolean;
   @PropSync("rules", { default: () => [] }) private _rules!: ((
     v: string
   ) => string | true | undefined)[];
@@ -164,12 +169,19 @@ export default class ATATFileUpload extends Vue {
   private fileAttachmentService?: AttachmentService;
   private errorMessages: string[] = [];
   private validateOnBlur = true;
-  
-  
   get isFileUploadDisabled():boolean{
     return this.maxNumberOfFiles<=this._validFiles.length;
   }
-  
+
+  get fileSizeConversion(): number {
+    return this.maxFileSizeInBytes / 1073741824
+  }
+  get formatFileTypes(): string {
+    let formatted = this.validFileFormats.map((file) =>{
+      return ` .${file}`
+    })
+    return formatted.join(',')
+  }
   get isFileUploadDisplayed(): boolean {
     if (this.multiplesAllowed === false){
       return this._validFiles.length !== 1 || this.errorMessages.length > 0
