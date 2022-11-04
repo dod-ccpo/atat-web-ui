@@ -835,7 +835,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SupportingDocumentation,
         completePercentageWeight: 1,
         component: SupportingDocumentation,
-        routeResolver: IGCESupportingDocumentationResolver
+        // routeResolver: IGCESupportingDocumentationResolver // EJY needed?
+
       },
       {
         menuText: "Funding Plan",
