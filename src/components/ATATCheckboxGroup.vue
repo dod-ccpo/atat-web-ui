@@ -233,11 +233,12 @@ export default class ATATCheckboxGroup extends Vue {
           textfieldToFocus.focus();
         }
       });
-    } else {
+    } else if (newVal.length < oldVal.length) {
       // checkbox UNchecked - get the index from oldVal, remove from this.selectedIndices
       const uncheckedVal = oldVal.find(val => !newVal.includes(val)) || "";
       const uncheckedIndex = this.getSelectedIndex(uncheckedVal);
       this.selectedIndices = this.selectedIndices.filter(idx => idx !== uncheckedIndex);
+      debugger;
       this._items[uncheckedIndex].textfieldValue = "";
       const textfieldToReset = this.getTextField(uncheckedIndex);
       if (textfieldToReset) {
