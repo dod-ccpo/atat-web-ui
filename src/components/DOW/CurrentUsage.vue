@@ -61,8 +61,6 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import { Checkbox, RadioButton, CurrentEnvUsageData } from "types/Global";
 
-
-
 @Component({
   components: {
     ATATCheckboxGroup,
@@ -87,7 +85,7 @@ export default class CurrentUsage extends Vue {
         specific event or during a certain period each year)`,
       value: "IrregularUsage"
     },
-  ]
+  ];
 
   public spikeCauses: Checkbox[] = [
     {
@@ -104,7 +102,6 @@ export default class CurrentUsage extends Vue {
 
   @Watch("_currentUsage.currentUsageDescription", {deep: true})
   public currentUsageDescriptionChange(newVal: string): void {
-    debugger;
     if (newVal === "RegularUsage") {
       this._currentUsage.trafficSpikeCauses = [];
       this._currentUsage.surgeUsageEvent = "";

@@ -24,7 +24,6 @@
       :currentUsage.sync="currentUsage"   
     />
 
-
     <RegionsDeployedAndUserCount 
       :hasTextFields="true"
       id="RegionsUsers"
@@ -80,5 +79,5 @@ export default class EnvironmentDetails extends Vue {
     or outside of the continental U.S. (OCONUS).`;
 
 }
-</script>
 
+</script>
