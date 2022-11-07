@@ -28,7 +28,7 @@ describe("Test suite: Current Environment ", () => {
         cy.findElement(background.selectDate).first().click({force: true});
       });      
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.verifyPageHeader("Do you have an existing environment?");
+    cy.verifyPageHeader("Do you have a current environment to rehost?");
         
   })    
 
@@ -43,6 +43,8 @@ describe("Test suite: Current Environment ", () => {
         " requirements later."
       cy.verifyTextMatches(common.introText, introTextInfo);
       cy.selectExistingEnv(background.existYesRadioOption, "true");
+      cy.findElement(background.existNoRadioOption).click({ force: true });
+      cy.btnClick(common.continueBtn, " Continue ");
       const introText = "If you have instances in a hybrid environment," +
         " then we will gather details about the location for each instance later."
       cy.verifyTextMatches(common.introText, introText);
