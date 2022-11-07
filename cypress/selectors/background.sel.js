@@ -26,7 +26,11 @@ module.exports = {
 
   //Current Environments
   ceRadioButtonOptionError: "#ExistingEnvOptions_radio_group_control .field-error",
-  ceActiveRadioOption:"#ExistingEnvOptions_radio_group_control .v-item--active",
+  ceActiveRadioOption: "#ExistingEnvOptions_radio_group_control .v-item--active",
+  
+  // ExistingEnvOptions
+  existingEnvYesRadioBtn:"#ExistingEnvOptions_radio_group_control #Radio_Yes",
+  existingEnvNoRadioBtn: "#ExistingEnvOptions_radio_group_control #Radio_No",
   
   //where is your current environment located?
   envLocationButtonsgroup: "#EnvLocationButtons_radio_group_control",
