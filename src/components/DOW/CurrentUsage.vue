@@ -112,7 +112,6 @@ export default class CurrentUsage extends Vue {
     }
   }
 
-
 }
 
 </script>
