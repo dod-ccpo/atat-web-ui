@@ -13,7 +13,7 @@
     <ATATCheckboxGroup
       class="mt-8"
       id="SpikeCauses"
-      v-if="currentUsageDescription === 'IrregularUsage'"
+      v-if="_currentUsage.currentUsageDescription === 'IrregularUsage'"
       groupLabel="Are spikes in usage typically caused by a specific event and/or 
         during certain period(s) of the year?"
       groupLabelId="SpikeCauseGroupLabel"
@@ -24,7 +24,7 @@
     <ATATTextField
       id="HighUsageEventDescription"
       class="mt-10"
-      v-if="trafficSpikeCauses.includes('EventBased')"
+      v-if="_currentUsage.trafficSpikeCauses.includes('EventBased')"
       :value.sync="_currentUsage.surgeUsageEvent"
       label="Tell us about the event that causes a surge in usage"
       tooltipText="Include any details that would help a CSP better understand 
@@ -37,7 +37,7 @@
     <ATATTextField
       id="HighUsagePeriodDescription"
       class="mt-8"
-      v-if="trafficSpikeCauses.includes('CertainPeriods')"
+      v-if="_currentUsage.trafficSpikeCauses.includes('CertainPeriods')"
       :value.sync="_currentUsage.surgeUsagePeriods"
       label="In which period of the year do you typically have a surge in usage?"
       tooltipText="Include any details that would help a CSP better understand 
@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -102,14 +102,14 @@ export default class CurrentUsage extends Vue {
     },
   ];
 
-  @Watch("_currentUsage", {deep: true})
-  public currentUsageDescriptionChange(newVal: CurrentEnvUsageData): void {
-    if (newVal.currentUsageDescription === "RegularUsage") {
+  @Watch("_currentUsage.currentUsageDescription", {deep: true})
+  public currentUsageDescriptionChange(newVal: string): void {
+    debugger;
+    if (newVal === "RegularUsage") {
       this._currentUsage.trafficSpikeCauses = [];
       this._currentUsage.surgeUsageEvent = "";
       this._currentUsage.surgeUsagePeriods = "";
     }
-    // this.$emit("currentUsageDataUpdate", this._currentUsage);
   }
 
 

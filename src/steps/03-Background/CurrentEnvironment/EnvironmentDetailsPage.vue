@@ -21,9 +21,7 @@
 
     <CurrentUsage 
       class="mb-10"
-      :currentUsage.sync="currentUsage"
-      @currentUsageDataUpdate="currentUsageDataUpdate"
-    
+      :currentUsage.sync="currentUsage"   
     />
 
 
