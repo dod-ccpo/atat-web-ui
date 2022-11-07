@@ -36,6 +36,14 @@
       :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
     />
 
+    <hr />
+
+    <h2 class="mb-4">3. Instance configurations</h2>
+
+    <InstanceConfig
+      :instanceConfig.sync="instanceConfig"
+    />
+
   </div>
 </template>
 
@@ -44,13 +52,16 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import CurrentUsage from "@/components/DOW/CurrentUsage.vue";
+import InstanceConfig from "@/components/DOW/InstanceConfig.vue";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 
-import { Checkbox, CurrentEnvUsageData } from "types/Global";
+
+import { Checkbox, CurrentEnvInstanceConfig, CurrentEnvUsageData } from "types/Global";
 
 @Component({
   components: {
     CurrentUsage,
+    InstanceConfig, 
     RegionsDeployedAndUserCount,
   }
 })
@@ -72,6 +83,17 @@ export default class EnvironmentDetails extends Vue {
     trafficSpikeCauses: [],
     surgeUsageEvent: "",
     surgeUsagePeriods: "",
+  }
+
+  public instanceConfig: CurrentEnvInstanceConfig = {
+    licensing: "",
+    operatingSystem: "",
+    numberOfVCPUs: null,
+    processorSpeed: null,
+    memory: null,
+    storageType: "",
+    storageAmount: null,
+    storageUnit: "",
   }
 
   public regionsDeployedTooltipText = `This is the geographic location where your 

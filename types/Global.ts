@@ -490,8 +490,19 @@ export type EvalPlanSourceSelection = "" | "NoTechProposal" | "TechProposal"
   | "SetLumpSum" | "EqualSetLumpSum";
 
 export interface CurrentEnvUsageData {
-  currentUsageDescription: string;
-  trafficSpikeCauses: string[];
-  surgeUsageEvent: string;
-  surgeUsagePeriods: string;
+  currentUsageDescription?: string;
+  trafficSpikeCauses?: string[];
+  surgeUsageEvent?: string;
+  surgeUsagePeriods?: string;
 } 
+
+export interface CurrentEnvInstanceConfig {
+  licensing?: string;
+  operatingSystem?: string;
+  numberOfVCPUs?: number | null;
+  processorSpeed?: number | null;
+  memory?: number | null;
+  storageType?: string;
+  storageAmount?: number | null;
+  storageUnit?: string;
+}
