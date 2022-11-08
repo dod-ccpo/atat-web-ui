@@ -8,6 +8,7 @@ import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 
 
+
 Vue.use(Vuetify);
 
 describe("Testing Classification Level Page", () => {
@@ -94,8 +95,42 @@ describe("Testing Classification Level Page", () => {
       expect(wrapper.vm.$data).toStrictEqual({
         "checkboxItems": [],
         "classifications": [],
+        "IL2": "cc3b52af87970590ec3b777acebb3581",
         "savedData": [],
-        "selectedOptions": []
+        "selectedOptions": [],
+        "environment": "",
+        "selectedDeployment": [],
+        "selectedType": [],
+        "classificationsTier": [
+          {
+            id: "Unclassified",
+            label: "Unclassified",
+            value: "U",
+          },
+          {
+            id: "Secret",
+            label: "Secret",
+            value: "S",
+          },
+          {
+            id: "TopSecret",
+            label: "Top Secret",
+            value: "TS",
+          },
+        ],
+        "cloudDeployment": [
+          {
+            id: "CommercialCloud",
+            label: "Commercial cloud",
+            value: "commercialCloud",
+          },
+          {
+            id: "GovernmentCloud",
+            label: "Federal community cloud (government cloud)",
+            value: "GovernmentCloud",
+          },
+
+        ]
       });
     });
 
