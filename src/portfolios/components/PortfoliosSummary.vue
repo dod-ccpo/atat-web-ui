@@ -405,10 +405,6 @@ export default class PortfoliosSummary extends Vue {
     this.$emit("totalCount", storeData.total_count);
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
-    const currentEvnStoreData = await CurrentEnvironment
-      .loadCurrentEnvironment(null); // get the curr env sys id from acq pkg
-    console.log(JSON.stringify(currentEvnStoreData));
-
     if (this.isHomeView) {
       storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
     }
