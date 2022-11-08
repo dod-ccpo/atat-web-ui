@@ -93,7 +93,7 @@ export default class EnvironmentDetails extends Vue {
     memory: null,
     storageType: "",
     storageAmount: null,
-    storageUnit: "",
+    storageUnit: "GB",
   }
 
   public regionsDeployedTooltipText = `This is the geographic location where your 

@@ -87,6 +87,7 @@ export interface StepperStep {
 export interface SelectData {
   text?: string;
   value?: string;
+  description?: string;
   multiSelectOrder?: number;
   disabled?: boolean;
   hidden?: boolean;

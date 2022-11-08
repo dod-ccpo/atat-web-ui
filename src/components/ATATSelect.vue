@@ -35,6 +35,10 @@
         :menu-props="{ bottom: true, offsetY: true }"
         :disabled="menuDisabled"
       >
+        <template v-if="showSelectedValue" v-slot:selection="{ item }">
+          {{ item.value }}
+        </template>
+
         <template v-slot:item="{ item, on }">
           <v-list-item 
             v-on="on" 
@@ -49,10 +53,12 @@
               :item-value = item.value
             >
               <v-list-item-title class="body">
-                <v-row no-gutters align="center">
-                  <span>{{ item.text }}</span>
-                </v-row>
+                {{ item.text }}
               </v-list-item-title>
+              <v-list-item-subtitle v-if="item.description">
+                {{ item.description }}
+              </v-list-item-subtitle>
+
             </v-list-item-content>
           </v-list-item>
         </template>
@@ -116,6 +122,7 @@ export default class ATATSelect extends Vue {
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: "standard" }) public iconType?: string;
   @Prop({ default: false }) private menuDisabled?: boolean;
+  @Prop({ default: false }) private showSelectedValue?: boolean;
 
   //data
   private rounded = false;
