@@ -17,6 +17,13 @@
     
     <hr />
 
+    <h2 class="mb-4">2. Current usage and users</h2>
+
+    <CurrentUsage 
+      class="mb-10"
+      :currentUsage.sync="currentUsage"   
+    />
+
     <RegionsDeployedAndUserCount 
       :hasTextFields="true"
       id="RegionsUsers"
@@ -36,12 +43,14 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
+import CurrentUsage from "@/components/DOW/CurrentUsage.vue";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 
-import { Checkbox } from "types/Global";
+import { Checkbox, CurrentEnvUsageData } from "types/Global";
 
 @Component({
   components: {
+    CurrentUsage,
     RegionsDeployedAndUserCount,
   }
 })
@@ -58,10 +67,17 @@ export default class EnvironmentDetails extends Vue {
     this.regionUserData = data;
   }
 
+  public currentUsage: CurrentEnvUsageData = {
+    currentUsageDescription: "",
+    trafficSpikeCauses: [],
+    surgeUsageEvent: "",
+    surgeUsagePeriods: "",
+  }
+
   public regionsDeployedTooltipText = `This is the geographic location where your 
     public cloud resources are located, e.g., within the continental U.S. (CONUS) 
     or outside of the continental U.S. (OCONUS).`;
 
 }
-</script>
 
+</script>

@@ -489,3 +489,9 @@ export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
 export type EvalPlanSourceSelection = "" | "NoTechProposal" | "TechProposal" 
   | "SetLumpSum" | "EqualSetLumpSum";
 
+export interface CurrentEnvUsageData {
+  currentUsageDescription: string;
+  trafficSpikeCauses: string[];
+  surgeUsageEvent: string;
+  surgeUsagePeriods: string;
+} 
