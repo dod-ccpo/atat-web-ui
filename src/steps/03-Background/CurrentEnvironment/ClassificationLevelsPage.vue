@@ -163,9 +163,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     let filtered = this.classifications
       .filter(classification => classification.impact_level === "IL2")
     if(filtered[0].sys_id){
-      if(newVal.includes(filtered[0].sys_id)){
-        this.IL2Selected = true
-      }
+      this.IL2Selected = newVal.includes(filtered[0].sys_id);
     }
   }
 
