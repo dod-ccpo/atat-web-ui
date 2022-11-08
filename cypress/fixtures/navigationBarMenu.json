@@ -76,6 +76,10 @@
       "Task Orders",
       "CSP Portal Access"
     ],
+    "taskorderMenu": [
+      "View task order details",
+      "Request to modify task order"
+    ],
     "roles": [
       "ROLES",
       "Manager",
