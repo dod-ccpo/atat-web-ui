@@ -12,7 +12,7 @@
               to every instance within your current environment. If you have data within two or more
               levels, we will gather details about each instance next.
             </p>
-            <p id="DeployedP" class="mb-2 font-weight-500">
+            <p id="ClassificationLevelP" class="mb-2 font-weight-500">
               What classification levels are your instances currently deployed in?
             </p>
             <p id="SelectMessage" class="mb-4">
@@ -22,49 +22,49 @@
               id="ClassificationTypesCheckboxes"
               :card="false"
               :hasOtherValue="true"
-              :items="classificationsTier"
+              :items="classificationsLevels"
               :rules="[
               $validators.required('Please select at least one classification level.')
             ]"
               :value.sync="selectedClassifications"
               class="copy-max-width mb-10"
-              name="checkboxes"
+              name="classificationTypesCheckboxes"
             />
-            <div v-if="checkboxItems.length > 1">
-              <p id="DeployedP" class="mb-3 font-weight-500">
+            <div v-if="impactLevels.length > 1">
+              <p id="ImpactLevelP" class="mb-3 font-weight-500">
                 For your Unclassified instance(s), what impact levels are you currently deployed in?
               </p>
-              <p id="SelectMessage" class="mb-4">
+              <p id="SelectMessage2" class="mb-4">
                 Select all that apply to your current environment.
-              </p>
-              <ATATCheckboxGroup
-                id="ClassificationLevelCheckboxes"
-                :card="false"
-                :hasOtherValue="true"
-                :items="checkboxItems"
-                :rules="[
-                    $validators.required('Please select at least one impact level.')
-                ]"
-                :value.sync="selectedImpactLevels"
-                class="copy-max-width mb-10"
-                name="checkboxes"
-              />
-            </div>
-            <div v-if="IL2Selected">
-              <p id="DeployedP" class="mb-4 font-weight-500">
-                For your IL2 instance(s), what type of cloud are currently deployed in?
               </p>
               <ATATCheckboxGroup
                 id="ImpactLevelCheckboxes"
                 :card="false"
                 :hasOtherValue="true"
-                :items="cloudDeployment"
+                :items="impactLevels"
+                :rules="[
+                    $validators.required('Please select at least one impact level.')
+                ]"
+                :value.sync="selectedImpactLevels"
+                class="copy-max-width mb-10"
+                name="impactLevelCheckboxes"
+              />
+            </div>
+            <div v-if="IL2Selected">
+              <p id="CloudTypeP" class="mb-4 font-weight-500">
+                For your IL2 instance(s), what type of cloud are currently deployed in?
+              </p>
+              <ATATCheckboxGroup
+                id="CloudTypeCheckboxes"
+                :card="false"
+                :hasOtherValue="true"
+                :items="cloudTypes"
                 :rules="[
                     $validators.required('Please select at least one type of cloud.')
                 ]"
                 :value.sync="selectedCloudTypes"
                 class="copy-max-width"
-                name="checkboxes"
+                name="cloudTypeCheckboxes"
               />
             </div>
           </div>
@@ -108,7 +108,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
-  private checkboxItems: Checkbox[] = [];
+  private impactLevels: Checkbox[] = [];
   private environment = "";
   public selectedImpactLevels: string[] = [];
   public selectedClassifications: string[] = [];
@@ -116,7 +116,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public classifications: ClassificationLevelDTO[] = []
   public savedData: ClassificationLevelDTO[] = [];
   public IL2Selected = false;
-  private classificationsTier: Checkbox[] = [
+  private classificationsLevels: Checkbox[] = [
     {
       id: "Unclassified",
       label: "Unclassified",
@@ -133,7 +133,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       value: "TS",
     },
   ]
-  private cloudDeployment: Checkbox[] = [
+  private cloudTypes: Checkbox[] = [
     {
       id: "CommercialCloud",
       label: "Commercial cloud",
@@ -155,7 +155,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       filteredList.push(...filtered)
     }
     this.selectedImpactLevels = []
-    this.checkboxItems =this.createCheckboxItems(filteredList)
+    this.impactLevels =this.createCheckboxItems(filteredList)
   }
 
   @Watch("selectedImpactLevels")
