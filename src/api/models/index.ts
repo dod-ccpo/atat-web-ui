@@ -69,14 +69,53 @@ export interface CurrentContractDTO extends BaseTableDTO {
   contract_order_expiration_date?: string;
 }
 
-export interface CurrentEnvironmentDTO extends BaseTableDTO {
-  current_environment_exists?: string;
-  environment_instances?: string;
-  additional_information?: string;
-  diagramChartDocumentation?: string;
-  assessmentAnalysisDocumentation?: string;
+// export interface CurrentEnvironmentDTO extends BaseTableDTO {
+//   current_environment_exists?: string;
+//   environment_instances?: string;
+//   additional_information?: string;
+//   diagramChartDocumentation?: string;
+//   assessmentAnalysisDocumentation?: string;
 
+// }
+
+export interface CurEnvSystemAttachment {
+  not_sure_what_this_looks_like: unknown;
 }
+export interface CurEnvMigrationAttachment {
+  not_sure_what_this_looks_like: unknown;
+}
+
+export interface CurrentEnvironmentDTO extends BaseTableDTO {
+  current_environment_exists: "" | "YES" | "NO";
+  has_system_documentation: "" | "YES" | "NO";
+  system_documentation?: CurEnvSystemAttachment[];
+  has_migration_documentation: "" | "YES" | "NO";
+  migration_documentation?: CurEnvMigrationAttachment[];
+  env_location: "" | "CLOUD" | "ONPREM" | "HYBRID";
+  env_classifications: string[]; // array of classification level sys_ids
+  env_instances: CurrentEnvironmentInstanceDTO[];
+}
+
+export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO{
+  instance_location: "" | "CLOUD" | "ONPREM";
+  deployed_regions?: string[];
+  classification_level: string; // classification level sys_id
+  current_usage_description: string;
+  traffic_spike?: string[];
+  surge_usage_event?: string;
+  surge_usage_periods?: string;
+  users_regions: 
+}
+
+export interface RegionUserCount {
+  region?: string;
+  count?: number;
+}
+
+
+
+
+
 
 export interface ContactDTO extends BaseTableDTO {
   type: string; // Mission Owner, COR, ACOR

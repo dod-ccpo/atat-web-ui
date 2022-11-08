@@ -15,7 +15,7 @@
 
     <ATATDatePicker
       id="ExpirationDate"
-      v-if="_pricingDetails.currentPaymentArrangement === 'Reserved'"
+      v-if="_pricingDetails.currentPaymentArrangement === 'PREPAID'"
       class="mt-8"
       :rules="[
         $validators.required(
@@ -56,12 +56,12 @@ export default class PricingDetails extends Vue {
     {
       id: "Reserved",
       label: "Reserved/Pre-paid/Up-front",
-      value: "Reserved",
+      value: "PREPAID",
     },
     {
       id: "PayAsYouGo",
       label: "Pay-as-you-go",
-      value: "PayAsYouGo",
+      value: "PAYASYOUGO",
     },
   ];
 
