@@ -153,6 +153,7 @@ export interface Checkbox {
   label: string;
   value: string;
   description?: string;
+  textfieldValue?: string;
 }
 
 export interface RadioButton extends Checkbox {
@@ -488,3 +489,9 @@ export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
 export type EvalPlanSourceSelection = "" | "NoTechProposal" | "TechProposal" 
   | "SetLumpSum" | "EqualSetLumpSum";
 
+export interface CurrentEnvUsageData {
+  currentUsageDescription: string;
+  trafficSpikeCauses: string[];
+  surgeUsageEvent: string;
+  surgeUsagePeriods: string;
+} 
