@@ -2,8 +2,14 @@
 <template>
   <div class="container-max-width">
     <h1 class="mb-10">
-      Future env details page
+      Let’s start gathering details about each instance in your environment
     </h1>
+    <p>
+      An instance may be an isolated environment, an enclave, or a collection of 
+      components. Aggregate all virtual machines (VMs) with similar specifications 
+      into a single instance below. If you have multiple instances, we will walk 
+      through them one at a time.
+    </p>
 
     <RegionsDeployedAndUserCount 
       :hasTextFields="false"
@@ -87,6 +93,8 @@ import {
   SelectData,
   CurrentEnvPricingDetails,
 } from "types/Global";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import { CurrentEnvironmentDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -152,6 +160,54 @@ export default class EnvironmentDetails extends Vue {
     { text: "Terabyte (TB)", value: "TB" },
     { text: "Petabyte (PB)", value: "PB" },
   ];
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage
+      .loadData<CurrentEnvironmentDTO>(
+        {storeProperty: StoreProperties.CurrentEnvironment}
+      );
+    if (storeData) {
+      debugger;
+      // this.savedData = {
+      //   additional_information: storeData.additional_information,
+      // }
+    }
+
+  }
+
+  /* eslint-disable camelcase */
+  public currentEnvironment = {
+    current_environment_exists: "",
+    has_system_documentation: "",
+    system_documentation: [],
+    has_migration_documentation: "",
+    migration_documentation: [],
+    location: "", // CLOUD | ONPREM | HYBRID
+    env_classifications: [
+      {
+        classification_level: "",
+        impact_levels: "",
+        IL2_cloud_deployments: "",
+        unclass_information_hosting: ""
+      }
+    ], 
+    environment_instances: [
+      {
+        location_type: "", // CLOUD | ONPREM
+        details: {
+          
+        }
+      }
+    ],
+    details_repicate_optimize: {
+
+    }
+
+  }
 
 }
 

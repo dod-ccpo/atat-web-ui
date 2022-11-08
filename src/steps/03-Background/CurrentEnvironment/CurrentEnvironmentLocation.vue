@@ -65,6 +65,9 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
        with a public cloud, allowing data and applications to be shared between them.`,
     },
   ];
+
+  // EJY additional_information is not where env type should be saved
+
   private savedData: CurrentEnvironmentDTO = {
     additional_information: "",
   }
