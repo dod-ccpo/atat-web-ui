@@ -26,7 +26,7 @@
               :rules="[
               $validators.required('Please select at least one classification level.')
             ]"
-              :value.sync="selectedType"
+              :value.sync="selectedImpactLevels"
               class="copy-max-width mb-10"
               name="checkboxes"
             />
@@ -45,7 +45,7 @@
                 :rules="[
                     $validators.required('Please select at least one impact level.')
                 ]"
-                :value.sync="selectedOptions"
+                :value.sync="selectedClassifications"
                 class="copy-max-width mb-10"
                 name="checkboxes"
               />
@@ -62,7 +62,7 @@
                 :rules="[
                     $validators.required('Please select at least one cloud.')
                 ]"
-                :value.sync="selectedDeployment"
+                :value.sync="selectedCloudTypes"
                 class="copy-max-width"
                 name="checkboxes"
               />
@@ -110,9 +110,9 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   private checkboxItems: Checkbox[] = [];
   private environment = "";
-  public selectedOptions: string[] = [];
-  public selectedType: string[] = [];
-  public selectedDeployment: string[] = [];
+  public selectedClassifications: string[] = [];
+  public selectedImpactLevels: string[] = [];
+  public selectedCloudTypes: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedData: ClassificationLevelDTO[] = [];
   public IL2Selected = false;
@@ -146,7 +146,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     },
 
   ]
-  @Watch("selectedType")
+  @Watch("selectedImpactLevels")
   public selectedTypeChange(newVal: string[]): void {
     let filteredList :ClassificationLevelDTO[] = []
     if(newVal.includes("U")) {
@@ -154,24 +154,28 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
         .filter(classification => classification.classification === "U" )
       filteredList.push(...filtered)
     }
-    this.selectedOptions = []
+    this.selectedClassifications = []
     this.checkboxItems =this.createCheckboxItems(filteredList)
   }
 
-  @Watch("selectedOptions")
+  @Watch("selectedClassifications")
   public selectedOptionChange(newVal: string[]): void {
     let filtered = this.classifications
       .filter(classification => classification.impact_level === "IL2")
     if(filtered[0].sys_id){
       this.IL2Selected = newVal.includes(filtered[0].sys_id);
     }
+    if(!this.IL2Selected){
+      this.selectedCloudTypes = [];
+    }
+
   }
 
 
 
   private saveSelected() {
     const arr :ClassificationLevelDTO[] = [];
-    this.selectedOptions.forEach(item => {
+    this.selectedClassifications.forEach(item => {
       const value = this.classifications.filter(( data )=>{
         return item == data.sys_id
       })
@@ -212,7 +216,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       this.savedData = storeData
       storeData.forEach((val) => {
         if (val.sys_id) {
-          this.selectedOptions.push(val.sys_id)
+          this.selectedClassifications.push(val.sys_id)
         }
       })
     }
