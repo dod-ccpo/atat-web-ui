@@ -1,46 +1,105 @@
 <template>
   <div>
     <v-container class="container-max-width" fluid>
-      <v-row>
+      <v-row v-if="environment.toLowerCase() === 'cloud computing environment'">
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            What classification level(s) are your instances deployed in?
+            Tell us about your current data classification and impact levels
           </h1>
           <div class="copy-max-width">
             <p id="IntroP" class="mb-10">
-              If you have instances within two or more classification levels, we will gather details
-              about each instance later.
+              If you only have data within a single level, then we will apply your selection below
+              to every instance within your current environment. If you have data within two or more
+              levels, we will gather details about each instance next.
+            </p>
+            <p id="DeployedP" class="mb-2 font-weight-500">
+              What classification levels are your instances currently deployed in?
             </p>
             <p id="SelectMessage" class="mb-4">
               Select all that apply to your current environment.
             </p>
-          </div>
-          <ATATCheckboxGroup
-            id="ClassificationLevelCheckboxes"
-            :card="false"
-            :hasOtherValue="true"
-            :items="checkboxItems"
-            :rules="[
+            <ATATCheckboxGroup
+              id="ClassificationTypesCheckboxes"
+              :card="false"
+              :hasOtherValue="true"
+              :items="classificationsTier"
+              :rules="[
               $validators.required('Please select at least one classification level.')
             ]"
-            :value.sync="selectedOptions"
-            class="copy-max-width"
-            name="checkboxes"
-          />
+              :value.sync="selectedType"
+              class="copy-max-width mb-10"
+              name="checkboxes"
+            />
+            <div v-if="checkboxItems.length > 1">
+              <p id="DeployedP" class="mb-3 font-weight-500">
+                For your Unclassified instance(s), what impact levels are you currently deployed in?
+              </p>
+              <p id="SelectMessage" class="mb-4">
+                Select all that apply to your current environment.
+              </p>
+              <ATATCheckboxGroup
+                id="ClassificationLevelCheckboxes"
+                :card="false"
+                :hasOtherValue="true"
+                :items="checkboxItems"
+                :rules="[
+                    $validators.required('Please select at least one impact level.')
+                ]"
+                :value.sync="selectedOptions"
+                class="copy-max-width"
+                name="checkboxes"
+              />
+            </div>
+            <div v-if="selectedOptions.includes(IL2)">
+              <p id="DeployedP" class="mb-4 font-weight-500">
+                For your IL2 instance(s), what type of cloud are currently deployed in?
+              </p>
+              <ATATCheckboxGroup
+                id="ImpactLevelCheckboxes"
+                :card="false"
+                :hasOtherValue="true"
+                :items="cloudDeployment"
+                :rules="[
+                    $validators.required('Please select at least one cloud.')
+                ]"
+                :value.sync="selectedDeployment"
+                class="copy-max-width"
+                name="checkboxes"
+              />
+            </div>
+          </div>
         </v-col>
       </v-row>
+      <v-row v-if="environment.toLowerCase() === 'hybrid cloud environment'">
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+            Future Hybrid Page
+          </h1>
+          <p>shown for testing purposes</p>
+        </v-col>
+      </v-row>
+      <v-row v-if="environment.toLowerCase() === 'on-premises'">
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+            Future on-Prem Page
+          </h1>
+          <p>shown for testing purposes</p>
+        </v-col>
+      </v-row>
+
     </v-container>
   </div>
 </template>
 <script lang="ts">
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox } from "../../../../types/Global";
 import { ClassificationLevelDTO } from "@/api/models";
 import classificationRequirements from "@/store/classificationRequirements";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 
 @Component({
@@ -49,10 +108,57 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
-  private checkboxItems: Checkbox[] = []
+  private checkboxItems: Checkbox[] = [];
+  private environment = "";
   public selectedOptions: string[] = [];
+  public selectedType: string[] = [];
+  public selectedDeployment: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedData: ClassificationLevelDTO[] = []
+  public IL2 = "cc3b52af87970590ec3b777acebb3581"
+  private classificationsTier: Checkbox[] = [
+    {
+      id: "Unclassified",
+      label: "Unclassified",
+      value: "U",
+    },
+    {
+      id: "Secret",
+      label: "Secret",
+      value: "S",
+    },
+    {
+      id: "TopSecret",
+      label: "Top Secret",
+      value: "TS",
+    },
+  ]
+  private cloudDeployment: Checkbox[] = [
+    {
+      id: "CommercialCloud",
+      label: "Commercial cloud",
+      value: "commercialCloud",
+    },
+    {
+      id: "GovernmentCloud",
+      label: "Federal community cloud (government cloud)",
+      value: "GovernmentCloud",
+    },
+
+  ]
+  @Watch("selectedType")
+  public selectedTypeChange(newVal: string[]): void {
+    let filteredList :ClassificationLevelDTO[] = []
+    if(newVal.includes("U")) {
+      let filtered = this.classifications
+        .filter(classification => classification.classification === "U" )
+      filteredList.push(...filtered)
+    }
+    this.selectedOptions = []
+    this.checkboxItems =this.createCheckboxItems(filteredList)
+  }
+
+
 
   private saveSelected() {
     const arr :ClassificationLevelDTO[] = [];
@@ -91,7 +197,6 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.classifications = await classificationRequirements.getAllClassificationLevels();
-    this.checkboxItems =this.createCheckboxItems(this.classifications)
     await classificationRequirements.loadEnvironmentInstances()
     const storeData = await classificationRequirements.getCurrentENVClassificationLevels()
     if(storeData) {
@@ -102,6 +207,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
         }
       })
     }
+    this.environment = AcquisitionPackage.currentEnvironment?.additional_information || ""
   }
 
   public async mounted(): Promise<void> {
