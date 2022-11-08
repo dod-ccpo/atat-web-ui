@@ -162,8 +162,10 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public selectedOptionChange(newVal: string[]): void {
     let filtered = this.classifications
       .filter(classification => classification.impact_level === "IL2")
-    if(newVal.includes(filtered[0].sys_id || "")){
-      this.IL2Selected = true
+    if(filtered[0].sys_id){
+      if(newVal.includes(filtered[0].sys_id)){
+        this.IL2Selected = true
+      }
     }
   }
 
