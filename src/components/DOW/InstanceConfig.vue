@@ -26,6 +26,7 @@
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
           ]"
+          :allowDecimals="false"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-3">
@@ -39,6 +40,7 @@
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
           ]"
+          :allowDecimals="false"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6">
@@ -63,10 +65,11 @@
           tooltipText="Enter the amount of Random Access Memory (RAM) available for 
             storing data short-term in order to perform computing operations."
           appendText="GB"
-          type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
           ]"
+          :isMaskRegex="true"
+          :mask="['^[0-9]*\.?[0-9]{1}$']"
         />
       </v-col>
     </v-row>
@@ -97,6 +100,7 @@
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
           ]"
+          :allowDecimals="false"
         />       
       </v-col>
     </v-row>
@@ -110,6 +114,7 @@ import { Component, PropSync, Watch } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
+
 
 import { 
   SelectData,
