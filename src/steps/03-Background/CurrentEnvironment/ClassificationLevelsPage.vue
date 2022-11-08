@@ -146,7 +146,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     },
 
   ]
-  @Watch("selectedImpactLevels")
+  @Watch("selectedClassifications")
   public selectedTypeChange(newVal: string[]): void {
     let filteredList :ClassificationLevelDTO[] = []
     if(newVal.includes("U")) {
@@ -158,7 +158,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     this.checkboxItems =this.createCheckboxItems(filteredList)
   }
 
-  @Watch("selectedClassifications")
+  @Watch("selectedImpactLevels")
   public selectedOptionChange(newVal: string[]): void {
     let filtered = this.classifications
       .filter(classification => classification.impact_level === "IL2")
