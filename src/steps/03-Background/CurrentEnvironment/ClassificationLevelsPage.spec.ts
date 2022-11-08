@@ -90,50 +90,6 @@ describe("Testing Classification Level Page", () => {
   });
 
   describe("test functions....", () => {
-    it("loadOnEnter() - is to set data.firstTimeHere to true ", async () => {
-      wrapper.vm.loadOnEnter();
-      expect(wrapper.vm.$data).toStrictEqual({
-        "checkboxItems": [],
-        "classifications": [],
-        "IL2": "cc3b52af87970590ec3b777acebb3581",
-        "savedData": [],
-        "selectedOptions": [],
-        "environment": "",
-        "selectedDeployment": [],
-        "selectedType": [],
-        "classificationsTier": [
-          {
-            id: "Unclassified",
-            label: "Unclassified",
-            value: "U",
-          },
-          {
-            id: "Secret",
-            label: "Secret",
-            value: "S",
-          },
-          {
-            id: "TopSecret",
-            label: "Top Secret",
-            value: "TS",
-          },
-        ],
-        "cloudDeployment": [
-          {
-            id: "CommercialCloud",
-            label: "Commercial cloud",
-            value: "commercialCloud",
-          },
-          {
-            id: "GovernmentCloud",
-            label: "Federal community cloud (government cloud)",
-            value: "GovernmentCloud",
-          },
-
-        ]
-      });
-    });
-
     it('Test that saving selected works', async () => {
       wrapper.vm.$data.classifications = allClassificationLevels
       wrapper.vm.$data.selectedOptions = ["class1", "class5", "class4"]
