@@ -133,7 +133,6 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: false }) private hideHelpTextOnErrors?: boolean;
   @Prop({ default: "text" }) private type?: string;
   @Prop({ default: true }) private allowDecimals?: boolean;
-  @Prop() private decimalToTenths?: boolean;
   @Prop({ default: false }) private appendDropdown?: boolean;
   @Prop() private dropdownOptions?: SelectData[];
   @PropSync("selectedDropdownValue") private _selectedDropdownValue?: string;
