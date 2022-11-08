@@ -77,13 +77,13 @@ export default class CurrentUsage extends Vue {
     {
       id: "RegularUsage",
       label: "Evenly distributed or constant usage",
-      value: "RegularUsage"
+      value: "EVEN_USAGE"
     },
     {
       id: "IrregularUsage",
       label: `Irregular usage or spike traffic (i.e., typically surges for a 
         specific event or during a certain period each year)`,
-      value: "IrregularUsage"
+      value: "IRREGULAR_USAGE"
     },
   ];
 

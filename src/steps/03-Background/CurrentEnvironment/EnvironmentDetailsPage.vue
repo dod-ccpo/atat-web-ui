@@ -191,25 +191,27 @@ export default class EnvironmentDetails extends Vue {
     
     // if storing current way using classificationLevels in ClassificationRequirements store
     env_classifications: [], // array of classification level sys_ids
-    IL2_cloud_deployments: [], // CAN BE POST-MVP -- Commercial Cloud | Federal community cloud (govt cloud)
+    // IL2_cloud_deployments: [], // CAN BE POST-MVP -- Commercial Cloud | Federal community cloud (govt cloud)
 
-    // if separating classification and impact levels - is this necessary?
-    env_classification: { // 
-      classification_levels: [], // Unclassified | Secret -- Top Secret hidden per Melissa
-      impact_levels: [], // IL2 | IL4 | IL5 
-      IL2_cloud_deployments: [], // CAN BE POST-MVP -- Commercial Cloud | Federal community cloud (govt cloud)
-    }, 
+    // // if separating classification and impact levels - is this necessary?
+    // env_classification: { // 
+    //   classification_levels: [], // Unclassified | Secret -- Top Secret hidden per Melissa
+    //   impact_levels: [], // IL2 | IL4 | IL5 
+    //   IL2_cloud_deployments: [], // CAN BE POST-MVP -- Commercial Cloud | Federal community cloud (govt cloud)
+    // }, 
 
     env_instances: [
       {
         instance_location: "", // CLOUD | ONPREM - auto-set if env_loc is CLOUD or ONPREM - radio if HYBRID
         deployed_regions: [], // checkboxes - CONUS East, CONUS Central, etc.
         
+        instance_classification: "", // classification level sys_id
+        
         // THESE 2 WILL STORE THE SAME THING - A CLASSIFICATION LEVEL - ONLY LABELS WILL CHANGE
-        classification_impact_level: "", // radio - only for CLOUD - if MULTIPLE selected on classification page
-        unclass_information_hosting: "", // radio - only for ONPREM if MULTIPLE selected on classification page
+        // classification_impact_level: "", // radio - only for CLOUD - if MULTIPLE selected on classification page
+        // unclass_information_hosting: "", // radio - only for ONPREM if MULTIPLE selected on classification page
 
-        IL2_cloud_types: [], // CAN BE POST-MVP
+        // IL2_cloud_types: [], // CAN BE POST-MVP
 
         current_usage_description: "", // radio - even usage or spikes in traffic
         traffic_spike: [], // checkboxes - event-based or period-based
