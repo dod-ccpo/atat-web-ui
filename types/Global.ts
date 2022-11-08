@@ -516,3 +516,8 @@ export interface CurrentEnvPerformanceTier {
   dataEgressMonthlyAmount?: number | null;
   dataEgressMonthlyUnit?: StorageUnit;
 }
+
+export interface CurrentEnvPricingDetails {
+  currentPaymentArrangement?: string;
+  pricingPeriodExpirationDate?: string;
+}
