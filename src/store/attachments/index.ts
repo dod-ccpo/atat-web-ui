@@ -10,6 +10,7 @@ import rootStore from "../index";
 
 import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
+import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { AttachmentDTO } from "@/api/models";
 import {
   AttachmentServiceCallbacks,
@@ -35,10 +36,11 @@ export class AttachmentStore extends VuexModule {
   private initialized = false;
   // store session properties
   protected sessionProperties: string[] = [FUNDING_REQUEST_FSFORM_TABLE, 
-    FUNDING_REQUEST_MIPRFORM_TABLE];
+    FUNDING_REQUEST_MIPRFORM_TABLE, REQUIREMENTS_COST_ESTIMATE_TABLE];
 
   public [FUNDING_REQUEST_FSFORM_TABLE]: AttachmentDTO[] = [];
   public [FUNDING_REQUEST_MIPRFORM_TABLE]: AttachmentDTO[] = [];
+  public [REQUIREMENTS_COST_ESTIMATE_TABLE]: AttachmentDTO[] = [];
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -146,6 +148,15 @@ export class AttachmentStore extends VuexModule {
       (attachment) => {
         this.addAttachment({
           key: FUNDING_REQUEST_MIPRFORM_TABLE,
+          attachment,
+        })
+      }
+    );
+    AttachmentServiceCallbacks.registerUploadCallBack(
+      REQUIREMENTS_COST_ESTIMATE_TABLE,
+      (attachment) => {
+        this.addAttachment({
+          key: REQUIREMENTS_COST_ESTIMATE_TABLE,
           attachment,
         })
       }

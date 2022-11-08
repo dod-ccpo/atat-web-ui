@@ -44,7 +44,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
-import { RequirementsCostEstimateDTO } from "@/api/models";
+import {AttachmentDTO, RequirementsCostEstimateDTO} from "@/api/models";
 import FinancialDetails from "@/store/financialDetails";
 import { invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
@@ -143,13 +143,38 @@ export default class SupportingDocumentation extends Vue {
   }
 
   /**
+   * TODO: this function may not be needed, since it is loading all attachments for all
+   * the records of requirements cost estimate table.
+   */
+  async loadAttachments(): Promise<void>{
+    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
+    const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
+      const file = new File([], attachment.file_name, {
+        lastModified: Date.parse(attachment.sys_created_on || "")
+      });
+      const upload: uploadingFile = {
+        attachmentId: attachment.sys_id || "",
+        fileName: attachment.file_name,
+        file: file,
+        created: file.lastModified,
+        progressStatus: 100,
+        link: attachment.download_link || "",
+        recordId: attachment.table_sys_id,
+        isErrored: false,
+        isUploaded: true
+      }
+      return upload;
+    });
+    this.uploadedFiles = [...uploadedFiles];
+  }
+
+  /**
    *
    */
   async loadOnEnter(): Promise<void> {
     try {
-      await this.loadRequirementsCostEstimateData(); 
-      //TODO:loadRequirementsCostEstimateData instead?
-      debugger;
+      await this.saveRequirementCostEstimateData();//TODO:loadRequirementsCostEstimateData instead?
+      //await this.loadRequirementsCostEstimateData();
     } catch (error) {
       throw new Error("an error occurred loading supporting documentation");
     }
@@ -157,6 +182,7 @@ export default class SupportingDocumentation extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    await this.loadAttachments()
     //listen for attachment service upload callbacks
     //and update attachments
     AttachmentServiceCallbacks.registerUploadCallBack(
