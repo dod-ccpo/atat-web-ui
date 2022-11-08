@@ -103,6 +103,12 @@ body {
   background: rgba($base, 0.5);
 }
 
+.v-menu__content {
+  &::-webkit-scrollbar-track {
+    background: white !important;
+  }  
+}
+
 textarea {
   &::-webkit-scrollbar-track {
     margin-block: 0;

@@ -490,6 +490,8 @@ export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
 export type EvalPlanSourceSelection = "" | "NoTechProposal" | "TechProposal" 
   | "SetLumpSum" | "EqualSetLumpSum";
 
+export type StorageUnit = "" | "GB" | "TB" | "PB";
+
 export interface CurrentEnvUsageData {
   currentUsageDescription?: string;
   trafficSpikeCauses?: string[];
@@ -505,5 +507,12 @@ export interface CurrentEnvInstanceConfig {
   memory?: number | null;
   storageType?: string;
   storageAmount?: number | null;
-  storageUnit?: string;
+  storageUnit?: StorageUnit;
+}
+
+export interface CurrentEnvPerformanceTier {
+  performanceTier?: string;
+  numberOfSimilarInstances?: number | null;
+  dataEgressMonthlyAmount?: number | null;
+  dataEgressMonthlyUnit?: StorageUnit;
 }

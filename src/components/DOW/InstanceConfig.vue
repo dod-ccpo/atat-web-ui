@@ -110,7 +110,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -130,6 +130,7 @@ import {
 
 export default class InstanceConfig extends Vue {
   @PropSync("instanceConfig") public _instanceConfig!: CurrentEnvInstanceConfig
+  @Prop() public storageUnits!: SelectData[];
 
 
   public storageTypes: SelectData[] = [
@@ -155,11 +156,6 @@ export default class InstanceConfig extends Vue {
     },
   ];
 
-  public storageUnits: SelectData[] = [
-    { text: "Gigabyte (GB)", value: "GB" },
-    { text: "Terabyte (TB)", value: "TB" },
-    { text: "Petabyte (PB)", value: "PB" },
-  ];
 
 
 }
