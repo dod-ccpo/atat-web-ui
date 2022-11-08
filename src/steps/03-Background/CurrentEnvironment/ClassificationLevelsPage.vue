@@ -60,7 +60,7 @@
                 :hasOtherValue="true"
                 :items="cloudDeployment"
                 :rules="[
-                    $validators.required('Please select at least one cloud.')
+                    $validators.required('Please select at least one type of cloud.')
                 ]"
                 :value.sync="selectedCloudTypes"
                 class="copy-max-width"
