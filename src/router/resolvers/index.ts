@@ -116,6 +116,16 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     : routeNames.CurrentContract;
 };
 
+export const ArchitecturalDesignDetailsRouteResolver = (current: string): string => {
+  const hasCurrentEnv
+      = AcquisitionPackage.currentEnvironment?.current_environment_exists === "true";
+  if (!hasCurrentEnv) {
+    return routeNames.CurrentEnvironment;
+  }else {
+    return routeNames.ArchitecturalDesignDetails
+  }
+};
+
 export const CurrentContractEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
     = AcquisitionPackage.currentEnvironment?.current_environment_exists === "true";
@@ -785,6 +795,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   BVTOResolver,
   NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
+  ArchitecturalDesignDetailsRouteResolver,
 };
 
 // add path resolvers here 

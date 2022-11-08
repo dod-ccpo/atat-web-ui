@@ -115,6 +115,7 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: ()=>[] }) private mask!: string[];
   @Prop({ default: false }) private isMaskRegex!: boolean;
   @Prop({ default: false }) private isCurrency!: boolean;
+  @Prop({ default: false }) private isFormattedNumber!: boolean;
   @Prop({ default: false }) private alignRight?: boolean;
   @Prop({ default: false }) private disabled?: boolean;
   @Prop({ default: true }) private showErrorMessages?: boolean;
@@ -171,12 +172,21 @@ export default class ATATTextField extends Vue  {
 
   private setMasks(): void {
     const maskObj: mask = {};
+
     if (this.isCurrency){
       maskObj.alias = "currency";
       maskObj.groupSeparator = ",";
       maskObj.digits = 2;
       maskObj.autoGroup = true;
       maskObj.digitsOptional = false;
+      maskObj.rightAlign=false;
+
+    } else if (this.isFormattedNumber) {
+      maskObj.alias = "decimal";
+      maskObj.groupSeparator = ",";
+      maskObj.digits = 0;
+      maskObj.autoGroup = true;
+      maskObj.digitsOptional = true;
       maskObj.rightAlign=false;
     } else if (this.mask.length > 0){
       if (this.isMaskRegex){
@@ -185,7 +195,7 @@ export default class ATATTextField extends Vue  {
         maskObj.mask = this.mask || [];
       }
     }
-    
+
     if (Object.keys(maskObj).length>0){
       maskObj.placeholder="";
       maskObj.jitMasking=true;

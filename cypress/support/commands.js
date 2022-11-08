@@ -1171,7 +1171,9 @@ Cypress.Commands.add("selectExistingEnv", (radioSelector, value) => {
       const yesLabel= "radio_button_checkedYes." 
       if (selectedOption === yesLabel) {
         //naviagtes to "where is your Current Environment located?"
-        cy.verifyPageHeader("Where is your current environment located?");
+        cy.verifyPageHeader(
+          "Do you have system diagrams, data architecture diagrams, charts," +
+          " or other relevant information for your current environment?");
       } else {
         //navigate to "Future Summary Page"
         cy.textExists("div.mb-auto","Future Summary page");

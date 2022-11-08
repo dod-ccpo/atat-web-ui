@@ -3,16 +3,16 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import IGCEStore from "@/store/IGCE";
 import Periods from "@/store/periods";
-import { 
+import {
   AcorsRouteResolver,
   BVTOResolver,
   CreateEvalPlanRouteResolver,
-  IGCECannotProceedResolver, 
-  IGCEGatherPriceEstimatesResolver, 
-  IGCESupportingDocumentationResolver, 
+  IGCECannotProceedResolver,
+  IGCEGatherPriceEstimatesResolver,
+  IGCESupportingDocumentationResolver,
   IGCESurgeCapabilities,
   NoEvalPlanRouteResolver,
-  EvalPlanDetailsRouteResolver
+  EvalPlanDetailsRouteResolver, ArchitecturalDesignDetailsRouteResolver
 
 } from "../resolvers/index"
 import { routeNames } from "@/router/stepper"
@@ -31,6 +31,12 @@ describe("testing route resolvers", () => {
     //reset periodOfPerformance and DOW back to incomplete
     Periods.setPeriods([]);
     DescriptionOfWork.setIsIncomplete(true);
+  })
+  describe("CurrentEnvironment Resolvers", () => {
+    it("ArchitecturalDesignDetailsRouteResolver() - routes to current environment", async () => {
+      const route = ArchitecturalDesignDetailsRouteResolver(routeNames.BackgroundSummary);
+      expect(route).toBe(routeNames.CurrentEnvironment);
+    });
   })
 
   describe("ACORs Resolvers", () => {
