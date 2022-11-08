@@ -139,6 +139,7 @@ import { createDateStr, toCurrencyString } from "@/helpers";
 import { formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
 import _ from "lodash";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -403,6 +404,10 @@ export default class PortfoliosSummary extends Vue {
     this.portfolioCount = storeData.total_count;
     this.$emit("totalCount", storeData.total_count);
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
+
+    const currentEvnStoreData = await CurrentEnvironment
+      .loadCurrentEnvironment(null); // get the curr env sys id from acq pkg
+    console.log(JSON.stringify(currentEvnStoreData));
 
     if (this.isHomeView) {
       storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);

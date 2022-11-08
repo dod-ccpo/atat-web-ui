@@ -69,13 +69,81 @@ export interface CurrentContractDTO extends BaseTableDTO {
   contract_order_expiration_date?: string;
 }
 
-export interface CurrentEnvironmentDTO extends BaseTableDTO {
-  current_environment_exists?: string;
-  environment_instances?: string;
-  additional_information?: string;
-  diagramChartDocumentation?: string;
-  assessmentAnalysisDocumentation?: string;
+export interface EnvironmentReplicateOptimizeDetails{
+  current_environment_replicated_optimized: string;
+  statement_replicated_optimized: string;
+  additional_growth: string; // "YES" | "NO"
+  anticipated_yearly_additional_capacity: number;
+  has_phased_approach: string; // "YES" | "NO"
+  phased_approach_schedule: string;
+  needs_architectural_design_services: string; // "YES" | "NO"
+  statement_architectural_design: string;
+  applications_need_architectural_design: string;
+  data_classifications_impact_levels: string[];
+  external_factors_architectural_design: string;
+}
 
+export interface RegionUserCount {
+  region?: string;
+  count?: number;
+}
+
+export interface EnvironmentDetails {
+  // hybrid_choice?: string;
+  // deployed_regions?: string[];
+  classification_level: string;
+  current_usage_description?: string;
+  traffic_spike?: string [];
+  surge_usage_event?: string;
+  surge_usage_periods?: string;
+  users_regions?: RegionUserCount [];
+  operating_system?: string;
+  licensing?: string;
+  number_Of_VCPUs?: number;
+  processor_speed?: string
+  memory_amount?: number; // assumed to be GB
+  storage_type?: string;
+  storage_amount?: number;
+  storage_amount_unit?: "GB" | "TB" | "PB";
+  performance_tier?: string;
+  number_of_similar_instances?: number;
+  data_egress_monthly_amount?: number;
+  data_egress_monthly_unit?: "GB" | "TB" | "PB";
+  pricing_model?: string;
+  pricing_model_expiration?: string;
+  additional_information?: string;
+}
+
+export interface EnvironmentClassification {
+  location_type: "CLOUD" | "ONPREM";
+  classification_levels: string[];
+  impact_levels: string[];
+  IL2_cloud_deployments: string [];
+  unclass_information_hosting: string[];
+}
+
+export interface Environment {
+  location: "HYBRID" | "CLOUD" | "ONPREM";
+  env_classifications: EnvironmentClassification[];
+  details: EnvironmentDetails;
+}
+
+export interface CurEnvSystemDocumentation extends BaseTableDTO{
+  acquisition_package?: string;
+}
+
+export interface CurEnvMigrationDocumentation extends BaseTableDTO{
+  acquisition_package?: string;
+}
+
+export interface CurrentEnvironmentDTO extends BaseTableDTO {
+  current_environment_exists?: string; // "YES" | "NO"
+  has_system_documentation: string; // "YES" | "NO"
+  system_documentation?: CurEnvSystemDocumentation;
+  has_migration_documentation: string; // "YES" | "NO"
+  migration_documentation?: CurEnvMigrationDocumentation;
+  environments: Environment [];
+  details_replicate_optimize?: EnvironmentReplicateOptimizeDetails;
 }
 
 export interface ContactDTO extends BaseTableDTO {

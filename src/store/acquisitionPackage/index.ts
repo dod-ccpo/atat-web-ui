@@ -232,10 +232,10 @@ const initialClassificationLevel = () => {
 
 const initialCurrentEnvironment = () => {
   return {
-    current_environment_exists: "",
-    environment_instances: "",
-    additional_information: "",
-    diagramChartDocumentation: "",
+    current_environment_exists: "YES",
+    environments: [],
+    has_system_documentation: "NO",
+    has_migration_documentation: "NO"
   }
 }
 
