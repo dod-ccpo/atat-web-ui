@@ -3,41 +3,14 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          Let’s see if you have any supporting documentation
+          Let’s upload your supporting documentation
         </h1>
         <div class="copy-max-width">
           <p id="IntroP" class="mb-7">
-            If you have any reference materials to support how your estimates were 
-            calculated, you can provide links or upload attachments below. Your 
-            contracting officer will rely on these resources as evidence of the 
-            realism of your IGCE.
-          </p>
-          <h2 id="Section1Header" class="mb-5">
-            1. Share a link to your custom cost estimate report
-          </h2>
-          <ATATTextField 
-            label="CSP pricing calculator link"
-            id="CSPPriceCalcLink"
-            :optional="true"
-            :tooltipText="cspLinkTooltip"
-            :value.sync="cspCalculatorLink"
-            placeHolder="https://example.com"
-            @blur="checkProtocol"
-            :validateOnBlur="true"
-            :rules="[
-              $validators.isURL('Please enter a valid URL.')            
-            ]"
-          />
-
-          <ATATDivider badgeText="AND/OR" />
-
-          <h2 id="Section2Header" class="mb-0">
-            2. Upload supporting documentation
-          </h2>
-          <p class="font-size-14 text-base">
-            Attach any files to support your estimated prices (e.g., an export of 
-            your cost estimate report, a screenshot from the CSP pricing calculator 
-            website, vendor invoices from a similar requirement, etc.)
+            Upload any reference materials that support how your estimates were 
+            calculated, such as an export of your cost estimate report, a screenshot 
+            from the CSP pricing calculator website, or vendor invoices from a 
+            similar requirement.
           </p>
 
         <ATATFileUpload
@@ -54,8 +27,7 @@
           :rules="getRulesArray()"
           @mouseleave="onFileUploadChanged"
           @blur="onFileUploadChanged"
-          :startCompact="true"
-          :helpText="fileUploadHelpText"
+          :startCompact="false"
         />
 
         </div>
@@ -67,23 +39,18 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
-
-import ATATDivider from "@/components/ATATDivider.vue";
 import ATATFileUpload from "../../../components/ATATFileUpload.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-// EJY file upload from Upload7600.vue
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
-import {AttachmentDTO, RequirementsCostEstimateDTO} from "@/api/models";
+import { RequirementsCostEstimateDTO } from "@/api/models";
 import FinancialDetails from "@/store/financialDetails";
 import { invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
 
-
 @Component({
   components: {
-    ATATDivider,
     ATATFileUpload,
     ATATTextField,
   }
@@ -102,19 +69,6 @@ export default class SupportingDocumentation extends Vue {
   private invalidFiles: invalidFile[] = [];
   public requiredFileUploadMessage = ""
   private maxFileSizeInBytes = 1073741824;
-  private fileUploadHelpText = `Supported file types: .csv, .xls(x), .pdf, .jpg, .png, .doc(x) 
-    • Max file size: 1GB`
-  public cspCalculatorLink = "";
-  public cspLinkTooltip = `If available, enter your share link from the CSP 
-    calculator website, so a contracting officer can access your custom cost 
-    estimate report.`;
-
-  public checkProtocol(): void {
-    this.cspCalculatorLink = this.cspCalculatorLink.trim();
-    if (this.cspCalculatorLink.length && this.cspCalculatorLink.indexOf("http") !== 0) {
-      this.cspCalculatorLink = "https://" + this.cspCalculatorLink;
-    }    
-  }
 
   async onRemoveAttachment(file: uploadingFile): Promise<void> {
     try {
@@ -193,7 +147,9 @@ export default class SupportingDocumentation extends Vue {
    */
   async loadOnEnter(): Promise<void> {
     try {
-      await this.saveRequirementCostEstimateData(); //TODO:loadRequirementsCostEstimateData instead?
+      await this.loadRequirementsCostEstimateData(); 
+      //TODO:loadRequirementsCostEstimateData instead?
+      debugger;
     } catch (error) {
       throw new Error("an error occurred loading supporting documentation");
     }
