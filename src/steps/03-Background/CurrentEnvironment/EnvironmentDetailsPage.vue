@@ -50,6 +50,17 @@
       :storageUnits="storageUnits"
     />
 
+    <hr />
+
+    <h2 class="mb-4">
+      5. Additional information 
+      <span class="text-base font-weight-400">(Optional)</span>
+    </h2>
+
+    <AdditionalInfo 
+      :additionalInfo.sync="additionalInfo"
+    />
+
   </div>
 </template>
 
@@ -57,6 +68,7 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
+import AdditionalInfo from "@/components/DOW/AdditionalInfo.vue";
 import CurrentUsage from "@/components/DOW/CurrentUsage.vue";
 import InstanceConfig from "@/components/DOW/InstanceConfig.vue";
 import PerformanceTier from "@/components/DOW/PerformanceTier.vue";
@@ -73,6 +85,7 @@ import {
 
 @Component({
   components: {
+    AdditionalInfo,
     CurrentUsage,
     InstanceConfig, 
     PerformanceTier,
@@ -116,6 +129,8 @@ export default class EnvironmentDetails extends Vue {
     dataEgressMonthlyAmount: null,
     dataEgressMonthlyUnit: "GB",
   }
+
+  public additionalInfo = "";
 
   public regionsDeployedTooltipText = `This is the geographic location where your 
     public cloud resources are located, e.g., within the continental U.S. (CONUS) 
