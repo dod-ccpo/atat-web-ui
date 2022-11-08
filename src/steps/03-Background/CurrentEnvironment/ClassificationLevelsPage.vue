@@ -50,7 +50,7 @@
                 name="checkboxes"
               />
             </div>
-            <div v-if="selectedOptions.includes(IL2)">
+            <div v-if="IL2Selected">
               <p id="DeployedP" class="mb-4 font-weight-500">
                 For your IL2 instance(s), what type of cloud are currently deployed in?
               </p>
@@ -114,8 +114,8 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public selectedType: string[] = [];
   public selectedDeployment: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
-  public savedData: ClassificationLevelDTO[] = []
-  public IL2 = "cc3b52af87970590ec3b777acebb3581"
+  public savedData: ClassificationLevelDTO[] = [];
+  public IL2Selected = false;
   private classificationsTier: Checkbox[] = [
     {
       id: "Unclassified",
@@ -156,6 +156,15 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     }
     this.selectedOptions = []
     this.checkboxItems =this.createCheckboxItems(filteredList)
+  }
+
+  @Watch("selectedOptions")
+  public selectedOptionChange(newVal: string[]): void {
+    let filtered = this.classifications
+      .filter(classification => classification.impact_level === "IL2")
+    if(newVal.includes(filtered[0].sys_id || "")){
+      this.IL2Selected = true
+    }
   }
 
 
