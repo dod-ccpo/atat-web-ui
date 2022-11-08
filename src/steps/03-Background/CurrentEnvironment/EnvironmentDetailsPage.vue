@@ -55,7 +55,6 @@ import CurrentUsage from "@/components/DOW/CurrentUsage.vue";
 import InstanceConfig from "@/components/DOW/InstanceConfig.vue";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 
-
 import { Checkbox, CurrentEnvInstanceConfig, CurrentEnvUsageData } from "types/Global";
 
 @Component({

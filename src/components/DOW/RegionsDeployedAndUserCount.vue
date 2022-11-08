@@ -14,7 +14,7 @@
     textFieldType="number"
     :labelWidth="180"
     :value.sync="selectedRegions"
-    @checkboxTextfieldDataUpdate="regionsUserDateUpdate"
+    @checkboxTextfieldDataUpdate="regionsUserDataUpdate"
     :isFormattedNumber="true"
     :rules="rules"
     :textfieldRules="textfieldRules"
@@ -98,7 +98,7 @@ export default class RegionsDeployedAndUserCount extends Vue {
     this.$emit("selectedRegionsUpdate", this.selectedRegions);
   }
 
-  public regionsUserDateUpdate(): void {
+  public regionsUserDataUpdate(): void {
     this.$emit("regionUserDataUpdate", this.regions);
   }
 
