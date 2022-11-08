@@ -8,6 +8,9 @@
           :value.sync="_instanceConfig.licensing"
           tooltipText="Provide details about your licensing agreement, to include 
             the type and number of licenses."
+          :rules="[
+            $validators.required('Enter a description of your current licensing.')
+          ]"
         />
       </v-col>
     </v-row>
@@ -19,6 +22,10 @@
           :value.sync="_instanceConfig.numberOfVCPUs"
           tooltipText="This refers to the size of compute. You can provide an approximate 
             number of virtual centralized processing units (vCPUs)."
+          type="number"
+          :rules="[
+            $validators.required('Enter a number greater than or equal to 1.'),
+          ]"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-3">
@@ -28,6 +35,10 @@
           :value.sync="_instanceConfig.processorSpeed"
           tooltipText="Enter the clock speed for each vCPU. This is typically measured
             in gigahertz (GHz)."
+          type="number"
+          :rules="[
+            $validators.required('Enter a number greater than or equal to 1.'),
+          ]"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6">
@@ -37,6 +48,9 @@
           :value.sync="_instanceConfig.operatingSystem"
           tooltipText="Specify the type of OS that your instance is running on 
             (e.g., Windows, Linux)."
+          :rules="[
+            $validators.required('Enter the name of an operating system.'),
+          ]"
         />
       </v-col>
     </v-row>
@@ -49,6 +63,10 @@
           tooltipText="Enter the amount of Random Access Memory (RAM) available for 
             storing data short-term in order to perform computing operations."
           appendText="GB"
+          type="number"
+          :rules="[
+            $validators.required('Enter a number greater than or equal to 1.'),
+          ]"
         />
       </v-col>
     </v-row>
@@ -75,6 +93,10 @@
           :appendDropdown="true"
           :dropdownOptions="storageUnits"
           :selectedDropdownValue.sync="_instanceConfig.storageUnit"
+          type="number"
+          :rules="[
+            $validators.required('Enter a number greater than or equal to 1.'),
+          ]"
         />       
       </v-col>
     </v-row>

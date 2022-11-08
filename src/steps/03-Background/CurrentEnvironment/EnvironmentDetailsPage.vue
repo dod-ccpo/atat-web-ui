@@ -1,6 +1,6 @@
 
 <template>
-  <div>
+  <div class="container-max-width">
     <h1 class="mb-10">
       Future env details page
     </h1>
