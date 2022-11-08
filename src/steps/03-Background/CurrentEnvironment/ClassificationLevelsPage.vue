@@ -46,7 +46,7 @@
                     $validators.required('Please select at least one impact level.')
                 ]"
                 :value.sync="selectedOptions"
-                class="copy-max-width"
+                class="copy-max-width mb-10"
                 name="checkboxes"
               />
             </div>
