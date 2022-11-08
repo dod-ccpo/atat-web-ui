@@ -26,7 +26,7 @@
               :rules="[
               $validators.required('Please select at least one classification level.')
             ]"
-              :value.sync="selectedImpactLevels"
+              :value.sync="selectedClassifications"
               class="copy-max-width mb-10"
               name="checkboxes"
             />
@@ -45,7 +45,7 @@
                 :rules="[
                     $validators.required('Please select at least one impact level.')
                 ]"
-                :value.sync="selectedClassifications"
+                :value.sync="selectedImpactLevels"
                 class="copy-max-width mb-10"
                 name="checkboxes"
               />
@@ -110,8 +110,8 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   private checkboxItems: Checkbox[] = [];
   private environment = "";
-  public selectedClassifications: string[] = [];
   public selectedImpactLevels: string[] = [];
+  public selectedClassifications: string[] = [];
   public selectedCloudTypes: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedData: ClassificationLevelDTO[] = [];
@@ -154,7 +154,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
         .filter(classification => classification.classification === "U" )
       filteredList.push(...filtered)
     }
-    this.selectedClassifications = []
+    this.selectedImpactLevels = []
     this.checkboxItems =this.createCheckboxItems(filteredList)
   }
 
@@ -175,7 +175,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
 
   private saveSelected() {
     const arr :ClassificationLevelDTO[] = [];
-    this.selectedClassifications.forEach(item => {
+    this.selectedImpactLevels.forEach(item => {
       const value = this.classifications.filter(( data )=>{
         return item == data.sys_id
       })
@@ -216,7 +216,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       this.savedData = storeData
       storeData.forEach((val) => {
         if (val.sys_id) {
-          this.selectedClassifications.push(val.sys_id)
+          this.selectedImpactLevels.push(val.sys_id)
         }
       })
     }
