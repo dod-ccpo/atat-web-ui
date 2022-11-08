@@ -1,5 +1,5 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
-import { bootstrapMockApis } from "../../../helpers";
+import { bootstrapMockApis,currencyToNumber,numberWithCommas } from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import ps from "../../../selectors/portfolioSummary.sel"
 
@@ -9,7 +9,7 @@ describe("Test suite: View all task orders", () => {
   let menus;  
   const portfolioName = "Air Force Portfolio";
   const taskOrderNumber = 1000000005000;
-  let totalSum = 0;
+  let totalSum = 0;  
 
   beforeEach(() => {
     cy.fixture("navigationBarMenu").then((data) => {
@@ -71,6 +71,32 @@ describe("Test suite: View all task orders", () => {
 
     //Total funds spent card is equal to table Total funds spent value    
     cy.verifyCardsValueMatchesWithTotalValue(ps.totalFundsSpent, ps.grandTotalFundsSpentValue);
+
+    //Total Task order value card is equal to table Total clin value with out option pending 
+    let optionPendingTotal=0;      
+    let totalTaskOrder;
+    let totalTOValue;
+    cy.findElement(ps.optionPendingCLINsValue).each(($ele) => {
+      const toNumber = currencyToNumber($ele.text());
+      cy.log("toNumber:", toNumber);
+      optionPendingTotal += toNumber;
+      cy.log("optionPendingTotal:", optionPendingTotal);
+      cy.findElement(ps.grandTotalCLINSValue).scrollIntoView()
+        .then(($el) => {
+          const totalValueString = currencyToNumber($el.text());
+          cy.log("TotalValueString:", totalValueString);
+          totalTaskOrder = totalValueString - optionPendingTotal;
+          totalTOValue = numberWithCommas(totalTaskOrder)
+          cy.log("totalTaskOrder:", totalTOValue)
+        });
+      cy.findElement(ps.totalTOValueCard)
+        .then(($el) => {
+          const totalCardValueString = currencyToNumber($el.text());
+          cy.log("totalCardValueString:", totalCardValueString)
+          const cardTotalValue = numberWithCommas(totalCardValueString)
+          expect(cardTotalValue).to.equal(totalTOValue);
+        });
+    });
     
     //CLIN Table exists with the following columns
     const expectedRowHeaders = [

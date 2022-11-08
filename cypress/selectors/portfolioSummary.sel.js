@@ -158,7 +158,8 @@ module.exports = {
   grandHiddenTotalObValue:"td:nth-child(3)._grand-total-clin-value span",
   grandTotalCLINSValue: "._grand-total-clin-value span",
   grandhiddenTotalCLINSValue: "td:nth-child(4)._grand-total-obligated-funds span",
-  grandTotalFundsSpentValue:"._grand-total-funds-spent",
+  grandTotalFundsSpentValue: "._grand-total-funds-spent",
+  optionPendingCLINsValue:"._total-clin-value._OPTION_PENDING",
   
   //CSP Portal Access
   cspTitle: "#CSPTitle.h3",
