@@ -89,14 +89,4 @@ describe("Testing Classification Level Page", () => {
 
   });
 
-  describe("test functions....", () => {
-    it('Test that saving selected works', async () => {
-      wrapper.vm.$data.classifications = allClassificationLevels
-      wrapper.vm.$data.selectedOptions = ["class1", "class5", "class4"]
-      const saved = wrapper.vm.saveSelected()
-      expect(saved).toStrictEqual(selectedClassifications);
-    })
-
-  });
-
 })
