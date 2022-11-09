@@ -1,7 +1,7 @@
 import common from '../selectors/common.sel';
 import 'cypress-iframe';
 import ps from "../selectors/portfolioSummary.sel";
-import { cleanText } from "../helpers";
+import { cleanText,currencyToNumber,numberWithCommas,numberWithoutPercentSign  } from "../helpers";
 import al from "../selectors/acquisitionList.sel";
 
 Cypress.Commands.add("dialogModalExist", (dialogModalSelector,modalTitleSelector,modalTitle) => {
@@ -189,4 +189,137 @@ Cypress.Commands.add("verifyAwardedTaskOrderCardDetails", () => {
     cy.verifyHasText(al.createdBy0);
     cy.verifyHasText(al.modified0);
   });
+});
+
+Cypress.Commands.add("verifyTaskOrderCardDetails", () => {
+  cy.findElement("._task-order-container ").then(() => {
+    cy.verifyHasText(ps.toLinkOne);
+    cy.verifyHasText(".v-chip--label");
+    cy.verifyHasText(ps.popOne);
+    cy.verifyHasText(ps.obligatedFundOne);
+    cy.verifyHasText(ps.totalValueOne);
+    cy.verifyHasText(ps.totalLFundsSpent);
+  });
+});
+
+Cypress.Commands.add("viewTaskOrderDetails", (taskorderMenu,toNumber) => {
+  cy.findElement("#MeatballMenu0Button_0").click({ force: true }).then(() => {
+    cy.verifyStringArray("#MeatballMenu0_0 .v-list", taskorderMenu);      
+  });
+  cy.textExists(ps.viewTODetailsLink0, "View task order details").click().then(() => {
+    cy.findElement(ps.taskOrderDetails).should("exist");
+    cy.verifyHasText(ps.taskorderlink).should("contain", "Task Order");
+    cy.verifyHasText(ps.taskorderNumber).should("contain",toNumber);
+  });
+});
+
+Cypress.Commands.add("verifyColumns", (columnIndex,headerText, excludeInactive) => {
+  cy.findElement(".v-data-table-header  th:nth-child(" + columnIndex + ") span")
+    .invoke('text')
+    .as('foundHeaderText');  
+
+  cy.get('@foundHeaderText').then(foundHeaderText => {
+    expect(headerText).equal(foundHeaderText)   
+  })
+  const extraSelector = excludeInactive ? ":not(.d-none)" : "";
+  cy.findElement("tbody tr.row-item" + extraSelector + " td:nth-child(" + columnIndex + ")")
+    .each(($el) => {
+      const value = $el.text();
+      cy.log(value);
+      expect(value).to.exist;
+    }); 
+  
+});
+
+Cypress.Commands.add("verifyTaskOrderStatus", (excludeInactive) => {
+  const extraSelector = excludeInactive ? ":not(.d-none)" : "";
+  cy.findElement("tbody tr.row-item" + extraSelector + " td:nth-child(2)").each(($el,rowIndex) => {
+    const status = $el.text();
+    const actualStatus = cleanText(status);
+    cy.log(status);
+    if (actualStatus === "Delinquent") {
+      cy.findElement(
+        "tbody tr.row-item:nth-child(" + (rowIndex + 1) + ") td:nth-child(6) ._overspent")
+        .scrollIntoView();
+      cy.verifyHasText(
+        "tbody tr.row-item:nth-child(" + (rowIndex + 1) + ") td:nth-child(6) ._overspent")
+        .should("be.visible").and("have.text", "Overspent");
+      cy.verifyHasText(
+        "tbody tr.row-item:nth-child(" + (rowIndex + 1) + ") td:nth-child(6) ._funds-spent-percent")
+        .invoke('text').then(($el) => {
+          const percentageNumber = numberWithoutPercentSign($el);           
+          cy.log("percentageNumber :", percentageNumber);
+          cy.wrap(percentageNumber).should("be.gte", 100);          
+        });
+    } else if (actualStatus == "Funding At-Risk") {
+      cy.verifyHasText(
+        "tbody tr.row-item:nth-child(" + (rowIndex + 1) + ") td:nth-child(6) ._funds-spent-percent")
+        .invoke('text').then(($el) => {
+          const percentageNumber = numberWithoutPercentSign($el);           
+          cy.log("percentageNumber :", percentageNumber);         
+          cy.wrap(percentageNumber).should("be.gte", 75).and("be.lt",100);
+
+        });
+        
+    } else if (actualStatus === "Expired"||actualStatus === "Option Pending") {
+      cy.findElement(
+        "tbody tr.row-item:nth-child(" + (rowIndex + 1) + ") td:nth-child(3) ._expiration")
+        .should("not.exist");
+    }
+    else if (actualStatus == "At-Risk") {
+      cy.verifyHasText(
+        "tbody tr.row-item:nth-child(" + (rowIndex + 1) + ") td:nth-child(3) ._expiration")        
+        .then(($el) => {
+          const expirationString = $el.text();
+          const expirationDays = expirationString.split(" ")[0];
+          cy.log("expirationDays :", expirationDays);
+          const days = parseFloat(expirationDays);
+          cy.wrap(days).should("be.lt",90);          
+          
+        });
+    }
+    else {
+      cy.findElement(
+        "tbody tr.row-item:nth-child(" + (rowIndex + 1) + ") td:nth-child(3) ._expiration")
+        .should("exist");
+    }
+  });
+});
+
+Cypress.Commands.add("verifyTotalValueMatches", (columnIndex,excludeInactive,totalSum,selector) => {
+  const extraSelector = excludeInactive ? ":not(.d-none)" : "";
+  cy.findElement("tbody tr.row-item" + extraSelector + " td:nth-child(" + columnIndex + ")")
+    .each(($ele) => {
+      const toNumber = currencyToNumber($ele.text());         
+      totalSum += toNumber
+      cy.log("Sum of each row value in table:",numberWithCommas(totalSum));
+    })
+  cy.findElement(selector).scrollIntoView()   
+    .then(($el) => {
+      const totalValueString = currencyToNumber($el.text());  
+      const totalValue = numberWithCommas(totalValueString)
+      cy.log("TotalValue:",numberWithCommas(totalValue));
+      expect(totalValue).to.equal(numberWithCommas(totalSum));
+    });    
+    
+});  
+
+Cypress.Commands.add("verifyCardsValueMatchesWithTotalValue", (cardSelector,cellSelector) => {
+  let cardTotalValue;
+  let tableTotalValue;  
+
+  cy.findElement(cardSelector)    
+    .then(($el) => {
+      const totalCardValueString = currencyToNumber($el.text());    
+      cardTotalValue = numberWithCommas(totalCardValueString)
+      cy.log("TotalCardValue:", cardTotalValue);       
+      cy.findElement(cellSelector).scrollIntoView()    
+        .then(($el) => {
+          const totalValueString = currencyToNumber($el.text()); 
+          tableTotalValue = numberWithCommas(totalValueString)
+          cy.log("TotalValue:",tableTotalValue);
+          expect(cardTotalValue).to.equal(tableTotalValue);
+        });
+    });
+  
 });

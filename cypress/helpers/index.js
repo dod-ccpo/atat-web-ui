@@ -124,3 +124,18 @@ export function capitalizeFirstLetter(str) {
 export function prefixId(id, prefix) {
   return [id.slice(0,1), prefix, id.slice(1)].join("");
 }
+
+export function currencyToNumber(str) {
+  const stringNoDollar = str.replace(/\$/g, '');
+  // eslint-disable-next-line no-useless-escape
+  const stringNoComma = stringNoDollar.replace(/\,/g, '');      
+  const toNumber = parseFloat(stringNoComma);
+  return toNumber;
+}
+
+export function numberWithoutPercentSign(str) {
+  const percentageString = str.replace(/[()]/g, '');         
+  const withoutPercentage = percentageString.replace("%","");          
+  const toNumber = parseFloat(withoutPercentage);
+  return toNumber;
+}
