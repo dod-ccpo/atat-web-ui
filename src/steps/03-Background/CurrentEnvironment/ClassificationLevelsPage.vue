@@ -153,9 +153,14 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       let filtered = this.classifications
         .filter(classification => classification.classification === "U" )
       filteredList.push(...filtered)
+      if (this.impactLevels.length === 0) {
+        this.impactLevels = this.createCheckboxItems(filteredList)
+      }
     }
-    this.selectedImpactLevels = []
-    this.impactLevels =this.createCheckboxItems(filteredList)
+    if (!newVal.includes("U")) {
+      this.impactLevels = [];
+      this.selectedImpactLevels = []
+    }
   }
 
   @Watch("selectedImpactLevels")
