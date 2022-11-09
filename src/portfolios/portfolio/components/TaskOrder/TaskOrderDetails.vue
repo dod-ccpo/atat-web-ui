@@ -166,7 +166,11 @@
                   </span>
                 </div>
               </td>
-              <td class="text-right _total-clin-value" :style="{ verticalAlign: getValign(item)}">
+              <td
+                class="text-right _total-clin-value"
+                :class="'_' + item.status"
+                :style="{ verticalAlign: getValign(item)}"
+              >
                   {{item.totalCLINValue}}
               </td>
               <td class="text-right _obligated-funds" :style="{ verticalAlign: getValign(item)}">
