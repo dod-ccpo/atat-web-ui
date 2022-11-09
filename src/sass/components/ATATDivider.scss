@@ -1,0 +1,24 @@
+._divider-wrap {
+  border-bottom: 1px solid $base-lighter;
+  position: relative;
+  margin: 56px 0;
+
+  ._divider-badge {
+    position: absolute;
+    left: 116px;
+    outline: 16px solid white;
+    height: 32px;
+    bottom: -16px;
+    font-size: 1.6rem;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 4px 8px;
+    z-index: 2;
+    &::before {
+      content: "";
+      z-index: 1;
+      width: 120%;
+      background-color: red;
+    }
+  }
+}

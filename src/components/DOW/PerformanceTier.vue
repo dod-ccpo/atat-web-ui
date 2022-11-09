@@ -16,12 +16,12 @@
       id="NumberOfSimilarInstances"
       class="mt-8 _input-max-width-240"
       :value.sync="_performanceTier.numberOfSimilarInstances"
-      label="Number of similar instances"
+      label="Number of instances with these configurations"
       type="number"
       :rules="[
         $validators.required('Enter a number greater than or equal to 1.'),
+        $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
       ]"    
-      tooltipText="Specify the quantity of instances you need with these configurations."
     />
 
     <ATATTextField
@@ -37,6 +37,7 @@
       type="number"
       :rules="[
         $validators.required('Enter a number greater than or equal to 1.'),
+        $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
       ]"
       :allowDecimals="false"
     />       
