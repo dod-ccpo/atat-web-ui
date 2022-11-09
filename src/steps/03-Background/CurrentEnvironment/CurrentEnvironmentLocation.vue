@@ -67,6 +67,8 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     },
   ];
 
+  private currentEnvironmentDTO: CurrentEnvironmentDTO 
+    = AcquisitionPackage.initialCurrentEnvironment();
   private savedData: CurrentEnvironment = {
     envLocation: "",
   }
@@ -83,6 +85,7 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
         {storeProperty: StoreProperties.CurrentEnvironment}
       );
     if (storeData) {
+      this.currentEnvironmentDTO = storeData;
       this.savedData = {
         envLocation: storeData.env_location,
       }
@@ -98,9 +101,10 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         
         // reinstate save to snow after CurrentEnvironment table updated in SNOW
-        const data = { env_location: this.currentEnvironmentLocation }
+        
+        this.currentEnvironmentDTO.env_location = this.currentEnvironmentLocation;
         await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-          data,
+          data: this.currentEnvironmentDTO,
           storeProperty: StoreProperties.CurrentEnvironment
         });
       }

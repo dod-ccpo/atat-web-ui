@@ -191,7 +191,8 @@ export default class EnvironmentDetails extends Vue {
     has_migration_documentation: "", // radio - YES | NO
     migration_documentation: [], // array of attachments
     env_location: "", // CLOUD | ONPREM | HYBRID
-    env_classifications: [], // array of classification level sys_ids
+    env_classifications_cloud: [], // array of classification level sys_ids
+    env_classifications_onprem: [], // array of classification level sys_ids
     // IL2_cloud_deployments: [], // CAN BE POST-MVP -- Commercial Cloud | Federal community cloud (govt cloud)
 
     env_instances: [

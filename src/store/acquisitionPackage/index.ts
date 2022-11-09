@@ -233,10 +233,25 @@ const initialClassificationLevel = () => {
 const initialCurrentEnvironment = () => {
   return {
     current_environment_exists: "",
-    environment_instances: "",
-    additional_information: "", // this will be removed
+    has_system_documentation: "",
+    system_documentation: [],
+    has_migration_documentation: "",
+    migration_documentation: [],
     env_location: "",
-    system_documentation: "",
+    env_classifications_cloud: [],
+    env_classifications_onprem: [],
+    env_instances: [],
+    current_environment_replicated_optimized: "", // radio - YES_REPLICATE | YES_OPTIMIZE | NO
+    statement_replicated_optimized: "",
+    additional_growth: "", // "YES" | "NO"
+    anticipated_yearly_additional_capacity: null, // number | null
+    has_phased_approach: "", // "YES" | "NO"
+    phased_approach_schedule: "",
+    needs_architectural_design_services: "", // "YES" | "NO"
+    statement_architectural_design: "",
+    applications_need_architectural_design: "",
+    data_classifications_impact_levels: [],
+    external_factors_architectural_design: "",
   }
 }
 
@@ -320,19 +335,14 @@ export class AcquisitionPackageStore extends VuexModule {
   taskOrderDetailsAlertClosed = false;
 
   fundingRequestType: string | null =  null;
-  currentEnv = {
-    system_documentation:"",
-    migration_documentation:"",
-  }
+  // currentEnv = {
+  //   system_documentation:"",
+  //   migration_documentation:"",
+  // }
   public initContact: ContactDTO = initialContact()
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
-  }
-
-  @Mutation
-  public setCurrentEnv(value: CurrentEnvironmentDTO): void {
-    this.currentEnv = Object.assign(this.currentEnv, value);
   }
 
   @Mutation
@@ -489,6 +499,19 @@ export class AcquisitionPackageStore extends VuexModule {
       ? Object.assign(this.currentEnvironment, value)
       : value;
   }
+
+  public get initialCurrentEnvironment(): CurrentEnvironmentDTO {
+    return initialCurrentEnvironment();
+  }
+  // public async getCurrentEnvironmentData(): Promise<CurrentEnvironmentDTO | null> {
+  //   return this.currentEnvironment;
+  // }
+
+  // @Mutation
+  // public setCurrentEnv(value: CurrentEnvironmentDTO): void {
+  //   this.currentEnv = Object.assign(this.currentEnv, value);
+  // }
+
 
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {

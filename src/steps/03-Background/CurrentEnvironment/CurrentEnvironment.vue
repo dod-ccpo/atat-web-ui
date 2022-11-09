@@ -30,9 +30,15 @@
 <script lang="ts">
 
 import { Component, Mixins } from "vue-property-decorator";
-import { RadioButton } from "../../../../types/Global";
+import { RadioButton, YesNo } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+
+import AcquisitionPackage, 
+{ 
+  StoreProperties, 
+  initialCurrentEnvironment 
+} from "@/store/acquisitionPackage";
+
 import { CurrentEnvironmentDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -47,15 +53,18 @@ export default class CurrentEnvironment extends Mixins(SaveOnLeave) {
     {
       id: "Yes",
       label: "Yes.",
-      value: "true",
+      value: "YES",
     },
     {
       id: "No",
       label: "No, current environment does not exist.",
-      value: "false",
+      value: "NO",
     },
   ];
-  public currentEnvironmentExists
+
+  public currentEnvironmentDTO: CurrentEnvironmentDTO = initialCurrentEnvironment();
+
+  public currentEnvironmentExists: YesNo
     = AcquisitionPackage.currentEnvironment?.current_environment_exists || ""
   private get currentData(): CurrentEnvironmentDTO {
     return {
