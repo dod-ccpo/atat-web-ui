@@ -52,14 +52,18 @@
 
     <hr />
 
+    <h2 class="mb-4">4. Pricing details</h2>
+
+    <PricingDetails :pricingDetails.sync="pricingDetails" />
+
+    <hr />
+
     <h2 class="mb-4">
       5. Additional information 
       <span class="text-base font-weight-400">(Optional)</span>
     </h2>
 
-    <AdditionalInfo 
-      :additionalInfo.sync="additionalInfo"
-    />
+    <AdditionalInfo :additionalInfo.sync="additionalInfo" />
 
   </div>
 </template>
@@ -72,8 +76,8 @@ import AdditionalInfo from "@/components/DOW/AdditionalInfo.vue";
 import CurrentUsage from "@/components/DOW/CurrentUsage.vue";
 import InstanceConfig from "@/components/DOW/InstanceConfig.vue";
 import PerformanceTier from "@/components/DOW/PerformanceTier.vue";
+import PricingDetails from "@/components/DOW/PricingDetails.vue";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
-
 
 import { 
   Checkbox, 
@@ -81,6 +85,7 @@ import {
   CurrentEnvUsageData, 
   CurrentEnvPerformanceTier,
   SelectData,
+  CurrentEnvPricingDetails,
 } from "types/Global";
 
 @Component({
@@ -89,6 +94,7 @@ import {
     CurrentUsage,
     InstanceConfig, 
     PerformanceTier,
+    PricingDetails,
     RegionsDeployedAndUserCount,
   }
 })
@@ -128,6 +134,11 @@ export default class EnvironmentDetails extends Vue {
     numberOfSimilarInstances: null,
     dataEgressMonthlyAmount: null,
     dataEgressMonthlyUnit: "GB",
+  }
+
+  public pricingDetails: CurrentEnvPricingDetails = {
+    currentPaymentArrangement: "",
+    pricingPeriodExpirationDate: "",
   }
 
   public additionalInfo = "";
