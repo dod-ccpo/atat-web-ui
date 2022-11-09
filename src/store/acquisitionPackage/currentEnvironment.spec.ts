@@ -23,8 +23,22 @@ describe("CurrentEnvironment Store",
         Store<{ currentEnvironment: any }> => new Vuex.Store({...storeOptions});
       currentEnvironmentStore = getModule(CurrentEnvironmentStore, createStore());
       currentEnvironmentMock = {
+        additional_growth: "",
+        anticipated_yearly_additional_capacity: 0,
+        applications_need_architectural_design: "",
+        current_environment_replicated_optimized: "",
+        data_classifications_impact_levels: [],
+        env_classifications_cloud: [],
+        env_classifications_on_prem: [],
+        env_instances: [],
+        env_location: "",
+        external_factors_architectural_design: "",
+        has_phased_approach: "",
+        needs_architectural_design_services: "",
+        phased_approach_schedule: "",
+        statement_architectural_design: "",
+        statement_replicated_optimized: "",
         current_environment_exists: "YES",
-        environments: [],
         has_system_documentation: "NO",
         has_migration_documentation: "NO"
       }
