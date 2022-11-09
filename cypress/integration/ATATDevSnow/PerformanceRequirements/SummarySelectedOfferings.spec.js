@@ -168,8 +168,7 @@ describe("Test suite: Summary screen: Selected Offerings ", { tags: '@iso-ignore
     cy.durationPeriodExists(performanceReqs.durationNoRadioBtn,
       performanceReqs.duration1ActiveRadioBtn,
       performanceReqs.periodCheckboxLabel1,
-      "NO");
-    cy.selectCheckBoxes([performanceReqs.checkBoxBase]);
+      "NO");    
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader(
       "Your Performance Requirements"
