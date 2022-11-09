@@ -96,17 +96,30 @@ export default class CurrentUsage extends Vue {
     {
       id: "CertainPeriods",
       label: "High usage during certain period(s) of the year",
-      value: "CertainPeriods"
+      value: "PeriodBased"
     },
   ];
 
-  @Watch("_currentUsage.currentUsageDescription", {deep: true})
-  public currentUsageDescriptionChange(newVal: string): void {
-    if (newVal === "RegularUsage") {
+  @Watch("_currentUsage", {deep: true})
+  public currentUsageDescriptionChange(newVal: CurrentEnvUsageData): void {
+    if (newVal.currentUsageDescription === "EVEN_USAGE") {
       this._currentUsage.trafficSpikeCauses = [];
-      this._currentUsage.surgeUsageEvent = "";
-      this._currentUsage.surgeUsagePeriods = "";
+      this._currentUsage.isTrafficSpikeEventBased = "";
+      this._currentUsage.isTrafficSpikePeriodBased = "";
+      this._currentUsage.trafficSpikeEventDescription = "";
+      this._currentUsage.trafficSpikePeriodDescription = "";
     }
+    if (!newVal.trafficSpikeCauses?.includes("EventBased")) {
+      this._currentUsage.trafficSpikeEventDescription = "";
+    } else if (newVal.trafficSpikeCauses?.includes("EventBased")) {
+      this._currentUsage.isTrafficSpikeEventBased = "YES";
+    }
+    if (!newVal.trafficSpikeCauses?.includes("PeriodBased")) {
+      this._currentUsage.trafficSpikePeriodDescription = "";
+    } else if (newVal.trafficSpikeCauses?.includes("PeriodBased")) {
+      this._currentUsage.isTrafficSpikePeriodBased = "YES";
+    }
+    
   }
 
 }

@@ -37,8 +37,8 @@ describe("Testing UploadChartsDiagrams Component", () => {
 
     it("test saveOnLeave()", async () => {
       wrapper.vm.$data.hasChanged = true
-      wrapper.vm.$data.currentData = {diagramChartDocumentation: 'test'}
-      const result = AcquisitionPackage.currentEnv.diagramChartDocumentation
+      wrapper.vm.$data.currentData = {system_documentation: 'test'}
+      const result = AcquisitionPackage.currentEnv.system_documentation
       jest.spyOn(AcquisitionPackage,"setCurrentEnv")
       wrapper.vm.saveOnLeave()
       Vue.nextTick(()=>{

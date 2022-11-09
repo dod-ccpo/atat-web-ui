@@ -37,8 +37,8 @@ describe("Testing UploadProcessDocuments Component", () => {
 
     it("test saveOnLeave()", async () => {
       wrapper.vm.$data.hasChanged = true
-      wrapper.vm.$data.currentData = {assessmentAnalysisDocumentation: 'test'}
-      const result = AcquisitionPackage.currentEnv.assessmentAnalysisDocumentation
+      wrapper.vm.$data.currentData = {migration_documentation: 'test'}
+      const result = AcquisitionPackage.currentEnv.migration_documentation
       jest.spyOn(AcquisitionPackage,"setCurrentEnv")
       wrapper.vm.saveOnLeave()
       Vue.nextTick(()=>{

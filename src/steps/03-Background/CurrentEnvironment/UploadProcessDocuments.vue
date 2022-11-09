@@ -79,15 +79,15 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
   private uploadedFiles: uploadingFile[] = [];
 
   public selectedUpload
-    = AcquisitionPackage.currentEnv?.assessmentAnalysisDocumentation || ""
+    = AcquisitionPackage.currentEnv?.migration_documentation || ""
   private get currentData(): CurrentEnvironmentDTO {
     return {
-      assessmentAnalysisDocumentation: this.selectedUpload || "",
+      migration_documentation: this.selectedUpload || "",
     };
   }
 
   private savedData: CurrentEnvironmentDTO = {
-    assessmentAnalysisDocumentation: "",
+    migration_documentation: "",
   }
 
   public removeAll = false
@@ -111,7 +111,7 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
     const storeData = AcquisitionPackage.currentEnv
     if (storeData) {
       this.savedData = {
-        assessmentAnalysisDocumentation: storeData.assessmentAnalysisDocumentation,
+        migration_documentation: storeData.migration_documentation,
       }
     }
   }

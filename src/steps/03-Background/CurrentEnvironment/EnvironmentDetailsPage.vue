@@ -93,6 +93,7 @@ import {
   SelectData,
   CurrentEnvPricingDetails,
 } from "types/Global";
+
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
 
@@ -122,8 +123,10 @@ export default class EnvironmentDetails extends Vue {
   public currentUsage: CurrentEnvUsageData = {
     currentUsageDescription: "",
     trafficSpikeCauses: [],
-    surgeUsageEvent: "",
-    surgeUsagePeriods: "",
+    isTrafficSpikeEventBased: "",
+    isTrafficSpikePeriodBased: "",
+    trafficSpikeEventDescription: "",
+    trafficSpikePeriodDescription: "",
   }
 
   public instanceConfig: CurrentEnvInstanceConfig = {
@@ -131,7 +134,7 @@ export default class EnvironmentDetails extends Vue {
     operatingSystem: "",
     numberOfVCPUs: null,
     processorSpeed: null,
-    memory: null,
+    memoryAmount: null,
     storageType: "",
     storageAmount: null,
     storageUnit: "GB",

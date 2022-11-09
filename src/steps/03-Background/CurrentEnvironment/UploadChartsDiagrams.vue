@@ -79,15 +79,15 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   private uploadedFiles: uploadingFile[] = [];
 
   public selectedUpload
-    = AcquisitionPackage.currentEnv?.diagramChartDocumentation || ""
+    = AcquisitionPackage.currentEnv?.system_documentation || ""
   private get currentData(): CurrentEnvironmentDTO {
     return {
-      diagramChartDocumentation: this.selectedUpload || "",
+      system_documentation: this.selectedUpload || "",
     };
   }
 
   private savedData: CurrentEnvironmentDTO = {
-    diagramChartDocumentation: "",
+    system_documentation: "",
   }
 
   private hasChanged(): boolean {
@@ -102,7 +102,7 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.savedData = {
         // eslint-disable-next-line camelcase
-        diagramChartDocumentation: storeData.diagramChartDocumentation,
+        system_documentation: storeData.system_documentation,
       }
     }
   }

@@ -27,12 +27,13 @@
 <script lang="ts">
 
 import { Component, Mixins } from "vue-property-decorator";
-import { RadioButton } from "../../../../types/Global";
+import { CurrentEnvironment, EnvironmentLocation, RadioButton } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+
 
 @Component({
   components: {
@@ -41,8 +42,8 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 })
 export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   /* eslint-disable camelcase */
-  public currentEnvironmentLocation
-    = AcquisitionPackage.currentEnvironment?.additional_information || ""
+  public currentEnvironmentLocation: EnvironmentLocation
+    = AcquisitionPackage.currentEnvironment?.env_location || ""
   private envLocationOption: RadioButton[] = [
     {
       id: "CloudComputingEnvironment",
@@ -66,15 +67,13 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     },
   ];
 
-  // EJY additional_information is not where env type should be saved
-
-  private savedData: CurrentEnvironmentDTO = {
-    additional_information: "",
+  private savedData: CurrentEnvironment = {
+    envLocation: "",
   }
 
-  private get currentData(): CurrentEnvironmentDTO {
+  private get currentData(): CurrentEnvironment {
     return {
-      additional_information: this.currentEnvironmentLocation || "",
+      envLocation: this.currentEnvironmentLocation || "",
     };
   }
 
@@ -85,7 +84,7 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       );
     if (storeData) {
       this.savedData = {
-        additional_information: storeData.additional_information,
+        envLocation: storeData.env_location,
       }
     }
   }
@@ -97,8 +96,11 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
+        
+        // reinstate save to snow after CurrentEnvironment table updated in SNOW
+        const data = { env_location: this.currentEnvironmentLocation }
         await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-          data: this.currentData,
+          data,
           storeProperty: StoreProperties.CurrentEnvironment
         });
       }

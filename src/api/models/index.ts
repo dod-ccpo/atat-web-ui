@@ -1,5 +1,17 @@
 /* eslint-disable camelcase */
-import { EvalPlanMethod, EvalPlanSourceSelection } from "../../../types/Global";
+import { 
+  EnvironmentInstanceLocation,
+  EnvironmentInstanceUsage,
+  EnvironmentLocation, 
+  EnvironmentReplicateOptimized, 
+  EvalPlanMethod, 
+  EvalPlanSourceSelection, 
+  PaymentArrangement, 
+  PerformanceTier, 
+  StorageType, 
+  StorageUnit, 
+  YesNo
+} from "../../../types/Global";
 
 export interface BaseTableDTO {
   sys_id?: string;
@@ -71,36 +83,32 @@ export interface CurrentContractDTO extends BaseTableDTO {
 
 // export interface CurrentEnvironmentDTO extends BaseTableDTO {
 //   current_environment_exists?: string;
+//   env_location?: string; 
+//   additional_information?: string; // this will be removed - currently storing env_location
 //   environment_instances?: string;
-//   additional_information?: string;
-//   diagramChartDocumentation?: string;
-//   assessmentAnalysisDocumentation?: string;
-
+//   system_documentation?: string;
+//   migration_documentation?: string;
 // }
 
-export interface CurEnvSystemAttachment {
-  not_sure_what_this_looks_like: unknown;
-}
-export interface CurEnvMigrationAttachment {
-  not_sure_what_this_looks_like: unknown;
-}
+
+// UPDATED CURRENT ENVIRONMENT DTO - not yet implemented on backend
 
 export interface CurrentEnvironmentDTO extends BaseTableDTO {
-  current_environment_exists: "" | "YES" | "NO";
-  has_system_documentation: "" | "YES" | "NO";
-  system_documentation?: CurEnvSystemAttachment[];
-  has_migration_documentation: "" | "YES" | "NO";
-  migration_documentation?: CurEnvMigrationAttachment[];
-  env_location: "" | "CLOUD" | "ONPREM" | "HYBRID";
+  current_environment_exists: YesNo;
+  has_system_documentation: YesNo;
+  system_documentation?: string[]; // List - sys_ids from sys_attachment table 
+  has_migration_documentation: YesNo;
+  migration_documentation?: string[]; // List - sys_ids from sys_attachment table 
+  env_location: EnvironmentLocation;
   env_classifications: string[]; // array of classification level sys_ids
-  env_instances: CurrentEnvironmentInstanceDTO[]; // array of CurrentEnvironmentInstanceDTO sys_ids
-  current_environment_replicated_optimized: string;
+  env_instances: CurrentEnvironmentInstanceDTO[]; // array of sys_ids
+  current_environment_replicated_optimized: EnvironmentReplicateOptimized;
   statement_replicated_optimized: string;
-  additional_growth: "" | "YES" | "NO";
+  additional_growth: YesNo;
   anticipated_yearly_additional_capacity: number; 
-  has_phased_approach: "" | "YES" | "NO";
+  has_phased_approach: YesNo;
   phased_approach_schedule: string; 
-  needs_architectural_design_services: "" | "YES" | "NO";
+  needs_architectural_design_services: YesNo;
   statement_architectural_design: string; 
   applications_need_architectural_design: string;
   data_classifications_impact_levels: string[];
@@ -108,37 +116,38 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
 }
 
 export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
-  instance_location: "" | "CLOUD" | "ONPREM";
+  instance_location: EnvironmentInstanceLocation;
   deployed_regions?: string[];
   classification_level: string; // classification level sys_id
-  current_usage_description: "" | "EVEN_USAGE" | "IRREGULAR_USAGE";
-  traffic_spike?: string[];
-  surge_usage_event?: string;
-  surge_usage_periods?: string;
-  users_regions: RegionUserCountDTO[]; // array of RegionUserCount sys_ids
+
+  current_usage_description: EnvironmentInstanceUsage;
+  is_traffic_spike_event_based: YesNo;
+  is_traffic_spike_period_based: YesNo;
+  traffic_spike_event_description?: string;
+  traffic_spike_period_description?: string;
+  
+  users_per_region: string; // json stringified sys_id/count pairs
+
   operating_system: string;
   licensing: string;
   number_Of_VCPUs: number;
   processor_speed: number; 
-  memory: number;
-  storage_type: "" | "BLOCK" | "OBJECT" | "FILE" | "ARCHIVE";
+  memory_amount: number;
+  memory_unit: StorageUnit;
+  storage_type: StorageType;
   storage_amount: number;
-  storage_unit: "" | "GB" | "TB" | "PB";
-  performance_tier: "GENERAL" | "COMPUTE" | "MEMORY" | "STORAGE";
+  storage_unit: StorageUnit;
+
+  performance_tier: PerformanceTier;
   number_of_similar_instances: number; 
   data_egress_monthly_storage: number;    
-  data_egress_monthly_storage_unit: "" | "GB" | "TB" | "PB";
-  current_payment_arrangement: "" | "PREPAID" | "PAYASYOUGO"
+  data_egress_monthly_storage_unit: StorageUnit;
+
+  current_payment_arrangement: PaymentArrangement;
   pricing_period_expiration_date?: string;
+
   additional_information?: string; 
 }
-
-export interface RegionUserCountDTO extends BaseTableDTO {
-  region: string;
-  count: number;
-}
-
-
 
 
 
