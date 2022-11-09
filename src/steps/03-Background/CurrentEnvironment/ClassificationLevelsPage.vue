@@ -12,7 +12,7 @@
               to every instance within your current environment. If you have data within two or more
               levels, we will gather details about each instance next.
             </p>
-            <p id="DeployedP" class="mb-2 font-weight-500">
+            <p id="ClassificationLevelP" class="mb-2 font-weight-500">
               What classification levels are your instances currently deployed in?
             </p>
             <p id="SelectMessage" class="mb-4">
@@ -22,56 +22,56 @@
               id="ClassificationTypesCheckboxes"
               :card="false"
               :hasOtherValue="true"
-              :items="classificationsTier"
+              :items="classificationsLevels"
               :rules="[
               $validators.required('Please select at least one classification level.')
             ]"
-              :value.sync="selectedType"
+              :value.sync="selectedClassifications"
               class="copy-max-width mb-10"
-              name="checkboxes"
+              name="classificationTypesCheckboxes"
             />
             <div v-if="environment.toLowerCase() ==='cloud computing environment'">
-              <div v-if="checkboxItems.length > 1">
+              <div v-if="impactLevels.length > 1">
                 <p id="DeployedP" class="mb-3 font-weight-500">
                   For your Unclassified instance(s), what impact levels are you currently deployed
                   in?
                 </p>
-                <p id="SelectMessage" class="mb-4">
+              <p id="SelectMessage2" class="mb-4">
                   Select all that apply to your current environment.
                 </p>
                 <ATATCheckboxGroup
-                  id="ClassificationLevelCheckboxes"
+                id="ImpactLevelCheckboxes"
                   :card="false"
                   :hasOtherValue="true"
-                  :items="checkboxItems"
+                :items="impactLevels"
                   :rules="[
                     $validators.required('Please select at least one impact level.')
                 ]"
-                  :value.sync="selectedOptions"
+                :value.sync="selectedImpactLevels"
                   class="copy-max-width mb-10"
-                  name="checkboxes"
+                name="impactLevelCheckboxes"
                 />
               </div>
               <div v-if="IL2Selected">
-                <p id="DeployedP" class="mb-4 font-weight-500">
+              <p id="CloudTypeP" class="mb-4 font-weight-500">
                   For your IL2 instance(s), what type of cloud are currently deployed in?
                 </p>
                 <ATATCheckboxGroup
-                  id="ImpactLevelCheckboxes"
+                id="CloudTypeCheckboxes"
                   :card="false"
                   :hasOtherValue="true"
-                  :items="cloudDeployment"
+                :items="cloudTypes"
                   :rules="[
-                    $validators.required('Please select at least one cloud.')
+                    $validators.required('Please select at least one type of cloud.')
                 ]"
-                  :value.sync="selectedDeployment"
-                  class="copy-max-width"
-                  name="checkboxes"
-                />
+                :value.sync="selectedCloudTypes"
+                class="copy-max-width"
+                name="cloudTypeCheckboxes"
+              />
               </div>
             </div>
             <div v-if="environment.toLowerCase() === 'on-premises'">
-              <div v-if="checkboxItems.length > 1">
+              <div v-if="unclassifiedSelected">
                 <p id="HostingP" class="mb-3 font-weight-500">
                   For your Unclassified instances, what type of information are you hosting?
                 </p>
@@ -79,16 +79,17 @@
                   Select all that apply to your current environment.
                 </p>
                 <ATATCheckboxGroup
-                  id="ClassificationLevelCheckboxes"
+                  id="InstanceCheckbox"
                   :card="false"
                   :hasOtherValue="true"
                   :items="instanceClass"
                   :rules="[
-                    $validators.required('Please select at least one impact level.')
+                    $validators.
+                    required('Please select at least one type of information that you are hosting.')
                 ]"
                   :value.sync="selectedInstances"
                   class="copy-max-width mb-10"
-                  name="checkboxes"
+                  name="instanceCheckbox"
                 />
               </div>
             </div>
@@ -124,16 +125,17 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
-  private checkboxItems: Checkbox[] = [];
+  private impactLevels: Checkbox[] = [];
   private environment = "";
-  public selectedOptions: string[] = [];
-  public selectedType: string[] = [];
-  public selectedDeployment: string[] = [];
+  public selectedImpactLevels: string[] = [];
+  public selectedClassifications: string[] = [];
+  public selectedCloudTypes: string[] = [];
   public selectedInstances: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedData: ClassificationLevelDTO[] = [];
   public IL2Selected = false;
-  private classificationsTier: Checkbox[] = [
+  public unclassifiedSelected = false;
+  private classificationsLevels: Checkbox[] = [
     {
       id: "Unclassified",
       label: "Unclassified",
@@ -150,7 +152,6 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       value: "TS",
     },
   ]
-
   private instanceClass: Checkbox[] = [
     {
       id: "PublicRelease",
@@ -170,8 +171,8 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       value: "IL5",
       description: "Equivalent to a Impact Level 5 (IL5) deploytment"
     },
-  ]
-  private cloudDeployment: Checkbox[] = [
+  ];
+  private cloudTypes: Checkbox[] = [
     {
       id: "CommercialCloud",
       label: "Commercial cloud",
@@ -184,35 +185,44 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     },
 
   ]
-  @Watch("selectedType")
+  @Watch("selectedClassifications")
   public selectedTypeChange(newVal: string[]): void {
     let filteredList :ClassificationLevelDTO[] = []
     if(newVal.includes("U")) {
+      this.unclassifiedSelected = true
       let filtered = this.classifications
         .filter(classification => classification.classification === "U" )
       filteredList.push(...filtered)
+      if (this.impactLevels.length === 0) {
+        this.impactLevels = this.createCheckboxItems(filteredList)
+      }
     }
-    this.selectedOptions = []
-    this.selectedInstances = []
-    this.checkboxItems =this.createCheckboxItems(filteredList)
+    if (!newVal.includes("U")) {
+      this.unclassifiedSelected = false
+      this.impactLevels = [];
+      this.selectedInstances = []
+      this.selectedImpactLevels = []
+    }
   }
 
-  @Watch("selectedOptions")
+  @Watch("selectedImpactLevels")
   public selectedOptionChange(newVal: string[]): void {
     let filtered = this.classifications
       .filter(classification => classification.impact_level === "IL2")
     if(filtered[0].sys_id){
-      if(newVal.includes(filtered[0].sys_id)){
-        this.IL2Selected = true
-      }
+      this.IL2Selected = newVal.includes(filtered[0].sys_id);
     }
+    if(!this.IL2Selected){
+      this.selectedCloudTypes = [];
+    }
+
   }
 
 
 
   private saveSelected() {
     const arr :ClassificationLevelDTO[] = [];
-    this.selectedOptions.forEach(item => {
+    this.selectedImpactLevels.forEach(item => {
       const value = this.classifications.filter(( data )=>{
         return item == data.sys_id
       })
@@ -253,7 +263,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       this.savedData = storeData
       storeData.forEach((val) => {
         if (val.sys_id) {
-          this.selectedOptions.push(val.sys_id)
+          this.selectedImpactLevels.push(val.sys_id)
         }
       })
     }
