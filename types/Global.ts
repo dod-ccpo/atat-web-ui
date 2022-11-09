@@ -521,3 +521,7 @@ export interface CurrentEnvPricingDetails {
   currentPaymentArrangement?: string;
   pricingPeriodExpirationDate?: string;
 }
+
+// export interface CurrentEnvironment {
+
+// }

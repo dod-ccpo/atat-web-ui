@@ -86,28 +86,21 @@ export interface CurEnvMigrationAttachment {
 }
 
 export interface CurrentEnvironmentDTO extends BaseTableDTO {
-  // sys_id: string; // and all other snow columns from BaseTableDTO
   current_environment_exists: "" | "YES" | "NO";
   has_system_documentation: "" | "YES" | "NO";
   system_documentation?: CurEnvSystemAttachment[];
   has_migration_documentation: "" | "YES" | "NO";
   migration_documentation?: CurEnvMigrationAttachment[];
   env_location: "" | "CLOUD" | "ONPREM" | "HYBRID";
-
-  // array of classification level sys_ids
-  env_classifications: string[];
-
-  // array of CurrentEnvironmentInstanceDTO sys_ids
-  env_instances: CurrentEnvironmentInstanceDTO[];
-
-  // below was previously EnvironmentReplicateOptimizeDetails
+  env_classifications: string[]; // array of classification level sys_ids
+  env_instances: CurrentEnvironmentInstanceDTO[]; // array of CurrentEnvironmentInstanceDTO sys_ids
   current_environment_replicated_optimized: string;
   statement_replicated_optimized: string;
-  additional_growth: string; // "YES" | "NO"
+  additional_growth: "" | "YES" | "NO";
   anticipated_yearly_additional_capacity: number; 
-  has_phased_approach: string; // "YES" | "NO"
+  has_phased_approach: "" | "YES" | "NO";
   phased_approach_schedule: string; 
-  needs_architectural_design_services: string; // "YES" | "NO"
+  needs_architectural_design_services: "" | "YES" | "NO";
   statement_architectural_design: string; 
   applications_need_architectural_design: string;
   data_classifications_impact_levels: string[];
@@ -115,37 +108,32 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
 }
 
 export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
-  // sys_id: string; // and all other snow columns from BaseTableDTO
   instance_location: "" | "CLOUD" | "ONPREM";
   deployed_regions?: string[];
   classification_level: string; // classification level sys_id
-  current_usage_description: string; // EVEN_USAGE | IRREGULAR_USAGE
+  current_usage_description: "" | "EVEN_USAGE" | "IRREGULAR_USAGE";
   traffic_spike?: string[];
   surge_usage_event?: string;
   surge_usage_periods?: string;
-
-  // array of RegionUserCount sys_ids
-  users_regions: RegionUserCountDTO[]; 
-  
+  users_regions: RegionUserCountDTO[]; // array of RegionUserCount sys_ids
   operating_system: string;
   licensing: string;
   number_Of_VCPUs: number;
   processor_speed: number; 
   memory: number;
-  storage_type: string; // BLOCK | OBJECT | FILE | ARCHIVE
+  storage_type: "" | "BLOCK" | "OBJECT" | "FILE" | "ARCHIVE";
   storage_amount: number;
-  storage_unit: string; // GB | TB | PB
-  performance_tier: string; // GENERAL | COMPUTE | MEMORY | STORAGE
+  storage_unit: "" | "GB" | "TB" | "PB";
+  performance_tier: "GENERAL" | "COMPUTE" | "MEMORY" | "STORAGE";
   number_of_similar_instances: number; 
   data_egress_monthly_storage: number;    
-  data_egress_monthly_storage_unit: string; // GB | TB | PB
-  current_payment_arrangement: string; // PREPAID | PAYASYOUGO
+  data_egress_monthly_storage_unit: "" | "GB" | "TB" | "PB";
+  current_payment_arrangement: "" | "PREPAID" | "PAYASYOUGO"
   pricing_period_expiration_date?: string;
   additional_information?: string; 
 }
 
 export interface RegionUserCountDTO extends BaseTableDTO {
-  // sys_id: string; // and all other snow columns from BaseTableDTO
   region: string;
   count: number;
 }

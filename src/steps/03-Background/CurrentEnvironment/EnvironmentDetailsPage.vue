@@ -188,31 +188,15 @@ export default class EnvironmentDetails extends Vue {
     has_migration_documentation: "", // radio - YES | NO
     migration_documentation: [], // array of attachments
     env_location: "", // CLOUD | ONPREM | HYBRID
-    
-    // if storing current way using classificationLevels in ClassificationRequirements store
     env_classifications: [], // array of classification level sys_ids
     // IL2_cloud_deployments: [], // CAN BE POST-MVP -- Commercial Cloud | Federal community cloud (govt cloud)
-
-    // // if separating classification and impact levels - is this necessary?
-    // env_classification: { // 
-    //   classification_levels: [], // Unclassified | Secret -- Top Secret hidden per Melissa
-    //   impact_levels: [], // IL2 | IL4 | IL5 
-    //   IL2_cloud_deployments: [], // CAN BE POST-MVP -- Commercial Cloud | Federal community cloud (govt cloud)
-    // }, 
 
     env_instances: [
       {
         instance_location: "", // CLOUD | ONPREM - auto-set if env_loc is CLOUD or ONPREM - radio if HYBRID
         deployed_regions: [], // checkboxes - CONUS East, CONUS Central, etc.
-        
         instance_classification: "", // classification level sys_id
-        
-        // THESE 2 WILL STORE THE SAME THING - A CLASSIFICATION LEVEL - ONLY LABELS WILL CHANGE
-        // classification_impact_level: "", // radio - only for CLOUD - if MULTIPLE selected on classification page
-        // unclass_information_hosting: "", // radio - only for ONPREM if MULTIPLE selected on classification page
-
         // IL2_cloud_types: [], // CAN BE POST-MVP
-
         current_usage_description: "", // radio - even usage or spikes in traffic
         traffic_spike: [], // checkboxes - event-based or period-based
         surge_usage_event: "", // textfield
@@ -240,21 +224,17 @@ export default class EnvironmentDetails extends Vue {
         additional_information: "", // textarea
       }
     ],
-
-    details_repicate_optimize: {
-      current_environment_replicated_optimized: "", // radio - REPLICATE | OPTIMIZE | NO
-      statement_replicated_optimized: "", // textarea
-      additional_growth: "", // "YES" | "NO"
-      anticipated_yearly_additional_capacity: null, // number | null - textfield
-      has_phased_approach: "", // "YES" | "NO"
-      phased_approach_schedule: "", // textarea 
-      needs_architectural_design_services: "", // "YES" | "NO"
-      statement_architectural_design: "", // textarea 
-      applications_need_architectural_design: "", // textfield
-      data_classifications_impact_levels: [], // checkboxes - array of sys_ids for U/IL2, U/IL3, U/IL4, Secret/IL6 - Top Secret hidden per Melissa
-      external_factors_architectural_design: "", // textfield
-    }
-
+    current_environment_replicated_optimized: "", // radio - REPLICATE | OPTIMIZE | NO
+    statement_replicated_optimized: "", // textarea
+    additional_growth: "", // "YES" | "NO"
+    anticipated_yearly_additional_capacity: null, // number | null - textfield
+    has_phased_approach: "", // "YES" | "NO"
+    phased_approach_schedule: "", // textarea 
+    needs_architectural_design_services: "", // "YES" | "NO"
+    statement_architectural_design: "", // textarea 
+    applications_need_architectural_design: "", // textfield
+    data_classifications_impact_levels: [], // checkboxes - array of sys_ids for U/IL2, U/IL3, U/IL4, Secret/IL6 - Top Secret hidden per Melissa
+    external_factors_architectural_design: "", // textfield
   }
 
 }
