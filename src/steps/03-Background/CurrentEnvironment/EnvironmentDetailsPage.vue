@@ -131,7 +131,7 @@ export default class EnvironmentDetails extends Vue {
 
   public performanceTier: CurrentEnvPerformanceTier = {
     performanceTier: "",
-    numberOfSimilarInstances: null,
+    numberOfSimilarInstances: 1,
     dataEgressMonthlyAmount: null,
     dataEgressMonthlyUnit: "GB",
   }
