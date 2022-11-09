@@ -78,6 +78,11 @@ export class CurrentEnvironmentStore extends VuexModule {
     await this.initialize();
   }
 
+  /**
+   * Creates a current environment object with default values and makes an API
+   * call to create the default record in the BE
+   */
+  @Action({rawError: true})
   public async initialCurrentEnvironment():
     Promise<CurrentEnvironmentDTO> {
     try {
