@@ -32,7 +32,7 @@
       >
         <template v-slot:prepend-inner>
           <div
-            v-if="isFullSize"
+            v-if="isFullSize && !startCompact"
             class="content d-flex flex-column align-center pt-9"
             @mousedown="fileUploadClicked"
           >
@@ -79,9 +79,7 @@
               <p class="ml-auto mb-0 mt-2 text-base">
                 Supported file types: {{formatFileTypes}}  • Max file size: {{fileSizeConversion}}GB
               </p>
-
             </div>
-            
           </div>
         </template>
       </v-file-input>
@@ -112,7 +110,7 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
 import {
-  AttachmentService,
+  AttachmentServiceTypes,
   AttachmentServiceFactory,
 } from "@/services/attachment";
 import { invalidFile, uploadingFile } from "types/Global";
@@ -145,7 +143,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: true}) private multiplesAllowed!: boolean;
   @Prop({ default: "required"}) private requiredMessage!: string;
   @Prop({ default: 20 }) private maxNumberOfFiles!: number;
-  
+  @Prop({ default: false }) private startCompact?: boolean;
   @Prop({ default: () => [] }) private validFileFormats!: string[];
   @PropSync("invalidFiles", { default: () => [] }) private _invalidFiles!: invalidFile[];
   @Prop({ default: "", required: true }) private attachmentServiceName!: string;
@@ -166,7 +164,7 @@ export default class ATATFileUpload extends Vue {
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
-  private fileAttachmentService?: AttachmentService;
+  private fileAttachmentService?: typeof AttachmentServiceTypes;
   private errorMessages: string[] = [];
   private validateOnBlur = true;
   get isFileUploadDisabled():boolean{
