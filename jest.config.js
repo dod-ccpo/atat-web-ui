@@ -10,6 +10,7 @@ module.exports = {
   collectCoverageFrom: [ 
     "src/**/*.vue", 
     "src/**/index.ts", 
+    "src/components/**/*.ts",
     "src/steps/**/*.ts", 
     "src/plugins/*.ts", 
     "src/dashboards/*.ts",  
@@ -47,6 +48,7 @@ module.exports = {
   testMatch: [
     "<rootDir>/src/home/**/*.spec.ts",
     "<rootDir>/src/components/*.spec.ts",
+    "<rootDir>/src/components/**/*.spec.ts",
     "<rootDir>/src/steps/**/*.spec.ts",
     "<rootDir>/src/store/**/*.spec.ts",
     "<rootDir>/src/router/**/*.spec.ts",

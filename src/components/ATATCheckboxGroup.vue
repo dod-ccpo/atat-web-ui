@@ -1,78 +1,116 @@
 <template>
   <div :id="id">
-
-    <p v-if="groupLabel" :id="groupLabelId" class="_checkbox-group-label">
-      {{ groupLabel }}
-    </p>
-
-    <v-checkbox
-      v-for="(item, index) in items"
-      v-model="_selected"
-      :id="'Checkbox_' + getIdText(item.id)"
-      :class="[
-        card ? '_checkbox-card' : '_checkbox',
-        color ? '_checkbox-' + color : '',
-        { 'flex-column _has-other': item.value === otherValue },
-        { '_other-selected': showOtherEntry(item.value) },
-        { '_no-description': noDescriptions}
-      ]"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value"
-      :error="error"
-      :disabled="disabled"
-      :rules="checkboxRules"
-      @mousedown="checkBoxClicked(item.value)"
-      multiple
-      :hide-details="true"
-      :ref="index === 0 ? 'checkboxGroup' : ''"
-      :data-group-id="id + '_Group'"
+    <p 
+      v-if="groupLabel" 
+      :id="groupLabelId" 
+      class="_checkbox-group-label d-flex align-center"
+      :class="{ 'mb-0' : groupLabelHelpText }"
     >
-      <template v-if="card || item.description || item.value === otherValue" v-slot:label>
-        <div class="d-flex flex-column width-100">
+      <span :class="{'mr-2' : !optional}">{{ groupLabel }}</span> 
+      <span class="optional mr-2" v-if="optional">Optional</span>
+      <ATATTooltip 
+        v-if="tooltipText"
+        :tooltipText="tooltipText"
+        :tooltipTitle="tooltipTitle"
+        :id="id"
+      />
+    </p>
+    <p v-if="groupLabelHelpText" class="text-base font-size-14 mb-3">
+      {{ groupLabelHelpText }}
+    </p>
+    <div class="_checkboxes">
+      <v-checkbox
+        v-for="(item, index) in _items"
+        v-model="_selected"
+        :id="'Checkbox_' + getIdText(item.id)"
+        :class="[
+          card ? '_checkbox-card' : '_checkbox',
+          color ? '_checkbox-' + color : '',
+          { 'flex-column _has-other': item.value === otherValue },
+          { '_other-selected': showOtherEntry(item.value) },
+          { '_no-description': noDescriptions },
+          { '_has-text-fields' : hasTextFields }
+        ]"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+        :error="error"
+        :disabled="disabled"
+        :rules="checkboxRules"
+        @mouseup="checkBoxClicked(item.value, index)"
+        multiple
+        :hide-details="true"
+        :ref="index === 0 ? 'checkboxGroup' : ''"
+        :data-group-id="id + '_Group'"
+      >
+        <template 
+          v-if="card || item.description || item.value === otherValue || hasTextFields" 
+          v-slot:label
+        >
           <div 
-            v-if="item.label" 
+            class="d-flex "
             :class="[
-              {'card-label': item.label}, 
-              {'mb-0': item.value === otherValue},
-              {'_no-description': noDescriptions}
+              { 'flex-column width-100' : !hasTextFields },
+              { 'align-center foobar' : hasTextFields }
             ]"
           >
-            {{ item.label }}
+            <div 
+              v-if="item.label" 
+              :class="[
+                {'card-label': item.label}, 
+                {'mb-0': item.value === otherValue},
+                {'_no-description': noDescriptions}
+              ]"
+              :style="labelStyles"
+            >
+              {{ item.label }}
+            </div>
+            <div
+              v-if="item.description"
+              class="mb-0 _description" v-html="item.description"
+            ></div>
           </div>
-          <div
-            v-if="item.description"
-            class="mb-0 _description" v-html="item.description"
-          ></div>
-        </div>
-      </template>
-      <template v-slot:append v-if="showOtherEntry(item.value)">
-        <ATATTextArea
-          v-if="otherEntryType === 'textarea'"
-          ref="atatTextInput"
-          name="otherTextArea"
-          v-show="showOtherEntry(item.value)"
-          :id="otherId"
-          class="width-100 ml-5 mb-6"
-          :rows="3"
-          :validateItOnBlur="validateOtherOnBlur"
-          :value.sync="_otherValueEntered"
-          :rules="otherRequiredRule"
-        />
-        <ATATTextField
-          v-if="otherEntryType === 'textfield'"
-          ref="atatTextInput"
-          name="otherTextField"
-          v-show="showOtherEntry(item.value)"
-          :id="otherId"
-          class="ml-5 mb-6 mt-2 _input-wrapper-max-width"
-          :validateItOnBlur="validateOtherOnBlur"
-          :value.sync="_otherValueEntered"
-          :rules="otherRequiredRule"
-        />
-      </template>
+        </template>
+        <template v-slot:append v-if="showOtherEntry(item.value) || hasTextFields">
+          <ATATTextArea
+            v-if="otherEntryType === 'textarea' && showOtherEntry(item.value)"
+            ref="atatTextInput"
+            name="otherTextArea"
+            v-show="showOtherEntry(item.value)"
+            :id="otherId"
+            class="width-100 ml-5 mb-6"
+            :rows="3"
+            :validateItOnBlur="validateOtherOnBlur"
+            :value.sync="_otherValueEntered"
+            :rules="otherRequiredRule"
+          />
+          <ATATTextField
+            v-if="otherEntryType === 'textfield' && showOtherEntry(item.value)"
+            ref="atatTextInput"
+            name="otherTextField"
+            v-show="showOtherEntry(item.value)"
+            :id="otherId"
+            class="ml-5 mb-6 mt-2 _input-wrapper-max-width"
+            :validateItOnBlur="validateOtherOnBlur"
+            :value.sync="_otherValueEntered"
+            :rules="otherRequiredRule"
+          />
 
-    </v-checkbox>
+          <ATATTextField 
+            v-if="hasTextFields && showTextField(index)"
+            :id="id + '_TextField' + index"
+            :appendText="textFieldAppendText"
+            :width="textFieldWidth"
+            type="text"
+            @blur="textFieldBlur(index)"   
+            :isFormattedNumber="isFormattedNumber" 
+            :rules="textfieldRules"        
+          /> 
+
+        </template>
+      </v-checkbox>
+    </div>
+
     <ATATErrorValidation :errorMessages="errorMessages" />
 
   </div>
@@ -85,6 +123,7 @@ import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import {Checkbox} from "../../types/Global";
 import { getIdText } from "@/helpers";
@@ -94,6 +133,7 @@ import { getIdText } from "@/helpers";
     ATATTextArea,
     ATATTextField,
     ATATErrorValidation,
+    ATATTooltip,
   }
 })
 
@@ -108,7 +148,7 @@ export default class ATATCheckboxGroup extends Vue {
   @PropSync("value") private _selected!: string[];
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
 
-  @Prop({ default: [""], required: true }) private items!: Checkbox[];
+  @PropSync("items") private _items!: Checkbox[];
   @Prop({ default: false }) private card!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private disabled!: boolean;
@@ -119,10 +159,22 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: "CheckboxGroup" }) private id!: string;
   @Prop({ default: "CheckboxGroupLabel" }) private groupLabelId!: string;
   @Prop() private groupLabel!: string;
+  @Prop() private groupLabelHelpText?: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
+  @Prop({ default: () => []}) private textfieldRules!: Array<unknown>;
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @Prop({ default: "" }) private color!: string;
+  @Prop({ default: false }) private optional?: boolean;
+  @Prop() private tooltipText?: string;
+  @Prop() private tooltipTitle?: string;
+  @Prop() private tooltipLabel?: string;
   @Prop({ default: false }) private noDescriptions?: boolean;
+  @Prop({ default: false }) private hasTextFields?: boolean;
+  @Prop() private labelWidth?: string;
+  @Prop() private textFieldAppendText?: string;
+  @Prop() private textFieldWidth?: number;
+  @Prop({ default: "text" }) private textFieldType?: string;
+  @Prop({ default: false }) private isFormattedNumber?: boolean;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -148,8 +200,51 @@ export default class ATATCheckboxGroup extends Vue {
     return getIdText(this.otherValue);
   }
 
+  public textFieldBlur(index: number): void {
+    const textfield = this.getTextField(index);
+    if (textfield) {
+      this._items[index].textfieldValue = textfield.value;
+      this.$emit("checkboxTextfieldDataUpdate", this._items)
+    }
+  }
+
+  private selectedIndices: number[] = [];
+
+  public getSelectedIndex(value: string): number {
+    return this._items.findIndex(obj => obj.value === value);
+  }
+
+  public getTextField(index: number): HTMLInputElement {
+    return document.getElementById(
+      `${this.id}_TextField${index}_text_field`
+    ) as HTMLInputElement;
+  }
+
   @Watch("_selected")
-  protected selectedOptionsChanged(newVal: string[]): void {
+  protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
+    if (newVal.length > oldVal.length) {
+      // new checkbox checked - get the index, push to this.selectedIndices
+      const checkedVal = newVal.find(val => !oldVal.includes(val)) || "";
+      const checkedIndex = this.getSelectedIndex(checkedVal);
+      this.selectedIndices.push(checkedIndex);
+      this.$nextTick(() => {
+        const textfieldToFocus = this.getTextField(checkedIndex);
+        if (textfieldToFocus) {
+          textfieldToFocus.focus();
+        }
+      });
+    } else if (newVal.length < oldVal.length) {
+      // checkbox UNchecked - get the index from oldVal, remove from this.selectedIndices
+      const uncheckedVal = oldVal.find(val => !newVal.includes(val)) || "";
+      const uncheckedIndex = this.getSelectedIndex(uncheckedVal);
+      this.selectedIndices = this.selectedIndices.filter(idx => idx !== uncheckedIndex);
+      this._items[uncheckedIndex].textfieldValue = "";
+      const textfieldToReset = this.getTextField(uncheckedIndex);
+      if (textfieldToReset) {
+        textfieldToReset.value = "";
+      }
+    }
+
     const otherIndex = newVal.indexOf(this.otherValue) > -1;
     const otherPrevSelectedIndex = this.prevSelected.indexOf(this.otherValue) > -1;
     if (otherIndex && !otherPrevSelectedIndex) {
@@ -188,6 +283,10 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   private hideOtherTextarea = false;
+
+  private showTextField(index: number): boolean {
+    return this.selectedIndices.includes(index);
+  }
 
   private checkBoxClicked(value: string): void {
     if (this.checkboxRules.length === 0) {
@@ -236,13 +335,17 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("items")
   protected checkboxItemsChange(): void {
-    if (this.items.length) {
+    if (this._items.length) {
       this.$nextTick(() => {
         this.setEventListeners();
       })
     }
   }
   
+  public get labelStyles(): string {
+    return this.labelWidth ? `min-width: ${this.labelWidth}px;` : "";
+  }
+
   public mounted(): void {
     this.setEventListeners();
   }
@@ -263,7 +366,7 @@ export default class ATATCheckboxGroup extends Vue {
         this.blurredCheckboxes[groupId].push(id);
       }
 
-      if (this.blurredCheckboxes[groupId].length === this.items.length) {
+      if (this.blurredCheckboxes[groupId].length === this._items.length) {
         if (this.checkboxRules.length === 0) {
           this.validateCheckboxes = true;
         }

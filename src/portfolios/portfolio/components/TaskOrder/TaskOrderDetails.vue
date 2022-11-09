@@ -36,6 +36,7 @@
       <v-card
         class="_task-order-card"
         elevation="0"
+        id="Card_TotalObligatedFunds"
       >
         <div class="d-flex">
           <span class="pr-2 font-weight-500">Total obligated funds</span>
@@ -49,6 +50,7 @@
       <v-card
         class="_task-order-card"
         elevation="0"
+        id="Card_TotalTaskOrderValue"
       >
         <div class="d-flex">
           <span class="pr-2 font-weight-500">Total task order value</span>
@@ -62,6 +64,7 @@
       <v-card
         class="_task-order-card"
         elevation="0"
+        id="Card_TotalLifecycleAmount"
       >
         <div class="d-flex">
           <span class="pr-2 font-weight-500">Total lifecycle amount</span>
@@ -75,6 +78,7 @@
       <v-card
         class="_task-order-card _last"
         elevation="0"
+        id="Card_TotalFundsSpent"
       >
         <div class="d-flex">
           <span class="pr-2 font-weight-500">Total funds spent</span>
@@ -114,8 +118,8 @@
 
               <td>
                 <div class="d-flex flex-column font-weight-400">
-                  {{item.CLINNumber}}
-                  <span class="font-size-12 text-base">
+                  <span class="_clin-number">{{item.CLINNumber}}</span>
+                  <span class="font-size-12 text-base _clin-title">
                     {{item.CLINTitle}}
                   </span>
                 </div>
@@ -135,17 +139,19 @@
                      
                   </div>
                   <div class="d-flex flex-column font-weight-500">
-                    {{ item.statusLabel }}
+                    <span class="_status">{{ item.statusLabel }}</span>
                   </div>
                 </div>
 
               </td>
               <td :style="{ verticalAlign: getValign(item)}">
                 <div class="d-flex flex-column">
-                  <span class="nowrap">{{ item.PoP.startDate }}&ndash;{{ item.PoP.endDate }}</span>
+                  <span class="nowrap _pop-dates">
+                    {{ item.PoP.startDate }}&ndash;{{ item.PoP.endDate }}
+                  </span>
                   <span
                     v-if="item.isActive"
-                    class="font-size-12 text-base d-flex"
+                    class="font-size-12 text-base d-flex _expiration-wrapper"
                   >
                     <ATATSVGIcon
                       v-if="item.status === statuses.AtRisk.value
@@ -154,16 +160,20 @@
                       height="16"
                       name="warning"
                       color="warning-dark2"
-                      class="mr-1"
+                      class="mr-1 _alert-icon"
                     />
-                    {{item.PoP.expiration}}
+                    <span class="_expiration">{{item.PoP.expiration}}</span>
                   </span>
                 </div>
               </td>
-              <td class="text-right" :style="{ verticalAlign: getValign(item)}">
+              <td
+                class="text-right _total-clin-value"
+                :class="'_' + item.status"
+                :style="{ verticalAlign: getValign(item)}"
+              >
                   {{item.totalCLINValue}}
               </td>
-              <td class="text-right" :style="{ verticalAlign: getValign(item)}">
+              <td class="text-right _obligated-funds" :style="{ verticalAlign: getValign(item)}">
                 {{item.obligatedFunds}}
               </td>
               <td :style="{ verticalAlign: getValign(item)}">
@@ -173,10 +183,10 @@
                     :class="{'text-error font-weight-500': item.status === 'Delinquent'}"
                     class="d-flex align-center justify-end"
                   >
-                    {{item.totalFundsSpent}}
+                    <span class="_total-funds-spent">{{item.totalFundsSpent}}</span>
                     <span
                       :class="{'text-error font-weight-500': item.status === 'Delinquent'}"
-                      class="font-size-12 text-base ml-3">
+                      class="font-size-12 text-base ml-3 _funds-spent-percent">
                     ({{item.fundsRemaining.percent}}%)
                   </span>
                   </div>
@@ -192,7 +202,7 @@
                       color="error"
                       class="mr-1"
                     />
-                    Overspent
+                    <span class="_overspent">Overspent</span>
                   </div>
                   <div
                     v-else-if="item.isActive"
@@ -236,7 +246,7 @@
               <td align="right" class="font-weight-700">
                 Total
               </td>
-              <td align="right" class="font-weight-700">
+              <td align="right" class="font-weight-700 _grand-total-clin-value">
                 <span v-if="!showInactive">
                   ${{ toCurrencyString(currentPeriodFundingTotals.CLINValue) }}
                 </span>
@@ -244,7 +254,7 @@
                   {{ selectedTaskOrder.totalLifeCycle }}
                 </span>
               </td>
-              <td align="right" class="font-weight-700">
+              <td align="right" class="font-weight-700 _grand-total-obligated-funds">
                 <span v-if="!showInactive">
                   ${{ toCurrencyString(currentPeriodFundingTotals.obligatedFunds) }}
                 </span>
@@ -253,28 +263,36 @@
                 </span>
               </td>
               <td align="right">
-               <div v-if="!showInactive">
-                 <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
-                   ${{ toCurrencyString(currentPeriodFundingTotals.fundsSpent) }}
-                   <span class="font-size-12 text-base ml-3 font-weight-500">
-                     ({{ totals.percent }}%)
-                   </span>
-                 </div>
-                 <span class="d-flex font-size-12 text-base justify-end">
-                 {{ totals.fundsRemaining }}
-                </span>
-              </div>
-              <div v-else>
-                <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
-                  {{ selectedTaskOrder.totalFundsSpent }}
-                  <span class="font-size-12 text-base ml-3 font-weight-500 ">
-                     ({{ taskOrderRemainingFunds.percent }}%)
-                   </span>
+                <div v-if="!showInactive">
+                  <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
+                    <span class="_grand-total-funds-spent">
+                      ${{ toCurrencyString(currentPeriodFundingTotals.fundsSpent) }}
+                    </span>
+                    <span class="_grand-total-spent-percent
+                      font-size-12 text-base ml-3 font-weight-500"
+                    >
+                      ({{ totals.percent }}%)
+                    </span>
+                  </div>
+                  <span class="d-flex font-size-12 text-base justify-end _grand-total-remaining">
+                    {{ totals.fundsRemaining }}
+                  </span>
                 </div>
-                <span class="d-flex font-size-12 text-base justify-end">
-                 {{ taskOrderRemainingFunds.fundsRemaining }}
-                </span>
-              </div>
+                <div v-else>
+                  <div class="d-flex justify-end align-center font-weight-700 text-base-darkset">
+                    <span class="_grand-total-funds-spent">
+                      {{ selectedTaskOrder.totalFundsSpent }}
+                    </span>
+                    <span class="_grand-total-spent-percent
+                      font-size-12 text-base ml-3 font-weight-500"
+                    >
+                      ({{ taskOrderRemainingFunds.percent }}%)
+                    </span>
+                  </div>
+                  <span class="d-flex font-size-12 text-base justify-end _grand-total-remaining">
+                    {{ taskOrderRemainingFunds.fundsRemaining }}
+                  </span>
+                </div>
               </td>
             </tr>
           </tbody>

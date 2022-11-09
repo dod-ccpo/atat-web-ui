@@ -87,6 +87,7 @@ export interface StepperStep {
 export interface SelectData {
   text?: string;
   value?: string;
+  description?: string;
   multiSelectOrder?: number;
   disabled?: boolean;
   hidden?: boolean;
@@ -153,6 +154,7 @@ export interface Checkbox {
   label: string;
   value: string;
   description?: string;
+  textfieldValue?: string;
 }
 
 export interface RadioButton extends Checkbox {
@@ -488,3 +490,34 @@ export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
 export type EvalPlanSourceSelection = "" | "NoTechProposal" | "TechProposal" 
   | "SetLumpSum" | "EqualSetLumpSum";
 
+export type StorageUnit = "" | "GB" | "TB" | "PB";
+
+export interface CurrentEnvUsageData {
+  currentUsageDescription?: string;
+  trafficSpikeCauses?: string[];
+  surgeUsageEvent?: string;
+  surgeUsagePeriods?: string;
+} 
+
+export interface CurrentEnvInstanceConfig {
+  licensing?: string;
+  operatingSystem?: string;
+  numberOfVCPUs?: number | null;
+  processorSpeed?: number | null;
+  memory?: number | null;
+  storageType?: string;
+  storageAmount?: number | null;
+  storageUnit?: StorageUnit;
+}
+
+export interface CurrentEnvPerformanceTier {
+  performanceTier?: string;
+  numberOfSimilarInstances?: number | null;
+  dataEgressMonthlyAmount?: number | null;
+  dataEgressMonthlyUnit?: StorageUnit;
+}
+
+export interface CurrentEnvPricingDetails {
+  currentPaymentArrangement?: string;
+  pricingPeriodExpirationDate?: string;
+}

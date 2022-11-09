@@ -9,14 +9,20 @@
     }
   }
 
-  .v-input__prepend-inner{
+  .v-input__prepend-inner, .v-input__append-inner {
+    margin-top: 6px !important;
     z-index: 1;
   }
-  
+
   fieldset {
+    max-height: 40px;
+    margin-top: 4px;
     border: 1px solid $base;
     border-radius: 4px;
     background-color: white;
+    legend {
+      display: none;
+    }
 
     &:focus {
       border-width: 2px;
@@ -61,9 +67,14 @@
     color: $base-light;
     line-height: 1.67em;
     margin-right: 2px;
+    z-index: 1;
+  }
+  &.v-input--is-focused {
+    ._append-text {
+      color: $primary;
+    }
   }
 }
-
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -76,3 +87,38 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+.v-text-field:not(.v-textarea) {
+  .v-text-field__slot {
+    max-height: 38px;
+  }
+}
+
+._append-dropdown {
+  .v-text-field:not(.v-select) {
+    fieldset {
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0;
+    }  
+    width: calc(100% - 60px);
+  }
+  .v-select {
+    fieldset {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0;
+      border-left-color: transparent !important;
+    }  
+    width: 60px;
+  }
+  .v-menu__content {
+    min-width: 150px !important;
+    left: -90px !important;
+  }
+  .v-select__selections {
+    min-width: 22px;
+  }
+  .v-input__append-inner {
+    padding-left: 0 !important;
+  }
+}
+

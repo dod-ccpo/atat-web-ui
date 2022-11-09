@@ -75,6 +75,12 @@ $widths: 500, 640, 740, 840, 760, 1200;
   }
 }
 
+._input-max-width-240 {
+  ._input-wrapper {
+    max-width: 240px;
+  }
+}
+
 //padding and margin modifications
 .remove-y-padding-from-cols  {
     .col{

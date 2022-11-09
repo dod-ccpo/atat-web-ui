@@ -136,7 +136,7 @@ import PortfolioData from "@/store/portfolio";
 
 import { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
-import { formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
+import { differenceInDays, formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
 import _ from "lodash";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
@@ -433,9 +433,13 @@ export default class PortfoliosSummary extends Vue {
           const popEnd = createDateStr(popEndISO, true);
           cardData.currentPoP = popStart + " - " + popEnd;
           const difToEndDate = formatDistanceToNow(new Date(popEndISO));
+          const difInDays = differenceInDays(new Date(popEndISO), new Date());
+          const difInDaysAbs = Math.abs(difInDays);
+          const difStr = difInDaysAbs > 60 ? difToEndDate : difInDaysAbs + " days";
           const isExpired = isAfter(new Date(), new Date(popEndISO));
+
           cardData.expiration 
-            = _.capitalize(difToEndDate + (isExpired ? " past" : " to") + " expiration");
+            = _.capitalize(difStr + (isExpired ? " past" : " to") + " expiration");
         }
       }
 
