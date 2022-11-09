@@ -100,7 +100,8 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   has_migration_documentation: YesNo;
   migration_documentation?: string[]; // List - sys_ids from sys_attachment table 
   env_location: EnvironmentLocation;
-  env_classifications: string[]; // array of classification level sys_ids
+  env_classifications_cloud: string[]; // array of classification level sys_ids
+  env_classifications_onprem: string[]; // array of classification level sys_ids
   env_instances: CurrentEnvironmentInstanceDTO[]; // array of sys_ids
   current_environment_replicated_optimized: EnvironmentReplicateOptimized;
   statement_replicated_optimized: string;
@@ -140,8 +141,8 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
 
   performance_tier: PerformanceTier;
   number_of_similar_instances: number; 
-  data_egress_monthly_storage: number;    
-  data_egress_monthly_storage_unit: StorageUnit;
+  data_egress_monthly_amount: number;    
+  data_egress_monthly_unit: StorageUnit;
 
   current_payment_arrangement: PaymentArrangement;
   pricing_period_expiration_date?: string;
