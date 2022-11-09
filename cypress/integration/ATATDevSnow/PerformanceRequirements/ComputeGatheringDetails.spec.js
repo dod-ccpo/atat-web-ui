@@ -128,8 +128,7 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
   
     //Storage Type
     cy.verifyStorageTypeListItems(categoryObj);
-    cy.findElement(performanceReq.storageTypePIOPS)
-      .should("have.text", "Provisioned IOPS SSD").click({ force: true });
+    cy.textExists(performanceReq.storageTypePIOPS,"Provisioned IOPS SSD").click({ force: true });
     //Storage Amount
     cy.textExists(performanceReq.storageAmountLabel, "Storage amount");
     
@@ -221,8 +220,7 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
     const memory = randomNumber(2)
     cy.enterTextInTextField(performanceReq.memoryTextBox, memory);
     cy.verifyStorageTypeListItems(categoryObj)
-    cy.findElement(performanceReq.storageTypeGP)
-      .should("have.text", "General Purpose SSD").click({ force: true });
+    cy.textExists(performanceReq.storageTypeGP, "General Purpose SSD").click({ force: true });
     //Storage Amount    
     const storageAmount = randomNumber(3)
     cy.enterTextInTextField(performanceReq.storageAmountTextBox, storageAmount);

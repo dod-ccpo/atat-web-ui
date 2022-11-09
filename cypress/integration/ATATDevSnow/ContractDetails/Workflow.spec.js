@@ -24,10 +24,8 @@ describe("Test suite: Contract Details: E2E work flow",  () => {
     cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").click({ force: true });
     cy.findElement(contractDetails.requestedStartDate).should("exist"); 
     cy.dropDownClick(contractDetails.requestedStartDropdownIcon);
-    const listOptions = "No sooner thanNot later than"    
-    cy.findElement(contractDetails.requestedStartDropdownList).each(($el) =>
-      cy.wrap($el).should("contain.text", listOptions)
-    );      
+    const listOptions = ["No sooner than", "Not later than"]  
+    cy.verifyStringArray(contractDetails.requestedStartDropdownList, listOptions);
     cy.findElement(contractDetails.requestedStartDateNosoonerthan).click();
     cy.findElement(contractDetails.calendarIcon).click();
     cy.findElement(contractDetails.navigateNextMonth).click({ force: true }).then(() => {

@@ -102,8 +102,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
       })  
         
     //select the salutationfrom dropdown
-    cy.findElement(contact.salutationDropdownListItemMr)
-      .should("have.text", "Mr.").click({ force: true });
+    cy.textExists(contact.salutationDropdownListItemMr, "Mr.").click({ force: true });
         
     // Assert ContactInformation Labels
     cy.textExists(contact.fNameLabel, " First name ");     
@@ -190,8 +189,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
 
     //select the value from salutationDropdownList
     cy.dropDownClick(contact.salutationDropDownIcon);
-    cy.findElement(contact.salutationDropdownListItemMrs)
-      .should("have.text", "Mrs.").click({ force: true });  
+    cy.textExists(contact.salutationDropdownListItemMrs, "Mrs.").click({ force: true });  
         
     const contactInformation = {
       firstNameSelector: contact.fNameTxtBox,

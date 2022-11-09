@@ -71,8 +71,7 @@ describe("Test suite: Compute Requirements", () => {
   
     //Storage Type
     cy.verifyStorageTypeListItems(categoryObj);
-    cy.findElement(performanceReq.storageTypeNearline)
-      .should("have.text", "Nearline").click({ force: true });
+    cy.textExists(performanceReq.storageTypeNearline, "Nearline").click({ force: true });
       
     //Storage Amount   
     const storageAmount = randomNumber(2)
@@ -133,8 +132,7 @@ describe("Test suite: Compute Requirements", () => {
   
     //Storage Type
     cy.verifyStorageTypeListItems(categoryObj);
-    cy.findElement(performanceReq.storageTypeOffline)
-      .should("have.text", "Offline").click({ force: true });
+    cy.textExists(performanceReq.storageTypeOffline,"Offline").click({ force: true });
       
     //Storage Amount   
     const storageAmount = randomNumber(3)
@@ -178,8 +176,7 @@ describe("Test suite: Compute Requirements", () => {
   
     //Storage Type
     cy.verifyStorageTypeListItems(categoryObj);
-    cy.findElement(performanceReq.storageTypeOffline)
-      .should("have.text", "Offline").click({ force: true });
+    cy.textExists(performanceReq.storageTypeOffline, "Offline").click({ force: true });
       
     //Storage Amount   
     const storageAmountInsTwo = randomNumber(3)
@@ -230,8 +227,7 @@ describe("Test suite: Compute Requirements", () => {
   
     //Storage Type
     cy.verifyStorageTypeListItems(categoryObj);
-    cy.findElement(performanceReq.storageTypeNearline)
-      .should("have.text", "Nearline").click({ force: true });
+    cy.textExists(performanceReq.storageTypeNearline,"Nearline").click({ force: true });
       
     //Storage Amount   
     const storageAmount = randomNumber(3)
