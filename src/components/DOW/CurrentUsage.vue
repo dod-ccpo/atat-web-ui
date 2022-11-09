@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section id="CurrentUsage">
     <ATATRadioGroup 
       id="CurrentUsageDescription"
       :items="usageOptions"

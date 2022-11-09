@@ -93,3 +93,32 @@ input[type=number] {
     max-height: 38px;
   }
 }
+
+._append-dropdown {
+  .v-text-field:not(.v-select) {
+    fieldset {
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0;
+    }  
+    width: calc(100% - 60px);
+  }
+  .v-select {
+    fieldset {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0;
+      border-left-color: transparent !important;
+    }  
+    width: 60px;
+  }
+  .v-menu__content {
+    min-width: 150px !important;
+    left: -90px !important;
+  }
+  .v-select__selections {
+    min-width: 22px;
+  }
+  .v-input__append-inner {
+    padding-left: 0 !important;
+  }
+}
+
