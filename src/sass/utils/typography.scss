@@ -113,6 +113,18 @@ hr, .hr {
     border-color: $base !important;
     -ieVar-❗border-color: $base !important;  
   }
+  
+  &._and-or {
+    position: relative;
+    &::after {
+      content: "AND/OR";
+      background-color: $base-lighter;
+      padding: 4px;
+      border-radius: 6px;
+      top: 0;
+      left: 50px;
+    }
+  }
 }
 
 

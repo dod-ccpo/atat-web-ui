@@ -18,7 +18,7 @@
         :label="label"
       />
     </div>
-    <div class="d-flex" :class="{'_append-dropdown' : appendDropdown}">
+    <div class="d-flex _input-wrapper" :class="{'_append-dropdown' : appendDropdown}">
       <v-text-field
         ref="atatTextField"
         :id="id + '_text_field'"
@@ -42,6 +42,7 @@
         autocomplete="off"
         :type="type"
         @keypress="filterNumbers($event)"
+        :validate-on-blur="validateOnBlur"
       >
 
         <template v-slot:prepend-inner>

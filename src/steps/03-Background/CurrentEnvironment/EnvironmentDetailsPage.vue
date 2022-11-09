@@ -42,7 +42,28 @@
 
     <InstanceConfig
       :instanceConfig.sync="instanceConfig"
+      :storageUnits="storageUnits"
     />
+
+    <PerformanceTier 
+      :performanceTier.sync="performanceTier"
+      :storageUnits="storageUnits"
+    />
+
+    <hr />
+
+    <h2 class="mb-4">4. Pricing details</h2>
+
+    <PricingDetails :pricingDetails.sync="pricingDetails" />
+
+    <hr />
+
+    <h2 class="mb-4">
+      5. Additional information 
+      <span class="text-base font-weight-400">(Optional)</span>
+    </h2>
+
+    <AdditionalInfo :additionalInfo.sync="additionalInfo" />
 
   </div>
 </template>
@@ -51,16 +72,29 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
+import AdditionalInfo from "@/components/DOW/AdditionalInfo.vue";
 import CurrentUsage from "@/components/DOW/CurrentUsage.vue";
 import InstanceConfig from "@/components/DOW/InstanceConfig.vue";
+import PerformanceTier from "@/components/DOW/PerformanceTier.vue";
+import PricingDetails from "@/components/DOW/PricingDetails.vue";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 
-import { Checkbox, CurrentEnvInstanceConfig, CurrentEnvUsageData } from "types/Global";
+import { 
+  Checkbox, 
+  CurrentEnvInstanceConfig, 
+  CurrentEnvUsageData, 
+  CurrentEnvPerformanceTier,
+  SelectData,
+  CurrentEnvPricingDetails,
+} from "types/Global";
 
 @Component({
   components: {
+    AdditionalInfo,
     CurrentUsage,
     InstanceConfig, 
+    PerformanceTier,
+    PricingDetails,
     RegionsDeployedAndUserCount,
   }
 })
@@ -95,9 +129,29 @@ export default class EnvironmentDetails extends Vue {
     storageUnit: "GB",
   }
 
+  public performanceTier: CurrentEnvPerformanceTier = {
+    performanceTier: "",
+    numberOfSimilarInstances: 1,
+    dataEgressMonthlyAmount: null,
+    dataEgressMonthlyUnit: "GB",
+  }
+
+  public pricingDetails: CurrentEnvPricingDetails = {
+    currentPaymentArrangement: "",
+    pricingPeriodExpirationDate: "",
+  }
+
+  public additionalInfo = "";
+
   public regionsDeployedTooltipText = `This is the geographic location where your 
     public cloud resources are located, e.g., within the continental U.S. (CONUS) 
     or outside of the continental U.S. (OCONUS).`;
+
+  public storageUnits: SelectData[] = [
+    { text: "Gigabyte (GB)", value: "GB" },
+    { text: "Terabyte (TB)", value: "TB" },
+    { text: "Petabyte (PB)", value: "PB" },
+  ];
 
 }
 

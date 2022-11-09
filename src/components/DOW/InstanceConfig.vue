@@ -25,6 +25,7 @@
           type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
+            $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
           ]"
           :allowDecimals="false"
         />
@@ -39,6 +40,7 @@
           type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
+            $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
           ]"
           :allowDecimals="false"
         />
@@ -67,6 +69,7 @@
           appendText="GB"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
+            $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
           ]"
           :isMaskRegex="true"
           :mask="['^[0-9]*\.?[0-9]{1}$']"
@@ -98,7 +101,7 @@
           :selectedDropdownValue.sync="_instanceConfig.storageUnit"
           type="number"
           :rules="[
-            $validators.required('Enter a number greater than or equal to 1.'),
+            $validators.required('Enter a number greater than or equal to 0.'),
           ]"
           :allowDecimals="false"
         />       
@@ -110,7 +113,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -130,13 +133,14 @@ import {
 
 export default class InstanceConfig extends Vue {
   @PropSync("instanceConfig") public _instanceConfig!: CurrentEnvInstanceConfig
+  @Prop() public storageUnits!: SelectData[];
 
 
   public storageTypes: SelectData[] = [
     { 
       text: "Block storage", 
       description: "Fixed-sized raw storage capacity", 
-      value: "Block storage VAL" 
+      value: "Block storage" 
     },
     { 
       text: "Object storage", 
@@ -155,11 +159,6 @@ export default class InstanceConfig extends Vue {
     },
   ];
 
-  public storageUnits: SelectData[] = [
-    { text: "Gigabyte (GB)", value: "GB" },
-    { text: "Terabyte (TB)", value: "TB" },
-    { text: "Petabyte (PB)", value: "PB" },
-  ];
 
 
 }
