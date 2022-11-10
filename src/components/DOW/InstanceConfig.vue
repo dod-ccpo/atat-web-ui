@@ -25,6 +25,7 @@
           type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
+            $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
           ]"
           :allowDecimals="false"
         />
@@ -39,6 +40,7 @@
           type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
+            $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
           ]"
           :allowDecimals="false"
         />
@@ -67,6 +69,7 @@
           appendText="GB"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
+            $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
           ]"
           :isMaskRegex="true"
           :mask="['^[0-9]*\.?[0-9]{1}$']"
@@ -98,7 +101,7 @@
           :selectedDropdownValue.sync="_instanceConfig.storageUnit"
           type="number"
           :rules="[
-            $validators.required('Enter a number greater than or equal to 1.'),
+            $validators.required('Enter a number greater than or equal to 0.'),
           ]"
           :allowDecimals="false"
         />       
@@ -137,7 +140,7 @@ export default class InstanceConfig extends Vue {
     { 
       text: "Block storage", 
       description: "Fixed-sized raw storage capacity", 
-      value: "Block storage VAL" 
+      value: "Block storage" 
     },
     { 
       text: "Object storage", 

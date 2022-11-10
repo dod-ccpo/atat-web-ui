@@ -68,9 +68,4 @@ describe("Testing SupportingDocumentation Component", () => {
     expect(FinancialDetails.loadRequirementsCostEstimate).toHaveBeenCalled();
   });
 
-  it("'Test checkProtocol()- should set proper csp calculator link protocol", async () => {
-    wrapper.vm.cspCalculatorLink = "ht" + "://" + "someurl";
-    wrapper.vm.checkProtocol();
-    expect(wrapper.vm.cspCalculatorLink.indexOf("https")).toBe(0);
-  });
 })
