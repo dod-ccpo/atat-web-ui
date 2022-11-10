@@ -47,17 +47,17 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     {
       id: "CloudComputingEnvironment",
       label: "Cloud computing environment",
-      value: "Cloud computing environment",
+      value: "CLOUD",
     },
     {
       id: "OnPremises",
-      label: "On-premises",
-      value: "On-premises",
+      label: "On-premise environment",
+      value: "ON_PREM",
     },
     {
       id: "HybridCloudEnvironment",
-      label: "Hybrid cloud environment",
-      value: "Hybrid cloud environment",
+      label: "Hybrid environment",
+      value: "HYBRID",
     },
   ];
   private savedData: CurrentEnvironmentDTO = {

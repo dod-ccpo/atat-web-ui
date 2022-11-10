@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container class="container-max-width" fluid>
-      <v-row>
+      <v-row v-if="environment.toLowerCase() !=='hybrid'">
         <v-col class="col-12">
           <h1 class="page-header mb-3">
             Tell us about your current data classification and impact levels
@@ -30,7 +30,7 @@
               class="copy-max-width mb-10"
               name="classificationTypesCheckboxes"
             />
-            <div v-if="environment.toLowerCase() ==='cloud computing environment'">
+            <div v-if="environment.toLowerCase() ==='cloud'">
               <div v-if="impactLevels.length > 1">
                 <p id="DeployedP" class="mb-3 font-weight-500">
                   For your Unclassified instance(s), what impact levels are you currently deployed
@@ -96,7 +96,7 @@
           </div>
         </v-col>
       </v-row>
-      <v-row v-if="environment.toLowerCase() === 'hybrid cloud environment'">
+      <v-row v-if="environment.toLowerCase() === 'hybrid'">
         <v-col class="col-12">
           <h1 class="page-header mb-3">
             Future Hybrid Page
