@@ -526,7 +526,6 @@ export interface CurrentEnvPricingDetails {
   pricingPeriodExpirationDate?: string;
 }
 
-export type YesNo = "" | "YES" | "NO";
 export type EnvironmentLocation = "" | "CLOUD" | "ONPREM" | "HYBRID";
 export type EnvironmentInstanceLocation = "" | "CLOUD" | "ONPREM";
 export type EnvironmentReplicateOptimized = "" | "YES_REPLICATE" | "YES_OPTIMIZE" | "NO";

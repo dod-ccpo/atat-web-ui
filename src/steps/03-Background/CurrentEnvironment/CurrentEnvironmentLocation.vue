@@ -25,9 +25,8 @@
   </v-container>
 </template>
 <script lang="ts">
-
 import { Component, Mixins } from "vue-property-decorator";
-import { CurrentEnvironment, EnvironmentLocation, RadioButton } from "../../../../types/Global";
+import { EnvironmentLocation, RadioButton } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
@@ -35,8 +34,6 @@ import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import CurrentEnvironment,
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-
-
 @Component({
   components: {
     ATATRadioGroup,
@@ -44,9 +41,8 @@ import CurrentEnvironment,
 })
 export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   public currEnvDTO = defaultCurrentEnvironment;
-
   /* eslint-disable camelcase */
-  public currentEnvironmentLocation: "" | "CLOUD" | "ON_PREM" | "HYBRID" = "";
+  public currentEnvironmentLocation: EnvironmentLocation = "";
   private envLocationOption: RadioButton[] = [
     {
       id: "CloudComputingEnvironment",
@@ -69,17 +65,14 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
        with a public cloud, allowing data and applications to be shared between them.`,
     },
   ];
-
   private savedData: Record<string, string> = {
     env_location: "",
   }
-
   private get currentData(): Record<string, string> {
     return {
       env_location: this.currentEnvironmentLocation || "",
     };
   }
-
   public async loadOnEnter(): Promise<void> {
     // TODO - get from ACQPKG store or CURRENV store??
     const storeData = await AcquisitionPackage.getCurrentEnvironment();
@@ -92,11 +85,9 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       }
     }
   }
-
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
@@ -105,7 +96,6 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
         // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-
         // TODO - wire to proper location for saving after DB is updated
         // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
         //   data: this.currentData,
@@ -115,13 +105,10 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     } catch (error) {
       console.log(error);
     }
-
     return true;
   }
-
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
 }
 </script>
-
