@@ -33,8 +33,8 @@ import CurrentEnvironmentLocation
   from "@/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.vue";
 import ClassificationLevels
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.vue";
-import EnvironmentDetailsPage
-  from "@/steps/03-Background/CurrentEnvironment/EnvironmentDetailsPage.vue";
+import InstanceDetails
+  from "@/steps/03-Background/CurrentEnvironment/InstanceDetails.vue";
 import BackgroundSummary from "../steps/03-Background/Summary.vue"
 import UploadSystemDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadSystemDocuments.vue";
@@ -217,7 +217,7 @@ export const routeNames = {
   CurrentEnvironmentLocation: "Current_Environment_Location",
   ClassificationLevels: "Classification_Levels",
   BackgroundSummary: "Background_Summary",
-  EnvironmentDetailsPage:"Environment_Details_Page",
+  InstanceDetails:"Environment_Details_Page",
   IGCE:"IGCE",
   CreatePriceEstimate:"Create_Price_Estimate",
   CannotProceed:"Cannot_Proceed",
@@ -494,8 +494,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Environment Details Page",
         path: "environment-details-page",
         excludeFromMenu: true,
-        name: routeNames.EnvironmentDetailsPage,
-        component: EnvironmentDetailsPage,
+        name: routeNames.InstanceDetails,
+        component: InstanceDetails,
         completePercentageWeight: 5,
         completed: false,
       },

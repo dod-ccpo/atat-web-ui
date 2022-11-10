@@ -113,27 +113,22 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   is_traffic_spike_period_based: YesNo;
   traffic_spike_event_description?: string;
   traffic_spike_period_description?: string;
-  
   users_per_region: string; // json stringified sys_id/count pairs
-
   operating_system: string;
   licensing: string;
-  number_Of_VCPUs: number;
-  processor_speed: number; 
-  memory_amount: number;
+  number_Of_VCPUs: number | null;
+  processor_speed: number | null; 
+  memory_amount: number | null;
   memory_unit: StorageUnit;
   storage_type: StorageType;
-  storage_amount: number;
+  storage_amount: number | null;
   storage_unit: StorageUnit;
-
   performance_tier: PerformanceTier;
-  number_of_similar_instances: number; 
-  data_egress_monthly_amount: number;    
+  number_of_instances: number | null; 
+  data_egress_monthly_amount: number | null;    
   data_egress_monthly_unit: StorageUnit;
-
   current_payment_arrangement: PaymentArrangement;
   pricing_period_expiration_date?: string;
-
   additional_information?: string; 
 }
 

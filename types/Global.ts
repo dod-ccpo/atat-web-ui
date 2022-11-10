@@ -526,8 +526,8 @@ export interface CurrentEnvPricingDetails {
   pricingPeriodExpirationDate?: string;
 }
 
-export type EnvironmentLocation = "" | "CLOUD" | "ONPREM" | "HYBRID";
-export type EnvironmentInstanceLocation = "" | "CLOUD" | "ONPREM";
+export type EnvironmentLocation = "" | "CLOUD" | "ON_PREM" | "HYBRID";
+export type EnvironmentInstanceLocation = "" | "CLOUD" | "ON_PREM";
 export type EnvironmentReplicateOptimized = "" | "YES_REPLICATE" | "YES_OPTIMIZE" | "NO";
 export type EnvironmentInstanceUsage = "" | "EVEN_USAGE" | "IRREGULAR_USAGE";
 export type StorageType = "" | "BLOCK" | "OBJECT" | "FILE" | "ARCHIVE";
@@ -541,7 +541,8 @@ export interface CurrentEnvironment {
   hasMigrationDocumentation?: YesNo;
   migrationDocumentation?: string[]; // List - sys_ids from sys_attachment table 
   envLocation?: EnvironmentLocation;
-  envClassifications?: string[]; // array of classification level sys_ids
+  envClassificationsCloud?: string[]; // array of classification level sys_ids
+  envClassificationsOnPrem?: string[]; // array of classification level sys_ids
   envInstances?: CurrentEnvironmentInstance[]; // array of sys_ids
   currentEnvironmentReplicatedOptimized?: EnvironmentReplicateOptimized;
   statementReplicatedOptimized?: string;

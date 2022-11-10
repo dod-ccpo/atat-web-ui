@@ -11,72 +11,102 @@
       through them one at a time.
     </p>
 
-    <RegionsDeployedAndUserCount 
-      :hasTextFields="false"
-      id="RegionsDeployed"
-      groupLabelId="RegionsDeployedLabel"
-      groupLabel="In which region(s) is this instance deployed?"
-      @selectedRegionsUpdate="regionsDeployedUpdate"
-      :tooltipText="regionsDeployedTooltipText"
-      :optional="true"
-    />
-    
-    <hr />
+    <h2 class="mb-4" v-if="hasTellUsAboutInstanceHeading">1. Tell us about Instance #1</h2>
 
-    <h2 class="mb-4">2. Current usage and users</h2>
-
-    <CurrentUsage 
-      class="mb-10"
-      :currentUsage.sync="currentUsage"   
+    <ATATRadioGroup 
+      v-if="envLocation === 'HYBRID' || !envLocation"
+      id="EnvironmentLocation"
+      class="mb-8"
+      :items="envLocationOptions"
+      tooltipText="On-premises environments are deployed in-house and within an 
+        enterprise IT infrastructure. Cloud environments are hosted by a third-party 
+        provider in an off-site, cloud-based server."
+      :value.sync="instanceData.instance_location"
+      legend="Where is this instance located?"
     />
 
-    <RegionsDeployedAndUserCount 
-      :hasTextFields="true"
-      id="RegionsUsers"
-      :optional="false"
-      groupLabelId="RegionUsersLabel"
-      groupLabel="Where are your users located?"
-      groupLabelHelpText="Enter the approximate number of users for each selected region."
-      @regionUserDataUpdate="regionUserDataUpdate"
-      :rules="[$validators.required('Select at least one region.'),]"
-      :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
-    />
+    <div v-show="instanceData.instance_location">
 
-    <hr />
+      <RegionsDeployedAndUserCount 
+        v-if="instanceData.instance_location === 'CLOUD'"
+        :hasTextFields="false"
+        id="RegionsDeployed"
+        groupLabelId="RegionsDeployedLabel"
+        groupLabel="In which region(s) is this instance deployed?"
+        @selectedRegionsUpdate="regionsDeployedUpdate"
+        :tooltipText="regionsDeployedTooltipText"
+        :optional="true"
+      />
+      
+      <hr v-if="hasTellUsAboutInstanceHeading" />
 
-    <h2 class="mb-4">3. Instance configurations</h2>
+      <h2 class="mb-4">
+        {{ hasTellUsAboutInstanceHeading ? "2." : "1." }}
+        Current usage and users
+      </h2>
 
-    <InstanceConfig
-      :instanceConfig.sync="instanceConfig"
-      :storageUnits="storageUnits"
-    />
+      <CurrentUsage 
+        class="mb-10"
+        :currentUsage.sync="currentUsage"   
+      />
 
-    <PerformanceTier 
-      :performanceTier.sync="performanceTier"
-      :storageUnits="storageUnits"
-    />
+      <RegionsDeployedAndUserCount 
+        :hasTextFields="true"
+        id="RegionsUsers"
+        :optional="false"
+        groupLabelId="RegionUsersLabel"
+        groupLabel="Where are your users located?"
+        groupLabelHelpText="Enter the approximate number of users for each selected region."
+        @regionUserDataUpdate="regionUserDataUpdate"
+        :rules="[$validators.required('Select at least one region.'),]"
+        :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
+      />
 
-    <hr />
+      <hr />
 
-    <h2 class="mb-4">4. Pricing details</h2>
+      <h2 class="mb-4">
+        {{ hasTellUsAboutInstanceHeading ? "3." : "2." }}
+        Instance configurations
+      </h2>
 
-    <PricingDetails :pricingDetails.sync="pricingDetails" />
+      <InstanceConfig
+        :instanceConfig.sync="instanceConfig"
+        :storageUnits="storageUnits"
+      />
 
-    <hr />
+      <PerformanceTier 
+        :performanceTier.sync="performanceTier"
+        :storageUnits="storageUnits"
+      />
 
-    <h2 class="mb-4">
-      5. Additional information 
-      <span class="text-base font-weight-400">(Optional)</span>
-    </h2>
+      <hr />
 
-    <AdditionalInfo :additionalInfo.sync="additionalInfo" />
+      <h2 class="mb-4">
+        {{ hasTellUsAboutInstanceHeading ? "4." : "3." }}
+        Pricing details
+      </h2>
 
+      <PricingDetails :pricingDetails.sync="pricingDetails" />
+
+      <hr />
+
+      <h2 class="mb-4">
+        {{ hasTellUsAboutInstanceHeading ? "5." : "4." }}
+        Additional information 
+        <span class="text-base font-weight-400">(Optional)</span>
+      </h2>
+
+      <AdditionalInfo :additionalInfo.sync="additionalInfo" />
+
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
+
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
 import AdditionalInfo from "@/components/DOW/AdditionalInfo.vue";
 import CurrentUsage from "@/components/DOW/CurrentUsage.vue";
@@ -92,13 +122,24 @@ import {
   CurrentEnvPerformanceTier,
   SelectData,
   CurrentEnvPricingDetails,
+  RadioButton,
 } from "types/Global";
 
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
 
+import SaveOnLeave from "@/mixins/saveOnLeave";
+
+import CurrentEnvironment, 
+{ 
+  defaultCurrentEnvironment, 
+  defaultCurrentEnvironmentInstance 
+} from "@/store/acquisitionPackage/currentEnvironment";
+
+
 @Component({
   components: {
+    ATATRadioGroup,
     AdditionalInfo,
     CurrentUsage,
     InstanceConfig, 
@@ -109,6 +150,41 @@ import { CurrentEnvironmentDTO } from "@/api/models";
 })
 
 export default class EnvironmentDetails extends Vue {
+  public currEnvDTO = defaultCurrentEnvironment;
+  public envLocation = "";
+  public instanceData = defaultCurrentEnvironmentInstance;
+
+  public envLocationOptions: RadioButton[] = [
+    {
+      id: "Cloud",
+      label: "Cloud",
+      value: "CLOUD",
+    },
+    {
+      id: "OnPremises",
+      label: "On-premises",
+      value: "ON_PREM",
+    },
+  ];
+
+  public get hasTellUsAboutInstanceHeading(): boolean {
+    // only one case where there won't be a "Tell us about instance #x" header -
+    // if instance location is on-premises AND only one classification was selected.
+    // classification radio options will show if either NO (ZERO) classification
+    // levels were selected, or more than one was selected.
+    return !(this.instanceData.instance_location === 'ON_PREM' 
+      && this.currEnvDTO.env_classifications_on_prem.length === 1);
+  }
+
+  // public sectionNumber(section: string): string {
+  //   switch (section) {
+  //   case "currentUsage": 
+  //     return this.instanceData.instance_location === 'ON_PREM' 
+  //     && this.currEnvDTO.env_classifications_cloud.length === 1
+  //       ? "1." : "2."
+  //   }
+  //   return "";
+  // }
 
   public regionsDeployed: string [] = [];
   public regionsDeployedUpdate(selected: string[]): void {
@@ -169,14 +245,21 @@ export default class EnvironmentDetails extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<CurrentEnvironmentDTO>(
-        {storeProperty: StoreProperties.CurrentEnvironment}
-      );
-    if (storeData) {
+    // const storeData = await AcquisitionPackage
+    //   .loadData<CurrentEnvironmentDTO>(
+    //     {storeProperty: StoreProperties.CurrentEnvironment}
+    //   );
+    const envStoreData = await AcquisitionPackage.getCurrentEnvironment();
+
+    if (envStoreData) {
       debugger;
+      this.currEnvDTO = envStoreData;
+      this.envLocation = envStoreData.env_location;
+      // eslint-disable-next-line camelcase
+      this.instanceData.instance_location = envStoreData.env_location !== "HYBRID"
+        ? envStoreData.env_location : "";
+
       // this.savedData = {
-      //   additional_information: storeData.additional_information,
       // }
     }
 
@@ -190,14 +273,14 @@ export default class EnvironmentDetails extends Vue {
     system_documentation: [], // array of attachments
     has_migration_documentation: "", // radio - YES | NO
     migration_documentation: [], // array of attachments
-    env_location: "", // CLOUD | ONPREM | HYBRID
+    env_location: "", // CLOUD | ON_PREM | HYBRID
     env_classifications_cloud: [], // array of classification level sys_ids
     env_classifications_onprem: [], // array of classification level sys_ids
     // IL2_cloud_deployments: [], // CAN BE POST-MVP -- Commercial Cloud | Federal community cloud (govt cloud)
 
     env_instances: [
       {
-        instance_location: "", // CLOUD | ONPREM - auto-set if env_loc is CLOUD or ONPREM - radio if HYBRID
+        instance_location: "", // CLOUD | ON_PREM - auto-set if env_loc is CLOUD or ON_PREM - radio if HYBRID
         deployed_regions: [], // checkboxes - CONUS East, CONUS Central, etc.
         instance_classification: "", // classification level sys_id
         // IL2_cloud_types: [], // CAN BE POST-MVP

@@ -116,7 +116,6 @@ export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         Object.assign(this.currEnvDTO, this.currentData);
-        debugger;
         // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);

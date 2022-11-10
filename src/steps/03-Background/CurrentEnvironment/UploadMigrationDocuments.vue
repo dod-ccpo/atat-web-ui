@@ -116,7 +116,6 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     // TODO - get from ACQPKG store or CURRENV store??
     const storeData = await AcquisitionPackage.getCurrentEnvironment();
-    debugger;
     if (storeData) {
       this.currEnvDTO = storeData;
       this.hasMigrationDocumentation = storeData.has_migration_documentation;
@@ -131,7 +130,6 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         Object.assign(this.currEnvDTO, this.currentData);
-        debugger;
         // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);

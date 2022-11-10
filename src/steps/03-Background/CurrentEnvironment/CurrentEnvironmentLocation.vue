@@ -76,7 +76,7 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     // TODO - get from ACQPKG store or CURRENV store??
     const storeData = await AcquisitionPackage.getCurrentEnvironment();
-    debugger;
+
     if (storeData) {
       this.currEnvDTO = storeData;
       this.currentEnvironmentLocation = storeData.env_location;
@@ -92,7 +92,6 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         Object.assign(this.currEnvDTO, this.currentData);
-        debugger;
         // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
