@@ -164,6 +164,27 @@ export class ValidationPlugin {
   };
 
   /**
+ * Validator that validates if url is valid
+ * Returns the error message otherwise.
+ *
+ * @param {string} message
+ * @returns {function(*): (boolean|string)}
+ */
+  isURL(
+    message?: string
+  ):((v: string) => string | true | undefined){
+    message = message || "Invalid URL";
+    return (v: string) => {
+      if (v !== "") {
+        // eslint-disable-next-line max-len
+        const httpRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/gm;
+        return v.match(httpRegex) ? true : message;
+      }
+      return true;
+    }
+  };
+
+  /**
   * @returns {function(*): (boolean|string)}
   */
   isEmail = (): ((v: string) => string | true | undefined) => {

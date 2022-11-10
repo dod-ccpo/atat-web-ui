@@ -243,7 +243,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        classificationRequirements.saveSelectedClassificationInstances(this.currentData)
+        await classificationRequirements.saveSelectedClassificationInstances(this.currentData)
       }
     } catch (error) {
       console.log(error);

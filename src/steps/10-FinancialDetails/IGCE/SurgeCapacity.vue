@@ -16,6 +16,7 @@
         </div>
         <ATATRadioGroup
           id="SurgeCapacity"
+          class="max-width-640"
           :value.sync="currentData.capacity"
           :items="items"
           name="surge-capacity"

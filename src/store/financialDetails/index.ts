@@ -5,8 +5,10 @@ import rootStore from "../index";
 
 import { baseGInvoiceData, fundingIncrement, IFPData } from "types/Global";
 import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers";
-import { FundingIncrementDTO, FundingPlanDTO, FundingRequestDTO, FundingRequestFSFormDTO,
-  FundingRequestMIPRFormDTO, TaskOrderDTO } from "@/api/models";
+import {
+  FundingIncrementDTO, FundingPlanDTO, FundingRequestDTO, FundingRequestFSFormDTO,
+  FundingRequestMIPRFormDTO, RequirementsCostEstimateDTO, TaskOrderDTO
+} from "@/api/models";
 import TaskOrder from "../taskOrder";
 import api from "@/api";
 
@@ -57,6 +59,14 @@ export const initialFundingRequestMIPRForm: FundingRequestMIPRFormDTO = {
   mipr_attachment: "",
 }
 
+export const initialRequirementsCostEstimate: RequirementsCostEstimateDTO = {
+  surge_capabilities: "Test SC" + (new Date()).toDateString(),
+  estimatedTaskOrderValue: "",
+  feePercentage: "",
+  feeCharged: "",
+  surge_capacity: ""
+}
+
 const saveFundingRequestToDISA = async (data: FundingRequestDTO):
  Promise<FundingRequestDTO>=>{
   const saveFundingRequest = (data.sys_id && data.sys_id.length > 0) ?
@@ -88,6 +98,7 @@ export class FinancialDetailsStore extends VuexModule {
   fundingRequest: FundingRequestDTO | null = null;
   fundingRequestFSForm: FundingRequestFSFormDTO | null = null;
   fundingRequestMIPRForm: FundingRequestMIPRFormDTO | null = null;
+  requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -95,6 +106,8 @@ export class FinancialDetailsStore extends VuexModule {
     nameofProperty(this, (x)=>x.fundingRequest),
     nameofProperty(this, (x)=>x.fundingRequestFSForm),
     nameofProperty(this, (x)=>x.fundingRequestMIPRForm),
+    // TODO below line sets the estimate automatically from session, which is undesirable during dev
+    // nameofProperty(this, (x)=>x.requirementsCostEstimate),
     nameofProperty(this, (x)=> x.initialFundingIncrementStr),
     nameofProperty(this, (x)=> x.fundingIncrements),
     nameofProperty(this, (x)=> x.fundingPlan),
@@ -135,9 +148,7 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
+    await this.initialize();
   }
 
   @Action({ rawError: true })
@@ -446,6 +457,30 @@ export class FinancialDetailsStore extends VuexModule {
    }
  }
 
+  /**
+   * Makes an api call and loads the requirements cost estimate. This function is wired into
+   * few callbacks including attachments record manager.
+   *
+   */
+  @Action({rawError: true})
+  async loadRequirementsCostEstimate():Promise<RequirementsCostEstimateDTO>{
+    // TODO: check if this needs to be uncommented. Commented because new record is not
+    //  getting created and always loading from the session.
+    // this.ensureInitialized();
+
+    try {
+      if(this.requirementsCostEstimate == null){
+        return initialRequirementsCostEstimate;
+      }
+      const requirementsCostEstimate = await api.requirementsCostEstimateTable
+        .retrieve(this.requirementsCostEstimate.sys_id);
+      this.setRequirementsCostEstimate(requirementsCostEstimate);
+      return requirementsCostEstimate;
+    } catch (error) {
+      throw new Error(`error occurred retrieving requirements cost estimate ${error}`);
+    }
+  }
+
  @Action({rawError: true})
   async saveFundingRequestType(value: string): Promise<void> {
 
@@ -498,6 +533,30 @@ export class FinancialDetailsStore extends VuexModule {
 
     } catch (error) {
       throw new Error( `error occurred saving funding request form ${error}`);
+    }
+  }
+
+  /**
+   * Makes an API call to either create (initial) or update the requirements cost estimate
+   *
+   * TODO: This function is expected to be called when @SupportingDocumentation.vue gets
+   *        "mounted". But that may be just for testing of the document upload. If there is any
+   *        step (component) that is expected to be mounted before @SupportingDocumentation.vue,
+   *        this function call should be moved. Delete this comment after final impl.
+   */
+  @Action({rawError: true})
+  public async saveRequirementsCostEstimate(
+    data: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateDTO>{
+    try {
+      const saveRequirementsCostEstimate = (data.sys_id && data.sys_id.length > 0) ?
+        api.requirementsCostEstimateTable.update(data.sys_id, data) :
+        api.requirementsCostEstimateTable.create(data);
+      // TODO: after initial impl, check if the below line can be avoided by adding "await" above
+      const savedRequirementsCostEstimate = await saveRequirementsCostEstimate;
+      this.setRequirementsCostEstimate(savedRequirementsCostEstimate);
+      return savedRequirementsCostEstimate;
+    } catch (error) {
+      throw new Error( `error occurred saving requirements cost estimate ${error}`);
     }
   }
 
@@ -582,7 +641,15 @@ export class FinancialDetailsStore extends VuexModule {
     );
   }
 
-
+  @Mutation
+  public setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): void {
+    this.requirementsCostEstimate = value;
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_FINANCIAL_DETAILS__KEY
+    );
+  }
 
   @Mutation
   private setInitialized(value: boolean) {
