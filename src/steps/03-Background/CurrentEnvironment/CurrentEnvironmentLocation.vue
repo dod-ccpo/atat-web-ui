@@ -14,7 +14,7 @@
             id="EnvLocationButtons"
             :card="true"
             :items="envLocationOption"
-            :rules="[$validators.required('Please select an option')]"
+            :rules="[$validators.required('Please select a type of environment')]"
             :value.sync="currentEnvironmentLocation"
             class="copy-max-width mb-10 max-width-740"
             name="radioButton-card"
@@ -48,21 +48,16 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       id: "CloudComputingEnvironment",
       label: "Cloud computing environment",
       value: "Cloud computing environment",
-      description: `Instances are hosted by a third-party provider in an
-       off-site, cloud-based server.`
     },
     {
       id: "OnPremises",
       label: "On-premises",
       value: "On-premises",
-      description: "Instances are deployed in-house and within an enterprise IT infrastructure.",
     },
     {
       id: "HybridCloudEnvironment",
       label: "Hybrid cloud environment",
       value: "Hybrid cloud environment",
-      description: `Computing environment that combines an on-premises datacenter (private cloud)
-       with a public cloud, allowing data and applications to be shared between them.`,
     },
   ];
   private savedData: CurrentEnvironmentDTO = {
