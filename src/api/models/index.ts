@@ -108,7 +108,6 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   instance_location: EnvironmentInstanceLocation;
   deployed_regions?: string[];
   classification_level: string; // classification level sys_id
-
   current_usage_description: EnvironmentInstanceUsage;
   is_traffic_spike_event_based: YesNo;
   is_traffic_spike_period_based: YesNo;

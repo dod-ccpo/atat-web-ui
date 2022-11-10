@@ -215,7 +215,8 @@ export default class EnvironmentDetails extends Vue {
         licensing: "",
         number_Of_VCPUs: null, // number | null - no decimals
         processor_speed: null, // number | null - no decimals 
-        memory: null, // number | null - one decimal place
+        memory_amount: null, // number | null - one decimal place
+        memory_unit: "GB", // only used in text field as append text
         storage_type: "", // dropdown - 
         storage_amount: null, // number | null - no decimals
         storage_unit: "GB", // dropdown -- GB | TB | PB - default GB
