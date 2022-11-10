@@ -81,18 +81,6 @@ export interface CurrentContractDTO extends BaseTableDTO {
   contract_order_expiration_date?: string;
 }
 
-// export interface CurrentEnvironmentDTO extends BaseTableDTO {
-//   current_environment_exists?: string;
-//   env_location?: string; 
-//   additional_information?: string; // this will be removed - currently storing env_location
-//   environment_instances?: string;
-//   system_documentation?: string;
-//   migration_documentation?: string;
-// }
-
-
-// UPDATED CURRENT ENVIRONMENT DTO - not yet implemented on backend
-
 export interface CurrentEnvironmentDTO extends BaseTableDTO {
   current_environment_exists: YesNo;
   has_system_documentation: YesNo;

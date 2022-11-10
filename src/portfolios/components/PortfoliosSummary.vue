@@ -139,6 +139,7 @@ import { createDateStr, toCurrencyString } from "@/helpers";
 import { differenceInDays, formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
 import _ from "lodash";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {

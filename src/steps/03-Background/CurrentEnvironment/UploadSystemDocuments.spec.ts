@@ -2,15 +2,15 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
-import UploadChartsDiagrams
-  from "@/steps/03-Background/CurrentEnvironment/UploadChartsDiagrams.vue";
+import UploadSystemDocuments
+  from "@/steps/03-Background/CurrentEnvironment/UploadSystemDocuments.vue";
 import validators from "../../../plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 
 Vue.use(Vuetify);
 
-describe("Testing UploadChartsDiagrams Component", () => {
+describe("Testing UploadSystemDocuments Component", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
   let vuetify: Vuetify;
@@ -18,13 +18,13 @@ describe("Testing UploadChartsDiagrams Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(UploadChartsDiagrams, {
+    wrapper = mount(UploadSystemDocuments, {
       vuetify,
       localVue
     });
   });
 
-  describe("testing UploadChartsDiagrams render", () => {
+  describe("testing UploadSystemDocuments render", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });

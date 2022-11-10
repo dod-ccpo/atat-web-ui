@@ -8,6 +8,7 @@ import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 
 
+
 Vue.use(Vuetify);
 
 describe("Testing Classification Level Page", () => {
@@ -85,26 +86,6 @@ describe("Testing Classification Level Page", () => {
     it("tests that component renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
-
-  });
-
-  describe("test functions....", () => {
-    it("loadOnEnter() - is to set data.firstTimeHere to true ", async () => {
-      wrapper.vm.loadOnEnter();
-      expect(wrapper.vm.$data).toStrictEqual({
-        "checkboxItems": [],
-        "classifications": [],
-        "savedData": [],
-        "selectedOptions": []
-      });
-    });
-
-    it('Test that saving selected works', async () => {
-      wrapper.vm.$data.classifications = allClassificationLevels
-      wrapper.vm.$data.selectedOptions = ["class1", "class5", "class4"]
-      const saved = wrapper.vm.saveSelected()
-      expect(saved).toStrictEqual(selectedClassifications);
-    })
 
   });
 

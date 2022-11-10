@@ -42,6 +42,7 @@ import FinancialDetails from "../financialDetails";
 import Periods from "../periods";
 import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -239,7 +240,7 @@ const initialCurrentEnvironment = () => {
     migration_documentation: [],
     env_location: "",
     env_classifications_cloud: [],
-    env_classifications_onprem: [],
+    env_classifications_on_prem: [],
     env_instances: [],
     current_environment_replicated_optimized: "", // radio - YES_REPLICATE | YES_OPTIMIZE | NO
     statement_replicated_optimized: "",
@@ -500,18 +501,10 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  public get initialCurrentEnvironment(): CurrentEnvironmentDTO {
-    return initialCurrentEnvironment();
+  @Action({rawError: true})
+  public async getCurrentEnvironment(): Promise<CurrentEnvironmentDTO | null>{
+    return this.currentEnvironment;
   }
-  // public async getCurrentEnvironmentData(): Promise<CurrentEnvironmentDTO | null> {
-  //   return this.currentEnvironment;
-  // }
-
-  // @Mutation
-  // public setCurrentEnv(value: CurrentEnvironmentDTO): void {
-  //   this.currentEnv = Object.assign(this.currentEnv, value);
-  // }
-
 
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
@@ -586,7 +579,11 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
-          this.setCurrentEnvironment(initialCurrentEnvironment());
+          // sys_id from current environment will need to be saved to acquisition package
+          const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
+          this.setCurrentEnvironment(currentEnvironmentDTO);
+          acquisitionPackage.current_environment =
+            currentEnvironmentDTO.sys_id as unknown as string;
           this.setAcquisitionPackage(acquisitionPackage);
           await TaskOrder.initialize(acquisitionPackage.sys_id || "");
           this.setInitialized(true);

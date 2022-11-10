@@ -17,11 +17,11 @@
             :card="true"
             :items="uploadOptions"
             :rules="[$validators.required('Please select an option')]"
-            :value.sync="selectedUpload"
+            :value.sync="hasSystemDocumentation"
             class="copy-max-width mb-10 max-width-740"
             width="180"
           />
-          <div v-show="selectedUpload === 'YES'">
+          <div v-show="hasSystemDocumentation === 'YES'">
             <hr />
              <ATATFileUpload
                 id="FundingPlan"
@@ -44,7 +44,7 @@
 <script lang="ts">
 
 import { Component, Mixins, Watch } from "vue-property-decorator";
-import { invalidFile, RadioButton, uploadingFile } from "../../../../types/Global";
+import { invalidFile, RadioButton, uploadingFile, YesNo } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
@@ -52,6 +52,8 @@ import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
+import CurrentEnvironment,
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -59,16 +61,18 @@ import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingReques
     ATATRadioGroup,
   },
 })
-export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
+export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
+  public currEnvDTO = defaultCurrentEnvironment;
+  
   private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
   private uploadOptions: RadioButton[] = [
     {
-      id: "Yes",
+      id: "Yes_SystemDocs",
       label: "Yes.",
       value: "YES",
     },
     {
-      id: "No",
+      id: "No_SystemDocs",
       label: "No.",
       value: "NO",
     },
@@ -78,16 +82,17 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   private validFileFormats = ["csv","xlsx","pdf","jpg","png","docx"];
   private uploadedFiles: uploadingFile[] = [];
 
-  public selectedUpload
-    = AcquisitionPackage.currentEnv?.system_documentation || ""
-  private get currentData(): CurrentEnvironmentDTO {
+  public hasSystemDocumentation: YesNo = "";
+  private get currentData(): Record<string, string> {
     return {
-      system_documentation: this.selectedUpload || "",
+      // eslint-disable-next-line camelcase
+      has_system_documentation: this.hasSystemDocumentation,
     };
   }
 
-  private savedData: CurrentEnvironmentDTO = {
-    system_documentation: "",
+  private savedData: Record<string, string> = {
+    // eslint-disable-next-line camelcase
+    has_system_documentation: "",
   }
 
   private hasChanged(): boolean {
@@ -95,14 +100,14 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage.currentEnv
-    // .loadData<CurrentEnvironmentDTO>(
-    //   { storeProperty: StoreProperties.CurrentEnvironment }
-    // );
+    // TODO - get from ACQPKG store or CURRENV store??
+    const storeData = await AcquisitionPackage.getCurrentEnvironment();
     if (storeData) {
+      this.currEnvDTO = storeData;
+      this.hasSystemDocumentation = storeData.has_system_documentation;
       this.savedData = {
         // eslint-disable-next-line camelcase
-        system_documentation: storeData.system_documentation,
+        has_system_documentation: storeData.has_system_documentation,
       }
     }
   }
@@ -110,7 +115,12 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        AcquisitionPackage.setCurrentEnv(this.currentData)
+        Object.assign(this.currEnvDTO, this.currentData);
+        debugger;
+        // TODO - which store to save to?
+        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
+        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+
         // will be used when SNOW store has been wired
         // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
         //   data: this.currentData,
@@ -127,11 +137,12 @@ export default class UploadChartsDiagrams extends Mixins(SaveOnLeave) {
 
   @Watch('selectedUpload')
   private selectedUploadChange(): void{
-    if(this.selectedUpload === "NO"){
+    if(this.hasSystemDocumentation === "NO"){
       this.uploadedFiles = []
       this.removeAll = true
     }
   }
+
   public async removeFile(file: uploadingFile): Promise<void> {
     // todo future ticket - delete attachment
   }

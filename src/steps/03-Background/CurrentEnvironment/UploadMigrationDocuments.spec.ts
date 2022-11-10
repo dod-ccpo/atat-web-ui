@@ -4,13 +4,13 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import validators from "../../../plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import UploadProcessDocuments
-  from "@/steps/03-Background/CurrentEnvironment/UploadProcessDocuments.vue";
+import UploadMigrationDocuments
+  from "@/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.vue";
 
 
 Vue.use(Vuetify);
 
-describe("Testing UploadProcessDocuments Component", () => {
+describe("Testing UploadMigrationDocuments Component", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
   let vuetify: Vuetify;
@@ -18,13 +18,13 @@ describe("Testing UploadProcessDocuments Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(UploadProcessDocuments, {
+    wrapper = mount(UploadMigrationDocuments, {
       vuetify,
       localVue
     });
   });
 
-  describe("testing UploadProcessDocuments render", () => {
+  describe("testing UploadMigrationDocuments render", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });

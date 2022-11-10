@@ -118,7 +118,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 
 export const ArchitecturalDesignDetailsRouteResolver = (current: string): string => {
   const hasCurrentEnv
-      = AcquisitionPackage.currentEnvironment?.current_environment_exists === "true";
+      = AcquisitionPackage.currentEnvironment?.current_environment_exists === "YES";
   if (!hasCurrentEnv) {
     return routeNames.CurrentEnvironment;
   }else {
@@ -128,9 +128,9 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
 
 export const CurrentContractEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
-    = AcquisitionPackage.currentEnvironment?.current_environment_exists === "true";
+    = AcquisitionPackage.currentEnvironment?.current_environment_exists === "YES";
   if (hasCurrentEnv) {
-    return routeNames.UploadChartsDiagrams;
+    return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment
     ? routeNames.BackgroundSummary
