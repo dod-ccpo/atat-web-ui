@@ -70,7 +70,7 @@
               />
               </div>
             </div>
-            <div v-if="environment.toLowerCase() === 'on-premises'">
+            <div v-if="environment.toLowerCase() === 'on_prem'">
               <div v-if="unclassifiedSelected">
                 <p id="HostingP" class="mb-3 font-weight-500">
                   For your Unclassified instances, what type of information are you hosting?
