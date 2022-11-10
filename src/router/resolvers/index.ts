@@ -130,7 +130,7 @@ export const CurrentContractEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
     = AcquisitionPackage.currentEnvironment?.current_environment_exists === "YES";
   if (hasCurrentEnv) {
-    return routeNames.UploadChartsDiagrams;
+    return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment
     ? routeNames.BackgroundSummary

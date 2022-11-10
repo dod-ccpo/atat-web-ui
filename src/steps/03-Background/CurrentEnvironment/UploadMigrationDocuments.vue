@@ -17,11 +17,11 @@
             :card="true"
             :items="uploadOptions"
             :rules="[$validators.required('Please select an option')]"
-            :value.sync="selectedUpload"
+            :value.sync="hasMigrationDocumentation"
             class="copy-max-width mb-10 max-width-740"
             width="180"
           />
-          <div v-show="selectedUpload === 'YES'">
+          <div v-show="hasMigrationDocumentation === 'YES'">
             <hr />
             <ATATFileUpload
               id="FundingPlan"
@@ -44,7 +44,7 @@
 <script lang="ts">
 
 import { Component, Mixins, Watch } from "vue-property-decorator";
-import { invalidFile, RadioButton, uploadingFile } from "../../../../types/Global";
+import { invalidFile, RadioButton, uploadingFile, YesNo } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
@@ -52,6 +52,8 @@ import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
+import CurrentEnvironment, 
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -59,7 +61,9 @@ import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingReques
     ATATRadioGroup,
   },
 })
-export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
+export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
+  public currEnvDTO = defaultCurrentEnvironment;
+
   private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
   private uploadOptions: RadioButton[] = [
     {
@@ -78,23 +82,24 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
   private validFileFormats = ["csv","xlsx","pdf","jpg","png","docx"];
   private uploadedFiles: uploadingFile[] = [];
 
-  public selectedUpload
-    = AcquisitionPackage.currentEnv?.assessmentAnalysisDocumentation || ""
-  private get currentData(): CurrentEnvironmentDTO {
+  public hasMigrationDocumentation: YesNo = "";
+  private get currentData(): Record<string, string> {
     return {
-      assessmentAnalysisDocumentation: this.selectedUpload || "",
+      // eslint-disable-next-line camelcase
+      has_migration_documentation: this.hasMigrationDocumentation || "",
     };
   }
 
-  private savedData: CurrentEnvironmentDTO = {
-    assessmentAnalysisDocumentation: "",
+  private savedData: Record<string, string> = {
+    // eslint-disable-next-line camelcase
+    has_migration_documentation: "",
   }
 
   public removeAll = false
 
-  @Watch('selectedUpload')
+  @Watch('hasMigrationDocumentation')
   private onValueChange(): void{
-    if(this.selectedUpload === "NO"){
+    if(this.hasMigrationDocumentation === "NO"){
       this.uploadedFiles = []
       this.removeAll = true
     }
@@ -107,11 +112,17 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
+
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage.currentEnv
+    // TODO - get from ACQPKG store or CURRENV store??
+    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    debugger;
     if (storeData) {
+      this.currEnvDTO = storeData;
+      this.hasMigrationDocumentation = storeData.has_migration_documentation;
       this.savedData = {
-        assessmentAnalysisDocumentation: storeData.assessmentAnalysisDocumentation,
+        // eslint-disable-next-line camelcase
+        has_migration_documentation: storeData.has_migration_documentation,
       }
     }
   }
@@ -119,7 +130,17 @@ export default class UploadProcessDocuments extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        AcquisitionPackage.setCurrentEnv(this.currentData)
+        Object.assign(this.currEnvDTO, this.currentData);
+        debugger;
+        // TODO - which store to save to?
+        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
+        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+
+        // will be used when SNOW store has been wired
+        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
+        //   data: this.currentData,
+        //   storeProperty: StoreProperties.CurrentEnvironment
+        // });
       }
     } catch (error) {
       console.log(error);

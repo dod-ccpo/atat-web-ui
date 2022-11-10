@@ -504,6 +504,11 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
+  @Action({rawError: true})
+  public async getCurrentEnvironment(): Promise<CurrentEnvironmentDTO | null>{
+    return this.currentEnvironment;
+  }
+
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
     console.log("in store: actionArgs", actionArgs);

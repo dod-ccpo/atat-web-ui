@@ -33,6 +33,8 @@ import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage"
 import { CurrentEnvironmentDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import CurrentEnvironment,
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -40,49 +42,52 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
   },
 })
 export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
+  public currEnvDTO = defaultCurrentEnvironment;
+
   /* eslint-disable camelcase */
-  public currentEnvironmentLocation
-    = AcquisitionPackage.currentEnvironment?.additional_information || ""
+  public currentEnvironmentLocation: "" | "CLOUD" | "ON_PREM" | "HYBRID" = "";
   private envLocationOption: RadioButton[] = [
     {
       id: "CloudComputingEnvironment",
       label: "Cloud computing environment",
-      value: "Cloud computing environment",
+      value: "CLOUD",
       description: `Instances are hosted by a third-party provider in an
        off-site, cloud-based server.`
     },
     {
       id: "OnPremises",
       label: "On-premises",
-      value: "On-premises",
+      value: "ON_PREM",
       description: "Instances are deployed in-house and within an enterprise IT infrastructure.",
     },
     {
       id: "HybridCloudEnvironment",
       label: "Hybrid cloud environment",
-      value: "Hybrid cloud environment",
+      value: "HYBRID",
       description: `Computing environment that combines an on-premises datacenter (private cloud)
        with a public cloud, allowing data and applications to be shared between them.`,
     },
   ];
-  private savedData: CurrentEnvironmentDTO = {
-    additional_information: "",
+
+  private savedData: Record<string, string> = {
+    env_location: "",
   }
 
-  private get currentData(): CurrentEnvironmentDTO {
+  private get currentData(): Record<string, string> {
     return {
-      additional_information: this.currentEnvironmentLocation || "",
+      env_location: this.currentEnvironmentLocation || "",
     };
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<CurrentEnvironmentDTO>(
-        {storeProperty: StoreProperties.CurrentEnvironment}
-      );
+    // TODO - get from ACQPKG store or CURRENV store??
+    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    debugger;
     if (storeData) {
+      this.currEnvDTO = storeData;
+      this.currentEnvironmentLocation = storeData.env_location;
       this.savedData = {
-        additional_information: storeData.additional_information,
+        env_location: storeData.env_location,
       }
     }
   }
@@ -94,10 +99,17 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-          data: this.currentData,
-          storeProperty: StoreProperties.CurrentEnvironment
-        });
+        Object.assign(this.currEnvDTO, this.currentData);
+        debugger;
+        // TODO - which store to save to?
+        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
+        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+
+        // TODO - wire to proper location for saving after DB is updated
+        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
+        //   data: this.currentData,
+        //   storeProperty: StoreProperties.CurrentEnvironment
+        // });
       }
     } catch (error) {
       console.log(error);

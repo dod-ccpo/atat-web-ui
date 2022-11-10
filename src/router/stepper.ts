@@ -27,7 +27,7 @@ import Background from "../steps/03-Background/Index.vue";
 import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
 import CurrentContractDetails
   from "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
-import CurrentEnvironment 
+import HasCurrentEnvironment 
   from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
 import CurrentEnvironmentLocation
   from "@/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.vue";
@@ -36,10 +36,10 @@ import ClassificationLevels
 import EnvironmentDetailsPage
   from "@/steps/03-Background/CurrentEnvironment/EnvironmentDetailsPage.vue";
 import BackgroundSummary from "../steps/03-Background/Summary.vue"
-import UploadChartsDiagrams
-  from "@/steps/03-Background/CurrentEnvironment/UploadChartsDiagrams.vue";
-import UploadProcessDocuments
-  from "@/steps/03-Background/CurrentEnvironment/UploadProcessDocuments.vue";
+import UploadSystemDocuments
+  from "@/steps/03-Background/CurrentEnvironment/UploadSystemDocuments.vue";
+import UploadMigrationDocuments
+  from "@/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.vue";
 import ReplicateAndOptimize
   from "@/steps/03-Background/CurrentEnvironment/ReplicateAndOptimize.vue";
 import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/ReplicateDetails.vue";
@@ -228,8 +228,8 @@ export const routeNames = {
   CostSummary:"Cost_Summary",
   EstimatesDeveloped:"Estimates_Developed",
   SupportingDocumentation:"Supporting_Documentation",
-  UploadChartsDiagrams:"Upload_Charts_Diagrams",
-  UploadProcessDocuments:"Upload_Process_Documents",
+  UploadSystemDocuments:"Upload_Charts_Diagrams",
+  UploadMigrationDocuments:"Upload_Process_Documents",
   ReplicateAndOptimize:"Replicate_And_Optimize",
   ReplicateDetails:"Replicate_Details",
   ArchitecturalDesign:"Architectural_Design",
@@ -449,7 +449,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Current Environment",
         path: "current-environment",
         name: routeNames.CurrentEnvironment,
-        component: CurrentEnvironment,
+        component: HasCurrentEnvironment,
         completePercentageWeight: 5,
         completed: false,
       },
@@ -457,8 +457,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Upload Charts",
         path: "upload-charts",
         excludeFromMenu: true,
-        name: routeNames.UploadChartsDiagrams,
-        component: UploadChartsDiagrams,
+        name: routeNames.UploadSystemDocuments,
+        component: UploadSystemDocuments,
         completePercentageWeight: 5,
         completed: false,
         routeResolver: CurrentContractEnvRouteResolver,
@@ -467,8 +467,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Upload Process",
         path: "upload-process",
         excludeFromMenu: true,
-        name: routeNames.UploadProcessDocuments,
-        component: UploadProcessDocuments,
+        name: routeNames.UploadMigrationDocuments,
+        component: UploadMigrationDocuments,
         completePercentageWeight: 5,
         completed: false,
       },
