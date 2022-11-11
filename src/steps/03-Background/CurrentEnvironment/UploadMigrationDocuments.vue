@@ -228,7 +228,7 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
         }
         return upload;
       });
-    console.log("Uploaded files length: " + uploadedFiles.length);
+    // console.log("Uploaded files length: " + uploadedFiles.length);
     this.uploadedFiles = [...uploadedFiles];
   }
 
