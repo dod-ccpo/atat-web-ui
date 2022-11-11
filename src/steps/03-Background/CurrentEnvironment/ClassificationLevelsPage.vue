@@ -1,7 +1,7 @@
 <template>
   <div class="foobar">
     <v-container class="container-max-width" fluid>
-      <v-row v-if="currentEnvironmentLocation !=='HYBRID'">
+      <v-row v-if="envLocation !=='HYBRID'">
         <v-col class="col-12">
           <h1 class="page-header mb-3">
             Tell us about your current data classification and impact levels
@@ -30,7 +30,7 @@
               class="copy-max-width mb-10"
               name="classificationTypesCheckboxes"
             />
-            <div v-if="currentEnvironmentLocation === 'CLOUD'">
+            <div v-if="envLocation === 'CLOUD'">
               <div v-if="impactLevels.length > 1">
                 <p id="DeployedP" class="mb-3 font-weight-500">
                   For your Unclassified instance(s), what impact levels are you currently deployed
@@ -43,37 +43,16 @@
                 id="ImpactLevelCheckboxes"
                   :card="false"
                   :hasOtherValue="true"
-                :items="impactLevels"
-                  :rules="[
-                    $validators.required('Please select at least one impact level.')
-                ]"
-                :value.sync="selectedImpactLevels"
+                  :items="impactLevels"
+                  :rules="[$validators.required('Please select at least one impact level.')]"
+                  :value.sync="selectedImpactLevels"
                   class="copy-max-width mb-10"
-                name="impactLevelCheckboxes"
-              />
+                  name="impactLevelCheckboxes"
+                />
+              </div>
             </div>
-            
-            <!-- START -- PRESERVE CODE FOR POST-MVP -->
-            <!-- <div v-if="IL2Selected">
-              <p id="CloudTypeP" class="mb-4 font-weight-500">
-                  For your IL2 instance(s), what type of cloud are currently deployed in?
-                </p>
-                <ATATCheckboxGroup
-                id="CloudTypeCheckboxes"
-                  :card="false"
-                  :hasOtherValue="true"
-                :items="cloudTypes"
-                  :rules="[
-                    $validators.required('Please select at least one type of cloud.')
-                ]"
-                :value.sync="selectedCloudTypes"
-                class="copy-max-width"
-                name="cloudTypeCheckboxes"
-              />
-            </div> -->
-            <!-- END -- PRESERVE CODE FOR POST-MVP -->
-            
-            <div v-if="currentEnvironmentLocation === 'ON_PREM'">
+
+            <div v-if="envLocation === 'ON_PREM'">
               <div v-if="unclassifiedSelected">
                 <p id="HostingP" class="mb-3 font-weight-500">
                   For your Unclassified instances, what type of information are you hosting?
@@ -96,6 +75,27 @@
                 />
               </div>
             </div>
+
+            <!-- START -- PRESERVE CODE FOR POST-MVP -->
+            <!-- <div v-if="IL2Selected">
+              <p id="CloudTypeP" class="mb-4 font-weight-500">
+                  For your IL2 instance(s), what type of cloud are currently deployed in?
+                </p>
+                <ATATCheckboxGroup
+                id="CloudTypeCheckboxes"
+                  :card="false"
+                  :hasOtherValue="true"
+                :items="cloudTypes"
+                  :rules="[
+                    $validators.required('Please select at least one type of cloud.')
+                ]"
+                :value.sync="selectedCloudTypes"
+                class="copy-max-width"
+                name="cloudTypeCheckboxes"
+              />
+            </div> -->
+            <!-- END -- PRESERVE CODE FOR POST-MVP -->
+              
           </div>
         </v-col>
       </v-row>
