@@ -28,7 +28,7 @@
             instance(s), what impact levels are you currently deployed in?
           </span>
           <span v-if="onPrem">
-            instance(s), what type of information are you hosting?
+            instances, what type of information are you hosting?
           </span>
         </p>
         <p id="SelectMessage2" class="mb-4">
