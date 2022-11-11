@@ -1,5 +1,8 @@
 <template>
   <div>
+    <h2 class="mb-5" v-if="isHybrid">
+      {{hybridText}}
+    </h2>
     <p id="ClassificationLevelP" class="mb-2 font-weight-500">
       What classification levels are your instances currently deployed in?
     </p>
@@ -18,26 +21,45 @@
       class="copy-max-width mb-10"
       name="classificationTypesCheckboxes"
     />
-    <div v-if="environment.toLowerCase() ==='cloud'">
       <div v-if="impactLevels.length > 1">
         <p id="DeployedP" class="mb-3 font-weight-500">
-          For your Unclassified instance(s), what impact levels are you currently deployed
-          in?
+          For your Unclassified
+          <span v-if="isCloud">
+            instance(s), what impact levels are you currently deployed in?
+          </span>
+          <span v-if="onPrem">
+            instance(s), what type of information are you hosting?
+          </span>
         </p>
         <p id="SelectMessage2" class="mb-4">
           Select all that apply to your current environment.
         </p>
         <ATATCheckboxGroup
+          v-if="isCloud"
           id="ImpactLevelCheckboxes"
           :card="false"
           :hasOtherValue="true"
           :items="impactLevels"
           :rules="[
-                    $validators.required('Please select at least one impact level.')
+            $validators.required('Please select at least one impact level.')
            ]"
           :value.sync="_selectedImpactLevels"
           class="copy-max-width mb-10"
           name="impactLevelCheckboxes"
+        />
+        <ATATCheckboxGroup
+          v-if="onPrem"
+          id="InstanceCheckbox"
+          :card="false"
+          :hasOtherValue="true"
+          :items="instanceClass"
+          :rules="[
+            $validators.
+            required('Please select at least one type of information that you are hosting.')
+           ]"
+          :value.sync="_selectedInstances"
+          class="copy-max-width mb-10"
+          name="instanceCheckbox"
         />
       </div>
       <div v-if="IL2Selected">
@@ -58,30 +80,6 @@
         />
       </div>
     </div>
-    <div v-if="environment.toLowerCase() === 'on_prem'">
-      <div v-if="unclassifiedSelected">
-        <p id="HostingP" class="mb-3 font-weight-500">
-          For your Unclassified instances, what type of information are you hosting?
-        </p>
-        <p id="SelectMessage" class="mb-4">
-          Select all that apply to your current environment.
-        </p>
-        <ATATCheckboxGroup
-          id="InstanceCheckbox"
-          :card="false"
-          :hasOtherValue="true"
-          :items="instanceClass"
-          :rules="[
-                    $validators.
-                    required('Please select at least one type of information that you are hosting.')
-           ]"
-          :value.sync="_selectedInstances"
-          class="copy-max-width mb-10"
-          name="instanceCheckbox"
-        />
-      </div>
-    </div>
-  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -98,11 +96,14 @@ import { buildClassificationCheckboxList } from "@/helpers";
   }
 })
 export default class ClassificationLevelForm extends Vue {
-  @Prop({required: true}) public environment?:string;
-  @PropSync("selectedImpactLevels") private _selectedImpactLevels!: string[];
-  @PropSync("selectedClassifications") private _selectedClassifications!: string[];
-  @PropSync("selectedCloudTypes") private _selectedCloudTypes!: string[];
-  @PropSync("selectedInstances") private _selectedInstances!: string[];
+  @Prop() public isCloud?:boolean;
+  @Prop() public onPrem?:boolean;
+  @Prop({required: true}) public isHybrid?:boolean;
+  @Prop({required: true}) public hybridText?:string;
+  @PropSync("selectedImpactLevels") private _selectedImpactLevels?: string[];
+  @PropSync("selectedClassifications") private _selectedClassifications?: string[];
+  @PropSync("selectedCloudTypes") private _selectedCloudTypes?: string[];
+  @PropSync("selectedInstances") private _selectedInstances?: string[];
 
   public classifications: ClassificationLevelDTO[] = []
   private impactLevels: Checkbox[] = [];
@@ -161,14 +162,12 @@ export default class ClassificationLevelForm extends Vue {
 
   @Watch("_selectedClassifications")
   public selectedTypeChange(newVal: string[]): void {
-    debugger
     let filteredList :ClassificationLevelDTO[] = []
     if(newVal.includes("U")) {
       this.unclassifiedSelected = true
       let filtered = this.classifications
         .filter(classification => classification.classification === "U" )
       filteredList.push(...filtered)
-      console.log(this.impactLevels)
       if (this.impactLevels.length === 0) {
         this.impactLevels = this.createCheckboxItems(filteredList)
       }
@@ -180,20 +179,19 @@ export default class ClassificationLevelForm extends Vue {
       this._selectedImpactLevels = []
     }
   }
-
-  @Watch("_selectedImpactLevels")
-  public selectedOptionChange(newVal: string[]): void {
-    debugger
-    let filtered = this.classifications
-      .filter(classification => classification.impact_level === "IL2")
-    if(filtered[0].sys_id){
-      this.IL2Selected = newVal.includes(filtered[0].sys_id);
-    }
-    if(!this.IL2Selected){
-      this._selectedCloudTypes = [];
-    }
-
-  }
+  // will be added in future sprint
+  // @Watch("_selectedImpactLevels")
+  // public selectedOptionChange(newVal: string[]): void {
+  //   let filtered = this.classifications
+  //     .filter(classification => classification.impact_level === "IL2")
+  //   if(filtered[0].sys_id){
+  //     this.IL2Selected = newVal.includes(filtered[0].sys_id);
+  //   }
+  //   if(!this.IL2Selected){
+  //     this._selectedCloudTypes = [];
+  //   }
+  //
+  // }
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     return buildClassificationCheckboxList(data, "", true, true);

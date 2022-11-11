@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container class="container-max-width" fluid>
-      <v-row v-if="environment.toLowerCase() !=='hybrid'">
+      <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
             Tell us about your current data classification and impact levels
@@ -13,10 +13,23 @@
               levels, we will gather details about each instance next.
             </p>
             <ClassificationLevelForm
-              index="1"
-             :environment="environment"
-             :selectedImpactLevel.sync="selectedImpactLevels"
+             v-if="isCloud|| isHybrid"
+             hybridText="1. Your cloud instances"
+             :isHybrid="isHybrid"
+             :isCloud="isCloud"
+             :selectedImpactLevels.sync="selectedImpactLevels"
              :selectedClassifications.sync="selectedClassifications"
+             :selectedCloudTypes.sync="selectedCloudTypes"
+             :selectedInstances.sync="selectedInstances"
+            />
+            <hr v-if="isHybrid" />
+            <ClassificationLevelForm
+             v-if="onPrem|| isHybrid"
+             hybridText="2. Your on-premise instances"
+             :isHybrid="isHybrid"
+             :onPrem="onPrem"
+             :selectedImpactLevels.sync="selectedImpactLevels"
+             :selectedClassifications.sync="selectedOnPremClassifications"
              :selectedCloudTypes.sync="selectedCloudTypes"
              :selectedInstances.sync="selectedInstances"
             />
@@ -30,7 +43,6 @@
 
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import { Checkbox } from "../../../../types/Global";
 import { ClassificationLevelDTO } from "@/api/models";
 import classificationRequirements from "@/store/classificationRequirements";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
@@ -48,8 +60,12 @@ import ClassificationLevelForm
 })
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   private environment = "";
+  private isHybrid = false;
+  private isCloud = false;
+  private onPrem = false;
   public selectedImpactLevels: string[] = [];
   public selectedClassifications: string[] = [];
+  public selectedOnPremClassifications: string[] = [];
   public selectedCloudTypes: string[] = [];
   public selectedInstances: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
@@ -104,6 +120,14 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       })
     }
     this.environment = AcquisitionPackage.currentEnvironment?.additional_information || ""
+    this.onPrem = this.environment === 'ON_PREM'
+    this.isCloud = this.environment === 'CLOUD'
+    this.isHybrid = this.environment === 'HYBRID'
+    if(this.isHybrid) {
+      this.isCloud = true;
+      this.onPrem = true
+    }
+    console.log(this.isHybrid)
   }
 
   public async mounted(): Promise<void> {
