@@ -190,7 +190,6 @@ export default class ClassificationLevelForm extends Vue {
   //   if(!this.IL2Selected){
   //     this._selectedCloudTypes = [];
   //   }
-  //
   // }
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {

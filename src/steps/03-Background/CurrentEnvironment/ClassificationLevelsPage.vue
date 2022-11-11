@@ -108,17 +108,6 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
 
 
   public async loadOnEnter(): Promise<void> {
-    this.classifications = await classificationRequirements.getAllClassificationLevels();
-    await classificationRequirements.loadEnvironmentInstances()
-    const storeData = await classificationRequirements.getCurrentENVClassificationLevels()
-    if(storeData) {
-      this.savedData = storeData
-      storeData.forEach((val) => {
-        if (val.sys_id) {
-          this.selectedImpactLevels.push(val.sys_id)
-        }
-      })
-    }
     this.environment = AcquisitionPackage.currentEnvironment?.additional_information || ""
     this.onPrem = this.environment === 'ON_PREM'
     this.isCloud = this.environment === 'CLOUD'
