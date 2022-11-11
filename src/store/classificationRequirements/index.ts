@@ -158,6 +158,7 @@ export class ClassificationRequirementsStore extends VuexModule {
 
   @Action({ rawError: true })
   public async loadEnvironmentInstances(): Promise<void> {
+    // EJY - IS THIS NEEDED? ONLY USED FOR CURRENT ENVIRONMENT WHICH WILL BE HANDLED DIFFERENTLY?
     try {
       const environmentInstance = await api.environmentInstanceTable.all();
       await this.setEnvironmentInstance(environmentInstance);

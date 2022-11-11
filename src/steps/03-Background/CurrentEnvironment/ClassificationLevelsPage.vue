@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="foobar">
     <v-container class="container-max-width" fluid>
-      <v-row v-if="environment.toLowerCase() !=='hybrid'">
+      <v-row v-if="currentEnvironmentLocation !=='HYBRID'">
         <v-col class="col-12">
           <h1 class="page-header mb-3">
             Tell us about your current data classification and impact levels
@@ -30,7 +30,7 @@
               class="copy-max-width mb-10"
               name="classificationTypesCheckboxes"
             />
-            <div v-if="environment.toLowerCase() ==='cloud'">
+            <div v-if="currentEnvironmentLocation === 'CLOUD'">
               <div v-if="impactLevels.length > 1">
                 <p id="DeployedP" class="mb-3 font-weight-500">
                   For your Unclassified instance(s), what impact levels are you currently deployed
@@ -70,7 +70,7 @@
               />
               </div>
             </div>
-            <div v-if="environment.toLowerCase() === 'on_prem'">
+            <div v-if="currentEnvironmentLocation === 'ON_PREM'">
               <div v-if="unclassifiedSelected">
                 <p id="HostingP" class="mb-3 font-weight-500">
                   For your Unclassified instances, what type of information are you hosting?
@@ -96,14 +96,6 @@
           </div>
         </v-col>
       </v-row>
-      <v-row v-if="environment.toLowerCase() === 'hybrid'">
-        <v-col class="col-12">
-          <h1 class="page-header mb-3">
-            Future Hybrid Page
-          </h1>
-          <p>shown for testing purposes</p>
-        </v-col>
-      </v-row>
     </v-container>
   </div>
 </template>
@@ -117,7 +109,8 @@ import classificationRequirements from "@/store/classificationRequirements";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-
+import CurrentEnvironment,
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -125,8 +118,10 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
+  public currEnvDTO = defaultCurrentEnvironment;
+  public currentEnvironmentLocation = "";
+
   private impactLevels: Checkbox[] = [];
-  private environment = "";
   public selectedImpactLevels: string[] = [];
   public selectedClassifications: string[] = [];
   public selectedCloudTypes: string[] = [];
@@ -215,12 +210,9 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     if(!this.IL2Selected){
       this.selectedCloudTypes = [];
     }
-
   }
 
-
-
-  private saveSelected() {
+  private getSelectedClassificationLevels() {
     const arr :ClassificationLevelDTO[] = [];
     this.selectedImpactLevels.forEach(item => {
       const value = this.classifications.filter(( data )=>{
@@ -232,7 +224,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   }
 
   public get currentData(): ClassificationLevelDTO[] {
-    return this.saveSelected()
+    return this.getSelectedClassificationLevels()
   }
 
 
@@ -257,17 +249,29 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.classifications = await classificationRequirements.getAllClassificationLevels();
+
+    // TODO - refactor to get from CurrentEnvironment
     await classificationRequirements.loadEnvironmentInstances()
-    const storeData = await classificationRequirements.getCurrentENVClassificationLevels()
-    if(storeData) {
-      this.savedData = storeData
-      storeData.forEach((val) => {
+    const classificationData = await classificationRequirements.getCurrentENVClassificationLevels()
+    if(classificationData) {
+      this.savedData = classificationData
+      classificationData.forEach((val) => {
         if (val.sys_id) {
           this.selectedImpactLevels.push(val.sys_id)
         }
       })
     }
-    this.environment = AcquisitionPackage.currentEnvironment?.additional_information || ""
+
+    // TODO - get from ACQPKG store or CURRENV store??
+    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    debugger;
+    if (storeData) {
+      this.currEnvDTO = storeData;
+      this.currentEnvironmentLocation = storeData.env_location;
+      // this.savedData = {
+      //   TODO - parse this out once saved properly after DB updated
+      // }
+    }
   }
 
   public async mounted(): Promise<void> {

@@ -143,8 +143,8 @@ export default class SupportingDocumentation extends Vue {
   }
 
   /**
-   * TODO: this function may not be needed, since it is loading all attachments for all
-   * the records of requirements cost estimate table.
+   * Loads the attachments across all the records of requirement cost
+   * estimate table.
    */
   async loadAttachments(): Promise<void>{
     const attachments = await Attachments.getAttachments(this.attachmentServiceName);

@@ -491,6 +491,7 @@ export type EvalPlanSourceSelection = "" | "NoTechProposal" | "TechProposal"
   | "SetLumpSum" | "EqualSetLumpSum";
 
 export type StorageUnit = "" | "GB" | "TB" | "PB";
+export type YesNo = "" | "YES" | "NO";
 
 export interface CurrentEnvUsageData {
   currentUsageDescription?: string;
