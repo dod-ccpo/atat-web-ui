@@ -157,82 +157,82 @@ export class ClassificationRequirementsStore extends VuexModule {
     }
   }
 
-  // EJY - IS THIS NEEDED? ONLY USED FOR CURRENT ENVIRONMENT WHICH WILL BE HANDLED DIFFERENTLY?
-  // @Action({ rawError: true })
-  // public async loadEnvironmentInstances(): Promise<void> {
-  //   try {
-  //     const environmentInstance = await api.environmentInstanceTable.all();
-  //     await this.setEnvironmentInstance(environmentInstance);
-  //   } catch (error) {
-  //     throw new Error(`error loading Environment Instances ${error}`);
-  //   }
-  // }
 
-  // EJY - IS THIS NEEDED? ONLY USED FOR CURRENT ENVIRONMENT WHICH WILL BE HANDLED DIFFERENTLY?
-  // @Action({ rawError: true })
-  // public async saveSelectedClassificationInstances(selected: ClassificationLevelDTO[] ):
-  //     Promise<void> {
-  //   const toBeSaved = selected.filter(cl => this.environmentInstances
-  //     .findIndex(ev => ev.classification_level === cl.sys_id) < 0).map(sel => {
-  //     const ei: EnvironmentInstanceDTO = {
-  //       /* eslint-disable camelcase */
-  //       storage_amount: "",
-  //       storage_type: "",
-  //       instance_name: "",
-  //       classification_level: sel.sys_id || "",
-  //       number_of_vcpus: "",
-  //       data_egress_monthly_amount: "",
-  //       performance_tier: "",
-  //       pricing_model_expiration: "",
-  //       csp_region: "",
-  //       memory_unit: "",
-  //       storage_unit: "",
-  //       pricing_model: "",
-  //       instance_location: "",
-  //       memory_amount: "",
-  //       operating_system_licensing: "",
-  //       data_egress_monthly_unit: ""
-  //     }
-  //     return ei;
-  //   });
-  //   const environmentInstancesToDelete: EnvironmentInstanceDTO[] = [];
-  //   this.currentEnvClassificationLevels.forEach(cl => {
-  //     const isFound = selected.find(sel => sel.sys_id === cl.sys_id);
-  //     if (!isFound) {
-  //       const envIToDelete = this.environmentInstances
-  //         .find(ei => 
-  //            (ei.classification_level as unknown as ReferenceColumn).value === cl.sys_id);
-  //       if (envIToDelete) {
-  //         environmentInstancesToDelete.push(envIToDelete);
-  //       }
-  //     }
-  //   });
-  //   //delete from SNOW
-  //   const deleteCalls = environmentInstancesToDelete
-  //     .map(ei=> {
-  //       api.environmentInstanceTable.remove(ei.sys_id || "")
-  //     } );
-  //   await Promise.all(deleteCalls);
+  @Action({ rawError: true })
+  public async loadEnvironmentInstances(): Promise<void> {
+    try {
+      const environmentInstance = await api.environmentInstanceTable.all();
+      await this.setEnvironmentInstance(environmentInstance);
+    } catch (error) {
+      throw new Error(`error loading Environment Instances ${error}`);
+    }
+  }
 
-  //   // save to SNOW
-  //   const saveToSNOW = async (ei:EnvironmentInstanceDTO) => {
-  //     const found = this.environmentInstances.find(instance=>
-  //       (instance.classification_level as unknown as ReferenceColumn).value
-  //         === ei.classification_level)
-  //     if(found){
-  //       found.classification_level = (found.classification_level as unknown as ReferenceColumn)
-  //         .value
-  //       ei = found
-  //     }
-  //     const sysId = ei.sys_id || ""
-  //     const saveCall = sysId.length > 0 ?
-  //       api.environmentInstanceTable.update(sysId,ei) :
-  //       api.environmentInstanceTable.create(ei)
-  //   }
-  //   const saveCalls = toBeSaved.map(ei=> saveToSNOW(ei));
-  //   await Promise.all(saveCalls);
-  //   this.setCurrentENVClassificationLevels(selected)
-  // }
+
+  @Action({ rawError: true })
+  public async saveSelectedClassificationInstances(selected: ClassificationLevelDTO[] ):
+      Promise<void> {
+    const toBeSaved = selected.filter(cl => this.environmentInstances
+      .findIndex(ev => ev.classification_level === cl.sys_id) < 0).map(sel => {
+      const ei: EnvironmentInstanceDTO = {
+        /* eslint-disable camelcase */
+        storage_amount: "",
+        storage_type: "",
+        instance_name: "",
+        classification_level: sel.sys_id || "",
+        number_of_vcpus: "",
+        data_egress_monthly_amount: "",
+        performance_tier: "",
+        pricing_model_expiration: "",
+        csp_region: "",
+        memory_unit: "",
+        storage_unit: "",
+        pricing_model: "",
+        instance_location: "",
+        memory_amount: "",
+        operating_system_licensing: "",
+        data_egress_monthly_unit: ""
+      }
+      return ei;
+    });
+    const environmentInstancesToDelete: EnvironmentInstanceDTO[] = [];
+    this.currentEnvClassificationLevels.forEach(cl => {
+      const isFound = selected.find(sel => sel.sys_id === cl.sys_id);
+      if (!isFound) {
+        const envIToDelete = this.environmentInstances
+          .find(ei =>
+            (ei.classification_level as unknown as ReferenceColumn).value === cl.sys_id);
+        if (envIToDelete) {
+          environmentInstancesToDelete.push(envIToDelete);
+        }
+      }
+    });
+    //delete from SNOW
+    const deleteCalls = environmentInstancesToDelete
+      .map(ei=> {
+        api.environmentInstanceTable.remove(ei.sys_id || "")
+      } );
+    await Promise.all(deleteCalls);
+
+    // save to SNOW
+    const saveToSNOW = async (ei:EnvironmentInstanceDTO) => {
+      const found = this.environmentInstances.find(instance=>
+        (instance.classification_level as unknown as ReferenceColumn).value
+          === ei.classification_level)
+      if(found){
+        found.classification_level = (found.classification_level as unknown as ReferenceColumn)
+          .value
+        ei = found
+      }
+      const sysId = ei.sys_id || ""
+      const saveCall = sysId.length > 0 ?
+        api.environmentInstanceTable.update(sysId,ei) :
+        api.environmentInstanceTable.create(ei)
+    }
+    const saveCalls = toBeSaved.map(ei=> saveToSNOW(ei));
+    await Promise.all(saveCalls);
+    this.setCurrentENVClassificationLevels(selected)
+  }
 }
 const ClassificationRequirements = getModule(ClassificationRequirementsStore);
 export default ClassificationRequirements;
