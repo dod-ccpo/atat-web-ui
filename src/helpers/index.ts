@@ -39,10 +39,12 @@ export const buildClassificationCheckboxList = (
   idSuffix: string, 
   descriptionNeeded: boolean,
   includeTS: boolean,
+  labelLength?: string,
 ): Checkbox[] => {
-  includeTS = includeTS || false;
-  const arr: Checkbox[] = [];
   idSuffix = idSuffix || "";
+  includeTS = includeTS || false;
+  const labelType = !labelLength || labelLength === "long" ? "long" : labelLength;
+  const arr: Checkbox[] = [];
 
   if (!includeTS) {
     data = data.filter(obj => obj.classification !== "TS");
@@ -52,7 +54,7 @@ export const buildClassificationCheckboxList = (
     if (classLevel.classification
     && classLevel.sys_id
     ) {
-      const label = buildClassificationLabel(classLevel, "long");
+      const label = buildClassificationLabel(classLevel, labelType);
       const description = buildClassificationDescription(classLevel)
       const classificationCheckbox: Checkbox = {
         id: classLevel.impact_level + idSuffix || classLevel.classification,

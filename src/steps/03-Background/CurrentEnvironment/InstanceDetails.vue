@@ -18,14 +18,23 @@
       id="EnvironmentLocation"
       class="mb-8"
       :items="envLocationOptions"
-      tooltipText="On-premises environments are deployed in-house and within an 
-        enterprise IT infrastructure. Cloud environments are hosted by a third-party 
-        provider in an off-site, cloud-based server."
+      tooltipText="<strong>On-premises environments</strong> are deployed in-house 
+        and within an enterprise IT infrastructure. <strong>Cloud environments</strong> 
+        are hosted by a third-party provider in an off-site, cloud-based server."
       :value.sync="instanceData.instance_location"
       legend="Where is this instance located?"
     />
 
     <div v-show="instanceData.instance_location">
+
+        <!-- v-if="showClassificationOptions" -- TODO after curr env classifications page wired -->
+      <ATATRadioGroup 
+        id="ClassificationLevelOptions"
+        class="mb-8"
+        :items="classificationRadioOptions"
+        :value.sync="instanceData.classification"
+        :legend="classificationLegend"
+      />
 
       <RegionsDeployedAndUserCount 
         v-if="instanceData.instance_location === 'CLOUD'"
@@ -104,7 +113,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
@@ -126,15 +135,15 @@ import {
 } from "types/Global";
 
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import { CurrentEnvironmentDTO } from "@/api/models";
-
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { ClassificationLevelDTO, CurrentEnvironmentDTO } from "@/api/models";
 
 import CurrentEnvironment, 
 { 
   defaultCurrentEnvironment, 
   defaultCurrentEnvironmentInstance 
 } from "@/store/acquisitionPackage/currentEnvironment";
+import classificationRequirements from "@/store/classificationRequirements";
+import { buildClassificationCheckboxList } from "@/helpers";
 
 
 @Component({
@@ -150,7 +159,7 @@ import CurrentEnvironment,
 })
 
 export default class EnvironmentDetails extends Vue {
-  public currEnvDTO = defaultCurrentEnvironment;
+  public currEnvData = defaultCurrentEnvironment;
   public envLocation = "";
   public instanceData = defaultCurrentEnvironmentInstance;
 
@@ -167,20 +176,61 @@ export default class EnvironmentDetails extends Vue {
     },
   ];
 
+  public allClassificationLevels: ClassificationLevelDTO[] = [];
+  public classificationRadioOptions: RadioButton[] = [];
+  public get classificationLegend(): string {
+    return this.instanceData.instance_location === "CLOUD"
+      ? "What data classification and impact level is this instance deployed in?"
+      : "What type of information are you hosting in this instance?";
+  }
+
+  @Watch("instanceData.instance_location")
+  public instanceLocChanged(): void {
+    this.setClassificationLabels();
+  }
+
+  public classificationLabels: Record<string, Record<string, string>> = {
+    CLOUD: { 
+      IL2: "Unclassified / IL2",
+      IL4: "Unclassified / IL4",
+      IL5: "Unclassified / IL5",
+      IL6: "Secret / IL6",
+      TS: "Top Secret",
+    },
+    ON_PREM: { 
+      IL2: "Unclassified (DoD information approved for public release)",
+      IL4: "Unclassified (DoD CUI)",
+      IL5: "Unclassified (DoD CUI & National Security Systems)",
+      IL6: "Secret",
+      TS: "Top Secret",
+    },
+  }
+
+  public setClassificationLabels(): void {
+    const locType = this.instanceData.instance_location;
+    if (locType) {
+      this.classificationRadioOptions.forEach((obj) => {
+        const IL = obj.id;
+        const labels = this.classificationLabels[locType];
+        obj.label = labels[IL];
+      });
+    }
+  }
+
   public get hasTellUsAboutInstanceHeading(): boolean {
     // only one case where there won't be a "Tell us about instance #x" header -
     // if instance location is on-premises AND only one classification was selected.
     // classification radio options will show if either NO (ZERO) classification
     // levels were selected, or more than one was selected.
     return !(this.instanceData.instance_location === 'ON_PREM' 
-      && this.currEnvDTO.env_classifications_on_prem.length === 1);
+      && this.currEnvData.env_classifications_on_prem.length === 1);
   }
 
   // public sectionNumber(section: string): string {
   //   switch (section) {
   //   case "currentUsage": 
   //     return this.instanceData.instance_location === 'ON_PREM' 
-  //     && this.currEnvDTO.env_classifications_cloud.length === 1
+  //     && this.currEnvData.env_classifications_cloud.length === 1
   //       ? "1." : "2."
   //   }
   //   return "";
@@ -249,15 +299,24 @@ export default class EnvironmentDetails extends Vue {
     //   .loadData<CurrentEnvironmentDTO>(
     //     {storeProperty: StoreProperties.CurrentEnvironment}
     //   );
+
+    this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
+    this.classificationRadioOptions = buildClassificationCheckboxList(
+      this.allClassificationLevels, "", false, true, "short"
+    );
+
+    debugger;
+
     const envStoreData = await AcquisitionPackage.getCurrentEnvironment();
 
     if (envStoreData) {
       debugger;
-      this.currEnvDTO = envStoreData;
+      this.currEnvData = envStoreData;
       this.envLocation = envStoreData.env_location;
       // eslint-disable-next-line camelcase
       this.instanceData.instance_location = envStoreData.env_location !== "HYBRID"
         ? envStoreData.env_location : "";
+      this.setClassificationLabels();
 
       // this.savedData = {
       // }
