@@ -159,7 +159,7 @@ import { buildClassificationCheckboxList } from "@/helpers";
   }
 })
 
-export default class EnvironmentDetails extends Vue {
+export default class InstanceDetails extends Vue {
   public currEnvData = defaultCurrentEnvironment;
   public envLocation = "";
   public instanceData = defaultCurrentEnvironmentInstance;
