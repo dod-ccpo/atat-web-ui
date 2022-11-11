@@ -34,6 +34,7 @@ import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import CurrentEnvironment,
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
+
 @Component({
   components: {
     ATATRadioGroup,
@@ -60,9 +61,11 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       value: "HYBRID",
     },
   ];
+
   private savedData: Record<string, string> = {
     env_location: "",
   }
+
   private get currentData(): Record<string, string> {
     return {
       env_location: this.currentEnvironmentLocation || "",
@@ -71,7 +74,6 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     // TODO - get from ACQPKG store or CURRENV store??
     const storeData = await AcquisitionPackage.getCurrentEnvironment();
-
     if (storeData) {
       this.currEnvDTO = storeData;
       this.currentEnvironmentLocation = storeData.env_location;
