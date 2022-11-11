@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container class="container-max-width" fluid>
-      <v-row v-if="environment.toLowerCase() === 'cloud computing environment'">
+      <v-row v-if="environment.toLowerCase() !=='hybrid'">
         <v-col class="col-12">
           <h1 class="page-header mb-3">
             Tell us about your current data classification and impact levels
@@ -30,47 +30,73 @@
               class="copy-max-width mb-10"
               name="classificationTypesCheckboxes"
             />
-            <div v-if="impactLevels.length > 1">
-              <p id="ImpactLevelP" class="mb-3 font-weight-500">
-                For your Unclassified instance(s), what impact levels are you currently deployed in?
-              </p>
+            <div v-if="environment.toLowerCase() ==='cloud'">
+              <div v-if="impactLevels.length > 1">
+                <p id="DeployedP" class="mb-3 font-weight-500">
+                  For your Unclassified instance(s), what impact levels are you currently deployed
+                  in?
+                </p>
               <p id="SelectMessage2" class="mb-4">
-                Select all that apply to your current environment.
-              </p>
-              <ATATCheckboxGroup
+                  Select all that apply to your current environment.
+                </p>
+                <ATATCheckboxGroup
                 id="ImpactLevelCheckboxes"
-                :card="false"
-                :hasOtherValue="true"
+                  :card="false"
+                  :hasOtherValue="true"
                 :items="impactLevels"
-                :rules="[
+                  :rules="[
                     $validators.required('Please select at least one impact level.')
                 ]"
                 :value.sync="selectedImpactLevels"
-                class="copy-max-width mb-10"
+                  class="copy-max-width mb-10"
                 name="impactLevelCheckboxes"
-              />
-            </div>
-            <div v-if="IL2Selected">
+                />
+              </div>
+              <div v-if="IL2Selected">
               <p id="CloudTypeP" class="mb-4 font-weight-500">
-                For your IL2 instance(s), what type of cloud are currently deployed in?
-              </p>
-              <ATATCheckboxGroup
+                  For your IL2 instance(s), what type of cloud are currently deployed in?
+                </p>
+                <ATATCheckboxGroup
                 id="CloudTypeCheckboxes"
-                :card="false"
-                :hasOtherValue="true"
+                  :card="false"
+                  :hasOtherValue="true"
                 :items="cloudTypes"
-                :rules="[
+                  :rules="[
                     $validators.required('Please select at least one type of cloud.')
                 ]"
                 :value.sync="selectedCloudTypes"
                 class="copy-max-width"
                 name="cloudTypeCheckboxes"
               />
+              </div>
+            </div>
+            <div v-if="environment.toLowerCase() === 'on_prem'">
+              <div v-if="unclassifiedSelected">
+                <p id="HostingP" class="mb-3 font-weight-500">
+                  For your Unclassified instances, what type of information are you hosting?
+                </p>
+                <p id="SelectMessage" class="mb-4">
+                  Select all that apply to your current environment.
+                </p>
+                <ATATCheckboxGroup
+                  id="InstanceCheckbox"
+                  :card="false"
+                  :hasOtherValue="true"
+                  :items="instanceClass"
+                  :rules="[
+                    $validators.
+                    required('Please select at least one type of information that you are hosting.')
+                ]"
+                  :value.sync="selectedInstances"
+                  class="copy-max-width mb-10"
+                  name="instanceCheckbox"
+                />
+              </div>
             </div>
           </div>
         </v-col>
       </v-row>
-      <v-row v-if="environment.toLowerCase() === 'hybrid cloud environment'">
+      <v-row v-if="environment.toLowerCase() === 'hybrid'">
         <v-col class="col-12">
           <h1 class="page-header mb-3">
             Future Hybrid Page
@@ -78,15 +104,6 @@
           <p>shown for testing purposes</p>
         </v-col>
       </v-row>
-      <v-row v-if="environment.toLowerCase() === 'on-premises'">
-        <v-col class="col-12">
-          <h1 class="page-header mb-3">
-            Future on-Prem Page
-          </h1>
-          <p>shown for testing purposes</p>
-        </v-col>
-      </v-row>
-
     </v-container>
   </div>
 </template>
@@ -113,9 +130,11 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public selectedImpactLevels: string[] = [];
   public selectedClassifications: string[] = [];
   public selectedCloudTypes: string[] = [];
+  public selectedInstances: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedData: ClassificationLevelDTO[] = [];
   public IL2Selected = false;
+  public unclassifiedSelected = false;
   private classificationsLevels: Checkbox[] = [
     {
       id: "Unclassified",
@@ -133,6 +152,26 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       value: "TS",
     },
   ]
+  private instanceClass: Checkbox[] = [
+    {
+      id: "PublicRelease",
+      label: "Information approved for public release (Low Confidentiality and Moderate Integrity)",
+      value: "IL2",
+      description: "Equivalent to a Impact Level 2 (IL2) deployment"
+    },
+    {
+      id: "CUI",
+      label: "Controlled Unclassified Information (CUI)",
+      value: "IL4",
+      description: "Equivalent to a Impact Level 4 (IL4) deployment"
+    },
+    {
+      id: "NationalSecuritySystems",
+      label: "CUI and National Security Systems",
+      value: "IL5",
+      description: "Equivalent to a Impact Level 5 (IL5) deploytment"
+    },
+  ];
   private cloudTypes: Checkbox[] = [
     {
       id: "CommercialCloud",
@@ -150,6 +189,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public selectedTypeChange(newVal: string[]): void {
     let filteredList :ClassificationLevelDTO[] = []
     if(newVal.includes("U")) {
+      this.unclassifiedSelected = true
       let filtered = this.classifications
         .filter(classification => classification.classification === "U" )
       filteredList.push(...filtered)
@@ -158,7 +198,9 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       }
     }
     if (!newVal.includes("U")) {
+      this.unclassifiedSelected = false
       this.impactLevels = [];
+      this.selectedInstances = []
       this.selectedImpactLevels = []
     }
   }
@@ -201,7 +243,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        classificationRequirements.saveSelectedClassificationInstances(this.currentData)
+        await classificationRequirements.saveSelectedClassificationInstances(this.currentData)
       }
     } catch (error) {
       console.log(error);
