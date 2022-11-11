@@ -157,14 +157,15 @@ export class CurrentEnvironmentStore extends VuexModule {
       //   has_migration_documentation: "NO" as const
       // }
 
-      // reinstate the following 4 lines after DB is updated
-      // const currentEnvironmentDTO = await api.currentEnvironmentTable
-      //   .create(defaultCurrentEnvironment);
+      const currentEnvironmentDTO = await api.currentEnvironmentTable
+        .create(defaultCurrentEnvironment);
+      // TODO: reinstate the below 2 lines after DB is updated
       // this.setCurrentEnvironment(currentEnvironmentDTO);
       // return currentEnvironmentDTO;
-      
+      // TODO: remove the below 3 lines after DB is updated
+      defaultCurrentEnvironment.sys_id = currentEnvironmentDTO.sys_id;
       this.setCurrentEnvironment(defaultCurrentEnvironment);
-      return defaultCurrentEnvironment;
+      return defaultCurrentEnvironment
 
     } catch (error) {
       throw new Error(`an error occurred while initializing current environment ${error}`);
@@ -175,15 +176,11 @@ export class CurrentEnvironmentStore extends VuexModule {
    * Loads the current environment by making BE api calls and sets it to this store
    */
   @Action({rawError: true})
-  async loadCurrentEnvironment(currentEnvironmentSysId: string | null): // TODO: remove null
-    Promise<CurrentEnvironmentDTO | undefined> {
+  async loadCurrentEnvironment(): Promise<CurrentEnvironmentDTO> {
     try {
-      // FIXME: remove below line after acquisition package store starts passing correct id
-      currentEnvironmentSysId = currentEnvironmentSysId ?
-        currentEnvironmentSysId : "039f0c7687e59150bc86b889cebb357d"; // pragma: allowlist secret
       const currentEnvironmentDTO = await api.currentEnvironmentTable
-        .retrieve(currentEnvironmentSysId);
-      // TODO: add orchestration to load data from other tables
+        .retrieve(this.currentEnvironment?.sys_id);
+      // TODO: add orchestration to load records from current environment instance table
       this.setCurrentEnvironment(currentEnvironmentDTO);
       return Promise.resolve(currentEnvironmentDTO);
     } catch (error) {

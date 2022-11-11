@@ -26,14 +26,16 @@
             <ATATFileUpload
               id="FundingPlan"
               tabindex="-1"
-              :invalidFiles.sync="invalidFiles"
+              :maxNumberOfFiles="100"
               :maxFileSizeInBytes="maxFileSizeInBytes"
               :validFileFormats="validFileFormats"
-              :validFiles.sync="uploadedFiles"
               :multiplesAllowed="true"
               :attachmentServiceName="attachmentServiceName"
+              :invalidFiles.sync="invalidFiles"
+              :validFiles.sync="uploadedFiles"
               :removeAll.sync="removeAll"
-              @delete="deleteFile"
+              @delete="onRemoveAttachment"
+              @uploaded="onUpload"
             />
           </div>
         </div>
@@ -42,18 +44,20 @@
   </v-container>
 </template>
 <script lang="ts">
-
+/* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { invalidFile, RadioButton, uploadingFile, YesNo } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { CurrentEnvironmentDTO } from "@/api/models";
+import {AttachmentDTO} from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
-import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
 import CurrentEnvironment, 
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
+import Attachments from "@/store/attachments";
+import {AttachmentServiceCallbacks} from "@/services/attachment";
+import {TABLENAME as CURRENT_ENVIRONMENT_TABLE} from "@/api/currentEnvironment";
 
 @Component({
   components: {
@@ -64,7 +68,7 @@ import CurrentEnvironment,
 export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
   public currEnvDTO = defaultCurrentEnvironment;
 
-  private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
+  private attachmentServiceName = CURRENT_ENVIRONMENT_TABLE;
   private uploadOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -105,12 +109,127 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
     }
   }
 
-  public async deleteFile(file: uploadingFile): Promise<void> {
-    // todo future ticket - delete attachment
-  }
-
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        Object.assign(this.currEnvDTO, this.currentData);
+        // TODO - which store to save to?
+        await CurrentEnvironment.saveCurrentEnvironment();
+        // AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO); // TODO: not to this for now
+
+        // will be used when SNOW store has been wired
+        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
+        //   data: this.currentData,
+        //   storeProperty: StoreProperties.CurrentEnvironment
+        // });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }
+
+  @Watch('selectedUpload')
+  private selectedUploadChange(): void{
+    if(this.hasMigrationDocumentation === "NO"){
+      this.uploadedFiles = []
+      this.removeAll = true
+    }
+  }
+
+  /**
+   * On file upload, once the file attachment gets uploaded to the proper place,
+   * the current environment's migration_documentation array needs to be
+   * updated with the sys_id of the newly added attachment. This function
+   * takes of this and follows up with a call-out to save the current environment.
+   */
+  public async onUpload(file: uploadingFile): Promise<void> {
+    try {
+      if (file) {
+        const attachmentSysId = file.attachmentId;
+        if(!this.currEnvDTO.migration_documentation) {
+          this.currEnvDTO.migration_documentation = [];
+        }
+        if (this.currEnvDTO.migration_documentation.indexOf(attachmentSysId) === -1) {
+          this.currEnvDTO.migration_documentation.push(attachmentSysId);
+        }
+        // console.log(this.currEnvDTO);
+        // the updated migration_documentation will need to be saved
+        await CurrentEnvironment.saveCurrentEnvironment();
+      }
+    } catch (error) {
+      console.error(`error completing file upload with id ${file?.attachmentId}`);
+    }
+  }
+
+  /**
+   * Deletes the attachment from the attachment table by making a callout.
+   *
+   * And the current environment's migration_documentation array needs to be
+   * updated by removing the sys_id of the deleted attachment.
+   */
+  public async onRemoveAttachment(file: uploadingFile): Promise<void> {
+    try {
+      if (file) {
+        const key = this.attachmentServiceName;
+        const attachmentId = file.attachmentId;
+        const recordId = file.recordId;
+        await Attachments.removeAttachment({
+          key,
+          attachmentId,
+          recordId, // recordId is the "table_sys_id" in the context of ATTACHMENT API
+        });
+        //
+        this.currEnvDTO.migration_documentation?.splice(
+            this.currEnvDTO.migration_documentation?.indexOf(attachmentId), 1);
+        // console.log(this.currEnvDTO);
+        // the updated migration_documentation will need to be saved
+        await CurrentEnvironment.saveCurrentEnvironment();
+      }
+    } catch (error) {
+      console.error(`error removing attachment with id ${file?.attachmentId}`);
+    }
+  }
+
+  /**
+   * Loads the attachments across all the records of current
+   * environment table. It then filters the attachments specific to migration
+   * documents of the acquisition.
+   */
+  async loadAttachments(): Promise<void>{
+    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
+    // console.log(this.currEnvDTO);
+    if(!this.currEnvDTO.migration_documentation) {
+      this.currEnvDTO.migration_documentation = [];
+    }
+    const uploadedFiles = attachments
+      .filter((attachment: AttachmentDTO) => {
+        return (this.currEnvDTO.migration_documentation
+          ?.indexOf(attachment.sys_id as string) !== -1)
+      })
+      .map((attachment: AttachmentDTO) => {
+        const file = new File([], attachment.file_name, {
+          lastModified: Date.parse(attachment.sys_created_on || "")
+        });
+        const upload: uploadingFile = {
+          attachmentId: attachment.sys_id || "",
+          fileName: attachment.file_name,
+          file: file,
+          created: file.lastModified,
+          progressStatus: 100,
+          link: attachment.download_link || "",
+          recordId: attachment.table_sys_id,
+          isErrored: false,
+          isUploaded: true
+        }
+        return upload;
+      });
+    // console.log("Uploaded files length: " + uploadedFiles.length);
+    this.uploadedFiles = [...uploadedFiles];
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -126,29 +245,18 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
     }
   }
 
-  protected async saveOnLeave(): Promise<boolean> {
-    try {
-      if (this.hasChanged()) {
-        Object.assign(this.currEnvDTO, this.currentData);
-        // TODO - which store to save to?
-        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-
-        // will be used when SNOW store has been wired
-        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.CurrentEnvironment
-        // });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    return true;
-  }
-
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    await this.loadAttachments()
+    //listen for attachment service upload callbacks
+    //and update attachments
+    // TODO: check if this call back registration is required & remove it if not needed
+    AttachmentServiceCallbacks.registerUploadCallBack(
+      CURRENT_ENVIRONMENT_TABLE,
+      async () => {
+        await CurrentEnvironment.loadCurrentEnvironment();
+      }
+    );
   }
 }
 </script>

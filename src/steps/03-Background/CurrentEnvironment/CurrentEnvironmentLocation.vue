@@ -6,7 +6,7 @@
           Where is your current environment located?
         </h1>
         <div class="copy-max-width">
-          <p class="mb-10">
+          <p class="mb-7">
             If you have instances in a hybrid environment, then we will gather details about the
             location for each instance later.
           </p>
@@ -14,7 +14,7 @@
             id="EnvLocationButtons"
             :card="true"
             :items="envLocationOption"
-            :rules="[$validators.required('Please select an option')]"
+            :rules="[$validators.required('Please select a type of environment')]"
             :value.sync="currentEnvironmentLocation"
             class="copy-max-width mb-10 max-width-740"
             name="radioButton-card"
@@ -48,21 +48,16 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       id: "CloudComputingEnvironment",
       label: "Cloud computing environment",
       value: "CLOUD",
-      description: `Instances are hosted by a third-party provider in an
-       off-site, cloud-based server.`
     },
     {
       id: "OnPremises",
-      label: "On-premises",
+      label: "On-premise environment",
       value: "ON_PREM",
-      description: "Instances are deployed in-house and within an enterprise IT infrastructure.",
     },
     {
       id: "HybridCloudEnvironment",
-      label: "Hybrid cloud environment",
+      label: "Hybrid environment",
       value: "HYBRID",
-      description: `Computing environment that combines an on-premises datacenter (private cloud)
-       with a public cloud, allowing data and applications to be shared between them.`,
     },
   ];
   private savedData: Record<string, string> = {

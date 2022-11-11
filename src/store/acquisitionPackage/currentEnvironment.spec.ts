@@ -103,7 +103,7 @@ describe("CurrentEnvironment Store",
       jest.spyOn(api.currentEnvironmentTable, "retrieve").mockReturnValue(
         Promise.resolve(currentEnvironmentMock)
       )
-      await currentEnvironmentStore.loadCurrentEnvironment("testAqId");
+      await currentEnvironmentStore.loadCurrentEnvironment();
       const loadedCurrentEnvironment = await currentEnvironmentStore.getCurrentEnvironment();
       expect(loadedCurrentEnvironment?.current_environment_exists).toBe("YES");
     })
