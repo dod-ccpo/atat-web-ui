@@ -12,96 +12,15 @@
               to every instance within your current environment. If you have data within two or more
               levels, we will gather details about each instance next.
             </p>
-            <p id="ClassificationLevelP" class="mb-2 font-weight-500">
-              What classification levels are your instances currently deployed in?
-            </p>
-            <p id="SelectMessage" class="mb-4">
-              Select all that apply to your current environment.
-            </p>
-            <ATATCheckboxGroup
-              id="ClassificationTypesCheckboxes"
-              :card="false"
-              :hasOtherValue="true"
-              :items="classificationsLevels"
-              :rules="[
-              $validators.required('Please select at least one classification level.')
-            ]"
-              :value.sync="selectedClassifications"
-              class="copy-max-width mb-10"
-              name="classificationTypesCheckboxes"
+            <ClassificationLevelForm
+              index="1"
+             :environment="environment"
+             :selectedImpactLevel.sync="selectedImpactLevels"
+             :selectedClassifications.sync="selectedClassifications"
+             :selectedCloudTypes.sync="selectedCloudTypes"
+             :selectedInstances.sync="selectedInstances"
             />
-            <div v-if="environment.toLowerCase() ==='cloud'">
-              <div v-if="impactLevels.length > 1">
-                <p id="DeployedP" class="mb-3 font-weight-500">
-                  For your Unclassified instance(s), what impact levels are you currently deployed
-                  in?
-                </p>
-              <p id="SelectMessage2" class="mb-4">
-                  Select all that apply to your current environment.
-                </p>
-                <ATATCheckboxGroup
-                id="ImpactLevelCheckboxes"
-                  :card="false"
-                  :hasOtherValue="true"
-                :items="impactLevels"
-                  :rules="[
-                    $validators.required('Please select at least one impact level.')
-                ]"
-                :value.sync="selectedImpactLevels"
-                  class="copy-max-width mb-10"
-                name="impactLevelCheckboxes"
-                />
-              </div>
-              <div v-if="IL2Selected">
-              <p id="CloudTypeP" class="mb-4 font-weight-500">
-                  For your IL2 instance(s), what type of cloud are currently deployed in?
-                </p>
-                <ATATCheckboxGroup
-                id="CloudTypeCheckboxes"
-                  :card="false"
-                  :hasOtherValue="true"
-                :items="cloudTypes"
-                  :rules="[
-                    $validators.required('Please select at least one type of cloud.')
-                ]"
-                :value.sync="selectedCloudTypes"
-                class="copy-max-width"
-                name="cloudTypeCheckboxes"
-              />
-              </div>
-            </div>
-            <div v-if="environment.toLowerCase() === 'on_prem'">
-              <div v-if="unclassifiedSelected">
-                <p id="HostingP" class="mb-3 font-weight-500">
-                  For your Unclassified instances, what type of information are you hosting?
-                </p>
-                <p id="SelectMessage" class="mb-4">
-                  Select all that apply to your current environment.
-                </p>
-                <ATATCheckboxGroup
-                  id="InstanceCheckbox"
-                  :card="false"
-                  :hasOtherValue="true"
-                  :items="instanceClass"
-                  :rules="[
-                    $validators.
-                    required('Please select at least one type of information that you are hosting.')
-                ]"
-                  :value.sync="selectedInstances"
-                  class="copy-max-width mb-10"
-                  name="instanceCheckbox"
-                />
-              </div>
-            </div>
           </div>
-        </v-col>
-      </v-row>
-      <v-row v-if="environment.toLowerCase() === 'hybrid'">
-        <v-col class="col-12">
-          <h1 class="page-header mb-3">
-            Future Hybrid Page
-          </h1>
-          <p>shown for testing purposes</p>
         </v-col>
       </v-row>
     </v-container>
@@ -117,15 +36,17 @@ import classificationRequirements from "@/store/classificationRequirements";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import ClassificationLevelForm
+  from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.vue";
 
 
 @Component({
   components: {
+    ClassificationLevelForm,
     ATATCheckboxGroup,
   }
 })
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
-  private impactLevels: Checkbox[] = [];
   private environment = "";
   public selectedImpactLevels: string[] = [];
   public selectedClassifications: string[] = [];
@@ -133,90 +54,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public selectedInstances: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedData: ClassificationLevelDTO[] = [];
-  public IL2Selected = false;
-  public unclassifiedSelected = false;
-  private classificationsLevels: Checkbox[] = [
-    {
-      id: "Unclassified",
-      label: "Unclassified",
-      value: "U",
-    },
-    {
-      id: "Secret",
-      label: "Secret",
-      value: "S",
-    },
-    {
-      id: "TopSecret",
-      label: "Top Secret",
-      value: "TS",
-    },
-  ]
-  private instanceClass: Checkbox[] = [
-    {
-      id: "PublicRelease",
-      label: "Information approved for public release (Low Confidentiality and Moderate Integrity)",
-      value: "IL2",
-      description: "Equivalent to a Impact Level 2 (IL2) deployment"
-    },
-    {
-      id: "CUI",
-      label: "Controlled Unclassified Information (CUI)",
-      value: "IL4",
-      description: "Equivalent to a Impact Level 4 (IL4) deployment"
-    },
-    {
-      id: "NationalSecuritySystems",
-      label: "CUI and National Security Systems",
-      value: "IL5",
-      description: "Equivalent to a Impact Level 5 (IL5) deploytment"
-    },
-  ];
-  private cloudTypes: Checkbox[] = [
-    {
-      id: "CommercialCloud",
-      label: "Commercial cloud",
-      value: "commercialCloud",
-    },
-    {
-      id: "GovernmentCloud",
-      label: "Federal community cloud (government cloud)",
-      value: "GovernmentCloud",
-    },
 
-  ]
-  @Watch("selectedClassifications")
-  public selectedTypeChange(newVal: string[]): void {
-    let filteredList :ClassificationLevelDTO[] = []
-    if(newVal.includes("U")) {
-      this.unclassifiedSelected = true
-      let filtered = this.classifications
-        .filter(classification => classification.classification === "U" )
-      filteredList.push(...filtered)
-      if (this.impactLevels.length === 0) {
-        this.impactLevels = this.createCheckboxItems(filteredList)
-      }
-    }
-    if (!newVal.includes("U")) {
-      this.unclassifiedSelected = false
-      this.impactLevels = [];
-      this.selectedInstances = []
-      this.selectedImpactLevels = []
-    }
-  }
-
-  @Watch("selectedImpactLevels")
-  public selectedOptionChange(newVal: string[]): void {
-    let filtered = this.classifications
-      .filter(classification => classification.impact_level === "IL2")
-    if(filtered[0].sys_id){
-      this.IL2Selected = newVal.includes(filtered[0].sys_id);
-    }
-    if(!this.IL2Selected){
-      this.selectedCloudTypes = [];
-    }
-
-  }
 
 
 
@@ -251,9 +89,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     return true;
   }
 
-  private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    return buildClassificationCheckboxList(data, "", true, true);
-  }
+
 
   public async loadOnEnter(): Promise<void> {
     this.classifications = await classificationRequirements.getAllClassificationLevels();
