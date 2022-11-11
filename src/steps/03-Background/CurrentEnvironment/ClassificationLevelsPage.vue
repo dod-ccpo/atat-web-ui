@@ -99,6 +99,11 @@
           </div>
         </v-col>
       </v-row>
+      <v-row v-if="envLocation ==='HYBRID'">
+        <v-col>
+          Future hybrid classification
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
