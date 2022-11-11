@@ -233,24 +233,26 @@ const initialClassificationLevel = () => {
 
 const initialCurrentEnvironment = () => {
   return {
-    additional_growth: "" as const,
-    anticipated_yearly_additional_capacity: 0,
-    applications_need_architectural_design: "",
-    current_environment_replicated_optimized: "" as const,
-    data_classifications_impact_levels: [],
+    current_environment_exists: "",
+    has_system_documentation: "",
+    system_documentation: [],
+    has_migration_documentation: "",
+    migration_documentation: [],
+    env_location: "",
     env_classifications_cloud: [],
     env_classifications_on_prem: [],
     env_instances: [],
-    env_location: "" as const,
-    external_factors_architectural_design: "",
-    has_phased_approach: "" as const,
-    needs_architectural_design_services: "" as const,
-    phased_approach_schedule: "",
-    statement_architectural_design: "",
+    current_environment_replicated_optimized: "", // radio - YES_REPLICATE | YES_OPTIMIZE | NO
     statement_replicated_optimized: "",
-    current_environment_exists: "YES" as const,
-    has_system_documentation: "NO" as const,
-    has_migration_documentation: "NO" as const
+    additional_growth: "", // "YES" | "NO"
+    anticipated_yearly_additional_capacity: null, // number | null
+    has_phased_approach: "", // "YES" | "NO"
+    phased_approach_schedule: "",
+    needs_architectural_design_services: "", // "YES" | "NO"
+    statement_architectural_design: "",
+    applications_need_architectural_design: "",
+    data_classifications_impact_levels: [],
+    external_factors_architectural_design: "",
   }
 }
 
@@ -334,19 +336,14 @@ export class AcquisitionPackageStore extends VuexModule {
   taskOrderDetailsAlertClosed = false;
 
   fundingRequestType: string | null =  null;
-  currentEnv = {
-    diagramChartDocumentation:"",
-    assessmentAnalysisDocumentation:"",
-  }
+  // currentEnv = {
+  //   system_documentation:"",
+  //   migration_documentation:"",
+  // }
   public initContact: ContactDTO = initialContact()
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
-  }
-
-  @Mutation
-  public setCurrentEnv(value: CurrentEnvironmentDTO): void {
-    this.currentEnv = Object.assign(this.currentEnv, value);
   }
 
   @Mutation

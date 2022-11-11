@@ -32,7 +32,9 @@
 import { Component, Mixins } from "vue-property-decorator";
 import { RadioButton, YesNo } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+
 import { CurrentEnvironmentDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";

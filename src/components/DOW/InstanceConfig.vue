@@ -140,22 +140,22 @@ export default class InstanceConfig extends Vue {
     { 
       text: "Block storage", 
       description: "Fixed-sized raw storage capacity", 
-      value: "Block storage" 
+      value: "BLOCK" 
     },
     { 
       text: "Object storage", 
       description: "Store and serve unstructured user-generated content",
-      value: "Object storage" 
+      value: "OBJECT" 
     },
     { 
       text: "File storage", 
       description: "Store and serve shared file systems",
-      value: "File storage" 
+      value: "FILE" 
     },
     { 
       text: "Archive storage", 
       description: "Store and serve for long-term data retention",
-      value: "Archive storage" 
+      value: "ARCHIVE" 
     },
   ];
 

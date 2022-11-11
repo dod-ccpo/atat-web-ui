@@ -494,10 +494,12 @@ export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
 
 export interface CurrentEnvUsageData {
-  currentUsageDescription?: string;
-  trafficSpikeCauses?: string[];
-  surgeUsageEvent?: string;
-  surgeUsagePeriods?: string;
+  currentUsageDescription?: EnvironmentInstanceUsage;
+  trafficSpikeCauses?: string[]; // EJY need to refactor in component
+  isTrafficSpikeEventBased?: YesNo;
+  isTrafficSpikePeriodBased?: YesNo;
+  trafficSpikeEventDescription?: string;
+  trafficSpikePeriodDescription?: string;
 } 
 
 export interface CurrentEnvInstanceConfig {
@@ -505,20 +507,64 @@ export interface CurrentEnvInstanceConfig {
   operatingSystem?: string;
   numberOfVCPUs?: number | null;
   processorSpeed?: number | null;
-  memory?: number | null;
+  memoryAmount?: number | null;
+  memoryUnit?: StorageUnit;
   storageType?: string;
   storageAmount?: number | null;
   storageUnit?: StorageUnit;
 }
 
 export interface CurrentEnvPerformanceTier {
-  performanceTier?: string;
+  performanceTier?: PerformanceTier;
   numberOfSimilarInstances?: number | null;
   dataEgressMonthlyAmount?: number | null;
   dataEgressMonthlyUnit?: StorageUnit;
 }
 
 export interface CurrentEnvPricingDetails {
-  currentPaymentArrangement?: string;
+  currentPaymentArrangement?: PaymentArrangement;
   pricingPeriodExpirationDate?: string;
+}
+
+export type EnvironmentLocation = "" | "CLOUD" | "ON_PREM" | "HYBRID";
+export type EnvironmentInstanceLocation = "" | "CLOUD" | "ON_PREM";
+export type EnvironmentReplicateOptimized = "" | "YES_REPLICATE" | "YES_OPTIMIZE" | "NO";
+export type EnvironmentInstanceUsage = "" | "EVEN_USAGE" | "IRREGULAR_USAGE";
+export type StorageType = "" | "BLOCK" | "OBJECT" | "FILE" | "ARCHIVE";
+export type PerformanceTier = "" | "GENERAL" | "COMPUTE" | "MEMORY" | "STORAGE";
+export type PaymentArrangement = "" | "PREPAID" | "PAYASYOUGO";
+
+export interface CurrentEnvironment {
+  currentEnvironmentExists?: YesNo;
+  hasSystemDocumentation?: YesNo;
+  systemDocumentation?: string[]; // List - sys_ids from sys_attachment table 
+  hasMigrationDocumentation?: YesNo;
+  migrationDocumentation?: string[]; // List - sys_ids from sys_attachment table 
+  envLocation?: EnvironmentLocation;
+  envClassificationsCloud?: string[]; // array of classification level sys_ids
+  envClassificationsOnPrem?: string[]; // array of classification level sys_ids
+  envInstances?: CurrentEnvironmentInstance[]; // array of sys_ids
+  currentEnvironmentReplicatedOptimized?: EnvironmentReplicateOptimized;
+  statementReplicatedOptimized?: string;
+  additionalGrowth?: YesNo;
+  anticipatedYearlyAdditionalCapacity?: number; 
+  hasPhasedApproach?: YesNo;
+  phasedApproachSchedule?: string; 
+  needsArchitecturalDesignServices?: YesNo;
+  statementArchitecturalDesign?: string; 
+  applicationsNeedArchitecturalDesign?: string;
+  dataClassificationsImpactLevels?: string[];
+  externalFactorsArchitecturalDesign?: string;          
+}
+
+export interface CurrentEnvironmentInstance {
+  instanceLocation?: EnvironmentInstanceLocation;
+  deployedRegions?: string[];
+  classificationLevel?: string; // classification level sys_id
+  currentUsage?: CurrentEnvUsageData,
+  usersPerRegion?: string; // json stringified sys_id/count pairs
+  instanceConfig?: CurrentEnvInstanceConfig;
+  performanceTier?: CurrentEnvPerformanceTier;
+  pricingDetails?: CurrentEnvPricingDetails;
+  additionalInformation?: string;
 }

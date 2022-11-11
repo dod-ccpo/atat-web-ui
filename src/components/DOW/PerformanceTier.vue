@@ -70,28 +70,28 @@ export default class PerformanceTier extends Vue {
       id: "GeneralPurpose",
       label: "General Purpose",
       description: "Provides a balance of compute, memory & network",
-      value: "GeneralPurpose",
+      value: "GENERAL_PURPOSE",
     },
     {
       id: "ComputeOptimized",
       label: "Compute Optimized",
       description: `Supports compute-bound applications that benefit from high 
         performance processors`,
-      value: "ComputeOptimized",
+      value: "COMPUTE_OPTIMIZED",
     },
     {
       id: "MemoryOptimized",
       label: "Memory Optimized",
       description: `Designed to deliver fast performance for workloads that 
         process large data sets in memory`,
-      value: "MemoryOptimized",
+      value: "MEMORY_OPTIMIZED",
     },
     {
       id: "StorageOptimized",
       label: "Storage Optimized",
       description: `Designed for high, sequential read and write workloads to 
         very large data sets on local storage`,
-      value: "StorageOptimized",
+      value: "STORAGE_OPTIMIZED",
     },
   ];
 

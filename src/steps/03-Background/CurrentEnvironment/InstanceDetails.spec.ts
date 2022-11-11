@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
-import EnvironmentDetailsPage from "./EnvironmentDetailsPage.vue";
+import InstanceDetails from "./InstanceDetails.vue";
 import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
@@ -20,7 +20,7 @@ describe("Testing Classification Level Page", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(EnvironmentDetailsPage, {
+    wrapper = mount(InstanceDetails, {
       localVue,
       vuetify,
     });

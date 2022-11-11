@@ -1,7 +1,7 @@
 <template>
   <div class="foobar">
     <v-container class="container-max-width" fluid>
-      <v-row v-if="currentEnvironmentLocation !=='HYBRID'">
+      <v-row v-if="envLocation !=='HYBRID'">
         <v-col class="col-12">
           <h1 class="page-header mb-3">
             Tell us about your current data classification and impact levels
@@ -22,7 +22,7 @@
               id="ClassificationTypesCheckboxes"
               :card="false"
               :hasOtherValue="true"
-              :items="classificationsLevels"
+              :items="topLevelClassifications"
               :rules="[
               $validators.required('Please select at least one classification level.')
             ]"
@@ -30,7 +30,7 @@
               class="copy-max-width mb-10"
               name="classificationTypesCheckboxes"
             />
-            <div v-if="currentEnvironmentLocation === 'CLOUD'">
+            <div v-if="envLocation === 'CLOUD'">
               <div v-if="impactLevels.length > 1">
                 <p id="DeployedP" class="mb-3 font-weight-500">
                   For your Unclassified instance(s), what impact levels are you currently deployed
@@ -43,34 +43,16 @@
                 id="ImpactLevelCheckboxes"
                   :card="false"
                   :hasOtherValue="true"
-                :items="impactLevels"
-                  :rules="[
-                    $validators.required('Please select at least one impact level.')
-                ]"
-                :value.sync="selectedImpactLevels"
+                  :items="impactLevels"
+                  :rules="[$validators.required('Please select at least one impact level.')]"
+                  :value.sync="selectedImpactLevels"
                   class="copy-max-width mb-10"
-                name="impactLevelCheckboxes"
+                  name="impactLevelCheckboxes"
                 />
               </div>
-              <div v-if="IL2Selected">
-              <p id="CloudTypeP" class="mb-4 font-weight-500">
-                  For your IL2 instance(s), what type of cloud are currently deployed in?
-                </p>
-                <ATATCheckboxGroup
-                id="CloudTypeCheckboxes"
-                  :card="false"
-                  :hasOtherValue="true"
-                :items="cloudTypes"
-                  :rules="[
-                    $validators.required('Please select at least one type of cloud.')
-                ]"
-                :value.sync="selectedCloudTypes"
-                class="copy-max-width"
-                name="cloudTypeCheckboxes"
-              />
-              </div>
             </div>
-            <div v-if="currentEnvironmentLocation === 'ON_PREM'">
+
+            <div v-if="envLocation === 'ON_PREM'">
               <div v-if="unclassifiedSelected">
                 <p id="HostingP" class="mb-3 font-weight-500">
                   For your Unclassified instances, what type of information are you hosting?
@@ -93,7 +75,33 @@
                 />
               </div>
             </div>
+
+            <!-- START -- PRESERVE CODE FOR POST-MVP -->
+            <!-- <div v-if="IL2Selected">
+              <p id="CloudTypeP" class="mb-4 font-weight-500">
+                  For your IL2 instance(s), what type of cloud are currently deployed in?
+                </p>
+                <ATATCheckboxGroup
+                id="CloudTypeCheckboxes"
+                  :card="false"
+                  :hasOtherValue="true"
+                :items="cloudTypes"
+                  :rules="[
+                    $validators.required('Please select at least one type of cloud.')
+                ]"
+                :value.sync="selectedCloudTypes"
+                class="copy-max-width"
+                name="cloudTypeCheckboxes"
+              />
+            </div> -->
+            <!-- END -- PRESERVE CODE FOR POST-MVP -->
+              
           </div>
+        </v-col>
+      </v-row>
+      <v-row v-if="envLocation ==='HYBRID'">
+        <v-col>
+          Future hybrid classification
         </v-col>
       </v-row>
     </v-container>
@@ -119,18 +127,22 @@ import CurrentEnvironment,
 })
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public currEnvDTO = defaultCurrentEnvironment;
-  public currentEnvironmentLocation = "";
+  public envLocation = "";
+  public envClassificationsCloud: string[] = []
+  public envClassificationsOnPrem: string[] = []
 
   private impactLevels: Checkbox[] = [];
   public selectedImpactLevels: string[] = [];
   public selectedClassifications: string[] = [];
+
+  public allClassificationLevels: ClassificationLevelDTO[] = []
+
   public selectedCloudTypes: string[] = [];
   public selectedInstances: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
-  public savedData: ClassificationLevelDTO[] = [];
-  public IL2Selected = false;
   public unclassifiedSelected = false;
-  private classificationsLevels: Checkbox[] = [
+
+  private topLevelClassifications: Checkbox[] = [
     {
       id: "Unclassified",
       label: "Unclassified",
@@ -146,7 +158,8 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       label: "Top Secret",
       value: "TS",
     },
-  ]
+  ];
+
   private instanceClass: Checkbox[] = [
     {
       id: "PublicRelease",
@@ -167,6 +180,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       description: "Equivalent to a Impact Level 5 (IL5) deploytment"
     },
   ];
+
   private cloudTypes: Checkbox[] = [
     {
       id: "CommercialCloud",
@@ -178,15 +192,15 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       label: "Federal community cloud (government cloud)",
       value: "GovernmentCloud",
     },
-
-  ]
+  ];
+  
   @Watch("selectedClassifications")
   public selectedTypeChange(newVal: string[]): void {
     let filteredList :ClassificationLevelDTO[] = []
     if(newVal.includes("U")) {
-      this.unclassifiedSelected = true
-      let filtered = this.classifications
+      let filtered = this.allClassificationLevels
         .filter(classification => classification.classification === "U" )
+      this.unclassifiedSelected = true
       filteredList.push(...filtered)
       if (this.impactLevels.length === 0) {
         this.impactLevels = this.createCheckboxItems(filteredList)
@@ -200,31 +214,65 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     }
   }
 
-  @Watch("selectedImpactLevels")
-  public selectedOptionChange(newVal: string[]): void {
-    let filtered = this.classifications
-      .filter(classification => classification.impact_level === "IL2")
-    if(filtered[0].sys_id){
-      this.IL2Selected = newVal.includes(filtered[0].sys_id);
-    }
-    if(!this.IL2Selected){
-      this.selectedCloudTypes = [];
+  // private getSelectedClassificationLevels() {
+  //   const arr :ClassificationLevelDTO[] = [];
+  //   this.selectedImpactLevels.forEach(item => {
+  //     const value = this.allClassificationLevels.filter(( data )=>{
+  //       return item == data.sys_id
+  //     })
+  //     arr.push(value[0])
+  //   })
+  //   return arr
+  // }
+
+  // public get selectedClassificationSysIds(): string[] {
+  // EJY FINISH AFTER DEVONTE HAS REFACTORED FOR HYBRID
+  // }
+
+  public get currentData(): Record<string, string[]> {
+    return {
+      envClassificationsCloud: [],
+      envClassificationsOnPrem: [],
     }
   }
 
-  private getSelectedClassificationLevels() {
-    const arr :ClassificationLevelDTO[] = [];
-    this.selectedImpactLevels.forEach(item => {
-      const value = this.classifications.filter(( data )=>{
-        return item == data.sys_id
-      })
-      arr.push(value[0])
-    })
-    return arr
+  public savedData: Record<string, string[]> = {
+    envClassificationsCloud: [],
+    envClassificationsOnPrem: [],
+  };
+
+
+  private createCheckboxItems(data: ClassificationLevelDTO[]) {
+    return buildClassificationCheckboxList(data, "", true, true);
   }
 
-  public get currentData(): ClassificationLevelDTO[] {
-    return this.getSelectedClassificationLevels()
+  public async loadOnEnter(): Promise<void> {
+    this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
+
+    const secret = this.allClassificationLevels.find(obj => obj.classification === "S");
+    const secretIndex = this.topLevelClassifications.findIndex(obj => obj.value === "S");
+    this.topLevelClassifications[secretIndex].value = secret?.sys_id || "S";
+    const topSecret = this.allClassificationLevels.find(obj => obj.classification === "TS");
+    const topSecretIndex = this.topLevelClassifications.findIndex(obj => obj.value === "TS");
+    this.topLevelClassifications[topSecretIndex].value = topSecret?.sys_id || "TS";
+
+    // TODO - get from ACQPKG store or CURRENV store??
+    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+
+    if (storeData) {
+      this.currEnvDTO = storeData;
+      this.envLocation = storeData.env_location;
+      this.envClassificationsCloud = storeData.env_classifications_cloud;
+      this.envClassificationsOnPrem = storeData.env_classifications_on_prem;
+      this.savedData = {
+        envClassificationsCloud: this.envClassificationsCloud,
+        envClassificationsOnPrem: this.envClassificationsOnPrem,
+      }
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 
 
@@ -235,7 +283,8 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await classificationRequirements.saveSelectedClassificationInstances(this.currentData)
+        // TODO - this needs to save to CurrentEnvironment, not classificationRequirements
+        // classificationRequirements.saveSelectedClassificationInstances(this.currentData)
       }
     } catch (error) {
       console.log(error);
@@ -243,40 +292,37 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     return true;
   }
 
-  private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    return buildClassificationCheckboxList(data, "", true, true);
-  }
 
-  public async loadOnEnter(): Promise<void> {
-    this.classifications = await classificationRequirements.getAllClassificationLevels();
+  // START -- PRESERVE CODE FOR POST-MVP
+  // CLOUD TYPES WILL BE POST MVP - it was a late addition
+  // public IL2Selected = false;
+  // public selectedCloudTypes: string[] = [];
+  // private cloudTypes: Checkbox[] = [
+  //   {
+  //     id: "CommercialCloud",
+  //     label: "Commercial cloud",
+  //     value: "commercialCloud",
+  //   },
+  //   {
+  //     id: "GovernmentCloud",
+  //     label: "Federal community cloud (government cloud)",
+  //     value: "GovernmentCloud",
+  //   },
+  // ]
+  // @Watch("selectedImpactLevels")
+  // public selectedOptionChange(newVal: string[]): void {
+  //   let filtered = this.allClassificationLevels
+  //     .filter(classification => classification.impact_level === "IL2")
+  //   if(filtered[0].sys_id){
+  //     this.IL2Selected = newVal.includes(filtered[0].sys_id);
+  //   }
+  //   if(!this.IL2Selected){
+  //     this.selectedCloudTypes = [];
+  //   }
+  // }
+  // END -- PRESERVE CODE FOR POST-MVP
 
-    // TODO - refactor to get from CurrentEnvironment
-    await classificationRequirements.loadEnvironmentInstances()
-    const classificationData = await classificationRequirements.getCurrentENVClassificationLevels()
-    if(classificationData) {
-      this.savedData = classificationData
-      classificationData.forEach((val) => {
-        if (val.sys_id) {
-          this.selectedImpactLevels.push(val.sys_id)
-        }
-      })
-    }
 
-    // TODO - get from ACQPKG store or CURRENV store??
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
-    debugger;
-    if (storeData) {
-      this.currEnvDTO = storeData;
-      this.currentEnvironmentLocation = storeData.env_location;
-      // this.savedData = {
-      //   TODO - parse this out once saved properly after DB updated
-      // }
-    }
-  }
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
 }
 </script>
 

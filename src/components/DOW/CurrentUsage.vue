@@ -13,7 +13,7 @@
     <ATATCheckboxGroup
       class="mt-8"
       id="SpikeCauses"
-      v-if="_currentUsage.currentUsageDescription === 'IrregularUsage'"
+      v-if="_currentUsage.currentUsageDescription === 'IRREGULAR_USAGE'"
       groupLabel="Are spikes in usage typically caused by a specific event and/or 
         during certain period(s) of the year?"
       groupLabelId="SpikeCauseGroupLabel"
@@ -24,7 +24,7 @@
     <ATATTextField
       id="HighUsageEventDescription"
       class="mt-10"
-      v-if="_currentUsage.trafficSpikeCauses.includes('EventBased')"
+      v-if="_currentUsage.trafficSpikeCauses.includes('EVENT')"
       :value.sync="_currentUsage.surgeUsageEvent"
       label="Tell us about the event that causes a surge in usage"
       tooltipText="Include any details that would help a CSP better understand 
@@ -37,7 +37,7 @@
     <ATATTextField
       id="HighUsagePeriodDescription"
       class="mt-8"
-      v-if="_currentUsage.trafficSpikeCauses.includes('CertainPeriods')"
+      v-if="_currentUsage.trafficSpikeCauses.includes('PERIOD')"
       :value.sync="_currentUsage.surgeUsagePeriods"
       label="In which period of the year do you typically have a surge in usage?"
       tooltipText="Include any details that would help a CSP better understand 
@@ -77,13 +77,13 @@ export default class CurrentUsage extends Vue {
     {
       id: "RegularUsage",
       label: "Evenly distributed or constant usage",
-      value: "RegularUsage"
+      value: "EVEN_USAGE"
     },
     {
       id: "IrregularUsage",
       label: `Irregular usage or spike traffic (i.e., typically surges for a 
         specific event or during a certain period each year)`,
-      value: "IrregularUsage"
+      value: "IRREGULAR_USAGE"
     },
   ];
 
@@ -91,21 +91,32 @@ export default class CurrentUsage extends Vue {
     {
       id: "EventBased",
       label: "Event-based spike in traffic",
-      value: "EventBased"
+      value: "EVENT"
     },
     {
       id: "CertainPeriods",
       label: "High usage during certain period(s) of the year",
-      value: "CertainPeriods"
+      value: "PERIOD"
     },
   ];
 
-  @Watch("_currentUsage.currentUsageDescription", {deep: true})
-  public currentUsageDescriptionChange(newVal: string): void {
-    if (newVal === "RegularUsage") {
-      this._currentUsage.trafficSpikeCauses = [];
-      this._currentUsage.surgeUsageEvent = "";
-      this._currentUsage.surgeUsagePeriods = "";
+  @Watch("_currentUsage", {deep: true})
+  public currentUsageDescriptionChange(newVal: CurrentEnvUsageData): void {
+    if (newVal.currentUsageDescription === "EVEN_USAGE") {
+      this._currentUsage.isTrafficSpikeEventBased = "";
+      this._currentUsage.isTrafficSpikePeriodBased = "";
+      this._currentUsage.trafficSpikeEventDescription = "";
+      this._currentUsage.trafficSpikePeriodDescription = "";
+    }
+    if (!newVal.trafficSpikeCauses?.includes("EVENT")) {
+      this._currentUsage.trafficSpikeEventDescription = "";
+    } else if (newVal.trafficSpikeCauses?.includes("EVENT")) {
+      this._currentUsage.isTrafficSpikeEventBased = "YES";
+    }
+    if (!newVal.trafficSpikeCauses?.includes("PERIOD")) {
+      this._currentUsage.trafficSpikePeriodDescription = "";
+    } else if (newVal.trafficSpikeCauses?.includes("PERIOD")) {
+      this._currentUsage.isTrafficSpikePeriodBased = "YES";
     }
   }
 
