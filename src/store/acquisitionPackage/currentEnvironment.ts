@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
-import {CurrentEnvironmentDTO} from "@/api/models";
+import {CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO} from "@/api/models";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import Vue from "vue";
 import {api} from "@/api";
@@ -28,6 +28,35 @@ export const defaultCurrentEnvironment: CurrentEnvironmentDTO = {
   has_system_documentation: "" as const,
   has_migration_documentation: "" as const
 }
+
+export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = {
+  instance_location: "",
+  deployed_regions: [],
+  classification_level: "", // classification level sys_id
+  current_usage_description: "",
+  is_traffic_spike_event_based: "",
+  is_traffic_spike_period_based: "",
+  traffic_spike_event_description: "",
+  traffic_spike_period_description: "",
+  users_per_region: "", // json stringified sys_id/count pairs
+  operating_system: "",
+  licensing: "",
+  number_Of_VCPUs: null,
+  processor_speed: null, 
+  memory_amount: null,
+  memory_unit: "GB",
+  storage_type: "",
+  storage_amount: null,
+  storage_unit: "GB",
+  performance_tier: "",
+  number_of_instances: null, 
+  data_egress_monthly_amount: null,   
+  data_egress_monthly_unit: "GB",
+  current_payment_arrangement: "",
+  pricing_period_expiration_date: "",
+  additional_information: "", 
+}
+
 
 /**
  * This module contains all the store and api support that is needed for "Background -
@@ -107,27 +136,6 @@ export class CurrentEnvironmentStore extends VuexModule {
   public async initialCurrentEnvironment():
     Promise<CurrentEnvironmentDTO> {
     try {
-      // const defaultCurrentEnvironment: CurrentEnvironmentDTO = {
-      //   additional_growth: "" as const,
-      //   anticipated_yearly_additional_capacity: 0,
-      //   applications_need_architectural_design: "",
-      //   current_environment_replicated_optimized: "" as const,
-      //   data_classifications_impact_levels: [],
-      //   env_classifications_cloud: [],
-      //   env_classifications_on_prem: [],
-      //   env_instances: [],
-      //   env_location: "" as const,
-      //   external_factors_architectural_design: "",
-      //   has_phased_approach: "" as const,
-      //   needs_architectural_design_services: "" as const,
-      //   phased_approach_schedule: "",
-      //   statement_architectural_design: "",
-      //   statement_replicated_optimized: "",
-      //   current_environment_exists: "YES" as const,
-      //   has_system_documentation: "NO" as const,
-      //   has_migration_documentation: "NO" as const
-      // }
-
       const currentEnvironmentDTO = await api.currentEnvironmentTable
         .create(defaultCurrentEnvironment);
       // TODO: reinstate the below 2 lines after DB is updated

@@ -157,11 +157,12 @@ describe("Classification Requirements Store", ()=> {
     expect(selectedClassifications).toBe(Classifications)
   })
 
-  test('Test getCurrentENVClassificationLevels returns currentEnvClassificationLevels', async () =>
-  {
-    const selectedENVClassifications = await ClassificationStore.getCurrentENVClassificationLevels()
-    expect(selectedENVClassifications).toBe(Classifications)
-  })
+  // test('Test getCurrentENVClassificationLevels returns currentEnvClassificationLevels', 
+  // async () => {
+  //   const selectedENVClassifications 
+  //     = await ClassificationStore.getCurrentENVClassificationLevels()
+  //   expect(selectedENVClassifications).toBe(Classifications)
+  // })
 
   test('Test getAllClassificationLevels returns classificationLevels', async () =>
   {
@@ -169,21 +170,21 @@ describe("Classification Requirements Store", ()=> {
     expect(classifications).toStrictEqual(Classifications)
   })
 
-  test('Test saveSelectedClassificationInstances returns classificationLevels', async () =>
-  {
-    await ClassificationStore.setCurrentENVClassificationLevels(envClassification)
-    await ClassificationStore.setEnvironmentInstance(storedEnvironmentInstance)
-    await ClassificationStore.saveSelectedClassificationInstances(savedClassifications)
-    expect(ClassificationStore.currentEnvClassificationLevels).toBe(savedClassifications)
-  })
+  // test('Test saveSelectedClassificationInstances returns classificationLevels', async () =>
+  // {
+  //   await ClassificationStore.setCurrentENVClassificationLevels(envClassification)
+  //   await ClassificationStore.setEnvironmentInstance(storedEnvironmentInstance)
+  //   await ClassificationStore.saveSelectedClassificationInstances(savedClassifications)
+  //   expect(ClassificationStore.currentEnvClassificationLevels).toBe(savedClassifications)
+  // })
 
 
-  test('Test saveSelectedClassificationInstances if branch', async () =>
-  {
-    await ClassificationStore.setCurrentENVClassificationLevels(envClassification)
-    await ClassificationStore.setEnvironmentInstance(storedEnvironmentInstance)
+  // test('Test saveSelectedClassificationInstances if branch', async () =>
+  // {
+  //   await ClassificationStore.setCurrentENVClassificationLevels(envClassification)
+  //   await ClassificationStore.setEnvironmentInstance(storedEnvironmentInstance)
 
-    await ClassificationStore.saveSelectedClassificationInstances(envClassification)
-    expect(ClassificationStore.currentEnvClassificationLevels).toBeDefined()
-  })
+  //   await ClassificationStore.saveSelectedClassificationInstances(envClassification)
+  //   expect(ClassificationStore.currentEnvClassificationLevels).toBeDefined()
+  // })
 })

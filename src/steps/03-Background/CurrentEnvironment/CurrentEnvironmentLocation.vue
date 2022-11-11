@@ -25,14 +25,15 @@
   </v-container>
 </template>
 <script lang="ts">
-
 import { Component, Mixins } from "vue-property-decorator";
-import { RadioButton } from "../../../../types/Global";
+import { EnvironmentLocation, RadioButton } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import CurrentEnvironment,
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -40,9 +41,9 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
   },
 })
 export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
+  public currEnvDTO = defaultCurrentEnvironment;
   /* eslint-disable camelcase */
-  public currentEnvironmentLocation
-    = AcquisitionPackage.currentEnvironment?.additional_information || ""
+  public currentEnvironmentLocation: EnvironmentLocation = "";
   private envLocationOption: RadioButton[] = [
     {
       id: "CloudComputingEnvironment",
@@ -60,47 +61,48 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       value: "HYBRID",
     },
   ];
-  private savedData: CurrentEnvironmentDTO = {
-    additional_information: "",
+
+  private savedData: Record<string, string> = {
+    env_location: "",
   }
 
-  private get currentData(): CurrentEnvironmentDTO {
+  private get currentData(): Record<string, string> {
     return {
-      additional_information: this.currentEnvironmentLocation || "",
+      env_location: this.currentEnvironmentLocation || "",
     };
   }
-
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<CurrentEnvironmentDTO>(
-        {storeProperty: StoreProperties.CurrentEnvironment}
-      );
+    // TODO - get from ACQPKG store or CURRENV store??
+    const storeData = await AcquisitionPackage.getCurrentEnvironment();
     if (storeData) {
+      this.currEnvDTO = storeData;
+      this.currentEnvironmentLocation = storeData.env_location;
       this.savedData = {
-        additional_information: storeData.additional_information,
+        env_location: storeData.env_location,
       }
     }
   }
-
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-          data: this.currentData,
-          storeProperty: StoreProperties.CurrentEnvironment
-        });
+        Object.assign(this.currEnvDTO, this.currentData);
+        // TODO - which store to save to?
+        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
+        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+        // TODO - wire to proper location for saving after DB is updated
+        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
+        //   data: this.currentData,
+        //   storeProperty: StoreProperties.CurrentEnvironment
+        // });
       }
     } catch (error) {
       console.log(error);
     }
-
     return true;
   }
-
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }

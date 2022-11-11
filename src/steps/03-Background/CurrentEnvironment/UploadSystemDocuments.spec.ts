@@ -37,9 +37,10 @@ describe("Testing UploadSystemDocuments Component", () => {
 
     it("test saveOnLeave()", async () => {
       wrapper.vm.$data.hasChanged = true
-      wrapper.vm.$data.currentData = {diagramChartDocumentation: 'test'}
-      const result = AcquisitionPackage.currentEnv.diagramChartDocumentation
-      jest.spyOn(AcquisitionPackage,"setCurrentEnv")
+      // eslint-disable-next-line camelcase
+      wrapper.vm.$data.currentData = {system_documentation: 'test'}
+      const result = AcquisitionPackage.currentEnvironment?.system_documentation
+      jest.spyOn(AcquisitionPackage,"setCurrentEnvironment")
       wrapper.vm.saveOnLeave()
       Vue.nextTick(()=>{
         expect(result).toBe('test');

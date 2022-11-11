@@ -59,7 +59,7 @@ import ClassificationLevelForm
   }
 })
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
-  private environment = "";
+  public envLocation = "";
   private isHybrid = false;
   private isCloud = false;
   private onPrem = false;
@@ -108,15 +108,17 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
 
 
   public async loadOnEnter(): Promise<void> {
-    this.environment = AcquisitionPackage.currentEnvironment?.additional_information || ""
-    this.onPrem = this.environment === 'ON_PREM'
-    this.isCloud = this.environment === 'CLOUD'
-    this.isHybrid = this.environment === 'HYBRID'
-    if(this.isHybrid) {
-      this.isCloud = true;
-      this.onPrem = true
+    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    if(storeData){
+      this.envLocation = storeData.env_location;
+      this.onPrem = this.envLocation === 'ON_PREM'
+      this.isCloud = this.envLocation === 'CLOUD'
+      this.isHybrid = this.envLocation === 'HYBRID'
+      if(this.isHybrid) {
+        this.isCloud = true;
+        this.onPrem = true
+      }
     }
-    console.log(this.isHybrid)
   }
 
   public async mounted(): Promise<void> {
