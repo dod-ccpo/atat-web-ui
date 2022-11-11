@@ -27,7 +27,19 @@
 
     <div v-show="instanceData.instance_location">
 
-        <!-- v-if="showClassificationOptions" -- TODO after curr env classifications page wired -->
+      <RegionsDeployedAndUserCount 
+        v-if="instanceData.instance_location === 'CLOUD'"
+        id="RegionsDeployed"
+        class="mb-8"
+        :hasTextFields="false"
+        groupLabelId="RegionsDeployedLabel"
+        groupLabel="In which region(s) is this instance deployed?"
+        @selectedRegionsUpdate="regionsDeployedUpdate"
+        :tooltipText="regionsDeployedTooltipText"
+        :optional="true"
+      />
+
+      <!-- v-if="showClassificationOptions" -- TODO after curr env classifications page wired -->
       <ATATRadioGroup 
         id="ClassificationLevelOptions"
         class="mb-8"
@@ -36,17 +48,6 @@
         :legend="classificationLegend"
       />
 
-      <RegionsDeployedAndUserCount 
-        v-if="instanceData.instance_location === 'CLOUD'"
-        :hasTextFields="false"
-        id="RegionsDeployed"
-        groupLabelId="RegionsDeployedLabel"
-        groupLabel="In which region(s) is this instance deployed?"
-        @selectedRegionsUpdate="regionsDeployedUpdate"
-        :tooltipText="regionsDeployedTooltipText"
-        :optional="true"
-      />
-      
       <hr v-if="hasTellUsAboutInstanceHeading" />
 
       <h2 class="mb-4">
@@ -305,12 +306,9 @@ export default class EnvironmentDetails extends Vue {
       this.allClassificationLevels, "", false, true, "short"
     );
 
-    debugger;
-
     const envStoreData = await AcquisitionPackage.getCurrentEnvironment();
 
     if (envStoreData) {
-      debugger;
       this.currEnvData = envStoreData;
       this.envLocation = envStoreData.env_location;
       // eslint-disable-next-line camelcase
