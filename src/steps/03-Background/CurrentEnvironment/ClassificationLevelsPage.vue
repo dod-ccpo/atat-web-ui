@@ -13,25 +13,25 @@
               levels, we will gather details about each instance next.
             </p>
             <ClassificationLevelForm
-             v-if="isCloud|| isHybrid"
-             hybridText="1. Your cloud instances"
-             :isHybrid="isHybrid"
-             :isCloud="isCloud"
-             :selectedImpactLevels.sync="selectedImpactLevels"
-             :selectedClassifications.sync="selectedClassifications"
-             :selectedCloudTypes.sync="selectedCloudTypes"
-             :selectedInstances.sync="selectedInstances"
+              v-if="isCloud|| isHybrid"
+              hybridText="1. Your cloud instances"
+              :isHybrid="isHybrid"
+              :isCloud="isCloud"
+              :selectedImpactLevels.sync="selectedImpactLevels"
+              :selectedClassifications.sync="selectedClassifications"
+              :selectedCloudTypes.sync="selectedCloudTypes"
+              :selectedInstances.sync="selectedInstances"
             />
             <hr v-if="isHybrid" />
             <ClassificationLevelForm
-             v-if="onPrem|| isHybrid"
-             hybridText="2. Your on-premise instances"
-             :isHybrid="isHybrid"
-             :onPrem="onPrem"
-             :selectedImpactLevels.sync="selectedImpactLevels"
-             :selectedClassifications.sync="selectedOnPremClassifications"
-             :selectedCloudTypes.sync="selectedCloudTypes"
-             :selectedInstances.sync="selectedInstances"
+              v-if="onPrem|| isHybrid"
+              hybridText="2. Your on-premise instances"
+              :isHybrid="isHybrid"
+              :onPrem="onPrem"
+              :selectedImpactLevels.sync="selectedImpactLevels"
+              :selectedClassifications.sync="selectedOnPremClassifications"
+              :selectedCloudTypes.sync="selectedCloudTypes"
+              :selectedInstances.sync="selectedInstances"
             />
           </div>
         </v-col>
@@ -124,4 +124,3 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   }
 }
 </script>
-

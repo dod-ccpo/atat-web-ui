@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { EvalPlanMethod, EvalPlanSourceSelection } from "../../../types/Global";
+import { EvalPlanMethod, EvalPlanSourceSelection, YesNo } from "../../../types/Global";
 
 export interface BaseTableDTO {
   sys_id?: string;
@@ -69,13 +69,55 @@ export interface CurrentContractDTO extends BaseTableDTO {
   contract_order_expiration_date?: string;
 }
 
-export interface CurrentEnvironmentDTO extends BaseTableDTO {
-  current_environment_exists?: string;
-  environment_instances?: string;
+export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
+  instance_location: "" | "CLOUD" | "ON_PREM";
+  deployed_regions?: string[];
+  classification_level: string; // classification level sys_id
+  current_usage_description: "" | "EVEN_USAGE" | "IRREGULAR_USAGE";
+  is_traffic_spike_event_based: YesNo;
+  is_traffic_spike_period_based: YesNo;
+  traffic_spike_event_description?: string;
+  traffic_spike_period_description?: string;
+  users_per_region: string; // json stringified sys_id/count pairs
+  operating_system: string;
+  licensing: string;
+  number_Of_VCPUs: number;
+  processor_speed: number;
+  memory_amount: number;
+  memory_unit: "GB";
+  storage_type: "" | "BLOCK" | "OBJECT" | "FILE" | "ARCHIVE";
+  storage_amount: number;
+  storage_unit: "" | "GB" | "TB" | "PB";
+  performance_tier: "GENERAL" | "COMPUTE" | "MEMORY" | "STORAGE";
+  number_of_similar_instances: number;
+  data_egress_monthly_amount: number;
+  data_egress_monthly_unit: "" | "GB" | "TB" | "PB";
+  current_payment_arrangement: "" | "PREPAID" | "PAY_AS_YOU_GO"
+  pricing_period_expiration_date?: string;
   additional_information?: string;
-  diagramChartDocumentation?: string;
-  assessmentAnalysisDocumentation?: string;
+}
 
+export interface CurrentEnvironmentDTO extends BaseTableDTO {
+  current_environment_exists: YesNo;
+  has_system_documentation: YesNo;
+  system_documentation?: string[]; // List - sys_ids from sys_attachment table
+  has_migration_documentation: YesNo;
+  migration_documentation?: string[]; // List - sys_ids from sys_attachment table
+  env_location: "" | "CLOUD" | "ON_PREM" | "HYBRID";
+  env_classifications_cloud: string[]; // array of classification level sys_ids
+  env_classifications_on_prem: string[]; // array of classification level sys_ids
+  env_instances: CurrentEnvironmentInstanceDTO[]; // array of CurrentEnvironmentInstanceDTO sys_ids
+  current_environment_replicated_optimized: "" | "YES_REPLICATE" | "YES_OPTIMIZE" | "NO";
+  statement_replicated_optimized: string;
+  additional_growth: YesNo;
+  anticipated_yearly_additional_capacity: number;
+  has_phased_approach: YesNo;
+  phased_approach_schedule: string;
+  needs_architectural_design_services: YesNo;
+  statement_architectural_design: string;
+  applications_need_architectural_design: string;
+  data_classifications_impact_levels: string[];
+  external_factors_architectural_design: string;
 }
 
 export interface ContactDTO extends BaseTableDTO {

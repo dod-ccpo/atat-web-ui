@@ -30,41 +30,44 @@
 <script lang="ts">
 
 import { Component, Mixins } from "vue-property-decorator";
-import { RadioButton } from "../../../../types/Global";
+import { RadioButton, YesNo } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import CurrentEnvironment, 
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
     ATATRadioGroup,
   },
 })
-export default class CurrentEnvironment extends Mixins(SaveOnLeave) {
+export default class HasCurrentEnvironment extends Mixins(SaveOnLeave) {
+  public currEnvDTO = defaultCurrentEnvironment;
+
   private existingEnvOption: RadioButton[] = [
     {
       id: "Yes",
       label: "Yes.",
-      value: "true",
+      value: "YES",
     },
     {
       id: "No",
       label: "No, current environment does not exist.",
-      value: "false",
+      value: "NO",
     },
   ];
-  public currentEnvironmentExists
-    = AcquisitionPackage.currentEnvironment?.current_environment_exists || ""
-  private get currentData(): CurrentEnvironmentDTO {
+  public currentEnvironmentExists: YesNo = "";
+  private get currentData(): Record<string, string> {
     return {
       // eslint-disable-next-line camelcase
       current_environment_exists: this.currentEnvironmentExists || "",
     };
   }
 
-  private savedData: CurrentEnvironmentDTO = {
+  private savedData: Record<string, string> = {
     // eslint-disable-next-line camelcase
     current_environment_exists: "",
   }
@@ -74,11 +77,11 @@ export default class CurrentEnvironment extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<CurrentEnvironmentDTO>(
-        { storeProperty: StoreProperties.CurrentEnvironment }
-      );
+    // TODO - get from ACQPKG store or CURRENV store??
+    const storeData = await AcquisitionPackage.getCurrentEnvironment();
     if (storeData) {
+      this.currEnvDTO = storeData;
+      this.currentEnvironmentExists = storeData.current_environment_exists;
       this.savedData = {
         // eslint-disable-next-line camelcase
         current_environment_exists: storeData.current_environment_exists,
@@ -89,10 +92,17 @@ export default class CurrentEnvironment extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-          data: this.currentData,
-          storeProperty: StoreProperties.CurrentEnvironment
-        });
+        Object.assign(this.currEnvDTO, this.currentData);
+
+        // TODO - which store to save to?
+        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
+        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+
+        // TODO - wire to proper location for saving after DB is updated
+        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
+        //   data: this.currentData,
+        //   storeProperty: StoreProperties.CurrentEnvironment
+        // });
       }
     } catch (error) {
       console.log(error);

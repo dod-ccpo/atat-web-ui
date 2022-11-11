@@ -21,65 +21,65 @@
       class="copy-max-width mb-10"
       name="classificationTypesCheckboxes"
     />
-      <div v-if="impactLevels.length > 1">
-        <p id="DeployedP" class="mb-3 font-weight-500">
-          For your Unclassified
-          <span v-if="isCloud">
+    <div v-if="impactLevels.length > 1">
+      <p id="DeployedP" class="mb-3 font-weight-500">
+        For your Unclassified
+        <span v-if="isCloud">
             instance(s), what impact levels are you currently deployed in?
           </span>
-          <span v-if="onPrem">
+        <span v-if="onPrem">
             instances, what type of information are you hosting?
           </span>
-        </p>
-        <p id="SelectMessage2" class="mb-4">
-          Select all that apply to your current environment.
-        </p>
-        <ATATCheckboxGroup
-          v-if="isCloud"
-          id="ImpactLevelCheckboxes"
-          :card="false"
-          :hasOtherValue="true"
-          :items="impactLevels"
-          :rules="[
+      </p>
+      <p id="SelectMessage2" class="mb-4">
+        Select all that apply to your current environment.
+      </p>
+      <ATATCheckboxGroup
+        v-if="isCloud"
+        id="ImpactLevelCheckboxes"
+        :card="false"
+        :hasOtherValue="true"
+        :items="impactLevels"
+        :rules="[
             $validators.required('Please select at least one impact level.')
            ]"
-          :value.sync="_selectedImpactLevels"
-          class="copy-max-width mb-10"
-          name="impactLevelCheckboxes"
-        />
-        <ATATCheckboxGroup
-          v-if="onPrem"
-          id="InstanceCheckbox"
-          :card="false"
-          :hasOtherValue="true"
-          :items="instanceClass"
-          :rules="[
+        :value.sync="_selectedImpactLevels"
+        class="copy-max-width mb-10"
+        name="impactLevelCheckboxes"
+      />
+      <ATATCheckboxGroup
+        v-if="onPrem"
+        id="InstanceCheckbox"
+        :card="false"
+        :hasOtherValue="true"
+        :items="instanceClass"
+        :rules="[
             $validators.
             required('Please select at least one type of information that you are hosting.')
            ]"
-          :value.sync="_selectedInstances"
-          class="copy-max-width mb-10"
-          name="instanceCheckbox"
-        />
-      </div>
-      <div v-if="IL2Selected">
-        <p id="CloudTypeP" class="mb-4 font-weight-500">
-          For your IL2 instance(s), what type of cloud are currently deployed in?
-        </p>
-        <ATATCheckboxGroup
-          id="CloudTypeCheckboxes"
-          :card="false"
-          :hasOtherValue="true"
-          :items="cloudTypes"
-          :rules="[
+        :value.sync="_selectedInstances"
+        class="copy-max-width mb-10"
+        name="instanceCheckbox"
+      />
+    </div>
+    <div v-if="IL2Selected">
+      <p id="CloudTypeP" class="mb-4 font-weight-500">
+        For your IL2 instance(s), what type of cloud are currently deployed in?
+      </p>
+      <ATATCheckboxGroup
+        id="CloudTypeCheckboxes"
+        :card="false"
+        :hasOtherValue="true"
+        :items="cloudTypes"
+        :rules="[
                     $validators.required('Please select at least one type of cloud.')
            ]"
-          :value.sync="_selectedCloudTypes"
-          class="copy-max-width"
-          name="cloudTypeCheckboxes"
-        />
-      </div>
+        :value.sync="_selectedCloudTypes"
+        class="copy-max-width"
+        name="cloudTypeCheckboxes"
+      />
     </div>
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -208,4 +208,3 @@ export default class ClassificationLevelForm extends Vue {
   }
 }
 </script>
-

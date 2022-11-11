@@ -31,7 +31,7 @@ import { FundingRequestFSFormApi } from "./fundingRequestFSForm";
 import { FundingRequestMIPRFormApi } from "./fundingRequestMIPRForm";
 import {ClinAPi, ClinDisplayAPi} from "./clin";
 import { EDAApi } from "./eda";
-import { CurrentEnvironmentAPI } from "@/api/currentEnvironment";
+import { CurrentEnvironmentApi } from "@/api/currentEnvironment";
 import { AggregateApi } from "./aggregate";
 import { EnvironmentInstanceAPI } from "@/api/EnvironmentInstance";
 import { AlertApi } from "./alerts";
@@ -76,7 +76,7 @@ export const api = {
   clinTable: new ClinAPi(),
   clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),
-  currentEnvironmentTable: new CurrentEnvironmentAPI(),
+  currentEnvironmentTable: new CurrentEnvironmentApi(),
   aggregate: new AggregateApi(),
   environmentInstanceTable: new EnvironmentInstanceAPI(),
   portfolioTable: new PortfolioApi(),

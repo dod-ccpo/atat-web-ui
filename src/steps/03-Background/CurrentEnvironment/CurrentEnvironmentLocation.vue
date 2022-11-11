@@ -106,4 +106,3 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   }
 }
 </script>
-
