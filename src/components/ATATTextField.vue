@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -87,6 +87,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { mask, SelectData } from "types/Global";
 import Inputmask from "inputmask/";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -101,8 +102,9 @@ export default class ATATTextField extends Vue  {
   $refs!: {
     atatTextField: Vue & { 
       errorBucket: string[]; 
-      errorCount: number 
-      resetValidation(): void
+      errorCount: number; 
+      resetValidation(): void;
+      validate: () => boolean; 
     };
   }; 
 
@@ -139,6 +141,20 @@ export default class ATATTextField extends Vue  {
   @PropSync("selectedDropdownValue") private _selectedDropdownValue?: string;
 
   @PropSync("value", { default: "" }) private _value!: string;
+
+
+  // getter for "validate now" flag in aquisition package store
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateFormNow;;
+  } 
+  // watch the "validate now" value from the acquisition package store
+  @Watch("validateFormNow")
+  public validateNowChange(): void {
+    if (!this.$refs.atatTextField.validate()) {
+      this.setErrorMessage();
+    }
+  }
+
 
   //data
   private errorMessages: string[] = [];

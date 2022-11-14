@@ -83,19 +83,6 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   private projectScope = "";
   private emergencyDeclaration = "";
 
-  get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.form as Vue & { validate: () => boolean };
-  }
-
-  public async validateForm(): Promise<boolean> {
-    let valid = false;
-
-    await this.$nextTick(() => {
-      valid = this.Form.validate();
-    });
-    return valid;
-  }
-
   public get projectTitle(): string {
     return AcquisitionPackage.getTitle();
   }
@@ -151,6 +138,9 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    // todo -- only save to store if form is valid?
+    // const isFormValid = this.$refs.form.validate();
+    // if (isFormValid) {
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveData({
@@ -162,6 +152,8 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       console.log(error);
     }
 
+    // }
+    // return isFormValid;
     return true;
   }
 }

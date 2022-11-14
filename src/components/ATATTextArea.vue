@@ -62,8 +62,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -73,7 +74,11 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 export default class ATATTextArea extends Vue {
   // refs
   $refs!: {
-    atatTextArea: Vue & { errorBucket: string[]; errorCount: number };
+    atatTextArea: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number,
+      validate: () => boolean; 
+    };
   };
 
   // props
@@ -90,6 +95,18 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: true }) private noResize!: boolean;
   @Prop({ default: "" }) private maxChars!: string;
   @Prop({ default: true }) private validateItOnBlur!: boolean;
+
+  // getter for "validate now" flag in aquisition package store
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateFormNow;;
+  } 
+  // watch the "validate now" value from the acquisition package store
+  @Watch("validateFormNow")
+  public validateNowChange(): void {
+    if (!this.$refs.atatTextArea.validate()) {
+      this.setErrorMessage();
+    }
+  }
 
   //data
   private placeHolder = "";

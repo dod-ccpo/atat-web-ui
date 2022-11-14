@@ -336,10 +336,16 @@ export class AcquisitionPackageStore extends VuexModule {
   taskOrderDetailsAlertClosed = false;
 
   fundingRequestType: string | null =  null;
-  // currentEnv = {
-  //   system_documentation:"",
-  //   migration_documentation:"",
-  // }
+
+  validateFormNow = false;
+  @Mutation
+  public async setValidateFormNow(bool: boolean): Promise<void> {
+    this.validateFormNow = bool;
+  }
+  public get getValidateFormNow(): boolean {
+    return this.validateFormNow;
+  }
+
   public initContact: ContactDTO = initialContact()
 
   public getTitle(): string {
