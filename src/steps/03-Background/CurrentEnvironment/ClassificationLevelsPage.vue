@@ -13,7 +13,7 @@
               levels, we will gather details about each instance next.
             </p>
             <ClassificationLevelForm
-              v-if="isCloud|| isHybrid"
+              v-if="isCloud || isHybrid"
               hybridText="1. Your cloud instances"
               :isHybrid="isHybrid"
               :isCloud="isCloud"
@@ -24,10 +24,10 @@
             />
             <hr v-if="isHybrid" />
             <ClassificationLevelForm
-              v-if="onPrem|| isHybrid"
+              v-if="isOnPrem || isHybrid"
               hybridText="2. Your on-premise instances"
               :isHybrid="isHybrid"
-              :onPrem="onPrem"
+              :isOnPrem="isOnPrem"
               :selectedImpactLevels.sync="selectedImpactLevels"
               :selectedClassifications.sync="selectedOnPremClassifications"
               :selectedCloudTypes.sync="selectedCloudTypes"
@@ -62,32 +62,35 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   public envLocation = "";
   private isHybrid = false;
   private isCloud = false;
-  private onPrem = false;
+  private isOnPrem = false;
+
   public selectedImpactLevels: string[] = [];
   public selectedClassifications: string[] = [];
   public selectedOnPremClassifications: string[] = [];
   public selectedCloudTypes: string[] = [];
   public selectedInstances: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
-  public savedData: ClassificationLevelDTO[] = [];
 
 
 
+  public allClassificationLevels: ClassificationLevelDTO[] = []
 
-  private saveSelected() {
-    const arr :ClassificationLevelDTO[] = [];
-    this.selectedImpactLevels.forEach(item => {
-      const value = this.classifications.filter(( data )=>{
-        return item == data.sys_id
-      })
-      arr.push(value[0])
-    })
-    return arr
-  }
+  public envClassificationsCloud: string[] = []
+  public envClassificationsOnPrem: string[] = []
 
-  public get currentData(): ClassificationLevelDTO[] {
-    return this.saveSelected()
-  }
+
+  public savedData: Record<string, string[]> = {
+    envClassificationsCloud: [],
+    envClassificationsOnPrem: [],
+  };
+
+  public get currentData(): Record<string, string[]> {
+    return {
+      envClassificationsCloud: this.envClassificationsCloud,
+      envClassificationsOnPrem: this.envClassificationsOnPrem,
+    }
+  };
+
 
 
   private hasChanged(): boolean {
@@ -105,20 +108,21 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
     return true;
   }
 
-
-
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.getCurrentEnvironment();
-    if(storeData){
+    if (storeData) {
+      this.currEnvDTO = storeData;
       this.envLocation = storeData.env_location;
-      this.onPrem = this.envLocation === 'ON_PREM'
-      this.isCloud = this.envLocation === 'CLOUD'
-      this.isHybrid = this.envLocation === 'HYBRID'
-      if(this.isHybrid) {
-        this.isCloud = true;
-        this.onPrem = true
-      }
+      this.isHybrid = this.envLocation === "HYBRID";
+      this.isOnPrem = this.envLocation === "ON_PREM" || this.isHybrid;
+      this.isCloud = this.envLocation === "CLOUD" || this.isHybrid;
+      this.envClassificationsCloud = storeData.env_classifications_cloud;
+      this.envClassificationsOnPrem = storeData.env_classifications_on_prem;
     }
+
+    this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
+
+
   }
 
   public async mounted(): Promise<void> {
