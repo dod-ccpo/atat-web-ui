@@ -46,6 +46,8 @@
         :items="classificationRadioOptions"
         :value.sync="instanceData.classification"
         :legend="classificationLegend"
+        :rules="[$validators.required(classificationErrorMessage)]"
+        :clearErrorMessages.sync="clearClassificationErrorMessages"
       />
 
       <hr v-if="hasTellUsAboutInstanceHeading" />
@@ -185,9 +187,18 @@ export default class InstanceDetails extends Vue {
       : "What type of information are you hosting in this instance?";
   }
 
+  public get classificationErrorMessage(): string {
+    return this.instanceData.instance_location === "CLOUD"
+      ? "Select a classification and impact level."
+      : "Select the type of information that are you hosting.";
+  }
+
+  public clearClassificationErrorMessages = false;
+
   @Watch("instanceData.instance_location")
   public instanceLocChanged(): void {
     this.setClassificationLabels();
+    this.clearClassificationErrorMessages = true;
   }
 
   public classificationLabels: Record<string, Record<string, string>> = {
