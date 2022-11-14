@@ -23,12 +23,12 @@
     />
     <div v-if="impactLevels.length > 1">
       <p id="DeployedP" class="mb-3 font-weight-500">
-        For your Unclassified instance(s), what
+        For your Unclassified
         <span v-if="isCloud">
-            impact levels are you currently deployed in?
+            instance(s), what impact levels are you currently deployed in?
           </span>
         <span v-if="onPrem">
-            type of information are you hosting?
+            instances, what type of information are you hosting?
           </span>
       </p>
       <p id="SelectMessage2" class="mb-4">

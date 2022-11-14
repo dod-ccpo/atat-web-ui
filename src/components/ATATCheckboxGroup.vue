@@ -51,7 +51,7 @@
             class="d-flex "
             :class="[
               { 'flex-column width-100' : !hasTextFields },
-              { 'align-center' : hasTextFields }
+              { 'align-center foobar' : hasTextFields }
             ]"
           >
             <div 
