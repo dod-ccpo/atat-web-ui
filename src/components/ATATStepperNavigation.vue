@@ -37,6 +37,7 @@
           role="link" 
           class="ml-4"
           id="ContinueButton"
+          :disabled="!isNextButtonClickable"
         >
           {{ continueButtonText }}
         </v-btn>
@@ -57,6 +58,7 @@ export default class ATATStepperNavigation extends Vue {
   @Prop({ default: "Back" }) private backButtonText?: string;
   @Prop({ default: "Continue" }) private continueButtonText?: string;
   @Prop({ default: false }) private noPrevious?: boolean;
+  @Prop({ default: false }) private isNextButtonClickable?: boolean;
 
   private getButtonClass(button: AdditionalButton) {
     return button.buttonClass || "secondary";
