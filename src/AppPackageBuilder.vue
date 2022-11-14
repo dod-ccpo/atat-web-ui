@@ -23,6 +23,7 @@
           :additionalButtons="additionalButtons"
           :backButtonText="backButtonText"
           :continueButtonText="continueButtonText"
+          :isNextButtonClickable="isNextButtonClickable"
           :noPrevious="noPrevious"
           class="mb-8"
         />
@@ -52,6 +53,7 @@ import ATATToast from "./components/ATATToast.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import Steps from "@/store/steps";
+import EventBus from "@/helpers/eventBus";
 
 import {
   AdditionalButton,
@@ -85,11 +87,19 @@ export default class AppPackageBuilder extends Vue {
     sideStepper: ATATSideStepper;
   };
 
+  private isNextButtonClickable = false;
+
   public routeNames: Record<string, string> = {};
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent || undefined;
   };
+
+  
+  isFormValid(isValid: boolean): boolean{
+    this.isNextButtonClickable = isValid;
+    return isValid;
+  }
 
   private stepperData = buildStepperData();
   private additionalButtons: AdditionalButton[] = [];
@@ -108,6 +118,7 @@ export default class AppPackageBuilder extends Vue {
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
     }
+    EventBus.$on('form-valid-check', this.isFormValid);
   }
 
   @Watch("$route")

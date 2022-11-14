@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation>
+  <v-form ref="form" lazy-validation @input="checkIfValidEvent">
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
@@ -70,6 +70,7 @@ import AcquisitionPackage, {
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
+import EventBus from "@/helpers/eventBus";
 
 @Component({
   components: {
@@ -82,6 +83,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";
+  private isValid = false;
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -94,6 +96,11 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       valid = this.Form.validate();
     });
     return valid;
+  }
+
+  async checkIfValidEvent(): Promise<void> {
+    this.isValid = await this.validateForm();
+    EventBus.$emit('form-valid-check', this.isValid);
   }
 
   public get projectTitle(): string {
