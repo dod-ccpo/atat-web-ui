@@ -21,7 +21,7 @@
         role="button"
         class="ml-4"
       >
-        <span>Toggle Developer Navigation</span>
+        <span>Toggle Developer Navigation {{ developerNavState }}</span>
       </v-btn>
 
       <span class="ml-auto d-flex">
@@ -75,6 +75,10 @@ export default class ATATStepperNavigation extends Vue {
 
   private allowDeveloperNavigation(): boolean {
     return process.env.VUE_APP_allowDeveloperNavigation === 'true' || false;
+  }
+
+  private get developerNavState(): string {
+    return AcquisitionPackage.getAllowDeveloperNavigation ? "OFF" : "ON";
   }
 
   private toggleDeveloperNavigation(): void {
