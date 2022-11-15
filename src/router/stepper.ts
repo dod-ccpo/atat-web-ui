@@ -254,14 +254,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     path: "/package-details",
     completePercentageWeight: 14,
     component: AcquisitionPackageDetails,
-    completed: true,
+    completed: false,
     children: [
       {
         menuText: "Project Overview",
         path: "project-overview",
         name: routeNames.ProjectOverview,
         completePercentageWeight: 4,
-        completed: true,
+        completed: false,
         component: ProjectOverview,
         // KEEP THIS FOR REFERENCE
         // additionalButtons: [
@@ -280,7 +280,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Organization",
         path: "organization-info",
         name: routeNames.OrganizationInfo,
-        completed: true,
+        completed: false,
         completePercentageWeight: 5,
         component: OrganizationInfo,
       },
@@ -289,7 +289,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "contact-info",
         name: routeNames.ContactInformation,
         completePercentageWeight: 5,
-        completed: true,
+        completed: false,
         component: ContactInfo,
       },
       {
