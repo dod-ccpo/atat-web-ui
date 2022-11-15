@@ -9,9 +9,10 @@
       name="AddressType"
       class="mt-3 mb-8"
       @radioButtonSelected="addressTypeChange"
+      :rules="[$validators.required('Please select your Organization\'s address type.')]"
     />
 
-    <v-form v-show="_selectedAddressType !== ''" ref="atatAddressForm" lazy-validation>
+    <v-form v-if="_selectedAddressType !== ''" ref="atatAddressForm" lazy-validation>
       <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField
@@ -44,7 +45,7 @@
         ]"
       >
         <ATATTextField
-          v-show="_selectedAddressType !== addressTypes.MIL"
+          v-if="_selectedAddressType !== addressTypes.MIL"
           id="City"
           label="City"
           :class="inputClass"
@@ -52,7 +53,7 @@
           :rules="getRules('City')"
         />
         <ATATSelect
-          v-show="_selectedAddressType === addressTypes.MIL"
+          v-if="_selectedAddressType === addressTypes.MIL"
           id="APO_FPO_DPO"
           label="APO/FPO/DPO"
           :class="inputClass"
@@ -74,7 +75,7 @@
         <ATATAutoComplete
           id="State"
           label="State"
-          v-show="_selectedAddressType === addressTypes.USA"
+          v-if="_selectedAddressType === addressTypes.USA"
           :class="inputClass"
           titleKey="text"
           :searchFields="['text', 'value']"
@@ -86,7 +87,7 @@
         />
 
         <ATATSelect
-          v-show="_selectedAddressType === addressTypes.MIL"
+          v-if="_selectedAddressType === addressTypes.MIL"
           id="StateCode"
           label="AA/AE/AP"
           :class="inputClass"
@@ -98,7 +99,7 @@
         />
 
         <ATATTextField
-          v-show="_selectedAddressType === addressTypes.FOR"
+          v-if="_selectedAddressType === addressTypes.FOR"
           id="StateProvince"
           label="State or Province"
           :value.sync="_stateOrProvince"
@@ -119,7 +120,7 @@
         />
       </v-col>
     </v-row>
-    <v-row v-show="_selectedAddressType === addressTypes.FOR">
+    <v-row v-if="_selectedAddressType === addressTypes.FOR">
       <v-col class="col-12 col-lg-4">
         <ATATAutoComplete
           id="Country"
