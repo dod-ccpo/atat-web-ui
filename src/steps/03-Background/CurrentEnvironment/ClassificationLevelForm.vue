@@ -10,59 +10,46 @@
       Select all that apply to your current environment.
     </p>
     <ATATCheckboxGroup
-      id="ClassificationTypesCheckboxes"
+      id="ClassificationLevelCheckboxes"
       :card="false"
       :hasOtherValue="true"
-      :items="classificationsLevels"
+      :items="topLevelClassifications"
       :rules="[
               $validators.required('Please select at least one classification level.')
        ]"
-      :value.sync="_selectedClassifications"
+      :value.sync="selectedTopLevelClassifications"
       class="copy-max-width mb-10"
       name="classificationTypesCheckboxes"
     />
-    <div v-if="impactLevels.length > 1">
+    <div v-if="showImpactLevels">
       <p id="DeployedP" class="mb-3 font-weight-500">
         For your Unclassified instance(s), what
         <span v-if="isCloud">
             impact levels are you currently deployed in?
           </span>
-        <span v-if="onPrem">
+        <span v-if="isOnPrem">
             type of information are you hosting?
           </span>
       </p>
       <p id="SelectMessage2" class="mb-4">
         Select all that apply to your current environment.
       </p>
+
       <ATATCheckboxGroup
-        v-if="isCloud"
-        id="ImpactLevelCheckboxes"
+        :id="impactLevelId"
         :card="false"
         :hasOtherValue="true"
-        :items="impactLevels"
-        :rules="[
-            $validators.required('Please select at least one impact level.')
-           ]"
-        :value.sync="_selectedImpactLevels"
+        :items="impactLevelOptions"
+        :rules="[$validators.required(impactLevelErrorMessage)]"
+        :value.sync="selectedImpactLevels"
         class="copy-max-width mb-10"
-        name="impactLevelCheckboxes"
+        :name="impactLevelId"
       />
-      <ATATCheckboxGroup
-        v-if="onPrem"
-        id="InstanceCheckbox"
-        :card="false"
-        :hasOtherValue="true"
-        :items="instanceClass"
-        :rules="[
-            $validators.
-            required('Please select at least one type of information that you are hosting.')
-           ]"
-        :value.sync="_selectedInstances"
-        class="copy-max-width mb-10"
-        name="instanceCheckbox"
-      />
+
     </div>
-    <div v-if="IL2Selected">
+
+    <!-- START -- PRESERVE CODE FOR POST-MVP -->
+    <!-- <div v-if="IL2Selected">
       <p id="CloudTypeP" class="mb-4 font-weight-500">
         For your IL2 instance(s), what type of cloud are currently deployed in?
       </p>
@@ -78,7 +65,9 @@
         class="copy-max-width"
         name="cloudTypeCheckboxes"
       />
-    </div>
+    </div> -->
+    <!-- END -- PRESERVE CODE FOR POST-MVP -->
+
   </div>
 </template>
 <script lang="ts">
@@ -97,19 +86,39 @@ import { buildClassificationCheckboxList } from "@/helpers";
 })
 export default class ClassificationLevelForm extends Vue {
   @Prop() public isCloud?:boolean;
-  @Prop() public onPrem?:boolean;
+  @Prop() public isOnPrem?:boolean;
   @Prop({required: true}) public isHybrid?:boolean;
   @Prop({required: true}) public hybridText?:string;
-  @PropSync("selectedImpactLevels") private _selectedImpactLevels?: string[];
-  @PropSync("selectedClassifications") private _selectedClassifications?: string[];
-  @PropSync("selectedCloudTypes") private _selectedCloudTypes?: string[];
-  @PropSync("selectedInstances") private _selectedInstances?: string[];
+  @PropSync("selectedClassifications") private _selectedClassifications!: string[];
 
-  public classifications: ClassificationLevelDTO[] = []
-  private impactLevels: Checkbox[] = [];
-  public IL2Selected = false;
-  public unclassifiedSelected = false;
-  private classificationsLevels: Checkbox[] = [
+  public allClassificationLevels: ClassificationLevelDTO[] = []
+
+  public get impactLevelId(): string {
+    return this.isCloud 
+      ? "CloudClassificationCheckboxes" 
+      : "OnPremClassificationCheckboxes";
+  }
+
+  public get impactLevelErrorMessage(): string {
+    return this.isCloud
+      ? "Please select at least one impact level."
+      : "Please select at least one type of information that you are hosting."
+  }
+
+  public get showImpactLevels(): boolean {
+    return this.selectedTopLevelClassifications 
+      ? this.selectedTopLevelClassifications.includes("U") 
+      : false;
+  }
+
+  public get impactLevelOptions(): Checkbox[] {
+    return this.isCloud 
+      ? this.cloudImpactLevelOptions 
+      : this.onPremImpactLevelOptions;
+  }
+
+  public selectedTopLevelClassifications: string[] = []
+  private topLevelClassifications: Checkbox[] = [
     {
       id: "Unclassified",
       label: "Unclassified",
@@ -125,11 +134,15 @@ export default class ClassificationLevelForm extends Vue {
       label: "Top Secret",
       value: "TS",
     },
-  ]
-  private instanceClass: Checkbox[] = [
+  ];
+
+  public selectedImpactLevels: string[] = [];
+  public cloudImpactLevelOptions: Checkbox[] = [];
+  public onPremImpactLevelOptions: Checkbox[] = [
     {
       id: "PublicRelease",
-      label: "Information approved for public release (Low Confidentiality and Moderate Integrity)",
+      label: `Information approved for public release (Low Confidentiality 
+        and Moderate Integrity)`,
       value: "IL2",
       description: "Equivalent to a Impact Level 2 (IL2) deployment"
     },
@@ -146,6 +159,92 @@ export default class ClassificationLevelForm extends Vue {
       description: "Equivalent to a Impact Level 5 (IL5) deploytment"
     },
   ];
+
+  @Watch("selectedTopLevelClassifications")
+  public selectedTopLevelClassificationChange(newVal: string[], oldVal: string[]): void {
+    if (!newVal.includes("U")) {
+      this.selectedImpactLevels = [];
+    }
+    if (newVal.length > oldVal.length) {
+      const noUnclassified = newVal.filter(c => c !== "U");
+      this._selectedClassifications = this._selectedClassifications?.concat(noUnclassified);
+      this._selectedClassifications = [...new Set(
+        [...this._selectedClassifications, ...noUnclassified]
+      )];
+    } else {
+      const uncheckedClassification = oldVal.filter(v => newVal.indexOf(v) === -1)[0];
+      const i = this._selectedClassifications?.indexOf(uncheckedClassification);
+      if (i > -1) {
+        this._selectedClassifications?.splice(i, 1);
+      }
+    }
+  }
+
+  @Watch("selectedImpactLevels")
+  public selectedImpactLevelsChange(newVal: string[], oldVal: string[]): void {
+    if (newVal.length > oldVal.length) {
+      this._selectedClassifications = this._selectedClassifications?.concat(newVal);
+      this._selectedClassifications = [...new Set([...this._selectedClassifications, ...newVal])]
+    } else {
+      const uncheckedILs = oldVal.filter(v => newVal.indexOf(v) === -1);
+      uncheckedILs.forEach((uncheckedIL) => {
+        const i = this._selectedClassifications?.indexOf(uncheckedIL);
+        if (i > -1) {
+          this._selectedClassifications?.splice(i, 1);
+        }
+      });
+    }
+  }
+
+  public async setSecretSysIds(): Promise<void> {
+    const secretClassificationAbbrs = ["S", "TS"];
+    secretClassificationAbbrs.forEach((abbr) => {
+      const classificationObj = this.allClassificationLevels.find(
+        obj => obj.classification === abbr
+      );
+      const index = this.topLevelClassifications.findIndex(obj => obj.value === abbr);
+      this.topLevelClassifications[index].value = classificationObj?.sys_id || "";
+    });
+  }
+
+  public async setOnPremImpactLevelSysId(): Promise<void> {
+    const unclassifiedILs = ["IL2", "IL4", "IL5"];
+    unclassifiedILs.forEach((IL) => {
+      const classificationObj = this.allClassificationLevels.find(
+        obj => obj.impact_level === IL
+      );
+      const sysId = classificationObj?.sys_id;
+      const onPremILIndex = this.onPremImpactLevelOptions.findIndex(
+        obj => obj.value === IL
+      );
+      this.onPremImpactLevelOptions[onPremILIndex].value = sysId || "";
+    });
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
+    // await classificationRequirements.loadEnvironmentInstances()
+
+    await this.setSecretSysIds();
+    await this.setOnPremImpactLevelSysId();
+
+    let onlyUnclassifiedILs = this.allClassificationLevels
+      .filter(classification => classification.classification === "U" );
+    this.cloudImpactLevelOptions = buildClassificationCheckboxList(
+      onlyUnclassifiedILs, "", true, true
+    );
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
+  /* 
+  // START -- PRESERVE CODE FOR POST-MVP
+  // CLOUD TYPES WILL BE POST MVP - it was a late addition
+
+  public IL2Selected = false;
+
   private cloudTypes: Checkbox[] = [
     {
       id: "CommercialCloud",
@@ -157,54 +256,21 @@ export default class ClassificationLevelForm extends Vue {
       label: "Federal community cloud (government cloud)",
       value: "GovernmentCloud",
     },
+  ];
 
-  ]
-
-  @Watch("_selectedClassifications")
-  public selectedTypeChange(newVal: string[]): void {
-    let filteredList :ClassificationLevelDTO[] = []
-    if(newVal.includes("U")) {
-      this.unclassifiedSelected = true
-      let filtered = this.classifications
-        .filter(classification => classification.classification === "U" )
-      filteredList.push(...filtered)
-      if (this.impactLevels.length === 0) {
-        this.impactLevels = this.createCheckboxItems(filteredList)
-      }
+  @Watch("_selectedImpactLevels")
+  public selectedOptionChange(newVal: string[]): void {
+    let filtered = this.allClassificationLevels
+      .filter(classification => classification.impact_level === "IL2")
+    if(filtered[0].sys_id){
+      this.IL2Selected = newVal.includes(filtered[0].sys_id);
     }
-    if (!newVal.includes("U")) {
-      this.unclassifiedSelected = false
-      this.impactLevels = [];
-      this._selectedInstances = []
-      this._selectedImpactLevels = []
+    if(!this.IL2Selected){
+      this._selectedCloudTypes = [];
     }
   }
-  // will be added in future sprint
-  // @Watch("_selectedImpactLevels")
-  // public selectedOptionChange(newVal: string[]): void {
-  //   let filtered = this.classifications
-  //     .filter(classification => classification.impact_level === "IL2")
-  //   if(filtered[0].sys_id){
-  //     this.IL2Selected = newVal.includes(filtered[0].sys_id);
-  //   }
-  //   if(!this.IL2Selected){
-  //     this._selectedCloudTypes = [];
-  //   }
-  // }
 
-  private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    return buildClassificationCheckboxList(data, "", true, true);
-  }
-
-
-
-  public async loadOnEnter(): Promise<void> {
-    this.classifications = await classificationRequirements.getAllClassificationLevels();
-    await classificationRequirements.loadEnvironmentInstances()
-  }
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
+  // END -- PRESERVE CODE FOR POST-MVP
+  */
 }
 </script>

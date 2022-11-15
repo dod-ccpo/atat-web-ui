@@ -31,7 +31,7 @@
           { '_no-description': noDescriptions },
           { '_has-text-fields' : hasTextFields }
         ]"
-        :key="item.value"
+        :key="id + '_' + item.value"
         :label="item.label"
         :value="item.value"
         :error="error"

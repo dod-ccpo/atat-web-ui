@@ -17,10 +17,7 @@
               hybridText="1. Your cloud instances"
               :isHybrid="isHybrid"
               :isCloud="isCloud"
-              :selectedImpactLevels.sync="selectedImpactLevels"
-              :selectedClassifications.sync="selectedClassifications"
-              :selectedCloudTypes.sync="selectedCloudTypes"
-              :selectedInstances.sync="selectedInstances"
+              :selectedClassifications.sync="envClassificationsCloud"
             />
             <hr v-if="isHybrid" />
             <ClassificationLevelForm
@@ -28,10 +25,7 @@
               hybridText="2. Your on-premise instances"
               :isHybrid="isHybrid"
               :isOnPrem="isOnPrem"
-              :selectedImpactLevels.sync="selectedImpactLevels"
-              :selectedClassifications.sync="selectedOnPremClassifications"
-              :selectedCloudTypes.sync="selectedCloudTypes"
-              :selectedInstances.sync="selectedInstances"
+              :selectedClassifications.sync="envClassificationsOnPrem"
             />
           </div>
         </v-col>
@@ -41,15 +35,15 @@
 </template>
 <script lang="ts">
 
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { ClassificationLevelDTO } from "@/api/models";
-import classificationRequirements from "@/store/classificationRequirements";
-import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
+import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ClassificationLevelForm
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.vue";
+import { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 
 
 @Component({
@@ -59,6 +53,7 @@ import ClassificationLevelForm
   }
 })
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
+  public currEnvDTO = defaultCurrentEnvironment;
   public envLocation = "";
   private isHybrid = false;
   private isCloud = false;
@@ -73,7 +68,6 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
 
 
 
-  public allClassificationLevels: ClassificationLevelDTO[] = []
 
   public envClassificationsCloud: string[] = []
   public envClassificationsOnPrem: string[] = []
@@ -118,9 +112,13 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       this.isCloud = this.envLocation === "CLOUD" || this.isHybrid;
       this.envClassificationsCloud = storeData.env_classifications_cloud;
       this.envClassificationsOnPrem = storeData.env_classifications_on_prem;
+      this.savedData = {
+        envClassificationsCloud: this.envClassificationsCloud,
+        envClassificationsOnPrem: this.envClassificationsOnPrem,
+      }
+
     }
 
-    this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
 
 
   }
