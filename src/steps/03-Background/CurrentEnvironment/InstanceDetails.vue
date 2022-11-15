@@ -39,12 +39,12 @@
         :optional="true"
       />
 
-      <!-- v-if="showClassificationOptions" -- TODO after curr env classifications page wired -->
       <ATATRadioGroup 
         id="ClassificationLevelOptions"
+        v-if="classificationRadioOptions.length > 1"
         class="mb-8"
         :items="classificationRadioOptions"
-        :value.sync="instanceData.classification"
+        :value.sync="instanceData.classification_level"
         :legend="classificationLegend"
       />
 
@@ -291,20 +291,45 @@ export default class InstanceDetails extends Vue {
     { text: "Petabyte (PB)", value: "PB" },
   ];
 
+  @Watch("instanceData.instance_location")
+  public instanceLocationChange(newVal: string): void {
+    // eslint-disable-next-line camelcase
+    this.instanceData.classification_level = "";
+    const envClassificationLevelSysIds = newVal === "CLOUD"
+      ? this.currEnvData.env_classifications_cloud
+      : this.currEnvData.env_classifications_on_prem;
+      
+    if (envClassificationLevelSysIds.length === 1) {
+      // eslint-disable-next-line camelcase
+      this.instanceData.classification_level = envClassificationLevelSysIds[0];
+    } else {
+      const filteredClassificationObjects = this.allClassificationLevels.filter((obj) => {
+        if (obj.sys_id) {
+          return envClassificationLevelSysIds.includes(obj.sys_id)
+        }
+      });
+
+      this.classificationRadioOptions = buildClassificationCheckboxList(
+        filteredClassificationObjects, "", false, true, "short"
+      );
+
+      this.setClassificationLabels();
+    }
+
+    
+  }
+
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {
-    // const storeData = await AcquisitionPackage
-    //   .loadData<CurrentEnvironmentDTO>(
-    //     {storeProperty: StoreProperties.CurrentEnvironment}
-    //   );
 
     this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
-    this.classificationRadioOptions = buildClassificationCheckboxList(
-      this.allClassificationLevels, "", false, true, "short"
-    );
+
+    // this.classificationRadioOptions = buildClassificationCheckboxList(
+    //   this.allClassificationLevels, "", false, true, "short"
+    // );
 
     const envStoreData = await AcquisitionPackage.getCurrentEnvironment();
 
@@ -314,6 +339,7 @@ export default class InstanceDetails extends Vue {
       // eslint-disable-next-line camelcase
       this.instanceData.instance_location = envStoreData.env_location !== "HYBRID"
         ? envStoreData.env_location : "";
+      // ejy put below into watcher on instanceData.instance_location
       this.setClassificationLabels();
 
       // this.savedData = {
