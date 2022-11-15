@@ -56,6 +56,8 @@ import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/Environ
 /* 4.2 */   import ContractType from "../steps/04-ContractDetails/ContractType.vue";
 /* 4.3 */   import ClassificationRequirements
   from "../steps/04-ContractDetails/ClassificationRequirements.vue";
+import SecurityRequirements from "@/steps/04-ContractDetails/SecurityRequirements.vue";
+import CrossDomain from "@/steps/04-ContractDetails/CrossDomain.vue";
 
 // Step 5 - Performance Requirements
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
@@ -145,7 +147,9 @@ import {
   CreateEvalPlanRouteResolver,
   BVTOResolver,
   NoEvalPlanRouteResolver,
-  EvalPlanDetailsRouteResolver, ArchitecturalDesignDetailsRouteResolver,
+  EvalPlanDetailsRouteResolver,
+  ArchitecturalDesignDetailsRouteResolver,
+  SecurityRequirementsResolver,
 
 } from "./resolvers";
 
@@ -235,6 +239,8 @@ export const routeNames = {
   ArchitecturalDesign:"Architectural_Design",
   ArchitecturalDesignDetails:"Architectural_Design_Details",
   EnvironmentSummary:"Environment_Summary",
+  SecurityRequirements:"Security_Requirements",
+  CrossDomain:"Cross_Domain",
 };
 
 /**
@@ -599,6 +605,23 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: ClassificationRequirements,
+      },
+      {
+        menuText: "Security Requirements",
+        path:"security-requirements",
+        name: routeNames.SecurityRequirements,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SecurityRequirements,
+        routeResolver: SecurityRequirementsResolver
+      },
+      {
+        menuText: "CrossDomain",
+        path:"cross-domain",
+        name: routeNames.CrossDomain,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: CrossDomain,
       },
     ]
   },
