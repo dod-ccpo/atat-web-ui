@@ -8,7 +8,9 @@ import Steps from "@/store/steps";
 import TaskOrder from "@/store/taskOrder";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
-import { EvaluationPlanDTO } from "@/api/models";
+import { ClassificationLevelDTO, EvaluationPlanDTO } from "@/api/models";
+import ClassificationRequirements from "@/store/classificationRequirements";
+import Vue from "vue";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -772,6 +774,23 @@ export const FinancialPOCResolver =  (current: string): string => {
 
 }
 
+export const SecurityRequirementsResolver = (current: string): string => {
+  const classifications = ClassificationRequirements.selectedClassificationLevels
+  let secretOrTopSecret = false
+  classifications.forEach(classification => {
+    if(classification.classification === "S" || classification.classification === "TS"){
+      secretOrTopSecret = true
+    }
+  })
+  if(secretOrTopSecret){
+    return routeNames.SecurityRequirements
+  }
+
+  return current === routeNames.ClassificationRequirements
+    ? routeNames.CrossDomain
+    : routeNames.ClassificationRequirements
+}
+
 
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
@@ -796,6 +815,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
+  SecurityRequirementsResolver
 };
 
 // add path resolvers here 
