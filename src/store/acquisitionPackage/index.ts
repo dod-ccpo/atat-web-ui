@@ -335,6 +335,8 @@ export class AcquisitionPackageStore extends VuexModule {
   totalBasePoPDuration = 0;
   taskOrderDetailsAlertClosed = false;
 
+  validateNow = false;
+
   fundingRequestType: string | null =  null;
   // currentEnv = {
   //   system_documentation:"",
@@ -344,6 +346,15 @@ export class AcquisitionPackageStore extends VuexModule {
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
+  }
+
+  public get getValidateNow(): boolean {
+    return this.validateNow;
+  }
+
+  @Mutation
+  public setValidateNow(value: boolean){
+    this.validateNow = value;
   }
 
   @Mutation
