@@ -20,7 +20,6 @@
             :value.sync="currentEnvironmentExists"
             class="copy-max-width mb-10 max-width-740"
             width="380"
-
           />
         </div>
       </v-col>

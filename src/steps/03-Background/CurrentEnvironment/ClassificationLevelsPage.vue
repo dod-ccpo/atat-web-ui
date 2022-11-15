@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-form ref="form">
     <v-container class="container-max-width" fluid>
       <v-row>
         <v-col class="col-12">
@@ -31,19 +31,19 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
+  </v-form>
 </template>
 <script lang="ts">
 
 import { Component, Mixins } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import { ClassificationLevelDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ClassificationLevelForm
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.vue";
-import { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
+import CurrentEnvironment, 
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 
 
 @Component({
@@ -58,20 +58,8 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   private isHybrid = false;
   private isCloud = false;
   private isOnPrem = false;
-
-  public selectedImpactLevels: string[] = [];
-  public selectedClassifications: string[] = [];
-  public selectedOnPremClassifications: string[] = [];
-  public selectedCloudTypes: string[] = [];
-  public selectedInstances: string[] = [];
-  public classifications: ClassificationLevelDTO[] = []
-
-
-
-
   public envClassificationsCloud: string[] = []
   public envClassificationsOnPrem: string[] = []
-
 
   public savedData: Record<string, string[]> = {
     envClassificationsCloud: [],
@@ -84,23 +72,6 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       envClassificationsOnPrem: this.envClassificationsOnPrem,
     }
   };
-
-
-
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
-  }
-
-  protected async saveOnLeave(): Promise<boolean> {
-    try {
-      if (this.hasChanged()) {
-        // await classificationRequirements.saveSelectedClassificationInstances(this.currentData)
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    return true;
-  }
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.getCurrentEnvironment();
@@ -116,15 +87,35 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
         envClassificationsCloud: this.envClassificationsCloud,
         envClassificationsOnPrem: this.envClassificationsOnPrem,
       }
-
     }
-
-
-
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
+
+  private hasChanged(): boolean {
+    debugger;
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    debugger;
+    try {
+      if (this.hasChanged()) {
+        /* eslint-disable camelcase */
+        this.currEnvDTO.env_classifications_cloud = this.envClassificationsCloud;
+        this.currEnvDTO.env_classifications_on_prem = this.envClassificationsOnPrem;
+        /* eslint-enable camelcase */
+        // TODO - which store to save to?
+        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
+        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }  
 }
 </script>
