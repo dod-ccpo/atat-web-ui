@@ -57,7 +57,10 @@
 
       <CurrentUsage 
         class="mb-10"
-        :currentUsage.sync="currentUsage"   
+        :usageTrafficSpikeCauses.sync="usageTrafficSpikeCauses"
+        :currentUsageDescription.sync="instanceData.current_usage_description"
+        :eventSpikeDescription.sync="instanceData.traffic_spike_event_description"
+        :periodSpikeDescription.sync="instanceData.traffic_spike_period_description"
       />
 
       <RegionsDeployedAndUserCount 
@@ -113,7 +116,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -128,7 +130,6 @@ import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUser
 import { 
   Checkbox, 
   CurrEnvInstanceConfig, 
-  CurrEnvInstanceUsage, 
   CurrEnvInstancePerformance,
   SelectData,
   CurrEnvInstancePricingDetails,
@@ -240,16 +241,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       && this.currEnvData.env_classifications_on_prem.length === 1);
   }
 
-  // public sectionNumber(section: string): string {
-  //   switch (section) {
-  //   case "currentUsage": 
-  //     return this.instanceData.instance_location === 'ON_PREM' 
-  //     && this.currEnvData.env_classifications_cloud.length === 1
-  //       ? "1." : "2."
-  //   }
-  //   return "";
-  // }
-
   public regionsDeployedUpdate(selected: string[]): void {
     this.instanceData.deployed_regions = selected;
   }
@@ -259,24 +250,22 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     this.instanceData.users_per_region = data;
   }
 
-  public currentUsage: CurrEnvInstanceUsage = {
-    currentUsageDescription: "",
-    trafficSpikeCauses: [],
-    isTrafficSpikeEventBased: "",
-    isTrafficSpikePeriodBased: "",
-    trafficSpikeEventDescription: "",
-    trafficSpikePeriodDescription: "",
-  }
-  @Watch("currentUsage", {deep: true})
-  public currentUsageChange(newVal: CurrEnvInstanceUsage): void {
-    const currentUsageData = {
-      current_usage_description: newVal.currentUsageDescription,
-      is_traffic_spike_event_based: newVal.isTrafficSpikeEventBased,
-      is_traffic_spike_period_based: newVal.isTrafficSpikePeriodBased,
-      traffic_spike_event_description: newVal.trafficSpikeEventDescription,
-      traffic_spike_period_description: newVal.trafficSpikePeriodDescription,
+  public usageTrafficSpikeCauses: string[] = [];
+  @Watch("usageTrafficSpikeCauses")
+  public usageTrafficSpikeCausesChange(newVal: string[]): void {
+    const spikeEventBased = newVal?.includes("EVENT") ? "YES" : "NO";
+    const spikePeriodBased = newVal?.includes("PERIOD") ? "YES" : "NO";
+    const spikeSelection = {
+      is_traffic_spike_event_based: spikeEventBased,
+      is_traffic_spike_period_based: spikePeriodBased,
     }
-    this.instanceData = Object.assign(this.instanceData, currentUsageData);    
+    this.instanceData = Object.assign(this.instanceData, spikeSelection);    
+    if (spikeEventBased === "NO") {
+      this.instanceData.traffic_spike_event_description = "";
+    }
+    if (spikePeriodBased === "NO") {
+      this.instanceData.traffic_spike_period_description = "";
+    }    
   }
 
   public instanceConfig: CurrEnvInstanceConfig = {
@@ -389,22 +378,12 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       if (instanceStoreData) {
         this.instanceData = instanceStoreData;
         this.savedData = _.cloneDeep(this.instanceData);
-        debugger;
-        const spikeCauses = [];
-        if (this.instanceData.is_traffic_spike_event_based) {
-          spikeCauses.push("EVENT");
-        }
-        if (this.instanceData.is_traffic_spike_period_based) {
-          spikeCauses.push("PERIOD");
-        }
 
-        this.currentUsage = {
-          currentUsageDescription: this.instanceData.current_usage_description,
-          isTrafficSpikeEventBased: this.instanceData.is_traffic_spike_event_based,
-          isTrafficSpikePeriodBased: this.instanceData.is_traffic_spike_period_based,
-          trafficSpikeEventDescription: this.instanceData.traffic_spike_event_description,
-          trafficSpikePeriodDescription: this.instanceData.traffic_spike_period_description,
-          trafficSpikeCauses: spikeCauses,
+        if (this.instanceData.is_traffic_spike_event_based === "YES") {
+          this.usageTrafficSpikeCauses.push("EVENT");
+        }
+        if (this.instanceData.is_traffic_spike_period_based === "YES") {
+          this.usageTrafficSpikeCauses.push("PERIOD");
         }
 
         this.instanceConfig = {
