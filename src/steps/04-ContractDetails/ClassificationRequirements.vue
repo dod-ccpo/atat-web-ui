@@ -14,7 +14,7 @@
               than one level, we will walk you through what is required within each level later.
             </p>
             <p id="SelectMessage">
-              Select all that apply to your contracting effort.
+              Select all that apply to your project.
             </p>
           </div>
           <ATATCheckboxGroup
