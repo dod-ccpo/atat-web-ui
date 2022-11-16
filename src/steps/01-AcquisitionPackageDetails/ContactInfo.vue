@@ -1,157 +1,158 @@
 <template>
-  <v-container fluid class="container-max-width">
-    
-    <h1 class="page-header">Let’s confirm your contact information</h1>
-    <ATATRadioGroup
-      legend="What role best describes your affiliation with the DoD?"
-      id="ContactRole"
-      :items="contactRoles"
-      :value.sync="selectedRole"
-      class="mb-6"
-      @radioButtonSelected="contactTypeChange"
-    />
+  <v-form ref="form" lazy-validation>
+    <v-container fluid class="container-max-width">
+      
+      <h1 class="page-header">Let’s confirm your contact information</h1>
+      <ATATRadioGroup
+        legend="What role best describes your affiliation with the DoD?"
+        id="ContactRole"
+        :items="contactRoles"
+        :value.sync="selectedRole"
+        class="mb-6"
+        @radioButtonSelected="contactTypeChange"
+        :rules="[$validators.required('Please select your role.')]"
+      />
 
-    <v-form ref="atatContactForm">
-      <v-row class="form-section">
-      <v-col>
-        <ATATSelect
-          id="Branch"
-          v-model="selectedBranch"
-          v-show="selectedRole === 'MILITARY'"
-          class="_input-max-width mb-10"
-          label="Service branch"
-          placeholder=""
-          :items="branchData"
-          :selectedValue.sync="selectedBranch"
-          :return-object="true"
-          :rules="[
-            $validators.required('Please enter your Service Branch.')
-          ]"
-        />
-
-        <ATATSelect
-          v-show="selectedRole !== 'MILITARY'"
-          id="Salutation"
-          class="_input-max-width"
-          label="Salutation"
-          :optional="true"
-          placeholder=""
-          :items="salutationData"
-          :selectedValue.sync="selectedSalutation"
-        />
-
-        <ATATAutoComplete
-          id="Rank"
-          v-show="selectedRole === 'MILITARY' && showContactInfoFields"
-          label="Rank"
-          titleKey="name"
-          :items="selectedBranchRanksData"
-          :searchFields="['name', 'grade']"
-          :selectedItem.sync="selectedRank"
-          class="_input-max-width mb-7"
-          icon="arrow_drop_down"
-          :rules="[
-            $validators.required('Please select your military rank.')
-          ]"
-        />
-      </v-col>
-      </v-row>
-      <v-row class="form-section" v-show="showContactInfoFields">
-        <v-col class="col-12 col-lg-3">
-          <ATATTextField
-            label="First name"
-            id="FirstName"
-          :value.sync="firstName"
-          class="_input-max-width"
-          :rules="[
-            $validators.required('Please enter your first name.')
-          ]"
-          />
-        </v-col>
-        <v-col class="col-12 col-lg-3">
-          <ATATTextField
-            label="Middle name"
-            id="MiddleName"
-            :value.sync="middleName"
-            :optional="true"
-            class="_input-max-width"
-          />
-        </v-col>
-        <v-col class="col-12 col-lg-3">
-          <ATATTextField
-            label="Last name"
-            id="LastName"
-            :value.sync="lastName"
-            class="_input-max-width"
-            :rules="[
-              $validators.required('Please enter your last name.')
-            ]"
-          />
-        </v-col>
-        <v-col class="col-12 col-lg-3">
-          <ATATTextField
-            label="Suffix"
-            id="Suffix"
-            :optional="true"
-            width="80"
-            :value.sync="suffix"
-          />
-        </v-col>
-      </v-row>
-      <v-row class="form-section mb-0" v-show="showContactInfoFields">
+        <v-row class="form-section">
         <v-col>
-          <ATATTextField
-            label="Your title"
-            id="ContactTitle"
+          <ATATSelect
+            id="Branch"
+            v-model="selectedBranch"
+            v-if="selectedRole === 'MILITARY'"
             class="_input-max-width mb-10"
-            :value.sync="title"
-            :rules="[
-              $validators.required('Please enter your title.')
-            ]"
-          />
-          <ATATPhoneInput
-            label="Your phone number"
-            id="ContactPhone"
-            class="mb-10"
-            :value.sync="selectedPhoneNumber"
-            :country.sync="selectedPhoneCountry"
-            :extensionValue.sync="phoneExtension"
-            :rules="[
-              $validators.isPhoneNumberValid(
-                this.selectedPhoneCountry
-              ),
-            ]"
-          />
-          <ATATTextField
-            label="Your email"
-            id="ContactEmail"
-            class="_input-max-width mb-10"
-            helpText="Enter a .mil or .gov email address."
-            :value.sync="email"
-            :validateOnBlur="true"
-            :rules="[
-                $validators.required('Please enter your email address.'),
-                $validators.isEmail(),
-            ]"
-          />
-          <ATATAutoComplete
-            v-show="selectedRole === 'CIVILIAN'"
-            id="ContactGrade"
-            :optional="true"
-            class="_input-max-width mb-10"
-            label="Grade"
-            :label-sr-only="false"
-            titleKey="label"
-            :searchFields="['label']"
-            :items="gradeData"
-            :selectedItem.sync="selectedGrade"
+            label="Service branch"
             placeholder=""
+            :items="branchData"
+            :selectedValue.sync="selectedBranch"
+            :return-object="true"
+            :rules="[
+              $validators.required('Please enter your Service Branch.')
+            ]"
+          />
+
+          <ATATSelect
+            v-if="selectedRole !== 'MILITARY'"
+            id="Salutation"
+            class="_input-max-width"
+            label="Salutation"
+            :optional="true"
+            placeholder=""
+            :items="salutationData"
+            :selectedValue.sync="selectedSalutation"
+          />
+
+          <ATATAutoComplete
+            id="Rank"
+            v-if="selectedRole === 'MILITARY' && showContactInfoFields"
+            label="Rank"
+            titleKey="name"
+            :items="selectedBranchRanksData"
+            :searchFields="['name', 'grade']"
+            :selectedItem.sync="selectedRank"
+            class="_input-max-width mb-7"
             icon="arrow_drop_down"
+            :rules="[
+              $validators.required('Please select your military rank.')
+            ]"
           />
         </v-col>
-      </v-row>
-    </v-form>
-  </v-container>
+        </v-row>
+        <v-row class="form-section" v-if="showContactInfoFields">
+          <v-col class="col-12 col-lg-3">
+            <ATATTextField
+              label="First name"
+              id="FirstName"
+            :value.sync="firstName"
+            class="_input-max-width"
+            :rules="[
+              $validators.required('Please enter your first name.')
+            ]"
+            />
+          </v-col>
+          <v-col class="col-12 col-lg-3">
+            <ATATTextField
+              label="Middle name"
+              id="MiddleName"
+              :value.sync="middleName"
+              :optional="true"
+              class="_input-max-width"
+            />
+          </v-col>
+          <v-col class="col-12 col-lg-3">
+            <ATATTextField
+              label="Last name"
+              id="LastName"
+              :value.sync="lastName"
+              class="_input-max-width"
+              :rules="[
+                $validators.required('Please enter your last name.')
+              ]"
+            />
+          </v-col>
+          <v-col class="col-12 col-lg-3">
+            <ATATTextField
+              label="Suffix"
+              id="Suffix"
+              :optional="true"
+              width="80"
+              :value.sync="suffix"
+            />
+          </v-col>
+        </v-row>
+        <v-row class="form-section mb-0" v-if="showContactInfoFields">
+          <v-col>
+            <ATATTextField
+              label="Your title"
+              id="ContactTitle"
+              class="_input-max-width mb-10"
+              :value.sync="title"
+              :rules="[
+                $validators.required('Please enter your title.')
+              ]"
+            />
+            <ATATPhoneInput
+              label="Your phone number"
+              id="ContactPhone"
+              class="mb-10"
+              :value.sync="selectedPhoneNumber"
+              :country.sync="selectedPhoneCountry"
+              :extensionValue.sync="phoneExtension"
+              :rules="[
+                $validators.isPhoneNumberValid(
+                  this.selectedPhoneCountry
+                ),
+              ]"
+            />
+            <ATATTextField
+              label="Your email"
+              id="ContactEmail"
+              class="_input-max-width mb-10"
+              helpText="Enter a .mil or .gov email address."
+              :value.sync="email"
+              :validateOnBlur="true"
+              :rules="[
+                  $validators.required('Please enter your email address.'),
+                  $validators.isEmail(),
+              ]"
+            />
+            <ATATAutoComplete
+              v-if="selectedRole === 'CIVILIAN'"
+              id="ContactGrade"
+              :optional="true"
+              class="_input-max-width mb-10"
+              label="Grade"
+              :label-sr-only="false"
+              titleKey="label"
+              :searchFields="['label']"
+              :items="gradeData"
+              :selectedItem.sync="selectedGrade"
+              placeholder=""
+              icon="arrow_drop_down"
+            />
+          </v-col>
+        </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">
