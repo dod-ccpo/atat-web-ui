@@ -247,6 +247,8 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   //   this.instanceData.deployed_regions = selected;
   // }
 
+  public userLocations: string[] = [];
+
   public regionUserDataUpdate(data: string): void {
     debugger;
     this.instanceData.users_per_region = data;
