@@ -8,7 +8,7 @@ import common from "../../../selectors/common.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReq from "../../../selectors/performanceReqs.sel";
 
-describe("Test suite: Let’s start by gathering your Compute requirements", () => {
+describe.skip("Test suite: Let’s start by gathering your Compute requirements", () => {
 
   let serviceOfferingGroups;
   let compute;
@@ -40,7 +40,7 @@ describe("Test suite: Let’s start by gathering your Compute requirements", () 
     cy.textExists(common.subStepClassReqsLink, " Classification Requirements ").click();    
 
   });
-
+  
   it("TC1: Multiple Classifications exists", () => {
     const periodCheckboxCount = 1
     let selectedClassifications = [contractDetails.level5, contractDetails.level4];
