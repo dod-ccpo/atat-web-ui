@@ -1,0 +1,20 @@
+{
+  "fairOpportunity": {
+    "headerText": "Let’s see if you qualify for an exception to the fair opportunity process",
+    "alertHeaderText": "Fair opportunity",
+    "alertMessage": "Each Cloud Service Provider (CSP) available within the JWCC contract must be given a fair opportunity to be considered for task orders exceeding the micro-purchase threshold, unless a statutory exception applies. Any exceptions will require written justification, in accordance with FAR 16.505(b)(2). We will help you complete justification documentation, if needed.",
+    "radioGroupLabel": "Based on your market research, do any of the following exceptions to fair opportunity apply to your acquisition?"
+  },
+  "needEvalPlan": {
+    "headerText": "Based on what you told us, you do not need an evaluation plan for this acquisition.",
+    "alertHeaderText": "Why don’t I need an evaluation plan?",
+    "introMessage": "An evaluation plan is used to establish the basis for how your acquisition will be evaluated during the source selection process.",
+    "secondMessage": "Since your requirement qualifies for an exception to the fair opportunity process, your evaluation team will assess the CSP’s entire solicitation response for technical acceptability. A task order award will be issued on a sole-source basis to the CSP that you specified in the previous section."
+  },
+  "workEvalPlan": {
+    "headerText": "Let’s work on an evaluation plan for your requirement",
+    "introDescription": "In this section, we'll develop the basis for how your acquisition will be evaluated. To begin, select the applicable evaluation method below. In the following screens, we’ll identify any compliance standards, differentiators, or assessment areas that CSPs must address in their response to the solicitation. You’ll have an opportunity to customize these standards for your specific needs.",
+    "epRadioGroupLabel": "Which source selection process is applicable to your requirement? Learn more",
+    "panelHeader": "Understanding the source selection process for JWCC task orders"
+  }
+}
