@@ -98,7 +98,7 @@ describe("testing src/helpers/index.ts", () => {
     },
     {
       classLevel:  { classification: "", impact_level: "IL6" },
-      description: "Accommodates DoD Classified Information up to SECRET"
+      description: ""
     },
     {
       classLevel: "",
