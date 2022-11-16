@@ -3,11 +3,15 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component} from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import {Component, Mixins} from "vue-property-decorator";
 @Component({
 })
-export default class Summary extends Vue {
+export default class Summary extends Mixins(SaveOnLeave) {
+
+  protected async saveOnLeave(): Promise<boolean> {
+    return true;
+  }
   
 }
 </script>

@@ -262,6 +262,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ProjectOverview,
         completePercentageWeight: 4,
         completed: false,
+        lastStep: true,
         component: ProjectOverview,
         // KEEP THIS FOR REFERENCE
         // additionalButtons: [
@@ -281,6 +282,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "organization-info",
         name: routeNames.OrganizationInfo,
         completed: false,
+        lastStep: true,
         completePercentageWeight: 5,
         component: OrganizationInfo,
       },
@@ -290,6 +292,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ContactInformation,
         completePercentageWeight: 5,
         completed: false,
+        lastStep: false,
         component: ContactInfo,
       },
       {
@@ -298,6 +301,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
+        lastStep: false,
         component: CorInfo,
       },
       {
@@ -305,6 +309,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "alt-cor",
         name: routeNames.AlternateCor,
         excludeFromMenu: true,
+        lastStep: false,
         component: AlternateCOR,
       },
       {
@@ -313,6 +318,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.AcorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
+        lastStep: false,
         component: AcorInfo,
         routeResolver: AcorsRouteResolver,
       },
@@ -322,6 +328,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.AcqPackageSummary,
         excludeFromMenu: true,
         completePercentageWeight: 5,
+        lastStep: true,
+        parentName: routeNames.ContactInformation,
         component: Summary,
         backButtonText: "Sample different Back text",
       }

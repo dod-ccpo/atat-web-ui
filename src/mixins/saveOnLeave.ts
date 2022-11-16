@@ -2,6 +2,7 @@ import Vue from "vue";
 import { Route } from "vue-router";
 import { Component } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import Steps from "@/store/steps";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
@@ -42,6 +43,7 @@ export default class SaveOnLeave extends Vue {
     this.$nextTick(()=> {
       AcquisitionPackage.setValidateNow(false);
       if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
+        Steps.setStepComplete(from.name as string);
         next();
       }
     })
