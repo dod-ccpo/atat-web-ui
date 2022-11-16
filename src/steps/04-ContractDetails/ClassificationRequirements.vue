@@ -77,7 +77,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   private checkboxItems: Checkbox[] = []
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    return buildClassificationCheckboxList(data, "", false, false);
+    return buildClassificationCheckboxList(data, "", true, false);
   }
 
   private saveSelected() {

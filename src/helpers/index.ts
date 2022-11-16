@@ -97,7 +97,7 @@ export const buildClassificationDescription
       case "IL5":
         return "Accommodates DoD CUI and National Security Systems"
       case "IL6":
-        return "Accommodates DoD Classified Information up to SECRET"
+        return ""
       default:
         return ""
       }
