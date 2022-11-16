@@ -25,7 +25,7 @@
       id="HighUsageEventDescription"
       class="mt-10"
       v-if="_currentUsage.trafficSpikeCauses.includes('EVENT')"
-      :value.sync="_currentUsage.surgeUsageEvent"
+      :value.sync="_currentUsage.trafficSpikeEventDescription"
       label="Tell us about the event that causes a surge in usage"
       tooltipText="Include any details that would help a CSP better understand 
         your surge requirements (i.e., event name and/or time of year)."
@@ -38,7 +38,7 @@
       id="HighUsagePeriodDescription"
       class="mt-8"
       v-if="_currentUsage.trafficSpikeCauses.includes('PERIOD')"
-      :value.sync="_currentUsage.surgeUsagePeriods"
+      :value.sync="_currentUsage.trafficSpikePeriodDescription"
       label="In which period of the year do you typically have a surge in usage?"
       tooltipText="Include any details that would help a CSP better understand 
         your surge requirements (i.e., date ranges or particular days, months, 
@@ -59,7 +59,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import { Checkbox, RadioButton, CurrentEnvUsageData } from "types/Global";
+import { Checkbox, RadioButton, CurrEnvInstanceUsage } from "types/Global";
 
 @Component({
   components: {
@@ -71,7 +71,7 @@ import { Checkbox, RadioButton, CurrentEnvUsageData } from "types/Global";
 
 export default class CurrentUsage extends Vue {
   
-  @PropSync("currentUsage") public _currentUsage!: CurrentEnvUsageData;
+  @PropSync("currentUsage") public _currentUsage!: CurrEnvInstanceUsage;
 
   public usageOptions: RadioButton[] = [
     {
@@ -101,22 +101,25 @@ export default class CurrentUsage extends Vue {
   ];
 
   @Watch("_currentUsage", {deep: true})
-  public currentUsageDescriptionChange(newVal: CurrentEnvUsageData): void {
+  public currentUsageDescriptionChange(newVal: CurrEnvInstanceUsage): void {
+    debugger;
     if (newVal.currentUsageDescription === "EVEN_USAGE") {
       this._currentUsage.isTrafficSpikeEventBased = "";
       this._currentUsage.isTrafficSpikePeriodBased = "";
       this._currentUsage.trafficSpikeEventDescription = "";
       this._currentUsage.trafficSpikePeriodDescription = "";
     }
+
     if (!newVal.trafficSpikeCauses?.includes("EVENT")) {
       this._currentUsage.trafficSpikeEventDescription = "";
-    } else if (newVal.trafficSpikeCauses?.includes("EVENT")) {
-      this._currentUsage.isTrafficSpikeEventBased = "YES";
+    // } else if (newVal.trafficSpikeCauses?.includes("EVENT")) {
+    //   this._currentUsage.isTrafficSpikeEventBased = "YES";
     }
+
     if (!newVal.trafficSpikeCauses?.includes("PERIOD")) {
       this._currentUsage.trafficSpikePeriodDescription = "";
-    } else if (newVal.trafficSpikeCauses?.includes("PERIOD")) {
-      this._currentUsage.isTrafficSpikePeriodBased = "YES";
+    // } else if (newVal.trafficSpikeCauses?.includes("PERIOD")) {
+    //   this._currentUsage.isTrafficSpikePeriodBased = "YES";
     }
   }
 

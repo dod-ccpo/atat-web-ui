@@ -73,9 +73,7 @@ export default class HasCurrentEnvironment extends Mixins(SaveOnLeave) {
     current_environment_exists: "",
   }
 
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
-  }
+
 
   public async loadOnEnter(): Promise<void> {
     // TODO - get from ACQPKG store or CURRENV store??
@@ -88,6 +86,15 @@ export default class HasCurrentEnvironment extends Mixins(SaveOnLeave) {
         current_environment_exists: storeData.current_environment_exists,
       }
     }
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
@@ -112,9 +119,6 @@ export default class HasCurrentEnvironment extends Mixins(SaveOnLeave) {
     return true;
   }
 
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
 }
 </script>
 

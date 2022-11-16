@@ -121,7 +121,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import { 
   SelectData,
-  CurrentEnvInstanceConfig 
+  CurrEnvInstanceConfig 
 } from "types/Global";
 
 @Component({
@@ -132,7 +132,7 @@ import {
 })
 
 export default class InstanceConfig extends Vue {
-  @PropSync("instanceConfig") public _instanceConfig!: CurrentEnvInstanceConfig
+  @PropSync("instanceConfig") public _instanceConfig!: CurrEnvInstanceConfig
   @Prop() public storageUnits!: SelectData[];
 
 

@@ -95,12 +95,10 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    debugger;
     return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger;
     try {
       if (this.hasChanged()) {
         /* eslint-disable camelcase */

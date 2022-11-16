@@ -41,7 +41,7 @@ export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = 
   users_per_region: "", // json stringified sys_id/count pairs
   operating_system: "",
   licensing: "",
-  number_Of_VCPUs: null,
+  number_of_VCPUs: null,
   processor_speed: null, 
   memory_amount: null,
   memory_unit: "GB",
@@ -72,6 +72,7 @@ export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = 
 export class CurrentEnvironmentStore extends VuexModule {
   initialized = false;
   public currentEnvironment: CurrentEnvironmentDTO | null = null;
+  public currentEnvInstance: CurrentEnvironmentInstanceDTO | null = null;
 
   @Action
   public async getCurrentEnvironment():
@@ -110,6 +111,39 @@ export class CurrentEnvironmentStore extends VuexModule {
     );
   }
 
+  // EJY - call this from env instance summary page on EDIT
+  @Mutation
+  public async setCurrentEnvironmentInstance(
+    value: CurrentEnvironmentInstanceDTO
+  ): Promise<void> {
+    debugger;
+    this.currentEnvInstance = value;
+    // TODO - future ticket - SAVE/UPDATE instance data TO SNOW
+
+    // TEMPORARY until have actual sys_ids use timestamp for sys_id (FUTURE TICKET)
+    if (!this.currentEnvInstance.sys_id) {
+      this.currentEnvInstance.sys_id = String(Date.now());
+    }
+
+    const instanceSysId = this.currentEnvInstance.sys_id;
+    if (this.currentEnvironment && instanceSysId 
+      && this.currentEnvironment.env_instances.indexOf(instanceSysId) === -1
+    ) {
+      this.currentEnvironment.env_instances.push(instanceSysId);
+      // TODO - future ticket - UPDATE env_instances array TO SNOW
+    }
+  }
+
+  public get getCurrentEnvInstance(): 
+    CurrentEnvironmentInstanceDTO | null {
+    // if (!this.currentEnvironment) {
+    //   this.setCurrentEnvironmentInstance(defaultCurrentEnvironmentInstance);
+    // }
+    debugger;
+    return this.currentEnvInstance;
+  }
+  
+
   @Action({rawError: true})
   async initialize(): Promise<void> {
     if (!this.initialized) {
@@ -144,6 +178,7 @@ export class CurrentEnvironmentStore extends VuexModule {
       // TODO: remove the below 3 lines after DB is updated
       defaultCurrentEnvironment.sys_id = currentEnvironmentDTO.sys_id;
       this.setCurrentEnvironment(defaultCurrentEnvironment);
+      this.setCurrentEnvironmentInstance(defaultCurrentEnvironmentInstance);
       return defaultCurrentEnvironment
 
     } catch (error) {
