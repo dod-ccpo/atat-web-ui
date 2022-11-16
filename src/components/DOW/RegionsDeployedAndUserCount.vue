@@ -13,7 +13,7 @@
     :textFieldWidth="164"
     textFieldType="number"
     :labelWidth="180"
-    :value.sync="_selectedRegions"
+    :value.sync="selectedRegions"
     @checkboxTextfieldDataUpdate="regionsUserDataUpdate"
     :isFormattedNumber="true"
     :rules="rules"
@@ -43,10 +43,12 @@ export default class RegionsDeployedAndUserCount extends Vue {
   @Prop() tooltipText?: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
   @Prop({ default: () => []}) private textfieldRules!: Array<unknown>;
-  @PropSync("selectedRegions") private _selectedRegions!: string[];
+  @Prop() private selectedDeployedRegionsOnLoad?: string[];
+  @Prop() private regionUsersOnLoad?: string;
+  // @PropSync("selectedRegions") private _selectedRegions!: string[];
 
 
-  // public selectedRegions: string[] = [];
+  public selectedRegions: string[] = [];
   public regions: Checkbox[] = [
     {
       id: "CONUSEast",
@@ -95,10 +97,10 @@ export default class RegionsDeployedAndUserCount extends Vue {
     },
   ];
 
-  // @Watch("_selectedRegions")
-  // public selectedRegionsChanged(): void {
-  //   this.$emit("selectedRegionsUpdate", this.selectedRegions);
-  // }
+  @Watch("selectedRegions")
+  public selectedRegionsChanged(): void {
+    this.$emit("selectedRegionsUpdate", this.selectedRegions);
+  }
 
   public regionsUserDataUpdate(data: Checkbox[]): void {
     const regionsWithUserCount = data.filter(
@@ -114,6 +116,30 @@ export default class RegionsDeployedAndUserCount extends Vue {
     })
     const jsonStr = JSON.stringify(regionUserData)
     this.$emit("regionUserDataUpdate", jsonStr);
+  }
+
+  @Watch("regionUsersOnLoad")
+  public regionUsersOnLoadChange(newVal: string): void {
+    const regionUsersArray = JSON.parse(newVal);
+    debugger;
+    const selectedRegions: string[] = [];
+    regionUsersArray.forEach((regionUsers: Record<string, string>) => {
+      const region = Object.keys(regionUsers)[0];
+      selectedRegions.push(region);
+      const userCount = Object.values(regionUsers)[0];
+      const i = this.regions.findIndex(obj => obj.value === region);
+      this.regions[i].textfieldValue = userCount;
+    });
+    this.$nextTick(() => {
+      this.selectedRegions = selectedRegions;
+    })
+
+  }
+
+  public async mounted(): Promise<void> {
+    if (this.selectedDeployedRegionsOnLoad) {
+      this.selectedRegions = this.selectedDeployedRegionsOnLoad;
+    }
   }
 
 }

@@ -36,9 +36,9 @@
         groupLabel="In which region(s) is this instance deployed?"
         :tooltipText="regionsDeployedTooltipText"
         :optional="true"
-        :selectedRegions.sync="instanceData.deployed_regions"
+        @selectedRegionsUpdate="regionsDeployedUpdate"
+        :selectedDeployedRegionsOnLoad="selectedDeployedRegionsOnLoad"
       />
-        <!-- @selectedRegionsUpdate="regionsDeployedUpdate" -->
 
       <ATATRadioGroup 
         id="ClassificationLevelOptions"
@@ -74,7 +74,7 @@
         @regionUserDataUpdate="regionUserDataUpdate"
         :rules="[$validators.required('Select at least one region.'),]"
         :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
-        :selectedRegions="userLocations"
+        :regionUsersOnLoad="regionUsersOnLoad"
       />
 
       <hr />
@@ -243,12 +243,12 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       && this.currEnvData.env_classifications_on_prem.length === 1);
   }
 
-  // public regionsDeployedUpdate(selected: string[]): void {
-  //   this.instanceData.deployed_regions = selected;
-  // }
+  public selectedDeployedRegionsOnLoad: string[] = [];
+  public regionsDeployedUpdate(selected: string[]): void {
+    this.instanceData.deployed_regions = selected;
+  }
 
-  public userLocations: string[] = [];
-
+  public regionUsersOnLoad = "";
   public regionUserDataUpdate(data: string): void {
     debugger;
     this.instanceData.users_per_region = data;
@@ -346,8 +346,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       ? this.currEnvData.env_classifications_cloud
       : this.currEnvData.env_classifications_on_prem;
 
-    debugger;
-
     if (envClassificationLevelSysIds.length === 1) {
       // eslint-disable-next-line camelcase
       this.instanceData.classification_level = envClassificationLevelSysIds[0];
@@ -370,6 +368,11 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 
+  
+  // EJY NEED ROUTE RESOLVER AFTER on classifications page if no location selected
+  // send directly to instance form with region and classification radio groups on every instance
+
+
   public async loadOnEnter(): Promise<void> {
 
     this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
@@ -378,12 +381,13 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     if (envStoreData) {
       this.currEnvData = envStoreData;
       this.envLocation = envStoreData.env_location;
-      
-      const instanceStoreData = CurrentEnvironment.getCurrentEnvInstance;
-      debugger;
+      const instanceStoreData = await CurrentEnvironment.getCurrentEnvInstance();
       if (instanceStoreData) {
-        this.instanceData = instanceStoreData;
-        this.savedData = _.cloneDeep(this.instanceData);
+        this.instanceData = _.cloneDeep(instanceStoreData);
+        this.savedData = _.cloneDeep(instanceStoreData);
+        
+        this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || [];
+        this.regionUsersOnLoad = this.instanceData.users_per_region;
 
         if (this.instanceData.is_traffic_spike_event_based === "YES") {
           this.usageTrafficSpikeCauses.push("EVENT");
@@ -414,7 +418,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
           currentPaymentArrangement: this.instanceData.current_payment_arrangement,
           pricingPeriodExpirationDate: this.instanceData.pricing_period_expiration_date,
         }
-        debugger;
       }
 
       if (!instanceStoreData?.instance_location) {

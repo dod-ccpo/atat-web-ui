@@ -5,6 +5,8 @@ import {CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO} from "@/api/models
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import Vue from "vue";
 import {api} from "@/api";
+import { debug } from "console";
+import _ from "lodash";
 
 const ATAT_CURRENT_ENVIRONMENT_KEY = "ATAT_CURRENT_ENVIRONMENT_KEY";
 
@@ -114,7 +116,7 @@ export class CurrentEnvironmentStore extends VuexModule {
 
   @Mutation
   public async resetCurrentEnvironmentInstance(): Promise<void> {
-    this.currentEnvInstance = defaultCurrentEnvironmentInstance;
+    this.currentEnvInstance = _.cloneDeep(defaultCurrentEnvironmentInstance);
   }
 
   // EJY - call this from env instance summary page on EDIT
@@ -122,10 +124,8 @@ export class CurrentEnvironmentStore extends VuexModule {
   public async setCurrentEnvironmentInstance(
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
-    debugger;
-    this.currentEnvInstance = value;
+    this.currentEnvInstance = _.cloneDeep(value);
     // TODO - future ticket - SAVE/UPDATE instance data TO SNOW
-
     // TEMPORARY until have actual sys_ids use timestamp for sys_id (FUTURE TICKET)
     if (!this.currentEnvInstance.sys_id) {
       this.currentEnvInstance.sys_id = String(Date.now());
@@ -146,17 +146,10 @@ export class CurrentEnvironmentStore extends VuexModule {
     }
   }
 
-
-
-  public get getCurrentEnvInstance(): 
-    CurrentEnvironmentInstanceDTO | null {
-    // if (!this.currentEnvironment) {
-    //   this.setCurrentEnvironmentInstance(defaultCurrentEnvironmentInstance);
-    // }
-    debugger;
+  @Action({rawError: true})
+  public async getCurrentEnvInstance(): Promise<CurrentEnvironmentInstanceDTO | null> {
     return this.currentEnvInstance;
   }
-  
 
   @Action({rawError: true})
   async initialize(): Promise<void> {
