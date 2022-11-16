@@ -16,6 +16,7 @@
 
 
       <v-btn
+        id="developerToggleButton"
         v-if="allowDeveloperNavigation()"
         @click="toggleDeveloperNavigation()"
         role="button"
