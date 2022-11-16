@@ -36,9 +36,10 @@
           >
             <template v-slot:content>
               <p class="mb-0">
-                Contracts requiring access to classified information (IL6 level and above) must
-                complete a <strong>DD Form 254, DoD Contract Security Classification
-                Specification.</strong> We will walk you through uploading this form next.
+                <strong> You DO NOT need to complete a DD Form 254,
+                DoD Contract Security Classification Specification, for this task order.</strong>
+                JWCC provides a DD254 at the IDIQ level that covers access to all classification
+                levels for the task orders ordered within it.
               </p>
             </template>
           </ATATAlert>
@@ -57,7 +58,6 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 import { Checkbox } from "../../../types/Global";
 import { ClassificationLevelDTO } from "@/api/models";
-import DescriptionOfWork from "@/store/descriptionOfWork";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
