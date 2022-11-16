@@ -37,14 +37,14 @@ module.exports = {
   subStepContactInformationTxt: "#SubStep_ContactInformation > .step-text",
   subStepContactInformationLink: "#SubStep_ContactInformation",
 
-  //Fair Opporunity
-  stepFairOppLink:"#Step_FairOpportunityProcess",
-  stepFairOppText: "#Step_FairOpportunityProcess .step-text",
-  stepFairOppTextCircle: "#Step_FairOpportunityProcess .step-circle",  
-  subStepExceptionsLink: "#SubStep_Exceptions",
-  subStepExceptionsText: "#SubStep_Exceptions .step-text",
-  subStepJustificationLink: "#SubStep_JustificationandApproval",
-  subStepJustificationText: "#SubStep_JustificationandApproval .step-text",
+  //Evaluation Criteria
+  stepEvaluationCriteriaLink: "#Step_EvaluationCriteria",
+  stepEvaluationCriteriaText: "#Step_EvaluationCriteria .step-text",
+  subStepFairOppLink:"#SubStep_ExceptiontoFairOpportunity",
+  stepFairOppText: "#SubStep_ExceptiontoFairOpportunity .step-text",
+  stepFairOppTextCircle: "#SubStep_ExceptiontoFairOpportunity .step-circle",  
+  subStepEvaluationLink: "#SubStep_CreateEvaluationPlan",
+  subStepEvaluationText: "#SubStep_CreateEvaluationPlan .step-text", 
 
   //Background
   stepBackgroundLink: "#Step_Background",
@@ -99,12 +99,7 @@ module.exports = {
   substepPDOILink: "#SubStep_PublicDisclosureofInformation",
   substepPDOIText: "#SubStep_PublicDisclosureofInformation .step-text",
   substepSection508Link: "#SubStep_Section508Standards",
-  substepSection508Text: "#SubStep_Section508Standards .step-text",
-
-  //Evaluation Criteria
-  stepEvaluationCriteriaLink: "#Step_EvaluationCriteria",
-  stepEvaluationCriteriaText: "#Step_EvaluationCriteria .step-text",
-
+  substepSection508Text: "#SubStep_Section508Standards .step-text",  
 
   //Financial Details
   stepFinancialDetailsLink:"#Step_FinancialDetails",
