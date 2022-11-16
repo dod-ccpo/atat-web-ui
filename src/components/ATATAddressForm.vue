@@ -204,7 +204,7 @@ export default class ATATAddressForm extends Vue {
           ? { text: "", value: "" }
           : { text: "United States of America", value: "US" };
 
-    this.resetData();
+    // this.resetData();
   }
 
   private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
