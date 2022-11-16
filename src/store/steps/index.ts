@@ -36,11 +36,10 @@ export class StepsStore extends VuexModule implements StepsState {
 
     @Mutation
     public setStepComplete(stepName: string): void {
-      const step = this.stepMap.get(stepName)
+      const step = this.stepMap.get(stepName);
       if(step && step.lastStep === true){
         step.completed = true; 
         this.stepMap.set(stepName, step);
-        debugger;
         if(step.parentName){
           const parentStep = this.stepMap.get(step.parentName);
           if(parentStep){

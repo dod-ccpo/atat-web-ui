@@ -167,13 +167,3 @@ export default class ATATSideStepper extends Vue {
   private percentComplete = 0;
 }
 </script>
-<style>
-.disabled {
-  pointer-events: none;
-  cursor: not-allowed;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-</style>
