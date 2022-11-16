@@ -193,7 +193,7 @@ import Vue from "vue";
 })
 export default class ContactInfo extends Mixins(SaveOnLeave) {
   $refs!: {
-    atatContactForm: Vue & {
+    form: Vue & {
       resetValidation: () => void;
       reset: () => void;
     };
