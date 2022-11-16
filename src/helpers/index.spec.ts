@@ -85,7 +85,7 @@ describe("testing src/helpers/index.ts", () => {
   it.each([
     { 
       classLevel:  { classification: "", impact_level: "IL2" }, 
-      description: "Accommodates DoD information that has been approved for public "
+      description: "Accommodates DoD information approved for public "
        + "release (Low Confidentiality and Moderate Integrity)"
     },
     {
