@@ -10,6 +10,10 @@ export interface StepInfo {
     additionalButtons: AdditionalButton[];
     backButtonText: string | undefined;
     continueButtonText: string | undefined;
+    completed: boolean | undefined;
+    completePercentageWeight: number | undefined;
+    lastStep: boolean | undefined;
+    parentName: string | undefined;
 }
 
 export interface AdditionalButton {

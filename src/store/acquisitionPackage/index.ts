@@ -277,6 +277,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensitiveInformation: store.sensitiveInformation,
       currentEnvironment: store.currentEnvironment,
+      allowDeveloperNavigation: store.allowDeveloperNavigation
     })
   );
 };
@@ -335,6 +336,9 @@ export class AcquisitionPackageStore extends VuexModule {
   totalBasePoPDuration = 0;
   taskOrderDetailsAlertClosed = false;
 
+  validateNow = false;
+  allowDeveloperNavigation = false;
+
   fundingRequestType: string | null =  null;
   // currentEnv = {
   //   system_documentation:"",
@@ -344,6 +348,24 @@ export class AcquisitionPackageStore extends VuexModule {
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
+  }
+
+  public get getValidateNow(): boolean {
+    return this.validateNow;
+  }
+
+  @Mutation
+  public setValidateNow(value: boolean){
+    this.validateNow = value;
+  }
+
+  public get getAllowDeveloperNavigation(): boolean {
+    return this.allowDeveloperNavigation;
+  }
+
+  @Mutation
+  public setAllowDeveloperNavigation(value: boolean){
+    this.allowDeveloperNavigation = value;
   }
 
   @Mutation
@@ -531,6 +553,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.gfeOverview = sessionData.gfeOverview;
     this.classificationLevel = sessionData.classificationLevel;
     this.currentEnvironment = sessionData.currentEnvironment;
+    this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
   }
 
   @Action({ rawError: true })
