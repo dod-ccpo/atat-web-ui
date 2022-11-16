@@ -98,8 +98,20 @@ export default class RegionsDeployedAndUserCount extends Vue {
     this.$emit("selectedRegionsUpdate", this.selectedRegions);
   }
 
-  public regionsUserDataUpdate(): void {
-    this.$emit("regionUserDataUpdate", this.regions);
+  public regionsUserDataUpdate(data: Checkbox[]): void {
+    const regionsWithUserCount = data.filter(
+      checkbox => checkbox.textfieldValue && checkbox.textfieldValue !== ""
+    );
+    const regionUserData: Record<string, string>[] = [];
+    regionsWithUserCount.forEach(checkboxObj => {
+      const key = `${checkboxObj.value}`;
+      const val = checkboxObj.textfieldValue || "";
+      const thisRegionUserObj = { [key]: val };
+      debugger;
+      regionUserData.push(thisRegionUserObj);
+    })
+    const jsonStr = JSON.stringify(regionUserData)
+    this.$emit("regionUserDataUpdate", jsonStr);
   }
 
 }

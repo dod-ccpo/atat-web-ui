@@ -73,6 +73,7 @@ export class CurrentEnvironmentStore extends VuexModule {
   initialized = false;
   public currentEnvironment: CurrentEnvironmentDTO | null = null;
   public currentEnvInstance: CurrentEnvironmentInstanceDTO | null = null;
+  public currentEnvInstances: CurrentEnvironmentInstanceDTO[] = [];
 
   @Action
   public async getCurrentEnvironment():
@@ -111,6 +112,11 @@ export class CurrentEnvironmentStore extends VuexModule {
     );
   }
 
+  @Mutation
+  public async resetCurrentEnvironmentInstance(): Promise<void> {
+    this.currentEnvInstance = defaultCurrentEnvironmentInstance;
+  }
+
   // EJY - call this from env instance summary page on EDIT
   @Mutation
   public async setCurrentEnvironmentInstance(
@@ -126,13 +132,21 @@ export class CurrentEnvironmentStore extends VuexModule {
     }
 
     const instanceSysId = this.currentEnvInstance.sys_id;
-    if (this.currentEnvironment && instanceSysId 
-      && this.currentEnvironment.env_instances.indexOf(instanceSysId) === -1
+    if (this.currentEnvironment?.env_instances.indexOf(instanceSysId) === -1
     ) {
       this.currentEnvironment.env_instances.push(instanceSysId);
+      this.currentEnvInstances.push(this.currentEnvInstance);
       // TODO - future ticket - UPDATE env_instances array TO SNOW
+    } else {
+      // update this instance with new data
+      const instanceIndex = this.currentEnvInstances.findIndex(obj => obj.sys_id === instanceSysId);
+      if (instanceIndex > -1) {
+        this.currentEnvInstances[instanceIndex] = this.currentEnvInstance;
+      }
     }
   }
+
+
 
   public get getCurrentEnvInstance(): 
     CurrentEnvironmentInstanceDTO | null {

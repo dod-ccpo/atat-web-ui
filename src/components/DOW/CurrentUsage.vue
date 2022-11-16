@@ -112,14 +112,16 @@ export default class CurrentUsage extends Vue {
 
     if (!newVal.trafficSpikeCauses?.includes("EVENT")) {
       this._currentUsage.trafficSpikeEventDescription = "";
-    // } else if (newVal.trafficSpikeCauses?.includes("EVENT")) {
-    //   this._currentUsage.isTrafficSpikeEventBased = "YES";
+      this._currentUsage.isTrafficSpikeEventBased = "NO";
+    } else if (newVal.trafficSpikeCauses?.includes("EVENT")) {
+      this._currentUsage.isTrafficSpikeEventBased = "YES";
     }
 
     if (!newVal.trafficSpikeCauses?.includes("PERIOD")) {
       this._currentUsage.trafficSpikePeriodDescription = "";
-    // } else if (newVal.trafficSpikeCauses?.includes("PERIOD")) {
-    //   this._currentUsage.isTrafficSpikePeriodBased = "YES";
+      this._currentUsage.isTrafficSpikePeriodBased = "NO";
+    } else if (newVal.trafficSpikeCauses?.includes("PERIOD")) {
+      this._currentUsage.isTrafficSpikePeriodBased = "YES";
     }
   }
 

@@ -250,14 +250,13 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   //   return "";
   // }
 
-  public regionsDeployed: string [] = [];
   public regionsDeployedUpdate(selected: string[]): void {
-    this.regionsDeployed = selected;
+    this.instanceData.deployed_regions = selected;
   }
 
-  public regionUserData: Checkbox[] = [];
-  public regionUserDataUpdate(data: Checkbox[]): void {
-    this.regionUserData = data;
+  public regionUserDataUpdate(data: string): void {
+    debugger;
+    this.instanceData.users_per_region = data;
   }
 
   public currentUsage: CurrEnvInstanceUsage = {
@@ -406,6 +405,29 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
           trafficSpikeEventDescription: this.instanceData.traffic_spike_event_description,
           trafficSpikePeriodDescription: this.instanceData.traffic_spike_period_description,
           trafficSpikeCauses: spikeCauses,
+        }
+
+        this.instanceConfig = {
+          licensing: this.instanceData.licensing,
+          operatingSystem: this.instanceData.operating_system,
+          numberOfVCPUs: this.instanceData.number_of_VCPUs, 
+          processorSpeed: this.instanceData.processor_speed,
+          memoryAmount: this.instanceData.memory_amount,
+          storageType: this.instanceData.storage_type,
+          storageAmount: this.instanceData.storage_amount,
+          storageUnit: this.instanceData.storage_unit,
+        }
+        
+        this.performanceTier = {
+          performanceTier: this.instanceData.performance_tier,
+          numberOfSimilarInstances: this.instanceData.number_of_instances,
+          dataEgressMonthlyAmount: this.instanceData.data_egress_monthly_amount,
+          dataEgressMonthlyUnit: this.instanceData.data_egress_monthly_unit,
+        }
+
+        this.pricingDetails = {
+          currentPaymentArrangement: this.instanceData.current_payment_arrangement,
+          pricingPeriodExpirationDate: this.instanceData.pricing_period_expiration_date,
         }
         debugger;
       }
