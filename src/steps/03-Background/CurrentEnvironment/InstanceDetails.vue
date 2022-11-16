@@ -34,10 +34,11 @@
         :hasTextFields="false"
         groupLabelId="RegionsDeployedLabel"
         groupLabel="In which region(s) is this instance deployed?"
-        @selectedRegionsUpdate="regionsDeployedUpdate"
         :tooltipText="regionsDeployedTooltipText"
         :optional="true"
+        :selectedRegions.sync="instanceData.deployed_regions"
       />
+        <!-- @selectedRegionsUpdate="regionsDeployedUpdate" -->
 
       <ATATRadioGroup 
         id="ClassificationLevelOptions"
@@ -73,6 +74,7 @@
         @regionUserDataUpdate="regionUserDataUpdate"
         :rules="[$validators.required('Select at least one region.'),]"
         :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
+        :selectedRegions="userLocations"
       />
 
       <hr />
@@ -241,9 +243,9 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       && this.currEnvData.env_classifications_on_prem.length === 1);
   }
 
-  public regionsDeployedUpdate(selected: string[]): void {
-    this.instanceData.deployed_regions = selected;
-  }
+  // public regionsDeployedUpdate(selected: string[]): void {
+  //   this.instanceData.deployed_regions = selected;
+  // }
 
   public regionUserDataUpdate(data: string): void {
     debugger;
@@ -342,6 +344,8 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       ? this.currEnvData.env_classifications_cloud
       : this.currEnvData.env_classifications_on_prem;
 
+    debugger;
+
     if (envClassificationLevelSysIds.length === 1) {
       // eslint-disable-next-line camelcase
       this.instanceData.classification_level = envClassificationLevelSysIds[0];
@@ -351,7 +355,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
           return envClassificationLevelSysIds.includes(obj.sys_id)
         }
       });
-
+      
       this.classificationRadioOptions = buildClassificationCheckboxList(
         filteredClassificationObjects, "", false, true, "short"
       );

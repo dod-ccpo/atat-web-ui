@@ -13,7 +13,7 @@
     :textFieldWidth="164"
     textFieldType="number"
     :labelWidth="180"
-    :value.sync="selectedRegions"
+    :value.sync="_selectedRegions"
     @checkboxTextfieldDataUpdate="regionsUserDataUpdate"
     :isFormattedNumber="true"
     :rules="rules"
@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox } from "types/Global";
@@ -43,8 +43,10 @@ export default class RegionsDeployedAndUserCount extends Vue {
   @Prop() tooltipText?: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
   @Prop({ default: () => []}) private textfieldRules!: Array<unknown>;
+  @PropSync("selectedRegions") private _selectedRegions!: string[];
 
-  public selectedRegions: string[] = [];
+
+  // public selectedRegions: string[] = [];
   public regions: Checkbox[] = [
     {
       id: "CONUSEast",
@@ -93,10 +95,10 @@ export default class RegionsDeployedAndUserCount extends Vue {
     },
   ];
 
-  @Watch("selectedRegions")
-  public selectedRegionsChanged(): void {
-    this.$emit("selectedRegionsUpdate", this.selectedRegions);
-  }
+  // @Watch("_selectedRegions")
+  // public selectedRegionsChanged(): void {
+  //   this.$emit("selectedRegionsUpdate", this.selectedRegions);
+  // }
 
   public regionsUserDataUpdate(data: Checkbox[]): void {
     const regionsWithUserCount = data.filter(
