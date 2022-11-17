@@ -221,13 +221,13 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   @Watch("_items", {deep: true})
-  protected itemsChanged(newVal: Checkbox[]) {
+  protected itemsChanged(newVal: Checkbox[]): void {
     debugger;
     if (this.hasTextFields) {
       newVal.forEach((obj, index) => {
         debugger;
-        if (obj.textfieldValue) {
-          const textfield = this.getTextField(index);
+        const textfield = this.getTextField(index);
+        if (textfield && obj.textfieldValue) {
           textfield.value = obj.textfieldValue;
         }
       });

@@ -54,46 +54,55 @@ export default class RegionsDeployedAndUserCount extends Vue {
       id: "CONUSEast",
       label: "CONUS East",
       value: "CONUSEast",
+      textfieldValue: "",
     },
     {
       id: "CONUSCentral",
       label: "CONUS Central",
       value: "CONUSCentral",
+      textfieldValue: "",
     },
     {
       id: "CONUSWest",
       label: "CONUS West",
       value: "CONUSWest",
+      textfieldValue: "",
     },
     {
       id: "AFRICOM",
       label: "AFRICOM",
       value: "AFRICOM",
+      textfieldValue: "",
     },
     {
       id: "CENTCOM",
       label: "CENTCOM",
-      value: "CENTCOM"
+      value: "CENTCOM",
+      textfieldValue: "",
     },
     {
       id: "EUCOM",
       label: "EUCOM",
-      value: "EUCOM"
+      value: "EUCOM",
+      textfieldValue: "",
     },
     {
       id: "INDOPACOM",
       label: "INDOPACOM",
-      value: "INDOPACOM"
+      value: "INDOPACOM",
+      textfieldValue: "",
     },
     {
       id: "PACCOM",
       label: "PACCOM",
-      value: "PACCOM"
+      value: "PACCOM",
+      textfieldValue: "",
     },
     {
       id: "SOUTHCOM",
       label: "SOUTHCOM",
-      value: "SOUTHCOM"
+      value: "SOUTHCOM",
+      textfieldValue: "",
     },
   ];
 
@@ -133,6 +142,9 @@ export default class RegionsDeployedAndUserCount extends Vue {
     this.$nextTick(() => {
       this.selectedRegions = selectedRegions;
     })
+    // setTimeout(() => {
+    //   this.selectedRegions = selectedRegions;
+    // }, 0);
 
   }
 
