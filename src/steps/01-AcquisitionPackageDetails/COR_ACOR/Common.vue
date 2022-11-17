@@ -3,7 +3,6 @@
     <div class="max-width-640" v-if="isWizard">
       <ATATAutoComplete
         id="SearchContact"
-        v-if="!showContactForm"
         :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
         :label-sr-only="true"
         :label="'Search for your ' + corOrAcor"
@@ -15,28 +14,7 @@
         placeholder="Search by name or email"
         icon="search"
         :noResultsText="'Manually enter my ' + corOrAcor + '’s contact information'"
-        :rules="[
-          $validators
-          .required('Please search for or manually enter' +
-            ' your ' + corOrAcor + ' contact information.')
-          ]"
-        @autocompleteInputUpdate="autocompleteInputUpdate"
-      />
-
-      <ATATAutoComplete
-        id="SearchContact"
-        v-if="showContactForm"
-        :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
-        :label-sr-only="true"
-        :label="'Search for your ' + corOrAcor"
-        titleKey="fullName"
-        subtitleKey="email"
-        :items="contactList"
-        :searchFields="['fullName', 'email']"
-        :selectedItem.sync="selectedContact"
-        placeholder="Search by name or email"
-        icon="search"
-        :noResultsText="'Manually enter my ' + corOrAcor + '’s contact information'"
+        :rules="getRules"
         @autocompleteInputUpdate="autocompleteInputUpdate"
       />
 
@@ -378,6 +356,14 @@ export default class CommonCorAcor extends Vue {
   }
 
   // methods
+
+  private get getRules(){
+    return this.showContactForm ? [] : [
+      this.$validators
+        .required('Please search for or manually enter' +
+        ' your ' + this.corOrAcor + ' contact information.')
+    ]
+  }
 
   private setShowAccessRadioButtons(): void {
     this.showAccessRadioButtons = this.selectedRole === "CIVILIAN"
