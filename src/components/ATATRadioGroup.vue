@@ -120,6 +120,7 @@ import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import { LegendLink, RadioButton } from "../../types/Global";
 import { getIdText } from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -186,6 +187,16 @@ export default class ATATRadioGroup extends Vue {
     this.otherRequiredRule = this.otherValueRequiredMessage && this._validateOtherOnBlur
       ? [this.$validators.required(this.otherValueRequiredMessage)]
       : [];
+  }
+
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if(!this.$refs.radioButtonGroup.validate())
+      this.setErrorMessage();
   }
 
   // methods

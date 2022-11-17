@@ -86,11 +86,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Emit, Prop, PropSync } from "vue-property-decorator";
+import { Component, Emit, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { SelectData } from "../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -106,6 +107,7 @@ export default class ATATSelect extends Vue {
       errorCount: number;
       blur: ()=> void;
       focus: ()=> void;
+      validate: () => boolean;
     };
   }; 
 
@@ -148,6 +150,16 @@ export default class ATATSelect extends Vue {
       });
       this.selectedBeforeChange = val;
     }
+  }
+
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if(!this.$refs.atatSelect.validate())
+      this.setErrorMessage();
   }
 
   private onInput(v: string) {

@@ -62,8 +62,9 @@
 import Vue from "vue";
 import { AutoCompleteItem } from "types/Global";
 
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -80,6 +81,7 @@ export default class ATATAutoComplete extends Vue {
       errorCount: number;
       blur: ()=> void;
       focus: ()=> void;
+      validate: () => boolean;
     };
   };
   // data
@@ -115,6 +117,16 @@ export default class ATATAutoComplete extends Vue {
 
   // methods
 
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if(!this.$refs.atatAutoComplete.validate())
+      this.setErrorMessage();
+  }
+
   private customFilter(item: AutoCompleteItem, queryText: string) {
     let text = "";
     this.searchFields.forEach((key) => {
@@ -133,7 +145,7 @@ export default class ATATAutoComplete extends Vue {
 
   private setErrorMessage(): void {
     setTimeout(()=>{
-      this.errorMessages = this.$refs.atatAutoComplete.errorBucket;
+      this.errorMessages = this.$refs.atatAutoComplete?.errorBucket;
     })
   }
   //@Events
