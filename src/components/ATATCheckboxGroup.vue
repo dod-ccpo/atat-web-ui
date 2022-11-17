@@ -344,7 +344,7 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.checkboxGroup.validate())
+    if(!this.$refs.checkboxGroup[0].validate())
       this.setErrorMessage();
   }
 
