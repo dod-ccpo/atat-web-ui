@@ -172,6 +172,15 @@
                   }
                 }
               }
+              &.disabled {
+                color: $base-light !important;
+                pointer-events: none;
+                cursor: not-allowed;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+              }
             }
             &.active-step {
               a.step {

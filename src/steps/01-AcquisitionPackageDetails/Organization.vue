@@ -1,171 +1,173 @@
 
 <template>
-  <v-container fluid class="container-max-width">
-    <v-row>
-      <v-col>
-        <h1 class="page-header">
-          Next, we’ll gather information about your organization
-        </h1>
+  <v-form ref="form" lazy-validation>
+    <v-container fluid class="container-max-width">
+      <v-row>
+        <v-col>
+          <h1 class="page-header">
+            Next, we’ll gather information about your organization
+          </h1>
 
-        <ATATAutoComplete
-          id="Agency"
-          class="_input-max-width mb-2"
-          label="What agency do you work for?"
-          :label-sr-only="false"
-          titleKey="text"
-          :searchFields="['text']"
-          :items="agencyData"
-          :selectedItem.sync="selectedAgency"
-          :rules="[$validators.required('Please select your agency.')]"
-          placeholder="Find your agency"
-          icon="arrow_drop_down"
-        />
+          <ATATAutoComplete
+            id="Agency"
+            class="_input-max-width mb-2"
+            label="What agency do you work for?"
+            :label-sr-only="false"
+            titleKey="text"
+            :searchFields="['text']"
+            :items="agencyData"
+            :selectedItem.sync="selectedAgency"
+            :rules="[$validators.required('Please select your agency.')]"
+            placeholder="Find your agency"
+            icon="arrow_drop_down"
+          />
 
-        <a
-          role="button"
-          id="RequestAgencyAdded"
-          class="_text-link"
-          :class="{ 'mb-10 d-inline-block': !selectedAgency }"
-          @click="showDialog = true"
-        >
-          Request to have your agency added
-        </a>
+          <a
+            role="button"
+            id="RequestAgencyAdded"
+            class="_text-link"
+            :class="{ 'mb-10 d-inline-block': !selectedAgency }"
+            @click="showDialog = true"
+          >
+            Request to have your agency added
+          </a>
 
-        <div v-show="selectedAgency" class="mt-10">
-          <hr />
-          <section id="Section1">
-            <h2 class="form-section-heading">
-              1. Tell us more about your organization
-            </h2>
-            <ATATAutoComplete
-              id="DisaOrg"
-              v-show="
-                selectedAgency &&
-                selectedAgency.value === this.DisaOrgName
-              "
-              class="_input-max-width mb-10"
-              label="DISA Organization"
-              :label-sr-only="false"
-              titleKey="text"
-              :searchFields="['text']"
-              :items="disaOrgData"
-              :selectedItem.sync="selectedDisaOrg"
-              :rules="[$validators.required('Please select your DISA Organization.')]"
-              placeholder="Find your DISA organization"
-              icon="arrow_drop_down"
-            />
-
-            <ATATTextField
-              id="OrgName"
-              v-show="
-                selectedAgency &&
-                selectedAgency.value !== this.DisaOrgName
-              "
-              label="Organization name"
-              class="_input-max-width mb-10"
-              :value.sync="organizationName"
-              :rules="[$validators.required('Please enter your organization name.'),
-              $validators.maxLength(80, 'Organization name cannot exceed 80 characters.')]"
-            />
-
-            <ATATTextField
-              id="DoDAAC"
-              label="DoD Activity Address Code (DoDAAC)"
-              class="_input-max-width"
-              tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, 
-              activity, or organization that has the authority to requisition, contract 
-              for, or fund/pay bills for materials and services."
-              :value.sync="dodAddressCode"
-              :rules="[
-                $validators.required('Please enter your 6-character DoDAAC.'), 
-                $validators.minLength(6, 'Your DoDAAC must be 6 characters.'),
-                $validators.maxLength(6, 'Your DoDAAC must be 6 characters.')
-              ]"
-            />
-
+          <div v-if="selectedAgency" class="mt-10">
             <hr />
-          </section>
+            <section id="Section1">
+              <h2 class="form-section-heading">
+                1. Tell us more about your organization
+              </h2>
+              <ATATAutoComplete
+                id="DisaOrg"
+                v-if="
+                  selectedAgency &&
+                  selectedAgency.value === this.DisaOrgName
+                "
+                class="_input-max-width mb-10"
+                label="DISA Organization"
+                :label-sr-only="false"
+                titleKey="text"
+                :searchFields="['text']"
+                :items="disaOrgData"
+                :selectedItem.sync="selectedDisaOrg"
+                :rules="[$validators.required('Please select your DISA Organization.')]"
+                placeholder="Find your DISA organization"
+                icon="arrow_drop_down"
+              />
 
-          <section id="Section2">
-            <h2 class="form-section-heading">
-              2. What is your organization’s address?
-            </h2>
+              <ATATTextField
+                id="OrgName"
+                v-if="
+                  selectedAgency &&
+                  selectedAgency.value !== this.DisaOrgName
+                "
+                label="Organization name"
+                class="_input-max-width mb-10"
+                :value.sync="organizationName"
+                :rules="[$validators.required('Please enter your organization name.'),
+                $validators.maxLength(80, 'Organization name cannot exceed 80 characters.')]"
+              />
 
-            <ATATAddressForm 
-              :selectedAddressType.sync="selectedAddressType"
-              :streetAddress1.sync="streetAddress1"
-              :streetAddress2.sync="streetAddress2"
-              :city.sync="city"
-              :selectedMilitaryPO.sync="selectedMilitaryPO"
-              :selectedState.sync="selectedState"
-              :selectedStateCode.sync="selectedStateCode"
-              :stateOrProvince.sync="stateOrProvince"
-              :zipCode.sync="zipCode"
-              :selectedCountry.sync="selectedCountry"
-              :requiredFields='[
-              {field:"StreetAddress", message: "Please enter an address."},
-              {field:"City", message:  "Please enter a city."},
-             {field:"State" , message: "Please select a state."},
-             {field:"ZIPCode" , message: "Please enter a ZIP code."},
-             {
-               field:"APO_FPO_DPO",
-               message: "Please select a military post office (APO or FPO)."
-               },
-             {field:"StateCode", message:  "Please select a state code."},
-             {field:"StateProvince", message: "Please enter a state/province."},
-             {field:"Country", message: "Please select a country."},
-             {field:"PostalCode" , message: "Please enter a postal code."},
-            ]'
-            :isValidRules='[
+              <ATATTextField
+                id="DoDAAC"
+                label="DoD Activity Address Code (DoDAAC)"
+                class="_input-max-width"
+                tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, 
+                activity, or organization that has the authority to requisition, contract 
+                for, or fund/pay bills for materials and services."
+                :value.sync="dodAddressCode"
+                :rules="[
+                  $validators.required('Please enter your 6-character DoDAAC.'), 
+                  $validators.minLength(6, 'Your DoDAAC must be 6 characters.'),
+                  $validators.maxLength(6, 'Your DoDAAC must be 6 characters.')
+                ]"
+              />
+
+              <hr />
+            </section>
+
+            <section id="Section2">
+              <h2 class="form-section-heading">
+                2. What is your organization’s address?
+              </h2>
+
+              <ATATAddressForm 
+                :selectedAddressType.sync="selectedAddressType"
+                :streetAddress1.sync="streetAddress1"
+                :streetAddress2.sync="streetAddress2"
+                :city.sync="city"
+                :selectedMilitaryPO.sync="selectedMilitaryPO"
+                :selectedState.sync="selectedState"
+                :selectedStateCode.sync="selectedStateCode"
+                :stateOrProvince.sync="stateOrProvince"
+                :zipCode.sync="zipCode"
+                :selectedCountry.sync="selectedCountry"
+                :requiredFields='[
+                {field:"StreetAddress", message: "Please enter an address."},
+                {field:"City", message:  "Please enter a city."},
+              {field:"State" , message: "Please select a state."},
+              {field:"ZIPCode" , message: "Please enter a ZIP code."},
               {
-                field:"ZIPCode",
-                message: "Your ZIP code must be 5 or 9 digits.",
-                mask:["99999", "99999-9999"],
+                field:"APO_FPO_DPO",
+                message: "Please select a military post office (APO or FPO)."
                 },
-              {
-                field:"PostalCode",
-                message: "Your postal code must be 10 characters or " +
-                "less and may include spaces and hyphens.",
-                mask:["^[0-9A-Za-z\\s\\-]{1,10}$"],
-                isMaskRegex: true
-              }
-            ]'
-              :addressTypeOptions="addressTypeOptions"
-              :addressTypes="addressTypes"
-              :militaryPostOfficeOptions="militaryPostOfficeOptions"
-              :stateListData="stateListData"
-              :stateCodeListData="stateCodeListData"
-              :countryListData="countryListData"
-            />
-          </section>
-        </div>
-      </v-col>
-    </v-row>
+              {field:"StateCode", message:  "Please select a state code."},
+              {field:"StateProvince", message: "Please enter a state/province."},
+              {field:"Country", message: "Please select a country."},
+              {field:"PostalCode" , message: "Please enter a postal code."},
+              ]'
+              :isValidRules='[
+                {
+                  field:"ZIPCode",
+                  message: "Your ZIP code must be 5 or 9 digits.",
+                  mask:["99999", "99999-9999"],
+                  },
+                {
+                  field:"PostalCode",
+                  message: "Your postal code must be 10 characters or " +
+                  "less and may include spaces and hyphens.",
+                  mask:["^[0-9A-Za-z\\s\\-]{1,10}$"],
+                  isMaskRegex: true
+                }
+              ]'
+                :addressTypeOptions="addressTypeOptions"
+                :addressTypes="addressTypes"
+                :militaryPostOfficeOptions="militaryPostOfficeOptions"
+                :stateListData="stateListData"
+                :stateCodeListData="stateCodeListData"
+                :countryListData="countryListData"
+              />
+            </section>
+          </div>
+        </v-col>
+      </v-row>
 
-    <ATATDialog
-      id="AddAgencyModal"
-      :showDialog.sync="showDialog"
-      title="Request to add your agency"
-      persistent
-      no-click-animation
-      okText="Send Request"
-      width="632"
-      :OKDisabled="true"
-    >
-      <template #content>
-        <p class="body">
-          The agency list is intended to represent activities at the highest
-          level. If you would like to add your agency, please send us
-          the following information for consideration.
-        </p>
-        <ATATTextField
-          id="AgencyOrgName"
-          label="Agency/Organization Name"
-          :class="[inputClass, 'pb-16 mb-9']"
-        />
-      </template>
-    </ATATDialog>
-  </v-container>
+      <ATATDialog
+        id="AddAgencyModal"
+        :showDialog.sync="showDialog"
+        title="Request to add your agency"
+        persistent
+        no-click-animation
+        okText="Send Request"
+        width="632"
+        :OKDisabled="true"
+      >
+        <template #content>
+          <p class="body">
+            The agency list is intended to represent activities at the highest
+            level. If you would like to add your agency, please send us
+            the following information for consideration.
+          </p>
+          <ATATTextField
+            id="AgencyOrgName"
+            label="Agency/Organization Name"
+            :class="[inputClass, 'pb-16 mb-9']"
+          />
+        </template>
+      </ATATDialog>
+    </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -309,7 +311,6 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private get currentData(): OrganizationDTO {
     let state = "";
     let city = this.city;
-
     if (this.selectedAddressType == this.addressTypes.USA) {
       state = this.selectedState.value as string;
     } else if (this.selectedAddressType == this.addressTypes.FOR) {
@@ -320,17 +321,17 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     }
 
     return {
-      disa_organization: this.selectedDisaOrg.value || "",
+      disa_organization: this.selectedDisaOrg.value as string,
       organization_name: this.organizationName,
       dodaac: this.dodAddressCode,
-      agency: this.selectedAgency.value || "",
+      agency: this.selectedAgency.value as string,
       address_type: this.selectedAddressType,
       street_address_1: this.streetAddress1,
       street_address_2: this.streetAddress2,
       city,
       zip_code: this.zipCode,
       state,
-      country: this.selectedCountry.text,
+      country: this.selectedCountry.text as string,
     };
   }
 

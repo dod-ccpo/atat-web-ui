@@ -14,6 +14,17 @@
         <span>{{ backButtonText }}</span>
       </v-btn>
 
+
+      <v-btn
+        id="developerToggleButton"
+        v-if="allowDeveloperNavigation()"
+        @click="toggleDeveloperNavigation()"
+        role="button"
+        class="ml-4"
+      >
+        <span>Toggle Developer Navigation {{ developerNavState }}</span>
+      </v-btn>
+
       <span class="ml-auto d-flex">
         <span v-if="additionalButtons.length" class="d-flex">
           <v-btn 
@@ -49,6 +60,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { AdditionalButton } from "@/store/steps/types";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({})
 
@@ -60,6 +72,18 @@ export default class ATATStepperNavigation extends Vue {
 
   private getButtonClass(button: AdditionalButton) {
     return button.buttonClass || "secondary";
+  }
+
+  private allowDeveloperNavigation(): boolean {
+    return process.env.VUE_APP_allowDeveloperNavigation === 'true' || false;
+  }
+
+  private get developerNavState(): string {
+    return AcquisitionPackage.getAllowDeveloperNavigation ? "OFF" : "ON";
+  }
+
+  private toggleDeveloperNavigation(): void {
+    AcquisitionPackage.setAllowDeveloperNavigation(!AcquisitionPackage.getAllowDeveloperNavigation);
   }
 
 }
