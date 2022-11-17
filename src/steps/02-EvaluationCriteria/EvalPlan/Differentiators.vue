@@ -1,42 +1,44 @@
 
 <template>
-  <div class="container-max-width">
-    <h1 class="page-header">
-      What differentiator(s) should be used to distinguish between technical proposals?
-    </h1>
-    <div class="copy-max-width">
-      <p class="page-intro">
-        Select at least one area that a CSP may offer the Government at a higher 
-        price for additional benefit, beyond the solution itself, that will 
-        distinguish it from other competitor’s solutions. During the source 
-        selection process, the evaluation team will evaluate these differentiators 
-        and document how the perceived benefits of the higher priced proposal 
-        merit additional cost.
-      </p>
+  <v-form ref="form" lazy-validation>
+    <div class="container-max-width">
+      <h1 class="page-header">
+        What differentiator(s) should be used to distinguish between technical proposals?
+      </h1>
+      <div class="copy-max-width">
+        <p class="page-intro">
+          Select at least one area that a CSP may offer the Government at a higher 
+          price for additional benefit, beyond the solution itself, that will 
+          distinguish it from other competitor’s solutions. During the source 
+          selection process, the evaluation team will evaluate these differentiators 
+          and document how the perceived benefits of the higher priced proposal 
+          merit additional cost.
+        </p>
 
-      <ATATCheckboxGroup
-        id="DifferentiatorOptions"
-        :card="true"
-        :noDescriptions="true"
-        :items="differentiators"
-        :value.sync="selectedDifferentiators"
-        :rules="[
-          $validators.required('Please select at least one differentiator.'),
-        ]"
+        <ATATCheckboxGroup
+          id="DifferentiatorOptions"
+          :card="true"
+          :noDescriptions="true"
+          :items="differentiators"
+          :value.sync="selectedDifferentiators"
+          :rules="[
+            $validators.required('Please select at least one differentiator.'),
+          ]"
 
-      />
+        />
 
-      <CustomSpecifications 
-        id="CustomDifferentiatorEntry"
-        v-show="showCustomDifferentiators"
-        sourceSelection="TechProposal"
-        :isDifferentiator="true"
-        :isOptional="customDiffsOptional"
-        :customSpecifications.sync="customDifferentiators"
-      />     
+        <CustomSpecifications 
+          id="CustomDifferentiatorEntry"
+          v-show="showCustomDifferentiators"
+          sourceSelection="TechProposal"
+          :isDifferentiator="true"
+          :isOptional="customDiffsOptional"
+          :customSpecifications.sync="customDifferentiators"
+        />     
 
+      </div>
     </div>
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">

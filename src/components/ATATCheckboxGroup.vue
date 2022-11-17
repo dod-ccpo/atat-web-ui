@@ -127,6 +127,7 @@ import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import {Checkbox} from "../../types/Global";
 import { getIdText } from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -140,7 +141,11 @@ import { getIdText } from "@/helpers";
 export default class ATATCheckboxGroup extends Vue {
   // refs
   $refs!: {
-    checkboxGroup: (Vue & { errorBucket: string[]; errorCount: number })[];
+    checkboxGroup: (Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      validate: () => boolean;
+    })[];
     atatTextInput: (Vue & { errorBucket: string[]; errorCount: number })[];
   }; 
 
@@ -331,6 +336,16 @@ export default class ATATCheckboxGroup extends Vue {
       const checkbox = elem as HTMLInputElement;
       checkbox.addEventListener("blur", this.setCheckboxEventListeners);
     });   
+  }
+
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if(!this.$refs.checkboxGroup.validate())
+      this.setErrorMessage();
   }
 
   @Watch("items")
