@@ -742,6 +742,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Conflict of Interest",
         path: "conflict-of-interest",
         completePercentageWeight: 2,
+        lastStep: true,
         component: ConflictOfInterest,
       },
       {
@@ -749,12 +750,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Packaging, Packing, and Shipping",
         path: "packaging-packing-and-shipping",
         completePercentageWeight: 2,
+        lastStep: true,
         component: PackagingPackingAndShipping,
       },
       {
         name: routeNames.Training,
         menuText: "Training",
         path: "training",
+        lastStep: false,
         completePercentageWeight: 2,
         component: Training,
       },
@@ -763,6 +766,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Training Courses",
         excludeFromMenu: true,
         path: "training",
+        lastStep: true,
+        parentName: routeNames.Training,
         completePercentageWeight: 2,
         component: TrainingCourses,
         routeResolver: ContractTrainingReq
