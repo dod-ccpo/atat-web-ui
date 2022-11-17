@@ -11,7 +11,7 @@ import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
 
-describe("Test suite: Performance Requirements: Categories",{ tags: '@iso-ignore' },  () => {
+describe.skip("Test suite: Performance Requirements: Categories",{ tags: '@iso-ignore' },  () => {
   let serviceOfferingGroups;
 
   beforeEach(() => {

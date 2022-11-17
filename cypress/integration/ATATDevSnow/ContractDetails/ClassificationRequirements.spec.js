@@ -3,7 +3,7 @@ import common from "../../../selectors/common.sel"
 import contractDetails from "../../../selectors/contractDetails.sel";
 
 
-describe("Test suite: Contract Details Step:Classification Requirements substep", () => {
+describe.skip("Test suite: Contract Details Step:Classification Requirements substep", () => {
 
   beforeEach(() => {
     bootstrapMockApis();
