@@ -10,7 +10,7 @@ import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
 
-describe("Test suite: Gather Requirements-Update Classification modal ", 
+describe.skip("Test suite: Gather Requirements-Update Classification modal ", 
   { tags: '@iso-ignore' },  
   () => {
     let serviceOfferingGroups; 
