@@ -76,11 +76,20 @@ export class CurrentEnvironmentStore extends VuexModule {
   public currentEnvironment: CurrentEnvironmentDTO | null = null;
   public currentEnvInstance: CurrentEnvironmentInstanceDTO | null = null;
   public currentEnvInstances: CurrentEnvironmentInstanceDTO[] = [];
+  public currentEnvInstanceSysId = "";
+  public currentEnvInstanceNumber = 1;
 
   @Action
   public async getCurrentEnvironment():
     Promise<CurrentEnvironmentDTO | null> {
     return this.currentEnvironment;
+  }
+
+  @Action
+  public async getCurrentEnvironmentInstances(): 
+    Promise<CurrentEnvironmentInstanceDTO[]>
+  {
+    return this.currentEnvInstances;
   }
 
   protected sessionProperties: string[] = [
@@ -114,14 +123,64 @@ export class CurrentEnvironmentStore extends VuexModule {
     );
   }
 
-  @Mutation
+  @Action
   public async resetCurrentEnvironmentInstance(): Promise<void> {
+    this.doResetCurrentEnvironmentInstance();
+    this.setCurrentEnvInstanceNumber(this.currentEnvInstances.length + 1);
+  }
+  @Mutation
+  public async doResetCurrentEnvironmentInstance(): Promise<void> {
     this.currentEnvInstance = _.cloneDeep(defaultCurrentEnvironmentInstance);
   }
 
-  // EJY - call this from env instance summary page on EDIT
+  @Action
+  public async setCurrentEnvInstanceNumber(num: number): Promise<void> {
+    this.doSetCurrentEnvInstanceNumber(num);
+  }
   @Mutation
+  public async doSetCurrentEnvInstanceNumber(num: number): Promise<void> {
+    this.currentEnvInstanceNumber = num;
+  }
+
+  @Action
+  public async deleteEnvironmentInstance(sysId: string): Promise<void> {
+    const i = this.currentEnvInstances.findIndex(obj => obj.sys_id === sysId);
+    if (i > -1) {
+      this.doDeleteEnvironmentInstance(i);
+    }
+  }
+  @Mutation
+  public async doDeleteEnvironmentInstance(index: number): Promise<void> {
+    const instanceSysId = this.currentEnvInstances[index].sys_id;
+    this.currentEnvInstances.splice(index, 1);
+    // TODO FUTURE TICKET - delete from snow -- use instanceSysId from above
+  }
+
+
+  @Action 
+  public async setCurrentEnvironmentInstanceSysId(sysId: string): Promise<void> {
+    await this.doSetCurrentEnvironmentInstanceSysId(sysId);
+    const i = this.currentEnvInstances.findIndex(obj => obj.sys_id === sysId);
+    if (i > -1) {
+      this.setCurrentEnvInstanceNumber(i + 1);
+      await this.setCurrentEnvironmentInstance(this.currentEnvInstances[i]);
+    }
+  }
+
+  @Mutation
+  public async doSetCurrentEnvironmentInstanceSysId(sysId: string): Promise<void> {
+    this.currentEnvInstanceSysId = sysId;
+  }
+
+  @Action
   public async setCurrentEnvironmentInstance(
+    value: CurrentEnvironmentInstanceDTO
+  ): Promise<void> {
+    this.doSetCurrentEnvironmentInstance(value);
+  }
+
+  @Mutation
+  public async doSetCurrentEnvironmentInstance(
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
     this.currentEnvInstance = _.cloneDeep(value);

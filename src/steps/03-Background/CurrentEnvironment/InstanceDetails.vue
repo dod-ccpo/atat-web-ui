@@ -11,7 +11,9 @@
       through them one at a time.
     </p>
 
-    <h2 class="mb-4" v-if="hasTellUsAboutInstanceHeading">1. Tell us about Instance #1</h2>
+    <h2 class="mb-4" v-if="hasTellUsAboutInstanceHeading">
+      1. Tell us about Instance #{{ instanceNumber }}
+    </h2>
 
     <ATATRadioGroup 
       v-if="envLocation === 'HYBRID' || !envLocation"
@@ -174,6 +176,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   public currEnvData = defaultCurrentEnvironment;
   public envLocation = "";
   public instanceData = defaultCurrentEnvironmentInstance;
+  public instanceNumber = 1;
 
   public get currentData(): CurrentEnvironmentInstanceDTO {
     return this.instanceData;
@@ -374,8 +377,9 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
 
   public async loadOnEnter(): Promise<void> {
-
+    debugger;
     this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
+    this.instanceNumber = CurrentEnvironment.currentEnvInstanceNumber;
 
     const envStoreData = await AcquisitionPackage.getCurrentEnvironment();
     if (envStoreData) {

@@ -376,6 +376,18 @@ export interface OtherServiceSummaryTableData {
   duration?: string;
 }
 
+export interface EnvInstanceSummaryTableData {
+  instanceSysId?: string;
+  instanceNumber: number;
+  location?: string;
+  qty?: string;
+  vCPU?: string;
+  memory?: string;
+  storage?: string;
+  classification?: string;
+  performance?: string;
+}
+
 export interface User {
   firstName?: string;
   lastName?: string;
