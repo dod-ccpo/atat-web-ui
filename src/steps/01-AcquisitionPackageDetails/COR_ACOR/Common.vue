@@ -1,6 +1,6 @@
 <template>
   <div class="pt-0">
-    <div class="max-width-640" v-if="isWizard">
+    <div class="max-width-640" v-if="isWizard && !showContactForm">
       <ATATAutoComplete
         id="SearchContact"
         :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
