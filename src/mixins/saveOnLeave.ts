@@ -12,6 +12,8 @@ export default class SaveOnLeave extends Vue {
   $refs!: {
     form: Vue & {
       validate: () => boolean;
+      resetValidation?: () => void;
+      reset?: () => void;
     };
   };
 
