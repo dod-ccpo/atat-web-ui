@@ -98,13 +98,15 @@
 
           <ATATTextField 
             v-if="hasTextFields && showTextField(index)"
+            ref="atatTextInput"
             :id="id + '_TextField' + index"
             :appendText="textFieldAppendText"
             :width="textFieldWidth"
             type="text"
             @blur="textFieldBlur(index)"   
             :isFormattedNumber="isFormattedNumber" 
-            :rules="textfieldRules"        
+            :rules="textfieldRules"  
+            :value.sync="item.textfieldValue"
           /> 
 
         </template>
@@ -220,42 +222,14 @@ export default class ATATCheckboxGroup extends Vue {
     ) as HTMLInputElement;
   }
 
-  @Watch("_items", {deep: true})
-  protected itemsChanged(newVal: Checkbox[]): void {
-    debugger;
-    if (this.hasTextFields) {
-      newVal.forEach((obj, index) => {
-        debugger;
-        const textfield = this.getTextField(index);
-        if (textfield && obj.textfieldValue) {
-          textfield.value = obj.textfieldValue;
-        }
-      });
-    }
-  }
-
-  public isLoading = true;
-
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
     if (newVal.length > oldVal.length) {
       // new checkbox checked - get the index, push to this.selectedIndices
       const newCheckedVals = newVal.filter(val => !oldVal.includes(val));
-      debugger;
       newCheckedVals.forEach((v) => {
         const checkedIndex = this.getSelectedIndex(v);
-        debugger;
-
         this.selectedIndices.push(checkedIndex);
-        this.$nextTick(() => {
-          const textfield = this.getTextField(checkedIndex);
-          if (textfield) {
-            textfield.value = this._items[checkedIndex].textfieldValue || "";
-            if (!this.isLoading) {
-              textfield.focus();
-            }
-          }
-        });
       });
 
     } else if (newVal.length < oldVal.length) {
@@ -334,7 +308,6 @@ export default class ATATCheckboxGroup extends Vue {
     }
   }
 
-  // methods
   private setErrorMessage(): void {
     if (this._selected.length) {
       this.clearErrorMessage();
@@ -358,7 +331,7 @@ export default class ATATCheckboxGroup extends Vue {
     });   
   }
 
-  @Watch("items")
+  @Watch("_items")
   protected checkboxItemsChange(): void {
     if (this._items.length) {
       this.$nextTick(() => {
@@ -373,11 +346,6 @@ export default class ATATCheckboxGroup extends Vue {
 
   public mounted(): void {
     this.setEventListeners();
-  }
-
-  public updated(): void {
-    debugger;
-    this.isLoading = false;
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {

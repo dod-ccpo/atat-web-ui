@@ -130,7 +130,6 @@ export default class RegionsDeployedAndUserCount extends Vue {
   @Watch("regionUsersOnLoad")
   public regionUsersOnLoadChange(newVal: string): void {
     const regionUsersArray = JSON.parse(newVal);
-    debugger;
     const selectedRegions: string[] = [];
     regionUsersArray.forEach((regionUsers: Record<string, string>) => {
       const region = Object.keys(regionUsers)[0];
@@ -139,12 +138,10 @@ export default class RegionsDeployedAndUserCount extends Vue {
       const i = this.regions.findIndex(obj => obj.value === region);
       this.regions[i].textfieldValue = userCount;
     });
+
     this.$nextTick(() => {
       this.selectedRegions = selectedRegions;
     })
-    // setTimeout(() => {
-    //   this.selectedRegions = selectedRegions;
-    // }, 0);
 
   }
 
