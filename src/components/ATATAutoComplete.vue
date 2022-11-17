@@ -145,7 +145,7 @@ export default class ATATAutoComplete extends Vue {
 
   private setErrorMessage(): void {
     setTimeout(()=>{
-      this.errorMessages = this.$refs.atatAutoComplete.errorBucket;
+      this.errorMessages = this.$refs.atatAutoComplete?.errorBucket;
     })
   }
   //@Events

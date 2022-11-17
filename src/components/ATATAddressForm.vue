@@ -12,7 +12,7 @@
       :rules="[$validators.required('Please select your Organization\'s address type.')]"
     />
 
-    <v-form v-if="_selectedAddressType !== ''" ref="atatAddressForm" lazy-validation>
+    <div v-if="_selectedAddressType !== ''" ref="atatAddressForm" lazy-validation>
       <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField
@@ -137,7 +137,7 @@
         />
       </v-col>
     </v-row> 
-    </v-form>
+    </div>
   </div>
 </template>
 
@@ -204,7 +204,7 @@ export default class ATATAddressForm extends Vue {
           ? { text: "", value: "" }
           : { text: "United States of America", value: "US" };
 
-    this.resetData();
+    // this.resetData();
   }
 
   private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
