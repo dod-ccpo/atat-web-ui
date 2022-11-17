@@ -124,7 +124,7 @@ describe("Testing ATATTextField Component", () => {
   describe("Calculate Percentage Weight", () => {
     it("It should return an accurate value", async () => {
       wrapper.vm.calculatePercentComplete();
-      expect(wrapper.vm.percentComplete).toEqual(5);
+      expect(wrapper.vm.percentComplete).toEqual(0);
     });
 
     it("It should calculate a completed child percent", () => {
@@ -166,7 +166,7 @@ describe("Testing ATATTextField Component", () => {
 
       refreshWrapper();
       wrapper.vm.calculatePercentComplete();
-      expect(wrapper.vm.percentComplete).toEqual(5);
+      expect(wrapper.vm.percentComplete).toEqual(0);
     });
   });
 

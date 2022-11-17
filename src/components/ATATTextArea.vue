@@ -62,8 +62,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -73,7 +74,11 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 export default class ATATTextArea extends Vue {
   // refs
   $refs!: {
-    atatTextArea: Vue & { errorBucket: string[]; errorCount: number };
+    atatTextArea: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      validate: () => boolean;
+    };
   };
 
   // props
@@ -100,6 +105,16 @@ export default class ATATTextArea extends Vue {
 
   private setErrorMessage(): void {
     this.errorMessages = this.$refs.atatTextArea.errorBucket;
+  }
+
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if(!this.$refs.atatTextArea.validate())
+      this.setErrorMessage();
   }
 
   //@Events

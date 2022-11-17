@@ -79,6 +79,7 @@ export interface StepperStep {
   additionalButtons?: AdditionalButton[];
   backButtonText?: string;
   continueButtonText?:string;
+  lastStep?: boolean;
 }
 
 /**
@@ -128,6 +129,8 @@ interface StepperRouteBase {
     additionalButtons?: AdditionalButton[];
     backButtonText?: string;
     continueButtonText?: string;
+    lastStep?: boolean;
+    parentName?: string;
 }
 
 /**
