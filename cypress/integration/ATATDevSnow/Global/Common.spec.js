@@ -44,7 +44,8 @@ describe("Test suite: Common SPA functionality", () => {
         
   });
 
-  it('TC2: Progress Bar for Vertical Stepper', () => {
+  //skipping because progress bar will be updated after completion of Step,need to update.
+  it.skipped('TC2: Progress Bar for Vertical Stepper', () => {
         
     //Completed Percentage(Steps completed)
     cy.completePercent()

@@ -132,6 +132,9 @@ Cypress.Commands.add('homePageClickAcquisitionPackBtn', () => {
   cy.textExists(lp.startSectionHeader, "Start building your JWCC acquisition package");
   cy.textExists(lp.startAcqPackBtn, "Start a new acquisition").should("be.enabled").click();
   cy.verifyPageHeader("Let’s start with basic info about your new acquisition");
+  cy.textExists("#developerToggleButton", "Toggle Developer Navigation ON").click().then(() => {
+    cy.textExists("#developerToggleButton", "Toggle Developer Navigation OFF");
+  });
   cy.window()
     .its("sessionStorage")
     .invoke("getItem", "ATAT_CONTACT_DATA_KEY")
