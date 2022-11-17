@@ -3,7 +3,7 @@ import common from "../../../selectors/common.sel"
 import contractDetails from "../../../selectors/contractDetails.sel";
 
 
-describe("Test suite: Contract Details: E2E work flow",  () => {
+describe.skip("Test suite: Contract Details: E2E work flow",  () => {
 
   beforeEach(() => {
     bootstrapMockApis();
