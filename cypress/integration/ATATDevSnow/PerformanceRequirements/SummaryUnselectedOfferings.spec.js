@@ -9,7 +9,7 @@ import common from "../../../selectors/common.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
-describe("Test suite: Summary screen: Unselected Offerings ",{ tags: '@iso-ignore' },  () => {
+describe.skip("Test suite: Summary screen: Unselected Offerings ",{ tags: '@iso-ignore' },  () => {
   let serviceOfferingGroups;
   let summary;
 

@@ -8,7 +8,7 @@ import common from "../../../selectors/common.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReq from "../../../selectors/performanceReqs.sel";
 
-describe("Test suite: Compute Requirements", () => {
+describe.skip("Test suite: Compute Requirements", () => {
 
   let serviceOfferingGroups;
   

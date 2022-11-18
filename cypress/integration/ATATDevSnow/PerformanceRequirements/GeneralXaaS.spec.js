@@ -13,7 +13,7 @@ const req2 = "Let’s gather some details for Requirement #2";
 const serviceCatOffering = "General Iaas, PaaS, and SaaS";
 
 
-describe("Test suite: General XaaS Flows", () => {
+describe.skip("Test suite: General XaaS Flows", () => {
 
   let serviceOfferingGroups;  
   let categoryObj;
