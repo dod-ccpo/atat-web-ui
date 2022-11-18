@@ -388,11 +388,17 @@ export default class EnvironmentSummary extends Vue {
         performance,
         isValid,
       };
+      
       this.tableData.push(instanceData);
       if (this.envLocation === "ON_PREM") {
         this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
       }
-      // EJY conditionally show classification column - different labels for on-prem and cloud
+
+      const hasMultipleClassifications 
+        = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
+      if (!hasMultipleClassifications) {
+        this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
+      }
     });
   }
 
