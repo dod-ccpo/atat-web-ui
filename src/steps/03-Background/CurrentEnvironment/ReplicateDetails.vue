@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -128,7 +128,19 @@ export default class ReplicateDetails extends Mixins(SaveOnLeave) {
     },
   ];
 
-  public get currentData(): Record<string, string | number> {
+  @Watch("currEnvDTO", {deep: true})
+  public currEnvDTOUpdate(newVal: Record<string, string | number | null>): void {
+    if (newVal.additional_growth === "NO") {
+      // eslint-disable-next-line camelcase
+      this.currEnvDTO.anticipated_yearly_additional_capacity = null;
+    }
+    if (newVal.has_phased_approach === "NO") {
+      // eslint-disable-next-line camelcase
+      this.currEnvDTO.phased_approach_schedule = "";
+    }
+  }
+
+  public get currentData(): Record<string, string | number | null> {
     return {
       statement: this.currEnvDTO.statement_replicated_optimized,
       additionalGrowth: this.currEnvDTO.additional_growth,
