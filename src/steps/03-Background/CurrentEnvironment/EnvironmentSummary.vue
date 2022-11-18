@@ -14,19 +14,34 @@
             wrap up this section.
           </p>
 
-          <div class="my-4 _gray-card">
+          <div class="mt-4 _light-gray-card">
             <div class="d-flex">
               <div>
                 <span class="font-weight-500">{{ environmentTypeText }}</span>
                 <br />
                 {{ classificationsText }}
               </div>
-              <div class="ml-4">
-                edit
+              <div class="ml-6">
+                <button
+                  id="EditEnvironment"
+                  @click="editEnvironment()"
+                  @keydown:enter="editEnvironment()"
+                  @keydown:space="editEnvironment()"
+                  aria-label="Edit Current Environment"
+                >
+                  <ATATSVGIcon name="edit" height="19" width="19" />
+                </button>
               </div>
             </div>
           </div>
-          
+
+          <div 
+            v-if="tableData.length === 0"
+            class="w-100 py-10 border1 border-rounded border-base-lighter text-center mb-10 mt-10" 
+          >
+            You currently do not have any instances.
+          </div>
+
           <v-data-table
             v-if="tableData.length"
             :headers="tableHeaders"
@@ -173,8 +188,37 @@ export default class EnvironmentSummary extends Vue {
     }
   }
 
+  public topLevelClassification(abbr: string): string {
+    switch(abbr) {
+    case "U": return "Unclassified";
+    case "S": return "Secret";
+    case "TS": return "Top Secret";
+    default: return ""
+    }
+  }
+
   public get classificationsText(): string {
-    return "Deployed within...";
+    const classifications: string[] = [];
+    this.classificationsCloud.forEach((sysId) => {
+      const cl = this.classificationLevels.find(obj => obj.sys_id === sysId);
+      classifications.push(this.topLevelClassification(cl?.classification as string))
+    })
+    this.classificationsOnPrem.forEach((sysId) => {
+      const cl = this.classificationLevels.find(obj => obj.sys_id === sysId);
+      classifications.push(this.topLevelClassification(cl?.classification as string))
+    })
+    let unique = (classifications.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
+    unique = unique.replace(/,(?=[^,]+$)/, ' and');
+    return "Deployed within " + unique;
+  }
+
+  public editEnvironment(): void {
+    this.$router.push({
+      name: routeNames.CurrentEnvironmentLocation,
+      params: {
+        direction: "next"
+      }   
+    });
   }
 
   public async addInstance(): Promise<void> {
@@ -193,14 +237,12 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public async editInstance(instance: EnvInstanceSummaryTableData): Promise<void> {
-    debugger;
     await CurrentEnvironment.setCurrentEnvironmentInstanceSysId(instance.instanceSysId || "");
     this.navigate();
   }
 
   @Watch("confirmInstanceDelete")
   public confirmInstanceDeleteChanged(newVal: boolean): void {
-    debugger;
     if (newVal && this.tableData.length > 0) {
       this.showDeleteInstanceDialog = newVal;
     } else if (newVal) {
@@ -211,7 +253,6 @@ export default class EnvironmentSummary extends Vue {
   public instanceToDeleteSysId = "";
 
   public confirmDeleteInstance(item: EnvInstanceSummaryTableData): void {
-    debugger;
     this.instanceNumberToDelete = item.instanceNumber;
     this.deleteInstanceModalTitle = "Delete instance #" + this.instanceNumberToDelete + "?";
     this.showDeleteInstanceDialog = true;
@@ -219,7 +260,6 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public async deleteInstance(): Promise<void> {
-    debugger;
     await CurrentEnvironment.deleteEnvironmentInstance(this.instanceToDeleteSysId);
     await this.buildTableData();
     this.showDeleteInstanceDialog = false;
@@ -249,7 +289,6 @@ export default class EnvironmentSummary extends Vue {
       "data_egress_monthly_amount",
       "current_payment_arrangement",
     ];
-    debugger;
 
     requiredFields.forEach((field) => {
       if (instanceData[field] === "") {
@@ -298,8 +337,6 @@ export default class EnvironmentSummary extends Vue {
     this.tableData = [];
     const instances = await CurrentEnvironment.getCurrentEnvironmentInstances();
 
-    debugger;
-
     instances.forEach(async (instance, index) => {
       let isValid = await this.validateInstance(instance);
       let storage = "";
@@ -319,9 +356,11 @@ export default class EnvironmentSummary extends Vue {
         let regions = instance.deployed_regions?.length 
           ? instance.deployed_regions.join(", ")
           : "";
+
+        regions = regions.replaceAll("CONUS", "CONUS ");
         location = this.envLocation === "HYBRID"
           ? regions.length
-            ? "Cloud<br>(" + location + ")"
+            ? "Cloud<br>(" + regions + ")"
             : "Cloud"
           : regions;
       }

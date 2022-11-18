@@ -110,7 +110,6 @@ export default class CurrentUsage extends Vue {
 
   @Watch("_currentUsageDescription", {deep: true})
   public currentUsageDescriptionChange(newVal: CurrEnvInstanceUsage): void {
-    debugger;
     if (newVal === "EVEN_USAGE") {
       this._usageTrafficSpikeCauses = [];
     }

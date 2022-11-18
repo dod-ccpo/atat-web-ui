@@ -253,7 +253,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
   public regionUsersOnLoad = "";
   public regionUserDataUpdate(data: string): void {
-    debugger;
     this.instanceData.users_per_region = data;
   }
 
@@ -377,7 +376,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
 
   public async loadOnEnter(): Promise<void> {
-    debugger;
     this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
     this.instanceNumber = CurrentEnvironment.currentEnvInstanceNumber;
 
@@ -432,14 +430,12 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    debugger;
     return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        debugger;
         CurrentEnvironment.setCurrentEnvironmentInstance(this.instanceData);
 
         // TODO - wire to proper location for saving after DB is updated
