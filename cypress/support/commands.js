@@ -272,6 +272,14 @@ Cypress.Commands.add("verifyRequiredCheckbox", (checkboxSelector, errorSelector,
     });
 });
 
+Cypress.Commands.add("verifyRequiredRadioBtn", (radioSelector,errorSelector, errorMessage) => {
+  cy.findElement(radioSelector).focus();
+  cy.clickSomethingElse(errorSelector)
+    .then(() => {
+      cy.checkErrorMessage(errorSelector, errorMessage);
+    });   
+});
+
 Cypress.Commands.add("verifyPageHeader", (headerText) => {
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(100);
