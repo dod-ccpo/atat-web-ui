@@ -26,13 +26,16 @@
         <router-link
           :id="'Step_' + getIdText(step.menuText)"
           :to="{ name: getRouteName(step) }"
-          :class="{ 'step-complete': step.completed }"
+          :class="{ 
+            'step-complete': isStepComplete(step.stepNumber),
+            'disabled': !isStepComplete(step.stepNumber) && !canNavigate() 
+          }"
           class="step"
           @click.native="setCurrentStep(step.stepNumber)"
         >
           <span class="step-circle">
             {{ step.stepNumber }}
-            <span v-if="step.completed" class="completed-check">
+            <span v-if="isStepComplete(step.stepNumber)" class="completed-check">
               <span class="d-sr-only">Completed</span>
               <v-icon>check_circle</v-icon>
             </span>
@@ -52,12 +55,15 @@
                 v-show="!subStep.excludeFromMenu"
                 :id="'SubStep_' + getIdText(subStep.menuText)"
                 :to="subStep.route"
-                :class="{ 'step-complete': subStep.completed }"
+                :class="{ 
+                  'step-complete': isSubstepComplete(subStep.name),
+                  'disabled': !isSubstepComplete(subStep.name) && !canNavigate() 
+                }"
                 class="substep"
               >
                 <span class="substep-circle">
                   <span
-                    v-if="subStep.completed"
+                    v-if="isSubstepComplete(subStep.name)"
                     class="completed-check"
                     :data-substep-complete-percentage="
                       subStep.completePercentageWeight
@@ -81,9 +87,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import { StepperStep } from "../../types/Global";
 import { getIdText } from "@/helpers";
+import { StepInfo } from "@/store/steps/types";
+import Steps from "@/store/steps";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({})
 export default class ATATSideStepper extends Vue {
@@ -91,6 +100,25 @@ export default class ATATSideStepper extends Vue {
 
   public setCurrentStep(stepNumber: string): void {
     this.activeStep = stepNumber;
+    this.calculatePercentComplete();
+  }
+
+  private getCurrentStepperStep(): StepInfo {
+    return Steps.currentStep as StepInfo;
+  }
+
+  private canNavigate(): boolean {
+    return AcquisitionPackage.getAllowDeveloperNavigation;
+  }
+
+  @Watch('getCurrentStepperStep')
+  private isStepComplete(stepNumber: string): boolean {
+    return stepNumber < (Steps.currentStep?.stepNumber as string);
+  }
+
+  @Watch('getCurrentStepperStep')
+  private isSubstepComplete(stepName: string): boolean {
+    return Steps.stepMap.get(stepName)?.completed as boolean;
   }
 
   private hasSubSteps(step: StepperStep) {
@@ -117,20 +145,14 @@ export default class ATATSideStepper extends Vue {
     // so we will use the child step name for routing
     return step.subSteps ? step.subSteps.length > 0 && step.subSteps[0].name : "";
   }
+  
   private calculatePercentComplete() {
     this.percentComplete = 0;
 
-    this.stepperData.forEach((step) => {
-      if (step.completed && step.completePercentageWeight) {
-        this.percentComplete += step.completePercentageWeight;
-      } else if (this.hasSubSteps(step)) {
-        step.subSteps?.forEach((subStep) => {
-          if (subStep.completed && subStep.completePercentageWeight) {
-            this.percentComplete += subStep.completePercentageWeight;
-          }
-        });
-      }
-    });
+    for(let [key, value] of Steps.stepMap){
+      if(value.completed)
+        this.percentComplete += value.completePercentageWeight as number;
+    }
     this.percentComplete = Math.round(this.percentComplete);
   }
 

@@ -60,17 +60,6 @@ describe("Testing index Component", () => {
     expect(await wrapper.vm.$data.currentTitle).toBe("Title From Store");
   })
 
-  it("getForm() returns Vue component with validate() function", async() =>{
-    const vueComponent = await wrapper.vm.Form;
-    expect(await vueComponent.validate()).toBe(true);
-  })
-
-  it("validateForm() returns Vue component", async() =>{
-    await wrapper.vm.Form;
-    const isValidated =  await wrapper.vm.validateForm();
-    expect(isValidated).toBe(true);
-  })
-
   it("currentData() - set title to ensure currentData.title is updated", 
     async ()=>{
       const title = "current Title"

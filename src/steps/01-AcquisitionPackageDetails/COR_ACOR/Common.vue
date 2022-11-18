@@ -1,92 +1,87 @@
 <template>
-  <v-form ref="form" lazy-validation>
-    <div class="pt-0">
-      <div class="max-width-640" v-if="isWizard">
-        <ATATAutoComplete
-          id="SearchContact"
-          :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
-          :label-sr-only="true"
-          :label="'Search for your ' + corOrAcor"
-          titleKey="fullName"
-          subtitleKey="email"
-          :items="contactList"
-          :searchFields="['fullName', 'email']"
-          :selectedItem.sync="selectedContact"
-          placeholder="Search by name or email"
-          icon="search"
-          :noResultsText="'Manually enter my ' + corOrAcor + '’s contact information'"
-          :rules="[
-            $validators
-            .required('Please search for or manually enter' +
-             ' your ' + corOrAcor + ' contact information.')
-            ]"
-          @autocompleteInputUpdate="autocompleteInputUpdate"
-        />
-
-        <PersonCard
-          v-if="haveSelectedContact"
-          :isACOR="isACOR"
-          :selectedContact.sync="selectedContact"
-          :showContactForm.sync="showContactForm"
-          id="SelectedContactCard"
-        />
-      </div>
-
-      <a
-        id="ContactFormToggle"
-        v-show="!haveSelectedContact && isWizard"
-        role="button"
-        class="expandable-content-opener"
-        :class="showContactForm ? 'open' : 'closed'"
-        tabindex="0"
-        @click="toggleContactForm"
-        @keypress="toggleContactForm"
-      >
-        Manually enter your {{ corOrAcor }}’s contact information
-      </a>
-
-      <CorAcorContactInfoForm
-        :isWizard="isWizard"
-        :isForm="isForm"
-        :corOrAcor="corOrAcor"
-        v-show="!isWizard || (showContactForm && !haveSelectedContact)"
-        :sectionHeader="sectionHeader"
-        
-        :selectedRole.sync="selectedRole"
-        :selectedBranch.sync="selectedBranch"
-        :selectedRank.sync="selectedRank"
-        :selectedSalutation.sync="selectedSalutation"
-        :firstName.sync="firstName"
-        :middleName.sync="middleName"
-        :lastName.sync="lastName"
-        :suffix.sync="suffix"
-        :formalName="formalName"
-        :email.sync="email"
-        :phone.sync="phone"
-        :selectedPhoneCountry.sync="selectedPhoneCountry"
-        :phoneExt.sync="phoneExt"
-        :dodaac.sync="dodaac"
-
-        :contactRoles="contactRoles"
-        :branchData="branchData"
-        :selectedBranchRanksData="selectedBranchRanksData"
+  <div class="pt-0">
+    <div class="max-width-640" v-if="isWizard">
+      <ATATAutoComplete
+        id="SearchContact"
+        :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
+        :label-sr-only="true"
+        :label="'Search for your ' + corOrAcor"
+        titleKey="fullName"
+        subtitleKey="email"
+        :items="contactList"
+        :searchFields="['fullName', 'email']"
+        :selectedItem.sync="selectedContact"
+        placeholder="Search by name or email"
+        icon="search"
+        :noResultsText="'Manually enter my ' + corOrAcor + '’s contact information'"
+        :rules="getRules"
+        @autocompleteInputUpdate="autocompleteInputUpdate"
       />
 
-      <section
-        id="AccessRadioButtons"
-        v-show="isWizard && ((showContactForm && showAccessRadioButtons) || haveSelectedContact)"
-      >
-        <hr/>
-        <ATATRadioGroup
-          legend="Does this individual need access to help you create this
-            acquisition package in ATAT?"
-          id="AccessToEdit"
-          :items="accessToEditOptions"
-          :value.sync="selectedAccessToEdit"
-        />
-      </section>
+      <PersonCard
+        v-if="haveSelectedContact"
+        :isACOR="isACOR"
+        :selectedContact.sync="selectedContact"
+        :showContactForm.sync="showContactForm"
+        id="SelectedContactCard"
+      />
     </div>
-  </v-form>
+
+    <a
+      id="ContactFormToggle"
+      v-if="!haveSelectedContact && isWizard"
+      role="button"
+      class="expandable-content-opener"
+      :class="showContactForm ? 'open' : 'closed'"
+      tabindex="0"
+      @click="toggleContactForm"
+      @keypress="toggleContactForm"
+    >
+      Manually enter your {{ corOrAcor }}’s contact information
+    </a>
+
+    <CorAcorContactInfoForm
+      :isWizard="isWizard"
+      :isForm="isForm"
+      :corOrAcor="corOrAcor"
+      v-if="!isWizard || (showContactForm && !haveSelectedContact)"
+      :sectionHeader="sectionHeader"
+      
+      :selectedRole.sync="selectedRole"
+      :selectedBranch.sync="selectedBranch"
+      :selectedRank.sync="selectedRank"
+      :selectedSalutation.sync="selectedSalutation"
+      :firstName.sync="firstName"
+      :middleName.sync="middleName"
+      :lastName.sync="lastName"
+      :suffix.sync="suffix"
+      :formalName="formalName"
+      :email.sync="email"
+      :phone.sync="phone"
+      :selectedPhoneCountry.sync="selectedPhoneCountry"
+      :phoneExt.sync="phoneExt"
+      :dodaac.sync="dodaac"
+
+      :contactRoles="contactRoles"
+      :branchData="branchData"
+      :selectedBranchRanksData="selectedBranchRanksData"
+    />
+
+    <section
+      id="AccessRadioButtons"
+      v-if="isWizard && ((showContactForm && showAccessRadioButtons) || haveSelectedContact)"
+    >
+      <hr/>
+      <ATATRadioGroup
+        legend="Does this individual need access to help you create this
+          acquisition package in ATAT?"
+        id="AccessToEdit"
+        :items="accessToEditOptions"
+        :value.sync="selectedAccessToEdit"
+        :rules="[$validators.required('Please select Yes or No.')]"
+      />
+    </section>
+  </div>
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
@@ -151,19 +146,6 @@ export default class CommonCorAcor extends Vue {
     return this.selectedContact
       && Object.prototype.hasOwnProperty.call(this.selectedContact, "firstName")
       && this.selectedContact.firstName !== "";
-  }
-
-  get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.form as Vue & { validate: () => boolean };
-  }
-
-  public async validateForm(): Promise<boolean> {
-    let valid = false;
-
-    await this.$nextTick(() => {
-      valid = this.Form.validate();
-    });
-    return valid;
   }
 
   // data
@@ -374,6 +356,14 @@ export default class CommonCorAcor extends Vue {
   }
 
   // methods
+
+  private get getRules(){
+    return this.showContactForm ? [] : [
+      this.$validators
+        .required('Please search for or manually enter' +
+        ' your ' + this.corOrAcor + ' contact information.')
+    ]
+  }
 
   private setShowAccessRadioButtons(): void {
     this.showAccessRadioButtons = this.selectedRole === "CIVILIAN"

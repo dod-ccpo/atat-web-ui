@@ -12,7 +12,7 @@ import performanceReqs from "../../../selectors/performanceReqs.sel";
 
 
 
-describe("Test suite: Summary screen: Selected Offerings ", { tags: '@iso-ignore' }, () => {
+describe.skip("Test suite: Summary screen: Selected Offerings ", { tags: '@iso-ignore' }, () => {
   let serviceOfferingGroups;  
 
   beforeEach(() => {

@@ -39,4 +39,5 @@ export interface SessionData {
   sensitiveInformation: SensitiveInformationDTO;
   currentEnvironment:CurrentEnvironmentDTO;
   environmentInstance:EnvironmentInstanceDTO;
+  allowDeveloperNavigation: boolean;
 }

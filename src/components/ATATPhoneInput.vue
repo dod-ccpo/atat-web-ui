@@ -147,6 +147,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask/";
 import { CountryObj } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 export const Countries: CountryObj[] = [
   {
@@ -387,6 +388,7 @@ export default class ATATPhoneInput extends Vue {
       reset: ()=> void;
       blur: ()=> void;
       focus: ()=> void;
+      validate: () => boolean;
     };
     atatPhoneDropdown: Vue &
     {
@@ -457,6 +459,16 @@ export default class ATATPhoneInput extends Vue {
   //ATATErrorValidation
   private setErrorMessage(): void {
     this.errorMessages = this.$refs.atatPhoneTextField.errorBucket;
+  }
+
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if(!this.$refs.atatPhoneTextField.validate())
+      this.setErrorMessage();
   }
 
 

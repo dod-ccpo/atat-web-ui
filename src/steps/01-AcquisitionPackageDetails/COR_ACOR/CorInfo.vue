@@ -1,30 +1,38 @@
 <template>
-  <v-container fluid class="container-max-width">
-    <v-row>
-      <v-col>
-        <h1 class="page-header">
-          Let’s gather info about your Contracting Officer’s Representative (COR)
-        </h1>
-        <p class="page-intro">
-          Your COR is an important part of your acquisition
-          approval process. We will fill out your COR’s contact information on any necessary forms
-          and will send your COR an email when documents are ready to be signed. Search for your COR
-          below or manually enter their contact information. For more guidance about CORs, visit
-          <a href="https://www.ditco.disa.mil/hq/cor/index.asp" class="_text-link" target="_blank">
-            https://www.ditco.disa.mil/hq/cor/index.asp<span class="_external-link">.</span>
-          </a>
-        </p>
+  <v-form ref="form" lazy-validation>
+    <v-container fluid class="container-max-width">
+      <v-row>
+        <v-col>
+          <h1 class="page-header">
+            Let’s gather info about your Contracting Officer’s Representative (COR)
+          </h1>
+          <p class="page-intro">
+            Your COR is an important part of your acquisition
+            approval process. We will fill out your COR’s contact information on any necessary forms
+            and will send your COR an email when documents are ready to be signed. Search for your
+            COR below or manually enter their contact information. 
+            For more guidance about CORs, visit
+            <a 
+              href="https://www.ditco.disa.mil/hq/cor/index.asp" 
+              class="_text-link" 
+              target="_blank"
+              rel="noopener"
+            >
+              https://www.ditco.disa.mil/hq/cor/index.asp<span class="_external-link">.</span>
+            </a>
+          </p>
 
-        <CommonCorAcor 
-          :isACOR="false"
-          :isWizard="true"
-          :currentContactData.sync="currentContactData"
-          :savedContactData.sync="savedContactData"
-        />
+          <CommonCorAcor 
+            :isACOR="false"
+            :isWizard="true"
+            :currentContactData.sync="currentContactData"
+            :savedContactData.sync="savedContactData"
+          />
 
-      </v-col>
-    </v-row>
-  </v-container>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">
