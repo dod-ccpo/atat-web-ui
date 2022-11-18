@@ -15,6 +15,7 @@ import {
 import Vue from "vue";
 
 import { ClassificationLevelDTO, EnvironmentInstanceDTO, ReferenceColumn } from "@/api/models";
+import { SecurityRequirement } from "../../../types/Global";
 
 const ATAT_CLASSIFICATION_LEVELS_KEY = "ATAT_CLASSIFICATION_LEVELS_KEY";
 
@@ -30,13 +31,15 @@ export class ClassificationRequirementsStore extends VuexModule {
   public selectedClassificationLevels: ClassificationLevelDTO[] = [];
   public currentEnvClassificationLevels: ClassificationLevelDTO[] = [];
   public environmentInstances: EnvironmentInstanceDTO[] = [];
+  public securityRequirements: SecurityRequirement[] = [];
 
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.classificationLevels),
     nameofProperty(this, (x)=> x.selectedClassificationLevels),
     nameofProperty(this, (x)=> x.currentEnvClassificationLevels),
-    nameofProperty(this, (x)=> x.environmentInstances)
+    nameofProperty(this, (x)=> x.environmentInstances),
+    nameofProperty(this, (x)=> x.securityRequirements)
   ];
 
   @Mutation
@@ -69,6 +72,16 @@ export class ClassificationRequirementsStore extends VuexModule {
   @Mutation
   public async setEnvironmentInstance(value: EnvironmentInstanceDTO[]): Promise<void> {
     this.environmentInstances = value;
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_CLASSIFICATION_LEVELS_KEY
+    );
+
+  }
+  @Mutation
+  public async setSecurityRequirements(value: SecurityRequirement[]): Promise<void> {
+    this.securityRequirements = value;
     storeDataToSession(
       this,
       this.sessionProperties,

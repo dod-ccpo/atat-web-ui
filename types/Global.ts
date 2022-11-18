@@ -533,6 +533,7 @@ export type EnvironmentInstanceUsage = "" | "EVEN_USAGE" | "IRREGULAR_USAGE";
 export type StorageType = "" | "BLOCK" | "OBJECT" | "FILE" | "ARCHIVE";
 export type PerformanceTier = "" | "GENERAL" | "COMPUTE" | "MEMORY" | "STORAGE";
 export type PaymentArrangement = "" | "PREPAID" | "PAYASYOUGO";
+export type securityClassification = ""|"SECRET" | "TOPSECRET"
 
 export interface CurrentEnvironment {
   currentEnvironmentExists?: YesNo;
@@ -567,4 +568,8 @@ export interface CurrentEnvironmentInstance {
   performanceTier?: CurrentEnvPerformanceTier;
   pricingDetails?: CurrentEnvPricingDetails;
   additionalInformation?: string;
+}
+export interface SecurityRequirement {
+  type: securityClassification;
+  classification_information_type: string[]
 }
