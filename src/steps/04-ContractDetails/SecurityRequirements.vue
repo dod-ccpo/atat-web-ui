@@ -187,7 +187,7 @@ public get currentData(): SecurityRequirement[] {
   }
   if(this.hasTopSecret){
     requirements.push({
-      type:"SECRET",
+      type:"TOPSECRET",
       // eslint-disable-next-line camelcase
       classification_information_type: this.selectedTopSecretSecurityRequirements
     })
