@@ -379,6 +379,19 @@ export interface OtherServiceSummaryTableData {
   duration?: string;
 }
 
+export interface EnvInstanceSummaryTableData {
+  instanceSysId?: string;
+  instanceNumber: number;
+  location?: string;
+  qty?: string;
+  vCPU?: string;
+  memory?: string;
+  storage?: string;
+  classification?: string;
+  performance?: string;
+  isValid?: boolean;
+}
+
 export interface User {
   firstName?: string;
   lastName?: string;
@@ -496,7 +509,7 @@ export type EvalPlanSourceSelection = "" | "NoTechProposal" | "TechProposal"
 export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
 
-export interface CurrentEnvUsageData {
+export interface CurrEnvInstanceUsage {
   currentUsageDescription?: EnvironmentInstanceUsage;
   trafficSpikeCauses?: string[]; // EJY need to refactor in component
   isTrafficSpikeEventBased?: YesNo;
@@ -505,7 +518,7 @@ export interface CurrentEnvUsageData {
   trafficSpikePeriodDescription?: string;
 } 
 
-export interface CurrentEnvInstanceConfig {
+export interface CurrEnvInstanceConfig {
   licensing?: string;
   operatingSystem?: string;
   numberOfVCPUs?: number | null;
@@ -517,14 +530,14 @@ export interface CurrentEnvInstanceConfig {
   storageUnit?: StorageUnit;
 }
 
-export interface CurrentEnvPerformanceTier {
+export interface CurrEnvInstancePerformance {
   performanceTier?: PerformanceTier;
   numberOfSimilarInstances?: number | null;
   dataEgressMonthlyAmount?: number | null;
   dataEgressMonthlyUnit?: StorageUnit;
 }
 
-export interface CurrentEnvPricingDetails {
+export interface CurrEnvInstancePricingDetails {
   currentPaymentArrangement?: PaymentArrangement;
   pricingPeriodExpirationDate?: string;
 }
@@ -564,10 +577,10 @@ export interface CurrentEnvironmentInstance {
   instanceLocation?: EnvironmentInstanceLocation;
   deployedRegions?: string[];
   classificationLevel?: string; // classification level sys_id
-  currentUsage?: CurrentEnvUsageData,
+  currentUsage?: CurrEnvInstanceUsage,
   usersPerRegion?: string; // json stringified sys_id/count pairs
-  instanceConfig?: CurrentEnvInstanceConfig;
-  performanceTier?: CurrentEnvPerformanceTier;
-  pricingDetails?: CurrentEnvPricingDetails;
+  instanceConfig?: CurrEnvInstanceConfig;
+  performanceTier?: CurrEnvInstancePerformance;
+  pricingDetails?: CurrEnvInstancePricingDetails;
   additionalInformation?: string;
 }
