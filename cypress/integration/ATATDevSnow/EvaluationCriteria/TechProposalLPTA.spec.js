@@ -5,7 +5,7 @@ import ep from "../../../selectors/evaluationPlan.sel";
 
 
 
-describe("Test suite: No technical proposal: Option One on Create Evaluation Plan", () => {
+describe("Test suite: Select technical proposal: Option2 on Create Evaluation Plan: LPTA", () => {
   let evalCriteria;
   const customText = randomString(5);
 
