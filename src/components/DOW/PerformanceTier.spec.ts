@@ -5,11 +5,11 @@ import PerformanceTier from "./PerformanceTier.vue";
 import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../plugins/validation";
-import { CurrentEnvPerformanceTier } from "types/Global";
+import { CurrEnvInstancePerformance } from "types/Global";
 
 Vue.use(Vuetify);
 
-const performanceTier: CurrentEnvPerformanceTier = {
+const performanceTier: CurrEnvInstancePerformance = {
   performanceTier: "",
   numberOfSimilarInstances: null,
   dataEgressMonthlyAmount: null,

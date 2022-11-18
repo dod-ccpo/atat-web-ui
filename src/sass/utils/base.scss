@@ -132,6 +132,14 @@ textarea {
   height: 100%;
 }
 
+._light-gray-card {
+  border: 1px solid $base-lighter;
+  background-color: $base-off-white;
+  border-radius: 4px;
+  padding: 16px;
+  display: inline-block;
+}
+
 ._clinTable {
   .v-expansion-panel {
     button {
@@ -184,7 +192,7 @@ textarea {
 }
 
 
-._offering-instances.v-data-table {
+._offering-instances.v-data-table, ._instances-table.v-data-table {
   > .v-data-table__wrapper > table > tbody {
     > tr {
       &.v-data-table__empty-wrapper {
@@ -214,16 +222,18 @@ textarea {
   }
 }
 
-._offering-instances.v-data-table > .v-data-table__wrapper > table > thead > tr {
-  background-color: $base-lightest;
-  & > th {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: $base-dark;
-    border-bottom: none !important;
-    white-space: nowrap;
-    padding: 8px;
-  } 
+._instances-table.v-data-table, ._offering-instances.v-data-table {
+  > .v-data-table__wrapper > table > thead > tr {
+    background-color: $base-lightest;
+    & > th {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: $base-dark;
+      border-bottom: none !important;
+      white-space: nowrap;
+      padding: 8px;
+    } 
+  }
 }
 
 ._v-align-top {

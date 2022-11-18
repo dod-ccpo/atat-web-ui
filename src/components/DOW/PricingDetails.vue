@@ -40,7 +40,7 @@ import { Component, PropSync, Watch } from "vue-property-decorator";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
-import { CurrentEnvPricingDetails, RadioButton } from "types/Global";
+import { CurrEnvInstancePricingDetails, RadioButton } from "types/Global";
 
 @Component({
   components: {
@@ -50,7 +50,7 @@ import { CurrentEnvPricingDetails, RadioButton } from "types/Global";
 })
 
 export default class PricingDetails extends Vue {
-  @PropSync("pricingDetails") public _pricingDetails!: CurrentEnvPricingDetails;
+  @PropSync("pricingDetails") public _pricingDetails!: CurrEnvInstancePricingDetails;
 
   public paymentArrangements: RadioButton[] = [
     {

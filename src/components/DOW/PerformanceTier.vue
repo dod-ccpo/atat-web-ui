@@ -52,7 +52,7 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
-import { CurrentEnvPerformanceTier, RadioButton, SelectData } from "types/Global";
+import { CurrEnvInstancePerformance, RadioButton, SelectData } from "types/Global";
 
 @Component({
   components: {
@@ -62,7 +62,7 @@ import { CurrentEnvPerformanceTier, RadioButton, SelectData } from "types/Global
 })
 
 export default class PerformanceTier extends Vue {
-  @PropSync("performanceTier") public _performanceTier!: CurrentEnvPerformanceTier;
+  @PropSync("performanceTier") public _performanceTier!: CurrEnvInstancePerformance;
   @Prop() public storageUnits!: SelectData[];
 
   public performanceTiers: RadioButton[] = [
