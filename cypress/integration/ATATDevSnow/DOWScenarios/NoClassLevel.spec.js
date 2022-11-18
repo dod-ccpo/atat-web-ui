@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import { 
   bootstrapMockApis,  
   getCheckboxIds,   
@@ -11,7 +12,7 @@ import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
 
-describe("Test suite: No Classification Levels Workflow Scenarios",
+describe.skip("Test suite: No Classification Levels Workflow Scenarios",
   { tags: '@iso-ignore' }, () => {
     let serviceOfferingGroups; 
     let periodCount=2
@@ -117,6 +118,7 @@ describe("Test suite: No Classification Levels Workflow Scenarios",
       );
       cy.btnClick(common.continueBtn, " Continue ");
       //Navigates to Gather Requirements screen for selected Offering checkboxIds[0]
+      cy.wait(1000);
       cy.verifyPageHeader(
         "Next, we’ll gather your requirements for " + labels[0]
       ); 
@@ -132,6 +134,7 @@ describe("Test suite: No Classification Levels Workflow Scenarios",
         "YES");      
       cy.btnClick(common.continueBtn, " Continue "); 
       //Navigates to gather screen for next offering selected
+      cy.wait(1000)
       cy.verifyPageHeader(
         "Next, we’ll gather your requirements for " + labels[1]
       );
@@ -147,6 +150,7 @@ describe("Test suite: No Classification Levels Workflow Scenarios",
       cy.periodCount(periodCount, performanceReqs.periodCheckboxRow1);
       cy.btnClick(common.continueBtn, " Continue "); 
       //navigate to Summary page
+      cy.wait(1000);
       cy.verifyPageHeader(
         "Your Performance Requirements"
       ); 

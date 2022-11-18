@@ -16,7 +16,7 @@ const needLabelRequirement = "Describe the anticipated need and usage of this re
 const letsWorkOnItHeader = "Let’s work on your performance requirements";
 
 
-describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () => {
+describe.skip("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () => {
   let serviceOfferingGroups; 
 
   beforeEach(() => {

@@ -49,7 +49,7 @@ module.exports = {
     "<rootDir>/src/home/**/*.spec.ts",
     "<rootDir>/src/components/*.spec.ts",
     "<rootDir>/src/components/**/*.spec.ts",
-    "<rootDir>/src/steps/**/*.spec.ts",
+    // "<rootDir>/src/steps/**/*.spec.ts",
     "<rootDir>/src/store/**/*.spec.ts",
     "<rootDir>/src/router/**/*.spec.ts",
     "<rootDir>/src/helpers/*.spec.ts",

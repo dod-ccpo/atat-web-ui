@@ -88,7 +88,7 @@ export class TaskOrderStore extends VuexModule {
         ...initial,
         acquisition_package: acquisitionPackageId,
       };
-      this.taskOrder = await this.save(taskOrder);
+      await this.save(taskOrder);
       this.setInitialized(true);
     }
   }

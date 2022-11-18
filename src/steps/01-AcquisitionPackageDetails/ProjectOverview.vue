@@ -83,19 +83,6 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   private projectScope = "";
   private emergencyDeclaration = "";
 
-  get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.form as Vue & { validate: () => boolean };
-  }
-
-  public async validateForm(): Promise<boolean> {
-    let valid = false;
-
-    await this.$nextTick(() => {
-      valid = this.Form.validate();
-    });
-    return valid;
-  }
-
   public get projectTitle(): string {
     return AcquisitionPackage.getTitle();
   }

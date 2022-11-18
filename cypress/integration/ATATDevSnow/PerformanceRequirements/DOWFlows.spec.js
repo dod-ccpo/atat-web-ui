@@ -5,7 +5,7 @@ import {
 import common from "../../../selectors/common.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
-describe("Test suite: DOW Workflows for each Category option", { tags: '@iso-ignore' }, () => {
+describe.skip("Test suite: DOW Workflows for each Category option", { tags: '@iso-ignore' }, () => {
 
   let serviceOfferingGroups;
 

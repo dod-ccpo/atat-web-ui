@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -87,6 +87,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { mask, SelectData } from "types/Global";
 import Inputmask from "inputmask/";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -101,6 +102,7 @@ export default class ATATTextField extends Vue  {
   $refs!: {
     atatTextField: Vue & { 
       errorBucket: string[]; 
+      validate: () => boolean;
       errorCount: number 
       resetValidation(): void
     };
@@ -139,6 +141,16 @@ export default class ATATTextField extends Vue  {
   @PropSync("selectedDropdownValue") private _selectedDropdownValue?: string;
 
   @PropSync("value", { default: "" }) private _value!: string;
+
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if(!this.$refs.atatTextField.validate())
+      this.setErrorMessage();
+  }
 
   //data
   private errorMessages: string[] = [];

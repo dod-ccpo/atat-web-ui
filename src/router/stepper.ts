@@ -56,6 +56,8 @@ import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/Environ
 /* 4.2 */   import ContractType from "../steps/04-ContractDetails/ContractType.vue";
 /* 4.3 */   import ClassificationRequirements
   from "../steps/04-ContractDetails/ClassificationRequirements.vue";
+import SecurityRequirements from "@/steps/04-ContractDetails/SecurityRequirements.vue";
+import CrossDomain from "@/steps/04-ContractDetails/CrossDomain.vue";
 
 // Step 5 - Performance Requirements
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
@@ -145,7 +147,9 @@ import {
   CreateEvalPlanRouteResolver,
   BVTOResolver,
   NoEvalPlanRouteResolver,
-  EvalPlanDetailsRouteResolver, ArchitecturalDesignDetailsRouteResolver,
+  EvalPlanDetailsRouteResolver,
+  ArchitecturalDesignDetailsRouteResolver,
+  SecurityRequirementsResolver,
 
 } from "./resolvers";
 
@@ -235,6 +239,8 @@ export const routeNames = {
   ArchitecturalDesign:"Architectural_Design",
   ArchitecturalDesignDetails:"Architectural_Design_Details",
   EnvironmentSummary:"Environment_Summary",
+  SecurityRequirements:"Security_Requirements",
+  CrossDomain:"Cross_Domain",
 };
 
 /**
@@ -254,14 +260,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     path: "/package-details",
     completePercentageWeight: 14,
     component: AcquisitionPackageDetails,
-    completed: true,
+    completed: false,
     children: [
       {
         menuText: "Project Overview",
         path: "project-overview",
         name: routeNames.ProjectOverview,
         completePercentageWeight: 4,
-        completed: true,
+        completed: false,
+        lastStep: true,
         component: ProjectOverview,
         // KEEP THIS FOR REFERENCE
         // additionalButtons: [
@@ -280,7 +287,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Organization",
         path: "organization-info",
         name: routeNames.OrganizationInfo,
-        completed: true,
+        completed: false,
+        lastStep: true,
         completePercentageWeight: 5,
         component: OrganizationInfo,
       },
@@ -289,7 +297,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "contact-info",
         name: routeNames.ContactInformation,
         completePercentageWeight: 5,
-        completed: true,
+        completed: false,
+        lastStep: false,
         component: ContactInfo,
       },
       {
@@ -298,6 +307,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
+        lastStep: false,
         component: CorInfo,
       },
       {
@@ -305,6 +315,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "alt-cor",
         name: routeNames.AlternateCor,
         excludeFromMenu: true,
+        lastStep: false,
         component: AlternateCOR,
       },
       {
@@ -313,6 +324,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.AcorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
+        lastStep: false,
         component: AcorInfo,
         routeResolver: AcorsRouteResolver,
       },
@@ -322,6 +334,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.AcqPackageSummary,
         excludeFromMenu: true,
         completePercentageWeight: 5,
+        lastStep: true,
+        parentName: routeNames.ContactInformation,
         component: Summary,
         backButtonText: "Sample different Back text",
       }
@@ -599,6 +613,23 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: ClassificationRequirements,
+      },
+      {
+        menuText: "Security Requirements",
+        path:"security-requirements",
+        name: routeNames.SecurityRequirements,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SecurityRequirements,
+        routeResolver: SecurityRequirementsResolver
+      },
+      {
+        menuText: "CrossDomain",
+        path:"cross-domain",
+        name: routeNames.CrossDomain,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: CrossDomain,
       },
     ]
   },

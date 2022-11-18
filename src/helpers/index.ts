@@ -90,14 +90,14 @@ export const buildClassificationDescription
     = (classLevel: ClassificationLevelDTO): string => {
       switch (classLevel.impact_level) {
       case "IL2":
-        return "Accommodates DoD information that has been approved for public "
+        return "Accommodates DoD information approved for public "
          + "release (Low Confidentiality and Moderate Integrity)"
       case "IL4":
         return "Accommodates DoD Controlled Unclassified Information (CUI)"
       case "IL5":
         return "Accommodates DoD CUI and National Security Systems"
       case "IL6":
-        return "Accommodates DoD Classified Information up to SECRET"
+        return ""
       default:
         return ""
       }

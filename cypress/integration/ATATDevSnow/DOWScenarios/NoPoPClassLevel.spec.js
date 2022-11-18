@@ -10,7 +10,7 @@ import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
 
-describe("Test suite: No PoP and Classification Levels exists workflows ", 
+describe.skip("Test suite: No PoP and Classification Levels exists workflows ", 
   { tags: '@iso-ignore' }, 
   () => {
     let serviceOfferingGroups;

@@ -9,15 +9,16 @@
       :value.sync="selectedRole"
       class="mb-6"
       @radioButtonSelected="contactTypeChange"
+      :rules="[$validators.required('Please select your role.')]"
     />
 
-    <v-form ref="atatContactForm">
+    <v-form ref="form">
       <v-row class="form-section">
       <v-col>
         <ATATSelect
           id="Branch"
           v-model="selectedBranch"
-          v-show="selectedRole === 'MILITARY'"
+          v-if="selectedRole === 'MILITARY'"
           class="_input-max-width mb-10"
           label="Service branch"
           placeholder=""
@@ -30,7 +31,7 @@
         />
 
         <ATATSelect
-          v-show="selectedRole !== 'MILITARY'"
+          v-if="selectedRole !== 'MILITARY'"
           id="Salutation"
           class="_input-max-width"
           label="Salutation"
@@ -42,7 +43,7 @@
 
         <ATATAutoComplete
           id="Rank"
-          v-show="selectedRole === 'MILITARY' && showContactInfoFields"
+          v-if="selectedRole === 'MILITARY' && showContactInfoFields"
           label="Rank"
           titleKey="name"
           :items="selectedBranchRanksData"
@@ -98,7 +99,7 @@
           />
         </v-col>
       </v-row>
-      <v-row class="form-section mb-0" v-show="showContactInfoFields">
+      <v-row class="form-section mb-0" v-if="showContactInfoFields">
         <v-col>
           <ATATTextField
             label="Your title"
@@ -135,7 +136,7 @@
             ]"
           />
           <ATATAutoComplete
-            v-show="selectedRole === 'CIVILIAN'"
+            v-if="selectedRole === 'CIVILIAN'"
             id="ContactGrade"
             :optional="true"
             class="_input-max-width mb-10"
@@ -192,9 +193,10 @@ import Vue from "vue";
 })
 export default class ContactInfo extends Mixins(SaveOnLeave) {
   $refs!: {
-    atatContactForm: Vue & {
+    form: Vue & {
       resetValidation: () => void;
       reset: () => void;
+      validate: () => boolean;
     };
   };
   
@@ -490,14 +492,14 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   public resetData(): void {
     Vue.nextTick(() => {
       //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      const formChildren = this.$refs.atatContactForm.$children;
+      const formChildren = this.$refs.form.$children;
      
       formChildren.forEach((ref)=> {
         ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
       });
       Vue.nextTick(() => {
-        this.$refs.atatContactForm.reset();
-        this.$refs.atatContactForm.resetValidation();
+        this.$refs.form.reset();
+        this.$refs.form.resetValidation();
       });
     });
   }
