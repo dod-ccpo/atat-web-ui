@@ -14,6 +14,19 @@
             wrap up this section.
           </p>
 
+          <div class="my-4 _gray-card">
+            <div class="d-flex">
+              <div>
+                <span class="font-weight-500">{{ environmentTypeText }}</span>
+                <br />
+                {{ classificationsText }}
+              </div>
+              <div class="ml-4">
+                edit
+              </div>
+            </div>
+          </div>
+          
           <v-data-table
             v-if="tableData.length"
             :headers="tableHeaders"
@@ -23,7 +36,30 @@
             :hide-default-footer="true"
             no-data-text="You currently do not have any instances."
           >
-
+            <!-- eslint-disable vue/valid-v-slot -->
+            <template v-slot:item.location="{ item }">
+              <span
+                 v-html="item.location" 
+                :class="[{'text-error font-weight-500': !item.isValid }]">
+              </span>
+              <div v-if="!item.isValid" class="d-flex align-center nowrap">
+                <ATATSVGIcon 
+                  name="errorFilled"
+                  width="13"
+                  height="13"
+                  color="error"
+                />
+                <span class="font-size-12 text-error d-inline-block ml-1">Missing info</span>
+              </div>
+            </template>
+            <!-- eslint-disable vue/valid-v-slot -->
+            <template v-slot:item.storage="{ item }">
+              <span class="nowrap">{{ item.storage }}</span>
+            </template>
+            <!-- eslint-disable vue/valid-v-slot -->
+            <template v-slot:item.performance="{ item }">
+              <span class="nowrap">{{ item.performance }}</span>
+            </template>
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
               <button
@@ -98,11 +134,15 @@ import { Component, Watch } from "vue-property-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { CurrentEnvironmentInstanceDTO } from "@/api/models";
+import { ClassificationLevelDTO, CurrentEnvironmentInstanceDTO } from "@/api/models";
 import { EnvInstanceSummaryTableData } from "types/Global";
-import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import CurrentEnvironment, 
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import _ from "lodash";
 import { routeNames } from "@/router/stepper";
+import { buildClassificationLabel, toTitleCase } from "@/helpers";
+import classificationRequirements from "@/store/classificationRequirements";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 
 @Component({
@@ -112,15 +152,30 @@ import { routeNames } from "@/router/stepper";
   }  
 })
 export default class EnvironmentSummary extends Vue {
-
+  public currEnvData = defaultCurrentEnvironment;
   public deleteInstanceModalTitle = "";
   public envInstances: CurrentEnvironmentInstanceDTO[] = [];
-
+  public envLocation = "";
+  public classificationsCloud: string[] = [];
+  public classificationsOnPrem: string[] = [];
   public tableHeaders: Record<string, string>[] = [];
   public tableData: EnvInstanceSummaryTableData[] = [];
-
   public showDeleteInstanceDialog = false;
   public instanceNumberToDelete = 0;
+  public classificationLevels: ClassificationLevelDTO[] = [];
+
+  public get environmentTypeText(): string {
+    switch (this.envLocation) {
+    case "CLOUD": return "Cloud Environment";
+    case "ON_PREM": return "On-premises Environment";
+    case "HYBRID": return "Hybrid Environment";
+    default: return "";
+    }
+  }
+
+  public get classificationsText(): string {
+    return "Deployed within...";
+  }
 
   public async addInstance(): Promise<void> {
     await CurrentEnvironment.resetCurrentEnvironmentInstance();
@@ -171,6 +226,62 @@ export default class EnvironmentSummary extends Vue {
     this.instanceToDeleteSysId = "";
   }
 
+  public async validateInstance(
+    instance: CurrentEnvironmentInstanceDTO,
+  ): Promise<boolean> {
+    const instanceData: Record<string, any> = _.clone(instance);
+    let isValid = true;
+    let requiredFields: string[] = [];
+    requiredFields = [
+      "instance_location",
+      "classification_level",
+      "current_usage_description",
+      "users_per_region",
+      "operating_system",
+      "licensing",
+      "number_of_VCPUs",
+      "processor_speed",
+      "memory_amount",
+      "storage_type",
+      "storage_amount",
+      "performance_tier",
+      "number_of_instances",
+      "data_egress_monthly_amount",
+      "current_payment_arrangement",
+    ];
+    debugger;
+
+    requiredFields.forEach((field) => {
+      if (instanceData[field] === "") {
+        isValid = false;
+      }
+    });
+    // extra logic needed if current_usage_description === "IRREGULAR_USAGE"
+    if (instanceData.current_usage_description === "IRREGULAR_USAGE") {
+      const isEventBased = instanceData.is_traffic_spike_event_based === "YES";
+      const isPeriodBased = instanceData.is_traffic_spike_period_based === "YES";
+      if (!isEventBased && !isPeriodBased) {
+        // one of these is required if irregular usage
+        isValid = false;
+      }
+      if ((isEventBased && instanceData.traffic_spike_event_description === "")
+        || (isPeriodBased && instanceData.traffic_spike_period_description === "")
+      ) {
+        // description is required if the according checkbox is checked
+        isValid = false;
+      }
+    }
+
+    if (instanceData.current_payment_arrangement === "PREPAID"
+      && instanceData.pricing_period_expiration_date === ""
+    ) {
+      isValid = false;
+    }
+
+    return isValid;
+
+  }
+
   public async buildTableData(): Promise<void> {
     this.tableHeaders = [    
       { text: "", value: "instanceNumber", width: "50" },
@@ -185,39 +296,77 @@ export default class EnvironmentSummary extends Vue {
     ];
 
     this.tableData = [];
-    debugger;
     const instances = await CurrentEnvironment.getCurrentEnvironmentInstances();
-    let instanceNumber = 1;
+
+    debugger;
+
     instances.forEach(async (instance, index) => {
-      const instanceClone = _.cloneDeep(instance);
-      let isValid = true;
+      let isValid = await this.validateInstance(instance);
       let storage = "";
       if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
-        storage = instance.storage_type + ": " + String(instance.storage_amount)
+        const storageType = toTitleCase(instance.storage_type);
+        storage = storageType + ": " + String(instance.storage_amount)
           + " " + instance.storage_unit;
       }
+      let performance = "";
+      if (instance.performance_tier) {
+        performance = toTitleCase(instance.performance_tier.replace("_", " "));
+      }
+      let location = "";
+      if (instance.instance_location === "ON_PREM") {
+        location = "On-premises";
+      } else {
+        let regions = instance.deployed_regions?.length 
+          ? instance.deployed_regions.join(", ")
+          : "";
+        location = this.envLocation === "HYBRID"
+          ? regions.length
+            ? "Cloud<br>(" + location + ")"
+            : "Cloud"
+          : regions;
+      }
+
+      let classification = "";
+      if (instance.classification_level) {
+        const i = this.classificationLevels.findIndex(
+          obj => obj.sys_id === instance.classification_level
+        );
+        if (i > -1) {
+          const classificationLevel = this.classificationLevels[i];
+          classification = buildClassificationLabel(classificationLevel, "short");
+        } 
+      }
+
       let instanceData: EnvInstanceSummaryTableData = { 
         instanceSysId: instance.sys_id,
         instanceNumber: index + 1,
-        location: instance.instance_location || "",
-        classification: "coming...",
+        location,
+        classification,
         qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
         vCPU: instance.number_of_VCPUs ? String(instance.number_of_VCPUs) : "",
         memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
         storage,
-        performance: instance.performance_tier
+        performance,
+        isValid,
       };
-      this.tableData.push(instanceData)
-      instanceNumber++;
-    })
-
-    // 
+      this.tableData.push(instanceData);
+      if (this.envLocation === "ON_PREM") {
+        this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
+      }
+      // EJY conditionally show classification column - different labels for on-prem and cloud
+    });
   }
 
   public async loadOnEnter(): Promise<void> {
-    //
+    const storeEnvData = await AcquisitionPackage.getCurrentEnvironment();
+    if (storeEnvData) {
+      this.currEnvData = _.clone(storeEnvData);
+      this.envLocation = this.currEnvData.env_location;
+      this.classificationsCloud = this.currEnvData.env_classifications_cloud;
+      this.classificationsOnPrem = this.currEnvData.env_classifications_on_prem;
+    }
+    this.classificationLevels = await classificationRequirements.getAllClassificationLevels();
     this.buildTableData();
-    debugger;
   }
 
   public async mounted(): Promise<void> {

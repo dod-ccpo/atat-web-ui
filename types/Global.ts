@@ -386,6 +386,7 @@ export interface EnvInstanceSummaryTableData {
   storage?: string;
   classification?: string;
   performance?: string;
+  isValid?: boolean;
 }
 
 export interface User {

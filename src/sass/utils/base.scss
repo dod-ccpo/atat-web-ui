@@ -132,6 +132,14 @@ textarea {
   height: 100%;
 }
 
+._gray-card {
+  border: 1px solid $base-lighter;
+  background-color: $base-lightest;
+  border-radius: 4px;
+  padding: 16px;
+  display: inline-block;
+}
+
 ._clinTable {
   .v-expansion-panel {
     button {
