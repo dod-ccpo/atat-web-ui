@@ -245,7 +245,7 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public async editInstance(instance: EnvInstanceSummaryTableData): Promise<void> {
-    await CurrentEnvironment.setCurrentEnvironmentInstanceSysId(instance.instanceSysId || "");
+    await CurrentEnvironment.setCurrentEnvironmentInstanceSysId(instance.instanceSysId as string);
     this.navigate();
   }
 
@@ -264,7 +264,7 @@ export default class EnvironmentSummary extends Vue {
     this.instanceNumberToDelete = item.instanceNumber;
     this.deleteInstanceModalTitle = "Delete instance #" + this.instanceNumberToDelete + "?";
     this.showDeleteInstanceDialog = true;
-    this.instanceToDeleteSysId = item.instanceSysId || "";
+    this.instanceToDeleteSysId = item.instanceSysId as string;
   }
 
   public async deleteInstance(): Promise<void> {
