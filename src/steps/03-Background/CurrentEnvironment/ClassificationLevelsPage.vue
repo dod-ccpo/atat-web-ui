@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-form ref="form">
     <v-container class="container-max-width" fluid>
       <v-row>
         <v-col class="col-12">
@@ -13,43 +13,37 @@
               levels, we will gather details about each instance next.
             </p>
             <ClassificationLevelForm
-              v-if="isCloud|| isHybrid"
+              v-if="isCloud || isHybrid"
               hybridText="1. Your cloud instances"
               :isHybrid="isHybrid"
               :isCloud="isCloud"
-              :selectedImpactLevels.sync="selectedImpactLevels"
-              :selectedClassifications.sync="selectedClassifications"
-              :selectedCloudTypes.sync="selectedCloudTypes"
-              :selectedInstances.sync="selectedInstances"
+              :selectedClassifications.sync="envClassificationsCloud"
             />
             <hr v-if="isHybrid" />
             <ClassificationLevelForm
-              v-if="onPrem|| isHybrid"
+              v-if="isOnPrem || isHybrid"
               hybridText="2. Your on-premise instances"
               :isHybrid="isHybrid"
-              :onPrem="onPrem"
-              :selectedImpactLevels.sync="selectedImpactLevels"
-              :selectedClassifications.sync="selectedOnPremClassifications"
-              :selectedCloudTypes.sync="selectedCloudTypes"
-              :selectedInstances.sync="selectedInstances"
+              :isOnPrem="isOnPrem"
+              :selectedClassifications.sync="envClassificationsOnPrem"
             />
           </div>
         </v-col>
       </v-row>
     </v-container>
-  </div>
+  </v-form>
 </template>
 <script lang="ts">
 
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import { ClassificationLevelDTO } from "@/api/models";
-import classificationRequirements from "@/store/classificationRequirements";
-import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
+import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ClassificationLevelForm
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.vue";
+import CurrentEnvironment, 
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 
 
 @Component({
@@ -59,36 +53,46 @@ import ClassificationLevelForm
   }
 })
 export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
+  public currEnvDTO = defaultCurrentEnvironment;
   public envLocation = "";
   private isHybrid = false;
   private isCloud = false;
-  private onPrem = false;
-  public selectedImpactLevels: string[] = [];
-  public selectedClassifications: string[] = [];
-  public selectedOnPremClassifications: string[] = [];
-  public selectedCloudTypes: string[] = [];
-  public selectedInstances: string[] = [];
-  public classifications: ClassificationLevelDTO[] = []
-  public savedData: ClassificationLevelDTO[] = [];
+  private isOnPrem = false;
+  public envClassificationsCloud: string[] = []
+  public envClassificationsOnPrem: string[] = []
 
+  public savedData: Record<string, string[]> = {
+    envClassificationsCloud: [],
+    envClassificationsOnPrem: [],
+  };
 
+  public get currentData(): Record<string, string[]> {
+    return {
+      envClassificationsCloud: this.envClassificationsCloud,
+      envClassificationsOnPrem: this.envClassificationsOnPrem,
+    }
+  };
 
-
-  private saveSelected() {
-    const arr :ClassificationLevelDTO[] = [];
-    this.selectedImpactLevels.forEach(item => {
-      const value = this.classifications.filter(( data )=>{
-        return item == data.sys_id
-      })
-      arr.push(value[0])
-    })
-    return arr
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    if (storeData) {
+      this.currEnvDTO = storeData;
+      this.envLocation = storeData.env_location;
+      this.isHybrid = this.envLocation === "HYBRID";
+      this.isOnPrem = this.envLocation === "ON_PREM" || this.isHybrid;
+      this.isCloud = this.envLocation === "CLOUD" || this.isHybrid;
+      this.envClassificationsCloud = storeData.env_classifications_cloud;
+      this.envClassificationsOnPrem = storeData.env_classifications_on_prem;
+      this.savedData = {
+        envClassificationsCloud: this.envClassificationsCloud,
+        envClassificationsOnPrem: this.envClassificationsOnPrem,
+      }
+    }
   }
 
-  public get currentData(): ClassificationLevelDTO[] {
-    return this.saveSelected()
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
-
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
@@ -97,32 +101,19 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        // await classificationRequirements.saveSelectedClassificationInstances(this.currentData)
+        /* eslint-disable camelcase */
+        this.currEnvDTO.env_classifications_cloud = this.envClassificationsCloud;
+        this.currEnvDTO.env_classifications_on_prem = this.envClassificationsOnPrem;
+        /* eslint-enable camelcase */
+        // TODO - which store to save to?
+        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
+        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+
       }
     } catch (error) {
       console.log(error);
     }
     return true;
-  }
-
-
-
-  public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
-    if(storeData){
-      this.envLocation = storeData.env_location;
-      this.onPrem = this.envLocation === 'ON_PREM'
-      this.isCloud = this.envLocation === 'CLOUD'
-      this.isHybrid = this.envLocation === 'HYBRID'
-      if(this.isHybrid) {
-        this.isCloud = true;
-        this.onPrem = true
-      }
-    }
-  }
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
+  }  
 }
 </script>
