@@ -29,7 +29,7 @@
 
         <CustomSpecifications 
           id="CustomDifferentiatorEntry"
-          v-show="showCustomDifferentiators"
+          v-if="showCustomDifferentiators"
           sourceSelection="TechProposal"
           :isDifferentiator="true"
           :isOptional="customDiffsOptional"
@@ -151,6 +151,10 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
   }
 
   public async saveOnLeave(): Promise<boolean> {
+    // need to flip `setValidateNow` to true in page component's `saveOnLeave` method
+    // for pages with checkbox groups that have validation rules
+    await AcquisitionPackage.setValidateNow(true);
+    
     try {
       /* eslint-disable camelcase */
       this.evalPlan.standard_differentiators = this.selectedDifferentiators;
