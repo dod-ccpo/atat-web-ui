@@ -1,46 +1,48 @@
 
 <template>
-  <div class="container-max-width">
-    <h1 class="page-header">
-      {{ header }}
-    </h1>
-    <Callout 
-      :sourceSelection="evalPlan.source_selection"
-      :method="evalPlan.method"
-    />
-    
-    <ATATRadioGroup
-      v-if="isStandards"
-      id="CustomStandards"
-      class="copy-max-width"
-      :items="standardsRadioGroupItems"
-      :legend="radioGroupLegend"
-      :value.sync="selectedStandardsRadioItem"
-      :rules="[
-        $validators.required('Please select an option.'),
-      ]"
-    />
+  <v-form ref="form" lazy-validation>
+    <div class="container-max-width">
+      <h1 class="page-header">
+        {{ header }}
+      </h1>
+      <Callout 
+        :sourceSelection="evalPlan.source_selection"
+        :method="evalPlan.method"
+      />
+      
+      <ATATRadioGroup
+        v-if="isStandards"
+        id="CustomStandards"
+        class="copy-max-width"
+        :items="standardsRadioGroupItems"
+        :legend="radioGroupLegend"
+        :value.sync="selectedStandardsRadioItem"
+        :rules="[
+          $validators.required('Please select an option.'),
+        ]"
+      />
 
-    <ATATCheckboxGroup 
-      v-if="evalPlan.source_selection === 'SetLumpSum'"
-      id="SetLumpSumCheckboxes"
-      groupLabel="In addition to the required criteria listed above, what other 
-        assessment areas would you like to evaluate?"
-      groupLabelId="OtherAssessmentAreasLabel"
-      :items="setLumpSumCheckboxOptions"
-      :value.sync="selectedSetLumpSumOptions"
-    />
+      <ATATCheckboxGroup 
+        v-if="evalPlan.source_selection === 'SetLumpSum'"
+        id="SetLumpSumCheckboxes"
+        groupLabel="In addition to the required criteria listed above, what other 
+          assessment areas would you like to evaluate?"
+        groupLabelId="OtherAssessmentAreasLabel"
+        :items="setLumpSumCheckboxOptions"
+        :value.sync="selectedSetLumpSumOptions"
+      />
 
-    <CustomSpecifications 
-      id="CustomSpecEntry"
-      v-show="showCustomSpecifications"
-      :sourceSelection="evalPlan.source_selection"
-      :isDifferentiator="false"
-      :isOptional="true"
-      :customSpecifications.sync="evalPlan.custom_specifications"
-    />
+      <CustomSpecifications 
+        id="CustomSpecEntry"
+        v-if="showCustomSpecifications"
+        :sourceSelection="evalPlan.source_selection"
+        :isDifferentiator="false"
+        :isOptional="true"
+        :customSpecifications.sync="evalPlan.custom_specifications"
+      />
 
-  </div>
+    </div>
+  </v-form>
 </template>
 
 <script lang="ts">

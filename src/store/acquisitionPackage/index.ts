@@ -354,8 +354,13 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.validateNow;
   }
 
+  @Action
+  public async setValidateNow(value: boolean): Promise<void> {
+    this.doSetValidateNow(value);
+  }
+
   @Mutation
-  public setValidateNow(value: boolean){
+  public async doSetValidateNow(value: boolean): Promise<void>{
     this.validateNow = value;
   }
 
@@ -364,7 +369,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setAllowDeveloperNavigation(value: boolean){
+  public setAllowDeveloperNavigation(value: boolean): void{
     this.allowDeveloperNavigation = value;
   }
 
