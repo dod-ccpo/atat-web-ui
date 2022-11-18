@@ -157,6 +157,8 @@ export default class PackagingPackingAndShipping extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
+
     if (this.noneApplySelected === "true" || this.otherSelected !== "true") {
       this.otherValueEntered = "";
     }
