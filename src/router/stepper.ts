@@ -355,6 +355,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.Exceptions,
         component: Exceptions,
         completePercentageWeight: 5,
+        lastStep: true,
         completed: false,
       },
       {
@@ -365,6 +366,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
+        lastStep: true,
         routeResolver: NoEvalPlanRouteResolver,
       },
       {
@@ -374,6 +376,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CreateEvalPlan,
         completePercentageWeight: 5,
         completed: false,
+        lastStep: false,
         routeResolver: CreateEvalPlanRouteResolver,
       },
       {
@@ -384,6 +387,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         excludeFromMenu: true,
         completed: false,
+        lastStep: false,
         routeResolver: EvalPlanDetailsRouteResolver,
         additionalButtons: [
           {
@@ -402,6 +406,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
         excludeFromMenu: true,
+        lastStep: false,
         routeResolver: BVTOResolver,
       },   
       {
@@ -411,6 +416,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: EvalPlanSummary,
         completePercentageWeight: 0,
         completed: false,
+        lastStep: true,
+        parentName: routeNames.CreateEvalPlan,
         excludeFromMenu: true,
       },
       // KEEP JustificationAndApproval for future ticket
