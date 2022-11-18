@@ -33,6 +33,7 @@ import { Checkbox } from "types/Global";
     ATATCheckboxGroup
   }
 })
+
 export default class RegionsDeployedAndUserCount extends Vue {
   @Prop({ default: "Regions" }) id!: string;
   @Prop({ default: false }) hasTextFields?: boolean;
@@ -45,8 +46,6 @@ export default class RegionsDeployedAndUserCount extends Vue {
   @Prop({ default: () => []}) private textfieldRules!: Array<unknown>;
   @Prop() private selectedDeployedRegionsOnLoad?: string[];
   @Prop() private regionUsersOnLoad?: string;
-  // @PropSync("selectedRegions") private _selectedRegions!: string[];
-
 
   public selectedRegions: string[] = [];
   public regions: Checkbox[] = [
