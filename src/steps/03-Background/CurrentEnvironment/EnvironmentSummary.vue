@@ -192,24 +192,32 @@ export default class EnvironmentSummary extends Vue {
     switch(abbr) {
     case "U": return "Unclassified";
     case "S": return "Secret";
-    case "TS": return "Top Secret";
+    case "TS": return "TS";
     default: return ""
     }
   }
 
   public get classificationsText(): string {
     const classifications: string[] = [];
-    this.classificationsCloud.forEach((sysId) => {
+    const unclassifiedILs: string[] = [];
+    const locationClassifications = this.classificationsCloud.concat(this.classificationsOnPrem);
+    locationClassifications.forEach((sysId) => {
       const cl = this.classificationLevels.find(obj => obj.sys_id === sysId);
       classifications.push(this.topLevelClassification(cl?.classification as string))
-    })
-    this.classificationsOnPrem.forEach((sysId) => {
-      const cl = this.classificationLevels.find(obj => obj.sys_id === sysId);
-      classifications.push(this.topLevelClassification(cl?.classification as string))
-    })
-    let unique = (classifications.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
-    unique = unique.replace(/,(?=[^,]+$)/, ' and');
-    return "Deployed within " + unique;
+      if (cl?.classification === "U") {
+        unclassifiedILs.push(cl.impact_level);
+      }
+    });
+    let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
+    if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
+      let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
+      const unclassifiedIndex = uniqueClassifications.indexOf("Unclassified");
+      uniqueClassifications.splice(unclassifiedIndex, 1);
+      uniqueClassifications.unshift("Unclassified (" + uniqueILs + ")");
+    }
+    let classificationsStr = uniqueClassifications.join(", ");
+    classificationsStr = classificationsStr.replace(/,(?=[^,]+$)/, ' and');
+    return "Deployed within " + classificationsStr;
   }
 
   public editEnvironment(): void {
