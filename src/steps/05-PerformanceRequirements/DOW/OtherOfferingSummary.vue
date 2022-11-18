@@ -198,7 +198,6 @@ export default class OtherOfferingSummary extends Vue {
   }
 
   public async editInstance(item: OtherServiceSummaryTableData): Promise<void> {
-    console.log("item.instanceNumber", item.instanceNumber)
     await DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(item.instanceNumber);
     this.navigate();
   }

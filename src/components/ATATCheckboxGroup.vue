@@ -31,7 +31,7 @@
           { '_no-description': noDescriptions },
           { '_has-text-fields' : hasTextFields }
         ]"
-        :key="item.value"
+        :key="id + '_' + item.value"
         :label="item.label"
         :value="item.value"
         :error="error"
@@ -51,7 +51,7 @@
             class="d-flex "
             :class="[
               { 'flex-column width-100' : !hasTextFields },
-              { 'align-center foobar' : hasTextFields }
+              { 'align-center' : hasTextFields }
             ]"
           >
             <div 
@@ -98,13 +98,15 @@
 
           <ATATTextField 
             v-if="hasTextFields && showTextField(index)"
+            ref="atatTextInput"
             :id="id + '_TextField' + index"
             :appendText="textFieldAppendText"
             :width="textFieldWidth"
             type="text"
             @blur="textFieldBlur(index)"   
             :isFormattedNumber="isFormattedNumber" 
-            :rules="textfieldRules"        
+            :rules="textfieldRules"  
+            :value.sync="item.textfieldValue"
           /> 
 
         </template>
@@ -227,15 +229,12 @@ export default class ATATCheckboxGroup extends Vue {
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
     if (newVal.length > oldVal.length) {
       // new checkbox checked - get the index, push to this.selectedIndices
-      const checkedVal = newVal.find(val => !oldVal.includes(val)) || "";
-      const checkedIndex = this.getSelectedIndex(checkedVal);
-      this.selectedIndices.push(checkedIndex);
-      this.$nextTick(() => {
-        const textfieldToFocus = this.getTextField(checkedIndex);
-        if (textfieldToFocus) {
-          textfieldToFocus.focus();
-        }
+      const newCheckedVals = newVal.filter(val => !oldVal.includes(val));
+      newCheckedVals.forEach((v) => {
+        const checkedIndex = this.getSelectedIndex(v);
+        this.selectedIndices.push(checkedIndex);
       });
+
     } else if (newVal.length < oldVal.length) {
       // checkbox UNchecked - get the index from oldVal, remove from this.selectedIndices
       const uncheckedVal = oldVal.find(val => !newVal.includes(val)) || "";
@@ -312,7 +311,6 @@ export default class ATATCheckboxGroup extends Vue {
     }
   }
 
-  // methods
   private setErrorMessage(): void {
     if (this._selected.length) {
       this.clearErrorMessage();
@@ -349,7 +347,8 @@ export default class ATATCheckboxGroup extends Vue {
       this.setErrorMessage();
   }
 
-  @Watch("items")
+  @Watch("_items")
+
   protected checkboxItemsChange(): void {
     if (this._items.length) {
       this.$nextTick(() => {
