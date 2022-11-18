@@ -120,7 +120,6 @@ export default class RegionsDeployedAndUserCount extends Vue {
       const key = `${checkboxObj.value}`;
       const val = checkboxObj.textfieldValue || "";
       const thisRegionUserObj = { [key]: val };
-      debugger;
       regionUserData.push(thisRegionUserObj);
     })
     const jsonStr = JSON.stringify(regionUserData)
