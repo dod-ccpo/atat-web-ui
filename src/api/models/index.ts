@@ -90,7 +90,7 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   env_location: EnvironmentLocation;
   env_classifications_cloud: string[]; // array of classification level sys_ids
   env_classifications_on_prem: string[]; // array of classification level sys_ids
-  env_instances: CurrentEnvironmentInstanceDTO[]; // array of sys_ids
+  env_instances: string[]; // array of sys_ids
   current_environment_replicated_optimized: EnvironmentReplicateOptimized;
   statement_replicated_optimized: string;
   additional_growth: YesNo;
@@ -116,7 +116,7 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   users_per_region: string; // json stringified sys_id/count pairs
   operating_system: string;
   licensing: string;
-  number_Of_VCPUs: number | null;
+  number_of_VCPUs: number | null;
   processor_speed: number | null; 
   memory_amount: number | null;
   memory_unit: StorageUnit;
@@ -333,6 +333,18 @@ export interface FundingRequestMIPRFormDTO extends BaseTableDTO {
       mipr_attachment: string;
 }
 
+export interface FundingRequirementDTO extends BaseTableDTO {
+  acquisition_package: string;
+  funding_plan: string;
+  funding_request: string;
+  funds_obligated: string;
+  funds_total: string;
+  incrementally_funded: string;
+  pop_start_date: string;
+  pop_end_date: string;
+  task_order_number: string;
+}
+
 export interface PeriodDTO extends BaseTableDTO {
   period_unit: string;
   period_unit_count: string;
@@ -377,19 +389,36 @@ export interface FundingIncrementDTO extends BaseTableDTO{
 export interface TaskOrderDTO extends BaseTableDTO {
     clins: string;
     clin_records?: ClinDTO[],
-    incrementally_funded: string;
-    funds_obligated: string;
-    acquisition_package: string;
+   /**
+   * @deprecated Will be deprecated: use the prop from funding_requirement
+   */
+    incrementally_funded: string; // will be deprecated: use the prop from funding_requirement
+  /**
+   * @deprecated Will be deprecated: use the prop from funding_requirement
+   */
+    funds_obligated: string; // do not delete. for portfolio sum, not in api call but calculated
+  /**
+   * @deprecated Will be deprecated: use the prop from funding_requirement
+   */
+    acquisition_package: string; // will be deprecated: use the prop from funding_requirement
+  /**
+   * @deprecated Will be deprecated: use the prop from funding_requirement
+   */
+    funding_plan: string; // will be deprecated: use the prop from funding_requirement
+  /**
+   * @deprecated Will be deprecated: use the prop from funding_requirement
+   */
+    funds_total: string; // do not delete. for portfolio sum, not in api call but calculated
+
     task_order_number: string;
     task_order_status: string;
     portfolio: string | ReferenceColumn;
-    funding_plan: string;
     pop_end_date: string;
     pop_start_date: string;
-    funds_total: string;
     total_task_order_value?: number; // total clin values that don't have expired/ option pending
     total_lifecycle_amount?: number; // total clin values irrespective of status
     funds_spent_task_order?: number; // total of is_actual=true costs across all clins of task order
+    funding_requirement?: FundingRequirementDTO; //
 }
 
 export interface CostsDTO extends BaseTableDTO {

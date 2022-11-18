@@ -3,7 +3,7 @@
     <ATATRadioGroup 
       id="CurrentUsageDescription"
       :items="usageOptions"
-      :value.sync="_currentUsage.currentUsageDescription"
+      :value.sync="_currentUsageDescription"
       legend="How would you describe the current usage?"
       :rules="[
         $validators.required('Select a description for your current usage.'),
@@ -13,19 +13,19 @@
     <ATATCheckboxGroup
       class="mt-8"
       id="SpikeCauses"
-      v-if="_currentUsage.currentUsageDescription === 'IRREGULAR_USAGE'"
+      v-if="_currentUsageDescription === 'IRREGULAR_USAGE'"
       groupLabel="Are spikes in usage typically caused by a specific event and/or 
         during certain period(s) of the year?"
       groupLabelId="SpikeCauseGroupLabel"
       :items="spikeCauses"
-      :value.sync="_currentUsage.trafficSpikeCauses"
+      :value.sync="_usageTrafficSpikeCauses"
     />
 
     <ATATTextField
       id="HighUsageEventDescription"
       class="mt-10"
-      v-if="_currentUsage.trafficSpikeCauses.includes('EVENT')"
-      :value.sync="_currentUsage.surgeUsageEvent"
+      v-if="_usageTrafficSpikeCauses.includes('EVENT')"
+      :value.sync="_eventSpikeDescription"
       label="Tell us about the event that causes a surge in usage"
       tooltipText="Include any details that would help a CSP better understand 
         your surge requirements (i.e., event name and/or time of year)."
@@ -37,8 +37,8 @@
     <ATATTextField
       id="HighUsagePeriodDescription"
       class="mt-8"
-      v-if="_currentUsage.trafficSpikeCauses.includes('PERIOD')"
-      :value.sync="_currentUsage.surgeUsagePeriods"
+      v-if="_usageTrafficSpikeCauses.includes('PERIOD')"
+      :value.sync="_periodSpikeDescription"
       label="In which period of the year do you typically have a surge in usage?"
       tooltipText="Include any details that would help a CSP better understand 
         your surge requirements (i.e., date ranges or particular days, months, 
@@ -59,7 +59,12 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import { Checkbox, RadioButton, CurrentEnvUsageData } from "types/Global";
+import { 
+  Checkbox, 
+  RadioButton, 
+  CurrEnvInstanceUsage, 
+  EnvironmentInstanceUsage 
+} from "types/Global";
 
 @Component({
   components: {
@@ -71,8 +76,11 @@ import { Checkbox, RadioButton, CurrentEnvUsageData } from "types/Global";
 
 export default class CurrentUsage extends Vue {
   
-  @PropSync("currentUsage") public _currentUsage!: CurrentEnvUsageData;
-
+  @PropSync("usageTrafficSpikeCauses") public _usageTrafficSpikeCauses!: string[];
+  @PropSync("currentUsageDescription") public _currentUsageDescription!: EnvironmentInstanceUsage;
+  @PropSync("eventSpikeDescription") public _eventSpikeDescription!: string;
+  @PropSync("periodSpikeDescription") public _periodSpikeDescription!: string;
+  
   public usageOptions: RadioButton[] = [
     {
       id: "RegularUsage",
@@ -100,26 +108,12 @@ export default class CurrentUsage extends Vue {
     },
   ];
 
-  @Watch("_currentUsage", {deep: true})
-  public currentUsageDescriptionChange(newVal: CurrentEnvUsageData): void {
-    if (newVal.currentUsageDescription === "EVEN_USAGE") {
-      this._currentUsage.isTrafficSpikeEventBased = "";
-      this._currentUsage.isTrafficSpikePeriodBased = "";
-      this._currentUsage.trafficSpikeEventDescription = "";
-      this._currentUsage.trafficSpikePeriodDescription = "";
-    }
-    if (!newVal.trafficSpikeCauses?.includes("EVENT")) {
-      this._currentUsage.trafficSpikeEventDescription = "";
-    } else if (newVal.trafficSpikeCauses?.includes("EVENT")) {
-      this._currentUsage.isTrafficSpikeEventBased = "YES";
-    }
-    if (!newVal.trafficSpikeCauses?.includes("PERIOD")) {
-      this._currentUsage.trafficSpikePeriodDescription = "";
-    } else if (newVal.trafficSpikeCauses?.includes("PERIOD")) {
-      this._currentUsage.isTrafficSpikePeriodBased = "YES";
+  @Watch("_currentUsageDescription", {deep: true})
+  public currentUsageDescriptionChange(newVal: CurrEnvInstanceUsage): void {
+    if (newVal === "EVEN_USAGE") {
+      this._usageTrafficSpikeCauses = [];
     }
   }
-
 }
 
 </script>

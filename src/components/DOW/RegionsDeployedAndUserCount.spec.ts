@@ -36,7 +36,7 @@ describe("Testing CurrentUsage Component", () => {
     });
 
     it("watch - selectedRegions change", async () => {
-      wrapper.vm.regionsUserDataUpdate();
+      wrapper.vm.regionsUserDataUpdate(["foo", "bar"]);
       expect(wrapper.emitted("regionUserDataUpdate")).toBeTruthy();
     });
   })

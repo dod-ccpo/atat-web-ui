@@ -31,7 +31,7 @@
           { '_no-description': noDescriptions },
           { '_has-text-fields' : hasTextFields }
         ]"
-        :key="item.value"
+        :key="id + '_' + item.value"
         :label="item.label"
         :value="item.value"
         :error="error"
@@ -51,7 +51,7 @@
             class="d-flex "
             :class="[
               { 'flex-column width-100' : !hasTextFields },
-              { 'align-center foobar' : hasTextFields }
+              { 'align-center' : hasTextFields }
             ]"
           >
             <div 
@@ -98,13 +98,15 @@
 
           <ATATTextField 
             v-if="hasTextFields && showTextField(index)"
+            ref="atatTextInput"
             :id="id + '_TextField' + index"
             :appendText="textFieldAppendText"
             :width="textFieldWidth"
             type="text"
             @blur="textFieldBlur(index)"   
             :isFormattedNumber="isFormattedNumber" 
-            :rules="textfieldRules"        
+            :rules="textfieldRules"  
+            :value.sync="item.textfieldValue"
           /> 
 
         </template>
@@ -127,6 +129,7 @@ import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import {Checkbox} from "../../types/Global";
 import { getIdText } from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -140,7 +143,11 @@ import { getIdText } from "@/helpers";
 export default class ATATCheckboxGroup extends Vue {
   // refs
   $refs!: {
-    checkboxGroup: (Vue & { errorBucket: string[]; errorCount: number })[];
+    checkboxGroup: (Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      validate: () => boolean;
+    })[];
     atatTextInput: (Vue & { errorBucket: string[]; errorCount: number })[];
   }; 
 
@@ -181,13 +188,11 @@ export default class ATATCheckboxGroup extends Vue {
   private prevSelected: string[] = [];
   private errorMessages: string[] = [];
   public blurredCheckboxes: Record<string, string[]> = {};
-  private validateCheckboxes = false;
+  private validateCheckboxesNow = false;
 
-  public checkboxRules = this.validateCheckboxes
-    ? this.rules
-    : [];
+  public checkboxRules:Array<unknown> = [];
 
-  @Watch("validateCheckboxes")
+  @Watch("validateCheckboxesNow")
   protected setCheckboxValidation(): void {
     this.checkboxRules = this.rules;
   }
@@ -224,15 +229,12 @@ export default class ATATCheckboxGroup extends Vue {
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
     if (newVal.length > oldVal.length) {
       // new checkbox checked - get the index, push to this.selectedIndices
-      const checkedVal = newVal.find(val => !oldVal.includes(val)) || "";
-      const checkedIndex = this.getSelectedIndex(checkedVal);
-      this.selectedIndices.push(checkedIndex);
-      this.$nextTick(() => {
-        const textfieldToFocus = this.getTextField(checkedIndex);
-        if (textfieldToFocus) {
-          textfieldToFocus.focus();
-        }
+      const newCheckedVals = newVal.filter(val => !oldVal.includes(val));
+      newCheckedVals.forEach((v) => {
+        const checkedIndex = this.getSelectedIndex(v);
+        this.selectedIndices.push(checkedIndex);
       });
+
     } else if (newVal.length < oldVal.length) {
       // checkbox UNchecked - get the index from oldVal, remove from this.selectedIndices
       const uncheckedVal = oldVal.find(val => !newVal.includes(val)) || "";
@@ -290,7 +292,7 @@ export default class ATATCheckboxGroup extends Vue {
 
   private checkBoxClicked(value: string): void {
     if (this.checkboxRules.length === 0) {
-      this.validateCheckboxes = true;;
+      this.validateCheckboxesNow = true;;
     }
     if (value === this.noneValue) {
       this.validateOtherOnBlur = false;
@@ -309,7 +311,6 @@ export default class ATATCheckboxGroup extends Vue {
     }
   }
 
-  // methods
   private setErrorMessage(): void {
     if (this._selected.length) {
       this.clearErrorMessage();
@@ -333,7 +334,21 @@ export default class ATATCheckboxGroup extends Vue {
     });   
   }
 
-  @Watch("items")
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if (!this.validateCheckboxesNow && this.rules.length) {
+      this.validateCheckboxesNow = true;
+    }
+    if(!this.$refs.checkboxGroup[0].validate())
+      this.setErrorMessage();
+  }
+
+  @Watch("_items")
+
   protected checkboxItemsChange(): void {
     if (this._items.length) {
       this.$nextTick(() => {
@@ -360,7 +375,7 @@ export default class ATATCheckboxGroup extends Vue {
       }
       if (this.blurredCheckboxes[groupId].indexOf(id) === -1) {
         // only clear if validation hasn't been set yet
-        if (!this.validateCheckboxes) {
+        if (!this.validateCheckboxesNow) {
           this.clearErrorMessage();
         }
         this.blurredCheckboxes[groupId].push(id);
@@ -368,7 +383,7 @@ export default class ATATCheckboxGroup extends Vue {
 
       if (this.blurredCheckboxes[groupId].length === this._items.length) {
         if (this.checkboxRules.length === 0) {
-          this.validateCheckboxes = true;
+          this.validateCheckboxesNow = true;
         }
         this.setErrorMessage();
       }

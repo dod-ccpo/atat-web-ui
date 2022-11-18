@@ -19,12 +19,10 @@ describe("Testing CurrentUsage Component", () => {
       vuetify,
       localVue,
       propsData: {
-        currentUsage: {
-          currentUsageDescription: "foo",
-          trafficSpikeCauses: [],
-          surgeUsageEvent: "",
-          surgeUsagePeriods: "",      
-        }
+        currentUsageDescription: "foo",
+        usageTrafficSpikeCauses: [],
+        eventSpikeDescription: "",
+        periodSpikeDescription: "",      
       }
     });
   });
@@ -37,8 +35,8 @@ describe("Testing CurrentUsage Component", () => {
 
   describe("testing watchers", () => {
     it("watch - currentUsageDescription change", async () => {
-      wrapper.vm.$props.currentUsage.surgeUsageEvent = "foo";
-      wrapper.vm.$props.currentUsage.currentUsageDescription = "RegularUsage";
+      wrapper.vm.$props.eventSpikeDescription = "foo";
+      wrapper.vm.$props.currentUsageDescription = "EVEN_USAGE";
       Vue.nextTick(() => {
         expect(wrapper.vm.$props.currentUsage.surgeUsageEvent).toBe("");
       })

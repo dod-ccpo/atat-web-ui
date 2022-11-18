@@ -3,7 +3,7 @@ import api from "@/api";
 import { ClinDTO, CostsDTO, TaskOrderDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
 import { TABLENAME as ClinTable } from "@/api/clin";
-import { TABLENAME as TaskOrderTable } from "@/api/taskOrder";
+import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
 
 export interface PortFolioDashBoardDTO {
@@ -96,6 +96,12 @@ const getEntityTotals = (
 };
 
 export class DashboardService {
+
+  /**
+   * Data returned by this function has no impact in the context of relocation of funding related
+   * columns to "funding_requirement" table. All the funding related data that is displayed on
+   * the UI, comes from the clins and costs table.
+   */
   public async getdata(
     taskOrderNumber: string
   ): Promise<PortFolioDashBoardDTO> {
@@ -211,6 +217,10 @@ export class DashboardService {
     return costs;
   }
 
+  /**
+   * Uses aggregate api response from funding_requirement table and all the data from the task_order
+   * and transforms the data as needed by the JWCCDashboard component.
+   */
   public async getTotals(taskOrderNumbers: string[]): Promise<any> {
     const taskOrderQuery = taskOrderNumbers.reduce((prev, current) => {
       const query = prev
@@ -227,7 +237,7 @@ export class DashboardService {
     };
 
     const aggregate = await api.aggregate.makeRequest(
-      TaskOrderTable,
+      FundingRequirementTable,
       aggregateRequestConfig
     ) as AggregateResults;
 
