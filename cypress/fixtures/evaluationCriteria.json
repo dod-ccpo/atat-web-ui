@@ -16,5 +16,16 @@
     "introDescription": "In this section, we'll develop the basis for how your acquisition will be evaluated. To begin, select the applicable evaluation method below. In the following screens, we’ll identify any compliance standards, differentiators, or assessment areas that CSPs must address in their response to the solicitation. You’ll have an opportunity to customize these standards for your specific needs.",
     "epRadioGroupLabel": "Which source selection process is applicable to your requirement? Learn more",
     "panelHeader": "Understanding the source selection process for JWCC task orders"
+  },
+  "noTechProposal": {
+    "headerText": "Now let’s review compliance standards when no technical proposal is required",
+    "alertSubHeader": "Award will be made to the lowest priced offeror meeting the following compliance standards:",
+    "customRadioGroupLabel": "In addition to the required standards listed above, do you want to include any custom compliance standards that CSPs must meet to be determined technically acceptable?"
+  },
+  "setEqualLumpSum": {
+    "headerText": "Based on your evaluation method, there are no required compliance standards, differentiators, or assessment areas.",
+    "alertHeader": "Why are there no required standards?",
+    "alertIntro": "Since you would like to purchase an equal dollar amount from each CSP, your Contracting Officer (KO) will issue a Request for Quote (RFQ) and ask CSPs to respond if they are “interested” or “not interested.” Task orders will be issued to all interested CSPs.",
+    "alertSubHeader": "Award will be made in equal parts to each CSP that responds to the RFQ as “interested.”"
   }
 }
