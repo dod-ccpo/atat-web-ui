@@ -1,50 +1,52 @@
 <template>
-  <div class="mb-7">
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header">
-            Let’s see if you qualify for an exception to the fair opportunity process
-          </h1>
+  <v-form ref="form" lazy-validation>
+    <div class="mb-7">
+      <v-container fluid class="container-max-width">
+        <v-row>
+          <v-col class="col-12">
+            <h1 class="page-header">
+              Let’s see if you qualify for an exception to the fair opportunity process
+            </h1>
 
-          <ATATAlert
-            id="FairOpportunityAlert"
-            type="callout"
-            :showIcon="false"
-            class="copy-max-width my-10"
-          >
-            <template v-slot:content>
-              <h2>Fair opportunity</h2>
-              <p class="mt-2 mb-0">
-                Each Cloud Service Provider (CSP) available within the JWCC contract must be given
-                a fair opportunity to be considered for task orders exceeding the micro-purchase
-                threshold, unless a statutory exception applies. Any exceptions will require
-                written justification, in accordance with
-                <a
-                  href="https://www.acquisition.gov/far/16.505"
-                  target="_blank"
-                  class="_text-link"
-                  id="ExceptionExternalLink"
-                >
-                  <span class="_external-link">FAR 16.505(b)(2)</span>
-                </a>.
-                We will help you complete justification documentation, if needed.
-              </p>
-            </template>
-          </ATATAlert>
+            <ATATAlert
+              id="FairOpportunityAlert"
+              type="callout"
+              :showIcon="false"
+              class="copy-max-width my-10"
+            >
+              <template v-slot:content>
+                <h2>Fair opportunity</h2>
+                <p class="mt-2 mb-0">
+                  Each Cloud Service Provider (CSP) available within the JWCC contract must be given
+                  a fair opportunity to be considered for task orders exceeding the micro-purchase
+                  threshold, unless a statutory exception applies. Any exceptions will require
+                  written justification, in accordance with
+                  <a
+                    href="https://www.acquisition.gov/far/16.505"
+                    target="_blank"
+                    class="_text-link"
+                    id="ExceptionExternalLink"
+                  >
+                    <span class="_external-link">FAR 16.505(b)(2)</span>
+                  </a>.
+                  We will help you complete justification documentation, if needed.
+                </p>
+              </template>
+            </ATATAlert>
 
-          <FairOppExceptions 
-            legend="Based on your market research, do any of the following exceptions to fair 
-              opportunity apply to your acquisition?"
-            classes="copy-max-width mb-10 mt-3"
-            :selectedException.sync="selectedException"
-            :rules="[$validators.required('Please select an option')]"            
-          />
+            <FairOppExceptions 
+              legend="Based on your market research, do any of the following exceptions to fair 
+                opportunity apply to your acquisition?"
+              classes="copy-max-width mb-10 mt-3"
+              :selectedException.sync="selectedException"
+              :rules="[$validators.required('Please select an option')]"            
+            />
 
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
+  </v-form>
 </template>
 
 <script lang="ts">
