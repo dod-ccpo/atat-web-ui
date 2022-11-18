@@ -37,6 +37,7 @@ import { EnvironmentInstanceAPI } from "@/api/EnvironmentInstance";
 import { AlertApi } from "./alerts";
 import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
+import {FundingRequirementApi} from "@/api/fundingRequirement";
 
 
 export const api = {
@@ -59,6 +60,7 @@ export const api = {
   fundingIncrementTable: new FundingIncrementApi(),
   fundingRequestFSFormTable: new FundingRequestFSFormApi(),
   fundingRequestMIPRFormTable: new FundingRequestMIPRFormApi(),
+  fundingRequirementTable: new FundingRequirementApi(),
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
   serviceOfferingTable: new ServiceOfferingApi(),

@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import api from "@/api";
-import { TaskOrderDTO } from "@/api/models";
+import {FundingRequirementDTO, TaskOrderDTO} from "@/api/models";
 import {
   VuexModule,
   Module,
@@ -98,22 +98,52 @@ export class TaskOrderStore extends VuexModule {
     try {
       // this converts any references columns to strings
       value = convertColumnReferencesToValues(value);
+      // separate out into objects that need to be saved to task order & funding req tables
+      const taskOrderForSave: any = {
+        clins: value.clins,
+        pop_start_date: value.pop_start_date,
+        pop_end_date: value.pop_end_date,
+        portfolio: value.portfolio,
+        task_order_number: value.task_order_number,
+        task_order_status: value.task_order_status
+      }
+
+      const fundingRequirementForSave: FundingRequirementDTO = {
+        acquisition_package: value.acquisition_package,
+        funding_plan: value.funding_plan,
+        funding_request: "",
+        funds_obligated: value.funds_obligated,
+        funds_total: value.funds_total,
+        incrementally_funded: value.incrementally_funded,
+        pop_end_date: value.pop_end_date,
+        pop_start_date: value.pop_start_date,
+        task_order_number: value.task_order_number
+      }
 
       const sysId = this.taskOrder?.sys_id || "";
-
       const saveTaskOrder =
         sysId.length > 0
-          ? api.taskOrderTable.update(sysId, value)
-          : api.taskOrderTable.create(value);
-
+          ? api.taskOrderTable.update(sysId, taskOrderForSave)
+          : api.taskOrderTable.create(taskOrderForSave);
       const savedTaskOrder = await saveTaskOrder;
 
+      const fundingReqSysId = this.taskOrder?.funding_requirement?.sys_id || "";
+      const saveFundingRequirement =
+        fundingReqSysId.length > 0
+          ? api.fundingRequirementTable.update(sysId, fundingRequirementForSave)
+          : api.fundingRequirementTable.create(fundingRequirementForSave);
+      const savedFundingReq = await saveFundingRequirement;
+      savedTaskOrder.funding_requirement = savedFundingReq;
+      // set the funding properties of task order dto for backward compatibility
+      savedTaskOrder.incrementally_funded = savedFundingReq.incrementally_funded;
+      savedTaskOrder.funds_obligated = savedFundingReq.funds_obligated;
+      savedTaskOrder.acquisition_package = savedFundingReq.acquisition_package;
+      savedTaskOrder.funding_plan = savedFundingReq.funding_plan;
+      savedTaskOrder.funds_total = savedFundingReq.funds_total;
       this.setTaskOrder(savedTaskOrder);
-      
       if (savedTaskOrder.funding_plan) {
         await FinancialDetails.loadFundingPlanData();
       }
-
       return savedTaskOrder;
     } catch (error) {
       throw new Error(`error saving TaskOrder ${error}`);
