@@ -94,7 +94,7 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   current_environment_replicated_optimized: EnvironmentReplicateOptimized;
   statement_replicated_optimized: string;
   additional_growth: YesNo;
-  anticipated_yearly_additional_capacity: number; 
+  anticipated_yearly_additional_capacity: number | null; 
   has_phased_approach: YesNo;
   phased_approach_schedule: string; 
   needs_architectural_design_services: YesNo;
