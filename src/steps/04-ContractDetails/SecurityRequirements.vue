@@ -30,11 +30,11 @@
               For your SECRET cloud services and support, what type of classified information will
               be accessed?
             </p>
-            <p id="SecretMessage" class="mb-5 ">
+            <p id="SecretMessageNote" class="mb-5 ">
               Select all that apply to your SECRET classification level.
             </p>
             <ATATCheckboxGroup
-              id="secretSecurityRequirements"
+              id="SecretSecurityRequirements"
               :value.sync="selectedSecretSecurityRequirements"
               :items="securityRequirementsCheckboxes"
               name="checkboxes"
@@ -47,15 +47,15 @@
           </div>
           <hr v-if="hasTopSecret && hasSecret" />
           <div v-if="hasTopSecret">
-            <p id="SecretMessage" class="mb-5 font-weight-500">
+            <p id="TopSecretMessage" class="mb-5 font-weight-500">
               For your TOP SECRET cloud services and support, what type of classified information
               will be accessed?
             </p>
-            <p id="SecretMessage" class="mb-5 ">
+            <p id="TopSecretMessageNote" class="mb-5 ">
               Select all that apply to your TOP SECRET classification level.
             </p>
             <ATATCheckboxGroup
-              id="secretSecurityRequirements"
+              id="TopSecretSecurityRequirements"
               :value.sync="selectedTopSecretSecurityRequirements"
               :items="securityRequirementsCheckboxes"
               name="checkboxes"

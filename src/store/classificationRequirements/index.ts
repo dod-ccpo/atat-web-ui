@@ -57,28 +57,6 @@ export class ClassificationRequirementsStore extends VuexModule {
     );
 
   }
-
-  @Mutation
-  public async setCurrentENVClassificationLevels(value: ClassificationLevelDTO[]): Promise<void> {
-    this.currentEnvClassificationLevels = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_CLASSIFICATION_LEVELS_KEY
-    );
-
-  }
-
-  @Mutation
-  public async setEnvironmentInstance(value: EnvironmentInstanceDTO[]): Promise<void> {
-    this.environmentInstances = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_CLASSIFICATION_LEVELS_KEY
-    );
-
-  }
   @Mutation
   public async setSecurityRequirements(value: SecurityRequirement[]): Promise<void> {
     this.securityRequirements = value;
