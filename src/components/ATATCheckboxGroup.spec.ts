@@ -61,10 +61,10 @@ describe("Testing ATATSelect Component", () => {
       expect(wrapper.exists()).toBe(true);
     });
     
-    it("@Watch validateCheckboxes - set $props.rules to ensure " +
+    it("@Watch validateCheckboxesNow - set $props.rules to ensure " +
           "$data.checkboxRules === $props.rules", async ()=> {
       await wrapper.setProps({rules})
-      wrapper.vm.$data.validateCheckboxes = true;
+      wrapper.vm.$data.validateCheckboxesNow = true;
       Vue.nextTick(()=>{
         expect(wrapper.vm.$data.checkboxRules).toEqual(rules);
       })
@@ -146,7 +146,7 @@ describe("Testing ATATSelect Component", () => {
 
     it("checkboxClicked - zero checkbox rules ensures checkboxes are validated", async()=>{
       await wrapper.vm.checkBoxClicked("1");
-      expect(await wrapper.vm.validateCheckboxes).toBe(true);
+      expect(await wrapper.vm.validateCheckboxesNow).toBe(true);
     })
 
     it("checkboxClicked() - check `other` checkbox, then check `NONE`, and `other` " +
@@ -251,7 +251,7 @@ describe("Testing ATATSelect Component", () => {
 
       await wrapper.setData({
         id: "CB",
-        validateCheckboxes: false
+        validateCheckboxesNow: false
       })
 
       const cb01 = document.createElement("input");
