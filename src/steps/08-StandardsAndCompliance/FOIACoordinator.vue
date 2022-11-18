@@ -1,92 +1,94 @@
 <template>
-  <div class="mb-7">
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header">Tell us about your FOIA Coordinator</h1>
+  <v-form ref="form" lazy-validation>
+    <div class="mb-7">
+      <v-container fluid class="container-max-width">
+        <v-row>
+          <v-col class="col-12">
+            <h1 class="page-header">Tell us about your FOIA Coordinator</h1>
 
-          <ATATTextField
-            id="FullName"
-            class="_input-max-width mb-10"
-            label="Full name"
-            helpText="Include rank, if applicable"
-            :value.sync="fullName"
-            :rules="[
-              $validators.required(
-                'Please enter your FOIA coordinator’s full name.'
-              ),
-            ]"
-          />
+            <ATATTextField
+              id="FullName"
+              class="_input-max-width mb-10"
+              label="Full name"
+              helpText="Include rank, if applicable"
+              :value.sync="fullName"
+              :rules="[
+                $validators.required(
+                  'Please enter your FOIA coordinator’s full name.'
+                ),
+              ]"
+            />
 
-          <ATATTextField
-            id="Email"
-            class="_input-max-width mb-10"
-            label="Email address"
-            helpText="Enter a .mil or .gov email address."
-            :value.sync="emailAddress"
-            :rules="[
-              $validators.required('Please enter your email address.'),
-              $validators.isEmail(),
-            ]"
-          />
+            <ATATTextField
+              id="Email"
+              class="_input-max-width mb-10"
+              label="Email address"
+              helpText="Enter a .mil or .gov email address."
+              :value.sync="emailAddress"
+              :rules="[
+                $validators.required('Please enter your email address.'),
+                $validators.isEmail(),
+              ]"
+            />
 
-          <hr />
+            <hr />
 
-          <ATATAddressForm
-            :addressTypeOptions="addressTypeOptions"
-            :addressTypes="addressTypes"
-            :city.sync="city"
-            :countryListData="countryListData"
-            :militaryPostOfficeOptions="militaryPostOfficeOptions"
-            :minLength="[]"
-            :requiredFields="[
-              { field: 'StreetAddress', message: 'Please enter an address.' },
-              { field: 'City', message: 'Please enter a city.' },
-              { field: 'State', message: 'Please select a state.' },
-              { field: 'ZIPCode', message: 'Please enter a ZIP code.' },
-              {
-                field: 'APO_FPO_DPO',
-                message: 'Please select a military post office (APO or FPO).',
-              },
-              { field: 'StateCode', message: 'Please select a state code.' },
-              {
-                field: 'StateProvince',
-                message: 'Please enter a state/province.',
-              },
-              { field: 'Country', message: 'Please select a country.' },
-              { field: 'PostalCode', message: 'Please enter a postal code.' },
-            ]"
-            :isValidRules="[
-              {
-                field: 'ZIPCode',
-                message: 'Your ZIP code must be 5 or 9 digits.',
-                mask: ['99999', '99999-9999'],
-              },
-              {
-                field: 'PostalCode',
-                message:
-                  'Your postal code must be 10 characters or ' +
-                  'less and may include spaces and hyphens.',
-                mask: ['^[A-Za-z0-9- ]{0,10}$'],
-                isMaskRegex: true,
-              },
-            ]"
-            :selectedAddressType.sync="selectedAddressType"
-            :selectedCountry.sync="selectedCountry"
-            :selectedMilitaryPO.sync="selectedMilitaryPO"
-            :selectedState.sync="selectedState"
-            :selectedStateCode.sync="selectedStateCode"
-            :stateCodeListData="stateCodeListData"
-            :stateListData="stateListData"
-            :stateOrProvince.sync="stateOrProvince"
-            :streetAddress1.sync="streetAddress1"
-            :streetAddress2.sync="streetAddress2"
-            :zipCode.sync="zipCode"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+            <ATATAddressForm
+              :addressTypeOptions="addressTypeOptions"
+              :addressTypes="addressTypes"
+              :city.sync="city"
+              :countryListData="countryListData"
+              :militaryPostOfficeOptions="militaryPostOfficeOptions"
+              :minLength="[]"
+              :requiredFields="[
+                { field: 'StreetAddress', message: 'Please enter an address.' },
+                { field: 'City', message: 'Please enter a city.' },
+                { field: 'State', message: 'Please select a state.' },
+                { field: 'ZIPCode', message: 'Please enter a ZIP code.' },
+                {
+                  field: 'APO_FPO_DPO',
+                  message: 'Please select a military post office (APO or FPO).',
+                },
+                { field: 'StateCode', message: 'Please select a state code.' },
+                {
+                  field: 'StateProvince',
+                  message: 'Please enter a state/province.',
+                },
+                { field: 'Country', message: 'Please select a country.' },
+                { field: 'PostalCode', message: 'Please enter a postal code.' },
+              ]"
+              :isValidRules="[
+                {
+                  field: 'ZIPCode',
+                  message: 'Your ZIP code must be 5 or 9 digits.',
+                  mask: ['99999', '99999-9999'],
+                },
+                {
+                  field: 'PostalCode',
+                  message:
+                    'Your postal code must be 10 characters or ' +
+                    'less and may include spaces and hyphens.',
+                  mask: ['^[A-Za-z0-9- ]{0,10}$'],
+                  isMaskRegex: true,
+                },
+              ]"
+              :selectedAddressType.sync="selectedAddressType"
+              :selectedCountry.sync="selectedCountry"
+              :selectedMilitaryPO.sync="selectedMilitaryPO"
+              :selectedState.sync="selectedState"
+              :selectedStateCode.sync="selectedStateCode"
+              :stateCodeListData="stateCodeListData"
+              :stateListData="stateListData"
+              :stateOrProvince.sync="stateOrProvince"
+              :streetAddress1.sync="streetAddress1"
+              :streetAddress2.sync="streetAddress2"
+              :zipCode.sync="zipCode"
+            />
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
+  </v-form>
 </template>
 
 <script lang="ts">
