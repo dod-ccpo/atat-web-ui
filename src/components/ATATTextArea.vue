@@ -5,8 +5,11 @@
         :id="id + '_text_field_label'"
         class="form-field-label width-100"
         :for="id + '_text_area'"
-        v-html="label"
       >
+        <span v-html="label"></span>
+        <span v-if="optional" class="optional">
+          Optional
+        </span>
       </label>
       <v-tooltip
         transition="slide-y-reverse-transition"
@@ -95,6 +98,7 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: true }) private noResize!: boolean;
   @Prop({ default: "" }) private maxChars!: string;
   @Prop({ default: true }) private validateItOnBlur!: boolean;
+  @Prop({ default: false }) private optional?: boolean;
 
   //data
   private placeHolder = "";

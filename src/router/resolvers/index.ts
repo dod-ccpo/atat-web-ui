@@ -119,13 +119,15 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 };
 
 export const ArchitecturalDesignDetailsRouteResolver = (current: string): string => {
-  const hasCurrentEnv
-      = AcquisitionPackage.currentEnvironment?.current_environment_exists === "YES";
-  if (!hasCurrentEnv) {
-    return routeNames.CurrentEnvironment;
-  }else {
-    return routeNames.ArchitecturalDesignDetails
+  const needsArchitectureDesign
+      = AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
+  if (needsArchitectureDesign) {
+    return routeNames.ArchitecturalDesignDetails;
   }
+  return current === routeNames.BackgroundSummary
+    ? routeNames.ArchitecturalDesign
+    : routeNames.BackgroundSummary;
+
 };
 
 export const CurrentContractEnvRouteResolver = (current: string): string => {

@@ -1,16 +1,18 @@
 <template>
-  <ArchitectureDesignForm
-
+  <ArchitecturalDesignForm
+    :isDOW="false"
+    :statementArchitecturalDesign.sync="currEnvDTO.statement_architectural_design"
+    :applicationsNeedArchitecturalDesign.sync="currEnvDTO.applications_need_architectural_design"
+    :dataClassificationsImpactLevels.sync="currEnvDTO.data_classifications_impact_levels"
+    :externalFactors.sync="currEnvDTO.external_factors_architectural_design"
   />
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 
-import <
+import ArchitecturalDesignForm from "@/components/DOW/ArchitecturalDesignForm.vue"
 
-import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { RadioButton } from "types/Global";
 import CurrentEnvironment, 
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -20,34 +22,27 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
-    ATATRadioGroup
+    ArchitecturalDesignForm
   }
 })
 
-export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
+export default class ArchitectureDesignDetails extends Mixins(SaveOnLeave) {
   public currEnvDTO = defaultCurrentEnvironment;
 
-  public radioOptions: RadioButton[] = [
-    {
-      id: "YesArchitecture",
-      value: "YES",
-      label: "Yes.",
-    },
-    {
-      id: "NoArchitecture",
-      value: "NO",
-      label: "No.",
-    },
-  ];
-
-  public get currentData(): Record<string, string> {
+  public get currentData(): Record<string, string | string[]> {
     return {
-      needsArchitectureDesign: this.currEnvDTO.needs_architectural_design_services,
+      statementArchitecturalDesign: this.currEnvDTO.statement_architectural_design,
+      applicationsNeedArchitecturalDesign: this.currEnvDTO.applications_need_architectural_design,
+      dataClassificationsImpactLevels: this.currEnvDTO.data_classifications_impact_levels,
+      externalFactors: this.currEnvDTO.external_factors_architectural_design,
     }
   };
 
-  public savedData: Record<string, string> = {
-    needsArchitectureDesign: ""
+  public savedData: Record<string, string | string[]> = {
+    statementArchitecturalDesign: "",
+    applicationsNeedArchitecturalDesign: "",
+    dataClassificationsImpactLevels: "",
+    externalFactors: "",
   }
 
   public async mounted(): Promise<void> {
@@ -58,7 +53,12 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
     const storeData = await AcquisitionPackage.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = _.cloneDeep(storeData);
-      this.savedData.needsArchitectureDesign = storeData.needs_architectural_design_services;
+      this.savedData = {
+        statementArchitecturalDesign: storeData.statement_architectural_design,
+        applicationsNeedArchitecturalDesign: storeData.applications_need_architectural_design,
+        dataClassificationsImpactLevels: storeData.data_classifications_impact_levels,
+        externalFactors: storeData.external_factors_architectural_design,
+      }
     }
   }
 

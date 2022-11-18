@@ -15,6 +15,7 @@
             <ATATRadioGroup 
               id="ArchitectureOptions"
               :card="true"
+              :width="180"
               :items="radioOptions"
               :value.sync="currEnvDTO.needs_architectural_design_services"
               :rules="[$validators.required('Please select an option.')]"
@@ -44,7 +45,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 
-export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
+export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
   public currEnvDTO = defaultCurrentEnvironment;
 
   public radioOptions: RadioButton[] = [

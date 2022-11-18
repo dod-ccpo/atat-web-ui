@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            <span v-if="isDOW">First, tell</span>
+            <span v-if="isDOW">Next, tell</span>
             <span v-else>Tell</span>
             us more about your architectural design requirements
           </h1>
@@ -17,6 +17,49 @@
             </p>
 
 
+            <ATATTextArea 
+              id="Statement"
+              class="textarea-max-width mb-10"
+              :value.sync="_statementArchitecturalDesign"
+              label="Provide a detailed statement identifying the outcomes and 
+                objectives for this requirement"
+              helpText="Include any information that would help a CSP to propose
+                an architectural design solution."
+              :maxChars="800"
+              :rules="[$validators.required('Enter a description for your requirement.')]"
+            />
+
+            <ATATTextField 
+              id="ApplicationsNeedArchitecturalDesign"
+              class="textarea-max-width mb-10"
+              :optional="true"
+              label="Identify any application(s) that need architectural designs"
+              :value.sync="_applicationsNeedArchitecturalDesign"
+            />
+
+            <ATATCheckboxGroup
+              id="ClassificationLevelCheckboxes"
+              :value.sync="_dataClassificationsImpactLevels"
+              :items="classificationCheckboxes"
+              groupLabel="What data classification and impact level(s) do you need an 
+                architectural design solution for?"
+              name="checkboxes"
+              :card="false"
+              class="copy-max-width mb-10"
+              :rules="[
+                $validators.required('Please select at least one classification level.')
+              ]"
+            />
+
+            <ATATTextArea 
+              id="ExternalFactors"
+              :optional="true"
+              class="textarea-max-width mb-10"
+              :value.sync="_externalFactors"
+              label="What external factors need to be considered for the deployment?"
+              helpText="Include any details about expiring contracts, data center closure, 
+                restrictions of applications, etc."
+            />
 
           </div>
         </v-col>
@@ -26,77 +69,48 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import Vue from "vue";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
-import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { RadioButton } from "types/Global";
-import CurrentEnvironment, 
-{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import _ from "lodash";
-import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATTextArea from "@/components/ATATTextArea.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
+import { Checkbox } from "types/Global";
+import { buildClassificationCheckboxList } from "@/helpers";
+import { ClassificationLevelDTO } from "@/api/models";
+import classificationRequirements from "@/store/classificationRequirements";
 
 @Component({
   components: {
-    ATATRadioGroup
+    ATATCheckboxGroup,
+    ATATTextField,
+    ATATTextArea,
   }
 })
 
-export default class ArchitectureDesignForm extends Mixins(SaveOnLeave) {
-  public currEnvDTO = defaultCurrentEnvironment;
+export default class ArchitectureDesignForm extends Vue {
+  @Prop({ default: true }) isDOW?: boolean;
+  @PropSync("statementArchitecturalDesign") public _statementArchitecturalDesign!: string;
+  @PropSync("applicationsNeedArchitecturalDesign") 
+    public _applicationsNeedArchitecturalDesign!: string;
+  @PropSync("dataClassificationsImpactLevels") public _dataClassificationsImpactLevels!: string[];
+  @PropSync("externalFactors") public _externalFactors!: string;
 
-  public radioOptions: RadioButton[] = [
-    {
-      id: "YesArchitecture",
-      value: "YES",
-      label: "Yes.",
-    },
-    {
-      id: "NoArchitecture",
-      value: "NO",
-      label: "No.",
-    },
-  ];
+  private classificationLevels: ClassificationLevelDTO[] = [];
+  private classificationCheckboxes: Checkbox[] = [];
 
-  public get currentData(): Record<string, string> {
-    return {
-      needsArchitectureDesign: this.currEnvDTO.needs_architectural_design_services,
-    }
-  };
-
-  public savedData: Record<string, string> = {
-    needsArchitectureDesign: ""
+  private createCheckboxItems(data: ClassificationLevelDTO[]) {
+    return buildClassificationCheckboxList(data, "", true, false);
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
-    if (storeData) {
-      this.currEnvDTO = _.cloneDeep(storeData);
-      this.savedData.needsArchitectureDesign = storeData.needs_architectural_design_services;
-    }
-  }
+    this.classificationLevels = await classificationRequirements.getAllClassificationLevels();
+    this.classificationCheckboxes =this.createCheckboxItems(this.classificationLevels)
 
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
   }
-
-  protected async saveOnLeave(): Promise<boolean> {
-    try {
-      if (this.hasChanged()) {
-        // TODO - which store to save to?
-        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    return true;
-  }  
 
 }
 
