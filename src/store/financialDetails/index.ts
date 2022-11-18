@@ -316,7 +316,9 @@ export class FinancialDetailsStore extends VuexModule {
         Object.assign(taskOrder, { funding_plan: fundingPlanSysId });
         const taskOrderSysId = taskOrder.sys_id;
         if (taskOrderSysId) {
-          api.taskOrderTable.update(taskOrderSysId, taskOrder);
+          // since only update is performed here, need to check for task order sys id
+          // before calling save. Otherwise, record gets created and may be undesirable
+          await TaskOrder.save(taskOrder);
         }
       }
 
