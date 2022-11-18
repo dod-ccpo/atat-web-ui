@@ -11,7 +11,9 @@
       through them one at a time.
     </p>
 
-    <h2 class="mb-4" v-if="hasTellUsAboutInstanceHeading">1. Tell us about Instance #1</h2>
+    <h2 class="mb-4" v-if="hasTellUsAboutInstanceHeading">
+      1. Tell us about Instance #{{ instanceNumber }}
+    </h2>
 
     <ATATRadioGroup 
       v-if="envLocation === 'HYBRID' || !envLocation"
@@ -34,17 +36,18 @@
         :hasTextFields="false"
         groupLabelId="RegionsDeployedLabel"
         groupLabel="In which region(s) is this instance deployed?"
-        @selectedRegionsUpdate="regionsDeployedUpdate"
         :tooltipText="regionsDeployedTooltipText"
         :optional="true"
+        @selectedRegionsUpdate="regionsDeployedUpdate"
+        :selectedDeployedRegionsOnLoad="selectedDeployedRegionsOnLoad"
       />
 
-      <!-- v-if="showClassificationOptions" -- TODO after curr env classifications page wired -->
       <ATATRadioGroup 
         id="ClassificationLevelOptions"
+        v-if="classificationRadioOptions.length > 1"
         class="mb-8"
         :items="classificationRadioOptions"
-        :value.sync="instanceData.classification"
+        :value.sync="instanceData.classification_level"
         :legend="classificationLegend"
         :rules="[$validators.required(classificationErrorMessage)]"
         :clearErrorMessages.sync="clearClassificationErrorMessages"
@@ -59,7 +62,10 @@
 
       <CurrentUsage 
         class="mb-10"
-        :currentUsage.sync="currentUsage"   
+        :usageTrafficSpikeCauses.sync="usageTrafficSpikeCauses"
+        :currentUsageDescription.sync="instanceData.current_usage_description"
+        :eventSpikeDescription.sync="instanceData.traffic_spike_event_description"
+        :periodSpikeDescription.sync="instanceData.traffic_spike_period_description"
       />
 
       <RegionsDeployedAndUserCount 
@@ -72,6 +78,7 @@
         @regionUserDataUpdate="regionUserDataUpdate"
         :rules="[$validators.required('Select at least one region.'),]"
         :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
+        :regionUsersOnLoad="regionUsersOnLoad"
       />
 
       <hr />
@@ -108,15 +115,14 @@
         <span class="text-base font-weight-400">(Optional)</span>
       </h2>
 
-      <AdditionalInfo :additionalInfo.sync="additionalInfo" />
+      <AdditionalInfo :additionalInfo.sync="instanceData.additional_information" />
 
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
@@ -129,16 +135,19 @@ import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUser
 
 import { 
   Checkbox, 
-  CurrentEnvInstanceConfig, 
-  CurrentEnvUsageData, 
-  CurrentEnvPerformanceTier,
+  CurrEnvInstanceConfig, 
+  CurrEnvInstancePerformance,
   SelectData,
-  CurrentEnvPricingDetails,
+  CurrEnvInstancePricingDetails,
   RadioButton,
 } from "types/Global";
 
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import { ClassificationLevelDTO, CurrentEnvironmentDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { 
+  ClassificationLevelDTO, 
+  CurrentEnvironmentInstanceDTO 
+} from "@/api/models";
+
 
 import CurrentEnvironment, 
 { 
@@ -146,7 +155,10 @@ import CurrentEnvironment,
   defaultCurrentEnvironmentInstance 
 } from "@/store/acquisitionPackage/currentEnvironment";
 import classificationRequirements from "@/store/classificationRequirements";
-import { buildClassificationCheckboxList } from "@/helpers";
+import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
+
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import _ from "lodash";
 
 
 @Component({
@@ -161,10 +173,17 @@ import { buildClassificationCheckboxList } from "@/helpers";
   }
 })
 
-export default class InstanceDetails extends Vue {
+export default class InstanceDetails extends Mixins(SaveOnLeave) {
+  /* eslint-disable camelcase */
   public currEnvData = defaultCurrentEnvironment;
   public envLocation = "";
   public instanceData = defaultCurrentEnvironmentInstance;
+  public instanceNumber = 1;
+
+  public get currentData(): CurrentEnvironmentInstanceDTO {
+    return this.instanceData;
+  }
+  public savedData: CurrentEnvironmentInstanceDTO = _.cloneDeep(defaultCurrentEnvironmentInstance);
 
   public envLocationOptions: RadioButton[] = [
     {
@@ -238,36 +257,35 @@ export default class InstanceDetails extends Vue {
       && this.currEnvData.env_classifications_on_prem.length === 1);
   }
 
-  // public sectionNumber(section: string): string {
-  //   switch (section) {
-  //   case "currentUsage": 
-  //     return this.instanceData.instance_location === 'ON_PREM' 
-  //     && this.currEnvData.env_classifications_cloud.length === 1
-  //       ? "1." : "2."
-  //   }
-  //   return "";
-  // }
-
-  public regionsDeployed: string [] = [];
+  public selectedDeployedRegionsOnLoad: string[] = [];
   public regionsDeployedUpdate(selected: string[]): void {
-    this.regionsDeployed = selected;
+    this.instanceData.deployed_regions = selected;
   }
 
-  public regionUserData: Checkbox[] = [];
-  public regionUserDataUpdate(data: Checkbox[]): void {
-    this.regionUserData = data;
+  public regionUsersOnLoad = "";
+  public regionUserDataUpdate(data: string): void {
+    this.instanceData.users_per_region = data;
   }
 
-  public currentUsage: CurrentEnvUsageData = {
-    currentUsageDescription: "",
-    trafficSpikeCauses: [],
-    isTrafficSpikeEventBased: "",
-    isTrafficSpikePeriodBased: "",
-    trafficSpikeEventDescription: "",
-    trafficSpikePeriodDescription: "",
+  public usageTrafficSpikeCauses: string[] = [];
+  @Watch("usageTrafficSpikeCauses")
+  public usageTrafficSpikeCausesChange(newVal: string[]): void {
+    const spikeEventBased = newVal?.includes("EVENT") ? "YES" : "NO";
+    const spikePeriodBased = newVal?.includes("PERIOD") ? "YES" : "NO";
+    const spikeSelection = {
+      is_traffic_spike_event_based: spikeEventBased,
+      is_traffic_spike_period_based: spikePeriodBased,
+    }
+    this.instanceData = Object.assign(this.instanceData, spikeSelection);    
+    if (spikeEventBased === "NO") {
+      this.instanceData.traffic_spike_event_description = "";
+    }
+    if (spikePeriodBased === "NO") {
+      this.instanceData.traffic_spike_period_description = "";
+    }    
   }
 
-  public instanceConfig: CurrentEnvInstanceConfig = {
+  public instanceConfig: CurrEnvInstanceConfig = {
     licensing: "",
     operatingSystem: "",
     numberOfVCPUs: null,
@@ -277,20 +295,51 @@ export default class InstanceDetails extends Vue {
     storageAmount: null,
     storageUnit: "GB",
   }
+  @Watch("instanceConfig", {deep: true})
+  public instanceConfigChange(newVal: CurrEnvInstanceConfig): void {
+    const instanceConfig = {
+      licensing: newVal.licensing,
+      operating_system: newVal.operatingSystem,
+      number_of_VCPUs: newVal.numberOfVCPUs,
+      processor_speed: newVal.processorSpeed,
+      memory_amount: newVal.memoryAmount,
+      memory_unit: "GB",
+      storage_type: newVal.storageType,
+      storage_amount: newVal.storageAmount,
+      storage_unit: newVal.storageUnit,
+    }
+    this.instanceData = Object.assign(this.instanceData, instanceConfig);    
+  }
 
-  public performanceTier: CurrentEnvPerformanceTier = {
+  public performanceTier: CurrEnvInstancePerformance = {
     performanceTier: "",
     numberOfSimilarInstances: 1,
     dataEgressMonthlyAmount: null,
     dataEgressMonthlyUnit: "GB",
   }
+  @Watch("performanceTier", {deep: true})
+  public performanceTierChange(newVal: CurrEnvInstancePerformance): void {
+    const performanceTier = {
+      performance_tier: newVal.performanceTier,
+      number_of_instances: newVal.numberOfSimilarInstances,
+      data_egress_monthly_amount: newVal.dataEgressMonthlyAmount,
+      data_egress_monthly_unit: newVal.dataEgressMonthlyUnit,
+    }
+    this.instanceData = Object.assign(this.instanceData, performanceTier);    
+  }
 
-  public pricingDetails: CurrentEnvPricingDetails = {
+  public pricingDetails: CurrEnvInstancePricingDetails = {
     currentPaymentArrangement: "",
     pricingPeriodExpirationDate: "",
   }
-
-  public additionalInfo = "";
+  @Watch("pricingDetails", {deep: true})
+  public pricingDetailsChange(newVal: CurrEnvInstancePricingDetails): void {
+    const pricingDetails = {
+      current_payment_arrangement: newVal.currentPaymentArrangement,
+      pricing_period_expiration_date: newVal.pricingPeriodExpirationDate,
+    }
+    this.instanceData = Object.assign(this.instanceData, pricingDetails);    
+  }
 
   public regionsDeployedTooltipText = `This is the geographic location where your 
     public cloud resources are located, e.g., within the continental U.S. (CONUS) 
@@ -302,96 +351,117 @@ export default class InstanceDetails extends Vue {
     { text: "Petabyte (PB)", value: "PB" },
   ];
 
+  @Watch("instanceData.instance_location")
+  public instanceLocationChange(newVal: string): void {
+    // eslint-disable-next-line camelcase
+    this.instanceData.classification_level = "";
+    const envClassificationLevelSysIds = newVal === "CLOUD"
+      ? this.currEnvData.env_classifications_cloud
+      : this.currEnvData.env_classifications_on_prem;
+
+    if (envClassificationLevelSysIds.length === 1) {
+      // eslint-disable-next-line camelcase
+      this.instanceData.classification_level = envClassificationLevelSysIds[0];
+    } else {
+      const filteredClassificationObjects = this.allClassificationLevels.filter((obj) => {
+        if (obj.sys_id) {
+          return envClassificationLevelSysIds.includes(obj.sys_id)
+        }
+      });
+      
+      this.classificationRadioOptions = buildClassificationCheckboxList(
+        filteredClassificationObjects, "", false, true, "short"
+      );
+
+      this.setClassificationLabels();
+    }   
+  }
+
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
 
-  public async loadOnEnter(): Promise<void> {
-    // const storeData = await AcquisitionPackage
-    //   .loadData<CurrentEnvironmentDTO>(
-    //     {storeProperty: StoreProperties.CurrentEnvironment}
-    //   );
+  
+  // EJY NEED ROUTE RESOLVER AFTER on classifications page if no location selected
+  // send directly to instance form with region and classification radio groups on every instance
 
+
+  public async loadOnEnter(): Promise<void> {
     this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
-    this.classificationRadioOptions = buildClassificationCheckboxList(
-      this.allClassificationLevels, "", false, true, "short"
-    );
+    this.instanceNumber = CurrentEnvironment.currentEnvInstanceNumber;
 
     const envStoreData = await AcquisitionPackage.getCurrentEnvironment();
-
     if (envStoreData) {
       this.currEnvData = envStoreData;
       this.envLocation = envStoreData.env_location;
-      // eslint-disable-next-line camelcase
-      this.instanceData.instance_location = envStoreData.env_location !== "HYBRID"
-        ? envStoreData.env_location : "";
-      this.setClassificationLabels();
+      const instanceStoreData = await CurrentEnvironment.getCurrentEnvInstance();
+      if (instanceStoreData) {
+        this.instanceData = _.cloneDeep(instanceStoreData);
+        this.savedData = _.cloneDeep(instanceStoreData);
+        
+        this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || [];
+        this.regionUsersOnLoad = this.instanceData.users_per_region;
 
-      // this.savedData = {
-      // }
+        if (this.instanceData.is_traffic_spike_event_based === "YES") {
+          this.usageTrafficSpikeCauses.push("EVENT");
+        }
+        if (this.instanceData.is_traffic_spike_period_based === "YES") {
+          this.usageTrafficSpikeCauses.push("PERIOD");
+        }
+
+        this.instanceConfig = {
+          licensing: this.instanceData.licensing,
+          operatingSystem: this.instanceData.operating_system,
+          numberOfVCPUs: this.instanceData.number_of_VCPUs, 
+          processorSpeed: this.instanceData.processor_speed,
+          memoryAmount: this.instanceData.memory_amount,
+          storageType: this.instanceData.storage_type,
+          storageAmount: this.instanceData.storage_amount,
+          storageUnit: this.instanceData.storage_unit,
+        }
+        
+        this.performanceTier = {
+          performanceTier: this.instanceData.performance_tier,
+          numberOfSimilarInstances: this.instanceData.number_of_instances,
+          dataEgressMonthlyAmount: this.instanceData.data_egress_monthly_amount,
+          dataEgressMonthlyUnit: this.instanceData.data_egress_monthly_unit,
+        }
+
+        this.pricingDetails = {
+          currentPaymentArrangement: this.instanceData.current_payment_arrangement,
+          pricingPeriodExpirationDate: this.instanceData.pricing_period_expiration_date,
+        }
+      }
+
+      if (!instanceStoreData?.instance_location) {
+        this.instanceData.instance_location = envStoreData.env_location !== "HYBRID"
+          ? envStoreData.env_location : "";
+      }
+    }
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        CurrentEnvironment.setCurrentEnvironmentInstance(this.instanceData);
+
+        // TODO - wire to proper location for saving after DB is updated
+        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
+        //   data: this.currentData,
+        //   storeProperty: StoreProperties.CurrentEnvironment
+        // });
+      }
+    } catch (error) {
+      console.log(error);
     }
 
+    return true;
   }
 
-  /* eslint-disable camelcase */
-  /* eslint-disable max-len */
-  public currentEnvironment = {
-    current_environment_exists: "", // radio - YES | NO 
-    has_system_documentation: "", // radio - YES | NO
-    system_documentation: [], // array of attachments
-    has_migration_documentation: "", // radio - YES | NO
-    migration_documentation: [], // array of attachments
-    env_location: "", // CLOUD | ON_PREM | HYBRID
-    env_classifications_cloud: [], // array of classification level sys_ids
-    env_classifications_onprem: [], // array of classification level sys_ids
-    // IL2_cloud_deployments: [], // CAN BE POST-MVP -- Commercial Cloud | Federal community cloud (govt cloud)
-
-    env_instances: [
-      {
-        instance_location: "", // CLOUD | ON_PREM - auto-set if env_loc is CLOUD or ON_PREM - radio if HYBRID
-        deployed_regions: [], // checkboxes - CONUS East, CONUS Central, etc.
-        instance_classification: "", // classification level sys_id
-        // IL2_cloud_types: [], // CAN BE POST-MVP
-        current_usage_description: "", // radio - even usage or spikes in traffic
-        traffic_spike: [], // checkboxes - event-based or period-based
-        surge_usage_event: "", // textfield
-        surge_usage_periods: "", // textfield 
-        users_regions: [ // checkboxes with textfields
-          {
-            region: "", // checkbox
-            count: null, // null | number - textfield
-          },
-        ], 
-        operating_system: "",
-        licensing: "",
-        number_Of_VCPUs: null, // number | null - no decimals
-        processor_speed: null, // number | null - no decimals 
-        memory_amount: null, // number | null - one decimal place
-        memory_unit: "GB", // only used in text field as append text
-        storage_type: "", // dropdown - 
-        storage_amount: null, // number | null - no decimals
-        storage_unit: "GB", // dropdown -- GB | TB | PB - default GB
-        performance_tier: "", // radio - GENERAL_PURPOSE | COMPUTE_OPTIMIZED | MEMORY_OPTIMIZED | STORAGE_OPTIMIZED
-        number_of_similar_instances: null, // number | null - no decimals 
-        data_egress_monthly_storage: null, // number | null - no decimals    
-        data_egress_monthly_storage_unit: "GB", // dropdown -- GB | TB | PB - default GB   
-        current_payment_arrangement: "", // radio - PREPAID | PAYASYOUGO
-        pricing_period_expiration_date: "", // datepicker - ISO string
-        additional_information: "", // textarea
-      }
-    ],
-    current_environment_replicated_optimized: "", // radio - REPLICATE | OPTIMIZE | NO
-    statement_replicated_optimized: "", // textarea
-    additional_growth: "", // "YES" | "NO"
-    anticipated_yearly_additional_capacity: null, // number | null - textfield
-    has_phased_approach: "", // "YES" | "NO"
-    phased_approach_schedule: "", // textarea 
-    needs_architectural_design_services: "", // "YES" | "NO"
-    statement_architectural_design: "", // textarea 
-    applications_need_architectural_design: "", // textfield
-    data_classifications_impact_levels: [], // checkboxes - array of sys_ids for U/IL2, U/IL3, U/IL4, Secret/IL6 - Top Secret hidden per Melissa
-    external_factors_architectural_design: "", // textfield
-  }
 
 }
 

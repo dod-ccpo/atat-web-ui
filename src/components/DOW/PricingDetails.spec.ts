@@ -5,11 +5,11 @@ import PricingDetails from "./PricingDetails.vue";
 import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../plugins/validation";
-import { CurrentEnvPricingDetails } from "types/Global";
+import { CurrEnvInstancePricingDetails } from "types/Global";
 
 Vue.use(Vuetify);
 
-const pricingDetails: CurrentEnvPricingDetails = {
+const pricingDetails: CurrEnvInstancePricingDetails = {
   currentPaymentArrangement: "",
   pricingPeriodExpirationDate: "",
 }

@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox } from "types/Global";
@@ -33,6 +33,7 @@ import { Checkbox } from "types/Global";
     ATATCheckboxGroup
   }
 })
+
 export default class RegionsDeployedAndUserCount extends Vue {
   @Prop({ default: "Regions" }) id!: string;
   @Prop({ default: false }) hasTextFields?: boolean;
@@ -43,6 +44,8 @@ export default class RegionsDeployedAndUserCount extends Vue {
   @Prop() tooltipText?: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
   @Prop({ default: () => []}) private textfieldRules!: Array<unknown>;
+  @Prop() private selectedDeployedRegionsOnLoad?: string[];
+  @Prop() private regionUsersOnLoad?: string;
 
   public selectedRegions: string[] = [];
   public regions: Checkbox[] = [
@@ -50,46 +53,55 @@ export default class RegionsDeployedAndUserCount extends Vue {
       id: "CONUSEast",
       label: "CONUS East",
       value: "CONUSEast",
+      textfieldValue: "",
     },
     {
       id: "CONUSCentral",
       label: "CONUS Central",
       value: "CONUSCentral",
+      textfieldValue: "",
     },
     {
       id: "CONUSWest",
       label: "CONUS West",
       value: "CONUSWest",
+      textfieldValue: "",
     },
     {
       id: "AFRICOM",
       label: "AFRICOM",
       value: "AFRICOM",
+      textfieldValue: "",
     },
     {
       id: "CENTCOM",
       label: "CENTCOM",
-      value: "CENTCOM"
+      value: "CENTCOM",
+      textfieldValue: "",
     },
     {
       id: "EUCOM",
       label: "EUCOM",
-      value: "EUCOM"
+      value: "EUCOM",
+      textfieldValue: "",
     },
     {
       id: "INDOPACOM",
       label: "INDOPACOM",
-      value: "INDOPACOM"
+      value: "INDOPACOM",
+      textfieldValue: "",
     },
     {
       id: "PACCOM",
       label: "PACCOM",
-      value: "PACCOM"
+      value: "PACCOM",
+      textfieldValue: "",
     },
     {
       id: "SOUTHCOM",
       label: "SOUTHCOM",
-      value: "SOUTHCOM"
+      value: "SOUTHCOM",
+      textfieldValue: "",
     },
   ];
 
@@ -98,8 +110,43 @@ export default class RegionsDeployedAndUserCount extends Vue {
     this.$emit("selectedRegionsUpdate", this.selectedRegions);
   }
 
-  public regionsUserDataUpdate(): void {
-    this.$emit("regionUserDataUpdate", this.regions);
+  public regionsUserDataUpdate(data: Checkbox[]): void {
+    const regionsWithUserCount = data.filter(
+      checkbox => checkbox.textfieldValue && checkbox.textfieldValue !== ""
+    );
+    const regionUserData: Record<string, string>[] = [];
+    regionsWithUserCount.forEach(checkboxObj => {
+      const key = `${checkboxObj.value}`;
+      const val = checkboxObj.textfieldValue || "";
+      const thisRegionUserObj = { [key]: val };
+      regionUserData.push(thisRegionUserObj);
+    })
+    const jsonStr = JSON.stringify(regionUserData)
+    this.$emit("regionUserDataUpdate", jsonStr);
+  }
+
+  @Watch("regionUsersOnLoad")
+  public regionUsersOnLoadChange(newVal: string): void {
+    const regionUsersArray = JSON.parse(newVal);
+    const selectedRegions: string[] = [];
+    regionUsersArray.forEach((regionUsers: Record<string, string>) => {
+      const region = Object.keys(regionUsers)[0];
+      selectedRegions.push(region);
+      const userCount = Object.values(regionUsers)[0];
+      const i = this.regions.findIndex(obj => obj.value === region);
+      this.regions[i].textfieldValue = userCount;
+    });
+
+    this.$nextTick(() => {
+      this.selectedRegions = selectedRegions;
+    })
+
+  }
+
+  public async mounted(): Promise<void> {
+    if (this.selectedDeployedRegionsOnLoad) {
+      this.selectedRegions = this.selectedDeployedRegionsOnLoad;
+    }
   }
 
 }

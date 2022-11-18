@@ -90,7 +90,7 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   env_location: EnvironmentLocation;
   env_classifications_cloud: string[]; // array of classification level sys_ids
   env_classifications_on_prem: string[]; // array of classification level sys_ids
-  env_instances: CurrentEnvironmentInstanceDTO[]; // array of sys_ids
+  env_instances: string[]; // array of sys_ids
   current_environment_replicated_optimized: EnvironmentReplicateOptimized;
   statement_replicated_optimized: string;
   additional_growth: YesNo;
@@ -116,7 +116,7 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   users_per_region: string; // json stringified sys_id/count pairs
   operating_system: string;
   licensing: string;
-  number_Of_VCPUs: number | null;
+  number_of_VCPUs: number | null;
   processor_speed: number | null; 
   memory_amount: number | null;
   memory_unit: StorageUnit;
