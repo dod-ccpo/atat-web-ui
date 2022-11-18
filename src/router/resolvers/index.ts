@@ -121,12 +121,15 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 export const ArchitecturalDesignDetailsRouteResolver = (current: string): string => {
   const needsArchitectureDesign
       = AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
-  if (needsArchitectureDesign) {
+  const hasCurrentEnv
+      = AcquisitionPackage.currentEnvironment?.current_environment_exists === "YES";
+
+  if (needsArchitectureDesign && hasCurrentEnv) {
     return routeNames.ArchitecturalDesignDetails;
   }
-  return current === routeNames.BackgroundSummary
-    ? routeNames.ArchitecturalDesign
-    : routeNames.BackgroundSummary;
+  return current === routeNames.ArchitecturalDesign 
+    ? routeNames.BackgroundSummary 
+    : routeNames.CurrentEnvironment;
 
 };
 
