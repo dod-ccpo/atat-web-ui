@@ -118,6 +118,17 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     : routeNames.CurrentContract;
 };
 
+export const ReplicateDetailsResolver = (current: string): string => {
+  const needsReplicateOrOptimize
+      = !(AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized === "NO");
+  if (needsReplicateOrOptimize) {
+    return routeNames.ReplicateDetails;
+  }
+  return current === routeNames.ReplicateAndOptimize
+    ? routeNames.ArchitecturalDesign
+    : routeNames.ReplicateAndOptimize;
+}
+
 export const ArchitecturalDesignDetailsRouteResolver = (current: string): string => {
   const needsArchitectureDesign
       = AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
@@ -801,6 +812,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
 const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   CurrentContractDetailsRouteResolver,
+  ReplicateDetailsResolver,
   CurrentContractEnvRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,

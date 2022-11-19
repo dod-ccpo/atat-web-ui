@@ -126,6 +126,7 @@ import {
   AcorsRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentContractEnvRouteResolver,
+  ReplicateDetailsResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
@@ -537,6 +538,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ReplicateAndOptimize,
         completePercentageWeight: 5,
         completed: false,
+
       },
       {
         menuText: "Replicate Details",
@@ -546,6 +548,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ReplicateDetails,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: ReplicateDetailsResolver,
       },
       {
         menuText: "Architectural Design",
