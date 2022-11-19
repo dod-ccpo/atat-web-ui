@@ -3,7 +3,7 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
-          <div v-if="hasTopSecret">
+          <div v-if="hasTopSecret && isDOW">
             <ATATRadioGroup
               class="copy-max-width mb-10"
               id="ClearanceLevelRadio"
