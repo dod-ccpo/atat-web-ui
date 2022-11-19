@@ -52,7 +52,9 @@ private storedClassification: ClassificationLevelDTO[] = [];
 private selectedSecretSecurityRequirements: string[] = [];
 private selectedTopSecretSecurityRequirements: string[] = [];
 private selectedClearanceLevels: string[] = [];
+// pragma: allowlist secret
 private hasSecret = false;
+// pragma: allowlist secret
 private hasTopSecret = false;
 public savedData: SecurityRequirement[] = []
 
