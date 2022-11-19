@@ -14,58 +14,14 @@
               Description of Work. <a>Learn more about JWCC security requirements</a>
             </p>
           </div>
-          <div v-if="hasTopSecret">
-            <ATATRadioGroup
-              class="copy-max-width mb-10"
-              id="ClearanceLevelRadio"
-              legend="What clearance level is required for contractor employees to provide your
-               training?"
-              :items="clearanceLevels"
-              :value.sync="selectedClearanceLevels"
-            />
-            <hr />
-          </div>
-          <div v-if="hasSecret">
-            <p id="SecretMessage" class="mb-5 font-weight-500">
-              For your SECRET cloud services and support, what type of classified information will
-              be accessed?
-            </p>
-            <p id="SecretMessageNote" class="mb-5 ">
-              Select all that apply to your SECRET classification level.
-            </p>
-            <ATATCheckboxGroup
-              id="SecretSecurityRequirements"
-              :value.sync="selectedSecretSecurityRequirements"
-              :items="securityRequirementsCheckboxes"
-              name="checkboxes"
-              :card="false"
-              class="copy-max-width"
-              :rules="[
-              $validators.required('Please select at least one type of classified information.')
-            ]"
-            />
-          </div>
-          <hr v-if="hasTopSecret && hasSecret" />
-          <div v-if="hasTopSecret">
-            <p id="TopSecretMessage" class="mb-5 font-weight-500">
-              For your TOP SECRET cloud services and support, what type of classified information
-              will be accessed?
-            </p>
-            <p id="TopSecretMessageNote" class="mb-5 ">
-              Select all that apply to your TOP SECRET classification level.
-            </p>
-            <ATATCheckboxGroup
-              id="TopSecretSecurityRequirements"
-              :value.sync="selectedTopSecretSecurityRequirements"
-              :items="securityRequirementsCheckboxes"
-              name="checkboxes"
-              :card="false"
-              class="copy-max-width"
-              :rules="[
-              $validators.required('Please select at least one type of classified information.')
-            ]"
-            />
-          </div>
+         <SecurityRequirementsForm
+           :hasSecret="hasSecret"
+           :hasTopSecret="hasTopSecret"
+           :isDOW="false"
+           :selectedSecretSecurityRequirements="selectedSecretSecurityRequirements"
+           :selectedTopSecretSecurityRequirements="selectedTopSecretSecurityRequirements"
+           :selectedClearanceLevels="selectedClearanceLevels"
+         />
         </v-col>
       </v-row>
     </v-container>
@@ -78,12 +34,14 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
-import { Checkbox, RadioButton, SecurityRequirement } from "types/Global";
+import { SecurityRequirement } from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import SecurityRequirementsForm from "@/components/DOW/SecurityRequirementsForm.vue";
 @Component({
   components: {
+    SecurityRequirementsForm,
     ATATRadioGroup,
     ATATCheckboxGroup,
     ATATAlert
@@ -96,84 +54,6 @@ private selectedTopSecretSecurityRequirements: string[] = [];
 private selectedClearanceLevels: string[] = [];
 private hasSecret = false;
 private hasTopSecret = false;
-private securityRequirementsCheckboxes: Checkbox[] = [
-  {
-    id: "COMSEC",
-    label: "Communication Security (COMSEC) Information",
-    value: "COMSEC",
-    description: "Includes accountable or non-accountable COMSEC information and controlled" +
-      " crytographic items (CCI)",
-  },
-  {
-    id: "RestrictedData",
-    label: "Restricted Data",
-    value: "restrictedData",
-  },
-  {
-    id: "CNWDI",
-    label: "Critical Nuclear Weapon Design Information (CNWDI)",
-    value: "CNWDI",
-    description:"If CNWDI access is required, then Restricted Data must also be selected."
-  },
-  {
-    id: "FormerlyRestrictedData",
-    label: "Formerly Restricted Data",
-    value: "formerlyRestrictedData",
-  },
-  {
-    id: "SCI",
-    label: "National Intelligence Information: Sensitive Compartmented Information (SCI)",
-    value: "SCI",
-  },
-  {
-    id: "NOSCI",
-    label: "National Intelligence Information: Non-SCI",
-    value: "NONSCI",
-  },
-  {
-    id: "SAP",
-    label: "Special Access Program (SAP) Information",
-    value: "SAP",
-  },
-  {
-    id: "NATO",
-    label: "North Atlantic Treaty Organization (NATO) Information",
-    value: "NATO",
-  },
-  {
-    id: "FGI",
-    label: "Foreign Government Information (FGI)",
-    value: "FGI",
-  },
-  {
-    id: "ACCM",
-    label: "Alternative Compensatory Control Measures (ACCM) Information",
-    value: "ACCM",
-  },
-  {
-    id: "CUI",
-    label: "Controlled Unclassified Information (CUI)",
-    value: "CUI",
-  },
-  {
-    id: "Other",
-    label: "Other - Secure Internet Protocol Router Network (SIPRNET) / Joint" +
-      " Worldwide Intelligence Communciations System (JWICS)",
-    value: "Other",
-  },
-]
-private clearanceLevels: RadioButton[] = [
-  {
-    id: "TopSecret",
-    label: "TopSecret",
-    value: "TS",
-  },
-  {
-    id: "TS/SCI",
-    label: "Top Secret/Sensitive Compartmented Information (TS/SCI)",
-    value: "TS/SCI",
-  },
-];
 public savedData: SecurityRequirement[] = []
 
 public get currentData(): SecurityRequirement[] {

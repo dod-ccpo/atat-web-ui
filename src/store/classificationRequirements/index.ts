@@ -15,7 +15,7 @@ import {
 import Vue from "vue";
 
 import { ClassificationLevelDTO, EnvironmentInstanceDTO, ReferenceColumn } from "@/api/models";
-import { SecurityRequirement } from "../../../types/Global";
+import { Checkbox, RadioButton, SecurityRequirement } from "../../../types/Global";
 
 const ATAT_CLASSIFICATION_LEVELS_KEY = "ATAT_CLASSIFICATION_LEVELS_KEY";
 
@@ -33,13 +33,15 @@ export class ClassificationRequirementsStore extends VuexModule {
   public environmentInstances: EnvironmentInstanceDTO[] = [];
   public securityRequirements: SecurityRequirement[] = [];
 
+
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.classificationLevels),
     nameofProperty(this, (x)=> x.selectedClassificationLevels),
     nameofProperty(this, (x)=> x.currentEnvClassificationLevels),
     nameofProperty(this, (x)=> x.environmentInstances),
-    nameofProperty(this, (x)=> x.securityRequirements)
+    nameofProperty(this, (x)=> x.securityRequirements),
+
   ];
 
   @Mutation
