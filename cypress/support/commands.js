@@ -616,8 +616,7 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value,sbSelector) =>
               .and("be.visible")
               .and("contain", "Rank");
             cy.findElement(contact.gradeAutoCompleteWrapper)
-              .should("exist")
-              .and("not.visible");
+              .should("not.exist");
           });        
       }
       if (selectedOption === "radio_button_checkedContractor") {
@@ -626,8 +625,7 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value,sbSelector) =>
           .and("be.visible")
           .and("contain", "Salutation");
         cy.findElement(contact.gradeAutoCompleteWrapper)
-          .should("exist")
-          .and("not.visible");
+          .should("not.exist");
       }
       if (selectedOption === "radio_button_checkedCivilian") {
         cy.findElement(contact.gradeAutoCompleteWrapper)
@@ -639,8 +637,8 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value,sbSelector) =>
           .and("be.visible")
           .and("contain", "Salutation");
         cy.findElement(contact.serviceBranchControl)
-          .should("exist")
-          .and("not.visible");
+          .should("not.exist");
+          
       }
     });  
 });
@@ -726,8 +724,7 @@ Cypress.Commands.add("checkIfCorOrAcor", (headerSelector, headerText, contactNam
           .should("exist")
           .and("be.visible");
         cy.findElement(commonCorAcor.contactFormToggle)
-          .should("exist")
-          .and("not.visible");
+          .should("not.exist");
       }
     });
 });

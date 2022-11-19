@@ -114,18 +114,34 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? routeNames.PeriodOfPerformance
+    ? routeNames.RequirementCategories
     : routeNames.CurrentContract;
 };
 
+export const ReplicateDetailsResolver = (current: string): string => {
+  const needsReplicateOrOptimize
+      = !(AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized === "NO");
+  if (needsReplicateOrOptimize) {
+    return routeNames.ReplicateDetails;
+  }
+  return current === routeNames.ReplicateAndOptimize
+    ? routeNames.ArchitecturalDesign
+    : routeNames.ReplicateAndOptimize;
+}
+
 export const ArchitecturalDesignDetailsRouteResolver = (current: string): string => {
+  const needsArchitectureDesign
+      = AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
   const hasCurrentEnv
       = AcquisitionPackage.currentEnvironment?.current_environment_exists === "YES";
-  if (!hasCurrentEnv) {
-    return routeNames.CurrentEnvironment;
-  }else {
-    return routeNames.ArchitecturalDesignDetails
+
+  if (needsArchitectureDesign && hasCurrentEnv) {
+    return routeNames.ArchitecturalDesignDetails;
   }
+  return current === routeNames.ArchitecturalDesign 
+    ? routeNames.BackgroundSummary 
+    : routeNames.CurrentEnvironment;
+
 };
 
 export const CurrentContractEnvRouteResolver = (current: string): string => {
@@ -796,6 +812,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
 const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   CurrentContractDetailsRouteResolver,
+  ReplicateDetailsResolver,
   CurrentContractEnvRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,

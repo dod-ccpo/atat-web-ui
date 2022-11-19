@@ -126,6 +126,7 @@ import {
   AcorsRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentContractEnvRouteResolver,
+  ReplicateDetailsResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
@@ -355,6 +356,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.Exceptions,
         component: Exceptions,
         completePercentageWeight: 5,
+        lastStep: true,
         completed: false,
       },
       {
@@ -365,6 +367,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
+        lastStep: true,
         routeResolver: NoEvalPlanRouteResolver,
       },
       {
@@ -374,6 +377,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CreateEvalPlan,
         completePercentageWeight: 5,
         completed: false,
+        lastStep: false,
         routeResolver: CreateEvalPlanRouteResolver,
       },
       {
@@ -384,6 +388,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         excludeFromMenu: true,
         completed: false,
+        lastStep: false,
         routeResolver: EvalPlanDetailsRouteResolver,
         additionalButtons: [
           {
@@ -402,6 +407,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
         excludeFromMenu: true,
+        lastStep: false,
         routeResolver: BVTOResolver,
       },   
       {
@@ -411,6 +417,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: EvalPlanSummary,
         completePercentageWeight: 0,
         completed: false,
+        lastStep: true,
+        parentName: routeNames.CreateEvalPlan,
         excludeFromMenu: true,
       },
       // KEEP JustificationAndApproval for future ticket
@@ -427,6 +435,69 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "03",
+    completePercentageWeight: 7,
+    menuText: "Contract Details",
+    path: "/period-of-performance",
+    component: ContractDetails,
+    children: [
+      {
+        name: routeNames.PeriodOfPerformance,
+        menuText: "Period of Performance",
+        path: "period-of-performance",
+        completePercentageWeight: 2,
+        component: PeriodOfPerformance,
+      },
+      {
+        name: routeNames.POPStart,
+        menuText: "Period of Performance Start Date",
+        path: "period-of-performance-start-date",
+        excludeFromMenu: true,
+        completePercentageWeight: 2,
+        component: POPStart,
+      },
+      {
+        name: routeNames.RecurringRequirement,
+        menuText: "Recurring Requirement",
+        excludeFromMenu: true,
+        path: "recurring-requirement",
+        completePercentageWeight: 2,
+        component: RecurringRequirement,
+      },
+      {
+        name: routeNames.ContractType,
+        menuText: "Contract Type",
+        path: "contract-type",
+        completePercentageWeight: 2,
+        component: ContractType,
+      },
+      {
+        menuText: "Classification Requirements",
+        path:"classification-requirements",
+        name: routeNames.ClassificationRequirements,
+        completePercentageWeight: 1,
+        component: ClassificationRequirements,
+      },
+      {
+        menuText: "Security Requirements",
+        path:"security-requirements",
+        name: routeNames.SecurityRequirements,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SecurityRequirements,
+        routeResolver: SecurityRequirementsResolver
+      },
+      {
+        menuText: "CrossDomain",
+        path:"cross-domain",
+        name: routeNames.CrossDomain,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: CrossDomain,
+      },
+    ]
+  },
+  {
+    stepNumber: "04",
     menuText: "Background",
     path: "/current-contract",
     completePercentageWeight: 10,
@@ -530,6 +601,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ReplicateAndOptimize,
         completePercentageWeight: 5,
         completed: false,
+
       },
       {
         menuText: "Replicate Details",
@@ -539,6 +611,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ReplicateDetails,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: ReplicateDetailsResolver,
       },
       {
         menuText: "Architectural Design",
@@ -567,69 +640,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: BackgroundSummary,
         completePercentageWeight: 5,
         completed: false,
-      },
-    ]
-  },
-  {
-    stepNumber: "04",
-    completePercentageWeight: 7,
-    menuText: "Contract Details",
-    path: "/period-of-performance",
-    component: ContractDetails,
-    children: [
-      {
-        name: routeNames.PeriodOfPerformance,
-        menuText: "Period of Performance",
-        path: "period-of-performance",
-        completePercentageWeight: 2,
-        component: PeriodOfPerformance,
-      },
-      {
-        name: routeNames.POPStart,
-        menuText: "Period of Performance Start Date",
-        path: "period-of-performance-start-date",
-        excludeFromMenu: true,
-        completePercentageWeight: 2,
-        component: POPStart,
-      },
-      {
-        name: routeNames.RecurringRequirement,
-        menuText: "Recurring Requirement",
-        excludeFromMenu: true,
-        path: "recurring-requirement",
-        completePercentageWeight: 2,
-        component: RecurringRequirement,
-      },
-      {
-        name: routeNames.ContractType,
-        menuText: "Contract Type",
-        path: "contract-type",
-        completePercentageWeight: 2,
-        component: ContractType,
-      },
-      {
-        menuText: "Classification Requirements",
-        path:"classification-requirements",
-        name: routeNames.ClassificationRequirements,
-        completePercentageWeight: 1,
-        component: ClassificationRequirements,
-      },
-      {
-        menuText: "Security Requirements",
-        path:"security-requirements",
-        name: routeNames.SecurityRequirements,
-        excludeFromMenu: true,
-        completePercentageWeight: 1,
-        component: SecurityRequirements,
-        routeResolver: SecurityRequirementsResolver
-      },
-      {
-        menuText: "CrossDomain",
-        path:"cross-domain",
-        name: routeNames.CrossDomain,
-        excludeFromMenu: true,
-        completePercentageWeight: 1,
-        component: CrossDomain,
       },
     ]
   },

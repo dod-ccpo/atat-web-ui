@@ -1,48 +1,50 @@
 
 <template>
-  <div class="container-max-width">
-    <h1 class="page-header">
-      Let’s work on an evaluation plan for your requirement
-    </h1>
-    <div class="copy-max-width">
-      <p class="page-intro">
-        In this section, we'll develop the basis for how your acquisition will be 
-        evaluated. To begin, select the applicable evaluation method below. In the 
-        following screens, we’ll identify any compliance standards, differentiators,
-        or assessment areas that CSPs must address in their response to the 
-        solicitation. You’ll have an opportunity to customize these standards for 
-        your specific needs.
-      </p>
+  <v-form ref="form" lazy-validation>
+    <div class="container-max-width">
+      <h1 class="page-header">
+        Let’s work on an evaluation plan for your requirement
+      </h1>
+      <div class="copy-max-width">
+        <p class="page-intro">
+          In this section, we'll develop the basis for how your acquisition will be 
+          evaluated. To begin, select the applicable evaluation method below. In the 
+          following screens, we’ll identify any compliance standards, differentiators,
+          or assessment areas that CSPs must address in their response to the 
+          solicitation. You’ll have an opportunity to customize these standards for 
+          your specific needs.
+        </p>
 
-      <ATATRadioGroup 
-        id="EvalPlanOptions"
-        legend="Which source selection process is applicable to your requirement?"
-        :legend-link="legendLink"
-        @openSlideoutPanel="openSlideoutPanel"
-        :value.sync="sourceSelection"
-        :items="evalOptions"
-        :rules="[
-          $validators.required('Please select an option.'),
-        ]"
-      />
-
-      <section v-show="showMethods" id="MethodSelectionSection">
-        <hr>
         <ATATRadioGroup 
-          id="MethodSelection"
-          :legend="methodLegend"
-          :value.sync="selectedMethod"
-          :items="methodOptions"
+          id="EvalPlanOptions"
+          legend="Which source selection process is applicable to your requirement?"
+          :legend-link="legendLink"
+          @openSlideoutPanel="openSlideoutPanel"
+          :value.sync="sourceSelection"
+          :items="evalOptions"
           :rules="[
-            $validators.required(methodRequiredMessage),
+            $validators.required('Please select an option.'),
           ]"
-          :clearErrorMessages.sync="clearMethodErrors"
         />
 
-      </section>
+        <section v-if="showMethods" id="MethodSelectionSection">
+          <hr>
+          <ATATRadioGroup 
+            id="MethodSelection"
+            :legend="methodLegend"
+            :value.sync="selectedMethod"
+            :items="methodOptions"
+            :rules="[
+              $validators.required(methodRequiredMessage),
+            ]"
+            :clearErrorMessages.sync="clearMethodErrors"
+          />
 
+        </section>
+
+      </div>
     </div>
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">

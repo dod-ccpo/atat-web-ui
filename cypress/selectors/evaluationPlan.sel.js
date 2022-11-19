@@ -31,4 +31,11 @@ module.exports = {
   custom1Spec: "#CustomSpecEntry .px-4",
   custom1DeleteBtn:"#DeleteCustomSpec_1",
   addAnotherCustomCS: "#AddCustomSpecButton",
+  //Now let’s review assessment criteria required for white papers
+  otherAssessmentareasLabel: "#OtherAssessmentAreasLabel",
+  checkboxesLabel: "._checkboxes input[type=checkbox]",
+  riskToGovCheckBox: "#Checkbox_RiskToGovt",
+  automationCapabilityCheckBox: "#Checkbox_AutomationCapability",
+  customAssessmentCheckBox: "#Checkbox_CustomAssessmentOption",
+  noOtherBtn: "#NoOtherAssessmentAreas",
 }
