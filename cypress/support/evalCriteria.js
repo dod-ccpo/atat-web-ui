@@ -163,3 +163,12 @@ Cypress.Commands.add("customSpecExists", () => {
     });
 
 });
+
+Cypress.Commands.add("selectCustomAssessmentCheckboxOption", () => {
+  cy.checkBoxOption(ep.customAssessmentCheckBox, "CustomAssessment").click({ force: true })
+    .then(() => {
+      cy.findElement(ep.customSpecSection).should("exist");
+      cy.findElement(ep.custom0SpecTextbox).should("be.visible").and("be.empty"); 
+    })  
+  
+});
