@@ -36,8 +36,9 @@ export default class SaveOnLeave extends Vue {
 
     const formToValidate = this.$refs.form;
     let isValid = true;
+    const direction = to.params.direction;
 
-    if(formToValidate){
+    if(direction === "next" && formToValidate){
       AcquisitionPackage.setValidateNow(true);
       isValid = this.$refs.form.validate();
     }
