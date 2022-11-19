@@ -11,7 +11,18 @@
               Based on what you told us, this project will require the CSP to access classified
               information. You are NOT required to complete a DD Form 254 for this task order.
               However, you will need to identify access requirements that will be included in your
-              Description of Work. <a>Learn more about JWCC security requirements</a>
+              Description of Work.
+              <a
+                role="button"
+                id="CoILearnMore"
+                class="_text-link"
+                tabindex="0"
+                @click="openSlideoutPanel"
+                @keydown.enter="openSlideoutPanel"
+                @keydown.space="openSlideoutPanel"
+              >
+                Learn more about JWCC security requirements
+              </a>
             </p>
           </div>
          <SecurityRequirementsForm
@@ -34,11 +45,14 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
-import { SecurityRequirement } from "types/Global";
+import { SecurityRequirement, SlideoutPanelContent } from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import SecurityRequirementsForm from "@/components/DOW/SecurityRequirementsForm.vue";
+import SlideoutPanel from "@/store/slideoutPanel";
+import SecurityRequirementsLearnMore
+  from "@/steps/04-ContractDetails/SecurityRequirementsLearnMore.vue";
 @Component({
   components: {
     SecurityRequirementsForm,
@@ -93,6 +107,12 @@ protected async saveOnLeave(): Promise<boolean> {
   }
   return true;
 }
+public openSlideoutPanel(e: Event): void {
+  if (e && e.currentTarget) {
+    const opener = e.currentTarget as HTMLElement;
+    SlideoutPanel.openSlideoutPanel(opener.id);
+  }
+}
 public async loadOnEnter(): Promise<void> {
   this.storedClassification = classificationRequirements.selectedClassificationLevels;
   this.storedClassification.forEach((classification) =>{
@@ -117,6 +137,11 @@ public async loadOnEnter(): Promise<void> {
 }
 
 public async mounted(): Promise<void> {
+  const slideoutPanelContent: SlideoutPanelContent = {
+    component: SecurityRequirementsLearnMore,
+    title: "Learn More",
+  };
+  await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   await this.loadOnEnter();
 }
 }
