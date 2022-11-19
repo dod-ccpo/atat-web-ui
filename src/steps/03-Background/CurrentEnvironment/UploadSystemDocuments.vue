@@ -7,7 +7,7 @@
           information for your current environment?
         </h1>
         <div class="copy-max-width">
-          <p class="mb-0">
+          <p class="mb-8">
             If available, you can upload this supporting documentation, and we will attach it to
             your Description of Work to be shared with the CSPs for proposal purposes. Please do not
             upload any classified documents.

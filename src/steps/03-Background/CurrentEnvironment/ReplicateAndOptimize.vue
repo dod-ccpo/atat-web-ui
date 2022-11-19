@@ -7,7 +7,7 @@
             Do you want to replicate or optimize your current environment within this acquisition?
           </h1>
           <div class="copy-max-width">
-            <p id="IntroP" class="mb-6">
+            <p id="IntroP" class="mb-8">
               Based on your response, we’ll include a task within your Description 
               of Work to help CSPs better understand your current performance 
               requirements in relation to your current environment. You will have 
@@ -19,9 +19,7 @@
               :card="true"
               :items="radioOptions"
               :value.sync="currEnvDTO.current_environment_replicated_optimized"
-              :rules="[
-                      $validators.required('Please select an option.')
-              ]"
+              :rules="[$validators.required('Please select an option.')]"
              />
           </div>
         </v-col>

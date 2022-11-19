@@ -63,6 +63,7 @@ import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
 import { EvaluationPlanDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import LoadOnEnter from "@/mixins/loadOnEnter";
 import { hasChanges } from "@/helpers";
 
 @Component({
@@ -72,7 +73,7 @@ import { hasChanges } from "@/helpers";
   }
 })
 
-export default class CreateEvalPlan extends Mixins(SaveOnLeave) {
+export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
   public isLoading = false;
   public sourceSelection: EvalPlanSourceSelection = "";
   public selectedMethod: EvalPlanMethod = "";

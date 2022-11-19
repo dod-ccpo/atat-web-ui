@@ -12,8 +12,8 @@ export interface StepInfo {
     continueButtonText: string | undefined;
     completed: boolean | undefined;
     completePercentageWeight: number | undefined;
-    lastStep: boolean | undefined;
-    parentName: string | undefined;
+    stepCompleteOnEnter: string | undefined;
+    stepCompleteOnLeave: string | undefined;
 }
 
 export interface AdditionalButton {

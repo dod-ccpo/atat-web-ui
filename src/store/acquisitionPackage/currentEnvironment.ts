@@ -12,7 +12,7 @@ const ATAT_CURRENT_ENVIRONMENT_KEY = "ATAT_CURRENT_ENVIRONMENT_KEY";
 
 export const defaultCurrentEnvironment: CurrentEnvironmentDTO = {
   additional_growth: "" as const,
-  anticipated_yearly_additional_capacity: 0,
+  anticipated_yearly_additional_capacity: null,
   applications_need_architectural_design: "",
   current_environment_replicated_optimized: "" as const,
   data_classifications_impact_levels: [],
