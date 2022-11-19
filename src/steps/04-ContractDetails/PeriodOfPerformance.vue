@@ -1,158 +1,162 @@
 <template>
-  <div class="mb-7">
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header">
-            Let’s gather some details about the duration of your task order
-          </h1>
-          <div class="copy-max-width">
-            <p class="mb-10">
-              Your Period of Performance (PoP) will begin based upon the
-              execution date of your task order or on your requested start date,
-              if applicable. It will extend through the length of the base
-              period, plus any subsequent option periods. In the fields below,
-              specify the length of time that each period will remain in effect.
-              Add, duplicate or remove option periods as needed, up to 5 years
-              total.
-              <a
-                role="button"
-                id="PopLearnMore"
-                class="_text-link"
-                tabindex="0"
-                @click="openSlideoutPanel"
-                @keydown.enter="openSlideoutPanel"
-                @keydown.space="openSlideoutPanel">
-                Learn more about PoPs on the JWCC contract.
-              </a>
-            </p>
-          </div>
-          <div class="mb-4 _semibold" style="padding-left: 101px">
-            Period of Performance length
-          </div>
-          <div id="BaseAndOptionWrapper">
-            <draggable
-              v-model="optionPeriods"
-              ghost-class="ghost"
-            >
-                <div
-                  v-for="(optionPeriod, index) in optionPeriods"
-                  :key="getIdText(getOptionPeriodLabel(index))"
-                  class="d-inline-block py-2 draggable"
-                  :id="getIdText(getOptionPeriodLabel(index)) + 'Row'"
-                  @click="preDrag($event, index)"
-                  :data-index="index"
-                >
-                  <div class="d-flex">
-                    <div class="d-flex align-center">
-                      <v-icon class="drag-icon">drag_indicator</v-icon>
-                    </div>
-                    <div
-                      class="d-flex align-center justify-end mr-4 font-size-14 _text-base"
-                      style="width: 65px"
-                    >
-                      <span class="duration">{{ getOptionPeriodLabel(index) }}</span>
-                    </div>
-                    <div>
-                      <ATATTextField
-                        :id="getIdText(getOptionPeriodLabel(index)) + 'Duration'"
-                        class="mr-4"
-                        :class="[
-                          { 'error--text': !optionPeriods[index].duration &&
-                      optionPeriods[index].unitOfTime != ''  },
-                        {'error--text': oneYearCheck(optionPeriods[index])}]"
-                        width="178"
-                        :value.sync="optionPeriods[index].duration"
-                        type="number"
-                      />
-                    </div>
-                    <div>
-                      <ATATSelect
-                        :id="getIdText(getOptionPeriodLabel(index)) + 'Dropdown'"
-                        :items="timePeriods"
-                        width="178"
-                        :selectedValue.sync="optionPeriods[index].unitOfTime"
-                        class="mr-4"
-                      />
-                    </div>
-                    <div
-                      :id="getIdText(getOptionPeriodLabel(index)) + 'Buttons'"
-                      class="d-flex align-center"
-                    >
-                      <v-btn
-                        icon
-                        class="mr-1"
-                        @click="copyOptionPeriod(index)"
-                        aria-label="Duplicate this option period"
-                        :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
-                      >
-                        <v-icon> content_copy </v-icon>
-                      </v-btn>
-
-                      <v-btn
-                        icon
-                        :disabled="optionPeriods.length === 1"
-                        @click="deleteOptionPeriod(index)"
-                        aria-label="Delete this option period"
-                        :id="getIdText(getOptionPeriodLabel(index)) + 'Delete'"
-                      >
-                        <v-icon> delete </v-icon>
-                      </v-btn>
-                    </div>
-
-                  </div>
-                  <ATATErrorValidation
-                    :id="'missingBase' + index"
-                    class="atat-text-field-error ml-14"
-                    :errorMessages="[
-                      `Please specify the length of your
-                      ${getOptionPeriodLabel(index)} period`
-                      ]"
-                    v-if="!optionPeriods[index].duration &&
-                    optionPeriods[index].unitOfTime != '' "
-                  />
-                  <ATATErrorValidation
-                    :id="'MoreThanAYear' + index"
-                    class="atat-text-field-error ml-14"
-                    :errorMessages="[oneYearCheck(optionPeriods[index])]"
-                    v-if="oneYearCheck(optionPeriods[index])"
-                  />
-                </div>
-            </draggable>
-          </div>
-
-          <v-btn
-            id="AddOptionPeriodButton"
-            v-if="totalPoPDuration < maxTotalPoPDuration"
-            plain
-            text
-            class=" mt-5 link-button no-border"
-            :ripple="false"
-            @click="addOptionPeriod()"
-          >
-            <v-icon color="primary" class="mr-2">control_point</v-icon>
-            <span>Add an option period</span>
-          </v-btn>
-
-          <div
-            class="justify-start align-center atat-text-field-error mt-2"
-            :class="{ 'd-flex': totalPoPDuration > maxTotalPoPDuration }"
-            v-show="totalPoPDuration > maxTotalPoPDuration"
-          >
-            <v-icon class="text-error icon-20"> error </v-icon>
-            <div class="field-error ml-2">
-              The total length of your base and option periods should be 5 years
-              or less.
+  <v-form ref="form" lazy-validation>
+    <div class="mb-7">
+      <v-container fluid class="container-max-width">
+        <v-row>
+          <v-col class="col-12">
+            <h1 class="page-header">
+              Let’s gather some details about the duration of your task order
+            </h1>
+            <div class="copy-max-width">
+              <p class="mb-10">
+                Your Period of Performance (PoP) will begin based upon the
+                execution date of your task order or on your requested start date,
+                if applicable. It will extend through the length of the base
+                period, plus any subsequent option periods. In the fields below,
+                specify the length of time that each period will remain in effect.
+                Add, duplicate or remove option periods as needed, up to 5 years
+                total.
+                <a
+                  role="button"
+                  id="PopLearnMore"
+                  class="_text-link"
+                  tabindex="0"
+                  @click="openSlideoutPanel"
+                  @keydown.enter="openSlideoutPanel"
+                  @keydown.space="openSlideoutPanel">
+                  Learn more about PoPs on the JWCC contract.
+                </a>
+              </p>
             </div>
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
-    <div id="DragImg" class="drag-img" style="display: none">
-      {{ optionPeriodClicked.duration }} {{ optionPeriodClicked.unitOfTime }}
-    </div>
-  </div>
+            <div class="mb-4 _semibold" style="padding-left: 101px">
+              Period of Performance length
+            </div>
+            <div id="BaseAndOptionWrapper">
+              <draggable
+                v-model="optionPeriods"
+                ghost-class="ghost"
+              >
+                  <div
+                    v-for="(optionPeriod, index) in optionPeriods"
+                    :key="getIdText(getOptionPeriodLabel(index))"
+                    class="d-inline-block py-2 draggable"
+                    :id="getIdText(getOptionPeriodLabel(index)) + 'Row'"
+                    @click="preDrag($event, index)"
+                    :data-index="index"
+                  >
+                    <div class="d-flex">
+                      <div class="d-flex align-center">
+                        <v-icon class="drag-icon">drag_indicator</v-icon>
+                      </div>
+                      <div
+                        class="d-flex align-center justify-end mr-4 font-size-14 _text-base"
+                        style="width: 65px"
+                      >
+                        <span class="duration">{{ getOptionPeriodLabel(index) }}</span>
+                      </div>
+                      <div>
+                        <ATATTextField
+                          :id="getIdText(getOptionPeriodLabel(index)) + 'Duration'"
+                          class="mr-4"
+                          :class="[
+                            { 'error--text': !optionPeriods[index].duration &&
+                        optionPeriods[index].unitOfTime != ''  },
+                          {'error--text': oneYearCheck(optionPeriods[index])}]"
+                          width="178"
+                          :value.sync="optionPeriods[index].duration"
+                          type="number"
+                          :rules="[
+                            $validators.required('Please provide a valid period length.'),
+                          ]"
+                        />
+                      </div>
+                      <div>
+                        <ATATSelect
+                          :id="getIdText(getOptionPeriodLabel(index)) + 'Dropdown'"
+                          :items="timePeriods"
+                          width="178"
+                          :selectedValue.sync="optionPeriods[index].unitOfTime"
+                          class="mr-4"
+                        />
+                      </div>
+                      <div
+                        :id="getIdText(getOptionPeriodLabel(index)) + 'Buttons'"
+                        class="d-flex align-center"
+                      >
+                        <v-btn
+                          icon
+                          class="mr-1"
+                          @click="copyOptionPeriod(index)"
+                          aria-label="Duplicate this option period"
+                          :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
+                        >
+                          <v-icon> content_copy </v-icon>
+                        </v-btn>
 
+                        <v-btn
+                          icon
+                          :disabled="optionPeriods.length === 1"
+                          @click="deleteOptionPeriod(index)"
+                          aria-label="Delete this option period"
+                          :id="getIdText(getOptionPeriodLabel(index)) + 'Delete'"
+                        >
+                          <v-icon> delete </v-icon>
+                        </v-btn>
+                      </div>
+
+                    </div>
+                    <ATATErrorValidation
+                      :id="'missingBase' + index"
+                      class="atat-text-field-error ml-14"
+                      :errorMessages="[
+                        `Please specify the length of your
+                        ${getOptionPeriodLabel(index)} period`
+                        ]"
+                      v-if="!optionPeriods[index].duration &&
+                      optionPeriods[index].unitOfTime != '' "
+                    />
+                    <ATATErrorValidation
+                      :id="'MoreThanAYear' + index"
+                      class="atat-text-field-error ml-14"
+                      :errorMessages="[oneYearCheck(optionPeriods[index])]"
+                      v-if="oneYearCheck(optionPeriods[index])"
+                    />
+                  </div>
+              </draggable>
+            </div>
+
+            <v-btn
+              id="AddOptionPeriodButton"
+              v-if="totalPoPDuration < maxTotalPoPDuration"
+              plain
+              text
+              class=" mt-5 link-button no-border"
+              :ripple="false"
+              @click="addOptionPeriod()"
+            >
+              <v-icon color="primary" class="mr-2">control_point</v-icon>
+              <span>Add an option period</span>
+            </v-btn>
+
+            <div
+              class="justify-start align-center atat-text-field-error mt-2"
+              :class="{ 'd-flex': totalPoPDuration > maxTotalPoPDuration }"
+              v-show="totalPoPDuration > maxTotalPoPDuration"
+            >
+              <v-icon class="text-error icon-20"> error </v-icon>
+              <div class="field-error ml-2">
+                The total length of your base and option periods should be 5 years
+                or less.
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+      <div id="DragImg" class="drag-img" style="display: none">
+        {{ optionPeriodClicked.duration }} {{ optionPeriodClicked.unitOfTime }}
+      </div>
+    </div>
+  </v-form>
 </template>
 
 <script lang="ts">
