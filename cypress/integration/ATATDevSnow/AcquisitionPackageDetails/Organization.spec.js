@@ -132,11 +132,10 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     cy.enterOrganizationAddress(orgAddress);
 
     //Click on Continue button
-    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.btnClick(common.continueBtn, " Continue "); 
 
     //Navigates to Contact information
-    cy.findElement(common.wrap).scrollTo('top', { easing: 'linear' });
-    cy.textExists(common.header, "Let’s confirm your contact information");
+    cy.verifyPageHeader("Let’s confirm your contact information");
     
   });
 
