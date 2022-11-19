@@ -129,6 +129,7 @@ import {SensitiveInformationDTO} from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import LoadOnEnter from "@/mixins/loadOnEnter";
 
 @Component({
   components: {
@@ -139,7 +140,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 
-export default class BAA extends Mixins(SaveOnLeave) {
+export default class BAA extends Mixins(LoadOnEnter,SaveOnLeave) {
   private baaHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/
     sample-business-associate-agreement-provisions/index.html`;
 

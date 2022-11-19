@@ -19,8 +19,8 @@ export const mapStepConfigs = (
       continueButtonText: routeConfig.continueButtonText || "Continue",
       completed: routeConfig.completed || false,
       completePercentageWeight: routeConfig.completePercentageWeight || 0,
-      lastStep: routeConfig.lastStep || false,
-      parentName: routeConfig.parentName || undefined
+      stepCompleteOnEnter: routeConfig.stepCompleteOnEnter || undefined,
+      stepCompleteOnLeave: routeConfig.stepCompleteOnLeave || undefined
     };
    
     const lastStep = map?.get(last || "");

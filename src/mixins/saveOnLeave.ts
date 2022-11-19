@@ -45,7 +45,7 @@ export default class SaveOnLeave extends Vue {
     this.$nextTick(()=> {
       AcquisitionPackage.setValidateNow(false);
       if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
-        Steps.setStepComplete(from.name as string);
+        Steps.setLeaveStepComplete(from.name as string);   
         next();
       }
     })

@@ -16,7 +16,7 @@ export default class LoadOnEnter extends Vue {
     from: Route,
     next: (n: unknown) => void
   ): Promise<void> {
-    Steps.setStepComplete(to.name as string);
+    Steps.setEnterStepComplete(to.name as string);
     next(async (vm: {loadOnEnter: ()=> Promise<void>} ) => {
       await vm.loadOnEnter();
     });
