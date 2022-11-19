@@ -114,7 +114,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? routeNames.PeriodOfPerformance
+    ? routeNames.RequirementCategories
     : routeNames.CurrentContract;
 };
 
