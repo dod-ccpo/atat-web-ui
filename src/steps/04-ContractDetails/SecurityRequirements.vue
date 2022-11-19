@@ -18,8 +18,8 @@
            :hasSecret="hasSecret"
            :hasTopSecret="hasTopSecret"
            :isDOW="false"
-           :selectedSecretSecurityRequirements="selectedSecretSecurityRequirements"
-           :selectedTopSecretSecurityRequirements="selectedTopSecretSecurityRequirements"
+           :selectedSecretSecurityRequirements.sync="selectedSecretSecurityRequirements"
+           :selectedTopSecretSecurityRequirements.sync="selectedTopSecretSecurityRequirements"
            :selectedClearanceLevels="selectedClearanceLevels"
          />
         </v-col>

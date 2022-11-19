@@ -33,7 +33,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -51,6 +51,14 @@ export default class SecurityRequirementsCheckboxes extends vue {
   @Prop() private securityRequirementsCheckboxes!: Checkbox[];
   @Prop() private hasSecret!: boolean;
   @Prop() private hasTopSecret!: boolean;
+
+  private selectedItem: string[] = []
+  @Watch("selectedItem")
+  public selectedChange(newVal: string[]): void {
+    debugger
+    this._selectedSecurityRequirements = newVal
+  }
+
 }
 </script>
 
