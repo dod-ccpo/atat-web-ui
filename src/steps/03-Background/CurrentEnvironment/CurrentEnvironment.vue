@@ -6,7 +6,7 @@
           Do you have a current environment to rehost?
         </h1>
         <div class="copy-max-width">
-          <p class="mb-0">
+          <p class="mb-8">
             If you select “Yes” below, we’ll gather details about your current environment next.
             This info will be included in your Description of Work to provide CSPs with a better
             understanding of what currently exists. This environment may not align with your current

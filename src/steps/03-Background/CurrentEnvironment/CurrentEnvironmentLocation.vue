@@ -6,7 +6,7 @@
           Where is your current environment located?
         </h1>
         <div class="copy-max-width">
-          <p class="mb-7">
+          <p class="mb-8">
             If you have instances in a hybrid environment, then we will gather details about the
             location for each instance later.
           </p>
