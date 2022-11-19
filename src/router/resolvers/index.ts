@@ -587,9 +587,9 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-  DescriptionOfWork.setBackToContractDetails(current === routeNames.PropertyDetails);
+  DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
-  if(current === routeNames.PropertyDetails){
+  if(current === routeNames.ConflictOfInterest){
     if(DescriptionOfWork.DOWObject.length > 0){
       DescriptionOfWork.setReturnToDOWSummary(false);
       return descriptionOfWorkSummaryPath
