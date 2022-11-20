@@ -1,35 +1,29 @@
 <template>
   <div>
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <div v-if="hasTopSecret && isDOW">
-            <ATATRadioGroup
-              class="copy-max-width mb-10"
-              id="ClearanceLevelRadio"
-              legend="What clearance level is required for contractor employees to provide your
-               training?"
-              :items="clearanceLevels"
-              :value.sync="_selectedClearanceLevels"
-            />
-            <hr />
-          </div>
-          <SecurityRequirementsCheckboxes
-            v-if="hasSecret"
-            :hasSecret="hasSecret"
-            :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
-            :selectedSecurityRequirements.sync="_selectedSecretSecurityRequirements"
-          />
-          <hr v-if="hasTopSecret && hasSecret" />
-          <SecurityRequirementsCheckboxes
-            v-if="hasTopSecret"
-            :hasTopSecret="hasTopSecret"
-            :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
-            :selectedSecurityRequirements.sync="_selectedTopSecretSecurityRequirements"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
+    <div v-if="hasTopSecret && isDOW">
+      <ATATRadioGroup
+        class="copy-max-width mb-10"
+        id="ClearanceLevelRadio"
+        legend="What clearance level is required for contractor employees to provide your
+         training?"
+        :items="clearanceLevels"
+        :value.sync="_selectedClearanceLevels"
+      />
+      <hr />
+    </div>
+    <SecurityRequirementsCheckboxes
+      v-if="hasSecret"
+      :hasSecret="hasSecret"
+      :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
+      :selectedSecurityRequirements.sync="_selectedSecretSecurityRequirements"
+    />
+    <hr v-if="hasTopSecret && hasSecret" />
+    <SecurityRequirementsCheckboxes
+      v-if="hasTopSecret"
+      :hasTopSecret="hasTopSecret"
+      :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
+      :selectedSecurityRequirements.sync="_selectedTopSecretSecurityRequirements"
+    />
   </div>
 </template>
 <script lang="ts">

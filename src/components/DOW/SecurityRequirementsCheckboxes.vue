@@ -1,34 +1,28 @@
 <template>
   <div>
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <p id="Message" class="mb-5 font-weight-500">
-            For your
-            <span v-if="hasSecret">SECRET</span>
-            <span v-if="hasTopSecret">TOP SECRET</span>
-            cloud services and support, what type of classified information will be accessed?
-          </p>
-          <p id="MessageNote" class="mb-5 ">
-            Select all that apply to your
-            <span v-if="hasSecret">SECRET</span>
-            <span v-if="hasTopSecret">TOP SECRET</span>
-            classification level.
-          </p>
-          <ATATCheckboxGroup
-            id="SecurityRequirements"
-            :value.sync="_selectedSecurityRequirements"
-            :items="securityRequirementsCheckboxes"
-            name="checkboxes"
-            :card="false"
-            class="copy-max-width"
-            :rules="[
-            $validators.required('Please select at least one type of classified information.')
-          ]"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
+    <p id="Message" class="mb-5 font-weight-500">
+      For your
+      <span v-if="hasSecret">SECRET</span>
+      <span v-if="hasTopSecret">TOP SECRET</span>
+      cloud services and support, what type of classified information will be accessed?
+    </p>
+    <p id="MessageNote" class="mb-5 ">
+      Select all that apply to your
+      <span v-if="hasSecret">SECRET</span>
+      <span v-if="hasTopSecret">TOP SECRET</span>
+      classification level.
+    </p>
+    <ATATCheckboxGroup
+      id="SecurityRequirements"
+      :value.sync="_selectedSecurityRequirements"
+      :items="securityRequirementsCheckboxes"
+      name="checkboxes"
+      :card="false"
+      class="copy-max-width"
+      :rules="[
+      $validators.required('Please select at least one type of classified information.')
+    ]"
+    />
   </div>
 </template>
 <script lang="ts">
