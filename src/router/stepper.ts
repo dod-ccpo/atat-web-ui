@@ -743,6 +743,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Conflict of Interest",
         path: "conflict-of-interest",
         completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.ConflictOfInterest,
         component: ConflictOfInterest,
       },
       {
@@ -750,6 +751,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Packaging, Packing, and Shipping",
         path: "packaging-packing-and-shipping",
         completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.PackagingPackingAndShipping,
         component: PackagingPackingAndShipping,
       },
       {
@@ -764,6 +766,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Training Courses",
         excludeFromMenu: true,
         path: "training",
+        stepCompleteOnLeave: routeNames.Training,
         completePercentageWeight: 2,
         component: TrainingCourses,
         routeResolver: ContractTrainingReq
@@ -783,6 +786,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Personally Identifiable Information (PII)",
         path: "/personally-identifiable-information",
         name: routeNames.PII,
+        stepCompleteOnEnter: routeNames.Training,
         completePercentageWeight: 2,
         component: PII,
       },
