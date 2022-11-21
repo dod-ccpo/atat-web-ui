@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form">
+  <v-form ref="form" lazy-validation>
     <v-container class="container-max-width" fluid>
       <v-row>
         <v-col class="col-12">
@@ -99,6 +99,9 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
+    await AcquisitionPackage.setValidateNow(true);
+
     try {
       if (this.hasChanged()) {
         /* eslint-disable camelcase */

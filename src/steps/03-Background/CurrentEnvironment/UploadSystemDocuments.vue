@@ -1,47 +1,49 @@
 <template>
-  <v-container class="container-max-width" fluid>
-    <v-row>
-      <v-col class="col-12">
-        <h1 class="page-header mb-3">
-          Do you have system diagrams, data architecture diagrams, charts, or other relevant
-          information for your current environment?
-        </h1>
-        <div class="copy-max-width">
-          <p class="mb-8">
-            If available, you can upload this supporting documentation, and we will attach it to
-            your Description of Work to be shared with the CSPs for proposal purposes. Please do not
-            upload any classified documents.
-          </p>
-          <ATATRadioGroup
-            id="ExistingEnvOptions"
-            :card="true"
-            :items="uploadOptions"
-            :rules="[$validators.required('Please select an option')]"
-            :value.sync="hasSystemDocumentation"
-            class="copy-max-width mb-10 max-width-740"
-            width="180"
-          />
-          <div v-show="hasSystemDocumentation === 'YES'">
-            <hr />
-             <ATATFileUpload
-                id="FundingPlan"
-                tabindex="-1"
-                :maxNumberOfFiles="100"
-                :maxFileSizeInBytes="maxFileSizeInBytes"
-                :validFileFormats="validFileFormats"
-                :multiplesAllowed="true"
-                :attachmentServiceName="attachmentServiceName"
-                :invalidFiles.sync="invalidFiles"
-                :validFiles.sync="uploadedFiles"
-                :removeAll.sync="removeAll"
-                @delete="onRemoveAttachment"
-                @uploaded="onUpload"
-             />
+  <v-form ref="form" lazy-validation>
+    <v-container class="container-max-width" fluid>
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+            Do you have system diagrams, data architecture diagrams, charts, or other relevant
+            information for your current environment?
+          </h1>
+          <div class="copy-max-width">
+            <p class="mb-8">
+              If available, you can upload this supporting documentation, and we will attach it to
+              your Description of Work to be shared with the CSPs for proposal purposes. 
+              Please do not upload any classified documents.
+            </p>
+            <ATATRadioGroup
+              id="ExistingEnvOptions"
+              :card="true"
+              :items="uploadOptions"
+              :rules="[$validators.required('Please select an option')]"
+              :value.sync="hasSystemDocumentation"
+              class="copy-max-width mb-10 max-width-740"
+              width="180"
+            />
+            <div v-if="hasSystemDocumentation === 'YES'">
+              <hr />
+              <ATATFileUpload
+                  id="FundingPlan"
+                  tabindex="-1"
+                  :maxNumberOfFiles="100"
+                  :maxFileSizeInBytes="maxFileSizeInBytes"
+                  :validFileFormats="validFileFormats"
+                  :multiplesAllowed="true"
+                  :attachmentServiceName="attachmentServiceName"
+                  :invalidFiles.sync="invalidFiles"
+                  :validFiles.sync="uploadedFiles"
+                  :removeAll.sync="removeAll"
+                  @delete="onRemoveAttachment"
+                  @uploaded="onUpload"
+              />
+            </div>
           </div>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
