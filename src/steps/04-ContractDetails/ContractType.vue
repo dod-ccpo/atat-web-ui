@@ -32,6 +32,9 @@
               name="checkbox-card"
               :card="true"
               class="max-width-500"
+              :rules="[
+                $validators.required('Please select at least one contract type')
+              ]"
             />
             </div>
 
@@ -46,6 +49,11 @@
                   monitor contractor performance and costs in labor. 
                   <a role='button' id='JustificationLearnMore'>Learn more</a>"
                 maxChars="2000"
+                :rules="[
+                  $validators.required(
+                    'Please provide justification for your T&M contract selection.'
+                  )
+                ]"
               />
             </div>
 

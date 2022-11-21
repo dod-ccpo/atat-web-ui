@@ -45,11 +45,11 @@
                     :data-index="index"
                   >
                     <div class="d-flex">
-                      <div class="d-flex align-center">
+                      <div class="d-flex">
                         <v-icon class="drag-icon">drag_indicator</v-icon>
                       </div>
                       <div
-                        class="d-flex align-center justify-end mr-4 font-size-14 _text-base"
+                        class="d-flex justify-end mr-4 font-size-14 _text-base"
                         style="width: 65px"
                       >
                         <span class="duration">{{ getOptionPeriodLabel(index) }}</span>
@@ -66,7 +66,7 @@
                           :value.sync="optionPeriods[index].duration"
                           type="number"
                           :rules="[
-                            $validators.required('Please provide a valid period length.'),
+                            $validators.required('Please provide a<br/> valid period length.'),
                           ]"
                         />
                       </div>
