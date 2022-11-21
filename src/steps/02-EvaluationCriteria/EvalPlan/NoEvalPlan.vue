@@ -42,6 +42,11 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 export default class NoEvalPlan extends Mixins(LoadOnEnter) {
+
+  protected async loadOnEnter(): Promise<boolean> {
+    return true;
+  }
+
 }
 </script>
 
