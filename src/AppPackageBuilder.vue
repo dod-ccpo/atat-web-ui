@@ -157,7 +157,7 @@ export default class AppPackageBuilder extends Vue {
       }
 
       Steps.setAltBackDestination("");   
-      this.$router.push({ name: nextStepName as string });
+      this.$router.push({ name: nextStepName as string, params: { direction } });
 
     } else if (direction === "previous" && this.altBackDestination) { 
 
@@ -166,12 +166,12 @@ export default class AppPackageBuilder extends Vue {
 
         switch (this.altBackDestination) {
         case AppSections.sectionTitles.Home: {
-          this.$router.push({name: "home" })
+          this.$router.push({name: "home", params: { direction } })
           AppSections.changeActiveSection(AppSections.sectionTitles.Home);
           break;
         }
         case AppSections.sectionTitles.Packages: {
-          this.$router.push({name: "home" })
+          this.$router.push({name: "home", params: { direction } })
           AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
           break;
         }

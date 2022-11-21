@@ -21,8 +21,8 @@ export class StepsStore extends VuexModule implements StepsState {
       continueButtonText:'',
       completed: false,
       completePercentageWeight: 0,
-      lastStep: false,
-      parentName: undefined
+      stepCompleteOnEnter: undefined,
+      stepCompleteOnLeave: undefined
     };
     
     stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
@@ -35,17 +35,25 @@ export class StepsStore extends VuexModule implements StepsState {
     altBackDestination = "";
 
     @Mutation
-    public setStepComplete(stepName: string): void {
+    public setEnterStepComplete(stepName: string): void {
       const step = this.stepMap.get(stepName);
-      if(step && step.lastStep === true){
-        step.completed = true; 
-        this.stepMap.set(stepName, step);
-        if(step.parentName){
-          const parentStep = this.stepMap.get(step.parentName);
-          if(parentStep){
-            parentStep.completed = true;
-            this.stepMap.set(step.parentName, parentStep);
-          }
+      if(step && step.stepCompleteOnEnter){
+        const enterStep = this.stepMap.get(step.stepCompleteOnEnter);
+        if(enterStep){
+          enterStep.completed = true;
+          this.stepMap.set(step.stepCompleteOnEnter, enterStep);
+        }
+      }
+    }
+
+    @Mutation
+    public setLeaveStepComplete(stepName: string): void {
+      const step = this.stepMap.get(stepName);
+      if(step && step.stepCompleteOnLeave){
+        const leaveStep = this.stepMap.get(step.stepCompleteOnLeave);
+        if(leaveStep){
+          leaveStep.completed = true;
+          this.stepMap.set(step.stepCompleteOnLeave, leaveStep);
         }
       }
     }

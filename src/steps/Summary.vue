@@ -3,11 +3,11 @@
 </template>
 
 <script lang="ts">
-import SaveOnLeave from "@/mixins/loadOnEnter";
+import LoadOnEnter from "@/mixins/loadOnEnter";
 import {Component, Mixins} from "vue-property-decorator";
 @Component({
 })
-export default class Summary extends Mixins(SaveOnLeave) {
+export default class Summary extends Mixins(LoadOnEnter) {
 
   protected async loadOnEnter(): Promise<boolean> {
     return true;
