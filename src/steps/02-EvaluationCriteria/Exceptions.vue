@@ -42,6 +42,43 @@
               :rules="[$validators.required('Please select an option')]"            
             />
 
+            <ATATAlert
+              id="JandAMMRWarningAlert"
+              type="warning"
+              :showIcon="false"
+              class="copy-max-width my-10"
+              v-if="selectedException !== '' && selectedException !== 'NO_NONE'"
+            >
+              <template v-slot:content>
+                <p>
+                  <strong>
+                    In order to submit your package to a contracting office, 
+                    you will need to complete a Justification &amp; Approval (J&amp;A) 
+                    and Sole Source Market Research Report (MRR).
+                  </strong>
+                </p>
+                <p>
+                  We recommend 
+                  <a 
+                    href=""
+                    target="_blank"
+                    class="_text-link"
+                    id="JandAMMRLink"
+                  >
+                    <span>downloading J&A and MRR templates</span>
+                  </a>
+                  for reference as you work through this wizard. In the following sections, we'll 
+                  help you prepare some details required in these templates, but you will need 
+                  to complete them outside of DAPPS. At the end, you'll have an opportunity to 
+                  upload your signed J&A and MRR for inclusion in your final package.
+                </p>
+                <p>
+                  NOTE: DISA does not require MRRs for Undefinitized Contract actions (UCAs), 
+                  Bridge contract actions, and for FAR 52.217-8 Option to Extend Services.
+                </p>
+              </template>
+            </ATATAlert>
+
           </v-col>
         </v-row>
       </v-container>
