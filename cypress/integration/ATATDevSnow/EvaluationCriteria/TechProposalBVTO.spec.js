@@ -5,7 +5,7 @@ import ep from "../../../selectors/evaluationPlan.sel";
 
 
 
-describe("Test suite: No technical proposal: Option One on Create Evaluation Plan", () => {
+describe("Test suite: Technical proposal: Option two on Create Evaluation Plan: BVTO", () => {
   let evalCriteria;
   const customText = randomString(5);
   
@@ -29,7 +29,7 @@ describe("Test suite: No technical proposal: Option One on Create Evaluation Pla
           
   });
   
-  it("TC1:Custom Standards: Select radio buttons", () => {
+  it("TC1: BVTO: Custom Standards: Select radio buttons", () => {
     cy.verifyTextMatches(
       ep.customStandardsRadioGroupLabel,
       evalCriteria.noTechProposal.customRadioGroupLabel
@@ -57,7 +57,7 @@ describe("Test suite: No technical proposal: Option One on Create Evaluation Pla
     cy.verifyPageHeader(evalCriteria.bvto.differentiatorsHeaderText);
   });
     
-  it("TC2: “Differentiator(s) screen.", () => {
+  it("TC2: Differentiator(s) screen", () => {
     cy.selectCustomStandardsRadioOption(ep.customRadioYesBtn, "YES");
     cy.enterTextInTextField(ep.custom0SpecTextbox, customText);     
     cy.textExists(common.continueBtn, "Continue").click();
@@ -80,7 +80,7 @@ describe("Test suite: No technical proposal: Option One on Create Evaluation Pla
     
   });
 
-  it("TC3: Differentiators screen: Validations,Add & Remove", () => {
+  it("TC3: Differentiator(s) screen: Validations, Add & Remove", () => {
     cy.selectCustomStandardsRadioOption(ep.customRadioYesBtn, "YES");
     cy.enterTextInTextField(ep.custom0SpecTextbox, customText);     
     cy.textExists(common.continueBtn, "Continue").click();
@@ -112,7 +112,7 @@ describe("Test suite: No technical proposal: Option One on Create Evaluation Pla
     cy.btnClick(common.continueBtn, " Continue ");
   });
 
-  it("TC4: Navigation: Click on Back Button: Differentiators screen", () => {
+  it("TC4: Navigation: Click on Back Button: Differentiator(s) screen", () => {
     cy.selectCustomStandardsRadioOption(ep.customRadioNoBtn, "NO");
     cy.textExists(common.continueBtn, "Continue").click();
     cy.verifyPageHeader(evalCriteria.bvto.differentiatorsHeaderText);      
