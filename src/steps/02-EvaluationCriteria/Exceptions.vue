@@ -58,19 +58,24 @@
                   </strong>
                 </p>
                 <p>
-                  We recommend 
+                  We recommend downloading the
                   <a 
-                    href=""
-                    target="_blank"
-                    class="_text-link"
-                    id="JandAMMRLink"
+                    href="#"
+                    target="_blank" class="_text-link" id="JandATemplateLink"
                   >
-                    <span>downloading J&A and MRR templates</span>
+                    <span>J&amp;A template</span>
+                  </a>
+                  and
+                  <a 
+                    href="#"
+                    target="_blank" class="_text-link" id="MRRTemplateLink"
+                  >
+                    <span>MRR template</span>
                   </a>
                   for reference as you work through this wizard. In the following sections, we'll 
                   help you prepare some details required in these templates, but you will need 
                   to complete them outside of DAPPS. At the end, you'll have an opportunity to 
-                  upload your signed J&A and MRR for inclusion in your final package.
+                  upload your signed J&amp;A and MRR for inclusion in your final package.
                 </p>
                 <p>
                   NOTE: DISA does not require MRRs for Undefinitized Contract actions (UCAs), 
