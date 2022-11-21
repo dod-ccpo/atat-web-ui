@@ -37,6 +37,7 @@
                 :removeAll.sync="removeAll"
                 @delete="onRemoveAttachment"
                 @uploaded="onUpload"
+                :rules="[$validators.required('Please upload a file')]"
               />
             </div>
           </div>
@@ -116,6 +117,9 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
+    AcquisitionPackage.setValidateNow(true);
+
     try {
       if (this.hasChanged()) {
         Object.assign(this.currEnvDTO, this.currentData);
