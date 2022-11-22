@@ -1,15 +1,25 @@
 <template>
-  <div>
-    Future Cross Domain page
-  </div>
+  <v-form ref="form" lazy-validation>
+    <div>
+      Future Cross Domain page
+    </div>
+  </v-form>
 </template>
 <script lang="ts">
-import Vue from "vue";
+import LoadOnEnter from "@/mixins/loadOnEnter";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 @Component({
 })
-export default class CrossDomain extends Vue {
+export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
+  protected async loadOnEnter(): Promise<boolean> {
+    return true;
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    return true;
+  }
 }
 </script>
 

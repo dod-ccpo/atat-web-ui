@@ -161,13 +161,15 @@ export default class ATATTextField extends Vue  {
     }
   }
 
-  public setErrorMessage(): void {
+  public async setErrorMessage(): Promise<void> {
     if (this.validateOnBlur) {
       Vue.nextTick(()=>{
         this.errorMessages = this.$refs.atatTextField.errorBucket;
+        this.$emit('errorMessage', this.errorMessages);
+        // await 
       });
     } else {
-      this.resetValidation();
+      await this.resetValidation();
     }
   }
   private iconColor = "base-light";
