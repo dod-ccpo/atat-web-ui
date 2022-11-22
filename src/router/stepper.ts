@@ -71,11 +71,6 @@ import OtherOfferingSummary
 import DOWSummary 
   from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
 
-// Step 6 - Government Furnished Equipment
-import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue";
-import PropertyDetails from "../steps/06-GovtFurnishedEquipment/PropertyDetails.vue";
-import Justification from "../steps/06-GovtFurnishedEquipment/Justification.vue";
-
 // Step 7 - Other Contract Considerations
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
@@ -721,29 +716,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "06",
     completePercentageWeight: 7,
-    menuText: "Government Furnished Equipment",
-    path: "/property-details",
-    component: GovtFurnishedEquipment,
-    children: [
-      {
-        name: routeNames.PropertyDetails,
-        menuText: "Property Details",
-        path: "property-details",
-        completePercentageWeight: 2,
-        component: PropertyDetails,
-      },
-      {
-        name: routeNames.Justification,
-        menuText: "Justification",
-        path: "justification",
-        completePercentageWeight: 2,
-        component: Justification,
-      },
-    ]
-  },
-  {
-    stepNumber: "07",
-    completePercentageWeight: 7,
     menuText: "Other Contract Considerations",
     path: "/conflict-of-interest",
     component: OtherContractConsiderations,
@@ -786,7 +758,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
 
   {
-    stepNumber: "08",
+    stepNumber: "07",
     completePercentageWeight: 7,
     menuText: "Standards and Compliance",
     path: "/personally-identifiable-information",
@@ -857,7 +829,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    stepNumber: "09",
+    stepNumber: "08",
     completePercentageWeight: 7,
     menuText: "Financial Details",
     path: "/requirements-cost-estimate",
@@ -1019,7 +991,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    stepNumber: "10",
+    stepNumber: "09",
     completePercentageWeight: 7,
     menuText: "Review Required Forms",
     path: "/review-required-forms",
