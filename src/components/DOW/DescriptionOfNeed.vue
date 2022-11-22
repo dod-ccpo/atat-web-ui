@@ -3,10 +3,11 @@
     :value.sync="_anticipatedNeedUsage"
     :id="'AnticipatedNeedUsage_' + (index + 1)"
     ref="DescriptionOfNeed"
-    :label="'Describe the anticipated need and usage of this ' + requirementOrInstance"
+    label="Statement of objectives for the anticipated need or usage"
+    :helpText="description"
     class="width-100 mb-10 max-width-740"
     :rows="5"
-    maxChars="500"
+    maxChars="800"
     :rules="[
       $validators.required('Please provide a description for this ' + requirementOrInstance + '.'),
       $validators.maxLength('500', 'Description is to be 500 characters or less.')
@@ -30,6 +31,10 @@ export default class DescriptionOfNeed extends Vue {
   @PropSync("anticipatedNeedUsage") public _anticipatedNeedUsage!: string;
   @Prop() public index!: number;
   @Prop({ default: "requirement" }) public requirementOrInstance?: string;
+
+  public description = "Use vendor-neutral language. This will be added to your" +
+    " Description of Work, so avoid including any company names or vendor-unique" +
+    " brand, product, or titles that could impact full and open competition."
 }
 
 </script>

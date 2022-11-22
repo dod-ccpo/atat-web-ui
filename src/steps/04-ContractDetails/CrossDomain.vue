@@ -13,21 +13,9 @@
               will be applied to any performance requirements that you specify. If you need more
               than one level, we will walk you through what is required within each level later.
             </p>
-            <p id="SelectMessage">
-              Select all that apply to your project.
-            </p>
+           <AnticipatedDurationandUsage />
           </div>
-          <ATATCheckboxGroup
-            id="ClassificationLevelCheckboxes"
-            :value.sync="selectedOptions"
-            :items="checkboxItems"
-            name="checkboxes"
-            :card="false"
-            class="copy-max-width"
-            :rules="[
-              $validators.required('Please select at least one classification level.')
-            ]"
-          />
+
         </v-col>
       </v-row>
     </v-container>
@@ -37,7 +25,9 @@
 import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
+import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationandUsage.vue";
 @Component({
+  components: {AnticipatedDurationandUsage}
 })
 export default class CrossDomain extends Vue {
 }
