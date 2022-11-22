@@ -981,7 +981,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    stepNumber: "9",
+    stepNumber: "09",
     completePercentageWeight: 7,
     menuText: "Review Required Forms",
     path: "/review-required-forms",
