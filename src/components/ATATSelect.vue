@@ -31,7 +31,7 @@
         :class="{ 'mt-2' : label }"
         :return-object="returnObject"
         :style="'width: ' + width + 'px'"
-        :rules="rules"
+        :rules="_rules"
         :menu-props="{ bottom: true, offsetY: true }"
         :disabled="menuDisabled"
       >
@@ -115,7 +115,7 @@ export default class ATATSelect extends Vue {
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: [] }) private items?: SelectData[];
-  @Prop({ default: ()=>[] }) private rules!: Array<unknown>;
+  @PropSync ("rules", { default: ()=>[] }) private _rules!: Array<unknown>;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private optional!: boolean;
@@ -158,8 +158,19 @@ export default class ATATSelect extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatSelect.validate())
+    this.addRequiredRule();
+    if(!this.$refs.atatSelect.validate()){
       this.setErrorMessage();
+      this.$emit('errorMessage', this.errorMessages);
+    }
+  }
+
+  public addRequiredRule(): void {
+    // accommodates for dropdowns that are loaded
+    // with no preselected value but required validation saveOnLeave
+    Vue.nextTick(()=>{
+      this._rules.push((v:string)=>v !== "" || "")
+    })
   }
 
   private onInput(v: string) {
@@ -171,6 +182,7 @@ export default class ATATSelect extends Vue {
       this.errorMessages = this.$refs.atatSelect && Object.prototype.hasOwnProperty.call(
         this.$refs.atatSelect, "errorBucket"
       ) ? this.$refs.atatSelect.errorBucket : [];
+      this.$emit('errorMessage', this.errorMessages);
     }, 0);
   }
 

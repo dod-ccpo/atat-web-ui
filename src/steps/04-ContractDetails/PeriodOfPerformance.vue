@@ -54,7 +54,7 @@
                       >
                         <span class="duration">{{ getOptionPeriodLabel(index) }}</span>
                       </div>
-                      <div>
+                      <div >
                         <ATATTextField
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Duration'"
                           class="mr-4"
@@ -63,10 +63,12 @@
                         optionPeriods[index].unitOfTime != ''  },
                           {'error--text': oneYearCheck(optionPeriods[index])}]"
                           width="178"
+                          :showErrorMessages="false"
+                          @errorMessage = "setDurationErrorMessages($event, index)"
                           :value.sync="optionPeriods[index].duration"
                           type="number"
                           :rules="[
-                            $validators.required('Please provide a<br/> valid period length.'),
+                            $validators.required(''),
                           ]"
                         />
                       </div>
@@ -75,7 +77,9 @@
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Dropdown'"
                           :items="timePeriods"
                           width="178"
+                          :showErrorMessages="false"
                           :selectedValue.sync="optionPeriods[index].unitOfTime"
+                          @errorMessage = "setDurationErrorMessages($event, index)"
                           class="mr-4"
                         />
                       </div>
@@ -105,15 +109,15 @@
                       </div>
 
                     </div>
+                   
                     <ATATErrorValidation
-                      :id="'missingBase' + index"
+                      :id="'Required' + index"
                       class="atat-text-field-error ml-14"
+                      v-if="durationErrorIndices.indexOf(index)>-1"
                       :errorMessages="[
-                        `Please specify the length of your
+                        `Please specify the duration and/or length of your
                         ${getOptionPeriodLabel(index)} period`
                         ]"
-                      v-if="!optionPeriods[index].duration &&
-                      optionPeriods[index].unitOfTime != '' "
                     />
                     <ATATErrorValidation
                       :id="'MoreThanAYear' + index"
@@ -169,7 +173,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import PopLearnMore from "./PopLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { fundingIncrement, PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
+import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
 import { getIdText } from "@/helpers";
 import { PeriodDTO } from "@/api/models";
 import Periods from "@/store/periods";
@@ -177,7 +181,6 @@ import {hasChanges} from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import FinancialDetails from "@/store/financialDetails";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
-
 
 const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 
@@ -202,6 +205,7 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 })
 export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public maxTotalPoPDuration = 365 * 5;
+  public durationErrorMessage = "Please provide a valid period length."
   public optionPeriodCount = 1;
   private removed: PeriodDTO[] = [];
 
@@ -213,6 +217,29 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       order: 1,
     },
   ];
+
+  public durationErrorIndices: number[] = [];
+  
+  public setDurationErrorMessages(errors: string[], idx: number): void {
+    const optPeriod = this.optionPeriods[idx];
+    const isErrored = !optPeriod.duration || optPeriod.unitOfTime === ''
+    const existingIdx = this.durationErrorIndices.indexOf(idx);
+
+    if (isErrored){
+      if (existingIdx === -1){
+        this.durationErrorIndices.push(idx)
+      } 
+    } else if (existingIdx > -1) {
+      this.durationErrorIndices.splice(existingIdx, 1);
+    }
+  }
+
+  public getDurationErrorMessages(idx: number): string {
+    return this.durationErrorIndices.indexOf(idx)>-1
+      ? this.durationErrorMessage
+      : ""
+  }
+
 
   @Watch("optionPeriods", {deep: true})
   protected optionPeriodsChange(): void {
