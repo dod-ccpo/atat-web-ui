@@ -10,7 +10,6 @@ import { SensitiveInformationApi } from "./sensitiveInformation";
 import { MilitaryRankApi } from "./militaryRanks";
 import { SystemChoicesApi } from "./systemChoices";
 import { ContractTypeApi, PeriodOfPerformanceApi } from "./contractDetails";
-import { GFEOverviewApi } from "./GFEOverview";
 import { RequirementsCostEstimateApi } from "./requirementsCostEstimate";
 import {StatesApi} from "./states";
 import {CountriesApi} from "./countries";
@@ -67,7 +66,6 @@ export const api = {
   militaryRankTable: new MilitaryRankApi(),
   periodTable: new PeriodApi(),
   periodOfPerformanceTable: new PeriodOfPerformanceApi(),
-  gfeOverviewTable: new GFEOverviewApi(),
   contractTypeTable: new ContractTypeApi(),
   requirementsCostEstimateTable: new RequirementsCostEstimateApi(),
   selectedServiceOfferingTable: new SelectedServiceOfferingApi(),
