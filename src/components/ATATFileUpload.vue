@@ -1,6 +1,6 @@
 <template>
 <button style="outline:none" @blur="$emit('blur')">
-  <v-form ref="atatFileUploadForm">
+  <!-- <v-form ref="atatFileUploadForm"> -->
     <div
       :id="id + 'EventDiv'"
       v-cloak
@@ -99,14 +99,14 @@
       :removeAll.sync="_removeAll"
       @delete="(file) => $emit('delete', file)"
     />
-  </v-form>
+  <!-- </v-form> -->
 </button>
 </template>
 
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
 import {
@@ -115,6 +115,7 @@ import {
 } from "@/services/attachment";
 import { invalidFile, uploadingFile } from "types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -130,11 +131,14 @@ export default class ATATFileUpload extends Vue {
     atatFileUpload: Vue & {
       errorBucket: string[];
       errorCount: number;
-    };
-    atatFileUploadForm: Vue & {
       resetValidation: () => void;
       reset: () => void;
+      validate: () => boolean;
     };
+    // atatFileUploadForm: Vue & {
+    //   resetValidation: () => void;
+    //   reset: () => void;
+    // };
   };
 
   // props
@@ -405,6 +409,16 @@ export default class ATATFileUpload extends Vue {
     }
   }
 
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if(!this.$refs.atatFileUpload.validate())
+      this.setErrorMessage();
+  }
+
   private setErrorMessage(): void {
     this.$nextTick(() => {
       this.errorMessages = this.$refs.atatFileUpload.errorBucket;
@@ -418,9 +432,9 @@ export default class ATATFileUpload extends Vue {
 
   private clearErrorMessages(): void {
     Vue.nextTick(() => {
-      this.$refs.atatFileUploadForm.reset();
+      this.$refs.atatFileUpload.reset();
       Vue.nextTick(() => {
-        this.$refs.atatFileUploadForm.resetValidation();
+        this.$refs.atatFileUpload.resetValidation();
       });
     });
   }

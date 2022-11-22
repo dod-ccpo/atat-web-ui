@@ -511,6 +511,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
+        stepCompleteOnLeave: routeNames.CurrentContract,
         routeResolver: CurrentContractDetailsRouteResolver,
         additionalButtons: [
           {
@@ -628,6 +629,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "background-summary",
         excludeFromMenu: true,
         name: routeNames.BackgroundSummary,
+        stepCompleteOnEnter: routeNames.CurrentEnvironment,
         component: BackgroundSummary,
         completePercentageWeight: 5,
         completed: false,
@@ -646,6 +648,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "/",
         excludeFromMenu: true,
         name: routeNames.RequirementCategories,
+        stepCompleteOnEnter: routeNames.CurrentContract,
         completePercentageWeight: 1,
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
