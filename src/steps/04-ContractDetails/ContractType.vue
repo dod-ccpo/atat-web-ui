@@ -1,57 +1,67 @@
 <template>
-  <div class="mb-7">
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header">
-            Which contract type(s) apply to this acquisition?
-          </h1>
-          <div class="copy-max-width">
-            <p class="mb-10" id="IntroP">
-              Firm-Fixed-Price (FFP) is the standard contract type for JWCC task orders. 
-              You must provide justification for a time-and-materials (T&amp;M) or 
-              hybrid contract, in accordance with 
-              <a 
-                href="https://www.acquisition.gov/far/12.207" 
-                target="_blank"
-                class="_text-link"
-              >
-                <span class="_external-link">FAR 12.207.</span>
-              </a>
-              If you are considering a T&amp;M contract, we suggest contacting the
-              DITCO Contracting Office for further guidance.            
-            </p>
-            <p id="SelectMessage">
-              Select all that apply to your contracting effort.
-            </p>
-          <ATATCheckboxGroup
-            id="ContractTypesCheckboxes"
-            :value.sync="selectedContractTypes"
-            :items="checkboxItems"
-            name="checkbox-card"
-            :card="true"
-            class="max-width-500"
-          />
-          </div>
-
-          <div v-show="hasTM" id="JustificationEntry" class="max-width-740">
-            <hr />
-            <ATATTextArea
-              id="JustificationForTM"
-              :value.sync="justification"
-              label="Please provide justification for your T&amp;M contract type."
-              helpText="Briefly describe why the duration of work and/or costs cannot 
-                be reasonably estimated and what control measures will be taken to 
-                monitor contractor performance and costs in labor. 
-                <a role='button' id='JustificationLearnMore'>Learn more</a>"
-              maxChars="2000"
+  <v-form ref="form" lazy-validation>
+    <div class="mb-7">
+      <v-container fluid class="container-max-width">
+        <v-row>
+          <v-col class="col-12">
+            <h1 class="page-header">
+              Which contract type(s) apply to this acquisition?
+            </h1>
+            <div class="copy-max-width">
+              <p class="mb-10" id="IntroP">
+                Firm-Fixed-Price (FFP) is the standard contract type for JWCC task orders. 
+                You must provide justification for a time-and-materials (T&amp;M) or 
+                hybrid contract, in accordance with 
+                <a 
+                  href="https://www.acquisition.gov/far/12.207" 
+                  target="_blank"
+                  class="_text-link"
+                >
+                  <span class="_external-link">FAR 12.207.</span>
+                </a>
+                If you are considering a T&amp;M contract, we suggest contacting the
+                DITCO Contracting Office for further guidance.            
+              </p>
+              <p id="SelectMessage">
+                Select all that apply to your contracting effort.
+              </p>
+            <ATATCheckboxGroup
+              id="ContractTypesCheckboxes"
+              :value.sync="selectedContractTypes"
+              :items="checkboxItems"
+              name="checkbox-card"
+              :card="true"
+              class="max-width-500"
+              :rules="[
+                $validators.required('Please select at least one contract type')
+              ]"
             />
-          </div>
+            </div>
 
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+            <div v-if="hasTM" id="JustificationEntry" class="max-width-740">
+              <hr />
+              <ATATTextArea
+                id="JustificationForTM"
+                :value.sync="justification"
+                label="Please provide justification for your T&amp;M contract type."
+                helpText="Briefly describe why the duration of work and/or costs cannot 
+                  be reasonably estimated and what control measures will be taken to 
+                  monitor contractor performance and costs in labor. 
+                  <a role='button' id='JustificationLearnMore'>Learn more</a>"
+                maxChars="2000"
+                :rules="[
+                  $validators.required(
+                    'Please provide justification for your T&M contract selection.'
+                  )
+                ]"
+              />
+            </div>
+
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -166,6 +176,8 @@ export default class ContractType extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
+
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveData<ContractTypeDTO>({data: this.currentData, 
