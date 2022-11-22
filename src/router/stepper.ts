@@ -121,6 +121,7 @@ import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
+import UploadJAMRRDocuments from "@/steps/11-ReviewRequiredForms/UploadJAMRRDocuments.vue"
 
 import {
   AcorsRouteResolver,
@@ -151,7 +152,7 @@ import {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-
+  UploadJAMRRDocumentsRouteResolver
 } from "./resolvers";
 
 export const routeNames = {
@@ -242,6 +243,7 @@ export const routeNames = {
   EnvironmentSummary:"Environment_Summary",
   SecurityRequirements:"Security_Requirements",
   CrossDomain:"Cross_Domain",
+  UploadJAMRRDocuments:"JA_MRR_Documents"
 };
 
 /**
@@ -1023,6 +1025,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: ReviewRequiredFormsStepOne,
       },
+      {
+        menuText: "Upload J&A and MRR Documents",
+        path:"upload-ja-mrr-documents",
+        excludeFromMenu: true,
+        name: routeNames.UploadJAMRRDocuments,
+        completePercentageWeight: 0,
+        component: UploadJAMRRDocuments,
+        routeResolver: UploadJAMRRDocumentsRouteResolver
+      }
     ],
   },
 ];
