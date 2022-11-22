@@ -1,11 +1,13 @@
 <template>
-  <ArchitecturalDesignForm
-    :isDOW="false"
-    :statementArchitecturalDesign.sync="currEnvDTO.statement_architectural_design"
-    :applicationsNeedArchitecturalDesign.sync="currEnvDTO.applications_need_architectural_design"
-    :dataClassificationsImpactLevels.sync="currEnvDTO.data_classifications_impact_levels"
-    :externalFactors.sync="currEnvDTO.external_factors_architectural_design"
-  />
+  <form ref="form" lazy-validation>
+    <ArchitecturalDesignForm
+      :isDOW="false"
+      :statementArchitecturalDesign.sync="currEnvDTO.statement_architectural_design"
+      :applicationsNeedArchitecturalDesign.sync="currEnvDTO.applications_need_architectural_design"
+      :dataClassificationsImpactLevels.sync="currEnvDTO.data_classifications_impact_levels"
+      :externalFactors.sync="currEnvDTO.external_factors_architectural_design"
+    />
+  </form>
 </template>
 
 <script lang="ts">
@@ -67,6 +69,9 @@ export default class ArchitectureDesignDetails extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
+    AcquisitionPackage.setValidateNow(true);
+
     try {
       if (this.hasChanged()) {
         // TODO - which store to save to?
