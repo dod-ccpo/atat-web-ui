@@ -1,30 +1,32 @@
 <template>
-  <div class="mb-7">
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header">
-            Will this be a future recurring requirement?
-          </h1>
-          <div class="copy-max-width">
-            <p class="mb-10">
-              DISA has developed a tracking system for expiring contracts. Responding YES to this 
-              question will enable contract specialists to populate the tracking system.
-            </p>
-            <ATATRadioGroup
-              class="copy-max-width mb-10 max-width-740"
-              id="RecurringOptions"
-              :card="true"
-              :items="recurringOptions"
-              :value.sync="selectedRecurringOption"
-              :rules="[$validators.required('Please select an option')]"
-            />
-          </div>
+  <v-form ref="form" lazy-validation>
+    <div class="mb-7">
+      <v-container fluid class="container-max-width">
+        <v-row>
+          <v-col class="col-12">
+            <h1 class="page-header">
+              Will this be a future recurring requirement?
+            </h1>
+            <div class="copy-max-width">
+              <p class="mb-10">
+                DISA has developed a tracking system for expiring contracts. Responding YES to this 
+                question will enable contract specialists to populate the tracking system.
+              </p>
+              <ATATRadioGroup
+                class="copy-max-width mb-10 max-width-740"
+                id="RecurringOptions"
+                :card="true"
+                :items="recurringOptions"
+                :value.sync="selectedRecurringOption"
+                :rules="[$validators.required('Please select an option')]"
+              />
+            </div>
 
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
+  </v-form>
 </template>
 
 <script lang="ts">
