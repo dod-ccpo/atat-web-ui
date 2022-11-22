@@ -835,7 +835,7 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
       cy.textExists(common.header, " Let’s gather some details about your current contract ");
     }
     else {
-      cy.verifyPageHeader("Let’s gather some details about the duration of your task order")
+      cy.verifyPageHeader("Let’s work on your performance requirements")
     }          
   })
 });

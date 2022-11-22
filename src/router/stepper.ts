@@ -458,6 +458,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         path: "recurring-requirement",
         completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.PeriodOfPerformance,
         component: RecurringRequirement,
       },
       {
@@ -465,6 +466,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Contract Type",
         path: "contract-type",
         completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.ContractType,
         component: ContractType,
       },
       {
@@ -488,6 +490,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path:"cross-domain",
         name: routeNames.CrossDomain,
         excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: CrossDomain,
       },
