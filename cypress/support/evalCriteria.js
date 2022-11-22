@@ -62,7 +62,7 @@ Cypress.Commands.add("selectEvaluationPlanOption", (radioSelector, value) => {
         cy.findElement(ep.lowestRiskRadioBtn).should("exist").not("[disabled]");
       } else {      
         cy.wait(1000)
-        cy.findElement(ep.methodSelection).should("not.visible");
+        cy.findElement(ep.methodSelection).should("not.exist");
       }
     })
 })
@@ -138,7 +138,7 @@ Cypress.Commands.add("selectCustomStandardsRadioOption", (radioSelector, value) 
         cy.findElement(ep.customSpecSection).should("exist");
         cy.findElement(ep.custom0SpecTextbox).should("be.visible").and("be.empty");
       } else {
-        cy.findElement(ep.customSpecSection).should("not.be.visible");
+        cy.findElement(ep.customSpecSection).should("not.exist");
       }
     });
 });
@@ -169,6 +169,14 @@ Cypress.Commands.add("selectCustomAssessmentCheckboxOption", () => {
     .then(() => {
       cy.findElement(ep.customSpecSection).should("exist");
       cy.findElement(ep.custom0SpecTextbox).should("be.visible").and("be.empty"); 
+    })  
+  
+});
+
+Cypress.Commands.add("selectOtherCheckboxOption", (checkBoxSelector,value,selector) => {
+  cy.checkBoxOption(checkBoxSelector,value ).click({ force: true })
+    .then(() => {
+      cy.findElement(selector).should("exist");       
     })  
   
 });

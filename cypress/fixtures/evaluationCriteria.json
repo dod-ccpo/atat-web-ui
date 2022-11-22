@@ -44,5 +44,19 @@
   },
   "lpta": {
     "headerText": "Now let’s review compliance standards when technical proposals are required"
+  },
+  "bvto": {
+    "headerText": "Now let’s review compliance standards when technical proposals are required",
+    "differentiatorsHeaderText": "What differentiator(s) should be used to distinguish between technical proposals?",
+    "diffIntroDesc": "Select at least one area that a CSP may offer the Government at a higher price for additional benefit, beyond the solution itself, that will distinguish it from other competitor’s solutions. During the source selection process, the evaluation team will evaluate these differentiators and document how the perceived benefits of the higher priced proposal merit additional cost.",
+    "differentiatorOptions": [
+      "Level of complexity reduced due to proposed solution",
+      "Any capability gained by implementing the solution (beyond the Government’s requirement)",
+      "Any schedule savings achieved due to proposed solution",
+      "Any lifecycle cost savings achieved due to proposed solution",
+      "Any enduring persistence (longevity) due to proposed solution",
+      "Any automation capability proposed to improve reliability and reduce human-error",
+      "Other - I want to write my own custom differentiator(s)."
+    ]
   }
 }
