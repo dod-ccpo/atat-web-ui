@@ -1,124 +1,126 @@
 
 <template>
-  <div class="container-max-width">
-    <h1 class="mb-10">
-      Let’s start gathering details about each instance in your environment
-    </h1>
-    <p>
-      An instance may be an isolated environment, an enclave, or a collection of 
-      components. Aggregate all virtual machines (VMs) with similar specifications 
-      into a single instance below. If you have multiple instances, we will walk 
-      through them one at a time.
-    </p>
+  <v-form ref="form" lazy-validation>
+    <div class="container-max-width">
+      <h1 class="mb-10">
+        Let’s start gathering details about each instance in your environment
+      </h1>
+      <p>
+        An instance may be an isolated environment, an enclave, or a collection of 
+        components. Aggregate all virtual machines (VMs) with similar specifications 
+        into a single instance below. If you have multiple instances, we will walk 
+        through them one at a time.
+      </p>
 
-    <h2 class="mb-4" v-if="hasTellUsAboutInstanceHeading">
-      1. Tell us about Instance #{{ instanceNumber }}
-    </h2>
-
-    <ATATRadioGroup 
-      v-if="envLocation === 'HYBRID' || !envLocation"
-      id="EnvironmentLocation"
-      class="mb-8"
-      :items="envLocationOptions"
-      tooltipText="<strong>On-premises environments</strong> are deployed in-house 
-        and within an enterprise IT infrastructure. <strong>Cloud environments</strong> 
-        are hosted by a third-party provider in an off-site, cloud-based server."
-      :value.sync="instanceData.instance_location"
-      legend="Where is this instance located?"
-    />
-
-    <div v-show="instanceData.instance_location">
-
-      <RegionsDeployedAndUserCount 
-        v-if="instanceData.instance_location === 'CLOUD'"
-        id="RegionsDeployed"
-        class="mb-8"
-        :hasTextFields="false"
-        groupLabelId="RegionsDeployedLabel"
-        groupLabel="In which region(s) is this instance deployed?"
-        :tooltipText="regionsDeployedTooltipText"
-        :optional="true"
-        @selectedRegionsUpdate="regionsDeployedUpdate"
-        :selectedDeployedRegionsOnLoad="selectedDeployedRegionsOnLoad"
-      />
+      <h2 class="mb-4" v-if="hasTellUsAboutInstanceHeading">
+        1. Tell us about Instance #{{ instanceNumber }}
+      </h2>
 
       <ATATRadioGroup 
-        id="ClassificationLevelOptions"
-        v-if="classificationRadioOptions.length > 1"
+        v-if="envLocation === 'HYBRID' || !envLocation"
+        id="EnvironmentLocation"
         class="mb-8"
-        :items="classificationRadioOptions"
-        :value.sync="instanceData.classification_level"
-        :legend="classificationLegend"
-        :rules="[$validators.required(classificationErrorMessage)]"
-        :clearErrorMessages.sync="clearClassificationErrorMessages"
+        :items="envLocationOptions"
+        tooltipText="<strong>On-premises environments</strong> are deployed in-house 
+          and within an enterprise IT infrastructure. <strong>Cloud environments</strong> 
+          are hosted by a third-party provider in an off-site, cloud-based server."
+        :value.sync="instanceData.instance_location"
+        legend="Where is this instance located?"
       />
 
-      <hr v-if="hasTellUsAboutInstanceHeading" />
+      <div v-show="instanceData.instance_location">
 
-      <h2 class="mb-4">
-        {{ hasTellUsAboutInstanceHeading ? "2." : "1." }}
-        Current usage and users
-      </h2>
+        <RegionsDeployedAndUserCount 
+          v-if="instanceData.instance_location === 'CLOUD'"
+          id="RegionsDeployed"
+          class="mb-8"
+          :hasTextFields="false"
+          groupLabelId="RegionsDeployedLabel"
+          groupLabel="In which region(s) is this instance deployed?"
+          :tooltipText="regionsDeployedTooltipText"
+          :optional="true"
+          @selectedRegionsUpdate="regionsDeployedUpdate"
+          :selectedDeployedRegionsOnLoad="selectedDeployedRegionsOnLoad"
+        />
 
-      <CurrentUsage 
-        class="mb-10"
-        :usageTrafficSpikeCauses.sync="usageTrafficSpikeCauses"
-        :currentUsageDescription.sync="instanceData.current_usage_description"
-        :eventSpikeDescription.sync="instanceData.traffic_spike_event_description"
-        :periodSpikeDescription.sync="instanceData.traffic_spike_period_description"
-      />
+        <ATATRadioGroup 
+          id="ClassificationLevelOptions"
+          v-if="classificationRadioOptions.length > 1"
+          class="mb-8"
+          :items="classificationRadioOptions"
+          :value.sync="instanceData.classification_level"
+          :legend="classificationLegend"
+          :rules="[$validators.required(classificationErrorMessage)]"
+          :clearErrorMessages.sync="clearClassificationErrorMessages"
+        />
 
-      <RegionsDeployedAndUserCount 
-        :hasTextFields="true"
-        id="RegionsUsers"
-        :optional="false"
-        groupLabelId="RegionUsersLabel"
-        groupLabel="Where are your users located?"
-        groupLabelHelpText="Enter the approximate number of users for each selected region."
-        @regionUserDataUpdate="regionUserDataUpdate"
-        :rules="[$validators.required('Select at least one region.'),]"
-        :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
-        :regionUsersOnLoad="regionUsersOnLoad"
-      />
+        <hr v-if="hasTellUsAboutInstanceHeading" />
 
-      <hr />
+        <h2 class="mb-4">
+          {{ hasTellUsAboutInstanceHeading ? "2." : "1." }}
+          Current usage and users
+        </h2>
 
-      <h2 class="mb-4">
-        {{ hasTellUsAboutInstanceHeading ? "3." : "2." }}
-        Instance configurations
-      </h2>
+        <CurrentUsage 
+          class="mb-10"
+          :usageTrafficSpikeCauses.sync="usageTrafficSpikeCauses"
+          :currentUsageDescription.sync="instanceData.current_usage_description"
+          :eventSpikeDescription.sync="instanceData.traffic_spike_event_description"
+          :periodSpikeDescription.sync="instanceData.traffic_spike_period_description"
+        />
 
-      <InstanceConfig
-        :instanceConfig.sync="instanceConfig"
-        :storageUnits="storageUnits"
-      />
+        <RegionsDeployedAndUserCount 
+          :hasTextFields="true"
+          id="RegionsUsers"
+          :optional="false"
+          groupLabelId="RegionUsersLabel"
+          groupLabel="Where are your users located?"
+          groupLabelHelpText="Enter the approximate number of users for each selected region."
+          @regionUserDataUpdate="regionUserDataUpdate"
+          :rules="[$validators.required('Select at least one region.'),]"
+          :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
+          :regionUsersOnLoad="regionUsersOnLoad"
+        />
 
-      <PerformanceTier 
-        :performanceTier.sync="performanceTier"
-        :storageUnits="storageUnits"
-      />
+        <hr />
 
-      <hr />
+        <h2 class="mb-4">
+          {{ hasTellUsAboutInstanceHeading ? "3." : "2." }}
+          Instance configurations
+        </h2>
 
-      <h2 class="mb-4">
-        {{ hasTellUsAboutInstanceHeading ? "4." : "3." }}
-        Pricing details
-      </h2>
+        <InstanceConfig
+          :instanceConfig.sync="instanceConfig"
+          :storageUnits="storageUnits"
+        />
 
-      <PricingDetails :pricingDetails.sync="pricingDetails" />
+        <PerformanceTier 
+          :performanceTier.sync="performanceTier"
+          :storageUnits="storageUnits"
+        />
 
-      <hr />
+        <hr />
 
-      <h2 class="mb-4">
-        {{ hasTellUsAboutInstanceHeading ? "5." : "4." }}
-        Additional information 
-        <span class="text-base font-weight-400">(Optional)</span>
-      </h2>
+        <h2 class="mb-4">
+          {{ hasTellUsAboutInstanceHeading ? "4." : "3." }}
+          Pricing details
+        </h2>
 
-      <AdditionalInfo :additionalInfo.sync="instanceData.additional_information" />
+        <PricingDetails :pricingDetails.sync="pricingDetails" />
 
+        <hr />
+
+        <h2 class="mb-4">
+          {{ hasTellUsAboutInstanceHeading ? "5." : "4." }}
+          Additional information 
+          <span class="text-base font-weight-400">(Optional)</span>
+        </h2>
+
+        <AdditionalInfo :additionalInfo.sync="instanceData.additional_information" />
+
+      </div>
     </div>
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -445,6 +447,9 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
+    await AcquisitionPackage.setValidateNow(true);
+
     try {
       if (this.hasChanged()) {
         CurrentEnvironment.setCurrentEnvironmentInstance(this.instanceData);

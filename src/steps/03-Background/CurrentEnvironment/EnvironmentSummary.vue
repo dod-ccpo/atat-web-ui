@@ -1,6 +1,6 @@
 
 <template>
-  <v-form class="mb-7">
+  <v-form ref="form" class="mb-7" lazy-validation>
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
