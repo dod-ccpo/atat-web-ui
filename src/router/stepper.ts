@@ -121,7 +121,8 @@ import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
-import UploadJAMRRDocuments from "@/steps/11-ReviewRequiredForms/UploadJAMRRDocuments.vue"
+import UploadJAMRRDocuments from "@/steps/11-ReviewRequiredForms/UploadJAMRRDocuments.vue";
+import ReadyToGeneratePackage from "@/steps/11-ReviewRequiredForms/ReadyToGeneratePackage.vue";
 
 import {
   AcorsRouteResolver,
@@ -243,7 +244,8 @@ export const routeNames = {
   EnvironmentSummary:"Environment_Summary",
   SecurityRequirements:"Security_Requirements",
   CrossDomain:"Cross_Domain",
-  UploadJAMRRDocuments:"JA_MRR_Documents"
+  UploadJAMRRDocuments:"JA_MRR_Documents",
+  ReadyToGeneratePackage:"Ready_To_Generate_Package"
 };
 
 /**
@@ -1036,6 +1038,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         component: UploadJAMRRDocuments,
         routeResolver: UploadJAMRRDocumentsRouteResolver
+      },
+      {
+        menuText: "Ready To Generate Package",
+        path:"ready-to-generate-package",
+        excludeFromMenu: true,
+        name: routeNames.ReadyToGeneratePackage,
+        completePercentageWeight: 0,
+        component: ReadyToGeneratePackage,
+        continueButtonText: "Generate my acquisition package"
       }
     ],
   },

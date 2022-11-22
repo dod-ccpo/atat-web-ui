@@ -57,7 +57,7 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
 export const UploadJAMRRDocumentsRouteResolver = (current: string): string => {
   return !evalPlanRequired() 
     ? routeNames.UploadJAMRRDocuments 
-    : routeNames.ReviewRequiredForms;
+    : routeNames.ReadyToGeneratePackage;
 };
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
