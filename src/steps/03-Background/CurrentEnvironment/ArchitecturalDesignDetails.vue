@@ -1,5 +1,5 @@
 <template>
-  <form ref="form" lazy-validation>
+  <v-form ref="form" lazy-validation>
     <ArchitecturalDesignForm
       :isDOW="false"
       :statementArchitecturalDesign.sync="currEnvDTO.statement_architectural_design"
@@ -7,7 +7,7 @@
       :dataClassificationsImpactLevels.sync="currEnvDTO.data_classifications_impact_levels"
       :externalFactors.sync="currEnvDTO.external_factors_architectural_design"
     />
-  </form>
+  </v-form>
 </template>
 
 <script lang="ts">
