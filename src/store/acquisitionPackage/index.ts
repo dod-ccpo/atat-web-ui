@@ -23,7 +23,6 @@ import {
   CurrentContractDTO,
   FairOpportunityDTO,
   EvaluationPlanDTO,
-  GFEOverviewDTO,
   RequirementsCostEstimateDTO,
   OrganizationDTO,
   PeriodDTO,
@@ -54,7 +53,6 @@ export const StoreProperties = {
   Organization: "organization",
   FairOpportunity: "fairOpportunity",
   EvaluationPlan: "evaluationPlan",
-  GFEOverview:"gfeOverview",
   PeriodOfPerformance: "periodOfPerformance",
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
@@ -178,16 +176,6 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
   }
 }
 
-const initialGFE = () => {
-  return {
-    dpas_unit_identification_code: "",
-    gfe_gfp_furnished: "",
-    dpas_custodian_number: "",
-    property_accountable: "",
-    property_custodian_name: "",
-  };
-};
-
 const initialPeriodOfPerformance = ()=> {
 
   return     { 
@@ -271,7 +259,6 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
       evaluationPlan: store.evaluationPlan,
-      gfeOverview: store.gfeOverview,
       periods: store.periods,
       periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
@@ -328,7 +315,6 @@ export class AcquisitionPackageStore extends VuexModule {
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periods: string | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
-  gfeOverview: GFEOverviewDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
@@ -509,12 +495,6 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.evaluationPlan || initialEvaluationPlan();
   }
 
-
-  @Mutation
-  public setGFEOverview(value: GFEOverviewDTO): void {
-    this.gfeOverview = value;
-  }
-
   @Mutation
   public setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): void {
     this.requirementsCostEstimate = this.requirementsCostEstimate
@@ -565,7 +545,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.periodOfPerformance = sessionData.periodOfPerformance;
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.sensitiveInformation = sessionData.sensitiveInformation;
-    this.gfeOverview = sessionData.gfeOverview;
     this.classificationLevel = sessionData.classificationLevel;
     this.currentEnvironment = sessionData.currentEnvironment;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
@@ -613,7 +592,6 @@ export class AcquisitionPackageStore extends VuexModule {
             surge_capacity: ""
           });
 
-          this.setGFEOverview(initialGFE());
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
@@ -669,7 +647,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.CurrentContract]: api.currentContractTable,
     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
     // [StoreProperties.EvaluationPlan]: api.evaluationPlanTable, // FUTURE TICKET
-    [StoreProperties.GFEOverview]: api.gfeOverviewTable,
     [StoreProperties.Organization]: api.organizationTable,
     [StoreProperties.Periods]: api.periodTable,
     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
@@ -686,7 +663,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.CurrentContract]: "current_contract",
     [StoreProperties.FairOpportunity]: "fair_opportunity",
     [StoreProperties.EvaluationPlan]: "evaluation_plan",
-    [StoreProperties.GFEOverview]: "gfe_overview",
     [StoreProperties.Organization]:  "organization",
     [StoreProperties.ProjectOverview]: "project_overview",
     [StoreProperties.PeriodOfPerformance]: "period_of_performance",
