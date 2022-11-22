@@ -38,4 +38,12 @@ module.exports = {
   automationCapabilityCheckBox: "#Checkbox_AutomationCapability",
   customAssessmentCheckBox: "#Checkbox_CustomAssessmentOption",
   noOtherBtn: "#NoOtherAssessmentAreas",
+  //What differentiator(s) should be used to distinguish between technical proposals?
+  levelComplexityCheckbox: "#Checkbox_LevelOfComplexity",
+  capGain:"#Checkbox_CapabilityGained",
+  differentitorsError: "#DifferentiatorOptions  .field-error",
+  otherCheckboxOption: "#Checkbox_CustomDifferentiators",
+  customDifferentiatorSection: "#CustomDifferentiatorEntry",
+  custom0SpecTextboxError: "#CustomSpec0_text_field_control .field-error",
+  customDifferentiator1Spec:"#CustomDifferentiatorEntry .px-4"
 }
