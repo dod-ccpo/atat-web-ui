@@ -418,6 +418,11 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public getInitialFairOpportunity() {
+    return initialFairOpportunity();
+  }
+
+  @Mutation
   public setContact(saveData: { data: ContactDTO; type: string }): void {
     const isCor = saveData.type === "COR";
     const dataKey =
@@ -526,6 +531,11 @@ export class AcquisitionPackageStore extends VuexModule {
     this.currentEnvironment = this.currentEnvironment
       ? Object.assign(this.currentEnvironment, value)
       : value;
+  }
+
+  @Action({rawError: true})
+  public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
+    return this.fairOpportunity;
   }
 
   @Action({rawError: true})
