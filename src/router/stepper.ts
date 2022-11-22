@@ -704,7 +704,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ],
   },
   {
-    stepNumber: "07",
+    stepNumber: "06",
     completePercentageWeight: 7,
     menuText: "Other Contract Considerations",
     path: "/conflict-of-interest",
@@ -748,7 +748,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
 
   {
-    stepNumber: "08",
+    stepNumber: "07",
     completePercentageWeight: 7,
     menuText: "Standards and Compliance",
     path: "/personally-identifiable-information",
@@ -819,7 +819,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    stepNumber: "09",
+    stepNumber: "08",
     completePercentageWeight: 7,
     menuText: "Financial Details",
     path: "/requirements-cost-estimate",
@@ -981,7 +981,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    stepNumber: "10",
+    stepNumber: "9",
     completePercentageWeight: 7,
     menuText: "Review Required Forms",
     path: "/review-required-forms",
