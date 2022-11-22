@@ -1,4 +1,5 @@
 <template>
+  <v-form ref="form" lazy-validation>
   <div>
     <v-container fluid class="container-max-width">
       <v-row>
@@ -37,9 +38,10 @@
       </v-row>
     </v-container>
   </div>
+  </v-form>
 </template>
 <script lang="ts">
-
+import LoadOnEnter from "@/mixins/loadOnEnter";
 import { Component, Mixins } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -97,7 +99,6 @@ private hasChanged(): boolean {
 }
 
 protected async saveOnLeave(): Promise<boolean> {
-  console.log(this.currentData, this.savedData)
   try {
     if (this.hasChanged()) {
       classificationRequirements.setSecurityRequirements(this.currentData)
@@ -113,7 +114,7 @@ public openSlideoutPanel(e: Event): void {
     SlideoutPanel.openSlideoutPanel(opener.id);
   }
 }
-public async loadOnEnter(): Promise<void> {
+public async loadOnEnter(): Promise<boolean> {
   this.storedClassification = classificationRequirements.selectedClassificationLevels;
   this.storedClassification.forEach((classification) =>{
     if(classification.classification === "TS"){
@@ -134,7 +135,9 @@ public async loadOnEnter(): Promise<void> {
       }
     })
   }
+  return true;
 }
+
 
 public async mounted(): Promise<void> {
   const slideoutPanelContent: SlideoutPanelContent = {

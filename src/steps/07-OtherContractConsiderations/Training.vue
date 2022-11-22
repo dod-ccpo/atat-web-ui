@@ -1,31 +1,33 @@
 <template>
-  <v-container fluid class="container-max-width">
-    <v-row>
-      <v-col class="col-12">
-        <h1 class="page-header mb-3">
-          Do you require any specific training courses from your contractors?
-        </h1>
-        <div class="copy-max-width">
-          <p class="mb-10">
-            Contractor employees may be required to take periodic mandatory training courses
-            provided through the agency, such as records management training and other training
-            required by statute, regulation, DoD, or local (e.g. DISA) policy. If your project
-            requires specific training, we’ll gather details about these courses next.
-          </p>
-          <ATATRadioGroup
-            class="copy-max-width mb-10 max-width-740"
-            id="TrainingOptions"
-            :card="true"
-            :items="trainingOptions"
-            :value.sync="selectedOption"
-            :rules="[$validators.required('Please select an option')]"
-            width="180"
+  <v-form ref="form" lazy-validation>
+    <v-container fluid class="container-max-width">
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+            Do you require any specific training courses from your contractors?
+          </h1>
+          <div class="copy-max-width">
+            <p class="mb-10">
+              Contractor employees may be required to take periodic mandatory training courses
+              provided through the agency, such as records management training and other training
+              required by statute, regulation, DoD, or local (e.g. DISA) policy. If your project
+              requires specific training, we’ll gather details about these courses next.
+            </p>
+            <ATATRadioGroup
+              class="copy-max-width mb-10 max-width-740"
+              id="TrainingOptions"
+              :card="true"
+              :items="trainingOptions"
+              :value.sync="selectedOption"
+              :rules="[$validators.required('Please select an option')]"
+              width="180"
 
-          />
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+            />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">

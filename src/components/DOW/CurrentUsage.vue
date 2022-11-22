@@ -19,6 +19,9 @@
       groupLabelId="SpikeCauseGroupLabel"
       :items="spikeCauses"
       :value.sync="_usageTrafficSpikeCauses"
+      :rules="[
+        $validators.required('Select at least one type of spike in usage.'),
+      ]"
     />
 
     <ATATTextField

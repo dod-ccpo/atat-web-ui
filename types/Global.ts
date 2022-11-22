@@ -129,8 +129,8 @@ interface StepperRouteBase {
     additionalButtons?: AdditionalButton[];
     backButtonText?: string;
     continueButtonText?: string;
-    lastStep?: boolean;
-    parentName?: string;
+    stepCompleteOnEnter?: string;
+    stepCompleteOnLeave?: string;
 }
 
 /**
