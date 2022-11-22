@@ -70,7 +70,7 @@ export default class ArchitectureDesignDetails extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
 
-    AcquisitionPackage.setValidateNow(true);
+    await AcquisitionPackage.setValidateNow(true);
 
     try {
       if (this.hasChanged()) {
