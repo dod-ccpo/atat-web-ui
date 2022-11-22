@@ -47,7 +47,7 @@ describe("Test suite: OCC: Conflict of Interest substep", () => {
     cy.radioBtn(occ.coiYesRadioOption, "YES").not("[disabled]");
     cy.radioBtn(occ.coiNoRadioOption, "NO").not("[disabled]").click({ force: true })
       .then(() => {
-        cy.findElement(occ.explanationLabelText).not("to.be.visible");
+        cy.findElement(occ.explanationLabelText).should("not.exist");
       });
     
   });
