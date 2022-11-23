@@ -127,6 +127,9 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   private uploadedFiles: uploadingFile[] = [];
   public removeAll = false;
 
+  private jaTemplateUrl = "";
+  private mrrTemplateUrl = "";
+
   public exception_to_fair_opportunity = "";
 
   private savedData: Record<string, string> = {
@@ -208,23 +211,11 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
     this.uploadedFiles = [...uploadedFiles];
   }
 
-  private jaTemplateUrl = "";
-  private mrrTemplateUrl = "";
-
   protected async saveOnLeave(): Promise<boolean> {
 
     AcquisitionPackage.setValidateNow(true);
 
     return true;
-  }
-
-  public async loadOnEnter(): Promise<void> {
-    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('ja');
-    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('mrr');
-  }
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -236,6 +227,8 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
         exception_to_fair_opportunity: storeData.exception_to_fair_opportunity
       }
     }
+    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('ja');
+    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('mrr');
   }
 
   public async mounted(): Promise<void> {
