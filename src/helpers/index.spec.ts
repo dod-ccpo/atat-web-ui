@@ -119,6 +119,7 @@ describe("testing src/helpers/index.ts", () => {
       {
         label: "Test Agency (TA)",
         title: "TEST AGENCY",
+        sys_id: "123asd5763",
         acronym: "TA",
         // eslint-disable-next-line camelcase
         css_id: 999999999
@@ -126,7 +127,7 @@ describe("testing src/helpers/index.ts", () => {
     ]
     const agencySelectList = convertAgencyRecordToSelect(agencyRecords)
     expect(agencySelectList).toEqual([
-      { text: agencyRecords[0].label, value: agencyRecords[0].title}
+      { text: agencyRecords[0].label, value: agencyRecords[0].sys_id}
     ])
   })
   it("convertSystemChoiceToSelect() - transform choice records to Select input", async () => {
