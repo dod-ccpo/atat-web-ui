@@ -16,7 +16,10 @@
             </p>
            <AnticipatedDurationandUsage
             type="requirement"
-            :dataObject=""
+            :dataObject="domainInfo"
+            :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+            :isPeriodsDataMissing="isPeriodsDataMissing"
+            index="0"
            />
           </div>
 
@@ -32,12 +35,43 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import { Component, Mixins } from "vue-property-decorator";
 import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationandUsage.vue";
+import {
+  Checkbox,
+  CrossDomainSolution,
+} from "../../../types/Global";
+import { createPeriodCheckboxItems } from "@/helpers";
+import Periods from "@/store/periods";
 @Component({
   components: {AnticipatedDurationandUsage}
 })
 export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
-  private domainInfo =
+  private isPeriodsDataMissing = false;
+  private domainInfo: CrossDomainSolution = {
+    isCrossDomain: "",
+    solutionType:[{
+      type: "",
+      dataQuantity: 0
+    }],
+    projectedFileStream:"",
+    classificationInstance: {
+      sysId: "",
+      impactLevel: "", // for sorting
+      classificationLevelSysId: "",
+      anticipatedNeedUsage: "",
+      entireDuration: "",
+      selectedPeriods: [{
+        label: "",
+        sysId: "",
+      }],
+      labelLong: "",
+      labelShort: "",
+    }
+  }
+  public availablePeriodCheckboxItems: Checkbox[] = [];
   protected async loadOnEnter(): Promise<boolean> {
+    const periods = await Periods.loadPeriods();
+    this.isPeriodsDataMissing = (periods && periods.length === 0);
+    this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
     return true;
   }
 

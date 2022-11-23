@@ -20,19 +20,20 @@
       class="copy-max-width mb-10 mt-0"
       ref="NeededForEntireDuration"
       :id="'EntireDuration_' + (index + 1)"
-      :legend="'Is this ' + requirementOrInstance +
-        ' needed for the entire duration of your task order?'"
-      :items="entureDurationOptions"
-      :value.sync="_entireDuration"
+      :legend="durationLabel ||
+      `Do you need this ${type} for the entire duration of your task order?`"
+      :items="entireDurationOptions"
+      :value.sync="_dataObject.entireDuration"
+      :tooltipText="toolTip"
       :rules="[
         $validators.required(
-          'Please select an option to specify your ' + requirementOrInstance + '’s duration.'
+          'Please select an option.'
         )
       ]"
     />
-    <div v-if="_entireDuration === 'NO'">
+    <div v-if="_dataObject.entireDuration === 'NO'">
       <p :id="'PeriodsLabel_' + (index + 1)" class="_checkbox-group-label">
-        In which base and/or option periods do you need this {{ requirementOrInstance }}?
+        In which base and/or option periods do you need this {{ type }}?
       </p>
       <ATATCheckboxGroup
         :id="'PeriodsCheckboxes_' + (index + 1)"
@@ -43,8 +44,7 @@
         :card="false"
         :disabled="isPeriodsDataMissing"
         :rules="[
-          $validators.required('Please select at least one base or option period' +
-            ' to specify your ' + requirementOrInstance + '’s duration level.')
+          $validators.required('Please select at least one base or option period.')
         ]"
         class="copy-max-width"
       />
@@ -72,44 +72,75 @@
 </div>
 </template>
 
-<EntireDuration
-  :entireDuration.sync="_computeData.entireDuration"
-  :periodsNeeded.sync="_computeData.periodsNeeded"
-  :isPeriodsDataMissing="isPeriodsDataMissing"
-  :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-  :index="0"
-  requirementOrInstance="instance"
-/>
-
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import DescriptionOfNeed from "@/components/DOW/DescriptionOfNeed.vue";
-import EntireDuration from "@/steps/05-PerformanceRequirements/DOW/EntireDuration.vue";
-import { OtherServiceOfferingData } from "../../../types/Global";
+import {
+  Checkbox,
+  CrossDomainSolution,
+  OtherServiceOfferingData,
+  RadioButton
+} from "../../../types/Global";
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import {routeNames} from "@/router/stepper";
+
 
 @Component({
   components: {
-    DescriptionOfNeed,
-    EntireDuration
+    ATATTextArea,
+    ATATRadioGroup,
+    ATATCheckboxGroup,
+    ATATAlert,
   }
 })
 
 export default class AnticipatedDurationandUsage extends Vue {
-  @PropSync("dataObject")public _dataObject!: OtherServiceOfferingData;
+  @PropSync("dataObject")public _dataObject!: OtherServiceOfferingData | CrossDomainSolution;
+  @PropSync("periodsNeeded") public _periodsNeeded?: string[];
   @Prop() private index!: string;
   @Prop({required: true}) private type!: string;
   @Prop({default: "Statement of objectives for the anticipated need or usage"})
   private label?: string;
+  @Prop({default: ""})
+  private durationLabel?: string;
   @Prop({default: "Use vendor-neutral language. This will be added to your" +
       " Description of Work, so avoid including any company names or vendor-unique" +
       " brand, product, or titles that could impact full and open competition."})
   private description?: string;
+  @Prop({default: "Performance period details will be used to generate a cost estimate for" +
+      " this service later."})
+  private toolTip?: string;
   @Prop({default: "800"}) private maxCharCount?: string;
+  @Prop() public isPeriodsDataMissing!: boolean;
+  @Prop() public availablePeriodCheckboxItems!: Checkbox[];
 
+  public routeNames = routeNames;
 
+  public entireDurationOptions: RadioButton[] = [
+    {
+      id: "Yes",
+      label: "Yes",
+      value: "YES",
+    },
+    {
+      id: "No",
+      label: "No",
+      value: "NO",
+    },
+  ];
+
+  // when user selects "YES", remove periods from needed array.
+  // when user selects "NO", pre-select base period
+  @Watch("_entireDuration")
+  public entireDurationChanged(newVal: string): void {
+    this._periodsNeeded = newVal === "NO" && this.availablePeriodCheckboxItems[0].value !== ""
+      ? [this.availablePeriodCheckboxItems[0].value]
+      : [];
+  }
 
 }
 
