@@ -82,6 +82,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import {
   Checkbox,
   CrossDomainSolution,
+  DOWClassificationInstance,
   OtherServiceOfferingData,
   RadioButton
 } from "../../../types/Global";
@@ -101,7 +102,7 @@ import {routeNames} from "@/router/stepper";
 })
 
 export default class AnticipatedDurationandUsage extends Vue {
-  @PropSync("dataObject")public _dataObject!: OtherServiceOfferingData | CrossDomainSolution;
+  @PropSync("dataObject")public _dataObject!: DOWClassificationInstance;
   @Prop() private index!: string;
   @Prop({required: true}) private type!: string;
   @Prop({default: "Statement of objectives for the anticipated need or usage"})
@@ -140,7 +141,7 @@ export default class AnticipatedDurationandUsage extends Vue {
   @Watch("dataObject.entireDuration")
   public entireDurationChanged(newVal: string): void {
     debugger
-    this._dataObject.periodsNeeded = newVal === "NO" &&
+    this._dataObject.selectedPeriods = newVal === "NO" &&
     this.availablePeriodCheckboxItems[0].value !== "" ? [this.availablePeriodCheckboxItems[0].value]
       : [];
   }

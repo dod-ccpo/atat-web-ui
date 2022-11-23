@@ -16,7 +16,7 @@
             </p>
            <AnticipatedDurationandUsage
             type="requirement"
-            :dataObject.sync="domainInfo"
+            :dataObject.sync="domainInfo.classificationInstance"
             :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
             :isPeriodsDataMissing="isPeriodsDataMissing"
             index="0"
@@ -38,6 +38,7 @@ import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationand
 import {
   Checkbox,
   CrossDomainSolution,
+  DOWClassificationInstance,
 } from "../../../types/Global";
 import { createPeriodCheckboxItems } from "@/helpers";
 import Periods from "@/store/periods";
