@@ -30,21 +30,23 @@
                         <span class="">
                           Download Word templates for the J&amp;A and MRR below.<br/><br/>
                           <v-row>
-                            <v-col cols="4">
+                            <v-col cols="5">
                               <v-btn
-                                class="v-btn primary"
-                                role="button"
-                                @click="downloadTemplateForms('ja')"
+                                type="button"
+                                class="v-btn primary no-text-decoration"
+                                width="250"
+                                :href="jaTemplateUrl"
                               >
                                 Download J&amp;A Template &nbsp;
                                 <v-icon class="v-btn--icon">download</v-icon>
                               </v-btn>
                             </v-col>
-                            <v-col cols="8">
+                            <v-col cols="7">
                               <v-btn
-                                class="v-btn primary ml-4"
-                                role="button"
-                                @click="downloadTemplateForms('mrr')"
+                                type="button"
+                                width="250"
+                                class="v-btn primary no-text-decoration"
+                                :href="mrrTemplateUrl"
                               >
                                 Download MRR Template &nbsp;
                                 <v-icon class="v-btn--icon">download</v-icon>
@@ -96,6 +98,9 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
 
+  private jaTemplateUrl = "";
+  private mrrTemplateUrl = "";
+
   protected async saveOnLeave(): Promise<boolean> {
 
     AcquisitionPackage.setValidateNow(true);
@@ -103,8 +108,13 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
     return true;
   }
 
-  private async downloadTemplateForms(type: string): Promise<void> {
-    console.log("Waiting for links");
+  public async loadOnEnter(): Promise<void> {
+    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('ja');
+    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('mrr');
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 }
 </script>
