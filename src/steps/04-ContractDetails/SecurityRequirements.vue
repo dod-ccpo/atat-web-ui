@@ -55,6 +55,7 @@ import SecurityRequirementsForm from "@/components/DOW/SecurityRequirementsForm.
 import SlideoutPanel from "@/store/slideoutPanel";
 import SecurityRequirementsLearnMore
   from "@/steps/04-ContractDetails/SecurityRequirementsLearnMore.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components: {
     SecurityRequirementsForm,
@@ -99,6 +100,7 @@ private hasChanged(): boolean {
 }
 
 protected async saveOnLeave(): Promise<boolean> {
+  await AcquisitionPackage.setValidateNow(true);
   try {
     if (this.hasChanged()) {
       classificationRequirements.setSecurityRequirements(this.currentData)
