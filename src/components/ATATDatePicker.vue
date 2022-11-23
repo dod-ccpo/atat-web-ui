@@ -90,6 +90,7 @@ import Inputmask from "inputmask";
 import { add, format, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -100,7 +101,11 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 export default class ATATDatePicker extends Vue {
   // refs
   $refs!: {
-    atatDatePicker: Vue & { errorBucket: string[]; errorCount: number };
+    atatDatePicker: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number; 
+      validate: () => boolean;
+    };
     atatDatePickerMenu: Vue & {
       save: (selectedDate: string) => Record<string, never>;
     };
@@ -279,6 +284,16 @@ export default class ATATDatePicker extends Vue {
    */
   private toggleMenu(): void {
     this.menu = !this.menu;
+  }
+
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if(!this.$refs.atatDatePicker.validate())
+      this.setErrorMessage();
   }
 
   /**

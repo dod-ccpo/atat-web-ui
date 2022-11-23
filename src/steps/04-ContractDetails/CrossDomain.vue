@@ -1,4 +1,5 @@
 <template>
+  <v-form ref="form" lazy-validation>
   <div>
     <v-container fluid class="container-max-width">
       <v-row>
@@ -13,23 +14,36 @@
               will be applied to any performance requirements that you specify. If you need more
               than one level, we will walk you through what is required within each level later.
             </p>
-           <AnticipatedDurationandUsage />
+           <AnticipatedDurationandUsage
+            type="requirement"
+            :dataObject=""
+           />
           </div>
 
         </v-col>
       </v-row>
     </v-container>
   </div>
+  </v-form>
 </template>
 <script lang="ts">
-import Vue from "vue";
+import LoadOnEnter from "@/mixins/loadOnEnter";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationandUsage.vue";
 @Component({
   components: {AnticipatedDurationandUsage}
 })
-export default class CrossDomain extends Vue {
+export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
+  private domainInfo =
+  protected async loadOnEnter(): Promise<boolean> {
+    return true;
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    return true;
+  }
 }
 </script>
 

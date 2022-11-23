@@ -1,52 +1,56 @@
 <template>
-  <div>
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header mb-3">
-            What classification level(s) will be required for your cloud resources and/or services?
-          </h1>
-          <div class="copy-max-width">
-            <p class="mb-10" id="IntroP">
-              In the next section, we will dive into the types of resources, tools, and services
-              that you need for this acquisition. The classification level(s) that you select below
-              will be applied to any performance requirements that you specify. If you need more
-              than one level, we will walk you through what is required within each level later.
-            </p>
-            <p id="SelectMessage">
-              Select all that apply to your project.
-            </p>
-          </div>
-          <ATATCheckboxGroup
-            id="ClassificationLevelCheckboxes"
-            :value.sync="selectedOptions"
-            :items="checkboxItems"
-            name="checkboxes"
-            :card="false"
-            class="copy-max-width"
-            :rules="[
-              $validators.required('Please select at least one classification level.')
-            ]"
-          />
-          <ATATAlert
-            id="ClassificationRequirementsAlert"
-            v-show="isIL6Selected === 'true'"
-            type="info"
-            class="copy-max-width my-10"
-          >
-            <template v-slot:content>
-              <p class="mb-0">
-                <strong> You DO NOT need to complete a DD Form 254,
-                DoD Contract Security Classification Specification, for this task order.</strong>
-                JWCC provides a DD254 at the IDIQ level that covers access to all classification
-                levels for the task orders ordered within it.
+  <v-form ref="form" lazy-validation>
+    <div>
+      <v-container fluid class="container-max-width">
+        <v-row>
+          <v-col class="col-12">
+            <h1 class="page-header mb-3">
+              What classification level(s) will be required 
+              for your cloud resources and/or services?
+            </h1>
+            <div class="copy-max-width">
+              <p class="mb-10" id="IntroP">
+                In the next section, we will dive into the types of resources, tools, and services
+                that you need for this acquisition. The classification level(s) that you 
+                select below will be applied to any performance requirements that you specify. 
+                If you need more than one level, 
+                we will walk you through what is required within each level later.
               </p>
-            </template>
-          </ATATAlert>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+              <p id="SelectMessage">
+                Select all that apply to your project.
+              </p>
+            </div>
+            <ATATCheckboxGroup
+              id="ClassificationLevelCheckboxes"
+              :value.sync="selectedOptions"
+              :items="checkboxItems"
+              name="checkboxes"
+              :card="false"
+              class="copy-max-width"
+              :rules="[
+                $validators.required('Please select at least one classification level.')
+              ]"
+            />
+            <ATATAlert
+              id="ClassificationRequirementsAlert"
+              v-show="isIL6Selected === 'true'"
+              type="info"
+              class="copy-max-width my-10"
+            >
+              <template v-slot:content>
+                <p class="mb-0">
+                  <strong> You DO NOT need to complete a DD Form 254,
+                  DoD Contract Security Classification Specification, for this task order.</strong>
+                  JWCC provides a DD254 at the IDIQ level that covers access to all classification
+                  levels for the task orders ordered within it.
+                </p>
+              </template>
+            </ATATAlert>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
+  </v-form>
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
@@ -61,6 +65,7 @@ import { ClassificationLevelDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
+import AcquisitionPackage from '@/store/acquisitionPackage';
 
 @Component({
   components: {
@@ -107,6 +112,8 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
+
     try {
       if (this.hasChanged()) {
         classificationRequirements.setSelectedClassificationLevels(this.currentData)

@@ -32,9 +32,5 @@ export default class DescriptionOfNeed extends Vue {
   @Prop() public index!: number;
   @Prop({ default: "requirement" }) public requirementOrInstance?: string;
 
-  public description = "Use vendor-neutral language. This will be added to your" +
-    " Description of Work, so avoid including any company names or vendor-unique" +
-    " brand, product, or titles that could impact full and open competition."
-}
 
 </script>

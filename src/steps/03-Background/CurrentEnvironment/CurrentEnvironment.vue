@@ -1,30 +1,32 @@
 <template>
-  <v-container class="container-max-width" fluid>
-    <v-row>
-      <v-col class="col-12">
-        <h1 class="page-header mb-3">
-          Do you have a current environment to rehost?
-        </h1>
-        <div class="copy-max-width">
-          <p class="mb-8">
-            If you select “Yes” below, we’ll gather details about your current environment next.
-            This info will be included in your Description of Work to provide CSPs with a better
-            understanding of what currently exists. This environment may not align with your current
-            needs that you outlined in Contract Details.
-          </p>
-          <ATATRadioGroup
-            id="ExistingEnvOptions"
-            :card="true"
-            :items="existingEnvOption"
-            :rules="[$validators.required('Please select an option')]"
-            :value.sync="currentEnvironmentExists"
-            class="copy-max-width mb-10 max-width-740"
-            width="380"
-          />
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-form ref="form" lazy-validation>
+    <v-container class="container-max-width" fluid>
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+            Do you have a current environment to rehost?
+          </h1>
+          <div class="copy-max-width">
+            <p class="mb-8">
+              If you select “Yes” below, we’ll gather details about your current environment next.
+              This info will be included in your Description of Work to provide CSPs with a better
+              understanding of what currently exists. This environment may not align with your 
+              current needs that you outlined in Contract Details.
+            </p>
+            <ATATRadioGroup
+              id="ExistingEnvOptions"
+              :card="true"
+              :items="existingEnvOption"
+              :rules="[$validators.required('Please select an option')]"
+              :value.sync="currentEnvironmentExists"
+              class="copy-max-width mb-10 max-width-740"
+              width="380"
+            />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 <script lang="ts">
 
