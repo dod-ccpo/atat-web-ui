@@ -60,14 +60,14 @@
                 <p>
                   We recommend downloading the
                   <a 
-                    href="#"
+                    :href="jaTemplateUrl"
                     target="_blank" class="_text-link" id="JandATemplateLink"
                   >
                     <span>J&amp;A template</span>
                   </a>
                   and
                   <a 
-                    href="#"
+                    :href="mrrTemplateUrl"
                     target="_blank" class="_text-link" id="MRRTemplateLink"
                   >
                     <span>MRR template</span>
@@ -111,6 +111,9 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 export default class Exceptions extends Mixins(SaveOnLeave) {
   private selectedException = "";
+
+  private jaTemplateUrl = "";
+  private mrrTemplateUrl = "";
   
   private get currentData(): FairOpportunityDTO {
     return {
@@ -135,6 +138,9 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity;
     }
+
+    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('ja');
+    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('mrr');
   }
 
   protected async saveOnLeave(): Promise<boolean> {
