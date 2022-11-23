@@ -75,6 +75,7 @@ import DOWSummary
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
+import Travel from "@/steps/07-OtherContractConsiderations/Travel.vue";
 import Training from "../steps/07-OtherContractConsiderations/Training.vue";
 import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
 
@@ -187,6 +188,7 @@ export const routeNames = {
   ContractType: "Contract_Type",
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
+  Travel: "Travel",
   Training: "Training",
   TrainingCourses: "Training_Courses",
   PropertyDetails: "Property_Details",
@@ -731,6 +733,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.PackagingPackingAndShipping,
         component: PackagingPackingAndShipping,
+      },
+      {
+        name: routeNames.Travel,
+        menuText: "Travel",
+        path: "travel",
+        completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.Travel,
+        component: Travel
       },
       {
         name: routeNames.Training,
