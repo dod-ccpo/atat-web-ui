@@ -600,5 +600,5 @@ export interface CrossDomainSolution {
     dataQuantity: number
   }],
   projectedFileStream:string,
-  classificationInstance: DOWClassificationInstance
+  classificationInstance: DOWClassificationInstance,
 }

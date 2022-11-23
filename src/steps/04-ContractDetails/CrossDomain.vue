@@ -16,7 +16,7 @@
             </p>
            <AnticipatedDurationandUsage
             type="requirement"
-            :dataObject="domainInfo"
+            :dataObject.sync="domainInfo"
             :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
             :isPeriodsDataMissing="isPeriodsDataMissing"
             index="0"

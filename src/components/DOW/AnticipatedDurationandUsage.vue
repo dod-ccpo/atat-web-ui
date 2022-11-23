@@ -12,7 +12,7 @@
     :rules="[
       $validators.required('Provide your statement of objective.'),
       $validators.maxLength(maxCharCount,
-       'Description is to be' + maxCharCount+ ' characters or less.')
+       'Description is to be ' + maxCharCount+ ' characters or less.')
     ]"
   />
   <div>
@@ -39,7 +39,7 @@
         :id="'PeriodsCheckboxes_' + (index + 1)"
         :aria-describedby="'PeriodsLabel_' + (index + 1)"
         ref="periodsCheckboxes"
-        :value.sync="_periodsNeeded"
+        :value.sync="selectedOptions"
         :items="availablePeriodCheckboxItems"
         :card="false"
         :disabled="isPeriodsDataMissing"
@@ -69,6 +69,8 @@
       </ATATAlert>
     </div>
   </div>
+  {{_dataObject}}
+
 </div>
 </template>
 
@@ -100,7 +102,6 @@ import {routeNames} from "@/router/stepper";
 
 export default class AnticipatedDurationandUsage extends Vue {
   @PropSync("dataObject")public _dataObject!: OtherServiceOfferingData | CrossDomainSolution;
-  @PropSync("periodsNeeded") public _periodsNeeded?: string[];
   @Prop() private index!: string;
   @Prop({required: true}) private type!: string;
   @Prop({default: "Statement of objectives for the anticipated need or usage"})
@@ -119,6 +120,7 @@ export default class AnticipatedDurationandUsage extends Vue {
   @Prop() public availablePeriodCheckboxItems!: Checkbox[];
 
   public routeNames = routeNames;
+  public selectedOptions = []
 
   public entireDurationOptions: RadioButton[] = [
     {
@@ -135,10 +137,11 @@ export default class AnticipatedDurationandUsage extends Vue {
 
   // when user selects "YES", remove periods from needed array.
   // when user selects "NO", pre-select base period
-  @Watch("_entireDuration")
+  @Watch("dataObject.entireDuration")
   public entireDurationChanged(newVal: string): void {
-    this._periodsNeeded = newVal === "NO" && this.availablePeriodCheckboxItems[0].value !== ""
-      ? [this.availablePeriodCheckboxItems[0].value]
+    debugger
+    this._dataObject.periodsNeeded = newVal === "NO" &&
+    this.availablePeriodCheckboxItems[0].value !== "" ? [this.availablePeriodCheckboxItems[0].value]
       : [];
   }
 
