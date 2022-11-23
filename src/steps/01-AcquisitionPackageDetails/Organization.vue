@@ -42,7 +42,7 @@
                 id="DisaOrg"
                 v-if="
                   selectedAgency &&
-                  selectedAgency.value === this.DisaOrgName
+                  selectedAgency.value === this.DisaOrgId
                 "
                 class="_input-max-width mb-10"
                 label="DISA Organization"
@@ -60,7 +60,7 @@
                 id="OrgName"
                 v-if="
                   selectedAgency &&
-                  selectedAgency.value !== this.DisaOrgName
+                  selectedAgency.value !== this.DisaOrgId
                 "
                 label="Organization name"
                 class="_input-max-width mb-10"
@@ -211,7 +211,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // data
   private emptySelectData: SelectData = { text: "", value: "" };
 
-  private DisaOrgName = "DEFENSE INFORMATION SYSTEMS AGENCY (DISA)";
+  private DisaOrgId = "fdd5245e875a9910bc86b889cebb35e3";
 
   private addressTypes = {
     USA: "US",
@@ -347,7 +347,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     zip_code: "",
     state: "",
     country: "",
-  } as Record<string, string>
+  } as Record<string, any>
 
 
   // watchers
@@ -364,7 +364,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     this.stateListData = ContactData.stateChoices;
     const storeData = await AcquisitionPackage
       .loadData<OrganizationDTO>({storeProperty: 
-      StoreProperties.Organization}) as Record<string, string>;
+      StoreProperties.Organization}) as Record<string, any>;
 
     if (storeData) {
       const keys: string[] = [
@@ -387,7 +387,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       });
 
       const selectedAgencyIndex = this.agencyData.findIndex(
-        (svc) => svc.value === storeData.agency
+        (svc) => svc.value === storeData.agency.value
       );
 
       if (selectedAgencyIndex > -1) {

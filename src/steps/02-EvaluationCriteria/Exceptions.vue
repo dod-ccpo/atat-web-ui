@@ -42,6 +42,48 @@
               :rules="[$validators.required('Please select an option')]"            
             />
 
+            <ATATAlert
+              id="JandAMMRWarningAlert"
+              type="warning"
+              :showIcon="false"
+              class="copy-max-width my-10"
+              v-if="selectedException !== '' && selectedException !== 'NO_NONE'"
+            >
+              <template v-slot:content>
+                <p>
+                  <strong>
+                    In order to submit your package to a contracting office, 
+                    you will need to complete a Justification &amp; Approval (J&amp;A) 
+                    and Sole Source Market Research Report (MRR).
+                  </strong>
+                </p>
+                <p>
+                  We recommend downloading the
+                  <a 
+                    :href="jaTemplateUrl"
+                    target="_blank" class="_text-link" id="JandATemplateLink"
+                  >
+                    <span>J&amp;A template</span>
+                  </a>
+                  and
+                  <a 
+                    :href="mrrTemplateUrl"
+                    target="_blank" class="_text-link" id="MRRTemplateLink"
+                  >
+                    <span>MRR template</span>
+                  </a>
+                  for reference as you work through this wizard. In the following sections, we'll 
+                  help you prepare some details required in these templates, but you will need 
+                  to complete them outside of DAPPS. At the end, you'll have an opportunity to 
+                  upload your signed J&amp;A and MRR for inclusion in your final package.
+                </p>
+                <p>
+                  NOTE: DISA does not require MRRs for Undefinitized Contract actions (UCAs), 
+                  Bridge contract actions, and for FAR 52.217-8 Option to Extend Services.
+                </p>
+              </template>
+            </ATATAlert>
+
           </v-col>
         </v-row>
       </v-container>
@@ -69,6 +111,9 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 export default class Exceptions extends Mixins(SaveOnLeave) {
   private selectedException = "";
+
+  private jaTemplateUrl = "";
+  private mrrTemplateUrl = "";
   
   private get currentData(): FairOpportunityDTO {
     return {
@@ -93,6 +138,9 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity;
     }
+
+    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('ja');
+    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('mrr');
   }
 
   protected async saveOnLeave(): Promise<boolean> {

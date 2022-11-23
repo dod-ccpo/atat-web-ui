@@ -19,10 +19,13 @@ export const toTitleCase = (string: string): string => {
 
 export const convertAgencyRecordToSelect =
     (data: AgencyDTO[]): SelectData[] => data.map(choice => {
-      const { label, title } = choice;
+      const { 
+        label, 
+        sys_id // eslint-disable-line camelcase 
+      } = choice;
       return {
         text: label,
-        value: title
+        value: sys_id // eslint-disable-line camelcase
       }
     });
 export const convertSystemChoiceToSelect =
