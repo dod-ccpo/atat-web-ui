@@ -76,7 +76,22 @@
             </div>
             <hr />
             <div class="copy-max-width">
-              
+              <h2>Upload your signed J&amp;A and MRR</h2>
+              <br/>
+              <ATATFileUpload
+                id="JAMRRFiles"
+                tabindex="-1"
+                :maxNumberOfFiles="100"
+                :maxFileSizeInBytes="maxFileSizeInBytes"
+                :validFileFormats="validFileFormats"
+                :multiplesAllowed="true"
+                :attachmentServiceName="attachmentServiceName"
+                :invalidFiles.sync="invalidFiles"
+                :validFiles.sync="uploadedFiles"
+                :removeAll.sync="removeAll"
+                @delete="onRemoveAttachment"
+                @uploaded="onUpload"
+              />
             </div>
           </v-col>
         </v-row>
@@ -87,9 +102,15 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
+import { invalidFile, uploadingFile } from "../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import {AttachmentDTO, FairOpportunityDTO} from "@/api/models";
+import { hasChanges } from "@/helpers";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
+import Attachments from "@/store/attachments";
+import {AttachmentServiceCallbacks} from "@/services/attachment";
 
 @Component({
   components: {
@@ -97,9 +118,98 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   },
 })
 export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
+  private fairOppDTO = AcquisitionPackage.getInitialFairOpportunity();
+
+  private attachmentServiceName = FAIR_OPPORTUNITY_TABLE;
+  private maxFileSizeInBytes = 1073741824;
+  private invalidFiles: invalidFile[] = [];
+  private validFileFormats = ["pdf"];
+  private uploadedFiles: uploadingFile[] = [];
+  public removeAll = false;
 
   private jaTemplateUrl = "";
   private mrrTemplateUrl = "";
+
+  public exception_to_fair_opportunity = "";
+
+  private savedData: Record<string, string> = {
+    exception_to_fair_opportunity: ""
+  };
+
+  private get currentData(): Record<string, string> {
+    return {
+      exception_to_fair_opportunity: this.exception_to_fair_opportunity
+    };
+  }
+
+  @Watch('selectedUpload')
+  private selectedUploadChange(): void{
+    this.uploadedFiles = []
+    this.removeAll = true
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async onUpload(file: uploadingFile): Promise<void> {
+    try {
+      if(file){
+        const attachmentSysId = file.attachmentId;
+        console.log(attachmentSysId);
+      }
+    } catch (error) {
+      console.error(`error completing file upload with id ${file?.attachmentId}`);
+    }
+  }
+
+  public async onRemoveAttachment(file: uploadingFile): Promise<void> {
+    try {
+      if (file) {
+        const key = this.attachmentServiceName;
+        const attachmentId = file.attachmentId;
+        const recordId = file.recordId;
+        await Attachments.removeAttachment({
+          key,
+          attachmentId,
+          recordId, // recordId is the "table_sys_id" in the context of ATTACHMENT API
+        });
+      }
+    } catch (error) {
+      console.error(`error removing attachment with id ${file?.attachmentId}`);
+    }
+  }
+
+  async loadAttachments(): Promise<void>{
+    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
+
+    console.log(attachments);
+
+    const uploadedFiles = attachments
+      .filter((attachment: AttachmentDTO) => {
+        return (
+          AcquisitionPackage.fairOpportunity?.sys_id === attachment.table_sys_id
+        )
+      })
+      .map((attachment: AttachmentDTO) => {
+        const file = new File([], attachment.file_name, {
+          lastModified: Date.parse(attachment.sys_created_on || "")
+        });
+        const upload: uploadingFile = {
+          attachmentId: attachment.sys_id || "",
+          fileName: attachment.file_name,
+          file: file,
+          created: file.lastModified,
+          progressStatus: 100,
+          link: attachment.download_link || "",
+          recordId: attachment.table_sys_id,
+          isErrored: false,
+          isUploaded: true
+        }
+        return upload;
+      });
+    this.uploadedFiles = [...uploadedFiles];
+  }
 
   protected async saveOnLeave(): Promise<boolean> {
 
@@ -109,12 +219,28 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.getFairOpportunity();
+    if (storeData) {
+      this.fairOppDTO = storeData;
+      this.exception_to_fair_opportunity = storeData.exception_to_fair_opportunity;
+      this.savedData = {
+        exception_to_fair_opportunity: storeData.exception_to_fair_opportunity
+      }
+    }
     this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('ja');
     this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('mrr');
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    await this.loadAttachments();
+
+    AttachmentServiceCallbacks.registerUploadCallBack(
+      FAIR_OPPORTUNITY_TABLE,
+      async () => {
+        await AcquisitionPackage.getFairOpportunity();
+      }
+    );
   }
 }
 </script>

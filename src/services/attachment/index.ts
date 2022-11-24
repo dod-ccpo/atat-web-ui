@@ -6,12 +6,14 @@ import { TABLENAME as FundingRequestFSFormTableName } from "@/api/fundingRequest
 import { TABLENAME as FundingRequestMIPRFormTableName } from "@/api/fundingRequestMIPRForm";
 import { TABLENAME as RequirementsCostEstimateTableName } from "@/api/requirementsCostEstimate";
 import { TABLENAME as CurrentEnvironmentTableName } from "@/api/currentEnvironment";
+import { TABLENAME as FairOpportunityTableName } from "@/api/fairOpportunity";
 import { FundingRequestFSAttachmentService } from "./fundingRequestFSForm";
 import { AttachmentServiceBase } from "./base";
 import { FundingRequestMIPRAttachmentService } from "./fundingRequestMIPRForm";
 import {RequirementsCostEstimateAttachmentService} from
   "@/services/attachment/reqCostEstimateSupportingDocs";
 import {CurrentEnvironmentDocumentService} from "@/services/attachment/currentEnvironmentDocument";
+import {FairOpportunityDocumentService} from "@/services/attachment/fairOpportunity";
 
 export const AttachmentServiceCallbacks = (() => {
   const uploadCallbacks: Record<
@@ -91,7 +93,8 @@ export const AttachmentServiceTypes = {
   FundingRequestFSForm: FundingRequestFSFormTableName,
   FundingRequestMIPRForm: FundingRequestMIPRFormTableName,
   RequirementsCostEstimate: RequirementsCostEstimateTableName,
-  CurrentEnvironment: CurrentEnvironmentTableName
+  CurrentEnvironment: CurrentEnvironmentTableName,
+  FairOpportunity: FairOpportunityTableName
 };
 export const AttachmentServiceFactory = (
   attachmentServiceType: string
@@ -123,6 +126,13 @@ export const AttachmentServiceFactory = (
       attachmentServiceType,
       CurrentEnvironmentTableName,
       api.currentEnvironmentTable
+    );
+
+  case AttachmentServiceTypes.FairOpportunity:
+    return new FairOpportunityDocumentService(
+      attachmentServiceType,
+      FairOpportunityTableName,
+      api.fairOpportunityTable
     );
   
   default:
