@@ -63,7 +63,7 @@
               </div>
               <div style="line-height: 1.4">
                 <div class="font-weight-700 font-size-14 text-base-darker">
-                  {{ currentUser.firstName }} {{ currentUser.lastName }}
+                  {{ currentUser.first_name }} {{ currentUser.last_name }}
                 </div>
                 <div class="font-size-12 text-base">
                   {{ currentUser.email }}
@@ -112,6 +112,8 @@ import { getUserInitials } from "@/helpers";
 
 import { getIdText } from "@/helpers";
 import AppSections from "@/store/appSections";
+import UserStore from "@/store/user";
+import { UserDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -120,12 +122,8 @@ import AppSections from "@/store/appSections";
 })
 export default class ATATTopNavBar extends Vue {
   // TEMP hardcoded current user
-  public currentUser: User = {
-    firstName: "Maria",
-    lastName: "Missionowner",
-    email: "maria.missionowner.civ@mail.mil",
-    role: "Manager",
-  };
+  /* eslint-disable camelcase */
+  public currentUser: UserDTO = UserStore.getInitialUser;
 
   public activeMenuItems: string[] = [];
 
@@ -163,6 +161,8 @@ export default class ATATTopNavBar extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const sectionData = await AppSections.getSectionData();
+
+    this.currentUser = await UserStore.getCurrentUser();
 
     this.topNavMenuItems = [
       {
@@ -217,7 +217,10 @@ export default class ATATTopNavBar extends Vue {
         ],
       },
       {
-        title: this.getUserInitials(this.currentUser),
+        title: this.getUserInitials({
+          firstName: this.currentUser.first_name,
+          lastName: this.currentUser.last_name
+        }),
         isProfile: true,
         align: "left",
         menu: [

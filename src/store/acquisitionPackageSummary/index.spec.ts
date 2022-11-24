@@ -179,6 +179,7 @@ describe("AcquisitionPackageSummary Store",
         "params": {
           "sysparm_fields": "package_status",
           "sysparm_query": "^package_statusINTASK_ORDER_AWARDED^project_overviewLIKEAlpha^" +
+            "mission_ownersLIKEe0c4c728875ed510ec3b777acebb356f^" +
             "mission_ownersISNOTEMPTY^ORDERBYproject_overview"
         }
       });

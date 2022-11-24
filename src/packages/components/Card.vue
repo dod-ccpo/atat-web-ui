@@ -121,8 +121,9 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
+import UserStore from "@/store/user";
 import {
-  AcquisitionPackageSummaryDTO,
+  AcquisitionPackageSummaryDTO, UserDTO,
 } from "@/api/models";
 @Component({
   components:{
@@ -137,7 +138,7 @@ export default class Card extends Vue {
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
   
-  public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
+  public currentUserSysId = "";
   public isOwner = false;
   public hasContributor = false;
   public isWaitingForSignatures = false
@@ -166,6 +167,8 @@ export default class Card extends Vue {
     contributors:"",
   }
 
+  private currentUser: UserDTO = UserStore.getInitialUser;
+
   public cardMenuItems: MeatballMenuItem[] = [];
 
 
@@ -188,7 +191,9 @@ export default class Card extends Vue {
     this.modifiedData.packageStatus = cardData.package_status?.display_value || ""
     this.modifiedData.projectOverview = cardData.project_overview?.display_value || ""
     this.modifiedData.secondaryReviewers = cardData.secondary_reviewers?.value || ""
-    this.modifiedData.createdBy = this.isOwner? "Maria Missionowner" : "Jack Ryan"
+    this.modifiedData.createdBy = this.isOwner 
+      ? this.currentUser.name as string 
+      : "Maria Missionowner "
     this.modifiedData.updated = cardData.sys_updated_on || ""
     this.modifiedData.contributors = cardData.contributors?.value || ""
   }
@@ -212,6 +217,8 @@ export default class Card extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    this.currentUser = await UserStore.getCurrentUser();
+    this.currentUserSysId = this.currentUser.sys_id as string;
     this.reformatData(this.cardData)
     if(this.cardData.package_status?.value === 'DRAFT'){
       this.cardMenuItems = [
