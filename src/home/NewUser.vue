@@ -58,10 +58,40 @@
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
-              <v-btn class="v-btn link-button no-border">
-                <v-icon>navigate_next</v-icon>
+              <v-btn 
+                class="v-btn link-button no-border"
+                @click="toggleShowNewFeatures"
+              >
+                <v-icon v-if="!showNewFeatures">navigate_next</v-icon>
+                <v-icon v-if="showNewFeatures">expand_more</v-icon>
                 <span><strong>Stay tuned for upcoming features! Read more</strong></span>
               </v-btn>
+              <div v-if="showNewFeatures">
+                <br />
+                <p class="mb-0">
+                  In the coming weeks, you will be able to:
+                </p>
+                <br/>
+                <v-list class="_atat-stepper">
+                  <v-list-item-group >
+                    <v-list-item>
+                      <span class="_step-circle">1</span>
+                      <v-list-item-content>
+                        Review and digitally sign documents prior to
+                        submission using DocuSign.
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item>
+                      <span class="_step-circle">2</span>
+                      <v-list-item-content>
+                        Submit your completed package directly within
+                        DAPPS, if you are using Defense Information
+                        Technology Contracting Organization (DITCO).
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-item-group>
+                </v-list>
+              </div>
             </div>
           </v-col>
         </v-row>
@@ -167,11 +197,17 @@ export default class NewUser extends Vue {
   public provisionStepsText = [
     `Provide a few details about your awarded task order and the individuals who 
      will administer your cloud resources.`,
-    `Once you initiate provisioning, ATAT will automate account and environment 
-     creation with your CSP.`,
+    `Initiate provisioning and ATAT will automate the creation of your account 
+     and environment with your Cloud Service Provider (CSP).`,
     `Track your cloud usage and manage spending throughout the duration of 
      the task order`,
   ];
+
+  public showNewFeatures = false;
+
+  public toggleShowNewFeatures(): void {
+    this.showNewFeatures = !this.showNewFeatures;
+  }
 
 }
 
