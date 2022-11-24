@@ -7,3 +7,26 @@
     white-space: normal !important;
     display: inline-block;
 }
+
+.package-list {
+  background: rgba(84, 68, 150, 0.1);
+  border-radius: 8px;
+}
+
+.package-list-header {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 31px;
+  color: #161B1E;
+}
+.package-list-subheading {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.25px;
+  color: #61686C;
+}

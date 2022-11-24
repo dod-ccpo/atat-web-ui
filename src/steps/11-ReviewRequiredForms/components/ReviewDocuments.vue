@@ -17,14 +17,14 @@
     </v-row>
     <v-row>
       <v-col cols="8">
-        <div class="bg-primary-lighter border-rounded-more pa-4">
+        <div class="package-list pa-4">
           <v-row no-gutters>
             <v-col cols="9">
-              <span class="h2">
+              <span class="package-list-header">
                 Your acquisition package
               </span>
               <br/>
-              <span class="h4 text-base-light">
+              <span class="package-list-subheading">
                 ({{_packageDocuments.length + 5}} documents)
               </span>
             </v-col>
@@ -114,6 +114,3 @@ export default class ReviewDocuments extends Vue {
 
 }
 </script>
-<style>
-
-</style>
