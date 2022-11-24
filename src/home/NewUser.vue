@@ -9,7 +9,7 @@
 
     <section 
       id="SectionPreparePackage" 
-      class="_learn-more-section bg-base-lightest _py-80"
+      class="_learn-more-section bg-white _py-80"
     >
       <div class="container-max-width">
         <h1 class="text-primary large text-center mb-10">
@@ -58,15 +58,16 @@
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
-              <v-btn>
-                Stay tuned! New features coming soon…
+              <v-btn class="v-btn link-button no-border">
+                <v-icon>navigate_next</v-icon>
+                <span><strong>Stay tuned for upcoming features! Read more</strong></span>
               </v-btn>
             </div>
           </v-col>
         </v-row>
       </div>
     </section>
-
+    <hr class="no-margin"/>
     <section 
       id="SectionProvisionResources" 
       class="_learn-more-section bg-white _py-80"
@@ -75,7 +76,19 @@
         <h1 class="text-primary large text-center mb-10">
           Provision your cloud resources
         </h1>
+        
+        <ATATAlert
+          type="info"
+        >
+          <template slot="content">
+            <span class="text-center">
+              Cloud account provisioning is not available at this time. 
+              This feature will be coming soon.
+            </span>
+          </template>
+        </ATATAlert>
 
+        <br /><br/>
         <v-row>
           <v-col class="pr-10">
             <p class="mt-5">
@@ -90,12 +103,6 @@
               understanding of how your team is using cloud to help you manage 
               spending throughout the duration of your task order.
             </p>
-            <v-btn
-              id="ProvisionResourcesButton"
-              class="primary mb-4 mt-4"
-            >
-              Provision new cloud resources
-            </v-btn>
 
           </v-col>
           <v-col class="pl-10">
@@ -132,11 +139,13 @@ import { Component } from "vue-property-decorator";
 
 import NewAcquisitionCard from "./components/NewAcquisitionCard.vue";
 import ExistingTaskOrderCard from "./components/ExistingTaskOrderCard.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
     NewAcquisitionCard,
     ExistingTaskOrderCard,
+    ATATAlert
   }
 })
 

@@ -9,11 +9,11 @@
     <div class="_hero-banner"></div>
     <v-main class="_home">
       <div class="_home-content">
-        <div class="container-max-width">
+        <div class="">
           <section class="_py-80">
             <v-row>
-              <v-col cols="6" offset="6">
-                <div class="bg-base-lightest pa-6">
+              <v-col cols="4" offset="6">
+                <div class="bg-base-lightest border-rounded-more pa-8">
                   <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
                   <br/>
                   <v-row>
@@ -25,13 +25,13 @@
                         Start a new acquisition
                       </v-btn>
                     </v-col>
-                    <v-col cols="6">
+                    <v-col cols="6" >
                       <v-btn 
                         id="HelpfulResourcesButton"
                         class="secondary"
                         @click="scrollToResources"
                       >
-                        Learn more about JWCC
+                        Learn more about JWCC<v-icon>launch</v-icon>
                       </v-btn>
                     </v-col>
                   </v-row>                
