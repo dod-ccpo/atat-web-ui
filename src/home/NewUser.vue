@@ -1,11 +1,11 @@
 <template>
   <div>
-    <section id="SectionCards" class="container-max-width mx-auto _mt-80 _mb-80">
+    <!-- <section id="SectionCards" class="container-max-width mx-auto _mt-80 _mb-80">
       <div class="_new-user-cards d-flex justify-space-between">
         <NewAcquisitionCard @startNewAcquisition="startNewAcquisition" />
         <ExistingTaskOrderCard />
       </div>
-    </section>
+    </section> -->
 
     <section 
       id="SectionPreparePackage" 
@@ -19,13 +19,14 @@
         <v-row>
           <v-col class="pr-10">
             <p class="mt-5">
-              The DISA Acquisition Package Preparation System (DAPPS) will walk you 
-              through the necessary steps to digitally prepare, sign, and submit your
-              acquisition package to procure cloud resources through JWCC.
+              The DISA Acquisition Package Preparation System (DAPPS) will walk you through
+              the necessary steps to digitally prepare an acquisition package to procure 
+              cloud resources through Joint Warfighting Cloud Capability (JWCC).
             </p>
             <p>
-              Based on your responses to a series of questions, DAPPS will generate
-              documents specific to your requirements.
+              Based on your responses to a series of questions, DAPPS will generate 
+              documents specific to your requirements. With this completed requirements 
+              package, you will have everything you need to begin the procurement process.
             </p>
             <v-btn
               id="StartNewAcquisitionButton"
@@ -34,7 +35,7 @@
               @keydown.enter="startNewAcquisition"
               @keydown.space="startNewAcquisition"
             >
-              Start your new acquisition package
+              Start a new acquisition
             </v-btn>
 
           </v-col>
@@ -57,6 +58,9 @@
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
+              <v-btn>
+                Stay tuned! New features coming soon…
+              </v-btn>
             </div>
           </v-col>
         </v-row>
@@ -143,15 +147,12 @@ export default class NewUser extends Vue {
   }
 
   public prepareStepsText = [
-    `Answer questions about your project requirements. You can add other people 
-     from your organization to help, if needed`,
-    `Based on your responses, requirements package documents will be automatically 
-     generated.`,
-    "Review and digitally sign your initial forms",
-    `Route documents to your approving officials, obtain their signatures, and 
-     monitor the approval progress.`,
-    `Submit your completed requirements package to your contracting office to 
-     begin the procurement process.`,
+    `Answer a series of questions about your project requirements.`,
+    `Generate acquisition documents automatically based on the provided responses.`,
+    `Download your completed package and review each document. Be sure to obtain
+     signatures from approving officials, as necessary.`,
+    `Submit your signed package to your Contracting Office via email
+     for processing.`,
   ];
 
   public provisionStepsText = [

@@ -10,17 +10,35 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
-
-          <div class="_welcome-bar">
-            <h1 class="text-primary">Hi Maria! How can we help you?</h1>
-            <v-btn 
-              id="HelpfulResourcesButton"
-              class="secondary"
-              @click="scrollToResources"
-            >
-              Helpful Resources
-            </v-btn>
-          </div>
+          <section class="_py-80">
+            <v-row>
+              <v-col cols="6" offset="6">
+                <div class="bg-base-lightest pa-6">
+                  <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
+                  <br/>
+                  <v-row>
+                    <v-col cols="6">
+                      <v-btn 
+                        class="v-btn primary"
+                        @click="startNewAcquisition"
+                      >
+                        Start a new acquisition
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="6">
+                      <v-btn 
+                        id="HelpfulResourcesButton"
+                        class="secondary"
+                        @click="scrollToResources"
+                      >
+                        Learn more about JWCC
+                      </v-btn>
+                    </v-col>
+                  </v-row>                
+                </div>
+              </v-col>
+            </v-row>
+          </section>
         </div>
 
         <NewUser 
@@ -76,6 +94,8 @@ import { routeNames } from "@/router/stepper";
 
 import { scrollToId } from "@/helpers";
 
+import UserStore from "@/store/user";
+
 @Component({
   components: {
     ATATFooter,
@@ -87,6 +107,8 @@ import { scrollToId } from "@/helpers";
 
 export default class Home extends Vue {
   public isNewUser = true;
+
+  private currentUser = UserStore.getInitialUser;
 
   public scrollToResources(): void {
     scrollToId("HelpfulResourcesCards");
@@ -110,6 +132,10 @@ export default class Home extends Vue {
     if (el) {
       el.scrollTop = 0;
     }
+  }
+
+  public async mounted(): Promise<void> {
+    this.currentUser = await UserStore.getCurrentUser();
   }
 
 }
