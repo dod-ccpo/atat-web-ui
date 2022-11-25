@@ -91,6 +91,7 @@
                 :removeAll.sync="removeAll"
                 @delete="onRemoveAttachment"
                 @uploaded="onUpload"
+                :rules="[$validators.required('Please upload a file')]"
               />
             </div>
           </v-col>
@@ -123,7 +124,7 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   private attachmentServiceName = FAIR_OPPORTUNITY_TABLE;
   private maxFileSizeInBytes = 1073741824;
   private invalidFiles: invalidFile[] = [];
-  private validFileFormats = ["pdf"];
+  private validFileFormats = ["pdf","jpg","png"];
   private uploadedFiles: uploadingFile[] = [];
   public removeAll = false;
 
