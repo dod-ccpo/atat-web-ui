@@ -35,6 +35,7 @@ import Failed from "@/components/icons/Failed.vue";
 import Filters from "@/components/icons/Filters.vue";
 import Feedback from "@/components/icons/Feedback.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
+import FileSignature from "@/components/icons/FileSignature.vue";
 import Gcp from "@/components/icons/Gcp.vue";
 import InfoOutline from "@/components/icons/InfoOutline.vue";
 import Launch from "@/components/icons/Launch.vue";
@@ -90,6 +91,7 @@ import WarningAmber from "@/components/icons/WarningAmber.vue";
     Filters,
     Feedback,
     FilePresent,
+    FileSignature,
     Gcp,
     InfoOutline,
     Launch,
