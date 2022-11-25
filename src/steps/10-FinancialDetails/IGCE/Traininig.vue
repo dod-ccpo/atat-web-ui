@@ -4,7 +4,7 @@
       <v-row>
         <v-col>
           <h1 class="page-header">
-            Future TraininigEstimates Page
+            Future Training Page
           </h1>
         </v-col>
       </v-row>
@@ -17,7 +17,7 @@ import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({})
-export default class TraininigEstimates extends Mixins(SaveOnLeave) {
+export default class IGCETraining extends Mixins(SaveOnLeave) {
 
   protected async loadOnEnter(): Promise<boolean> {
     return true;
