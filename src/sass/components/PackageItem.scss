@@ -1,0 +1,36 @@
+.package-item-card {
+  box-sizing: border-box;
+  background: #FFFFFF;
+  border: 1px solid #E0E1E2 !important;
+  border-radius: 8px;
+  box-shadow: none !important;
+  /* padding-bottom: 24px; */
+  gap: 40px;
+  height: 60px;
+  align-items: center;
+}
+.package-title {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.25px;
+  color: #161B1E;
+}
+.signature-required {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px;
+  gap: 8px;
+}
+.signature-required span {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.25px;
+  color: #61686C;
+}
