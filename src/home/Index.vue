@@ -14,7 +14,7 @@
             <div class="d-flex flex-row-reverse">
               <div class="d-flex align-flex-end">
                 
-                <div class="bg-base-lightest border-rounded-more pa-8">
+                <div class="bg-white border-rounded-more pa-8">
                   <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
                   <br />
                   <div class="d-flex justify-space-around">
