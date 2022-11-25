@@ -1,0 +1,116 @@
+<template>
+  <div>
+    <v-row>
+      <v-col cols="12">
+        <h1>
+          Your documents are ready to download and review.
+        </h1>
+        <div class="copy-max-width">
+          <p class="mt-2 mb-0">
+            We’ve generated your required documents based on the info that you have 
+            provided in steps 1-8. Download your entire package below and review each 
+            document. Be sure to sign all necessary documents prior to submitting them 
+            to your contracting office to begin the procurement process.
+          </p>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="8">
+        <div class="package-list pa-4">
+          <v-row no-gutters>
+            <v-col cols="9">
+              <span class="package-list-header">
+                Your acquisition package
+              </span>
+              <br/>
+              <span class="package-list-subheading">
+                ({{_packageDocuments.length + 5}} documents)
+              </span>
+            </v-col>
+            <v-col cols="3" align-self="end">
+              <v-btn
+                class="primary"
+                large
+              >
+                Download&nbsp;
+                <v-icon>download</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row> 
+          <v-row>
+            <v-col>
+              <PackageItem
+                itemNumber="01"
+                itemName="Requirements Checklist"
+                requiresSignature=true
+              ></PackageItem>
+              <PackageItem
+                itemNumber="02"
+                itemName="Description of Work"
+              ></PackageItem>
+              <PackageItem
+                itemNumber="03"
+                itemName="Evaluation Plan"
+              ></PackageItem>
+              <PackageItem
+                itemNumber="04"
+                itemName="Independent Government Cost Estimate (IGCE)"
+                requiresSignature=true
+              ></PackageItem>
+              <PackageItem
+                itemNumber="05"
+                itemName="Incremental Funding Plan"
+                requiresSignature=true
+              ></PackageItem>
+              <PackageItem
+                v-for="(document, idx) of _packageDocuments" :key="idx"
+                :itemNumber="(Number(idx) + 6).toString().padStart(2,'0')"
+              ></PackageItem>
+            </v-col>
+          </v-row>        
+        </div>
+      </v-col>
+      <v-col cols="4">
+        <div 
+          id="regenerateCard" 
+          class="border1 border-rounded border-base-lighter pa-6"
+        >
+          <h2>Need to update your documents?</h2>
+          <br/>
+          <p>
+            You can make changes to information within steps 1-8 
+            at any time and re-generate new documents, as needed.
+          </p> 
+          <v-btn
+            class="secondary"
+            @click="$emit('regenerate')"
+          >
+            Re-generate my documents&nbsp;
+            <v-icon>sync</v-icon>
+          </v-btn>
+        </div>
+      </v-col>
+    </v-row>
+  </div>
+</template>
+<script lang="ts">
+import { Component, PropSync } from "vue-property-decorator";
+import Vue from "vue";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import PackageItem from "./PackageItem.vue";
+
+@Component({
+  components: {
+    ATATSVGIcon,
+    PackageItem
+  }
+})
+export default class ReviewDocuments extends Vue {
+
+  @PropSync(
+    "packageDocuments",{default: () => []}
+  ) private _packageDocuments: [];
+
+}
+</script>
