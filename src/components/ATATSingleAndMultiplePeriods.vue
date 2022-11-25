@@ -20,6 +20,7 @@
       />
     </template>
     <template v-if="isMultiple">
+      <div class="font-weight-500 mb-4">{{ multiplePeriodLabel}} </div>
       <div
         v-for="(period, idx) in _periods"
         :key="idx"
@@ -35,7 +36,6 @@
         <div>
           <ATATTextField
             :id="period.period_type"
-            :label="multiplePeriodLabel"
             width="190"
             class="ml-5"
             :alignRight="true"
