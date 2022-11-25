@@ -1,23 +1,17 @@
 <template>
   <fieldset class="no-border">
-    <div class="d-flex align-center mb-2">
-      <label
-        class="form-field-label font-weight-500 mr-1"
-      > 
-        <span v-html="isMultiple ? multiplePeriodLabel : singlePeriodLabel"></span>
-      </label>
+    
+    <template v-if="!isMultiple">
+      <div class="d-flex align-center mb-2">
+        <label class="form-field-label font-weight-400 mr-1">
+          {{ singlePeriodLabel}} 
+         </label>
       <ATATTooltip 
         v-if="!isMultiple && showSinglePeriodTooltip"
         :tooltipText="singlePeriodTooltipText"
-        :label="isMultiple ? multiplePeriodLabel : singlePeriodLabel"
       />
-      <ATATTooltip 
-        v-if="isMultiple && showMultiplePeriodTooltip"
-        :tooltipText="multiplePeriodTooltipText"
-        :label="isMultiple ? multiplePeriodLabel : singlePeriodLabel"
-      />
+     
     </div>
-    <template v-if="!isMultiple">
       <ATATTextField
         id="SingleAmount"
         width="190"
@@ -36,6 +30,15 @@
       />
     </template>
     <template v-if="isMultiple">
+      <div class="d-flex align-center mb-2">
+        <label class="form-field-label font-weight-500 mr-1">
+          {{ multiplePeriodLabel}} 
+        </label>
+        <ATATTooltip 
+          v-if="isMultiple && showMultiplePeriodTooltip"
+          :tooltipText="multiplePeriodTooltipText"
+        />
+      </div>
       <div
         v-for="(period, idx) in _periods"
         :key="idx"
