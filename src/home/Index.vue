@@ -9,13 +9,35 @@
     <div class="_hero-banner"></div>
     <v-main class="_home">
       <div class="_home-content">
-        <div class="">
+        <div class="container-max-width">
           <section class="_py-80">
-            <v-row>
-              <v-col cols="4" offset="6">
+            <div class="d-flex flex-row-reverse">
+              <div class="d-flex align-flex-end">
+                
                 <div class="bg-base-lightest border-rounded-more pa-8">
                   <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
-                  <br/>
+                  <br />
+                  <div class="d-flex justify-space-around">
+                    <div class="d-flex align-flex-start">
+                      <v-btn 
+                        class="v-btn primary"
+                        @click="startNewAcquisition"
+                      >
+                        Start a new acquisition
+                      </v-btn>
+                    </div>
+                    &nbsp;&nbsp;
+                    <div class="d-flex align-flex-end">
+                      <v-btn 
+                        id="HelpfulResourcesButton"
+                        class="secondary"
+                        @click="scrollToResources"
+                      >
+                        Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
+                      </v-btn>
+                    </div>
+                  </div>
+                  <!-- <br/>
                   <v-row>
                     <v-col cols="6">
                       <v-btn 
@@ -34,10 +56,10 @@
                         Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
                       </v-btn>
                     </v-col>
-                  </v-row>                
+                  </v-row> -->
                 </div>
-              </v-col>
-            </v-row>
+              </div>
+            </div>
           </section>
         </div>
 
