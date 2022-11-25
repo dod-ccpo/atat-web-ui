@@ -688,6 +688,55 @@ export const IGCECannotProceedResolver = (current: string): string => {
   return routeNames.CannotProceed;
 };
 
+export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
+
+  const needsReplicateOrOptimize
+    = !(
+      AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized === "NO"
+    );
+
+  if(
+    current === routeNames.CreatePriceEstimate 
+    && IGCEStore.hasDOWandPoP 
+    && needsReplicateOrOptimize
+  ){
+    return routeNames.OptimizeOrReplicate;
+  }
+
+  return current === routeNames.OptimizeOrReplicate 
+    && IGCEStore.hasDOWandPoP && needsReplicateOrOptimize
+    ? routeNames.CreatePriceEstimate
+    : routeNames.ArchitecturalDesignSolutions;
+
+}
+
+export const IGCEArchitecturalDesignSolutionsResolver = (current: string): string => {
+
+  const currentEnvNeedsArchitectureDesign
+    = (
+      AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES"
+    )
+
+  if(
+    current === routeNames.OptimizeOrReplicate 
+    && IGCEStore.hasDOWandPoP 
+    && (
+      currentEnvNeedsArchitectureDesign
+    )
+  ){
+    return routeNames.ArchitecturalDesignSolutions;
+  }
+
+  return current === routeNames.ArchitecturalDesignSolutions 
+    && IGCEStore.hasDOWandPoP
+    && (
+      currentEnvNeedsArchitectureDesign
+    )
+    ? routeNames.OptimizeOrReplicate
+    : routeNames.CannotProceed;
+
+}
+
 export const IGCEGatherPriceEstimatesResolver = (current: string): string => {
   if (current === routeNames.TravelEstimates && IGCEStore.hasDOWandPoP){
     return routeNames.GatherPriceEstimates;
@@ -825,6 +874,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   A11yRequirementResolver,
   ContractTrainingReq,
   IGCECannotProceedResolver,
+  IGCEOptimizeOrReplicateResolver,
+  IGCEArchitecturalDesignSolutionsResolver,
   IGCEGatherPriceEstimatesResolver,
   IGCESupportingDocumentationResolver,
   MIPRResolver,
