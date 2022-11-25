@@ -4,8 +4,35 @@
       <v-row>
         <v-col>
           <h1 class="page-header">
-            Future OptimizeOrReplicate Page
+            {{headingText}}
           </h1>
+          <p class="page-intro">
+            Based on what you previously told us, you need the CSP to perform a 
+            "lift and shift" to recreate your environment and configurations using 
+            JWCC offerings. Below, estimate a price per period for this requirement. 
+            If you know the requirement will change over time, then you can customize 
+            the price for each performance period.
+          </p>
+          <div class="copy-max-width">
+            <ATATRadioGroup
+              class="copy-max-width max-width-740"
+              id="OptimizeOrReplicateEstimates"
+              :card="true"
+              :items="optimizeOrReplicateEstimateOptions"
+              :value.sync="ceilingPrice"
+              :rules="[$validators.required('Please select an option')]"
+            />
+          </div>
+          <hr class="mt-8" v-if="ceilingPrice !== ''" />
+
+          <div v-if="ceilingPrice !== ''">
+            <ATATSingleAndMultiplePeriods
+              :periods.sync="periods"
+              :isMultiple="ceilingPrice === 'multiple'"
+              :values.sync="estimatedCosts"
+              :singlePeriodTooltipText="singlePeriodTooltipText"
+            ></ATATSingleAndMultiplePeriods>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -13,21 +40,97 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { RadioButton } from "types/Global";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
+import { hasChanges } from "@/helpers";
+import Periods from "@/store/periods";
+import { PeriodDTO } from "@/api/models";
+import IGCEStore, { OptimizeOrReplicateEstimateNeeds } from "@/store/IGCE";
 
-@Component({})
+@Component({
+  components: {
+    ATATRadioGroup,
+    ATATSingleAndMultiplePeriods
+  },
+})
 export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
 
+  private headingText = "";
+  private ceilingPrice = "";
+  private estimatedCosts = [""];
+  private periods: PeriodDTO[] | null = [];
+  private singlePeriodTooltipText = "This estimate will be applied to all performance periods.";
+
+  public savedData: OptimizeOrReplicateEstimateNeeds = {
+    ceilingPrice: "",
+    estimatedCosts: [],
+  };
+
+  private optimizeOrReplicateEstimateOptions: RadioButton[] = [
+    {
+      id: "SinglePrice",
+      label:
+        "I want to apply the same price estimate to all performance periods.",
+      value: "single",
+    },
+    {
+      id: "MultiplePrices",
+      label:
+        "I want to estimate a different price for the base and each option period.",
+      value: "multiple",
+    },
+  ];
+
+  get currentData(): OptimizeOrReplicateEstimateNeeds {
+    return{
+      ceilingPrice: this.ceilingPrice,
+      estimatedCosts: this.estimatedCosts,
+    }
+  };
+
+  @Watch("ceilingPrice")
+  protected changeSelection(newVal: string): void{
+    if (newVal !== this.savedData.ceilingPrice){
+      this.estimatedCosts = [];
+    }
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+
   protected async loadOnEnter(): Promise<boolean> {
+    const store = await IGCEStore.getOptimizeOrReplicateEstimateNeeds();
+    this.savedData = store;
+    this.ceilingPrice = store.ceilingPrice;
+    this.estimatedCosts = store.estimatedCosts;
+    const replicatedOrOptimized = 
+      AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized;
+
+    if(replicatedOrOptimized === "YES_OPTIMIZE")
+      this.headingText = `Let's start with a price estimate 
+        for optimizing your current functions`;
+    else if(replicatedOrOptimized === "YES_REPLICATE")
+      this.headingText = `Let's start with a price estimate 
+        for replicating your current functions`;
+
     return true;
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    this.periods = Periods.periods;
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    if (this.hasChanged()) { 
+      IGCEStore.setOptimizeOrReplicateEstimateNeeds(this.currentData);
+    }
     return true;
   }
 
