@@ -32,5 +32,5 @@ export default class DescriptionOfNeed extends Vue {
   @Prop() public index!: number;
   @Prop({ default: "requirement" }) public requirementOrInstance?: string;
 
-
+}
 </script>
