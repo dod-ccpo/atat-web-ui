@@ -1,9 +1,25 @@
 <template>
   <fieldset class="no-border">
+    <div class="d-flex align-center mb-2">
+      <label
+        class="form-field-label font-weight-500 mr-1"
+      > 
+        <span v-html="isMultiple ? multiplePeriodLabel : singlePeriodLabel"></span>
+      </label>
+      <ATATTooltip 
+        v-if="!isMultiple && showSinglePeriodTooltip"
+        :tooltipText="singlePeriodTooltipText"
+        :label="isMultiple ? multiplePeriodLabel : singlePeriodLabel"
+      />
+      <ATATTooltip 
+        v-if="isMultiple && showMultiplePeriodTooltip"
+        :tooltipText="multiplePeriodTooltipText"
+        :label="isMultiple ? multiplePeriodLabel : singlePeriodLabel"
+      />
+    </div>
     <template v-if="!isMultiple">
       <ATATTextField
         id="SingleAmount"
-        :label="singlePeriodLabel"
         width="190"
         class="mr-2"
         :alignRight="true"
@@ -35,14 +51,12 @@
         <div>
           <ATATTextField
             :id="period.period_type"
-            :label="multiplePeriodLabel"
             width="190"
             class="ml-5"
             :alignRight="true"
             :value.sync="_values[idx]"
             :isCurrency="textboxSuffix === ''"
             :appendText="textboxSuffix !== '' ? textboxSuffix : null"
-            :tooltipText="showMultiplePeriodTooltip ? multiplePeriodTooltipText : null"
             :showErrorMessages="true"
             :rules="[
               $validators.required(
@@ -59,11 +73,13 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
+import ATATTooltip from "@/components/ATATTooltip.vue";
 import { PeriodDTO } from "@/api/models";
 
 @Component({
   components: {
-    ATATTextField
+    ATATTextField,
+    ATATTooltip
   }
 })
 export default class ATATSingleAndMultiplePeriods extends Vue {
