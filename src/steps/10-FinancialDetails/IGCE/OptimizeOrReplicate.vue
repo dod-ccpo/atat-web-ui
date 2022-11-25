@@ -18,6 +18,7 @@
               class="copy-max-width max-width-740"
               id="OptimizeOrReplicateEstimates"
               :card="true"
+              legend="How do you want to estimate a price for this requirement?"
               :items="optimizeOrReplicateEstimateOptions"
               :value.sync="ceilingPrice"
               :rules="[$validators.required('Please select an option')]"
@@ -31,6 +32,8 @@
               :isMultiple="ceilingPrice === 'multiple'"
               :values.sync="estimatedCosts"
               :singlePeriodTooltipText="singlePeriodTooltipText"
+              :multiplePeriodTooltipText = "multiplePeriodTooltipText"
+              :showMultiplePeriodTooltip="true"
             ></ATATSingleAndMultiplePeriods>
           </div>
         </v-col>
@@ -64,6 +67,8 @@ export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
   private estimatedCosts = [""];
   private periods: PeriodDTO[] | null = [];
   private singlePeriodTooltipText = "This estimate will be applied to all performance periods.";
+  private multiplePeriodTooltipText = `Customize a price estimate for 
+    each performance period, based on your needs.`;
 
   public savedData: OptimizeOrReplicateEstimateNeeds = {
     ceilingPrice: "",
