@@ -10,10 +10,29 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="">
-          <section class="_py-80">
+          <section class="pb-8">
             <v-row>
-              <v-col cols="4" offset="6">
-                <div class="bg-base-lightest border-rounded-more pa-8">
+              <v-col v-if="!isNewUser" cols="8" offset="2">
+                <div class="_welcome-bar">
+                  <v-row>
+                    <v-col cols="9">
+                      <h1 class="text-primary">
+                        Hi {{currentUser.first_name}}! How can we help you?
+                      </h1>
+                    </v-col>
+                    <v-col cols="2">
+                      <v-btn 
+                        class="v-btn primary"
+                        @click="startNewAcquisition"
+                      >
+                        Start a new acquisition
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </div>
+              </v-col>
+              <v-col v-if="isNewUser" cols="4" offset="6">
+                <div class="bg-white border-rounded pa-8">
                   <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
                   <br/>
                   <v-row>

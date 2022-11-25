@@ -1,143 +1,91 @@
 <template>
   <div class="pt-8 pb-10">
-    <div class="container-max-width">
+    <section class="_learn-more-section bg-white _py-80">
+      <div class="container-max-width">
 
-      <v-row>    
-        <v-col class="col-sm-12 col-md-7 pr-5">
+        <v-row>    
+          <v-col class="col-sm-12 col-md-7 pr-5">
 
-           <ATATAlert 
-            v-if="showAlert"
-            type="warning"
-            :closeButton="true"
-            class="mb-10"
-          >
-            <template slot="content">
-              You have {{ draftPackageCount }} 
-              draft<span v-if="draftPackageCount !== 1">s</span>
-              in progress.
-            </template>
-
-          </ATATAlert>
-
-          <v-expansion-panels id="PackagesAccordion" flat v-model="packagesPanel">
-            <v-expansion-panel expand>
-              <v-expansion-panel-header>
-                <div class="d-flex justify-space-between">
-                  <div class="h3">
-                    Open Acquisition Packages
+            <v-expansion-panels id="PackagesAccordion" flat v-model="packagesPanel">
+              <v-expansion-panel expand>
+                <v-expansion-panel-header>
+                  <div class="d-flex justify-space-between">
+                    <div class="h3">
+                      Open Acquisition Packages
+                    </div>
+                    <div class="h3 _item-count pr-4">
+                      {{ packageCount }} package<span v-if="packageCount !== 1">s</span>
+                    </div>
                   </div>
-                  <div class="h3 _item-count pr-4">
-                    {{ packageCount }} package<span v-if="packageCount !== 1">s</span>
-                  </div>
-                </div>
 
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
 
-                <PackageCards
-                  v-for="(cardData, index) in packageData"
-                  :key="index"
-                  :cardData="cardData"
-                  :index="index"
-                  :isLastCard="index === packageData.length - 1"
-                />
+                  <PackageCards
+                    v-for="(cardData, index) in packageData"
+                    :key="index"
+                    :cardData="cardData"
+                    :index="index"
+                    :isLastCard="index === packageData.length - 1"
+                  />
 
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-          <div class="_view-all mb-10">
-            <a
-              id="viewAllPackagesLink"
-              role="button"
-              @click="viewAllPackages"
-              @keydown.enter="viewAllPackages"
-              @keydown.space="viewAllPackages"
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+            <div class="_view-all mb-10">
+              <a
+                id="viewAllPackagesLink"
+                role="button"
+                @click="viewAllPackages"
+                @keydown.enter="viewAllPackages"
+                @keydown.space="viewAllPackages"
+              >
+                View all open packages
+              </a>
+            </div>
+
+          </v-col>
+
+          <v-col class="col-sm-12 col-md-5 pl-5">
+            <ATATAlert
+              type="info"
             >
-              View all open packages
-            </a>
-          </div>
+              <template slot="content">
+                Provisioning of cloud resources is not available at this time. In the coming 
+                weeks, you will be able to add an awarded JWCC task order, and ATAT will 
+                create accounts and environments within your CSP portal.
+              </template>
+            </ATATAlert>
+            <br/>
 
+            <v-card flat class="pa-6 mb-10 _simple-border">
+              <h3 class="text-primary mb-4">What else could we help you with?</h3>
+              <v-btn
+                id="JWCCHelpCenterButton"
+                class="secondary mb-4 mt-4 width-100"
+              >
+                JWCC Help Center&nbsp;<v-icon>launch</v-icon>
+              </v-btn>
+              <v-btn
+                id="CustomerSupportButton"
+                class="secondary mt-4 width-100"
+              >
+                Contact customer support&nbsp;<v-icon>launch</v-icon>
+              </v-btn>
+              <v-btn
+                id="ReportIssueButton"
+                class="secondary mt-4 width-100"
+              >
+                Report a bug or technical issue&nbsp;<v-icon>launch</v-icon>
+              </v-btn>
 
-          <v-expansion-panels id="PortfoliosAccordion" flat v-model="portfolioPanel">
-            <v-expansion-panel expand>
-              <v-expansion-panel-header>
-                <div class="d-flex justify-space-between">
-                  <div class="h3">
-                    Porfolios
-                  </div>
-                  <div class="h3 text-base-light _item-count pr-4">
-                    {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>
-                  </div>
-                </div>
+            </v-card>
 
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-
-                <PortfoliosSummary 
-                  active-tab="ALL" 
-                  default-sort="DESCsys_updated_on"
-                  :isHomeView="true" 
-                  @totalCount="updateTotalPortfolios"
-                />
-
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
-          <div class="_view-all">
-            <a
-              id="ViewAllPortfoliosLink"
-              role="button"
-              @click="viewAllPortfolios"
-              @keydown.enter="viewAllPortfolios"
-              @keydown.space="viewAllPortfolios"
-            >
-              View all portfolios
-            </a>
-          </div>
-
-        </v-col>
-
-        <v-col class="col-sm-12 col-md-5 pl-5">
-          <v-card flat class="pa-6 mb-10 _simple-border">
-            <h3 class="text-primary mb-2">Do you already have an awarded task order?</h3>
-            <p>
-              Provide a few details about your awarded task order and we’ll import 
-              your info to provision your cloud resources.
-            </p>
-            <ATATSearch 
-              buttonText="Search"
-              placeHolder="Search Task Order Number"
-              class="d-inline-block"
-              width="auto"
-              wrapperWidth="100%"
-            />
-          </v-card>
-
-          <v-card flat class="pa-6 mb-10 _simple-border">
-            <h3 class="text-primary mb-4">What else could we help you with?</h3>
-            <v-btn
-              id="StartNewAcquisitionButton2"
-              class="primary mb-4 mt-4 width-100"
-              @click="startNewAcquisition"
-              @keydown.enter="startNewAcquisition"
-              @keydown.space="startNewAcquisition"
-            >
-              Start your new acquisition package
-            </v-btn>
-            <v-btn
-              id="StartNewAcquisitionButton"
-              class="secondary mt-4 width-100"
-            >
-              Create a new portfolio
-            </v-btn>
-
-          </v-card>
-
-        </v-col>
-      </v-row>
-      
-    </div>
+          </v-col>
+        </v-row>
+        
+      </div>
+    </section>
   </div>
 </template>
 
