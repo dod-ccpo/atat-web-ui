@@ -54,6 +54,12 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
     : routeNames.Exceptions;
 };
 
+export const UploadJAMRRDocumentsRouteResolver = (current: string): string => {
+  return !evalPlanRequired() 
+    ? routeNames.UploadJAMRRDocuments 
+    : routeNames.ReadyToGeneratePackage;
+};
+
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = AcquisitionPackage.getEvaluationPlan;
   if (missingEvalPlanMethod(evalPlan)) {
@@ -832,7 +838,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
-  SecurityRequirementsResolver
+  SecurityRequirementsResolver,
+  UploadJAMRRDocumentsRouteResolver
 };
 
 // add path resolvers here 

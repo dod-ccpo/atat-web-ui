@@ -75,6 +75,7 @@ import DOWSummary
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
+import Travel from "@/steps/07-OtherContractConsiderations/Travel.vue";
 import Training from "../steps/07-OtherContractConsiderations/Training.vue";
 import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
 
@@ -116,6 +117,9 @@ import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
+import UploadJAMRRDocuments from "@/steps/11-ReviewRequiredForms/UploadJAMRRDocuments.vue";
+import ReadyToGeneratePackage from "@/steps/11-ReviewRequiredForms/ReadyToGeneratePackage.vue";
+import GeneratePackageDocuments from "@/steps/11-ReviewRequiredForms/GeneratePackageDocuments.vue";
 
 import {
   AcorsRouteResolver,
@@ -146,7 +150,7 @@ import {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-
+  UploadJAMRRDocumentsRouteResolver
 } from "./resolvers";
 
 export const routeNames = {
@@ -187,6 +191,7 @@ export const routeNames = {
   ContractType: "Contract_Type",
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
+  Travel: "Travel",
   Training: "Training",
   TrainingCourses: "Training_Courses",
   PropertyDetails: "Property_Details",
@@ -237,6 +242,9 @@ export const routeNames = {
   EnvironmentSummary:"Environment_Summary",
   SecurityRequirements:"Security_Requirements",
   CrossDomain:"Cross_Domain",
+  UploadJAMRRDocuments:"JA_MRR_Documents",
+  ReadyToGeneratePackage:"Ready_To_Generate_Package",
+  GeneratePackageDocuments: "Generate_Package_Documents"
 };
 
 /**
@@ -733,6 +741,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: PackagingPackingAndShipping,
       },
       {
+        name: routeNames.Travel,
+        menuText: "Travel",
+        path: "travel",
+        completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.Travel,
+        component: Travel
+      },
+      {
         name: routeNames.Training,
         menuText: "Training",
         path: "training",
@@ -1001,6 +1017,32 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: ReviewRequiredFormsStepOne,
       },
+      {
+        menuText: "Upload J&A and MRR Documents",
+        path:"upload-ja-mrr-documents",
+        excludeFromMenu: true,
+        name: routeNames.UploadJAMRRDocuments,
+        completePercentageWeight: 0,
+        component: UploadJAMRRDocuments,
+        routeResolver: UploadJAMRRDocumentsRouteResolver
+      },
+      {
+        menuText: "Ready To Generate Package",
+        path:"ready-to-generate-package",
+        excludeFromMenu: true,
+        name: routeNames.ReadyToGeneratePackage,
+        completePercentageWeight: 0,
+        component: ReadyToGeneratePackage,
+        continueButtonText: "Generate my acquisition package"
+      },
+      {
+        menuText: "Generate Package Documents",
+        path:"generate-package-documents",
+        excludeFromMenu: true,
+        name: routeNames.GeneratePackageDocuments,
+        completePercentageWeight: 0,
+        component: GeneratePackageDocuments
+      }
     ],
   },
 ];

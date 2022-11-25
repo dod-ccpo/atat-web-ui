@@ -1,5 +1,5 @@
 <template>
-  <nav class="stepper-nav container-max-width">
+  <nav class="stepper-nav container-max-width" :id="id">
     <hr class="base-lighter mt-10 mb-8" />
     <div class="d-flex">
 
@@ -69,6 +69,7 @@ export default class ATATStepperNavigation extends Vue {
   @Prop({ default: "Back" }) private backButtonText?: string;
   @Prop({ default: "Continue" }) private continueButtonText?: string;
   @Prop({ default: false }) private noPrevious?: boolean;
+  @Prop({ default: "stepperNavigation" }) private id?: string;
 
   private getButtonClass(button: AdditionalButton) {
     return button.buttonClass || "secondary";

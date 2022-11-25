@@ -12,6 +12,7 @@ import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestF
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { TABLENAME as CURRENT_ENVIRONMENT_TABLE } from "@/api/currentEnvironment";
+import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
 import { AttachmentDTO } from "@/api/models";
 import {
   AttachmentServiceCallbacks,
@@ -37,12 +38,14 @@ export class AttachmentStore extends VuexModule {
   private initialized = false;
   // store session properties
   protected sessionProperties: string[] = [FUNDING_REQUEST_FSFORM_TABLE, 
-    FUNDING_REQUEST_MIPRFORM_TABLE, REQUIREMENTS_COST_ESTIMATE_TABLE, CURRENT_ENVIRONMENT_TABLE];
+    FUNDING_REQUEST_MIPRFORM_TABLE, REQUIREMENTS_COST_ESTIMATE_TABLE, 
+    CURRENT_ENVIRONMENT_TABLE, FAIR_OPPORTUNITY_TABLE];
 
   public [FUNDING_REQUEST_FSFORM_TABLE]: AttachmentDTO[] = [];
   public [FUNDING_REQUEST_MIPRFORM_TABLE]: AttachmentDTO[] = [];
   public [REQUIREMENTS_COST_ESTIMATE_TABLE]: AttachmentDTO[] = [];
   public [CURRENT_ENVIRONMENT_TABLE]: AttachmentDTO[] = [];
+  public [FAIR_OPPORTUNITY_TABLE]: AttachmentDTO[] = [];
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -169,6 +172,15 @@ export class AttachmentStore extends VuexModule {
         this.addAttachment({
           key: CURRENT_ENVIRONMENT_TABLE,
           attachment,
+        })
+      }
+    );
+    AttachmentServiceCallbacks.registerUploadCallBack(
+      FAIR_OPPORTUNITY_TABLE,
+      (attachment) => {
+        this.addAttachment({
+          key: FAIR_OPPORTUNITY_TABLE,
+          attachment
         })
       }
     );
