@@ -31,7 +31,7 @@
                         class="secondary"
                         @click="scrollToResources"
                       >
-                        Learn more about JWCC<v-icon>launch</v-icon>
+                        Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
                       </v-btn>
                     </v-col>
                   </v-row>                
@@ -52,8 +52,6 @@
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
         />
-
-        <HelpfulResourcesCards :isNewUser="isNewUser" />
 
         <div class="bg-white">
           <div class="container-max-width pt-5">

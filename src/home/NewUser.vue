@@ -1,12 +1,5 @@
 <template>
   <div>
-    <!-- <section id="SectionCards" class="container-max-width mx-auto _mt-80 _mb-80">
-      <div class="_new-user-cards d-flex justify-space-between">
-        <NewAcquisitionCard @startNewAcquisition="startNewAcquisition" />
-        <ExistingTaskOrderCard />
-      </div>
-    </section> -->
-
     <section 
       id="SectionPreparePackage" 
       class="_learn-more-section bg-white _py-80"
@@ -95,9 +88,9 @@
             </div>
           </v-col>
         </v-row>
+        <ATATDivider></ATATDivider>
       </div>
     </section>
-    <hr class="no-margin"/>
     <section 
       id="SectionProvisionResources" 
       class="_learn-more-section bg-white _py-80"
@@ -170,12 +163,14 @@ import { Component } from "vue-property-decorator";
 import NewAcquisitionCard from "./components/NewAcquisitionCard.vue";
 import ExistingTaskOrderCard from "./components/ExistingTaskOrderCard.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
+import ATATDivider from "@/components/ATATDivider.vue";
 
 @Component({
   components: {
     NewAcquisitionCard,
     ExistingTaskOrderCard,
-    ATATAlert
+    ATATAlert,
+    ATATDivider
   }
 })
 
