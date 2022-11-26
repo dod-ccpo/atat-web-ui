@@ -62,10 +62,10 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   current_environment: string;
   environment_instance: string;
   secondary_reviewers?: string[];
-  mission_owners?: string[],
-  contract_award: ReferenceColumn,
+  mission_owners?: string;
+  contract_award: ReferenceColumn;
   package_status?: string;
-  contributors?: string[],
+  contributors?: string[];
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -542,7 +542,7 @@ export interface PackageSummaryDTO { // TODO: delete this interface after acq pa
     package_status?: string,
     sys_updated_on?: string,
     sys_created_by?: string,
-    mission_owners?: string[],
+    mission_owners?: string,
     contract_award?: ReferenceColumn["value"],
     contributors?: string[],
     sys_id?: string,
@@ -592,4 +592,13 @@ export interface EvaluationPlanDTO extends BaseTableDTO {
   custom_specifications?: string[];
   standard_differentiators?: string[];
   custom_differentiators?: string[];
+}
+
+export interface UserDTO extends BaseTableDTO {
+  last_login_time?: string;
+  name?: string;
+  first_name?: string;
+  last_name?: string;
+  user_name?: string;
+  email?: string;
 }
