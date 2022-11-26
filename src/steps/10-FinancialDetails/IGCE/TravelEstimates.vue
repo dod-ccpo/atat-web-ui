@@ -24,69 +24,13 @@
         </div>
         <hr class="mt-8" v-if="ceilingPrice !== ''" />
 
-        <fieldset class="no-border" v-if="ceilingPrice !== ''">
-          <legend
-            :class="[
-              { 'font-weight-500': ceilingPrice === 'multiple' },
-              ' mb-4',
-            ]"
-          >
-            Estimated travel costs per period
-          </legend>
-          <template v-if="ceilingPrice === 'single'">
-            <ATATTextField
-              id="SingleAmount"
-              :value.sync="estimatedTravelCosts[0]"
-              :alignRight="true"
-              :isCurrency="true"
-              :showErrorMessages="true"
-              @blur="sanitizeValue(0, estimatedTravelCosts[0])"
-              width="190"
-              class="mr-2"
-              :rules="[
-                $validators.required(
-                  'Enter your estimated travel price.',
-                  true
-                ),
-              ]"
-            />
-          </template>
-          <template v-if="currentData.ceilingPrice === 'multiple'">
-            <div
-              v-for="(period, idx) in periods"
-              :key="idx"
-              :class="[
-                idx < periods.length - 1 ? 'pb-5' : '',
-                ' pl-2 d-flex align-start',
-              ]"
-              style="border-left: #544496 4px solid"
-            >
-              <div class="text-right mt-2" style="width: 75px">
-                {{ getOption(idx) }}
-              </div>
-              <div>
-                <ATATTextField
-                  :id="period.period_type"
-                  :value.sync="estimatedTravelCosts[idx]"
-                  :alignRight="true"
-                  :isCurrency="true"
-                  :showErrorMessages="true"
-                  @blur="
-                    sanitizeValue(idx, estimatedTravelCosts[idx])
-                  "
-                  width="190"
-                  class="ml-5"
-                  :rules="[
-                    $validators.required(
-                      'Enter your estimated travel price.',
-                      true
-                    ),
-                  ]"
-                />
-              </div>
-            </div>
-          </template>
-        </fieldset>
+        <div v-if="ceilingPrice !== ''">
+          <ATATSingleAndMultiplePeriods
+            :periods.sync="periods"
+            :isMultiple="ceilingPrice === 'multiple'"
+            :values.sync="estimatedTravelCosts"
+          ></ATATSingleAndMultiplePeriods>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -94,20 +38,18 @@
 <script lang="ts">
 import { RadioButton } from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import ATATTextField from "@/components/ATATTextField.vue";
-import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore, { TravelEstimateNeeds } from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
 
 @Component({
   components: {
     ATATRadioGroup,
-    ATATTextField,
-    ATATErrorValidation,
+    ATATSingleAndMultiplePeriods
   },
 })
 export default class TravelEstimates extends Mixins(SaveOnLeave) {
@@ -150,16 +92,6 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
-  }
-
-  public sanitizeValue(idx: number, val: string): void {
-    if (parseInt(val) === 0) {
-      this.currentData.estimatedTravelCosts[idx] = "";
-    }
-  }
-
-  public getOption(idx: number): string {
-    return idx === 0 ? "Base" : "Option " + idx;
   }
 
   private async mounted(): Promise<void> {

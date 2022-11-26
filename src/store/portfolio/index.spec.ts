@@ -7,6 +7,7 @@ import {FundingAlertTypes, PortfolioDataStore,
 import { getModule } from 'vuex-module-decorators';
 import Vue from "vue";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
+import UserStore from "@/store/user";
 import { AlertDTO } from '@/api/models';
 import { MemberInvites, Portfolio } from 'types/Global';
 const localVue = createLocalVue();
@@ -17,6 +18,8 @@ describe("Portfolio Store", () => {
   let portfolioStore: PortfolioDataStore;
 
   beforeEach(() => {
+    UserStore.setCurrentUser(UserStore.getInitialUser);
+    UserStore.setInitialized(true);
     const createStore = (storeOptions: any = {}):
         Store<{ portfolio: any }> => new Vuex.Store({ ...storeOptions });
     portfolioStore = getModule(PortfolioDataStore, createStore());
