@@ -1,97 +1,99 @@
 <template>
-  <div class="mb-7">
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header">
-            Next, we’ll gather your requirements for {{ serviceOfferingName }}
-          </h1>
-          <div class="copy-max-width">
+  <v-form ref="form" lazy-validation>
+    <div class="mb-7">
+      <v-container fluid class="container-max-width">
+        <v-row>
+          <v-col class="col-12">
+            <h1 class="page-header">
+              Next, we’ll gather your requirements for {{ serviceOfferingName }}
+            </h1>
+            <div class="copy-max-width">
 
-            <div 
-              v-if="avlClassificationLevelObjects.length === 1"
-              id="SingleClassificationIntro"  
-              class="mb-10"
-            >
-              <p>
-                In the previous section, you specified 
-                <strong>{{ singleClassificationLevelName }}</strong> for the 
-                classification level of all cloud resources and services. If you 
-                need this within a different level, 
-                <a 
-                  role="button" 
-                  id="UpdateClassification"
-                  tabindex="0"
-                  @click="openModal"
-                  @keydown.enter="openModal"
-                  @keydown.space="openModal"
-                >update your Classification Requirements</a>.
-              </p>
+              <div 
+                v-if="avlClassificationLevelObjects.length === 1"
+                id="SingleClassificationIntro"  
+                class="mb-10"
+              >
+                <p>
+                  In the previous section, you specified 
+                  <strong>{{ singleClassificationLevelName }}</strong> for the 
+                  classification level of all cloud resources and services. If you 
+                  need this within a different level, 
+                  <a 
+                    role="button" 
+                    id="UpdateClassification"
+                    tabindex="0"
+                    @click="openModal"
+                    @keydown.enter="openModal"
+                    @keydown.space="openModal"
+                  >update your Classification Requirements</a>.
+                </p>
+              </div>
+
+              <div v-else id="ClassificationCheckboxWrapper">
+                <ATATCheckboxGroup
+                  id="ClassificationCheckboxes"
+                  aria-describedby="ClassificationGroupLabel"
+                  :value.sync="selectedHeaderLevelSysIds"
+                  :items="headerCheckboxItems"
+                  :card="false"
+                  class="copy-max-width"
+                  :rules="[
+                    $validators.required('Please select at least one option.')
+                  ]"
+                  groupLabel="What classification level(s) do you need?"
+                  groupLabelId="ClassificationGroupLabel"
+                />
+
+                <ATATExpandableLink aria-id="AboutClassificationLevels" class="mt-10">
+                  <template v-slot:header>
+                    I need this requirement within a different classification level. What do I do?
+                  </template>
+                  <template v-slot:content>
+                    <p>
+                      The levels listed above are based on the classification requirements 
+                      you specified in the previous Contract Details section. If you need 
+                      to make changes to these levels, 
+                      <a 
+                        role="button"
+                        id="UpdateClassification"
+                        tabindex="0"
+                        @click="openModal"
+                        @keydown.enter="openModal"
+                        @keydown.space="openModal"
+                      >update your Classification Requirements</a>.
+                    </p>
+                  </template>
+                </ATATExpandableLink>
+
+              </div>
+
+              <div id="OfferingDetailsForms">
+                <RequirementsForm
+                  :instances="instancesFormData"
+                  :avlInstancesLength="avlInstancesLength"
+                  :isPeriodsDataMissing="isPeriodsDataMissing"
+                />
+              </div>
+
             </div>
+          </v-col>
+        </v-row>
+      </v-container>
 
-            <div v-else id="ClassificationCheckboxWrapper">
-              <ATATCheckboxGroup
-                id="ClassificationCheckboxes"
-                aria-describedby="ClassificationGroupLabel"
-                :value.sync="selectedHeaderLevelSysIds"
-                :items="headerCheckboxItems"
-                :card="false"
-                class="copy-max-width"
-                :rules="[
-                  $validators.required('Please select at least one option.')
-                ]"
-                groupLabel="What classification level(s) do you need?"
-                groupLabelId="ClassificationGroupLabel"
-              />
+      <ClassificationsModal 
+        :showDialog="showDialog"
+        @cancelClicked="modalCancelClicked"
+        @okClicked="modalOkClicked"
+        :modalSelectedOptions.sync="modalSelectedOptions"
+        :modalSelectionsOnOpen="modalSelectionsOnOpen"
+        :modalCheckboxItems="modalCheckboxItems"
+        :IL6SysId="IL6SysId"
+        :isIL6Selected.sync="isIL6Selected"
+      />
 
-              <ATATExpandableLink aria-id="AboutClassificationLevels" class="mt-10">
-                <template v-slot:header>
-                  I need this requirement within a different classification level. What do I do?
-                </template>
-                <template v-slot:content>
-                  <p>
-                    The levels listed above are based on the classification requirements 
-                    you specified in the previous Contract Details section. If you need 
-                    to make changes to these levels, 
-                    <a 
-                      role="button"
-                      id="UpdateClassification"
-                      tabindex="0"
-                      @click="openModal"
-                      @keydown.enter="openModal"
-                      @keydown.space="openModal"
-                    >update your Classification Requirements</a>.
-                  </p>
-                </template>
-              </ATATExpandableLink>
-
-            </div>
-
-            <div id="OfferingDetailsForms">
-              <RequirementsForm
-                :instances="instancesFormData"
-                :avlInstancesLength="avlInstancesLength"
-                :isPeriodsDataMissing="isPeriodsDataMissing"
-              />
-            </div>
-
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
-
-    <ClassificationsModal 
-      :showDialog="showDialog"
-      @cancelClicked="modalCancelClicked"
-      @okClicked="modalOkClicked"
-      :modalSelectedOptions.sync="modalSelectedOptions"
-      :modalSelectionsOnOpen="modalSelectionsOnOpen"
-      :modalCheckboxItems="modalCheckboxItems"
-      :IL6SysId="IL6SysId"
-      :isIL6Selected.sync="isIL6Selected"
-    />
-
-  </div>
+    </div>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -118,6 +120,7 @@ import {
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
 import _ from "lodash";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -378,6 +381,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
     try {
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {
