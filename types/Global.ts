@@ -401,6 +401,7 @@ export interface User {
   phoneExt?: string;
   designation?: string;
   agency?: string;
+  sys_id?: string;
 }
 
 export interface Portfolio extends BaseTableDTO {
