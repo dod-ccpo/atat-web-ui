@@ -42,6 +42,7 @@ import Periods from "../periods";
 import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import UserStore from "../user";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -243,6 +244,10 @@ const initialCurrentEnvironment = () => {
     external_factors_architectural_design: "",
   }
 }
+
+const saveAcquisitionPackage = (value: AcquisitionPackageDTO) => {
+  api.acquisitionPackageTable.update(value.sys_id as string, value);
+};
 
 const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
@@ -619,6 +624,8 @@ export class AcquisitionPackageStore extends VuexModule {
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
 
+    const loggedInUser = await UserStore.getCurrentUser();
+
     if (storedSessionData && storedSessionData.length > 0) {
       const parsedData = JSON.parse(storedSessionData) as SessionData;
       this.setDataFromSession(parsedData);
@@ -653,7 +660,9 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentEnvironment(currentEnvironmentDTO);
           acquisitionPackage.current_environment =
             currentEnvironmentDTO.sys_id as unknown as string;
+          acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           this.setAcquisitionPackage(acquisitionPackage);
+          saveAcquisitionPackage(acquisitionPackage);
           await TaskOrder.initialize(acquisitionPackage.sys_id || "");
           this.setInitialized(true);
         }
