@@ -1,39 +1,57 @@
 <template>
-  <v-container fluid class="container-max-width">
-    <v-row>
-      <v-col class="col-12">
-        <h1 class="page-header">
-          How do you want to estimate your travel needs?
-        </h1>
-        <p class="page-intro">
-          Consider the travel requirements that you previously outlined (e.g.,
-          location, duration, quantity, attendance, etc.). You may choose to set
-          a ceiling price and apply it to all periods. Or, if you know that your
-          travel requirements will change over time, then you may opt to set a
-          different price for each period.
-        </p>
-        <div class="copy-max-width">
-          <ATATRadioGroup
-            class="copy-max-width max-width-740"
-            id="TravelEstimates"
-            :card="true"
-            :items="travelEstimateOptions"
-            :value.sync="ceilingPrice"
-            :rules="[$validators.required('Please select an option')]"
-          />
-        </div>
-        <hr class="mt-8" v-if="ceilingPrice !== ''" />
-
-        <div v-if="ceilingPrice !== ''">
-          <ATATSingleAndMultiplePeriods
-            :periods.sync="periods"
-            :isMultiple="ceilingPrice === 'multiple'"
-            :values.sync="estimatedTravelCosts"
-          ></ATATSingleAndMultiplePeriods>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-form ref="form" lazy-validation>
+    <v-container fluid class="container-max-width">
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header">
+            Let’s gather price estimates for your travel requirements
+          </h1>
+          <p class="page-intro">
+            Considering the travel requirements that you previously outlined, 
+            estimate costs for each period. If you have multiple trips within 
+            the same performance period, aggregate the prices into a single 
+            estimate per period.
+          </p>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="col-7">
+          <div class="copy-max-width">
+            <ATATRadioGroup
+              class="copy-max-width max-width-740"
+              id="TravelEstimates"
+              legend="How do you want to estimate your travel needs?"
+              :items="travelEstimateOptions"
+              :value.sync="ceilingPrice"
+              :rules="[$validators.required('Please select an option')]"
+            />
+          </div>
+          <br />
+          <div v-if="ceilingPrice !== ''">
+            <ATATSingleAndMultiplePeriods
+              :periods.sync="periods"
+              :isMultiple="ceilingPrice === 'multiple'"
+              :singlePeriodLabel="singlePeriodLabel"
+              :multiplePeriodLabel="multiplePeriodLabel"
+              :singlePeriodTooltipText="singlePeriodTooltipText"
+              :multiplePeriodTooltipText="multiplePeriodTooltipText"
+              :showMultiplePeriodTooltip="true"
+              :values.sync="estimatedTravelCosts"
+            ></ATATSingleAndMultiplePeriods>
+          </div>
+        </v-col>
+        <v-col class="col-5">
+          <CardRequirement
+            title="Travel summary"
+            iconType="currentLocation"
+            unitType="trip"
+            :items="periods"
+            :background="cardRequirementBackground"
+          ></CardRequirement>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 <script lang="ts">
 import { RadioButton } from "types/Global";
@@ -45,11 +63,14 @@ import IGCEStore, { TravelEstimateNeeds } from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
+import CardRequirement from "./components/Card_Requirement.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
     ATATRadioGroup,
-    ATATSingleAndMultiplePeriods
+    ATATSingleAndMultiplePeriods,
+    CardRequirement
   },
 })
 export default class TravelEstimates extends Mixins(SaveOnLeave) {
@@ -61,17 +82,26 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     estimatedTravelCosts: [],
   };
 
+  private cardRequirementBackground = `bg-base-lightest _no-shadow
+    border-rounded-more pa-4`;
+  private singlePeriodLabel = "Estimated travel costs per period";
+  private multiplePeriodLabel = "Estimated travel costs per period";
+  private singlePeriodTooltipText = `This estimate will be applied to all performance 
+    periods specified in the travel summary.`;
+  private multiplePeriodTooltipText = `Customize a price estimate for each performance 
+    period specified in the travel summary.`;
+
   private travelEstimateOptions: RadioButton[] = [
     {
       id: "SinglePrice",
       label:
-        "I want to set a ceiling price and apply the same estimate to all base and option periods.",
+        "I want to apply the same price estimate to all performance periods.",
       value: "single",
     },
     {
       id: "MultiplePrices",
       label:
-        "I want to customize my travel estimates for the base and each option period.",
+        "I want to estimate a different price for the base and each option period.",
       value: "multiple",
     },
   ];
@@ -107,6 +137,7 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
     if (this.hasChanged()) {
       IGCEStore.setTravelEstimateNeeds(this.currentData);
     }

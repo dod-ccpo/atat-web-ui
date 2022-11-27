@@ -25,6 +25,7 @@ import CommentBubble from "@/components/icons/CommentBubble.vue";
 import ContactSupport from "@/components/icons/ContactSupport.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
+import CurrentLocation from "@/components/icons/CurrentLocation.vue";
 import DisaLogo from "@/components/icons/DisaLogo.vue";
 import Email from "@/components/icons/Email.vue";
 import ErrorFilled from "@/components/icons/ErrorFilled.vue";
@@ -81,6 +82,7 @@ import WarningAmber from "@/components/icons/WarningAmber.vue";
     ContactSupport,
     ControlPoint,
     Currency,
+    CurrentLocation,
     DisaLogo,
     Edit,
     Email,
