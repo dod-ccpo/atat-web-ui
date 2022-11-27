@@ -51,13 +51,13 @@
               <div>
                 <v-btn
                   id="baseYearButton"
-                  @click="toggleBaseExpanded()"
+                  @click="baseExpanded = !baseExpanded"
                 >
-                  <v-icon v-if="!baseExpanded">navigate_next</v-icon>
-                  <v-icon v-if="baseExpanded">expand_more</v-icon>
+                  <v-icon v-show="!baseExpanded">navigate_next</v-icon>
+                  <v-icon v-show="baseExpanded">expand_more</v-icon>
                   <strong>Base Period</strong> ({{basePeriodTripsCount}} trips) 
                 </v-btn>
-                <div v-if="baseExpanded">
+                <div v-show="baseExpanded">
                   <div
                     v-for="(item, idx) in basePeriodItems"
                     :key="idx"
@@ -77,41 +77,41 @@
                       </span>
                     </div>
                   </div>
-                  <div class="hr"></div>
+                  <div class="hr" v-show="optionPeriodItems?.length > 0"></div>
                 </div>
               </div>
-              <div v-if="periods?.length > 1">
-                <div v-for="(item, idx) in periods?.slice(1)" :key="idx">
-                  <v-btn
-                    :id="getButtonId(idx)"
-                    @click="toggleOptionsExpanded(idx)"
+              <div
+                v-for="(item, idx) in optionPeriodItems" 
+                :key="idx"
+              >
+                <v-btn
+                  @click="optionsExpanded[idx] = !optionsExpanded[idx]"
+                >
+                  <v-icon v-show="!optionsExpanded[idx]">navigate_next</v-icon>
+                  <v-icon v-show="optionsExpanded[idx]">expand_more</v-icon>
+                  <strong>Option Period {{idx + 1}}</strong> ({{optionPeriodTripsCount}} trips) 
+                </v-btn>
+                <div v-show="optionsExpanded[idx]">
+                  <div
+                    v-for="(item, idx2) in optionPeriodItems[idx]"
+                    :key="idx2"
+                    class="d-flex flex-row align-center pl-12"
                   >
-                    <v-icon v-if="!optionsExpanded[idx]">navigate_next</v-icon>
-                    <v-icon v-if="optionsExpanded[idx]">expand_more</v-icon>
-                    <strong>Option Period {{idx + 1}}</strong> ({{optionPeriodTripsCount}} trips) 
-                  </v-btn>
-                  <div v-if="optionsExpanded[idx]">
-                    <div
-                      v-for="(item, idx2) in optionPeriodItems[idx]"
-                      :key="idx2"
-                      class="d-flex flex-row align-center pl-12"
-                    >
-                      <div class="d-flex">
-                        <span>{{item.count}} x</span>
-                      </div>
-                      <div class="d-flex">
-                        <span>
-                          &nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                      </div>
-                      <div class="d-flex">
-                        <span>
-                          {{item.location}}, {{item.duration}}, {{item.travelers}} travelers
-                        </span>
-                      </div>
+                    <div class="d-flex">
+                      <span>{{item.count}} x</span>
                     </div>
-                    <div class="hr"></div>
+                    <div class="d-flex">
+                      <span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                      </span>
+                    </div>
+                    <div class="d-flex">
+                      <span>
+                        {{item.location}}, {{item.duration}}, {{item.travelers}} travelers
+                      </span>
+                    </div>
                   </div>
+                  <div class="hr"></div>
                 </div>
               </div>
             </template>
@@ -174,53 +174,12 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     },
   ];
 
-  private basePeriodItems = [
-    {
-      count: "2",
-      location: "Washington, DC",
-      duration: "2 days",
-      travelers: "4"
-    },
-    {
-      count: "2",
-      location: "San Diego, CA",
-      duration: "2 days",
-      travelers: "4"
-    }
-  ];
+  private basePeriodItems: any[] = [];
 
-  private optionPeriodItems = [
-    [
-      {
-        count: "2",
-        location: "Washington, DC",
-        duration: "2 days",
-        travelers: "4"
-      },
-      {
-        count: "2",
-        location: "San Diego, CA",
-        duration: "2 days",
-        travelers: "4"
-      },
-    ]
-  ]
+  private optionPeriodItems: any[] = [];
 
   private baseExpanded = false;
   private optionsExpanded: boolean[] = [];
-
-  private getButtonId(index: number){
-    return "Option" + (index + 1) as string + "Button";
-  }
-
-  private toggleBaseExpanded(): void {
-    this.baseExpanded = !this.baseExpanded;
-  }
-
-  private toggleOptionsExpanded(index: number): void {
-    this.optionsExpanded[index] = !this.optionsExpanded[index];
-    console.log(this.optionsExpanded)
-  }
 
   get basePeriodTripsCount(): number {
     let total = 0;
@@ -235,8 +194,8 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   get optionPeriodTripsCount(): number {
     let total = 0;
 
-    this.optionPeriodItems.every((currentItem) => {
-      currentItem.forEach((item) => {
+    this.optionPeriodItems.forEach((currentItem) => {
+      currentItem.forEach((item: any) => {
         total += Number(item.count);
       })
     });
@@ -277,7 +236,43 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     this.estimatedTravelCosts = store.estimatedTravelCosts;
 
     this.periods = Periods.periods;
-    this.periods?.slice(1).forEach(() => {
+
+    // TEST DATA; REMOVE ONCE REAL DATA IS AVAILABLE
+    this.basePeriodItems = [
+      {
+        count: "2",
+        location: "Washington, DC",
+        duration: "2 days",
+        travelers: "4"
+      },
+      {
+        count: "2",
+        location: "San Diego, CA",
+        duration: "2 days",
+        travelers: "4"
+      }
+    ];
+
+    // TEST DATA; REMOVE ONCE REAL DATA IS AVAILABLE
+    this.optionPeriodItems = [
+      [
+        {
+          count: "2",
+          location: "Washington, DC",
+          duration: "2 days",
+          travelers: "4"
+        },
+        {
+          count: "2",
+          location: "San Diego, CA",
+          duration: "2 days",
+          travelers: "4"
+        },
+      ]
+    ];
+
+    
+    this.optionPeriodItems.forEach(() => {
       this.optionsExpanded.push(false);
     });
   }
