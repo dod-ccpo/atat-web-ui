@@ -175,20 +175,6 @@ describe("Existing User Component", () => {
       anchorLink.trigger('keydown.enter'); // trigger viewAllPortfolios();
       expect(wrapper.vm.$route.name).toBe("Project_Overview")
     });
- 
-    it("testing @keydown.space to trigger startNewAcquisition()", async () => {
-      const btn = await wrapper.find("#StartNewAcquisitionButton2");
-      btn.trigger('keydown.space'); // trigger viewAllPortfolios();
-      expect(await wrapper.emitted("startNewAcquisition")).toBeTruthy();
-      expect(wrapper.vm.$route.name).toBe("Project_Overview");
-    });
-
-    it("testing @keydown.enter to trigger startNewAcquisition()", async () => {
-      const btn = await wrapper.find("#StartNewAcquisitionButton2");
-      btn.trigger('keydown.enter'); // trigger viewAllPortfolios();
-      expect(await wrapper.emitted("startNewAcquisition")).toBeTruthy();
-      expect(wrapper.vm.$route.name).toBe("Project_Overview");
-    });
 
     it("testing @keydown.space to trigger viewAllPackages() ", async () => {
       const anchorLink = await wrapper.find("#viewAllPackagesLink");

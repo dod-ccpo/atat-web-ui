@@ -21,16 +21,12 @@
               documents specific to your requirements. With this completed requirements 
               package, you will have everything you need to begin the procurement process.
             </p>
-            <v-btn
-              id="StartNewAcquisitionButton"
-              class="primary mb-4 mt-4"
-              @click="startNewAcquisition"
-              @keydown.enter="startNewAcquisition"
-              @keydown.space="startNewAcquisition"
-            >
-              Start a new acquisition
-            </v-btn>
-
+            <div class="mb-4 mt-4">
+              <StartNewAcquisition
+                  :id="'StartNewAcquisitionButton'"
+                  :label="'Start a new acquisition'"
+              />
+            </div>
           </v-col>
           <v-col class="pl-10">
             <div class="bg-primary-lighter border-rounded-more pa-8">
@@ -40,7 +36,7 @@
               </p>
               <v-list class="_atat-stepper">
                 <v-list-item-group >
-                  <v-list-item 
+                  <v-list-item
                     v-for="(stepText, index) in prepareStepsText"
                     :key="index"
                   >
@@ -51,7 +47,7 @@
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
-              <v-btn 
+              <v-btn
                 class="v-btn link-button no-border"
                 @click="toggleShowNewFeatures"
               >
@@ -91,21 +87,21 @@
         <ATATDivider></ATATDivider>
       </div>
     </section>
-    <section 
-      id="SectionProvisionResources" 
+    <section
+      id="SectionProvisionResources"
       class="_learn-more-section bg-white _py-80"
     >
       <div class="container-max-width">
         <h1 class="text-primary large text-center mb-10">
           Provision your cloud resources
         </h1>
-        
+
         <ATATAlert
           type="info"
         >
           <template slot="content">
             <span class="text-center">
-              Cloud account provisioning is not available at this time. 
+              Cloud account provisioning is not available at this time.
               This feature will be coming soon.
             </span>
           </template>
@@ -115,15 +111,15 @@
         <v-row>
           <v-col class="pr-10">
             <p class="mt-5">
-              Whether you used DAPPS to generate your acquisition package or obtained 
-              a JWCC task order from your own contracting office, the Account Tracking 
-              and Automation Tool (ATAT) will enable you to provision accounts and 
+              Whether you used DAPPS to generate your acquisition package or obtained
+              a JWCC task order from your own contracting office, the Account Tracking
+              and Automation Tool (ATAT) will enable you to provision accounts and
               environments for your cloud contracts.
             </p>
             <p>
-              ATAT also provides a reporting dashboard that tracks cloud usage and 
-              other metrics across your portfolio. This will give you a better 
-              understanding of how your team is using cloud to help you manage 
+              ATAT also provides a reporting dashboard that tracks cloud usage and
+              other metrics across your portfolio. This will give you a better
+              understanding of how your team is using cloud to help you manage
               spending throughout the duration of your task order.
             </p>
 
@@ -136,7 +132,7 @@
               </p>
               <v-list class="_atat-stepper">
                 <v-list-item-group >
-                  <v-list-item 
+                  <v-list-item
                     v-for="(stepText, index) in provisionStepsText"
                     :key="index"
                   >
@@ -164,21 +160,19 @@ import NewAcquisitionCard from "./components/NewAcquisitionCard.vue";
 import ExistingTaskOrderCard from "./components/ExistingTaskOrderCard.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDivider from "@/components/ATATDivider.vue";
+import StartNewAcquisition from "@/packages/components/StartNewAcquisition.vue";
 
 @Component({
   components: {
     NewAcquisitionCard,
     ExistingTaskOrderCard,
     ATATAlert,
-    ATATDivider
+    ATATDivider,
+    StartNewAcquisition
   }
 })
 
 export default class NewUser extends Vue {
- 
-  public startNewAcquisition(): void {
-    this.$emit("startNewAcquisition");
-  }
 
   public prepareStepsText = [
     `Answer a series of questions about your project requirements.`,

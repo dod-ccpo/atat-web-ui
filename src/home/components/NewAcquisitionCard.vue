@@ -7,15 +7,12 @@
       We’ll guide you through steps to prepare procurement documents based on 
       your project’s specific needs.
     </p>
-    <v-btn
-      id="StartNewAcquisition"
-      class="primary mb-4"
-      @click="startNewAcquisition"
-      @keydown.enter="startNewAcquisition"
-      @keydown.space="startNewAcquisition"
-    >
-      Start a new acquisition
-    </v-btn>
+    <div class="mb-4">
+      <StartNewAcquisition
+          :id="'StartNewAcquisition'"
+          :label="'Start a new acquisition'"
+      />
+    </div>
     <v-btn 
       id="LearnMoreBuilding"
       class="secondary"
@@ -32,9 +29,16 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import { scrollToId } from "@/helpers";
+import StartNewAcquisition from "@/packages/components/StartNewAcquisition.vue";
 
-@Component({})
+@Component({
+  components: {
+    StartNewAcquisition
+  }
+})
 
+// TODO: This component is imported by NewUser component but not used. Not defined or imported
+//  elsewhere. Could probably be deleted
 export default class NewAcquisitionCard extends Vue {
 
   public async startNewAcquisition(): Promise<void> {

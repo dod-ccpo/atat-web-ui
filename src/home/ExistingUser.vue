@@ -116,15 +116,12 @@
 
           <v-card flat class="pa-6 mb-10 _simple-border">
             <h3 class="text-primary mb-4">What else could we help you with?</h3>
-            <v-btn
-              id="StartNewAcquisitionButton2"
-              class="primary mb-4 mt-4 width-100"
-              @click="startNewAcquisition"
-              @keydown.enter="startNewAcquisition"
-              @keydown.space="startNewAcquisition"
-            >
-              Start your new acquisition package
-            </v-btn>
+            <div class="mb-4 mt-4">
+              <StartNewAcquisition
+                  :id="'StartNewAcquisitionButton2'"
+                  :label="'Start your new acquisition package'"
+              />
+            </div>
             <v-btn
               id="StartNewAcquisitionButton"
               class="secondary mt-4 width-100"
@@ -159,6 +156,7 @@ import {
   AcquisitionPackageSummarySearchDTO, 
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import StartNewAcquisition from "@/packages/components/StartNewAcquisition.vue";
 
 @Component({
   components: {
@@ -166,6 +164,7 @@ import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
     ATATSearch,
     "PackageCards": Card,
     PortfoliosSummary,
+    StartNewAcquisition,
   }
 })
 
@@ -182,10 +181,6 @@ export default class ExistingUser extends Vue {
 
   public get showAlert(): boolean {
     return this.draftPackageCount > 0
-  }
-
-  public startNewAcquisition(): void {
-    this.$emit("startNewAcquisition");
   }
 
   public updateTotalPortfolios(totalCount: number): void {

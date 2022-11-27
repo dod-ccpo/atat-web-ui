@@ -19,16 +19,11 @@
                   <br />
                   <div class="d-flex justify-space-around">
                     <div class="d-flex align-flex-start">
-                      <v-btn 
-                        class="v-btn primary"
-                        @click="startNewAcquisition"
-                      >
-                        Start a new acquisition
-                      </v-btn>
+                      <StartNewAcquisition :label="'Start New Acquisition'"/>
                     </div>
                     &nbsp;&nbsp;
                     <div class="d-flex align-flex-end">
-                      <v-btn 
+                      <v-btn
                         id="HelpfulResourcesButton"
                         class="secondary"
                         @click="scrollToResources"
@@ -40,7 +35,7 @@
                   <!-- <br/>
                   <v-row>
                     <v-col cols="6">
-                      <v-btn 
+                      <v-btn
                         class="v-btn primary"
                         @click="startNewAcquisition"
                       >
@@ -48,7 +43,7 @@
                       </v-btn>
                     </v-col>
                     <v-col cols="6" >
-                      <v-btn 
+                      <v-btn
                         id="HelpfulResourcesButton"
                         class="secondary"
                         @click="scrollToResources"
@@ -63,31 +58,29 @@
           </section>
         </div>
 
-        <NewUser 
-          v-if="isNewUser" 
-          class="mt-15" 
-          @startNewAcquisition="startNewAcquisition" 
+        <NewUser
+          v-if="isNewUser"
+          class="mt-15"
         />
 
-        <ExistingUser 
-          v-else 
-          class="mt-8" 
-          @startNewAcquisition="startNewAcquisition" 
+        <ExistingUser
+          v-else
+          class="mt-8"
         />
 
         <div class="bg-white">
           <div class="container-max-width pt-5">
-            <a 
+            <a
               id="TempUserTypeToggle"
-              role="button" 
-              @click="toggleUserType" 
+              role="button"
+              @click="toggleUserType"
               class="font-size-12 d-block mb-10"
             >
               Toggle new/existing for testing
             </a>
 
           </div>
-        </div>        
+        </div>
 
         <div class="bg-white">
           <ATATFooter class="mx-auto pt-10" />
@@ -104,6 +97,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import ATATFooter from "@/components/ATATFooter.vue";
+import StartNewAcquisition from "@/packages/components/StartNewAcquisition.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 
@@ -119,6 +113,7 @@ import UserStore from "@/store/user";
 @Component({
   components: {
     ATATFooter,
+    StartNewAcquisition,
     ExistingUser,
     HelpfulResourcesCards,
     NewUser,

@@ -620,55 +620,44 @@ export class AcquisitionPackageStore extends VuexModule {
       return;
     }
 
-    const storedSessionData = sessionStorage.getItem(
-      ATAT_ACQUISTION_PACKAGE_KEY
-    ) as string;
-
     const loggedInUser = await UserStore.getCurrentUser();
+    try {
+      const acquisitionPackage = await api.acquisitionPackageTable.create();
+      if (acquisitionPackage) {
+        this.setProjectOverview(initialProjectOverview());
+        this.setOrganization(initialOrganization());
+        this.setContractType(initialContractType());
+        this.setContact({ data: initialContact(), type: "COR" });
+        this.setContact({ data: initialContact(), type: "ACOR" });
+        this.setCurrentContract(initialCurrentContract());
+        this.setContractConsiderations(initialContractConsiderations());
+        this.setFairOpportunity(initialFairOpportunity());
+        this.setEvaluationPlan(initialEvaluationPlan());
 
-    if (storedSessionData && storedSessionData.length > 0) {
-      const parsedData = JSON.parse(storedSessionData) as SessionData;
-      this.setDataFromSession(parsedData);
-      this.setInitialized(true);
-    } else {
-      try {
-        const acquisitionPackage = await api.acquisitionPackageTable.create();
-        if (acquisitionPackage) {
-          this.setProjectOverview(initialProjectOverview());
-          this.setOrganization(initialOrganization());
-          this.setContractType(initialContractType());
-          this.setContact({ data: initialContact(), type: "COR" });
-          this.setContact({ data: initialContact(), type: "ACOR" });
-          this.setCurrentContract(initialCurrentContract());
-          this.setContractConsiderations(initialContractConsiderations());
-          this.setFairOpportunity(initialFairOpportunity());
-          this.setEvaluationPlan(initialEvaluationPlan());
+        this.setRequirementsCostEstimate({
+          estimatedTaskOrderValue: "",
+          feePercentage: "",
+          feeCharged: "" ,
+          surge_capabilities: "",
+          surge_capacity: ""
+        });
 
-          this.setRequirementsCostEstimate({ 
-            estimatedTaskOrderValue: "",
-            feePercentage: "",
-            feeCharged: "" ,
-            surge_capabilities: "",
-            surge_capacity: ""
-          });
-
-          this.setPeriods([]);
-          this.setPeriodOfPerformance(initialPeriodOfPerformance());
-          this.setSensitiveInformation(initialSensitiveInformation());
-          // sys_id from current environment will need to be saved to acquisition package
-          const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
-          this.setCurrentEnvironment(currentEnvironmentDTO);
-          acquisitionPackage.current_environment =
-            currentEnvironmentDTO.sys_id as unknown as string;
-          acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
-          this.setAcquisitionPackage(acquisitionPackage);
-          saveAcquisitionPackage(acquisitionPackage);
-          await TaskOrder.initialize(acquisitionPackage.sys_id || "");
-          this.setInitialized(true);
-        }
-      } catch (error) {
-        console.log(`error creating acquisition package ${error}`);
+        this.setPeriods([]);
+        this.setPeriodOfPerformance(initialPeriodOfPerformance());
+        this.setSensitiveInformation(initialSensitiveInformation());
+        // sys_id from current environment will need to be saved to acquisition package
+        const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
+        this.setCurrentEnvironment(currentEnvironmentDTO);
+        acquisitionPackage.current_environment =
+          currentEnvironmentDTO.sys_id as unknown as string;
+        acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
+        this.setAcquisitionPackage(acquisitionPackage);
+        saveAcquisitionPackage(acquisitionPackage);
+        await TaskOrder.initialize(acquisitionPackage.sys_id || "");
+        this.setInitialized(true);
       }
+    } catch (error) {
+      console.log(`error creating acquisition package ${error}`);
     }
     await Periods.initialize();
   }

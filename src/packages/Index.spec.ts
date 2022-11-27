@@ -45,13 +45,6 @@ describe("Testing Packages Component", () => {
   });
 
   describe("testing index functions", () => {
-
-    it("toAcquisitions() - tests back to home", async () => {
-      wrapper.vm.$data.altBackDestination = "Home";
-      await wrapper.vm.toAcquisitions();
-      expect(router.app.$route.name).toBe("Project_Overview");
-    });
-
     it("test tabIndex changes",()=>{
       const apStatus = wrapper.vm.$data.searchDTO.acquisitionPackageStatus
       wrapper.vm.tabIndexChanged(0)

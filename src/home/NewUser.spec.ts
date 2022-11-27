@@ -38,12 +38,6 @@ describe("Testing New User Component", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
-
-    it("startNewAcquisition()", async () => {
-      await wrapper.vm.startNewAcquisition();
-      expect(router.app.$route.name).toBe("Project_Overview");
-    });
-
   });
 
 });

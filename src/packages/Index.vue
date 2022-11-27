@@ -28,13 +28,7 @@
           </div>
         </div>
         <div class="d-flex ml-auto">
-          <v-btn
-            class="primary"
-            :ripple="false"
-            @click="toAcquisitions"
-          >
-            Start New Acquisition
-          </v-btn>
+          <StartNewAcquisition :label="'Start New Acquisition'"/>
         </div>
         <div class="d-flex justify-end align-center"></div>
       </v-app-bar>
@@ -91,6 +85,7 @@ import Toast from "@/store/toast";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Search from "@/packages/components/Search.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
+import StartNewAcquisition from "@/packages/components/StartNewAcquisition.vue";
 
 @Component({
   components: {
@@ -99,7 +94,8 @@ import ATATNoResults from "@/components/ATATNoResults.vue";
     ATATToast,
     ATATNoResults,
     Card,
-    Search
+    Search,
+    StartNewAcquisition
   }
 })
 export default class Packages extends Vue {
@@ -174,16 +170,6 @@ export default class Packages extends Vue {
 
   public tabClicked(tabType: string): void {
     this.activeTab = tabType;
-  }
-  public async toAcquisitions(): Promise<void> {
-    await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
-    this.$router.push({
-      name: routeNames.ProjectOverview,
-      params: {
-        direction: "next"
-      }
-    }).catch(() => console.log("avoiding redundant navigation"));
-    AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
   private getIdText(string: string) {
     return getIdText(string);
