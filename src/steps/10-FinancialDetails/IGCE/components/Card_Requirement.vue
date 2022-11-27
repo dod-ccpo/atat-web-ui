@@ -16,36 +16,12 @@
       </div>
       <div class="ml-auto">
         <span class="h3 text-base">
-          {{items?.length}} 
-          {{unitType}}<span v-if="items?.length > 1 || items?.length == 0">s</span>
+          {{units}} 
         </span>
       </div>
     </div>
     <br/>
-    <div>
-      <v-btn
-        @click="toggleBaseExpanded()"
-      >
-        <v-icon v-if="!baseExpanded">navigate_next</v-icon>
-        <v-icon v-if="baseExpanded">expand_more</v-icon>
-        <strong>Base Period</strong> (5 {{unitType}}s) 
-      </v-btn>
-      <div v-if="baseExpanded">
-        <span class="pl-12">2 x Washington, DC, 2 days, 4 travelers</span>
-        <div class="hr"></div>
-      </div>
-    </div>
-    <div v-if="items?.length > 1">
-      <div v-for="(item, idx) in items" :key="idx">
-        <div v-if="idx != 0">
-          <v-btn>
-            <v-icon v-if="true">navigate_next</v-icon>
-            <v-icon v-if="false">expand_more</v-icon>
-            <strong>Option Period {{idx}}</strong> (5 {{unitType}}s) 
-          </v-btn>
-        </div>
-      </div>
-    </div>
+    <slot name="content"></slot>
   </v-card>
 </template>
 <script lang="ts">
@@ -63,15 +39,8 @@ import { Component, Prop } from "vue-property-decorator";
 export default class CardRequirement extends Vue {
   @Prop({default: "Card Title"}) private title?: string;
   @Prop({default: "infoOutline"}) private iconType?: string;
-  @Prop({default: "item"}) private unitType?: string;
+  @Prop({default: "5 items"}) private units?: string;
   @Prop({default: "bg-base-lighter"}) private background?: string;
-  @Prop({default: () => []}) private items?: [];
-
-  private baseExpanded = false;
-
-  private toggleBaseExpanded(): void {
-    this.baseExpanded = !this.baseExpanded;
-  }
 }
 </script>
 

@@ -44,10 +44,78 @@
           <CardRequirement
             title="Travel summary"
             iconType="currentLocation"
-            unitType="trip"
-            :items="periods"
+            :units="totalTrips + ' trips'"
             :background="cardRequirementBackground"
-          ></CardRequirement>
+          >
+            <template slot="content">
+              <div>
+                <v-btn
+                  id="baseYearButton"
+                  @click="toggleBaseExpanded()"
+                >
+                  <v-icon v-if="!baseExpanded">navigate_next</v-icon>
+                  <v-icon v-if="baseExpanded">expand_more</v-icon>
+                  <strong>Base Period</strong> ({{basePeriodTripsCount}} trips) 
+                </v-btn>
+                <div v-if="baseExpanded">
+                  <div
+                    v-for="(item, idx) in basePeriodItems"
+                    :key="idx"
+                    class="d-flex flex-row align-center pl-12"
+                  >
+                    <div class="d-flex">
+                      <span>{{item.count}} x</span>
+                    </div>
+                    <div class="d-flex">
+                      <span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                      </span>
+                    </div>
+                    <div class="d-flex">
+                      <span>
+                        {{item.location}}, {{item.duration}}, {{item.travelers}} travelers
+                      </span>
+                    </div>
+                  </div>
+                  <div class="hr"></div>
+                </div>
+              </div>
+              <div v-if="periods?.length > 1">
+                <div v-for="(item, idx) in periods?.slice(1)" :key="idx">
+                  <v-btn
+                    :id="getButtonId(idx)"
+                    @click="toggleOptionsExpanded(idx)"
+                  >
+                    <v-icon v-if="!optionsExpanded[idx]">navigate_next</v-icon>
+                    <v-icon v-if="optionsExpanded[idx]">expand_more</v-icon>
+                    <strong>Option Period {{idx + 1}}</strong> ({{optionPeriodTripsCount}} trips) 
+                  </v-btn>
+                  <div v-if="optionsExpanded[idx]">
+                    <div
+                      v-for="(item, idx2) in optionPeriodItems[idx]"
+                      :key="idx2"
+                      class="d-flex flex-row align-center pl-12"
+                    >
+                      <div class="d-flex">
+                        <span>{{item.count}} x</span>
+                      </div>
+                      <div class="d-flex">
+                        <span>
+                          &nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                      </div>
+                      <div class="d-flex">
+                        <span>
+                          {{item.location}}, {{item.duration}}, {{item.travelers}} travelers
+                        </span>
+                      </div>
+                    </div>
+                    <div class="hr"></div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </CardRequirement>
         </v-col>
       </v-row>
     </v-container>
@@ -106,6 +174,80 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     },
   ];
 
+  private basePeriodItems = [
+    {
+      count: "2",
+      location: "Washington, DC",
+      duration: "2 days",
+      travelers: "4"
+    },
+    {
+      count: "2",
+      location: "San Diego, CA",
+      duration: "2 days",
+      travelers: "4"
+    }
+  ];
+
+  private optionPeriodItems = [
+    [
+      {
+        count: "2",
+        location: "Washington, DC",
+        duration: "2 days",
+        travelers: "4"
+      },
+      {
+        count: "2",
+        location: "San Diego, CA",
+        duration: "2 days",
+        travelers: "4"
+      },
+    ]
+  ]
+
+  private baseExpanded = false;
+  private optionsExpanded: boolean[] = [];
+
+  private getButtonId(index: number){
+    return "Option" + (index + 1) as string + "Button";
+  }
+
+  private toggleBaseExpanded(): void {
+    this.baseExpanded = !this.baseExpanded;
+  }
+
+  private toggleOptionsExpanded(index: number): void {
+    this.optionsExpanded[index] = !this.optionsExpanded[index];
+    console.log(this.optionsExpanded)
+  }
+
+  get basePeriodTripsCount(): number {
+    let total = 0;
+
+    this.basePeriodItems.forEach((currentItem) => {
+      total += Number(currentItem.count);
+    });
+
+    return total;
+  }
+
+  get optionPeriodTripsCount(): number {
+    let total = 0;
+
+    this.optionPeriodItems.every((currentItem) => {
+      currentItem.forEach((item) => {
+        total += Number(item.count);
+      })
+    });
+
+    return total;
+  }
+
+  get totalTrips(): number {
+    return this.basePeriodTripsCount + this.optionPeriodTripsCount;
+  }
+
   get currentData(): TravelEstimateNeeds {
     return{
       ceilingPrice: this.ceilingPrice,
@@ -126,7 +268,6 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
 
   private async mounted(): Promise<void> {
     await this.loadOnEnter();
-    this.periods = Periods.periods;
   }
 
   private async loadOnEnter(): Promise<void> {
@@ -134,6 +275,11 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     this.savedData = store;
     this.ceilingPrice = store.ceilingPrice;
     this.estimatedTravelCosts = store.estimatedTravelCosts;
+
+    this.periods = Periods.periods;
+    this.periods?.slice(1).forEach(() => {
+      this.optionsExpanded.push(false);
+    });
   }
 
   protected async saveOnLeave(): Promise<boolean> {
