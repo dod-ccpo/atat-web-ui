@@ -692,14 +692,11 @@ const currentEnvNeedsArchitectureDesign = (): boolean => {
 }
 
 export const IGCECannotProceedResolver = (current: string): string => {
-  debugger;
   if (!IGCEStore.hasDOWandPoP){
     return routeNames.CannotProceed;
   }
 
-  debugger;
   if (current === routeNames.CreatePriceEstimate) {
-    debugger;
     if (needsReplicateOrOptimize()) {
       return routeNames.OptimizeOrReplicate;
     }
@@ -712,7 +709,6 @@ export const IGCECannotProceedResolver = (current: string): string => {
 }
 
 export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
-  debugger;
   if (current === routeNames.CannotProceed){
     return routeNames.FundingPlanType;
   }
