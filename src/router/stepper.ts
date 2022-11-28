@@ -145,7 +145,6 @@ import {
   FinancialPOCResolver,
   OtherOfferingSummaryPathResolver,
   IGCESurgeCapabilities,
-  IGCEGatherPriceEstimatesResolver,
   IGCECannotProceedResolver,
   IGCEOptimizeOrReplicateResolver,
   IGCEArchitecturalDesignSolutionsResolver,
@@ -880,6 +879,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.OptimizeOrReplicate,
         completePercentageWeight: 0,
         component: OptimizeOrReplicate,
+        routeResolver: IGCEOptimizeOrReplicateResolver,
       },
       {
         menuText: "Architectural Design Solutions",
@@ -888,6 +888,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ArchitecturalDesignSolutions,
         completePercentageWeight: 0,
         component: ArchitecturalDesignSolutions,
+        routeResolver: IGCEArchitecturalDesignSolutionsResolver,
       },
       {
         menuText: "Gather Price Estimates",
@@ -961,8 +962,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SupportingDocumentation,
         completePercentageWeight: 1,
         component: SupportingDocumentation,
-        // routeResolver: IGCESupportingDocumentationResolver // EJY needed?
-
+        routeResolver: IGCESupportingDocumentationResolver
       },
       {
         menuText: "Funding Plan",
