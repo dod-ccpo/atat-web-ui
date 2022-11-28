@@ -100,6 +100,18 @@ export default class ATATStepperNavigation extends Vue {
         case "developer_tools":
           buttonText += "Developer Tools and Services";
           break;
+        case "networking":
+          buttonText += "Networking";
+          break;
+        case "security":
+          buttonText += "Security";
+          break;
+        case "machine_learning":
+          buttonText += "Machine Learning";
+          break;
+        case "iot":
+          buttonText += "Internet of Things";
+          break;
         default:
           buttonText += "these cloud resources";
           break;
