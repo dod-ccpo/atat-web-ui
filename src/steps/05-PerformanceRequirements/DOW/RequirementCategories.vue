@@ -42,7 +42,7 @@
               :value.sync="selectedXaasOptions"
               aria-describedby="XaaSLabel"
               class="copy-max-width"
-              groupLabel="What type of XaaS resources, tools and services do you need?"
+              groupLabel="What type of XaaS resources, tools, and services do you need?"
               groupLabelId="XaaSLabel"
             />
             <hr/>
@@ -57,7 +57,7 @@
               :value.sync="cloudSupportSelectedOptions"
               aria-describedby="CloudSupportLabel"
               class="copy-max-width"
-              groupLabel="What type(s) of cloud support packages do you need?"
+              groupLabel="What type of services do you need in a cloud support package?"
               groupLabelId="CloudSupportLabel"
             />
           </div>
@@ -131,15 +131,22 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       const checkboxItem: Checkbox = {
         id: this.getIdText(serviceOfferingGroup.value),
         label: serviceOfferingGroup.label,
-        value: serviceOfferingGroup.value
+        value: serviceOfferingGroup.value,
+        description: serviceOfferingGroup.hint
       };
 
-      const cloudServiceCategories = ["advisory", "training", this.cloudNoneValue.toLowerCase()];
+      console.log(checkboxItem)
+
+      const cloudServiceCategories = [
+        "portability",
+        "advisory", 
+        "helpdesk",
+        "training",
+        "documentation",
+        "general_support", 
+        this.cloudNoneValue.toLowerCase()
+      ];
       if (!cloudServiceCategories.includes(checkboxItem.value.toLowerCase())) {
-        if (checkboxItem.value.toLowerCase() === "general_xaas") {
-          checkboxItem.description = `Including third party marketplace and any
-            other XaaS resources not covered in the categories above`;
-        };
         this.xaasCheckboxItems.push(checkboxItem);
       } else {
         this.cloudSupportCheckboxItems.push(checkboxItem);
