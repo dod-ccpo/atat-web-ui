@@ -25,11 +25,11 @@
   </v-container>
 </template>
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import { EnvironmentLocation, RadioButton } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import { CurrentEnvironmentDTO } from "@/api/models";
+import { CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import CurrentEnvironment,
@@ -42,6 +42,8 @@ import CurrentEnvironment,
 })
 export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   public currEnvDTO = defaultCurrentEnvironment;
+  public envInstances: CurrentEnvironmentInstanceDTO[] = [];
+
   /* eslint-disable camelcase */
   public currentEnvironmentLocation: EnvironmentLocation = "";
   private envLocationOption: RadioButton[] = [
@@ -62,6 +64,12 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     },
   ];
 
+  @Watch("currentEnvironmentLocation")
+  public locationChange(newVal: string) {
+    //
+    
+  }
+
   private savedData: Record<string, string> = {
     env_location: "",
   }
@@ -71,6 +79,11 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       env_location: this.currentEnvironmentLocation || "",
     };
   }
+
+  public get hasCloudEnvs(): boolean {
+    return this.envInstances.findIndex(obj => obj.env_location === "ON_PREM")
+  }
+
   public async loadOnEnter(): Promise<void> {
     // TODO - get from ACQPKG store or CURRENV store??
     const storeData = await AcquisitionPackage.getCurrentEnvironment();
