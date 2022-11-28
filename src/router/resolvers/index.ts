@@ -677,75 +677,55 @@ export const IGCESurgeCapabilities =  (current:string): string =>{
   }
   return routeNames.SurgeCapabilities;
 }
+
+
+// KEEP FOR FUTURE TICKETS  8331 and 8344
+const needsReplicateOrOptimize = (): boolean => {
+  return !(
+    AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized === "NO"
+  );
+}
+// KEEP FOR FUTURE TICKETS  8331 and 8344
+const currentEnvNeedsArchitectureDesign = (): boolean => {
+  return AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
+}
+
 export const IGCECannotProceedResolver = (current: string): string => {
-  if (IGCEStore.hasDOWandPoP){
-    if (current ===  routeNames.CreatePriceEstimate){
-      return routeNames.GatherPriceEstimates;
-    } else if (current == routeNames.GatherPriceEstimates) {
-      return routeNames.CreatePriceEstimate;
-    }
+  if (!IGCEStore.hasDOWandPoP){
+    return routeNames.CannotProceed;
   }
-  return routeNames.CannotProceed;
-};
+
+  return current ===  routeNames.CreatePriceEstimate
+    ? routeNames.OptimizeOrReplicate
+    : routeNames.CreatePriceEstimate;
+  // TODO - TICKETS 8331 AND 8344 -- additional logic needed
+}
 
 export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
-
-  const needsReplicateOrOptimize
-    = !(
-      AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized === "NO"
-    );
-
-  if(
-    current === routeNames.CreatePriceEstimate 
-    && IGCEStore.hasDOWandPoP 
-    && needsReplicateOrOptimize
-  ){
-    return routeNames.OptimizeOrReplicate;
+  if (current === routeNames.CannotProceed){
+    return routeNames.FundingPlanType;
   }
 
-  return current === routeNames.OptimizeOrReplicate 
-    && IGCEStore.hasDOWandPoP && needsReplicateOrOptimize
-    ? routeNames.CreatePriceEstimate
-    : routeNames.ArchitecturalDesignSolutions;
-
+  return routeNames.OptimizeOrReplicate
+  // KEEP FOR FUTURE TICKET 8331 -- additional logic needed
+  // return current === routeNames.ArchitecturalDesignSolutions && needsReplicateOrOptimize()
+  //   ? routeNames.OptimizeOrReplicate
+  //   : routeNames.CreatePriceEstimate;
 }
+
 
 export const IGCEArchitecturalDesignSolutionsResolver = (current: string): string => {
+  return routeNames.ArchitecturalDesignSolutions;
 
-  const currentEnvNeedsArchitectureDesign
-    = (
-      AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES"
-    )
+  // KEEP FOR FUTURE TICKET 8344 -- additional logic needed
+  // if (currentEnvNeedsArchitectureDesign()) {
+  //   return routeNames.ArchitecturalDesignSolutions;
+  // }
 
-  if(
-    current === routeNames.OptimizeOrReplicate 
-    && IGCEStore.hasDOWandPoP 
-    && (
-      currentEnvNeedsArchitectureDesign
-    )
-  ){
-    return routeNames.ArchitecturalDesignSolutions;
-  }
-
-  return current === routeNames.ArchitecturalDesignSolutions 
-    && IGCEStore.hasDOWandPoP
-    && (
-      currentEnvNeedsArchitectureDesign
-    )
-    ? routeNames.OptimizeOrReplicate
-    : routeNames.CannotProceed;
-
+  // return current === routeNames.GatherPriceEstimates && needsReplicateOrOptimize()
+  //   ? routeNames.OptimizeOrReplicate
+  //   : routeNames.CreatePriceEstimate;
 }
-
-export const IGCEGatherPriceEstimatesResolver = (current: string): string => {
-  if (current === routeNames.TravelEstimates && IGCEStore.hasDOWandPoP){
-    return routeNames.GatherPriceEstimates;
-  }
-
-  return current === routeNames.GatherPriceEstimates && IGCEStore.hasDOWandPoP
-    ? routeNames.CreatePriceEstimate
-    : routeNames.FundingPlanType;
-};
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {
   return current === routeNames.FundingPlanType && IGCEStore.hasDOWandPoP
@@ -876,7 +856,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   IGCECannotProceedResolver,
   IGCEOptimizeOrReplicateResolver,
   IGCEArchitecturalDesignSolutionsResolver,
-  IGCEGatherPriceEstimatesResolver,
   IGCESupportingDocumentationResolver,
   MIPRResolver,
   IGCESurgeCapabilities,
