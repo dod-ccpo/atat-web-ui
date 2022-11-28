@@ -96,6 +96,10 @@ $widths: 500, 640, 740, 840, 760, 1200;
     }
 }
 
+.no-margin {
+  margin: 0 !important;
+}
+
 .height-auto {
     height: auto !important;
 }
@@ -151,4 +155,29 @@ $widths: 500, 640, 740, 840, 760, 1200;
 
 ._no-shadow {
   box-shadow: none !important;
+}
+
+.ellipsis{
+  display:inline-block;
+  overflow:hidden;
+  vertical-align:bottom;
+}
+
+.ellipsis:after {
+  display:inline-block;
+  -webkit-animation: ellipsis-keyframes 900ms steps(4, jump-none) infinite;
+  animation: ellipsis-keyframes 900ms steps(4, jump-none) infinite;
+  content: "...";
+}
+
+@keyframes ellipsis-keyframes {
+  0%{
+    transform:translateX(-100%)
+  }
+}
+
+@-webkit-keyframes ellipsis-keyframes {
+  0%{
+    transform:translateX(-100%)
+  }
 }

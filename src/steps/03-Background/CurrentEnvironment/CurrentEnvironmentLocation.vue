@@ -1,28 +1,30 @@
 <template>
-  <v-container class="container-max-width" fluid>
-    <v-row>
-      <v-col class="col-12">
-        <h1 class="page-header mb-3">
-          Where is your current environment located?
-        </h1>
-        <div class="copy-max-width">
-          <p class="mb-8">
-            If you have instances in a hybrid environment, then we will gather details about the
-            location for each instance later.
-          </p>
-          <ATATRadioGroup
-            id="EnvLocationButtons"
-            :card="true"
-            :items="envLocationOption"
-            :rules="[$validators.required('Please select a type of environment')]"
-            :value.sync="currentEnvironmentLocation"
-            class="copy-max-width mb-10 max-width-740"
-            name="radioButton-card"
-          />
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-form ref="form" lazy-validation>
+    <v-container class="container-max-width" fluid>
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+            Where is your current environment located?
+          </h1>
+          <div class="copy-max-width">
+            <p class="mb-8">
+              If you have instances in a hybrid environment, then we will gather details about the
+              location for each instance later.
+            </p>
+            <ATATRadioGroup
+              id="EnvLocationButtons"
+              :card="true"
+              :items="envLocationOption"
+              :rules="[$validators.required('Please select a type of environment')]"
+              :value.sync="currentEnvironmentLocation"
+              class="copy-max-width mb-10 max-width-740"
+              name="radioButton-card"
+            />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 <script lang="ts">
 import { Component, Mixins, Watch } from "vue-property-decorator";

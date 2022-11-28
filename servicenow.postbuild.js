@@ -189,7 +189,7 @@ function resolveRobotoFontsAndImagePaths(fileContent){
     }
   
     // image paths
-    const imageMatches = findMatches(fileContent, imgRegex, 8);
+    const imageMatches = findMatches(fileContent, imgRegex, 10);
     if (imageMatches) {
       const newImagePath = servicenowConfig.IMG_API_PATH;
       console.log(`Replacing the image paths with: ${newImagePath}`);

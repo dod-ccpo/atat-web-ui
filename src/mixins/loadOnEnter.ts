@@ -9,14 +9,14 @@ import Steps from "@/store/steps";
  */
 Component.registerHooks(["beforeRouteEnter"]);
 @Component({})
-export default class SaveOnLeave extends Vue {
+export default class LoadOnEnter extends Vue {
 
   public async beforeRouteEnter(
     to: Route,
     from: Route,
     next: (n: unknown) => void
   ): Promise<void> {
-    Steps.setStepComplete(to.name as string);
+    Steps.setEnterStepComplete(to.name as string);
     next(async (vm: {loadOnEnter: ()=> Promise<void>} ) => {
       await vm.loadOnEnter();
     });

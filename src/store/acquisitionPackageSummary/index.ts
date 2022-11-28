@@ -10,6 +10,7 @@ import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpe
 import Vue from "vue"
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
+import CurrentUserStore from "@/store/user";
 
 const ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY = "ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY";
 
@@ -104,7 +105,11 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   @Action({rawError: true})
   private async getMandatorySearchParameterQuery(searchDTO: AcquisitionPackageSummarySearchDTO):
     Promise<string> {
-    let query = "";
+
+    const currentUser = await CurrentUserStore.getCurrentUser();
+    const userSysId = currentUser.sys_id;
+
+    let query = "^mission_ownersLIKE" + userSysId;
     // query = query + "^package_status!=DRAFT^ORmission_ownersISNOTEMPTY" // TODO: is this needed
     query = query + "^mission_ownersISNOTEMPTY" // TODO: should mission owners be in the query
     query = query + "^ORDERBY" + searchDTO.sort;

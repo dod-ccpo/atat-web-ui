@@ -71,15 +71,11 @@ import OtherOfferingSummary
 import DOWSummary 
   from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
 
-// Step 6 - Government Furnished Equipment
-import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue";
-import PropertyDetails from "../steps/06-GovtFurnishedEquipment/PropertyDetails.vue";
-import Justification from "../steps/06-GovtFurnishedEquipment/Justification.vue";
-
 // Step 7 - Other Contract Considerations
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
+import Travel from "@/steps/07-OtherContractConsiderations/Travel.vue";
 import Training from "../steps/07-OtherContractConsiderations/Training.vue";
 import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
 
@@ -121,6 +117,9 @@ import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
+import UploadJAMRRDocuments from "@/steps/11-ReviewRequiredForms/UploadJAMRRDocuments.vue";
+import ReadyToGeneratePackage from "@/steps/11-ReviewRequiredForms/ReadyToGeneratePackage.vue";
+import GeneratePackageDocuments from "@/steps/11-ReviewRequiredForms/GeneratePackageDocuments.vue";
 
 import {
   AcorsRouteResolver,
@@ -151,7 +150,7 @@ import {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-
+  UploadJAMRRDocumentsRouteResolver
 } from "./resolvers";
 
 export const routeNames = {
@@ -192,6 +191,7 @@ export const routeNames = {
   ContractType: "Contract_Type",
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
+  Travel: "Travel",
   Training: "Training",
   TrainingCourses: "Training_Courses",
   PropertyDetails: "Property_Details",
@@ -242,6 +242,9 @@ export const routeNames = {
   EnvironmentSummary:"Environment_Summary",
   SecurityRequirements:"Security_Requirements",
   CrossDomain:"Cross_Domain",
+  UploadJAMRRDocuments:"JA_MRR_Documents",
+  ReadyToGeneratePackage:"Ready_To_Generate_Package",
+  GeneratePackageDocuments: "Generate_Package_Documents"
 };
 
 /**
@@ -269,7 +272,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ProjectOverview,
         completePercentageWeight: 4,
         completed: false,
-        lastStep: true,
+        stepCompleteOnLeave: routeNames.ProjectOverview,
         component: ProjectOverview,
         // KEEP THIS FOR REFERENCE
         // additionalButtons: [
@@ -289,7 +292,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "organization-info",
         name: routeNames.OrganizationInfo,
         completed: false,
-        lastStep: true,
+        stepCompleteOnLeave: routeNames.OrganizationInfo,
         completePercentageWeight: 5,
         component: OrganizationInfo,
       },
@@ -299,7 +302,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ContactInformation,
         completePercentageWeight: 5,
         completed: false,
-        lastStep: false,
         component: ContactInfo,
       },
       {
@@ -308,7 +310,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
-        lastStep: false,
         component: CorInfo,
       },
       {
@@ -316,7 +317,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "alt-cor",
         name: routeNames.AlternateCor,
         excludeFromMenu: true,
-        lastStep: false,
         component: AlternateCOR,
       },
       {
@@ -325,7 +325,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.AcorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
-        lastStep: false,
         component: AcorInfo,
         routeResolver: AcorsRouteResolver,
       },
@@ -335,8 +334,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.AcqPackageSummary,
         excludeFromMenu: true,
         completePercentageWeight: 5,
-        lastStep: true,
-        parentName: routeNames.ContactInformation,
+        stepCompleteOnEnter: routeNames.ContactInformation,
         component: Summary,
         backButtonText: "Sample different Back text",
       }
@@ -356,7 +354,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.Exceptions,
         component: Exceptions,
         completePercentageWeight: 5,
-        lastStep: true,
         completed: false,
       },
       {
@@ -367,7 +364,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
-        lastStep: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
         routeResolver: NoEvalPlanRouteResolver,
       },
       {
@@ -376,8 +373,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CreateEvalPlan,
         component: CreateEvalPlan,
         completePercentageWeight: 5,
+        stepCompleteOnEnter: routeNames.Exceptions,
         completed: false,
-        lastStep: false,
         routeResolver: CreateEvalPlanRouteResolver,
       },
       {
@@ -388,7 +385,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         excludeFromMenu: true,
         completed: false,
-        lastStep: false,
         routeResolver: EvalPlanDetailsRouteResolver,
         additionalButtons: [
           {
@@ -407,7 +403,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
         excludeFromMenu: true,
-        lastStep: false,
         routeResolver: BVTOResolver,
       },   
       {
@@ -417,8 +412,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: EvalPlanSummary,
         completePercentageWeight: 0,
         completed: false,
-        lastStep: true,
-        parentName: routeNames.CreateEvalPlan,
+        stepCompleteOnEnter: routeNames.CreateEvalPlan,
         excludeFromMenu: true,
       },
       // KEEP JustificationAndApproval for future ticket
@@ -461,6 +455,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         path: "recurring-requirement",
         completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.PeriodOfPerformance,
         component: RecurringRequirement,
       },
       {
@@ -468,6 +463,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Contract Type",
         path: "contract-type",
         completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.ContractType,
         component: ContractType,
       },
       {
@@ -491,6 +487,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path:"cross-domain",
         name: routeNames.CrossDomain,
         excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: CrossDomain,
       },
@@ -520,6 +517,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
+        stepCompleteOnLeave: routeNames.CurrentContract,
         routeResolver: CurrentContractDetailsRouteResolver,
         additionalButtons: [
           {
@@ -637,6 +635,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "background-summary",
         excludeFromMenu: true,
         name: routeNames.BackgroundSummary,
+        stepCompleteOnEnter: routeNames.CurrentEnvironment,
         component: BackgroundSummary,
         completePercentageWeight: 5,
         completed: false,
@@ -655,6 +654,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "/",
         excludeFromMenu: true,
         name: routeNames.RequirementCategories,
+        stepCompleteOnEnter: routeNames.CurrentContract,
         completePercentageWeight: 1,
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
@@ -720,29 +720,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "06",
     completePercentageWeight: 7,
-    menuText: "Government Furnished Equipment",
-    path: "/property-details",
-    component: GovtFurnishedEquipment,
-    children: [
-      {
-        name: routeNames.PropertyDetails,
-        menuText: "Property Details",
-        path: "property-details",
-        completePercentageWeight: 2,
-        component: PropertyDetails,
-      },
-      {
-        name: routeNames.Justification,
-        menuText: "Justification",
-        path: "justification",
-        completePercentageWeight: 2,
-        component: Justification,
-      },
-    ]
-  },
-  {
-    stepNumber: "07",
-    completePercentageWeight: 7,
     menuText: "Other Contract Considerations",
     path: "/conflict-of-interest",
     component: OtherContractConsiderations,
@@ -752,6 +729,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Conflict of Interest",
         path: "conflict-of-interest",
         completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.ConflictOfInterest,
         component: ConflictOfInterest,
       },
       {
@@ -759,7 +737,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Packaging, Packing, and Shipping",
         path: "packaging-packing-and-shipping",
         completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.PackagingPackingAndShipping,
         component: PackagingPackingAndShipping,
+      },
+      {
+        name: routeNames.Travel,
+        menuText: "Travel",
+        path: "travel",
+        completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.Travel,
+        component: Travel
       },
       {
         name: routeNames.Training,
@@ -773,6 +760,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Training Courses",
         excludeFromMenu: true,
         path: "training",
+        stepCompleteOnLeave: routeNames.Training,
         completePercentageWeight: 2,
         component: TrainingCourses,
         routeResolver: ContractTrainingReq
@@ -782,7 +770,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
 
   {
-    stepNumber: "08",
+    stepNumber: "07",
     completePercentageWeight: 7,
     menuText: "Standards and Compliance",
     path: "/personally-identifiable-information",
@@ -792,6 +780,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Personally Identifiable Information (PII)",
         path: "/personally-identifiable-information",
         name: routeNames.PII,
+        stepCompleteOnEnter: routeNames.Training,
         completePercentageWeight: 2,
         component: PII,
       },
@@ -801,6 +790,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.PIIRecord,
         completePercentageWeight: 2,
         component: PIIRecord,
+        stepCompleteOnLeave: routeNames.PII,
         excludeFromMenu: true,
         routeResolver: PIIRecordResolver
       },
@@ -808,6 +798,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Business Associate Agreement (BAA)",
         path: "/business-associate-agreement",
         name: routeNames.BAA,
+        stepCompleteOnEnter: routeNames.PII,
+        stepCompleteOnLeave: routeNames.BAA,
         completePercentageWeight: 2,
         component: BAA,
       },
@@ -824,6 +816,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.FOIACoordinator,
         completePercentageWeight: 2,
         excludeFromMenu: true,
+        stepCompleteOnLeave: routeNames.FOIA,
         component: FOIACoordinator,
         routeResolver: FOIARecordResolver
       },
@@ -831,6 +824,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Section 508 Standards",
         path: "/508-standards",
         name: routeNames.Section508Standards,
+        stepCompleteOnEnter: routeNames.FOIA,
         completePercentageWeight: 2,
         component: Section508Standards,
       },
@@ -839,6 +833,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "/508-accessibility-reqs",
         name: routeNames.Section508AccessibilityRequirements,
         excludeFromMenu: true,
+        stepCompleteOnLeave: routeNames.Section508Standards,
         completePercentageWeight: 2,
         component: Section508AccessibilityRequirements,
         routeResolver: A11yRequirementResolver
@@ -846,7 +841,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    stepNumber: "09",
+    stepNumber: "08",
     completePercentageWeight: 7,
     menuText: "Financial Details",
     path: "/requirements-cost-estimate",
@@ -1008,7 +1003,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    stepNumber: "10",
+    stepNumber: "09",
     completePercentageWeight: 7,
     menuText: "Review Required Forms",
     path: "/review-required-forms",
@@ -1022,6 +1017,32 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: ReviewRequiredFormsStepOne,
       },
+      {
+        menuText: "Upload J&A and MRR Documents",
+        path:"upload-ja-mrr-documents",
+        excludeFromMenu: true,
+        name: routeNames.UploadJAMRRDocuments,
+        completePercentageWeight: 0,
+        component: UploadJAMRRDocuments,
+        routeResolver: UploadJAMRRDocumentsRouteResolver
+      },
+      {
+        menuText: "Ready To Generate Package",
+        path:"ready-to-generate-package",
+        excludeFromMenu: true,
+        name: routeNames.ReadyToGeneratePackage,
+        completePercentageWeight: 0,
+        component: ReadyToGeneratePackage,
+        continueButtonText: "Generate my acquisition package"
+      },
+      {
+        menuText: "Generate Package Documents",
+        path:"generate-package-documents",
+        excludeFromMenu: true,
+        name: routeNames.GeneratePackageDocuments,
+        completePercentageWeight: 0,
+        component: GeneratePackageDocuments
+      }
     ],
   },
 ];

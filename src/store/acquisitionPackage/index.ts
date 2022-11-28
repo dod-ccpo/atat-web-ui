@@ -23,7 +23,6 @@ import {
   CurrentContractDTO,
   FairOpportunityDTO,
   EvaluationPlanDTO,
-  GFEOverviewDTO,
   RequirementsCostEstimateDTO,
   OrganizationDTO,
   PeriodDTO,
@@ -43,6 +42,7 @@ import Periods from "../periods";
 import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import UserStore from "../user";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -54,7 +54,6 @@ export const StoreProperties = {
   Organization: "organization",
   FairOpportunity: "fairOpportunity",
   EvaluationPlan: "evaluationPlan",
-  GFEOverview:"gfeOverview",
   PeriodOfPerformance: "periodOfPerformance",
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
@@ -178,16 +177,6 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
   }
 }
 
-const initialGFE = () => {
-  return {
-    dpas_unit_identification_code: "",
-    gfe_gfp_furnished: "",
-    dpas_custodian_number: "",
-    property_accountable: "",
-    property_custodian_name: "",
-  };
-};
-
 const initialPeriodOfPerformance = ()=> {
 
   return     { 
@@ -256,6 +245,10 @@ const initialCurrentEnvironment = () => {
   }
 }
 
+const saveAcquisitionPackage = (value: AcquisitionPackageDTO) => {
+  api.acquisitionPackageTable.update(value.sys_id as string, value);
+};
+
 const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
     ATAT_ACQUISTION_PACKAGE_KEY,
@@ -271,7 +264,6 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
       evaluationPlan: store.evaluationPlan,
-      gfeOverview: store.gfeOverview,
       periods: store.periods,
       periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
@@ -296,6 +288,34 @@ const getStoreDataTableProperty = (
   }
 
   return dataProperty;
+};
+
+/* Below sys_ids are NOT secrets */
+export const jamrrTemplateUrls = {
+  disastorefront: {
+    documentSysIds: {
+      mrr: '4864795287979d10bc86b889cebb353f', //pragma: allowlist secret
+      ja: 'db44755687979d10bc86b889cebb354a' //pragma: allowlist secret
+    }
+  },
+  niprdev: {
+    documentSysIds: {
+      mrr: '',
+      ja: ''
+    }
+  },
+  niprtest: {
+    documentSysIds: {
+      mrr: '',
+      ja: ''
+    }
+  },
+  niprprod: {
+    documentSysIds: {
+      mrr: '',
+      ja: ''
+    }
+  }
 };
 
 @Module({
@@ -328,7 +348,6 @@ export class AcquisitionPackageStore extends VuexModule {
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periods: string | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
-  gfeOverview: GFEOverviewDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
@@ -403,6 +422,31 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action
+  public async getJamrrTemplateUrl(type: string): Promise<string>{
+    let url = '';
+    const hostname = window.location.hostname;
+    let attachment: AttachmentDTO;
+
+    switch(hostname) {
+    default: {
+      if(type === 'ja'){
+        attachment = await api.attachments.retrieve(
+          jamrrTemplateUrls.disastorefront.documentSysIds.ja
+        );
+      } else {
+        attachment = await api.attachments.retrieve(
+          jamrrTemplateUrls.disastorefront.documentSysIds.mrr
+        );
+      } 
+    }};
+
+    if(attachment)
+      url = attachment.download_link as string;
+
+    return url;
+  }
+
+  @Action
   public getAcquisitionPackageSysId(): string {
     return this.acquisitionPackage?.sys_id || "";
   }
@@ -415,6 +459,11 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setOrganization(value: OrganizationDTO): void {
     this.organization = value;
+  }
+
+  @Mutation
+  public getInitialFairOpportunity() {
+    return initialFairOpportunity();
   }
 
   @Mutation
@@ -504,12 +553,6 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.evaluationPlan || initialEvaluationPlan();
   }
 
-
-  @Mutation
-  public setGFEOverview(value: GFEOverviewDTO): void {
-    this.gfeOverview = value;
-  }
-
   @Mutation
   public setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): void {
     this.requirementsCostEstimate = this.requirementsCostEstimate
@@ -526,6 +569,11 @@ export class AcquisitionPackageStore extends VuexModule {
     this.currentEnvironment = this.currentEnvironment
       ? Object.assign(this.currentEnvironment, value)
       : value;
+  }
+
+  @Action({rawError: true})
+  public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
+    return this.fairOpportunity;
   }
 
   @Action({rawError: true})
@@ -555,7 +603,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.periodOfPerformance = sessionData.periodOfPerformance;
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.sensitiveInformation = sessionData.sensitiveInformation;
-    this.gfeOverview = sessionData.gfeOverview;
     this.classificationLevel = sessionData.classificationLevel;
     this.currentEnvironment = sessionData.currentEnvironment;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
@@ -576,6 +623,8 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
+
+    const loggedInUser = await UserStore.getCurrentUser();
 
     if (storedSessionData && storedSessionData.length > 0) {
       const parsedData = JSON.parse(storedSessionData) as SessionData;
@@ -603,7 +652,6 @@ export class AcquisitionPackageStore extends VuexModule {
             surge_capacity: ""
           });
 
-          this.setGFEOverview(initialGFE());
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
@@ -612,7 +660,9 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentEnvironment(currentEnvironmentDTO);
           acquisitionPackage.current_environment =
             currentEnvironmentDTO.sys_id as unknown as string;
+          acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           this.setAcquisitionPackage(acquisitionPackage);
+          saveAcquisitionPackage(acquisitionPackage);
           await TaskOrder.initialize(acquisitionPackage.sys_id || "");
           this.setInitialized(true);
         }
@@ -659,7 +709,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.CurrentContract]: api.currentContractTable,
     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
     // [StoreProperties.EvaluationPlan]: api.evaluationPlanTable, // FUTURE TICKET
-    [StoreProperties.GFEOverview]: api.gfeOverviewTable,
     [StoreProperties.Organization]: api.organizationTable,
     [StoreProperties.Periods]: api.periodTable,
     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
@@ -676,7 +725,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.CurrentContract]: "current_contract",
     [StoreProperties.FairOpportunity]: "fair_opportunity",
     [StoreProperties.EvaluationPlan]: "evaluation_plan",
-    [StoreProperties.GFEOverview]: "gfe_overview",
     [StoreProperties.Organization]:  "organization",
     [StoreProperties.ProjectOverview]: "project_overview",
     [StoreProperties.PeriodOfPerformance]: "period_of_performance",

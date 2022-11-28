@@ -1,64 +1,66 @@
 <template>
-  <v-container class="container-max-width" fluid>
-    <v-row>
-      <v-col class="col-12">
-        <h1 class="page-header">
-          Let’s gather some details about your current contract
-        </h1>
-        <div class="copy-max-width">
-          <IncumbentContractorName
-            id="IncumbentContractorName"
-            :rules="[
-              $validators.required(
-                'Please enter the incumbent contractor’s name.'
-              ),
-            ]"
-            :value.sync="incumbentContractorName"
-            class="_input-max-width mb-10"
-            label="Incumbent contractor name"
-          />
-
-          <ContractNumber
-            id="ContractNumber"
-            :rules="[
-              $validators.required('Please enter your contract number.'),
-            ]"
-            :value.sync="contractNumber"
-            class="_input-max-width mb-10"
-            label="Contract number"
-          />
-
-          <TaskOrderNumber
-              id="TaskDeliveryOrderNumber"
-              :value.sync="taskDeliveryOrderNumber"
-              :optional="true"
+  <v-form ref="form" lazy-validation>
+    <v-container class="container-max-width" fluid>
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header">
+            Let’s gather some details about your current contract
+          </h1>
+          <div class="copy-max-width">
+            <IncumbentContractorName
+              id="IncumbentContractorName"
+              :rules="[
+                $validators.required(
+                  'Please enter the incumbent contractor’s name.'
+                ),
+              ]"
+              :value.sync="incumbentContractorName"
               class="_input-max-width mb-10"
-              label="Task/Delivery order number"
-              tooltipText="Leave this field empty if your previous acquisition
-             was only a contract, not an order placed under a contract."
-          />
+              label="Incumbent contractor name"
+            />
 
-          <!-- NOTE: max date to be determined -->
-          <ATATDatePicker
-            id="Expiration"
-            :min="minDate"
-            :rules="[
-              $validators.required(
-                'Please enter your contract/order expiration date.'
-              ),
-              $validators.isDateValid('Please enter a valid date.'),
-            ]"
-            :value.sync="contractOrderExpirationDate"
-            label="Contract/Order expiration date"
-            max="2024-01-01"
-            placeHolder="MM/DD/YYYY"
-            tooltipText="Use the period of performance end date for your task order. If you
-                do not have an order number, use your contract expiration date."
-          />
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+            <ContractNumber
+              id="ContractNumber"
+              :rules="[
+                $validators.required('Please enter your contract number.'),
+              ]"
+              :value.sync="contractNumber"
+              class="_input-max-width mb-10"
+              label="Contract number"
+            />
+
+            <TaskOrderNumber
+                id="TaskDeliveryOrderNumber"
+                :value.sync="taskDeliveryOrderNumber"
+                :optional="true"
+                class="_input-max-width mb-10"
+                label="Task/Delivery order number"
+                tooltipText="Leave this field empty if your previous acquisition
+              was only a contract, not an order placed under a contract."
+            />
+
+            <!-- NOTE: max date to be determined -->
+            <ATATDatePicker
+              id="Expiration"
+              :min="minDate"
+              :rules="[
+                $validators.required(
+                  'Please enter your contract/order expiration date.'
+                ),
+                $validators.isDateValid('Please enter a valid date.'),
+              ]"
+              :value.sync="contractOrderExpirationDate"
+              label="Contract/Order expiration date"
+              max="2024-01-01"
+              placeHolder="MM/DD/YYYY"
+              tooltipText="Use the period of performance end date for your task order. If you
+                  do not have an order number, use your contract expiration date."
+            />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">

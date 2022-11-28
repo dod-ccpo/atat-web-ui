@@ -1,60 +1,62 @@
 <template>
-  <v-container fluid class="container-max-width">
-    <v-row>
-      <v-col class="col-12">
-        <h1 class="page-header mb-3">
-          Do you have a potential conflict of interest?
-        </h1>
-        <div class="copy-max-width">
-          <p class="mb-10">
-            An organizational conflict of interest (COI) is a situation where,
-            because of other relationships or activities, a person or company
-            (1) is unable or potentially unable to render impartial assistance
-            or advice to the government, (2) cannot objectively perform contract
-            work, or (3) has an unfair competitive advantage.
-            <a
-              role="button"
-              id="CoILearnMore"
-              class="_text-link"
-              tabindex="0"
-              @click="openSlideoutPanel"
-              @keydown.enter="openSlideoutPanel"
-              @keydown.space="openSlideoutPanel">
-              Learn more about COI.
-            </a>
-          </p>
-          <ATATRadioGroup
-            class="copy-max-width max-width-760"
-            id="COIOptions"
-            :card="true"
-            :items="conflictOfInterestOptions"
-            :value.sync="hasConflict"
-            :rules="[$validators.required('Please select an option')]"
-          />
-        </div>
-        <div v-show="hasConflict === 'YES'">
-          <hr class="mt-5" />
-          <ATATTextArea
-            id="Explanation"
-            label="Please provide an explanation of your conflict of interest."
-            class="width-100"
-            :rows="7"
-            :rules="[
-              $validators.required(
-                'Please provide an explanation of your COI.'
-              ),
-              $validators.maxLength(
-                1600,
-                'Please limit your description to 1600 characters or less'
-              ),
-            ]"
-            :value.sync="explanation"
-            maxChars="1600"
-          />
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-form ref="form" lazy-validation>
+    <v-container fluid class="container-max-width">
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+            Do you have a potential conflict of interest?
+          </h1>
+          <div class="copy-max-width">
+            <p class="mb-10">
+              An organizational conflict of interest (COI) is a situation where,
+              because of other relationships or activities, a person or company
+              (1) is unable or potentially unable to render impartial assistance
+              or advice to the government, (2) cannot objectively perform contract
+              work, or (3) has an unfair competitive advantage.
+              <a
+                role="button"
+                id="CoILearnMore"
+                class="_text-link"
+                tabindex="0"
+                @click="openSlideoutPanel"
+                @keydown.enter="openSlideoutPanel"
+                @keydown.space="openSlideoutPanel">
+                Learn more about COI.
+              </a>
+            </p>
+            <ATATRadioGroup
+              class="copy-max-width max-width-760"
+              id="COIOptions"
+              :card="true"
+              :items="conflictOfInterestOptions"
+              :value.sync="hasConflict"
+              :rules="[$validators.required('Please select an option')]"
+            />
+          </div>
+          <div v-if="hasConflict === 'YES'">
+            <hr class="mt-5" />
+            <ATATTextArea
+              id="Explanation"
+              label="Please provide an explanation of your conflict of interest."
+              class="width-100"
+              :rows="7"
+              :rules="[
+                $validators.required(
+                  'Please provide an explanation of your COI.'
+                ),
+                $validators.maxLength(
+                  1600,
+                  'Please limit your description to 1600 characters or less'
+                ),
+              ]"
+              :value.sync="explanation"
+              maxChars="1600"
+            />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
