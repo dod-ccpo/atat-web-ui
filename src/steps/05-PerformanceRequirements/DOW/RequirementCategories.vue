@@ -8,10 +8,7 @@
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              Through JWCC, you have the ability to procure many offerings for
-              Anything as a Service (XaaS) and Cloud Support Packages. Specify
-              any categories that may apply to your acquisition below, and we’ll
-              walk through each selection to get more details next.
+              {{introText}}
               <a
                 role="button"
                 tabindex="0"
@@ -30,6 +27,28 @@
               :isPeriodsDataMissing="isPeriodsDataMissing"
             />
           </div>
+          <div class="copy-max-width">
+            <legend
+              class="font-weight-500 pb-0 mr-2"
+            >
+              Do you need an architectural design solution to address a known
+              problem or use-case?<br/>
+              <span
+                class="text-base-light font-weight-400"
+              >
+                This is in addition to any known problems 
+                that you told us about for your current environment.
+              </span>
+            </legend>
+            <ATATRadioGroup 
+              id="ArchitectureOptions"
+              :width="180"
+              :items="radioOptions"
+              :value.sync="currEnvDTO.needs_architectural_design_services"
+              :rules="[$validators.required('Please select an option.')]"
+            />
+          </div>
+          <hr/>
           <div class="copy-max-width">
             <ATATCheckboxGroup
               id="XaaSCheckboxes"
@@ -71,12 +90,15 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import PerfReqLearnMore from "./PerfReqLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
-import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
+import { Checkbox, RadioButton, SlideoutPanelContent } from "../../../../types/Global";
+import { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import { SystemChoiceDTO } from "@/api/models";
 import { routeNames } from "../../../router/stepper";
+import _ from "lodash";
 // import router from "@/router";
 
 import DescriptionOfWork from "@/store/descriptionOfWork";
@@ -84,11 +106,13 @@ import { getIdText } from "@/helpers";
 import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 
 @Component({
   components: {
     ATATCheckboxGroup,
+    ATATRadioGroup,
     PerfReqLearnMore,
     DOWAlert
   }
@@ -107,6 +131,26 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   private showAlert = false
   private routeNames = routeNames
   private goToSummary = false;
+
+  public introText = `Through JWCC, you have the ability to procure many offerings for
+    Anything as a Service (XaaS) and Cloud Support Packages. Specify
+    any categories that may apply to your acquisition below, and we'll
+    walk through each selection to get more details next.`;
+
+  public radioOptions: RadioButton[] = [
+    {
+      id: "YesArchitecture",
+      value: "YES",
+      label: "Yes.",
+    },
+    {
+      id: "NoArchitecture",
+      value: "NO",
+      label: "No.",
+    },
+  ];
+
+  public currEnvDTO = defaultCurrentEnvironment;
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -174,6 +218,26 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       value: this.cloudNoneValue,
     };
     this.cloudSupportCheckboxItems.push(cloudSupportNone)
+
+    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    if (storeData) {
+      this.currEnvDTO = _.cloneDeep(storeData);
+    }
+
+    const replicateOrOptimize = 
+      this.currEnvDTO.current_environment_replicated_optimized || "";
+
+    if(replicateOrOptimize === "YES_OPTIMIZE"){
+      this.introText = `In addition to optimizing your current environment, 
+        you can procure other JWCC offerings for Anything as a Service (XaaS) 
+        and Cloud Support Packages. Specify any categories that may apply to your 
+        acquisition below, and we'll walk through each selection to get more details.`;
+    } else if (replicateOrOptimize === "YES_REPLICATE") {
+      this.introText = `In addition to replicating your current environment, 
+        you can procure other JWCC offerings for Anything as a Service (XaaS) 
+        and Cloud Support Packages. Specify any categories that may apply to your 
+        acquisition below, and we'll walk through each selection to get more details.`;
+    }
 
   };
 
