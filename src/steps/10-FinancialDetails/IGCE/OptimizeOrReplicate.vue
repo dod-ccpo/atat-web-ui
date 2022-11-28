@@ -4,11 +4,11 @@
       <v-row>
         <v-col>
           <h1 class="page-header">
-            {{headingText}}
+            Let’s start with a price estimate for {{ headingVerb }} your current functions
           </h1>
           <p class="page-intro">
             Based on what you previously told us, you need the CSP to perform a 
-            "lift and shift" to recreate your environment and configurations using 
+            “lift and shift” to recreate your environment and configurations using 
             JWCC offerings. Below, estimate a price per period for this requirement. 
             If you know the requirement will change over time, then you can customize 
             the price for each performance period.
@@ -17,7 +17,7 @@
             <ATATRadioGroup
               class="copy-max-width max-width-740"
               id="OptimizeOrReplicateEstimates"
-              :card="true"
+              :card="false"
               legend="How do you want to estimate a price for this requirement?"
               :items="optimizeOrReplicateEstimateOptions"
               :value.sync="ceilingPrice"
@@ -62,7 +62,6 @@ import IGCEStore, { OptimizeOrReplicateEstimateNeeds } from "@/store/IGCE";
 })
 export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
 
-  private headingText = "";
   private ceilingPrice = "";
   private estimatedCosts = [""];
   private periods: PeriodDTO[] | null = [];
@@ -108,21 +107,17 @@ export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 
+  public get headingVerb(): string {
+    const replicatedOrOptimized = 
+      AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized;
+    return replicatedOrOptimized === "YES_OPTIMIZE" ? "optimizing" : "replicating";
+  }
 
   protected async loadOnEnter(): Promise<boolean> {
     const store = await IGCEStore.getOptimizeOrReplicateEstimateNeeds();
     this.savedData = store;
     this.ceilingPrice = store.ceilingPrice;
     this.estimatedCosts = store.estimatedCosts;
-    const replicatedOrOptimized = 
-      AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized;
-
-    if(replicatedOrOptimized === "YES_OPTIMIZE")
-      this.headingText = `Let's start with a price estimate 
-        for optimizing your current functions`;
-    else if(replicatedOrOptimized === "YES_REPLICATE")
-      this.headingText = `Let's start with a price estimate 
-        for replicating your current functions`;
 
     return true;
   }

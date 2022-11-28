@@ -30,7 +30,7 @@
       />
     </template>
     <template v-if="isMultiple">
-      <div class="d-flex align-center mb-2">
+      <div class="d-flex align-center mb-4">
         <label class="form-field-label font-weight-500 mr-1">
           {{ multiplePeriodLabel}} 
         </label>
@@ -42,6 +42,7 @@
       <div
         v-for="(period, idx) in _periods"
         :key="idx"
+        class="font-weight-500 font-size-14 text-base"
         :class="[
           idx < _periods.length - 1 ? 'pb-5' : '',
           ' pl-2 d-flex align-start',

@@ -49,7 +49,6 @@ export default class SecurityRequirementsCheckboxes extends vue {
   private selectedItem: string[] = []
   @Watch("selectedItem")
   public selectedChange(newVal: string[]): void {
-    debugger
     this._selectedSecurityRequirements = newVal
   }
 
