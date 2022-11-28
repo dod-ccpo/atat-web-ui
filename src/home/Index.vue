@@ -9,42 +9,40 @@
     <div class="_hero-banner"></div>
     <v-main class="_home">
       <div class="_home-content">
-        <div class="">
-          <section class="pb-8">
-            <v-row>
-              <v-col v-if="!isNewUser" cols="8" offset="2">
-                <div class="_welcome-bar">
-                  <v-row>
-                    <v-col cols="9">
-                      <h1 class="text-primary">
-                        Hi {{currentUser.first_name}}! How can we help you?
-                      </h1>
-                    </v-col>
-                    <v-col cols="2">
-                      <v-btn 
-                        class="v-btn primary"
-                        @click="startNewAcquisition"
-                      >
-                        Start a new acquisition
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-col>
-              <v-col v-if="isNewUser" cols="4" offset="6">
-                <div class="bg-white border-rounded pa-8">
+        <div class="container-max-width">
+          <div v-if="!isNewUser" class="_welcome-bar">
+            <div class="d-flex justify-start">
+              <h1 class="text-primary">
+                Hi {{currentUser.first_name}}! How can we help you?
+              </h1>
+            </div>
+            <div class="d-flex justify-end">
+              <v-btn 
+                class="v-btn primary"
+                @click="startNewAcquisition"
+              >
+                Start a new acquisition
+              </v-btn>
+            </div>
+          </div>
+          <section v-if="isNewUser" class="_py-80">
+            
+            <div class="d-flex flex-row-reverse">
+              <div class="d-flex align-flex-end">       
+                <div class="bg-white border-rounded-more pa-8">
                   <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
-                  <br/>
-                  <v-row>
-                    <v-col cols="6">
+                  <br />
+                  <div class="d-flex justify-space-around">
+                    <div class="d-flex align-flex-start">
                       <v-btn 
                         class="v-btn primary"
                         @click="startNewAcquisition"
                       >
                         Start a new acquisition
                       </v-btn>
-                    </v-col>
-                    <v-col cols="6" >
+                    </div>
+                    &nbsp;&nbsp;
+                    <div class="d-flex align-flex-end">
                       <v-btn 
                         id="HelpfulResourcesButton"
                         class="secondary"
@@ -52,11 +50,11 @@
                       >
                         Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
                       </v-btn>
-                    </v-col>
-                  </v-row>                
+                    </div>
+                  </div>
                 </div>
-              </v-col>
-            </v-row>
+              </div>
+            </div>
           </section>
         </div>
 
