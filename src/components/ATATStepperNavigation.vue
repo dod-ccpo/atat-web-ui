@@ -58,7 +58,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import { AdditionalButton } from "@/store/steps/types";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -85,6 +85,30 @@ export default class ATATStepperNavigation extends Vue {
 
   private toggleDeveloperNavigation(): void {
     AcquisitionPackage.setAllowDeveloperNavigation(!AcquisitionPackage.getAllowDeveloperNavigation);
+  }
+
+  @Watch("additionalButtons")
+  private updateAdditionalButtonText(): void {
+
+    const groupName = this.$route.params.groupName;
+
+    if(groupName && this.additionalButtons?.length){
+      let buttonText = "I don't need "
+      this.additionalButtons?.forEach((button, index) => {
+
+        switch(groupName){
+        case "developer_tools":
+          buttonText += "Developer Tools and Services";
+          break;
+        default:
+          buttonText += "these cloud resources";
+          break;
+        }
+
+        (button as any).buttonText = buttonText;
+        (this.additionalButtons as any)[index] = button;
+      });
+    }
   }
 
 }
