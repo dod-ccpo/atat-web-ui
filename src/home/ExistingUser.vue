@@ -40,7 +40,7 @@
                 @keydown.enter="viewAllPackages"
                 @keydown.space="viewAllPackages"
               >
-                View all open packages
+                View all packages
               </a>
             </div>
 
@@ -64,19 +64,45 @@
                 id="JWCCHelpCenterButton"
                 class="secondary mb-4 mt-4 width-100"
               >
-                JWCC Help Center&nbsp;<v-icon>launch</v-icon>
+                JWCC Help Center
+                 
+                  <ATATSVGIcon
+                    id="JWCCHelpCenterButtonIcon"
+                    width="15"
+                    height="15"
+                    name="launch"
+                    class="ml-2"
+                    color="primary"
+                  />
+              
               </v-btn>
               <v-btn
                 id="CustomerSupportButton"
                 class="secondary mt-4 width-100"
               >
-                Contact customer support&nbsp;<v-icon>launch</v-icon>
+                Contact customer support
+                   <ATATSVGIcon
+                    id="CustomerSupportButtonIcon"
+                    width="15"
+                    height="15"
+                    name="launch"
+                    class="ml-2"
+                    color="primary"
+                  />
               </v-btn>
               <v-btn
                 id="ReportIssueButton"
-                class="secondary mt-4 width-100"
+                class="secondary mt-4 width-100" 
               >
-                Report a bug or technical issue&nbsp;<v-icon>launch</v-icon>
+                Report a bug or technical issue
+                 <ATATSVGIcon
+                    id="ReportIssueButtonIcon"
+                    width="15"
+                    height="15"
+                    name="launch"
+                    class="ml-2"
+                    color="primary"
+                  />
               </v-btn>
 
             </v-card>
@@ -107,6 +133,7 @@ import {
   AcquisitionPackageSummarySearchDTO, 
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
   components: {
@@ -114,6 +141,7 @@ import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
     ATATSearch,
     "PackageCards": Card,
     PortfoliosSummary,
+    ATATSVGIcon
   }
 })
 
