@@ -10,10 +10,25 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
-          <section class="_py-80">
+          <div v-if="!isNewUser" class="_welcome-bar">
+            <div class="d-flex justify-start">
+              <h1 class="text-primary">
+                Hi {{currentUser.first_name}}! How can we help you?
+              </h1>
+            </div>
+            <div class="d-flex justify-end">
+              <v-btn 
+                class="v-btn primary"
+                @click="startNewAcquisition"
+              >
+                Start a new acquisition
+              </v-btn>
+            </div>
+          </div>
+          <section v-if="isNewUser" class="_py-80">
+            
             <div class="d-flex flex-row-reverse">
-              <div class="d-flex align-flex-end">
-                
+              <div class="d-flex align-flex-end">       
                 <div class="bg-white border-rounded-more pa-8">
                   <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
                   <br />
@@ -37,26 +52,6 @@
                       </v-btn>
                     </div>
                   </div>
-                  <!-- <br/>
-                  <v-row>
-                    <v-col cols="6">
-                      <v-btn 
-                        class="v-btn primary"
-                        @click="startNewAcquisition"
-                      >
-                        Start a new acquisition
-                      </v-btn>
-                    </v-col>
-                    <v-col cols="6" >
-                      <v-btn 
-                        id="HelpfulResourcesButton"
-                        class="secondary"
-                        @click="scrollToResources"
-                      >
-                        Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row> -->
                 </div>
               </div>
             </div>
