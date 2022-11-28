@@ -83,7 +83,8 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   }
 
   public get hasCloudEnvs(): boolean {
-    return this.envInstances.findIndex(obj => obj.env_location === "ON_PREM")
+    const cloudEnvs = this.envInstances.filter(obj => obj.instance_location === "CLOUD");
+    return cloudEnvs && cloudEnvs.length > 0;
   }
 
   public async loadOnEnter(): Promise<void> {
