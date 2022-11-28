@@ -69,7 +69,8 @@
       </ATATAlert>
     </div>
   </div>
-  {{_dataObject}}
+  {{availablePeriodCheckboxItems}}
+  {{selectedOptions}}
 
 </div>
 </template>
@@ -121,7 +122,7 @@ export default class AnticipatedDurationandUsage extends Vue {
   @Prop() public availablePeriodCheckboxItems!: Checkbox[];
 
   public routeNames = routeNames;
-  public selectedOptions = []
+  public selectedOptions: string[] = []
 
   public entireDurationOptions: RadioButton[] = [
     {
@@ -141,9 +142,20 @@ export default class AnticipatedDurationandUsage extends Vue {
   @Watch("dataObject.entireDuration")
   public entireDurationChanged(newVal: string): void {
     debugger
-    this._dataObject.selectedPeriods = newVal === "NO" &&
+    this.selectedOptions = newVal === "NO" &&
     this.availablePeriodCheckboxItems[0].value !== "" ? [this.availablePeriodCheckboxItems[0].value]
       : [];
+    ;
+  // need to create vale for DOWPOP
+    // if(this.selectedOptions.length > 0) {
+    //   let optionPeriods = []
+    //   this.selectedOptions.forEach((periodValue)=>{
+    //
+    //   })
+    //
+    // }else{
+    //   this._dataObject.selectedPeriods = []
+    // }
   }
 
 }
