@@ -4,16 +4,20 @@
       <v-row>
         <v-col>
           <h1 class="page-header">
-            Let's gather price estimates for your architectural design solutions
+            Let’s gather price estimates for your architectural design solutions
           </h1>
           <p class="page-intro">
-            {{pageIntroText}}
+            Consider the details you previously outlined for architectural design 
+            solutions to address your known {{ issuesText }}. 
+            Estimate a price per period for this requirement below. If you know the 
+            requirement will change over time, then you can customize the price 
+            for each performance period.
           </p>
           <div v-if="hasSingleArchitecturalDesignProblem">
             <div class="copy-max-width">
               <ATATRadioGroup
                 class="copy-max-width max-width-740"
-                id="singleArchEstimates"
+                id="SingleArchEstimates"
                 legend="How do you want to estimate a price for this requirement?"
                 :items="estimateOptions"
                 :value.sync="singleCeilingPrice"
@@ -154,8 +158,6 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
     },
   ];
 
-
-
   get currentData(): ArchDesignEstimateNeeds[] {
     const estimateNeeds: ArchDesignEstimateNeeds[] = [];
 
@@ -198,6 +200,12 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 
+  public get issuesText(): string {
+    return this.hasSingleArchitecturalDesignProblem
+      ? "problem or use-case"
+      : "problems or use-cases"
+  }
+
   protected async loadOnEnter(): Promise<boolean> {
 
     const store = await IGCEStore.getArchDesignEstimateNeeds();
@@ -216,25 +224,11 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
     const currentEnvironmentNeeds = // true;
       AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
 
-    /* ONLY HAS LOGIC FOR CURRENT ENVIRONMENT AT THE MOMENT; NEEDS DOW ITEMS THAT HAVEN'T
+    /* todo: ONLY HAS LOGIC FOR CURRENT ENVIRONMENT AT THE MOMENT; NEEDS DOW ITEMS THAT HAVEN'T
        BEEN IMPLEMENTED YET */
     const perfReqNeeds = true;
 
     this.hasSingleArchitecturalDesignProblem = !(currentEnvironmentNeeds && perfReqNeeds);
-
-    if(this.hasSingleArchitecturalDesignProblem) {
-      this.pageIntroText = `Consider the details you previously outlined for 
-        architectural design solutions to address your known problem or use-case. 
-        Estimate a price per period for this requirement below. If you know the 
-        requirement will change over time, then you can customize the price 
-        for each performance period.`;
-    } else {
-      this.pageIntroText = `Consider the details you previously outlined for 
-        architectural design solutions to address your known problems or use-cases. 
-        Estimate costs for each of these requirements below. If you know the 
-        requirement will change over time, then you can customize the price 
-        for each performance period.`;
-    }
 
     return true;
   }
