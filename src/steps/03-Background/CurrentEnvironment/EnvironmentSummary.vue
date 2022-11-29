@@ -201,7 +201,6 @@ export default class EnvironmentSummary extends Vue {
     const classifications: string[] = [];
     const unclassifiedILs: string[] = [];
     const locationClassifications = this.classificationsCloud.concat(this.classificationsOnPrem);
-    debugger
     locationClassifications.forEach((sysId) => {
       const cl = this.classificationLevels.find(obj => obj.sys_id === sysId);
       classifications.push(this.topLevelClassification(cl?.classification as string))
@@ -210,7 +209,6 @@ export default class EnvironmentSummary extends Vue {
       }
     });
     let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
-    debugger;
 
     if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
       let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
@@ -233,9 +231,7 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public async addInstance(): Promise<void> {
-    debugger;
     await CurrentEnvironment.setCurrentEnvInstanceNumber(this.envInstances.length + 1);
-    // await CurrentEnvironment.createNewEnvInstance();
     this.navigate();
   }
 
@@ -251,7 +247,6 @@ export default class EnvironmentSummary extends Vue {
 
   public async editInstance(instance: EnvInstanceSummaryTableData): Promise<void> {
     await CurrentEnvironment.setCurrentEnvironmentInstanceNumber(instance.instanceSysId as string);
-    debugger;
     this.navigate();
   }
 

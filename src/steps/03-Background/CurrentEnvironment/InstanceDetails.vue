@@ -347,19 +347,9 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     { text: "Petabyte (PB)", value: "PB" },
   ];
 
-  // @Watch("instanceData.instance_location")
-  // public instanceLocChanged(): void {
-  //   debugger;
-  //   this.setClassificationLabels();
-  //   this.clearClassificationErrorMessages = true;
-  // }
-
-
   @Watch("instanceData.instance_location")
   public instanceLocationChange(newVal: string, oldVal: string): void {
     // eslint-disable-next-line camelcase
-    debugger;
-
     this.setClassificationLabels();
     this.clearClassificationErrorMessages = true;
     if (oldVal !== "") {
@@ -391,7 +381,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 
-  
   // EJY NEED ROUTE RESOLVER AFTER on classifications page if no location selected
   // send directly to instance form with region and classification radio groups on every instance
 
@@ -406,7 +395,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       const instanceStoreData = await CurrentEnvironment.getCurrentEnvInstance();
       if (instanceStoreData) {
         this.instanceData = _.cloneDeep(instanceStoreData);
-        debugger;
         this.savedData = _.cloneDeep(instanceStoreData);
         
         this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || [];
@@ -444,7 +432,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       }
 
       if (!instanceStoreData?.instance_location) {
-        debugger;
         this.instanceData.instance_location = envStoreData.env_location !== "HYBRID"
           ? envStoreData.env_location : "";
       }

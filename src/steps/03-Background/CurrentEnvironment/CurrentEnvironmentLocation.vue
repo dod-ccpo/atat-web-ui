@@ -65,7 +65,7 @@
 </template>
 <script lang="ts">
 import { Component, Mixins, Watch } from "vue-property-decorator";
-import { EnvironmentLocation, RadioButton } from "../../../../types/Global";
+import { EnvironmentLocation, RadioButton, ToastObj } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO } from "@/api/models";
@@ -73,9 +73,11 @@ import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
+import Toast from "@/store/toast";
 
 import CurrentEnvironment,
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -165,7 +167,6 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   }
 
   public async deleteInstances(): Promise<void> {
-    debugger;
     const instancesToDelete = this.envInstances.filter(
       obj => obj.instance_location === this.deleteInstanceType
     );
@@ -176,8 +177,18 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       }
     });
     this.showConfirmDialog = false;
-    // show the toast
+    this.instanceRemovedToast.message 
+      = _.startCase(this.deleteInstanceTypeStr) + " instances deleted";
+    Toast.setToast(this.instanceRemovedToast);
   }
+
+  public instanceRemovedToast: ToastObj = {
+    type: "success",
+    message: "",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  };
 
 
   private savedData: Record<string, string> = {
@@ -215,14 +226,10 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        debugger;
         Object.assign(this.currEnvDTO, this.currentData);
         // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-        debugger;
-        // EJY is this the culprit??
-        //CurrentEnvironment.createNewEnvInstance();
 
         // TODO - wire to proper location for saving after DB is updated
         // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({

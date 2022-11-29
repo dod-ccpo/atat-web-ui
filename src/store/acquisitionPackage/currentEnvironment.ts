@@ -74,10 +74,7 @@ export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = 
 export class CurrentEnvironmentStore extends VuexModule {
   initialized = false;
   public currentEnvironment: CurrentEnvironmentDTO | null = null;
-  // EJY
-  // public currentEnvInstance: CurrentEnvironmentInstanceDTO | null = null;
   public currentEnvInstances: CurrentEnvironmentInstanceDTO[] = [];
-  // public currentEnvInstanceSysId = "";
   public currentEnvInstanceNumber = 0;
 
   @Action
@@ -126,19 +123,12 @@ export class CurrentEnvironmentStore extends VuexModule {
 
   @Action
   public async createNewEnvInstance(): Promise<void> {
-    // this.doCreateNewEnvInstance();
-    debugger;
     await this.setCurrentEnvInstanceNumber(this.currentEnvInstances.length + 1);
-    debugger;
   }
   @Mutation
   public async doCreateNewEnvInstance(): Promise<void> {
-    debugger;
-    // need currentEnvInstance????
-    // this.currentEnvInstance = _.cloneDeep(defaultCurrentEnvironmentInstance);
     const newEnvInstance = _.cloneDeep(defaultCurrentEnvironmentInstance)
     this.currentEnvInstances.push(newEnvInstance)
-    debugger;
   }
 
   @Action
@@ -160,8 +150,8 @@ export class CurrentEnvironmentStore extends VuexModule {
   @Mutation
   public async doDeleteEnvironmentInstance(index: number): Promise<void> {
     const instanceSysId = this.currentEnvInstances[index].sys_id;
-    this.currentEnvInstances.splice(index, 1);
     // TODO FUTURE TICKET - delete from snow -- use instanceSysId from above
+    this.currentEnvInstances.splice(index, 1);
   }
 
   @Action
@@ -177,22 +167,13 @@ export class CurrentEnvironmentStore extends VuexModule {
     }
   }
 
-
   @Action 
   public async setCurrentEnvironmentInstanceNumber(sysId: string): Promise<void> {
-    // await this.doSetCurrentEnvironmentInstanceSysId(sysId);
     const i = this.currentEnvInstances.findIndex(obj => obj.sys_id === sysId);
-    debugger;
     if (i > -1) {
       this.setCurrentEnvInstanceNumber(i);
-      // await this.saveCurrentEnvironmentInstance(this.currentEnvInstances[i]);
     }
   }
-
-  // @Mutation
-  // public async doSetCurrentEnvironmentInstanceSysId(sysId: string): Promise<void> {
-  //   this.currentEnvInstanceSysId = sysId;
-  // }
 
   @Action
   public async saveCurrentEnvironmentInstance(
@@ -205,15 +186,12 @@ export class CurrentEnvironmentStore extends VuexModule {
   public async doSaveCurrentEnvironmentInstance(
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
-    // this.currentEnvInstance = _.cloneDeep(value);
     const instance = _.cloneDeep(value);
     // TODO - future ticket - SAVE/UPDATE instance data TO SNOW
     // TEMPORARY until have actual sys_ids use timestamp for sys_id (FUTURE TICKET)
     if (!instance.sys_id) {
       instance.sys_id = String(Date.now());
     }
-
-    debugger;
 
     const instanceSysId = instance.sys_id;
     if (this.currentEnvironment?.env_instances.indexOf(instanceSysId) === -1) {
@@ -234,8 +212,6 @@ export class CurrentEnvironmentStore extends VuexModule {
 
   @Action({rawError: true})
   public async getCurrentEnvInstance(): Promise<CurrentEnvironmentInstanceDTO | null> {
-    // return this.currentEnvInstance;
-    debugger;
     return this.currentEnvInstances[this.currentEnvInstanceNumber];
   }
 
@@ -273,15 +249,8 @@ export class CurrentEnvironmentStore extends VuexModule {
       // TODO: remove the below 3 lines after DB is updated
       defaultCurrentEnvironment.sys_id = currentEnvironmentDTO.sys_id;
       this.setCurrentEnvironment(defaultCurrentEnvironment);
-      
-      debugger;
-      // EJY commented this out - why is this being set to default?
-      // EJY because need to set to blank when ADDING ANOTHER INSTANCE but not first one??
-
-      // this.saveCurrentEnvironmentInstance(defaultCurrentEnvironmentInstance);
-      
+           
       return defaultCurrentEnvironment
-
     } catch (error) {
       throw new Error(`an error occurred while initializing current environment ${error}`);
     }
