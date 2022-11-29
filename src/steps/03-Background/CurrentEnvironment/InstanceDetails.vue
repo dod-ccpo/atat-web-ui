@@ -12,6 +12,22 @@
         through them one at a time.
       </p>
 
+      <!-- <v-expand-transition>
+        <ATATAlert
+          id="ErrorsOnLoadAlert"
+          v-show="formHasErrors === true && formHasBeenTouched === true"
+          type="error"
+          class="mb-10"
+        >
+          <template v-slot:content>
+            <p class="mb-0" id="ErrorsOnLoadAlertText">
+              Some of your info is missing. You can add it now or come back at any 
+              time before finalizing your acquisition package.
+            </p>
+          </template>
+        </ATATAlert>
+      </v-expand-transition> -->
+
       <h2 class="mb-4" v-if="hasTellUsAboutInstanceHeading">
         1. Tell us about Instance #{{ instanceNumber }}
       </h2>
@@ -181,6 +197,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   public envLocation = "";
   public instanceData = _.cloneDeep(defaultCurrentEnvironmentInstance);
   public instanceNumber = 0;
+  public isNewInstance = true;
 
   public get currentData(): CurrentEnvironmentInstanceDTO {
     return this.instanceData;
@@ -376,9 +393,21 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       this.setClassificationLabels();
     }   
   }
+  public async validateOnLoad(): Promise<void> {
+    this.isNewInstance = await CurrentEnvironment.isNewInstance();
+    if (!this.isNewInstance) {
+      // user is editing an existing instance, validate on load
+      await this.validate();
+      this.$nextTick(async () => {
+        this.setErrorMessages();
+      });
+
+    }
+  }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    await this.validateOnLoad();
   }
 
   // EJY NEED ROUTE RESOLVER AFTER on classifications page if no location selected

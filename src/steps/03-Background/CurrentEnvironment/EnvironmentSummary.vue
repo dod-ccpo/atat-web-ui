@@ -167,6 +167,17 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }  
 })
 export default class EnvironmentSummary extends Vue {
+
+  $refs!: {
+    form: Vue & {
+      resetValidation: () => void;
+      errorBucket: string[];
+      reset: () => void;
+      validate: () => boolean;
+      errorBag: Record<number, boolean>;
+    },
+  };
+
   public currEnvData = defaultCurrentEnvironment;
   public deleteInstanceModalTitle = "";
   public envInstances: CurrentEnvironmentInstanceDTO[] = [];
