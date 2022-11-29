@@ -9,6 +9,11 @@ export interface TravelEstimateNeeds {
   estimatedTravelCosts: string[]
 };
 
+export interface ArchDesignEstimateNeeds {
+  ceilingPrice: string,
+  estimatedCosts: string[]
+}
+
 export interface OptimizeOrReplicateEstimateNeeds {
   ceilingPrice: string,
   estimatedCosts: string[]
@@ -51,6 +56,12 @@ export class IGCEStore extends VuexModule {
     ceilingPrice: "",
     estimatedCosts: []
   }
+  archDesignEstimateNeeds: ArchDesignEstimateNeeds[] = [];
+
+  @Mutation
+  public setArchDesignEstimateNeeds(needs: ArchDesignEstimateNeeds[]): void {
+    this.archDesignEstimateNeeds = needs;
+  }
 
 
   @Mutation
@@ -81,6 +92,11 @@ export class IGCEStore extends VuexModule {
   public setHasDOWandPop(): void {
     this.hasDOWandPoP = ((Periods.periods && Periods.periods.length > 0) && 
       DescriptionOfWork.isIncomplete === false) || false;
+  }
+
+  @Action({ rawError: true })
+  public async getArchDesignEstimateNeeds(): Promise<ArchDesignEstimateNeeds[]> {
+    return this.archDesignEstimateNeeds;
   }
 
   @Action({ rawError: true })

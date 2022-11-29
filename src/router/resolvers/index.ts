@@ -125,9 +125,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 };
 
 export const ReplicateDetailsResolver = (current: string): string => {
-  const needsReplicateOrOptimize
-      = !(AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized === "NO");
-  if (needsReplicateOrOptimize) {
+  if (needsReplicateOrOptimize()) {
     return routeNames.ReplicateDetails;
   }
   return current === routeNames.ReplicateAndOptimize
@@ -449,6 +447,9 @@ export const OfferGroupOfferingsPathResolver = (
   case "general_xaas":
     dontNeedButtonText = "I don’t have general XaaS requirements";
     break;
+  case "developer_tools":
+    dontNeedButtonText = "I don’t need Developer Tools and Services";
+    break;
   // case "database": // stubbed in for future ticket
   //   dontNeedButtonText = "I don’t need database services";
   //   break;
@@ -724,16 +725,15 @@ export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
 
 
 export const IGCEArchitecturalDesignSolutionsResolver = (current: string): string => {
-  return routeNames.ArchitecturalDesignSolutions;
+  if (currentEnvNeedsArchitectureDesign()) {
+    return routeNames.ArchitecturalDesignSolutions;
+  }
 
-  // KEEP FOR FUTURE TICKET 8344 -- additional logic needed
-  // if (currentEnvNeedsArchitectureDesign()) {
-  //   return routeNames.ArchitecturalDesignSolutions;
-  // }
-
-  // return current === routeNames.GatherPriceEstimates && needsReplicateOrOptimize()
-  //   ? routeNames.OptimizeOrReplicate
-  //   : routeNames.CreatePriceEstimate;
+  return current === routeNames.GatherPriceEstimates && needsReplicateOrOptimize()
+    ? routeNames.OptimizeOrReplicate
+    : current === routeNames.GatherPriceEstimates
+      ? routeNames.CreatePriceEstimate
+      : routeNames.GatherPriceEstimates;
 }
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {
