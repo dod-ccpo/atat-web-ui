@@ -5,6 +5,7 @@
         <v-col
           v-if="isServiceOfferingList"
           class="col-12"
+          @AdditionalButtonClicked="deleteServiceOfferingCategory"
         >
           <h1 
             class="page-header"
@@ -54,6 +55,17 @@
 
       </v-row>
     </v-container>
+
+    <DeleteOfferingModal
+      :showDialog="showDialog"
+      :requirementName="requirementName"
+      :offeringName="deselectedLabel"
+      :deleteMode="deleteMode"
+      @deleteOfferingCancelClicked="modalCancelClicked"
+      @deleteOfferingOkClicked="deleteServiceItem"
+    >
+    </DeleteOfferingModal>
+
   </div>
 </template>
 
@@ -68,6 +80,7 @@ import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
+import DeleteOfferingModal from "./DeleteOfferingModal.vue";
 
 import { 
   Checkbox, 
@@ -81,6 +94,7 @@ import { getIdText } from "@/helpers";
     ATATCheckboxGroup,
     DOWSubtleAlert,
     OtherOfferings,
+    DeleteOfferingModal,
   }
 })
 
@@ -89,7 +103,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public requirementName = "";
 
   public requiredMessage = `Please select at least one type of offering. If you 
-    no longer need ${this.requirementName}, select the “I don’t need 
+    no longer need ${this.requirementName}, select the “I don't need 
     these cloud resources” button below.`;
 
   public otherValueRequiredMessage = "Please enter a title for this requirement."
@@ -97,9 +111,70 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public otherValueEntered = "";
   public otherSelected = "";
 
+  public showDialog = false;
+  public previousSelectedOptions: string[] = [];
+  public deselectedLabel = "";
+  public deleteMode = "item";
+
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
+    if(this.previousSelectedOptions.length > this.selectedOptions.length){
+      const difference = this.previousSelectedOptions.filter(
+        tempVal => this.selectedOptions.indexOf(tempVal) === -1
+      );
+      const deselectedItem = this.checkboxItems.find(el => el.value === difference[0]);
+      this.deselectedLabel = deselectedItem?.label || "";
+      this.deleteMode = "item";
+      this.openModal();
+    }
+    
     this.otherSelected = newVal.indexOf(this.otherValue) > -1 ? "true" : "false";
+    this.previousSelectedOptions = this.selectedOptions.slice();
+  }
+
+  get confirmOfferingDelete(): boolean {
+    return DescriptionOfWork.confirmServiceOfferingDeleteVal;
+  }
+
+  @Watch("confirmOfferingDelete")
+  public deleteServiceOfferingCategory(newVal: boolean): void {
+    if(newVal){
+      this.deleteMode = "category";
+      this.openModal();
+    } 
+  }
+
+  public openModal(): void {
+    this.showDialog = true;
+  }
+
+  public modalCancelClicked(): void {
+    const deselectedItem = this.checkboxItems.find(el => el.label === this.deselectedLabel);
+    if(deselectedItem)
+      this.selectedOptions.push(deselectedItem?.value);
+    this.showDialog = false;
+  }
+
+  public async deleteServiceItem(): Promise<void> {
+    if(this.deleteMode === "category"){
+      await DescriptionOfWork.removeCurrentOfferingGroup();
+      DescriptionOfWork.setConfirmServiceOfferingDelete(false);
+      this.showDialog = false;
+      this.deleteMode = "item";
+      this.deselectedLabel = "";
+      this.$router.push({
+        name: "pathResolver",
+        params: {
+          resolver: "OfferGroupOfferingsPathResolver",
+          direction: "next"
+        },
+      }).catch(() => console.log("avoiding redundant navigation"));
+    } else {
+      this.showDialog = false;
+      this.deleteMode = "item";
+      this.deselectedLabel = "";
+    }
+    
   }
 
   public selectedOptions: string[] = [];
@@ -143,8 +218,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     // all other categories have a similar workflow with checkbox list of service offerings
     this.isServiceOfferingList = !this.isCompute && !this.isGeneral;
 
+    this.requirementName = await DescriptionOfWork.getOfferingGroupName();
+
     if (this.isServiceOfferingList) {
-      this.requirementName = await DescriptionOfWork.getOfferingGroupName();
       this.serviceOfferings = await DescriptionOfWork.getServiceOfferings();
       if (this.serviceOfferings.length) {
         this.serviceOfferings.forEach((offering) => {
@@ -160,8 +236,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           }
         });
       }
-
-      this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
       const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
       
@@ -208,6 +282,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     this.isPeriodsDataMissing = periods.length === 0 ? true : false;
     this.isClassificationDataMissing = classifications.length === 0 ? true : false;
     this.showSubtleAlert = this.isPeriodsDataMissing || this.isClassificationDataMissing;
+
+    this.previousSelectedOptions = this.selectedOptions.slice();
+    this.showDialog = false;
+    this.deleteMode = "item";
+    this.deselectedLabel = "";
+    await DescriptionOfWork.setConfirmServiceOfferingDelete(false);
   } 
 
   public async mounted(): Promise<void> {
