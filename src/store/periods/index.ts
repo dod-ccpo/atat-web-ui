@@ -22,8 +22,6 @@ import {
   storeDataToSession,
 } from "../helpers";
 
-const ATAT_PERIODS_DATA_KEY = "ATAT_PERIODS_DATA_KEY";
-
 const savePeriod = async (period: PeriodDTO): Promise<PeriodDTO> => {
   try {
     const periodSysId = period.sys_id;
@@ -76,33 +74,17 @@ export class PeriodsStore extends VuexModule {
   @Mutation
   public setPeriods(value: PeriodDTO[]): void {
     this.periods = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_PERIODS_DATA_KEY
-    );
-
   }
 
   @Mutation
   public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
     this.periodOfPerformance = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_PERIODS_DATA_KEY
-    );
   }
 
   @Action({ rawError: true })
   async initialize(): Promise<void> {
-
-    const sessionRestored = retrieveSession(ATAT_PERIODS_DATA_KEY);
-    if (sessionRestored) {
-      this.setStoreData(sessionRestored);
-      this.setInitialized(true);
-    }
-     
+    this.setPeriods([]);
+    this.setPeriodOfPerformance(initialPeriodOfPerformance);
   }
 
   @Action({ rawError: true })
@@ -112,14 +94,9 @@ export class PeriodsStore extends VuexModule {
 
   @Action({ rawError: true })
   public async loadPeriods(): Promise<PeriodDTO[]> {
-
-    await this.ensureInitialized();
-
     try {
-      
       if(this.periodOfPerformance?.sys_id)
       {
-
         const periodOfPerformance =  await 
         api.periodOfPerformanceTable.retrieve(this.periodOfPerformance.sys_id);
         this.setPeriodOfPerformance(periodOfPerformance);
@@ -157,10 +134,7 @@ export class PeriodsStore extends VuexModule {
 
   @Action({rawError: true})
   public async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO>{
-
-    await this.ensureInitialized();
-
-    if(this.periodOfPerformance && this.periodOfPerformance.sys_id 
+    if(this.periodOfPerformance && this.periodOfPerformance.sys_id
       && this.periodOfPerformance.sys_id.length > 0)
     {
       const periodOfPerformance =  await 

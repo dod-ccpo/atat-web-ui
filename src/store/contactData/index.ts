@@ -214,29 +214,19 @@ export class ContactDataStore extends VuexModule {
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     try {
-
-      const sessionRestored= retrieveSession(ATAT_CONTACT_DATA_KEY);
-
-      if(sessionRestored){
-        this.setStoreData(sessionRestored);
-        this.setMilitaryAutoCompleteGroups();
-      }
-      else{
-
-        await Promise.all([this.getBranchChoices(), 
-          this.getCountries(),
-          this.getCivilianGradeChoices(), 
-          this.getContactRoleChoices(),
-          this.getContactSalutationChoices(),
-          this.getStates()]);
-    
-        const ranks = await api.militaryRankTable.all();
-        this.setRanks(ranks);
-        this.setMilitaryAutoCompleteGroups();
-        this.setInitialized(true);
-        storeDataToSession(this, this.sessionProperties, ATAT_CONTACT_DATA_KEY);
-      }
-
+      // removed storing data to session.
+      await Promise.all([this.getBranchChoices(),
+        this.getCountries(),
+        this.getCivilianGradeChoices(),
+        this.getContactRoleChoices(),
+        this.getContactSalutationChoices(),
+        this.getStates()]);
+      const ranks = await api.militaryRankTable.all();
+      this.setRanks(ranks);
+      this.setMilitaryAutoCompleteGroups();
+      this.setInitialized(true);
+      // TODO:the below line may need to be removed,since it is not being used during initialization
+      // storeDataToSession(this, this.sessionProperties, ATAT_CONTACT_DATA_KEY);
     } catch (error) {
       console.log(error);
       console.log("error loading military rank data");
@@ -245,7 +235,6 @@ export class ContactDataStore extends VuexModule {
 
   @Action({ rawError: true })
   public async LoadMilitaryBranches(): Promise<SystemChoiceDTO[]> {
-    await this.ensureInitialized();
     return this.branchChoices;
   }
 

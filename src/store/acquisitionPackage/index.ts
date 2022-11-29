@@ -178,7 +178,6 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
 }
 
 const initialPeriodOfPerformance = ()=> {
-
   return     { 
     pop_start_request: "",
     requested_pop_start_date: "",
@@ -481,16 +480,22 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setCurrentContract(value: CurrentContractDTO): void {
-    this.currentContract = this.currentContract
+    this.currentContract = value;
+    // TODO: below block is retaining the previous sys_id value from the store and there by
+    //  not only forcing the UI in making an API call. This is also leading in assigning data
+    //  from one acquisition to a different acquisition. For now commenting out the block, but
+    //  the block below and all the occurrences (commented) should be deleted from this store.
+    /*this.currentContract = this.currentContract
       ? Object.assign(this.currentContract, value)
-      : value;
+      : value;*/
   }
 
   @Mutation
   public setSensitiveInformation(value: SensitiveInformationDTO): void {
-    this.sensitiveInformation = this.sensitiveInformation
+    this.sensitiveInformation = value;
+    /*this.sensitiveInformation = this.sensitiveInformation
       ? Object.assign(this.sensitiveInformation, value)
-      : value;
+      : value;*/
   }
 
   @Mutation
@@ -500,30 +505,34 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setClassificationLevel(value: ClassificationLevelDTO): void {
-    this.classificationLevel = this.classificationLevel
+    this.classificationLevel = value;
+    /*this.classificationLevel = this.classificationLevel
       ? Object.assign(this.classificationLevel, value)
-      : value;
+      : value;*/
   }
 
   @Mutation
   public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
-    this.periodOfPerformance = this.periodOfPerformance
+    this.periodOfPerformance = value;
+    /*this.periodOfPerformance = this.periodOfPerformance
       ? Object.assign(this.periodOfPerformance, value)
-      : value;
+      : value;*/
   }
 
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
-    this.contractType = this.contractType
+    this.contractType = value;
+    /*this.contractType = this.contractType
       ? Object.assign(this.contractType, value)
-      : value;
+      : value;*/
   }
 
   @Mutation
   public setContractConsiderations(value: ContractConsiderationsDTO): void {
-    this.contractConsiderations = this.contractConsiderations 
+    this.contractConsiderations = value;
+    /*this.contractConsiderations = this.contractConsiderations
       ? Object.assign(this.contractConsiderations, value) 
-      : value;
+      : value;*/
   }
 
   @Mutation
@@ -542,11 +551,12 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public async setEvaluationPlan(value: EvaluationPlanDTO): Promise<void> {
-    if (this.evaluationPlan) {
+    this.evaluationPlan = value;
+    /*if (this.evaluationPlan) {
       this.evaluationPlan = Object.assign(this.evaluationPlan, value);
     } else {
       this.evaluationPlan = value;
-    }
+    }*/
   }
 
   public get getEvaluationPlan(): EvaluationPlanDTO {
@@ -555,9 +565,10 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): void {
-    this.requirementsCostEstimate = this.requirementsCostEstimate
+    this.requirementsCostEstimate = value;
+    /*this.requirementsCostEstimate = this.requirementsCostEstimate
       ? Object.assign(this.requirementsCostEstimate, value)
-      : value;
+      : value;*/
   }
   @Action({rawError: true})
   public getRequirementsCostEstimate(): RequirementsCostEstimateDTO | null{
@@ -566,9 +577,10 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setCurrentEnvironment(value: CurrentEnvironmentDTO): void {
-    this.currentEnvironment = this.currentEnvironment
+    this.currentEnvironment = value;
+    /*this.currentEnvironment = this.currentEnvironment
       ? Object.assign(this.currentEnvironment, value)
-      : value;
+      : value;*/
   }
 
   @Action({rawError: true})

@@ -16,18 +16,11 @@ import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
 import { AttachmentDTO } from "@/api/models";
 import {
   AttachmentServiceCallbacks,
-  AttachmentServiceTypes,
   AttachmentServiceFactory,
 } from "@/services/attachment";
 
 import Vue from "vue";
 
-const ATAT_ATTACHMENTS_KEY = "ATAT_ATTACHMENTS_KEY";
-
-import {
-  storeDataToSession,
-  retrieveSession,
-} from "../helpers";
 @Module({
   name: "AttachmentsStore",
   namespaced: true,
@@ -107,7 +100,6 @@ export class AttachmentStore extends VuexModule {
         (attachment) => attachment.sys_id !== attachmentId
       );
       this.updateAttachments({ key, attachments: attachmentsAfterRemoval });
-      storeDataToSession(this, this.sessionProperties, ATAT_ATTACHMENTS_KEY);
     } catch (error) {
       console.error(
         `error ocurred removing attachment data for ${key} error: ${error}`
@@ -127,7 +119,6 @@ export class AttachmentStore extends VuexModule {
     const existingAttachments = storeData[key] as AttachmentDTO[];
     const attachments = [...existingAttachments, attachment];
     this.updateAttachments({ key, attachments });
-    storeDataToSession(this, this.sessionProperties, ATAT_ATTACHMENTS_KEY);
   }
 
   @Action({ rawError: true })
@@ -184,12 +175,6 @@ export class AttachmentStore extends VuexModule {
         })
       }
     );
-
-    const sessionRestored = retrieveSession(ATAT_ATTACHMENTS_KEY);
-    if (sessionRestored) {
-      this.setStoreData(sessionRestored);
-    }
-
     this.setInitialized(true);
   }
 

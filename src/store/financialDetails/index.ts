@@ -4,15 +4,13 @@ import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-dec
 import rootStore from "../index";
 
 import { baseGInvoiceData, fundingIncrement, IFPData } from "types/Global";
-import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers";
+import { nameofProperty, storeDataToSession } from "../helpers";
 import {
   FundingIncrementDTO, FundingPlanDTO, FundingRequestDTO, FundingRequestFSFormDTO,
   FundingRequestMIPRFormDTO, RequirementsCostEstimateDTO, TaskOrderDTO
 } from "@/api/models";
 import TaskOrder from "../taskOrder";
 import api from "@/api";
-
-const ATAT_FINANCIAL_DETAILS__KEY = "ATAT_FINANCIAL_DETAILS__KEY";
 
 const saveIncrement = async (increment: fundingIncrement): Promise<FundingIncrementDTO> => {
   try {
@@ -153,25 +151,11 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-
     if (this.initialized) {
       return;
     }
-
-    const sessionRestored = retrieveSession(ATAT_FINANCIAL_DETAILS__KEY);
-    if (sessionRestored) {
-      this.setStoreData(sessionRestored);
-    }
-    else{
-      await this.loadFundingPlanData();
-    }
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
+    await this.loadFundingPlanData();
     this.setInitialized(true);
-
   }
 
   @Action
@@ -229,19 +213,11 @@ export class FinancialDetailsStore extends VuexModule {
         }
         this.fundingIncrements.push(incrObj);
       });
-
-      storeDataToSession(
-        this,
-        this.sessionProperties,
-        ATAT_FINANCIAL_DETAILS__KEY
-      );
     }
   }
 
   @Action({ rawError: true })
   public async loadIFPData(): Promise<IFPData> {
-    await this.ensureInitialized();
-
     return {
       initialFundingIncrementStr: this.initialFundingIncrementStr || "",
       fundingIncrements: this.fundingIncrements,
@@ -261,11 +237,6 @@ export class FinancialDetailsStore extends VuexModule {
   @Mutation
   public setFundingPlan(value: FundingPlanDTO): void {
     this.fundingPlan = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
   @Action({ rawError: true })
@@ -301,13 +272,6 @@ export class FinancialDetailsStore extends VuexModule {
       // add sysIds to this.fundingIncrements
       const remainingAmountIncrements = savedFundingPlan.remaining_amount_increments
       this.setFundingIncrements(remainingAmountIncrements);
-
-
-      storeDataToSession(
-        this,
-        this.sessionProperties,
-        ATAT_FINANCIAL_DETAILS__KEY
-      );
 
       // save funding plan sys_id to TaskOrder table
       const fundingPlanSysId = savedFundingPlan.sys_id;
@@ -365,7 +329,6 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action({ rawError: true })
   public async getEstimatedTaskOrderValue(): Promise<string> {
-    this.ensureInitialized();
     return this.estimatedTaskOrderValue || "";
   }
 
@@ -377,12 +340,6 @@ export class FinancialDetailsStore extends VuexModule {
       { estimated_task_order_value: value }
     );
     await this.saveFundingPlan();
-
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );  
   }
 
  @Action({rawError: true})
@@ -401,8 +358,6 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action({rawError: true})
  async loadFundingRequest():Promise<FundingRequestDTO>{
-   this.ensureInitialized();
-
    try {
      if(this.fundingRequest == null){
        const fundingRequest: FundingRequestDTO = {
@@ -425,8 +380,6 @@ export class FinancialDetailsStore extends VuexModule {
 
  @Action({rawError: true})
   async loadFundingRequestFSForm():Promise<FundingRequestFSFormDTO>{
-    this.ensureInitialized();
-
     try {
       if(this.fundingRequestFSForm == null){
         return initialFundingRequestFSForm;
@@ -444,8 +397,6 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action({rawError: true})
  async loadFundingRequestMIPRForm():Promise<FundingRequestMIPRFormDTO>{
-   this.ensureInitialized();
-
    try {
      if(this.fundingRequestMIPRForm == null){
        return initialFundingRequestMIPRForm;
@@ -466,10 +417,6 @@ export class FinancialDetailsStore extends VuexModule {
    */
   @Action({rawError: true})
   async loadRequirementsCostEstimate():Promise<RequirementsCostEstimateDTO>{
-    // TODO: check if this needs to be uncommented. Commented because new record is not
-    //  getting created and always loading from the session.
-    // this.ensureInitialized();
-
     try {
       if(this.requirementsCostEstimate == null){
         return initialRequirementsCostEstimate;
@@ -565,96 +512,51 @@ export class FinancialDetailsStore extends VuexModule {
   @Mutation
   public setEstimatedTaskOrderValue(value: string | undefined): void {
     this.estimatedTaskOrderValue = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
   @Mutation
   public setInitialAmount(value: string): void {
     this.initialFundingIncrementStr = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
   @Mutation
   public setMIPRNumber(value: string): void {
     this.miprNumber = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
 
   @Mutation
   public setGTCNumber(value: string): void {
     this.gtcNumber = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
   @Mutation
   public setOrderNumber(value: string): void {
     this.orderNumber = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
   @Mutation
   public setFundingRequest(value: FundingRequestDTO): void {
     this.fundingRequest = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
   @Mutation
   public setFundingRequestFSForm(value: FundingRequestFSFormDTO): void {
     this.fundingRequestFSForm = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
   @Mutation
   public setFundingRequestMIPRForm(value: FundingRequestMIPRFormDTO): void {
     this.fundingRequestMIPRForm = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
   @Mutation
   public setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): void {
     this.requirementsCostEstimate = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
   @Mutation
-  private setInitialized(value: boolean) {
+  public setInitialized(value: boolean) {
     this.initialized = value;
   }
 

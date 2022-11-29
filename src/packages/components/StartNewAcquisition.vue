@@ -23,6 +23,12 @@ import AppSections from "@/store/appSections";
 import {routeNames} from "@/router/stepper";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {defaultCurrentEnvironment} from "@/store/acquisitionPackage/currentEnvironment";
+import Periods from "@/store/periods";
+import ContactData from "@/store/contactData";
+import OrganiationData from "@/store/organizationData";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import Attachments from "@/store/attachments";
+import FinancialDetails from "@/store/financialDetails";
 
 /**
  * Performs any session or state cleanup before routing the user to a new acquisition. This
@@ -35,6 +41,12 @@ export default class StartNewAcquisition extends Vue {
 
   public async startNewAcquisition(): Promise<void> {
     AcquisitionPackage.setInitialized(false);
+    Periods.setInitialized(false);
+    ContactData.setInitialized(false);
+    OrganiationData.setInitialized(false);
+    DescriptionOfWork.setInitialized(false);
+    Attachments.setInitialized(false);
+    FinancialDetails.setInitialized(false);
     // TODO: delete below 2 lines after CurrentEnvironment-initialCurrentEnvironment TODOs are fixed
     delete defaultCurrentEnvironment.sys_id;
     defaultCurrentEnvironment.env_instances = [];

@@ -343,7 +343,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  private setInitialized(value: boolean) {
+  public setInitialized(value: boolean) {
     this.initialized = value;
   }
 
@@ -994,26 +994,14 @@ export class DescriptionOfWorkStore extends VuexModule {
     if (this.initialized) {
       return;
     }
-    
-    const sessionRestored = retrieveSession(ATAT_DESCRIPTION_OF_WORK_KEY);
-    if (sessionRestored) {
-      this.setStoreData(sessionRestored);
+    try {
+      await Promise.all([
+        this.loadServiceOfferings(),
+        this.LoadServiceOfferingGroups(),
+      ]);
       this.setInitialized(true);
-    } else {
-      try {
-        await Promise.all([
-          this.loadServiceOfferings(),
-          this.LoadServiceOfferingGroups(),
-        ]);
-        storeDataToSession(
-          this,
-          this.sessionProperties,
-          ATAT_DESCRIPTION_OF_WORK_KEY
-        );
-        this.setInitialized(true);
-      } catch (error) {
-        console.error(error);
-      }
+    } catch (error) {
+      console.error(error);
     }
   }
 

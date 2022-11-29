@@ -6,10 +6,8 @@ import api from "@/api";
 import { AxiosRequestConfig } from "axios"
 import {TABLENAME as OrganizationTable} from "@/api/organization";
 import { AgencyDTO, SystemChoiceDTO } from "@/api/models";
-import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
+import  {nameofProperty} from "../helpers"
 import Vue from "vue";
-
-const ATAT_ORGANIZATION_DATA_KEY = 'ATAT_ORGANIZATION_DATA_KEY';
 
 @Module({
   name: "OrganizationData",
@@ -93,26 +91,13 @@ export class OrganizationDataStore extends VuexModule {
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     try {
-
-      const sessionRestored = retrieveSession(ATAT_ORGANIZATION_DATA_KEY);
-
-      if(sessionRestored){
-        this.setStoreData(sessionRestored);
-      }
-      else{
-        await this.getAgencyData();
-        await this.getDisaOrgData();
-        this.setInitialized(true);
-        storeDataToSession(this, this.sessionProperties, ATAT_ORGANIZATION_DATA_KEY);
-      }
-
-    
-        
+      await this.getAgencyData();
+      await this.getDisaOrgData();
+      this.setInitialized(true);
     } catch (error) {
       console.log(`error occurred loading organization data ${error}`)
     }
   }
-
 }
 
 const OrganiationData = getModule(OrganizationDataStore);
