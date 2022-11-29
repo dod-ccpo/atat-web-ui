@@ -7,7 +7,7 @@ describe("Test suite: OCC: Conflict of Interest substep", () => {
   beforeEach(() => {
 
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
   });
     

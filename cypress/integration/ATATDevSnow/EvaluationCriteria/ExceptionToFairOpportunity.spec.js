@@ -14,7 +14,7 @@ describe("Test suite: Exception to Fair Opportunity", () => {
     });
     
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepEvaluationCriteriaLink, " Evaluation Criteria ");
     cy.activeStep(common.stepFairOppText);

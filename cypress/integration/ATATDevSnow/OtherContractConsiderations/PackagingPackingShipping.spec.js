@@ -100,7 +100,7 @@ describe("Test suite: OCC: PPS substep", () => {
       });    
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();    
     //navigates next substep  Packaging, Packing, and Shipping 
-    cy.findElement(common.subStepTrainingText)
+    cy.findElement(common.subStepTravelText)
       .should("be.visible")
       .and('have.css', 'color', colors.primary);
     
