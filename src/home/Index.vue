@@ -10,17 +10,52 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
-
-          <div class="_welcome-bar">
-            <h1 class="text-primary">Hi Maria! How can we help you?</h1>
-            <v-btn 
-              id="HelpfulResourcesButton"
-              class="secondary"
-              @click="scrollToResources"
-            >
-              Helpful Resources
-            </v-btn>
+          <div v-if="!isNewUser" class="_welcome-bar">
+            <div class="d-flex justify-start">
+              <h1 class="text-primary">
+                Hi {{currentUser.first_name}}! How can we help you?
+              </h1>
+            </div>
+            <div class="d-flex justify-end">
+              <v-btn 
+                class="v-btn primary"
+                @click="startNewAcquisition"
+              >
+                Start a new acquisition
+              </v-btn>
+            </div>
           </div>
+          <section v-if="isNewUser" class="_py-80">
+            
+            <div class="d-flex flex-row-reverse">
+              <div class="d-flex align-flex-end">       
+                <div class="bg-white border-rounded-more pa-8">
+                  <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
+                  <br />
+                  <div class="d-flex justify-space-around">
+                    <div class="d-flex align-flex-start">
+                      <v-btn 
+                        class="v-btn primary"
+                        @click="startNewAcquisition"
+                      >
+                        Start a new acquisition
+                      </v-btn>
+                    </div>
+                    &nbsp;&nbsp;
+                    <div class="d-flex align-flex-end">
+                      <v-btn 
+                        id="HelpfulResourcesButton"
+                        class="secondary"
+                        @click="scrollToResources"
+                      >
+                        Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
+                      </v-btn>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
 
         <NewUser 
@@ -34,8 +69,6 @@
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
         />
-
-        <HelpfulResourcesCards :isNewUser="isNewUser" />
 
         <div class="bg-white">
           <div class="container-max-width pt-5">
@@ -76,6 +109,8 @@ import { routeNames } from "@/router/stepper";
 
 import { scrollToId } from "@/helpers";
 
+import UserStore from "@/store/user";
+
 @Component({
   components: {
     ATATFooter,
@@ -87,6 +122,8 @@ import { scrollToId } from "@/helpers";
 
 export default class Home extends Vue {
   public isNewUser = true;
+
+  private currentUser = UserStore.getInitialUser;
 
   public scrollToResources(): void {
     scrollToId("HelpfulResourcesCards");
@@ -110,6 +147,10 @@ export default class Home extends Vue {
     if (el) {
       el.scrollTop = 0;
     }
+  }
+
+  public async mounted(): Promise<void> {
+    this.currentUser = await UserStore.getCurrentUser();
   }
 
 }

@@ -42,6 +42,7 @@ import Periods from "../periods";
 import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import UserStore from "../user";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -244,6 +245,10 @@ const initialCurrentEnvironment = () => {
   }
 }
 
+const saveAcquisitionPackage = (value: AcquisitionPackageDTO) => {
+  api.acquisitionPackageTable.update(value.sys_id as string, value);
+};
+
 const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
     ATAT_ACQUISTION_PACKAGE_KEY,
@@ -283,6 +288,34 @@ const getStoreDataTableProperty = (
   }
 
   return dataProperty;
+};
+
+/* Below sys_ids are NOT secrets */
+export const jamrrTemplateUrls = {
+  disastorefront: {
+    documentSysIds: {
+      mrr: '4864795287979d10bc86b889cebb353f', //pragma: allowlist secret
+      ja: 'db44755687979d10bc86b889cebb354a' //pragma: allowlist secret
+    }
+  },
+  niprdev: {
+    documentSysIds: {
+      mrr: '',
+      ja: ''
+    }
+  },
+  niprtest: {
+    documentSysIds: {
+      mrr: '',
+      ja: ''
+    }
+  },
+  niprprod: {
+    documentSysIds: {
+      mrr: '',
+      ja: ''
+    }
+  }
 };
 
 @Module({
@@ -389,6 +422,31 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action
+  public async getJamrrTemplateUrl(type: string): Promise<string>{
+    let url = '';
+    const hostname = window.location.hostname;
+    let attachment: AttachmentDTO;
+
+    switch(hostname) {
+    default: {
+      if(type === 'ja'){
+        attachment = await api.attachments.retrieve(
+          jamrrTemplateUrls.disastorefront.documentSysIds.ja
+        );
+      } else {
+        attachment = await api.attachments.retrieve(
+          jamrrTemplateUrls.disastorefront.documentSysIds.mrr
+        );
+      } 
+    }};
+
+    if(attachment)
+      url = attachment.download_link as string;
+
+    return url;
+  }
+
+  @Action
   public getAcquisitionPackageSysId(): string {
     return this.acquisitionPackage?.sys_id || "";
   }
@@ -401,6 +459,11 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setOrganization(value: OrganizationDTO): void {
     this.organization = value;
+  }
+
+  @Mutation
+  public getInitialFairOpportunity() {
+    return initialFairOpportunity();
   }
 
   @Mutation
@@ -509,6 +572,11 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
+    return this.fairOpportunity;
+  }
+
+  @Action({rawError: true})
   public async getCurrentEnvironment(): Promise<CurrentEnvironmentDTO | null>{
     return this.currentEnvironment;
   }
@@ -556,6 +624,8 @@ export class AcquisitionPackageStore extends VuexModule {
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
 
+    const loggedInUser = await UserStore.getCurrentUser();
+
     if (storedSessionData && storedSessionData.length > 0) {
       const parsedData = JSON.parse(storedSessionData) as SessionData;
       this.setDataFromSession(parsedData);
@@ -590,7 +660,9 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentEnvironment(currentEnvironmentDTO);
           acquisitionPackage.current_environment =
             currentEnvironmentDTO.sys_id as unknown as string;
+          acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           this.setAcquisitionPackage(acquisitionPackage);
+          saveAcquisitionPackage(acquisitionPackage);
           await TaskOrder.initialize(acquisitionPackage.sys_id || "");
           this.setInitialized(true);
         }

@@ -54,6 +54,12 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
     : routeNames.Exceptions;
 };
 
+export const UploadJAMRRDocumentsRouteResolver = (current: string): string => {
+  return !evalPlanRequired() 
+    ? routeNames.UploadJAMRRDocuments 
+    : routeNames.ReadyToGeneratePackage;
+};
+
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = AcquisitionPackage.getEvaluationPlan;
   if (missingEvalPlanMethod(evalPlan)) {
@@ -671,26 +677,55 @@ export const IGCESurgeCapabilities =  (current:string): string =>{
   }
   return routeNames.SurgeCapabilities;
 }
+
+
+// KEEP FOR FUTURE TICKETS  8331 and 8344
+const needsReplicateOrOptimize = (): boolean => {
+  return !(
+    AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized === "NO"
+  );
+}
+// KEEP FOR FUTURE TICKETS  8331 and 8344
+const currentEnvNeedsArchitectureDesign = (): boolean => {
+  return AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
+}
+
 export const IGCECannotProceedResolver = (current: string): string => {
-  if (IGCEStore.hasDOWandPoP){
-    if (current ===  routeNames.CreatePriceEstimate){
-      return routeNames.GatherPriceEstimates;
-    } else if (current == routeNames.GatherPriceEstimates) {
-      return routeNames.CreatePriceEstimate;
-    }
-  }
-  return routeNames.CannotProceed;
-};
-
-export const IGCEGatherPriceEstimatesResolver = (current: string): string => {
-  if (current === routeNames.TravelEstimates && IGCEStore.hasDOWandPoP){
-    return routeNames.GatherPriceEstimates;
+  if (!IGCEStore.hasDOWandPoP){
+    return routeNames.CannotProceed;
   }
 
-  return current === routeNames.GatherPriceEstimates && IGCEStore.hasDOWandPoP
-    ? routeNames.CreatePriceEstimate
-    : routeNames.FundingPlanType;
-};
+  return current ===  routeNames.CreatePriceEstimate
+    ? routeNames.OptimizeOrReplicate
+    : routeNames.CreatePriceEstimate;
+  // TODO - TICKETS 8331 AND 8344 -- additional logic needed
+}
+
+export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
+  if (current === routeNames.CannotProceed){
+    return routeNames.FundingPlanType;
+  }
+
+  return routeNames.OptimizeOrReplicate
+  // KEEP FOR FUTURE TICKET 8331 -- additional logic needed
+  // return current === routeNames.ArchitecturalDesignSolutions && needsReplicateOrOptimize()
+  //   ? routeNames.OptimizeOrReplicate
+  //   : routeNames.CreatePriceEstimate;
+}
+
+
+export const IGCEArchitecturalDesignSolutionsResolver = (current: string): string => {
+  return routeNames.ArchitecturalDesignSolutions;
+
+  // KEEP FOR FUTURE TICKET 8344 -- additional logic needed
+  // if (currentEnvNeedsArchitectureDesign()) {
+  //   return routeNames.ArchitecturalDesignSolutions;
+  // }
+
+  // return current === routeNames.GatherPriceEstimates && needsReplicateOrOptimize()
+  //   ? routeNames.OptimizeOrReplicate
+  //   : routeNames.CreatePriceEstimate;
+}
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {
   return current === routeNames.FundingPlanType && IGCEStore.hasDOWandPoP
@@ -819,7 +854,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   A11yRequirementResolver,
   ContractTrainingReq,
   IGCECannotProceedResolver,
-  IGCEGatherPriceEstimatesResolver,
+  IGCEOptimizeOrReplicateResolver,
+  IGCEArchitecturalDesignSolutionsResolver,
   IGCESupportingDocumentationResolver,
   MIPRResolver,
   IGCESurgeCapabilities,
@@ -832,7 +868,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
-  SecurityRequirementsResolver
+  SecurityRequirementsResolver,
+  UploadJAMRRDocumentsRouteResolver
 };
 
 // add path resolvers here 

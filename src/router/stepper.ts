@@ -75,6 +75,7 @@ import DOWSummary
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
+import Travel from "@/steps/07-OtherContractConsiderations/Travel.vue";
 import Training from "../steps/07-OtherContractConsiderations/Training.vue";
 import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
 
@@ -93,7 +94,11 @@ import Section508AccessibilityRequirements
 import IGCE from "@/steps/10-FinancialDetails/IGCE/Index.vue";
 import CreatePriceEstimate from "@/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.vue";
 import CannotProceed from "@/steps/10-FinancialDetails/IGCE/CannotProceed.vue";
+import OptimizeOrReplicate from "@/steps/10-FinancialDetails/IGCE/OptimizeOrReplicate.vue";
+import ArchitecturalDesignSolutions 
+  from '@/steps/10-FinancialDetails/IGCE/ArchitecturalDesignSolutions.vue';
 import GatherPriceEstimates from "@/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.vue";
+import IGCETraining from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 import TravelEstimates from "@/steps/10-FinancialDetails/IGCE/TravelEstimates.vue";
 import SurgeCapacity from "@/steps/10-FinancialDetails/IGCE/SurgeCapacity.vue";
 import FeeCharged from "@/steps/10-FinancialDetails/IGCE/FeeCharged.vue";
@@ -116,6 +121,9 @@ import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
+import UploadJAMRRDocuments from "@/steps/11-ReviewRequiredForms/UploadJAMRRDocuments.vue";
+import ReadyToGeneratePackage from "@/steps/11-ReviewRequiredForms/ReadyToGeneratePackage.vue";
+import GeneratePackageDocuments from "@/steps/11-ReviewRequiredForms/GeneratePackageDocuments.vue";
 
 import {
   AcorsRouteResolver,
@@ -137,8 +145,9 @@ import {
   FinancialPOCResolver,
   OtherOfferingSummaryPathResolver,
   IGCESurgeCapabilities,
-  IGCEGatherPriceEstimatesResolver,
   IGCECannotProceedResolver,
+  IGCEOptimizeOrReplicateResolver,
+  IGCEArchitecturalDesignSolutionsResolver,
   IGCESupportingDocumentationResolver,
   CreateEvalPlanRouteResolver,
   BVTOResolver,
@@ -146,8 +155,9 @@ import {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-
+  UploadJAMRRDocumentsRouteResolver
 } from "./resolvers";
+import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
 export const routeNames = {
   ProjectOverview: "Project_Overview",
@@ -187,6 +197,7 @@ export const routeNames = {
   ContractType: "Contract_Type",
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
+  Travel: "Travel",
   Training: "Training",
   TrainingCourses: "Training_Courses",
   PropertyDetails: "Property_Details",
@@ -222,6 +233,9 @@ export const routeNames = {
   CreatePriceEstimate:"Create_Price_Estimate",
   CannotProceed:"Cannot_Proceed",
   GatherPriceEstimates:"Gather_Price_Estimates",
+  OptimizeOrReplicate:"Optimize_Or_Replicate",
+  ArchitecturalDesignSolutions:"ArchitecturalDesignSolutions",
+  IGCETraining:"Training",
   TravelEstimates:"Travel_Estimates",
   SurgeCapacity:"Surge_Capacity",
   FeeCharged:"Fee_Charged",
@@ -237,6 +251,9 @@ export const routeNames = {
   EnvironmentSummary:"Environment_Summary",
   SecurityRequirements:"Security_Requirements",
   CrossDomain:"Cross_Domain",
+  UploadJAMRRDocuments:"JA_MRR_Documents",
+  ReadyToGeneratePackage:"Ready_To_Generate_Package",
+  GeneratePackageDocuments: "Generate_Package_Documents"
 };
 
 /**
@@ -733,6 +750,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: PackagingPackingAndShipping,
       },
       {
+        name: routeNames.Travel,
+        menuText: "Travel",
+        path: "travel",
+        completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.Travel,
+        component: Travel
+      },
+      {
         name: routeNames.Training,
         menuText: "Training",
         path: "training",
@@ -848,13 +873,38 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: IGCECannotProceedResolver
       },
       {
+        menuText: "Optimize Or Replicate",
+        excludeFromMenu: true,
+        path: "optimize-or-replicate",
+        name: routeNames.OptimizeOrReplicate,
+        completePercentageWeight: 0,
+        component: OptimizeOrReplicate,
+        routeResolver: IGCEOptimizeOrReplicateResolver,
+      },
+      {
+        menuText: "Architectural Design Solutions",
+        excludeFromMenu: true,
+        path: "architectural-design-solutions",
+        name: routeNames.ArchitecturalDesignSolutions,
+        completePercentageWeight: 0,
+        component: ArchitecturalDesignSolutions,
+        routeResolver: IGCEArchitecturalDesignSolutionsResolver,
+      },
+      {
         menuText: "Gather Price Estimates",
         excludeFromMenu: true,
         path: "gather-price-estimates",
         name: routeNames.GatherPriceEstimates,
         completePercentageWeight: 1,
         component: GatherPriceEstimates,
-        routeResolver: IGCEGatherPriceEstimatesResolver,
+      },
+      {
+        menuText: "Training",
+        excludeFromMenu: true,
+        path: "training-estimate",
+        name: routeNames.IGCETraining,
+        completePercentageWeight: 1,
+        component: IGCETraining
       },
       {
         menuText: "Travel Estimates",
@@ -912,8 +962,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SupportingDocumentation,
         completePercentageWeight: 1,
         component: SupportingDocumentation,
-        // routeResolver: IGCESupportingDocumentationResolver // EJY needed?
-
+        routeResolver: IGCESupportingDocumentationResolver
       },
       {
         menuText: "Funding Plan",
@@ -1001,6 +1050,32 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: ReviewRequiredFormsStepOne,
       },
+      {
+        menuText: "Upload J&A and MRR Documents",
+        path:"upload-ja-mrr-documents",
+        excludeFromMenu: true,
+        name: routeNames.UploadJAMRRDocuments,
+        completePercentageWeight: 0,
+        component: UploadJAMRRDocuments,
+        routeResolver: UploadJAMRRDocumentsRouteResolver
+      },
+      {
+        menuText: "Ready To Generate Package",
+        path:"ready-to-generate-package",
+        excludeFromMenu: true,
+        name: routeNames.ReadyToGeneratePackage,
+        completePercentageWeight: 0,
+        component: ReadyToGeneratePackage,
+        continueButtonText: "Generate my acquisition package"
+      },
+      {
+        menuText: "Generate Package Documents",
+        path:"generate-package-documents",
+        excludeFromMenu: true,
+        name: routeNames.GeneratePackageDocuments,
+        completePercentageWeight: 0,
+        component: GeneratePackageDocuments
+      }
     ],
   },
 ];

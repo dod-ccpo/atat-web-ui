@@ -37,6 +37,7 @@ import { AlertApi } from "./alerts";
 import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
+import { UserApi } from "@/api/user";
 
 
 export const api = {
@@ -80,7 +81,8 @@ export const api = {
   aggregate: new AggregateApi(),
   environmentInstanceTable: new EnvironmentInstanceAPI(),
   portfolioTable: new PortfolioApi(),
-  cloudServiceProviderTable: new CloudServiceProviderApi()
+  cloudServiceProviderTable: new CloudServiceProviderApi(),
+  userTable: new UserApi()
 }
 
 export default {

@@ -1,3 +1,18 @@
+%step-circle{
+  flex: 0 0 28px;
+  font-size: 1.2rem;
+  border: 1px solid $base-light;
+  margin-right: 12px;
+  text-align: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  line-height: 26px;
+  background-color: $white;
+  outline: 2px solid $white;
+  z-index: 2;
+}
+
 .theme--light {
   &.v-navigation-drawer {
     &.global-side-nav-bar {
@@ -83,18 +98,7 @@
                 margin-top: 2px;
               }
               .step-circle {
-                flex: 0 0 28px;
-                font-size: 1.2rem;
-                border: 1px solid $base-light;
-                margin-right: 12px;
-                text-align: center;
-                width: 28px;
-                height: 28px;
-                border-radius: 50%;
-                line-height: 26px;
-                background-color: $white;
-                outline: 2px solid $white;
-                z-index: 2;
+                @extend %step-circle;
               }
               .substep-circle {
                 flex: 0 0 28px;
