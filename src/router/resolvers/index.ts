@@ -439,35 +439,25 @@ export const OfferGroupOfferingsPathResolver = (
     }     
   }
   
-  let dontNeedButtonText = "";
-  switch (currentGroupId.toLowerCase()) {
-  case "compute":
-    dontNeedButtonText = "I don’t need compute resources";
-    break;
-  case "general_xaas":
-    dontNeedButtonText = "I don’t have general XaaS requirements";
-    break;
-  case "developer_tools":
-    dontNeedButtonText = "I don’t need Developer Tools and Services";
-    break;
-  case "networking":
-    dontNeedButtonText = "I don’t need  Networking";
-    break;
-  case "security":
-    dontNeedButtonText = "I don’t need Security";
-    break;
-  case "machine_learning":
-    dontNeedButtonText = "I don’t need Machine Learning";
-    break;
-  case "iot":
-    dontNeedButtonText = "I don’t need Internet of Things";
-    break;
-  // case "database": // stubbed in for future ticket
-  //   dontNeedButtonText = "I don’t need database services";
-  //   break;
-  default:
-    dontNeedButtonText = "I don’t need these cloud resources";
+  let dontNeedButtonText = "I don’t need ";
+  /* eslint-disable camelcase */
+  const offeringNames: Record<string, string> = {
+    compute: "Compute",
+    developer_tools: "Developer Tools and Services",
+    applications: "Application services",
+    machine_learning: "Machine Learning",
+    networking: "Networking",
+    security: "Security",
+    database: "Database",
+    storage: "Storage",
+    edge_computing: "Edge Computing and Tactical Edge",
+    iot: "Internet of Things",
+    general_xaas: "General IaaS, PaaS, and SaaS",
   }
+  /* eslint-enable camelcase */
+  
+  const offeringStr = offeringNames[currentGroupId.toLowerCase()] || "these cloud resources";
+  dontNeedButtonText += offeringStr;
 
   Steps.setAdditionalButtonText({
     buttonText: dontNeedButtonText, 

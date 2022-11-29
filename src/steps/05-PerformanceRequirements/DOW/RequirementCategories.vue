@@ -226,20 +226,18 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
 
     const replicateOrOptimize = 
       this.currEnvDTO.current_environment_replicated_optimized || "";
+      
+    const replicateOrOptimizeGerund = replicateOrOptimize === "YES_OPTIMIZE"
+      ? "optimizing" : replicateOrOptimize === "YES_REPLICATE" ? "replicating" : ""
 
-    if(replicateOrOptimize === "YES_OPTIMIZE"){
-      this.introText = `In addition to optimizing your current environment, 
-        you can procure other JWCC offerings for Anything as a Service (XaaS) 
-        and Cloud Support Packages. Specify any categories that may apply to your 
-        acquisition below, and we'll walk through each selection to get more details.`;
-    } else if (replicateOrOptimize === "YES_REPLICATE") {
-      this.introText = `In addition to replicating your current environment, 
+    if (replicateOrOptimize) {
+      this.introText = `In addition to ${replicateOrOptimizeGerund} your current environment, 
         you can procure other JWCC offerings for Anything as a Service (XaaS) 
         and Cloud Support Packages. Specify any categories that may apply to your 
         acquisition below, and we'll walk through each selection to get more details.`;
     }
 
-  };
+  }
 
   public async mounted(): Promise<void> {
     this.goToSummary = DescriptionOfWork.DOWObject.length > 0;
