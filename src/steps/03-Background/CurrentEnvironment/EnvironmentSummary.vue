@@ -201,6 +201,7 @@ export default class EnvironmentSummary extends Vue {
     const classifications: string[] = [];
     const unclassifiedILs: string[] = [];
     const locationClassifications = this.classificationsCloud.concat(this.classificationsOnPrem);
+    debugger
     locationClassifications.forEach((sysId) => {
       const cl = this.classificationLevels.find(obj => obj.sys_id === sysId);
       classifications.push(this.topLevelClassification(cl?.classification as string))
@@ -232,7 +233,9 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public async addInstance(): Promise<void> {
-    await CurrentEnvironment.resetCurrentEnvironmentInstance();
+    debugger;
+    await CurrentEnvironment.setCurrentEnvInstanceNumber(this.envInstances.length + 1);
+    // await CurrentEnvironment.createNewEnvInstance();
     this.navigate();
   }
 
@@ -247,7 +250,8 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public async editInstance(instance: EnvInstanceSummaryTableData): Promise<void> {
-    await CurrentEnvironment.setCurrentEnvironmentInstanceSysId(instance.instanceSysId as string);
+    await CurrentEnvironment.setCurrentEnvironmentInstanceNumber(instance.instanceSysId as string);
+    debugger;
     this.navigate();
   }
 

@@ -177,10 +177,10 @@ import _ from "lodash";
 
 export default class InstanceDetails extends Mixins(SaveOnLeave) {
   /* eslint-disable camelcase */
-  public currEnvData = defaultCurrentEnvironment;
+  public currEnvData = _.cloneDeep(defaultCurrentEnvironment);
   public envLocation = "";
-  public instanceData = defaultCurrentEnvironmentInstance;
-  public instanceNumber = 1;
+  public instanceData = _.cloneDeep(defaultCurrentEnvironmentInstance);
+  public instanceNumber = 0;
 
   public get currentData(): CurrentEnvironmentInstanceDTO {
     return this.instanceData;
@@ -215,12 +215,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   }
 
   public clearClassificationErrorMessages = false;
-
-  @Watch("instanceData.instance_location")
-  public instanceLocChanged(): void {
-    this.setClassificationLabels();
-    this.clearClassificationErrorMessages = true;
-  }
 
   public classificationLabels: Record<string, Record<string, string>> = {
     CLOUD: { 
@@ -353,10 +347,24 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     { text: "Petabyte (PB)", value: "PB" },
   ];
 
+  // @Watch("instanceData.instance_location")
+  // public instanceLocChanged(): void {
+  //   debugger;
+  //   this.setClassificationLabels();
+  //   this.clearClassificationErrorMessages = true;
+  // }
+
+
   @Watch("instanceData.instance_location")
-  public instanceLocationChange(newVal: string): void {
+  public instanceLocationChange(newVal: string, oldVal: string): void {
     // eslint-disable-next-line camelcase
-    this.instanceData.classification_level = "";
+    debugger;
+
+    this.setClassificationLabels();
+    this.clearClassificationErrorMessages = true;
+    if (oldVal !== "") {
+      this.instanceData.classification_level = "";
+    }
     const envClassificationLevelSysIds = newVal === "CLOUD"
       ? this.currEnvData.env_classifications_cloud
       : this.currEnvData.env_classifications_on_prem;
@@ -390,15 +398,15 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
-    this.instanceNumber = CurrentEnvironment.currentEnvInstanceNumber;
-
-    const envStoreData = await AcquisitionPackage.getCurrentEnvironment();
+    this.instanceNumber = CurrentEnvironment.currentEnvInstanceNumber + 1;
+    const envStoreData = await CurrentEnvironment.getCurrentEnvironment();
     if (envStoreData) {
       this.currEnvData = envStoreData;
       this.envLocation = envStoreData.env_location;
       const instanceStoreData = await CurrentEnvironment.getCurrentEnvInstance();
       if (instanceStoreData) {
         this.instanceData = _.cloneDeep(instanceStoreData);
+        debugger;
         this.savedData = _.cloneDeep(instanceStoreData);
         
         this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || [];
@@ -436,6 +444,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       }
 
       if (!instanceStoreData?.instance_location) {
+        debugger;
         this.instanceData.instance_location = envStoreData.env_location !== "HYBRID"
           ? envStoreData.env_location : "";
       }
@@ -452,7 +461,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        CurrentEnvironment.setCurrentEnvironmentInstance(this.instanceData);
+        CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
 
         // TODO - wire to proper location for saving after DB is updated
         // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({

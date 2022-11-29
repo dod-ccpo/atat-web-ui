@@ -215,12 +215,14 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
+        debugger;
         Object.assign(this.currEnvDTO, this.currentData);
         // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-        
-        CurrentEnvironment.resetCurrentEnvironmentInstance();
+        debugger;
+        // EJY is this the culprit??
+        //CurrentEnvironment.createNewEnvInstance();
 
         // TODO - wire to proper location for saving after DB is updated
         // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
