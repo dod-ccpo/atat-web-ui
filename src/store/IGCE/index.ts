@@ -9,6 +9,16 @@ export interface TravelEstimateNeeds {
   estimatedTravelCosts: string[]
 };
 
+export interface ArchDesignEstimateNeeds {
+  ceilingPrice: string,
+  estimatedCosts: string[]
+}
+
+export interface OptimizeOrReplicateEstimateNeeds {
+  ceilingPrice: string,
+  estimatedCosts: string[]
+};
+
 export interface SurgeRequirements {
   capacity: string,
   capabilities: string
@@ -42,7 +52,23 @@ export class IGCEStore extends VuexModule {
     isCharged: "",
     percentage: ""
   }
+  optimizeOrReplicateEstimateNeeds: OptimizeOrReplicateEstimateNeeds = {
+    ceilingPrice: "",
+    estimatedCosts: []
+  }
+  archDesignEstimateNeeds: ArchDesignEstimateNeeds[] = [];
 
+  @Mutation
+  public setArchDesignEstimateNeeds(needs: ArchDesignEstimateNeeds[]): void {
+    this.archDesignEstimateNeeds = needs;
+  }
+
+
+  @Mutation
+  public setOptimizeOrReplicateEstimateNeeds(needs: OptimizeOrReplicateEstimateNeeds): void {
+    this.optimizeOrReplicateEstimateNeeds.ceilingPrice = needs.ceilingPrice;
+    this.optimizeOrReplicateEstimateNeeds.estimatedCosts = needs.estimatedCosts;
+  }
   
   @Mutation
   public setTravelEstimateNeeds(needs: TravelEstimateNeeds): void {
@@ -66,6 +92,16 @@ export class IGCEStore extends VuexModule {
   public setHasDOWandPop(): void {
     this.hasDOWandPoP = ((Periods.periods && Periods.periods.length > 0) && 
       DescriptionOfWork.isIncomplete === false) || false;
+  }
+
+  @Action({ rawError: true })
+  public async getArchDesignEstimateNeeds(): Promise<ArchDesignEstimateNeeds[]> {
+    return this.archDesignEstimateNeeds;
+  }
+
+  @Action({ rawError: true })
+  public async getOptimizeOrReplicateEstimateNeeds(): Promise<OptimizeOrReplicateEstimateNeeds> {
+    return this.optimizeOrReplicateEstimateNeeds;
   }
 
   @Action({ rawError: true })
