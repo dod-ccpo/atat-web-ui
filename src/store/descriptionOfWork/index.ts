@@ -806,7 +806,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action
-  public setConfirmServiceOfferingDelete(bool: boolean): void {
+  public async setConfirmServiceOfferingDelete(bool: boolean): Promise<void> {
     this.doSetConfirmServiceOfferingDelete(bool);
   }
   @Mutation

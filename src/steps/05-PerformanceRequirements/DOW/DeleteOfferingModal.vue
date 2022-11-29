@@ -29,9 +29,9 @@ import ATATDialog from "@/components/ATATDialog.vue";
 })
 export default class DeleteOfferingModal extends Vue {
   @PropSync("showDialog") public _showModal?: boolean;
-  @Prop({default: "[category title]"}) public requirementName!: string;
-  @Prop({default: "[offering deselected]"}) public offeringName?: string;
-  @PropSync("deleteMode", {default: "item"}) public _deleteMode?: string;
+  @Prop({default: "[category title]"}) private requirementName!: string;
+  @Prop({default: "[offering deselected]"}) private offeringName?: string;
+  @PropSync("deleteMode", {default: "item"}) private _deleteMode?: string;
 
   public title = "";
   public okText = "";
@@ -59,12 +59,10 @@ export default class DeleteOfferingModal extends Vue {
   }
 
   public OKClicked(): void {
-    this._showModal = false;
     this.$emit("deleteOfferingOkClicked");
   }
 
   public cancelClicked(): void {
-    this._showModal = false;
     this.$emit("deleteOfferingCancelClicked");
   }
 }
