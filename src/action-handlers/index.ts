@@ -49,7 +49,7 @@ async function confirmComputeDeletion() {
 }
 
 async function confirmServiceDeletion() {
-  DescriptionOfWork.setConfirmServiceOfferingDelete(true);
+  await DescriptionOfWork.setConfirmServiceOfferingDelete(true);
 }
 
 export default actionHandler;

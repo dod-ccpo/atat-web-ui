@@ -121,7 +121,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       const difference = this.previousSelectedOptions.filter(
         tempVal => this.selectedOptions.indexOf(tempVal) === -1
       );
-      const deselectedItem = this.checkboxItems.find(el => el.value === difference[0])
+      const deselectedItem = this.checkboxItems.find(el => el.value === difference[0]);
       this.deselectedLabel = deselectedItem?.label || "";
       this.deleteMode = "item";
       this.openModal();
@@ -148,6 +148,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   }
 
   public modalCancelClicked(): void {
+    const deselectedItem = this.checkboxItems.find(el => el.label === this.deselectedLabel);
+    if(deselectedItem)
+      this.selectedOptions.push(deselectedItem?.value);
     this.showDialog = false;
   }
 
@@ -155,6 +158,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     if(this.deleteMode === "category"){
       await DescriptionOfWork.removeCurrentOfferingGroup();
       DescriptionOfWork.setConfirmServiceOfferingDelete(false);
+      this.showDialog = false;
+      this.deleteMode = "item";
+      this.deselectedLabel = "";
       this.$router.push({
         name: "pathResolver",
         params: {
@@ -162,8 +168,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           direction: "next"
         },
       }).catch(() => console.log("avoiding redundant navigation"));
+    } else {
+      this.showDialog = false;
+      this.deleteMode = "item";
+      this.deselectedLabel = "";
     }
-    this.showDialog = false;
+    
   }
 
   public selectedOptions: string[] = [];
@@ -274,6 +284,10 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     this.showSubtleAlert = this.isPeriodsDataMissing || this.isClassificationDataMissing;
 
     this.previousSelectedOptions = this.selectedOptions.slice();
+    this.showDialog = false;
+    this.deleteMode = "item";
+    this.deselectedLabel = "";
+    await DescriptionOfWork.setConfirmServiceOfferingDelete(false);
   } 
 
   public async mounted(): Promise<void> {
