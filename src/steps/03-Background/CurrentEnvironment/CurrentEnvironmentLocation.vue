@@ -77,7 +77,6 @@ import Toast from "@/store/toast";
 
 import CurrentEnvironment,
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-import _ from "lodash";
 
 @Component({
   components: {
@@ -177,8 +176,8 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       }
     });
     this.showConfirmDialog = false;
-    this.instanceRemovedToast.message 
-      = _.startCase(this.deleteInstanceTypeStr) + " instances deleted";
+    const instanceTypeDeleted = this.changeToEnv === "CLOUD" ? "On-premise" : "Cloud";
+    this.instanceRemovedToast.message = instanceTypeDeleted + " instances deleted";
     Toast.setToast(this.instanceRemovedToast);
   }
 
