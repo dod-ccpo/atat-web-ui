@@ -7,9 +7,6 @@
             <h1 class="page-header">
               Ready to generate your acquisition package?
             </h1>
-            <!-- <div class="copy-max-width">
-              
-            </div> -->
           </v-col>
         </v-row>
         <v-row>
@@ -33,13 +30,11 @@
             </span>
           </v-col>
           <v-col class="col-6">
-            <v-img 
-              eager
-              contain
-              max-width="500"
-              max-height="375.52"
-              src="@/assets/images/readyToGeneratePackage.svg"
-            ></v-img>
+            <ATATSVGIcon
+              width="500"
+              height="375.52"
+              name="readyToGeneratePackage"
+            ></ATATSVGIcon>
           </v-col>
         </v-row>
       </v-container>
@@ -51,8 +46,13 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-@Component({})
+@Component({
+  components: {
+    ATATSVGIcon
+  }
+})
 export default class ReadyToGeneratePackage extends Mixins(SaveOnLeave) {
 
   // public async mounted(): Promise<void> {
