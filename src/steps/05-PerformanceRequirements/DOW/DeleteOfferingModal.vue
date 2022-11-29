@@ -5,7 +5,7 @@
     :title="title"
     no-click-animation
     :okText="okText"
-    width="670"
+    width="450"
     @ok="OKClicked"
     @cancelClicked="cancelClicked"
   >

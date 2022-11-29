@@ -87,29 +87,5 @@ export default class ATATStepperNavigation extends Vue {
     AcquisitionPackage.setAllowDeveloperNavigation(!AcquisitionPackage.getAllowDeveloperNavigation);
   }
 
-  @Watch("additionalButtons")
-  private updateAdditionalButtonText(): void {
-
-    const groupName = this.$route.params.groupName;
-
-    if(groupName && this.additionalButtons?.length){
-      let buttonText = "I don't need "
-      this.additionalButtons?.forEach((button, index) => {
-
-        switch(groupName){
-        case "developer_tools":
-          buttonText += "Developer Tools and Services";
-          break;
-        default:
-          buttonText += "these cloud resources";
-          break;
-        }
-
-        (button as any).buttonText = buttonText;
-        (this.additionalButtons as any)[index] = button;
-      });
-    }
-  }
-
 }
 </script>

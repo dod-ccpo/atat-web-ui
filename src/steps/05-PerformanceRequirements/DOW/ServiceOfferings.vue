@@ -41,6 +41,17 @@
             />
 
           </div>
+          
+          <DeleteOfferingModal
+            :showDialog="showDialog"
+            :requirementName="requirementName"
+            :offeringName="deselectedLabel"
+            :deleteMode="deleteMode"
+            @deleteOfferingCancelClicked="modalCancelClicked"
+            @deleteOfferingOkClicked="deleteServiceItem"
+          >
+          </DeleteOfferingModal>
+
         </v-col>
         
         <v-col v-else-if="isCompute || isGeneral">
@@ -56,15 +67,6 @@
       </v-row>
     </v-container>
 
-    <DeleteOfferingModal
-      :showDialog="showDialog"
-      :requirementName="requirementName"
-      :offeringName="deselectedLabel"
-      :deleteMode="deleteMode"
-      @deleteOfferingCancelClicked="modalCancelClicked"
-      @deleteOfferingOkClicked="deleteServiceItem"
-    >
-    </DeleteOfferingModal>
   </div>
 </template>
 
