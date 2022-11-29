@@ -679,13 +679,14 @@ export const IGCESurgeCapabilities =  (current:string): string =>{
 }
 
 
-// KEEP FOR FUTURE TICKETS  8331 and 8344
 const needsReplicateOrOptimize = (): boolean => {
-  return !(
-    AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized === "NO"
+  return (
+    AcquisitionPackage.currentEnvironment !== null &&
+    AcquisitionPackage.currentEnvironment
+      .current_environment_replicated_optimized.indexOf("YES") > -1
   );
 }
-// KEEP FOR FUTURE TICKETS  8331 and 8344
+
 const currentEnvNeedsArchitectureDesign = (): boolean => {
   return AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
 }
@@ -695,10 +696,16 @@ export const IGCECannotProceedResolver = (current: string): string => {
     return routeNames.CannotProceed;
   }
 
-  return current ===  routeNames.CreatePriceEstimate
-    ? routeNames.OptimizeOrReplicate
-    : routeNames.CreatePriceEstimate;
-  // TODO - TICKETS 8331 AND 8344 -- additional logic needed
+  if (current === routeNames.CreatePriceEstimate) {
+    if (needsReplicateOrOptimize()) {
+      return routeNames.OptimizeOrReplicate;
+    }
+    if (currentEnvNeedsArchitectureDesign()) {
+      return routeNames.ArchitecturalDesignSolutions;
+    }
+    return routeNames.GatherPriceEstimates
+  }
+  return routeNames.CreatePriceEstimate;
 }
 
 export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
@@ -706,11 +713,13 @@ export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
     return routeNames.FundingPlanType;
   }
 
-  return routeNames.OptimizeOrReplicate
-  // KEEP FOR FUTURE TICKET 8331 -- additional logic needed
-  // return current === routeNames.ArchitecturalDesignSolutions && needsReplicateOrOptimize()
-  //   ? routeNames.OptimizeOrReplicate
-  //   : routeNames.CreatePriceEstimate;
+  if (needsReplicateOrOptimize()) {
+    return routeNames.OptimizeOrReplicate;
+  }
+
+  return current === routeNames.ArchitecturalDesignSolutions 
+    ? routeNames.CreatePriceEstimate
+    : routeNames.ArchitecturalDesignSolutions;
 }
 
 
