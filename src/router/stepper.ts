@@ -94,7 +94,11 @@ import Section508AccessibilityRequirements
 import IGCE from "@/steps/10-FinancialDetails/IGCE/Index.vue";
 import CreatePriceEstimate from "@/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.vue";
 import CannotProceed from "@/steps/10-FinancialDetails/IGCE/CannotProceed.vue";
+import OptimizeOrReplicate from "@/steps/10-FinancialDetails/IGCE/OptimizeOrReplicate.vue";
+import ArchitecturalDesignSolutions 
+  from '@/steps/10-FinancialDetails/IGCE/ArchitecturalDesignSolutions.vue';
 import GatherPriceEstimates from "@/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.vue";
+import IGCETraining from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 import TravelEstimates from "@/steps/10-FinancialDetails/IGCE/TravelEstimates.vue";
 import SurgeCapacity from "@/steps/10-FinancialDetails/IGCE/SurgeCapacity.vue";
 import FeeCharged from "@/steps/10-FinancialDetails/IGCE/FeeCharged.vue";
@@ -141,8 +145,9 @@ import {
   FinancialPOCResolver,
   OtherOfferingSummaryPathResolver,
   IGCESurgeCapabilities,
-  IGCEGatherPriceEstimatesResolver,
   IGCECannotProceedResolver,
+  IGCEOptimizeOrReplicateResolver,
+  IGCEArchitecturalDesignSolutionsResolver,
   IGCESupportingDocumentationResolver,
   CreateEvalPlanRouteResolver,
   BVTOResolver,
@@ -152,6 +157,7 @@ import {
   SecurityRequirementsResolver,
   UploadJAMRRDocumentsRouteResolver
 } from "./resolvers";
+import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
 export const routeNames = {
   ProjectOverview: "Project_Overview",
@@ -227,6 +233,9 @@ export const routeNames = {
   CreatePriceEstimate:"Create_Price_Estimate",
   CannotProceed:"Cannot_Proceed",
   GatherPriceEstimates:"Gather_Price_Estimates",
+  OptimizeOrReplicate:"Optimize_Or_Replicate",
+  ArchitecturalDesignSolutions:"ArchitecturalDesignSolutions",
+  IGCETraining:"Training",
   TravelEstimates:"Travel_Estimates",
   SurgeCapacity:"Surge_Capacity",
   FeeCharged:"Fee_Charged",
@@ -865,13 +874,38 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: IGCECannotProceedResolver
       },
       {
+        menuText: "Optimize Or Replicate",
+        excludeFromMenu: true,
+        path: "optimize-or-replicate",
+        name: routeNames.OptimizeOrReplicate,
+        completePercentageWeight: 0,
+        component: OptimizeOrReplicate,
+        routeResolver: IGCEOptimizeOrReplicateResolver,
+      },
+      {
+        menuText: "Architectural Design Solutions",
+        excludeFromMenu: true,
+        path: "architectural-design-solutions",
+        name: routeNames.ArchitecturalDesignSolutions,
+        completePercentageWeight: 0,
+        component: ArchitecturalDesignSolutions,
+        routeResolver: IGCEArchitecturalDesignSolutionsResolver,
+      },
+      {
         menuText: "Gather Price Estimates",
         excludeFromMenu: true,
         path: "gather-price-estimates",
         name: routeNames.GatherPriceEstimates,
         completePercentageWeight: 1,
         component: GatherPriceEstimates,
-        routeResolver: IGCEGatherPriceEstimatesResolver,
+      },
+      {
+        menuText: "Training",
+        excludeFromMenu: true,
+        path: "training-estimate",
+        name: routeNames.IGCETraining,
+        completePercentageWeight: 1,
+        component: IGCETraining
       },
       {
         menuText: "Travel Estimates",
@@ -929,8 +963,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SupportingDocumentation,
         completePercentageWeight: 1,
         component: SupportingDocumentation,
-        // routeResolver: IGCESupportingDocumentationResolver // EJY needed?
-
+        routeResolver: IGCESupportingDocumentationResolver
       },
       {
         menuText: "Funding Plan",
