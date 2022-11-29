@@ -125,6 +125,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       const deselectedItem = this.checkboxItems.find(el => el.value === difference[0]);
       this.deselectedLabel = deselectedItem?.label || "";
       this.deleteMode = "item";
+      // todo: need to check if service offering has saved data or if is first
+      // time checking the offering checkbox. If first time (i.e., no saved data
+      // for the offering), then no need to show the delete confirmation modal
       this.openModal();
     }
     
@@ -148,11 +151,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     this.showDialog = true;
   }
 
-  public modalCancelClicked(): void {
+  public async modalCancelClicked(): Promise<void> {
     const deselectedItem = this.checkboxItems.find(el => el.label === this.deselectedLabel);
     if(deselectedItem)
       this.selectedOptions.push(deselectedItem?.value);
     this.showDialog = false;
+    await DescriptionOfWork.setConfirmServiceOfferingDelete(false);
   }
 
   public async deleteServiceItem(): Promise<void> {
@@ -284,9 +288,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     this.showSubtleAlert = this.isPeriodsDataMissing || this.isClassificationDataMissing;
 
     this.previousSelectedOptions = this.selectedOptions.slice();
-    this.showDialog = false;
-    this.deleteMode = "item";
-    this.deselectedLabel = "";
     await DescriptionOfWork.setConfirmServiceOfferingDelete(false);
   } 
 
