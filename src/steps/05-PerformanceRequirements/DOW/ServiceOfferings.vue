@@ -41,17 +41,6 @@
             />
 
           </div>
-          
-          <DeleteOfferingModal
-            :showDialog="showDialog"
-            :requirementName="requirementName"
-            :offeringName="deselectedLabel"
-            :deleteMode="deleteMode"
-            @deleteOfferingCancelClicked="modalCancelClicked"
-            @deleteOfferingOkClicked="deleteServiceItem"
-          >
-          </DeleteOfferingModal>
-
         </v-col>
         
         <v-col v-else-if="isCompute || isGeneral">
@@ -66,6 +55,16 @@
 
       </v-row>
     </v-container>
+
+    <DeleteOfferingModal
+      :showDialog="showDialog"
+      :requirementName="requirementName"
+      :offeringName="deselectedLabel"
+      :deleteMode="deleteMode"
+      @deleteOfferingCancelClicked="modalCancelClicked"
+      @deleteOfferingOkClicked="deleteServiceItem"
+    >
+    </DeleteOfferingModal>
 
   </div>
 </template>
@@ -219,8 +218,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     // all other categories have a similar workflow with checkbox list of service offerings
     this.isServiceOfferingList = !this.isCompute && !this.isGeneral;
 
+    this.requirementName = await DescriptionOfWork.getOfferingGroupName();
+
     if (this.isServiceOfferingList) {
-      this.requirementName = await DescriptionOfWork.getOfferingGroupName();
       this.serviceOfferings = await DescriptionOfWork.getServiceOfferings();
       if (this.serviceOfferings.length) {
         this.serviceOfferings.forEach((offering) => {
@@ -236,8 +236,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           }
         });
       }
-
-      this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
       const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
       
