@@ -21,7 +21,7 @@
         id="EnvironmentLocation"
         class="mb-8"
         :items="envLocationOptions"
-        tooltipText="<strong>On-premises environments</strong> are deployed in-house 
+        tooltipText="<strong>On-premise environments</strong> are deployed in-house 
           and within an enterprise IT infrastructure. <strong>Cloud environments</strong> 
           are hosted by a third-party provider in an off-site, cloud-based server."
         :value.sync="instanceData.instance_location"
@@ -195,7 +195,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     },
     {
       id: "OnPremises",
-      label: "On-premises",
+      label: "On-premise",
       value: "ON_PREM",
     },
   ];
@@ -252,7 +252,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
   public get hasTellUsAboutInstanceHeading(): boolean {
     // only one case where there won't be a "Tell us about instance #x" header -
-    // if instance location is on-premises AND only one classification was selected.
+    // if instance location is on-premise AND only one classification was selected.
     // classification radio options will show if either NO (ZERO) classification
     // levels were selected, or more than one was selected.
     return !(this.instanceData.instance_location === 'ON_PREM' 

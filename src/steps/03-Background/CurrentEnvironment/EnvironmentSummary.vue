@@ -182,7 +182,7 @@ export default class EnvironmentSummary extends Vue {
   public get environmentTypeText(): string {
     switch (this.envLocation) {
     case "CLOUD": return "Cloud Environment";
-    case "ON_PREM": return "On-premises Environment";
+    case "ON_PREM": return "On-premise Environment";
     case "HYBRID": return "Hybrid Environment";
     default: return "";
     }
@@ -209,6 +209,8 @@ export default class EnvironmentSummary extends Vue {
       }
     });
     let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
+    debugger;
+
     if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
       let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
       const unclassifiedIndex = uniqueClassifications.indexOf("Unclassified");
@@ -359,7 +361,7 @@ export default class EnvironmentSummary extends Vue {
       }
       let location = "";
       if (instance.instance_location === "ON_PREM") {
-        location = "On-premises";
+        location = "On-premise";
       } else {
         let regions = instance.deployed_regions?.length 
           ? instance.deployed_regions.join(", ")
@@ -411,7 +413,7 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeEnvData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeEnvData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeEnvData) {
       this.currEnvData = _.clone(storeEnvData);
       this.envLocation = this.currEnvData.env_location;

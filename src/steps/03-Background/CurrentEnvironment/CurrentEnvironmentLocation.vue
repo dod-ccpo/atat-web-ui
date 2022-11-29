@@ -21,9 +21,46 @@
               name="radioButton-card"
             />
           </div>
+
+          <ATATAlert 
+            id="LocationChangeAlert"
+            class="copy-max-width"
+            type="warning"
+            v-if="warningMessage"
+          >
+            <template slot="content">
+              <p class="mb-0">
+                NOTE: {{ warningMessage }}
+              </p>
+            </template>
+          </ATATAlert>
+
         </v-col>
       </v-row>
     </v-container>
+
+    <ATATDialog
+      id="ChangeEnvLocationModal"
+      :showDialog="showConfirmDialog"
+      :title="'Delete all ' + deleteInstanceTypeStr + ' instances?'" 
+      no-click-animation
+      :okText="'Delete all ' + deleteInstanceTypeStr + ' instances'" 
+      width="450"
+      @ok="deleteInstances"
+      @cancelClicked="cancelDeleteInstances"
+    >    
+      <template #content>
+        <p class="body" :class="{'mb-0' : changeFromEnv === 'HYBRID' }">
+          This action will permanently delete all {{ deleteInstanceTypeStr }} 
+          instances that you already entered.
+        </p>
+        <p v-if="changeFromEnv !== 'HYBRID'" class="mb-0 body">
+          If you need to add {{ theOtherEnvTypeStr }} instances to your current 
+          environment summary, consider changing to a hybrid environment instead.
+        </p>
+      </template>
+    </ATATDialog>
+
   </v-form>
 </template>
 <script lang="ts">
@@ -34,18 +71,22 @@ import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage"
 import { CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
+import ATATDialog from "@/components/ATATDialog.vue";
+
 import CurrentEnvironment,
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
     ATATRadioGroup,
+    ATATAlert,
+    ATATDialog,
   },
 })
 export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
   public currEnvDTO = defaultCurrentEnvironment;
-  public envInstances: CurrentEnvironmentInstanceDTO[] = [];
-
+  public showConfirmDialog = false;
   /* eslint-disable camelcase */
   public currentEnvironmentLocation: EnvironmentLocation = "";
   private envLocationOption: RadioButton[] = [
@@ -66,11 +107,78 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     },
   ];
 
-  @Watch("currentEnvironmentLocation")
-  public locationChange(newVal: string) {
-    //
-    
+  public changeFromEnv = "";
+  public changeToEnv = "";
+
+  public warningMessage = "";
+  public warningMessages: Record<string, string> = {
+    CLOUD: `Changing to an on-premise environment will delete all cloud instances 
+      that you already entered.`,
+    ON_PREM: `Changing to a cloud environment will delete all on-premise instances
+      that you already entered.`,
+    HYBRID: `Changing to a cloud environment will delete all on-premise instances 
+      that you already entered. And vice versa, changing to an on-premise environment 
+      will delete all cloud instances.`
   }
+
+  public get envInstances(): CurrentEnvironmentInstanceDTO[] {
+    return CurrentEnvironment.currentEnvInstances;
+  };
+
+  public get hasCloudInstances(): boolean {
+    return this.hasInstances("CLOUD");
+  }
+
+  public get hasOnPremInstances(): boolean {
+    return this.hasInstances("ON_PREM");
+  }
+
+  public hasInstances(type: string): boolean {
+    const onPremEnvs = this.envInstances.filter(obj => obj.instance_location === type);
+    return onPremEnvs && onPremEnvs.length > 0;
+  }
+
+  public get deleteInstanceType(): string {
+    return this.changeToEnv === "CLOUD" ? "ON_PREM" : "CLOUD";
+  }
+  public get deleteInstanceTypeStr(): string {
+    return this.changeToEnv === "CLOUD" ? "on-premise" : "cloud";
+  }
+  public get theOtherEnvTypeStr(): string {
+    return this.changeToEnv === "CLOUD" ? "cloud" : "on-premise";
+  }
+
+
+  @Watch("currentEnvironmentLocation")
+  public locationChange(newVal: string): void {
+    this.changeToEnv = newVal;
+    if (
+      newVal === "ON_PREM" && this.hasCloudInstances || 
+      newVal === "CLOUD" && this.hasOnPremInstances
+    ) {
+      this.showConfirmDialog = true;
+    }
+  }
+
+  public cancelDeleteInstances(): void {
+    this.showConfirmDialog = false;
+  }
+
+  public async deleteInstances(): Promise<void> {
+    debugger;
+    const instancesToDelete = this.envInstances.filter(
+      obj => obj.instance_location === this.deleteInstanceType
+    );
+    instancesToDelete.forEach(async (instance) => {
+      if (instance.sys_id) {
+        await CurrentEnvironment.deleteEnvironmentInstance(instance.sys_id);
+        await CurrentEnvironment.clearEnvClassifications(this.deleteInstanceType);
+      }
+    });
+    this.showConfirmDialog = false;
+    // show the toast
+  }
+
 
   private savedData: Record<string, string> = {
     env_location: "",
@@ -82,12 +190,10 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     };
   }
 
-  public get hasCloudEnvs(): boolean {
-    const cloudEnvs = this.envInstances.filter(obj => obj.instance_location === "CLOUD");
-    return cloudEnvs && cloudEnvs.length > 0;
-  }
 
   public async loadOnEnter(): Promise<void> {
+    // this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
+
     // TODO - get from ACQPKG store or CURRENV store??
     const storeData = await AcquisitionPackage.getCurrentEnvironment();
     if (storeData) {
@@ -96,6 +202,11 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       this.savedData = {
         env_location: storeData.env_location,
       }
+      if (storeData.env_location) {
+        this.warningMessage = this.warningMessages[storeData.env_location];
+        this.changeFromEnv = storeData.env_location;
+      }
+
     }
   }
   public async mounted(): Promise<void> {

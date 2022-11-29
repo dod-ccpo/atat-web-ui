@@ -156,6 +156,19 @@ export class CurrentEnvironmentStore extends VuexModule {
     // TODO FUTURE TICKET - delete from snow -- use instanceSysId from above
   }
 
+  @Action
+  public async clearEnvClassifications(type: string): Promise<void> {
+    await this.doClearEnvClassifications(type);
+  }
+  @Mutation
+  public async doClearEnvClassifications(type: string): Promise<void> {
+    if (type === "CLOUD" && this.currentEnvironment) {
+      this.currentEnvironment.env_classifications_cloud = [];
+    } else if (type === "ON_PREM" && this.currentEnvironment) {
+      this.currentEnvironment.env_classifications_on_prem = [];
+    }
+  }
+
 
   @Action 
   public async setCurrentEnvironmentInstanceSysId(sysId: string): Promise<void> {
