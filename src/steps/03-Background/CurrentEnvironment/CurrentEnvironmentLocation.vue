@@ -189,7 +189,6 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     hasIcon: true,
   };
 
-
   private savedData: Record<string, string> = {
     env_location: "",
   }
@@ -200,10 +199,7 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     };
   }
 
-
   public async loadOnEnter(): Promise<void> {
-    // this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
-
     // TODO - get from ACQPKG store or CURRENV store??
     const storeData = await AcquisitionPackage.getCurrentEnvironment();
     if (storeData) {
@@ -219,9 +215,11 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
 
     }
   }
+
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
+
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
@@ -229,7 +227,6 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
         // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-
         // TODO - wire to proper location for saving after DB is updated
         // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
         //   data: this.currentData,
@@ -241,6 +238,7 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     }
     return true;
   }
+
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
