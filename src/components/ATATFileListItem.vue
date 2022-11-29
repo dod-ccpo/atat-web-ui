@@ -207,7 +207,6 @@ export default class ATATFileListItem extends Vue {
    * removes file at index
    */
   private removeFile(idx: number, event: Event): void {
-    debugger;
     event.preventDefault();
     Vue.nextTick(() => {
       this.$emit("removeFiles", idx);

@@ -1,5 +1,5 @@
 <template>
-<button style="outline:none" @blur="$emit('blur')">
+<div style="outline:none">
   <!-- <v-form ref="atatFileUploadForm"> -->
     <div
       :id="id + 'EventDiv'"
@@ -100,7 +100,7 @@
       @delete="deleteFile"
     />
   <!-- </v-form> -->
-</button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -197,6 +197,7 @@ export default class ATATFileUpload extends Vue {
     this.$emit('delete', file);
     await this.$refs.atatFileUpload.$emit("click:clear");
     await this.$refs.atatFileUpload.$emit("change");
+    this.reset();
   }
 
   /**
