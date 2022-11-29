@@ -101,7 +101,7 @@
       class="secondary ml-auto"
       :id="'RemoveFile0' + index"
       v-if="!isLoading"
-      @click="removeFile(index)"
+      @click="removeFile(index, ...arguments)"
     >
       <ATATSVGIcon
         name="remove"
@@ -206,7 +206,8 @@ export default class ATATFileListItem extends Vue {
    *
    * removes file at index
    */
-  private removeFile(idx: number): void {
+  private removeFile(idx: number, event: Event): void {
+    event.preventDefault();
     Vue.nextTick(() => {
       this.$emit("removeFiles", idx);
     });
