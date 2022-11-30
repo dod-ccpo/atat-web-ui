@@ -2,10 +2,10 @@
 <template>
   <v-form ref="form" lazy-validation>
     <div class="container-max-width">
-      <h1 class="mb-10">
+      <h1 class="mb-3">
         Let’s start gathering details about each instance in your environment
       </h1>
-      <p>
+      <p class="mb-10">
         An instance may be an isolated environment, an enclave, or a collection of 
         components. Aggregate all virtual machines (VMs) with similar specifications 
         into a single instance below. If you have multiple instances, we will walk 
