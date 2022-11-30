@@ -43,7 +43,7 @@ export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = 
   users_per_region: "", // json stringified sys_id/count pairs
   operating_system: "",
   licensing: "",
-  number_of_VCPUs: null,
+  number_of_vcpus: null,
   processor_speed: null, 
   memory_amount: null,
   memory_unit: "GB",
