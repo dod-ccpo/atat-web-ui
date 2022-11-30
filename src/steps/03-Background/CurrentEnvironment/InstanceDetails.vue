@@ -488,13 +488,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
-
-        // TODO - wire to proper location for saving after DB is updated
-        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.CurrentEnvironment
-        // });
+        await CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
       }
     } catch (error) {
       console.log(error);

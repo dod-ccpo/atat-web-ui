@@ -227,10 +227,7 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         Object.assign(this.currEnvDTO, this.currentData);
-        // TODO - which store to save to?
-        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-        await CurrentEnvironment.saveCurrentEnvironment();
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
       }
     } catch (error) {
       console.log(error);

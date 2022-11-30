@@ -116,8 +116,14 @@ export class CurrentEnvironmentStore extends VuexModule {
     this.initialized = value;
   }
 
+  @Action
+  public async setCurrentEnvironment(value: CurrentEnvironmentDTO): Promise<void> {
+    await this.doSetCurrentEnvironment(value);
+    await this.saveCurrentEnvironment();
+  }
+
   @Mutation
-  public setCurrentEnvironment(value: CurrentEnvironmentDTO): void {
+  public async doSetCurrentEnvironment(value: CurrentEnvironmentDTO): Promise<void> {
     this.currentEnvironment = value;
     storeDataToSession(
       this,

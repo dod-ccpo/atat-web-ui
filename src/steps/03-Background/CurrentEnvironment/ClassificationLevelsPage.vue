@@ -108,10 +108,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
         this.currEnvDTO.env_classifications_cloud = this.envClassificationsCloud;
         this.currEnvDTO.env_classifications_onprem = this.envClassificationsOnPrem;
         /* eslint-enable camelcase */
-        // TODO - which store to save to?
-        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-        await CurrentEnvironment.saveCurrentEnvironment();
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
       }
     } catch (error) {
       console.log(error);
