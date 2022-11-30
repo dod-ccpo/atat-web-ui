@@ -101,6 +101,7 @@
       id="OperatingEnvironment"
       legend="What type of operating environment do you need?"
       :items="operatingEnvironmentRadioOptions"
+      :value.sync="_computeData.operatingEnvironment"
       name="OperatingEnvironment"
       class="mt-3 mb-2"
       :rules="[$validators.required('Select a type of operating environment.')]"
@@ -110,6 +111,7 @@
       id="OSLicensing"
       legend="Operating system licensing"
       :items="osLicensingRadioOptions"
+      :value.sync="_computeData.operatingSystemLicensing"
       name="OSLicensing"
       class="mt-3 mb-2"
       :rules="[$validators.required('Select a licensing option.')]"
@@ -138,6 +140,7 @@
           id="ProcessorSpeed"
           label="Processor Speed"
           :tooltipText="processorSpeedTooltipText"
+          :value.sync="_computeData.processorSpeed"
           type="number"
           :allowDecimals="false"
           :rules="[
@@ -196,7 +199,7 @@
           :value.sync="_computeData.storageAmount"
           :appendDropdown="true"
           :dropdownOptions="dataUnits"
-          :selectedDropdownValue.sync="selectedDataUnit"
+          :selectedDropdownValue.sync="_computeData.storageUnit"
           type="number"
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
@@ -420,8 +423,6 @@ export default class ComputeForm extends Vue {
     { text: "Petabyte (PB)", value: "PB" },
   ];
 
-  public selectedDataUnit = "GB";
-
   public performanceTiers: RadioButton[] = [
     {
       id: "GeneralPurpose",
@@ -482,6 +483,13 @@ export default class ComputeForm extends Vue {
 
   public classificationTooltipText = `The levels listed below are based on the 
     overall classification requirements you previously specified.`;
+
+
+  public async mounted(): Promise<void> {
+    if(!this._computeData.storageUnit){
+      this._computeData.storageUnit = "GB";
+    }
+  }
 
 }
 

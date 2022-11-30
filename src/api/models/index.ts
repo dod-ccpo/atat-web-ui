@@ -475,22 +475,34 @@ export interface EDAResponse {
 }
 
 export interface EnvironmentInstanceDTO extends BaseTableDTO {
-  storage_amount: string;
-  storage_type: string;
-  instance_name: string;
   classification_level: string | ReferenceColumn;
-  number_of_vcpus: string;
-  data_egress_monthly_amount: string;
-  performance_tier: string;
-  pricing_model_expiration: string;
-  csp_region: string;
-  memory_unit: string;
-  storage_unit: string;
-  pricing_model: string;
+  selected_periods?: string | ReferenceColumn;
+  region?: string | ReferenceColumn;
+  need_for_entire_task_order_duration?: string;
+  instance_name: string;
   instance_location: string;
+  number_of_instances?: string;
+  operating_system?: string;
+  licensing?: string;
+  pricing_model: string;
+  pricing_model_expiration: string;
+  performance_tier: string;
+  number_of_vcpus: string;
+  processor_speed?: string;
   memory_amount: string;
-  operating_system_licensing: string;
+  memory_unit: string;
+  storage_type: string;
+  storage_amount: string;
+  storage_unit: string;
+  data_egress_monthly_amount: string;
   data_egress_monthly_unit: string;
+  operating_system_licensing: string;
+  csp_region?: string;
+}
+
+export interface ComputeEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  environment_type?: string;
+  operating_environment?: string;
 }
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{
