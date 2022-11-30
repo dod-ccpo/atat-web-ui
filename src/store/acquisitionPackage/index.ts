@@ -229,8 +229,8 @@ const initialCurrentEnvironment = () => {
     migration_documentation: [],
     env_location: "",
     env_classifications_cloud: [],
-    env_classifications_on_prem: [],
-    env_instances: [],
+    env_classifications_onprem: [],
+    env_instances: "",
     current_environment_replicated_optimized: "", // radio - YES_REPLICATE | YES_OPTIMIZE | NO
     statement_replicated_optimized: "",
     additional_growth: "", // "YES" | "NO"

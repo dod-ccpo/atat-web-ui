@@ -256,7 +256,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     // classification radio options will show if either NO (ZERO) classification
     // levels were selected, or more than one was selected.
     return !(this.instanceData.instance_location === 'ON_PREM' 
-      && this.currEnvData.env_classifications_on_prem.length === 1);
+      && this.currEnvData.env_classifications_onprem.length === 1);
   }
 
   public selectedDeployedRegionsOnLoad: string[] = [];
@@ -359,7 +359,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     this.instanceData.classification_level = "";
     const envClassificationLevelSysIds = newVal === "CLOUD"
       ? this.currEnvData.env_classifications_cloud
-      : this.currEnvData.env_classifications_on_prem;
+      : this.currEnvData.env_classifications_onprem;
 
     if (envClassificationLevelSysIds.length === 1) {
       // eslint-disable-next-line camelcase

@@ -5,8 +5,8 @@ import {CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO} from "@/api/models
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import Vue from "vue";
 import {api} from "@/api";
-import { debug } from "console";
 import _ from "lodash";
+import any = jasmine.any;
 
 const ATAT_CURRENT_ENVIRONMENT_KEY = "ATAT_CURRENT_ENVIRONMENT_KEY";
 
@@ -15,10 +15,10 @@ export const defaultCurrentEnvironment: CurrentEnvironmentDTO = {
   anticipated_yearly_additional_capacity: null,
   applications_need_architectural_design: "",
   current_environment_replicated_optimized: "" as const,
-  data_classifications_impact_levels: [],
-  env_classifications_cloud: [],
-  env_classifications_on_prem: [],
-  env_instances: [],
+  data_classifications_impact_levels: undefined as unknown as string[],
+  env_classifications_cloud: undefined as unknown as string[],
+  env_classifications_onprem: undefined as unknown as string[],
+  env_instances: undefined as unknown as string[],
   env_location: "" as const,
   external_factors_architectural_design: "",
   has_phased_approach: "" as const,
@@ -92,6 +92,11 @@ export class CurrentEnvironmentStore extends VuexModule {
     return this.currentEnvInstances;
   }
 
+  @Mutation
+  public setCurrentEnvironmentInstances(value: CurrentEnvironmentInstanceDTO[]): void {
+    this.currentEnvInstances = value;
+  }
+
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.currentEnvironment)
   ];
@@ -149,13 +154,21 @@ export class CurrentEnvironmentStore extends VuexModule {
       this.doDeleteEnvironmentInstance(i);
     }
   }
-  @Mutation
+
+  /**
+   * Makes an API call to delete the instance. And then sets all the context
+   * including making another function call out to update the current environment.
+   */
+  @Action({rawError: true})
   public async doDeleteEnvironmentInstance(index: number): Promise<void> {
     const instanceSysId = this.currentEnvInstances[index].sys_id;
+    await api.currentEnvironmentInstanceTable.remove(instanceSysId as string);
     this.currentEnvInstances.splice(index, 1);
-    // TODO FUTURE TICKET - delete from snow -- use instanceSysId from above
+    const currentEnvInstanceIndex = this.currentEnvironment?.env_instances
+      .indexOf(instanceSysId as string);
+    this.currentEnvironment?.env_instances.splice(currentEnvInstanceIndex as number, 1);
+    await this.saveCurrentEnvironment();
   }
-
 
   @Action 
   public async setCurrentEnvironmentInstanceSysId(sysId: string): Promise<void> {
@@ -176,29 +189,37 @@ export class CurrentEnvironmentStore extends VuexModule {
   public async setCurrentEnvironmentInstance(
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
-    this.doSetCurrentEnvironmentInstance(value);
+    await this.doSetCurrentEnvironmentInstance(value);
+    await this.saveCurrentEnvironment();
   }
 
+  /**
+   * Makes an API call to either create or update the instance and then using the response
+   * from the API, sets all the other context. Also makes a function call out to update the
+   * base current environment table with the updated instance id.\
+   */
   @Mutation
   public async doSetCurrentEnvironmentInstance(
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
-    this.currentEnvInstance = _.cloneDeep(value);
-    // TODO - future ticket - SAVE/UPDATE instance data TO SNOW
-    // TEMPORARY until have actual sys_ids use timestamp for sys_id (FUTURE TICKET)
+    this.currentEnvInstance = _.cloneDeep(value)
     if (!this.currentEnvInstance.sys_id) {
-      this.currentEnvInstance.sys_id = String(Date.now());
-    }
-
-    const instanceSysId = this.currentEnvInstance.sys_id;
-    if (this.currentEnvironment?.env_instances.indexOf(instanceSysId) === -1
-    ) {
-      this.currentEnvironment.env_instances.push(instanceSysId);
+      const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
+        .create(this.currentEnvInstance);
+      // setting individual properties instead of the whole object is required
+      // because certain reference types have a different structure and needs mapping
+      this.currentEnvInstance.sys_id = currEnvInstanceResp.sys_id as string;
+      this.currentEnvInstance.sys_updated_on = currEnvInstanceResp.sys_updated_on;
+      this.currentEnvInstance.sys_updated_by = currEnvInstanceResp.sys_updated_by;
       this.currentEnvInstances.push(this.currentEnvInstance);
-      // TODO - future ticket - UPDATE env_instances array TO SNOW
+      this.currentEnvironment?.env_instances.push(this.currentEnvInstance.sys_id);
     } else {
-      // update this instance with new data
-      const instanceIndex = this.currentEnvInstances.findIndex(obj => obj.sys_id === instanceSysId);
+      const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
+        .update(this.currentEnvInstance?.sys_id as unknown as string, this.currentEnvInstance);
+      const instanceIndex = this.currentEnvInstances
+        .findIndex(obj => obj.sys_id === currEnvInstanceResp.sys_id);
+      this.currentEnvInstance.sys_updated_on = currEnvInstanceResp.sys_updated_on;
+      this.currentEnvInstance.sys_updated_by = currEnvInstanceResp.sys_updated_by;
       if (instanceIndex > -1) {
         this.currentEnvInstances[instanceIndex] = this.currentEnvInstance;
       }
@@ -229,6 +250,57 @@ export class CurrentEnvironmentStore extends VuexModule {
   }
 
   /**
+   * Some data types in the response are not compatible with the types defined in the ui.
+   * This function maps the response from the API to the type defined in the UI
+   *
+   * Repetitive logic can be consolidated by using "keyof" and "typeof" types. Leaving it
+   * for now in the essence of time for release.
+   */
+  @Mutation
+  private mapCurrentEnvironmentFromResponse(currentEnvResponse: CurrentEnvironmentDTO) {
+    currentEnvResponse.env_instances = (currentEnvResponse.env_instances as unknown as string)
+      .split(",").filter(nonEmptyVal => nonEmptyVal);
+    currentEnvResponse.system_documentation =
+      (currentEnvResponse.system_documentation as unknown as string)
+        .split(",").filter(nonEmptyVal => nonEmptyVal);
+    currentEnvResponse.migration_documentation =
+      (currentEnvResponse.migration_documentation as unknown as string)
+        .split(",").filter(nonEmptyVal => nonEmptyVal);
+    currentEnvResponse.env_classifications_cloud =
+      (currentEnvResponse.env_classifications_cloud as unknown as string)
+        .split(",").filter(nonEmptyVal => nonEmptyVal);
+    currentEnvResponse.env_classifications_onprem =
+      (currentEnvResponse.env_classifications_onprem as unknown as string)
+        .split(",").filter(nonEmptyVal => nonEmptyVal);
+    currentEnvResponse.data_classifications_impact_levels =
+      (currentEnvResponse.data_classifications_impact_levels as unknown as string)
+        .split(",").filter(nonEmptyVal => nonEmptyVal);
+  }
+
+  /**
+   * Some data types on the UI side are not compatible with the types defined in the
+   * database.This function transforms the UI type to the type defined in the table
+   */
+  @Action({rawError: true})
+  private transformCurrentEnvironmentForSave(currentEnvResponse: CurrentEnvironmentDTO):
+    CurrentEnvironmentDTO {
+    const currEnvForSave = _.cloneDeep(currentEnvResponse);
+    currEnvForSave.env_instances =
+      currentEnvResponse.env_instances.toString() as unknown as string[];
+    currEnvForSave.system_documentation =
+      currentEnvResponse.system_documentation?.toString() as unknown as string[];
+    currEnvForSave.migration_documentation =
+      currentEnvResponse.migration_documentation?.toString() as unknown as string[];
+    currEnvForSave.env_classifications_cloud =
+      currentEnvResponse.env_classifications_cloud.toString() as unknown as string[];
+    currEnvForSave.env_classifications_onprem =
+      currentEnvResponse.env_classifications_onprem.toString() as unknown as string[];
+    currEnvForSave.data_classifications_impact_levels =
+      currentEnvResponse.data_classifications_impact_levels.toString() as unknown as string[];
+    return currEnvForSave;
+  }
+
+  /**
    * Creates a current environment object with default values and makes an API
    * call to create the default record in the BE
    */
@@ -238,15 +310,10 @@ export class CurrentEnvironmentStore extends VuexModule {
     try {
       const currentEnvironmentDTO = await api.currentEnvironmentTable
         .create(defaultCurrentEnvironment);
-      // TODO: reinstate the below 2 lines after DB is updated
-      // this.setCurrentEnvironment(currentEnvironmentDTO);
-      // return currentEnvironmentDTO;
-      // TODO: remove the below 3 lines after DB is updated
-      defaultCurrentEnvironment.sys_id = currentEnvironmentDTO.sys_id;
-      this.setCurrentEnvironment(defaultCurrentEnvironment);
-      this.setCurrentEnvironmentInstance(defaultCurrentEnvironmentInstance);
-      return defaultCurrentEnvironment
-
+      this.mapCurrentEnvironmentFromResponse(currentEnvironmentDTO);
+      this.setCurrentEnvironment(currentEnvironmentDTO);
+      this.setCurrentEnvironmentInstances([]);
+      return currentEnvironmentDTO;
     } catch (error) {
       throw new Error(`an error occurred while initializing current environment ${error}`);
     }
@@ -273,15 +340,16 @@ export class CurrentEnvironmentStore extends VuexModule {
    */
   @Action({rawError: true})
   async saveCurrentEnvironment(): Promise<boolean> {
-    // TODO: map the store object to the DB tables and make proper API calls to either
-    //  create or update the current environment.
     try {
-      let isSaveSuccessfull = false;
-      if (this.currentEnvironment) {
-        // TODO: update or create
-        isSaveSuccessfull = true;
-      }
-      return isSaveSuccessfull;
+      const currentEnvironment = await this.getCurrentEnvironment() as CurrentEnvironmentDTO;
+      currentEnvironment.env_instances = ["3a78526087af5550ec3b777acebb355c", "test_instance"];
+      console.log(currentEnvironment)
+      const transformedCurrEnv = await this.transformCurrentEnvironmentForSave(
+        currentEnvironment as CurrentEnvironmentDTO);
+      console.log(transformedCurrEnv);
+      await api.currentEnvironmentTable
+        .update(currentEnvironment?.sys_id as unknown as string, transformedCurrEnv);
+      return true;
     } catch (error) {
       throw new Error(`an error occurred saving current environment ${error}`);
     }

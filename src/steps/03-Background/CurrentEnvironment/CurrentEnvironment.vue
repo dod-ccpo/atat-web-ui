@@ -107,12 +107,7 @@ export default class HasCurrentEnvironment extends Mixins(SaveOnLeave) {
         // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-
-        // TODO - wire to proper location for saving after DB is updated
-        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.CurrentEnvironment
-        // });
+        await CurrentEnvironment.saveCurrentEnvironment();
       }
     } catch (error) {
       console.log(error);

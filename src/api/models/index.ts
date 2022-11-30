@@ -89,7 +89,7 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   migration_documentation?: string[]; // List - sys_ids from sys_attachment table 
   env_location: EnvironmentLocation;
   env_classifications_cloud: string[]; // array of classification level sys_ids
-  env_classifications_on_prem: string[]; // array of classification level sys_ids
+  env_classifications_onprem: string[]; // array of classification level sys_ids
   env_instances: string[]; // array of sys_ids
   current_environment_replicated_optimized: EnvironmentReplicateOptimized;
   statement_replicated_optimized: string;

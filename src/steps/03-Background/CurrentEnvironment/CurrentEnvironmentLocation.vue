@@ -94,7 +94,7 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
         // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-        
+        await CurrentEnvironment.saveCurrentEnvironment();
         CurrentEnvironment.resetCurrentEnvironmentInstance();
 
         // TODO - wire to proper location for saving after DB is updated

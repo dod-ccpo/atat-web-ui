@@ -416,7 +416,7 @@ export default class EnvironmentSummary extends Vue {
       this.currEnvData = _.clone(storeEnvData);
       this.envLocation = this.currEnvData.env_location;
       this.classificationsCloud = this.currEnvData.env_classifications_cloud;
-      this.classificationsOnPrem = this.currEnvData.env_classifications_on_prem;
+      this.classificationsOnPrem = this.currEnvData.env_classifications_onprem;
     }
     this.classificationLevels = await classificationRequirements.getAllClassificationLevels();
     this.buildTableData();
