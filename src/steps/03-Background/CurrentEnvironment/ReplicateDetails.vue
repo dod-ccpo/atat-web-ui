@@ -192,6 +192,7 @@ export default class ReplicateDetails extends Mixins(SaveOnLeave) {
         // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+        await CurrentEnvironment.saveCurrentEnvironment();
       }
     } catch (error) {
       console.log(error);
