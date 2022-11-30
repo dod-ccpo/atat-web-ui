@@ -279,6 +279,12 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 }
 
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
+
+  debugger;
+  // EJY
+  // need to know if going to security requirements page (for Tactical Edge only??)
+
+
   const groupId = DescriptionOfWork.currentGroupId;
   if (otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1) {
     return otherServiceOfferingSummaryPath; 
@@ -485,20 +491,25 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
-  debugger;
-  // EJY
-  // need to know if going to security requirements page (for Tactical Edge only??)
   
 
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
+
+  const groupId = DescriptionOfWork.currentGroupId;
+  const isOtherOffering = otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1;
+
+  debugger;
+  // EJY
+  // if SECRET or TOPSECRET
+  // need to know if going to security requirements page (for Tactical Edge only??)
+  // THIS GETS HIT when leaving compute/generalXaaS form
+
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
     return "period-of-performance/period-of-performance";
   }
 
-  const groupId = DescriptionOfWork.currentGroupId;
-  const isOtherOffering = otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1;
   
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
@@ -599,12 +610,13 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 }
 
 const needsSecurityRequirements = [
-  "ADVISORY_AND_ASSISTANCE", // from offering summary
-  "HELP_DESK",               // from offering summary
-  "TRAINING",                // from offering summary
-  "DOCUMENTATION",           // from offering summary
-  "GENERAL_CLOUD_SUPPORT",   // from offering summary
-  "TACTICAL_EDGE",           // FROM OFFERING DETAILS
+  "advisory_and_assistance", // from offering summary
+  "help_desk",               // from offering summary
+  "training",                // from offering summary
+  "documentation",           // from offering summary
+  "general_cloud_support",   // from offering summary
+  "tactical_edge",           // FROM OFFERING DETAILS
+  "compute" // TEMPORARY FOR TESTING ROUTE RESOLVER
 ];
 
 export const DOWSecurityRequirementsPathResolver 
