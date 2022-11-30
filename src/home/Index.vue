@@ -61,6 +61,7 @@
         <ExistingUser
           v-else
           class="mt-8"
+          @startNewAcquisition="startNewAcquisition"
         />
 
         <div class="bg-white">
@@ -116,7 +117,7 @@ import UserStore from "@/store/user";
 })
 
 export default class Home extends Vue {
-  public isNewUser = true;
+  public isNewUser = false;
 
   private currentUser = UserStore.getInitialUser;
 
@@ -135,17 +136,11 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
-  // temporary method to swap New vs Existing users
-  public toggleUserType(): void {
-    this.isNewUser = !this.isNewUser;
-    const el = document.querySelector(".v-main__wrap");
-    if (el) {
-      el.scrollTop = 0;
-    }
-  }
-
   public async mounted(): Promise<void> {
     this.currentUser = await UserStore.getCurrentUser();
+
+    const userHasPackages = await UserStore.hasPackages();
+    this.isNewUser = !userHasPackages;
   }
 
 }

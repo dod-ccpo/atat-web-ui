@@ -795,8 +795,23 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   confirmOtherOfferingDelete = false;
 
+  confirmServiceOfferingDelete = false;
+
+  public get confirmServiceOfferingDeleteVal(): boolean {
+    return this.confirmServiceOfferingDelete;
+  }
+
   public get confirmOtherOfferingDeleteVal(): boolean {
     return this.confirmOtherOfferingDelete;
+  }
+
+  @Action
+  public async setConfirmServiceOfferingDelete(bool: boolean): Promise<void> {
+    this.doSetConfirmServiceOfferingDelete(bool);
+  }
+  @Mutation
+  public doSetConfirmServiceOfferingDelete(bool: boolean): void {
+    this.confirmServiceOfferingDelete = bool;
   }
 
   @Action

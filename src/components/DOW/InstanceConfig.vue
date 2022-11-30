@@ -83,6 +83,7 @@
           label="Storage type"
           :items="storageTypes"
           :selectedValue.sync="_instanceConfig.storageType"
+          :validateOnBlur="true"
           :rules="[
             $validators.required('Select a storage type.')
           ]"

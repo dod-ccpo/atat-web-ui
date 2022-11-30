@@ -88,12 +88,6 @@ export default class CustomSpecifications extends Vue {
     return this.isStandards ? "compliance standard" : "assessment area";
   }
 
-  // public get rules(): unknown[] {
-  //   return !this.isOptional
-  //     ? [this.$validators.required('Please enter a custom ' + this.specificationType + '.')]
-  //     : [];
-  // }
-
   public addCustomSpec(): void {
     this._customSpecifications.push("");
   }
@@ -104,4 +98,3 @@ export default class CustomSpecifications extends Vue {
 
 }
 </script>
-
