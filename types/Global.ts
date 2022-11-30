@@ -302,6 +302,7 @@ export interface DOWServiceOfferingGroup {
   sequence: number;
   serviceOfferings: DOWServiceOffering[];
   otherOfferingData?: OtherServiceOfferingData[];
+  databaseOfferingData?: DatabaseOfferingData[];
 }
 
 export interface fundingIncrement {

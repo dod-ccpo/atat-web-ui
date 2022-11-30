@@ -217,9 +217,8 @@
           label="Network performance"
           :tooltipText="networkPerformanceTooltipText"
           :value.sync="_databaseData.networkPerformance"
-          type="number"
           :rules="[
-            $validators.required('Enter a number greater than or equal to 1.'),         
+            $validators.required('Enter your network performance.'),         
           ]"
         />
       </v-col>

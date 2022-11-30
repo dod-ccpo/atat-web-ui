@@ -749,6 +749,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         && otherOfferingObj.otherOfferingData
         && otherOfferingObj.otherOfferingData.length > 0
       ) {
+        console.log(otherOfferingObj.otherOfferingData)
         return otherOfferingObj.otherOfferingData;
       }
     }

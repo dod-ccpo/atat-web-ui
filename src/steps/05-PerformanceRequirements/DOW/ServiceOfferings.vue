@@ -43,12 +43,23 @@
           </div>
         </v-col>
         
-        <v-col v-else-if="(isCompute || isGeneral || isDatabase)">
+        <v-col v-else-if="(isCompute || isGeneral)">
           <OtherOfferings 
             :isCompute="isCompute"
             :isGeneral="isGeneral"
             :isDatabase="isDatabase"
             :serviceOfferingData.sync="otherOfferingData" 
+            :isPeriodsDataMissing="isPeriodsDataMissing"
+            :isClassificationDataMissing="isClassificationDataMissing"
+          />
+        </v-col>
+
+        <v-col v-else-if="(isDatabase)">
+          <OtherOfferings 
+            :isCompute="isCompute"
+            :isGeneral="isGeneral"
+            :isDatabase="isDatabase"
+            :serviceOfferingData.sync="databaseOfferingData" 
             :isPeriodsDataMissing="isPeriodsDataMissing"
             :isClassificationDataMissing="isClassificationDataMissing"
           />
@@ -86,7 +97,8 @@ import DeleteOfferingModal from "./DeleteOfferingModal.vue";
 import { 
   Checkbox, 
   OtherServiceOfferingData, 
-  DOWServiceOffering, 
+  DOWServiceOffering,
+  DatabaseOfferingData, 
 } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
 
@@ -208,6 +220,28 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     requirementTitle: "",
   }
 
+  public databaseOfferingData: DatabaseOfferingData = {
+    instanceNumber: 1,
+    environmentType: "",
+    classificationLevel: "",
+    deployedRegions: [],
+    deployedRegionsOther: "",
+    descriptionOfNeed: "",
+    entireDuration: "",
+    periodsNeeded: [],
+    operatingSystemAndLicensing: "",
+    numberOfVCPUs: "",
+    memory: "",
+    storageType: "",
+    storageAmount: "",
+    performanceTier: "",
+    performanceTierOther: "",
+    numberOfInstancesNeeded: "1",
+    requirementTitle: "",
+    databaseLicensing: "",
+    networkPerformance: ""
+  }
+
   public showSubtleAlert = false;
   public isPeriodsDataMissing = false;
   public isClassificationDataMissing = false;
@@ -252,6 +286,32 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       this.selectedOptions.push(...validSelections);
 
       this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
+    } else if (this.isDatabase) {
+      const dbOfferingIndex = DescriptionOfWork.DOWObject.findIndex(
+        obj => obj.serviceOfferingGroupId.toLowerCase() 
+          === DescriptionOfWork.currentGroupId.toLowerCase()
+      );
+      if (dbOfferingIndex > -1) {
+        const dbOtherOfferingDataArray = 
+          DescriptionOfWork.DOWObject[dbOfferingIndex].databaseOfferingData;
+        if (dbOtherOfferingDataArray && dbOtherOfferingDataArray.length > 0) {
+          const dbCurrentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
+          const dbOtherOfferingData = dbOtherOfferingDataArray.find(
+            obj => obj.instanceNumber === dbCurrentInstanceNumber
+          );
+          if (dbOtherOfferingData) {
+            this.databaseOfferingData = dbOtherOfferingData;
+          } else {
+            const dbNewOtherOfferingData 
+              = await DescriptionOfWork.getOtherOfferingInstance(0) as DatabaseOfferingData;
+            dbNewOtherOfferingData.instanceNumber = dbCurrentInstanceNumber;
+            this.databaseOfferingData = dbNewOtherOfferingData;
+          }
+        } else {
+          this.databaseOfferingData.instanceNumber = 1;
+          DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(1);
+        }
+      }
     } else if (this.isCompute || this.isGeneral) {
       const offeringIndex = DescriptionOfWork.DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() 
@@ -306,6 +366,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             await DescriptionOfWork.setSelectedOfferings(
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
+          } else if (this.isDatabase){
+            await DescriptionOfWork.setOtherOfferingData(this.databaseOfferingData);
           } else if (this.isCompute || this.isGeneral) {
             await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
