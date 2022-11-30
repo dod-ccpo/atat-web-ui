@@ -226,10 +226,6 @@ export default class Card extends Vue {
           title: "Edit draft package",
           action: "Edit draft package"
         },
-        {
-          title: "Invite contributors",
-          action: "Invite contributors"
-        },
       ]
       if(this.isOwner) {
         this.cardMenuItems.push(
