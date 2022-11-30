@@ -304,7 +304,7 @@ export default class EnvironmentSummary extends Vue {
       "users_per_region",
       "operating_system",
       "licensing",
-      "number_of_VCPUs",
+      "number_of_vcpus",
       "processor_speed",
       "memory_amount",
       "storage_type",
@@ -408,7 +408,7 @@ export default class EnvironmentSummary extends Vue {
           location,
           classification,
           qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
-          vCPU: instance.number_of_VCPUs ? String(instance.number_of_VCPUs) : "",
+          vCPU: instance.number_of_vcpus ? String(instance.number_of_vcpus) : "",
           memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
           storage,
           performance,
@@ -438,7 +438,7 @@ export default class EnvironmentSummary extends Vue {
       this.classificationsOnPrem = this.currEnvData.env_classifications_onprem;
     }
     this.classificationLevels = await classificationRequirements.getAllClassificationLevels();
-    this.buildTableData();
+    await this.buildTableData();
   }
 
   public async mounted(): Promise<void> {

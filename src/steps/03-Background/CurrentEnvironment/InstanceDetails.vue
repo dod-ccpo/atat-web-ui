@@ -317,7 +317,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     const instanceConfig = {
       licensing: newVal.licensing,
       operating_system: newVal.operatingSystem,
-      number_of_VCPUs: newVal.numberOfVCPUs,
+      number_of_vcpus: newVal.numberOfVCPUs,
       processor_speed: newVal.processorSpeed,
       memory_amount: newVal.memoryAmount,
       memory_unit: "GB",
@@ -449,7 +449,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         this.instanceConfig = {
           licensing: this.instanceData.licensing,
           operatingSystem: this.instanceData.operating_system,
-          numberOfVCPUs: this.instanceData.number_of_VCPUs, 
+          numberOfVCPUs: this.instanceData.number_of_vcpus,
           processorSpeed: this.instanceData.processor_speed,
           memoryAmount: this.instanceData.memory_amount,
           storageType: this.instanceData.storage_type,
