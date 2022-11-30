@@ -10,9 +10,11 @@
             </h1>
             <div class="copy-max-width">
               <p class="mb-10" id="IntroP">
-                This is not common for most cloud computing acquisitions. However,
-                you may have a situation, like an on-premises to cloud migration, 
-                where you need to transfer data on hard drives to a CSP.            
+                This is not common for most cloud computing acquisitions. However, 
+                you may have a situation, like Tactical Edge device delivery, 
+                instructional materials in support of training, or physical data 
+                transfer services where you need to transfer data on hard drives 
+                to a CSP.            
               </p>
               <p id="SelectMessage">
                 Select all that apply to your contracting effort.
