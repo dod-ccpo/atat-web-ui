@@ -17,7 +17,7 @@ export class SystemChoicesApi extends TableApiBase<SystemChoiceDTO> {
     try{
       return await this.all({
         params: {
-          sysparm_fields: 'label,value,name',
+          sysparm_fields: 'label,value,name,hint',
           name: tableName,
           element: choiceColumnName,
         }
