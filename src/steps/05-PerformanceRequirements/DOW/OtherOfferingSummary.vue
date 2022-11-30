@@ -150,7 +150,11 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
-import { OtherServiceOfferingData, OtherServiceSummaryTableData } from "../../../../types/Global";
+import { 
+  DatabaseOfferingData, 
+  OtherServiceOfferingData, 
+  OtherServiceSummaryTableData 
+} from "../../../../types/Global";
 import { buildClassificationLabel } from "@/helpers";
 import _ from 'lodash';
 
@@ -289,6 +293,38 @@ export default class OtherOfferingSummary extends Vue {
           memory: instanceClone.memory ? `${instanceClone.memory} GB` : "",
           storage: instanceClone.storageAmount ? `${instanceClone.storageAmount} GB` : "" ,
           performance: performanceTier,
+        };
+      } else if (this.isDatabase) {
+        this.tableHeaders = [    
+          { text: "", value: "instanceNumber", width: "50" },
+          { text: "Database type", value: "typeOrTitle" },
+          { text: "Quantity", value: "qty" },
+          { text: "vCPU", value: "vCPU" },
+          { text: "Memory", value: "memory" },
+          { text: "Storage", value: "storage" },
+          { text: "Performance", value: "performance" },
+          { text: "", value: "actions", width: "75" },
+        ];
+
+        if (!instanceClone.environmentType) {
+          instanceClone.environmentType = `<div class="text-error font-weight-500">Unknown</div>`;
+        }
+        isValid = await this.validateInstance(
+          instanceClone, hasOtherPerformanceTier
+        );
+        if (!isValid) {
+          instanceClone.environmentType += this.rowErrorMessage
+        }
+
+        instanceData = {
+          instanceNumber: instanceClone.instanceNumber,
+          typeOrTitle: instanceClone.environmentType,
+          qty: instanceClone.numberOfInstancesNeeded,
+          vCPU: instanceClone.numberOfVCPUs,
+          memory: instanceClone.memory ? `${instanceClone.memory} GB` : "",
+          storage: instanceClone.storageAmount ? `${instanceClone.storageType} 
+            ${instanceClone.storageAmount} GB` : "" ,
+          performance: (instanceClone as DatabaseOfferingData).networkPerformance,
         };
       } else if (this.isGeneral) {
         this.tableHeaders = [    
