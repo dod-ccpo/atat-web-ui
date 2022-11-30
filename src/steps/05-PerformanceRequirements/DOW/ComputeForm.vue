@@ -1,9 +1,11 @@
 <template>
   <div>
     <h1 class="page-header mb-3" tabindex="-1">
-      <span v-if="firstTimeHere">Let’s start by gathering your Compute requirements</span>
+      <span v-if="firstTimeHere">
+        Next, let's start by gathering your requirements for Compute
+      </span>
       <span v-else>
-        Let’s gather some details for Compute Instance #{{ _computeData.instanceNumber }}
+        Let's gather some details for Compute Instance #{{ _computeData.instanceNumber }}
       </span>
     </h1>
     <p 
@@ -11,10 +13,10 @@
       :class="isClassificationDataMissing || isPeriodsDataMissing ? 'mb-4' : 'mb-10'"
     >
       <span v-if="firstTimeHere">
-        In this section, we’ll collect details about each compute instance that you need. 
+        In this section, we'll collect details about each compute instance that you need. 
       </span>
 
-      If you need multiple, we’ll walk through them one at a time. 
+      If you need multiple, we'll walk through them one at a time. 
       <span v-if="avlClassificationLevelObjects.length === 1">
         You previously specified <strong>{{ singleClassificationLevelName }}</strong> 
         as the classification level for all requirements. If you need any instances
@@ -62,20 +64,11 @@
         Instance details
       </span>
     </h2>
-    <ATATRadioGroup
-      id="EnvironmnetType"
-      legend="What type of environment is this instance?"
-      :value.sync="_computeData.environmentType"
-      :items="EnvironmentTypeOptions"
-      name="EnvironmnetType"
-      class="mt-3 mb-8"
-      :rules="[$validators.required('Please select a type of environment.')]"
-    />
 
     <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
       <ATATRadioGroup
         id="ClassificationLevel"
-        legend="What classification level is this instance deployed in?"
+        legend="What classification and impact level do you need this instance deployed in?"
         :value.sync="_computeData.classificationLevel"
         :items="classificationRadioOptions"
         name="ClassificationLevel"
@@ -94,65 +87,38 @@
       >Update your Classification Requirements</a>
     </div>
 
-    <p class="d-flex mb-4">
-      <span class="font-weight-500">What region(s) do you need this instance deployed in?</span>
-      <span class="optional">Optional</span>
-      <ATATTooltip 
-        class="d-block ml-2"
-        id="Region"
-        :tooltipText="regionTooltipText"
-        label="Region selection"
-      />
-    </p>
-    <ATATCheckboxGroup 
-      id="Regions"
-      ref="regionsCheckbox"
-      aria-describedby="CheckboxGroupLabel"
-      :value.sync="_computeData.deployedRegions"
-      :items="regionCheckboxOption"
-      :card="false"
-      class="copy-max-width mb-10"
-      :hasOtherValue="true"
-      :otherValue="otherRegionValue"
-      :otherValueEntered.sync="_computeData.deployedRegionsOther"
-      :otherValueRequiredMessage="otherRegionValueRequiredMessage"
-      otherEntryType="textfield"
+    <ATATRadioGroup
+      id="EnvironmentType"
+      legend="What type of environment is this instance?"
+      :value.sync="_computeData.environmentType"
+      :items="EnvironmentTypeOptions"
+      name="EnvironmentType"
+      class="mt-3 mb-8"
+      :rules="[$validators.required('Please select a type of environment.')]"
     />
 
-    <DescriptionOfNeed
-      :anticipatedNeedUsage.sync="_computeData.anticipatedNeedUsage"
-      :index="0"
-      :textAreaWithCounter="true"
-      requirementOrInstance="instance"
+    <ATATRadioGroup 
+      id="OperatingEnvironment"
+      legend="What type of operating environment do you need?"
+      :items="operatingEnvironmentRadioOptions"
+      name="OperatingEnvironment"
+      class="mt-3 mb-2"
+      :rules="[$validators.required('Select a type of operating environment.')]"
     />
 
-    <EntireDuration
-      :entireDuration.sync="_computeData.entireDuration"
-      :periodsNeeded.sync="_computeData.periodsNeeded"
-      :isPeriodsDataMissing="isPeriodsDataMissing"
-      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-      :index="0"
-      requirementOrInstance="instance"
+    <ATATRadioGroup 
+      id="OSLicensing"
+      legend="Operating system licensing"
+      :items="osLicensingRadioOptions"
+      name="OSLicensing"
+      class="mt-3 mb-2"
+      :rules="[$validators.required('Select a licensing option.')]"
     />
 
     <hr />
 
     <h2 id="FormSection2Heading" class="mb-5">2. Instance configurations</h2>
 
-    <v-row class="mt-7">
-      <v-col class="col-md-12 col-lg-9">
-        <ATATTextField
-          ref="operatingSystemAndLicensing"
-          id="OperatingSystemAndLicensing"
-          label="Operating system and licensing"
-          :tooltipText="operatingSystemTooltipText"
-          :value.sync="_computeData.operatingSystemAndLicensing"
-          :rules="[
-            $validators.required('Please describe your OS and licensing requirements.')
-          ]"
-        />
-      </v-col>
-    </v-row>
     <v-row class="mt-7">
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
@@ -163,10 +129,36 @@
           type="number"
           :allowDecimals="false"
           :rules="[
-            $validators.required('Please enter a number greater than or equal to 0.')
+            $validators.required('Please enter a number greater than or equal to 1.')
           ]"
         />
       </v-col>
+      <v-col class="col-sm-12 col-md-6 col-lg-3">
+        <ATATTextField
+          id="ProcessorSpeed"
+          label="Processor Speed"
+          :tooltipText="processorSpeedTooltipText"
+          type="number"
+          :allowDecimals="false"
+          :rules="[
+            $validators.required('Please enter a number greater than or equal to 1.')
+          ]"
+        />
+      </v-col>
+      <v-col class="col-md-12 col-lg-6">
+        <ATATTextField
+          ref="operatingSystem"
+          id="OperatingSystem"
+          label="Operating system"
+          :tooltipText="operatingSystemTooltipText"
+          :value.sync="_computeData.operatingSystemAndLicensing"
+          :rules="[
+            $validators.required('Enter the name of an operating system')
+          ]"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
           id="Memory"
@@ -180,6 +172,9 @@
           ]"
         />
       </v-col>
+      <v-spacer></v-spacer>
+    </v-row>
+    <v-row>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATSelect
           id="StorageType"
@@ -205,6 +200,7 @@
           ]"
         />
       </v-col>
+      <v-spacer></v-spacer>
     </v-row>
 
     <ATATRadioGroup
@@ -242,6 +238,28 @@
         />
       </v-col>
     </v-row>
+
+    <hr />
+
+    <h2 class="mb-5" id="FormSection3Heading">
+      3. Anticipated need and duration
+    </h2>
+
+    <DescriptionOfNeed
+      :anticipatedNeedUsage.sync="_computeData.anticipatedNeedUsage"
+      :index="0"
+      :textAreaWithCounter="true"
+      requirementOrInstance="instance"
+    />
+
+    <EntireDuration
+      :entireDuration.sync="_computeData.entireDuration"
+      :periodsNeeded.sync="_computeData.periodsNeeded"
+      :isPeriodsDataMissing="isPeriodsDataMissing"
+      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+      :index="0"
+      requirementOrInstance="instance"
+    />
 
   </div>
 </template>
@@ -298,7 +316,6 @@ export default class ComputeForm extends Vue {
   @Prop() public formHasErrors!: boolean;
   @Prop() public formHasBeenTouched!: boolean;
   @Prop() public classificationRadioOptions!: RadioButton[];
-  @Prop() public classificationTooltipText!: string;
   @Prop() public availablePeriodCheckboxItems!: Checkbox[];
   @Prop() public validateOtherTierNow!: boolean;
   @Prop() public validateOtherTierOnBlur!: boolean;
@@ -319,75 +336,108 @@ export default class ComputeForm extends Vue {
       value: "Dev/Testing",
     },
     {
-      id: "PreProdStaging",
-      label: "Pre-production/Staging",
-      value: "Pre-production/Staging",
+      id: "PreProd",
+      label: "Pre-production",
+      value: "Pre-production",
     },
     {
-      id: "Production",
-      label: "Production",
-      value: "Production",
+      id: "Production/Staging",
+      label: "Production/Staging",
+      value: "Production/Staging",
+    },
+    {
+      id: "COOP",
+      label: "Continuity of Operations Planning (COOP)/Disaster Recovery",
+      value: "Continuity of Operations Planning (COOP)/Disaster Recovery",
     },
   ];
 
-  public regionCheckboxOption: Checkbox[] = [
+  public operatingEnvironmentRadioOptions: RadioButton[] = [
     {
-      id: "CONUSEast",
-      label: "CONUS East",
-      value: "CONUS East",
+      id: "VirtualMachines",
+      label: "Virtual machines",
+      value: "Virtual machines"
     },
     {
-      id: "CONUSCentral",
-      label: "CONUS Central",
-      value: "CONUS Central",
+      id: "Containers",
+      label: "Containers",
+      value: "Containers"
     },
     {
-      id: "CONUSWest",
-      label: "CONUS West",
-      value: "CONUS West",
+      id: "Serverless",
+      label: "Serverless",
+      value: "Serverless"
     },
     {
-      id: "OCONUS",
-      label: "OCONUS",
-      value: "OCONUS",
-    },
-    {
-      id: "Other",
-      label: "Other",
-      value: "OtherRegion",
-    },
+      id: "EndUserComputing",
+      label: "End user computing/Virtual Desktop",
+      value: "End user computing/Virtual Desktop"
+    }
   ];
 
-  public otherRegionValueRequiredMessage = "Please enter your other region(s).";
+  public osLicensingRadioOptions: RadioButton[] = [
+    {
+      id: "Transfer",
+      label: "Transfer existing license",
+      value: "Transfer"
+    },
+    {
+      id: "New",
+      label: "New license",
+      value: "New"
+    }
+  ];
 
   public storageTypes: SelectData[] = [
-    { text: "General Purpose SSD", value: "General Purpose SSD" },
-    { text: "Provisioned IOPS SSD", value: "Provisioned IOPS SSD" },
-    { text: "Nearline", value: "Nearline" },
-    { text: "Offline", value: "Offline" },
-    { text: "Other", value: "Other" },
+    { 
+      text: "Block storage", 
+      value: "Block storage",
+      description: "Fixed-sized raw storage capacity"
+    },
+    { 
+      text: "Object storage", 
+      value: "Object storage",
+      description: "Store and serve unstructured user-generated content"
+    },
+    { 
+      text: "File storage", 
+      value: "File storage",
+      description: "Store and serve shared file systems"
+    },
+    { 
+      text: "Archive storage", 
+      value: "Archive storage",
+      description: "Store and serve for long-term data retention"
+    },
   ];
 
   public performanceTiers: RadioButton[] = [
     {
-      id: "PerformancePremium",
-      label: "High performance (Premium)",
-      value: "Premium",
+      id: "GeneralPurpose",
+      label: "General Purpose",
+      value: "General",
+      description: "Provides a balance of compute, memory & network"
     },
     {
-      id: "PerformanceStandard",
-      label: "Medium performance (Standard)",
-      value: "Standard",
+      id: "ComputeOptimized",
+      label: "Compute Optimized",
+      value: "Compute",
+      description: `Supports compute-bound applications that benefit 
+        from high performance processors`
     },
     {
-      id: "PerformanceBasic",
-      label: "Low performance (Basic)",
-      value: "Basic",
+      id: "MemoryOptimized",
+      label: "Memory Optimized",
+      value: "Memory",
+      description: `Designed to deliver fast performance for 
+        workloads that process large data sets in memory`
     },
     {
-      id: "PerformanceOther",
-      label: "Other",
-      value: "OtherPerformance",
+      id: "StorageOptimized",
+      label: "Storage Optimized",
+      value: "Storage",
+      description: `Designed for high, sequential read and write 
+        workloads to very large data sets on local storage`
     },
   ];
   public otherPerformanceTierValueRequiredMessage 
@@ -398,26 +448,29 @@ export default class ComputeForm extends Vue {
     continental U.S. (OCONUS). If you need a certain location, select Other and enter 
     your specifications.`;
 
-  public operatingSystemTooltipText = `Specify the type of OS you want to run your 
-    instance on. Provide details about your licensing scenario, to include the number 
-    of licenses.`;
+  public operatingSystemTooltipText = `Specify which operating system you want to 
+    run your instance on (e.g., Windows, Linux).`;
 
-  public VCPUTooltipText = `A vCPU, or virtual centrallized processing unit, represents 
-    a portion or share of the underlying, physical CPU that is assigned to a particular 
-    virtual machine.`;
+  public VCPUTooltipText = `This refers to the size of compute. You can provide an 
+    approximate number of virtual centralized processing units (vCPUs).`;
 
-  public memoryTooltipText = `Enter the amount of Random Access Memory (RAM) you need 
-    to store data short-term for performing computing operations.`;
+  public processorSpeedTooltipText = `Enter the clock speed for each vCPU. 
+    This is typically measured in gigahertz (GHz).`;
+
+  public memoryTooltipText = `Enter the amount of Random Access Memory (RAM) available 
+    for storing data short-term in order to perform computing operations.`;
 
   public storageAmountTooltipText = `Enter the amount of storage you need to access 
     and store data on a long-term basis.`;
 
-  public performanceTierTooltipText = `This refers to your network speed and service 
-    availability. If you have size and performance details, select Other and enter 
-    your specifications.`;
+  public performanceTierTooltipText = `This refers to your network speed and 
+    service availability.`;
 
   public numberOfInstancesTooltipText = `Specify the number of instances you need 
     with these configurations.`;
+
+  public classificationTooltipText = `The levels listed below are based on the 
+    overall classification requirements you previously specified.`;
 
 }
 
