@@ -5,7 +5,6 @@ import {CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO} from "@/api/models
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import Vue from "vue";
 import {api} from "@/api";
-import { debug } from "console";
 import _ from "lodash";
 
 const ATAT_CURRENT_ENVIRONMENT_KEY = "ATAT_CURRENT_ENVIRONMENT_KEY";
@@ -123,17 +122,12 @@ export class CurrentEnvironmentStore extends VuexModule {
 
   @Action
   public async createNewEnvInstance(): Promise<void> {
-    await this.setCurrentEnvInstanceNumber(this.currentEnvInstances.length + 1);
-  }
-  @Mutation
-  public async doCreateNewEnvInstance(): Promise<void> {
-    const newEnvInstance = _.cloneDeep(defaultCurrentEnvironmentInstance)
-    this.currentEnvInstances.push(newEnvInstance)
+    await this.doSetCurrentEnvInstanceNumber(this.currentEnvInstances.length + 1);
   }
 
   @Action
   public async setCurrentEnvInstanceNumber(num: number): Promise<void> {
-    this.doSetCurrentEnvInstanceNumber(num);
+    await this.doSetCurrentEnvInstanceNumber(num);
   }
   @Mutation
   public async doSetCurrentEnvInstanceNumber(num: number): Promise<void> {

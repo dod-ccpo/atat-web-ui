@@ -222,16 +222,19 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public editEnvironment(): void {
-    this.$router.push({
-      name: routeNames.CurrentEnvironmentLocation,
-      params: {
-        direction: "next"
-      }   
-    });
+    this.$nextTick(() => {
+      this.$router.push({
+        name: routeNames.CurrentEnvironmentLocation,
+        params: {
+          direction: "next"
+        }   
+      });
+
+    })
   }
 
   public async addInstance(): Promise<void> {
-    await CurrentEnvironment.setCurrentEnvInstanceNumber(this.envInstances.length + 1);
+    await CurrentEnvironment.setCurrentEnvInstanceNumber(this.envInstances.length);
     this.navigate();
   }
 
@@ -344,9 +347,9 @@ export default class EnvironmentSummary extends Vue {
     ];
 
     this.tableData = [];
-    const instances = await CurrentEnvironment.getCurrentEnvironmentInstances();
+    this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
 
-    instances.forEach(async (instance, index) => {
+    this.envInstances.forEach(async (instance, index) => {
       let isValid = await this.validateInstance(instance);
       let storage = "";
       if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
