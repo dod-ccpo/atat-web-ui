@@ -96,6 +96,7 @@ import { routeNames } from "@/router/stepper";
 import { scrollToId } from "@/helpers";
 
 import UserStore from "@/store/user";
+import { UserDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -109,7 +110,7 @@ import UserStore from "@/store/user";
 export default class Home extends Vue {
   public isNewUser = false;
 
-  private currentUser = UserStore.getInitialUser;
+  private currentUser: UserDTO = {};
 
   public scrollToResources(): void {
     scrollToId("HelpfulResourcesCards");
