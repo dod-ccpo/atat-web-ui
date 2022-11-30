@@ -22,6 +22,24 @@
             class="w-100 py-10 border1 border-rounded border-base-lighter text-center mb-10 mt-10" 
           >
             You do not have any requirements yet.
+            <div class="d-flex justify-center">
+              <v-btn
+                id="AddInstance"
+                role="link" 
+                class="primary mt-5"
+                :ripple="false"
+                @click="addInstance()"
+              >
+                <ATATSVGIcon 
+                  color="white" 
+                  height="17" 
+                  width="18" 
+                  name="control-point" 
+                  class="mr-2"
+                />
+                Add an {{ requirementOrInstance }}
+              </v-btn> 
+            </div>
           </div>
 
           <v-data-table
@@ -60,11 +78,12 @@
           </v-data-table>  
           <hr class="mt-0" v-if="tableData.length" /> 
           <v-btn
-            id="AddInstance"
+            id="AddAnotherInstance"
             role="link" 
             class="secondary _normal _small-text mt-5"
             :ripple="false"
             @click="addInstance()"
+            v-if="tableData.length"
           >
             <ATATSVGIcon 
               color="primary" 
@@ -73,9 +92,7 @@
               name="control-point" 
               class="mr-2"
             />
-            Add 
-            <span v-if="tableData.length">&nbsp;another&nbsp;</span> 
-            {{ requirementOrInstance }}
+            Add another {{ requirementOrInstance }}
           </v-btn>  
         </v-col>
       </v-row>
@@ -234,7 +251,6 @@ export default class OtherOfferingSummary extends Vue {
     this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
-      let hasOtherRegion = false;
       let hasOtherPerformanceTier = false;
       let isValid = true;
 
@@ -242,8 +258,6 @@ export default class OtherOfferingSummary extends Vue {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
           { text: "Type", value: "typeOrTitle" },
-          { text: "Location", value: "location" },
-          { text: "Classification", value: "classification" },
           { text: "Quantity", value: "qty" },
           { text: "vCPU", value: "vCPU" },
           { text: "Memory", value: "memory" },
@@ -251,39 +265,17 @@ export default class OtherOfferingSummary extends Vue {
           { text: "Performance", value: "performance" },
           { text: "", value: "actions", width: "75" },
         ];
-        const otherRegionIndex = instanceClone.deployedRegions.indexOf("OtherRegion");
-        if (otherRegionIndex > -1) {
-          hasOtherRegion = true;
-          instanceClone.deployedRegions.splice(otherRegionIndex, 1);
-          if (instanceClone.deployedRegionsOther) {
-            instanceClone.deployedRegions.push(instanceClone.deployedRegionsOther);
-          }
-        }
-        const deployedRegions = instanceClone.deployedRegions.join(", ");
 
         hasOtherPerformanceTier = instanceClone.performanceTier.indexOf("Other") > -1;
         const performanceTier = hasOtherPerformanceTier
           ? instanceClone.performanceTierOther
           : instanceClone.performanceTier;
 
-        const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
-        let classificationLevel = "";
-        if (classificationLevels.length > 1) {
-          const classificationObj = classificationLevels.find(
-            obj => obj.sys_id === instanceClone.classificationLevel
-          );
-          if (classificationObj) {
-            classificationLevel = buildClassificationLabel(classificationObj, "short");
-          }
-        } else {
-          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
-        }
-
         if (!instanceClone.environmentType) {
           instanceClone.environmentType = `<div class="text-error font-weight-500">Unknown</div>`;
         }
         isValid = await this.validateInstance(
-          instanceClone, hasOtherRegion, hasOtherPerformanceTier
+          instanceClone, hasOtherPerformanceTier
         );
         if (!isValid) {
           instanceClone.environmentType += this.rowErrorMessage
@@ -292,8 +284,6 @@ export default class OtherOfferingSummary extends Vue {
         instanceData = {
           instanceNumber: instanceClone.instanceNumber,
           typeOrTitle: instanceClone.environmentType,
-          location: deployedRegions,
-          classification: classificationLevel,
           qty: instanceClone.numberOfInstancesNeeded,
           vCPU: instanceClone.numberOfVCPUs,
           memory: instanceClone.memory ? `${instanceClone.memory} GB` : "",
@@ -355,7 +345,6 @@ export default class OtherOfferingSummary extends Vue {
 
   public async validateInstance(
     instance: OtherServiceOfferingData, 
-    hasOtherRegion?: boolean,
     hasOtherPerformanceTier?: boolean,
   ): Promise<boolean> {
     const instanceData: Record<string, any> = _.clone(instance);
@@ -378,7 +367,6 @@ export default class OtherOfferingSummary extends Vue {
       ];
 
       if ((hasOtherPerformanceTier && instanceData.performanceTierOther === "")
-        || (hasOtherRegion && instanceData.deployedRegionsOther === "")
       ) {
         isValid = false;
       }
@@ -417,7 +405,7 @@ export default class OtherOfferingSummary extends Vue {
     case "compute": 
       this.isCompute = true;
       this.requirementOrInstance = "instance";
-      this.serviceDescription = "compute";
+      this.serviceDescription = "Compute";
       break;
     case "general_xaas":
       this.isGeneral = true;
