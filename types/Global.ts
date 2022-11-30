@@ -370,6 +370,11 @@ export interface OtherServiceOfferingData {
   requirementTitle?: string;
 }
 
+export interface DatabaseOfferingData extends OtherServiceOfferingData {
+  networkPerformance: string;
+  databaseLicensing: string;
+}
+
 export interface OtherServiceSummaryTableData {
   instanceNumber: number;
   typeOrTitle?: string;

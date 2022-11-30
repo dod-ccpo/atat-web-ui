@@ -23,6 +23,28 @@
         @formUpdate="formComponentUpdate"
       />
 
+      <DatabaseForm
+        v-if="isDatabase"
+        :databaseData.sync="_serviceOfferingData"
+        :firstTimeHere="firstTimeHere"
+        :isClassificationDataMissing="isClassificationDataMissing"
+        :isPeriodsDataMissing="isPeriodsDataMissing"
+        :avlClassificationLevelObjects="avlClassificationLevelObjects"
+        :singleClassificationLevelName="singleClassificationLevelName"
+        :formHasErrors="formHasErrors"
+        :formHasBeenTouched="formHasBeenTouched"
+        :classificationRadioOptions="classificationRadioOptions"
+        :classificationTooltipText="classificationTooltipText"
+        :otherRegionValue="otherRegionValue"
+        :otherPerformanceTierValue="otherPerformanceTierValue"
+        :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+        :validateOtherTierNow="validateOtherTierNow"
+        :validateOtherTierOnBlur="validateOtherTierOnBlur"
+        :clearOtherTierValidation="clearOtherTierValidation"
+        @openModal="openModal"
+        @formUpdate="formComponentUpdate"
+      />
+
       <GeneralXaaSForm 
         v-if="isGeneral"
         :generalXaaSData.sync="_serviceOfferingData"
@@ -60,6 +82,7 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeForm from "./ComputeForm.vue"
 import GeneralXaaSForm from "./GeneralXaaSForm.vue";
+import DatabaseForm from "./DatabaseForm.vue";
 
 import Toast from "@/store/toast";
 
@@ -85,6 +108,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
     ClassificationsModal,
     ComputeForm,
     GeneralXaaSForm,
+    DatabaseForm,
   }
 })
 
@@ -102,6 +126,7 @@ export default class OtherOfferings extends Vue {
   @PropSync("serviceOfferingData") public _serviceOfferingData!: OtherServiceOfferingData;
   @Prop() public isCompute!: boolean;
   @Prop() public isGeneral!: boolean;
+  @Prop() public isDatabase!: boolean;
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
 
@@ -202,7 +227,7 @@ export default class OtherOfferings extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    if (this.isCompute || this.isGeneral) {
+    if (this.isCompute || this.isGeneral || this.isDatabase) {
       const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
       this.firstTimeHere 
         = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
@@ -237,7 +262,7 @@ export default class OtherOfferings extends Vue {
   }
 
   public async setComponentSpecificData(): Promise<void> {
-    if (this.isCompute || this.isGeneral) {
+    if (this.isCompute || this.isGeneral || this.isDatabase) {
       this.formHasBeenTouched 
         = await DescriptionOfWork.hasInstanceBeenTouched(this._serviceOfferingData.instanceNumber);
     }

@@ -207,7 +207,11 @@ export const ContractTrainingReq = (current: string): string => {
 const basePerformanceRequirementsPath =  "performance-requirements";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 
-const otherServiceOfferings = ["compute", "general_xaas"] // future ticket - add "database"
+const otherServiceOfferings = [
+  "compute", 
+  "database",
+  "general_xaas"
+];
 const otherServiceOfferingSummaryPath = "performance-requirements/service-offerings/other/summary";
 
 const baseOfferingDetailsPath =  `${basePerformanceRequirementsPath}/service-offering-details/`;
@@ -450,9 +454,9 @@ export const OfferGroupOfferingsPathResolver = (
   case "developer_tools":
     dontNeedButtonText = "I don’t need Developer Tools and Services";
     break;
-  // case "database": // stubbed in for future ticket
-  //   dontNeedButtonText = "I don’t need database services";
-  //   break;
+  case "database": // stubbed in for future ticket
+    dontNeedButtonText = "I don’t need database services";
+    break;
   default:
     dontNeedButtonText = "I don’t need these cloud resources";
   }

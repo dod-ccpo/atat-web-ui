@@ -43,10 +43,11 @@
           </div>
         </v-col>
         
-        <v-col v-else-if="isCompute || isGeneral">
+        <v-col v-else-if="(isCompute || isGeneral || isDatabase)">
           <OtherOfferings 
             :isCompute="isCompute"
             :isGeneral="isGeneral"
+            :isDatabase="isDatabase"
             :serviceOfferingData.sync="otherOfferingData" 
             :isPeriodsDataMissing="isPeriodsDataMissing"
             :isClassificationDataMissing="isClassificationDataMissing"
@@ -184,6 +185,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public isCompute = false;
   public isGeneral = false;
+  public isDatabase = false;
   public isServiceOfferingList = true;
 
   public otherOfferingData: OtherServiceOfferingData = {
@@ -215,8 +217,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     // only Compute and General XaaS categories differ in requirements
     this.isCompute = this.serviceGroupOnLoad.toLowerCase() === "compute";
     this.isGeneral = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
+    this.isDatabase = this.serviceGroupOnLoad.toLowerCase() === "database";
     // all other categories have a similar workflow with checkbox list of service offerings
-    this.isServiceOfferingList = !this.isCompute && !this.isGeneral;
+    this.isServiceOfferingList = !this.isCompute && !this.isGeneral && !this.isDatabase;
 
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 

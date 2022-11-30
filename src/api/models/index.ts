@@ -505,6 +505,11 @@ export interface ComputeEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
   operating_environment?: string;
 }
 
+export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  network_performance?: string;
+  database_licensing?: string;
+}
+
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
   csp: ReferenceColumn;
