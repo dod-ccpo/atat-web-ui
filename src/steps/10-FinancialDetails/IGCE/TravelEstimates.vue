@@ -7,9 +7,9 @@
             Let’s gather price estimates for your travel requirements
           </h1>
           <p class="page-intro">
-            Considering the travel requirements that you previously outlined, 
-            estimate costs for each period. If you have multiple trips within 
-            the same performance period, aggregate the prices into a single 
+            Considering the travel requirements that you previously outlined,
+            estimate costs for each period. If you have multiple trips within
+            the same performance period, aggregate the prices into a single
             estimate per period.
           </p>
         </v-col>
@@ -41,81 +41,66 @@
           </div>
         </v-col>
         <v-col class="col-5">
-          <CardRequirement
-            title="Travel summary"
-            iconType="currentLocation"
-            :units="totalTrips + ' trips'"
-            :background="cardRequirementBackground"
+          <ATATAlert
+            type="callout"
+            :showIcon="false"
+            calloutBackground="primary-lighter"
+            class="copy-max-width my-10"
           >
             <template slot="content">
               <div>
-                <v-btn
-                  id="baseYearButton"
-                  @click="baseExpanded = !baseExpanded"
-                >
-                  <v-icon v-show="!baseExpanded">navigate_next</v-icon>
-                  <v-icon v-show="baseExpanded">expand_more</v-icon>
-                  <strong>Base Period</strong> ({{basePeriodTripsCount}} trips) 
-                </v-btn>
-                <div v-show="baseExpanded">
-                  <div
-                    v-for="(item, idx) in basePeriodItems"
-                    :key="idx"
-                    class="d-flex flex-row align-center pl-12"
-                  >
-                    <div class="d-flex">
-                      <span>{{item.count}} x</span>
-                    </div>
-                    <div class="d-flex">
-                      <span>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                      </span>
-                    </div>
-                    <div class="d-flex">
-                      <span>
-                        {{item.location}}, {{item.duration}}, {{item.travelers}} travelers
-                      </span>
-                    </div>
-                  </div>
-                  <div class="hr" v-show="optionPeriodItems?.length > 0"></div>
-                </div>
-              </div>
-              <div
-                v-for="(item, idx) in optionPeriodItems" 
-                :key="idx"
-              >
-                <v-btn
-                  @click="optionsExpanded[idx] = !optionsExpanded[idx]"
-                >
-                  <v-icon v-show="!optionsExpanded[idx]">navigate_next</v-icon>
-                  <v-icon v-show="optionsExpanded[idx]">expand_more</v-icon>
-                  <strong>Option Period {{idx + 1}}</strong> ({{optionPeriodTripsCount}} trips) 
-                </v-btn>
-                <div v-show="optionsExpanded[idx]">
-                  <div
-                    v-for="(item, idx2) in optionPeriodItems[idx]"
-                    :key="idx2"
-                    class="d-flex flex-row align-center pl-12"
-                  >
-                    <div class="d-flex">
-                      <span>{{item.count}} x</span>
-                    </div>
-                    <div class="d-flex">
-                      <span>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                      </span>
-                    </div>
-                    <div class="d-flex">
-                      <span>
-                        {{item.location}}, {{item.duration}}, {{item.travelers}} travelers
-                      </span>
-                    </div>
-                  </div>
-                  <div class="hr"></div>
-                </div>
+                <h2 class="d-flex align-center mb-2">
+                  <ATATSVGIcon
+                    name="currentLocation"
+                    width="23"
+                    height="33"
+                    class="mr-4"
+                  ></ATATSVGIcon>
+                  Travel Summary
+                </h2>
+                <v-expansion-panels accordion flat>
+                  <v-expansion-panel class="bg-transparent pb-2">
+                    <v-expansion-panel-header id="baseYearButton" class="no-hover">
+                      Base Period
+                      <span class="font-weight-400"
+                        >({{ basePeriodTripsCount }} trips)</span
+                      >
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <div
+                        v-for="(item, index) in basePeriodItems"
+                        :key="index"
+                        :id="item.id + '_Content'"
+                      >
+                        {{ item.count }} x {{ item.location }},
+                        {{ item.duration }}, {{ item.travelers }} travelers
+                      </div>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+               
+                  <v-expansion-panel class="bg-transparent pb-2"
+                        v-for="(optionYear, index) in optionPeriodItems"
+                        :key="index"
+                        :id="optionYear.id + '_Content'">
+                    <v-expansion-panel-header id="optionYearButton" class="no-hover">
+                      Option {{ index+1 }} Period
+                      <span class="font-weight-400"
+                        >({{ optionPeriodTripsCount }} trips)</span
+                      >
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <div v-for="(item, index) in optionYear"
+                        :key="index"
+                        :id="item.id + '_Content'">
+                         {{ item.count }} x {{ item.location }},
+                        {{ item.duration }}, {{ item.travelers }} travelers
+                      </div>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
               </div>
             </template>
-          </CardRequirement>
+          </ATATAlert>
         </v-col>
       </v-row>
     </v-container>
@@ -124,6 +109,8 @@
 <script lang="ts">
 import { RadioButton } from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
+import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
@@ -131,14 +118,16 @@ import IGCEStore, { TravelEstimateNeeds } from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
-import CardRequirement from "./components/Card_Requirement.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
   components: {
     ATATRadioGroup,
     ATATSingleAndMultiplePeriods,
-    CardRequirement
+    ATATAlert,
+    ATATSVGIcon,
+    ATATExpandableLink,
   },
 })
 export default class TravelEstimates extends Mixins(SaveOnLeave) {
@@ -150,8 +139,6 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     estimatedTravelCosts: [],
   };
 
-  private cardRequirementBackground = `bg-base-lightest _no-shadow
-    border-rounded-more pa-4`;
   private singlePeriodLabel = "Estimated travel costs per period";
   private multiplePeriodLabel = "Estimated travel costs per period";
   private singlePeriodTooltipText = `This estimate will be applied to all performance 
@@ -208,15 +195,15 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   }
 
   get currentData(): TravelEstimateNeeds {
-    return{
+    return {
       ceilingPrice: this.ceilingPrice,
       estimatedTravelCosts: this.estimatedTravelCosts,
-    }
-  };
+    };
+  }
 
   @Watch("ceilingPrice")
-  protected changeSelection(newVal: string): void{
-    if (newVal !== this.savedData.ceilingPrice){
+  protected changeSelection(newVal: string): void {
+    if (newVal !== this.savedData.ceilingPrice) {
       this.estimatedTravelCosts = [];
     }
   }
@@ -243,14 +230,14 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
         count: "2",
         location: "Washington, DC",
         duration: "2 days",
-        travelers: "4"
+        travelers: "4",
       },
       {
         count: "2",
         location: "San Diego, CA",
         duration: "2 days",
-        travelers: "4"
-      }
+        travelers: "4",
+      },
     ];
 
     // TEST DATA; REMOVE ONCE REAL DATA IS AVAILABLE
@@ -268,13 +255,24 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
           duration: "2 days",
           travelers: "4"
         },
+      ],
+      [
+        {
+          count: "3",
+          location: "Washington, DC",
+          duration: "2 days",
+          travelers: "4"
+        },
+        {
+          count: "5",
+          location: "San Diego, CA",
+          duration: "2 days",
+          travelers: "4"
+        },
       ]
     ];
 
-    
-    this.optionPeriodItems.forEach(() => {
-      this.optionsExpanded.push(false);
-    });
+   
   }
 
   protected async saveOnLeave(): Promise<boolean> {
