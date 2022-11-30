@@ -210,6 +210,12 @@ export class CurrentEnvironmentStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async isNewInstance(): Promise<boolean> {
+    return this.currentEnvInstances[this.currentEnvInstanceNumber] === undefined
+      ? true : false;
+  }
+
+  @Action({rawError: true})
   async initialize(): Promise<void> {
     if (!this.initialized) {
       const sessionRestored = retrieveSession(ATAT_CURRENT_ENVIRONMENT_KEY);
