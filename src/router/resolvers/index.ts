@@ -485,6 +485,11 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
+  debugger;
+  // EJY
+  // need to know if going to security requirements page (for Tactical Edge only??)
+  
+
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
   if (DescriptionOfWork.summaryBackToContractDetails) {
@@ -592,6 +597,38 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   DescriptionOfWork.setReturnToDOWSummary(false);
   return descriptionOfWorkSummaryPath
 }
+
+const needsSecurityRequirements = [
+  "ADVISORY_AND_ASSISTANCE", // from offering summary
+  "HELP_DESK",               // from offering summary
+  "TRAINING",                // from offering summary
+  "DOCUMENTATION",           // from offering summary
+  "GENERAL_CLOUD_SUPPORT",   // from offering summary
+  "TACTICAL_EDGE",           // FROM OFFERING DETAILS
+];
+
+export const DOWSecurityRequirementsPathResolver 
+  = (current: string, direction: string): string => {
+    const groupId = DescriptionOfWork.currentGroupId;    
+    const isOtherOffering = otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1;
+    const needsSecurity = needsSecurityRequirements.includes(groupId);
+    debugger;
+    // if direction = next OR prev, and current groupId in `needsSecurityRequirements` 
+    //   -- route to security requirements page
+
+    // if direction = next OR prev and current groupId NOT in `needsSecurityRequirements`
+    //   -- route to 
+
+    // if direction = prev and current groupId in `needsSecurityRequirements`
+    //   -- go to security requirements page
+
+    // if direction = prev and current groupId NOT in `needsSecurityRequirements`
+    //   -- go to offering details page IF a previous offering
+    //   -- else if no prev offering, go to last page of prev step???
+    return routeNames.DOWSecurityRequirements
+    // return descriptionOfWorkSummaryPath;
+  };
+
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
