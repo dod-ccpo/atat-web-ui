@@ -447,6 +447,9 @@ export const OfferGroupOfferingsPathResolver = (
   case "general_xaas":
     dontNeedButtonText = "I don’t have general XaaS requirements";
     break;
+  case "developer_tools":
+    dontNeedButtonText = "I don’t need Developer Tools and Services";
+    break;
   // case "database": // stubbed in for future ticket
   //   dontNeedButtonText = "I don’t need database services";
   //   break;
