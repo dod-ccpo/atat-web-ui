@@ -347,7 +347,6 @@ export class CurrentEnvironmentStore extends VuexModule {
   async saveCurrentEnvironment(): Promise<boolean> {
     try {
       const currentEnvironment = await this.getCurrentEnvironment() as CurrentEnvironmentDTO;
-      currentEnvironment.env_instances = ["3a78526087af5550ec3b777acebb355c", "test_instance"];
       console.log(currentEnvironment)
       const transformedCurrEnv = await this.transformCurrentEnvironmentForSave(
         currentEnvironment as CurrentEnvironmentDTO);
