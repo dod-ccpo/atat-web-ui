@@ -180,6 +180,7 @@
           id="StorageType"
           label="Storage type"
           :items="storageTypes"
+          placeholder="- Select -"
           :selectedValue.sync="_computeData.storageType"
           :rules="[
             $validators.required('Select a storage type.')
@@ -193,7 +194,9 @@
           label="Storage amount"
           :tooltipText="storageAmountTooltipText"
           :value.sync="_computeData.storageAmount"
-          appendText="GB"
+          :appendDropdown="true"
+          :dropdownOptions="dataUnits"
+          :selectedDropdownValue.sync="selectedDataUnit"
           type="number"
           :rules="[
             $validators.required('Please enter a number greater than or equal to 0.')
@@ -379,63 +382,71 @@ export default class ComputeForm extends Vue {
     {
       id: "Transfer",
       label: "Transfer existing license",
-      value: "Transfer"
+      value: "TRANSFER_EXISTING"
     },
     {
       id: "New",
       label: "New license",
-      value: "New"
+      value: "NEW"
     }
   ];
 
   public storageTypes: SelectData[] = [
     { 
       text: "Block storage", 
-      value: "Block storage",
+      value: "BLOCK",
       description: "Fixed-sized raw storage capacity"
     },
     { 
       text: "Object storage", 
-      value: "Object storage",
+      value: "OBJECT",
       description: "Store and serve unstructured user-generated content"
     },
     { 
       text: "File storage", 
-      value: "File storage",
+      value: "FILE",
       description: "Store and serve shared file systems"
     },
     { 
       text: "Archive storage", 
-      value: "Archive storage",
+      value: "ARCHIVE",
       description: "Store and serve for long-term data retention"
     },
   ];
+
+  public dataUnits: SelectData[] = [
+    { text: "Gigabyte (GB)", value: "GB" },
+    { text: "Terabyte (TB)", value: "TB" },
+    { text: "Petabyte (PB)", value: "PB" },
+  ];
+
+  public selectedDataUnit = "GB";
 
   public performanceTiers: RadioButton[] = [
     {
       id: "GeneralPurpose",
       label: "General Purpose",
-      value: "General",
+      value: "GENERAL",
       description: "Provides a balance of compute, memory & network"
     },
     {
       id: "ComputeOptimized",
       label: "Compute Optimized",
-      value: "Compute",
+      value: "COMPUTE",
       description: `Supports compute-bound applications that benefit 
         from high performance processors`
     },
     {
       id: "MemoryOptimized",
       label: "Memory Optimized",
-      value: "Memory",
+      value: "MEMORY",
       description: `Designed to deliver fast performance for 
         workloads that process large data sets in memory`
     },
     {
       id: "StorageOptimized",
       label: "Storage Optimized",
-      value: "Storage",
+      value: "STORAGE",
       description: `Designed for high, sequential read and write 
         workloads to very large data sets on local storage`
     },
