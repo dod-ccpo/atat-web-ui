@@ -116,7 +116,7 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   users_per_region: string; // json stringified sys_id/count pairs
   operating_system: string;
   licensing: string;
-  number_of_VCPUs: number | null;
+  number_of_vcpus: number | null;
   processor_speed: number | null; 
   memory_amount: number | null;
   memory_unit: StorageUnit;

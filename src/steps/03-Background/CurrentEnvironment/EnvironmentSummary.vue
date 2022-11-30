@@ -434,7 +434,7 @@ export default class EnvironmentSummary extends Vue {
       this.classificationsOnPrem = this.currEnvData.env_classifications_onprem;
     }
     this.classificationLevels = await classificationRequirements.getAllClassificationLevels();
-    this.buildTableData();
+    await this.buildTableData();
   }
 
   public async mounted(): Promise<void> {
