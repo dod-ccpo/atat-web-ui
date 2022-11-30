@@ -136,6 +136,15 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
+  // temporary method to swap New vs Existing users
+  public toggleUserType(): void {
+    this.isNewUser = !this.isNewUser;
+    const el = document.querySelector(".v-main__wrap");
+    if (el) {
+      el.scrollTop = 0;
+    }
+  }
+
   public async mounted(): Promise<void> {
     this.currentUser = await UserStore.getCurrentUser();
 
