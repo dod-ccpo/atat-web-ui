@@ -14,7 +14,7 @@
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _package-title"
           >
-            {{ modifiedData.projectOverview || 'Test'}}
+            {{ modifiedData.projectOverview || ' '}}
           </a>
         </div>
           <v-chip
