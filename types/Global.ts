@@ -348,6 +348,11 @@ export interface lineChartData {
 export interface OtherServiceOfferingData {
   instanceNumber: number;
   environmentType: string;
+  anticipatedNeedUsage?: string;
+  operatingEnvironment?: string;
+  operatingSystemLicensing?: string;
+  processorSpeed?: string;
+  storageUnit?: string;
   classificationLevel?: string;
   deployedRegions: string[];
   deployedRegionsOther: string;
