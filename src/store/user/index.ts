@@ -10,7 +10,8 @@ import rootStore from "../index";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import api from "@/api";
 import Vue from "vue";
-import { UserDTO } from "@/api/models";
+import { AcquisitionPackageSummarySearchDTO, UserDTO } from "@/api/models";
+import AcquisitionPackageSummary from "../acquisitionPackageSummary";
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
 
@@ -72,6 +73,27 @@ export class UserStore extends VuexModule {
   @Mutation
   public setCurrentUser(value: UserDTO): void {
     this.currentUser = value;
+  }
+
+  @Action({rawError: true})
+  public async hasPackages(): Promise<boolean> {
+
+    let userHasPackages = false;
+
+    const searchDTO:AcquisitionPackageSummarySearchDTO = {
+      acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER",
+      searchString: "",
+      sort: "DESCsys_updated_on",
+      limit: 5,
+      offset: 0
+    };
+
+    const packageData = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(searchDTO);
+
+    userHasPackages = packageData.total_count > 0;
+
+    return userHasPackages;
   }
 
   @Action({rawError: true})
