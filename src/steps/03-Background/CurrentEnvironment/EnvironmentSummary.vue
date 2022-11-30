@@ -167,6 +167,17 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }  
 })
 export default class EnvironmentSummary extends Vue {
+
+  $refs!: {
+    form: Vue & {
+      resetValidation: () => void;
+      errorBucket: string[];
+      reset: () => void;
+      validate: () => boolean;
+      errorBag: Record<number, boolean>;
+    },
+  };
+
   public currEnvData = defaultCurrentEnvironment;
   public deleteInstanceModalTitle = "";
   public envInstances: CurrentEnvironmentInstanceDTO[] = [];
@@ -182,7 +193,7 @@ export default class EnvironmentSummary extends Vue {
   public get environmentTypeText(): string {
     switch (this.envLocation) {
     case "CLOUD": return "Cloud Environment";
-    case "ON_PREM": return "On-premises Environment";
+    case "ON_PREM": return "On-premise Environment";
     case "HYBRID": return "Hybrid Environment";
     default: return "";
     }
@@ -209,6 +220,7 @@ export default class EnvironmentSummary extends Vue {
       }
     });
     let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
+
     if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
       let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
       const unclassifiedIndex = uniqueClassifications.indexOf("Unclassified");
@@ -221,16 +233,19 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public editEnvironment(): void {
-    this.$router.push({
-      name: routeNames.CurrentEnvironmentLocation,
-      params: {
-        direction: "next"
-      }   
-    });
+    this.$nextTick(() => {
+      this.$router.push({
+        name: routeNames.CurrentEnvironmentLocation,
+        params: {
+          direction: "next"
+        }   
+      });
+
+    })
   }
 
   public async addInstance(): Promise<void> {
-    await CurrentEnvironment.resetCurrentEnvironmentInstance();
+    await CurrentEnvironment.setCurrentEnvInstanceNumber(this.envInstances.length);
     this.navigate();
   }
 
@@ -245,7 +260,7 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public async editInstance(instance: EnvInstanceSummaryTableData): Promise<void> {
-    await CurrentEnvironment.setCurrentEnvironmentInstanceSysId(instance.instanceSysId as string);
+    await CurrentEnvironment.setCurrentEnvironmentInstanceNumber(instance.instanceSysId as string);
     this.navigate();
   }
 
@@ -343,9 +358,9 @@ export default class EnvironmentSummary extends Vue {
     ];
 
     this.tableData = [];
-    const instances = await CurrentEnvironment.getCurrentEnvironmentInstances();
+    this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
 
-    instances.forEach(async (instance, index) => {
+    this.envInstances.forEach(async (instance, index) => {
       let isValid = await this.validateInstance(instance);
       let storage = "";
       if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
@@ -359,7 +374,7 @@ export default class EnvironmentSummary extends Vue {
       }
       let location = "";
       if (instance.instance_location === "ON_PREM") {
-        location = "On-premises";
+        location = "On-premise";
       } else {
         let regions = instance.deployed_regions?.length 
           ? instance.deployed_regions.join(", ")
@@ -411,7 +426,7 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeEnvData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeEnvData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeEnvData) {
       this.currEnvData = _.clone(storeEnvData);
       this.envLocation = this.currEnvData.env_location;

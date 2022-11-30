@@ -44,7 +44,7 @@
                     @click="preDrag($event, index)"
                     :data-index="index"
                   >
-                    <div class="d-flex">
+                    <div class="d-flex align-center">
                       <div class="d-flex">
                         <v-icon class="drag-icon">drag_indicator</v-icon>
                       </div>

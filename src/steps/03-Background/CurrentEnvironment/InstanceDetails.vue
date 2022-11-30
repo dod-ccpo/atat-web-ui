@@ -2,15 +2,31 @@
 <template>
   <v-form ref="form" lazy-validation>
     <div class="container-max-width">
-      <h1 class="mb-10">
+      <h1 class="mb-3">
         Let’s start gathering details about each instance in your environment
       </h1>
-      <p>
+      <p class="mb-10">
         An instance may be an isolated environment, an enclave, or a collection of 
         components. Aggregate all virtual machines (VMs) with similar specifications 
         into a single instance below. If you have multiple instances, we will walk 
         through them one at a time.
       </p>
+
+      <v-expand-transition>
+        <ATATAlert
+          id="ErrorsOnLoadAlert"
+          v-show="!isValid && !isNewInstance"
+          type="error"
+          class="mb-10"
+        >
+          <template v-slot:content>
+            <p class="mb-0" id="ErrorsOnLoadAlertText">
+              Some of your info is missing. You can add it now or come back at any 
+              time before finalizing your acquisition package.
+            </p>
+          </template>
+        </ATATAlert>
+      </v-expand-transition>
 
       <h2 class="mb-4" v-if="hasTellUsAboutInstanceHeading">
         1. Tell us about Instance #{{ instanceNumber }}
@@ -21,7 +37,7 @@
         id="EnvironmentLocation"
         class="mb-8"
         :items="envLocationOptions"
-        tooltipText="<strong>On-premises environments</strong> are deployed in-house 
+        tooltipText="<strong>On-premise environments</strong> are deployed in-house 
           and within an enterprise IT infrastructure. <strong>Cloud environments</strong> 
           are hosted by a third-party provider in an off-site, cloud-based server."
         :value.sync="instanceData.instance_location"
@@ -126,7 +142,10 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 import AdditionalInfo from "@/components/DOW/AdditionalInfo.vue";
 import CurrentUsage from "@/components/DOW/CurrentUsage.vue";
@@ -136,7 +155,6 @@ import PricingDetails from "@/components/DOW/PricingDetails.vue";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 
 import { 
-  Checkbox, 
   CurrEnvInstanceConfig, 
   CurrEnvInstancePerformance,
   SelectData,
@@ -165,6 +183,7 @@ import _ from "lodash";
 
 @Component({
   components: {
+    ATATAlert,
     ATATRadioGroup,
     AdditionalInfo,
     CurrentUsage,
@@ -177,10 +196,12 @@ import _ from "lodash";
 
 export default class InstanceDetails extends Mixins(SaveOnLeave) {
   /* eslint-disable camelcase */
-  public currEnvData = defaultCurrentEnvironment;
+  public currEnvData = _.cloneDeep(defaultCurrentEnvironment);
   public envLocation = "";
-  public instanceData = defaultCurrentEnvironmentInstance;
-  public instanceNumber = 1;
+  public instanceData = _.cloneDeep(defaultCurrentEnvironmentInstance);
+  public instanceNumber = 0;
+  public isNewInstance = true;
+  public isValid = true;
 
   public get currentData(): CurrentEnvironmentInstanceDTO {
     return this.instanceData;
@@ -195,7 +216,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     },
     {
       id: "OnPremises",
-      label: "On-premises",
+      label: "On-premise",
       value: "ON_PREM",
     },
   ];
@@ -215,12 +236,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   }
 
   public clearClassificationErrorMessages = false;
-
-  @Watch("instanceData.instance_location")
-  public instanceLocChanged(): void {
-    this.setClassificationLabels();
-    this.clearClassificationErrorMessages = true;
-  }
 
   public classificationLabels: Record<string, Record<string, string>> = {
     CLOUD: { 
@@ -252,7 +267,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
   public get hasTellUsAboutInstanceHeading(): boolean {
     // only one case where there won't be a "Tell us about instance #x" header -
-    // if instance location is on-premises AND only one classification was selected.
+    // if instance location is on-premise AND only one classification was selected.
     // classification radio options will show if either NO (ZERO) classification
     // levels were selected, or more than one was selected.
     return !(this.instanceData.instance_location === 'ON_PREM' 
@@ -354,9 +369,13 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   ];
 
   @Watch("instanceData.instance_location")
-  public instanceLocationChange(newVal: string): void {
+  public instanceLocationChange(newVal: string, oldVal: string): void {
     // eslint-disable-next-line camelcase
-    this.instanceData.classification_level = "";
+    this.setClassificationLabels();
+    this.clearClassificationErrorMessages = true;
+    if (oldVal !== "") {
+      this.instanceData.classification_level = "";
+    }
     const envClassificationLevelSysIds = newVal === "CLOUD"
       ? this.currEnvData.env_classifications_cloud
       : this.currEnvData.env_classifications_onprem;
@@ -378,21 +397,37 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       this.setClassificationLabels();
     }   
   }
+  public async validateOnLoad(): Promise<void> {
+    this.isNewInstance = await CurrentEnvironment.isNewInstance();
+    if (!this.isNewInstance) {
+      // user is editing an existing instance, validate on load
+      await this.validate();
+      AcquisitionPackage.setValidateNow(true);
+      this.$nextTick(async () => {
+        AcquisitionPackage.setValidateNow(true);
+      });
+    }
+  }
+
+  public async validate(): Promise<void> {
+    this.$nextTick(() => {
+      this.isValid = this.$refs.form.validate();
+    });
+  }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    await this.validateOnLoad();
   }
 
-  
   // EJY NEED ROUTE RESOLVER AFTER on classifications page if no location selected
   // send directly to instance form with region and classification radio groups on every instance
 
 
   public async loadOnEnter(): Promise<void> {
     this.allClassificationLevels = await classificationRequirements.getAllClassificationLevels();
-    this.instanceNumber = CurrentEnvironment.currentEnvInstanceNumber;
-
-    const envStoreData = await AcquisitionPackage.getCurrentEnvironment();
+    this.instanceNumber = CurrentEnvironment.currentEnvInstanceNumber + 1;
+    const envStoreData = await CurrentEnvironment.getCurrentEnvironment();
     if (envStoreData) {
       this.currEnvData = envStoreData;
       this.envLocation = envStoreData.env_location;
@@ -447,12 +482,13 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-
+    // need to flip `setValidateNow` to true in page component's `saveOnLeave` method
+    // for pages with checkbox groups that have validation rules
     await AcquisitionPackage.setValidateNow(true);
 
     try {
       if (this.hasChanged()) {
-        CurrentEnvironment.setCurrentEnvironmentInstance(this.instanceData);
+        CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
 
         // TODO - wire to proper location for saving after DB is updated
         // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
@@ -466,7 +502,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
     return true;
   }
-
 
 }
 

@@ -74,10 +74,8 @@ export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = 
 export class CurrentEnvironmentStore extends VuexModule {
   initialized = false;
   public currentEnvironment: CurrentEnvironmentDTO | null = null;
-  public currentEnvInstance: CurrentEnvironmentInstanceDTO | null = null;
   public currentEnvInstances: CurrentEnvironmentInstanceDTO[] = [];
-  public currentEnvInstanceSysId = "";
-  public currentEnvInstanceNumber = 1;
+  public currentEnvInstanceNumber = 0;
 
   @Action
   public async getCurrentEnvironment():
@@ -129,18 +127,13 @@ export class CurrentEnvironmentStore extends VuexModule {
   }
 
   @Action
-  public async resetCurrentEnvironmentInstance(): Promise<void> {
-    this.doResetCurrentEnvironmentInstance();
-    this.setCurrentEnvInstanceNumber(this.currentEnvInstances.length + 1);
-  }
-  @Mutation
-  public async doResetCurrentEnvironmentInstance(): Promise<void> {
-    this.currentEnvInstance = _.cloneDeep(defaultCurrentEnvironmentInstance);
+  public async createNewEnvInstance(): Promise<void> {
+    await this.doSetCurrentEnvInstanceNumber(this.currentEnvInstances.length + 1);
   }
 
   @Action
   public async setCurrentEnvInstanceNumber(num: number): Promise<void> {
-    this.doSetCurrentEnvInstanceNumber(num);
+    await this.doSetCurrentEnvInstanceNumber(num);
   }
   @Mutation
   public async doSetCurrentEnvInstanceNumber(num: number): Promise<void> {
@@ -170,26 +163,32 @@ export class CurrentEnvironmentStore extends VuexModule {
     await this.saveCurrentEnvironment();
   }
 
-  @Action 
-  public async setCurrentEnvironmentInstanceSysId(sysId: string): Promise<void> {
-    await this.doSetCurrentEnvironmentInstanceSysId(sysId);
-    const i = this.currentEnvInstances.findIndex(obj => obj.sys_id === sysId);
-    if (i > -1) {
-      this.setCurrentEnvInstanceNumber(i + 1);
-      await this.setCurrentEnvironmentInstance(this.currentEnvInstances[i]);
+  @Action
+  public async clearEnvClassifications(type: string): Promise<void> {
+    await this.doClearEnvClassifications(type);
+  }
+  @Mutation
+  public async doClearEnvClassifications(type: string): Promise<void> {
+    if (type === "CLOUD" && this.currentEnvironment) {
+      this.currentEnvironment.env_classifications_cloud = [];
+    } else if (type === "ON_PREM" && this.currentEnvironment) {
+      this.currentEnvironment.env_classifications_onprem = [];
     }
   }
 
-  @Mutation
-  public async doSetCurrentEnvironmentInstanceSysId(sysId: string): Promise<void> {
-    this.currentEnvInstanceSysId = sysId;
+  @Action 
+  public async setCurrentEnvironmentInstanceNumber(sysId: string): Promise<void> {
+    const i = this.currentEnvInstances.findIndex(obj => obj.sys_id === sysId);
+    if (i > -1) {
+      this.setCurrentEnvInstanceNumber(i);
+    }
   }
 
   @Action
-  public async setCurrentEnvironmentInstance(
+  public async saveCurrentEnvironmentInstance(
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
-    await this.doSetCurrentEnvironmentInstance(value);
+    await this.doSaveCurrentEnvironmentInstance(value);
     await this.saveCurrentEnvironment();
   }
 
@@ -199,36 +198,42 @@ export class CurrentEnvironmentStore extends VuexModule {
    * base current environment table with the updated instance id.\
    */
   @Mutation
-  public async doSetCurrentEnvironmentInstance(
+  public async doSaveCurrentEnvironmentInstance(
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
-    this.currentEnvInstance = _.cloneDeep(value)
-    if (!this.currentEnvInstance.sys_id) {
+    const instance = _.cloneDeep(value);
+    if (!instance.sys_id) {
       const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
-        .create(this.currentEnvInstance);
+        .create(instance);
       // setting individual properties instead of the whole object is required
       // because certain reference types have a different structure and needs mapping
-      this.currentEnvInstance.sys_id = currEnvInstanceResp.sys_id as string;
-      this.currentEnvInstance.sys_updated_on = currEnvInstanceResp.sys_updated_on;
-      this.currentEnvInstance.sys_updated_by = currEnvInstanceResp.sys_updated_by;
-      this.currentEnvInstances.push(this.currentEnvInstance);
-      this.currentEnvironment?.env_instances.push(this.currentEnvInstance.sys_id);
+      instance.sys_id = currEnvInstanceResp.sys_id as string;
+      instance.sys_updated_on = currEnvInstanceResp.sys_updated_on;
+      instance.sys_updated_by = currEnvInstanceResp.sys_updated_by;
+      this.currentEnvInstances.push(instance);
+      this.currentEnvironment?.env_instances.push(instance.sys_id);
     } else {
       const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
-        .update(this.currentEnvInstance?.sys_id as unknown as string, this.currentEnvInstance);
+        .update(instance.sys_id as unknown as string, instance);
       const instanceIndex = this.currentEnvInstances
         .findIndex(obj => obj.sys_id === currEnvInstanceResp.sys_id);
-      this.currentEnvInstance.sys_updated_on = currEnvInstanceResp.sys_updated_on;
-      this.currentEnvInstance.sys_updated_by = currEnvInstanceResp.sys_updated_by;
       if (instanceIndex > -1) {
-        this.currentEnvInstances[instanceIndex] = this.currentEnvInstance;
+        const currentInstance = this.currentEnvInstances[instanceIndex];
+        currentInstance.sys_updated_on = currEnvInstanceResp.sys_updated_on;
+        currentInstance.sys_updated_by = currEnvInstanceResp.sys_updated_by;
       }
     }
   }
 
   @Action({rawError: true})
   public async getCurrentEnvInstance(): Promise<CurrentEnvironmentInstanceDTO | null> {
-    return this.currentEnvInstance;
+    return this.currentEnvInstances[this.currentEnvInstanceNumber];
+  }
+
+  @Action({rawError: true})
+  public async isNewInstance(): Promise<boolean> {
+    return this.currentEnvInstances[this.currentEnvInstanceNumber] === undefined
+      ? true : false;
   }
 
   @Action({rawError: true})
