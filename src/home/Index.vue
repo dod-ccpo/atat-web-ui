@@ -34,7 +34,7 @@
                   <br />
                   <div class="d-flex justify-space-around">
                     <div class="d-flex align-flex-start">
-                      <v-btn 
+                      <v-btn
                         class="v-btn primary"
                         @click="startNewAcquisition"
                       >
@@ -43,9 +43,11 @@
                     </div>
                     &nbsp;&nbsp;
                     <div class="d-flex align-flex-end">
-                      <v-btn 
+                      <v-btn
+                        href="https://community.hacc.mil/s/jwcc"
+                        target="_blank"
                         id="HelpfulResourcesButton"
-                        class="secondary"
+                        class="secondary no-text-decoration"
                         @click="scrollToResources"
                       >
                         Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
