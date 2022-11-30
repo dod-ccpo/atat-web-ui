@@ -133,9 +133,8 @@ Cypress.Commands.add("findElement", (selector) => {
 
 Cypress.Commands.add('homePageClickAcquisitionPackBtn', () => {
   
-  cy.textExists(lp.sectionPrepareHeader, "Prepare your acquisition package online");
-  cy.findElement(lp.sectionPrepareStartBtn).scrollIntoView();
-  cy.textExists(lp.sectionPrepareStartBtn, "Start a new acquisition").should("be.enabled").click();
+  cy.findElement(lp.welcomeBarText).should("exist");
+  cy.textExists(lp.startAcqWelcome, "Start a new acquisition").should("be.enabled").click();
   cy.verifyPageHeader("Let’s start with basic info about your new acquisition");
   cy.textExists("#developerToggleButton", "Toggle Developer Navigation ON").click().then(() => {
     cy.textExists("#developerToggleButton", "Toggle Developer Navigation OFF");

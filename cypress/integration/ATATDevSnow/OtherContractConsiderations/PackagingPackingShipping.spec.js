@@ -7,7 +7,7 @@ describe("Test suite: OCC: PPS substep", () => {
 
   beforeEach(() => {
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
   });
     
@@ -31,8 +31,9 @@ describe("Test suite: OCC: PPS substep", () => {
     //navigates to packaging screen
     cy.verifyPageHeader("Do you need to include packaging, packing, or shipping instructions?");
     const expectedBodyText = "This is not common for most cloud computing acquisitions." +
-      " However, you may have a situation, like an on-premises to cloud migration," +
-      " where you need to transfer data on hard drives to a CSP."
+      " However, you may have a situation, like Tactical Edge device delivery, instructional" +
+      " materials in support of training, or physical data transfer services where you need" +
+      " to transfer data on hard drives to a CSP."
     cy.findElement(occ.introText).then(($el) => {
       let actualTxt = $el.text();
       cy.log(actualTxt);

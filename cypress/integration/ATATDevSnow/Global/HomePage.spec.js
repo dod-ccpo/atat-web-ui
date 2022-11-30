@@ -14,8 +14,7 @@ describe("Test suite: Home Page ", () => {
   
   });
 
-  it("TC1: Existing User Welcome Banner and Helpful Resources", () => {
-    cy.findElement("#TempUserTypeToggle").scrollIntoView().click();
+  it("TC1: Existing User Welcome Banner and Helpful Resources", () => {    
     cy.textExists(lp.welcomeBarText, "Hi " + firstName + "! How can we help you?");
     cy.findElement(".v-expansion-panel").should('have.attr', 'aria-expanded', "true").click();
       

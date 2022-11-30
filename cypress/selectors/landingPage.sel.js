@@ -1,5 +1,6 @@
 module.exports = {
   welcomeBarText: "._welcome-bar h1",
+  startAcqWelcome:"._welcome-bar button",
   helpfulResources: "._welcome-bar #HelpfulResourcesButton",
   startSectionHeader:"._new-user-cards h2.h1",
   startAcqPackBtn: "#StartBuildingPackageCard #StartNewAcquisition",
