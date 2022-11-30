@@ -150,7 +150,7 @@ export class CurrentEnvironmentStore extends VuexModule {
   public async deleteEnvironmentInstance(sysId: string): Promise<void> {
     const i = this.currentEnvInstances.findIndex(obj => obj.sys_id === sysId);
     if (i > -1) {
-      this.doDeleteEnvironmentInstance(i);
+      await this.doDeleteEnvironmentInstance(i);
     }
   }
 

@@ -284,9 +284,11 @@ export default class EnvironmentSummary extends Vue {
 
   public async deleteInstance(): Promise<void> {
     await CurrentEnvironment.deleteEnvironmentInstance(this.instanceToDeleteSysId);
-    await this.buildTableData();
-    this.showDeleteInstanceDialog = false;
-    this.instanceToDeleteSysId = "";
+    this.$nextTick(async () => {
+      await this.buildTableData();
+      this.showDeleteInstanceDialog = false;
+      this.instanceToDeleteSysId = "";
+    })
   }
 
   public async validateInstance(
@@ -345,84 +347,86 @@ export default class EnvironmentSummary extends Vue {
   }
 
   public async buildTableData(): Promise<void> {
-    this.tableHeaders = [    
-      { text: "", value: "instanceNumber", width: "50" },
-      { text: "Location", value: "location" },
-      { text: "Classification", value: "classification" },
-      { text: "Quantity", value: "qty" },
-      { text: "vCPU", value: "vCPU" },
-      { text: "Memory", value: "memory" },
-      { text: "Storage", value: "storage" },
-      { text: "Performance", value: "performance" },
-      { text: "", value: "actions", width: "75" },
-    ];
+    setTimeout(async () => {
 
-    this.tableData = [];
-    this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
+      this.tableHeaders = [    
+        { text: "", value: "instanceNumber", width: "50" },
+        { text: "Location", value: "location" },
+        { text: "Classification", value: "classification" },
+        { text: "Quantity", value: "qty" },
+        { text: "vCPU", value: "vCPU" },
+        { text: "Memory", value: "memory" },
+        { text: "Storage", value: "storage" },
+        { text: "Performance", value: "performance" },
+        { text: "", value: "actions", width: "75" },
+      ];
 
-    this.envInstances.forEach(async (instance, index) => {
-      let isValid = await this.validateInstance(instance);
-      let storage = "";
-      if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
-        const storageType = toTitleCase(instance.storage_type);
-        storage = storageType + ": " + String(instance.storage_amount)
-          + " " + instance.storage_unit;
-      }
-      let performance = "";
-      if (instance.performance_tier) {
-        performance = toTitleCase(instance.performance_tier.replace("_", " "));
-      }
-      let location = "";
-      if (instance.instance_location === "ON_PREM") {
-        location = "On-premise";
-      } else {
-        let regions = instance.deployed_regions?.length 
-          ? instance.deployed_regions.join(", ")
-          : "";
+      this.tableData = [];
+      this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
+      this.envInstances.forEach(async (instance, index) => {
+        let isValid = await this.validateInstance(instance);
+        let storage = "";
+        if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
+          const storageType = toTitleCase(instance.storage_type);
+          storage = storageType + ": " + String(instance.storage_amount)
+            + " " + instance.storage_unit;
+        }
+        let performance = "";
+        if (instance.performance_tier) {
+          performance = toTitleCase(instance.performance_tier.replace("_", " "));
+        }
+        let location = "";
+        if (instance.instance_location === "ON_PREM") {
+          location = "On-premise";
+        } else {
+          let regions = instance.deployed_regions?.length 
+            ? instance.deployed_regions.join(", ")
+            : "";
 
-        regions = regions.replaceAll("CONUS", "CONUS ");
-        location = this.envLocation === "HYBRID"
-          ? regions.length
-            ? "Cloud<br>(" + regions + ")"
-            : "Cloud"
-          : regions;
-      }
+          regions = regions.replaceAll("CONUS", "CONUS ");
+          location = this.envLocation === "HYBRID"
+            ? regions.length
+              ? "Cloud<br>(" + regions + ")"
+              : "Cloud"
+            : regions;
+        }
 
-      let classification = "";
-      if (instance.classification_level) {
-        const i = this.classificationLevels.findIndex(
-          obj => obj.sys_id === instance.classification_level
-        );
-        if (i > -1) {
-          const classificationLevel = this.classificationLevels[i];
-          classification = buildClassificationLabel(classificationLevel, "short");
-        } 
-      }
+        let classification = "";
+        if (instance.classification_level) {
+          const i = this.classificationLevels.findIndex(
+            obj => obj.sys_id === instance.classification_level
+          );
+          if (i > -1) {
+            const classificationLevel = this.classificationLevels[i];
+            classification = buildClassificationLabel(classificationLevel, "short");
+          } 
+        }
 
-      let instanceData: EnvInstanceSummaryTableData = { 
-        instanceSysId: instance.sys_id,
-        instanceNumber: index + 1,
-        location,
-        classification,
-        qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
-        vCPU: instance.number_of_VCPUs ? String(instance.number_of_VCPUs) : "",
-        memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
-        storage,
-        performance,
-        isValid,
-      };
-      
-      this.tableData.push(instanceData);
-      if (this.envLocation === "ON_PREM") {
-        this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
-      }
+        let instanceData: EnvInstanceSummaryTableData = { 
+          instanceSysId: instance.sys_id,
+          instanceNumber: index + 1,
+          location,
+          classification,
+          qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
+          vCPU: instance.number_of_VCPUs ? String(instance.number_of_VCPUs) : "",
+          memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
+          storage,
+          performance,
+          isValid,
+        };
+        
+        this.tableData.push(instanceData);
+        if (this.envLocation === "ON_PREM") {
+          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
+        }
 
-      const hasMultipleClassifications 
-        = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
-      if (!hasMultipleClassifications) {
-        this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
-      }
-    });
+        const hasMultipleClassifications 
+          = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
+        if (!hasMultipleClassifications) {
+          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
+        }
+      });
+    }, 0);
   }
 
   public async loadOnEnter(): Promise<void> {
