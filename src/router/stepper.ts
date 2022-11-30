@@ -145,7 +145,6 @@ import {
   FinancialPOCResolver,
   OtherOfferingSummaryPathResolver,
   IGCESurgeCapabilities,
-  IGCEGatherPriceEstimatesResolver,
   IGCECannotProceedResolver,
   IGCEOptimizeOrReplicateResolver,
   IGCEArchitecturalDesignSolutionsResolver,
@@ -682,7 +681,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t need these cloud resources",
             buttonId: "DontNeedResources",
             buttonClass: "secondary",
-            actionName: "deleteServiceOfferingGroup",
+            actionName: "confirmServiceDeletion",
+            emitText: "confirmDeleteService",
           },
         ],
       },
@@ -880,6 +880,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.OptimizeOrReplicate,
         completePercentageWeight: 0,
         component: OptimizeOrReplicate,
+        routeResolver: IGCEOptimizeOrReplicateResolver,
       },
       {
         menuText: "Architectural Design Solutions",
@@ -888,6 +889,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ArchitecturalDesignSolutions,
         completePercentageWeight: 0,
         component: ArchitecturalDesignSolutions,
+        routeResolver: IGCEArchitecturalDesignSolutionsResolver,
       },
       {
         menuText: "Gather Price Estimates",
@@ -961,70 +963,69 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SupportingDocumentation,
         completePercentageWeight: 1,
         component: SupportingDocumentation,
-        // routeResolver: IGCESupportingDocumentationResolver // EJY needed?
+        routeResolver: IGCESupportingDocumentationResolver
+      },
+      {
+        menuText: "Funding Plan",
+        path: "funding-plan",
+        name: routeNames.FundingPlanType,
+        completePercentageWeight: 1,
+        component: FundingPlanType
+      },
+      {
+        menuText: "MIPR",
+        excludeFromMenu: true,
+        path: "mipr",
+        name: routeNames.MIPR,
+        completePercentageWeight: 1,
+        component: MIPR,
+        routeResolver: MIPRResolver
+      },
+      {
+        menuText: "G-Invoicing",
+        excludeFromMenu: true,
+        path: "g-invoicing",
+        name: routeNames.GInvoicing,
+        completePercentageWeight: 1,
+        component: GInvoicing,
+        routeResolver: GInvoicingResolver,
+      },
+      {
+        menuText: "Upload-7600",
+        excludeFromMenu: true,
+        path: "upload-7600",
+        name: routeNames.Upload7600,
+        completePercentageWeight: 1,
+        component: Upload7600,
+        routeResolver: Upload7600Resolver
+      },
+      {
+        menuText: "Severability and Incremental Funding",
+        path: "severability-and-incremental-funding",
+        name: routeNames.SeverabilityAndIncrementalFunding,
+        completePercentageWeight: 1,
+        component: SeverabilityAndIncrementalFunding,
 
       },
-      // {
-      //   menuText: "Funding Plan",
-      //   path: "funding-plan",
-      //   name: routeNames.FundingPlanType,
-      //   completePercentageWeight: 1,
-      //   component: FundingPlanType
-      // },
-      // {
-      //   menuText: "MIPR",
-      //   excludeFromMenu: true,
-      //   path: "mipr",
-      //   name: routeNames.MIPR,
-      //   completePercentageWeight: 1,
-      //   component: MIPR,
-      //   routeResolver: MIPRResolver
-      // },
-      // {
-      //   menuText: "G-Invoicing",
-      //   excludeFromMenu: true,
-      //   path: "g-invoicing",
-      //   name: routeNames.GInvoicing,
-      //   completePercentageWeight: 1,
-      //   component: GInvoicing,
-      //   routeResolver: GInvoicingResolver,
-      // },
-      // {
-      //   menuText: "Upload-7600",
-      //   excludeFromMenu: true,
-      //   path: "upload-7600",
-      //   name: routeNames.Upload7600,
-      //   completePercentageWeight: 1,
-      //   component: Upload7600,
-      //   routeResolver: Upload7600Resolver
-      // },
-      // {
-      //   menuText: "Severability and Incremental Funding",
-      //   path: "severability-and-incremental-funding",
-      //   name: routeNames.SeverabilityAndIncrementalFunding,
-      //   completePercentageWeight: 1,
-      //   component: SeverabilityAndIncrementalFunding,
+      {
+        menuText: "Incremental Funding",
+        excludeFromMenu: true,
+        path: "incremental-funding",
+        name: routeNames.IncrementalFunding,
+        completePercentageWeight: 1,
+        component: IncrementalFunding,
+        routeResolver: IncrementalFundingResolver
+      },
+      {
+        menuText: "Financial POC Form",
+        excludeFromMenu: true,
+        path: "financial-POC-Form",
+        name: routeNames.FinancialPOCForm,
+        completePercentageWeight: 1,
+        component: FinancialPOCForm,
+        routeResolver: FinancialPOCResolver
 
-      // },
-      // {
-      //   menuText: "Incremental Funding",
-      //   excludeFromMenu: true,
-      //   path: "incremental-funding",
-      //   name: routeNames.IncrementalFunding,
-      //   completePercentageWeight: 1,
-      //   component: IncrementalFunding,
-      //   routeResolver: IncrementalFundingResolver
-      // },
-      // {
-      //   menuText: "Financial POC Form",
-      //   excludeFromMenu: true,
-      //   path: "financial-POC-Form",
-      //   name: routeNames.FinancialPOCForm,
-      //   completePercentageWeight: 1,
-      //   component: FinancialPOCForm,
-      //   routeResolver: FinancialPOCResolver
-
-      // },
+      },
       {
         menuText: "SummaryPage",
         excludeFromMenu: true,

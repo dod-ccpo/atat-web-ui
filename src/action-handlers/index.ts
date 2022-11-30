@@ -7,12 +7,14 @@ const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
   deleteServiceOfferingGroup: "deleteServiceOfferingGroup",
   confirmComputeDeletion: "confirmComputeDeletion",
+  confirmServiceDeletion: "confirmServiceDeletion"
 }
 
 const actions =  {
   [actionHandlerNames.sampleAdditionalButtonAction]: sampleAdditionalButtonAction,
   [actionHandlerNames.deleteServiceOfferingGroup]: deleteServiceOfferingGroup,
   [actionHandlerNames.confirmComputeDeletion]: confirmComputeDeletion,
+  [actionHandlerNames.confirmServiceDeletion]: confirmServiceDeletion,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -44,6 +46,10 @@ async function deleteServiceOfferingGroup() {
 // used in Compute when user clicks "I don't need compute resources" button
 async function confirmComputeDeletion() {
   DescriptionOfWork.setConfirmOtherOfferingDelete(true);
+}
+
+async function confirmServiceDeletion() {
+  await DescriptionOfWork.setConfirmServiceOfferingDelete(true);
 }
 
 export default actionHandler;

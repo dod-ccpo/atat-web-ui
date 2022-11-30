@@ -1,5 +1,5 @@
 <template>
-<button style="outline:none" @blur="$emit('blur')">
+<div style="outline:none">
   <!-- <v-form ref="atatFileUploadForm"> -->
     <div
       :id="id + 'EventDiv'"
@@ -23,7 +23,7 @@
         prepend-icon=""
         accept="application/pdf,application/vnd.ms-excel, .xlsx"
         :truncate-length="truncateLength"
-        :clearable="false"
+        :clearable="true"
         @change="fileUploadChanged"
         :hide-details="true"
         :rules="_rules"
@@ -97,10 +97,10 @@
       :multiplesAllowed="multiplesAllowed"
       :title="fileListTitle"
       :removeAll.sync="_removeAll"
-      @delete="(file) => $emit('delete', file)"
+      @delete="deleteFile"
     />
   <!-- </v-form> -->
-</button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -192,6 +192,14 @@ export default class ATATFileUpload extends Vue {
   }
 
   //Events
+
+  private async deleteFile(file: File): Promise<void>{
+    this.$emit('delete', file);
+    await this.$refs.atatFileUpload.$emit("click:clear");
+    await this.$refs.atatFileUpload.$emit("change");
+    this.reset();
+  }
+
   /**
    * triggers html file upload click
    */

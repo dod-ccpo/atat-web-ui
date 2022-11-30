@@ -10,10 +10,25 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
-          <section class="_py-80">
+          <div v-if="!isNewUser" class="_welcome-bar">
+            <div class="d-flex justify-start">
+              <h1 class="text-primary">
+                Hi {{currentUser.first_name}}! How can we help you?
+              </h1>
+            </div>
+            <div class="d-flex justify-end">
+              <v-btn 
+                class="v-btn primary"
+                @click="startNewAcquisition"
+              >
+                Start a new acquisition
+              </v-btn>
+            </div>
+          </div>
+          <section v-if="isNewUser" class="_py-80">
+            
             <div class="d-flex flex-row-reverse">
-              <div class="d-flex align-flex-end">
-                
+              <div class="d-flex align-flex-end">       
                 <div class="bg-white border-rounded-more pa-8">
                   <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
                   <br />
@@ -37,26 +52,6 @@
                       </v-btn>
                     </div>
                   </div>
-                  <!-- <br/>
-                  <v-row>
-                    <v-col cols="6">
-                      <v-btn 
-                        class="v-btn primary"
-                        @click="startNewAcquisition"
-                      >
-                        Start a new acquisition
-                      </v-btn>
-                    </v-col>
-                    <v-col cols="6" >
-                      <v-btn 
-                        id="HelpfulResourcesButton"
-                        class="secondary"
-                        @click="scrollToResources"
-                      >
-                        Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row> -->
                 </div>
               </div>
             </div>
@@ -73,21 +68,7 @@
           v-else 
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
-        />
-
-        <div class="bg-white">
-          <div class="container-max-width pt-5">
-            <a 
-              id="TempUserTypeToggle"
-              role="button" 
-              @click="toggleUserType" 
-              class="font-size-12 d-block mb-10"
-            >
-              Toggle new/existing for testing
-            </a>
-
-          </div>
-        </div>        
+        />      
 
         <div class="bg-white">
           <ATATFooter class="mx-auto pt-10" />
@@ -126,7 +107,7 @@ import UserStore from "@/store/user";
 })
 
 export default class Home extends Vue {
-  public isNewUser = true;
+  public isNewUser = false;
 
   private currentUser = UserStore.getInitialUser;
 
@@ -145,17 +126,11 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
-  // temporary method to swap New vs Existing users
-  public toggleUserType(): void {
-    this.isNewUser = !this.isNewUser;
-    const el = document.querySelector(".v-main__wrap");
-    if (el) {
-      el.scrollTop = 0;
-    }
-  }
-
   public async mounted(): Promise<void> {
     this.currentUser = await UserStore.getCurrentUser();
+
+    const userHasPackages = await UserStore.hasPackages();
+    this.isNewUser = !userHasPackages;
   }
 
 }

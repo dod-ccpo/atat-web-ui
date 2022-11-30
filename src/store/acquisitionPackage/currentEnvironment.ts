@@ -5,7 +5,6 @@ import {CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO} from "@/api/models
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import Vue from "vue";
 import {api} from "@/api";
-import { debug } from "console";
 import _ from "lodash";
 
 const ATAT_CURRENT_ENVIRONMENT_KEY = "ATAT_CURRENT_ENVIRONMENT_KEY";
@@ -74,10 +73,8 @@ export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = 
 export class CurrentEnvironmentStore extends VuexModule {
   initialized = false;
   public currentEnvironment: CurrentEnvironmentDTO | null = null;
-  public currentEnvInstance: CurrentEnvironmentInstanceDTO | null = null;
   public currentEnvInstances: CurrentEnvironmentInstanceDTO[] = [];
-  public currentEnvInstanceSysId = "";
-  public currentEnvInstanceNumber = 1;
+  public currentEnvInstanceNumber = 0;
 
   @Action
   public async getCurrentEnvironment():
@@ -124,18 +121,13 @@ export class CurrentEnvironmentStore extends VuexModule {
   }
 
   @Action
-  public async resetCurrentEnvironmentInstance(): Promise<void> {
-    this.doResetCurrentEnvironmentInstance();
-    this.setCurrentEnvInstanceNumber(this.currentEnvInstances.length + 1);
-  }
-  @Mutation
-  public async doResetCurrentEnvironmentInstance(): Promise<void> {
-    this.currentEnvInstance = _.cloneDeep(defaultCurrentEnvironmentInstance);
+  public async createNewEnvInstance(): Promise<void> {
+    await this.doSetCurrentEnvInstanceNumber(this.currentEnvInstances.length + 1);
   }
 
   @Action
   public async setCurrentEnvInstanceNumber(num: number): Promise<void> {
-    this.doSetCurrentEnvInstanceNumber(num);
+    await this.doSetCurrentEnvInstanceNumber(num);
   }
   @Mutation
   public async doSetCurrentEnvInstanceNumber(num: number): Promise<void> {
@@ -152,62 +144,75 @@ export class CurrentEnvironmentStore extends VuexModule {
   @Mutation
   public async doDeleteEnvironmentInstance(index: number): Promise<void> {
     const instanceSysId = this.currentEnvInstances[index].sys_id;
-    this.currentEnvInstances.splice(index, 1);
     // TODO FUTURE TICKET - delete from snow -- use instanceSysId from above
-  }
-
-
-  @Action 
-  public async setCurrentEnvironmentInstanceSysId(sysId: string): Promise<void> {
-    await this.doSetCurrentEnvironmentInstanceSysId(sysId);
-    const i = this.currentEnvInstances.findIndex(obj => obj.sys_id === sysId);
-    if (i > -1) {
-      this.setCurrentEnvInstanceNumber(i + 1);
-      await this.setCurrentEnvironmentInstance(this.currentEnvInstances[i]);
-    }
-  }
-
-  @Mutation
-  public async doSetCurrentEnvironmentInstanceSysId(sysId: string): Promise<void> {
-    this.currentEnvInstanceSysId = sysId;
+    this.currentEnvInstances.splice(index, 1);
   }
 
   @Action
-  public async setCurrentEnvironmentInstance(
+  public async clearEnvClassifications(type: string): Promise<void> {
+    await this.doClearEnvClassifications(type);
+  }
+  @Mutation
+  public async doClearEnvClassifications(type: string): Promise<void> {
+    if (type === "CLOUD" && this.currentEnvironment) {
+      this.currentEnvironment.env_classifications_cloud = [];
+    } else if (type === "ON_PREM" && this.currentEnvironment) {
+      this.currentEnvironment.env_classifications_on_prem = [];
+    }
+  }
+
+  @Action 
+  public async setCurrentEnvironmentInstanceNumber(sysId: string): Promise<void> {
+    const i = this.currentEnvInstances.findIndex(obj => obj.sys_id === sysId);
+    if (i > -1) {
+      this.setCurrentEnvInstanceNumber(i);
+    }
+  }
+
+  @Action
+  public async saveCurrentEnvironmentInstance(
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
-    this.doSetCurrentEnvironmentInstance(value);
+    this.doSaveCurrentEnvironmentInstance(value);
   }
 
   @Mutation
-  public async doSetCurrentEnvironmentInstance(
+  public async doSaveCurrentEnvironmentInstance(
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
-    this.currentEnvInstance = _.cloneDeep(value);
+    const instance = _.cloneDeep(value);
     // TODO - future ticket - SAVE/UPDATE instance data TO SNOW
     // TEMPORARY until have actual sys_ids use timestamp for sys_id (FUTURE TICKET)
-    if (!this.currentEnvInstance.sys_id) {
-      this.currentEnvInstance.sys_id = String(Date.now());
+    if (!instance.sys_id) {
+      instance.sys_id = String(Date.now());
     }
 
-    const instanceSysId = this.currentEnvInstance.sys_id;
-    if (this.currentEnvironment?.env_instances.indexOf(instanceSysId) === -1
-    ) {
+    const instanceSysId = instance.sys_id;
+    if (this.currentEnvironment?.env_instances.indexOf(instanceSysId) === -1) {
+      // add new instance 
       this.currentEnvironment.env_instances.push(instanceSysId);
-      this.currentEnvInstances.push(this.currentEnvInstance);
+      this.currentEnvInstances.push(instance);
       // TODO - future ticket - UPDATE env_instances array TO SNOW
     } else {
-      // update this instance with new data
-      const instanceIndex = this.currentEnvInstances.findIndex(obj => obj.sys_id === instanceSysId);
+      // update existing instance with new data
+      const instanceIndex = this.currentEnvInstances.findIndex(
+        obj => obj.sys_id === instanceSysId
+      );
       if (instanceIndex > -1) {
-        this.currentEnvInstances[instanceIndex] = this.currentEnvInstance;
+        this.currentEnvInstances[instanceIndex] = instance;
       }
     }
   }
 
   @Action({rawError: true})
   public async getCurrentEnvInstance(): Promise<CurrentEnvironmentInstanceDTO | null> {
-    return this.currentEnvInstance;
+    return this.currentEnvInstances[this.currentEnvInstanceNumber];
+  }
+
+  @Action({rawError: true})
+  public async isNewInstance(): Promise<boolean> {
+    return this.currentEnvInstances[this.currentEnvInstanceNumber] === undefined
+      ? true : false;
   }
 
   @Action({rawError: true})
@@ -244,9 +249,8 @@ export class CurrentEnvironmentStore extends VuexModule {
       // TODO: remove the below 3 lines after DB is updated
       defaultCurrentEnvironment.sys_id = currentEnvironmentDTO.sys_id;
       this.setCurrentEnvironment(defaultCurrentEnvironment);
-      this.setCurrentEnvironmentInstance(defaultCurrentEnvironmentInstance);
+           
       return defaultCurrentEnvironment
-
     } catch (error) {
       throw new Error(`an error occurred while initializing current environment ${error}`);
     }

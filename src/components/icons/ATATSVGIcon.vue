@@ -66,6 +66,7 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
 import Warning from "@/components/icons/Warning.vue";
 import WarningAmber from "@/components/icons/WarningAmber.vue";
+import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vue";
 
 
 @Component({
@@ -123,6 +124,7 @@ import WarningAmber from "@/components/icons/WarningAmber.vue";
     UploadFile,
     Warning,
     WarningAmber,
+    ReadyToGeneratePackage,
   }
 })
 
