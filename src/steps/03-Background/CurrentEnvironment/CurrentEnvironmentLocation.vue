@@ -179,6 +179,9 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     const instanceTypeDeleted = this.changeToEnv === "CLOUD" ? "On-premise" : "Cloud";
     this.instanceRemovedToast.message = instanceTypeDeleted + " instances deleted";
     Toast.setToast(this.instanceRemovedToast);
+
+    const envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
+    await CurrentEnvironment.setCurrentEnvInstanceNumber(envInstances.length);
   }
 
   public instanceRemovedToast: ToastObj = {
