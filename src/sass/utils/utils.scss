@@ -100,6 +100,10 @@ $widths: 500, 640, 740, 840, 760, 1200;
   margin: 0 !important;
 }
 
+.no-hover:hover{
+  background-color: transparent !important;
+}
+
 .height-auto {
     height: auto !important;
 }
