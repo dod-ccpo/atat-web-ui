@@ -12,10 +12,10 @@
         through them one at a time.
       </p>
 
-      <!-- <v-expand-transition>
+      <v-expand-transition>
         <ATATAlert
           id="ErrorsOnLoadAlert"
-          v-show="formHasErrors === true && formHasBeenTouched === true"
+          v-show="!isValid && !isNewInstance"
           type="error"
           class="mb-10"
         >
@@ -26,7 +26,7 @@
             </p>
           </template>
         </ATATAlert>
-      </v-expand-transition> -->
+      </v-expand-transition>
 
       <h2 class="mb-4" v-if="hasTellUsAboutInstanceHeading">
         1. Tell us about Instance #{{ instanceNumber }}
@@ -142,7 +142,10 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 import AdditionalInfo from "@/components/DOW/AdditionalInfo.vue";
 import CurrentUsage from "@/components/DOW/CurrentUsage.vue";
@@ -152,7 +155,6 @@ import PricingDetails from "@/components/DOW/PricingDetails.vue";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 
 import { 
-  Checkbox, 
   CurrEnvInstanceConfig, 
   CurrEnvInstancePerformance,
   SelectData,
@@ -181,6 +183,7 @@ import _ from "lodash";
 
 @Component({
   components: {
+    ATATAlert,
     ATATRadioGroup,
     AdditionalInfo,
     CurrentUsage,
@@ -198,6 +201,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   public instanceData = _.cloneDeep(defaultCurrentEnvironmentInstance);
   public instanceNumber = 0;
   public isNewInstance = true;
+  public isValid = true;
 
   public get currentData(): CurrentEnvironmentInstanceDTO {
     return this.instanceData;
@@ -398,11 +402,17 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     if (!this.isNewInstance) {
       // user is editing an existing instance, validate on load
       await this.validate();
+      AcquisitionPackage.setValidateNow(true);
       this.$nextTick(async () => {
-        this.setErrorMessages();
+        AcquisitionPackage.setValidateNow(true);
       });
-
     }
+  }
+
+  public async validate(): Promise<void> {
+    this.$nextTick(() => {
+      this.isValid = this.$refs.form.validate();
+    });
   }
 
   public async mounted(): Promise<void> {
@@ -472,7 +482,8 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-
+    // need to flip `setValidateNow` to true in page component's `saveOnLeave` method
+    // for pages with checkbox groups that have validation rules
     await AcquisitionPackage.setValidateNow(true);
 
     try {
@@ -491,7 +502,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
     return true;
   }
-
 
 }
 
