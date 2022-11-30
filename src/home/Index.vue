@@ -68,21 +68,7 @@
           v-else 
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
-        />
-
-        <div class="bg-white">
-          <div class="container-max-width pt-5">
-            <a 
-              id="TempUserTypeToggle"
-              role="button" 
-              @click="toggleUserType" 
-              class="font-size-12 d-block mb-10"
-            >
-              Toggle new/existing for testing
-            </a>
-
-          </div>
-        </div>        
+        />      
 
         <div class="bg-white">
           <ATATFooter class="mx-auto pt-10" />
@@ -121,7 +107,7 @@ import UserStore from "@/store/user";
 })
 
 export default class Home extends Vue {
-  public isNewUser = true;
+  public isNewUser = false;
 
   private currentUser = UserStore.getInitialUser;
 
@@ -140,17 +126,11 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
-  // temporary method to swap New vs Existing users
-  public toggleUserType(): void {
-    this.isNewUser = !this.isNewUser;
-    const el = document.querySelector(".v-main__wrap");
-    if (el) {
-      el.scrollTop = 0;
-    }
-  }
-
   public async mounted(): Promise<void> {
     this.currentUser = await UserStore.getCurrentUser();
+
+    const userHasPackages = await UserStore.hasPackages();
+    this.isNewUser = !userHasPackages;
   }
 
 }
