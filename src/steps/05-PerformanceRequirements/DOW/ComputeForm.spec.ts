@@ -10,6 +10,7 @@ import {
   Checkbox,
   RadioButton,
   SelectData,
+  ComputeOfferingData,
   OtherServiceOfferingData
 } from "../../../../types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
@@ -26,8 +27,9 @@ describe("Testing ComputeForm Component", () => {
   Vue.config.silent = true;
 
   //propsData
-  const otherOfferingData: OtherServiceOfferingData  = {
+  const otherOfferingData: ComputeOfferingData | OtherServiceOfferingData  = {
     "instanceNumber": 1,
+    "operatingSystem": "",
     "environmentType": "Dev/Testing",
     // `pragma: allowlist secret`
     "classificationLevel": "class1",
@@ -41,7 +43,6 @@ describe("Testing ComputeForm Component", () => {
       "1",
       "2"
     ],
-    "operatingSystemAndLicensing": "safsfsdaf",
     "numberOfVCPUs": "1",
     "memory": "1",
     "storageType": "Provisioned IOPS SSD",
