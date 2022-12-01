@@ -612,12 +612,21 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async loadPackageFromId(packageId: string){
-    const loggedInUser = await UserStore.getCurrentUser();
     const acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
+
+      await ContactData.initialize();
+      await OrganiationData.initialize();
+      await DescriptionOfWork.initialize();
+      await Attachments.initialize();
+      await FinancialDetails.initialize();
+
       this.setAcquisitionPackage(acquisitionPackage);
       
-      if(acquisitionPackage.project_overview.value) {
+      if(
+        acquisitionPackage.project_overview &&
+        acquisitionPackage.project_overview.value
+      ) {
         const projectOverview = await api.projectOverviewTable.retrieve(
           acquisitionPackage.project_overview.value
         );
@@ -631,7 +640,10 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
 
-      if(acquisitionPackage.period_of_performance.value){
+      if(
+        acquisitionPackage.period_of_performance &&
+        acquisitionPackage.period_of_performance.value
+      ){
         const periodOfPerformance = await api.periodOfPerformanceTable.retrieve(
           acquisitionPackage.period_of_performance.value
         );
@@ -643,7 +655,10 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
       
-      if(acquisitionPackage.organization.value) {
+      if(
+        acquisitionPackage.organization && 
+        acquisitionPackage.organization.value
+      ) {
         const organization = await api.organizationTable.retrieve(
           acquisitionPackage.organization.value
         );
@@ -655,7 +670,10 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(acquisitionPackage.fair_opportunity.value) {
+      if(
+        acquisitionPackage.fair_opportunity &&
+        acquisitionPackage.fair_opportunity.value
+      ) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(
           acquisitionPackage.fair_opportunity.value
         );
@@ -667,7 +685,10 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(acquisitionPackage.current_contract.value) {
+      if(
+        acquisitionPackage.current_contract &&
+        acquisitionPackage.current_contract.value
+      ) {
         const currentContract = await api.currentContractTable.retrieve(
           acquisitionPackage.current_contract.value
         );
@@ -679,7 +700,10 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(acquisitionPackage.sensitive_information.value){
+      if(
+        acquisitionPackage.sensitive_information &&
+        acquisitionPackage.sensitive_information.value
+      ){
         const sensitiveInformation = await api.sensitiveInformationTable.retrieve(
           acquisitionPackage.sensitive_information.value
         );
@@ -691,7 +715,10 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(acquisitionPackage.contract_type.value){
+      if(
+        acquisitionPackage.contract_type &&
+        acquisitionPackage.contract_type.value
+      ){
         const contractType = await api.contractTypeTable.retrieve(
           acquisitionPackage.contract_type.value
         );
@@ -703,7 +730,10 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
 
-      if(acquisitionPackage.classification_level.value) {
+      if(
+        acquisitionPackage.classification_level &&
+        acquisitionPackage.classification_level.value
+      ) {
         const classificationLevel = await api.classificationLevelTable.retrieve(
           acquisitionPackage.classification_level.value
         );
@@ -715,19 +745,29 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(acquisitionPackage.current_environment.value){
+      if(
+        acquisitionPackage.current_environment &&
+        acquisitionPackage.current_environment.value
+      ){
         const currentEnvironment = await api.currentEnvironmentTable.retrieve(
           acquisitionPackage.current_environment.value
         );
-        if(currentEnvironment)
+        if(currentEnvironment){
           this.setCurrentEnvironment(currentEnvironment);
+          CurrentEnvironment.setCurrentEnvironment(currentEnvironment);
+        }
       } else {
         this.setCurrentEnvironment(
           await CurrentEnvironment.initialCurrentEnvironment()
         );
+        CurrentEnvironment.setInitialized(false);
+        await CurrentEnvironment.initialize();
       }
 
-      if(acquisitionPackage.contract_considerations.value) {
+      if(
+        acquisitionPackage.contract_considerations &&
+        acquisitionPackage.contract_considerations.value
+      ) {
         const contractConsiderations = await api.contractConsiderationsTable.retrieve(
           acquisitionPackage.contract_considerations.value
         );
@@ -739,7 +779,10 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(acquisitionPackage.requirements_cost_estimate.value) {
+      if(
+        acquisitionPackage.requirements_cost_estimate &&
+        acquisitionPackage.requirements_cost_estimate.value
+      ) {
         const requirementsCostEstimate = await api.requirementsCostEstimateTable.retrieve(
           acquisitionPackage.requirements_cost_estimate.value
         );
@@ -750,7 +793,6 @@ export class AcquisitionPackageStore extends VuexModule {
           initialRequirementsCostEstimate()
         );
       }
-
 
       if(acquisitionPackage.periods)
         this.setPeriodsFromString(acquisitionPackage.periods)
