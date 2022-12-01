@@ -90,7 +90,7 @@ export default class PackagingPackingAndShipping extends Mixins(SaveOnLeave) {
     },
     {
       id: "Other",
-      label: "Other",
+      label: "Other - Write custom instructions",
       value: this.otherValue,
       description: "",
     },
