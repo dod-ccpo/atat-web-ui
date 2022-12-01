@@ -50,7 +50,7 @@
           id="OperatingSystem"
           label="Operating system"
           :value.sync="_instanceConfig.operatingSystem"
-          tooltipText="Specify the type of OS that your instance is running on 
+          tooltipText="Specify the type of Operating System (OS) that your instance is running on 
             (e.g., Windows, Linux)."
           :rules="[
             $validators.required('Enter the name of an operating system.'),
