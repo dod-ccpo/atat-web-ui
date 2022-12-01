@@ -65,6 +65,8 @@ import Toast from "@/store/toast";
 
 import { 
   Checkbox, 
+  ComputeOfferingData,
+  DOWServiceOfferingGroup,
   OtherServiceOfferingData,
   RadioButton,
   ToastObj,
@@ -99,7 +101,8 @@ export default class OtherOfferings extends Vue {
     },
   };
 
-  @PropSync("serviceOfferingData") public _serviceOfferingData!: OtherServiceOfferingData;
+  @PropSync("serviceOfferingData") 
+    public _serviceOfferingData!: ComputeOfferingData | OtherServiceOfferingData;
   @Prop() public isCompute!: boolean;
   @Prop() public isGeneral!: boolean;
   @Prop() public isPeriodsDataMissing!: boolean;
@@ -202,8 +205,14 @@ export default class OtherOfferings extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    if (this.isCompute || this.isGeneral) {
-      const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
+    let otherOfferingObj: DOWServiceOfferingGroup;
+    if(this.isCompute) {
+      otherOfferingObj = DescriptionOfWork.computeOfferingObject;
+      this.firstTimeHere 
+        = !otherOfferingObj.computeOfferingData 
+        || otherOfferingObj.computeOfferingData.length === 0;
+    } else if (this.isGeneral) {
+      otherOfferingObj = DescriptionOfWork.otherOfferingObject;
       this.firstTimeHere 
         = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
     }
@@ -237,7 +246,12 @@ export default class OtherOfferings extends Vue {
   }
 
   public async setComponentSpecificData(): Promise<void> {
-    if (this.isCompute || this.isGeneral) {
+    if (this.isCompute) {
+      this.formHasBeenTouched
+        = await DescriptionOfWork.hasComputeInstanceBeenTouched(
+          this._serviceOfferingData.instanceNumber
+        );
+    } else if (this.isGeneral) {
       this.formHasBeenTouched 
         = await DescriptionOfWork.hasInstanceBeenTouched(this._serviceOfferingData.instanceNumber);
     }

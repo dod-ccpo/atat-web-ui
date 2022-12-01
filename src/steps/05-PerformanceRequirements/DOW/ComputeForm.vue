@@ -111,7 +111,7 @@
       id="OSLicensing"
       legend="Operating system licensing"
       :items="osLicensingRadioOptions"
-      :value.sync="_computeData.operatingSystemLicensing"
+      :value.sync="_computeData.licensing"
       name="OSLicensing"
       class="mt-3 mb-2"
       :rules="[$validators.required('Select a licensing option.')]"
@@ -154,7 +154,7 @@
           id="OperatingSystem"
           label="Operating system"
           :tooltipText="operatingSystemTooltipText"
-          :value.sync="_computeData.operatingSystemAndLicensing"
+          :value.sync="_computeData.operatingSystem"
           :rules="[
             $validators.required('Enter the name of an operating system')
           ]"
@@ -290,7 +290,7 @@ import { ClassificationLevelDTO } from "@/api/models";
 
 import { 
   Checkbox, 
-  OtherServiceOfferingData,
+  ComputeOfferingData, 
   RadioButton,
   SelectData,
 } from "../../../../types/Global";
@@ -311,7 +311,7 @@ import {
 })
 
 export default class ComputeForm extends Vue {
-  @PropSync("computeData") public _computeData!: OtherServiceOfferingData;
+  @PropSync("computeData") public _computeData!: ComputeOfferingData;
   @Prop() public firstTimeHere!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
   @Prop() public isPeriodsDataMissing!: boolean;
@@ -339,22 +339,22 @@ export default class ComputeForm extends Vue {
     {
       id: "DevTesting",
       label: "Dev/Testing",
-      value: "Dev/Testing",
+      value: "DEV_TEST",
     },
     {
       id: "PreProd",
       label: "Pre-production",
-      value: "Pre-production",
+      value: "PRE_PROD",
     },
     {
       id: "Production/Staging",
       label: "Production/Staging",
-      value: "Production/Staging",
+      value: "PROD_STAGING",
     },
     {
       id: "COOP",
       label: "Continuity of Operations Planning (COOP)/Disaster Recovery",
-      value: "Continuity of Operations Planning (COOP)/Disaster Recovery",
+      value: "COOP_DISASTER_RECOVERY",
     },
   ];
 
@@ -362,22 +362,22 @@ export default class ComputeForm extends Vue {
     {
       id: "VirtualMachines",
       label: "Virtual machines",
-      value: "Virtual machines"
+      value: "VIRTUAL"
     },
     {
       id: "Containers",
       label: "Containers",
-      value: "Containers"
+      value: "CONTAINERS"
     },
     {
       id: "Serverless",
       label: "Serverless",
-      value: "Serverless"
+      value: "SERVERLESS"
     },
     {
       id: "EndUserComputing",
       label: "End user computing/Virtual Desktop",
-      value: "End user computing/Virtual Desktop"
+      value: "END_USER_COMPUTING_VIRTUAL_DESKTOP"
     }
   ];
 
