@@ -67,7 +67,6 @@ export default class PricingDetails extends Vue {
 
   @Watch("_pricingDetails.currentPaymentArrangement", {deep: true})
   public currentPmtArrangementChange(newVal: string): void {
-    console.log("newVal", newVal);
     if (newVal === "PAYASYOUGO") {
       this._pricingDetails.pricingPeriodExpirationDate = "";
     }
