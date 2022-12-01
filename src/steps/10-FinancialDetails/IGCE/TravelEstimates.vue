@@ -31,6 +31,16 @@
             :values.sync="estimatedTravelCosts"
           ></ATATSingleAndMultiplePeriods>
         </div>
+
+        <div>
+          <br/>
+          <hr />
+          <AnticipatedDataNeeds
+            :periods.sync="periods"
+            :percentages.sync="percentages"
+            needs="data"
+          ></AnticipatedDataNeeds>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -45,17 +55,20 @@ import IGCEStore, { TravelEstimateNeeds } from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
+import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 
 @Component({
   components: {
     ATATRadioGroup,
-    ATATSingleAndMultiplePeriods
+    ATATSingleAndMultiplePeriods,
+    AnticipatedDataNeeds
   },
 })
 export default class TravelEstimates extends Mixins(SaveOnLeave) {
   private periods: PeriodDTO[] | null = [];
   private ceilingPrice = "";
   private estimatedTravelCosts = [""];
+  private percentages = [""];
   public savedData: TravelEstimateNeeds = {
     ceilingPrice: "",
     estimatedTravelCosts: [],
