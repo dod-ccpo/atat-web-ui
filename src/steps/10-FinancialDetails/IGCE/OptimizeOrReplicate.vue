@@ -7,8 +7,8 @@
             Let’s start with a price estimate for {{ headingVerb }} your current functions
           </h1>
           <p class="page-intro">
-            Based on what you previously told us, you need the CSP to perform a 
-            “lift and shift” to recreate your environment and configurations using 
+            Based on what you previously told us in the Background section, you need the CSP 
+            to perform a “lift and shift” to recreate your environment and configurations using 
             JWCC offerings. Below, estimate a price per period for this requirement. 
             If you know the requirement will change over time, then you can customize 
             the price for each performance period.

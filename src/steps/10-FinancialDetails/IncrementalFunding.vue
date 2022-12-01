@@ -197,7 +197,7 @@
                       Base period length: {{ periodLengthStr }}
                     </span>
                     <p class="mb-0">
-                      Your funding plan may not exceed this PoP.
+                      Your funding plan may not exceed this period.
                     </p>
                     <hr class="base my-4" />
                   </div>
