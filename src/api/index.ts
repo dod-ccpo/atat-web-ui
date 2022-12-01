@@ -38,7 +38,7 @@ import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
 import { UserApi } from "@/api/user";
-import { SelectedClassificationLevel } from "@/api/selectedClassificationLevels";
+import { SelectedClassificationLevels } from "@/api/selectedClassificationLevels";
 
 
 export const api = {
@@ -84,7 +84,7 @@ export const api = {
   portfolioTable: new PortfolioApi(),
   cloudServiceProviderTable: new CloudServiceProviderApi(),
   userTable: new UserApi(),
-  classificationLevelsObjectTable: new SelectedClassificationLevel()
+  classificationLevelsObjectTable: new SelectedClassificationLevels()
 }
 
 export default {
