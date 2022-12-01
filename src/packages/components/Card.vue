@@ -216,7 +216,7 @@ export default class Card extends Vue {
         query: {
           packageId: this.cardData.sys_id
         }
-      });
+      }).catch(() => console.log("avoiding redundant navigation"));
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
       break;
     case "Archive acquisition":
