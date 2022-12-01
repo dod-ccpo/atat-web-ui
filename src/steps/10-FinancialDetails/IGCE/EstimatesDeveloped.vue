@@ -7,9 +7,7 @@
         </h1>
         <div class="copy-max-width">
           <p id="IntroP" class="mb-7">
-            Contracting officers rely on the IGCE to assist in the determination 
-            of the acquisition strategy, as well as an estimated cost for the 
-            proposed effort. Along with your cost breakdown, the contracting 
+            Along with your cost breakdown, the contracting 
             office needs to clearly understand the methodology that you used to 
             determine your price estimates. 
           </p>
@@ -35,11 +33,11 @@
 
           <ATATTextArea
             id="HowEstimateMade"
-            label="How was your cost estimate made?"
+            label="How was your cost estimated?"
             class="max-width-740 mb-7"
             rows="7"
             :rules="[
-              $validators.required('Please describe how your cost estimate was made.'),
+              $validators.required('Please describe how your cost was estimated.'),
               $validators.maxLength(1000, 
                 'Please limit your description to 1,000 characters or less.')
             ]"
@@ -55,7 +53,7 @@
             id="PriceComparison"
             class="mb-10"
             legend="Thinking of your previous contract for this requirement, how 
-              did the cost estimate compare with the prices that you actually paid 
+              does the cost estimate compare with the prices that you actually paid 
               for services and/or support?" 
             :value.sync="selectedPriceComparison"
             :items="priceComparisonOptions"
@@ -139,7 +137,7 @@ export default class EstimatesDeveloped extends Vue {
     },
     {
       id: "VendorInvoices",
-      label: "Vendor invoices from a previous requirement",
+      label: "Prices previously paid on a same or similar contract",
       value: "VendorInvoices",
     },
     {

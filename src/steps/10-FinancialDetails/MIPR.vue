@@ -7,13 +7,13 @@
           <ATATTextField
             id="MIPRNumber"
             :rules="[
-                $validators.required('Please enter the MIPR number located' +
+                $validators.required('Please enter the MIPR Number located' +
                  ' on your authorized DD Form 448.')
               ]"
             :tooltipText="toolTip"
             :value.sync="MIPRNumber"
             class="_input-max-width"
-            label="MIPR number"
+            label="MIPR Number"
           />
         </div>
         <hr/>
