@@ -76,21 +76,27 @@ export class TaskOrderStore extends VuexModule {
     }
   }
 
+  @Mutation
+  private cleanStoreData() {
+    this.taskOrder = null;
+  }
+
   @Action({ rawError: true })
   public async initialize(acquisitionPackageId: string): Promise<void> {
-
-    const sessionRestored = storeHelperFunctions.retrieveSession(ATAT_TASK_ORDER_KEY);
-    if (sessionRestored) {
-      this.setStoreData(sessionRestored);
-      this.setInitialized(true);
-    }else{
-      const taskOrder = {
-        ...initial,
-        acquisition_package: acquisitionPackageId,
-      };
-      await this.save(taskOrder);
-      this.setInitialized(true);
+    console.log("initializing task order store");
+    if (this.initialized) {
+      return;
     }
+    this.cleanStoreData();
+    const taskOrder = {
+      ...initial,
+      acquisition_package: acquisitionPackageId,
+    };
+    await this.save(taskOrder);
+    // TODO: below 1 line may not be getting called because
+    //  of an error elsewhere. As a result some financial details
+    //  data may remain sticky from acquisition to acquisition.
+    this.setInitialized(true);
   }
 
   @Action({ rawError: true })

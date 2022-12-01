@@ -100,30 +100,25 @@ export class ClassificationRequirementsStore extends VuexModule {
     }
   }
 
+  @Mutation
+  private cleanStoreData() {
+    this.selectedClassificationLevels = [];
+    this.securityRequirements = [];
+  }
+
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     if (this.initialized) {
       return;
-    } 
-
-    const sessionRestored = retrieveSession(ATAT_CLASSIFICATION_LEVELS_KEY);
-    if (sessionRestored) {
-      this.setStoreData(sessionRestored);
+    }
+    try {
+      this.cleanStoreData();
+      await Promise.all([
+        this.loadClassificationLevels(),
+      ]);
       this.setInitialized(true);
-    } else {
-      try {
-        await Promise.all([
-          this.loadClassificationLevels(),
-        ]);
-        storeDataToSession(
-          this,
-          this.sessionProperties,
-          ATAT_CLASSIFICATION_LEVELS_KEY
-        );
-        this.setInitialized(true);
-      } catch (error) {
-        console.error(error);
-      }
+    } catch (error) {
+      console.error(error);
     }
   }
 

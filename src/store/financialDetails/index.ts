@@ -149,13 +149,32 @@ export class FinancialDetailsStore extends VuexModule {
     await this.initialize();
   }
 
+  @Mutation
+  private cleanStoreData() {
+    this.fundingPlan = this.fundingPlanValue;
+    this.estimatedTaskOrderValue = "";
+    this.miprNumber = null;
+    this.initialFundingIncrementStr = "";
+    this.fundingIncrements = [];
+    this.gtcNumber = null;
+    this.orderNumber = null;
+    this.taskOrder = null;
+    this.fundingRequest = null;
+    this.fundingRequestFSForm = null;
+    this.fundingRequestMIPRForm = null;
+    this.requirementsCostEstimate = null;
+  }
+
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     if (this.initialized) {
       return;
     }
-    await this.loadFundingPlanData();
+    this.cleanStoreData();
+    // TODO: below 1 line should be the last line but at the time of wiring this
+    //   load funding plan has an error
     this.setInitialized(true);
+    await this.loadFundingPlanData();
   }
 
   @Action

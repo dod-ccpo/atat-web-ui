@@ -620,14 +620,36 @@ export class AcquisitionPackageStore extends VuexModule {
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
   }
 
+  @Mutation
+  private cleanStoreData() {
+    // this.acquisitionPackage = null;
+    // this.acorInfo = null;
+    this.contactInfo = null;
+    // this.contractConsiderations = null;
+    // this.corInfo = null;
+    // this.contractType = null;
+    // this.currentContract = null;
+    // this.fairOpportunity = null;
+    // this.evaluationPlan = null;
+    // this.organization = null;
+    // this.periods = null;
+    // this.projectOverview = null;
+    // this.periodOfPerformance = null;
+    // this.requirementsCostEstimate = null;
+    // this.sensitiveInformation = null;
+    // this.classificationLevel = null;
+    // this.currentEnvironment = null;
+    // this.allowDeveloperNavigation = false;
+  }
+
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
+    this.cleanStoreData();
     await ContactData.initialize();
     await OrganiationData.initialize();
     await DescriptionOfWork.initialize();
     await Attachments.initialize();
     await FinancialDetails.initialize();
-    
     if (this.initialized) {
       return;
     }
