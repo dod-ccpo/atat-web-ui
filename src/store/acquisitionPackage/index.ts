@@ -58,7 +58,7 @@ export const StoreProperties = {
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
-  CurrentEnvironment: "currentEnvironment",
+  CurrentEnvironment: "currentEnvironment"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -745,24 +745,25 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(
-        acquisitionPackage.current_environment &&
-        acquisitionPackage.current_environment.value
-      ){
-        const currentEnvironment = await api.currentEnvironmentTable.retrieve(
-          acquisitionPackage.current_environment.value
-        );
-        if(currentEnvironment){
-          this.setCurrentEnvironment(currentEnvironment);
-          CurrentEnvironment.setCurrentEnvironment(currentEnvironment);
-        }
-      } else {
-        this.setCurrentEnvironment(
-          await CurrentEnvironment.initialCurrentEnvironment()
-        );
-        CurrentEnvironment.setInitialized(false);
-        await CurrentEnvironment.initialize();
-      }
+      // if(
+      //   acquisitionPackage.current_environment &&
+      //   acquisitionPackage.current_environment.value
+      // ){
+      //   debugger;
+      //   const currentEnvironment = await api.currentEnvironmentTable.retrieve(
+      //     acquisitionPackage.current_environment.value
+      //   );
+      //   if(currentEnvironment){
+      //     this.setCurrentEnvironment(currentEnvironment);
+      //     CurrentEnvironment.setCurrentEnvironment(currentEnvironment);
+      //   }
+      // } else {
+      //   this.setCurrentEnvironment(
+      //     await CurrentEnvironment.initialCurrentEnvironment()
+      //   );
+      //   CurrentEnvironment.setInitialized(false);
+      //   await CurrentEnvironment.initialize();
+      // }
 
       if(
         acquisitionPackage.contract_considerations &&
@@ -860,9 +861,6 @@ export class AcquisitionPackageStore extends VuexModule {
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
           this.setCurrentEnvironment(currentEnvironmentDTO);
-          acquisitionPackage.current_environment = {
-            value: currentEnvironmentDTO.sys_id as string
-          };
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
@@ -1093,7 +1091,7 @@ export class AcquisitionPackageStore extends VuexModule {
         apiEndPoint.create(data);
       const savedData = await saveAction;
       // updates the store state data
-      this.setStoreData({data: savedData, storeProperty});
+      await this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
       if(acquisitionPackageProp === undefined)
       {
@@ -1101,10 +1099,17 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
-        [acquisitionPackageProp]: (data as BaseTableDTO).sys_id,
+        [acquisitionPackageProp]: (savedData as BaseTableDTO).sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving store data ${storeProperty}`);
+    } finally {
+      if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
+        await api.acquisitionPackageTable.update(
+          this.acquisitionPackage.sys_id,
+          this.acquisitionPackage
+        );
+      }
     }
   }
 
@@ -1274,8 +1279,13 @@ export class AcquisitionPackageStore extends VuexModule {
     this.updatePackageData({key: property, data: collection.map(item=>item.sys_id).join(",")});
   }
 
+  @Action({rawError: true})
+  public async setPackageId(value: string): Promise<void> {
+    this.doSetPackageId(value);
+  }
+
   @Mutation
-  public setPackageId(value: string): void {
+  public doSetPackageId(value: string): void {
     this.packageId = value;
   }
 
