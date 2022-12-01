@@ -127,12 +127,10 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   number_of_instances: number | null; 
   data_egress_monthly_amount: number | null;    
   data_egress_monthly_unit: StorageUnit;
-  current_payment_arrangement: PaymentArrangement;
-  pricing_period_expiration_date?: string;
+  pricing_model: PaymentArrangement;
+  pricing_model_expiration?: string;
   additional_information?: string; 
 }
-
-
 
 export interface ContactDTO extends BaseTableDTO {
   type: string; // Mission Owner, COR, ACOR

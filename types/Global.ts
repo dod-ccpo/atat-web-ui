@@ -549,7 +549,7 @@ export type EnvironmentReplicateOptimized = "" | "YES_REPLICATE" | "YES_OPTIMIZE
 export type EnvironmentInstanceUsage = "" | "EVEN_USAGE" | "IRREGULAR_USAGE";
 export type StorageType = "" | "BLOCK" | "OBJECT" | "FILE" | "ARCHIVE";
 export type PerformanceTier = "" | "GENERAL" | "COMPUTE" | "MEMORY" | "STORAGE";
-export type PaymentArrangement = "" | "PREPAID" | "PAYASYOUGO";
+export type PaymentArrangement = "" | "PREPAID" | "PAY_AS_YOU_GO";
 export type securityClassification = ""|"SECRET" | "TOPSECRET"
 
 export interface CurrentEnvironment {

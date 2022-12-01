@@ -352,8 +352,8 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   @Watch("pricingDetails", {deep: true})
   public pricingDetailsChange(newVal: CurrEnvInstancePricingDetails): void {
     const pricingDetails = {
-      current_payment_arrangement: newVal.currentPaymentArrangement,
-      pricing_period_expiration_date: newVal.pricingPeriodExpirationDate,
+      pricing_model: newVal.currentPaymentArrangement,
+      pricing_model_expiration: newVal.pricingPeriodExpirationDate,
     }
     this.instanceData = Object.assign(this.instanceData, pricingDetails);    
   }
@@ -465,8 +465,8 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         }
 
         this.pricingDetails = {
-          currentPaymentArrangement: this.instanceData.current_payment_arrangement,
-          pricingPeriodExpirationDate: this.instanceData.pricing_period_expiration_date,
+          currentPaymentArrangement: this.instanceData.pricing_model,
+          pricingPeriodExpirationDate: this.instanceData.pricing_model_expiration,
         }
       }
 

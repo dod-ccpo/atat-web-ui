@@ -212,6 +212,8 @@ export default class EnvironmentSummary extends Vue {
     const classifications: string[] = [];
     const unclassifiedILs: string[] = [];
     const locationClassifications = this.classificationsCloud.concat(this.classificationsOnPrem);
+    debugger;
+
     locationClassifications.forEach((sysId) => {
       const cl = this.classificationLevels.find(obj => obj.sys_id === sysId);
       classifications.push(this.topLevelClassification(cl?.classification as string))
@@ -312,7 +314,7 @@ export default class EnvironmentSummary extends Vue {
       "performance_tier",
       "number_of_instances",
       "data_egress_monthly_amount",
-      "current_payment_arrangement",
+      "pricing_model",
     ];
 
     requiredFields.forEach((field) => {
@@ -336,8 +338,8 @@ export default class EnvironmentSummary extends Vue {
       }
     }
 
-    if (instanceData.current_payment_arrangement === "PREPAID"
-      && instanceData.pricing_period_expiration_date === ""
+    if (instanceData.pricing_model === "PREPAID"
+      && instanceData.pricing_model_expiration === ""
     ) {
       isValid = false;
     }
@@ -373,7 +375,8 @@ export default class EnvironmentSummary extends Vue {
         }
         let performance = "";
         if (instance.performance_tier) {
-          performance = toTitleCase(instance.performance_tier.replace("_", " "));
+          performance = toTitleCase(instance.performance_tier);
+          performance += performance === "General" ? " Purpose" : " Optimized";
         }
         let location = "";
         if (instance.instance_location === "ON_PREM") {

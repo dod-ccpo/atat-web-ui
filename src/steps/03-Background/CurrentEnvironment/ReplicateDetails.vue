@@ -43,6 +43,7 @@
               :width="120"
               label="What percentage of additional capacity do you anticipate each year?"
               suffix="%"
+              type="number"
               :value.sync="currEnvDTO.anticipated_yearly_additional_capacity"
               :rules="[$validators.required('Enter a percentage for your anticipated growth.')]"
             />

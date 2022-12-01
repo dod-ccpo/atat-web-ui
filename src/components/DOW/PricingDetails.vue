@@ -61,14 +61,14 @@ export default class PricingDetails extends Vue {
     {
       id: "PayAsYouGo",
       label: "Pay-as-you-go",
-      value: "PAYASYOUGO",
+      value: "PAY_AS_YOU_GO",
     },
   ];
 
   @Watch("_pricingDetails.currentPaymentArrangement", {deep: true})
   public currentPmtArrangementChange(newVal: string): void {
     console.log("newVal", newVal);
-    if (newVal === "PAYASYOUGO") {
+    if (newVal === "PAY_AS_YOU_GO") {
       this._pricingDetails.pricingPeriodExpirationDate = "";
     }
   }
