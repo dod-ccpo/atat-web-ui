@@ -12,7 +12,7 @@ describe("Test suite: Common SPA functionality", () => {
       
       
     });
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
   });
     
@@ -68,8 +68,8 @@ describe("Test suite: Common SPA functionality", () => {
 
   it("TC3: Menu tabs on the navigation bar", () => {
     
-    const expectedEmail = "maria.missionowner.civ@mail.mil";
-    const expectedNames = expectedEmail.split('.civ')[0].split('.');
+    const expectedEmail = Cypress.env("snowUser");
+    const expectedNames = expectedEmail.split('-ctr')[0].split('.');
     const expectedFirstName = expectedNames[0];
     const firstName = capitalizeFirstLetter(expectedFirstName);
     const expectedLastName = expectedNames[1]
