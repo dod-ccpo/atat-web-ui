@@ -86,6 +86,8 @@ module.exports = {
   subStepCoIText: "#SubStep_ConflictofInterest .step-text",
   subStepPPSLink: "#SubStep_PackagingPackingandShipping",
   subStepPPSText: "#SubStep_PackagingPackingandShipping .step-text",
+  subStepTravelLink: "#SubStep_Travel",
+  subStepTravelText:"#SubStep_Travel .step-text",
   subStepTrainingLink: "#SubStep_Training",
   subStepTrainingText: "#SubStep_Training .step-text",
   

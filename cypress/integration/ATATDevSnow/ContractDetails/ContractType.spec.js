@@ -7,7 +7,7 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
 
   beforeEach(() => {
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();   
   });
     

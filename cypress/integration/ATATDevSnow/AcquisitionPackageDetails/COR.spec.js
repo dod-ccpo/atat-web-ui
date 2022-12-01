@@ -15,7 +15,7 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
       contactInfo = info;
     });
 
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
   });
 
