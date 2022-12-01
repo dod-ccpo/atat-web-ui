@@ -16,8 +16,8 @@
     <p> 
       For more information about the FOIA, visit 
       <a href="https://www.foia.gov" target="_blank" class="_text-link">
-        https://www.foia.gov<span class="_external-link">.</span>
-      </a>
+        <span class="_external-link">FOIA.gov</span>
+      </a>.
     </p>
   </div>
 </template>

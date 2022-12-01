@@ -5,7 +5,7 @@
         <v-row>
           <v-col class="col-12">
             <h1 class="page-header">
-              Let's find out if your effort provides for Personally Identifiable Information
+              Let's find out if your project includes Personally Identifiable Information (PII)
             </h1>
 
             <ATATAlert
@@ -15,7 +15,7 @@
               class="copy-max-width my-10"
             >
               <template v-slot:content>
-                <h2>Personally Identifiable Information (PII)</h2>
+                <h2>What is PII</h2>
                 <p class="mt-2 mb-0">
                   PII is information about an individual which identifies, links, relates, or is
                   unique to an individual. Examples include social security number, age, military
@@ -42,7 +42,7 @@
               <template v-slot:content>
                 <p class="mb-4">
                   If this effort provides for the design, development, or operation of a system of
-                  records on individuals (in whole or in part), then the contracting officer must
+                  records on individuals (in whole or in part), then the Contracting Officer must
                   include the following clauses in the solicitation:
                 </p>
                 <ul>
