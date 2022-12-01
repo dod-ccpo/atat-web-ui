@@ -7,7 +7,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   beforeEach(() => {
 
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();    
   });    
     

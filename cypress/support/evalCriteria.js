@@ -11,20 +11,24 @@ Cypress.Commands.add("selectFairOppRadioOption", (radioSelector, value) => {
   cy.findElement(fo.fairOppRadioActiveBtn)
     .then(($radioBtn) => {
       const selectedOption = $radioBtn.text();
-      cy.log(selectedOption);   
-      cy.textExists(common.continueBtn, " Continue ").click();
+      cy.log(selectedOption);       
       const optionSelectedText = "radio_button_checkedNone" +
-        " of these exceptions apply to this acquisition.";      
+        " of these exceptions apply to this acquisition."; 
+      if (selectedOption != optionSelectedText) {
+        cy.findElement("#JandAMMRWarningAlert").should("exist")
+      }      
+      cy.btnClick(common.continueBtn, " Continue ");
       if (selectedOption === optionSelectedText) {
         cy.wait(1000)
         cy.textExists(common.header,"Let’s work on an evaluation plan for your requirement");
       } else {
-        cy.wait(1000)
+        cy.wait(1000)        
         cy.textExists(
           common.header,
           "Based on what you told us, you do not need an evaluation plan for this acquisition."
         );
       }
+      
     })  
   
 });

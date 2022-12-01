@@ -11,7 +11,7 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
     cy.fixture("orgAddressType").then((types) => {
       orgAddressType = types;
     });
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();    
   });    
     
