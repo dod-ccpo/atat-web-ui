@@ -209,6 +209,7 @@ export interface SystemChoiceDTO extends BaseTableDTO {
   label: string;
   value: string;
   sequence?: number;
+  hint?: string;
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
