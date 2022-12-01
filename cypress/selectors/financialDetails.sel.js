@@ -51,7 +51,7 @@ module.exports = {
   fileUploadSection: ".atat-file-upload",
   uploadLink: "#BrowseToUpload",
   fundingfileupload: "#FundingPlanFileUpload",
-  fundingfileuploadError: "form.v-form .field-error",
+  fundingfileuploadError: ".file-upload-validation-messages",
   uploadedFile0Link: "#FileLink00",
   uploadedFile0RemoveBtn: "#RemoveFile00",
 

@@ -38,6 +38,7 @@ module.exports = (on, config) => {
   config.env.snowUser = process.env.SNOWUSER;
   config.env.snowPass = process.env.SNOWPASS;
   config.env.disaNoIframeUrl = process.env.disaNoIframeUrl;
+  config.env.userId = process.env.userId
   
   return config;
 }

@@ -27,7 +27,7 @@ describe("Test suite: View all task orders", () => {
       
     });    
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(false);
     cy.textExists(common.portfolioBtn, "Portfolios").click();
     cy.searchPortfolio("Air", portfolioName); 
     cy.wait(1000);

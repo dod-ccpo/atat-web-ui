@@ -3,11 +3,11 @@ import common from "../../../selectors/common.sel";
 import occ from "../../../selectors/occ.sel";
 
 
-describe("Test suite: OCC: Training substep", () => {
+describe.skip("Test suite: OCC: Training substep", () => {
   
   beforeEach(() => {
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
   });
     
@@ -32,6 +32,10 @@ describe("Test suite: OCC: Training substep", () => {
     cy.verifyPageHeader("Do you need to include packaging, packing, or shipping instructions?");
     cy.checkBoxOption(occ.noneCheckBox, "NONE").check({ force: true })
       .should("be.checked");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.findElement(common.subStepTravelText)
+      .should("be.visible")
+      .and('have.css', 'color', colors.primary);
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.verifyPageHeader("Do you require any specific training courses from your contractors?");
     const expectedBodyText = "Contractor employees may be required to take periodic" +

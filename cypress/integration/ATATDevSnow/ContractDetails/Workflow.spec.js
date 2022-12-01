@@ -7,7 +7,7 @@ describe.skip("Test suite: Contract Details: E2E work flow",  () => {
 
   beforeEach(() => {
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
   });  
 

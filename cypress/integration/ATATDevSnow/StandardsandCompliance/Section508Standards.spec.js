@@ -6,7 +6,7 @@ describe("Test suite: SAC: Section 508 Standards", () => {
   
   beforeEach(() => {
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();    
   });    
     

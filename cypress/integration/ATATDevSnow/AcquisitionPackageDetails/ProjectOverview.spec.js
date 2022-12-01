@@ -14,7 +14,7 @@ describe("Test suite: Acquisition Package ", () => {
       projectDetails = details;
     });
     
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
   });
 

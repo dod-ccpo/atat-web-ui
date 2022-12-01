@@ -3,7 +3,7 @@ import common from "../../../selectors/common.sel";
 import occ from "../../../selectors/occ.sel";
 
 
-describe("Test suite: Training substep: Training Course", () => {
+describe.skip("Test suite: Training substep: Training Course", () => {
 
   beforeEach(() => {
     bootstrapMockApis();
