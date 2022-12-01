@@ -9,7 +9,7 @@
           <p>
             If you need more {{ requirementOrInstance }}s, add them below. You can 
             also edit or delete any info from the {{ requirementOrInstance }}s that 
-            you have already entered. When you’re done, click Continue and we will 
+            you have already entered. When you’re done, click "Continue" and we will 
             move on to your 
             <span v-if="nextOfferingGroupStr && !returnToDOWSummary">
               {{ nextOfferingGroupStr }} requirements.
@@ -417,7 +417,7 @@ export default class OtherOfferingSummary extends Vue {
     case "compute": 
       this.isCompute = true;
       this.requirementOrInstance = "instance";
-      this.serviceDescription = "compute";
+      this.serviceDescription = "Compute";
       break;
     case "general_xaas":
       this.isGeneral = true;

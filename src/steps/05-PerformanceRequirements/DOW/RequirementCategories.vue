@@ -135,7 +135,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   public introText = `Through JWCC, you have the ability to procure many offerings for
     Anything as a Service (XaaS) and Cloud Support Packages. Specify
     any categories that may apply to your acquisition below, and we'll
-    walk through each selection to get more details next.`;
+    walk through each selection to get more details.`;
 
   public radioOptions: RadioButton[] = [
     {
