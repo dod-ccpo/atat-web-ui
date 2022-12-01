@@ -27,7 +27,8 @@
                   determine and properly document IT accessibility requirements in contracting
                   documents. From the ART website, you can
                   <span class="h6">choose from pre-packaged sample procurements</span>
-                  for standard ICT products and services or
+                  for standard Information and Communication Technology (ICT) products and 
+                  services or
                   <span class="h6">start a new procurement</span>
                   to identify your relevant accessibility requirements.
                   ART will guide you through a series of questions about your procurement, beginning
@@ -44,7 +45,8 @@
             </ATATAlert>
             <ATATTextArea
               id="OperationToBePerformed"
-              label="What accessibility requirements do you need to include in your solicitation?"
+              label="What accessibility requirements do you need to include in your 
+              Description of Work?"
               helpText="Copy/paste the procurement language from your
               custom ART report or from one of the sample procurements."
               class="width-100 copy-max-width"
