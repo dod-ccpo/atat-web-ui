@@ -11,14 +11,14 @@
           <ATATAutoComplete
             id="Agency"
             class="_input-max-width mb-2"
-            label="What agency do you work for?"
+            label="What service or agency are you affiliated with?"
             :label-sr-only="false"
             titleKey="text"
             :searchFields="['text']"
             :items="agencyData"
             :selectedItem.sync="selectedAgency"
-            :rules="[$validators.required('Please select your agency.')]"
-            placeholder="Find your agency"
+            :rules="[$validators.required('Please select your agency or service.')]"
+            placeholder="Find your agency or service"
             icon="arrow_drop_down"
           />
 
@@ -74,7 +74,7 @@
                 label="DoD Activity Address Code (DoDAAC)"
                 class="_input-max-width"
                 tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, 
-                activity, or organization that has the authority to requisition, contract 
+                activity, or organization that has the authority to request, contract 
                 for, or fund/pay bills for materials and services."
                 :value.sync="dodAddressCode"
                 :rules="[

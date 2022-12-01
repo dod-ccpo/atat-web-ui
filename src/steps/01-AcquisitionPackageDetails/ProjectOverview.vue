@@ -7,7 +7,7 @@
             Let’s start with basic info about your new acquisition
           </h1>
           <p class="page-intro">
-            In this section, we will gather some overarching details about your
+            In this section, we will gather overarching details about your
             project requirements, organization, and points of contact. This
             information will be used to complete your required acquisition forms
             and will also help us to guide you through the JWCC procurement
