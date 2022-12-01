@@ -4,14 +4,14 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Has a migration assessment, analysis, or process occurred to identify the cloud services
-            and tools needed?
+            Have you completed a migration assessment, analysis, or process to identify
+            the cloud services and tools needed?
           </h1>
           <div class="copy-max-width">
             <p class="mb-8">
               If available, you can upload this supporting documentation, and we will attach it to
-              your Description of Work to be shared with the CSPs for proposal purposes. Please do
-              not upload any classified documents.
+              your Description of Work to be shared with the CSPs for proposal purposes. 
+              <b>Please do not upload any classified documents.</b>
             </p>
             <ATATRadioGroup
               id="ExistingEnvOptions"
