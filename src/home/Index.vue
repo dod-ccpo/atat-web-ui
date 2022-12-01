@@ -98,6 +98,7 @@ import { routeNames } from "@/router/stepper";
 import { scrollToId } from "@/helpers";
 
 import UserStore from "@/store/user";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -119,11 +120,13 @@ export default class Home extends Vue {
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    await AcquisitionPackage.reset();
     this.$router.push({
       name: routeNames.ProjectOverview,
       params: {
         direction: "next"
-      }
+      },
+      replace: true
     }).catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }

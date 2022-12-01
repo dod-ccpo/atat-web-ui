@@ -37,7 +37,7 @@ import { SessionData } from "./models";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
-import FinancialDetails from "../financialDetails";
+import FinancialDetails, { initialRequirementsCostEstimate } from "../financialDetails";
 import Periods from "../periods";
 import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
@@ -355,6 +355,8 @@ export class AcquisitionPackageStore extends VuexModule {
   totalBasePoPDuration = 0;
   taskOrderDetailsAlertClosed = false;
 
+  packageId = "";
+
   validateNow = false;
   allowDeveloperNavigation = false;
 
@@ -608,17 +610,175 @@ export class AcquisitionPackageStore extends VuexModule {
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
   }
 
+  @Action({rawError: true})
+  public async loadPackageFromId(packageId: string){
+    const loggedInUser = await UserStore.getCurrentUser();
+    const acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
+    if (acquisitionPackage) {
+      this.setAcquisitionPackage(acquisitionPackage);
+      
+      if(acquisitionPackage.project_overview.value) {
+        const projectOverview = await api.projectOverviewTable.retrieve(
+          acquisitionPackage.project_overview.value
+        );
+        if(projectOverview){
+          this.setProjectOverview(projectOverview);
+          this.setProjectTitle(projectOverview.title);
+        }
+      } else {
+        this.setProjectOverview(
+          initialProjectOverview()
+        )
+      }
+
+      if(acquisitionPackage.period_of_performance.value){
+        const periodOfPerformance = await api.periodOfPerformanceTable.retrieve(
+          acquisitionPackage.period_of_performance.value
+        );
+        if(periodOfPerformance)
+          this.setPeriodOfPerformance(periodOfPerformance)
+      } else {
+        this.setPeriodOfPerformance(
+          initialPeriodOfPerformance()
+        );
+      }
+      
+      if(acquisitionPackage.organization.value) {
+        const organization = await api.organizationTable.retrieve(
+          acquisitionPackage.organization.value
+        );
+        if(organization)
+          this.setOrganization(organization);
+      } else {
+        this.setOrganization(
+          initialOrganization()
+        );
+      }
+
+      if(acquisitionPackage.fair_opportunity.value) {
+        const fairOpportunity = await api.fairOpportunityTable.retrieve(
+          acquisitionPackage.fair_opportunity.value
+        );
+        if(fairOpportunity)
+          this.setFairOpportunity(fairOpportunity);
+      } else {
+        this.setFairOpportunity(
+          initialFairOpportunity()
+        );
+      }
+
+      if(acquisitionPackage.current_contract.value) {
+        const currentContract = await api.currentContractTable.retrieve(
+          acquisitionPackage.current_contract.value
+        );
+        if(currentContract)
+          this.setCurrentContract(currentContract);
+      } else {
+        this.setCurrentContract(
+          initialCurrentContract()
+        );
+      }
+
+      if(acquisitionPackage.sensitive_information.value){
+        const sensitiveInformation = await api.sensitiveInformationTable.retrieve(
+          acquisitionPackage.sensitive_information.value
+        );
+        if(sensitiveInformation)
+          this.setSensitiveInformation(sensitiveInformation);
+      } else {
+        this.setSensitiveInformation(
+          initialSensitiveInformation()
+        );
+      }
+
+      if(acquisitionPackage.contract_type.value){
+        const contractType = await api.contractTypeTable.retrieve(
+          acquisitionPackage.contract_type.value
+        );
+        if(contractType)
+          this.setContractType(contractType);
+      } else {
+        this.setContractType(
+          initialContractType()
+        )
+      }
+
+      if(acquisitionPackage.classification_level.value) {
+        const classificationLevel = await api.classificationLevelTable.retrieve(
+          acquisitionPackage.classification_level.value
+        );
+        if(classificationLevel)
+          this.setClassificationLevel(classificationLevel);
+      } else {
+        this.setClassificationLevel(
+          initialClassificationLevel()
+        );
+      }
+
+      if(acquisitionPackage.current_environment.value){
+        const currentEnvironment = await api.currentEnvironmentTable.retrieve(
+          acquisitionPackage.current_environment.value
+        );
+        if(currentEnvironment)
+          this.setCurrentEnvironment(currentEnvironment);
+      } else {
+        this.setCurrentEnvironment(
+          await CurrentEnvironment.initialCurrentEnvironment()
+        );
+      }
+
+      if(acquisitionPackage.contract_considerations.value) {
+        const contractConsiderations = await api.contractConsiderationsTable.retrieve(
+          acquisitionPackage.contract_considerations.value
+        );
+        if(contractConsiderations)
+          this.setContractConsiderations(contractConsiderations);
+      } else {
+        this.setContractConsiderations(
+          initialContractConsiderations()
+        );
+      }
+
+      if(acquisitionPackage.requirements_cost_estimate.value) {
+        const requirementsCostEstimate = await api.requirementsCostEstimateTable.retrieve(
+          acquisitionPackage.requirements_cost_estimate.value
+        );
+        if(requirementsCostEstimate)
+          this.setRequirementsCostEstimate(requirementsCostEstimate);
+      } else {
+        this.setRequirementsCostEstimate(
+          initialRequirementsCostEstimate()
+        );
+      }
+
+
+      if(acquisitionPackage.periods)
+        this.setPeriodsFromString(acquisitionPackage.periods)
+
+      this.setInitialized(true);
+
+    } else {
+      await this.initialize();
+    }
+  }
+
+  @Mutation
+  private setPeriodsFromString(value: string): void {
+    this.periods = value;
+  }
+
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
+
+    if (this.initialized) {
+      return;
+    }
+
     await ContactData.initialize();
     await OrganiationData.initialize();
     await DescriptionOfWork.initialize();
     await Attachments.initialize();
     await FinancialDetails.initialize();
-    
-    if (this.initialized) {
-      return;
-    }
 
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
@@ -658,8 +818,9 @@ export class AcquisitionPackageStore extends VuexModule {
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
           this.setCurrentEnvironment(currentEnvironmentDTO);
-          acquisitionPackage.current_environment =
-            currentEnvironmentDTO.sys_id as unknown as string;
+          acquisitionPackage.current_environment = {
+            value: currentEnvironmentDTO.sys_id as string
+          };
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
@@ -921,7 +1082,7 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setSensitiveInformation(sensitiveInformationData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          sensitive_information: sys_id,
+          sensitive_information: {value: sys_id},
         } as AcquisitionPackageDTO);
       }
       return this.sensitiveInformation as SensitiveInformationDTO;
@@ -947,7 +1108,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setSensitiveInformation(savedSensitiveInformation);
       this.setAcquisitionPackage({
         ...this.sensitiveInformation,
-        sensitive_information: sys_id,
+        sensitive_information: {value: sys_id}
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving sensitive info data ${error}`);
@@ -966,7 +1127,7 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setContractConsiderations(contractConsiderationsData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          contract_considerations: sys_id,
+          contract_considerations: {value: sys_id}
         } as AcquisitionPackageDTO);
       }
       return this.contractConsiderations as ContractConsiderationsDTO;
@@ -994,7 +1155,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setContractConsiderations(savedData);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
-        contract_considerations: sys_id,
+        contract_considerations: {value: sys_id}
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(
@@ -1069,6 +1230,56 @@ export class AcquisitionPackageStore extends VuexModule {
   async saveCollection<TData extends BaseTableDTO>({collection, property}:
     {collection: TData[], property: string}): Promise<void> {
     this.updatePackageData({key: property, data: collection.map(item=>item.sys_id).join(",")});
+  }
+
+  @Mutation
+  public setPackageId(value: string): void {
+    this.packageId = value;
+  }
+
+  @Action({rawError: true})
+  public async reset(): Promise<void>{
+
+    await ContactData.reset();
+    await OrganiationData.reset();
+    await DescriptionOfWork.reset();
+    await Attachments.reset();
+    await FinancialDetails.reset();
+    await CurrentEnvironment.reset();
+
+    sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
+
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.initialized = false;
+    this.projectTitle = "";
+    this.acquisitionPackage = null;
+    this.projectOverview = null;
+    this.organization = null;
+    this.contactInfo = null;
+    this.contractConsiderations = null;
+    this.corInfo = null;
+    this.acorInfo = null;
+    this.hasAlternativeContactRep = null;
+    this.fairOpportunity = null;
+    this.evaluationPlan = null;
+    this.currentContract = null;
+    this.sensitiveInformation = null;
+    this.periods = null;
+    this.periodOfPerformance = null;
+    this.contractType = null;
+    this.requirementsCostEstimate = null;
+    this.classificationLevel = null;
+    this.currentEnvironment = null;
+    this.totalBasePoPDuration = 0;
+    this.taskOrderDetailsAlertClosed = false;
+    this.packageId = "";
+    this.validateNow = false;
+    this.allowDeveloperNavigation = false;
+    this.fundingRequestType =  null;
   }
 }
 

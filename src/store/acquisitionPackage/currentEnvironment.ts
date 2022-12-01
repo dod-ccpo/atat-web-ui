@@ -290,6 +290,20 @@ export class CurrentEnvironmentStore extends VuexModule {
       throw new Error(`an error occurred saving current environment ${error}`);
     }
   }
+
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_CURRENT_ENVIRONMENT_KEY);
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.initialized = false;
+    this.currentEnvironment = null;
+    this.currentEnvInstances = [];
+    this.currentEnvInstanceNumber = 0;
+  }
 }
 
 const CurrentEnvironment = getModule(CurrentEnvironmentStore);

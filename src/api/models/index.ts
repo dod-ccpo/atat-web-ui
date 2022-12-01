@@ -43,23 +43,23 @@ export interface AlertDTO extends BaseTableDTO {
 export interface AcquisitionPackageDTO extends BaseTableDTO {
   status: string;
   number: string;
-  project_overview: string;
-  organization: string;
+  project_overview: ReferenceColumn;
+  organization: ReferenceColumn;
   contact: string;
-  fair_opportunity: string;
-  current_contract: string;
+  fair_opportunity: ReferenceColumn;
+  current_contract: ReferenceColumn;
   docusign_envelope_id: string;
-  sensitive_information: string;
-  period_of_performance: string;
+  sensitive_information: ReferenceColumn;
+  period_of_performance: ReferenceColumn;
   periods: string;
   gfe_overview: string;
-  contract_type: string;
-  requirements_const_estimate: string;
-  contract_considerations: string;
+  contract_type: ReferenceColumn;
+  requirements_cost_estimate: ReferenceColumn;
+  contract_considerations: ReferenceColumn;
   funding_plans: string;
-  classification_level: string;
+  classification_level: ReferenceColumn;
   required_services: string;
-  current_environment: string;
+  current_environment: ReferenceColumn;
   environment_instance: string;
   secondary_reviewers?: string[];
   mission_owners?: string;
@@ -354,8 +354,8 @@ export interface PeriodDTO extends BaseTableDTO {
 }
 
 export interface ReferenceColumn {
-  link: string;
-  value: string;
+  link?: string;
+  value?: string;
 }
 
 export interface DisplayColumn {

@@ -114,8 +114,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   // selectedOfferingGroups: stringObj[] = [];
   DOWObject: DOWServiceOfferingGroup[] = [];
 
-    //list of required services -- this is synchronized to back end
-    userSelectedServiceOfferings: SelectedServiceOfferingDTO[] = [];
+  //list of required services -- this is synchronized to back end
+  userSelectedServiceOfferings: SelectedServiceOfferingDTO[] = [];
 
   currentGroupId = "";
   currentOfferingName = "";
@@ -1275,6 +1275,38 @@ export class DescriptionOfWorkStore extends VuexModule {
       throw new Error(`error persisting services ${error}`);
     }
     
+  }
+
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_DESCRIPTION_OF_WORK_KEY);
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.summaryBackToContractDetails = false;
+    this.currentGroupRemoved = false;
+    this.currentGroupRemovedForNav = false;
+    this.lastGroupRemoved = false;
+    this.initialized = false;
+    this.isIncomplete = true;
+    this.serviceOfferings = [];
+    this.serviceOfferingGroups = [];
+    this.DOWObject = [];
+    this.userSelectedServiceOfferings = [];
+    this.currentGroupId = "";
+    this.currentOfferingName = "";
+    this.currentOfferingSysId = "";
+    this.xaaSNoneValue = "XaaS_NONE";
+    this.cloudNoneValue = "Cloud_NONE";
+    this.returnToDOWSummary = false;
+    this.reviewGroupFromSummary = false;
+    this.addGroupFromSummary = false;
+    this.currentOtherServiceInstanceNumber = 0;
+    this.otherOfferingInstancesTouched = {};
+    this.confirmOtherOfferingDelete = false;
+    this.confirmServiceOfferingDelete = false;
   }
 }
 
