@@ -15,7 +15,7 @@ describe("Test suite: Option3 on Create Evaluation Plan: Lowest Risk", () => {
     });
     
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepEvaluationCriteriaLink, " Evaluation Criteria ");
     cy.activeStep(common.stepFairOppText);

@@ -14,7 +14,7 @@ describe("Test suite: Option One on Create Evaluation Plan: No technical proposa
     });
     
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepEvaluationCriteriaLink, " Evaluation Criteria ");
     cy.activeStep(common.stepFairOppText);

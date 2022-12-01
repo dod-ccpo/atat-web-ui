@@ -2,7 +2,7 @@ import Vue, { computed } from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
-import validators, { ValidationPlugin } from "../../../plugins/validation";
+import validators, { ValidationPlugin } from "../../plugins/validation";
 import { DefaultProps } from "vue/types/options";
 
 import { init, generateString, validateInput } from "@/helpers/unitTests";

@@ -14,7 +14,7 @@
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _package-title"
           >
-            {{ modifiedData.projectOverview || 'Test'}}
+            {{ modifiedData.projectOverview || 'Untitled package'}}
           </a>
         </div>
           <v-chip
@@ -240,10 +240,6 @@ export default class Card extends Vue {
         {
           title: "Edit draft package",
           action: "Edit draft package"
-        },
-        {
-          title: "Invite contributors",
-          action: "Invite contributors"
         },
       ]
       if(this.isOwner) {

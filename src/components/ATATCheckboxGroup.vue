@@ -114,7 +114,6 @@
     </div>
 
     <ATATErrorValidation :errorMessages="errorMessages" />
-
   </div>
 </template>
 
@@ -227,23 +226,25 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
-    if (newVal.length > oldVal.length) {
-      // new checkbox checked - get the index, push to this.selectedIndices
-      const newCheckedVals = newVal.filter(val => !oldVal.includes(val));
-      newCheckedVals.forEach((v) => {
-        const checkedIndex = this.getSelectedIndex(v);
-        this.selectedIndices.push(checkedIndex);
-      });
+    if(oldVal){
+      if (newVal.length > oldVal.length) {
+        // new checkbox checked - get the index, push to this.selectedIndices
+        const newCheckedVals = newVal.filter(val => !oldVal.includes(val));
+        newCheckedVals.forEach((v) => {
+          const checkedIndex = this.getSelectedIndex(v);
+          this.selectedIndices.push(checkedIndex);
+        });
 
-    } else if (newVal.length < oldVal.length) {
-      // checkbox UNchecked - get the index from oldVal, remove from this.selectedIndices
-      const uncheckedVal = oldVal.find(val => !newVal.includes(val)) || "";
-      const uncheckedIndex = this.getSelectedIndex(uncheckedVal);
-      this.selectedIndices = this.selectedIndices.filter(idx => idx !== uncheckedIndex);
-      this._items[uncheckedIndex].textfieldValue = "";
-      const textfieldToReset = this.getTextField(uncheckedIndex);
-      if (textfieldToReset) {
-        textfieldToReset.value = "";
+      } else if (newVal.length < oldVal.length) {
+        // checkbox UNchecked - get the index from oldVal, remove from this.selectedIndices
+        const uncheckedVal = oldVal.find(val => !newVal.includes(val)) || "";
+        const uncheckedIndex = this.getSelectedIndex(uncheckedVal);
+        this.selectedIndices = this.selectedIndices.filter(idx => idx !== uncheckedIndex);
+        this._items[uncheckedIndex].textfieldValue = "";
+        const textfieldToReset = this.getTextField(uncheckedIndex);
+        if (textfieldToReset) {
+          textfieldToReset.value = "";
+        }
       }
     }
 

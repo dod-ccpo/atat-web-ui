@@ -98,7 +98,11 @@ import { routeNames } from "@/router/stepper";
 import { scrollToId } from "@/helpers";
 
 import UserStore from "@/store/user";
+<<<<<<< HEAD
 import AcquisitionPackage from "@/store/acquisitionPackage";
+=======
+import { UserDTO } from "@/api/models";
+>>>>>>> 824806facbeae9115d273656c42f64cda04cae65
 
 @Component({
   components: {
@@ -112,7 +116,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class Home extends Vue {
   public isNewUser = false;
 
-  private currentUser = UserStore.getInitialUser;
+  private currentUser: UserDTO = {};
 
   public scrollToResources(): void {
     scrollToId("HelpfulResourcesCards");

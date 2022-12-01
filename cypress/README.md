@@ -85,6 +85,7 @@ Create a `.env` file in the project's root directory and use the following Envir
 | Environment Variable Name          | Description                                    |
 | ---------------------------------- | ---------------------------------------------- |
 | 'testURL'                          | PortalUrl                                      |
+| 'userId'                           | Your userId from Sandbox.                      |
 | 'localTestURL'                     | http://localhost:8080                          |
 | 'localTestURLInIframe'             | http://localhost:8080/testing.html             |
 | 'isTestingLocally'                 | false (set true to test locally)               |

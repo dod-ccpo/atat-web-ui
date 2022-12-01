@@ -48,7 +48,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-import DescriptionOfNeed from "./DescriptionOfNeed.vue"
+import DescriptionOfNeed from "../../../components/DOW/DescriptionOfNeed.vue"
 import EntireDuration from "./EntireDuration.vue"
 
 import { 
