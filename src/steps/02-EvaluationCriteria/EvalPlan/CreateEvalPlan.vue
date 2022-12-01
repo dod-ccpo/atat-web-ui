@@ -8,8 +8,8 @@
       <div class="copy-max-width">
         <p class="page-intro">
           In this section, we'll develop the basis for how your acquisition will be 
-          evaluated. To begin, select the applicable evaluation method below. In the 
-          following screens, we’ll identify any compliance standards, differentiators,
+          evaluated. To begin, select the applicable evaluation method below. Next, 
+          we’ll identify any compliance standards, differentiators,
           or assessment areas that CSPs must address in their response to the 
           solicitation. You’ll have an opportunity to customize these standards for 
           your specific needs.

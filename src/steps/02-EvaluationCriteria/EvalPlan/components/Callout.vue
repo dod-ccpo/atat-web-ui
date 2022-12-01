@@ -78,16 +78,16 @@ export default class Callout extends Vue {
   public get introP(): string {
     if (!this.isStandards) {
       if (this.sourceSelection === "SetLumpSum") {
-        return `Your Contracting Officer (KO) will request CSPs submit a white paper
+        return `Your Contracting Officer (KO) will request Contractors submit a white paper
           identifying a strategy and approach that will meet or exceed the requirements 
-          within the proposed costs. CSPs must also provide a price proposal which 
+          within the proposed costs. Contractors must also provide a price proposal which 
           includes a complete list of cloud service offerings with catalog item 
-          numbers/SKUs and quantities to meet the requirements.`
+          numbers/Stock Keeping Units (SKUs) and quantities to meet the requirements.`
       }
-      return `Since you would like to purchase an equal dollar amount from each CSP,
+      return `Since you would like to purchase an equal dollar amount from each Contractor,
         your Contracting Officer (KO) will issue a Request for Quote (RFQ) and ask 
-        CSPs to respond if they are “interested” or “not interested.” Task orders 
-        will be issued to all interested CSPs.`
+        Contractors to respond if they are “interested” or “not interested.” Task orders 
+        will be issued to all interested Contractors.`
     }
     const substr1 = this.sourceSelection === "NoTechProposal"
       ? "to provide a price quote"
@@ -95,10 +95,10 @@ export default class Callout extends Vue {
     const substr2 = this.sourceSelection === "NoTechProposal"
       ? " required to meet the criteria in your Description of Work"
       : "";
-    return `Your Contracting Officer (KO) will request CSPs ${substr1} that 
+    return `Your Contracting Officer (KO) will request Contractors ${substr1} that 
       includes the total price and a complete list of cloud service offerings 
-      with catalog item numbers/SKUs, the unit price, unit of issue, and quantities 
-      calculated on a monthly basis for each catalog item number/SKU${substr2}.`
+      with catalog item numbers/Stock Keeping Units (SKUs), the unit price, unit of issue, 
+      and quantities calculated on a monthly basis for each catalog item number/SKU${substr2}.`
   }
 
   public get subhead(): string {
@@ -106,14 +106,14 @@ export default class Callout extends Vue {
       return `Award will be made to the lowest priced offeror meeting the following 
         compliance standards:`;
     } else if (this.method === "BVTO") {
-      return `Award will be made to the CSP providing the best value and meets the 
+      return `Award will be made to the Contractor providing the best value and meets the 
         following compliance standards:`;
     } else if (this.sourceSelection === "SetLumpSum") {  
       const methodStr = this.method === "LowestRisk" ? "lowest risk" : "best use";
-      return `Award will be made to the CSP whose white paper offers the “${ methodStr }” 
+      return `Award will be made to the Contractor whose white paper offers the “${ methodStr }” 
         solution and meets the following assessment areas:`;
     }
-    return `Award will be made in equal parts to each CSP that responds to the 
+    return `Award will be made in equal parts to each Contractor that responds to the 
       RFQ as “interested.”`
   }
 
@@ -123,7 +123,7 @@ export default class Callout extends Vue {
     case "NoTechProposal":
       listItems = [
         "Each requirement element has one or more specific catalog item number/SKU specified.",
-        "The CSP mapped the catalog item numbers/SKUs to the requirement element(s)."
+        "The Contractor mapped the catalog item numbers/SKUs to the requirement element(s)."
       ];
       break;
     case "TechProposal":
