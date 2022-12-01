@@ -38,6 +38,7 @@ import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
 import { UserApi } from "@/api/user";
+import { ComputeEnvironmentInstanceAPI } from "./computeEnvironmentInstance";
 
 
 export const api = {
@@ -64,6 +65,7 @@ export const api = {
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
   serviceOfferingTable: new ServiceOfferingApi(),
+  computeOfferingTable: new ComputeEnvironmentInstanceAPI(),
   militaryRankTable: new MilitaryRankApi(),
   periodTable: new PeriodApi(),
   periodOfPerformanceTable: new PeriodOfPerformanceApi(),

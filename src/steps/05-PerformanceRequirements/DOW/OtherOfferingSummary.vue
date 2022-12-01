@@ -133,7 +133,11 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
-import { OtherServiceOfferingData, OtherServiceSummaryTableData } from "../../../../types/Global";
+import { 
+  ComputeOfferingData, 
+  OtherServiceOfferingData, 
+  OtherServiceSummaryTableData 
+} from "../../../../types/Global";
 import { buildClassificationLabel } from "@/helpers";
 import _ from 'lodash';
 
@@ -152,7 +156,8 @@ export default class OtherOfferingSummary extends Vue {
   public serviceDescription = "";
   public deleteInstanceModalTitle = "";
 
-  public offeringInstances: OtherServiceOfferingData[] = [];
+  public offeringInstances: 
+    ComputeOfferingData[] | OtherServiceOfferingData[] = [];
 
   public tableHeaders: Record<string, string>[] = [];
   public tableData: OtherServiceSummaryTableData[] = [];
@@ -230,7 +235,9 @@ export default class OtherOfferingSummary extends Vue {
     this.tableData = [];
     const allPeriods = await Periods.getAllPeriods();
 
-    this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
+    this.offeringInstances = this.isCompute
+      ? await DescriptionOfWork.getComputeOfferingInstances()
+      : await DescriptionOfWork.getOtherOfferingInstances();
     this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
@@ -354,7 +361,7 @@ export default class OtherOfferingSummary extends Vue {
   }
 
   public async validateInstance(
-    instance: OtherServiceOfferingData, 
+    instance: ComputeOfferingData | OtherServiceOfferingData, 
     hasOtherRegion?: boolean,
     hasOtherPerformanceTier?: boolean,
   ): Promise<boolean> {
@@ -365,16 +372,19 @@ export default class OtherOfferingSummary extends Vue {
     if (this.isCompute) {
       requiredFields = [
         "environmentType",
+        "operatingSystem",
+        "processorSpeed",
         "classificationLevel",
         "entireDuration",
         "memory",
         "anticipatedNeedUsage",
         "numberOfInstancesNeeded",
         "numberOfVCPUs",
-        "operatingSystemAndLicensing",
+        "licensing",
         "performanceTier",
         "storageAmount",
         "storageType",
+        "storageUnit"
       ];
 
       if ((hasOtherPerformanceTier && instanceData.performanceTierOther === "")

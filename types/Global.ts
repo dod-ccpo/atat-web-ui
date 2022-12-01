@@ -300,6 +300,7 @@ export interface DOWServiceOffering {
 export interface DOWServiceOfferingGroup {
   serviceOfferingGroupId: string;
   sequence: number;
+  computeOfferingData?: ComputeOfferingData[];
   serviceOfferings: DOWServiceOffering[];
   otherOfferingData?: OtherServiceOfferingData[];
 }
@@ -347,19 +348,17 @@ export interface lineChartData {
 
 export interface OtherServiceOfferingData {
   instanceNumber: number;
-  environmentType: string;
   anticipatedNeedUsage?: string;
-  operatingEnvironment?: string;
-  operatingSystemLicensing?: string;
+  licensing?: string;
   processorSpeed?: string;
   storageUnit?: string;
   classificationLevel?: string;
   deployedRegions: string[];
   deployedRegionsOther: string;
+  operatingSystem: string;
   descriptionOfNeed: string;
   entireDuration: string;
   periodsNeeded: string[];
-  operatingSystemAndLicensing: string;
   numberOfVCPUs: string;
   memory: string;
   storageType: string;
@@ -368,6 +367,11 @@ export interface OtherServiceOfferingData {
   performanceTierOther: string;
   numberOfInstancesNeeded: string;
   requirementTitle?: string;
+}
+
+export interface ComputeOfferingData extends OtherServiceOfferingData {
+  operatingEnvironment?: string;
+  environmentType: string;
 }
 
 export interface OtherServiceSummaryTableData {

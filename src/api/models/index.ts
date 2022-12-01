@@ -496,8 +496,6 @@ export interface EnvironmentInstanceDTO extends BaseTableDTO {
   storage_unit: string;
   data_egress_monthly_amount: string;
   data_egress_monthly_unit: string;
-  operating_system_licensing: string;
-  csp_region?: string;
 }
 
 export interface ComputeEnvironmentInstanceDTO extends EnvironmentInstanceDTO {

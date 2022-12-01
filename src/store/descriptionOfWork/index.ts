@@ -8,7 +8,7 @@ import {
 } from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import { ClassificationInstanceDTO, SelectedServiceOfferingDTO, 
+import { ClassificationInstanceDTO, ComputeEnvironmentInstanceDTO, SelectedServiceOfferingDTO, 
   ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
 import {
@@ -21,6 +21,7 @@ import {
   DOWServiceOfferingGroup, 
   DOWServiceOffering, 
   DOWClassificationInstance,
+  ComputeOfferingData,
   OtherServiceOfferingData,
 } from "../../../types/Global";
 
@@ -43,6 +44,30 @@ type ServiceOfferingProxy =  {
   classificationInstances: ClassificationInstanceProxy[]
   dowServiceGroupIndex: number,
   dowServiceIndex: number
+}
+
+const mapComputeOfferingToDTO=(
+  offering: ComputeOfferingData
+): ComputeEnvironmentInstanceDTO=> {
+  return {
+    need_for_entire_task_order_duration: offering.anticipatedNeedUsage,
+    licensing: offering.licensing,
+    processor_speed: offering.processorSpeed,
+    storage_unit: offering.storageUnit,
+    classification_level: offering.classificationLevel,
+    region: offering.deployedRegions.join(","),
+    operating_system: offering.operatingSystem,
+    number_of_vcpus: offering.numberOfVCPUs,
+    memory_amount: offering.memory,
+    memory_unit: "GB",
+    storage_type: offering.storageType,
+    storage_amount: offering.storageAmount,
+    performance_tier: offering.performanceTier,
+    number_of_instances: offering.numberOfInstancesNeeded,
+    instance_name: offering.requirementTitle,
+    operating_environment: offering.operatingEnvironment,
+    environment_type: offering.environmentType
+  } as ComputeEnvironmentInstanceDTO;
 }
 
 //helper to map DowService offering
@@ -114,8 +139,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   // selectedOfferingGroups: stringObj[] = [];
   DOWObject: DOWServiceOfferingGroup[] = [];
 
-    //list of required services -- this is synchronized to back end
-    userSelectedServiceOfferings: SelectedServiceOfferingDTO[] = [];
+  //list of required services -- this is synchronized to back end
+  userSelectedServiceOfferings: SelectedServiceOfferingDTO[] = [];
 
   currentGroupId = "";
   currentOfferingName = "";
@@ -594,6 +619,25 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   emptyOtherOfferingInstance: OtherServiceOfferingData = {
     instanceNumber: this.currentOtherServiceInstanceNumber,
+    classificationLevel: "",
+    deployedRegions: [],
+    deployedRegionsOther: "",
+    descriptionOfNeed: "",
+    entireDuration: "",
+    periodsNeeded: [],
+    numberOfVCPUs: "",
+    memory: "",
+    storageType: "",
+    storageAmount: "",
+    performanceTier: "",
+    operatingSystem: "",
+    performanceTierOther: "",
+    numberOfInstancesNeeded: "1",
+    requirementTitle: "",
+  }
+
+  emptyComputeOfferingInstance: ComputeOfferingData = {
+    instanceNumber: this.currentOtherServiceInstanceNumber,
     environmentType: "",
     classificationLevel: "",
     deployedRegions: [],
@@ -601,18 +645,20 @@ export class DescriptionOfWorkStore extends VuexModule {
     descriptionOfNeed: "",
     entireDuration: "",
     periodsNeeded: [],
-    operatingSystemAndLicensing: "",
     numberOfVCPUs: "",
     memory: "",
     storageType: "",
     storageAmount: "",
     performanceTier: "",
+    operatingSystem: "",
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
     requirementTitle: "",
+    operatingEnvironment: "",
   }
 
   otherOfferingInstancesTouched: Record<string, number[]> = {};
+  computeOfferingInstancesTouched: Record<string, number[]> = {};
 
   @Action 
   public async getLastOtherOfferingInstanceNumber(): Promise<number> {
@@ -650,6 +696,163 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
     return _.clone(this.emptyOtherOfferingInstance);
   }
+
+  @Action
+  public async getComputeOfferingInstance(instanceNumber: number): Promise<ComputeOfferingData> {
+    const computeOfferingData = this.computeOfferingObject.computeOfferingData;
+    if (computeOfferingData && computeOfferingData.length) {
+      const instance = computeOfferingData.find(
+        obj => obj.instanceNumber === instanceNumber
+      );
+      return instance || _.clone(this.emptyComputeOfferingInstance);
+    }
+    return _.clone(this.emptyComputeOfferingInstance);
+  }
+
+  public get computeOfferingObject(): DOWServiceOfferingGroup {
+    const currentOfferingId = this.currentGroupId.toLowerCase();
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === currentOfferingId
+    );
+    return offeringIndex > -1
+      ? this.DOWObject[offeringIndex]
+      : { serviceOfferingGroupId: "", sequence: 0, serviceOfferings: [] };
+  }
+
+  @Action
+  public async pushTouchedComputeOfferingInstance(instanceNumber: number): Promise<void> {
+    this.doPushTouchedComputeOfferingInstance(instanceNumber);
+  }
+
+  @Mutation
+  public doPushTouchedComputeOfferingInstance(instanceNumber: number): void {
+    const groupKey: string = this.currentGroupId.toLowerCase();
+    if (!Object.prototype.hasOwnProperty.call(this.computeOfferingInstancesTouched, groupKey)) {
+      this.computeOfferingInstancesTouched[groupKey] = [];
+    }
+    this.computeOfferingInstancesTouched[groupKey].push(instanceNumber);
+  }
+
+  @Action
+  public async setComputeOfferingData(computeOfferingData: ComputeOfferingData): Promise<void> {
+    this.doSetComputeOfferingData(computeOfferingData);
+  }
+
+  @Mutation
+  public async doSetComputeOfferingData(
+    computeOfferingData: ComputeOfferingData
+  ): Promise<void> {
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
+    );
+
+    if (offeringIndex > -1) {
+      const computeOfferingObj = this.DOWObject[offeringIndex];
+      if (
+        computeOfferingObj 
+        && Object.prototype.hasOwnProperty.call(computeOfferingObj, "serviceOfferingGroupId")
+        && computeOfferingObj.serviceOfferingGroupId
+      ) {
+        if (!Object.prototype.hasOwnProperty.call(computeOfferingObj, "computeOfferingData")) {
+          computeOfferingObj.computeOfferingData = [];
+          computeOfferingObj.computeOfferingData?.push(computeOfferingData);
+        } else {
+          const instanceNumber = computeOfferingData.instanceNumber;
+          const existingInstance = computeOfferingObj.computeOfferingData?.find(
+            o => o.instanceNumber === instanceNumber
+          );
+          if (existingInstance ) {
+            Object.assign(existingInstance, computeOfferingData);
+          } else {
+            computeOfferingObj.computeOfferingData?.push(computeOfferingData);
+          }
+        }
+        const groupId: string = this.currentGroupId.toLowerCase();
+        if (!Object.prototype.hasOwnProperty.call(this.computeOfferingInstancesTouched, groupId)) {
+          this.computeOfferingInstancesTouched[groupId] = [];
+        }
+
+        if (this.computeOfferingInstancesTouched[groupId]
+          .indexOf(computeOfferingData.instanceNumber) === -1) {
+          this.computeOfferingInstancesTouched[groupId].push(computeOfferingData.instanceNumber);
+        }
+      } else {
+        throw new Error(`Error saving ${this.currentGroupId} data to store`);
+      }
+    }
+  }
+
+  @Action public async getTouchedComputeOfferingInstances(): Promise<number[]> {
+    return this.computeOfferingInstancesTouched[this.currentGroupId.toLowerCase()];
+  }
+
+  @Action public async hasComputeInstanceBeenTouched(instanceNo: number): Promise<boolean> {
+    const groupId = this.currentGroupId.toLowerCase();
+    if (!Object.prototype.hasOwnProperty.call(this.computeOfferingInstancesTouched, groupId)) {
+      this.computeOfferingInstancesTouched[groupId] = [];
+    }
+
+    return this.computeOfferingInstancesTouched[groupId].indexOf(instanceNo) > -1;
+  }
+
+  @Action 
+  public async getComputeOfferingInstances(): Promise<ComputeOfferingData[]> {
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
+    );
+    if (offeringIndex > -1) {
+      const computeOfferingObj = this.DOWObject[offeringIndex];
+      if (
+        Object.prototype.hasOwnProperty.call(computeOfferingObj, "computeOfferingData")
+        && computeOfferingObj.computeOfferingData
+        && computeOfferingObj.computeOfferingData.length > 0
+      ) {
+        return computeOfferingObj.computeOfferingData;
+      }
+    }
+    return [];
+  }
+
+  @Action
+  public async deleteComputeOfferingInstance(instanceNumber: number): Promise<void> {
+    this.doDeleteOtherOfferingInstance(instanceNumber);
+  }
+
+  @Mutation
+  public doDeleteComputeOfferingInstance(instanceNumber: number): void {
+    const computeOfferingId = this.currentGroupId.toLowerCase();
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === computeOfferingId
+    );
+    if (offeringIndex > -1) {
+      const computeOfferingObj = this.DOWObject[offeringIndex];
+      if (
+        computeOfferingObj 
+        && Object.prototype.hasOwnProperty.call(computeOfferingObj, "computeOfferingData")
+        && computeOfferingObj.computeOfferingData
+      ) {
+        const instanceIndex = computeOfferingObj.computeOfferingData.findIndex(
+          obj => obj.instanceNumber === instanceNumber
+        );
+        computeOfferingObj.computeOfferingData.splice(instanceIndex, 1);
+        for (let i = instanceIndex; i < computeOfferingObj.computeOfferingData.length; i++) {
+          computeOfferingObj.computeOfferingData[i].instanceNumber 
+            = computeOfferingObj.computeOfferingData[i].instanceNumber - 1;
+        }
+      }
+    }
+    // remove instanceNumber from touched ones - this.computeOfferingInstancesTouched
+    // decrease each instance number after instanceNumber
+    const touchedInstances = this.computeOfferingInstancesTouched[computeOfferingId];
+    touchedInstances.sort((a, b) => a > b ? 1 : -1);
+    const deleteIndex = touchedInstances.indexOf(instanceNumber);
+    touchedInstances.splice(deleteIndex, 1);
+    this.computeOfferingInstancesTouched[computeOfferingId] 
+      = touchedInstances.map(i => i >= deleteIndex + 1 ? i - 1 : i);
+  }
+
+  confirmComputeOfferingDelete = false;
+
 
   public get otherOfferingObject(): DOWServiceOfferingGroup {
     const currentOfferingId = this.currentGroupId.toLowerCase();
@@ -801,6 +1004,10 @@ export class DescriptionOfWorkStore extends VuexModule {
     return this.confirmServiceOfferingDelete;
   }
 
+  public get confirmComputeOfferingDeleteVal(): boolean {
+    return this.confirmComputeOfferingDelete;
+  }
+
   public get confirmOtherOfferingDeleteVal(): boolean {
     return this.confirmOtherOfferingDelete;
   }
@@ -821,6 +1028,37 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public doSetConfirmOtherOfferingDelete(bool: boolean): void {
     this.confirmOtherOfferingDelete = bool;
+  }
+
+  @Action
+  public setConfirmComputeOfferingDelete(bool: boolean): void {
+    this.doSetConfirmComputeOfferingDelete(bool);
+  }
+  @Mutation
+  public doSetConfirmComputeOfferingDelete(bool: boolean): void {
+    this.confirmComputeOfferingDelete = bool;
+  }
+
+  @Action
+  public async deleteComputeOffering(): Promise<void> {
+    this.doDeleteComputeOffering();
+  }
+
+  @Mutation
+  public doDeleteComputeOffering(): void {
+    const offeringIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
+    );
+    if (offeringIndex > -1) {
+      this.DOWObject.splice(offeringIndex, 1);
+      if (this.DOWObject.length) {
+
+        const nextGroupId = this.DOWObject.length === offeringIndex
+          ? this.DOWObject[offeringIndex - 1].serviceOfferingGroupId
+          : this.DOWObject[offeringIndex].serviceOfferingGroupId;
+        this.currentGroupId = nextGroupId;
+      }
+    }
   }
 
   @Action
@@ -1194,6 +1432,26 @@ export class DescriptionOfWorkStore extends VuexModule {
       
       throw new Error( `error occurred while saving service proxy`)
     }
+
+  }
+
+  @Action({rawError: true})
+  public async saveComputeServices(): Promise<void>{
+    const computeServices = await this.getComputeOfferingInstances();
+
+    console.log(computeServices);
+
+    const calls = computeServices.map(
+      item => api.computeOfferingTable.create(
+        mapComputeOfferingToDTO(item)
+      )
+    );
+
+    console.log(calls);
+
+    const saveCalls = await Promise.all(calls);
+
+    console.log(saveCalls);
 
   }
 

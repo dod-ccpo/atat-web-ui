@@ -85,7 +85,8 @@ import DeleteOfferingModal from "./DeleteOfferingModal.vue";
 import { 
   Checkbox, 
   OtherServiceOfferingData, 
-  DOWServiceOffering, 
+  DOWServiceOffering,
+  ComputeOfferingData, 
 } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
 
@@ -186,16 +187,15 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public isGeneral = false;
   public isServiceOfferingList = true;
 
-  public otherOfferingData: OtherServiceOfferingData = {
+  public otherOfferingData: ComputeOfferingData | OtherServiceOfferingData = {
     instanceNumber: 1,
-    environmentType: "",
     classificationLevel: "",
     deployedRegions: [],
     deployedRegionsOther: "",
     descriptionOfNeed: "",
     entireDuration: "",
     periodsNeeded: [],
-    operatingSystemAndLicensing: "",
+    operatingSystem: "",
     numberOfVCPUs: "",
     memory: "",
     storageType: "",
@@ -249,7 +249,34 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       this.selectedOptions.push(...validSelections);
 
       this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
-    } else if (this.isCompute || this.isGeneral) {
+    } else if (this.isCompute) {
+      const computeOfferingIndex = DescriptionOfWork.DOWObject.findIndex(
+        obj => obj.serviceOfferingGroupId.toLowerCase() 
+          === DescriptionOfWork.currentGroupId.toLowerCase()
+      );
+      if (computeOfferingIndex > -1) {
+        const computeOfferingDataArray = 
+          DescriptionOfWork.DOWObject[computeOfferingIndex].computeOfferingData;
+        if (computeOfferingDataArray && computeOfferingDataArray.length > 0) {
+          const computeCurrentInstanceNumber = 
+            DescriptionOfWork.currentOtherServiceInstanceNumber;
+          const computeOfferingData = computeOfferingDataArray.find(
+            obj => obj.instanceNumber === computeCurrentInstanceNumber
+          );
+          if (computeOfferingData) {
+            this.otherOfferingData = computeOfferingData as ComputeOfferingData;
+          } else {
+            const newComputeOfferingData 
+              = await DescriptionOfWork.getOtherOfferingInstance(0);
+            newComputeOfferingData.instanceNumber = computeCurrentInstanceNumber;
+            this.otherOfferingData = newComputeOfferingData as ComputeOfferingData;
+          }
+        } else {
+          this.otherOfferingData.instanceNumber = 1;
+          DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(1);
+        }
+      }
+    } else if (this.isGeneral) {
       const offeringIndex = DescriptionOfWork.DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() 
           === DescriptionOfWork.currentGroupId.toLowerCase()
@@ -303,7 +330,11 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             await DescriptionOfWork.setSelectedOfferings(
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
-          } else if (this.isCompute || this.isGeneral) {
+          } else if (this.isCompute ) {
+            await DescriptionOfWork.setComputeOfferingData(
+              this.otherOfferingData as ComputeOfferingData
+            );
+          }else if (this.isGeneral) {
             await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
         }
@@ -312,7 +343,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         if (this.isServiceOfferingList) {
           await DescriptionOfWork.saveUserSelectedServices();
         } else if (this.isCompute) {
-          // save computeData to backend in ticket AT-7767
+          await DescriptionOfWork.saveComputeServices();
         }
       }
     } catch (error) {
