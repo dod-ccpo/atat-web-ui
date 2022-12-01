@@ -37,9 +37,22 @@ export default class DeleteOfferingModal extends Vue {
   public okText = "";
   public bodyContent = "";
 
+  @Watch("requirementName")
+  public requirementNameChanged(): void {
+    this.updateModalContent();
+  }
+  @Watch("offeringName")
+  public offeringNameChanged(): void {
+    this.updateModalContent();
+  }
+
   @Watch("deleteMode")
   modeChanged(): void {
-    if(this._deleteMode === "item"){
+    this.updateModalContent();
+  }
+
+  public updateModalContent(): void {
+    if(this._deleteMode === "item") {
       this.title = "Delete " + this.offeringName + "?";
       this.bodyContent = `This requirement will be removed from your 
         ${this.requirementName} requirements.
@@ -47,10 +60,10 @@ export default class DeleteOfferingModal extends Vue {
       this.okText = "Delete requirement";
     } else {
       this.title = "Delete all requirements in this category?";
-      this.bodyContent = `This action will remove the ${this.requirementName} category
+      this.bodyContent = `This action will remove the “${this.requirementName}” category
         from your performance requirements. Any details about your requirements
         will not be saved.`;
-      this.okText = "Delete requirement";
+      this.okText = "Delete all requirements";
     }
   }
 
