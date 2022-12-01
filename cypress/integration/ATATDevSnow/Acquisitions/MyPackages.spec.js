@@ -15,7 +15,8 @@ describe("Test suite: List of Acquisitions packages", () => {
       menus = data;
     });    
 
-    cy.launchATAT();
+    cy.launchATAT(false);
+
     cy.dropDownClick(common.acquisitionsTab);       
     cy.textExists(common.myPackage, "My Packages").click();
     cy.textExists(ps.summaryHeader, "Acquisitions"); 
@@ -198,16 +199,20 @@ describe("Test suite: List of Acquisitions packages", () => {
       cy.tabStatus(al.allPackageTab, "true");
     });
     cy.wait(1000);
-    cy.findElement(al.acquisitionStatusChip).each((card) => {
-      const cardText = Cypress.$(card).text();
-      const actualCard = cleanText(cardText);
-      cy.log(actualCard);
-    })
-      .should("contain", "Archived")
-      .and("contain", "Draft")
-      .and("contain", "Task Order Awarded")
-      .and("contain", "Waiting for Task Order")
-      .and("contain", "Waiting for Signatures");
+    cy.findElement(al.searchPackageInput).should("exist").type("aa");
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.findElement(al.searchBtn).should("exist").click().wait(1000).then(() => {
+      cy.findElement(al.acquisitionStatusChip).each((card) => {
+        const cardText = Cypress.$(card).text();
+        const actualCard = cleanText(cardText);
+        cy.log(actualCard);
+      })
+        .should("contain", "Archived")
+        .and("contain", "Draft")
+        .and("contain", "Task Order Awarded")
+        .and("contain", "Waiting for Task Order")
+        .and("contain", "Waiting for Signatures");
+    });   
       
   });
 

@@ -293,7 +293,7 @@ export default class ATATCheckboxGroup extends Vue {
 
   private checkBoxClicked(value: string): void {
     if (this.checkboxRules.length === 0) {
-      this.validateCheckboxesNow = true;;
+      this.validateCheckboxesNow = true;
     }
     if (value === this.noneValue) {
       this.validateOtherOnBlur = false;
@@ -344,8 +344,7 @@ export default class ATATCheckboxGroup extends Vue {
     if (!this.validateCheckboxesNow && this.rules.length) {
       this.validateCheckboxesNow = true;
     }
-    if(!this.$refs.checkboxGroup[0].validate())
-      this.setErrorMessage();
+    this.setErrorMessage();
   }
 
   @Watch("_items")

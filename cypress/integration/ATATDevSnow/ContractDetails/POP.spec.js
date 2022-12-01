@@ -8,7 +8,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
 
   beforeEach(() => {
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
   });
     
