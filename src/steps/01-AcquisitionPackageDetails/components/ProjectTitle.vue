@@ -7,7 +7,7 @@
       class="_input-max-width"
       tooltipText="Provide a short, descriptive title of the work to
               be performed. This will be used to refer to this project within 
-              ATAT and across all acquisition forms."
+              ATAT and across all acquisition documents."
       :value.sync="_currentTitle"
     />
   </div>

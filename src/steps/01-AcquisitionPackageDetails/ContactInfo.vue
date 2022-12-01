@@ -287,11 +287,6 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       label: "Civilian",
       value: "CIVILIAN",
     },
-    {
-      id: "Contractor",
-      label: "Contractor",
-      value: "CONTRACTOR",
-    },
   ];
 
   private selectedGrade: {grade: string, label: string} = {grade: "", label: ""};
