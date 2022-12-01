@@ -15,7 +15,7 @@ describe("Test suite: Select technical proposal: Option2 on Create Evaluation Pl
     });
     
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
     cy.clickSideStepper(common.stepEvaluationCriteriaLink, " Evaluation Criteria ");
     cy.activeStep(common.stepFairOppText);
