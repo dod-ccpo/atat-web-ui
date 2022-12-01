@@ -113,7 +113,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
     },
     {
       id: "NoStartDate",
-      label: "No. The PoP should start upon execution of the task order.",
+      label: "No.",
       value: "NO",
     },
   ];
