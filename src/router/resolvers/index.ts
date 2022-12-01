@@ -143,9 +143,9 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
   if (needsArchitectureDesign && hasCurrentEnv) {
     return routeNames.ArchitecturalDesignDetails;
   }
-  return current === routeNames.ArchitecturalDesign 
-    ? routeNames.BackgroundSummary 
-    : routeNames.CurrentEnvironment;
+  return current === routeNames.BackgroundSummary 
+    ? routeNames.ArchitecturalDesign 
+    : routeNames.BackgroundSummary;
 
 };
 

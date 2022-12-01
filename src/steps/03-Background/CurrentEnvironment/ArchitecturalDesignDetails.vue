@@ -74,9 +74,8 @@ export default class ArchitectureDesignDetails extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+
       }
     } catch (error) {
       console.log(error);
