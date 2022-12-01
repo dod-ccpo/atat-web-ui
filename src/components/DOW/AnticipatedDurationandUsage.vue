@@ -69,9 +69,6 @@
       </ATATAlert>
     </div>
   </div>
-  {{availablePeriodCheckboxItems}}
-  {{selectedOptions}}
-
 </div>
 </template>
 
@@ -82,9 +79,7 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import {
   Checkbox,
-  CrossDomainSolution,
   DOWClassificationInstance,
-  OtherServiceOfferingData,
   RadioButton
 } from "../../../types/Global";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -110,9 +105,9 @@ export default class AnticipatedDurationandUsage extends Vue {
   private label?: string;
   @Prop({default: ""})
   private durationLabel?: string;
-  @Prop({default: "Use vendor-neutral language. This will be added to your" +
-      " Description of Work, so avoid including any company names or vendor-unique" +
-      " brand, product, or titles that could impact full and open competition."})
+  @Prop({default: 'Use vendor-neutral language to describe the purpose and usage. Provide a ' +
+              'functional description of the requirement without including any company names ' +
+              'or vendor-unique brand, product, or titles.'})
   private description?: string;
   @Prop({default: "Performance period details will be used to generate a cost estimate for" +
       " this service later."})
