@@ -165,7 +165,7 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
         }
         // console.log(this.currEnvDTO);
         // the updated migration_documentation will need to be saved
-        await CurrentEnvironment.saveCurrentEnvironment();
+        await CurrentEnvironment.setCurrentEnvironment();
       }
     } catch (error) {
       console.error(`error completing file upload with id ${file?.attachmentId}`);
