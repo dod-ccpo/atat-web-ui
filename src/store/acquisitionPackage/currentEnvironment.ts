@@ -59,7 +59,6 @@ export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = 
   additional_information: "", 
 }
 
-
 /**
  * This module contains all the store and api support that is needed for "Background -
  * current environment" of a new Acquisition
@@ -78,15 +77,12 @@ export class CurrentEnvironmentStore extends VuexModule {
   public currentEnvInstanceNumber = 0;
 
   @Action
-  public async getCurrentEnvironment():
-    Promise<CurrentEnvironmentDTO | null> {
+  public async getCurrentEnvironment(): Promise<CurrentEnvironmentDTO | null> {
     return this.currentEnvironment;
   }
 
   @Action
-  public async getCurrentEnvironmentInstances(): 
-    Promise<CurrentEnvironmentInstanceDTO[]>
-  {
+  public async getCurrentEnvironmentInstances(): Promise<CurrentEnvironmentInstanceDTO[]> {
     return this.currentEnvInstances;
   }
 
@@ -213,25 +209,16 @@ export class CurrentEnvironmentStore extends VuexModule {
     if (!instance.sys_id) {
       const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
         .create(instance);
-      // setting individual properties instead of the whole object is required
-      // because certain reference types have a different structure and needs mapping
       instance.sys_id = currEnvInstanceResp.sys_id as string;
-      // instance.sys_updated_on = currEnvInstanceResp.sys_updated_on;
-      // instance.sys_updated_by = currEnvInstanceResp.sys_updated_by;
       this.currentEnvInstances.push(instance);
       this.currentEnvironment?.env_instances.push(instance.sys_id);
     } else {
-      debugger;
       const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
         .update(instance.sys_id as unknown as string, instance);
       const instanceIndex = this.currentEnvInstances
         .findIndex(obj => obj.sys_id === currEnvInstanceResp.sys_id);
       if (instanceIndex > -1) {
         this.currentEnvInstances[instanceIndex] = instance;
-
-        // const currentInstance = this.currentEnvInstances[instanceIndex];
-        // currentInstance.sys_updated_on = currEnvInstanceResp.sys_updated_on;
-        // currentInstance.sys_updated_by = currEnvInstanceResp.sys_updated_by;
       }
     }
   }

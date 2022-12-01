@@ -212,7 +212,6 @@ export default class EnvironmentSummary extends Vue {
     const classifications: string[] = [];
     const unclassifiedILs: string[] = [];
     const locationClassifications = this.classificationsCloud.concat(this.classificationsOnPrem);
-    debugger;
 
     locationClassifications.forEach((sysId) => {
       const cl = this.classificationLevels.find(obj => obj.sys_id === sysId);
