@@ -77,7 +77,7 @@ export default class Callout extends Vue {
 
   public get introP(): string {
     if (!this.isStandards) {
-      if (this.sourceSelection === "SET_LUMP_SUM") {
+      if (this.sourceSelection === "SetLumpSum") {
         return `Your Contracting Officer (KO) will request Contractors submit a white paper
           identifying a strategy and approach that will meet or exceed the requirements 
           within the proposed costs. Contractors must also provide a price proposal which 
@@ -108,8 +108,8 @@ export default class Callout extends Vue {
     } else if (this.method === "BVTO") {
       return `Award will be made to the Contractor providing the best value and meets the 
         following compliance standards:`;
-    } else if (this.sourceSelection === "SET_LUMP_SUM") {  
-      const methodStr = this.method === "LOWEST_RISK" ? "lowest risk" : "best use";
+    } else if (this.sourceSelection === "SetLumpSum") {  
+      const methodStr = this.method === "LowestRisk" ? "lowest risk" : "best use";
       return `Award will be made to the Contractor whose white paper offers the “${ methodStr }” 
         solution and meets the following assessment areas:`;
     }
@@ -135,7 +135,7 @@ export default class Callout extends Vue {
           of how the item will contribute to the solution is provided.`
       ];
       break;
-    case "SET_LUMP_SUM":
+    case "SetLumpSum":
       listItems = [
         `Solution adequately addresses each requirement element or identifies any 
           requirement elements which are not explicitly identified in the strategy 
