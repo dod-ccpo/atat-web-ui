@@ -3,12 +3,13 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          What type of funding request did you use for this acquisition?
+          What type of funding document will you use for this acquisition?
         </h1>
         <div class="copy-max-width">
           <p id="IntroP" class="mb-7">
-            To complete this section, you will need an authorized funding request to transfer
-            funds from your agency to DITCO. We recommend using G-Invoicing to generate your 7600A
+            To complete this section and proceed with submittal of your requirement, 
+            you must have a certified funding document to transfer funds to your Contracting
+            Office. We recommend using Government Invoicing (G-Invoicing) to generate your 7600A
             and 7600B, but you will also be able to upload form(s) directly from your computer.
             <a id="LearnMoreFunding"
                 role="button"
@@ -41,7 +42,8 @@
               <p>
                 G-Invoicing is the long-term solution for Federal Program Agencies (FPAs) to
                 manage their intragovernmental (IGT) Buy/Sell transactions. This is the preferred
-                system for generating and maintaining your GT&amp;Cs and Orders with DITCO.
+                system for generating and maintaining your GT&amp;Cs and Orders with Defense 
+                Information Technology Contracting Organization (DITCO).
                 <a id="LearnMoreGInvoicing"
                     role="button"
                     tabindex="0"
@@ -57,8 +59,9 @@
                 (ERP) system.
               </p>
               <p>
-                Whether using G-Invoicing or your ERP, you must obtain a signature from your
-                authorized financial point of contact before you can proceed with this section.
+                Whether using G-Invoicing or your ERP, you must obtain a certified funding document
+                from your authorized financial point of contact before you can proceed with 
+                this section.
               </p>
             </template>
           </ATATExpandableLink>

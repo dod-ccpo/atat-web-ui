@@ -12,8 +12,8 @@
         <span class="_external-link">Government Invoicing (G-Invoicing)</span>
       </a>
       to create and manage all
-      intragovernmental (IGT) Buy/Sell transactions. This financial management system will replace
-      the various manual forms used today like the Fiscal Service Form 7600A/B, Military
+      Buy/Sell intragovernmental (IGT) transactions. This financial management system will replace
+      the various manual forms used today like the Fiscal Service (FS) Form 7600A/B, Military
       Interdepartmental Purchase Request (MIPR), etc.
     </p>
     <p>
@@ -47,8 +47,8 @@
       A GT&amp;C agreement may contain one or more Orders.
     </p>
     <p>
-      If your agency uses G-Invoicing, then you will only need to provide your Order Number, and we
-      will take care of syncing your IGT info with this acquisition.
+      If your agency uses G-Invoicing, then you will only need to provide your 7600B Order Number, 
+      and we will take care of syncing your IGT info with this acquisition.
     </p>
     <p>
       If you choose to upload, you will need to provide both of these FS forms.
