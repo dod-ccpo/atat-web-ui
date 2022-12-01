@@ -20,14 +20,13 @@ describe("Testing ServiceOfferingDetails Component", () => {
 
   const otherOfferingData: OtherServiceOfferingData = {
     instanceNumber: 1,
-    environmentType: "",
     classificationLevel: "",
+    operatingSystem: "",
     deployedRegions: [],
     deployedRegionsOther: "",
     descriptionOfNeed: "",
     entireDuration: "",
     periodsNeeded: [],
-    operatingSystemAndLicensing: "",
     numberOfVCPUs: "",
     memory: "",
     storageType: "",

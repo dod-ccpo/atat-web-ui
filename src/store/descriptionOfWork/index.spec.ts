@@ -14,6 +14,7 @@ import {
   DOWServiceOffering, 
   DOWClassificationInstance,
   OtherServiceOfferingData,
+  ComputeOfferingData,
 } from "../../../types/Global";
 
 const localVue = createLocalVue();
@@ -26,16 +27,15 @@ const state = DescriptionOfWorkStore.state;
 
 describe("Testing Description of Work store", () => {
   
-  const otherOfferingData: OtherServiceOfferingData[] = [{
+  const otherOfferingData: ComputeOfferingData[] | OtherServiceOfferingData[] = [{
     instanceNumber: 1,
-    environmentType: "",
     classificationLevel: "",
+    operatingSystem: "",
     deployedRegions: [],
     deployedRegionsOther: "",
     descriptionOfNeed: "",
     entireDuration: "",
     periodsNeeded: [],
-    operatingSystemAndLicensing: "",
     numberOfVCPUs: "",
     memory: "",
     storageType: "",
