@@ -5,7 +5,7 @@
         <v-row>
           <v-col class="col-12">
             <h1 class="page-header">
-              Let’s see if you qualify for an exception to the fair opportunity process
+              Let’s see if you qualify for an exception to fair opportunity
             </h1>
 
             <ATATAlert
@@ -17,7 +17,7 @@
               <template v-slot:content>
                 <h2>Fair opportunity</h2>
                 <p class="mt-2 mb-0">
-                  Each Cloud Service Provider (CSP) available within the JWCC contract must be given
+                  Each Cloud Service Provider (CSP) available within the JWCC Contract must be given
                   a fair opportunity to be considered for task orders exceeding the micro-purchase
                   threshold, unless a statutory exception applies. Any exceptions will require
                   written justification, in accordance with
@@ -29,7 +29,7 @@
                   >
                     <span class="_external-link">FAR 16.505(b)(2)</span>
                   </a>.
-                  We will help you complete justification documentation, if needed.
+                  <!--We will help you complete justification documentation, if needed.-->
                 </p>
               </template>
             </ATATAlert>
