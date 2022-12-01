@@ -43,6 +43,7 @@ import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -541,7 +542,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public async setEvaluationPlan(value: EvaluationPlanDTO): Promise<void> {
+  public setEvaluationPlan(value: EvaluationPlanDTO): void {
     if (this.evaluationPlan) {
       this.evaluationPlan = Object.assign(this.evaluationPlan, value);
     } else {
@@ -642,7 +643,9 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setFairOpportunity(initialFairOpportunity());
-          this.setEvaluationPlan(initialEvaluationPlan());
+          const evaluationPlanDTO = await EvaluationPlan.initialEvaluationPlan();
+          this.setEvaluationPlan(evaluationPlanDTO);
+          acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
 
           this.setRequirementsCostEstimate({ 
             estimatedTaskOrderValue: "",

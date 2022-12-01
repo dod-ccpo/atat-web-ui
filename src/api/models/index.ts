@@ -66,6 +66,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   contract_award: ReferenceColumn;
   package_status?: string;
   contributors?: string[];
+  evaluation_plan?: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {

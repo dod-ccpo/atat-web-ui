@@ -59,6 +59,7 @@ import { Checkbox, RadioButton } from "types/Global";
 import { hasChanges, scrollToId } from "@/helpers";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
   components: {
@@ -221,13 +222,8 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   public async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged) {
-        // KEEP FOR FUTURE TICKET when API hooked up for saving to SNOW
-        // await AcquisitionPackage.saveData({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.EvaluationPlan,
-        // });
-        // REMOVE line below after above hooked up
-        await AcquisitionPackage.setEvaluationPlan(this.currentData);
+        await EvaluationPlan.setEvaluationPlan(this.currentData);
+        await EvaluationPlan.saveEvaluationPlan();
       }
     } catch (error) {
       console.log(error);
