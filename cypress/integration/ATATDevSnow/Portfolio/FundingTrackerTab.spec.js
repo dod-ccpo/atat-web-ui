@@ -24,7 +24,7 @@ describe("Test suite: Portfolios Funding Tracker tab", () => {
       }
     });
 
-    cy.launchATAT();
+    cy.launchATAT(false);
     cy.textExists(common.portfolioBtn, "Portfolios").click();
     cy.searchPortfolio("army", portfolioName);
   });

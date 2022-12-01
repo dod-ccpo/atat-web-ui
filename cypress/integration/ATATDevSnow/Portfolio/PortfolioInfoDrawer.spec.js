@@ -29,7 +29,7 @@ describe("Test suite: Portfolio info Drawer", () => {
       
     });   
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(false);
     cy.textExists(common.portfolioBtn, "Portfolios").click();
     cy.searchPortfolio("air", portfolioName);    
   });

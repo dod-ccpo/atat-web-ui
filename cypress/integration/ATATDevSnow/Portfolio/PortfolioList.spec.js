@@ -17,7 +17,7 @@ describe("Test suite: List of Portfolios", () => {
       filterOptions = data;
     });
 
-    cy.launchATAT();
+    cy.launchATAT(false);
     cy.textExists(common.portfolioBtn, "Portfolios").click();
     cy.textExists(ps.summaryHeader, "Portfolios"); 
     cy.tabStatus(ps.allPortTab, "true");

@@ -30,7 +30,7 @@ describe("Test suite: Portfolios CSP Portaltab", () => {
       
     });    
     
-    cy.launchATAT();
+    cy.launchATAT(false);
     cy.textExists(common.portfolioBtn, "Portfolios").click();
     cy.searchPortfolio("army", portfolioName); 
   });
