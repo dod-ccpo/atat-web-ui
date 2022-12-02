@@ -89,6 +89,7 @@ export const buildClassificationLabel
       return classificationString + "/" + IL;
     }
 
+
 export const buildClassificationDescription
     = (classLevel: ClassificationLevelDTO): string => {
       switch (classLevel.impact_level) {

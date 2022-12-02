@@ -70,6 +70,8 @@ import OtherOfferingSummary
   from "../steps/05-PerformanceRequirements/DOW/OtherOfferingSummary.vue";
 import DOWSummary 
   from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
+import AnticipatedUserAndDataNeeds
+  from "@/steps/05-PerformanceRequirements/DOW/AnticipatedUserAndDataNeeds.vue";
 
 // Step 7 - Other Contract Considerations
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
@@ -253,7 +255,8 @@ export const routeNames = {
   CrossDomain:"Cross_Domain",
   UploadJAMRRDocuments:"JA_MRR_Documents",
   ReadyToGeneratePackage:"Ready_To_Generate_Package",
-  GeneratePackageDocuments: "Generate_Package_Documents"
+  GeneratePackageDocuments: "Generate_Package_Documents",
+  AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs"
 };
 
 /**
@@ -663,6 +666,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "/",
         excludeFromMenu: true,
         name: routeNames.RequirementCategories,
+        stepCompleteOnEnter: routeNames.CurrentContract,
+        completePercentageWeight: 1,
+        component: RequirementCategories,
+        routeResolver: PerformanceRequirementsPathResolver,
+      },
+      {
+        menuText: "Performance Requirements",
+        path: "anticipated-user-and-data-need",
+        excludeFromMenu: true,
+        name: routeNames.AnticipatedUserAndDataNeeds,
         stepCompleteOnEnter: routeNames.CurrentContract,
         completePercentageWeight: 1,
         component: RequirementCategories,
