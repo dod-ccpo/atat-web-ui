@@ -234,7 +234,7 @@ export const routeNames = {
   GatherPriceEstimates:"Gather_Price_Estimates",
   OptimizeOrReplicate:"Optimize_Or_Replicate",
   ArchitecturalDesignSolutions:"ArchitecturalDesignSolutions",
-  IGCETraining:"Training",
+  IGCETraining:"IGCE_Training",
   TravelEstimates:"Travel_Estimates",
   SurgeCapacity:"Surge_Capacity",
   FeeCharged:"Fee_Charged",
