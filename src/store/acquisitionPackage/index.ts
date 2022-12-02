@@ -29,6 +29,7 @@ import {
   PeriodOfPerformanceDTO,
   ProjectOverviewDTO,
   SensitiveInformationDTO,
+  ReferenceColumn,
 } from "@/api/models";
 
 import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
@@ -576,18 +577,80 @@ export class AcquisitionPackageStore extends VuexModule {
       await Attachments.initialize();
       await FinancialDetails.initialize();
 
-      // NATE: pick up here? :)
-      // await CurrentEnvironment.loadCurrentEnvFromId(
-      //   acquisitionPackage.current_environment.value);
 
-      this.setAcquisitionPackage(acquisitionPackage);
+      const currentEnvironmentSysId = 
+        typeof acquisitionPackage.current_environment === "object" ?
+          (acquisitionPackage.current_environment as ReferenceColumn).value as string
+          : acquisitionPackage.current_environment as string;
+
+      const projectOverviewSysId = 
+        typeof acquisitionPackage.project_overview === "object" ?
+          (acquisitionPackage.project_overview as ReferenceColumn).value as string
+          : acquisitionPackage.project_overview as string;
+
+      const organizationSysId =
+        typeof acquisitionPackage.organization === "object" ?
+          (acquisitionPackage.organization as ReferenceColumn).value as string
+          : acquisitionPackage.organization as string;
+
+      const popSysId = 
+        typeof acquisitionPackage.period_of_performance === "object" ?
+          (acquisitionPackage.period_of_performance as ReferenceColumn).value as string
+          : acquisitionPackage.period_of_performance as string;
+
+      const fairOppSysId = 
+        typeof acquisitionPackage.fair_opportunity === "object" ?
+          (acquisitionPackage.fair_opportunity as ReferenceColumn).value as string
+          : acquisitionPackage.fair_opportunity as string;
+
+      const currContractSysId = 
+        typeof acquisitionPackage.current_contract === "object" ?
+          (acquisitionPackage.current_contract as ReferenceColumn).value as string
+          : acquisitionPackage.current_contract as string;
+
+      const sensitiveInfoSysId =
+        typeof acquisitionPackage.sensitive_information === "object" ?
+          (acquisitionPackage.sensitive_information as ReferenceColumn).value as string
+          : acquisitionPackage.sensitive_information as string;
+
+      const contractTypeSysId =
+        typeof acquisitionPackage.contract_type === "object" ?
+          (acquisitionPackage.contract_type as ReferenceColumn).value as string
+          : acquisitionPackage.contract_type as string;
+
+      const classificationLevelSysId =
+        typeof acquisitionPackage.classification_level === "object" ?
+          (acquisitionPackage.classification_level as ReferenceColumn).value as string
+          : acquisitionPackage.classification_level as string;
+
+      const contractConsiderationsSysId = 
+        typeof acquisitionPackage.contract_considerations === "object" ?
+          (acquisitionPackage.contract_considerations as ReferenceColumn).value as string
+          : acquisitionPackage.contract_considerations as string;
+
+      const reqCostEstimateSysId = 
+        typeof acquisitionPackage.requirements_cost_estimate === "object" ?
+          (acquisitionPackage.requirements_cost_estimate as ReferenceColumn).value as string
+          : acquisitionPackage.requirements_cost_estimate as string;
       
-      if(
-        acquisitionPackage.project_overview &&
-        acquisitionPackage.project_overview.value
-      ) {
+
+      this.setAcquisitionPackage({
+        ...acquisitionPackage,
+        project_overview: projectOverviewSysId,
+        current_environment: currentEnvironmentSysId,
+        organization: organizationSysId,
+        period_of_performance: popSysId,
+        fair_opportunity: fairOppSysId,
+        current_contract: currContractSysId,
+        sensitive_information: sensitiveInfoSysId,
+        contract_type: contractTypeSysId,
+        contract_considerations: contractConsiderationsSysId,
+        requirements_cost_estimate: reqCostEstimateSysId
+      });
+      
+      if(projectOverviewSysId) {
         const projectOverview = await api.projectOverviewTable.retrieve(
-          acquisitionPackage.project_overview.value
+          projectOverviewSysId
         );
         if(projectOverview){
           this.setProjectOverview(projectOverview);
@@ -599,27 +662,19 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
 
-      if(
-        acquisitionPackage.period_of_performance &&
-        acquisitionPackage.period_of_performance.value
-      ){
-        const periodOfPerformance = await api.periodOfPerformanceTable.retrieve(
-          acquisitionPackage.period_of_performance.value
+      if(currentEnvironmentSysId){
+        await CurrentEnvironment.loadCurrentEnvFromId(
+          currentEnvironmentSysId
         );
-        if(periodOfPerformance)
-          this.setPeriodOfPerformance(periodOfPerformance)
       } else {
-        this.setPeriodOfPerformance(
-          initialPeriodOfPerformance()
+        await CurrentEnvironment.setCurrentEnvironment(
+          await CurrentEnvironment.initialCurrentEnvironment()
         );
       }
-      
-      if(
-        acquisitionPackage.organization && 
-        acquisitionPackage.organization.value
-      ) {
+
+      if(organizationSysId) {
         const organization = await api.organizationTable.retrieve(
-          acquisitionPackage.organization.value
+          organizationSysId
         );
         if(organization)
           this.setOrganization(organization);
@@ -629,12 +684,21 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(
-        acquisitionPackage.fair_opportunity &&
-        acquisitionPackage.fair_opportunity.value
-      ) {
+      if(popSysId){
+        const periodOfPerformance = await api.periodOfPerformanceTable.retrieve(
+          popSysId
+        );
+        if(periodOfPerformance)
+          this.setPeriodOfPerformance(periodOfPerformance)
+      } else {
+        this.setPeriodOfPerformance(
+          initialPeriodOfPerformance()
+        );
+      }
+
+      if(fairOppSysId) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(
-          acquisitionPackage.fair_opportunity.value
+          fairOppSysId
         );
         if(fairOpportunity)
           this.setFairOpportunity(fairOpportunity);
@@ -644,12 +708,9 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(
-        acquisitionPackage.current_contract &&
-        acquisitionPackage.current_contract.value
-      ) {
+      if(currContractSysId) {
         const currentContract = await api.currentContractTable.retrieve(
-          acquisitionPackage.current_contract.value
+          currContractSysId
         );
         if(currentContract)
           this.setCurrentContract(currentContract);
@@ -659,12 +720,9 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(
-        acquisitionPackage.sensitive_information &&
-        acquisitionPackage.sensitive_information.value
-      ){
+      if(sensitiveInfoSysId){
         const sensitiveInformation = await api.sensitiveInformationTable.retrieve(
-          acquisitionPackage.sensitive_information.value
+          sensitiveInfoSysId
         );
         if(sensitiveInformation)
           this.setSensitiveInformation(sensitiveInformation);
@@ -674,12 +732,9 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(
-        acquisitionPackage.contract_type &&
-        acquisitionPackage.contract_type.value
-      ){
+      if(contractTypeSysId){
         const contractType = await api.contractTypeTable.retrieve(
-          acquisitionPackage.contract_type.value
+          contractTypeSysId
         );
         if(contractType)
           this.setContractType(contractType);
@@ -689,12 +744,9 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
 
-      if(
-        acquisitionPackage.classification_level &&
-        acquisitionPackage.classification_level.value
-      ) {
+      if(classificationLevelSysId) {
         const classificationLevel = await api.classificationLevelTable.retrieve(
-          acquisitionPackage.classification_level.value
+          classificationLevelSysId
         );
         if(classificationLevel)
           this.setClassificationLevel(classificationLevel);
@@ -704,12 +756,9 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(
-        acquisitionPackage.contract_considerations &&
-        acquisitionPackage.contract_considerations.value
-      ) {
+      if(contractConsiderationsSysId) {
         const contractConsiderations = await api.contractConsiderationsTable.retrieve(
-          acquisitionPackage.contract_considerations.value
+          contractConsiderationsSysId
         );
         if(contractConsiderations)
           this.setContractConsiderations(contractConsiderations);
@@ -719,12 +768,9 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(
-        acquisitionPackage.requirements_cost_estimate &&
-        acquisitionPackage.requirements_cost_estimate.value
-      ) {
+      if(reqCostEstimateSysId) {
         const requirementsCostEstimate = await api.requirementsCostEstimateTable.retrieve(
-          acquisitionPackage.requirements_cost_estimate.value
+          reqCostEstimateSysId
         );
         if(requirementsCostEstimate)
           this.setRequirementsCostEstimate(requirementsCostEstimate);
@@ -799,7 +845,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
-          acquisitionPackage.current_environment = { value: currentEnvironmentDTO.sys_id };
+          acquisitionPackage.current_environment = currentEnvironmentDTO.sys_id as string;
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);

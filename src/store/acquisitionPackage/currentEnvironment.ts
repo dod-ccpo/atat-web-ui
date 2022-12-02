@@ -7,6 +7,7 @@ import Vue from "vue";
 import {api} from "@/api";
 import _ from "lodash";
 import any = jasmine.any;
+import { AxiosRequestConfig } from "axios";
 
 const ATAT_CURRENT_ENVIRONMENT_KEY = "ATAT_CURRENT_ENVIRONMENT_KEY";
 
@@ -316,16 +317,37 @@ export class CurrentEnvironmentStore extends VuexModule {
 
   @Action({rawError: true})
   public async loadCurrentEnvFromId(sysId: string): Promise<void> {
-    // NATE: do your magic!
-    // this.doInitialize()
+    const currentEnvironment = await api.currentEnvironmentTable.retrieve(sysId);
+
+    if(currentEnvironment){
+      await this.setCurrentEnvironment(currentEnvironment);
+
+      if(currentEnvironment.env_instances.length > 0){
+        const queryString = "sys_id=" + currentEnvironment.env_instances.join("^ORsys_id=");
+
+        const config: AxiosRequestConfig = {
+          params: {
+            sysparm_display_value: "all",
+            sysparm_query: queryString
+          }
+        };
+
+        const currentEnvInstances: CurrentEnvironmentInstanceDTO[] 
+          = await api.currentEnvironmentInstanceTable.getQuery(config);
+
+        if(currentEnvInstances.length)
+          this.setCurrentEnvironmentInstances(currentEnvInstances);
+      }
+
+    } else {
+      await this.setCurrentEnvironment(
+        await this.initialCurrentEnvironment()
+      );
+    }
+      
 
   }
-
-  @Mutation
-  public doInitialize(sysId: string): void {
-    //
-  }
-
+  
   /**
    * Loads the current environment by making BE api calls and sets it to this store
    */
