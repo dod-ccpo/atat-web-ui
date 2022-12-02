@@ -10,7 +10,9 @@
           to know some basic information about your users and data within each
           classification level.
         </p>
-        <v-expansion-panels v-for="(classification, index) in selectedClassifications"
+        <v-expansion-panels
+          v-model="accordionClosed"
+          v-for="(classification, index) in selectedClassifications"
           :id="'AnticipatedUserAndDataNeedsAccordion' + index"
           :key="index"
           class="mb-4"
@@ -19,7 +21,7 @@
           <v-expansion-panel expand>
             <v-expansion-panel-header>
               <div class="d-flex justify-space-between">
-                <div class="h4">
+                <div class="h4 _expansion-panel-header">
                   {{buildClassificationLabel(classification,'short',true)}}
                 </div>
               </div>
@@ -66,6 +68,7 @@ import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 })
 export default class AnticipatedUserAndDataNeeds extends Vue {
   public selectedClassifications: ClassificationLevelDTO[] = []
+  public accordionClosed = 0;
 
   private async mounted(): Promise<void> {
     await this.loadOnEnter();
