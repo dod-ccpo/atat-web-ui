@@ -112,12 +112,12 @@ export class PackageSummaryStore extends VuexModule {
         this.packageList.push({
           project_overview: (p.project_overview as unknown as ReferenceColumn).value,
           title: "",
-          secondary_reviewers: p.secondary_reviewers,
+          secondary_reviewers: p.secondary_reviewers?.split(","),
           sys_updated_on: p.sys_updated_on,
           sys_created_by: p.sys_created_by,
           mission_owners: p.mission_owners,
           package_status: p.package_status,
-          contributors: p.contributors,
+          contributors: p.contributors?.split(","),
           contract_award: (p.contract_award as ReferenceColumn).value,
           sys_id: p.sys_id
         })
