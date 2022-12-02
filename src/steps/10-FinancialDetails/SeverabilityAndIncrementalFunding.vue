@@ -118,7 +118,10 @@
             </template>
           </ATATExpandableLink>
         </div>
-        <div v-if="showAlert()">
+
+        <!-- TODO - ADD ALERT BACK IN WHEN IGCE IMPLEMENTED FULLY -->
+        
+        <!-- <div v-if="showAlert()">
           <ATATAlert
             id="IFPRequestPageAlert"
             class="container-max-width my-10"
@@ -164,8 +167,8 @@
                 </p>
               </div>
             </template>
-          </ATATAlert>
-        </div>
+          </ATATAlert> 
+        </div>-->
       </v-col>
     </v-row>
   </v-container>
