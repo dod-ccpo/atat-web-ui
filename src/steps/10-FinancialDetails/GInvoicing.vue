@@ -41,7 +41,7 @@
               tooltipText="This is a 20-character value (including hyphens) generated 
                 by G-Invoicing. You may also enter 22 characters (including a period 
                 and digit at the end) to reference the version number. Your Order Number
-                is located in the top section of <b>your FS Form 7600A</b>"
+                is located in the top section of <strong>your FS Form 7600A</strong>"
               :hideHelpTextOnError="true"
               :validate-on-blur="true"
               :value.sync="gInvoiceNumber"
