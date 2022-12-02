@@ -117,7 +117,7 @@ import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 
-// step 10 - Review Required Forms
+// step 10 - Generate Package Documents
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
@@ -1039,7 +1039,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "09",
     completePercentageWeight: 7,
-    menuText: "Review Required Forms",
+    menuText: "Generate Package Documents",
     path: "/review-required-forms",
     component: ReviewRequiredForms,
     children: [
