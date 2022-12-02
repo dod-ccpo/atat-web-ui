@@ -9,6 +9,24 @@
       criteria for selecting a source based on submission of a 
       quote/proposal/white paper.
     </p>
+    <h3 class="mb-5">What factors should be considered when deciding whether 
+      or not to require a technical proposal?</h3>
+      <v-expansion-panels accordion flat>
+        <v-expansion-panel
+          v-for="(item, index) in factorsPanelData"
+          :key="index"
+        >
+      <v-expansion-panel-header :id="item.id + '_Button'">
+      {{ item.headerText }}
+      </v-expansion-panel-header>
+      <v-expansion-panel-content :id="item.id + '_Content'">
+          <div v-html="item.content"></div>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+    </v-expansion-panels>
+    <hr/>
+    <h3 class="mb-5">Methods of evaluation
+    </h3>
     <p class="mb-3">
       The following methods of evaluation are available under the JWCC Contract.
     </p>
@@ -127,7 +145,28 @@ export default class CreateEvalPlanSlideOut extends Vue {
       `
     },
   ];
-
+  public factorsPanelData: Record<string, string>[] = [
+    {
+      headerText: "Technical proposal required",
+      id: "techProposalRequiredExpandCollapse",
+      content: `
+      A technical proposal is required when the CSP needs to clearly describe how their proposed 
+      solution combines offerings to meet the Government’s need. A CSP would respond to the 
+      solicitation by providing a detailed written technical proposal that includes a list of 
+      offerings with proposed pricing.
+      `
+    },
+    {
+      headerText: "No technical proposal required",
+      id: "noTechProposalRequiredExpandCollapse",
+      content: `
+      A technical proposal is not required when the CSP can clearly demonstrate their understanding 
+      of the requirements by providing a comprehensive listing of all offerings that is sufficient 
+      to meet the Government’s need. A CSP would respond to the solicitation by only providing a 
+      list of offerings with proposed pricing.
+      `
+    }
+  ];
 }
 </script>
 

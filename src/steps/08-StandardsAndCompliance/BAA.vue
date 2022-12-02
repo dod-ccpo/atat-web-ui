@@ -154,7 +154,7 @@ export default class BAA extends Mixins(LoadOnEnter,SaveOnLeave) {
   private bAAOptions: RadioButton[] = [
     {
       id: "YesBAA",
-      label: "Yes. This contract effort will require a BAA to safeguard e-PHI.",
+      label: "Yes. This contract effort will require a BAA to safeguard PHI.",
       value: "YES",
     },
     {

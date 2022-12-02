@@ -15,7 +15,7 @@
               class="copy-max-width my-10"
             >
               <template v-slot:content>
-                <h2>What is PII</h2>
+                <h2>What is PII?</h2>
                 <p class="mt-2 mb-0">
                   PII is information about an individual which identifies, links, relates, or is
                   unique to an individual. Examples include social security number, age, military
