@@ -43,6 +43,7 @@
               :width="120"
               label="What percentage of additional capacity do you anticipate each year?"
               suffix="%"
+              type="number"
               :value.sync="currEnvDTO.anticipated_yearly_additional_capacity"
               :rules="[$validators.required('Enter a percentage for your anticipated growth.')]"
             />
@@ -163,7 +164,7 @@ export default class ReplicateDetails extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = _.cloneDeep(storeData);
       this.savedData = {
@@ -189,9 +190,7 @@ export default class ReplicateDetails extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        // TODO - which store to save to?
-        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
       }
     } catch (error) {
       console.log(error);

@@ -29,7 +29,6 @@ import {
   PeriodOfPerformanceDTO,
   ProjectOverviewDTO,
   SensitiveInformationDTO,
-  CurrentEnvironmentDTO,
 } from "@/api/models";
 
 import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
@@ -39,7 +38,6 @@ import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails, { initialRequirementsCostEstimate } from "../financialDetails";
 import Periods from "../periods";
-import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
@@ -220,31 +218,6 @@ const initialClassificationLevel = () => {
   }
 }
 
-const initialCurrentEnvironment = () => {
-  return {
-    current_environment_exists: "",
-    has_system_documentation: "",
-    system_documentation: [],
-    has_migration_documentation: "",
-    migration_documentation: [],
-    env_location: "",
-    env_classifications_cloud: [],
-    env_classifications_on_prem: [],
-    env_instances: [],
-    current_environment_replicated_optimized: "", // radio - YES_REPLICATE | YES_OPTIMIZE | NO
-    statement_replicated_optimized: "",
-    additional_growth: "", // "YES" | "NO"
-    anticipated_yearly_additional_capacity: null, // number | null
-    has_phased_approach: "", // "YES" | "NO"
-    phased_approach_schedule: "",
-    needs_architectural_design_services: "", // "YES" | "NO"
-    statement_architectural_design: "",
-    applications_need_architectural_design: "",
-    data_classifications_impact_levels: [],
-    external_factors_architectural_design: "",
-  }
-}
-
 const saveAcquisitionPackage = (value: AcquisitionPackageDTO) => {
   api.acquisitionPackageTable.update(value.sys_id as string, value);
 };
@@ -268,7 +241,6 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensitiveInformation: store.sensitiveInformation,
-      currentEnvironment: store.currentEnvironment,
       allowDeveloperNavigation: store.allowDeveloperNavigation
     })
   );
@@ -351,7 +323,6 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
-  currentEnvironment: CurrentEnvironmentDTO | null = null;
   totalBasePoPDuration = 0;
   taskOrderDetailsAlertClosed = false;
 
@@ -361,10 +332,7 @@ export class AcquisitionPackageStore extends VuexModule {
   allowDeveloperNavigation = false;
 
   fundingRequestType: string | null =  null;
-  // currentEnv = {
-  //   system_documentation:"",
-  //   migration_documentation:"",
-  // }
+
   public initContact: ContactDTO = initialContact()
 
   public getTitle(): string {
@@ -566,21 +534,9 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.requirementsCostEstimate;
   }
 
-  @Mutation
-  public setCurrentEnvironment(value: CurrentEnvironmentDTO): void {
-    this.currentEnvironment = this.currentEnvironment
-      ? Object.assign(this.currentEnvironment, value)
-      : value;
-  }
-
   @Action({rawError: true})
   public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
     return this.fairOpportunity;
-  }
-
-  @Action({rawError: true})
-  public async getCurrentEnvironment(): Promise<CurrentEnvironmentDTO | null>{
-    return this.currentEnvironment;
   }
 
   @Action
@@ -606,12 +562,11 @@ export class AcquisitionPackageStore extends VuexModule {
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.classificationLevel = sessionData.classificationLevel;
-    this.currentEnvironment = sessionData.currentEnvironment;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
   }
 
   @Action({rawError: true})
-  public async loadPackageFromId(packageId: string){
+  public async loadPackageFromId(packageId: string): Promise<void> {
     const acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
 
@@ -745,26 +700,6 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      // if(
-      //   acquisitionPackage.current_environment &&
-      //   acquisitionPackage.current_environment.value
-      // ){
-      //   debugger;
-      //   const currentEnvironment = await api.currentEnvironmentTable.retrieve(
-      //     acquisitionPackage.current_environment.value
-      //   );
-      //   if(currentEnvironment){
-      //     this.setCurrentEnvironment(currentEnvironment);
-      //     CurrentEnvironment.setCurrentEnvironment(currentEnvironment);
-      //   }
-      // } else {
-      //   this.setCurrentEnvironment(
-      //     await CurrentEnvironment.initialCurrentEnvironment()
-      //   );
-      //   CurrentEnvironment.setInitialized(false);
-      //   await CurrentEnvironment.initialize();
-      // }
-
       if(
         acquisitionPackage.contract_considerations &&
         acquisitionPackage.contract_considerations.value
@@ -860,7 +795,9 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
-          this.setCurrentEnvironment(currentEnvironmentDTO);
+          // acquisitionPackage.current_environment = EJY
+          //   currentEnvironmentDTO.sys_id as unknown as string;
+          acquisitionPackage.current_environment = { value: currentEnvironmentDTO.sys_id };
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
@@ -1325,7 +1262,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.contractType = null;
     this.requirementsCostEstimate = null;
     this.classificationLevel = null;
-    this.currentEnvironment = null;
     this.totalBasePoPDuration = 0;
     this.taskOrderDetailsAlertClosed = false;
     this.packageId = "";

@@ -1,6 +1,6 @@
 <template>
   <div class="pt-8 pb-10">
-    <section class="_learn-more-section bg-white _py-80">
+    <section class="_learn-more-section">
       <div class="container-max-width">
 
         <v-row>    
@@ -32,7 +32,7 @@
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
-            <div class="_view-all mb-10">
+            <div class="_view-all mb-10 bg-white">
               <a
                 id="viewAllPackagesLink"
                 role="button"
