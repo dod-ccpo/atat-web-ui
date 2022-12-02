@@ -286,6 +286,25 @@ export class ContactDataStore extends VuexModule {
       return filteredCountries;
     }
   }
+
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_CONTACT_DATA_KEY);
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.initialized = false;
+    this.branchChoices = [];
+    this.civilianGradeChoices  = [];
+    this.countries = [];
+    this.militaryRanks = [];
+    this.militaryAutoCompleteGroups = {};
+    this.roleChoices = [];
+    this.salutationChoices = [];
+    this.states = [];
+  }
 }
 
 const ContactData = getModule(ContactDataStore);

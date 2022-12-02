@@ -502,10 +502,10 @@ export interface IGCE {
   surgeCapabilities: string,
 }
 
-export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
+export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BEST_USE" | "LOWEST_RISK";
 
-export type EvalPlanSourceSelection = "" | "NoTechProposal" | "TechProposal" 
-  | "SetLumpSum" | "EqualSetLumpSum";
+export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL" 
+  | "SET_LUMP_SUM" | "EQUAL_SET_LUMP_SUM";
 
 export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";

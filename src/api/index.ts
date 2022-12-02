@@ -38,7 +38,10 @@ import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
 import { UserApi } from "@/api/user";
+import {EvaluationPlanApi} from "@/api/evaluationPlan";
 import {CurrentEnvironmentInstanceAPI} from "@/api/currentEnvironmentInstance";
+import {EvalPlanAssessmentAreaApi} from "@/api/evalPlanAssessmentArea";
+import {EvalPlanDifferentiatorApi} from "@/api/evalPlanDifferentiator";
 
 
 export const api = {
@@ -84,7 +87,10 @@ export const api = {
   environmentInstanceTable: new EnvironmentInstanceAPI(),
   portfolioTable: new PortfolioApi(),
   cloudServiceProviderTable: new CloudServiceProviderApi(),
-  userTable: new UserApi()
+  userTable: new UserApi(),
+  evaluationPlanTable: new EvaluationPlanApi(),
+  evalPlanAssessmentAreaTable: new EvalPlanAssessmentAreaApi(),
+  evalPlanDifferentiatorTable: new EvalPlanDifferentiatorApi()
 }
 
 export default {
