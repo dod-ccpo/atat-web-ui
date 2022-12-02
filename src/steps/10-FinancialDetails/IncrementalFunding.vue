@@ -305,8 +305,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
-  public costEstimate = 0;
-  public costEstimateStr = "";
+  public costEstimate = 250000;
+  public costEstimateStr = toCurrencyString(this.costEstimate);
   public amountRemaining = 0;
   public amountRemainingStr = "";
   public initialAmount = 0;
