@@ -117,13 +117,12 @@ import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 
-// step 10 - Review Required Forms
-import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
-import ReviewRequiredFormsStepOne 
-  from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
+// step 10 - Generate Package Documents
+import GeneratePackageDocuments from "../steps/11-ReviewRequiredForms/Index.vue";
+import GeneratePackageDocumentsStepOne 
+  from "../steps/11-ReviewRequiredForms/GeneratePackageDocumentsStepOne.vue";
 import UploadJAMRRDocuments from "@/steps/11-ReviewRequiredForms/UploadJAMRRDocuments.vue";
 import ReadyToGeneratePackage from "@/steps/11-ReviewRequiredForms/ReadyToGeneratePackage.vue";
-import GeneratePackageDocuments from "@/steps/11-ReviewRequiredForms/GeneratePackageDocuments.vue";
 
 import {
   AcorsRouteResolver,
@@ -216,8 +215,8 @@ export const routeNames = {
   MIPR: "MIPR",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   IncrementalFunding: "Incremental_Funding",
-  ReviewRequiredForms: "Review_Required_Forms",
-  ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
+  GeneratePackageDocuments: "Generate_Package_Documents",
+  GeneratePackageDocumentsStepOne: "Generate_Package_Documents_Step_One",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
   GInvoicing:'G_Invoicing',
@@ -253,7 +252,6 @@ export const routeNames = {
   CrossDomain:"Cross_Domain",
   UploadJAMRRDocuments:"JA_MRR_Documents",
   ReadyToGeneratePackage:"Ready_To_Generate_Package",
-  GeneratePackageDocuments: "Generate_Package_Documents"
 };
 
 /**
@@ -1039,17 +1037,17 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "09",
     completePercentageWeight: 7,
-    menuText: "Review Required Forms",
+    menuText: "Generate Package Documents",
     path: "/review-required-forms",
-    component: ReviewRequiredForms,
+    component: GeneratePackageDocuments,
     children: [
       {
         menuText: "Step One",
         path:"review-required-forms",
         excludeFromMenu: true,
-        name: routeNames.ReviewRequiredFormsStepOne,
+        name: routeNames.GeneratePackageDocumentsStepOne,
         completePercentageWeight: 1,
-        component: ReviewRequiredFormsStepOne,
+        component: GeneratePackageDocumentsStepOne,
       },
       {
         menuText: "Upload J&A and MRR Documents",

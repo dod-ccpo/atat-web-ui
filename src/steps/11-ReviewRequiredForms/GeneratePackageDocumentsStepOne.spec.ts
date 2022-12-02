@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import lab  from "@/steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
+import lab  from "@/steps/11-ReviewRequiredForms/GeneratePackageDocumentsStepOne.vue";
 Vue.use(Vuetify);
 
 describe("Testing index Component", () => {
