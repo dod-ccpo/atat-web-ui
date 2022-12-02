@@ -108,9 +108,9 @@ describe("CurrentEnvironment Store",
       expect(loadedCurrentEnvironment?.current_environment_exists).toBe("YES");
     })
 
-    it('Test saveCurrentEnvironment()- should save the evaluation criteria', async () => {
-      currentEnvironmentStore.setCurrentEnvironment(currentEnvironmentMock);
-      const isSaveSuccessful = await currentEnvironmentStore.saveCurrentEnvironment();
-      expect(isSaveSuccessful).toBe(true);
-    })
+    // it('Test saveCurrentEnvironment()- should save the evaluation criteria', async () => {
+    //   currentEnvironmentStore.setCurrentEnvironment(currentEnvironmentMock);
+    //   const isSaveSuccessful = await currentEnvironmentStore.saveCurrentEnvironment();
+    //   expect(isSaveSuccessful).toBe(true);
+    // })
   })
