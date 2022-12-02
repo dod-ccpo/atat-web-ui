@@ -25,7 +25,7 @@
     <p>
       The financial management system aligns processes between trading partners through each step of
       the Buy/Sell lifecycle and uses a common set of terms. This will replace the various manual
-      forms used today like the Fiscal Servicen (FS) Form 7600A/B, Military Interdepartmental 
+      forms used today like the Fiscal Services (FS) Form 7600A/B, Military Interdepartmental 
       Purchase Request (MIPR), etc.
     </p>
     <p>
