@@ -98,10 +98,12 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
   public showCustomDifferentiators = false;
   public customDiffsOptional = true;
 
+  public otherSysId = "";
+
   @Watch("selectedDifferentiators")
   public selectedDifferentiatorsChange(newVal: string[], oldVal: string[]): void {
-    this.showCustomDifferentiators = newVal.includes("CustomDifferentiators");
-    if (!this.showCustomDifferentiators && oldVal.includes("CustomDifferentiators")) {
+    this.showCustomDifferentiators = newVal.includes(this.otherSysId);
+    if (!this.showCustomDifferentiators && oldVal.includes(this.otherSysId)) {
       this.customDifferentiators = [];
     }
     this.customDiffsOptional = newVal.length > 1;
@@ -119,6 +121,11 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
     this.differentiators = convertEvalPlanDifferentiatorToCheckbox(
       EvaluationPlan.differentiatorData
     );
+
+    const otherItem = this.differentiators.find(item => item.id === "CustomDifferentiators");
+
+    this.otherSysId = otherItem?.value || "";
+
     if (storeData) {
       this.evalPlan = _.cloneDeep(storeData);
       this.savedData = _.cloneDeep(storeData);

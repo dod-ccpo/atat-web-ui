@@ -75,7 +75,7 @@ export class EvaluationPlanStore extends VuexModule {
   private async getDifferentiatorData(): Promise<void>{
     const differentiatorRequestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_query: "ORDERBYlabel",
+        sysparm_query: "ORDERBYsequence",
         sysparm_fields: "name,description,sys_id",
       },
     };
@@ -95,7 +95,7 @@ export class EvaluationPlanStore extends VuexModule {
   private async getAssessmentAreaData(): Promise<void>{
     const assessmentAreaRequestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_query: "ORDERBYlabel",
+        sysparm_query: "ORDERBYsequence",
         sysparm_fields: "name,description,sys_id",
       },
     };

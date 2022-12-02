@@ -85,7 +85,6 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 
 export const BVTOResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
-  debugger;
   if (current === routeNames.EvalPlanSummary){
     if (!evalPlanRequired()) {
       return routeNames.NoEvalPlan;
