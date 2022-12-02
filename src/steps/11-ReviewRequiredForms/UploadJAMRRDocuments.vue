@@ -124,7 +124,7 @@ import {AttachmentDTO, FairOpportunityDTO} from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
 import Attachments from "@/store/attachments";
 import {AttachmentServiceCallbacks} from "@/services/attachment";
@@ -236,8 +236,18 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
     return true;
   }
 
+  /**
+   * Since this is the first page in the generate package documents step, need to ensure that
+   * the fair opportunity table record and sys_id exists for the document upload. To do this
+   * a save is performed immediately after load.
+   */
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getFairOpportunity();
+    let storeData = await AcquisitionPackage.getFairOpportunity();
+    await AcquisitionPackage.saveData({
+      data: storeData as FairOpportunityDTO,
+      storeProperty: StoreProperties.FairOpportunity,
+    }, )
+    storeData = await AcquisitionPackage.getFairOpportunity();
     if (storeData) {
       this.fairOppDTO = storeData;
       this.exception_to_fair_opportunity = storeData.exception_to_fair_opportunity;
