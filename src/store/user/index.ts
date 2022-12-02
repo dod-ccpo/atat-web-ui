@@ -42,6 +42,14 @@ export class UserStore extends VuexModule {
     nameofProperty(this, (x) => x.currentUser)
   ];
 
+  @Action({rawError: true})
+  public async resetUser(): Promise<void> {
+    this.setInitialized(false);
+    sessionStorage.removeItem(ATAT_USER_KEY);
+    this.setCurrentUser({});
+    await this.ensureInitialized();
+  }
+
 
   @Action({rawError: true})
   public async getCurrentUser(): Promise<UserDTO> {

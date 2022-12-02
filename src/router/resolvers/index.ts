@@ -11,6 +11,7 @@ import IGCEStore from "@/store/IGCE";
 import { ClassificationLevelDTO, EvaluationPlanDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Vue from "vue";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -135,22 +136,22 @@ export const ReplicateDetailsResolver = (current: string): string => {
 
 export const ArchitecturalDesignDetailsRouteResolver = (current: string): string => {
   const needsArchitectureDesign
-      = AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
+      = CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
   const hasCurrentEnv
-      = AcquisitionPackage.currentEnvironment?.current_environment_exists === "YES";
+      = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
 
   if (needsArchitectureDesign && hasCurrentEnv) {
     return routeNames.ArchitecturalDesignDetails;
   }
-  return current === routeNames.ArchitecturalDesign 
-    ? routeNames.BackgroundSummary 
-    : routeNames.CurrentEnvironment;
+  return current === routeNames.BackgroundSummary 
+    ? routeNames.ArchitecturalDesign 
+    : routeNames.BackgroundSummary;
 
 };
 
 export const CurrentContractEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
-    = AcquisitionPackage.currentEnvironment?.current_environment_exists === "YES";
+    = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
   if (hasCurrentEnv) {
     return routeNames.UploadSystemDocuments;
   }
@@ -439,23 +440,25 @@ export const OfferGroupOfferingsPathResolver = (
     }     
   }
   
-  let dontNeedButtonText = "";
-  switch (currentGroupId.toLowerCase()) {
-  case "compute":
-    dontNeedButtonText = "I don’t need compute resources";
-    break;
-  case "general_xaas":
-    dontNeedButtonText = "I don’t have general XaaS requirements";
-    break;
-  case "developer_tools":
-    dontNeedButtonText = "I don’t need Developer Tools and Services";
-    break;
-  // case "database": // stubbed in for future ticket
-  //   dontNeedButtonText = "I don’t need database services";
-  //   break;
-  default:
-    dontNeedButtonText = "I don’t need these cloud resources";
+  let dontNeedButtonText = "I don’t need ";
+  /* eslint-disable camelcase */
+  const offeringNames: Record<string, string> = {
+    compute: "Compute",
+    developer_tools: "Developer Tools and Services",
+    applications: "Application services",
+    machine_learning: "Machine Learning",
+    networking: "Networking",
+    security: "Security",
+    database: "Database",
+    storage: "Storage",
+    edge_computing: "Edge Computing and Tactical Edge",
+    iot: "Internet of Things",
+    general_xaas: "General IaaS, PaaS, and SaaS",
   }
+  /* eslint-enable camelcase */
+  
+  const offeringStr = offeringNames[currentGroupId.toLowerCase()] || "these cloud resources";
+  dontNeedButtonText += offeringStr;
 
   Steps.setAdditionalButtonText({
     buttonText: dontNeedButtonText, 
@@ -682,14 +685,14 @@ export const IGCESurgeCapabilities =  (current:string): string =>{
 
 const needsReplicateOrOptimize = (): boolean => {
   return (
-    AcquisitionPackage.currentEnvironment !== null &&
-    AcquisitionPackage.currentEnvironment
+    CurrentEnvironment.currentEnvironment !== null &&
+    CurrentEnvironment.currentEnvironment
       .current_environment_replicated_optimized.indexOf("YES") > -1
   );
 }
 
 const currentEnvNeedsArchitectureDesign = (): boolean => {
-  return AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
+  return CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
 }
 
 export const IGCECannotProceedResolver = (current: string): string => {

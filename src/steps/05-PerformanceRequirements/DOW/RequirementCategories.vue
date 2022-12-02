@@ -3,12 +3,14 @@
     <v-container class="container-max-width" fluid>
       <v-row>
         <v-col class="col-12">
-          <h1 class="page-header">
+          <h1 class="page-header mb-3">
             Let’s work on your performance requirements
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              {{introText}}
+              {{introSentence}} 
+              Specify any categories that may apply to your acquisition below, and
+              we’ll walk through each selection to get more details.
               <a
                 role="button"
                 tabindex="0"
@@ -28,20 +30,12 @@
             />
           </div>
           <div class="copy-max-width">
-            <legend
-              class="font-weight-500 pb-0 mr-2"
-            >
-              Do you need an architectural design solution to address a known
-              problem or use-case?<br/>
-              <span
-                class="text-base-light font-weight-400"
-              >
-                This is in addition to any known problems 
-                that you told us about for your current environment.
-              </span>
-            </legend>
             <ATATRadioGroup 
               id="ArchitectureOptions"
+              legend="Do you need an architectural design solution to address a known
+                problem or use-case?"
+              helpText="This is in addition to any known problems 
+                that you told us about for your current environment."
               :width="180"
               :items="radioOptions"
               :value.sync="currEnvDTO.needs_architectural_design_services"
@@ -95,7 +89,8 @@ import PerfReqLearnMore from "./PerfReqLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { Checkbox, RadioButton, SlideoutPanelContent } from "../../../../types/Global";
-import { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
+import CurrentEnvironment, 
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import { SystemChoiceDTO } from "@/api/models";
 import { routeNames } from "../../../router/stepper";
 import _ from "lodash";
@@ -132,10 +127,8 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   private routeNames = routeNames
   private goToSummary = false;
 
-  public introText = `Through JWCC, you have the ability to procure many offerings for
-    Anything as a Service (XaaS) and Cloud Support Packages. Specify
-    any categories that may apply to your acquisition below, and we'll
-    walk through each selection to get more details next.`;
+  public introSentence = `Through JWCC, you have the ability to procure many offerings for
+    Anything as a Service (XaaS) and Cloud Support Packages.`;
 
   public radioOptions: RadioButton[] = [
     {
@@ -219,27 +212,23 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     };
     this.cloudSupportCheckboxItems.push(cloudSupportNone)
 
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = _.cloneDeep(storeData);
     }
 
     const replicateOrOptimize = 
       this.currEnvDTO.current_environment_replicated_optimized || "";
+      
+    const replicateOrOptimizeGerund = replicateOrOptimize === "YES_OPTIMIZE"
+      ? "optimizing" : replicateOrOptimize === "YES_REPLICATE" ? "replicating" : ""
 
-    if(replicateOrOptimize === "YES_OPTIMIZE"){
-      this.introText = `In addition to optimizing your current environment, 
+    if (replicateOrOptimize) {
+      this.introSentence = `In addition to ${replicateOrOptimizeGerund} your current environment, 
         you can procure other JWCC offerings for Anything as a Service (XaaS) 
-        and Cloud Support Packages. Specify any categories that may apply to your 
-        acquisition below, and we'll walk through each selection to get more details.`;
-    } else if (replicateOrOptimize === "YES_REPLICATE") {
-      this.introText = `In addition to replicating your current environment, 
-        you can procure other JWCC offerings for Anything as a Service (XaaS) 
-        and Cloud Support Packages. Specify any categories that may apply to your 
-        acquisition below, and we'll walk through each selection to get more details.`;
+        and Cloud Support Packages.`;
     }
-
-  };
+  }
 
   public async mounted(): Promise<void> {
     this.goToSummary = DescriptionOfWork.DOWObject.length > 0;

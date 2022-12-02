@@ -74,7 +74,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = storeData;
       this.envLocation = storeData.env_location;
@@ -82,7 +82,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       this.isOnPrem = this.envLocation === "ON_PREM" || this.isHybrid;
       this.isCloud = this.envLocation === "CLOUD" || this.isHybrid;
       this.envClassificationsCloud = storeData.env_classifications_cloud;
-      this.envClassificationsOnPrem = storeData.env_classifications_on_prem;
+      this.envClassificationsOnPrem = storeData.env_classifications_onprem;
       this.savedData = {
         envClassificationsCloud: this.envClassificationsCloud,
         envClassificationsOnPrem: this.envClassificationsOnPrem,
@@ -106,12 +106,9 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         /* eslint-disable camelcase */
         this.currEnvDTO.env_classifications_cloud = this.envClassificationsCloud;
-        this.currEnvDTO.env_classifications_on_prem = this.envClassificationsOnPrem;
+        this.currEnvDTO.env_classifications_onprem = this.envClassificationsOnPrem;
         /* eslint-enable camelcase */
-        // TODO - which store to save to?
-        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
       }
     } catch (error) {
       console.log(error);

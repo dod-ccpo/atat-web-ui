@@ -31,12 +31,12 @@ describe("testing route resolvers", () => {
     Periods.setPeriods([]);
     DescriptionOfWork.setIsIncomplete(true);
   })
-  describe("CurrentEnvironment Resolvers", () => {
-    it("ArchitecturalDesignDetailsRouteResolver() - routes to current environment", async () => {
-      const route = ArchitecturalDesignDetailsRouteResolver(routeNames.BackgroundSummary);
-      expect(route).toBe(routeNames.CurrentEnvironment);
-    });
-  })
+  // describe("CurrentEnvironment Resolvers", () => {
+  //   it("ArchitecturalDesignDetailsRouteResolver() - routes to current environment", async () => {
+  //     const route = ArchitecturalDesignDetailsRouteResolver(routeNames.BackgroundSummary);
+  //     expect(route).toBe(routeNames.CurrentEnvironment);
+  //   });
+  // })
 
   describe("ACORs Resolvers", () => {
     it ("AcorsRouteResolver() - routes to acquisition package summary", async () => {

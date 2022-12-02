@@ -86,14 +86,15 @@
                 </v-list>
               </div>
             </div>
+
           </v-col>
         </v-row>
-        <ATATDivider></ATATDivider>
+      <hr class="my-0 _mt-80" />
       </div>
     </section>
     <section 
       id="SectionProvisionResources" 
-      class="_learn-more-section bg-white _py-80"
+      class="_learn-more-section bg-white _pb-80"
     >
       <div class="container-max-width">
         <h1 class="text-primary large text-center mb-10">
