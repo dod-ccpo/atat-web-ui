@@ -72,7 +72,7 @@ export const buildClassificationCheckboxList = (
 };
 
 export const buildClassificationLabel
-    = (classLevel: ClassificationLevelDTO, type: string | null): string => {
+    = (classLevel: ClassificationLevelDTO, type: string | null, spaceBetween = false): string => {
       type = type || "long";
       const classificationString = classLevel.classification === "U"
         ? "Unclassified"
@@ -85,6 +85,10 @@ export const buildClassificationLabel
       }
       if (type === "long") {
         return classificationString + " / " + ILString;
+      }
+      if(spaceBetween){
+        return classificationString + " / " + IL;
+
       }
       return classificationString + "/" + IL;
     }

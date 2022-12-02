@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="container-max-width">
+  <v-container fluid class="container-max-width _anticipated-users-accordion">
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header">
@@ -13,30 +13,34 @@
         <v-expansion-panels v-for="(classification, index) in selectedClassifications"
           :id="'AnticipatedUserAndDataNeedsAccordion' + index"
           :key="index"
+          class="mb-4"
           flat
         >
           <v-expansion-panel expand>
             <v-expansion-panel-header>
               <div class="d-flex justify-space-between">
                 <div class="h4">
-                  {{buildClassificationLabel(classification,'short')}}
+                  {{buildClassificationLabel(classification,'short',true)}}
                 </div>
               </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <span>1. Anticipated users</span>
+              <span class="font-weight-500 font-size-20">1. Anticipated users</span>
               <RegionsDeployedAndUserCount
-                label="Where are your users located?"
-                description="Enter the approximate number of users that you expect within each
-                 selected region."
+                groupLabel="Where are your users located?"
+                groupLabelHelpText="Enter the approximate number of users that you expect within
+                 each selected region."
+                :hasTextFields="true"
+                class="mb-12 mt-5"
               />
-              <AnticipatedUserAndDataNeeds
-                DataOrUsers="Users"
+              <AnticipatedDataNeeds
+                needs="user"
               />
-              <hr />
-              <span>2. Anticipated data needs</span>
-              <AnticipatedUserAndDataNeeds
-                DataOrUsers="Data"
+              <hr class="mb-10 mt-5" />
+              <span class="font-weight-500 font-size-20 mb-5">2. Anticipated data needs</span>
+              <AnticipatedDataNeeds
+                class="mt-5"
+                needs="data"
               />
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -52,11 +56,12 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel } from "@/helpers";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
+import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 
 @Component({
   components: {
     RegionsDeployedAndUserCount,
-    AnticipatedUserAndDataNeeds
+    AnticipatedDataNeeds
   },
 })
 export default class AnticipatedUserAndDataNeeds extends Vue {

@@ -662,20 +662,18 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: PerformanceRequirementsIndex,
     children: [
       {
+        menuText: "Anticipated Users and Data Needs",
+        path: "anticipated-users-and-data-needs",
+        name: routeNames.AnticipatedUserAndDataNeeds,
+        completePercentageWeight: 5,
+        completed: false,
+        component: AnticipatedUserAndDataNeeds,
+      },
+      {
         menuText: "Performance Requirements",
         path: "/",
         excludeFromMenu: true,
         name: routeNames.RequirementCategories,
-        stepCompleteOnEnter: routeNames.CurrentContract,
-        completePercentageWeight: 1,
-        component: RequirementCategories,
-        routeResolver: PerformanceRequirementsPathResolver,
-      },
-      {
-        menuText: "Performance Requirements",
-        path: "anticipated-user-and-data-need",
-        excludeFromMenu: true,
-        name: routeNames.AnticipatedUserAndDataNeeds,
         stepCompleteOnEnter: routeNames.CurrentContract,
         completePercentageWeight: 1,
         component: RequirementCategories,
