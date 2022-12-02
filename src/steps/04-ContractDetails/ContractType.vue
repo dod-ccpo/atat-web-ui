@@ -122,7 +122,7 @@ export default class ContractType extends Mixins(SaveOnLeave) {
       id: "TMCheckbox",
       label: "Time-and-material (T&M)",
       value: "T&M",
-      description: "This applies to any contract line items other than travel.",
+      description: "A justification is required for any contract line item other than travel.",
     }
   ];
 

@@ -1,7 +1,8 @@
 <template>
   <v-container fluid class="container-max-width">
     
-    <h1 class="page-header">Let’s confirm your contact information</h1>
+    <h1 class="page-header">Let's find out about the primary point of contact for this 
+      requirement</h1>
     <ATATRadioGroup
       legend="What role best describes your affiliation with the DoD?"
       id="ContactRole"
