@@ -61,7 +61,6 @@ import {
 import SlideoutPanel from "@/store/slideoutPanel";
 import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
 import { EvaluationPlanDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import { hasChanges } from "@/helpers";
@@ -94,37 +93,37 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
       label: `I do not require a technical proposal. Award will be made on a 
         Lowest Price, Technically Acceptable (LPTA) basis.`,
       id: "NoTechProposal",
-      value: "NoTechProposal"
+      value: "NO_TECH_PROPOSAL"
     },
     {
       label: `I require a technical proposal. Award will be made on either a 
         LPTA or Best Value Trade-Off (BVTO) basis.`,
       id: "TechProposal",
-      value: "TechProposal",
+      value: "TECH_PROPOSAL",
     },
     {
       label: `I would like to purchase a set lump sum dollar amount of offerings 
         from any one CSP. Award will be made to the CSP offering either the 
         “best use” or “lowest risk” solution.`,
       id: "SetLumpSum",
-      value: "SetLumpSum",
+      value: "SET_LUMP_SUM",
     },
     {
       label: `I would like to purchase an equal set lump sum dollar amount of 
         offerings from each CSP. The Government will issue equal awards to each CSP.`,
       id: "EqualSetLumpSum",
-      value: "EqualSetLumpSum",
+      value: "EQUAL_SET_LUMP_SUM",
     }
   ];
 
   public get methodOptions(): RadioButton[] {
-    return this.sourceSelection === "TechProposal" 
+    return this.sourceSelection === "TECH_PROPOSAL" 
       ? this.techProposalOptions
       : this.lumpSumOptions;
   }
 
   public get methodMessagingSubstr(): string {
-    return this.sourceSelection === "TechProposal" 
+    return this.sourceSelection === "TECH_PROPOSAL" 
       ? "method of evaluation" : "technique";
   }
 
@@ -157,20 +156,20 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
     {
       label: "“Best use” solution",
       id: "BestUse",
-      value: "BestUse",
+      value: "BEST_USE",
       description: "Award will be made to the CSP offering the “best use.”"
     },
     {
       label: "“Lowest risk” solution",
       id: "LowestRisk",
-      value: "LowestRisk",
+      value: "LOWEST_RISK",
       description: "Award will be made to the CSP providing the lowest risk."
     },
   ];
 
   public get showMethods(): boolean {
-    return this.sourceSelection === "TechProposal" 
-      || this.sourceSelection === "SetLumpSum";
+    return this.sourceSelection === "TECH_PROPOSAL" 
+      || this.sourceSelection === "SET_LUMP_SUM";
   }
 
   public legendLink: LegendLink = {
@@ -204,10 +203,10 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
     source_selection: "",
     method: "",
     has_custom_specifications: "",
-    standard_specifications: [],
-    custom_specifications: [],
-    standard_differentiators: [],
-    custom_differentiators: [],
+    standard_specifications: "",
+    custom_specifications: "",
+    standard_differentiators: "",
+    custom_differentiators: "",
     sys_id: ""
   }
   /* eslint-enable camelcase */
@@ -244,10 +243,10 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
           // reset specification data if either source or method changed
           /* eslint-disable camelcase */
           this.currentData.has_custom_specifications = undefined;
-          this.currentData.standard_specifications = [];
-          this.currentData.custom_specifications = [];
-          this.currentData.standard_differentiators = [];
-          this.currentData.custom_differentiators = [];
+          this.currentData.standard_specifications = "";
+          this.currentData.custom_specifications = "";
+          this.currentData.standard_differentiators = "";
+          this.currentData.custom_differentiators = "";
           /* eslint-enable camelcase */
         }
         await EvaluationPlan.setEvaluationPlan(this.currentData);

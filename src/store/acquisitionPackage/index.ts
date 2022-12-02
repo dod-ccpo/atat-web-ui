@@ -171,8 +171,8 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
     source_selection: "" as EvalPlanSourceSelection,
     method: "" as EvalPlanMethod,
     has_custom_specifications: undefined,
-    standard_specifications: [],
-    custom_specifications: [],
+    standard_specifications: "",
+    custom_specifications: "",
   }
 }
 

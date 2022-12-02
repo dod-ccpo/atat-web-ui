@@ -593,14 +593,26 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
 }
 
+export interface EvalPlanAssessmentAreaDTO extends BaseTableDTO {
+  name: string;
+  description: string;
+  sequence: string;
+}
+
+export interface EvalPlanDifferentiatorDTO extends BaseTableDTO {
+  name: string;
+  description: string;
+  sequence: string;
+}
+
 export interface EvaluationPlanDTO extends BaseTableDTO {
   source_selection: EvalPlanSourceSelection;
   method?: EvalPlanMethod;
   has_custom_specifications?: string;
-  standard_specifications?: string[];
-  custom_specifications?: string[];
-  standard_differentiators?: string[];
-  custom_differentiators?: string[];
+  standard_specifications?: string;
+  custom_specifications?: string;
+  standard_differentiators?: string;
+  custom_differentiators?: string;
 }
 
 export interface UserDTO extends BaseTableDTO {

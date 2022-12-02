@@ -1,10 +1,15 @@
 /* eslint-disable camelcase */
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
-import {EvaluationPlanDTO} from "@/api/models";
+import {
+  EvalPlanAssessmentAreaDTO, 
+  EvalPlanDifferentiatorDTO, 
+  EvaluationPlanDTO
+} from "@/api/models";
 import {nameofProperty} from "@/store/helpers";
 import Vue from "vue";
 import {api} from "@/api";
+import { AxiosRequestConfig } from "axios";
 
 const ATAT_EVALUATION_PLAN_KEY = "ATAT_EVALUATION_PLAN_KEY";
 
@@ -13,10 +18,10 @@ export const defaultEvaluationPlan = (): EvaluationPlanDTO => {
     source_selection: "",
     method: "",
     has_custom_specifications: "",
-    standard_specifications: [],
-    custom_specifications: [],
-    standard_differentiators: [],
-    custom_differentiators: []
+    standard_specifications: "",
+    custom_specifications: "",
+    standard_differentiators: "",
+    custom_differentiators: ""
   };
 }
 
@@ -35,6 +40,9 @@ export class EvaluationPlanStore extends VuexModule {
   initialized = false;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentEnvInstanceNumber = 0;
+
+  differentiatorData: EvalPlanDifferentiatorDTO[] = [];
+  assessmentAreaData: EvalPlanAssessmentAreaDTO[] = [];
 
   @Action({rawError: true})
   public async getEvaluationPlan(): Promise<EvaluationPlanDTO | null> {
@@ -59,6 +67,47 @@ export class EvaluationPlanStore extends VuexModule {
   }
 
   @Mutation
+  public setDifferentiatorData(value: EvalPlanDifferentiatorDTO[]): void {
+    this.differentiatorData = value;
+  }
+
+  @Action({rawError: true})
+  private async getDifferentiatorData(): Promise<void>{
+    const differentiatorRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "ORDERBYlabel",
+        sysparm_fields: "name,description,sys_id",
+      },
+    };
+
+    const differentiatorData = 
+      await api.evalPlanDifferentiatorTable.all(differentiatorRequestConfig);
+
+    this.setDifferentiatorData(differentiatorData);
+  }
+
+  @Mutation
+  public setAssessmentAreaData(value: EvalPlanAssessmentAreaDTO[]): void {
+    this.assessmentAreaData = value;
+  }
+
+  @Action({rawError: true})
+  private async getAssessmentAreaData(): Promise<void>{
+    const assessmentAreaRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "ORDERBYlabel",
+        sysparm_fields: "name,description,sys_id",
+      },
+    };
+
+    const assessmentAreaData = 
+      await api.evalPlanAssessmentAreaTable.all(assessmentAreaRequestConfig);
+
+    this.setAssessmentAreaData(assessmentAreaData);
+  }
+
+
+  @Mutation
   public setInitialized(value: boolean): void {
     this.initialized = value;
   }
@@ -80,6 +129,8 @@ export class EvaluationPlanStore extends VuexModule {
     }
     
     const evaluationPlanDTO = await this.initialEvaluationPlan();
+    await this.getAssessmentAreaData();
+    await this.getDifferentiatorData();
     await this.setEvaluationPlan(evaluationPlanDTO);
     this.setInitialized(true);
   }
