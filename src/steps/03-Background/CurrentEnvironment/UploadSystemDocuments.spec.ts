@@ -35,17 +35,17 @@ describe("Testing UploadSystemDocuments Component", () => {
       expect(wrapper.vm.hasChanged()).toBe(true);
     });
 
-    it("test saveOnLeave()", async () => {
-      wrapper.vm.$data.hasChanged = true
-      // eslint-disable-next-line camelcase
-      wrapper.vm.$data.currentData = {system_documentation: 'test'}
-      const result = AcquisitionPackage.currentEnvironment?.system_documentation
-      jest.spyOn(AcquisitionPackage,"setCurrentEnvironment")
-      wrapper.vm.saveOnLeave()
-      Vue.nextTick(()=>{
-        expect(result).toBe('test');
-      })
-    })
+    // it("test saveOnLeave()", async () => {
+    //   wrapper.vm.$data.hasChanged = true
+    //   // eslint-disable-next-line camelcase
+    //   wrapper.vm.$data.currentData = {system_documentation: 'test'}
+    //   const result = AcquisitionPackage.currentEnvironment?.system_documentation
+    //   jest.spyOn(AcquisitionPackage,"setCurrentEnvironment")
+    //   wrapper.vm.saveOnLeave()
+    //   Vue.nextTick(()=>{
+    //     expect(result).toBe('test');
+    //   })
+    // })
 
     it("test onValueChange",()=>{
       wrapper.vm.$data.selectedUpload = "NO";
