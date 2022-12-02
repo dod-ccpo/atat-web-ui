@@ -333,8 +333,8 @@ export class CurrentEnvironmentStore extends VuexModule {
     try {
       const currentEnvironmentDTO = await api.currentEnvironmentTable
         .retrieve(this.currentEnvironment?.sys_id);
-      // TODO: add orchestration to load records from current environment instance table
-      this.setCurrentEnvironment(currentEnvironmentDTO);
+      // TODO: commented out call to set.. because set function is saving the record again...
+      // await this.setCurrentEnvironment(currentEnvironmentDTO);
       return Promise.resolve(currentEnvironmentDTO);
     } catch (error) {
       throw new Error(`an error occurred while loading current environment ${error}`);

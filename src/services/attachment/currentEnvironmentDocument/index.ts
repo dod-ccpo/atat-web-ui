@@ -8,11 +8,11 @@ import {CurrentEnvironmentApi} from "@/api/currentEnvironment";
 // record manager to coordinate record creation saving with attachment service
 const recordManager : RecordManager<CurrentEnvironmentDTO> = {
   retrieveOrCreate: async function (): Promise<CurrentEnvironmentDTO> {
-    return await CurrentEnvironment.loadCurrentEnvironment();
+    return await CurrentEnvironment.getCurrentEnvironment() as CurrentEnvironmentDTO;
   },
   save: async function (record: string): Promise<void> {
-    const data = JSON.parse(record) as CurrentEnvironmentDTO;
-    CurrentEnvironment.setCurrentEnvironment(data);
+    // const data = JSON.parse(record) as CurrentEnvironmentDTO;
+    // await CurrentEnvironment.setCurrentEnvironment(data);
   },
   updateRecord: function (record: string, attachmentSysId: string, fileName: string):
     CurrentEnvironmentDTO {
