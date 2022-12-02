@@ -594,6 +594,11 @@ export class AcquisitionPackageStore extends VuexModule {
           (acquisitionPackage.organization as ReferenceColumn).value as string
           : acquisitionPackage.organization as string;
 
+      const evalPlanSysId = 
+        typeof acquisitionPackage.evaluation_plan === "object" ?
+          (acquisitionPackage.evaluation_plan as ReferenceColumn).value as string
+          : acquisitionPackage.evaluation_plan as string;
+
       const popSysId = 
         typeof acquisitionPackage.period_of_performance === "object" ?
           (acquisitionPackage.period_of_performance as ReferenceColumn).value as string
@@ -646,7 +651,8 @@ export class AcquisitionPackageStore extends VuexModule {
         sensitive_information: sensitiveInfoSysId,
         contract_type: contractTypeSysId,
         contract_considerations: contractConsiderationsSysId,
-        requirements_cost_estimate: reqCostEstimateSysId
+        requirements_cost_estimate: reqCostEstimateSysId,
+        evaluation_plan: evalPlanSysId
       });
       
       if(projectOverviewSysId) {
@@ -682,6 +688,14 @@ export class AcquisitionPackageStore extends VuexModule {
       } else {
         this.setOrganization(
           initialOrganization()
+        );
+      }
+
+      if(evalPlanSysId){
+        await EvaluationPlan.loadEvalPlanFromId(evalPlanSysId);
+      } else {
+        await EvaluationPlan.setEvaluationPlan(
+          await EvaluationPlan.initialEvaluationPlan()
         );
       }
 

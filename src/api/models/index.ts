@@ -65,7 +65,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   mission_owners?: string;
   contract_award: ReferenceColumn | string;
   package_status?: string;
-  contributors?: string[];
+  contributors?: string;
   evaluation_plan?: string;
 }
 

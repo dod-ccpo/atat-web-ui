@@ -187,6 +187,23 @@ export class EvaluationPlanStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async loadEvalPlanFromId(sysId: string): Promise<void> {
+    const evalPlan = await api.evaluationPlanTable.retrieve(sysId);
+
+    if(evalPlan){
+      await this.setEvaluationPlan(evalPlan);
+    } else {
+      await this.setEvaluationPlan(
+        await this.initialEvaluationPlan()
+      );
+    }
+
+    await this.getAssessmentAreaData();
+    await this.getDifferentiatorData();
+    this.setInitialized(true);
+  }
+
+  @Action({rawError: true})
   public async reset(): Promise<void> {
     sessionStorage.removeItem(ATAT_EVALUATION_PLAN_KEY);
     this.doReset();
