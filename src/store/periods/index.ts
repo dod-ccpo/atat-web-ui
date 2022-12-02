@@ -43,7 +43,7 @@ const initialPeriodOfPerformance: PeriodOfPerformanceDTO = {
   time_frame: "",
   recurring_requirement: "",
   option_periods: "",
-  base_period: ""
+  base_period: "",
 }
 
 @Module({
@@ -116,7 +116,7 @@ export class PeriodsStore extends VuexModule {
     await this.ensureInitialized();
 
     try {
-      
+      debugger;
       if(this.periodOfPerformance?.sys_id)
       {
 
@@ -159,7 +159,7 @@ export class PeriodsStore extends VuexModule {
   public async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO>{
 
     await this.ensureInitialized();
-
+    debugger;
     if(this.periodOfPerformance && this.periodOfPerformance.sys_id 
       && this.periodOfPerformance.sys_id.length > 0)
     {
@@ -182,6 +182,7 @@ export class PeriodsStore extends VuexModule {
           requested_pop_start_date: this.periodOfPerformance?.requested_pop_start_date  || "",
           base_period: basePeriod?.sys_id || "",
           option_periods: optionPeriods.map((period) => period.sys_id).join(","),
+          sys_id: this.periodOfPerformance.sys_id || "",
         };
 
         return pop;
@@ -252,6 +253,7 @@ export class PeriodsStore extends VuexModule {
 
   @Action({rawError: true})
   public async savePeriodOfPerformance(value: PeriodOfPerformanceDTO) : Promise<void>{
+    debugger;
     const popSysId = value?.sys_id || "";
     const savePop = popSysId.length > 0 ? 
       api.periodOfPerformanceTable.update(popSysId || "", value):
