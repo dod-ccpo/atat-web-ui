@@ -117,11 +117,11 @@ import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 
 // step 10 - Generate Package Documents
-import GeneratePackageDocuments from "../steps/11-ReviewRequiredForms/Index.vue";
-import GeneratePackageDocumentsStepOne 
-  from "../steps/11-ReviewRequiredForms/GeneratePackageDocumentsStepOne.vue";
-import UploadJAMRRDocuments from "@/steps/11-ReviewRequiredForms/UploadJAMRRDocuments.vue";
-import ReadyToGeneratePackage from "@/steps/11-ReviewRequiredForms/ReadyToGeneratePackage.vue";
+import GeneratePackageDocuments from "../steps/11-GeneratePackageDocuments/Index.vue";
+import UploadJAMRRDocuments from "@/steps/11-GeneratePackageDocuments/UploadJAMRRDocuments.vue";
+import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToGeneratePackage.vue";
+import GeneratingPackageDocuments 
+  from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
 
 import {
   AcorsRouteResolver,
@@ -214,8 +214,7 @@ export const routeNames = {
   MIPR: "MIPR",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   IncrementalFunding: "Incremental_Funding",
-  GeneratePackageDocuments: "Generate_Package_Documents",
-  GeneratePackageDocumentsStepOne: "Generate_Package_Documents_Step_One",
+  GeneratingPackageDocuments: "Generating_Package_Documents",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
   GInvoicing:'G_Invoicing',
@@ -994,7 +993,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
-
       },
       {
         menuText: "Incremental Funding",
@@ -1033,14 +1031,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: GeneratePackageDocuments,
     children: [
       {
-        menuText: "Step One",
-        path:"review-required-forms",
-        excludeFromMenu: true,
-        name: routeNames.GeneratePackageDocumentsStepOne,
-        completePercentageWeight: 1,
-        component: GeneratePackageDocumentsStepOne,
-      },
-      {
         menuText: "Upload J&A and MRR Documents",
         path:"upload-ja-mrr-documents",
         excludeFromMenu: true,
@@ -1062,9 +1052,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Generate Package Documents",
         path:"generate-package-documents",
         excludeFromMenu: true,
-        name: routeNames.GeneratePackageDocuments,
+        name: routeNames.GeneratingPackageDocuments,
         completePercentageWeight: 0,
-        component: GeneratePackageDocuments
+        component: GeneratingPackageDocuments
       }
     ],
   },
