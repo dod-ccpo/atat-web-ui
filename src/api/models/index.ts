@@ -98,7 +98,7 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   migration_documentation?: string[]; // List - sys_ids from sys_attachment table 
   env_location: EnvironmentLocation;
   env_classifications_cloud: string[]; // array of classification level sys_ids
-  env_classifications_on_prem: string[]; // array of classification level sys_ids
+  env_classifications_onprem: string[]; // array of classification level sys_ids
   env_instances: string[]; // array of sys_ids
   current_environment_replicated_optimized: EnvironmentReplicateOptimized;
   statement_replicated_optimized: string;
@@ -125,7 +125,7 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   users_per_region: string; // json stringified sys_id/count pairs
   operating_system: string;
   licensing: string;
-  number_of_VCPUs: number | null;
+  number_of_vcpus: number | null;
   processor_speed: number | null; 
   memory_amount: number | null;
   memory_unit: StorageUnit;
@@ -136,12 +136,10 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   number_of_instances: number | null; 
   data_egress_monthly_amount: number | null;    
   data_egress_monthly_unit: StorageUnit;
-  current_payment_arrangement: PaymentArrangement;
-  pricing_period_expiration_date?: string;
+  pricing_model: PaymentArrangement;
+  pricing_model_expiration?: string;
   additional_information?: string; 
 }
-
-
 
 export interface ContactDTO extends BaseTableDTO {
   type: string; // Mission Owner, COR, ACOR

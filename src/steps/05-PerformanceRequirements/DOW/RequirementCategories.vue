@@ -89,7 +89,8 @@ import PerfReqLearnMore from "./PerfReqLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { Checkbox, RadioButton, SlideoutPanelContent } from "../../../../types/Global";
-import { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
+import CurrentEnvironment, 
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import { SystemChoiceDTO } from "@/api/models";
 import { routeNames } from "../../../router/stepper";
 import _ from "lodash";
@@ -211,7 +212,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     };
     this.cloudSupportCheckboxItems.push(cloudSupportNone)
 
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = _.cloneDeep(storeData);
     }

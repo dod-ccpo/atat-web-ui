@@ -117,7 +117,6 @@
             instance
           </v-btn>  
 
-
         </v-col>
       </v-row>
     </v-container>
@@ -159,7 +158,6 @@ import { buildClassificationLabel, toTitleCase } from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
-
 @Component({
   components: {
     ATATDialog,
@@ -167,17 +165,6 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }  
 })
 export default class EnvironmentSummary extends Vue {
-
-  $refs!: {
-    form: Vue & {
-      resetValidation: () => void;
-      errorBucket: string[];
-      reset: () => void;
-      validate: () => boolean;
-      errorBag: Record<number, boolean>;
-    },
-  };
-
   public currEnvData = defaultCurrentEnvironment;
   public deleteInstanceModalTitle = "";
   public envInstances: CurrentEnvironmentInstanceDTO[] = [];
@@ -212,6 +199,7 @@ export default class EnvironmentSummary extends Vue {
     const classifications: string[] = [];
     const unclassifiedILs: string[] = [];
     const locationClassifications = this.classificationsCloud.concat(this.classificationsOnPrem);
+
     locationClassifications.forEach((sysId) => {
       const cl = this.classificationLevels.find(obj => obj.sys_id === sysId);
       classifications.push(this.topLevelClassification(cl?.classification as string))
@@ -284,9 +272,11 @@ export default class EnvironmentSummary extends Vue {
 
   public async deleteInstance(): Promise<void> {
     await CurrentEnvironment.deleteEnvironmentInstance(this.instanceToDeleteSysId);
-    await this.buildTableData();
-    this.showDeleteInstanceDialog = false;
-    this.instanceToDeleteSysId = "";
+    this.$nextTick(async () => {
+      await this.buildTableData();
+      this.showDeleteInstanceDialog = false;
+      this.instanceToDeleteSysId = "";
+    })
   }
 
   public async validateInstance(
@@ -302,7 +292,7 @@ export default class EnvironmentSummary extends Vue {
       "users_per_region",
       "operating_system",
       "licensing",
-      "number_of_VCPUs",
+      "number_of_vcpus",
       "processor_speed",
       "memory_amount",
       "storage_type",
@@ -310,9 +300,8 @@ export default class EnvironmentSummary extends Vue {
       "performance_tier",
       "number_of_instances",
       "data_egress_monthly_amount",
-      "current_payment_arrangement",
+      "pricing_model",
     ];
-
     requiredFields.forEach((field) => {
       if (instanceData[field] === "") {
         isValid = false;
@@ -334,95 +323,98 @@ export default class EnvironmentSummary extends Vue {
       }
     }
 
-    if (instanceData.current_payment_arrangement === "PREPAID"
-      && instanceData.pricing_period_expiration_date === ""
+    if (instanceData.pricing_model === "PREPAID"
+      && instanceData.pricing_model_expiration === ""
     ) {
       isValid = false;
     }
-
+    
     return isValid;
-
   }
 
   public async buildTableData(): Promise<void> {
-    this.tableHeaders = [    
-      { text: "", value: "instanceNumber", width: "50" },
-      { text: "Location", value: "location" },
-      { text: "Classification", value: "classification" },
-      { text: "Quantity", value: "qty" },
-      { text: "vCPU", value: "vCPU" },
-      { text: "Memory", value: "memory" },
-      { text: "Storage", value: "storage" },
-      { text: "Performance", value: "performance" },
-      { text: "", value: "actions", width: "75" },
-    ];
+    setTimeout(async () => {
 
-    this.tableData = [];
-    this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
+      this.tableHeaders = [    
+        { text: "", value: "instanceNumber", width: "50" },
+        { text: "Location", value: "location" },
+        { text: "Classification", value: "classification" },
+        { text: "Quantity", value: "qty" },
+        { text: "vCPU", value: "vCPU" },
+        { text: "Memory", value: "memory" },
+        { text: "Storage", value: "storage" },
+        { text: "Performance", value: "performance" },
+        { text: "", value: "actions", width: "75" },
+      ];
 
-    this.envInstances.forEach(async (instance, index) => {
-      let isValid = await this.validateInstance(instance);
-      let storage = "";
-      if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
-        const storageType = toTitleCase(instance.storage_type);
-        storage = storageType + ": " + String(instance.storage_amount)
-          + " " + instance.storage_unit;
-      }
-      let performance = "";
-      if (instance.performance_tier) {
-        performance = toTitleCase(instance.performance_tier.replace("_", " "));
-      }
-      let location = "";
-      if (instance.instance_location === "ON_PREM") {
-        location = "On-premise";
-      } else {
-        let regions = instance.deployed_regions?.length 
-          ? instance.deployed_regions.join(", ")
-          : "";
+      this.tableData = [];
+      this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
 
-        regions = regions.replaceAll("CONUS", "CONUS ");
-        location = this.envLocation === "HYBRID"
-          ? regions.length
-            ? "Cloud<br>(" + regions + ")"
-            : "Cloud"
-          : regions;
-      }
+      this.envInstances.forEach(async (instance, index) => {
+        let isValid = await this.validateInstance(instance);
+        let storage = "";
+        if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
+          const storageType = toTitleCase(instance.storage_type);
+          storage = storageType + ": " + String(instance.storage_amount)
+            + " " + instance.storage_unit;
+        }
+        let performance = "";
+        if (instance.performance_tier) {
+          performance = toTitleCase(instance.performance_tier);
+          performance += performance === "General" ? " Purpose" : " Optimized";
+        }
+        let location = "";
+        if (instance.instance_location === "ON_PREM") {
+          location = "On-premise";
+        } else {
+          let regions = instance.deployed_regions?.length 
+            ? instance.deployed_regions.join(", ")
+            : "";
 
-      let classification = "";
-      if (instance.classification_level) {
-        const i = this.classificationLevels.findIndex(
-          obj => obj.sys_id === instance.classification_level
-        );
-        if (i > -1) {
-          const classificationLevel = this.classificationLevels[i];
-          classification = buildClassificationLabel(classificationLevel, "short");
-        } 
-      }
+          regions = regions.replaceAll("CONUS", "CONUS ");
+          location = this.envLocation === "HYBRID"
+            ? regions.length
+              ? "Cloud<br>(" + regions + ")"
+              : "Cloud"
+            : regions;
+        }
 
-      let instanceData: EnvInstanceSummaryTableData = { 
-        instanceSysId: instance.sys_id,
-        instanceNumber: index + 1,
-        location,
-        classification,
-        qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
-        vCPU: instance.number_of_VCPUs ? String(instance.number_of_VCPUs) : "",
-        memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
-        storage,
-        performance,
-        isValid,
-      };
-      
-      this.tableData.push(instanceData);
-      if (this.envLocation === "ON_PREM") {
-        this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
-      }
+        let classification = "";
+        if (instance.classification_level) {
+          const i = this.classificationLevels.findIndex(
+            obj => obj.sys_id === instance.classification_level
+          );
+          if (i > -1) {
+            const classificationLevel = this.classificationLevels[i];
+            classification = buildClassificationLabel(classificationLevel, "short");
+          } 
+        }
 
-      const hasMultipleClassifications 
-        = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
-      if (!hasMultipleClassifications) {
-        this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
-      }
-    });
+        let instanceData: EnvInstanceSummaryTableData = { 
+          instanceSysId: instance.sys_id,
+          instanceNumber: index + 1,
+          location,
+          classification,
+          qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
+          vCPU: instance.number_of_vcpus ? String(instance.number_of_vcpus) : "",
+          memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
+          storage,
+          performance,
+          isValid,
+        };
+        
+        this.tableData.push(instanceData);
+        if (this.envLocation === "ON_PREM") {
+          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
+        }
+
+        const hasMultipleClassifications 
+          = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
+        if (!hasMultipleClassifications) {
+          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
+        }
+      });
+    }, 0);
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -431,10 +423,10 @@ export default class EnvironmentSummary extends Vue {
       this.currEnvData = _.clone(storeEnvData);
       this.envLocation = this.currEnvData.env_location;
       this.classificationsCloud = this.currEnvData.env_classifications_cloud;
-      this.classificationsOnPrem = this.currEnvData.env_classifications_on_prem;
+      this.classificationsOnPrem = this.currEnvData.env_classifications_onprem;
     }
     this.classificationLevels = await classificationRequirements.getAllClassificationLevels();
-    this.buildTableData();
+    await this.buildTableData();
   }
 
   public async mounted(): Promise<void> {

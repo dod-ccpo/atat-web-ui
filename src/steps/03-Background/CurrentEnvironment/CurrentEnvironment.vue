@@ -78,8 +78,7 @@ export default class HasCurrentEnvironment extends Mixins(SaveOnLeave) {
 
 
   public async loadOnEnter(): Promise<void> {
-    // TODO - get from ACQPKG store or CURRENV store??
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = storeData;
       this.currentEnvironmentExists = storeData.current_environment_exists;
@@ -103,16 +102,7 @@ export default class HasCurrentEnvironment extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         Object.assign(this.currEnvDTO, this.currentData);
-
-        // TODO - which store to save to?
-        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
-
-        // TODO - wire to proper location for saving after DB is updated
-        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.CurrentEnvironment
-        // });
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
       }
     } catch (error) {
       console.log(error);
