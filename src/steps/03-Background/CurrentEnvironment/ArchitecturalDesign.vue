@@ -76,7 +76,7 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = _.cloneDeep(storeData);
       this.savedData.needsArchitectureDesign = storeData.needs_architectural_design_services;

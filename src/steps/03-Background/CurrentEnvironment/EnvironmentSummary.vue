@@ -117,7 +117,6 @@
             instance
           </v-btn>  
 
-
         </v-col>
       </v-row>
     </v-container>
@@ -159,7 +158,6 @@ import { buildClassificationLabel, toTitleCase } from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
-
 @Component({
   components: {
     ATATDialog,
@@ -167,17 +165,6 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }  
 })
 export default class EnvironmentSummary extends Vue {
-
-  $refs!: {
-    form: Vue & {
-      resetValidation: () => void;
-      errorBucket: string[];
-      reset: () => void;
-      validate: () => boolean;
-      errorBag: Record<number, boolean>;
-    },
-  };
-
   public currEnvData = defaultCurrentEnvironment;
   public deleteInstanceModalTitle = "";
   public envInstances: CurrentEnvironmentInstanceDTO[] = [];
@@ -315,7 +302,6 @@ export default class EnvironmentSummary extends Vue {
       "data_egress_monthly_amount",
       "pricing_model",
     ];
-
     requiredFields.forEach((field) => {
       if (instanceData[field] === "") {
         isValid = false;
@@ -342,9 +328,8 @@ export default class EnvironmentSummary extends Vue {
     ) {
       isValid = false;
     }
-
+    
     return isValid;
-
   }
 
   public async buildTableData(): Promise<void> {
@@ -364,6 +349,7 @@ export default class EnvironmentSummary extends Vue {
 
       this.tableData = [];
       this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
+
       this.envInstances.forEach(async (instance, index) => {
         let isValid = await this.validateInstance(instance);
         let storage = "";

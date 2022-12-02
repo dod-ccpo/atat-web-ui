@@ -11,24 +11,26 @@ import any = jasmine.any;
 const ATAT_CURRENT_ENVIRONMENT_KEY = "ATAT_CURRENT_ENVIRONMENT_KEY";
 
 export const defaultCurrentEnvironment: CurrentEnvironmentDTO = {
-  additional_growth: "" as const,
-  anticipated_yearly_additional_capacity: null,
-  applications_need_architectural_design: "",
-  current_environment_replicated_optimized: "" as const,
-  data_classifications_impact_levels: undefined as unknown as string[],
-  env_classifications_cloud: undefined as unknown as string[],
-  env_classifications_onprem: undefined as unknown as string[],
-  env_instances: undefined as unknown as string[],
-  env_location: "" as const,
-  external_factors_architectural_design: "",
-  has_phased_approach: "" as const,
-  needs_architectural_design_services: "" as const,
-  phased_approach_schedule: "",
-  statement_architectural_design: "",
+  current_environment_exists: "",
+  has_system_documentation: "",
+  system_documentation: [],
+  has_migration_documentation: "",
+  migration_documentation: [],
+  env_location: "",
+  env_classifications_cloud: [],
+  env_classifications_onprem: [],
+  env_instances: [],
+  current_environment_replicated_optimized: "", // radio - YES_REPLICATE | YES_OPTIMIZE | NO
   statement_replicated_optimized: "",
-  current_environment_exists: "" as const,
-  has_system_documentation: "" as const,
-  has_migration_documentation: "" as const
+  additional_growth: "", // "YES" | "NO"
+  anticipated_yearly_additional_capacity: null, // number | null
+  has_phased_approach: "", // "YES" | "NO"
+  phased_approach_schedule: "",
+  needs_architectural_design_services: "", // "YES" | "NO"
+  statement_architectural_design: "",
+  applications_need_architectural_design: "",
+  data_classifications_impact_levels: [],
+  external_factors_architectural_design: "",
 }
 
 export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = {
@@ -285,21 +287,21 @@ export class CurrentEnvironmentStore extends VuexModule {
    * database.This function transforms the UI type to the type defined in the table
    */
   @Action({rawError: true})
-  private transformCurrentEnvironmentForSave(currentEnvResponse: CurrentEnvironmentDTO):
+  private transformCurrentEnvironmentForSave(currentEnv: CurrentEnvironmentDTO):
     CurrentEnvironmentDTO {
-    const currEnvForSave = _.cloneDeep(currentEnvResponse);
+    const currEnvForSave = _.cloneDeep(currentEnv);
     currEnvForSave.env_instances =
-      currentEnvResponse.env_instances.toString() as unknown as string[];
+      currentEnv.env_instances.toString() as unknown as string[];
     currEnvForSave.system_documentation =
-      currentEnvResponse.system_documentation?.toString() as unknown as string[];
+      currentEnv.system_documentation?.toString() as unknown as string[];
     currEnvForSave.migration_documentation =
-      currentEnvResponse.migration_documentation?.toString() as unknown as string[];
+      currentEnv.migration_documentation?.toString() as unknown as string[];
     currEnvForSave.env_classifications_cloud =
-      currentEnvResponse.env_classifications_cloud.toString() as unknown as string[];
+      currentEnv.env_classifications_cloud.toString() as unknown as string[];
     currEnvForSave.env_classifications_onprem =
-      currentEnvResponse.env_classifications_onprem.toString() as unknown as string[];
+      currentEnv.env_classifications_onprem.toString() as unknown as string[];
     currEnvForSave.data_classifications_impact_levels =
-      currentEnvResponse.data_classifications_impact_levels.toString() as unknown as string[];
+      currentEnv.data_classifications_impact_levels.toString() as unknown as string[];
     return currEnvForSave;
   }
 
@@ -311,8 +313,9 @@ export class CurrentEnvironmentStore extends VuexModule {
   public async initialCurrentEnvironment():
     Promise<CurrentEnvironmentDTO> {
     try {
+      const currentEnvForSave = this.transformCurrentEnvironmentForSave(defaultCurrentEnvironment);
       const currentEnvironmentDTO = await api.currentEnvironmentTable
-        .create(defaultCurrentEnvironment);
+        .create(currentEnvForSave);
       this.mapCurrentEnvironmentFromResponse(currentEnvironmentDTO);
       this.setCurrentEnvironment(currentEnvironmentDTO);
       this.setCurrentEnvironmentInstances([]);

@@ -74,7 +74,7 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = storeData;
       this.envLocation = storeData.env_location;
