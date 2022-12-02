@@ -172,8 +172,6 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         description: serviceOfferingGroup.hint
       };
 
-      console.log(checkboxItem)
-
       const cloudServiceCategories = [
         "portability",
         "advisory", 

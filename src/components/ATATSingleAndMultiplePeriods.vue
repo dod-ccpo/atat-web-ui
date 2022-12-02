@@ -97,7 +97,7 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
   @Prop({default: "Default Multiple Textbox Tooltip"}) private multiplePeriodTooltipText?: string;
 
   @PropSync("periods", {default: []}) private _periods: PeriodDTO[];
-  @PropSync("values", {default: [""]}) private _values: string[];
+  @PropSync("values", {default: () => [""]}) private _values: string[];
 
   public sanitizeValue(idx: number, val: string): void {
     if (parseInt(val) === 0) {

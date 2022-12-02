@@ -36,6 +36,7 @@
                 class="mb-12 mt-5"
               />
               <AnticipatedDataNeeds
+                :periods="periods"
                 needs="user"
               />
               <hr class="mb-10 mt-5" />
@@ -43,6 +44,7 @@
               <AnticipatedDataNeeds
                 class="mt-5"
                 needs="data"
+                :periods="periods"
               />
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -55,10 +57,11 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { ClassificationLevelDTO } from "@/api/models";
+import { ClassificationLevelDTO, PeriodDTO } from "@/api/models";
 import { buildClassificationLabel } from "@/helpers";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
+import Periods from "@/store/periods";
 
 @Component({
   components: {
@@ -68,6 +71,7 @@ import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 })
 export default class AnticipatedUserAndDataNeeds extends Vue {
   public selectedClassifications: ClassificationLevelDTO[] = []
+  private periods: PeriodDTO[] | null = [];
   public accordionClosed = 0;
 
   private async mounted(): Promise<void> {
@@ -76,6 +80,7 @@ export default class AnticipatedUserAndDataNeeds extends Vue {
   public buildClassificationLabel = buildClassificationLabel
 
   private async loadOnEnter(): Promise<void> {
+    this.periods = Periods.periods;
     const classificationLevels = ClassificationRequirements.selectedClassificationLevels
     const allClassificationLevels = await ClassificationRequirements.getAllClassificationLevels()
     classificationLevels.forEach((classification) =>{
