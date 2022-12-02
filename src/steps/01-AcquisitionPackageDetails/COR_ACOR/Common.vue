@@ -1,6 +1,7 @@
 <template>
   <div class="pt-0">
-    <div class="max-width-640" v-if="isWizard">
+    <!-- TODO - REINSTATE AFTER AUTOCOMPLETE IS POPULATED WITH ACTUAL DATA FROM SNOW -->
+    <!-- <div class="max-width-640" v-if="isWizard">
       <ATATAutoComplete
         id="SearchContact"
         :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
@@ -38,13 +39,18 @@
       @keypress="toggleContactForm"
     >
       Manually enter your {{ corOrAcor }}’s contact information
-    </a>
+    </a> 
+    
+    -->
 
+    <!--
+    ADD THIS PROP BACK TO CorAcorContactInfoForm BELOW AFTER CARD ABOVE IS REINSTATED
+      v-if="!isWizard || (showContactForm && !haveSelectedContact)"
+    -->
     <CorAcorContactInfoForm
       :isWizard="isWizard"
       :isForm="isForm"
       :corOrAcor="corOrAcor"
-      v-if="!isWizard || (showContactForm && !haveSelectedContact)"
       :sectionHeader="sectionHeader"
       
       :selectedRole.sync="selectedRole"
@@ -67,9 +73,13 @@
       :selectedBranchRanksData="selectedBranchRanksData"
     />
 
+    <!-- ADD BACK TO <section> TAG AFTER CARD/AUTOCOMPLETE ABOVE IS REINSTATED
+      v-if="isWizard && ((showContactForm && showAccessRadioButtons) || haveSelectedContact)"
+    -->
+
     <section
       id="AccessRadioButtons"
-      v-if="isWizard && ((showContactForm && showAccessRadioButtons) || haveSelectedContact)"
+      v-if="isWizard && showAccessRadioButtons"
     >
       <hr/>
       <ATATRadioGroup
