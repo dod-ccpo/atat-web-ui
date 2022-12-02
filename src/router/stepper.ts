@@ -1044,16 +1044,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: ReviewRequiredForms,
     children: [
       {
-        menuText: "Step One",
-        path:"review-required-forms",
-        excludeFromMenu: true,
-        name: routeNames.ReviewRequiredFormsStepOne,
-        completePercentageWeight: 1,
-        component: ReviewRequiredFormsStepOne,
-      },
-      {
         menuText: "Upload J&A and MRR Documents",
-        path:"upload-ja-mrr-documents",
+        path:"review-required-forms",
         excludeFromMenu: true,
         name: routeNames.UploadJAMRRDocuments,
         completePercentageWeight: 0,
