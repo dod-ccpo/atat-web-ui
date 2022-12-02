@@ -42,6 +42,7 @@ import Periods from "../periods";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -171,8 +172,8 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
     source_selection: "" as EvalPlanSourceSelection,
     method: "" as EvalPlanMethod,
     has_custom_specifications: undefined,
-    standard_specifications: [],
-    custom_specifications: [],
+    standard_specifications: "",
+    custom_specifications: "",
   }
 }
 
@@ -512,7 +513,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public async setEvaluationPlan(value: EvaluationPlanDTO): Promise<void> {
+  public setEvaluationPlan(value: EvaluationPlanDTO): void {
     if (this.evaluationPlan) {
       this.evaluationPlan = Object.assign(this.evaluationPlan, value);
     } else {
@@ -830,7 +831,11 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setFairOpportunity(initialFairOpportunity());
-          this.setEvaluationPlan(initialEvaluationPlan());
+          const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
+          if(evaluationPlanDTO){
+            this.setEvaluationPlan(evaluationPlanDTO);
+            acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
+          }
 
           this.setRequirementsCostEstimate({ 
             estimatedTaskOrderValue: "",

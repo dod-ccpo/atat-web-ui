@@ -65,7 +65,8 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   mission_owners?: string;
   contract_award: ReferenceColumn | string;
   package_status?: string;
-  contributors?: string;
+  contributors?: string[];
+  evaluation_plan?: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -592,14 +593,26 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
 }
 
+export interface EvalPlanAssessmentAreaDTO extends BaseTableDTO {
+  name: string;
+  description: string;
+  sequence: string;
+}
+
+export interface EvalPlanDifferentiatorDTO extends BaseTableDTO {
+  name: string;
+  description: string;
+  sequence: string;
+}
+
 export interface EvaluationPlanDTO extends BaseTableDTO {
   source_selection: EvalPlanSourceSelection;
   method?: EvalPlanMethod;
   has_custom_specifications?: string;
-  standard_specifications?: string[];
-  custom_specifications?: string[];
-  standard_differentiators?: string[];
-  custom_differentiators?: string[];
+  standard_specifications?: string;
+  custom_specifications?: string;
+  standard_differentiators?: string;
+  custom_differentiators?: string;
 }
 
 export interface UserDTO extends BaseTableDTO {
