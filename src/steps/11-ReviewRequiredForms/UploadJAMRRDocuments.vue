@@ -81,7 +81,7 @@
               <ATATFileUpload
                 id="JAMRRFiles"
                 tabindex="-1"
-                :maxNumberOfFiles="100"
+                :maxNumberOfFiles="2"
                 :maxFileSizeInBytes="maxFileSizeInBytes"
                 :validFileFormats="validFileFormats"
                 :multiplesAllowed="true"
