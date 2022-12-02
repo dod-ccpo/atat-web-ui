@@ -99,6 +99,9 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
     has_custom_specifications: "",
     standard_specifications: [],
     custom_specifications: [],
+    standard_differentiators: [],
+    custom_differentiators: [],
+    sys_id: ""
     /* eslint-enable camelcase */
   }
 
@@ -135,6 +138,9 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
     has_custom_specifications: "",
     standard_specifications: [],
     custom_specifications: [],
+    standard_differentiators: [],
+    custom_differentiators: [],
+    sys_id: ""
   }
 
   public initCustomSpecs(): void {  
@@ -197,7 +203,7 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage.getEvaluationPlan;
+    const storeData = await EvaluationPlan.getEvaluationPlan();
     if (storeData) {
       this.evalPlan = _.cloneDeep(storeData);
       this.savedData = _.cloneDeep(storeData);

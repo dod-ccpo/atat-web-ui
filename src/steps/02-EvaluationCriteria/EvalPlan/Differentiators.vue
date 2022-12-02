@@ -67,9 +67,23 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
   /* eslint-disable camelcase */
   public evalPlan: EvaluationPlanDTO = {
     source_selection: "",
+    method: "",
+    has_custom_specifications: "",
+    standard_specifications: [],
+    custom_specifications: [],
+    standard_differentiators: [],
+    custom_differentiators: [],
+    sys_id: ""
   }
   public savedData: EvaluationPlanDTO = {
     source_selection: "",
+    method: "",
+    has_custom_specifications: "",
+    standard_specifications: [],
+    custom_specifications: [],
+    standard_differentiators: [],
+    custom_differentiators: [],
+    sys_id: ""
   }
   /* eslint-enable camelcase */
 
@@ -138,7 +152,7 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage.getEvaluationPlan;
+    const storeData = await EvaluationPlan.getEvaluationPlan();
     if (storeData) {
       this.evalPlan = _.cloneDeep(storeData);
       this.savedData = _.cloneDeep(storeData);

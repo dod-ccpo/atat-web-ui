@@ -643,9 +643,11 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setFairOpportunity(initialFairOpportunity());
-          const evaluationPlanDTO = await EvaluationPlan.initialEvaluationPlan();
-          this.setEvaluationPlan(evaluationPlanDTO);
-          acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
+          const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
+          if(evaluationPlanDTO){
+            this.setEvaluationPlan(evaluationPlanDTO);
+            acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
+          }
 
           this.setRequirementsCostEstimate({ 
             estimatedTaskOrderValue: "",

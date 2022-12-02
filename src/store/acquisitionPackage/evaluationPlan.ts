@@ -8,14 +8,16 @@ import {api} from "@/api";
 
 const ATAT_EVALUATION_PLAN_KEY = "ATAT_EVALUATION_PLAN_KEY";
 
-export const defaultEvaluationPlan: EvaluationPlanDTO = {
-  source_selection: "",
-  method: "",
-  has_custom_specifications: "",
-  standard_specifications: [],
-  custom_specifications: [],
-  standard_differentiators: [],
-  custom_differentiators: []
+export const defaultEvaluationPlan = (): EvaluationPlanDTO => {
+  return {
+    source_selection: "",
+    method: "",
+    has_custom_specifications: "",
+    standard_specifications: [],
+    custom_specifications: [],
+    standard_differentiators: [],
+    custom_differentiators: []
+  };
 }
 
 /**
@@ -31,12 +33,12 @@ export const defaultEvaluationPlan: EvaluationPlanDTO = {
 
 export class EvaluationPlanStore extends VuexModule {
   initialized = false;
-  public evaluationPlan: EvaluationPlanDTO | null = null;
-  public currentEnvInstanceNumber = 0;
+  evaluationPlan: EvaluationPlanDTO | null = null;
+  currentEnvInstanceNumber = 0;
 
-  @Action
-  public async getEvaluationPlan():
-    Promise<EvaluationPlanDTO | null> {
+  @Action({rawError: true})
+  public async getEvaluationPlan(): Promise<EvaluationPlanDTO | null> {
+    await this.ensureInitialized();
     return this.evaluationPlan;
   }
 
@@ -61,22 +63,14 @@ export class EvaluationPlanStore extends VuexModule {
     this.initialized = value;
   }
 
-  @Mutation
-  public setEvaluationPlan(value: EvaluationPlanDTO): void {
-    this.evaluationPlan = value;
+  @Action({rawError: true})
+  public async setEvaluationPlan(value: EvaluationPlanDTO): Promise<void> {
+    this.doSetEvaluationPlan(value);
   }
 
   @Mutation
-  private cleanStoreData() {
-    this.evaluationPlan = {
-      source_selection: "",
-      method: "",
-      has_custom_specifications: "",
-      standard_specifications: [],
-      custom_specifications: [],
-      standard_differentiators: [],
-      custom_differentiators: []
-    }
+  private doSetEvaluationPlan(value: EvaluationPlanDTO): void {
+    this.evaluationPlan = value;
   }
 
   @Action({rawError: true})
@@ -84,7 +78,9 @@ export class EvaluationPlanStore extends VuexModule {
     if (this.initialized) {
       return;
     }
-    this.cleanStoreData();
+    
+    const evaluationPlanDTO = await this.initialEvaluationPlan();
+    await this.setEvaluationPlan(evaluationPlanDTO);
     this.setInitialized(true);
   }
 
@@ -102,8 +98,7 @@ export class EvaluationPlanStore extends VuexModule {
     Promise<EvaluationPlanDTO> {
     try {
       const evaluationPlanDTO = await api.evaluationPlanTable
-        .create(defaultEvaluationPlan);
-      this.setEvaluationPlan(evaluationPlanDTO);
+        .create(defaultEvaluationPlan());
       return evaluationPlanDTO;
     } catch (error) {
       throw new Error(`an error occurred while initializing evaluation plan ${error}`);
@@ -138,6 +133,19 @@ export class EvaluationPlanStore extends VuexModule {
     } catch (error) {
       throw new Error(`an error occurred saving evaluation plan ${error}`);
     }
+  }
+
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_EVALUATION_PLAN_KEY);
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.initialized = false;
+    this.evaluationPlan = defaultEvaluationPlan();
+    this.currentEnvInstanceNumber = 0;
   }
 }
 

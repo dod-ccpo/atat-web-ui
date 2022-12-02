@@ -196,6 +196,7 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
       custom_specifications: this.savedData.custom_specifications,
       standard_differentiators: this.savedData.standard_differentiators,
       custom_differentiators: this.savedData.custom_differentiators,
+      sys_id: this.savedData.sys_id
     }
   }
 
@@ -207,6 +208,7 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
     custom_specifications: [],
     standard_differentiators: [],
     custom_differentiators: [],
+    sys_id: ""
   }
   /* eslint-enable camelcase */
 
@@ -222,7 +224,7 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage.getEvaluationPlan;
+    const storeData = await EvaluationPlan.getEvaluationPlan();
     if (storeData) {
       this.savedData = storeData;
       this.sourceSelection = storeData.source_selection;
