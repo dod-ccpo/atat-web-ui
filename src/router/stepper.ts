@@ -157,7 +157,8 @@ import {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-  UploadJAMRRDocumentsRouteResolver
+  UploadJAMRRDocumentsRouteResolver,
+  AnticipatedUserAndDataNeedsResolver,
 } from "./resolvers";
 import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
@@ -662,14 +663,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: PerformanceRequirementsIndex,
     children: [
       {
-        menuText: "Anticipated Users and Data Needs",
-        path: "anticipated-users-and-data-needs",
-        name: routeNames.AnticipatedUserAndDataNeeds,
-        completePercentageWeight: 5,
-        completed: false,
-        component: AnticipatedUserAndDataNeeds,
-      },
-      {
         menuText: "Performance Requirements",
         path: "/",
         excludeFromMenu: true,
@@ -678,6 +671,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
+      },
+      {
+        menuText: "Anticipated Users and Data Needs",
+        excludeFromMenu: true,
+        path: "anticipated-users-and-data-needs",
+        name: routeNames.AnticipatedUserAndDataNeeds,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: AnticipatedUserAndDataNeedsResolver,
+        component: AnticipatedUserAndDataNeeds,
       },
       {
         menuText: "Service Offerings",
