@@ -32,27 +32,22 @@
                 <div class="bg-white border-rounded-more pa-8">
                   <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
                   <br />
-                  <div class="d-flex justify-space-around">
-                    <div class="d-flex align-flex-start">
-                      <v-btn
-                        class="v-btn primary"
-                        @click="startNewAcquisition"
-                      >
-                        Start a new acquisition
-                      </v-btn>
-                    </div>
-                    &nbsp;&nbsp;
-                    <div class="d-flex align-flex-end">
-                      <v-btn
-                        href="https://community.hacc.mil/s/jwcc"
-                        target="_blank"
-                        id="HelpfulResourcesButton"
-                        class="secondary no-text-decoration"
-                        @click="scrollToResources"
-                      >
-                        Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
-                      </v-btn>
-                    </div>
+                  <div class="d-flex">
+                    <v-btn
+                      class="v-btn primary mr-4"
+                      @click="startNewAcquisition"
+                    >
+                      Start a new acquisition
+                    </v-btn>
+                    <v-btn
+                      href="https://community.hacc.mil/s/jwcc"
+                      target="_blank"
+                      id="HelpfulResourcesButton"
+                      class="secondary no-text-decoration"
+                      @click="scrollToResources"
+                    >
+                      Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
+                    </v-btn>
                   </div>
                 </div>
               </div>

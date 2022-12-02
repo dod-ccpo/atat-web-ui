@@ -38,6 +38,7 @@ import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
 import { UserApi } from "@/api/user";
+import {CurrentEnvironmentInstanceAPI} from "@/api/currentEnvironmentInstance";
 
 
 export const api = {
@@ -78,6 +79,7 @@ export const api = {
   clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),
   currentEnvironmentTable: new CurrentEnvironmentApi(),
+  currentEnvironmentInstanceTable: new CurrentEnvironmentInstanceAPI(),
   aggregate: new AggregateApi(),
   environmentInstanceTable: new EnvironmentInstanceAPI(),
   portfolioTable: new PortfolioApi(),

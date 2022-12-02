@@ -93,6 +93,10 @@
     padding-top: 80px !important;
     padding-bottom: 80px !important;
   }
+ 
+  ._pb-80 {
+    padding-bottom: 80px !important;
+  }
 
   .v-expansion-panel-header {
     background-color: $primary;
@@ -173,6 +177,9 @@
   }
   
   &._is-new-user {
+    ._home-content {
+      margin-top: 216px !important;
+    }
     ._hero-banner {
       height: 600px;
       max-height: 600px;
