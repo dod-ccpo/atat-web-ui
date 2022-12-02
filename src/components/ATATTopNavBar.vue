@@ -121,9 +121,9 @@ import { UserDTO } from "@/api/models";
   },
 })
 export default class ATATTopNavBar extends Vue {
-  // TEMP hardcoded current user
+
   /* eslint-disable camelcase */
-  public currentUser: UserDTO = UserStore.getInitialUser;
+  public currentUser: UserDTO = {};
 
   public activeMenuItems: string[] = [];
 
