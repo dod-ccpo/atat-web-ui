@@ -249,7 +249,7 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   recurring_requirement?: string;
   base_and_options?: string; //deprecated
   option_periods?: string;
-  base_period?: string;
+  base_period?: ReferenceColumn | string;
 }
 
 export interface ContractTypeDTO extends BaseTableDTO {

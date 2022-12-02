@@ -25,8 +25,8 @@ import {
   EvaluationPlanDTO,
   RequirementsCostEstimateDTO,
   OrganizationDTO,
-  PeriodDTO,
-  PeriodOfPerformanceDTO,
+  // PeriodDTO,
+  // PeriodOfPerformanceDTO,
   ProjectOverviewDTO,
   SensitiveInformationDTO,
   ReferenceColumn,
@@ -54,7 +54,7 @@ export const StoreProperties = {
   Organization: "organization",
   FairOpportunity: "fairOpportunity",
   EvaluationPlan: "evaluationPlan",
-  PeriodOfPerformance: "periodOfPerformance",
+  // PeriodOfPerformance: "periodOfPerformance",
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
@@ -239,8 +239,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
       evaluationPlan: store.evaluationPlan,
-      periods: store.periods,
-      periodOfPerformance: store.periodOfPerformance,
+      // periods: store.periods,
+      // periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensitiveInformation: store.sensitiveInformation,
       allowDeveloperNavigation: store.allowDeveloperNavigation
@@ -320,8 +320,8 @@ export class AcquisitionPackageStore extends VuexModule {
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
-  periods: string | null = null;
-  periodOfPerformance: PeriodOfPerformanceDTO | null = null;
+  // periods: string | null = null;
+  // periodOfPerformance: PeriodOfPerformanceDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
@@ -465,10 +465,10 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  @Mutation
-  public setPeriods(value: PeriodDTO[]): void {
-    this.periods = value.map(period=> period.sys_id).join(',');
-  }
+  // @Mutation
+  // public setPeriods(value: PeriodDTO[]): void {
+  //   this.periods = value.map(period=> period.sys_id).join(',');
+  // }
 
   @Mutation
   public setClassificationLevel(value: ClassificationLevelDTO): void {
@@ -477,12 +477,12 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  @Mutation
-  public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
-    this.periodOfPerformance = this.periodOfPerformance
-      ? Object.assign(this.periodOfPerformance, value)
-      : value;
-  }
+  // @Mutation
+  // public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
+  //   this.periodOfPerformance = this.periodOfPerformance
+  //     ? Object.assign(this.periodOfPerformance, value)
+  //     : value;
+  // }
 
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
@@ -558,9 +558,9 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = sessionData.fairOpportunity;
     this.evaluationPlan = sessionData.evaluationPlan;
     this.organization = sessionData.organization;
-    this.periods = sessionData.periods;
+    // this.periods = sessionData.periods;
     this.projectOverview = sessionData.projectOverview;
-    this.periodOfPerformance = sessionData.periodOfPerformance;
+    // this.periodOfPerformance = sessionData.periodOfPerformance;
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.classificationLevel = sessionData.classificationLevel;
@@ -700,16 +700,26 @@ export class AcquisitionPackageStore extends VuexModule {
       }
 
       if(popSysId){
-        const periodOfPerformance = await api.periodOfPerformanceTable.retrieve(
+        await Periods.loadPeriodOfPerformanceFromSysId(
           popSysId
-        );
-        if(periodOfPerformance)
-          this.setPeriodOfPerformance(periodOfPerformance)
+        )
       } else {
-        this.setPeriodOfPerformance(
-          initialPeriodOfPerformance()
-        );
+        await Periods.setPeriodOfPerformance(
+          await Periods.initialPeriodOfPerformance()
+        )
       }
+
+      // if(popSysId){
+      //   const periodOfPerformance = await api.periodOfPerformanceTable.retrieve(
+      //     popSysId
+      //   );
+      //   if(periodOfPerformance)
+      //     this.setPeriodOfPerformance(periodOfPerformance)
+      // } else {
+      //   this.setPeriodOfPerformance(
+      //     initialPeriodOfPerformance()
+      //   );
+      // }
 
       if(fairOppSysId) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(
@@ -795,8 +805,8 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(acquisitionPackage.periods)
-        this.setPeriodsFromString(acquisitionPackage.periods)
+      // if(acquisitionPackage.periods)
+      //   this.setPeriodsFromString(acquisitionPackage.periods)
 
       this.setInitialized(true);
 
@@ -805,10 +815,10 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Mutation
-  private setPeriodsFromString(value: string): void {
-    this.periods = value;
-  }
+  // @Mutation
+  // private setPeriodsFromString(value: string): void {
+  //   this.periods = value;
+  // }
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
@@ -859,12 +869,14 @@ export class AcquisitionPackageStore extends VuexModule {
             surge_capacity: ""
           });
 
-          this.setPeriods([]);
-          this.setPeriodOfPerformance(initialPeriodOfPerformance());
+          // this.setPeriods([]);
+          // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
           acquisitionPackage.current_environment = currentEnvironmentDTO.sys_id as string;
+          const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
+          acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
@@ -915,9 +927,9 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
     // [StoreProperties.EvaluationPlan]: api.evaluationPlanTable, // FUTURE TICKET
     [StoreProperties.Organization]: api.organizationTable,
-    [StoreProperties.Periods]: api.periodTable,
+    // [StoreProperties.Periods]: api.periodTable,
     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
-    [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
+    // [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
     [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
     [StoreProperties.CurrentEnvironment]: api.currentEnvironmentTable,
@@ -932,8 +944,8 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.EvaluationPlan]: "evaluation_plan",
     [StoreProperties.Organization]:  "organization",
     [StoreProperties.ProjectOverview]: "project_overview",
-    [StoreProperties.PeriodOfPerformance]: "period_of_performance",
-    [StoreProperties.Periods]: "periods",
+    // [StoreProperties.PeriodOfPerformance]: "period_of_performance",
+    // [StoreProperties.Periods]: "periods",
     [StoreProperties.RequirementsCostEstimate]: "requirements_cost_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
     [StoreProperties.ClassificationLevel]: "classification_level",
@@ -1302,6 +1314,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await Attachments.reset();
     await FinancialDetails.reset();
     await CurrentEnvironment.reset();
+    await Periods.reset();
 
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
 
@@ -1324,8 +1337,8 @@ export class AcquisitionPackageStore extends VuexModule {
     this.evaluationPlan = null;
     this.currentContract = null;
     this.sensitiveInformation = null;
-    this.periods = null;
-    this.periodOfPerformance = null;
+    // this.periods = null;
+    // this.periodOfPerformance = null;
     this.contractType = null;
     this.requirementsCostEstimate = null;
     this.classificationLevel = null;

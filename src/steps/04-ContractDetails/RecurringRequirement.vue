@@ -41,7 +41,7 @@ import { PeriodOfPerformanceDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
 import { RadioButton } from "../../../types/Global";
-import Periods from "@/store/periods";
+import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
 
 @Component({
   components: {
@@ -50,6 +50,8 @@ import Periods from "@/store/periods";
 })
 
 export default class RecurringRequirement extends Mixins(SaveOnLeave) {
+
+  public popDTO = defaultPeriodOfPerformance;
 
   public selectedRecurringOption = "";
 
@@ -80,12 +82,14 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await Periods.loadPeriodOfPerformance();
+    const storeData = await Periods.getPeriodOfPerformance();
     if (storeData) {
+      this.popDTO = storeData;
       if (Object.prototype.hasOwnProperty.call(storeData, 'recurring_requirement')) {
         this.savedData = {
           recurring_requirement: storeData.recurring_requirement,
         }
+        this.selectedRecurringOption = storeData.recurring_requirement as string;
       }
     } 
   }
@@ -98,10 +102,10 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         let pops: PeriodOfPerformanceDTO  = {  
-          ...this.savedData,
+          ...this.popDTO,
           recurring_requirement: this.currentData.recurring_requirement || "",
         }
-        await Periods.savePeriodOfPerformance(pops);
+        await Periods.setPeriodOfPerformance(pops);
       }
     } catch (error) {
       console.log(error);
