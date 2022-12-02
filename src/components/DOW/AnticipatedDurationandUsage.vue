@@ -1,7 +1,7 @@
 <template>
 <div>
   <ATATTextArea
-    :value.sync="_dataObject.anticipatedNeedUsage"
+    :value.sync="_anticipatedNeedUsage"
     :id="'AnticipatedNeedUsage_' + (index + 1)"
     ref="DescriptionOfNeed"
     :label="label"
@@ -23,7 +23,8 @@
       :legend="durationLabel ||
       `Do you need this ${type} for the entire duration of your task order?`"
       :items="entireDurationOptions"
-      :value.sync="_dataObject.entireDuration"
+      @radioButtonSelected="selectEntireDuration"
+      :value.sync="_entireDuration"
       :tooltipText="toolTip"
       :rules="[
         $validators.required(
@@ -31,7 +32,7 @@
         )
       ]"
     />
-    <div v-if="_dataObject.entireDuration === 'NO'">
+    <div v-if="_entireDuration === 'NO'">
       <p :id="'PeriodsLabel_' + (index + 1)" class="_checkbox-group-label">
         In which base and/or option periods do you need this {{ type }}?
       </p>
@@ -39,7 +40,7 @@
         :id="'PeriodsCheckboxes_' + (index + 1)"
         :aria-describedby="'PeriodsLabel_' + (index + 1)"
         ref="periodsCheckboxes"
-        :value.sync="selectedOptions"
+        :value.sync="_selectedPeriods"
         :items="availablePeriodCheckboxItems"
         :card="false"
         :disabled="isPeriodsDataMissing"
@@ -80,6 +81,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import {
   Checkbox,
   DOWClassificationInstance,
+  DOWPoP,
   RadioButton
 } from "../../../types/Global";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -98,7 +100,11 @@ import {routeNames} from "@/router/stepper";
 })
 
 export default class AnticipatedDurationandUsage extends Vue {
-  @PropSync("dataObject")public _dataObject!: DOWClassificationInstance;
+  @PropSync("dataObject") public _dataObject!: DOWClassificationInstance;
+  @PropSync("anticipatedNeedUsage") public _anticipatedNeedUsage!: string;
+  @PropSync("entireDuration")public _entireDuration!: string;
+  @PropSync("selectedPeriods")public _selectedPeriods!: string[]; 
+  
   @Prop() private index!: string;
   @Prop({required: true}) private type!: string;
   @Prop({default: "Statement of objectives for the anticipated need or usage"})
@@ -117,7 +123,7 @@ export default class AnticipatedDurationandUsage extends Vue {
   @Prop() public availablePeriodCheckboxItems!: Checkbox[];
 
   public routeNames = routeNames;
-  public selectedOptions: string[] = []
+  public selectedOptions: string[] = [];
 
   public entireDurationOptions: RadioButton[] = [
     {
@@ -132,25 +138,45 @@ export default class AnticipatedDurationandUsage extends Vue {
     },
   ];
 
+  // transforms selected sysID to the DOWPoP obj 
+  // and adds to this._selectedPeriods array
+  @Watch("selectedOptions")
+  public setSelectedPeriods(newVal: string[]): void {
+    const tempArray: DOWPoP[] = [];
+    newVal.forEach(p => {
+      tempArray.push(
+        {
+          label: "",
+          sysId: p,
+        }
+      )
+    });
+    this._selectedPeriods = newVal;
+  }
+
+  // clears out any period selected if user selects YES
+  public selectEntireDuration(value: string): void {
+    if (value.toUpperCase() === "YES"){
+      this.selectedOptions = [];
+      this._selectedPeriods = [];
+    }
+  }
+
   // when user selects "YES", remove periods from needed array.
   // when user selects "NO", pre-select base period
   @Watch("dataObject.entireDuration")
   public entireDurationChanged(newVal: string): void {
-    debugger
     this.selectedOptions = newVal === "NO" &&
     this.availablePeriodCheckboxItems[0].value !== "" ? [this.availablePeriodCheckboxItems[0].value]
       : [];
     ;
-  // need to create vale for DOWPOP
-    // if(this.selectedOptions.length > 0) {
-    //   let optionPeriods = []
-    //   this.selectedOptions.forEach((periodValue)=>{
-    //
-    //   })
-    //
-    // }else{
-    //   this._dataObject.selectedPeriods = []
-    // }
+  }
+
+  public mounted(): void {
+    if (this._dataObject){
+      this._dataObject.anticipatedNeedUsage = this._anticipatedNeedUsage;
+      this._dataObject.entireDuration = this._entireDuration;
+    }
   }
 
 }
