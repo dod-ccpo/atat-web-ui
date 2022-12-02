@@ -117,9 +117,19 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadData<ProjectOverviewDTO>({
-      storeProperty: StoreProperties.ProjectOverview,
-    });
+
+    const packageId = this.$route.query['packageId'] || "";
+
+    if(packageId){
+      await AcquisitionPackage.reset();
+      await AcquisitionPackage.setPackageId(packageId as string);
+      await AcquisitionPackage.loadPackageFromId(packageId as string);
+    }
+
+    const storeData = AcquisitionPackage.projectOverview
+      || await AcquisitionPackage.loadData<ProjectOverviewDTO>({
+        storeProperty: StoreProperties.ProjectOverview,
+      });
 
     if (storeData) {
       this.currentTitle = storeData.title;

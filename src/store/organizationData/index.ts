@@ -113,6 +113,19 @@ export class OrganizationDataStore extends VuexModule {
     }
   }
 
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_ORGANIZATION_DATA_KEY);
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.initialized = false;
+    this.agency_data = [];
+    this.disa_org_data = [];
+  }
+
 }
 
 const OrganiationData = getModule(OrganizationDataStore);
