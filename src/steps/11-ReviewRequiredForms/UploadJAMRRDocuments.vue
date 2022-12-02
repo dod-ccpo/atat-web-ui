@@ -94,6 +94,21 @@
                 :rules="[$validators.required('Please upload a file')]"
               />
             </div>
+            <ATATAlert
+                id="UPload7600Alert"
+                v-show="uploadedFiles.length > 0 && uploadedFiles.length < 2"
+                type="warning"
+                class="mt-10"
+            >
+              <template v-slot:content>
+                <p class="mb-0">
+                  You may be missing a required document. Please ensure that both
+                  signed documents are uploaded before submitting your completed
+                  package. If your J&A and MRR were combined into a single file before
+                  uploading, ignore this message.
+                </p>
+              </template>
+            </ATATAlert>
           </v-col>
         </v-row>
       </v-container>
@@ -108,6 +123,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import {AttachmentDTO, FairOpportunityDTO} from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
 import Attachments from "@/store/attachments";
@@ -115,7 +131,8 @@ import {AttachmentServiceCallbacks} from "@/services/attachment";
 
 @Component({
   components: {
-    ATATFileUpload
+    ATATFileUpload,
+    ATATAlert
   },
 })
 export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
