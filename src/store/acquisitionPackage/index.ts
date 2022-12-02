@@ -576,6 +576,10 @@ export class AcquisitionPackageStore extends VuexModule {
       await Attachments.initialize();
       await FinancialDetails.initialize();
 
+      // NATE: pick up here? :)
+      // await CurrentEnvironment.loadCurrentEnvFromId(
+      //   acquisitionPackage.current_environment.value);
+
       this.setAcquisitionPackage(acquisitionPackage);
       
       if(
@@ -795,8 +799,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
-          // acquisitionPackage.current_environment = EJY
-          //   currentEnvironmentDTO.sys_id as unknown as string;
           acquisitionPackage.current_environment = { value: currentEnvironmentDTO.sys_id };
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           this.setAcquisitionPackage(acquisitionPackage);

@@ -74,7 +74,7 @@ export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = 
 
 export class CurrentEnvironmentStore extends VuexModule {
   initialized = false;
-  public currentEnvironment: CurrentEnvironmentDTO | null = null;
+  public currentEnvironment: CurrentEnvironmentDTO = defaultCurrentEnvironment;
   public currentEnvInstances: CurrentEnvironmentInstanceDTO[] = [];
   public currentEnvInstanceNumber = 0;
 
@@ -236,23 +236,7 @@ export class CurrentEnvironmentStore extends VuexModule {
       ? true : false;
   }
 
-  @Action({rawError: true})
-  async initialize(): Promise<void> {
-    if (!this.initialized) {
-      const sessionRestored = retrieveSession(ATAT_CURRENT_ENVIRONMENT_KEY);
-      if (sessionRestored) {
-        this.setStoreData(sessionRestored);
-      } else {
-        this.setInitialized(true);
-        storeDataToSession(this, this.sessionProperties, ATAT_CURRENT_ENVIRONMENT_KEY);
-      }
-    }
-  }
 
-  @Action({rawError: true})
-  async ensureInitialized(): Promise<void> {
-    await this.initialize();
-  }
 
   /**
    * Some data types in the response are not compatible with the types defined in the ui.
@@ -313,16 +297,33 @@ export class CurrentEnvironmentStore extends VuexModule {
   public async initialCurrentEnvironment():
     Promise<CurrentEnvironmentDTO> {
     try {
-      const currentEnvForSave = this.transformCurrentEnvironmentForSave(defaultCurrentEnvironment);
-      const currentEnvironmentDTO = await api.currentEnvironmentTable
-        .create(currentEnvForSave);
-      this.mapCurrentEnvironmentFromResponse(currentEnvironmentDTO);
-      this.setCurrentEnvironment(currentEnvironmentDTO);
-      this.setCurrentEnvironmentInstances([]);
-      return currentEnvironmentDTO;
+      if (!this.initialized) {
+        const currentEnvForSave 
+          = this.transformCurrentEnvironmentForSave(defaultCurrentEnvironment);
+        const currentEnvironmentDTO = await api.currentEnvironmentTable
+          .create(currentEnvForSave);
+        this.mapCurrentEnvironmentFromResponse(currentEnvironmentDTO);
+        this.setCurrentEnvironment(currentEnvironmentDTO);
+        this.setCurrentEnvironmentInstances([]);
+        this.setInitialized(true);
+        return currentEnvironmentDTO;
+      }
+      return this.currentEnvironment || defaultCurrentEnvironment;
     } catch (error) {
       throw new Error(`an error occurred while initializing current environment ${error}`);
     }
+  }
+
+  @Action({rawError: true})
+  public async loadCurrentEnvFromId(sysId: string): Promise<void> {
+    // NATE: do your magic!
+    // this.doInitialize()
+
+  }
+
+  @Mutation
+  public doInitialize(sysId: string): void {
+    //
   }
 
   /**
@@ -367,7 +368,7 @@ export class CurrentEnvironmentStore extends VuexModule {
   @Mutation
   private doReset(): void {
     this.initialized = false;
-    this.currentEnvironment = null;
+    this.currentEnvironment = defaultCurrentEnvironment;
     this.currentEnvInstances = [];
     this.currentEnvInstanceNumber = 0;
   }
