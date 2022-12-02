@@ -52,7 +52,7 @@ export default class ArchitectureDesignDetails extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = _.cloneDeep(storeData);
       this.savedData = {
@@ -74,9 +74,8 @@ export default class ArchitectureDesignDetails extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        // TODO - which store to save to?
         CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+
       }
     } catch (error) {
       console.log(error);

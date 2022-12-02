@@ -236,24 +236,24 @@ export default class ClassificationLevelForm extends Vue {
 
     // parse sys_ids for selectedClassifications into their appropriate arrays
     // of either selected top-level or impact-level
-    this._selectedClassifications.forEach((sysId) => {
-      const selectedTopLevelClassification: Checkbox | undefined
-        = this.topLevelClassifications.find(obj => obj.value === sysId);
-      if (selectedTopLevelClassification) {
-        this.selectedTopLevelClassifications.push(selectedTopLevelClassification.value);
-      } else {
-        const selctedImpactLevel: Checkbox | undefined
-          = this.impactLevelOptions.find(obj => obj.value === sysId);
-        if (selctedImpactLevel) {
-          this.selectedImpactLevels.push(selctedImpactLevel.value);
-          if (this.selectedTopLevelClassifications.indexOf("U") === -1) {
-            this.selectedTopLevelClassifications.push("U");
+    if (this._selectedClassifications) {
+      this._selectedClassifications.forEach((sysId) => {
+        const selectedTopLevelClassification: Checkbox | undefined
+          = this.topLevelClassifications.find(obj => obj.value === sysId);
+        if (selectedTopLevelClassification) {
+          this.selectedTopLevelClassifications.push(selectedTopLevelClassification.value);
+        } else {
+          const selctedImpactLevel: Checkbox | undefined
+            = this.impactLevelOptions.find(obj => obj.value === sysId);
+          if (selctedImpactLevel) {
+            this.selectedImpactLevels.push(selctedImpactLevel.value);
+            if (this.selectedTopLevelClassifications.indexOf("U") === -1) {
+              this.selectedTopLevelClassifications.push("U");
+            }
           }
         }
-      }
-    })
-
-
+      });
+    }
   }
 
   public async mounted(): Promise<void> {

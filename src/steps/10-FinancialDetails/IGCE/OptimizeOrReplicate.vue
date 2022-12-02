@@ -45,7 +45,6 @@
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import { RadioButton } from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
@@ -53,6 +52,7 @@ import { hasChanges } from "@/helpers";
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore, { OptimizeOrReplicateEstimateNeeds } from "@/store/IGCE";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -109,7 +109,7 @@ export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
 
   public get headingVerb(): string {
     const replicatedOrOptimized = 
-      AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized;
+      CurrentEnvironment.currentEnvironment?.current_environment_replicated_optimized;
     return replicatedOrOptimized === "YES_OPTIMIZE" ? "optimizing" : "replicating";
   }
 

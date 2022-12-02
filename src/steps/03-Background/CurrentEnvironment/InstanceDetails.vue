@@ -271,7 +271,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     // classification radio options will show if either NO (ZERO) classification
     // levels were selected, or more than one was selected.
     return !(this.instanceData.instance_location === 'ON_PREM' 
-      && this.currEnvData.env_classifications_on_prem.length === 1);
+      && this.currEnvData.env_classifications_onprem.length === 1);
   }
 
   public selectedDeployedRegionsOnLoad: string[] = [];
@@ -317,7 +317,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     const instanceConfig = {
       licensing: newVal.licensing,
       operating_system: newVal.operatingSystem,
-      number_of_VCPUs: newVal.numberOfVCPUs,
+      number_of_vcpus: newVal.numberOfVCPUs,
       processor_speed: newVal.processorSpeed,
       memory_amount: newVal.memoryAmount,
       memory_unit: "GB",
@@ -352,8 +352,8 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   @Watch("pricingDetails", {deep: true})
   public pricingDetailsChange(newVal: CurrEnvInstancePricingDetails): void {
     const pricingDetails = {
-      current_payment_arrangement: newVal.currentPaymentArrangement,
-      pricing_period_expiration_date: newVal.pricingPeriodExpirationDate,
+      pricing_model: newVal.currentPaymentArrangement,
+      pricing_model_expiration: newVal.pricingPeriodExpirationDate,
     }
     this.instanceData = Object.assign(this.instanceData, pricingDetails);    
   }
@@ -378,7 +378,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     }
     const envClassificationLevelSysIds = newVal === "CLOUD"
       ? this.currEnvData.env_classifications_cloud
-      : this.currEnvData.env_classifications_on_prem;
+      : this.currEnvData.env_classifications_onprem;
 
     if (envClassificationLevelSysIds.length === 1) {
       // eslint-disable-next-line camelcase
@@ -449,7 +449,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         this.instanceConfig = {
           licensing: this.instanceData.licensing,
           operatingSystem: this.instanceData.operating_system,
-          numberOfVCPUs: this.instanceData.number_of_VCPUs, 
+          numberOfVCPUs: this.instanceData.number_of_vcpus,
           processorSpeed: this.instanceData.processor_speed,
           memoryAmount: this.instanceData.memory_amount,
           storageType: this.instanceData.storage_type,
@@ -465,8 +465,8 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         }
 
         this.pricingDetails = {
-          currentPaymentArrangement: this.instanceData.current_payment_arrangement,
-          pricingPeriodExpirationDate: this.instanceData.pricing_period_expiration_date,
+          currentPaymentArrangement: this.instanceData.pricing_model,
+          pricingPeriodExpirationDate: this.instanceData.pricing_model_expiration,
         }
       }
 
@@ -488,13 +488,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
-
-        // TODO - wire to proper location for saving after DB is updated
-        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.CurrentEnvironment
-        // });
+        await CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
       }
     } catch (error) {
       console.log(error);

@@ -157,7 +157,7 @@ export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
         }
         // console.log(this.currEnvDTO);
         // the updated system_documentation will need to be saved
-        await CurrentEnvironment.saveCurrentEnvironment();
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
       }
     } catch (error) {
       console.error(`error completing file upload with id ${file?.attachmentId}`);
@@ -229,7 +229,7 @@ export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     // TODO - get from ACQPKG store or CURRENV store??
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = storeData;
       this.hasSystemDocumentation = storeData.has_system_documentation;

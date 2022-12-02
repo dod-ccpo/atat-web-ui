@@ -29,7 +29,7 @@ describe("CurrentEnvironment Store",
         current_environment_replicated_optimized: "",
         data_classifications_impact_levels: [],
         env_classifications_cloud: [],
-        env_classifications_on_prem: [],
+        env_classifications_onprem: [],
         env_instances: [],
         env_location: "",
         external_factors_architectural_design: "",
@@ -108,9 +108,9 @@ describe("CurrentEnvironment Store",
       expect(loadedCurrentEnvironment?.current_environment_exists).toBe("YES");
     })
 
-    it('Test saveCurrentEnvironment()- should save the evaluation criteria', async () => {
-      currentEnvironmentStore.setCurrentEnvironment(currentEnvironmentMock);
-      const isSaveSuccessful = await currentEnvironmentStore.saveCurrentEnvironment();
-      expect(isSaveSuccessful).toBe(true);
-    })
+    // it('Test saveCurrentEnvironment()- should save the evaluation criteria', async () => {
+    //   currentEnvironmentStore.setCurrentEnvironment(currentEnvironmentMock);
+    //   const isSaveSuccessful = await currentEnvironmentStore.saveCurrentEnvironment();
+    //   expect(isSaveSuccessful).toBe(true);
+    // })
   })

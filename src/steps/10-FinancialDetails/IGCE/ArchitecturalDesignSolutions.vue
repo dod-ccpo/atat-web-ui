@@ -105,6 +105,7 @@ import { hasChanges } from "@/helpers";
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore, { ArchDesignEstimateNeeds } from "@/store/IGCE";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -221,8 +222,8 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
       this.singleCeilingPrice = this.singleEstimateNeeds.ceilingPrice;
     }
 
-    const currentEnvironmentNeeds = // true;
-      AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
+    const currentEnvironmentNeeds =
+      CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
 
     /* todo: ONLY HAS LOGIC FOR CURRENT ENVIRONMENT AT THE MOMENT; NEEDS DOW ITEMS THAT HAVEN'T
        BEEN IMPLEMENTED YET */
