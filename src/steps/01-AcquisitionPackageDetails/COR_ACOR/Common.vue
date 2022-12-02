@@ -71,15 +71,16 @@
       id="AccessRadioButtons"
       v-if="isWizard && ((showContactForm && showAccessRadioButtons) || haveSelectedContact)"
     >
-      <hr/>
-      <ATATRadioGroup
+    <!--TODO determine if this section is necessary-->
+     <!--  <hr/>
+     <ATATRadioGroup
         legend="Does this individual need access to help you create this
           acquisition package in ATAT?"
         id="AccessToEdit"
         :items="accessToEditOptions"
         :value.sync="selectedAccessToEdit"
         :rules="[$validators.required('Please select Yes or No.')]"
-      />
+      />-->
     </section>
   </div>
 </template>
