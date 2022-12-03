@@ -4,8 +4,8 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import Differentiators from "@/steps/02-EvaluationCriteria/EvalPlan/Differentiators.vue";
 import validators from "@/plugins/validation";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import { EvaluationPlanDTO } from "@/api/models";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 Vue.use(Vuetify);
 
@@ -13,19 +13,19 @@ Vue.use(Vuetify);
 const initialEvalPlan: EvaluationPlanDTO = {
   source_selection: "",
   method: "",
-  standard_specifications: [],
-  custom_specifications: [],  
-  standard_differentiators: [],
-  custom_differentiators: [],  
+  standard_specifications: "",
+  custom_specifications: "",  
+  standard_differentiators: "",
+  custom_differentiators: "",  
 };
 
 const evalPlanPopulated: EvaluationPlanDTO = {
-  source_selection: "TechProposal",
+  source_selection: "TECH_PROPOSAL",
   method: "BVTO",
-  standard_specifications: [],
-  custom_specifications: [],    
-  standard_differentiators: [],
-  custom_differentiators: [],  
+  standard_specifications: "",
+  custom_specifications: "",    
+  standard_differentiators: "",
+  custom_differentiators: "",  
 };
 /* eslint-enable camelcase */
 
@@ -36,7 +36,7 @@ describe("Testing Differentiators Component", () => {
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
   beforeEach(async () => {
-    await AcquisitionPackage.setEvaluationPlan(evalPlanPopulated);
+    await EvaluationPlan.setEvaluationPlan(evalPlanPopulated);
     vuetify = new Vuetify();
     wrapper = mount(Differentiators, {
       vuetify,
@@ -71,7 +71,7 @@ describe("Testing Differentiators Component", () => {
     
 
     it("saveOnLeave() - saves eval plan data to store", async () => {
-      await AcquisitionPackage.setEvaluationPlan(initialEvalPlan);
+      await EvaluationPlan.setEvaluationPlan(initialEvalPlan);
       await wrapper.vm.loadOnEnter();
       await wrapper.setData({
         sourceSelection: "TechProposal",
