@@ -91,6 +91,7 @@ import Toast from "@/store/toast";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Search from "@/packages/components/Search.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -177,11 +178,13 @@ export default class Packages extends Vue {
   }
   public async toAcquisitions(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
+    await AcquisitionPackage.reset();
     this.$router.push({
       name: routeNames.ProjectOverview,
       params: {
         direction: "next"
-      }
+      },
+      replace: true
     }).catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }

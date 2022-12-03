@@ -19,15 +19,15 @@ describe("AcquisitionPackage Store", () => {
   const initialEvalPlan: EvaluationPlanDTO = {
     source_selection: "",
     method: "",
-    standard_specifications: [],
-    custom_specifications: [],    
+    standard_specifications: "",
+    custom_specifications: "",    
   }
 
   const evalPlanPopulated: EvaluationPlanDTO = {
-    source_selection: "TechProposal",
+    source_selection: "TECH_PROPOSAL",
     method: "BVTO",
-    standard_specifications: [],
-    custom_specifications: [],    
+    standard_specifications: "",
+    custom_specifications: "",    
   } 
 
   beforeEach(() => {
@@ -63,14 +63,14 @@ describe("AcquisitionPackage Store", () => {
     expect(acqPackageStore.evaluationPlan?.source_selection).toBe("");
 
     await acqPackageStore.setEvaluationPlan(evalPlanPopulated);
-    expect(acqPackageStore.evaluationPlan?.source_selection).toBe("TechProposal");
+    expect(acqPackageStore.evaluationPlan?.source_selection).toBe("TECH_PROPOSAL");
   })
 
   it("getEvaluationPlan() returns eval plan data ", async () => {  
     await acqPackageStore.setEvaluationPlan(evalPlanPopulated);
     expect(acqPackageStore.evaluationPlan).not.toBeNull;
     const evalPlan = acqPackageStore.getEvaluationPlan;
-    expect(evalPlan?.source_selection).toBe("TechProposal");
+    expect(evalPlan?.source_selection).toBe("TECH_PROPOSAL");
   });
 
 });

@@ -41,6 +41,7 @@ import { PeriodOfPerformanceDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
 import { RadioButton } from "../../../types/Global";
+import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
 
 @Component({
   components: {
@@ -50,8 +51,9 @@ import { RadioButton } from "../../../types/Global";
 
 export default class RecurringRequirement extends Mixins(SaveOnLeave) {
 
-  public selectedRecurringOption 
-    = AcquisitionPackage.periodOfPerformance?.recurring_requirement || "";
+  public popDTO = defaultPeriodOfPerformance;
+
+  public selectedRecurringOption = "";
 
   private recurringOptions: RadioButton[] = [
     {
@@ -80,17 +82,16 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<PeriodOfPerformanceDTO>({storeProperty: StoreProperties.PeriodOfPerformance});
+    const storeData = await Periods.getPeriodOfPerformance();
     if (storeData) {
+      this.popDTO = storeData;
       if (Object.prototype.hasOwnProperty.call(storeData, 'recurring_requirement')) {
         this.savedData = {
           recurring_requirement: storeData.recurring_requirement,
         }
+        this.selectedRecurringOption = storeData.recurring_requirement as string;
       }
-    } else {
-      AcquisitionPackage.setPeriodOfPerformance(this.currentData);
-    }
+    } 
   }
 
   private hasChanged(): boolean {
@@ -100,9 +101,11 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveData<PeriodOfPerformanceDTO>(
-          {data: this.currentData, 
-            storeProperty: StoreProperties.PeriodOfPerformance});
+        let pops: PeriodOfPerformanceDTO  = {  
+          ...this.popDTO,
+          recurring_requirement: this.currentData.recurring_requirement || "",
+        }
+        await Periods.setPeriodOfPerformance(pops);
       }
     } catch (error) {
       console.log(error);

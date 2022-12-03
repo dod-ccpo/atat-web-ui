@@ -23,7 +23,7 @@
 
                   <PackageCards
                     v-for="(cardData, index) in packageData"
-                    :key="index"
+                    :key="cardData.sys_id"
                     :cardData="cardData"
                     :index="index"
                     :isLastCard="index === packageData.length - 1"

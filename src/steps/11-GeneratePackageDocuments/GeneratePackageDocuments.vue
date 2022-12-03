@@ -29,7 +29,7 @@ import ReviewDocuments from "./components/ReviewDocuments.vue";
     ReviewDocuments
   }
 })
-export default class GeneratePackageDocuments extends Mixins(SaveOnLeave) {
+export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
 
   private isGenerating = false;
 

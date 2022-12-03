@@ -1,4 +1,11 @@
-import { AgencyDTO, ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@/api/models";
+import { 
+  AgencyDTO, 
+  ClassificationLevelDTO, 
+  EvalPlanAssessmentAreaDTO, 
+  EvalPlanDifferentiatorDTO, 
+  PeriodDTO, 
+  SystemChoiceDTO 
+} from "@/api/models";
 import { Checkbox, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
@@ -36,6 +43,25 @@ export const convertSystemChoiceToSelect =
         value
       }
     });
+
+
+export const convertEvalPlanDifferentiatorToCheckbox = 
+  (data: EvalPlanDifferentiatorDTO[]): Checkbox[] => data.map(item => {
+    return {
+      id: item.name,
+      label: item.description,
+      value: item.sys_id as string
+    }
+  });
+
+export const convertEvalPlanAssessmentAreaToCheckbox = 
+  (data: EvalPlanAssessmentAreaDTO[]): Checkbox[] => data.map(item => {
+    return {
+      id: item.name,
+      label: item.description,
+      value: item.sys_id as string
+    }
+  });
 
 export const buildClassificationCheckboxList = (
   data: ClassificationLevelDTO[], 
