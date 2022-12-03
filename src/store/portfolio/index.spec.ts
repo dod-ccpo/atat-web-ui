@@ -34,6 +34,7 @@ describe("Portfolio Store", () => {
         link:"",
         value:"",
       },
+      docgen_job_status: "",
       classification_level: {value: ""},
       contact: "",
       contract_considerations: {value: ""},

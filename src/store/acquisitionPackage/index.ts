@@ -420,7 +420,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action
   public getAcquisitionPackageSysId(): string {
-    debugger;
     return this.acquisitionPackage?.sys_id || "";
   }
 
