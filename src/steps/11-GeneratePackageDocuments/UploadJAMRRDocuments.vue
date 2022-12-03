@@ -95,7 +95,7 @@
               />
             </div>
             <ATATAlert
-                id="UPload7600Alert"
+                id="UploadJAMRRDocsAlert"
                 v-show="uploadedFiles.length > 0 && uploadedFiles.length < 2"
                 type="warning"
                 class="mt-10"
@@ -104,7 +104,7 @@
                 <p class="mb-0">
                   You may be missing a required document. Please ensure that both
                   signed documents are uploaded before submitting your completed
-                  package. If your J&A and MRR were combined into a single file before
+                  package. If your J&amp;A and MRR were combined into a single file before
                   uploading, ignore this message.
                 </p>
               </template>
