@@ -451,6 +451,16 @@ export class AcquisitionPackageStore extends VuexModule {
     this[dataKey] = saveData.data;
   }
 
+  @Action({rawError: true})
+  public async getContact(type: string): Promise<ContactDTO> {
+    if(type === "COR")
+      return this.corInfo as ContactDTO;
+    else if(type === "ACOR")
+      return this.acorInfo as ContactDTO;
+    else
+      return this.contactInfo as ContactDTO;
+  }
+
   @Mutation
   public setCurrentContract(value: CurrentContractDTO): void {
     this.currentContract = this.currentContract
@@ -638,6 +648,21 @@ export class AcquisitionPackageStore extends VuexModule {
         typeof acquisitionPackage.requirements_cost_estimate === "object" ?
           (acquisitionPackage.requirements_cost_estimate as ReferenceColumn).value as string
           : acquisitionPackage.requirements_cost_estimate as string;
+
+      const corSysId = 
+        typeof acquisitionPackage.cor === "object" ?
+          (acquisitionPackage.cor as ReferenceColumn).value as string
+          : acquisitionPackage.cor as string;
+
+      const aCorSysId =
+        typeof acquisitionPackage.acor === "object" ?
+          (acquisitionPackage.acor as ReferenceColumn).value as string
+          : acquisitionPackage.acor as string;
+
+      const primaryContactSysId =
+        typeof acquisitionPackage.primary_contact === "object" ?
+          (acquisitionPackage.primary_contact as ReferenceColumn).value as string
+          : acquisitionPackage.primary_contact as string;
       
 
       this.setAcquisitionPackage({
@@ -652,7 +677,10 @@ export class AcquisitionPackageStore extends VuexModule {
         contract_type: contractTypeSysId,
         contract_considerations: contractConsiderationsSysId,
         requirements_cost_estimate: reqCostEstimateSysId,
-        evaluation_plan: evalPlanSysId
+        evaluation_plan: evalPlanSysId,
+        cor: corSysId,
+        acor: aCorSysId,
+        primary_contact: primaryContactSysId
       });
       
       if(projectOverviewSysId) {
@@ -708,18 +736,6 @@ export class AcquisitionPackageStore extends VuexModule {
           await Periods.initialPeriodOfPerformance()
         )
       }
-
-      // if(popSysId){
-      //   const periodOfPerformance = await api.periodOfPerformanceTable.retrieve(
-      //     popSysId
-      //   );
-      //   if(periodOfPerformance)
-      //     this.setPeriodOfPerformance(periodOfPerformance)
-      // } else {
-      //   this.setPeriodOfPerformance(
-      //     initialPeriodOfPerformance()
-      //   );
-      // }
 
       if(fairOppSysId) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(
@@ -805,8 +821,39 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      // if(acquisitionPackage.periods)
-      //   this.setPeriodsFromString(acquisitionPackage.periods)
+      if(corSysId) {
+        const corInfo = await api.contactsTable.retrieve(
+          corSysId
+        );
+        if(corInfo){
+          corInfo.sys_id = corSysId;
+          this.setContact({ data: corInfo, type: "COR"});
+        }
+      }
+
+      if(aCorSysId) {
+        const acorInfo = await api.contactsTable.retrieve(
+          aCorSysId
+        );
+        if(acorInfo){
+          acorInfo.sys_id = aCorSysId;
+          this.setContact({ data: acorInfo, type: "ACOR"});
+          this.setHasAlternateCOR(true);
+        }
+      }
+
+      if(primaryContactSysId){
+        const primaryContact = await api.contactsTable.retrieve(
+          primaryContactSysId
+        );
+        if(primaryContact){
+          primaryContact.sys_id = primaryContactSysId
+          this.setContact({
+            data: primaryContact,
+            type: "Mission Owner"
+          });
+        }
+      }
 
       this.setInitialized(true);
 
@@ -959,6 +1006,8 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  
+
   @Action({ rawError: true })
   async loadContactInfo(contactType: string): Promise<ContactDTO> {
     try {
@@ -1013,10 +1062,26 @@ export class AcquisitionPackageStore extends VuexModule {
           ? await api.contactsTable.update(sys_id, { ...saveData.data, sys_id })
           : await api.contactsTable.create(saveData.data);
       this.setContact({ data: savedContact, type: saveData.type });
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        contact: sys_id,
-      } as AcquisitionPackageDTO);
+
+      if(dataKey === "corInfo"){
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          cor: savedContact.sys_id as string,
+        } as AcquisitionPackageDTO);
+      } else if(dataKey === "acorInfo"){
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          acor: savedContact.sys_id as string,
+        } as AcquisitionPackageDTO);
+        this.setHasAlternateCOR(true);
+      } else {
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          primary_contact: savedContact.sys_id as string,
+        } as AcquisitionPackageDTO);
+      }
+        
+      await this.saveAcquisitionPackage();
     } catch (error) {
       throw new Error(`error occurred saving contact info ${error}`);
     }
@@ -1120,12 +1185,17 @@ export class AcquisitionPackageStore extends VuexModule {
     } catch (error) {
       throw new Error(`error occurred saving store data ${storeProperty}`);
     } finally {
-      if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
-        await api.acquisitionPackageTable.update(
-          this.acquisitionPackage.sys_id,
-          this.acquisitionPackage
-        );
-      }
+      await this.saveAcquisitionPackage();
+    }
+  }
+
+  @Action({rawError: true})
+  public async saveAcquisitionPackage(): Promise<void>{
+    if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
+      await api.acquisitionPackageTable.update(
+        this.acquisitionPackage.sys_id,
+        this.acquisitionPackage
+      );
     }
   }
 

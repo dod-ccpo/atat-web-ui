@@ -390,7 +390,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
 
     this.salutationData = convertSystemChoiceToSelect(ContactData.salutationChoices);
 
-    const storeData = await AcquisitionPackage.loadContactInfo("Mission Owner");
+    const storeData = await AcquisitionPackage.getContact("Mission Owner");
     this.savedData = storeData;
 
     if (storeData) {

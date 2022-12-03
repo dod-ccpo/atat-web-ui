@@ -56,7 +56,10 @@ describe("Portfolio Store", () => {
       status: "",
       sys_created_by: "",
       sys_created_on: "",
-      sys_updated_on: ""
+      sys_updated_on: "",
+      cor: "",
+      acor: "",
+      primary_contact: ""
     })
   })
   afterEach(()=>{
