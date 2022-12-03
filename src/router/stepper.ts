@@ -1027,7 +1027,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "09",
     completePercentageWeight: 7,
     menuText: "Generate Package Documents",
-    path: "/review-required-forms",
+    path: "/upload-ja-mrr-documents",
     component: GeneratePackageDocuments,
     children: [
       {
