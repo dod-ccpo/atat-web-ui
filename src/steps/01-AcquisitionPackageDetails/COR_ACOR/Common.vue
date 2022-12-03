@@ -408,7 +408,7 @@ export default class CommonCorAcor extends Vue {
 
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
 
-    const storeData = await AcquisitionPackage.loadContactInfo(this.corOrAcor);
+    const storeData = await AcquisitionPackage.getContact(this.corOrAcor);
     this.savedData = storeData;
 
     if (storeData) {
@@ -472,16 +472,18 @@ export default class CommonCorAcor extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
     this.setShowAccessRadioButtons();
-    if (this.savedData.manually_entered === "true") {
-      this.showContactForm = true;
-    } else {
-      const foundContact = this.contactList.find(val =>
-        val.email === this.savedData.email
-      );
-      if (foundContact) {
-        this.selectedContact = foundContact;
+    if(this.savedData){
+      if (this.savedData.manually_entered === "true") {
+        this.showContactForm = true;
+      } else {
+        const foundContact = this.contactList.find(val =>
+          val.email === this.savedData.email
+        );
+        if (foundContact) {
+          this.selectedContact = foundContact;
+        }
       }
-    }
+    } 
   }
 
 }

@@ -67,6 +67,9 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   package_status?: string;
   contributors?: string;
   evaluation_plan?: string;
+  cor: ReferenceColumn | string;
+  acor: ReferenceColumn | string;
+  primary_contact: ReferenceColumn | string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
