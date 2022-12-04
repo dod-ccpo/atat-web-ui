@@ -95,10 +95,9 @@ export default class App extends Vue {
       }
     })
     
-    const userSysIdFromSession = sessionStorage.getItem("userId");
-    if (userSysIdFromSession) {
-      await CurrentUserStore.resetUser();
-    }
+    setTimeout(() => {
+      CurrentUserStore.resetUser();
+    }, 0)
 
     await this.loadOnEnter();
   }
