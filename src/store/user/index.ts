@@ -36,7 +36,8 @@ const initialUser = ()=> {
 export class UserStore extends VuexModule {
   initialized = false;
 
-  currentUser: UserDTO = initialUser();
+  // currentUser: UserDTO = initialUser();
+  currentUser: UserDTO = {};
 
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.currentUser)
@@ -111,33 +112,27 @@ export class UserStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-
+    debugger;
     if(this.initialized)
       return;
 
     const sessionRestored = retrieveSession(ATAT_USER_KEY);
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
+      this.setInitialized(true);
     } else {
       if(sessionStorage.getItem('userId')){
-        const tempUser = await api.userTable.retrieve(
+        const user = await api.userTable.retrieve(
           sessionStorage.getItem('userId') as string
         );
 
-        if(tempUser){
-          this.currentUser.first_name = tempUser.first_name;
-          this.currentUser.last_name = tempUser.last_name;
-          this.currentUser.name = tempUser.name;
-          this.currentUser.email = tempUser.email;
-          this.currentUser.sys_id = tempUser.sys_id;
-          this.currentUser.user_name = tempUser.user_name;
-          this.currentUser.last_login_time = tempUser.last_login_time;
+        if (user) {
+          this.setCurrentUser(user);
+          storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
+          this.setInitialized(true);
         }
-        storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
       }  
-    }
-    this.setInitialized(true);
-    
+    }    
   }
 }
 

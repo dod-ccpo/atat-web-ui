@@ -106,7 +106,7 @@
 <script lang="ts">
 import { TopNavItem, User } from "types/Global";
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { getUserInitials } from "@/helpers";
 
@@ -114,6 +114,7 @@ import { getIdText } from "@/helpers";
 import AppSections from "@/store/appSections";
 import UserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
+import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
@@ -123,7 +124,29 @@ import { UserDTO } from "@/api/models";
 export default class ATATTopNavBar extends Vue {
 
   /* eslint-disable camelcase */
-  public currentUser: UserDTO = {};
+  // public get currentUser(): UserDTO {
+  //   return CurrentUserStore.getCurrentUser();
+  // };
+  public get userInitials(): string {
+    return this.getUserInitials({
+      firstName: this.currentUser.first_name,
+      lastName: this.currentUser.last_name
+    })
+  };
+
+  public get getCurrentUser(): UserDTO {
+    debugger;
+    return CurrentUserStore.currentUser;
+  }
+
+  public currentUser: UserDTO = {}
+
+  @Watch("getCurrentUser")
+  public currentUserChange(newVal: UserDTO): void {
+    debugger;
+    this.currentUser = newVal;
+    this.buildMenu();
+  }  
 
   public activeMenuItems: string[] = [];
 
@@ -159,11 +182,8 @@ export default class ATATTopNavBar extends Vue {
     return getIdText(str);
   }
 
-  public async loadOnEnter(): Promise<void> {
+  public async buildMenu(): Promise<void> {
     const sectionData = await AppSections.getSectionData();
-
-    this.currentUser = await UserStore.getCurrentUser();
-
     this.topNavMenuItems = [
       {
         title: "Dashboard",
@@ -217,10 +237,7 @@ export default class ATATTopNavBar extends Vue {
         ],
       },
       {
-        title: this.getUserInitials({
-          firstName: this.currentUser.first_name,
-          lastName: this.currentUser.last_name
-        }),
+        title: this.userInitials,
         isProfile: true,
         align: "left",
         menu: [
@@ -264,11 +281,15 @@ export default class ATATTopNavBar extends Vue {
           },
         ],
       },
-    ];
+    ];    
   }
 
+
+  // public async loadOnEnter(): Promise<void> {
+  // }
+
   public async mounted(): Promise<void> {
-    await this.loadOnEnter();
+    // await this.loadOnEnter();
   }
 }
 </script>

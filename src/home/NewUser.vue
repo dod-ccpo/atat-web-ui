@@ -5,6 +5,11 @@
       class="_learn-more-section bg-white _py-80"
     >
       <div class="container-max-width">
+
+    <v-btn
+      @click="setUserId"
+    > SET USER</v-btn>
+
         <h1 class="text-primary large text-center mb-10">
           Prepare your acquisition package online
         </h1>
@@ -177,6 +182,11 @@ import ATATDivider from "@/components/ATATDivider.vue";
 
 export default class NewUser extends Vue {
  
+
+  public setUserId(): void {
+    // sessionStorage.setItem("userId", "")
+  }
+
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
   }

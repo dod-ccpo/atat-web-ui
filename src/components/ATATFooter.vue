@@ -14,7 +14,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { api } from "@/api";
 import UserStore from "@/store/user";
 @Component({})
 export default class ATATFooter extends Vue {
