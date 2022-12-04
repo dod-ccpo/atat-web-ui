@@ -53,6 +53,8 @@ module.exports = {
     BASE_API_URL += BASE_API_URL.endsWith("/") ? "api" : "/api";
     let SNOWUSER = process.env.NODE_ENV === 'development' ? process.env.SNOWUSER :'';
     let SNOWPASS = process.env.NODE_ENV === 'development' ? process.env.SNOWPASS : '';
+    const SNOW_USER_SYSID = process.env.NODE_ENV === 'development' 
+      ? process.env.userId : process.env.userIdDefault; 
 
     config.plugin('define').tap((definitions) => {
       let _base = definitions[0]["process.env"];
@@ -61,6 +63,7 @@ module.exports = {
         'VUE_APP_BASE_API_URL': JSON.stringify(BASE_API_URL),
         'VUE_APP_SNOWUSER': JSON.stringify(SNOWUSER),
         'VUE_APP_SNOWPASS': JSON.stringify(SNOWPASS),
+        'SNOW_USER_SYSID': JSON.stringify(SNOW_USER_SYSID),
       };
       return definitions;
     });

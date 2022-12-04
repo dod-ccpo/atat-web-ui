@@ -82,6 +82,13 @@ export default class App extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    if (process.env.NODE_ENV === "development") {
+      // NOTE: add `userId` to .env file with your snow sys_id to view your packages etc.
+      // will default to maria missionowner if your userId is not in .env
+      const snowUserSysId = process.env.SNOW_USER_SYSID || "";
+      sessionStorage.setItem("userId", snowUserSysId)
+    }
+
     window.addEventListener("storage", async (e) => {
       if (e.storageArea === sessionStorage && e.key === "userId") {
         await CurrentUserStore.resetUser();

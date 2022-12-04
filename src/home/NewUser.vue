@@ -5,7 +5,6 @@
       class="_learn-more-section bg-white _py-80"
     >
       <div class="container-max-width">
-
         <h1 class="text-primary large text-center mb-10">
           Prepare your acquisition package online
         </h1>
@@ -177,6 +176,7 @@ import ATATDivider from "@/components/ATATDivider.vue";
 })
 
 export default class NewUser extends Vue {
+
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
   }
