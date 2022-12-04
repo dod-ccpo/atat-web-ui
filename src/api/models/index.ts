@@ -355,6 +355,7 @@ export interface FundingRequirementDTO extends BaseTableDTO {
   pop_start_date: string;
   pop_end_date: string;
   task_order_number: string;
+  financial_poc?: string;
 }
 
 export interface PeriodDTO extends BaseTableDTO {

@@ -1069,6 +1069,12 @@ export class AcquisitionPackageStore extends VuexModule {
           cor: savedContact.sys_id as string,
         } as AcquisitionPackageDTO);
       } else if(dataKey === "acorInfo"){
+        const fundingRequirement = TaskOrder.value.funding_requirement;
+        if(fundingRequirement?.sys_id) {
+          await api.fundingRequirementTable.update(
+            fundingRequirement?.sys_id,
+            {...fundingRequirement, financial_poc: savedContact.sys_id as string})
+        }
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
           acor: savedContact.sys_id as string,
