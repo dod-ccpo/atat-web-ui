@@ -17,6 +17,7 @@ import storeHelperFunctions, {
 } from "../helpers";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import FinancialDetails from "../financialDetails";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 const ATAT_TASK_ORDER_KEY = "ATAT_TASK_ORDER_KEY";
 
@@ -141,6 +142,9 @@ export class TaskOrderStore extends VuexModule {
       savedTaskOrder.funding_plan = savedFundingReq.funding_plan;
       savedTaskOrder.funds_total = savedFundingReq.funds_total;
       this.setTaskOrder(savedTaskOrder);
+      // TODO: Eric, we need to make sure this call will trigger PATCH of the acquisition
+      //  package with the correct funding requirement sys_id
+      AcquisitionPackage.setFundingRequirement(savedFundingReq);
       if (savedTaskOrder.funding_plan) {
         await FinancialDetails.loadFundingPlanData();
       }

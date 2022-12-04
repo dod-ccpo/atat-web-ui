@@ -29,7 +29,7 @@ import {
   // PeriodOfPerformanceDTO,
   ProjectOverviewDTO,
   SensitiveInformationDTO,
-  ReferenceColumn,
+  ReferenceColumn, FundingRequirementDTO,
 } from "@/api/models";
 
 import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
@@ -232,6 +232,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       projectOverview: store.projectOverview,
       organization: store.organization,
       contactInfo: store.contactInfo,
+      financialPocInfo: store.financialPocInfo,
       contractConsiderations: store.contractConsiderations,
       corInfo: store.corInfo,
       acorInfo: store.acorInfo,
@@ -312,6 +313,7 @@ export class AcquisitionPackageStore extends VuexModule {
   projectOverview: ProjectOverviewDTO | null = null;
   organization: OrganizationDTO | null = null;
   contactInfo: ContactDTO | null = null;
+  financialPocInfo: ContactDTO | null = null;
   contractConsiderations: ContractConsiderationsDTO | null = null;
   corInfo: ContactDTO | null = null;
   acorInfo: ContactDTO | null = null;
@@ -324,6 +326,7 @@ export class AcquisitionPackageStore extends VuexModule {
   // periodOfPerformance: PeriodOfPerformanceDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
+  fundingRequirement: FundingRequirementDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
   totalBasePoPDuration = 0;
   taskOrderDetailsAlertClosed = false;
@@ -444,10 +447,11 @@ export class AcquisitionPackageStore extends VuexModule {
     const dataKey =
       saveData.type === "Mission Owner"
         ? "contactInfo"
-        : isCor
-          ? "corInfo"
-          : "acorInfo";
-
+        : saveData.type === "Financial POC"
+          ? "financialPocInfo"
+          : isCor
+            ? "corInfo"
+            : "acorInfo";
     this[dataKey] = saveData.data;
   }
 
@@ -457,6 +461,8 @@ export class AcquisitionPackageStore extends VuexModule {
       return this.corInfo as ContactDTO;
     else if(type === "ACOR")
       return this.acorInfo as ContactDTO;
+    else if(type === "Financial POC")
+      return this.financialPocInfo as ContactDTO;
     else
       return this.contactInfo as ContactDTO;
   }
@@ -549,6 +555,17 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
     return this.fairOpportunity;
+  }
+
+  @Mutation
+  public setFundingRequirement(value: FundingRequirementDTO): void {
+    this.fundingRequirement = this.fundingRequirement
+      ? Object.assign(this.fundingRequirement, value)
+      : value;
+  }
+  @Action({rawError: true})
+  public getFundingRequirement(): FundingRequirementDTO | null{
+    return this.fundingRequirement;
   }
 
   @Action
@@ -663,9 +680,14 @@ export class AcquisitionPackageStore extends VuexModule {
         typeof acquisitionPackage.primary_contact === "object" ?
           (acquisitionPackage.primary_contact as ReferenceColumn).value as string
           : acquisitionPackage.primary_contact as string;
+
+      const fundingRequirementSysId =
+        typeof acquisitionPackage.funding_requirement === "object" ?
+          (acquisitionPackage.funding_requirement as ReferenceColumn).value as string
+          : acquisitionPackage.funding_requirement as string;
       
 
-      this.setAcquisitionPackage({
+      await this.setAcquisitionPackage({
         ...acquisitionPackage,
         project_overview: projectOverviewSysId,
         current_environment: currentEnvironmentSysId,
@@ -680,7 +702,8 @@ export class AcquisitionPackageStore extends VuexModule {
         evaluation_plan: evalPlanSysId,
         cor: corSysId,
         acor: aCorSysId,
-        primary_contact: primaryContactSysId
+        primary_contact: primaryContactSysId,
+        funding_requirement: fundingRequirementSysId
       });
       
       if(projectOverviewSysId) {
@@ -855,6 +878,31 @@ export class AcquisitionPackageStore extends VuexModule {
         }
       }
 
+      if(fundingRequirementSysId){
+        const fundingRequirement = await api.fundingRequirementTable.retrieve(
+          fundingRequirementSysId
+        );
+        if(fundingRequirement){
+          fundingRequirement.sys_id = fundingRequirementSysId
+          this.setFundingRequirement(fundingRequirement);
+          // load the financial Poc  of the funding requirement and store
+          // the contact to the "financialPocInfo property
+          const financialPocSysId =
+            typeof fundingRequirement.financial_poc === "object" ?
+              (fundingRequirement.financial_poc as ReferenceColumn).value as string
+              : fundingRequirement.financial_poc as string;
+          if(financialPocSysId) {
+            const financialPocInfo = await api.contactsTable.retrieve(
+              financialPocSysId
+            );
+            if(financialPocInfo){
+              financialPocInfo.sys_id = financialPocSysId;
+              this.setContact({ data: financialPocInfo, type: "Financial POC"});
+            }
+          }
+        }
+      }
+
       this.setInitialized(true);
 
     } else {
@@ -899,6 +947,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContractType(initialContractType());
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
+          this.setContact({ data: initialContact(), type: "Financial POC" })
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setFairOpportunity(initialFairOpportunity());
@@ -928,6 +977,9 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
           await TaskOrder.initialize(acquisitionPackage.sys_id || "");
+          // TODO: ERIC, set the funding requirement back to acquisition package here or in the
+          //  TaskOrder initialize function
+
           this.setInitialized(true);
         }
       } catch (error) {
@@ -1016,9 +1068,11 @@ export class AcquisitionPackageStore extends VuexModule {
       const dataKey =
         contactType === "Mission Owner"
           ? "contactInfo"
-          : isCor
-            ? "corInfo"
-            : "acorInfo";
+          : contactType === "Financial POC"
+            ? "financialPocInfo"
+            : isCor
+              ? "corInfo"
+              : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
 
@@ -1052,9 +1106,11 @@ export class AcquisitionPackageStore extends VuexModule {
       const dataKey =
         saveData.type === "Mission Owner"
           ? "contactInfo"
-          : isCor
-            ? "corInfo"
-            : "acorInfo";
+          : saveData.type === "Financial POC"
+            ? "financialPocInfo"
+            : isCor
+              ? "corInfo"
+              : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
       const savedContact =
@@ -1069,17 +1125,18 @@ export class AcquisitionPackageStore extends VuexModule {
           cor: savedContact.sys_id as string,
         } as AcquisitionPackageDTO);
       } else if(dataKey === "acorInfo"){
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          acor: savedContact.sys_id as string,
+        } as AcquisitionPackageDTO);
+        this.setHasAlternateCOR(true);
+      } else if (dataKey === "financialPocInfo") {
         const fundingRequirement = TaskOrder.value.funding_requirement;
         if(fundingRequirement?.sys_id) {
           await api.fundingRequirementTable.update(
             fundingRequirement?.sys_id,
             {...fundingRequirement, financial_poc: savedContact.sys_id as string})
         }
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          acor: savedContact.sys_id as string,
-        } as AcquisitionPackageDTO);
-        this.setHasAlternateCOR(true);
       } else {
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,

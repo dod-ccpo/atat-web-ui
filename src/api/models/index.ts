@@ -70,6 +70,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   cor: ReferenceColumn | string;
   acor: ReferenceColumn | string;
   primary_contact: ReferenceColumn | string;
+  funding_requirement: ReferenceColumn | string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
