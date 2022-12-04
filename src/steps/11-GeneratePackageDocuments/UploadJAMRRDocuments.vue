@@ -35,6 +35,7 @@
                                 type="button"
                                 class="v-btn primary no-text-decoration"
                                 width="250"
+                                target="_blank"
                                 :href="jaTemplateUrl"
                               >
                                 Download J&amp;A Template &nbsp;
@@ -45,6 +46,7 @@
                               <v-btn
                                 type="button"
                                 width="250"
+                                target="_blank"
                                 class="v-btn primary no-text-decoration"
                                 :href="mrrTemplateUrl"
                               >

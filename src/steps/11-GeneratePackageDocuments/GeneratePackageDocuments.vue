@@ -7,7 +7,8 @@
           <GeneratingDocuments v-if="isGenerating"/>
           <ReviewDocuments 
             v-if="!isGenerating"
-            @regenerate="regeneratePackage()"
+            :isErrored="isErrored"
+            @regenerate="generateDocuments()"
           />
         </v-col>
       </v-row>
@@ -32,36 +33,53 @@ import ReviewDocuments from "./components/ReviewDocuments.vue";
 export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
 
   private isGenerating = false;
-
+  private isErrored = false;
+  private docJobStatus = "" ;
   private packageDocuments = [];
-
+  
   @Watch('isGenerating')
   public toggleNavigation(): void {
     let el = document.getElementById('stepperNavigation');
-    
-    if(el)
-      el.hidden = this.isGenerating;
+    if(el) { el.hidden = this.isGenerating; }
   }
 
-  async regeneratePackage(): Promise<void>{
+  async generateDocuments(): Promise<void>{
+    await AcquisitionPackage.saveDocGenStatus('IN_PROGRESS')
+    this.isErrored = false;
     this.isGenerating = true;
-    await this.generateDocuments();
+    this.getStatus();
+  }
+ 
+  public async getStatus(): Promise<void> {
+    const intervalId = setInterval(() => checkDocJobStatus(), 3000);
+
+    const checkDocJobStatus: unknown = (async ()=> {
+      await this.getDocJobStatus();
+      ["COMPLETE", "FAILED"].some(
+        (status)=>{
+          console.log(intervalId)
+          if (status === this.docJobStatus.toUpperCase()){
+            clearInterval(intervalId);
+            this.isGenerating = false;
+            this.isErrored = status === "FAILED";
+          }
+        }
+      )
+    });
   }
 
-  async generateDocuments(): Promise<void> {
-    // Stubbed out for now
-    setTimeout(() => {
-      this.isGenerating = false;
-    }, 5000);
-  }
+  public async getDocJobStatus(): Promise<void> {
+    this.docJobStatus = await AcquisitionPackage.getDocGenStatus(
+        AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "")
+  } 
 
   public async mounted(): Promise<void> {
-    this.isGenerating = true;
-    if(this.packageDocuments.length === 0)
-      this.generateDocuments();
+    await this.getDocJobStatus();
+    this.generateDocuments();
   }
 
   public async saveOnLeave(): Promise<boolean> {
+    this.isGenerating = false; //to restore bottom navigation
     await AcquisitionPackage.setValidateNow(true);
     return true;
   }

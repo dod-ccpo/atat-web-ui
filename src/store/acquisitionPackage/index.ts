@@ -327,7 +327,7 @@ export class AcquisitionPackageStore extends VuexModule {
   classificationLevel: ClassificationLevelDTO | null = null;
   totalBasePoPDuration = 0;
   taskOrderDetailsAlertClosed = false;
-
+  docGenJobStatus = "";
   packageId = "";
 
   validateNow = false;
@@ -554,6 +554,25 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
     console.log("in store: actionArgs", actionArgs);
+  }
+  @Action
+  public async getDocGenStatus(packageId: string): Promise<string> {
+    if(this.acquisitionPackage){
+      this.acquisitionPackage.docgen_job_status = 
+        await (await (api.acquisitionPackageTable.retrieve(packageId))).docgen_job_status;
+    }
+    return this.acquisitionPackage?.docgen_job_status || "";
+  }
+
+  @Action
+  public async saveDocGenStatus(newDocGenStatus: string): Promise<void> {
+    if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
+      this.acquisitionPackage.docgen_job_status = newDocGenStatus;
+      await api.acquisitionPackageTable.update(
+        this.acquisitionPackage.sys_id,
+        this.acquisitionPackage
+      );
+    }
   }
 
   @Mutation
