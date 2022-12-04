@@ -45,7 +45,6 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   number: string;
   project_overview: ReferenceColumn | string;
   organization: ReferenceColumn | string;
-  contact: string;
   fair_opportunity: ReferenceColumn | string;
   current_contract: ReferenceColumn | string;
   docusign_envelope_id: string;
@@ -71,6 +70,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   cor: ReferenceColumn | string;
   acor: ReferenceColumn | string;
   primary_contact: ReferenceColumn | string;
+  funding_requirement: ReferenceColumn | string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -356,6 +356,7 @@ export interface FundingRequirementDTO extends BaseTableDTO {
   pop_start_date: string;
   pop_end_date: string;
   task_order_number: string;
+  financial_poc?: string;
 }
 
 export interface PeriodDTO extends BaseTableDTO {
