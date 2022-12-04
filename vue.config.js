@@ -54,7 +54,7 @@ module.exports = {
     let SNOWUSER = process.env.NODE_ENV === 'development' ? process.env.SNOWUSER :'';
     let SNOWPASS = process.env.NODE_ENV === 'development' ? process.env.SNOWPASS : '';
     const SNOW_USER_SYSID = process.env.NODE_ENV === 'development' 
-      ? process.env.userId : process.env.userIdDefault; 
+      ? process.env.userId : "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
 
     config.plugin('define').tap((definitions) => {
       let _base = definitions[0]["process.env"];
