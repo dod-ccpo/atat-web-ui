@@ -42,7 +42,7 @@
             </v-col>
             <v-col cols="3" align-self="end">
               <v-btn
-                class="primary"
+                class="primary _text-decoration-none"
                 large
                 v-if="isErrored === false"
                 target="_blank"
