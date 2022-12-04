@@ -15,6 +15,18 @@
         </div>
       </v-col>
     </v-row>
+     <v-row>
+      <v-col>
+        <ATATAlert v-if="isErrored">
+          <template v-slot:content>
+              <p class="mt-1 mb-0">
+                An error has occured while generating the documents.  
+                Please contact your system administrator
+              </p>
+          </template>
+        </ATATAlert>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="8">
         <div class="package-list pa-4">
@@ -30,8 +42,11 @@
             </v-col>
             <v-col cols="3" align-self="end">
               <v-btn
-                class="primary"
+                class="primary _text-decoration-none"
                 large
+                v-if="isErrored === false"
+                target="_blank"
+                :href="'/download_all_attachments.do?sysparm_sys_id=' + packageId" 
               >
                 Download&nbsp;
                 <v-icon>download</v-icon>
@@ -95,22 +110,32 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import Vue from "vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PackageItem from "./PackageItem.vue";
+import ATATAlert from "@/components/ATATAlert.vue"
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
     ATATSVGIcon,
-    PackageItem
+    PackageItem,
+    ATATAlert
   }
 })
 export default class ReviewDocuments extends Vue {
 
   @PropSync(
     "packageDocuments",{default: () => []}
-  ) private _packageDocuments: [];
+  ) private _packageDocuments!: [];
+
+  @Prop({default: false }) private isErrored!: boolean;
+  public packageId = "";
+
+  async mounted(): Promise<void>{
+    this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
+  }
 
 }
 </script>
