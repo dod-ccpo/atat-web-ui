@@ -445,7 +445,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public setContact(saveData: { data: ContactDTO; type: string }): void {
     const isCor = saveData.type === "COR";
     const dataKey =
-      saveData.type === "Mission Owner"
+      saveData.type === "Primary Contact"
         ? "contactInfo"
         : saveData.type === "Financial POC"
           ? "financialPocInfo"
@@ -685,7 +685,6 @@ export class AcquisitionPackageStore extends VuexModule {
         typeof acquisitionPackage.funding_requirement === "object" ?
           (acquisitionPackage.funding_requirement as ReferenceColumn).value as string
           : acquisitionPackage.funding_requirement as string;
-      
 
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -873,7 +872,7 @@ export class AcquisitionPackageStore extends VuexModule {
           primaryContact.sys_id = primaryContactSysId
           this.setContact({
             data: primaryContact,
-            type: "Mission Owner"
+            type: "Primary Contact"
           });
         }
       }
@@ -974,11 +973,12 @@ export class AcquisitionPackageStore extends VuexModule {
           const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
+          const taskOrderObj = await TaskOrder.initialize(acquisitionPackage.sys_id || "");
+          acquisitionPackage.funding_requirement 
+            = taskOrderObj.funding_requirement?.sys_id as string;
+
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
-          await TaskOrder.initialize(acquisitionPackage.sys_id || "");
-          // TODO: ERIC, set the funding requirement back to acquisition package here or in the
-          //  TaskOrder initialize function
 
           this.setInitialized(true);
         }
@@ -1065,8 +1065,27 @@ export class AcquisitionPackageStore extends VuexModule {
     try {
       await this.ensureInitialized();
       const isCor = contactType === "COR";
+
+      let acqPkgKey = "";
+      // let dataKey = "";
+
+      switch(contactType) {
+      case "Primary Contact":
+        acqPkgKey = "contactInfo";
+        break;
+      case "FinancialPocInfo": 
+        acqPkgKey = "financialPocInfo";
+        break;
+      case "COR": 
+        acqPkgKey = "corInfo";
+        break;
+      case "ACOR": 
+        acqPkgKey = "acorInfo";
+        break;
+      }
+
       const dataKey =
-        contactType === "Mission Owner"
+        contactType === "Primary Contact"
           ? "contactInfo"
           : contactType === "Financial POC"
             ? "financialPocInfo"
@@ -1075,7 +1094,6 @@ export class AcquisitionPackageStore extends VuexModule {
               : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
-
       if (sys_id.length > 0) {
         if (dataKey === "acorInfo") {
           this.setHasAlternateCOR(true);
@@ -1084,7 +1102,7 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setContact({ data: contactInfo, type: contactType });
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          contact: sys_id,
+          [acqPkgKey]: sys_id,
         } as AcquisitionPackageDTO);
       }
       return this[dataKey] as ContactDTO;
@@ -1104,7 +1122,7 @@ export class AcquisitionPackageStore extends VuexModule {
     try {
       const isCor = saveData.type === "COR";
       const dataKey =
-        saveData.type === "Mission Owner"
+        saveData.type === "Primary Contact"
           ? "contactInfo"
           : saveData.type === "Financial POC"
             ? "financialPocInfo"
@@ -1448,6 +1466,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await FinancialDetails.reset();
     await CurrentEnvironment.reset();
     await Periods.reset();
+    await TaskOrder.reset();
 
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
 
@@ -1461,10 +1480,11 @@ export class AcquisitionPackageStore extends VuexModule {
     this.acquisitionPackage = null;
     this.projectOverview = null;
     this.organization = null;
-    this.contactInfo = null;
     this.contractConsiderations = null;
+    this.contactInfo = null;
     this.corInfo = null;
     this.acorInfo = null;
+    this.financialPocInfo = null;
     this.hasAlternativeContactRep = null;
     this.fairOpportunity = null;
     this.evaluationPlan = null;
@@ -1481,6 +1501,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.validateNow = false;
     this.allowDeveloperNavigation = false;
     this.fundingRequestType =  null;
+    this.fundingRequirement = null;
   }
 }
 

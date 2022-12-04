@@ -78,20 +78,19 @@ export class TaskOrderStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public async initialize(acquisitionPackageId: string): Promise<void> {
-
+  public async initialize(acquisitionPackageId: string): Promise<TaskOrderDTO> {
     const sessionRestored = storeHelperFunctions.retrieveSession(ATAT_TASK_ORDER_KEY);
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
-      this.setInitialized(true);
     }else{
       const taskOrder = {
         ...initial,
         acquisition_package: acquisitionPackageId,
       };
       await this.save(taskOrder);
-      this.setInitialized(true);
     }
+    this.setInitialized(true);
+    return this.taskOrder || initial;
   }
 
   @Action({ rawError: true })
@@ -142,8 +141,7 @@ export class TaskOrderStore extends VuexModule {
       savedTaskOrder.funding_plan = savedFundingReq.funding_plan;
       savedTaskOrder.funds_total = savedFundingReq.funds_total;
       this.setTaskOrder(savedTaskOrder);
-      // TODO: Eric, we need to make sure this call will trigger PATCH of the acquisition
-      //  package with the correct funding requirement sys_id
+
       AcquisitionPackage.setFundingRequirement(savedFundingReq);
       if (savedTaskOrder.funding_plan) {
         await FinancialDetails.loadFundingPlanData();
@@ -166,6 +164,17 @@ export class TaskOrderStore extends VuexModule {
       }
     }
     return this.value.incrementally_funded;
+  }
+
+  @Action
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_TASK_ORDER_KEY);
+    this.doReset();
+  }
+
+  @Mutation private doReset(): void {
+    this.initialized = false;
+    this.taskOrder = null;
   }
 
 }
