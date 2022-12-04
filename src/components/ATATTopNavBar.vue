@@ -123,10 +123,8 @@ import CurrentUserStore from "@/store/user";
 })
 export default class ATATTopNavBar extends Vue {
 
-  /* eslint-disable camelcase */
-  // public get currentUser(): UserDTO {
-  //   return CurrentUserStore.getCurrentUser();
-  // };
+  public currentUser: UserDTO = {}
+
   public get userInitials(): string {
     return this.getUserInitials({
       firstName: this.currentUser.first_name,
@@ -135,15 +133,11 @@ export default class ATATTopNavBar extends Vue {
   };
 
   public get getCurrentUser(): UserDTO {
-    debugger;
     return CurrentUserStore.currentUser;
   }
 
-  public currentUser: UserDTO = {}
-
   @Watch("getCurrentUser")
   public currentUserChange(newVal: UserDTO): void {
-    debugger;
     this.currentUser = newVal;
     this.buildMenu();
   }  
@@ -285,11 +279,12 @@ export default class ATATTopNavBar extends Vue {
   }
 
 
-  // public async loadOnEnter(): Promise<void> {
-  // }
+  public async loadOnEnter(): Promise<void> {
+    this.buildMenu();
+  }
 
   public async mounted(): Promise<void> {
-    // await this.loadOnEnter();
+    await this.loadOnEnter();
   }
 }
 </script>

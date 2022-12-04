@@ -15,17 +15,17 @@ import AcquisitionPackageSummary from "../acquisitionPackageSummary";
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
 
-const initialUser = ()=> {
-  return {
-    sys_id: "e0c4c728875ed510ec3b777acebb356f", // pragma: allowlist secret
-    name: "Maria Missionowner ",
-    first_name: "Maria",
-    last_name: "Missionowner ",
-    user_name: "maria.missionowner.civ@mail.mil",
-    email: "maria.missionowner.civ@mail.mil",
-    last_login_time: "2022-10-03 14:15:07"
-  }
-}
+// const initialUser = ()=> {
+//   return {
+//     sys_id: "e0c4c728875ed510ec3b777acebb356f", // pragma: allowlist secret
+//     name: "Maria Missionowner ",
+//     first_name: "Maria",
+//     last_name: "Missionowner ",
+//     user_name: "maria.missionowner.civ@mail.mil",
+//     email: "maria.missionowner.civ@mail.mil",
+//     last_login_time: "2022-10-03 14:15:07"
+//   }
+// }
 
 @Module({
   name: "UserStore",
@@ -58,9 +58,9 @@ export class UserStore extends VuexModule {
     return this.currentUser as UserDTO;
   }
 
-  public get getInitialUser(): UserDTO {
-    return initialUser();
-  }
+  // public get getInitialUser(): UserDTO {
+  //   return initialUser();
+  // }
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -112,7 +112,6 @@ export class UserStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-    debugger;
     if(this.initialized)
       return;
 

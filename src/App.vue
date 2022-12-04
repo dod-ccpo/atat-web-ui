@@ -81,16 +81,9 @@ export default class App extends Vue {
     }
   }
 
-  public created(): void {
-    sessionStorage.setItem("userId", "")    
-  }
-
   public async mounted(): Promise<void> {
     window.addEventListener("storage", async (e) => {
-      debugger;
       if (e.storageArea === sessionStorage && e.key === "userId") {
-        debugger;
-        // CurrentUserStore.setInitialized(false);
         await CurrentUserStore.resetUser();
       }
     })

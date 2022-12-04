@@ -6,23 +6,32 @@
       <a href="#" class="_text-link">Accessibility</a>
     </div>
     <div>
-      Last login: {{lastLoginTime}}
+      Last login: {{currentUser.last_login_time}}
     </div>
   </v-footer>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import UserStore from "@/store/user";
+import { UserDTO } from "@/api/models";
+import CurrentUserStore from "@/store/user";
 @Component({})
 export default class ATATFooter extends Vue {
+  private currentUser: UserDTO = {};
 
-  private lastLoginTime = "Sept. 3, 2020 1616-0400";
+  public get getCurrentUser(): UserDTO {
+    return CurrentUserStore.currentUser;
+  }
+
+  @Watch("getCurrentUser")
+  public currentUserChange(newVal: UserDTO): void {
+    this.currentUser = newVal;
+  }  
 
   public async loadOnEnter(): Promise<void> {
-    const currentUser = await UserStore.getCurrentUser();
-    this.lastLoginTime = currentUser.last_login_time as string;
+    this.currentUser = await UserStore.getCurrentUser();
   }
 
   public async mounted(): Promise<void> {
