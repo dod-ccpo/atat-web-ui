@@ -184,7 +184,7 @@ export default class NewUser extends Vue {
  
 
   public setUserId(): void {
-    // sessionStorage.setItem("userId", "")
+    sessionStorage.setItem("userId", "")
   }
 
   public startNewAcquisition(): void {

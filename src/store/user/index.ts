@@ -125,9 +125,18 @@ export class UserStore extends VuexModule {
         const user = await api.userTable.retrieve(
           sessionStorage.getItem('userId') as string
         );
-
         if (user) {
-          this.setCurrentUser(user);
+          const userObj: UserDTO = {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            name: user.name,
+            email: user.email,
+            sys_id: user.sys_id,
+            user_name: user.user_name,
+            last_login_time: user.last_login_time,
+          };
+
+          this.setCurrentUser(userObj);
           storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
           this.setInitialized(true);
         }
