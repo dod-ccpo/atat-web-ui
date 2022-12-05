@@ -737,14 +737,14 @@ export class AcquisitionPackageStore extends VuexModule {
           initialProjectOverview()
         )
       }
-
+      debugger;
       if(currentEnvironmentSysId){
         await CurrentEnvironment.loadCurrentEnvFromId(
           currentEnvironmentSysId
         );
       } else {
         await CurrentEnvironment.setCurrentEnvironment(
-          await CurrentEnvironment.initialCurrentEnvironment()
+          await CurrentEnvironment.initializeCurrentEnvironment()
         );
       }
 
@@ -987,7 +987,7 @@ export class AcquisitionPackageStore extends VuexModule {
           // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
-          const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
+          const currentEnvironmentDTO = await CurrentEnvironment.initializeCurrentEnvironment();
           acquisitionPackage.current_environment = currentEnvironmentDTO.sys_id as string;
           const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;

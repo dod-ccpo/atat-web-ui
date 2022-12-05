@@ -487,6 +487,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
 
     try {
+      debugger;
       if (this.hasChanged()) {
         await CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
       }
