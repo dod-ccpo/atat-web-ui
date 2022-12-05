@@ -237,7 +237,6 @@ export default class ClassificationLevelForm extends Vue {
     // parse sys_ids for selectedClassifications into their appropriate arrays
     // of either selected top-level or impact-level
     if (this._selectedClassifications) {
-      debugger;
       const selectedClassifications = this._selectedClassifications
       this._selectedClassifications.forEach((sysId) => {
         const selectedTopLevelClassification: Checkbox | undefined

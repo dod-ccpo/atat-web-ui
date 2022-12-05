@@ -83,7 +83,6 @@ export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
       this.isCloud = this.envLocation === "CLOUD" || this.isHybrid;
       this.envClassificationsCloud = storeData.env_classifications_cloud;
       this.envClassificationsOnPrem = storeData.env_classifications_onprem;
-      debugger;
       this.savedData = {
         envClassificationsCloud: this.envClassificationsCloud,
         envClassificationsOnPrem: this.envClassificationsOnPrem,

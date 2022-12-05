@@ -738,7 +738,7 @@ export class AcquisitionPackageStore extends VuexModule {
           initialProjectOverview()
         )
       }
-      debugger;
+
       if(currentEnvironmentSysId){
         await CurrentEnvironment.loadCurrentEnvFromId(
           currentEnvironmentSysId

@@ -196,11 +196,9 @@ export class CurrentEnvironmentStore extends VuexModule {
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
     await this.doSaveCurrentEnvironmentInstance(value);
-    debugger;
     setTimeout(async () => {
       await this.saveCurrentEnvironment();
     }, 0)
-    debugger;
   }
 
   /**
@@ -213,18 +211,13 @@ export class CurrentEnvironmentStore extends VuexModule {
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
     const instance = _.cloneDeep(value);
-    debugger;
     // not saving the first time
     if (!instance.sys_id) {
-      debugger;
       const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
         .create(instance);
-      debugger;
       instance.sys_id = currEnvInstanceResp.sys_id as string;
       this.currentEnvInstances.push(instance);
-      debugger;
       this.currentEnvironment?.env_instances.push(instance.sys_id);
-      debugger;
     } else {
       const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
         .update(instance.sys_id as unknown as string, instance);
@@ -330,13 +323,7 @@ export class CurrentEnvironmentStore extends VuexModule {
     const currentEnvironment = await api.currentEnvironmentTable.retrieve(sysId);
     if(currentEnvironment){
       this.mapCurrentEnvironmentFromResponse(currentEnvironment);
-      debugger;
-      
-      // TODO: AJAY - load attachments here??
-      // go get all attachements for system and migration
-
       await this.setCurrentEnvironment(currentEnvironment);
-
       if(currentEnvironment.env_instances.length > 0){
         const queryString = "sys_id=" + currentEnvironment.env_instances.join("^ORsys_id=");
 
@@ -397,10 +384,8 @@ export class CurrentEnvironmentStore extends VuexModule {
    */
   @Action({rawError: true})
   async saveCurrentEnvironment(): Promise<boolean> {
-    debugger;
     try {
       const currentEnvironment = await this.getCurrentEnvironment() as CurrentEnvironmentDTO;
-      debugger;
       const transformedCurrEnv = await this.transformCurrentEnvironmentForSave(
         currentEnvironment as CurrentEnvironmentDTO);
       await api.currentEnvironmentTable
