@@ -113,15 +113,7 @@ export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         Object.assign(this.currEnvDTO, this.currentData);
-        // TODO - which store to save to?
         await CurrentEnvironment.saveCurrentEnvironment();
-        // AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO); // TODO: not to this for now
-
-        // will be used when SNOW store has been wired
-        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.CurrentEnvironment
-        // });
       }
     } catch (error) {
       console.log(error);
