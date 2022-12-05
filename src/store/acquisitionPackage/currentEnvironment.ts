@@ -159,7 +159,7 @@ export class CurrentEnvironmentStore extends VuexModule {
    * Makes an API call to delete the instance. And then sets all the context
    * including making another function call out to update the current environment.
    */
-  @Mutation // EJY changed from Action to Mutation
+  @Action({rawError: true})
   public async doDeleteEnvironmentInstance(index: number): Promise<void> {
     const instanceSysId = this.currentEnvInstances[index].sys_id;
     await api.currentEnvironmentInstanceTable.remove(instanceSysId as string);
@@ -211,7 +211,6 @@ export class CurrentEnvironmentStore extends VuexModule {
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
     const instance = _.cloneDeep(value);
-    // not saving the first time
     if (!instance.sys_id) {
       const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
         .create(instance);
