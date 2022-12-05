@@ -160,7 +160,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await Periods.loadPeriodOfPerformance();
+    const storeData = await Periods.getPeriodOfPerformance();
 
     if (storeData) {
       this.loaded = storeData;
@@ -186,7 +186,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
           requested_pop_start_date: this.currentData.requested_pop_start_date  || "",
         }
 
-        await Periods.savePeriodOfPerformance(pops);
+        await Periods.setPeriodOfPerformance(pops);
       }
     } catch (error) {
       console.log(error);

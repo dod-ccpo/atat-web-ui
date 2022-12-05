@@ -43,29 +43,34 @@ export interface AlertDTO extends BaseTableDTO {
 export interface AcquisitionPackageDTO extends BaseTableDTO {
   status: string;
   number: string;
-  project_overview: string;
-  organization: string;
-  contact: string;
-  fair_opportunity: string;
-  current_contract: string;
+  project_overview: ReferenceColumn | string;
+  organization: ReferenceColumn | string;
+  fair_opportunity: ReferenceColumn | string;
+  current_contract: ReferenceColumn | string;
   docusign_envelope_id: string;
-  sensitive_information: string;
-  period_of_performance: string;
+  docgen_job_status: string;
+  sensitive_information: ReferenceColumn | string;
+  period_of_performance: ReferenceColumn | string;
   periods: string;
   gfe_overview: string;
-  contract_type: string;
-  requirements_const_estimate: string;
-  contract_considerations: string;
+  contract_type: ReferenceColumn | string;
+  requirements_cost_estimate: ReferenceColumn | string;
+  contract_considerations: ReferenceColumn | string;
   funding_plans: string;
-  classification_level: string;
+  classification_level: ReferenceColumn | string;
   required_services: string;
-  current_environment: string;
+  current_environment: ReferenceColumn | string;
   environment_instance: string;
-  secondary_reviewers?: string[];
+  secondary_reviewers?: string;
   mission_owners?: string;
-  contract_award: ReferenceColumn;
+  contract_award: ReferenceColumn | string;
   package_status?: string;
-  contributors?: string[];
+  contributors?: string;
+  evaluation_plan?: string;
+  cor: ReferenceColumn | string;
+  acor: ReferenceColumn | string;
+  primary_contact: ReferenceColumn | string;
+  funding_requirement: ReferenceColumn | string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -248,7 +253,7 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   recurring_requirement?: string;
   base_and_options?: string; //deprecated
   option_periods?: string;
-  base_period?: string;
+  base_period?: ReferenceColumn | string;
 }
 
 export interface ContractTypeDTO extends BaseTableDTO {
@@ -351,6 +356,7 @@ export interface FundingRequirementDTO extends BaseTableDTO {
   pop_start_date: string;
   pop_end_date: string;
   task_order_number: string;
+  financial_poc?: string;
 }
 
 export interface PeriodDTO extends BaseTableDTO {
@@ -361,8 +367,8 @@ export interface PeriodDTO extends BaseTableDTO {
 }
 
 export interface ReferenceColumn {
-  link: string;
-  value: string;
+  link?: string;
+  value?: string;
 }
 
 export interface DisplayColumn {
@@ -592,14 +598,26 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
 }
 
+export interface EvalPlanAssessmentAreaDTO extends BaseTableDTO {
+  name: string;
+  description: string;
+  sequence: string;
+}
+
+export interface EvalPlanDifferentiatorDTO extends BaseTableDTO {
+  name: string;
+  description: string;
+  sequence: string;
+}
+
 export interface EvaluationPlanDTO extends BaseTableDTO {
   source_selection: EvalPlanSourceSelection;
   method?: EvalPlanMethod;
   has_custom_specifications?: string;
-  standard_specifications?: string[];
-  custom_specifications?: string[];
-  standard_differentiators?: string[];
-  custom_differentiators?: string[];
+  standard_specifications?: string;
+  custom_specifications?: string;
+  standard_differentiators?: string;
+  custom_differentiators?: string;
 }
 
 export interface UserDTO extends BaseTableDTO {

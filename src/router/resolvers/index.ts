@@ -12,6 +12,7 @@ import { ClassificationLevelDTO, EvaluationPlanDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -40,7 +41,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   // does not select an option, send to summary page.
   const source = evalPlan.source_selection;
   const method = evalPlan.method;
-  return (source === "TechProposal" || source === "SetLumpSum") && !method ? true : false;
+  return (source === "TECH_PROPOSAL" || source === "SET_LUMP_SUM") && !method ? true : false;
 }
 
 export const CreateEvalPlanRouteResolver = (current: string): string => {
@@ -62,7 +63,7 @@ export const UploadJAMRRDocumentsRouteResolver = (current: string): string => {
 };
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
-  const evalPlan = AcquisitionPackage.getEvaluationPlan;
+  const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (missingEvalPlanMethod(evalPlan)) {
     return routeNames.EvalPlanSummary;
   }
@@ -71,7 +72,7 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
     buttonId: "NoOtherAssessmentAreas"
   });
 
-  if (evalPlan.source_selection === "SetLumpSum") {
+  if (evalPlan.source_selection === "SET_LUMP_SUM") {
     Steps.setAdditionalButtonHide(false);
   } else {
     Steps.setAdditionalButtonHide(true);
@@ -83,7 +84,7 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 };
 
 export const BVTOResolver = (current: string): string => {
-  const evalPlan = AcquisitionPackage.getEvaluationPlan;
+  const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.EvalPlanSummary){
     if (!evalPlanRequired()) {
       return routeNames.NoEvalPlan;

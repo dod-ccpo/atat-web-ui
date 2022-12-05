@@ -206,6 +206,22 @@ export class AttachmentStore extends VuexModule {
     const storeData = this as unknown as Record<string, unknown>;
     return storeData[serviceKey] as AttachmentDTO[];
   }
+
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_ATTACHMENTS_KEY);
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.initialized = false;
+    this[FUNDING_REQUEST_FSFORM_TABLE] = [];
+    this[FUNDING_REQUEST_MIPRFORM_TABLE] = [];
+    this[REQUIREMENTS_COST_ESTIMATE_TABLE] = [];
+    this[CURRENT_ENVIRONMENT_TABLE] = [];
+    this[FAIR_OPPORTUNITY_TABLE] = [];
+  }
 }
 
 const Attachments = getModule(AttachmentStore);

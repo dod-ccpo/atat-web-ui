@@ -7,6 +7,7 @@ import validators from "@/plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { EvaluationPlanDTO } from "@/api/models";
 import { Checkbox } from "types/Global";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 Vue.use(Vuetify);
 
@@ -14,19 +15,19 @@ Vue.use(Vuetify);
 const initialEvalPlan: EvaluationPlanDTO = {
   source_selection: "",
   method: "",
-  standard_specifications: [],
-  custom_specifications: [],  
-  standard_differentiators: [],
-  custom_differentiators: [],  
+  standard_specifications: "",
+  custom_specifications: "",  
+  standard_differentiators: "",
+  custom_differentiators: "",  
 };
 
 const evalPlanPopulated: EvaluationPlanDTO = {
-  source_selection: "TechProposal",
+  source_selection: "TECH_PROPOSAL",
   method: "BVTO",
-  standard_specifications: [],
-  custom_specifications: [],    
-  standard_differentiators: [],
-  custom_differentiators: [],  
+  standard_specifications: "",
+  custom_specifications: "",    
+  standard_differentiators: "",
+  custom_differentiators: "",  
 };
 /* eslint-enable camelcase */
 
@@ -38,7 +39,7 @@ describe("Testing NoEvalPlan Component", () => {
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
   beforeEach(async () => {
-    await AcquisitionPackage.setEvaluationPlan(evalPlanPopulated);
+    await EvaluationPlan.setEvaluationPlan(evalPlanPopulated);
     vuetify = new Vuetify();
     wrapper = mount(EvalPlanDetails, {
       vuetify,
@@ -55,7 +56,7 @@ describe("Testing NoEvalPlan Component", () => {
   describe("testing methods", () => {
     it("loadOnEnter() - gets eval plan data from store", async () => {
       await wrapper.vm.loadOnEnter();
-      expect(wrapper.vm.$data.evalPlan.source_selection).toBe("TechProposal")
+      expect(wrapper.vm.$data.evalPlan.source_selection).toBe("TECH_PROPOSAL")
     });
 
     it("initCustomSpecs", async () => {
@@ -68,10 +69,10 @@ describe("Testing NoEvalPlan Component", () => {
     });
 
     it("saveOnLeave() - saves eval plan data to store", async () => {
-      await AcquisitionPackage.setEvaluationPlan(initialEvalPlan);
+      await EvaluationPlan.setEvaluationPlan(initialEvalPlan);
       await wrapper.vm.loadOnEnter();
       await wrapper.setData({
-        sourceSelection: "TechProposal",
+        sourceSelection: "TECH_PROPOSAL",
         method: "BVTO",
         savedData: {
           // eslint-disable-next-line camelcase
@@ -91,14 +92,14 @@ describe("Testing NoEvalPlan Component", () => {
   describe("testing getters", () => {
     it ("gets header for tech proposal required", async () => {
       // eslint-disable-next-line camelcase
-      wrapper.vm.$data.evalPlan.source_selection = "TechProposal";
+      wrapper.vm.$data.evalPlan.source_selection = "TECH_PROPOSAL";
       expect(wrapper.vm.isStandards).toBeTruthy();
       expect(wrapper.vm.header).toContain("proposals are required")  
     });
     it ("gets header for no proposal required", async () => {
       await wrapper.setData({
         // eslint-disable-next-line camelcase
-        evalPlan: { source_selection: "NoTechProposal" }
+        evalPlan: { source_selection: "NO_TECH_PROPOSAL" }
       })
 
       expect(wrapper.vm.isStandards).toBeTruthy();
@@ -108,7 +109,7 @@ describe("Testing NoEvalPlan Component", () => {
     it ("gets header for lump sum one CSP", async () => {
       await wrapper.setData({
         // eslint-disable-next-line camelcase
-        evalPlan: { source_selection: "SetLumpSum" }
+        evalPlan: { source_selection: "SET_LUMP_SUM" }
       })
 
       expect(wrapper.vm.isStandards).toBeFalsy();
@@ -118,7 +119,7 @@ describe("Testing NoEvalPlan Component", () => {
     it ("gets header for lump sum multiple CSPs", async () => {
       await wrapper.setData({
         // eslint-disable-next-line camelcase
-        evalPlan: { source_selection: "EqualSetLumpSum" }
+        evalPlan: { source_selection: "EQUAL_SET_LUMP_SUM" }
       });
 
       expect(wrapper.vm.isStandards).toBeFalsy();

@@ -25,10 +25,11 @@ import {
   EvaluationPlanDTO,
   RequirementsCostEstimateDTO,
   OrganizationDTO,
-  PeriodDTO,
-  PeriodOfPerformanceDTO,
+  // PeriodDTO,
+  // PeriodOfPerformanceDTO,
   ProjectOverviewDTO,
   SensitiveInformationDTO,
+  ReferenceColumn, FundingRequirementDTO,
 } from "@/api/models";
 
 import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
@@ -36,11 +37,12 @@ import { SessionData } from "./models";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
-import FinancialDetails from "../financialDetails";
+import FinancialDetails, { initialRequirementsCostEstimate } from "../financialDetails";
 import Periods from "../periods";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -52,11 +54,11 @@ export const StoreProperties = {
   Organization: "organization",
   FairOpportunity: "fairOpportunity",
   EvaluationPlan: "evaluationPlan",
-  PeriodOfPerformance: "periodOfPerformance",
+  // PeriodOfPerformance: "periodOfPerformance",
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
-  CurrentEnvironment: "currentEnvironment",
+  CurrentEnvironment: "currentEnvironment"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -170,8 +172,8 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
     source_selection: "" as EvalPlanSourceSelection,
     method: "" as EvalPlanMethod,
     has_custom_specifications: undefined,
-    standard_specifications: [],
-    custom_specifications: [],
+    standard_specifications: "",
+    custom_specifications: "",
   }
 }
 
@@ -211,6 +213,13 @@ const initialSensitiveInformation = ()=> {
   }
 }
 
+const initialClassificationLevel = () => {
+  return {
+    impact_level: "",
+    classification: "",
+  }
+}
+
 const saveAcquisitionPackage = (value: AcquisitionPackageDTO) => {
   api.acquisitionPackageTable.update(value.sys_id as string, value);
 };
@@ -223,6 +232,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       projectOverview: store.projectOverview,
       organization: store.organization,
       contactInfo: store.contactInfo,
+      financialPocInfo: store.financialPocInfo,
       contractConsiderations: store.contractConsiderations,
       corInfo: store.corInfo,
       acorInfo: store.acorInfo,
@@ -230,8 +240,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
       evaluationPlan: store.evaluationPlan,
-      periods: store.periods,
-      periodOfPerformance: store.periodOfPerformance,
+      // periods: store.periods,
+      // periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensitiveInformation: store.sensitiveInformation,
       allowDeveloperNavigation: store.allowDeveloperNavigation
@@ -303,6 +313,7 @@ export class AcquisitionPackageStore extends VuexModule {
   projectOverview: ProjectOverviewDTO | null = null;
   organization: OrganizationDTO | null = null;
   contactInfo: ContactDTO | null = null;
+  financialPocInfo: ContactDTO | null = null;
   contractConsiderations: ContractConsiderationsDTO | null = null;
   corInfo: ContactDTO | null = null;
   acorInfo: ContactDTO | null = null;
@@ -311,13 +322,16 @@ export class AcquisitionPackageStore extends VuexModule {
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
-  periods: string | null = null;
-  periodOfPerformance: PeriodOfPerformanceDTO | null = null;
+  // periods: string | null = null;
+  // periodOfPerformance: PeriodOfPerformanceDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
+  fundingRequirement: FundingRequirementDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
   totalBasePoPDuration = 0;
   taskOrderDetailsAlertClosed = false;
+  docGenJobStatus = "";
+  packageId = "";
 
   validateNow = false;
   allowDeveloperNavigation = false;
@@ -431,13 +445,26 @@ export class AcquisitionPackageStore extends VuexModule {
   public setContact(saveData: { data: ContactDTO; type: string }): void {
     const isCor = saveData.type === "COR";
     const dataKey =
-      saveData.type === "Mission Owner"
+      saveData.type === "Primary Contact"
         ? "contactInfo"
-        : isCor
-          ? "corInfo"
-          : "acorInfo";
-
+        : saveData.type === "Financial POC"
+          ? "financialPocInfo"
+          : isCor
+            ? "corInfo"
+            : "acorInfo";
     this[dataKey] = saveData.data;
+  }
+
+  @Action({rawError: true})
+  public async getContact(type: string): Promise<ContactDTO> {
+    if(type === "COR")
+      return this.corInfo as ContactDTO;
+    else if(type === "ACOR")
+      return this.acorInfo as ContactDTO;
+    else if(type === "Financial POC")
+      return this.financialPocInfo as ContactDTO;
+    else
+      return this.contactInfo as ContactDTO;
   }
 
   @Mutation
@@ -454,10 +481,10 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  @Mutation
-  public setPeriods(value: PeriodDTO[]): void {
-    this.periods = value.map(period=> period.sys_id).join(',');
-  }
+  // @Mutation
+  // public setPeriods(value: PeriodDTO[]): void {
+  //   this.periods = value.map(period=> period.sys_id).join(',');
+  // }
 
   @Mutation
   public setClassificationLevel(value: ClassificationLevelDTO): void {
@@ -466,12 +493,12 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  @Mutation
-  public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
-    this.periodOfPerformance = this.periodOfPerformance
-      ? Object.assign(this.periodOfPerformance, value)
-      : value;
-  }
+  // @Mutation
+  // public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
+  //   this.periodOfPerformance = this.periodOfPerformance
+  //     ? Object.assign(this.periodOfPerformance, value)
+  //     : value;
+  // }
 
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
@@ -502,7 +529,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public async setEvaluationPlan(value: EvaluationPlanDTO): Promise<void> {
+  public setEvaluationPlan(value: EvaluationPlanDTO): void {
     if (this.evaluationPlan) {
       this.evaluationPlan = Object.assign(this.evaluationPlan, value);
     } else {
@@ -530,9 +557,39 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.fairOpportunity;
   }
 
+  @Mutation
+  public setFundingRequirement(value: FundingRequirementDTO): void {
+    this.fundingRequirement = this.fundingRequirement
+      ? Object.assign(this.fundingRequirement, value)
+      : value;
+  }
+  @Action({rawError: true})
+  public getFundingRequirement(): FundingRequirementDTO | null{
+    return this.fundingRequirement;
+  }
+
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
     console.log("in store: actionArgs", actionArgs);
+  }
+  @Action
+  public async getDocGenStatus(packageId: string): Promise<string> {
+    if(this.acquisitionPackage){
+      this.acquisitionPackage.docgen_job_status = 
+        await (await (api.acquisitionPackageTable.retrieve(packageId))).docgen_job_status;
+    }
+    return this.acquisitionPackage?.docgen_job_status || "";
+  }
+
+  @Action
+  public async saveDocGenStatus(newDocGenStatus: string): Promise<void> {
+    if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
+      this.acquisitionPackage.docgen_job_status = newDocGenStatus;
+      await api.acquisitionPackageTable.update(
+        this.acquisitionPackage.sys_id,
+        this.acquisitionPackage
+      );
+    }
   }
 
   @Mutation
@@ -547,26 +604,347 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = sessionData.fairOpportunity;
     this.evaluationPlan = sessionData.evaluationPlan;
     this.organization = sessionData.organization;
-    this.periods = sessionData.periods;
+    // this.periods = sessionData.periods;
     this.projectOverview = sessionData.projectOverview;
-    this.periodOfPerformance = sessionData.periodOfPerformance;
+    // this.periodOfPerformance = sessionData.periodOfPerformance;
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.classificationLevel = sessionData.classificationLevel;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
   }
 
+  @Action({rawError: true})
+  public async loadPackageFromId(packageId: string): Promise<void> {
+    const acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
+    if (acquisitionPackage) {
+
+      await ContactData.initialize();
+      await OrganiationData.initialize();
+      await DescriptionOfWork.initialize();
+      await Attachments.initialize();
+      await FinancialDetails.initialize();
+
+
+      const currentEnvironmentSysId = 
+        typeof acquisitionPackage.current_environment === "object" ?
+          (acquisitionPackage.current_environment as ReferenceColumn).value as string
+          : acquisitionPackage.current_environment as string;
+
+      const projectOverviewSysId = 
+        typeof acquisitionPackage.project_overview === "object" ?
+          (acquisitionPackage.project_overview as ReferenceColumn).value as string
+          : acquisitionPackage.project_overview as string;
+
+      const organizationSysId =
+        typeof acquisitionPackage.organization === "object" ?
+          (acquisitionPackage.organization as ReferenceColumn).value as string
+          : acquisitionPackage.organization as string;
+
+      const evalPlanSysId = 
+        typeof acquisitionPackage.evaluation_plan === "object" ?
+          (acquisitionPackage.evaluation_plan as ReferenceColumn).value as string
+          : acquisitionPackage.evaluation_plan as string;
+
+      const popSysId = 
+        typeof acquisitionPackage.period_of_performance === "object" ?
+          (acquisitionPackage.period_of_performance as ReferenceColumn).value as string
+          : acquisitionPackage.period_of_performance as string;
+
+      const fairOppSysId = 
+        typeof acquisitionPackage.fair_opportunity === "object" ?
+          (acquisitionPackage.fair_opportunity as ReferenceColumn).value as string
+          : acquisitionPackage.fair_opportunity as string;
+
+      const currContractSysId = 
+        typeof acquisitionPackage.current_contract === "object" ?
+          (acquisitionPackage.current_contract as ReferenceColumn).value as string
+          : acquisitionPackage.current_contract as string;
+
+      const sensitiveInfoSysId =
+        typeof acquisitionPackage.sensitive_information === "object" ?
+          (acquisitionPackage.sensitive_information as ReferenceColumn).value as string
+          : acquisitionPackage.sensitive_information as string;
+
+      const contractTypeSysId =
+        typeof acquisitionPackage.contract_type === "object" ?
+          (acquisitionPackage.contract_type as ReferenceColumn).value as string
+          : acquisitionPackage.contract_type as string;
+
+      const classificationLevelSysId =
+        typeof acquisitionPackage.classification_level === "object" ?
+          (acquisitionPackage.classification_level as ReferenceColumn).value as string
+          : acquisitionPackage.classification_level as string;
+
+      const contractConsiderationsSysId = 
+        typeof acquisitionPackage.contract_considerations === "object" ?
+          (acquisitionPackage.contract_considerations as ReferenceColumn).value as string
+          : acquisitionPackage.contract_considerations as string;
+
+      const reqCostEstimateSysId = 
+        typeof acquisitionPackage.requirements_cost_estimate === "object" ?
+          (acquisitionPackage.requirements_cost_estimate as ReferenceColumn).value as string
+          : acquisitionPackage.requirements_cost_estimate as string;
+
+      const corSysId = 
+        typeof acquisitionPackage.cor === "object" ?
+          (acquisitionPackage.cor as ReferenceColumn).value as string
+          : acquisitionPackage.cor as string;
+
+      const aCorSysId =
+        typeof acquisitionPackage.acor === "object" ?
+          (acquisitionPackage.acor as ReferenceColumn).value as string
+          : acquisitionPackage.acor as string;
+
+      const primaryContactSysId =
+        typeof acquisitionPackage.primary_contact === "object" ?
+          (acquisitionPackage.primary_contact as ReferenceColumn).value as string
+          : acquisitionPackage.primary_contact as string;
+
+      const fundingRequirementSysId =
+        typeof acquisitionPackage.funding_requirement === "object" ?
+          (acquisitionPackage.funding_requirement as ReferenceColumn).value as string
+          : acquisitionPackage.funding_requirement as string;
+
+      await this.setAcquisitionPackage({
+        ...acquisitionPackage,
+        project_overview: projectOverviewSysId,
+        current_environment: currentEnvironmentSysId,
+        organization: organizationSysId,
+        period_of_performance: popSysId,
+        fair_opportunity: fairOppSysId,
+        current_contract: currContractSysId,
+        sensitive_information: sensitiveInfoSysId,
+        contract_type: contractTypeSysId,
+        contract_considerations: contractConsiderationsSysId,
+        requirements_cost_estimate: reqCostEstimateSysId,
+        evaluation_plan: evalPlanSysId,
+        cor: corSysId,
+        acor: aCorSysId,
+        primary_contact: primaryContactSysId,
+        funding_requirement: fundingRequirementSysId
+      });
+      
+      if(projectOverviewSysId) {
+        const projectOverview = await api.projectOverviewTable.retrieve(
+          projectOverviewSysId
+        );
+        if(projectOverview){
+          this.setProjectOverview(projectOverview);
+          this.setProjectTitle(projectOverview.title);
+        }
+      } else {
+        this.setProjectOverview(
+          initialProjectOverview()
+        )
+      }
+
+      if(currentEnvironmentSysId){
+        await CurrentEnvironment.loadCurrentEnvFromId(
+          currentEnvironmentSysId
+        );
+      } else {
+        await CurrentEnvironment.setCurrentEnvironment(
+          await CurrentEnvironment.initialCurrentEnvironment()
+        );
+      }
+
+      if(organizationSysId) {
+        const organization = await api.organizationTable.retrieve(
+          organizationSysId
+        );
+        if(organization)
+          this.setOrganization(organization);
+      } else {
+        this.setOrganization(
+          initialOrganization()
+        );
+      }
+
+      if(evalPlanSysId){
+        await EvaluationPlan.loadEvalPlanFromId(evalPlanSysId);
+      } else {
+        await EvaluationPlan.setEvaluationPlan(
+          await EvaluationPlan.initialEvaluationPlan()
+        );
+      }
+
+      if(popSysId){
+        await Periods.loadPeriodOfPerformanceFromSysId(
+          popSysId
+        )
+      } else {
+        await Periods.setPeriodOfPerformance(
+          await Periods.initialPeriodOfPerformance()
+        )
+      }
+
+      if(fairOppSysId) {
+        const fairOpportunity = await api.fairOpportunityTable.retrieve(
+          fairOppSysId
+        );
+        if(fairOpportunity)
+          this.setFairOpportunity(fairOpportunity);
+      } else {
+        this.setFairOpportunity(
+          initialFairOpportunity()
+        );
+      }
+
+      if(currContractSysId) {
+        const currentContract = await api.currentContractTable.retrieve(
+          currContractSysId
+        );
+        if(currentContract)
+          this.setCurrentContract(currentContract);
+      } else {
+        this.setCurrentContract(
+          initialCurrentContract()
+        );
+      }
+
+      if(sensitiveInfoSysId){
+        const sensitiveInformation = await api.sensitiveInformationTable.retrieve(
+          sensitiveInfoSysId
+        );
+        if(sensitiveInformation)
+          this.setSensitiveInformation(sensitiveInformation);
+      } else {
+        this.setSensitiveInformation(
+          initialSensitiveInformation()
+        );
+      }
+
+      if(contractTypeSysId){
+        const contractType = await api.contractTypeTable.retrieve(
+          contractTypeSysId
+        );
+        if(contractType)
+          this.setContractType(contractType);
+      } else {
+        this.setContractType(
+          initialContractType()
+        )
+      }
+
+      if(classificationLevelSysId) {
+        const classificationLevel = await api.classificationLevelTable.retrieve(
+          classificationLevelSysId
+        );
+        if(classificationLevel)
+          this.setClassificationLevel(classificationLevel);
+      } else {
+        this.setClassificationLevel(
+          initialClassificationLevel()
+        );
+      }
+
+      if(contractConsiderationsSysId) {
+        const contractConsiderations = await api.contractConsiderationsTable.retrieve(
+          contractConsiderationsSysId
+        );
+        if(contractConsiderations)
+          this.setContractConsiderations(contractConsiderations);
+      } else {
+        this.setContractConsiderations(
+          initialContractConsiderations()
+        );
+      }
+
+      if(reqCostEstimateSysId) {
+        const requirementsCostEstimate = await api.requirementsCostEstimateTable.retrieve(
+          reqCostEstimateSysId
+        );
+        if(requirementsCostEstimate)
+          this.setRequirementsCostEstimate(requirementsCostEstimate);
+      } else {
+        this.setRequirementsCostEstimate(
+          initialRequirementsCostEstimate()
+        );
+      }
+
+      if(corSysId) {
+        const corInfo = await api.contactsTable.retrieve(
+          corSysId
+        );
+        if(corInfo){
+          corInfo.sys_id = corSysId;
+          this.setContact({ data: corInfo, type: "COR"});
+        }
+      }
+
+      if(aCorSysId) {
+        const acorInfo = await api.contactsTable.retrieve(
+          aCorSysId
+        );
+        if(acorInfo){
+          acorInfo.sys_id = aCorSysId;
+          this.setContact({ data: acorInfo, type: "ACOR"});
+          this.setHasAlternateCOR(true);
+        }
+      }
+
+      if(primaryContactSysId){
+        const primaryContact = await api.contactsTable.retrieve(
+          primaryContactSysId
+        );
+        if(primaryContact){
+          primaryContact.sys_id = primaryContactSysId
+          this.setContact({
+            data: primaryContact,
+            type: "Primary Contact"
+          });
+        }
+      }
+
+      if(fundingRequirementSysId){
+        const fundingRequirement = await api.fundingRequirementTable.retrieve(
+          fundingRequirementSysId
+        );
+        if(fundingRequirement){
+          fundingRequirement.sys_id = fundingRequirementSysId
+          this.setFundingRequirement(fundingRequirement);
+          // load the financial Poc  of the funding requirement and store
+          // the contact to the "financialPocInfo property
+          const financialPocSysId =
+            typeof fundingRequirement.financial_poc === "object" ?
+              (fundingRequirement.financial_poc as ReferenceColumn).value as string
+              : fundingRequirement.financial_poc as string;
+          if(financialPocSysId) {
+            const financialPocInfo = await api.contactsTable.retrieve(
+              financialPocSysId
+            );
+            if(financialPocInfo){
+              financialPocInfo.sys_id = financialPocSysId;
+              this.setContact({ data: financialPocInfo, type: "Financial POC"});
+            }
+          }
+        }
+      }
+
+      this.setInitialized(true);
+
+    } else {
+      await this.initialize();
+    }
+  }
+
+  // @Mutation
+  // private setPeriodsFromString(value: string): void {
+  //   this.periods = value;
+  // }
+
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
+
+    if (this.initialized) {
+      return;
+    }
+
     await ContactData.initialize();
     await OrganiationData.initialize();
     await DescriptionOfWork.initialize();
     await Attachments.initialize();
     await FinancialDetails.initialize();
-    
-    if (this.initialized) {
-      return;
-    }
 
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
@@ -587,10 +965,15 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContractType(initialContractType());
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
+          this.setContact({ data: initialContact(), type: "Financial POC" })
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setFairOpportunity(initialFairOpportunity());
-          this.setEvaluationPlan(initialEvaluationPlan());
+          const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
+          if(evaluationPlanDTO){
+            this.setEvaluationPlan(evaluationPlanDTO);
+            acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
+          }
 
           this.setRequirementsCostEstimate({ 
             estimatedTaskOrderValue: "",
@@ -600,17 +983,22 @@ export class AcquisitionPackageStore extends VuexModule {
             surge_capacity: ""
           });
 
-          this.setPeriods([]);
-          this.setPeriodOfPerformance(initialPeriodOfPerformance());
+          // this.setPeriods([]);
+          // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initialCurrentEnvironment();
-          acquisitionPackage.current_environment =
-            currentEnvironmentDTO.sys_id as unknown as string;
+          acquisitionPackage.current_environment = currentEnvironmentDTO.sys_id as string;
+          const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
+          acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
+          const taskOrderObj = await TaskOrder.initialize(acquisitionPackage.sys_id || "");
+          acquisitionPackage.funding_requirement 
+            = taskOrderObj.funding_requirement?.sys_id as string;
+
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
-          await TaskOrder.initialize(acquisitionPackage.sys_id || "");
+
           this.setInitialized(true);
         }
       } catch (error) {
@@ -657,9 +1045,9 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
     // [StoreProperties.EvaluationPlan]: api.evaluationPlanTable, // FUTURE TICKET
     [StoreProperties.Organization]: api.organizationTable,
-    [StoreProperties.Periods]: api.periodTable,
+    // [StoreProperties.Periods]: api.periodTable,
     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
-    [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
+    // [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
     [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
     [StoreProperties.CurrentEnvironment]: api.currentEnvironmentTable,
@@ -674,8 +1062,8 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.EvaluationPlan]: "evaluation_plan",
     [StoreProperties.Organization]:  "organization",
     [StoreProperties.ProjectOverview]: "project_overview",
-    [StoreProperties.PeriodOfPerformance]: "period_of_performance",
-    [StoreProperties.Periods]: "periods",
+    // [StoreProperties.PeriodOfPerformance]: "period_of_performance",
+    // [StoreProperties.Periods]: "periods",
     [StoreProperties.RequirementsCostEstimate]: "requirements_cost_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
     [StoreProperties.ClassificationLevel]: "classification_level",
@@ -689,20 +1077,42 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  
+
   @Action({ rawError: true })
   async loadContactInfo(contactType: string): Promise<ContactDTO> {
     try {
       await this.ensureInitialized();
       const isCor = contactType === "COR";
+
+      let acqPkgKey = "";
+      // let dataKey = "";
+
+      switch(contactType) {
+      case "Primary Contact":
+        acqPkgKey = "contactInfo";
+        break;
+      case "FinancialPocInfo": 
+        acqPkgKey = "financialPocInfo";
+        break;
+      case "COR": 
+        acqPkgKey = "corInfo";
+        break;
+      case "ACOR": 
+        acqPkgKey = "acorInfo";
+        break;
+      }
+
       const dataKey =
-        contactType === "Mission Owner"
+        contactType === "Primary Contact"
           ? "contactInfo"
-          : isCor
-            ? "corInfo"
-            : "acorInfo";
+          : contactType === "Financial POC"
+            ? "financialPocInfo"
+            : isCor
+              ? "corInfo"
+              : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
-
       if (sys_id.length > 0) {
         if (dataKey === "acorInfo") {
           this.setHasAlternateCOR(true);
@@ -711,7 +1121,7 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setContact({ data: contactInfo, type: contactType });
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          contact: sys_id,
+          [acqPkgKey]: sys_id,
         } as AcquisitionPackageDTO);
       }
       return this[dataKey] as ContactDTO;
@@ -731,11 +1141,13 @@ export class AcquisitionPackageStore extends VuexModule {
     try {
       const isCor = saveData.type === "COR";
       const dataKey =
-        saveData.type === "Mission Owner"
+        saveData.type === "Primary Contact"
           ? "contactInfo"
-          : isCor
-            ? "corInfo"
-            : "acorInfo";
+          : saveData.type === "Financial POC"
+            ? "financialPocInfo"
+            : isCor
+              ? "corInfo"
+              : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
       const savedContact =
@@ -743,10 +1155,33 @@ export class AcquisitionPackageStore extends VuexModule {
           ? await api.contactsTable.update(sys_id, { ...saveData.data, sys_id })
           : await api.contactsTable.create(saveData.data);
       this.setContact({ data: savedContact, type: saveData.type });
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        contact: sys_id,
-      } as AcquisitionPackageDTO);
+
+      if(dataKey === "corInfo"){
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          cor: savedContact.sys_id as string,
+        } as AcquisitionPackageDTO);
+      } else if(dataKey === "acorInfo"){
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          acor: savedContact.sys_id as string,
+        } as AcquisitionPackageDTO);
+        this.setHasAlternateCOR(true);
+      } else if (dataKey === "financialPocInfo") {
+        const fundingRequirement = TaskOrder.value.funding_requirement;
+        if(fundingRequirement?.sys_id) {
+          await api.fundingRequirementTable.update(
+            fundingRequirement?.sys_id,
+            {...fundingRequirement, financial_poc: savedContact.sys_id as string})
+        }
+      } else {
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          primary_contact: savedContact.sys_id as string,
+        } as AcquisitionPackageDTO);
+      }
+        
+      await this.saveAcquisitionPackage();
     } catch (error) {
       throw new Error(`error occurred saving contact info ${error}`);
     }
@@ -837,7 +1272,7 @@ export class AcquisitionPackageStore extends VuexModule {
         apiEndPoint.create(data);
       const savedData = await saveAction;
       // updates the store state data
-      this.setStoreData({data: savedData, storeProperty});
+      await this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
       if(acquisitionPackageProp === undefined)
       {
@@ -845,10 +1280,22 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
-        [acquisitionPackageProp]: (data as BaseTableDTO).sys_id,
+        [acquisitionPackageProp]: (savedData as BaseTableDTO).sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving store data ${storeProperty}`);
+    } finally {
+      await this.saveAcquisitionPackage();
+    }
+  }
+
+  @Action({rawError: true})
+  public async saveAcquisitionPackage(): Promise<void>{
+    if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
+      await api.acquisitionPackageTable.update(
+        this.acquisitionPackage.sys_id,
+        this.acquisitionPackage
+      );
     }
   }
 
@@ -868,7 +1315,7 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setSensitiveInformation(sensitiveInformationData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          sensitive_information: sys_id,
+          sensitive_information: {value: sys_id},
         } as AcquisitionPackageDTO);
       }
       return this.sensitiveInformation as SensitiveInformationDTO;
@@ -894,7 +1341,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setSensitiveInformation(savedSensitiveInformation);
       this.setAcquisitionPackage({
         ...this.sensitiveInformation,
-        sensitive_information: sys_id,
+        sensitive_information: {value: sys_id}
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving sensitive info data ${error}`);
@@ -913,7 +1360,7 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setContractConsiderations(contractConsiderationsData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          contract_considerations: sys_id,
+          contract_considerations: {value: sys_id}
         } as AcquisitionPackageDTO);
       }
       return this.contractConsiderations as ContractConsiderationsDTO;
@@ -941,7 +1388,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setContractConsiderations(savedData);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
-        contract_considerations: sys_id,
+        contract_considerations: {value: sys_id}
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(
@@ -1016,6 +1463,64 @@ export class AcquisitionPackageStore extends VuexModule {
   async saveCollection<TData extends BaseTableDTO>({collection, property}:
     {collection: TData[], property: string}): Promise<void> {
     this.updatePackageData({key: property, data: collection.map(item=>item.sys_id).join(",")});
+  }
+
+  @Action({rawError: true})
+  public async setPackageId(value: string): Promise<void> {
+    this.doSetPackageId(value);
+  }
+
+  @Mutation
+  public doSetPackageId(value: string): void {
+    this.packageId = value;
+  }
+
+  @Action({rawError: true})
+  public async reset(): Promise<void>{
+
+    await ContactData.reset();
+    await OrganiationData.reset();
+    await DescriptionOfWork.reset();
+    await Attachments.reset();
+    await FinancialDetails.reset();
+    await CurrentEnvironment.reset();
+    await Periods.reset();
+    await TaskOrder.reset();
+
+    sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
+
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.initialized = false;
+    this.projectTitle = "";
+    this.acquisitionPackage = null;
+    this.projectOverview = null;
+    this.organization = null;
+    this.contractConsiderations = null;
+    this.contactInfo = null;
+    this.corInfo = null;
+    this.acorInfo = null;
+    this.financialPocInfo = null;
+    this.hasAlternativeContactRep = null;
+    this.fairOpportunity = null;
+    this.evaluationPlan = null;
+    this.currentContract = null;
+    this.sensitiveInformation = null;
+    // this.periods = null;
+    // this.periodOfPerformance = null;
+    this.contractType = null;
+    this.requirementsCostEstimate = null;
+    this.classificationLevel = null;
+    this.totalBasePoPDuration = 0;
+    this.taskOrderDetailsAlertClosed = false;
+    this.packageId = "";
+    this.validateNow = false;
+    this.allowDeveloperNavigation = false;
+    this.fundingRequestType =  null;
+    this.fundingRequirement = null;
   }
 }
 

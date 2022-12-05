@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
@@ -93,7 +93,9 @@ import { routeNames } from "@/router/stepper";
 import { scrollToId } from "@/helpers";
 
 import UserStore from "@/store/user";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import { UserDTO } from "@/api/models";
+import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
@@ -109,26 +111,42 @@ export default class Home extends Vue {
 
   private currentUser: UserDTO = {};
 
+  public get getCurrentUser(): UserDTO {
+    return CurrentUserStore.currentUser;
+  }
+
+  @Watch("getCurrentUser")
+  public async currentUserChange(newVal: UserDTO): Promise<void> {
+    this.currentUser = newVal;
+    await this.checkIfIsNewUser();
+  }  
+
   public scrollToResources(): void {
     scrollToId("HelpfulResourcesCards");
   }
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    await AcquisitionPackage.reset();
     this.$router.push({
       name: routeNames.ProjectOverview,
       params: {
         direction: "next"
-      }
+      },
+      replace: true
     }).catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
-  public async mounted(): Promise<void> {
-    this.currentUser = await UserStore.getCurrentUser();
-
+  public async checkIfIsNewUser(): Promise<void> {
     const userHasPackages = await UserStore.hasPackages();
     this.isNewUser = !userHasPackages;
+  }
+
+  public async mounted(): Promise<void> {
+    this.currentUser = await UserStore.getCurrentUser();
+    await this.checkIfIsNewUser();
+
   }
 
 }
