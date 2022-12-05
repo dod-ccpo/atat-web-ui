@@ -114,7 +114,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import { MeatballMenuItem } from "../../../types/Global";
 import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -127,6 +127,7 @@ import {
 } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 import AppSections from "@/store/appSections";
+import CurrentUserStore from "@/store/user";
 @Component({
   components:{
     ATATSVGIcon,
@@ -140,7 +141,6 @@ export default class Card extends Vue {
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
   
-  public currentUserSysId = "";
   public isOwner = false;
   public hasContributor = false;
   public isWaitingForSignatures = false
@@ -169,7 +169,16 @@ export default class Card extends Vue {
     contributors:"",
   }
 
-  private currentUser: UserDTO = UserStore.getInitialUser;
+  private currentUser: UserDTO = {};
+
+  public get getCurrentUser(): UserDTO {
+    return CurrentUserStore.currentUser;
+  }
+
+  @Watch("getCurrentUser")
+  public currentUserChange(newVal: UserDTO): void {
+    this.currentUser = newVal;
+  }  
 
   public cardMenuItems: MeatballMenuItem[] = [];
 
@@ -185,8 +194,8 @@ export default class Card extends Vue {
     if(cardData && cardData.contributors){
       this.hasContributor = cardData.contributors?.value.length > 0
     }
-    if(cardData && cardData.mission_owners) {
-      this.isOwner = cardData.mission_owners?.value.indexOf(this.currentUserSysId) > -1
+    if(cardData && cardData.mission_owners && this.currentUser.sys_id) {
+      this.isOwner = cardData.mission_owners?.value.indexOf(this.currentUser.sys_id) > -1
     }
     this.modifiedData.contractAward = cardData.contract_award?.value || ""
     this.modifiedData.missionOwners = cardData.mission_owners?.value || ""
@@ -233,7 +242,6 @@ export default class Card extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.currentUser = await UserStore.getCurrentUser();
-    this.currentUserSysId = this.currentUser.sys_id as string;
     this.reformatData(this.cardData)
     if(this.cardData.package_status?.value === 'DRAFT'){
       this.cardMenuItems = [

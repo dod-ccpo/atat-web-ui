@@ -2,7 +2,6 @@
   <div class="pt-8 pb-10">
     <section class="_learn-more-section">
       <div class="container-max-width">
-
         <v-row>    
           <v-col class="col-sm-12 col-md-7 pr-5">
 
@@ -117,7 +116,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
@@ -130,10 +129,12 @@ import Portfolios from "../portfolios/Index.vue";
 import PortfoliosSummary from "../portfolios/components/PortfoliosSummary.vue"
 import { 
   AcquisitionPackageSummaryDTO,
-  AcquisitionPackageSummarySearchDTO, 
+  AcquisitionPackageSummarySearchDTO,
+  UserDTO, 
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
@@ -146,7 +147,6 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 })
 
 export default class ExistingUser extends Vue {
-
   public packageData:AcquisitionPackageSummaryDTO[] = []
   public draftPackageCount = 0;
 
@@ -184,20 +184,32 @@ export default class ExistingUser extends Vue {
     offset: 0
   };
 
+  public get getCurrentUser(): UserDTO {
+    return CurrentUserStore.currentUser;
+  }
+
+  @Watch("getCurrentUser")
+  public async currentUserChange(): Promise<void> {
+    await this.loadPackageData();
+  }  
+
+  public async loadPackageData(): Promise<void> {
+    const packageData = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(this.searchDTO);
+    
+    this.packageData = packageData.acquisitionPackageSummaryList;
+    this.packageCount = this.packageData.length;
+    const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
+    this.draftPackageCount = draftPackages?.length || 0;
+  }
+
   public async loadOnEnter(): Promise<void>{
     try {
-      const packageData = await AcquisitionPackageSummary
-        .searchAcquisitionPackageSummaryList(this.searchDTO);
-      
-      this.packageData = packageData.acquisitionPackageSummaryList;
-      this.packageCount = this.packageData.length;
-      const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
-      this.draftPackageCount = draftPackages?.length || 0;
+      await this.loadPackageData();
     }
     catch {
       console.log("Error loading acquisition package data");
     }
-
   }
 
   public mounted():void{
