@@ -29,27 +29,26 @@
     </v-row>
     <v-row>
       <v-col cols="8">
-        <div class="package-list pa-4">
+        <div class="package-list pa-6">
           <v-row no-gutters>
             <v-col cols="9">
-              <span class="package-list-header">
+              <h2>
                 Your acquisition package
-              </span>
-              <br/>
-              <span class="package-list-subheading">
+              </h2>
+              <span class="font-weight-500 text-base font-size-14">
                 ({{_packageDocuments.length + 5}} documents)
               </span>
             </v-col>
             <v-col cols="3" align-self="end">
               <v-btn
-                class="primary _text-decoration-none"
+                class="primary _text-decoration-none px-6"
                 large
                 v-if="isErrored === false"
                 target="_blank"
                 :href="'/download_all_attachments.do?sysparm_sys_id=' + packageId" 
               >
-                Download&nbsp;
-                <v-icon>download</v-icon>
+                Download 
+                <v-icon class="ml-2">download</v-icon>
               </v-btn>
             </v-col>
           </v-row> 
@@ -91,8 +90,7 @@
           id="regenerateCard" 
           class="border1 border-rounded border-base-lighter pa-6"
         >
-          <h2>Need to update your documents?</h2>
-          <br/>
+          <h3 class="mb-2">Need to update your documents?</h3>
           <p>
             You can make changes to information within steps 1-8 
             at any time and re-generate new documents, as needed.

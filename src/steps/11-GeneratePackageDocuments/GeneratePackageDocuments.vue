@@ -32,7 +32,7 @@ import ReviewDocuments from "./components/ReviewDocuments.vue";
 })
 export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
 
-  private isGenerating = false;
+  private isGenerating = true;
   private isErrored = false;
   private docJobStatus = "" ;
   private packageDocuments = [];
