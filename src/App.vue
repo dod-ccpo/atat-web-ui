@@ -94,10 +94,10 @@ export default class App extends Vue {
         await CurrentUserStore.resetUser();
       }
     })
-    
+
     setTimeout(() => {
       CurrentUserStore.resetUser();
-    }, 0)
+    }, 1000)
 
     await this.loadOnEnter();
   }
