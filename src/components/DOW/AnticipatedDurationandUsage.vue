@@ -136,7 +136,6 @@ export default class AnticipatedDurationandUsage extends Vue {
   // when user selects "NO", pre-select base period
   @Watch("dataObject.entireDuration")
   public entireDurationChanged(newVal: string): void {
-    debugger
     this.selectedOptions = newVal === "NO" &&
     this.availablePeriodCheckboxItems[0].value !== "" ? [this.availablePeriodCheckboxItems[0].value]
       : [];

@@ -176,7 +176,7 @@ import ATATDivider from "@/components/ATATDivider.vue";
 })
 
 export default class NewUser extends Vue {
- 
+
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
   }

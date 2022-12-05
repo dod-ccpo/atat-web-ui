@@ -341,14 +341,14 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       suffix,
       salutation,
       phone: phone || "",
-      phone_extension: phoneExt || "", // not used on Mission Owner contact entry form
+      phone_extension: phoneExt || "", // not used on Primary Contact contact entry form
       email,
-      type: "Mission Owner",
+      type: "Primary Contact",
       dodaac: "",
       can_access_package: "true",
       grade_civ,
       title,
-      manually_entered: "", // not used on Mission Owner contact entry form
+      manually_entered: "", // not used on Primary Contact contact entry form
     };
   }
 
@@ -386,7 +386,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
 
     this.salutationData = convertSystemChoiceToSelect(ContactData.salutationChoices);
 
-    const storeData = await AcquisitionPackage.getContact("Mission Owner");
+    const storeData = await AcquisitionPackage.getContact("Primary Contact");
     this.savedData = storeData;
 
     if (storeData) {
@@ -505,7 +505,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveContactInfo({
           data: this.currentData,
-          type: "Mission Owner",
+          type: "Primary Contact",
         });
       }
     } catch (error) {
