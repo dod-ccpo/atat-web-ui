@@ -175,12 +175,12 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       console.log(checkboxItem)
 
       const cloudServiceCategories = [
-        "portability",
-        "advisory", 
-        "helpdesk",
+        "portability_plan",
+        "advisory_assistance", 
+        "help_desk_services",
         "training",
-        "documentation",
-        "general_support", 
+        "documentation_support",
+        "general_cloud_support", 
         this.cloudNoneValue.toLowerCase()
       ];
       if (!cloudServiceCategories.includes(checkboxItem.value.toLowerCase())) {

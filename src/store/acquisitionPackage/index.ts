@@ -656,9 +656,10 @@ export class AcquisitionPackageStore extends VuexModule {
           : acquisitionPackage.fair_opportunity as string;
 
       const currContractSysId = 
-        typeof acquisitionPackage.current_contract === "object" ?
-          (acquisitionPackage.current_contract as ReferenceColumn).value as string
-          : acquisitionPackage.current_contract as string;
+        typeof acquisitionPackage.current_contract_and_recurring_information === "object" ?
+          // eslint-disable-next-line max-len
+          (acquisitionPackage.current_contract_and_recurring_information as ReferenceColumn).value as string
+          : acquisitionPackage.current_contract_and_recurring_information as string;
 
       const sensitiveInfoSysId =
         typeof acquisitionPackage.sensitive_information === "object" ?
@@ -712,7 +713,7 @@ export class AcquisitionPackageStore extends VuexModule {
         organization: organizationSysId,
         period_of_performance: popSysId,
         fair_opportunity: fairOppSysId,
-        current_contract: currContractSysId,
+        current_contract_and_recurring_information: currContractSysId,
         sensitive_information: sensitiveInfoSysId,
         contract_type: contractTypeSysId,
         contract_considerations: contractConsiderationsSysId,
@@ -1057,7 +1058,7 @@ export class AcquisitionPackageStore extends VuexModule {
   //mapping store propertties name to acquisition package properties
   private acquisitionPackagePropertyMap: Record<string, string> = {
     [StoreProperties.ContractType]: "contract_type",
-    [StoreProperties.CurrentContract]: "current_contract",
+    [StoreProperties.CurrentContract]: "current_contract_and_recurring_information",
     [StoreProperties.FairOpportunity]: "fair_opportunity",
     [StoreProperties.EvaluationPlan]: "evaluation_plan",
     [StoreProperties.Organization]:  "organization",

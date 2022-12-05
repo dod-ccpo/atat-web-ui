@@ -46,7 +46,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   project_overview: ReferenceColumn | string;
   organization: ReferenceColumn | string;
   fair_opportunity: ReferenceColumn | string;
-  current_contract: ReferenceColumn | string;
+  current_contract_and_recurring_information: ReferenceColumn | string;
   docusign_envelope_id: string;
   docgen_job_status: string;
   sensitive_information: ReferenceColumn | string;
