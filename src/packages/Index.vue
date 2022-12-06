@@ -40,6 +40,7 @@
       </v-app-bar>
       <v-container
         class="container-max-width"
+        style="margin-bottom: 200px;"
       >
         <Search
           :searchString.sync="searchString"

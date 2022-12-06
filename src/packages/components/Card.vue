@@ -98,7 +98,7 @@
     />
     <DeletePackageModal
       :showModal.sync="showDeleteModal"
-      :packageName="modifiedData.projectOverview"
+      :packageName="modifiedData.projectOverview || 'Untitled package'"
       :hasContributor="hasContributor"
       :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
       @okClicked="updateStatus('DELETED')"
@@ -106,7 +106,7 @@
     <ArchiveModal
       :showModal.sync="showArchiveModal"
       :hasContributor="hasContributor"
-      :packageName="modifiedData.projectOverview"
+      :packageName="modifiedData.projectOverview || 'Untitled package'"
       :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
       @okClicked="updateStatus('ARCHIVED')"
     />
