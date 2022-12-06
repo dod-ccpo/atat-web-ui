@@ -84,7 +84,7 @@ export const Statuses: Record<string, Record<string, string>> = {
 }
 
 
-const initialCurrentContract = ()=> {
+export const initialCurrentContract = (): CurrentContractDTO => {
   return {
     current_contract_exists: "",
     incumbent_contractor_name: "",
@@ -476,19 +476,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action
-  public clearCurrentContractInfo(): void {
-    const data: CurrentContractDTO = {
-      current_contract_exists: "NO",
-      incumbent_contractor_name: "",
-      contract_number: "",
-      task_delivery_order_number: "",
-      contract_order_expiration_date: "",
-    }
+  public async clearCurrentContractInfo(): Promise<void> {
+    const data = initialCurrentContract();
+    data.current_contract_exists = "NO";
     this.setCurrentContract(data);
-    // EJY keep me
-
+    this.saveData<CurrentContractDTO>({data,
+      storeProperty: StoreProperties.CurrentContract});
   }
-
 
   @Mutation
   public setSensitiveInformation(value: SensitiveInformationDTO): void {
