@@ -42,19 +42,21 @@
             color="base"
             class="mr-1"
           />
+          <!-- 
+          TODO: Add back in when saving progress to snow  
           <span v-if="modifiedData.packageStatus.toLowerCase() === 'draft'" >
             30% complete
           </span>
           <span v-else>
             100% complete
-          </span>
+          </span> 
           <ATATSVGIcon
             name="bullet"
             color="base-light"
             :width="9"
             :height="9"
             class="d-inline-block mx-1"
-          />
+          /> -->
         </div>
         <div
           v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
@@ -99,16 +101,16 @@
     />
     <DeletePackageModal
       :showModal.sync="showDeleteModal"
-      :packageName="modifiedData.projectOverview"
+      :packageName="modifiedData.projectOverview || 'Untitled package'"
       :hasContributor="hasContributor"
-      :waitingForSignature = "modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
+      :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
       @okClicked="updateStatus('DELETED')"
     />
     <ArchiveModal
       :showModal.sync="showArchiveModal"
       :hasContributor="hasContributor"
-      :packageName="modifiedData.projectOverview"
-      :waitingForSignature = "modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
+      :packageName="modifiedData.projectOverview || 'Untitled package'"
+      :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
       @okClicked="updateStatus('ARCHIVED')"
     />
   </v-card>
@@ -118,7 +120,7 @@
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
-import { MeatballMenuItem } from "../../../types/Global";
+import { MeatballMenuItem, ToastObj } from "../../../types/Global";
 import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
@@ -131,6 +133,8 @@ import {
 import { routeNames } from "@/router/stepper";
 import AppSections from "@/store/appSections";
 import CurrentUserStore from "@/store/user";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import Toast from "@/store/toast";
 @Component({
   components:{
     ATATSVGIcon,
@@ -185,13 +189,11 @@ export default class Card extends Vue {
 
   public cardMenuItems: MeatballMenuItem[] = [];
 
-
   public get statusChipBgColor(): string {
     const status = this.modifiedData.packageStatus
 
     return getStatusChipBgColor(status ? status : "");
   }
-
 
   public reformatData(cardData:AcquisitionPackageSummaryDTO): void {
     if(cardData && cardData.contributors){
@@ -211,10 +213,37 @@ export default class Card extends Vue {
     this.modifiedData.updated = cardData.sys_updated_on || ""
     this.modifiedData.contributors = cardData.contributors?.value || ""
   }
-  public updateStatus(newStatus: string): void {
+
+  public async updateStatus(newStatus: string): Promise<void> {
+    let message = "";
+    switch(newStatus){
+    case 'DELETED':
+      message = "Acquisition package deleted"
+      break;
+    case 'ARCHIVED':
+      message = "Acquisition package archived"
+      break;
+    case 'DRAFT':
+      message = "Acquisition package restored to draft"
+      break;
+    }
+    await AcquisitionPackageSummary
+      .updateAcquisitionPackageStatus({
+        acquisitionPackageSysId: this.cardData.sys_id as string,
+        newStatus
+      });
+
+    const toastObj: ToastObj = {
+      type: "success",
+      message,
+      isOpen: true,
+      hasUndo: false,
+      hasIcon: true,
+    };
+
+    Toast.setToast(toastObj);
     this.$emit("updateStatus", this.cardData.sys_id, newStatus);
   }
-
 
   public packageTitleClick(status: string): void {
     if (status.toLowerCase() === "draft") {
