@@ -42,6 +42,7 @@ import {EvaluationPlanApi} from "@/api/evaluationPlan";
 import {CurrentEnvironmentInstanceAPI} from "@/api/currentEnvironmentInstance";
 import {EvalPlanAssessmentAreaApi} from "@/api/evalPlanAssessmentArea";
 import {EvalPlanDifferentiatorApi} from "@/api/evalPlanDifferentiator";
+import {SelectedClassificationLevels} from "@/api/selectedClassificationLevels";
 
 
 export const api = {
@@ -90,7 +91,8 @@ export const api = {
   userTable: new UserApi(),
   evaluationPlanTable: new EvaluationPlanApi(),
   evalPlanAssessmentAreaTable: new EvalPlanAssessmentAreaApi(),
-  evalPlanDifferentiatorTable: new EvalPlanDifferentiatorApi()
+  evalPlanDifferentiatorTable: new EvalPlanDifferentiatorApi(),
+  classificationLevelsObjectTable: new SelectedClassificationLevels()
 }
 
 export default {
