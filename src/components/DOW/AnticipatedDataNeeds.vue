@@ -20,14 +20,14 @@
       <ATATRadioGroup
         :legend="increaseLabel"
         :items="increaseOptions"
-        :value.sync="increaseSelection"
+        :value.sync="_increaseSelection"
         :rules="[
           $validators.required('Please select an option.')
         ]"
       ></ATATRadioGroup>
       <br/>
     </div>
-    <div v-if="increaseSelection === 'YES'">
+    <div v-if="_increaseSelection === 'YES'">
       <ATATRadioGroup
         :legend="growthLabel"
         :items="growthOptions"
@@ -82,6 +82,7 @@ export default class AnticipatedDataNeeds extends Vue {
   @PropSync("dataTextFieldValue") private _dataTextFieldValue?: string;
   @PropSync("dataDropdownValue", {default: "GB"}) private _dataDropdownValue?: string;
   @PropSync("percentages") private _percentages?: string[];
+  @PropSync("userIncrease") private _increaseSelection?: string;
 
   private dataUnits: SelectData[] = [];
 
@@ -92,7 +93,6 @@ export default class AnticipatedDataNeeds extends Vue {
   ];
 
   private increaseLabel = "";
-  private increaseSelection = "";
   private increaseOptions: RadioButton[] = [
     {
       id: "YES",

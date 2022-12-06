@@ -77,12 +77,12 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   impact_level: string;
   classification: string;
   users_per_region?: string; // json stringified sys_id/count pairs
-  increase_in_users?: boolean;
+  increase_in_users?: YesNo;
   user_growth_estimate_type?: "SINGLE" | "MULTIPLE";
   user_growth_estimate_percentage?: string[];
   data_egress_monthly_amount?: number | null;
   data_egress_monthly_unit?: StorageUnit;
-  data_increase?: boolean;
+  data_increase?: YesNo;
   data_growth_estimate_type?: "SINGLE" | "MULTIPLE";
   data_growth_estimate_percentage?: string[];
 }

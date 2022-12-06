@@ -280,8 +280,9 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 }
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string) => {
-  const numberOfXAAServices = DescriptionOfWork.DOWObject.length;
-  if(current === routeNames.RequirementCategories && numberOfXAAServices >= 1){
+  const xaasServices = DescriptionOfWork.hasXaasService;
+  const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
+  if(current === routeNames.RequirementCategories && xaasServices && !hasBeenVisited){
     return routeNames.AnticipatedUserAndDataNeeds
   }
   return current === routeNames.RequirementCategories ? routeNames.ServiceOfferings

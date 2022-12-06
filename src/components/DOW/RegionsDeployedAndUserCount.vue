@@ -46,6 +46,7 @@ export default class RegionsDeployedAndUserCount extends Vue {
   @Prop({ default: () => []}) private textfieldRules!: Array<unknown>;
   @Prop() private selectedDeployedRegionsOnLoad?: string[];
   @Prop() private regionUsersOnLoad?: string;
+  @Prop({default:0}) private componentIndex?: number;
 
   public selectedRegions: string[] = [];
   public regions: Checkbox[] = [
@@ -122,7 +123,7 @@ export default class RegionsDeployedAndUserCount extends Vue {
       regionUserData.push(thisRegionUserObj);
     })
     const jsonStr = JSON.stringify(regionUserData)
-    this.$emit("regionUserDataUpdate", jsonStr);
+    this.$emit("regionUserDataUpdate", jsonStr,this.componentIndex);
   }
 
   @Watch("regionUsersOnLoad")

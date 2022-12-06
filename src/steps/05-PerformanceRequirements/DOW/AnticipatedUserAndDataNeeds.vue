@@ -34,9 +34,12 @@
                  each selected region."
                 :hasTextFields="true"
                 class="mb-12 mt-5"
+                :componentIndex="index"
+                @regionUserDataUpdate="regionUserDataUpdate"
               />
               <AnticipatedDataNeeds
                 :periods="periods"
+                :userIncrease.sync="anticipatedNeedsData[index].increase_in_users"
                 needs="user"
               />
               <hr class="mb-10 mt-5" />
@@ -54,14 +57,18 @@
   </v-container>
 </template>
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO, PeriodDTO } from "@/api/models";
 import { buildClassificationLabel } from "@/helpers";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import Periods from "@/store/periods";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import { StorageUnit } from "../../../../types/Global";
 
 @Component({
   components: {
@@ -69,16 +76,20 @@ import Periods from "@/store/periods";
     AnticipatedDataNeeds
   },
 })
-export default class AnticipatedUserAndDataNeeds extends Vue {
+export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   public selectedClassifications: ClassificationLevelDTO[] = []
   private periods: PeriodDTO[] | null = [];
   public accordionClosed = 0;
+  public anticipatedNeedsData: ClassificationLevelDTO[] = []
 
   private async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
   public buildClassificationLabel = buildClassificationLabel
-
+  public regionUserDataUpdate(data: string,index:number): void {
+    this.anticipatedNeedsData[index].users_per_region = data;
+    console.log(this.anticipatedNeedsData)
+  }
   private async loadOnEnter(): Promise<void> {
     this.periods = Periods.periods;
     const classificationLevels = ClassificationRequirements.selectedClassificationLevels
@@ -90,7 +101,28 @@ export default class AnticipatedUserAndDataNeeds extends Vue {
         }
       })
     })
+    console.log(this.selectedClassifications)
+    console.log(this.anticipatedNeedsData)
+    this.selectedClassifications.forEach((classification)=>{
+      let data: ClassificationLevelDTO = {
+        impact_level : classification.impact_level,
+        classification : classification.classification,
+        users_per_region : "",// json stringified sys_id/count pairs
+        increase_in_users : false,
+        user_growth_estimate_type : undefined,
+        user_growth_estimate_percentage : [],
+        data_egress_monthly_amount : null,
+        data_egress_monthly_unit : "",
+        data_increase : false,
+        data_growth_estimate_type : undefined,
+        data_growth_estimate_percentage : []
+      }
+      this.anticipatedNeedsData.push(data)
+    })
   }
+  protected async saveOnLeave(): Promise<boolean> {
+    return true;
+  };
 }
 </script>
 
