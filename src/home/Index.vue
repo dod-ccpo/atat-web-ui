@@ -6,6 +6,8 @@
       {'_is-existing-user' : !isNewUser }
     ]"  
   >
+    <ATATToast />
+
     <div class="_hero-banner"></div>
     <v-main class="_home">
       <div class="_home-content">
@@ -65,6 +67,7 @@
           v-else 
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
+          @allPackagesCleared="isNewUser = true"
         />      
 
         <div class="bg-white">
@@ -84,6 +87,7 @@ import { Component, Watch } from "vue-property-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
+import ATATToast from "@/components/ATATToast.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
@@ -100,6 +104,7 @@ import CurrentUserStore from "@/store/user";
 @Component({
   components: {
     ATATFooter,
+    ATATToast,
     ExistingUser,
     HelpfulResourcesCards,
     NewUser,

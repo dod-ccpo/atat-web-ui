@@ -86,8 +86,7 @@ import {
   AcquisitionPackageSummaryMetadataAndDataDTO,
   AcquisitionPackageSummarySearchDTO,
 } from "@/api/models";
-import { ToastObj } from "../../types/Global";
-import Toast from "@/store/toast";
+
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Search from "@/packages/components/Search.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
@@ -192,34 +191,7 @@ export default class Packages extends Vue {
     return getIdText(string);
   }
 
-  public async updateStatus(sysId: string,newStatus: string): Promise<void> {
-    let message = "";
-    switch(newStatus){
-    case 'DELETED':
-      message = "Acquisition package deleted"
-      break;
-    case 'ARCHIVED':
-      message = "Acquisition package archived"
-      break;
-    case 'DRAFT':
-      message = "Acquisition package restored to draft"
-      break;
-    }
-    await AcquisitionPackageSummary
-      .updateAcquisitionPackageStatus({
-        acquisitionPackageSysId: sysId,
-        newStatus
-      });
-
-    const toastObj: ToastObj = {
-      type: "success",
-      message,
-      isOpen: true,
-      hasUndo: false,
-      hasIcon: true,
-    };
-
-    Toast.setToast(toastObj);
+  public async updateStatus(): Promise<void> {
     await this.updateSearchDTO("","")
   }
 
