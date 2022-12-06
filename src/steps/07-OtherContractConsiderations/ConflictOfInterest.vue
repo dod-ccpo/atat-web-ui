@@ -70,7 +70,7 @@ import CoILearnMore from "./CoILearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ContractConsiderationsDTO } from "@/api/models";
 
 @Component({
@@ -83,7 +83,7 @@ import { ContractConsiderationsDTO } from "@/api/models";
 export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
   private explanation 
     = AcquisitionPackage.contractConsiderations?.conflict_of_interest_explanation || "";
-  private saved: ContractConsiderationsDTO = {};
+  private savedData: ContractConsiderationsDTO = {};
   private hasConflict 
     = AcquisitionPackage.contractConsiderations?.potential_conflict_of_interest || "";
   private conflictOfInterestOptions: RadioButton[] = [
@@ -107,7 +107,7 @@ export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
     }
   }
 
-  public get current(): ContractConsiderationsDTO {
+  public get currentData(): ContractConsiderationsDTO {
     return {
       potential_conflict_of_interest: this.hasConflict || "",
       conflict_of_interest_explanation: this.explanation,
@@ -124,10 +124,11 @@ export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadContractConsiderations();
-
+    const storeData = await AcquisitionPackage.loadData<ContractConsiderationsDTO>({
+      storeProperty: StoreProperties.ContractConsiderations
+    });
     if (storeData) {
-      this.saved = {
+      this.savedData = {
         potential_conflict_of_interest: storeData.potential_conflict_of_interest || "",
         conflict_of_interest_explanation : storeData.conflict_of_interest_explanation || "",
       }
@@ -135,7 +136,7 @@ export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
   }
 
   public isChanged(): boolean {
-    return hasChanges(this.saved, this.current);
+    return hasChanges(this.savedData, this.currentData);
   }
 
   @Watch('hasConflict')
@@ -148,7 +149,10 @@ export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.isChanged()) {
-        await AcquisitionPackage.saveContractConsiderations(this.current);
+        await AcquisitionPackage.saveData({
+          data: this.currentData,
+          storeProperty: StoreProperties.ContractConsiderations,
+        });
       }
     } catch (error) {
       console.log(error);
