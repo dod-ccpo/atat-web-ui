@@ -80,6 +80,7 @@ export default class Training extends Mixins(SaveOnLeave) {
         contractor_required_training: storeData.contractor_required_training,
         required_training_courses: storeData.required_training_courses,
       }
+      this.trainingCourses = storeData.required_training_courses as string;
     }
   }
 
