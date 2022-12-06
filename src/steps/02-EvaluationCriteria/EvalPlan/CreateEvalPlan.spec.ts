@@ -5,9 +5,9 @@ import {DefaultProps} from "vue/types/options";
 import CreateEvalPlan from "@/steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.vue";
 import validators from "@/plugins/validation";
 import SlideoutPanel from "@/store/slideoutPanel";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import { EvaluationPlanDTO } from "@/api/models";
 import { initial } from "cypress/types/lodash";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 Vue.use(Vuetify);
 
@@ -16,15 +16,15 @@ Vue.use(Vuetify);
 const initialEvalPlan: EvaluationPlanDTO = {
   source_selection: "",
   method: "",
-  standard_specifications: [],
-  custom_specifications: [],    
+  standard_specifications: "",
+  custom_specifications: "",    
 };
 
 const evalPlanPopulated: EvaluationPlanDTO = {
-  source_selection: "TechProposal",
+  source_selection: "TECH_PROPOSAL",
   method: "BVTO",
-  standard_specifications: [],
-  custom_specifications: [],    
+  standard_specifications: "",
+  custom_specifications: "",    
 } ;
 /* eslint-enable camelcase */
 
@@ -65,20 +65,20 @@ describe("Testing CreateEvalPlan Component", () => {
         sourceSelection: "TechProposal"
       });
       const data = wrapper.vm.currentData;
-      expect(data.source_selection).toBe("TechProposal");
+      expect(data.source_selection).toBe("TECH_PROPOSAL");
     });
 
     it("loadOnEnter() - gets eval plan data from store", async () => {
-      await AcquisitionPackage.setEvaluationPlan(evalPlanPopulated);
+      await EvaluationPlan.setEvaluationPlan(evalPlanPopulated);
       await wrapper.vm.loadOnEnter();
-      expect(wrapper.vm.$data.sourceSelection).toBe("TechProposal")
+      expect(wrapper.vm.$data.sourceSelection).toBe("TECH_PROPOSAL")
     });
 
     it("saveOnLeave() - saves eval plan data to store", async () => {
-      await AcquisitionPackage.setEvaluationPlan(initialEvalPlan);
+      await EvaluationPlan.setEvaluationPlan(initialEvalPlan);
       // await wrapper.vm.loadOnEnter();
       await wrapper.setData({
-        sourceSelection: "TechProposal",
+        sourceSelection: "TECH_PROPOSAL",
         selectedMethod: "BVTO",
         savedData: {
           // eslint-disable-next-line camelcase
@@ -92,18 +92,18 @@ describe("Testing CreateEvalPlan Component", () => {
         console.log("FOOOO")
         expect(hasChanged).toBeTruthy();
         console.log("BAAARRR")
-        const evalPlanDataFromStore = AcquisitionPackage.getEvaluationPlan;
+        const evalPlanDataFromStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
         console.log("BAZZZZ")
-        expect(evalPlanDataFromStore?.source_selection).toBe("TechProposal")  
+        expect(evalPlanDataFromStore?.source_selection).toBe("TECH_PROPOSAL")  
         console.log("QUXXXX")
       })
     });
     it("Watcher - sourceSelection - resets current method", async () => {
-      wrapper.vm.$data.sourceSelection = "TechProposal";
+      wrapper.vm.$data.sourceSelection = "TECH_PROPOSAL";
       wrapper.vm.$data.selectedMethod = "LPTA";
       expect(wrapper.vm.currentData.method).toBe("LPTA");
       Vue.nextTick(() => {
-        wrapper.vm.$data.sourceSelection = "NoTechProposal";
+        wrapper.vm.$data.sourceSelection = "NO_TECH_PROPOSAL";
         expect(wrapper.vm.currentData.method).toBe("");  
       })
     });
@@ -111,7 +111,7 @@ describe("Testing CreateEvalPlan Component", () => {
     it("getters - methodOptions() - returns options for TechProposal required", async () => {
       wrapper.vm.$data.techProposalOptions = ["A"];
       wrapper.vm.$data.lumpSumOptions = ["B", "C"];
-      wrapper.vm.$data.sourceSelection = "TechProposal";
+      wrapper.vm.$data.sourceSelection = "TECH_PROPOSAL";
       const options = wrapper.vm.methodOptions;
       expect(options.length).toBe(1);
     });
@@ -119,19 +119,19 @@ describe("Testing CreateEvalPlan Component", () => {
     it("getters - methodOptions() - returns options for SetLumpSum", async () => {
       wrapper.vm.$data.techProposalOptions = ["A"];
       wrapper.vm.$data.lumpSumOptions = ["B", "C"];
-      wrapper.vm.$data.sourceSelection = "SetLumpSum";
+      wrapper.vm.$data.sourceSelection = "SET_LUMP_SUM";
       const options = wrapper.vm.methodOptions;
       expect(options.length).toBe(2);
     });
 
     it("getters - methodMessagingSubstr() - returns substring for TechProposal", async () => {
-      wrapper.vm.$data.sourceSelection = "TechProposal";
+      wrapper.vm.$data.sourceSelection = "TECH_PROPOSAL";
       const substr = wrapper.vm.methodMessagingSubstr;
       expect(substr).toBe("method of evaluation");
     })
 
     it("getters - methodMessagingSubstr() - returns substring for NOT TechProposal", async () => {
-      wrapper.vm.$data.sourceSelection = "NoTechProposal";
+      wrapper.vm.$data.sourceSelection = "NO_TECH_PROPOSAL";
       const substr = wrapper.vm.methodMessagingSubstr;
       expect(substr).toBe("technique");
     })

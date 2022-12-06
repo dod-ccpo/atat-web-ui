@@ -28,14 +28,14 @@ describe("Testing ContactInfo Component", () => {
     suffix: "",
     salutation: "",
     phone: "",
-    phone_extension: "", // not used on Mission Owner contact entry form
+    phone_extension: "", // not used on Primary Contact contact entry form
     email: "",
-    type: "Mission Owner",
+    type: "Primary Contact",
     dodaac: "",
     can_access_package: "true",
     grade_civ: "",
     title: "",
-    manually_entered: "", // not used on Mission Owner contact entry form
+    manually_entered: "", // not used on Primary Contact contact entry form
   }; 
 
   const mockLoadedContactDTO: ContactDTO = {
@@ -44,7 +44,7 @@ describe("Testing ContactInfo Component", () => {
     dodaac: "",
     suffix: "",
     title: "",
-    type: "Mission Owner",
+    type: "Primary Contact",
     can_access_package: "",
     phone_extension: "",
     first_name: "Jewel",

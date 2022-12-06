@@ -35,6 +35,7 @@
                                 type="button"
                                 class="v-btn primary no-text-decoration"
                                 width="250"
+                                target="_blank"
                                 :href="jaTemplateUrl"
                               >
                                 Download J&amp;A Template &nbsp;
@@ -45,6 +46,7 @@
                               <v-btn
                                 type="button"
                                 width="250"
+                                target="_blank"
                                 class="v-btn primary no-text-decoration"
                                 :href="mrrTemplateUrl"
                               >
@@ -81,7 +83,7 @@
               <ATATFileUpload
                 id="JAMRRFiles"
                 tabindex="-1"
-                :maxNumberOfFiles="100"
+                :maxNumberOfFiles="2"
                 :maxFileSizeInBytes="maxFileSizeInBytes"
                 :validFileFormats="validFileFormats"
                 :multiplesAllowed="true"
@@ -94,6 +96,21 @@
                 :rules="[$validators.required('Please upload a file')]"
               />
             </div>
+            <ATATAlert
+                id="UploadJAMRRDocsAlert"
+                v-show="uploadedFiles.length > 0 && uploadedFiles.length < 2"
+                type="warning"
+                class="mt-10"
+            >
+              <template v-slot:content>
+                <p class="mb-0">
+                  You may be missing a required document. Please ensure that both
+                  signed documents are uploaded before submitting your completed
+                  package. If your J&amp;A and MRR were combined into a single file before
+                  uploading, ignore this message.
+                </p>
+              </template>
+            </ATATAlert>
           </v-col>
         </v-row>
       </v-container>
@@ -108,14 +125,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import {AttachmentDTO, FairOpportunityDTO} from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import ATATAlert from "@/components/ATATAlert.vue";
+import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
 import Attachments from "@/store/attachments";
 import {AttachmentServiceCallbacks} from "@/services/attachment";
 
 @Component({
   components: {
-    ATATFileUpload
+    ATATFileUpload,
+    ATATAlert
   },
 })
 export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
@@ -219,8 +238,18 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
     return true;
   }
 
+  /**
+   * Since this is the first page in the generate package documents step, need to ensure that
+   * the fair opportunity table record and sys_id exists for the document upload. To do this
+   * a save is performed immediately after load.
+   */
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getFairOpportunity();
+    let storeData = await AcquisitionPackage.getFairOpportunity();
+    await AcquisitionPackage.saveData({
+      data: storeData as FairOpportunityDTO,
+      storeProperty: StoreProperties.FairOpportunity,
+    }, )
+    storeData = await AcquisitionPackage.getFairOpportunity();
     if (storeData) {
       this.fairOppDTO = storeData;
       this.exception_to_fair_opportunity = storeData.exception_to_fair_opportunity;

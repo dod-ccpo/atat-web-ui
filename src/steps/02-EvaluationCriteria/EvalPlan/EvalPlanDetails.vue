@@ -23,12 +23,12 @@
       />
 
       <ATATCheckboxGroup 
-        v-if="evalPlan.source_selection === 'SetLumpSum'"
+        v-if="evalPlan.source_selection === 'SET_LUMP_SUM'"
         id="SetLumpSumCheckboxes"
         groupLabel="In addition to the required criteria listed above, what other 
           assessment areas would you like to evaluate?"
         groupLabelId="OtherAssessmentAreasLabel"
-        :items="setLumpSumCheckboxOptions"
+        :items="lumpSumCheckboxOptions"
         :value.sync="selectedSetLumpSumOptions"
       />
 
@@ -38,7 +38,7 @@
         :sourceSelection="evalPlan.source_selection"
         :isDifferentiator="false"
         :isOptional="true"
-        :customSpecifications.sync="evalPlan.custom_specifications"
+        :customSpecifications.sync="customSpecifications"
       />
 
     </div>
@@ -53,12 +53,12 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import Callout from "./components/Callout.vue";
 import CustomSpecifications from "./components/CustomSpecifications.vue"
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import { EvaluationPlanDTO } from "@/api/models";
+import { EvalPlanAssessmentAreaDTO, EvaluationPlanDTO } from "@/api/models";
 import { Checkbox, RadioButton } from "types/Global";
-import { hasChanges, scrollToId } from "@/helpers";
+import { convertEvalPlanAssessmentAreaToCheckbox, hasChanges, scrollToId } from "@/helpers";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
   components: {
@@ -72,18 +72,18 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   public isLoading = false;
   public get isStandards(): boolean {
-    return this.evalPlan.source_selection.indexOf("TechProposal") > -1;
+    return this.evalPlan.source_selection.indexOf("TECH_PROPOSAL") > -1;
   }
 
   public get header(): string {
     switch(this.evalPlan.source_selection) {
-    case "NoTechProposal":
+    case "NO_TECH_PROPOSAL":
       return "Now let’s review compliance standards when no technical proposal is required";
-    case "TechProposal":
+    case "TECH_PROPOSAL":
       return "Now let’s review compliance standards when technical proposals are required";
-    case "SetLumpSum":
+    case "SET_LUMP_SUM":
       return "Now let’s review assessment criteria required for white papers";
-    case "EqualSetLumpSum":
+    case "EQUAL_SET_LUMP_SUM":
       return `Based on your evaluation method, there are no required compliance 
         standards, differentiators, or assessment areas.`
     default:
@@ -96,8 +96,11 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
     source_selection: "",
     method: "",
     has_custom_specifications: "",
-    standard_specifications: [],
-    custom_specifications: [],
+    standard_specifications: "",
+    custom_specifications: "",
+    standard_differentiators: "",
+    custom_differentiators: "",
+    sys_id: ""
     /* eslint-enable camelcase */
   }
 
@@ -132,13 +135,17 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
     source_selection: "",
     method: "",
     has_custom_specifications: "",
-    standard_specifications: [],
-    custom_specifications: [],
+    standard_specifications: "",
+    custom_specifications: "",
+    standard_differentiators: "",
+    custom_differentiators: "",
+    sys_id: ""
   }
 
+  public customSpecifications: string[] = [];
+
   public initCustomSpecs(): void {  
-    this.evalPlan.custom_specifications = this.evalPlan.custom_specifications || [];
-    this.evalPlan.custom_specifications.push("");
+    this.customSpecifications = this.evalPlan.custom_specifications?.split(",") || [];
     this.$nextTick(() => {
       scrollToId("CustomSpecEntry");
     });
@@ -146,10 +153,11 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   }
 
   public clearCustomSpecs(): void {
-    this.evalPlan.custom_specifications = [];
+    this.evalPlan.custom_specifications = "";
+    this.customSpecifications = [];
     this.evalPlan.has_custom_specifications = "NO";
   }
-  /* eslint-enable camelcase */
+
 
   @Watch("selectedStandardsRadioItem")
   public selectedStandardsRadioItemChange(newVal: string): void {
@@ -158,11 +166,16 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
     }
   }
 
+  @Watch("customSpecifications")
+  public customSpecificationsChange(newVal: string[]): void {
+    this.evalPlan.custom_specifications = newVal.join(",")
+  }
+
   @Watch("selectedSetLumpSumOptions")
   public selectedSetLumpSumOptionsChange(newVal: string[], oldVal: string[]): void {
     if (!this.isLoading) {
       // eslint-disable-next-line camelcase
-      this.evalPlan.standard_specifications = newVal;
+      this.evalPlan.standard_specifications = newVal.join(",");
       if (newVal.includes("CustomAssessment") && !oldVal.includes("CustomAssessment")) {
         this.initCustomSpecs();
       } else if (!newVal.includes("CustomAssessment")) {
@@ -172,38 +185,33 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   }
 
   public selectedSetLumpSumOptions: string[] = [];
-  public get setLumpSumCheckboxOptions(): Checkbox[] {
-    const options: Checkbox[] = [
-      {
-        id: "AutomationCapability",
-        label: "Any automation capability proposed to improve reliability and reduce human-error",
-        value: "AutomationCapability",
-      },
-      {
-        id: "CustomAssessmentOption",
-        label: "I want to write my own custom assessment area(s)",
-        value: "CustomAssessment",
-      },
-    ];
-    if (this.evalPlan.method === "BestUse") {
-      options.unshift( {
-        id: "RiskToGovt",
-        label: "Risk to the Government",
-        value: "RiskToGovt"
-      });
+
+  public lumpSumCheckboxOptions: Checkbox[] = [];
+
+  public setLumpSumCheckboxOptions(): Checkbox[] {
+
+    let options: Checkbox[] = []; 
+    
+    options = convertEvalPlanAssessmentAreaToCheckbox(
+      EvaluationPlan.assessmentAreaData);
+
+    if(this.evalPlan.method !== "BEST_USE"){
+      options = options.filter(item => {return item.id !== "RiskToGovt"});
     }
     return options;
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage.getEvaluationPlan;
+    const storeData = await EvaluationPlan.getEvaluationPlan();
     if (storeData) {
       this.evalPlan = _.cloneDeep(storeData);
       this.savedData = _.cloneDeep(storeData);
-      if (this.evalPlan.source_selection === "SetLumpSum") {
-        this.selectedSetLumpSumOptions = this.evalPlan.standard_specifications || [];
+      if (this.evalPlan.source_selection === "SET_LUMP_SUM") {
+        this.selectedSetLumpSumOptions = this.evalPlan.standard_specifications?.split(",") || [];
       }
       this.selectedStandardsRadioItem = this.evalPlan.has_custom_specifications || "";
+
+      this.lumpSumCheckboxOptions = this.setLumpSumCheckboxOptions();
 
     }
   }
@@ -221,13 +229,8 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   public async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged) {
-        // KEEP FOR FUTURE TICKET when API hooked up for saving to SNOW
-        // await AcquisitionPackage.saveData({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.EvaluationPlan,
-        // });
-        // REMOVE line below after above hooked up
-        await AcquisitionPackage.setEvaluationPlan(this.currentData);
+        await EvaluationPlan.setEvaluationPlan(this.currentData);
+        await EvaluationPlan.saveEvaluationPlan();
       }
     } catch (error) {
       console.log(error);

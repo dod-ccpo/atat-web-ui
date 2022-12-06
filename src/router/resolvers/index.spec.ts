@@ -16,6 +16,7 @@ import {
 } from "../resolvers/index"
 import { routeNames } from "@/router/stepper"
 import Vue from "vue";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 describe("testing route resolvers", () => {
   const legitPeriod = [
@@ -126,14 +127,14 @@ describe("testing route resolvers", () => {
     });
 
     it ("BVTOResolver() - routes to BVTO page", async () => {
-      await AcquisitionPackage.setEvaluationPlan(
+      await EvaluationPlan.setEvaluationPlan(
         { source_selection: "", method: "BVTO" }
       );
       const route = BVTOResolver(routeNames.EvalPlanDetails);
       expect(route).toBe(routeNames.Differentiators);
     });
     it ("BVTOResolver() - routes to Summary page when not BVTO method", async () => {
-      await AcquisitionPackage.setEvaluationPlan(
+      await EvaluationPlan.setEvaluationPlan(
         { source_selection: "", method: "LPTA" }
       );
       const route = BVTOResolver(routeNames.EvalPlanDetails);
@@ -141,7 +142,7 @@ describe("testing route resolvers", () => {
     });
 
     it ("BVTOResolver() - routes to EvalPlanSummary page", async () => {
-      await AcquisitionPackage.setEvaluationPlan(
+      await EvaluationPlan.setEvaluationPlan(
         { source_selection: "", method: "" }
       );
       const route = BVTOResolver(routeNames.EvalPlanDetails);
@@ -149,7 +150,7 @@ describe("testing route resolvers", () => {
     });
 
     it ("BVTOResolver() - routes to EvalPlanDetails page", async () => {
-      await AcquisitionPackage.setEvaluationPlan(
+      await EvaluationPlan.setEvaluationPlan(
         { source_selection: "", method: "" }
       );
       const route = BVTOResolver(routeNames.EvalPlanSummary);

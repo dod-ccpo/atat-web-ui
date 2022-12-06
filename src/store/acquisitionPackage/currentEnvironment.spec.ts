@@ -48,27 +48,27 @@ describe("CurrentEnvironment Store",
       jest.clearAllTimers();
     })
 
-    it('Test setInitialized()- sets initialized to true', async () => {
-      await currentEnvironmentStore.initialize();
-      expect(currentEnvironmentStore.initialized).toBe(true)
-    })
+    // it('Test setInitialized()- sets initialized to true', async () => {
+    //   await currentEnvironmentStore.initialize();
+    //   expect(currentEnvironmentStore.initialized).toBe(true)
+    // })
 
-    it('Test initialize()- should set store data if not already initialized' +
-      'and store data available in session', async () => {
-      currentEnvironmentStore.setInitialized(false);
-      jest.spyOn(storeHelperFunctions, "retrieveSession").mockReturnValue(
-        JSON.stringify(currentEnvironmentMock)
-      );
-      jest.spyOn(currentEnvironmentStore, "setStoreData");
-      await currentEnvironmentStore.initialize();
-      expect(currentEnvironmentStore.setStoreData).toHaveBeenCalled();
-    })
+    // it('Test initialize()- should set store data if not already initialized' +
+    //   'and store data available in session', async () => {
+    //   currentEnvironmentStore.setInitialized(false);
+    //   jest.spyOn(storeHelperFunctions, "retrieveSession").mockReturnValue(
+    //     JSON.stringify(currentEnvironmentMock)
+    //   );
+    //   jest.spyOn(currentEnvironmentStore, "setStoreData");
+    //   await currentEnvironmentStore.initialize();
+    //   expect(currentEnvironmentStore.setStoreData).toHaveBeenCalled();
+    // })
 
-    it('Test ensureInitialized()- should call initialize function', async () => {
-      jest.spyOn(currentEnvironmentStore, "initialize");
-      await currentEnvironmentStore.ensureInitialized();
-      expect(currentEnvironmentStore.initialize).toHaveBeenCalled();
-    })
+    // it('Test ensureInitialized()- should call initialize function', async () => {
+    //   jest.spyOn(currentEnvironmentStore, "initialize");
+    //   await currentEnvironmentStore.ensureInitialized();
+    //   expect(currentEnvironmentStore.initialize).toHaveBeenCalled();
+    // })
 
     it('Test setStoreData()- should set appropriate session data to store', async () => {
       jest.spyOn(Vue, "set");
