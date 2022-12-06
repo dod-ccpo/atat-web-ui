@@ -13,6 +13,9 @@
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _package-title"
+            @click="packageTitleClick(modifiedData.packageStatus)"
+            @keydown.enter="packageTitleClick(modifiedData.packageStatus)"
+            @keydown.space="packageTitleClick(modifiedData.packageStatus)"
           >
             {{ modifiedData.projectOverview || 'Untitled package'}}
           </a>
@@ -212,6 +215,12 @@ export default class Card extends Vue {
     this.$emit("updateStatus", this.cardData.sys_id, newStatus);
   }
 
+
+  public packageTitleClick(status: string): void {
+    if (status.toLowerCase() === "draft") {
+      this.cardMenuClick({action: 'Edit draft package', title: ""})    
+    }
+  }
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
     switch (menuItem.action) {

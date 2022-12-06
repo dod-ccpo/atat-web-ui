@@ -509,7 +509,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setContractConsiderations(value: ContractConsiderationsDTO): void {
-    debugger;
     this.contractConsiderations = this.contractConsiderations 
       ? Object.assign(this.contractConsiderations, value) 
       : value;
@@ -677,7 +676,6 @@ export class AcquisitionPackageStore extends VuexModule {
           (acquisitionPackage.classification_level as ReferenceColumn).value as string
           : acquisitionPackage.classification_level as string;
 
-      debugger;
       const contractConsiderationsSysId = 
         typeof acquisitionPackage.contract_considerations === "object" ?
           (acquisitionPackage.contract_considerations as ReferenceColumn).value as string
@@ -840,7 +838,7 @@ export class AcquisitionPackageStore extends VuexModule {
           initialClassificationLevel()
         );
       }
-      debugger
+
       if(contractConsiderationsSysId) {
         const contractConsiderations = await api.contractConsiderationsTable.retrieve(
           contractConsiderationsSysId
@@ -1377,7 +1375,6 @@ export class AcquisitionPackageStore extends VuexModule {
     data: ContractConsiderationsDTO
   ): Promise<void> {
     try {
-      debugger;
       const sys_id = this.contractConsiderations?.sys_id || "";
       const savedData =
         sys_id.length > 0
@@ -1394,12 +1391,12 @@ export class AcquisitionPackageStore extends VuexModule {
         ...this.acquisitionPackage,
         contract_considerations: sys_id
       } as AcquisitionPackageDTO);
-      // contract_considerations: {value: sys_id}
-
     } catch (error) {
       throw new Error(
         `error occurred saving Contract Considerations data ${error}`
       );
+    } finally {
+      await this.saveAcquisitionPackage();
     }
   }
 
