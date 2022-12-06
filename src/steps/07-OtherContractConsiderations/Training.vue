@@ -36,7 +36,7 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { RadioButton } from "../../../types/Global";
 import { ContractConsiderationsDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -47,11 +47,11 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class Training extends Mixins(SaveOnLeave) {
-  private saved: ContractConsiderationsDTO = {
-    contractor_required_training: "",
-  };
+  private savedData: ContractConsiderationsDTO = {};
   private selectedOption 
     = AcquisitionPackage.contractConsiderations?.contractor_required_training || "";
+  private trainingCourses = "";
+
   private trainingOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -65,28 +65,38 @@ export default class Training extends Mixins(SaveOnLeave) {
     },
   ];
 
-  public get current(): ContractConsiderationsDTO {
+  public get currentData(): ContractConsiderationsDTO {
     return {
       contractor_required_training: this.selectedOption,
+      required_training_courses: this.trainingCourses,
     };
   }
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadContractConsiderations();
+    const storeData = await AcquisitionPackage.loadData<ContractConsiderationsDTO>({
+      storeProperty: StoreProperties.ContractConsiderations
+    });    
     if (storeData) {
-      this.saved = {
+      this.savedData = {
         contractor_required_training: storeData.contractor_required_training,
+        required_training_courses: storeData.required_training_courses,
       }
     }
   }
 
   public isChanged(): boolean {
-    return hasChanges(this.saved, this.current);
+    return hasChanges(this.savedData, this.currentData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.isChanged()) {
-        await AcquisitionPackage.saveContractConsiderations(this.current);
+        if (this.currentData.contractor_required_training === "NO") {
+          this.trainingCourses = "";
+        }
+        await AcquisitionPackage.saveData({
+          data: this.currentData,
+          storeProperty: StoreProperties.ContractConsiderations,
+        });
       }
     } catch (error) {
       console.log(error);
