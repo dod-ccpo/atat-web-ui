@@ -89,7 +89,7 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { stringObj } from "../../../types/Global";
 import { ContractConsiderationsDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -100,7 +100,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 export default class TrainingCourses extends Mixins(SaveOnLeave) {
-  private saved: ContractConsiderationsDTO = {};
+  private savedData: ContractConsiderationsDTO = {};
   public trainingCerts: stringObj[] = [
     {name: ""}
   ];
@@ -132,15 +132,18 @@ export default class TrainingCourses extends Mixins(SaveOnLeave) {
 
   }
 
-  public get current(): ContractConsiderationsDTO {
+  public get currentData(): ContractConsiderationsDTO {
     return {
       required_training_courses: this.transformTrainingCerts(this.trainingCerts) || "",
     };
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadContractConsiderations();
-    this.saved = {
+    const storeData = await AcquisitionPackage.loadData<ContractConsiderationsDTO>({
+      storeProperty: StoreProperties.ContractConsiderations
+    });
+
+    this.savedData = {
       required_training_courses: storeData.required_training_courses || '',
     }
     if (storeData && storeData.required_training_courses) {
@@ -149,13 +152,17 @@ export default class TrainingCourses extends Mixins(SaveOnLeave) {
   }
 
   public isChanged(): boolean {
-    return hasChanges(this.saved, this.current);
+    return hasChanges(this.savedData, this.currentData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.isChanged()) {
-        await AcquisitionPackage.saveContractConsiderations(this.current);
+        await AcquisitionPackage.saveData({
+          data: this.currentData,
+          storeProperty: StoreProperties.ContractConsiderations,
+        });
+
       }
     } catch (error) {
       console.log(error);
