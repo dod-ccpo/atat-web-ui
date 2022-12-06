@@ -474,6 +474,21 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
+  @Action
+  public clearCurrentContractInfo(): void {
+    const data: CurrentContractDTO = {
+      current_contract_exists: "NO",
+      incumbent_contractor_name: "",
+      contract_number: "",
+      task_delivery_order_number: "",
+      contract_order_expiration_date: "",
+    }
+    this.setCurrentContract(data);
+    // EJY keep me
+
+  }
+
+
   @Mutation
   public setSensitiveInformation(value: SensitiveInformationDTO): void {
     this.sensitiveInformation = this.sensitiveInformation
