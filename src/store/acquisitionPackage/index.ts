@@ -266,33 +266,6 @@ const getStoreDataTableProperty = (
   return dataProperty;
 };
 
-/* Below sys_ids are NOT secrets */
-export const jamrrTemplateUrls = {
-  disastorefront: {
-    documentSysIds: {
-      mrr: '4864795287979d10bc86b889cebb353f', //pragma: allowlist secret
-      ja: 'db44755687979d10bc86b889cebb354a' //pragma: allowlist secret
-    }
-  },
-  niprdev: {
-    documentSysIds: {
-      mrr: '',
-      ja: ''
-    }
-  },
-  niprtest: {
-    documentSysIds: {
-      mrr: '',
-      ja: ''
-    }
-  },
-  niprprod: {
-    documentSysIds: {
-      mrr: '',
-      ja: ''
-    }
-  }
-};
 
 @Module({
   name: "AcquisitionPackage",
