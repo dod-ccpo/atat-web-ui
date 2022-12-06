@@ -84,7 +84,7 @@ export const Statuses: Record<string, Record<string, string>> = {
 }
 
 
-const initialCurrentContract = ()=> {
+export const initialCurrentContract = (): CurrentContractDTO => {
   return {
     current_contract_exists: "",
     incumbent_contractor_name: "",
@@ -473,6 +473,15 @@ export class AcquisitionPackageStore extends VuexModule {
     this.currentContract = this.currentContract
       ? Object.assign(this.currentContract, value)
       : value;
+  }
+
+  @Action
+  public async clearCurrentContractInfo(): Promise<void> {
+    const data = initialCurrentContract();
+    data.current_contract_exists = "NO";
+    this.setCurrentContract(data);
+    this.saveData<CurrentContractDTO>({data,
+      storeProperty: StoreProperties.CurrentContract});
   }
 
   @Mutation
