@@ -150,14 +150,14 @@ const initialContact = () => {
 
 const initialContractConsiderations = ()=> {
   return {
-    packaging_shipping_other: "false",
+    packaging_shipping_other: "",
     contractor_required_training: "",
     packaging_shipping_other_explanation: "",
     conflict_of_interest_explanation: "",
     potential_conflict_of_interest: "",
     required_training_courses: "",
-    packaging_shipping_none_apply: "false",
-    contractor_provided_transfer: "false",
+    packaging_shipping_none_apply: "",
+    contractor_provided_transfer: "",
   }
 }
 
@@ -509,6 +509,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setContractConsiderations(value: ContractConsiderationsDTO): void {
+    debugger;
     this.contractConsiderations = this.contractConsiderations 
       ? Object.assign(this.contractConsiderations, value) 
       : value;
@@ -676,6 +677,7 @@ export class AcquisitionPackageStore extends VuexModule {
           (acquisitionPackage.classification_level as ReferenceColumn).value as string
           : acquisitionPackage.classification_level as string;
 
+      debugger;
       const contractConsiderationsSysId = 
         typeof acquisitionPackage.contract_considerations === "object" ?
           (acquisitionPackage.contract_considerations as ReferenceColumn).value as string
@@ -838,7 +840,7 @@ export class AcquisitionPackageStore extends VuexModule {
           initialClassificationLevel()
         );
       }
-
+      debugger
       if(contractConsiderationsSysId) {
         const contractConsiderations = await api.contractConsiderationsTable.retrieve(
           contractConsiderationsSysId
@@ -1375,6 +1377,7 @@ export class AcquisitionPackageStore extends VuexModule {
     data: ContractConsiderationsDTO
   ): Promise<void> {
     try {
+      debugger;
       const sys_id = this.contractConsiderations?.sys_id || "";
       const savedData =
         sys_id.length > 0
@@ -1389,8 +1392,10 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setContractConsiderations(savedData);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
-        contract_considerations: {value: sys_id}
+        contract_considerations: sys_id
       } as AcquisitionPackageDTO);
+      // contract_considerations: {value: sys_id}
+
     } catch (error) {
       throw new Error(
         `error occurred saving Contract Considerations data ${error}`
