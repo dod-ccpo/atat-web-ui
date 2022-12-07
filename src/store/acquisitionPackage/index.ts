@@ -44,6 +44,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import { AxiosRequestConfig } from "axios";
+import ClassificationRequirements from "../classificationRequirements";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -1434,6 +1435,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await CurrentEnvironment.reset();
     await Periods.reset();
     await TaskOrder.reset();
+    await ClassificationRequirements.reset();
 
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
 

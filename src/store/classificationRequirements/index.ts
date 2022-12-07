@@ -29,8 +29,6 @@ export class ClassificationRequirementsStore extends VuexModule {
   public initialized = false;
   public classificationLevels: ClassificationLevelDTO[] = [];
   public selectedClassificationLevels: ClassificationLevelDTO[] = [];
-  public currentEnvClassificationLevels: ClassificationLevelDTO[] = [];
-  public environmentInstances: EnvironmentInstanceDTO[] = [];
   public securityRequirements: SecurityRequirement[] = [];
 
 
@@ -38,10 +36,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.classificationLevels),
     nameofProperty(this, (x)=> x.selectedClassificationLevels),
-    nameofProperty(this, (x)=> x.currentEnvClassificationLevels),
-    nameofProperty(this, (x)=> x.environmentInstances),
     nameofProperty(this, (x)=> x.securityRequirements),
-
   ];
 
   @Mutation
@@ -135,12 +130,28 @@ export class ClassificationRequirementsStore extends VuexModule {
   @Action({ rawError: true })
   public async loadClassificationLevels(): Promise<void> {
     try {
-      const classificationLevels = await api.classificationLevelTable.all();
-      this.setClassifications(classificationLevels);
+      if (this.classificationLevels.length === 0) {
+        const classificationLevels = await api.classificationLevelTable.all();
+        this.setClassifications(classificationLevels);
+      }
     } catch (error) {
       throw new Error(`error loading Classification Levels ${error}`);
     }
   }
+
+  @Action({ rawError: true })
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_CLASSIFICATION_LEVELS_KEY);
+    this.doReset();
+  }
+
+  @Mutation
+  public doReset(): void {
+    this.initialized = false;
+    this.selectedClassificationLevels = [];
+    this.securityRequirements = [];
+  }
+
 }
 
 const ClassificationRequirements = getModule(ClassificationRequirementsStore);
