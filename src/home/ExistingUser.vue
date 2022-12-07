@@ -60,10 +60,10 @@
 
             <v-card flat class="pa-6 mb-10 _simple-border">
               <h3 class="text-primary mb-4">What else could we help you with?</h3>
-              <a href="https://community.hacc.mil/s/jwcc/resources" 
-              target="_blank" id="JWCCHelpCenterLink" rel="noopener" class="_text-link">
                 <v-btn
                   id="JWCCHelpCenterButton"
+                  href="https://community.hacc.mil/s/jwcc/resources"
+                  target="_blank" 
                   class="secondary mb-4 mt-4 width-100"
                 >
                   JWCC Help Center
@@ -78,12 +78,11 @@
                     />
                 
                 </v-btn>
-              </a>
-              <a href="https://community.hacc.mil/s/contact?RequestTopic=DAPPS" 
-              target="_blank" id="customerSupportLink" rel="noopener" class="_text-link">
                 <v-btn
                   id="CustomerSupportButton"
                   class="secondary mt-4 width-100"
+                  href="https://community.hacc.mil/s/contact?RequestTopic=DAPPS"
+                  target="_blank"
                 >      
                   Contact customer support
                     <ATATSVGIcon
@@ -96,12 +95,10 @@
                     />
                     
                 </v-btn>
-              </a>
-        <a href="https://services.disa.mil/sp?id=sc_cat_item
-        &sys_id=20e86845dbaf19148c045e8cd39619d9&sysparm_category=a30a5ca3db12a0508c045e8cd396197c" 
-              target="_blank" id="reportBugOrTechnicalIssueLink" rel="noopener" class="_text-link">
                 <v-btn
+                  :href="reportIssueLink"
                   id="ReportIssueButton"
+                   target="_blank"
                   class="secondary mt-4 width-100" 
                 >
                   Report a bug or technical issue
@@ -114,7 +111,6 @@
                       color="primary"
                     />
                 </v-btn>
-              </a>
             </v-card>
 
           </v-col>
@@ -160,6 +156,9 @@ import CurrentUserStore from "@/store/user";
 export default class ExistingUser extends Vue {
   public packageData:AcquisitionPackageSummaryDTO[] = []
   public draftPackageCount = 0;
+
+  public reportIssueLink = "https://services.disa.mil/sp?id=sc_cat_item&sys_id=20e86845dbaf1914" +
+                      "8c045e8cd39619d9&sysparm_category=a30a5ca3db12a0508c045e8cd396197c";
 
   public packagesPanel = 0; // open by default
   public packageCount = 0;
