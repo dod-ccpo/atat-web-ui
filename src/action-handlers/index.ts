@@ -7,7 +7,8 @@ const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
   deleteServiceOfferingGroup: "deleteServiceOfferingGroup",
   confirmComputeDeletion: "confirmComputeDeletion",
-  confirmServiceDeletion: "confirmServiceDeletion"
+  confirmServiceDeletion: "confirmServiceDeletion",
+  clearCurrentContractInfo: "clearCurrentContractInfo",
 }
 
 const actions =  {
@@ -15,6 +16,8 @@ const actions =  {
   [actionHandlerNames.deleteServiceOfferingGroup]: deleteServiceOfferingGroup,
   [actionHandlerNames.confirmComputeDeletion]: confirmComputeDeletion,
   [actionHandlerNames.confirmServiceDeletion]: confirmServiceDeletion,
+  [actionHandlerNames.clearCurrentContractInfo]: clearCurrentContractInfo,
+
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -28,6 +31,10 @@ function sampleAdditionalButtonAction(actionArgs: string[]) {
   // console.log("in action-handler: foo: " + foo + "bar: " + bar);
   AcquisitionPackage.sampleAdditionalButtonActionInStore(actionArgs);
   alert("\"Cancel\" will navigate to JWCC intro when completed.");
+}
+
+function clearCurrentContractInfo() {
+  AcquisitionPackage.clearCurrentContractInfo();
 }
 
 // used in Performance Requirements when user clicks "I don't need these cloud resources" button

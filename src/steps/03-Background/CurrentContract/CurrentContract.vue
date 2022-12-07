@@ -32,7 +32,9 @@ import { Component, Mixins } from "vue-property-decorator";
 
 import CurrentContractOptions from "./components/CurrentContractOptions.vue"
 
-import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
+import AcquisitionPackage, 
+{initialCurrentContract, StoreProperties} from "@/store/acquisitionPackage";
+
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -83,7 +85,12 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveData<CurrentContractDTO>({data: this.currentData,
+        let data = this.currentData;
+        if (data.current_contract_exists === "NO") {
+          data = initialCurrentContract();
+          data.current_contract_exists = "NO"
+        }
+        await AcquisitionPackage.saveData<CurrentContractDTO>({data,
           storeProperty: StoreProperties.CurrentContract});
       }
     } catch (error) {

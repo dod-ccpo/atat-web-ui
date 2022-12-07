@@ -26,6 +26,7 @@
                     :cardData="cardData"
                     :index="index"
                     :isLastCard="index === packageData.length - 1"
+                    @updateStatus="loadPackageData"
                   />
 
                 </v-expansion-panel-content>
@@ -201,6 +202,9 @@ export default class ExistingUser extends Vue {
     this.packageCount = this.packageData.length;
     const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
     this.draftPackageCount = draftPackages?.length || 0;
+    if (this.packageCount === 0) {
+      this.$emit("allPackagesCleared");
+    }
   }
 
   public async loadOnEnter(): Promise<void>{
