@@ -100,30 +100,27 @@ import {routeNames} from "@/router/stepper";
 })
 
 export default class AnticipatedDurationandUsage extends Vue {
-  @PropSync("dataObject") public _dataObject!: DOWClassificationInstance;
+  // @PropSync("dataObject") public _dataObject!: DOWClassificationInstance;
   @PropSync("anticipatedNeedUsage") public _anticipatedNeedUsage!: string;
   @PropSync("entireDuration")public _entireDuration!: string;
   @PropSync("selectedPeriods")public _selectedPeriods!: string[]; 
   
   @Prop() private index!: string;
   @Prop({required: true}) private type!: string;
-  @Prop({default: "Statement of objectives for the anticipated need or usage"})
-  private label?: string;
-  @Prop({default: ""})
-  private durationLabel?: string;
-  @Prop({default: 'Use vendor-neutral language to describe the purpose and usage. Provide a ' +
-              'functional description of the requirement without including any company names ' +
-              'or vendor-unique brand, product, or titles.'})
-  private description?: string;
-  @Prop({default: "Performance period details will be used to generate a cost estimate for" +
-      " this service later."})
-  private toolTip?: string;
+  @Prop({default: `Statement of objectives for the anticipated 
+    need or usage`}) private label?: string;
+  @Prop({default: ""}) private durationLabel?: string;
+  @Prop({default: `Use vendor-neutral language to describe the purpose and usage. Provide a 
+    functional description of the requirement without including any company names
+    or vendor-unique brand, product, or titles.`}) private description?: string;
+  @Prop({default: `Performance period details will be used to generate a cost estimate for
+    this service later.`}) private toolTip?: string;
   @Prop({default: "800"}) private maxCharCount?: string;
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public availablePeriodCheckboxItems!: Checkbox[];
 
   public routeNames = routeNames;
-  public selectedOptions: string[] = [];
+  // public selectedOptions: string[] = [];
 
   public entireDurationOptions: RadioButton[] = [
     {
@@ -140,43 +137,46 @@ export default class AnticipatedDurationandUsage extends Vue {
 
   // transforms selected sysID to the DOWPoP obj 
   // and adds to this._selectedPeriods array
-  @Watch("selectedOptions")
-  public setSelectedPeriods(newVal: string[]): void {
-    const tempArray: DOWPoP[] = [];
-    newVal.forEach(p => {
-      tempArray.push(
-        {
-          label: "",
-          sysId: p,
-        }
-      )
-    });
-    this._selectedPeriods = newVal;
-  }
+  // @Watch("selectedOptions")
+  // public setSelectedPeriods(newVal: string[]): void {
+  //   const tempArray: DOWPoP[] = [];
+  //   debugger;
+  //   newVal.forEach(sysId => {
+  //     tempArray.push(
+  //       {
+  //         label: "",
+  //         sysId,
+  //       }
+  //     )
+  //   });
+  //   debugger;
+  //   this._selectedPeriods = newVal;
+  // }
 
   // clears out any period selected if user selects YES
   public selectEntireDuration(value: string): void {
+    debugger;
     if (value.toUpperCase() === "YES"){
-      this.selectedOptions = [];
+      // this.selectedOptions = [];
       this._selectedPeriods = [];
     }
   }
 
   // when user selects "YES", remove periods from needed array.
   // when user selects "NO", pre-select base period
-  @Watch("dataObject.entireDuration")
+  @Watch("_entireDuration")
   public entireDurationChanged(newVal: string): void {
-    this.selectedOptions = newVal === "NO" &&
-    this.availablePeriodCheckboxItems[0].value !== "" ? [this.availablePeriodCheckboxItems[0].value]
+    debugger;
+    this._selectedPeriods = newVal === "NO" && this.availablePeriodCheckboxItems[0].value !== "" 
+      ? [this.availablePeriodCheckboxItems[0].value]
       : [];
-    ;
   }
 
   public mounted(): void {
-    if (this._dataObject){
-      this._dataObject.anticipatedNeedUsage = this._anticipatedNeedUsage;
-      this._dataObject.entireDuration = this._entireDuration;
-    }
+    // if (this._dataObject){
+    //   this._dataObject.anticipatedNeedUsage = this._anticipatedNeedUsage;
+    //   this._dataObject.entireDuration = this._entireDuration;
+    // }
   }
 
 }

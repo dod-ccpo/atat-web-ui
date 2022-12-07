@@ -26,7 +26,7 @@
                 :selectedPeriods.sync="instance.selectedPeriods"
                 :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
                 :isPeriodsDataMissing="isPeriodsDataMissing"
-                index="0"
+                :index="index"
               />
              
             </div>
