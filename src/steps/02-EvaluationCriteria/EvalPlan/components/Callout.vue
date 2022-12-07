@@ -77,7 +77,7 @@ export default class Callout extends Vue {
 
   public get introP(): string {
     if (!this.isStandards) {
-      if (this.sourceSelection === "SetLumpSum") {
+      if (this.sourceSelection === "Set_Lump_Sum") {
         return `Your Contracting Officer (KO) will request Contractors submit a white paper
           identifying a strategy and approach that will meet or exceed the requirements 
           within the proposed costs. Contractors must also provide a price proposal which 
@@ -135,7 +135,7 @@ export default class Callout extends Vue {
           of how the item will contribute to the solution is provided.`
       ];
       break;
-    case "SetLumpSum":
+    case "Set_Lump_Sum":
       listItems = [
         `Solution adequately addresses each requirement element or identifies any 
           requirement elements which are not explicitly identified in the strategy 
