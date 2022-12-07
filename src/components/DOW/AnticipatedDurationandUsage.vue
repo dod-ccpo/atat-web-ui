@@ -12,7 +12,7 @@
     :rules="[
       $validators.required('Provide your statement of objective.'),
       $validators.maxLength(maxCharCount,
-       'Description is to be ' + maxCharCount+ ' characters or less.')
+       'Description is to be ' + maxCharCount + ' characters or less.')
     ]"
   />
   <div>
@@ -21,9 +21,8 @@
       ref="NeededForEntireDuration"
       :id="'EntireDuration_' + (index + 1)"
       :legend="durationLabel ||
-      `Do you need this ${type} for the entire duration of your task order?`"
+        `Do you need this ${type} for the entire duration of your task order?`"
       :items="entireDurationOptions"
-      @radioButtonSelected="selectEntireDuration"
       :value.sync="_entireDuration"
       :tooltipText="toolTip"
       :rules="[
@@ -80,15 +79,12 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import {
   Checkbox,
-  DOWClassificationInstance,
-  DOWPoP,
   RadioButton
 } from "../../../types/Global";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import {routeNames} from "@/router/stepper";
-
 
 @Component({
   components: {
@@ -100,7 +96,6 @@ import {routeNames} from "@/router/stepper";
 })
 
 export default class AnticipatedDurationandUsage extends Vue {
-  // @PropSync("dataObject") public _dataObject!: DOWClassificationInstance;
   @PropSync("anticipatedNeedUsage") public _anticipatedNeedUsage!: string;
   @PropSync("entireDuration")public _entireDuration!: string;
   @PropSync("selectedPeriods")public _selectedPeriods!: string[]; 
@@ -120,7 +115,6 @@ export default class AnticipatedDurationandUsage extends Vue {
   @Prop() public availablePeriodCheckboxItems!: Checkbox[];
 
   public routeNames = routeNames;
-  // public selectedOptions: string[] = [];
 
   public entireDurationOptions: RadioButton[] = [
     {
@@ -135,33 +129,6 @@ export default class AnticipatedDurationandUsage extends Vue {
     },
   ];
 
-  // transforms selected sysID to the DOWPoP obj 
-  // and adds to this._selectedPeriods array
-  // @Watch("selectedOptions")
-  // public setSelectedPeriods(newVal: string[]): void {
-  //   const tempArray: DOWPoP[] = [];
-  //   debugger;
-  //   newVal.forEach(sysId => {
-  //     tempArray.push(
-  //       {
-  //         label: "",
-  //         sysId,
-  //       }
-  //     )
-  //   });
-  //   debugger;
-  //   this._selectedPeriods = newVal;
-  // }
-
-  // clears out any period selected if user selects YES
-  public selectEntireDuration(value: string): void {
-    debugger;
-    if (value.toUpperCase() === "YES"){
-      // this.selectedOptions = [];
-      this._selectedPeriods = [];
-    }
-  }
-
   // when user selects "YES", remove periods from needed array.
   // when user selects "NO", pre-select base period
   @Watch("_entireDuration")
@@ -170,13 +137,6 @@ export default class AnticipatedDurationandUsage extends Vue {
     this._selectedPeriods = newVal === "NO" && this.availablePeriodCheckboxItems[0].value !== "" 
       ? [this.availablePeriodCheckboxItems[0].value]
       : [];
-  }
-
-  public mounted(): void {
-    // if (this._dataObject){
-    //   this._dataObject.anticipatedNeedUsage = this._anticipatedNeedUsage;
-    //   this._dataObject.entireDuration = this._entireDuration;
-    // }
   }
 
 }
