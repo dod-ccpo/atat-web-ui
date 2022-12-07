@@ -6,7 +6,7 @@
         <v-col cols="12">
           <GeneratingDocuments v-if="isGenerating"/>
           <ReviewDocuments 
-            v-if="!isGenerating"
+            v-if="docsAreReady"
             :isErrored="isErrored"
             @regenerate="generateDocuments()"
           />
@@ -32,7 +32,8 @@ import ReviewDocuments from "./components/ReviewDocuments.vue";
 })
 export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
 
-  private isGenerating = false;
+  private isGenerating = true;
+  public docsAreReady = false;
   private isErrored = false;
   private docJobStatus = "" ;
   private packageDocuments = [];
@@ -61,6 +62,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
           if (status === this.docJobStatus.toUpperCase()){
             clearInterval(intervalId);
             this.isGenerating = false;
+            this.docsAreReady = true;
             this.isErrored = status === "FAILED";
           }
         }

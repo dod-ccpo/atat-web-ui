@@ -42,6 +42,7 @@ import {EvaluationPlanApi} from "@/api/evaluationPlan";
 import {CurrentEnvironmentInstanceAPI} from "@/api/currentEnvironmentInstance";
 import {EvalPlanAssessmentAreaApi} from "@/api/evalPlanAssessmentArea";
 import {EvalPlanDifferentiatorApi} from "@/api/evalPlanDifferentiator";
+import { SysPropertiesApi } from "./sys_properties";
 
 
 export const api = {
@@ -90,7 +91,8 @@ export const api = {
   userTable: new UserApi(),
   evaluationPlanTable: new EvaluationPlanApi(),
   evalPlanAssessmentAreaTable: new EvalPlanAssessmentAreaApi(),
-  evalPlanDifferentiatorTable: new EvalPlanDifferentiatorApi()
+  evalPlanDifferentiatorTable: new EvalPlanDifferentiatorApi(),
+  sysProperties: new SysPropertiesApi()
 }
 
 export default {
