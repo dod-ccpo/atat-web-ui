@@ -188,6 +188,7 @@ export default class ATATSelect extends Vue {
 
   //@Events
   private onBlur(value: string) : void {
+    this.setErrorMessage();
     this.$emit('blur', value);
   }
 
