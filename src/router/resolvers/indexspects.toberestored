@@ -13,7 +13,7 @@ import {
   NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver, ArchitecturalDesignDetailsRouteResolver
 
-} from "../resolvers/index"
+} from "./index"
 import { routeNames } from "@/router/stepper"
 import Vue from "vue";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
