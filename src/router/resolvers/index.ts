@@ -13,6 +13,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
+import IGCE from "@/store/IGCE";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -20,11 +21,11 @@ export const AcorsRouteResolver = (current: string): string => {
 
   //routing from alternate cor and the user does not have an ACOR
   if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
-    return routeNames.AcqPackageSummary;
+    return routeNames.Exceptions;
   }
 
   //routing from summary and user does not have ACOR
-  if (current === routeNames.AcqPackageSummary && hasAlternativeContactRep === false) {
+  if (current === routeNames.Exceptions && !hasAlternativeContactRep) {
     return routeNames.AlternateCor;
   }
 
@@ -85,7 +86,7 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 
 export const BVTOResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
-  if (current === routeNames.EvalPlanSummary){
+  if (current === routeNames.PeriodOfPerformance){
     if (!evalPlanRequired()) {
       return routeNames.NoEvalPlan;
     }
@@ -99,7 +100,7 @@ export const BVTOResolver = (current: string): string => {
   }
 
   return current === routeNames.EvalPlanDetails
-    ? routeNames.EvalPlanSummary
+    ? routeNames.PeriodOfPerformance
     : routeNames.EvalPlanDetails;
 };
 
@@ -122,7 +123,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? routeNames.RequirementCategories
+    ? IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
     : routeNames.CurrentContract;
 };
 
@@ -140,13 +141,20 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
       = CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
   const hasCurrentEnv
       = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
-
-  if (needsArchitectureDesign && hasCurrentEnv) {
-    return routeNames.ArchitecturalDesignDetails;
+  const hasCurrentContract 
+      = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+ 
+  if (current === routeNames.DOWSummary || 
+      current === routeNames.RequirementCategories){
+    if (!hasCurrentContract){  // if no current contract
+      return routeNames.CurrentContract;
+    } else if (hasCurrentContract && !hasCurrentEnv){ // if current contract & NO current env
+      return routeNames.CurrentEnvironment;
+    } 
   }
-  return current === routeNames.BackgroundSummary 
-    ? routeNames.ArchitecturalDesign 
-    : routeNames.BackgroundSummary;
+  return needsArchitectureDesign
+    ? routeNames.ArchitecturalDesignDetails 
+    : routeNames.ArchitecturalDesign 
 
 };
 
@@ -156,8 +164,8 @@ export const CurrentEnvRouteResolver = (current: string): string => {
   if (hasCurrentEnv) {
     return routeNames.UploadSystemDocuments;
   }
-  return current === routeNames.CurrentEnvironment
-    ? routeNames.BackgroundSummary
+  return current === routeNames.CurrentEnvironment 
+    ? IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
     : routeNames.CurrentEnvironment;
 };
 
@@ -493,7 +501,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   Steps.setAdditionalButtonHide(false);
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
-    return "period-of-performance/period-of-performance";
+    return "current-contract/current-contract";
   }
 
   const groupId = DescriptionOfWork.currentGroupId;
