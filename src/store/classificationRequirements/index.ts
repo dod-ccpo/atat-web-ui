@@ -147,6 +147,18 @@ export class ClassificationRequirementsStore extends VuexModule {
       throw new Error(`an error occurred saving a single selected classification level ${error}`);
     }
   }
+
+  @Action({ rawError: true })
+  public async reset(): Promise<void> {
+    this.doReset();
+  }
+
+  @Mutation
+  public doReset(): void {
+    this.selectedClassificationLevels = [];
+    this.securityRequirements = [];
+  }
+
 }
 
 const ClassificationRequirements = getModule(ClassificationRequirementsStore);

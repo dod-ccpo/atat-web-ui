@@ -44,6 +44,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import { AxiosRequestConfig } from "axios";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -59,7 +60,8 @@ export const StoreProperties = {
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
-  CurrentEnvironment: "currentEnvironment"
+  CurrentEnvironment: "currentEnvironment",
+  ContractConsiderations: "contractConsiderations",
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -84,7 +86,7 @@ export const Statuses: Record<string, Record<string, string>> = {
 }
 
 
-const initialCurrentContract = ()=> {
+export const initialCurrentContract = (): CurrentContractDTO => {
   return {
     current_contract_exists: "",
     incumbent_contractor_name: "",
@@ -151,14 +153,14 @@ const initialContact = () => {
 
 const initialContractConsiderations = ()=> {
   return {
-    packaging_shipping_other: "false",
+    packaging_shipping_other: "",
     contractor_required_training: "",
     packaging_shipping_other_explanation: "",
     conflict_of_interest_explanation: "",
     potential_conflict_of_interest: "",
     required_training_courses: "",
-    packaging_shipping_none_apply: "false",
-    contractor_provided_transfer: "false",
+    packaging_shipping_none_apply: "",
+    contractor_provided_transfer: "",
   }
 }
 
@@ -266,33 +268,6 @@ const getStoreDataTableProperty = (
   return dataProperty;
 };
 
-/* Below sys_ids are NOT secrets */
-export const jamrrTemplateUrls = {
-  disastorefront: {
-    documentSysIds: {
-      mrr: '4864795287979d10bc86b889cebb353f', //pragma: allowlist secret
-      ja: 'db44755687979d10bc86b889cebb354a' //pragma: allowlist secret
-    }
-  },
-  niprdev: {
-    documentSysIds: {
-      mrr: '',
-      ja: ''
-    }
-  },
-  niprtest: {
-    documentSysIds: {
-      mrr: '',
-      ja: ''
-    }
-  },
-  niprprod: {
-    documentSysIds: {
-      mrr: '',
-      ja: ''
-    }
-  }
-};
 
 @Module({
   name: "AcquisitionPackage",
@@ -400,24 +375,35 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action
   public async getJamrrTemplateUrl(type: string): Promise<string>{
     let url = '';
-    const hostname = window.location.hostname;
-    let attachment: AttachmentDTO;
+    let attachment: AttachmentDTO[] = [{
+      file_name: "",
+      table_sys_id: ""
+    }];
+    const name = (type === 'ja') 
+      ? "justificationAndApproval" 
+      : "marketResearchReport";
 
-    switch(hostname) {
-    default: {
-      if(type === 'ja'){
-        attachment = await api.attachments.retrieve(
-          jamrrTemplateUrls.disastorefront.documentSysIds.ja
-        );
-      } else {
-        attachment = await api.attachments.retrieve(
-          jamrrTemplateUrls.disastorefront.documentSysIds.mrr
-        );
-      } 
-    }};
+    const getSysProperties: AxiosRequestConfig = {
+      params: {
+        sysparm_fields: "sys_id",
+        sysparm_query: "name=x_g_dis_atat.dappsTemplates." + name
+      }
+    };
 
-    if(attachment)
-      url = attachment.download_link as string;
+    const sysProperties = await api.sysProperties.getQuery(getSysProperties);
+
+    const getAttachment: AxiosRequestConfig = {
+      params: {
+        sysparm_fields: "sys_id",
+        sysparm_query: "table_sys_id=" + sysProperties[0].sys_id 
+      }
+    };
+
+
+    attachment = await api.attachments.getQuery(getAttachment);
+    if(attachment){
+      url = attachment[0].download_link as string;
+    }
 
     return url;
   }
@@ -473,6 +459,15 @@ export class AcquisitionPackageStore extends VuexModule {
     this.currentContract = this.currentContract
       ? Object.assign(this.currentContract, value)
       : value;
+  }
+
+  @Action
+  public async clearCurrentContractInfo(): Promise<void> {
+    const data = initialCurrentContract();
+    data.current_contract_exists = "NO";
+    this.setCurrentContract(data);
+    this.saveData<CurrentContractDTO>({data,
+      storeProperty: StoreProperties.CurrentContract});
   }
 
   @Mutation
@@ -1050,7 +1045,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractType]: api.contractTypeTable,
     [StoreProperties.CurrentContract]: api.currentContractTable,
     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
-    // [StoreProperties.EvaluationPlan]: api.evaluationPlanTable, // FUTURE TICKET
     [StoreProperties.Organization]: api.organizationTable,
     // [StoreProperties.Periods]: api.periodTable,
     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
@@ -1059,6 +1053,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
     [StoreProperties.CurrentEnvironment]: api.currentEnvironmentTable,
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
+    [StoreProperties.ContractConsiderations]: api.contractConsiderationsTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -1075,6 +1070,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.SensitiveInformation]: "sensitive_information",
     [StoreProperties.ClassificationLevel]: "classification_level",
     [StoreProperties.CurrentEnvironment]: "current_environment",
+    [StoreProperties.ContractConsiderations]: "contract_considerations",
   }
 
   @Action({ rawError: true })
@@ -1356,55 +1352,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  async loadContractConsiderations(): Promise<ContractConsiderationsDTO> {
-    try {
-      await this.ensureInitialized();
-      const sys_id = this.contractConsiderations?.sys_id || "";
-
-      if (sys_id.length > 0) {
-        const contractConsiderationsData =
-          await api.contractConsiderationsTable.retrieve(sys_id as string);
-        this.setContractConsiderations(contractConsiderationsData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          contract_considerations: {value: sys_id}
-        } as AcquisitionPackageDTO);
-      }
-      return this.contractConsiderations as ContractConsiderationsDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading Contract Type data ${error}`);
-    }
-  }
-
-  @Action({ rawError: true })
-  async saveContractConsiderations(
-    data: ContractConsiderationsDTO
-  ): Promise<void> {
-    try {
-      const sys_id = this.contractConsiderations?.sys_id || "";
-      const savedData =
-        sys_id.length > 0
-          ? await api.contractConsiderationsTable.update(sys_id, {
-            ...data,
-            sys_id,
-          })
-          : await api.contractConsiderationsTable.create({
-            ...initialContractConsiderations(),
-            ...data,
-          });
-      this.setContractConsiderations(savedData);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        contract_considerations: {value: sys_id}
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(
-        `error occurred saving Contract Considerations data ${error}`
-      );
-    }
-  }
-
-  @Action({ rawError: true })
   async removeAttachment({
     key,
     attachmentId,
@@ -1493,6 +1440,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await CurrentEnvironment.reset();
     await Periods.reset();
     await TaskOrder.reset();
+    await ClassificationRequirements.reset();
 
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
 
