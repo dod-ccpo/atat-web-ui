@@ -31,19 +31,19 @@
       <ATATRadioGroup
         :legend="growthLabel"
         :items="growthOptions"
-        :value.sync="growthSelection"
+        :value.sync="_growthSelection"
         :rules="[
           $validators.required('Please select an option.')
         ]"
       ></ATATRadioGroup>
       <br />
-      <div v-if="growthSelection !== ''">
+      <div v-if="_growthSelection !== ''">
         <ATATSingleAndMultiplePeriods
           :periods.sync="_periods"
           :textboxSuffix="'%'"
           :singlePeriodLabel="percentageLabel"
           :multiplePeriodLabel="percentageLabel"
-          :isMultiple="growthSelection === 'multiple'"
+          :isMultiple="_growthSelection === 'multiple'"
           :values.sync="_percentages"
         ></ATATSingleAndMultiplePeriods>
       </div>
@@ -83,6 +83,7 @@ export default class AnticipatedDataNeeds extends Vue {
   @PropSync("dataDropdownValue", {default: "GB"}) private _dataDropdownValue?: string;
   @PropSync("percentages") private _percentages?: string[];
   @PropSync("userIncrease") private _increaseSelection?: string;
+  @PropSync("growthSelection") private _growthSelection?: string;
 
   private dataUnits: SelectData[] = [];
 
@@ -102,7 +103,6 @@ export default class AnticipatedDataNeeds extends Vue {
   ];
 
   private growthLabel = "";
-  private growthSelection = "";
   private growthOptions: RadioButton[] = [
     {
       id: "single",

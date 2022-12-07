@@ -40,6 +40,8 @@
               <AnticipatedDataNeeds
                 :periods="periods"
                 :userIncrease.sync="anticipatedNeedsData[index].increase_in_users"
+                :growthSelection.sync="anticipatedNeedsData[index].user_growth_estimate_type"
+                :percentages.sync="anticipatedNeedsData[index].user_growth_estimate_percentage"
                 needs="user"
               />
               <hr class="mb-10 mt-5" />
@@ -61,7 +63,7 @@
 import Vue from "vue";
 import { Component, Mixins } from "vue-property-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { ClassificationLevelDTO, PeriodDTO } from "@/api/models";
+import { ClassificationLevelDTO, PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel } from "@/helpers";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
@@ -69,6 +71,7 @@ import Periods from "@/store/periods";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { StorageUnit } from "../../../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -80,7 +83,7 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   public selectedClassifications: ClassificationLevelDTO[] = []
   private periods: PeriodDTO[] | null = [];
   public accordionClosed = 0;
-  public anticipatedNeedsData: ClassificationLevelDTO[] = []
+  public anticipatedNeedsData: SelectedClassificationLevelDTO[] = []
 
   private async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -104,21 +107,24 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
     console.log(this.selectedClassifications)
     console.log(this.anticipatedNeedsData)
     this.selectedClassifications.forEach((classification)=>{
-      let data: ClassificationLevelDTO = {
+      let data: SelectedClassificationLevelDTO = {
+        classification_level: classification.sys_id || "", // sys id
+        acqusistion_package: AcquisitionPackage.getAcquisitionPackageSysId(),
         impact_level : classification.impact_level,
         classification : classification.classification,
         users_per_region : "",// json stringified sys_id/count pairs
-        increase_in_users : false,
+        increase_in_users : "",
         user_growth_estimate_type : undefined,
         user_growth_estimate_percentage : [],
         data_egress_monthly_amount : null,
         data_egress_monthly_unit : "",
-        data_increase : false,
+        data_increase : "",
         data_growth_estimate_type : undefined,
         data_growth_estimate_percentage : []
       }
       this.anticipatedNeedsData.push(data)
     })
+    console.log("periods",this.periods)
   }
   protected async saveOnLeave(): Promise<boolean> {
     return true;
