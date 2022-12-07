@@ -150,7 +150,7 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
 
 };
 
-export const CurrentContractEnvRouteResolver = (current: string): string => {
+export const CurrentEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
     = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
   if (hasCurrentEnv) {
@@ -869,7 +869,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   CurrentContractDetailsRouteResolver,
   ReplicateDetailsResolver,
-  CurrentContractEnvRouteResolver,
+  CurrentEnvRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,

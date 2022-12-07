@@ -128,7 +128,7 @@ import GeneratingPackageDocuments
 import {
   AcorsRouteResolver,
   CurrentContractDetailsRouteResolver,
-  CurrentContractEnvRouteResolver,
+  CurrentEnvRouteResolver,
   ReplicateDetailsResolver,
   PIIRecordResolver,
   FOIARecordResolver,
@@ -534,7 +534,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t have an existing contract",
             buttonId: "NoExistingContract",
             buttonClass: "secondary",
-            name: routeNames.PeriodOfPerformance,
+            name: routeNames.RequirementCategories,
+            actionName: "clearCurrentContractInfo"
           },
         ],
       },
@@ -554,7 +555,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: UploadSystemDocuments,
         completePercentageWeight: 5,
         completed: false,
-        routeResolver: CurrentContractEnvRouteResolver,
+        routeResolver: CurrentEnvRouteResolver,
       },
       {
         menuText: "Upload Process",
