@@ -39,7 +39,7 @@
               />
               <AnticipatedDataNeeds
                 :periods="periods"
-                :userIncrease.sync="anticipatedNeedsData[index].increase_in_users"
+                :increaseSelection.sync="anticipatedNeedsData[index].increase_in_users"
                 :growthSelection.sync="anticipatedNeedsData[index].user_growth_estimate_type"
                 :percentages.sync="anticipatedNeedsData[index].user_growth_estimate_percentage"
                 needs="user"
@@ -50,6 +50,11 @@
                 class="mt-5"
                 needs="data"
                 :periods="periods"
+                :increaseSelection.sync="anticipatedNeedsData[index].data_increase"
+                :growthSelection.sync="anticipatedNeedsData[index].data_growth_estimate_type"
+                :percentages.sync="anticipatedNeedsData[index].data_growth_estimate_percentage"
+                :dataTextFieldValue.sync="anticipatedNeedsData[index].data_egress_monthly_amount"
+                :dataDropdownValue.sync="anticipatedNeedsData[index].data_egress_monthly_unit"
               />
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -109,7 +114,7 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
     this.selectedClassifications.forEach((classification)=>{
       let data: SelectedClassificationLevelDTO = {
         classification_level: classification.sys_id || "", // sys id
-        acqusistion_package: AcquisitionPackage.getAcquisitionPackageSysId(),
+        acquisition_package: AcquisitionPackage.getAcquisitionPackageSysId(),
         impact_level : classification.impact_level,
         classification : classification.classification,
         users_per_region : "",// json stringified sys_id/count pairs
@@ -117,7 +122,7 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
         user_growth_estimate_type : undefined,
         user_growth_estimate_percentage : [],
         data_egress_monthly_amount : null,
-        data_egress_monthly_unit : "",
+        data_egress_monthly_unit : "GB",
         data_increase : "",
         data_growth_estimate_type : undefined,
         data_growth_estimate_percentage : []

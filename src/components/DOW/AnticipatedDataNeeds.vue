@@ -39,7 +39,7 @@
       <br />
       <div v-if="_growthSelection !== ''">
         <ATATSingleAndMultiplePeriods
-          :periods.sync="_periods"
+          :periods="periods"
           :textboxSuffix="'%'"
           :singlePeriodLabel="percentageLabel"
           :multiplePeriodLabel="percentageLabel"
@@ -77,12 +77,12 @@ export default class AnticipatedDataNeeds extends Vue {
     default: `This refers to the amount of data that gets transferred 
       from your organization's host network to the external networks.`
   }) private dataTooltipText?: string;
+  @Prop() private periods!: PeriodDTO[];
 
-  @PropSync("periods", {default: []}) private _periods: PeriodDTO[];
-  @PropSync("dataTextFieldValue") private _dataTextFieldValue?: string;
+  @PropSync("dataTextFieldValue") private _dataTextFieldValue?: number;
   @PropSync("dataDropdownValue", {default: "GB"}) private _dataDropdownValue?: string;
   @PropSync("percentages") private _percentages?: string[];
-  @PropSync("userIncrease") private _increaseSelection?: string;
+  @PropSync("increaseSelection") private _increaseSelection?: string;
   @PropSync("growthSelection") private _growthSelection?: string;
 
   private dataUnits: SelectData[] = [];

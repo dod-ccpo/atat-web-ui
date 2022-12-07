@@ -14,7 +14,12 @@ import {
 } from "../helpers";
 import Vue from "vue";
 
-import { ClassificationLevelDTO, EnvironmentInstanceDTO, ReferenceColumn } from "@/api/models";
+import {
+  ClassificationLevelDTO,
+  EnvironmentInstanceDTO,
+  ReferenceColumn,
+  SelectedClassificationLevelDTO
+} from "@/api/models";
 import { Checkbox, RadioButton, SecurityRequirement } from "../../../types/Global";
 
 const ATAT_CLASSIFICATION_LEVELS_KEY = "ATAT_CLASSIFICATION_LEVELS_KEY";
@@ -28,7 +33,7 @@ const ATAT_CLASSIFICATION_LEVELS_KEY = "ATAT_CLASSIFICATION_LEVELS_KEY";
 export class ClassificationRequirementsStore extends VuexModule {
   public initialized = false;
   public classificationLevels: ClassificationLevelDTO[] = [];
-  public selectedClassificationLevels: ClassificationLevelDTO[] = [];
+  public selectedClassificationLevels: SelectedClassificationLevelDTO[] = [];
   public currentEnvClassificationLevels: ClassificationLevelDTO[] = [];
   public environmentInstances: EnvironmentInstanceDTO[] = [];
   public securityRequirements: SecurityRequirement[] = [];
@@ -49,16 +54,25 @@ export class ClassificationRequirementsStore extends VuexModule {
     this.classificationLevels = value;
   }
 
+  @Action({ rawError: true })
+  public async setSelectedClassificationLevels(
+    value: SelectedClassificationLevelDTO[]
+  ): Promise<void> {
+    await this.doSetSelectedClassificationLevels(value)
+  }
+
   @Mutation
-  public async setSelectedClassificationLevels(value: ClassificationLevelDTO[]): Promise<void> {
+  public async doSetSelectedClassificationLevels(
+    value: SelectedClassificationLevelDTO[]
+  ): Promise<void> {
     this.selectedClassificationLevels = value;
     storeDataToSession(
       this,
       this.sessionProperties,
       ATAT_CLASSIFICATION_LEVELS_KEY
     );
-
   }
+
   @Mutation
   public async setSecurityRequirements(value: SecurityRequirement[]): Promise<void> {
     this.securityRequirements = value;

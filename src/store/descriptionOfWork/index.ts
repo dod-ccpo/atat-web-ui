@@ -499,7 +499,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public doSetSelectedOfferingGroups(selectedOfferingGroupIds: string[]): void {
-    debugger
     if (selectedOfferingGroupIds.length) {
       selectedOfferingGroupIds.forEach(async (selectedOfferingGroupId) => {
         if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroupId)) {

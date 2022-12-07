@@ -80,7 +80,7 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
 
 export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
   classification_level: string; // sys id
-  acqusistion_package: string; // sys id
+  acquisition_package: string; // sys id
   users_per_region?: string; // json stringified sys_id/count pairs
   increase_in_users?: YesNo;
   user_growth_estimate_type?: "SINGLE" | "MULTIPLE";

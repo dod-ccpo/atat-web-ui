@@ -215,9 +215,10 @@ export class PeriodsStore extends VuexModule {
         let periods = "";
 
         if (this.periodOfPerformance.base_period) {
-          periods += (
-          this.periodOfPerformance.base_period as unknown as ReferenceColumn
-          ).value;
+          const baseSysId = typeof this.periodOfPerformance.base_period === "object"
+            ? (this.periodOfPerformance.base_period as ReferenceColumn).value as string
+            : this.periodOfPerformance.base_period as string;
+          periods += baseSysId
         }
 
         if (this.periodOfPerformance.option_periods) {
