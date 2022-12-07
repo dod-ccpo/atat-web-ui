@@ -14,11 +14,17 @@ const Classifications = [{
 
 const savedClassifications = [{
   impact_level: 'IL2',
-  classification: 'test 2'
+  classification: 'test 2',
+  sys_id:"level1",
+  classification_level: {value: "v1", link: ""},
+  acquisition_package: {value: "a1", link: ""}
 },
 {
   impact_level: 'IL4',
-  classification: 'test 4'
+  classification: 'test 4',
+  sys_id:"level2",
+  classification_level: {value: "v2", link: ""},
+  acquisition_package: {value: "a1", link: ""}
 }]
 
 /* eslint-ensable camelcase */
@@ -31,10 +37,6 @@ describe("Classification Requirements Store", ()=> {
     Store<{ ClassificationStore: any}> => new Vuex.Store({ ...storeOptions });
     ClassificationStore = getModule(ClassificationRequirementsStore, createStore());
   })
-  test('Test ensureInitialized ', () => {
-    ClassificationStore.ensureInitialized()
-    expect(ClassificationStore.initialized).toBe(false)
-  })
 
   test('Test setClassifications sets the classificationLevels ', () => {
     ClassificationStore.setClassifications(Classifications)
@@ -42,19 +44,19 @@ describe("Classification Requirements Store", ()=> {
   })
 
   test('Test setSelectedClassificationLevels sets the selectedClassificationLevel ', () => {
-    ClassificationStore.setSelectedClassificationLevels(Classifications)
-    expect(ClassificationStore.selectedClassificationLevels).toBe(Classifications)
+    ClassificationStore.setSelectedClassificationLevels(savedClassifications)
+    expect(ClassificationStore.selectedClassificationLevels).toBe(savedClassifications)
   })
 
   test('Test getSelectedClassificationLevels returns SelectedClassification', async () => {
     const selectedClassifications = await ClassificationStore.getSelectedClassificationLevels()
-    expect(selectedClassifications).toBe(Classifications)
+    expect(selectedClassifications).toBe(savedClassifications)
   })
 
   test('Test getAllClassificationLevels returns classificationLevels', async () =>
   {
     const classifications = await ClassificationStore.getAllClassificationLevels()
-    expect(classifications).toStrictEqual(Classifications)
+    expect(classifications).toStrictEqual(Classifications);
   })
 
 })
