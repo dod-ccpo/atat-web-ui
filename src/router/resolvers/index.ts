@@ -13,6 +13,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
+import IGCE from "@/store/IGCE";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -122,7 +123,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? routeNames.RequirementCategories
+    ? IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
     : routeNames.CurrentContract;
 };
 
@@ -147,7 +148,6 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
       current === routeNames.RequirementCategories){
     if (!hasCurrentContract){  // if no current contract
       return routeNames.CurrentContract;
-    
     } else if (hasCurrentContract && !hasCurrentEnv){ // if current contract & NO current env
       return routeNames.CurrentEnvironment;
     } 
@@ -164,8 +164,8 @@ export const CurrentEnvRouteResolver = (current: string): string => {
   if (hasCurrentEnv) {
     return routeNames.UploadSystemDocuments;
   }
-  return current === routeNames.CurrentEnvironment
-    ? routeNames.DOWSummary
+  return current === routeNames.CurrentEnvironment 
+    ? IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
     : routeNames.CurrentEnvironment;
 };
 
