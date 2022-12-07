@@ -133,10 +133,11 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
 
     const storeData = await classificationRequirements.getSelectedClassificationLevels()
     if(storeData) {
+      console.log(storeData)
       this.savedData = storeData
       storeData.forEach((val) => {
-        if (val.sys_id) {
-          this.selectedOptions.push(val.sys_id)
+        if (val.sys_id || val.classification_level) {
+          this.selectedOptions.push(val.sys_id || val.classification_level)
         }
       })
     }

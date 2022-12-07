@@ -118,17 +118,17 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
         classification : classification.classification,
         users_per_region : "",// json stringified sys_id/count pairs
         increase_in_users : "",
-        user_growth_estimate_type : undefined,
+        user_growth_estimate_type : "",
         user_growth_estimate_percentage : [],
         data_egress_monthly_amount : null,
         data_egress_monthly_unit : "GB",
         data_increase : "",
-        data_growth_estimate_type : undefined,
+        data_growth_estimate_type : "",
         data_growth_estimate_percentage : []
       }
       this.anticipatedNeedsData.push(data)
     })
-    console.log("periods",this.periods)
+    console.log("data",this.anticipatedNeedsData)
   }
   public savedData: SelectedClassificationLevelDTO[] = []
 
