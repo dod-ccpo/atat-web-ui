@@ -61,7 +61,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 import { Checkbox } from "../../../types/Global";
-import { ClassificationLevelDTO } from "@/api/models";
+import { ClassificationLevelDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -76,7 +76,7 @@ import AcquisitionPackage from '@/store/acquisitionPackage';
 
 export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
-  public classifications: ClassificationLevelDTO[] = []
+  public classifications: SelectedClassificationLevelDTO[] = []
   public isIL6Selected = ""
   public IL6SysId = ""
   private checkboxItems: Checkbox[] = []
@@ -86,7 +86,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   private saveSelected() {
-    const arr :ClassificationLevelDTO[] = [];
+    const arr :SelectedClassificationLevelDTO[] = [];
     this.selectedOptions.forEach(item => {
       const value = this.classifications.filter(( data )=>{
         return item == data.sys_id
@@ -100,9 +100,9 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public selectedOptionsChange(newVal: string[]): void {
     this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false"
   }
-  public savedData: ClassificationLevelDTO[] = []
+  public savedData: SelectedClassificationLevelDTO[] = []
 
-  public get currentData(): ClassificationLevelDTO[] {
+  public get currentData(): SelectedClassificationLevelDTO[] {
     return this.saveSelected()
   }
 

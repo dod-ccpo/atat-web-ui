@@ -32,7 +32,7 @@ const ATAT_CLASSIFICATION_LEVELS_KEY = "ATAT_CLASSIFICATION_LEVELS_KEY";
 })
 export class ClassificationRequirementsStore extends VuexModule {
   public initialized = false;
-  public classificationLevels: ClassificationLevelDTO[] = [];
+  public classificationLevels: SelectedClassificationLevelDTO[] = [];
   public selectedClassificationLevels: SelectedClassificationLevelDTO[] = [];
   public currentEnvClassificationLevels: ClassificationLevelDTO[] = [];
   public environmentInstances: EnvironmentInstanceDTO[] = [];
@@ -50,7 +50,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   ];
 
   @Mutation
-  public setClassifications(value: ClassificationLevelDTO[]): void {
+  public setClassifications(value: SelectedClassificationLevelDTO[]): void {
     this.classificationLevels = value;
   }
 
@@ -97,12 +97,12 @@ export class ClassificationRequirementsStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public async getSelectedClassificationLevels(): Promise<ClassificationLevelDTO[]> {
+  public async getSelectedClassificationLevels(): Promise<SelectedClassificationLevelDTO[]> {
     return this.selectedClassificationLevels;
   }
 
   @Action({ rawError: true })
-  public async getAllClassificationLevels(): Promise<ClassificationLevelDTO[]> {
+  public async getAllClassificationLevels(): Promise<SelectedClassificationLevelDTO[]> {
     await this.ensureInitialized();
     return this.classificationLevels;
   }
