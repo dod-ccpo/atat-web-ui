@@ -108,7 +108,7 @@ export default class Callout extends Vue {
     } else if (this.method === "BVTO") {
       return `Award will be made to the Contractor providing the best value and meets the 
         following compliance standards:`;
-    } else if (this.sourceSelection === "SetLumpSum") {  
+    } else if (this.sourceSelection === "Set_Lump_Sum") {  
       const methodStr = this.method === "LowestRisk" ? "lowest risk" : "best use";
       return `Award will be made to the Contractor whose white paper offers the “${ methodStr }” 
         solution and meets the following assessment areas:`;
