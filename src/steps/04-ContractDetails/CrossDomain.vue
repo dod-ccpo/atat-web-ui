@@ -16,7 +16,9 @@
             </p>
            <AnticipatedDurationandUsage
             type="requirement"
-            :dataObject.sync="domainInfo.classificationInstance"
+            :anticipatedNeedUsage.sync="domainInfo.classificationInstance.anticipatedNeedUsage"
+            :entireDuration.sync="domainInfo.classificationInstance.entireDuration"
+            :selectedPeriods.sync="domainInfo.classificationInstance.selectedPeriods"
             :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
             :isPeriodsDataMissing="isPeriodsDataMissing"
             index="0"
@@ -60,10 +62,7 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
       classificationLevelSysId: "",
       anticipatedNeedUsage: "",
       entireDuration: "",
-      selectedPeriods: [{
-        label: "",
-        sysId: "",
-      }],
+      selectedPeriods: [],
       labelLong: "",
       labelShort: "",
     }
