@@ -128,14 +128,13 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public selectedOptionsChange(newVal: string[]): void {
     this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false"
   }
-  public savedData: ClassificationLevelDTO[] = []
 
   public get currentData(): SelectedClassificationLevelDTO[] {
     return this.buildCurrentSelectedClassLevelList()
   }
 
   private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
+    return hasChanges(this.currentData, this.savedSelectedClassLevelList);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
