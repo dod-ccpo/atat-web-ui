@@ -41,7 +41,7 @@ describe("Classification Requirements Store", ()=> {
     expect(ClassificationStore.classificationLevels).toBe(Classifications)
   })
 
-  test('Test setSelectedClassificationLevels sets the selectedClassificationLevels ', () => {
+  test('Test setSelectedClassificationLevels sets the selectedClassificationLevel ', () => {
     ClassificationStore.setSelectedClassificationLevels(Classifications)
     expect(ClassificationStore.selectedClassificationLevels).toBe(Classifications)
   })

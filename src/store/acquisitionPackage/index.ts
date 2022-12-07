@@ -43,6 +43,7 @@ import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
+import ClassificationRequirements from "@/store/classificationRequirements";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -724,6 +725,11 @@ export class AcquisitionPackageStore extends VuexModule {
         primary_contact: primaryContactSysId,
         funding_requirement: fundingRequirementSysId
       });
+
+      await ClassificationRequirements.getAllClassificationLevels();
+      // load selected call will take care of loading or setting an empty array
+      await ClassificationRequirements
+        .loadSelectedClassificationLevelsByAqId(this.acquisitionPackage?.sys_id as string);
       
       if(projectOverviewSysId) {
         const projectOverview = await api.projectOverviewTable.retrieve(
