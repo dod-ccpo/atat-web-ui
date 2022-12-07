@@ -116,7 +116,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        classificationRequirements.setSelectedClassificationLevels(this.currentData)
+        await classificationRequirements.setSelectedClassificationLevels(this.currentData)
       }
     } catch (error) {
       console.log(error);

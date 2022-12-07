@@ -69,7 +69,7 @@ import Vue from "vue";
 import { Component, Mixins } from "vue-property-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO, PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
-import { buildClassificationLabel } from "@/helpers";
+import { buildClassificationLabel, hasChanges } from "@/helpers";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import Periods from "@/store/periods";
@@ -77,6 +77,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { StorageUnit } from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import classificationRequirements from "@/store/classificationRequirements";
 
 @Component({
   components: {
@@ -109,8 +110,6 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
         }
       })
     })
-    console.log(this.selectedClassifications)
-    console.log(this.anticipatedNeedsData)
     this.selectedClassifications.forEach((classification)=>{
       let data: SelectedClassificationLevelDTO = {
         classification_level: classification.sys_id || "", // sys id
@@ -131,9 +130,28 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
     })
     console.log("periods",this.periods)
   }
+  public savedData: SelectedClassificationLevelDTO[] = []
+
+  public get currentData(): SelectedClassificationLevelDTO[] {
+    return this.anticipatedNeedsData
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
   protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
+
+    try {
+      if (this.hasChanged()) {
+        await classificationRequirements.setSelectedClassificationLevels(this.currentData)
+      }
+    } catch (error) {
+      console.log(error);
+    }
     return true;
-  };
+  }
 }
 </script>
 
