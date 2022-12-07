@@ -34,7 +34,6 @@
         :rules="_rules"
         :menu-props="{ bottom: true, offsetY: true }"
         :disabled="menuDisabled"
-        :validate-on-blur="validateOnBlur"
       >
         <template v-if="showSelectedValue" v-slot:selection="{ item }">
           {{ item.value }}
@@ -126,7 +125,6 @@ export default class ATATSelect extends Vue {
   @Prop({ default: "standard" }) public iconType?: string;
   @Prop({ default: false }) private menuDisabled?: boolean;
   @Prop({ default: false }) private showSelectedValue?: boolean;
-  @Prop({ default: true }) private validateOnBlur!: boolean;
 
   //data
   private rounded = false;
@@ -190,10 +188,6 @@ export default class ATATSelect extends Vue {
 
   //@Events
   private onBlur(value: string) : void {
-    if (this.validateOnBlur) {
-      this.addRequiredRule();
-      this.setErrorMessage();
-    }
     this.$emit('blur', value);
   }
 
