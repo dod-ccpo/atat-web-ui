@@ -333,16 +333,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: AcorInfo,
         routeResolver: AcorsRouteResolver,
       },
-      {
-        menuText: "Summary",
-        path: "summary",
-        name: routeNames.AcqPackageSummary,
-        excludeFromMenu: true,
-        completePercentageWeight: 5,
-        stepCompleteOnEnter: routeNames.ContactInformation,
-        component: Summary,
-        backButtonText: "Sample different Back text",
-      }
+      // {
+      //   menuText: "Summary",
+      //   path: "summary",
+      //   name: routeNames.AcqPackageSummary,
+      //   excludeFromMenu: true,
+      //   completePercentageWeight: 5,
+      //   stepCompleteOnEnter: routeNames.ContactInformation,
+      //   component: Summary,
+      //   backButtonText: "Sample different Back text",
+      // }
     ],
   },
   {
@@ -351,6 +351,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     path: "/exceptions",
     completePercentageWeight: 10,
     component: FairOpportunityProcess,
+    stepCompleteOnEnter: routeNames.ContactInformation,
     completed: false,
     children: [
       {
@@ -410,16 +411,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         routeResolver: BVTOResolver,
       },   
-      {
-        menuText: "Evaluation Plan Summary",
-        path: "eval-plan-summary",
-        name: routeNames.EvalPlanSummary,
-        component: EvalPlanSummary,
-        completePercentageWeight: 0,
-        completed: false,
-        stepCompleteOnEnter: routeNames.CreateEvalPlan,
-        excludeFromMenu: true,
-      },
+      // {
+      //   menuText: "Evaluation Plan Summary",
+      //   path: "eval-plan-summary",
+      //   name: routeNames.EvalPlanSummary,
+      //   component: EvalPlanSummary,
+      //   completePercentageWeight: 0,
+      //   completed: false,
+      //   stepCompleteOnEnter: routeNames.CreateEvalPlan,
+      //   excludeFromMenu: true,
+      // },
       // KEEP JustificationAndApproval for future ticket
       // {
       //   menuText: "Justification and Approval",
@@ -445,6 +446,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "period-of-performance",
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
+        stepCompleteOnEnter: routeNames.CreateEvalPlan,
       },
       {
         name: routeNames.POPStart,
@@ -504,6 +506,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     path: "/current-contract",
     completePercentageWeight: 10,
     component: Background,
+    stepCompleteOnEnter: routeNames.ClassificationRequirements,
     completed: false,
     children: [
       {
@@ -636,16 +639,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         routeResolver: ArchitecturalDesignDetailsRouteResolver
       },
-      {
-        menuText: "Summary",
-        path: "background-summary",
-        excludeFromMenu: true,
-        name: routeNames.BackgroundSummary,
-        stepCompleteOnEnter: routeNames.CurrentEnvironment,
-        component: BackgroundSummary,
-        completePercentageWeight: 5,
-        completed: false,
-      },
+      // {
+      //   menuText: "Summary",
+      //   path: "background-summary",
+      //   excludeFromMenu: true,
+      //   name: routeNames.BackgroundSummary,
+      //   stepCompleteOnEnter: routeNames.CurrentEnvironment,
+      //   component: BackgroundSummary,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      // },
     ]
   },
   {
