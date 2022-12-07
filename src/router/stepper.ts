@@ -333,16 +333,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: AcorInfo,
         routeResolver: AcorsRouteResolver,
       },
-      {
-        menuText: "Summary",
-        path: "summary",
-        name: routeNames.AcqPackageSummary,
-        excludeFromMenu: true,
-        completePercentageWeight: 5,
-        stepCompleteOnEnter: routeNames.ContactInformation,
-        component: Summary,
-        backButtonText: "Sample different Back text",
-      }
+      // {
+      //   menuText: "Summary",
+      //   path: "summary",
+      //   name: routeNames.AcqPackageSummary,
+      //   excludeFromMenu: true,
+      //   completePercentageWeight: 5,
+      //   stepCompleteOnEnter: routeNames.ContactInformation,
+      //   component: Summary,
+      //   backButtonText: "Sample different Back text",
+      // }
     ],
   },
   {

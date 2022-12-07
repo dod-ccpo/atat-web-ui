@@ -20,11 +20,11 @@ export const AcorsRouteResolver = (current: string): string => {
 
   //routing from alternate cor and the user does not have an ACOR
   if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
-    return routeNames.AcqPackageSummary;
+    return routeNames.Exceptions;
   }
 
   //routing from summary and user does not have ACOR
-  if (current === routeNames.AcqPackageSummary && hasAlternativeContactRep === false) {
+  if (current === routeNames.Exceptions && !hasAlternativeContactRep) {
     return routeNames.AlternateCor;
   }
 
