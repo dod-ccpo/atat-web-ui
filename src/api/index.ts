@@ -42,8 +42,8 @@ import {EvaluationPlanApi} from "@/api/evaluationPlan";
 import {CurrentEnvironmentInstanceAPI} from "@/api/currentEnvironmentInstance";
 import {EvalPlanAssessmentAreaApi} from "@/api/evalPlanAssessmentArea";
 import {EvalPlanDifferentiatorApi} from "@/api/evalPlanDifferentiator";
+import {SelectedClassificationLevelApi} from "@/api/selectedClassificationLevel";
 import { SysPropertiesApi } from "./sys_properties";
-
 
 export const api = {
 
@@ -92,6 +92,7 @@ export const api = {
   evaluationPlanTable: new EvaluationPlanApi(),
   evalPlanAssessmentAreaTable: new EvalPlanAssessmentAreaApi(),
   evalPlanDifferentiatorTable: new EvalPlanDifferentiatorApi(),
+  selectedClassificationLevelTable: new SelectedClassificationLevelApi(),
   sysProperties: new SysPropertiesApi()
 }
 
