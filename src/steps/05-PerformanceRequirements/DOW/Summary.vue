@@ -330,7 +330,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     if (DescriptionOfWork.summaryBackToContractDetails) {
-      Steps.setAltBackButtonText("Back to Contract Details");
+      Steps.setAltBackButtonText("Back to Background");
     } else {
       Steps.clearAltBackButtonText();
     }

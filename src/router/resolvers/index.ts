@@ -85,7 +85,7 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 
 export const BVTOResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
-  if (current === routeNames.EvalPlanSummary){
+  if (current === routeNames.PeriodOfPerformance){
     if (!evalPlanRequired()) {
       return routeNames.NoEvalPlan;
     }
@@ -99,7 +99,7 @@ export const BVTOResolver = (current: string): string => {
   }
 
   return current === routeNames.EvalPlanDetails
-    ? routeNames.EvalPlanSummary
+    ? routeNames.PeriodOfPerformance
     : routeNames.EvalPlanDetails;
 };
 
@@ -141,12 +141,18 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
   const hasCurrentEnv
       = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
 
+  if (current === routeNames.DOWSummary || 
+      current === routeNames.RequirementCategories){
+    return routeNames.ArchitecturalDesign 
+  }
+  
   if (needsArchitectureDesign && hasCurrentEnv) {
     return routeNames.ArchitecturalDesignDetails;
+  } else if(!needsArchitectureDesign) {
+    return routeNames.RequirementCategories;
   }
-  return current === routeNames.BackgroundSummary 
-    ? routeNames.ArchitecturalDesign 
-    : routeNames.BackgroundSummary;
+  
+  return routeNames.ArchitecturalDesign
 
 };
 
@@ -493,7 +499,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   Steps.setAdditionalButtonHide(false);
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
-    return "period-of-performance/period-of-performance";
+    return "current-contract/current-contract";
   }
 
   const groupId = DescriptionOfWork.currentGroupId;
