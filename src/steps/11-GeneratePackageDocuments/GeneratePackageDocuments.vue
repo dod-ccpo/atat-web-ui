@@ -4,12 +4,13 @@
     <v-container class="container-max-width">
       <v-row>
         <v-col cols="12">
-          <GeneratingDocuments v-if="isGenerating"/>
-          <ReviewDocuments 
-            v-if="docsAreReady"
-            :isErrored="isErrored"
-            @regenerate="generateDocuments()"
-          />
+          <div v-if="packageDocComponent">
+            <component 
+              :is="packageDocComponent" 
+              :isErrored="isErrored"
+              @regenerate="generateDocuments()"            
+            />
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -33,11 +34,11 @@ import ReviewDocuments from "./components/ReviewDocuments.vue";
 export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
 
   private isGenerating = true;
-  public docsAreReady = false;
   private isErrored = false;
   private docJobStatus = "" ;
-  private packageDocuments = [];
-  
+
+  public packageDocComponent = GeneratingDocuments;
+
   @Watch('isGenerating')
   public toggleNavigation(): void {
     let el = document.getElementById('stepperNavigation');
@@ -48,6 +49,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.saveDocGenStatus('IN_PROGRESS')
     this.isErrored = false;
     this.isGenerating = true;
+    this.packageDocComponent = GeneratingDocuments;
     this.getStatus();
   }
  
@@ -62,7 +64,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
           if (status === this.docJobStatus.toUpperCase()){
             clearInterval(intervalId);
             this.isGenerating = false;
-            this.docsAreReady = true;
+            this.packageDocComponent = ReviewDocuments;
             this.isErrored = status === "FAILED";
           }
         }
