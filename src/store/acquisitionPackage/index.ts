@@ -43,6 +43,7 @@ import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
+import { AxiosRequestConfig } from "axios";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -266,33 +267,6 @@ const getStoreDataTableProperty = (
   return dataProperty;
 };
 
-/* Below sys_ids are NOT secrets */
-export const jamrrTemplateUrls = {
-  disastorefront: {
-    documentSysIds: {
-      mrr: '4864795287979d10bc86b889cebb353f', //pragma: allowlist secret
-      ja: 'db44755687979d10bc86b889cebb354a' //pragma: allowlist secret
-    }
-  },
-  niprdev: {
-    documentSysIds: {
-      mrr: '',
-      ja: ''
-    }
-  },
-  niprtest: {
-    documentSysIds: {
-      mrr: '',
-      ja: ''
-    }
-  },
-  niprprod: {
-    documentSysIds: {
-      mrr: '',
-      ja: ''
-    }
-  }
-};
 
 @Module({
   name: "AcquisitionPackage",
@@ -400,24 +374,35 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action
   public async getJamrrTemplateUrl(type: string): Promise<string>{
     let url = '';
-    const hostname = window.location.hostname;
-    let attachment: AttachmentDTO;
+    let attachment: AttachmentDTO[] = [{
+      file_name: "",
+      table_sys_id: ""
+    }];
+    const name = (type === 'ja') 
+      ? "justificationAndApproval" 
+      : "marketResearchReport";
 
-    switch(hostname) {
-    default: {
-      if(type === 'ja'){
-        attachment = await api.attachments.retrieve(
-          jamrrTemplateUrls.disastorefront.documentSysIds.ja
-        );
-      } else {
-        attachment = await api.attachments.retrieve(
-          jamrrTemplateUrls.disastorefront.documentSysIds.mrr
-        );
-      } 
-    }};
+    const getSysProperties: AxiosRequestConfig = {
+      params: {
+        sysparm_fields: "sys_id",
+        sysparm_query: "name=x_g_dis_atat.dappsTemplates." + name
+      }
+    };
 
-    if(attachment)
-      url = attachment.download_link as string;
+    const sysProperties = await api.sysProperties.getQuery(getSysProperties);
+
+    const getAttachment: AxiosRequestConfig = {
+      params: {
+        sysparm_fields: "sys_id",
+        sysparm_query: "table_sys_id=" + sysProperties[0].sys_id 
+      }
+    };
+
+
+    attachment = await api.attachments.getQuery(getAttachment);
+    if(attachment){
+      url = attachment[0].download_link as string;
+    }
 
     return url;
   }
