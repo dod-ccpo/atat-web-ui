@@ -50,7 +50,7 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ContractConsiderationsDTO } from "@/api/models";
 import { Checkbox } from "../../../types/Global";
 import { hasChanges } from "@/helpers";
@@ -119,36 +119,29 @@ export default class PackagingPackingAndShipping extends Mixins(SaveOnLeave) {
     };
   }
   
-  private savedData = {
-    contractor_provided_transfer: "",
-    packaging_shipping_other: "",
-    packaging_shipping_other_explanation: "",
-    packaging_shipping_none_apply: "",
-  } as Record<string, string>;
+  private savedData: ContractConsiderationsDTO = {};
 
   public async loadOnEnter(): Promise<void> {
-    const storeData 
-      = await AcquisitionPackage.loadContractConsiderations() as Record<string, string>;
+    const storeData = await AcquisitionPackage.loadData<ContractConsiderationsDTO>({
+      storeProperty: StoreProperties.ContractConsiderations
+    });
     
     if (storeData) {
-      const keys: string[] = [
-        "contractor_provided_transfer",
-        "packaging_shipping_other",
-        "packaging_shipping_other_explanation",
-        "packaging_shipping_none_apply"
-      ];
-      keys.forEach((key: string) => {
-        if (Object.prototype.hasOwnProperty.call(storeData, key)) {
-          this.savedData[key] = storeData[key];
-        }
-      });
+      this.savedData = {
+        contractor_provided_transfer: storeData.contractor_provided_transfer,
+        packaging_shipping_other: storeData.packaging_shipping_other, 
+        packaging_shipping_other_explanation: storeData.packaging_shipping_other_explanation,
+        packaging_shipping_none_apply: storeData.packaging_shipping_none_apply
+
+      }
+
       this.savedData.contractor_provided_transfer === "true" 
         ? this.selectedOptions.push(this.contractorProvidedTransportValue) : null; 
       this.savedData.packaging_shipping_other === "true" 
         ? this.selectedOptions.push(this.otherValue) : null; 
       this.savedData.packaging_shipping_none_apply === "true" 
         ? this.selectedOptions.push(this.noneApplyValue) : null; 
-      this.otherValueEntered = this.savedData.packaging_shipping_other_explanation;
+      this.otherValueEntered = this.savedData.packaging_shipping_other_explanation as string;
     } else {
       AcquisitionPackage.setCurrentContract(this.currentData);
     }
@@ -166,7 +159,10 @@ export default class PackagingPackingAndShipping extends Mixins(SaveOnLeave) {
     }
     try {
       if (this.isChanged()) {
-        await AcquisitionPackage.saveContractConsiderations(this.currentData);
+        await AcquisitionPackage.saveData({
+          data: this.currentData,
+          storeProperty: StoreProperties.ContractConsiderations,
+        });
       }
     } catch (error) {
       console.log(error);

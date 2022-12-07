@@ -207,16 +207,14 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
    * documents of the acquisition.
    */
   async loadAttachments(): Promise<void>{
-    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
-    // console.log(this.currEnvDTO);
     if(!this.currEnvDTO.migration_documentation) {
       this.currEnvDTO.migration_documentation = [];
     }
+    const attachments = await Attachments.getAttachmentsBySysIds({
+      serviceKey: this.attachmentServiceName,
+      sysIds: this.currEnvDTO.migration_documentation
+    });
     const uploadedFiles = attachments
-      .filter((attachment: AttachmentDTO) => {
-        return (this.currEnvDTO.migration_documentation
-          ?.indexOf(attachment.sys_id as string) !== -1)
-      })
       .map((attachment: AttachmentDTO) => {
         const file = new File([], attachment.file_name, {
           lastModified: Date.parse(attachment.sys_created_on || "")

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
-import {CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO} from "@/api/models";
+import {CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO, ReferenceColumn} from "@/api/models";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import Vue from "vue";
 import {api} from "@/api";
@@ -196,7 +196,9 @@ export class CurrentEnvironmentStore extends VuexModule {
     value: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
     await this.doSaveCurrentEnvironmentInstance(value);
-    await this.saveCurrentEnvironment();
+    setTimeout(async () => {
+      await this.saveCurrentEnvironment();
+    }, 0)
   }
 
   /**
@@ -247,7 +249,7 @@ export class CurrentEnvironmentStore extends VuexModule {
    * for now in the essence of time for release.
    */
   @Mutation
-  private mapCurrentEnvironmentFromResponse(currentEnvResponse: CurrentEnvironmentDTO) {
+  private mapCurrentEnvironmentFromResponse(currentEnvResponse: any) {
     currentEnvResponse.env_instances = (currentEnvResponse.env_instances as unknown as string)
       .split(",").filter(nonEmptyVal => nonEmptyVal);
     currentEnvResponse.system_documentation =
@@ -295,7 +297,7 @@ export class CurrentEnvironmentStore extends VuexModule {
    * call to create the default record in the BE
    */
   @Action({rawError: true})
-  public async initialCurrentEnvironment():
+  public async initializeCurrentEnvironment():
     Promise<CurrentEnvironmentDTO> {
     try {
       if (!this.initialized) {
@@ -318,10 +320,9 @@ export class CurrentEnvironmentStore extends VuexModule {
   @Action({rawError: true})
   public async loadCurrentEnvFromId(sysId: string): Promise<void> {
     const currentEnvironment = await api.currentEnvironmentTable.retrieve(sysId);
-
     if(currentEnvironment){
+      this.mapCurrentEnvironmentFromResponse(currentEnvironment);
       await this.setCurrentEnvironment(currentEnvironment);
-
       if(currentEnvironment.env_instances.length > 0){
         const queryString = "sys_id=" + currentEnvironment.env_instances.join("^ORsys_id=");
 
@@ -335,13 +336,26 @@ export class CurrentEnvironmentStore extends VuexModule {
         const currentEnvInstances: CurrentEnvironmentInstanceDTO[] 
           = await api.currentEnvironmentInstanceTable.getQuery(config);
 
-        if(currentEnvInstances.length)
+        if(currentEnvInstances.length) {
+          // need to convert fields from a ReferenceColumn to its .value as string
+          currentEnvInstances.forEach((instance: any) => {
+            const keys = Object.keys(instance);
+            keys.forEach(key => {
+              instance[key] = typeof instance[key] === "object"
+                ? (instance[key] as ReferenceColumn).value as string
+                : instance[key] as string;
+            });
+            if (instance.deployed_regions) {
+              instance.deployed_regions = (instance.deployed_regions.slice(1, -1)).split(",")
+            }
+          });
           this.setCurrentEnvironmentInstances(currentEnvInstances);
+        }
       }
 
     } else {
       await this.setCurrentEnvironment(
-        await this.initialCurrentEnvironment()
+        await this.initializeCurrentEnvironment()
       );
     }
       

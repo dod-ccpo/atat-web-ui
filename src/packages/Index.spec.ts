@@ -74,11 +74,9 @@ describe("Testing Packages Component", () => {
     })
 
     it("test updateStatus()",()=>{
-      const spy = jest.spyOn(AcquisitionPackageSummary,"updateAcquisitionPackageStatus")
+      const spy = jest.spyOn(AcquisitionPackageSummary,"searchAcquisitionPackageSummaryList")
         .mockImplementation()
-      wrapper.vm.updateStatus("testsysID","DELETED")
-      wrapper.vm.updateStatus("testsysID","ARCHIVED")
-      wrapper.vm.updateStatus("testsysID","DRAFT")
+      wrapper.vm.updateStatus()
       expect(spy).toBeCalled();
     })
 
