@@ -1,28 +1,14 @@
-import {
-  Action,
-  getModule,
-  Module,
-  Mutation,
-  VuexModule,
-} from "vuex-module-decorators";
+/* eslint-disable camelcase */
+import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
 import {
-  nameofProperty,
-  storeDataToSession,
-  retrieveSession,
-} from "../helpers";
-import Vue from "vue";
-
-import {
   ClassificationLevelDTO,
-  EnvironmentInstanceDTO,
   ReferenceColumn,
   SelectedClassificationLevelDTO
 } from "@/api/models";
-import { Checkbox, RadioButton, SecurityRequirement } from "../../../types/Global";
-
-const ATAT_CLASSIFICATION_LEVELS_KEY = "ATAT_CLASSIFICATION_LEVELS_KEY";
+import {SecurityRequirement} from "../../../types/Global";
+import {AxiosRequestConfig} from "axios";
 
 @Module({
   name: "ClassificationRequirements",
@@ -31,26 +17,12 @@ const ATAT_CLASSIFICATION_LEVELS_KEY = "ATAT_CLASSIFICATION_LEVELS_KEY";
   store: rootStore,
 })
 export class ClassificationRequirementsStore extends VuexModule {
-  public initialized = false;
-  public classificationLevels: SelectedClassificationLevelDTO[] = [];
+  public classificationLevels: ClassificationLevelDTO[] = [];
   public selectedClassificationLevels: SelectedClassificationLevelDTO[] = [];
-  public currentEnvClassificationLevels: ClassificationLevelDTO[] = [];
-  public environmentInstances: EnvironmentInstanceDTO[] = [];
   public securityRequirements: SecurityRequirement[] = [];
 
-
-  // store session properties
-  protected sessionProperties: string[] = [
-    nameofProperty(this, (x) => x.classificationLevels),
-    nameofProperty(this, (x)=> x.selectedClassificationLevels),
-    nameofProperty(this, (x)=> x.currentEnvClassificationLevels),
-    nameofProperty(this, (x)=> x.environmentInstances),
-    nameofProperty(this, (x)=> x.securityRequirements),
-
-  ];
-
   @Mutation
-  public setClassifications(value: SelectedClassificationLevelDTO[]): void {
+  public setClassifications(value: ClassificationLevelDTO[]): void {
     this.classificationLevels = value;
   }
 
@@ -66,87 +38,22 @@ export class ClassificationRequirementsStore extends VuexModule {
     value: SelectedClassificationLevelDTO[]
   ): Promise<void> {
     this.selectedClassificationLevels = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_CLASSIFICATION_LEVELS_KEY
-    );
   }
 
   @Mutation
   public async setSecurityRequirements(value: SecurityRequirement[]): Promise<void> {
     this.securityRequirements = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_CLASSIFICATION_LEVELS_KEY
-    );
-
   }
 
-  @Mutation
-  public setStoreData(sessionData: string): void {
-    try {
-      const sessionDataObject = JSON.parse(sessionData);
-      Object.keys(sessionDataObject).forEach((property) => {
-        Vue.set(this, property, sessionDataObject[property]);
-      });
-    } catch (error) {
-      throw new Error("error restoring session for contact data store");
+  @Action({rawError: true})
+  public async getAllClassificationLevels(): Promise<ClassificationLevelDTO[]> {
+    if (this.classificationLevels.length === 0) {
+      await this.loadClassificationLevels();
     }
-  }
-
-  @Action({ rawError: true })
-  public async getSelectedClassificationLevels(): Promise<SelectedClassificationLevelDTO[]> {
-    return this.selectedClassificationLevels;
-  }
-
-  @Action({ rawError: true })
-  public async getAllClassificationLevels(): Promise<SelectedClassificationLevelDTO[]> {
-    await this.ensureInitialized();
     return this.classificationLevels;
   }
 
-  @Action({ rawError: true })
-  async ensureInitialized(): Promise<void> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-  }
-
-  @Action({ rawError: true })
-  public async initialize(): Promise<void> {
-    if (this.initialized) {
-      return;
-    } 
-
-    const sessionRestored = retrieveSession(ATAT_CLASSIFICATION_LEVELS_KEY);
-    if (sessionRestored) {
-      this.setStoreData(sessionRestored);
-      this.setInitialized(true);
-    } else {
-      try {
-        await Promise.all([
-          this.loadClassificationLevels(),
-        ]);
-        storeDataToSession(
-          this,
-          this.sessionProperties,
-          ATAT_CLASSIFICATION_LEVELS_KEY
-        );
-        this.setInitialized(true);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-
-  @Mutation
-  public setInitialized(value: boolean): void {
-    this.initialized = value;
-  }
-
-  @Action({ rawError: true })
+  @Action({rawError: true})
   public async loadClassificationLevels(): Promise<void> {
     try {
       const classificationLevels = await api.classificationLevelTable.all();
@@ -155,6 +62,111 @@ export class ClassificationRequirementsStore extends VuexModule {
       throw new Error(`error loading Classification Levels ${error}`);
     }
   }
+
+  @Action({rawError: true})
+  public async getSelectedClassificationLevels(): Promise<SelectedClassificationLevelDTO[]> {
+    return this.selectedClassificationLevels;
+  }
+
+  /**
+   * Loads the selected classification levels by acquisition id and then does some mapping
+   * for backward compatibility.
+   * @param acquisitionSysId - sys_id of the acquisition package table record
+   */
+  @Action({rawError: true})
+  public async loadSelectedClassificationLevelsByAqId(acquisitionSysId: string): Promise<void> {
+    const selectedClassLevelsRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + acquisitionSysId
+      }
+    };
+    let selectedClassLevelList = await api.selectedClassificationLevelTable
+      .getQuery(selectedClassLevelsRequestConfig);
+    if (selectedClassLevelList.length > 0) {
+      selectedClassLevelList = selectedClassLevelList
+        .map(selectedClassLevel => {
+          const classLevelForMapping = this.classificationLevels
+            .find(classLevel => classLevel.sys_id === selectedClassLevel.classification_level.value)
+          if (classLevelForMapping) {
+            selectedClassLevel.impact_level = classLevelForMapping.impact_level;
+            selectedClassLevel.classification = classLevelForMapping.classification;
+          }
+          return selectedClassLevel;
+        })
+    }
+    await this.setSelectedClassificationLevels(selectedClassLevelList);
+  }
+
+  /**
+   * Compares the currently selected classification list from this store, with the new list
+   * passed into this function. Then marks classifications for either create or
+   * delete. No need to update since the selected classification level is already tied to the
+   * acquisition. Then performs the API calls to complete the save.
+   */
+  @Action({rawError: true})
+  async saveAllSelectedClassificationLevels(
+    newSelectedClassLevelList: SelectedClassificationLevelDTO[])
+    : Promise<boolean> {
+    try {
+      const markedForCreateList = newSelectedClassLevelList
+        .filter(newSelected => newSelected.sys_id ? newSelected.sys_id.length === 0 : true);
+      const currSelectedClasLevelList = await this.getSelectedClassificationLevels();
+      const markedForDeleteList = currSelectedClasLevelList
+        .filter(currSelected => (newSelectedClassLevelList.find(newSelected =>
+          newSelected.sys_id === currSelected.sys_id)) === undefined);
+      const apiCallList: Promise<SelectedClassificationLevelDTO | void>[] = [];
+      markedForCreateList.forEach(markedForCreate => {
+        apiCallList.push(api.selectedClassificationLevelTable
+          .create(markedForCreate));
+      })
+      markedForDeleteList.forEach(markedForDelete => {
+        apiCallList.push(api.selectedClassificationLevelTable
+          .remove(markedForDelete.sys_id as string));
+      })
+      await Promise.all(apiCallList);
+      return true;
+    } catch (error) {
+      throw new Error(`an error occurred saving selected classification levels ${error}`);
+    }
+  }
+
+  /**
+   * Saves a single selected classification level and sets the context
+   * @param selectedClassificationLevel - object from this store (not cloned) that is retrieved
+   * and filtered using the call to "getSelectedClassificationLevels".
+   */
+  @Action({rawError: true})
+  async saveSingleSelectedClassificationLevel(
+    selectedClassificationLevel: SelectedClassificationLevelDTO)
+    : Promise<boolean> {
+    try {
+      selectedClassificationLevel = {
+        ...selectedClassificationLevel,
+        classification_level:
+          selectedClassificationLevel.classification_level.value as unknown as ReferenceColumn,
+        acquisition_package:
+          selectedClassificationLevel.acquisition_package.value as unknown as ReferenceColumn}
+      const updateSelectedClassificationLevel = await api.selectedClassificationLevelTable
+        .update(selectedClassificationLevel.sys_id as string, selectedClassificationLevel);
+      selectedClassificationLevel.sys_updated_by = updateSelectedClassificationLevel.sys_updated_by;
+      selectedClassificationLevel.sys_updated_on = updateSelectedClassificationLevel.sys_updated_on;
+      return true;
+    } catch (error) {
+      throw new Error(`an error occurred saving a single selected classification level ${error}`);
+    }
+  }
+
+  @Action({ rawError: true })
+  public async reset(): Promise<void> {
+    this.doReset();
+  }
+
+  @Mutation
+  public doReset(): void {
+    this.selectedClassificationLevels = [];
+    this.securityRequirements = [];
+  }
+
 }
 
 const ClassificationRequirements = getModule(ClassificationRequirementsStore);

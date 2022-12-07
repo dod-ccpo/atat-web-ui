@@ -12,7 +12,7 @@
         </p>
         <v-expansion-panels
           v-model="accordionClosed"
-          v-for="(classification, index) in selectedClassifications"
+          v-for="(classification, index) in anticipatedNeedsData"
           :id="'AnticipatedUserAndDataNeedsAccordion' + index"
           :key="index"
           class="mb-4"
@@ -66,7 +66,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO, PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel, hasChanges } from "@/helpers";
@@ -86,10 +86,9 @@ import classificationRequirements from "@/store/classificationRequirements";
   },
 })
 export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
-  public selectedClassifications: ClassificationLevelDTO[] = []
   private periods: PeriodDTO[] | null = [];
   public accordionClosed = 0;
-  public anticipatedNeedsData: SelectedClassificationLevelDTO[] = []
+  public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];
 
   private async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -97,38 +96,10 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   public buildClassificationLabel = buildClassificationLabel
   public regionUserDataUpdate(data: string,index:number): void {
     this.anticipatedNeedsData[index].users_per_region = data;
-    console.log(this.anticipatedNeedsData)
   }
   private async loadOnEnter(): Promise<void> {
     this.periods = Periods.periods;
-    const classificationLevels = ClassificationRequirements.selectedClassificationLevels
-    const allClassificationLevels = await ClassificationRequirements.getAllClassificationLevels()
-    classificationLevels.forEach((classification) =>{
-      allClassificationLevels.forEach((storedClassification) => {
-        if(classification.sys_id === storedClassification.sys_id){
-          this.selectedClassifications.push(storedClassification)
-        }
-      })
-    })
-    this.selectedClassifications.forEach((classification)=>{
-      let data: SelectedClassificationLevelDTO = {
-        classification_level: classification.sys_id || "", // sys id
-        acquisition_package: AcquisitionPackage.getAcquisitionPackageSysId(),
-        impact_level : classification.impact_level,
-        classification : classification.classification,
-        users_per_region : "",// json stringified sys_id/count pairs
-        increase_in_users : "",
-        user_growth_estimate_type : "",
-        user_growth_estimate_percentage : [],
-        data_egress_monthly_amount : null,
-        data_egress_monthly_unit : "GB",
-        data_increase : "",
-        data_growth_estimate_type : "",
-        data_growth_estimate_percentage : []
-      }
-      this.anticipatedNeedsData.push(data)
-    })
-    console.log("data",this.anticipatedNeedsData)
+    this.anticipatedNeedsData = await ClassificationRequirements.getSelectedClassificationLevels()
   }
   public savedData: SelectedClassificationLevelDTO[] = []
 

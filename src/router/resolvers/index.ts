@@ -282,7 +282,6 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 export const AnticipatedUserAndDataNeedsResolver = (current:string) => {
   const xaasServices = DescriptionOfWork.hasXaasService;
   const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
-  debugger
   if(current === routeNames.RequirementCategories && xaasServices && !hasBeenVisited){
     return routeNames.AnticipatedUserAndDataNeeds
   }

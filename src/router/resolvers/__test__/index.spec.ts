@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
   OtherOfferingSummaryPathResolver,
   OfferingDetailsPathResolver,
@@ -86,7 +87,9 @@ describe("testing src/router/index.ts", () => {
       ClassificationRequirements.setSelectedClassificationLevels([{
         // eslint-disable-next-line camelcase
         impact_level: 'IL2',
-        classification: "U"}])
+        classification: "U",
+        classification_level: {value: "v1", link: ""},
+        acquisition_package: {value: "a1", link: ""}}])
       DescriptionOfWork.setCurrentOffering({name:'test',sysId:'testID'})
       const result = OfferingDetailsPathResolver("Service", "next")
       expect(result).toBe('performance-requirements/service-offering-details/compute/test')

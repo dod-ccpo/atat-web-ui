@@ -76,12 +76,16 @@ describe("Testing OtherOfferingSummary Component", () => {
       {
         impact_level: "level1",
         classification: "level1",
-        sys_id:"level1"
+        sys_id:"level1",
+        classification_level: {value: "v1", link: ""},
+        acquisition_package: {value: "a1", link: ""}
       },
       {
         impact_level: "level2",
         classification: "level2",
-        sys_id:"level2"
+        sys_id:"level2",
+        classification_level: {value: "v2", link: ""},
+        acquisition_package: {value: "a1", link: ""}
       }
     ])
     jest.spyOn(Periods,'getAllPeriods').mockImplementation(
