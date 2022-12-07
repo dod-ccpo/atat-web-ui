@@ -140,19 +140,21 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
       = CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
   const hasCurrentEnv
       = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
-
+  const hasCurrentContract 
+      = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+ 
   if (current === routeNames.DOWSummary || 
       current === routeNames.RequirementCategories){
-    return routeNames.ArchitecturalDesign 
+    if (!hasCurrentContract){  // if no current contract
+      return routeNames.CurrentContract;
+    
+    } else if (hasCurrentContract && !hasCurrentEnv){ // if current contract & NO current env
+      return routeNames.CurrentEnvironment;
+    } 
   }
-  
-  if (needsArchitectureDesign && hasCurrentEnv) {
-    return routeNames.ArchitecturalDesignDetails;
-  } else if(!needsArchitectureDesign) {
-    return routeNames.RequirementCategories;
-  }
-  
-  return routeNames.ArchitecturalDesign
+  return needsArchitectureDesign
+    ? routeNames.ArchitecturalDesignDetails 
+    : routeNames.ArchitecturalDesign 
 
 };
 
@@ -163,7 +165,7 @@ export const CurrentEnvRouteResolver = (current: string): string => {
     return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment
-    ? routeNames.BackgroundSummary
+    ? routeNames.DOWSummary
     : routeNames.CurrentEnvironment;
 };
 
