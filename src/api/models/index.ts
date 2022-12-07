@@ -215,6 +215,10 @@ export interface SystemChoiceDTO extends BaseTableDTO {
   hint?: string;
 }
 
+export interface SystemPropertiesDTO extends BaseTableDTO {
+  sys_id?: string
+}
+
 export interface SensitiveInformationDTO extends BaseTableDTO {
   pii_present?: string;
   system_of_record_name?: string;
