@@ -295,16 +295,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       }
       this.isIL6Selected = selectedClassLevel.impact_level === this.IL6SysId;
     });
-    /*let selectedListForCheckboxes = _.cloneDeep(this.selectedClassificationLevelList);
-    selectedListForCheckboxes = selectedListForCheckboxes
-      .map(selected => {
-        selected.sys_id = selected.classification_level.value
-        return selected;
-      })
-    // since createCheckboxItems is used by classification and selected classification levels
-    // the above cloneDeep and manipulation is needed to get the sys_id in the correct spot
-    this.headerCheckboxItems 
-      = this.createCheckboxItems(selectedListForCheckboxes, "");*/
     this.headerCheckboxItems
         = this.createCheckboxItems(this.selectedClassificationLevelList, "");
   }

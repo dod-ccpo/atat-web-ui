@@ -176,6 +176,13 @@ export default class OtherOfferings extends Vue {
 
   public async classificationLevelsChanged(): Promise<void> {
     this.showDialog = false;
+    const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
+        this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
+    await classificationRequirements.saveAllSelectedClassificationLevels(currentData)
+    await classificationRequirements.loadSelectedClassificationLevelsByAqId(
+        this.acquisitionPackage?.sys_id as string);
+    await this.setAvailableClassificationLevels()
+    this.setAvlClassificationLevels();
     if (this.selectedClassificationLevelList.length === 1) {
       this.checkSingleClassification();
     } else if (this._serviceOfferingData.classificationLevel) {
@@ -186,12 +193,6 @@ export default class OtherOfferings extends Vue {
         this._serviceOfferingData.classificationLevel = "";
       }
     }
-    const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
-        this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
-    await classificationRequirements.saveAllSelectedClassificationLevels(currentData)
-    await classificationRequirements.loadSelectedClassificationLevelsByAqId(
-        this.acquisitionPackage?.sys_id as string);
-    this.setAvlClassificationLevels();
     Toast.setToast(this.classificationLevelToast);
   }
 
