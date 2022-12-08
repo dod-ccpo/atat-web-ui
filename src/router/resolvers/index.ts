@@ -47,7 +47,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 
 export const CreateEvalPlanRouteResolver = (current: string): string => {
   if (current === routeNames.NoEvalPlan) {
-    return routeNames.EvalPlanSummary;
+    return routeNames.PeriodOfPerformance;
   }
   if(current === routeNames.EvalPlanDetails){
     return routeNames.CreateEvalPlan
@@ -66,7 +66,7 @@ export const UploadJAMRRDocumentsRouteResolver = (current: string): string => {
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (missingEvalPlanMethod(evalPlan)) {
-    return routeNames.EvalPlanSummary;
+    return routeNames.PeriodOfPerformance;
   }
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
