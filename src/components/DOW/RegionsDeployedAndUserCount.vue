@@ -128,7 +128,12 @@ export default class RegionsDeployedAndUserCount extends Vue {
 
   @Watch("regionUsersOnLoad")
   public regionUsersOnLoadChange(newVal: string): void {
-    const regionUsersArray = JSON.parse(newVal);
+    this.updateRegionUsers(newVal)
+  }
+
+  public updateRegionUsers(value:string): void {
+    debugger
+    const regionUsersArray = JSON.parse(value);
     const selectedRegions: string[] = [];
     regionUsersArray.forEach((regionUsers: Record<string, string>) => {
       const region = Object.keys(regionUsers)[0];
@@ -141,10 +146,12 @@ export default class RegionsDeployedAndUserCount extends Vue {
     this.$nextTick(() => {
       this.selectedRegions = selectedRegions;
     })
-
   }
 
   public async mounted(): Promise<void> {
+    if(this.regionUsersOnLoad){
+      this.updateRegionUsers(this.regionUsersOnLoad)
+    }
     if (this.selectedDeployedRegionsOnLoad) {
       this.selectedRegions = this.selectedDeployedRegionsOnLoad;
     }

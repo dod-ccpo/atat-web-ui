@@ -8,7 +8,7 @@
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              {{introSentence}} 
+              {{introText}}
               Specify any categories that may apply to your acquisition below, and
               we’ll walk through each selection to get more details.
               <a

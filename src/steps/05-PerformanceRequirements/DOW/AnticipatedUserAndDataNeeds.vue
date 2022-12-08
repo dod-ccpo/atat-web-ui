@@ -35,6 +35,7 @@
                 :hasTextFields="true"
                 class="mb-12 mt-5"
                 :componentIndex="index"
+                :regionUsersOnLoad="anticipatedNeedsData[index].users_per_region"
                 @regionUserDataUpdate="regionUserDataUpdate"
               />
               <AnticipatedDataNeeds
