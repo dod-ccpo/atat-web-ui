@@ -140,7 +140,6 @@ export class PortfolioSummaryStore extends VuexModule {
       }
     };
     const portfolioList = await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
-    debugger;
     return portfolioList.length;
   }
 

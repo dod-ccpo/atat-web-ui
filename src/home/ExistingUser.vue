@@ -209,7 +209,6 @@ export default class ExistingUser extends Vue {
     
     this.packageData = packageData.acquisitionPackageSummaryList;
     this.packageCount = packageData.total_count;
-    debugger;
     const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
     this.draftPackageCount = draftPackages?.length || 0;
     if (this.packageCount === 0) {

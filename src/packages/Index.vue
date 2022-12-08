@@ -40,7 +40,7 @@
       </v-app-bar>
       <v-container
         class="container-max-width"
-        style="margin-bottom: 200px; margin-top:30px;"
+        style="margin-bottom: 200px;"
         id="PackageTable"
       >
         <Search
@@ -94,7 +94,7 @@
 import Vue from "vue";
 
 import { Component, Watch } from "vue-property-decorator";
-import { getIdText, scrollToId } from "@/helpers";
+import { getIdText, scrollToId, scrollToMainTop } from "@/helpers";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
@@ -171,7 +171,6 @@ export default class Packages extends Vue {
 
  @Watch("page")
   public paged(): void {
-    debugger;
     if (!this.isSearchSortFilter) {
       this.paging = true;
       this.loadPackageData();
@@ -194,7 +193,6 @@ export default class Packages extends Vue {
   }
 
   public async loadPackageData(): Promise<void> {
-    debugger;
     this.isLoading = true;
 
     this.page = !this.paging ? 1 : this.page;
@@ -203,13 +201,13 @@ export default class Packages extends Vue {
 
     const packageResults = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO)
-    debugger;
     this.packageData = packageResults?.acquisitionPackageSummaryList || [];
     this.packageCount = packageResults.total_count;
 
     this.numberOfPages = Math.ceil(this.packageCount / this.recordsPerPage);
 
-    scrollToId("PackageTable");
+    scrollToMainTop();
+
     this.paging = false;
     this.isSearchSortFilter = false;
     this.isLoading = false;

@@ -133,7 +133,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     };
     const acquisitionPackageList = await api.acquisitionPackagesSummaryTable
       .getQuery(acquisitionPackageSummaryListRequestConfig);
-    debugger
     return acquisitionPackageList.length;
   }
 
