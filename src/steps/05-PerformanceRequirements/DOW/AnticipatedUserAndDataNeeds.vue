@@ -66,7 +66,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
+
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO, PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
@@ -75,8 +75,6 @@ import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUser
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import Periods from "@/store/periods";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import DescriptionOfWork from "@/store/descriptionOfWork";
-import { StorageUnit } from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import classificationRequirements from "@/store/classificationRequirements";
 
@@ -90,6 +88,8 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   private periods: PeriodDTO[] | null = [];
   public accordionClosed = 0;
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];
+  public savedData: SelectedClassificationLevelDTO[] = []
+
 
   private async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -101,22 +101,29 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   private async loadOnEnter(): Promise<void> {
     this.periods = Periods.periods;
     this.anticipatedNeedsData = await ClassificationRequirements.getSelectedClassificationLevels()
+    this.savedData = await ClassificationRequirements.getSelectedClassificationLevels()
   }
-  public savedData: SelectedClassificationLevelDTO[] = []
 
   public get currentData(): SelectedClassificationLevelDTO[] {
     return this.anticipatedNeedsData
   }
 
   private hasChanged(): boolean {
+    console.log(this.currentData)
     return hasChanges(this.currentData, this.savedData);
+  }
+
+  private async updateSnowSelected(value:SelectedClassificationLevelDTO): Promise<void> {
+    await ClassificationRequirements.saveSingleSelectedClassificationLevel(value)
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-        await classificationRequirements.setSelectedClassificationLevels(this.currentData)
+        this.currentData.forEach(classification => {
+          this.updateSnowSelected(classification)
+        })
       }
     } catch (error) {
       console.log(error);

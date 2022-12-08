@@ -114,6 +114,7 @@ export class ClassificationRequirementsStore extends VuexModule {
     newSelectedClassLevelList: SelectedClassificationLevelDTO[])
     : Promise<boolean> {
     try {
+      debugger
       const markedForCreateList = newSelectedClassLevelList
         .filter(newSelected => newSelected.sys_id ? newSelected.sys_id.length === 0 : true);
       const currSelectedClasLevelList = await this.getSelectedClassificationLevels();
@@ -152,16 +153,15 @@ export class ClassificationRequirementsStore extends VuexModule {
     selectedClassificationLevel: SelectedClassificationLevelDTO)
     : Promise<boolean> {
     try {
+      debugger
       selectedClassificationLevel = {
         ...selectedClassificationLevel,
         classification_level:
           selectedClassificationLevel.classification_level.value as unknown as ReferenceColumn,
         acquisition_package:
           selectedClassificationLevel.acquisition_package.value as unknown as ReferenceColumn}
-      const updateSelectedClassificationLevel = await api.selectedClassificationLevelTable
+      await api.selectedClassificationLevelTable
         .update(selectedClassificationLevel.sys_id as string, selectedClassificationLevel);
-      selectedClassificationLevel.sys_updated_by = updateSelectedClassificationLevel.sys_updated_by;
-      selectedClassificationLevel.sys_updated_on = updateSelectedClassificationLevel.sys_updated_on;
       return true;
     } catch (error) {
       throw new Error(`an error occurred saving a single selected classification level ${error}`);

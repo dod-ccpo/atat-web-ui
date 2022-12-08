@@ -101,7 +101,6 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
         .find(savedClassLevel =>
           savedClassLevel.classification_level.value === classificationLevelSysId);
       if (selectedClassificationLevel) {
-        debugger
         currentSelectedClassLevelList.push(selectedClassificationLevel);
       } else {
         const defaultSelectedClassificationLevel: SelectedClassificationLevelDTO = {
@@ -135,6 +134,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
+    console.log(this.currentData, this.savedSelectedClassLevelList)
     return hasChanges(this.currentData, this.savedSelectedClassLevelList);
   }
 
