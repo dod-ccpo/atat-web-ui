@@ -97,6 +97,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import RequirementsForm from './RequirementsForm.vue'
@@ -111,7 +112,11 @@ import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 
-import {AcquisitionPackageDTO, ClassificationLevelDTO, SelectedClassificationLevelDTO} from "@/api/models";
+import {
+  AcquisitionPackageDTO,
+  ClassificationLevelDTO,
+  SelectedClassificationLevelDTO
+} from "@/api/models";
 import { 
   buildClassificationCheckboxList, 
   buildClassificationLabel,
@@ -121,7 +126,9 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 
 import _ from "lodash";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import {buildCurrentSelectedClassLevelList} from "@/packages/helpers/ClassificationRequirementsHelper";
+import {
+  buildCurrentSelectedClassLevelList
+} from "@/packages/helpers/ClassificationRequirementsHelper";
 import classificationRequirements from "@/store/classificationRequirements";
 
 @Component({
@@ -246,7 +253,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     await classificationRequirements.saveAllSelectedClassificationLevels(currentData)
     await classificationRequirements.loadSelectedClassificationLevelsByAqId(
         this.acquisitionPackage?.sys_id as string);
-    // await ClassificationRequirements.setSelectedClassificationLevels(arr);
     await this.setAvailableClassificationLevels();
     await this.buildNewClassificationInstances();
     this.checkSingleClassification();
@@ -289,8 +295,18 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       }
       this.isIL6Selected = selectedClassLevel.impact_level === this.IL6SysId;
     });
+    /*let selectedListForCheckboxes = _.cloneDeep(this.selectedClassificationLevelList);
+    selectedListForCheckboxes = selectedListForCheckboxes
+      .map(selected => {
+        selected.sys_id = selected.classification_level.value
+        return selected;
+      })
+    // since createCheckboxItems is used by classification and selected classification levels
+    // the above cloneDeep and manipulation is needed to get the sys_id in the correct spot
     this.headerCheckboxItems 
-      = this.createCheckboxItems(this.selectedClassificationLevelList, "");
+      = this.createCheckboxItems(selectedListForCheckboxes, "");*/
+    this.headerCheckboxItems
+        = this.createCheckboxItems(this.selectedClassificationLevelList, "");
   }
 
   public checkSingleClassification(): void {
