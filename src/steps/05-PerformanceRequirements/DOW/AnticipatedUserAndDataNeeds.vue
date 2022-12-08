@@ -114,7 +114,6 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
-
     try {
       if (this.hasChanged()) {
         await classificationRequirements.setSelectedClassificationLevels(this.currentData)

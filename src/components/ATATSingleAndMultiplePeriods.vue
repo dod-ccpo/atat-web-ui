@@ -17,7 +17,7 @@
         width="190"
         class="mr-2"
         :alignRight="true"
-        :value.sync="_values[0]"
+        :value.sync="val[0]"
         :isCurrency="textboxSuffix === ''"
         :appendText="textboxSuffix !== '' ? textboxSuffix : null"
         :tooltipText="showSinglePeriodTooltip ? singlePeriodTooltipText : null"
@@ -58,7 +58,7 @@
             width="190"
             class="ml-5"
             :alignRight="true"
-            :value.sync="_values[idx]"
+            :value.sync="val[idx]"
             :isCurrency="textboxSuffix === ''"
             :appendText="textboxSuffix !== '' ? textboxSuffix : null"
             :showErrorMessages="true"
@@ -97,17 +97,35 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
   @Prop({default: "Default Multiple Textbox Tooltip"}) private multiplePeriodTooltipText?: string;
   @Prop() private periods!: PeriodDTO[];
 
-  @PropSync("values", {default: () => [""]}) private _values!: string[];
+  @PropSync("values", {default: () => []}) private _values!: string[];
 
   public sanitizeValue(idx: number, val: string): void {
     if (parseInt(val) === 0) {
       this._values[idx] = "";
     }
   }
+  public val:string[] = []
+
+  @Watch('val')
+  public valChanged():void {
+    this._values = this.val
+  }
+
+  @Watch("isMultiple")
+  public isMultipleChanged(newValue: boolean): void {
+    if (newValue) {
+      this._values.length = 1;
+    }
+  }
 
   public getOption(idx: number): string {
     return idx === 0 ? "Base" : "Option " + idx;
   }
-    
+
+  public mounted():void{
+    if(this._values){
+      this.val = this._values
+    }
+  }
 }
 </script>
