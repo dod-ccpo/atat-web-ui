@@ -21,7 +21,7 @@
                   which relates to the past, present, or future physical or mental 
                   health or condition of any individual. Per the Health Insurance 
                   Portability and Accountability Act of 1996 (HIPAA), a BAA is required 
-                  between the mission owner and the business associate to provide assurance 
+                  between the Mission Partner and the business associate to provide assurance 
                   that the business associate will appropriately safeguard PHI when 
                   it is transmitted or maintained in electronic (e-PHI) or any other form. 
                   <a role="button"
@@ -56,10 +56,11 @@
             >
               <template v-slot:content>
                 <p>
-                  As a mission owner, it is your responsibility to obtain 
+                  As a Mission Partner, it is your responsibility to obtain 
                   the appropriate agreements with your business associate(s). 
                   Business associates must also obtain BAAs from their subcontractors. 
-                  You do not need to provide these agreements in your acquisition package. 
+                  These agreements shall be maintained by your office and are not included 
+                  in your acquisition package. 
                 </p>
                 <p class="mb-0">
                   For sample BAA provisions, visit 
@@ -67,7 +68,7 @@
                     :href="baaHref" 
                     target="_blank" 
                   >
-                    {{baaHref}}<span 
+                    Health Information Privacy, Business Associate Contracts<span 
                     class="_external-link">.</span>
                   </a>
                 </p>
@@ -81,16 +82,17 @@
               <template v-slot:content>
                 <p>
                   Per HIPAA, a BAA is required when PHI is transmitted and maintained in electronic 
-                  (e-PHI) or any other form or medium and in combination with one or more of the 18 
+                  or any other form and in combination with one or more of the 18 
                   identifiers defined by HIPAA.
                 </p>
                 <p>
-                  DISA strives to protect the confidentiality, integrity, and availability of e-PHI 
-                  by permitting a business associate to create, receive, maintain, or transmit e-PHI
-                  on its behalf, only if there is written agreement between DISA and the business 
-                  associate that provides assurance that the business associate will appropriately 
-                  safeguard such e-PHI. Business associate must also obtain same business associate
-                  agreements from its subcontractors. 
+                  The Government strives to protect the confidentiality, integrity, and 
+                  availability of e-PHI by permitting a business associate to create, 
+                  receive, maintain, or transmit e-PHI on its behalf; this is the case 
+                  only if there is written agreement between the Mission Partner and 
+                  the business associate that provides assurance that the business 
+                  associate will appropriately safeguard the e-PHI. Business associate 
+                  must also obtain same business associate agreements from its subcontractors. 
                 </p>
                 <p>
                   For more information, reference
@@ -152,7 +154,7 @@ export default class BAA extends Mixins(LoadOnEnter,SaveOnLeave) {
   private bAAOptions: RadioButton[] = [
     {
       id: "YesBAA",
-      label: "Yes. This contract effort will require a BAA to safeguard e-PHI.",
+      label: "Yes. This contract effort will require a BAA to safeguard PHI.",
       value: "YES",
     },
     {

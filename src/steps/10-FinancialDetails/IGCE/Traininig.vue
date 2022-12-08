@@ -4,7 +4,7 @@
       <v-row>
         <v-col>
           <h1 class="page-header">
-            Future Training Page
+            Now we'll estimate your training requirements
           </h1>
         </v-col>
       </v-row>

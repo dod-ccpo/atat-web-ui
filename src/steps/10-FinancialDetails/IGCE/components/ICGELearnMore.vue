@@ -7,7 +7,7 @@
       projected cost/price of those resources.
     </p>
     <p>
-      An IGCE should mirror the performance requirements outlined in the Description of Work (DoW) 
+      An IGCE should mirror the performance requirements outlined in the Description of Work 
       as much as possible. It is an important document that assists the Contracting Officer in 
       determining the reasonableness of an offeror’s proposed price and understanding of the 
       requirements.

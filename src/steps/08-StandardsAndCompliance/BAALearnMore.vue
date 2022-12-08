@@ -4,7 +4,7 @@
     <h3 class="mb-4">What is a business associate?</h3>
     <p> 
       A business associate is a person or entity that performs certain functions or activities 
-      that involve the use or disclosure of protected health information (PHI) on behalf of, or 
+      that involve the use or disclosure of Protected Health Information (PHI) on behalf of, or 
       provides services to, a covered entity. A member of the covered entity’s workforce is not 
       a business associate.
     </p>
@@ -53,7 +53,7 @@
             target="_blank"
             class="_text-link"
           >
-          {{moreInfoHref}}
+          Health Information Privacy, Business Associate Contracts
           </a>
         </li>
         <li class="mb-2">

@@ -62,7 +62,7 @@
               <div v-if="showNewFeatures">
                 <br />
                 <p class="mb-0">
-                  In the coming weeks, you will be able to:
+                  Soon, you will be able to:
                 </p>
                 <br/>
                 <v-list class="_atat-stepper">
@@ -71,7 +71,7 @@
                       <span class="_step-circle">1</span>
                       <v-list-item-content>
                         Review and digitally sign documents prior to
-                        submission using DocuSign.
+                        submission.
                       </v-list-item-content>
                     </v-list-item>
                     <v-list-item>
@@ -117,7 +117,7 @@
           <v-col class="pr-10">
             <p class="mt-5">
               Whether you used DAPPS to generate your acquisition package or obtained 
-              a JWCC task order from your own contracting office, the Account Tracking 
+              a JWCC task order from your own Contracting Office, the Account Tracking 
               and Automation Tool (ATAT) will enable you to provision accounts and 
               environments for your cloud contracts.
             </p>

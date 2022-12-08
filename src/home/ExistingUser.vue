@@ -60,51 +60,57 @@
 
             <v-card flat class="pa-6 mb-10 _simple-border">
               <h3 class="text-primary mb-4">What else could we help you with?</h3>
-              <v-btn
-                id="JWCCHelpCenterButton"
-                class="secondary mb-4 mt-4 width-100"
-              >
-                JWCC Help Center
-                 
+                <v-btn
+                  id="JWCCHelpCenterButton"
+                  href="https://community.hacc.mil/s/jwcc/resources"
+                  target="_blank" 
+                  class="secondary mb-4 mt-4 width-100"
+                >
+                  JWCC Help Center
+                  
+                    <ATATSVGIcon
+                      id="JWCCHelpCenterButtonIcon"
+                      width="15"
+                      height="15"
+                      name="launch"
+                      class="ml-2"
+                      color="primary"
+                    />
+                
+                </v-btn>
+                <v-btn
+                  id="CustomerSupportButton"
+                  class="secondary mt-4 width-100"
+                  href="https://community.hacc.mil/s/contact?RequestTopic=DAPPS"
+                  target="_blank"
+                >      
+                  Contact customer support
+                    <ATATSVGIcon
+                      id="CustomerSupportButtonIcon"
+                      width="15"
+                      height="15"
+                      name="launch"
+                      class="ml-2"
+                      color="primary"
+                    />
+                    
+                </v-btn>
+                <v-btn
+                  :href="reportIssueLink"
+                  id="ReportIssueButton"
+                   target="_blank"
+                  class="secondary mt-4 width-100" 
+                >
+                  Report a bug or technical issue
                   <ATATSVGIcon
-                    id="JWCCHelpCenterButtonIcon"
-                    width="15"
-                    height="15"
-                    name="launch"
-                    class="ml-2"
-                    color="primary"
-                  />
-              
-              </v-btn>
-              <v-btn
-                id="CustomerSupportButton"
-                class="secondary mt-4 width-100"
-              >
-                Contact customer support
-                   <ATATSVGIcon
-                    id="CustomerSupportButtonIcon"
-                    width="15"
-                    height="15"
-                    name="launch"
-                    class="ml-2"
-                    color="primary"
-                  />
-              </v-btn>
-              <v-btn
-                id="ReportIssueButton"
-                class="secondary mt-4 width-100" 
-              >
-                Report a bug or technical issue
-                 <ATATSVGIcon
-                    id="ReportIssueButtonIcon"
-                    width="15"
-                    height="15"
-                    name="launch"
-                    class="ml-2"
-                    color="primary"
-                  />
-              </v-btn>
-
+                      id="ReportIssueButtonIcon"
+                      width="15"
+                      height="15"
+                      name="launch"
+                      class="ml-2"
+                      color="primary"
+                    />
+                </v-btn>
             </v-card>
 
           </v-col>
@@ -150,6 +156,9 @@ import CurrentUserStore from "@/store/user";
 export default class ExistingUser extends Vue {
   public packageData:AcquisitionPackageSummaryDTO[] = []
   public draftPackageCount = 0;
+
+  public reportIssueLink = "https://services.disa.mil/sp?id=sc_cat_item&sys_id=20e86845dbaf1914" +
+                      "8c045e8cd39619d9&sysparm_category=a30a5ca3db12a0508c045e8cd396197c";
 
   public packagesPanel = 0; // open by default
   public packageCount = 0;

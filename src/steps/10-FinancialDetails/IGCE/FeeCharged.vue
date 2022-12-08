@@ -8,10 +8,11 @@
         </h1>
         <div class="copy-max-width">
           <p id="IntroP" class="mb-7">
-            Based on what you previously told us, your cost estimate will
-            include a 1% external ordering agency fee. If there is an additional
-            fee associated with using your contracting office, then we will
-            include a percentage in your IGCE.
+            Based on what you previously told us in the Acquisition Package Details section, you 
+            will not be utilizing the Defense Information Technology Contracting Organization 
+            (DITCO).  Therefore, if your Contracting Office charges an additional fee, it will 
+            be included in your total estimate. Additionally, your acquisition is subject to a 1% 
+            external ordering agency fee that will be automatically included in your estimate.
           </p>
         </div>
         <ATATRadioGroup

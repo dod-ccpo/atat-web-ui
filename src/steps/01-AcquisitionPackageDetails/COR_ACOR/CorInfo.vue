@@ -18,7 +18,7 @@
               target="_blank"
               rel="noopener"
             >
-              https://www.ditco.disa.mil/hq/cor/index.asp<span class="_external-link">.</span>
+              DITCO's COR Resources<span class="_external-link">.</span>
             </a>
           </p>
 

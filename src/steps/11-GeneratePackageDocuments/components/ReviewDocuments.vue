@@ -6,11 +6,11 @@
           Your documents are ready to download and review.
         </h1>
         <div class="copy-max-width">
-          <p class="mt-2 mb-4">
-            We’ve generated your required documents based on the info that you have 
+          <p class="mt-2 mb-0">
+            We’ve generated your required documents based on the information that you have 
             provided in steps 1-8. Download your entire package below and review each 
             document. Be sure to sign all necessary documents prior to submitting them 
-            to your contracting office to begin the procurement process.
+            to your Contracting Office to begin the procurement process.
           </p>
         </div>
       </v-col>

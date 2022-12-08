@@ -42,7 +42,7 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
 
   public expansionPanelData: Record<string, string>[] = [
     {
-      headerText: " How do I determine a monthly price for each of my cloud" +
+      headerText: " How do I determine a price for each of my cloud" +
         " services and/or support?",
       id: "MPC",
       content: `
@@ -133,8 +133,8 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
           to prepare an adequate proposal for your project’s unique requirements.
         </p>
         <p>
-          Any details provided in your IGCE will be used internally by your
-          office for budgeting purposes and by the contracting office to assist
+          Any details provided in your Independent Government Cost Estimate (IGCE) will be used 
+          internally by your office for budgeting purposes and by the contracting office to assist
           in proposal evaluations and price reasonableness determinations.
         </p>
         <p>

@@ -57,8 +57,8 @@ export default class FairOppExceptions extends Vue {
     {
       id: "AllFair",
       label: `The order must be issued on a sole-source basis in the interest of economy and 
-        efficiency because it is a logical follow-on to an order already issued under the JWCC 
-        contracts, provided that all awardees were given a fair opportunity to be considered for 
+        efficiency because it is a logical follow-on to an order already issued under the 
+        contract, provided that all awardees were given a fair opportunity to be considered for 
         the original order. <span class="text-base">FAR 16.505(b)(2)(i)(C)</span>`,
       value: "YES_FAR_16_505_B_2_I_C",
       readonly: !this.isForm,

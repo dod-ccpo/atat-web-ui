@@ -31,7 +31,7 @@
       :value.sync="_eventSpikeDescription"
       label="Tell us about the event that causes a surge in usage"
       tooltipText="Include any details that would help a CSP better understand 
-        your surge requirements (i.e., event name and/or time of year)."
+        your surge requirements (e.g., event name and/or time of year)."
       :rules="[
         $validators.required('Enter your high usage event.'),
       ]"
@@ -44,7 +44,7 @@
       :value.sync="_periodSpikeDescription"
       label="In which period of the year do you typically have a surge in usage?"
       tooltipText="Include any details that would help a CSP better understand 
-        your surge requirements (i.e., date ranges or particular days, months, 
+        your surge requirements (e.g., date ranges or particular days, months, 
         or quarters that are higher)."
       :rules="[
         $validators.required('Describe your high usage period(s).'),
@@ -92,7 +92,7 @@ export default class CurrentUsage extends Vue {
     },
     {
       id: "IrregularUsage",
-      label: `Irregular usage or spike traffic (i.e., typically surges for a 
+      label: `Irregular usage or spike traffic (e.g., typically surges for a 
         specific event or during a certain period each year)`,
       value: "IRREGULAR_USAGE"
     },

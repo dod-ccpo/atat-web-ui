@@ -39,10 +39,10 @@
             >
               <template v-slot:content>
                 <p class="mb-0">
-                  <strong> You DO NOT need to complete a DD Form 254,
+                  <strong> You do not need to complete a DD Form 254,
                   DoD Contract Security Classification Specification, for this task order.</strong>
-                  JWCC provides a DD254 at the IDIQ level that covers access to all classification
-                  levels for the task orders ordered within it.
+                  JWCC provides a DD Form 254 at the contract level that covers access to all 
+                  classification levels for the task orders ordered within it.
                 </p>
               </template>
             </ATATAlert>

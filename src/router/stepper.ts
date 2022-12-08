@@ -958,7 +958,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: IGCESupportingDocumentationResolver
       },
       {
-        menuText: "Funding Plan",
+        menuText: "Funding",
         path: "funding-plan",
         name: routeNames.FundingPlanType,
         completePercentageWeight: 1,
