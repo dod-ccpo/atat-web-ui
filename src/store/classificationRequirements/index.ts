@@ -91,6 +91,12 @@ export class ClassificationRequirementsStore extends VuexModule {
             selectedClassLevel.impact_level = classLevelForMapping.impact_level;
             selectedClassLevel.classification = classLevelForMapping.classification;
           }
+          selectedClassLevel.data_growth_estimate_percentage
+              = (selectedClassLevel.data_growth_estimate_percentage as unknown as string)
+              .split(",").filter(nonEmptyVal => nonEmptyVal);
+          selectedClassLevel.user_growth_estimate_percentage
+              = (selectedClassLevel.user_growth_estimate_percentage as unknown as string)
+              .split(",").filter(nonEmptyVal => nonEmptyVal);
           return selectedClassLevel;
         })
     }
@@ -104,7 +110,7 @@ export class ClassificationRequirementsStore extends VuexModule {
    * acquisition. Then performs the API calls to complete the save.
    */
   @Action({rawError: true})
-  async saveAllSelectedClassificationLevels(
+  async saveSelectedClassificationLevels(
     newSelectedClassLevelList: SelectedClassificationLevelDTO[])
     : Promise<boolean> {
     try {
@@ -114,6 +120,12 @@ export class ClassificationRequirementsStore extends VuexModule {
       const markedForDeleteList = currSelectedClasLevelList
         .filter(currSelected => (newSelectedClassLevelList.find(newSelected =>
           newSelected.sys_id === currSelected.sys_id)) === undefined);
+      newSelectedClassLevelList.forEach((obj) => {
+        obj.data_growth_estimate_percentage
+            = obj.data_growth_estimate_percentage?.toString() as unknown as string[];
+        obj.user_growth_estimate_percentage
+            = obj.user_growth_estimate_percentage?.toString() as unknown as string[];
+      });
       const apiCallList: Promise<SelectedClassificationLevelDTO | void>[] = [];
       markedForCreateList.forEach(markedForCreate => {
         apiCallList.push(api.selectedClassificationLevelTable

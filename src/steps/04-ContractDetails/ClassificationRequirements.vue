@@ -101,22 +101,23 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
         .find(savedClassLevel =>
           savedClassLevel.classification_level.value === classificationLevelSysId);
       if (selectedClassificationLevel) {
+        debugger
         currentSelectedClassLevelList.push(selectedClassificationLevel);
       } else {
-        const defaultSelectedClassificationLevel = {
+        const defaultSelectedClassificationLevel: SelectedClassificationLevelDTO = {
           impact_level: "",
           classification: "",
           classification_level: classificationLevelSysId as unknown as ReferenceColumn,
           acquisition_package: this.acquisitionPackage?.sys_id as unknown as ReferenceColumn,
-          users_per_region: undefined,
-          increase_in_users: "" as const,
-          user_growth_estimate_type: undefined,
-          user_growth_estimate_percentage: undefined,
+          users_per_region: "",
+          increase_in_users: "",
+          user_growth_estimate_type: "",
+          user_growth_estimate_percentage: [],
           data_egress_monthly_amount: null,
-          data_egress_monthly_unit: "" as const,
-          data_increase: "" as const,
-          data_growth_estimate_type: undefined,
-          data_growth_estimate_percentage: undefined
+          data_egress_monthly_unit: "",
+          data_increase: "",
+          data_growth_estimate_type: "",
+          data_growth_estimate_percentage: []
         }
         currentSelectedClassLevelList.push(defaultSelectedClassificationLevel);
       }
@@ -141,7 +142,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-        await classificationRequirements.saveAllSelectedClassificationLevels(this.currentData)
+        await classificationRequirements.saveSelectedClassificationLevels(this.currentData)
         await classificationRequirements.loadSelectedClassificationLevelsByAqId(
             this.acquisitionPackage?.sys_id as string);
       }

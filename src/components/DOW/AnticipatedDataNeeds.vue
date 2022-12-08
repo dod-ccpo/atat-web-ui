@@ -4,6 +4,7 @@
       v-if="needs === 'data'">
       <ATATTextField
         width="234"
+        type="number"
         :label="dataLabel"
         :tooltipText="dataTooltipText"
         :appendDropdown="true"

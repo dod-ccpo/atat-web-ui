@@ -16,15 +16,16 @@
         id="SingleAmount"
         width="190"
         class="mr-2"
+        type="number"
         :alignRight="true"
-        :value.sync="val[0]"
+        :value.sync="_values[0]"
         :isCurrency="textboxSuffix === ''"
         :appendText="textboxSuffix !== '' ? textboxSuffix : null"
         :tooltipText="showSinglePeriodTooltip ? singlePeriodTooltipText : null"
         :showErrorMessages="true"
         :rules="[
           $validators.required(
-            'Enter you estimated price per period.',
+            'Enter your estimated price per period.',
           ),
         ]"
       />
@@ -58,13 +59,13 @@
             width="190"
             class="ml-5"
             :alignRight="true"
-            :value.sync="val[idx]"
+            :value.sync="_values[idx]"
             :isCurrency="textboxSuffix === ''"
             :appendText="textboxSuffix !== '' ? textboxSuffix : null"
             :showErrorMessages="true"
             :rules="[
               $validators.required(
-                'Enter you estimated price for this period.',
+                'Enter your estimated price for this period.',
               ),
             ]"
           />
@@ -99,33 +100,15 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
 
   @PropSync("values", {default: () => []}) private _values!: string[];
 
-  public sanitizeValue(idx: number, val: string): void {
-    if (parseInt(val) === 0) {
-      this._values[idx] = "";
-    }
-  }
-  public val:string[] = []
-
-  @Watch('val')
-  public valChanged():void {
-    this._values = this.val
-  }
-
   @Watch("isMultiple")
   public isMultipleChanged(newValue: boolean): void {
-    if (newValue) {
+    if (!newValue) {
       this._values.length = 1;
     }
   }
-
   public getOption(idx: number): string {
     return idx === 0 ? "Base" : "Option " + idx;
   }
 
-  public mounted():void{
-    if(this._values){
-      this.val = this._values
-    }
-  }
 }
 </script>
