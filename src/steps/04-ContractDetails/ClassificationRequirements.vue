@@ -111,12 +111,12 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
           users_per_region: undefined,
           increase_in_users: "" as const,
           user_growth_estimate_type: undefined,
-          user_growth_estimate_percentage: [],
+          user_growth_estimate_percentage: undefined,
           data_egress_monthly_amount: null,
           data_egress_monthly_unit: "" as const,
           data_increase: "" as const,
           data_growth_estimate_type: undefined,
-          data_growth_estimate_percentage: []
+          data_growth_estimate_percentage: undefined
         }
         currentSelectedClassLevelList.push(defaultSelectedClassificationLevel);
       }
