@@ -353,7 +353,6 @@ export class DescriptionOfWorkStore extends VuexModule {
           }
         })
         if(!xaasServiceFound){
-          debugger
           this.setAnticipatedUsersAndDataHasBeenVisited(false)
         }
         this.hasXaasService = xaasServiceFound;
