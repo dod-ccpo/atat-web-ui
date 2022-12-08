@@ -78,6 +78,15 @@
           </div>
 
         </div>
+        <div 
+          v-if="!packageData.length && !isLoading"
+          id="NoRecords" 
+          class="width-100 py-10 text-center"
+        >
+          <h2 class="mb-2">{{ noRecordsHeading }}</h2>
+          <p>{{ noRecordsMessage }}</p>
+        </div>
+
         <ATATNoResults
           v-show="packageData.length === 0 && searchString && !isLoading"
           :searchString="searchedString"
@@ -94,7 +103,7 @@
 import Vue from "vue";
 
 import { Component, Watch } from "vue-property-decorator";
-import { getIdText, scrollToId, scrollToMainTop } from "@/helpers";
+import { getIdText, scrollToMainTop } from "@/helpers";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
@@ -134,24 +143,50 @@ export default class Packages extends Vue {
   public isLoading = false;
   public isSearchSortFilter = false;
 
+  public noRecordsHeading = "";
+  public noRecordsMessage = "";
+
+  public setNoRecordsText(index: number): void {
+    switch (index) {
+    case 0:
+      this.noRecordsHeading = "No open packages";
+      this.noRecordsMessage = `Draft acquisitions or those waiting for task order 
+        award will appear here`;
+      break;
+    case 1:
+      this.noRecordsHeading = "No awarded task orders";
+      this.noRecordsMessage = "Acquisitions that have been awarded a task order will appear here";
+      break
+    case 2:
+      this.noRecordsHeading = "No archived packages";
+      this.noRecordsMessage = "Acquisitions that have been archived will appear here"
+      break
+    case 3:
+      this.noRecordsHeading = "No packages";
+      this.noRecordsMessage = "All of your acquisition packages will appear here"
+      break    
+    }
+  }
+
   @Watch('tabIndex')
   public async tabIndexChanged(newVal:number): Promise<void> {
     let acquisitionPackageStatus = ""
     switch(newVal){
     case 0:
-      acquisitionPackageStatus = "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER"
+      acquisitionPackageStatus = "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER";
       break
     case 1:
-      acquisitionPackageStatus = "TASK_ORDER_AWARDED"
+      acquisitionPackageStatus = "TASK_ORDER_AWARDED";
       break
     case 2:
-      acquisitionPackageStatus = "ARCHIVED"
+      acquisitionPackageStatus = "ARCHIVED";
       break
     case 3:
       acquisitionPackageStatus =
         "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER,TASK_ORDER_AWARDED,ARCHIVED"
       break
     }
+    this.setNoRecordsText(newVal);
     await this.updateSearchDTO('acquisitionPackageStatus',acquisitionPackageStatus)
   }
   public tabIndex = 0;
@@ -280,6 +315,7 @@ export default class Packages extends Vue {
 
   private async loadOnEnter(){
     this.loadPackageData();
+    this.setNoRecordsText(0);
   }
 
   public mounted():void{
