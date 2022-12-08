@@ -397,7 +397,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t need other assessment areas",
             buttonId: "NoOtherAssessmentAreas",
             buttonClass: "secondary",
-            name: routeNames.EvalPlanSummary,
+            // name: routeNames.EvalPlanSummary, // TODO: restore when summaryu page added
+            name: routeNames.PeriodOfPerformance,
           },
         ]
       },
