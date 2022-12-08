@@ -3,9 +3,9 @@
     <ATATRadioGroup 
       id="CurrentPaymentArrangement"
       legend="Current payment arrangement"
-      tooltipText="<strong>Reserved instances</strong> allow you to save on usage 
-        costs for a fixed term. <strong>Pay-as-you-go instances</strong> let you 
-        pay for compute capacity by the hour or second with no long-term commitments."
+      tooltipText="<strong>Reserved/pre-paid/up-front instances</strong> allow you to save on 
+      usage costs for a fixed term.  <br><br><strong>Pay-as-you-go instances</strong> let you pay 
+	  for compute capacity by the hour or second with no long-term commitments."
       :items="paymentArrangements"
       :value.sync="_pricingDetails.currentPaymentArrangement"
       :rules="[

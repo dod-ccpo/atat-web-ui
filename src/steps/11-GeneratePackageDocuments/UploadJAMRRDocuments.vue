@@ -28,7 +28,7 @@
                       <span class="_step-circle">1</span>
                       <v-list-item-content>
                         <span class="">
-                          Download Word templates for the J&amp;A and MRR below.<br/><br/>
+                          Download Word document templates for the J&amp;A and MRR below.<br/><br/>
                           <v-row>
                             <v-col cols="5">
                               <v-btn

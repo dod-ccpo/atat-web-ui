@@ -10,7 +10,7 @@
           <p id="IntroP">
             If you have more instances for this environment, add them below. You 
             can also edit or delete any information from the instances that you 
-            have already entered. When you’re done, click Continue and we will 
+            have already entered. When you’re done, click the "Continue" button to 
             wrap up this section.
           </p>
 

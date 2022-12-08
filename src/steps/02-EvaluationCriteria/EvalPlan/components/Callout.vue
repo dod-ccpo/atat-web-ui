@@ -1,6 +1,6 @@
 
 <template>
-  <ATATAlert 
+  <ATATAlert
     id="Callout"
     type="callout"
     calloutBackground="primary-lighter"
@@ -11,22 +11,22 @@
         {{ heading }}
       </h2>
       <p id="IntroP" class="mb-4">
-         {{ introP }}
+        {{ introP }}
       </p>
-      <p 
-        v-if="subhead" 
-        class="font-weight-700" 
+      <p
+        v-if="subhead"
+        class="font-weight-700"
         :class="listItems.length ? 'mb-2' : 'mb-0'"
         id="Subhead"
       >
         {{ subhead }}
       </p>
       <div v-if="listItems.length" style="border-left: 4px solid #544496">
-        <div 
+        <div
           v-for="(item, index) in listItems"
           :key="index"
           class="d-flex"
-          :class="{ 'pb-3' : index < listItems.length - 1 }"
+          :class="{ 'pb-3': index < listItems.length - 1 }"
         >
           <div class="font-weight-700 nowrap pl-4 align-top">
             {{ listType }} #{{ index + 1 }}
@@ -49,9 +49,8 @@ import ATATAlert from "@/components/ATATAlert.vue";
 @Component({
   components: {
     ATATAlert,
-  }
+  },
 })
-
 export default class Callout extends Vue {
   @Prop() public sourceSelection!: string;
   @Prop() public method?: string;
@@ -68,37 +67,39 @@ export default class Callout extends Vue {
     if (this.noRequiredStandards) {
       return "Why are there no required standards?";
     }
-    return this.isStandards ? "Compliance Standards" : "Assessment Areas"
+    return this.isStandards ? "Compliance Standards" : "Assessment Areas";
   }
 
   public get listType(): string {
-    return this.isStandards ? "Standard" : "Criteria"
+    return this.isStandards ? "Standard" : "Criteria";
   }
 
   public get introP(): string {
     if (!this.isStandards) {
       if (this.sourceSelection === "SET_LUMP_SUM") {
-        return `Your Contracting Officer (KO) will request CSPs submit a white paper
+        return `Your Contracting Officer (KO) will request Contractors submit a white paper
           identifying a strategy and approach that will meet or exceed the requirements 
-          within the proposed costs. CSPs must also provide a price proposal which 
+          within the proposed costs. Contractors must also provide a price proposal which 
           includes a complete list of cloud service offerings with catalog item 
-          numbers/SKUs and quantities to meet the requirements.`
+          numbers/Stock Keeping Units (SKUs) and quantities to meet the requirements.`;
       }
-      return `Since you would like to purchase an equal dollar amount from each CSP,
+      return `Since you would like to purchase an equal dollar amount from each Contractor,
         your Contracting Officer (KO) will issue a Request for Quote (RFQ) and ask 
-        CSPs to respond if they are “interested” or “not interested.” Task orders 
-        will be issued to all interested CSPs.`
+        Contractors to respond if they are “interested” or “not interested.” Task orders 
+        will be issued to all interested Contractors.`;
     }
-    const substr1 = this.sourceSelection === "NO_TECH_PROPOSAL"
-      ? "to provide a price quote"
-      : "propose a technical solution and provide a price proposal"
-    const substr2 = this.sourceSelection === "NO_TECH_PROPOSAL"
-      ? " required to meet the criteria in your Description of Work"
-      : "";
-    return `Your Contracting Officer (KO) will request CSPs ${substr1} that 
+    const substr1 =
+      this.sourceSelection === "NO_TECH_PROPOSAL"
+        ? "to provide a price quote"
+        : "propose a technical solution and provide a price proposal";
+    const substr2 =
+      this.sourceSelection === "NO_TECH_PROPOSAL"
+        ? " required to meet the criteria in your Description of Work"
+        : "";
+    return `Your Contracting Officer (KO) will request Contractors ${substr1} that 
       includes the total price and a complete list of cloud service offerings 
-      with catalog item numbers/SKUs, the unit price, unit of issue, and quantities 
-      calculated on a monthly basis for each catalog item number/SKU${substr2}.`
+      with catalog item numbers/Stock Keeping Units (SKUs), the unit price, unit of issue, 
+      and quantities calculated on a monthly basis for each catalog item number/SKU${substr2}.`;
   }
 
   public get subhead(): string {
@@ -106,15 +107,16 @@ export default class Callout extends Vue {
       return `Award will be made to the lowest priced offeror meeting the following 
         compliance standards:`;
     } else if (this.method === "BVTO") {
-      return `Award will be made to the CSP providing the best value and meets the 
+      return `Award will be made to the Contractor providing the best value and meets the 
         following compliance standards:`;
-    } else if (this.sourceSelection === "SET_LUMP_SUM") {  
-      const methodStr = this.method === "LOWEST_RISK" ? "lowest risk" : "best use";
-      return `Award will be made to the CSP whose white paper offers the “${ methodStr }” 
+    } else if (this.sourceSelection === "SET_LUMP_SUM") {
+      const methodStr =
+        this.method === "LowestRisk" ? "lowest risk" : "best use";
+      return `Award will be made to the Contractor whose white paper offers the “${methodStr}” 
         solution and meets the following assessment areas:`;
     }
-    return `Award will be made in equal parts to each CSP that responds to the 
-      RFQ as “interested.”`
+    return `Award will be made in equal parts to each Contractor that responds to the 
+      RFQ as “interested.”`;
   }
 
   public get listItems(): string[] {
@@ -123,7 +125,7 @@ export default class Callout extends Vue {
     case "NO_TECH_PROPOSAL":
       listItems = [
         "Each requirement element has one or more specific catalog item number/SKU specified.",
-        "The CSP mapped the catalog item numbers/SKUs to the requirement element(s)."
+        "The Contractor mapped the catalog item numbers/SKUs to the requirement element(s).",
       ];
       break;
     case "TECH_PROPOSAL":
@@ -132,7 +134,7 @@ export default class Callout extends Vue {
         `The proposed solution identifies all catalog items (and quantity) necessary 
           to meet the requirements.`,
         `Each catalog item is mapped to a specific requirement and an explanation 
-          of how the item will contribute to the solution is provided.`
+          of how the item will contribute to the solution is provided.`,
       ];
       break;
     case "SET_LUMP_SUM":
@@ -144,19 +146,21 @@ export default class Callout extends Vue {
           item numbers/SKUs (and quantities) that are required.`,
         `Each catalog item is mapped to a specific requirement and an explanation 
           of how the item will contribute to the solution is provided.`,
-        `The proposed solution addresses how the Contractor will facilitate the described need.`
+        `The proposed solution addresses how the Contractor will facilitate the described need.`,
       ];
     }
-    if (this.method === "LOWEST_RISK" && this.sourceSelection === "SET_LUMP_SUM") {
-      listItems.push("Risk to the Government.")
+    if (
+      this.method === "LOWEST_RISK" &&
+      this.sourceSelection === "SET_LUMP_SUM"
+    ) {
+      listItems.push("Risk to the Government.");
     }
     if (this.method === "BVTO" && this.sourceSelection === "TECH_PROPOSAL") {
       listItems[1] = `The proposed solution identifies all catalog items (and quantity) 
-        that are required.`
+        that are required.`;
     }
     return listItems;
   }
-
 }
 </script>
 

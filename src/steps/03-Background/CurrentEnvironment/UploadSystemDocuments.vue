@@ -11,7 +11,7 @@
             <p class="mb-8">
               If available, you can upload this supporting documentation, and we will attach it to
               your Description of Work to be shared with the CSPs for proposal purposes. 
-              Please do not upload any classified documents.
+              <strong>Please do not upload any classified documents.</strong>
             </p>
             <ATATRadioGroup
               id="ExistingEnvOptions"

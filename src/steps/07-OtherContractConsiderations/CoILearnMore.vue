@@ -12,15 +12,18 @@
       >
         <span class="_external-link">FAR 9.502</span>
       </a> states that “an organizational COI may result when factors create an 
-      actual or potential conflict of interest on an instant contract, or when 
+      actual or potential COI on an instant contract, or when 
       the nature of the work to be performed on the instant contract creates an 
       actual or potential COI on a future acquisition.”
     </p>
     <p>
       An organizational COI exists when the nature of the work to be performed 
-      may, without some restriction on future activities, (1) result in an 
-      unfair competitive advantage to the contractor on other contracts or (2) 
-      impair the contractor’s objectivity in performing the contract work. 
+      may, without some restriction on future activities:
+      <ol>
+        <li>result in an 
+      unfair competitive advantage to the contractor on other contracts, or</li>
+      <li>impair the contractor’s objectivity in performing the contract work.</li>
+      </ol>
     </p>
     <p>
       In services contracts, it is the latter which may most often occur because 
@@ -35,15 +38,15 @@
     <p>
       The primary burden is on the contractor to identify any organizational 
       COI; however, the government has the responsibility to identify and 
-      evaluate such conflicts. The task order contracting officer (TOKO) is 
+      evaluate such conflicts. The Contracting Officer (KO) is 
       charged with avoiding, neutralizing or mitigating such potential 
       conflicts.
     </p>
     <p>
       The customer must make a determination that no COI exists, or identify 
       any potential COI that may exist for the execution of this task order. 
-      The customer should request approval from their TOKO if a competitive 
-      requirement which is similar to the work on this description of work is 
+      The customer should request approval from their KO if a competitive 
+      requirement, which is similar to the work on this Description of Work is 
       contemplated by their agency.      
     </p>
     <p>
