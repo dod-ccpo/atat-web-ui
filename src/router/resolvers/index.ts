@@ -154,8 +154,7 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
   }
   return needsArchitectureDesign
     ? routeNames.ArchitecturalDesignDetails 
-    : routeNames.ArchitecturalDesign 
-
+    : IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
 };
 
 export const CurrentEnvRouteResolver = (current: string): string => {
