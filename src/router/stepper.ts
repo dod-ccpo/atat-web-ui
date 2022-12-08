@@ -1017,14 +1017,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FinancialPOCResolver
 
       },
-      {
-        menuText: "SummaryPage",
-        excludeFromMenu: true,
-        path: "summary-page",
-        name: routeNames.SummaryPage,
-        completePercentageWeight: 1,
-        component: SummaryPage,
-      },
+      // {
+      //   menuText: "SummaryPage",
+      //   excludeFromMenu: true,
+      //   path: "summary-page",
+      //   name: routeNames.SummaryPage,
+      //   completePercentageWeight: 1,
+      //   component: SummaryPage,
+      // },
     ]
   },
   {
