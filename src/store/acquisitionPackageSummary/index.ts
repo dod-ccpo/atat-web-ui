@@ -175,12 +175,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     })
   }
 
-
-  // @Action({rawError: true})
-  // public async getPackageCount(): number {
-  //   let query = await this.getMandatorySearchParameterQuery();
-  // }
-
   /**
    * Makes a callout to get the acquisition package search queries and then loads the acquisition
    * package list by concatenating the search queries
