@@ -69,6 +69,9 @@ import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from '@/store/acquisitionPackage';
 import _ from "lodash";
+import {
+  buildCurrentSelectedClassLevelList
+} from "@/packages/helpers/ClassificationRequirementsHelper";
 
 @Component({
   components: {
@@ -90,47 +93,14 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     return buildClassificationCheckboxList(data, "", true, false);
   }
 
-  /**
-   * Builds the current selected classification level list by using the saved list and the default
-   * object. For the default object, sets the selected classification_level sys_id
-   */
-  private buildCurrentSelectedClassLevelList() {
-    const currentSelectedClassLevelList :SelectedClassificationLevelDTO[] = [];
-    for (const classificationLevelSysId of this.selectedOptions) {
-      const selectedClassificationLevel = this.savedSelectedClassLevelList
-        .find(savedClassLevel =>
-          savedClassLevel.classification_level.value === classificationLevelSysId);
-      if (selectedClassificationLevel) {
-        currentSelectedClassLevelList.push(selectedClassificationLevel);
-      } else {
-        const defaultSelectedClassificationLevel = {
-          impact_level: "",
-          classification: "",
-          classification_level: classificationLevelSysId as unknown as ReferenceColumn,
-          acquisition_package: this.acquisitionPackage?.sys_id as unknown as ReferenceColumn,
-          users_per_region: undefined,
-          increase_in_users: "" as const,
-          user_growth_estimate_type: undefined,
-          user_growth_estimate_percentage: [],
-          data_egress_monthly_amount: null,
-          data_egress_monthly_unit: "" as const,
-          data_increase: "" as const,
-          data_growth_estimate_type: undefined,
-          data_growth_estimate_percentage: []
-        }
-        currentSelectedClassLevelList.push(defaultSelectedClassificationLevel);
-      }
-    }
-    return currentSelectedClassLevelList
-  }
-
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
     this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false"
   }
 
   public get currentData(): SelectedClassificationLevelDTO[] {
-    return this.buildCurrentSelectedClassLevelList()
+    return buildCurrentSelectedClassLevelList(this.selectedOptions,
+        this.acquisitionPackage?.sys_id as string, this.savedSelectedClassLevelList)
   }
 
   private hasChanged(): boolean {
