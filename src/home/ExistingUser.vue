@@ -208,7 +208,7 @@ export default class ExistingUser extends Vue {
       .searchAcquisitionPackageSummaryList(this.searchDTO);
     
     this.packageData = packageData.acquisitionPackageSummaryList;
-    this.packageCount = this.packageData.length;
+    this.packageCount = packageData.total_count;
     const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
     this.draftPackageCount = draftPackages?.length || 0;
     if (this.packageCount === 0) {
