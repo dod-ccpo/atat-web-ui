@@ -16,6 +16,7 @@
         id="SingleAmount"
         width="190"
         class="mr-2"
+        type="number"
         :alignRight="true"
         :value.sync="_values[0]"
         :isCurrency="textboxSuffix === ''"
@@ -24,7 +25,7 @@
         :showErrorMessages="true"
         :rules="[
           $validators.required(
-            'Enter you estimated price per period.',
+            'Enter your estimated price per period.',
           ),
         ]"
       />
@@ -55,6 +56,7 @@
         <div>
           <ATATTextField
             :id="period.period_type"
+            type="number"
             width="190"
             class="ml-5"
             :alignRight="true"
@@ -64,7 +66,7 @@
             :showErrorMessages="true"
             :rules="[
               $validators.required(
-                'Enter you estimated price for this period.',
+                'Enter your estimated price for this period.',
               ),
             ]"
           />
