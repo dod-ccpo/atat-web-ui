@@ -40,9 +40,11 @@
       </v-app-bar>
       <v-container
         class="container-max-width"
-        style="margin-bottom: 200px;"
+        style="margin-bottom: 200px; margin-top:30px;"
+        id="PackageTable"
       >
         <Search
+          id="SearchPackages"
           :searchString.sync="searchString"
           :selectedSort.sync="selectedSort"
           @search="search"
@@ -52,6 +54,7 @@
           v-if="packageData.length" 
           id="PackageCards" 
           class="d-flex flex-column align-center pt-5"
+          :class="{ '_is-paginated' : packageCount > recordsPerPage}"
         >
           <Card
             v-for="(cardData, index) in packageData"
@@ -60,10 +63,9 @@
             :index="index"
             :isLastCard="index === packageData.length - 1"
             @updateStatus="updateStatus"
-
           />
 
-          <div class="_table-pagination mt-5" v-show="packageCount > recordsPerPage">
+          <div class="_table-pagination" v-show="packageCount > recordsPerPage">
             <span class="mr-11 font-weight-400 font-size-14">
               Showing {{ startingNumber }}-{{ endingNumber }} of {{ packageCount }}
             </span>
@@ -92,7 +94,7 @@
 import Vue from "vue";
 
 import { Component, Watch } from "vue-property-decorator";
-import { getIdText } from "@/helpers";
+import { getIdText, scrollToId } from "@/helpers";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
@@ -124,12 +126,13 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class Packages extends Vue {
 
   public page = 1;
-  public recordsPerPage = 3;
+  public recordsPerPage = 10;
   public numberOfPages = 0;
   public packageCount = 0;
   public offset = 0;
   public paging = false;
   public isLoading = false;
+  public isSearchSortFilter = false;
 
   @Watch('tabIndex')
   public async tabIndexChanged(newVal:number): Promise<void> {
@@ -168,9 +171,10 @@ export default class Packages extends Vue {
 
  @Watch("page")
   public paged(): void {
+    debugger;
     if (!this.isSearchSortFilter) {
       this.paging = true;
-      this.loadPortfolioData();
+      this.loadPackageData();
     }
   }
 
@@ -178,29 +182,49 @@ export default class Packages extends Vue {
     acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER",
     searchString: "",
     sort: this.selectedSort,
-    limit: 10,
+    limit: this.recordsPerPage,
     offset: this.offset
   };
 
   public async updateSearchDTO(key:string, value:string): Promise<void> {
     this.searchDTO = Object.assign(this.searchDTO,{[key]:value})
+    this.paging = false;
+    this.isSearchSortFilter = true;    
     await this.loadPackageData();
   }
 
   public async loadPackageData(): Promise<void> {
+    debugger;
     this.isLoading = true;
-    const packageResults = await AcquisitionPackageSummary
-      .searchAcquisitionPackageSummaryList(this.searchDTO)
-    this.packageData = packageResults?.acquisitionPackageSummaryList || [];
-    this.packageCount = this.allPackageData.total_count;
 
     this.page = !this.paging ? 1 : this.page;
     this.offset = (this.page - 1) * this.recordsPerPage;
     this.searchDTO.offset = this.offset;
+
+    const packageResults = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(this.searchDTO)
+    debugger;
+    this.packageData = packageResults?.acquisitionPackageSummaryList || [];
+    this.packageCount = packageResults.total_count;
+
     this.numberOfPages = Math.ceil(this.packageCount / this.recordsPerPage);
 
+    scrollToId("PackageTable");
     this.paging = false;
+    this.isSearchSortFilter = false;
     this.isLoading = false;
+  }
+
+  public get endingNumber(): number {
+    const ending = this.page * this.recordsPerPage;
+    if (ending > this.packageCount) {
+      return this.packageCount;
+    }
+    return ending;
+  }
+  public get startingNumber():number {
+    const starting = (this.page - 1) * this.recordsPerPage + 1;
+    return starting;
   }
 
   public tabItems: Record<string, string>[] = [
