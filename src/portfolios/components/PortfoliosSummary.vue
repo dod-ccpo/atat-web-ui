@@ -158,7 +158,7 @@ export default class PortfoliosSummary extends Vue {
   public isHaCCAdmin = false;
 
   public page = 1;
-  public recordsPerPage = 10;
+  public recordsPerPage = 3;
   public numberOfPages = 0;
   public portfolioCount = 0;
   public offset = 0;
