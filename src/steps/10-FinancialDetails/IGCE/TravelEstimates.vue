@@ -78,13 +78,13 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     {
       id: "SinglePrice",
       label:
-        "I want to set a ceiling price and apply the same estimate to all base and option periods.",
+        "I want to apply the same price estimate to all performance periods.",
       value: "single",
     },
     {
       id: "MultiplePrices",
       label:
-        "I want to customize my travel estimates for the base and each option period.",
+        "I want to estimate a different price for the base and each option period.",
       value: "multiple",
     },
   ];

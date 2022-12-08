@@ -70,7 +70,7 @@
       tabindex="0"
       id="RemoveSelectedContactInfo"
       @click="removeCorInfo"
-    >Remove {{ corOrAcor }} info
+    >Remove {{ corOrAcor }}
     </a>
     <ATATDialog
       id="ChangeContactInfoModal"

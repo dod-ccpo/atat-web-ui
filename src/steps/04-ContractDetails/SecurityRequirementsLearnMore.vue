@@ -4,16 +4,16 @@
       About JWCC security requirements
     </h2>
     <p>
-    Security requirements and compliance mandates are established in the JWCC IDIQ Contract DD
-    Form 254, DoD Contract Security Classification Specification. This covers access to all
+    Security requirements and compliance mandates are established in the JWCC Contract DD Form 
+    254, DoD Contract Security Classification Specification. This covers access to all 
     classification levels for the task orders ordered within it.
     </p>
     <p>
-      As a result, Mission Owners that have Secret and/or Top Secret classification requirements
-      do not need to complete a DD254 for their individual task order.
+      As a result, Mission Owners that have Secret and/or Top Secret classification requirements 
+      do not need to complete a DD Form 254 for their individual task order.
     </p>
     <p>
-      Security requirements pertaining to contractor employee’s clearance levels and access to
+      Security requirements pertaining to contractor employee’s clearance levels and access to 
       classified information will be captured within the Description of Work for each task order.
     </p>
   </div>
