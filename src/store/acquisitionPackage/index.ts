@@ -1441,6 +1441,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await Periods.reset();
     await TaskOrder.reset();
     await ClassificationRequirements.reset();
+    await EvaluationPlan.reset();
 
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
 

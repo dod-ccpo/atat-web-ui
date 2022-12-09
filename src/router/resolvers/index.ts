@@ -150,12 +150,15 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
       return routeNames.CurrentContract;
     } else if (hasCurrentContract && !hasCurrentEnv){ // if current contract & NO current env
       return routeNames.CurrentEnvironment;
-    } 
+    } else if (hasCurrentEnv){
+      return needsArchitectureDesign 
+        ? routeNames.ArchitecturalDesignDetails
+        : routeNames.ArchitecturalDesign
+    }
   }
   return needsArchitectureDesign
     ? routeNames.ArchitecturalDesignDetails 
-    : routeNames.ArchitecturalDesign 
-
+    : IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
 };
 
 export const CurrentEnvRouteResolver = (current: string): string => {
@@ -821,7 +824,7 @@ export const IncrementalFundingResolver = (current: string): string => {
   const isIncrementallyFunded = TaskOrder.value.incrementally_funded
 
   if (baseDuration && baseDuration < cutOff || isIncrementallyFunded === "NO") {
-    return routeNames.SummaryPage;
+    return routeNames.UploadJAMRRDocuments;
   }
 
   return current === routeNames.IncrementalFunding
@@ -835,13 +838,13 @@ export const FinancialPOCResolver =  (current: string): string => {
   calcBasePeriod().then(value => {
     baseDuration = value
   })
-  if (current === routeNames.SummaryPage && baseDuration && baseDuration < cutOff ||
-      current === routeNames.SummaryPage && isIncrementallyFunded === "NO") {
+  if (current === routeNames.UploadJAMRRDocuments && baseDuration && baseDuration < cutOff ||
+      current === routeNames.UploadJAMRRDocuments && isIncrementallyFunded === "NO") {
     return routeNames.SeverabilityAndIncrementalFunding;
   }
 
   return current === routeNames.FinancialPOCForm
-    ? routeNames.SummaryPage
+    ? routeNames.UploadJAMRRDocuments
     : routeNames.FinancialPOCForm
 
 }
