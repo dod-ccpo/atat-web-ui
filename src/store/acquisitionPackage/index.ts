@@ -558,6 +558,11 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fundingRequirement = this.fundingRequirement
       ? Object.assign(this.fundingRequirement, value)
       : value;
+
+    if (this.acquisitionPackage && !this.acquisitionPackage.funding_requirement) {
+      this.acquisitionPackage.funding_requirement = value.sys_id || "";
+    }
+    
   }
   @Action({rawError: true})
   public getFundingRequirement(): FundingRequirementDTO | null{
@@ -906,7 +911,6 @@ export class AcquisitionPackageStore extends VuexModule {
           fundingRequirementSysId
         );
         if(fundingRequirement){
-          fundingRequirement.sys_id = fundingRequirementSysId
           this.setFundingRequirement(fundingRequirement);
           // load the financial Poc  of the funding requirement and store
           // the contact to the "financialPocInfo property
@@ -919,7 +923,6 @@ export class AcquisitionPackageStore extends VuexModule {
               financialPocSysId
             );
             if(financialPocInfo){
-              financialPocInfo.sys_id = financialPocSysId;
               this.setContact({ data: financialPocInfo, type: "Financial POC"});
             }
           }
@@ -998,10 +1001,9 @@ export class AcquisitionPackageStore extends VuexModule {
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           const taskOrderObj = await TaskOrder.initialize(acquisitionPackage.sys_id || "");
-          debugger;
 
-          // acquisitionPackage.funding_requirement 
-          //   = taskOrderObj.funding_requirement?.sys_id as string;
+          acquisitionPackage.funding_requirement 
+            = taskOrderObj.funding_requirement?.sys_id as string;
 
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
@@ -1182,6 +1184,9 @@ export class AcquisitionPackageStore extends VuexModule {
           await api.fundingRequirementTable.update(
             fundingRequirement?.sys_id,
             {...fundingRequirement, financial_poc: savedContact.sys_id as string})
+          if (this.acquisitionPackage && !this.acquisitionPackage.funding_requirement) {
+            this.acquisitionPackage.funding_requirement = fundingRequirement.sys_id;
+          }
         }
       } else {
         this.setAcquisitionPackage({
@@ -1189,7 +1194,6 @@ export class AcquisitionPackageStore extends VuexModule {
           primary_contact: savedContact.sys_id as string,
         } as AcquisitionPackageDTO);
       }
-        
       await this.saveAcquisitionPackage();
     } catch (error) {
       throw new Error(`error occurred saving contact info ${error}`);
