@@ -71,7 +71,7 @@
               <div id="OfferingDetailsForms">
                 <RequirementsForm
                   :instances="instancesFormData"
-                  :selectedInstancesLength="selectedInstancesLength"
+                  :avlInstancesLength="selectedInstancesLength"
                   :isPeriodsDataMissing="isPeriodsDataMissing"
                 />
               </div>
