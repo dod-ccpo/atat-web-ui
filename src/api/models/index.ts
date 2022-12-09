@@ -10,7 +10,8 @@ import {
   PerformanceTier, 
   StorageType, 
   StorageUnit, 
-  YesNo
+  YesNo,
+  SingleMultiple
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -83,12 +84,12 @@ export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
   acquisition_package: ReferenceColumn; // sys id
   users_per_region?: string; // json stringified sys_id/count pairs
   increase_in_users?: YesNo;
-  user_growth_estimate_type?: "SINGLE" | "MULTIPLE";
+  user_growth_estimate_type?: SingleMultiple
   user_growth_estimate_percentage?: string[];
   data_egress_monthly_amount?: number | null;
   data_egress_monthly_unit?: StorageUnit;
   data_increase?: YesNo;
-  data_growth_estimate_type?: "SINGLE" | "MULTIPLE";
+  data_growth_estimate_type?: SingleMultiple;
   data_growth_estimate_percentage?: string[];
 }
 

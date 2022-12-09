@@ -111,7 +111,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-        await classificationRequirements.saveAllSelectedClassificationLevels(this.currentData)
+        await classificationRequirements.saveSelectedClassificationLevels(this.currentData)
         await classificationRequirements.loadSelectedClassificationLevelsByAqId(
             this.acquisitionPackage?.sys_id as string);
       }

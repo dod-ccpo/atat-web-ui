@@ -21,30 +21,30 @@
       <ATATRadioGroup
         :legend="increaseLabel"
         :items="increaseOptions"
-        :value.sync="increaseSelection"
+        :value.sync="_increaseSelection"
         :rules="[
           $validators.required('Please select an option.')
         ]"
       ></ATATRadioGroup>
       <br/>
     </div>
-    <div v-if="increaseSelection === 'YES'">
+    <div v-if="_increaseSelection === 'YES'">
       <ATATRadioGroup
         :legend="growthLabel"
         :items="growthOptions"
-        :value.sync="growthSelection"
+        :value.sync="_growthSelection"
         :rules="[
           $validators.required('Please select an option.')
         ]"
       ></ATATRadioGroup>
       <br />
-      <div v-if="growthSelection !== ''">
+      <div v-if="_growthSelection !== ''" class="mb-6">
         <ATATSingleAndMultiplePeriods
-          :periods.sync="_periods"
+          :periods="periods"
           :textboxSuffix="'%'"
           :singlePeriodLabel="percentageLabel"
           :multiplePeriodLabel="percentageLabel"
-          :isMultiple="growthSelection === 'multiple'"
+          :isMultiple="_growthSelection === 'multiple'"
           :values.sync="_percentages"
         ></ATATSingleAndMultiplePeriods>
       </div>
@@ -78,11 +78,13 @@ export default class AnticipatedDataNeeds extends Vue {
     default: `This refers to the amount of data that gets transferred 
       from your organization's host network to the external networks.`
   }) private dataTooltipText?: string;
+  @Prop() private periods!: PeriodDTO[];
 
-  @PropSync("periods", {default: []}) private _periods: PeriodDTO[];
-  @PropSync("dataTextFieldValue") private _dataTextFieldValue?: string;
+  @PropSync("dataTextFieldValue") private _dataTextFieldValue?: number;
   @PropSync("dataDropdownValue", {default: "GB"}) private _dataDropdownValue?: string;
   @PropSync("percentages") private _percentages?: string[];
+  @PropSync("increaseSelection") private _increaseSelection?: string;
+  @PropSync("growthSelection") private _growthSelection?: string;
 
   private dataUnits: SelectData[] = [];
 
@@ -93,7 +95,6 @@ export default class AnticipatedDataNeeds extends Vue {
   ];
 
   private increaseLabel = "";
-  private increaseSelection = "";
   private increaseOptions: RadioButton[] = [
     {
       id: "YES",
@@ -103,7 +104,6 @@ export default class AnticipatedDataNeeds extends Vue {
   ];
 
   private growthLabel = "";
-  private growthSelection = "";
   private growthOptions: RadioButton[] = [
     {
       id: "single",

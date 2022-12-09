@@ -46,6 +46,7 @@ export default class RegionsDeployedAndUserCount extends Vue {
   @Prop({ default: () => []}) private textfieldRules!: Array<unknown>;
   @Prop() private selectedDeployedRegionsOnLoad?: string[];
   @Prop() private regionUsersOnLoad?: string;
+  @Prop({default:0}) private componentIndex?: number;
 
   public selectedRegions: string[] = [];
   public regions: Checkbox[] = [
@@ -122,12 +123,17 @@ export default class RegionsDeployedAndUserCount extends Vue {
       regionUserData.push(thisRegionUserObj);
     })
     const jsonStr = JSON.stringify(regionUserData)
-    this.$emit("regionUserDataUpdate", jsonStr);
+    this.$emit("regionUserDataUpdate", jsonStr,this.componentIndex);
   }
 
   @Watch("regionUsersOnLoad")
   public regionUsersOnLoadChange(newVal: string): void {
-    const regionUsersArray = JSON.parse(newVal);
+    this.updateRegionUsers(newVal)
+  }
+
+  public updateRegionUsers(value:string): void {
+
+    const regionUsersArray = JSON.parse(value);
     const selectedRegions: string[] = [];
     regionUsersArray.forEach((regionUsers: Record<string, string>) => {
       const region = Object.keys(regionUsers)[0];
@@ -140,10 +146,12 @@ export default class RegionsDeployedAndUserCount extends Vue {
     this.$nextTick(() => {
       this.selectedRegions = selectedRegions;
     })
-
   }
 
   public async mounted(): Promise<void> {
+    if(this.regionUsersOnLoad){
+      this.updateRegionUsers(this.regionUsersOnLoad)
+    }
     if (this.selectedDeployedRegionsOnLoad) {
       this.selectedRegions = this.selectedDeployedRegionsOnLoad;
     }

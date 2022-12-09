@@ -8,7 +8,7 @@
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              {{introSentence}} 
+              {{introText}}
               Specify any categories that may apply to your acquisition below, and
               we’ll walk through each selection to get more details.
               <a
@@ -174,15 +174,13 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         description: serviceOfferingGroup.hint
       };
 
-      console.log(checkboxItem)
-
       const cloudServiceCategories = [
         "portability_plan",
-        "advisory_assistance", 
+        "advisory_assistance",
         "help_desk_services",
         "training",
         "documentation_support",
-        "general_cloud_support", 
+        "general_cloud_support",
         this.cloudNoneValue.toLowerCase()
       ];
       if (!cloudServiceCategories.includes(checkboxItem.value.toLowerCase())) {

@@ -47,7 +47,10 @@ h3, .h3 {
 h4, .h4 {
   font-size: 1.6rem !important;
   line-height: 1.5em !important;
-  letter-spacing: .015rem; 
+  letter-spacing: .015rem;
+  &._expansion-panel-header {
+    font-family: $base-font !important;
+  }
 }                 
 
 p {
