@@ -38,7 +38,7 @@
         ]"
       ></ATATRadioGroup>
       <br />
-      <div v-if="_growthSelection !== ''">
+      <div v-if="_growthSelection !== ''" class="mb-6">
         <ATATSingleAndMultiplePeriods
           :periods="periods"
           :textboxSuffix="'%'"

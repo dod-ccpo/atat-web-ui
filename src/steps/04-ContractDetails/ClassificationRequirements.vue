@@ -134,7 +134,6 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    console.log(this.currentData, this.savedSelectedClassLevelList)
     return hasChanges(this.currentData, this.savedSelectedClassLevelList);
   }
 
