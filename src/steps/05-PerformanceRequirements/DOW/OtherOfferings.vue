@@ -7,7 +7,7 @@
         :firstTimeHere="firstTimeHere"
         :isClassificationDataMissing="isClassificationDataMissing"
         :isPeriodsDataMissing="isPeriodsDataMissing"
-        :avlClassificationLevelObjects="avlClassificationLevelObjects"
+        :avlClassificationLevelObjects="selectedClassificationLevelList"
         :singleClassificationLevelName="singleClassificationLevelName"
         :formHasErrors="formHasErrors"
         :formHasBeenTouched="formHasBeenTouched"
@@ -29,7 +29,7 @@
         :firstTimeHere="firstTimeHere"
         :isClassificationDataMissing="isClassificationDataMissing"
         :isPeriodsDataMissing="isPeriodsDataMissing"
-        :avlClassificationLevelObjects="avlClassificationLevelObjects"
+        :avlClassificationLevelObjects="selectedClassificationLevelList"
         :singleClassificationLevelName="singleClassificationLevelName"
         :classificationRadioOptions="classificationRadioOptions"
         :classificationTooltipText="classificationTooltipText"
@@ -71,7 +71,11 @@ import {
 } from "../../../../types/Global";
 
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { ClassificationLevelDTO } from "@/api/models";
+import {
+  AcquisitionPackageDTO,
+  ClassificationLevelDTO,
+  SelectedClassificationLevelDTO
+} from "@/api/models";
 
 import { 
   buildClassificationCheckboxList, 
@@ -79,6 +83,11 @@ import {
   createPeriodCheckboxItems,
 } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import {
+  buildCurrentSelectedClassLevelList
+} from "@/packages/helpers/ClassificationRequirementsHelper";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import classificationRequirements from "@/store/classificationRequirements";
 
 @Component({
   components: {
@@ -113,7 +122,7 @@ export default class OtherOfferings extends Vue {
   public isIL6Selected = false;
   public IL6SysId = "";
   public allClassificationLevels:ClassificationLevelDTO[] = [];
-  public avlClassificationLevelObjects: ClassificationLevelDTO[] = [];
+  public selectedClassificationLevelList: SelectedClassificationLevelDTO[] = [];
   public classificationRadioOptions: RadioButton[] = [];
   public singleClassificationLevelName: string | undefined = "";
   public availablePeriodCheckboxItems: Checkbox[] = [];
@@ -126,6 +135,7 @@ export default class OtherOfferings extends Vue {
   public otherRegionValue = "OtherRegion";
   public otherPerformanceTierValue = "OtherPerformance";
   public clearOtherTierValidation = false;
+  public acquisitionPackage: AcquisitionPackageDTO | undefined;
 
   public classificationLevelToast: ToastObj = {
     type: "success",
@@ -145,19 +155,20 @@ export default class OtherOfferings extends Vue {
   }
 
   public setAvlClassificationLevels(): void {
+    console.log("Called setAvlClassificationLevels..");
     this.classificationRadioOptions 
-      = this.createCheckboxOrRadioItems(this.avlClassificationLevelObjects, "Radio");
+      = this.createCheckboxOrRadioItems(this.selectedClassificationLevelList, "Radio");
   }
 
   public checkSingleClassification(): void {
     // if only one classification level selected in Contract Details or the 
     // classifications modal, set it as the "selected" classification level
     if (
-      this.avlClassificationLevelObjects.length === 1
-      && this.avlClassificationLevelObjects[0].sys_id
+      this.selectedClassificationLevelList.length === 1
+      && this.selectedClassificationLevelList[0].classification_level.value
     ) {
-      const classificationObj = this.avlClassificationLevelObjects[0];
-      this._serviceOfferingData.classificationLevel = classificationObj.sys_id;
+      const classificationObj = this.selectedClassificationLevelList[0];
+      this._serviceOfferingData.classificationLevel = classificationObj.classification_level.value;
       this.singleClassificationLevelName 
         = buildClassificationLabel(classificationObj, "short");
     }
@@ -165,15 +176,14 @@ export default class OtherOfferings extends Vue {
 
   public async classificationLevelsChanged(): Promise<void> {
     this.showDialog = false;
-    this.avlClassificationLevelObjects = [];
-    this.modalSelectedOptions.forEach((sysId) => {
-      const classififcationObj = this.allClassificationLevels.find(obj => obj.sys_id === sysId);
-      if (classififcationObj) {
-        this.avlClassificationLevelObjects.push(classififcationObj);
-      }
-    });
+    const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
+        this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
+    await classificationRequirements.saveAllSelectedClassificationLevels(currentData)
+    await classificationRequirements.loadSelectedClassificationLevelsByAqId(
+        this.acquisitionPackage?.sys_id as string);
+    await this.setAvailableClassificationLevels()
     this.setAvlClassificationLevels();
-    if (this.avlClassificationLevelObjects.length === 1) {
+    if (this.selectedClassificationLevelList.length === 1) {
       this.checkSingleClassification();
     } else if (this._serviceOfferingData.classificationLevel) {
       // if the classification level that was selected was removed via the modal,
@@ -183,11 +193,6 @@ export default class OtherOfferings extends Vue {
         this._serviceOfferingData.classificationLevel = "";
       }
     }
-
-    await ClassificationRequirements.setSelectedClassificationLevels(
-      this.avlClassificationLevelObjects
-    );
-
     Toast.setToast(this.classificationLevelToast);
   }
 
@@ -197,11 +202,14 @@ export default class OtherOfferings extends Vue {
   }
 
   public async setAvailableClassificationLevels(): Promise<void> {
-    this.avlClassificationLevelObjects 
+    this.selectedClassificationLevelList 
       = await ClassificationRequirements.getSelectedClassificationLevels();
   }
 
   public async loadOnEnter(): Promise<void> {
+    console.log("Other Offerings load on enter...");
+    this.acquisitionPackage = await AcquisitionPackage
+      .getAcquisitionPackage() as AcquisitionPackageDTO;
     if (this.isCompute || this.isGeneral) {
       const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
       this.firstTimeHere 
@@ -209,12 +217,12 @@ export default class OtherOfferings extends Vue {
     }
 
     // get classification levels selected in step 4 Contract Details
-    this.avlClassificationLevelObjects 
+    this.selectedClassificationLevelList 
       = await ClassificationRequirements.getSelectedClassificationLevels();
     // set checked items in modal to classification levels selected in step 4 Contract Details
-    if (this.avlClassificationLevelObjects) {
-      this.avlClassificationLevelObjects.forEach((val) => {
-        this.modalSelectedOptions.push(val.sys_id || "")
+    if (this.selectedClassificationLevelList) {
+      this.selectedClassificationLevelList.forEach((val) => {
+        this.modalSelectedOptions.push(val.classification_level.value || "")
       });
       this.checkSingleClassification();
     }
