@@ -696,12 +696,12 @@ export class AcquisitionPackageStore extends VuexModule {
         typeof acquisitionPackage.primary_contact === "object" ?
           (acquisitionPackage.primary_contact as ReferenceColumn).value as string
           : acquisitionPackage.primary_contact as string;
-
+      debugger;
       const fundingRequirementSysId =
         typeof acquisitionPackage.funding_requirement === "object" ?
           (acquisitionPackage.funding_requirement as ReferenceColumn).value as string
           : acquisitionPackage.funding_requirement as string;
-
+      debugger;
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
         project_overview: projectOverviewSysId,
@@ -898,7 +898,10 @@ export class AcquisitionPackageStore extends VuexModule {
         }
       }
 
+      debugger;
+
       if(fundingRequirementSysId){
+        debugger;
         const fundingRequirement = await api.fundingRequirementTable.retrieve(
           fundingRequirementSysId
         );
@@ -995,8 +998,10 @@ export class AcquisitionPackageStore extends VuexModule {
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           const taskOrderObj = await TaskOrder.initialize(acquisitionPackage.sys_id || "");
-          acquisitionPackage.funding_requirement 
-            = taskOrderObj.funding_requirement?.sys_id as string;
+          debugger;
+
+          // acquisitionPackage.funding_requirement 
+          //   = taskOrderObj.funding_requirement?.sys_id as string;
 
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
@@ -1173,6 +1178,7 @@ export class AcquisitionPackageStore extends VuexModule {
       } else if (dataKey === "financialPocInfo") {
         const fundingRequirement = TaskOrder.value.funding_requirement;
         if(fundingRequirement?.sys_id) {
+          debugger;
           await api.fundingRequirementTable.update(
             fundingRequirement?.sys_id,
             {...fundingRequirement, financial_poc: savedContact.sys_id as string})
