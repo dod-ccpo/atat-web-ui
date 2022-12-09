@@ -182,7 +182,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       const instance: DOWClassificationInstance = {
         sysId: "", // will be populated after saving
         impactLevel: obj.impact_level,
-        classificationLevelSysId: obj.sys_id || "",
+        classificationLevelSysId: obj.classification_level.value || "",
         anticipatedNeedUsage: "",
         entireDuration: "",
         selectedPeriods: [],
@@ -264,7 +264,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         this.selectedClassificationLevelSysIds.includes(classificationLevelSysId)
     );
     this.selectedHeaderLevelSysIds = filteredSelectedHeaderLevelSysIds;
-
     const filteredHeaderChecked = this.headerCheckboxSelectedSysIds.filter(
       classificationLevelSysId => 
         this.selectedClassificationLevelSysIds.includes(classificationLevelSysId)
