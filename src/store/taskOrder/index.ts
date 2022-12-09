@@ -79,7 +79,6 @@ export class TaskOrderStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(acquisitionPackageId: string): Promise<TaskOrderDTO> {
-    debugger;
     const sessionRestored = storeHelperFunctions.retrieveSession(ATAT_TASK_ORDER_KEY);
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
@@ -91,7 +90,6 @@ export class TaskOrderStore extends VuexModule {
       await this.save(taskOrder);
     }
     this.setInitialized(true);
-    debugger;
     return this.taskOrder || initial;
   }
 
