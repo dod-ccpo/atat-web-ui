@@ -50,9 +50,10 @@ import { Checkbox } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { EvaluationPlanDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { hasChanges } from "@/helpers";
+import { convertEvalPlanDifferentiatorToCheckbox, hasChanges } from "@/helpers";
 
 import _ from "lodash";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
   components: {
@@ -66,9 +67,23 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
   /* eslint-disable camelcase */
   public evalPlan: EvaluationPlanDTO = {
     source_selection: "",
+    method: "",
+    has_custom_specifications: "",
+    standard_specifications: "",
+    custom_specifications: "",
+    standard_differentiators: "",
+    custom_differentiators: "",
+    sys_id: ""
   }
   public savedData: EvaluationPlanDTO = {
     source_selection: "",
+    method: "",
+    has_custom_specifications: "",
+    standard_specifications: "",
+    custom_specifications: "",
+    standard_differentiators: "",
+    custom_differentiators: "",
+    sys_id: ""
   }
   /* eslint-enable camelcase */
 
@@ -78,52 +93,17 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
 
   public customDifferentiators: string[] = [];
   public selectedDifferentiators: string[] = [];
-  public differentiators: Checkbox[] = [
-    {
-      id: "LevelOfComplexity",
-      label: "Level of complexity reduced due to proposed solution",
-      value: "LevelOfComplexity",
-    },
-    {
-      id: "CapabilityGained",
-      label: `Any capability gained by implementing the solution (beyond the 
-        Government’s requirement)`,
-      value: "CapabilityGained",
-    },
-    {
-      id: "ScheduleSavings",
-      label: "Any schedule savings achieved due to proposed solution",
-      value: "ScheduleSavings",
-    },
-    {
-      id: "CostSavings",
-      label: "Any lifecycle cost savings achieved due to proposed solution",
-      value: "CostSavings",
-    },
-    {
-      id: "Longevity",
-      label: "Any enduring persistence (longevity) due to proposed solution",
-      value: "Longevity",
-    },
-    {
-      id: "AutomationCapability",
-      label: "Any automation capability proposed to improve reliability and reduce human-error",
-      value: "AutomationCapability",
-    },
-    {
-      id: "CustomDifferentiators",
-      label: "Other - I want to write my own custom differentiator(s).",
-      value: "CustomDifferentiators",
-    },
-  ];
+  public differentiators: Checkbox[] = [];
 
   public showCustomDifferentiators = false;
   public customDiffsOptional = true;
 
+  public otherSysId = "";
+
   @Watch("selectedDifferentiators")
   public selectedDifferentiatorsChange(newVal: string[], oldVal: string[]): void {
-    this.showCustomDifferentiators = newVal.includes("CustomDifferentiators");
-    if (!this.showCustomDifferentiators && oldVal.includes("CustomDifferentiators")) {
+    this.showCustomDifferentiators = newVal.includes(this.otherSysId);
+    if (!this.showCustomDifferentiators && oldVal.includes(this.otherSysId)) {
       this.customDifferentiators = [];
     }
     this.customDiffsOptional = newVal.length > 1;
@@ -137,12 +117,20 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage.getEvaluationPlan;
+    const storeData = await EvaluationPlan.getEvaluationPlan();
+    this.differentiators = convertEvalPlanDifferentiatorToCheckbox(
+      EvaluationPlan.differentiatorData
+    );
+
+    const otherItem = this.differentiators.find(item => item.id === "CustomDifferentiators");
+
+    this.otherSysId = otherItem?.value || "";
+
     if (storeData) {
       this.evalPlan = _.cloneDeep(storeData);
       this.savedData = _.cloneDeep(storeData);
-      this.selectedDifferentiators = this.evalPlan.standard_differentiators || [];
-      this.customDifferentiators = this.evalPlan.custom_differentiators || [];
+      this.selectedDifferentiators = this.evalPlan.standard_differentiators?.split(",") || [];
+      this.customDifferentiators = this.evalPlan.custom_differentiators?.split(",") || [];
     }
   }
 
@@ -157,18 +145,13 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
     
     try {
       /* eslint-disable camelcase */
-      this.evalPlan.standard_differentiators = this.selectedDifferentiators;
-      this.evalPlan.custom_differentiators = this.customDifferentiators;
+      this.evalPlan.standard_differentiators = this.selectedDifferentiators.join(",");
+      this.evalPlan.custom_differentiators = this.customDifferentiators.join(",");
       /* eslint-enable camelcase */
 
       if (this.hasChanged) {
-        // KEEP FOR FUTURE TICKET when API hooked up for saving to SNOW
-        // await AcquisitionPackage.saveData({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.EvaluationPlan,
-        // });
-        // REMOVE line below after above hooked up
-        await AcquisitionPackage.setEvaluationPlan(this.currentData);
+        await EvaluationPlan.setEvaluationPlan(this.currentData);
+        await EvaluationPlan.saveEvaluationPlan();
       }
     } catch (error) {
       console.log(error);

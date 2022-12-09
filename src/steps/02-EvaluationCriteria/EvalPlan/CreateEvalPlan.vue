@@ -8,8 +8,8 @@
       <div class="copy-max-width">
         <p class="page-intro">
           In this section, we'll develop the basis for how your acquisition will be 
-          evaluated. To begin, select the applicable evaluation method below. In the 
-          following screens, we’ll identify any compliance standards, differentiators,
+          evaluated. To begin, select the applicable evaluation method below. Next, 
+          we’ll identify any compliance standards, differentiators,
           or assessment areas that CSPs must address in their response to the 
           solicitation. You’ll have an opportunity to customize these standards for 
           your specific needs.
@@ -61,10 +61,10 @@ import {
 import SlideoutPanel from "@/store/slideoutPanel";
 import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
 import { EvaluationPlanDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import { hasChanges } from "@/helpers";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
   components: {
@@ -93,37 +93,37 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
       label: `I do not require a technical proposal. Award will be made on a 
         Lowest Price, Technically Acceptable (LPTA) basis.`,
       id: "NoTechProposal",
-      value: "NoTechProposal"
+      value: "NO_TECH_PROPOSAL"
     },
     {
       label: `I require a technical proposal. Award will be made on either a 
         LPTA or Best Value Trade-Off (BVTO) basis.`,
       id: "TechProposal",
-      value: "TechProposal",
+      value: "TECH_PROPOSAL",
     },
     {
       label: `I would like to purchase a set lump sum dollar amount of offerings 
         from any one CSP. Award will be made to the CSP offering either the 
         “best use” or “lowest risk” solution.`,
       id: "SetLumpSum",
-      value: "SetLumpSum",
+      value: "SET_LUMP_SUM",
     },
     {
       label: `I would like to purchase an equal set lump sum dollar amount of 
         offerings from each CSP. The Government will issue equal awards to each CSP.`,
       id: "EqualSetLumpSum",
-      value: "EqualSetLumpSum",
+      value: "EQUAL_SET_LUMP_SUM",
     }
   ];
 
   public get methodOptions(): RadioButton[] {
-    return this.sourceSelection === "TechProposal" 
+    return this.sourceSelection === "TECH_PROPOSAL" 
       ? this.techProposalOptions
       : this.lumpSumOptions;
   }
 
   public get methodMessagingSubstr(): string {
-    return this.sourceSelection === "TechProposal" 
+    return this.sourceSelection === "TECH_PROPOSAL" 
       ? "method of evaluation" : "technique";
   }
 
@@ -156,20 +156,20 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
     {
       label: "“Best use” solution",
       id: "BestUse",
-      value: "BestUse",
+      value: "BEST_USE",
       description: "Award will be made to the CSP offering the “best use.”"
     },
     {
       label: "“Lowest risk” solution",
       id: "LowestRisk",
-      value: "LowestRisk",
+      value: "LOWEST_RISK",
       description: "Award will be made to the CSP providing the lowest risk."
     },
   ];
 
   public get showMethods(): boolean {
-    return this.sourceSelection === "TechProposal" 
-      || this.sourceSelection === "SetLumpSum";
+    return this.sourceSelection === "TECH_PROPOSAL" 
+      || this.sourceSelection === "SET_LUMP_SUM";
   }
 
   public legendLink: LegendLink = {
@@ -195,6 +195,7 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
       custom_specifications: this.savedData.custom_specifications,
       standard_differentiators: this.savedData.standard_differentiators,
       custom_differentiators: this.savedData.custom_differentiators,
+      sys_id: this.savedData.sys_id
     }
   }
 
@@ -202,10 +203,11 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
     source_selection: "",
     method: "",
     has_custom_specifications: "",
-    standard_specifications: [],
-    custom_specifications: [],
-    standard_differentiators: [],
-    custom_differentiators: [],
+    standard_specifications: "",
+    custom_specifications: "",
+    standard_differentiators: "",
+    custom_differentiators: "",
+    sys_id: ""
   }
   /* eslint-enable camelcase */
 
@@ -221,7 +223,7 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage.getEvaluationPlan;
+    const storeData = await EvaluationPlan.getEvaluationPlan();
     if (storeData) {
       this.savedData = storeData;
       this.sourceSelection = storeData.source_selection;
@@ -241,21 +243,14 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
           // reset specification data if either source or method changed
           /* eslint-disable camelcase */
           this.currentData.has_custom_specifications = undefined;
-          this.currentData.standard_specifications = [];
-          this.currentData.custom_specifications = [];
-          this.currentData.standard_differentiators = [];
-          this.currentData.custom_differentiators = [];
+          this.currentData.standard_specifications = "";
+          this.currentData.custom_specifications = "";
+          this.currentData.standard_differentiators = "";
+          this.currentData.custom_differentiators = "";
           /* eslint-enable camelcase */
         }
-
-        // KEEP FOR FUTURE TICKET when API hooked up for saving to SNOW
-        // await AcquisitionPackage.saveData({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.EvaluationPlan,
-        // });
-        // REMOVE line below after above hooked up
-        
-        await AcquisitionPackage.setEvaluationPlan(this.currentData);
+        await EvaluationPlan.setEvaluationPlan(this.currentData);
+        await EvaluationPlan.saveEvaluationPlan();
       }
     } catch (error) {
       console.log(error);

@@ -9,9 +9,9 @@
           </h1>
           <div class="copy-max-width">
             <p class="mb-10" id="IntroP">
-              Based on what you told us, this project will require the CSP to access classified
-              information. You are NOT required to complete a DD Form 254 for this task order.
-              However, you will need to identify access requirements that will be included in your
+              Based on what you told us, this project will require the CSP to access classified 
+              information. You are NOT required to complete a DD Form 254 for this task order. 
+              However, you will need to identify access requirements that will be included in your 
               Description of Work.
               <a
                 role="button"

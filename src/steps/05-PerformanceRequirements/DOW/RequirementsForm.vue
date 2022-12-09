@@ -19,16 +19,13 @@
                 </h2>
               </span>
               
-              <DescriptionOfNeed
+              <AnticipatedDurationandUsage
+                type="requirement"
                 :anticipatedNeedUsage.sync="instance.anticipatedNeedUsage"
-                :index="index"
-              />
-
-              <EntireDuration
                 :entireDuration.sync="instance.entireDuration"
-                :periodsNeeded.sync="instance.selectedPeriods"
-                :isPeriodsDataMissing="isPeriodsDataMissing"
+                :selectedPeriods.sync="instance.selectedPeriods"
                 :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+                :isPeriodsDataMissing="isPeriodsDataMissing"
                 :index="index"
               />
              
@@ -48,8 +45,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-import DescriptionOfNeed from "./DescriptionOfNeed.vue"
-import EntireDuration from "./EntireDuration.vue"
+import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationandUsage.vue";
 
 import { 
   Checkbox, 
@@ -66,8 +62,7 @@ import { createPeriodCheckboxItems } from "@/helpers";
     ATATRadioGroup,
     ATATTextArea,
     ATATTextField,
-    DescriptionOfNeed,
-    EntireDuration,
+    AnticipatedDurationandUsage
   }
 })
 

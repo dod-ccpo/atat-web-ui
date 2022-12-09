@@ -114,20 +114,32 @@ export class DescriptionOfWorkStore extends VuexModule {
   // selectedOfferingGroups: stringObj[] = [];
   DOWObject: DOWServiceOfferingGroup[] = [];
 
-    //list of required services -- this is synchronized to back end
-    userSelectedServiceOfferings: SelectedServiceOfferingDTO[] = [];
+  //list of required services -- this is synchronized to back end
+  userSelectedServiceOfferings: SelectedServiceOfferingDTO[] = [];
 
   currentGroupId = "";
   currentOfferingName = "";
   currentOfferingSysId = "";
-
   xaaSNoneValue = "XaaS_NONE";
   cloudNoneValue = "Cloud_NONE";
-
+  hasXaasService = false
+  anticipatedUsersAndDataHasBeenVisited = false
   returnToDOWSummary = false;
   reviewGroupFromSummary = false;
   addGroupFromSummary = false;
-
+  xaasServices = [
+    'STORAGE',
+    'DATABASE',
+    'GENERAL_XAAS',
+    'IOT',
+    'EDGE_COMPUTING',
+    'SECURITY',
+    'NETWORKING',
+    'MACHINE_LEARNING',
+    'APPLICATIONS',
+    'DEVELOPER_TOOLS',
+    'COMPUTE'
+  ]
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
@@ -330,11 +342,37 @@ export class DescriptionOfWorkStore extends VuexModule {
     return this.serviceOfferingsForGroup.length > 0;
   }
 
+  @Mutation
+  public checkForXaas(): void {
+    if(this.DOWObject){
+      let xaasServiceFound = false
+      this.DOWObject.forEach((service)=>{
+        this.xaasServices.forEach((xaas)=>{
+          if(xaas === service.serviceOfferingGroupId){
+            xaasServiceFound = true
+          }
+        })
+        this.hasXaasService = xaasServiceFound;
+      })
+    }
+  }
+
   public summaryBackToContractDetails = false;
 
   @Mutation
   public setBackToContractDetails(bool: boolean): void {
     this.summaryBackToContractDetails = bool;
+  }
+  @Action
+  public doSetAnticipatedUsersAndDataHasBeenVisited(): void {
+    this.setAnticipatedUsersAndDataHasBeenVisited()
+  }
+
+  @Mutation
+  public setAnticipatedUsersAndDataHasBeenVisited(): void {
+    if(!this.hasXaasService){
+      this.anticipatedUsersAndDataHasBeenVisited = false;
+    }
   }
 
   @Mutation
@@ -459,7 +497,9 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async setSelectedOfferingGroups(selectedOfferingGroupIds: string[]): Promise<void> {
-    this.doSetSelectedOfferingGroups(selectedOfferingGroupIds);
+    await this.doSetSelectedOfferingGroups(selectedOfferingGroupIds);
+    this.checkForXaas()
+    this.setAnticipatedUsersAndDataHasBeenVisited()
   }
 
   @Mutation
@@ -487,7 +527,6 @@ export class DescriptionOfWorkStore extends VuexModule {
             this.DOWObject.splice(index, 1);
           }
         });
-
         this.DOWObject.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
       });
     } else {
@@ -499,7 +538,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       : "";
     this.currentOfferingName = "";
     this.currentOfferingSysId = "";
-
   }
 
   @Action 
@@ -825,7 +863,9 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async deleteOtherOffering(): Promise<void> {
-    this.doDeleteOtherOffering();
+    await this.doDeleteOtherOffering();
+    this.checkForXaas()
+    this.setAnticipatedUsersAndDataHasBeenVisited()
   }
 
   @Mutation
@@ -1275,6 +1315,38 @@ export class DescriptionOfWorkStore extends VuexModule {
       throw new Error(`error persisting services ${error}`);
     }
     
+  }
+
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_DESCRIPTION_OF_WORK_KEY);
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.summaryBackToContractDetails = false;
+    this.currentGroupRemoved = false;
+    this.currentGroupRemovedForNav = false;
+    this.lastGroupRemoved = false;
+    this.initialized = false;
+    this.isIncomplete = true;
+    this.serviceOfferings = [];
+    this.serviceOfferingGroups = [];
+    this.DOWObject = [];
+    this.userSelectedServiceOfferings = [];
+    this.currentGroupId = "";
+    this.currentOfferingName = "";
+    this.currentOfferingSysId = "";
+    this.xaaSNoneValue = "XaaS_NONE";
+    this.cloudNoneValue = "Cloud_NONE";
+    this.returnToDOWSummary = false;
+    this.reviewGroupFromSummary = false;
+    this.addGroupFromSummary = false;
+    this.currentOtherServiceInstanceNumber = 0;
+    this.otherOfferingInstancesTouched = {};
+    this.confirmOtherOfferingDelete = false;
+    this.confirmServiceOfferingDelete = false;
   }
 }
 

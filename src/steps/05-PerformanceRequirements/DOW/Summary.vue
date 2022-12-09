@@ -9,7 +9,7 @@
           <p class="mb-10">
             We need some more details for this section. You can add info now, or come back to make
             edits at any time. When you are ready to wrap up this section, we will move on to
-            government furnished equipment.
+            other contract considerations.
           </p>
         </div>
         <div class="container-max-width">
@@ -330,7 +330,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     if (DescriptionOfWork.summaryBackToContractDetails) {
-      Steps.setAltBackButtonText("Back to Contract Details");
+      Steps.setAltBackButtonText("Back to Background");
     } else {
       Steps.clearAltBackButtonText();
     }

@@ -31,6 +31,16 @@
             :values.sync="estimatedTravelCosts"
           ></ATATSingleAndMultiplePeriods>
         </div>
+
+        <div>
+          <br/>
+          <hr />
+          <AnticipatedDataNeeds
+            :periods.sync="periods"
+            :percentages.sync="percentages"
+            needs="data"
+          ></AnticipatedDataNeeds>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -45,17 +55,20 @@ import IGCEStore, { TravelEstimateNeeds } from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
+import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 
 @Component({
   components: {
     ATATRadioGroup,
-    ATATSingleAndMultiplePeriods
+    ATATSingleAndMultiplePeriods,
+    AnticipatedDataNeeds
   },
 })
 export default class TravelEstimates extends Mixins(SaveOnLeave) {
   private periods: PeriodDTO[] | null = [];
   private ceilingPrice = "";
   private estimatedTravelCosts = [""];
+  private percentages = [""];
   public savedData: TravelEstimateNeeds = {
     ceilingPrice: "",
     estimatedTravelCosts: [],
@@ -65,13 +78,13 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     {
       id: "SinglePrice",
       label:
-        "I want to set a ceiling price and apply the same estimate to all base and option periods.",
+        "I want to apply the same price estimate to all performance periods.",
       value: "single",
     },
     {
       id: "MultiplePrices",
       label:
-        "I want to customize my travel estimates for the base and each option period.",
+        "I want to estimate a different price for the base and each option period.",
       value: "multiple",
     },
   ];

@@ -53,22 +53,22 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
     {
       id: "YesReplicate",
       value: "YES_REPLICATE",
-      label: "I need my current functions replicated using JWCC offerings.",
-      description: `CSP needs to perform a “lift and shift” to recreate my environment 
+      label: "We need the current functions replicated using JWCC offerings.",
+      description: `CSP needs to perform a “lift and shift” to recreate the environment 
         and configurations, as is.`
     },
     {
       id: "YesOptimize",
       value: "YES_OPTIMIZE",
-      label: "I need my current functions optimized using JWCC offerings.",
-      description: `CSP needs to evaluate my environment configurations and propose 
+      label: "We need the current functions optimized using JWCC offerings.",
+      description: `CSP needs to evaluate the environment configurations and propose 
         an improved/modernized solution.`
     },
     {
       id: "NoReplicateOrOptimize",
       value: "NO",
-      label: "No. My current environment does not meet my current needs.",
-      description: `I want to identify new cloud resources and support requirements 
+      label: "No. The current environment does not meet the current needs.",
+      description: `We want to identify new cloud resources and support requirements 
         for this acquisition.`
     },
   ];
@@ -88,7 +88,7 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = _.cloneDeep(storeData);
       this.savedData.replicatedOrOptimized = storeData.current_environment_replicated_optimized;
@@ -102,9 +102,7 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        // TODO - which store to save to?
-        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO);
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
       }
     } catch (error) {
       console.log(error);

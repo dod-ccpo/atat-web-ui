@@ -11,6 +11,9 @@ import IGCEStore from "@/store/IGCE";
 import { ClassificationLevelDTO, EvaluationPlanDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Vue from "vue";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
+import IGCE from "@/store/IGCE";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -18,11 +21,11 @@ export const AcorsRouteResolver = (current: string): string => {
 
   //routing from alternate cor and the user does not have an ACOR
   if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
-    return routeNames.AcqPackageSummary;
+    return routeNames.Exceptions;
   }
 
   //routing from summary and user does not have ACOR
-  if (current === routeNames.AcqPackageSummary && hasAlternativeContactRep === false) {
+  if (current === routeNames.Exceptions && !hasAlternativeContactRep) {
     return routeNames.AlternateCor;
   }
 
@@ -39,12 +42,12 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   // does not select an option, send to summary page.
   const source = evalPlan.source_selection;
   const method = evalPlan.method;
-  return (source === "TechProposal" || source === "SetLumpSum") && !method ? true : false;
+  return (source === "TECH_PROPOSAL" || source === "SET_LUMP_SUM") && !method ? true : false;
 }
 
 export const CreateEvalPlanRouteResolver = (current: string): string => {
   if (current === routeNames.NoEvalPlan) {
-    return routeNames.EvalPlanSummary;
+    return routeNames.PeriodOfPerformance;
   }
   if(current === routeNames.EvalPlanDetails){
     return routeNames.CreateEvalPlan
@@ -61,16 +64,16 @@ export const UploadJAMRRDocumentsRouteResolver = (current: string): string => {
 };
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
-  const evalPlan = AcquisitionPackage.getEvaluationPlan;
+  const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (missingEvalPlanMethod(evalPlan)) {
-    return routeNames.EvalPlanSummary;
+    return routeNames.PeriodOfPerformance;
   }
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
     buttonId: "NoOtherAssessmentAreas"
   });
 
-  if (evalPlan.source_selection === "SetLumpSum") {
+  if (evalPlan.source_selection === "SET_LUMP_SUM") {
     Steps.setAdditionalButtonHide(false);
   } else {
     Steps.setAdditionalButtonHide(true);
@@ -82,8 +85,8 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 };
 
 export const BVTOResolver = (current: string): string => {
-  const evalPlan = AcquisitionPackage.getEvaluationPlan;
-  if (current === routeNames.EvalPlanSummary){
+  const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
+  if (current === routeNames.PeriodOfPerformance){
     if (!evalPlanRequired()) {
       return routeNames.NoEvalPlan;
     }
@@ -97,7 +100,7 @@ export const BVTOResolver = (current: string): string => {
   }
 
   return current === routeNames.EvalPlanDetails
-    ? routeNames.EvalPlanSummary
+    ? routeNames.PeriodOfPerformance
     : routeNames.EvalPlanDetails;
 };
 
@@ -120,7 +123,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? routeNames.RequirementCategories
+    ? IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
     : routeNames.CurrentContract;
 };
 
@@ -135,27 +138,37 @@ export const ReplicateDetailsResolver = (current: string): string => {
 
 export const ArchitecturalDesignDetailsRouteResolver = (current: string): string => {
   const needsArchitectureDesign
-      = AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
+      = CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
   const hasCurrentEnv
-      = AcquisitionPackage.currentEnvironment?.current_environment_exists === "YES";
-
-  if (needsArchitectureDesign && hasCurrentEnv) {
-    return routeNames.ArchitecturalDesignDetails;
+      = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
+  const hasCurrentContract 
+      = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+ 
+  if (current === routeNames.DOWSummary || 
+      current === routeNames.RequirementCategories){
+    if (!hasCurrentContract){  // if no current contract
+      return routeNames.CurrentContract;
+    } else if (hasCurrentContract && !hasCurrentEnv){ // if current contract & NO current env
+      return routeNames.CurrentEnvironment;
+    } else if (hasCurrentEnv){
+      return needsArchitectureDesign 
+        ? routeNames.ArchitecturalDesignDetails
+        : routeNames.ArchitecturalDesign
+    }
   }
-  return current === routeNames.ArchitecturalDesign 
-    ? routeNames.BackgroundSummary 
-    : routeNames.CurrentEnvironment;
-
+  return needsArchitectureDesign
+    ? routeNames.ArchitecturalDesignDetails 
+    : IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
 };
 
-export const CurrentContractEnvRouteResolver = (current: string): string => {
+export const CurrentEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
-    = AcquisitionPackage.currentEnvironment?.current_environment_exists === "YES";
+    = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
   if (hasCurrentEnv) {
     return routeNames.UploadSystemDocuments;
   }
-  return current === routeNames.CurrentEnvironment
-    ? routeNames.BackgroundSummary
+  return current === routeNames.CurrentEnvironment 
+    ? IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
     : routeNames.CurrentEnvironment;
 };
 
@@ -223,8 +236,7 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 export const RequirementsPathResolver = (current: string, direction: string): string => {
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
-
-  if (current === routeNames.ServiceOfferings 
+  if (current === routeNames.ServiceOfferings
     && missingClassification 
     && !atBeginningOfOfferingGroups
   ) {
@@ -278,6 +290,15 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
+export const AnticipatedUserAndDataNeedsResolver = (current:string) => {
+  const xaasServices = DescriptionOfWork.hasXaasService;
+  const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
+  if(current === routeNames.RequirementCategories && xaasServices && !hasBeenVisited){
+    return routeNames.AnticipatedUserAndDataNeeds
+  }
+  return current === routeNames.RequirementCategories ? routeNames.ServiceOfferings
+    : routeNames.RequirementCategories;
+}
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
 
   debugger;
@@ -445,23 +466,25 @@ export const OfferGroupOfferingsPathResolver = (
     }     
   }
   
-  let dontNeedButtonText = "";
-  switch (currentGroupId.toLowerCase()) {
-  case "compute":
-    dontNeedButtonText = "I don’t need compute resources";
-    break;
-  case "general_xaas":
-    dontNeedButtonText = "I don’t have general XaaS requirements";
-    break;
-  case "developer_tools":
-    dontNeedButtonText = "I don’t need Developer Tools and Services";
-    break;
-  // case "database": // stubbed in for future ticket
-  //   dontNeedButtonText = "I don’t need database services";
-  //   break;
-  default:
-    dontNeedButtonText = "I don’t need these cloud resources";
+  let dontNeedButtonText = "I don’t need ";
+  /* eslint-disable camelcase */
+  const offeringNames: Record<string, string> = {
+    compute: "Compute",
+    developer_tools: "Developer Tools and Services",
+    applications: "Application services",
+    machine_learning: "Machine Learning",
+    networking: "Networking",
+    security: "Security",
+    database: "Database",
+    storage: "Storage",
+    edge_computing: "Edge Computing and Tactical Edge",
+    iot: "Internet of Things",
+    general_xaas: "General IaaS, PaaS, and SaaS",
   }
+  /* eslint-enable camelcase */
+  
+  const offeringStr = offeringNames[currentGroupId.toLowerCase()] || "these cloud resources";
+  dontNeedButtonText += offeringStr;
 
   Steps.setAdditionalButtonText({
     buttonText: dontNeedButtonText, 
@@ -507,7 +530,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
-    return "period-of-performance/period-of-performance";
+    return "current-contract/current-contract";
   }
 
   
@@ -731,14 +754,14 @@ export const IGCESurgeCapabilities =  (current:string): string =>{
 
 const needsReplicateOrOptimize = (): boolean => {
   return (
-    AcquisitionPackage.currentEnvironment !== null &&
-    AcquisitionPackage.currentEnvironment
+    CurrentEnvironment.currentEnvironment !== null &&
+    CurrentEnvironment.currentEnvironment
       .current_environment_replicated_optimized.indexOf("YES") > -1
   );
 }
 
 const currentEnvNeedsArchitectureDesign = (): boolean => {
-  return AcquisitionPackage.currentEnvironment?.needs_architectural_design_services === "YES";
+  return CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
 }
 
 export const IGCECannotProceedResolver = (current: string): string => {
@@ -858,7 +881,7 @@ export const IncrementalFundingResolver = (current: string): string => {
   const isIncrementallyFunded = TaskOrder.value.incrementally_funded
 
   if (baseDuration && baseDuration < cutOff || isIncrementallyFunded === "NO") {
-    return routeNames.SummaryPage;
+    return routeNames.UploadJAMRRDocuments;
   }
 
   return current === routeNames.IncrementalFunding
@@ -872,13 +895,13 @@ export const FinancialPOCResolver =  (current: string): string => {
   calcBasePeriod().then(value => {
     baseDuration = value
   })
-  if (current === routeNames.SummaryPage && baseDuration && baseDuration < cutOff ||
-      current === routeNames.SummaryPage && isIncrementallyFunded === "NO") {
+  if (current === routeNames.UploadJAMRRDocuments && baseDuration && baseDuration < cutOff ||
+      current === routeNames.UploadJAMRRDocuments && isIncrementallyFunded === "NO") {
     return routeNames.SeverabilityAndIncrementalFunding;
   }
 
   return current === routeNames.FinancialPOCForm
-    ? routeNames.SummaryPage
+    ? routeNames.UploadJAMRRDocuments
     : routeNames.FinancialPOCForm
 
 }
@@ -906,7 +929,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   CurrentContractDetailsRouteResolver,
   ReplicateDetailsResolver,
-  CurrentContractEnvRouteResolver,
+  CurrentEnvRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
@@ -927,7 +950,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-  UploadJAMRRDocumentsRouteResolver
+  UploadJAMRRDocumentsRouteResolver,
+  AnticipatedUserAndDataNeedsResolver
 };
 
 // add path resolvers here 

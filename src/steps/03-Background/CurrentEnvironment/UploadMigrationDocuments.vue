@@ -4,14 +4,14 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Has a migration assessment, analysis, or process occurred to identify the cloud services
-            and tools needed?
+            Have you completed a migration assessment, analysis, or process to identify
+            the cloud services and tools needed?
           </h1>
           <div class="copy-max-width">
             <p class="mb-8">
               If available, you can upload this supporting documentation, and we will attach it to
-              your Description of Work to be shared with the CSPs for proposal purposes. Please do
-              not upload any classified documents.
+              your Description of Work to be shared with the CSPs for proposal purposes. 
+              <strong>Please do not upload any classified documents.</strong>
             </p>
             <ATATRadioGroup
               id="ExistingEnvOptions"
@@ -165,7 +165,7 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
         }
         // console.log(this.currEnvDTO);
         // the updated migration_documentation will need to be saved
-        await CurrentEnvironment.saveCurrentEnvironment();
+        await CurrentEnvironment.setCurrentEnvironment();
       }
     } catch (error) {
       console.error(`error completing file upload with id ${file?.attachmentId}`);
@@ -207,16 +207,14 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
    * documents of the acquisition.
    */
   async loadAttachments(): Promise<void>{
-    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
-    // console.log(this.currEnvDTO);
     if(!this.currEnvDTO.migration_documentation) {
       this.currEnvDTO.migration_documentation = [];
     }
+    const attachments = await Attachments.getAttachmentsBySysIds({
+      serviceKey: this.attachmentServiceName,
+      sysIds: this.currEnvDTO.migration_documentation
+    });
     const uploadedFiles = attachments
-      .filter((attachment: AttachmentDTO) => {
-        return (this.currEnvDTO.migration_documentation
-          ?.indexOf(attachment.sys_id as string) !== -1)
-      })
       .map((attachment: AttachmentDTO) => {
         const file = new File([], attachment.file_name, {
           lastModified: Date.parse(attachment.sys_created_on || "")
@@ -240,7 +238,7 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     // TODO - get from ACQPKG store or CURRENV store??
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = storeData;
       this.hasMigrationDocumentation = storeData.has_migration_documentation;

@@ -11,7 +11,7 @@
             <p class="mb-8">
               If available, you can upload this supporting documentation, and we will attach it to
               your Description of Work to be shared with the CSPs for proposal purposes. 
-              Please do not upload any classified documents.
+              <strong>Please do not upload any classified documents.</strong>
             </p>
             <ATATRadioGroup
               id="ExistingEnvOptions"
@@ -93,7 +93,7 @@ export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
   private get currentData(): Record<string, string> {
     return {
       // eslint-disable-next-line camelcase
-      has_system_documentation: this.hasSystemDocumentation,
+      has_system_documentation: this.hasSystemDocumentation  || "",
     };
   }
 
@@ -113,15 +113,7 @@ export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         Object.assign(this.currEnvDTO, this.currentData);
-        // TODO - which store to save to?
         await CurrentEnvironment.saveCurrentEnvironment();
-        // AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO); // TODO: not to this for now
-
-        // will be used when SNOW store has been wired
-        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.CurrentEnvironment
-        // });
       }
     } catch (error) {
       console.log(error);
@@ -157,7 +149,7 @@ export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
         }
         // console.log(this.currEnvDTO);
         // the updated system_documentation will need to be saved
-        await CurrentEnvironment.saveCurrentEnvironment();
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
       }
     } catch (error) {
       console.error(`error completing file upload with id ${file?.attachmentId}`);
@@ -199,14 +191,14 @@ export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
    * documents of the acquisition.
    */
   async loadAttachments(): Promise<void>{
-    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
     if(!this.currEnvDTO.system_documentation) {
       this.currEnvDTO.system_documentation = [];
     }
+    const attachments = await Attachments.getAttachmentsBySysIds({
+      serviceKey: this.attachmentServiceName,
+      sysIds: this.currEnvDTO.system_documentation
+    });
     const uploadedFiles = attachments
-      .filter((attachment: AttachmentDTO) => {
-        return (this.currEnvDTO.system_documentation?.indexOf(attachment.sys_id as string) !== -1)
-      })
       .map((attachment: AttachmentDTO) => {
         const file = new File([], attachment.file_name, {
           lastModified: Date.parse(attachment.sys_created_on || "")
@@ -229,7 +221,7 @@ export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     // TODO - get from ACQPKG store or CURRENV store??
-    const storeData = await AcquisitionPackage.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
       this.currEnvDTO = storeData;
       this.hasSystemDocumentation = storeData.has_system_documentation;

@@ -17,7 +17,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
       orgAddressType = types;
     });
     
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
   });
 

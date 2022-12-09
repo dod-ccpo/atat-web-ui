@@ -6,6 +6,8 @@
       {'_is-existing-user' : !isNewUser }
     ]"  
   >
+    <ATATToast />
+
     <div class="_hero-banner"></div>
     <v-main class="_home">
       <div class="_home-content">
@@ -32,25 +34,22 @@
                 <div class="bg-white border-rounded-more pa-8">
                   <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
                   <br />
-                  <div class="d-flex justify-space-around">
-                    <div class="d-flex align-flex-start">
-                      <v-btn 
-                        class="v-btn primary"
-                        @click="startNewAcquisition"
-                      >
-                        Start a new acquisition
-                      </v-btn>
-                    </div>
-                    &nbsp;&nbsp;
-                    <div class="d-flex align-flex-end">
-                      <v-btn 
-                        id="HelpfulResourcesButton"
-                        class="secondary"
-                        @click="scrollToResources"
-                      >
-                        Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
-                      </v-btn>
-                    </div>
+                  <div class="d-flex">
+                    <v-btn
+                      class="v-btn primary mr-4"
+                      @click="startNewAcquisition"
+                    >
+                      Start a new acquisition
+                    </v-btn>
+                    <v-btn
+                      href="https://community.hacc.mil/s/jwcc"
+                      target="_blank"
+                      id="HelpfulResourcesButton"
+                      class="secondary no-text-decoration"
+                      @click="scrollToResources"
+                    >
+                      Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
+                    </v-btn>
                   </div>
                 </div>
               </div>
@@ -68,6 +67,7 @@
           v-else 
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
+          @allPackagesCleared="isNewUser = true"
         />      
 
         <div class="bg-white">
@@ -82,11 +82,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
+import ATATToast from "@/components/ATATToast.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
@@ -96,10 +97,14 @@ import { routeNames } from "@/router/stepper";
 import { scrollToId } from "@/helpers";
 
 import UserStore from "@/store/user";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { UserDTO } from "@/api/models";
+import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
     ATATFooter,
+    ATATToast,
     ExistingUser,
     HelpfulResourcesCards,
     NewUser,
@@ -109,7 +114,17 @@ import UserStore from "@/store/user";
 export default class Home extends Vue {
   public isNewUser = false;
 
-  private currentUser = UserStore.getInitialUser;
+  private currentUser: UserDTO = {};
+
+  public get getCurrentUser(): UserDTO {
+    return CurrentUserStore.currentUser;
+  }
+
+  @Watch("getCurrentUser")
+  public async currentUserChange(newVal: UserDTO): Promise<void> {
+    this.currentUser = newVal;
+    await this.checkIfIsNewUser();
+  }  
 
   public scrollToResources(): void {
     scrollToId("HelpfulResourcesCards");
@@ -117,20 +132,26 @@ export default class Home extends Vue {
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    await AcquisitionPackage.reset();
     this.$router.push({
       name: routeNames.ProjectOverview,
       params: {
         direction: "next"
-      }
+      },
+      replace: true
     }).catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
-  public async mounted(): Promise<void> {
-    this.currentUser = await UserStore.getCurrentUser();
-
+  public async checkIfIsNewUser(): Promise<void> {
     const userHasPackages = await UserStore.hasPackages();
     this.isNewUser = !userHasPackages;
+  }
+
+  public async mounted(): Promise<void> {
+    this.currentUser = await UserStore.getCurrentUser();
+    await this.checkIfIsNewUser();
+
   }
 
 }

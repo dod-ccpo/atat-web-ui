@@ -72,12 +72,13 @@ import DOWSecurityRequirements
   from "../steps/05-PerformanceRequirements/DOW/DOWSecurityRequirements.vue";
 import DOWSummary 
   from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
+import AnticipatedUserAndDataNeeds
+  from "@/steps/05-PerformanceRequirements/DOW/AnticipatedUserAndDataNeeds.vue";
 
 // Step 7 - Other Contract Considerations
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
-import Travel from "@/steps/07-OtherContractConsiderations/Travel.vue";
 import Training from "../steps/07-OtherContractConsiderations/Training.vue";
 import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
 
@@ -119,18 +120,17 @@ import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 
-// step 10 - Review Required Forms
-import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
-import ReviewRequiredFormsStepOne 
-  from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
-import UploadJAMRRDocuments from "@/steps/11-ReviewRequiredForms/UploadJAMRRDocuments.vue";
-import ReadyToGeneratePackage from "@/steps/11-ReviewRequiredForms/ReadyToGeneratePackage.vue";
-import GeneratePackageDocuments from "@/steps/11-ReviewRequiredForms/GeneratePackageDocuments.vue";
+// step 10 - Generate Package Documents
+import GeneratePackageDocuments from "../steps/11-GeneratePackageDocuments/Index.vue";
+import UploadJAMRRDocuments from "@/steps/11-GeneratePackageDocuments/UploadJAMRRDocuments.vue";
+import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToGeneratePackage.vue";
+import GeneratingPackageDocuments
+  from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
 
 import {
   AcorsRouteResolver,
   CurrentContractDetailsRouteResolver,
-  CurrentContractEnvRouteResolver,
+  CurrentEnvRouteResolver,
   ReplicateDetailsResolver,
   PIIRecordResolver,
   FOIARecordResolver,
@@ -158,7 +158,8 @@ import {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-  UploadJAMRRDocumentsRouteResolver
+  UploadJAMRRDocumentsRouteResolver,
+  AnticipatedUserAndDataNeedsResolver,
 } from "./resolvers";
 import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
@@ -219,8 +220,7 @@ export const routeNames = {
   MIPR: "MIPR",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   IncrementalFunding: "Incremental_Funding",
-  ReviewRequiredForms: "Review_Required_Forms",
-  ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
+  GeneratingPackageDocuments: "Generating_Package_Documents",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
   GInvoicing:'G_Invoicing',
@@ -238,7 +238,7 @@ export const routeNames = {
   GatherPriceEstimates:"Gather_Price_Estimates",
   OptimizeOrReplicate:"Optimize_Or_Replicate",
   ArchitecturalDesignSolutions:"ArchitecturalDesignSolutions",
-  IGCETraining:"Training",
+  IGCETraining:"IGCE_Training",
   TravelEstimates:"Travel_Estimates",
   SurgeCapacity:"Surge_Capacity",
   FeeCharged:"Fee_Charged",
@@ -256,7 +256,8 @@ export const routeNames = {
   CrossDomain:"Cross_Domain",
   UploadJAMRRDocuments:"JA_MRR_Documents",
   ReadyToGeneratePackage:"Ready_To_Generate_Package",
-  GeneratePackageDocuments: "Generate_Package_Documents"
+  GeneratePackageDocuments: "Generate_Package_Documents",
+  AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs"
 };
 
 /**
@@ -340,16 +341,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: AcorInfo,
         routeResolver: AcorsRouteResolver,
       },
-      {
-        menuText: "Summary",
-        path: "summary",
-        name: routeNames.AcqPackageSummary,
-        excludeFromMenu: true,
-        completePercentageWeight: 5,
-        stepCompleteOnEnter: routeNames.ContactInformation,
-        component: Summary,
-        backButtonText: "Sample different Back text",
-      }
+      // {
+      //   menuText: "Summary",
+      //   path: "summary",
+      //   name: routeNames.AcqPackageSummary,
+      //   excludeFromMenu: true,
+      //   completePercentageWeight: 5,
+      //   stepCompleteOnEnter: routeNames.ContactInformation,
+      //   component: Summary,
+      //   backButtonText: "Sample different Back text",
+      // }
     ],
   },
   {
@@ -358,6 +359,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     path: "/exceptions",
     completePercentageWeight: 10,
     component: FairOpportunityProcess,
+    stepCompleteOnEnter: routeNames.ContactInformation,
     completed: false,
     children: [
       {
@@ -403,7 +405,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t need other assessment areas",
             buttonId: "NoOtherAssessmentAreas",
             buttonClass: "secondary",
-            name: routeNames.EvalPlanSummary,
+            // name: routeNames.EvalPlanSummary, // TODO: restore when summaryu page added
+            name: routeNames.PeriodOfPerformance,
           },
         ]
       },
@@ -417,16 +420,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         routeResolver: BVTOResolver,
       },   
-      {
-        menuText: "Evaluation Plan Summary",
-        path: "eval-plan-summary",
-        name: routeNames.EvalPlanSummary,
-        component: EvalPlanSummary,
-        completePercentageWeight: 0,
-        completed: false,
-        stepCompleteOnEnter: routeNames.CreateEvalPlan,
-        excludeFromMenu: true,
-      },
+      // {
+      //   menuText: "Evaluation Plan Summary",
+      //   path: "eval-plan-summary",
+      //   name: routeNames.EvalPlanSummary,
+      //   component: EvalPlanSummary,
+      //   completePercentageWeight: 0,
+      //   completed: false,
+      //   stepCompleteOnEnter: routeNames.CreateEvalPlan,
+      //   excludeFromMenu: true,
+      // },
       // KEEP JustificationAndApproval for future ticket
       // {
       //   menuText: "Justification and Approval",
@@ -452,6 +455,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "period-of-performance",
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
+        stepCompleteOnEnter: routeNames.CreateEvalPlan,
       },
       {
         name: routeNames.POPStart,
@@ -511,6 +515,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     path: "/current-contract",
     completePercentageWeight: 10,
     component: Background,
+    stepCompleteOnEnter: routeNames.ClassificationRequirements,
     completed: false,
     children: [
       {
@@ -536,7 +541,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t have an existing contract",
             buttonId: "NoExistingContract",
             buttonClass: "secondary",
-            name: routeNames.PeriodOfPerformance,
+            name: routeNames.RequirementCategories,
+            actionName: "clearCurrentContractInfo"
           },
         ],
       },
@@ -556,7 +562,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: UploadSystemDocuments,
         completePercentageWeight: 5,
         completed: false,
-        routeResolver: CurrentContractEnvRouteResolver,
+        routeResolver: CurrentEnvRouteResolver,
       },
       {
         menuText: "Upload Process",
@@ -642,16 +648,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         routeResolver: ArchitecturalDesignDetailsRouteResolver
       },
-      {
-        menuText: "Summary",
-        path: "background-summary",
-        excludeFromMenu: true,
-        name: routeNames.BackgroundSummary,
-        stepCompleteOnEnter: routeNames.CurrentEnvironment,
-        component: BackgroundSummary,
-        completePercentageWeight: 5,
-        completed: false,
-      },
+      // {
+      //   menuText: "Summary",
+      //   path: "background-summary",
+      //   excludeFromMenu: true,
+      //   name: routeNames.BackgroundSummary,
+      //   stepCompleteOnEnter: routeNames.CurrentEnvironment,
+      //   component: BackgroundSummary,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      // },
     ]
   },
   {
@@ -670,6 +676,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
+      },
+      {
+        menuText: "Anticipated Users and Data Needs",
+        excludeFromMenu: true,
+        path: "anticipated-users-and-data-needs",
+        name: routeNames.AnticipatedUserAndDataNeeds,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: AnticipatedUserAndDataNeedsResolver,
+        component: AnticipatedUserAndDataNeeds,
       },
       {
         menuText: "Service Offerings",
@@ -761,14 +777,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.PackagingPackingAndShipping,
         component: PackagingPackingAndShipping,
-      },
-      {
-        name: routeNames.Travel,
-        menuText: "Travel",
-        path: "travel",
-        completePercentageWeight: 2,
-        stepCompleteOnLeave: routeNames.Travel,
-        component: Travel
       },
       {
         name: routeNames.Training,
@@ -978,7 +986,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: IGCESupportingDocumentationResolver
       },
       {
-        menuText: "Funding Plan",
+        menuText: "Funding",
         path: "funding-plan",
         name: routeNames.FundingPlanType,
         completePercentageWeight: 1,
@@ -1017,7 +1025,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
-
       },
       {
         menuText: "Incremental Funding",
@@ -1038,31 +1045,23 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FinancialPOCResolver
 
       },
-      {
-        menuText: "SummaryPage",
-        excludeFromMenu: true,
-        path: "summary-page",
-        name: routeNames.SummaryPage,
-        completePercentageWeight: 1,
-        component: SummaryPage,
-      },
+      // {
+      //   menuText: "SummaryPage",
+      //   excludeFromMenu: true,
+      //   path: "summary-page",
+      //   name: routeNames.SummaryPage,
+      //   completePercentageWeight: 1,
+      //   component: SummaryPage,
+      // },
     ]
   },
   {
     stepNumber: "09",
     completePercentageWeight: 7,
-    menuText: "Review Required Forms",
-    path: "/review-required-forms",
-    component: ReviewRequiredForms,
+    menuText: "Generate Package Documents",
+    path: "/upload-ja-mrr-documents",
+    component: GeneratePackageDocuments,
     children: [
-      {
-        menuText: "Step One",
-        path:"review-required-forms",
-        excludeFromMenu: true,
-        name: routeNames.ReviewRequiredFormsStepOne,
-        completePercentageWeight: 1,
-        component: ReviewRequiredFormsStepOne,
-      },
       {
         menuText: "Upload J&A and MRR Documents",
         path:"upload-ja-mrr-documents",
@@ -1085,9 +1084,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Generate Package Documents",
         path:"generate-package-documents",
         excludeFromMenu: true,
-        name: routeNames.GeneratePackageDocuments,
+        name: routeNames.GeneratingPackageDocuments,
         completePercentageWeight: 0,
-        component: GeneratePackageDocuments
+        component: GeneratingPackageDocuments
       }
     ],
   },

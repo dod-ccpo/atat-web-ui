@@ -10,7 +10,8 @@ import {
   PerformanceTier, 
   StorageType, 
   StorageUnit, 
-  YesNo
+  YesNo,
+  SingleMultiple
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -43,34 +44,53 @@ export interface AlertDTO extends BaseTableDTO {
 export interface AcquisitionPackageDTO extends BaseTableDTO {
   status: string;
   number: string;
-  project_overview: string;
-  organization: string;
-  contact: string;
-  fair_opportunity: string;
-  current_contract: string;
+  project_overview: ReferenceColumn | string;
+  organization: ReferenceColumn | string;
+  fair_opportunity: ReferenceColumn | string;
+  current_contract_and_recurring_information: ReferenceColumn | string;
   docusign_envelope_id: string;
-  sensitive_information: string;
-  period_of_performance: string;
+  docgen_job_status: string;
+  sensitive_information: ReferenceColumn | string;
+  period_of_performance: ReferenceColumn | string;
   periods: string;
   gfe_overview: string;
-  contract_type: string;
-  requirements_const_estimate: string;
-  contract_considerations: string;
+  contract_type: ReferenceColumn | string;
+  requirements_cost_estimate: ReferenceColumn | string;
+  contract_considerations: ReferenceColumn | string;
   funding_plans: string;
-  classification_level: string;
+  classification_level: ReferenceColumn | string;
   required_services: string;
-  current_environment: string;
+  current_environment: ReferenceColumn | string;
   environment_instance: string;
-  secondary_reviewers?: string[];
+  secondary_reviewers?: string;
   mission_owners?: string;
-  contract_award: ReferenceColumn;
+  contract_award: ReferenceColumn | string;
   package_status?: string;
-  contributors?: string[];
+  contributors?: string;
+  evaluation_plan?: string;
+  cor: ReferenceColumn | string;
+  acor: ReferenceColumn | string;
+  primary_contact: ReferenceColumn | string;
+  funding_requirement: ReferenceColumn | string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
   impact_level: string;
   classification: string;
+}
+
+export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
+  classification_level: ReferenceColumn; // sys id
+  acquisition_package: ReferenceColumn; // sys id
+  users_per_region?: string; // json stringified sys_id/count pairs
+  increase_in_users?: YesNo;
+  user_growth_estimate_type?: SingleMultiple
+  user_growth_estimate_percentage?: string[];
+  data_egress_monthly_amount?: number | null;
+  data_egress_monthly_unit?: StorageUnit;
+  data_increase?: YesNo;
+  data_growth_estimate_type?: SingleMultiple;
+  data_growth_estimate_percentage?: string[];
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -89,7 +109,7 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   migration_documentation?: string[]; // List - sys_ids from sys_attachment table 
   env_location: EnvironmentLocation;
   env_classifications_cloud: string[]; // array of classification level sys_ids
-  env_classifications_on_prem: string[]; // array of classification level sys_ids
+  env_classifications_onprem: string[]; // array of classification level sys_ids
   env_instances: string[]; // array of sys_ids
   current_environment_replicated_optimized: EnvironmentReplicateOptimized;
   statement_replicated_optimized: string;
@@ -116,7 +136,7 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   users_per_region: string; // json stringified sys_id/count pairs
   operating_system: string;
   licensing: string;
-  number_of_VCPUs: number | null;
+  number_of_vcpus: number | null;
   processor_speed: number | null; 
   memory_amount: number | null;
   memory_unit: StorageUnit;
@@ -127,12 +147,10 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   number_of_instances: number | null; 
   data_egress_monthly_amount: number | null;    
   data_egress_monthly_unit: StorageUnit;
-  current_payment_arrangement: PaymentArrangement;
-  pricing_period_expiration_date?: string;
+  pricing_model: PaymentArrangement;
+  pricing_model_expiration?: string;
   additional_information?: string; 
 }
-
-
 
 export interface ContactDTO extends BaseTableDTO {
   type: string; // Mission Owner, COR, ACOR
@@ -200,6 +218,11 @@ export interface SystemChoiceDTO extends BaseTableDTO {
   label: string;
   value: string;
   sequence?: number;
+  hint?: string;
+}
+
+export interface SystemPropertiesDTO extends BaseTableDTO {
+  sys_id?: string
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
@@ -240,7 +263,7 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   recurring_requirement?: string;
   base_and_options?: string; //deprecated
   option_periods?: string;
-  base_period?: string;
+  base_period?: ReferenceColumn | string;
 }
 
 export interface ContractTypeDTO extends BaseTableDTO {
@@ -343,6 +366,7 @@ export interface FundingRequirementDTO extends BaseTableDTO {
   pop_start_date: string;
   pop_end_date: string;
   task_order_number: string;
+  financial_poc?: string;
 }
 
 export interface PeriodDTO extends BaseTableDTO {
@@ -353,8 +377,8 @@ export interface PeriodDTO extends BaseTableDTO {
 }
 
 export interface ReferenceColumn {
-  link: string;
-  value: string;
+  link?: string;
+  value?: string;
 }
 
 export interface DisplayColumn {
@@ -584,14 +608,26 @@ export interface AcquisitionPackageSummaryMetadataAndDataDTO {
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
 }
 
+export interface EvalPlanAssessmentAreaDTO extends BaseTableDTO {
+  name: string;
+  description: string;
+  sequence: string;
+}
+
+export interface EvalPlanDifferentiatorDTO extends BaseTableDTO {
+  name: string;
+  description: string;
+  sequence: string;
+}
+
 export interface EvaluationPlanDTO extends BaseTableDTO {
   source_selection: EvalPlanSourceSelection;
   method?: EvalPlanMethod;
   has_custom_specifications?: string;
-  standard_specifications?: string[];
-  custom_specifications?: string[];
-  standard_differentiators?: string[];
-  custom_differentiators?: string[];
+  standard_specifications?: string;
+  custom_specifications?: string;
+  standard_differentiators?: string;
+  custom_differentiators?: string;
 }
 
 export interface UserDTO extends BaseTableDTO {

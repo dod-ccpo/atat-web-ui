@@ -38,7 +38,12 @@ import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
 import { UserApi } from "@/api/user";
-
+import {EvaluationPlanApi} from "@/api/evaluationPlan";
+import {CurrentEnvironmentInstanceAPI} from "@/api/currentEnvironmentInstance";
+import {EvalPlanAssessmentAreaApi} from "@/api/evalPlanAssessmentArea";
+import {EvalPlanDifferentiatorApi} from "@/api/evalPlanDifferentiator";
+import {SelectedClassificationLevelApi} from "@/api/selectedClassificationLevel";
+import { SysPropertiesApi } from "./sys_properties";
 
 export const api = {
 
@@ -78,11 +83,17 @@ export const api = {
   clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),
   currentEnvironmentTable: new CurrentEnvironmentApi(),
+  currentEnvironmentInstanceTable: new CurrentEnvironmentInstanceAPI(),
   aggregate: new AggregateApi(),
   environmentInstanceTable: new EnvironmentInstanceAPI(),
   portfolioTable: new PortfolioApi(),
   cloudServiceProviderTable: new CloudServiceProviderApi(),
-  userTable: new UserApi()
+  userTable: new UserApi(),
+  evaluationPlanTable: new EvaluationPlanApi(),
+  evalPlanAssessmentAreaTable: new EvalPlanAssessmentAreaApi(),
+  evalPlanDifferentiatorTable: new EvalPlanDifferentiatorApi(),
+  selectedClassificationLevelTable: new SelectedClassificationLevelApi(),
+  sysProperties: new SysPropertiesApi()
 }
 
 export default {

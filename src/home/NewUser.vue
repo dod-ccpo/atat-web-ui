@@ -62,7 +62,7 @@
               <div v-if="showNewFeatures">
                 <br />
                 <p class="mb-0">
-                  In the coming weeks, you will be able to:
+                  Soon, you will be able to:
                 </p>
                 <br/>
                 <v-list class="_atat-stepper">
@@ -71,7 +71,7 @@
                       <span class="_step-circle">1</span>
                       <v-list-item-content>
                         Review and digitally sign documents prior to
-                        submission using DocuSign.
+                        submission.
                       </v-list-item-content>
                     </v-list-item>
                     <v-list-item>
@@ -86,14 +86,15 @@
                 </v-list>
               </div>
             </div>
+
           </v-col>
         </v-row>
-        <ATATDivider></ATATDivider>
+      <hr class="my-0 _mt-80" />
       </div>
     </section>
     <section 
       id="SectionProvisionResources" 
-      class="_learn-more-section bg-white _py-80"
+      class="_learn-more-section bg-white _pb-80"
     >
       <div class="container-max-width">
         <h1 class="text-primary large text-center mb-10">
@@ -116,7 +117,7 @@
           <v-col class="pr-10">
             <p class="mt-5">
               Whether you used DAPPS to generate your acquisition package or obtained 
-              a JWCC task order from your own contracting office, the Account Tracking 
+              a JWCC task order from your own Contracting Office, the Account Tracking 
               and Automation Tool (ATAT) will enable you to provision accounts and 
               environments for your cloud contracts.
             </p>
@@ -175,7 +176,7 @@ import ATATDivider from "@/components/ATATDivider.vue";
 })
 
 export default class NewUser extends Vue {
- 
+
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
   }

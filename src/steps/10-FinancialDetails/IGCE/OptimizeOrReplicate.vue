@@ -7,8 +7,8 @@
             Let’s start with a price estimate for {{ headingVerb }} your current functions
           </h1>
           <p class="page-intro">
-            Based on what you previously told us, you need the CSP to perform a 
-            “lift and shift” to recreate your environment and configurations using 
+            Based on what you previously told us in the Background section, you need the CSP 
+            to perform a “lift and shift” to recreate your environment and configurations using 
             JWCC offerings. Below, estimate a price per period for this requirement. 
             If you know the requirement will change over time, then you can customize 
             the price for each performance period.
@@ -45,7 +45,6 @@
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import { RadioButton } from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
@@ -53,6 +52,7 @@ import { hasChanges } from "@/helpers";
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore, { OptimizeOrReplicateEstimateNeeds } from "@/store/IGCE";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -109,7 +109,7 @@ export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
 
   public get headingVerb(): string {
     const replicatedOrOptimized = 
-      AcquisitionPackage.currentEnvironment?.current_environment_replicated_optimized;
+      CurrentEnvironment.currentEnvironment?.current_environment_replicated_optimized;
     return replicatedOrOptimized === "YES_OPTIMIZE" ? "optimizing" : "replicating";
   }
 

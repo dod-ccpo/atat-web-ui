@@ -28,6 +28,8 @@ import {
   storeDataToSession,
   retrieveSession,
 } from "../helpers";
+import {api} from "@/api";
+import {AxiosRequestConfig} from "axios";
 @Module({
   name: "AttachmentsStore",
   namespaced: true,
@@ -205,6 +207,61 @@ export class AttachmentStore extends VuexModule {
     await this.ensureInitialized();
     const storeData = this as unknown as Record<string, unknown>;
     return storeData[serviceKey] as AttachmentDTO[];
+  }
+
+  /**
+   * Check if the attachments are available in the store, if they are, then
+   * returns it from the store. Otherwise, makes an API call and sets
+   * the attachments to the store and returns the attachments.
+   */
+  @Action({rawError: true})
+  public async getAttachmentsBySysIds({
+    serviceKey,
+    sysIds,
+  }: {
+    serviceKey: string;
+    sysIds: string[];
+  }): Promise<AttachmentDTO[]> {
+    let attachmentList: AttachmentDTO[] = [];
+    const storeData = this as unknown as Record<string, unknown>;
+    const attachmentListFromStore = storeData[serviceKey] as AttachmentDTO[];
+    if (attachmentListFromStore && attachmentListFromStore.length > 0) {
+      attachmentList = attachmentListFromStore
+        .filter(attachment => sysIds.indexOf(attachment.sys_id as string) !== -1)
+    }
+    if (attachmentList.length === sysIds.length) {
+      return attachmentList;
+    } else {
+      const query =
+        "^sys_idIN" + sysIds;
+      const attachmentsBySysIdsRequestConfig: AxiosRequestConfig = {
+        params: {
+          sysparm_query: query
+        }
+      };
+      attachmentList = await api.attachments.getQuery(attachmentsBySysIdsRequestConfig);
+      // below call sets the attachments to the store
+      this.updateAttachments({
+        key: serviceKey,
+        attachments: attachmentList});
+      return attachmentList;
+    }
+  }
+
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_ATTACHMENTS_KEY);
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.initialized = false;
+    this[FUNDING_REQUEST_FSFORM_TABLE] = [];
+    this[FUNDING_REQUEST_MIPRFORM_TABLE] = [];
+    this[REQUIREMENTS_COST_ESTIMATE_TABLE] = [];
+    this[CURRENT_ENVIRONMENT_TABLE] = [];
+    this[FAIR_OPPORTUNITY_TABLE] = [];
   }
 }
 

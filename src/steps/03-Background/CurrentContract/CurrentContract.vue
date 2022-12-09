@@ -8,10 +8,9 @@
           </h1>
           <div class="copy-max-width">
             <p class="mb-8">
-              If your acquisition is a follow-on requirement, we’ll gather some 
-              details about your contract next. Your procurement history will serve 
-              as a background on multiple documents within your final acquisition 
-              package, including the Requirements Checklist and Description of Work.
+              If your acquisition is a follow-on requirement, we’ll gather details 
+              about your contract. Your current contract will serve as a background 
+              on multiple documents within your final acquisition package, as applicable.
             </p>
             <CurrentContractOptions                                  
               :card="true"
@@ -32,7 +31,9 @@ import { Component, Mixins } from "vue-property-decorator";
 
 import CurrentContractOptions from "./components/CurrentContractOptions.vue"
 
-import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
+import AcquisitionPackage, 
+{initialCurrentContract, StoreProperties} from "@/store/acquisitionPackage";
+
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -83,7 +84,12 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveData<CurrentContractDTO>({data: this.currentData,
+        let data = this.currentData;
+        if (data.current_contract_exists === "NO") {
+          data = initialCurrentContract();
+          data.current_contract_exists = "NO"
+        }
+        await AcquisitionPackage.saveData<CurrentContractDTO>({data,
           storeProperty: StoreProperties.CurrentContract});
       }
     } catch (error) {

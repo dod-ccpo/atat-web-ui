@@ -5,16 +5,16 @@
         <v-row>
           <v-col class="col-12">
             <h1 class="page-header">
-              Let’s gather some details about the duration of your task order
+              Let’s gather details about the duration of your task order
             </h1>
             <div class="copy-max-width">
               <p class="mb-10">
                 Your Period of Performance (PoP) will begin based upon the
                 execution date of your task order or on your requested start date,
                 if applicable. It will extend through the length of the base
-                period, plus any subsequent option periods. In the fields below,
-                specify the length of time that each period will remain in effect.
-                Add, duplicate or remove option periods as needed, up to 5 years
+                period, plus any subsequent exercised option periods. In the fields below,
+                specify the required length of time for each period.
+                Add, duplicate or remove option periods as needed, not to exceed five calendar years
                 total.
                 <a
                   role="button"
@@ -504,7 +504,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   private savedData: PeriodDTO[] = [];
 
   public async loadOnEnter(): Promise<void> {
-    const periods = await Periods.loadPeriods();
+    const periods = await Periods.getAllPeriods() as PeriodDTO[];
     this.savedData = periods.map(period=> {
 
       return {

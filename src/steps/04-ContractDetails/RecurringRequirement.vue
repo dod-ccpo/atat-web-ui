@@ -5,12 +5,13 @@
         <v-row>
           <v-col class="col-12">
             <h1 class="page-header">
-              Will this be a future recurring requirement?
+              Will this be a recurring requirement?
             </h1>
             <div class="copy-max-width">
               <p class="mb-10">
-                DISA has developed a tracking system for expiring contracts. Responding YES to this 
-                question will enable contract specialists to populate the tracking system.
+                DISA has developed a tracking system for expiring contracts. Responding "YES" 
+                below will enable DITCO to notify you of expiring contracts in sufficient time 
+                to prepare your follow-on acquisition package.
               </p>
               <ATATRadioGroup
                 class="copy-max-width mb-10 max-width-740"
@@ -41,6 +42,7 @@ import { PeriodOfPerformanceDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
 import { RadioButton } from "../../../types/Global";
+import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
 
 @Component({
   components: {
@@ -50,8 +52,9 @@ import { RadioButton } from "../../../types/Global";
 
 export default class RecurringRequirement extends Mixins(SaveOnLeave) {
 
-  public selectedRecurringOption 
-    = AcquisitionPackage.periodOfPerformance?.recurring_requirement || "";
+  public popDTO = defaultPeriodOfPerformance;
+
+  public selectedRecurringOption = "";
 
   private recurringOptions: RadioButton[] = [
     {
@@ -80,17 +83,16 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<PeriodOfPerformanceDTO>({storeProperty: StoreProperties.PeriodOfPerformance});
+    const storeData = await Periods.getPeriodOfPerformance();
     if (storeData) {
+      this.popDTO = storeData;
       if (Object.prototype.hasOwnProperty.call(storeData, 'recurring_requirement')) {
         this.savedData = {
           recurring_requirement: storeData.recurring_requirement,
         }
+        this.selectedRecurringOption = storeData.recurring_requirement as string;
       }
-    } else {
-      AcquisitionPackage.setPeriodOfPerformance(this.currentData);
-    }
+    } 
   }
 
   private hasChanged(): boolean {
@@ -100,9 +102,11 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveData<PeriodOfPerformanceDTO>(
-          {data: this.currentData, 
-            storeProperty: StoreProperties.PeriodOfPerformance});
+        let pops: PeriodOfPerformanceDTO  = {  
+          ...this.popDTO,
+          recurring_requirement: this.currentData.recurring_requirement || "",
+        }
+        await Periods.setPeriodOfPerformance(pops);
       }
     } catch (error) {
       console.log(error);

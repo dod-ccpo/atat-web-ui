@@ -48,8 +48,8 @@
           <p class="mb-10">
             To request incremental funding, your requirement must be severable in nature. This means
             that it can be divided and apportioned into two or more parts that are not necessarily
-            dependent upon each other. If you select Yes below, we will help you generate a
-            projected schedule for your incremental funding next.
+            dependent upon each other. If you select "Yes" below, we will help you generate a
+            projected schedule for your incremental funding.
           </p>
           <ATATRadioGroup
             id="IncrementallyFundOptions"
@@ -66,9 +66,9 @@
             <template v-slot:content>
               <p class="mb-4">
                 Severable services are continuing and recurring in nature (e.g., systems development
-                support provided on a level-of-effort basis). "Severable" means tasks can be
-                separated into components that independently meet a separate and on-going need of
-                the government.
+                support provided on a level-of-effort basis, help-desk support, maintenance). 
+                "Severable" means tasks can be separated into components that independently meet a 
+                separate and on-going need of the government.
               </p>
               <p>
                 U.S. Government Accountability Office (GAO) considers services to be non-severable
@@ -94,31 +94,44 @@
                 Plan</strong>.
               </p>
               <p class="pb-2">
-                The purpose of this document is to provide Defense Information Technology
-                Contracting Organization (DITCO) with:
+                The purpose of this document is to provide the Contracting Office 
+                with the following:
               </p>
               <ol>
                 <li class="pb-2">
-                  written certification that the requirement is severable in nature;
+                  Written certification that the requirement is severable in nature
                 </li>
                 <li class="pb-2">
-                  a projected schedule for fully funding any contract line items that are not
-                  optional in nature, regardless of contract type;
+                  A projected schedule for fully funding any contract line items that are not
+                  optional in nature, regardless of contract type
                 </li>
                 <li class="pb-2">
-                  a projected schedule for fully funding firm-fixed-price contract line items in
-                  order to populate DFARS clause 252.232-7007, Limitation of Government’s
-                  Obligation; and
+                  A projected schedule for fully funding firm-fixed-price contract line items in
+                  order to populate 
+                  
+                  <a
+      href="https://www.acquisition.gov/dfars/252.232-7007-limitation-ofgovernments-obligation."
+                  target="_blank"
+                  class="_text-link"
+                  id="limitationOfGovernmentsObligationLink"
+                >
+                  <span class="_external-link">DFARS clause 252.232-7007, Limitation of Government’s
+                  Obligation</span>
+                </a>
+                  
                 </li>
                 <li class="pb-2">
-                  provide assurance to DITCO that funds have been budgeted and will be available to
+                  Assurance that funds have been budgeted and will be available to
                   fully fund contract line items that are not optional in nature.
                 </li>
               </ol>
             </template>
           </ATATExpandableLink>
         </div>
-        <div v-if="showAlert()">
+
+        <!-- TODO - ADD ALERT BACK IN WHEN IGCE IMPLEMENTED FULLY -->
+        
+        <!-- <div v-if="showAlert()">
           <ATATAlert
             id="IFPRequestPageAlert"
             class="container-max-width my-10"
@@ -164,8 +177,8 @@
                 </p>
               </div>
             </template>
-          </ATATAlert>
-        </div>
+          </ATATAlert> 
+        </div>-->
       </v-col>
     </v-row>
   </v-container>

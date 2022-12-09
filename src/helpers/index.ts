@@ -1,4 +1,11 @@
-import { AgencyDTO, ClassificationLevelDTO, PeriodDTO, SystemChoiceDTO } from "@/api/models";
+import { 
+  AgencyDTO, 
+  ClassificationLevelDTO, 
+  EvalPlanAssessmentAreaDTO, 
+  EvalPlanDifferentiatorDTO, 
+  PeriodDTO, 
+  SystemChoiceDTO 
+} from "@/api/models";
 import { Checkbox, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
@@ -37,6 +44,25 @@ export const convertSystemChoiceToSelect =
       }
     });
 
+
+export const convertEvalPlanDifferentiatorToCheckbox = 
+  (data: EvalPlanDifferentiatorDTO[]): Checkbox[] => data.map(item => {
+    return {
+      id: item.name,
+      label: item.description,
+      value: item.sys_id as string
+    }
+  });
+
+export const convertEvalPlanAssessmentAreaToCheckbox = 
+  (data: EvalPlanAssessmentAreaDTO[]): Checkbox[] => data.map(item => {
+    return {
+      id: item.name,
+      label: item.description,
+      value: item.sys_id as string
+    }
+  });
+
 export const buildClassificationCheckboxList = (
   data: ClassificationLevelDTO[], 
   idSuffix: string, 
@@ -72,7 +98,7 @@ export const buildClassificationCheckboxList = (
 };
 
 export const buildClassificationLabel
-    = (classLevel: ClassificationLevelDTO, type: string | null): string => {
+    = (classLevel: ClassificationLevelDTO, type: string | null, spaceBetween = false): string => {
       type = type || "long";
       const classificationString = classLevel.classification === "U"
         ? "Unclassified"
@@ -86,8 +112,13 @@ export const buildClassificationLabel
       if (type === "long") {
         return classificationString + " / " + ILString;
       }
+      if(spaceBetween){
+        return classificationString + " / " + IL;
+
+      }
       return classificationString + "/" + IL;
     }
+
 
 export const buildClassificationDescription
     = (classLevel: ClassificationLevelDTO): string => {
@@ -290,6 +321,13 @@ export function differenceInDaysOrMonths(
     startDate: formattedStartDate,
     endDate: formattedEndDate,
     expiration: `${numberOfTimeUnits} ${unitOfTime} to expiration`
+  }
+}
+
+export function scrollToMainTop(): void {
+  const mainWrap = document.querySelector(".v-main__wrap");
+  if (mainWrap) {
+    mainWrap.scrollTo({top: 0, behavior: "smooth"});
   }
 }
 

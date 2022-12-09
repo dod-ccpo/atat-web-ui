@@ -17,15 +17,15 @@
               <template v-slot:content>
                 <h2>Public Disclosure of Information</h2>
                 <p class="mt-2">
-                  All task orders, including the work statement, Security Classification, DD254, 
-                  and other government-generated documents incorporated into a task order by 
+                  All task orders, including the work statement, Security Classification, DD Form 
+                  254, and other government-generated documents incorporated into a task order by 
                   reference are subject to disclosure under FOIA.
                 </p>
                 <p class="mb-0">
                   If public disclosure of information would be considered harmful to a government 
                   interest, then document(s) should be marked for Controlled Unclassified 
                   Information (CUI) to alert the recipient that an exemption may apply. FOIA 
-                  requests for any documents marked CUI will be referred to the mission owner’s 
+                  requests for any documents marked CUI will be referred to the Mission Partner’s 
                   FOIA office for response. 
                   <a role="button"
                     id="FOIALearnMore"
@@ -42,7 +42,7 @@
             <ATATRadioGroup
               class="copy-max-width mb-10"
               id="FOIAOptions"
-              legend="Have you provided any information in this acquisition package that, 
+              legend="Have you provided any CUI information in this acquisition package that, 
                 if released, would be harmful to the government?"
               :items="fOIAOptions"
               :value.sync="potentialToBeHarmful"
@@ -64,13 +64,13 @@
                   security classification under the criteria of an Executive Order, but 
                   the disclosure of which would be considered harmful to a government 
                   interest, one or more FOIA exemptions may apply. In this instance, 
-                  the work statement/DD254 should be marked for Controlled Unclassified 
+                  the Description of Work should be marked for Controlled Unclassified 
                   Information (CUI) and each paragraph that contains CUI information 
                   should also be marked to alert the recipient that an exemption may apply.  
                 </p>
                 <p>
-                  Responsibility for the marking of CUI information is with the mission 
-                  owner. The CUI legend ensures that a recipient is aware of the status 
+                  Responsibility for the marking of CUI information is with the Mission 
+                  Partner. The CUI legend ensures that a recipient is aware of the status 
                   of the information in the document; it is not a form of classification 
                   to protect security interests.
                 </p>
@@ -79,8 +79,8 @@
                   information within a document; an entire document cannot be exempted 
                   if only a portion is considered vulnerable to a security risk. A document 
                   marked CUI in its entirety, but wherein the information is not segregated 
-                  as set out above, will be referred to the mission owner’s FOIA office for 
-                  response to the FOIA requester. The contracting office can only protect 
+                  as set out above, will be referred to the Mission Partner’s FOIA office for 
+                  response to the FOIA requester. The Contracting Office can only protect 
                   from disclosure of a document that has been appropriately marked when it 
                   is submitted as part of a complete requirements package.
                 </p>

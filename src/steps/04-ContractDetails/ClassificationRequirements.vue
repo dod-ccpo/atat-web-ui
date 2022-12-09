@@ -39,10 +39,10 @@
             >
               <template v-slot:content>
                 <p class="mb-0">
-                  <strong> You DO NOT need to complete a DD Form 254,
+                  <strong> You do not need to complete a DD Form 254,
                   DoD Contract Security Classification Specification, for this task order.</strong>
-                  JWCC provides a DD254 at the IDIQ level that covers access to all classification
-                  levels for the task orders ordered within it.
+                  JWCC provides a DD Form 254 at the contract level that covers access to all 
+                  classification levels for the task orders ordered within it.
                 </p>
               </template>
             </ATATAlert>
@@ -54,18 +54,21 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import vue from 'vue'
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 import { Checkbox } from "../../../types/Global";
-import { ClassificationLevelDTO } from "@/api/models";
+import {
+  AcquisitionPackageDTO,
+  ClassificationLevelDTO, ReferenceColumn, SelectedClassificationLevelDTO
+} from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from '@/store/acquisitionPackage';
+import _ from "lodash";
 
 @Component({
   components: {
@@ -77,6 +80,8 @@ import AcquisitionPackage from '@/store/acquisitionPackage';
 export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
+  public savedSelectedClassLevelList: SelectedClassificationLevelDTO[] = [];
+  public acquisitionPackage: AcquisitionPackageDTO | undefined;
   public isIL6Selected = ""
   public IL6SysId = ""
   private checkboxItems: Checkbox[] = []
@@ -85,38 +90,60 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     return buildClassificationCheckboxList(data, "", true, false);
   }
 
-  private saveSelected() {
-    const arr :ClassificationLevelDTO[] = [];
-    this.selectedOptions.forEach(item => {
-      const value = this.classifications.filter(( data )=>{
-        return item == data.sys_id
-      })
-      arr.push(value[0])
-    })
-    return arr
+  /**
+   * Builds the current selected classification level list by using the saved list and the default
+   * object. For the default object, sets the selected classification_level sys_id
+   */
+  private buildCurrentSelectedClassLevelList() {
+    const currentSelectedClassLevelList :SelectedClassificationLevelDTO[] = [];
+    for (const classificationLevelSysId of this.selectedOptions) {
+      const selectedClassificationLevel = this.savedSelectedClassLevelList
+        .find(savedClassLevel =>
+          savedClassLevel.classification_level.value === classificationLevelSysId);
+      if (selectedClassificationLevel) {
+        currentSelectedClassLevelList.push(selectedClassificationLevel);
+      } else {
+        const defaultSelectedClassificationLevel: SelectedClassificationLevelDTO = {
+          impact_level: "",
+          classification: "",
+          classification_level: classificationLevelSysId as unknown as ReferenceColumn,
+          acquisition_package: this.acquisitionPackage?.sys_id as unknown as ReferenceColumn,
+          users_per_region: "",
+          increase_in_users: "",
+          user_growth_estimate_type: "",
+          user_growth_estimate_percentage: [],
+          data_egress_monthly_amount: null,
+          data_egress_monthly_unit: "",
+          data_increase: "",
+          data_growth_estimate_type: "",
+          data_growth_estimate_percentage: []
+        }
+        currentSelectedClassLevelList.push(defaultSelectedClassificationLevel);
+      }
+    }
+    return currentSelectedClassLevelList
   }
 
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
     this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false"
   }
-  public savedData: ClassificationLevelDTO[] = []
 
-  public get currentData(): ClassificationLevelDTO[] {
-    return this.saveSelected()
+  public get currentData(): SelectedClassificationLevelDTO[] {
+    return this.buildCurrentSelectedClassLevelList()
   }
 
-
   private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
+    return hasChanges(this.currentData, this.savedSelectedClassLevelList);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
-
     try {
       if (this.hasChanged()) {
-        classificationRequirements.setSelectedClassificationLevels(this.currentData)
+        await classificationRequirements.saveSelectedClassificationLevels(this.currentData)
+        await classificationRequirements.loadSelectedClassificationLevelsByAqId(
+            this.acquisitionPackage?.sys_id as string);
       }
     } catch (error) {
       console.log(error);
@@ -124,22 +151,24 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     return true;
   }
 
+  /**
+   * Loads all classification level choices, loads all previously selected classification
+   * levels and then sets the context for pre-selecting the checkboxes.
+   */
   public async loadOnEnter(): Promise<void> {
+    this.acquisitionPackage = await AcquisitionPackage
+      .getAcquisitionPackage() as AcquisitionPackageDTO;
     this.classifications = await classificationRequirements.getAllClassificationLevels();
-    this.checkboxItems =this.createCheckboxItems(this.classifications)
-
+    this.checkboxItems =this.createCheckboxItems(this.classifications);
     const IL6Checkbox = this.checkboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "false";
-
-    const storeData = await classificationRequirements.getSelectedClassificationLevels()
-    if(storeData) {
-      this.savedData = storeData
-      storeData.forEach((val) => {
-        if (val.sys_id) {
-          this.selectedOptions.push(val.sys_id)
-        }
-      })
-    }
+    // need to clone so that the store data is not modified. Store data needs to be intact
+    // for comparison purposes during save
+    this.savedSelectedClassLevelList =
+        _.cloneDeep(await classificationRequirements.getSelectedClassificationLevels());
+    this.selectedOptions = this.savedSelectedClassLevelList
+      .map(savedSelectedClassLevel =>
+        savedSelectedClassLevel.classification_level.value) as string[];
   }
 
   public async mounted(): Promise<void> {

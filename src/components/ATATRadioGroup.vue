@@ -9,7 +9,7 @@
       v-model="_selectedValue"
     >
       <fieldset>
-        <div class="d-flex mb-3">
+        <div class="d-flex" :class="{ 'mb-3' : !helpText }">
           <legend
             v-if="legend"
             class="form-field-label pb-0 mr-2"
@@ -30,7 +30,6 @@
               </a>
             </span>
           </legend>
-
           <ATATTooltip 
             v-if="tooltipText"
             :tooltipText="tooltipText"
@@ -38,6 +37,9 @@
             :id="id"
             :label="getTooltipLabel()"
           />
+        </div>
+        <div v-if="helpText" class="font-size-14 text-base mb-3">
+          {{ helpText }}
         </div>
 
         <v-radio
@@ -152,6 +154,7 @@ export default class ATATRadioGroup extends Vue {
   @PropSync("value") private _selectedValue!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: "" }) private legend!: string;
+  @Prop({ default: "" }) private helpText?: string;
   @Prop({ default: [""] }) private items!: RadioButton[];
   @Prop({ default: () => []}) private rules!: Array<unknown>;
   @Prop({ default: false }) private card!: boolean;

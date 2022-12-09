@@ -8,7 +8,7 @@ describe("Test suite: Current Contract", () => {
 
   beforeEach(() => {
     bootstrapMockApis();
-    cy.launchATAT();
+    cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();    
   })
     

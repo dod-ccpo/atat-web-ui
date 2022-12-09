@@ -59,12 +59,14 @@ export const initialFundingRequestMIPRForm: FundingRequestMIPRFormDTO = {
   mipr_attachment: "",
 }
 
-export const initialRequirementsCostEstimate: RequirementsCostEstimateDTO = {
-  surge_capabilities: "Test SC" + (new Date()).toDateString(),
-  estimatedTaskOrderValue: "",
-  feePercentage: "",
-  feeCharged: "",
-  surge_capacity: ""
+export const initialRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
+  return {
+    surge_capabilities: "Test SC" + (new Date()).toDateString(),
+    estimatedTaskOrderValue: "",
+    feePercentage: "",
+    feeCharged: "",
+    surge_capacity: ""
+  };
 }
 
 const saveFundingRequestToDISA = async (data: FundingRequestDTO):
@@ -472,7 +474,7 @@ export class FinancialDetailsStore extends VuexModule {
 
     try {
       if(this.requirementsCostEstimate == null){
-        return initialRequirementsCostEstimate;
+        return initialRequirementsCostEstimate();
       }
       const requirementsCostEstimate = await api.requirementsCostEstimateTable
         .retrieve(this.requirementsCostEstimate.sys_id);
@@ -669,6 +671,29 @@ export class FinancialDetailsStore extends VuexModule {
     } catch (error) {
       throw new Error("error saving session data");
     }
+  }
+
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    sessionStorage.removeItem(ATAT_FINANCIAL_DETAILS__KEY);
+    this.doReset();
+  }
+
+  @Mutation
+  private doReset(): void {
+    this.initialized = false;
+    this.fundingPlan = initialFundingPlan;
+    this.estimatedTaskOrderValue = "";
+    this.miprNumber = null;
+    this.initialFundingIncrementStr = "";
+    this.fundingIncrements = [];
+    this.gtcNumber = null;
+    this.orderNumber = null;
+    this.taskOrder = null;
+    this.fundingRequest = null;
+    this.fundingRequestFSForm = null;
+    this.fundingRequestMIPRForm = null;
+    this.requirementsCostEstimate = null;
   }
 
 }

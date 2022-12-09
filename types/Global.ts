@@ -502,13 +502,14 @@ export interface IGCE {
   surgeCapabilities: string,
 }
 
-export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BestUse" | "LowestRisk";
+export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BEST_USE" | "LOWEST_RISK";
 
-export type EvalPlanSourceSelection = "" | "NoTechProposal" | "TechProposal" 
-  | "SetLumpSum" | "EqualSetLumpSum";
+export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL" 
+  | "SET_LUMP_SUM" | "EQUAL_SET_LUMP_SUM";
 
 export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
+export type SingleMultiple = "SINGLE" | "MULTIPLE" | "";
 
 export interface CurrEnvInstanceUsage {
   currentUsageDescription?: EnvironmentInstanceUsage;
@@ -549,9 +550,11 @@ export type EnvironmentReplicateOptimized = "" | "YES_REPLICATE" | "YES_OPTIMIZE
 export type EnvironmentInstanceUsage = "" | "EVEN_USAGE" | "IRREGULAR_USAGE";
 export type StorageType = "" | "BLOCK" | "OBJECT" | "FILE" | "ARCHIVE";
 export type PerformanceTier = "" | "GENERAL" | "COMPUTE" | "MEMORY" | "STORAGE";
-export type PaymentArrangement = "" | "PREPAID" | "PAYASYOUGO";
-export type securityClassification = ""|"SECRET" | "TOPSECRET"
-
+export type PaymentArrangement = "" | "PREPAID" | "PAY_AS_YOU_GO";
+export type SecurityClassification = ""|"SECRET" | "TOPSECRET";
+export type DomainType = ""|"UNCLASSIFIED_TO_SECRET" | "UNCLASSIFIED_TO_TOP_SECRET" |
+    "SECRET_TO_UNCLASSIFIED" | "SECRET_TO_TOP_SECRET" | "TOP_SECRET_TO_UNCLASSIFIED" |
+    "TOP_SECRET_TO_SECRET"
 export interface CurrentEnvironment {
   currentEnvironmentExists?: YesNo;
   hasSystemDocumentation?: YesNo;
@@ -587,6 +590,16 @@ export interface CurrentEnvironmentInstance {
   additionalInformation?: string;
 }
 export interface SecurityRequirement {
-  type: securityClassification;
+  type: SecurityClassification;
   classification_information_type: string[]
+}
+
+export interface CrossDomainSolution {
+  isCrossDomain: YesNo;
+  solutionType:[{
+    type: DomainType,
+    dataQuantity: number
+  }],
+  projectedFileStream:string,
+  classificationInstance: DOWClassificationInstance,
 }

@@ -76,7 +76,7 @@ Cypress.Commands.add("hopOutOfIframe", (hopOut, navigate) => {
   }
 });
 
-Cypress.Commands.add("launchATAT", () => {
+Cypress.Commands.add("launchATAT", (bool) => {
   cy.hopOutOfIframe(false);
   if (isTestingLocally){
     cy.clearSession();
@@ -84,7 +84,12 @@ Cypress.Commands.add("launchATAT", () => {
       cy.visit(Cypress.env("localTestURLInIframe"));    
       cy.frameLoaded(common.app);        
     } else {
-      cy.visit(Cypress.env("localTestURL"));    
+      if (bool) {
+        cy.window().its("sessionStorage")
+          .invoke("setItem", "userId", Cypress.env("userId"));
+      }
+      cy.visit(Cypress.env("localTestURL"));  
+      
     }
   } else if (isTestingIsolated) {
     cy.clearSession();
@@ -95,8 +100,7 @@ Cypress.Commands.add("launchATAT", () => {
     cy.clearSession();
     cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
     cy.frameLoaded(common.app);
-  }
-
+  } 
 });
 
 Cypress.Commands.add("clearSession", () => {
@@ -129,8 +133,8 @@ Cypress.Commands.add("findElement", (selector) => {
 
 Cypress.Commands.add('homePageClickAcquisitionPackBtn', () => {
   
-  cy.textExists(lp.startSectionHeader, "Start building your JWCC acquisition package");
-  cy.textExists(lp.startAcqPackBtn, "Start a new acquisition").should("be.enabled").click();
+  cy.findElement(lp.welcomeBarText).should("exist");
+  cy.textExists(lp.startAcqWelcome, "Start a new acquisition").should("be.enabled").click();
   cy.verifyPageHeader("Let’s start with basic info about your new acquisition");
   cy.textExists("#developerToggleButton", "Toggle Developer Navigation ON").click().then(() => {
     cy.textExists("#developerToggleButton", "Toggle Developer Navigation OFF");

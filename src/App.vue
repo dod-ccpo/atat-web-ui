@@ -23,6 +23,7 @@ import DocumentReview from "@/documentReview/Index.vue";
 import Portfolios from "@/portfolios/Index.vue";
 import Packages from "@/packages/Index.vue";
 import Home from "@/home/Index.vue";
+import CurrentUserStore from "./store/user";
 
 @Component({
   components: {
@@ -81,6 +82,23 @@ export default class App extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    if (process.env.NODE_ENV === "development") {
+      // NOTE: add `userId` to .env file with your snow sys_id to view 
+      // your packages etc. when running locally
+      const snowUserSysId = process.env.SNOW_USER_SYSID || "";
+      sessionStorage.setItem("userId", snowUserSysId)
+    }
+
+    window.addEventListener("storage", async (e) => {
+      if (e.storageArea === sessionStorage && e.key === "userId") {
+        await CurrentUserStore.resetUser();
+      }
+    })
+
+    setTimeout(() => {
+      CurrentUserStore.resetUser();
+    }, 1000)
+
     await this.loadOnEnter();
   }
 

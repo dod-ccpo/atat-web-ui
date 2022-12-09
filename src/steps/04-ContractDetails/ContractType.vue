@@ -9,9 +9,10 @@
             </h1>
             <div class="copy-max-width">
               <p class="mb-10" id="IntroP">
-                Firm-Fixed-Price (FFP) is the standard contract type for JWCC task orders. 
-                You must provide justification for a time-and-materials (T&amp;M) or 
-                hybrid contract, in accordance with 
+                Firm-fixed-price (FFP) is the standard contract type for JWCC task orders. 
+                For JWCC, consumption-based line items are considered FFP. You must provide 
+                justification for a time-and-material (T&M) or hybrid contract, in accordance 
+                with 
                 <a 
                   href="https://www.acquisition.gov/far/12.207" 
                   target="_blank"
@@ -19,8 +20,8 @@
                 >
                   <span class="_external-link">FAR 12.207.</span>
                 </a>
-                If you are considering a T&amp;M contract, we suggest contacting the
-                DITCO Contracting Office for further guidance.            
+                If you are considering a T&amp;M contract, we suggest contacting your 
+                Contracting Office for further guidance.          
               </p>
               <p id="SelectMessage">
                 Select all that apply to your contracting effort.
@@ -119,9 +120,9 @@ export default class ContractType extends Mixins(SaveOnLeave) {
     },
     {
       id: "TMCheckbox",
-      label: "Time-and-materials (T&M)",
+      label: "Time-and-material (T&M)",
       value: "T&M",
-      description: "This applies to any contract line items other than travel.",
+      description: "A justification is required for any contract line item other than travel.",
     }
   ];
 

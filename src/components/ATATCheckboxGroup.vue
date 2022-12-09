@@ -114,7 +114,6 @@
     </div>
 
     <ATATErrorValidation :errorMessages="errorMessages" />
-
   </div>
 </template>
 
@@ -227,7 +226,7 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
-    if (newVal.length > oldVal.length) {
+    if (!oldVal || newVal.length > oldVal.length) {
       // new checkbox checked - get the index, push to this.selectedIndices
       const newCheckedVals = newVal.filter(val => !oldVal.includes(val));
       newCheckedVals.forEach((v) => {

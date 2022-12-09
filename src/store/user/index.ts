@@ -15,6 +15,7 @@ import AcquisitionPackageSummary from "../acquisitionPackageSummary";
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
 
+// initialUser for unit tests
 const initialUser = ()=> {
   return {
     sys_id: "e0c4c728875ed510ec3b777acebb356f", // pragma: allowlist secret
@@ -36,11 +37,19 @@ const initialUser = ()=> {
 export class UserStore extends VuexModule {
   initialized = false;
 
-  currentUser: UserDTO = initialUser();
+  currentUser: UserDTO = {};
 
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.currentUser)
   ];
+
+  @Action({rawError: true})
+  public async resetUser(): Promise<void> {
+    this.setInitialized(false);
+    sessionStorage.removeItem(ATAT_USER_KEY);
+    this.setCurrentUser({});
+    await this.ensureInitialized();
+  }
 
 
   @Action({rawError: true})
@@ -103,33 +112,35 @@ export class UserStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-
     if(this.initialized)
       return;
 
     const sessionRestored = retrieveSession(ATAT_USER_KEY);
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
+      this.setInitialized(true);
     } else {
       if(sessionStorage.getItem('userId')){
-        const tempUser = await api.userTable.retrieve(
+        const user = await api.userTable.retrieve(
           sessionStorage.getItem('userId') as string
         );
+        if (user) {
+          const userObj: UserDTO = {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            name: user.name,
+            email: user.email,
+            sys_id: user.sys_id,
+            user_name: user.user_name,
+            last_login_time: user.last_login_time,
+          };
 
-        if(tempUser){
-          this.currentUser.first_name = tempUser.first_name;
-          this.currentUser.last_name = tempUser.last_name;
-          this.currentUser.name = tempUser.name;
-          this.currentUser.email = tempUser.email;
-          this.currentUser.sys_id = tempUser.sys_id;
-          this.currentUser.user_name = tempUser.user_name;
-          this.currentUser.last_login_time = tempUser.last_login_time;
+          this.setCurrentUser(userObj);
+          storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
+          this.setInitialized(true);
         }
-        storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
       }  
-    }
-    this.setInitialized(true);
-    
+    }    
   }
 }
 

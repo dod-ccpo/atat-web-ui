@@ -33,7 +33,7 @@
         :disabled="disabled"
         :hide-details="counter === ''"
         :suffix="suffix"
-        :style="'max-width: ' + width + 'px'"
+        :style="'max-width: ' + width + 'px; width: ' + width + 'px'"
         :rules="rules"
         :counter="counter"
         @blur="onBlur"

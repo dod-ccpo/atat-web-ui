@@ -54,7 +54,7 @@
               max="2024-01-01"
               placeHolder="MM/DD/YYYY"
               tooltipText="Use the period of performance end date for your task order. If you
-                  do not have an order number, use your contract expiration date."
+                  do not have a task order, use your contract end date."
             />
           </div>
         </v-col>
