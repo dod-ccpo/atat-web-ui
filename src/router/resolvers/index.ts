@@ -150,12 +150,15 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
       return routeNames.CurrentContract;
     } else if (hasCurrentContract && !hasCurrentEnv){ // if current contract & NO current env
       return routeNames.CurrentEnvironment;
-    } 
+    } else if (hasCurrentEnv){
+      return needsArchitectureDesign 
+        ? routeNames.ArchitecturalDesignDetails
+        : routeNames.ArchitecturalDesign
+    }
   }
   return needsArchitectureDesign
     ? routeNames.ArchitecturalDesignDetails 
-    : routeNames.ArchitecturalDesign 
-
+    : IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
 };
 
 export const CurrentEnvRouteResolver = (current: string): string => {
