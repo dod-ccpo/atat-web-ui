@@ -78,7 +78,7 @@ export default class CustomSpecifications extends Vue {
   @Prop({ default: false }) public isOptional?: boolean;
 
   public get isStandards(): boolean {
-    return this.sourceSelection.indexOf("TechProposal") > -1;
+    return this.sourceSelection.indexOf("TECH_PROPOSAL") > -1;
   }
 
   public get specificationType(): string {

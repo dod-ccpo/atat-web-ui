@@ -53,7 +53,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import Callout from "./components/Callout.vue";
 import CustomSpecifications from "./components/CustomSpecifications.vue"
 
-import { EvalPlanAssessmentAreaDTO, EvaluationPlanDTO } from "@/api/models";
+import { EvaluationPlanDTO } from "@/api/models";
 import { Checkbox, RadioButton } from "types/Global";
 import { convertEvalPlanAssessmentAreaToCheckbox, hasChanges, scrollToId } from "@/helpers";
 import _ from "lodash";
@@ -74,6 +74,8 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   public get isStandards(): boolean {
     return this.evalPlan.source_selection.indexOf("TECH_PROPOSAL") > -1;
   }
+
+  public setLumpSumCustomSysId = "";
 
   public get header(): string {
     switch(this.evalPlan.source_selection) {
@@ -106,7 +108,7 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
 
   public get showCustomSpecifications(): boolean {
     return this.selectedStandardsRadioItem === 'YES'
-      || this.selectedSetLumpSumOptions.includes("CustomAssessment");
+      || this.selectedSetLumpSumOptions.includes(this.setLumpSumCustomSysId);
   }
 
   public selectedStandardsRadioItem = "";
@@ -146,9 +148,11 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
 
   public initCustomSpecs(): void {  
     this.customSpecifications = this.evalPlan.custom_specifications?.split(",") || [];
-    this.$nextTick(() => {
-      scrollToId("CustomSpecEntry");
-    });
+    if (!this.isLoading) {
+      this.$nextTick(() => {
+        scrollToId("CustomSpecEntry");
+      });
+    }
     this.evalPlan.has_custom_specifications = "YES";
   }
 
@@ -161,9 +165,7 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
 
   @Watch("selectedStandardsRadioItem")
   public selectedStandardsRadioItemChange(newVal: string): void {
-    if (!this.isLoading) {
-      newVal === "YES" ? this.initCustomSpecs() : this.clearCustomSpecs();
-    }
+    newVal === "YES" ? this.initCustomSpecs() : this.clearCustomSpecs();
   }
 
   @Watch("customSpecifications")
@@ -173,14 +175,14 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
 
   @Watch("selectedSetLumpSumOptions")
   public selectedSetLumpSumOptionsChange(newVal: string[], oldVal: string[]): void {
-    if (!this.isLoading) {
-      // eslint-disable-next-line camelcase
-      this.evalPlan.standard_specifications = newVal.join(",");
-      if (newVal.includes("CustomAssessment") && !oldVal.includes("CustomAssessment")) {
-        this.initCustomSpecs();
-      } else if (!newVal.includes("CustomAssessment")) {
-        this.clearCustomSpecs();
-      }      
+    // eslint-disable-next-line camelcase
+    this.evalPlan.standard_specifications = newVal.join(",");
+    if (newVal.includes(this.setLumpSumCustomSysId) 
+      && !oldVal.includes(this.setLumpSumCustomSysId)) 
+    {
+      this.initCustomSpecs();
+    } else if (!newVal.includes(this.setLumpSumCustomSysId)) {
+      this.clearCustomSpecs();
     }
   }
 
@@ -189,12 +191,12 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   public lumpSumCheckboxOptions: Checkbox[] = [];
 
   public setLumpSumCheckboxOptions(): Checkbox[] {
-
-    let options: Checkbox[] = []; 
-    
-    options = convertEvalPlanAssessmentAreaToCheckbox(
-      EvaluationPlan.assessmentAreaData);
-
+    let options: Checkbox[] 
+      = convertEvalPlanAssessmentAreaToCheckbox(EvaluationPlan.assessmentAreaData);
+    const customOption = options.find(obj => obj.label.indexOf("custom") > -1);
+    if (customOption) {
+      this.setLumpSumCustomSysId = customOption.value;
+    }
     if(this.evalPlan.method !== "BEST_USE"){
       options = options.filter(item => {return item.id !== "RiskToGovt"});
     }
