@@ -156,10 +156,9 @@ export class PeriodsStore extends VuexModule {
             periods.push(
               ...optionPeriods
             );
-
-          this.setPeriods(periods);
         }
       }
+      this.setPeriods(periods);
     }
 
     
