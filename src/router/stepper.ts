@@ -402,7 +402,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t need other assessment areas",
             buttonId: "NoOtherAssessmentAreas",
             buttonClass: "secondary",
-            name: routeNames.EvalPlanSummary,
+            // name: routeNames.EvalPlanSummary, // TODO: restore when summaryu page added
+            name: routeNames.PeriodOfPerformance,
           },
         ]
       },
@@ -1032,14 +1033,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FinancialPOCResolver
 
       },
-      {
-        menuText: "SummaryPage",
-        excludeFromMenu: true,
-        path: "summary-page",
-        name: routeNames.SummaryPage,
-        completePercentageWeight: 1,
-        component: SummaryPage,
-      },
+      // {
+      //   menuText: "SummaryPage",
+      //   excludeFromMenu: true,
+      //   path: "summary-page",
+      //   name: routeNames.SummaryPage,
+      //   completePercentageWeight: 1,
+      //   component: SummaryPage,
+      // },
     ]
   },
   {

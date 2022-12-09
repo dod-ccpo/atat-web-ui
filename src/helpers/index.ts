@@ -324,6 +324,13 @@ export function differenceInDaysOrMonths(
   }
 }
 
+export function scrollToMainTop(): void {
+  const mainWrap = document.querySelector(".v-main__wrap");
+  if (mainWrap) {
+    mainWrap.scrollTo({top: 0, behavior: "smooth"});
+  }
+}
+
 export function scrollToId(id: string): void {
   const el = document.getElementById(id);
   if (el) {

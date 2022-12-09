@@ -111,7 +111,7 @@ export default class Callout extends Vue {
         following compliance standards:`;
     } else if (this.sourceSelection === "SET_LUMP_SUM") {
       const methodStr =
-        this.method === "LowestRisk" ? "lowest risk" : "best use";
+        this.method === "LOWEST_RISK" ? "lowest risk" : "best use";
       return `Award will be made to the Contractor whose white paper offers the “${methodStr}” 
         solution and meets the following assessment areas:`;
     }
