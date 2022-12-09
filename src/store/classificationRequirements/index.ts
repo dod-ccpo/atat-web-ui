@@ -114,7 +114,6 @@ export class ClassificationRequirementsStore extends VuexModule {
     newSelectedClassLevelList: SelectedClassificationLevelDTO[])
     : Promise<boolean> {
     try {
-      debugger
       const markedForCreateList = newSelectedClassLevelList
         .filter(newSelected => newSelected.sys_id ? newSelected.sys_id.length === 0 : true);
       const currSelectedClasLevelList = await this.getSelectedClassificationLevels();
@@ -153,7 +152,6 @@ export class ClassificationRequirementsStore extends VuexModule {
     selectedClassificationLevel: SelectedClassificationLevelDTO)
     : Promise<boolean> {
     try {
-      debugger
       selectedClassificationLevel = {
         ...selectedClassificationLevel,
         classification_level:
