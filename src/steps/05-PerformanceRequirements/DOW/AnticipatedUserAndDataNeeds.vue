@@ -11,7 +11,7 @@
           classification level.
         </p>
         <v-expansion-panels
-          v-model="accordionClosed"
+          v-model="accordionClosed[index]"
           v-for="(classification, index) in anticipatedNeedsData"
           :id="'AnticipatedUserAndDataNeedsAccordion' + index"
           :key="index"
@@ -86,7 +86,7 @@ import classificationRequirements from "@/store/classificationRequirements";
 })
 export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   private periods: PeriodDTO[] | null = [];
-  public accordionClosed = 0;
+  public accordionClosed: number[] = [];
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];
   public savedData: SelectedClassificationLevelDTO[] = []
 
@@ -100,8 +100,12 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   }
   private async loadOnEnter(): Promise<void> {
     this.periods = Periods.periods;
-    this.anticipatedNeedsData = await ClassificationRequirements.getSelectedClassificationLevels()
+    const classifications = await ClassificationRequirements.getSelectedClassificationLevels()
     this.savedData = await ClassificationRequirements.getSelectedClassificationLevels()
+    console.log(this.anticipatedNeedsData)
+    this.anticipatedNeedsData = classifications
+      .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
+    this.accordionClosed = new Array(this.anticipatedNeedsData.length).fill(0)
   }
 
   public get currentData(): SelectedClassificationLevelDTO[] {

@@ -352,9 +352,6 @@ export class DescriptionOfWorkStore extends VuexModule {
             xaasServiceFound = true
           }
         })
-        if(!xaasServiceFound){
-          this.setAnticipatedUsersAndDataHasBeenVisited(false)
-        }
         this.hasXaasService = xaasServiceFound;
       })
     }
@@ -366,9 +363,16 @@ export class DescriptionOfWorkStore extends VuexModule {
   public setBackToContractDetails(bool: boolean): void {
     this.summaryBackToContractDetails = bool;
   }
+  @Action
+  public doSetAnticipatedUsersAndDataHasBeenVisited(): void {
+    this.setAnticipatedUsersAndDataHasBeenVisited()
+  }
+
   @Mutation
-  public setAnticipatedUsersAndDataHasBeenVisited(bool: boolean): void {
-    this.anticipatedUsersAndDataHasBeenVisited = bool;
+  public setAnticipatedUsersAndDataHasBeenVisited(): void {
+    if(!this.hasXaasService){
+      this.anticipatedUsersAndDataHasBeenVisited = false;
+    }
   }
 
   @Mutation
@@ -495,6 +499,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async setSelectedOfferingGroups(selectedOfferingGroupIds: string[]): Promise<void> {
     await this.doSetSelectedOfferingGroups(selectedOfferingGroupIds);
     this.checkForXaas()
+    this.setAnticipatedUsersAndDataHasBeenVisited()
   }
 
   @Mutation
@@ -860,6 +865,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async deleteOtherOffering(): Promise<void> {
     await this.doDeleteOtherOffering();
     this.checkForXaas()
+    this.setAnticipatedUsersAndDataHasBeenVisited()
   }
 
   @Mutation
