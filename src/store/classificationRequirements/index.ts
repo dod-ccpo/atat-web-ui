@@ -26,6 +26,20 @@ export class ClassificationRequirementsStore extends VuexModule {
     this.classificationLevels = value;
   }
 
+  @Action({ rawError: true })
+  public async setSelectedClassificationLevels(
+    value: SelectedClassificationLevelDTO[]
+  ): Promise<void> {
+    await this.doSetSelectedClassificationLevels(value)
+  }
+
+  @Mutation
+  public async doSetSelectedClassificationLevels(
+    value: SelectedClassificationLevelDTO[]
+  ): Promise<void> {
+    this.selectedClassificationLevels = value;
+  }
+
   @Mutation
   public async setSecurityRequirements(value: SecurityRequirement[]): Promise<void> {
     this.securityRequirements = value;
@@ -47,12 +61,6 @@ export class ClassificationRequirementsStore extends VuexModule {
     } catch (error) {
       throw new Error(`error loading Classification Levels ${error}`);
     }
-  }
-
-  @Mutation
-  public async setSelectedClassificationLevels(value: SelectedClassificationLevelDTO[]):
-    Promise<void> {
-    this.selectedClassificationLevels = value;
   }
 
   @Action({rawError: true})
@@ -83,6 +91,12 @@ export class ClassificationRequirementsStore extends VuexModule {
             selectedClassLevel.impact_level = classLevelForMapping.impact_level;
             selectedClassLevel.classification = classLevelForMapping.classification;
           }
+          selectedClassLevel.data_growth_estimate_percentage
+              = (selectedClassLevel.data_growth_estimate_percentage as unknown as string)
+              .split(",").filter(nonEmptyVal => nonEmptyVal);
+          selectedClassLevel.user_growth_estimate_percentage
+              = (selectedClassLevel.user_growth_estimate_percentage as unknown as string)
+              .split(",").filter(nonEmptyVal => nonEmptyVal);
           return selectedClassLevel;
         })
     }
@@ -96,7 +110,7 @@ export class ClassificationRequirementsStore extends VuexModule {
    * acquisition. Then performs the API calls to complete the save.
    */
   @Action({rawError: true})
-  async saveAllSelectedClassificationLevels(
+  async saveSelectedClassificationLevels(
     newSelectedClassLevelList: SelectedClassificationLevelDTO[])
     : Promise<boolean> {
     try {
@@ -106,6 +120,12 @@ export class ClassificationRequirementsStore extends VuexModule {
       const markedForDeleteList = currSelectedClasLevelList
         .filter(currSelected => (newSelectedClassLevelList.find(newSelected =>
           newSelected.sys_id === currSelected.sys_id)) === undefined);
+      newSelectedClassLevelList.forEach((obj) => {
+        obj.data_growth_estimate_percentage
+            = obj.data_growth_estimate_percentage?.toString() as unknown as string[];
+        obj.user_growth_estimate_percentage
+            = obj.user_growth_estimate_percentage?.toString() as unknown as string[];
+      });
       const apiCallList: Promise<SelectedClassificationLevelDTO | void>[] = [];
       markedForCreateList.forEach(markedForCreate => {
         apiCallList.push(api.selectedClassificationLevelTable
@@ -138,10 +158,8 @@ export class ClassificationRequirementsStore extends VuexModule {
           selectedClassificationLevel.classification_level.value as unknown as ReferenceColumn,
         acquisition_package:
           selectedClassificationLevel.acquisition_package.value as unknown as ReferenceColumn}
-      const updateSelectedClassificationLevel = await api.selectedClassificationLevelTable
+      await api.selectedClassificationLevelTable
         .update(selectedClassificationLevel.sys_id as string, selectedClassificationLevel);
-      selectedClassificationLevel.sys_updated_by = updateSelectedClassificationLevel.sys_updated_by;
-      selectedClassificationLevel.sys_updated_on = updateSelectedClassificationLevel.sys_updated_on;
       return true;
     } catch (error) {
       throw new Error(`an error occurred saving a single selected classification level ${error}`);
