@@ -509,6 +509,7 @@ export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL"
 
 export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
+export type SingleMultiple = "SINGLE" | "MULTIPLE" | "";
 
 export interface CurrEnvInstanceUsage {
   currentUsageDescription?: EnvironmentInstanceUsage;

@@ -236,8 +236,7 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 export const RequirementsPathResolver = (current: string, direction: string): string => {
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
-
-  if (current === routeNames.ServiceOfferings 
+  if (current === routeNames.ServiceOfferings
     && missingClassification 
     && !atBeginningOfOfferingGroups
   ) {
@@ -291,6 +290,15 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
+export const AnticipatedUserAndDataNeedsResolver = (current:string) => {
+  const xaasServices = DescriptionOfWork.hasXaasService;
+  const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
+  if(current === routeNames.RequirementCategories && xaasServices && !hasBeenVisited){
+    return routeNames.AnticipatedUserAndDataNeeds
+  }
+  return current === routeNames.RequirementCategories ? routeNames.ServiceOfferings
+    : routeNames.RequirementCategories;
+}
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
   const groupId = DescriptionOfWork.currentGroupId;
   if (otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1) {
@@ -893,7 +901,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-  UploadJAMRRDocumentsRouteResolver
+  UploadJAMRRDocumentsRouteResolver,
+  AnticipatedUserAndDataNeedsResolver
 };
 
 // add path resolvers here 

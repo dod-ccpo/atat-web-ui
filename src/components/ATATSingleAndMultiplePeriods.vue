@@ -41,11 +41,11 @@
         />
       </div>
       <div
-        v-for="(period, idx) in _periods"
+        v-for="(period, idx) in periods"
         :key="idx"
         class="font-weight-500 font-size-14 text-base"
         :class="[
-          idx < _periods.length - 1 ? 'pb-5' : '',
+          idx < periods.length - 1 ? 'pb-5' : '',
           ' pl-2 d-flex align-start',
         ]"
         style="border-left: #544496 4px solid"
@@ -97,19 +97,19 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
   @Prop({default: ''}) private textboxSuffix?: string;
   @Prop({default: "Default Single Textbox Tooltip"}) private singlePeriodTooltipText?: string;
   @Prop({default: "Default Multiple Textbox Tooltip"}) private multiplePeriodTooltipText?: string;
+  @Prop() private periods!: PeriodDTO[];
 
-  @PropSync("periods", {default: []}) private _periods: PeriodDTO[];
-  @PropSync("values", {default: [""]}) private _values: string[];
+  @PropSync("values", {default: () => []}) private _values!: string[];
 
-  public sanitizeValue(idx: number, val: string): void {
-    if (parseInt(val) === 0) {
-      this._values[idx] = "";
+  @Watch("isMultiple")
+  public isMultipleChanged(newValue: boolean): void {
+    if (!newValue) {
+      this._values.length = 1;
     }
   }
-
   public getOption(idx: number): string {
     return idx === 0 ? "Base" : "Option " + idx;
   }
-    
+
 }
 </script>

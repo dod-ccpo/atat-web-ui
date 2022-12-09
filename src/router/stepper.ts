@@ -70,6 +70,8 @@ import OtherOfferingSummary
   from "../steps/05-PerformanceRequirements/DOW/OtherOfferingSummary.vue";
 import DOWSummary 
   from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
+import AnticipatedUserAndDataNeeds
+  from "@/steps/05-PerformanceRequirements/DOW/AnticipatedUserAndDataNeeds.vue";
 
 // Step 7 - Other Contract Considerations
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
@@ -120,7 +122,7 @@ import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 import GeneratePackageDocuments from "../steps/11-GeneratePackageDocuments/Index.vue";
 import UploadJAMRRDocuments from "@/steps/11-GeneratePackageDocuments/UploadJAMRRDocuments.vue";
 import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToGeneratePackage.vue";
-import GeneratingPackageDocuments 
+import GeneratingPackageDocuments
   from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
 
 import {
@@ -153,7 +155,8 @@ import {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-  UploadJAMRRDocumentsRouteResolver
+  UploadJAMRRDocumentsRouteResolver,
+  AnticipatedUserAndDataNeedsResolver,
 } from "./resolvers";
 import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
@@ -250,6 +253,8 @@ export const routeNames = {
   CrossDomain:"Cross_Domain",
   UploadJAMRRDocuments:"JA_MRR_Documents",
   ReadyToGeneratePackage:"Ready_To_Generate_Package",
+  GeneratePackageDocuments: "Generate_Package_Documents",
+  AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs"
 };
 
 /**
@@ -668,6 +673,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
+      },
+      {
+        menuText: "Anticipated Users and Data Needs",
+        excludeFromMenu: true,
+        path: "anticipated-users-and-data-needs",
+        name: routeNames.AnticipatedUserAndDataNeeds,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: AnticipatedUserAndDataNeedsResolver,
+        component: AnticipatedUserAndDataNeeds,
       },
       {
         menuText: "Service Offerings",
