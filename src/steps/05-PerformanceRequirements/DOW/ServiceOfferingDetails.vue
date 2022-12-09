@@ -182,7 +182,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       const instance: DOWClassificationInstance = {
         sysId: "", // will be populated after saving
         impactLevel: obj.impact_level,
-        classificationLevelSysId: obj.classification_level.value || "",
+        classificationLevelSysId: obj.sys_id || "",
         anticipatedNeedUsage: "",
         entireDuration: "",
         selectedPeriods: [],
@@ -250,7 +250,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     });
     const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
         this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
-    await classificationRequirements.saveAllSelectedClassificationLevels(currentData)
+    await classificationRequirements.saveSelectedClassificationLevels(currentData)
     await classificationRequirements.loadSelectedClassificationLevelsByAqId(
         this.acquisitionPackage?.sys_id as string);
     await this.setAvailableClassificationLevels();
@@ -302,9 +302,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // if only one classification level selected in Contract Details, set
     // it as "selected" for instance forms
     if (this.selectedInstancesLength === 1
-        && this.selectedClassificationLevelList[0].classification_level.value) {
+      && this.selectedClassificationLevelList[0].sys_id) {
       const classificationObj = this.selectedClassificationLevelList[0];
-      const sysId = classificationObj.classification_level.value;
+      const sysId = classificationObj.sys_id;
       if(sysId) {
         this.selectedHeaderLevelSysIds.push(sysId);
       }
