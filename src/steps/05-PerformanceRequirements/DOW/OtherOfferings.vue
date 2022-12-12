@@ -57,28 +57,67 @@
       </ATATAlert>
     </v-expand-transition>
 
+
+    <h2 class="mb-5" id="FormSection1Heading">
+      1. 
+      <span v-if="firstTimeHere">
+        Tell us about Instance #{{ _serviceOfferingData.instanceNumber }}
+      </span>
+      <span v-else>
+        Instance details
+      </span>
+    </h2>
+
+
+    <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
+      <ATATRadioGroup
+        id="ClassificationLevel"
+        legend="What classification level is this instance deployed in?"
+        :value.sync="_serviceOfferingData.classificationLevel"
+        :items="classificationRadioOptions"
+        name="ClassificationLevel"
+        class="mt-3 mb-2"
+        :tooltipText="classificationTooltipText"
+        tooltipLabel="Classification level for this instance"
+        :rules="[$validators.required('Please select a classification level.')]"
+      />
+      <a 
+        role="button" 
+        id="UpdateClassificationFromRadios"
+        tabindex="0"
+        @click="openModal"
+        @keydown.enter="openModal"
+        @keydown.space="openModal"
+      >Update your Classification Requirements</a>
+    </div>
+
+
     <v-form ref="form" lazy-validation>
+
       <ComputeForm
         v-if="isCompute"
-        :computeData.sync="_serviceOfferingData"
-        :firstTimeHere="firstTimeHere"
-        :isClassificationDataMissing="isClassificationDataMissing"
-        :isPeriodsDataMissing="isPeriodsDataMissing"
-        :avlClassificationLevelObjects="selectedClassificationLevelList"
-        :singleClassificationLevelName="singleClassificationLevelName"
-        :formHasErrors="formHasErrors"
-        :formHasBeenTouched="formHasBeenTouched"
-        :classificationRadioOptions="classificationRadioOptions"
-        :classificationTooltipText="classificationTooltipText"
-        :otherRegionValue="otherRegionValue"
-        :otherPerformanceTierValue="otherPerformanceTierValue"
-        :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-        :validateOtherTierNow="validateOtherTierNow"
-        :validateOtherTierOnBlur="validateOtherTierOnBlur"
-        :clearOtherTierValidation="clearOtherTierValidation"
-        @openModal="openModal"
-        @formUpdate="formComponentUpdate"
+        :data.sync="_serviceOfferingData"  
+
       />
+      <section v-if="isCompute || isDatabase">
+        <hr />
+        <h2>
+          2. {{ isCompute ? 'Instance' : 'Database' }} Configurations
+        </h2>
+
+        <InstanceConfig
+          :data.sync="_serviceOfferingData"
+          :storageUnits="storageUnits"
+        />
+
+        <PerformanceTier 
+          :isCompute="isCompute"
+          :isDatabase="isDatabase"
+          :isDOW="true"
+          :data.sync="_serviceOfferingData"
+          :storageUnits="storageUnits"
+        />
+      </section>
 
       <div v-if="!isGeneral">
         <hr/>
@@ -133,6 +172,7 @@ import {
   Checkbox, 
   OtherServiceOfferingData,
   RadioButton,
+  SelectData,
   ToastObj,
 } from "../../../../types/Global";
 
@@ -182,6 +222,7 @@ export default class OtherOfferings extends Vue {
   @Prop() public otherOfferingName!: string;
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
+  @Prop() public avlClassificationLevelObjects!: ClassificationLevelDTO[];
 
   public firstTimeHere = false;
   public modalSelectionsOnOpen: string[] = [];
@@ -217,10 +258,13 @@ export default class OtherOfferings extends Vue {
   public offeringName = "";
 
   public introText = "";
+  
 
-  public description = `Use vendor-neutral language to describe the purpose and usage. 
-    Provide a functional description of the requirement without including any company names 
-    or vendor-unique brand, product, or titles.`;
+  public storageUnits: SelectData[] = [
+    { text: "Gigabyte (GB)", value: "GB" },
+    { text: "Terabyte (TB)", value: "TB" },
+    { text: "Petabyte (PB)", value: "PB" },
+  ];
 
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;

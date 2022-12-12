@@ -2,20 +2,32 @@
   <div id="PerformanceTier" class="mt-10">
     <ATATRadioGroup 
       id="PerformanceTierOptions"
+      v-if="!isDatabase"
       :items="performanceTiers"
       legend="Performance tier"
       tooltipText="This refers to your network speed and service availability."
       :rules="[
         $validators.required('Select a performance tier.'),
       ]"
-      :value.sync="_performanceTier.performanceTier"
+      :value.sync="_data.performanceTier"
+    />
 
+    <ATATTextField
+      id="NetworkPerformance"
+      v-if="isDatabase"
+      class="mt-8 _input-max-width-240"
+      :value.sync="_data.networkPerformance"
+      label="Network performance"
+      tooltipText="This refers to your network speed and service availability."
+      :rules="[
+        $validators.required('Enter a description of your network performance.'),
+      ]"    
     />
 
     <ATATTextField
       id="NumberOfSimilarInstances"
       class="mt-8 _input-max-width-240"
-      :value.sync="_performanceTier.numberOfSimilarInstances"
+      :value.sync="_data.numberOfSimilarInstances"
       label="Number of instances with these configurations"
       type="number"
       :rules="[
@@ -26,14 +38,15 @@
 
     <ATATTextField
       id="MonthlyDataEgress"
+      v-if="!isDOW"
       class="mt-8 _input-max-width-240 _has-appended-dropdown"
       label="Approximate data/internet egress per month"
-      :value.sync="_performanceTier.dataEgressMonthlyAmount"
+      :value.sync="_data.dataEgressMonthlyAmount"
       tooltipText="This refers to the amount of data that gets transferred from 
         your organization’s host network to external networks."
       :appendDropdown="true"
       :dropdownOptions="storageUnits"
-      :selectedDropdownValue.sync="_performanceTier.dataEgressMonthlyUnit"
+      :selectedDropdownValue.sync="_data.dataEgressMonthlyUnit"
       type="number"
       :rules="[
         $validators.required('Enter a number greater than or equal to 1.'),
@@ -52,7 +65,12 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
-import { CurrEnvInstancePerformance, RadioButton, SelectData } from "types/Global";
+import { 
+  CurrEnvInstancePerformance, 
+  OtherServiceOfferingData, 
+  RadioButton,
+  SelectData 
+} from "types/Global";
 
 @Component({
   components: {
@@ -62,8 +80,12 @@ import { CurrEnvInstancePerformance, RadioButton, SelectData } from "types/Globa
 })
 
 export default class PerformanceTier extends Vue {
-  @PropSync("performanceTier") public _performanceTier!: CurrEnvInstancePerformance;
+  @PropSync("data") 
+    public _data!: CurrEnvInstancePerformance | OtherServiceOfferingData;
   @Prop() public storageUnits!: SelectData[];
+  @Prop({ default: false }) public isDOW?: boolean;
+  @Prop({ default: false }) public isCompute?: boolean;
+  @Prop({ default: false }) public isDatabase?: boolean;
 
   public performanceTiers: RadioButton[] = [
     {

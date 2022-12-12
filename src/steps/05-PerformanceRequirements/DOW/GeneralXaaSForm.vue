@@ -42,7 +42,8 @@
       class="copy-max-width"
     />
 
-    <ATATTextField 
+    <!-- REMOVED -->
+    <!-- <ATATTextField 
       id="RequirementTitle"
       ref="RequirementTitle"
       label="Requirement title"
@@ -51,7 +52,7 @@
         PaaS or SaaS requirement."
       :value.sync="_generalXaaSData.requirementTitle"
       :rules="[$validators.required('Please provide a title for this requirement.')]"
-    />
+    /> -->
 
     <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
       <ATATRadioGroup

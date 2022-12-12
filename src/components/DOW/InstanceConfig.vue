@@ -5,7 +5,7 @@
         <ATATTextField
           id="Licensing"
           label="Licensing"
-          :value.sync="_instanceConfig.licensing"
+          :value.sync="_data.licensing"
           tooltipText="Provide details about your licensing agreement, to include 
             the type and number of licenses."
           :rules="[
@@ -19,7 +19,7 @@
         <ATATTextField
           id="NumberOfVCPUs"
           label="Number of vCPUs"
-          :value.sync="_instanceConfig.numberOfVCPUs"
+          :value.sync="_data.numberOfVCPUs"
           tooltipText="This refers to the size of compute. You can provide an approximate 
             number of virtual centralized processing units (vCPUs)."
           type="number"
@@ -34,7 +34,7 @@
         <ATATTextField
           id="ProcessorSpeed"
           label="Processor speed"
-          :value.sync="_instanceConfig.processorSpeed"
+          :value.sync="_data.processorSpeed"
           tooltipText="Enter the clock speed for each vCPU. This is typically measured
             in gigahertz (GHz)."
           type="number"
@@ -49,7 +49,7 @@
         <ATATTextField
           id="OperatingSystem"
           label="Operating system"
-          :value.sync="_instanceConfig.operatingSystem"
+          :value.sync="_data.operatingSystem"
           tooltipText="Specify the type of Operating System (OS) that your instance is running on 
             (e.g., Windows, Linux)."
           :rules="[
@@ -63,7 +63,7 @@
         <ATATTextField
           id="Memory"
           label="Memory"
-          :value.sync="_instanceConfig.memoryAmount"
+          :value.sync="_data.memoryAmount"
           tooltipText="Enter the amount of Random Access Memory (RAM) available for 
             storing data short-term in order to perform computing operations."
           appendText="GB"
@@ -82,7 +82,7 @@
           id="StorageType"
           label="Storage type"
           :items="storageTypes"
-          :selectedValue.sync="_instanceConfig.storageType"
+          :selectedValue.sync="_data.storageType"
           :validateOnBlur="true"
           :rules="[
             $validators.required('Select a storage type.')
@@ -94,12 +94,12 @@
         <ATATTextField
           id="StorageAmount"
           label="Storage size"
-          :value.sync="_instanceConfig.storageAmount"
+          :value.sync="_data.storageAmount"
           tooltipText="Enter the amount of storage available to access and store 
             data on a long-term basis."
           :appendDropdown="true"
           :dropdownOptions="storageUnits"
-          :selectedDropdownValue.sync="_instanceConfig.storageUnit"
+          :selectedDropdownValue.sync="_data.storageUnit"
           type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 0.'),
@@ -122,7 +122,8 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import { 
   SelectData,
-  CurrEnvInstanceConfig 
+  CurrEnvInstanceConfig, 
+  OtherServiceOfferingData
 } from "types/Global";
 
 @Component({
@@ -133,9 +134,8 @@ import {
 })
 
 export default class InstanceConfig extends Vue {
-  @PropSync("instanceConfig") public _instanceConfig!: CurrEnvInstanceConfig
+  @PropSync("data") public _data!: CurrEnvInstanceConfig | OtherServiceOfferingData;
   @Prop() public storageUnits!: SelectData[];
-
 
   public storageTypes: SelectData[] = [
     { 

@@ -356,9 +356,11 @@ export interface OtherServiceOfferingData {
   periodsNeeded: string[];
   operatingSystemAndLicensing: string;
   numberOfVCPUs: string;
-  memory: string;
+  memoryAmount: string;
+  memoryUnit: StorageUnit;
   storageType: string;
   storageAmount: string;
+  storageUnit: StorageUnit;
   performanceTier: string;
   performanceTierOther: string;
   numberOfInstancesNeeded: string;
