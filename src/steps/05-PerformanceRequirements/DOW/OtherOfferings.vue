@@ -1,6 +1,63 @@
 <template>
   <div>
-    <v-form ref="serviceOfferingForm">
+
+    <h1 class="page-header mb-3" tabindex="-1">
+      <span v-if="firstTimeHere">
+        {{introText}}
+      </span>
+      <span v-else>
+        Let’s gather some details for {{offeringName}} #{{ _serviceOfferingData.instanceNumber }}
+      </span>
+    </h1>
+    <p 
+      class="copy-max-width"
+      :class="isClassificationDataMissing || isPeriodsDataMissing ? 'mb-4' : 'mb-10'"
+    >
+      <span v-if="firstTimeHere">
+        In this section, we’ll collect details 
+        about each {{offeringName.toLowerCase()}} that you need. 
+      </span>
+
+      If you need multiple, we’ll walk through them one at a time. 
+      <span v-if="selectedClassificationLevelList.length === 1">
+        You previously specified <strong>{{ singleClassificationLevelName }}</strong> 
+        as the classification level for all requirements. If you need any instances
+        within a different level, 
+        <a 
+          role="button" 
+          id="UpdateClassificationFromIntro"
+          tabindex="0"
+          @click="openModal"
+          @keydown.enter="openModal"
+          @keydown.space="openModal"
+        >update your Classification Requirements</a>.
+      </span>
+    </p>
+    
+    <DOWSubtleAlert
+      v-show="isClassificationDataMissing || isPeriodsDataMissing"
+      :isClassificationDataMissing="isClassificationDataMissing"
+      :isPeriodsDataMissing="isPeriodsDataMissing"
+      class="copy-max-width"
+    />
+
+    <v-expand-transition>
+      <ATATAlert
+        id="ErrorsOnLoadAlert"
+        v-show="formHasErrors === true && formHasBeenTouched === true"
+        type="error"
+        class="mb-10"
+      >
+        <template v-slot:content>
+          <p class="mb-0" id="ErrorsOnLoadAlertText">
+            Some of your info is missing. You can add it now or come back at any 
+            time before finalizing your acquisition package.
+          </p>
+        </template>
+      </ATATAlert>
+    </v-expand-transition>
+
+    <v-form ref="form" lazy-validation>
       <ComputeForm
         v-if="isCompute"
         :computeData.sync="_serviceOfferingData"
@@ -23,18 +80,23 @@
         @formUpdate="formComponentUpdate"
       />
 
-      <GeneralXaaSForm 
-        v-if="isGeneral"
-        :generalXaaSData.sync="_serviceOfferingData"
-        :firstTimeHere="firstTimeHere"
-        :isClassificationDataMissing="isClassificationDataMissing"
+      <div v-if="!isGeneral">
+        <hr/>
+        <h2 class="mb5">
+          3. Anticipated need and duration
+        </h2>
+        <br/>
+      </div>
+      
+      <AnticipatedDurationandUsage
+        type="requirement"
+        :description="description"
+        :index="_serviceOfferingData.instanceNumber"
         :isPeriodsDataMissing="isPeriodsDataMissing"
-        :avlClassificationLevelObjects="selectedClassificationLevelList"
-        :singleClassificationLevelName="singleClassificationLevelName"
-        :classificationRadioOptions="classificationRadioOptions"
-        :classificationTooltipText="classificationTooltipText"
         :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-        @openModal="openModal"
+        :anticipatedNeedUsage.sync="_serviceOfferingData.descriptionOfNeed"
+        :entireDuration.sync="_serviceOfferingData.entireDuration"
+        :selectedPeriods.sync="_serviceOfferingData.periodsNeeded"
       />
   
     </v-form>
@@ -59,9 +121,13 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeForm from "./ComputeForm.vue"
-import GeneralXaaSForm from "./GeneralXaaSForm.vue";
+import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationandUsage.vue";
 
 import Toast from "@/store/toast";
+
+import DOWSubtleAlert from "./DOWSubtleAlert.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
+import _ from "lodash";
 
 import { 
   Checkbox, 
@@ -93,13 +159,15 @@ import classificationRequirements from "@/store/classificationRequirements";
   components: {
     ClassificationsModal,
     ComputeForm,
-    GeneralXaaSForm,
+    AnticipatedDurationandUsage,
+    DOWSubtleAlert,
+    ATATAlert
   }
 })
 
 export default class OtherOfferings extends Vue {
   $refs!: {
-    serviceOfferingForm: Vue & {
+    form: Vue & {
       resetValidation: () => void;
       errorBucket: string[];
       reset: () => void;
@@ -111,6 +179,7 @@ export default class OtherOfferings extends Vue {
   @PropSync("serviceOfferingData") public _serviceOfferingData!: OtherServiceOfferingData;
   @Prop() public isCompute!: boolean;
   @Prop() public isGeneral!: boolean;
+  @Prop() public otherOfferingName!: string;
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
 
@@ -145,6 +214,14 @@ export default class OtherOfferings extends Vue {
     hasIcon: true,
   };
 
+  public offeringName = "";
+
+  public introText = "";
+
+  public description = `Use vendor-neutral language to describe the purpose and usage. 
+    Provide a functional description of the requirement without including any company names 
+    or vendor-unique brand, product, or titles.`;
+
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
     this.showDialog = true;
@@ -155,7 +232,6 @@ export default class OtherOfferings extends Vue {
   }
 
   public setAvlClassificationLevels(): void {
-    console.log("Called setAvlClassificationLevels..");
     this.classificationRadioOptions 
       = this.createCheckboxOrRadioItems(this.selectedClassificationLevelList, "Radio");
   }
@@ -178,7 +254,7 @@ export default class OtherOfferings extends Vue {
     this.showDialog = false;
     const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
         this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
-    await classificationRequirements.saveAllSelectedClassificationLevels(currentData)
+    await classificationRequirements.saveSelectedClassificationLevels(currentData)
     await classificationRequirements.loadSelectedClassificationLevelsByAqId(
         this.acquisitionPackage?.sys_id as string);
     await this.setAvailableClassificationLevels()
@@ -207,13 +283,24 @@ export default class OtherOfferings extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    console.log("Other Offerings load on enter...");
     this.acquisitionPackage = await AcquisitionPackage
       .getAcquisitionPackage() as AcquisitionPackageDTO;
     if (this.isCompute || this.isGeneral) {
       const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
       this.firstTimeHere 
         = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
+    }
+
+    if(this.isGeneral){
+      this.introText = `Let’s gather your requirements for 
+        general IaaS, PaaS, and SaaS`;
+
+      this.offeringName = "Requirement"
+    } else {
+      this.introText = `Next, let’s start gathering your 
+        requirements for ${_.startCase(this.otherOfferingName)}`;
+
+      this.offeringName = _.startCase(this.otherOfferingName) + " Instance";
     }
 
     // get classification levels selected in step 4 Contract Details
@@ -267,20 +354,20 @@ export default class OtherOfferings extends Vue {
   }
 
   public formComponentUpdate(): void {
-    const eb = this.$refs.serviceOfferingForm.errorBag;
+    const eb = this.$refs.form.errorBag;
     this.errorBagValues = Object.values(eb);
   }
 
   @Watch("errorBagValues")
   public errorBagChange(): void {
     this.$nextTick(() => {
-      const errorBag = Object.values(this.$refs.serviceOfferingForm.errorBag);
+      const errorBag = Object.values(this.$refs.form.errorBag);
       this.formHasErrors = errorBag.includes(true);
     });
   }
   
   get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.serviceOfferingForm as Vue & { validate: () => boolean };
+    return this.$refs.form as Vue & { validate: () => boolean };
   }
 
   public async validate(): Promise<void> {
@@ -290,11 +377,11 @@ export default class OtherOfferings extends Vue {
   }
 
   private setErrorMessages(): void {
-    if (!this.$refs.serviceOfferingForm) {
+    if (!this.$refs.form) {
       return;
     }
-    this.errorBagValues = Object.values(this.$refs.serviceOfferingForm.errorBag);
-    const formChildren = this.$refs.serviceOfferingForm.$children[0].$children;
+    this.errorBagValues = Object.values(this.$refs.form.errorBag);
+    const formChildren = this.$refs.form.$children[0].$children;
     const inputRefs = [
       "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
     ];

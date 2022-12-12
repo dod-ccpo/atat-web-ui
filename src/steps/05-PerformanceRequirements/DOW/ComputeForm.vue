@@ -1,58 +1,5 @@
 <template>
   <div>
-    <h1 class="page-header mb-3" tabindex="-1">
-      <span v-if="firstTimeHere">Let’s start by gathering your Compute requirements</span>
-      <span v-else>
-        Let’s gather some details for Compute Instance #{{ _computeData.instanceNumber }}
-      </span>
-    </h1>
-    <p 
-      class="copy-max-width"
-      :class="isClassificationDataMissing || isPeriodsDataMissing ? 'mb-4' : 'mb-10'"
-    >
-      <span v-if="firstTimeHere">
-        In this section, we’ll collect details about each compute instance that you need. 
-      </span>
-
-      If you need multiple, we’ll walk through them one at a time. 
-      <span v-if="avlClassificationLevelObjects.length === 1">
-        You previously specified <strong>{{ singleClassificationLevelName }}</strong> 
-        as the classification level for all requirements. If you need any instances
-        within a different level, 
-        <a 
-          role="button" 
-          id="UpdateClassificationFromIntro"
-          tabindex="0"
-          @click="openModal"
-          @keydown.enter="openModal"
-          @keydown.space="openModal"
-        >update your Classification Requirements</a>.
-      </span>
-    </p>
-    
-    <DOWSubtleAlert
-      v-show="isClassificationDataMissing || isPeriodsDataMissing"
-      :isClassificationDataMissing="isClassificationDataMissing"
-      :isPeriodsDataMissing="isPeriodsDataMissing"
-      class="copy-max-width"
-    />
-
-    <v-expand-transition>
-      <ATATAlert
-        id="ErrorsOnLoadAlert"
-        v-show="formHasErrors === true && formHasBeenTouched === true"
-        type="error"
-        class="mb-10"
-      >
-        <template v-slot:content>
-          <p class="mb-0" id="ErrorsOnLoadAlertText">
-            Some of your info is missing. You can add it now or come back at any 
-            time before finalizing your acquisition package.
-          </p>
-        </template>
-      </ATATAlert>
-    </v-expand-transition>
-
     <h2 class="mb-5" id="FormSection1Heading">
       1. 
       <span v-if="firstTimeHere">
@@ -94,65 +41,10 @@
       >Update your Classification Requirements</a>
     </div>
 
-    <p class="d-flex mb-4">
-      <span class="font-weight-500">What region(s) do you need this instance deployed in?</span>
-      <span class="optional">Optional</span>
-      <ATATTooltip 
-        class="d-block ml-2"
-        id="Region"
-        :tooltipText="regionTooltipText"
-        label="Region selection"
-      />
-    </p>
-    <ATATCheckboxGroup 
-      id="Regions"
-      ref="regionsCheckbox"
-      aria-describedby="CheckboxGroupLabel"
-      :value.sync="_computeData.deployedRegions"
-      :items="regionCheckboxOption"
-      :card="false"
-      class="copy-max-width mb-10"
-      :hasOtherValue="true"
-      :otherValue="otherRegionValue"
-      :otherValueEntered.sync="_computeData.deployedRegionsOther"
-      :otherValueRequiredMessage="otherRegionValueRequiredMessage"
-      otherEntryType="textfield"
-    />
-
-    <DescriptionOfNeed
-      :anticipatedNeedUsage.sync="_computeData.anticipatedNeedUsage"
-      :index="0"
-      :textAreaWithCounter="true"
-      requirementOrInstance="instance"
-    />
-
-    <EntireDuration
-      :entireDuration.sync="_computeData.entireDuration"
-      :periodsNeeded.sync="_computeData.periodsNeeded"
-      :isPeriodsDataMissing="isPeriodsDataMissing"
-      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-      :index="0"
-      requirementOrInstance="instance"
-    />
-
     <hr />
 
     <h2 id="FormSection2Heading" class="mb-5">2. Instance configurations</h2>
 
-    <v-row class="mt-7">
-      <v-col class="col-md-12 col-lg-9">
-        <ATATTextField
-          ref="operatingSystemAndLicensing"
-          id="OperatingSystemAndLicensing"
-          label="Operating system and licensing"
-          :tooltipText="operatingSystemTooltipText"
-          :value.sync="_computeData.operatingSystemAndLicensing"
-          :rules="[
-            $validators.required('Please describe your OS and licensing requirements.')
-          ]"
-        />
-      </v-col>
-    </v-row>
     <v-row class="mt-7">
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
@@ -169,6 +61,33 @@
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
+          id="processorSpeed"
+          label="Processor speed"
+          :tooltipText="VCPUTooltipText"
+          :value.sync="_computeData.numberOfVCPUs"
+          type="number"
+          :allowDecimals="false"
+          :rules="[
+            $validators.required('Please enter a number greater than or equal to 0.')
+          ]"
+        />
+      </v-col>
+      <v-col class="col-md-12 col-lg-6">
+        <ATATTextField
+          ref="operatingSystemAndLicensing"
+          id="OperatingSystemAndLicensing"
+          label="Operating system"
+          :tooltipText="operatingSystemTooltipText"
+          :value.sync="_computeData.operatingSystemAndLicensing"
+          :rules="[
+            $validators.required('Please describe your OS and licensing requirements.')
+          ]"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="col-sm-12 col-md-6 col-lg-3">
+        <ATATTextField
           id="Memory"
           label="Memory"
           :tooltipText="memoryTooltipText"
@@ -180,6 +99,9 @@
           ]"
         />
       </v-col>
+      <v-spacer/>
+    </v-row>
+    <v-row>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATSelect
           id="StorageType"
@@ -205,6 +127,7 @@
           ]"
         />
       </v-col>
+      <v-spacer/>
     </v-row>
 
     <ATATRadioGroup

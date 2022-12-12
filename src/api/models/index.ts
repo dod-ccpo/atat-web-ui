@@ -515,6 +515,21 @@ export interface EnvironmentInstanceDTO extends BaseTableDTO {
   memory_amount: string;
   operating_system_licensing: string;
   data_egress_monthly_unit: string;
+  operating_system?: string;
+  region?: string;
+  processor_speed?: string;
+  licensing?: string;
+}
+
+export interface ComputeEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  operating_environment?: string;
+  environment_type?: string;
+}
+
+export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  database_type?: string;
+  database_licensing?: string;
+  database_type_other?: string;
 }
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{

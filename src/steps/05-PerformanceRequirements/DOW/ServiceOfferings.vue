@@ -43,10 +43,11 @@
           </div>
         </v-col>
         
-        <v-col v-else-if="isCompute || isGeneral">
+        <v-col v-else-if="isOtherOffering">
           <OtherOfferings 
             :isCompute="isCompute"
             :isGeneral="isGeneral"
+            :otherOfferingName="otherOfferingName"
             :serviceOfferingData.sync="otherOfferingData" 
             :isPeriodsDataMissing="isPeriodsDataMissing"
             :isClassificationDataMissing="isClassificationDataMissing"
@@ -81,6 +82,8 @@ import classificationRequirements from "@/store/classificationRequirements";
 
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import DeleteOfferingModal from "./DeleteOfferingModal.vue";
+
+import _ from "lodash";
 
 import { 
   Checkbox, 
@@ -188,6 +191,13 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public isCompute = false;
   public isGeneral = false;
+  public isOtherOffering = false;
+  public otherOfferingName = "";
+  public otherOfferingList = [
+    "compute",
+    "general_xaas"
+  ];
+
   public isServiceOfferingList = true;
 
   public otherOfferingData: OtherServiceOfferingData = {
@@ -219,6 +229,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     // only Compute and General XaaS categories differ in requirements
     this.isCompute = this.serviceGroupOnLoad.toLowerCase() === "compute";
     this.isGeneral = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
+    this.isOtherOffering = this.otherOfferingList.includes(this.serviceGroupOnLoad.toLowerCase());
+    if(this.isOtherOffering)
+      this.otherOfferingName = this.serviceGroupOnLoad.toLowerCase();
     // all other categories have a similar workflow with checkbox list of service offerings
     this.isServiceOfferingList = !this.isCompute && !this.isGeneral;
 

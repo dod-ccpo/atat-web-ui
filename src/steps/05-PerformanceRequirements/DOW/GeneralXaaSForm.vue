@@ -76,20 +76,6 @@
       >Update your Classification Requirements</a>
     </div>
 
-    <DescriptionOfNeed
-      :anticipatedNeedUsage.sync="_generalXaaSData.anticipatedNeedUsage"
-      :index="1"
-      :textAreaWithCounter="true"
-    />
-
-    <EntireDuration
-      :entireDuration.sync="_generalXaaSData.entireDuration"
-      :periodsNeeded.sync="_generalXaaSData.periodsNeeded"
-      :isPeriodsDataMissing="isPeriodsDataMissing"
-      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-      :index="1"
-    />
-
   </div>
 </template>
 
