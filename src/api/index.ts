@@ -46,6 +46,8 @@ import {SelectedClassificationLevelApi} from "@/api/selectedClassificationLevel"
 import { SysPropertiesApi } from "./sys_properties";
 import { ComputeEnvironmentInstanceAPI } from "@/api/computeEnvironmentInstance";
 import { DatabaseEnvironmentInstanceAPI } from "@/api/databaseEnvironmentInstance";
+import { StorageEnvironmentInstanceAPI } from "@/api/storageEnvironmentInstance";
+import { CloudSupportEnvironmentInstanceAPI } from "@/api/cloudSupportEnvironmentInstance";
 
 export const api = {
 
@@ -97,7 +99,9 @@ export const api = {
   selectedClassificationLevelTable: new SelectedClassificationLevelApi(),
   sysProperties: new SysPropertiesApi(),
   computeEnvironmentInstanceTable: new ComputeEnvironmentInstanceAPI(),
-  databaseEnvironmentInstanceAPI: new DatabaseEnvironmentInstanceAPI()
+  databaseEnvironmentInstanceTable: new DatabaseEnvironmentInstanceAPI(),
+  storageEnvironmentInstanceTable: new StorageEnvironmentInstanceAPI(),
+  cloudSupportEnvironmentInstanceTable: new CloudSupportEnvironmentInstanceAPI()
 }
 
 export default {

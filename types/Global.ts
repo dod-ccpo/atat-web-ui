@@ -346,6 +346,7 @@ export interface lineChartData {
 }
 
 export interface OtherServiceOfferingData {
+  acquisitionPackageSysId?: string;
   instanceNumber: number;
   environmentType: string;
   classificationLevel?: string;
@@ -374,6 +375,10 @@ export interface OtherServiceOfferingData {
   region?: string;
   processorSpeed?: string;
   networkPerformance?: string;
+  databaseLicensing?: string;
+  sysId?: string;
+  personnelOnsiteAccess?: string;
+  tsContractorClearanceType?: string;
 }
 
 export interface OtherServiceSummaryTableData {
