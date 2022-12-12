@@ -499,38 +499,52 @@ export interface EDAResponse {
 }
 
 export interface EnvironmentInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  anticipated_need_or_usage: string;
+  classification_level: ReferenceColumn | string;
+  classified_information_types: string;
+  data_egress_monthly_amount: string;
+  data_egress_monthly_unit: string;
+  instance_location: string;
+  instance_name: string;
+  licensing?: string;
+  memory_amount: string;
+  memory_unit: string;
+  need_for_entire_task_order_duration: string;
+  number_of_instances: string;
+  number_of_vcpus: string;
+  operating_system?: string;
+  operating_system_licensing: string;
+  performance_tier: string;
+  pricing_model: string;
+  pricing_model_expiration: string;
+  processor_speed?: string;
+  region?: ReferenceColumn | string;
+  selected_periods?: string;
   storage_amount: string;
   storage_type: string;
-  instance_name: string;
-  classification_level: string | ReferenceColumn;
-  number_of_vcpus: string;
-  data_egress_monthly_amount: string;
-  performance_tier: string;
-  pricing_model_expiration: string;
-  csp_region: string;
-  memory_unit: string;
   storage_unit: string;
-  pricing_model: string;
-  instance_location: string;
-  memory_amount: string;
-  operating_system_licensing: string;
-  data_egress_monthly_unit: string;
-  operating_system?: string;
-  region?: string;
-  processor_speed?: string;
-  licensing?: string;
 }
 
 export interface ComputeEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
-  operating_environment?: string;
   environment_type?: string;
+  operating_environment?: string;
 }
 
 export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
-  database_type?: string;
   database_licensing?: string;
+  database_type?: string;
   database_type_other?: string;
   network_performance?: string;
+}
+
+export interface StorageEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+
+}
+
+export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  personnel_onsite_access?: string;
+  ts_contractor_clearance_type?: string;
 }
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{

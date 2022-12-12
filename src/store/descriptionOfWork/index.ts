@@ -14,6 +14,7 @@ import {
   DatabaseEnvironmentInstanceDTO, 
   SelectedServiceOfferingDTO, 
   ServiceOfferingDTO, 
+  StorageEnvironmentInstanceDTO, 
   SystemChoiceDTO 
 } from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
@@ -123,6 +124,7 @@ const saveOrUpdateOtherServiceOffering =
     tempObject.processor_speed = serviceOffering.processorSpeed;
     tempObject.licensing = serviceOffering.licensing;
     tempObject.sys_id = serviceOffering.sysId;
+    tempObject.acquisition_package = serviceOffering.acquisitionPackageSysId;
 
     switch(offeringType){
     case "compute":
@@ -149,20 +151,32 @@ const saveOrUpdateOtherServiceOffering =
       tempObject.network_performance = serviceOffering.networkPerformance;
       console.log(tempObject as DatabaseEnvironmentInstanceDTO);
       // if(tempObject.sys_id){
-      //   await api.databaseEnvironmentInstanceAPI.update(
+      //   await api.databaseEnvironmentInstanceTable.update(
       //     tempObject.sys_id,
       //     tempObject as DatabaseEnvironmentInstanceDTO
       //   );
       //   objSysId = tempObject.sys_id;
       // } else {
-      //   const savedObject = await api.databaseEnvironmentInstanceAPI.create(
+      //   const savedObject = await api.databaseEnvironmentInstanceTable.create(
       //     tempObject as DatabaseEnvironmentInstanceDTO
       //   );
       //   objSysId = savedObject.sys_id as string;
       // }
       break;
     case "storage":
-      console.log("Not implemented in SNOW yet");
+      console.log(tempObject as StorageEnvironmentInstanceDTO);
+      // if(tempObject.sys_id){
+      //   await api.storageEnvironmentInstanceTable.update(
+      //     tempObject.sys_id,
+      //     tempObject as StorageEnvironmentInstanceDTO
+      //   );
+      //   objSysId = tempObject.sys_id;
+      // } else {
+      //   const savedObject = await api.storageEnvironmentInstanceTable.create(
+      //     tempObject as StorageEnvironmentInstanceDTO
+      //   );
+      //   objSysId = savedObject.sys_id as string;
+      // }
       break;
     default:
       console.log("Should never get here");
