@@ -8,8 +8,14 @@ import {
 } from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import { ClassificationInstanceDTO, SelectedServiceOfferingDTO, 
-  ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
+import { 
+  ClassificationInstanceDTO, 
+  ComputeEnvironmentInstanceDTO, 
+  DatabaseEnvironmentInstanceDTO, 
+  SelectedServiceOfferingDTO, 
+  ServiceOfferingDTO, 
+  SystemChoiceDTO 
+} from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
 import {
   nameofProperty,
@@ -96,6 +102,76 @@ const mapDOWServiceOfferingToServiceProxy=
   }
 
 }
+
+const saveOrUpdateOtherServiceOffering = 
+  async (
+    serviceOffering: OtherServiceOfferingData,
+    offeringType: string
+  ):Promise<string> => {
+    const tempObject: any = {};
+    let objSysId = "";
+
+    tempObject.storage_amount = serviceOffering.storageAmount;
+    tempObject.storage_type = serviceOffering.storageType;
+    tempObject.instance_name = serviceOffering.requirementTitle;
+    tempObject.classification_level = serviceOffering.classificationLevel;
+    tempObject.number_of_vcpus = serviceOffering.numberOfVCPUs;
+    tempObject.performance_tier = serviceOffering.performanceTier;
+    tempObject.memory_unit = serviceOffering.memory;
+    tempObject.operating_system = serviceOffering.operatingSystem;
+    tempObject.region = serviceOffering.region;
+    tempObject.processor_speed = serviceOffering.processorSpeed;
+    tempObject.licensing = serviceOffering.licensing;
+    tempObject.sys_id = serviceOffering.sysId;
+
+    switch(offeringType){
+    case "compute":
+      tempObject.operating_environment = serviceOffering.operatingEnvironment;
+      tempObject.environment_type = serviceOffering.environmentType;
+      console.log(tempObject as ComputeEnvironmentInstanceDTO);
+      // if(tempObject.sys_id){
+      //   await api.computeEnvironmentInstanceTable.update(
+      //     tempObject.sys_id,
+      //     tempObject as ComputeEnvironmentInstanceDTO
+      //   );
+      //   objSysId = tempObject.sys_id;
+      // } else {
+      //   const savedObject = await api.computeEnvironmentInstanceTable.create(
+      //     tempObject as ComputeEnvironmentInstanceDTO
+      //   );
+      //   objSysId = savedObject.sys_id as string;
+      // }
+      break;
+    case "database":
+      tempObject.database_type = serviceOffering.databaseType;
+      tempObject.database_licensing = serviceOffering.databaseLicensing;
+      tempObject.database_type_other = serviceOffering.databaseTypeOther;
+      tempObject.network_performance = serviceOffering.networkPerformance;
+      console.log(tempObject as DatabaseEnvironmentInstanceDTO);
+      // if(tempObject.sys_id){
+      //   await api.databaseEnvironmentInstanceAPI.update(
+      //     tempObject.sys_id,
+      //     tempObject as DatabaseEnvironmentInstanceDTO
+      //   );
+      //   objSysId = tempObject.sys_id;
+      // } else {
+      //   const savedObject = await api.databaseEnvironmentInstanceAPI.create(
+      //     tempObject as DatabaseEnvironmentInstanceDTO
+      //   );
+      //   objSysId = savedObject.sys_id as string;
+      // }
+      break;
+    case "storage":
+      console.log("Not implemented in SNOW yet");
+      break;
+    default:
+      console.log("Should never get here");
+      objSysId = "";
+      break;
+    }
+
+    return objSysId;
+  };
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
 
@@ -733,6 +809,9 @@ export class DescriptionOfWorkStore extends VuexModule {
         && Object.prototype.hasOwnProperty.call(otherOfferingObj, "serviceOfferingGroupId")
         && otherOfferingObj.serviceOfferingGroupId
       ) {
+        const groupId: string = this.currentGroupId.toLowerCase();
+        const objSysId = await saveOrUpdateOtherServiceOffering(otherOfferingData, groupId);
+        otherOfferingData.sysId = objSysId;
         if (!Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")) {
           otherOfferingObj.otherOfferingData = [];
           otherOfferingObj.otherOfferingData?.push(otherOfferingData);
@@ -747,7 +826,7 @@ export class DescriptionOfWorkStore extends VuexModule {
             otherOfferingObj.otherOfferingData?.push(otherOfferingData);
           }
         }
-        const groupId: string = this.currentGroupId.toLowerCase();
+        
         if (!Object.prototype.hasOwnProperty.call(this.otherOfferingInstancesTouched, groupId)) {
           this.otherOfferingInstancesTouched[groupId] = [];
         }
@@ -756,6 +835,8 @@ export class DescriptionOfWorkStore extends VuexModule {
           .indexOf(otherOfferingData.instanceNumber) === -1) {
           this.otherOfferingInstancesTouched[groupId].push(otherOfferingData.instanceNumber);
         }
+
+        
       } else {
         throw new Error(`Error saving ${this.currentGroupId} data to store`);
       }

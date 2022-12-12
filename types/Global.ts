@@ -372,6 +372,8 @@ export interface OtherServiceOfferingData {
   region?: string;
   processorSpeed?: string;
   networkPerformance?: string;
+  databaseLicensing?: string;
+  sysId?: string;
 }
 
 export interface OtherServiceSummaryTableData {

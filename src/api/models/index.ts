@@ -530,6 +530,7 @@ export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
   database_type?: string;
   database_licensing?: string;
   database_type_other?: string;
+  network_performance?: string;
 }
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{
