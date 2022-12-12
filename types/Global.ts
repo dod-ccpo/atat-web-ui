@@ -363,6 +363,15 @@ export interface OtherServiceOfferingData {
   performanceTierOther: string;
   numberOfInstancesNeeded: string;
   requirementTitle?: string;
+  usageDescription?: string;
+  operatingEnvironment?: string;
+  databaseType?: string;
+  databaseTypeOther?: string;
+  licensing?: string;
+  operatingSystem?: string;
+  region?: string;
+  processorSpeed?: string;
+  networkPerformance?: string;
 }
 
 export interface OtherServiceSummaryTableData {
