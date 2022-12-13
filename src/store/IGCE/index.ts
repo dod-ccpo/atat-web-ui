@@ -4,6 +4,8 @@ import rootStore from "../index";
 import api from "@/api";
 import {RequirementsCostEstimateDTO} from "@/api/models";
 import _ from "lodash";
+import Periods from "@/store/periods";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
@@ -84,6 +86,16 @@ export class IGCEStore extends VuexModule {
   @Mutation
   public async doSetRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
     this.requirementsCostEstimate = value;
+  }
+
+  @Mutation
+  public setHasDOWandPop(): void {
+    const requirementCostEstimate = this.requirementsCostEstimate as RequirementsCostEstimateDTO;
+    if ((Periods.periods && Periods.periods.length > 0) && !DescriptionOfWork.isIncomplete) {
+      requirementCostEstimate.has_DOW_and_PoP = "YES";
+    } else {
+      requirementCostEstimate.has_DOW_and_PoP = "NO";
+    }
   }
 
   // TODO: write other setters and getters as needed.
