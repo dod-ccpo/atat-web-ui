@@ -79,6 +79,12 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   classification: string;
 }
 
+export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
+  description: string;
+  name: string;
+  sequence: string;
+}
+
 export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
   classification_level: ReferenceColumn; // sys id
   acquisition_package: ReferenceColumn; // sys id

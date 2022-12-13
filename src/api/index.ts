@@ -49,6 +49,7 @@ import { DatabaseEnvironmentInstanceAPI } from "@/api/databaseEnvironmentInstanc
 import { StorageEnvironmentInstanceAPI } from "@/api/storageEnvironmentInstance";
 import { CloudSupportEnvironmentInstanceAPI } from "@/api/cloudSupportEnvironmentInstance";
 import { ArchitecturalDesignRequirementAPI } from "@/api/architecturalDesignRequirement";
+import { ClassifiedInformationTypeAPI } from "@/api/classifiedInformationType";
 
 export const api = {
 
@@ -103,7 +104,8 @@ export const api = {
   databaseEnvironmentInstanceTable: new DatabaseEnvironmentInstanceAPI(),
   storageEnvironmentInstanceTable: new StorageEnvironmentInstanceAPI(),
   cloudSupportEnvironmentInstanceTable: new CloudSupportEnvironmentInstanceAPI(),
-  architecturalDesignRequirementTable: new ArchitecturalDesignRequirementAPI()
+  architecturalDesignRequirementTable: new ArchitecturalDesignRequirementAPI(),
+  classifiedInformationTypeTable: new ClassifiedInformationTypeAPI()
 }
 
 export default {

@@ -4,6 +4,7 @@ import rootStore from "../index";
 import api from "@/api";
 import {
   ClassificationLevelDTO,
+  ClassifiedInformationTypeDTO,
   ReferenceColumn,
   SelectedClassificationLevelDTO
 } from "@/api/models";
@@ -20,6 +21,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   public classificationLevels: ClassificationLevelDTO[] = [];
   public selectedClassificationLevels: SelectedClassificationLevelDTO[] = [];
   public securityRequirements: SecurityRequirement[] = [];
+  public classifiedInformationTypes: ClassifiedInformationTypeDTO[] = [];
 
   @Mutation
   public setClassifications(value: ClassificationLevelDTO[]): void {
@@ -30,18 +32,23 @@ export class ClassificationRequirementsStore extends VuexModule {
   public async setSelectedClassificationLevels(
     value: SelectedClassificationLevelDTO[]
   ): Promise<void> {
-    await this.doSetSelectedClassificationLevels(value)
+    this.doSetSelectedClassificationLevels(value);
   }
 
   @Mutation
-  public async doSetSelectedClassificationLevels(
+  private doSetSelectedClassificationLevels(
     value: SelectedClassificationLevelDTO[]
-  ): Promise<void> {
+  ): void {
     this.selectedClassificationLevels = value;
   }
 
-  @Mutation
+  @Action({rawError: true})
   public async setSecurityRequirements(value: SecurityRequirement[]): Promise<void> {
+    this.doSetSecurityRequirements(value);
+  }
+
+  @Mutation
+  private doSetSecurityRequirements(value: SecurityRequirement[]): void {
     this.securityRequirements = value;
   }
 
@@ -60,6 +67,36 @@ export class ClassificationRequirementsStore extends VuexModule {
       this.setClassifications(classificationLevels);
     } catch (error) {
       throw new Error(`error loading Classification Levels ${error}`);
+    }
+  }
+
+  @Action({rawError: true})
+  public async getAllClassifiedInformationTypes(): Promise<ClassifiedInformationTypeDTO[]> {
+    if (this.classifiedInformationTypes.length === 0) {
+      await this.loadClassifiedInformationTypes();
+    }
+    return this.classifiedInformationTypes;
+  }
+
+  @Mutation
+  private doSetClassifiedInformationTypes(value: ClassifiedInformationTypeDTO[]): void {
+    this.classifiedInformationTypes = value;
+  }
+
+  @Action({rawError: true})
+  public async setClassifiedInformationTypes(
+    value: ClassifiedInformationTypeDTO[]
+  ): Promise<void> {
+    this.doSetClassifiedInformationTypes(value);
+  }
+
+  @Action({rawError: true})
+  public async loadClassifiedInformationTypes(): Promise<void> {
+    try {
+      const classifiedInformationTypes = await api.classifiedInformationTypeTable.all();
+      await this.setClassifiedInformationTypes(classifiedInformationTypes);
+    } catch (error) {
+      throw new Error(`error loading Classification Information Types ${error}`);
     }
   }
 
