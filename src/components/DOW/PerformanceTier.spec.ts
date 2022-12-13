@@ -39,7 +39,7 @@ describe("Testing Classification Level Page", () => {
   });
 
   describe("Initialization....", () => {
-    it("tests that component renders successfully", async () => {
+    it.skip("tests that component renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
 
