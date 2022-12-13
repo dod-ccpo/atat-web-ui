@@ -10,6 +10,7 @@ import rootStore from "../index";
 import api from "@/api";
 import { 
   ClassificationInstanceDTO, 
+  CloudSupportEnvironmentInstanceDTO, 
   ComputeEnvironmentInstanceDTO, 
   DatabaseEnvironmentInstanceDTO, 
   SelectedServiceOfferingDTO, 
@@ -179,6 +180,24 @@ const saveOrUpdateOtherServiceOffering =
       } else {
         const savedObject = await api.storageEnvironmentInstanceTable.create(
           tempObject as StorageEnvironmentInstanceDTO
+        );
+        objSysId = savedObject.sys_id as string;
+      }
+      break;
+    case "advisory_assistance":
+    case "help_desk_services":
+    case "documentation_support":
+    case "general_cloud_support":
+      tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
+      if(tempObject.sys_id){
+        await api.cloudSupportEnvironmentInstanceTable.update(
+          tempObject.sys_id,
+          tempObject as CloudSupportEnvironmentInstanceDTO
+        );
+        objSysId = tempObject.sys_id;
+      } else {
+        const savedObject = await api.cloudSupportEnvironmentInstanceTable.create(
+          tempObject as CloudSupportEnvironmentInstanceDTO
         );
         objSysId = savedObject.sys_id as string;
       }
