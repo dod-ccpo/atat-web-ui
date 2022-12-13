@@ -47,6 +47,7 @@
           <OtherOfferings 
             :isCompute="isCompute"
             :isGeneral="isGeneral"
+            :isDatabase="isDatabase"
             :otherOfferingName="otherOfferingName"
             :serviceOfferingData.sync="otherOfferingData" 
             :isPeriodsDataMissing="isPeriodsDataMissing"
@@ -191,11 +192,20 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public isCompute = false;
   public isGeneral = false;
+  public isDatabase = false;
   public isOtherOffering = false;
   public otherOfferingName = "";
+
   public otherOfferingList = [
     "compute",
-    "general_xaas"
+    "database",
+    "storage",
+    "general_xaas",
+    "advisory_assistance",
+    "help_desk_services",
+    "training",
+    "documentation_support",
+    "general_cloud_support",
   ];
 
   public isServiceOfferingList = true;
@@ -211,7 +221,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     periodsNeeded: [],
     operatingSystemAndLicensing: "",
     numberOfVCPUs: "",
-    memory: "",
+    memoryAmount: "",
     storageType: "",
     storageAmount: "",
     performanceTier: "",
@@ -226,9 +236,11 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
-    // only Compute and General XaaS categories differ in requirements
+
     this.isCompute = this.serviceGroupOnLoad.toLowerCase() === "compute";
     this.isGeneral = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
+    this.isDatabase = this.serviceGroupOnLoad.toLowerCase() === "database";
+
     this.isOtherOffering = this.otherOfferingList.includes(this.serviceGroupOnLoad.toLowerCase());
     if(this.isOtherOffering)
       this.otherOfferingName = this.serviceGroupOnLoad.toLowerCase();

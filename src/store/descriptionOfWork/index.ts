@@ -118,7 +118,8 @@ const saveOrUpdateOtherServiceOffering =
     tempObject.classification_level = serviceOffering.classificationLevel;
     tempObject.number_of_vcpus = serviceOffering.numberOfVCPUs;
     tempObject.performance_tier = serviceOffering.performanceTier;
-    tempObject.memory_unit = serviceOffering.memory;
+    tempObject.memory_amount = serviceOffering.memoryAmount;
+    tempObject.memory_unit = serviceOffering.memoryUnit;
     tempObject.operating_system = serviceOffering.operatingSystem;
     tempObject.region = serviceOffering.region;
     tempObject.processor_speed = serviceOffering.processorSpeed;
@@ -721,6 +722,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   currentOtherServiceInstanceNumber = 0;
 
   emptyOtherOfferingInstance: OtherServiceOfferingData = {
+    acquisitionPackageSysId: "",
     instanceNumber: this.currentOtherServiceInstanceNumber,
     environmentType: "",
     classificationLevel: "",
@@ -731,13 +733,28 @@ export class DescriptionOfWorkStore extends VuexModule {
     periodsNeeded: [],
     operatingSystemAndLicensing: "",
     numberOfVCPUs: "",
-    memory: "",
+    memoryAmount: "",
+    memoryUnit: "GB",
     storageType: "",
     storageAmount: "",
+    storageUnit: "",
     performanceTier: "",
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
-    requirementTitle: "",
+    requirementTitle: "",   
+    usageDescription: "",
+    operatingEnvironment: "",
+    databaseType: "",
+    databaseTypeOther: "",
+    licensing: "",
+    operatingSystem: "",
+    region: "",
+    processorSpeed: "",
+    networkPerformance: "",
+    databaseLicensing: "",
+    sysId: "",
+    personnelOnsiteAccess: "",
+    tsContractorClearanceType: "",
   }
 
   otherOfferingInstancesTouched: Record<string, number[]> = {};
@@ -1099,6 +1116,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     });
 
+    // EJY need to update?
     const groupsWithNoOtherOption = ["ADVISORY", "TRAINING"];
     
     if (groupsWithNoOtherOption.indexOf(this.currentGroupId) === -1) {

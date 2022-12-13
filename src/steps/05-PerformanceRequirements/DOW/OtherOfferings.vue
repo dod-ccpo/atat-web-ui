@@ -69,7 +69,7 @@
     </h2>
 
 
-    <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
+    <div v-if="selectedClassificationLevelList.length > 1" class="mb-8">
       <ATATRadioGroup
         id="ClassificationLevel"
         legend="What classification level is this instance deployed in?"
@@ -97,8 +97,8 @@
       <ComputeForm
         v-if="isCompute"
         :data.sync="_serviceOfferingData"  
-
       />
+      
       <section v-if="isCompute || isDatabase">
         <hr />
         <h2>
@@ -129,7 +129,6 @@
       
       <AnticipatedDurationandUsage
         type="requirement"
-        :description="description"
         :index="_serviceOfferingData.instanceNumber"
         :isPeriodsDataMissing="isPeriodsDataMissing"
         :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
@@ -161,6 +160,8 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeForm from "./ComputeForm.vue"
 import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationandUsage.vue";
+import InstanceConfig from "@/components/DOW/InstanceConfig.vue";
+import PerformanceTier from "@/components/DOW/PerformanceTier.vue";
 
 import Toast from "@/store/toast";
 
@@ -201,7 +202,9 @@ import classificationRequirements from "@/store/classificationRequirements";
     ComputeForm,
     AnticipatedDurationandUsage,
     DOWSubtleAlert,
-    ATATAlert
+    ATATAlert,
+    InstanceConfig,
+    PerformanceTier,
   }
 })
 
@@ -219,6 +222,7 @@ export default class OtherOfferings extends Vue {
   @PropSync("serviceOfferingData") public _serviceOfferingData!: OtherServiceOfferingData;
   @Prop() public isCompute!: boolean;
   @Prop() public isGeneral!: boolean;
+  @Prop() public isDatabase!: boolean;
   @Prop() public otherOfferingName!: string;
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
