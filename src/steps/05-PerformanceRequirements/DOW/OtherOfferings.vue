@@ -6,7 +6,8 @@
         {{introText}}
       </span>
       <span v-else>
-        Let’s gather some details for {{offeringName}} #{{ _serviceOfferingData.instanceNumber }}
+        Let’s gather your requirements 
+        for {{offeringName}} #{{ _serviceOfferingData.instanceNumber }}
       </span>
     </h1>
     <p 
@@ -58,7 +59,10 @@
     </v-expand-transition>
 
 
-    <h2 class="mb-5" id="FormSection1Heading">
+    <h2 class="mb-5" 
+      id="FormSection1Heading"
+      v-if="isCompute || isDatabase"
+    >
       1. 
       <span v-if="firstTimeHere">
         Tell us about Instance #{{ _serviceOfferingData.instanceNumber }}
@@ -130,10 +134,10 @@
         />
       </section>
 
-      <div v-if="!isGeneral">
+      <div v-if="isCompute || isDatabase || isStorage">
         <hr/>
         <h2 class="mb5">
-          3. Anticipated need and duration
+          {{ isStorage ? '2' : '3' }}. Anticipated need and duration
         </h2>
         <br/>
       </div>
@@ -147,6 +151,20 @@
         :entireDuration.sync="_serviceOfferingData.entireDuration"
         :selectedPeriods.sync="_serviceOfferingData.periodsNeeded"
       />
+
+      <div v-if="isSupport">
+        <ATATRadioGroup
+          class="copy-max-width mb-10 mt-0"
+          legend="Will this service require CSP personnel to access on-site locations?"
+          :items="onsiteAccessOptions"
+          :value.sync="_serviceOfferingData.personnelOnsiteAccess"
+          :rules="[
+            $validators.required(
+              'Please select an option.'
+            )
+          ]"
+        />
+      </div>
   
     </v-form>
 
@@ -180,6 +198,7 @@ import Toast from "@/store/toast";
 
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import _ from "lodash";
 
 import { 
@@ -219,7 +238,8 @@ import classificationRequirements from "@/store/classificationRequirements";
     InstanceConfig,
     PerformanceTier,
     DatabaseFormElements,
-    StorageFormElements
+    StorageFormElements,
+    ATATRadioGroup
   }
 })
 
@@ -235,13 +255,10 @@ export default class OtherOfferings extends Vue {
   };
 
   @PropSync("serviceOfferingData") public _serviceOfferingData!: OtherServiceOfferingData;
-  @Prop() public isCompute!: boolean;
-  @Prop() public isGeneral!: boolean;
-  @Prop() public isDatabase!: boolean;
-  @Prop() public otherOfferingName!: string;
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
   @Prop() public avlClassificationLevelObjects!: ClassificationLevelDTO[];
+  @Prop() public otherOfferingList!: string[];
 
   public firstTimeHere = false;
   public modalSelectionsOnOpen: string[] = [];
@@ -266,6 +283,13 @@ export default class OtherOfferings extends Vue {
   public clearOtherTierValidation = false;
   public acquisitionPackage: AcquisitionPackageDTO | undefined;
 
+  public serviceGroupOnLoad = "";
+  public isStorage = false;
+  public isCompute = false;
+  public isGeneral = false;
+  public isDatabase = false;
+  public isSupport = false;
+
   public classificationLevelToast: ToastObj = {
     type: "success",
     message: "Classification requirements updated",
@@ -276,16 +300,25 @@ export default class OtherOfferings extends Vue {
 
   public offeringName = "";
 
-  public introText = "";
-
-  public serviceGroupOnLoad = "";
-  public isStorage = false;
-  
+  public introText = ""; 
 
   public storageUnits: SelectData[] = [
     { text: "Gigabyte (GB)", value: "GB" },
     { text: "Terabyte (TB)", value: "TB" },
     { text: "Petabyte (PB)", value: "PB" },
+  ];
+
+  public onsiteAccessOptions: RadioButton[] = [
+    {
+      id: "Yes",
+      label: "Yes",
+      value: "YES",
+    },
+    {
+      id: "No",
+      label: "No",
+      value: "NO",
+    },
   ];
 
   public openModal(): void {
@@ -358,7 +391,18 @@ export default class OtherOfferings extends Vue {
     }
 
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
+
+    this.isCompute = this.serviceGroupOnLoad.toLowerCase() === "compute";
+    this.isGeneral = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
+    this.isDatabase = this.serviceGroupOnLoad.toLowerCase() === "database";
     this.isStorage = this.serviceGroupOnLoad.toLowerCase() === "storage";
+
+    this.isSupport = [
+      "advisory_assistance",
+      "help_desk_services",
+      "documentation_support",
+      "general_cloud_support"
+    ].includes(this.serviceGroupOnLoad.toLowerCase());
 
     if(this.isGeneral){
       this.introText = `Let’s gather your requirements for 
@@ -367,9 +411,9 @@ export default class OtherOfferings extends Vue {
       this.offeringName = "Requirement"
     } else {
       this.introText = `Next, let’s start gathering your 
-        requirements for ${_.startCase(this.otherOfferingName)}`;
+        requirements for ${_.startCase(this.serviceGroupOnLoad.toLowerCase())}`;
 
-      this.offeringName = _.startCase(this.otherOfferingName) + " Instance";
+      this.offeringName = _.startCase(this.serviceGroupOnLoad.toLowerCase()) + " Instance";
     }
 
     // get classification levels selected in step 4 Contract Details

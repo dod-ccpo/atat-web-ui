@@ -1,5 +1,8 @@
 <template>
   <div>
+    <h2 class="mb-5">
+      1. Storage Configurations
+    </h2>
     <v-row>
       <v-col class="col-sm-12 col-md-3">
         <ATATSelect

@@ -384,12 +384,10 @@ export interface OtherServiceOfferingData {
 export interface OtherServiceSummaryTableData {
   instanceNumber: number;
   typeOrTitle?: string;
-  location?: string;
   qty?: string;
   vCPU?: string;
   memory?: string;
   storage?: string;
-  classification?: string;
   performance?: string;
   requirementTitle?: string;
   duration?: string;

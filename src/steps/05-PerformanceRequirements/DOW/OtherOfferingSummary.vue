@@ -242,8 +242,6 @@ export default class OtherOfferingSummary extends Vue {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
           { text: "Type", value: "typeOrTitle" },
-          { text: "Location", value: "location" },
-          { text: "Classification", value: "classification" },
           { text: "Quantity", value: "qty" },
           { text: "vCPU", value: "vCPU" },
           { text: "Memory", value: "memory" },
@@ -292,12 +290,11 @@ export default class OtherOfferingSummary extends Vue {
         instanceData = {
           instanceNumber: instanceClone.instanceNumber,
           typeOrTitle: instanceClone.environmentType,
-          location: deployedRegions,
-          classification: classificationLevel,
           qty: instanceClone.numberOfInstancesNeeded,
           vCPU: instanceClone.numberOfVCPUs,
-          memory: instanceClone.memory ? `${instanceClone.memory} GB` : "",
-          storage: instanceClone.storageAmount ? `${instanceClone.storageAmount} GB` : "" ,
+          memory: instanceClone.memoryAmount ? `${instanceClone.memoryAmount} GB` : "",
+          storage: instanceClone.storageAmount ? `${instanceClone.storageType}: 
+            ${instanceClone.storageAmount} ${instanceClone.storageUnit}` : "" ,
           performance: performanceTier,
         };
       } else if (this.isGeneral) {
@@ -367,11 +364,12 @@ export default class OtherOfferingSummary extends Vue {
         "environmentType",
         "classificationLevel",
         "entireDuration",
-        "memory",
+        "memoryAmount",
         "anticipatedNeedUsage",
         "numberOfInstancesNeeded",
         "numberOfVCPUs",
-        "operatingSystemAndLicensing",
+        "operatingSystem",
+        "licensing",
         "performanceTier",
         "storageAmount",
         "storageType",

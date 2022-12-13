@@ -43,12 +43,9 @@
           </div>
         </v-col>
         
-        <v-col v-else-if="isOtherOffering">
+        <v-col v-else-if="!isServiceOfferingList">
           <OtherOfferings 
-            :isCompute="isCompute"
-            :isGeneral="isGeneral"
-            :isDatabase="isDatabase"
-            :otherOfferingName="otherOfferingName"
+            :otherOfferingList="otherOfferingList"
             :serviceOfferingData.sync="otherOfferingData" 
             :isPeriodsDataMissing="isPeriodsDataMissing"
             :isClassificationDataMissing="isClassificationDataMissing"
@@ -190,12 +187,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public serviceOfferings: DOWServiceOffering[] = [];
   public serviceGroupOnLoad = "";
 
-  public isCompute = false;
-  public isGeneral = false;
-  public isDatabase = false;
-  public isOtherOffering = false;
-  public otherOfferingName = "";
-
   public otherOfferingList = [
     "compute",
     "database",
@@ -237,13 +228,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
 
-    this.isCompute = this.serviceGroupOnLoad.toLowerCase() === "compute";
-    this.isGeneral = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
-    this.isDatabase = this.serviceGroupOnLoad.toLowerCase() === "database";
-
-    this.isOtherOffering = this.otherOfferingList.includes(this.serviceGroupOnLoad.toLowerCase());
-    if(this.isOtherOffering)
-      this.otherOfferingName = this.serviceGroupOnLoad.toLowerCase();
     // all other categories have a similar workflow with checkbox list of service offerings
     this.isServiceOfferingList = !this.otherOfferingList.includes(
       this.serviceGroupOnLoad.toLowerCase()
@@ -280,7 +264,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       this.selectedOptions.push(...validSelections);
 
       this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
-    } else if (this.isCompute || this.isGeneral) {
+    } else {
       const offeringIndex = DescriptionOfWork.DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() 
           === DescriptionOfWork.currentGroupId.toLowerCase()
@@ -339,8 +323,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         //save to backend
         if (this.isServiceOfferingList) {
           await DescriptionOfWork.saveUserSelectedServices();
-        } else if (this.isCompute) {
-          // save computeData to backend in ticket AT-7767
         }
       }
     } catch (error) {
