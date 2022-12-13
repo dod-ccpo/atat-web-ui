@@ -26,13 +26,6 @@ describe("FinancialDetails Store",
       const createStore = (storeOptions: any = {}):
         Store<{ financialDetails: any }> => new Vuex.Store({...storeOptions});
       financialDetailsStore = getModule(FinancialDetailsStore, createStore());
-      requirementsCostEstimateDTO = {
-        surge_capabilities: "Test SC",
-        estimatedTaskOrderValue: "",
-        feePercentage: "",
-        feeCharged: "",
-        surge_capacity: ""
-      }
       fundingRequestFSFormDTO = {
         fs_form_7600a_filename: "Test 7600",
         fs_form_7600a_attachment: "123",
@@ -81,35 +74,6 @@ describe("FinancialDetails Store",
           JSON.stringify(requirementsCostEstimateDTO));
       } catch {
         await expect(Vue.set).not.toHaveBeenCalled();
-      }
-    })
-
-    it('Test loadRequirementsCostEstimate()- should not load requirements' +
-      'cost estimate from the api if not already created', async () => {
-      jest.spyOn(api.requirementsCostEstimateTable, "retrieve");
-      await financialDetailsStore.loadRequirementsCostEstimate();
-      expect(api.requirementsCostEstimateTable.retrieve).not.toHaveBeenCalled();
-    })
-
-    it('Test loadRequirementsCostEstimate()- should load req cost estimate from api', async () => {
-      jest.spyOn(api.requirementsCostEstimateTable, "retrieve").mockReturnValue(
-        Promise.resolve(requirementsCostEstimateDTO)
-      )
-      financialDetailsStore.setRequirementsCostEstimate(requirementsCostEstimateDTO);
-      await financialDetailsStore.loadRequirementsCostEstimate();
-      expect(api.requirementsCostEstimateTable.retrieve).toHaveBeenCalled();
-    })
-
-    it('Test loadRequirementsCostEstimate()- should catch the error', async () => {
-      financialDetailsStore.setRequirementsCostEstimate(requirementsCostEstimateDTO);
-      jest.spyOn(api.requirementsCostEstimateTable, "retrieve").mockImplementation(() => {
-        throw Error;
-      })
-      jest.spyOn(financialDetailsStore, "setRequirementsCostEstimate");
-      try {
-        await financialDetailsStore.loadRequirementsCostEstimate();
-      } catch {
-        await expect(financialDetailsStore.setRequirementsCostEstimate).not.toHaveBeenCalled();
       }
     })
     

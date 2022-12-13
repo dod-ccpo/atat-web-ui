@@ -45,9 +45,9 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
 import {AttachmentDTO, RequirementsCostEstimateDTO} from "@/api/models";
-import FinancialDetails from "@/store/financialDetails";
 import { invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
+import IGCE from "@/store/IGCE";
 
 @Component({
   components: {
@@ -104,12 +104,13 @@ export default class SupportingDocumentation extends Vue {
    * code that uploads the attachment.
    */
   async saveRequirementCostEstimateData(): Promise<void> {
-    const requirementsCostEstimate = await FinancialDetails.loadRequirementsCostEstimate();
-    this.loaded = await FinancialDetails.saveRequirementsCostEstimate(requirementsCostEstimate);
+    const requirementsCostEstimate = await IGCE.getRequirementsCostEstimate();
+    await IGCE.saveRequirementsCostEstimate(requirementsCostEstimate);
+    this.loaded = await IGCE.getRequirementsCostEstimate();
   }
 
   async loadRequirementsCostEstimateData(): Promise<void>{
-    this.loaded = await FinancialDetails.loadRequirementsCostEstimate();
+    this.loaded = await IGCE.getRequirementsCostEstimate();
   }
 
   private onFileUploadChanged(): void {
