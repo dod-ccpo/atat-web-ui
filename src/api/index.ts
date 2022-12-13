@@ -48,6 +48,7 @@ import { ComputeEnvironmentInstanceAPI } from "@/api/computeEnvironmentInstance"
 import { DatabaseEnvironmentInstanceAPI } from "@/api/databaseEnvironmentInstance";
 import { StorageEnvironmentInstanceAPI } from "@/api/storageEnvironmentInstance";
 import { CloudSupportEnvironmentInstanceAPI } from "@/api/cloudSupportEnvironmentInstance";
+import { ArchitecturalDesignRequirementAPI } from "@/api/architecturalDesignRequirement";
 
 export const api = {
 
@@ -102,6 +103,7 @@ export const api = {
   databaseEnvironmentInstanceTable: new DatabaseEnvironmentInstanceAPI(),
   storageEnvironmentInstanceTable: new StorageEnvironmentInstanceAPI(),
   cloudSupportEnvironmentInstanceTable: new CloudSupportEnvironmentInstanceAPI()
+  architecturalDesignRequirementTable: new ArchitecturalDesignRequirementAPI()
 }
 
 export default {

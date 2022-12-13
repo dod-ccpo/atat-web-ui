@@ -547,6 +547,13 @@ export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceD
   ts_contractor_clearance_type?: string;
 }
 
+export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
+  applications_needing_design: string;
+  data_classification_levels: string;
+  external_factors: string;
+  statement: string;
+}
+
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
   csp: ReferenceColumn;
