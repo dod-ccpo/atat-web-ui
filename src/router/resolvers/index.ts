@@ -314,7 +314,6 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
   }
 
   return descriptionOfWorkSummaryPath;
-     
 }
 
 export const OfferGroupOfferingsPathResolver = (
