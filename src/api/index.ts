@@ -102,7 +102,7 @@ export const api = {
   computeEnvironmentInstanceTable: new ComputeEnvironmentInstanceAPI(),
   databaseEnvironmentInstanceTable: new DatabaseEnvironmentInstanceAPI(),
   storageEnvironmentInstanceTable: new StorageEnvironmentInstanceAPI(),
-  cloudSupportEnvironmentInstanceTable: new CloudSupportEnvironmentInstanceAPI()
+  cloudSupportEnvironmentInstanceTable: new CloudSupportEnvironmentInstanceAPI(),
   architecturalDesignRequirementTable: new ArchitecturalDesignRequirementAPI()
 }
 
