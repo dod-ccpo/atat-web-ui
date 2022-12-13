@@ -3,7 +3,7 @@
     <ATATRadioGroup
       id="EnvironmnetType"
       legend="What type of environment is this instance?"
-      :value.sync="_data.environmentType"
+      :value.sync="offeringData.environmentType"
       :items="environmentTypeOptions"
       name="EnvironmnetType"
       class="mt-3 mb-8"
@@ -13,7 +13,7 @@
     <ATATRadioGroup
       id="OperatingEnvType"
       legend="What type of operating environment do you need?"
-      :value.sync="_data.operatingEnvironment"
+      :value.sync="offeringData.operatingEnvironment"
       :items="operatingEnvOptions"
       name="OperatingEnvType"
       class="mt-3 mb-8"
@@ -23,7 +23,7 @@
     <ATATRadioGroup
       id="OSLicensingType"
       legend="Operating system licensing"
-      :value.sync="_data.operatingSystemLicensing"
+      :value.sync="offeringData.licensing"
       :items="OSLicensingOptions"
       name="OSLicensingType"
       class="mt-3 mb-8"
@@ -50,8 +50,8 @@ import {
   }
 })
 
-export default class ComputeForm extends Vue {
-  @PropSync("data") public _data!: OtherServiceOfferingData;
+export default class ComputeFormElements extends Vue {
+  @PropSync("data") public offeringData!: OtherServiceOfferingData;
 
   public environmentTypeOptions: RadioButton[] = [
     {

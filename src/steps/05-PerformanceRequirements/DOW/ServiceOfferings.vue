@@ -245,7 +245,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     if(this.isOtherOffering)
       this.otherOfferingName = this.serviceGroupOnLoad.toLowerCase();
     // all other categories have a similar workflow with checkbox list of service offerings
-    this.isServiceOfferingList = !this.isCompute && !this.isGeneral;
+    this.isServiceOfferingList = !this.otherOfferingList.includes(
+      this.serviceGroupOnLoad.toLowerCase()
+    );
 
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
@@ -329,7 +331,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             await DescriptionOfWork.setSelectedOfferings(
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
-          } else if (this.isCompute || this.isGeneral) {
+          } else {
             await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
         }

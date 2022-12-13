@@ -1,31 +1,18 @@
 <template>
   <section id="InstanceConfig">
-    <v-row>
-      <v-col class="col-sm-12 col-md-6">
-        <ATATTextField
-          id="Licensing"
-          label="Licensing"
-          :value.sync="_data.licensing"
-          tooltipText="Provide details about your licensing agreement, to include 
-            the type and number of licenses."
-          :rules="[
-            $validators.required('Enter a description of your current licensing.')
-          ]"
-        />
-      </v-col>
-    </v-row>
+    <br/>
     <v-row>
       <v-col class="col-sm-12 col-md-3">
         <ATATTextField
           id="NumberOfVCPUs"
           label="Number of vCPUs"
-          :value.sync="_data.numberOfVCPUs"
+          :value.sync="offeringData.numberOfVCPUs"
           tooltipText="This refers to the size of compute. You can provide an approximate 
             number of virtual centralized processing units (vCPUs)."
           type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
-            $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
+            $validators.greaterThan(0, 'Enter a number greater than or equal to 1.'),
           ]"
           :allowDecimals="false"
         />
@@ -34,13 +21,13 @@
         <ATATTextField
           id="ProcessorSpeed"
           label="Processor speed"
-          :value.sync="_data.processorSpeed"
+          :value.sync="offeringData.processorSpeed"
           tooltipText="Enter the clock speed for each vCPU. This is typically measured
             in gigahertz (GHz)."
           type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
-            $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
+            $validators.greaterThan(0, 'Enter a number greater than or equal to 1.'),
           ]"
           :allowDecimals="false"
         />
@@ -49,7 +36,7 @@
         <ATATTextField
           id="OperatingSystem"
           label="Operating system"
-          :value.sync="_data.operatingSystem"
+          :value.sync="offeringData.operatingSystem"
           tooltipText="Specify the type of Operating System (OS) that your instance is running on 
             (e.g., Windows, Linux)."
           :rules="[
@@ -63,13 +50,13 @@
         <ATATTextField
           id="Memory"
           label="Memory"
-          :value.sync="_data.memoryAmount"
+          :value.sync="offeringData.memoryAmount"
           tooltipText="Enter the amount of Random Access Memory (RAM) available for 
             storing data short-term in order to perform computing operations."
           appendText="GB"
           :rules="[
             $validators.required('Enter a number greater than or equal to 1.'),
-            $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
+            $validators.greaterThan(0, 'Enter a number greater than or equal to 1.'),
           ]"
           :isMaskRegex="true"
           :mask="['^[0-9]*\.?[0-9]{1}$']"
@@ -82,7 +69,7 @@
           id="StorageType"
           label="Storage type"
           :items="storageTypes"
-          :selectedValue.sync="_data.storageType"
+          :selectedValue.sync="offeringData.storageType"
           :validateOnBlur="true"
           :rules="[
             $validators.required('Select a storage type.')
@@ -94,12 +81,12 @@
         <ATATTextField
           id="StorageAmount"
           label="Storage size"
-          :value.sync="_data.storageAmount"
+          :value.sync="offeringData.storageAmount"
           tooltipText="Enter the amount of storage available to access and store 
             data on a long-term basis."
           :appendDropdown="true"
           :dropdownOptions="storageUnits"
-          :selectedDropdownValue.sync="_data.storageUnit"
+          :selectedDropdownValue.sync="offeringData.storageUnit"
           type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 0.'),
@@ -134,7 +121,7 @@ import {
 })
 
 export default class InstanceConfig extends Vue {
-  @PropSync("data") public _data!: CurrEnvInstanceConfig | OtherServiceOfferingData;
+  @PropSync("data") public offeringData!: CurrEnvInstanceConfig | OtherServiceOfferingData;
   @Prop() public storageUnits!: SelectData[];
 
   public storageTypes: SelectData[] = [

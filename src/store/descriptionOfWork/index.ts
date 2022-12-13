@@ -33,6 +33,7 @@ import {
 
 import _, { differenceWith, first, last } from "lodash";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import AcquisitionPackage from "../acquisitionPackage";
 
 
 // Classification Proxy helps keep track of saved
@@ -112,75 +113,78 @@ const saveOrUpdateOtherServiceOffering =
     const tempObject: any = {};
     let objSysId = "";
 
+    tempObject.acquisition_package = serviceOffering.acquisitionPackageSysId;
+    tempObject.anticipated_need_or_usage = serviceOffering.descriptionOfNeed;
+    tempObject.classification_level = serviceOffering.classificationLevel;
+    tempObject.instance_name = serviceOffering.requirementTitle;
+    tempObject.licensing = serviceOffering.licensing;
+    tempObject.memory_amount = serviceOffering.memoryAmount;
+    tempObject.memory_unit = serviceOffering.memoryUnit || "GB";
+    tempObject.need_for_entire_task_order_duration = serviceOffering.entireDuration;
+    tempObject.number_of_instances = serviceOffering.numberOfInstancesNeeded;
+    tempObject.number_of_vcpus = serviceOffering.numberOfVCPUs;
+    tempObject.operating_system = serviceOffering.operatingSystem;
+    tempObject.performance_tier = serviceOffering.performanceTier;
+    tempObject.processor_speed = serviceOffering.processorSpeed;
+    tempObject.region = serviceOffering.region;
+    tempObject.selected_periods = serviceOffering.periodsNeeded.join(",");
     tempObject.storage_amount = serviceOffering.storageAmount;
     tempObject.storage_type = serviceOffering.storageType;
-    tempObject.instance_name = serviceOffering.requirementTitle;
-    tempObject.classification_level = serviceOffering.classificationLevel;
-    tempObject.number_of_vcpus = serviceOffering.numberOfVCPUs;
-    tempObject.performance_tier = serviceOffering.performanceTier;
-    tempObject.memory_amount = serviceOffering.memoryAmount;
-    tempObject.memory_unit = serviceOffering.memoryUnit;
-    tempObject.operating_system = serviceOffering.operatingSystem;
-    tempObject.region = serviceOffering.region;
-    tempObject.processor_speed = serviceOffering.processorSpeed;
-    tempObject.licensing = serviceOffering.licensing;
+    tempObject.storage_unit = serviceOffering.storageUnit;
     tempObject.sys_id = serviceOffering.sysId;
-    tempObject.acquisition_package = serviceOffering.acquisitionPackageSysId;
 
     switch(offeringType){
     case "compute":
-      tempObject.operating_environment = serviceOffering.operatingEnvironment;
       tempObject.environment_type = serviceOffering.environmentType;
-      console.log(tempObject as ComputeEnvironmentInstanceDTO);
-      // if(tempObject.sys_id){
-      //   await api.computeEnvironmentInstanceTable.update(
-      //     tempObject.sys_id,
-      //     tempObject as ComputeEnvironmentInstanceDTO
-      //   );
-      //   objSysId = tempObject.sys_id;
-      // } else {
-      //   const savedObject = await api.computeEnvironmentInstanceTable.create(
-      //     tempObject as ComputeEnvironmentInstanceDTO
-      //   );
-      //   objSysId = savedObject.sys_id as string;
-      // }
+      tempObject.operating_environment = serviceOffering.operatingEnvironment; 
+      if(tempObject.sys_id){
+        await api.computeEnvironmentInstanceTable.update(
+          tempObject.sys_id,
+          tempObject as ComputeEnvironmentInstanceDTO
+        );
+        objSysId = tempObject.sys_id;
+      } else {
+        const savedObject = await api.computeEnvironmentInstanceTable.create(
+          tempObject as ComputeEnvironmentInstanceDTO
+        );
+        objSysId = savedObject.sys_id as string;
+      }
       break;
     case "database":
-      tempObject.database_type = serviceOffering.databaseType;
       tempObject.database_licensing = serviceOffering.databaseLicensing;
+      tempObject.database_type = serviceOffering.databaseType;
       tempObject.database_type_other = serviceOffering.databaseTypeOther;
       tempObject.network_performance = serviceOffering.networkPerformance;
-      console.log(tempObject as DatabaseEnvironmentInstanceDTO);
-      // if(tempObject.sys_id){
-      //   await api.databaseEnvironmentInstanceTable.update(
-      //     tempObject.sys_id,
-      //     tempObject as DatabaseEnvironmentInstanceDTO
-      //   );
-      //   objSysId = tempObject.sys_id;
-      // } else {
-      //   const savedObject = await api.databaseEnvironmentInstanceTable.create(
-      //     tempObject as DatabaseEnvironmentInstanceDTO
-      //   );
-      //   objSysId = savedObject.sys_id as string;
-      // }
+      if(tempObject.sys_id){
+        await api.databaseEnvironmentInstanceTable.update(
+          tempObject.sys_id,
+          tempObject as DatabaseEnvironmentInstanceDTO
+        );
+        objSysId = tempObject.sys_id;
+      } else {
+        const savedObject = await api.databaseEnvironmentInstanceTable.create(
+          tempObject as DatabaseEnvironmentInstanceDTO
+        );
+        objSysId = savedObject.sys_id as string;
+      }
       break;
     case "storage":
       console.log(tempObject as StorageEnvironmentInstanceDTO);
-      // if(tempObject.sys_id){
-      //   await api.storageEnvironmentInstanceTable.update(
-      //     tempObject.sys_id,
-      //     tempObject as StorageEnvironmentInstanceDTO
-      //   );
-      //   objSysId = tempObject.sys_id;
-      // } else {
-      //   const savedObject = await api.storageEnvironmentInstanceTable.create(
-      //     tempObject as StorageEnvironmentInstanceDTO
-      //   );
-      //   objSysId = savedObject.sys_id as string;
-      // }
+      if(tempObject.sys_id){
+        await api.storageEnvironmentInstanceTable.update(
+          tempObject.sys_id,
+          tempObject as StorageEnvironmentInstanceDTO
+        );
+        objSysId = tempObject.sys_id;
+      } else {
+        const savedObject = await api.storageEnvironmentInstanceTable.create(
+          tempObject as StorageEnvironmentInstanceDTO
+        );
+        objSysId = savedObject.sys_id as string;
+      }
       break;
     default:
-      console.log("Should never get here");
+      console.log("DOW object saving for this type is not implemented yet.");
       objSysId = "";
       break;
     }
@@ -822,13 +826,17 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async setOtherOfferingData(otherOfferingData: OtherServiceOfferingData): Promise<void> {
+    const groupId: string = this.currentGroupId.toLowerCase();
+    otherOfferingData.acquisitionPackageSysId = AcquisitionPackage.packageId;
+    const objSysId = await saveOrUpdateOtherServiceOffering(otherOfferingData, groupId);
+    otherOfferingData.sysId = objSysId;
     this.doSetOtherOfferingData(otherOfferingData);
   }
 
   @Mutation
-  public async doSetOtherOfferingData(
+  public doSetOtherOfferingData(
     otherOfferingData: OtherServiceOfferingData
-  ): Promise<void> {
+  ): void {
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
     );
@@ -841,8 +849,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         && otherOfferingObj.serviceOfferingGroupId
       ) {
         const groupId: string = this.currentGroupId.toLowerCase();
-        const objSysId = await saveOrUpdateOtherServiceOffering(otherOfferingData, groupId);
-        otherOfferingData.sysId = objSysId;
         if (!Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")) {
           otherOfferingObj.otherOfferingData = [];
           otherOfferingObj.otherOfferingData?.push(otherOfferingData);

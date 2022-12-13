@@ -9,14 +9,14 @@
       :rules="[
         $validators.required('Select a performance tier.'),
       ]"
-      :value.sync="_data.performanceTier"
+      :value.sync="offeringData.performanceTier"
     />
 
     <ATATTextField
       id="NetworkPerformance"
       v-if="isDatabase"
       class="mt-8 _input-max-width-240"
-      :value.sync="_data.networkPerformance"
+      :value.sync="offeringData.networkPerformance"
       label="Network performance"
       tooltipText="This refers to your network speed and service availability."
       :rules="[
@@ -27,12 +27,12 @@
     <ATATTextField
       id="NumberOfSimilarInstances"
       class="mt-8 _input-max-width-240"
-      :value.sync="_data.numberOfSimilarInstances"
+      :value.sync="offeringData.numberOfSimilarInstances"
       label="Number of instances with these configurations"
       type="number"
       :rules="[
         $validators.required('Enter a number greater than or equal to 1.'),
-        $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
+        $validators.greaterThan(0, 'Enter a number greater than or equal to 1.'),
       ]"    
     />
 
@@ -41,16 +41,16 @@
       v-if="!isDOW"
       class="mt-8 _input-max-width-240 _has-appended-dropdown"
       label="Approximate data/internet egress per month"
-      :value.sync="_data.dataEgressMonthlyAmount"
+      :value.sync="offeringData.dataEgressMonthlyAmount"
       tooltipText="This refers to the amount of data that gets transferred from 
         your organization’s host network to external networks."
       :appendDropdown="true"
       :dropdownOptions="storageUnits"
-      :selectedDropdownValue.sync="_data.dataEgressMonthlyUnit"
+      :selectedDropdownValue.sync="offeringData.dataEgressMonthlyUnit"
       type="number"
       :rules="[
         $validators.required('Enter a number greater than or equal to 1.'),
-        $validators.greaterThan('0', 'Enter a number greater than or equal to 1.'),
+        $validators.greaterThan(0, 'Enter a number greater than or equal to 1.'),
       ]"
       :allowDecimals="false"
     />       
@@ -81,7 +81,7 @@ import {
 
 export default class PerformanceTier extends Vue {
   @PropSync("data") 
-    public _data!: CurrEnvInstancePerformance | OtherServiceOfferingData;
+    public offeringData!: CurrEnvInstancePerformance | OtherServiceOfferingData;
   @Prop() public storageUnits!: SelectData[];
   @Prop({ default: false }) public isDOW?: boolean;
   @Prop({ default: false }) public isCompute?: boolean;

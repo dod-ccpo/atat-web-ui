@@ -94,9 +94,20 @@
 
     <v-form ref="form" lazy-validation>
 
-      <ComputeForm
+      <ComputeFormElements
         v-if="isCompute"
         :data.sync="_serviceOfferingData"  
+      />
+
+      <DatabaseFormElements
+        v-if="isDatabase"
+        :data.sync="_serviceOfferingData"  
+      />
+
+      <StorageFormElements
+        v-if="isStorage"
+        :data.sync="_serviceOfferingData"
+        :storageUnits="storageUnits"
       />
       
       <section v-if="isCompute || isDatabase">
@@ -158,7 +169,9 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ClassificationsModal from "./ClassificationsModal.vue";
-import ComputeForm from "./ComputeForm.vue"
+import ComputeFormElements from "./ComputeFormElements.vue"
+import DatabaseFormElements from "./DatabaseFormElements.vue";
+import StorageFormElements from "./StorageFormElements.vue";
 import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationandUsage.vue";
 import InstanceConfig from "@/components/DOW/InstanceConfig.vue";
 import PerformanceTier from "@/components/DOW/PerformanceTier.vue";
@@ -199,12 +212,14 @@ import classificationRequirements from "@/store/classificationRequirements";
 @Component({
   components: {
     ClassificationsModal,
-    ComputeForm,
+    ComputeFormElements,
     AnticipatedDurationandUsage,
     DOWSubtleAlert,
     ATATAlert,
     InstanceConfig,
     PerformanceTier,
+    DatabaseFormElements,
+    StorageFormElements
   }
 })
 
@@ -262,6 +277,9 @@ export default class OtherOfferings extends Vue {
   public offeringName = "";
 
   public introText = "";
+
+  public serviceGroupOnLoad = "";
+  public isStorage = false;
   
 
   public storageUnits: SelectData[] = [
@@ -338,6 +356,9 @@ export default class OtherOfferings extends Vue {
       this.firstTimeHere 
         = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
     }
+
+    this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
+    this.isStorage = this.serviceGroupOnLoad.toLowerCase() === "storage";
 
     if(this.isGeneral){
       this.introText = `Let’s gather your requirements for 
