@@ -545,9 +545,7 @@ export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
   network_performance?: string;
 }
 
-export interface StorageEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
-
-}
+export type StorageEnvironmentInstanceDTO = EnvironmentInstanceDTO
 
 export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
   personnel_onsite_access?: string;

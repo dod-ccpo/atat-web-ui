@@ -78,6 +78,7 @@ describe("Testing Description of Work store", () => {
     AcquisitionPackage.setProjectOverview({
       title: "",
       scope: "",
+      // eslint-disable-next-line camelcase
       emergency_declaration:""
     })
     AcquisitionPackage.setOrganization({})  
