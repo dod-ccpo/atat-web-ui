@@ -86,10 +86,11 @@ export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
 }
 
 export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
-  classification_level: ReferenceColumn; // sys id
-  acquisition_package: ReferenceColumn; // sys id
+  classification_level: ReferenceColumn | string; // sys id
+  acquisition_package: ReferenceColumn | string; // sys id
   users_per_region?: string; // json stringified sys_id/count pairs
   increase_in_users?: YesNo;
+  classified_information_types?: string;
   user_growth_estimate_type?: SingleMultiple
   user_growth_estimate_percentage?: string[];
   data_egress_monthly_amount?: number | null;
