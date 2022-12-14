@@ -1334,12 +1334,15 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public doDeleteOtherOffering(): void {
+    const groupIdToDelete = this.currentGroupId.toLowerCase();
     const offeringIndex = this.DOWObject.findIndex(
-      o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
+      o => o.serviceOfferingGroupId.toLowerCase() === groupIdToDelete
     );
     if (offeringIndex > -1) {
       this.DOWObject.splice(offeringIndex, 1);
       if (this.DOWObject.length) {
+        // remove group from touched obj to prevent validation on load if adding group again
+        delete this.otherOfferingInstancesTouched[groupIdToDelete];
 
         const nextGroupId = this.DOWObject.length === offeringIndex
           ? this.DOWObject[offeringIndex - 1].serviceOfferingGroupId
