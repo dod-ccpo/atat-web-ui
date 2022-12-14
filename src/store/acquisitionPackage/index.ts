@@ -380,31 +380,19 @@ export class AcquisitionPackageStore extends VuexModule {
       table_sys_id: ""
     }];
     const name = (type === 'ja') 
-      ? "justificationAndApproval" 
-      : "marketResearchReport";
+      ? "JWCC J&A Template_Template.docx" 
+      : "JWCC Market Research Report (Sole Source)_Template.docx";
 
-    const getSysProperties: AxiosRequestConfig = {
+    const getAttachmentSysIDQuery: AxiosRequestConfig = {
       params: {
         sysparm_fields: "sys_id",
-        sysparm_query: "name=x_g_dis_atat.dappsTemplates." + name
+        sysparm_query: "file_name=" + name + "^table_name=sys_ws_operation"
       }
     };
-
-    const sysProperties = await api.sysProperties.getQuery(getSysProperties);
-
-    const getAttachment: AxiosRequestConfig = {
-      params: {
-        sysparm_fields: "sys_id",
-        sysparm_query: "table_sys_id=" + sysProperties[0].sys_id 
-      }
-    };
-
-
-    attachment = await api.attachments.getQuery(getAttachment);
+    attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
     if(attachment){
       url = attachment[0].download_link as string;
     }
-
     return url;
   }
 
