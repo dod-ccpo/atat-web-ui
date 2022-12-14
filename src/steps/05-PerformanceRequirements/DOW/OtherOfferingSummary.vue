@@ -37,7 +37,9 @@
           >
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.typeOrTitle="{ item }">
-              <span v-html="item.typeOrTitle"></span>
+              <div v-html="item.typeOrTitle" 
+                :class="{'text-clamp--1-line' : isGeneralXaaS}"
+              ></div>
             </template>
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
@@ -148,7 +150,7 @@ import _ from 'lodash';
 
 export default class OtherOfferingSummary extends Vue {
   public isCompute = false;
-  public isGeneral = false;
+  public isGeneralXaaS = false;
   public isDatabase = false;
   public deleteInstanceModalTitle = "";
 
@@ -205,10 +207,9 @@ export default class OtherOfferingSummary extends Vue {
   }
   public confirmDeleteInstance(item: OtherServiceSummaryTableData): void {
     this.instanceNumberToDelete = item.instanceNumber;
-    this.deleteInstanceModalTitle = this.isGeneral
-      ? "Delete “" + item.requirementTitle +"?”"
-      : "Delete " + this.serviceGroupVerbiageInfo.typeForText 
-        + ' #' + this.instanceNumberToDelete + '?'
+    this.deleteInstanceModalTitle = "Delete " 
+      + toTitleCase(this.serviceGroupVerbiageInfo.typeForText) 
+      + ' #' + this.instanceNumberToDelete + '?';
     this.showDeleteInstanceDialog = true;
   }
 
@@ -305,10 +306,10 @@ export default class OtherOfferingSummary extends Vue {
       // -----------------------------------------------------------------
       // GENERAL XAAS
       // -----------------------------------------------------------------
-      } else if (this.isGeneral) {
+      } else if (this.isGeneralXaaS) {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
-          { text: "Requirement title", value: "typeOrTitle", width: "50%" },
+          { text: "Statement of objectives", value: "typeOrTitle", width: "50%" },
           { text: "Duration", value: "duration", width: "50%" },
           { text: "", value: "actions", width: "75" },
         ];
@@ -333,21 +334,20 @@ export default class OtherOfferingSummary extends Vue {
           duration = "Entire task order";
         }
 
-        typeOrTitle = !instanceClone.requirementTitle 
-          ? `<div class="text-error font-weight-500">Untitled</div>`
-          : instanceClone.requirementTitle;
+        typeOrTitle = !instanceClone.descriptionOfNeed 
+          ? `<div class="text-error font-weight-500">Unknown</div>`
+          : instanceClone.descriptionOfNeed;
 
         isValid = await this.validateInstance(instanceClone);
         if (!isValid) {
           typeOrTitle += this.rowErrorMessage;
         }
         
-        instanceClone.requirementTitle = instanceClone.requirementTitle || "Untitled";
+        instanceClone.descriptionOfNeed = instanceClone.descriptionOfNeed || "Unknown";
 
         instanceData = {
           instanceNumber: instanceClone.instanceNumber,
           typeOrTitle: typeOrTitle,
-          requirementTitle: instanceClone.requirementTitle,
           duration: duration,
         }
       }
@@ -379,7 +379,7 @@ export default class OtherOfferingSummary extends Vue {
         "storageType",
       ];
 
-    } else if (this.isGeneral) {
+    } else if (this.isGeneralXaaS) {
       requiredFields = [
         "classificationLevel",
         "anticipatedNeedUsage",
@@ -406,7 +406,7 @@ export default class OtherOfferingSummary extends Vue {
     const currentGroupId = await DescriptionOfWork.getCurrentOfferingGroupId();
     const offering = currentGroupId.toLowerCase();
     this.isCompute = offering === "compute";
-    this.isGeneral = offering === "general_xaas";
+    this.isGeneralXaaS = offering === "general_xaas";
     this.isDatabase = offering === "database";
 
     await this.buildTableData();
