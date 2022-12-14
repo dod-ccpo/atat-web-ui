@@ -229,6 +229,7 @@ export default class ATATRadioGroup extends Vue {
   private showOtherEntry(value: string): boolean {
     return this.hasOtherValue 
       && value === this.otherValue
+      && this._selectedValue !== undefined
       && this._selectedValue.indexOf(this.otherValue) > -1
       && !this.hideOtherInput;
   }
