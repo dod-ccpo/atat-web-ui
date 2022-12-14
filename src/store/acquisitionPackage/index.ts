@@ -926,6 +926,8 @@ export class AcquisitionPackageStore extends VuexModule {
         }
       }
 
+      await DescriptionOfWork.loadDOWfromAcquistionPackageId(packageId);
+
       this.setInitialized(true);
 
     } else {

@@ -348,10 +348,10 @@ export interface lineChartData {
 export interface OtherServiceOfferingData {
   acquisitionPackageSysId?: string;
   instanceNumber: number;
-  environmentType: string;
+  environmentType?: string;
   classificationLevel?: string;
-  deployedRegions: string[];
-  deployedRegionsOther: string;
+  deployedRegions?: string[];
+  deployedRegionsOther?: string;
   descriptionOfNeed: string;
   entireDuration: string;
   periodsNeeded: string[];

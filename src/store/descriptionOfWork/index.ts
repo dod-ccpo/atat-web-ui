@@ -30,11 +30,16 @@ import {
   DOWServiceOffering, 
   DOWClassificationInstance,
   OtherServiceOfferingData,
+  DOWPoP,
+  StorageUnit,
 } from "../../../types/Global";
 
 import _, { differenceWith, first, last } from "lodash";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "../acquisitionPackage";
+import Periods from "../periods";
+import { buildClassificationLabel } from "@/helpers";
+import { AxiosRequestConfig } from "axios";
 
 
 // Classification Proxy helps keep track of saved
@@ -211,6 +216,111 @@ const saveOrUpdateOtherServiceOffering =
     return objSysId;
   };
 
+const mapClassificationInstanceFromDTO = (
+  value: ClassificationInstanceDTO
+): DOWClassificationInstance => {
+  const impactLevel = ClassificationRequirements.classificationLevels.find((item) => {
+    return item.sys_id === value.sys_id;
+  });
+  const labelLong = impactLevel ? buildClassificationLabel(impactLevel, "long") : "";
+  const labelShort = impactLevel ? buildClassificationLabel(impactLevel, "short") : "";
+  const selectedPeriods: DOWPoP[] = [];
+  if(value.selected_periods !== "") {
+    const periods = value.selected_periods.split(",");
+    periods.forEach(period => {
+      const selectedPeriod = Periods.periods.find((item) => {
+        return item.sys_id = period;
+      });
+      if(selectedPeriod){
+        const label = selectedPeriod.period_type === "Base"
+          ? "Base period"
+          : `Option period ${selectedPeriod.option_order}`;
+        selectedPeriods.push({
+          label: label,
+          sysId: selectedPeriod.sys_id as string
+        });
+      }
+        
+    })
+  }
+  const result: DOWClassificationInstance = {
+    anticipatedNeedUsage: value.usage_description,
+    classificationLevelSysId: value.classification_level,
+    entireDuration: value.need_for_entire_task_order_duration,
+    selectedPeriods: selectedPeriods,
+    impactLevel: impactLevel?.impact_level || "",
+    labelLong: labelLong,
+    labelShort: labelShort
+  };
+
+  return result;
+};
+
+const mapOtherOfferingFromDTO = (
+  index: number,
+  value: ComputeEnvironmentInstanceDTO | 
+    DatabaseEnvironmentInstanceDTO | 
+    StorageEnvironmentInstanceDTO | 
+    CloudSupportEnvironmentInstanceDTO
+): OtherServiceOfferingData => {
+
+  const acquisitionPackageSysId = 
+    typeof value.acquisition_package === "object"
+      ? value.acquisition_package.value as string
+      : value.acquisition_package as string;
+
+  const classificationLevel = 
+    typeof value.classification_level === "object"
+      ? value.classification_level.value as string
+      : value.classification_level as string;
+
+  const region = 
+    typeof value.region === "object"
+      ? value.region.value as string
+      : value.region as string;
+
+  const result: OtherServiceOfferingData = {
+    acquisitionPackageSysId: acquisitionPackageSysId,
+    descriptionOfNeed: value.anticipated_need_or_usage,
+    classificationLevel: classificationLevel,
+    requirementTitle: value.instance_name,
+    licensing: value.licensing,
+    memoryAmount: value.memory_amount,
+    entireDuration: value.need_for_entire_task_order_duration,
+    numberOfInstancesNeeded: value.number_of_instances,
+    numberOfVCPUs: value.number_of_vcpus,
+    operatingSystem: value.operating_system,
+    performanceTier: value.performance_tier,
+    processorSpeed: value.processor_speed,
+    region: region,
+    periodsNeeded: value.selected_periods?.split(",") || [],
+    storageAmount: value.storage_amount,
+    storageType: value.storage_type,
+    storageUnit: value.storage_unit as StorageUnit,
+    sysId: value.sys_id,
+    instanceNumber: index 
+  };
+
+  if("environment_type" in value){
+    result.environmentType = value.environment_type;
+    result.operatingEnvironment = value.operating_environment;
+  }
+
+  if("database_licensing" in value){
+    result.databaseLicensing = value.database_licensing;
+    result.databaseType = value.database_type;
+    result.databaseTypeOther = value.database_type_other;
+    result.networkPerformance = value.network_performance;
+  }
+
+  if("personnel_onsite_access" in value){
+    result.personnelOnsiteAccess = value.personnel_onsite_access;
+    result.tsContractorClearanceType = value.ts_contractor_clearance_type;
+  }
+
+  return result;
+};
+
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
 
 const serviceGroupVerbiageInfo: Record<string, Record<string, string>> = {
@@ -332,6 +442,48 @@ export class DescriptionOfWorkStore extends VuexModule {
     'DEVELOPER_TOOLS',
     'COMPUTE'
   ];
+
+  @Action({rawError: true})
+  public async loadDOWfromAcquistionPackageId(sysId: string): Promise<void> {
+    const requestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + sysId
+      }
+    };
+
+    this.setCurrentOfferingGroupId("COMPUTE");
+    this.addOfferingGroup("COMPUTE");
+    const computeItems = await api.computeEnvironmentInstanceTable.getQuery(requestConfig);
+    computeItems.forEach((item,index) => {
+      const offeringData = mapOtherOfferingFromDTO(
+        index + 1,
+        item as ComputeEnvironmentInstanceDTO
+      );
+      this.doSetOtherOfferingData(offeringData);
+    });
+
+    this.setCurrentOfferingGroupId("DATABASE");
+    this.addOfferingGroup("DATABASE");
+    const databaseItems = await api.databaseEnvironmentInstanceTable.getQuery(requestConfig);
+    databaseItems.forEach((item,index) => {
+      const offeringData = mapOtherOfferingFromDTO(
+        index + 1,
+        item as DatabaseEnvironmentInstanceDTO
+      );
+      this.doSetOtherOfferingData(offeringData);
+    });
+
+    this.setCurrentOfferingGroupId("STORAGE");
+    this.addOfferingGroup("STORAGE");
+    const storageItems = await api.databaseEnvironmentInstanceTable.getQuery(requestConfig);
+    storageItems.forEach((item,index) => {
+      const offeringData = mapOtherOfferingFromDTO(
+        index + 1,
+        item as StorageEnvironmentInstanceDTO
+      );
+      this.doSetOtherOfferingData(offeringData);
+    });
+  }
 
   @Action
   public async getServiceGroupVerbiageInfo(): Promise<Record<string, string>> {
@@ -683,7 +835,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public async addOfferingGroup(groupId: string): Promise<void> {
+  public addOfferingGroup(groupId: string): void {
     const group = this.serviceOfferingGroups.find(e => e.value === groupId)
     const offeringGroup: DOWServiceOfferingGroup = {
       serviceOfferingGroupId: groupId,
