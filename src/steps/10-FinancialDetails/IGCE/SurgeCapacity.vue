@@ -33,7 +33,7 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import IGCEStore, { SurgeRequirements } from "@/store/IGCE";
+import IGCEStore from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
 import {RequirementsCostEstimateDTO} from "@/api/models";
 import {YesNo} from "../../../../types/Global";

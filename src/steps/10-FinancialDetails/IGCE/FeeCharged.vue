@@ -52,7 +52,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import IGCEStore, { Fee } from "@/store/IGCE";
+import IGCEStore from "@/store/IGCE";
 import {RequirementsCostEstimateDTO} from "@/api/models";
 import {YesNo} from "../../../../types/Global";
 
