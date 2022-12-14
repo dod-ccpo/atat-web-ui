@@ -13,7 +13,7 @@ import {
   CloudSupportEnvironmentInstanceDTO, 
   ComputeEnvironmentInstanceDTO, 
   DatabaseEnvironmentInstanceDTO, 
-EnvironmentInstanceDTO, 
+  EnvironmentInstanceDTO, 
   SelectedServiceOfferingDTO, 
   ServiceOfferingDTO, 
   StorageEnvironmentInstanceDTO, 
@@ -498,6 +498,21 @@ export class DescriptionOfWorkStore extends VuexModule {
       );
       this.doSetOtherOfferingData(offeringData);
     });
+
+    this.setCurrentOfferingGroupId("GENERAL_XAAS");
+    this.addOfferingGroup("GENERAL_XAAS");
+    const xaasItems = await api.environmentInstanceTable.getQuery(requestConfig);
+    xaasItems.forEach((item,index) => {
+      const offeringData = mapOtherOfferingFromDTO(
+        index + 1,
+        item as EnvironmentInstanceDTO
+      );
+      this.doSetOtherOfferingData(offeringData);
+    });
+
+
+    this.setCurrentOfferingGroupId("");
+
   }
 
   @Action
