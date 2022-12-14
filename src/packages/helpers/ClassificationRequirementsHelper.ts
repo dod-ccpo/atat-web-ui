@@ -13,8 +13,13 @@ export const buildCurrentSelectedClassLevelList = (
   const currentSelectedClassLevelList: SelectedClassificationLevelDTO[] = [];
   for (const classificationLevelSysId of selectedOptions) {
     const selectedClassificationLevel = savedSelectedClassLevelList
-      .find(savedClassLevel =>
-        savedClassLevel.classification_level.value === classificationLevelSysId);
+      .find(savedClassLevel =>{
+        const classLevelId =
+          typeof savedClassLevel.classification_level === "object"
+            ? savedClassLevel.classification_level.value as string
+            : savedClassLevel.classification_level as string;
+        return classLevelId === classificationLevelSysId
+      });
     if (selectedClassificationLevel) {
       currentSelectedClassLevelList.push(selectedClassificationLevel);
     } else {

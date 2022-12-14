@@ -4,6 +4,7 @@ import rootStore from "../index";
 import api from "@/api";
 import {
   ClassificationLevelDTO,
+  ClassifiedInformationTypeDTO,
   ReferenceColumn,
   SelectedClassificationLevelDTO
 } from "@/api/models";
@@ -20,6 +21,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   public classificationLevels: ClassificationLevelDTO[] = [];
   public selectedClassificationLevels: SelectedClassificationLevelDTO[] = [];
   public securityRequirements: SecurityRequirement[] = [];
+  public classifiedInformationTypes: ClassifiedInformationTypeDTO[] = [];
 
   @Mutation
   public setClassifications(value: ClassificationLevelDTO[]): void {
@@ -30,18 +32,23 @@ export class ClassificationRequirementsStore extends VuexModule {
   public async setSelectedClassificationLevels(
     value: SelectedClassificationLevelDTO[]
   ): Promise<void> {
-    await this.doSetSelectedClassificationLevels(value)
+    this.doSetSelectedClassificationLevels(value);
   }
 
   @Mutation
-  public async doSetSelectedClassificationLevels(
+  private doSetSelectedClassificationLevels(
     value: SelectedClassificationLevelDTO[]
-  ): Promise<void> {
+  ): void {
     this.selectedClassificationLevels = value;
   }
 
-  @Mutation
+  @Action({rawError: true})
   public async setSecurityRequirements(value: SecurityRequirement[]): Promise<void> {
+    this.doSetSecurityRequirements(value);
+  }
+
+  @Mutation
+  private doSetSecurityRequirements(value: SecurityRequirement[]): void {
     this.securityRequirements = value;
   }
 
@@ -64,6 +71,74 @@ export class ClassificationRequirementsStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async getAllClassifiedInformationTypes(): Promise<ClassifiedInformationTypeDTO[]> {
+    if (this.classifiedInformationTypes.length === 0) {
+      await this.loadClassifiedInformationTypes();
+    }
+    return this.classifiedInformationTypes;
+  }
+
+  @Mutation
+  private doSetClassifiedInformationTypes(value: ClassifiedInformationTypeDTO[]): void {
+    this.classifiedInformationTypes = value;
+  }
+
+  @Action({rawError: true})
+  public async saveClassifiedInformationTypes(): Promise<void> {
+    const selectedClassLevelList = this.selectedClassificationLevels;
+    const requirements = this.securityRequirements;
+    const levelIndex = selectedClassLevelList.findIndex(item => item.classification === "S");
+    if(levelIndex > -1){
+      const classLevel = selectedClassLevelList[levelIndex];
+      const typeIndex = requirements.findIndex(item => item.type === "SECRET");
+      const informationType = typeIndex > -1 
+        ? requirements[typeIndex].classification_information_type.join(",") 
+        : "";
+
+      classLevel.classified_information_types = informationType;
+      classLevel.acquisition_package =
+        typeof classLevel.acquisition_package === "object"
+          ? classLevel.acquisition_package.value as string
+          : classLevel.acquisition_package as string
+
+      classLevel.classification_level =
+        typeof classLevel.classification_level === "object"
+          ? classLevel.classification_level.value as string
+          : classLevel.classification_level as string
+
+      const apiCall = classLevel.sys_id ? api.selectedClassificationLevelTable.update(
+        classLevel.sys_id,
+        classLevel
+      ) : api.selectedClassificationLevelTable.create(classLevel);
+
+      debugger;
+
+      await Promise.all([apiCall]);
+
+      selectedClassLevelList[levelIndex] = classLevel;
+
+      await this.setSelectedClassificationLevels(selectedClassLevelList);
+    } 
+  }
+
+  @Action({rawError: true})
+  public async setClassifiedInformationTypes(
+    value: ClassifiedInformationTypeDTO[]
+  ): Promise<void> {
+    this.doSetClassifiedInformationTypes(value);
+  }
+
+  @Action({rawError: true})
+  public async loadClassifiedInformationTypes(): Promise<void> {
+    try {
+      const classifiedInformationTypes = await api.classifiedInformationTypeTable.all();
+      await this.setClassifiedInformationTypes(classifiedInformationTypes);
+    } catch (error) {
+      throw new Error(`error loading Classification Information Types ${error}`);
+    }
+  }
+
+  @Action({rawError: true})
   public async getSelectedClassificationLevels(): Promise<SelectedClassificationLevelDTO[]> {
     return this.selectedClassificationLevels;
   }
@@ -80,13 +155,20 @@ export class ClassificationRequirementsStore extends VuexModule {
         sysparm_query: "^acquisition_packageIN" + acquisitionSysId
       }
     };
+
+    const tempRequirements = this.securityRequirements;
+
     let selectedClassLevelList = await api.selectedClassificationLevelTable
       .getQuery(selectedClassLevelsRequestConfig);
     if (selectedClassLevelList.length > 0) {
       selectedClassLevelList = selectedClassLevelList
         .map(selectedClassLevel => {
+          const classLevelId = 
+            typeof selectedClassLevel.classification_level === "object"
+              ? selectedClassLevel.classification_level.value as string
+              : selectedClassLevel.classification_level as string;
           const classLevelForMapping = this.classificationLevels
-            .find(classLevel => classLevel.sys_id === selectedClassLevel.classification_level.value)
+            .find(classLevel => classLevel.sys_id === classLevelId)
           if (classLevelForMapping) {
             selectedClassLevel.impact_level = classLevelForMapping.impact_level;
             selectedClassLevel.classification = classLevelForMapping.classification;
@@ -97,9 +179,27 @@ export class ClassificationRequirementsStore extends VuexModule {
           selectedClassLevel.user_growth_estimate_percentage
               = (selectedClassLevel.user_growth_estimate_percentage as unknown as string)
               .split(",").filter(nonEmptyVal => nonEmptyVal);
+          if(selectedClassLevel.classification === "S"){        
+            const index = tempRequirements.findIndex(item => item.type === "SECRET");
+            let types: string[] = [];
+            if(selectedClassLevel.classified_information_types)
+              types = selectedClassLevel.classified_information_types?.split(",") as string[];
+            if(index > -1) {
+              tempRequirements[index] = {
+                type: "SECRET",
+                classification_information_type: types
+              };
+            } else {
+              tempRequirements.push({
+                type: "SECRET",
+                classification_information_type: types
+              });
+            }            
+          }
           return selectedClassLevel;
         })
     }
+    await this.setSecurityRequirements(tempRequirements);
     await this.setSelectedClassificationLevels(selectedClassLevelList);
   }
 
@@ -152,12 +252,21 @@ export class ClassificationRequirementsStore extends VuexModule {
     selectedClassificationLevel: SelectedClassificationLevelDTO)
     : Promise<boolean> {
     try {
+      const packageId = 
+        typeof selectedClassificationLevel.acquisition_package === "object"
+          ? selectedClassificationLevel.acquisition_package.value as string
+          : selectedClassificationLevel.acquisition_package as string;
+      
+      const classLevel = 
+        typeof selectedClassificationLevel.classification_level === "object"
+          ? selectedClassificationLevel.classification_level.value as string
+          : selectedClassificationLevel.classification_level as string;
+
       selectedClassificationLevel = {
         ...selectedClassificationLevel,
-        classification_level:
-          selectedClassificationLevel.classification_level.value as unknown as ReferenceColumn,
-        acquisition_package:
-          selectedClassificationLevel.acquisition_package.value as unknown as ReferenceColumn}
+        classification_level: classLevel,
+        acquisition_package: packageId
+      }
       await api.selectedClassificationLevelTable
         .update(selectedClassificationLevel.sys_id as string, selectedClassificationLevel);
       return true;

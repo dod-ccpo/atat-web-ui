@@ -79,11 +79,18 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   classification: string;
 }
 
+export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
+  description: string;
+  name: string;
+  sequence: string;
+}
+
 export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
-  classification_level: ReferenceColumn; // sys id
-  acquisition_package: ReferenceColumn; // sys id
+  classification_level: ReferenceColumn | string; // sys id
+  acquisition_package: ReferenceColumn | string; // sys id
   users_per_region?: string; // json stringified sys_id/count pairs
   increase_in_users?: YesNo;
+  classified_information_types?: string;
   user_growth_estimate_type?: SingleMultiple
   user_growth_estimate_percentage?: string[];
   data_egress_monthly_amount?: number | null;
@@ -545,6 +552,13 @@ export interface StorageEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
 export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
   personnel_onsite_access?: string;
   ts_contractor_clearance_type?: string;
+}
+
+export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
+  applications_needing_design: string;
+  data_classification_levels: string;
+  external_factors: string;
+  statement: string;
 }
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{
