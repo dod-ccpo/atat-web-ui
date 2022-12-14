@@ -252,6 +252,7 @@ export default class OtherOfferingSummary extends Vue {
       let duration = "";
       let trainingType = "";
       let personnelOnsiteAccess = "";
+      let performance = "";
 
       // -----------------------------------------------------------------
       // COMPUTE AND DATABASE
@@ -282,8 +283,14 @@ export default class OtherOfferingSummary extends Vue {
           if (selectedEnv) {
             typeOrTitle = selectedEnv.label;
           }
+          if (instanceClone.performanceTier) {
+            performance = toTitleCase(instanceClone.performanceTier || "");
+            performance += performance === "General" ? " purpose" : " optimized";
+          }
+
         } else {
           typeOrTitle = toTitleCase(instanceClone.databaseType || "");
+          performance = instanceClone.networkPerformance || "";
         }
       // -----------------------------------------------------------------
       // STORAGE
@@ -384,7 +391,7 @@ export default class OtherOfferingSummary extends Vue {
           : `${toTitleCase(instanceClone.storageType || "")}: 
             ${instanceClone.storageAmount} ${instanceClone.storageUnit}`
         : ""     
-     
+
       instanceData = {
         instanceNumber: instanceClone.instanceNumber,
         typeOrTitle,
@@ -395,7 +402,7 @@ export default class OtherOfferingSummary extends Vue {
         memory: instanceClone.memoryAmount ? `${instanceClone.memoryAmount} GB` : "",
         storageType: toTitleCase(instanceClone.storageType || ""),        
         storageAmount,
-        performance: instanceClone.performanceTier,
+        performance,
         personnelOnsiteAccess,
         trainingType,
       };
