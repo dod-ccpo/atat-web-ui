@@ -467,8 +467,9 @@ export class DescriptionOfWorkStore extends VuexModule {
     };
 
     this.setCurrentOfferingGroupId("COMPUTE");
-    this.addOfferingGroup("COMPUTE");
     const computeItems = await api.computeEnvironmentInstanceTable.getQuery(requestConfig);
+    if(computeItems.length > 0)
+      this.addOfferingGroup("COMPUTE");
     computeItems.forEach((item,index) => {
       const offeringData = mapOtherOfferingFromDTO(
         index + 1,
@@ -478,8 +479,9 @@ export class DescriptionOfWorkStore extends VuexModule {
     });
 
     this.setCurrentOfferingGroupId("DATABASE");
-    this.addOfferingGroup("DATABASE");
     const databaseItems = await api.databaseEnvironmentInstanceTable.getQuery(requestConfig);
+    if(databaseItems.length > 0)
+      this.addOfferingGroup("DATABASE");
     databaseItems.forEach((item,index) => {
       const offeringData = mapOtherOfferingFromDTO(
         index + 1,
@@ -489,8 +491,9 @@ export class DescriptionOfWorkStore extends VuexModule {
     });
 
     this.setCurrentOfferingGroupId("STORAGE");
-    this.addOfferingGroup("STORAGE");
     const storageItems = await api.databaseEnvironmentInstanceTable.getQuery(requestConfig);
+    if(storageItems.length > 0)
+      this.addOfferingGroup("STORAGE");
     storageItems.forEach((item,index) => {
       const offeringData = mapOtherOfferingFromDTO(
         index + 1,
@@ -500,8 +503,9 @@ export class DescriptionOfWorkStore extends VuexModule {
     });
 
     this.setCurrentOfferingGroupId("GENERAL_XAAS");
-    this.addOfferingGroup("GENERAL_XAAS");
     const xaasItems = await api.environmentInstanceTable.getQuery(requestConfig);
+    if(xaasItems.length > 0)
+      this.addOfferingGroup("GENERAL_XAAS"); 
     xaasItems.forEach((item,index) => {
       const offeringData = mapOtherOfferingFromDTO(
         index + 1,
@@ -509,7 +513,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       );
       this.doSetOtherOfferingData(offeringData);
     });
-
 
     this.setCurrentOfferingGroupId("");
 
