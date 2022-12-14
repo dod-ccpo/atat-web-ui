@@ -363,6 +363,7 @@ export interface OtherServiceOfferingData {
   performanceTierOther: string;
   numberOfInstancesNeeded: string;
   requirementTitle?: string;
+  anticipatedNeedUsage:string;
 }
 
 export interface OtherServiceSummaryTableData {

@@ -21,7 +21,7 @@
     <div class="_price-estimates-accordion">
       <v-expansion-panels
         v-model="accordionClosed[index]"
-        v-for="(classification, index) in selectedClassifications"
+        v-for="(classification, index) in instanceData"
         :id="'AnticipatedUserAndDataNeedsAccordion' + index"
         :key="index"
         class="mb-4"
@@ -31,7 +31,10 @@
           <v-expansion-panel-header>
             <div class="d-flex justify-space-between">
               <div class="h4 _expansion-panel-header">
-                {{buildClassificationLabel(classification,'short',true)}}
+                {{classification.labelShort}}
+                <span class="offering-number">
+                  {{classification.offerings.length}}
+                </span>
               </div>
             </div>
           </v-expansion-panel-header>
@@ -58,11 +61,13 @@ import { Component } from "vue-property-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { SlideoutPanelContent } from "../../../../types/Global";
 // eslint-disable-next-line camelcase
+/* eslint-disable camelcase */
 import SlideOut_GatherPricesEstimates
   from "@/steps/10-FinancialDetails/IGCE/components/SlideOut_GatherPricesEstimates.vue";
 import { buildClassificationLabel } from "@/helpers";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { SelectedClassificationLevelDTO } from "@/api/models";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
 })
@@ -70,6 +75,7 @@ export default class GatherPriceEstimates extends Vue {
 
   public selectedClassifications: SelectedClassificationLevelDTO[] = []
   public accordionClosed: number[] = []
+  public instanceData:any[] = []
 
   public buildClassificationLabel = buildClassificationLabel
   public openSlideoutPanel(e: Event): void {
@@ -84,6 +90,74 @@ export default class GatherPriceEstimates extends Vue {
     this.selectedClassifications = classifications
       .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
     this.accordionClosed = new Array(classifications.length).fill(0)
+    this.selectedClassifications.forEach((classification)=>{
+      // eslint-disable-next-line camelcase
+      const classification_instance:{
+        labelShort:string,
+        sysId:string,
+        offerings:Record<string,string>[]
+      } = {
+        labelShort: buildClassificationLabel(classification,'short',true),
+        sysId:classification.sys_id|| "",
+        offerings:[]
+      }
+      this.instanceData.push(classification_instance)
+    })
+
+    const dowObject = DescriptionOfWork.DOWObject
+    dowObject.forEach((service)=>{
+      const classificationOfferings:{
+        IGCE_title:string,
+        IGCE_description:string,
+        monthly_price:number
+      } = {
+        IGCE_title:"",
+        IGCE_description:"",
+        monthly_price:0
+      }
+      const serviceName = service.serviceOfferingGroupId
+      if(service.otherOfferingData){
+        debugger
+        service.otherOfferingData.forEach((offering)=>{
+          if(offering.classificationLevel){
+            this.instanceData.forEach((instance)=>{
+              if(instance.sysId === offering.classificationLevel){
+                if(offering.instanceNumber){
+                  classificationOfferings.IGCE_title =
+                    `${serviceName} - instance #${offering.instanceNumber}`;
+                }else{
+                  classificationOfferings.IGCE_title = serviceName;
+                }
+                const formData = `${offering.numberOfInstancesNeeded} x
+                (${offering.environmentType}, virtual machines,
+                ${offering.operatingSystemAndLicensing}, ${offering.numberOfVCPUs}
+                 vCPUs, ${offering.memory} GB RAM,
+                  ${offering.storageType}: ${offering.storageAmount} GB, general performance)`
+                classificationOfferings.IGCE_description = formData || offering.anticipatedNeedUsage
+                instance.offerings.push(classificationOfferings)
+              }
+            })
+          }
+        })
+      }
+      if(service.serviceOfferings){
+        service.serviceOfferings.forEach((offering)=>{
+          offering.classificationInstances?.forEach((classificationInstance)=>{
+            this.instanceData.forEach((instance)=>{
+              if(instance.sysID === classificationInstance.classificationLevelSysId){
+                classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
+                classificationOfferings.IGCE_description =
+                  classificationInstance.anticipatedNeedUsage
+                instance.offerings.push(classificationOfferings)
+              }
+            })
+          })
+        })
+      }
+    })
+    console.log(dowObject)
+    console.log(this.selectedClassifications)
+    console.log(this.instanceData)
   }
 
   public async mounted(): Promise<void> {
