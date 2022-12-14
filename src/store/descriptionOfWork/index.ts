@@ -442,6 +442,34 @@ export const instanceEnvTypeOptions: RadioButton[] = [
   }
 ];
 
+export const trainingTypeOptions: RadioButton[] = [
+  {
+    id: "OnSiteCONUS",
+    label: "On-site instructor-led within the Continental United States (CONUS)",
+    value: "ON_SITE_CONUS", 
+  },
+  {
+    id: "OnSiteOCONUS",
+    label: "On-site instructor-led outside of the Continental United States (OCONUS)",
+    value: "ON_SITE_OCONUS", 
+  },
+  {
+    id: "VirturalInstructorLed",
+    label: "Virtual instructor-led",
+    value: "VIRTUAL_INSTRUCTOR_LED", 
+  },
+  {
+    id: "VirtualSelfLed",
+    label: "Virtual self-led",
+    value: "VIRTUAL_SELF_LED", 
+  },
+  {
+    id: "NoPreference",
+    label: "No preference",
+    value: "NO_PREFERENCE", 
+  },
+];
+
 @Module({
   name: "DescriptionOfWork",
   namespaced: true,

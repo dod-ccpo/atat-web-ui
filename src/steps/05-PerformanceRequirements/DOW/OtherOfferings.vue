@@ -66,7 +66,6 @@
       1. {{ sectionOneSubhead }}
     </h2>
 
-
     <div v-if="selectedClassificationLevelList.length > 1" class="mb-10">
       <ATATRadioGroup
         id="ClassificationLevel"
@@ -88,7 +87,6 @@
         @keydown.space="openModal"
       >Update your Classification Requirements</a>
     </div>
-
 
     <v-form ref="form" lazy-validation>
 
@@ -153,7 +151,7 @@
         :selectedPeriods.sync="_serviceOfferingData.periodsNeeded"
       />
 
-      <div v-if="isSupport">
+      <div v-if="isSupport" class="mt-10">
         <ATATRadioGroup
           class="copy-max-width mb-10 mt-0"
           legend="Will this service require CSP personnel to access on-site locations?"

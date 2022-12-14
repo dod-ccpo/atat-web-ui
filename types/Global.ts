@@ -394,11 +394,14 @@ export interface OtherServiceSummaryTableData {
   qty?: string;
   vCPU?: string;
   memory?: string;
-  storage?: string;
+  storageAmount?: string;
+  storageType?: string;
   performance?: string;
   requirementTitle?: string;
   duration?: string;
-}
+  personnelOnsiteAccess?: string;
+  trainingType?: string;
+}  
 
 export interface EnvInstanceSummaryTableData {
   instanceSysId?: string;

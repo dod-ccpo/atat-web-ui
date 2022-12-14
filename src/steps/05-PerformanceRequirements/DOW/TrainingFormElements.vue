@@ -80,6 +80,7 @@ import { Component, PropSync } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"
+import { trainingTypeOptions }  from "@/store/descriptionOfWork";
 
 import { 
   OtherServiceOfferingData,
@@ -107,39 +108,12 @@ export default class TrainingFormElements extends Vue {
       && this.offeringData.trainingType.indexOf('CONUS') > -1;
   }
 
-
   public get showTrainingTimezone(): boolean {
     return this.offeringData.trainingType !== undefined
       && this.offeringData.trainingType.indexOf('INSTRUCTOR') > -1
   }
 
-  public trainingTypes: RadioButton[] = [
-    {
-      id: "OnSiteCONUS",
-      label: "On-site instructor-led within the Continental United States (CONUS)",
-      value: "ON_SITE_CONUS", 
-    },
-    {
-      id: "OnSiteOCONUS",
-      label: "On-site instructor-led outside of the Continental United States (OCONUS)",
-      value: "ON_SITE_OCONUS", 
-    },
-    {
-      id: "VirturalInstructorLed",
-      label: "Virtual instructor-led",
-      value: "VIRTUAL_INSTRUCTOR_LED", 
-    },
-    {
-      id: "VirtualSelfLed",
-      label: "Virtual self-led",
-      value: "VIRTUAL_SELF_LED", 
-    },
-    {
-      id: "NoPreference",
-      label: "No preference",
-      value: "NO_PREFERENCE", 
-    },
-  ];
+  public trainingTypes = trainingTypeOptions;
 
   public trainingFaciltyTypes: RadioButton[] = [
     {

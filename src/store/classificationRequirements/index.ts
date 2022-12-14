@@ -111,8 +111,6 @@ export class ClassificationRequirementsStore extends VuexModule {
         classLevel
       ) : api.selectedClassificationLevelTable.create(classLevel);
 
-      debugger;
-
       await Promise.all([apiCall]);
 
       selectedClassLevelList[levelIndex] = classLevel;
