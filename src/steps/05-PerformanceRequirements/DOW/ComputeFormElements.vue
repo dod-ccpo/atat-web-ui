@@ -43,6 +43,7 @@ import {
   OtherServiceOfferingData,
   RadioButton,
 } from "../../../../types/Global";
+import { instanceEnvTypeOptions }  from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -53,28 +54,7 @@ import {
 export default class ComputeFormElements extends Vue {
   @PropSync("data") public offeringData!: OtherServiceOfferingData;
 
-  public environmentTypeOptions: RadioButton[] = [
-    {
-      id: "DevTesting",
-      label: "Dev/Testing",
-      value: "DEV_TEST", 
-    },
-    {
-      id: "PreProdStaging",
-      label: "Pre-production",
-      value: "PRE_PROD",
-    },
-    {
-      id: "Production",
-      label: "Production/Staging",
-      value: "PROD_STAGING",
-    },
-    {
-      id: "COOP",
-      label: "Continuity of Operations Planning (COOP)/Disaster Recovery",
-      value: "COOP_DISASTER_RECOVERY"
-    }
-  ];
+  public environmentTypeOptions = instanceEnvTypeOptions;
 
   public operatingEnvOptions: RadioButton[] = [
     {

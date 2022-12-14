@@ -132,11 +132,11 @@ import { Component, Watch } from "vue-property-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-import DescriptionOfWork from "@/store/descriptionOfWork";
+import DescriptionOfWork, { instanceEnvTypeOptions } from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 import { OtherServiceOfferingData, OtherServiceSummaryTableData } from "../../../../types/Global";
-import { buildClassificationLabel } from "@/helpers";
+import { buildClassificationLabel, toTitleCase } from "@/helpers";
 import _ from 'lodash';
 
 @Component({
@@ -238,11 +238,15 @@ export default class OtherOfferingSummary extends Vue {
       const instanceClone = _.cloneDeep(instance);
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
       let isValid = true;
-
-      if (this.isCompute) {
+      let typeOrTitle = "";
+      // -----------------------------------------------------------------
+      // COMPUTE AND DATABASE
+      // -----------------------------------------------------------------
+      if (this.isCompute || this.isDatabase) {
+        const typeTitle = this.isCompute ? "Type" : "Database Type";
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
-          { text: "Type", value: "typeOrTitle" },
+          { text: typeTitle, value: "typeOrTitle" },
           { text: "Classification", value: "classification" },
           { text: "Quantity", value: "qty" },
           { text: "vCPU", value: "vCPU" },
@@ -273,9 +277,22 @@ export default class OtherOfferingSummary extends Vue {
           instanceClone.environmentType += this.rowErrorMessage
         }
 
+        debugger;
+
+        if (this.isCompute) {
+          const selectedEnv = instanceEnvTypeOptions.find(
+            obj => obj.value === instanceClone.environmentType
+          );
+          if (selectedEnv) {
+            typeOrTitle = selectedEnv.label;
+          }
+        } else {
+          typeOrTitle = toTitleCase(instanceClone.databaseType || "");
+        }
+
         instanceData = {
           instanceNumber: instanceClone.instanceNumber,
-          typeOrTitle: instanceClone.environmentType,
+          typeOrTitle,
           classification: classificationLevel,
           qty: instanceClone.numberOfInstancesNeeded,
           vCPU: instanceClone.numberOfVCPUs,
@@ -284,6 +301,10 @@ export default class OtherOfferingSummary extends Vue {
             ${instanceClone.storageAmount} ${instanceClone.storageUnit}` : "" ,
           performance: instanceClone.performanceTier,
         };
+
+      // -----------------------------------------------------------------
+      // GENERAL XAAS
+      // -----------------------------------------------------------------
       } else if (this.isGeneral) {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
@@ -312,7 +333,7 @@ export default class OtherOfferingSummary extends Vue {
           duration = "Entire task order";
         }
 
-        let typeOrTitle = !instanceClone.requirementTitle 
+        typeOrTitle = !instanceClone.requirementTitle 
           ? `<div class="text-error font-weight-500">Untitled</div>`
           : instanceClone.requirementTitle;
 

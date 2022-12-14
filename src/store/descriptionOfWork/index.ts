@@ -33,6 +33,7 @@ import {
   OtherServiceOfferingData,
   DOWPoP,
   StorageUnit,
+  RadioButton,
 } from "../../../types/Global";
 
 import _, { differenceWith, first, last } from "lodash";
@@ -415,6 +416,29 @@ const serviceGroupVerbiageInfo: Record<string, Record<string, string>> = {
     introText: `any other cloud support services that you need.`,
   },
 }
+
+export const instanceEnvTypeOptions: RadioButton[] = [
+  {
+    id: "DevTesting",
+    label: "Dev/Testing",
+    value: "DEV_TEST", 
+  },
+  {
+    id: "PreProdStaging",
+    label: "Pre-production",
+    value: "PRE_PROD",
+  },
+  {
+    id: "Production",
+    label: "Production/Staging",
+    value: "PROD_STAGING",
+  },
+  {
+    id: "COOP",
+    label: "Continuity of Operations Planning (COOP)/Disaster Recovery",
+    value: "COOP_DISASTER_RECOVERY"
+  }
+];
 
 @Module({
   name: "DescriptionOfWork",
