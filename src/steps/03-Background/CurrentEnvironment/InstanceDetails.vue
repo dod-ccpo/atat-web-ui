@@ -106,12 +106,12 @@
         </h2>
 
         <InstanceConfig
-          :instanceConfig.sync="instanceConfig"
+          :data.sync="instanceConfig"
           :storageUnits="storageUnits"
         />
 
         <PerformanceTier 
-          :performanceTier.sync="performanceTier"
+          :data.sync="performanceTier"
           :storageUnits="storageUnits"
         />
 

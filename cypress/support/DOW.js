@@ -36,7 +36,7 @@ Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
       cy.btnClick(common.continueBtn, " Continue ");   
 
       cy.verifyPageHeader(
-        "Next, we’ll gather your requirements for " + serviceOfferingNames[index]
+        "Now we’ll gather your requirements for " + serviceOfferingNames[index]
       ); 
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(1000); // needed because with 2 back button clicks, needs a pause for scroll into view
