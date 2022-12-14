@@ -8,6 +8,11 @@
       name="DatabaseType"
       class="mt-3 mb-8"
       :rules="[$validators.required('Please select a type of database.')]"
+      :hasOtherValue="true"
+      otherValueRequiredMessage="Enter your other database type."
+      :validateOtherOnBlur="true"
+      otherValue="OTHER"
+      :otherValueEntered.sync="offeringData.databaseTypeOther"
     />
 
     <ATATRadioGroup
@@ -38,6 +43,7 @@ import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATTextField from "@/components/ATATTextField.vue"
 
 import { 
   OtherServiceOfferingData,
@@ -47,6 +53,7 @@ import {
 @Component({
   components: {
     ATATRadioGroup,
+    ATATTextField,
   }
 })
 

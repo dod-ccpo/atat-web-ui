@@ -13,7 +13,7 @@ import {
   CloudSupportEnvironmentInstanceDTO, 
   ComputeEnvironmentInstanceDTO, 
   DatabaseEnvironmentInstanceDTO, 
-EnvironmentInstanceDTO, 
+  EnvironmentInstanceDTO, 
   SelectedServiceOfferingDTO, 
   ServiceOfferingDTO, 
   StorageEnvironmentInstanceDTO, 

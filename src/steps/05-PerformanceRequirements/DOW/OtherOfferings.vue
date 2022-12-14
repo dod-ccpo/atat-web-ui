@@ -67,7 +67,7 @@
     </h2>
 
 
-    <div v-if="selectedClassificationLevelList.length > 1" class="mb-8">
+    <div v-if="selectedClassificationLevelList.length > 1" class="mb-10">
       <ATATRadioGroup
         id="ClassificationLevel"
         legend="What classification level is this instance deployed in?"
