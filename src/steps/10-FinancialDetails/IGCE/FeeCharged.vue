@@ -45,6 +45,7 @@
   </v-container>
 </template>
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -52,6 +53,8 @@ import ATATTextField from "@/components/ATATTextField.vue"
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import IGCEStore, { Fee } from "@/store/IGCE";
+import {RequirementsCostEstimateDTO} from "@/api/models";
+import {YesNo} from "../../../../types/Global";
 
 @Component({
   components: {
@@ -67,8 +70,8 @@ export default class FeeCharged  extends Mixins(SaveOnLeave)  {
   };
 
 
-  private isCharged = "";
-  private percentage = "";
+  private isCharged: YesNo = "";
+  private percentage: number | null = null;
   private items = [
     {
       id: "YES",
@@ -82,22 +85,22 @@ export default class FeeCharged  extends Mixins(SaveOnLeave)  {
     },
   ];
 
-  private get currentData(): Fee {
+  private get currentData(): RequirementsCostEstimateDTO["fee_specs"] {
     return {
-      percentage: this.percentage,
-      isCharged: this.isCharged
+      is_charged: this.isCharged,
+      percentage: this.percentage
     };
   }
 
-   private savedData: Fee = {
-     percentage: "",
-     isCharged: ""
+   private savedData: RequirementsCostEstimateDTO["fee_specs"]  = {
+     is_charged: "",
+     percentage: null
    };
 
    @Watch("isCharged")
    protected evalIsCharged(newVal: string): void {
      if (newVal === "NO"){
-       this.percentage = "";
+       this.percentage = null;
      }
    }
 
@@ -113,20 +116,21 @@ export default class FeeCharged  extends Mixins(SaveOnLeave)  {
    }
 
    public async loadOnEnter(): Promise<void> {
-     const storeData: Fee = await IGCEStore.getFeeSpecs();
-     if (storeData) {
-       this.savedData = storeData;
-       this.percentage = storeData.percentage;
-       this.isCharged = storeData.isCharged;
-     }
+     const store = await IGCEStore.getRequirementsCostEstimate();
+     this.savedData = store.fee_specs;
+     this.isCharged = store.fee_specs.is_charged
+     this.percentage = store.fee_specs.percentage;
    }
 
    protected async saveOnLeave(): Promise<boolean> {
      if (this.hasChanged()) {
        if (this.hasErrorMessages()){
-         this.percentage = "";
+         this.percentage = null;
        }
-       IGCEStore.setFeeSpecs(this.currentData)    
+       const store = await IGCEStore.getRequirementsCostEstimate();
+       store.fee_specs = this.currentData;
+       await IGCEStore.setRequirementsCostEstimate(store);
+       await IGCEStore.saveRequirementsCostEstimate();
      }
      return true;
    }

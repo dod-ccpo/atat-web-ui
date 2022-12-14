@@ -27,31 +27,22 @@
         <div v-if="ceilingPrice !== ''">
           <ATATSingleAndMultiplePeriods
             :periods.sync="periods"
-            :isMultiple="ceilingPrice === 'multiple'"
+            :isMultiple="ceilingPrice === 'MULTIPLE'"
             :values.sync="estimatedTravelCosts"
           ></ATATSingleAndMultiplePeriods>
-        </div>
-
-        <div>
-          <br/>
-          <hr />
-          <AnticipatedDataNeeds
-            :periods.sync="periods"
-            :percentages.sync="percentages"
-            needs="data"
-          ></AnticipatedDataNeeds>
         </div>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script lang="ts">
-import { RadioButton } from "types/Global";
+/* eslint-disable camelcase */
+import {RadioButton, SingleMultiple} from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import Periods from "@/store/periods";
-import { PeriodDTO } from "@/api/models";
-import IGCEStore, { TravelEstimateNeeds } from "@/store/IGCE";
+import {EstimateOptionValueDTO, PeriodDTO} from "@/api/models";
+import IGCEStore from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
@@ -66,12 +57,12 @@ import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 })
 export default class TravelEstimates extends Mixins(SaveOnLeave) {
   private periods: PeriodDTO[] | null = [];
-  private ceilingPrice = "";
+  private ceilingPrice: SingleMultiple = "";
   private estimatedTravelCosts = [""];
   private percentages = [""];
-  public savedData: TravelEstimateNeeds = {
-    ceilingPrice: "",
-    estimatedTravelCosts: [],
+  public savedData: EstimateOptionValueDTO = {
+    option: "",
+    estimated_values: [],
   };
 
   private travelEstimateOptions: RadioButton[] = [
@@ -79,26 +70,27 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
       id: "SinglePrice",
       label:
         "I want to apply the same price estimate to all performance periods.",
-      value: "single",
+      value: "SINGLE",
     },
     {
       id: "MultiplePrices",
       label:
         "I want to estimate a different price for the base and each option period.",
-      value: "multiple",
+      value: "MULTIPLE",
     },
   ];
 
-  get currentData(): TravelEstimateNeeds {
+  get currentData(): EstimateOptionValueDTO {
     return{
-      ceilingPrice: this.ceilingPrice,
-      estimatedTravelCosts: this.estimatedTravelCosts,
+      option: this.ceilingPrice,
+      estimated_values: this.estimatedTravelCosts,
     }
   };
 
   @Watch("ceilingPrice")
   protected changeSelection(newVal: string): void{
-    if (newVal !== this.savedData.ceilingPrice){
+    console.log("New ceiling price: " + newVal);
+    if (newVal !== this.savedData.option){
       this.estimatedTravelCosts = [];
     }
   }
@@ -113,15 +105,18 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   }
 
   private async loadOnEnter(): Promise<void> {
-    const store = await IGCEStore.getTravelEstimateNeeds();
-    this.savedData = store;
-    this.ceilingPrice = store.ceilingPrice;
-    this.estimatedTravelCosts = store.estimatedTravelCosts;
+    const store = await IGCEStore.getRequirementsCostEstimate();
+    this.savedData = store.travel;
+    this.ceilingPrice = store.travel.option
+    this.estimatedTravelCosts = store.travel.estimated_values;
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     if (this.hasChanged()) {
-      IGCEStore.setTravelEstimateNeeds(this.currentData);
+      const store = await IGCEStore.getRequirementsCostEstimate();
+      store.travel = this.currentData;
+      await IGCEStore.setRequirementsCostEstimate(store);
+      await IGCEStore.saveRequirementsCostEstimate();
     }
     return true;
   }

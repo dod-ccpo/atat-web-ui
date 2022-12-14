@@ -130,19 +130,20 @@ export class IGCEStore extends VuexModule {
   }
 
   /**
-   * Saves requirements cost estimate record and sets the context.
+   * Saves requirements cost estimate record that is in the store and sets the context. The
+   * caller has to ensure that the store data is updated before calling this function.
    */
   @Action({rawError: true})
-  public async saveRequirementsCostEstimate(
-    requirementCostEstimate: RequirementsCostEstimateDTO)
-    : Promise<boolean> {
+  public async saveRequirementsCostEstimate(): Promise<boolean> {
     try {
+      console.log("IGCE Store: Saving requirements cost estimate");
       // TODO: perform any data transformation using spread construct.
+      // TODO: uncomment below 4 statements after SNOW table update
+      /*const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
       const updatedReqCostEstimate = await api.requirementsCostEstimateTable
-        .update(requirementCostEstimate.sys_id as string, requirementCostEstimate);
-      const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
+        .update(storeRequirementsCostEstimate.sys_id as string, storeRequirementsCostEstimate);
       storeRequirementsCostEstimate.sys_updated_on = updatedReqCostEstimate.sys_updated_on;
-      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;
+      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;*/
       return true;
     } catch (error) {
       throw new Error(`an error occurred saving requirements cost estimate ${error}`);
