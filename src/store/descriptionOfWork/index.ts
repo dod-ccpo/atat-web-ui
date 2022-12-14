@@ -213,6 +213,84 @@ const saveOrUpdateOtherServiceOffering =
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
 
+const serviceGroupVerbiageInfo: Record<string, Record<string, string>> = {
+  COMPUTE: { 
+    offeringName: "Compute",
+    headingDetails1: "Compute",
+    heading2: "Compute Instance",
+    headingSummary: "Compute Requirements", 
+    typeForUsage: "instance",
+    typeForText: "instance",
+    introText: `each Compute instance that you need.`, 
+  },
+  DATABASE: { 
+    offeringName: "Database", 
+    heading2: "Database Instance",
+    headingSummary: "Database Requirements", 
+    typeForUsage: "requirement",
+    typeForText: "instance",
+    introText: `each Database instance that you need.`, 
+  },
+  STORAGE: { 
+    offeringName: "Storage", 
+    heading2: "Storage Instance",
+    headingSummary: "Storage Requirementss", 
+    typeForUsage: "requirement",
+    typeForText: "instance",
+    introText: `each Storage instance that you need, separate from your 
+      Compute and Database requirements.`,
+  },
+  GENERAL_XAAS: { 
+    offeringName: "General IaaS, PaaS, and SaaS", 
+    heading2: "Requirement",
+    headingSummary: "General IaaS, PaaS, and SaaS Requirements", 
+    typeForUsage: "requirement",
+    typeForText: "requirement",
+    introText: `any third-party marketplace solutions or cloud resources not covered 
+      in the other Anything as a Service (XaaS) categories.`,
+  }, 
+  ADVISORY_ASSISTANCE: { 
+    offeringName: "Advisory and Assistance", 
+    heading2: "Advisory and Assistance Services",
+    headingSummary: "Advisory and Assistance", 
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `each Advisory and Assistance service that you need.`,
+  },
+  HELP_DESK_SERVICES: { 
+    offeringName: "Help Desk Services",
+    heading2: "Help Desk Service",
+    headingSummary: "Help Desk Services", 
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `each Help Desk Service that you need`,
+  },
+  TRAINING: { 
+    offeringName: "Training", 
+    heading2: "Training",
+    headingSummary: "Training Requirements", 
+    typeForUsage: "training", 
+    typeForText: "training",
+    introText: `each training that you need.`,
+  },
+  DOCUMENTATION_SUPPORT: { 
+    offeringName: "Documentation Support", 
+    heading2: "Documentation Support",
+    headingSummary: "Documentation Support Services", 
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `each Documentation Support service that you need.`,
+  },
+  GENERAL_CLOUD_SUPPORT: { 
+    offeringName: "General Cloud Support", 
+    heading2: "Cloud Support Service",
+    headingSummary: "General Cloud Support Services", 
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `any other cloud support services that you need.`,
+  },
+}
+
 @Module({
   name: "DescriptionOfWork",
   namespaced: true,
@@ -253,7 +331,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     'APPLICATIONS',
     'DEVELOPER_TOOLS',
     'COMPUTE'
-  ]
+  ];
+
+  @Action
+  public async getServiceGroupVerbiageInfo(): Promise<Record<string, string>> {
+    return serviceGroupVerbiageInfo[this.currentGroupId];
+  }
+
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
@@ -778,6 +862,10 @@ export class DescriptionOfWorkStore extends VuexModule {
     sysId: "",
     personnelOnsiteAccess: "",
     tsContractorClearanceType: "",
+    trainingType: "",
+    trainingLocation: "",
+    trainingTimeZone: "",
+    trainingPersonnel: "",
   }
 
   otherOfferingInstancesTouched: Record<string, number[]> = {};

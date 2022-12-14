@@ -1,7 +1,7 @@
 <template>
   <div>
     <ATATRadioGroup
-      id="EnvironmnetType"
+      id="EnvironmentType"
       legend="What type of environment is this instance?"
       :value.sync="offeringData.environmentType"
       :items="environmentTypeOptions"

@@ -20,7 +20,8 @@
               </span>
               
               <AnticipatedDurationandUsage
-                type="requirement"
+                typeForUsage="requirement"
+                typeForDuration="requirement"
                 :anticipatedNeedUsage.sync="instance.anticipatedNeedUsage"
                 :entireDuration.sync="instance.entireDuration"
                 :selectedPeriods.sync="instance.selectedPeriods"

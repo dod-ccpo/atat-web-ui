@@ -3,11 +3,11 @@
 
     <h1 class="page-header mb-3" tabindex="-1">
       <span v-if="firstTimeHere">
-        {{introText}}
+        Let’s gather your requirements for {{ serviceGroupVerbiageInfo.offeringName }}
       </span>
       <span v-else>
-        Let’s gather your requirements 
-        for {{offeringName}} #{{ _serviceOfferingData.instanceNumber }}
+        Let’s gather some details 
+        for {{ serviceGroupVerbiageInfo.heading2 }} #{{ _serviceOfferingData.instanceNumber }}
       </span>
     </h1>
     <p 
@@ -16,14 +16,14 @@
     >
       <span v-if="firstTimeHere">
         In this section, we’ll collect details 
-        about each {{offeringName.toLowerCase()}} that you need. 
+        about {{ serviceGroupVerbiageInfo.introText }} 
       </span>
 
       If you need multiple, we’ll walk through them one at a time. 
       <span v-if="selectedClassificationLevelList.length === 1">
-        You previously specified <strong>{{ singleClassificationLevelName }}</strong> 
-        as the classification level for all requirements. If you need any instances
-        within a different level, 
+        This {{ serviceGroupVerbiageInfo.typeForText }} will be within the 
+        <strong>{{ singleClassificationLevelName }}</strong> classification level. 
+        If you need a different level, 
         <a 
           role="button" 
           id="UpdateClassificationFromIntro"
@@ -61,15 +61,9 @@
 
     <h2 class="mb-5" 
       id="FormSection1Heading"
-      v-if="isCompute || isDatabase"
+      v-if="isCompute || isDatabase || isTraining || isStorage"
     >
-      1. 
-      <span v-if="firstTimeHere">
-        Tell us about Instance #{{ _serviceOfferingData.instanceNumber }}
-      </span>
-      <span v-else>
-        Instance details
-      </span>
+      1. {{ sectionOneSubhead }}
     </h2>
 
 
@@ -113,6 +107,11 @@
         :data.sync="_serviceOfferingData"
         :storageUnits="storageUnits"
       />
+
+      <TrainingFormElements
+        v-if="isTraining"
+        :data.sync="_serviceOfferingData"
+      />
       
       <section v-if="isCompute || isDatabase">
         <hr />
@@ -123,6 +122,7 @@
         <InstanceConfig
           :data.sync="_serviceOfferingData"
           :storageUnits="storageUnits"
+          :isDOW="true"
         />
 
         <PerformanceTier 
@@ -134,16 +134,17 @@
         />
       </section>
 
-      <div v-if="isCompute || isDatabase || isStorage">
+      <div v-if="isCompute || isDatabase || isStorage || isTraining">
         <hr/>
         <h2 class="mb5">
-          {{ isStorage ? '2' : '3' }}. Anticipated need and duration
+          {{ isStorage || isTraining ? '2' : '3' }}. Anticipated need and duration
         </h2>
         <br/>
       </div>
       
       <AnticipatedDurationandUsage
-        type="requirement"
+        :typeForUsage="serviceGroupVerbiageInfo.typeForUsage"
+        :typeForDuration="serviceGroupVerbiageInfo.typeForText"
         :index="_serviceOfferingData.instanceNumber"
         :isPeriodsDataMissing="isPeriodsDataMissing"
         :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
@@ -190,6 +191,7 @@ import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeFormElements from "./ComputeFormElements.vue"
 import DatabaseFormElements from "./DatabaseFormElements.vue";
 import StorageFormElements from "./StorageFormElements.vue";
+import TrainingFormElements from "./TrainingFormElements.vue";
 import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationandUsage.vue";
 import InstanceConfig from "@/components/DOW/InstanceConfig.vue";
 import PerformanceTier from "@/components/DOW/PerformanceTier.vue";
@@ -239,7 +241,8 @@ import classificationRequirements from "@/store/classificationRequirements";
     PerformanceTier,
     DatabaseFormElements,
     StorageFormElements,
-    ATATRadioGroup
+    TrainingFormElements,
+    ATATRadioGroup,
   }
 })
 
@@ -286,9 +289,28 @@ export default class OtherOfferings extends Vue {
   public serviceGroupOnLoad = "";
   public isStorage = false;
   public isCompute = false;
-  public isGeneral = false;
+  public isGeneralXaaS = false;
   public isDatabase = false;
   public isSupport = false;
+  public isTraining = false;
+
+  public serviceGroupVerbiageInfo: Record<string, string> = {};
+
+  public get sectionOneSubhead(): string {
+    let subhead = "Instance details";
+    switch(this.serviceGroupOnLoad.toLowerCase()) {
+    case "training":
+      subhead = "Training details";
+      break;
+    case "database":
+      subhead = "Database details";
+      break;
+    case "storage":
+      subhead = "Storage configurations"
+      break;
+    }
+    return subhead;
+  }
 
   public classificationLevelToast: ToastObj = {
     type: "success",
@@ -297,10 +319,7 @@ export default class OtherOfferings extends Vue {
     hasUndo: false,
     hasIcon: true,
   };
-
-  public offeringName = "";
-
-  public introText = ""; 
+  public introOfferingString = "";
 
   public storageUnits: SelectData[] = [
     { text: "Gigabyte (GB)", value: "GB" },
@@ -381,21 +400,17 @@ export default class OtherOfferings extends Vue {
       = await ClassificationRequirements.getSelectedClassificationLevels();
   }
 
+
   public async loadOnEnter(): Promise<void> {
+    this.serviceGroupVerbiageInfo = await DescriptionOfWork.getServiceGroupVerbiageInfo();
     this.acquisitionPackage = await AcquisitionPackage
       .getAcquisitionPackage() as AcquisitionPackageDTO;
-    if (this.isCompute || this.isGeneral) {
-      const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
-      this.firstTimeHere 
-        = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
-    }
-
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
-
     this.isCompute = this.serviceGroupOnLoad.toLowerCase() === "compute";
-    this.isGeneral = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
+    this.isGeneralXaaS = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
     this.isDatabase = this.serviceGroupOnLoad.toLowerCase() === "database";
     this.isStorage = this.serviceGroupOnLoad.toLowerCase() === "storage";
+    this.isTraining = this.serviceGroupOnLoad.toLowerCase() === "training";
 
     this.isSupport = [
       "advisory_assistance",
@@ -404,16 +419,12 @@ export default class OtherOfferings extends Vue {
       "general_cloud_support"
     ].includes(this.serviceGroupOnLoad.toLowerCase());
 
-    if(this.isGeneral){
-      this.introText = `Let’s gather your requirements for 
-        general IaaS, PaaS, and SaaS`;
+    debugger;
 
-      this.offeringName = "Requirement"
-    } else {
-      this.introText = `Next, let’s start gathering your 
-        requirements for ${_.startCase(this.serviceGroupOnLoad.toLowerCase())}`;
-
-      this.offeringName = _.startCase(this.serviceGroupOnLoad.toLowerCase()) + " Instance";
+    if (this.serviceGroupOnLoad.toLowerCase() !== "portability_plan") {
+      const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
+      this.firstTimeHere 
+        = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
     }
 
     // get classification levels selected in step 4 Contract Details
@@ -445,7 +456,7 @@ export default class OtherOfferings extends Vue {
   }
 
   public async setComponentSpecificData(): Promise<void> {
-    if (this.isCompute || this.isGeneral) {
+    if (this.isCompute || this.isGeneralXaaS) {
       this.formHasBeenTouched 
         = await DescriptionOfWork.hasInstanceBeenTouched(this._serviceOfferingData.instanceNumber);
     }

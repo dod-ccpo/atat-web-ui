@@ -1,6 +1,20 @@
 <template>
   <section id="InstanceConfig">
-    <br/>
+    <v-row>
+      <v-col class="col-sm-12 col-md-6">
+        <ATATTextField
+          v-if="!isDOW"
+          id="Licensing"
+          label="Licensing"
+          :value.sync="_data.licensing"
+          tooltipText="Provide details about your licensing agreement, to include 
+            the type and number of licenses."
+          :rules="[
+            $validators.required('Enter a description of your current licensing.')
+          ]"
+        />
+      </v-col>
+    </v-row>
     <v-row>
       <v-col class="col-sm-12 col-md-3">
         <ATATTextField
@@ -123,6 +137,7 @@ import {
 export default class InstanceConfig extends Vue {
   @PropSync("data") public offeringData!: CurrEnvInstanceConfig | OtherServiceOfferingData;
   @Prop() public storageUnits!: SelectData[];
+  @Prop({default: false}) public isDOW?: boolean;
 
   public storageTypes: SelectData[] = [
     { 

@@ -379,11 +379,18 @@ export interface OtherServiceOfferingData {
   sysId?: string;
   personnelOnsiteAccess?: string;
   tsContractorClearanceType?: string;
+  // eslint-disable-next-line max-len
+  trainingType?: "" | "ON_SITE_CONUS" | "ON_SITE_OCONUS" | "VIRTUAL_INSTRUCTOR_LED" | "VIRTUAL_SELF_LED" | "NO_PREFERENCE";
+  trainingLocation?: string;
+  trainingTimeZone?: string;
+  trainingPersonnel?: string;
+  trainingFacilityType?: "" | "GOVT" | "NON_GOVT";
 }
 
 export interface OtherServiceSummaryTableData {
   instanceNumber: number;
   typeOrTitle?: string;
+  classification?: string;
   qty?: string;
   vCPU?: string;
   memory?: string;

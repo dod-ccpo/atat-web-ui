@@ -4,11 +4,12 @@
       <v-row>
         <v-col>
           <h1 class="page-header mb-3">
-            Your {{ serviceDescription }} requirements
+            Your {{ serviceGroupVerbiageInfo.headingSummary }}
           </h1>
           <p>
-            If you need more {{ requirementOrInstance }}s, add them below. You can 
-            also edit or delete any info from the {{ requirementOrInstance }}s that 
+            If you need more {{ serviceGroupVerbiageInfo.typeForText }}s, add them below. 
+            You can also edit or delete any info from the 
+            {{ serviceGroupVerbiageInfo.typeForText }}s that 
             you have already entered. When you’re done, click "Continue" and we will 
             move on to your 
             <span v-if="nextOfferingGroupStr && !returnToDOWSummary">
@@ -75,7 +76,7 @@
             />
             Add 
             <span v-if="tableData.length">&nbsp;another&nbsp;</span> 
-            {{ requirementOrInstance }}
+            {{ serviceGroupVerbiageInfo.typeForText }}
           </v-btn>  
         </v-col>
       </v-row>
@@ -86,16 +87,16 @@
       :showDialog="showDeleteInstanceDialog"
       :title="deleteInstanceModalTitle"
       no-click-animation
-      :okText="'Delete ' + requirementOrInstance"
+      :okText="'Delete ' + serviceGroupVerbiageInfo.typeForText"
       width="450"
       @ok="deleteInstance"
       @cancelClicked="showDeleteInstanceDialog = false"
     >
       <template #content>
         <p class="body">
-          This {{ requirementOrInstance }} will be removed from your {{ serviceDescription }}
-          requirements. Any details about this {{ requirementOrInstance }} 
-          will not be saved.
+          This {{ serviceGroupVerbiageInfo.typeForText }} will be removed from your 
+          {{ serviceGroupVerbiageInfo.offeringName }} requirements. Any details about this 
+          {{ serviceGroupVerbiageInfo.typeForText }} will not be saved.
         </p>
       </template>
     </ATATDialog>
@@ -103,18 +104,19 @@
     <ATATDialog
       id="DeleteAllInstancesModal"
       :showDialog="showDeleteOfferingDialog"
-      :title="'Delete all ' + serviceDescription + ' ' + requirementOrInstance + 's?'"
+      :title="'Delete all ' + serviceGroupVerbiageInfo.offeringName + 
+        ' ' + serviceGroupVerbiageInfo.typeForText + 's?'"
       no-click-animation
-      :okText="'Delete ' + serviceDescription"
+      :okText="'Delete ' + serviceGroupVerbiageInfo.offeringName"
       width="450"
       @ok="deleteOffering"
       @cancelClicked="cancelDeleteOffering"
     >
       <template #content>
         <p class="body">
-          This action will remove the "{{ serviceDescription }}" category from your 
-          performance requirements. Any details about your 
-          {{ requirementOrInstance }}<span v-if="tableData.length > 1">s</span> 
+          This action will remove the “{{ serviceGroupVerbiageInfo.offeringName }}” 
+          category from your performance requirements. Any details about your 
+          {{ serviceGroupVerbiageInfo.typeForText }}<span v-if="tableData.length > 1">s</span> 
           will not be saved.
         </p>
       </template>
@@ -148,8 +150,6 @@ export default class OtherOfferingSummary extends Vue {
   public isCompute = false;
   public isGeneral = false;
   public isDatabase = false;
-  public requirementOrInstance = "";
-  public serviceDescription = "";
   public deleteInstanceModalTitle = "";
 
   public offeringInstances: OtherServiceOfferingData[] = [];
@@ -163,6 +163,8 @@ export default class OtherOfferingSummary extends Vue {
   public showDeleteOfferingDialog = false;
   public missingEnvironmentType = false;
   public returnToDOWSummary = false;
+
+  public serviceGroupVerbiageInfo: Record<string, string> = {};
 
   get confirmOfferingDelete(): boolean {
     return DescriptionOfWork.confirmOtherOfferingDeleteVal;
@@ -205,7 +207,8 @@ export default class OtherOfferingSummary extends Vue {
     this.instanceNumberToDelete = item.instanceNumber;
     this.deleteInstanceModalTitle = this.isGeneral
       ? "Delete “" + item.requirementTitle +"?”"
-      : "Delete " + this.requirementOrInstance + ' #' + this.instanceNumberToDelete + '?'
+      : "Delete " + this.serviceGroupVerbiageInfo.typeForText 
+        + ' #' + this.instanceNumberToDelete + '?'
     this.showDeleteInstanceDialog = true;
   }
 
@@ -234,14 +237,13 @@ export default class OtherOfferingSummary extends Vue {
     this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
-      let hasOtherRegion = false;
-      let hasOtherPerformanceTier = false;
       let isValid = true;
 
       if (this.isCompute) {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
           { text: "Type", value: "typeOrTitle" },
+          { text: "Classification", value: "classification" },
           { text: "Quantity", value: "qty" },
           { text: "vCPU", value: "vCPU" },
           { text: "Memory", value: "memory" },
@@ -249,20 +251,6 @@ export default class OtherOfferingSummary extends Vue {
           { text: "Performance", value: "performance" },
           { text: "", value: "actions", width: "75" },
         ];
-        const otherRegionIndex = instanceClone.deployedRegions.indexOf("OtherRegion");
-        if (otherRegionIndex > -1) {
-          hasOtherRegion = true;
-          instanceClone.deployedRegions.splice(otherRegionIndex, 1);
-          if (instanceClone.deployedRegionsOther) {
-            instanceClone.deployedRegions.push(instanceClone.deployedRegionsOther);
-          }
-        }
-        const deployedRegions = instanceClone.deployedRegions.join(", ");
-
-        hasOtherPerformanceTier = instanceClone.performanceTier.indexOf("Other") > -1;
-        const performanceTier = hasOtherPerformanceTier
-          ? instanceClone.performanceTierOther
-          : instanceClone.performanceTier;
 
         const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
         let classificationLevel = "";
@@ -280,9 +268,7 @@ export default class OtherOfferingSummary extends Vue {
         if (!instanceClone.environmentType) {
           instanceClone.environmentType = `<div class="text-error font-weight-500">Unknown</div>`;
         }
-        isValid = await this.validateInstance(
-          instanceClone, hasOtherRegion, hasOtherPerformanceTier
-        );
+        isValid = await this.validateInstance(instanceClone);
         if (!isValid) {
           instanceClone.environmentType += this.rowErrorMessage
         }
@@ -290,12 +276,13 @@ export default class OtherOfferingSummary extends Vue {
         instanceData = {
           instanceNumber: instanceClone.instanceNumber,
           typeOrTitle: instanceClone.environmentType,
+          classification: classificationLevel,
           qty: instanceClone.numberOfInstancesNeeded,
           vCPU: instanceClone.numberOfVCPUs,
           memory: instanceClone.memoryAmount ? `${instanceClone.memoryAmount} GB` : "",
           storage: instanceClone.storageAmount ? `${instanceClone.storageType}: 
             ${instanceClone.storageAmount} ${instanceClone.storageUnit}` : "" ,
-          performance: performanceTier,
+          performance: instanceClone.performanceTier,
         };
       } else if (this.isGeneral) {
         this.tableHeaders = [    
@@ -350,11 +337,7 @@ export default class OtherOfferingSummary extends Vue {
     this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
   }
 
-  public async validateInstance(
-    instance: OtherServiceOfferingData, 
-    hasOtherRegion?: boolean,
-    hasOtherPerformanceTier?: boolean,
-  ): Promise<boolean> {
+  public async validateInstance(instance: OtherServiceOfferingData): Promise<boolean> {
     const instanceData: Record<string, any> = _.clone(instance);
     let isValid = true;
     let requiredFields: string[] = [];
@@ -375,14 +358,8 @@ export default class OtherOfferingSummary extends Vue {
         "storageType",
       ];
 
-      if ((hasOtherPerformanceTier && instanceData.performanceTierOther === "")
-        || (hasOtherRegion && instanceData.deployedRegionsOther === "")
-      ) {
-        isValid = false;
-      }
     } else if (this.isGeneral) {
       requiredFields = [
-        "requirementTitle",
         "classificationLevel",
         "anticipatedNeedUsage",
         "entireDuration",
@@ -403,34 +380,13 @@ export default class OtherOfferingSummary extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.returnToDOWSummary = await DescriptionOfWork.getReturnToDOWSummary();
+    this.serviceGroupVerbiageInfo = await DescriptionOfWork.getServiceGroupVerbiageInfo();
 
     const currentGroupId = await DescriptionOfWork.getCurrentOfferingGroupId();
     const offering = currentGroupId.toLowerCase();
     this.isCompute = offering === "compute";
     this.isGeneral = offering === "general_xaas";
     this.isDatabase = offering === "database";
-
-    this.requirementOrInstance = this.isGeneral ? "requirement" : "instance"; 
-    switch (offering) {
-    case "compute": 
-      this.isCompute = true;
-      this.requirementOrInstance = "instance";
-      this.serviceDescription = "Compute";
-      break;
-    case "general_xaas":
-      this.isGeneral = true;
-      this.requirementOrInstance = "requirement";
-      this.serviceDescription = "general IaaS, PaaS, and SaaS";
-      break;
-    case "database":
-      this.isDatabase = true;
-      this.requirementOrInstance = "instance";
-      this.serviceDescription = "database service";
-      break;
-    default:
-      this.requirementOrInstance = "instance";
-      this.serviceDescription = "service"
-    }
 
     await this.buildTableData();
 
