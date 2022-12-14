@@ -135,10 +135,6 @@ export default class ATATFileUpload extends Vue {
       reset: () => void;
       validate: () => boolean;
     };
-    // atatFileUploadForm: Vue & {
-    //   resetValidation: () => void;
-    //   reset: () => void;
-    // };
   };
 
   // props
@@ -484,6 +480,9 @@ export default class ATATFileUpload extends Vue {
 
   private updated(): void {
     this.isFullSize = this._validFiles.length === 0;
+    if (this._validFiles.length>0){
+      this.$refs.atatFileUpload.resetValidation();
+    }
   }
 }
 </script>
