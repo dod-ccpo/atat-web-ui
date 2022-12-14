@@ -60,15 +60,17 @@
                 <p>
                   We recommend downloading the
                   <a 
-                    :href="jaTemplateUrl"
-                    target="_blank" class="_text-link" id="JandATemplateLink"
+                    :href="jaURL"
+                    download= "JWCC J&A Template_Template.docx"
+                    class="_text-link" id="JandATemplateLink"
                   >
                     <span>J&amp;A template</span>
                   </a>
                   and
-                  <a 
-                    :href="mrrTemplateUrl"
-                    target="_blank" class="_text-link" id="MRRTemplateLink"
+                   <!-- eslint-disable-next-line max-len -->
+                  <a :href="mrrURL"
+                   download="JWCC Market Research Report (Sole Source)_Template.docx"
+                    class="_text-link" id="MRRTemplateLink"
                   >
                     <span>MRR template</span>
                   </a>
@@ -110,11 +112,10 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class Exceptions extends Mixins(SaveOnLeave) {
+  private jaURL = "";
+  private mrrURL = "";
   private selectedException = "";
 
-  private jaTemplateUrl = "";
-  private mrrTemplateUrl = "";
-  
   private get currentData(): FairOpportunityDTO {
     return {
       exception_to_fair_opportunity: this.selectedException,
@@ -139,8 +140,8 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
       this.selectedException = storeData.exception_to_fair_opportunity;
     }
 
-    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('ja');
-    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateUrl('mrr');
+    this.jaURL = await AcquisitionPackage.getJamrrTemplateUrl("ja");
+    this.mrrURL = await AcquisitionPackage.getJamrrTemplateUrl("mrr");
   }
 
   protected async saveOnLeave(): Promise<boolean> {
