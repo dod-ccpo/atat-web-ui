@@ -138,7 +138,9 @@ const saveOrUpdateOtherServiceOffering =
     tempObject.storage_amount = serviceOffering.storageAmount;
     tempObject.storage_type = serviceOffering.storageType;
     tempObject.storage_unit = serviceOffering.storageUnit;
-    tempObject.sys_id = serviceOffering.sysId;
+
+    if(serviceOffering.sysId)
+      tempObject.sys_id = serviceOffering.sysId;
 
     switch(offeringType){
     case "compute":

@@ -419,8 +419,6 @@ export default class OtherOfferings extends Vue {
       "general_cloud_support"
     ].includes(this.serviceGroupOnLoad.toLowerCase());
 
-    debugger;
-
     if (this.serviceGroupOnLoad.toLowerCase() !== "portability_plan") {
       const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
       this.firstTimeHere 
