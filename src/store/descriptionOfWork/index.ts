@@ -13,6 +13,7 @@ import {
   CloudSupportEnvironmentInstanceDTO, 
   ComputeEnvironmentInstanceDTO, 
   DatabaseEnvironmentInstanceDTO, 
+EnvironmentInstanceDTO, 
   SelectedServiceOfferingDTO, 
   ServiceOfferingDTO, 
   StorageEnvironmentInstanceDTO, 
@@ -175,7 +176,6 @@ const saveOrUpdateOtherServiceOffering =
       }
       break;
     case "storage":
-      console.log(tempObject as StorageEnvironmentInstanceDTO);
       if(tempObject.sys_id){
         await api.storageEnvironmentInstanceTable.update(
           tempObject.sys_id,
@@ -185,6 +185,20 @@ const saveOrUpdateOtherServiceOffering =
       } else {
         const savedObject = await api.storageEnvironmentInstanceTable.create(
           tempObject as StorageEnvironmentInstanceDTO
+        );
+        objSysId = savedObject.sys_id as string;
+      }
+      break;
+    case "general_xaas":
+      if(tempObject.sys_id){
+        await api.environmentInstanceTable.update(
+          tempObject.sys_id,
+          tempObject as EnvironmentInstanceDTO
+        )
+        objSysId = tempObject.sys_id;
+      } else {
+        const savedObject = await api.environmentInstanceTable.create(
+          tempObject as EnvironmentInstanceDTO
         );
         objSysId = savedObject.sys_id as string;
       }
@@ -261,7 +275,8 @@ const mapOtherOfferingFromDTO = (
   value: ComputeEnvironmentInstanceDTO | 
     DatabaseEnvironmentInstanceDTO | 
     StorageEnvironmentInstanceDTO | 
-    CloudSupportEnvironmentInstanceDTO
+    CloudSupportEnvironmentInstanceDTO |
+    EnvironmentInstanceDTO
 ): OtherServiceOfferingData => {
 
   const acquisitionPackageSysId = 
