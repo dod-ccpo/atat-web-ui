@@ -71,9 +71,8 @@ export default class CardRequirement extends Vue {
 
   public saveTitle(): void {
     if(this.title !== ""){
-      console.log(this.title)
       // eslint-disable-next-line camelcase
-      // this._cardData.IGCE_title = this.title;
+      this._cardData.IGCE_title = this.title;
     }else{
       this.title = this._cardData.IGCE_title;
     }
@@ -82,7 +81,7 @@ export default class CardRequirement extends Vue {
     if(this.description !== ""){
       console.log(this.description)
       // eslint-disable-next-line camelcase
-      // this._cardData.IGCE_description = this.description;
+      this._cardData.IGCE_description = this.description;
     }else{
       this.description = this._cardData.IGCE_description;
     }
@@ -92,10 +91,8 @@ export default class CardRequirement extends Vue {
     if(Number(this._cardData.monthly_price) < 1 ){
       this.noMonthlyValue = true
       // eslint-disable-next-line camelcase
-      // this._cardData.IGCE_description = this.description;
     }else{
       this.noMonthlyValue = false
-
     }
   }
   public async loadOnEnter(): Promise<void> {
