@@ -237,7 +237,7 @@ export default class Packages extends Vue {
     const packageResults = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO)
     this.packageData = packageResults?.acquisitionPackageSummaryList || [];
-    this.packageCount = packageResults.total_count;
+    this.packageCount = packageResults?.total_count || 0;
 
     this.numberOfPages = Math.ceil(this.packageCount / this.recordsPerPage);
 

@@ -85,7 +85,7 @@ module.exports = {
 
         }));
 
-        config.module
+      config.module
         .rule("svg")
         .use("file-loader")
         .loader("file-loader")

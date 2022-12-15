@@ -215,11 +215,6 @@ textarea {
       }
     }
   }
-  &._first-col-nowrap .v-data-table__wrapper > table > tbody > tr > td {
-    &:nth-of-type(2) {
-      white-space: nowrap;
-    }
-  }
 }
 
 ._instances-table.v-data-table, ._offering-instances.v-data-table {
