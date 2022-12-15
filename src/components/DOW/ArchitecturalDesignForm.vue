@@ -4,9 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            <span v-if="isDOW">Next, tell</span>
-            <span v-else>Tell</span>
-            us more about your architectural design requirements
+            Tell us more about your architectural design requirements
           </h1>
           <div class="copy-max-width">
             <p id="IntroP" class="mb-8">

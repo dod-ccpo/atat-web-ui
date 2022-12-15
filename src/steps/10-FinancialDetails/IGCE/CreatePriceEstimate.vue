@@ -8,7 +8,7 @@
          <div class="copy-max-width">
             <p id="IntroP" class="mb-10">
               In the Performance Requirements section, you told us about all of the cloud 
-              services and support that are needed for this project. Now, we’ll dive into 
+              services and support that are needed for this project. Next, we’ll dive into 
               calculating the estimated prices to help you generate an Independent 
               Government Cost Estimate (IGCE). 
               <a id="LearnMoreIGCE"

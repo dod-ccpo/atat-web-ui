@@ -3,7 +3,7 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          Next, tell us about how your estimates were developed
+          Now tell us about how your estimates were developed
         </h1>
         <div class="copy-max-width">
           <p id="IntroP" class="mb-7">

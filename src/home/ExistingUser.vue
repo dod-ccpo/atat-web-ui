@@ -64,7 +64,7 @@
                   id="JWCCHelpCenterButton"
                   href="https://community.hacc.mil/s/jwcc/resources"
                   target="_blank" 
-                  class="secondary mb-4 mt-4 width-100"
+                  class="secondary mb-4 mt-4 width-100 _text-decoration-none"
                 >
                   JWCC Help Center
                   
@@ -80,7 +80,7 @@
                 </v-btn>
                 <v-btn
                   id="CustomerSupportButton"
-                  class="secondary mt-4 width-100"
+                  class="secondary mt-4 width-100 _text-decoration-none"
                   href="https://community.hacc.mil/s/contact?RequestTopic=DAPPS"
                   target="_blank"
                 >      
@@ -99,7 +99,7 @@
                   :href="reportIssueLink"
                   id="ReportIssueButton"
                    target="_blank"
-                  class="secondary mt-4 width-100" 
+                  class="secondary mt-4 width-100 _text-decoration-none" 
                 >
                   Report a bug or technical issue
                   <ATATSVGIcon
