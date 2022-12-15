@@ -282,7 +282,8 @@ export interface DOWClassificationInstance {
   classificationLevelSysId: string;
   anticipatedNeedUsage: string;
   entireDuration: string;
-  selectedPeriods?: DOWPoP[];
+  // selectedPeriods?: DOWPoP[];
+  selectedPeriods?: string[];
   labelLong?: string;
   labelShort?: string;
 }

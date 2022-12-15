@@ -77,6 +77,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
 export interface ClassificationLevelDTO extends BaseTableDTO {
   impact_level: string;
   classification: string;
+  classification_level?: ReferenceColumn | string;
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {

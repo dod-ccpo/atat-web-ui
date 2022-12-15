@@ -129,15 +129,8 @@ const saveOrUpdateClassificationInstance =
     let objSysId = "";
 
     if(classificationInstance.selectedPeriods){
-      const selectedPeriods: string[] = [];
-
-      classificationInstance.selectedPeriods.forEach(item => {
-        selectedPeriods.push(item.sysId);
-      });
-
-      tempObject.selected_periods = selectedPeriods.join(",") || "";
+      tempObject.selected_periods = classificationInstance.selectedPeriods.join(",") || "";
     }
-
     const classificationLevel =
       typeof classificationInstance.classificationLevelSysId === "object"
         ? (classificationInstance.classificationLevelSysId as ReferenceColumn).value as string
@@ -306,7 +299,7 @@ const mapClassificationInstanceFromDTO = (
   });
   const labelLong = impactLevel ? buildClassificationLabel(impactLevel, "long") : "";
   const labelShort = impactLevel ? buildClassificationLabel(impactLevel, "short") : "";
-  const selectedPeriods: DOWPoP[] = [];
+  const selectedPeriods: string[] = [];
   if(value.selected_periods !== "") {
     const periods = value.selected_periods.split(",");
     periods.forEach(period => {
@@ -314,13 +307,7 @@ const mapClassificationInstanceFromDTO = (
         return item.sys_id = period;
       });
       if(selectedPeriod){
-        const label = selectedPeriod.period_type === "Base"
-          ? "Base period"
-          : `Option period ${selectedPeriod.option_order}`;
-        selectedPeriods.push({
-          label: label,
-          sysId: selectedPeriod.sys_id as string
-        });
+        selectedPeriods.push(selectedPeriod.sys_id || "");
       }
         
     })

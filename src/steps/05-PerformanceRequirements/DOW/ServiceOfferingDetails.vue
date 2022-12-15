@@ -183,7 +183,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       const instance: DOWClassificationInstance = {
         sysId: "", // will be populated after saving
         impactLevel: obj.impact_level,
-        classificationLevelSysId: obj.sys_id || "",
+        classificationLevelSysId: (obj.classification_level as ReferenceColumn).value || "",
         anticipatedNeedUsage: "",
         entireDuration: "",
         selectedPeriods: [],
@@ -350,6 +350,10 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       this.savedData = [...this.classificationInstances];
       this.classificationInstances.forEach((instance) => {
         if (instance.classificationLevelSysId) {
+          if (typeof instance.classificationLevelSysId === "object") {
+            instance.classificationLevelSysId 
+              = (instance.classificationLevelSysId as ReferenceColumn).value || "";
+          }
           this.selectedHeaderLevelSysIds.push(instance.classificationLevelSysId);
         }
       });
