@@ -8,7 +8,7 @@
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              {{introText}}
+              {{introSentence}}
               Specify any categories that may apply to your acquisition below, and
               we’ll walk through each selection to get more details.
               <a
@@ -127,10 +127,8 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   private routeNames = routeNames
   private goToSummary = false;
 
-  public introText = `Through JWCC, you have the ability to procure many offerings for
-    Anything as a Service (XaaS) and Cloud Support Packages. Specify
-    any categories that may apply to your acquisition below, and we'll
-    walk through each selection to get more details.`;
+  public introSentence = `Through JWCC, you have the ability to procure many offerings for
+    Anything as a Service (XaaS) and Cloud Support Packages.`;
 
   public radioOptions: RadioButton[] = [
     {

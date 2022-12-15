@@ -102,7 +102,6 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
     this.periods = Periods.periods;
     const classifications = await ClassificationRequirements.getSelectedClassificationLevels()
     this.savedData = await ClassificationRequirements.getSelectedClassificationLevels()
-    console.log(this.anticipatedNeedsData)
     this.anticipatedNeedsData = classifications
       .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
     this.accordionClosed = new Array(this.anticipatedNeedsData.length).fill(0)
@@ -113,7 +112,6 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    console.log(this.currentData)
     return hasChanges(this.currentData, this.savedData);
   }
 
