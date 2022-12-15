@@ -279,14 +279,6 @@ export interface ContractTypeDTO extends BaseTableDTO {
   contract_type_justification: string;
 }
 
-export interface RequirementsCostEstimateDTO extends BaseTableDTO {
-    surge_capabilities?: string;
-    estimatedTaskOrderValue?: string;
-    feePercentage?: string;
-    feeCharged?: string;
-    surge_capacity?: string;
-}
-
 export interface RequiredServicesDTO extends BaseTableDTO {
   usage_description: string;
   applicable_classification_levels: string;
@@ -680,3 +672,56 @@ export interface UserDTO extends BaseTableDTO {
   user_name?: string;
   email?: string;
 }
+
+export interface EstimateOptionValueDTO {
+  option: SingleMultiple;
+  estimated_values: string[];
+}
+
+export interface TrainingEstimateDTO {
+  cost_estimate: "PER_PERSON" | "PER_CLASS" | "SUBSCRIPTION";
+  subscription_estimate: "ANNUAL" | "MONTHLY";
+  estimated_price: string;
+  estimate: EstimateOptionValueDTO;
+}
+
+export interface RequirementsCostEstimateDTO extends BaseTableDTO{
+  has_DOW_and_PoP: YesNo;
+  optimize_replicate: EstimateOptionValueDTO;
+  architectural_design_current_environment: EstimateOptionValueDTO;
+  architectural_design_performance_requirements: EstimateOptionValueDTO;
+  training: TrainingEstimateDTO[];
+  travel: EstimateOptionValueDTO;
+  surge_requirements: {
+    capabilities: YesNo;
+    capacity: number | null;
+  }
+  fee_specs: {
+    is_charged: YesNo;
+    percentage: number | null;
+  };
+  how_estimates_developed: {
+    tools_used: {
+      AWS: YesNo;
+      GOOGLE_CLOUD: YesNo;
+      MICROSOFT_AZURE: YesNo;
+      ORACLE_CLOUD: YesNo;
+      PREVIOUSLY_PAID_PRICES: YesNo;
+      OTHER: YesNo;
+      OTHER_TOOLS: string;
+    }
+    cost_estimate_description: string;
+    previous_cost_estimate_comparison:{
+      options: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
+      percentage: number | null;
+    };
+  }
+}
+
+/*export interface RequirementsCostEstimateDTO extends BaseTableDTO {
+  surge_capabilities?: string;
+  estimatedTaskOrderValue?: string;
+  feePercentage?: string;
+  feeCharged?: string;
+  surge_capacity?: string;
+}*/
