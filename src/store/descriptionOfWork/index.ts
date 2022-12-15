@@ -294,11 +294,17 @@ const saveOrUpdateOtherServiceOffering =
 const mapClassificationInstanceFromDTO = (
   value: ClassificationInstanceDTO
 ): DOWClassificationInstance => {
-  const impactLevel = ClassificationRequirements.classificationLevels.find((item) => {
-    return item.sys_id === value.sys_id;
+  const classificationLevel = ClassificationRequirements.classificationLevels.find((item) => {
+    const sysId = 
+      typeof value.classification_level === "object"
+        ? (value.classification_level as ReferenceColumn).value as string
+        : value.classification_level as string;
+    return item.sys_id === sysId
   });
-  const labelLong = impactLevel ? buildClassificationLabel(impactLevel, "long") : "";
-  const labelShort = impactLevel ? buildClassificationLabel(impactLevel, "short") : "";
+  const labelLong = classificationLevel 
+    ? buildClassificationLabel(classificationLevel, "long") : "";
+  const labelShort = classificationLevel 
+    ? buildClassificationLabel(classificationLevel, "short") : "";
   const selectedPeriods: string[] = [];
   if(value.selected_periods !== "") {
     const periods = value.selected_periods.split(",");
@@ -317,7 +323,7 @@ const mapClassificationInstanceFromDTO = (
     classificationLevelSysId: value.classification_level,
     entireDuration: value.need_for_entire_task_order_duration,
     selectedPeriods: selectedPeriods,
-    impactLevel: impactLevel?.impact_level || "",
+    impactLevel: classificationLevel?.impact_level || "",
     labelLong: labelLong,
     labelShort: labelShort
   };

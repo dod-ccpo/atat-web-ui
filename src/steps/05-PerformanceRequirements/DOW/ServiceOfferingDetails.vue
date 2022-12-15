@@ -211,7 +211,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       }
     }, this);
     // remove options not in new selected options array
-    const instancesToShowClone = this.headerCheckboxSelectedSysIds;
+    const instancesToShowClone = _.cloneDeep(this.headerCheckboxSelectedSysIds);
     instancesToShowClone.forEach((classificationLevelSysId) => {
       if (!newSysIds.includes(classificationLevelSysId)) {
         const i = this.headerCheckboxSelectedSysIds.findIndex(
