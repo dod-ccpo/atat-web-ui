@@ -289,6 +289,7 @@ export interface DOWClassificationInstance {
 
 export interface DOWServiceOffering {
   name: string;
+  acquisitionPackageSysId: string;
   otherOfferingName?: string;
   "sys_id": string; //service offering sys id
   serviceId: string; // id of the service
@@ -380,11 +381,14 @@ export interface OtherServiceOfferingData {
   personnelOnsiteAccess?: string;
   tsContractorClearanceType?: string;
   // eslint-disable-next-line max-len
-  trainingType?: "" | "ON_SITE_CONUS" | "ON_SITE_OCONUS" | "VIRTUAL_INSTRUCTOR_LED" | "VIRTUAL_SELF_LED" | "NO_PREFERENCE";
+  trainingType?: "" | "ONSITE_INSTRUCTOR_CONUS" | "ONSITE_INSTRUCTOR_OCONUS" | "VIRTUAL_INSTRUCTOR" | "VIRTUAL_SELF_LED" | "NO_PREFERENCE" | string;
   trainingLocation?: string;
   trainingTimeZone?: string;
   trainingPersonnel?: string;
-  trainingFacilityType?: "" | "GOVT" | "NON_GOVT";
+  trainingFacilityType?: "" | "GOVERNMENT_FACILITY" | "NON_GOVERNMENT_FACILITY" | string;
+  serviceType?: string;
+  canTrainInUnclassEnv?: string;
+  trainingRequirementTitle?: string;
 }
 
 export interface OtherServiceSummaryTableData {

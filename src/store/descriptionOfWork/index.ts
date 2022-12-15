@@ -68,9 +68,10 @@ const mapDOWServiceOfferingToServiceProxy=
 (dowServiceOffering: DOWServiceOffering, groupIndex: number, 
   serviceIndex: number): ServiceOfferingProxy=> {
 
-  
+  const acquisitionPackageId = AcquisitionPackage.packageId;
       
   const serviceOffering: SelectedServiceOfferingDTO = {
+    acquisition_package: acquisitionPackageId,
     service_offering : dowServiceOffering['sys_id'] || "",
     classification_instances: "",
     other_service_offering: dowServiceOffering.otherOfferingName || "",
@@ -128,7 +129,8 @@ const saveOrUpdateOtherServiceOffering =
     tempObject.licensing = serviceOffering.licensing;
     tempObject.memory_amount = serviceOffering.memoryAmount;
     tempObject.memory_unit = serviceOffering.memoryUnit || "GB";
-    tempObject.need_for_entire_task_order_duration = serviceOffering.entireDuration;
+    /* TODO: PLZ HAVE PLATFORM TEAM FIX CASE TO UPPERCASE TO REMOVE THIS HACK!!! */
+    tempObject.need_for_entire_task_order_duration = serviceOffering.entireDuration.toLowerCase();
     tempObject.number_of_instances = serviceOffering.numberOfInstancesNeeded;
     tempObject.number_of_vcpus = serviceOffering.numberOfVCPUs;
     tempObject.operating_system = serviceOffering.operatingSystem;
@@ -210,7 +212,17 @@ const saveOrUpdateOtherServiceOffering =
     case "help_desk_services":
     case "documentation_support":
     case "general_cloud_support":
+    case "training":
+      tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
       tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
+      tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
+      tempObject.service_type = offeringType.toUpperCase();
+      tempObject.training_facility_type = serviceOffering.trainingFacilityType;
+      tempObject.training_format = serviceOffering.trainingType;
+      tempObject.training_location = serviceOffering.trainingLocation;
+      tempObject.training_requirement_title = serviceOffering.trainingRequirementTitle;
+      tempObject.training_time_zone = serviceOffering.trainingTimeZone;
+      tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
       if(tempObject.sys_id){
         await api.cloudSupportEnvironmentInstanceTable.update(
           tempObject.sys_id,
@@ -304,7 +316,8 @@ const mapOtherOfferingFromDTO = (
     requirementTitle: value.instance_name,
     licensing: value.licensing,
     memoryAmount: value.memory_amount,
-    entireDuration: value.need_for_entire_task_order_duration,
+    /* TODO: PLZ HAVE PLATFORM TEAM FIX CASE TO UPPERCASE TO REMOVE THIS HACK!!! MKAY? */
+    entireDuration: value.need_for_entire_task_order_duration.toUpperCase(),
     numberOfInstancesNeeded: value.number_of_instances,
     numberOfVCPUs: value.number_of_vcpus,
     operatingSystem: value.operating_system,
@@ -331,8 +344,16 @@ const mapOtherOfferingFromDTO = (
     result.networkPerformance = value.network_performance;
   }
 
-  if("personnel_onsite_access" in value){
+  if("service_type" in value){
+    result.canTrainInUnclassEnv = value.can_train_in_unclass_env;
     result.personnelOnsiteAccess = value.personnel_onsite_access;
+    result.trainingPersonnel = value.personnel_requiring_training;
+    result.serviceType = value.service_type;
+    result.trainingFacilityType = value.training_facility_type;
+    result.trainingType = value.training_format;
+    result.trainingLocation = value.training_location;
+    result.trainingRequirementTitle = value.training_requirement_title;
+    result.trainingTimeZone = value.training_time_zone;
     result.tsContractorClearanceType = value.ts_contractor_clearance_type;
   }
 
@@ -446,17 +467,17 @@ export const trainingTypeOptions: RadioButton[] = [
   {
     id: "OnSiteCONUS",
     label: "On-site instructor-led within the Continental United States (CONUS)",
-    value: "ON_SITE_CONUS", 
+    value: "ONSITE_INSTRUCTOR_CONUS", 
   },
   {
     id: "OnSiteOCONUS",
     label: "On-site instructor-led outside of the Continental United States (OCONUS)",
-    value: "ON_SITE_OCONUS", 
+    value: "ONSITE_INSTRUCTOR_OCONUS", 
   },
   {
     id: "VirturalInstructorLed",
     label: "Virtual instructor-led",
-    value: "VIRTUAL_INSTRUCTOR_LED", 
+    value: "VIRTUAL_INSTRUCTOR", 
   },
   {
     id: "VirtualSelfLed",
@@ -566,6 +587,32 @@ export class DescriptionOfWorkStore extends VuexModule {
         item as EnvironmentInstanceDTO
       );
       this.doSetOtherOfferingData(offeringData);
+    });
+
+    const supportItems = await api.cloudSupportEnvironmentInstanceTable.getQuery(requestConfig);
+    [
+      "advisory_assistance",
+      "help_desk_services",
+      "documentation_support",
+      "general_cloud_support",
+      "training",
+    ].forEach(groupId => {
+      const tempItems = supportItems.filter(item => item.service_type === groupId.toUpperCase());
+
+      if(tempItems.length > 0){
+        this.addOfferingGroup(groupId.toUpperCase());
+        this.setCurrentOfferingGroupId(groupId.toUpperCase());
+      }
+        
+
+      tempItems.forEach((item,index) => {
+        const offeringData = mapOtherOfferingFromDTO(
+          index + 1,
+          item as CloudSupportEnvironmentInstanceDTO
+        );
+        // debugger;
+        this.doSetOtherOfferingData(offeringData);
+      });
     });
 
     this.setCurrentOfferingGroupId("");
@@ -991,6 +1038,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     const groupIndex 
       = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
+
+    const acquisitionPackageId = AcquisitionPackage.packageId;
     if (groupIndex >= 0) {
       if (selectedOfferingSysIds.length === 0) {
         this.DOWObject[groupIndex].serviceOfferings = [];
@@ -1014,7 +1063,11 @@ export class DescriptionOfWorkStore extends VuexModule {
                 description,
                 sequence,
               }
-              currentOfferings.push({...offering,serviceId : ""});
+              currentOfferings.push({
+                ...offering,
+                acquisitionPackageSysId: acquisitionPackageId,
+                serviceId : ""
+              });
             }
           }
         });
@@ -1195,6 +1248,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         && otherOfferingObj.serviceOfferingGroupId
       ) {
         const groupId: string = this.currentGroupId.toLowerCase();
+        // debugger;
         if (!Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")) {
           otherOfferingObj.otherOfferingData = [];
           otherOfferingObj.otherOfferingData?.push(otherOfferingData);
@@ -1454,6 +1508,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     const serviceOfferings: DOWServiceOffering[] = [];
     const dowOfferings = this.serviceOfferingsForGroup;
 
+    const acquisitionPackageId = AcquisitionPackage.packageId;
+
     serviceOfferingsForGroup.forEach((obj) => {
       
       //does the saved offering exist in DOW store?
@@ -1462,6 +1518,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       const offering = savedInDown ? savedInDown :{
         name: obj.name,
         "sys_id": obj.sys_id || "",
+        acquisitionPackageSysId: acquisitionPackageId,
         sequence: obj.sequence,
         description: obj.description,
         serviceId: "",
@@ -1478,6 +1535,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       const otherOffering: DOWServiceOffering = {
         name: "Other",
         sys_id: "Other",
+        acquisitionPackageSysId: acquisitionPackageId,
         sequence: "99",
         description: "",
         serviceId: "",
