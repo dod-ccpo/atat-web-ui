@@ -29,25 +29,33 @@
       >
         <v-expansion-panel expand>
           <v-expansion-panel-header>
-            <div class="d-flex justify-space-between">
+            <div class="d-flex">
               <div class="h4 _expansion-panel-header">
                 {{classification.labelShort}}
-                <span class="offering-number">
-                  {{classification.offerings.length}}
-                </span>
+              </div>
+              <div class="offering-number font-size-10">
+                {{classification.offerings.length}}
               </div>
             </div>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            <div class="_expansion-panel-content-header">
-              <div>
-                Service Name and Configuration Summary
+            <div v-if="classification.offerings.length > 0">
+              <div class="_expansion-panel-content-header">
+                <div>
+                  Service Name and Configuration Summary
+                </div>
+                <div>
+                  Estimated price per unit
+                </div>
               </div>
-              <div>
-                Estimated price per unit
-              </div>
-            </div>
 
+                <Card_Requirement
+                  v-for="(requirement,idx) in classification.offerings"
+                  :cardData="requirement"
+                  :key="idx"
+                  :index="idx + 1"
+                />
+            </div>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -68,8 +76,10 @@ import { buildClassificationLabel } from "@/helpers";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { SelectedClassificationLevelDTO } from "@/api/models";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import Card_Requirement from "@/steps/10-FinancialDetails/IGCE/components/Card_Requirement.vue";
 
 @Component({
+  components: {Card_Requirement}
 })
 export default class GatherPriceEstimates extends Vue {
 
@@ -84,6 +94,11 @@ export default class GatherPriceEstimates extends Vue {
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
   }
+  public getFormattedNames(value: string): string {
+    let avlOfferings = DescriptionOfWork.serviceOfferingGroups;
+    const filtered = avlOfferings.filter(obj => obj.value == value);
+    return filtered.length > 0 ? filtered[0].label : "";
+  };
 
   private async loadOnEnter(): Promise<void> {
     const classifications = await ClassificationRequirements.getSelectedClassificationLevels()
@@ -106,33 +121,34 @@ export default class GatherPriceEstimates extends Vue {
 
     const dowObject = DescriptionOfWork.DOWObject
     dowObject.forEach((service)=>{
-      const classificationOfferings:{
-        IGCE_title:string,
-        IGCE_description:string,
-        monthly_price:number
-      } = {
-        IGCE_title:"",
-        IGCE_description:"",
-        monthly_price:0
-      }
-      const serviceName = service.serviceOfferingGroupId
+      debugger
+      const serviceName = this.getFormattedNames(service.serviceOfferingGroupId)
       if(service.otherOfferingData){
         debugger
         service.otherOfferingData.forEach((offering)=>{
           if(offering.classificationLevel){
             this.instanceData.forEach((instance)=>{
               if(instance.sysId === offering.classificationLevel){
+                const classificationOfferings:{
+                  IGCE_title:string,
+                  IGCE_description:string,
+                  monthly_price:number
+                } = {
+                  IGCE_title:"",
+                  IGCE_description:"",
+                  monthly_price:0
+                }
                 if(offering.instanceNumber){
                   classificationOfferings.IGCE_title =
                     `${serviceName} - instance #${offering.instanceNumber}`;
                 }else{
                   classificationOfferings.IGCE_title = serviceName;
                 }
-                const formData = `${offering.numberOfInstancesNeeded} x
-                (${offering.environmentType}, virtual machines,
-                ${offering.operatingSystemAndLicensing}, ${offering.numberOfVCPUs}
-                 vCPUs, ${offering.memory} GB RAM,
-                  ${offering.storageType}: ${offering.storageAmount} GB, general performance)`
+                const formData = offering.numberOfInstancesNeeded + " x ("
+                  + offering.environmentType
+                  + ", virtual machines, " + offering.operatingSystemAndLicensing+", "
+                  + offering.numberOfVCPUs + " vCPUs, " + offering.memory + " GB RAM,"
+                  + offering.storageType+": "+ offering.storageAmount+" GB, general performance)"
                 classificationOfferings.IGCE_description = formData || offering.anticipatedNeedUsage
                 instance.offerings.push(classificationOfferings)
               }
@@ -144,7 +160,16 @@ export default class GatherPriceEstimates extends Vue {
         service.serviceOfferings.forEach((offering)=>{
           offering.classificationInstances?.forEach((classificationInstance)=>{
             this.instanceData.forEach((instance)=>{
-              if(instance.sysID === classificationInstance.classificationLevelSysId){
+              if(instance.sysId === classificationInstance.classificationLevelSysId){
+                const classificationOfferings:{
+                  IGCE_title:string,
+                  IGCE_description:string,
+                  monthly_price:number
+                } = {
+                  IGCE_title:"",
+                  IGCE_description:"",
+                  monthly_price:0
+                }
                 classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
                 classificationOfferings.IGCE_description =
                   classificationInstance.anticipatedNeedUsage
@@ -155,9 +180,6 @@ export default class GatherPriceEstimates extends Vue {
         })
       }
     })
-    console.log(dowObject)
-    console.log(this.selectedClassifications)
-    console.log(this.instanceData)
   }
 
   public async mounted(): Promise<void> {

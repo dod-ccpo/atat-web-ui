@@ -648,6 +648,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
     requirementTitle: "",
+    anticipatedNeedUsage:"",
   }
 
   otherOfferingInstancesTouched: Record<string, number[]> = {};

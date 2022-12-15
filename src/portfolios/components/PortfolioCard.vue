@@ -1,4 +1,4 @@
-ç<template>
+<template>
   <v-card
     class="_summary-card-wrapper"
     :class="{ '_first': index === 0, '_last': isLastCard }"
