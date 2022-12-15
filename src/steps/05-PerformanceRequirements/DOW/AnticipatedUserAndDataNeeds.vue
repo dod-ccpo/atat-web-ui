@@ -77,6 +77,7 @@ import Periods from "@/store/periods";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import classificationRequirements from "@/store/classificationRequirements";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -101,7 +102,7 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   private async loadOnEnter(): Promise<void> {
     this.periods = Periods.periods;
     const classifications = await ClassificationRequirements.getSelectedClassificationLevels()
-    this.savedData = await ClassificationRequirements.getSelectedClassificationLevels()
+    this.savedData = _.cloneDeep(classifications);
     this.anticipatedNeedsData = classifications
       .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
     this.accordionClosed = new Array(this.anticipatedNeedsData.length).fill(0)
@@ -123,9 +124,9 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-        this.currentData.forEach(classification => {
-          this.updateSnowSelected(classification)
-        })
+        for(const classification of this.currentData){
+          await this.updateSnowSelected(classification);
+        }
       }
     } catch (error) {
       console.log(error);
