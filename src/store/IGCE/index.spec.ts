@@ -10,7 +10,7 @@ import {api} from "@/api";
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe("Organization Store", () => {
+describe("IGCE Store", () => {
   let igceStore: IGCEStore;
 
   const requirementsCostEstimate: RequirementsCostEstimateDTO = {
@@ -65,18 +65,10 @@ describe("Organization Store", () => {
     describe("set functions", () => {
       it('Test loadRequirementsCostEstimate()- should load req cost estimate from api',
         async () => {
-          jest.spyOn(api.requirementsCostEstimateTable, "retrieve");
-          await igceStore.loadRequirementsCostEstimateDataById("test_id");
-          expect(api.requirementsCostEstimateTable.retrieve).toHaveBeenCalled();
-        })
-
-      it('Test loadRequirementsCostEstimate()- should load req cost estimate from api',
-        async () => {
-          jest.spyOn(api.requirementsCostEstimateTable, "retrieve").mockReturnValue(
-            Promise.resolve(requirementsCostEstimate)
-          )
-          await igceStore.setRequirementsCostEstimate(requirementsCostEstimate);
-          await igceStore.getRequirementsCostEstimate();
+          jest.spyOn(api.requirementsCostEstimateTable, "retrieve").mockImplementation( () => {
+            return Promise.resolve(requirementsCostEstimate)
+          })
+          await igceStore.loadRequirementsCostEstimateDataById("some_sys_id");
           expect(api.requirementsCostEstimateTable.retrieve).toHaveBeenCalled();
         })
 

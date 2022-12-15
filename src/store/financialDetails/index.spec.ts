@@ -5,10 +5,8 @@ import {getModule} from "vuex-module-decorators";
 import {FinancialDetailsStore} from "@/store/financialDetails/index";
 import {
   FundingRequestFSFormDTO,
-  FundingRequestMIPRFormDTO,
-  RequirementsCostEstimateDTO
+  FundingRequestMIPRFormDTO
 } from "@/api/models";
-import Vue from "vue";
 import {api} from "@/api";
 jest.mock('@/store/helpers')
 
@@ -18,7 +16,6 @@ localVue.use(Vuex);
 describe("FinancialDetails Store",
   () => {
     let financialDetailsStore: FinancialDetailsStore;
-    let requirementsCostEstimateDTO: RequirementsCostEstimateDTO;
     let fundingRequestFSFormDTO: FundingRequestFSFormDTO
     let fundingRequestMIPRFormDTO: FundingRequestMIPRFormDTO
 
@@ -55,26 +52,6 @@ describe("FinancialDetails Store",
       jest.spyOn(financialDetailsStore, "initialize");
       await financialDetailsStore.ensureInitialized();
       expect(financialDetailsStore.initialize).toHaveBeenCalled();
-    })
-
-    it('Test setStoreData()- should set appropriate session data to store', async () => {
-      jest.spyOn(Vue, "set");
-      financialDetailsStore.setStoreData(
-        JSON.stringify(requirementsCostEstimateDTO));
-      await expect(Vue.set).toHaveBeenCalled();
-    })
-
-    it('Test setStoreData()- should catch the error', async () => {
-      jest.spyOn(JSON, "parse").mockImplementation(() => {
-        throw Error;
-      })
-      jest.spyOn(Vue, "set");
-      try {
-        financialDetailsStore.setStoreData(
-          JSON.stringify(requirementsCostEstimateDTO));
-      } catch {
-        await expect(Vue.set).not.toHaveBeenCalled();
-      }
     })
     
     it('Test loadFundingRequestFSForm()- should not load requirements' +
@@ -133,32 +110,5 @@ describe("FinancialDetails Store",
       } catch {
         await expect(financialDetailsStore.setFundingRequestMIPRForm).not.toHaveBeenCalled();
       }
-    })
-
-    it('Test saveRequirementsCostEstimate()- should create the requirements' +
-      'cost estimate record if the sys_id is null in the store', async () => {
-      jest.spyOn(api.requirementsCostEstimateTable, "create").mockReturnValue(
-        Promise.resolve(requirementsCostEstimateDTO)
-      );
-      jest.spyOn(api.requirementsCostEstimateTable, "update").mockReturnValue(
-        Promise.resolve(requirementsCostEstimateDTO)
-      );
-      await financialDetailsStore.saveRequirementsCostEstimate(requirementsCostEstimateDTO);
-      expect(api.requirementsCostEstimateTable.create).toHaveBeenCalled();
-      expect(api.requirementsCostEstimateTable.update).not.toHaveBeenCalled();
-    })
-
-    it('Test saveRequirementsCostEstimate()- should update the requirements' +
-      'cost estimate record if the sys_id is not null in the store', async () => {
-      requirementsCostEstimateDTO.sys_id = "12" // this should force the update
-      jest.spyOn(api.requirementsCostEstimateTable, "create").mockReturnValue(
-        Promise.resolve(requirementsCostEstimateDTO)
-      );
-      jest.spyOn(api.requirementsCostEstimateTable, "update").mockReturnValue(
-        Promise.resolve(requirementsCostEstimateDTO)
-      );
-      await financialDetailsStore.saveRequirementsCostEstimate(requirementsCostEstimateDTO);
-      expect(api.requirementsCostEstimateTable.create).not.toHaveBeenCalled();
-      expect(api.requirementsCostEstimateTable.update).toHaveBeenCalled();
     })
   })

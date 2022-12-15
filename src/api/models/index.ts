@@ -77,6 +77,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
 export interface ClassificationLevelDTO extends BaseTableDTO {
   impact_level: string;
   classification: string;
+  classification_level?: ReferenceColumn | string;
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
@@ -386,9 +387,11 @@ export interface DisplayColumn {
 }
 
 export interface SelectedServiceOfferingDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  architectural_design_requirement?: ReferenceColumn | string;
   classification_instances: string;
   other_service_offering: string;
-  service_offering: string;
+  service_offering: ReferenceColumn | string;
 }
 
 export interface ClassificationInstanceDTO extends BaseTableDTO {
@@ -540,7 +543,15 @@ export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
 export type StorageEnvironmentInstanceDTO = EnvironmentInstanceDTO
 
 export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  can_train_in_unclass_env?: string;
   personnel_onsite_access?: string;
+  personnel_requiring_training?: string;
+  service_type?: string;
+  training_facility_type?: string;
+  training_format?: string;
+  training_location?: string;
+  training_requirement_title?: string;
+  training_time_zone?: string;
   ts_contractor_clearance_type?: string;
 }
 
