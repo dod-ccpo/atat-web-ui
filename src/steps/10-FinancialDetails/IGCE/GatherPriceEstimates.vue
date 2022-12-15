@@ -67,7 +67,7 @@ import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
-import { SlideoutPanelContent } from "../../../../types/Global";
+import { OtherServiceOfferingData, SlideoutPanelContent } from "../../../../types/Global";
 // eslint-disable-next-line camelcase
 /* eslint-disable camelcase */
 import SlideOut_GatherPricesEstimates
@@ -99,6 +99,34 @@ export default class GatherPriceEstimates extends Vue {
     const filtered = avlOfferings.filter(obj => obj.value == value);
     return filtered.length > 0 ? filtered[0].label : "";
   };
+
+  public createFormData(serviceName: string, service: OtherServiceOfferingData) : string {
+    switch (serviceName) {
+    case "Compute":
+      return service.numberOfInstancesNeeded + " x ("
+        + service.environmentType
+        + ", "+ service.operatingEnvironment?.toLowerCase()
+        + service.operatingSystemAndLicensing+", "
+        + service.numberOfVCPUs + " vCPUs, " + service.memoryAmount + " GB RAM, "
+        + service.storageType?.toLowerCase()+" storage: "+ service.storageAmount+" "
+        +service.storageUnit+", " + service.performanceTier+ ")"
+    case "Database":
+      return service.numberOfInstancesNeeded + " x ("
+          + service.databaseType
+          + ", "+ service.operatingSystemAndLicensing +", " + service.databaseLicensing+", "
+          + service.numberOfVCPUs + " vCPUs, " + service.memoryAmount + " GB RAM, "
+          + service.storageType?.toLowerCase()+" storage: "+ service.storageAmount+" "
+          +service.storageUnit+")"
+    case "Storage":
+      return service.numberOfInstancesNeeded + " x ("
+        + service.storageType?.toLowerCase()+" storage: "+ service.storageAmount+" "
+        +service.storageUnit+")"
+    default:
+      return service.usageDescription ||
+        service.anticipatedNeedUsage||
+        service.descriptionOfNeed||""
+    }
+  }
 
   private async loadOnEnter(): Promise<void> {
     const classifications = await ClassificationRequirements.getSelectedClassificationLevels()
@@ -144,12 +172,9 @@ export default class GatherPriceEstimates extends Vue {
                 }else{
                   classificationOfferings.IGCE_title = serviceName;
                 }
-                const formData = offering.numberOfInstancesNeeded + " x ("
-                  + offering.environmentType
-                  + ", virtual machines, " + offering.operatingSystemAndLicensing+", "
-                  + offering.numberOfVCPUs + " vCPUs, " + offering.memory + " GB RAM,"
-                  + offering.storageType+": "+ offering.storageAmount+" GB, general performance)"
-                classificationOfferings.IGCE_description = formData || offering.anticipatedNeedUsage
+
+                const formData = this.createFormData(serviceName,offering)
+                classificationOfferings.IGCE_description = formData || offering.usageDescription||""
                 instance.offerings.push(classificationOfferings)
               }
             })

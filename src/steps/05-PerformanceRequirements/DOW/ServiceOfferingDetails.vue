@@ -5,7 +5,7 @@
         <v-row>
           <v-col class="col-12">
             <h1 class="page-header">
-              Next, we’ll gather your requirements for {{ serviceOfferingName }}
+              Now we’ll gather your requirements for {{ serviceOfferingName }}
             </h1>
             <div class="copy-max-width">
 

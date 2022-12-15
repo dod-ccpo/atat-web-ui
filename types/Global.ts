@@ -346,38 +346,62 @@ export interface lineChartData {
 }
 
 export interface OtherServiceOfferingData {
-  instanceNumber: number;
-  environmentType: string;
+  acquisitionPackageSysId?: string;
+  anticipatedNeedUsage?: string;
   classificationLevel?: string;
-  deployedRegions: string[];
-  deployedRegionsOther: string;
+  databaseLicensing?: string;
+  databaseType?: string;
+  databaseTypeOther?: string;
+  deployedRegions?: string[];
+  deployedRegionsOther?: string;
   descriptionOfNeed: string;
   entireDuration: string;
+  environmentType?: string;
+  instanceNumber: number;
+  licensing?: string;
+  memoryAmount?: string;
+  memoryUnit?: StorageUnit;
+  networkPerformance?: string;
+  numberOfInstancesNeeded?: string;
+  numberOfVCPUs?: string;
+  operatingEnvironment?: string;
+  operatingSystem?: string;
+  operatingSystemAndLicensing?: string;
+  performanceTier?: string;
+  performanceTierOther?: string;
   periodsNeeded: string[];
-  operatingSystemAndLicensing: string;
-  numberOfVCPUs: string;
-  memory: string;
-  storageType: string;
-  storageAmount: string;
-  performanceTier: string;
-  performanceTierOther: string;
-  numberOfInstancesNeeded: string;
+  personnelOnsiteAccess?: string;
+  processorSpeed?: string;
+  region?: string;
   requirementTitle?: string;
-  anticipatedNeedUsage:string;
+  storageAmount?: string;
+  storageType?: string;
+  storageUnit?: StorageUnit;
+  sysId?: string;
+  trainingFacilityType?: "" | "GOVT" | "NON_GOVT";
+  trainingLocation?: string;
+  trainingPersonnel?: string;
+  trainingTimeZone?: string;
+  // eslint-disable-next-line max-len
+  trainingType?: "" | "ON_SITE_CONUS" | "ON_SITE_OCONUS" | "VIRTUAL_INSTRUCTOR_LED" | "VIRTUAL_SELF_LED" | "NO_PREFERENCE";
+  tsContractorClearanceType?: string;
+  usageDescription?: string;
 }
 
 export interface OtherServiceSummaryTableData {
   instanceNumber: number;
   typeOrTitle?: string;
-  location?: string;
+  classification?: string;
   qty?: string;
   vCPU?: string;
   memory?: string;
-  storage?: string;
-  classification?: string;
+  storageAmount?: string;
+  storageType?: string;
   performance?: string;
   requirementTitle?: string;
   duration?: string;
+  personnelOnsiteAccess?: string;
+  trainingType?: string;
 }
 
 export interface EnvInstanceSummaryTableData {
