@@ -140,8 +140,8 @@ const saveOrUpdateClassificationInstance =
 
     const classificationLevel =
       typeof classificationInstance.classificationLevelSysId === "object"
-      ? (classificationInstance.classificationLevelSysId as ReferenceColumn).value as string
-      : classificationInstance.classificationLevelSysId as string;
+        ? (classificationInstance.classificationLevelSysId as ReferenceColumn).value as string
+        : classificationInstance.classificationLevelSysId as string;
 
     tempObject.classification_level = classificationLevel;
     tempObject.usage_description = classificationInstance.anticipatedNeedUsage;
