@@ -138,7 +138,12 @@ const saveOrUpdateClassificationInstance =
       tempObject.selected_periods = selectedPeriods.join(",") || "";
     }
 
-    tempObject.classification_level = classificationInstance.classificationLevelSysId;
+    const classificationLevel =
+      typeof classificationInstance.classificationLevelSysId === "object"
+      ? (classificationInstance.classificationLevelSysId as ReferenceColumn).value as string
+      : classificationInstance.classificationLevelSysId as string;
+
+    tempObject.classification_level = classificationLevel;
     tempObject.usage_description = classificationInstance.anticipatedNeedUsage;
     tempObject.need_for_entire_task_order_duration = classificationInstance.entireDuration;
 
