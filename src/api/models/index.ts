@@ -395,9 +395,10 @@ export interface DisplayColumn {
 
 export interface SelectedServiceOfferingDTO extends BaseTableDTO {
   acquisition_package: ReferenceColumn | string;
+  architectural_design_requirement?: ReferenceColumn | string;
   classification_instances: string;
   other_service_offering: string;
-  service_offering: string;
+  service_offering: ReferenceColumn | string;
 }
 
 export interface ClassificationInstanceDTO extends BaseTableDTO {

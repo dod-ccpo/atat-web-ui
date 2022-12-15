@@ -115,6 +115,7 @@ import Periods from "@/store/periods";
 import {
   AcquisitionPackageDTO,
   ClassificationLevelDTO,
+  ReferenceColumn,
   SelectedClassificationLevelDTO
 } from "@/api/models";
 import { 
@@ -323,7 +324,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if(this.selectedClassificationLevelList) {
       this.selectedClassificationLevelList.forEach((val) => {
-        this.modalSelectedOptions.push(val.classification_level.value || "")
+        this.modalSelectedOptions.push((val.classification_level as ReferenceColumn).value || "")
       });
     }
     // set up header checkbox items and list of sysIds for available classification levels
@@ -393,10 +394,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       });
 
       if (this.hasChanged()) {
-        // save to store
         await DescriptionOfWork.setOfferingDetails(this.instancesFormData);
-        //save to backend
-        await DescriptionOfWork.saveUserSelectedServices();
       }
     } catch (error) {
       console.log(error);

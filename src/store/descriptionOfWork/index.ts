@@ -13,7 +13,8 @@ import {
   CloudSupportEnvironmentInstanceDTO, 
   ComputeEnvironmentInstanceDTO, 
   DatabaseEnvironmentInstanceDTO, 
-  EnvironmentInstanceDTO, 
+  EnvironmentInstanceDTO,  
+  ReferenceColumn,  
   SelectedServiceOfferingDTO, 
   ServiceOfferingDTO, 
   StorageEnvironmentInstanceDTO, 
@@ -113,6 +114,106 @@ const mapDOWServiceOfferingToServiceProxy=
   }
 
 }
+
+const saveOrUpdateSelectedServiceOffering = 
+  async (
+    selectedServiceOffering: DOWServiceOffering,
+    serviceOfferingId: string
+  ):Promise<string> => {
+    const tempObject: any = {};
+    let objSysId = "";
+
+    const classificationInstances: string[] = [];
+
+    if(selectedServiceOffering.classificationInstances &&
+      selectedServiceOffering.classificationInstances.length > 0){
+
+      if(selectedServiceOffering.classificationInstances.length > 1) {
+        selectedServiceOffering.classificationInstances.forEach(item => {
+          const tempId = typeof item.classificationLevelSysId === "object"
+            ? (item.classificationLevelSysId as ReferenceColumn).value as string
+            : item.classificationLevelSysId;
+
+          classificationInstances.push(tempId);
+        })
+      } else {
+        const item = selectedServiceOffering.classificationInstances[0];
+        const tempId = typeof item.classificationLevelSysId === "object"
+          ? (item.classificationLevelSysId as ReferenceColumn).value as string
+          : item.classificationLevelSysId;
+
+        classificationInstances.push(tempId);
+      }
+    }
+
+    //TODO: set this to an actual value
+    tempObject.architectural_design_requirement = "";
+
+    tempObject.classification_instances = classificationInstances.join(",") || "";
+    tempObject.acquisition_package = selectedServiceOffering.acquisitionPackageSysId;
+    tempObject.other_service_offering = selectedServiceOffering.otherOfferingName;
+    tempObject.service_offering = serviceOfferingId;
+
+    if(selectedServiceOffering.sys_id)
+      tempObject.sys_id = selectedServiceOffering.sys_id;
+
+
+    if(tempObject.sys_id){
+      await api.selectedServiceOfferingTable.update(
+        tempObject.sys_id,
+        tempObject
+      );
+      objSysId = tempObject.sys_id;
+    } else {
+      const savedObject = await api.selectedServiceOfferingTable.create(
+        tempObject
+      );
+      objSysId = savedObject.sys_id as string;
+    }
+
+    return objSysId;
+  };
+
+const saveOrUpdateClassificationInstance = 
+  async (
+    classificationInstance: DOWClassificationInstance
+  ):Promise<string> => {
+    const tempObject: any = {};
+    let objSysId = "";
+
+    if(classificationInstance.selectedPeriods){
+      const selectedPeriods: string[] = [];
+
+      classificationInstance.selectedPeriods.forEach(item => {
+        selectedPeriods.push(item.sysId);
+      });
+
+      tempObject.selected_periods = selectedPeriods.join(",") || "";
+    }
+
+    tempObject.classification_level = classificationInstance.classificationLevelSysId;
+    tempObject.usage_description = classificationInstance.anticipatedNeedUsage;
+    tempObject.need_for_entire_task_order_duration = classificationInstance.entireDuration;
+
+    if(classificationInstance.sysId)
+      tempObject.sys_id = classificationInstance.sysId;
+
+    if(tempObject.sys_id){
+      await api.classificationInstanceTable.update(
+        tempObject.sys_id,
+        tempObject as ClassificationInstanceDTO
+      );
+      objSysId = tempObject.sys_id;
+    } else {
+      const savedObject = await api.classificationInstanceTable.create(
+        tempObject as ClassificationInstanceDTO
+      );
+
+      objSysId = savedObject.sys_id as string;
+    }
+
+    return objSysId;
+  };
 
 const saveOrUpdateOtherServiceOffering = 
   async (
@@ -537,7 +638,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async loadDOWfromAcquistionPackageId(sysId: string): Promise<void> {
     const requestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_query: "^acquisition_packageIN" + sysId
+        sysparm_query: "^acquisition_packageIN" + sysId,
+        sysparm_display_value: "false"
       }
     };
 
@@ -614,6 +716,71 @@ export class DescriptionOfWorkStore extends VuexModule {
         this.doSetOtherOfferingData(offeringData);
       });
     });
+
+    const selectedOfferingsList = await api.selectedServiceOfferingTable.getQuery(requestConfig);
+    const serviceOfferingList = [
+      "developer_tools",
+      "applications",
+      "machine_learning",
+      "networking",
+      "security",
+      "edge_computing",
+      "iot"
+    ];
+    for(const groupId of serviceOfferingList){
+      const offeringsForGroup: ServiceOfferingDTO[] = this.serviceOfferings.filter(
+        item => item.service_offering_group === groupId.toUpperCase()
+      );
+
+      for(const group of offeringsForGroup){
+        const tempOfferingsList = selectedOfferingsList.filter(
+          item => (item.service_offering as ReferenceColumn).value === group.sys_id
+        );
+
+        if(tempOfferingsList.length > 0){
+          this.addOfferingGroup(group.service_offering_group);
+          this.setCurrentOfferingGroupId(group.service_offering_group);
+        }
+
+        for(const offering of tempOfferingsList){
+          const classificationInstances: DOWClassificationInstance[] = [];
+          const classificationInstanceIds = offering.classification_instances !== ""
+            ? offering.classification_instances.split(",") : [];
+          if(classificationInstanceIds.length > 0) {
+            let queryString = "sys_id=";
+            if(classificationInstanceIds.length > 1)
+              queryString += classificationInstanceIds.join("^ORsys_id=");
+            else
+              queryString += classificationInstanceIds[0];
+            const ciRequestConfig: AxiosRequestConfig = {
+              params: {
+                sysparm_query: queryString,
+                sysparm_display_value: "false"
+              }
+            };
+
+            const dtoObjects = await api.classificationInstanceTable.getQuery(ciRequestConfig);
+
+            for(const dtoItem of dtoObjects){
+              const tempItem = mapClassificationInstanceFromDTO(dtoItem);
+              classificationInstances.push(tempItem);
+            }
+          }
+
+          this.DOWObject[this.DOWObject.length - 1].serviceOfferings.push({
+            acquisitionPackageSysId: (
+              offering.acquisition_package as ReferenceColumn).value as string,
+            sys_id: offering.sys_id as string,
+            name: group.name as string,
+            otherOfferingName: offering.other_service_offering as string,
+            description: group.description,
+            sequence: group.sequence as string,
+            serviceId: group.service_offering_group as string,
+            classificationInstances: classificationInstances
+          });
+        }
+      }
+    }
 
     this.setCurrentOfferingGroupId("");
 
@@ -1028,76 +1195,70 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async setSelectedOfferings(
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): Promise<void> {
-    this.doSetSelectedOfferings({ selectedOfferingSysIds, otherValue });
+    this.doSetSelectedServiceOffering({ selectedOfferingSysIds, otherValue });
   }
 
   @Mutation
-  public doSetSelectedOfferings(
+  public doSetSelectedServiceOffering(
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): void {
+    const acquisitionPackageId = AcquisitionPackage.packageId;
     const groupIndex 
       = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
-    let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
-
-    const acquisitionPackageId = AcquisitionPackage.packageId;
+    
     if (groupIndex >= 0) {
+      let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
+
       if (selectedOfferingSysIds.length === 0) {
         this.DOWObject[groupIndex].serviceOfferings = [];
         currentOfferings = [];
       } else {
-        // add selectedOfferings to DOWObject
         selectedOfferingSysIds.forEach((selectedOfferingSysId) => {
-          if (!currentOfferings.some((e) => e.sys_id === selectedOfferingSysId)) {
-            const foundOffering 
+          const foundOffering 
               = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
-            if (foundOffering || otherValue) {
-              const name = foundOffering ? foundOffering.name : otherValue;
-              const description = foundOffering ? foundOffering.description : "";
-              const sequence = foundOffering ? foundOffering.sequence : "99";
+          if (!currentOfferings.some((e) => e.name === foundOffering?.name)) {
+            const name = foundOffering ? foundOffering.name : otherValue;
+            const description = foundOffering ? foundOffering.description : "";
+            const sequence = foundOffering ? foundOffering.sequence : "99";
 
-              const offering = {
-                name,
-                other: otherValue,
-                "sys_id": selectedOfferingSysId,
-                classificationInstances: [],
-                description,
-                sequence,
-              }
-              currentOfferings.push({
-                ...offering,
-                acquisitionPackageSysId: acquisitionPackageId,
-                serviceId : ""
-              });
+            const offering = {
+              name,
+              other: otherValue,
+              "sys_id": selectedOfferingSysId,
+              classificationInstances: [],
+              description,
+              sequence,
             }
-          }
-        });
-
-        // remove any service offerings previously selected but unchecked this pass
-        const currentOfferingsClone = _.cloneDeep(currentOfferings);
-        // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
-        currentOfferingsClone.forEach((offering) => {
-          const sysId = offering.sys_id;
-          if (!selectedOfferingSysIds.includes(sysId)) {
-            const i = currentOfferings.findIndex(e => e.sys_id === sysId);
-            currentOfferings.splice(i, 1);
+            currentOfferings.push({
+              ...offering,
+              acquisitionPackageSysId: acquisitionPackageId,
+              serviceId : ""
+            });
           }
         });
 
         this.DOWObject[groupIndex].serviceOfferings.sort(
           (a, b) => parseInt(a.sequence) > parseInt(b.sequence) ? 1 : -1
         );
-
       }
       this.currentOfferingName = currentOfferings.length > 0
         ? currentOfferings[0].name : "";
       this.currentOfferingSysId = currentOfferings.length > 0 
         ? currentOfferings[0].sys_id : "";
-    }
+    } 
   }
 
   @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
-    this.doSetOfferingDetails(instancesData);
+    const updatedInstancesData: DOWClassificationInstance[] = [];
+
+    for(const instanceData of instancesData){
+      const dataSysId = await saveOrUpdateClassificationInstance(instanceData);
+      instanceData.sysId = dataSysId as string;
+      updatedInstancesData.push(instanceData);
+    }
+
+    this.doSetOfferingDetails(updatedInstancesData);
   }
 
   @Mutation
