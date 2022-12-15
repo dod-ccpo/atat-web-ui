@@ -89,7 +89,6 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
 
   @Watch("ceilingPrice")
   protected changeSelection(newVal: string): void{
-    console.log("New ceiling price: " + newVal);
     if (newVal !== this.savedData.option){
       this.estimatedTravelCosts = [];
     }
