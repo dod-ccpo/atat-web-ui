@@ -746,6 +746,10 @@ const needsReplicateOrOptimize = (): boolean => {
 const currentEnvNeedsArchitectureDesign = (): boolean => {
   return CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
 }
+const DOWNeedsArchitectureDesign = (): boolean | null => {
+  return DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
+}
+
 
 export const IGCECannotProceedResolver = (current: string): string => {
   if (!IGCEStore.hasDOWandPoP){
@@ -778,9 +782,8 @@ export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
     : routeNames.ArchitecturalDesignSolutions;
 }
 
-
 export const IGCEArchitecturalDesignSolutionsResolver = (current: string): string => {
-  if (currentEnvNeedsArchitectureDesign()) {
+  if (currentEnvNeedsArchitectureDesign() || DOWNeedsArchitectureDesign()) {
     return routeNames.ArchitecturalDesignSolutions;
   }
 

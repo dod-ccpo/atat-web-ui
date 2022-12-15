@@ -130,7 +130,7 @@ const saveOrUpdateOtherServiceOffering =
     tempObject.memory_amount = serviceOffering.memoryAmount;
     tempObject.memory_unit = serviceOffering.memoryUnit || "GB";
     tempObject.need_for_entire_task_order_duration = serviceOffering.entireDuration;
-    tempObject.number_of_instances = serviceOffering.numberOfInstancesNeeded;
+    tempObject.number_of_instances = serviceOffering.numberOfInstances;
     tempObject.number_of_vcpus = serviceOffering.numberOfVCPUs;
     tempObject.operating_system = serviceOffering.operatingSystem;
     tempObject.performance_tier = serviceOffering.performanceTier;
@@ -306,7 +306,7 @@ const mapOtherOfferingFromDTO = (
     licensing: value.licensing,
     memoryAmount: value.memory_amount,
     entireDuration: value.need_for_entire_task_order_duration,
-    numberOfInstancesNeeded: value.number_of_instances,
+    numberOfInstances: value.number_of_instances,
     numberOfVCPUs: value.number_of_vcpus,
     operatingSystem: value.operating_system,
     performanceTier: value.performance_tier,
@@ -1129,7 +1129,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     storageUnit: "GB", 
     performanceTier: "",
     performanceTierOther: "",
-    numberOfInstancesNeeded: "1",
+    numberOfInstances: "1",
     requirementTitle: "",   
     usageDescription: "",
     operatingEnvironment: "",

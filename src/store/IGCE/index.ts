@@ -10,6 +10,7 @@ export interface TravelEstimateNeeds {
 };
 
 export interface ArchDesignEstimateNeeds {
+  type: "" | "DOW" | "CURRENT_ENV"
   ceilingPrice: string,
   estimatedCosts: string[]
 }

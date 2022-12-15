@@ -106,6 +106,7 @@ import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore, { ArchDesignEstimateNeeds } from "@/store/IGCE";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -116,6 +117,8 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
 
   private hasSingleArchitecturalDesignProblem = true;
+  private DOWHasArchDesignNeeds: boolean | null = false;
+  private currentEnvHasArchDesignNeeds: boolean | null = false;
 
   private pageIntroText = "";
   private periods: PeriodDTO[] | null = [];
@@ -127,17 +130,19 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
   private currentEnvCeilingPrice = "";
   private perfReqCeilingPrice = "";
 
-  private singleEstimateNeeds: ArchDesignEstimateNeeds = {
-    ceilingPrice: "",
-    estimatedCosts: []
-  };
+  // private singleEstimateNeeds: ArchDesignEstimateNeeds = {
+  //   ceilingPrice: "",
+  //   estimatedCosts: []
+  // };
 
   private currentEnvEstimateNeeds: ArchDesignEstimateNeeds = {
+    type: "CURRENT_ENV",
     ceilingPrice: "",
     estimatedCosts: []
   };
 
   private perfReqEstimateNeeds: ArchDesignEstimateNeeds = {
+    type: "DOW",
     ceilingPrice: "",
     estimatedCosts: []
   };
@@ -159,16 +164,11 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
     },
   ];
 
+
   get currentData(): ArchDesignEstimateNeeds[] {
     const estimateNeeds: ArchDesignEstimateNeeds[] = [];
-
-    if(this.hasSingleArchitecturalDesignProblem){
-      estimateNeeds.push(this.singleEstimateNeeds);
-    } else {
-      estimateNeeds.push(this.currentEnvEstimateNeeds);
-      estimateNeeds.push(this.perfReqEstimateNeeds);
-    }
-
+    estimateNeeds.push(this.currentEnvEstimateNeeds);
+    estimateNeeds.push(this.perfReqEstimateNeeds);
     return estimateNeeds;
   }
 
@@ -208,8 +208,11 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
   }
 
   protected async loadOnEnter(): Promise<boolean> {
-
+    // this.DOWHasArchDesignNeeds = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
+    // // this.currentEnvEstimateNeeds = 
+    
     const store = await IGCEStore.getArchDesignEstimateNeeds();
+    debugger;
     this.savedData = store;
 
     if(store.length > 1){
@@ -224,10 +227,7 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
 
     const currentEnvironmentNeeds =
       CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
-
-    /* todo: ONLY HAS LOGIC FOR CURRENT ENVIRONMENT AT THE MOMENT; NEEDS DOW ITEMS THAT HAVEN'T
-       BEEN IMPLEMENTED YET */
-    const perfReqNeeds = true;
+    const perfReqNeeds = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
 
     this.hasSingleArchitecturalDesignProblem = !(currentEnvironmentNeeds && perfReqNeeds);
 
