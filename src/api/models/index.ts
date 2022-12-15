@@ -547,6 +547,8 @@ export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
 
 export type StorageEnvironmentInstanceDTO = EnvironmentInstanceDTO
 
+export type XaasEnvironmentInstanceDTO = EnvironmentInstanceDTO
+
 export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
   personnel_onsite_access?: string;
   ts_contractor_clearance_type?: string;

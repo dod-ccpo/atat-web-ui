@@ -17,7 +17,8 @@ import {
   SelectedServiceOfferingDTO, 
   ServiceOfferingDTO, 
   StorageEnvironmentInstanceDTO, 
-  SystemChoiceDTO 
+  SystemChoiceDTO,
+  XaasEnvironmentInstanceDTO
 } from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
 import {
@@ -194,14 +195,14 @@ const saveOrUpdateOtherServiceOffering =
       break;
     case "general_xaas":
       if(tempObject.sys_id){
-        await api.environmentInstanceTable.update(
+        await api.xaaSEnvironmentInstanceTable.update(
           tempObject.sys_id,
-          tempObject as EnvironmentInstanceDTO
+          tempObject as XaasEnvironmentInstanceDTO
         )
         objSysId = tempObject.sys_id;
       } else {
-        const savedObject = await api.environmentInstanceTable.create(
-          tempObject as EnvironmentInstanceDTO
+        const savedObject = await api.xaaSEnvironmentInstanceTable.create(
+          tempObject as XaasEnvironmentInstanceDTO
         );
         objSysId = savedObject.sys_id as string;
       }
@@ -279,7 +280,7 @@ const mapOtherOfferingFromDTO = (
     DatabaseEnvironmentInstanceDTO | 
     StorageEnvironmentInstanceDTO | 
     CloudSupportEnvironmentInstanceDTO |
-    EnvironmentInstanceDTO
+    XaasEnvironmentInstanceDTO
 ): OtherServiceOfferingData => {
 
   const acquisitionPackageSysId = 
@@ -557,13 +558,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     });
 
     this.setCurrentOfferingGroupId("GENERAL_XAAS");
-    const xaasItems = await api.environmentInstanceTable.getQuery(requestConfig);
+    const xaasItems = await api.xaaSEnvironmentInstanceTable.getQuery(requestConfig);
     if(xaasItems.length > 0)
       this.addOfferingGroup("GENERAL_XAAS"); 
     xaasItems.forEach((item,index) => {
       const offeringData = mapOtherOfferingFromDTO(
         index + 1,
-        item as EnvironmentInstanceDTO
+        item as XaasEnvironmentInstanceDTO
       );
       this.doSetOtherOfferingData(offeringData);
     });
