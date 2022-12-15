@@ -1126,7 +1126,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     memoryUnit: "GB",
     storageType: "",
     storageAmount: "",
-    storageUnit: "",
+    storageUnit: "GB", 
     performanceTier: "",
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
