@@ -13,16 +13,28 @@ import {AxiosRequestConfig} from "axios";
 import CurrentUserStore from "@/store/user";
 
 const ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY = "ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY";
-
+export type PackageSort = "DESCsys_updated_on" | "project_overview"
 @Module({
   name: "AcquisitionPackageSummaryStore",
   namespaced: true,
   dynamic: true,
   store: rootStore,
 })
+
 export class AcquisitionPackageSummaryStore extends VuexModule {
   initialized = false;
   acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[] | null = null;
+  selectedSort: PackageSort = "project_overview";
+
+  @Action 
+  setSelectedSort(value: PackageSort): void {
+    this.doSetSelectedSort(value);
+  }
+  @Mutation
+  public doSetSelectedSort(value: PackageSort): void {
+    this.selectedSort = value;
+  }
+
 
   @Action
   public async getAllAcquisitionPackageSummaryList():

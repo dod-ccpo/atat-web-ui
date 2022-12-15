@@ -243,6 +243,7 @@ const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
 const getOfferingGroupServicesPath = (groupId: string)=>
   `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
 
+
 export const RequirementsPathResolver = (current: string, direction: string): string => {
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
@@ -300,14 +301,35 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
-export const AnticipatedUserAndDataNeedsResolver = (current:string) => {
+
+export const DOWArchitecturalDesignResolver = (current: string): string => {
+  const DOWNeedsArch = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
+  debugger;
+  if (DOWNeedsArch) {
+    // coming from either direction, if needs architectural design, go there
+    return routeNames.DOWArchitecturalDesign;
+  }
+  // TODO: this likely needs more logic to determine if return to DOW Summary
+  // if adding architectural design from a DOW Summary "card" which has not
+  // yet been implemented.
+  return current === routeNames.RequirementCategories
+    ? AnticipatedUserAndDataNeedsResolver(current)
+    : routeNames.RequirementCategories;
+}
+
+export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
+  debugger;
   const xaasServices = DescriptionOfWork.hasXaasService;
   const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
-  if(current === routeNames.RequirementCategories && xaasServices && !hasBeenVisited){
+  if ((current === routeNames.DOWArchitecturalDesign 
+    || current === routeNames.RequirementCategories)
+    && xaasServices && !hasBeenVisited
+  ) {
     return routeNames.AnticipatedUserAndDataNeeds
   }
-  return current === routeNames.RequirementCategories ? routeNames.ServiceOfferings
-    : routeNames.RequirementCategories;
+  return current === routeNames.DOWArchitecturalDesign 
+    ? routeNames.ServiceOfferings
+    : routeNames.DOWArchitecturalDesign;
 }
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
   const groupId = DescriptionOfWork.currentGroupId;
@@ -912,7 +934,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
   UploadJAMRRDocumentsRouteResolver,
-  AnticipatedUserAndDataNeedsResolver
+  AnticipatedUserAndDataNeedsResolver,
+  DOWArchitecturalDesignResolver,
 };
 
 // add path resolvers here 

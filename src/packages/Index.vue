@@ -117,7 +117,7 @@ import {
   AcquisitionPackageSummarySearchDTO,
 } from "@/api/models";
 
-import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import AcquisitionPackageSummary, { PackageSort } from "@/store/acquisitionPackageSummary";
 import Search from "@/packages/components/Search.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -192,7 +192,7 @@ export default class Packages extends Vue {
   public tabIndex = 0;
   public searchString = ""
   public searchedString = ""
-  public selectedSort: 'DESCsys_updated_on' | 'project_overview' = "project_overview"
+  public selectedSort: PackageSort = "project_overview"
   public packageData:AcquisitionPackageSummaryDTO[] = []
   public allPackageData:AcquisitionPackageSummaryMetadataAndDataDTO = {
     // eslint-disable-next-line camelcase
@@ -200,8 +200,9 @@ export default class Packages extends Vue {
     acquisitionPackageSummaryList:[]
   }
   @Watch('selectedSort')
-  public async sortingChanged(newVal:string): Promise<void> {
-    await this.updateSearchDTO('sort',newVal)
+  public async sortingChanged(newVal: PackageSort): Promise<void> {
+    await this.updateSearchDTO('sort', newVal);
+    AcquisitionPackageSummary.setSelectedSort(newVal);
   }
 
  @Watch("page")
@@ -314,6 +315,7 @@ export default class Packages extends Vue {
   }
 
   private async loadOnEnter(){
+    this.selectedSort = AcquisitionPackageSummary.selectedSort;
     this.loadPackageData();
     this.setNoRecordsText(0);
   }

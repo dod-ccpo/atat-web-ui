@@ -6,7 +6,7 @@
           v-if="!isDOW"
           id="Licensing"
           label="Licensing"
-          :value.sync="_data.licensing"
+          :value.sync="offeringData.licensing"
           tooltipText="Provide details about your licensing agreement, to include 
             the type and number of licenses."
           :rules="[

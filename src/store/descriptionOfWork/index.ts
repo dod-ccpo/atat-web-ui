@@ -9,6 +9,7 @@ import {
 import rootStore from "../index";
 import api from "@/api";
 import { 
+  ArchitecturalDesignRequirementDTO,
   ClassificationInstanceDTO, 
   CloudSupportEnvironmentInstanceDTO, 
   ComputeEnvironmentInstanceDTO, 
@@ -17,7 +18,7 @@ import {
   SelectedServiceOfferingDTO, 
   ServiceOfferingDTO, 
   StorageEnvironmentInstanceDTO, 
-  SystemChoiceDTO 
+  SystemChoiceDTO
 } from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
 import {
@@ -470,6 +471,15 @@ export const trainingTypeOptions: RadioButton[] = [
   },
 ];
 
+export const defaultDOWArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
+  source: "DOW",
+  statement: "",
+  applications_needing_design: "",
+  data_classification_levels: "",
+  external_factors: "",
+}
+
+
 @Module({
   name: "DescriptionOfWork",
   namespaced: true,
@@ -511,6 +521,37 @@ export class DescriptionOfWorkStore extends VuexModule {
     'DEVELOPER_TOOLS',
     'COMPUTE'
   ];
+
+  public DOWHasArchitecturalDesignNeeds: boolean | null = null;
+  public DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;
+
+  @Action({rawError: true})
+  public async setDOWHasArchitecturalDesign(value: boolean): Promise<void> {
+    this.doSetDOWHasArchitecturalDesign(value);
+  }
+
+  @Mutation
+  public doSetDOWHasArchitecturalDesign(value: boolean): void {
+    this.DOWHasArchitecturalDesignNeeds = value;
+  }
+
+  @Action({rawError: true})
+  public async setDOWArchitecturalDesign(value: ArchitecturalDesignRequirementDTO): Promise<void> {
+    this.doSetDOWArchitecturalDesign(value);
+    // TODO: SAVE TO SNOW
+  }
+
+  @Mutation
+  public doSetDOWArchitecturalDesign(value: ArchitecturalDesignRequirementDTO): void {
+    this.DOWArchitectureNeeds = this.DOWArchitectureNeeds
+      ? Object.assign(this.DOWArchitectureNeeds, value)
+      : value;
+  }
+
+  @Action({rawError: true})
+  public async getDOWArchitecturalNeeds(): Promise<ArchitecturalDesignRequirementDTO> {
+    return this.DOWArchitectureNeeds;
+  }
 
   @Action({rawError: true})
   public async loadDOWfromAcquistionPackageId(sysId: string): Promise<void> {
@@ -572,11 +613,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   }
 
-  @Action
-  public async getServiceGroupVerbiageInfo(): Promise<Record<string, string>> {
-    return serviceGroupVerbiageInfo[this.currentGroupId];
-  }
-
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
@@ -584,7 +620,14 @@ export class DescriptionOfWorkStore extends VuexModule {
     nameofProperty(this, (x)=> x.userSelectedServiceOfferings),
     nameofProperty(this, (x)=> x.DOWObject)
   ];
-  
+
+  @Action
+  public async getServiceGroupVerbiageInfo(): Promise<Record<string, string>> {
+    return serviceGroupVerbiageInfo[this.currentGroupId];
+  }
+
+
+
   @Action 
   public async getDOWObject(): Promise<DOWServiceOfferingGroup[]> {
     return this.DOWObject;
