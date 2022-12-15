@@ -33,15 +33,8 @@ describe("Organization Store", () => {
         options: "",
         percentage: null
       },
-      tools_used: {
-        AWS: "",
-        GOOGLE_CLOUD: "",
-        MICROSOFT_AZURE: "",
-        ORACLE_CLOUD: "",
-        PREVIOUSLY_PAID_PRICES: "",
-        OTHER: "",
-        OTHER_TOOLS: "",
-      }
+      tools_used: "",
+      other_tools_used: ""
     },
     optimize_replicate: {
       option: "",
