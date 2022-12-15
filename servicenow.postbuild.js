@@ -267,14 +267,17 @@ function renameFiles(directory, extensionToAppend) {
   );
   const files = fs.readdirSync(directory);
   files.forEach((file) => {
-    const oldFilename = path.join(directory, file);
-    console.log("-- found: ", oldFilename);
-    try {
-      const newFilename = oldFilename + ourFakeExtension;
-      fs.renameSync(oldFilename, newFilename);
-      console.log("-- renamed: ", newFilename);
-    } catch (err) {
-      console.error(err);
+    //ignore template (.docx) files
+    if (file.toLowerCase().indexOf(".docx")===-1) {
+      const oldFilename = path.join(directory, file);
+      console.log("-- found: ", oldFilename);
+      try {
+        const newFilename = oldFilename + ourFakeExtension;
+        fs.renameSync(oldFilename, newFilename);
+        console.log("-- renamed: ", newFilename);
+      } catch (err) {
+        console.error(err);
+      }
     }
   });
 }

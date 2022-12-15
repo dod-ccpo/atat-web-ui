@@ -43,10 +43,9 @@
           </div>
         </v-col>
         
-        <v-col v-else-if="isCompute || isGeneral">
+        <v-col v-else-if="!isServiceOfferingList">
           <OtherOfferings 
-            :isCompute="isCompute"
-            :isGeneral="isGeneral"
+            :otherOfferingList="otherOfferingList"
             :serviceOfferingData.sync="otherOfferingData" 
             :isPeriodsDataMissing="isPeriodsDataMissing"
             :isClassificationDataMissing="isClassificationDataMissing"
@@ -81,6 +80,8 @@ import classificationRequirements from "@/store/classificationRequirements";
 
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import DeleteOfferingModal from "./DeleteOfferingModal.vue";
+
+import _ from "lodash";
 
 import { 
   Checkbox, 
@@ -186,8 +187,18 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public serviceOfferings: DOWServiceOffering[] = [];
   public serviceGroupOnLoad = "";
 
-  public isCompute = false;
-  public isGeneral = false;
+  public otherOfferingList = [
+    "compute",
+    "database",
+    "storage",
+    "general_xaas",
+    "advisory_assistance",
+    "help_desk_services",
+    "training",
+    "documentation_support",
+    "general_cloud_support",
+  ];
+
   public isServiceOfferingList = true;
 
   public otherOfferingData: OtherServiceOfferingData = {
@@ -201,7 +212,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     periodsNeeded: [],
     operatingSystemAndLicensing: "",
     numberOfVCPUs: "",
-    memory: "",
+    memoryAmount: "",
     storageType: "",
     storageAmount: "",
     performanceTier: "",
@@ -216,11 +227,11 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
-    // only Compute and General XaaS categories differ in requirements
-    this.isCompute = this.serviceGroupOnLoad.toLowerCase() === "compute";
-    this.isGeneral = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
+
     // all other categories have a similar workflow with checkbox list of service offerings
-    this.isServiceOfferingList = !this.isCompute && !this.isGeneral;
+    this.isServiceOfferingList = !this.otherOfferingList.includes(
+      this.serviceGroupOnLoad.toLowerCase()
+    );
 
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
@@ -253,7 +264,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       this.selectedOptions.push(...validSelections);
 
       this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
-    } else if (this.isCompute || this.isGeneral) {
+    } else {
       const offeringIndex = DescriptionOfWork.DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() 
           === DescriptionOfWork.currentGroupId.toLowerCase()
@@ -304,7 +315,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             await DescriptionOfWork.setSelectedOfferings(
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
-          } else if (this.isCompute || this.isGeneral) {
+          } else {
             await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
         }
@@ -312,8 +323,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         //save to backend
         if (this.isServiceOfferingList) {
           await DescriptionOfWork.saveUserSelectedServices();
-        } else if (this.isCompute) {
-          // save computeData to backend in ticket AT-7767
         }
       }
     } catch (error) {

@@ -15,7 +15,8 @@
               than one level, we will walk you through what is required within each level later.
             </p>
            <AnticipatedDurationandUsage
-            type="requirement"
+            typeForUsage="cds"
+            typeForDuration="requirement"
             :anticipatedNeedUsage.sync="domainInfo.classificationInstance.anticipatedNeedUsage"
             :entireDuration.sync="domainInfo.classificationInstance.entireDuration"
             :selectedPeriods.sync="domainInfo.classificationInstance.selectedPeriods"

@@ -223,7 +223,17 @@ export const ContractTrainingReq = (current: string): string => {
 const basePerformanceRequirementsPath =  "performance-requirements";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 
-const otherServiceOfferings = ["compute", "general_xaas"] // future ticket - add "database"
+const otherServiceOfferings = [
+  "compute",
+  "database",
+  "storage",
+  "general_xaas",
+  "advisory_assistance",
+  "help_desk_services",
+  "training",
+  "documentation_support",
+  "general_cloud_support",
+]; // future ticket - add "database"
 const otherServiceOfferingSummaryPath = "performance-requirements/service-offerings/other/summary";
 
 const baseOfferingDetailsPath =  `${basePerformanceRequirementsPath}/service-offering-details/`;
