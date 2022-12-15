@@ -62,59 +62,6 @@ type ServiceOfferingProxy =  {
   dowServiceIndex: number
 }
 
-//helper to map DowService offering
-//from DOW object to a ServiceOffering Proxy 
-// that can be saved
-const mapDOWServiceOfferingToServiceProxy= 
-(dowServiceOffering: DOWServiceOffering, groupIndex: number, 
-  serviceIndex: number): ServiceOfferingProxy=> {
-
-  const acquisitionPackageId = AcquisitionPackage.packageId;
-      
-  const serviceOffering: SelectedServiceOfferingDTO = {
-    acquisition_package: acquisitionPackageId,
-    service_offering : dowServiceOffering['sys_id'] || "",
-    classification_instances: "",
-    other_service_offering: dowServiceOffering.otherOfferingName || "",
-    sys_id : dowServiceOffering.serviceId.length ? 
-      dowServiceOffering.serviceId : undefined
-  };
-
-
-  if(serviceOffering.service_offering === "Other"){
-    const soOther = ((dowServiceOffering as unknown) as ServiceOfferingDTO);
-
-    serviceOffering.service_offering = "";
-    serviceOffering.other_service_offering = soOther && soOther.other ? soOther.other : ""
-  }
-
-  const classificationInstances = dowServiceOffering
-    .classificationInstances?.map((instance, instanceIndex)=> {
-
-      const classificationInstance: ClassificationInstanceProxy = {
-        dowClassificationInstanceIndex: instanceIndex,
-        classificationInstance: {
-          selected_periods: instance
-            .selectedPeriods?.map(period=>period).join(',') || "",
-          classification_level: instance.classificationLevelSysId,
-          sys_id: instance.sysId,
-          usage_description: instance.anticipatedNeedUsage,
-          need_for_entire_task_order_duration: instance.entireDuration
-        },
-      }
-      return classificationInstance;
-    }) || [];
-
-  
-  return {
-    serviceOffering,
-    classificationInstances,
-    dowServiceGroupIndex: groupIndex,
-    dowServiceIndex: serviceIndex
-  }
-
-}
-
 const saveOrUpdateSelectedServiceOffering = 
   async (
     selectedServiceOffering: DOWServiceOffering,
@@ -130,19 +77,19 @@ const saveOrUpdateSelectedServiceOffering =
 
       if(selectedServiceOffering.classificationInstances.length > 1) {
         selectedServiceOffering.classificationInstances.forEach(item => {
-          const tempId = typeof item.classificationLevelSysId === "object"
-            ? (item.classificationLevelSysId as ReferenceColumn).value as string
-            : item.classificationLevelSysId;
+          const tempId = typeof item.sysId === "object"
+            ? (item.sysId as ReferenceColumn).value as string
+            : item.sysId;
 
-          classificationInstances.push(tempId);
+          classificationInstances.push(tempId as string);
         })
       } else {
         const item = selectedServiceOffering.classificationInstances[0];
-        const tempId = typeof item.classificationLevelSysId === "object"
-          ? (item.classificationLevelSysId as ReferenceColumn).value as string
-          : item.classificationLevelSysId;
+        const tempId = typeof item.sysId === "object"
+          ? (item.sysId as ReferenceColumn).value as string
+          : item.sysId;
 
-        classificationInstances.push(tempId);
+        classificationInstances.push(tempId as string);
       }
     }
 
@@ -712,7 +659,6 @@ export class DescriptionOfWorkStore extends VuexModule {
           index + 1,
           item as CloudSupportEnvironmentInstanceDTO
         );
-        // debugger;
         this.doSetOtherOfferingData(offeringData);
       });
     });
@@ -737,12 +683,17 @@ export class DescriptionOfWorkStore extends VuexModule {
           item => (item.service_offering as ReferenceColumn).value === group.sys_id
         );
 
-        if(tempOfferingsList.length > 0){
-          this.addOfferingGroup(group.service_offering_group);
-          this.setCurrentOfferingGroupId(group.service_offering_group);
-        }
-
         for(const offering of tempOfferingsList){
+          const groupIndex = this.DOWObject.findIndex(
+            item => item.serviceOfferingGroupId === group.service_offering_group);
+  
+          if(groupIndex < 0)
+            this.addOfferingGroup(group.service_offering_group);
+  
+          if(tempOfferingsList.length > 0){
+            this.setCurrentOfferingGroupId(group.service_offering_group);
+          }
+
           const classificationInstances: DOWClassificationInstance[] = [];
           const classificationInstanceIds = offering.classification_instances !== ""
             ? offering.classification_instances.split(",") : [];
@@ -1196,6 +1147,28 @@ export class DescriptionOfWorkStore extends VuexModule {
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): Promise<void> {
     this.doSetSelectedServiceOffering({ selectedOfferingSysIds, otherValue });
+    // await this.saveSelectedServiceOfferings();
+  }
+
+  @Action
+  public async saveSelectedServiceOfferings(
+  ): Promise<void> {
+    const groupIndex 
+      = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
+    
+    if (groupIndex >= 0) {
+      const currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
+      
+      for(const offering of currentOfferings){
+        const serviceOffering = this.serviceOfferings.find(item => item.name === offering.name);
+
+        if(serviceOffering){
+          const sysId = await saveOrUpdateSelectedServiceOffering(
+            offering, serviceOffering.sys_id as string);
+          offering.sys_id = sysId;
+        }        
+      }
+    }
   }
 
   @Mutation
@@ -1220,19 +1193,20 @@ export class DescriptionOfWorkStore extends VuexModule {
             const name = foundOffering ? foundOffering.name : otherValue;
             const description = foundOffering ? foundOffering.description : "";
             const sequence = foundOffering ? foundOffering.sequence : "99";
+            const serviceId = foundOffering ? foundOffering.service_offering_group : "";
 
             const offering = {
               name,
               other: otherValue,
-              "sys_id": selectedOfferingSysId,
+              "sys_id": "",
               classificationInstances: [],
               description,
               sequence,
+              serviceId
             }
             currentOfferings.push({
               ...offering,
-              acquisitionPackageSysId: acquisitionPackageId,
-              serviceId : ""
+              acquisitionPackageSysId: acquisitionPackageId
             });
           }
         });
@@ -1259,6 +1233,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
 
     this.doSetOfferingDetails(updatedInstancesData);
+    this.saveSelectedServiceOfferings();
   }
 
   @Mutation
@@ -1409,7 +1384,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         && otherOfferingObj.serviceOfferingGroupId
       ) {
         const groupId: string = this.currentGroupId.toLowerCase();
-        // debugger;
+
         if (!Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")) {
           otherOfferingObj.otherOfferingData = [];
           otherOfferingObj.otherOfferingData?.push(otherOfferingData);
@@ -1840,168 +1815,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     } catch (error) {
       //to nothing here we're deleting stuff optimistically
     }
-  }
-
-  @Action({rawError: true})
-  public async saveClassificationInstance(data: 
-    ClassificationInstanceProxy):Promise<ClassificationInstanceProxy>{
-    const sysId = data.classificationInstance.sys_id;
-    const { classification_level, need_for_entire_task_order_duration, 
-      selected_periods, usage_description, } = data.classificationInstance;
-    const saveClassificationInstance = (sysId && sysId.length > 0) ? 
-      api.classificationInstanceTable.update(sysId, {
-        classification_level,
-        need_for_entire_task_order_duration,
-        selected_periods,
-        usage_description
-      }) : 
-      api.classificationInstanceTable.create({
-        classification_level,
-        need_for_entire_task_order_duration,
-        selected_periods,
-        usage_description
-      });
-    const savedClassificationInstance =  await saveClassificationInstance;
-    data.classificationInstance = savedClassificationInstance;
-   
-    return data;
-  }
-
-  @Action({rawError: true})
-  public async saveclassificationInstances(data: ClassificationInstanceProxy[]):
-   Promise<ClassificationInstanceProxy[]>{
- 
-    try {
-       
-      //create a save call for each classification instance
-      const calls = data.map(instance=> this.saveClassificationInstance(instance));
-      const savedInstances = await Promise.all(calls);
-      return savedInstances;
-       
-    } catch (error) {
-      throw new Error(`error saving classification instances ${error}`);
-       
-    }
-    
-  }
-
-
-  @Action({rawError: true})
-  public async saveUserService(serviceProxy: ServiceOfferingProxy): Promise<ServiceOfferingProxy>{
-
-    try {
-      let savedClassificationInstances: ClassificationInstanceProxy[] = [];
-
-      //first save classification instances
-      if(serviceProxy.classificationInstances.length)
-      {
-        savedClassificationInstances = 
-      await this.saveclassificationInstances(serviceProxy.classificationInstances);
-      }
-      
-      //save service instance
-      serviceProxy.serviceOffering.classification_instances = 
-      savedClassificationInstances
-        .map(instance=> instance.classificationInstance.sys_id || "").join(',') || "";
-
-      const apiTable = api.selectedServiceOfferingTable;
-
-      const saveService = serviceProxy.serviceOffering.sys_id ? 
-        apiTable.update(serviceProxy.serviceOffering.sys_id || "", serviceProxy.serviceOffering)
-        : apiTable.create(serviceProxy.serviceOffering);
-      
-      const savedService = await saveService;
-      
-      serviceProxy.classificationInstances = savedClassificationInstances;
-      serviceProxy.serviceOffering = savedService;
-     
-      return serviceProxy;
-
-    } catch (error) {
-      
-      throw new Error( `error occurred while saving service proxy`)
-    }
-
-  }
-
-  @Action({rawError: true})
-  public async saveUserServices(serviceProxies: ServiceOfferingProxy[]): Promise<void>{
-
-    try {
-      const calls = serviceProxies.map(proxy=> this.saveUserService(proxy));
-      const savedProxies = await Promise.all(calls);
-      
-      //update dow object with saved ids
-      this.updateDOWObjectWithSavedIds(savedProxies);
-      const savedServices = savedProxies.map(proxy=> proxy.serviceOffering);
-      this.setUserSelectedServices(savedServices);
-      
-    } catch (error) {
-      console.error(error);
-      throw new Error(`error occurred saving services ${error}`);
-    }
-  }
-
-  //synchronizes back end with DOW
-  @Action({rawError: true})
-  public async saveUserSelectedServices(): Promise<void>{
-    try {
-      const requiredServices = this.userSelectedServiceOfferings;
-      const dowOfferingGroups = this.DOWObject;
-
-      //grab all of the selected services in the dow object
-      //build a list of Service Proxy items
-
-      //grab all of the selected services in the dow object
-      const serviceOfferingProxies: ServiceOfferingProxy[] = [];
-
-      dowOfferingGroups.forEach((group, groupIndex)=> {
-        group.serviceOfferings.forEach((offering, offeringIndex)=> {
-          serviceOfferingProxies.push(
-            mapDOWServiceOfferingToServiceProxy(offering, groupIndex, offeringIndex));
-        });
-      });
-
-      const unsavedServices = serviceOfferingProxies
-        .filter(proxy=>(proxy.serviceOffering.sys_id === undefined || 
-        proxy.serviceOffering.sys_id.length === 0));
-
-      const savedServices = serviceOfferingProxies
-        .filter(proxy=>proxy.serviceOffering.sys_id?.length);
-
-      const servicesToRemove: SelectedServiceOfferingDTO[] = [];
-
-      if(requiredServices.length)
-      {
-      //get services to delete - delete all of the service offerings
-      //that are no longer in the dow object
-        requiredServices.forEach(service=> {
-
-          const inSaved = savedServices
-            .find(saved=> saved.serviceOffering.sys_id === service.sys_id);
-          if(!inSaved){
-            servicesToRemove.push(service);
-          }
-        });
-   
-        if(servicesToRemove.length){
-          await this.removeUserSelectedServices(servicesToRemove);
-        }
-      }
-
-      //get all of the services that haven't been removed for updating
-      const servicesToUpdate = differenceWith<ServiceOfferingProxy, SelectedServiceOfferingDTO>
-      (savedServices, servicesToRemove, ({serviceOffering}, selected)=> 
-        serviceOffering.service_offering === selected.service_offering);
-
-      const servicesTosave: ServiceOfferingProxy[] = [...servicesToUpdate, ...unsavedServices];
-      await this.saveUserServices(servicesTosave);
-     
-    } catch (error) {
-      console.error(error);
-      throw new Error(`error persisting services ${error}`);
-    }
-    
   }
 
   @Action({rawError: true})
