@@ -2,8 +2,8 @@
   <ATATDialog
     id="UpdateClassificationsModal"
     :showDialog.sync="_showModal"
-    title="What classification level(s) are required for your
-      cloud resources and/or services?"
+    title="What classification and impact level(s) are required 
+      for your entire contracting effort?"
     no-click-animation
     okText="Change Levels"
     width="670"
@@ -12,13 +12,10 @@
     @cancelClicked="cancelClicked"
   >
     <template #content>
-      <p class="body">
+      <p class="body mb-5">
         Changes to the selections below will be reflected in the overall Classification
         Requirements section. If you select more than one, we will ask you to specify a
         level for each performance requirement.
-      </p>
-      <p class="body mb-5">
-        Select all that apply to your contracting effort.
       </p>
       <ATATCheckboxGroup
         id="ClassificationLevelCheckboxesModal"
