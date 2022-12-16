@@ -795,11 +795,14 @@ export const IGCEArchitecturalDesignSolutionsResolver = (current: string): strin
 }
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {
-
-  return current === routeNames.FundingPlanType &&
+  if (current === routeNames.EstimatesDeveloped) {
+    return routeNames.SupportingDocumentation;
+  } else {
+    return current === routeNames.FundingPlanType &&
     (IGCEStore.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
-    ? routeNames.EstimatesDeveloped
-    : routeNames.CannotProceed;
+      ? routeNames.SupportingDocumentation
+      : routeNames.CannotProceed;
+  }
 };
 
 export const MIPRResolver = (current: string): string => {

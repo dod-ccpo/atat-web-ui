@@ -717,15 +717,9 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
     percentage: number | null;
   };
   how_estimates_developed: {
-    tools_used: {
-      AWS: YesNo;
-      GOOGLE_CLOUD: YesNo;
-      MICROSOFT_AZURE: YesNo;
-      ORACLE_CLOUD: YesNo;
-      PREVIOUSLY_PAID_PRICES: YesNo;
-      OTHER: YesNo;
-      OTHER_TOOLS: string;
-    }
+    // csv list Eg: "AWS,GOOGLE_CLOUD,MICROSOFT_AZURE,ORACLE_CLOUD,PREVIOUSLY_PAID_PRICES,OTHER"
+    tools_used: string
+    other_tools_used: string
     cost_estimate_description: string;
     previous_cost_estimate_comparison:{
       options: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
