@@ -53,7 +53,6 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
     }
   }
 }
-
 @Module({
   name: "IGCEStore",
   namespaced: true,
@@ -72,7 +71,7 @@ export class IGCEStore extends VuexModule {
   public doReset(): void {
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
   }
-
+  
   @Action
   public async getRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
     return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
@@ -81,11 +80,14 @@ export class IGCEStore extends VuexModule {
   @Action
   public async setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
     await this.doSetRequirementsCostEstimate(value);
+    await this.saveRequirementsCostEstimate(value);
   }
 
   @Mutation
   public async doSetRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
-    this.requirementsCostEstimate = value;
+    this.requirementsCostEstimate = this.requirementsCostEstimate
+      ? Object.assign(this.requirementsCostEstimate, value)
+      : value;
   }
 
   @Mutation

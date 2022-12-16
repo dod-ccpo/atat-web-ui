@@ -177,9 +177,9 @@ const saveOrUpdateOtherServiceOffering =
     tempObject.licensing = serviceOffering.licensing;
     tempObject.memory_amount = serviceOffering.memoryAmount;
     tempObject.memory_unit = serviceOffering.memoryUnit || "GB";
+    tempObject.number_of_instances = serviceOffering.numberOfInstances;
     /* TODO: PLZ HAVE PLATFORM TEAM FIX CASE TO UPPERCASE TO REMOVE THIS HACK!!! */
     tempObject.need_for_entire_task_order_duration = serviceOffering.entireDuration.toLowerCase();
-    tempObject.number_of_instances = serviceOffering.numberOfInstances;
     tempObject.number_of_vcpus = serviceOffering.numberOfVCPUs;
     tempObject.operating_system = serviceOffering.operatingSystem;
     tempObject.performance_tier = serviceOffering.performanceTier;
@@ -262,6 +262,7 @@ const saveOrUpdateOtherServiceOffering =
     case "documentation_support":
     case "general_cloud_support":
     case "training":
+    case "portability_plan":
       tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
       tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
       tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
@@ -365,9 +366,9 @@ const mapOtherOfferingFromDTO = (
     requirementTitle: value.instance_name,
     licensing: value.operating_system_licensing,
     memoryAmount: value.memory_amount,
+    numberOfInstances: value.number_of_instances,
     /* TODO: PLZ HAVE PLATFORM TEAM FIX CASE TO UPPERCASE TO REMOVE THIS HACK!!! MKAY? */
     entireDuration: value.need_for_entire_task_order_duration.toUpperCase(),
-    numberOfInstances: value.number_of_instances,
     numberOfVCPUs: value.number_of_vcpus,
     operatingSystem: value.operating_system,
     performanceTier: value.performance_tier,
@@ -487,6 +488,14 @@ const serviceGroupVerbiageInfo: Record<string, Record<string, string>> = {
     typeForUsage: "service",
     typeForText: "service",
     introText: `any other cloud support services that you need.`,
+  },
+  PORTABILITY_PLAN: { 
+    offeringName: "Portability Plan", 
+    heading2: "Portability Plan",
+    headingSummary: "Portability Plan Services", 
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `each Portability Plan service that you need.`,
   },
 }
 
@@ -687,6 +696,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       "documentation_support",
       "general_cloud_support",
       "training",
+      "portability_plan"
     ].forEach(groupId => {
       const tempItems = supportItems.filter(item => item.service_type === groupId.toUpperCase());
 
