@@ -34,7 +34,6 @@ describe("Testing ServiceOfferingDetails Component", () => {
     storageAmount: "",
     performanceTier: "",
     performanceTierOther: "",
-    numberOfInstancesNeeded: "1",
     requirementTitle: "",
   }
 

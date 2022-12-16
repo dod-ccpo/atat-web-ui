@@ -48,7 +48,6 @@ describe("Testing ComputeForm Component", () => {
     "storageAmount": "1",
     "performanceTier": "Premium",
     "performanceTierOther": "",
-    "numberOfInstancesNeeded": "1"
   };
 
   const avlClassificationLevelObjects = [
