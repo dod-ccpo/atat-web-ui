@@ -274,7 +274,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
       // send to group offerings page
       const serviceOffering = routeNames.ServiceOfferings
       DescriptionOfWork.setCurrentOfferingGroupId(group);
-      return OfferGroupOfferingsPathResolver(serviceOffering , direction);
+      return ServiceOfferingsPathResolver(serviceOffering , direction);
     }
   }
 
@@ -319,7 +319,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 
 /****************************************************************************/
 /****************************************************************************/
-
+// hit when leaving first main DOW offering category checkbox page
 export const DOWArchitecturalDesignResolver = (current: string): string => {
   
   debugger;
@@ -385,8 +385,8 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
 /****************************************************************************/
 /****************************************************************************/
 
-
-export const OfferGroupOfferingsPathResolver = (
+// This is the "simple 6" 2nd-level checkbox list page for non-"other offering" categories
+export const ServiceOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
   DescriptionOfWork.setBackToContractDetails(false);
@@ -427,7 +427,7 @@ export const OfferGroupOfferingsPathResolver = (
 
   debugger;
   
-  // CRAZY BIG RESOLVER OfferGroupOfferingsPathResolver
+  // CRAZY BIG RESOLVER ServiceOfferingsPathResolver
 
   if (!addGroupFromSummary 
     && ((currentGroupRemovedForNav && lastGroupRemoved) 
@@ -642,7 +642,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     if (!DescriptionOfWork.currentOfferingGroupHasOfferings) { 
       // send to group offerings page
       const serviceOffering = routeNames.ServiceOfferings
-      return OfferGroupOfferingsPathResolver(serviceOffering , direction);
+      return ServiceOfferingsPathResolver(serviceOffering , direction);
     }
 
     if (DescriptionOfWork.currentOfferingName === ""){
@@ -652,7 +652,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
         DescriptionOfWork.setCurrentOffering(offering);
       } else {
         const serviceOffering = routeNames.ServiceOfferings
-        return OfferGroupOfferingsPathResolver(serviceOffering , direction);
+        return ServiceOfferingsPathResolver(serviceOffering , direction);
       }
     }
   }
@@ -699,7 +699,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     // send to group offerings page
     const serviceOffering = routeNames.ServiceOfferings
     DescriptionOfWork.setCurrentOfferingGroupId(nextOrPrevGroup);
-    return OfferGroupOfferingsPathResolver(serviceOffering , direction);
+    return ServiceOfferingsPathResolver(serviceOffering , direction);
   }
 
   DescriptionOfWork.setReturnToDOWSummary(false);
@@ -809,7 +809,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
         throw new Error('unable to retrive next offering group');
       }
       DescriptionOfWork.setCurrentOfferingGroupId(nextOfferingGroup);
-      return OfferGroupOfferingsPathResolver(current , direction);
+      return ServiceOfferingsPathResolver(current , direction);
     }
   }
 
@@ -1040,7 +1040,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
 // add path resolvers here 
 const pathResolvers: Record<string, StepPathResolver> = {
   OtherOfferingSummaryPathResolver,
-  OfferGroupOfferingsPathResolver,
+  ServiceOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   RequirementsPathResolver,

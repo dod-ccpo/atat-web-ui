@@ -275,7 +275,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
     this.$router.push({
       name: "pathResolver",
       params: {
-        resolver: "OfferGroupOfferingsPathResolver",
+        resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
     })

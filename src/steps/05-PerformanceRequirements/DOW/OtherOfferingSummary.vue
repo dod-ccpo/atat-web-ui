@@ -196,7 +196,7 @@ export default class OtherOfferingSummary extends Vue {
     this.$router.push({
       name: "pathResolver",
       params: {
-        resolver: "OfferGroupOfferingsPathResolver",
+        resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
     }).catch(() => console.log("avoiding redundant navigation"));

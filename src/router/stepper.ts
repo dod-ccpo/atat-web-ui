@@ -138,7 +138,7 @@ import {
   FOIARecordResolver,
   A11yRequirementResolver,
   ContractTrainingReq,
-  OfferGroupOfferingsPathResolver,
+  ServiceOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   MIPRResolver,
@@ -714,7 +714,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ServiceOfferings,
         completePercentageWeight: 1,
         component: ServiceOfferings,
-        routeResolver: OfferGroupOfferingsPathResolver,
+        routeResolver: ServiceOfferingsPathResolver,
         additionalButtons: [
           {
             buttonText: "I don’t need these cloud resources",

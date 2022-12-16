@@ -23,6 +23,9 @@ export class ClassificationRequirementsStore extends VuexModule {
   public securityRequirements: SecurityRequirement[] = [];
   public classifiedInformationTypes: ClassifiedInformationTypeDTO[] = [];
 
+  // public get secretOrTopSecretSelected(): boolean {}
+
+
   @Mutation
   public setClassifications(value: ClassificationLevelDTO[]): void {
     this.classificationLevels = value;
