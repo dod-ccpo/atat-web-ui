@@ -46,7 +46,7 @@ describe("Testing OtherOfferings Component", () => {
     "storageAmount": "1",
     "performanceTier": "Premium",
     "performanceTierOther": "",
-    "numberOfInstancesNeeded": "1"
+    "numberOfInstances": "1"
   }
 
   const avlClassificationLevelObjects = [

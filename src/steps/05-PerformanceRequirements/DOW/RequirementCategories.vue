@@ -38,7 +38,7 @@
                 that you told us about for your current environment."
               :width="180"
               :items="radioOptions"
-              :value.sync="currEnvDTO.needs_architectural_design_services"
+              :value.sync="DOWNeedsArchitecturalDesign"
               :rules="[$validators.required('Please select an option.')]"
             />
           </div>
@@ -89,8 +89,6 @@ import PerfReqLearnMore from "./PerfReqLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { Checkbox, RadioButton, SlideoutPanelContent } from "../../../../types/Global";
-import CurrentEnvironment, 
-{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import { SystemChoiceDTO } from "@/api/models";
 import { routeNames } from "../../../router/stepper";
 import _ from "lodash";
@@ -101,7 +99,6 @@ import { getIdText } from "@/helpers";
 import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 
 @Component({
@@ -126,6 +123,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   private showAlert = false
   private routeNames = routeNames
   private goToSummary = false;
+  public DOWNeedsArchitecturalDesign = "";
 
   public introSentence = `Through JWCC, you have the ability to procure many offerings for
     Anything as a Service (XaaS) and Cloud Support Packages.`;
@@ -142,8 +140,6 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       label: "No.",
     },
   ];
-
-  public currEnvDTO = defaultCurrentEnvironment;
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -210,25 +206,13 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     };
     this.cloudSupportCheckboxItems.push(cloudSupportNone)
 
-    const storeData = await CurrentEnvironment.getCurrentEnvironment();
-    if (storeData) {
-      this.currEnvDTO = _.cloneDeep(storeData);
-    }
-
-    const replicateOrOptimize = 
-      this.currEnvDTO.current_environment_replicated_optimized || "";
-      
-    const replicateOrOptimizeGerund = replicateOrOptimize === "YES_OPTIMIZE"
-      ? "optimizing" : replicateOrOptimize === "YES_REPLICATE" ? "replicating" : ""
-
-    if (replicateOrOptimize) {
-      this.introSentence = `In addition to ${replicateOrOptimizeGerund} your current environment, 
-        you can procure other JWCC offerings for Anything as a Service (XaaS) 
-        and Cloud Support Packages.`;
-    }
   }
 
   public async mounted(): Promise<void> {
+    if (DescriptionOfWork.DOWHasArchitecturalDesignNeeds) {
+      this.DOWNeedsArchitecturalDesign 
+        = DescriptionOfWork.DOWHasArchitecturalDesignNeeds ? "YES" : "NO"
+    }
     this.goToSummary = DescriptionOfWork.DOWObject.length > 0;
     if (this.goToSummary) {
       DescriptionOfWork.setBackToContractDetails(true);
@@ -254,6 +238,9 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
           = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
 
         await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferingGroups);
+        
+        const bool = this.DOWNeedsArchitecturalDesign === "YES" ? true : false;
+        await DescriptionOfWork.setDOWHasArchitecturalDesign(bool);
       }
     } catch (error) {
       throw new Error('error saving requirement data');

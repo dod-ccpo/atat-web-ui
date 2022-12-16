@@ -290,8 +290,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
     this.selectedClassificationLevelSysIds = [];
     this.selectedClassificationLevelList.forEach(selectedClassLevel => {
-      if (selectedClassLevel.classification_level.value) {
-        this.selectedClassificationLevelSysIds.push(selectedClassLevel.classification_level.value);
+      const sysId = (selectedClassLevel.classification_level as ReferenceColumn).value
+      if (sysId) {
+        this.selectedClassificationLevelSysIds.push(sysId);
       }
       this.isIL6Selected = selectedClassLevel.impact_level === this.IL6SysId;
     });
@@ -305,7 +306,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     if (this.selectedInstancesLength === 1
       && this.selectedClassificationLevelList[0].sys_id) {
       const classificationObj = this.selectedClassificationLevelList[0];
-      const sysId = classificationObj.sys_id;
+      const sysId = (classificationObj.classification_level as ReferenceColumn).value;
       if(sysId) {
         this.selectedHeaderLevelSysIds.push(sysId);
       }
