@@ -23,7 +23,7 @@
     <ATATRadioGroup
       id="OSLicensingType"
       legend="Operating system licensing"
-      :value.sync="offeringData.licensing"
+      :value.sync="offeringData.operatingSystemAndLicensing"
       :items="OSLicensingOptions"
       name="OSLicensingType"
       class="mt-3 mb-8"

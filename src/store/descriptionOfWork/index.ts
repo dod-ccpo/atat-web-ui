@@ -148,6 +148,7 @@ const saveOrUpdateOtherServiceOffering =
     case "compute":
       tempObject.environment_type = serviceOffering.environmentType;
       tempObject.operating_environment = serviceOffering.operatingEnvironment; 
+      tempObject.operating_system_licensing = serviceOffering.operatingSystemAndLicensing;
       if(tempObject.sys_id){
         await api.computeEnvironmentInstanceTable.update(
           tempObject.sys_id,
@@ -303,7 +304,7 @@ const mapOtherOfferingFromDTO = (
     descriptionOfNeed: value.anticipated_need_or_usage,
     classificationLevel: classificationLevel,
     requirementTitle: value.instance_name,
-    licensing: value.licensing,
+    licensing: value.operating_system_licensing,
     memoryAmount: value.memory_amount,
     entireDuration: value.need_for_entire_task_order_duration,
     numberOfInstances: value.number_of_instances,
@@ -323,6 +324,7 @@ const mapOtherOfferingFromDTO = (
   if("environment_type" in value){
     result.environmentType = value.environment_type;
     result.operatingEnvironment = value.operating_environment;
+    result.operatingSystemAndLicensing = value.operating_system_licensing;
   }
 
   if("database_licensing" in value){

@@ -428,7 +428,7 @@ export default class OtherOfferingSummary extends Vue {
         "numberOfInstances",
         "numberOfVCPUs",
         "operatingSystem",
-        "licensing",
+        "operatingSystemAndLicensing",
         "performanceTier",
         "storageAmount",
         "storageType",
