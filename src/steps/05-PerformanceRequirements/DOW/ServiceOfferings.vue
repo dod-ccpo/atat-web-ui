@@ -202,7 +202,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public isServiceOfferingList = true;
 
-  public otherOfferingData = DescriptionOfWork.emptyOtherOfferingInstance
+  public otherOfferingData = _.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance);
 
   public showSubtleAlert = false;
   public isPeriodsDataMissing = false;
