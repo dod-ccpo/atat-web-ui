@@ -73,7 +73,7 @@ export class IGCEStore extends VuexModule {
   @Action
   public async setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
     await this.doSetRequirementsCostEstimate(value);
-    await this.saveRequirementsCostEstimate(value);
+    await this.saveRequirementsCostEstimate();
   }
 
   @Mutation
@@ -130,18 +130,19 @@ export class IGCEStore extends VuexModule {
    */
   @Action({rawError: true})
   public async saveRequirementsCostEstimate(): Promise<boolean> {
-    try {
+    return true;
+    /*try {
       // TODO: perform any data transformation using spread construct.
       // TODO: uncomment below 4 statements after SNOW table update
-      /*const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
+      /!*const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
       const updatedReqCostEstimate = await api.requirementsCostEstimateTable
         .update(storeRequirementsCostEstimate.sys_id as string, storeRequirementsCostEstimate);
       storeRequirementsCostEstimate.sys_updated_on = updatedReqCostEstimate.sys_updated_on;
-      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;*/
+      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;*!/
       return true;
     } catch (error) {
       throw new Error(`an error occurred saving requirements cost estimate ${error}`);
-    }
+    }*/
   }
 }
 
