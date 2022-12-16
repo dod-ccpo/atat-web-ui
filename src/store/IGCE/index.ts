@@ -1,8 +1,11 @@
 /* eslint-disable camelcase */
-import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
-import rootStore from "@/store";
-import Periods from "../periods";
-import DescriptionOfWork from "../descriptionOfWork";
+import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
+import rootStore from "../index";
+import api from "@/api";
+import {RequirementsCostEstimateDTO} from "@/api/models";
+import _ from "lodash";
+import Periods from "@/store/periods";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 export interface TravelEstimateNeeds {
   ceilingPrice: string,
@@ -30,6 +33,54 @@ export interface Fee{
   percentage: string
 }
 
+
+export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
+  return {
+    has_DOW_and_PoP: "",
+    architectural_design_current_environment: {
+      option: "",
+      estimated_values: []
+    },
+    architectural_design_performance_requirements: {
+      option: "",
+      estimated_values: []
+    },
+    fee_specs: {
+      is_charged: "",
+      percentage: null
+    },
+    how_estimates_developed: {
+      cost_estimate_description: "",
+      previous_cost_estimate_comparison: {
+        options: "",
+        percentage: null
+      },
+      tools_used: {
+        AWS: "",
+        GOOGLE_CLOUD: "",
+        MICROSOFT_AZURE: "",
+        ORACLE_CLOUD: "",
+        PREVIOUSLY_PAID_PRICES: "",
+        OTHER: "",
+        OTHER_TOOLS: "",
+      }
+    },
+    optimize_replicate: {
+      option: "",
+      estimated_values: []
+    },
+    surge_requirements: {
+      capabilities: "",
+      capacity: null
+    },
+    training: [],
+    travel: {
+      option: "",
+      estimated_values: []
+    }
+  }
+}
+
 @Module({
   name: "IGCEStore",
   namespaced: true,
@@ -37,96 +88,94 @@ export interface Fee{
   store: rootStore,
 })
 export class IGCEStore extends VuexModule {
-  // flag to show/skip `CannotProceed` page 
-  // found at src\steps\10-FinancialDetails\IGCE\CannotProceed.vue
-  hasDOWandPoP = false;
+  public requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
 
-  travelEstimateNeeds: TravelEstimateNeeds =  {
-    ceilingPrice: "",
-    estimatedTravelCosts: []
-  }
-  surgeRequirements: SurgeRequirements = {
-    capacity: "",
-    capabilities: ""
-  }
-  feeSpecs: Fee ={
-    isCharged: "",
-    percentage: ""
-  }
-  optimizeOrReplicateEstimateNeeds: OptimizeOrReplicateEstimateNeeds = {
-    ceilingPrice: "",
-    estimatedCosts: []
-  }
-  archDesignEstimateNeeds: ArchDesignEstimateNeeds[] = [];
-
-  @Mutation
-  public setArchDesignEstimateNeeds(needs: ArchDesignEstimateNeeds[]): void {
-    this.archDesignEstimateNeeds = needs;
-  }
-
-
-  @Mutation
-  public setOptimizeOrReplicateEstimateNeeds(needs: OptimizeOrReplicateEstimateNeeds): void {
-    this.optimizeOrReplicateEstimateNeeds.ceilingPrice = needs.ceilingPrice;
-    this.optimizeOrReplicateEstimateNeeds.estimatedCosts = needs.estimatedCosts;
-  }
-  
-  @Mutation
-  public setTravelEstimateNeeds(needs: TravelEstimateNeeds): void {
-    this.travelEstimateNeeds.ceilingPrice = needs.ceilingPrice;
-    this.travelEstimateNeeds.estimatedTravelCosts = needs.estimatedTravelCosts;
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    this.doReset();
   }
 
   @Mutation
-  public setSurgeRequirements(surgeCap: SurgeRequirements): void {
-    this.surgeRequirements.capacity = surgeCap.capacity;
-    this.surgeRequirements.capabilities = surgeCap.capabilities;
+  public doReset(): void {
+    this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
+  }
+
+  @Action
+  public async getRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
+    return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
+  }
+
+  @Action
+  public async setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
+    await this.doSetRequirementsCostEstimate(value);
   }
 
   @Mutation
-  public setFeeSpecs(fee: Fee): void {
-    this.feeSpecs.isCharged= fee.isCharged;
-    this.feeSpecs.percentage = fee.percentage;
-  } 
+  public async doSetRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
+    this.requirementsCostEstimate = value;
+  }
 
   @Mutation
   public setHasDOWandPop(): void {
-    this.hasDOWandPoP = ((Periods.periods && Periods.periods.length > 0) && 
-      DescriptionOfWork.isIncomplete === false) || false;
+    const requirementCostEstimate = this.requirementsCostEstimate as RequirementsCostEstimateDTO;
+    if ((Periods.periods && Periods.periods.length > 0) && !DescriptionOfWork.isIncomplete) {
+      requirementCostEstimate.has_DOW_and_PoP = "YES";
+    } else {
+      requirementCostEstimate.has_DOW_and_PoP = "NO";
+    }
   }
 
-  @Action({ rawError: true })
-  public async getArchDesignEstimateNeeds(): Promise<ArchDesignEstimateNeeds[]> {
-    return this.archDesignEstimateNeeds;
+  // TODO: write other setters and getters as needed.
+
+  @Action
+  public async initializeRequirementsCostEstimate(): Promise<void> {
+    await this.doInitializeRequirementsCostEstimate();
   }
 
-  @Action({ rawError: true })
-  public async getOptimizeOrReplicateEstimateNeeds(): Promise<OptimizeOrReplicateEstimateNeeds> {
-    return this.optimizeOrReplicateEstimateNeeds;
+  @Mutation
+  public async doInitializeRequirementsCostEstimate(): Promise<void> {
+    // TODO: need to initialize this in SNOW by making api call. Then set the response from snow
+    this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
+    // TODO: other initializations outside of requirements cost estimate
   }
 
-  @Action({ rawError: true })
-  public async getTravelEstimateNeeds(): Promise<TravelEstimateNeeds> {
-    return this.travelEstimateNeeds;
+  /**
+   * Loads the Requirements cost estimate data using the acquisition package sys id.
+   * And then sets the context such that the data could be retrieved using the
+   * getters (getRequirementsCostEstimate)
+   * @param reqCostEstimateSysId - sys_id of the acquisition package table record
+   */
+  @Action({rawError: true})
+  public async loadRequirementsCostEstimateDataById(reqCostEstimateSysId: string): Promise<void> {
+    const requirementsCostEstimate = await api.requirementsCostEstimateTable
+      .retrieve(reqCostEstimateSysId);
+    if (requirementsCostEstimate) {
+      await this.doSetRequirementsCostEstimate(requirementsCostEstimate);
+    } else {
+      await this.initializeRequirementsCostEstimate();
+    }
   }
 
-  @Action({ rawError: true })
-  public async getSurgeRequirements(): Promise<SurgeRequirements> {
-    return this.surgeRequirements;
+  /**
+   * Saves requirements cost estimate record and sets the context.
+   */
+  @Action({rawError: true})
+  public async saveRequirementsCostEstimate(
+    requirementCostEstimate: RequirementsCostEstimateDTO)
+    : Promise<boolean> {
+    try {
+      // TODO: perform any data transformation using spread construct.
+      const updatedReqCostEstimate = await api.requirementsCostEstimateTable
+        .update(requirementCostEstimate.sys_id as string, requirementCostEstimate);
+      const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
+      storeRequirementsCostEstimate.sys_updated_on = updatedReqCostEstimate.sys_updated_on;
+      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;
+      return true;
+    } catch (error) {
+      throw new Error(`an error occurred saving requirements cost estimate ${error}`);
+    }
   }
-
-  @Action({ rawError: true })
-  public async getFeeSpecs(): Promise<Fee> {
-    return this.feeSpecs;
-  }
-
-  @Action({ rawError: true })
-  public async getHasDOWandPoP(): Promise<boolean> {
-    return this.hasDOWandPoP;
-  }
-
 }
 
 const IGCE = getModule(IGCEStore);
 export default IGCE;
-
