@@ -32,7 +32,7 @@ export async function validateInput(
   let success = false;
 
   try {
-    const mockValidator = jest.spyOn(localVue.prototype.$validators, validatorName);
+    const mockValidator = jest.spyOn(localVue?.prototype.$validators, validatorName);
     await wrapper.setProps(props); 
     expect(mockValidator).toHaveBeenCalled();
 

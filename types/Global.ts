@@ -282,13 +282,15 @@ export interface DOWClassificationInstance {
   classificationLevelSysId: string;
   anticipatedNeedUsage: string;
   entireDuration: string;
-  selectedPeriods?: DOWPoP[];
+  // selectedPeriods?: DOWPoP[];
+  selectedPeriods?: string[];
   labelLong?: string;
   labelShort?: string;
 }
 
 export interface DOWServiceOffering {
   name: string;
+  acquisitionPackageSysId: string;
   otherOfferingName?: string;
   "sys_id": string; //service offering sys id
   serviceId: string; // id of the service
@@ -346,38 +348,65 @@ export interface lineChartData {
 }
 
 export interface OtherServiceOfferingData {
+  acquisitionPackageSysId?: string;
   instanceNumber: number;
-  environmentType: string;
+  environmentType?: string;
   classificationLevel?: string;
-  deployedRegions: string[];
-  deployedRegionsOther: string;
+  deployedRegions?: string[];
+  deployedRegionsOther?: string;
   descriptionOfNeed: string;
   entireDuration: string;
   periodsNeeded: string[];
-  operatingSystemAndLicensing: string;
-  numberOfVCPUs: string;
-  memory: string;
-  storageType: string;
-  storageAmount: string;
-  performanceTier: string;
-  performanceTierOther: string;
-  numberOfInstancesNeeded: string;
+  operatingSystemAndLicensing?: string;
+  numberOfVCPUs?: string;
+  memoryAmount?: string;
+  memoryUnit?: StorageUnit;
+  storageType?: string;
+  storageAmount?: string;
+  storageUnit?: StorageUnit;
+  performanceTier?: string;
+  performanceTierOther?: string;
+  numberOfInstancesNeeded?: string;
   requirementTitle?: string;
+  usageDescription?: string;
+  operatingEnvironment?: string;
+  databaseType?: string;
+  databaseTypeOther?: string;
+  licensing?: string;
+  operatingSystem?: string;
+  region?: string;
+  processorSpeed?: string;
+  networkPerformance?: string;
+  databaseLicensing?: string;
+  sysId?: string;
+  personnelOnsiteAccess?: string;
+  tsContractorClearanceType?: string;
+  // eslint-disable-next-line max-len
+  trainingType?: "" | "ONSITE_INSTRUCTOR_CONUS" | "ONSITE_INSTRUCTOR_OCONUS" | "VIRTUAL_INSTRUCTOR" | "VIRTUAL_SELF_LED" | "NO_PREFERENCE" | string;
+  trainingLocation?: string;
+  trainingTimeZone?: string;
+  trainingPersonnel?: string;
+  trainingFacilityType?: "" | "GOVERNMENT_FACILITY" | "NON_GOVERNMENT_FACILITY" | string;
+  serviceType?: string;
+  canTrainInUnclassEnv?: string;
+  trainingRequirementTitle?: string;
 }
 
 export interface OtherServiceSummaryTableData {
   instanceNumber: number;
   typeOrTitle?: string;
-  location?: string;
+  classification?: string;
   qty?: string;
   vCPU?: string;
   memory?: string;
-  storage?: string;
-  classification?: string;
+  storageAmount?: string;
+  storageType?: string;
   performance?: string;
   requirementTitle?: string;
   duration?: string;
-}
+  personnelOnsiteAccess?: string;
+  trainingType?: string;
+}  
 
 export interface EnvInstanceSummaryTableData {
   instanceSysId?: string;

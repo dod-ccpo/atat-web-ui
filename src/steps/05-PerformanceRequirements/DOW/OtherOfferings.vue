@@ -1,41 +1,169 @@
 <template>
   <div>
-    <v-form ref="serviceOfferingForm">
-      <ComputeForm
+
+    <h1 class="page-header mb-3" tabindex="-1">
+      <span v-if="firstTimeHere">
+        Let’s gather your requirements for {{ serviceGroupVerbiageInfo.offeringName }}
+      </span>
+      <span v-else>
+        Let’s gather some details 
+        for {{ serviceGroupVerbiageInfo.heading2 }} #{{ _serviceOfferingData.instanceNumber }}
+      </span>
+    </h1>
+    <p 
+      class="copy-max-width"
+      :class="isClassificationDataMissing || isPeriodsDataMissing ? 'mb-4' : 'mb-10'"
+    >
+      <span v-if="firstTimeHere">
+        In this section, we’ll collect details 
+        about {{ serviceGroupVerbiageInfo.introText }} 
+      </span>
+
+      If you need multiple, we’ll walk through them one at a time. 
+      <span v-if="selectedClassificationLevelList.length === 1">
+        This {{ serviceGroupVerbiageInfo.typeForText }} will be within the 
+        <strong>{{ singleClassificationLevelName }}</strong> classification level. 
+        If you need a different level, 
+        <a 
+          role="button" 
+          id="UpdateClassificationFromIntro"
+          tabindex="0"
+          @click="openModal"
+          @keydown.enter="openModal"
+          @keydown.space="openModal"
+        >update your Classification Requirements</a>.
+      </span>
+    </p>
+    
+    <DOWSubtleAlert
+      v-show="isClassificationDataMissing || isPeriodsDataMissing"
+      :isClassificationDataMissing="isClassificationDataMissing"
+      :isPeriodsDataMissing="isPeriodsDataMissing"
+      class="copy-max-width"
+    />
+
+    <v-expand-transition>
+      <ATATAlert
+        id="ErrorsOnLoadAlert"
+        v-show="formHasErrors === true && formHasBeenTouched === true"
+        type="error"
+        class="mb-10"
+      >
+        <template v-slot:content>
+          <p class="mb-0" id="ErrorsOnLoadAlertText">
+            Some of your info is missing. You can add it now or come back at any 
+            time before finalizing your acquisition package.
+          </p>
+        </template>
+      </ATATAlert>
+    </v-expand-transition>
+
+
+    <h2 class="mb-5" 
+      id="FormSection1Heading"
+      v-if="isCompute || isDatabase || isTraining || isStorage"
+    >
+      1. {{ sectionOneSubhead }}
+    </h2>
+
+    <div v-if="selectedClassificationLevelList.length > 1" class="mb-10">
+      <ATATRadioGroup
+        id="ClassificationLevel"
+        legend="What classification level is this instance deployed in?"
+        :value.sync="_serviceOfferingData.classificationLevel"
+        :items="classificationRadioOptions"
+        name="ClassificationLevel"
+        class="mt-3 mb-2"
+        :tooltipText="classificationTooltipText"
+        tooltipLabel="Classification level for this instance"
+        :rules="[$validators.required('Please select a classification level.')]"
+      />
+      <a 
+        role="button" 
+        id="UpdateClassificationFromRadios"
+        tabindex="0"
+        @click="openModal"
+        @keydown.enter="openModal"
+        @keydown.space="openModal"
+      >Update your Classification Requirements</a>
+    </div>
+
+    <v-form ref="form" lazy-validation>
+
+      <ComputeFormElements
         v-if="isCompute"
-        :computeData.sync="_serviceOfferingData"
-        :firstTimeHere="firstTimeHere"
-        :isClassificationDataMissing="isClassificationDataMissing"
-        :isPeriodsDataMissing="isPeriodsDataMissing"
-        :avlClassificationLevelObjects="avlClassificationLevelObjects"
-        :singleClassificationLevelName="singleClassificationLevelName"
-        :formHasErrors="formHasErrors"
-        :formHasBeenTouched="formHasBeenTouched"
-        :classificationRadioOptions="classificationRadioOptions"
-        :classificationTooltipText="classificationTooltipText"
-        :otherRegionValue="otherRegionValue"
-        :otherPerformanceTierValue="otherPerformanceTierValue"
-        :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-        :validateOtherTierNow="validateOtherTierNow"
-        :validateOtherTierOnBlur="validateOtherTierOnBlur"
-        :clearOtherTierValidation="clearOtherTierValidation"
-        @openModal="openModal"
-        @formUpdate="formComponentUpdate"
+        :data.sync="_serviceOfferingData"  
       />
 
-      <GeneralXaaSForm 
-        v-if="isGeneral"
-        :generalXaaSData.sync="_serviceOfferingData"
-        :firstTimeHere="firstTimeHere"
-        :isClassificationDataMissing="isClassificationDataMissing"
-        :isPeriodsDataMissing="isPeriodsDataMissing"
-        :avlClassificationLevelObjects="avlClassificationLevelObjects"
-        :singleClassificationLevelName="singleClassificationLevelName"
-        :classificationRadioOptions="classificationRadioOptions"
-        :classificationTooltipText="classificationTooltipText"
-        :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-        @openModal="openModal"
+      <DatabaseFormElements
+        v-if="isDatabase"
+        :data.sync="_serviceOfferingData"  
       />
+
+      <StorageFormElements
+        v-if="isStorage"
+        :data.sync="_serviceOfferingData"
+        :storageUnits="storageUnits"
+      />
+
+      <TrainingFormElements
+        v-if="isTraining"
+        :data.sync="_serviceOfferingData"
+      />
+      
+      <section v-if="isCompute || isDatabase">
+        <hr />
+        <h2>
+          2. {{ isCompute ? 'Instance' : 'Database' }} Configurations
+        </h2>
+
+        <InstanceConfig
+          :data.sync="_serviceOfferingData"
+          :storageUnits="storageUnits"
+          :isDOW="true"
+        />
+
+        <PerformanceTier 
+          :isCompute="isCompute"
+          :isDatabase="isDatabase"
+          :isDOW="true"
+          :data.sync="_serviceOfferingData"
+          :storageUnits="storageUnits"
+        />
+      </section>
+
+      <div v-if="isCompute || isDatabase || isStorage || isTraining">
+        <hr/>
+        <h2 class="mb5">
+          {{ isStorage || isTraining ? '2' : '3' }}. Anticipated need and duration
+        </h2>
+        <br/>
+      </div>
+      
+      <AnticipatedDurationandUsage
+        :typeForUsage="serviceGroupVerbiageInfo.typeForUsage"
+        :typeForDuration="serviceGroupVerbiageInfo.typeForText"
+        :index="_serviceOfferingData.instanceNumber"
+        :isPeriodsDataMissing="isPeriodsDataMissing"
+        :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+        :anticipatedNeedUsage.sync="_serviceOfferingData.descriptionOfNeed"
+        :entireDuration.sync="_serviceOfferingData.entireDuration"
+        :selectedPeriods.sync="_serviceOfferingData.periodsNeeded"
+      />
+
+      <div v-if="isSupport" class="mt-10">
+        <ATATRadioGroup
+          class="copy-max-width mb-10 mt-0"
+          legend="Will this service require CSP personnel to access on-site locations?"
+          :items="onsiteAccessOptions"
+          :value.sync="_serviceOfferingData.personnelOnsiteAccess"
+          :rules="[
+            $validators.required(
+              'Please select an option.'
+            )
+          ]"
+        />
+      </div>
   
     </v-form>
 
@@ -58,20 +186,35 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ClassificationsModal from "./ClassificationsModal.vue";
-import ComputeForm from "./ComputeForm.vue"
-import GeneralXaaSForm from "./GeneralXaaSForm.vue";
+import ComputeFormElements from "./ComputeFormElements.vue"
+import DatabaseFormElements from "./DatabaseFormElements.vue";
+import StorageFormElements from "./StorageFormElements.vue";
+import TrainingFormElements from "./TrainingFormElements.vue";
+import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationandUsage.vue";
+import InstanceConfig from "@/components/DOW/InstanceConfig.vue";
+import PerformanceTier from "@/components/DOW/PerformanceTier.vue";
 
 import Toast from "@/store/toast";
+
+import DOWSubtleAlert from "./DOWSubtleAlert.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import _ from "lodash";
 
 import { 
   Checkbox, 
   OtherServiceOfferingData,
   RadioButton,
+  SelectData,
   ToastObj,
 } from "../../../../types/Global";
 
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { ClassificationLevelDTO } from "@/api/models";
+import {
+  AcquisitionPackageDTO,
+  ClassificationLevelDTO,
+  SelectedClassificationLevelDTO
+} from "@/api/models";
 
 import { 
   buildClassificationCheckboxList, 
@@ -79,18 +222,31 @@ import {
   createPeriodCheckboxItems,
 } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import {
+  buildCurrentSelectedClassLevelList
+} from "@/packages/helpers/ClassificationRequirementsHelper";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import classificationRequirements from "@/store/classificationRequirements";
 
 @Component({
   components: {
     ClassificationsModal,
-    ComputeForm,
-    GeneralXaaSForm,
+    ComputeFormElements,
+    AnticipatedDurationandUsage,
+    DOWSubtleAlert,
+    ATATAlert,
+    InstanceConfig,
+    PerformanceTier,
+    DatabaseFormElements,
+    StorageFormElements,
+    TrainingFormElements,
+    ATATRadioGroup,
   }
 })
 
 export default class OtherOfferings extends Vue {
   $refs!: {
-    serviceOfferingForm: Vue & {
+    form: Vue & {
       resetValidation: () => void;
       errorBucket: string[];
       reset: () => void;
@@ -100,10 +256,10 @@ export default class OtherOfferings extends Vue {
   };
 
   @PropSync("serviceOfferingData") public _serviceOfferingData!: OtherServiceOfferingData;
-  @Prop() public isCompute!: boolean;
-  @Prop() public isGeneral!: boolean;
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
+  @Prop() public avlClassificationLevelObjects!: ClassificationLevelDTO[];
+  @Prop() public otherOfferingList!: string[];
 
   public firstTimeHere = false;
   public modalSelectionsOnOpen: string[] = [];
@@ -113,7 +269,7 @@ export default class OtherOfferings extends Vue {
   public isIL6Selected = false;
   public IL6SysId = "";
   public allClassificationLevels:ClassificationLevelDTO[] = [];
-  public avlClassificationLevelObjects: ClassificationLevelDTO[] = [];
+  public selectedClassificationLevelList: SelectedClassificationLevelDTO[] = [];
   public classificationRadioOptions: RadioButton[] = [];
   public singleClassificationLevelName: string | undefined = "";
   public availablePeriodCheckboxItems: Checkbox[] = [];
@@ -126,6 +282,33 @@ export default class OtherOfferings extends Vue {
   public otherRegionValue = "OtherRegion";
   public otherPerformanceTierValue = "OtherPerformance";
   public clearOtherTierValidation = false;
+  public acquisitionPackage: AcquisitionPackageDTO | undefined;
+
+  public serviceGroupOnLoad = "";
+  public isStorage = false;
+  public isCompute = false;
+  public isGeneralXaaS = false;
+  public isDatabase = false;
+  public isSupport = false;
+  public isTraining = false;
+
+  public serviceGroupVerbiageInfo: Record<string, string> = {};
+
+  public get sectionOneSubhead(): string {
+    let subhead = "Instance details";
+    switch(this.serviceGroupOnLoad.toLowerCase()) {
+    case "training":
+      subhead = "Training details";
+      break;
+    case "database":
+      subhead = "Database details";
+      break;
+    case "storage":
+      subhead = "Storage configurations"
+      break;
+    }
+    return subhead;
+  }
 
   public classificationLevelToast: ToastObj = {
     type: "success",
@@ -134,6 +317,26 @@ export default class OtherOfferings extends Vue {
     hasUndo: false,
     hasIcon: true,
   };
+  public introOfferingString = "";
+
+  public storageUnits: SelectData[] = [
+    { text: "Gigabyte (GB)", value: "GB" },
+    { text: "Terabyte (TB)", value: "TB" },
+    { text: "Petabyte (PB)", value: "PB" },
+  ];
+
+  public onsiteAccessOptions: RadioButton[] = [
+    {
+      id: "Yes",
+      label: "Yes",
+      value: "YES",
+    },
+    {
+      id: "No",
+      label: "No",
+      value: "NO",
+    },
+  ];
 
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
@@ -146,18 +349,18 @@ export default class OtherOfferings extends Vue {
 
   public setAvlClassificationLevels(): void {
     this.classificationRadioOptions 
-      = this.createCheckboxOrRadioItems(this.avlClassificationLevelObjects, "Radio");
+      = this.createCheckboxOrRadioItems(this.selectedClassificationLevelList, "Radio");
   }
 
   public checkSingleClassification(): void {
     // if only one classification level selected in Contract Details or the 
     // classifications modal, set it as the "selected" classification level
     if (
-      this.avlClassificationLevelObjects.length === 1
-      && this.avlClassificationLevelObjects[0].sys_id
+      this.selectedClassificationLevelList.length === 1
+      && this.selectedClassificationLevelList[0].classification_level.value
     ) {
-      const classificationObj = this.avlClassificationLevelObjects[0];
-      this._serviceOfferingData.classificationLevel = classificationObj.sys_id;
+      const classificationObj = this.selectedClassificationLevelList[0];
+      this._serviceOfferingData.classificationLevel = classificationObj.classification_level.value;
       this.singleClassificationLevelName 
         = buildClassificationLabel(classificationObj, "short");
     }
@@ -165,15 +368,14 @@ export default class OtherOfferings extends Vue {
 
   public async classificationLevelsChanged(): Promise<void> {
     this.showDialog = false;
-    this.avlClassificationLevelObjects = [];
-    this.modalSelectedOptions.forEach((sysId) => {
-      const classififcationObj = this.allClassificationLevels.find(obj => obj.sys_id === sysId);
-      if (classififcationObj) {
-        this.avlClassificationLevelObjects.push(classififcationObj);
-      }
-    });
+    const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
+        this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
+    await classificationRequirements.saveSelectedClassificationLevels(currentData)
+    await classificationRequirements.loadSelectedClassificationLevelsByAqId(
+        this.acquisitionPackage?.sys_id as string);
+    await this.setAvailableClassificationLevels()
     this.setAvlClassificationLevels();
-    if (this.avlClassificationLevelObjects.length === 1) {
+    if (this.selectedClassificationLevelList.length === 1) {
       this.checkSingleClassification();
     } else if (this._serviceOfferingData.classificationLevel) {
       // if the classification level that was selected was removed via the modal,
@@ -183,11 +385,6 @@ export default class OtherOfferings extends Vue {
         this._serviceOfferingData.classificationLevel = "";
       }
     }
-
-    await ClassificationRequirements.setSelectedClassificationLevels(
-      this.avlClassificationLevelObjects
-    );
-
     Toast.setToast(this.classificationLevelToast);
   }
 
@@ -197,24 +394,42 @@ export default class OtherOfferings extends Vue {
   }
 
   public async setAvailableClassificationLevels(): Promise<void> {
-    this.avlClassificationLevelObjects 
+    this.selectedClassificationLevelList 
       = await ClassificationRequirements.getSelectedClassificationLevels();
   }
 
+
   public async loadOnEnter(): Promise<void> {
-    if (this.isCompute || this.isGeneral) {
+    this.serviceGroupVerbiageInfo = await DescriptionOfWork.getServiceGroupVerbiageInfo();
+    this.acquisitionPackage = await AcquisitionPackage
+      .getAcquisitionPackage() as AcquisitionPackageDTO;
+    this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
+    this.isCompute = this.serviceGroupOnLoad.toLowerCase() === "compute";
+    this.isGeneralXaaS = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
+    this.isDatabase = this.serviceGroupOnLoad.toLowerCase() === "database";
+    this.isStorage = this.serviceGroupOnLoad.toLowerCase() === "storage";
+    this.isTraining = this.serviceGroupOnLoad.toLowerCase() === "training";
+
+    this.isSupport = [
+      "advisory_assistance",
+      "help_desk_services",
+      "documentation_support",
+      "general_cloud_support"
+    ].includes(this.serviceGroupOnLoad.toLowerCase());
+
+    if (this.serviceGroupOnLoad.toLowerCase() !== "portability_plan") {
       const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
       this.firstTimeHere 
         = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
     }
 
     // get classification levels selected in step 4 Contract Details
-    this.avlClassificationLevelObjects 
+    this.selectedClassificationLevelList 
       = await ClassificationRequirements.getSelectedClassificationLevels();
     // set checked items in modal to classification levels selected in step 4 Contract Details
-    if (this.avlClassificationLevelObjects) {
-      this.avlClassificationLevelObjects.forEach((val) => {
-        this.modalSelectedOptions.push(val.sys_id || "")
+    if (this.selectedClassificationLevelList) {
+      this.selectedClassificationLevelList.forEach((val) => {
+        this.modalSelectedOptions.push(val.classification_level.value || "")
       });
       this.checkSingleClassification();
     }
@@ -237,7 +452,7 @@ export default class OtherOfferings extends Vue {
   }
 
   public async setComponentSpecificData(): Promise<void> {
-    if (this.isCompute || this.isGeneral) {
+    if (this.isCompute || this.isGeneralXaaS) {
       this.formHasBeenTouched 
         = await DescriptionOfWork.hasInstanceBeenTouched(this._serviceOfferingData.instanceNumber);
     }
@@ -259,20 +474,20 @@ export default class OtherOfferings extends Vue {
   }
 
   public formComponentUpdate(): void {
-    const eb = this.$refs.serviceOfferingForm.errorBag;
+    const eb = this.$refs.form.errorBag;
     this.errorBagValues = Object.values(eb);
   }
 
   @Watch("errorBagValues")
   public errorBagChange(): void {
     this.$nextTick(() => {
-      const errorBag = Object.values(this.$refs.serviceOfferingForm.errorBag);
+      const errorBag = Object.values(this.$refs.form.errorBag);
       this.formHasErrors = errorBag.includes(true);
     });
   }
   
   get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.serviceOfferingForm as Vue & { validate: () => boolean };
+    return this.$refs.form as Vue & { validate: () => boolean };
   }
 
   public async validate(): Promise<void> {
@@ -282,11 +497,11 @@ export default class OtherOfferings extends Vue {
   }
 
   private setErrorMessages(): void {
-    if (!this.$refs.serviceOfferingForm) {
+    if (!this.$refs.form) {
       return;
     }
-    this.errorBagValues = Object.values(this.$refs.serviceOfferingForm.errorBag);
-    const formChildren = this.$refs.serviceOfferingForm.$children[0].$children;
+    this.errorBagValues = Object.values(this.$refs.form.errorBag);
+    const formChildren = this.$refs.form.$children[0].$children;
     const inputRefs = [
       "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
     ];

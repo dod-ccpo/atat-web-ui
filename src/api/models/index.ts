@@ -77,13 +77,21 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
 export interface ClassificationLevelDTO extends BaseTableDTO {
   impact_level: string;
   classification: string;
+  classification_level?: ReferenceColumn | string;
+}
+
+export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
+  description: string;
+  name: string;
+  sequence: string;
 }
 
 export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
-  classification_level: ReferenceColumn; // sys id
-  acquisition_package: ReferenceColumn; // sys id
+  classification_level: ReferenceColumn | string; // sys id
+  acquisition_package: ReferenceColumn | string; // sys id
   users_per_region?: string; // json stringified sys_id/count pairs
   increase_in_users?: YesNo;
+  classified_information_types?: string;
   user_growth_estimate_type?: SingleMultiple
   user_growth_estimate_percentage?: string[];
   data_egress_monthly_amount?: number | null;
@@ -272,14 +280,6 @@ export interface ContractTypeDTO extends BaseTableDTO {
   contract_type_justification: string;
 }
 
-export interface RequirementsCostEstimateDTO extends BaseTableDTO {
-    surge_capabilities?: string;
-    estimatedTaskOrderValue?: string;
-    feePercentage?: string;
-    feeCharged?: string;
-    surge_capacity?: string;
-}
-
 export interface RequiredServicesDTO extends BaseTableDTO {
   usage_description: string;
   applicable_classification_levels: string;
@@ -387,9 +387,11 @@ export interface DisplayColumn {
 }
 
 export interface SelectedServiceOfferingDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  architectural_design_requirement?: ReferenceColumn | string;
   classification_instances: string;
   other_service_offering: string;
-  service_offering: string;
+  service_offering: ReferenceColumn | string;
 }
 
 export interface ClassificationInstanceDTO extends BaseTableDTO {
@@ -499,22 +501,65 @@ export interface EDAResponse {
 }
 
 export interface EnvironmentInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  anticipated_need_or_usage: string;
+  classification_level: ReferenceColumn | string;
+  classified_information_types: string;
+  data_egress_monthly_amount: string;
+  data_egress_monthly_unit: string;
+  instance_location: string;
+  instance_name: string;
+  licensing?: string;
+  memory_amount: string;
+  memory_unit: string;
+  need_for_entire_task_order_duration: string;
+  number_of_instances: string;
+  number_of_vcpus: string;
+  operating_system?: string;
+  operating_system_licensing: string;
+  performance_tier: string;
+  pricing_model: string;
+  pricing_model_expiration: string;
+  processor_speed?: string;
+  region?: ReferenceColumn | string;
+  selected_periods?: string;
   storage_amount: string;
   storage_type: string;
-  instance_name: string;
-  classification_level: string | ReferenceColumn;
-  number_of_vcpus: string;
-  data_egress_monthly_amount: string;
-  performance_tier: string;
-  pricing_model_expiration: string;
-  csp_region: string;
-  memory_unit: string;
   storage_unit: string;
-  pricing_model: string;
-  instance_location: string;
-  memory_amount: string;
-  operating_system_licensing: string;
-  data_egress_monthly_unit: string;
+}
+
+export interface ComputeEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  environment_type?: string;
+  operating_environment?: string;
+}
+
+export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  database_licensing?: string;
+  database_type?: string;
+  database_type_other?: string;
+  network_performance?: string;
+}
+
+export type StorageEnvironmentInstanceDTO = EnvironmentInstanceDTO
+
+export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  can_train_in_unclass_env?: string;
+  personnel_onsite_access?: string;
+  personnel_requiring_training?: string;
+  service_type?: string;
+  training_facility_type?: string;
+  training_format?: string;
+  training_location?: string;
+  training_requirement_title?: string;
+  training_time_zone?: string;
+  ts_contractor_clearance_type?: string;
+}
+
+export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
+  applications_needing_design: string;
+  data_classification_levels: string;
+  external_factors: string;
+  statement: string;
 }
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{
@@ -638,3 +683,56 @@ export interface UserDTO extends BaseTableDTO {
   user_name?: string;
   email?: string;
 }
+
+export interface EstimateOptionValueDTO {
+  option: SingleMultiple;
+  estimated_values: string[];
+}
+
+export interface TrainingEstimateDTO {
+  cost_estimate: "PER_PERSON" | "PER_CLASS" | "SUBSCRIPTION";
+  subscription_estimate: "ANNUAL" | "MONTHLY";
+  estimated_price: string;
+  estimate: EstimateOptionValueDTO;
+}
+
+export interface RequirementsCostEstimateDTO extends BaseTableDTO{
+  has_DOW_and_PoP: YesNo;
+  optimize_replicate: EstimateOptionValueDTO;
+  architectural_design_current_environment: EstimateOptionValueDTO;
+  architectural_design_performance_requirements: EstimateOptionValueDTO;
+  training: TrainingEstimateDTO[];
+  travel: EstimateOptionValueDTO;
+  surge_requirements: {
+    capabilities: YesNo;
+    capacity: number | null;
+  }
+  fee_specs: {
+    is_charged: YesNo;
+    percentage: number | null;
+  };
+  how_estimates_developed: {
+    tools_used: {
+      AWS: YesNo;
+      GOOGLE_CLOUD: YesNo;
+      MICROSOFT_AZURE: YesNo;
+      ORACLE_CLOUD: YesNo;
+      PREVIOUSLY_PAID_PRICES: YesNo;
+      OTHER: YesNo;
+      OTHER_TOOLS: string;
+    }
+    cost_estimate_description: string;
+    previous_cost_estimate_comparison:{
+      options: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
+      percentage: number | null;
+    };
+  }
+}
+
+/*export interface RequirementsCostEstimateDTO extends BaseTableDTO {
+  surge_capabilities?: string;
+  estimatedTaskOrderValue?: string;
+  feePercentage?: string;
+  feeCharged?: string;
+  surge_capacity?: string;
+}*/

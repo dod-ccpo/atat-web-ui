@@ -297,7 +297,9 @@ export default class Summary extends Mixins(SaveOnLeave) {
     let outputArr :string[] = [];
     value.forEach((obj)=>{
       let id = obj.serviceOfferingGroupId;
-      if (this.isClassificationDataMissing || obj.serviceOfferings.length === 0) {
+      if (this.isClassificationDataMissing || 
+        (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||
+        (obj.otherOfferingData && obj.otherOfferingData.length === 0)) {
         outputArr.push(id);
       } else {
         obj.serviceOfferings.forEach((offering)=>{

@@ -35,6 +35,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import vue from "vue";
 import { Checkbox, RadioButton } from "../../../types/Global";
 import SecurityRequirementsCheckboxes from "@/components/DOW/SecurityRequirementsCheckboxes.vue";
+import classificationRequirements from "@/store/classificationRequirements";
 @Component({
   components: {
     SecurityRequirementsCheckboxes,
@@ -55,72 +56,8 @@ export default class SecurityRequirementsForm extends vue {
   @Prop() private hasTopSecret!: boolean;
   @Prop() private isDOW!: boolean;
 
-  private securityRequirementsCheckboxes: Checkbox[] = [
-    {
-      id: "COMSEC",
-      label: "Communication Security (COMSEC) Information",
-      value: "COMSEC",
-      description: "Includes accountable or non-accountable COMSEC information and controlled" +
-        " crytographic items (CCI)",
-    },
-    {
-      id: "RestrictedData",
-      label: "Restricted Data",
-      value: "restrictedData",
-    },
-    {
-      id: "CNWDI",
-      label: "Critical Nuclear Weapon Design Information (CNWDI)",
-      value: "CNWDI",
-      description:"If CNWDI access is required, then Restricted Data must also be selected."
-    },
-    {
-      id: "FormerlyRestrictedData",
-      label: "Formerly Restricted Data",
-      value: "formerlyRestrictedData",
-    },
-    {
-      id: "SCI",
-      label: "National Intelligence Information: Sensitive Compartmented Information (SCI)",
-      value: "SCI",
-    },
-    {
-      id: "NOSCI",
-      label: "National Intelligence Information: Non-SCI",
-      value: "NONSCI",
-    },
-    {
-      id: "SAP",
-      label: "Special Access Program (SAP) Information",
-      value: "SAP",
-    },
-    {
-      id: "NATO",
-      label: "North Atlantic Treaty Organization (NATO) Information",
-      value: "NATO",
-    },
-    {
-      id: "FGI",
-      label: "Foreign Government Information (FGI)",
-      value: "FGI",
-    },
-    {
-      id: "ACCM",
-      label: "Alternative Compensatory Control Measures (ACCM) Information",
-      value: "ACCM",
-    },
-    {
-      id: "CUI",
-      label: "Controlled Unclassified Information (CUI)",
-      value: "CUI",
-    },
-    {
-      id: "Other",
-      label: "Other - Secure Internet Protocol Router Network (SIPRNET) / Joint" +
-        " Worldwide Intelligence Communciations System (JWICS)",
-      value: "Other",
-    },
-  ]
+  private securityRequirementsCheckboxes: Checkbox[] = [];
+  
   private clearanceLevels: RadioButton[] = [
     {
       id: "TopSecret",
@@ -133,6 +70,31 @@ export default class SecurityRequirementsForm extends vue {
       value: "TS/SCI",
     },
   ];
+
+  private async loadOnEnter(): Promise<void> {
+    let classifiedInformationTypes = 
+      await classificationRequirements.getAllClassifiedInformationTypes();
+
+    classifiedInformationTypes = classifiedInformationTypes.sort((a,b) => {
+      return Number(a.sequence) - Number(b.sequence);
+    });
+
+    this.securityRequirementsCheckboxes = [];
+
+    classifiedInformationTypes.forEach(item => {
+      this.securityRequirementsCheckboxes.push({
+        id: item.sequence,
+        label: item.name,
+        description: item.description,
+        value: item.sys_id as string
+      })
+    })
+
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
 }
 </script>
 

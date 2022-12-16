@@ -266,7 +266,7 @@ export class CurrentEnvironmentStore extends VuexModule {
         .split(",").filter(nonEmptyVal => nonEmptyVal);
     currentEnvResponse.data_classifications_impact_levels =
       (currentEnvResponse.data_classifications_impact_levels as unknown as string)
-        .split(",").filter(nonEmptyVal => nonEmptyVal);
+        ?.split(",").filter(nonEmptyVal => nonEmptyVal);
   }
 
   /**
@@ -288,7 +288,7 @@ export class CurrentEnvironmentStore extends VuexModule {
     currEnvForSave.env_classifications_onprem =
       currentEnv.env_classifications_onprem.toString() as unknown as string[];
     currEnvForSave.data_classifications_impact_levels =
-      currentEnv.data_classifications_impact_levels.toString() as unknown as string[];
+      currentEnv.data_classifications_impact_levels?.toString() as unknown as string[];
     return currEnvForSave;
   }
 

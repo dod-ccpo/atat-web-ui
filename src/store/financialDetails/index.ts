@@ -59,16 +59,6 @@ export const initialFundingRequestMIPRForm: FundingRequestMIPRFormDTO = {
   mipr_attachment: "",
 }
 
-export const initialRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
-  return {
-    surge_capabilities: "Test SC" + (new Date()).toDateString(),
-    estimatedTaskOrderValue: "",
-    feePercentage: "",
-    feeCharged: "",
-    surge_capacity: ""
-  };
-}
-
 const saveFundingRequestToDISA = async (data: FundingRequestDTO):
  Promise<FundingRequestDTO>=>{
   const saveFundingRequest = (data.sys_id && data.sys_id.length > 0) ?
@@ -460,30 +450,6 @@ export class FinancialDetailsStore extends VuexModule {
      throw new Error(`error occurred retrieving funding request form ${error}`);
    }
  }
-
-  /**
-   * Makes an api call and loads the requirements cost estimate. This function is wired into
-   * few callbacks including attachments record manager.
-   *
-   */
-  @Action({rawError: true})
-  async loadRequirementsCostEstimate():Promise<RequirementsCostEstimateDTO>{
-    // TODO: check if this needs to be uncommented. Commented because new record is not
-    //  getting created and always loading from the session.
-    // this.ensureInitialized();
-
-    try {
-      if(this.requirementsCostEstimate == null){
-        return initialRequirementsCostEstimate();
-      }
-      const requirementsCostEstimate = await api.requirementsCostEstimateTable
-        .retrieve(this.requirementsCostEstimate.sys_id);
-      this.setRequirementsCostEstimate(requirementsCostEstimate);
-      return requirementsCostEstimate;
-    } catch (error) {
-      throw new Error(`error occurred retrieving requirements cost estimate ${error}`);
-    }
-  }
 
  @Action({rawError: true})
   async saveFundingRequestType(value: string): Promise<void> {
