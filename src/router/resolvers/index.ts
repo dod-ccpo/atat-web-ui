@@ -123,7 +123,8 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
+    ? (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
+      ? routeNames.DOWSummary : routeNames.RequirementCategories
     : routeNames.CurrentContract;
 };
 
@@ -158,7 +159,8 @@ export const ArchitecturalDesignDetailsRouteResolver = (current: string): string
   }
   return needsArchitectureDesign
     ? routeNames.ArchitecturalDesignDetails 
-    : IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
+    : (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
+      ? routeNames.DOWSummary : routeNames.RequirementCategories
 };
 
 export const CurrentEnvRouteResolver = (current: string): string => {
@@ -168,7 +170,8 @@ export const CurrentEnvRouteResolver = (current: string): string => {
     return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment 
-    ? IGCE.hasDOWandPoP ? routeNames.DOWSummary : routeNames.RequirementCategories
+    ? (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
+      ? routeNames.DOWSummary : routeNames.RequirementCategories
     : routeNames.CurrentEnvironment;
 };
 
@@ -702,7 +705,8 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 };
 
 export const IGCESurgeCapabilities =  (current:string): string =>{
-  const surgeCapacity = IGCEStore.surgeRequirements.capacity;
+  const surgeCapacity =
+    IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
   if (surgeCapacity.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
     return routeNames.FeeCharged;
   }
@@ -726,7 +730,7 @@ const currentEnvNeedsArchitectureDesign = (): boolean => {
 }
 
 export const IGCECannotProceedResolver = (current: string): string => {
-  if (!IGCEStore.hasDOWandPoP){
+  if (!(IGCEStore.requirementsCostEstimate?.has_DOW_and_PoP === "YES")){
     return routeNames.CannotProceed;
   }
 
@@ -770,7 +774,9 @@ export const IGCEArchitecturalDesignSolutionsResolver = (current: string): strin
 }
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {
-  return current === routeNames.FundingPlanType && IGCEStore.hasDOWandPoP
+
+  return current === routeNames.FundingPlanType &&
+    (IGCEStore.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
     ? routeNames.EstimatesDeveloped
     : routeNames.CannotProceed;
 };

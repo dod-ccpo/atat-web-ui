@@ -4,11 +4,12 @@ import {AttachmentServiceCallbacks, RecordManager} from "..";
 import { AttachmentServiceBase } from "../base";
 import FinancialDetails from "@/store/financialDetails";
 import {RequirementsCostEstimateApi} from "@/api/requirementsCostEstimate";
+import IGCE from "@/store/IGCE";
 
 // record manager to coordinate record creation saving with attachment service
 const recordManager : RecordManager<RequirementsCostEstimateDTO> = {
   retrieveOrCreate: async function (): Promise<RequirementsCostEstimateDTO> {
-    const record = await FinancialDetails.loadRequirementsCostEstimate();
+    const record = await IGCE.getRequirementsCostEstimate();
     return record;
   },
   save: async function (record: string): Promise<void> {
