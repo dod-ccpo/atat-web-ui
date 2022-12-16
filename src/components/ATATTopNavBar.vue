@@ -97,7 +97,7 @@
                   />
                 </div>
                 <v-list-item-title>
-                  {{ menuItem.title }} sfdas
+                  {{ menuItem.title }}
                 </v-list-item-title>
                 <div v-if="menuItem.externalUrl">
                   <ATATSVGIcon 
