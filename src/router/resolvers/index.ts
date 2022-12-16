@@ -227,6 +227,14 @@ export const ContractTrainingReq = (current: string): string => {
 /****************************************************************************/
 /****************************************************************************/
 
+const needsSecurityRequirements = [
+  "advisory_and_assistance", // from other offering summary
+  "help_desk",               // from other offering summary
+  "training",                // from other offering summary
+  "documentation",           // from other offering summary
+  "general_cloud_support",   // from other offering summary
+  "edge_computing",           // FROM OFFERING DETAILS
+];
 
 const basePerformanceRequirementsPath =  "performance-requirements";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
@@ -360,13 +368,29 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
 
+  const groupId = DescriptionOfWork.currentGroupId.toLowerCase();
+
+  // need to know if going to security requirements page (for Tactical Edge only)
+  if (needsSecurityRequirements.includes(groupId) && !otherServiceOfferings.includes(groupId)) {
+    debugger;
+    const hasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher; 
+    if (hasSecretOrHigher) {
+      debugger;
+      // EJY look at DOWObject - loop thru array to find group ID. then loop through
+      // serviceOfferings to find prop `name` which matches dow store `currentOfferingName`
+      // then loop through each `classificationInstances` to find `classificationLevelSysId`
+      // that is either S or TS in the classification store
+      // OR - set a flag in the store that `currentOffering` has high-side (S or TS)
+      // in `saveOnLeave` in `ServiceOfferingDetails.vue` and `OtherOfferingSummary.vue`
+
+      // check that any instance for this offering has S or TS
+    }
+  
+  }
   debugger;
-  // EJY
-  // need to know if going to security requirements page (for Tactical Edge only??)
 
 
-  const groupId = DescriptionOfWork.currentGroupId;
-  if (otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1) {
+  if (otherServiceOfferings.indexOf(groupId) > -1) {
     return otherServiceOfferingSummaryPath; 
   }
 
@@ -706,15 +730,9 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   return descriptionOfWorkSummaryPath
 }
 
-const needsSecurityRequirements = [
-  "advisory_and_assistance", // from offering summary
-  "help_desk",               // from offering summary
-  "training",                // from offering summary
-  "documentation",           // from offering summary
-  "general_cloud_support",   // from offering summary
-  "tactical_edge",           // FROM OFFERING DETAILS
-  "compute" // TEMPORARY FOR TESTING ROUTE RESOLVER
-];
+
+/****************************************************************************/
+/****************************************************************************/
 
 export const DOWSecurityRequirementsPathResolver 
   = (current: string, direction: string): string => {
@@ -815,6 +833,18 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
   return OfferingDetailsPathResolver(current, direction);
 };
+
+
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+
+
 
 export const IGCESurgeCapabilities =  (current:string): string =>{
   const surgeCapacity =
