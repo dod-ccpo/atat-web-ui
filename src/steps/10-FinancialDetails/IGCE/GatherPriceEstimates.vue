@@ -65,27 +65,33 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { OtherServiceOfferingData, SlideoutPanelContent } from "../../../../types/Global";
 // eslint-disable-next-line camelcase
 /* eslint-disable camelcase */
 import SlideOut_GatherPricesEstimates
   from "@/steps/10-FinancialDetails/IGCE/components/SlideOut_GatherPricesEstimates.vue";
-import { buildClassificationLabel } from "@/helpers";
+import { buildClassificationLabel, hasChanges } from "@/helpers";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { SelectedClassificationLevelDTO } from "@/api/models";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Card_Requirement from "@/steps/10-FinancialDetails/IGCE/components/Card_Requirement.vue";
+import IGCE, { RequirementsCostEstimate } from "@/store/IGCE";
+import _ from "lodash";
+import LoadOnEnter from "@/mixins/loadOnEnter";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import vue from "vue";
+
 
 @Component({
   components: {Card_Requirement}
 })
-export default class GatherPriceEstimates extends Vue {
+export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
 
   public selectedClassifications: SelectedClassificationLevelDTO[] = []
   public accordionClosed: number[] = []
-  public instanceData:any[] = []
+  public instanceData:RequirementsCostEstimate[] = []
 
   public buildClassificationLabel = buildClassificationLabel
   public openSlideoutPanel(e: Event): void {
@@ -128,84 +134,111 @@ export default class GatherPriceEstimates extends Vue {
     }
   }
 
+  private get currentData(): RequirementsCostEstimate[] {
+    let currentData = _.cloneDeep(this.instanceData)
+    return currentData
+  }
+
+  private savedData: RequirementsCostEstimate[] = []
+
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
   private async loadOnEnter(): Promise<void> {
     const classifications = await ClassificationRequirements.getSelectedClassificationLevels()
     this.selectedClassifications = classifications
       .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
     this.accordionClosed = new Array(classifications.length).fill(0)
-    this.selectedClassifications.forEach((classification)=>{
-      // eslint-disable-next-line camelcase
-      const classification_instance:{
-        labelShort:string,
-        sysId:string,
-        offerings:Record<string,string>[]
-      } = {
-        labelShort: buildClassificationLabel(classification,'short',true),
-        sysId:classification.sys_id|| "",
-        offerings:[]
-      }
-      this.instanceData.push(classification_instance)
-    })
+    this.savedData = IGCE.requirementsCostEstimates
+    if(this.savedData.length >= 1){
+      this.instanceData = _.cloneDeep(this.savedData)
+    }else{
+      this.selectedClassifications.forEach((classification)=>{
+        // eslint-disable-next-line camelcase
+        const classification_instance:{
+          labelShort:string,
+          sysId:string,
+          offerings:Record<string,string>[]
+        } = {
+          labelShort: buildClassificationLabel(classification,'short',true),
+          sysId:classification.sys_id|| "",
+          offerings:[]
+        }
+        this.instanceData.push(classification_instance)
+      })
 
-    const dowObject = DescriptionOfWork.DOWObject
-    dowObject.forEach((service)=>{
-      debugger
-      const serviceName = this.getFormattedNames(service.serviceOfferingGroupId)
-      if(service.otherOfferingData){
-        debugger
-        service.otherOfferingData.forEach((offering)=>{
-          if(offering.classificationLevel){
-            this.instanceData.forEach((instance)=>{
-              if(instance.sysId === offering.classificationLevel){
-                const classificationOfferings:{
-                  IGCE_title:string,
-                  IGCE_description:string,
-                  monthly_price:number
-                } = {
-                  IGCE_title:"",
-                  IGCE_description:"",
-                  monthly_price:0
-                }
-                if(offering.instanceNumber){
-                  classificationOfferings.IGCE_title =
-                    `${serviceName} - instance #${offering.instanceNumber}`;
-                }else{
-                  classificationOfferings.IGCE_title = serviceName;
-                }
+      const dowObject = DescriptionOfWork.DOWObject
+      dowObject.forEach((service)=>{
+        const serviceName = this.getFormattedNames(service.serviceOfferingGroupId)
+        if(service.otherOfferingData){
+          service.otherOfferingData.forEach((offering)=>{
+            if(offering.classificationLevel){
+              this.instanceData.forEach((instance)=>{
+                if(instance.sysId === offering.classificationLevel){
+                  const classificationOfferings:{
+                    IGCE_title:string,
+                    IGCE_description:string,
+                    monthly_price:number
+                  } = {
+                    IGCE_title:"",
+                    IGCE_description:"",
+                    monthly_price:0
+                  }
+                  if(offering.instanceNumber){
+                    classificationOfferings.IGCE_title =
+                      `${serviceName} - instance #${offering.instanceNumber}`;
+                  }else{
+                    classificationOfferings.IGCE_title = serviceName;
+                  }
 
-                const formData = this.createFormData(serviceName,offering)
-                classificationOfferings.IGCE_description = formData || offering.usageDescription||""
-                instance.offerings.push(classificationOfferings)
-              }
-            })
-          }
-        })
-      }
-      if(service.serviceOfferings){
-        service.serviceOfferings.forEach((offering)=>{
-          offering.classificationInstances?.forEach((classificationInstance)=>{
-            this.instanceData.forEach((instance)=>{
-              if(instance.sysId === classificationInstance.classificationLevelSysId){
-                const classificationOfferings:{
-                  IGCE_title:string,
-                  IGCE_description:string,
-                  monthly_price:number
-                } = {
-                  IGCE_title:"",
-                  IGCE_description:"",
-                  monthly_price:0
+                  const formData = this.createFormData(serviceName,offering)
+                  classificationOfferings.IGCE_description = formData || offering.usageDescription
+                    ||""
+                  instance.offerings.push(classificationOfferings)
                 }
-                classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
-                classificationOfferings.IGCE_description =
-                  classificationInstance.anticipatedNeedUsage
-                instance.offerings.push(classificationOfferings)
-              }
+              })
+            }
+          })
+        }
+        if(service.serviceOfferings){
+          service.serviceOfferings.forEach((offering)=>{
+            offering.classificationInstances?.forEach((classificationInstance)=>{
+              this.instanceData.forEach((instance)=>{
+                if(instance.sysId === classificationInstance.classificationLevelSysId){
+                  const classificationOfferings:{
+                    IGCE_title:string,
+                    IGCE_description:string,
+                    monthly_price:number
+                  } = {
+                    IGCE_title:"",
+                    IGCE_description:"",
+                    monthly_price:0
+                  }
+                  classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
+                  classificationOfferings.IGCE_description =
+                    classificationInstance.anticipatedNeedUsage
+                  instance.offerings.push(classificationOfferings)
+                }
+              })
             })
           })
-        })
-      }
-    })
+        }
+      })
+    }
   }
+  protected async saveOnLeave(): Promise<boolean> {
+    try{
+      if (this.hasChanged()) {
+        await IGCE.doSetRequirementEstimate(this.currentData)
+      }
+    }catch (error) {
+      console.log(error);
+    }
+    return true;
+  }
+
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter()

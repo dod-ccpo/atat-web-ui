@@ -29,6 +29,12 @@ export interface Fee{
   percentage: string
 }
 
+export interface RequirementsCostEstimate {
+  labelShort: string,
+  sysId: string,
+  offerings: Record<string, string|number>[]
+}
+
 @Module({
   name: "IGCEStore",
   namespaced: true,
@@ -57,6 +63,8 @@ export class IGCEStore extends VuexModule {
     estimatedCosts: []
   }
   archDesignEstimateNeeds: ArchDesignEstimateNeeds[] = [];
+
+  requirementsCostEstimates : RequirementsCostEstimate[] = []
 
   @Mutation
   public setArchDesignEstimateNeeds(needs: ArchDesignEstimateNeeds[]): void {
@@ -93,6 +101,11 @@ export class IGCEStore extends VuexModule {
     this.hasDOWandPoP = ((Periods.periods && Periods.periods.length > 0) && 
       DescriptionOfWork.isIncomplete === false) || false;
   }
+  @Mutation
+  public setRequirementsEstimates(value:RequirementsCostEstimate[]): void {
+    debugger
+    this.requirementsCostEstimates = value
+  }
 
   @Action({ rawError: true })
   public async getArchDesignEstimateNeeds(): Promise<ArchDesignEstimateNeeds[]> {
@@ -122,6 +135,11 @@ export class IGCEStore extends VuexModule {
   @Action({ rawError: true })
   public async getHasDOWandPoP(): Promise<boolean> {
     return this.hasDOWandPoP;
+  }
+
+  @Action({ rawError: true })
+  public async doSetRequirementEstimate(value: RequirementsCostEstimate[]): Promise<void> {
+    this.setRequirementsEstimates(value)
   }
 
 }
