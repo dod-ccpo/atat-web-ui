@@ -1932,6 +1932,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.otherOfferingInstancesTouched = {};
     this.confirmOtherOfferingDelete = false;
     this.confirmServiceOfferingDelete = false;
+    this.DOWHasArchitecturalDesignNeeds = null;
+    this.DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;
   }
 }
 

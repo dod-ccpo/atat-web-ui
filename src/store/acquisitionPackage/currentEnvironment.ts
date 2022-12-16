@@ -497,6 +497,8 @@ export class CurrentEnvironmentStore extends VuexModule {
     this.currentEnvironment = defaultCurrentEnvironment;
     this.currentEnvInstances = [];
     this.currentEnvInstanceNumber = 0;
+    this.CurrentEnvironmentHasArchitecturalDesignNeeds = null;
+    this.CurrentEnvironmentArchitectureNeeds = defaultCurrentEnvironmentArchitecturalNeeds;
   }
 }
 
