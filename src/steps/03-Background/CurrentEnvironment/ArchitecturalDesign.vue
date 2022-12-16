@@ -1,72 +1,85 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <ArchitecturalDesignForm
-      :isDOW="false"
-      :statementArchitecturalDesign.sync="CurrentEnvironmentArchNeeds.statement"
-      :applicationsNeedArchitecturalDesign.sync="
-        CurrentEnvironmentArchNeeds.applications_needing_design"
-      :dataClassificationsImpactLevels.sync="CurrentEnvironmentArchNeeds.data_classification_levels"
-      :externalFactors.sync="CurrentEnvironmentArchNeeds.external_factors"
-    />
+    <v-container class="container-max-width" fluid>
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+            Do you need an architectural design solution to address a known problem
+            or use-case related to your current environment?
+          </h1>
+          <div class="copy-max-width">
+            <p id="IntroP" class="mb-8">
+              If needed, we’ll gather details about your architectural design requirements next.
+            </p>
+
+            <ATATRadioGroup 
+              id="ArchitectureOptions"
+              :card="true"
+              :width="180"
+              :items="radioOptions"
+              :value.sync="currEnvDTO.needs_architectural_design_services"
+              :rules="[$validators.required('Please select an option.')]"
+             />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-form>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 
-import ArchitecturalDesignForm from "@/components/DOW/ArchitecturalDesignForm.vue"
-
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import { RadioButton } from "types/Global";
+import CurrentEnvironment, 
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import CurrentEnvironment, 
-{ 
-  defaultCurrentEnvironment, 
-  defaultCurrentEnvironmentArchitecturalNeeds 
-} from "@/store/acquisitionPackage/currentEnvironment";
-import { ArchitecturalDesignRequirementDTO } from "@/api/models";
 
 @Component({
   components: {
-    ArchitecturalDesignForm
+    ATATRadioGroup
   }
 })
 
-export default class ArchitectureDesign extends Mixins(SaveOnLeave) {
-  public CurrentEnvironmentArchNeeds = defaultCurrentEnvironmentArchitecturalNeeds;
+export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
+  public currEnvDTO = defaultCurrentEnvironment;
 
-  /* eslint-disable camelcase */
-  public get currentData(): ArchitecturalDesignRequirementDTO {
+  public radioOptions: RadioButton[] = [
+    {
+      id: "YesArchitecture",
+      value: "YES",
+      label: "Yes.",
+    },
+    {
+      id: "NoArchitecture",
+      value: "NO",
+      label: "No.",
+    },
+  ];
+
+  public get currentData(): Record<string, string> {
     return {
-      source: "CURRENT_ENVIRONMENT",
-      statement: this.CurrentEnvironmentArchNeeds.statement,
-      applications_needing_design: this.CurrentEnvironmentArchNeeds.applications_needing_design,
-      data_classification_levels: this.CurrentEnvironmentArchNeeds.data_classification_levels,
-      external_factors: this.CurrentEnvironmentArchNeeds.external_factors,
-      acquisition_package: this.CurrentEnvironmentArchNeeds.acquisition_package
+      needsArchitectureDesign: this.currEnvDTO.needs_architectural_design_services,
     }
   };
 
-  public savedData: ArchitecturalDesignRequirementDTO = {
-    source: "CURRENT_ENVIRONMENT",
-    statement: "",
-    applications_needing_design: "",
-    data_classification_levels: "",
-    external_factors: "",
-    acquisition_package: ""
+  public savedData: Record<string, string> = {
+    needsArchitectureDesign: ""
   }
-  /* eslint-enable camelcase */
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await CurrentEnvironment.getCurrentEnvironmentArchitecturalNeeds();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
-      this.CurrentEnvironmentArchNeeds = _.cloneDeep(storeData);
-      this.savedData = _.cloneDeep(storeData);
+      this.currEnvDTO = _.cloneDeep(storeData);
+      this.savedData.needsArchitectureDesign = storeData.needs_architectural_design_services;
     }
   }
 
@@ -75,13 +88,9 @@ export default class ArchitectureDesign extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-
-    await AcquisitionPackage.setValidateNow(true);
-
     try {
       if (this.hasChanged()) {
-        CurrentEnvironment.setCurrentEnvironmentArchitecturalDesign(this.currentData);
-
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
       }
     } catch (error) {
       console.log(error);
