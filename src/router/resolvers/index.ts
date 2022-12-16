@@ -304,21 +304,17 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 
 export const DOWArchitecturalDesignResolver = (current: string): string => {
   const DOWNeedsArch = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
-  debugger;
   if (DOWNeedsArch) {
     // coming from either direction, if needs architectural design, go there
     return routeNames.DOWArchitecturalDesign;
   }
-  // TODO: this likely needs more logic to determine if return to DOW Summary
-  // if adding architectural design from a DOW Summary "card" which has not
-  // yet been implemented.
-  return current === routeNames.RequirementCategories
-    ? AnticipatedUserAndDataNeedsResolver(current)
+  const xaasServices = DescriptionOfWork.hasXaasService;
+  return current === routeNames.RequirementCategories 
+    ? xaasServices ? routeNames.AnticipatedUserAndDataNeeds : routeNames.ServiceOfferings
     : routeNames.RequirementCategories;
 }
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
-  debugger;
   const xaasServices = DescriptionOfWork.hasXaasService;
   const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
   if ((current === routeNames.DOWArchitecturalDesign 
@@ -331,6 +327,7 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
     ? routeNames.ServiceOfferings
     : routeNames.DOWArchitecturalDesign;
 }
+
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
   const groupId = DescriptionOfWork.currentGroupId;
   if (otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1) {

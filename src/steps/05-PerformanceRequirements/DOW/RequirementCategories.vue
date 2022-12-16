@@ -209,7 +209,6 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
-    debugger;
     if (DescriptionOfWork.DOWHasArchitecturalDesignNeeds) {
       this.DOWNeedsArchitecturalDesign 
         = DescriptionOfWork.DOWHasArchitecturalDesignNeeds ? "YES" : "NO"
