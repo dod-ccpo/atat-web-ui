@@ -419,8 +419,12 @@ export default class ATATFileUpload extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatFileUpload.validate())
+    const isValidated = this.$refs.atatFileUpload.validate();
+    if(!isValidated && this._validFiles.length===0){
       this.setErrorMessage();
+    } //else {
+    //   this.reset()
+    // }
   }
 
   private setErrorMessage(): void {
