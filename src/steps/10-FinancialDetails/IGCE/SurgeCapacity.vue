@@ -17,7 +17,7 @@
         <ATATRadioGroup
           id="SurgeCapacity"
           class="max-width-640"
-          :value.sync="currentData.capacity"
+          :value.sync="capabilities"
           :items="items"
           name="surge-capacity"
           card="true"
@@ -71,9 +71,11 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
     capabilities: ""
   };
 
-   @Watch("capacity")
-  protected changeSelection(): void{
-    this.capabilities = "";
+   @Watch("capabilities")
+  protected changeSelection(): void {
+    if (this.capabilities !== "YES") {
+      this.capacity = null;
+    }
   }
   
    private hasChanged(): boolean {

@@ -129,7 +129,6 @@ export class IGCEStore extends VuexModule {
   @Action({rawError: true})
   public async saveRequirementsCostEstimate(): Promise<boolean> {
     try {
-      console.log("IGCE Store: Saving requirements cost estimate");
       // TODO: perform any data transformation using spread construct.
       // TODO: uncomment below 4 statements after SNOW table update
       /*const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
