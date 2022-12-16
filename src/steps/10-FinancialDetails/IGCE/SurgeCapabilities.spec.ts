@@ -53,40 +53,4 @@ describe("Testing SurgeCapabilities Component", () => {
     const hasErrorMessages = await wrapper.vm.hasErrorMessages();
     expect(hasErrorMessages).toBe(true);
   });
-
-  it("saveOnLeave() if data has changed, and there are errorMessages, then don't " +
-  "save $data.capabilities to IGCEStore.setSurgeRequirements()", async () => {
-    const capabilities = "30";
-    wrapper.setData({
-      capabilities,
-      savedData:{
-        capabilities: "40"
-      }
-    })
-
-    //add error message
-    const textBox = await wrapper.find({ref: "PercentageTextbox"});
-    textBox.vm.$data.errorMessages =["Required"]
-
-    await wrapper.vm.saveOnLeave();
-    const reqCostEst = await IGCEStore.getSurgeRequirements();
-    expect(reqCostEst.capabilities).not.toBe(capabilities);
-  });
-
-  it("saveOnLeave() if data has changed, and there are NO errorMessages, then " +
-  "save $data.capabilities to IGCEStore.setSurgeRequirements()", async () => {
-    const capabilities = "30";
-    wrapper.setData({
-      capabilities,
-      savedData:{
-        capabilities: "40"
-      }
-    })
-    await wrapper.vm.saveOnLeave();
-    const reqCostEst = await IGCEStore.getSurgeRequirements();
-    expect(reqCostEst.capabilities).toBe(capabilities);
-  });
-
-
-
 })

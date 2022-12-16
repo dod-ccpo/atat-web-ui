@@ -1,15 +1,14 @@
 /* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
-import {createLocalVue, mount, shallowMount, Wrapper} from "@vue/test-utils";
+import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import SupportingDocumentation from "@/steps/10-FinancialDetails/IGCE/SupportingDocumentation.vue";
 import validators from "@/plugins/validation";
 import Attachments from "@/store/attachments";
 import {uploadingFile} from "../../../../types/Global";
-import FinancialDetails from "@/store/financialDetails";
 import {RequirementsCostEstimateDTO} from "@/api/models";
-import {AttachmentServiceCallbacks} from "@/services/attachment";
+import IGCE from "@/store/IGCE";
 Vue.use(Vuetify);
 
 describe("Testing SupportingDocumentation Component", () => {
@@ -26,11 +25,48 @@ describe("Testing SupportingDocumentation Component", () => {
       vuetify,
     });
     requirementsCostEstimateDTO = {
-      surge_capabilities: "Test SC",
-      estimatedTaskOrderValue: "",
-      feePercentage: "",
-      feeCharged: "",
-      surge_capacity: ""
+      has_DOW_and_PoP: "",
+      architectural_design_current_environment: {
+        option: "",
+        estimated_values: []
+      },
+      architectural_design_performance_requirements: {
+        option: "",
+        estimated_values: []
+      },
+      fee_specs: {
+        is_charged: "",
+        percentage: null
+      },
+      how_estimates_developed: {
+        cost_estimate_description: "",
+        previous_cost_estimate_comparison: {
+          options: "",
+          percentage: null
+        },
+        tools_used: {
+          AWS: "",
+          GOOGLE_CLOUD: "",
+          MICROSOFT_AZURE: "",
+          ORACLE_CLOUD: "",
+          PREVIOUSLY_PAID_PRICES: "",
+          OTHER: "",
+          OTHER_TOOLS: "",
+        }
+      },
+      optimize_replicate: {
+        option: "",
+        estimated_values: []
+      },
+      surge_requirements: {
+        capabilities: "",
+        capacity: null
+      },
+      training: [],
+      travel: {
+        option: "",
+        estimated_values: []
+      }
     }
   });
 
@@ -61,11 +97,11 @@ describe("Testing SupportingDocumentation Component", () => {
 
   it("'Test loadRequirementsCostEstimateData()- should make proper call outs to load " +
     "requirements cost estimate data", async () => {
-    jest.spyOn(FinancialDetails, "loadRequirementsCostEstimate").mockReturnValue(
+    jest.spyOn(IGCE, "getRequirementsCostEstimate").mockReturnValue(
       Promise.resolve(requirementsCostEstimateDTO)
     )
     wrapper.vm.loadRequirementsCostEstimateData();
-    expect(FinancialDetails.loadRequirementsCostEstimate).toHaveBeenCalled();
+    expect(IGCE.getRequirementsCostEstimate()).toHaveBeenCalled();
   });
 
 })

@@ -77,6 +77,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
 export interface ClassificationLevelDTO extends BaseTableDTO {
   impact_level: string;
   classification: string;
+  classification_level?: ReferenceColumn | string;
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
@@ -280,14 +281,6 @@ export interface ContractTypeDTO extends BaseTableDTO {
   contract_type_justification: string;
 }
 
-export interface RequirementsCostEstimateDTO extends BaseTableDTO {
-    surge_capabilities?: string;
-    estimatedTaskOrderValue?: string;
-    feePercentage?: string;
-    feeCharged?: string;
-    surge_capacity?: string;
-}
-
 export interface RequiredServicesDTO extends BaseTableDTO {
   usage_description: string;
   applicable_classification_levels: string;
@@ -395,9 +388,11 @@ export interface DisplayColumn {
 }
 
 export interface SelectedServiceOfferingDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  architectural_design_requirement?: ReferenceColumn | string;
   classification_instances: string;
   other_service_offering: string;
-  service_offering: string;
+  service_offering: ReferenceColumn | string;
 }
 
 export interface ClassificationInstanceDTO extends BaseTableDTO {
@@ -549,7 +544,15 @@ export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
 export type StorageEnvironmentInstanceDTO = EnvironmentInstanceDTO
 
 export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  can_train_in_unclass_env?: string;
   personnel_onsite_access?: string;
+  personnel_requiring_training?: string;
+  service_type?: string;
+  training_facility_type?: string;
+  training_format?: string;
+  training_location?: string;
+  training_requirement_title?: string;
+  training_time_zone?: string;
   ts_contractor_clearance_type?: string;
 }
 
@@ -683,3 +686,56 @@ export interface UserDTO extends BaseTableDTO {
   user_name?: string;
   email?: string;
 }
+
+export interface EstimateOptionValueDTO {
+  option: SingleMultiple;
+  estimated_values: string[];
+}
+
+export interface TrainingEstimateDTO {
+  cost_estimate: "PER_PERSON" | "PER_CLASS" | "SUBSCRIPTION";
+  subscription_estimate: "ANNUAL" | "MONTHLY";
+  estimated_price: string;
+  estimate: EstimateOptionValueDTO;
+}
+
+export interface RequirementsCostEstimateDTO extends BaseTableDTO{
+  has_DOW_and_PoP: YesNo;
+  optimize_replicate: EstimateOptionValueDTO;
+  architectural_design_current_environment: EstimateOptionValueDTO;
+  architectural_design_performance_requirements: EstimateOptionValueDTO;
+  training: TrainingEstimateDTO[];
+  travel: EstimateOptionValueDTO;
+  surge_requirements: {
+    capabilities: YesNo;
+    capacity: number | null;
+  }
+  fee_specs: {
+    is_charged: YesNo;
+    percentage: number | null;
+  };
+  how_estimates_developed: {
+    tools_used: {
+      AWS: YesNo;
+      GOOGLE_CLOUD: YesNo;
+      MICROSOFT_AZURE: YesNo;
+      ORACLE_CLOUD: YesNo;
+      PREVIOUSLY_PAID_PRICES: YesNo;
+      OTHER: YesNo;
+      OTHER_TOOLS: string;
+    }
+    cost_estimate_description: string;
+    previous_cost_estimate_comparison:{
+      options: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
+      percentage: number | null;
+    };
+  }
+}
+
+/*export interface RequirementsCostEstimateDTO extends BaseTableDTO {
+  surge_capabilities?: string;
+  estimatedTaskOrderValue?: string;
+  feePercentage?: string;
+  feeCharged?: string;
+  surge_capacity?: string;
+}*/
