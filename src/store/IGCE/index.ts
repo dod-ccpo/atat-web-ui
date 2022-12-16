@@ -129,7 +129,6 @@ export class IGCEStore extends VuexModule {
   }
   @Mutation
   public setRequirementsEstimates(value:CostEstimate[]): void {
-    debugger
     this.costEstimates = value
   }
 
