@@ -479,6 +479,7 @@ export const defaultDOWArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
   applications_needing_design: "",
   data_classification_levels: "",
   external_factors: "",
+  acquisition_package: ""
 }
 
 
@@ -538,9 +539,11 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async setDOWArchitecturalDesign(value: ArchitecturalDesignRequirementDTO): Promise<void> {
+  public async setDOWArchitecturalDesign(value: ArchitecturalDesignRequirementDTO): Promise<void> { 
+    const sysId = await this.saveDOWArchitecturalDesign(value);
+    value.sys_id = sysId;
+    value.acquisition_package = AcquisitionPackage.acquisitionPackage?.sys_id as string;
     this.doSetDOWArchitecturalDesign(value);
-    // TODO: SAVE TO SNOW
   }
 
   @Mutation
@@ -548,6 +551,45 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.DOWArchitectureNeeds = this.DOWArchitectureNeeds
       ? Object.assign(this.DOWArchitectureNeeds, value)
       : value;
+  }
+
+  @Action({rawError: true})
+  public async saveDOWArchitecturalDesign(
+    value: ArchitecturalDesignRequirementDTO): Promise<string> {
+
+    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
+    let sysId = "";
+    let classificationLevels = "";
+    
+
+    if(Array.isArray(value.data_classification_levels)){
+      classificationLevels = value.data_classification_levels.join(",");
+    } else {
+      classificationLevels = value.data_classification_levels;
+    }
+
+    if(value.sys_id){
+      await api.architecturalDesignRequirementTable.update(
+        value.sys_id,
+        {
+          ...value,
+          acquisition_package: packageId,
+          data_classification_levels: classificationLevels
+        }
+      );
+      sysId = value.sys_id as string;
+    } else {
+      const savedObject = await api.architecturalDesignRequirementTable.create(
+        {
+          ...value,
+          acquisition_package: packageId,
+          data_classification_levels: classificationLevels
+        }
+      );
+      sysId = savedObject.sys_id as string;
+    }
+
+    return sysId;
   }
 
   @Action({rawError: true})

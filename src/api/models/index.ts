@@ -554,6 +554,7 @@ export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceD
 }
 
 export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   source: "" | "CURRENT_ENVIRONMENT" | "DOW";
   applications_needing_design: string;
   data_classification_levels: string;
