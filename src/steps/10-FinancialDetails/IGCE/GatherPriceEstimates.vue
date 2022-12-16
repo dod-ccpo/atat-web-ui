@@ -77,7 +77,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { SelectedClassificationLevelDTO } from "@/api/models";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Card_Requirement from "@/steps/10-FinancialDetails/IGCE/components/Card_Requirement.vue";
-import IGCE, { RequirementsCostEstimate } from "@/store/IGCE";
+import IGCE, { CostEstimate } from "@/store/IGCE";
 import _ from "lodash";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -91,7 +91,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
 
   public selectedClassifications: SelectedClassificationLevelDTO[] = []
   public accordionClosed: number[] = []
-  public instanceData:RequirementsCostEstimate[] = []
+  public instanceData:CostEstimate[] = []
 
   public buildClassificationLabel = buildClassificationLabel
   public openSlideoutPanel(e: Event): void {
@@ -129,17 +129,16 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         +service.storageUnit+")"
     default:
       return service.usageDescription ||
-        service.anticipatedNeedUsage||
         service.descriptionOfNeed||""
     }
   }
 
-  private get currentData(): RequirementsCostEstimate[] {
+  private get currentData(): CostEstimate[] {
     let currentData = _.cloneDeep(this.instanceData)
     return currentData
   }
 
-  private savedData: RequirementsCostEstimate[] = []
+  private savedData: CostEstimate[] = []
 
 
   private hasChanged(): boolean {
@@ -148,10 +147,11 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
 
   private async loadOnEnter(): Promise<void> {
     const classifications = await ClassificationRequirements.getSelectedClassificationLevels()
+    const cloudServices = DescriptionOfWork.cloudSupportServices
     this.selectedClassifications = classifications
       .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
     this.accordionClosed = new Array(classifications.length).fill(0)
-    this.savedData = IGCE.requirementsCostEstimates
+    this.savedData = IGCE.costEstimates
     if(this.savedData.length >= 1){
       this.instanceData = _.cloneDeep(this.savedData)
     }else{
@@ -169,6 +169,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         this.instanceData.push(classification_instance)
       })
 
+
       const dowObject = DescriptionOfWork.DOWObject
       dowObject.forEach((service)=>{
         const serviceName = this.getFormattedNames(service.serviceOfferingGroupId)
@@ -180,11 +181,15 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   const classificationOfferings:{
                     IGCE_title:string,
                     IGCE_description:string,
-                    monthly_price:number
+                    monthly_price:number,
+                    isCloudServicePackage:boolean,
+                    sysId:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
-                    monthly_price:0
+                    monthly_price:0,
+                    isCloudServicePackage:false,
+                    sysId:"",
                   }
                   if(offering.instanceNumber){
                     classificationOfferings.IGCE_title =
@@ -192,7 +197,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   }else{
                     classificationOfferings.IGCE_title = serviceName;
                   }
-
+                  classificationOfferings.sysId = instance.sysId;
+                  classificationOfferings.isCloudServicePackage = cloudServices
+                    .includes(serviceName)
                   const formData = this.createFormData(serviceName,offering)
                   classificationOfferings.IGCE_description = formData || offering.usageDescription
                     ||""
@@ -210,13 +217,20 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   const classificationOfferings:{
                     IGCE_title:string,
                     IGCE_description:string,
-                    monthly_price:number
+                    monthly_price:number,
+                    isCloudServicePackage:boolean,
+                    sysId:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
-                    monthly_price:0
+                    monthly_price:0,
+                    isCloudServicePackage:false,
+                    sysId:"",
                   }
                   classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
+                  classificationOfferings.sysId = instance.sysId;
+                  classificationOfferings.isCloudServicePackage = cloudServices
+                    .includes(serviceName)
                   classificationOfferings.IGCE_description =
                     classificationInstance.anticipatedNeedUsage
                   instance.offerings.push(classificationOfferings)
@@ -231,7 +245,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try{
       if (this.hasChanged()) {
-        await IGCE.doSetRequirementEstimate(this.currentData)
+        await IGCE.doSetCostEstimate(this.currentData)
       }
     }catch (error) {
       console.log(error);

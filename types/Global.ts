@@ -1,16 +1,16 @@
 /* eslint-disable camelcase */
 import { Component } from "vue";
-import { 
+import {
   RouteConfigMultipleViews,
-  RouteConfigSingleView 
+  RouteConfigSingleView
 } from "vue-router/types/router";
 
 import { AdditionalButton } from "@/store/steps/types";
 
-import { 
-  CurrentContractDTO, 
+import {
+  CurrentContractDTO,
   FairOpportunityDTO,
-  OrganizationDTO, 
+  OrganizationDTO,
   ProjectOverviewDTO,
   ContactDTO,
   BaseTableDTO,
@@ -34,6 +34,7 @@ export interface MenuIcon {
 }
 export interface TopNavItem {
   title: string;
+  subtitle?: string;
   parentTitle?: string;
   component?: Component;
   spaSectionTitle?: string;
@@ -113,24 +114,24 @@ export interface AutoCompleteItemGroups {
  */
 interface StepperRouteBase {
 
-    stepNumber?: string;
-    completePercentageWeight?: number;
-    menuText?: string;
-    completed?: boolean;
-    /**
-     * Setting this flag to true will prevent item from being 
-     * rendered in menu but will still include it in the route record
-     */
-    excludeFromMenu?: boolean;
-    /**
-     * A handler to 
-     */
-    routeResolver?: (currentRoute: string, direction: string) => string;
-    additionalButtons?: AdditionalButton[];
-    backButtonText?: string;
-    continueButtonText?: string;
-    stepCompleteOnEnter?: string;
-    stepCompleteOnLeave?: string;
+  stepNumber?: string;
+  completePercentageWeight?: number;
+  menuText?: string;
+  completed?: boolean;
+  /**
+   * Setting this flag to true will prevent item from being
+   * rendered in menu but will still include it in the route record
+   */
+  excludeFromMenu?: boolean;
+  /**
+   * A handler to
+   */
+  routeResolver?: (currentRoute: string, direction: string) => string;
+  additionalButtons?: AdditionalButton[];
+  backButtonText?: string;
+  continueButtonText?: string;
+  stepCompleteOnEnter?: string;
+  stepCompleteOnLeave?: string;
 }
 
 /**
@@ -184,12 +185,12 @@ export interface CountryObj {
 }
 
 export interface BreadCrumbItem {
-    disabled?: boolean,
-    exact?: boolean,
-    href?: string,
-    link?: boolean,
-    text?: string | number,
-    to?: string;
+  disabled?: boolean,
+  exact?: boolean,
+  href?: string,
+  link?: boolean,
+  text?: string | number,
+  to?: string;
 }
 
 export interface ToastObj {
@@ -215,8 +216,8 @@ export interface PoP {
 }
 
 export interface RankData {
-  grade: string; 
-  name: string; 
+  grade: string;
+  name: string;
   sysId: string;
 }
 
@@ -282,13 +283,15 @@ export interface DOWClassificationInstance {
   classificationLevelSysId: string;
   anticipatedNeedUsage: string;
   entireDuration: string;
-  selectedPeriods?: DOWPoP[];
+  // selectedPeriods?: DOWPoP[];
+  selectedPeriods?: string[];
   labelLong?: string;
   labelShort?: string;
 }
 
 export interface DOWServiceOffering {
   name: string;
+  acquisitionPackageSysId: string;
   otherOfferingName?: string;
   "sys_id": string; //service offering sys id
   serviceId: string; // id of the service
@@ -347,45 +350,47 @@ export interface lineChartData {
 
 export interface OtherServiceOfferingData {
   acquisitionPackageSysId?: string;
-  anticipatedNeedUsage?: string;
+  instanceNumber: number;
+  environmentType?: string;
   classificationLevel?: string;
-  databaseLicensing?: string;
-  databaseType?: string;
-  databaseTypeOther?: string;
   deployedRegions?: string[];
   deployedRegionsOther?: string;
   descriptionOfNeed: string;
   entireDuration: string;
-  environmentType?: string;
-  instanceNumber: number;
-  licensing?: string;
+  periodsNeeded: string[];
+  operatingSystemAndLicensing?: string;
+  numberOfVCPUs?: string;
   memoryAmount?: string;
   memoryUnit?: StorageUnit;
-  networkPerformance?: string;
-  numberOfInstancesNeeded?: string;
-  numberOfVCPUs?: string;
-  operatingEnvironment?: string;
-  operatingSystem?: string;
-  operatingSystemAndLicensing?: string;
+  storageType?: string;
+  storageAmount?: string;
+  storageUnit?: StorageUnit;
   performanceTier?: string;
   performanceTierOther?: string;
-  periodsNeeded: string[];
-  personnelOnsiteAccess?: string;
-  processorSpeed?: string;
-  region?: string;
+  numberOfInstancesNeeded?: string;
   requirementTitle?: string;
-  storageAmount?: string;
-  storageType?: string;
-  storageUnit?: StorageUnit;
-  sysId?: string;
-  trainingFacilityType?: "" | "GOVT" | "NON_GOVT";
-  trainingLocation?: string;
-  trainingPersonnel?: string;
-  trainingTimeZone?: string;
-  // eslint-disable-next-line max-len
-  trainingType?: "" | "ON_SITE_CONUS" | "ON_SITE_OCONUS" | "VIRTUAL_INSTRUCTOR_LED" | "VIRTUAL_SELF_LED" | "NO_PREFERENCE";
-  tsContractorClearanceType?: string;
   usageDescription?: string;
+  operatingEnvironment?: string;
+  databaseType?: string;
+  databaseTypeOther?: string;
+  licensing?: string;
+  operatingSystem?: string;
+  region?: string;
+  processorSpeed?: string;
+  networkPerformance?: string;
+  databaseLicensing?: string;
+  sysId?: string;
+  personnelOnsiteAccess?: string;
+  tsContractorClearanceType?: string;
+  // eslint-disable-next-line max-len
+  trainingType?: "" | "ONSITE_INSTRUCTOR_CONUS" | "ONSITE_INSTRUCTOR_OCONUS" | "VIRTUAL_INSTRUCTOR" | "VIRTUAL_SELF_LED" | "NO_PREFERENCE" | string;
+  trainingLocation?: string;
+  trainingTimeZone?: string;
+  trainingPersonnel?: string;
+  trainingFacilityType?: "" | "GOVERNMENT_FACILITY" | "NON_GOVERNMENT_FACILITY" | string;
+  serviceType?: string;
+  canTrainInUnclassEnv?: string;
+  trainingRequirementTitle?: string;
 }
 
 export interface OtherServiceSummaryTableData {
@@ -480,7 +485,7 @@ export interface MemberInvites {
 }
 
 export interface FundingTrackerAlert {
-   alertType: string;
+  alertType: string;
 }
 
 export interface TaskOrderCardData {
@@ -529,8 +534,8 @@ export interface IGCE {
 
 export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BEST_USE" | "LOWEST_RISK";
 
-export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL" 
-  | "SET_LUMP_SUM" | "EQUAL_SET_LUMP_SUM";
+export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL"
+    | "SET_LUMP_SUM" | "EQUAL_SET_LUMP_SUM";
 
 export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
@@ -543,7 +548,7 @@ export interface CurrEnvInstanceUsage {
   isTrafficSpikePeriodBased?: YesNo;
   trafficSpikeEventDescription?: string;
   trafficSpikePeriodDescription?: string;
-} 
+}
 
 export interface CurrEnvInstanceConfig {
   licensing?: string;
@@ -583,9 +588,9 @@ export type DomainType = ""|"UNCLASSIFIED_TO_SECRET" | "UNCLASSIFIED_TO_TOP_SECR
 export interface CurrentEnvironment {
   currentEnvironmentExists?: YesNo;
   hasSystemDocumentation?: YesNo;
-  systemDocumentation?: string[]; // List - sys_ids from sys_attachment table 
+  systemDocumentation?: string[]; // List - sys_ids from sys_attachment table
   hasMigrationDocumentation?: YesNo;
-  migrationDocumentation?: string[]; // List - sys_ids from sys_attachment table 
+  migrationDocumentation?: string[]; // List - sys_ids from sys_attachment table
   envLocation?: EnvironmentLocation;
   envClassificationsCloud?: string[]; // array of classification level sys_ids
   envClassificationsOnPrem?: string[]; // array of classification level sys_ids
@@ -593,14 +598,14 @@ export interface CurrentEnvironment {
   currentEnvironmentReplicatedOptimized?: EnvironmentReplicateOptimized;
   statementReplicatedOptimized?: string;
   additionalGrowth?: YesNo;
-  anticipatedYearlyAdditionalCapacity?: number; 
+  anticipatedYearlyAdditionalCapacity?: number;
   hasPhasedApproach?: YesNo;
-  phasedApproachSchedule?: string; 
+  phasedApproachSchedule?: string;
   needsArchitecturalDesignServices?: YesNo;
-  statementArchitecturalDesign?: string; 
+  statementArchitecturalDesign?: string;
   applicationsNeedArchitecturalDesign?: string;
   dataClassificationsImpactLevels?: string[];
-  externalFactorsArchitecturalDesign?: string;          
+  externalFactorsArchitecturalDesign?: string;
 }
 
 export interface CurrentEnvironmentInstance {

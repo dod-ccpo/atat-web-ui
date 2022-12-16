@@ -67,48 +67,4 @@ describe("Testing FeeCharged Component", () => {
       await wrapper.vm.evalIsCharged("NO");
       expect(await wrapper.vm.$data.percentage).toBe("");
     });
-
-  it("saveOnLeave() if data has changed, and NO errorMessages set new data to " +
-  "IGCEStore.setFeeSpecs", async () => {
-    const isCharged = "YES";
-    const percentage= "15";
-    wrapper.setData({
-      isCharged,
-      percentage,
-      savedData:{
-        isCharged: 'NO',
-        percentage: ''
-      }
-    })
-    await wrapper.vm.saveOnLeave();
-    const reqCostEst = await IGCEStore.getFeeSpecs()
-    expect(reqCostEst.isCharged).toBe(isCharged);
-  });
-
-  it("saveOnLeave() if data has changed, and there are errorMessages, then save new data to " +
-  "IGCEStore.setFeeSpecs and don't save percentage", async () => {
-    const isCharged = "YES";
-    const percentage= "15";
-    wrapper.setData({
-      isCharged,
-      percentage,
-      savedData:{
-        isCharged: 'NO',
-        percentage: ''
-      }
-    })
-
-    //add error message
-    const textBox = await wrapper.find({ref: "PercentageTextbox"});
-    textBox.vm.$data.errorMessages =["Required"]
-
-    await wrapper.vm.saveOnLeave();
-    const reqCostEst = await IGCEStore.getFeeSpecs()
-    expect(reqCostEst.percentage).not.toBe(percentage);
-  });
-
-
-
-
-
 })

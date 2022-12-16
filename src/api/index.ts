@@ -50,6 +50,7 @@ import { StorageEnvironmentInstanceAPI } from "@/api/storageEnvironmentInstance"
 import { CloudSupportEnvironmentInstanceAPI } from "@/api/cloudSupportEnvironmentInstance";
 import { ArchitecturalDesignRequirementAPI } from "@/api/architecturalDesignRequirement";
 import { ClassifiedInformationTypeAPI } from "@/api/classifiedInformationType";
+import { XaaSEnvironmentInstanceAPI } from "@/api/xaasEnvironmentInstance";
 
 export const api = {
 
@@ -105,7 +106,8 @@ export const api = {
   storageEnvironmentInstanceTable: new StorageEnvironmentInstanceAPI(),
   cloudSupportEnvironmentInstanceTable: new CloudSupportEnvironmentInstanceAPI(),
   architecturalDesignRequirementTable: new ArchitecturalDesignRequirementAPI(),
-  classifiedInformationTypeTable: new ClassifiedInformationTypeAPI()
+  classifiedInformationTypeTable: new ClassifiedInformationTypeAPI(),
+  xaaSEnvironmentInstanceTable: new XaaSEnvironmentInstanceAPI()
 }
 
 export default {

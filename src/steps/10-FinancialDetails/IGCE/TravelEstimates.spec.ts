@@ -65,27 +65,4 @@ describe("Testing TravelEstimates Component", () => {
       const getOption = wrapper.vm.getOption(1);
       expect(getOption).toBe("Option 1");
     });
-
-  it("saveOnLeave() - if data has changed, ensure data saved to store ", 
-    async () => {
-
-      wrapper.setData({
-        savedData: {
-          ceilingPrice: "multiple",
-          estimatedTravelCosts: ["1,234.56, 2,345,67"],
-        },
-      })
-      wrapper.vm.currentData.ceilingPrice = "single"
-      
-      await wrapper.vm.saveOnLeave();
-      expect(await IGCEStore.travelEstimateNeeds.ceilingPrice).toBe("single");
-    });
-
-
-
-
-
-  
-
-
 })

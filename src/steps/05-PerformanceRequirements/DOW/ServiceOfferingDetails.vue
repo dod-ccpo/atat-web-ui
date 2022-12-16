@@ -115,6 +115,7 @@ import Periods from "@/store/periods";
 import {
   AcquisitionPackageDTO,
   ClassificationLevelDTO,
+  ReferenceColumn,
   SelectedClassificationLevelDTO
 } from "@/api/models";
 import { 
@@ -182,7 +183,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       const instance: DOWClassificationInstance = {
         sysId: "", // will be populated after saving
         impactLevel: obj.impact_level,
-        classificationLevelSysId: obj.sys_id || "",
+        classificationLevelSysId: (obj.classification_level as ReferenceColumn).value || "",
         anticipatedNeedUsage: "",
         entireDuration: "",
         selectedPeriods: [],
@@ -210,7 +211,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       }
     }, this);
     // remove options not in new selected options array
-    const instancesToShowClone = this.headerCheckboxSelectedSysIds;
+    const instancesToShowClone = _.cloneDeep(this.headerCheckboxSelectedSysIds);
     instancesToShowClone.forEach((classificationLevelSysId) => {
       if (!newSysIds.includes(classificationLevelSysId)) {
         const i = this.headerCheckboxSelectedSysIds.findIndex(
@@ -323,7 +324,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if(this.selectedClassificationLevelList) {
       this.selectedClassificationLevelList.forEach((val) => {
-        this.modalSelectedOptions.push(val.classification_level.value || "")
+        this.modalSelectedOptions.push((val.classification_level as ReferenceColumn).value || "")
       });
     }
     // set up header checkbox items and list of sysIds for available classification levels
@@ -349,6 +350,10 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       this.savedData = [...this.classificationInstances];
       this.classificationInstances.forEach((instance) => {
         if (instance.classificationLevelSysId) {
+          if (typeof instance.classificationLevelSysId === "object") {
+            instance.classificationLevelSysId 
+              = (instance.classificationLevelSysId as ReferenceColumn).value || "";
+          }
           this.selectedHeaderLevelSysIds.push(instance.classificationLevelSysId);
         }
       });
@@ -393,10 +398,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       });
 
       if (this.hasChanged()) {
-        // save to store
         await DescriptionOfWork.setOfferingDetails(this.instancesFormData);
-        //save to backend
-        await DescriptionOfWork.saveUserSelectedServices();
       }
     } catch (error) {
       console.log(error);
