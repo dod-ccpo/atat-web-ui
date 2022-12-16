@@ -66,6 +66,7 @@
       tooltipText="Enter the total number of people that require this training. 
         This may be split across multiple training sessions."
       width="234"
+      type="number"
       :rules="[
         $validators.required('Enter the number of personnel that require this training.'),
       ]"
@@ -110,7 +111,7 @@ export default class TrainingFormElements extends Vue {
 
   public get showTrainingTimezone(): boolean {
     return this.offeringData.trainingType !== undefined
-      && this.offeringData.trainingType.indexOf('INSTRUCTOR') > -1
+      && this.offeringData.trainingType === "VIRTUAL_INSTRUCTOR"
   }
 
   public trainingTypes = trainingTypeOptions;

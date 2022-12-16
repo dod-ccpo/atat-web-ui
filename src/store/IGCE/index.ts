@@ -46,6 +46,13 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
     }
   }
 }
+
+export interface CostEstimate {
+  labelShort: string,
+  sysId: string,
+  offerings: Record<string, string|number|boolean>[]
+}
+
 @Module({
   name: "IGCEStore",
   namespaced: true,
@@ -60,11 +67,13 @@ export class IGCEStore extends VuexModule {
     this.doReset();
   }
 
+  costEstimates : CostEstimate[] = []
+
   @Mutation
   public doReset(): void {
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
   }
-  
+
   @Action
   public async getRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
     return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
@@ -83,6 +92,14 @@ export class IGCEStore extends VuexModule {
       : value;
   }
 
+  @Action({ rawError: true })
+  public async doSetCostEstimate(value: CostEstimate[]): Promise<void> {
+    await this.setCostEstimate(value)
+  }
+  @Mutation
+  public async setCostEstimate(value: CostEstimate[]): Promise<void> {
+    this.costEstimates = value;
+  }
   @Mutation
   public setHasDOWandPop(): void {
     const requirementCostEstimate = this.requirementsCostEstimate as RequirementsCostEstimateDTO;
@@ -106,6 +123,7 @@ export class IGCEStore extends VuexModule {
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
     // TODO: other initializations outside of requirements cost estimate
   }
+
 
   /**
    * Loads the Requirements cost estimate data using the acquisition package sys id.
