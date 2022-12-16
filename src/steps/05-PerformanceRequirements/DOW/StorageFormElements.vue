@@ -35,9 +35,9 @@
     <v-row>
       <v-col>
         <ATATTextField
-          id="NumberOfSimilarInstances"
+          id="NumberOfInstances"
           class="mt-8 _input-max-width-240"
-          :value.sync="offeringData.numberOfInstancesNeeded"
+          :value.sync="offeringData.numberOfInstances"
           label="Number of instances needed"
           type="number"
           :rules="[

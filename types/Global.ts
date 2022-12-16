@@ -367,7 +367,7 @@ export interface OtherServiceOfferingData {
   storageUnit?: StorageUnit;
   performanceTier?: string;
   performanceTierOther?: string;
-  numberOfInstancesNeeded?: string;
+  numberOfInstances?: string;
   requirementTitle?: string;
   usageDescription?: string;
   operatingEnvironment?: string;
@@ -564,7 +564,7 @@ export interface CurrEnvInstanceConfig {
 
 export interface CurrEnvInstancePerformance {
   performanceTier?: PerformanceTier;
-  numberOfSimilarInstances?: number | null;
+  numberOfInstances?: number | null;
   dataEgressMonthlyAmount?: number | null;
   dataEgressMonthlyUnit?: StorageUnit;
 }
