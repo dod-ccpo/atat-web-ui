@@ -24,7 +24,7 @@
 
     <ATATRadioGroup
       id="TrainingFacility"
-      v-if="offeringData.trainingType === 'ON_SITE_CONUS'"
+      v-if="offeringData.trainingType === 'ONSITE_INSTRUCTOR_CONUS'"
       legend="What type of facility will your training be held at??"
       :value.sync="offeringData.trainingFacilityType"
       :items="trainingFaciltyTypes"
@@ -50,7 +50,7 @@
       id="TrainingTimezone"
       class="mb-10"
       v-if="showTrainingTimezone"
-      :value.sync="offeringData.trainingTimezone"
+      :value.sync="offeringData.trainingTimeZone"
       label="Timezone of training"
       width="234"
       :rules="[
@@ -119,12 +119,12 @@ export default class TrainingFormElements extends Vue {
     {
       id: "GovtFacility",
       label: "Government facility",
-      value: "GOVT", 
+      value: "GOVERNMENT_FACILITY", 
     },
     {
       id: "NonGovtFacility",
       label: "Non-government facility (e.g., CSP or 3rd party facility)",
-      value: "NON_GOVT", 
+      value: "NON_GOVERNMENT_FACILITY", 
     },
   ];
 
