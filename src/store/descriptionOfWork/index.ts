@@ -19,7 +19,8 @@ import {
   SelectedServiceOfferingDTO, 
   ServiceOfferingDTO, 
   StorageEnvironmentInstanceDTO, 
-  SystemChoiceDTO
+  SystemChoiceDTO,
+  XaasEnvironmentInstanceDTO
 } from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
 import {
@@ -244,14 +245,14 @@ const saveOrUpdateOtherServiceOffering =
       break;
     case "general_xaas":
       if(tempObject.sys_id){
-        await api.environmentInstanceTable.update(
+        await api.xaaSEnvironmentInstanceTable.update(
           tempObject.sys_id,
-          tempObject as EnvironmentInstanceDTO
+          tempObject as XaasEnvironmentInstanceDTO
         )
         objSysId = tempObject.sys_id;
       } else {
-        const savedObject = await api.environmentInstanceTable.create(
-          tempObject as EnvironmentInstanceDTO
+        const savedObject = await api.xaaSEnvironmentInstanceTable.create(
+          tempObject as XaasEnvironmentInstanceDTO
         );
         objSysId = savedObject.sys_id as string;
       }
@@ -261,6 +262,7 @@ const saveOrUpdateOtherServiceOffering =
     case "documentation_support":
     case "general_cloud_support":
     case "training":
+    case "portability_plan":
       tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
       tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
       tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
@@ -339,7 +341,7 @@ const mapOtherOfferingFromDTO = (
     DatabaseEnvironmentInstanceDTO | 
     StorageEnvironmentInstanceDTO | 
     CloudSupportEnvironmentInstanceDTO |
-    EnvironmentInstanceDTO
+    XaasEnvironmentInstanceDTO
 ): OtherServiceOfferingData => {
 
   const acquisitionPackageSysId = 
@@ -486,6 +488,14 @@ const serviceGroupVerbiageInfo: Record<string, Record<string, string>> = {
     typeForUsage: "service",
     typeForText: "service",
     introText: `any other cloud support services that you need.`,
+  },
+  PORTABILITY_PLAN: { 
+    offeringName: "Portability Plan", 
+    heading2: "Portability Plan",
+    headingSummary: "Portability Plan Services", 
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `each Portability Plan service that you need.`,
   },
 }
 
@@ -710,13 +720,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     });
 
     this.setCurrentOfferingGroupId("GENERAL_XAAS");
-    const xaasItems = await api.environmentInstanceTable.getQuery(requestConfig);
+    const xaasItems = await api.xaaSEnvironmentInstanceTable.getQuery(requestConfig);
     if(xaasItems.length > 0)
       this.addOfferingGroup("GENERAL_XAAS"); 
     xaasItems.forEach((item,index) => {
       const offeringData = mapOtherOfferingFromDTO(
         index + 1,
-        item as EnvironmentInstanceDTO
+        item as XaasEnvironmentInstanceDTO
       );
       this.doSetOtherOfferingData(offeringData);
     });
@@ -728,6 +738,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       "documentation_support",
       "general_cloud_support",
       "training",
+      "portability_plan"
     ].forEach(groupId => {
       const tempItems = supportItems.filter(item => item.service_type === groupId.toUpperCase());
 

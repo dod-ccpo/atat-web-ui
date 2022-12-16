@@ -543,6 +543,8 @@ export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
 
 export type StorageEnvironmentInstanceDTO = EnvironmentInstanceDTO
 
+export type XaasEnvironmentInstanceDTO = EnvironmentInstanceDTO
+
 export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
   can_train_in_unclass_env?: string;
   personnel_onsite_access?: string;

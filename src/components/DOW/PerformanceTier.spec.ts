@@ -11,6 +11,7 @@ Vue.use(Vuetify);
 
 const performanceTier: CurrEnvInstancePerformance = {
   performanceTier: "",
+  numberOfInstances: null,
   dataEgressMonthlyAmount: null,
   dataEgressMonthlyUnit: "GB",
 }

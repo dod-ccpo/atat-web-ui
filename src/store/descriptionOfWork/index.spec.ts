@@ -43,6 +43,7 @@ describe("Testing Description of Work store", () => {
     storageAmount: "",
     performanceTier: "",
     performanceTierOther: "",
+    numberOfInstances: "1",
     requirementTitle: "",
   }]
 
