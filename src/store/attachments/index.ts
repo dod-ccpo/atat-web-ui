@@ -39,8 +39,8 @@ import {AxiosRequestConfig} from "axios";
 export class AttachmentStore extends VuexModule {
   private initialized = false;
   // store session properties
-  protected sessionProperties: string[] = [FUNDING_REQUEST_FSFORM_TABLE, 
-    FUNDING_REQUEST_MIPRFORM_TABLE, REQUIREMENTS_COST_ESTIMATE_TABLE, 
+  protected sessionProperties: string[] = [FUNDING_REQUEST_FSFORM_TABLE,
+    FUNDING_REQUEST_MIPRFORM_TABLE, REQUIREMENTS_COST_ESTIMATE_TABLE,
     CURRENT_ENVIRONMENT_TABLE, FAIR_OPPORTUNITY_TABLE];
 
   public [FUNDING_REQUEST_FSFORM_TABLE]: AttachmentDTO[] = [];
@@ -246,6 +246,29 @@ export class AttachmentStore extends VuexModule {
         attachments: attachmentList});
       return attachmentList;
     }
+  }
+
+  /**
+   * Gets the attachments by table sys id, sets them to the store and returns the attachments.
+   */
+  @Action({rawError: true})
+  public async getAttachmentsByTableSysIds(
+    {serviceKey, tableSysId,}: {
+    serviceKey: string;
+    tableSysId: string;
+  }): Promise<AttachmentDTO[]> {
+    let attachmentList: AttachmentDTO[] = [];
+    const attachmentsBySysIdsRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query:  "^table_sys_id=" + tableSysId
+      }
+    };
+    attachmentList = await api.attachments.getQuery(attachmentsBySysIdsRequestConfig);
+    // below call sets the attachments to the store
+    this.updateAttachments({
+      key: serviceKey,
+      attachments: attachmentList});
+    return attachmentList;
   }
 
   @Action({rawError: true})
