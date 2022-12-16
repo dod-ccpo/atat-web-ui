@@ -330,7 +330,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
   public performanceTier: CurrEnvInstancePerformance = {
     performanceTier: "",
-    numberOfSimilarInstances: 1,
+    numberOfInstances: 1,
     dataEgressMonthlyAmount: null,
     dataEgressMonthlyUnit: "GB",
   }
@@ -338,7 +338,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   public performanceTierChange(newVal: CurrEnvInstancePerformance): void {
     const performanceTier = {
       performance_tier: newVal.performanceTier,
-      number_of_instances: newVal.numberOfSimilarInstances,
+      number_of_instances: newVal.numberOfInstances,
       data_egress_monthly_amount: newVal.dataEgressMonthlyAmount,
       data_egress_monthly_unit: newVal.dataEgressMonthlyUnit,
     }
@@ -459,7 +459,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         
         this.performanceTier = {
           performanceTier: this.instanceData.performance_tier,
-          numberOfSimilarInstances: this.instanceData.number_of_instances,
+          numberOfInstances: this.instanceData.number_of_instances,
           dataEgressMonthlyAmount: this.instanceData.data_egress_monthly_amount,
           dataEgressMonthlyUnit: this.instanceData.data_egress_monthly_unit,
         }

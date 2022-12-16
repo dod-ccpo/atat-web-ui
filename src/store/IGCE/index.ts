@@ -89,11 +89,14 @@ export class IGCEStore extends VuexModule {
   @Action
   public async setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
     await this.doSetRequirementsCostEstimate(value);
+    await this.saveRequirementsCostEstimate(value);
   }
 
   @Mutation
   public async doSetRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
-    this.requirementsCostEstimate = value;
+    this.requirementsCostEstimate = this.requirementsCostEstimate
+      ? Object.assign(this.requirementsCostEstimate, value)
+      : value;
   }
 
   @Action({ rawError: true })

@@ -3,6 +3,7 @@ import {stepperRoutes} from "./stepper";
 import PathResolver from "./resolvers/PathResolver.vue";
 import RouteResolver from "./resolvers/RouteResolver.vue";
 import Home from "../home/Index.vue";
+import { scrollToMainTop } from "@/helpers";
 
 const routes = [
   {
@@ -26,7 +27,7 @@ const routes = [
 const router = new VueRouter({
   routes, // short for `routes: routes`
   scrollBehavior() {
-    return { x: 0, y: 0 };
+    scrollToMainTop();
   },
 });
 

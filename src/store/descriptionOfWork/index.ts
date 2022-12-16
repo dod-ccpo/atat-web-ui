@@ -9,6 +9,7 @@ import {
 import rootStore from "../index";
 import api from "@/api";
 import {
+  ArchitecturalDesignRequirementDTO,
   ClassificationInstanceDTO,
   CloudSupportEnvironmentInstanceDTO,
   ComputeEnvironmentInstanceDTO,
@@ -176,9 +177,10 @@ const saveOrUpdateOtherServiceOffering =
       tempObject.licensing = serviceOffering.licensing;
       tempObject.memory_amount = serviceOffering.memoryAmount;
       tempObject.memory_unit = serviceOffering.memoryUnit || "GB";
+      tempObject.number_of_instances = serviceOffering.numberOfInstances;
       /* TODO: PLZ HAVE PLATFORM TEAM FIX CASE TO UPPERCASE TO REMOVE THIS HACK!!! */
       tempObject.need_for_entire_task_order_duration = serviceOffering.entireDuration.toLowerCase();
-      tempObject.number_of_instances = serviceOffering.numberOfInstancesNeeded;
+      tempObject.need_for_entire_task_order_duration = serviceOffering.entireDuration.toLowerCase();
       tempObject.number_of_vcpus = serviceOffering.numberOfVCPUs;
       tempObject.operating_system = serviceOffering.operatingSystem;
       tempObject.performance_tier = serviceOffering.performanceTier;
@@ -196,6 +198,7 @@ const saveOrUpdateOtherServiceOffering =
       case "compute":
         tempObject.environment_type = serviceOffering.environmentType;
         tempObject.operating_environment = serviceOffering.operatingEnvironment;
+        tempObject.operating_system_licensing = serviceOffering.operatingSystemAndLicensing;
         if(tempObject.sys_id){
           await api.computeEnvironmentInstanceTable.update(
             tempObject.sys_id,
@@ -260,7 +263,7 @@ const saveOrUpdateOtherServiceOffering =
       case "documentation_support":
       case "general_cloud_support":
       case "training":
-    case "portability_plan":
+      case "portability_plan":
         tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
         tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
         tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
@@ -362,11 +365,11 @@ const mapOtherOfferingFromDTO = (
     descriptionOfNeed: value.anticipated_need_or_usage,
     classificationLevel: classificationLevel,
     requirementTitle: value.instance_name,
-    licensing: value.licensing,
+    licensing: value.operating_system_licensing,
     memoryAmount: value.memory_amount,
+    numberOfInstances: value.number_of_instances,
     /* TODO: PLZ HAVE PLATFORM TEAM FIX CASE TO UPPERCASE TO REMOVE THIS HACK!!! MKAY? */
     entireDuration: value.need_for_entire_task_order_duration.toUpperCase(),
-    numberOfInstancesNeeded: value.number_of_instances,
     numberOfVCPUs: value.number_of_vcpus,
     operatingSystem: value.operating_system,
     performanceTier: value.performance_tier,
@@ -383,6 +386,7 @@ const mapOtherOfferingFromDTO = (
   if("environment_type" in value){
     result.environmentType = value.environment_type;
     result.operatingEnvironment = value.operating_environment;
+    result.operatingSystemAndLicensing = value.operating_system_licensing;
   }
 
   if("database_licensing" in value){
@@ -547,6 +551,15 @@ export const trainingTypeOptions: RadioButton[] = [
   },
 ];
 
+export const defaultDOWArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
+  source: "DOW",
+  statement: "",
+  applications_needing_design: "",
+  data_classification_levels: "",
+  external_factors: "",
+}
+
+
 @Module({
   name: "DescriptionOfWork",
   namespaced: true,
@@ -597,6 +610,37 @@ export class DescriptionOfWorkStore extends VuexModule {
     "DOCUMENTATION_SUPPORT",
     "GENERAL_CLOUD_SUPPORT"
   ]
+
+  public DOWHasArchitecturalDesignNeeds: boolean | null = null;
+  public DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;
+
+  @Action({rawError: true})
+  public async setDOWHasArchitecturalDesign(value: boolean): Promise<void> {
+    this.doSetDOWHasArchitecturalDesign(value);
+  }
+
+  @Mutation
+  public doSetDOWHasArchitecturalDesign(value: boolean): void {
+    this.DOWHasArchitecturalDesignNeeds = value;
+  }
+
+  @Action({rawError: true})
+  public async setDOWArchitecturalDesign(value: ArchitecturalDesignRequirementDTO): Promise<void> {
+    this.doSetDOWArchitecturalDesign(value);
+    // TODO: SAVE TO SNOW
+  }
+
+  @Mutation
+  public doSetDOWArchitecturalDesign(value: ArchitecturalDesignRequirementDTO): void {
+    this.DOWArchitectureNeeds = this.DOWArchitectureNeeds
+      ? Object.assign(this.DOWArchitectureNeeds, value)
+      : value;
+  }
+
+  @Action({rawError: true})
+  public async getDOWArchitecturalNeeds(): Promise<ArchitecturalDesignRequirementDTO> {
+    return this.DOWArchitectureNeeds;
+  }
 
   @Action({rawError: true})
   public async loadDOWfromAcquistionPackageId(sysId: string): Promise<void> {
@@ -755,11 +799,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   }
 
-  @Action
-  public async getServiceGroupVerbiageInfo(): Promise<Record<string, string>> {
-    return serviceGroupVerbiageInfo[this.currentGroupId];
-  }
-
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
@@ -767,6 +806,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     nameofProperty(this, (x)=> x.userSelectedServiceOfferings),
     nameofProperty(this, (x)=> x.DOWObject)
   ];
+
+  @Action
+  public async getServiceGroupVerbiageInfo(): Promise<Record<string, string>> {
+    return serviceGroupVerbiageInfo[this.currentGroupId];
+  }
+
+
 
   @Action
   public async getDOWObject(): Promise<DOWServiceOfferingGroup[]> {
@@ -1290,10 +1336,10 @@ export class DescriptionOfWorkStore extends VuexModule {
     memoryUnit: "GB",
     storageType: "",
     storageAmount: "",
-    storageUnit: "",
+    storageUnit: "GB",
     performanceTier: "",
     performanceTierOther: "",
-    numberOfInstancesNeeded: "1",
+    numberOfInstances: "1",
     requirementTitle: "",
     usageDescription: "",
     operatingEnvironment: "",

@@ -370,6 +370,9 @@ export default class OtherOfferings extends Vue {
       this.selectedClassificationLevelList.length === 1
       && this.selectedClassificationLevelList[0].classification_level.value
     ) {
+      
+      //   EJY DOUBLE CHECK VALUE RED SQUIGGLES
+
       const classificationObj = this.selectedClassificationLevelList[0];
       this._serviceOfferingData.classificationLevel = classificationObj.classification_level.value;
       this.singleClassificationLevelName 
@@ -439,6 +442,9 @@ export default class OtherOfferings extends Vue {
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if (this.selectedClassificationLevelList) {
       this.selectedClassificationLevelList.forEach((val) => {
+  
+        //   EJY DOUBLE CHECK VALUE RED SQUIGGLES
+        
         this.modalSelectedOptions.push(val.classification_level.value || "")
       });
       this.checkSingleClassification();
@@ -525,6 +531,7 @@ export default class OtherOfferings extends Vue {
           const childRef: any = child.$refs[key];
           if (childRef[0]) {
             if (this.isCompute && childRef[0].attrs$["data-group-id"] === "Regions_Group"
+            && this._serviceOfferingData.deployedRegions
               && this._serviceOfferingData.deployedRegions.indexOf(this.otherRegionValue) > -1
               && this._serviceOfferingData.deployedRegionsOther === ""
             ) {

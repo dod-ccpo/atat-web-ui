@@ -246,6 +246,7 @@ const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
 const getOfferingGroupServicesPath = (groupId: string)=>
   `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
 
+
 export const RequirementsPathResolver = (current: string, direction: string): string => {
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
@@ -303,15 +304,33 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
-export const AnticipatedUserAndDataNeedsResolver = (current:string) => {
-  const xaasServices = DescriptionOfWork.hasXaasService;
-  const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
-  if(current === routeNames.RequirementCategories && xaasServices && !hasBeenVisited){
-    return routeNames.AnticipatedUserAndDataNeeds
+
+export const DOWArchitecturalDesignResolver = (current: string): string => {
+  const DOWNeedsArch = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
+  if (DOWNeedsArch) {
+    // coming from either direction, if needs architectural design, go there
+    return routeNames.DOWArchitecturalDesign;
   }
-  return current === routeNames.RequirementCategories ? routeNames.ServiceOfferings
+  const xaasServices = DescriptionOfWork.hasXaasService;
+  return current === routeNames.RequirementCategories 
+    ? xaasServices ? routeNames.AnticipatedUserAndDataNeeds : routeNames.ServiceOfferings
     : routeNames.RequirementCategories;
 }
+
+export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
+  const xaasServices = DescriptionOfWork.hasXaasService;
+  const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
+  if ((current === routeNames.DOWArchitecturalDesign 
+    || current === routeNames.RequirementCategories)
+    && xaasServices && !hasBeenVisited
+  ) {
+    return routeNames.AnticipatedUserAndDataNeeds
+  }
+  return current === routeNames.DOWArchitecturalDesign 
+    ? routeNames.ServiceOfferings
+    : routeNames.DOWArchitecturalDesign;
+}
+
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
   const groupId = DescriptionOfWork.currentGroupId;
   if (otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1) {
@@ -727,6 +746,10 @@ const needsReplicateOrOptimize = (): boolean => {
 const currentEnvNeedsArchitectureDesign = (): boolean => {
   return CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
 }
+const DOWNeedsArchitectureDesign = (): boolean | null => {
+  return DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
+}
+
 
 export const IGCECannotProceedResolver = (current: string): string => {
   if (!(IGCEStore.requirementsCostEstimate?.has_DOW_and_PoP === "YES")){
@@ -759,9 +782,8 @@ export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
     : routeNames.ArchitecturalDesignSolutions;
 }
 
-
 export const IGCEArchitecturalDesignSolutionsResolver = (current: string): string => {
-  if (currentEnvNeedsArchitectureDesign()) {
+  if (currentEnvNeedsArchitectureDesign() || DOWNeedsArchitectureDesign()) {
     return routeNames.ArchitecturalDesignSolutions;
   }
 
@@ -917,7 +939,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
   UploadJAMRRDocumentsRouteResolver,
-  AnticipatedUserAndDataNeedsResolver
+  AnticipatedUserAndDataNeedsResolver,
+  DOWArchitecturalDesignResolver,
 };
 
 // add path resolvers here 
