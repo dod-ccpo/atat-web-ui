@@ -16,6 +16,7 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import ArrowBack from "@/components/icons/ArrowBack.vue";
 import Aws from "@/components/icons/Aws.vue";
 import Azure from "@/components/icons/Azure.vue";
+import BugReport from "@/components/icons/BugReport.vue";
 import Bullet from "@/components/icons/Bullet.vue";
 import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
@@ -73,6 +74,7 @@ import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vu
     ArrowBack,
     Aws,
     Azure,
+    BugReport,
     Bullet,
     Calendar,
     ChevronDown,
