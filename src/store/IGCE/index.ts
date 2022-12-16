@@ -7,33 +7,6 @@ import _ from "lodash";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
-export interface TravelEstimateNeeds {
-  ceilingPrice: string,
-  estimatedTravelCosts: string[]
-};
-
-export interface ArchDesignEstimateNeeds {
-  type: "" | "DOW" | "CURRENT_ENV"
-  ceilingPrice: string,
-  estimatedCosts: string[]
-}
-
-export interface OptimizeOrReplicateEstimateNeeds {
-  ceilingPrice: string,
-  estimatedCosts: string[]
-};
-
-export interface SurgeRequirements {
-  capacity: string,
-  capabilities: string
-}
-
-export interface Fee{
-  isCharged: string,
-  percentage: string
-}
-
-
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
     has_DOW_and_PoP: "",
@@ -80,7 +53,6 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
     }
   }
 }
-
 @Module({
   name: "IGCEStore",
   namespaced: true,
@@ -99,7 +71,7 @@ export class IGCEStore extends VuexModule {
   public doReset(): void {
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
   }
-
+  
   @Action
   public async getRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
     return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
@@ -108,11 +80,14 @@ export class IGCEStore extends VuexModule {
   @Action
   public async setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
     await this.doSetRequirementsCostEstimate(value);
+    await this.saveRequirementsCostEstimate(value);
   }
 
   @Mutation
   public async doSetRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
-    this.requirementsCostEstimate = value;
+    this.requirementsCostEstimate = this.requirementsCostEstimate
+      ? Object.assign(this.requirementsCostEstimate, value)
+      : value;
   }
 
   @Mutation
