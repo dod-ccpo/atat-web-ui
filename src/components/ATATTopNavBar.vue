@@ -82,19 +82,40 @@
               :key="idx"
               :id="'TopNavBarMenuItem_' + getIdText(menuItem.title)"
               @click="navClicked(menuItem)"
-              :class="[{ _active: isMenuItemActive(menuItem) }]"
+              :class="[
+                { _active: isMenuItemActive(menuItem) }, 
+                { 'd-block pt-2 pb-1' : menuItem.subtitle } 
+              ]"
             >
-              <div v-if="menuItem.icon" class="text-center _menu-icon mr-2">
-                <ATATSVGIcon
-                  :name="menuItem.icon.name"
-                  :color="menuItem.icon.color"
-                  :width="menuItem.icon.width"
-                  :height="menuItem.icon.height"
-                />
+              <div class="d-flex align-center width-100">
+                <div v-if="menuItem.icon" class="text-center _menu-icon mr-2">
+                  <ATATSVGIcon
+                    :name="menuItem.icon.name"
+                    :color="menuItem.icon.color"
+                    :width="menuItem.icon.width"
+                    :height="menuItem.icon.height"
+                  />
+                </div>
+                <v-list-item-title>
+                  {{ menuItem.title }} sfdas
+                </v-list-item-title>
+                <div v-if="menuItem.externalUrl">
+                  <ATATSVGIcon 
+                    name="externalLink"
+                    color="primary"
+                    width="14"
+                    height="16"
+                  />
+                </div>
               </div>
-              <v-list-item-title>
-                {{ menuItem.title }}
-              </v-list-item-title>
+              <span 
+                v-if="menuItem.subtitle" 
+                class="d-block font-size-14 text-base pr-8"
+                style="margin-left: 25px;"
+              >
+                {{ menuItem.subtitle }}
+              </span>
+
             </v-list-item>
           </template>
         </v-list>
@@ -248,6 +269,7 @@ export default class ATATTopNavBar extends Vue {
           },
           {
             title: "Customer Support",
+            subtitle: "Get answers about ATAT and DAPPS",
             externalUrl: "https://community.hacc.mil/s/contact?RequestTopic=DAPPS",
             icon: {
               name: "contactSupport",
@@ -258,6 +280,7 @@ export default class ATATTopNavBar extends Vue {
           },
           {
             title: "Technical Support",
+            subtitle: "Report bugs or technical issues",
             externalUrl: "https://services.disa.mil/sp?" + 
               "id=sc_cat_item&sys_id=20e86845dbaf19148c045e8cd39619d9&" + 
               "sysparm_category=a30a5ca3db12a0508c045e8cd396197c",
