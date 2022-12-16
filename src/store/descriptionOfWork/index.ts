@@ -260,6 +260,7 @@ const saveOrUpdateOtherServiceOffering =
     case "documentation_support":
     case "general_cloud_support":
     case "training":
+    case "portability_plan":
       tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
       tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
       tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
@@ -485,6 +486,14 @@ const serviceGroupVerbiageInfo: Record<string, Record<string, string>> = {
     typeForText: "service",
     introText: `any other cloud support services that you need.`,
   },
+  PORTABILITY_PLAN: { 
+    offeringName: "Portability Plan", 
+    heading2: "Portability Plan",
+    headingSummary: "Portability Plan Services", 
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `each Portability Plan service that you need.`,
+  },
 }
 
 export const instanceEnvTypeOptions: RadioButton[] = [
@@ -644,6 +653,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       "documentation_support",
       "general_cloud_support",
       "training",
+      "portability_plan"
     ].forEach(groupId => {
       const tempItems = supportItems.filter(item => item.service_type === groupId.toUpperCase());
 
