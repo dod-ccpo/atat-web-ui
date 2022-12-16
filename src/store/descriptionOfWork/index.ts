@@ -260,7 +260,7 @@ const saveOrUpdateOtherServiceOffering =
       case "documentation_support":
       case "general_cloud_support":
       case "training":
-      case "portability_plan":
+    case "portability_plan":
         tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
         tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
         tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;

@@ -197,6 +197,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     "training",
     "documentation_support",
     "general_cloud_support",
+    "portability_plan"
   ];
 
   public isServiceOfferingList = true;
