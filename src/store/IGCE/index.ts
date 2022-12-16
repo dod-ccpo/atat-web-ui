@@ -127,10 +127,7 @@ export class IGCEStore extends VuexModule {
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
     // TODO: other initializations outside of requirements cost estimate
   }
-  @Mutation
-  public setRequirementsEstimates(value:CostEstimate[]): void {
-    this.costEstimates = value
-  }
+
 
   /**
    * Loads the Requirements cost estimate data using the acquisition package sys id.
