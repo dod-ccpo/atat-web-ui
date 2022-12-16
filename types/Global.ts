@@ -34,6 +34,7 @@ export interface MenuIcon {
 }
 export interface TopNavItem {
   title: string;
+  subtitle?: string;
   parentTitle?: string;
   component?: Component;
   spaSectionTitle?: string;
