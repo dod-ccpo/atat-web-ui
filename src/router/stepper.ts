@@ -64,6 +64,8 @@ import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/In
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
 import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
+import ArchitectureDesignDOW
+  from "../steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
 import ServiceOfferingDetails 
   from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue";
 import OtherOfferingSummary 
@@ -160,6 +162,8 @@ import {
   SecurityRequirementsResolver,
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
+  DOWArchitecturalDesignResolver,
+  
 } from "./resolvers";
 import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
@@ -188,6 +192,7 @@ export const routeNames = {
   CurrentContractDetails: "Current_Contract_Details",
   CurrentEnvironment:"Current_Environment",
   RequirementCategories: "Requirement_Categories",
+  DOWArchitecturalDesign: "DOW_Architectural_Design",
   ServiceOfferings: "Service_Offerings",
   ServiceOfferingDetails: "Service_Offering_Details",
   OtherOfferingSummary: "Other_Offering_Summary",
@@ -677,6 +682,18 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
       },
+
+      {
+        menuText: "Architectural Design Requirements DOW",
+        excludeFromMenu: true,
+        path: "architectural-design-requirements-dow",
+        name: routeNames.DOWArchitecturalDesign,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: DOWArchitecturalDesignResolver,
+        component: ArchitectureDesignDOW,
+      },
+
       {
         menuText: "Anticipated Users and Data Needs",
         excludeFromMenu: true,
@@ -687,6 +704,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: AnticipatedUserAndDataNeedsResolver,
         component: AnticipatedUserAndDataNeeds,
       },
+
+
+
       {
         menuText: "Service Offerings",
         path: "service-offerings/:groupName",

@@ -201,25 +201,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public isServiceOfferingList = true;
 
-  public otherOfferingData: OtherServiceOfferingData = {
-    instanceNumber: 1,
-    environmentType: "",
-    classificationLevel: "",
-    deployedRegions: [],
-    deployedRegionsOther: "",
-    descriptionOfNeed: "",
-    entireDuration: "",
-    periodsNeeded: [],
-    operatingSystemAndLicensing: "",
-    numberOfVCPUs: "",
-    memoryAmount: "",
-    storageType: "",
-    storageAmount: "",
-    performanceTier: "",
-    performanceTierOther: "",
-    numberOfInstancesNeeded: "1",
-    requirementTitle: "",
-  }
+  public otherOfferingData = DescriptionOfWork.emptyOtherOfferingInstance
 
   public showSubtleAlert = false;
   public isPeriodsDataMissing = false;

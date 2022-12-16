@@ -126,6 +126,7 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   has_phased_approach: YesNo;
   phased_approach_schedule: string; 
   needs_architectural_design_services: YesNo;
+  // EJY --- BELOW 4 ARE NOW IN THEIR OWN TABLE
   statement_architectural_design: string; 
   applications_need_architectural_design: string;
   data_classifications_impact_levels: string[];
@@ -556,6 +557,7 @@ export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceD
 }
 
 export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
+  source: "" | "CURRENT_ENVIRONMENT" | "DOW";
   applications_needing_design: string;
   data_classification_levels: string;
   external_factors: string;
