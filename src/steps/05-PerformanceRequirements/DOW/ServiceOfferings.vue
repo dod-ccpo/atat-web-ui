@@ -319,11 +319,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
         }
-
-        //save to backend
-        if (this.isServiceOfferingList) {
-          await DescriptionOfWork.saveUserSelectedServices();
-        }
       }
     } catch (error) {
       throw new Error('error saving requirement data');
