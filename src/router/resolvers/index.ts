@@ -220,6 +220,14 @@ export const ContractTrainingReq = (current: string): string => {
     : routeNames.Training;
 };
 
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+
 const basePerformanceRequirementsPath =  "performance-requirements";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 
@@ -246,8 +254,13 @@ const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
 const getOfferingGroupServicesPath = (groupId: string)=>
   `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
 
+/****************************************************************************/
+/****************************************************************************/
 
 export const RequirementsPathResolver = (current: string, direction: string): string => {
+  
+  debugger;
+
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
   if (current === routeNames.ServiceOfferings
@@ -304,8 +317,13 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
+/****************************************************************************/
+/****************************************************************************/
 
 export const DOWArchitecturalDesignResolver = (current: string): string => {
+  
+  debugger;
+
   const DOWNeedsArch = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
   if (DOWNeedsArch) {
     // coming from either direction, if needs architectural design, go there
@@ -317,7 +335,13 @@ export const DOWArchitecturalDesignResolver = (current: string): string => {
     : routeNames.RequirementCategories;
 }
 
+/****************************************************************************/
+/****************************************************************************/
+
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
+  
+  debugger;
+
   const xaasServices = DescriptionOfWork.hasXaasService;
   const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
   if ((current === routeNames.DOWArchitecturalDesign 
@@ -330,6 +354,9 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
     ? routeNames.ServiceOfferings
     : routeNames.DOWArchitecturalDesign;
 }
+
+/****************************************************************************/
+/****************************************************************************/
 
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
 
@@ -355,11 +382,17 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
      
 }
 
+/****************************************************************************/
+/****************************************************************************/
+
+
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
+
+  debugger;
 
   DescriptionOfWork.setCurrentGroupRemoved(false);
   // if no options selected on category page, or if only "None apply" checkboxes checked, 
@@ -391,6 +424,10 @@ export const OfferGroupOfferingsPathResolver = (
     || lastGroupRemoved
 
   const directionNext = direction ===  "next";
+
+  debugger;
+  
+  // CRAZY BIG RESOLVER OfferGroupOfferingsPathResolver
 
   if (!addGroupFromSummary 
     && ((currentGroupRemovedForNav && lastGroupRemoved) 
@@ -544,9 +581,14 @@ export const OfferGroupOfferingsPathResolver = (
   return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
 }
 
+/****************************************************************************/
+/****************************************************************************/
+
+
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   
+  debugger;
 
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
@@ -679,7 +721,9 @@ export const DOWSecurityRequirementsPathResolver
     const groupId = DescriptionOfWork.currentGroupId;    
     const isOtherOffering = otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1;
     const needsSecurity = needsSecurityRequirements.includes(groupId);
+
     debugger;
+
     // if direction = next OR prev, and current groupId in `needsSecurityRequirements` 
     //   -- route to security requirements page
 
