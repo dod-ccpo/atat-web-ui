@@ -181,54 +181,94 @@ export default class ATATTopNavBar extends Vue {
     this.topNavMenuItems = [
       {
         title: "Dashboard",
+        spaSectionTitle: sectionData.sectionTitles.Home,
       },
       {
         title: "Acquisitions",
-        menu: [
-          {
-            title: "My Packages",
-            parentTitle: "Acquisitions",
-            spaSectionTitle: sectionData.sectionTitles.Packages,
-          },
-          {
-            title: "My Task Orders",
-            parentTitle: "Acquisitions",
-          },
-          { 
-            title: "Document Review", 
-            separatorBefore: true,
-            parentTitle: "Acquisitions",
-            spaSectionTitle: sectionData.sectionTitles.DocumentReview,
-          },
-        ]
+        spaSectionTitle: sectionData.sectionTitles.Packages,
+        // menu: [
+        //   {
+        //     title: "My Packages",
+        //     parentTitle: "Acquisitions",
+        //     spaSectionTitle: sectionData.sectionTitles.Packages,
+        //   },
+        //   {
+        //     title: "My Task Orders",
+        //     parentTitle: "Acquisitions",
+        //   },
+        //   { 
+        //     title: "Document Review", 
+        //     separatorBefore: true,
+        //     parentTitle: "Acquisitions",
+        //     spaSectionTitle: sectionData.sectionTitles.DocumentReview,
+        //   },
+        // ]
       },
+      // {
+      //   title: "Portfolios",
+      //   spaSectionTitle: sectionData.sectionTitles.Portfolios,
+      // },
+      // {
+      //   title: "Portals",
+      //   align: "left",
+      //   menu: [
+      //     {
+      //       title: "Global Service Desk",
+      //       icon: {
+      //         name: "person",
+      //         width: "14",
+      //         height: "15",
+      //         color: "base-dark",
+      //       },
+      //     },
+      //     {
+      //       title: "Mission Partner Portal",
+      //       icon: {
+      //         name: "support",
+      //         width: "18",
+      //         height: "17",
+      //         color: "base-dark",
+      //       },
+      //     },
+      //   ],
+      // },
       {
-        title: "Portfolios",
-        spaSectionTitle: sectionData.sectionTitles.Portfolios,
-      },
-      {
-        title: "Portals",
+        title: "Help & Support",
         align: "left",
         menu: [
           {
-            title: "Global Service Desk",
-            icon: {
-              name: "person",
-              width: "14",
-              height: "15",
-              color: "base-dark",
-            },
-          },
-          {
-            title: "Mission Partner Portal",
+            title: "JWCC Help Center",
+            externalUrl: "https://community.hacc.mil/s/jwcc/resources",
             icon: {
               name: "support",
-              width: "18",
+              width: "17",
               height: "17",
-              color: "base-dark",
-            },
+              color: "base-dark"
+            }
           },
-        ],
+          {
+            title: "Customer Support",
+            externalUrl: "https://community.hacc.mil/s/contact?RequestTopic=DAPPS",
+            icon: {
+              name: "contactSupport",
+              width: "16",
+              height: "19",
+              color: "base-dark"
+            }
+          },
+          {
+            title: "Technical Support",
+            externalUrl: "https://services.disa.mil/sp?" + 
+              "id=sc_cat_item&sys_id=20e86845dbaf19148c045e8cd39619d9&" + 
+              "sysparm_category=a30a5ca3db12a0508c045e8cd396197c",
+            icon: {
+              name: "bugReport",
+              width: "14",
+              height: "15",
+              color: "base-dark"
+            }
+          }
+        ]
       },
       {
         title: this.userInitials,
