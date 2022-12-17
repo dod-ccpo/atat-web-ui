@@ -311,7 +311,7 @@ export default class ATATDatePicker extends Vue {
    * LIFECYCLE HOOKS
    */
   private mounted(): void {
-    this.date = this.value;
+    this.date = this.reformatDate(this.value);
     this.$nextTick(() => {
       this.addMasks();
     });
