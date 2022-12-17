@@ -6,10 +6,12 @@ import {
   ClassificationLevelDTO,
   ClassifiedInformationTypeDTO,
   ReferenceColumn,
+  CrossDomainSolutionDTO,
   SelectedClassificationLevelDTO
 } from "@/api/models";
-import {SecurityRequirement} from "../../../types/Global";
+import {CrossDomainSolution, SecurityRequirement} from "../../../types/Global";
 import {AxiosRequestConfig} from "axios";
+import AcquisitionPackage from "../acquisitionPackage";
 
 @Module({
   name: "ClassificationRequirements",
@@ -22,6 +24,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   public selectedClassificationLevels: SelectedClassificationLevelDTO[] = [];
   public securityRequirements: SecurityRequirement[] = [];
   public classifiedInformationTypes: ClassifiedInformationTypeDTO[] = [];
+  public cdsSolution: CrossDomainSolutionDTO | null = null;
 
   @Mutation
   public setClassifications(value: ClassificationLevelDTO[]): void {
@@ -273,6 +276,76 @@ export class ClassificationRequirementsStore extends VuexModule {
     }
   }
 
+  @Action({rawError: true})
+  public async setCdsSolution(value: CrossDomainSolution): Promise<void> {
+    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
+    const cdsSolution: CrossDomainSolutionDTO = {
+      acquisition_package: packageId,
+      anticipated_need_or_usage: value.anticipatedNeedUsage,
+      cross_domain_solution_required: value.crossDomainSolutionRequired,
+      need_for_entire_task_order_duration: value.entireDuration,
+      projected_file_stream_type: value.projectedFileStream,
+      selected_periods: value.selectedPeriods.join(",") || "",
+      traffic_per_domain_pair: JSON.stringify(value.solutionType) || ""
+    };
+    const sysId = await this.saveCdsSolution(cdsSolution);
+    this.doSetCdsSolution({
+      ...cdsSolution,
+      sys_id: sysId
+    });
+  }
+
+  @Mutation
+  private doSetCdsSolution(value: CrossDomainSolutionDTO): void {
+    this.cdsSolution = value;
+  }
+
+  @Action({rawError: true})
+  public async getCdsSolution(): Promise<CrossDomainSolutionDTO> {
+    return this.cdsSolution as CrossDomainSolutionDTO;
+  }
+
+  @Action({rawError: true})
+  public async saveCdsSolution(value: CrossDomainSolutionDTO): Promise<string>{
+    let objSysId = "";
+
+    if(value.sys_id){
+      await api.crossDomainSolutionTable.update(
+        value.sys_id,
+        value
+      );
+      objSysId = value.sys_id;
+    } else {
+      const savedObject = await api.crossDomainSolutionTable.create(
+        value
+      );
+      objSysId = savedObject.sys_id as string;
+    }
+
+    return objSysId;
+  }
+
+  @Action({rawError: true})
+  public async loadCdsSolutionByPackageId(packageId: string): Promise<void> {
+    const cdsRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + packageId
+      }
+    };
+
+    const cdsSolution = await api.crossDomainSolutionTable.getQuery(cdsRequestConfig);
+
+    if(cdsSolution.length > 0){
+      const sysId = typeof cdsSolution[0].acquisition_package === "object"
+        ? cdsSolution[0].acquisition_package.value as string
+        : cdsSolution[0].acquisition_package as string;
+      this.doSetCdsSolution({
+        ...cdsSolution[0],
+        acquisition_package: sysId
+      });
+    }
+  }
+
   @Action({ rawError: true })
   public async reset(): Promise<void> {
     this.doReset();
@@ -282,6 +355,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   public doReset(): void {
     this.selectedClassificationLevels = [];
     this.securityRequirements = [];
+    this.cdsSolution = null;
   }
 
 }
