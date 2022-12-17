@@ -192,6 +192,16 @@ export interface ContractConsiderationsDTO extends BaseTableDTO{
   contractor_provided_transfer?: string;
 }
 
+export interface CrossDomainSolutionDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  anticipated_need_or_usage: string;
+  cross_domain_solution_required: string;
+  need_for_entire_task_order_duration: string;
+  projected_file_stream_type: string;
+  selected_periods: string;
+  traffic_per_domain_pair: string;
+}
+
 export interface FairOpportunityDTO extends BaseTableDTO {
   exception_to_fair_opportunity: string;
 }
