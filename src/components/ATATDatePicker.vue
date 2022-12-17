@@ -297,6 +297,13 @@ export default class ATATDatePicker extends Vue {
   }
 
   /**
+   * sets date to value
+   */
+  public setDateToValue(): void{
+    this.date = this.value;
+  }
+
+  /**
    * returns menutop based on if label
    */
   get getMenutop(): string {
@@ -311,11 +318,16 @@ export default class ATATDatePicker extends Vue {
    * LIFECYCLE HOOKS
    */
   private mounted(): void {
-    this.date = this.value;
+    this.setDateToValue();
     this.$nextTick(() => {
       this.addMasks();
     });
     this.removeErrors();
   }
+
+  private updated(): void {
+    this.setDateToValue();
+  }
+
 }
 </script>
