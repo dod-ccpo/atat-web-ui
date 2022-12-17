@@ -63,8 +63,6 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-
 import { Component, Mixins } from "vue-property-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { OtherServiceOfferingData, SlideoutPanelContent } from "../../../../types/Global";
@@ -74,14 +72,12 @@ import SlideOut_GatherPricesEstimates
   from "@/steps/10-FinancialDetails/IGCE/components/SlideOut_GatherPricesEstimates.vue";
 import { buildClassificationLabel, hasChanges } from "@/helpers";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { SelectedClassificationLevelDTO } from "@/api/models";
+import { ReferenceColumn, SelectedClassificationLevelDTO } from "@/api/models";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Card_Requirement from "@/steps/10-FinancialDetails/IGCE/components/Card_Requirement.vue";
 import IGCE, { CostEstimate } from "@/store/IGCE";
 import _ from "lodash";
-import LoadOnEnter from "@/mixins/loadOnEnter";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import vue from "vue";
 
 
 @Component({
@@ -109,7 +105,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   public createFormData(serviceName: string, service: OtherServiceOfferingData) : string {
     switch (serviceName) {
     case "Compute":
-      return service.numberOfInstancesNeeded + " x ("
+      return service.numberOfInstances + " x ("
         + service.environmentType
         + ", "+ service.operatingEnvironment?.toLowerCase()
         + service.operatingSystemAndLicensing+", "
@@ -117,14 +113,14 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         + service.storageType?.toLowerCase()+" storage: "+ service.storageAmount+" "
         +service.storageUnit+", " + service.performanceTier+ ")"
     case "Database":
-      return service.numberOfInstancesNeeded + " x ("
+      return service.numberOfInstances + " x ("
           + service.databaseType
           + ", "+ service.operatingSystemAndLicensing +", " + service.databaseLicensing+", "
           + service.numberOfVCPUs + " vCPUs, " + service.memoryAmount + " GB RAM, "
           + service.storageType?.toLowerCase()+" storage: "+ service.storageAmount+" "
           +service.storageUnit+")"
     case "Storage":
-      return service.numberOfInstancesNeeded + " x ("
+      return service.numberOfInstances + " x ("
         + service.storageType?.toLowerCase()+" storage: "+ service.storageAmount+" "
         +service.storageUnit+")"
     default:
@@ -134,8 +130,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   }
 
   private get currentData(): CostEstimate[] {
-    let currentData = _.cloneDeep(this.instanceData)
-    return currentData
+    return _.cloneDeep(this.instanceData)
   }
 
   private savedData: CostEstimate[] = []
@@ -157,13 +152,11 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     }else{
       this.selectedClassifications.forEach((classification)=>{
         // eslint-disable-next-line camelcase
-        const classification_instance:{
-          labelShort:string,
-          sysId:string,
-          offerings:Record<string,string>[]
-        } = {
+        const classification_instance: CostEstimate = {
           labelShort: buildClassificationLabel(classification,'short',true),
-          sysId:classification.sys_id|| "",
+          sysId: typeof classification.classification_level === "object"
+            ? (classification.classification_level as ReferenceColumn).value as string
+            : classification.classification_level as string,
           offerings:[]
         }
         this.instanceData.push(classification_instance)
