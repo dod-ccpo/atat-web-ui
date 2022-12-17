@@ -1,82 +1,244 @@
 <template>
   <v-form ref="form" lazy-validation>
-  <div>
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header mb-3">
-            Do you require a cross-domain solution (CDS)?
-          </h1>
-          <div class="copy-max-width">
-            <p class="mb-10" id="IntroP">
-              In the next section, we will dive into the types of resources, tools, and services
-              that you need for this acquisition. The classification level(s) that you select below
-              will be applied to any performance requirements that you specify. If you need more
-              than one level, we will walk you through what is required within each level later.
-            </p>
-           <AnticipatedDurationandUsage
-            typeForUsage="cds"
-            typeForDuration="requirement"
-            :anticipatedNeedUsage.sync="domainInfo.classificationInstance.anticipatedNeedUsage"
-            :entireDuration.sync="domainInfo.classificationInstance.entireDuration"
-            :selectedPeriods.sync="domainInfo.classificationInstance.selectedPeriods"
-            :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-            :isPeriodsDataMissing="isPeriodsDataMissing"
-            index="0"
-           />
-          </div>
+    <div>
+      <v-container fluid class="container-max-width">
+        <v-row>
+          <v-col class="col-12">
+            <h1 class="page-header mb-3">
+              Do you require a cross-domain solution (CDS)?
+            </h1>
 
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+            <ATATRadioGroup
+              id="needsCDSGroup"
+              card="true"
+              :value.sync="domainInfo.crossDomainSolutionRequired"
+              :items="cdsOptions"
+              :rules="[$validators.required('Please select Yes or No.')]"
+              name="needsCDSGroup"
+              class="mt-3 mb-8"
+              width="180"
+            />
+
+            <div v-if="domainInfo.crossDomainSolutionRequired === 'YES'">
+              <hr />
+              <div class="copy-max-width">
+
+                <v-row>
+                  <v-col>
+                    <ATATCheckboxGroup
+                      id="cdsSolutions"
+                      :items.sync="cdsSolutionItems"
+                      textFieldAppendText="GB/month"  
+                      class="mb-8 _cds-checkbox-list"
+                      :hasTextFields="true"
+                      groupLabelId="cdsSolutionLabel"
+                      groupLabel="What type of cross-domain solution do you need?"
+                      :labelWidth="240"
+                      :textFieldWidth="164"
+                      :value.sync="selectedCDSCheckboxItems"
+                      :groupLabelHelpText="cdsSolutionLabelHelpText"
+                      @checkboxTextfieldDataUpdate="solutionTypeDataUpdate"
+                    />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="col-sm-12 col-md-6">
+                    <ATATTextField 
+                      id="projectedFileStreamType"
+                      label="Projected file stream/type"
+                      :value.sync="domainInfo.projectedFileStream"
+                    />
+                  </v-col>
+                </v-row>
+
+                <v-row>
+                  <v-col>
+                    <AnticipatedDurationandUsage
+                      typeForUsage="cds"
+                      typeForDuration="requirement"
+                      :anticipatedNeedUsage.sync="
+                        domainInfo.anticipatedNeedUsage"
+                      :entireDuration.sync="domainInfo.entireDuration"
+                      :selectedPeriods.sync="domainInfo.selectedPeriods"
+                      :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+                      :isPeriodsDataMissing="isPeriodsDataMissing"
+                      index="0"
+                    />
+                  </v-col>
+                </v-row>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
   </v-form>
 </template>
 <script lang="ts">
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationandUsage.vue";
 import {
   Checkbox,
   CrossDomainSolution,
-  DOWClassificationInstance,
+  RadioButton,
 } from "../../../types/Global";
 import { createPeriodCheckboxItems } from "@/helpers";
 import Periods from "@/store/periods";
+
+import ClassificationRequirements from "@/store/classificationRequirements";
+
 @Component({
-  components: {AnticipatedDurationandUsage}
+  components: {
+    AnticipatedDurationandUsage,
+    ATATRadioGroup,
+    ATATTextField,
+    ATATCheckboxGroup
+  }
 })
 export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
-  private isPeriodsDataMissing = false;
-  private domainInfo: CrossDomainSolution = {
-    isCrossDomain: "",
-    solutionType:[{
-      type: "",
-      dataQuantity: 0
-    }],
+  public isPeriodsDataMissing = false;
+  public domainInfo: CrossDomainSolution = {
+    crossDomainSolutionRequired: "",
+    solutionType:[],
     projectedFileStream:"",
-    classificationInstance: {
-      sysId: "",
-      impactLevel: "", // for sorting
-      classificationLevelSysId: "",
-      anticipatedNeedUsage: "",
-      entireDuration: "",
-      selectedPeriods: [],
-      labelLong: "",
-      labelShort: "",
-    }
+    entireDuration: "",
+    anticipatedNeedUsage: "",
+    selectedPeriods: []
   }
+
+  public selectedCDSCheckboxItems: Checkbox[] = [];
+
   public availablePeriodCheckboxItems: Checkbox[] = [];
+
+  public cdsOptions: RadioButton[] = [
+    {
+      id: "YesCdsSolution",
+      label: "Yes",
+      value: "YES",
+    },
+    {
+      id: "NoCdsSolution",
+      label: "No",
+      value: "NO",
+    },
+  ];
+
+  public cdsSolutionItems: Checkbox[] = [
+    {
+      id: "UtoS",
+      label: "Unclassified to Secret",
+      value: "U_TO_S",
+      textfieldValue: "",
+    },
+    {
+      id: "StoU",
+      label: "Secret to Unclassified",
+      value: "S_TO_U",
+      textfieldValue: "",
+    },
+  ];
+
+  public cdsSolutionLabelHelpText = `For each selection, enter the approximate quantity of 
+    data that you expect to transfer between domains each month.`;
+
+  @Watch("selectedCDSCheckboxItems")
+  public updateSelectedCDSCheckboxItems(): void {
+
+    const solutionTypeData: { type: string; dataQuantity: number; }[] = [];
+
+    this.selectedCDSCheckboxItems.forEach(item => {
+      const index = this.domainInfo.solutionType.findIndex(
+        solutionType => solutionType.type === item.value);
+
+      // debugger;
+      if(index > -1) { 
+        solutionTypeData.push(this.domainInfo.solutionType[index]);
+      } else {
+        const itemIndex = this.cdsSolutionItems.findIndex(
+          cdsItem => cdsItem.value == item as unknown as string)
+        
+        const cdsSelection = this.cdsSolutionItems[itemIndex];
+        solutionTypeData.push(
+          { 
+            type: cdsSelection.value, 
+            dataQuantity: Number(cdsSelection.textfieldValue) || 0
+          });
+      }
+    });
+
+    this.domainInfo.solutionType = solutionTypeData;
+  }
+
+  public solutionTypeDataUpdate(data: Checkbox[]): void {
+    const solutionTypeCount = data.filter(
+      checkbox => checkbox.textfieldValue && checkbox.textfieldValue !== ""
+    );
+
+    const solutionTypeData: { type: string; dataQuantity: number; }[] = [];
+
+    solutionTypeCount.forEach(checkboxObj => {
+      const type = `${checkboxObj.value}`;
+      const val = Number(checkboxObj.textfieldValue) || 0;
+      const thisSolutionTypeObj = { type: type, dataQuantity: val };
+      solutionTypeData.push(thisSolutionTypeObj);
+    });
+
+    this.domainInfo.solutionType = solutionTypeData;
+  }
+
   protected async loadOnEnter(): Promise<boolean> {
     const periods = await Periods.loadPeriods();
     this.isPeriodsDataMissing = (periods && periods.length === 0);
     this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
+
+    const cdsSolution = await ClassificationRequirements.getCdsSolution();
+
+    if(cdsSolution){
+      this.domainInfo.anticipatedNeedUsage = cdsSolution.anticipated_need_or_usage;
+      this.domainInfo.crossDomainSolutionRequired = cdsSolution.cross_domain_solution_required;
+      this.domainInfo.entireDuration = cdsSolution.need_for_entire_task_order_duration;
+      this.domainInfo.projectedFileStream = cdsSolution.projected_file_stream_type;
+      this.domainInfo.selectedPeriods = cdsSolution.selected_periods 
+        ? cdsSolution.selected_periods.split(",") : [];
+
+      const solutionTypes: { type: string; dataQuantity: number; }[]
+       = JSON.parse(cdsSolution.traffic_per_domain_pair);
+
+      if(solutionTypes){
+
+        const checkboxItems: any = [];
+
+        solutionTypes.forEach(item => {
+          const checkBoxItemIndex = this.cdsSolutionItems.findIndex(
+            cbItem => cbItem.value === item.type);
+
+          if(checkBoxItemIndex > -1){
+            this.cdsSolutionItems[
+              checkBoxItemIndex].textfieldValue = item.dataQuantity.toString();
+
+            checkboxItems.push(item.type);
+          }
+            
+        });
+        
+        this.$nextTick(() => {
+          this.selectedCDSCheckboxItems = checkboxItems;
+          this.domainInfo.solutionType = solutionTypes;
+        });
+      }
+    }
+
     return true;
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    await ClassificationRequirements.setCdsSolution(this.domainInfo);
     return true;
   }
 }

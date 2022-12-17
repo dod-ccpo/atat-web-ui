@@ -51,6 +51,7 @@ import { CloudSupportEnvironmentInstanceAPI } from "@/api/cloudSupportEnvironmen
 import { ArchitecturalDesignRequirementAPI } from "@/api/architecturalDesignRequirement";
 import { ClassifiedInformationTypeAPI } from "@/api/classifiedInformationType";
 import { XaaSEnvironmentInstanceAPI } from "@/api/xaasEnvironmentInstance";
+import { CrossDomainSolutionAPI } from "@/api/crossDomainSolution";
 
 export const api = {
 
@@ -107,7 +108,8 @@ export const api = {
   cloudSupportEnvironmentInstanceTable: new CloudSupportEnvironmentInstanceAPI(),
   architecturalDesignRequirementTable: new ArchitecturalDesignRequirementAPI(),
   classifiedInformationTypeTable: new ClassifiedInformationTypeAPI(),
-  xaaSEnvironmentInstanceTable: new XaaSEnvironmentInstanceAPI()
+  xaaSEnvironmentInstanceTable: new XaaSEnvironmentInstanceAPI(),
+  crossDomainSolutionTable: new CrossDomainSolutionAPI()
 }
 
 export default {
