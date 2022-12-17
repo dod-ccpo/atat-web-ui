@@ -931,6 +931,7 @@ export class AcquisitionPackageStore extends VuexModule {
       }
 
       await DescriptionOfWork.loadDOWfromAcquistionPackageId(packageId);
+      await ClassificationRequirements.loadCdsSolutionByPackageId(packageId);
 
       this.setInitialized(true);
 

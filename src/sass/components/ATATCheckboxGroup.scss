@@ -146,6 +146,14 @@
 
 }
 
+._cds-checkbox-list {
+  ._has-text-fields {
+    > .v-input__control {
+      max-width: 240px !important;
+    }
+  }
+}
+
 ._checkbox-card {
   @extend ._checkbox;
   background-color: $base-lightest !important;

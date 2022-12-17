@@ -625,11 +625,13 @@ export interface SecurityRequirement {
 }
 
 export interface CrossDomainSolution {
-  isCrossDomain: YesNo;
-  solutionType:[{
-    type: DomainType,
+  crossDomainSolutionRequired: string;
+  entireDuration: string;
+  anticipatedNeedUsage: string;
+  solutionType:{
+    type: string,
     dataQuantity: number
-  }],
-  projectedFileStream:string,
-  classificationInstance: DOWClassificationInstance,
+  }[],
+  projectedFileStream:string;
+  selectedPeriods: string[];
 }
