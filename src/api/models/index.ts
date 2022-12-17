@@ -501,6 +501,12 @@ export interface EDAResponse {
   message: string;
 }
 
+
+export interface GInvoicingResponse {
+  valid: boolean;
+  message: string;
+}
+
 export interface EnvironmentInstanceDTO extends BaseTableDTO {
   acquisition_package: ReferenceColumn | string;
   anticipated_need_or_usage: string;
