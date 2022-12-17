@@ -37,7 +37,7 @@
           placeHolder="1-50"
           suffix="%"
           width="150"
-          :value.sync="capabilities"
+          :value.sync="capacity"
           :rules="[
             $validators.isBetween(1, 50, 'Please enter a number between 1-50'),
             $validators.required('Please enter a number between 1-50'),
@@ -57,6 +57,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATAlert from "../../../components/ATATAlert.vue";
 import ATATTextField from "../../../components/ATATTextField.vue";
 import IGCEStore, {SurgeRequirements } from "@/store/IGCE";
+import {YesNo} from "../../../../types/Global";
 
 @Component({
   components: {
@@ -71,8 +72,8 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
     };
   };
 
-  private capabilities = "";
-  private capacity = "";
+  public capacity: number | null = null;
+  public capabilities: YesNo = "";
   private get currentData(): SurgeRequirements {
     return {
       capabilities: this.capabilities,
@@ -94,20 +95,21 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await IGCEStore.getSurgeRequirements();
-    if (storeData) {
-      this.savedData = storeData;
-      this.capabilities = storeData.capabilities;
-      this.capacity = storeData.capacity;
-    }
+    const store = await IGCEStore.getRequirementsCostEstimate();
+    this.savedData = store.surge_requirements;
+    this.capabilities = store.surge_requirements.capabilities;
+    this.capacity = store.surge_requirements.capacity as number;
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    if (this.hasErrorMessages()){
-      this.capabilities = "";
-    }
     if (this.hasChanged()) {
-      IGCEStore.setSurgeRequirements(this.currentData);
+      if (this.hasErrorMessages()){
+        this.capacity = null;
+      }
+      const store = await IGCEStore.getRequirementsCostEstimate();
+      store.surge_requirements = this.currentData;
+      await IGCEStore.setRequirementsCostEstimate(store);
+      await IGCEStore.saveRequirementsCostEstimate();
     }
     return true;
   }

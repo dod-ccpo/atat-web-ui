@@ -142,6 +142,7 @@ import Periods from "@/store/periods";
 import { OtherServiceOfferingData, OtherServiceSummaryTableData } from "../../../../types/Global";
 import { buildClassificationLabel, toTitleCase } from "@/helpers";
 import _ from 'lodash';
+import { ReferenceColumn } from "@/api/models";
 
 @Component({
   components: {
@@ -375,8 +376,8 @@ export default class OtherOfferingSummary extends Vue {
       }
 
       if (classificationLevels.length > 1) {
-        const classificationObj = classificationLevels.find(
-          obj => obj.sys_id === instanceClone.classificationLevel
+        const classificationObj = classificationLevels.find(obj => (
+          obj.classification_level as ReferenceColumn).value === instanceClone.classificationLevel
         );
         if (classificationObj) {
           classificationLevel = buildClassificationLabel(classificationObj, "short");
@@ -397,7 +398,7 @@ export default class OtherOfferingSummary extends Vue {
         typeOrTitle,
         classification: classificationLevel,
         duration: duration,
-        qty: instanceClone.numberOfInstancesNeeded,
+        qty: instanceClone.numberOfInstances,
         vCPU: instanceClone.numberOfVCPUs,
         memory: instanceClone.memoryAmount ? `${instanceClone.memoryAmount} GB` : "",
         storageType: toTitleCase(instanceClone.storageType || ""),        
@@ -425,10 +426,10 @@ export default class OtherOfferingSummary extends Vue {
         "entireDuration",
         "memoryAmount",
         "anticipatedNeedUsage",
-        "numberOfInstancesNeeded",
+        "numberOfInstances",
         "numberOfVCPUs",
         "operatingSystem",
-        "licensing",
+        "operatingSystemAndLicensing",
         "performanceTier",
         "storageAmount",
         "storageType",

@@ -1,12 +1,11 @@
 <template>
   <v-form ref="form" lazy-validation>
     <ArchitecturalDesignForm
-      :isDOW="false"
-      :statementArchitecturalDesign.sync="CurrentEnvironmentArchNeeds.statement"
-      :applicationsNeedArchitecturalDesign.sync="
-        CurrentEnvironmentArchNeeds.applications_needing_design"
-      :dataClassificationsImpactLevels.sync="CurrentEnvironmentArchNeeds.data_classification_levels"
-      :externalFactors.sync="CurrentEnvironmentArchNeeds.external_factors"
+      :isDOW="true"
+      :statementArchitecturalDesign.sync="DOWArchNeeds.statement"
+      :applicationsNeedArchitecturalDesign.sync="DOWArchNeeds.applications_needing_design"
+      :dataClassificationsImpactLevels.sync="DOWArchNeeds.data_classification_levels"
+      :externalFactors.sync="DOWArchNeeds.external_factors"
     />
   </v-form>
 </template>
@@ -20,11 +19,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import CurrentEnvironment, 
-{ 
-  defaultCurrentEnvironment, 
-  defaultCurrentEnvironmentArchitecturalNeeds 
-} from "@/store/acquisitionPackage/currentEnvironment";
+import DescriptionOfWork, { defaultDOWArchitecturalNeeds } from "@/store/descriptionOfWork";
 import { ArchitecturalDesignRequirementDTO } from "@/api/models";
 
 @Component({
@@ -33,23 +28,23 @@ import { ArchitecturalDesignRequirementDTO } from "@/api/models";
   }
 })
 
-export default class ArchitectureDesign extends Mixins(SaveOnLeave) {
-  public CurrentEnvironmentArchNeeds = defaultCurrentEnvironmentArchitecturalNeeds;
+export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
+  public DOWArchNeeds = defaultDOWArchitecturalNeeds;
 
   /* eslint-disable camelcase */
   public get currentData(): ArchitecturalDesignRequirementDTO {
     return {
-      source: "CURRENT_ENVIRONMENT",
-      statement: this.CurrentEnvironmentArchNeeds.statement,
-      applications_needing_design: this.CurrentEnvironmentArchNeeds.applications_needing_design,
-      data_classification_levels: this.CurrentEnvironmentArchNeeds.data_classification_levels,
-      external_factors: this.CurrentEnvironmentArchNeeds.external_factors,
-      acquisition_package: this.CurrentEnvironmentArchNeeds.acquisition_package
+      source: "DOW",
+      statement: this.DOWArchNeeds.statement,
+      applications_needing_design: this.DOWArchNeeds.applications_needing_design,
+      data_classification_levels: this.DOWArchNeeds.data_classification_levels,
+      external_factors: this.DOWArchNeeds.external_factors,
+      acquisition_package: this.DOWArchNeeds.acquisition_package
     }
   };
 
   public savedData: ArchitecturalDesignRequirementDTO = {
-    source: "CURRENT_ENVIRONMENT",
+    source: "DOW",
     statement: "",
     applications_needing_design: "",
     data_classification_levels: "",
@@ -63,9 +58,9 @@ export default class ArchitectureDesign extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await CurrentEnvironment.getCurrentEnvironmentArchitecturalNeeds();
+    const storeData = await DescriptionOfWork.getDOWArchitecturalNeeds();
     if (storeData) {
-      this.CurrentEnvironmentArchNeeds = _.cloneDeep(storeData);
+      this.DOWArchNeeds = _.cloneDeep(storeData);
       this.savedData = _.cloneDeep(storeData);
     }
   }
@@ -80,7 +75,7 @@ export default class ArchitectureDesign extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        CurrentEnvironment.setCurrentEnvironmentArchitecturalDesign(this.currentData);
+        DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);
 
       }
     } catch (error) {

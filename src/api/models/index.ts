@@ -126,6 +126,7 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   has_phased_approach: YesNo;
   phased_approach_schedule: string; 
   needs_architectural_design_services: YesNo;
+  // EJY --- BELOW 4 ARE NOW IN THEIR OWN TABLE
   statement_architectural_design: string; 
   applications_need_architectural_design: string;
   data_classifications_impact_levels: string[];
@@ -542,6 +543,8 @@ export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
 
 export type StorageEnvironmentInstanceDTO = EnvironmentInstanceDTO
 
+export type XaasEnvironmentInstanceDTO = EnvironmentInstanceDTO
+
 export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
   can_train_in_unclass_env?: string;
   personnel_onsite_access?: string;
@@ -556,6 +559,8 @@ export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceD
 }
 
 export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  source: "" | "CURRENT_ENVIRONMENT" | "DOW";
   applications_needing_design: string;
   data_classification_levels: string;
   external_factors: string;
@@ -712,15 +717,9 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
     percentage: number | null;
   };
   how_estimates_developed: {
-    tools_used: {
-      AWS: YesNo;
-      GOOGLE_CLOUD: YesNo;
-      MICROSOFT_AZURE: YesNo;
-      ORACLE_CLOUD: YesNo;
-      PREVIOUSLY_PAID_PRICES: YesNo;
-      OTHER: YesNo;
-      OTHER_TOOLS: string;
-    }
+    // csv list Eg: "AWS,GOOGLE_CLOUD,MICROSOFT_AZURE,ORACLE_CLOUD,PREVIOUSLY_PAID_PRICES,OTHER"
+    tools_used: string
+    other_tools_used: string
     cost_estimate_description: string;
     previous_cost_estimate_comparison:{
       options: "" | "MORE_THAN" | "LESS_THAN" | "SAME";

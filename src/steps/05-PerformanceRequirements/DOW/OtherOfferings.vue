@@ -10,7 +10,14 @@
         for {{ serviceGroupVerbiageInfo.heading2 }} #{{ _serviceOfferingData.instanceNumber }}
       </span>
     </h1>
-    <p 
+    <p
+      v-if="isPortabilityPlan"
+    >
+      Refer to the JWCC Contract Performance Work 
+      Statement (PWS) for the definition of a Portability Plan.
+    </p>
+    <p
+      v-else 
       class="copy-max-width"
       :class="isClassificationDataMissing || isPeriodsDataMissing ? 'mb-4' : 'mb-10'"
     >
@@ -66,29 +73,29 @@
       1. {{ sectionOneSubhead }}
     </h2>
 
-    <div v-if="selectedClassificationLevelList.length > 1" class="mb-10">
-      <ATATRadioGroup
-        id="ClassificationLevel"
-        legend="What classification level is this instance deployed in?"
-        :value.sync="_serviceOfferingData.classificationLevel"
-        :items="classificationRadioOptions"
-        name="ClassificationLevel"
-        class="mt-3 mb-2"
-        :tooltipText="classificationTooltipText"
-        tooltipLabel="Classification level for this instance"
-        :rules="[$validators.required('Please select a classification level.')]"
-      />
-      <a 
-        role="button" 
-        id="UpdateClassificationFromRadios"
-        tabindex="0"
-        @click="openModal"
-        @keydown.enter="openModal"
-        @keydown.space="openModal"
-      >Update your Classification Requirements</a>
-    </div>
-
     <v-form ref="form" lazy-validation>
+
+      <div v-if="selectedClassificationLevelList.length > 1" class="mb-10">
+        <ATATRadioGroup
+          id="ClassificationLevel"
+          legend="What classification level is this instance deployed in?"
+          :value.sync="_serviceOfferingData.classificationLevel"
+          :items="classificationRadioOptions"
+          name="ClassificationLevel"
+          class="mt-3 mb-2"
+          :tooltipText="classificationTooltipText"
+          tooltipLabel="Classification level for this instance"
+          :rules="[$validators.required('Please select a classification level.')]"
+        />
+        <a 
+          role="button" 
+          id="UpdateClassificationFromRadios"
+          tabindex="0"
+          @click="openModal"
+          @keydown.enter="openModal"
+          @keydown.space="openModal"
+        >Update your Classification Requirements</a>
+      </div>
 
       <ComputeFormElements
         v-if="isCompute"
@@ -140,16 +147,19 @@
         <br/>
       </div>
       
-      <AnticipatedDurationandUsage
-        :typeForUsage="serviceGroupVerbiageInfo.typeForUsage"
-        :typeForDuration="serviceGroupVerbiageInfo.typeForText"
-        :index="_serviceOfferingData.instanceNumber"
-        :isPeriodsDataMissing="isPeriodsDataMissing"
-        :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-        :anticipatedNeedUsage.sync="_serviceOfferingData.descriptionOfNeed"
-        :entireDuration.sync="_serviceOfferingData.entireDuration"
-        :selectedPeriods.sync="_serviceOfferingData.periodsNeeded"
-      />
+      <div v-if="!isPortabilityPlan">
+        <AnticipatedDurationandUsage
+          :typeForUsage="serviceGroupVerbiageInfo.typeForUsage"
+          :typeForDuration="serviceGroupVerbiageInfo.typeForText"
+          :index="_serviceOfferingData.instanceNumber"
+          :isPeriodsDataMissing="isPeriodsDataMissing"
+          :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
+          :anticipatedNeedUsage.sync="_serviceOfferingData.descriptionOfNeed"
+          :entireDuration.sync="_serviceOfferingData.entireDuration"
+          :selectedPeriods.sync="_serviceOfferingData.periodsNeeded"
+        />
+      </div>
+      
 
       <div v-if="isSupport" class="mt-10">
         <ATATRadioGroup
@@ -291,6 +301,7 @@ export default class OtherOfferings extends Vue {
   public isDatabase = false;
   public isSupport = false;
   public isTraining = false;
+  public isPortabilityPlan = false;
 
   public serviceGroupVerbiageInfo: Record<string, string> = {};
 
@@ -359,6 +370,9 @@ export default class OtherOfferings extends Vue {
       this.selectedClassificationLevelList.length === 1
       && this.selectedClassificationLevelList[0].classification_level.value
     ) {
+      
+      //   EJY DOUBLE CHECK VALUE RED SQUIGGLES
+
       const classificationObj = this.selectedClassificationLevelList[0];
       this._serviceOfferingData.classificationLevel = classificationObj.classification_level.value;
       this.singleClassificationLevelName 
@@ -409,6 +423,7 @@ export default class OtherOfferings extends Vue {
     this.isDatabase = this.serviceGroupOnLoad.toLowerCase() === "database";
     this.isStorage = this.serviceGroupOnLoad.toLowerCase() === "storage";
     this.isTraining = this.serviceGroupOnLoad.toLowerCase() === "training";
+    this.isPortabilityPlan = this.serviceGroupOnLoad.toLowerCase() === "portability_plan";
 
     this.isSupport = [
       "advisory_assistance",
@@ -417,11 +432,9 @@ export default class OtherOfferings extends Vue {
       "general_cloud_support"
     ].includes(this.serviceGroupOnLoad.toLowerCase());
 
-    if (this.serviceGroupOnLoad.toLowerCase() !== "portability_plan") {
-      const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
-      this.firstTimeHere 
-        = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
-    }
+    const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
+    this.firstTimeHere 
+      = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
 
     // get classification levels selected in step 4 Contract Details
     this.selectedClassificationLevelList 
@@ -429,6 +442,9 @@ export default class OtherOfferings extends Vue {
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if (this.selectedClassificationLevelList) {
       this.selectedClassificationLevelList.forEach((val) => {
+  
+        //   EJY DOUBLE CHECK VALUE RED SQUIGGLES
+        
         this.modalSelectedOptions.push(val.classification_level.value || "")
       });
       this.checkSingleClassification();
@@ -515,6 +531,7 @@ export default class OtherOfferings extends Vue {
           const childRef: any = child.$refs[key];
           if (childRef[0]) {
             if (this.isCompute && childRef[0].attrs$["data-group-id"] === "Regions_Group"
+            && this._serviceOfferingData.deployedRegions
               && this._serviceOfferingData.deployedRegions.indexOf(this.otherRegionValue) > -1
               && this._serviceOfferingData.deployedRegionsOther === ""
             ) {
