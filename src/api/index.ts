@@ -52,6 +52,7 @@ import { ArchitecturalDesignRequirementAPI } from "@/api/architecturalDesignRequ
 import { ClassifiedInformationTypeAPI } from "@/api/classifiedInformationType";
 import { XaaSEnvironmentInstanceAPI } from "@/api/xaasEnvironmentInstance";
 import { CrossDomainSolutionAPI } from "@/api/crossDomainSolution";
+import { GInvoicingApi } from "@/api/gInvoicing";
 
 export const api = {
 
@@ -90,6 +91,7 @@ export const api = {
   clinTable: new ClinAPi(),
   clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),
+  gInvoicingApi: new GInvoicingApi(),
   currentEnvironmentTable: new CurrentEnvironmentApi(),
   currentEnvironmentInstanceTable: new CurrentEnvironmentInstanceAPI(),
   aggregate: new AggregateApi(),
