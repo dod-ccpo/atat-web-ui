@@ -92,14 +92,6 @@ export class IGCEStore extends VuexModule {
       : value;
   }
 
-  @Action({ rawError: true })
-  public async doSetCostEstimate(value: CostEstimate[]): Promise<void> {
-    await this.setCostEstimate(value)
-  }
-  @Mutation
-  public async setCostEstimate(value: CostEstimate[]): Promise<void> {
-    this.costEstimates = value;
-  }
   @Mutation
   public setHasDOWandPop(): void {
     const requirementCostEstimate = this.requirementsCostEstimate as RequirementsCostEstimateDTO;
@@ -161,6 +153,18 @@ export class IGCEStore extends VuexModule {
     } catch (error) {
       throw new Error(`an error occurred saving requirements cost estimate ${error}`);
     }*/
+  }
+
+  @Action({rawError: true})
+  public async setCostEstimate(value: CostEstimate[]): Promise<void> {
+    console.log("Setting igce estimate...");
+    console.log(value);
+    await this.doSetCostEstimate(value)
+  }
+
+  @Mutation
+  public async doSetCostEstimate(value: CostEstimate[]): Promise<void> {
+    this.costEstimates = value;
   }
 }
 
