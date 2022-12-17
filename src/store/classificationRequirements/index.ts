@@ -288,6 +288,10 @@ export class ClassificationRequirementsStore extends VuexModule {
       selected_periods: value.selectedPeriods.join(",") || "",
       traffic_per_domain_pair: JSON.stringify(value.solutionType) || ""
     };
+
+    if(this.cdsSolution && this.cdsSolution.sys_id)
+      cdsSolution.sys_id = this.cdsSolution.sys_id;
+
     const sysId = await this.saveCdsSolution(cdsSolution);
     this.doSetCdsSolution({
       ...cdsSolution,
