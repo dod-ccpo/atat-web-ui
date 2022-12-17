@@ -26,7 +26,7 @@
         :clearable="true"
         @change="fileUploadChanged"
         :hide-details="true"
-        :rules="_rules"
+        :rules="setRules"
         :validate-on-blur="validateOnBlur"
         @keydown.tab="setErrorMessage()"
       >
@@ -135,10 +135,6 @@ export default class ATATFileUpload extends Vue {
       reset: () => void;
       validate: () => boolean;
     };
-    // atatFileUploadForm: Vue & {
-    //   resetValidation: () => void;
-    //   reset: () => void;
-    // };
   };
 
   // props
@@ -189,6 +185,10 @@ export default class ATATFileUpload extends Vue {
       return this._validFiles.length !== 1 || this.errorMessages.length > 0
     }
     return true;
+  }
+
+  get setRules():((v: string) => string | true | undefined)[] {
+    return this._validFiles.length>0 ? [] : this._rules;
   }
 
   //Events
@@ -423,8 +423,9 @@ export default class ATATFileUpload extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatFileUpload.validate())
+    if (!this.$refs.atatFileUpload.validate()){
       this.setErrorMessage();
+    }
   }
 
   private setErrorMessage(): void {
@@ -484,6 +485,9 @@ export default class ATATFileUpload extends Vue {
 
   private updated(): void {
     this.isFullSize = this._validFiles.length === 0;
+    if (this._validFiles.length>0){
+      this.$refs.atatFileUpload.resetValidation();
+    }
   }
 }
 </script>
