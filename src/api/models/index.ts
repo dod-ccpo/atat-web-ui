@@ -711,7 +711,7 @@ export interface EstimateOptionValueDTO {
 }
 
 export interface TrainingEstimateDTO {
-  cost_estimate: "PER_PERSON" | "PER_CLASS" | "SUBSCRIPTION";
+  cost_estimate: "" | "PER_PERSON" | "PER_SESSION" | "SUBSCRIPTION";
   estimate: EstimateOptionValueDTO;
 }
 

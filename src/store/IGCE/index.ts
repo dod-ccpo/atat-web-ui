@@ -2,7 +2,7 @@
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import {RequirementsCostEstimateDTO} from "@/api/models";
+import {RequirementsCostEstimateDTO, TrainingEstimateDTO} from "@/api/models";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
@@ -47,6 +47,16 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
   }
 }
 
+export const defaultTrainingEstimateDTO = (): TrainingEstimateDTO => {
+  return {
+    cost_estimate: "",
+    estimate: {
+      estimated_values: [],
+      option: ""
+    }
+  };
+}
+
 export interface CostEstimate {
   labelShort: string,
   sysId: string,
@@ -61,8 +71,8 @@ export interface CostEstimate {
 })
 export class IGCEStore extends VuexModule {
   public requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
-
-  public igceTrainingIndex: number | null = null;
+  public initialized = false;
+  public igceTrainingIndex = -1;
 
   @Action({rawError: true})
   public async reset(): Promise<void> {
@@ -73,8 +83,28 @@ export class IGCEStore extends VuexModule {
 
   @Mutation
   public doReset(): void {
-    this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
-    this.igceTrainingIndex = null;
+    this.requirementsCostEstimate = null;
+    this.igceTrainingIndex = -1;
+    this.initialized = false;
+  }
+
+  @Action({rawError: true})
+  public async saveTrainingEstimate(value: TrainingEstimateDTO): Promise<void> {
+    this.doSaveTrainingEstimate(value)
+  }
+
+  @Mutation
+  public doSaveTrainingEstimate(value: TrainingEstimateDTO): void {
+    if(
+      this.requirementsCostEstimate &&
+      this.igceTrainingIndex >= 0 &&
+      this.requirementsCostEstimate.training
+    ){
+      if(this.requirementsCostEstimate.training.length < this.igceTrainingIndex + 1)
+        this.requirementsCostEstimate.training.push(value);
+      else
+        this.requirementsCostEstimate.training[this.igceTrainingIndex] = value;
+    }
   }
 
   @Action
@@ -89,7 +119,7 @@ export class IGCEStore extends VuexModule {
   }
 
   @Mutation
-  public setIgceTrainingIndex(value: number | null): void {
+  public setIgceTrainingIndex(value: number): void {
     this.igceTrainingIndex = value;
   }
 
@@ -122,14 +152,17 @@ export class IGCEStore extends VuexModule {
 
   @Action
   public async initializeRequirementsCostEstimate(): Promise<void> {
-    await this.doInitializeRequirementsCostEstimate();
+    this.doInitializeRequirementsCostEstimate();
   }
 
   @Mutation
-  public async doInitializeRequirementsCostEstimate(): Promise<void> {
+  public doInitializeRequirementsCostEstimate(): void {
+    if(this.initialized)
+      return;
     // TODO: need to initialize this in SNOW by making api call. Then set the response from snow
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
     // TODO: other initializations outside of requirements cost estimate
+    this.initialized = true;
   }
 
 

@@ -20,7 +20,7 @@
             id="trainingEstimateType"
             legend="How do you want to estimate your cost for this training?"
             :items="trainingEstimateTypeOptions"
-            :value.sync="trainingEstimateType"
+            :value.sync="instanceData.cost_estimate"
             :rules="[$validators.required('Please select an option.')]"
           />
         </v-col>
@@ -63,26 +63,26 @@
           </div>
         </v-col>
       </v-row>
-      <div v-if="trainingEstimateType !== ''">
+      <div v-if="instanceData.cost_estimate !== ''">
         <v-row>
           <v-col>
             <ATATRadioGroup
               :legend="periodTypeLabel"
               :items="periodTypeOptions"
-              :value.sync="periodType"
+              :value.sync="instanceData.estimate.option"
               :rules="[
                 $validators.required('Please select an option.')
               ]"
             />
             <br />
-            <div v-if="periodType !== ''">
+            <div v-if="instanceData.estimate.option !== ''">
               <ATATSingleAndMultiplePeriods
                 :periods="periods"
                 :textboxSuffix="periodsSuffix"
                 :singlePeriodLabel="periodsLabel"
                 :multiplePeriodLabel="periodsLabel"
-                :isMultiple="periodType === 'MULTIPLE'"
-                :values.sync="periodEstimates"
+                :isMultiple="instanceData.estimate.option === 'MULTIPLE'"
+                :values.sync="instanceData.estimate.estimated_values"
                 :showSinglePeriodTooltip="false"
               />
             </div>
@@ -110,7 +110,9 @@ import { PeriodDTO, TrainingEstimateDTO } from "@/api/models";
 import Periods from "@/store/periods";
 import IGCE from "@/store/IGCE";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import { trainingTypeOptions }  from "@/store/descriptionOfWork";
+import _ from "lodash";
+import { defaultTrainingEstimateDTO } from "@/store/IGCE";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -155,9 +157,13 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
   public periods: PeriodDTO[] | null = [];
 
-  public trainingEstimateType = "";
-  public periodType: SingleMultiple = "";
-  public periodEstimates: string[] = [];
+  public instanceData: TrainingEstimateDTO = defaultTrainingEstimateDTO();
+
+  public get currentData(): TrainingEstimateDTO {
+    return this.instanceData;
+  }
+
+  public savedData: TrainingEstimateDTO = defaultTrainingEstimateDTO();
 
   public periodTypeLabel = "";
   public periodsSuffix = "";
@@ -170,9 +176,9 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
   public trainingLocation = `On-site instructor led CONUS 
     (government facility, Washington, DC, 10 people)`;
 
-  @Watch("trainingEstimateType")
+  @Watch("instanceData.cost_estimate")
   private updateSelections(): void {
-    switch(this.trainingEstimateType){
+    switch(this.instanceData.cost_estimate){
     case "PER_PERSON":
       this.periodsSuffix = "people";
       this.periodsLabel = "Number of people trained per period";
@@ -198,20 +204,21 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       break;
     }
 
-    this.periodType = "";
-    this.periodEstimates = [];
+    this.instanceData.estimate.option = "";
+    this.instanceData.estimate.estimated_values = [];
   }
 
   protected async loadOnEnter(): Promise<boolean> {
     this.periods = Periods.periods;
 
-    const trainingIndex = IGCE.igceTrainingIndex;
+    if(IGCE.igceTrainingIndex < 0)
+      IGCE.setIgceTrainingIndex(0);
+
+    this.trainingIndex = IGCE.igceTrainingIndex;
+
     const dowTrainingItems = DescriptionOfWork.DOWObject.find(
       item => item.serviceOfferingGroupId === "TRAINING"
     );
-
-    if(trainingIndex)
-      this.trainingIndex = trainingIndex;
 
     if(dowTrainingItems && dowTrainingItems.otherOfferingData){
       this.trainingCount = dowTrainingItems.otherOfferingData.length;
@@ -231,6 +238,14 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
           ${trainingItem.trainingPersonnel} people)`;
       }
     }
+
+    if(this.trainingIndex > -1 && 
+      IGCE.requirementsCostEstimate &&
+      IGCE.requirementsCostEstimate.training.length > 0
+    ){
+      this.instanceData = _.cloneDeep(IGCE.requirementsCostEstimate.training[this.trainingIndex]);
+      this.savedData = _.cloneDeep(IGCE.requirementsCostEstimate.training[this.trainingIndex]);
+    }
       
 
     return true;
@@ -240,7 +255,17 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
   protected async saveOnLeave(): Promise<boolean> {
+    try{
+      if(this.hasChanged())
+        await IGCE.saveTrainingEstimate(this.currentData);
+    } catch (error){
+      console.log(error);
+    }
     return true;
   }
 
