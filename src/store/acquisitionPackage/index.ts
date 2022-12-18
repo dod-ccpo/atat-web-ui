@@ -620,13 +620,6 @@ export class AcquisitionPackageStore extends VuexModule {
           (acquisitionPackage.current_environment as ReferenceColumn).value as string
           : acquisitionPackage.current_environment as string;
 
-      // TODO: check if req cost estimate reference gets added to acquisition package table. 
-      //  Otherwise, refactore below block.
-      const requirementsCostEstimateSysId =
-        typeof acquisitionPackage.requirements_cost_estimate === "object" ?
-          (acquisitionPackage.requirements_cost_estimate as ReferenceColumn).value as string
-          : acquisitionPackage.requirements_cost_estimate as string;
-
       const projectOverviewSysId = 
         typeof acquisitionPackage.project_overview === "object" ?
           (acquisitionPackage.project_overview as ReferenceColumn).value as string
@@ -751,13 +744,10 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(requirementsCostEstimateSysId){
-        await IGCE.loadRequirementsCostEstimateDataById(
-          requirementsCostEstimateSysId
-        );
-      } else {
-        await IGCE.initializeRequirementsCostEstimate(); // initialize also sets the store data
-      }
+      // call below loads if available or initializes
+      await IGCE.loadRequirementsCostEstimateDataById(
+        this.acquisitionPackage?.sys_id as string
+      );
 
       if(organizationSysId) {
         const organization = await api.organizationTable.retrieve(
@@ -988,6 +978,7 @@ export class AcquisitionPackageStore extends VuexModule {
           }
 
           this.setRequirementsCostEstimate({
+            acquisition_package: "",
             has_DOW_and_PoP: "",
             architectural_design_current_environment: {
               option: "",

@@ -2,13 +2,17 @@
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import {RequirementsCostEstimateDTO} from "@/api/models";
+import {IgceEstimateDTO, ReferenceColumn, RequirementsCostEstimateDTO} from "@/api/models";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import ClassificationRequirements from "@/store/classificationRequirements";
+import {AxiosRequestConfig} from "axios";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
+    acquisition_package: "",
     has_DOW_and_PoP: "",
     architectural_design_current_environment: {
       option: "",
@@ -61,6 +65,7 @@ export interface CostEstimate {
 })
 export class IGCEStore extends VuexModule {
   public requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
+  public igceEstimateList: IgceEstimateDTO[] = [];
 
   @Action({rawError: true})
   public async reset(): Promise<void> {
@@ -72,6 +77,7 @@ export class IGCEStore extends VuexModule {
   @Mutation
   public doReset(): void {
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
+    this.igceEstimateList = [];
   }
 
   @Action
@@ -111,9 +117,8 @@ export class IGCEStore extends VuexModule {
 
   @Mutation
   public async doInitializeRequirementsCostEstimate(): Promise<void> {
-    // TODO: need to initialize this in SNOW by making api call. Then set the response from snow
-    this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
-    // TODO: other initializations outside of requirements cost estimate
+    this.requirementsCostEstimate = await api.requirementsCostEstimateTable
+      .create(defaultRequirementsCostEstimate());
   }
 
 
@@ -155,16 +160,117 @@ export class IGCEStore extends VuexModule {
     }*/
   }
 
+  /**
+   * Loads the Requirements cost estimate data using the acquisition package sys id.
+   * And then sets the context such that the data could be retrieved using the
+   * getters (getRequirementsCostEstimate)
+   * @param packageId - sys_id of the acquisition package table record
+   */
+  @Action({rawError: true})
+  public async loadRequirementsCostEstimateDataByPackageId(packageId: string): Promise<void> {
+    const rceRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + packageId
+      }
+    };
+    const reqCostEstimateList = await api.requirementsCostEstimateTable.getQuery(rceRequestConfig);
+    if(reqCostEstimateList.length > 0){
+      const sysId = typeof reqCostEstimateList[0].acquisition_package === "object"
+        ? reqCostEstimateList[0].acquisition_package.value as string
+        : reqCostEstimateList[0].acquisition_package as string;
+      await this.doSetRequirementsCostEstimate({
+        ...reqCostEstimateList[0],
+        acquisition_package: sysId
+      });
+    } else {
+      await this.initializeRequirementsCostEstimate();
+    }
+  }
+
+  /**
+   * Loads the igce estimate data using the acquisition package sys id.
+   * And then sets the context such that the data could be retrieved using the
+   * getters (getIgceCostEstimate)
+   * @param packageId - sys_id of the acquisition package table record
+   */
+  @Action({rawError: true})
+  public async loadIgceEstimateByPackageId(packageId: string): Promise<void> {
+    const rceRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + packageId
+      }
+    };
+    const igceEstimateList = await api.igceEstimateTable.getQuery(rceRequestConfig);
+    this.doSetIgceEstimate(igceEstimateList);
+  }
+
   @Action({rawError: true})
   public async setCostEstimate(value: CostEstimate[]): Promise<void> {
     console.log("Setting igce estimate...");
     console.log(value);
-    await this.doSetCostEstimate(value)
+    const aqPackageSysId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
+    const crossDomainSysId = ClassificationRequirements.cdsSolution?.sys_id as string;
+    const contractTypeSysId =
+      AcquisitionPackage.acquisitionPackage?.contract_type === "object"
+        ? (AcquisitionPackage.acquisitionPackage?.contract_type as unknown as ReferenceColumn)
+          .value as string
+        : AcquisitionPackage.acquisitionPackage?.contract_type as string;
+    const periods = Periods.periods;
+    let quantityCalculated = 0;
+    periods.forEach(period => {
+      if(period.period_unit === "MONTH") {
+        quantityCalculated = quantityCalculated + Number(period.period_unit_count);
+      } else if (period.period_unit === "YEAR") {
+        quantityCalculated = quantityCalculated + (Number(period.period_unit_count) * 12);
+      }
+    })
+    await this.saveIgceEstimates(
+      {
+        costEstimatList: value,
+        aqPackageSysId: aqPackageSysId,
+        crossDomainSysId: crossDomainSysId,
+        contractTypeSysId: contractTypeSysId,
+        quantity: quantityCalculated
+      });
+    await this.loadIgceEstimateByPackageId(aqPackageSysId);
   }
 
   @Mutation
-  public async doSetCostEstimate(value: CostEstimate[]): Promise<void> {
-    this.costEstimates = value;
+  public async doSetIgceEstimate(igceEstimateList: IgceEstimateDTO[]): Promise<void> {
+    this.igceEstimateList = igceEstimateList;
+  }
+
+  @Action({rawError: true})
+  public async saveIgceEstimates(saveIgceObject: {
+    costEstimatList: CostEstimate[],
+    aqPackageSysId: string,
+    crossDomainSysId: string,
+    contractTypeSysId: string,
+    quantity: number
+  }): Promise<void>{
+    const apiCallList: Promise<IgceEstimateDTO>[] = [];
+    saveIgceObject.costEstimatList.forEach(costEstimate => {
+      costEstimate.offerings.forEach(offering => {
+        const igceEstimateSysId = offering.igceEstimateSysId as string;
+        const igceEstimate: IgceEstimateDTO = {
+          acquisition_package: saveIgceObject.aqPackageSysId,
+          classification_instance: costEstimate.sysId,
+          contract_type: saveIgceObject.contractTypeSysId,
+          cross_domain_solution: saveIgceObject.crossDomainSysId,
+          quantity: saveIgceObject.quantity,
+          selected_service_offering: offering.sysId as string,
+          title: offering.IGCE_title as string,
+          unit: "MONTHLY",
+          unit_price: offering.monthly_price as number
+        }
+        if(igceEstimateSysId && igceEstimateSysId.length > 0) {
+          apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate));
+        } else {
+          apiCallList.push(api.igceEstimateTable.create(igceEstimate));
+        }
+      })
+    })
+    await Promise.all(apiCallList);
   }
 }
 

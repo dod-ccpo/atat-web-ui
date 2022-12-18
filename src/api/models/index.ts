@@ -718,6 +718,7 @@ export interface TrainingEstimateDTO {
 }
 
 export interface RequirementsCostEstimateDTO extends BaseTableDTO{
+  acquisition_package: ReferenceColumn | string;
   has_DOW_and_PoP: YesNo;
   optimize_replicate: EstimateOptionValueDTO;
   architectural_design_current_environment: EstimateOptionValueDTO;
@@ -744,10 +745,15 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   }
 }
 
-/*export interface RequirementsCostEstimateDTO extends BaseTableDTO {
-  surge_capabilities?: string;
-  estimatedTaskOrderValue?: string;
-  feePercentage?: string;
-  feeCharged?: string;
-  surge_capacity?: string;
-}*/
+export interface IgceEstimateDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  classification_instance: ReferenceColumn | string;
+  contract_type: ReferenceColumn | string;
+  cross_domain_solution: ReferenceColumn | string;
+  selected_service_offering: ReferenceColumn | string;
+  title: string;
+  unit: string;
+  unit_price: number | null;
+  quantity: number;
+  dow_task_number?: string;
+}
