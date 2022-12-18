@@ -15,7 +15,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
+        <v-col cols="7">
           <ATATRadioGroup
             id="trainingEstimateType"
             legend="How do you want to estimate your cost for this training?"
@@ -24,26 +24,64 @@
             :rules="[$validators.required('Please select an option.')]"
           />
         </v-col>
+        <v-col cols="5">
+          <div>
+            <ATATAlert 
+              type="callout"
+              calloutBackground="base-lightest"
+            >
+              <template slot="content">
+                <v-row>
+                  <v-col class="d-flex justify-start">
+                    <span>
+                      <ATATSVGIcon 
+                        width="37"
+                        height="28"
+                        name="menuBook"
+                      />
+                     
+                    </span>
+                    &nbsp; &nbsp;
+                    <h2>Training #{{trainingIndex + 1}}</h2>
+                  </v-col>
+                  <v-col class="d-flex justify-end">
+                    <h3 class="text-base-light">
+                      {{trainingIndex + 1}} of {{trainingCount}}
+                    </h3>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <h3>{{trainingTitle}}</h3>
+                    <p class="text-base-light">
+                      {{trainingLocation}}
+                    </p>
+                  </v-col>
+                </v-row>
+              </template>
+            </ATATAlert>
+          </div>
+        </v-col>
       </v-row>
       <div v-if="trainingEstimateType !== ''">
         <v-row>
           <v-col>
             <ATATRadioGroup
-              :legend="durationLabel"
-              :items="entireDurationOptions"
-              :value.sync="entireDuration"
+              :legend="periodTypeLabel"
+              :items="periodTypeOptions"
+              :value.sync="periodType"
               :rules="[
                 $validators.required('Please select an option.')
               ]"
             />
             <br />
-            <div v-if="entireDuration !== ''">
+            <div v-if="periodType !== ''">
               <ATATSingleAndMultiplePeriods
                 :periods="periods"
                 :textboxSuffix="periodsSuffix"
                 :singlePeriodLabel="periodsLabel"
                 :multiplePeriodLabel="periodsLabel"
-                :isMultiple="entireDuration === 'NO'"
+                :isMultiple="periodType === 'MULTIPLE'"
                 :values.sync="periodEstimates"
                 :showSinglePeriodTooltip="false"
               />
@@ -58,16 +96,28 @@
 /* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { RadioButton } from "types/Global";
+import { 
+  RadioButton, 
+  SingleMultiple, 
+  TRAINING_TYPE,
+  TRAINING_FACILITY_TYPE
+} from "../../../../types/Global";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { PeriodDTO } from "@/api/models";
+import ATATAlert from "@/components/ATATAlert.vue";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import { PeriodDTO, TrainingEstimateDTO } from "@/api/models";
 import Periods from "@/store/periods";
+import IGCE from "@/store/IGCE";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import { trainingTypeOptions }  from "@/store/descriptionOfWork";
 
 @Component({
   components: {
     ATATRadioGroup,
-    ATATSingleAndMultiplePeriods
+    ATATSingleAndMultiplePeriods,
+    ATATAlert,
+    ATATSVGIcon
   }
 })
 export default class IGCETraining extends Mixins(SaveOnLeave) {
@@ -90,28 +140,35 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     },
   ];
 
-  public entireDurationOptions: RadioButton[] = [
+  public periodTypeOptions: RadioButton[] = [
     {
       id: "Yes",
       label: "Yes",
-      value: "YES",
+      value: "SINGLE",
     },
     {
       id: "No",
       label: "No",
-      value: "NO",
+      value: "MULTIPLE",
     },
   ];
 
   public periods: PeriodDTO[] | null = [];
 
   public trainingEstimateType = "";
-  public entireDuration = "";
+  public periodType: SingleMultiple = "";
   public periodEstimates: string[] = [];
 
-  public durationLabel = "";
+  public periodTypeLabel = "";
   public periodsSuffix = "";
   public periodsLabel = "";
+
+  public trainingIndex = 0;
+  public trainingCount = 0;
+
+  public trainingTitle = "[User's training title]";
+  public trainingLocation = `On-site instructor led CONUS 
+    (government facility, Washington, DC, 10 people)`;
 
   @Watch("trainingEstimateType")
   private updateSelections(): void {
@@ -119,34 +176,63 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     case "PER_PERSON":
       this.periodsSuffix = "people";
       this.periodsLabel = "Number of people trained per period";
-      this.durationLabel = `Do you anticipate needing the same number of 
+      this.periodTypeLabel = `Do you anticipate needing the same number of 
         people trained within each performance period?`;
       break;
     case "PER_SESSION":
       this.periodsSuffix = "sessions";
       this.periodsLabel = "Number of training sessions per period";
-      this.durationLabel = `Do you anticipate needing the same number of 
+      this.periodTypeLabel = `Do you anticipate needing the same number of 
         training sessions each performance period?`;
       break;
     case "SUBSCRIPTION":
       this.periodsSuffix = "months";
       this.periodsLabel = "Number of months per period";
-      this.durationLabel = `Do you anticipate needing subscriptions for 
+      this.periodTypeLabel = `Do you anticipate needing subscriptions for 
         the same number of months within each performance period?`;
       break;
     default:
       this.periodsSuffix = "";
       this.periodsLabel = "";
-      this.durationLabel = "";
+      this.periodTypeLabel = "";
       break;
     }
 
-    this.entireDuration = "";
+    this.periodType = "";
     this.periodEstimates = [];
   }
 
   protected async loadOnEnter(): Promise<boolean> {
     this.periods = Periods.periods;
+
+    const trainingIndex = IGCE.igceTrainingIndex;
+    const dowTrainingItems = DescriptionOfWork.DOWObject.find(
+      item => item.serviceOfferingGroupId === "TRAINING"
+    );
+
+    if(trainingIndex)
+      this.trainingIndex = trainingIndex;
+
+    if(dowTrainingItems && dowTrainingItems.otherOfferingData){
+      this.trainingCount = dowTrainingItems.otherOfferingData.length;
+      const trainingItem = dowTrainingItems.otherOfferingData[this.trainingIndex];
+
+      if(trainingItem){
+        this.trainingTitle = trainingItem.requirementTitle as string;
+
+        const trainingType = TRAINING_TYPE[trainingItem.trainingType as keyof typeof TRAINING_TYPE];
+
+        const trainingFacilityType = TRAINING_FACILITY_TYPE[
+          trainingItem.trainingFacilityType as keyof typeof TRAINING_FACILITY_TYPE
+        ];
+
+        this.trainingLocation = `${trainingType} 
+          (${trainingFacilityType}, ${trainingItem.trainingLocation}, 
+          ${trainingItem.trainingPersonnel} people)`;
+      }
+    }
+      
+
     return true;
   }
 

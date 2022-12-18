@@ -712,8 +712,6 @@ export interface EstimateOptionValueDTO {
 
 export interface TrainingEstimateDTO {
   cost_estimate: "PER_PERSON" | "PER_CLASS" | "SUBSCRIPTION";
-  subscription_estimate: "ANNUAL" | "MONTHLY";
-  estimated_price: string;
   estimate: EstimateOptionValueDTO;
 }
 

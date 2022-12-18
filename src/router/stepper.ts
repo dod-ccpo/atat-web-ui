@@ -157,7 +157,7 @@ import {
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
-  
+  IGCETrainingResolver,
 } from "./resolvers";
 import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
@@ -909,7 +909,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "training-estimate",
         name: routeNames.IGCETraining,
         completePercentageWeight: 1,
-        component: IGCETraining
+        component: IGCETraining,
+        routeResolver: IGCETrainingResolver
       },
       // {
       //   menuText: "Travel Estimates",

@@ -532,6 +532,19 @@ export interface IGCE {
   surgeCapabilities: string,
 }
 
+export enum TRAINING_TYPE {
+  ONSITE_INSTRUCTOR_CONUS = "On-site instructor led CONUS",
+  ONSITE_INSTRUCTOR_OCONUS = "On-site instructor led OCONUS",
+  VIRTUAL_INSTRUCTOR = "Virtual instructor-led",
+  VIRTUAL_SELF_LED = "Virtual self-led",
+  NO_PREFERENCE = "No preference"
+}
+
+export enum TRAINING_FACILITY_TYPE {
+  GOVERNMENT_FACILITY = "Government facility",
+  NON_GOVERNMENT_FACILITY = "Non-government facility"
+}
+
 export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BEST_USE" | "LOWEST_RISK";
 
 export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL"

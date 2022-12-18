@@ -711,6 +711,25 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   return OfferingDetailsPathResolver(current, direction);
 };
 
+export const IGCETrainingResolver = (current: string): string =>{
+  if(dowHasTraining()) {
+    return routeNames.IGCETraining;
+  }
+
+  return current === routeNames.GatherPriceEstimates
+    ? routeNames.SurgeCapacity
+    : routeNames.GatherPriceEstimates;
+}
+
+
+const dowHasTraining = (): boolean => {
+  const trainingOfferings = DescriptionOfWork.DOWObject.filter(
+    item => item.serviceOfferingGroupId === "TRAINING"
+  );
+
+  return trainingOfferings ? trainingOfferings.length > 0 : false;
+}
+
 export const IGCESurgeCapabilities =  (current:string): string =>{
   const surgeCapacity =
     IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
@@ -932,6 +951,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
+  IGCETrainingResolver
 };
 
 // add path resolvers here 

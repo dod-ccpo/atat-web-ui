@@ -62,6 +62,8 @@ export interface CostEstimate {
 export class IGCEStore extends VuexModule {
   public requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
 
+  public igceTrainingIndex: number | null = null;
+
   @Action({rawError: true})
   public async reset(): Promise<void> {
     this.doReset();
@@ -72,6 +74,7 @@ export class IGCEStore extends VuexModule {
   @Mutation
   public doReset(): void {
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
+    this.igceTrainingIndex = null;
   }
 
   @Action
@@ -83,6 +86,11 @@ export class IGCEStore extends VuexModule {
   public async setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
     await this.doSetRequirementsCostEstimate(value);
     await this.saveRequirementsCostEstimate();
+  }
+
+  @Mutation
+  public setIgceTrainingIndex(value: number | null): void {
+    this.igceTrainingIndex = value;
   }
 
   @Mutation
