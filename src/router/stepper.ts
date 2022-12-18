@@ -79,8 +79,6 @@ import AnticipatedUserAndDataNeeds
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
-import Training from "../steps/07-OtherContractConsiderations/Training.vue";
-import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
 
 // Step 8 - Standards and Compliance
 import OtherContractConsiderations from "../steps/08-StandardsAndCompliance/Index.vue";
@@ -135,7 +133,6 @@ import {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
-  ContractTrainingReq,
   OfferGroupOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
@@ -203,9 +200,7 @@ export const routeNames = {
   ContractType: "Contract_Type",
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
-  Travel: "Travel",
-  Training: "Training",
-  TrainingCourses: "Training_Courses",
+  // Travel: "Travel",
   PropertyDetails: "Property_Details",
   Justification: "Justification",
   OtherContractConsiderations: "Other_Contract_Considerations",
@@ -786,24 +781,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnLeave: routeNames.PackagingPackingAndShipping,
         component: PackagingPackingAndShipping,
       },
-      {
-        name: routeNames.Training,
-        menuText: "Training",
-        path: "training",
-        completePercentageWeight: 2,
-        component: Training,
-      },
-      {
-        name: routeNames.TrainingCourses,
-        menuText: "Training Courses",
-        excludeFromMenu: true,
-        path: "training",
-        stepCompleteOnLeave: routeNames.Training,
-        completePercentageWeight: 2,
-        component: TrainingCourses,
-        routeResolver: ContractTrainingReq
-
-      },
     ]
   },
 
@@ -818,7 +795,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Personally Identifiable Information (PII)",
         path: "/personally-identifiable-information",
         name: routeNames.PII,
-        stepCompleteOnEnter: routeNames.Training,
         completePercentageWeight: 2,
         component: PII,
       },
@@ -935,14 +911,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: IGCETraining
       },
-      {
-        menuText: "Travel Estimates",
-        excludeFromMenu: true,
-        path: "travel-estimate",
-        name: routeNames.TravelEstimates,
-        completePercentageWeight: 1,
-        component: TravelEstimates
-      },
+      // {
+      //   menuText: "Travel Estimates",
+      //   excludeFromMenu: true,
+      //   path: "travel-estimate",
+      //   name: routeNames.TravelEstimates,
+      //   completePercentageWeight: 1,
+      //   component: TravelEstimates
+      // },
       {
         menuText: "Surge Capacity",
         excludeFromMenu: true,
