@@ -28,15 +28,8 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
         options: "",
         percentage: null
       },
-      tools_used: {
-        AWS: "",
-        GOOGLE_CLOUD: "",
-        MICROSOFT_AZURE: "",
-        ORACLE_CLOUD: "",
-        PREVIOUSLY_PAID_PRICES: "",
-        OTHER: "",
-        OTHER_TOOLS: "",
-      }
+      tools_used: "",
+      other_tools_used: ""
     },
     optimize_replicate: {
       option: "",
@@ -53,6 +46,13 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
     }
   }
 }
+
+export interface CostEstimate {
+  labelShort: string,
+  sysId: string,
+  offerings: Record<string, string|number|boolean>[]
+}
+
 @Module({
   name: "IGCEStore",
   namespaced: true,
@@ -67,11 +67,13 @@ export class IGCEStore extends VuexModule {
     this.doReset();
   }
 
+  costEstimates : CostEstimate[] = []
+
   @Mutation
   public doReset(): void {
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
   }
-  
+
   @Action
   public async getRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
     return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
@@ -80,7 +82,7 @@ export class IGCEStore extends VuexModule {
   @Action
   public async setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
     await this.doSetRequirementsCostEstimate(value);
-    await this.saveRequirementsCostEstimate(value);
+    await this.saveRequirementsCostEstimate();
   }
 
   @Mutation
@@ -90,6 +92,14 @@ export class IGCEStore extends VuexModule {
       : value;
   }
 
+  @Action({ rawError: true })
+  public async doSetCostEstimate(value: CostEstimate[]): Promise<void> {
+    await this.setCostEstimate(value)
+  }
+  @Mutation
+  public async setCostEstimate(value: CostEstimate[]): Promise<void> {
+    this.costEstimates = value;
+  }
   @Mutation
   public setHasDOWandPop(): void {
     const requirementCostEstimate = this.requirementsCostEstimate as RequirementsCostEstimateDTO;
@@ -114,6 +124,7 @@ export class IGCEStore extends VuexModule {
     // TODO: other initializations outside of requirements cost estimate
   }
 
+
   /**
    * Loads the Requirements cost estimate data using the acquisition package sys id.
    * And then sets the context such that the data could be retrieved using the
@@ -132,23 +143,24 @@ export class IGCEStore extends VuexModule {
   }
 
   /**
-   * Saves requirements cost estimate record and sets the context.
+   * Saves requirements cost estimate record that is in the store and sets the context. The
+   * caller has to ensure that the store data is updated before calling this function.
    */
   @Action({rawError: true})
-  public async saveRequirementsCostEstimate(
-    requirementCostEstimate: RequirementsCostEstimateDTO)
-    : Promise<boolean> {
-    try {
+  public async saveRequirementsCostEstimate(): Promise<boolean> {
+    return true;
+    /*try {
       // TODO: perform any data transformation using spread construct.
+      // TODO: uncomment below 4 statements after SNOW table update
+      /!*const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
       const updatedReqCostEstimate = await api.requirementsCostEstimateTable
-        .update(requirementCostEstimate.sys_id as string, requirementCostEstimate);
-      const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
+        .update(storeRequirementsCostEstimate.sys_id as string, storeRequirementsCostEstimate);
       storeRequirementsCostEstimate.sys_updated_on = updatedReqCostEstimate.sys_updated_on;
-      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;
+      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;*!/
       return true;
     } catch (error) {
       throw new Error(`an error occurred saving requirements cost estimate ${error}`);
-    }
+    }*/
   }
 }
 

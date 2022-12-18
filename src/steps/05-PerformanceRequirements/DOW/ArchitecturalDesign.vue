@@ -39,6 +39,7 @@ export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
       applications_needing_design: this.DOWArchNeeds.applications_needing_design,
       data_classification_levels: this.DOWArchNeeds.data_classification_levels,
       external_factors: this.DOWArchNeeds.external_factors,
+      acquisition_package: this.DOWArchNeeds.acquisition_package
     }
   };
 
@@ -48,6 +49,7 @@ export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
     applications_needing_design: "",
     data_classification_levels: "",
     external_factors: "",
+    acquisition_package: ""
   }
   /* eslint-enable camelcase */
 

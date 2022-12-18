@@ -1,16 +1,16 @@
 /* eslint-disable camelcase */
 import { Component } from "vue";
-import { 
+import {
   RouteConfigMultipleViews,
-  RouteConfigSingleView 
+  RouteConfigSingleView
 } from "vue-router/types/router";
 
 import { AdditionalButton } from "@/store/steps/types";
 
-import { 
-  CurrentContractDTO, 
+import {
+  CurrentContractDTO,
   FairOpportunityDTO,
-  OrganizationDTO, 
+  OrganizationDTO,
   ProjectOverviewDTO,
   ContactDTO,
   BaseTableDTO,
@@ -114,24 +114,24 @@ export interface AutoCompleteItemGroups {
  */
 interface StepperRouteBase {
 
-    stepNumber?: string;
-    completePercentageWeight?: number;
-    menuText?: string;
-    completed?: boolean;
-    /**
-     * Setting this flag to true will prevent item from being 
-     * rendered in menu but will still include it in the route record
-     */
-    excludeFromMenu?: boolean;
-    /**
-     * A handler to 
-     */
-    routeResolver?: (currentRoute: string, direction: string) => string;
-    additionalButtons?: AdditionalButton[];
-    backButtonText?: string;
-    continueButtonText?: string;
-    stepCompleteOnEnter?: string;
-    stepCompleteOnLeave?: string;
+  stepNumber?: string;
+  completePercentageWeight?: number;
+  menuText?: string;
+  completed?: boolean;
+  /**
+   * Setting this flag to true will prevent item from being
+   * rendered in menu but will still include it in the route record
+   */
+  excludeFromMenu?: boolean;
+  /**
+   * A handler to
+   */
+  routeResolver?: (currentRoute: string, direction: string) => string;
+  additionalButtons?: AdditionalButton[];
+  backButtonText?: string;
+  continueButtonText?: string;
+  stepCompleteOnEnter?: string;
+  stepCompleteOnLeave?: string;
 }
 
 /**
@@ -185,12 +185,12 @@ export interface CountryObj {
 }
 
 export interface BreadCrumbItem {
-    disabled?: boolean,
-    exact?: boolean,
-    href?: string,
-    link?: boolean,
-    text?: string | number,
-    to?: string;
+  disabled?: boolean,
+  exact?: boolean,
+  href?: string,
+  link?: boolean,
+  text?: string | number,
+  to?: string;
 }
 
 export interface ToastObj {
@@ -216,8 +216,8 @@ export interface PoP {
 }
 
 export interface RankData {
-  grade: string; 
-  name: string; 
+  grade: string;
+  name: string;
   sysId: string;
 }
 
@@ -407,7 +407,7 @@ export interface OtherServiceSummaryTableData {
   duration?: string;
   personnelOnsiteAccess?: string;
   trainingType?: string;
-}  
+}
 
 export interface EnvInstanceSummaryTableData {
   instanceSysId?: string;
@@ -485,7 +485,7 @@ export interface MemberInvites {
 }
 
 export interface FundingTrackerAlert {
-   alertType: string;
+  alertType: string;
 }
 
 export interface TaskOrderCardData {
@@ -534,8 +534,8 @@ export interface IGCE {
 
 export type EvalPlanMethod = "" | "LPTA" | "BVTO" | "BEST_USE" | "LOWEST_RISK";
 
-export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL" 
-  | "SET_LUMP_SUM" | "EQUAL_SET_LUMP_SUM";
+export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL"
+    | "SET_LUMP_SUM" | "EQUAL_SET_LUMP_SUM";
 
 export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
@@ -548,7 +548,7 @@ export interface CurrEnvInstanceUsage {
   isTrafficSpikePeriodBased?: YesNo;
   trafficSpikeEventDescription?: string;
   trafficSpikePeriodDescription?: string;
-} 
+}
 
 export interface CurrEnvInstanceConfig {
   licensing?: string;
@@ -588,9 +588,9 @@ export type DomainType = ""|"UNCLASSIFIED_TO_SECRET" | "UNCLASSIFIED_TO_TOP_SECR
 export interface CurrentEnvironment {
   currentEnvironmentExists?: YesNo;
   hasSystemDocumentation?: YesNo;
-  systemDocumentation?: string[]; // List - sys_ids from sys_attachment table 
+  systemDocumentation?: string[]; // List - sys_ids from sys_attachment table
   hasMigrationDocumentation?: YesNo;
-  migrationDocumentation?: string[]; // List - sys_ids from sys_attachment table 
+  migrationDocumentation?: string[]; // List - sys_ids from sys_attachment table
   envLocation?: EnvironmentLocation;
   envClassificationsCloud?: string[]; // array of classification level sys_ids
   envClassificationsOnPrem?: string[]; // array of classification level sys_ids
@@ -598,14 +598,14 @@ export interface CurrentEnvironment {
   currentEnvironmentReplicatedOptimized?: EnvironmentReplicateOptimized;
   statementReplicatedOptimized?: string;
   additionalGrowth?: YesNo;
-  anticipatedYearlyAdditionalCapacity?: number; 
+  anticipatedYearlyAdditionalCapacity?: number;
   hasPhasedApproach?: YesNo;
-  phasedApproachSchedule?: string; 
+  phasedApproachSchedule?: string;
   needsArchitecturalDesignServices?: YesNo;
-  statementArchitecturalDesign?: string; 
+  statementArchitecturalDesign?: string;
   applicationsNeedArchitecturalDesign?: string;
   dataClassificationsImpactLevels?: string[];
-  externalFactorsArchitecturalDesign?: string;          
+  externalFactorsArchitecturalDesign?: string;
 }
 
 export interface CurrentEnvironmentInstance {
@@ -625,11 +625,13 @@ export interface SecurityRequirement {
 }
 
 export interface CrossDomainSolution {
-  isCrossDomain: YesNo;
-  solutionType:[{
-    type: DomainType,
+  crossDomainSolutionRequired: string;
+  entireDuration: string;
+  anticipatedNeedUsage: string;
+  solutionType:{
+    type: string,
     dataQuantity: number
-  }],
-  projectedFileStream:string,
-  classificationInstance: DOWClassificationInstance,
+  }[],
+  projectedFileStream:string;
+  selectedPeriods: string[];
 }
