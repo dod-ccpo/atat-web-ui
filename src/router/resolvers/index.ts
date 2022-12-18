@@ -209,17 +209,6 @@ export const A11yRequirementResolver = (current: string): string => {
     : routeNames.Section508Standards;
 };
 
-export const ContractTrainingReq = (current: string): string => {
-  const contractTraining
-      = AcquisitionPackage.contractConsiderations?.contractor_required_training === "YES";
-  if (contractTraining) {
-    return routeNames.TrainingCourses;
-  }
-  return current === routeNames.Training
-    ? routeNames.PII
-    : routeNames.Training;
-};
-
 const basePerformanceRequirementsPath =  "performance-requirements";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 
@@ -924,7 +913,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
-  ContractTrainingReq,
   IGCECannotProceedResolver,
   IGCEOptimizeOrReplicateResolver,
   IGCEArchitecturalDesignSolutionsResolver,
