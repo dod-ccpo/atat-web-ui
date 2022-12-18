@@ -120,12 +120,12 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
 
     const packageId = this.$route.query['packageId'] || "";
 
+    await AcquisitionPackage.reset();
+
     if(packageId){
-      await AcquisitionPackage.reset();
       await AcquisitionPackage.setPackageId(packageId as string);
       await AcquisitionPackage.loadPackageFromId(packageId as string);
     } else {
-      await AcquisitionPackage.reset();
       await AcquisitionPackage.initialize();
     }
 
