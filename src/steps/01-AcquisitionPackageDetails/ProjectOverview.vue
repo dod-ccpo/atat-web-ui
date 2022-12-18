@@ -124,6 +124,9 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       await AcquisitionPackage.reset();
       await AcquisitionPackage.setPackageId(packageId as string);
       await AcquisitionPackage.loadPackageFromId(packageId as string);
+    } else {
+      await AcquisitionPackage.reset();
+      await AcquisitionPackage.initialize();
     }
 
     const storeData = AcquisitionPackage.projectOverview
