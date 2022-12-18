@@ -4,7 +4,7 @@
       <v-row>
         <v-col>
           <h1 class="page-header">
-            Now we'll estimate your training requirements
+            Now we’ll estimate your training requirements
           </h1>
           <p class="page-intro">
             Considering the training details you previously outlined in Performance 
