@@ -18,12 +18,12 @@
             </p>
           </div>
           <!-- pragma: allowlist nextline secret -->
-          <SecurityRequirementsForm :hasSecret="hasSecret" :hasTopSecret="hasTopSecret"
+          <!-- <SecurityRequirementsForm :hasSecret="hasSecret" :hasTopSecret="hasTopSecret"
             :isDOW="true"
             :selectedSecretSecurityRequirements.sync="selectedSecretSecurityRequirements"
             :selectedTopSecretSecurityRequirements.sync="selectedTopSecretSecurityRequirements"
             :selectedClearanceLevels="selectedClearanceLevels"
-          />
+          /> -->
         </v-col>
       </v-row>
     </v-container>

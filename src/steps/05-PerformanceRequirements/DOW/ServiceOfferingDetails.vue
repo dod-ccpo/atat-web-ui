@@ -391,6 +391,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
+    await DescriptionOfWork.setNeedsSecurityRequirements();
     try {
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {

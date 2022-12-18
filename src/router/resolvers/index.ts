@@ -209,47 +209,37 @@ export const A11yRequirementResolver = (current: string): string => {
     : routeNames.Section508Standards;
 };
 
-export const ContractTrainingReq = (current: string): string => {
-  const contractTraining
-      = AcquisitionPackage.contractConsiderations?.contractor_required_training === "YES";
-  if (contractTraining) {
-    return routeNames.TrainingCourses;
-  }
-  return current === routeNames.Training
-    ? routeNames.PII
-    : routeNames.Training;
-};
+// export const ContractTrainingReq = (current: string): string => {
+//   const contractTraining
+//       = AcquisitionPackage.contractConsiderations?.contractor_required_training === "YES";
+//   if (contractTraining) {
+//     return routeNames.TrainingCourses;
+//   }
+//   return current === routeNames.Training
+//     ? routeNames.PII
+//     : routeNames.Training;
+// };
 
 
 /****************************************************************************/
 /****************************************************************************/
-/****************************************************************************/
+/****************************************************************************
+
+██████   ██████  ██     ██               ███████ ████████  █████  ██████  ████████ 
+██   ██ ██    ██ ██     ██               ██         ██    ██   ██ ██   ██    ██    
+██   ██ ██    ██ ██  █  ██     █████     ███████    ██    ███████ ██████     ██    
+██   ██ ██    ██ ██ ███ ██                    ██    ██    ██   ██ ██   ██    ██    
+██████   ██████   ███ ███                ███████    ██    ██   ██ ██   ██    ██    
+
+
 /****************************************************************************/
 /****************************************************************************/
 
-const needsSecurityRequirements = [
-  "advisory_and_assistance", // from other offering summary
-  "help_desk",               // from other offering summary
-  "training",                // from other offering summary
-  "documentation",           // from other offering summary
-  "general_cloud_support",   // from other offering summary
-  "edge_computing",           // FROM OFFERING DETAILS
-];
+const needsSecurityRequirements = DescriptionOfWork.needsSecurityRequirements;
+const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings;
 
 const basePerformanceRequirementsPath =  "performance-requirements";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
-
-const otherServiceOfferings = [
-  "compute",
-  "database",
-  "storage",
-  "general_xaas",
-  "advisory_assistance",
-  "help_desk_services",
-  "training",
-  "documentation_support",
-  "general_cloud_support",
-]; // future ticket - add "database"
 const otherServiceOfferingSummaryPath = "performance-requirements/service-offerings/other/summary";
 
 const baseOfferingDetailsPath =  `${basePerformanceRequirementsPath}/service-offering-details/`;
@@ -262,7 +252,14 @@ const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
 const getOfferingGroupServicesPath = (groupId: string)=>
   `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
 
-/****************************************************************************/
+/****************************************************************************
+
+ ██████  █████  ████████ ███████  ██████   ██████  ██████  ██ ███████ ███████ 
+██      ██   ██    ██    ██      ██       ██    ██ ██   ██ ██ ██      ██      
+██      ███████    ██    █████   ██   ███ ██    ██ ██████  ██ █████   ███████ 
+██      ██   ██    ██    ██      ██    ██ ██    ██ ██   ██ ██ ██           ██ 
+ ██████ ██   ██    ██    ███████  ██████   ██████  ██   ██ ██ ███████ ███████ 
+
 /****************************************************************************/
 
 export const RequirementsPathResolver = (current: string, direction: string): string => {
@@ -307,7 +304,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
     DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
     
     //Compute, General XaaS, etc. don't have service offerings
-    if (otherServiceOfferings.indexOf(previousGroup.toLowerCase()) > -1) {
+    if (otherServiceOfferings.indexOf(previousGroup) > -1) {
       return otherServiceOfferingSummaryPath;
     }
 
@@ -325,7 +322,15 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
-/****************************************************************************/
+/****************************************************************************
+
+ █████  ██████   ██████ ██   ██     ██████  ███████ ███████ ██  ██████  ███    ██ 
+██   ██ ██   ██ ██      ██   ██     ██   ██ ██      ██      ██ ██       ████   ██ 
+███████ ██████  ██      ███████     ██   ██ █████   ███████ ██ ██   ███ ██ ██  ██ 
+██   ██ ██   ██ ██      ██   ██     ██   ██ ██           ██ ██ ██    ██ ██  ██ ██ 
+██   ██ ██   ██  ██████ ██   ██     ██████  ███████ ███████ ██  ██████  ██   ████ 
+
+
 /****************************************************************************/
 // hit when leaving first main DOW offering category checkbox page
 export const DOWArchitecturalDesignResolver = (current: string): string => {
@@ -343,7 +348,15 @@ export const DOWArchitecturalDesignResolver = (current: string): string => {
     : routeNames.RequirementCategories;
 }
 
-/****************************************************************************/
+/****************************************************************************
+
+██    ██ ███████ ███████ ██████  ███████     ██ ██████   █████  ████████  █████  
+██    ██ ██      ██      ██   ██ ██         ██  ██   ██ ██   ██    ██    ██   ██ 
+██    ██ ███████ █████   ██████  ███████   ██   ██   ██ ███████    ██    ███████ 
+██    ██      ██ ██      ██   ██      ██  ██    ██   ██ ██   ██    ██    ██   ██ 
+ ██████  ███████ ███████ ██   ██ ███████ ██     ██████  ██   ██    ██    ██   ██ 
+
+
 /****************************************************************************/
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
@@ -363,31 +376,42 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
     : routeNames.DOWArchitecturalDesign;
 }
 
+/****************************************************************************
+ ██████      ██████         ███████ ██    ██ ███    ███ ███    ███  █████  ██████  ██    ██ 
+██    ██    ██    ██        ██      ██    ██ ████  ████ ████  ████ ██   ██ ██   ██  ██  ██  
+██    ██    ██    ██        ███████ ██    ██ ██ ████ ██ ██ ████ ██ ███████ ██████    ████   
+██    ██    ██    ██             ██ ██    ██ ██  ██  ██ ██  ██  ██ ██   ██ ██   ██    ██    
+ ██████  ██  ██████  ██     ███████  ██████  ██      ██ ██      ██ ██   ██ ██   ██    ██    
 /****************************************************************************/
-/****************************************************************************/
 
-export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string=>{
+export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
 
-  const groupId = DescriptionOfWork.currentGroupId.toLowerCase();
-
-  // need to know if going to security requirements page (for Tactical Edge only)
-  if (needsSecurityRequirements.includes(groupId) && !otherServiceOfferings.includes(groupId)) {
-    debugger;
-    const hasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher; 
-    if (hasSecretOrHigher) {
-      debugger;
-      // EJY look at DOWObject - loop thru array to find group ID. then loop through
-      // serviceOfferings to find prop `name` which matches dow store `currentOfferingName`
-      // then loop through each `classificationInstances` to find `classificationLevelSysId`
-      // that is either S or TS in the classification store
-      // OR - set a flag in the store that `currentOffering` has high-side (S or TS)
-      // in `saveOnLeave` in `ServiceOfferingDetails.vue` and `OtherOfferingSummary.vue`
-
-      // check that any instance for this offering has S or TS
-    }
-  
-  }
+  const groupId = DescriptionOfWork.currentGroupId;
+  const needsSecurity = needsSecurityRequirements.includes(groupId);
+  const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
   debugger;
+  if (needsSecurity && direction === "next" && !isOtherOffering) {
+    DescriptionOfWork.doSetNeedsSecurityRequirements(false);
+    return routeNames.DOWSecurityRequirements;
+  }
+  // // need to know if going to security requirements page (for Tactical Edge only)
+  // if (needsSecurityRequirements.includes(groupId) && !otherServiceOfferings.includes(groupId)) {
+  //   debugger;
+  //   const hasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher; 
+  //   if (hasSecretOrHigher) {
+  //     debugger;
+  //     // EJY look at DOWObject - loop thru array to find group ID. then loop through
+  //     // serviceOfferings to find prop `name` which matches dow store `currentOfferingName`
+  //     // then loop through each `classificationInstances` to find `classificationLevelSysId`
+  //     // that is either S or TS in the classification store
+  //     // OR - set a flag in the store that `currentOffering` has high-side (S or TS)
+  //     // in `saveOnLeave` in `ServiceOfferingDetails.vue` and `OtherOfferingSummary.vue`
+
+  //     // check that any instance for this offering has S or TS
+  //   }
+  
+  // }
+  // debugger;
 
 
   if (otherServiceOfferings.indexOf(groupId) > -1) {
@@ -405,10 +429,20 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
   return descriptionOfWorkSummaryPath;
 }
 
-/****************************************************************************/
+/****************************************************************************
+
+██████   █████   ██████  ███████     ██████  
+██   ██ ██   ██ ██       ██               ██ 
+██████  ███████ ██   ███ █████        █████  
+██      ██   ██ ██    ██ ██          ██      
+██      ██   ██  ██████  ███████     ███████ 
+
 /****************************************************************************/
 
 // This is the "simple 6" 2nd-level checkbox list page for non-"other offering" categories
+// ... the service offering checkbox list for a selected offering group...
+// AND the "other offering" form page
+
 export const ServiceOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
@@ -422,7 +456,7 @@ export const ServiceOfferingsPathResolver = (
   // or if last group was removed, send to summary page
   const DOWObject = DescriptionOfWork.DOWObject;
   const currentGroupId = DescriptionOfWork.currentGroupId;
-  const isOtherOffering = otherServiceOfferings.indexOf(currentGroupId.toLowerCase()) > -1;
+  const isOtherOffering = otherServiceOfferings.indexOf(currentGroupId) > -1;
 
   const atLastNoneApply = currentGroupId === DescriptionOfWork.cloudNoneValue;
   const onlyNoneApplySelected = DOWObject.every((e) => {
@@ -604,7 +638,15 @@ export const ServiceOfferingsPathResolver = (
   return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
 }
 
-/****************************************************************************/
+/****************************************************************************
+
+███████ ██ ███    ███ ██████  ██      ███████      ██████      ███████  ██████  ██████  ███    ███ 
+██      ██ ████  ████ ██   ██ ██      ██          ██           ██      ██    ██ ██   ██ ████  ████ 
+███████ ██ ██ ████ ██ ██████  ██      █████       ███████      █████   ██    ██ ██████  ██ ████ ██ 
+     ██ ██ ██  ██  ██ ██      ██      ██          ██    ██     ██      ██    ██ ██   ██ ██  ██  ██ 
+███████ ██ ██      ██ ██      ███████ ███████      ██████      ██       ██████  ██   ██ ██      ██ 
+
+
 /****************************************************************************/
 
 
@@ -617,7 +659,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   Steps.setAdditionalButtonHide(false);
 
   const groupId = DescriptionOfWork.currentGroupId;
-  const isOtherOffering = otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1;
+  const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
 
   debugger;
   // EJY
@@ -629,7 +671,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setBackToContractDetails(false);
     return "current-contract/current-contract";
   }
-
   
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
@@ -718,7 +759,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   }
 
   if (nextOrPrevGroup && !(current === routeNames.OtherOfferingSummary 
-    && otherServiceOfferings.indexOf(nextOrPrevGroup.toLowerCase()) > -1)) {
+    && otherServiceOfferings.indexOf(nextOrPrevGroup) > -1)) {
     // send to group offerings page
     const serviceOffering = routeNames.ServiceOfferings
     DescriptionOfWork.setCurrentOfferingGroupId(nextOrPrevGroup);
@@ -730,32 +771,68 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 }
 
 
-/****************************************************************************/
+/****************************************************************************
+
+███████ ███████  ██████ ██    ██ ██████  ██ ████████ ██    ██     ██████  ███████  ██████  
+██      ██      ██      ██    ██ ██   ██ ██    ██     ██  ██      ██   ██ ██      ██    ██ 
+███████ █████   ██      ██    ██ ██████  ██    ██      ████       ██████  █████   ██    ██ 
+     ██ ██      ██      ██    ██ ██   ██ ██    ██       ██        ██   ██ ██      ██ ▄▄ ██ 
+███████ ███████  ██████  ██████  ██   ██ ██    ██       ██        ██   ██ ███████  ██████  
+
 /****************************************************************************/
 
 export const DOWSecurityRequirementsPathResolver 
   = (current: string, direction: string): string => {
     const groupId = DescriptionOfWork.currentGroupId;    
-    const isOtherOffering = otherServiceOfferings.indexOf(groupId.toLowerCase()) > -1;
+    const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
     const needsSecurity = needsSecurityRequirements.includes(groupId);
-
+    const packageHasHighSide = ClassificationRequirements.packageHasSecretOrHigher;
     debugger;
+    // DescriptionOfWork.serviceNeedsSecurityRequirements
 
-    // if direction = next OR prev, and current groupId in `needsSecurityRequirements` 
-    //   -- route to security requirements page
+    // if coming from either direction and needs security requirements, show form
+    if (needsSecurity && packageHasHighSide) {
+      DescriptionOfWork.doSetNeedsSecurityRequirements(false);
+      return routeNames.DOWSecurityRequirements;
+    }
+  
+    if (isOtherOffering && direction === "prev") {
+      return OtherOfferingSummaryPathResolver(current, direction);
+    } else if (direction === "prev") {
+      return OfferingDetailsPathResolver(current, direction);
+    }
+    DescriptionOfWork.doSetNeedsSecurityRequirements(false);
+    return DowSummaryPathResolver(current, direction);
 
-    // if direction = next OR prev and current groupId NOT in `needsSecurityRequirements`
-    //   -- route to 
 
-    // if direction = prev and current groupId in `needsSecurityRequirements`
-    //   -- go to security requirements page
+    // debugger;
 
-    // if direction = prev and current groupId NOT in `needsSecurityRequirements`
-    //   -- go to offering details page IF a previous offering
-    //   -- else if no prev offering, go to last page of prev step???
-    return routeNames.DOWSecurityRequirements
+    // // if direction = next OR prev, and current groupId in `needsSecurityRequirements` 
+    // //   -- route to security requirements page
+
+    // // if direction = next OR prev and current groupId NOT in `needsSecurityRequirements`
+    // //   -- route to 
+
+    // // if direction = prev and current groupId in `needsSecurityRequirements`
+    // //   -- go to security requirements page
+
+    // // if direction = prev and current groupId NOT in `needsSecurityRequirements`
+    // //   -- go to offering details page IF a previous offering
+    // //   -- else if no prev offering, go to last page of prev step???
+    // return routeNames.DOWSecurityRequirements
     // return descriptionOfWorkSummaryPath;
   };
+
+
+/****************************************************************************
+
+██████   ██████  ██     ██     ███████ ██    ██ ███    ███  █████  ███    ███ ██████  ██    ██ 
+██   ██ ██    ██ ██     ██     ██      ██    ██ ████  ████ ██   ██ ████  ████ ██   ██  ██  ██  
+██   ██ ██    ██ ██  █  ██     ███████ ██    ██ ██ ████ ██ ███████ ██ ████ ██ ██████    ████   
+██   ██ ██    ██ ██ ███ ██          ██ ██    ██ ██  ██  ██ ██   ██ ██  ██  ██ ██   ██    ██    
+██████   ██████   ███ ███      ███████  ██████  ██      ██ ██   ██ ██      ██ ██   ██    ██    
+
+/****************************************************************************/
 
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
@@ -834,10 +911,18 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 };
 
 
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************
 
-/****************************************************************************/
-/****************************************************************************/
-/****************************************************************************/
+
+██████   ██████  ██     ██               ███████ ███    ██ ██████  
+██   ██ ██    ██ ██     ██               ██      ████   ██ ██   ██ 
+██   ██ ██    ██ ██  █  ██     █████     █████   ██ ██  ██ ██   ██ 
+██   ██ ██    ██ ██ ███ ██               ██      ██  ██ ██ ██   ██ 
+██████   ██████   ███ ███                ███████ ██   ████ ██████  
+
+
 /****************************************************************************/
 /****************************************************************************/
 /****************************************************************************/

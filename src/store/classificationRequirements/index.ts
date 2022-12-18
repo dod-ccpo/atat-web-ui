@@ -33,6 +33,10 @@ export class ClassificationRequirementsStore extends VuexModule {
     );
     return found.length > 0;
   }
+  // public get instanceHasSecretOrHigher(): boolean {
+  //   if (this.this.currentGroupId)
+  //   return true;
+  // }
 
   public cdsSolution: CrossDomainSolutionDTO | null = null;
 

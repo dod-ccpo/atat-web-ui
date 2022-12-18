@@ -135,7 +135,7 @@ import {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
-  ContractTrainingReq,
+  // ContractTrainingReq,
   ServiceOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
@@ -700,9 +700,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: AnticipatedUserAndDataNeedsResolver,
         component: AnticipatedUserAndDataNeeds,
       },
-
-
-
       {
         menuText: "Service Offerings",
         path: "service-offerings/:groupName",

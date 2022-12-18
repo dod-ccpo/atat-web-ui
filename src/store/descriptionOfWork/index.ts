@@ -600,7 +600,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     'MACHINE_LEARNING',
     'APPLICATIONS',
     'DEVELOPER_TOOLS',
-    'COMPUTE'
+    'COMPUTE',
   ];
 
   cloudSupportServices = [
@@ -609,8 +609,58 @@ export class DescriptionOfWorkStore extends VuexModule {
     "HELP_DESK_SERVICES",
     "TRAINING",
     "DOCUMENTATION_SUPPORT",
-    "GENERAL_CLOUD_SUPPORT"
+    "GENERAL_CLOUD_SUPPORT",
   ]
+
+  public otherServiceOfferings = [
+    "COMPUTE",
+    "DATABASE",
+    "STORAGE",
+    "GENERAL_XAAS",
+    "ADVISORY_ASSISTANCE",
+    "HELP_DESK_SERVICES",
+    "TRAINING",
+    "DOCUMENTATION_SUPPORT",
+    "GENERAL_CLOUD_SUPPORT",
+  ];
+
+  public needsSecurityRequirements = [
+    "ADVISORY_ASSISTANCE",
+    "HELP_DESK_SERVICES",
+    "TRAINING",
+    "DOCUMENTATION_SUPPORT",
+    "GENERAL_CLOUD_SUPPORT",
+    "EDGE_COMPUTING",
+  ];
+
+  public serviceNeedsSecurityRequirements = false;
+
+  @Action({rawError: true})
+  public async setNeedsSecurityRequirements(): Promise<void> {
+    const needsSecurityRequirements = this.needsSecurityRequirements.includes(this.currentGroupId);
+    this.doSetNeedsSecurityRequirements(needsSecurityRequirements);
+  }
+
+  @Mutation
+  public async doSetNeedsSecurityRequirements(value: boolean): Promise<void> {
+    this.serviceNeedsSecurityRequirements = value;
+  }
+  
+  public get anInstanceHasSecretOrHigher(): boolean {
+    debugger;
+    if (this.needsSecurityRequirements.includes(this.currentGroupId)) {
+      if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
+        // check classificationInstances object
+
+      } else {
+        // check otherOffering object
+      }
+    }
+    return false;
+  }
+
+
+
 
   public DOWHasArchitecturalDesignNeeds: boolean | null = null;
   public DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;

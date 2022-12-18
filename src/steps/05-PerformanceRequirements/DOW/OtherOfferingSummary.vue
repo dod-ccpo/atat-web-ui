@@ -128,8 +128,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -151,7 +151,7 @@ import { ReferenceColumn } from "@/api/models";
   }
 })
 
-export default class OtherOfferingSummary extends Vue {
+export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public isCompute = false;
   public isGeneralXaaS = false;
   public isDatabase = false;
@@ -493,6 +493,11 @@ export default class OtherOfferingSummary extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   };
+
+  protected async saveOnLeave(): Promise<boolean> {
+    DescriptionOfWork.setNeedsSecurityRequirements();
+    return true;
+  }
 
 }
 
