@@ -14,7 +14,7 @@ const recordManager : RecordManager<RequirementsCostEstimateDTO> = {
   },
   save: async function (record: string): Promise<void> {
     const data = JSON.parse(record) as RequirementsCostEstimateDTO;
-    FinancialDetails.setRequirementsCostEstimate(data);
+    await IGCE.setRequirementsCostEstimate(data);
   },
   updateRecord: function (record: string, attachmentSysId: string,
     fileName: string): RequirementsCostEstimateDTO {

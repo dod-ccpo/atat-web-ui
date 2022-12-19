@@ -55,7 +55,6 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   periods: string;
   gfe_overview: string;
   contract_type: ReferenceColumn | string;
-  requirements_cost_estimate: ReferenceColumn | string;
   contract_considerations: ReferenceColumn | string;
   funding_plans: string;
   classification_level: ReferenceColumn | string;
