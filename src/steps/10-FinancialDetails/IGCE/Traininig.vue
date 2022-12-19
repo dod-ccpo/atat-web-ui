@@ -261,6 +261,10 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     ){
       this.instanceData = _.cloneDeep(IGCE.requirementsCostEstimate.training[this.trainingIndex]);
       this.savedData = _.cloneDeep(IGCE.requirementsCostEstimate.training[this.trainingIndex]);
+
+      this.$nextTick(() => {
+        this.instanceData.estimate = _.cloneDeep(this.savedData.estimate);
+      });
     }
       
 
