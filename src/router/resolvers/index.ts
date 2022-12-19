@@ -240,6 +240,7 @@ const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings;
 
 const basePerformanceRequirementsPath =  "performance-requirements";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
+const DOWSecurityRequitementsPath = "performance-requirements/dow-security-requirements";
 const otherServiceOfferingSummaryPath = "performance-requirements/service-offerings/other/summary";
 
 const baseOfferingDetailsPath =  `${basePerformanceRequirementsPath}/service-offering-details/`;
@@ -392,7 +393,7 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
   debugger;
   if (needsSecurity && direction === "next" && !isOtherOffering) {
     DescriptionOfWork.doSetNeedsSecurityRequirements(false);
-    return routeNames.DOWSecurityRequirements;
+    return DOWSecurityRequitementsPath;
   }
   // // need to know if going to security requirements page (for Tactical Edge only)
   // if (needsSecurityRequirements.includes(groupId) && !otherServiceOfferings.includes(groupId)) {
@@ -793,7 +794,7 @@ export const DOWSecurityRequirementsPathResolver
     // if coming from either direction and needs security requirements, show form
     if (needsSecurity && packageHasHighSide) {
       DescriptionOfWork.doSetNeedsSecurityRequirements(false);
-      return routeNames.DOWSecurityRequirements;
+      return DOWSecurityRequitementsPath;
     }
   
     if (isOtherOffering && direction === "prev") {

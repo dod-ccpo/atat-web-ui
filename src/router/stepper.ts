@@ -747,7 +747,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Security Requirements",
-        path: "service-offerings/security-requirements",
+        path: "dow-security-requirements",
         excludeFromMenu: true,
         name: routeNames.DOWSecurityRequirements,
         completePercentageWeight: 1,

@@ -18,12 +18,12 @@
             </p>
           </div>
           <!-- pragma: allowlist nextline secret -->
-          <!-- <SecurityRequirementsForm :hasSecret="hasSecret" :hasTopSecret="hasTopSecret"
+          <SecurityRequirementsForm :hasSecret="hasSecret" :hasTopSecret="hasTopSecret"
             :isDOW="true"
             :selectedSecretSecurityRequirements.sync="selectedSecretSecurityRequirements"
             :selectedTopSecretSecurityRequirements.sync="selectedTopSecretSecurityRequirements"
             :selectedClearanceLevels="selectedClearanceLevels"
-          /> -->
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -66,6 +66,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
   // pragma: allowlist secret
   private hasTopSecret = false;
   public savedData: SecurityRequirement[] = []
+
 
   public get currentData(): SecurityRequirement[] {
     let requirements:SecurityRequirement[] = []
@@ -126,7 +127,8 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
           this.selectedSecretSecurityRequirements = requirement.classification_information_type
         }
         if(requirement.type === "TOPSECRET"){
-          this.selectedTopSecretSecurityRequirements = requirement.classification_information_type
+          this.selectedTopSecretSecurityRequirements 
+   = requirement.classification_information_type
         }
       })
     }
@@ -135,6 +137,9 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
 
 
   public async mounted(): Promise<void> {
+    
+    debugger;
+
     const slideoutPanelContent: SlideoutPanelContent = {
       component: SecurityRequirementsLearnMore,
       title: "Learn More",
