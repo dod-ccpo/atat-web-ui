@@ -37,6 +37,7 @@
               :items="contractingShopOptions"
               :value.sync="contractingShop"
               :card="true"
+              :rules="[$validators.required('Please select an option.')]"
             />
           </div>
         </v-col>
