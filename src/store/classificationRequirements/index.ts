@@ -168,12 +168,9 @@ export class ClassificationRequirementsStore extends VuexModule {
     if (selectedClassLevelList.length > 0) {
       selectedClassLevelList = selectedClassLevelList
         .map(selectedClassLevel => {
-          const classLevelId = 
-            typeof selectedClassLevel.classification_level === "object"
-              ? selectedClassLevel.classification_level.value as string
-              : selectedClassLevel.classification_level as string;
+          selectedClassLevel = convertColumnReferencesToValues(selectedClassLevel);
           const classLevelForMapping = this.classificationLevels
-            .find(classLevel => classLevel.sys_id === classLevelId)
+            .find(classLevel => classLevel.sys_id === selectedClassLevel.classification_level)
           if (classLevelForMapping) {
             selectedClassLevel.impact_level = classLevelForMapping.impact_level;
             selectedClassLevel.classification = classLevelForMapping.classification;
