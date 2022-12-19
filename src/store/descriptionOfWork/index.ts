@@ -647,13 +647,30 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
   
   public get anInstanceHasSecretOrHigher(): boolean {
+    const highSideSysIds = ClassificationRequirements.getHighSideSysIds;
     debugger;
+    
     if (this.needsSecurityRequirements.includes(this.currentGroupId)) {
+      const data = this.DOWObject.find(
+        obj => obj.serviceOfferingGroupId === this.currentGroupId
+      );
+
       if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
         // check classificationInstances object
-
+        if (data) {
+          const offering = data.serviceOfferings.find(
+            obj => obj.name === this.currentOfferingName
+          );
+          if (offering) {
+            const highSideInstances = offering.classificationInstances?.filter(
+              obj => highSideSysIds.includes(obj.classificationLevelSysId)
+            );
+            return highSideInstances !== undefined && highSideInstances.length > 0;
+          }
+        }
       } else {
-        // check otherOffering object
+        // check otherOfferingData object
+
       }
     }
     return false;

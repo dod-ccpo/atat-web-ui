@@ -26,6 +26,10 @@ export class ClassificationRequirementsStore extends VuexModule {
   public classifiedInformationTypes: ClassifiedInformationTypeDTO[] = [];
   public classificationSecretSysId = "";
   public classificationTopSecretSysId = "";
+  public highSideSysIds = [this.classificationSecretSysId, this.classificationTopSecretSysId];
+  public get getHighSideSysIds(): string[] {
+    return this.highSideSysIds;
+  }
 
   public get packageHasSecretOrHigher(): boolean {
     const found = this.selectedClassificationLevels.filter(obj => 
@@ -33,10 +37,6 @@ export class ClassificationRequirementsStore extends VuexModule {
     );
     return found.length > 0;
   }
-  // public get instanceHasSecretOrHigher(): boolean {
-  //   if (this.this.currentGroupId)
-  //   return true;
-  // }
 
   public cdsSolution: CrossDomainSolutionDTO | null = null;
 

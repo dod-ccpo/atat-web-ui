@@ -387,13 +387,17 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
 
-  const groupId = DescriptionOfWork.currentGroupId;
-  const needsSecurity = needsSecurityRequirements.includes(groupId);
+  const groupId = DescriptionOfWork.currentGroupId;    
   const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
+  const needsSecurity = needsSecurityRequirements.includes(groupId);
+  const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
+  const anInstanceHasSecretOrHigher = DescriptionOfWork.anInstanceHasSecretOrHigher;
   debugger;
   if (needsSecurity && direction === "next" && !isOtherOffering) {
-    DescriptionOfWork.doSetNeedsSecurityRequirements(false);
-    return DOWSecurityRequitementsPath;
+    if (needsSecurity && packageHasSecretOrHigher && anInstanceHasSecretOrHigher) {
+      DescriptionOfWork.doSetNeedsSecurityRequirements(false);
+      return DOWSecurityRequitementsPath;  
+    }
   }
   // // need to know if going to security requirements page (for Tactical Edge only)
   // if (needsSecurityRequirements.includes(groupId) && !otherServiceOfferings.includes(groupId)) {
@@ -787,12 +791,14 @@ export const DOWSecurityRequirementsPathResolver
     const groupId = DescriptionOfWork.currentGroupId;    
     const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
     const needsSecurity = needsSecurityRequirements.includes(groupId);
-    const packageHasHighSide = ClassificationRequirements.packageHasSecretOrHigher;
+    const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
+    const anInstanceHasSecretOrHigher = DescriptionOfWork.anInstanceHasSecretOrHigher;
+
     debugger;
     // DescriptionOfWork.serviceNeedsSecurityRequirements
 
     // if coming from either direction and needs security requirements, show form
-    if (needsSecurity && packageHasHighSide) {
+    if (needsSecurity && packageHasSecretOrHigher && anInstanceHasSecretOrHigher) {
       DescriptionOfWork.doSetNeedsSecurityRequirements(false);
       return DOWSecurityRequitementsPath;
     }
