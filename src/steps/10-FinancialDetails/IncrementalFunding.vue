@@ -199,11 +199,11 @@
                     <p class="mb-0">
                       Your funding plan may not exceed this period.
                     </p>
-                    <hr class="base my-4" />
+                    <!-- <hr class="base my-4" /> -->
                   </div>
                 </div>
 
-                <div class="d-flex">
+                <!-- <div class="d-flex">
                   <div class="pr-5">
                     <ATATSVGIcon
                       name="monetizationOn"
@@ -217,7 +217,7 @@
                       Total cost estimate: ${{ costEstimateStr }}
                     </span>
                     <p class="mb-0" v-if="!isFundingMet">
-                      <!-- adjust message for overfunded or funding met -->
+                      
                       You need to add
                       <span id="AmountRemaining" class="bold">
                         ${{ amountRemainingStr }}
@@ -229,7 +229,7 @@
                       your base period.
                     </p>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -362,16 +362,16 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public async validateOnContinue(): Promise<void> {
     this.calcAmounts("initialIncrement");
     this.calcAmounts("increment0");
-    this.isUnderfunded(); 
-    this.isOverfunded();
+    // this.isUnderfunded(); 
+    // this.isOverfunded();
 
-    if (!this.hasValidatedOnContinue && (this.outOfRangeIndex && this.outOfRangeIndex >= 0
-      || this.isIFPUnderfunded || this.isIFPOverfunded)
-    ) {
-      this.allowContinue = false;
-    } else {
-      this.allowContinue = true;
-    }
+    // if (!this.hasValidatedOnContinue && (this.outOfRangeIndex && this.outOfRangeIndex >= 0
+    //   || this.isIFPUnderfunded || this.isIFPOverfunded)
+    // ) {
+    //   this.allowContinue = false;
+    // } else {
+    //   this.allowContinue = true;
+    // }
   }
 
   public quarterChange(args: Record<string, SelectData>): void {
@@ -575,7 +575,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.totalAmount = this.initialAmount
       ? this.initialAmount + incrementsTotal
       : incrementsTotal;
-    this.isFundingMet = this.totalAmount >= this.costEstimate;
+    // this.isFundingMet = this.totalAmount >= this.costEstimate;
 
     this.amountRemaining = this.costEstimate - this.totalAmount;
     this.amountRemainingStr = this.amountRemaining
@@ -602,7 +602,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       amt = parseFloat(this.fundingIncrements[0].amt);
       this.errorMissingFirstIncrement = amt === 0 || isNaN(amt);
     }
-    this.isOverfunded();
+    // this.isOverfunded();
   }
 
   public checkIfHasPeriodGap(index: number): boolean {

@@ -1,6 +1,7 @@
 import {StepperRouteConfig, StepperStep} from "../../types/Global";
 
 // Step 1 - Acquisition Package Details
+import ContractingShop from "@/steps/01-AcquisitionPackageDetails/ContractingShop.vue";
 import AcquisitionPackageDetails from "../steps/01-AcquisitionPackageDetails/Index.vue";
 import ProjectOverview from "../steps/01-AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/01-AcquisitionPackageDetails/ContactInfo.vue";
@@ -166,6 +167,7 @@ import {
 import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
 export const routeNames = {
+  ContractingShop: "Contracting_Shop",
   ProjectOverview: "Project_Overview",
   OrganizationInfo: "Organization_Info",
   ContactInformation: "Contact_Information",
@@ -280,6 +282,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: AcquisitionPackageDetails,
     completed: false,
     children: [
+      {
+        menuText: "Contracting Shop",
+        path: "/",
+        name: routeNames.ContractingShop,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        component: ContractingShop
+      },
       {
         menuText: "Project Overview",
         path: "project-overview",
@@ -954,14 +965,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: FeeCharged
       },
-      {
-        menuText: "Cost Summary",
-        excludeFromMenu: true,
-        path: "cost-summary",
-        name: routeNames.CostSummary,
-        completePercentageWeight: 1,
-        component: CostSummary
-      },
+      // {
+      //   menuText: "Cost Summary",
+      //   excludeFromMenu: true,
+      //   path: "cost-summary",
+      //   name: routeNames.CostSummary,
+      //   completePercentageWeight: 1,
+      //   component: CostSummary
+      // },
       {
         menuText: "Estimates Developed",
         excludeFromMenu: true,
