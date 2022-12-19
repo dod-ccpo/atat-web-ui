@@ -12,6 +12,7 @@ import {
 import {CrossDomainSolution, SecurityRequirement} from "../../../types/Global";
 import {AxiosRequestConfig} from "axios";
 import AcquisitionPackage from "../acquisitionPackage";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 @Module({
   name: "ClassificationRequirements",
@@ -65,6 +66,9 @@ export class ClassificationRequirementsStore extends VuexModule {
   private doSetSelectedClassificationLevels(
     value: SelectedClassificationLevelDTO[]
   ): void {
+    value.forEach(val => {
+      val = convertColumnReferencesToValues(val);
+    })
     this.selectedClassificationLevels = value;
   }
 

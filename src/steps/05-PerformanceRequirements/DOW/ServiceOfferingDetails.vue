@@ -131,6 +131,7 @@ import {
   buildCurrentSelectedClassLevelList
 } from "@/packages/helpers/ClassificationRequirementsHelper";
 import classificationRequirements from "@/store/classificationRequirements";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 @Component({
   components: {
@@ -178,12 +179,13 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public async buildNewClassificationInstances(): Promise<void> {
     this.classificationInstances = [];
     this.selectedClassificationLevelList.forEach((obj) => {
+      obj = convertColumnReferencesToValues(obj);
       const labelLong = buildClassificationLabel(obj, "long");
       const labelShort = buildClassificationLabel(obj, "short");
       const instance: DOWClassificationInstance = {
         sysId: "", // will be populated after saving
         impactLevel: obj.impact_level,
-        classificationLevelSysId: (obj.classification_level as ReferenceColumn).value || "",
+        classificationLevelSysId: obj.classification_level as string,
         anticipatedNeedUsage: "",
         entireDuration: "",
         selectedPeriods: [],
@@ -290,7 +292,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
     this.selectedClassificationLevelSysIds = [];
     this.selectedClassificationLevelList.forEach(selectedClassLevel => {
-      const sysId = (selectedClassLevel.classification_level as ReferenceColumn).value
+      const sysId = typeof selectedClassLevel.classification_level === "object"
+        ? (selectedClassLevel.classification_level as ReferenceColumn).value
+        : selectedClassLevel.classification_level as string;
       if (sysId) {
         this.selectedClassificationLevelSysIds.push(sysId);
       }
@@ -306,7 +310,10 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     if (this.selectedInstancesLength === 1
       && this.selectedClassificationLevelList[0].sys_id) {
       const classificationObj = this.selectedClassificationLevelList[0];
-      const sysId = (classificationObj.classification_level as ReferenceColumn).value;
+      const sysId = typeof classificationObj.classification_level === "object"
+        ? (classificationObj.classification_level as ReferenceColumn).value
+        : classificationObj.classification_level as string;
+
       if(sysId) {
         this.selectedHeaderLevelSysIds.push(sysId);
       }
@@ -325,7 +332,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if(this.selectedClassificationLevelList) {
       this.selectedClassificationLevelList.forEach((val) => {
-        this.modalSelectedOptions.push((val.classification_level as ReferenceColumn).value || "")
+        val = convertColumnReferencesToValues(val);
+        this.modalSelectedOptions.push(val.classification_level as string)
       });
     }
     // set up header checkbox items and list of sysIds for available classification levels
