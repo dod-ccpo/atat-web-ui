@@ -2,7 +2,12 @@
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import {IgceEstimateDTO, ReferenceColumn, RequirementsCostEstimateDTO} from "@/api/models";
+import {
+  IgceEstimateDTO,
+  ReferenceColumn,
+  RequirementsCostEstimateDFlat,
+  RequirementsCostEstimateDTO
+} from "@/api/models";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
@@ -108,7 +113,83 @@ export class IGCEStore extends VuexModule {
     }
   }
 
-  // TODO: write other setters and getters as needed.
+  @Action
+  private async transformRequirementsCostEstimateFromFlatToTree(
+    rceFlat: RequirementsCostEstimateDFlat): Promise<RequirementsCostEstimateDTO> {
+    return {
+      acquisition_package: rceFlat.acquisition_package,
+      architectural_design_current_environment: {
+        option: rceFlat.architectural_design_current_environment_option,
+        estimated_values:
+        rceFlat.architectural_design_current_environment_estimated_values?.split(",")
+      },
+      architectural_design_performance_requirements: {
+        option: rceFlat.architectural_design_performance_requirements_option,
+        estimated_values:
+          rceFlat.architectural_design_performance_requirements_estimated_values?.split(",")
+      },
+      fee_specs: {
+        is_charged: rceFlat.contracting_office_other_charges_fee,
+        percentage: rceFlat.contracting_office_other_fee_percentage
+      },
+      has_DOW_and_PoP: rceFlat.has_dow_and_pop,
+      how_estimates_developed: {
+        tools_used: rceFlat.how_est_dev_tools_used,
+        other_tools_used: rceFlat.how_est_dev_other_tools_used,
+        cost_estimate_description: rceFlat.how_est_dev_cost_estimate_description,
+        previous_cost_estimate_comparison: {
+          options: rceFlat.how_est_dev_prev_cost_estimate_comp_option,
+          percentage: rceFlat.how_est_dev_prev_cost_estimate_comp_percentage
+        },
+      },
+      optimize_replicate: {
+        option: rceFlat.optimize_replicate_option,
+        estimated_values: rceFlat.optimize_replicate_estimated_values?.split(",")
+      },
+      surge_requirements: {
+        capabilities: rceFlat.surge_requirement_capabilities,
+        capacity: rceFlat.surge_requirement_capacity},
+      training: JSON.parse(rceFlat.training) ? JSON.parse(rceFlat.training) : [],
+      travel: {
+        option: rceFlat.travel_option,
+        estimated_values: rceFlat.travel_estimated_values?.split(",")
+      }
+    };
+  }
+
+  @Action
+  private async transformRequirementsCostEstimateFromTreeToFlat(
+    rceTree: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateDFlat> {
+    return {
+      acquisition_package: rceTree.acquisition_package,
+      architectural_design_current_environment_option:
+        rceTree.architectural_design_current_environment.option,
+      architectural_design_current_environment_estimated_values:
+        rceTree.architectural_design_current_environment.estimated_values?.toString(),
+      architectural_design_performance_requirements_option:
+        rceTree.architectural_design_performance_requirements.option,
+      architectural_design_performance_requirements_estimated_values:
+        rceTree.architectural_design_performance_requirements.estimated_values?.toString(),
+      contracting_office_other_charges_fee: rceTree.fee_specs.is_charged,
+      contracting_office_other_fee_percentage: rceTree.fee_specs.percentage,
+      has_dow_and_pop: rceTree.has_DOW_and_PoP,
+      how_est_dev_tools_used: rceTree.how_estimates_developed.tools_used,
+      how_est_dev_other_tools_used: rceTree.how_estimates_developed.other_tools_used,
+      how_est_dev_cost_estimate_description:
+        rceTree.how_estimates_developed.cost_estimate_description,
+      how_est_dev_prev_cost_estimate_comp_option:
+        rceTree.how_estimates_developed.previous_cost_estimate_comparison.options,
+      how_est_dev_prev_cost_estimate_comp_percentage:
+        rceTree.how_estimates_developed.previous_cost_estimate_comparison.percentage,
+      optimize_replicate_option: rceTree.optimize_replicate.option,
+      optimize_replicate_estimated_values: rceTree.optimize_replicate.estimated_values?.toString(),
+      surge_requirement_capacity: rceTree.surge_requirements.capacity,
+      surge_requirement_capabilities: rceTree.surge_requirements.capabilities,
+      training: JSON.stringify(rceTree.training),
+      travel_option: rceTree.travel.option,
+      travel_estimated_values: rceTree.travel.estimated_values?.toString()
+    }
+  }
 
   @Action
   public async initializeRequirementsCostEstimate(): Promise<void> {
@@ -117,26 +198,11 @@ export class IGCEStore extends VuexModule {
 
   @Mutation
   public async doInitializeRequirementsCostEstimate(): Promise<void> {
-    this.requirementsCostEstimate = await api.requirementsCostEstimateTable
-      .create(defaultRequirementsCostEstimate());
-  }
-
-
-  /**
-   * Loads the Requirements cost estimate data using the acquisition package sys id.
-   * And then sets the context such that the data could be retrieved using the
-   * getters (getRequirementsCostEstimate)
-   * @param reqCostEstimateSysId - sys_id of the acquisition package table record
-   */
-  @Action({rawError: true})
-  public async loadRequirementsCostEstimateDataById(reqCostEstimateSysId: string): Promise<void> {
-    const requirementsCostEstimate = await api.requirementsCostEstimateTable
-      .retrieve(reqCostEstimateSysId);
-    if (requirementsCostEstimate) {
-      await this.doSetRequirementsCostEstimate(requirementsCostEstimate);
-    } else {
-      await this.initializeRequirementsCostEstimate();
-    }
+    this.requirementsCostEstimate =
+      await this.transformRequirementsCostEstimateFromFlatToTree(
+        await api.requirementsCostEstimateTable
+          .create(await this.transformRequirementsCostEstimateFromTreeToFlat(
+            defaultRequirementsCostEstimate())));
   }
 
   /**
@@ -179,7 +245,7 @@ export class IGCEStore extends VuexModule {
         ? reqCostEstimateList[0].acquisition_package.value as string
         : reqCostEstimateList[0].acquisition_package as string;
       await this.doSetRequirementsCostEstimate({
-        ...reqCostEstimateList[0],
+        ...await this.transformRequirementsCostEstimateFromFlatToTree(reqCostEstimateList[0]),
         acquisition_package: sysId
       });
     } else {

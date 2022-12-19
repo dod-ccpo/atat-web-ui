@@ -740,7 +740,7 @@ export class AcquisitionPackageStore extends VuexModule {
       }
 
       // call below loads if available or initializes
-      await IGCE.loadRequirementsCostEstimateDataById(
+      await IGCE.loadRequirementsCostEstimateDataByPackageId(
         this.acquisitionPackage?.sys_id as string
       );
 

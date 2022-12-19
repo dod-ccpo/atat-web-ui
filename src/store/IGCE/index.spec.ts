@@ -4,7 +4,7 @@ import Vuex, {Store} from 'vuex';
 import {createLocalVue} from '@vue/test-utils';
 import {getModule} from 'vuex-module-decorators';
 import {IGCEStore} from '.';
-import {RequirementsCostEstimateDTO} from "@/api/models";
+import {RequirementsCostEstimateDFlat} from "@/api/models";
 import {api} from "@/api";
 
 const localVue = createLocalVue();
@@ -13,43 +13,28 @@ localVue.use(Vuex);
 describe("IGCE Store", () => {
   let igceStore: IGCEStore;
 
-  const requirementsCostEstimate: RequirementsCostEstimateDTO = {
+  const requirementsCostEstimate: RequirementsCostEstimateDFlat = {
     acquisition_package: "",
-    has_DOW_and_PoP: "",
-    architectural_design_current_environment: {
-      option: "",
-      estimated_values: []
-    },
-    architectural_design_performance_requirements: {
-      option: "",
-      estimated_values: []
-    },
-    fee_specs: {
-      is_charged: "",
-      percentage: null
-    },
-    how_estimates_developed: {
-      cost_estimate_description: "",
-      previous_cost_estimate_comparison: {
-        options: "",
-        percentage: null
-      },
-      tools_used: "",
-      other_tools_used: ""
-    },
-    optimize_replicate: {
-      option: "",
-      estimated_values: []
-    },
-    surge_requirements: {
-      capabilities: "",
-      capacity: null
-    },
-    training: [],
-    travel: {
-      option: "",
-      estimated_values: []
-    }
+    architectural_design_current_environment_estimated_values: "",
+    architectural_design_current_environment_option: "",
+    architectural_design_performance_requirements_estimated_values: "",
+    architectural_design_performance_requirements_option: "",
+    contracting_office_other_charges_fee: "",
+    contracting_office_other_fee_percentage: null,
+    has_dow_and_pop: "",
+    how_est_dev_cost_estimate_description: "",
+    how_est_dev_other_tools_used: "",
+    how_est_dev_prev_cost_estimate_comp_option: "",
+    how_est_dev_prev_cost_estimate_comp_percentage: null,
+    how_est_dev_tools_used: "",
+    optimize_replicate_estimated_values: "",
+    optimize_replicate_option: "",
+    surge_requirement_capabilities: "",
+    surge_requirement_capacity: null,
+    training: "",
+    travel_estimated_values: "",
+    travel_option: ""
+
   }
 
   beforeEach(() => {
@@ -66,10 +51,11 @@ describe("IGCE Store", () => {
     describe("set functions", () => {
       it('Test loadRequirementsCostEstimate()- should load req cost estimate from api',
         async () => {
-          jest.spyOn(api.requirementsCostEstimateTable, "retrieve").mockImplementation( () => {
-            return Promise.resolve(requirementsCostEstimate)
-          })
-          await igceStore.loadRequirementsCostEstimateDataById("some_sys_id");
+          jest.spyOn(api.requirementsCostEstimateTable, "getQuery").mockImplementation(
+            () => {
+              return Promise.resolve([requirementsCostEstimate])
+            })
+          await igceStore.loadRequirementsCostEstimateDataByPackageId("some_sys_id");
           expect(api.requirementsCostEstimateTable.retrieve).toHaveBeenCalled();
         })
 
