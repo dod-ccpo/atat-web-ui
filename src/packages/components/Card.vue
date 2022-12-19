@@ -255,7 +255,7 @@ export default class Card extends Vue {
     switch (menuItem.action) {
     case "Edit draft package":
       this.$router.replace({
-        name: routeNames.ProjectOverview,
+        name: routeNames.ContractingShop,
         replace: true,
         params: {
           direction: "next"
