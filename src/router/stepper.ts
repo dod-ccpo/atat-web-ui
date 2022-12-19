@@ -157,7 +157,7 @@ import {
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
-  IGCETrainingResolver,
+  IGCETrainingPathResolver,
 } from "./resolvers";
 import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
@@ -902,6 +902,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GatherPriceEstimates,
         completePercentageWeight: 1,
         component: GatherPriceEstimates,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Training",
@@ -910,7 +911,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.IGCETraining,
         completePercentageWeight: 1,
         component: IGCETraining,
-        routeResolver: IGCETrainingResolver
+        routeResolver: IGCETrainingPathResolver,
       },
       // {
       //   menuText: "Travel Estimates",
@@ -926,7 +927,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "surge-capacity",
         name: routeNames.SurgeCapacity,
         completePercentageWeight: 1,
-        component: SurgeCapacity
+        component: SurgeCapacity,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Surge Capabilities",

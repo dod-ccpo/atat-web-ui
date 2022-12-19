@@ -25,7 +25,7 @@
         :showErrorMessages="true"
         :rules="[
           $validators.required(
-            'Enter your estimated price per period.',
+            singlePeriodErrorMessage,
           ),
         ]"
       />
@@ -66,7 +66,7 @@
             :showErrorMessages="true"
             :rules="[
               $validators.required(
-                'Enter your estimated price for this period.',
+                multiplePeriodErrorMessage,
               ),
             ]"
           />
@@ -97,6 +97,12 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
   @Prop({default: ''}) private textboxSuffix?: string;
   @Prop({default: "Default Single Textbox Tooltip"}) private singlePeriodTooltipText?: string;
   @Prop({default: "Default Multiple Textbox Tooltip"}) private multiplePeriodTooltipText?: string;
+  @Prop(
+    {default: "Enter your estimated price per period."}
+  ) private singlePeriodErrorMessage?: string;
+  @Prop(
+    {default: "Enter your estimated price for this period."}
+  ) private multiplePeriodErrorMessage?: string;
   @Prop() private periods!: PeriodDTO[];
 
   @PropSync("values", {default: () => []}) private _values!: string[];

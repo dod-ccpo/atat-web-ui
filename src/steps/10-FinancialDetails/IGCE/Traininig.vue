@@ -84,6 +84,8 @@
                 :isMultiple="instanceData.estimate.option === 'MULTIPLE'"
                 :values.sync="instanceData.estimate.estimated_values"
                 :showSinglePeriodTooltip="false"
+                :singlePeriodErrorMessage="singlePeriodErrorMessage"
+                :multiplePeriodErrorMessage="multiplePeriodErrorMessage"
               />
             </div>
           </v-col>
@@ -168,6 +170,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
   public periodTypeLabel = "";
   public periodsSuffix = "";
   public periodsLabel = "";
+  public singlePeriodErrorMessage = "";
+  public multiplePeriodErrorMessage = "";
 
   public trainingIndex = 0;
   public trainingCount = 0;
@@ -184,23 +188,37 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.periodsLabel = "Number of people trained per period";
       this.periodTypeLabel = `Do you anticipate needing the same number of 
         people trained within each performance period?`;
+      this.singlePeriodErrorMessage = `Enther the number of people 
+        expected to be trained each period.`
+      this.multiplePeriodErrorMessage = `Enther the number of people 
+        expected to be trained in this period.`
       break;
     case "PER_SESSION":
       this.periodsSuffix = "sessions";
       this.periodsLabel = "Number of training sessions per period";
       this.periodTypeLabel = `Do you anticipate needing the same number of 
         training sessions each performance period?`;
+      this.singlePeriodErrorMessage = `Enther the number of training 
+        sessions each period.`
+      this.multiplePeriodErrorMessage = `Enther the number of training 
+        sessions in this period.`
       break;
     case "SUBSCRIPTION":
       this.periodsSuffix = "months";
       this.periodsLabel = "Number of months per period";
       this.periodTypeLabel = `Do you anticipate needing subscriptions for 
         the same number of months within each performance period?`;
+      this.singlePeriodErrorMessage = `Enther the number of subscriptions 
+        each period.`
+      this.multiplePeriodErrorMessage = `Enther the number of subscriptions 
+        in this period.`
       break;
     default:
       this.periodsSuffix = "";
       this.periodsLabel = "";
       this.periodTypeLabel = "";
+      this.singlePeriodErrorMessage = "";
+      this.multiplePeriodErrorMessage = "";
       break;
     }
 
@@ -210,9 +228,6 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
   protected async loadOnEnter(): Promise<boolean> {
     this.periods = Periods.periods;
-
-    if(IGCE.igceTrainingIndex < 0)
-      IGCE.setIgceTrainingIndex(0);
 
     this.trainingIndex = IGCE.igceTrainingIndex;
 
@@ -234,14 +249,15 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         ];
 
         this.trainingLocation = `${trainingType} 
-          (${trainingFacilityType}, ${trainingItem.trainingLocation}, 
+          (${trainingFacilityType ? trainingFacilityType + ', ' : ''}
+          ${trainingItem.trainingLocation ? trainingItem.trainingLocation + ', ' : ''} 
           ${trainingItem.trainingPersonnel} people)`;
       }
     }
 
     if(this.trainingIndex > -1 && 
       IGCE.requirementsCostEstimate &&
-      IGCE.requirementsCostEstimate.training.length > 0
+      this.trainingIndex < IGCE.requirementsCostEstimate.training.length
     ){
       this.instanceData = _.cloneDeep(IGCE.requirementsCostEstimate.training[this.trainingIndex]);
       this.savedData = _.cloneDeep(IGCE.requirementsCostEstimate.training[this.trainingIndex]);
