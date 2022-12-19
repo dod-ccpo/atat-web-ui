@@ -944,14 +944,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: FeeCharged
       },
-      {
-        menuText: "Cost Summary",
-        excludeFromMenu: true,
-        path: "cost-summary",
-        name: routeNames.CostSummary,
-        completePercentageWeight: 1,
-        component: CostSummary
-      },
+      // {
+      //   menuText: "Cost Summary",
+      //   excludeFromMenu: true,
+      //   path: "cost-summary",
+      //   name: routeNames.CostSummary,
+      //   completePercentageWeight: 1,
+      //   component: CostSummary
+      // },
       {
         menuText: "Estimates Developed",
         excludeFromMenu: true,
