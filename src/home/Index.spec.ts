@@ -119,7 +119,7 @@ describe("Testing Landing Page", () => {
 
     it("startNewAcquisition()", async () => {
       await wrapper.vm.startNewAcquisition();
-      expect(wrapper.vm.$route.name).toBe("Project_Overview");
+      expect(wrapper.vm.$route.name).toBe("Contracting_Shop");
     });
 
     it("scrollToResources()", async () => {
