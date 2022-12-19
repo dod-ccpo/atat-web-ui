@@ -1,6 +1,7 @@
 import {StepperRouteConfig, StepperStep} from "../../types/Global";
 
 // Step 1 - Acquisition Package Details
+import ContractingShop from "@/steps/01-AcquisitionPackageDetails/ContractingShop.vue";
 import AcquisitionPackageDetails from "../steps/01-AcquisitionPackageDetails/Index.vue";
 import ProjectOverview from "../steps/01-AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/01-AcquisitionPackageDetails/ContactInfo.vue";
@@ -79,8 +80,6 @@ import AnticipatedUserAndDataNeeds
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
-import Training from "../steps/07-OtherContractConsiderations/Training.vue";
-import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
 
 // Step 8 - Standards and Compliance
 import OtherContractConsiderations from "../steps/08-StandardsAndCompliance/Index.vue";
@@ -135,7 +134,6 @@ import {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
-  ContractTrainingReq,
   OfferGroupOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
@@ -165,6 +163,7 @@ import {
 import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
 export const routeNames = {
+  ContractingShop: "Contracting_Shop",
   ProjectOverview: "Project_Overview",
   OrganizationInfo: "Organization_Info",
   ContactInformation: "Contact_Information",
@@ -203,9 +202,7 @@ export const routeNames = {
   ContractType: "Contract_Type",
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
-  Travel: "Travel",
-  Training: "Training",
-  TrainingCourses: "Training_Courses",
+  // Travel: "Travel",
   PropertyDetails: "Property_Details",
   Justification: "Justification",
   OtherContractConsiderations: "Other_Contract_Considerations",
@@ -281,6 +278,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: AcquisitionPackageDetails,
     completed: false,
     children: [
+      {
+        menuText: "Contracting Shop",
+        path: "/",
+        name: routeNames.ContractingShop,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        component: ContractingShop
+      },
       {
         menuText: "Project Overview",
         path: "project-overview",
@@ -786,24 +792,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnLeave: routeNames.PackagingPackingAndShipping,
         component: PackagingPackingAndShipping,
       },
-      {
-        name: routeNames.Training,
-        menuText: "Training",
-        path: "training",
-        completePercentageWeight: 2,
-        component: Training,
-      },
-      {
-        name: routeNames.TrainingCourses,
-        menuText: "Training Courses",
-        excludeFromMenu: true,
-        path: "training",
-        stepCompleteOnLeave: routeNames.Training,
-        completePercentageWeight: 2,
-        component: TrainingCourses,
-        routeResolver: ContractTrainingReq
-
-      },
     ]
   },
 
@@ -818,7 +806,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Personally Identifiable Information (PII)",
         path: "/personally-identifiable-information",
         name: routeNames.PII,
-        stepCompleteOnEnter: routeNames.Training,
         completePercentageWeight: 2,
         component: PII,
       },
@@ -935,14 +922,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: IGCETraining
       },
-      {
-        menuText: "Travel Estimates",
-        excludeFromMenu: true,
-        path: "travel-estimate",
-        name: routeNames.TravelEstimates,
-        completePercentageWeight: 1,
-        component: TravelEstimates
-      },
+      // {
+      //   menuText: "Travel Estimates",
+      //   excludeFromMenu: true,
+      //   path: "travel-estimate",
+      //   name: routeNames.TravelEstimates,
+      //   completePercentageWeight: 1,
+      //   component: TravelEstimates
+      // },
       {
         menuText: "Surge Capacity",
         excludeFromMenu: true,
@@ -968,14 +955,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: FeeCharged
       },
-      {
-        menuText: "Cost Summary",
-        excludeFromMenu: true,
-        path: "cost-summary",
-        name: routeNames.CostSummary,
-        completePercentageWeight: 1,
-        component: CostSummary
-      },
+      // {
+      //   menuText: "Cost Summary",
+      //   excludeFromMenu: true,
+      //   path: "cost-summary",
+      //   name: routeNames.CostSummary,
+      //   completePercentageWeight: 1,
+      //   component: CostSummary
+      // },
       {
         menuText: "Estimates Developed",
         excludeFromMenu: true,

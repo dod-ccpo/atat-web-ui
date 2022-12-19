@@ -72,6 +72,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   acor: ReferenceColumn | string;
   primary_contact: ReferenceColumn | string;
   funding_requirement: ReferenceColumn | string;
+  contracting_shop?: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
