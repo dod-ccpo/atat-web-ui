@@ -138,7 +138,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
         _.cloneDeep(await classificationRequirements.getSelectedClassificationLevels());
     this.selectedOptions = this.savedSelectedClassLevelList
       .map(savedSelectedClassLevel =>
-        savedSelectedClassLevel.classification_level.value) as string[];
+        savedSelectedClassLevel.classification_level) as string[];
   }
 
   public async mounted(): Promise<void> {
