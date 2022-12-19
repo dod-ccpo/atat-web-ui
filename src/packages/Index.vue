@@ -288,7 +288,7 @@ export default class Packages extends Vue {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
     await AcquisitionPackage.reset();
     this.$router.push({
-      name: routeNames.ProjectOverview,
+      name: routeNames.ContractingShop,
       params: {
         direction: "next"
       },

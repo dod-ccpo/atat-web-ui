@@ -313,6 +313,8 @@ export class AcquisitionPackageStore extends VuexModule {
   validateNow = false;
   allowDeveloperNavigation = false;
 
+  contractingShop = "";
+
   fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact()
@@ -323,6 +325,18 @@ export class AcquisitionPackageStore extends VuexModule {
 
   public get getValidateNow(): boolean {
     return this.validateNow;
+  }
+
+  @Action({rawError: false})
+  public async setContractingShop(value: string): Promise<void> {
+    this.doSetContractingShop(value);
+  }
+
+  @Mutation
+  private doSetContractingShop(value: string): void {
+    this.contractingShop = value;
+    if(this.acquisitionPackage)
+      this.acquisitionPackage.contracting_shop = value;
   }
 
   @Action
@@ -726,6 +740,9 @@ export class AcquisitionPackageStore extends VuexModule {
       // load selected call will take care of loading or setting an empty array
       await ClassificationRequirements
         .loadSelectedClassificationLevelsByAqId(this.acquisitionPackage?.sys_id as string);
+
+      if(acquisitionPackage.contracting_shop)
+        await this.setContractingShop(acquisitionPackage.contracting_shop);
       
       if(projectOverviewSysId) {
         const projectOverview = await api.projectOverviewTable.retrieve(
@@ -1525,6 +1542,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.allowDeveloperNavigation = false;
     this.fundingRequestType =  null;
     this.fundingRequirement = null;
+    this.contractingShop = "";
   }
 }
 

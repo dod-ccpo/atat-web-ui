@@ -134,7 +134,7 @@ export default class Home extends Vue {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await AcquisitionPackage.reset();
     this.$router.push({
-      name: routeNames.ProjectOverview,
+      name: routeNames.ContractingShop,
       params: {
         direction: "next"
       },
