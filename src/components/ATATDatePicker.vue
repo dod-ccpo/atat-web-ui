@@ -127,7 +127,7 @@ export default class ATATDatePicker extends Vue {
 
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private id!: string;
-  @PropSync("value") private _value!: string;
+  @Prop({ default: "" }) private value!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: false }) private showAdjacentMonths!: boolean;
@@ -312,10 +312,10 @@ export default class ATATDatePicker extends Vue {
    * LIFECYCLE HOOKS
    */
   private mounted(): void {
-    if (this._value && this._value.indexOf("-") > -1) {
-      this.date = this._value;
-    } else if (this._value && this._value.indexOf("/") > -1) {
-      this.date = this.reformatDate(this._value);
+    if (this.value && this.value.indexOf("-") > -1) {
+      this.date = this.value;
+    } else if (this.value && this.value.indexOf("/") > -1) {
+      this.date = this.reformatDate(this.value);
     }
 
     this.formatDateWatcher();
