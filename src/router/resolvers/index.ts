@@ -399,25 +399,6 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
       return DOWSecurityRequitementsPath;  
     }
   }
-  // // need to know if going to security requirements page (for Tactical Edge only)
-  // if (needsSecurityRequirements.includes(groupId) && !otherServiceOfferings.includes(groupId)) {
-  //   debugger;
-  //   const hasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher; 
-  //   if (hasSecretOrHigher) {
-  //     debugger;
-  //     // EJY look at DOWObject - loop thru array to find group ID. then loop through
-  //     // serviceOfferings to find prop `name` which matches dow store `currentOfferingName`
-  //     // then loop through each `classificationInstances` to find `classificationLevelSysId`
-  //     // that is either S or TS in the classification store
-  //     // OR - set a flag in the store that `currentOffering` has high-side (S or TS)
-  //     // in `saveOnLeave` in `ServiceOfferingDetails.vue` and `OtherOfferingSummary.vue`
-
-  //     // check that any instance for this offering has S or TS
-  //   }
-  
-  // }
-  // debugger;
-
 
   if (otherServiceOfferings.indexOf(groupId) > -1) {
     return otherServiceOfferingSummaryPath; 
@@ -788,16 +769,19 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 
 export const DOWSecurityRequirementsPathResolver 
   = (current: string, direction: string): string => {
+    debugger;
+    
     const groupId = DescriptionOfWork.currentGroupId;    
     const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
     const needsSecurity = needsSecurityRequirements.includes(groupId);
     const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
     const anInstanceHasSecretOrHigher = DescriptionOfWork.anInstanceHasSecretOrHigher;
-
+    const foo = DescriptionOfWork.fooVal;
     debugger;
     // DescriptionOfWork.serviceNeedsSecurityRequirements
 
     // if coming from either direction and needs security requirements, show form
+    // if (needsSecurity && packageHasSecretOrHigher && anInstanceHasSecretOrHigher) {
     if (needsSecurity && packageHasSecretOrHigher && anInstanceHasSecretOrHigher) {
       DescriptionOfWork.doSetNeedsSecurityRequirements(false);
       return DOWSecurityRequitementsPath;
@@ -1163,6 +1147,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
 // add path resolvers here 
 const pathResolvers: Record<string, StepPathResolver> = {
   OtherOfferingSummaryPathResolver,
+  DOWSecurityRequirementsPathResolver,
   ServiceOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,

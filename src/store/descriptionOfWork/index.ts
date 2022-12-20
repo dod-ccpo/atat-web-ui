@@ -633,6 +633,18 @@ export class DescriptionOfWorkStore extends VuexModule {
     "EDGE_COMPUTING",
   ];
 
+  public get DOWSecReqOfferingName(): string {
+    // returns current service offering if tactical edge,
+    // or group name if other offering
+    if (this.currentGroupId === "EDGE_COMPUTING") {
+      return this.currentOfferingName;
+    }
+    const groupObj = this.serviceOfferingGroups.find(
+      obj => obj.value === this.currentGroupId
+    );
+    return groupObj ? groupObj.label : "service offering";
+  }
+
   public serviceNeedsSecurityRequirements = false;
 
   @Action({rawError: true})
@@ -646,19 +658,32 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.serviceNeedsSecurityRequirements = value;
   }
   
+  public foo = false;
+  public set fooVal(val: boolean) {
+    debugger;
+    this.foo = val;
+  }
+  public get fooVal(): boolean {
+    debugger
+    this.fooVal = true;
+    return this.foo;
+  }
+
+
   public get anInstanceHasSecretOrHigher(): boolean {
-    const highSideSysIds = ClassificationRequirements.getHighSideSysIds;
+    // "high side" is secret or above
+    const highSideSysIds = ClassificationRequirements.highSideSysIds;
     debugger;
     
     if (this.needsSecurityRequirements.includes(this.currentGroupId)) {
-      const data = this.DOWObject.find(
+      const offeringGroupObj = this.DOWObject.find(
         obj => obj.serviceOfferingGroupId === this.currentGroupId
       );
 
-      if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
+      if (offeringGroupObj) {
+        if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
         // check classificationInstances object
-        if (data) {
-          const offering = data.serviceOfferings.find(
+          const offering = offeringGroupObj.serviceOfferings.find(
             obj => obj.name === this.currentOfferingName
           );
           if (offering) {
@@ -667,11 +692,14 @@ export class DescriptionOfWorkStore extends VuexModule {
             );
             return highSideInstances !== undefined && highSideInstances.length > 0;
           }
-        }
-      } else {
-        // check otherOfferingData object
-
-      }
+        } else {
+          // check otherOfferingData object
+          const highSideInstances = offeringGroupObj.otherOfferingData?.filter(
+            obj => highSideSysIds.includes(obj.classificationLevel as string)
+          );
+          return highSideInstances !== undefined && highSideInstances.length > 0;
+        }        
+      } 
     }
     return false;
   }

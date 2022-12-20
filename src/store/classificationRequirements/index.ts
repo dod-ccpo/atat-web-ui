@@ -27,9 +27,8 @@ export class ClassificationRequirementsStore extends VuexModule {
   public classifiedInformationTypes: ClassifiedInformationTypeDTO[] = [];
   public classificationSecretSysId = "";
   public classificationTopSecretSysId = "";
-  public highSideSysIds = [this.classificationSecretSysId, this.classificationTopSecretSysId];
-  public get getHighSideSysIds(): string[] {
-    return this.highSideSysIds;
+  public get highSideSysIds(): string[] {
+    return [this.classificationSecretSysId, this.classificationTopSecretSysId];
   }
 
   public get packageHasSecretOrHigher(): boolean {
@@ -45,7 +44,6 @@ export class ClassificationRequirementsStore extends VuexModule {
   public setClassifications(value: ClassificationLevelDTO[]): void {
     this.classificationLevels = value;
     const secretObj = value.find(obj => obj.classification === "S");
-    debugger;
     if (secretObj) {
       this.classificationSecretSysId = secretObj.sys_id || "";
     }

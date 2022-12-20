@@ -5,12 +5,11 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Tell us about the security requirements for your -- Training --
+            Tell us about the security requirements for your {{ offeringName }}
           </h1>
           <div class="copy-max-width">
             <p class="mb-10" id="IntroP">
-              -- Training --
-              services may require individuals to have a different clearance 
+              {{ offeringName }} services may require individuals to have a different clearance 
               and/or level of access to classified information compared to other 
               performance requirements. We pre-filled your security requirements 
               based on information you already provided, but you can edit options 
@@ -46,6 +45,7 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import SecurityRequirementsLearnMore
   from "@/steps/04-ContractDetails/SecurityRequirementsLearnMore.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -57,7 +57,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 
 export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
-  private storedClassification: ClassificationLevelDTO[] = [];
+  private selectedClassifications: ClassificationLevelDTO[] = [];
   private selectedSecretSecurityRequirements: string[] = [];
   private selectedTopSecretSecurityRequirements: string[] = [];
   private selectedClearanceLevels: string[] = [];
@@ -66,7 +66,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
   // pragma: allowlist secret
   private hasTopSecret = false;
   public savedData: SecurityRequirement[] = []
-
+  public offeringName = "";
 
   public get currentData(): SecurityRequirement[] {
     let requirements:SecurityRequirement[] = []
@@ -84,7 +84,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
         classification_information_type: this.selectedTopSecretSecurityRequirements
       })
     }
-    return requirements
+    return requirements;
   }
 
 
@@ -96,7 +96,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-        // classificationRequirements.setSecurityRequirements(this.currentData)
+        classificationRequirements.setSecurityRequirements(this.currentData)
       }
     } catch (error) {
       console.log(error);
@@ -110,28 +110,33 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
     }
   }
   public async loadOnEnter(): Promise<boolean> {
-    this.storedClassification = classificationRequirements.selectedClassificationLevels;
-    this.storedClassification.forEach((classification) => {
+    this.selectedClassifications = classificationRequirements.selectedClassificationLevels;
+    this.selectedClassifications.forEach((classification) => {
       if(classification.classification === "TS"){
-        this.hasTopSecret = true
+        this.hasTopSecret = true;
       }
       if(classification.classification === "S"){
-        this.hasSecret = true
+        this.hasSecret = true;
       }
     })
 
-    let storeData = classificationRequirements.securityRequirements
-    if(storeData){
-      storeData.forEach((requirement)=>{
-        if(requirement.type === "SECRET"){
-          this.selectedSecretSecurityRequirements = requirement.classification_information_type
-        }
-        if(requirement.type === "TOPSECRET"){
-          this.selectedTopSecretSecurityRequirements 
-   = requirement.classification_information_type
-        }
-      })
-    }
+    //   let storeData = classificationRequirements.securityRequirements
+    //   if(storeData){
+    //     storeData.forEach((requirement)=>{
+    //       if(requirement.type === "SECRET"){
+    //         this.selectedSecretSecurityRequirements 
+    // = requirement.classification_information_type;
+    //         // this.savedData.push({
+    //         //   type: "SECRET",
+    //         //   classification_information_type: 
+    //         // });
+    //       }
+    //       if(requirement.type === "TOPSECRET"){
+    //         this.selectedTopSecretSecurityRequirements 
+    //  = requirement.classification_information_type
+    //       }
+    //     })
+    //   }
     return true;
   }
 
@@ -139,6 +144,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
   public async mounted(): Promise<void> {
     
     debugger;
+    this.offeringName = DescriptionOfWork.DOWSecReqOfferingName;
 
     const slideoutPanelContent: SlideoutPanelContent = {
       component: SecurityRequirementsLearnMore,
