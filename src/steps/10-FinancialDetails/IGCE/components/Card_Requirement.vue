@@ -38,7 +38,6 @@
         :value.sync="_cardData.monthly_price"
         :isCurrency="true"
         :showErrorMessages="false"
-        type="number"
         appendText="/month"
         width="160"
         @blur="checkMonthlyValue()"
@@ -87,12 +86,7 @@ export default class CardRequirement extends Vue {
   }
 
   public checkMonthlyValue(): void {
-    if(Number(this._cardData.monthly_price) < 1 ){
-      this.noMonthlyValue = true
-      // eslint-disable-next-line camelcase
-    }else{
-      this.noMonthlyValue = false
-    }
+    this.noMonthlyValue = Number(this._cardData.monthly_price) < 1;
   }
   public async loadOnEnter(): Promise<void> {
     Vue.nextTick(() => {

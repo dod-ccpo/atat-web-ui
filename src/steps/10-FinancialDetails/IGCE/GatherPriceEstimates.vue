@@ -107,7 +107,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     case "Compute":
       return service.numberOfInstances + " x ("
         + service.environmentType
-        + ", "+ service.operatingEnvironment?.toLowerCase()
+        + ", "+ service.operatingEnvironment?.toLowerCase()+ ", "
         + service.operatingSystemAndLicensing+", "
         + service.numberOfVCPUs + " vCPUs, " + service.memoryAmount + " GB RAM, "
         + service.storageType?.toLowerCase()+" storage: "+ service.storageAmount+" "
@@ -145,9 +145,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     const cloudServices = DescriptionOfWork.cloudSupportServices
     this.selectedClassifications = classifications
       .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
-    this.accordionClosed = new Array(classifications.length).fill(0)
     this.savedData = IGCE.costEstimates
     if(this.savedData.length >= 1){
+      //make changes to accommodate for returning after DOWObject has been changed
       this.instanceData = _.cloneDeep(this.savedData)
     }else{
       this.selectedClassifications.forEach((classification)=>{
@@ -161,8 +161,6 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         }
         this.instanceData.push(classification_instance)
       })
-
-
       const dowObject = DescriptionOfWork.DOWObject
       dowObject.forEach((service)=>{
         const serviceName = this.getFormattedNames(service.serviceOfferingGroupId)
@@ -174,13 +172,13 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   const classificationOfferings:{
                     IGCE_title:string,
                     IGCE_description:string,
-                    monthly_price:number,
+                    monthly_price:string,
                     isCloudServicePackage:boolean,
                     sysId:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
-                    monthly_price:0,
+                    monthly_price:"",
                     isCloudServicePackage:false,
                     sysId:"",
                   }
@@ -196,7 +194,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   const formData = this.createFormData(serviceName,offering)
                   classificationOfferings.IGCE_description = formData || offering.usageDescription
                     ||""
-                  instance.offerings.push(classificationOfferings)
+                  if(serviceName !== 'Training'){
+                    instance.offerings.push(classificationOfferings)
+                  }
                 }
               })
             }
@@ -210,13 +210,13 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   const classificationOfferings:{
                     IGCE_title:string,
                     IGCE_description:string,
-                    monthly_price:number,
+                    monthly_price:string,
                     isCloudServicePackage:boolean,
                     sysId:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
-                    monthly_price:0,
+                    monthly_price:"0",
                     isCloudServicePackage:false,
                     sysId:"",
                   }
@@ -226,7 +226,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                     .includes(serviceName)
                   classificationOfferings.IGCE_description =
                     classificationInstance.anticipatedNeedUsage
-                  instance.offerings.push(classificationOfferings)
+                  if(serviceName !== 'Training'){
+                    instance.offerings.push(classificationOfferings)
+                  }
                 }
               })
             })
@@ -234,6 +236,13 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         }
       })
     }
+    this.instanceData.forEach(instance=>{
+      if(instance.offerings.length <= 0){
+        this.accordionClosed.push(1)
+      }else{
+        this.accordionClosed.push(0)
+      }
+    })
   }
   protected async saveOnLeave(): Promise<boolean> {
     try{

@@ -56,7 +56,6 @@
         <div>
           <ATATTextField
             :id="period.period_type"
-            type="number"
             width="190"
             class="ml-5"
             :alignRight="true"
