@@ -6,7 +6,7 @@ import {
   IgceEstimateDTO,
   ReferenceColumn,
   RequirementsCostEstimateFlat,
-  RequirementsCostEstimateDTO
+  RequirementsCostEstimateDTO, ContractTypeDTO
 } from "@/api/models";
 import _ from "lodash";
 import Periods from "@/store/periods";
@@ -285,11 +285,13 @@ export class IGCEStore extends VuexModule {
   public async setCostEstimate(value: CostEstimate[]): Promise<void> {
     const aqPackageSysId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
     const crossDomainSysId = ClassificationRequirements.cdsSolution?.sys_id as string;
-    const contractTypeSysId =
-      AcquisitionPackage.acquisitionPackage?.contract_type === "object"
-        ? (AcquisitionPackage.acquisitionPackage?.contract_type as unknown as ReferenceColumn)
-          .value as string
-        : AcquisitionPackage.acquisitionPackage?.contract_type as string;
+    let contractTypeChoice = "TBD";
+    const contractType: ContractTypeDTO = AcquisitionPackage.contractType as ContractTypeDTO;
+    if (contractType?.firm_fixed_price === "true") {
+      contractTypeChoice = "FFP";
+    } else if (contractType?.time_and_materials === "true") {
+      contractTypeChoice = "T&M";
+    }
     const periods = Periods.periods;
     let quantityCalculated = 0;
     periods.forEach(period => {
@@ -304,7 +306,7 @@ export class IGCEStore extends VuexModule {
         costEstimatList: value,
         aqPackageSysId: aqPackageSysId,
         crossDomainSysId: crossDomainSysId,
-        contractTypeSysId: contractTypeSysId,
+        contractTypeChoice: contractTypeChoice,
         quantity: quantityCalculated
       });
     await this.loadIgceEstimateByPackageId(aqPackageSysId);
@@ -320,7 +322,7 @@ export class IGCEStore extends VuexModule {
     costEstimatList: CostEstimate[],
     aqPackageSysId: string,
     crossDomainSysId: string,
-    contractTypeSysId: string,
+    contractTypeChoice: string,
     quantity: number
   }): Promise<void>{
     const apiCallList: Promise<IgceEstimateDTO>[] = [];
@@ -329,11 +331,18 @@ export class IGCEStore extends VuexModule {
         const igceEstimateSysId = offering.igceEstimateSysId as string;
         const igceEstimate: IgceEstimateDTO = {
           acquisition_package: saveIgceObject.aqPackageSysId,
-          classification_instance: costEstimate.sysId,
-          contract_type: saveIgceObject.contractTypeSysId,
+          classification_instance: offering.sysId as string,
+          // TODO: top level sys_id should have been class instance. "repetition of sys_id property
+          //  names inside CostEstimate object is confusing. We should rename to explicit prefixes.
+          //  Line above and below this comment should be updated after sys_id prop name refactor.
+          // classification_instance: costEstimate.sysId,
+          contract_type: saveIgceObject.contractTypeChoice,
           cross_domain_solution: saveIgceObject.crossDomainSysId,
           quantity: saveIgceObject.quantity,
-          selected_service_offering: offering.sysId as string,
+          // TODO: By using
+          //  IgceEstimate object or renaming the existing CostEstimate props, there won't be any
+          //  confusion regarding what each sys_id is mapping to.
+          selected_service_offering: offering.sysId as string, // FIXME: This mapping is incorrect.
           description: offering.IGCE_description as string,
           title: offering.IGCE_title as string,
           unit: "MONTHS",
