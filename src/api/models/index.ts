@@ -745,7 +745,7 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   }
 }
 
-export interface RequirementsCostEstimateDFlat extends BaseTableDTO{
+export interface RequirementsCostEstimateFlat extends BaseTableDTO{
   acquisition_package: ReferenceColumn | string;
   architectural_design_current_environment_option: SingleMultiple;
   architectural_design_current_environment_estimated_values: string;// csv

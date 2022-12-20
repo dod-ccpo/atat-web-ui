@@ -4,7 +4,7 @@ import Vuex, {Store} from 'vuex';
 import {createLocalVue} from '@vue/test-utils';
 import {getModule} from 'vuex-module-decorators';
 import {IGCEStore} from '.';
-import {RequirementsCostEstimateDFlat} from "@/api/models";
+import {RequirementsCostEstimateFlat} from "@/api/models";
 import {api} from "@/api";
 
 const localVue = createLocalVue();
@@ -13,7 +13,7 @@ localVue.use(Vuex);
 describe("IGCE Store", () => {
   let igceStore: IGCEStore;
 
-  const requirementsCostEstimate: RequirementsCostEstimateDFlat = {
+  const requirementsCostEstimate: RequirementsCostEstimateFlat = {
     acquisition_package: "",
     architectural_design_current_environment_estimated_values: "",
     architectural_design_current_environment_option: "",

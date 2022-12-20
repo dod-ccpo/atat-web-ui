@@ -1,36 +1,35 @@
 /* eslint-disable camelcase */
-import {AttachmentDTO, RequirementsCostEstimateDTO} from "@/api/models";
+import {AttachmentDTO, RequirementsCostEstimateFlat} from "@/api/models";
 import {AttachmentServiceCallbacks, RecordManager} from "..";
 import { AttachmentServiceBase } from "../base";
-import FinancialDetails from "@/store/financialDetails";
 import {RequirementsCostEstimateApi} from "@/api/requirementsCostEstimate";
 import IGCE from "@/store/IGCE";
 
 // record manager to coordinate record creation saving with attachment service
-const recordManager : RecordManager<RequirementsCostEstimateDTO> = {
-  retrieveOrCreate: async function (): Promise<RequirementsCostEstimateDTO> {
-    const record = await IGCE.getRequirementsCostEstimate();
+const recordManager : RecordManager<RequirementsCostEstimateFlat> = {
+  retrieveOrCreate: async function (): Promise<RequirementsCostEstimateFlat> {
+    const record = await IGCE.getRequirementsCostEstimateFlat();
     return record;
   },
   save: async function (record: string): Promise<void> {
-    const data = JSON.parse(record) as RequirementsCostEstimateDTO;
-    await IGCE.setRequirementsCostEstimate(data);
+    const data = JSON.parse(record) as RequirementsCostEstimateFlat;
+    await IGCE.setRequirementsCostEstimateFlat(data);
   },
   updateRecord: function (record: string, attachmentSysId: string,
-    fileName: string): RequirementsCostEstimateDTO {
-    return JSON.parse(record) as RequirementsCostEstimateDTO;
+    fileName: string): RequirementsCostEstimateFlat {
+    return JSON.parse(record) as RequirementsCostEstimateFlat;
     // nothing else to do here because the attachment is added to the record and no slot column
   }
 }
 
 export class RequirementsCostEstimateAttachmentService extends
-  AttachmentServiceBase<RequirementsCostEstimateApi, RequirementsCostEstimateDTO>{
+  AttachmentServiceBase<RequirementsCostEstimateApi, RequirementsCostEstimateFlat>{
 
   constructor(serviceKey: string, tableName: string, tableApi: RequirementsCostEstimateApi) {
     super(serviceKey, tableName, tableApi);
   }
 
-  protected recordManager: RecordManager<RequirementsCostEstimateDTO> = recordManager;
+  protected recordManager: RecordManager<RequirementsCostEstimateFlat> = recordManager;
 
   /**
    * The function in the super class (base attachment) deletes both the attachment and the

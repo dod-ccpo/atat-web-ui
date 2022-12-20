@@ -5,7 +5,7 @@ import api from "@/api";
 import {
   IgceEstimateDTO,
   ReferenceColumn,
-  RequirementsCostEstimateDFlat,
+  RequirementsCostEstimateFlat,
   RequirementsCostEstimateDTO
 } from "@/api/models";
 import _ from "lodash";
@@ -91,8 +91,21 @@ export class IGCEStore extends VuexModule {
   }
 
   @Action
+  public async getRequirementsCostEstimateFlat(): Promise<RequirementsCostEstimateFlat> {
+    return this.transformRequirementsCostEstimateFromTreeToFlat(
+      this.requirementsCostEstimate as RequirementsCostEstimateDTO);
+  }
+
+  @Action
   public async setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
     await this.doSetRequirementsCostEstimate(value);
+    await this.saveRequirementsCostEstimate();
+  }
+
+  @Action
+  public async setRequirementsCostEstimateFlat(value: RequirementsCostEstimateFlat): Promise<void> {
+    await this.doSetRequirementsCostEstimate(
+      await this.transformRequirementsCostEstimateFromFlatToTree(value));
     await this.saveRequirementsCostEstimate();
   }
 
@@ -115,7 +128,7 @@ export class IGCEStore extends VuexModule {
 
   @Action
   private async transformRequirementsCostEstimateFromFlatToTree(
-    rceFlat: RequirementsCostEstimateDFlat): Promise<RequirementsCostEstimateDTO> {
+    rceFlat: RequirementsCostEstimateFlat): Promise<RequirementsCostEstimateDTO> {
     return {
       acquisition_package: rceFlat.acquisition_package,
       architectural_design_current_environment: {
@@ -149,7 +162,7 @@ export class IGCEStore extends VuexModule {
       surge_requirements: {
         capabilities: rceFlat.surge_requirement_capabilities,
         capacity: rceFlat.surge_requirement_capacity},
-      training: JSON.parse(rceFlat.training) ? JSON.parse(rceFlat.training) : [],
+      training: rceFlat.training ? JSON.parse(rceFlat.training) : [],
       travel: {
         option: rceFlat.travel_option,
         estimated_values: rceFlat.travel_estimated_values?.split(",")
@@ -159,7 +172,7 @@ export class IGCEStore extends VuexModule {
 
   @Action
   private async transformRequirementsCostEstimateFromTreeToFlat(
-    rceTree: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateDFlat> {
+    rceTree: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateFlat> {
     return {
       acquisition_package: rceTree.acquisition_package,
       architectural_design_current_environment_option:
@@ -185,7 +198,7 @@ export class IGCEStore extends VuexModule {
       optimize_replicate_estimated_values: rceTree.optimize_replicate.estimated_values?.toString(),
       surge_requirement_capacity: rceTree.surge_requirements.capacity,
       surge_requirement_capabilities: rceTree.surge_requirements.capabilities,
-      training: JSON.stringify(rceTree.training),
+      training: JSON.stringify(rceTree.training ? rceTree.training : []),
       travel_option: rceTree.travel.option,
       travel_estimated_values: rceTree.travel.estimated_values?.toString()
     }
@@ -193,16 +206,11 @@ export class IGCEStore extends VuexModule {
 
   @Action
   public async initializeRequirementsCostEstimate(): Promise<void> {
-    await this.doInitializeRequirementsCostEstimate();
-  }
-
-  @Mutation
-  public async doInitializeRequirementsCostEstimate(): Promise<void> {
-    this.requirementsCostEstimate =
+    await this.doSetRequirementsCostEstimate(
       await this.transformRequirementsCostEstimateFromFlatToTree(
         await api.requirementsCostEstimateTable
           .create(await this.transformRequirementsCostEstimateFromTreeToFlat(
-            defaultRequirementsCostEstimate())));
+            defaultRequirementsCostEstimate()))));
   }
 
   /**
@@ -211,19 +219,18 @@ export class IGCEStore extends VuexModule {
    */
   @Action({rawError: true})
   public async saveRequirementsCostEstimate(): Promise<boolean> {
-    return true;
-    /*try {
-      // TODO: perform any data transformation using spread construct.
-      // TODO: uncomment below 4 statements after SNOW table update
-      /!*const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
+    try {
+      const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
       const updatedReqCostEstimate = await api.requirementsCostEstimateTable
-        .update(storeRequirementsCostEstimate.sys_id as string, storeRequirementsCostEstimate);
+        .update(storeRequirementsCostEstimate.sys_id as string,
+          await this.transformRequirementsCostEstimateFromTreeToFlat(
+            storeRequirementsCostEstimate));
       storeRequirementsCostEstimate.sys_updated_on = updatedReqCostEstimate.sys_updated_on;
-      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;*!/
+      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;
       return true;
     } catch (error) {
       throw new Error(`an error occurred saving requirements cost estimate ${error}`);
-    }*/
+    }
   }
 
   /**
@@ -267,13 +274,11 @@ export class IGCEStore extends VuexModule {
       }
     };
     const igceEstimateList = await api.igceEstimateTable.getQuery(rceRequestConfig);
-    this.doSetIgceEstimate(igceEstimateList);
+    await this.doSetIgceEstimate(igceEstimateList);
   }
 
   @Action({rawError: true})
   public async setCostEstimate(value: CostEstimate[]): Promise<void> {
-    console.log("Setting igce estimate...");
-    console.log(value);
     const aqPackageSysId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
     const crossDomainSysId = ClassificationRequirements.cdsSolution?.sys_id as string;
     const contractTypeSysId =
@@ -326,7 +331,7 @@ export class IGCEStore extends VuexModule {
           quantity: saveIgceObject.quantity,
           selected_service_offering: offering.sysId as string,
           title: offering.IGCE_title as string,
-          unit: "MONTHLY",
+          unit: "MONTHS",
           unit_price: offering.monthly_price as number
         }
         if(igceEstimateSysId && igceEstimateSysId.length > 0) {
