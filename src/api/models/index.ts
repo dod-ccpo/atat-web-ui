@@ -808,6 +808,7 @@ export interface IgceEstimateDTO extends BaseTableDTO {
   cross_domain_solution: ReferenceColumn | string;
   selected_service_offering: ReferenceColumn | string;
   title: string;
+  description: string;
   unit: string;
   unit_price: number | null;
   quantity: number;

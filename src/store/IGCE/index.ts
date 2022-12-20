@@ -277,6 +277,10 @@ export class IGCEStore extends VuexModule {
     await this.doSetIgceEstimate(igceEstimateList);
   }
 
+  /**
+   * Gathers all the required reference column Ids, calculates the quantity based on periods, makes
+   * a callout to save and the sets the igce estimate to this store.
+   */
   @Action({rawError: true})
   public async setCostEstimate(value: CostEstimate[]): Promise<void> {
     const aqPackageSysId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
@@ -330,6 +334,7 @@ export class IGCEStore extends VuexModule {
           cross_domain_solution: saveIgceObject.crossDomainSysId,
           quantity: saveIgceObject.quantity,
           selected_service_offering: offering.sysId as string,
+          description: offering.IGCE_description as string,
           title: offering.IGCE_title as string,
           unit: "MONTHS",
           unit_price: offering.monthly_price as number
