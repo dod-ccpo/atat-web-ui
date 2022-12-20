@@ -2,13 +2,22 @@
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import {RequirementsCostEstimateDTO} from "@/api/models";
+import {
+  IgceEstimateDTO,
+  ReferenceColumn,
+  RequirementsCostEstimateFlat,
+  RequirementsCostEstimateDTO
+} from "@/api/models";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import ClassificationRequirements from "@/store/classificationRequirements";
+import {AxiosRequestConfig} from "axios";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
+    acquisition_package: "",
     has_DOW_and_PoP: "",
     architectural_design_current_environment: {
       option: "",
@@ -61,6 +70,7 @@ export interface CostEstimate {
 })
 export class IGCEStore extends VuexModule {
   public requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
+  public igceEstimateList: IgceEstimateDTO[] = [];
 
   @Action({rawError: true})
   public async reset(): Promise<void> {
@@ -72,6 +82,7 @@ export class IGCEStore extends VuexModule {
   @Mutation
   public doReset(): void {
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
+    this.igceEstimateList = [];
   }
 
   @Action
@@ -80,8 +91,21 @@ export class IGCEStore extends VuexModule {
   }
 
   @Action
+  public async getRequirementsCostEstimateFlat(): Promise<RequirementsCostEstimateFlat> {
+    return this.transformRequirementsCostEstimateFromTreeToFlat(
+      this.requirementsCostEstimate as RequirementsCostEstimateDTO);
+  }
+
+  @Action
   public async setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): Promise<void> {
     await this.doSetRequirementsCostEstimate(value);
+    await this.saveRequirementsCostEstimate();
+  }
+
+  @Action
+  public async setRequirementsCostEstimateFlat(value: RequirementsCostEstimateFlat): Promise<void> {
+    await this.doSetRequirementsCostEstimate(
+      await this.transformRequirementsCostEstimateFromFlatToTree(value));
     await this.saveRequirementsCostEstimate();
   }
 
@@ -92,14 +116,6 @@ export class IGCEStore extends VuexModule {
       : value;
   }
 
-  @Action({ rawError: true })
-  public async doSetCostEstimate(value: CostEstimate[]): Promise<void> {
-    await this.setCostEstimate(value)
-  }
-  @Mutation
-  public async setCostEstimate(value: CostEstimate[]): Promise<void> {
-    this.costEstimates = value;
-  }
   @Mutation
   public setHasDOWandPop(): void {
     const requirementCostEstimate = this.requirementsCostEstimate as RequirementsCostEstimateDTO;
@@ -110,36 +126,91 @@ export class IGCEStore extends VuexModule {
     }
   }
 
-  // TODO: write other setters and getters as needed.
+  @Action
+  private async transformRequirementsCostEstimateFromFlatToTree(
+    rceFlat: RequirementsCostEstimateFlat): Promise<RequirementsCostEstimateDTO> {
+    return {
+      acquisition_package: rceFlat.acquisition_package,
+      architectural_design_current_environment: {
+        option: rceFlat.architectural_design_current_environment_option,
+        estimated_values:
+        rceFlat.architectural_design_current_environment_estimated_values?.split(",")
+      },
+      architectural_design_performance_requirements: {
+        option: rceFlat.architectural_design_performance_requirements_option,
+        estimated_values:
+          rceFlat.architectural_design_performance_requirements_estimated_values?.split(",")
+      },
+      fee_specs: {
+        is_charged: rceFlat.contracting_office_other_charges_fee,
+        percentage: rceFlat.contracting_office_other_fee_percentage
+      },
+      has_DOW_and_PoP: rceFlat.has_dow_and_pop,
+      how_estimates_developed: {
+        tools_used: rceFlat.how_est_dev_tools_used,
+        other_tools_used: rceFlat.how_est_dev_other_tools_used,
+        cost_estimate_description: rceFlat.how_est_dev_cost_estimate_description,
+        previous_cost_estimate_comparison: {
+          options: rceFlat.how_est_dev_prev_cost_estimate_comp_option,
+          percentage: rceFlat.how_est_dev_prev_cost_estimate_comp_percentage
+        },
+      },
+      optimize_replicate: {
+        option: rceFlat.optimize_replicate_option,
+        estimated_values: rceFlat.optimize_replicate_estimated_values?.split(",")
+      },
+      surge_requirements: {
+        capabilities: rceFlat.surge_requirement_capabilities,
+        capacity: rceFlat.surge_requirement_capacity},
+      training: rceFlat.training ? JSON.parse(rceFlat.training) : [],
+      travel: {
+        option: rceFlat.travel_option,
+        estimated_values: rceFlat.travel_estimated_values?.split(",")
+      }
+    };
+  }
+
+  @Action
+  private async transformRequirementsCostEstimateFromTreeToFlat(
+    rceTree: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateFlat> {
+    return {
+      acquisition_package: rceTree.acquisition_package,
+      architectural_design_current_environment_option:
+        rceTree.architectural_design_current_environment.option,
+      architectural_design_current_environment_estimated_values:
+        rceTree.architectural_design_current_environment.estimated_values?.toString(),
+      architectural_design_performance_requirements_option:
+        rceTree.architectural_design_performance_requirements.option,
+      architectural_design_performance_requirements_estimated_values:
+        rceTree.architectural_design_performance_requirements.estimated_values?.toString(),
+      contracting_office_other_charges_fee: rceTree.fee_specs.is_charged,
+      contracting_office_other_fee_percentage: rceTree.fee_specs.percentage,
+      has_dow_and_pop: rceTree.has_DOW_and_PoP,
+      how_est_dev_tools_used: rceTree.how_estimates_developed.tools_used,
+      how_est_dev_other_tools_used: rceTree.how_estimates_developed.other_tools_used,
+      how_est_dev_cost_estimate_description:
+        rceTree.how_estimates_developed.cost_estimate_description,
+      how_est_dev_prev_cost_estimate_comp_option:
+        rceTree.how_estimates_developed.previous_cost_estimate_comparison.options,
+      how_est_dev_prev_cost_estimate_comp_percentage:
+        rceTree.how_estimates_developed.previous_cost_estimate_comparison.percentage,
+      optimize_replicate_option: rceTree.optimize_replicate.option,
+      optimize_replicate_estimated_values: rceTree.optimize_replicate.estimated_values?.toString(),
+      surge_requirement_capacity: rceTree.surge_requirements.capacity,
+      surge_requirement_capabilities: rceTree.surge_requirements.capabilities,
+      training: JSON.stringify(rceTree.training ? rceTree.training : []),
+      travel_option: rceTree.travel.option,
+      travel_estimated_values: rceTree.travel.estimated_values?.toString()
+    }
+  }
 
   @Action
   public async initializeRequirementsCostEstimate(): Promise<void> {
-    await this.doInitializeRequirementsCostEstimate();
-  }
-
-  @Mutation
-  public async doInitializeRequirementsCostEstimate(): Promise<void> {
-    // TODO: need to initialize this in SNOW by making api call. Then set the response from snow
-    this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
-    // TODO: other initializations outside of requirements cost estimate
-  }
-
-
-  /**
-   * Loads the Requirements cost estimate data using the acquisition package sys id.
-   * And then sets the context such that the data could be retrieved using the
-   * getters (getRequirementsCostEstimate)
-   * @param reqCostEstimateSysId - sys_id of the acquisition package table record
-   */
-  @Action({rawError: true})
-  public async loadRequirementsCostEstimateDataById(reqCostEstimateSysId: string): Promise<void> {
-    const requirementsCostEstimate = await api.requirementsCostEstimateTable
-      .retrieve(reqCostEstimateSysId);
-    if (requirementsCostEstimate) {
-      await this.doSetRequirementsCostEstimate(requirementsCostEstimate);
-    } else {
-      await this.initializeRequirementsCostEstimate();
-    }
+    await this.doSetRequirementsCostEstimate(
+      await this.transformRequirementsCostEstimateFromFlatToTree(
+        await api.requirementsCostEstimateTable
+          .create(await this.transformRequirementsCostEstimateFromTreeToFlat(
+            defaultRequirementsCostEstimate()))));
   }
 
   /**
@@ -148,19 +219,134 @@ export class IGCEStore extends VuexModule {
    */
   @Action({rawError: true})
   public async saveRequirementsCostEstimate(): Promise<boolean> {
-    return true;
-    /*try {
-      // TODO: perform any data transformation using spread construct.
-      // TODO: uncomment below 4 statements after SNOW table update
-      /!*const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
+    try {
+      const storeRequirementsCostEstimate = await this.getRequirementsCostEstimate();
       const updatedReqCostEstimate = await api.requirementsCostEstimateTable
-        .update(storeRequirementsCostEstimate.sys_id as string, storeRequirementsCostEstimate);
+        .update(storeRequirementsCostEstimate.sys_id as string,
+          await this.transformRequirementsCostEstimateFromTreeToFlat(
+            storeRequirementsCostEstimate));
       storeRequirementsCostEstimate.sys_updated_on = updatedReqCostEstimate.sys_updated_on;
-      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;*!/
+      storeRequirementsCostEstimate.sys_updated_by = updatedReqCostEstimate.sys_updated_by;
       return true;
     } catch (error) {
       throw new Error(`an error occurred saving requirements cost estimate ${error}`);
-    }*/
+    }
+  }
+
+  /**
+   * Loads the Requirements cost estimate data using the acquisition package sys id.
+   * And then sets the context such that the data could be retrieved using the
+   * getters (getRequirementsCostEstimate)
+   * @param packageId - sys_id of the acquisition package table record
+   */
+  @Action({rawError: true})
+  public async loadRequirementsCostEstimateDataByPackageId(packageId: string): Promise<void> {
+    const rceRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + packageId
+      }
+    };
+    const reqCostEstimateList = await api.requirementsCostEstimateTable.getQuery(rceRequestConfig);
+    if(reqCostEstimateList.length > 0){
+      const sysId = typeof reqCostEstimateList[0].acquisition_package === "object"
+        ? reqCostEstimateList[0].acquisition_package.value as string
+        : reqCostEstimateList[0].acquisition_package as string;
+      await this.doSetRequirementsCostEstimate({
+        ...await this.transformRequirementsCostEstimateFromFlatToTree(reqCostEstimateList[0]),
+        acquisition_package: sysId
+      });
+    } else {
+      await this.initializeRequirementsCostEstimate();
+    }
+  }
+
+  /**
+   * Loads the igce estimate data using the acquisition package sys id.
+   * And then sets the context such that the data could be retrieved using the
+   * getters (getIgceCostEstimate)
+   * @param packageId - sys_id of the acquisition package table record
+   */
+  @Action({rawError: true})
+  public async loadIgceEstimateByPackageId(packageId: string): Promise<void> {
+    const rceRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + packageId
+      }
+    };
+    const igceEstimateList = await api.igceEstimateTable.getQuery(rceRequestConfig);
+    await this.doSetIgceEstimate(igceEstimateList);
+  }
+
+  /**
+   * Gathers all the required reference column Ids, calculates the quantity based on periods, makes
+   * a callout to save and the sets the igce estimate to this store.
+   */
+  @Action({rawError: true})
+  public async setCostEstimate(value: CostEstimate[]): Promise<void> {
+    const aqPackageSysId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
+    const crossDomainSysId = ClassificationRequirements.cdsSolution?.sys_id as string;
+    const contractTypeSysId =
+      AcquisitionPackage.acquisitionPackage?.contract_type === "object"
+        ? (AcquisitionPackage.acquisitionPackage?.contract_type as unknown as ReferenceColumn)
+          .value as string
+        : AcquisitionPackage.acquisitionPackage?.contract_type as string;
+    const periods = Periods.periods;
+    let quantityCalculated = 0;
+    periods.forEach(period => {
+      if(period.period_unit === "MONTH") {
+        quantityCalculated = quantityCalculated + Number(period.period_unit_count);
+      } else if (period.period_unit === "YEAR") {
+        quantityCalculated = quantityCalculated + (Number(period.period_unit_count) * 12);
+      }
+    })
+    await this.saveIgceEstimates(
+      {
+        costEstimatList: value,
+        aqPackageSysId: aqPackageSysId,
+        crossDomainSysId: crossDomainSysId,
+        contractTypeSysId: contractTypeSysId,
+        quantity: quantityCalculated
+      });
+    await this.loadIgceEstimateByPackageId(aqPackageSysId);
+  }
+
+  @Mutation
+  public async doSetIgceEstimate(igceEstimateList: IgceEstimateDTO[]): Promise<void> {
+    this.igceEstimateList = igceEstimateList;
+  }
+
+  @Action({rawError: true})
+  public async saveIgceEstimates(saveIgceObject: {
+    costEstimatList: CostEstimate[],
+    aqPackageSysId: string,
+    crossDomainSysId: string,
+    contractTypeSysId: string,
+    quantity: number
+  }): Promise<void>{
+    const apiCallList: Promise<IgceEstimateDTO>[] = [];
+    saveIgceObject.costEstimatList.forEach(costEstimate => {
+      costEstimate.offerings.forEach(offering => {
+        const igceEstimateSysId = offering.igceEstimateSysId as string;
+        const igceEstimate: IgceEstimateDTO = {
+          acquisition_package: saveIgceObject.aqPackageSysId,
+          classification_instance: costEstimate.sysId,
+          contract_type: saveIgceObject.contractTypeSysId,
+          cross_domain_solution: saveIgceObject.crossDomainSysId,
+          quantity: saveIgceObject.quantity,
+          selected_service_offering: offering.sysId as string,
+          description: offering.IGCE_description as string,
+          title: offering.IGCE_title as string,
+          unit: "MONTHS",
+          unit_price: offering.monthly_price as number
+        }
+        if(igceEstimateSysId && igceEstimateSysId.length > 0) {
+          apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate));
+        } else {
+          apiCallList.push(api.igceEstimateTable.create(igceEstimate));
+        }
+      })
+    })
+    await Promise.all(apiCallList);
   }
 }
 

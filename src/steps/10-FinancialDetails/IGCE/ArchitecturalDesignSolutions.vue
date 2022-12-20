@@ -190,7 +190,7 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
         = this.currentEnvCostEstimate;
       this.costEstimate.architectural_design_performance_requirements
         = this.perfReqCostEstimate;
-      IGCEStore.setRequirementsCostEstimate(this.costEstimate);
+      await IGCEStore.setRequirementsCostEstimate(this.costEstimate);
     }
 
     return true;
