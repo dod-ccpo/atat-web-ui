@@ -172,13 +172,13 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   const classificationOfferings:{
                     IGCE_title:string,
                     IGCE_description:string,
-                    monthly_price:string,
+                    monthly_price:number,
                     isCloudServicePackage:boolean,
                     sysId:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
-                    monthly_price:"",
+                    monthly_price:0,
                     isCloudServicePackage:false,
                     sysId:"",
                   }
@@ -210,13 +210,13 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   const classificationOfferings:{
                     IGCE_title:string,
                     IGCE_description:string,
-                    monthly_price:string,
+                    monthly_price:number,
                     isCloudServicePackage:boolean,
                     sysId:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
-                    monthly_price:"0",
+                    monthly_price:0,
                     isCloudServicePackage:false,
                     sysId:"",
                   }
