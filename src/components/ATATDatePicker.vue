@@ -84,7 +84,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import Vue from "vue";
 import Inputmask from "inputmask";
 import { add, format, isValid } from "date-fns";
@@ -311,10 +311,14 @@ export default class ATATDatePicker extends Vue {
    * LIFECYCLE HOOKS
    */
   private mounted(): void {
-    if (this.value) {
+    if (this.value && this.value.indexOf("-") > -1) {
+      this.date = this.value;
+    } else if (this.value && this.value.indexOf("/") > -1) {
       this.date = this.reformatDate(this.value);
-      this.formatDateWatcher();
     }
+
+    this.formatDateWatcher();
+
     this.$nextTick(() => {
       this.addMasks();
     });
