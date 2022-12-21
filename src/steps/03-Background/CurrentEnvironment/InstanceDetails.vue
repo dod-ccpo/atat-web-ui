@@ -485,9 +485,10 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     // need to flip `setValidateNow` to true in page component's `saveOnLeave` method
     // for pages with checkbox groups that have validation rules
     await AcquisitionPackage.setValidateNow(true);
+    const isValid = this.$refs.form.validate();
 
     try {
-      if (this.hasChanged()) {
+      if (this.hasChanged() && isValid) {
         await CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
       }
     } catch (error) {
