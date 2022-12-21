@@ -100,7 +100,7 @@ import OptimizeOrReplicate from "@/steps/10-FinancialDetails/IGCE/OptimizeOrRepl
 import ArchitecturalDesignSolutions 
   from '@/steps/10-FinancialDetails/IGCE/ArchitecturalDesignSolutions.vue';
 import GatherPriceEstimates from "@/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.vue";
-import IGCETraining from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
+import IGCETraining from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 import TravelEstimates from "@/steps/10-FinancialDetails/IGCE/TravelEstimates.vue";
 import SurgeCapacity from "@/steps/10-FinancialDetails/IGCE/SurgeCapacity.vue";
 import FeeCharged from "@/steps/10-FinancialDetails/IGCE/FeeCharged.vue";
@@ -160,7 +160,7 @@ import {
   DOWArchitecturalDesignResolver,
   IGCETrainingPathResolver,
 } from "./resolvers";
-import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
+import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 
 export const routeNames = {
   ContractingShop: "Contracting_Shop",

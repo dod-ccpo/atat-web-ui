@@ -648,3 +648,17 @@ export interface CrossDomainSolution {
   projectedFileStream:string;
   selectedPeriods: string[];
 }
+
+export interface EstimateOptionValue {
+  option?: SingleMultiple;
+  estimated_values: string[];
+}
+
+export interface TrainingEstimate {
+  sysId?: string;
+  costEstimateType: "" | "PER_PERSON" | "PER_SESSION" | "SUBSCRIPTION" | string;
+  estimate: EstimateOptionValue;
+  estimatedTrainingPrice: string;
+  subscriptionType?: "" | "ANNUAL" | "MONTHLY" | string;
+  trainingOption: SingleMultiple;
+}

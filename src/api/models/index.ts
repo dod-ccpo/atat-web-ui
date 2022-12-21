@@ -11,7 +11,9 @@ import {
   StorageType, 
   StorageUnit, 
   YesNo,
-  SingleMultiple
+  SingleMultiple,
+  EstimateOptionValue,
+  TrainingEstimate
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -705,24 +707,22 @@ export interface UserDTO extends BaseTableDTO {
   user_name?: string;
   email?: string;
 }
-
-export interface EstimateOptionValueDTO {
-  option: SingleMultiple;
-  estimated_values: string[];
-}
-
-export interface TrainingEstimateDTO {
-  cost_estimate: "" | "PER_PERSON" | "PER_SESSION" | "SUBSCRIPTION";
-  estimate: EstimateOptionValueDTO;
+export interface TrainingEstimateDTO extends BaseTableDTO{
+  acquisition_package: string;
+  estimated_price_per_training_unit: string;
+  subscription_type: string; //ANNUAL or MONTHLY
+  training_estimated_values: string;
+  training_option: string; //SINGLE or MULTIPLE
+  training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
 }
 
 export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   has_DOW_and_PoP: YesNo;
-  optimize_replicate: EstimateOptionValueDTO;
-  architectural_design_current_environment: EstimateOptionValueDTO;
-  architectural_design_performance_requirements: EstimateOptionValueDTO;
+  optimize_replicate: EstimateOptionValue;
+  architectural_design_current_environment: EstimateOptionValue;
+  architectural_design_performance_requirements: EstimateOptionValue;
   training: TrainingEstimateDTO[];
-  travel: EstimateOptionValueDTO;
+  travel: EstimateOptionValue;
   surge_requirements: {
     capabilities: YesNo;
     capacity: number | null;

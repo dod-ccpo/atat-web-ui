@@ -53,6 +53,7 @@ import { ClassifiedInformationTypeAPI } from "@/api/classifiedInformationType";
 import { XaaSEnvironmentInstanceAPI } from "@/api/xaasEnvironmentInstance";
 import { CrossDomainSolutionAPI } from "@/api/crossDomainSolution";
 import { GInvoicingApi } from "@/api/gInvoicing";
+import { TrainingEstimateAPI } from "@/api/trainingEstimate";
 
 export const api = {
 
@@ -111,7 +112,8 @@ export const api = {
   architecturalDesignRequirementTable: new ArchitecturalDesignRequirementAPI(),
   classifiedInformationTypeTable: new ClassifiedInformationTypeAPI(),
   xaaSEnvironmentInstanceTable: new XaaSEnvironmentInstanceAPI(),
-  crossDomainSolutionTable: new CrossDomainSolutionAPI()
+  crossDomainSolutionTable: new CrossDomainSolutionAPI(),
+  trainingEstimateTable: new TrainingEstimateAPI()
 }
 
 export default {

@@ -3,9 +3,12 @@ import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-deco
 import rootStore from "../index";
 import api from "@/api";
 import {RequirementsCostEstimateDTO, TrainingEstimateDTO} from "@/api/models";
+import {SingleMultiple, TrainingEstimate} from "../../../types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import AcquisitionPackage from "../acquisitionPackage";
+import { AxiosRequestConfig } from "axios";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
@@ -47,13 +50,14 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
   }
 }
 
-export const defaultTrainingEstimateDTO = (): TrainingEstimateDTO => {
+export const defaultTrainingEstimate = (): TrainingEstimate => {
   return {
-    cost_estimate: "",
+    costEstimateType: "",
     estimate: {
       estimated_values: [],
-      option: ""
-    }
+    },
+    estimatedTrainingPrice: "",
+    trainingOption: ""
   };
 }
 
@@ -74,6 +78,8 @@ export class IGCEStore extends VuexModule {
   public initialized = false;
   public igceTrainingIndex = -1;
 
+  public trainingItems: TrainingEstimate[] = [];
+
   @Action({rawError: true})
   public async reset(): Promise<void> {
     this.doReset();
@@ -86,25 +92,84 @@ export class IGCEStore extends VuexModule {
     this.requirementsCostEstimate = null;
     this.igceTrainingIndex = -1;
     this.initialized = false;
+    this.trainingItems = [];
   }
 
   @Action({rawError: true})
-  public async saveTrainingEstimate(value: TrainingEstimateDTO): Promise<void> {
-    this.doSaveTrainingEstimate(value)
+  public async loadTrainingEstimatesFromPackage(packageId: string): Promise<void> {
+    const requestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + packageId,
+        sysparm_display_value: "false"
+      }
+    };
+
+    const trainingEstimates = await api.trainingEstimateTable.getQuery(requestConfig);
+
+    trainingEstimates.forEach(item => {
+      const trainingItem: TrainingEstimate = {
+        sysId: item.sys_id,
+        costEstimateType: item.training_unit,
+        estimate: JSON.parse(item.training_estimated_values),
+        estimatedTrainingPrice: item.estimated_price_per_training_unit,
+        subscriptionType: item.subscription_type,
+        trainingOption: item.training_option as SingleMultiple
+      };
+
+      this.doSetTrainingEstimate(trainingItem);
+    });
+  }
+
+  @Action({rawError: true})
+  public async setTrainingEstimate(value: TrainingEstimate): Promise<void> {
+    const objSysId = await this.saveTrainingEstimate(value);
+    this.doSetTrainingEstimate({
+      ...value,
+      sysId: objSysId
+    });
   }
 
   @Mutation
-  public doSaveTrainingEstimate(value: TrainingEstimateDTO): void {
-    if(
-      this.requirementsCostEstimate &&
-      this.igceTrainingIndex >= 0 &&
-      this.requirementsCostEstimate.training
-    ){
-      if(this.requirementsCostEstimate.training.length < this.igceTrainingIndex + 1)
-        this.requirementsCostEstimate.training.push(value);
-      else
-        this.requirementsCostEstimate.training[this.igceTrainingIndex] = value;
+  private doSetTrainingEstimate(value: TrainingEstimate): void {
+    if(this.trainingItems.length < this.igceTrainingIndex + 1)
+      this.trainingItems.push(value);
+    else
+      this.trainingItems[this.igceTrainingIndex] = value;
+  }
+
+  @Action({rawError: true})
+  public async saveTrainingEstimate(value: TrainingEstimate): Promise<string> {
+    let objSysId = "";
+
+    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id;
+
+    const trainingDTOItem: TrainingEstimateDTO = {
+      acquisition_package: packageId || "",
+      estimated_price_per_training_unit: value.estimatedTrainingPrice,
+      subscription_type: value.subscriptionType || "",
+      training_option: value.trainingOption,
+      training_estimated_values: JSON.stringify(value.estimate),
+      training_unit: value.costEstimateType
+    };
+
+    if(value.sysId){
+      await api.trainingEstimateTable.update(
+        value.sysId,
+        {
+          ...trainingDTOItem,
+          sys_id: value.sysId
+        }
+      );
+      objSysId = value.sysId;
+    } else {
+      const savedObject = await api.trainingEstimateTable.create(
+        trainingDTOItem
+      );
+
+      objSysId = savedObject.sys_id as string;
     }
+
+    return objSysId;
   }
 
   @Action
@@ -161,6 +226,7 @@ export class IGCEStore extends VuexModule {
       return;
     // TODO: need to initialize this in SNOW by making api call. Then set the response from snow
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
+    this.trainingItems = [];
     // TODO: other initializations outside of requirements cost estimate
     this.initialized = true;
   }
