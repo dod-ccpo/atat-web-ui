@@ -156,7 +156,6 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
       const index = this.domainInfo.solutionType.findIndex(
         solutionType => solutionType.type === item.value);
 
-      // debugger;
       if(index > -1) { 
         solutionTypeData.push(this.domainInfo.solutionType[index]);
       } else {

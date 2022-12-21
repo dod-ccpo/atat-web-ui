@@ -159,7 +159,7 @@ export class ValidationPlugin {
     message = message || `Invalid Date`;
     // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
-      return (/^[0-9]*$/.test(v.replaceAll(/[/-]/g, ""))) || message
+      return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message;
     };
   };
 
