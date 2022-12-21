@@ -129,6 +129,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         service.descriptionOfNeed||""
     }
   }
+  private serviceOrInstance(value: string): string {
+    return DescriptionOfWork.xaasServices.includes(value)? "Instance":"Service"
+  }
 
   private get currentData(): CostEstimate[] {
     return _.cloneDeep(this.instanceData)
@@ -225,7 +228,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   }
                   if(offering.instanceNumber){
                     classificationOfferings.IGCE_title =
-                      `${serviceName} - instance #${offering.instanceNumber}`;
+                      // eslint-disable-next-line max-len
+                      `${serviceName} - ${this.serviceOrInstance(service.serviceOfferingGroupId)} #${offering.instanceNumber}`;
                   }else{
                     classificationOfferings.IGCE_title = serviceName;
                   }
