@@ -235,7 +235,8 @@ export const A11yRequirementResolver = (current: string): string => {
 /****************************************************************************/
 /****************************************************************************/
 
-const needsSecurityRequirements = DescriptionOfWork.needsSecurityRequirements;
+const offeringsThatNeedSecurityRequirements 
+  = DescriptionOfWork.offeringsThatNeedSecurityRequirements;
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings;
 
 const basePerformanceRequirementsPath =  "performance-requirements";
@@ -389,7 +390,7 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
 
   const groupId = DescriptionOfWork.currentGroupId;    
   const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
-  const needsSecurity = needsSecurityRequirements.includes(groupId);
+  const needsSecurity = offeringsThatNeedSecurityRequirements.includes(groupId);
   const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
   const anInstanceHasSecretOrHigher = DescriptionOfWork.anInstanceHasSecretOrHigher;
   debugger;
@@ -632,15 +633,12 @@ export const ServiceOfferingsPathResolver = (
      ██ ██ ██  ██  ██ ██      ██      ██          ██    ██     ██      ██    ██ ██   ██ ██  ██  ██ 
 ███████ ██ ██      ██ ██      ███████ ███████      ██████      ██       ██████  ██   ██ ██      ██ 
 
-
 /****************************************************************************/
 
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   
-  debugger;
-
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
 
@@ -648,10 +646,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
 
   debugger;
-  // EJY
-  // if SECRET or TOPSECRET
-  // need to know if going to security requirements page (for Tactical Edge only??)
-  // THIS GETS HIT when leaving compute/generalXaaS form
 
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
@@ -767,23 +761,26 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 
 /****************************************************************************/
 
+
 export const DOWSecurityRequirementsPathResolver 
   = (current: string, direction: string): string => {
     debugger;
     
     const groupId = DescriptionOfWork.currentGroupId;    
     const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
-    const needsSecurity = needsSecurityRequirements.includes(groupId);
+    // const needsSecurity = offeringsThatNeedSecurityRequirements.includes(groupId);
+    // const anInstanceHasSecretOrHigher = DescriptionOfWork.foobar;
+
     const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
-    const anInstanceHasSecretOrHigher = DescriptionOfWork.anInstanceHasSecretOrHigher;
-    const foo = DescriptionOfWork.fooVal;
+    const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
+
     debugger;
-    // DescriptionOfWork.serviceNeedsSecurityRequirements
 
     // if coming from either direction and needs security requirements, show form
     // if (needsSecurity && packageHasSecretOrHigher && anInstanceHasSecretOrHigher) {
-    if (needsSecurity && packageHasSecretOrHigher && anInstanceHasSecretOrHigher) {
+    if (packageHasSecretOrHigher && showSecurityRequirements) {
       DescriptionOfWork.doSetNeedsSecurityRequirements(false);
+      DescriptionOfWork.resetShowSecurityRequirements();
       return DOWSecurityRequitementsPath;
     }
   
@@ -798,16 +795,18 @@ export const DOWSecurityRequirementsPathResolver
 
     // debugger;
 
-    // // if direction = next OR prev, and current groupId in `needsSecurityRequirements` 
+    // // if direction = next OR prev, 
+    //      and current groupId in `offeringsThatNeedSecurityRequirements` 
     // //   -- route to security requirements page
 
-    // // if direction = next OR prev and current groupId NOT in `needsSecurityRequirements`
+    // // if direction = next OR prev 
+    // .     and current groupId NOT in `offeringsThatNeedSecurityRequirements`
     // //   -- route to 
 
-    // // if direction = prev and current groupId in `needsSecurityRequirements`
+    // // if direction = prev and current groupId in `offeringsThatNeedSecurityRequirements`
     // //   -- go to security requirements page
 
-    // // if direction = prev and current groupId NOT in `needsSecurityRequirements`
+    // // if direction = prev and current groupId NOT in `offeringsThatNeedSecurityRequirements`
     // //   -- go to offering details page IF a previous offering
     // //   -- else if no prev offering, go to last page of prev step???
     // return routeNames.DOWSecurityRequirements

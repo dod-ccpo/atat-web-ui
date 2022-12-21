@@ -32,6 +32,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   }
 
   public get packageHasSecretOrHigher(): boolean {
+    debugger;
     const found = this.selectedClassificationLevels.filter(obj => 
       obj.classification === "S" || obj.classification === "TS"
     );

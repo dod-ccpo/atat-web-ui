@@ -495,7 +495,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   };
 
   protected async saveOnLeave(): Promise<boolean> {
-    DescriptionOfWork.setNeedsSecurityRequirements();
+    await DescriptionOfWork.setNeedsSecurityRequirements();
     return true;
   }
 

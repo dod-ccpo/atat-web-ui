@@ -560,13 +560,13 @@ export const defaultDOWArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
   acquisition_package: ""
 }
 
-
 @Module({
   name: "DescriptionOfWork",
   namespaced: true,
   dynamic: true,
   store: rootStore,
 })
+
 export class DescriptionOfWorkStore extends VuexModule {
   initialized = false;
   isIncomplete = true;
@@ -624,7 +624,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     "GENERAL_CLOUD_SUPPORT",
   ];
 
-  public needsSecurityRequirements = [
+  public offeringsThatNeedSecurityRequirements = [
     "ADVISORY_ASSISTANCE",
     "HELP_DESK_SERVICES",
     "TRAINING",
@@ -649,8 +649,10 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({rawError: true})
   public async setNeedsSecurityRequirements(): Promise<void> {
-    const needsSecurityRequirements = this.needsSecurityRequirements.includes(this.currentGroupId);
+    const needsSecurityRequirements 
+      = this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId);
     this.doSetNeedsSecurityRequirements(needsSecurityRequirements);
+    await this.setShowSecurityRequirements();
   }
 
   @Mutation
@@ -658,24 +660,79 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.serviceNeedsSecurityRequirements = value;
   }
   
-  public foo = false;
-  public set fooVal(val: boolean) {
-    debugger;
-    this.foo = val;
+  public showSecurityRequirements = false;
+
+  @Action({rawError: true})
+  public resetShowSecurityRequirements(): void {
+    this.doResetShowSecurityRequirements();
   }
-  public get fooVal(): boolean {
-    debugger
-    this.fooVal = true;
-    return this.foo;
+  @Mutation
+  public doResetShowSecurityRequirements(): void {
+    this.showSecurityRequirements = false;
   }
 
+  @Action({rawError: true})
+  public async setShowSecurityRequirements(): Promise<void> {
+    this.doSetShowSecurityRequirements();
+  }
+
+  public get foobar(): boolean {
+    debugger;
+    return true;
+  }
+
+  @Mutation
+  public doSetShowSecurityRequirements(): void {
+    this.showSecurityRequirements = false;
+    // "high side" is secret or above
+    const highSideSysIds = ClassificationRequirements.highSideSysIds;
+    debugger;
+    let highSideInstances = undefined;
+    if (this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId)) {
+      const offeringGroupObj = this.DOWObject.find(
+        obj => obj.serviceOfferingGroupId === this.currentGroupId
+      );
+
+      if (offeringGroupObj) {
+        if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
+        // check classificationInstances object
+          const offering = offeringGroupObj.serviceOfferings.find(
+            obj => obj.name === this.currentOfferingName
+          );
+          if (offering) {
+            highSideInstances = offering.classificationInstances?.filter(
+              obj => highSideSysIds.includes(obj.classificationLevelSysId)
+            );
+            this.showSecurityRequirements 
+              = highSideInstances !== undefined && highSideInstances.length > 0;
+          }
+        } else {
+          // check otherOfferingData object
+          highSideInstances = offeringGroupObj.otherOfferingData?.filter(
+            obj => highSideSysIds.includes(obj.classificationLevel as string)
+          );
+        }        
+      } 
+    }
+    this.showSecurityRequirements 
+      = highSideInstances !== undefined && highSideInstances.length > 0;
+  }
+
+
+  @Action({rawError: true})
+  public getFoo(): boolean {
+    debugger;
+    return this.anInstanceHasSecretOrHigher;
+  }
+
+ 
 
   public get anInstanceHasSecretOrHigher(): boolean {
     // "high side" is secret or above
     const highSideSysIds = ClassificationRequirements.highSideSysIds;
     debugger;
     
-    if (this.needsSecurityRequirements.includes(this.currentGroupId)) {
+    if (this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId)) {
       const offeringGroupObj = this.DOWObject.find(
         obj => obj.serviceOfferingGroupId === this.currentGroupId
       );
