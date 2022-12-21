@@ -78,6 +78,7 @@ import Card_Requirement from "@/steps/10-FinancialDetails/IGCE/components/Card_R
 import IGCE, { CostEstimate } from "@/store/IGCE";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 
 @Component({
@@ -145,11 +146,45 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     const cloudServices = DescriptionOfWork.cloudSupportServices
     this.selectedClassifications = classifications
       .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
-    this.savedData = IGCE.costEstimates
-    if(this.savedData.length >= 1){
-      //make changes to accommodate for returning after DOWObject has been changed
-      this.instanceData = _.cloneDeep(this.savedData)
-    }else{
+    // this.savedData = IGCE.costEstimates
+    //TODO re-map this.savedData
+    debugger
+    console.log(this.instanceData)
+    const dataFromSnow = _.cloneDeep(IGCE.igceEstimateList)
+    if(dataFromSnow.length > 0){
+      this.selectedClassifications.forEach((classification)=>{
+        // eslint-disable-next-line camelcase
+        const classification_instance: CostEstimate = {
+          labelShort: buildClassificationLabel(classification,'short',true),
+          sysId: typeof classification.classification_level === "object"
+            ? (classification.classification_level as ReferenceColumn).value as string
+            : classification.classification_level as string,
+          offerings:[]
+        }
+        this.instanceData.push(classification_instance)
+      })
+      this.instanceData.forEach((instance)=>{
+        dataFromSnow.forEach((estimate) =>{
+          const flatData = convertColumnReferencesToValues(estimate)
+          if(instance.sysId === flatData.classification_instance){
+            const obj = {
+              IGCE_title:flatData.title,
+              IGCE_description:flatData.description,
+              monthly_price:flatData.unit_price,
+              isCloudServicePackage:false,
+              sysIdCDS:(flatData.cross_domain_solution as ReferenceColumn).value as string,
+              sysIdClassificationInstance:flatData.classification_instance,
+              sysIdServicesOffering:(flatData.selected_service_offering as ReferenceColumn)
+                .value as string,
+              sysId:flatData.sys_id|| "",
+            }
+            instance.offerings.push(obj)
+          }
+        })
+      })
+      debugger
+      this.savedData = _.cloneDeep(this.instanceData)
+    } else{
       this.selectedClassifications.forEach((classification)=>{
         // eslint-disable-next-line camelcase
         const classification_instance: CostEstimate = {
@@ -174,12 +209,18 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                     IGCE_description:string,
                     monthly_price:number,
                     isCloudServicePackage:boolean,
+                    sysIdCDS:string,
+                    sysIdClassificationInstance:string,
+                    sysIdServicesOffering:string,
                     sysId:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
                     monthly_price:0,
                     isCloudServicePackage:false,
+                    sysIdCDS:"",
+                    sysIdClassificationInstance:"",
+                    sysIdServicesOffering:"",
                     sysId:"",
                   }
                   if(offering.instanceNumber){
@@ -188,7 +229,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   }else{
                     classificationOfferings.IGCE_title = serviceName;
                   }
-                  classificationOfferings.sysId = instance.sysId;
+                  classificationOfferings.sysIdClassificationInstance = instance.sysId;
                   classificationOfferings.isCloudServicePackage = cloudServices
                     .includes(serviceName)
                   const formData = this.createFormData(serviceName,offering)
@@ -212,16 +253,22 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                     IGCE_description:string,
                     monthly_price:number,
                     isCloudServicePackage:boolean,
+                    sysIdCDS:string,
+                    sysIdClassificationInstance:string,
+                    sysIdServicesOffering:string,
                     sysId:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
                     monthly_price:0,
                     isCloudServicePackage:false,
+                    sysIdCDS:"",
+                    sysIdClassificationInstance:"",
+                    sysIdServicesOffering:"",
                     sysId:"",
                   }
                   classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
-                  classificationOfferings.sysId = instance.sysId;
+                  classificationOfferings.sysIdClassificationInstance = instance.sysId;
                   classificationOfferings.isCloudServicePackage = cloudServices
                     .includes(serviceName)
                   classificationOfferings.IGCE_description =
@@ -247,6 +294,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try{
       if (this.hasChanged()) {
+        console.log(this.savedData, this.currentData)
         await IGCE.setCostEstimate(this.currentData)
       }
     }catch (error) {
