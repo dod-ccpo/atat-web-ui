@@ -966,7 +966,7 @@ export class AcquisitionPackageStore extends VuexModule {
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initializeCurrentEnvironment();
           acquisitionPackage.current_environment = currentEnvironmentDTO.sys_id as string;
-          await IGCE.initializeRequirementsCostEstimate();
+          await IGCE.initializeRequirementsCostEstimate(acquisitionPackage.sys_id || "");
           const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
