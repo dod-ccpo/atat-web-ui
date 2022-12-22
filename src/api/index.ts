@@ -53,6 +53,7 @@ import { ClassifiedInformationTypeAPI } from "@/api/classifiedInformationType";
 import { XaaSEnvironmentInstanceAPI } from "@/api/xaasEnvironmentInstance";
 import { CrossDomainSolutionAPI } from "@/api/crossDomainSolution";
 import { GInvoicingApi } from "@/api/gInvoicing";
+import {IgceEstimateApi} from "@/api/igceEstimate";
 
 export const api = {
 
@@ -83,6 +84,7 @@ export const api = {
   periodOfPerformanceTable: new PeriodOfPerformanceApi(),
   contractTypeTable: new ContractTypeApi(),
   requirementsCostEstimateTable: new RequirementsCostEstimateApi(),
+  igceEstimateTable: new IgceEstimateApi(),
   selectedServiceOfferingTable: new SelectedServiceOfferingApi(),
   statesTable: new StatesApi(),
   countriesTable: new CountriesApi(),

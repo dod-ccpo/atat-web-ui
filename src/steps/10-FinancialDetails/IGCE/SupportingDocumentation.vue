@@ -104,8 +104,7 @@ export default class SupportingDocumentation extends Vue {
    * code that uploads the attachment.
    */
   async saveRequirementCostEstimateData(): Promise<void> {
-    const requirementsCostEstimate = await IGCE.getRequirementsCostEstimate();
-    await IGCE.saveRequirementsCostEstimate(requirementsCostEstimate);
+    await IGCE.saveRequirementsCostEstimate();
     this.loaded = await IGCE.getRequirementsCostEstimate();
   }
 
