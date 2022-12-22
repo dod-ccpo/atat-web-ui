@@ -25,17 +25,15 @@
                 Learn more
               </a>
             </p>
-          </div>
 
-          <div class="">
             <ATATRadioGroup 
               id="ContractingShopChoice"
               name="ContractingShopChoice"
               :items="contractingShopOptions"
               :value.sync="contractingShop"
               :card="true"
-              :rules="[$validators.required('Please select an option.')]"
               width="400"
+              :rules="[$validators.required('Please select an option.')]"
             />
           </div>
         </v-col>

@@ -12,13 +12,13 @@
       further instructions.
     </p>
     <p>
-      If you plan to use DITCO, upon completion of the interview process, your 
+      <strong>If you plan to use DITCO,</strong> upon completion of the interview process, your 
       requirements package will be automatically sent to DITCO. All feedback 
       and processing will be managed within DAPPS. There is a 2.25% processing 
       fee for DITCO contracting services.
     </p>
     <p>
-      If you plan to use a different Contracting Office, you will be able to 
+      <strong>If you plan to use a different Contracting Office,</strong> you will be able to 
       download your signed documents to submit to your Contracting Office. 
       Feedback from your Contracting Office will not be managed within DAPPS, 
       but you will be able to edit your responses within the system, re-sign, 

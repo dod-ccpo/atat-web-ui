@@ -62,7 +62,7 @@
             <div v-if="perfReqCostEstimate.option !== ''" class="mt-8">
               <ATATSingleAndMultiplePeriods
                 :periods.sync="periods"
-                :isMultiple="perfReqCostEstimate.option === 'multiple'"
+                :isMultiple="perfReqCostEstimate.option === 'MULTIPLE'"
                 :values.sync="perfReqCostEstimate.estimated_values"
                 :singlePeriodTooltipText="singlePeriodTooltipText"
                 :multiplePeriodTooltipText = "multiplePeriodTooltipText"
@@ -130,12 +130,12 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
     {
       id: "SinglePrice",
       label: "I want to apply the same price estimate to all performance periods.",
-      value: "single",
+      value: "SINGLE",
     },
     {
       id: "MultiplePrices",
       label: "I want to estimate a different price for the base and each option period.",
-      value: "multiple",
+      value: "MULTIPLE",
     },
   ];
 
@@ -190,7 +190,7 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
         = this.currentEnvCostEstimate;
       this.costEstimate.architectural_design_performance_requirements
         = this.perfReqCostEstimate;
-      IGCEStore.setRequirementsCostEstimate(this.costEstimate);
+      await IGCEStore.setRequirementsCostEstimate(this.costEstimate);
     }
 
     return true;
