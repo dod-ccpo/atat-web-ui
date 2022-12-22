@@ -490,6 +490,13 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged() && isValid) {
         await CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
+      } else if (!isValid) {
+        // error--text        
+        const el = document.getElementsByClassName("error--text")[0];
+        debugger;
+        el.scrollIntoView({
+          behavior: "smooth"
+        });
       }
     } catch (error) {
       console.log(error);
