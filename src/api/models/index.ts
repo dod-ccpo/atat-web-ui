@@ -410,6 +410,7 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
   classification_level: string;
   usage_description: string;
   need_for_entire_task_order_duration: string;
+  classified_information_types?: string; // EJY HERE HERE
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {

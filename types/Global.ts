@@ -287,6 +287,7 @@ export interface DOWClassificationInstance {
   selectedPeriods?: string[];
   labelLong?: string;
   labelShort?: string;
+  classifiedInformationTypes?: string; // EJY HERE HERE
 }
 
 export interface DOWServiceOffering {
@@ -391,6 +392,8 @@ export interface OtherServiceOfferingData {
   serviceType?: string;
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
+  classifiedInformationTypes?: string; // EJY HERE HERE
+  
 }
 
 export interface OtherServiceSummaryTableData {

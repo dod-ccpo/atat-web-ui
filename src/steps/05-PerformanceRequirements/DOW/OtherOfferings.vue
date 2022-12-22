@@ -438,7 +438,7 @@ export default class OtherOfferings extends Vue {
       = await ClassificationRequirements.getSelectedClassificationLevels();
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if (this.selectedClassificationLevelList) {
-      this.selectedClassificationLevelList.forEach((val) => {      
+      this.selectedClassificationLevelList.forEach((val) => {
         this.modalSelectedOptions.push(val.classification_level as string)
       });
       this.checkSingleClassification();

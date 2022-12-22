@@ -128,8 +128,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -151,7 +151,7 @@ import { ReferenceColumn } from "@/api/models";
   }
 })
 
-export default class OtherOfferingSummary extends Vue {
+export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public isCompute = false;
   public isGeneralXaaS = false;
   public isDatabase = false;
@@ -197,7 +197,7 @@ export default class OtherOfferingSummary extends Vue {
     this.$router.push({
       name: "pathResolver",
       params: {
-        resolver: "OfferGroupOfferingsPathResolver",
+        resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
     }).catch(() => console.log("avoiding redundant navigation"));
@@ -376,9 +376,13 @@ export default class OtherOfferingSummary extends Vue {
       }
 
       if (classificationLevels.length > 1) {
-        const classificationObj = classificationLevels.find(obj => (
-          obj.classification_level as ReferenceColumn).value === instanceClone.classificationLevel
-        );
+        const classificationObj = classificationLevels.find(obj => {
+          const classificationLevelSysId = typeof obj.classification_level === "object"
+            ? (obj.classification_level as ReferenceColumn).value  
+            : obj.classification_level;
+          return classificationLevelSysId === instanceClone.classificationLevel
+        });
+
         if (classificationObj) {
           classificationLevel = buildClassificationLabel(classificationObj, "short");
         }
@@ -493,6 +497,11 @@ export default class OtherOfferingSummary extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   };
+
+  protected async saveOnLeave(): Promise<boolean> {
+    await DescriptionOfWork.setNeedsSecurityRequirements();
+    return true;
+  }
 
 }
 
