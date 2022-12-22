@@ -491,9 +491,8 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       if (this.hasChanged() && isValid) {
         await CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
       } else if (!isValid) {
-        // error--text        
+        // scroll to first errored input/issue
         const el = document.getElementsByClassName("error--text")[0];
-        debugger;
         el.scrollIntoView({
           behavior: "smooth"
         });
