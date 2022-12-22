@@ -20,17 +20,17 @@
               :card="false"
               legend="How do you want to estimate a price for this requirement?"
               :items="optimizeOrReplicateEstimateOptions"
-              :value.sync="oAndRCostEstimates.option"
+              :value.sync="opRepOption"
               :rules="[$validators.required('Please select an option')]"
             />
           </div>
-          <hr class="mt-8" v-if="oAndRCostEstimates.option !== ''" />
+          <hr class="mt-8" v-if="opRepOption !== ''" />
 
-          <div v-if="oAndRCostEstimates.option !== ''">
+          <div v-if="opRepOption !== ''">
             <ATATSingleAndMultiplePeriods
               :periods.sync="periods"
-              :isMultiple="oAndRCostEstimates.option === 'multiple'"
-              :values.sync="oAndRCostEstimates.estimated_values"
+              :isMultiple="opRepOption === 'MULTIPLE'"
+              :values.sync="opRepEstValues"
               :singlePeriodTooltipText="singlePeriodTooltipText"
               :multiplePeriodTooltipText = "multiplePeriodTooltipText"
               :showMultiplePeriodTooltip="true"
@@ -45,15 +45,14 @@
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { RadioButton } from "types/Global";
+import {RadioButton, SingleMultiple} from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
 import { hasChanges } from "@/helpers";
 import Periods from "@/store/periods";
 import { EstimateOptionValueDTO, PeriodDTO } from "@/api/models";
-import IGCEStore, { defaultRequirementsCostEstimate } from "@/store/IGCE";
+import IGCEStore from "@/store/IGCE";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
-import _ from "lodash";
 
 @Component({
   components: {
@@ -62,47 +61,45 @@ import _ from "lodash";
   },
 })
 export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
-
-  private oAndRCostEstimates: EstimateOptionValueDTO = {
-    option: "",
-    estimated_values: []
-  };
-  private costEstimate = defaultRequirementsCostEstimate();
-
+  private opRepOption: SingleMultiple = "";
+  private opRepEstValues: string[] = [""];
   private periods: PeriodDTO[] | null = [];
   private singlePeriodTooltipText = "This estimate will be applied to all performance periods.";
   private multiplePeriodTooltipText = `Customize a price estimate for 
     each performance period, based on your needs.`;
-
-  private optimizeOrReplicateEstimateOptions: RadioButton[] = [
-    {
-      id: "SinglePrice",
-      label:
-        "I want to apply the same price estimate to all performance periods.",
-      value: "single",
-    },
-    {
-      id: "MultiplePrices",
-      label:
-        "I want to estimate a different price for the base and each option period.",
-      value: "multiple",
-    },
-  ];
 
   public savedData: EstimateOptionValueDTO = {
     option:"",
     estimated_values:[]
   };
 
+  private optimizeOrReplicateEstimateOptions: RadioButton[] = [
+    {
+      id: "SinglePrice",
+      label:
+        "I want to apply the same price estimate to all performance periods.",
+      value: "SINGLE",
+    },
+    {
+      id: "MultiplePrices",
+      label:
+        "I want to estimate a different price for the base and each option period.",
+      value: "MULTIPLE",
+    },
+  ];
 
-  @Watch("oAndRCostEstimates", {deep: true})
-  protected changeSelection(newVal: EstimateOptionValueDTO): void{
-    if (newVal.option === "SINGLE"){
-      this.oAndRCostEstimates.estimated_values.length = 1;
+  get currentData(): EstimateOptionValueDTO {
+    return{
+      option: this.opRepOption,
+      estimated_values: this.opRepEstValues,
     }
   }
-  get currentData(): EstimateOptionValueDTO {
-    return this.oAndRCostEstimates;
+
+  @Watch("opRepOption", {deep: true})
+  protected changeSelection(newVal: string): void{
+    if (newVal !== this.savedData.option){
+      this.opRepEstValues = [];
+    }
   }
 
   private hasChanged(): boolean {
@@ -118,8 +115,8 @@ export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
   protected async loadOnEnter(): Promise<boolean> {
     const store = await IGCEStore.getRequirementsCostEstimate();
     this.savedData = store.optimize_replicate;
-    this.oAndRCostEstimates = store.optimize_replicate
-    this.costEstimate = _.cloneDeep(store);
+    this.opRepOption = store.optimize_replicate.option;
+    this.opRepEstValues = store.optimize_replicate.estimated_values;
     return true;
   }
 
@@ -130,8 +127,10 @@ export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     if (this.hasChanged()) {
-      this.costEstimate.optimize_replicate = this.currentData
-      await IGCEStore.setRequirementsCostEstimate(this.costEstimate);
+      const store = await IGCEStore.getRequirementsCostEstimate();
+      store.optimize_replicate = this.currentData
+      await IGCEStore.setRequirementsCostEstimate(store);
+      await IGCEStore.saveRequirementsCostEstimate();
     }
     return true;
   }
