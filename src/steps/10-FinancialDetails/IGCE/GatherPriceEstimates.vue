@@ -189,16 +189,19 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       this.savedData = _.cloneDeep(this.instanceData)
     } else{
       this.selectedClassifications.forEach((classification)=>{
-        // eslint-disable-next-line camelcase
-        const classification_instance: CostEstimate = {
-          labelShort: buildClassificationLabel(classification,'short',true),
-          sysId: typeof classification.classification_level === "object"
-            ? (classification.classification_level as ReferenceColumn).value as string
-            : classification.classification_level as string,
-          offerings:[]
+        if(classification.classification_level !==""){
+          // eslint-disable-next-line camelcase
+          const classification_instance: CostEstimate = {
+            labelShort: buildClassificationLabel(classification,'short',true),
+            sysId: typeof classification.classification_level === "object"
+              ? (classification.classification_level as ReferenceColumn).value as string
+              : classification.classification_level as string,
+            offerings:[]
+          }
+          this.instanceData.push(classification_instance)
         }
-        this.instanceData.push(classification_instance)
       })
+
       const dowObject = DescriptionOfWork.DOWObject
       dowObject.forEach((service)=>{
         const serviceName = this.getFormattedNames(service.serviceOfferingGroupId)
