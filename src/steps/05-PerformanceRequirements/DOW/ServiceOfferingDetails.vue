@@ -182,10 +182,13 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       obj = convertColumnReferencesToValues(obj);
       const labelLong = buildClassificationLabel(obj, "long");
       const labelShort = buildClassificationLabel(obj, "short");
+      const classificationLevelSysId = typeof obj.classification_level === "object"
+        ? (obj.classification_level as ReferenceColumn).value 
+        : obj.classification_level;
       const instance: DOWClassificationInstance = {
         sysId: "", // will be populated after saving
         impactLevel: obj.impact_level,
-        classificationLevelSysId: obj.classification_level as string,
+        classificationLevelSysId: classificationLevelSysId as string,
         anticipatedNeedUsage: "",
         entireDuration: "",
         selectedPeriods: [],
@@ -402,7 +405,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     const isValid = this.$refs.form.validate();
     
     try {
-      debugger;
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {
           this.instancesFormData[index].selectedPeriods = [];
@@ -410,7 +412,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       });
 
       if (this.hasChanged() && isValid) {
-        await DescriptionOfWork.setNeedsSecurityRequirements();
+        // await DescriptionOfWork.setNeedsSecurityRequirements();
         await DescriptionOfWork.setOfferingDetails(this.instancesFormData);
       } else if (!isValid) {
         // scroll to first errored input/issue

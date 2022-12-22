@@ -73,7 +73,6 @@ const saveOrUpdateSelectedServiceOffering =
       let objSysId = "";
 
       const classificationInstances: string[] = [];
-      debugger;
       if(selectedServiceOffering.classificationInstances &&
           selectedServiceOffering.classificationInstances.length > 0){
 
@@ -82,7 +81,6 @@ const saveOrUpdateSelectedServiceOffering =
             const tempId = typeof item.sysId === "object"
               ? (item.sysId as ReferenceColumn).value as string
               : item.sysId;
-            debugger;
             classificationInstances.push(tempId as string);
           })
         } else {
@@ -106,7 +104,6 @@ const saveOrUpdateSelectedServiceOffering =
       if(selectedServiceOffering.sys_id)
         tempObject.sys_id = selectedServiceOffering.sys_id;
 
-      debugger;
       if(tempObject.sys_id){
         await api.selectedServiceOfferingTable.update(
           tempObject.sys_id,
@@ -127,7 +124,6 @@ const saveOrUpdateClassificationInstance =
     async (
       classificationInstance: DOWClassificationInstance
     ):Promise<string> => {
-      debugger;
       const tempObject: any = {};
       let objSysId = "";
 
@@ -138,7 +134,6 @@ const saveOrUpdateClassificationInstance =
           typeof classificationInstance.classificationLevelSysId === "object"
             ? (classificationInstance.classificationLevelSysId as ReferenceColumn).value as string
             : classificationInstance.classificationLevelSysId as string;
-      debugger;
       tempObject.classification_level = classificationLevel;
       tempObject.usage_description = classificationInstance.anticipatedNeedUsage;
       tempObject.need_for_entire_task_order_duration = classificationInstance.entireDuration;
@@ -1352,26 +1347,17 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async setSelectedOfferings(
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): Promise<void> {
-    debugger;
     this.doSetSelectedServiceOffering({ selectedOfferingSysIds, otherValue });
-    // await this.saveSelectedServiceOfferings();
   }
 
   @Action
   public async saveSelectedServiceOfferings(
   ): Promise<void> {
-    debugger;
     const groupIndex
         = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
 
     if (groupIndex >= 0) {
       const currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
-
-      
-      // currentOfferings.forEach(offering => {
-      //   const serviceOffering = this.serviceOfferings.find(item => item.name === offering.name);
-
-      // })
 
       for(const offering of currentOfferings){
         const serviceOffering = this.serviceOfferings.find(item => item.name === offering.name);
@@ -1380,9 +1366,6 @@ export class DescriptionOfWorkStore extends VuexModule {
           const sysId = await saveOrUpdateSelectedServiceOffering(
             offering, serviceOffering.sys_id as string);
           offering.sys_id = sysId;
-          // this.DOWObject[groupIndex]
-          // is this where need to set currentOfferingSysId ??
-          debugger;
         }
       }
     }
@@ -1392,13 +1375,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   public doSetSelectedServiceOffering(
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): void {
-
-    debugger; // where is this called??????
-    
     const acquisitionPackageId = AcquisitionPackage.packageId;
     const groupIndex
         = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
-    debugger;
     if (groupIndex >= 0) {
       let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
 
@@ -1437,8 +1416,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       }
       this.currentOfferingName = currentOfferings.length > 0
         ? currentOfferings[0].name : "";
-      // FAILING TO HIT THIS
-      debugger; // FOOOOO
       this.currentOfferingSysId = currentOfferings.length > 0
         ? currentOfferings[0].sys_id : "";
     }
@@ -1447,33 +1424,30 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
     const updatedInstancesData: DOWClassificationInstance[] = [];
-    debugger;
     for(const instanceData of instancesData){
       const dataSysId = await saveOrUpdateClassificationInstance(instanceData);
       instanceData.sysId = dataSysId as string;
-      debugger;
       updatedInstancesData.push(instanceData);
     }
 
-    this.doSetOfferingDetails(updatedInstancesData);
-    this.saveSelectedServiceOfferings();
+    await this.doSetOfferingDetails(updatedInstancesData);
+    await this.saveSelectedServiceOfferings().then(async () => {
+      await this.setNeedsSecurityRequirements();
+    });
   }
 
   @Mutation
-  public doSetOfferingDetails(instancesData: DOWClassificationInstance[]): void {
-    debugger;
+  public async doSetOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
     const groupIndex = this.DOWObject.findIndex(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );
-    // point of failure!!!!!!
-    debugger; // currentOfferingSysId IS NOT GETTING SET
     const offeringIndex = this.DOWObject[groupIndex].serviceOfferings.findIndex(
+      // TODO: use sys_id instead of .name - this.currentOfferingSysId not currently being set
       // obj => obj.sys_id === this.currentOfferingSysId
       obj => obj.name === this.currentOfferingName
     );
     this.DOWObject[groupIndex].serviceOfferings[offeringIndex].classificationInstances
         = instancesData;
-    debugger;
   }
 
   // ******************************************************************
@@ -1778,7 +1752,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public setCurrentOffering(value: { name: string, sysId: string }): void {
-    debugger; // WHERE IS THIS GETTING CALLED
     this.currentOfferingName = value.name;
     this.currentOfferingSysId = value.sysId;
   }
