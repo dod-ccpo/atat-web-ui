@@ -81,7 +81,7 @@
                 <v-btn
                   id="CustomerSupportButton"
                   class="secondary mt-4 width-100 _text-decoration-none"
-                  href="https://community.hacc.mil/s/contact?RequestTopic=DAPPS"
+                  :href="supportUrl"
                   target="_blank"
                 >      
                   Contact customer support
@@ -158,8 +158,11 @@ export default class ExistingUser extends Vue {
   public draftPackageCount = 0;
 
   public reportIssueLink = "https://services.disa.mil/sp?id=sc_cat_item&sys_id=20e86845dbaf1914" +
-                      "8c045e8cd39619d9&sysparm_category=a30a5ca3db12a0508c045e8cd396197c";
+    "8c045e8cd39619d9&sysparm_category=a30a5ca3db12a0508c045e8cd396197c";
 
+  public supportUrl = "https://community.hacc.mil/s/contact?RequestTopic=Account%20Tracking%20" +
+    "and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer"
+    
   public packagesPanel = 0; // open by default
   public packageCount = 0;
 

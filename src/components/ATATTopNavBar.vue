@@ -270,7 +270,8 @@ export default class ATATTopNavBar extends Vue {
           {
             title: "Customer Support",
             subtitle: "Get answers about ATAT and DAPPS",
-            externalUrl: "https://community.hacc.mil/s/contact?RequestTopic=DAPPS",
+            externalUrl: "https://community.hacc.mil/s/contact?RequestTopic=Account%20Tracking%20" +
+              "and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer",
             icon: {
               name: "contactSupport",
               width: "16",
