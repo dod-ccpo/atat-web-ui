@@ -399,16 +399,25 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
-    await DescriptionOfWork.setNeedsSecurityRequirements();
+    const isValid = this.$refs.form.validate();
+    
     try {
+      debugger;
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {
           this.instancesFormData[index].selectedPeriods = [];
         }
       });
 
-      if (this.hasChanged()) {
+      if (this.hasChanged() && isValid) {
+        await DescriptionOfWork.setNeedsSecurityRequirements();
         await DescriptionOfWork.setOfferingDetails(this.instancesFormData);
+      } else if (!isValid) {
+        // scroll to first errored input/issue
+        const el = document.getElementsByClassName("error--text")[0];
+        el.scrollIntoView({
+          behavior: "smooth"
+        });
       }
     } catch (error) {
       console.log(error);

@@ -368,13 +368,11 @@ export default class OtherOfferings extends Vue {
     // classifications modal, set it as the "selected" classification level
     if (
       this.selectedClassificationLevelList.length === 1
-      && this.selectedClassificationLevelList[0].classification_level.value
+      && this.selectedClassificationLevelList[0].classification_level
     ) {
-      
-      //   EJY DOUBLE CHECK VALUE RED SQUIGGLES
-
       const classificationObj = this.selectedClassificationLevelList[0];
-      this._serviceOfferingData.classificationLevel = classificationObj.classification_level.value;
+      this._serviceOfferingData.classificationLevel 
+        = classificationObj.classification_level as string;
       this.singleClassificationLevelName 
         = buildClassificationLabel(classificationObj, "short");
     }
@@ -442,10 +440,7 @@ export default class OtherOfferings extends Vue {
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if (this.selectedClassificationLevelList) {
       this.selectedClassificationLevelList.forEach((val) => {
-  
-        //   EJY DOUBLE CHECK VALUE RED SQUIGGLES
-        
-        this.modalSelectedOptions.push(val.classification_level.value || "")
+        this.modalSelectedOptions.push(val.classification_level as string)
       });
       this.checkSingleClassification();
     }

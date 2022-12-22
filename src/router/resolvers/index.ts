@@ -368,40 +368,6 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 }
 
 /****************************************************************************
- ██████      ██████         ███████ ██    ██ ███    ███ ███    ███  █████  ██████  ██    ██ 
-██    ██    ██    ██        ██      ██    ██ ████  ████ ████  ████ ██   ██ ██   ██  ██  ██  
-██    ██    ██    ██        ███████ ██    ██ ██ ████ ██ ██ ████ ██ ███████ ██████    ████   
-██    ██    ██    ██             ██ ██    ██ ██  ██  ██ ██  ██  ██ ██   ██ ██   ██    ██    
- ██████  ██  ██████  ██     ███████  ██████  ██      ██ ██      ██ ██   ██ ██   ██    ██    
-/****************************************************************************/
-
-export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
-  const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
-  const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
-
-  if (packageHasSecretOrHigher && showSecurityRequirements) {
-    DescriptionOfWork.doSetNeedsSecurityRequirements(false);
-    return DOWSecurityRequitementsPath;  
-  }
-
-  const groupId = DescriptionOfWork.currentGroupId;    
-
-  if (otherServiceOfferings.indexOf(groupId) > -1) {
-    return otherServiceOfferingSummaryPath; 
-  }
-
-  if(current === routeNames.ServiceOfferingDetails && direction === "next"){
-    return DowSummaryPathResolver(current, direction);
-  }
-
-  if(current === routeNames.DOWSummary){
-    return OfferingDetailsPathResolver(current, direction);
-  }
-
-  return descriptionOfWorkSummaryPath;
-}
-
-/****************************************************************************
 
 ██████   █████   ██████  ███████     ██████  
 ██   ██ ██   ██ ██       ██               ██ 
@@ -616,7 +582,7 @@ export const ServiceOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
-  
+  debugger;
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
 
@@ -728,6 +694,42 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 
 
 /****************************************************************************
+ ██████      ██████         ███████ ██    ██ ███    ███ ███    ███  █████  ██████  ██    ██ 
+██    ██    ██    ██        ██      ██    ██ ████  ████ ████  ████ ██   ██ ██   ██  ██  ██  
+██    ██    ██    ██        ███████ ██    ██ ██ ████ ██ ██ ████ ██ ███████ ██████    ████   
+██    ██    ██    ██             ██ ██    ██ ██  ██  ██ ██  ██  ██ ██   ██ ██   ██    ██    
+ ██████  ██  ██████  ██     ███████  ██████  ██      ██ ██      ██ ██   ██ ██   ██    ██    
+/****************************************************************************/
+
+export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
+  const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
+  const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
+  
+  // EJY SOMEWHERE IN HERE
+
+  if (packageHasSecretOrHigher && showSecurityRequirements) {
+    DescriptionOfWork.doSetNeedsSecurityRequirements(false);
+    return DOWSecurityRequitementsPath;  
+  }
+
+  const groupId = DescriptionOfWork.currentGroupId;    
+
+  if (otherServiceOfferings.indexOf(groupId) > -1) {
+    return otherServiceOfferingSummaryPath; 
+  }
+  debugger
+  if(current === routeNames.ServiceOfferingDetails && direction === "next"){
+    return DowSummaryPathResolver(current, direction);
+  }
+
+  if(current === routeNames.DOWSummary){
+    return OfferingDetailsPathResolver(current, direction);
+  }
+
+  return descriptionOfWorkSummaryPath;
+}
+
+/****************************************************************************
 
 ███████ ███████  ██████ ██    ██ ██████  ██ ████████ ██    ██     ██████  ███████  ██████  
 ██      ██      ██      ██    ██ ██   ██ ██    ██     ██  ██      ██   ██ ██      ██    ██ 
@@ -792,6 +794,7 @@ export const DOWSecurityRequirementsPathResolver
 
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+  debugger;
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if(current === routeNames.ConflictOfInterest){
@@ -830,7 +833,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       {
         throw new Error('unable to retrieve next service offering');
       }
-
+      debugger;
       DescriptionOfWork.setCurrentOffering(nextServiceOffering);
       return OfferingDetailsPathResolver(current, direction);
     }
@@ -844,7 +847,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       {
         throw new Error('unable to retreive next service offering');
       }
-
+      debugger;
       DescriptionOfWork.setCurrentOffering(nextServiceOffering);
       return OfferingDetailsPathResolver(current, direction);
     }
@@ -858,11 +861,12 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       {
         throw new Error('unable to retrive next offering group');
       }
+      debugger;
       DescriptionOfWork.setCurrentOfferingGroupId(nextOfferingGroup);
       return ServiceOfferingsPathResolver(current , direction);
     }
   }
-
+  debugger;
   return OfferingDetailsPathResolver(current, direction);
 };
 
