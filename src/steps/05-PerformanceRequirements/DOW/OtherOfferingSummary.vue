@@ -376,9 +376,13 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
       }
 
       if (classificationLevels.length > 1) {
-        const classificationObj = classificationLevels.find(obj => (
-          obj.classification_level as ReferenceColumn).value === instanceClone.classificationLevel
-        );
+        const classificationObj = classificationLevels.find(obj => {
+          const classificationLevelSysId = typeof obj.classification_level === "object"
+            ? (obj.classification_level as ReferenceColumn).value  
+            : obj.classification_level;
+          return classificationLevelSysId === instanceClone.classificationLevel
+        });
+
         if (classificationObj) {
           classificationLevel = buildClassificationLabel(classificationObj, "short");
         }
