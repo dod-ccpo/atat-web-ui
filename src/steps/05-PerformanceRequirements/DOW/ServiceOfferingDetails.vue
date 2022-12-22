@@ -420,6 +420,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         el.scrollIntoView({
           behavior: "smooth"
         });
+      } else {
+        await DescriptionOfWork.setNeedsSecurityRequirements();
       }
     } catch (error) {
       console.log(error);

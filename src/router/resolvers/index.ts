@@ -384,6 +384,7 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 export const ServiceOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
+  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
   DescriptionOfWork.setCurrentGroupRemoved(false);
@@ -584,7 +585,7 @@ export const ServiceOfferingsPathResolver = (
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
-
+  debugger;
   const groupId = DescriptionOfWork.currentGroupId;
   const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
 
@@ -663,7 +664,10 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;   
   } 
+  debugger;
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
+    // EJY OOF
+
     const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
     if (offering) {
       return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
@@ -703,7 +707,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
   const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
   const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
-
+  debugger;
   if (packageHasSecretOrHigher && showSecurityRequirements) {
     DescriptionOfWork.doSetNeedsSecurityRequirements(false);
     return DOWSecurityRequitementsPath;  
@@ -739,6 +743,7 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
 
 export const DOWSecurityRequirementsPathResolver 
   = (current: string, direction: string): string => {
+    debugger;
     const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
     const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
 
@@ -772,6 +777,9 @@ export const DOWSecurityRequirementsPathResolver
 
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+ 
+  debugger;
+
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if(current === routeNames.ConflictOfInterest){
@@ -795,7 +803,11 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   }
 
   // coming from service offering details step
-  if(current === routeNames.ServiceOfferingDetails){
+  // EJY OR SECURITY REQ ?
+  debugger;
+  if(current === routeNames.ServiceOfferingDetails
+    || current === routeNames.DOWSecurityRequirements
+  ){
 
     //no more offerings or services to process go to summary
     if(atOfferingsEnd && atServicesEnd){
