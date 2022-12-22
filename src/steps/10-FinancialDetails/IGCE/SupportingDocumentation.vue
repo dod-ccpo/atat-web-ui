@@ -59,7 +59,7 @@ import IGCE from "@/store/IGCE";
 export default class SupportingDocumentation extends Vue {
   public validFileFormats = ["csv","xls","xlsx","pdf","jpg","png","doc","docx"];
   private attachmentServiceName = REQUIREMENTS_COST_ESTIMATE_TABLE;
-  private loaded: RequirementsCostEstimateDTO | null = null;
+  private rceCostEstimate: RequirementsCostEstimateDTO | null = null;
   private saved: {gtcNumber: string, orderNumber: string} = {
     gtcNumber: "",
     orderNumber: ""
@@ -96,20 +96,8 @@ export default class SupportingDocumentation extends Vue {
     //   this.uploadedFiles.length > 0 && this.uploadedFiles.length < 2;
   }
 
-  /**
-   * Since this function may not have an existing "Requirements Cost Estimate" record because
-   * this may be the first component that uses the data from Requirements Cost... As a result,
-   * a save operation may need t obe done immediately after the component gets mounted, so that
-   * the user can start adding attachments. The call to this function may also be moved to the
-   * code that uploads the attachment.
-   */
-  async saveRequirementCostEstimateData(): Promise<void> {
-    await IGCE.saveRequirementsCostEstimate();
-    this.loaded = await IGCE.getRequirementsCostEstimate();
-  }
-
   async loadRequirementsCostEstimateData(): Promise<void>{
-    this.loaded = await IGCE.getRequirementsCostEstimate();
+    this.rceCostEstimate = await IGCE.getRequirementsCostEstimate();
   }
 
   private onFileUploadChanged(): void {
@@ -147,7 +135,10 @@ export default class SupportingDocumentation extends Vue {
    * estimate table.
    */
   async loadAttachments(): Promise<void>{
-    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
+    const attachments = await Attachments.getAttachmentsByTableSysIds({
+      serviceKey: this.attachmentServiceName,
+      tableSysId: this.rceCostEstimate?.sys_id as string
+    });
     const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
       const file = new File([], attachment.file_name, {
         lastModified: Date.parse(attachment.sys_created_on || "")
@@ -173,8 +164,7 @@ export default class SupportingDocumentation extends Vue {
    */
   async loadOnEnter(): Promise<void> {
     try {
-      await this.saveRequirementCostEstimateData();//TODO:loadRequirementsCostEstimateData instead?
-      //await this.loadRequirementsCostEstimateData();
+      this.rceCostEstimate = await IGCE.getRequirementsCostEstimate();
     } catch (error) {
       throw new Error("an error occurred loading supporting documentation");
     }
