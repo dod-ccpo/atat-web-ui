@@ -268,7 +268,6 @@ export default class OtherOfferings extends Vue {
   @PropSync("serviceOfferingData") public _serviceOfferingData!: OtherServiceOfferingData;
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
-  @Prop() public avlClassificationLevelObjects!: ClassificationLevelDTO[];
   @Prop() public otherOfferingList!: string[];
 
   public firstTimeHere = false;
