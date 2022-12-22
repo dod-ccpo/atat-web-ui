@@ -238,7 +238,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try{
       if (this.hasChanged()) {
-        await IGCE.doSetCostEstimate(this.currentData)
+        await IGCE.setCostEstimate(this.currentData)
       }
     }catch (error) {
       console.log(error);
