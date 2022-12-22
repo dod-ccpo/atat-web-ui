@@ -205,6 +205,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         if(service.otherOfferingData){
           service.otherOfferingData.forEach((offering)=>{
             if(offering.classificationLevel){
+              debugger
               this.instanceData.forEach((instance)=>{
                 if(instance.sysId === offering.classificationLevel){
                   const classificationOfferings:{
