@@ -142,8 +142,6 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
 
 
   public async mounted(): Promise<void> {
-    
-    debugger;
     this.offeringName = DescriptionOfWork.DOWSecReqOfferingName;
 
     const slideoutPanelContent: SlideoutPanelContent = {
