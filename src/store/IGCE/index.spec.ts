@@ -56,7 +56,7 @@ describe("IGCE Store", () => {
               return Promise.resolve([requirementsCostEstimate])
             })
           await igceStore.loadRequirementsCostEstimateDataByPackageId("some_sys_id");
-          expect(api.requirementsCostEstimateTable.retrieve).toHaveBeenCalled();
+          expect(api.requirementsCostEstimateTable.getQuery).toHaveBeenCalled();
         })
 
       // it('Test loadRequirementsCostEstimate()- should catch the error', async () => {

@@ -166,7 +166,14 @@ export class IGCEStore extends VuexModule {
       travel: {
         option: rceFlat.travel_option,
         estimated_values: rceFlat.travel_estimated_values?.split(",")
-      }
+      },
+      sys_created_by: rceFlat.sys_created_by,
+      sys_created_on: rceFlat.sys_created_on,
+      sys_id: rceFlat.sys_id,
+      sys_mod_count: rceFlat.sys_mod_count,
+      sys_tags: rceFlat.sys_tags,
+      sys_updated_by: rceFlat.sys_updated_by,
+      sys_updated_on: rceFlat.sys_updated_on
     };
   }
 
@@ -174,7 +181,9 @@ export class IGCEStore extends VuexModule {
   private async transformRequirementsCostEstimateFromTreeToFlat(
     rceTree: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateFlat> {
     return {
-      acquisition_package: rceTree.acquisition_package,
+      acquisition_package: typeof rceTree.acquisition_package === "object"
+        ? rceTree.acquisition_package.value as string
+        : rceTree.acquisition_package as string,
       architectural_design_current_environment_option:
         rceTree.architectural_design_current_environment.option,
       architectural_design_current_environment_estimated_values:
@@ -200,17 +209,27 @@ export class IGCEStore extends VuexModule {
       surge_requirement_capabilities: rceTree.surge_requirements.capabilities,
       training: JSON.stringify(rceTree.training ? rceTree.training : []),
       travel_option: rceTree.travel.option,
-      travel_estimated_values: rceTree.travel.estimated_values?.toString()
+      travel_estimated_values: rceTree.travel.estimated_values?.toString(),
+      sys_created_by: rceTree.sys_created_by,
+      sys_created_on: rceTree.sys_created_on,
+      sys_id: rceTree.sys_id,
+      sys_mod_count: rceTree.sys_mod_count,
+      sys_tags: rceTree.sys_tags,
+      sys_updated_by: rceTree.sys_updated_by,
+      sys_updated_on: rceTree.sys_updated_on
     }
   }
 
   @Action
-  public async initializeRequirementsCostEstimate(): Promise<void> {
-    await this.doSetRequirementsCostEstimate(
+  public async initializeRequirementsCostEstimate(acqPackageId: string): Promise<void> {
+    const requirementsCostEstimateFlat =
+      await api.requirementsCostEstimateTable
+        .create(await this.transformRequirementsCostEstimateFromTreeToFlat(
+          {...defaultRequirementsCostEstimate(), acquisition_package: acqPackageId }));
+    const requirementsCostEstimateDTO =
       await this.transformRequirementsCostEstimateFromFlatToTree(
-        await api.requirementsCostEstimateTable
-          .create(await this.transformRequirementsCostEstimateFromTreeToFlat(
-            defaultRequirementsCostEstimate()))));
+        requirementsCostEstimateFlat)
+    await this.doSetRequirementsCostEstimate(requirementsCostEstimateDTO);
   }
 
   /**
@@ -256,7 +275,7 @@ export class IGCEStore extends VuexModule {
         acquisition_package: sysId
       });
     } else {
-      await this.initializeRequirementsCostEstimate();
+      await this.initializeRequirementsCostEstimate(packageId);
     }
   }
 
