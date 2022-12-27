@@ -3,7 +3,7 @@ import {
   OtherOfferingSummaryPathResolver,
   OfferingDetailsPathResolver,
   RequirementsPathResolver,
-  OfferGroupOfferingsPathResolver,
+  ServiceOfferingsPathResolver,
   calcBasePeriod, 
   IncrementalFundingResolver, 
   FinancialPOCResolver  
@@ -121,11 +121,11 @@ describe("testing src/router/index.ts", () => {
 
   });
 
-  describe('Testing OfferGroupOfferingsPathResolver()', () => {
-    it("Test OfferGroupOfferingsPathResolver()- should return the default path for compute", () => {
+  describe('Testing ServiceOfferingsPathResolver()', () => {
+    it("Test ServiceOfferingsPathResolver()- should return the default path for compute", () => {
       DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")
       DescriptionOfWork.setAddGroupFromSummary(true)
-      const result = OfferGroupOfferingsPathResolver("test", "testing")
+      const result = ServiceOfferingsPathResolver("test", "testing")
       expect(result).toBe('performance-requirements/service-offerings/compute')
     })
   })
