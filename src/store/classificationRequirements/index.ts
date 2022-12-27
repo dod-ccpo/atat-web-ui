@@ -25,11 +25,32 @@ export class ClassificationRequirementsStore extends VuexModule {
   public selectedClassificationLevels: SelectedClassificationLevelDTO[] = [];
   public securityRequirements: SecurityRequirement[] = [];
   public classifiedInformationTypes: ClassifiedInformationTypeDTO[] = [];
+  public classificationSecretSysId = "";
+  public classificationTopSecretSysId = "";
+  public get highSideSysIds(): string[] {
+    return [this.classificationSecretSysId, this.classificationTopSecretSysId];
+  }
+
+  public get packageHasSecretOrHigher(): boolean {
+    const found = this.selectedClassificationLevels.filter(obj => 
+      obj.classification === "S" || obj.classification === "TS"
+    );
+    return found.length > 0;
+  }
+
   public cdsSolution: CrossDomainSolutionDTO | null = null;
 
   @Mutation
   public setClassifications(value: ClassificationLevelDTO[]): void {
     this.classificationLevels = value;
+    const secretObj = value.find(obj => obj.classification === "S");
+    if (secretObj) {
+      this.classificationSecretSysId = secretObj.sys_id || "";
+    }
+    const topSecretObj = value.find(obj => obj.classification === "TS");
+    if (topSecretObj) {
+      this.classificationTopSecretSysId = topSecretObj.sys_id || "";
+    }
   }
 
   @Action({ rawError: true })

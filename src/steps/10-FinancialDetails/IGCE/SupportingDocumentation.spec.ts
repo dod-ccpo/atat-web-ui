@@ -25,6 +25,7 @@ describe("Testing SupportingDocumentation Component", () => {
       vuetify,
     });
     requirementsCostEstimateDTO = {
+      acquisition_package: "",
       has_DOW_and_PoP: "",
       architectural_design_current_environment: {
         option: "",

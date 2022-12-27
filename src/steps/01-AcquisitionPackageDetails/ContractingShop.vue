@@ -3,13 +3,13 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
-          <h1 class="page-header">
+          <h1 class="page-header mb-3">
             Are you using the Defense Information Technology 
             Contracting Organization (DITCO) for processing 
             your JWCC task order?
           </h1>
           <div class="copy-max-width">
-            <p class="page-intro">
+            <p class="mb-6">
               Documents that are generated upon completion of this form are 
               intended for DITCO. If you plan to use another Contracting Office, 
               we recommend that you verify that they will accept DITCO templates 
@@ -25,18 +25,14 @@
                 Learn more
               </a>
             </p>
-          </div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <div class="col-sm-12 col-md-5">
+
             <ATATRadioGroup 
               id="ContractingShopChoice"
               name="ContractingShopChoice"
               :items="contractingShopOptions"
               :value.sync="contractingShop"
               :card="true"
+              width="400"
               :rules="[$validators.required('Please select an option.')]"
             />
           </div>

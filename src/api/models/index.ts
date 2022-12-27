@@ -57,7 +57,6 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   periods: string;
   gfe_overview: string;
   contract_type: ReferenceColumn | string;
-  requirements_cost_estimate: ReferenceColumn | string;
   contract_considerations: ReferenceColumn | string;
   funding_plans: string;
   classification_level: ReferenceColumn | string;
@@ -413,6 +412,10 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
   classification_level: string;
   usage_description: string;
   need_for_entire_task_order_duration: string;
+  classified_information_types?: string; // EJY HERE HERE
+  type_of_delivery?: "" | "SHIPPED" | "PICK_UP";
+  type_of_mobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
+  type_of_mobility_other?: string;
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {
@@ -715,7 +718,13 @@ export interface TrainingEstimateDTO extends BaseTableDTO{
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
 }
 
+export interface EstimateOptionValueDTO {
+  option: SingleMultiple;
+  estimated_values: string[];
+}
+
 export interface RequirementsCostEstimateDTO extends BaseTableDTO{
+  acquisition_package: ReferenceColumn | string;
   has_DOW_and_PoP: YesNo;
   optimize_replicate: EstimateOptionValue;
   architectural_design_current_environment: EstimateOptionValue;
@@ -742,10 +751,72 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   }
 }
 
-/*export interface RequirementsCostEstimateDTO extends BaseTableDTO {
-  surge_capabilities?: string;
-  estimatedTaskOrderValue?: string;
-  feePercentage?: string;
-  feeCharged?: string;
-  surge_capacity?: string;
-}*/
+export interface RequirementsCostEstimateFlat extends BaseTableDTO{
+  acquisition_package: ReferenceColumn | string;
+  architectural_design_current_environment_option: SingleMultiple;
+  architectural_design_current_environment_estimated_values: string;// csv
+  architectural_design_performance_requirements_option: SingleMultiple;
+  architectural_design_performance_requirements_estimated_values: string; //csv
+  contracting_office_other_charges_fee: YesNo; // fee_spec
+  contracting_office_other_fee_percentage: number | null; // fee_spec
+  has_dow_and_pop: YesNo;
+  optimize_replicate_option: SingleMultiple;
+  optimize_replicate_estimated_values: string; // csv
+  surge_requirement_capabilities: YesNo
+  surge_requirement_capacity: number | null;
+
+  // TODO: double check the below properties for name matching with SNOW column names.
+  //  Because properties are being defined based on consensus with platform team instead of actual.
+  how_est_dev_tools_used: string; // csv list Eg: "AWS,GOOGLE_CLOUD,MICROSOFT_AZURE,OTHER..."
+  how_est_dev_other_tools_used: string;
+  how_est_dev_cost_estimate_description: string;
+  how_est_dev_prev_cost_estimate_comp_option: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
+  how_est_dev_prev_cost_estimate_comp_percentage: number | null;
+  travel_option: SingleMultiple;
+  travel_estimated_values: string;// csv
+  training: string // json of TrainingEstimateDTO
+  // training_cost_estimate: "" | "PER_PERSON" | "PER_CLASS" | "SUBSCRIPTION";
+  // training_subscription_estimate: "" | "ANNUAL" | "MONTHLY";
+  // training_estimated_price: number | null;
+  // training_estimate_option: SingleMultiple;
+  // training_estimated_values: string; // csv
+
+  // TODO: not sure what the below 4 properties map to on the UI side RceDTO
+  // contracting_office_fee_pct?: number | null; // does this map to "fee_specs" percentage?
+  // cost_estimate_description?: // should this prefix "how_est_dev_"?
+
+  // TODO: below 2 need suffix "how_estimates_developed" shortened to;
+  //  "how_est_dev_prev_cost_estimate_comp_option
+  // previous_cost_estimate_comparison_option: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
+  // previous_cost_estimate_comparison_percentage: number | null;
+
+  // TODO: is below column needed? Looks like we can delete
+  // surge_capabilities
+
+  // TODO: REMAINING UI DTO properties that do not have a place in the RCE SNOW table
+  // training: TrainingEstimateDTO[]; // as already covered earlier today in IGCE group chat
+  // travel: EstimateOptionValueDTO; / should be flattened similar to "optimize_replicate_"
+  // fee_specs: { // flatten it similar to how " surge_requirement_" are flattened
+  //   is_charged: YesNo;
+  //   percentage: number | null;
+  // };
+  // how_estimates_developed: { // prefix below 3 with "how_est_dev_" to find home for DTO on UI?
+  //   tools_used: string; // csv list Eg: "AWS,GOOGLE_CLOUD,MICROSOFT_AZURE,OTHER..."
+  //   other_tools_used: string;
+  //   cost_estimate_description: string;
+  // }
+}
+
+export interface IgceEstimateDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  classification_instance: ReferenceColumn | string;
+  contract_type: ReferenceColumn | string;
+  cross_domain_solution: ReferenceColumn | string;
+  selected_service_offering: ReferenceColumn | string;
+  title: string;
+  description: string;
+  unit: string;
+  unit_price: number | null;
+  quantity: number;
+  dow_task_number?: string;
+}

@@ -221,7 +221,7 @@ export class PeriodsStore extends VuexModule {
         }
 
         if (this.periodOfPerformance.option_periods) {
-          periods += `, ${this.periodOfPerformance.option_periods}`;
+          periods += `,${this.periodOfPerformance.option_periods}`;
         }
 
         if (!periods.length) {
