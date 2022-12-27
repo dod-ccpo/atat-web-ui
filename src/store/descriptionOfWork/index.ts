@@ -37,6 +37,7 @@ import {
   DOWPoP,
   StorageUnit,
   RadioButton,
+  TravelSummaryTableData,
 } from "../../../types/Global";
 
 import _, { differenceWith, first, last } from "lodash";
@@ -612,8 +613,21 @@ export class DescriptionOfWorkStore extends VuexModule {
     "GENERAL_CLOUD_SUPPORT"
   ]
 
+  travelSummaryInstances: TravelSummaryTableData[] = [];
+
   public DOWHasArchitecturalDesignNeeds: boolean | null = null;
   public DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;
+
+  @Action({rawError: true})
+  public async setTravel(travelInstances: TravelSummaryTableData[]): Promise<void> {
+    this.doSetTravel(travelInstances);
+  }
+
+  @Mutation
+  public doSetTravel(travelInstances: TravelSummaryTableData[]): void {
+    this.travelSummaryInstances = travelInstances;
+  }
+
 
   @Action({rawError: true})
   public async setDOWHasArchitecturalDesign(value: boolean): Promise<void> {
@@ -677,6 +691,11 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
 
     return sysId;
+  }
+
+  @Action({rawError: true})
+  public async getTravel(): Promise<TravelSummaryTableData[]> {
+    return this.travelSummaryInstances;
   }
 
   @Action({rawError: true})
