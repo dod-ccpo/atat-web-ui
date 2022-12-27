@@ -804,14 +804,15 @@ export interface RequirementsCostEstimateFlat extends BaseTableDTO{
 
 export interface IgceEstimateDTO extends BaseTableDTO {
   acquisition_package: ReferenceColumn | string;
+  classification_level: ReferenceColumn | string;
   classification_instance: ReferenceColumn | string;
-  contract_type: ReferenceColumn | string;
+  environment_instance: ReferenceColumn | string;
   cross_domain_solution: ReferenceColumn | string;
-  selected_service_offering: ReferenceColumn | string;
+  contract_type: "" | "FFP" | "T&M" | "TBD";
   title: string;
   description: string;
   unit: string;
   unit_price: number | null;
-  quantity: number;
+  unit_quantity: string;
   dow_task_number?: string;
 }
