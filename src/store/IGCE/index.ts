@@ -59,7 +59,7 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
 export interface CostEstimate {
   labelShort: string,
   sysId: string,
-  offerings: Record<string, string|boolean|number|null>[]
+  offerings: Record<string, string|string[]|boolean|number|null>[]
 }
 
 @Module({

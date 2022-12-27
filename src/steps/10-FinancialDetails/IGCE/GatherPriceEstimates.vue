@@ -139,6 +139,20 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
 
   private savedData: CostEstimate[] = []
 
+  private convertToMonths(value:number,unit:string): number{
+    switch(unit) {
+    case "YEAR":
+      return 12
+    case "MONTH":
+      return value
+    case "WEEK":
+      return Math.ceil(value/4.345)
+    case "DAY":
+      return Math.ceil(value/30.4167)
+    default:
+      return 0
+    }
+  }
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
@@ -151,7 +165,6 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
     // this.savedData = IGCE.costEstimates
     //TODO re-map this.savedData
-    debugger
     console.log(this.instanceData)
     const dataFromSnow = _.cloneDeep(IGCE.igceEstimateList)
     if(dataFromSnow.length > 0){
@@ -180,12 +193,13 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
               sysIdServicesOffering:(flatData.selected_service_offering as ReferenceColumn)
                 .value as string,
               sysId:flatData.sys_id|| "",
+              unit:flatData.unit,
+              quantity:flatData.unit_quantity
             }
             instance.offerings.push(obj)
           }
         })
       })
-      debugger
       this.savedData = _.cloneDeep(this.instanceData)
     } else{
       this.selectedClassifications.forEach((classification)=>{
@@ -208,7 +222,6 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         if(service.otherOfferingData){
           service.otherOfferingData.forEach((offering)=>{
             if(offering.classificationLevel){
-              debugger
               this.instanceData.forEach((instance)=>{
                 if(instance.sysId === offering.classificationLevel){
                   const classificationOfferings:{
@@ -218,8 +231,11 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                     isCloudServicePackage:boolean,
                     sysIdCDS:string,
                     sysIdClassificationInstance:string,
-                    sysIdServicesOffering:string,
+                    sysIdClassificationLevel:string,
+                    sysIdEnvironmentInstance:string,
                     sysId:string,
+                    unit:string,
+                    unit_quantity:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
@@ -227,8 +243,11 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                     isCloudServicePackage:false,
                     sysIdCDS:"",
                     sysIdClassificationInstance:"",
-                    sysIdServicesOffering:"",
+                    sysIdClassificationLevel:"",
+                    sysIdEnvironmentInstance:"",
                     sysId:"",
+                    unit:"",
+                    unit_quantity:"",
                   }
                   if(offering.instanceNumber){
                     classificationOfferings.IGCE_title =
@@ -243,6 +262,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   const formData = this.createFormData(serviceName,offering)
                   classificationOfferings.IGCE_description = formData || offering.usageDescription
                     ||""
+                  classificationOfferings.unit = "/month"
                   if(serviceName !== 'Training'){
                     instance.offerings.push(classificationOfferings)
                   }
@@ -265,6 +285,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                     sysIdClassificationInstance:string,
                     sysIdServicesOffering:string,
                     sysId:string,
+                    unit:string,
+                    unit_quantity:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
@@ -274,6 +296,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                     sysIdClassificationInstance:"",
                     sysIdServicesOffering:"",
                     sysId:"",
+                    unit:"",
+                    unit_quantity:"",
                   }
                   classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
                   classificationOfferings.sysIdClassificationInstance = instance.sysId;
@@ -291,6 +315,27 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         }
       })
     }
+    this.instanceData.forEach(instance=>{
+      if(instance.labelShort === "Secret / IL6"){
+        if(ClassificationRequirements.cdsSolution?.anticipated_need_or_usage){
+          debugger
+          const traffic = JSON
+            .parse(ClassificationRequirements.cdsSolution?.traffic_per_domain_pair)
+          const object ={
+            IGCE_title: "Cross-domain solution (CDS)",
+            IGCE_description: ClassificationRequirements.cdsSolution?.anticipated_need_or_usage,
+            sysIdCDS: ClassificationRequirements.cdsSolution?.sys_id || "",
+            monthly_price: traffic?.[0].dataQuantity,
+            isCloudServicePackage:false,
+            sysIdClassificationInstance:"",
+            sysIdServicesOffering:"",
+            sysId:"",
+            unit:"/month"
+          }
+          instance.offerings.push(object)
+        }
+      }
+    })
     this.instanceData.forEach(instance=>{
       if(instance.offerings.length <= 0){
         this.accordionClosed.push(1)

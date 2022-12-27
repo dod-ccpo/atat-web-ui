@@ -38,7 +38,7 @@
         :value.sync="_cardData.monthly_price"
         :isCurrency="true"
         :showErrorMessages="false"
-        appendText="/month"
+        :appendText= type
         width="160"
         @blur="checkMonthlyValue()"
         class="ml-auto pt-3 _requirement-currency"
@@ -66,6 +66,7 @@ export default class CardRequirement extends Vue {
 
   public title = ""
   public description = ""
+  public type = ""
   public noMonthlyValue = false
 
   public saveTitle(): void {
@@ -92,6 +93,7 @@ export default class CardRequirement extends Vue {
     Vue.nextTick(() => {
       this.title = this._cardData.IGCE_title
       this.description = this._cardData.IGCE_description
+      this.type = this._cardData.unit
     })
   }
 

@@ -813,5 +813,6 @@ export interface IgceEstimateDTO extends BaseTableDTO {
   unit: string;
   unit_price: number | null;
   quantity: number;
+  unit_quantity:string;
   dow_task_number?: string;
 }
