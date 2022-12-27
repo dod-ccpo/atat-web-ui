@@ -418,7 +418,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       });
 
       if (this.hasChanged() && isValid) {
-        // await DescriptionOfWork.setNeedsSecurityRequirements();
         await DescriptionOfWork.setOfferingDetails(this.instancesFormData);
       } else if (!isValid) {
         // scroll to first errored input/issue
