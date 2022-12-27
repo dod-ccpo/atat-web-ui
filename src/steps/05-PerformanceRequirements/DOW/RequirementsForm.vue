@@ -155,13 +155,11 @@ export default class RequirementsForm extends Vue {
     })
   }
 
-
   public async loadOnEnter(): Promise<void> {
     this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
     this.isTacticalEdge = this.groupId === "EDGE_COMPUTING";
-    this.isMobile = this.serviceOfferingName === "Mobile Technology"; // EJY will be Mobile
-    this.isDelivery = this.serviceOfferingName === "Remotable Technology"; // will be Delivery
-
+    this.isMobile = this.serviceOfferingName === "Mobility";
+    this.isDelivery = this.serviceOfferingName === "Delivery";
   };
 
   public async mounted(): Promise<void> {
