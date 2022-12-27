@@ -73,6 +73,8 @@
                   :instances="instancesFormData"
                   :avlInstancesLength="selectedInstancesLength"
                   :isPeriodsDataMissing="isPeriodsDataMissing"
+                  :groupId="groupId"
+                  :serviceOfferingName="serviceOfferingName"
                 />
               </div>
 
@@ -194,6 +196,10 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         selectedPeriods: [],
         labelLong,
         labelShort,
+        classifiedInformationTypes: "",
+        typeOfDelivery: "",
+        typeOfMobility: "",
+        typeOfMobilityOther: "",
       }
       this.classificationInstances.push(instance);
     }, this);
