@@ -346,12 +346,15 @@ export class IGCEStore extends VuexModule {
     const apiCallList: Promise<IgceEstimateDTO>[] = [];
     saveIgceObject.costEstimatList.forEach(costEstimate => {
       costEstimate.offerings.forEach(offering => {
-        const igceEstimateSysId = offering.igceEstimateSysId as string;
+        const igceEstimateSysId = offering.sysId as string;
         const igceEstimate: IgceEstimateDTO = {
           acquisition_package: saveIgceObject.aqPackageSysId,
-          classification_level: offering.sysIdClassificationLevel as string,
-          classification_instance: offering.sysIdClassificationInstance as string,
-          environment_instance: offering.sysIdEnvironmentInstance as string,
+          classification_level: offering.sysIdClassificationLevel ?
+            offering.sysIdClassificationLevel as string : "",
+          classification_instance: offering.sysIdClassificationInstance ?
+            offering.sysIdClassificationInstance as string : "",
+          environment_instance: offering.sysIdEnvironmentInstance ?
+            offering.sysIdEnvironmentInstance as string : "",
           cross_domain_solution: saveIgceObject.crossDomainSysId,
           contract_type: saveIgceObject.contractTypeChoice,
           description: offering.IGCE_description as string,
