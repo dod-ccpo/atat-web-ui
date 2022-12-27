@@ -1,8 +1,9 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="container-max-width">
+    <v-container fluid class="container-max-width mb-7">
       <v-row>
-        <v-col>
+        <v-col class="col-12">
+
           <h1 class="page-header">
             Now we’ll estimate your training requirements
           </h1>
@@ -12,123 +13,97 @@
             training. We’ll take care of calculating your total estimates within 
             the IGCE.
           </p>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="7">
-          <ATATRadioGroup
-            id="trainingEstimateType"
-            legend="How do you want to estimate your cost for this training?"
-            :items="trainingEstimateTypeOptions"
-            :value.sync="instanceData.costEstimateType"
-            :rules="[$validators.required('Please select an option.')]"
-          />
-          <br/>
-          <div class="col-sm-12 col-md-6" 
-            v-if="instanceData.costEstimateType !== '' && 
-            instanceData.costEstimateType !== 'SUBSCRIPTION'">
+          <div class="d-flex justify-space-between">
+            <div class="mr-10">
+              <ATATRadioGroup
+                id="trainingEstimateType"
+                class="mb-8"
+                legend="How do you want to estimate your cost for this training?"
+                :items="trainingEstimateTypeOptions"
+                :value.sync="instanceData.costEstimateType"
+                :rules="[$validators.required('Please select an option.')]"
+              />
+
+            </div>
+            <div>
+              <ATATAlert 
+                type="callout"
+                calloutBackground="primary-lighter"
+                maxWidth="400"
+                minWidth="400"
+              >
+                <template slot="content">
+                  <div class="d-flex justify-space-between mb-4 width-100" >
+                    <div>
+                      <div class="d-flex">
+                        <ATATSVGIcon 
+                          width="37"
+                          height="28"
+                          name="menuBook"
+                          class="mr-2"
+                        />
+                        <h2>Training #{{trainingIndex + 1}}</h2>
+                      </div>
+                    </div>
+                    <div class="h3 text-base-light">
+                      {{trainingIndex + 1}} of {{trainingCount}}
+                    </div>
+                  </div>
+
+                  <div class="h3">{{trainingTitle}}</div>
+                  <p class="text-base-light mb-0">
+                    {{trainingLocation}}
+                  </p>
+
+                </template>
+              </ATATAlert> 
+            </div>
+          </div>
+
+          <div v-if="instanceData.costEstimateType !== ''">
             <ATATTextField
               id="CostEstimatePrice"
               name="CostEstimatePrice"
+              class="mb-10"
               :label="costEstimateLabel"
               :suffix="costEstimateSuffix"
               :isCurrency="true"
               :value.sync="instanceData.estimatedTrainingPrice"
               :tooltipText="costEstimateTooltipText"
+              width="234"
               :rules="costEstimateRules"
             />
-          </div>
-          <div v-if="instanceData.costEstimateType === 'SUBSCRIPTION'">
-            <ATATRadioGroup
-              id="CostEstimateSubscriptionType"
-              name="CostEstimateSubscriptionType"
-              :items="subscriptionTypeOptions"
-              :legend="costEstimateLabel"
-              :value.sync="instanceData.subscriptionType"
-              :rules="[$validators.required('Please select an option.')]"
-            />
-            <div class="col-sm-12 col-md-7" v-if="instanceData.subscriptionType !== ''">
-              <ATATTextField
-                id="CostEstimateSubscriptionPrice"
-                name="CostEstimateSubscriptionPrice"
-                label="Estimated price for all subscriptions"
-                :suffix="costEstimateSuffix"
-                :isCurrency="true"
-                width="234"
-                :tooltipText="costEstimateTooltipText"
-                :value.sync="instanceData.estimatedTrainingPrice"
-                :rules="costEstimateRules"
+              
+            <div v-if="instanceData.costEstimateType !== 'ANNUAL_SUBSCRIPTION'">
+              <ATATRadioGroup
+                class="mb-8"
+                id="TrainingType"
+                :legend="periodTypeLabel"
+                :items="periodTypeOptions"
+                :value.sync="instanceData.trainingOption"
+                :rules="[
+                  $validators.required('Please select an option.')
+                ]"
               />
+
+              <div v-if="instanceData.trainingOption !== ''">
+                <ATATSingleAndMultiplePeriods
+                  :periods="periods"
+                  :textboxSuffix="periodsSuffix"
+                  :singlePeriodLabel="periodsLabel"
+                  :multiplePeriodLabel="periodsLabel"
+                  :isMultiple="instanceData.trainingOption === 'MULTIPLE'"
+                  :values.sync="instanceData.estimate.estimated_values"
+                  :showSinglePeriodTooltip="false"
+                  :singlePeriodErrorMessage="singlePeriodErrorMessage"
+                  :multiplePeriodErrorMessage="multiplePeriodErrorMessage"
+                />
+              </div>
             </div>
-          </div>
-        </v-col>
-        <v-col cols="5">
-          <div>
-            <ATATAlert 
-              type="callout"
-              calloutBackground="base-lightest"
-            >
-              <template slot="content">
-                <v-row>
-                  <v-col class="d-flex justify-start">
-                    <span>
-                      <ATATSVGIcon 
-                        width="37"
-                        height="28"
-                        name="menuBook"
-                      />
-                     
-                    </span>
-                    &nbsp; &nbsp;
-                    <h2>Training #{{trainingIndex + 1}}</h2>
-                  </v-col>
-                  <v-col class="d-flex justify-end">
-                    <h3 class="text-base-light">
-                      {{trainingIndex + 1}} of {{trainingCount}}
-                    </h3>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    <h3>{{trainingTitle}}</h3>
-                    <p class="text-base-light">
-                      {{trainingLocation}}
-                    </p>
-                  </v-col>
-                </v-row>
-              </template>
-            </ATATAlert>
+
           </div>
         </v-col>
       </v-row>
-      <div v-if="instanceData.costEstimateType !== ''">
-        <v-row>
-          <v-col>
-            <ATATRadioGroup
-              :legend="periodTypeLabel"
-              :items="periodTypeOptions"
-              :value.sync="instanceData.trainingOption"
-              :rules="[
-                $validators.required('Please select an option.')
-              ]"
-            />
-            <br />
-            <div v-if="instanceData.trainingOption !== ''">
-              <ATATSingleAndMultiplePeriods
-                :periods="periods"
-                :textboxSuffix="periodsSuffix"
-                :singlePeriodLabel="periodsLabel"
-                :multiplePeriodLabel="periodsLabel"
-                :isMultiple="instanceData.trainingOption === 'MULTIPLE'"
-                :values.sync="instanceData.estimate.estimated_values"
-                :showSinglePeriodTooltip="false"
-                :singlePeriodErrorMessage="singlePeriodErrorMessage"
-                :multiplePeriodErrorMessage="multiplePeriodErrorMessage"
-              />
-            </div>
-          </v-col>
-        </v-row>
-      </div>
     </v-container>
   </v-form>
 </template>
@@ -174,30 +149,21 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       value: "PER_PERSON"
     },
     {
-      id: "PerSession",
+      id: "PerClass",
       label: "Individual training course (Pay per class/session)",
-      value: "PER_SESSION"
+      value: "PER_CLASS"
     },
     {
-      id: "Subscription",
-      label: "Subscription based",
-      value: "SUBSCRIPTION"
+      id: "AnnualSubscription",
+      label: "Annual subscription",
+      value: "ANNUAL_SUBSCRIPTION"
+    },
+    {
+      id: "MonthlySubscription",
+      label: "Monthly subscription",
+      value: "MONTHLY_SUBSCRIPTION"
     },
   ];
-
-  public subscriptionTypeOptions: RadioButton[] = [
-    {
-      id: "Annual",
-      label: "Annual Subscription",
-      value: "ANNUAL"
-    },
-    {
-      id: "Monthly",
-      label: "Monthly Subscription",
-      value: "MONTHLY"
-    }
-  ]
-
   public periodTypeOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -246,9 +212,9 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.periodsLabel = "Number of people trained per period";
       this.periodTypeLabel = `Do you anticipate needing the same number of 
         people trained within each performance period?`;
-      this.singlePeriodErrorMessage = `Enther the number of people 
+      this.singlePeriodErrorMessage = `Enter the number of people 
         expected to be trained each period.`
-      this.multiplePeriodErrorMessage = `Enther the number of people 
+      this.multiplePeriodErrorMessage = `Enter the number of people 
         expected to be trained in this period.`
       this.costEstimateLabel = `Estimated price per person`;
       this.costEstimateSuffix = `/person`;
@@ -256,14 +222,14 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         periods that you specified in the Performance Requirements section.`;
       this.costEstimateRules = [this.$validators.required('Please select an option.')];
       break;
-    case "PER_SESSION":
+    case "PER_CLASS":
       this.periodsSuffix = "sessions";
       this.periodsLabel = "Number of training sessions per period";
       this.periodTypeLabel = `Do you anticipate needing the same number of 
         training sessions each performance period?`;
-      this.singlePeriodErrorMessage = `Enther the number of training 
+      this.singlePeriodErrorMessage = `Enter the number of training 
         sessions each period.`
-      this.multiplePeriodErrorMessage = `Enther the number of training 
+      this.multiplePeriodErrorMessage = `Enter the number of training 
         sessions in this period.`
       this.costEstimateLabel = `Estimated price per session`;
       this.costEstimateSuffix = `/session`;
@@ -271,18 +237,26 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         periods that you specified in the Performance Requirements section.`;
       this.costEstimateRules = [this.$validators.required('Please select an option.')];
       break;
-    case "SUBSCRIPTION":
+    case "MONTHLY_SUBSCRIPTION":
       this.periodsSuffix = "months";
       this.periodsLabel = "Number of months per period";
       this.periodTypeLabel = `Do you anticipate needing subscriptions for 
         the same number of months within each performance period?`;
-      this.singlePeriodErrorMessage = `Enther the number of subscriptions 
+      this.singlePeriodErrorMessage = `Enter the number of subscriptions 
         each period.`
-      this.multiplePeriodErrorMessage = `Enther the number of subscriptions 
+      this.multiplePeriodErrorMessage = `Enter the number of subscriptions 
         in this period.`
-      this.costEstimateLabel = `What type of subscription do you plan on 
-        using for your price estimate?`;
-      this.costEstimateSuffix = "";
+      this.costEstimateLabel = `Estimated price for all subscriptions`;
+      this.costEstimateSuffix = "/month";
+      this.costEstimateTooltipText = "";
+      this.costEstimateRules = [];
+      break;
+    case "ANNUAL_SUBSCRIPTION":
+      this.periodsSuffix = "";
+      this.periodsLabel = "";
+      this.periodTypeLabel = "";
+      this.costEstimateSuffix = "/year";
+      this.costEstimateLabel = `Estimated price for all subscriptions`;
       this.costEstimateTooltipText = "";
       this.costEstimateRules = [];
       break;
@@ -301,28 +275,6 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
     this.instanceData.estimate.estimated_values = [];
     this.instanceData.trainingOption = "";
-    this.instanceData.subscriptionType = "";
-  }
-
-  @Watch("instanceData.subscriptionType")
-  public updateSubscriptionSelections(): void {
-    this.instanceData.estimatedTrainingPrice = "";
-    switch(this.instanceData.subscriptionType){
-    case "ANNUAL":
-      this.costEstimateSuffix = `/year`;
-      this.costEstimateRules = [this.$validators.required('Please select an option.')];
-      this.costEstimateTooltipText = `This estimate will be applied to all performance 
-        periods that you specified in the Performance Requirements section.`;
-      break;
-    case "MONTHLY":
-      this.costEstimateSuffix = `/month`;
-      this.costEstimateRules = [this.$validators.required('Please select an option.')];
-      this.costEstimateTooltipText = `This estimate will be applied to all performance 
-        periods that you specified in the Performance Requirements section.`;
-      break;
-    default:
-      this.costEstimateSuffix = "";
-    }
   }
 
   protected async loadOnEnter(): Promise<boolean> {

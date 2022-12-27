@@ -710,7 +710,6 @@ export interface UserDTO extends BaseTableDTO {
 export interface TrainingEstimateDTO extends BaseTableDTO{
   acquisition_package: string;
   estimated_price_per_training_unit: string;
-  subscription_type: string; //ANNUAL or MONTHLY
   training_estimated_values: string;
   training_option: string; //SINGLE or MULTIPLE
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION

@@ -112,7 +112,6 @@ export class IGCEStore extends VuexModule {
         costEstimateType: item.training_unit,
         estimate: JSON.parse(item.training_estimated_values),
         estimatedTrainingPrice: item.estimated_price_per_training_unit,
-        subscriptionType: item.subscription_type,
         trainingOption: item.training_option as SingleMultiple
       };
 
@@ -146,12 +145,11 @@ export class IGCEStore extends VuexModule {
     const trainingDTOItem: TrainingEstimateDTO = {
       acquisition_package: packageId || "",
       estimated_price_per_training_unit: value.estimatedTrainingPrice,
-      subscription_type: value.subscriptionType || "",
       training_option: value.trainingOption,
       training_estimated_values: JSON.stringify(value.estimate),
       training_unit: value.costEstimateType
     };
-
+    debugger;
     if(value.sysId){
       await api.trainingEstimateTable.update(
         value.sysId,
