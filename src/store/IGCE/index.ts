@@ -103,7 +103,7 @@ export class IGCEStore extends VuexModule {
         sysparm_display_value: "false"
       }
     };
-
+    debugger;
     const trainingEstimates = await api.trainingEstimateTable.getQuery(requestConfig);
 
     trainingEstimates.forEach(item => {
@@ -115,8 +115,9 @@ export class IGCEStore extends VuexModule {
         trainingOption: item.training_option as SingleMultiple
       };
 
-      this.doSetTrainingEstimate(trainingItem);
+      this.trainingItems.push(trainingItem);
     });
+    this.igceTrainingIndex = 0;
   }
 
   @Action({rawError: true})
