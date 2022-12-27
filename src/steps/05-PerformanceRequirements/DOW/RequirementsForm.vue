@@ -27,6 +27,7 @@
                   :items="deliveryOptions"
                   :value.sync="instance.typeOfDelivery"
                   legend="What type of delivery do you need?"
+                  :rules="[$validators.required('Please select a type of delivery.')]"
                 />
                 <ATATRadioGroup 
                   v-if="isMobile"
@@ -36,10 +37,11 @@
                   :value.sync="instance.typeOfMobility"
                   legend="What type of mobility do you need?"
                   :hasOtherValue="true"
-                  otherValueRequiredMessage="Please enter your other type of mobility"
+                  otherValueRequiredMessage="Please enter your other type of mobility."
                   :validateOtherOnBlur="true"
                   otherValue="OTHER"
                   :otherValueEntered.sync="instance.typeOfMobilityOther"
+                  :rules="[$validators.required('Please select a type of mobility.')]"
                 />                           
               </div>
 
