@@ -73,6 +73,8 @@
                   :instances="instancesFormData"
                   :avlInstancesLength="selectedInstancesLength"
                   :isPeriodsDataMissing="isPeriodsDataMissing"
+                  :groupId="groupId"
+                  :serviceOfferingName="serviceOfferingName"
                 />
               </div>
 
@@ -194,6 +196,10 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         selectedPeriods: [],
         labelLong,
         labelShort,
+        classifiedInformationTypes: "",
+        typeOfDelivery: "",
+        typeOfMobility: "",
+        typeOfMobilityOther: "",
       }
       this.classificationInstances.push(instance);
     }, this);
@@ -412,7 +418,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       });
 
       if (this.hasChanged() && isValid) {
-        // await DescriptionOfWork.setNeedsSecurityRequirements();
         await DescriptionOfWork.setOfferingDetails(this.instancesFormData);
       } else if (!isValid) {
         // scroll to first errored input/issue

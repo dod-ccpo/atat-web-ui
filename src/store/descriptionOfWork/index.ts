@@ -34,7 +34,6 @@ import {
   DOWServiceOffering,
   DOWClassificationInstance,
   OtherServiceOfferingData,
-  DOWPoP,
   StorageUnit,
   RadioButton,
 } from "../../../types/Global";
@@ -137,6 +136,10 @@ const saveOrUpdateClassificationInstance =
       tempObject.classification_level = classificationLevel;
       tempObject.usage_description = classificationInstance.anticipatedNeedUsage;
       tempObject.need_for_entire_task_order_duration = classificationInstance.entireDuration;
+      tempObject.type_of_delivery = classificationInstance.typeOfDelivery;
+      tempObject.type_of_mobility = classificationInstance.typeOfMobility;
+      tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
+      tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
 
       if(classificationInstance.sysId)
         tempObject.sys_id = classificationInstance.sysId;
