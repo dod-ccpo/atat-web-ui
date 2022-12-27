@@ -14,17 +14,6 @@
         <span>{{ backButtonText }}</span>
       </v-btn>
 
-
-      <v-btn
-        id="developerToggleButton"
-        v-if="allowDeveloperNavigation()"
-        @click="toggleDeveloperNavigation()"
-        role="button"
-        class="ml-4"
-      >
-        <span>Toggle Developer Navigation {{ developerNavState }}</span>
-      </v-btn>
-
       <span class="ml-auto d-flex">
         <span v-if="additionalButtons.length" class="d-flex">
           <v-btn 
@@ -53,6 +42,16 @@
         </v-btn>
       </span>
     </div>
+
+    <v-btn
+      id="developerToggleButton"
+      v-if="allowDeveloperNavigation()"
+      @click="toggleDeveloperNavigation()"
+      role="button"
+      class="mt-10"
+    >
+      <span>Toggle Developer Navigation {{ developerNavState }}</span>
+    </v-btn>    
   </nav>
 </template>
 
