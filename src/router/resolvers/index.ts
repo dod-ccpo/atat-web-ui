@@ -384,7 +384,6 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 export const ServiceOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
-  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
   DescriptionOfWork.setCurrentGroupRemoved(false);
@@ -585,7 +584,6 @@ export const ServiceOfferingsPathResolver = (
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
-  debugger;
   const groupId = DescriptionOfWork.currentGroupId;
   const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
 
@@ -664,7 +662,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;   
   } 
-  debugger;
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
     // EJY OOF
 
@@ -707,7 +704,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
   const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
   const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
-  debugger;
   if (packageHasSecretOrHigher && showSecurityRequirements) {
     DescriptionOfWork.doSetNeedsSecurityRequirements(false);
     return DOWSecurityRequitementsPath;  
@@ -743,7 +739,6 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
 
 export const DOWSecurityRequirementsPathResolver 
   = (current: string, direction: string): string => {
-    debugger;
     const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
     const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
 
@@ -777,9 +772,6 @@ export const DOWSecurityRequirementsPathResolver
 
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
- 
-  debugger;
-
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if(current === routeNames.ConflictOfInterest){
@@ -804,7 +796,6 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
   // coming from service offering details step
   // EJY OR SECURITY REQ ?
-  debugger;
   if(current === routeNames.ServiceOfferingDetails
     || current === routeNames.DOWSecurityRequirements
   ){
