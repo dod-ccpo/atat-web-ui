@@ -288,7 +288,7 @@ export class IGCEStore extends VuexModule {
     await this.doSetRequirementsCostEstimate(requirementsCostEstimateDTO);
 
   }
-
+  
   @Action({rawError: true })
   private async transformRequirementsCostEstimateFromTreeToFlat(
     rceTree: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateFlat> {
