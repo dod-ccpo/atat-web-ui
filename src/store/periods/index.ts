@@ -28,7 +28,6 @@ const ATAT_PERIODS_DATA_KEY = "ATAT_PERIODS_DATA_KEY";
 
 const savePeriod = async (period: PeriodDTO): Promise<PeriodDTO> => {
   try {
-    // period = convertColumnReferencesToValues(period);
     const periodSysId = period.sys_id;
 
     const savedPeriod = periodSysId?.length
@@ -152,16 +151,13 @@ export class PeriodsStore extends VuexModule {
           };
   
           const optionPeriods: PeriodDTO[] = await api.periodTable.getQuery(config);
-  
           if (optionPeriods.length) {
             periods.push(...optionPeriods);
-
           }
         }
       }
       this.setPeriods(periods);
     }
-
     
   }
 
@@ -236,7 +232,7 @@ export class PeriodsStore extends VuexModule {
         return results;
 
       }
-      // return this.periods;
+
       return [];
       
     } catch (error) {
