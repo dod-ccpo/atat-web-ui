@@ -1,9 +1,11 @@
 <template>
   <v-footer class="atat-page-footer container-max-width">
     <div class="links">
+      <!-- TODO: restore in future ticket
       <a href="#" class="_text-link">Security Notice</a>
       <a href="#" class="_text-link">Privacy</a>
-      <a href="#" class="_text-link">Accessibility</a>
+      <a href="#" class="_text-link">Accessibility</a> 
+      -->
     </div>
     <div>
       Last login: {{currentUser.last_login_time}}

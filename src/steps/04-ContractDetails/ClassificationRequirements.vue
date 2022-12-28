@@ -110,6 +110,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
     try {
+      debugger
       if (this.hasChanged()) {
         await classificationRequirements.saveSelectedClassificationLevels(this.currentData)
         await classificationRequirements.loadSelectedClassificationLevelsByAqId(
@@ -128,6 +129,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     this.acquisitionPackage = await AcquisitionPackage
       .getAcquisitionPackage() as AcquisitionPackageDTO;
+    debugger;
     this.classifications = await classificationRequirements.getAllClassificationLevels();
     this.checkboxItems =this.createCheckboxItems(this.classifications);
     const IL6Checkbox = this.checkboxItems.find(e => e.label.indexOf("IL6") > -1);

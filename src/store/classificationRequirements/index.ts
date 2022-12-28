@@ -176,6 +176,7 @@ export class ClassificationRequirementsStore extends VuexModule {
    */
   @Action({rawError: true})
   public async loadSelectedClassificationLevelsByAqId(acquisitionSysId: string): Promise<void> {
+    debugger;
     const selectedClassLevelsRequestConfig: AxiosRequestConfig = {
       params: {
         sysparm_query: "^acquisition_packageIN" + acquisitionSysId
@@ -237,6 +238,7 @@ export class ClassificationRequirementsStore extends VuexModule {
     newSelectedClassLevelList: SelectedClassificationLevelDTO[])
     : Promise<boolean> {
     try {
+      debugger;
       const markedForCreateList = newSelectedClassLevelList
         .filter(newSelected => newSelected.sys_id ? newSelected.sys_id.length === 0 : true);
       const currSelectedClasLevelList = await this.getSelectedClassificationLevels();
