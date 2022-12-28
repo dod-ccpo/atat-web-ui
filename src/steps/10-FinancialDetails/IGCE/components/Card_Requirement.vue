@@ -88,6 +88,13 @@ export default class CardRequirement extends Vue {
 
   public checkMonthlyValue(): void {
     this.noMonthlyValue = Number(this._cardData.monthly_price) < 1;
+    if(!this.noMonthlyValue && this._cardData.trafficPerDomain){
+      const object:Record <string, string> = {
+        type:this._cardData.type,
+        dataQuantity: this._cardData.monthly_price
+      }
+      this._cardData.trafficPerDomain = JSON.stringify([object])
+    }
   }
   public async loadOnEnter(): Promise<void> {
     Vue.nextTick(() => {

@@ -79,6 +79,7 @@ import IGCE, { CostEstimate } from "@/store/IGCE";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import Periods, { PeriodsStore } from "@/store/periods";
 
 
 @Component({
@@ -165,8 +166,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
     // this.savedData = IGCE.costEstimates
     //TODO re-map this.savedData
-    console.log(this.instanceData)
     const dataFromSnow = _.cloneDeep(IGCE.igceEstimateList)
+    console.log(dataFromSnow)
     if(dataFromSnow.length > 0){
       this.selectedClassifications.forEach((classification)=>{
         // eslint-disable-next-line camelcase
@@ -190,7 +191,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
               isCloudServicePackage:false,
               sysIdCDS:(flatData.cross_domain_solution as ReferenceColumn).value as string,
               sysIdClassificationInstance:flatData.classification_instance,
-              sysIdServicesOffering:(flatData.selected_service_offering as ReferenceColumn)
+              sysIdEnvironmentInstance:(flatData.environment_instance as ReferenceColumn)
                 .value as string,
               sysId:flatData.sys_id|| "",
               unit:flatData.unit,
@@ -223,6 +224,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
           service.otherOfferingData.forEach((offering)=>{
             if(offering.classificationLevel){
               this.instanceData.forEach((instance)=>{
+
                 if(instance.sysId === offering.classificationLevel){
                   const classificationOfferings:{
                     IGCE_title:string,
@@ -256,6 +258,26 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   }else{
                     classificationOfferings.IGCE_title = serviceName;
                   }
+                  const quantityObj:Record<string, number> = {}
+                  if(offering.entireDuration === "NO"){
+                    offering.periodsNeeded.forEach(period=>{
+                      let selected = Periods.periods
+                        .filter(selectedPeriod => selectedPeriod.sys_id === period)
+                      quantityObj[period] = this.convertToMonths(
+                        Number(selected[0].period_unit_count),selected[0].period_unit
+                      )
+                    })
+                    classificationOfferings.unit_quantity = JSON.stringify(quantityObj)
+                  }else{
+                    Periods.periods.forEach(period=>{
+                      if(period.sys_id){
+                        quantityObj[period.sys_id] = this.convertToMonths(
+                          Number(period.period_unit_count),period.period_unit
+                        )
+                      }
+                    })
+                    classificationOfferings.unit_quantity = JSON.stringify(quantityObj)
+                  }
                   classificationOfferings.sysIdClassificationInstance = instance.sysId;
                   classificationOfferings.isCloudServicePackage = cloudServices
                     .includes(serviceName)
@@ -275,7 +297,12 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
           service.serviceOfferings.forEach((offering)=>{
             offering.classificationInstances?.forEach((classificationInstance)=>{
               this.instanceData.forEach((instance)=>{
-                if(instance.sysId === classificationInstance.classificationLevelSysId){
+                // eslint-disable-next-line max-len
+                let classificationId = typeof(classificationInstance.classificationLevelSysId) === "object"?
+                  // eslint-disable-next-line max-len
+                  (classificationInstance.classificationLevelSysId as ReferenceColumn).value as string:
+                  classificationInstance.classificationLevelSysId as string
+                if(instance.sysId === classificationId ){
                   const classificationOfferings:{
                     IGCE_title:string,
                     IGCE_description:string,
@@ -299,6 +326,28 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                     unit:"",
                     unit_quantity:"",
                   }
+                  const quantityObj:Record<string, number> = {}
+                  if(classificationInstance.entireDuration === "NO"
+                    && classificationInstance.selectedPeriods)
+                  {
+                    classificationInstance.selectedPeriods.forEach(period=>{
+                      let selected = Periods.periods
+                        .filter(selectedPeriod => selectedPeriod.sys_id === period)
+                      quantityObj[period] = this.convertToMonths(
+                        Number(selected[0].period_unit_count),selected[0].period_unit
+                      )
+                    })
+                    classificationOfferings.unit_quantity = JSON.stringify(quantityObj)
+                  }else{
+                    Periods.periods.forEach(period=>{
+                      if(period.sys_id){
+                        quantityObj[period.sys_id] = this.convertToMonths(
+                          Number(period.period_unit_count),period.period_unit
+                        )
+                      }
+                    })
+                    classificationOfferings.unit_quantity = JSON.stringify(quantityObj)
+                  }
                   classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
                   classificationOfferings.sysIdClassificationInstance = instance.sysId;
                   classificationOfferings.isCloudServicePackage = cloudServices
@@ -317,7 +366,6 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       this.instanceData.forEach(instance=>{
         if(instance.labelShort === "Secret / IL6"){
           if(ClassificationRequirements.cdsSolution?.anticipated_need_or_usage){
-            debugger
             const traffic = JSON
               .parse(ClassificationRequirements.cdsSolution?.traffic_per_domain_pair)
             const object ={
@@ -329,7 +377,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
               sysIdClassificationInstance:"",
               sysIdServicesOffering:"",
               sysId:"",
-              unit:"/month"
+              unit:"/month",
+              trafficPerDomain:"update",
+              type: traffic?.[0].type
             }
             instance.offerings.push(object)
           }
@@ -347,6 +397,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try{
       if (this.hasChanged()) {
+        debugger
         console.log(this.savedData, this.currentData)
         await IGCE.setCostEstimate(this.currentData)
       }
