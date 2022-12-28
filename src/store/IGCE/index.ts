@@ -304,7 +304,7 @@ export class IGCEStore extends VuexModule {
   @Action({rawError: true})
   public async setCostEstimate(value: CostEstimate[]): Promise<void> {
     const aqPackageSysId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
-    const crossDomainSysId = ClassificationRequirements.cdsSolution?.sys_id as string;
+    // const crossDomainSysId = ClassificationRequirements.cdsSolution?.sys_id as string;
     let contractTypeChoice: IgceEstimateDTO["contract_type"] = "TBD";
     const contractType: ContractTypeDTO = AcquisitionPackage.contractType as ContractTypeDTO;
     if (contractType?.firm_fixed_price === "true") {
@@ -323,7 +323,6 @@ export class IGCEStore extends VuexModule {
       {
         costEstimatList: value,
         aqPackageSysId: aqPackageSysId,
-        crossDomainSysId: crossDomainSysId,
         contractTypeChoice: contractTypeChoice,
         quantity: JSON.stringify(quantityCalculated)
       });
@@ -339,7 +338,6 @@ export class IGCEStore extends VuexModule {
   public async saveIgceEstimates(saveIgceObject: {
     costEstimatList: CostEstimate[],
     aqPackageSysId: string,
-    crossDomainSysId: string,
     contractTypeChoice: "" | "FFP" | "T&M" | "TBD",
     quantity: string
   }): Promise<void>{
@@ -355,7 +353,8 @@ export class IGCEStore extends VuexModule {
             offering.sysIdClassificationInstance as string : "",
           environment_instance: offering.sysIdEnvironmentInstance ?
             offering.sysIdEnvironmentInstance as string : "",
-          cross_domain_solution: saveIgceObject.crossDomainSysId,
+          cross_domain_solution: offering.sysIdCDS ?
+            offering.sysIdCDS as string : "",
           contract_type: saveIgceObject.contractTypeChoice,
           description: offering.IGCE_description as string,
           title: offering.IGCE_title as string,

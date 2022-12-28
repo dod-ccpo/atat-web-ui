@@ -67,6 +67,8 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
   private hasTopSecret = false;
   public savedData: SecurityRequirement[] = []
   public offeringName = "";
+  public groupId = DescriptionOfWork.currentGroupId;
+  public isCloudSupportService = false;
 
   public get currentData(): SecurityRequirement[] {
     let requirements:SecurityRequirement[] = []
@@ -96,19 +98,22 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-        classificationRequirements.setSecurityRequirements(this.currentData)
+        // TODO FUTURE TICKET save security requirements to store/snow
+        // see note below about isCloudSupportService - pass to method in DOW store
       }
     } catch (error) {
       console.log(error);
     }
     return true;
   }
+
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
   }
+
   public async loadOnEnter(): Promise<boolean> {
     this.selectedClassifications = classificationRequirements.selectedClassificationLevels;
     this.selectedClassifications.forEach((classification) => {
@@ -118,25 +123,13 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
       if(classification.classification === "S"){
         this.hasSecret = true;
       }
-    })
+    });
 
-    //   let storeData = classificationRequirements.securityRequirements
-    //   if(storeData){
-    //     storeData.forEach((requirement)=>{
-    //       if(requirement.type === "SECRET"){
-    //         this.selectedSecretSecurityRequirements 
-    // = requirement.classification_information_type;
-    //         // this.savedData.push({
-    //         //   type: "SECRET",
-    //         //   classification_information_type: 
-    //         // });
-    //       }
-    //       if(requirement.type === "TOPSECRET"){
-    //         this.selectedTopSecretSecurityRequirements 
-    //  = requirement.classification_information_type
-    //       }
-    //     })
-    //   }
+    // use isCloudSupportService to determine where to save.
+    // e.g., update ClassificationInstance table if !isCloudSupportService
+    // else update EnvironmentInstance table 
+    this.isCloudSupportService = DescriptionOfWork.cloudSupportServices.includes(this.groupId)
+        
     return true;
   }
 
