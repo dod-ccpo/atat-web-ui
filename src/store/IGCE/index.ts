@@ -411,19 +411,12 @@ export class IGCEStore extends VuexModule {
     } else if (contractType?.time_and_materials === "true") {
       contractTypeChoice = "T&M";
     }
-    const periods = Periods.periods;
-    const quantityCalculated: Record<string, number> = {};
-    periods.forEach(period => {
-      quantityCalculated[period.sys_id as string] =
-        convertPeriodUnitQuantityToMonths(
-          Number(period.period_unit_count), period.period_unit);
-    })
+
     await this.saveIgceEstimates(
       {
         costEstimatList: value,
         aqPackageSysId: aqPackageSysId,
-        contractTypeChoice: contractTypeChoice,
-        quantity: JSON.stringify(quantityCalculated)
+        contractTypeChoice: contractTypeChoice
       });
     await this.loadIgceEstimateByPackageId(aqPackageSysId);
   }
@@ -437,8 +430,7 @@ export class IGCEStore extends VuexModule {
   public async saveIgceEstimates(saveIgceObject: {
     costEstimatList: CostEstimate[],
     aqPackageSysId: string,
-    contractTypeChoice: "" | "FFP" | "T&M" | "TBD",
-    quantity: string
+    contractTypeChoice: "" | "FFP" | "T&M" | "TBD"
   }): Promise<void>{
     const apiCallList: Promise<IgceEstimateDTO>[] = [];
     saveIgceObject.costEstimatList.forEach(costEstimate => {
@@ -457,9 +449,9 @@ export class IGCEStore extends VuexModule {
           contract_type: saveIgceObject.contractTypeChoice,
           description: offering.IGCE_description as string,
           title: offering.IGCE_title as string,
-          unit: "MONTHS",
+          unit: offering.unit as string,
           unit_price: offering.monthly_price as number,
-          unit_quantity: saveIgceObject.quantity,
+          unit_quantity: offering.unit_quantity as string
         }
         if(igceEstimateSysId && igceEstimateSysId.length > 0) {
           apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate));
