@@ -43,7 +43,7 @@ export const retrieveSession = (sessionKey: string): string | null=> {
 export const convertPeriodUnitQuantityToMonths = (numberOfUnits: number, unit:string): number => {
   switch(unit) {
   case "YEAR":
-    return 12
+    return numberOfUnits * 12
   case "MONTH":
     return numberOfUnits
   case "WEEK":
