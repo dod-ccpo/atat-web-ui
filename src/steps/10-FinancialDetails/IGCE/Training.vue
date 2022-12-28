@@ -72,6 +72,7 @@
               :tooltipText="costEstimateTooltipText"
               width="234"
               :rules="costEstimateRules"
+              :alignRight="true"
             />
               
             <div v-if="instanceData.costEstimateType !== 'ANNUAL_SUBSCRIPTION'">
@@ -220,7 +221,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.costEstimateSuffix = `/person`;
       this.costEstimateTooltipText = `This estimate will be applied to all performance 
         periods that you specified in the Performance Requirements section.`;
-      this.costEstimateRules = [this.$validators.required('Please select an option.')];
+      this.costEstimateRules = 
+        [this.$validators.required('Enter your estimated price per person.')];
       break;
     case "PER_CLASS":
       this.periodsSuffix = "sessions";
@@ -235,7 +237,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.costEstimateSuffix = `/session`;
       this.costEstimateTooltipText = `This estimate will be applied to all performance 
         periods that you specified in the Performance Requirements section.`;
-      this.costEstimateRules = [this.$validators.required('Please select an option.')];
+      this.costEstimateRules = 
+        [this.$validators.required('Enter your estimated price per session.')];
       break;
     case "MONTHLY_SUBSCRIPTION":
       this.periodsSuffix = "months";
@@ -249,7 +252,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.costEstimateLabel = `Estimated price for all subscriptions`;
       this.costEstimateSuffix = "/month";
       this.costEstimateTooltipText = "";
-      this.costEstimateRules = [];
+      this.costEstimateRules = 
+        [this.$validators.required('Enter your estimated price per month.')];
       break;
     case "ANNUAL_SUBSCRIPTION":
       this.periodsSuffix = "";
@@ -258,7 +262,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.costEstimateSuffix = "/year";
       this.costEstimateLabel = `Estimated price for all subscriptions`;
       this.costEstimateTooltipText = "";
-      this.costEstimateRules = [];
+      this.costEstimateRules = 
+        [this.$validators.required('Enter your estimated price per year.')];
       break;
     default:
       this.periodsSuffix = "";
