@@ -656,9 +656,9 @@ export interface EstimateOptionValue {
 
 export interface TrainingEstimate {
   sysId?: string;
-  costEstimateType: "" | "PER_PERSON" | "PER_SESSION" | "SUBSCRIPTION" | string;
+  costEstimateType: 
+    "" | "PER_PERSON" | "PER_SESSION" | "ANNUAL_SUBSCRIPTION" | "MONTHLY_SUBSCRIPTION" | string;
   estimate: EstimateOptionValue;
   estimatedTrainingPrice: string;
-  subscriptionType?: "" | "ANNUAL" | "MONTHLY" | string;
   trainingOption: SingleMultiple;
 }

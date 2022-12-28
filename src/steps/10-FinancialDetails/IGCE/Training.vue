@@ -317,8 +317,6 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
           this.instanceData.estimate = _.cloneDeep(this.savedData.estimate);
         if(this.savedData.costEstimateType)
           this.instanceData.costEstimateType = _.cloneDeep(this.savedData.costEstimateType);
-        if(this.savedData.subscriptionType)
-          this.instanceData.subscriptionType = _.cloneDeep(this.savedData.subscriptionType);
         if(this.savedData.trainingOption)
           this.instanceData.trainingOption = _.cloneDeep(this.savedData.trainingOption);
         

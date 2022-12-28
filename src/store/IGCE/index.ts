@@ -126,7 +126,6 @@ export class IGCEStore extends VuexModule {
 
       this.trainingItems.push(trainingItem);
     });
-    this.igceTrainingIndex = 0;
   }
 
   @Action({rawError: true})
@@ -276,23 +275,6 @@ export class IGCEStore extends VuexModule {
       sys_updated_on: rceFlat.sys_updated_on
     };
   }
-
-  // @Action
-  // public async initializeRequirementsCostEstimate(): Promise<void> {
-  //   this.doInitializeRequirementsCostEstimate();
-  // }
-
-  // @Mutation
-  // public doInitializeRequirementsCostEstimate(): void {
-  //   if(this.initialized)
-  //     return;
-  //   // TODO: need to initialize this in SNOW by making api call. Then set the response from snow
-  //   this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
-  //   this.trainingItems = [];
-  //   // TODO: other initializations outside of requirements cost estimate
-  //   this.initialized = true;
-  // }
-    
 
   @Action
   public async initializeRequirementsCostEstimate(acqPackageId: string): Promise<void> {
