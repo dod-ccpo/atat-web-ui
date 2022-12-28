@@ -365,7 +365,8 @@ export class IGCEStore extends VuexModule {
           description: offering.IGCE_description as string,
           title: offering.IGCE_title as string,
           unit: "MONTHS",
-          unit_price: offering.monthly_price as number
+          unit_price: offering.monthly_price as number,
+          unit_quantity: offering.unit_quantity as string
         }
         if(igceEstimateSysId && igceEstimateSysId.length > 0) {
           apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate));

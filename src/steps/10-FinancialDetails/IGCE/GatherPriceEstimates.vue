@@ -314,28 +314,28 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
           })
         }
       })
-    }
-    this.instanceData.forEach(instance=>{
-      if(instance.labelShort === "Secret / IL6"){
-        if(ClassificationRequirements.cdsSolution?.anticipated_need_or_usage){
-          debugger
-          const traffic = JSON
-            .parse(ClassificationRequirements.cdsSolution?.traffic_per_domain_pair)
-          const object ={
-            IGCE_title: "Cross-domain solution (CDS)",
-            IGCE_description: ClassificationRequirements.cdsSolution?.anticipated_need_or_usage,
-            sysIdCDS: ClassificationRequirements.cdsSolution?.sys_id || "",
-            monthly_price: traffic?.[0].dataQuantity,
-            isCloudServicePackage:false,
-            sysIdClassificationInstance:"",
-            sysIdServicesOffering:"",
-            sysId:"",
-            unit:"/month"
+      this.instanceData.forEach(instance=>{
+        if(instance.labelShort === "Secret / IL6"){
+          if(ClassificationRequirements.cdsSolution?.anticipated_need_or_usage){
+            debugger
+            const traffic = JSON
+              .parse(ClassificationRequirements.cdsSolution?.traffic_per_domain_pair)
+            const object ={
+              IGCE_title: "Cross-domain solution (CDS)",
+              IGCE_description: ClassificationRequirements.cdsSolution?.anticipated_need_or_usage,
+              sysIdCDS: ClassificationRequirements.cdsSolution?.sys_id || "",
+              monthly_price: traffic?.[0].dataQuantity,
+              isCloudServicePackage:false,
+              sysIdClassificationInstance:"",
+              sysIdServicesOffering:"",
+              sysId:"",
+              unit:"/month"
+            }
+            instance.offerings.push(object)
           }
-          instance.offerings.push(object)
         }
-      }
-    })
+      })
+    }
     this.instanceData.forEach(instance=>{
       if(instance.offerings.length <= 0){
         this.accordionClosed.push(1)
