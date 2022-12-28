@@ -306,6 +306,35 @@ export default class ATATTopNavBar extends Vue {
         isProfile: true,
         align: "left",
         menu: [
+          // TODO: restore to profile menu in future ticket
+          // {
+          //   title: "Profile",
+          //   separatorBefore: true,
+          //   icon: {
+          //     name: "person",
+          //     width: "14",
+          //     height: "15",
+          //     color: "base-dark",
+          //   },
+          // },
+          // {
+          //   title: "Contact Support",
+          //   icon: {
+          //     name: "contactSupport",
+          //     width: "17",
+          //     height: "20",
+          //     color: "base-dark",
+          //   },
+          // },
+          // {
+          //   title: "Submit Feedback",
+          //   icon: {
+          //     name: "feedback",
+          //     width: "18",
+          //     height: "17",
+          //     color: "base-dark",
+          //   },
+          // },          
           {
             title: "Sign out",
             separatorBefore: true,
@@ -321,35 +350,6 @@ export default class ATATTopNavBar extends Vue {
       },
     ];    
   }
-  // TODO: restore to profile menu in future ticket
-  // {
-  //   title: "Profile",
-  //   separatorBefore: true,
-  //   icon: {
-  //     name: "person",
-  //     width: "14",
-  //     height: "15",
-  //     color: "base-dark",
-  //   },
-  // },
-  // {
-  //   title: "Contact Support",
-  //   icon: {
-  //     name: "contactSupport",
-  //     width: "17",
-  //     height: "20",
-  //     color: "base-dark",
-  //   },
-  // },
-  // {
-  //   title: "Submit Feedback",
-  //   icon: {
-  //     name: "feedback",
-  //     width: "18",
-  //     height: "17",
-  //     color: "base-dark",
-  //   },
-  // },
 
   public async loadOnEnter(): Promise<void> {
     this.buildMenu();
