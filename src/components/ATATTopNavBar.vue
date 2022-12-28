@@ -185,6 +185,9 @@ export default class ATATTopNavBar extends Vue {
       } else if (item.externalUrl) {
         // open external URL in new tab
         window.open(item.externalUrl, "_blank");
+      } else if (item.link) {
+        // open URL in same tab
+        window.location.href = item.link;
       }
     }
   }
@@ -195,6 +198,10 @@ export default class ATATTopNavBar extends Vue {
 
   public getIdText(str: string): string {
     return getIdText(str);
+  }
+
+  public get logoutLink(): string {
+    return window.location.origin + "/logout.do";
   }
 
   public async buildMenu(): Promise<void> {
@@ -302,7 +309,7 @@ export default class ATATTopNavBar extends Vue {
           {
             title: "Sign out",
             separatorBefore: true,
-            externalUrl: this.logoutLink,
+            link: this.logoutLink,
             icon: {
               name: "signOut",
               width: "18",
