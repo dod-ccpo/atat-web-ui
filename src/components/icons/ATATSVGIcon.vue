@@ -41,6 +41,7 @@ import Gcp from "@/components/icons/Gcp.vue";
 import InfoOutline from "@/components/icons/InfoOutline.vue";
 import Launch from "@/components/icons/Launch.vue";
 import ManageAccount from "@/components/icons/ManageAccount.vue";
+import MenuBook from "@/components/icons/MenuBook.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import OptionPending from "@/components/icons/OptionPending.vue";
 import Oracle from "@/components/icons/Oracle.vue";
@@ -99,6 +100,7 @@ import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vu
     InfoOutline,
     Launch,
     ManageAccount,
+    MenuBook,
     MonetizationOn,
     OptionPending,
     Oracle,
