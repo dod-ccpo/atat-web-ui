@@ -11,7 +11,9 @@ import {
   StorageType, 
   StorageUnit, 
   YesNo,
-  SingleMultiple
+  SingleMultiple,
+  EstimateOptionValue,
+  TrainingEstimate
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -709,26 +711,27 @@ export interface UserDTO extends BaseTableDTO {
   email?: string;
 }
 
+export interface TrainingEstimateDTO extends BaseTableDTO{
+  acquisition_package: string;
+  estimated_price_per_training_unit: string;
+  training_estimated_values: string;
+  training_option: string; //SINGLE or MULTIPLE
+  training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
+}
+
 export interface EstimateOptionValueDTO {
   option: SingleMultiple;
   estimated_values: string[];
 }
 
-export interface TrainingEstimateDTO {
-  cost_estimate: "PER_PERSON" | "PER_CLASS" | "SUBSCRIPTION";
-  subscription_estimate: "ANNUAL" | "MONTHLY";
-  estimated_price: number;
-  estimate: EstimateOptionValueDTO;
-}
-
 export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   acquisition_package: ReferenceColumn | string;
   has_DOW_and_PoP: YesNo;
-  optimize_replicate: EstimateOptionValueDTO;
-  architectural_design_current_environment: EstimateOptionValueDTO;
-  architectural_design_performance_requirements: EstimateOptionValueDTO;
+  optimize_replicate: EstimateOptionValue;
+  architectural_design_current_environment: EstimateOptionValue;
+  architectural_design_performance_requirements: EstimateOptionValue;
   training: TrainingEstimateDTO[];
-  travel: EstimateOptionValueDTO;
+  travel: EstimateOptionValue;
   surge_requirements: {
     capabilities: YesNo;
     capacity: number | null;
@@ -751,14 +754,14 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
 
 export interface RequirementsCostEstimateFlat extends BaseTableDTO{
   acquisition_package: ReferenceColumn | string;
-  architectural_design_current_environment_option: SingleMultiple;
+  architectural_design_current_environment_option?: SingleMultiple;
   architectural_design_current_environment_estimated_values: string;// csv
-  architectural_design_performance_requirements_option: SingleMultiple;
+  architectural_design_performance_requirements_option?: SingleMultiple;
   architectural_design_performance_requirements_estimated_values: string; //csv
   contracting_office_other_charges_fee: YesNo; // fee_spec
   contracting_office_other_fee_percentage: number | null; // fee_spec
   has_dow_and_pop: YesNo;
-  optimize_replicate_option: SingleMultiple;
+  optimize_replicate_option?: SingleMultiple;
   optimize_replicate_estimated_values: string; // csv
   surge_requirement_capabilities: YesNo
   surge_requirement_capacity: number | null;
@@ -770,7 +773,7 @@ export interface RequirementsCostEstimateFlat extends BaseTableDTO{
   how_est_dev_cost_estimate_description: string;
   how_est_dev_prev_cost_estimate_comp_option: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
   how_est_dev_prev_cost_estimate_comp_percentage: number | null;
-  travel_option: SingleMultiple;
+  travel_option?: SingleMultiple;
   travel_estimated_values: string;// csv
   training: string // json of TrainingEstimateDTO
   // training_cost_estimate: "" | "PER_PERSON" | "PER_CLASS" | "SUBSCRIPTION";

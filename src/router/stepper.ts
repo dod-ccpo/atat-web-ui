@@ -102,7 +102,7 @@ import OptimizeOrReplicate from "@/steps/10-FinancialDetails/IGCE/OptimizeOrRepl
 import ArchitecturalDesignSolutions 
   from '@/steps/10-FinancialDetails/IGCE/ArchitecturalDesignSolutions.vue';
 import GatherPriceEstimates from "@/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.vue";
-import IGCETraining from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
+import IGCETraining from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 import TravelEstimates from "@/steps/10-FinancialDetails/IGCE/TravelEstimates.vue";
 import SurgeCapacity from "@/steps/10-FinancialDetails/IGCE/SurgeCapacity.vue";
 import FeeCharged from "@/steps/10-FinancialDetails/IGCE/FeeCharged.vue";
@@ -162,9 +162,9 @@ import {
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
-  
+  IGCETrainingPathResolver,
 } from "./resolvers";
-import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
+import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 
 export const routeNames = {
   ContractingShop: "Contracting_Shop",
@@ -923,6 +923,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GatherPriceEstimates,
         completePercentageWeight: 1,
         component: GatherPriceEstimates,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Training",
@@ -930,7 +931,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "training-estimate",
         name: routeNames.IGCETraining,
         completePercentageWeight: 1,
-        component: IGCETraining
+        component: IGCETraining,
+        routeResolver: IGCETrainingPathResolver,
       },
       // {
       //   menuText: "Travel Estimates",
@@ -946,7 +948,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "surge-capacity",
         name: routeNames.SurgeCapacity,
         completePercentageWeight: 1,
-        component: SurgeCapacity
+        component: SurgeCapacity,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Surge Capabilities",
