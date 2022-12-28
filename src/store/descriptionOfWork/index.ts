@@ -34,7 +34,6 @@ import {
   DOWServiceOffering,
   DOWClassificationInstance,
   OtherServiceOfferingData,
-  DOWPoP,
   StorageUnit,
   RadioButton,
 } from "../../../types/Global";
@@ -73,7 +72,6 @@ const saveOrUpdateSelectedServiceOffering =
       let objSysId = "";
 
       const classificationInstances: string[] = [];
-
       if(selectedServiceOffering.classificationInstances &&
           selectedServiceOffering.classificationInstances.length > 0){
 
@@ -82,7 +80,6 @@ const saveOrUpdateSelectedServiceOffering =
             const tempId = typeof item.sysId === "object"
               ? (item.sysId as ReferenceColumn).value as string
               : item.sysId;
-
             classificationInstances.push(tempId as string);
           })
         } else {
@@ -105,7 +102,6 @@ const saveOrUpdateSelectedServiceOffering =
 
       if(selectedServiceOffering.sys_id)
         tempObject.sys_id = selectedServiceOffering.sys_id;
-
 
       if(tempObject.sys_id){
         await api.selectedServiceOfferingTable.update(
@@ -137,10 +133,13 @@ const saveOrUpdateClassificationInstance =
           typeof classificationInstance.classificationLevelSysId === "object"
             ? (classificationInstance.classificationLevelSysId as ReferenceColumn).value as string
             : classificationInstance.classificationLevelSysId as string;
-
       tempObject.classification_level = classificationLevel;
       tempObject.usage_description = classificationInstance.anticipatedNeedUsage;
       tempObject.need_for_entire_task_order_duration = classificationInstance.entireDuration;
+      tempObject.type_of_delivery = classificationInstance.typeOfDelivery;
+      tempObject.type_of_mobility = classificationInstance.typeOfMobility;
+      tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
+      tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
 
       if(classificationInstance.sysId)
         tempObject.sys_id = classificationInstance.sysId;
@@ -560,13 +559,13 @@ export const defaultDOWArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
   acquisition_package: ""
 }
 
-
 @Module({
   name: "DescriptionOfWork",
   namespaced: true,
   dynamic: true,
   store: rootStore,
 })
+
 export class DescriptionOfWorkStore extends VuexModule {
   initialized = false;
   isIncomplete = true;
@@ -600,7 +599,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     'MACHINE_LEARNING',
     'APPLICATIONS',
     'DEVELOPER_TOOLS',
-    'COMPUTE'
+    'COMPUTE',
   ];
 
   cloudSupportServices = [
@@ -609,8 +608,107 @@ export class DescriptionOfWorkStore extends VuexModule {
     "HELP_DESK_SERVICES",
     "TRAINING",
     "DOCUMENTATION_SUPPORT",
-    "GENERAL_CLOUD_SUPPORT"
+    "GENERAL_CLOUD_SUPPORT",
   ]
+
+  public otherServiceOfferings = [
+    "COMPUTE",
+    "DATABASE",
+    "STORAGE",
+    "GENERAL_XAAS",
+    "ADVISORY_ASSISTANCE",
+    "HELP_DESK_SERVICES",
+    "TRAINING",
+    "DOCUMENTATION_SUPPORT",
+    "GENERAL_CLOUD_SUPPORT",
+  ];
+
+  public offeringsThatNeedSecurityRequirements = [
+    "ADVISORY_ASSISTANCE",
+    "HELP_DESK_SERVICES",
+    "TRAINING",
+    "DOCUMENTATION_SUPPORT",
+    "GENERAL_CLOUD_SUPPORT",
+    "EDGE_COMPUTING",
+  ];
+
+  public get DOWSecReqOfferingName(): string {
+    // returns current service offering if tactical edge,
+    // or group name if other offering
+    if (this.currentGroupId === "EDGE_COMPUTING") {
+      return this.currentOfferingName;
+    }
+    const groupObj = this.serviceOfferingGroups.find(
+      obj => obj.value === this.currentGroupId
+    );
+    return groupObj ? groupObj.label : "service offering";
+  }
+
+  public serviceNeedsSecurityRequirements = false;
+
+  @Action({rawError: true})
+  public async setNeedsSecurityRequirements(): Promise<void> {
+    const needsSecurityRequirements 
+      = this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId);
+    await this.doSetNeedsSecurityRequirements(needsSecurityRequirements);
+    await this.setShowSecurityRequirements();
+  }
+  @Mutation
+  public async doSetNeedsSecurityRequirements(value: boolean): Promise<void> {
+    this.serviceNeedsSecurityRequirements = value;
+    if (value === false) {
+      DescriptionOfWork.resetShowSecurityRequirements();
+    }
+  }
+  
+  public showSecurityRequirements = false;
+
+  @Action({rawError: true})
+  public resetShowSecurityRequirements(): void {
+    this.doResetShowSecurityRequirements();
+  }
+  @Mutation
+  public doResetShowSecurityRequirements(): void {
+    this.showSecurityRequirements = false;
+  }
+
+  @Action({rawError: true})
+  public async setShowSecurityRequirements(): Promise<void> {
+    // "high side" is secret or above
+    const highSideSysIds = ClassificationRequirements.highSideSysIds;
+    let highSideInstances = undefined;
+
+    if (this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId)) {
+      const offeringGroupObj = this.DOWObject.find(
+        obj => obj.serviceOfferingGroupId === this.currentGroupId
+      );
+
+      if (offeringGroupObj) {
+        if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
+        // check classificationInstances object
+          const offering = offeringGroupObj.serviceOfferings.find(
+            obj => obj.name === this.currentOfferingName
+          );
+          if (offering) {
+            highSideInstances = offering.classificationInstances?.filter(
+              obj => highSideSysIds.includes(obj.classificationLevelSysId)
+            );
+          }
+        } else {
+          // check otherOfferingData object
+          highSideInstances = offeringGroupObj.otherOfferingData?.filter(
+            obj => highSideSysIds.includes(obj.classificationLevel as string)
+          );
+        }        
+      } 
+    }    
+    const showSecurityReqs = highSideInstances !== undefined && highSideInstances.length > 0;
+    this.doSetShowSecurityRequirements(showSecurityReqs);
+  }
+  @Mutation
+  public doSetShowSecurityRequirements(value: boolean): void {
+    this.showSecurityRequirements = value;
+  }
 
   public DOWHasArchitecturalDesignNeeds: boolean | null = null;
   public DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;
@@ -1253,7 +1351,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): Promise<void> {
     this.doSetSelectedServiceOffering({ selectedOfferingSysIds, otherValue });
-    // await this.saveSelectedServiceOfferings();
   }
 
   @Action
@@ -1284,7 +1381,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const acquisitionPackageId = AcquisitionPackage.packageId;
     const groupIndex
         = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
-
     if (groupIndex >= 0) {
       let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
 
@@ -1331,24 +1427,27 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
     const updatedInstancesData: DOWClassificationInstance[] = [];
-
     for(const instanceData of instancesData){
       const dataSysId = await saveOrUpdateClassificationInstance(instanceData);
       instanceData.sysId = dataSysId as string;
       updatedInstancesData.push(instanceData);
     }
 
-    this.doSetOfferingDetails(updatedInstancesData);
-    this.saveSelectedServiceOfferings();
+    await this.doSetOfferingDetails(updatedInstancesData);
+    await this.saveSelectedServiceOfferings().then(async () => {
+      await this.setNeedsSecurityRequirements();
+    });
   }
 
   @Mutation
-  public doSetOfferingDetails(instancesData: DOWClassificationInstance[]): void {
+  public async doSetOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
     const groupIndex = this.DOWObject.findIndex(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );
     const offeringIndex = this.DOWObject[groupIndex].serviceOfferings.findIndex(
-      obj => obj.sys_id === this.currentOfferingSysId
+      // TODO: use sys_id instead of .name - this.currentOfferingSysId not currently being set
+      // obj => obj.sys_id === this.currentOfferingSysId
+      obj => obj.name === this.currentOfferingName
     );
     this.DOWObject[groupIndex].serviceOfferings[offeringIndex].classificationInstances
         = instancesData;

@@ -44,7 +44,7 @@ async function deleteServiceOfferingGroup() {
   router.push({
     name: "pathResolver",
     params: {
-      resolver: "OfferGroupOfferingsPathResolver",
+      resolver: "ServiceOfferingsPathResolver",
       direction: "next"
     },
   }).catch(() => console.log("avoiding redundant navigation"));

@@ -55,7 +55,7 @@
         </div>
         <div>
           <ATATTextField
-            :id="period.period_type"
+            :id="period.period_type + '_' + idx"
             type="number"
             width="190"
             class="ml-5"

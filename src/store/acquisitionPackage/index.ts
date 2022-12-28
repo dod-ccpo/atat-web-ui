@@ -23,7 +23,6 @@ import {
   CurrentContractDTO,
   FairOpportunityDTO,
   EvaluationPlanDTO,
-  RequirementsCostEstimateDTO,
   OrganizationDTO,
   // PeriodDTO,
   // PeriodOfPerformanceDTO,
@@ -45,7 +44,7 @@ import UserStore from "../user";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
-import IGCE, {defaultRequirementsCostEstimate} from "@/store/IGCE";
+import IGCE from "@/store/IGCE";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -58,7 +57,6 @@ export const StoreProperties = {
   FairOpportunity: "fairOpportunity",
   EvaluationPlan: "evaluationPlan",
   // PeriodOfPerformance: "periodOfPerformance",
-  RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
   CurrentEnvironment: "currentEnvironment",
@@ -246,7 +244,6 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       evaluationPlan: store.evaluationPlan,
       // periods: store.periods,
       // periodOfPerformance: store.periodOfPerformance,
-      requirementsCostEstimate: store.requirementsCostEstimate,
       sensitiveInformation: store.sensitiveInformation,
       allowDeveloperNavigation: store.allowDeveloperNavigation
     })
@@ -302,7 +299,6 @@ export class AcquisitionPackageStore extends VuexModule {
   // periods: string | null = null;
   // periodOfPerformance: PeriodOfPerformanceDTO | null = null;
   contractType: ContractTypeDTO | null = null;
-  requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   fundingRequirement: FundingRequirementDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
   totalBasePoPDuration = 0;
@@ -540,17 +536,6 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.evaluationPlan || initialEvaluationPlan();
   }
 
-  @Mutation
-  public setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): void {
-    this.requirementsCostEstimate = this.requirementsCostEstimate
-      ? Object.assign(this.requirementsCostEstimate, value)
-      : value;
-  }
-  @Action({rawError: true})
-  public getRequirementsCostEstimate(): RequirementsCostEstimateDTO | null{
-    return this.requirementsCostEstimate;
-  }
-
   @Action({rawError: true})
   public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
     return this.fairOpportunity;
@@ -611,7 +596,6 @@ export class AcquisitionPackageStore extends VuexModule {
     // this.periods = sessionData.periods;
     this.projectOverview = sessionData.projectOverview;
     // this.periodOfPerformance = sessionData.periodOfPerformance;
-    this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.classificationLevel = sessionData.classificationLevel;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
@@ -633,13 +617,6 @@ export class AcquisitionPackageStore extends VuexModule {
         typeof acquisitionPackage.current_environment === "object" ?
           (acquisitionPackage.current_environment as ReferenceColumn).value as string
           : acquisitionPackage.current_environment as string;
-
-      // TODO: check if req cost estimate reference gets added to acquisition package table. 
-      //  Otherwise, refactore below block.
-      const requirementsCostEstimateSysId =
-        typeof acquisitionPackage.requirements_cost_estimate === "object" ?
-          (acquisitionPackage.requirements_cost_estimate as ReferenceColumn).value as string
-          : acquisitionPackage.requirements_cost_estimate as string;
 
       const projectOverviewSysId = 
         typeof acquisitionPackage.project_overview === "object" ?
@@ -692,11 +669,6 @@ export class AcquisitionPackageStore extends VuexModule {
           (acquisitionPackage.contract_considerations as ReferenceColumn).value as string
           : acquisitionPackage.contract_considerations as string;
 
-      const reqCostEstimateSysId = 
-        typeof acquisitionPackage.requirements_cost_estimate === "object" ?
-          (acquisitionPackage.requirements_cost_estimate as ReferenceColumn).value as string
-          : acquisitionPackage.requirements_cost_estimate as string;
-
       const corSysId = 
         typeof acquisitionPackage.cor === "object" ?
           (acquisitionPackage.cor as ReferenceColumn).value as string
@@ -728,7 +700,6 @@ export class AcquisitionPackageStore extends VuexModule {
         sensitive_information: sensitiveInfoSysId,
         contract_type: contractTypeSysId,
         contract_considerations: contractConsiderationsSysId,
-        requirements_cost_estimate: reqCostEstimateSysId,
         evaluation_plan: evalPlanSysId,
         cor: corSysId,
         acor: aCorSysId,
@@ -768,13 +739,10 @@ export class AcquisitionPackageStore extends VuexModule {
         );
       }
 
-      if(requirementsCostEstimateSysId){
-        await IGCE.loadRequirementsCostEstimateDataById(
-          requirementsCostEstimateSysId
-        );
-      } else {
-        await IGCE.initializeRequirementsCostEstimate(); // initialize also sets the store data
-      }
+      // call below loads if available or initializes
+      await IGCE.loadRequirementsCostEstimateDataByPackageId(
+        this.acquisitionPackage?.sys_id as string
+      );
 
       if(organizationSysId) {
         const organization = await api.organizationTable.retrieve(
@@ -875,18 +843,6 @@ export class AcquisitionPackageStore extends VuexModule {
       } else {
         this.setContractConsiderations(
           initialContractConsiderations()
-        );
-      }
-
-      if(reqCostEstimateSysId) {
-        const requirementsCostEstimate = await api.requirementsCostEstimateTable.retrieve(
-          reqCostEstimateSysId
-        );
-        if(requirementsCostEstimate)
-          this.setRequirementsCostEstimate(requirementsCostEstimate);
-      } else {
-        this.setRequirementsCostEstimate(
-          defaultRequirementsCostEstimate()
         );
       }
 
@@ -1005,54 +961,13 @@ export class AcquisitionPackageStore extends VuexModule {
             acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
           }
 
-          this.setRequirementsCostEstimate({
-            has_DOW_and_PoP: "",
-            architectural_design_current_environment: {
-              option: "",
-              estimated_values: []
-            },
-            architectural_design_performance_requirements: {
-              option: "",
-              estimated_values: []
-            },
-            fee_specs: {
-              is_charged: "",
-              percentage: null
-            },
-            how_estimates_developed: {
-              cost_estimate_description: "",
-              previous_cost_estimate_comparison: {
-                options: "",
-                percentage: null
-              },
-              tools_used: "",
-              other_tools_used: ""
-            },
-            optimize_replicate: {
-              option: "",
-              estimated_values: []
-            },
-            surge_requirements: {
-              capabilities: "",
-              capacity: null
-            },
-            training: [],
-            travel: {
-              option: "",
-              estimated_values: []
-            }
-          });
-
           // this.setPeriods([]);
           // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initializeCurrentEnvironment();
           acquisitionPackage.current_environment = currentEnvironmentDTO.sys_id as string;
-          await IGCE.initializeRequirementsCostEstimate();
-          const requirementsCostEstimateDTO = await IGCE.getRequirementsCostEstimate();
-          acquisitionPackage.requirements_cost_estimate =
-            requirementsCostEstimateDTO.sys_id as string;
+          await IGCE.initializeRequirementsCostEstimate(acquisitionPackage.sys_id || "");
           const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
@@ -1112,7 +1027,6 @@ export class AcquisitionPackageStore extends VuexModule {
     // [StoreProperties.Periods]: api.periodTable,
     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
     // [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
-    [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
     [StoreProperties.CurrentEnvironment]: api.currentEnvironmentTable,
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
@@ -1129,7 +1043,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ProjectOverview]: "project_overview",
     // [StoreProperties.PeriodOfPerformance]: "period_of_performance",
     // [StoreProperties.Periods]: "periods",
-    [StoreProperties.RequirementsCostEstimate]: "requirements_cost_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
     [StoreProperties.ClassificationLevel]: "classification_level",
     [StoreProperties.CurrentEnvironment]: "current_environment",
@@ -1534,7 +1447,6 @@ export class AcquisitionPackageStore extends VuexModule {
     // this.periods = null;
     // this.periodOfPerformance = null;
     this.contractType = null;
-    this.requirementsCostEstimate = null;
     this.classificationLevel = null;
     this.totalBasePoPDuration = 0;
     this.taskOrderDetailsAlertClosed = false;
