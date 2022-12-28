@@ -410,6 +410,10 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
   classification_level: string;
   usage_description: string;
   need_for_entire_task_order_duration: string;
+  classified_information_types?: string; // EJY HERE HERE
+  type_of_delivery?: "" | "SHIPPED" | "PICK_UP";
+  type_of_mobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
+  type_of_mobility_other?: string;
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {

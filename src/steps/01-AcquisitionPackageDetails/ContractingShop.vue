@@ -9,7 +9,7 @@
             your JWCC task order?
           </h1>
           <div class="copy-max-width">
-            <p class="mb-0">
+            <p class="mb-6">
               Documents that are generated upon completion of this form are 
               intended for DITCO. If you plan to use another Contracting Office, 
               we recommend that you verify that they will accept DITCO templates 
@@ -25,9 +25,7 @@
                 Learn more
               </a>
             </p>
-          </div>
- 
-          <div class="mt-10">
+
             <ATATRadioGroup 
               id="ContractingShopChoice"
               name="ContractingShopChoice"
