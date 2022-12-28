@@ -366,20 +366,17 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       this.instanceData.forEach(instance=>{
         if(instance.labelShort === "Secret / IL6"){
           if(ClassificationRequirements.cdsSolution?.anticipated_need_or_usage){
-            const traffic = JSON
-              .parse(ClassificationRequirements.cdsSolution?.traffic_per_domain_pair)
             const object ={
               IGCE_title: "Cross-domain solution (CDS)",
               IGCE_description: ClassificationRequirements.cdsSolution?.anticipated_need_or_usage,
               sysIdCDS: ClassificationRequirements.cdsSolution?.sys_id || "",
-              monthly_price: traffic?.[0].dataQuantity,
+              monthly_price: "",
               isCloudServicePackage:false,
               sysIdClassificationInstance:"",
               sysIdServicesOffering:"",
               sysId:"",
               unit:"/month",
               trafficPerDomain:"update",
-              type: traffic?.[0].type
             }
             instance.offerings.push(object)
           }
@@ -406,7 +403,6 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     }
     return true;
   }
-
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter()
