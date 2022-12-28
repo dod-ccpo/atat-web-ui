@@ -22,12 +22,16 @@ import {
   storeDataToSession,
 } from "../helpers";
 import { AxiosRequestConfig } from "axios";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 const ATAT_PERIODS_DATA_KEY = "ATAT_PERIODS_DATA_KEY";
 
 const savePeriod = async (period: PeriodDTO): Promise<PeriodDTO> => {
   try {
+    debugger;
+    period = convertColumnReferencesToValues(period);
     const periodSysId = period.sys_id;
+
     const savedPeriod = periodSysId?.length
       ? await api.periodTable.update(periodSysId, period)
       : await api.periodTable.create(period);
@@ -127,10 +131,12 @@ export class PeriodsStore extends VuexModule {
         base_period: basePeriodSysId
       });
 
-      if(basePeriodSysId){   
-        const basePeriod = await api.periodTable.retrieve(basePeriodSysId);
-        if(basePeriod)
+      if (basePeriodSysId) {   
+        let basePeriod = await api.periodTable.retrieve(basePeriodSysId);
+        if (basePeriod) {
+          basePeriod = convertColumnReferencesToValues(basePeriod);
           periods.push(basePeriod);
+        }
       }
   
       if(periodOfPerformance.option_periods){
@@ -152,10 +158,11 @@ export class PeriodsStore extends VuexModule {
   
           const optionPeriods: PeriodDTO[] = await api.periodTable.getQuery(config);
   
-          if(optionPeriods.length)
-            periods.push(
-              ...optionPeriods
-            );
+          if (optionPeriods.length) {
+            debugger;
+            periods.push(...optionPeriods);
+
+          }
         }
       }
       this.setPeriods(periods);
