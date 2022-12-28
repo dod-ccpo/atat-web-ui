@@ -125,27 +125,29 @@ export class TaskOrderStore extends VuexModule {
         sysId.length > 0
           ? api.taskOrderTable.update(sysId, taskOrderForSave)
           : api.taskOrderTable.create(taskOrderForSave);
-      const savedTaskOrder = await saveTaskOrder;
+      let savedTaskOrder = await saveTaskOrder;
+      savedTaskOrder = convertColumnReferencesToValues(savedTaskOrder);
 
       const fundingReqSysId = this.taskOrder?.funding_requirement?.sys_id || "";
       const saveFundingRequirement =
         fundingReqSysId.length > 0
           ? api.fundingRequirementTable.update(fundingReqSysId, fundingRequirementForSave)
           : api.fundingRequirementTable.create(fundingRequirementForSave);
-      const savedFundingReq = await saveFundingRequirement;
+      let savedFundingReq = await saveFundingRequirement;
+      savedFundingReq = convertColumnReferencesToValues(savedFundingReq)
+
       savedTaskOrder.funding_requirement = savedFundingReq;
       // set the funding properties of task order dto for backward compatibility
       savedTaskOrder.incrementally_funded = savedFundingReq.incrementally_funded;
       savedTaskOrder.funds_obligated = savedFundingReq.funds_obligated;
       savedTaskOrder.acquisition_package = savedFundingReq.acquisition_package;
+
       savedTaskOrder.funding_plan = savedFundingReq.funding_plan;
       savedTaskOrder.funds_total = savedFundingReq.funds_total;
       this.setTaskOrder(savedTaskOrder);
 
       AcquisitionPackage.setFundingRequirement(savedFundingReq);
-      if (savedTaskOrder.funding_plan) {
-        await FinancialDetails.loadFundingPlanData();
-      }
+
       return savedTaskOrder;
     } catch (error) {
       throw new Error(`error saving TaskOrder ${error}`);
