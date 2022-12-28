@@ -865,6 +865,72 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
 
 
+export const IGCETrainingPathResolver = (current: string, direction: string): string =>{
+
+  const basePath = "requirements-cost-estimate/";
+  const igceTrainingPath = "training-estimate";
+  const gatherPriceEstimatesPath = "gather-price-estimates";
+  const surgeCapacityPath = "surge-capacity";
+
+  const hasTraining = dowHasTraining();
+  const isFirst = isFirstIGCETraining();
+  const isLast = isLastIGCETraining();
+
+  if(hasTraining) {   
+
+    if(direction === "next")
+      IGCE.setIgceTrainingIndex(IGCE.igceTrainingIndex + 1);
+    else
+      IGCE.setIgceTrainingIndex(IGCE.igceTrainingIndex - 1);
+
+    if(isFirst) {
+      if(direction === "next"){
+        return basePath + igceTrainingPath;
+      } else {
+        return basePath + gatherPriceEstimatesPath;
+      }
+    } else if(isLast && direction === "previous") {
+      return basePath + igceTrainingPath;
+    } else if(!isLast && current === routeNames.IGCETraining) {
+      return basePath + igceTrainingPath;
+    } else if(isLast) {
+      return basePath + surgeCapacityPath;
+    } else {
+      return basePath + gatherPriceEstimatesPath;
+    }
+  }
+
+  return current === routeNames.GatherPriceEstimates
+    ? basePath + surgeCapacityPath
+    : basePath + gatherPriceEstimatesPath;
+}
+
+const isFirstIGCETraining = (): boolean => {
+  const trainingIndex = IGCE.igceTrainingIndex;
+
+  return trainingIndex <= 0;
+}
+
+const isLastIGCETraining = (): boolean => {
+  const trainingOfferings = DescriptionOfWork.DOWObject.find(
+    item => item.serviceOfferingGroupId === "TRAINING"
+  );
+
+  const trainingIndex = IGCE.igceTrainingIndex;
+
+  return trainingOfferings?.otherOfferingData 
+    ? trainingIndex >= trainingOfferings.otherOfferingData.length - 1 : false;
+
+}
+
+const dowHasTraining = (): boolean => {
+  const trainingOfferings = DescriptionOfWork.DOWObject.find(
+    item => item.serviceOfferingGroupId === "TRAINING"
+  );
+
+  return trainingOfferings?.otherOfferingData 
+    ? trainingOfferings.otherOfferingData.length > 0 : false;
+}
 
 export const IGCESurgeCapabilities =  (current:string): string =>{
   const surgeCapacity =
@@ -1087,6 +1153,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
+  // IGCETrainingResolver
 };
 
 // add path resolvers here 
@@ -1097,6 +1164,7 @@ const pathResolvers: Record<string, StepPathResolver> = {
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   RequirementsPathResolver,
+  IGCETrainingPathResolver
 }
 
 export const InvokeRouteResolver = (
