@@ -411,11 +411,11 @@ export interface OtherServiceSummaryTableData {
 
 export interface TravelSummaryTableData {
   instanceNumber: number;
-  tripLocation: string;
-  durationInDays: string;
-  numberOfTravelers: string;
-  numberOfTrips: string;
-  selectedPeriods: string[];
+  trip_location: string;
+  selected_periods: string;
+  number_of_trips: string;
+  number_of_travelers: string;
+  duration_in_days: string;
 }
 
 export interface EnvInstanceSummaryTableData {

@@ -41,8 +41,8 @@
             :hide-default-footer="true"
           >
             <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.selectedPeriods="{ item }">
-              {{ createPeriodText(item.selectedPeriods) }}
+            <template v-slot:item.selected_periods="{ item }">
+              {{ createPeriodText(item.selected_periods) }}
             </template>
 
             <!-- eslint-disable vue/valid-v-slot -->
@@ -65,7 +65,7 @@
 
               <button
                 :id="'DeleteButton_' + item.instanceNumber"
-                @click="confirmDeleteInstance(item)"
+                @click="confirmDeleteModal(item)"
               >
                 <ATATSVGIcon name="remove" height="18" width="14" />
               </button>
@@ -111,7 +111,7 @@
               <ATATTextField
                 id="TripLocation"
                 label="Trip Location"
-                :value.sync="travelItem.tripLocation"
+                :value.sync="travelItem.trip_location"
               />
             </v-col>
           </v-row>
@@ -121,7 +121,7 @@
                 id="Duration"
                 label="Duration"
                 suffix="days"
-                :value.sync="travelItem.durationInDays"
+                :value.sync="travelItem.duration_in_days"
                 type="number"
               />
             </v-col>
@@ -130,7 +130,7 @@
                 id="NumberOfTravelers"
                 label="Number of travelers"
                 suffix="people"
-                :value.sync="travelItem.numberOfTravelers"
+                :value.sync="travelItem.number_of_travelers"
                 type="number"
               />
             </v-col>
@@ -139,7 +139,7 @@
                 id="NumberOfTrips"
                 label="Number of trips"
                 suffix="per period"
-                :value.sync="travelItem.numberOfTrips"
+                :value.sync="travelItem.number_of_trips"
                 type="number"
               />
             </v-col>
@@ -161,7 +161,7 @@
                 aria-describedby="PeriodsLabel"
                 ref="periodsCheckboxes"
                 :items="availablePeriodCheckboxItems"
-                :value.sync="travelItem.selectedPeriods"
+                :value.sync="travelItem.selected_periods"
                 :card="false"
                 class="copy-max-width"
               />
@@ -220,11 +220,11 @@ export default class Travel extends Mixins(SaveOnLeave) {
   public tableData: TravelSummaryTableData[] = [];
   public travelItem: TravelSummaryTableData = {
     instanceNumber: 0,
-    tripLocation: "",
-    durationInDays: "",
-    numberOfTravelers: "",
-    numberOfTrips: "",
-    selectedPeriods: [],
+    trip_location: "",
+    duration_in_days: "",
+    number_of_travelers: "",
+    number_of_trips: "",
+    selected_periods: "",
   };
   public isCreate = false;
   public showTravelFormDialog = false;
@@ -243,17 +243,17 @@ export default class Travel extends Mixins(SaveOnLeave) {
     return this.hasListings
       ? [
         { text: "", value: "instanceNumber", width: "50" },
-        { text: "Location", value: "tripLocation" },
-        { text: "Duration", value: "durationInDays" },
-        { text: "Number of travelers", value: "numberOfTravelers" },
-        { text: "Number of trips", value: "numberOfTrips" },
-        { text: "Performance period(s)", value: "selectedPeriods" },
+        { text: "Location", value: "trip_location" },
+        { text: "Duration", value: "duration_in_days" },
+        { text: "Number of travelers", value: "number_of_travelers" },
+        { text: "Number of trips", value: "number_of_trips" },
+        { text: "Performance period(s)", value: "selected_periods" },
         { text: "", value: "actions", width: "100" },
       ]
       : []
   }
 
-  get hasListings(): boolean{
+  get hasListings(): boolean {
     return this.tableData.length > 0;
   }
 
@@ -272,11 +272,11 @@ export default class Travel extends Mixins(SaveOnLeave) {
   public resetTravelItem(): void {
     this.travelItem = {
       instanceNumber: 0,
-      tripLocation: "",
-      durationInDays: "",
-      numberOfTravelers: "",
-      numberOfTrips: "",
-      selectedPeriods: [],
+      trip_location: "",
+      duration_in_days: "",
+      number_of_travelers: "",
+      number_of_trips: "",
+      selected_periods: "",
     };
   }
 
@@ -292,17 +292,25 @@ export default class Travel extends Mixins(SaveOnLeave) {
     this.setTableData();
   }
 
-  public confirmDeleteInstance(item: TravelSummaryTableData): void {
-    this.travelItem = item;
+  public confirmDeleteModal(item?: TravelSummaryTableData): void {
+    if (item){
+      this.travelItem = item;
+    } else {
+      this.deleteAll = true;
+    }
     this.showDeleteInstanceDialog = true;
     this.deleteInstanceModalTitle = this.deleteAll
       ? "Delete trips"
-      : "Delete trip to " + item.tripLocation + "?"
+      : "Delete trip to " + item?.trip_location + "?"
   }
 
   public deleteInstance(): void{
-    this.tableData.splice(this.travelItem.instanceNumber-1, 1);
-    this.setTableData();
+    if (this.deleteAll){
+      this.tableData = [];
+    } else {
+      this.tableData.splice(this.travelItem.instanceNumber-1, 1);
+      this.setTableData();
+    }
     this.showDeleteInstanceDialog = false;
   }
 

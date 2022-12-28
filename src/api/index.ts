@@ -54,6 +54,7 @@ import { XaaSEnvironmentInstanceAPI } from "@/api/xaasEnvironmentInstance";
 import { CrossDomainSolutionAPI } from "@/api/crossDomainSolution";
 import { GInvoicingApi } from "@/api/gInvoicing";
 import {IgceEstimateApi} from "@/api/igceEstimate";
+import { travelRequirementApi } from "./travelRequirement";
 
 export const api = {
 
@@ -113,7 +114,8 @@ export const api = {
   architecturalDesignRequirementTable: new ArchitecturalDesignRequirementAPI(),
   classifiedInformationTypeTable: new ClassifiedInformationTypeAPI(),
   xaaSEnvironmentInstanceTable: new XaaSEnvironmentInstanceAPI(),
-  crossDomainSolutionTable: new CrossDomainSolutionAPI()
+  crossDomainSolutionTable: new CrossDomainSolutionAPI(),
+  travelRequirementTable: new travelRequirementApi()
 }
 
 export default {

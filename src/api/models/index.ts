@@ -587,6 +587,15 @@ export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
   statement: string;
 }
 
+export interface TravelRequirementDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  trip_location: string;
+  selected_periods: string;
+  number_of_trips: string;
+  number_of_travelers: string;
+  duration_in_days: string;
+}
+
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
   csp: ReferenceColumn;

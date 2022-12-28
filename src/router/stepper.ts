@@ -811,6 +811,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.Travel,
         component: Travel,
+        additionalButtons: [
+          {
+            buttonText: "I don’t need CSP employees to travel",
+            buttonId: "DontNeedTravel",
+            buttonClass: "secondary",
+            actionName: "confirmDeleteModal",
+            emitText: "confirmDeleteTravel",
+          },
+        ]
       },
     ]
   },
