@@ -816,7 +816,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t need CSP employees to travel",
             buttonId: "DontNeedTravel",
             buttonClass: "secondary",
-            actionName: "confirmDeleteModal",
+            actionName: "confirmDeleteTravelAll",
             emitText: "confirmDeleteTravel",
           },
         ]

@@ -179,7 +179,7 @@
       okText="Delete"
       width="450"
       @ok="deleteInstance"
-      @cancelClicked="showDeleteInstanceDialog = false"
+      @cancelClicked="cancelDeleteModal"
     >
       <template #content>
         <p class="body" v-if="deleteAll">
@@ -196,7 +196,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { Checkbox, TravelSummaryTableData } from "types/Global";
 
@@ -229,7 +229,6 @@ export default class Travel extends Mixins(SaveOnLeave) {
   public isCreate = false;
   public showTravelFormDialog = false;
   public showDeleteInstanceDialog = false;
-  public deleteAll = false; 
   public deleteInstanceModalTitle = "";
   public availablePeriodCheckboxItems: Checkbox[] = [];
 
@@ -255,6 +254,17 @@ export default class Travel extends Mixins(SaveOnLeave) {
 
   get hasListings(): boolean {
     return this.tableData.length > 0;
+  }
+
+  get deleteAll(): boolean {
+    return DescriptionOfWork.confirmTravelDeleteAllVal;
+  }
+
+  @Watch("deleteAll")
+  public showDeleteAllModal(showModal: boolean): void {
+    if (showModal && this.hasListings){
+      this.confirmDeleteModal(); 
+    }
   }
 
   public createInstance(): TravelSummaryTableData {
@@ -295,9 +305,8 @@ export default class Travel extends Mixins(SaveOnLeave) {
   public confirmDeleteModal(item?: TravelSummaryTableData): void {
     if (item){
       this.travelItem = item;
-    } else {
-      this.deleteAll = true;
-    }
+    } 
+
     this.showDeleteInstanceDialog = true;
     this.deleteInstanceModalTitle = this.deleteAll
       ? "Delete trips"
@@ -307,11 +316,17 @@ export default class Travel extends Mixins(SaveOnLeave) {
   public deleteInstance(): void{
     if (this.deleteAll){
       this.tableData = [];
+      DescriptionOfWork.setConfirmTravelDeleteAll(false);
     } else {
       this.tableData.splice(this.travelItem.instanceNumber-1, 1);
       this.setTableData();
     }
     this.showDeleteInstanceDialog = false;
+  }
+
+  public cancelDeleteModal(): void{
+    this.showDeleteInstanceDialog = false
+    DescriptionOfWork.setConfirmTravelDeleteAll(false);
   }
 
   public addTravelItemToTable(): void {

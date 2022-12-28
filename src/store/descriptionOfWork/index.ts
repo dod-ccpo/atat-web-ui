@@ -1747,7 +1747,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   confirmOtherOfferingDelete = false;
-
+  confirmTravelDeleteAll = false;
   confirmServiceOfferingDelete = false;
 
   public get confirmServiceOfferingDeleteVal(): boolean {
@@ -1756,6 +1756,10 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   public get confirmOtherOfferingDeleteVal(): boolean {
     return this.confirmOtherOfferingDelete;
+  }
+
+  public get confirmTravelDeleteAllVal(): boolean {
+    return this.confirmTravelDeleteAll;
   }
 
   @Action
@@ -1774,6 +1778,15 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public doSetConfirmOtherOfferingDelete(bool: boolean): void {
     this.confirmOtherOfferingDelete = bool;
+  }
+
+  @Action
+  public setConfirmTravelDeleteAll(bool: boolean): void {
+    this.doSetConfirmTravelDeleteAll(bool);
+  }
+  @Mutation
+  public doSetConfirmTravelDeleteAll(bool: boolean): void {
+    this.confirmTravelDeleteAll = bool;
   }
 
   @Action
