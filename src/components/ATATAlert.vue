@@ -5,7 +5,7 @@
     class="_atat-alert"
     :class="getClasses"
     :id="id"
-    :style="{ 'max-width': maxWidth + 'px' }"
+    :style="[{ 'max-width': maxWidth + 'px' }, { 'min-width' : minWidth + 'px' }]"
   >
     <div
       class="_content d-flex"
@@ -26,7 +26,7 @@
           {{ getIcon() }}
         </i>
       </div>
-      <div>
+      <div class="width-100">
         <slot name="content"></slot>
         <div
           v-if="maxHeight"
@@ -85,6 +85,7 @@ export default class ATATAlert extends Vue {
   @Prop({default: "Alert"}) private id?: string;
   @Prop({default: ""}) private maxHeight?: string;
   @Prop({default: ""}) private maxWidth?: string;
+  @Prop({default: ""}) private minWidth?: string;
 
   /**
    * type: 1) info, 2) error, 3) warning, 4) success, 5) callout

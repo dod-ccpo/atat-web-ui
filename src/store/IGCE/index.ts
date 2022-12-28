@@ -2,18 +2,20 @@
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import {
-  IgceEstimateDTO,
-  ReferenceColumn,
-  RequirementsCostEstimateFlat,
-  RequirementsCostEstimateDTO, ContractTypeDTO
-} from "@/api/models";
+import {SingleMultiple, TrainingEstimate} from "../../../types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage from "../acquisitionPackage";
+import { AxiosRequestConfig } from "axios";
+import {
+  IgceEstimateDTO,
+  RequirementsCostEstimateFlat,
+  RequirementsCostEstimateDTO, 
+  ContractTypeDTO,
+  TrainingEstimateDTO
+} from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import {AxiosRequestConfig} from "axios";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
@@ -56,6 +58,17 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
   }
 }
 
+export const defaultTrainingEstimate = (): TrainingEstimate => {
+  return {
+    costEstimateType: "",
+    estimate: {
+      estimated_values: [],
+    },
+    estimatedTrainingPrice: "",
+    trainingOption: ""
+  };
+}
+
 export interface CostEstimate {
   labelShort: string,
   sysId: string,
@@ -70,6 +83,9 @@ export interface CostEstimate {
 })
 export class IGCEStore extends VuexModule {
   public requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
+  public initialized = false;
+  public igceTrainingIndex = -1;
+  public trainingItems: TrainingEstimate[] = [];
   public igceEstimateList: IgceEstimateDTO[] = [];
 
   @Action({rawError: true})
@@ -81,8 +97,86 @@ export class IGCEStore extends VuexModule {
 
   @Mutation
   public doReset(): void {
+    this.requirementsCostEstimate = null;
+    this.igceTrainingIndex = -1;
+    this.initialized = false;
+    this.trainingItems = [];
     this.requirementsCostEstimate = _.cloneDeep(defaultRequirementsCostEstimate());
     this.igceEstimateList = [];
+  }
+
+  @Action({rawError: true})
+  public async loadTrainingEstimatesFromPackage(packageId: string): Promise<void> {
+    const requestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + packageId,
+        sysparm_display_value: "false"
+      }
+    };
+    const trainingEstimates = await api.trainingEstimateTable.getQuery(requestConfig);
+
+    trainingEstimates.forEach(item => {
+      const trainingItem: TrainingEstimate = {
+        sysId: item.sys_id,
+        costEstimateType: item.training_unit,
+        estimate: JSON.parse(item.training_estimated_values),
+        estimatedTrainingPrice: item.estimated_price_per_training_unit,
+        trainingOption: item.training_option as SingleMultiple
+      };
+
+      this.trainingItems.push(trainingItem);
+    });
+  }
+
+  @Action({rawError: true})
+  public async setTrainingEstimate(value: TrainingEstimate): Promise<void> {
+    const objSysId = await this.saveTrainingEstimate(value);
+    this.doSetTrainingEstimate({
+      ...value,
+      sysId: objSysId
+    });
+  }
+
+  @Mutation
+  private doSetTrainingEstimate(value: TrainingEstimate): void {
+    if(this.trainingItems.length < this.igceTrainingIndex + 1)
+      this.trainingItems.push(value);
+    else
+      this.trainingItems[this.igceTrainingIndex] = value;
+  }
+
+  @Action({rawError: true})
+  public async saveTrainingEstimate(value: TrainingEstimate): Promise<string> {
+    let objSysId = "";
+
+    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id;
+
+    const trainingDTOItem: TrainingEstimateDTO = {
+      acquisition_package: packageId || "",
+      estimated_price_per_training_unit: value.estimatedTrainingPrice,
+      training_option: value.trainingOption,
+      training_estimated_values: JSON.stringify(value.estimate),
+      training_unit: value.costEstimateType
+    };
+
+    if(value.sysId){
+      await api.trainingEstimateTable.update(
+        value.sysId,
+        {
+          ...trainingDTOItem,
+          sys_id: value.sysId
+        }
+      );
+      objSysId = value.sysId;
+    } else {
+      const savedObject = await api.trainingEstimateTable.create(
+        trainingDTOItem
+      );
+
+      objSysId = savedObject.sys_id as string;
+    }
+
+    return objSysId;
   }
 
   @Action
@@ -107,6 +201,11 @@ export class IGCEStore extends VuexModule {
     await this.doSetRequirementsCostEstimate(
       await this.transformRequirementsCostEstimateFromFlatToTree(value));
     await this.saveRequirementsCostEstimate();
+  }
+
+  @Mutation
+  public setIgceTrainingIndex(value: number): void {
+    this.igceTrainingIndex = value;
   }
 
   @Mutation
@@ -178,6 +277,18 @@ export class IGCEStore extends VuexModule {
   }
 
   @Action
+  public async initializeRequirementsCostEstimate(acqPackageId: string): Promise<void> {
+    const requirementsCostEstimateFlat =
+      await api.requirementsCostEstimateTable
+        .create(await this.transformRequirementsCostEstimateFromTreeToFlat(
+          {...defaultRequirementsCostEstimate(), acquisition_package: acqPackageId }));
+    const requirementsCostEstimateDTO =
+      await this.transformRequirementsCostEstimateFromFlatToTree(
+        requirementsCostEstimateFlat)
+    await this.doSetRequirementsCostEstimate(requirementsCostEstimateDTO);
+
+  }
+
   private async transformRequirementsCostEstimateFromTreeToFlat(
     rceTree: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateFlat> {
     return {
@@ -218,18 +329,6 @@ export class IGCEStore extends VuexModule {
       sys_updated_by: rceTree.sys_updated_by,
       sys_updated_on: rceTree.sys_updated_on
     }
-  }
-
-  @Action
-  public async initializeRequirementsCostEstimate(acqPackageId: string): Promise<void> {
-    const requirementsCostEstimateFlat =
-      await api.requirementsCostEstimateTable
-        .create(await this.transformRequirementsCostEstimateFromTreeToFlat(
-          {...defaultRequirementsCostEstimate(), acquisition_package: acqPackageId }));
-    const requirementsCostEstimateDTO =
-      await this.transformRequirementsCostEstimateFromFlatToTree(
-        requirementsCostEstimateFlat)
-    await this.doSetRequirementsCostEstimate(requirementsCostEstimateDTO);
   }
 
   /**
