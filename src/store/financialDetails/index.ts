@@ -7,10 +7,11 @@ import { baseGInvoiceData, fundingIncrement, IFPData } from "types/Global";
 import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers";
 import {
   FundingIncrementDTO, FundingPlanDTO, FundingRequestDTO, FundingRequestFSFormDTO,
-  FundingRequestMIPRFormDTO, TaskOrderDTO
+  FundingRequestMIPRFormDTO, ReferenceColumn, TaskOrderDTO
 } from "@/api/models";
 import TaskOrder from "../taskOrder";
 import api from "@/api";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 const ATAT_FINANCIAL_DETAILS__KEY = "ATAT_FINANCIAL_DETAILS__KEY";
 
@@ -81,6 +82,7 @@ export class FinancialDetailsStore extends VuexModule {
   fundingPlan: FundingPlanDTO = this.fundingPlanValue;
   estimatedTaskOrderValue: string | undefined = "";
   miprNumber: string | null = null;
+  isIncrementallyFunded: string | undefined = "";
   initialFundingIncrementStr: string | undefined = "";
   fundingIncrements: fundingIncrement[] = [];
 
@@ -142,7 +144,6 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-
     if (this.initialized) {
       return;
     }
@@ -180,24 +181,42 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action({ rawError: true })
   public async loadFundingPlanData(): Promise<void> {
-
     // get funding plan sysID from taskorder table if it exists
     if (!this.fundingPlan.sys_id) {
       const taskOrder = TaskOrder.value;
-      const fundingPlanSysId = taskOrder.funding_plan;
+      const sysId = typeof taskOrder.funding_plan === "object"
+        ? (taskOrder.funding_plan as ReferenceColumn).value as string
+        : taskOrder.funding_plan;
+      const fundingPlanSysId = sysId;
 
       if (fundingPlanSysId.length > 0) {
-        const fundingPlan = await api.fundingPlanTable.retrieve(fundingPlanSysId as string);
-        this.setFundingPlan(fundingPlan);
-
-        this.setEstimatedTaskOrderValue(fundingPlan.estimated_task_order_value);
-        this.setInitialAmount(fundingPlan.initial_amount);
-        
-        const remainingAmountIncrements = fundingPlan.remaining_amount_increments;
-        await this.setFundingIncrements(remainingAmountIncrements);
+        this.setFundingPlanData(fundingPlanSysId);
       } 
     }
     return;
+  }
+
+  @Action({ rawError: true })
+  public async setFundingPlanData(fundingPlanSysId: string): Promise<void> {
+    let fundingPlan = await api.fundingPlanTable.retrieve(fundingPlanSysId as string);
+    fundingPlan = convertColumnReferencesToValues(fundingPlan);
+    this.setFundingPlan(fundingPlan);
+
+    this.setEstimatedTaskOrderValue(fundingPlan.estimated_task_order_value);
+    this.setInitialAmount(fundingPlan.initial_amount);
+    
+    const remainingAmountIncrements = fundingPlan.remaining_amount_increments;
+    await this.setFundingIncrements(remainingAmountIncrements);
+  }
+
+  @Action({ rawError: true })
+  public async setIsIncrementallyFunded(val: string): Promise<void> {
+    this.doSetIsIncrementallyFunded(val);
+  }
+
+  @Mutation
+  public doSetIsIncrementallyFunded(val: string): void {
+    this.isIncrementallyFunded = val;
   }
 
   @Mutation
@@ -285,8 +304,8 @@ export class FinancialDetailsStore extends VuexModule {
       }
 
       Object.assign(this.fundingPlan, IFPData);
-      const savedFundingPlan = await this.saveFundingPlan();
-
+      let savedFundingPlan = await this.saveFundingPlan();
+      savedFundingPlan = convertColumnReferencesToValues(savedFundingPlan);
       // add sysIds to this.fundingIncrements
       const remainingAmountIncrements = savedFundingPlan.remaining_amount_increments
       this.setFundingIncrements(remainingAmountIncrements);
@@ -325,7 +344,9 @@ export class FinancialDetailsStore extends VuexModule {
       ? api.fundingPlanTable.update(sysId, this.fundingPlan)
       : api.fundingPlanTable.create(this.fundingPlan);
 
-    const savedFundingPlan = await saveFundingPlan;
+    let savedFundingPlan = await saveFundingPlan;
+    savedFundingPlan = convertColumnReferencesToValues(savedFundingPlan);
+
     this.setFundingPlan(savedFundingPlan)
     return savedFundingPlan;
   }

@@ -540,7 +540,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-
       if(this.totalPoPDuration > this.maxTotalPoPDuration)
         return false;
 

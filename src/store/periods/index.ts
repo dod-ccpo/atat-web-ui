@@ -28,8 +28,7 @@ const ATAT_PERIODS_DATA_KEY = "ATAT_PERIODS_DATA_KEY";
 
 const savePeriod = async (period: PeriodDTO): Promise<PeriodDTO> => {
   try {
-    debugger;
-    period = convertColumnReferencesToValues(period);
+    // period = convertColumnReferencesToValues(period);
     const periodSysId = period.sys_id;
 
     const savedPeriod = periodSysId?.length
@@ -96,6 +95,7 @@ export class PeriodsStore extends VuexModule {
 
   @Action({rawError: true})
   public async setPeriodOfPerformance(value: PeriodOfPerformanceDTO): Promise<void> {
+    value = convertColumnReferencesToValues(value);
     this.doSetPeriodOfPerformance(value);
     await this.savePeriodOfPerformance(value);
   }
@@ -112,19 +112,14 @@ export class PeriodsStore extends VuexModule {
 
   @Action({rawError: true})
   public async loadPeriodOfPerformanceFromSysId(sysId: string): Promise<void> {
-    const periodOfPerformance = await api.periodOfPerformanceTable.retrieve(sysId);
+    let periodOfPerformance = await api.periodOfPerformanceTable.retrieve(sysId);
+    periodOfPerformance = convertColumnReferencesToValues(periodOfPerformance);
 
     this.setPeriods([]);
 
-    if(periodOfPerformance){
-
-
+    if (periodOfPerformance) {
       const periods: PeriodDTO[] = [];
-
-      const basePeriodSysId = 
-        typeof periodOfPerformance.base_period === "object"
-          ? (periodOfPerformance.base_period as ReferenceColumn).value as string
-          : periodOfPerformance.base_period as string;
+      const basePeriodSysId = periodOfPerformance.base_period as string;
 
       await this.setPeriodOfPerformance({
         ...periodOfPerformance,
@@ -159,7 +154,6 @@ export class PeriodsStore extends VuexModule {
           const optionPeriods: PeriodDTO[] = await api.periodTable.getQuery(config);
   
           if (optionPeriods.length) {
-            debugger;
             periods.push(...optionPeriods);
 
           }
@@ -242,7 +236,7 @@ export class PeriodsStore extends VuexModule {
         return results;
 
       }
-
+      // return this.periods;
       return [];
       
     } catch (error) {
@@ -258,8 +252,12 @@ export class PeriodsStore extends VuexModule {
     if(this.periodOfPerformance && this.periodOfPerformance.sys_id 
       && this.periodOfPerformance.sys_id.length > 0)
     {
-      const periodOfPerformance =  await 
-      api.periodOfPerformanceTable.retrieve(this.periodOfPerformance.sys_id);
+      let periodOfPerformance = await api.periodOfPerformanceTable.retrieve(
+        this.periodOfPerformance.sys_id
+      );
+
+      periodOfPerformance = convertColumnReferencesToValues(periodOfPerformance);
+
       this.setPeriodOfPerformance(periodOfPerformance);
 
       if(periodOfPerformance && this.periods != null){
@@ -306,15 +304,9 @@ export class PeriodsStore extends VuexModule {
       if (removeRequests) {
         await Promise.all(removeRequests);
       }
-
       const saveRequests = periods.map((period) => savePeriod(period));
       const savedPeriods = await Promise.all(saveRequests);
       this.setPeriods(savedPeriods);
-
-      // await AcquisitionPackage.saveCollection({
-      //   collection: this.periods || [],
-      //   property: StoreProperties.Periods,
-      // });
 
       const basePeriod = savedPeriods.find(
         (period) => period.period_type === "BASE"
