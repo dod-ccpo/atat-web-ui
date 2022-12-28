@@ -113,7 +113,6 @@ export class IGCEStore extends VuexModule {
         sysparm_display_value: "false"
       }
     };
-    debugger;
     const trainingEstimates = await api.trainingEstimateTable.getQuery(requestConfig);
 
     trainingEstimates.forEach(item => {
@@ -160,7 +159,7 @@ export class IGCEStore extends VuexModule {
       training_estimated_values: JSON.stringify(value.estimate),
       training_unit: value.costEstimateType
     };
-    debugger;
+
     if(value.sysId){
       await api.trainingEstimateTable.update(
         value.sysId,
