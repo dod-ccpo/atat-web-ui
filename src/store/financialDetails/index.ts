@@ -152,9 +152,7 @@ export class FinancialDetailsStore extends VuexModule {
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
     }
-    else{
-      await this.loadFundingPlanData();
-    }
+
     storeDataToSession(
       this,
       this.sessionProperties,
@@ -177,23 +175,6 @@ export class FinancialDetailsStore extends VuexModule {
 
     const savedForm = await this.saveFundingRequestFSForm(formToSave);
     this.setFundingRequestFSForm(savedForm);
-  }
-
-  @Action({ rawError: true })
-  public async loadFundingPlanData(): Promise<void> {
-    // get funding plan sysID from taskorder table if it exists
-    if (!this.fundingPlan.sys_id) {
-      const taskOrder = TaskOrder.value;
-      const sysId = typeof taskOrder.funding_plan === "object"
-        ? (taskOrder.funding_plan as ReferenceColumn).value as string
-        : taskOrder.funding_plan;
-      const fundingPlanSysId = sysId;
-
-      if (fundingPlanSysId.length > 0) {
-        this.setFundingPlanData(fundingPlanSysId);
-      } 
-    }
-    return;
   }
 
   @Action({ rawError: true })

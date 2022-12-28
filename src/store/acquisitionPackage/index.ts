@@ -544,15 +544,11 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setFundingRequirement(value: FundingRequirementDTO): void {
-    // this.fundingRequirement = this.fundingRequirement
-    //   ? Object.assign(this.fundingRequirement, value)
-    //   : value;
-
     if (this.acquisitionPackage && !this.acquisitionPackage.funding_requirement) {
       this.acquisitionPackage.funding_requirement = value.sys_id || "";
     }
-    
   }
+
   @Action({rawError: true})
   public getFundingRequirement(): FundingRequirementDTO | null{
     return this.fundingRequirement;

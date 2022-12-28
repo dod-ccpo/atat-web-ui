@@ -147,9 +147,7 @@ export class TaskOrderStore extends VuexModule {
       this.setTaskOrder(savedTaskOrder);
 
       AcquisitionPackage.setFundingRequirement(savedFundingReq);
-      if (savedTaskOrder.funding_plan) {
-        await FinancialDetails.loadFundingPlanData();
-      }
+
       return savedTaskOrder;
     } catch (error) {
       throw new Error(`error saving TaskOrder ${error}`);
