@@ -372,7 +372,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
               sysIdCDS: ClassificationRequirements.cdsSolution?.sys_id || "",
               monthly_price: "",
               isCloudServicePackage:false,
-              sysIdClassificationInstance:"",
+              sysIdClassificationInstance:instance.sysId,
               sysIdServicesOffering:"",
               sysId:"",
               unit:"/month",
