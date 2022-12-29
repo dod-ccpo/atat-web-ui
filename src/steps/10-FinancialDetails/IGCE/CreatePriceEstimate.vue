@@ -22,6 +22,7 @@
             </p>
           </div>
         <ATATAlert
+          id="CalculatorCallout"
           type="callout"
           :showIcon="false"
           class="pa-8"
@@ -100,6 +101,7 @@
         </ATATAlert>
 
         <ATATAlert 
+          id="EstimateAlert"
           type="warning"
           class="mt-10"
         >
