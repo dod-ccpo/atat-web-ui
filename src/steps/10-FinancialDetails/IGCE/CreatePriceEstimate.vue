@@ -22,6 +22,7 @@
             </p>
           </div>
         <ATATAlert
+          id="CalculatorCallout"
           type="callout"
           :showIcon="false"
           class="pa-8"
@@ -34,9 +35,10 @@
                 <v-list-item>
                   <span class="_step-circle">1</span>
                   <v-list-item-content>
-                    Choose one or more of the CSP pricing calculators below to
-                    help you calculate your estimated price for JWCC cloud
-                    services and support.
+                    Choose one or more of the Cloud Service Provider (CSP) pricing 
+                    calculators below to help you calculate your estimated price 
+                    for JWCC cloud services and support. Depending on your selection, 
+                    you may need to register for an account to view the pricing calculator.
                     <v-card 
                       v-for="(csp,idx) in csps" 
                       :key="idx" 
@@ -52,10 +54,15 @@
                       </div>
                       <h3 class="_csp-name"> {{ csp.name }}</h3>
                       <div class="_csp-link-div">
-                        <a :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
-                          class="_csp-link"
-                          @click="showAlert(csp.name)"> 
-                          View calculator
+
+                        <a v-for="(link, index) in csp.links"
+                          :key="index" 
+                          :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
+                          class="_csp-link d-block"
+                          :href="link.url"
+                          target="_blank"
+                        >
+                          {{ link.text }}
                           <span class="_text-decoration-none ml-1">
                           <ATATSVGIcon
                             :id="csp.iconName.toUpperCase() + 'LaunchIcon'"
@@ -92,6 +99,20 @@
             </v-list>
           </template>
         </ATATAlert>
+
+        <ATATAlert 
+          id="EstimateAlert"
+          type="warning"
+          class="mt-10"
+        >
+          <template v-slot:content>
+            JWCC CSP’s Pricing Calculator provides estimates for services only. 
+            Final pricing for services, including potential additional discounts, 
+            will be provided during the Task Order competition process.
+          </template>
+
+        </ATATAlert>
+
       </v-col>
     </v-row>
   </v-container>
@@ -120,25 +141,57 @@ export default class CreatePriceEstimate extends Vue {
       name: "Amazon Web Services (AWS)",
       iconName: "aws",
       width: "64",
-      height: "39" 
+      height: "39",
+      links: [
+        {
+          text: "View calculator",
+          url: "https://calculator.aws/#/?token=4ec5ddaefb8454253ef740c67969aae0&volume_discount=0"
+        }
+      ]
     },
     {
       name: "Google Cloud Platform (GCP)",
       iconName: "gcp",
       width: "64",
-      height: "57 " 
+      height: "57",
+      links: [
+        {
+          text: "IL2 calculator",
+          url: "https://portal.gov.gss.google/il2/",
+        },
+        {
+          text: "IL4 calculator",
+          url: "https://portal.gov.gss.google/il4/calc.html",
+        },
+        {
+          text: "IL6 calculator",
+          url: "https://portal.gov.gss.google/il5/calc.html",
+        }
+      ] 
     },
     {
       name: "Microsoft Azure",
       iconName: "azure",
       width: "64",
-      height: "50" 
+      height: "50",
+      links: [
+        {
+          text: "View calculator",
+          url: "https://azure.microsoft.com/en-us/pricing/calculator/",
+        }
+      ]
     },                
     {
       name: "Oracle Cloud",
       iconName: "oracle",
       width: "64",
-      height: "41" 
+      height: "41",
+      links: [
+        {
+          text: "View calculator",
+          url: "https://cloud.nsg.oracle.com/ce/jwcc/index.html",
+        }
+      ]
     }
   ]
   public showAlert(csp: string):void {
