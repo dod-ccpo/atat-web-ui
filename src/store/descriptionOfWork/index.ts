@@ -36,6 +36,7 @@ import {
   OtherServiceOfferingData,
   StorageUnit,
   RadioButton,
+  SecurityRequirement,
 } from "../../../types/Global";
 
 import _, { differenceWith, first, last } from "lodash";
@@ -119,6 +120,7 @@ const saveOrUpdateSelectedServiceOffering =
       return objSysId;
     };
 
+// EJY - use this for simple 7 instances
 const saveOrUpdateClassificationInstance =
     async (
       classificationInstance: DOWClassificationInstance
@@ -161,6 +163,7 @@ const saveOrUpdateClassificationInstance =
       return objSysId;
     };
 
+// EJY HERE - use this for saving security requirements for other service offerings
 const saveOrUpdateOtherServiceOffering =
     async (
       serviceOffering: OtherServiceOfferingData,
@@ -189,6 +192,7 @@ const saveOrUpdateOtherServiceOffering =
       tempObject.storage_amount = serviceOffering.storageAmount;
       tempObject.storage_type = serviceOffering.storageType;
       tempObject.storage_unit = serviceOffering.storageUnit;
+      tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
 
       if(serviceOffering.sysId)
         tempObject.sys_id = serviceOffering.sysId;
@@ -708,6 +712,55 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public doSetShowSecurityRequirements(value: boolean): void {
     this.showSecurityRequirements = value;
+  }
+
+  // EJY WORKING HERE
+  @Action({rawError: true})
+  public saveSecurityRequirements(securityReqs: SecurityRequirement[]): void {
+    // pragma: allowlist secret
+    const secretSysId = ClassificationRequirements.classificationSecretSysId;
+    // pragma: allowlist secret
+    const topSecretSysId = ClassificationRequirements.classificationTopSecretSysId;
+
+    // pragma: allowlist secret
+    const secretReqsObj = securityReqs.find(obj => obj.type === "SECRET");
+    // pragma: allowlist secret
+    const secretReqs = (secretReqsObj?.classification_information_type)?.join(",");
+
+    const offeringGroupObj = this.DOWObject.find(
+      obj => obj.serviceOfferingGroupId === this.currentGroupId
+    );
+    const isCloudSupportService = 
+      DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+    
+    debugger;
+    if (offeringGroupObj && isCloudSupportService) {
+      // save other offering instances with secret + classification level
+      offeringGroupObj.otherOfferingData?.forEach(instance => {
+        if (instance.classificationLevel === secretSysId) {
+          instance.classifiedInformationTypes = secretReqs;
+          saveOrUpdateOtherServiceOffering(instance, this.currentGroupId.toLocaleLowerCase());
+        }
+      })
+    } else if (offeringGroupObj) {
+      // save classification instances with secret + classification level
+      const serviceOfferingObj = offeringGroupObj.serviceOfferings.find(
+        obj => obj.name === this.currentOfferingName
+      );
+      if (serviceOfferingObj) {
+        serviceOfferingObj.classificationInstances?.forEach(instance => {
+          if (instance.classificationLevelSysId === secretSysId) {
+            instance.classifiedInformationTypes = secretReqs;
+            saveOrUpdateClassificationInstance(instance);
+          }
+        })
+      }
+
+
+    }
+    
+
+    debugger;
   }
 
   public DOWHasArchitecturalDesignNeeds: boolean | null = null;

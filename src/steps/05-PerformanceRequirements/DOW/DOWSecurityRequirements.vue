@@ -100,6 +100,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         // TODO FUTURE TICKET save security requirements to store/snow
         // see note below about isCloudSupportService - pass to method in DOW store
+        DescriptionOfWork.saveSecurityRequirements(this.currentData);
       }
     } catch (error) {
       console.log(error);

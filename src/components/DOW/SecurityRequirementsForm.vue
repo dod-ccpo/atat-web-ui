@@ -14,6 +14,7 @@
     <SecurityRequirementsCheckboxes
       v-if="hasSecret"
       :hasSecret="hasSecret"
+      :isDOW="isDOW"
       :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
       :selectedSecurityRequirements.sync="_selectedSecretSecurityRequirements"
     />
@@ -21,6 +22,7 @@
     <SecurityRequirementsCheckboxes
       v-if="hasTopSecret"
       :hasTopSecret="hasTopSecret"
+      :isDOW="isDOW"
       :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
       :selectedSecurityRequirements.sync="_selectedTopSecretSecurityRequirements"
     />
