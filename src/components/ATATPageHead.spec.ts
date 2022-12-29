@@ -35,13 +35,13 @@ describe("Testing ATATPageHead Component", () => {
     expect(headerSpan.exists()).toBe(true);
     expect(headerSpan.text()).toBe(headline)
   });
-
-  it("expected person button display in page head", async () => {
-    const personButton = wrapper.find("#Person_Button");
-    expect(personButton.exists()).toBe(true);
-    const personIcon = personButton.find(".v-icon");
-    expect (personIcon.text()).toBe("person_add_alt_1");
-  });
+  // DMG Test was failing after comment removing non-functional links and buttons 12/29/2022
+  // it("expected person button display in page head", async () => {
+  //   const personButton = wrapper.find("#Person_Button");
+  //   expect(personButton.exists()).toBe(true);
+  //   const personIcon = personButton.find(".v-icon");
+  //   expect (personIcon.text()).toBe("person_add_alt_1");
+  // });
 
   it("expected more button display in page head", async () => {
     const moreButton = wrapper.find("#MoreMenuButton");
