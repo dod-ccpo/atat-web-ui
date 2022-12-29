@@ -160,7 +160,7 @@ export default class ATATSearch extends Vue {
   @Prop({ default: () => [] }) private rules?: Array<unknown>;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
-  @Prop({ default: "G-Invoicing" }) private searchType?: string;
+  @Prop({ default: "" }) private searchType?: string;
   @Prop({ default: "" }) private buttonText?: string;
 
   @PropSync("value", { default: "" }) public _value!: string;
@@ -195,6 +195,7 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
+    debugger;
     if (this.isSimulation && this.errorMessages.length === 0 && this._value) {
 
       // simulate success on first search, error on second.
