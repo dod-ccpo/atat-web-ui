@@ -277,7 +277,7 @@ export class IGCEStore extends VuexModule {
     };
   }
 
-  @Action
+  @Action({rawError: true })
   public async initializeRequirementsCostEstimate(acqPackageId: string): Promise<void> {
     const requirementsCostEstimateFlat =
       await api.requirementsCostEstimateTable
@@ -289,7 +289,8 @@ export class IGCEStore extends VuexModule {
     await this.doSetRequirementsCostEstimate(requirementsCostEstimateDTO);
 
   }
-
+  
+  @Action({rawError: true })
   private async transformRequirementsCostEstimateFromTreeToFlat(
     rceTree: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateFlat> {
     return {
