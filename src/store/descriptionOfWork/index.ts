@@ -767,8 +767,8 @@ export class DescriptionOfWorkStore extends VuexModule {
         type: "TOPSECRET",
         classification_information_type: [],
       }
-
     ];
+
     const secretSysId = ClassificationRequirements.classificationSecretSysId;
 
     const isCloudSupportService = 
@@ -779,7 +779,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     );
 
     if (offeringGroupObj && isCloudSupportService) {
-      //
       offeringGroupObj.otherOfferingData?.forEach(instance => {
         if (instance.classificationLevel === secretSysId) {
           const secretObj = securityReqs.find(obj => obj.type === "SECRET");

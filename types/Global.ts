@@ -281,7 +281,7 @@ export interface DOWClassificationInstance {
   selectedPeriods?: string[];
   labelLong?: string;
   labelShort?: string;
-  classifiedInformationTypes?: string; // EJY   HERE HERE
+  classifiedInformationTypes?: string;
   typeOfDelivery?: "" | "SHIPPED" | "PICK_UP";
   typeOfMobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   typeOfMobilityOther?: string;
@@ -389,7 +389,7 @@ export interface OtherServiceOfferingData {
   serviceType?: string;
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
-  classifiedInformationTypes?: string; // EJY  HERE HERE
+  classifiedInformationTypes?: string;
 }
 
 export interface OtherServiceSummaryTableData {
