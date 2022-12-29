@@ -60,7 +60,7 @@
 // requirements cost estimate csp cards
 ._calculator-card {
   width: 169px !important;
-  height: 205px;
+  height: 245px;
   max-width: 169px;
   margin: 10px 16px 20px 0px;
   box-sizing: border-box;
@@ -80,29 +80,27 @@
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    height: 45%;
+    height: 84px;
   }
   ._csp-name {
-    position: absolute;
-    top: 45%;
     font-weight: 500;
     text-align: center;
     font-family: $heading-font;
-   
+    height: 52px;
   }
+
   ._csp-link-div {
     ._csp-link{
       display: flex !important;
       justify-content: center !important;
       align-items: center;
       text-decoration: none;
+      margin: 8px 0;
       &:hover {
         text-decoration: underline;
       }
     }
     width: 100%;
-    margin-top: auto !important;
-    position: absolute;
-    bottom: 16px;
+    margin-top: 8px;
   }
 }
