@@ -34,6 +34,27 @@ export const retrieveSession = (sessionKey: string): string | null=> {
   return sessionData;
 };
 
+/**
+ * Converts a given period's unit to months, based on a period's unit and the
+ * count of number of units.
+ * @param numberOfUnits
+ * @param unit
+ */
+export const convertPeriodUnitQuantityToMonths = (numberOfUnits: number, unit:string): number => {
+  switch(unit) {
+  case "YEAR":
+    return numberOfUnits * 12
+  case "MONTH":
+    return numberOfUnits
+  case "WEEK":
+    return Math.ceil(numberOfUnits/4.345)
+  case "DAY":
+    return Math.ceil(numberOfUnits/30.4167)
+  default:
+    return 0
+  }
+}
+
 const storeHelperFunctions = {
   retrieveSession
 };
