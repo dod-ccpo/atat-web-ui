@@ -25,16 +25,16 @@
                 id="currentEnvArchEstimates"
                 legend="How do you want to estimate a price for this requirement?"
                 :items="estimateOptions"
-                :value.sync="currentEnvCostEstimate.option"
+                :value.sync="currEnvOption"
                 :rules="[$validators.required('Please select an option')]"
               />
             </div>
 
-            <div v-if="currentEnvCostEstimate.option !== ''" class="mt-8">
+            <div v-if="currEnvOption !== ''" class="mt-8">
               <ATATSingleAndMultiplePeriods
                 :periods.sync="periods"
-                :isMultiple="currentEnvCostEstimate.option === 'MULTIPLE'"
-                :values.sync="currentEnvCostEstimate.estimated_values"
+                :isMultiple="currEnvOption === 'MULTIPLE'"
+                :values.sync="currEnvEstValues"
                 :singlePeriodTooltipText="singlePeriodTooltipText"
                 :multiplePeriodTooltipText = "multiplePeriodTooltipText"
                 :showMultiplePeriodTooltip="true"
@@ -54,16 +54,16 @@
                 id="perfReqArchEstimates"
                 legend="How do you want to estimate a price for this requirement?"
                 :items="estimateOptions"
-                :value.sync="perfReqCostEstimate.option"
+                :value.sync="perfReqOption"
                 :rules="[$validators.required('Please select an option')]"
               />
             </div>
 
-            <div v-if="perfReqCostEstimate.option !== ''" class="mt-8">
+            <div v-if="perfReqOption !== ''" class="mt-8">
               <ATATSingleAndMultiplePeriods
                 :periods.sync="periods"
-                :isMultiple="perfReqCostEstimate.option === 'MULTIPLE'"
-                :values.sync="perfReqCostEstimate.estimated_values"
+                :isMultiple="perfReqOption === 'MULTIPLE'"
+                :values.sync="perfReqEstValues"
                 :singlePeriodTooltipText="singlePeriodTooltipText"
                 :multiplePeriodTooltipText = "multiplePeriodTooltipText"
                 :showMultiplePeriodTooltip="true"
@@ -81,16 +81,15 @@
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { RadioButton } from "types/Global";
+import {RadioButton, SingleMultiple} from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
 import { hasChanges } from "@/helpers";
 import Periods from "@/store/periods";
 import { EstimateOptionValueDTO, PeriodDTO } from "@/api/models";
-import IGCEStore, { defaultRequirementsCostEstimate } from "@/store/IGCE";
+import IGCEStore from "@/store/IGCE";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import _ from "lodash";
 
 @Component({
   components: {
@@ -102,9 +101,6 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
   private bothNeed = false;
   private DOWHasArchDesignNeeds: boolean | null = false;
   private currentEnvHasArchDesignNeeds: boolean | null = false;
-
-  private costEstimate = defaultRequirementsCostEstimate();
-
   private periods: PeriodDTO[] | null = [];
   private singlePeriodTooltipText = "This estimate will be applied to all performance periods.";
   private multiplePeriodTooltipText = `Customize a price estimate for 
@@ -116,15 +112,11 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
       : "problem or use-case"
   }
 
-  private currentEnvCostEstimate: EstimateOptionValueDTO = {
-    option: "",
-    estimated_values: []
-  };
+  private currEnvOption: SingleMultiple = "";
+  private currEnvEstValues: string[] = [""];
 
-  private perfReqCostEstimate: EstimateOptionValueDTO = {
-    option: "",
-    estimated_values: []
-  };
+  private perfReqOption: SingleMultiple = "";
+  private perfReqEstValues: string[] = [""];
 
   private estimateOptions: RadioButton[] = [
     {
@@ -139,27 +131,47 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
     },
   ];
 
-  @Watch("currentEnvCostEstimate", {deep: true})
-  private currentEnvCostEstimateChangeSelection(newVal: EstimateOptionValueDTO): void {
-    if(newVal.option === "SINGLE"){
-      this.currentEnvCostEstimate.estimated_values.length = 1;
+  @Watch("currEnvOption", {deep: true})
+  private currentEnvCostEstimateChangeSelection(newVal: string): void {
+    if(newVal !== this.savedCurrEnvData.option){
+      this.currEnvEstValues = [];
     }
   }
 
-  @Watch("currentEnvCostEstimate", {deep: true})
-  private perfReqCostEstimateChangeSelection(newVal: EstimateOptionValueDTO): void {
-    if(newVal.option === "SINGLE"){
-      this.perfReqCostEstimate.estimated_values.length = 1;
+  @Watch("perfReqOption", {deep: true})
+  private perfReqCostEstimateChangeSelection(newVal: string): void {
+    if(newVal !== this.savedPerfReqData.option){
+      this.perfReqEstValues = [];
     }
   }
 
-  public savedData: EstimateOptionValueDTO[] = [];
-  get currentData(): EstimateOptionValueDTO[] {
-    return [this.currentEnvCostEstimate, this.perfReqCostEstimate];
+  public savedCurrEnvData: EstimateOptionValueDTO = {
+    option:"",
+    estimated_values:[]
+  };
+
+  public savedPerfReqData: EstimateOptionValueDTO = {
+    option:"",
+    estimated_values:[]
+  };
+
+  get currentDataCurrEnv(): EstimateOptionValueDTO {
+    return{
+      option: this.currEnvOption,
+      estimated_values: this.currEnvEstValues,
+    }
+  }
+
+  get currentDataPerfReq(): EstimateOptionValueDTO {
+    return{
+      option: this.perfReqOption,
+      estimated_values: this.perfReqEstValues,
+    }
   }
 
   private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
+    return (hasChanges(this.currentDataCurrEnv, this.savedCurrEnvData) ||
+        hasChanges(this.currentDataPerfReq, this.savedPerfReqData));
   }
 
   protected async loadOnEnter(): Promise<void> {
@@ -169,12 +181,13 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
     this.bothNeed = (this.DOWHasArchDesignNeeds === true && this.currentEnvHasArchDesignNeeds);
     
     const store = await IGCEStore.getRequirementsCostEstimate();
+    this.savedCurrEnvData = store.architectural_design_current_environment;
+    this.currEnvOption = store.architectural_design_current_environment.option;
+    this.currEnvEstValues = store.architectural_design_current_environment.estimated_values;
 
-    this.costEstimate = _.cloneDeep(store);
-    this.currentEnvCostEstimate = store.architectural_design_current_environment;
-    this.perfReqCostEstimate = store.architectural_design_performance_requirements;
-
-    this.savedData = [this.currentEnvCostEstimate, this.perfReqCostEstimate];
+    this.savedPerfReqData = store.architectural_design_performance_requirements;
+    this.perfReqOption = store.architectural_design_performance_requirements.option;
+    this.perfReqEstValues = store.architectural_design_performance_requirements.estimated_values;
   }
 
   public async mounted(): Promise<void> {
@@ -184,15 +197,13 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
-
     if (this.hasChanged()) {
-      this.costEstimate.architectural_design_current_environment
-        = this.currentEnvCostEstimate;
-      this.costEstimate.architectural_design_performance_requirements
-        = this.perfReqCostEstimate;
-      await IGCEStore.setRequirementsCostEstimate(this.costEstimate);
+      const store = await IGCEStore.getRequirementsCostEstimate();
+      store.architectural_design_current_environment = this.currentDataCurrEnv;
+      store.architectural_design_performance_requirements = this.currentDataPerfReq;
+      await IGCEStore.setRequirementsCostEstimate(store);
+      await IGCEStore.saveRequirementsCostEstimate();
     }
-
     return true;
   }
 
