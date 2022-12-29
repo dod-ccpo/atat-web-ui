@@ -45,6 +45,7 @@ import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -543,15 +544,11 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setFundingRequirement(value: FundingRequirementDTO): void {
-    this.fundingRequirement = this.fundingRequirement
-      ? Object.assign(this.fundingRequirement, value)
-      : value;
-
     if (this.acquisitionPackage && !this.acquisitionPackage.funding_requirement) {
       this.acquisitionPackage.funding_requirement = value.sys_id || "";
     }
-    
   }
+
   @Action({rawError: true})
   public getFundingRequirement(): FundingRequirementDTO | null{
     return this.fundingRequirement;
@@ -603,91 +600,31 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async loadPackageFromId(packageId: string): Promise<void> {
-    const acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
+    let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
-
+      acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
       await ContactData.initialize();
       await OrganiationData.initialize();
       await DescriptionOfWork.initialize();
       await Attachments.initialize();
       await FinancialDetails.initialize();
 
-
-      const currentEnvironmentSysId = 
-        typeof acquisitionPackage.current_environment === "object" ?
-          (acquisitionPackage.current_environment as ReferenceColumn).value as string
-          : acquisitionPackage.current_environment as string;
-
-      const projectOverviewSysId = 
-        typeof acquisitionPackage.project_overview === "object" ?
-          (acquisitionPackage.project_overview as ReferenceColumn).value as string
-          : acquisitionPackage.project_overview as string;
-
-      const organizationSysId =
-        typeof acquisitionPackage.organization === "object" ?
-          (acquisitionPackage.organization as ReferenceColumn).value as string
-          : acquisitionPackage.organization as string;
-
-      const evalPlanSysId = 
-        typeof acquisitionPackage.evaluation_plan === "object" ?
-          (acquisitionPackage.evaluation_plan as ReferenceColumn).value as string
-          : acquisitionPackage.evaluation_plan as string;
-
-      const popSysId = 
-        typeof acquisitionPackage.period_of_performance === "object" ?
-          (acquisitionPackage.period_of_performance as ReferenceColumn).value as string
-          : acquisitionPackage.period_of_performance as string;
-
-      const fairOppSysId = 
-        typeof acquisitionPackage.fair_opportunity === "object" ?
-          (acquisitionPackage.fair_opportunity as ReferenceColumn).value as string
-          : acquisitionPackage.fair_opportunity as string;
-
+      const currentEnvironmentSysId = acquisitionPackage.current_environment as string;
+      const projectOverviewSysId = acquisitionPackage.project_overview as string;
+      const organizationSysId = acquisitionPackage.organization as string;
+      const evalPlanSysId = acquisitionPackage.evaluation_plan as string;
+      const popSysId = acquisitionPackage.period_of_performance as string;
+      const fairOppSysId = acquisitionPackage.fair_opportunity as string;
       const currContractSysId = 
-        typeof acquisitionPackage.current_contract_and_recurring_information === "object" ?
-          // eslint-disable-next-line max-len
-          (acquisitionPackage.current_contract_and_recurring_information as ReferenceColumn).value as string
-          : acquisitionPackage.current_contract_and_recurring_information as string;
-
-      const sensitiveInfoSysId =
-        typeof acquisitionPackage.sensitive_information === "object" ?
-          (acquisitionPackage.sensitive_information as ReferenceColumn).value as string
-          : acquisitionPackage.sensitive_information as string;
-
-      const contractTypeSysId =
-        typeof acquisitionPackage.contract_type === "object" ?
-          (acquisitionPackage.contract_type as ReferenceColumn).value as string
-          : acquisitionPackage.contract_type as string;
-
-      const classificationLevelSysId =
-        typeof acquisitionPackage.classification_level === "object" ?
-          (acquisitionPackage.classification_level as ReferenceColumn).value as string
-          : acquisitionPackage.classification_level as string;
-
-      const contractConsiderationsSysId = 
-        typeof acquisitionPackage.contract_considerations === "object" ?
-          (acquisitionPackage.contract_considerations as ReferenceColumn).value as string
-          : acquisitionPackage.contract_considerations as string;
-
-      const corSysId = 
-        typeof acquisitionPackage.cor === "object" ?
-          (acquisitionPackage.cor as ReferenceColumn).value as string
-          : acquisitionPackage.cor as string;
-
-      const aCorSysId =
-        typeof acquisitionPackage.acor === "object" ?
-          (acquisitionPackage.acor as ReferenceColumn).value as string
-          : acquisitionPackage.acor as string;
-
-      const primaryContactSysId =
-        typeof acquisitionPackage.primary_contact === "object" ?
-          (acquisitionPackage.primary_contact as ReferenceColumn).value as string
-          : acquisitionPackage.primary_contact as string;
-
-      const fundingRequirementSysId =
-        typeof acquisitionPackage.funding_requirement === "object" ?
-          (acquisitionPackage.funding_requirement as ReferenceColumn).value as string
-          : acquisitionPackage.funding_requirement as string;
+        acquisitionPackage.current_contract_and_recurring_information as string;
+      const sensitiveInfoSysId = acquisitionPackage.sensitive_information as string;
+      const contractTypeSysId =  acquisitionPackage.contract_type as string;
+      const classificationLevelSysId = acquisitionPackage.classification_level as string;
+      const contractConsiderationsSysId = acquisitionPackage.contract_considerations as string;
+      const corSysId = acquisitionPackage.cor as string;
+      const aCorSysId = acquisitionPackage.acor as string;
+      const primaryContactSysId = acquisitionPackage.primary_contact as string;
+      const fundingRequirementSysId = acquisitionPackage.funding_requirement as string;
 
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -881,11 +818,18 @@ export class AcquisitionPackageStore extends VuexModule {
       }
 
       if(fundingRequirementSysId){
-        const fundingRequirement = await api.fundingRequirementTable.retrieve(
+        let fundingRequirement = await api.fundingRequirementTable.retrieve(
           fundingRequirementSysId
         );
+        fundingRequirement = convertColumnReferencesToValues(fundingRequirement);
+
         if(fundingRequirement){
           this.setFundingRequirement(fundingRequirement);
+          await FinancialDetails.setIsIncrementallyFunded(fundingRequirement.incrementally_funded);
+          if (fundingRequirement.funding_plan) {
+            await FinancialDetails.setFundingPlanData(fundingRequirement.funding_plan)
+          }
+
           // load the financial Poc  of the funding requirement and store
           // the contact to the "financialPocInfo property
           const financialPocSysId =
