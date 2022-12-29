@@ -167,7 +167,6 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     // this.savedData = IGCE.costEstimates
     //TODO re-map this.savedData
     const dataFromSnow = _.cloneDeep(IGCE.igceEstimateList)
-    console.log(dataFromSnow)
     if(dataFromSnow.length > 0){
       this.selectedClassifications.forEach((classification)=>{
         // eslint-disable-next-line camelcase
@@ -394,8 +393,6 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try{
       if (this.hasChanged()) {
-        debugger
-        console.log(this.savedData, this.currentData)
         await IGCE.setCostEstimate(this.currentData)
       }
     }catch (error) {
