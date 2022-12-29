@@ -46,6 +46,7 @@
               :validate-on-blur="true"
               :value.sync="gInvoiceNumber"
               helpText="Format: OYYMM-000-000-000000"
+              searchType="G-Invoicing"
 
               :rules="[
                 $validators.isMaskValid(

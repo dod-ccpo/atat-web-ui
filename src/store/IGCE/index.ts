@@ -16,6 +16,7 @@ import {
   TrainingEstimateDTO
 } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import {convertPeriodUnitQuantityToMonths} from "@/store/helpers";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
@@ -276,7 +277,7 @@ export class IGCEStore extends VuexModule {
     };
   }
 
-  @Action
+  @Action({rawError: true })
   public async initializeRequirementsCostEstimate(acqPackageId: string): Promise<void> {
     const requirementsCostEstimateFlat =
       await api.requirementsCostEstimateTable
@@ -288,7 +289,8 @@ export class IGCEStore extends VuexModule {
     await this.doSetRequirementsCostEstimate(requirementsCostEstimateDTO);
 
   }
-
+  
+  @Action({rawError: true })
   private async transformRequirementsCostEstimateFromTreeToFlat(
     rceTree: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateFlat> {
     return {
@@ -402,30 +404,20 @@ export class IGCEStore extends VuexModule {
   @Action({rawError: true})
   public async setCostEstimate(value: CostEstimate[]): Promise<void> {
     const aqPackageSysId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
-    const crossDomainSysId = ClassificationRequirements.cdsSolution?.sys_id as string;
-    let contractTypeChoice = "TBD";
+    // const crossDomainSysId = ClassificationRequirements.cdsSolution?.sys_id as string;
+    let contractTypeChoice: IgceEstimateDTO["contract_type"] = "TBD";
     const contractType: ContractTypeDTO = AcquisitionPackage.contractType as ContractTypeDTO;
     if (contractType?.firm_fixed_price === "true") {
       contractTypeChoice = "FFP";
     } else if (contractType?.time_and_materials === "true") {
       contractTypeChoice = "T&M";
     }
-    const periods = Periods.periods;
-    let quantityCalculated = 0;
-    periods.forEach(period => {
-      if(period.period_unit === "MONTH") {
-        quantityCalculated = quantityCalculated + Number(period.period_unit_count);
-      } else if (period.period_unit === "YEAR") {
-        quantityCalculated = quantityCalculated + (Number(period.period_unit_count) * 12);
-      }
-    })
+
     await this.saveIgceEstimates(
       {
         costEstimatList: value,
         aqPackageSysId: aqPackageSysId,
-        crossDomainSysId: crossDomainSysId,
-        contractTypeChoice: contractTypeChoice,
-        quantity: quantityCalculated
+        contractTypeChoice: contractTypeChoice
       });
     await this.loadIgceEstimateByPackageId(aqPackageSysId);
   }
@@ -439,32 +431,28 @@ export class IGCEStore extends VuexModule {
   public async saveIgceEstimates(saveIgceObject: {
     costEstimatList: CostEstimate[],
     aqPackageSysId: string,
-    crossDomainSysId: string,
-    contractTypeChoice: string,
-    quantity: number
+    contractTypeChoice: "" | "FFP" | "T&M" | "TBD"
   }): Promise<void>{
     const apiCallList: Promise<IgceEstimateDTO>[] = [];
     saveIgceObject.costEstimatList.forEach(costEstimate => {
       costEstimate.offerings.forEach(offering => {
-        const igceEstimateSysId = offering.igceEstimateSysId as string;
+        const igceEstimateSysId = offering.sysId as string;
         const igceEstimate: IgceEstimateDTO = {
           acquisition_package: saveIgceObject.aqPackageSysId,
-          classification_instance: offering.sysId as string,
-          // TODO: top level sys_id should have been class instance. "repetition of sys_id property
-          //  names inside CostEstimate object is confusing. We should rename to explicit prefixes.
-          //  Line above and below this comment should be updated after sys_id prop name refactor.
-          // classification_instance: costEstimate.sysId,
+          classification_level: offering.sysIdClassificationLevel ?
+            offering.sysIdClassificationLevel as string : "",
+          classification_instance: offering.sysIdClassificationInstance ?
+            offering.sysIdClassificationInstance as string : "",
+          environment_instance: offering.sysIdEnvironmentInstance ?
+            offering.sysIdEnvironmentInstance as string : "",
+          cross_domain_solution: offering.sysIdCDS ?
+            offering.sysIdCDS as string : "",
           contract_type: saveIgceObject.contractTypeChoice,
-          cross_domain_solution: saveIgceObject.crossDomainSysId,
-          quantity: saveIgceObject.quantity,
-          // TODO: By using
-          //  IgceEstimate object or renaming the existing CostEstimate props, there won't be any
-          //  confusion regarding what each sys_id is mapping to.
-          selected_service_offering: offering.sysId as string, // FIXME: This mapping is incorrect.
           description: offering.IGCE_description as string,
           title: offering.IGCE_title as string,
-          unit: "MONTHS",
-          unit_price: offering.monthly_price as number
+          unit: offering.unit as string,
+          unit_price: offering.monthly_price as number,
+          unit_quantity: offering.unit_quantity as string
         }
         if(igceEstimateSysId && igceEstimateSysId.length > 0) {
           apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate));
