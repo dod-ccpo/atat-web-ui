@@ -120,7 +120,6 @@ const saveOrUpdateSelectedServiceOffering =
       return objSysId;
     };
 
-// EJY - use this for simple 7 instances
 const saveOrUpdateClassificationInstance =
     async (
       classificationInstance: DOWClassificationInstance
@@ -163,7 +162,6 @@ const saveOrUpdateClassificationInstance =
       return objSysId;
     };
 
-// EJY HERE - use this for saving security requirements for other service offerings
 const saveOrUpdateOtherServiceOffering =
     async (
       serviceOffering: OtherServiceOfferingData,
@@ -383,7 +381,8 @@ const mapOtherOfferingFromDTO = (
     storageType: value.storage_type,
     storageUnit: value.storage_unit as StorageUnit,
     sysId: value.sys_id,
-    instanceNumber: index
+    instanceNumber: index,
+    classifiedInformationTypes: value.classified_information_types,
   };
 
   if("environment_type" in value){
@@ -714,13 +713,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.showSecurityRequirements = value;
   }
 
-  // EJY WORKING HERE
   @Action({rawError: true})
-  public saveSecurityRequirements(securityReqs: SecurityRequirement[]): void {
+  public async saveSecurityRequirements(securityReqs: SecurityRequirement[]): Promise<void> {
     // pragma: allowlist secret
     const secretSysId = ClassificationRequirements.classificationSecretSysId;
+    // TODO: future ticket when implementing TOP secret. keep const around even if unused currently
     // pragma: allowlist secret
-    const topSecretSysId = ClassificationRequirements.classificationTopSecretSysId;
+    // const topSecretSysId = ClassificationRequirements.classificationTopSecretSysId;
 
     // pragma: allowlist secret
     const secretReqsObj = securityReqs.find(obj => obj.type === "SECRET");
@@ -733,7 +732,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const isCloudSupportService = 
       DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
     
-    debugger;
     if (offeringGroupObj && isCloudSupportService) {
       // save other offering instances with secret + classification level
       offeringGroupObj.otherOfferingData?.forEach(instance => {
@@ -741,7 +739,7 @@ export class DescriptionOfWorkStore extends VuexModule {
           instance.classifiedInformationTypes = secretReqs;
           saveOrUpdateOtherServiceOffering(instance, this.currentGroupId.toLocaleLowerCase());
         }
-      })
+      });
     } else if (offeringGroupObj) {
       // save classification instances with secret + classification level
       const serviceOfferingObj = offeringGroupObj.serviceOfferings.find(
@@ -753,14 +751,49 @@ export class DescriptionOfWorkStore extends VuexModule {
             instance.classifiedInformationTypes = secretReqs;
             saveOrUpdateClassificationInstance(instance);
           }
-        })
+        });
+      }
+    }
+  }
+
+  @Action({rawError: true})
+  public async getDOWSecurityRequirements(): Promise<SecurityRequirement[]> {
+    const securityReqs: SecurityRequirement[] = [
+      {
+        type: "SECRET",
+        classification_information_type: [],
+      },
+      {
+        type: "TOPSECRET",
+        classification_information_type: [],
       }
 
+    ];
+    const secretSysId = ClassificationRequirements.classificationSecretSysId;
 
+    const isCloudSupportService = 
+      DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+
+    const offeringGroupObj = this.DOWObject.find(
+      obj => obj.serviceOfferingGroupId === this.currentGroupId
+    );
+
+    if (offeringGroupObj && isCloudSupportService) {
+      //
+      offeringGroupObj.otherOfferingData?.forEach(instance => {
+        if (instance.classificationLevel === secretSysId) {
+          const secretObj = securityReqs.find(obj => obj.type === "SECRET");
+          if (secretObj) {
+            const secReqSysIds = instance.classifiedInformationTypes 
+              ? instance.classifiedInformationTypes.split(",")
+              : [];
+            secretObj.classification_information_type = secReqSysIds;
+          }
+        }
+      });
     }
-    
+    return securityReqs;
 
-    debugger;
   }
 
   public DOWHasArchitecturalDesignNeeds: boolean | null = null;
@@ -1552,6 +1585,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     trainingLocation: "",
     trainingTimeZone: "",
     trainingPersonnel: "",
+    classifiedInformationTypes: "",
   }
 
   otherOfferingInstancesTouched: Record<string, number[]> = {};

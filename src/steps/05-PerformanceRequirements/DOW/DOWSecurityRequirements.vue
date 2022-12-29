@@ -46,6 +46,7 @@ import SecurityRequirementsLearnMore
   from "@/steps/04-ContractDetails/SecurityRequirementsLearnMore.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -98,9 +99,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-        // TODO FUTURE TICKET save security requirements to store/snow
-        // see note below about isCloudSupportService - pass to method in DOW store
-        DescriptionOfWork.saveSecurityRequirements(this.currentData);
+        await DescriptionOfWork.saveSecurityRequirements(this.currentData);
       }
     } catch (error) {
       console.log(error);
@@ -126,11 +125,20 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
       }
     });
 
-    // use isCloudSupportService to determine where to save.
-    // e.g., update ClassificationInstance table if !isCloudSupportService
-    // else update EnvironmentInstance table 
-    this.isCloudSupportService = DescriptionOfWork.cloudSupportServices.includes(this.groupId)
-        
+    const storeData = await DescriptionOfWork.getDOWSecurityRequirements();
+    if (storeData) {
+      this.savedData = _.cloneDeep(storeData);     
+      const secretReqsObj = storeData.find(obj => obj.type === "SECRET");
+      if (secretReqsObj) {
+        this.selectedSecretSecurityRequirements 
+          = secretReqsObj.classification_information_type;
+      }
+      const topSecretReqsObj = storeData.find(obj => obj.type === "TOPSECRET");
+      if (topSecretReqsObj) {
+        this.selectedTopSecretSecurityRequirements 
+          = topSecretReqsObj.classification_information_type;
+      }
+    }
     return true;
   }
 
