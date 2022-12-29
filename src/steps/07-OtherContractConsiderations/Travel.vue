@@ -224,7 +224,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
     duration_in_days: "",
     number_of_travelers: "",
     number_of_trips: "",
-    selected_periods: "",
+    selected_periods: [],
   };
   public isCreate = false;
   public showTravelFormDialog = false;
@@ -286,7 +286,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
       duration_in_days: "",
       number_of_travelers: "",
       number_of_trips: "",
-      selected_periods: "",
+      selected_periods: [],
     };
   }
 
@@ -368,11 +368,12 @@ export default class Travel extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void>{
+    await DescriptionOfWork.loadTravel();
     this.tableData = await DescriptionOfWork.getTravel();
   }
 
   public async saveOnLeave(): Promise<boolean>{
-    await DescriptionOfWork.setTravel(this.tableData);
+    await DescriptionOfWork.saveTravel(this.tableData);
     return true;
   }
 
