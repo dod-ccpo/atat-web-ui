@@ -890,6 +890,7 @@ export class AcquisitionPackageStore extends VuexModule {
       try {
         const acquisitionPackage = await api.acquisitionPackageTable.create();
         if (acquisitionPackage) {
+          await this.setPackageId(acquisitionPackage.sys_id as string);
           this.setProjectOverview(initialProjectOverview());
           this.setOrganization(initialOrganization());
           this.setContractType(initialContractType());

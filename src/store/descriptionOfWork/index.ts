@@ -44,6 +44,7 @@ import AcquisitionPackage from "../acquisitionPackage";
 import Periods from "../periods";
 import { buildClassificationLabel } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 
 // Classification Proxy helps keep track of saved
@@ -96,7 +97,8 @@ const saveOrUpdateSelectedServiceOffering =
       tempObject.architectural_design_requirement = "";
 
       tempObject.classification_instances = classificationInstances.join(",") || "";
-      tempObject.acquisition_package = selectedServiceOffering.acquisitionPackageSysId;
+
+      tempObject.acquisition_package = AcquisitionPackage.packageId;
       tempObject.other_service_offering = selectedServiceOffering.otherOfferingName;
       tempObject.service_offering = serviceOfferingId;
 
@@ -168,8 +170,7 @@ const saveOrUpdateOtherServiceOffering =
     ):Promise<string> => {
       const tempObject: any = {};
       let objSysId = "";
-
-      tempObject.acquisition_package = serviceOffering.acquisitionPackageSysId;
+      tempObject.acquisition_package = AcquisitionPackage.packageId;
       tempObject.anticipated_need_or_usage = serviceOffering.descriptionOfNeed;
       tempObject.classification_level = serviceOffering.classificationLevel;
       tempObject.instance_name = serviceOffering.requirementTitle;
@@ -344,25 +345,11 @@ const mapOtherOfferingFromDTO = (
         XaasEnvironmentInstanceDTO
 ): OtherServiceOfferingData => {
 
-  const acquisitionPackageSysId =
-      typeof value.acquisition_package === "object"
-        ? value.acquisition_package.value as string
-        : value.acquisition_package as string;
-
-  const classificationLevel =
-      typeof value.classification_level === "object"
-        ? value.classification_level.value as string
-        : value.classification_level as string;
-
-  const region =
-      typeof value.region === "object"
-        ? value.region.value as string
-        : value.region as string;
-
+  value = convertColumnReferencesToValues(value);
   const result: OtherServiceOfferingData = {
-    acquisitionPackageSysId: acquisitionPackageSysId,
+    acquisitionPackageSysId: AcquisitionPackage.packageId,
     descriptionOfNeed: value.anticipated_need_or_usage,
-    classificationLevel: classificationLevel,
+    classificationLevel: value.classification_level as string,
     requirementTitle: value.instance_name,
     licensing: value.operating_system_licensing,
     memoryAmount: value.memory_amount,
@@ -373,7 +360,7 @@ const mapOtherOfferingFromDTO = (
     operatingSystem: value.operating_system,
     performanceTier: value.performance_tier,
     processorSpeed: value.processor_speed,
-    region: region,
+    region: value.region as string,
     periodsNeeded: value.selected_periods?.split(",") || [],
     storageAmount: value.storage_amount,
     storageType: value.storage_type,
@@ -727,7 +714,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async setDOWArchitecturalDesign(value: ArchitecturalDesignRequirementDTO): Promise<void> { 
     const sysId = await this.saveDOWArchitecturalDesign(value);
     value.sys_id = sysId;
-    value.acquisition_package = AcquisitionPackage.acquisitionPackage?.sys_id as string;
+    value.acquisition_package = AcquisitionPackage.packageId;
     this.doSetDOWArchitecturalDesign(value);
   }
 
@@ -921,8 +908,7 @@ export class DescriptionOfWorkStore extends VuexModule {
           }
 
           this.DOWObject[this.DOWObject.length - 1].serviceOfferings.push({
-            acquisitionPackageSysId: (
-                offering.acquisition_package as ReferenceColumn).value as string,
+            acquisitionPackageSysId: AcquisitionPackage.packageId,
             sys_id: offering.sys_id as string,
             name: group.name as string,
             otherOfferingName: offering.other_service_offering as string,
