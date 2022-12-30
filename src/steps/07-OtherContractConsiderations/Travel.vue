@@ -40,6 +40,24 @@
             class="elevation-0 _offering-instances mt-10"
             :hide-default-footer="true"
           >
+
+             <!-- eslint-disable vue/valid-v-slot -->
+            <template v-slot:item.duration_in_days="{ item }">
+              {{ item.duration_in_days }} 
+              {{ item.duration_in_days>1 ? 'days': 'day'}}
+            </template>
+
+             <!-- eslint-disable vue/valid-v-slot -->
+            <template v-slot:item.number_of_travelers="{ item }">
+              {{ item.number_of_travelers }} 
+              {{ item.number_of_travelers>1 ? 'travelers': 'traveler'}}
+            </template>
+
+            <!-- eslint-disable vue/valid-v-slot -->
+            <template v-slot:item.number_of_trips="{ item }">
+              {{ createNumberOfTripsTexts(item)  }} 
+            </template>
+
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.selected_periods="{ item }">
               {{ createPeriodText(item.selected_periods) }}
@@ -140,6 +158,7 @@
                 label="Number of trips"
                 suffix="per period"
                 :value.sync="travelItem.number_of_trips"
+                tooltipText="This number of trips will be applied to each period selected below."
                 type="number"
               />
             </v-col>
@@ -194,6 +213,13 @@
     </ATATDialog>
   </v-form>
 </template>
+
+<style>
+.v-tooltip__content {
+    z-index: 10000 !important;
+}
+</style>
+
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
@@ -331,7 +357,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
 
   public addTravelItemToTable(): void {
     if (this.isCreate) {
-      this.tableData.unshift(this.travelItem);
+      this.tableData.push(this.travelItem);
       this.setTableData();
     }
     this.showTravelFormDialog = false;
@@ -360,6 +386,13 @@ export default class Travel extends Mixins(SaveOnLeave) {
       .join(", ")
       .replaceAll("OPTION PERIOD ", "OP")
       .replaceAll("BASE PERIOD", "Base");
+  }
+
+  public createNumberOfTripsTexts(item: TravelSummaryTableData): string{
+    const totalNumberOfTrips = parseInt(item.number_of_trips) * item.selected_periods.length;
+    return totalNumberOfTrips > 1 
+      ? (totalNumberOfTrips + " total (" + item.number_of_trips + " per period)")
+      : totalNumberOfTrips + " total"
   }
 
   public async mounted(): Promise<void> {
