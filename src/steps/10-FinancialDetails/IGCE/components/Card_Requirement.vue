@@ -38,8 +38,7 @@
         :value.sync="_cardData.monthly_price"
         :isCurrency="true"
         :showErrorMessages="false"
-        type="number"
-        appendText="/month"
+        :appendText= type
         width="160"
         @blur="checkMonthlyValue()"
         class="ml-auto pt-3 _requirement-currency"
@@ -67,6 +66,7 @@ export default class CardRequirement extends Vue {
 
   public title = ""
   public description = ""
+  public type = ""
   public noMonthlyValue = false
 
   public saveTitle(): void {
@@ -87,17 +87,13 @@ export default class CardRequirement extends Vue {
   }
 
   public checkMonthlyValue(): void {
-    if(Number(this._cardData.monthly_price) < 1 ){
-      this.noMonthlyValue = true
-      // eslint-disable-next-line camelcase
-    }else{
-      this.noMonthlyValue = false
-    }
+    this.noMonthlyValue = Number(this._cardData.monthly_price) < 1;
   }
   public async loadOnEnter(): Promise<void> {
     Vue.nextTick(() => {
       this.title = this._cardData.IGCE_title
       this.description = this._cardData.IGCE_description
+      this.type = this._cardData.unit
     })
   }
 
