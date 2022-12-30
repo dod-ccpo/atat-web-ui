@@ -16,7 +16,6 @@
         id="SingleAmount"
         width="190"
         class="mr-2"
-        type="number"
         :alignRight="true"
         :value.sync="_values[0]"
         :isCurrency="textboxSuffix === ''"

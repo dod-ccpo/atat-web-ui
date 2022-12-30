@@ -8,6 +8,7 @@
     <div class="d-flex justify-space-between width-100 align-center">
       <div id="PackageNameHeader" tabindex="-1" class="h3">{{ headline }}</div>
       <div class="d-flex justify-end align-center">
+        <!-- TODO: restore in future ticket
         <v-btn icon class="mr-5 _header-button _add-user-button" id="Person_Button">
           <v-icon class="icon-20 text-base-dark">person_add_alt_1</v-icon>
         </v-btn>
@@ -41,7 +42,8 @@
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
-        </v-menu>        
+        </v-menu>   
+        -->     
       </div>
     </div>
   </v-app-bar>

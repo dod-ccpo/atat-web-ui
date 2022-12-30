@@ -906,6 +906,16 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
     : basePath + gatherPriceEstimatesPath;
 }
 
+export const IGCEGatherPriceResolver = (current: string): string => {
+  const hasOffering = DescriptionOfWork.DOWObject.length >= 1
+
+  if (hasOffering) {
+    return routeNames.GatherPriceEstimates;
+  }
+  return current === routeNames.CreatePriceEstimate ? routeNames.IGCETraining 
+    : routeNames.CreatePriceEstimate;
+}
+
 const isFirstIGCETraining = (): boolean => {
   const trainingIndex = IGCE.igceTrainingIndex;
 
@@ -1154,6 +1164,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
+  IGCEGatherPriceResolver,
   // IGCETrainingResolver
 };
 
