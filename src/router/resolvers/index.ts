@@ -661,7 +661,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setLastGroupRemoved(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;   
-  } 
+  }
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
     // EJY OOF
 
@@ -772,6 +772,7 @@ export const DOWSecurityRequirementsPathResolver
 
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if(current === routeNames.ConflictOfInterest){
