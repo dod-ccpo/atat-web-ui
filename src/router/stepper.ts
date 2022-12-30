@@ -165,6 +165,7 @@ import {
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
   IGCETrainingPathResolver,
+  IGCEGatherPriceResolver,
 } from "./resolvers";
 import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 
@@ -942,7 +943,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GatherPriceEstimates,
         completePercentageWeight: 1,
         component: GatherPriceEstimates,
-        routeResolver: IGCETrainingPathResolver,
+        routeResolver: IGCEGatherPriceResolver,
       },
       {
         menuText: "Training",

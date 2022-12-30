@@ -16,7 +16,6 @@
         id="SingleAmount"
         width="190"
         class="mr-2"
-        type="number"
         :alignRight="true"
         :value.sync="_values[0]"
         :isCurrency="textboxSuffix === ''"
@@ -56,7 +55,6 @@
         <div>
           <ATATTextField
             :id="period.period_type + '_' + idx"
-            type="number"
             width="190"
             class="ml-5"
             :alignRight="true"

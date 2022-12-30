@@ -661,7 +661,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setLastGroupRemoved(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;   
-  } 
+  }
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
     // EJY OOF
 
@@ -772,6 +772,7 @@ export const DOWSecurityRequirementsPathResolver
 
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if(current === routeNames.ConflictOfInterest){
@@ -903,6 +904,16 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
   return current === routeNames.GatherPriceEstimates
     ? basePath + surgeCapacityPath
     : basePath + gatherPriceEstimatesPath;
+}
+
+export const IGCEGatherPriceResolver = (current: string): string => {
+  const hasOffering = DescriptionOfWork.DOWObject.length >= 1
+
+  if (hasOffering) {
+    return routeNames.GatherPriceEstimates;
+  }
+  return current === routeNames.CreatePriceEstimate ? routeNames.IGCETraining 
+    : routeNames.CreatePriceEstimate;
 }
 
 const isFirstIGCETraining = (): boolean => {
@@ -1153,6 +1164,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
+  IGCEGatherPriceResolver,
   // IGCETrainingResolver
 };
 

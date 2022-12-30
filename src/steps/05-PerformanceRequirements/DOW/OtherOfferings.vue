@@ -370,7 +370,7 @@ export default class OtherOfferings extends Vue {
       && this.selectedClassificationLevelList[0].classification_level
     ) {
       const classificationObj = this.selectedClassificationLevelList[0];
-      this._serviceOfferingData.classificationLevel 
+      this._serviceOfferingData.classificationLevel
         = classificationObj.classification_level as string;
       this.singleClassificationLevelName 
         = buildClassificationLabel(classificationObj, "short");
