@@ -15,11 +15,11 @@ import {
   ComputeEnvironmentInstanceDTO,
   DatabaseEnvironmentInstanceDTO,
   EnvironmentInstanceDTO,
-  ReferenceColumn,
+  ReferenceColumn, SelectedClassificationLevelDTO,
   SelectedServiceOfferingDTO,
   ServiceOfferingDTO,
   StorageEnvironmentInstanceDTO,
-  SystemChoiceDTO,
+  SystemChoiceDTO, TravelRequirementDTO,
   XaasEnvironmentInstanceDTO
 } from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
@@ -36,6 +36,7 @@ import {
   OtherServiceOfferingData,
   StorageUnit,
   RadioButton,
+  TravelSummaryTableData,
 } from "../../../types/Global";
 
 import _, { differenceWith, first, last } from "lodash";
@@ -712,6 +713,88 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   public DOWHasArchitecturalDesignNeeds: boolean | null = null;
   public DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;
+  travelSummaryInstances: TravelSummaryTableData[] = [];
+
+  @Action({rawError: true})
+  public async setTravel(travelInstances: TravelSummaryTableData[]): Promise<void> {
+    this.doSetTravel(travelInstances);
+  }
+
+  @Mutation
+  public doSetTravel(travelInstances: TravelSummaryTableData[]): void {
+    this.travelSummaryInstances = travelInstances;
+  }
+
+  /**
+   * Gets the acquisition package sys id from the acquisition package store and then loads
+   * all the travel records for the acquisition.
+   */
+  @Action({rawError: true})
+  public async loadTravel(): Promise<void> {
+    const travelRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" +
+        AcquisitionPackage.acquisitionPackage?.sys_id as string
+      }
+    };
+    const travelList = await api.travelRequirementTable.getQuery(travelRequestConfig);
+    await this.doSetTravel(travelList.map((travel, index): TravelSummaryTableData => {
+      return {
+        sys_id: travel.sys_id,
+        acquisition_package: (travel.acquisition_package as ReferenceColumn).value,
+        duration_in_days: travel.duration_in_days,
+        instanceNumber: index + 1,
+        number_of_travelers: travel.number_of_travelers,
+        number_of_trips: travel.number_of_trips,
+        selected_periods: travel.selected_periods?.split(","),
+        trip_location: travel.trip_location
+      }
+    }));
+  }
+
+  /**
+   * Compares the travelSummaryInstances of this store with the newTravel passed to this
+   * function and marks them for create, update and delete.
+   * @param newTravel
+   */
+  @Action({rawError: true})
+  public async saveTravel(
+    newTravel: TravelSummaryTableData[]): Promise<boolean> {
+    const newTravelDTO: TravelRequirementDTO[] = 
+      newTravel.map((travel): TravelRequirementDTO  => {
+        return {
+          sys_id: travel.sys_id,
+          acquisition_package: travel.acquisition_package as string,
+          duration_in_days: travel.duration_in_days,
+          number_of_travelers: travel.number_of_travelers,
+          number_of_trips: travel.number_of_trips,
+          selected_periods: travel.selected_periods.toString(), // csv
+          trip_location: travel.trip_location
+        }
+      })
+    const createList = newTravelDTO.filter(travel => !(travel.sys_id && travel.sys_id.length > 0));
+    const updateList = newTravelDTO.filter(travel => (travel.sys_id && travel.sys_id.length > 0));
+    const deleteList = this.travelSummaryInstances.filter(travel => {
+      return newTravelDTO.map(newTravel => newTravel.sys_id).indexOf(travel.sys_id) === -1;
+    })
+    const apiCallList: Promise<TravelRequirementDTO | void>[] = [];
+    createList.forEach(markedForCreate => {
+      apiCallList.push(api.travelRequirementTable
+        .create({...markedForCreate,
+          acquisition_package: AcquisitionPackage.acquisitionPackage?.sys_id as string
+        }));
+    })
+    updateList.forEach(markedForUpdate => {
+      apiCallList.push(api.travelRequirementTable
+        .update(markedForUpdate.sys_id as string, markedForUpdate));
+    })
+    deleteList.forEach(markedForDelete => {
+      apiCallList.push(api.travelRequirementTable
+        .remove(markedForDelete.sys_id as string));
+    })
+    await Promise.all(apiCallList);
+    return true;
+  }
 
   @Action({rawError: true})
   public async setDOWHasArchitecturalDesign(value: boolean): Promise<void> {
@@ -775,6 +858,50 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
 
     return sysId;
+  }
+
+  @Action({rawError: true})
+  public async saveTravelRequirements(
+    value: ArchitecturalDesignRequirementDTO): Promise<string> {
+
+    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
+    let sysId = "";
+    let classificationLevels = "";
+    
+
+    if(Array.isArray(value.data_classification_levels)){
+      classificationLevels = value.data_classification_levels.join(",");
+    } else {
+      classificationLevels = value.data_classification_levels;
+    }
+
+    if(value.sys_id){
+      await api.architecturalDesignRequirementTable.update(
+        value.sys_id,
+        {
+          ...value,
+          acquisition_package: packageId,
+          data_classification_levels: classificationLevels
+        }
+      );
+      sysId = value.sys_id as string;
+    } else {
+      const savedObject = await api.architecturalDesignRequirementTable.create(
+        {
+          ...value,
+          acquisition_package: packageId,
+          data_classification_levels: classificationLevels
+        }
+      );
+      sysId = savedObject.sys_id as string;
+    }
+
+    return sysId;
+  }
+
+  @Action({rawError: true})
+  public async getTravel(): Promise<TravelSummaryTableData[]> {
+    return this.travelSummaryInstances;
   }
 
   @Action({rawError: true})
@@ -1691,7 +1818,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   confirmOtherOfferingDelete = false;
-
+  confirmTravelDeleteAll = false;
   confirmServiceOfferingDelete = false;
 
   public get confirmServiceOfferingDeleteVal(): boolean {
@@ -1700,6 +1827,10 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   public get confirmOtherOfferingDeleteVal(): boolean {
     return this.confirmOtherOfferingDelete;
+  }
+
+  public get confirmTravelDeleteAllVal(): boolean {
+    return this.confirmTravelDeleteAll;
   }
 
   @Action
@@ -1718,6 +1849,15 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public doSetConfirmOtherOfferingDelete(bool: boolean): void {
     this.confirmOtherOfferingDelete = bool;
+  }
+
+  @Action
+  public setConfirmTravelDeleteAll(bool: boolean): void {
+    this.doSetConfirmTravelDeleteAll(bool);
+  }
+  @Mutation
+  public doSetConfirmTravelDeleteAll(bool: boolean): void {
+    this.confirmTravelDeleteAll = bool;
   }
 
   @Action

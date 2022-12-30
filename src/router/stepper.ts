@@ -82,6 +82,8 @@ import AnticipatedUserAndDataNeeds
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
+import Travel
+  from "../steps/07-OtherContractConsiderations/Travel.vue";
 
 // Step 8 - Standards and Compliance
 import OtherContractConsiderations from "../steps/08-StandardsAndCompliance/Index.vue";
@@ -207,7 +209,7 @@ export const routeNames = {
   ContractType: "Contract_Type",
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
-  // Travel: "Travel",
+  Travel: "Travel",
   PropertyDetails: "Property_Details",
   Justification: "Justification",
   OtherContractConsiderations: "Other_Contract_Considerations",
@@ -802,6 +804,23 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.PackagingPackingAndShipping,
         component: PackagingPackingAndShipping,
+      },
+      {
+        name: routeNames.Travel,
+        menuText: "Travel",
+        path: "travel",
+        completePercentageWeight: 2,
+        stepCompleteOnLeave: routeNames.Travel,
+        component: Travel,
+        additionalButtons: [
+          {
+            buttonText: "I don’t need CSP employees to travel",
+            buttonId: "DontNeedTravel",
+            buttonClass: "secondary",
+            actionName: "confirmDeleteTravelAll",
+            emitText: "confirmDeleteTravel",
+          },
+        ]
       },
     ]
   },
