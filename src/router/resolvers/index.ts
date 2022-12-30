@@ -871,20 +871,57 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 /****************************************************************************/
 /****************************************************************************/
 
+const IGCERouteNext = (current: string): string => {
+
+  if (needsReplicateOrOptimize() && current === routeNames.CreatePriceEstimate) {
+    return routeNames.OptimizeOrReplicate;
+  }
+  
+  if ((currentEnvNeedsArchitectureDesign() || DOWNeedsArchitectureDesign()) &&
+    (current === routeNames.CreatePriceEstimate 
+    || current === routeNames.OptimizeOrReplicate)) {
+    return routeNames.ArchitecturalDesignSolutions;
+  }
+  if (hasServiceOfferings() && 
+    (current === routeNames.CreatePriceEstimate
+    || current === routeNames.OptimizeOrReplicate
+    || current === routeNames.ArchitecturalDesignSolutions)
+  ) {
+    return routeNames.GatherPriceEstimates;
+  }
+  if (dowHasTraining() && 
+    (current === routeNames.CreatePriceEstimate
+    || current === routeNames.OptimizeOrReplicate
+    || current === routeNames.ArchitecturalDesignSolutions
+    || current === routeNames.GatherPriceEstimates)
+  ) {
+    IGCE.setIgceTrainingIndex(0);
+    return routeNames.IGCETraining;
+  }
+  if (needsTravelEstimate() && 
+    (current === routeNames.CreatePriceEstimate
+    || current === routeNames.OptimizeOrReplicate
+    || current === routeNames.ArchitecturalDesignSolutions
+    || current === routeNames.GatherPriceEstimates
+    || current === routeNames.IGCETraining)
+  ) {
+    return routeNames.TravelEstimates;
+  }
+  return routeNames.SurgeCapacity;
+
+}
+
+
+
 export const IGCECannotProceedResolver = (current: string): string => {
   if (!(IGCEStore.requirementsCostEstimate?.has_DOW_and_PoP === "YES")){
     return routeNames.CannotProceed;
   }
 
   if (current === routeNames.CreatePriceEstimate) {
-    if (needsReplicateOrOptimize()) {
-      return routeNames.OptimizeOrReplicate;
-    }
-    if (currentEnvNeedsArchitectureDesign()) {
-      return routeNames.ArchitecturalDesignSolutions;
-    }
-    return routeNames.GatherPriceEstimates
+    return IGCERouteNext(current);
   }
+
   return routeNames.CreatePriceEstimate;
 }
 
@@ -892,21 +929,22 @@ export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
   if (current === routeNames.CannotProceed){
     return routeNames.FundingPlanType;
   }
-  debugger;
+
   if (needsReplicateOrOptimize()) {
     return routeNames.OptimizeOrReplicate;
   }
 
-  const needsArchDesign 
-    = currentEnvNeedsArchitectureDesign() || DOWNeedsArchitectureDesign();
-  const hasOfferings = hasServiceOfferings();
-  const hasTraining = dowHasTraining();
-  const hasTravel = needsTravelEstimate();
+  // moving backwards
+  if (current === routeNames.ArchitecturalDesignSolutions
+    || current === routeNames.GatherPriceEstimates
+    || current === routeNames.IGCETraining
+    || current === routeNames.TravelEstimates
+  ) {
+    return routeNames.CreatePriceEstimate;
+  }
 
-
-  return current === routeNames.ArchitecturalDesignSolutions 
-    ? routeNames.CreatePriceEstimate
-    : routeNames.ArchitecturalDesignSolutions;
+  // move forwards
+  return IGCERouteNext(current);
 }
 
 export const IGCEArchitecturalDesignSolutionsResolver = (current: string): string => {
@@ -914,16 +952,23 @@ export const IGCEArchitecturalDesignSolutionsResolver = (current: string): strin
     return routeNames.ArchitecturalDesignSolutions;
   }
 
-  return current === routeNames.GatherPriceEstimates && needsReplicateOrOptimize()
-    ? routeNames.OptimizeOrReplicate
-    : current === routeNames.GatherPriceEstimates
-      ? routeNames.CreatePriceEstimate
-      : routeNames.GatherPriceEstimates;
+  // moving backwards
+  if (current === routeNames.GatherPriceEstimates
+    || current === routeNames.IGCETraining
+    || current === routeNames.TravelEstimates
+  ) {
+    return needsReplicateOrOptimize() 
+      ? routeNames.OptimizeOrReplicate 
+      : routeNames.CreatePriceEstimate;
+  }
+
+  // move forwards
+  return IGCERouteNext(current);
 }
 
-export const IGCEPathResolver = (current: string, direction: string): string =>{
+export const IGCETrainingPathResolver = (current: string, direction: string): string =>{
   const basePath = "requirements-cost-estimate/";
-  const priceEstimatePath = basePath + "create-price-estimate";
+  const createPriceEstimatePath = basePath + "create-price-estimate";
   const repOptimizePath = basePath + "optimize-or-replicate";
   const archDesignPath = basePath + "architectural-design-solutions";
   const gatherPriceEstimatesPath = basePath + "gather-price-estimates";
@@ -970,7 +1015,7 @@ export const IGCEPathResolver = (current: string, direction: string): string =>{
     if (hasOfferings) return gatherPriceEstimatesPath;
     if (needsArchDesign) return archDesignPath;
     if (needsRepOrOpt) return repOptimizePath;
-    return priceEstimatePath;
+    return createPriceEstimatePath;
   }
 
   // =======================================================
@@ -982,10 +1027,16 @@ export const IGCEPathResolver = (current: string, direction: string): string =>{
     const newIdx = direction === "next"
       ? IGCE.igceTrainingIndex + 1 : IGCE.igceTrainingIndex - 1;
     IGCE.setIgceTrainingIndex(newIdx);
-    debugger;
 
     if (isFirstTraining) {
-      return direction === "next" ? igceTrainingPath : gatherPriceEstimatesPath;
+      if (direction === "previous") {
+        if (hasOfferings) return gatherPriceEstimatesPath;
+        if (needsArchDesign) return archDesignPath;
+        if (needsRepOrOpt) return repOptimizePath;
+        return createPriceEstimatePath;
+      }
+      return igceTrainingPath;
+
     } 
     if (isLastTraining && direction === "next") {
       return hasTravel ? travelEstimatePath : surgeCapacityPath;
@@ -998,7 +1049,7 @@ export const IGCEPathResolver = (current: string, direction: string): string =>{
     if (hasOfferings) return gatherPriceEstimatesPath;
     if (needsArchDesign) return archDesignPath;
     if (needsRepOrOpt) return repOptimizePath;
-    return priceEstimatePath;  
+    return createPriceEstimatePath;  
   }
 
   // going next from Training single instance to either Travel or Surge Capacity
@@ -1014,7 +1065,7 @@ const hasServiceOfferings = (): boolean => {
 
 const needsTravelEstimate = (): boolean => {
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // NEED TO GET THIS FROM DOW STORE when wired up
+  // TODO: NEED TO GET THIS FROM DOW STORE when wired up
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   return true; 
@@ -1262,7 +1313,7 @@ const pathResolvers: Record<string, StepPathResolver> = {
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   RequirementsPathResolver,
-  IGCEPathResolver
+  IGCETrainingPathResolver
 }
 
 export const InvokeRouteResolver = (

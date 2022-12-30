@@ -163,7 +163,7 @@ import {
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
-  IGCEPathResolver,
+  IGCETrainingPathResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -923,7 +923,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GatherPriceEstimates,
         completePercentageWeight: 1,
         component: GatherPriceEstimates,
-        routeResolver: IGCEPathResolver,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Training",
@@ -932,7 +932,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.IGCETraining,
         completePercentageWeight: 1,
         component: IGCETraining,
-        routeResolver: IGCEPathResolver,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Travel Estimates",
@@ -941,7 +941,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.TravelEstimates,
         completePercentageWeight: 1,
         component: TravelEstimates,
-        routeResolver: IGCEPathResolver,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Surge Capacity",
