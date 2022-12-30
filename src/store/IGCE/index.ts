@@ -73,7 +73,7 @@ export const defaultTrainingEstimate = (): TrainingEstimate => {
 export interface CostEstimate {
   labelShort: string,
   sysId: string,
-  offerings: Record<string, string|number|boolean>[]
+  offerings: Record<string, string|string[]|boolean|number|null>[]
 }
 
 @Module({

@@ -78,6 +78,8 @@ import Card_Requirement from "@/steps/10-FinancialDetails/IGCE/components/Card_R
 import IGCE, { CostEstimate } from "@/store/IGCE";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { convertColumnReferencesToValues } from "@/api/helpers";
+import Periods, { PeriodsStore } from "@/store/periods";
 
 
 @Component({
@@ -107,7 +109,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     case "Compute":
       return service.numberOfInstances + " x ("
         + service.environmentType
-        + ", "+ service.operatingEnvironment?.toLowerCase()
+        + ", "+ service.operatingEnvironment?.toLowerCase()+ ", "
         + service.operatingSystemAndLicensing+", "
         + service.numberOfVCPUs + " vCPUs, " + service.memoryAmount + " GB RAM, "
         + service.storageType?.toLowerCase()+" storage: "+ service.storageAmount+" "
@@ -128,6 +130,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         service.descriptionOfNeed||""
     }
   }
+  private serviceOrInstance(value: string): string {
+    return DescriptionOfWork.xaasServices.includes(value)? "Instance":"Service"
+  }
 
   private get currentData(): CostEstimate[] {
     return _.cloneDeep(this.instanceData)
@@ -135,6 +140,20 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
 
   private savedData: CostEstimate[] = []
 
+  private convertToMonths(value:number,unit:string): number{
+    switch(unit) {
+    case "YEAR":
+      return 12
+    case "MONTH":
+      return value
+    case "WEEK":
+      return Math.ceil(value/4.345)
+    case "DAY":
+      return Math.ceil(value/30.4167)
+    default:
+      return 0
+    }
+  }
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
@@ -145,11 +164,10 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     const cloudServices = DescriptionOfWork.cloudSupportServices
     this.selectedClassifications = classifications
       .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
-    this.accordionClosed = new Array(classifications.length).fill(0)
-    this.savedData = IGCE.costEstimates
-    if(this.savedData.length >= 1){
-      this.instanceData = _.cloneDeep(this.savedData)
-    }else{
+    // this.savedData = IGCE.costEstimates
+    //TODO re-map this.savedData
+    const dataFromSnow = _.cloneDeep(IGCE.igceEstimateList)
+    if(dataFromSnow.length > 0){
       this.selectedClassifications.forEach((classification)=>{
         // eslint-disable-next-line camelcase
         const classification_instance: CostEstimate = {
@@ -161,7 +179,42 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         }
         this.instanceData.push(classification_instance)
       })
-
+      this.instanceData.forEach((instance)=>{
+        dataFromSnow.forEach((estimate) =>{
+          const flatData = convertColumnReferencesToValues(estimate)
+          if(instance.sysId === flatData.classification_instance){
+            const obj = {
+              IGCE_title:flatData.title,
+              IGCE_description:flatData.description,
+              monthly_price:flatData.unit_price,
+              isCloudServicePackage:false,
+              sysIdCDS:(flatData.cross_domain_solution as ReferenceColumn).value as string,
+              sysIdClassificationInstance:flatData.classification_instance,
+              sysIdEnvironmentInstance:(flatData.environment_instance as ReferenceColumn)
+                .value as string,
+              sysId:flatData.sys_id|| "",
+              unit:flatData.unit,
+              quantity:flatData.unit_quantity
+            }
+            instance.offerings.push(obj)
+          }
+        })
+      })
+      this.savedData = _.cloneDeep(this.instanceData)
+    } else{
+      this.selectedClassifications.forEach((classification)=>{
+        if(classification.classification_level !==""){
+          // eslint-disable-next-line camelcase
+          const classification_instance: CostEstimate = {
+            labelShort: buildClassificationLabel(classification,'short',true),
+            sysId: typeof classification.classification_level === "object"
+              ? (classification.classification_level as ReferenceColumn).value as string
+              : classification.classification_level as string,
+            offerings:[]
+          }
+          this.instanceData.push(classification_instance)
+        }
+      })
 
       const dowObject = DescriptionOfWork.DOWObject
       dowObject.forEach((service)=>{
@@ -170,33 +223,70 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
           service.otherOfferingData.forEach((offering)=>{
             if(offering.classificationLevel){
               this.instanceData.forEach((instance)=>{
+
                 if(instance.sysId === offering.classificationLevel){
                   const classificationOfferings:{
                     IGCE_title:string,
                     IGCE_description:string,
                     monthly_price:number,
                     isCloudServicePackage:boolean,
+                    sysIdCDS:string,
+                    sysIdClassificationInstance:string,
+                    sysIdClassificationLevel:string,
+                    sysIdEnvironmentInstance:string,
                     sysId:string,
+                    unit:string,
+                    unit_quantity:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
                     monthly_price:0,
                     isCloudServicePackage:false,
+                    sysIdCDS:"",
+                    sysIdClassificationInstance:"",
+                    sysIdClassificationLevel:"",
+                    sysIdEnvironmentInstance:"",
                     sysId:"",
+                    unit:"",
+                    unit_quantity:"",
                   }
                   if(offering.instanceNumber){
                     classificationOfferings.IGCE_title =
-                      `${serviceName} - instance #${offering.instanceNumber}`;
+                      // eslint-disable-next-line max-len
+                      `${serviceName} - ${this.serviceOrInstance(service.serviceOfferingGroupId)} #${offering.instanceNumber}`;
                   }else{
                     classificationOfferings.IGCE_title = serviceName;
                   }
-                  classificationOfferings.sysId = instance.sysId;
+                  const quantityObj:Record<string, number> = {}
+                  if(offering.entireDuration === "NO"){
+                    offering.periodsNeeded.forEach(period=>{
+                      let selected = Periods.periods
+                        .filter(selectedPeriod => selectedPeriod.sys_id === period)
+                      quantityObj[period] = this.convertToMonths(
+                        Number(selected[0].period_unit_count),selected[0].period_unit
+                      )
+                    })
+                    classificationOfferings.unit_quantity = JSON.stringify(quantityObj)
+                  }else{
+                    Periods.periods.forEach(period=>{
+                      if(period.sys_id){
+                        quantityObj[period.sys_id] = this.convertToMonths(
+                          Number(period.period_unit_count),period.period_unit
+                        )
+                      }
+                    })
+                    classificationOfferings.unit_quantity = JSON.stringify(quantityObj)
+                  }
+                  classificationOfferings.sysIdClassificationInstance = instance.sysId;
                   classificationOfferings.isCloudServicePackage = cloudServices
                     .includes(serviceName)
                   const formData = this.createFormData(serviceName,offering)
                   classificationOfferings.IGCE_description = formData || offering.usageDescription
                     ||""
-                  instance.offerings.push(classificationOfferings)
+                  classificationOfferings.unit = "/month"
+                  if(serviceName !== 'Training'){
+                    instance.offerings.push(classificationOfferings)
+                  }
                 }
               })
             }
@@ -206,34 +296,99 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
           service.serviceOfferings.forEach((offering)=>{
             offering.classificationInstances?.forEach((classificationInstance)=>{
               this.instanceData.forEach((instance)=>{
-                if(instance.sysId === classificationInstance.classificationLevelSysId){
+                // eslint-disable-next-line max-len
+                let classificationId = typeof(classificationInstance.classificationLevelSysId) === "object"?
+                  // eslint-disable-next-line max-len
+                  (classificationInstance.classificationLevelSysId as ReferenceColumn).value as string:
+                  classificationInstance.classificationLevelSysId as string
+                if(instance.sysId === classificationId ){
                   const classificationOfferings:{
                     IGCE_title:string,
                     IGCE_description:string,
                     monthly_price:number,
                     isCloudServicePackage:boolean,
+                    sysIdCDS:string,
+                    sysIdClassificationInstance:string,
+                    sysIdServicesOffering:string,
                     sysId:string,
+                    unit:string,
+                    unit_quantity:string,
                   } = {
                     IGCE_title:"",
                     IGCE_description:"",
                     monthly_price:0,
                     isCloudServicePackage:false,
+                    sysIdCDS:"",
+                    sysIdClassificationInstance:"",
+                    sysIdServicesOffering:"",
                     sysId:"",
+                    unit:"",
+                    unit_quantity:"",
+                  }
+                  const quantityObj:Record<string, number> = {}
+                  if(classificationInstance.entireDuration === "NO"
+                    && classificationInstance.selectedPeriods)
+                  {
+                    classificationInstance.selectedPeriods.forEach(period=>{
+                      let selected = Periods.periods
+                        .filter(selectedPeriod => selectedPeriod.sys_id === period)
+                      quantityObj[period] = this.convertToMonths(
+                        Number(selected[0].period_unit_count),selected[0].period_unit
+                      )
+                    })
+                    classificationOfferings.unit_quantity = JSON.stringify(quantityObj)
+                  }else{
+                    Periods.periods.forEach(period=>{
+                      if(period.sys_id){
+                        quantityObj[period.sys_id] = this.convertToMonths(
+                          Number(period.period_unit_count),period.period_unit
+                        )
+                      }
+                    })
+                    classificationOfferings.unit_quantity = JSON.stringify(quantityObj)
                   }
                   classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
-                  classificationOfferings.sysId = instance.sysId;
+                  classificationOfferings.sysIdClassificationInstance = instance.sysId;
                   classificationOfferings.isCloudServicePackage = cloudServices
                     .includes(serviceName)
                   classificationOfferings.IGCE_description =
                     classificationInstance.anticipatedNeedUsage
-                  instance.offerings.push(classificationOfferings)
+                  if(serviceName !== 'Training'){
+                    instance.offerings.push(classificationOfferings)
+                  }
                 }
               })
             })
           })
         }
       })
+      this.instanceData.forEach(instance=>{
+        if(instance.labelShort === "Secret / IL6"){
+          if(ClassificationRequirements.cdsSolution?.anticipated_need_or_usage){
+            const object ={
+              IGCE_title: "Cross-domain solution (CDS)",
+              IGCE_description: ClassificationRequirements.cdsSolution?.anticipated_need_or_usage,
+              sysIdCDS: ClassificationRequirements.cdsSolution?.sys_id || "",
+              monthly_price: "",
+              isCloudServicePackage:false,
+              sysIdClassificationInstance:instance.sysId,
+              sysIdServicesOffering:"",
+              sysId:"",
+              unit:"/month",
+              trafficPerDomain:"update",
+            }
+            instance.offerings.push(object)
+          }
+        }
+      })
     }
+    this.instanceData.forEach(instance=>{
+      if(instance.offerings.length <= 0){
+        this.accordionClosed.push(1)
+      }else{
+        this.accordionClosed.push(0)
+      }
+    })
   }
   protected async saveOnLeave(): Promise<boolean> {
     try{
@@ -245,7 +400,6 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     }
     return true;
   }
-
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter()
