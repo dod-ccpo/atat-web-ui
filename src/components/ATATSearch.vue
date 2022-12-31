@@ -195,7 +195,6 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
-    debugger;
     if (this.isSimulation && this.errorMessages.length === 0 && this._value) {
 
       // simulate success on first search, error on second.

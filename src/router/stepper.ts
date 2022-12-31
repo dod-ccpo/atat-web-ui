@@ -113,6 +113,7 @@ import SupportingDocumentation from "@/steps/10-FinancialDetails/IGCE/Supporting
 import EstimatesDeveloped from "@/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.vue";
 import SurgeCapabilities from "../steps/10-FinancialDetails/IGCE/SurgeCapabilities.vue";
 import MIPR from "../steps/10-FinancialDetails/MIPR.vue";
+import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
 import IncrementalFunding 
@@ -165,9 +166,7 @@ import {
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
   IGCETrainingPathResolver,
-  IGCEGatherPriceResolver,
 } from "./resolvers";
-import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 
 export const routeNames = {
   ContractingShop: "Contracting_Shop",
@@ -943,7 +942,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GatherPriceEstimates,
         completePercentageWeight: 1,
         component: GatherPriceEstimates,
-        routeResolver: IGCEGatherPriceResolver,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Training",
@@ -954,14 +953,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: IGCETraining,
         routeResolver: IGCETrainingPathResolver,
       },
-      // {
-      //   menuText: "Travel Estimates",
-      //   excludeFromMenu: true,
-      //   path: "travel-estimate",
-      //   name: routeNames.TravelEstimates,
-      //   completePercentageWeight: 1,
-      //   component: TravelEstimates
-      // },
+      {
+        menuText: "Travel Estimates",
+        excludeFromMenu: true,
+        path: "travel-estimate",
+        name: routeNames.TravelEstimates,
+        completePercentageWeight: 1,
+        component: TravelEstimates,
+        routeResolver: IGCETrainingPathResolver,
+      },
       {
         menuText: "Surge Capacity",
         excludeFromMenu: true,
@@ -969,7 +969,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SurgeCapacity,
         completePercentageWeight: 1,
         component: SurgeCapacity,
-        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Surge Capabilities",
