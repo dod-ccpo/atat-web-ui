@@ -69,7 +69,8 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { SlideoutPanelContent, RadioButton } from "../../../types/Global";
 import ContractingShopLearnMore from "./ContractingShopLearnMore.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import { ProjectOverviewDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -111,6 +112,11 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
       await AcquisitionPackage.setPackageId(packageId as string);
       await AcquisitionPackage.loadPackageFromId(packageId as string);
     }
+    // make sure package is initialized
+    const storeData = AcquisitionPackage.projectOverview
+      || await AcquisitionPackage.loadData<ProjectOverviewDTO>({
+        storeProperty: StoreProperties.ProjectOverview,
+      });
 
     this.contractingShop = AcquisitionPackage.contractingShop || "";
   }

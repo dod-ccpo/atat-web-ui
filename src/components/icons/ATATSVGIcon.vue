@@ -24,6 +24,7 @@ import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
 import CommentBubble from "@/components/icons/CommentBubble.vue";
 import ContactSupport from "@/components/icons/ContactSupport.vue";
+import ContentCopy from "@/components/icons/ContentCopy.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
 import DisaLogo from "@/components/icons/DisaLogo.vue";
@@ -83,6 +84,7 @@ import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vu
     Close,
     CommentBubble,
     ContactSupport,
+    ContentCopy,
     ControlPoint,
     Currency,
     DisaLogo,

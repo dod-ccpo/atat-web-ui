@@ -55,6 +55,7 @@ import { CrossDomainSolutionAPI } from "@/api/crossDomainSolution";
 import { GInvoicingApi } from "@/api/gInvoicing";
 import { TrainingEstimateAPI } from "@/api/trainingEstimate";
 import {IgceEstimateApi} from "@/api/igceEstimate";
+import { travelRequirementApi } from "./travelRequirement";
 
 export const api = {
 
@@ -115,6 +116,7 @@ export const api = {
   classifiedInformationTypeTable: new ClassifiedInformationTypeAPI(),
   xaaSEnvironmentInstanceTable: new XaaSEnvironmentInstanceAPI(),
   crossDomainSolutionTable: new CrossDomainSolutionAPI(),
+  travelRequirementTable: new travelRequirementApi(),
   trainingEstimateTable: new TrainingEstimateAPI()
 }
 
