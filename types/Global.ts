@@ -409,6 +409,17 @@ export interface OtherServiceSummaryTableData {
   trainingType?: string;
 }
 
+export interface TravelSummaryTableData {
+  acquisition_package?: string;
+  sys_id?: string;
+  instanceNumber: number;
+  trip_location: string;
+  selected_periods: string[];
+  number_of_trips: string;
+  number_of_travelers: string;
+  duration_in_days: string;
+}
+
 export interface EnvInstanceSummaryTableData {
   instanceSysId?: string;
   instanceNumber: number;
