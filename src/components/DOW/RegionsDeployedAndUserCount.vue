@@ -36,7 +36,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 })
 
 export default class RegionsDeployedAndUserCount extends Vue {
-  @Prop({ default: "regions" }) id!: string;
+  @Prop({ default: "Regions" }) id!: string;
   @Prop({ default: false }) hasTextFields?: boolean;
   @Prop() groupLabel?: string;
   @Prop() groupLabelId?: string;

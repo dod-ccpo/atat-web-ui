@@ -28,7 +28,9 @@ import {
   // PeriodOfPerformanceDTO,
   ProjectOverviewDTO,
   SensitiveInformationDTO,
-  ReferenceColumn, FundingRequirementDTO, RegionsDTO,
+  ReferenceColumn,
+  FundingRequirementDTO,
+  RegionsDTO,
 } from "@/api/models";
 
 import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
@@ -620,6 +622,7 @@ export class AcquisitionPackageStore extends VuexModule {
       await DescriptionOfWork.initialize();
       await Attachments.initialize();
       await FinancialDetails.initialize();
+      await this.setRegions()
 
       const currentEnvironmentSysId = acquisitionPackage.current_environment as string;
       const projectOverviewSysId = acquisitionPackage.project_overview as string;

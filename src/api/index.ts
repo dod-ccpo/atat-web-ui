@@ -56,7 +56,8 @@ import { GInvoicingApi } from "@/api/gInvoicing";
 import { TrainingEstimateAPI } from "@/api/trainingEstimate";
 import {IgceEstimateApi} from "@/api/igceEstimate";
 import { travelRequirementApi } from "./travelRequirement";
-import {RegionsAPI } from "@/api/regions"
+import { RegionsAPI } from "./regions";
+
 
 export const api = {
 

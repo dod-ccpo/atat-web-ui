@@ -32,7 +32,7 @@ module.exports = {
   envDevTesting: "#Radio_DevTesting",
   envPrepodStage: "#Radio_PreProdStaging",
   envProd: "#Radio_Production",  
-  regionGroup:"#regions input[type=checkbox]",
+  regionGroup:"#Regions input[type=checkbox]",
   regionCheckboxLabel: ".font-weight-500",
   eastCheckbox: "#Checkbox_CONUSEast",
   centralCheckBox: "#Checkbox_CONUSCentral",
