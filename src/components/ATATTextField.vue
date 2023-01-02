@@ -224,7 +224,6 @@ export default class ATATTextField extends Vue  {
         maskObj.mask = this.mask || [];
       }
     }
-
     if (Object.keys(maskObj).length>0){
       maskObj.placeholder="";
       maskObj.jitMasking=true;
@@ -256,6 +255,7 @@ export default class ATATTextField extends Vue  {
 
   public filterNumbers(evt: KeyboardEvent): void {
     if (this.type === "number") {
+      debugger
       let keyPressed = evt.key.toString();
       const regex = this.allowDecimals
         ? /^[0-9]*\.?[0-9]*$/

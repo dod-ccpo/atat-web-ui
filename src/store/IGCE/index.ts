@@ -257,7 +257,7 @@ export class IGCEStore extends VuexModule {
       },
       optimize_replicate: {
         option: rceFlat.optimize_replicate_option,
-        estimated_values: rceFlat.optimize_replicate_estimated_values?.split(",")
+        estimated_values: rceFlat.optimize_replicate_estimated_values?.split(/\.\d\d/gm)
       },
       surge_requirements: {
         capabilities: rceFlat.surge_requirement_capabilities,
