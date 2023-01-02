@@ -27,6 +27,7 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox } from "types/Global";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -35,7 +36,7 @@ import { Checkbox } from "types/Global";
 })
 
 export default class RegionsDeployedAndUserCount extends Vue {
-  @Prop({ default: "Regions" }) id!: string;
+  @Prop({ default: "regions" }) id!: string;
   @Prop({ default: false }) hasTextFields?: boolean;
   @Prop() groupLabel?: string;
   @Prop() groupLabelId?: string;
@@ -49,62 +50,7 @@ export default class RegionsDeployedAndUserCount extends Vue {
   @Prop({default:0}) private componentIndex?: number;
 
   public selectedRegions: string[] = [];
-  public regions: Checkbox[] = [
-    {
-      id: "CONUSEast",
-      label: "CONUS East",
-      value: "CONUSEast",
-      textfieldValue: "",
-    },
-    {
-      id: "CONUSCentral",
-      label: "CONUS Central",
-      value: "CONUSCentral",
-      textfieldValue: "",
-    },
-    {
-      id: "CONUSWest",
-      label: "CONUS West",
-      value: "CONUSWest",
-      textfieldValue: "",
-    },
-    {
-      id: "AFRICOM",
-      label: "AFRICOM",
-      value: "AFRICOM",
-      textfieldValue: "",
-    },
-    {
-      id: "CENTCOM",
-      label: "CENTCOM",
-      value: "CENTCOM",
-      textfieldValue: "",
-    },
-    {
-      id: "EUCOM",
-      label: "EUCOM",
-      value: "EUCOM",
-      textfieldValue: "",
-    },
-    {
-      id: "INDOPACOM",
-      label: "INDOPACOM",
-      value: "INDOPACOM",
-      textfieldValue: "",
-    },
-    {
-      id: "PACCOM",
-      label: "PACCOM",
-      value: "PACCOM",
-      textfieldValue: "",
-    },
-    {
-      id: "SOUTHCOM",
-      label: "SOUTHCOM",
-      value: "SOUTHCOM",
-      textfieldValue: "",
-    },
-  ];
+  public regions: Checkbox[] = [];
 
   @Watch("selectedRegions")
   public selectedRegionsChanged(): void {
@@ -149,6 +95,17 @@ export default class RegionsDeployedAndUserCount extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    let regionsData = acquisitionPackage.regions
+    regionsData?.forEach(region => {
+      let item = {
+        id : region.name,
+        label : region.name,
+        value : region.sys_id,
+        textfieldValue : ""
+      }
+      this.regions.push(item);
+    })
+    
     if(this.regionUsersOnLoad){
       this.updateRegionUsers(this.regionUsersOnLoad)
     }
