@@ -16,7 +16,7 @@
             <ATATRadioGroup
               class="copy-max-width max-width-740"
               id="TravelEstimates"
-              :card="true"
+              legend="How do you want to estimate your travel needs?"
               :items="travelEstimateOptions"
               :value.sync="ceilingPrice"
               :rules="[$validators.required('Please select an option')]"
@@ -37,28 +37,33 @@
                         width="23"
                         height="33"
                         name="place"
-                        class="mt-n1 mr-2"
+                        class="ml-2 mt-n1 mr-3"
                         color="primary"
                       />
                     </div>
                     <h2 class="">Travel summary</h2>
                     <h3 class="text-base-light ml-auto">
-                      {{ numberOfTrips }} trip(s)
+                      {{ pluralizeTrip(numberOfAllTrips) }}
                     </h3>
                   </div>
                 </div>
 
-                <v-expansion-panels accordion flat class="bg-transparent">
+                <v-expansion-panels accordion flat>
                   <v-expansion-panel
+                    class="bg-transparent"
                     v-for="(item, index) in calloutData"
                     :key="index"
                   >
-                    <v-expansion-panel-header :id="item.id + '_Button'">
-                      {{ item.period }} ({{ getNumberOfTripsForEachPeriod(item.trips.length)}})
+                    <v-expansion-panel-header :id="item.id + '_Button'" class="no-hover">
+                      <strong>{{ item.period }}</strong> 
+                      <span class="font-weight-400">
+                        ({{ pluralizeTrip(item.totalNumberOfTripsPerPeriod) }})
+                      </span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content :id="item.id + '_Content'">
-                      <div v-for="(trip, tripIdx) in item.trips" :key="tripIdx"
-                      >
+                      <div 
+                        v-for="(trip, tripIdx) in item.trips" 
+                        :key="tripIdx">
                         <div v-html="trip" class="d-flex align-top"></div>
                       </div>
                     </v-expansion-panel-content>
@@ -75,6 +80,11 @@
             :periods.sync="periods"
             :isMultiple="ceilingPrice === 'MULTIPLE'"
             :values.sync="estimatedTravelCosts"
+            singlePeriodTooltipText=
+              "Customize a price estimate for each performance period specified in the travel 
+              summary."
+            singlePeriodErrorMessage="Enter your estimated travel costs per period"
+            multiplePeriodErrorMessage="Enter your estimated travel costs for this period"
           ></ATATSingleAndMultiplePeriods>
         </div>
       </v-col>
@@ -85,6 +95,7 @@
 /* eslint-disable camelcase */
 import {
   Checkbox,
+  EstimateOptionValue,
   RadioButton,
   SingleMultiple,
   TravelCalloutDataItem,
@@ -118,14 +129,14 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 })
 export default class TravelEstimates extends Mixins(SaveOnLeave) {
   private periods: PeriodDTO[] | null = [];
-  private ceilingPrice: SingleMultiple = "";
+  private ceilingPrice: SingleMultiple | undefined = "";
   private estimatedTravelCosts = [""];
   private percentages = [""];
-  private numberOfTrips = 0;
+  private numberOfAllTrips = 0;
   private selectedPeriods: Checkbox[] = [];
   private travelDOWData: TravelSummaryTableData[] = [];
   private calloutData: TravelCalloutDataItem[] = [];
-  public savedData: EstimateOptionValueDTO = {
+  public savedData: EstimateOptionValue = {
     option: "",
     estimated_values: [],
   };
@@ -147,7 +158,7 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   
   get currentData(): EstimateOptionValueDTO {
     return {
-      option: this.ceilingPrice,
+      option: this.ceilingPrice || "",
       estimated_values: this.estimatedTravelCosts,
     };
   }
@@ -179,12 +190,13 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   protected async loadDOWTravelData(): Promise<void> {
     this.selectedPeriods = await createPeriodCheckboxItems();
     this.travelDOWData = await DescriptionOfWork.getTravel();
-
+    
     this.selectedPeriods.forEach((period) => {
       const calloutDataItem: TravelCalloutDataItem = {
         period: period.label,
-        period_sys_id: period.value,
+        periodSysId: period.value,
         trips: [],
+        totalNumberOfTripsPerPeriod: 0
       };
       this.travelDOWData.forEach((travelItem) => {
         if (travelItem.selected_periods.join("").indexOf(period.value) > -1) {
@@ -200,27 +212,31 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
               "traveler"
             );
           calloutDataItem.trips.push(
-            "<div class='mr-2'>" +
-              travelItem.number_of_trips + " x " + 
-            "</div>" + 
+            "<div class='mr-3'>" +
+                  travelItem.number_of_trips +"&nbsp;&nbsp;x" +
+            "</div>" +
             "<div>" +
-              travelItem.trip_location +
-              ", " +
-              duration +
-              ", " +
-              travelers + 
+            travelItem.trip_location +
+            ", " +
+            duration +
+            ", " +
+            travelers +
             "</div>"
           );
+          calloutDataItem.totalNumberOfTripsPerPeriod =
+            calloutDataItem.totalNumberOfTripsPerPeriod + parseInt(travelItem.number_of_trips);
         }
+        
       });
       if (calloutDataItem.trips.length > 0) {
+        this.numberOfAllTrips = this.numberOfAllTrips + calloutDataItem.totalNumberOfTripsPerPeriod;
         this.calloutData.push(calloutDataItem);
       }
     });
   }
 
-  protected getNumberOfTripsForEachPeriod(trips: number): string {
-    return trips + " " + setItemToPlural(trips, "trip")
+  protected pluralizeTrip(numberOfTrips: number): string {
+    return numberOfTrips + " " + setItemToPlural(numberOfTrips, "trip");
   }
 
   protected async saveOnLeave(): Promise<boolean> {

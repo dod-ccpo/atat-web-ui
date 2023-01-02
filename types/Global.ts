@@ -422,7 +422,8 @@ export interface TravelSummaryTableData {
 
 export interface TravelCalloutDataItem {
     period: string,
-    period_sys_id: string
+    periodSysId: string,
+    totalNumberOfTripsPerPeriod: number,
     trips: string[]
 }
 

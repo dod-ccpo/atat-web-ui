@@ -1,6 +1,6 @@
 <template>
   <svg
-    viewBox="0 0 23 33"
+    viewBox="0 0 25 35"
     xmlns="http://www.w3.org/2000/svg"
   >
     <!-- eslint-disable -->
