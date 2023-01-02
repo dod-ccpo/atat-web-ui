@@ -420,6 +420,12 @@ export interface TravelSummaryTableData {
   duration_in_days: string;
 }
 
+export interface TravelCalloutDataItem {
+    period: string,
+    period_sys_id: string
+    trips: string[]
+}
+
 export interface EnvInstanceSummaryTableData {
   instanceSysId?: string;
   instanceNumber: number;
