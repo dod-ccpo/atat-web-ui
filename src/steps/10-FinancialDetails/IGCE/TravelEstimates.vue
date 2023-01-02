@@ -117,7 +117,6 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     if (this.hasChanged()) {
-      console.log("has changes..");
       const store = await IGCEStore.getRequirementsCostEstimate();
       store.travel = this.currentData;
       await IGCEStore.setRequirementsCostEstimate(store);
