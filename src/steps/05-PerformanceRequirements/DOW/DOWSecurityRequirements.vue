@@ -142,7 +142,6 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
     return true;
   }
 
-
   public async mounted(): Promise<void> {
     this.offeringName = DescriptionOfWork.DOWSecReqOfferingName;
 

@@ -333,7 +333,11 @@ const mapClassificationInstanceFromDTO = (
     selectedPeriods: selectedPeriods,
     impactLevel: classificationLevel?.impact_level || "",
     labelLong: labelLong,
-    labelShort: labelShort
+    labelShort: labelShort,
+    typeOfDelivery: value.type_of_delivery,
+    typeOfMobility: value.type_of_mobility,
+    typeOfMobilityOther: value.type_of_mobility_other,
+    classifiedInformationTypes: value.classified_information_types,
   };
 
   return result;
@@ -746,16 +750,14 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({rawError: true})
   public async getDOWSecurityRequirements(): Promise<SecurityRequirement[]> {
-    const securityReqs: SecurityRequirement[] = [
-      {
-        type: "SECRET",
-        classification_information_type: [],
-      },
-      {
-        type: "TOPSECRET",
-        classification_information_type: [],
-      }
-    ];
+    const secretObj: SecurityRequirement = {
+      type: "SECRET",
+      classification_information_type: [],
+    };
+    const topSecretObj: SecurityRequirement = {
+      type: "TOPSECRET",
+      classification_information_type: [],
+    };
 
     const secretSysId = ClassificationRequirements.classificationSecretSysId;
 
@@ -765,22 +767,35 @@ export class DescriptionOfWorkStore extends VuexModule {
     const offeringGroupObj = this.DOWObject.find(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );
-
     if (offeringGroupObj && isCloudSupportService) {
       offeringGroupObj.otherOfferingData?.forEach(instance => {
         if (instance.classificationLevel === secretSysId) {
-          const secretObj = securityReqs.find(obj => obj.type === "SECRET");
-          if (secretObj) {
-            const secReqSysIds = instance.classifiedInformationTypes 
-              ? instance.classifiedInformationTypes.split(",")
-              : [];
-            secretObj.classification_information_type = secReqSysIds;
-          }
+          const secReqSysIds = instance.classifiedInformationTypes 
+            ? instance.classifiedInformationTypes.split(",")
+            : [];
+          secretObj.classification_information_type = secReqSysIds; 
         }
+    
       });
+    } else if (offeringGroupObj && !isCloudSupportService) {
+      const offering = offeringGroupObj.serviceOfferings.find(
+        obj => obj.name === this.currentOfferingName
+      );
+      if (offering) {
+        const secretInstance = offering.classificationInstances?.find(
+          obj => obj.classificationLevelSysId === secretSysId
+        );
+        if (secretInstance) {
+          const secReqSysIds = secretInstance.classifiedInformationTypes 
+            ? secretInstance.classifiedInformationTypes.split(",")
+            : [];
+          secretObj.classification_information_type = secReqSysIds;
+        }
+      }
     }
-    return securityReqs;
 
+    const securityReqs: SecurityRequirement[] = [ secretObj, topSecretObj ];
+    return securityReqs;
   }
 
   public DOWHasArchitecturalDesignNeeds: boolean | null = null;
