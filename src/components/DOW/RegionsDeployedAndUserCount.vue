@@ -96,15 +96,16 @@ export default class RegionsDeployedAndUserCount extends Vue {
 
   public async mounted(): Promise<void> {
     let regionsData = acquisitionPackage.regions
-    regionsData?.forEach(region => {
-      let item = {
-        id : region.name,
-        label : region.name,
-        value : region.sys_id,
-        textfieldValue : ""
-      }
-      this.regions.push(item);
-    })
+    regionsData?.sort((a, b) => a.sequence > b.sequence ? 1 : -1)
+      .forEach(region => {
+        let item = {
+          id : region.name,
+          label : region.name,
+          value : region.sys_id,
+          textfieldValue : ""
+        }
+        this.regions.push(item);
+      })
     
     if(this.regionUsersOnLoad){
       this.updateRegionUsers(this.regionUsersOnLoad)
