@@ -46,6 +46,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import { homedir } from "os";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -325,6 +326,15 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.validateNow;
   }
 
+  public cancelLoadDest = "Home";
+  @Mutation
+  public doSetCancelLoadDest(val: string): void {
+    this.cancelLoadDest = val;
+  }
+  public get getCancelLoadDest(): string {
+    return this.cancelLoadDest || "Home";
+  }
+
   public packagePercentLoaded = 0;
   public get getPackagePercentLoaded(): number {
     return this.packagePercentLoaded;
@@ -333,7 +343,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public setPackagePercentLoaded(val: number): void {
     this.packagePercentLoaded = val;
   }
-  
+
   public get getIsLoading(): boolean {
     return this.isLoading;
   }

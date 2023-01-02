@@ -123,7 +123,9 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
   public contractingShop = "";
 
   public cancelLoad(): void {
-    AppSections.changeActiveSection("Home");
+    AcquisitionPackage.setInitialized(false);
+    const dest = AcquisitionPackage.getCancelLoadDest;
+    AppSections.changeActiveSection(dest);
   }
 
   public openSlideoutPanel(e: Event): void {

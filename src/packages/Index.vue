@@ -318,6 +318,8 @@ export default class Packages extends Vue {
     this.selectedSort = AcquisitionPackageSummary.selectedSort;
     this.loadPackageData();
     this.setNoRecordsText(0);
+    const sectionData = await AppSections.getSectionData();
+    AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Packages);
   }
 
   public mounted():void{
