@@ -53,6 +53,7 @@ import Periods from "@/store/periods";
 import { EstimateOptionValueDTO, PeriodDTO } from "@/api/models";
 import IGCEStore from "@/store/IGCE";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -114,7 +115,7 @@ export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
 
   protected async loadOnEnter(): Promise<boolean> {
     const store = await IGCEStore.getRequirementsCostEstimate();
-    this.savedData = store.optimize_replicate;
+    this.savedData = _.cloneDeep(store.optimize_replicate);
     this.opRepOption = store.optimize_replicate.option;
     this.opRepEstValues = store.optimize_replicate.estimated_values;
     return true;
