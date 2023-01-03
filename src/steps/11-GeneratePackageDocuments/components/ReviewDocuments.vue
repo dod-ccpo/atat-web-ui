@@ -86,6 +86,24 @@
         </div>
       </v-col>
       <v-col cols="4">
+        <div
+          id="emailCard"
+          class="border1 border-rounded border-base-lighter pa-6"
+        >
+          <h3 class="mb-2">Email your documents to DITCO</h3>
+          <p>
+            Send your completed package via email to disa.scott.ditco.mbx.ditco-jwcc@mail.mil
+          </p>
+          <a
+            class="button"
+            href="mailto:disa.scott.ditco.mbx.ditco-jwcc@mail.mil"
+          >
+            <div class="d-flex align-center">
+              Send Documents&nbsp;
+              <ATATSVGIcon name="sendEmail" color="primary" :width="19" :height="14" />
+            </div>
+          </a>
+        </div>
         <div 
           id="regenerateCard" 
           class="border1 border-rounded border-base-lighter pa-6"

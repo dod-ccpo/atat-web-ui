@@ -470,6 +470,14 @@ textarea {
     }
   }
 }
+a {
+  .button {
+    text-decoration: none !important;
+    width: 100%;
+    background-color: $primary;
+    color: $white;
+  }
+}
 
 ._progress-bar {
   &.v-progress-linear--rounded {
