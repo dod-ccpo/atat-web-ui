@@ -118,7 +118,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public deleteMode = "item";
 
   @Watch("selectedOptions")
-  public selectedOptionsChange(newVal: string[]): void {
+  public async selectedOptionsChange(newVal: string[]): Promise<void> {
     if(this.previousSelectedOptions.length > this.selectedOptions.length){
       const difference = this.previousSelectedOptions.filter(
         tempVal => this.selectedOptions.indexOf(tempVal) === -1
@@ -126,10 +126,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       const deselectedItem = this.checkboxItems.find(el => el.value === difference[0]);
       this.deselectedLabel = deselectedItem?.label || "";
       this.deleteMode = "item";
-      // todo: need to check if service offering has saved data or if is first
-      // time checking the offering checkbox. If first time (i.e., no saved data
-      // for the offering), then no need to show the delete confirmation modal
-      this.openModal();
+
+      const hasInstances = 
+        await DescriptionOfWork.serviceOfferingHasInstances(this.deselectedLabel);
+      if (hasInstances) {
+        this.openModal();
+      }
     }
     
     this.otherSelected = newVal.indexOf(this.otherValue) > -1 ? "true" : "false";
@@ -175,9 +177,11 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         },
       }).catch(() => console.log("avoiding redundant navigation"));
     } else {
+      await DescriptionOfWork.removeServiceOffering(this.deselectedLabel);
       this.showDialog = false;
       this.deleteMode = "item";
       this.deselectedLabel = "";
+
     }
     
   }
