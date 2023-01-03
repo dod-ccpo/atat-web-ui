@@ -1535,7 +1535,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         groupToRemoveObj.serviceOfferings.forEach(offering => {
           if (offering.classificationInstances && offering.classificationInstances.length > 0) {
             offering.classificationInstances.forEach(instance => {
-              // deleteOtherOfferingInstanceFromSNOW(instance.sysId as string, this.currentGroupId);
               sysIds.push(instance.sysId as string);
             });
           }

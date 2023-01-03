@@ -181,9 +181,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       this.showDialog = false;
       this.deleteMode = "item";
       this.deselectedLabel = "";
-
     }
-    
+       
   }
 
   public selectedOptions: string[] = [];
