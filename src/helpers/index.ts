@@ -353,3 +353,7 @@ export function getStatusLabelFromValue(value: string): string {
   const statusKey = _.startCase(value.replaceAll("_", " ").toLowerCase()).replaceAll(" ", "");
   return Statuses[statusKey] ? Statuses[statusKey].label : "";
 }
+
+export function setItemToPlural(numberOfItems: number, noun: string): string {
+  return numberOfItems >1 ? noun + "s" : noun;
+}
