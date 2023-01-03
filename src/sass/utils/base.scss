@@ -469,5 +469,10 @@ textarea {
 
     }
   }
+}
 
+._progress-bar {
+  &.v-progress-linear--rounded {
+    border-radius: 16px;
+  }
 }
