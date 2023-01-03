@@ -28,7 +28,9 @@ import {
   // PeriodOfPerformanceDTO,
   ProjectOverviewDTO,
   SensitiveInformationDTO,
-  ReferenceColumn, FundingRequirementDTO,
+  ReferenceColumn,
+  FundingRequirementDTO,
+  RegionsDTO,
 } from "@/api/models";
 
 import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
@@ -63,6 +65,7 @@ export const StoreProperties = {
   ClassificationLevel: "ClassificationRequirements",
   CurrentEnvironment: "currentEnvironment",
   ContractConsiderations: "contractConsiderations",
+  Regions:"regions"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -307,6 +310,7 @@ export class AcquisitionPackageStore extends VuexModule {
   taskOrderDetailsAlertClosed = false;
   docGenJobStatus = "";
   packageId = "";
+  regions: RegionsDTO[] | null = null;
   isLoading = false;
 
   validateNow = false;
@@ -541,6 +545,15 @@ export class AcquisitionPackageStore extends VuexModule {
       ? Object.assign(this.contractConsiderations, value) 
       : value;
   }
+  @Action({ rawError: true })
+  public async setRegions(): Promise<void> {
+    const value:RegionsDTO[] = await api.regionsTable.all()
+    this.doSetRegions(value);
+  }
+  @Mutation
+  public doSetRegions(value: RegionsDTO[]): void {
+    this.regions = value
+  }
 
   @Mutation
   public setProjectTitle(value: string): void {
@@ -628,6 +641,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.classificationLevel = sessionData.classificationLevel;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
+    this.regions = sessionData.regions
   }
 
   @Action({rawError: true})
@@ -646,6 +660,7 @@ export class AcquisitionPackageStore extends VuexModule {
       await Attachments.initialize();
       this.setPackagePercentLoaded(20);
       await FinancialDetails.initialize();
+      await this.setRegions()
       this.setPackagePercentLoaded(25);
 
       const currentEnvironmentSysId = acquisitionPackage.current_environment as string;
@@ -941,6 +956,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await FinancialDetails.initialize();
     this.setPackagePercentLoaded(25);
 
+    await this.setRegions()
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
@@ -1052,6 +1068,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.CurrentEnvironment]: api.currentEnvironmentTable,
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
     [StoreProperties.ContractConsiderations]: api.contractConsiderationsTable,
+    [StoreProperties.Regions]:api.regionsTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -1068,6 +1085,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ClassificationLevel]: "classification_level",
     [StoreProperties.CurrentEnvironment]: "current_environment",
     [StoreProperties.ContractConsiderations]: "contract_considerations",
+    [StoreProperties.Regions]: "regions",
   }
 
   @Action({ rawError: true })
