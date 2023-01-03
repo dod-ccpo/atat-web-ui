@@ -4,14 +4,25 @@
       For your
       <span v-if="hasSecret">SECRET</span>
       <span v-if="hasTopSecret">TOP SECRET</span>
-      cloud services and support, what type of classified information will be accessed?
+      <span v-if="!isDOW">
+        cloud services and support, what type of classified information will be accessed?
+      </span>
+      <span v-if="isDOW">
+        advisory services, what type of classified information will contractor employees 
+        be required to access?
+      </span>
     </p>
-    <p id="MessageNote" class="mb-5 ">
+    
+    <p v-if="!isDOW" id="MessageNote" class="mb-5 ">
       Select all that apply to your
       <span v-if="hasSecret">SECRET</span>
       <span v-if="hasTopSecret">TOP SECRET</span>
       classification level.
     </p>
+    <p v-if="isDOW" id="DOWMessageNote" class="mb-5">
+      Select all that apply to this support service.
+    </p>
+
     <ATATCheckboxGroup
       id="SecurityRequirements"
       :value.sync="_selectedSecurityRequirements"
@@ -45,6 +56,7 @@ export default class SecurityRequirementsCheckboxes extends vue {
   @Prop() private securityRequirementsCheckboxes!: Checkbox[];
   @Prop() private hasSecret!: boolean;
   @Prop() private hasTopSecret!: boolean;
+  @Prop() private isDOW!: boolean;
 
   private selectedItem: string[] = []
   @Watch("selectedItem")

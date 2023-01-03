@@ -36,6 +36,7 @@ import {
   OtherServiceOfferingData,
   StorageUnit,
   RadioButton,
+  SecurityRequirement,
   TravelSummaryTableData,
 } from "../../../types/Global";
 
@@ -191,6 +192,7 @@ const saveOrUpdateOtherServiceOffering =
       tempObject.storage_amount = serviceOffering.storageAmount;
       tempObject.storage_type = serviceOffering.storageType;
       tempObject.storage_unit = serviceOffering.storageUnit;
+      tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
 
       if(serviceOffering.sysId)
         tempObject.sys_id = serviceOffering.sysId;
@@ -331,7 +333,11 @@ const mapClassificationInstanceFromDTO = (
     selectedPeriods: selectedPeriods,
     impactLevel: classificationLevel?.impact_level || "",
     labelLong: labelLong,
-    labelShort: labelShort
+    labelShort: labelShort,
+    typeOfDelivery: value.type_of_delivery,
+    typeOfMobility: value.type_of_mobility,
+    typeOfMobilityOther: value.type_of_mobility_other,
+    classifiedInformationTypes: value.classified_information_types,
   };
 
   return result;
@@ -367,7 +373,8 @@ const mapOtherOfferingFromDTO = (
     storageType: value.storage_type,
     storageUnit: value.storage_unit as StorageUnit,
     sysId: value.sys_id,
-    instanceNumber: index
+    instanceNumber: index,
+    classifiedInformationTypes: value.classified_information_types,
   };
 
   if("environment_type" in value){
@@ -696,6 +703,99 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public doSetShowSecurityRequirements(value: boolean): void {
     this.showSecurityRequirements = value;
+  }
+
+  @Action({rawError: true})
+  public async saveSecurityRequirements(securityReqs: SecurityRequirement[]): Promise<void> {
+    // pragma: allowlist secret
+    const secretSysId = ClassificationRequirements.classificationSecretSysId;
+    // TODO: future ticket when implementing TOP secret. keep const around even if unused currently
+    // pragma: allowlist secret
+    // const topSecretSysId = ClassificationRequirements.classificationTopSecretSysId;
+
+    // pragma: allowlist secret
+    const secretReqsObj = securityReqs.find(obj => obj.type === "SECRET");
+    // pragma: allowlist secret
+    const secretReqs = (secretReqsObj?.classification_information_type)?.join(",");
+
+    const offeringGroupObj = this.DOWObject.find(
+      obj => obj.serviceOfferingGroupId === this.currentGroupId
+    );
+    const isCloudSupportService = 
+      DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+    
+    if (offeringGroupObj && isCloudSupportService) {
+      // save other offering instances with secret + classification level
+      offeringGroupObj.otherOfferingData?.forEach(instance => {
+        if (instance.classificationLevel === secretSysId) {
+          instance.classifiedInformationTypes = secretReqs;
+          saveOrUpdateOtherServiceOffering(instance, this.currentGroupId.toLocaleLowerCase());
+        }
+      });
+    } else if (offeringGroupObj) {
+      // save classification instances with secret + classification level
+      const serviceOfferingObj = offeringGroupObj.serviceOfferings.find(
+        obj => obj.name === this.currentOfferingName
+      );
+      if (serviceOfferingObj) {
+        serviceOfferingObj.classificationInstances?.forEach(instance => {
+          if (instance.classificationLevelSysId === secretSysId) {
+            instance.classifiedInformationTypes = secretReqs;
+            saveOrUpdateClassificationInstance(instance);
+          }
+        });
+      }
+    }
+  }
+
+  @Action({rawError: true})
+  public async getDOWSecurityRequirements(): Promise<SecurityRequirement[]> {
+    const secretObj: SecurityRequirement = {
+      type: "SECRET",
+      classification_information_type: [],
+    };
+    const topSecretObj: SecurityRequirement = {
+      type: "TOPSECRET",
+      classification_information_type: [],
+    };
+
+    const secretSysId = ClassificationRequirements.classificationSecretSysId;
+
+    const isCloudSupportService = 
+      DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+
+    const offeringGroupObj = this.DOWObject.find(
+      obj => obj.serviceOfferingGroupId === this.currentGroupId
+    );
+    if (offeringGroupObj && isCloudSupportService) {
+      offeringGroupObj.otherOfferingData?.forEach(instance => {
+        if (instance.classificationLevel === secretSysId) {
+          const secReqSysIds = instance.classifiedInformationTypes 
+            ? instance.classifiedInformationTypes.split(",")
+            : [];
+          secretObj.classification_information_type = secReqSysIds; 
+        }
+    
+      });
+    } else if (offeringGroupObj && !isCloudSupportService) {
+      const offering = offeringGroupObj.serviceOfferings.find(
+        obj => obj.name === this.currentOfferingName
+      );
+      if (offering) {
+        const secretInstance = offering.classificationInstances?.find(
+          obj => obj.classificationLevelSysId === secretSysId
+        );
+        if (secretInstance) {
+          const secReqSysIds = secretInstance.classifiedInformationTypes 
+            ? secretInstance.classifiedInformationTypes.split(",")
+            : [];
+          secretObj.classification_information_type = secReqSysIds;
+        }
+      }
+    }
+
+    const securityReqs: SecurityRequirement[] = [ secretObj, topSecretObj ];
+    return securityReqs;
   }
 
   public DOWHasArchitecturalDesignNeeds: boolean | null = null;
@@ -1612,6 +1712,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     trainingLocation: "",
     trainingTimeZone: "",
     trainingPersonnel: "",
+    classifiedInformationTypes: "",
   }
 
   otherOfferingInstancesTouched: Record<string, number[]> = {};

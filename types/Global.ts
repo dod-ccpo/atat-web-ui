@@ -281,7 +281,7 @@ export interface DOWClassificationInstance {
   selectedPeriods?: string[];
   labelLong?: string;
   labelShort?: string;
-  classifiedInformationTypes?: string; // EJY HERE HERE
+  classifiedInformationTypes?: string;
   typeOfDelivery?: "" | "SHIPPED" | "PICK_UP";
   typeOfMobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   typeOfMobilityOther?: string;
@@ -389,8 +389,7 @@ export interface OtherServiceOfferingData {
   serviceType?: string;
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
-  classifiedInformationTypes?: string; // EJY HERE HERE
-  
+  classifiedInformationTypes?: string;
 }
 
 export interface OtherServiceSummaryTableData {
@@ -418,6 +417,13 @@ export interface TravelSummaryTableData {
   number_of_trips: string;
   number_of_travelers: string;
   duration_in_days: string;
+}
+
+export interface TravelCalloutDataItem {
+    period: string,
+    periodSysId: string,
+    totalNumberOfTripsPerPeriod: number,
+    trips: string[]
 }
 
 export interface EnvInstanceSummaryTableData {

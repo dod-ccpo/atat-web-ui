@@ -46,6 +46,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import { homedir } from "os";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -306,6 +307,7 @@ export class AcquisitionPackageStore extends VuexModule {
   taskOrderDetailsAlertClosed = false;
   docGenJobStatus = "";
   packageId = "";
+  isLoading = false;
 
   validateNow = false;
   allowDeveloperNavigation = false;
@@ -322,6 +324,36 @@ export class AcquisitionPackageStore extends VuexModule {
 
   public get getValidateNow(): boolean {
     return this.validateNow;
+  }
+
+  public cancelLoadDest = "Home";
+  @Mutation
+  public doSetCancelLoadDest(val: string): void {
+    this.cancelLoadDest = val;
+  }
+  public get getCancelLoadDest(): string {
+    return this.cancelLoadDest || "Home";
+  }
+
+  public packagePercentLoaded = 0;
+  public get getPackagePercentLoaded(): number {
+    return this.packagePercentLoaded;
+  }
+  @Mutation
+  public setPackagePercentLoaded(val: number): void {
+    this.packagePercentLoaded = val;
+  }
+
+  public get getIsLoading(): boolean {
+    return this.isLoading;
+  }
+  @Action({rawError: true})
+  public setIsLoading(val: boolean): void {
+    this.doSetIsLoading(val);
+  }
+  @Mutation
+  public doSetIsLoading(val: boolean): void {
+    this.isLoading = val;
   }
 
   @Action({rawError: false})
@@ -600,14 +632,21 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async loadPackageFromId(packageId: string): Promise<void> {
+    this.setIsLoading(true);
+    this.setPackagePercentLoaded(0);
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
       await ContactData.initialize();
+      this.setPackagePercentLoaded(5);
       await OrganiationData.initialize();
+      this.setPackagePercentLoaded(10);
       await DescriptionOfWork.initialize();
+      this.setPackagePercentLoaded(15);
       await Attachments.initialize();
+      this.setPackagePercentLoaded(20);
       await FinancialDetails.initialize();
+      this.setPackagePercentLoaded(25);
 
       const currentEnvironmentSysId = acquisitionPackage.current_environment as string;
       const projectOverviewSysId = acquisitionPackage.project_overview as string;
@@ -645,9 +684,12 @@ export class AcquisitionPackageStore extends VuexModule {
       });
 
       await ClassificationRequirements.getAllClassificationLevels();
+      this.setPackagePercentLoaded(30);
+
       // load selected call will take care of loading or setting an empty array
       await ClassificationRequirements
         .loadSelectedClassificationLevelsByAqId(this.acquisitionPackage?.sys_id as string);
+      this.setPackagePercentLoaded(35);
 
       if(acquisitionPackage.contracting_shop)
         await this.setContractingShop(acquisitionPackage.contracting_shop);
@@ -675,11 +717,13 @@ export class AcquisitionPackageStore extends VuexModule {
           await CurrentEnvironment.initializeCurrentEnvironment()
         );
       }
+      this.setPackagePercentLoaded(40);
 
       // call below loads if available or initializes
       await IGCE.loadRequirementsCostEstimateDataByPackageId(
         this.acquisitionPackage?.sys_id as string
       );
+      this.setPackagePercentLoaded(45);
 
       if(organizationSysId) {
         const organization = await api.organizationTable.retrieve(
@@ -700,6 +744,7 @@ export class AcquisitionPackageStore extends VuexModule {
           await EvaluationPlan.initialEvaluationPlan()
         );
       }
+      this.setPackagePercentLoaded(50);
 
       if(popSysId){
         await Periods.loadPeriodOfPerformanceFromSysId(
@@ -710,6 +755,7 @@ export class AcquisitionPackageStore extends VuexModule {
           await Periods.initialPeriodOfPerformance()
         )
       }
+      this.setPackagePercentLoaded(55);
 
       if(fairOppSysId) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(
@@ -722,6 +768,7 @@ export class AcquisitionPackageStore extends VuexModule {
           initialFairOpportunity()
         );
       }
+      this.setPackagePercentLoaded(60);
 
       if(currContractSysId) {
         const currentContract = await api.currentContractTable.retrieve(
@@ -734,6 +781,7 @@ export class AcquisitionPackageStore extends VuexModule {
           initialCurrentContract()
         );
       }
+      this.setPackagePercentLoaded(65);
 
       if(sensitiveInfoSysId){
         const sensitiveInformation = await api.sensitiveInformationTable.retrieve(
@@ -746,6 +794,7 @@ export class AcquisitionPackageStore extends VuexModule {
           initialSensitiveInformation()
         );
       }
+      this.setPackagePercentLoaded(70);
 
       if(contractTypeSysId){
         const contractType = await api.contractTypeTable.retrieve(
@@ -758,6 +807,7 @@ export class AcquisitionPackageStore extends VuexModule {
           initialContractType()
         )
       }
+      this.setPackagePercentLoaded(75);
 
       if(classificationLevelSysId) {
         const classificationLevel = await api.classificationLevelTable.retrieve(
@@ -770,6 +820,7 @@ export class AcquisitionPackageStore extends VuexModule {
           initialClassificationLevel()
         );
       }
+      this.setPackagePercentLoaded(80);
 
       if(contractConsiderationsSysId) {
         const contractConsiderations = await api.contractConsiderationsTable.retrieve(
@@ -782,6 +833,7 @@ export class AcquisitionPackageStore extends VuexModule {
           initialContractConsiderations()
         );
       }
+      this.setPackagePercentLoaded(85);
 
       if(corSysId) {
         const corInfo = await api.contactsTable.retrieve(
@@ -816,6 +868,7 @@ export class AcquisitionPackageStore extends VuexModule {
           });
         }
       }
+      this.setPackagePercentLoaded(90);
 
       if(fundingRequirementSysId){
         let fundingRequirement = await api.fundingRequirementTable.retrieve(
@@ -846,12 +899,17 @@ export class AcquisitionPackageStore extends VuexModule {
           }
         }
       }
+      this.setPackagePercentLoaded(92);
 
       await DescriptionOfWork.loadDOWfromAcquistionPackageId(packageId);
+      this.setPackagePercentLoaded(94);
       await ClassificationRequirements.loadCdsSolutionByPackageId(packageId);
+      this.setPackagePercentLoaded(96);
       await IGCE.loadTrainingEstimatesFromPackage(packageId);
+      this.setPackagePercentLoaded(100);
 
       this.setInitialized(true);
+      this.setIsLoading(false);
 
     } else {
       await this.initialize();
@@ -869,12 +927,19 @@ export class AcquisitionPackageStore extends VuexModule {
     if (this.initialized) {
       return;
     }
+    this.setIsLoading(true);
+    this.setPackagePercentLoaded(0);
 
     await ContactData.initialize();
+    this.setPackagePercentLoaded(5);
     await OrganiationData.initialize();
+    this.setPackagePercentLoaded(10);
     await DescriptionOfWork.initialize();
+    this.setPackagePercentLoaded(15);
     await Attachments.initialize();
+    this.setPackagePercentLoaded(20);
     await FinancialDetails.initialize();
+    this.setPackagePercentLoaded(25);
 
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
@@ -890,6 +955,8 @@ export class AcquisitionPackageStore extends VuexModule {
       try {
         const acquisitionPackage = await api.acquisitionPackageTable.create();
         if (acquisitionPackage) {
+          this.setPackagePercentLoaded(30);
+
           await this.setPackageId(acquisitionPackage.sys_id as string);
           this.setProjectOverview(initialProjectOverview());
           this.setOrganization(initialOrganization());
@@ -905,18 +972,24 @@ export class AcquisitionPackageStore extends VuexModule {
             this.setEvaluationPlan(evaluationPlanDTO);
             acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
           }
+          this.setPackagePercentLoaded(50);
 
           // this.setPeriods([]);
           // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initializeCurrentEnvironment();
+          this.setPackagePercentLoaded(60);
+
           acquisitionPackage.current_environment = currentEnvironmentDTO.sys_id as string;
           await IGCE.initializeRequirementsCostEstimate(acquisitionPackage.sys_id || "");
+          this.setPackagePercentLoaded(70);
           const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
+          this.setPackagePercentLoaded(80);
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           const taskOrderObj = await TaskOrder.initialize(acquisitionPackage.sys_id || "");
+          this.setPackagePercentLoaded(90);
 
           acquisitionPackage.funding_requirement 
             = taskOrderObj.funding_requirement?.sys_id as string;
@@ -930,7 +1003,10 @@ export class AcquisitionPackageStore extends VuexModule {
         console.log(`error creating acquisition package ${error}`);
       }
     }
+    this.setPackagePercentLoaded(95);
     await Periods.initialize();
+    this.setPackagePercentLoaded(100);
+    this.setIsLoading(false);
   }
 
   // service or agency selected on Organiation page

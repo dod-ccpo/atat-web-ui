@@ -90,6 +90,7 @@ import { EstimateOptionValueDTO, PeriodDTO } from "@/api/models";
 import IGCEStore from "@/store/IGCE";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -181,11 +182,11 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
     this.bothNeed = (this.DOWHasArchDesignNeeds === true && this.currentEnvHasArchDesignNeeds);
     
     const store = await IGCEStore.getRequirementsCostEstimate();
-    this.savedCurrEnvData = store.architectural_design_current_environment;
+    this.savedCurrEnvData = _.cloneDeep(store.architectural_design_current_environment);
     this.currEnvOption = store.architectural_design_current_environment.option;
     this.currEnvEstValues = store.architectural_design_current_environment.estimated_values;
 
-    this.savedPerfReqData = store.architectural_design_performance_requirements;
+    this.savedPerfReqData = _.cloneDeep(store.architectural_design_performance_requirements);
     this.perfReqOption = store.architectural_design_performance_requirements.option;
     this.perfReqEstValues = store.architectural_design_performance_requirements.estimated_values;
   }
