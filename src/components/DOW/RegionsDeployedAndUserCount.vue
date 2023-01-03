@@ -78,8 +78,6 @@ export default class RegionsDeployedAndUserCount extends Vue {
   }
 
   public updateRegionUsers(value:string): void {
-    console.log(value)
-    console.log(this.regions)
     const regionUsersArray = JSON.parse(value);
     const selectedRegions: string[] = [];
     regionUsersArray.forEach((regionUsers: Record<string, string>) => {
@@ -97,7 +95,6 @@ export default class RegionsDeployedAndUserCount extends Vue {
 
   public async mounted(): Promise<void> {
     let regionsData = acquisitionPackage.regions
-    console.log(regionsData)
     regionsData?.sort((a, b) => a.sequence > b.sequence ? 1 : -1)
       .forEach(region => {
         let item = {
@@ -108,7 +105,6 @@ export default class RegionsDeployedAndUserCount extends Vue {
         }
         this.regions.push(item);
       })
-    console.log(regionsData)
 
     Vue.nextTick(() => {
       if (this.regionUsersOnLoad) {
