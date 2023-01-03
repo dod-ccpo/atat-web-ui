@@ -103,6 +103,9 @@ export class CurrentEnvironmentStore extends VuexModule {
   public async getCurrentEnvironmentInstances(): Promise<CurrentEnvironmentInstanceDTO[]> {
     return this.currentEnvInstances;
   }
+  public get currEnvInstances(): CurrentEnvironmentInstanceDTO[] {
+    return this.currentEnvInstances;
+  }
 
   @Mutation
   public setCurrentEnvironmentInstances(value: CurrentEnvironmentInstanceDTO[]): void {
