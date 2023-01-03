@@ -501,7 +501,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       console.log(error);
     }
 
-    return true;
+    return isValid;
   }
 
 }

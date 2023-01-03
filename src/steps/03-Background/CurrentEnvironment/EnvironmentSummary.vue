@@ -332,6 +332,14 @@ export default class EnvironmentSummary extends Vue {
     return isValid;
   }
 
+  public currEnvInstances: CurrentEnvironmentInstanceDTO[] = 
+    CurrentEnvironment.currEnvInstances;
+  
+  @Watch("currEnvInstances")
+  public async currEnvInstancesUpdated(): Promise<void> {
+    await this.buildTableData();
+  }
+
   public async buildTableData(): Promise<void> {
     setTimeout(async () => {
 
