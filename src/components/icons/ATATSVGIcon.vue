@@ -69,6 +69,7 @@ import UploadFile from "@/components/icons/UploadFile.vue";
 import Warning from "@/components/icons/Warning.vue";
 import WarningAmber from "@/components/icons/WarningAmber.vue";
 import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vue";
+import Place from "@/components/icons/Place.vue";
 
 
 @Component({
@@ -129,6 +130,7 @@ import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vu
     Warning,
     WarningAmber,
     ReadyToGeneratePackage,
+    Place
   }
 })
 
