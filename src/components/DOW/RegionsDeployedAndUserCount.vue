@@ -78,6 +78,7 @@ export default class RegionsDeployedAndUserCount extends Vue {
   }
 
   public updateRegionUsers(value:string): void {
+    console.log(value)
     const regionUsersArray = JSON.parse(value);
     const selectedRegions: string[] = [];
     regionUsersArray.forEach((regionUsers: Record<string, string>) => {
