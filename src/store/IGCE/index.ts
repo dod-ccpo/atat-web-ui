@@ -15,8 +15,7 @@ import {
   ContractTypeDTO,
   TrainingEstimateDTO
 } from "@/api/models";
-import ClassificationRequirements from "@/store/classificationRequirements";
-import {convertPeriodUnitQuantityToMonths} from "@/store/helpers";
+import {currencyStringToNumber} from "@/helpers";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
@@ -300,11 +299,13 @@ export class IGCEStore extends VuexModule {
       architectural_design_current_environment_option:
         rceTree.architectural_design_current_environment.option,
       architectural_design_current_environment_estimated_values:
-        rceTree.architectural_design_current_environment.estimated_values?.toString(),
+        rceTree.architectural_design_current_environment.estimated_values
+          ?.map(currency => currencyStringToNumber(currency)).toString(),
       architectural_design_performance_requirements_option:
         rceTree.architectural_design_performance_requirements.option,
       architectural_design_performance_requirements_estimated_values:
-        rceTree.architectural_design_performance_requirements.estimated_values?.toString(),
+        rceTree.architectural_design_performance_requirements.estimated_values
+          ?.map(currency => currencyStringToNumber(currency)).toString(),
       contracting_office_other_charges_fee: rceTree.fee_specs.is_charged,
       contracting_office_other_fee_percentage: rceTree.fee_specs.percentage,
       has_dow_and_pop: rceTree.has_DOW_and_PoP,
@@ -317,12 +318,14 @@ export class IGCEStore extends VuexModule {
       how_est_dev_prev_cost_estimate_comp_percentage:
         rceTree.how_estimates_developed.previous_cost_estimate_comparison.percentage,
       optimize_replicate_option: rceTree.optimize_replicate.option,
-      optimize_replicate_estimated_values: rceTree.optimize_replicate.estimated_values?.toString(),
+      optimize_replicate_estimated_values: rceTree.optimize_replicate.estimated_values
+        ?.map(currency => currencyStringToNumber(currency)).toString(),
       surge_requirement_capacity: rceTree.surge_requirements.capacity,
       surge_requirement_capabilities: rceTree.surge_requirements.capabilities,
       training: JSON.stringify(rceTree.training ? rceTree.training : []),
       travel_option: rceTree.travel.option,
-      travel_estimated_values: rceTree.travel.estimated_values?.toString(),
+      travel_estimated_values: rceTree.travel.estimated_values
+        ?.map(currency => currencyStringToNumber(currency)).toString(),
       sys_created_by: rceTree.sys_created_by,
       sys_created_on: rceTree.sys_created_on,
       sys_id: rceTree.sys_id,
