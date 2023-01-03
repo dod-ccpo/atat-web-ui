@@ -117,6 +117,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -171,6 +172,10 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
+    console.log("Current Data");
+    console.log(this.currentData);
+    console.log("Saved Data");
+    console.log(this.savedData);
     return hasChanges(this.currentData, this.savedData);
   }
 
@@ -182,8 +187,8 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
 
   private async loadOnEnter(): Promise<void> {
     const store = await IGCEStore.getRequirementsCostEstimate();
-    this.savedData = store.travel;
-    this.ceilingPrice = store.travel.option;
+    this.savedData = _.cloneDeep(store.travel);
+    this.ceilingPrice = store.travel.option
     this.estimatedTravelCosts = store.travel.estimated_values;
   }
 
