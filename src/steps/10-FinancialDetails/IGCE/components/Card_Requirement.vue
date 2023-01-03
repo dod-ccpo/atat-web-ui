@@ -47,11 +47,17 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+  .v-textarea textarea {
+      font-size: 2.4em !important;
+  }
+</style>
+
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-import { Checkbox } from "../../../../../types/Global";
+import { Component, Prop, PropSync} from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 @Component({

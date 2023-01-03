@@ -62,6 +62,8 @@
     </div>
   </div>
 </template>
+
+
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -79,7 +81,7 @@ import IGCE, { CostEstimate } from "@/store/IGCE";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import Periods, { PeriodsStore } from "@/store/periods";
+import Periods from "@/store/periods";
 
 
 @Component({
@@ -219,7 +221,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       const dowObject = DescriptionOfWork.DOWObject
       dowObject.forEach((service)=>{
         const serviceName = this.getFormattedNames(service.serviceOfferingGroupId)
-        if(service.otherOfferingData){
+        if(service.otherOfferingData && service.otherOfferingData.length>0){
           service.otherOfferingData.forEach((offering)=>{
             if(offering.classificationLevel){
               this.instanceData.forEach((instance)=>{
@@ -247,7 +249,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                     sysIdClassificationLevel:"",
                     sysIdEnvironmentInstance:"",
                     sysId:"",
-                    unit:"",
+                    unit: "",
                     unit_quantity:"",
                   }
                   if(offering.instanceNumber){
@@ -283,7 +285,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                   const formData = this.createFormData(serviceName,offering)
                   classificationOfferings.IGCE_description = formData || offering.usageDescription
                     ||""
-                  classificationOfferings.unit = "/month"
+                  classificationOfferings.unit = serviceName.toLowerCase().includes("portability") 
+                    ? "/each" : "/month";
                   if(serviceName !== 'Training'){
                     instance.offerings.push(classificationOfferings)
                   }
@@ -292,7 +295,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
             }
           })
         }
-        if(service.serviceOfferings){
+        if(service.serviceOfferings.length>0){
           service.serviceOfferings.forEach((offering)=>{
             offering.classificationInstances?.forEach((classificationInstance)=>{
               this.instanceData.forEach((instance)=>{
@@ -353,6 +356,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                     .includes(serviceName)
                   classificationOfferings.IGCE_description =
                     classificationInstance.anticipatedNeedUsage
+                  classificationOfferings.unit =  "/month";
                   if(serviceName !== 'Training'){
                     instance.offerings.push(classificationOfferings)
                   }
@@ -383,6 +387,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       })
     }
     this.instanceData.forEach(instance=>{
+      instance
       if(instance.offerings.length <= 0){
         this.accordionClosed.push(1)
       }else{
