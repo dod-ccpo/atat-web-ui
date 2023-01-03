@@ -210,7 +210,6 @@ export class CurrentEnvironmentStore extends VuexModule {
   }
 
   @Action({rawError: true})
-
   public async saveCurrentEnvironmentInstance(
     instance: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
