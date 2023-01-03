@@ -151,7 +151,8 @@ export default class Home extends Vue {
   public async mounted(): Promise<void> {
     this.currentUser = await UserStore.getCurrentUser();
     await this.checkIfIsNewUser();
-
+    const sectionData = await AppSections.getSectionData();
+    AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
   }
 
 }

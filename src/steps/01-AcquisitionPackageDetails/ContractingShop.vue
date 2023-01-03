@@ -59,6 +59,31 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <v-dialog
+      v-model="isLoading"
+      :max-width="'520px'"
+      persistent
+    >
+      <v-card class="pa-10">
+        <div class="text-center">
+          <div class="h1 mb-4">Loading your package details<span class="ellipsis"></span></div>
+          <p>Please wait while we finish getting your package ready.</p>
+          <div class="px-4">
+            <v-progress-linear
+              :value="packagePercentLoaded"
+              color="#544496"
+              class="mb-6 _progress-bar"
+              height="16"
+              rounded  
+            />
+          </div>
+          <a @click="cancelLoad" role="button">Go back</a>
+        </div>
+      </v-card>
+    </v-dialog>
+
+
   </v-form>
 </template>
 <script lang="ts">
@@ -71,6 +96,7 @@ import { SlideoutPanelContent, RadioButton } from "../../../types/Global";
 import ContractingShopLearnMore from "./ContractingShopLearnMore.vue";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ProjectOverviewDTO } from "@/api/models";
+import AppSections from "@/store/appSections";
 
 @Component({
   components: {
@@ -80,7 +106,7 @@ import { ProjectOverviewDTO } from "@/api/models";
   }
 })
 export default class ContractingShop extends Mixins(SaveOnLeave) {
-
+  public isPageLoading = false;
   public contractingShopOptions: RadioButton[] = [
     {
       id: "DITCO",
@@ -96,6 +122,12 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
 
   public contractingShop = "";
 
+  public cancelLoad(): void {
+    AcquisitionPackage.setInitialized(false);
+    const dest = AcquisitionPackage.getCancelLoadDest;
+    AppSections.changeActiveSection(dest);
+  }
+
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
@@ -103,7 +135,20 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
     }
   }
 
+  public get packagePercentLoaded(): number {
+    return AcquisitionPackage.getPackagePercentLoaded;
+  }
+
+  public get isLoading(): boolean {
+    return this.isPageLoading || this.isPackageLoading;
+  }
+
+  public get isPackageLoading(): boolean {
+    return AcquisitionPackage.getIsLoading;
+  }
+
   private async loadOnEnter(): Promise<void> {
+    this.isPageLoading = true;
 
     const packageId = this.$route.query['packageId'] || "";
 
@@ -119,9 +164,11 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
       });
 
     this.contractingShop = AcquisitionPackage.contractingShop || "";
+    this.isPageLoading = false;
   }
 
   public async mounted(): Promise<void> {
+    AcquisitionPackage.setPackagePercentLoaded(0);
     const slideoutPanelContent: SlideoutPanelContent = {
       component: ContractingShopLearnMore,
       title: "Learn More",
