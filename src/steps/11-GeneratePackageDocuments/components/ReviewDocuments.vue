@@ -88,21 +88,21 @@
       <v-col cols="4">
         <div
           id="emailCard"
-          class="border1 border-rounded border-base-lighter pa-6"
+          class="border1 border-rounded border-base-lighter pa-6 mb-4 elevation-2"
         >
           <h3 class="mb-2">Email your documents to DITCO</h3>
           <p>
             Send your completed package via email to disa.scott.ditco.mbx.ditco-jwcc@mail.mil
           </p>
-          <a
-            class="button"
-            href="mailto:disa.scott.ditco.mbx.ditco-jwcc@mail.mil"
-          >
-            <div class="d-flex align-center">
-              Send Documents&nbsp;
-              <ATATSVGIcon name="sendEmail" color="primary" :width="19" :height="14" />
-            </div>
-          </a>
+            <v-btn
+              class="d-flex align-center _button-text justify-space-around primary"
+              @click="openMail"
+              @keydown.enter="openMail"
+              @keydown.space="openMail"
+            >
+              Send Documents
+              <ATATSVGIcon class="ml-2" name="sendEmail" color="white" :width="19" :height="14"/>
+            </v-btn>
         </div>
         <div 
           id="regenerateCard" 
@@ -149,6 +149,10 @@ export default class ReviewDocuments extends Vue {
   @Prop({default: false }) private isErrored!: boolean;
   public packageId = "";
 
+  private openMail(): void {
+    const mailStr = "mailto:disa.scott.ditco.mbx.ditco-jwcc@mail.mil";
+    window.open(mailStr, "_blank");
+  }
   async mounted(): Promise<void>{
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
   }
