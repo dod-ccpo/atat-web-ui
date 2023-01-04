@@ -264,6 +264,7 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
 
 .text-clamp--1-line {
   -webkit-line-clamp: 1;
+  @extend .text-clamp;
 }
 
 .nowrap {

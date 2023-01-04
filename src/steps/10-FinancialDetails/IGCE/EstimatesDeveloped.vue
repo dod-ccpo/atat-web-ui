@@ -3,7 +3,7 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          Next, tell us about how your estimates were developed
+          Now tell us about how your estimates were developed
         </h1>
         <div class="copy-max-width">
           <p id="IntroP" class="mb-7">
@@ -18,7 +18,7 @@
             class="copy-max-width mb-10"
             :value.sync="selectedTools"
             :hasOtherValue="true"
-            otherValue="Other"
+            otherValue="OTHER"
             :otherValueEntered.sync="otherValueEntered"
             otherValueRequiredMessage="Please enter your other type of information or tool."
             :items="toolsOptions"
@@ -83,14 +83,19 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import {Component, Mixins, Watch} from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import { RadioButton, Checkbox } from "../../../../types/Global";
+import {RadioButton, Checkbox} from "../../../../types/Global";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import IGCEStore from "@/store/IGCE";
+import {RequirementsCostEstimateDTO} from "@/api/models";
+import {hasChanges} from "@/helpers";
 
 @Component({
   components: {
@@ -101,49 +106,57 @@ import { RadioButton, Checkbox } from "../../../../types/Global";
   }
 })
 
-export default class EstimatesDeveloped extends Vue {
+export default class EstimatesDeveloped extends Mixins(SaveOnLeave) {
   $refs!: {
     percentOverUnder: Vue & {
       resetValidation(): void
     };
   };
 
-  public selectedPriceComparison = "";
+  public selectedPriceComparison: "" | "MORE_THAN" | "LESS_THAN" | "SAME" = "";
   public howEstimateMade = "";
   public otherValueEntered = "";
-  public percentOverUnder = "";
-  
+  public percentOverUnder: number | null = null;
   public selectedTools: string[] = [];
+  public savedData: RequirementsCostEstimateDTO["how_estimates_developed"] = {
+    tools_used: "",
+    other_tools_used: "",
+    cost_estimate_description: "",
+    previous_cost_estimate_comparison: {
+      options: "",
+      percentage: null
+    }
+  };
   private toolsOptions: Checkbox[] = [
     {
       id: "AWSCalc",
       label: "AWS pricing calculator",
-      value: "AWSCalc",
+      value: "AWS",
     },
     {
       id: "GoogleCalc",
       label: "Google Cloud pricing calculator",
-      value: "GoogleCalc",
+      value: "GOOGLE_CLOUD",
     },
     {
       id: "AzureCalc",
       label: "Microsoft Azure pricing calculator",
-      value: "AzureCalc",
+      value: "MICROSOFT_AZURE",
     },
     {
       id: "OracleCalc",
       label: "Oracle Cloud pricing calculator",
-      value: "OracleCalc",
+      value: "ORACLE_CLOUD",
     },
     {
       id: "VendorInvoices",
       label: "Prices previously paid on a same or similar contract",
-      value: "VendorInvoices",
+      value: "PREVIOUSLY_PAID_PRICES",
     },
     {
       id: "Other",
       label: "Other",
-      value: "Other",
+      value: "OTHER",
     },
   ];
 
@@ -151,18 +164,18 @@ export default class EstimatesDeveloped extends Vue {
     {
       id: "More",
       label: "The previous cost estimate was <strong>more than</strong> the actual prices paid.",
-      value: "More",
+      value: "MORE_THAN",
     },
     {
       id: "Less",
       label: "The previous cost estimate was <strong>less than</strong> the actual prices paid.",
-      value: "Less",
+      value: "LESS_THAN",
     },
     {
       id: "Same",
       label: `The previous cost estimate was approximately the <strong>same</strong> 
         as the actual prices paid.`,
-      value: "Same",
+      value: "SAME",
     },
   ];
 
@@ -173,7 +186,8 @@ export default class EstimatesDeveloped extends Vue {
   } 
 
   public get showPercentage(): boolean {
-    return this.selectedPriceComparison === "More" || this.selectedPriceComparison === "Less";
+    return this.selectedPriceComparison === "MORE_THAN"
+        || this.selectedPriceComparison === "LESS_THAN";
   }
 
   public get percentRequiredMessage(): string {
@@ -182,7 +196,7 @@ export default class EstimatesDeveloped extends Vue {
   } 
 
   public get overUnderStr(): string {
-    return this.selectedPriceComparison === "More" ? "overestimated" : "underestimated";
+    return this.selectedPriceComparison === "MORE_THAN" ? "overestimated" : "underestimated";
   }
 
   public percentageRules: unknown[] = []
@@ -193,6 +207,48 @@ export default class EstimatesDeveloped extends Vue {
       this.$refs.percentOverUnder?.resetValidation();
       this.percentageRules = [this.$validators.required(this.percentRequiredMessage)]
     })
+  }
+
+  get currentData(): RequirementsCostEstimateDTO["how_estimates_developed"] {
+    return{
+      tools_used: this.selectedTools.toString(),
+      other_tools_used: this.otherValueEntered,
+      cost_estimate_description: this.howEstimateMade,
+      previous_cost_estimate_comparison: {
+        options: this.selectedPriceComparison,
+        percentage: this.percentOverUnder
+      }
+    }
+  };
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  private async loadOnEnter(): Promise<void> {
+    const store = await IGCEStore.getRequirementsCostEstimate();
+    this.savedData = store.how_estimates_developed;
+    this.selectedTools = store.how_estimates_developed.tools_used.split(",");
+    this.otherValueEntered = store.how_estimates_developed.other_tools_used;
+    this.howEstimateMade = store.how_estimates_developed.cost_estimate_description;
+    this.selectedPriceComparison =
+        store.how_estimates_developed.previous_cost_estimate_comparison.options;
+    this.percentOverUnder =
+        store.how_estimates_developed.previous_cost_estimate_comparison.percentage;
+  }
+
+  private async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    if (this.hasChanged()) {
+      const store = await IGCEStore.getRequirementsCostEstimate();
+      store.how_estimates_developed = this.currentData;
+      await IGCEStore.setRequirementsCostEstimate(store);
+      await IGCEStore.saveRequirementsCostEstimate();
+    }
+    return true;
   }
 
 }

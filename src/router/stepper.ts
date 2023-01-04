@@ -1,6 +1,7 @@
 import {StepperRouteConfig, StepperStep} from "../../types/Global";
 
 // Step 1 - Acquisition Package Details
+import ContractingShop from "@/steps/01-AcquisitionPackageDetails/ContractingShop.vue";
 import AcquisitionPackageDetails from "../steps/01-AcquisitionPackageDetails/Index.vue";
 import ProjectOverview from "../steps/01-AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/01-AcquisitionPackageDetails/ContactInfo.vue";
@@ -64,10 +65,14 @@ import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/In
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
 import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
+import ArchitectureDesignDOW
+  from "../steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
 import ServiceOfferingDetails 
   from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue";
 import OtherOfferingSummary 
   from "../steps/05-PerformanceRequirements/DOW/OtherOfferingSummary.vue";
+import DOWSecurityRequirements
+  from "../steps/05-PerformanceRequirements/DOW/DOWSecurityRequirements.vue";
 import DOWSummary 
   from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
 import AnticipatedUserAndDataNeeds
@@ -77,8 +82,8 @@ import AnticipatedUserAndDataNeeds
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
-import Training from "../steps/07-OtherContractConsiderations/Training.vue";
-import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
+import Travel
+  from "../steps/07-OtherContractConsiderations/Travel.vue";
 
 // Step 8 - Standards and Compliance
 import OtherContractConsiderations from "../steps/08-StandardsAndCompliance/Index.vue";
@@ -99,7 +104,7 @@ import OptimizeOrReplicate from "@/steps/10-FinancialDetails/IGCE/OptimizeOrRepl
 import ArchitecturalDesignSolutions 
   from '@/steps/10-FinancialDetails/IGCE/ArchitecturalDesignSolutions.vue';
 import GatherPriceEstimates from "@/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.vue";
-import IGCETraining from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
+import IGCETraining from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 import TravelEstimates from "@/steps/10-FinancialDetails/IGCE/TravelEstimates.vue";
 import SurgeCapacity from "@/steps/10-FinancialDetails/IGCE/SurgeCapacity.vue";
 import FeeCharged from "@/steps/10-FinancialDetails/IGCE/FeeCharged.vue";
@@ -108,6 +113,7 @@ import SupportingDocumentation from "@/steps/10-FinancialDetails/IGCE/Supporting
 import EstimatesDeveloped from "@/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.vue";
 import SurgeCapabilities from "../steps/10-FinancialDetails/IGCE/SurgeCapabilities.vue";
 import MIPR from "../steps/10-FinancialDetails/MIPR.vue";
+import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
 import IncrementalFunding 
@@ -133,8 +139,8 @@ import {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
-  ContractTrainingReq,
-  OfferGroupOfferingsPathResolver,
+  // ContractTrainingReq,
+  ServiceOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   MIPRResolver,
@@ -144,6 +150,7 @@ import {
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
   OtherOfferingSummaryPathResolver,
+  DOWSecurityRequirementsPathResolver,
   IGCESurgeCapabilities,
   IGCECannotProceedResolver,
   IGCEOptimizeOrReplicateResolver,
@@ -157,10 +164,12 @@ import {
   SecurityRequirementsResolver,
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
+  DOWArchitecturalDesignResolver,
+  IGCETrainingPathResolver,
 } from "./resolvers";
-import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Traininig.vue";
 
 export const routeNames = {
+  ContractingShop: "Contracting_Shop",
   ProjectOverview: "Project_Overview",
   OrganizationInfo: "Organization_Info",
   ContactInformation: "Contact_Information",
@@ -185,10 +194,11 @@ export const routeNames = {
   CurrentContractDetails: "Current_Contract_Details",
   CurrentEnvironment:"Current_Environment",
   RequirementCategories: "Requirement_Categories",
+  DOWArchitecturalDesign: "DOW_Architectural_Design",
   ServiceOfferings: "Service_Offerings",
   ServiceOfferingDetails: "Service_Offering_Details",
   OtherOfferingSummary: "Other_Offering_Summary",
-  // ComputeRequirements: "Compute_Requirements",
+  DOWSecurityRequirements: "DOW_Security_Requirements",
   DOWSummary: "DOW_Summary",
   OptimizeCurrentEnvironment: "Optimize_Current_Environment",
   AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
@@ -199,8 +209,6 @@ export const routeNames = {
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
   Travel: "Travel",
-  Training: "Training",
-  TrainingCourses: "Training_Courses",
   PropertyDetails: "Property_Details",
   Justification: "Justification",
   OtherContractConsiderations: "Other_Contract_Considerations",
@@ -276,6 +284,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: AcquisitionPackageDetails,
     completed: false,
     children: [
+      {
+        menuText: "Contracting Shop",
+        path: "/",
+        name: routeNames.ContractingShop,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        component: ContractingShop
+      },
       {
         menuText: "Project Overview",
         path: "project-overview",
@@ -674,6 +691,18 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
       },
+
+      {
+        menuText: "Architectural Design Requirements DOW",
+        excludeFromMenu: true,
+        path: "architectural-design-requirements-dow",
+        name: routeNames.DOWArchitecturalDesign,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: DOWArchitecturalDesignResolver,
+        component: ArchitectureDesignDOW,
+      },
+
       {
         menuText: "Anticipated Users and Data Needs",
         excludeFromMenu: true,
@@ -691,7 +720,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ServiceOfferings,
         completePercentageWeight: 1,
         component: ServiceOfferings,
-        routeResolver: OfferGroupOfferingsPathResolver,
+        routeResolver: ServiceOfferingsPathResolver,
         additionalButtons: [
           {
             buttonText: "I don’t need these cloud resources",
@@ -728,8 +757,17 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             emitText: "confirmDeleteCompute",
           },
         ],
-
       },
+      {
+        menuText: "Security Requirements",
+        path: "dow-security-requirements",
+        excludeFromMenu: true,
+        name: routeNames.DOWSecurityRequirements,
+        completePercentageWeight: 1,
+        component: DOWSecurityRequirements,
+        routeResolver: DOWSecurityRequirementsPathResolver,
+      },
+
       {
         menuText: "DOW Summary",
         path: "dow-summary",
@@ -767,22 +805,21 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: PackagingPackingAndShipping,
       },
       {
-        name: routeNames.Training,
-        menuText: "Training",
-        path: "training",
+        name: routeNames.Travel,
+        menuText: "Travel",
+        path: "travel",
         completePercentageWeight: 2,
-        component: Training,
-      },
-      {
-        name: routeNames.TrainingCourses,
-        menuText: "Training Courses",
-        excludeFromMenu: true,
-        path: "training",
-        stepCompleteOnLeave: routeNames.Training,
-        completePercentageWeight: 2,
-        component: TrainingCourses,
-        routeResolver: ContractTrainingReq
-
+        stepCompleteOnLeave: routeNames.Travel,
+        component: Travel,
+        additionalButtons: [
+          {
+            buttonText: "I don’t need CSP employees to travel",
+            buttonId: "DontNeedTravel",
+            buttonClass: "secondary",
+            actionName: "confirmDeleteTravelAll",
+            emitText: "confirmDeleteTravel",
+          },
+        ]
       },
     ]
   },
@@ -798,7 +835,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Personally Identifiable Information (PII)",
         path: "/personally-identifiable-information",
         name: routeNames.PII,
-        stepCompleteOnEnter: routeNames.Training,
         completePercentageWeight: 2,
         component: PII,
       },
@@ -906,6 +942,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GatherPriceEstimates,
         completePercentageWeight: 1,
         component: GatherPriceEstimates,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Training",
@@ -913,7 +950,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "training-estimate",
         name: routeNames.IGCETraining,
         completePercentageWeight: 1,
-        component: IGCETraining
+        component: IGCETraining,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Travel Estimates",
@@ -921,7 +959,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "travel-estimate",
         name: routeNames.TravelEstimates,
         completePercentageWeight: 1,
-        component: TravelEstimates
+        component: TravelEstimates,
+        routeResolver: IGCETrainingPathResolver,
       },
       {
         menuText: "Surge Capacity",
@@ -929,7 +968,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "surge-capacity",
         name: routeNames.SurgeCapacity,
         completePercentageWeight: 1,
-        component: SurgeCapacity
+        component: SurgeCapacity,
       },
       {
         menuText: "Surge Capabilities",
@@ -948,14 +987,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: FeeCharged
       },
-      {
-        menuText: "Cost Summary",
-        excludeFromMenu: true,
-        path: "cost-summary",
-        name: routeNames.CostSummary,
-        completePercentageWeight: 1,
-        component: CostSummary
-      },
+      // {
+      //   menuText: "Cost Summary",
+      //   excludeFromMenu: true,
+      //   path: "cost-summary",
+      //   name: routeNames.CostSummary,
+      //   completePercentageWeight: 1,
+      //   component: CostSummary
+      // },
       {
         menuText: "Estimates Developed",
         excludeFromMenu: true,

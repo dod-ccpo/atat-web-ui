@@ -9,6 +9,7 @@ const actionHandlerNames = {
   confirmComputeDeletion: "confirmComputeDeletion",
   confirmServiceDeletion: "confirmServiceDeletion",
   clearCurrentContractInfo: "clearCurrentContractInfo",
+  confirmDeleteTravelAll: "confirmDeleteTravelAll"
 }
 
 const actions =  {
@@ -17,7 +18,7 @@ const actions =  {
   [actionHandlerNames.confirmComputeDeletion]: confirmComputeDeletion,
   [actionHandlerNames.confirmServiceDeletion]: confirmServiceDeletion,
   [actionHandlerNames.clearCurrentContractInfo]: clearCurrentContractInfo,
-
+  [actionHandlerNames.confirmDeleteTravelAll]: confirmDeleteTravelAll,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -44,7 +45,7 @@ async function deleteServiceOfferingGroup() {
   router.push({
     name: "pathResolver",
     params: {
-      resolver: "OfferGroupOfferingsPathResolver",
+      resolver: "ServiceOfferingsPathResolver",
       direction: "next"
     },
   }).catch(() => console.log("avoiding redundant navigation"));
@@ -57,6 +58,10 @@ async function confirmComputeDeletion() {
 
 async function confirmServiceDeletion() {
   await DescriptionOfWork.setConfirmServiceOfferingDelete(true);
+}
+
+async function confirmDeleteTravelAll() {
+  await DescriptionOfWork.setConfirmTravelDeleteAll(true);
 }
 
 export default actionHandler;

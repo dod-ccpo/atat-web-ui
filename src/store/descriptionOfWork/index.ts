@@ -8,8 +8,20 @@ import {
 } from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import { ClassificationInstanceDTO, SelectedServiceOfferingDTO, 
-  ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
+import {
+  ArchitecturalDesignRequirementDTO,
+  ClassificationInstanceDTO,
+  CloudSupportEnvironmentInstanceDTO,
+  ComputeEnvironmentInstanceDTO,
+  DatabaseEnvironmentInstanceDTO,
+  EnvironmentInstanceDTO,
+  ReferenceColumn, SelectedClassificationLevelDTO,
+  SelectedServiceOfferingDTO,
+  ServiceOfferingDTO,
+  StorageEnvironmentInstanceDTO,
+  SystemChoiceDTO, TravelRequirementDTO,
+  XaasEnvironmentInstanceDTO
+} from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
 import {
   nameofProperty,
@@ -17,23 +29,32 @@ import {
   retrieveSession,
 } from "../helpers";
 import Vue from "vue";
-import { 
-  DOWServiceOfferingGroup, 
-  DOWServiceOffering, 
+import {
+  DOWServiceOfferingGroup,
+  DOWServiceOffering,
   DOWClassificationInstance,
   OtherServiceOfferingData,
+  StorageUnit,
+  RadioButton,
+  SecurityRequirement,
+  TravelSummaryTableData,
 } from "../../../types/Global";
 
 import _, { differenceWith, first, last } from "lodash";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import AcquisitionPackage from "../acquisitionPackage";
+import Periods from "../periods";
+import { buildClassificationLabel } from "@/helpers";
+import { AxiosRequestConfig } from "axios";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 
 // Classification Proxy helps keep track of saved
 // Classification Instances so we can efficiently
 // update the DOW object
 type ClassificationInstanceProxy = {
-   dowClassificationInstanceIndex: number;
-   classificationInstance: ClassificationInstanceDTO;
+  dowClassificationInstanceIndex: number;
+  classificationInstance: ClassificationInstanceDTO;
 }
 // service proxy type for saving service offerings
 // and associated classification instances
@@ -45,59 +66,519 @@ type ServiceOfferingProxy =  {
   dowServiceIndex: number
 }
 
-//helper to map DowService offering
-//from DOW object to a ServiceOffering Proxy 
-// that can be saved
-const mapDOWServiceOfferingToServiceProxy= 
-(dowServiceOffering: DOWServiceOffering, groupIndex: number, 
-  serviceIndex: number): ServiceOfferingProxy=> {
+const saveOrUpdateSelectedServiceOffering =
+    async (
+      selectedServiceOffering: DOWServiceOffering,
+      serviceOfferingId: string
+    ):Promise<string> => {
+      const tempObject: any = {};
+      let objSysId = "";
 
-  
-      
-  const serviceOffering: SelectedServiceOfferingDTO = {
-    service_offering : dowServiceOffering['sys_id'] || "",
-    classification_instances: "",
-    other_service_offering: dowServiceOffering.otherOfferingName || "",
-    sys_id : dowServiceOffering.serviceId.length ? 
-      dowServiceOffering.serviceId : undefined
+      const classificationInstances: string[] = [];
+      if(selectedServiceOffering.classificationInstances &&
+          selectedServiceOffering.classificationInstances.length > 0){
+
+        if(selectedServiceOffering.classificationInstances.length > 1) {
+          selectedServiceOffering.classificationInstances.forEach(item => {
+            const tempId = typeof item.sysId === "object"
+              ? (item.sysId as ReferenceColumn).value as string
+              : item.sysId;
+            classificationInstances.push(tempId as string);
+          })
+        } else {
+          const item = selectedServiceOffering.classificationInstances[0];
+          const tempId = typeof item.sysId === "object"
+            ? (item.sysId as ReferenceColumn).value as string
+            : item.sysId;
+
+          classificationInstances.push(tempId as string);
+        }
+      }
+
+      //TODO: set this to an actual value
+      tempObject.architectural_design_requirement = "";
+
+      tempObject.classification_instances = classificationInstances.join(",") || "";
+
+      tempObject.acquisition_package = AcquisitionPackage.packageId;
+      tempObject.other_service_offering = selectedServiceOffering.otherOfferingName;
+      tempObject.service_offering = serviceOfferingId;
+
+      if(selectedServiceOffering.sys_id)
+        tempObject.sys_id = selectedServiceOffering.sys_id;
+
+      if(tempObject.sys_id){
+        await api.selectedServiceOfferingTable.update(
+          tempObject.sys_id,
+          tempObject
+        );
+        objSysId = tempObject.sys_id;
+      } else {
+        const savedObject = await api.selectedServiceOfferingTable.create(
+          tempObject
+        );
+        objSysId = savedObject.sys_id as string;
+      }
+
+      return objSysId;
+    };
+
+const saveOrUpdateClassificationInstance =
+    async (
+      classificationInstance: DOWClassificationInstance
+    ):Promise<string> => {
+      const tempObject: any = {};
+      let objSysId = "";
+
+      if(classificationInstance.selectedPeriods){
+        tempObject.selected_periods = classificationInstance.selectedPeriods.join(",") || "";
+      }
+      const classificationLevel =
+          typeof classificationInstance.classificationLevelSysId === "object"
+            ? (classificationInstance.classificationLevelSysId as ReferenceColumn).value as string
+            : classificationInstance.classificationLevelSysId as string;
+      tempObject.classification_level = classificationLevel;
+      tempObject.usage_description = classificationInstance.anticipatedNeedUsage;
+      tempObject.need_for_entire_task_order_duration = classificationInstance.entireDuration;
+      tempObject.type_of_delivery = classificationInstance.typeOfDelivery;
+      tempObject.type_of_mobility = classificationInstance.typeOfMobility;
+      tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
+      tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
+
+      if(classificationInstance.sysId)
+        tempObject.sys_id = classificationInstance.sysId;
+
+      if(tempObject.sys_id){
+        await api.classificationInstanceTable.update(
+          tempObject.sys_id,
+            tempObject as ClassificationInstanceDTO
+        );
+        objSysId = tempObject.sys_id;
+      } else {
+        const savedObject = await api.classificationInstanceTable.create(
+            tempObject as ClassificationInstanceDTO
+        );
+
+        objSysId = savedObject.sys_id as string;
+      }
+
+      return objSysId;
+    };
+
+const saveOrUpdateOtherServiceOffering =
+    async (
+      serviceOffering: OtherServiceOfferingData,
+      offeringType: string
+    ):Promise<string> => {
+      const tempObject: any = {};
+      let objSysId = "";
+      tempObject.acquisition_package = AcquisitionPackage.packageId;
+      tempObject.anticipated_need_or_usage = serviceOffering.descriptionOfNeed;
+      tempObject.classification_level = serviceOffering.classificationLevel;
+      tempObject.instance_name = serviceOffering.requirementTitle;
+      tempObject.licensing = serviceOffering.licensing;
+      tempObject.memory_amount = serviceOffering.memoryAmount;
+      tempObject.memory_unit = serviceOffering.memoryUnit || "GB";
+      tempObject.number_of_instances = serviceOffering.numberOfInstances;
+      /* TODO: PLZ HAVE PLATFORM TEAM FIX CASE TO UPPERCASE TO REMOVE THIS HACK!!! */
+      tempObject.need_for_entire_task_order_duration = serviceOffering.entireDuration.toLowerCase();
+      tempObject.need_for_entire_task_order_duration = serviceOffering.entireDuration.toLowerCase();
+      tempObject.number_of_vcpus = serviceOffering.numberOfVCPUs;
+      tempObject.operating_system = serviceOffering.operatingSystem;
+      tempObject.performance_tier = serviceOffering.performanceTier;
+      tempObject.processor_speed = serviceOffering.processorSpeed;
+      tempObject.region = serviceOffering.region;
+      tempObject.selected_periods = serviceOffering.periodsNeeded.join(",");
+      tempObject.storage_amount = serviceOffering.storageAmount;
+      tempObject.storage_type = serviceOffering.storageType;
+      tempObject.storage_unit = serviceOffering.storageUnit;
+      tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
+
+      if(serviceOffering.sysId)
+        tempObject.sys_id = serviceOffering.sysId;
+
+      switch(offeringType){
+      case "compute":
+        tempObject.environment_type = serviceOffering.environmentType;
+        tempObject.operating_environment = serviceOffering.operatingEnvironment;
+        tempObject.operating_system_licensing = serviceOffering.operatingSystemAndLicensing;
+        if(tempObject.sys_id){
+          await api.computeEnvironmentInstanceTable.update(
+            tempObject.sys_id,
+                tempObject as ComputeEnvironmentInstanceDTO
+          );
+          objSysId = tempObject.sys_id;
+        } else {
+          const savedObject = await api.computeEnvironmentInstanceTable.create(
+                tempObject as ComputeEnvironmentInstanceDTO
+          );
+          objSysId = savedObject.sys_id as string;
+        }
+        break;
+      case "database":
+        tempObject.database_licensing = serviceOffering.databaseLicensing;
+        tempObject.database_type = serviceOffering.databaseType;
+        tempObject.database_type_other = serviceOffering.databaseTypeOther;
+        tempObject.network_performance = serviceOffering.networkPerformance;
+        if(tempObject.sys_id){
+          await api.databaseEnvironmentInstanceTable.update(
+            tempObject.sys_id,
+                tempObject as DatabaseEnvironmentInstanceDTO
+          );
+          objSysId = tempObject.sys_id;
+        } else {
+          const savedObject = await api.databaseEnvironmentInstanceTable.create(
+                tempObject as DatabaseEnvironmentInstanceDTO
+          );
+          objSysId = savedObject.sys_id as string;
+        }
+        break;
+      case "storage":
+        if(tempObject.sys_id){
+          await api.storageEnvironmentInstanceTable.update(
+            tempObject.sys_id,
+                tempObject as StorageEnvironmentInstanceDTO
+          );
+          objSysId = tempObject.sys_id;
+        } else {
+          const savedObject = await api.storageEnvironmentInstanceTable.create(
+                tempObject as StorageEnvironmentInstanceDTO
+          );
+          objSysId = savedObject.sys_id as string;
+        }
+        break;
+      case "general_xaas":
+        if(tempObject.sys_id){
+          await api.xaaSEnvironmentInstanceTable.update(
+            tempObject.sys_id,
+                tempObject as XaasEnvironmentInstanceDTO
+          )
+          objSysId = tempObject.sys_id;
+        } else {
+          const savedObject = await api.xaaSEnvironmentInstanceTable.create(
+                tempObject as XaasEnvironmentInstanceDTO
+          );
+          objSysId = savedObject.sys_id as string;
+        }
+        break;
+      case "advisory_assistance":
+      case "help_desk_services":
+      case "documentation_support":
+      case "general_cloud_support":
+      case "training":
+      case "portability_plan":
+        tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
+        tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
+        tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
+        tempObject.service_type = offeringType.toUpperCase();
+        tempObject.training_facility_type = serviceOffering.trainingFacilityType;
+        tempObject.training_format = serviceOffering.trainingType;
+        tempObject.training_location = serviceOffering.trainingLocation;
+        tempObject.training_requirement_title = serviceOffering.trainingRequirementTitle;
+        tempObject.training_time_zone = serviceOffering.trainingTimeZone;
+        tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
+        if(tempObject.sys_id){
+          await api.cloudSupportEnvironmentInstanceTable.update(
+            tempObject.sys_id,
+                tempObject as CloudSupportEnvironmentInstanceDTO
+          );
+          objSysId = tempObject.sys_id;
+        } else {
+          const savedObject = await api.cloudSupportEnvironmentInstanceTable.create(
+                tempObject as CloudSupportEnvironmentInstanceDTO
+          );
+          objSysId = savedObject.sys_id as string;
+        }
+        break;
+      default:
+        console.log("DOW object saving for this type is not implemented yet.");
+        objSysId = "";
+        break;
+      }
+
+      return objSysId;
+    };
+
+const mapClassificationInstanceFromDTO = (
+  value: ClassificationInstanceDTO
+): DOWClassificationInstance => {
+  value = convertColumnReferencesToValues(value);
+  const classificationLevel = ClassificationRequirements.classificationLevels.find((item) => {
+    const sysId =
+        typeof value.classification_level === "object"
+          ? (value.classification_level as ReferenceColumn).value as string
+          : value.classification_level as string;
+    return item.sys_id === sysId
+  });
+  const labelLong = classificationLevel
+    ? buildClassificationLabel(classificationLevel, "long") : "";
+  const labelShort = classificationLevel
+    ? buildClassificationLabel(classificationLevel, "short") : "";
+  const selectedPeriods: string[] = [];
+  if(value.selected_periods !== "") {
+    const periods = value.selected_periods.split(",");
+    periods.forEach(period => {
+      const selectedPeriod = Periods.periods.find((item) => {
+        return item.sys_id = period;
+      });
+      if(selectedPeriod){
+        selectedPeriods.push(selectedPeriod.sys_id || "");
+      }
+
+    })
+  }
+  const result: DOWClassificationInstance = {
+    anticipatedNeedUsage: value.usage_description,
+    classificationLevelSysId: value.classification_level,
+    entireDuration: value.need_for_entire_task_order_duration,
+    selectedPeriods: selectedPeriods,
+    impactLevel: classificationLevel?.impact_level || "",
+    labelLong: labelLong,
+    labelShort: labelShort,
+    typeOfDelivery: value.type_of_delivery,
+    typeOfMobility: value.type_of_mobility,
+    typeOfMobilityOther: value.type_of_mobility_other,
+    classifiedInformationTypes: value.classified_information_types,
+    sysId: value.sys_id,
   };
 
+  return result;
+};
 
-  if(serviceOffering.service_offering === "Other"){
-    const soOther = ((dowServiceOffering as unknown) as ServiceOfferingDTO);
+const mapOtherOfferingFromDTO = (
+  index: number,
+  value: ComputeEnvironmentInstanceDTO |
+        DatabaseEnvironmentInstanceDTO |
+        StorageEnvironmentInstanceDTO |
+        CloudSupportEnvironmentInstanceDTO |
+        XaasEnvironmentInstanceDTO
+): OtherServiceOfferingData => {
 
-    serviceOffering.service_offering = "";
-    serviceOffering.other_service_offering = soOther && soOther.other ? soOther.other : ""
+  value = convertColumnReferencesToValues(value);
+  const result: OtherServiceOfferingData = {
+    acquisitionPackageSysId: AcquisitionPackage.packageId,
+    descriptionOfNeed: value.anticipated_need_or_usage,
+    classificationLevel: value.classification_level as string,
+    requirementTitle: value.instance_name,
+    licensing: value.operating_system_licensing,
+    memoryAmount: value.memory_amount,
+    numberOfInstances: value.number_of_instances,
+    /* TODO: PLZ HAVE PLATFORM TEAM FIX CASE TO UPPERCASE TO REMOVE THIS HACK!!! MKAY? */
+    entireDuration: value.need_for_entire_task_order_duration.toUpperCase(),
+    numberOfVCPUs: value.number_of_vcpus,
+    operatingSystem: value.operating_system,
+    performanceTier: value.performance_tier,
+    processorSpeed: value.processor_speed,
+    region: value.region as string,
+    periodsNeeded: value.selected_periods?.split(",") || [],
+    storageAmount: value.storage_amount,
+    storageType: value.storage_type,
+    storageUnit: value.storage_unit as StorageUnit,
+    sysId: value.sys_id,
+    instanceNumber: index,
+    classifiedInformationTypes: value.classified_information_types,
+  };
+
+  if("environment_type" in value){
+    result.environmentType = value.environment_type;
+    result.operatingEnvironment = value.operating_environment;
+    result.operatingSystemAndLicensing = value.operating_system_licensing;
   }
 
-  const classificationInstances = dowServiceOffering
-    .classificationInstances?.map((instance, instanceIndex)=> {
-
-      const classificationInstance: ClassificationInstanceProxy = {
-        dowClassificationInstanceIndex: instanceIndex,
-        classificationInstance: {
-          selected_periods: instance
-            .selectedPeriods?.map(period=>period).join(',') || "",
-          classification_level: instance.classificationLevelSysId,
-          sys_id: instance.sysId,
-          usage_description: instance.anticipatedNeedUsage,
-          need_for_entire_task_order_duration: instance.entireDuration
-        },
-      }
-      return classificationInstance;
-    }) || [];
-
-  
-  return {
-    serviceOffering,
-    classificationInstances,
-    dowServiceGroupIndex: groupIndex,
-    dowServiceIndex: serviceIndex
+  if("database_licensing" in value){
+    result.databaseLicensing = value.database_licensing;
+    result.databaseType = value.database_type;
+    result.databaseTypeOther = value.database_type_other;
+    result.networkPerformance = value.network_performance;
   }
 
-}
+  if("service_type" in value){
+    result.canTrainInUnclassEnv = value.can_train_in_unclass_env;
+    result.personnelOnsiteAccess = value.personnel_onsite_access;
+    result.trainingPersonnel = value.personnel_requiring_training;
+    result.serviceType = value.service_type;
+    result.trainingFacilityType = value.training_facility_type;
+    result.trainingType = value.training_format;
+    result.trainingLocation = value.training_location;
+    result.trainingRequirementTitle = value.training_requirement_title;
+    result.trainingTimeZone = value.training_time_zone;
+    result.tsContractorClearanceType = value.ts_contractor_clearance_type;
+  }
+
+  return result;
+};
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
+
+const serviceGroupVerbiageInfo: Record<string, Record<string, string>> = {
+  COMPUTE: {
+    offeringName: "Compute",
+    headingDetails1: "Compute",
+    heading2: "Compute Instance",
+    headingSummary: "Compute Requirements",
+    typeForUsage: "instance",
+    typeForText: "instance",
+    introText: `each Compute instance that you need.`,
+  },
+  DATABASE: {
+    offeringName: "Database",
+    heading2: "Database Instance",
+    headingSummary: "Database Requirements",
+    typeForUsage: "requirement",
+    typeForText: "instance",
+    introText: `each Database instance that you need.`,
+  },
+  STORAGE: {
+    offeringName: "Storage",
+    heading2: "Storage Instance",
+    headingSummary: "Storage Requirementss",
+    typeForUsage: "requirement",
+    typeForText: "instance",
+    introText: `each Storage instance that you need, separate from your 
+      Compute and Database requirements.`,
+  },
+  GENERAL_XAAS: {
+    offeringName: "General IaaS, PaaS, and SaaS",
+    heading2: "Requirement",
+    headingSummary: "General IaaS, PaaS, and SaaS Requirements",
+    typeForUsage: "requirement",
+    typeForText: "requirement",
+    introText: `any third-party marketplace solutions or cloud resources not covered 
+      in the other Anything as a Service (XaaS) categories.`,
+  },
+  ADVISORY_ASSISTANCE: {
+    offeringName: "Advisory and Assistance",
+    heading2: "Advisory and Assistance Services",
+    headingSummary: "Advisory and Assistance",
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `each Advisory and Assistance service that you need.`,
+  },
+  HELP_DESK_SERVICES: {
+    offeringName: "Help Desk Services",
+    heading2: "Help Desk Service",
+    headingSummary: "Help Desk Services",
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `each Help Desk Service that you need`,
+  },
+  TRAINING: {
+    offeringName: "Training",
+    heading2: "Training",
+    headingSummary: "Training Requirements",
+    typeForUsage: "training",
+    typeForText: "training",
+    introText: `each training that you need.`,
+  },
+  DOCUMENTATION_SUPPORT: {
+    offeringName: "Documentation Support",
+    heading2: "Documentation Support",
+    headingSummary: "Documentation Support Services",
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `each Documentation Support service that you need.`,
+  },
+  GENERAL_CLOUD_SUPPORT: {
+    offeringName: "General Cloud Support",
+    heading2: "Cloud Support Service",
+    headingSummary: "General Cloud Support Services",
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `any other cloud support services that you need.`,
+  },
+  PORTABILITY_PLAN: {
+    offeringName: "Portability Plan",
+    heading2: "Portability Plan",
+    headingSummary: "Portability Plan Services",
+    typeForUsage: "service",
+    typeForText: "service",
+    introText: `each Portability Plan service that you need.`,
+  },
+}
+
+export const instanceEnvTypeOptions: RadioButton[] = [
+  {
+    id: "DevTesting",
+    label: "Dev/Testing",
+    value: "DEV_TEST",
+  },
+  {
+    id: "PreProdStaging",
+    label: "Pre-production",
+    value: "PRE_PROD",
+  },
+  {
+    id: "Production",
+    label: "Production/Staging",
+    value: "PROD_STAGING",
+  },
+  {
+    id: "COOP",
+    label: "Continuity of Operations Planning (COOP)/Disaster Recovery",
+    value: "COOP_DISASTER_RECOVERY"
+  }
+];
+
+export const trainingTypeOptions: RadioButton[] = [
+  {
+    id: "OnSiteCONUS",
+    label: "On-site instructor-led within the Continental United States (CONUS)",
+    value: "ONSITE_INSTRUCTOR_CONUS",
+  },
+  {
+    id: "OnSiteOCONUS",
+    label: "On-site instructor-led outside of the Continental United States (OCONUS)",
+    value: "ONSITE_INSTRUCTOR_OCONUS",
+  },
+  {
+    id: "VirturalInstructorLed",
+    label: "Virtual instructor-led",
+    value: "VIRTUAL_INSTRUCTOR",
+  },
+  {
+    id: "VirtualSelfLed",
+    label: "Virtual self-led",
+    value: "VIRTUAL_SELF_LED",
+  },
+  {
+    id: "NoPreference",
+    label: "No preference",
+    value: "NO_PREFERENCE",
+  },
+];
+
+export const defaultDOWArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
+  source: "DOW",
+  statement: "",
+  applications_needing_design: "",
+  data_classification_levels: "",
+  external_factors: "",
+  acquisition_package: ""
+}
+
+const deleteOtherOfferingInstanceFromSNOW = (sysId: string, groupId: string) => {
+  switch (groupId.toLowerCase()) {
+  case "compute":
+    api.computeEnvironmentInstanceTable.remove(sysId);
+    break;
+  case "database":
+    api.databaseEnvironmentInstanceTable.remove(sysId);
+    break;
+  case "storage":
+    api.storageEnvironmentInstanceTable.remove(sysId);
+    break;
+  case "general_xaas":
+    api.xaaSEnvironmentInstanceTable.remove(sysId);
+    break;
+  case "advisory_assistance":
+  case "help_desk_services":
+  case "documentation_support":
+  case "general_cloud_support":
+  case "training":
+  case "portability_plan":
+    api.cloudSupportEnvironmentInstanceTable.remove(sysId);
+  }
+}  
 
 @Module({
   name: "DescriptionOfWork",
@@ -105,6 +586,7 @@ const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
   dynamic: true,
   store: rootStore,
 })
+
 export class DescriptionOfWorkStore extends VuexModule {
   initialized = false;
   isIncomplete = true;
@@ -138,8 +620,564 @@ export class DescriptionOfWorkStore extends VuexModule {
     'MACHINE_LEARNING',
     'APPLICATIONS',
     'DEVELOPER_TOOLS',
-    'COMPUTE'
+    'COMPUTE',
+  ];
+
+  cloudSupportServices = [
+    "PORTABILITY_PLAN",
+    "ADVISORY_ASSISTANCE",
+    "HELP_DESK_SERVICES",
+    "TRAINING",
+    "DOCUMENTATION_SUPPORT",
+    "GENERAL_CLOUD_SUPPORT",
   ]
+
+  public otherServiceOfferings = [
+    "COMPUTE",
+    "DATABASE",
+    "STORAGE",
+    "GENERAL_XAAS",
+    "ADVISORY_ASSISTANCE",
+    "HELP_DESK_SERVICES",
+    "TRAINING",
+    "DOCUMENTATION_SUPPORT",
+    "GENERAL_CLOUD_SUPPORT",
+  ];
+
+  public offeringsThatNeedSecurityRequirements = [
+    "ADVISORY_ASSISTANCE",
+    "HELP_DESK_SERVICES",
+    "TRAINING",
+    "DOCUMENTATION_SUPPORT",
+    "GENERAL_CLOUD_SUPPORT",
+    "EDGE_COMPUTING",
+  ];
+
+  public get DOWSecReqOfferingName(): string {
+    // returns current service offering if tactical edge,
+    // or group name if other offering
+    if (this.currentGroupId === "EDGE_COMPUTING") {
+      return this.currentOfferingName;
+    }
+    const groupObj = this.serviceOfferingGroups.find(
+      obj => obj.value === this.currentGroupId
+    );
+    return groupObj ? groupObj.label : "service offering";
+  }
+
+  public serviceNeedsSecurityRequirements = false;
+
+  @Action({rawError: true})
+  public async setNeedsSecurityRequirements(): Promise<void> {
+    const needsSecurityRequirements 
+      = this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId);
+    await this.doSetNeedsSecurityRequirements(needsSecurityRequirements);
+    await this.setShowSecurityRequirements();
+  }
+  @Mutation
+  public async doSetNeedsSecurityRequirements(value: boolean): Promise<void> {
+    this.serviceNeedsSecurityRequirements = value;
+    if (value === false) {
+      DescriptionOfWork.resetShowSecurityRequirements();
+    }
+  }
+  
+  public showSecurityRequirements = false;
+
+  @Action({rawError: true})
+  public resetShowSecurityRequirements(): void {
+    this.doResetShowSecurityRequirements();
+  }
+  @Mutation
+  public doResetShowSecurityRequirements(): void {
+    this.showSecurityRequirements = false;
+  }
+
+  @Action({rawError: true})
+  public async setShowSecurityRequirements(): Promise<void> {
+    // "high side" is secret or above
+    const highSideSysIds = ClassificationRequirements.highSideSysIds;
+    let highSideInstances = undefined;
+
+    if (this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId)) {
+      const offeringGroupObj = this.DOWObject.find(
+        obj => obj.serviceOfferingGroupId === this.currentGroupId
+      );
+
+      if (offeringGroupObj) {
+        if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
+        // check classificationInstances object
+          const offering = offeringGroupObj.serviceOfferings.find(
+            obj => obj.name === this.currentOfferingName
+          );
+          if (offering) {
+            highSideInstances = offering.classificationInstances?.filter(
+              obj => highSideSysIds.includes(obj.classificationLevelSysId)
+            );
+          }
+        } else {
+          // check otherOfferingData object
+          highSideInstances = offeringGroupObj.otherOfferingData?.filter(
+            obj => highSideSysIds.includes(obj.classificationLevel as string)
+          );
+        }        
+      } 
+    }    
+    const showSecurityReqs = highSideInstances !== undefined && highSideInstances.length > 0;
+    this.doSetShowSecurityRequirements(showSecurityReqs);
+  }
+  @Mutation
+  public doSetShowSecurityRequirements(value: boolean): void {
+    this.showSecurityRequirements = value;
+  }
+
+  @Action({rawError: true})
+  public async saveSecurityRequirements(securityReqs: SecurityRequirement[]): Promise<void> {
+    // pragma: allowlist secret
+    const secretSysId = ClassificationRequirements.classificationSecretSysId;
+    // TODO: future ticket when implementing TOP secret. keep const around even if unused currently
+    // pragma: allowlist secret
+    // const topSecretSysId = ClassificationRequirements.classificationTopSecretSysId;
+
+    // pragma: allowlist secret
+    const secretReqsObj = securityReqs.find(obj => obj.type === "SECRET");
+    // pragma: allowlist secret
+    const secretReqs = (secretReqsObj?.classification_information_type)?.join(",");
+
+    const offeringGroupObj = this.DOWObject.find(
+      obj => obj.serviceOfferingGroupId === this.currentGroupId
+    );
+    const isCloudSupportService = 
+      DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+    
+    if (offeringGroupObj && isCloudSupportService) {
+      // save other offering instances with secret + classification level
+      offeringGroupObj.otherOfferingData?.forEach(instance => {
+        if (instance.classificationLevel === secretSysId) {
+          instance.classifiedInformationTypes = secretReqs;
+          saveOrUpdateOtherServiceOffering(instance, this.currentGroupId.toLocaleLowerCase());
+        }
+      });
+    } else if (offeringGroupObj) {
+      // save classification instances with secret + classification level
+      const serviceOfferingObj = offeringGroupObj.serviceOfferings.find(
+        obj => obj.name === this.currentOfferingName
+      );
+      if (serviceOfferingObj) {
+        serviceOfferingObj.classificationInstances?.forEach(instance => {
+          if (instance.classificationLevelSysId === secretSysId) {
+            instance.classifiedInformationTypes = secretReqs;
+            saveOrUpdateClassificationInstance(instance);
+          }
+        });
+      }
+    }
+  }
+
+  @Action({rawError: true})
+  public async getDOWSecurityRequirements(): Promise<SecurityRequirement[]> {
+    const secretObj: SecurityRequirement = {
+      type: "SECRET",
+      classification_information_type: [],
+    };
+    const topSecretObj: SecurityRequirement = {
+      type: "TOPSECRET",
+      classification_information_type: [],
+    };
+
+    const secretSysId = ClassificationRequirements.classificationSecretSysId;
+
+    const isCloudSupportService = 
+      DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+
+    const offeringGroupObj = this.DOWObject.find(
+      obj => obj.serviceOfferingGroupId === this.currentGroupId
+    );
+    if (offeringGroupObj && isCloudSupportService) {
+      offeringGroupObj.otherOfferingData?.forEach(instance => {
+        if (instance.classificationLevel === secretSysId) {
+          const secReqSysIds = instance.classifiedInformationTypes 
+            ? instance.classifiedInformationTypes.split(",")
+            : [];
+          secretObj.classification_information_type = secReqSysIds; 
+        }
+    
+      });
+    } else if (offeringGroupObj && !isCloudSupportService) {
+      const offering = offeringGroupObj.serviceOfferings.find(
+        obj => obj.name === this.currentOfferingName
+      );
+      if (offering) {
+        const secretInstance = offering.classificationInstances?.find(
+          obj => obj.classificationLevelSysId === secretSysId
+        );
+        if (secretInstance) {
+          const secReqSysIds = secretInstance.classifiedInformationTypes 
+            ? secretInstance.classifiedInformationTypes.split(",")
+            : [];
+          secretObj.classification_information_type = secReqSysIds;
+        }
+      }
+    }
+
+    const securityReqs: SecurityRequirement[] = [ secretObj, topSecretObj ];
+    return securityReqs;
+  }
+
+  public DOWHasArchitecturalDesignNeeds: boolean | null = null;
+  public DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;
+  travelSummaryInstances: TravelSummaryTableData[] = [];
+
+  @Action({rawError: true})
+  public async setTravel(travelInstances: TravelSummaryTableData[]): Promise<void> {
+    this.doSetTravel(travelInstances);
+  }
+
+  @Mutation
+  public doSetTravel(travelInstances: TravelSummaryTableData[]): void {
+    this.travelSummaryInstances = travelInstances;
+  }
+
+  /**
+   * Gets the acquisition package sys id from the acquisition package store and then loads
+   * all the travel records for the acquisition.
+   */
+  @Action({rawError: true})
+  public async loadTravel(): Promise<void> {
+    const travelRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" +
+        AcquisitionPackage.acquisitionPackage?.sys_id as string
+      }
+    };
+    const travelList = await api.travelRequirementTable.getQuery(travelRequestConfig);
+    await this.doSetTravel(travelList.map((travel, index): TravelSummaryTableData => {
+      return {
+        sys_id: travel.sys_id,
+        acquisition_package: (travel.acquisition_package as ReferenceColumn).value,
+        duration_in_days: travel.duration_in_days,
+        instanceNumber: index + 1,
+        number_of_travelers: travel.number_of_travelers,
+        number_of_trips: travel.number_of_trips,
+        selected_periods: travel.selected_periods?.split(","),
+        trip_location: travel.trip_location
+      }
+    }));
+  }
+
+  /**
+   * Compares the travelSummaryInstances of this store with the newTravel passed to this
+   * function and marks them for create, update and delete.
+   * @param newTravel
+   */
+  @Action({rawError: true})
+  public async saveTravel(
+    newTravel: TravelSummaryTableData[]): Promise<boolean> {
+    const newTravelDTO: TravelRequirementDTO[] = 
+      newTravel.map((travel): TravelRequirementDTO  => {
+        return {
+          sys_id: travel.sys_id,
+          acquisition_package: travel.acquisition_package as string,
+          duration_in_days: travel.duration_in_days,
+          number_of_travelers: travel.number_of_travelers,
+          number_of_trips: travel.number_of_trips,
+          selected_periods: travel.selected_periods.toString(), // csv
+          trip_location: travel.trip_location
+        }
+      })
+    const createList = newTravelDTO.filter(travel => !(travel.sys_id && travel.sys_id.length > 0));
+    const updateList = newTravelDTO.filter(travel => (travel.sys_id && travel.sys_id.length > 0));
+    const deleteList = this.travelSummaryInstances.filter(travel => {
+      return newTravelDTO.map(newTravel => newTravel.sys_id).indexOf(travel.sys_id) === -1;
+    })
+    const apiCallList: Promise<TravelRequirementDTO | void>[] = [];
+    createList.forEach(markedForCreate => {
+      apiCallList.push(api.travelRequirementTable
+        .create({...markedForCreate,
+          acquisition_package: AcquisitionPackage.acquisitionPackage?.sys_id as string
+        }));
+    })
+    updateList.forEach(markedForUpdate => {
+      apiCallList.push(api.travelRequirementTable
+        .update(markedForUpdate.sys_id as string, markedForUpdate));
+    })
+    deleteList.forEach(markedForDelete => {
+      apiCallList.push(api.travelRequirementTable
+        .remove(markedForDelete.sys_id as string));
+    })
+    await Promise.all(apiCallList);
+    return true;
+  }
+
+  @Action({rawError: true})
+  public async setDOWHasArchitecturalDesign(value: boolean): Promise<void> {
+    this.doSetDOWHasArchitecturalDesign(value);
+  }
+
+  @Mutation
+  public doSetDOWHasArchitecturalDesign(value: boolean): void {
+    this.DOWHasArchitecturalDesignNeeds = value;
+  }
+
+  @Action({rawError: true})
+  public async setDOWArchitecturalDesign(value: ArchitecturalDesignRequirementDTO): Promise<void> { 
+    const sysId = await this.saveDOWArchitecturalDesign(value);
+    value.sys_id = sysId;
+    value.acquisition_package = AcquisitionPackage.packageId;
+    this.doSetDOWArchitecturalDesign(value);
+  }
+
+  @Mutation
+  public doSetDOWArchitecturalDesign(value: ArchitecturalDesignRequirementDTO): void {
+    this.DOWArchitectureNeeds = this.DOWArchitectureNeeds
+      ? Object.assign(this.DOWArchitectureNeeds, value)
+      : value;
+  }
+
+  @Action({rawError: true})
+  public async saveDOWArchitecturalDesign(
+    value: ArchitecturalDesignRequirementDTO): Promise<string> {
+
+    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
+    let sysId = "";
+    let classificationLevels = "";
+    
+
+    if(Array.isArray(value.data_classification_levels)){
+      classificationLevels = value.data_classification_levels.join(",");
+    } else {
+      classificationLevels = value.data_classification_levels;
+    }
+
+    if(value.sys_id){
+      await api.architecturalDesignRequirementTable.update(
+        value.sys_id,
+        {
+          ...value,
+          acquisition_package: packageId,
+          data_classification_levels: classificationLevels
+        }
+      );
+      sysId = value.sys_id as string;
+    } else {
+      const savedObject = await api.architecturalDesignRequirementTable.create(
+        {
+          ...value,
+          acquisition_package: packageId,
+          data_classification_levels: classificationLevels
+        }
+      );
+      sysId = savedObject.sys_id as string;
+    }
+
+    return sysId;
+  }
+
+  @Action({rawError: true})
+  public async saveTravelRequirements(
+    value: ArchitecturalDesignRequirementDTO): Promise<string> {
+
+    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
+    let sysId = "";
+    let classificationLevels = "";
+    
+
+    if(Array.isArray(value.data_classification_levels)){
+      classificationLevels = value.data_classification_levels.join(",");
+    } else {
+      classificationLevels = value.data_classification_levels;
+    }
+
+    if(value.sys_id){
+      await api.architecturalDesignRequirementTable.update(
+        value.sys_id,
+        {
+          ...value,
+          acquisition_package: packageId,
+          data_classification_levels: classificationLevels
+        }
+      );
+      sysId = value.sys_id as string;
+    } else {
+      const savedObject = await api.architecturalDesignRequirementTable.create(
+        {
+          ...value,
+          acquisition_package: packageId,
+          data_classification_levels: classificationLevels
+        }
+      );
+      sysId = savedObject.sys_id as string;
+    }
+
+    return sysId;
+  }
+
+  @Action({rawError: true})
+  public async getTravel(): Promise<TravelSummaryTableData[]> {
+    return this.travelSummaryInstances;
+  }
+
+  @Action({rawError: true})
+  public async getDOWArchitecturalNeeds(): Promise<ArchitecturalDesignRequirementDTO> {
+    return this.DOWArchitectureNeeds;
+  }
+
+  @Action({rawError: true})
+  public async loadDOWfromAcquistionPackageId(sysId: string): Promise<void> {
+    const requestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + sysId,
+        sysparm_display_value: "false"
+      }
+    };
+
+    this.setCurrentOfferingGroupId("COMPUTE");
+    const computeItems = await api.computeEnvironmentInstanceTable.getQuery(requestConfig);
+    if(computeItems.length > 0)
+      this.addOfferingGroup("COMPUTE");
+    computeItems.forEach((item,index) => {
+      const offeringData = mapOtherOfferingFromDTO(
+        index + 1,
+          item as ComputeEnvironmentInstanceDTO
+      );
+      this.doSetOtherOfferingData(offeringData);
+    });
+
+    this.setCurrentOfferingGroupId("DATABASE");
+    const databaseItems = await api.databaseEnvironmentInstanceTable.getQuery(requestConfig);
+    if(databaseItems.length > 0)
+      this.addOfferingGroup("DATABASE");
+    databaseItems.forEach((item,index) => {
+      const offeringData = mapOtherOfferingFromDTO(
+        index + 1,
+          item as DatabaseEnvironmentInstanceDTO
+      );
+      this.doSetOtherOfferingData(offeringData);
+    });
+
+    this.setCurrentOfferingGroupId("STORAGE");
+    const storageItems = await api.databaseEnvironmentInstanceTable.getQuery(requestConfig);
+    if(storageItems.length > 0)
+      this.addOfferingGroup("STORAGE");
+    storageItems.forEach((item,index) => {
+      const offeringData = mapOtherOfferingFromDTO(
+        index + 1,
+          item as StorageEnvironmentInstanceDTO
+      );
+      this.doSetOtherOfferingData(offeringData);
+    });
+
+    this.setCurrentOfferingGroupId("GENERAL_XAAS");
+    const xaasItems = await api.xaaSEnvironmentInstanceTable.getQuery(requestConfig);
+    if(xaasItems.length > 0)
+      this.addOfferingGroup("GENERAL_XAAS");
+    xaasItems.forEach((item,index) => {
+      const offeringData = mapOtherOfferingFromDTO(
+        index + 1,
+          item as XaasEnvironmentInstanceDTO
+      );
+      this.doSetOtherOfferingData(offeringData);
+    });
+
+    const supportItems = await api.cloudSupportEnvironmentInstanceTable.getQuery(requestConfig);
+    [
+      "advisory_assistance",
+      "help_desk_services",
+      "documentation_support",
+      "general_cloud_support",
+      "training",
+      "portability_plan"
+    ].forEach(groupId => {
+      const tempItems = supportItems.filter(item => item.service_type === groupId.toUpperCase());
+
+      if(tempItems.length > 0){
+        this.addOfferingGroup(groupId.toUpperCase());
+        this.setCurrentOfferingGroupId(groupId.toUpperCase());
+      }
+
+
+      tempItems.forEach((item,index) => {
+        const offeringData = mapOtherOfferingFromDTO(
+          index + 1,
+            item as CloudSupportEnvironmentInstanceDTO
+        );
+        this.doSetOtherOfferingData(offeringData);
+      });
+    });
+
+    const selectedOfferingsList = await api.selectedServiceOfferingTable.getQuery(requestConfig);
+    const serviceOfferingList = [
+      "developer_tools",
+      "applications",
+      "machine_learning",
+      "networking",
+      "security",
+      "edge_computing",
+      "iot"
+    ];
+    for(const groupId of serviceOfferingList){
+      const offeringsForGroup: ServiceOfferingDTO[] = this.serviceOfferings.filter(
+        item => item.service_offering_group === groupId.toUpperCase()
+      );
+
+      for(const group of offeringsForGroup){
+        const tempOfferingsList = selectedOfferingsList.filter(
+          item => (item.service_offering as ReferenceColumn).value === group.sys_id
+        );
+
+        for(const offering of tempOfferingsList){
+          const groupIndex = this.DOWObject.findIndex(
+            item => item.serviceOfferingGroupId === group.service_offering_group);
+
+          if(groupIndex < 0)
+            this.addOfferingGroup(group.service_offering_group);
+
+          if(tempOfferingsList.length > 0){
+            this.setCurrentOfferingGroupId(group.service_offering_group);
+          }
+
+          const classificationInstances: DOWClassificationInstance[] = [];
+          const classificationInstanceIds = offering.classification_instances !== ""
+            ? offering.classification_instances.split(",") : [];
+          if(classificationInstanceIds.length > 0) {
+            let queryString = "sys_id=";
+            if(classificationInstanceIds.length > 1)
+              queryString += classificationInstanceIds.join("^ORsys_id=");
+            else
+              queryString += classificationInstanceIds[0];
+            const ciRequestConfig: AxiosRequestConfig = {
+              params: {
+                sysparm_query: queryString,
+                sysparm_display_value: "false"
+              }
+            };
+
+            const dtoObjects = await api.classificationInstanceTable.getQuery(ciRequestConfig);
+
+            for(const dtoItem of dtoObjects){
+              const tempItem = mapClassificationInstanceFromDTO(dtoItem);
+              classificationInstances.push(tempItem);
+            }
+          }
+
+          this.DOWObject[this.DOWObject.length - 1].serviceOfferings.push({
+            acquisitionPackageSysId: AcquisitionPackage.packageId,
+            sys_id: offering.sys_id as string,
+            name: group.name as string,
+            otherOfferingName: offering.other_service_offering as string,
+            description: group.description,
+            sequence: group.sequence as string,
+            serviceId: group.service_offering_group as string,
+            classificationInstances: classificationInstances
+          });
+        }
+      }
+    }
+
+    this.setCurrentOfferingGroupId("");
+
+  }
+
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
@@ -147,8 +1185,15 @@ export class DescriptionOfWorkStore extends VuexModule {
     nameofProperty(this, (x)=> x.userSelectedServiceOfferings),
     nameofProperty(this, (x)=> x.DOWObject)
   ];
-  
-  @Action 
+
+  @Action
+  public async getServiceGroupVerbiageInfo(): Promise<Record<string, string>> {
+    return serviceGroupVerbiageInfo[this.currentGroupId];
+  }
+
+
+
+  @Action
   public async getDOWObject(): Promise<DOWServiceOfferingGroup[]> {
     return this.DOWObject;
   }
@@ -162,8 +1207,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   public get currentOfferingIndex(): number {
     const groupIndex = this.currentOfferingGroupIndex;
     const offeringIndex = groupIndex > -1 ? this.DOWObject[groupIndex]
-      .serviceOfferings.findIndex(offering=> offering.name 
-        === this.currentOfferingName): groupIndex;
+      .serviceOfferings.findIndex(offering=> offering.name
+            === this.currentOfferingName): groupIndex;
     return offeringIndex;
   }
 
@@ -195,7 +1240,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     const offerings =  this.serviceOfferingsForGroup;
     const currentOfferingIndex = offerings
       .findIndex(offering=> offering.name === this.currentOfferingName);
-    return currentOfferingIndex == 0; 
+    return currentOfferingIndex == 0;
   }
 
   public get isAtBeginningOfServiceGroups(): boolean {
@@ -206,7 +1251,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get nextServiceOffering(): { name: string, sysId: string} | undefined {
- 
+
     const serviceOfferings = this.serviceOfferingsForGroup;
 
     if(!serviceOfferings.length)
@@ -287,7 +1332,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     if(currentGroupIndex < 0){
       return undefined;
     }
-  
+
     const groupIndex = currentGroupIndex > 0 ? currentGroupIndex - 1 :  currentGroupIndex;
     const nextGroup = this.validServiceGroups[groupIndex].serviceOfferingGroupId;
     return nextGroup;
@@ -301,11 +1346,11 @@ export class DescriptionOfWorkStore extends VuexModule {
     if(currentGroupIndex < 0){
       return undefined;
     }
-  
+
     const lastOffering =  last(this.validServiceGroups[currentGroupIndex].serviceOfferings);
 
-    return lastOffering 
-      ? { name: lastOffering.name, sysId: lastOffering.sys_id } 
+    return lastOffering
+      ? { name: lastOffering.name, sysId: lastOffering.sys_id }
       : undefined;
   }
 
@@ -323,10 +1368,10 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get selectedServiceOfferings(): string[] {
-    const currentGroup = this.DOWObject.find(group => 
+    const currentGroup = this.DOWObject.find(group =>
       group.serviceOfferingGroupId === this.currentGroupId);
     if (currentGroup?.serviceOfferings) {
-      return currentGroup.serviceOfferings.flatMap(offering => 
+      return currentGroup.serviceOfferings.flatMap(offering =>
         offering.sys_id === "Other" ? "Other" : offering.name);
     }
     return [""];
@@ -418,10 +1463,94 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.lastGroupRemoved = bool;
   }
 
+  @Action({rawError: true})
+  public async serviceOfferingHasInstances(offeringName: string): Promise<boolean> {
+    let hasInstances = false;
+    const currentOfferingGroup = this.DOWObject.find(
+      obj => obj.serviceOfferingGroupId === this.currentGroupId
+    )
+    if (currentOfferingGroup 
+      && currentOfferingGroup.serviceOfferings 
+      && currentOfferingGroup.serviceOfferings.length > 0
+    ) {
+      const serviceOfferingObj = currentOfferingGroup.serviceOfferings.find(
+        obj => obj.name === offeringName
+      );
+      if (serviceOfferingObj
+        && serviceOfferingObj.classificationInstances
+        && serviceOfferingObj.classificationInstances.length > 0
+      ) {
+        hasInstances = true;
+      }
+    }
+    return hasInstances;
+  }
+
+  @Action({rawError: true})
+  public async removeServiceOffering(offeringName: string): Promise<void> {
+    const offeringGroupIndex = this.DOWObject.findIndex(
+      group => group.serviceOfferingGroupId === this.currentGroupId
+    );
+
+    const offeringGroupObj = this.DOWObject.find(
+      group => group.serviceOfferingGroupId === this.currentGroupId
+    );
+    if (offeringGroupObj) {
+      const offeringObj = offeringGroupObj.serviceOfferings.find(
+        offering => offering.name === offeringName
+      );
+
+      if (offeringObj 
+        && offeringObj?.classificationInstances 
+        && offeringObj.classificationInstances.length > 0
+      ) {
+        const sysIds: string[] = [];
+        offeringObj.classificationInstances.forEach(instance => {
+          sysIds.push(instance.sysId as string);
+        });
+        await this.removeClassificationInstances(sysIds); 
+        await this.deleteServiceOfferingFromSNOW(offeringObj.sys_id);  
+      }
+      const updatedOfferings = 
+        offeringGroupObj.serviceOfferings.filter(obj => obj.name !== offeringName);
+      this.DOWObject[offeringGroupIndex].serviceOfferings = updatedOfferings;
+    }    
+  }
+  @Action({rawError: true})
+  public async deleteServiceOfferingFromSNOW(sysId: string): Promise<void> {
+    await api.selectedServiceOfferingTable.remove(sysId);
+  } 
+
   @Action
   public async removeCurrentOfferingGroup(): Promise<void> {
+    await this.deleteOfferingGroupInstances();
     await this.setSelectedOfferings({selectedOfferingSysIds: [], otherValue: ""});
     this.doRemoveCurrentOfferingGroup();
+  }
+
+  @Action({rawError: true})
+  public async deleteOfferingGroupInstances(): Promise<void> {
+    if (!this.currentGroupRemoved) {
+      const groupIdToRemove = this.currentGroupId;
+      const groupToRemoveObj = this.DOWObject.find(
+        e => e.serviceOfferingGroupId === groupIdToRemove
+      );
+      if (groupToRemoveObj 
+        && groupToRemoveObj.serviceOfferings 
+        && groupToRemoveObj.serviceOfferings.length > 0
+      ) {
+        groupToRemoveObj.serviceOfferings.forEach(async offering => {
+          const sysIds: string[] = [];
+          if (offering.classificationInstances && offering.classificationInstances.length > 0) {
+            offering.classificationInstances.forEach(instance => {
+              sysIds.push(instance.sysId as string);
+            });
+          }
+          await this.removeClassificationInstances(sysIds);
+          await this.deleteServiceOfferingFromSNOW(offering.sys_id)
+        })
+      }
+    }
   }
 
   // removes current offering group if user clicks  the "I don't need these cloud resources"
@@ -429,7 +1558,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public doRemoveCurrentOfferingGroup(): void {
     if (!this.currentGroupRemoved) {
-      this.currentGroupRemovedForNav = true;    
+      this.currentGroupRemovedForNav = true;
       const groupIdToRemove = this.currentGroupId;
       const groupIndex = this.DOWObject.findIndex(
         e => e.serviceOfferingGroupId === groupIdToRemove
@@ -460,7 +1589,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         // set currentGroupId to next group in DOWObject
         this.currentGroupId = DOWObjectBeforeRemoval[groupIndex + 1].serviceOfferingGroupId;
       }
-      this.currentGroupRemoved = true; 
+      this.currentGroupRemoved = true;
     }
   }
 
@@ -485,7 +1614,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public async addOfferingGroup(groupId: string): Promise<void> {
+  public addOfferingGroup(groupId: string): void {
     const group = this.serviceOfferingGroups.find(e => e.value === groupId)
     const offeringGroup: DOWServiceOfferingGroup = {
       serviceOfferingGroupId: groupId,
@@ -532,94 +1661,130 @@ export class DescriptionOfWorkStore extends VuexModule {
     } else {
       this.DOWObject = [];
     }
-    this.currentGroupId = this.DOWObject.length > 0 
-      && this.DOWObject[0].serviceOfferingGroupId.indexOf("NONE") === -1 
-      ? this.DOWObject[0].serviceOfferingGroupId 
+    this.currentGroupId = this.DOWObject.length > 0
+    && this.DOWObject[0].serviceOfferingGroupId.indexOf("NONE") === -1
+      ? this.DOWObject[0].serviceOfferingGroupId
       : "";
     this.currentOfferingName = "";
     this.currentOfferingSysId = "";
   }
 
-  @Action 
+  @Action
   public async setSelectedOfferings(
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): Promise<void> {
-    this.doSetSelectedOfferings({ selectedOfferingSysIds, otherValue });
+    this.doSetSelectedServiceOffering({ selectedOfferingSysIds, otherValue });
+  }
+
+  @Action
+  public async saveSelectedServiceOfferings(
+  ): Promise<void> {
+    const groupIndex
+        = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
+
+    if (groupIndex >= 0) {
+      const currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
+
+      for(const offering of currentOfferings){
+        const serviceOffering = this.serviceOfferings.find(item => item.name === offering.name);
+
+        if(serviceOffering){
+          const sysId = await saveOrUpdateSelectedServiceOffering(
+            offering, serviceOffering.sys_id as string);
+          offering.sys_id = sysId;
+        }
+      }
+    }
   }
 
   @Mutation
-  public doSetSelectedOfferings(
+  public doSetSelectedServiceOffering(
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): void {
-    const groupIndex 
-      = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
-    let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
+    const acquisitionPackageId = AcquisitionPackage.packageId;
+    const groupIndex
+        = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     if (groupIndex >= 0) {
+      let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
+
       if (selectedOfferingSysIds.length === 0) {
         this.DOWObject[groupIndex].serviceOfferings = [];
         currentOfferings = [];
       } else {
-        // add selectedOfferings to DOWObject
         selectedOfferingSysIds.forEach((selectedOfferingSysId) => {
-          if (!currentOfferings.some((e) => e.sys_id === selectedOfferingSysId)) {
-            const foundOffering 
+          const foundOffering
               = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
-            if (foundOffering || otherValue) {
-              const name = foundOffering ? foundOffering.name : otherValue;
-              const description = foundOffering ? foundOffering.description : "";
-              const sequence = foundOffering ? foundOffering.sequence : "99";
+          if (!currentOfferings.some((e) => e.name === foundOffering?.name)) {
+            const name = foundOffering ? foundOffering.name : otherValue;
+            const description = foundOffering ? foundOffering.description : "";
+            const sequence = foundOffering ? foundOffering.sequence : "99";
+            const serviceId = foundOffering ? foundOffering.service_offering_group : "";
 
-              const offering = {
-                name,
-                other: otherValue,
-                "sys_id": selectedOfferingSysId,
-                classificationInstances: [],
-                description,
-                sequence,
-              }
-              currentOfferings.push({...offering,serviceId : ""});
+            const offering = {
+              name,
+              other: otherValue,
+              "sys_id": "",
+              classificationInstances: [],
+              description,
+              sequence,
+              serviceId
             }
-          }
-        });
-
-        // remove any service offerings previously selected but unchecked this pass
-        const currentOfferingsClone = _.cloneDeep(currentOfferings);
-        // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
-        currentOfferingsClone.forEach((offering) => {
-          const sysId = offering.sys_id;
-          if (!selectedOfferingSysIds.includes(sysId)) {
-            const i = currentOfferings.findIndex(e => e.sys_id === sysId);
-            currentOfferings.splice(i, 1);
+            currentOfferings.push({
+              ...offering,
+              acquisitionPackageSysId: acquisitionPackageId
+            });
           }
         });
 
         this.DOWObject[groupIndex].serviceOfferings.sort(
           (a, b) => parseInt(a.sequence) > parseInt(b.sequence) ? 1 : -1
         );
-
       }
       this.currentOfferingName = currentOfferings.length > 0
         ? currentOfferings[0].name : "";
-      this.currentOfferingSysId = currentOfferings.length > 0 
+      this.currentOfferingSysId = currentOfferings.length > 0
         ? currentOfferings[0].sys_id : "";
     }
   }
 
   @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
-    this.doSetOfferingDetails(instancesData);
-  }
+    const updatedInstancesData: DOWClassificationInstance[] = [];
+    for(const instanceData of instancesData){
+      const dataSysId = await saveOrUpdateClassificationInstance(instanceData);
+      instanceData.sysId = dataSysId as string;
+      updatedInstancesData.push(instanceData);
+    }
 
-  @Mutation
-  public doSetOfferingDetails(instancesData: DOWClassificationInstance[]): void {
     const groupIndex = this.DOWObject.findIndex(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );
     const offeringIndex = this.DOWObject[groupIndex].serviceOfferings.findIndex(
-      obj => obj.sys_id === this.currentOfferingSysId
+      // TODO: use sys_id instead of .name - this.currentOfferingSysId not currently being set
+      // obj => obj.sys_id === this.currentOfferingSysId
+      obj => obj.name === this.currentOfferingName
     );
+
+    const currentInstances = _.cloneDeep(
+      this.DOWObject[groupIndex].serviceOfferings[offeringIndex].classificationInstances
+    )
+    if (currentInstances && currentInstances.length) {
+      const currentSysIds = currentInstances.map(obj => obj.sysId);
+      const updatedDataSysIds = instancesData.map(obj => obj.sysId);
+      const instancesToDelete = currentSysIds.filter(sysId => !updatedDataSysIds.includes(sysId));
+      if (instancesToDelete && instancesToDelete.length) {
+        const sysIds: string[] = [];
+        instancesToDelete.forEach(sysId => sysId !== undefined ? sysIds.push(sysId) : false);
+        await this.removeClassificationInstances(sysIds)
+      }
+    }
+
     this.DOWObject[groupIndex].serviceOfferings[offeringIndex].classificationInstances
-      = instancesData;
+        = updatedInstancesData;
+
+    await this.saveSelectedServiceOfferings().then(async () => {
+      await this.setNeedsSecurityRequirements();
+    });
   }
 
   // ******************************************************************
@@ -631,6 +1796,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   currentOtherServiceInstanceNumber = 0;
 
   emptyOtherOfferingInstance: OtherServiceOfferingData = {
+    acquisitionPackageSysId: "",
     instanceNumber: this.currentOtherServiceInstanceNumber,
     environmentType: "",
     classificationLevel: "",
@@ -641,18 +1807,38 @@ export class DescriptionOfWorkStore extends VuexModule {
     periodsNeeded: [],
     operatingSystemAndLicensing: "",
     numberOfVCPUs: "",
-    memory: "",
+    memoryAmount: "",
+    memoryUnit: "GB",
     storageType: "",
     storageAmount: "",
+    storageUnit: "GB",
     performanceTier: "",
     performanceTierOther: "",
-    numberOfInstancesNeeded: "1",
+    numberOfInstances: "1",
     requirementTitle: "",
+    usageDescription: "",
+    operatingEnvironment: "",
+    databaseType: "",
+    databaseTypeOther: "",
+    licensing: "",
+    operatingSystem: "",
+    region: "",
+    processorSpeed: "",
+    networkPerformance: "",
+    databaseLicensing: "",
+    sysId: "",
+    personnelOnsiteAccess: "",
+    tsContractorClearanceType: "",
+    trainingType: "",
+    trainingLocation: "",
+    trainingTimeZone: "",
+    trainingPersonnel: "",
+    classifiedInformationTypes: "",
   }
 
   otherOfferingInstancesTouched: Record<string, number[]> = {};
 
-  @Action 
+  @Action
   public async getLastOtherOfferingInstanceNumber(): Promise<number> {
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
@@ -667,12 +1853,12 @@ export class DescriptionOfWorkStore extends VuexModule {
     return 1;
   }
 
-  @Action 
+  @Action
   public async setCurrentOtherOfferingInstanceNumber(number: number): Promise<void> {
     this.doSetCurrentOtherOfferingInstanceNumber(number);
   }
 
-  @Mutation 
+  @Mutation
   public async doSetCurrentOtherOfferingInstanceNumber(number: number): Promise<void> {
     this.currentOtherServiceInstanceNumber = number;
   }
@@ -715,13 +1901,17 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async setOtherOfferingData(otherOfferingData: OtherServiceOfferingData): Promise<void> {
+    const groupId: string = this.currentGroupId.toLowerCase();
+    otherOfferingData.acquisitionPackageSysId = AcquisitionPackage.packageId;
+    const objSysId = await saveOrUpdateOtherServiceOffering(otherOfferingData, groupId);
+    otherOfferingData.sysId = objSysId;
     this.doSetOtherOfferingData(otherOfferingData);
   }
 
   @Mutation
-  public async doSetOtherOfferingData(
+  public doSetOtherOfferingData(
     otherOfferingData: OtherServiceOfferingData
-  ): Promise<void> {
+  ): void {
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
     );
@@ -729,10 +1919,12 @@ export class DescriptionOfWorkStore extends VuexModule {
     if (offeringIndex > -1) {
       const otherOfferingObj = this.DOWObject[offeringIndex];
       if (
-        otherOfferingObj 
-        && Object.prototype.hasOwnProperty.call(otherOfferingObj, "serviceOfferingGroupId")
-        && otherOfferingObj.serviceOfferingGroupId
+        otherOfferingObj
+          && Object.prototype.hasOwnProperty.call(otherOfferingObj, "serviceOfferingGroupId")
+          && otherOfferingObj.serviceOfferingGroupId
       ) {
+        const groupId: string = this.currentGroupId.toLowerCase();
+
         if (!Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")) {
           otherOfferingObj.otherOfferingData = [];
           otherOfferingObj.otherOfferingData?.push(otherOfferingData);
@@ -747,7 +1939,7 @@ export class DescriptionOfWorkStore extends VuexModule {
             otherOfferingObj.otherOfferingData?.push(otherOfferingData);
           }
         }
-        const groupId: string = this.currentGroupId.toLowerCase();
+
         if (!Object.prototype.hasOwnProperty.call(this.otherOfferingInstancesTouched, groupId)) {
           this.otherOfferingInstancesTouched[groupId] = [];
         }
@@ -756,6 +1948,8 @@ export class DescriptionOfWorkStore extends VuexModule {
           .indexOf(otherOfferingData.instanceNumber) === -1) {
           this.otherOfferingInstancesTouched[groupId].push(otherOfferingData.instanceNumber);
         }
+
+
       } else {
         throw new Error(`Error saving ${this.currentGroupId} data to store`);
       }
@@ -775,7 +1969,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     return this.otherOfferingInstancesTouched[groupId].indexOf(instanceNo) > -1;
   }
 
-  @Action 
+  @Action
   public async getOtherOfferingInstances(): Promise<OtherServiceOfferingData[]> {
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
@@ -784,8 +1978,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       const otherOfferingObj = this.DOWObject[offeringIndex];
       if (
         Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")
-        && otherOfferingObj.otherOfferingData
-        && otherOfferingObj.otherOfferingData.length > 0
+          && otherOfferingObj.otherOfferingData
+          && otherOfferingObj.otherOfferingData.length > 0
       ) {
         return otherOfferingObj.otherOfferingData;
       }
@@ -807,17 +2001,24 @@ export class DescriptionOfWorkStore extends VuexModule {
     if (offeringIndex > -1) {
       const otherOfferingObj = this.DOWObject[offeringIndex];
       if (
-        otherOfferingObj 
-        && Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")
-        && otherOfferingObj.otherOfferingData
+        otherOfferingObj
+          && Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")
+          && otherOfferingObj.otherOfferingData
       ) {
+        const instanceToDelete = otherOfferingObj.otherOfferingData.find(
+          obj => obj.instanceNumber === instanceNumber
+        );
+        if (instanceToDelete && instanceToDelete.sysId) {
+          deleteOtherOfferingInstanceFromSNOW(instanceToDelete.sysId, this.currentGroupId);
+        }
+
         const instanceIndex = otherOfferingObj.otherOfferingData.findIndex(
           obj => obj.instanceNumber === instanceNumber
         );
         otherOfferingObj.otherOfferingData.splice(instanceIndex, 1);
         for (let i = instanceIndex; i < otherOfferingObj.otherOfferingData.length; i++) {
-          otherOfferingObj.otherOfferingData[i].instanceNumber 
-            = otherOfferingObj.otherOfferingData[i].instanceNumber - 1;
+          otherOfferingObj.otherOfferingData[i].instanceNumber
+              = otherOfferingObj.otherOfferingData[i].instanceNumber - 1;
         }
       }
     }
@@ -827,12 +2028,14 @@ export class DescriptionOfWorkStore extends VuexModule {
     touchedInstances.sort((a, b) => a > b ? 1 : -1);
     const deleteIndex = touchedInstances.indexOf(instanceNumber);
     touchedInstances.splice(deleteIndex, 1);
-    this.otherOfferingInstancesTouched[otherOfferingId] 
-      = touchedInstances.map(i => i >= deleteIndex + 1 ? i - 1 : i);
+    this.otherOfferingInstancesTouched[otherOfferingId]
+        = touchedInstances.map(i => i >= deleteIndex + 1 ? i - 1 : i);
   }
 
-  confirmOtherOfferingDelete = false;
 
+
+  confirmOtherOfferingDelete = false;
+  confirmTravelDeleteAll = false;
   confirmServiceOfferingDelete = false;
 
   public get confirmServiceOfferingDeleteVal(): boolean {
@@ -841,6 +2044,10 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   public get confirmOtherOfferingDeleteVal(): boolean {
     return this.confirmOtherOfferingDelete;
+  }
+
+  public get confirmTravelDeleteAllVal(): boolean {
+    return this.confirmTravelDeleteAll;
   }
 
   @Action
@@ -862,20 +2069,43 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action
+  public setConfirmTravelDeleteAll(bool: boolean): void {
+    this.doSetConfirmTravelDeleteAll(bool);
+  }
+  @Mutation
+  public doSetConfirmTravelDeleteAll(bool: boolean): void {
+    this.confirmTravelDeleteAll = bool;
+  }
+
+  @Action
   public async deleteOtherOffering(): Promise<void> {
-    await this.doDeleteOtherOffering();
+    this.doDeleteOtherOffering();
     this.checkForXaas()
     this.setAnticipatedUsersAndDataHasBeenVisited()
   }
 
   @Mutation
   public doDeleteOtherOffering(): void {
+    const groupIdToDelete = this.currentGroupId.toLowerCase();
+    const offeringToDelete = this.DOWObject.find(
+      o => o.serviceOfferingGroupId.toLowerCase() === groupIdToDelete
+    );
+    if (offeringToDelete 
+      && offeringToDelete.otherOfferingData 
+      && offeringToDelete.otherOfferingData.length > 0
+    ) {
+      offeringToDelete.otherOfferingData.forEach((instance) => {
+        deleteOtherOfferingInstanceFromSNOW(instance.sysId as string, this.currentGroupId);
+      });
+    }
     const offeringIndex = this.DOWObject.findIndex(
-      o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
+      o => o.serviceOfferingGroupId.toLowerCase() === groupIdToDelete
     );
     if (offeringIndex > -1) {
       this.DOWObject.splice(offeringIndex, 1);
       if (this.DOWObject.length) {
+        // remove group from touched obj to prevent validation on load if adding group again
+        delete this.otherOfferingInstancesTouched[groupIdToDelete];
 
         const nextGroupId = this.DOWObject.length === offeringIndex
           ? this.DOWObject[offeringIndex - 1].serviceOfferingGroupId
@@ -909,10 +2139,10 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({ rawError: true })
   public async getClassificationInstances(): Promise<DOWClassificationInstance[]> {
-    const currentGroup 
-      = this.DOWObject.find((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
+    const currentGroup
+        = this.DOWObject.find((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     const currentOffering
-      = currentGroup?.serviceOfferings.find((obj) => obj.name === this.currentOfferingName);
+        = currentGroup?.serviceOfferings.find((obj) => obj.name === this.currentOfferingName);
     if (currentOffering && currentOffering.classificationInstances) {
       return currentOffering.classificationInstances;
     }
@@ -950,9 +2180,9 @@ export class DescriptionOfWorkStore extends VuexModule {
 
       //updated classification instances with ids
       data.classificationInstances?.forEach((instance, index)=> {
-        const savedInstanceProxy = 
-          value.classificationInstances
-            .find(cInstance=>cInstance.dowClassificationInstanceIndex === index);
+        const savedInstanceProxy =
+            value.classificationInstances
+              .find(cInstance=>cInstance.dowClassificationInstanceIndex === index);
         if(savedInstanceProxy)
         {
           instance.sysId = savedInstanceProxy?.classificationInstance.sys_id;
@@ -987,14 +2217,17 @@ export class DescriptionOfWorkStore extends VuexModule {
     const serviceOfferings: DOWServiceOffering[] = [];
     const dowOfferings = this.serviceOfferingsForGroup;
 
+    const acquisitionPackageId = AcquisitionPackage.packageId;
+
     serviceOfferingsForGroup.forEach((obj) => {
-      
+
       //does the saved offering exist in DOW store?
       const savedInDown = dowOfferings.find(offering=>offering.sys_id === obj.sys_id);
 
       const offering = savedInDown ? savedInDown :{
         name: obj.name,
         "sys_id": obj.sys_id || "",
+        acquisitionPackageSysId: acquisitionPackageId,
         sequence: obj.sequence,
         description: obj.description,
         serviceId: "",
@@ -1004,12 +2237,14 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     });
 
+    // EJY need to update?
     const groupsWithNoOtherOption = ["ADVISORY", "TRAINING"];
-    
+
     if (groupsWithNoOtherOption.indexOf(this.currentGroupId) === -1) {
       const otherOffering: DOWServiceOffering = {
         name: "Other",
         sys_id: "Other",
+        acquisitionPackageSysId: acquisitionPackageId,
         sequence: "99",
         description: "",
         serviceId: "",
@@ -1036,7 +2271,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public getServiceOfferingName(): string {
     return this.currentOfferingName;
   }
-  
+
   @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
@@ -1049,7 +2284,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     if (this.initialized) {
       return;
     }
-    
+
     const sessionRestored = retrieveSession(ATAT_DESCRIPTION_OF_WORK_KEY);
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
@@ -1087,7 +2322,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     try {
       const serviceOfferingGroups = await api.systemChoices
         .getChoices(ServiceOfferingTableName, "service_offering_group");
-      this.setServiceOfferingGroups(serviceOfferingGroups);  
+      this.setServiceOfferingGroups(serviceOfferingGroups);
     } catch (error) {
       throw new Error(`error loading Service Offering Groups ${error}`);
     }
@@ -1095,14 +2330,14 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeClassificationInstances(classificationInstances:
-    string[]): Promise<void>{
+                                                 string[]): Promise<void>{
 
-    
-  
+
+
     try {
 
       const calls:Promise<void>[] = [];
-     
+
       classificationInstances.forEach(instance=> {
 
         if(instance.length> 0){
@@ -1112,23 +2347,23 @@ export class DescriptionOfWorkStore extends VuexModule {
       await Promise.all(calls);
     } catch (error) {
       //do nothing here we'll delete optimistically
-    } 
+    }
   }
 
   @Action({rawError: true})
   public async removeUserSelectedService(service: SelectedServiceOfferingDTO): Promise<void>{
     try {
-      
+
 
       await api.selectedServiceOfferingTable.remove(service.sys_id || "");
-     
+
       const classificationInstances = service.classification_instances.split(',');
 
       if(classificationInstances && classificationInstances.length)
       {
         await this.removeClassificationInstances(classificationInstances);
       }
-  
+
     } catch (error) {
       //do nothing here we'll delete optimistically
     }
@@ -1136,7 +2371,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeUserSelectedServices(requiredServices: SelectedServiceOfferingDTO[])
- : Promise<void>{
+      : Promise<void>{
     try {
 
       const calls = requiredServices.reduce<Promise<void>[]>((previous, current)=>  {
@@ -1149,172 +2384,10 @@ export class DescriptionOfWorkStore extends VuexModule {
 
       }, []);
       await Promise.all(calls);
-       
+
     } catch (error) {
       //to nothing here we're deleting stuff optimistically
     }
-  }
-
-  @Action({rawError: true})
-  public async saveClassificationInstance(data: 
-    ClassificationInstanceProxy):Promise<ClassificationInstanceProxy>{
-    const sysId = data.classificationInstance.sys_id;
-    const { classification_level, need_for_entire_task_order_duration, 
-      selected_periods, usage_description, } = data.classificationInstance;
-    const saveClassificationInstance = (sysId && sysId.length > 0) ? 
-      api.classificationInstanceTable.update(sysId, {
-        classification_level,
-        need_for_entire_task_order_duration,
-        selected_periods,
-        usage_description
-      }) : 
-      api.classificationInstanceTable.create({
-        classification_level,
-        need_for_entire_task_order_duration,
-        selected_periods,
-        usage_description
-      });
-    const savedClassificationInstance =  await saveClassificationInstance;
-    data.classificationInstance = savedClassificationInstance;
-   
-    return data;
-  }
-
-  @Action({rawError: true})
-  public async saveclassificationInstances(data: ClassificationInstanceProxy[]):
-   Promise<ClassificationInstanceProxy[]>{
- 
-    try {
-       
-      //create a save call for each classification instance
-      const calls = data.map(instance=> this.saveClassificationInstance(instance));
-      const savedInstances = await Promise.all(calls);
-      return savedInstances;
-       
-    } catch (error) {
-      throw new Error(`error saving classification instances ${error}`);
-       
-    }
-    
-  }
-
-
-  @Action({rawError: true})
-  public async saveUserService(serviceProxy: ServiceOfferingProxy): Promise<ServiceOfferingProxy>{
-
-    try {
-      let savedClassificationInstances: ClassificationInstanceProxy[] = [];
-
-      //first save classification instances
-      if(serviceProxy.classificationInstances.length)
-      {
-        savedClassificationInstances = 
-      await this.saveclassificationInstances(serviceProxy.classificationInstances);
-      }
-      
-      //save service instance
-      serviceProxy.serviceOffering.classification_instances = 
-      savedClassificationInstances
-        .map(instance=> instance.classificationInstance.sys_id || "").join(',') || "";
-
-      const apiTable = api.selectedServiceOfferingTable;
-
-      const saveService = serviceProxy.serviceOffering.sys_id ? 
-        apiTable.update(serviceProxy.serviceOffering.sys_id || "", serviceProxy.serviceOffering)
-        : apiTable.create(serviceProxy.serviceOffering);
-      
-      const savedService = await saveService;
-      
-      serviceProxy.classificationInstances = savedClassificationInstances;
-      serviceProxy.serviceOffering = savedService;
-     
-      return serviceProxy;
-
-    } catch (error) {
-      
-      throw new Error( `error occurred while saving service proxy`)
-    }
-
-  }
-
-  @Action({rawError: true})
-  public async saveUserServices(serviceProxies: ServiceOfferingProxy[]): Promise<void>{
-
-    try {
-      const calls = serviceProxies.map(proxy=> this.saveUserService(proxy));
-      const savedProxies = await Promise.all(calls);
-      
-      //update dow object with saved ids
-      this.updateDOWObjectWithSavedIds(savedProxies);
-      const savedServices = savedProxies.map(proxy=> proxy.serviceOffering);
-      this.setUserSelectedServices(savedServices);
-      
-    } catch (error) {
-      console.error(error);
-      throw new Error(`error occurred saving services ${error}`);
-    }
-  }
-
-  //synchronizes back end with DOW
-  @Action({rawError: true})
-  public async saveUserSelectedServices(): Promise<void>{
-    try {
-      const requiredServices = this.userSelectedServiceOfferings;
-      const dowOfferingGroups = this.DOWObject;
-
-      //grab all of the selected services in the dow object
-      //build a list of Service Proxy items
-
-      //grab all of the selected services in the dow object
-      const serviceOfferingProxies: ServiceOfferingProxy[] = [];
-
-      dowOfferingGroups.forEach((group, groupIndex)=> {
-        group.serviceOfferings.forEach((offering, offeringIndex)=> {
-          serviceOfferingProxies.push(
-            mapDOWServiceOfferingToServiceProxy(offering, groupIndex, offeringIndex));
-        });
-      });
-
-      const unsavedServices = serviceOfferingProxies
-        .filter(proxy=>(proxy.serviceOffering.sys_id === undefined || 
-        proxy.serviceOffering.sys_id.length === 0));
-
-      const savedServices = serviceOfferingProxies
-        .filter(proxy=>proxy.serviceOffering.sys_id?.length);
-
-      const servicesToRemove: SelectedServiceOfferingDTO[] = [];
-
-      if(requiredServices.length)
-      {
-      //get services to delete - delete all of the service offerings
-      //that are no longer in the dow object
-        requiredServices.forEach(service=> {
-
-          const inSaved = savedServices
-            .find(saved=> saved.serviceOffering.sys_id === service.sys_id);
-          if(!inSaved){
-            servicesToRemove.push(service);
-          }
-        });
-   
-        if(servicesToRemove.length){
-          await this.removeUserSelectedServices(servicesToRemove);
-        }
-      }
-
-      //get all of the services that haven't been removed for updating
-      const servicesToUpdate = differenceWith<ServiceOfferingProxy, SelectedServiceOfferingDTO>
-      (savedServices, servicesToRemove, ({serviceOffering}, selected)=> 
-        serviceOffering.service_offering === selected.service_offering);
-
-      const servicesTosave: ServiceOfferingProxy[] = [...servicesToUpdate, ...unsavedServices];
-      await this.saveUserServices(servicesTosave);
-     
-    } catch (error) {
-      console.error(error);
-      throw new Error(`error persisting services ${error}`);
-    }
-    
   }
 
   @Action({rawError: true})
@@ -1347,6 +2420,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.otherOfferingInstancesTouched = {};
     this.confirmOtherOfferingDelete = false;
     this.confirmServiceOfferingDelete = false;
+    this.DOWHasArchitecturalDesignNeeds = null;
+    this.DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;
   }
 }
 

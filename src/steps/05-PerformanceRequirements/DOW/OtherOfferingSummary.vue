@@ -4,11 +4,12 @@
       <v-row>
         <v-col>
           <h1 class="page-header mb-3">
-            Your {{ serviceDescription }} requirements
+            Your {{ serviceGroupVerbiageInfo.headingSummary }}
           </h1>
           <p>
-            If you need more {{ requirementOrInstance }}s, add them below. You can 
-            also edit or delete any info from the {{ requirementOrInstance }}s that 
+            If you need more {{ serviceGroupVerbiageInfo.typeForText }}s, add them below. 
+            You can also edit or delete any info from the 
+            {{ serviceGroupVerbiageInfo.typeForText }}s that 
             you have already entered. When you’re done, click "Continue" and we will 
             move on to your 
             <span v-if="nextOfferingGroupStr && !returnToDOWSummary">
@@ -36,7 +37,9 @@
           >
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.typeOrTitle="{ item }">
-              <span v-html="item.typeOrTitle"></span>
+              <div v-html="item.typeOrTitle" 
+                :class="{'text-clamp--1-line' : hasStatementColumn }"
+              ></div>
             </template>
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
@@ -75,7 +78,7 @@
             />
             Add 
             <span v-if="tableData.length">&nbsp;another&nbsp;</span> 
-            {{ requirementOrInstance }}
+            {{ serviceGroupVerbiageInfo.typeForText }}
           </v-btn>  
         </v-col>
       </v-row>
@@ -86,16 +89,16 @@
       :showDialog="showDeleteInstanceDialog"
       :title="deleteInstanceModalTitle"
       no-click-animation
-      :okText="'Delete ' + requirementOrInstance"
+      :okText="'Delete ' + serviceGroupVerbiageInfo.typeForText"
       width="450"
       @ok="deleteInstance"
       @cancelClicked="showDeleteInstanceDialog = false"
     >
       <template #content>
         <p class="body">
-          This {{ requirementOrInstance }} will be removed from your {{ serviceDescription }}
-          requirements. Any details about this {{ requirementOrInstance }} 
-          will not be saved.
+          This {{ serviceGroupVerbiageInfo.typeForText }} will be removed from your 
+          {{ serviceGroupVerbiageInfo.offeringName }} requirements. Any details about this 
+          {{ serviceGroupVerbiageInfo.typeForText }} will not be saved.
         </p>
       </template>
     </ATATDialog>
@@ -103,18 +106,19 @@
     <ATATDialog
       id="DeleteAllInstancesModal"
       :showDialog="showDeleteOfferingDialog"
-      :title="'Delete all ' + serviceDescription + ' ' + requirementOrInstance + 's?'"
+      :title="'Delete all ' + serviceGroupVerbiageInfo.offeringName + 
+        ' ' + serviceGroupVerbiageInfo.typeForText + 's?'"
       no-click-animation
-      :okText="'Delete ' + serviceDescription"
+      :okText="'Delete ' + serviceGroupVerbiageInfo.offeringName"
       width="450"
       @ok="deleteOffering"
       @cancelClicked="cancelDeleteOffering"
     >
       <template #content>
         <p class="body">
-          This action will remove the "{{ serviceDescription }}" category from your 
-          performance requirements. Any details about your 
-          {{ requirementOrInstance }}<span v-if="tableData.length > 1">s</span> 
+          This action will remove the “{{ serviceGroupVerbiageInfo.offeringName }}” 
+          category from your performance requirements. Any details about your 
+          {{ serviceGroupVerbiageInfo.typeForText }}<span v-if="tableData.length > 1">s</span> 
           will not be saved.
         </p>
       </template>
@@ -124,18 +128,21 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-import DescriptionOfWork from "@/store/descriptionOfWork";
+import DescriptionOfWork, 
+{ instanceEnvTypeOptions, trainingTypeOptions } from "@/store/descriptionOfWork";
+
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 import { OtherServiceOfferingData, OtherServiceSummaryTableData } from "../../../../types/Global";
-import { buildClassificationLabel } from "@/helpers";
+import { buildClassificationLabel, toTitleCase } from "@/helpers";
 import _ from 'lodash';
+import { ReferenceColumn } from "@/api/models";
 
 @Component({
   components: {
@@ -144,12 +151,15 @@ import _ from 'lodash';
   }
 })
 
-export default class OtherOfferingSummary extends Vue {
+export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public isCompute = false;
-  public isGeneral = false;
+  public isGeneralXaaS = false;
   public isDatabase = false;
-  public requirementOrInstance = "";
-  public serviceDescription = "";
+  public isStorage = false;
+  public isTraining = false;
+  public hasOnSiteColumn = false;
+  public hasStatementColumn = false;
+
   public deleteInstanceModalTitle = "";
 
   public offeringInstances: OtherServiceOfferingData[] = [];
@@ -163,6 +173,8 @@ export default class OtherOfferingSummary extends Vue {
   public showDeleteOfferingDialog = false;
   public missingEnvironmentType = false;
   public returnToDOWSummary = false;
+
+  public serviceGroupVerbiageInfo: Record<string, string> = {};
 
   get confirmOfferingDelete(): boolean {
     return DescriptionOfWork.confirmOtherOfferingDeleteVal;
@@ -185,7 +197,7 @@ export default class OtherOfferingSummary extends Vue {
     this.$router.push({
       name: "pathResolver",
       params: {
-        resolver: "OfferGroupOfferingsPathResolver",
+        resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
     }).catch(() => console.log("avoiding redundant navigation"));
@@ -203,9 +215,9 @@ export default class OtherOfferingSummary extends Vue {
   }
   public confirmDeleteInstance(item: OtherServiceSummaryTableData): void {
     this.instanceNumberToDelete = item.instanceNumber;
-    this.deleteInstanceModalTitle = this.isGeneral
-      ? "Delete “" + item.requirementTitle +"?”"
-      : "Delete " + this.requirementOrInstance + ' #' + this.instanceNumberToDelete + '?'
+    this.deleteInstanceModalTitle = "Delete " 
+      + toTitleCase(this.serviceGroupVerbiageInfo.typeForText) 
+      + ' #' + this.instanceNumberToDelete + '?';
     this.showDeleteInstanceDialog = true;
   }
 
@@ -229,123 +241,176 @@ export default class OtherOfferingSummary extends Vue {
   public async buildTableData(): Promise<void> {
     this.tableData = [];
     const allPeriods = await Periods.getAllPeriods();
+    const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
 
     this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
     this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
-      let hasOtherRegion = false;
-      let hasOtherPerformanceTier = false;
       let isValid = true;
+      let typeOrTitle = "";
+      let classificationLevel = "";
+      let duration = "";
+      let trainingType = "";
+      let personnelOnsiteAccess = "";
+      let performance = "";
 
-      if (this.isCompute) {
+      // -----------------------------------------------------------------
+      // COMPUTE AND DATABASE
+      // -----------------------------------------------------------------
+      if (this.isCompute || this.isDatabase) {
+        const typeTitle = this.isCompute ? "Type" : "Database Type";
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
-          { text: "Type", value: "typeOrTitle" },
-          { text: "Location", value: "location" },
+          { text: typeTitle, value: "typeOrTitle" },
           { text: "Classification", value: "classification" },
           { text: "Quantity", value: "qty" },
           { text: "vCPU", value: "vCPU" },
           { text: "Memory", value: "memory" },
-          { text: "Storage", value: "storage" },
+          { text: "Storage", value: "storageAmount" },
           { text: "Performance", value: "performance" },
           { text: "", value: "actions", width: "75" },
         ];
-        const otherRegionIndex = instanceClone.deployedRegions.indexOf("OtherRegion");
-        if (otherRegionIndex > -1) {
-          hasOtherRegion = true;
-          instanceClone.deployedRegions.splice(otherRegionIndex, 1);
-          if (instanceClone.deployedRegionsOther) {
-            instanceClone.deployedRegions.push(instanceClone.deployedRegionsOther);
-          }
-        }
-        const deployedRegions = instanceClone.deployedRegions.join(", ");
-
-        hasOtherPerformanceTier = instanceClone.performanceTier.indexOf("Other") > -1;
-        const performanceTier = hasOtherPerformanceTier
-          ? instanceClone.performanceTierOther
-          : instanceClone.performanceTier;
-
-        const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
-        let classificationLevel = "";
-        if (classificationLevels.length > 1) {
-          const classificationObj = classificationLevels.find(
-            obj => obj.sys_id === instanceClone.classificationLevel
-          );
-          if (classificationObj) {
-            classificationLevel = buildClassificationLabel(classificationObj, "short");
-          }
-        } else {
-          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
-        }
 
         if (!instanceClone.environmentType) {
-          instanceClone.environmentType = `<div class="text-error font-weight-500">Unknown</div>`;
+          typeOrTitle = `<div class="text-error font-weight-500">Unknown</div>`;
         }
-        isValid = await this.validateInstance(
-          instanceClone, hasOtherRegion, hasOtherPerformanceTier
-        );
-        if (!isValid) {
-          instanceClone.environmentType += this.rowErrorMessage
-        }
+  
 
-        instanceData = {
-          instanceNumber: instanceClone.instanceNumber,
-          typeOrTitle: instanceClone.environmentType,
-          location: deployedRegions,
-          classification: classificationLevel,
-          qty: instanceClone.numberOfInstancesNeeded,
-          vCPU: instanceClone.numberOfVCPUs,
-          memory: instanceClone.memory ? `${instanceClone.memory} GB` : "",
-          storage: instanceClone.storageAmount ? `${instanceClone.storageAmount} GB` : "" ,
-          performance: performanceTier,
-        };
-      } else if (this.isGeneral) {
+        if (this.isCompute) {
+          const selectedEnv = instanceEnvTypeOptions.find(
+            obj => obj.value === instanceClone.environmentType
+          );
+          if (selectedEnv) {
+            typeOrTitle = selectedEnv.label;
+          }
+          if (instanceClone.performanceTier) {
+            performance = toTitleCase(instanceClone.performanceTier || "");
+            performance += performance === "General" ? " purpose" : " optimized";
+          }
+
+        } else {
+          typeOrTitle = toTitleCase(instanceClone.databaseType || "");
+          performance = instanceClone.networkPerformance || "";
+        }
+      // -----------------------------------------------------------------
+      // STORAGE
+      // -----------------------------------------------------------------
+      } else if (this.isStorage) {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
-          { text: "Requirement title", value: "typeOrTitle", width: "50%" },
+          { text: "Classification", value: "classification" },
+          { text: "Storage Type", value: "storageType", width: "50%" },
+          { text: "Storage Size", value: "storageAmount", width: "50%" },
+          { text: "", value: "actions", width: "75" },
+        ];
+      // -----------------------------------------------------------------
+      // TRAINING
+      // -----------------------------------------------------------------
+      } else if (this.isTraining) {
+        this.tableHeaders = [    
+          { text: "", value: "instanceNumber", width: "50" },
+          { text: "Title", value: "typeOrTitle", width: "30%" },
+          { text: "Classification", value: "classification", width: "20%" },
+          { text: "Training format", value: "trainingType", width: "30%" },
+          { text: "Duration", value: "duration", width: "20%"},
+          { text: "", value: "actions", width: "75" },
+        ];
+        typeOrTitle = instanceClone.requirementTitle || "";
+
+        const selectedTrainingType = trainingTypeOptions.find(
+          obj => obj.value === instanceClone.trainingType
+        );
+        if (selectedTrainingType) {
+          trainingType = selectedTrainingType.label;
+        }
+      // -----------------------------------------------------------------
+      // GENERAL XAAS
+      // -----------------------------------------------------------------
+      } else {
+        this.tableHeaders = [    
+          { text: "", value: "instanceNumber", width: "50" },
+          { text: "Statement of objectives", value: "typeOrTitle", width: "50%" },
+          { text: "Classification", value: "classification" },
+          { text: "On-site access", value: "personnelOnsiteAccess" },          
           { text: "Duration", value: "duration", width: "50%" },
           { text: "", value: "actions", width: "75" },
         ];
 
-        let duration = "";
-        if (
-          instanceClone.entireDuration === "NO" 
-          && instanceClone.periodsNeeded.length 
-          && allPeriods?.length
-        ) {
-          const periodsNeeded: string[] = [];
-          instanceClone.periodsNeeded.forEach((sysId) => {
-            const periodObj = allPeriods.find((obj) => obj.sys_id === sysId);
-            if (periodObj) {
-              let periodText = periodObj?.period_type.indexOf("BASE") > -1 
-                ? "Base period" : "Option period " + (parseInt(periodObj.option_order) - 1);
-              periodsNeeded.push(periodText);
-            }
-          });
-          duration = periodsNeeded.join(", ");
-        } else if (instanceClone.entireDuration === "YES") {
-          duration = "Entire task order";
+        if (!this.hasOnSiteColumn) {
+          this.tableHeaders = this.tableHeaders.filter(
+            obj => obj.value !== "personnelOnsiteAccess"
+          );
+        } else {
+          personnelOnsiteAccess = instanceClone.personnelOnsiteAccess === "YES"
+            ? "Required" : "Not required";
         }
 
-        let typeOrTitle = !instanceClone.requirementTitle 
-          ? `<div class="text-error font-weight-500">Untitled</div>`
-          : instanceClone.requirementTitle;
-
-        isValid = await this.validateInstance(instanceClone);
-        if (!isValid) {
-          typeOrTitle += this.rowErrorMessage;
-        }
-        
-        instanceClone.requirementTitle = instanceClone.requirementTitle || "Untitled";
-
-        instanceData = {
-          instanceNumber: instanceClone.instanceNumber,
-          typeOrTitle: typeOrTitle,
-          requirementTitle: instanceClone.requirementTitle,
-          duration: duration,
-        }
+        typeOrTitle = !instanceClone.descriptionOfNeed 
+          ? `<div class="text-error font-weight-500">Unknown</div>`
+          : instanceClone.descriptionOfNeed;
       }
+
+      isValid = await this.validateInstance(instanceClone);
+      if (!isValid) {
+        typeOrTitle += this.rowErrorMessage
+      }
+
+      if (
+        instanceClone.entireDuration === "NO" 
+        && instanceClone.periodsNeeded.length 
+        && allPeriods?.length
+      ) {
+        const periodsNeeded: string[] = [];
+        instanceClone.periodsNeeded.forEach((sysId) => {
+          const periodObj = allPeriods.find((obj) => obj.sys_id === sysId);
+          if (periodObj) {
+            let periodText = periodObj?.period_type.indexOf("BASE") > -1 
+              ? "Base period" : "Option period " + (parseInt(periodObj.option_order) - 1);
+            periodsNeeded.push(periodText);
+          }
+        });
+        duration = periodsNeeded.join(", ");
+      } else if (instanceClone.entireDuration === "YES") {
+        duration = "Entire task order";
+      }
+
+      if (classificationLevels.length > 1) {
+        const classificationObj = classificationLevels.find(obj => {
+          const classificationLevelSysId = typeof obj.classification_level === "object"
+            ? (obj.classification_level as ReferenceColumn).value  
+            : obj.classification_level;
+          return classificationLevelSysId === instanceClone.classificationLevel
+        });
+
+        if (classificationObj) {
+          classificationLevel = buildClassificationLabel(classificationObj, "short");
+        }
+      } else {
+        this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
+      }
+      
+      const storageAmount = instanceClone.storageAmount
+        ? this.isStorage
+          ? `${instanceClone.storageAmount} ${instanceClone.storageUnit}` 
+          : `${toTitleCase(instanceClone.storageType || "")}: 
+            ${instanceClone.storageAmount} ${instanceClone.storageUnit}`
+        : ""     
+
+      instanceData = {
+        instanceNumber: instanceClone.instanceNumber,
+        typeOrTitle,
+        classification: classificationLevel,
+        duration: duration,
+        qty: instanceClone.numberOfInstances,
+        vCPU: instanceClone.numberOfVCPUs,
+        memory: instanceClone.memoryAmount ? `${instanceClone.memoryAmount} GB` : "",
+        storageType: toTitleCase(instanceClone.storageType || ""),        
+        storageAmount,
+        performance,
+        personnelOnsiteAccess,
+        trainingType,
+      };
 
       this.tableData.push(instanceData);
     })
@@ -353,11 +418,7 @@ export default class OtherOfferingSummary extends Vue {
     this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
   }
 
-  public async validateInstance(
-    instance: OtherServiceOfferingData, 
-    hasOtherRegion?: boolean,
-    hasOtherPerformanceTier?: boolean,
-  ): Promise<boolean> {
+  public async validateInstance(instance: OtherServiceOfferingData): Promise<boolean> {
     const instanceData: Record<string, any> = _.clone(instance);
     let isValid = true;
     let requiredFields: string[] = [];
@@ -367,24 +428,19 @@ export default class OtherOfferingSummary extends Vue {
         "environmentType",
         "classificationLevel",
         "entireDuration",
-        "memory",
+        "memoryAmount",
         "anticipatedNeedUsage",
-        "numberOfInstancesNeeded",
+        "numberOfInstances",
         "numberOfVCPUs",
+        "operatingSystem",
         "operatingSystemAndLicensing",
         "performanceTier",
         "storageAmount",
         "storageType",
       ];
 
-      if ((hasOtherPerformanceTier && instanceData.performanceTierOther === "")
-        || (hasOtherRegion && instanceData.deployedRegionsOther === "")
-      ) {
-        isValid = false;
-      }
-    } else if (this.isGeneral) {
+    } else if (this.isGeneralXaaS) {
       requiredFields = [
-        "requirementTitle",
         "classificationLevel",
         "anticipatedNeedUsage",
         "entireDuration",
@@ -405,34 +461,18 @@ export default class OtherOfferingSummary extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.returnToDOWSummary = await DescriptionOfWork.getReturnToDOWSummary();
+    this.serviceGroupVerbiageInfo = await DescriptionOfWork.getServiceGroupVerbiageInfo();
 
     const currentGroupId = await DescriptionOfWork.getCurrentOfferingGroupId();
     const offering = currentGroupId.toLowerCase();
     this.isCompute = offering === "compute";
-    this.isGeneral = offering === "general_xaas";
+    this.isGeneralXaaS = offering === "general_xaas";
     this.isDatabase = offering === "database";
-
-    this.requirementOrInstance = this.isGeneral ? "requirement" : "instance"; 
-    switch (offering) {
-    case "compute": 
-      this.isCompute = true;
-      this.requirementOrInstance = "instance";
-      this.serviceDescription = "Compute";
-      break;
-    case "general_xaas":
-      this.isGeneral = true;
-      this.requirementOrInstance = "requirement";
-      this.serviceDescription = "general IaaS, PaaS, and SaaS";
-      break;
-    case "database":
-      this.isDatabase = true;
-      this.requirementOrInstance = "instance";
-      this.serviceDescription = "database service";
-      break;
-    default:
-      this.requirementOrInstance = "instance";
-      this.serviceDescription = "service"
-    }
+    this.isStorage = offering === "storage";
+    this.isTraining = offering === "training";
+    this.hasOnSiteColumn 
+      = ["documentation_support", "help_desk_services", "advisory_assistance"].includes(offering);
+    this.hasStatementColumn = this.hasOnSiteColumn || offering.indexOf("general") > -1;
 
     await this.buildTableData();
 
@@ -457,6 +497,11 @@ export default class OtherOfferingSummary extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   };
+
+  protected async saveOnLeave(): Promise<boolean> {
+    await DescriptionOfWork.setNeedsSecurityRequirements();
+    return true;
+  }
 
 }
 

@@ -43,10 +43,9 @@
           </div>
         </v-col>
         
-        <v-col v-else-if="isCompute || isGeneral">
+        <v-col v-else-if="!isServiceOfferingList">
           <OtherOfferings 
-            :isCompute="isCompute"
-            :isGeneral="isGeneral"
+            :otherOfferingList="otherOfferingList"
             :serviceOfferingData.sync="otherOfferingData" 
             :isPeriodsDataMissing="isPeriodsDataMissing"
             :isClassificationDataMissing="isClassificationDataMissing"
@@ -81,6 +80,8 @@ import classificationRequirements from "@/store/classificationRequirements";
 
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import DeleteOfferingModal from "./DeleteOfferingModal.vue";
+
+import _ from "lodash";
 
 import { 
   Checkbox, 
@@ -117,7 +118,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public deleteMode = "item";
 
   @Watch("selectedOptions")
-  public selectedOptionsChange(newVal: string[]): void {
+  public async selectedOptionsChange(newVal: string[]): Promise<void> {
     if(this.previousSelectedOptions.length > this.selectedOptions.length){
       const difference = this.previousSelectedOptions.filter(
         tempVal => this.selectedOptions.indexOf(tempVal) === -1
@@ -125,10 +126,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       const deselectedItem = this.checkboxItems.find(el => el.value === difference[0]);
       this.deselectedLabel = deselectedItem?.label || "";
       this.deleteMode = "item";
-      // todo: need to check if service offering has saved data or if is first
-      // time checking the offering checkbox. If first time (i.e., no saved data
-      // for the offering), then no need to show the delete confirmation modal
-      this.openModal();
+
+      const hasInstances = 
+        await DescriptionOfWork.serviceOfferingHasInstances(this.deselectedLabel);
+      if (hasInstances) {
+        this.openModal();
+      }
     }
     
     this.otherSelected = newVal.indexOf(this.otherValue) > -1 ? "true" : "false";
@@ -169,16 +172,17 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       this.$router.push({
         name: "pathResolver",
         params: {
-          resolver: "OfferGroupOfferingsPathResolver",
+          resolver: "ServiceOfferingsPathResolver",
           direction: "next"
         },
       }).catch(() => console.log("avoiding redundant navigation"));
     } else {
+      await DescriptionOfWork.removeServiceOffering(this.deselectedLabel);
       this.showDialog = false;
       this.deleteMode = "item";
       this.deselectedLabel = "";
     }
-    
+       
   }
 
   public selectedOptions: string[] = [];
@@ -186,29 +190,22 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public serviceOfferings: DOWServiceOffering[] = [];
   public serviceGroupOnLoad = "";
 
-  public isCompute = false;
-  public isGeneral = false;
+  public otherOfferingList = [
+    "compute",
+    "database",
+    "storage",
+    "general_xaas",
+    "advisory_assistance",
+    "help_desk_services",
+    "training",
+    "documentation_support",
+    "general_cloud_support",
+    "portability_plan"
+  ];
+
   public isServiceOfferingList = true;
 
-  public otherOfferingData: OtherServiceOfferingData = {
-    instanceNumber: 1,
-    environmentType: "",
-    classificationLevel: "",
-    deployedRegions: [],
-    deployedRegionsOther: "",
-    descriptionOfNeed: "",
-    entireDuration: "",
-    periodsNeeded: [],
-    operatingSystemAndLicensing: "",
-    numberOfVCPUs: "",
-    memory: "",
-    storageType: "",
-    storageAmount: "",
-    performanceTier: "",
-    performanceTierOther: "",
-    numberOfInstancesNeeded: "1",
-    requirementTitle: "",
-  }
+  public otherOfferingData = _.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance);
 
   public showSubtleAlert = false;
   public isPeriodsDataMissing = false;
@@ -216,11 +213,11 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
-    // only Compute and General XaaS categories differ in requirements
-    this.isCompute = this.serviceGroupOnLoad.toLowerCase() === "compute";
-    this.isGeneral = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
+
     // all other categories have a similar workflow with checkbox list of service offerings
-    this.isServiceOfferingList = !this.isCompute && !this.isGeneral;
+    this.isServiceOfferingList = !this.otherOfferingList.includes(
+      this.serviceGroupOnLoad.toLowerCase()
+    );
 
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
@@ -253,7 +250,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       this.selectedOptions.push(...validSelections);
 
       this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
-    } else if (this.isCompute || this.isGeneral) {
+    } else {
       const offeringIndex = DescriptionOfWork.DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() 
           === DescriptionOfWork.currentGroupId.toLowerCase()
@@ -304,16 +301,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             await DescriptionOfWork.setSelectedOfferings(
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
-          } else if (this.isCompute || this.isGeneral) {
+          } else {
             await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
-        }
-
-        //save to backend
-        if (this.isServiceOfferingList) {
-          await DescriptionOfWork.saveUserSelectedServices();
-        } else if (this.isCompute) {
-          // save computeData to backend in ticket AT-7767
         }
       }
     } catch (error) {

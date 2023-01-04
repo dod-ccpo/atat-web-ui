@@ -16,6 +16,7 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import ArrowBack from "@/components/icons/ArrowBack.vue";
 import Aws from "@/components/icons/Aws.vue";
 import Azure from "@/components/icons/Azure.vue";
+import BugReport from "@/components/icons/BugReport.vue";
 import Bullet from "@/components/icons/Bullet.vue";
 import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
@@ -23,6 +24,7 @@ import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
 import CommentBubble from "@/components/icons/CommentBubble.vue";
 import ContactSupport from "@/components/icons/ContactSupport.vue";
+import ContentCopy from "@/components/icons/ContentCopy.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
 import DisaLogo from "@/components/icons/DisaLogo.vue";
@@ -40,6 +42,7 @@ import Gcp from "@/components/icons/Gcp.vue";
 import InfoOutline from "@/components/icons/InfoOutline.vue";
 import Launch from "@/components/icons/Launch.vue";
 import ManageAccount from "@/components/icons/ManageAccount.vue";
+import MenuBook from "@/components/icons/MenuBook.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import OptionPending from "@/components/icons/OptionPending.vue";
 import Oracle from "@/components/icons/Oracle.vue";
@@ -66,6 +69,7 @@ import UploadFile from "@/components/icons/UploadFile.vue";
 import Warning from "@/components/icons/Warning.vue";
 import WarningAmber from "@/components/icons/WarningAmber.vue";
 import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vue";
+import Place from "@/components/icons/Place.vue";
 
 
 @Component({
@@ -73,6 +77,7 @@ import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vu
     ArrowBack,
     Aws,
     Azure,
+    BugReport,
     Bullet,
     Calendar,
     ChevronDown,
@@ -80,6 +85,7 @@ import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vu
     Close,
     CommentBubble,
     ContactSupport,
+    ContentCopy,
     ControlPoint,
     Currency,
     DisaLogo,
@@ -97,6 +103,7 @@ import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vu
     InfoOutline,
     Launch,
     ManageAccount,
+    MenuBook,
     MonetizationOn,
     OptionPending,
     Oracle,
@@ -123,6 +130,7 @@ import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vu
     Warning,
     WarningAmber,
     ReadyToGeneratePackage,
+    Place
   }
 })
 

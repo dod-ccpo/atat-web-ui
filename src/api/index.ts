@@ -44,6 +44,20 @@ import {EvalPlanAssessmentAreaApi} from "@/api/evalPlanAssessmentArea";
 import {EvalPlanDifferentiatorApi} from "@/api/evalPlanDifferentiator";
 import {SelectedClassificationLevelApi} from "@/api/selectedClassificationLevel";
 import { SysPropertiesApi } from "./sys_properties";
+import { ComputeEnvironmentInstanceAPI } from "@/api/computeEnvironmentInstance";
+import { DatabaseEnvironmentInstanceAPI } from "@/api/databaseEnvironmentInstance";
+import { StorageEnvironmentInstanceAPI } from "@/api/storageEnvironmentInstance";
+import { CloudSupportEnvironmentInstanceAPI } from "@/api/cloudSupportEnvironmentInstance";
+import { ArchitecturalDesignRequirementAPI } from "@/api/architecturalDesignRequirement";
+import { ClassifiedInformationTypeAPI } from "@/api/classifiedInformationType";
+import { XaaSEnvironmentInstanceAPI } from "@/api/xaasEnvironmentInstance";
+import { CrossDomainSolutionAPI } from "@/api/crossDomainSolution";
+import { GInvoicingApi } from "@/api/gInvoicing";
+import { TrainingEstimateAPI } from "@/api/trainingEstimate";
+import {IgceEstimateApi} from "@/api/igceEstimate";
+import { travelRequirementApi } from "./travelRequirement";
+import { RegionsAPI } from "./regions";
+
 
 export const api = {
 
@@ -74,6 +88,7 @@ export const api = {
   periodOfPerformanceTable: new PeriodOfPerformanceApi(),
   contractTypeTable: new ContractTypeApi(),
   requirementsCostEstimateTable: new RequirementsCostEstimateApi(),
+  igceEstimateTable: new IgceEstimateApi(),
   selectedServiceOfferingTable: new SelectedServiceOfferingApi(),
   statesTable: new StatesApi(),
   countriesTable: new CountriesApi(),
@@ -82,6 +97,7 @@ export const api = {
   clinTable: new ClinAPi(),
   clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),
+  gInvoicingApi: new GInvoicingApi(),
   currentEnvironmentTable: new CurrentEnvironmentApi(),
   currentEnvironmentInstanceTable: new CurrentEnvironmentInstanceAPI(),
   aggregate: new AggregateApi(),
@@ -93,7 +109,18 @@ export const api = {
   evalPlanAssessmentAreaTable: new EvalPlanAssessmentAreaApi(),
   evalPlanDifferentiatorTable: new EvalPlanDifferentiatorApi(),
   selectedClassificationLevelTable: new SelectedClassificationLevelApi(),
-  sysProperties: new SysPropertiesApi()
+  sysProperties: new SysPropertiesApi(),
+  computeEnvironmentInstanceTable: new ComputeEnvironmentInstanceAPI(),
+  databaseEnvironmentInstanceTable: new DatabaseEnvironmentInstanceAPI(),
+  storageEnvironmentInstanceTable: new StorageEnvironmentInstanceAPI(),
+  cloudSupportEnvironmentInstanceTable: new CloudSupportEnvironmentInstanceAPI(),
+  architecturalDesignRequirementTable: new ArchitecturalDesignRequirementAPI(),
+  classifiedInformationTypeTable: new ClassifiedInformationTypeAPI(),
+  xaaSEnvironmentInstanceTable: new XaaSEnvironmentInstanceAPI(),
+  crossDomainSolutionTable: new CrossDomainSolutionAPI(),
+  travelRequirementTable: new travelRequirementApi(),
+  trainingEstimateTable: new TrainingEstimateAPI(),
+  regionsTable: new RegionsAPI()
 }
 
 export default {

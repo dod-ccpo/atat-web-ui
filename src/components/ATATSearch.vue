@@ -107,8 +107,7 @@
     >
       <template v-slot:content>
         <p class="mb-0">
-          Good news! We found your order within {{ searchType }} and synced your funding
-          details with this acquisition.          
+          Good news! We found your order within {{ searchType }}.          
         </p>
       </template>
     </ATATAlert>
@@ -161,7 +160,7 @@ export default class ATATSearch extends Vue {
   @Prop({ default: () => [] }) private rules?: Array<unknown>;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
-  @Prop({ default: "G-Invoicing" }) private searchType?: string;
+  @Prop({ default: "" }) private searchType?: string;
   @Prop({ default: "" }) private buttonText?: string;
 
   @PropSync("value", { default: "" }) public _value!: string;
@@ -235,6 +234,29 @@ export default class ATATSearch extends Vue {
 
         this.showLoader = false;
       }
+    } else if (this.searchType === "G-Invoicing") {
+      try {
+
+        this.showLoader = true;
+        this.showSuccessAlert = false;
+        this.showErrorAlert = false;
+        this.showHelpText = false;
+
+        const gInvoicingResponse = await api.gInvoicingApi.search(this._value);
+        if(gInvoicingResponse.valid){
+          this.showSuccessAlert = true;
+        }
+        else{
+          this.showErrorAlert = true;
+        }
+
+      } catch (error) {
+        this.showErrorAlert = true;
+      }finally{
+
+        this.showLoader = false;
+      }
+
     }
 
     this.$emit("search");

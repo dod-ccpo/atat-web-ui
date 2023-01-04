@@ -14,6 +14,7 @@
             wrap up this section.
           </p>
 
+
           <div class="mt-4 _light-gray-card">
             <div class="d-flex">
               <div>
@@ -54,8 +55,9 @@
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.location="{ item }">
               <span
-                 v-html="item.location" 
+                 v-html="item.location"
                 :class="[{'text-error font-weight-500': !item.isValid }]">
+                {item}
               </span>
               <div v-if="!item.isValid" class="d-flex align-center nowrap">
                 <ATATSVGIcon 
@@ -176,6 +178,7 @@ export default class EnvironmentSummary extends Vue {
   public showDeleteInstanceDialog = false;
   public instanceNumberToDelete = 0;
   public classificationLevels: ClassificationLevelDTO[] = [];
+  public locationNames: Record<string, string> ={}
 
   public get environmentTypeText(): string {
     switch (this.envLocation) {
@@ -332,6 +335,14 @@ export default class EnvironmentSummary extends Vue {
     return isValid;
   }
 
+  public currEnvInstances: CurrentEnvironmentInstanceDTO[] = 
+    CurrentEnvironment.currEnvInstances;
+  
+  @Watch("currEnvInstances")
+  public async currEnvInstancesUpdated(): Promise<void> {
+    await this.buildTableData();
+  }
+
   public async buildTableData(): Promise<void> {
     setTimeout(async () => {
 
@@ -367,10 +378,13 @@ export default class EnvironmentSummary extends Vue {
         if (instance.instance_location === "ON_PREM") {
           location = "On-premise";
         } else {
-          let regions = instance.deployed_regions?.length 
-            ? instance.deployed_regions.join(", ")
+          let instances: string[] = []
+          instance.deployed_regions?.forEach((instanceId) => {
+            instances.push(this.locationNames[instanceId])
+          })
+          let regions = instances?.length
+            ? instances.join(", ")
             : "";
-
           regions = regions.replaceAll("CONUS", "CONUS ");
           location = this.envLocation === "HYBRID"
             ? regions.length
@@ -425,6 +439,9 @@ export default class EnvironmentSummary extends Vue {
       this.classificationsCloud = this.currEnvData.env_classifications_cloud;
       this.classificationsOnPrem = this.currEnvData.env_classifications_onprem;
     }
+    AcquisitionPackage.regions?.forEach(location => {
+      this.locationNames[location.sys_id] = location.name
+    })
     this.classificationLevels = await classificationRequirements.getAllClassificationLevels();
     await this.buildTableData();
   }

@@ -191,6 +191,14 @@ textarea {
  }
 }
 
+.v-expansion-panel-header{
+  &.no-hover{
+    &:hover{
+      background-color: transparent !important;
+    }
+  }
+}
+
 
 ._offering-instances.v-data-table, ._instances-table.v-data-table {
   > .v-data-table__wrapper > table > tbody {
@@ -213,11 +221,6 @@ textarea {
           font-weight: 500;
         }
       }
-    }
-  }
-  &._first-col-nowrap .v-data-table__wrapper > table > tbody > tr > td {
-    &:nth-of-type(2) {
-      white-space: nowrap;
     }
   }
 }
@@ -466,5 +469,10 @@ textarea {
 
     }
   }
+}
 
+._progress-bar {
+  &.v-progress-linear--rounded {
+    border-radius: 16px;
+  }
 }

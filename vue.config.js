@@ -38,8 +38,8 @@ module.exports = {
         },
       }
 
-      config.output.filename = 'js/[name]-[hash]-js'
-      config.output.chunkFilename = 'js/[name]-[chunkhash]-js'
+      config.output.filename = 'js/[name]-js'
+      config.output.chunkFilename = 'js/[name]-js'
 
     }
   },

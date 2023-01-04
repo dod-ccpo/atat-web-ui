@@ -1,0 +1,157 @@
+._price-estimates-accordion {
+  .v-expansion-panel-header {
+    background-color: $primary;
+    width: 100%;
+    border-bottom: none;
+    border-radius: 8px;
+    height:53px;
+    &--active {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    &:hover {
+      background-color: $primary-dark;
+    }
+
+    .h4 {
+      color: white !important;
+
+      &._item-count {
+        color: $primary-lighter !important;
+      }
+    }
+    .offering-number{
+      height: 22px !important;
+      padding: 0px 8px 2px 8px;
+      border-radius: 4px;
+      background-color:$primary-lighter !important;
+      color: $base-darkest;
+      font-weight: 700 !important;
+      font-size: 11px;
+      margin-left:16px;
+    }
+
+    .v-expansion-panel-header__icon {
+      left: 12px;
+      top: 16px;
+
+      .v-icon {
+        color: white !important;
+      }
+    }
+  }
+
+  .v-expansion-panel-content__wrap {
+    padding: 0;
+    margin:0;
+  }
+  .v-expansion-panel-content {
+    ._expansion-panel-content-header{
+      background-color:$base-lightest;
+      display: flex;
+      flex-direction: row;
+      justify-content:space-between;
+      align-items: center;
+      height:40px;
+      font-size: 13px;
+      font-weight: 700;
+      color: $base-dark;
+      .summary-text{
+        padding-left: 70px;
+      }
+      .estimate-price-text{
+        padding-right: 85px;
+      }
+    }
+    ._requirement-card{
+      border-top: 1px solid $base-lighter;
+      
+      padding: 0px;
+      ._requirement-head {
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        outline: 1px solid transparent;
+        width: 450px;
+        &:hover{
+          border-radius: 4px;
+          border: 1px solid $base-lighter;
+
+        }
+        &.v-input--is-focused{
+          border-radius: 4px;
+          border: 1px solid $primary;
+          outline: 1px solid $primary;
+        }
+        
+        .v-input__slot {
+          padding: 2px;
+          &::before {
+            display: none
+          }
+          &::after {
+            display: none
+          }
+          .v-text-field input {
+            padding: 0px;
+            font-size: 16px !important;
+          }
+        }
+      }
+      ._requirement-description {
+        font-size: 12px;
+        font-weight: 400;
+        color: $base-lighter;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        outline: 1px solid transparent;
+        width: 450px;
+        &:hover{
+          border-radius: 4px;
+          border: 1px solid $base-lighter;
+        }
+        &.v-input--is-focused{
+          border-radius: 4px;
+          border: 1px solid $primary;
+          outline: 1px solid $primary;
+        }
+        .v-input__slot {
+          padding: 2px;
+          &::before {
+            display: none
+          }
+          &::after {
+            display: none
+          }
+          .v-text-field__slot {
+            textarea {
+              font-size: 13px !important;
+              line-height: 16px !important;
+              font-weight: 400;
+              color: $base;
+              padding-top: 0;
+            }
+          }
+
+        }
+      }
+      ._requirement-currency {
+        ._input-wrapper {
+          .v-input__control {
+            .v-input__slot {
+              fieldset {
+                border: solid 1px $base-light
+              }
+            }
+          }
+        }
+      }
+    }
+    border: 1px solid $base-lighter;
+    border-top:0;
+    
+  }
+
+
+}

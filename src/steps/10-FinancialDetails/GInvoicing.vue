@@ -34,7 +34,7 @@
         <div v-show="useGInvoicing === 'YES'">
           <hr class="mt-5" />
             <ATATSearch
-              :isSimulation="true"
+              :isSimulation="false"
               id="OrderNumber"
               placeHolder="Find your order in G-Invoicing"
               label="Order Number"
@@ -46,6 +46,7 @@
               :validate-on-blur="true"
               :value.sync="gInvoiceNumber"
               helpText="Format: OYYMM-000-000-000000"
+              searchType="G-Invoicing"
 
               :rules="[
                 $validators.isMaskValid(

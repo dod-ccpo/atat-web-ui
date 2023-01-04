@@ -17,7 +17,7 @@
         <ATATRadioGroup
           id="SurgeCapacity"
           class="max-width-640"
-          :value.sync="currentData.capacity"
+          :value.sync="capabilities"
           :items="items"
           name="surge-capacity"
           card="true"
@@ -33,8 +33,10 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import IGCEStore, { SurgeRequirements } from "@/store/IGCE";
+import IGCEStore from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
+import {RequirementsCostEstimateDTO} from "@/api/models";
+import {YesNo} from "../../../../types/Global";
 
 @Component({
   components: {
@@ -42,8 +44,8 @@ import { hasChanges } from "@/helpers";
   },
 })
 export default class SurgeCapacity extends Mixins(SaveOnLeave) {
-  public capacity = "";
-  public capabilities = "";
+  public capacity: number | null = null;
+  public capabilities: YesNo = "";
   private items = [
     {
       id: "YES",
@@ -57,21 +59,23 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
     },
   ];
 
-  get currentData(): SurgeRequirements {
+  get currentData(): RequirementsCostEstimateDTO["surge_requirements"] {
     return{
       capacity: this.capacity,
-      capabilities: ""
+      capabilities: this.capabilities
     }
   }
 
-  private savedData: SurgeRequirements = {
-    capacity: "",
+  private savedData: RequirementsCostEstimateDTO["surge_requirements"] = {
+    capacity: null,
     capabilities: ""
   };
 
-   @Watch("capacity")
-  protected changeSelection(): void{
-    this.capabilities = "";
+   @Watch("capabilities")
+  protected changeSelection(): void {
+    if (this.capabilities !== "YES") {
+      this.capacity = null;
+    }
   }
   
    private hasChanged(): boolean {
@@ -79,11 +83,10 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
    }
 
    public async loadOnEnter(): Promise<void> {
-     const storeData = await IGCEStore.getSurgeRequirements();
-     if (storeData) {
-       this.savedData = storeData;
-       this.capacity = storeData.capacity;
-     }
+     const store = await IGCEStore.getRequirementsCostEstimate();
+     this.savedData = store.surge_requirements;
+     this.capabilities = store.surge_requirements.capabilities;
+     this.capacity = store.surge_requirements.capacity as number;
    }
 
    public async mounted(): Promise<void> {
@@ -92,7 +95,10 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
 
    protected async saveOnLeave(): Promise<boolean> {
      if (this.hasChanged()) {
-       IGCEStore.setSurgeRequirements(this.currentData);
+       const store = await IGCEStore.getRequirementsCostEstimate();
+       store.surge_requirements = this.currentData;
+       await IGCEStore.setRequirementsCostEstimate(store);
+       await IGCEStore.saveRequirementsCostEstimate();
      }
      return true;
    }

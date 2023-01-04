@@ -117,7 +117,7 @@ import {
   AcquisitionPackageSummarySearchDTO,
 } from "@/api/models";
 
-import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import AcquisitionPackageSummary, { PackageSort } from "@/store/acquisitionPackageSummary";
 import Search from "@/packages/components/Search.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -192,7 +192,7 @@ export default class Packages extends Vue {
   public tabIndex = 0;
   public searchString = ""
   public searchedString = ""
-  public selectedSort: 'DESCsys_updated_on' | 'project_overview' = "project_overview"
+  public selectedSort: PackageSort = "project_overview"
   public packageData:AcquisitionPackageSummaryDTO[] = []
   public allPackageData:AcquisitionPackageSummaryMetadataAndDataDTO = {
     // eslint-disable-next-line camelcase
@@ -200,8 +200,9 @@ export default class Packages extends Vue {
     acquisitionPackageSummaryList:[]
   }
   @Watch('selectedSort')
-  public async sortingChanged(newVal:string): Promise<void> {
-    await this.updateSearchDTO('sort',newVal)
+  public async sortingChanged(newVal: PackageSort): Promise<void> {
+    await this.updateSearchDTO('sort', newVal);
+    AcquisitionPackageSummary.setSelectedSort(newVal);
   }
 
  @Watch("page")
@@ -237,7 +238,7 @@ export default class Packages extends Vue {
     const packageResults = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO)
     this.packageData = packageResults?.acquisitionPackageSummaryList || [];
-    this.packageCount = packageResults.total_count;
+    this.packageCount = packageResults?.total_count || 0;
 
     this.numberOfPages = Math.ceil(this.packageCount / this.recordsPerPage);
 
@@ -287,7 +288,7 @@ export default class Packages extends Vue {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
     await AcquisitionPackage.reset();
     this.$router.push({
-      name: routeNames.ProjectOverview,
+      name: routeNames.ContractingShop,
       params: {
         direction: "next"
       },
@@ -314,8 +315,11 @@ export default class Packages extends Vue {
   }
 
   private async loadOnEnter(){
+    this.selectedSort = AcquisitionPackageSummary.selectedSort;
     this.loadPackageData();
     this.setNoRecordsText(0);
+    const sectionData = await AppSections.getSectionData();
+    AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Packages);
   }
 
   public mounted():void{

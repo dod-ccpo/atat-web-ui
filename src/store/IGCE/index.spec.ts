@@ -1,108 +1,76 @@
 /* eslint-disable camelcase */
 
-import Vuex, { Store } from 'vuex';
-import { createLocalVue } from '@vue/test-utils';
-import { getModule } from 'vuex-module-decorators';
-import {Fee, IGCEStore, SurgeRequirements, TravelEstimateNeeds} from '.';
-import Periods from '../periods';
-import DescriptionOfWork from '../descriptionOfWork';
+import Vuex, {Store} from 'vuex';
+import {createLocalVue} from '@vue/test-utils';
+import {getModule} from 'vuex-module-decorators';
+import {IGCEStore} from '.';
+import {RequirementsCostEstimateFlat} from "@/api/models";
+import {api} from "@/api";
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe("Organization Store", () => {
+describe("IGCE Store", () => {
   let igceStore: IGCEStore;
 
-  const travelEstimateNeeds: TravelEstimateNeeds = {
-    ceilingPrice: 'single',
-    estimatedTravelCosts: ['1234.56']
-  }
+  const requirementsCostEstimate: RequirementsCostEstimateFlat = {
+    acquisition_package: "",
+    architectural_design_current_environment_estimated_values: "",
+    architectural_design_current_environment_option: "",
+    architectural_design_performance_requirements_estimated_values: "",
+    architectural_design_performance_requirements_option: "",
+    contracting_office_other_charges_fee: "",
+    contracting_office_other_fee_percentage: null,
+    has_dow_and_pop: "",
+    how_est_dev_cost_estimate_description: "",
+    how_est_dev_other_tools_used: "",
+    how_est_dev_prev_cost_estimate_comp_option: "",
+    how_est_dev_prev_cost_estimate_comp_percentage: null,
+    how_est_dev_tools_used: "",
+    optimize_replicate_estimated_values: "",
+    optimize_replicate_option: "",
+    surge_requirement_capabilities: "",
+    surge_requirement_capacity: null,
+    training: "",
+    travel_estimated_values: "",
+    travel_option: ""
 
-  const surgeRequirements: SurgeRequirements = {
-    capacity: 'YES',
-    capabilities: '13'
   }
-
-  const feeSpecs: Fee = {
-    isCharged: 'YES',
-    percentage: '15'
-  }
-
-  const legitPeriod = [
-    {
-      "period_unit": "YEAR",
-      "period_unit_count": "1",
-      "period_type": "BASE",
-      "option_order": "1"
-    }
-  ]
 
   beforeEach(() => {
-    const createStore = (storeOptions = {}): Store<{ igceStore: IGCEStore }> => 
-      new Vuex.Store({ ...storeOptions });
+    const createStore = (storeOptions = {}): Store<{ igceStore: IGCEStore }> =>
+      new Vuex.Store({...storeOptions});
     igceStore = getModule(IGCEStore, createStore());
   })
 
-  afterEach(()=>{
+  afterEach(() => {
     jest.clearAllMocks();
   })
 
-  describe("IGCE Store", ()=>{
-    describe("set functions", ()=>{
-      it("setTravelEstimateNeeds(needs) to set store properties", async()=>{
-        igceStore.setTravelEstimateNeeds(travelEstimateNeeds);
-        expect(igceStore.travelEstimateNeeds.ceilingPrice).toBe("single")
-      });
+  describe("IGCE Store", () => {
+    describe("set functions", () => {
+      it('Test loadRequirementsCostEstimate()- should load req cost estimate from api',
+        async () => {
+          jest.spyOn(api.requirementsCostEstimateTable, "getQuery").mockImplementation(
+            () => {
+              return Promise.resolve([requirementsCostEstimate])
+            })
+          await igceStore.loadRequirementsCostEstimateDataByPackageId("some_sys_id");
+          expect(api.requirementsCostEstimateTable.getQuery).toHaveBeenCalled();
+        })
 
-      it("setTravelEstimateNeeds(needs) to set store properties", async()=>{
-        igceStore.setSurgeRequirements(surgeRequirements);
-        expect(igceStore.surgeRequirements.capabilities).toBe("13")
-      })
-
-      it("setFeeSpecs(fee) to set store properties", async()=>{
-        igceStore.setFeeSpecs(feeSpecs);
-        expect(igceStore.feeSpecs.percentage).toBe("15")
-      })
-
-      it("setHasDOWandPop() with undefined periods to return false", async()=>{
-        igceStore.setHasDOWandPop();
-        expect(igceStore.hasDOWandPoP).toBe(false)
-      })
-
-      it("setHasDOWandPop() to set store properties", async()=>{
-        Periods.setPeriods(legitPeriod)
-        DescriptionOfWork.setIsIncomplete(false);
-        igceStore.setHasDOWandPop();
-        expect(igceStore.hasDOWandPoP).toBe(true)
-      })
-    });
-
-    describe("GET functions()", ()=>{
-      it("getTravelEstimateNeeds(needs) and successfully retrieve store properties", async()=>{
-        igceStore.setTravelEstimateNeeds(travelEstimateNeeds);
-        const teNeeds = await igceStore.getTravelEstimateNeeds();
-        expect(teNeeds.ceilingPrice).toBe('single');
-      })
-
-      it("getSurgeRequirements(needs) and successfully retrieve store properties", async()=>{
-        igceStore.setSurgeRequirements(surgeRequirements);
-        const surge = await igceStore.getSurgeRequirements();
-        expect(surge.capabilities).toBe('13');
-      })
-
-      it("getFeeSpecs() and successfully retrieve store properties", async()=>{
-        igceStore.setFeeSpecs(feeSpecs);
-        const fee = await igceStore.getFeeSpecs();
-        expect(fee.percentage).toBe('15');
-      })
-
-      it("getHasDOWandPop() to retrieve store properties", async()=>{
-        Periods.setPeriods(legitPeriod)
-        DescriptionOfWork.setIsIncomplete(false);
-        await igceStore.setHasDOWandPop();
-        expect(await igceStore.getHasDOWandPoP()).toBe(true)
-      })
-
-
+      // it('Test loadRequirementsCostEstimate()- should catch the error', async () => {
+      //   await igceStore.setRequirementsCostEstimate(requirementsCostEstimate);
+      //   jest.spyOn(api.requirementsCostEstimateTable, "retrieve").mockImplementation(() => {
+      //     throw Error;
+      //   })
+      //   jest.spyOn(igceStore, "setRequirementsCostEstimate");
+      //   try {
+      //     await igceStore.loadRequirementsCostEstimateDataById("some_id");
+      //   } catch {
+      //     await expect(igceStore.setRequirementsCostEstimate).not.toHaveBeenCalled();
+      //   }
+      // })
     })
   })
 })

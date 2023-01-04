@@ -134,7 +134,7 @@ export default class Home extends Vue {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await AcquisitionPackage.reset();
     this.$router.push({
-      name: routeNames.ProjectOverview,
+      name: routeNames.ContractingShop,
       params: {
         direction: "next"
       },
@@ -151,7 +151,8 @@ export default class Home extends Vue {
   public async mounted(): Promise<void> {
     this.currentUser = await UserStore.getCurrentUser();
     await this.checkIfIsNewUser();
-
+    const sectionData = await AppSections.getSectionData();
+    AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
   }
 
 }

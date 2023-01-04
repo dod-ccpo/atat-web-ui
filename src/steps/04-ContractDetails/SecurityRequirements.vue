@@ -103,7 +103,8 @@ protected async saveOnLeave(): Promise<boolean> {
   await AcquisitionPackage.setValidateNow(true);
   try {
     if (this.hasChanged()) {
-      classificationRequirements.setSecurityRequirements(this.currentData)
+      await classificationRequirements.setSecurityRequirements(this.currentData);
+      await classificationRequirements.saveClassifiedInformationTypes();
     }
   } catch (error) {
     console.log(error);

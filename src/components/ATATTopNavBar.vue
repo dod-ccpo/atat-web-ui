@@ -82,19 +82,40 @@
               :key="idx"
               :id="'TopNavBarMenuItem_' + getIdText(menuItem.title)"
               @click="navClicked(menuItem)"
-              :class="[{ _active: isMenuItemActive(menuItem) }]"
+              :class="[
+                { _active: isMenuItemActive(menuItem) }, 
+                { 'd-block pt-2 pb-1' : menuItem.subtitle } 
+              ]"
             >
-              <div v-if="menuItem.icon" class="text-center _menu-icon mr-2">
-                <ATATSVGIcon
-                  :name="menuItem.icon.name"
-                  :color="menuItem.icon.color"
-                  :width="menuItem.icon.width"
-                  :height="menuItem.icon.height"
-                />
+              <div class="d-flex align-center width-100">
+                <div v-if="menuItem.icon" class="text-center _menu-icon mr-2">
+                  <ATATSVGIcon
+                    :name="menuItem.icon.name"
+                    :color="menuItem.icon.color"
+                    :width="menuItem.icon.width"
+                    :height="menuItem.icon.height"
+                  />
+                </div>
+                <v-list-item-title>
+                  {{ menuItem.title }}
+                </v-list-item-title>
+                <div v-if="menuItem.externalUrl">
+                  <ATATSVGIcon 
+                    name="externalLink"
+                    color="primary"
+                    width="14"
+                    height="16"
+                  />
+                </div>
               </div>
-              <v-list-item-title>
-                {{ menuItem.title }}
-              </v-list-item-title>
+              <span 
+                v-if="menuItem.subtitle" 
+                class="d-block font-size-14 text-base pr-8"
+                style="margin-left: 25px;"
+              >
+                {{ menuItem.subtitle }}
+              </span>
+
             </v-list-item>
           </template>
         </v-list>
@@ -164,6 +185,9 @@ export default class ATATTopNavBar extends Vue {
       } else if (item.externalUrl) {
         // open external URL in new tab
         window.open(item.externalUrl, "_blank");
+      } else if (item.link) {
+        // open URL in same tab
+        window.location.href = item.link;
       }
     }
   }
@@ -176,96 +200,145 @@ export default class ATATTopNavBar extends Vue {
     return getIdText(str);
   }
 
+  public get logoutLink(): string {
+    return window.location.origin + "/logout.do";
+  }
+
   public async buildMenu(): Promise<void> {
     const sectionData = await AppSections.getSectionData();
     this.topNavMenuItems = [
       {
         title: "Dashboard",
+        spaSectionTitle: sectionData.sectionTitles.Home,
       },
       {
         title: "Acquisitions",
-        menu: [
-          {
-            title: "My Packages",
-            parentTitle: "Acquisitions",
-            spaSectionTitle: sectionData.sectionTitles.Packages,
-          },
-          {
-            title: "My Task Orders",
-            parentTitle: "Acquisitions",
-          },
-          { 
-            title: "Document Review", 
-            separatorBefore: true,
-            parentTitle: "Acquisitions",
-            spaSectionTitle: sectionData.sectionTitles.DocumentReview,
-          },
-        ]
+        spaSectionTitle: sectionData.sectionTitles.Packages,
+        // menu: [
+        //   {
+        //     title: "My Packages",
+        //     parentTitle: "Acquisitions",
+        //     spaSectionTitle: sectionData.sectionTitles.Packages,
+        //   },
+        //   {
+        //     title: "My Task Orders",
+        //     parentTitle: "Acquisitions",
+        //   },
+        //   { 
+        //     title: "Document Review", 
+        //     separatorBefore: true,
+        //     parentTitle: "Acquisitions",
+        //     spaSectionTitle: sectionData.sectionTitles.DocumentReview,
+        //   },
+        // ]
       },
+      // {
+      //   title: "Portfolios",
+      //   spaSectionTitle: sectionData.sectionTitles.Portfolios,
+      // },
+      // {
+      //   title: "Portals",
+      //   align: "left",
+      //   menu: [
+      //     {
+      //       title: "Global Service Desk",
+      //       icon: {
+      //         name: "person",
+      //         width: "14",
+      //         height: "15",
+      //         color: "base-dark",
+      //       },
+      //     },
+      //     {
+      //       title: "Mission Partner Portal",
+      //       icon: {
+      //         name: "support",
+      //         width: "18",
+      //         height: "17",
+      //         color: "base-dark",
+      //       },
+      //     },
+      //   ],
+      // },
       {
-        title: "Portfolios",
-        spaSectionTitle: sectionData.sectionTitles.Portfolios,
-      },
-      {
-        title: "Portals",
+        title: "Help & Support",
         align: "left",
         menu: [
           {
-            title: "Global Service Desk",
-            icon: {
-              name: "person",
-              width: "14",
-              height: "15",
-              color: "base-dark",
-            },
-          },
-          {
-            title: "Mission Partner Portal",
+            title: "JWCC Help Center",
+            externalUrl: "https://community.hacc.mil/s/jwcc/resources",
             icon: {
               name: "support",
-              width: "18",
+              width: "17",
               height: "17",
-              color: "base-dark",
-            },
+              color: "base-dark"
+            }
           },
-        ],
+          {
+            title: "Customer Support",
+            subtitle: "Get answers about ATAT and DAPPS",
+            externalUrl: "https://community.hacc.mil/s/contact?RequestTopic=Account%20Tracking%20" +
+              "and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer",
+            icon: {
+              name: "contactSupport",
+              width: "16",
+              height: "19",
+              color: "base-dark"
+            }
+          },
+          {
+            title: "Technical Support",
+            subtitle: "Report bugs or technical issues",
+            externalUrl: "https://services.disa.mil/sp?" + 
+              "id=sc_cat_item&sys_id=20e86845dbaf19148c045e8cd39619d9&" + 
+              "sysparm_category=a30a5ca3db12a0508c045e8cd396197c",
+            icon: {
+              name: "bugReport",
+              width: "14",
+              height: "15",
+              color: "base-dark"
+            }
+          }
+        ]
       },
       {
         title: this.userInitials,
         isProfile: true,
         align: "left",
         menu: [
-          {
-            title: "Profile",
-            separatorBefore: true,
-            icon: {
-              name: "person",
-              width: "14",
-              height: "15",
-              color: "base-dark",
-            },
-          },
-          {
-            title: "Contact Support",
-            icon: {
-              name: "contactSupport",
-              width: "17",
-              height: "20",
-              color: "base-dark",
-            },
-          },
-          {
-            title: "Submit Feedback",
-            icon: {
-              name: "feedback",
-              width: "18",
-              height: "17",
-              color: "base-dark",
-            },
-          },
+          // TODO: restore to profile menu in future ticket
+          // {
+          //   title: "Profile",
+          //   separatorBefore: true,
+          //   icon: {
+          //     name: "person",
+          //     width: "14",
+          //     height: "15",
+          //     color: "base-dark",
+          //   },
+          // },
+          // {
+          //   title: "Contact Support",
+          //   icon: {
+          //     name: "contactSupport",
+          //     width: "17",
+          //     height: "20",
+          //     color: "base-dark",
+          //   },
+          // },
+          // {
+          //   title: "Submit Feedback",
+          //   icon: {
+          //     name: "feedback",
+          //     width: "18",
+          //     height: "17",
+          //     color: "base-dark",
+          //   },
+          // },          
           {
             title: "Sign out",
             separatorBefore: true,
+            link: this.logoutLink,
             icon: {
               name: "signOut",
               width: "18",
@@ -277,7 +350,6 @@ export default class ATATTopNavBar extends Vue {
       },
     ];    
   }
-
 
   public async loadOnEnter(): Promise<void> {
     this.buildMenu();

@@ -5,7 +5,7 @@
         <v-row>
           <v-col class="col-12">
             <h1 class="page-header">
-              Next, we’ll gather your requirements for {{ serviceOfferingName }}
+              Now we’ll gather your requirements for {{ serviceOfferingName }}
             </h1>
             <div class="copy-max-width">
 
@@ -73,6 +73,8 @@
                   :instances="instancesFormData"
                   :avlInstancesLength="selectedInstancesLength"
                   :isPeriodsDataMissing="isPeriodsDataMissing"
+                  :groupId="groupId"
+                  :serviceOfferingName="serviceOfferingName"
                 />
               </div>
 
@@ -115,6 +117,7 @@ import Periods from "@/store/periods";
 import {
   AcquisitionPackageDTO,
   ClassificationLevelDTO,
+  ReferenceColumn,
   SelectedClassificationLevelDTO
 } from "@/api/models";
 import { 
@@ -130,6 +133,7 @@ import {
   buildCurrentSelectedClassLevelList
 } from "@/packages/helpers/ClassificationRequirementsHelper";
 import classificationRequirements from "@/store/classificationRequirements";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 @Component({
   components: {
@@ -177,17 +181,25 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public async buildNewClassificationInstances(): Promise<void> {
     this.classificationInstances = [];
     this.selectedClassificationLevelList.forEach((obj) => {
+      obj = convertColumnReferencesToValues(obj);
       const labelLong = buildClassificationLabel(obj, "long");
       const labelShort = buildClassificationLabel(obj, "short");
+      const classificationLevelSysId = typeof obj.classification_level === "object"
+        ? (obj.classification_level as ReferenceColumn).value 
+        : obj.classification_level;
       const instance: DOWClassificationInstance = {
         sysId: "", // will be populated after saving
         impactLevel: obj.impact_level,
-        classificationLevelSysId: obj.sys_id || "",
+        classificationLevelSysId: classificationLevelSysId as string,
         anticipatedNeedUsage: "",
         entireDuration: "",
         selectedPeriods: [],
         labelLong,
         labelShort,
+        classifiedInformationTypes: "",
+        typeOfDelivery: "",
+        typeOfMobility: "",
+        typeOfMobilityOther: "",
       }
       this.classificationInstances.push(instance);
     }, this);
@@ -210,7 +222,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       }
     }, this);
     // remove options not in new selected options array
-    const instancesToShowClone = this.headerCheckboxSelectedSysIds;
+    const instancesToShowClone = _.cloneDeep(this.headerCheckboxSelectedSysIds);
     instancesToShowClone.forEach((classificationLevelSysId) => {
       if (!newSysIds.includes(classificationLevelSysId)) {
         const i = this.headerCheckboxSelectedSysIds.findIndex(
@@ -289,8 +301,11 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
     this.selectedClassificationLevelSysIds = [];
     this.selectedClassificationLevelList.forEach(selectedClassLevel => {
-      if (selectedClassLevel.classification_level.value) {
-        this.selectedClassificationLevelSysIds.push(selectedClassLevel.classification_level.value);
+      const sysId = typeof selectedClassLevel.classification_level === "object"
+        ? (selectedClassLevel.classification_level as ReferenceColumn).value
+        : selectedClassLevel.classification_level as string;
+      if (sysId) {
+        this.selectedClassificationLevelSysIds.push(sysId);
       }
       this.isIL6Selected = selectedClassLevel.impact_level === this.IL6SysId;
     });
@@ -304,7 +319,10 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     if (this.selectedInstancesLength === 1
       && this.selectedClassificationLevelList[0].sys_id) {
       const classificationObj = this.selectedClassificationLevelList[0];
-      const sysId = classificationObj.sys_id;
+      const sysId = typeof classificationObj.classification_level === "object"
+        ? (classificationObj.classification_level as ReferenceColumn).value
+        : classificationObj.classification_level as string;
+
       if(sysId) {
         this.selectedHeaderLevelSysIds.push(sysId);
       }
@@ -323,7 +341,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if(this.selectedClassificationLevelList) {
       this.selectedClassificationLevelList.forEach((val) => {
-        this.modalSelectedOptions.push(val.classification_level.value || "")
+        val = convertColumnReferencesToValues(val);
+        this.modalSelectedOptions.push(val.classification_level as string)
       });
     }
     // set up header checkbox items and list of sysIds for available classification levels
@@ -349,6 +368,10 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       this.savedData = [...this.classificationInstances];
       this.classificationInstances.forEach((instance) => {
         if (instance.classificationLevelSysId) {
+          if (typeof instance.classificationLevelSysId === "object") {
+            instance.classificationLevelSysId 
+              = (instance.classificationLevelSysId as ReferenceColumn).value || "";
+          }
           this.selectedHeaderLevelSysIds.push(instance.classificationLevelSysId);
         }
       });
@@ -385,6 +408,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
+    const isValid = this.$refs.form.validate();
+    
     try {
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {
@@ -392,11 +417,16 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         }
       });
 
-      if (this.hasChanged()) {
-        // save to store
+      if (this.hasChanged() && isValid) {
         await DescriptionOfWork.setOfferingDetails(this.instancesFormData);
-        //save to backend
-        await DescriptionOfWork.saveUserSelectedServices();
+      } else if (!isValid) {
+        // scroll to first errored input/issue
+        const el = document.getElementsByClassName("error--text")[0];
+        el.scrollIntoView({
+          behavior: "smooth"
+        });
+      } else {
+        await DescriptionOfWork.setNeedsSecurityRequirements();
       }
     } catch (error) {
       console.log(error);

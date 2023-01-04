@@ -4,6 +4,7 @@ import {
   EvalPlanAssessmentAreaDTO, 
   EvalPlanDifferentiatorDTO, 
   PeriodDTO, 
+  ReferenceColumn, 
   SystemChoiceDTO 
 } from "@/api/models";
 import { Checkbox, SelectData, User } from "types/Global";
@@ -83,11 +84,19 @@ export const buildClassificationCheckboxList = (
     if (classLevel.classification
     && classLevel.sys_id
     ) {
+      let classificationLevelSysId = classLevel.sys_id;
+      if (classLevel.classification_level) {
+        classificationLevelSysId =
+        typeof classLevel.classification_level === "object"
+          ? (classLevel.classification_level as ReferenceColumn).value as string
+          : classLevel.classification_level as string;  
+      }
+
       const label = buildClassificationLabel(classLevel, labelType);
       const description = buildClassificationDescription(classLevel)
       const classificationCheckbox: Checkbox = {
         id: classLevel.impact_level + idSuffix || classLevel.classification,
-        value: classLevel.sys_id,
+        value: classificationLevelSysId,
         label: label,
         description: descriptionNeeded === true? description : "",
       }
@@ -343,4 +352,8 @@ export function scrollToId(id: string): void {
 export function getStatusLabelFromValue(value: string): string {
   const statusKey = _.startCase(value.replaceAll("_", " ").toLowerCase()).replaceAll(" ", "");
   return Statuses[statusKey] ? Statuses[statusKey].label : "";
+}
+
+export function setItemToPlural(numberOfItems: number, noun: string): string {
+  return numberOfItems >1 ? noun + "s" : noun;
 }

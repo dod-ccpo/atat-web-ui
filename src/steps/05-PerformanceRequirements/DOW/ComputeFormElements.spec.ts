@@ -2,7 +2,7 @@ import Vue, { computed } from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
-import ComputeForm from "../DOW/ComputeForm.vue";
+import ComputeFormElements from "./ComputeFormElements.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 
@@ -43,12 +43,12 @@ describe("Testing ComputeForm Component", () => {
     ],
     "operatingSystemAndLicensing": "safsfsdaf",
     "numberOfVCPUs": "1",
-    "memory": "1",
+    "memoryAmount": "1",
     "storageType": "Provisioned IOPS SSD",
     "storageAmount": "1",
     "performanceTier": "Premium",
     "performanceTierOther": "",
-    "numberOfInstancesNeeded": "1"
+    "numberOfInstances": "1"
   };
 
   const avlClassificationLevelObjects = [
@@ -86,7 +86,7 @@ describe("Testing ComputeForm Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(ComputeForm, {
+    wrapper = mount(ComputeFormElements, {
       localVue,
       vuetify,
       mocks: {

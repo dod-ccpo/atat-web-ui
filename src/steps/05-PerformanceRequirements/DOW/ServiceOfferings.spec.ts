@@ -29,12 +29,12 @@ describe("Testing ServiceOfferingDetails Component", () => {
     periodsNeeded: [],
     operatingSystemAndLicensing: "",
     numberOfVCPUs: "",
-    memory: "",
+    memoryAmount: "",
     storageType: "",
     storageAmount: "",
     performanceTier: "",
     performanceTierOther: "",
-    numberOfInstancesNeeded: "1",
+    numberOfInstances: "1",
     requirementTitle: "",
   }
 

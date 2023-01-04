@@ -2,10 +2,11 @@
   <v-form ref="form" lazy-validation>
     <ArchitecturalDesignForm
       :isDOW="false"
-      :statementArchitecturalDesign.sync="currEnvDTO.statement_architectural_design"
-      :applicationsNeedArchitecturalDesign.sync="currEnvDTO.applications_need_architectural_design"
-      :dataClassificationsImpactLevels.sync="currEnvDTO.data_classifications_impact_levels"
-      :externalFactors.sync="currEnvDTO.external_factors_architectural_design"
+      :statementArchitecturalDesign.sync="CurrentEnvironmentArchNeeds.statement"
+      :applicationsNeedArchitecturalDesign.sync="
+        CurrentEnvironmentArchNeeds.applications_needing_design"
+      :dataClassificationsImpactLevels.sync="CurrentEnvironmentArchNeeds.data_classification_levels"
+      :externalFactors.sync="CurrentEnvironmentArchNeeds.external_factors"
     />
   </v-form>
 </template>
@@ -15,12 +16,16 @@ import { Component, Mixins } from "vue-property-decorator";
 
 import ArchitecturalDesignForm from "@/components/DOW/ArchitecturalDesignForm.vue"
 
-import CurrentEnvironment, 
-{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import CurrentEnvironment, 
+{ 
+  defaultCurrentEnvironment, 
+  defaultCurrentEnvironmentArchitecturalNeeds 
+} from "@/store/acquisitionPackage/currentEnvironment";
+import { ArchitecturalDesignRequirementDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -28,39 +33,40 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 
-export default class ArchitectureDesignDetails extends Mixins(SaveOnLeave) {
-  public currEnvDTO = defaultCurrentEnvironment;
+export default class ArchitectureDesign extends Mixins(SaveOnLeave) {
+  public CurrentEnvironmentArchNeeds = defaultCurrentEnvironmentArchitecturalNeeds;
 
-  public get currentData(): Record<string, string | string[]> {
+  /* eslint-disable camelcase */
+  public get currentData(): ArchitecturalDesignRequirementDTO {
     return {
-      statementArchitecturalDesign: this.currEnvDTO.statement_architectural_design,
-      applicationsNeedArchitecturalDesign: this.currEnvDTO.applications_need_architectural_design,
-      dataClassificationsImpactLevels: this.currEnvDTO.data_classifications_impact_levels,
-      externalFactors: this.currEnvDTO.external_factors_architectural_design,
+      source: "CURRENT_ENVIRONMENT",
+      statement: this.CurrentEnvironmentArchNeeds.statement,
+      applications_needing_design: this.CurrentEnvironmentArchNeeds.applications_needing_design,
+      data_classification_levels: this.CurrentEnvironmentArchNeeds.data_classification_levels,
+      external_factors: this.CurrentEnvironmentArchNeeds.external_factors,
+      acquisition_package: this.CurrentEnvironmentArchNeeds.acquisition_package
     }
   };
 
-  public savedData: Record<string, string | string[]> = {
-    statementArchitecturalDesign: "",
-    applicationsNeedArchitecturalDesign: "",
-    dataClassificationsImpactLevels: "",
-    externalFactors: "",
+  public savedData: ArchitecturalDesignRequirementDTO = {
+    source: "CURRENT_ENVIRONMENT",
+    statement: "",
+    applications_needing_design: "",
+    data_classification_levels: "",
+    external_factors: "",
+    acquisition_package: ""
   }
+  /* eslint-enable camelcase */
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await CurrentEnvironment.getCurrentEnvironment();
+    const storeData = await CurrentEnvironment.getCurrentEnvironmentArchitecturalNeeds();
     if (storeData) {
-      this.currEnvDTO = _.cloneDeep(storeData);
-      this.savedData = {
-        statementArchitecturalDesign: storeData.statement_architectural_design,
-        applicationsNeedArchitecturalDesign: storeData.applications_need_architectural_design,
-        dataClassificationsImpactLevels: storeData.data_classifications_impact_levels,
-        externalFactors: storeData.external_factors_architectural_design,
-      }
+      this.CurrentEnvironmentArchNeeds = _.cloneDeep(storeData);
+      this.savedData = _.cloneDeep(storeData);
     }
   }
 
@@ -74,7 +80,7 @@ export default class ArchitectureDesignDetails extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
+        CurrentEnvironment.setCurrentEnvironmentArchitecturalDesign(this.currentData);
 
       }
     } catch (error) {

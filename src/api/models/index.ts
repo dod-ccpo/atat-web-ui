@@ -11,7 +11,9 @@ import {
   StorageType, 
   StorageUnit, 
   YesNo,
-  SingleMultiple
+  SingleMultiple,
+  EstimateOptionValue,
+  TrainingEstimate
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -55,7 +57,6 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   periods: string;
   gfe_overview: string;
   contract_type: ReferenceColumn | string;
-  requirements_cost_estimate: ReferenceColumn | string;
   contract_considerations: ReferenceColumn | string;
   funding_plans: string;
   classification_level: ReferenceColumn | string;
@@ -72,18 +73,27 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   acor: ReferenceColumn | string;
   primary_contact: ReferenceColumn | string;
   funding_requirement: ReferenceColumn | string;
+  contracting_shop?: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
   impact_level: string;
   classification: string;
+  classification_level?: ReferenceColumn | string;
+}
+
+export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
+  description: string;
+  name: string;
+  sequence: string;
 }
 
 export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
-  classification_level: ReferenceColumn; // sys id
-  acquisition_package: ReferenceColumn; // sys id
+  classification_level: ReferenceColumn | string; // sys id
+  acquisition_package: ReferenceColumn | string; // sys id
   users_per_region?: string; // json stringified sys_id/count pairs
   increase_in_users?: YesNo;
+  classified_information_types?: string;
   user_growth_estimate_type?: SingleMultiple
   user_growth_estimate_percentage?: string[];
   data_egress_monthly_amount?: number | null;
@@ -118,6 +128,7 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   has_phased_approach: YesNo;
   phased_approach_schedule: string; 
   needs_architectural_design_services: YesNo;
+  // EJY --- BELOW 4 ARE NOW IN THEIR OWN TABLE
   statement_architectural_design: string; 
   applications_need_architectural_design: string;
   data_classifications_impact_levels: string[];
@@ -181,6 +192,16 @@ export interface ContractConsiderationsDTO extends BaseTableDTO{
   required_training_courses?: string;
   packaging_shipping_none_apply?: string;
   contractor_provided_transfer?: string;
+}
+
+export interface CrossDomainSolutionDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  anticipated_need_or_usage: string;
+  cross_domain_solution_required: string;
+  need_for_entire_task_order_duration: string;
+  projected_file_stream_type: string;
+  selected_periods: string;
+  traffic_per_domain_pair: string;
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {
@@ -270,14 +291,6 @@ export interface ContractTypeDTO extends BaseTableDTO {
   firm_fixed_price: string;
   time_and_materials: string;
   contract_type_justification: string;
-}
-
-export interface RequirementsCostEstimateDTO extends BaseTableDTO {
-    surge_capabilities?: string;
-    estimatedTaskOrderValue?: string;
-    feePercentage?: string;
-    feeCharged?: string;
-    surge_capacity?: string;
 }
 
 export interface RequiredServicesDTO extends BaseTableDTO {
@@ -387,9 +400,11 @@ export interface DisplayColumn {
 }
 
 export interface SelectedServiceOfferingDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  architectural_design_requirement?: ReferenceColumn | string;
   classification_instances: string;
   other_service_offering: string;
-  service_offering: string;
+  service_offering: ReferenceColumn | string;
 }
 
 export interface ClassificationInstanceDTO extends BaseTableDTO {
@@ -397,6 +412,10 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
   classification_level: string;
   usage_description: string;
   need_for_entire_task_order_duration: string;
+  classified_information_types?: string;
+  type_of_delivery?: "" | "SHIPPED" | "PICK_UP";
+  type_of_mobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
+  type_of_mobility_other?: string;
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {
@@ -498,23 +517,85 @@ export interface EDAResponse {
   message: string;
 }
 
+
+export interface GInvoicingResponse {
+  valid: boolean;
+  message: string;
+}
+
 export interface EnvironmentInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  anticipated_need_or_usage: string;
+  classification_level: ReferenceColumn | string;
+  classified_information_types: string;
+  data_egress_monthly_amount: string;
+  data_egress_monthly_unit: string;
+  instance_location: string;
+  instance_name: string;
+  licensing?: string;
+  memory_amount: string;
+  memory_unit: string;
+  need_for_entire_task_order_duration: string;
+  number_of_instances: string;
+  number_of_vcpus: string;
+  operating_system?: string;
+  operating_system_licensing: string;
+  performance_tier: string;
+  pricing_model: string;
+  pricing_model_expiration: string;
+  processor_speed?: string;
+  region?: ReferenceColumn | string;
+  selected_periods?: string;
   storage_amount: string;
   storage_type: string;
-  instance_name: string;
-  classification_level: string | ReferenceColumn;
-  number_of_vcpus: string;
-  data_egress_monthly_amount: string;
-  performance_tier: string;
-  pricing_model_expiration: string;
-  csp_region: string;
-  memory_unit: string;
   storage_unit: string;
-  pricing_model: string;
-  instance_location: string;
-  memory_amount: string;
-  operating_system_licensing: string;
-  data_egress_monthly_unit: string;
+}
+
+export interface ComputeEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  environment_type?: string;
+  operating_environment?: string;
+}
+
+export interface DatabaseEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  database_licensing?: string;
+  database_type?: string;
+  database_type_other?: string;
+  network_performance?: string;
+}
+
+export type StorageEnvironmentInstanceDTO = EnvironmentInstanceDTO
+
+export type XaasEnvironmentInstanceDTO = EnvironmentInstanceDTO
+
+export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceDTO {
+  can_train_in_unclass_env?: string;
+  personnel_onsite_access?: string;
+  personnel_requiring_training?: string;
+  service_type?: string;
+  training_facility_type?: string;
+  training_format?: string;
+  training_location?: string;
+  training_requirement_title?: string;
+  training_time_zone?: string;
+  ts_contractor_clearance_type?: string;
+}
+
+export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  source: "" | "CURRENT_ENVIRONMENT" | "DOW";
+  applications_needing_design: string;
+  data_classification_levels: string;
+  external_factors: string;
+  statement: string;
+}
+
+export interface TravelRequirementDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  trip_location: string;
+  selected_periods: string;
+  number_of_trips: string;
+  number_of_travelers: string;
+  duration_in_days: string;
 }
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{
@@ -637,4 +718,130 @@ export interface UserDTO extends BaseTableDTO {
   last_name?: string;
   user_name?: string;
   email?: string;
+}
+
+export interface TrainingEstimateDTO extends BaseTableDTO{
+  acquisition_package: string;
+  estimated_price_per_training_unit: string;
+  training_estimated_values: string;
+  training_option: string; //SINGLE or MULTIPLE
+  training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
+}
+
+export interface EstimateOptionValueDTO {
+  option: SingleMultiple;
+  estimated_values: string[];
+}
+
+export interface RequirementsCostEstimateDTO extends BaseTableDTO{
+  acquisition_package: ReferenceColumn | string;
+  has_DOW_and_PoP: YesNo;
+  optimize_replicate: EstimateOptionValue;
+  architectural_design_current_environment: EstimateOptionValue;
+  architectural_design_performance_requirements: EstimateOptionValue;
+  training: TrainingEstimateDTO[];
+  travel: EstimateOptionValue;
+  surge_requirements: {
+    capabilities: YesNo;
+    capacity: number | null;
+  }
+  fee_specs: {
+    is_charged: YesNo;
+    percentage: number | null;
+  };
+  how_estimates_developed: {
+    // csv list Eg: "AWS,GOOGLE_CLOUD,MICROSOFT_AZURE,ORACLE_CLOUD,PREVIOUSLY_PAID_PRICES,OTHER"
+    tools_used: string
+    other_tools_used: string
+    cost_estimate_description: string;
+    previous_cost_estimate_comparison:{
+      options: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
+      percentage: number | null;
+    };
+  }
+}
+
+export interface RequirementsCostEstimateFlat extends BaseTableDTO{
+  acquisition_package: ReferenceColumn | string;
+  architectural_design_current_environment_option?: SingleMultiple;
+  architectural_design_current_environment_estimated_values: string;// csv
+  architectural_design_performance_requirements_option?: SingleMultiple;
+  architectural_design_performance_requirements_estimated_values: string; //csv
+  contracting_office_other_charges_fee: YesNo; // fee_spec
+  contracting_office_other_fee_percentage: number | null; // fee_spec
+  has_dow_and_pop: YesNo;
+  optimize_replicate_option?: SingleMultiple;
+  optimize_replicate_estimated_values: string; // csv
+  surge_requirement_capabilities: YesNo
+  surge_requirement_capacity: number | null;
+
+  // TODO: double check the below properties for name matching with SNOW column names.
+  //  Because properties are being defined based on consensus with platform team instead of actual.
+  how_est_dev_tools_used: string; // csv list Eg: "AWS,GOOGLE_CLOUD,MICROSOFT_AZURE,OTHER..."
+  how_est_dev_other_tools_used: string;
+  how_est_dev_cost_estimate_description: string;
+  how_est_dev_prev_cost_estimate_comp_option: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
+  how_est_dev_prev_cost_estimate_comp_percentage: number | null;
+  travel_option?: SingleMultiple;
+  travel_estimated_values: string;// csv
+  training: string // json of TrainingEstimateDTO
+  // training_cost_estimate: "" | "PER_PERSON" | "PER_CLASS" | "SUBSCRIPTION";
+  // training_subscription_estimate: "" | "ANNUAL" | "MONTHLY";
+  // training_estimated_price: number | null;
+  // training_estimate_option: SingleMultiple;
+  // training_estimated_values: string; // csv
+
+  // TODO: not sure what the below 4 properties map to on the UI side RceDTO
+  // contracting_office_fee_pct?: number | null; // does this map to "fee_specs" percentage?
+  // cost_estimate_description?: // should this prefix "how_est_dev_"?
+
+  // TODO: below 2 need suffix "how_estimates_developed" shortened to;
+  //  "how_est_dev_prev_cost_estimate_comp_option
+  // previous_cost_estimate_comparison_option: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
+  // previous_cost_estimate_comparison_percentage: number | null;
+
+  // TODO: is below column needed? Looks like we can delete
+  // surge_capabilities
+
+  // TODO: REMAINING UI DTO properties that do not have a place in the RCE SNOW table
+  // training: TrainingEstimateDTO[]; // as already covered earlier today in IGCE group chat
+  // travel: EstimateOptionValueDTO; / should be flattened similar to "optimize_replicate_"
+  // fee_specs: { // flatten it similar to how " surge_requirement_" are flattened
+  //   is_charged: YesNo;
+  //   percentage: number | null;
+  // };
+  // how_estimates_developed: { // prefix below 3 with "how_est_dev_" to find home for DTO on UI?
+  //   tools_used: string; // csv list Eg: "AWS,GOOGLE_CLOUD,MICROSOFT_AZURE,OTHER..."
+  //   other_tools_used: string;
+  //   cost_estimate_description: string;
+  // }
+}
+
+export interface IgceEstimateDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
+  classification_level: ReferenceColumn | string;
+  classification_instance: ReferenceColumn | string;
+  environment_instance: ReferenceColumn | string;
+  cross_domain_solution: ReferenceColumn | string;
+  contract_type: "" | "FFP" | "T&M" | "TBD";
+  title: string;
+  description: string;
+  unit: string;
+  unit_price: number | null;
+  unit_quantity: string;
+  dow_task_number?: string;
+}
+
+export interface RegionsDTO extends BaseTableDTO {
+  sequence: string
+  sys_id: string
+  sys_updated_by: string
+  sys_created_on: string
+  name: string
+  sys_mod_count: string
+  description: string
+  sys_updated_on: string
+  sys_tags: string
+  sys_created_by: string
+  group: string
 }
