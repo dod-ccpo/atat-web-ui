@@ -987,8 +987,6 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
   const needsRepOrOpt = needsReplicateOrOptimize();
   const hasTravel = needsTravelEstimate();
   const hasOfferings = hasServiceOfferings();
-  console.log('hasOfferings');
-  console.log(hasOfferings)
 
   // =======================================================
   // MOVING FORWARD
