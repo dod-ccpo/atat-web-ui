@@ -1065,11 +1065,7 @@ const hasServiceOfferings = (): boolean => {
 }
 
 const needsTravelEstimate = (): boolean => {
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // TODO: NEED TO GET THIS FROM DOW STORE when wired up
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  return true; 
+  return DescriptionOfWork.travelSummaryInstances.length>0;
 }
 
 const isFirstIGCETraining = (): boolean => {
