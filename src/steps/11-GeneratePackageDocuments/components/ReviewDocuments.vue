@@ -1,34 +1,32 @@
 <template>
   <div>
-    <v-row>
-      <v-col cols="12">
-        <h1>
-          Your documents are ready to download and review.
-        </h1>
-        <div class="copy-max-width">
-          <p class="mt-2 mb-0">
-            We’ve generated your required documents based on the information that you have 
-            provided in steps 1-8. Download your entire package below and review each 
-            document. Be sure to sign all necessary documents prior to submitting them 
-            to your Contracting Office to begin the procurement process.
-          </p>
-        </div>
-      </v-col>
-    </v-row>
-     <v-row v-if="isErrored">
-      <v-col>
-        <ATATAlert>
-          <template v-slot:content>
-              <p class="mt-1 mb-0">
-                An error has occured while generating the documents.  
-                Please contact your system administrator
-              </p>
-          </template>
-        </ATATAlert>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="8">
+    <h1>
+      Your documents are ready to download and review.
+    </h1>
+    <div class="copy-max-width">
+      <p class="mt-2 mb-0">
+        We’ve generated your required documents based on the information that you have 
+        provided in steps 1-8. Download your entire package below and review each 
+        document. Be sure to sign all necessary documents prior to submitting them 
+        to your Contracting Office to begin the procurement process.
+      </p>
+    </div>
+
+    <ATATAlert 
+      v-if="isErrored" 
+      id="ErrorAlert" 
+      class="my-10"
+    >
+      <template v-slot:content>
+        <p class="mt-1 mb-0">
+          An error has occured while generating the documents.  
+          Please contact your system administrator
+        </p>
+      </template>
+    </ATATAlert>
+
+    <div class="d-flex">
+      <div class="mr-8">
         <div class="package-list pa-6">
           <v-row no-gutters>
             <v-col cols="9">
@@ -84,19 +82,19 @@
             </v-col>
           </v-row>        
         </div>
-      </v-col>
-      <v-col cols="4">
+      </div>
+
+      <div style="width: 400px;">
         <div v-if="contractingShop === 'DITCO' "
           id="emailCard"
-          class="border1 border-rounded border-base-lighter pa-6 mb-7 elevation-2"
+          class="border1 border-rounded-more border-base-lighter pa-6 mb-7 _shadow"
         >
           <h3 class="mb-2">Email your documents to DITCO</h3>
           <p>
             Send your completed package via email to disa.scott.ditco.mbx.ditco-jwcc@mail.mil
           </p>
             <v-btn
-              class="d-flex align-center primary"
-              width="278px"
+              class="d-flex align-center primary width-100"
               @click="openMail"
               @keydown.enter="openMail"
               @keydown.space="openMail"
@@ -107,7 +105,7 @@
         </div>
         <div 
           id="regenerateCard" 
-          class="border1 border-rounded border-base-lighter pa-6"
+          class="border1 border-rounded-more border-base-lighter pa-6"
         >
           <h3 class="mb-2">Need to update your documents?</h3>
           <p>
@@ -115,15 +113,15 @@
             at any time and re-generate new documents, as needed.
           </p> 
           <v-btn
-            class="secondary"
+            class="secondary width-100"
             @click="$emit('regenerate')"
           >
             Re-generate my documents&nbsp;
             <v-icon>sync</v-icon>
           </v-btn>
         </div>
-      </v-col>
-    </v-row>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
