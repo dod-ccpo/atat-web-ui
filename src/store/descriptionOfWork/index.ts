@@ -554,6 +554,30 @@ export const defaultDOWArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
   acquisition_package: ""
 }
 
+const deleteOtherOfferingInstanceFromSNOW = (sysId: string, groupId: string) => {
+  switch (groupId.toLowerCase()) {
+  case "compute":
+    api.computeEnvironmentInstanceTable.remove(sysId);
+    break;
+  case "database":
+    api.databaseEnvironmentInstanceTable.remove(sysId);
+    break;
+  case "storage":
+    api.databaseEnvironmentInstanceTable.remove(sysId);
+    break;
+  case "general_xaas":
+    api.xaaSEnvironmentInstanceTable.remove(sysId);
+    break;
+  case "advisory_assistance":
+  case "help_desk_services":
+  case "documentation_support":
+  case "general_cloud_support":
+  case "training":
+  case "portability_plan":
+    api.cloudSupportEnvironmentInstanceTable.remove(sysId);
+  }
+}  
+
 @Module({
   name: "DescriptionOfWork",
   namespaced: true,
@@ -1884,6 +1908,14 @@ export class DescriptionOfWorkStore extends VuexModule {
           && Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")
           && otherOfferingObj.otherOfferingData
       ) {
+        const instanceToDelete = otherOfferingObj.otherOfferingData.find(
+          obj => obj.instanceNumber === instanceNumber
+        );
+        debugger;
+        if (instanceToDelete && instanceToDelete.sysId) {
+          deleteOtherOfferingInstanceFromSNOW(instanceToDelete.sysId, this.currentGroupId);
+        }
+
         const instanceIndex = otherOfferingObj.otherOfferingData.findIndex(
           obj => obj.instanceNumber === instanceNumber
         );
@@ -1903,6 +1935,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.otherOfferingInstancesTouched[otherOfferingId]
         = touchedInstances.map(i => i >= deleteIndex + 1 ? i - 1 : i);
   }
+
+
 
   confirmOtherOfferingDelete = false;
   confirmTravelDeleteAll = false;
@@ -1949,7 +1983,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async deleteOtherOffering(): Promise<void> {
-    await this.doDeleteOtherOffering();
+    this.doDeleteOtherOffering();
     this.checkForXaas()
     this.setAnticipatedUsersAndDataHasBeenVisited()
   }
@@ -1957,6 +1991,17 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public doDeleteOtherOffering(): void {
     const groupIdToDelete = this.currentGroupId.toLowerCase();
+    const offeringToDelete = this.DOWObject.find(
+      o => o.serviceOfferingGroupId.toLowerCase() === groupIdToDelete
+    );
+    if (offeringToDelete 
+      && offeringToDelete.otherOfferingData 
+      && offeringToDelete.otherOfferingData.length > 0
+    ) {
+      offeringToDelete.otherOfferingData.forEach((instance) => {
+        deleteOtherOfferingInstanceFromSNOW(instance.sysId as string, this.currentGroupId);
+      });
+    }
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === groupIdToDelete
     );

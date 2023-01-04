@@ -419,6 +419,13 @@ export interface TravelSummaryTableData {
   duration_in_days: string;
 }
 
+export interface TravelCalloutDataItem {
+    period: string,
+    periodSysId: string,
+    totalNumberOfTripsPerPeriod: number,
+    trips: string[]
+}
+
 export interface EnvInstanceSummaryTableData {
   instanceSysId?: string;
   instanceNumber: number;

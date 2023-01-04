@@ -103,6 +103,9 @@ export class CurrentEnvironmentStore extends VuexModule {
   public async getCurrentEnvironmentInstances(): Promise<CurrentEnvironmentInstanceDTO[]> {
     return this.currentEnvInstances;
   }
+  public get currEnvInstances(): CurrentEnvironmentInstanceDTO[] {
+    return this.currentEnvInstances;
+  }
 
   @Mutation
   public setCurrentEnvironmentInstances(value: CurrentEnvironmentInstanceDTO[]): void {
@@ -206,26 +209,15 @@ export class CurrentEnvironmentStore extends VuexModule {
     }
   }
 
-  @Action
+  @Action({rawError: true})
   public async saveCurrentEnvironmentInstance(
-    value: CurrentEnvironmentInstanceDTO
+    instance: CurrentEnvironmentInstanceDTO
   ): Promise<void> {
-    await this.doSaveCurrentEnvironmentInstance(value);
-    setTimeout(async () => {
-      await this.saveCurrentEnvironment();
-    }, 0)
-  }
-
-  /**
-   * Makes an API call to either create or update the instance and then using the response
-   * from the API, sets all the other context. Also makes a function call out to update the
-   * base current environment table with the updated instance id.\
-   */
-  @Mutation
-  public async doSaveCurrentEnvironmentInstance(
-    value: CurrentEnvironmentInstanceDTO
-  ): Promise<void> {
-    const instance = _.cloneDeep(value);
+    /**
+     * Makes an API call to either create or update the instance and then using the response
+     * from the API, sets all the other context. Also makes a function call out to update the
+     * base current environment table with the updated instance id.\
+     */
     if (!instance.sys_id) {
       const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
         .create(instance);
@@ -241,7 +233,9 @@ export class CurrentEnvironmentStore extends VuexModule {
         this.currentEnvInstances[instanceIndex] = instance;
       }
     }
+    await this.saveCurrentEnvironment();
   }
+  
 
   @Action({rawError: true})
   public async getCurrentEnvInstance(): Promise<CurrentEnvironmentInstanceDTO | null> {

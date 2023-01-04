@@ -191,6 +191,14 @@ textarea {
  }
 }
 
+.v-expansion-panel-header{
+  &.no-hover{
+    &:hover{
+      background-color: transparent !important;
+    }
+  }
+}
+
 
 ._offering-instances.v-data-table, ._instances-table.v-data-table {
   > .v-data-table__wrapper > table > tbody {
