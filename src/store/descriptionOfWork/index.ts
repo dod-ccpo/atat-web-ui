@@ -302,6 +302,7 @@ const saveOrUpdateOtherServiceOffering =
 const mapClassificationInstanceFromDTO = (
   value: ClassificationInstanceDTO
 ): DOWClassificationInstance => {
+  value = convertColumnReferencesToValues(value);
   const classificationLevel = ClassificationRequirements.classificationLevels.find((item) => {
     const sysId =
         typeof value.classification_level === "object"
@@ -338,6 +339,7 @@ const mapClassificationInstanceFromDTO = (
     typeOfMobility: value.type_of_mobility,
     typeOfMobilityOther: value.type_of_mobility_other,
     classifiedInformationTypes: value.classified_information_types,
+    sysId: value.sys_id,
   };
 
   return result;
@@ -1461,10 +1463,94 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.lastGroupRemoved = bool;
   }
 
+  @Action({rawError: true})
+  public async serviceOfferingHasInstances(offeringName: string): Promise<boolean> {
+    let hasInstances = false;
+    const currentOfferingGroup = this.DOWObject.find(
+      obj => obj.serviceOfferingGroupId === this.currentGroupId
+    )
+    if (currentOfferingGroup 
+      && currentOfferingGroup.serviceOfferings 
+      && currentOfferingGroup.serviceOfferings.length > 0
+    ) {
+      const serviceOfferingObj = currentOfferingGroup.serviceOfferings.find(
+        obj => obj.name === offeringName
+      );
+      if (serviceOfferingObj
+        && serviceOfferingObj.classificationInstances
+        && serviceOfferingObj.classificationInstances.length > 0
+      ) {
+        hasInstances = true;
+      }
+    }
+    return hasInstances;
+  }
+
+  @Action({rawError: true})
+  public async removeServiceOffering(offeringName: string): Promise<void> {
+    const offeringGroupIndex = this.DOWObject.findIndex(
+      group => group.serviceOfferingGroupId === this.currentGroupId
+    );
+
+    const offeringGroupObj = this.DOWObject.find(
+      group => group.serviceOfferingGroupId === this.currentGroupId
+    );
+    if (offeringGroupObj) {
+      const offeringObj = offeringGroupObj.serviceOfferings.find(
+        offering => offering.name === offeringName
+      );
+
+      if (offeringObj 
+        && offeringObj?.classificationInstances 
+        && offeringObj.classificationInstances.length > 0
+      ) {
+        const sysIds: string[] = [];
+        offeringObj.classificationInstances.forEach(instance => {
+          sysIds.push(instance.sysId as string);
+        });
+        await this.removeClassificationInstances(sysIds); 
+        await this.deleteServiceOfferingFromSNOW(offeringObj.sys_id);  
+      }
+      const updatedOfferings = 
+        offeringGroupObj.serviceOfferings.filter(obj => obj.name !== offeringName);
+      this.DOWObject[offeringGroupIndex].serviceOfferings = updatedOfferings;
+    }    
+  }
+  @Action({rawError: true})
+  public async deleteServiceOfferingFromSNOW(sysId: string): Promise<void> {
+    await api.selectedServiceOfferingTable.remove(sysId);
+  } 
+
   @Action
   public async removeCurrentOfferingGroup(): Promise<void> {
+    await this.deleteOfferingGroupInstances();
     await this.setSelectedOfferings({selectedOfferingSysIds: [], otherValue: ""});
     this.doRemoveCurrentOfferingGroup();
+  }
+
+  @Action({rawError: true})
+  public async deleteOfferingGroupInstances(): Promise<void> {
+    if (!this.currentGroupRemoved) {
+      const groupIdToRemove = this.currentGroupId;
+      const groupToRemoveObj = this.DOWObject.find(
+        e => e.serviceOfferingGroupId === groupIdToRemove
+      );
+      if (groupToRemoveObj 
+        && groupToRemoveObj.serviceOfferings 
+        && groupToRemoveObj.serviceOfferings.length > 0
+      ) {
+        groupToRemoveObj.serviceOfferings.forEach(async offering => {
+          const sysIds: string[] = [];
+          if (offering.classificationInstances && offering.classificationInstances.length > 0) {
+            offering.classificationInstances.forEach(instance => {
+              sysIds.push(instance.sysId as string);
+            });
+          }
+          await this.removeClassificationInstances(sysIds);
+          await this.deleteServiceOfferingFromSNOW(offering.sys_id)
+        })
+      }
+    }
   }
 
   // removes current offering group if user clicks  the "I don't need these cloud resources"
@@ -1911,7 +1997,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         const instanceToDelete = otherOfferingObj.otherOfferingData.find(
           obj => obj.instanceNumber === instanceNumber
         );
-        debugger;
         if (instanceToDelete && instanceToDelete.sysId) {
           deleteOtherOfferingInstanceFromSNOW(instanceToDelete.sysId, this.currentGroupId);
         }
