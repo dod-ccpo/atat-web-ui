@@ -23,6 +23,7 @@
           :additionalButtons="additionalButtons"
           :backButtonText="backButtonText"
           :continueButtonText="continueButtonText"
+          :hideContinueButton="hideContinueButton"
           :noPrevious="noPrevious"
           class="mb-8"
         />
@@ -97,6 +98,7 @@ export default class AppPackageBuilder extends Vue {
   private backButtonText = "Back";
   private continueButtonText = "Continue";
   private altBackDestination = "";
+  private hideContinueButton = false;
 
   async mounted(): Promise<void> {
     this.routeNames = routeNames;
@@ -195,6 +197,7 @@ export default class AppPackageBuilder extends Vue {
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
+    this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments;
   }
 
   private async additionalButtonClick(button: AdditionalButton) {
