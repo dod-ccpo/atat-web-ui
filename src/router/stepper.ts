@@ -165,7 +165,8 @@ import {
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
-  IGCETrainingPathResolver, IGCESurgeCapacityResolver,
+  IGCETrainingPathResolver, 
+  FeeChargedResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -969,7 +970,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SurgeCapacity,
         completePercentageWeight: 1,
         component: SurgeCapacity,
-        routeResolver: IGCESurgeCapacityResolver
       },
       {
         menuText: "Surge Capabilities",
@@ -986,7 +986,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "fee-charged",
         name: routeNames.FeeCharged,
         completePercentageWeight: 1,
-        component: FeeCharged
+        component: FeeCharged,
+        routeResolver: FeeChargedResolver,
       },
       // {
       //   menuText: "Cost Summary",

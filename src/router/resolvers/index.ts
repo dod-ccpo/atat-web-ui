@@ -908,17 +908,7 @@ const IGCERouteNext = (current: string): string => {
   ) {
     return routeNames.TravelEstimates;
   }
-  if(!contractingShopIsDitco() &&
-      (current === routeNames.CreatePriceEstimate
-          || current === routeNames.OptimizeOrReplicate
-          || current === routeNames.ArchitecturalDesignSolutions
-          || current === routeNames.GatherPriceEstimates
-          || current === routeNames.IGCETraining
-          || current === routeNames.TravelEstimates)
-  ){
-    return routeNames.SurgeCapacity;
-  }
-  return routeNames.FeeCharged;
+  return routeNames.SurgeCapacity;
 
 }
 
@@ -1067,6 +1057,45 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
   return hasTravel ? travelEstimatePath : surgeCapacityPath; 
 }
 
+export const IGCESurgeCapabilities =  (current:string): string =>{
+  const surgeCapacity =
+    IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
+
+  if (surgeCapacity.toUpperCase() !== "YES") {
+    if (current === routeNames.SurgeCapacity){
+      // TODO: change routeNames.EstimatesDeveloped below to routeNames.CostSummary
+      // when cost summary page is reinstated
+      return contractingShopIsDitco() ? routeNames.EstimatesDeveloped : routeNames.FeeCharged;
+    }
+    if (current === routeNames.FeeCharged){
+      return routeNames.SurgeCapacity;
+    }
+  } 
+  return routeNames.SurgeCapabilities;
+}
+
+export const FeeChargedResolver = (current: string): string => {
+  const surgeCapacity =
+    IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
+
+  if (!contractingShopIsDitco()) {
+    return routeNames.FeeCharged
+  }
+
+  if (current === routeNames.EstimatesDeveloped) {
+    return surgeCapacity === "YES" 
+      ? routeNames.SurgeCapabilities
+      : routeNames.SurgeCapacity;
+  }
+  // TODO: change routeNames.EstimatesDeveloped below to routeNames.CostSummary
+  // when cost summary page is reinstated
+  return routeNames.EstimatesDeveloped;
+}
+
+const contractingShopIsDitco = (): boolean => {
+  return AcquisitionPackage.contractingShop === "DITCO"
+}
+
 const hasServiceOfferings = (): boolean => {
   const offerings = DescriptionOfWork.DOWObject.filter(
     obj => obj.serviceOfferingGroupId !== "TRAINING"
@@ -1076,10 +1105,6 @@ const hasServiceOfferings = (): boolean => {
 
 const needsTravelEstimate = (): boolean => {
   return DescriptionOfWork.travelSummaryInstances.length>0;
-}
-
-const contractingShopIsDitco =(): boolean=>{
-  return AcquisitionPackage.contractingShop === "DITCO"
 }
 
 const isFirstIGCETraining = (): boolean => {
@@ -1119,37 +1144,6 @@ const dowHasTraining = (): boolean => {
 
   return trainingOfferings?.otherOfferingData 
     ? trainingOfferings.otherOfferingData.length > 0 : false;
-}
-
-export const IGCESurgeCapacityResolver =  (current:string): string =>{
-  const contractingShop = AcquisitionPackage.contractingShop
-  debugger
-  //forward
-  const forwardRoutes = [
-    routeNames.GatherPriceEstimates,
-    routeNames.IGCETraining,
-    routeNames.TravelEstimates
-  ]
-  if(contractingShop !== 'DITCO' && forwardRoutes.includes(current) ){
-    return routeNames.SurgeCapacity
-  }
-  //backward
-  if(contractingShop === 'DITCO' && (current === routeNames.SurgeCapabilities ||
-      current === routeNames.FeeCharged)){
-    return routeNames.GatherPriceEstimates
-  }
-  return routeNames.SurgeCapacity
-}
-export const IGCESurgeCapabilities =  (current:string): string =>{
-  const surgeCapacity =
-    IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
-  if (surgeCapacity.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
-    return routeNames.FeeCharged;
-  }
-  if (surgeCapacity.toUpperCase() !== "YES" && current === routeNames.FeeCharged){
-    return routeNames.SurgeCapacity;
-  }
-  return routeNames.SurgeCapabilities;
 }
 
 const needsReplicateOrOptimize = (): boolean => {
@@ -1319,7 +1313,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   IGCESupportingDocumentationResolver,
   MIPRResolver,
   IGCESurgeCapabilities,
-  IGCESurgeCapacityResolver,
+  FeeChargedResolver,
   GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,
