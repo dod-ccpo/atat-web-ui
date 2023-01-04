@@ -1756,14 +1756,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       updatedInstancesData.push(instanceData);
     }
 
-    await this.doSetOfferingDetails(updatedInstancesData);
-    await this.saveSelectedServiceOfferings().then(async () => {
-      await this.setNeedsSecurityRequirements();
-    });
-  }
-
-  @Mutation
-  public async doSetOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
     const groupIndex = this.DOWObject.findIndex(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );
@@ -1772,8 +1764,27 @@ export class DescriptionOfWorkStore extends VuexModule {
       // obj => obj.sys_id === this.currentOfferingSysId
       obj => obj.name === this.currentOfferingName
     );
+
+    const currentInstances = _.cloneDeep(
+      this.DOWObject[groupIndex].serviceOfferings[offeringIndex].classificationInstances
+    )
+    if (currentInstances && currentInstances.length) {
+      const currentSysIds = currentInstances.map(obj => obj.sysId);
+      const updatedDataSysIds = instancesData.map(obj => obj.sysId);
+      const instancesToDelete = currentSysIds.filter(sysId => !updatedDataSysIds.includes(sysId));
+      if (instancesToDelete && instancesToDelete.length) {
+        const sysIds: string[] = [];
+        instancesToDelete.forEach(sysId => sysId !== undefined ? sysIds.push(sysId) : false);
+        await this.removeClassificationInstances(sysIds)
+      }
+    }
+
     this.DOWObject[groupIndex].serviceOfferings[offeringIndex].classificationInstances
-        = instancesData;
+        = updatedInstancesData;
+
+    await this.saveSelectedServiceOfferings().then(async () => {
+      await this.setNeedsSecurityRequirements();
+    });
   }
 
   // ******************************************************************
