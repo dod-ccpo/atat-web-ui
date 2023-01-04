@@ -255,6 +255,13 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   public async modalOkClicked(): Promise<void> {
     this.showDialog = false;
+    
+    debugger;
+    if (this.modalSelectedOptions.length < this.modalSelectionsOnOpen.length) {
+      // ejy figure out which ones were removed
+      
+
+    }
     // remove any previously selected classifications no longer selected in modal
     const keepSelected = this.modalSelectedOptions;
     this.selectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter((sysId) => {
