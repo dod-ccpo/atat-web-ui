@@ -302,6 +302,7 @@ const saveOrUpdateOtherServiceOffering =
 const mapClassificationInstanceFromDTO = (
   value: ClassificationInstanceDTO
 ): DOWClassificationInstance => {
+  value = convertColumnReferencesToValues(value);
   const classificationLevel = ClassificationRequirements.classificationLevels.find((item) => {
     const sysId =
         typeof value.classification_level === "object"
@@ -338,6 +339,7 @@ const mapClassificationInstanceFromDTO = (
     typeOfMobility: value.type_of_mobility,
     typeOfMobilityOther: value.type_of_mobility_other,
     classifiedInformationTypes: value.classified_information_types,
+    sysId: value.sys_id,
   };
 
   return result;
@@ -1497,21 +1499,27 @@ export class DescriptionOfWorkStore extends VuexModule {
       const offeringObj = offeringGroupObj.serviceOfferings.find(
         offering => offering.name === offeringName
       );
-      const sysIds: string[] = [];
+
       if (offeringObj 
         && offeringObj?.classificationInstances 
         && offeringObj.classificationInstances.length > 0
       ) {
+        const sysIds: string[] = [];
         offeringObj.classificationInstances.forEach(instance => {
           sysIds.push(instance.sysId as string);
         });
-        this.removeClassificationInstances(sysIds);        
+        await this.removeClassificationInstances(sysIds); 
+        await this.deleteServiceOfferingFromSNOW(offeringObj.sys_id);  
       }
       const updatedOfferings = 
         offeringGroupObj.serviceOfferings.filter(obj => obj.name !== offeringName);
       this.DOWObject[offeringGroupIndex].serviceOfferings = updatedOfferings;
     }    
   }
+  @Action({rawError: true})
+  public async deleteServiceOfferingFromSNOW(sysId: string): Promise<void> {
+    await api.selectedServiceOfferingTable.remove(sysId);
+  } 
 
   @Action
   public async removeCurrentOfferingGroup(): Promise<void> {
@@ -1531,14 +1539,15 @@ export class DescriptionOfWorkStore extends VuexModule {
         && groupToRemoveObj.serviceOfferings 
         && groupToRemoveObj.serviceOfferings.length > 0
       ) {
-        const sysIds: string[] = [];
-        groupToRemoveObj.serviceOfferings.forEach(offering => {
+        groupToRemoveObj.serviceOfferings.forEach(async offering => {
+          const sysIds: string[] = [];
           if (offering.classificationInstances && offering.classificationInstances.length > 0) {
             offering.classificationInstances.forEach(instance => {
               sysIds.push(instance.sysId as string);
             });
           }
-          this.removeClassificationInstances(sysIds);
+          await this.removeClassificationInstances(sysIds);
+          await this.deleteServiceOfferingFromSNOW(offering.sys_id)
         })
       }
     }
