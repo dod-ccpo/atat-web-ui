@@ -60,7 +60,7 @@
                 <p>
                   We recommend downloading the
                   <a 
-                    :href="jaURL"
+                    :href="jaTemplateUrl"
                     download= "JWCC J&A Template_Template.docx"
                     class="_text-link" id="JandATemplateLink"
                   >
@@ -68,7 +68,7 @@
                   </a>
                   and
                    <!-- eslint-disable-next-line max-len -->
-                  <a :href="mrrURL"
+                  <a :href="mrrTemplateUrl"
                    download="JWCC Market Research Report (Sole Source)_Template.docx"
                     class="_text-link" id="MRRTemplateLink"
                   >
@@ -112,8 +112,8 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class Exceptions extends Mixins(SaveOnLeave) {
-  private jaURL = "";
-  private mrrURL = "";
+  private jaTemplateUrl = "";
+  private mrrTemplateUrl = "";
   private selectedException = "";
 
   private get currentData(): FairOpportunityDTO {
@@ -140,8 +140,10 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
       this.selectedException = storeData.exception_to_fair_opportunity;
     }
 
-    this.jaURL = await AcquisitionPackage.getJamrrTemplateUrl("ja");
-    this.mrrURL = await AcquisitionPackage.getJamrrTemplateUrl("mrr");
+    this.jaTemplateUrl = document.location.origin + "/sys_attachment.do?sys_id=" 
+      + await AcquisitionPackage.getJamrrTemplateSysID('ja');
+    this.mrrTemplateUrl = document.location.origin + "/sys_attachment.do?sys_id=" + 
+      await AcquisitionPackage.getJamrrTemplateSysID('mrr');
   }
 
   protected async saveOnLeave(): Promise<boolean> {

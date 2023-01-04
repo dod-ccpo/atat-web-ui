@@ -373,8 +373,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action
-  public async getJamrrTemplateUrl(type: string): Promise<string>{
-    let url = '';
+  public async getJamrrTemplateSysID(type: string): Promise<string>{
     let attachment: AttachmentDTO[] = [{
       file_name: "",
       table_sys_id: ""
@@ -390,12 +389,11 @@ export class AcquisitionPackageStore extends VuexModule {
       }
     };
     attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
-    if(attachment){
-      url = attachment[0].download_link as string;
-    }
-    return url;
+    return attachment[0].sys_id || "";
   }
 
+  //https://services-dev.disa.mil/sys_attachment.do?sys_id=8b6e6da7db80a154b1227ea5f39619b2
+  
   @Action
   public getAcquisitionPackageSysId(): string {
     return this.acquisitionPackage?.sys_id || "";
