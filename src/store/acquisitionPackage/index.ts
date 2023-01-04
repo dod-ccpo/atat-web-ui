@@ -389,11 +389,9 @@ export class AcquisitionPackageStore extends VuexModule {
       }
     };
     attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
-    return attachment[0].sys_id || "";
+    return document.location.origin + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || "";
   }
 
-  //https://services-dev.disa.mil/sys_attachment.do?sys_id=8b6e6da7db80a154b1227ea5f39619b2
-  
   @Action
   public getAcquisitionPackageSysId(): string {
     return this.acquisitionPackage?.sys_id || "";

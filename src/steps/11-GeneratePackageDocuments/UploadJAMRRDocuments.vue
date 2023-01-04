@@ -257,10 +257,8 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
         exception_to_fair_opportunity: storeData.exception_to_fair_opportunity
       }
     }
-    this.jaTemplateUrl = document.location.origin + "/sys_attachment.do?sys_id=" 
-      + await AcquisitionPackage.getJamrrTemplateSysID('ja');
-    this.mrrTemplateUrl = document.location.origin + "/sys_attachment.do?sys_id=" + 
-      await AcquisitionPackage.getJamrrTemplateSysID('mrr');
+    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('ja');
+    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('mrr');
   }
 
   

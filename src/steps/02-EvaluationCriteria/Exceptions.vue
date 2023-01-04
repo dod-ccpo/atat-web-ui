@@ -140,10 +140,8 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
       this.selectedException = storeData.exception_to_fair_opportunity;
     }
 
-    this.jaTemplateUrl = document.location.origin + "/sys_attachment.do?sys_id=" 
-      + await AcquisitionPackage.getJamrrTemplateSysID('ja');
-    this.mrrTemplateUrl = document.location.origin + "/sys_attachment.do?sys_id=" + 
-      await AcquisitionPackage.getJamrrTemplateSysID('mrr');
+    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('ja');
+    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('mrr');
   }
 
   protected async saveOnLeave(): Promise<boolean> {
