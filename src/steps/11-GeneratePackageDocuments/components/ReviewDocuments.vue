@@ -88,14 +88,15 @@
       <v-col cols="4">
         <div
           id="emailCard"
-          class="border1 border-rounded border-base-lighter pa-6 mb-4 elevation-2"
+          class="border1 border-rounded border-base-lighter pa-6 mb-7 elevation-2"
         >
           <h3 class="mb-2">Email your documents to DITCO</h3>
           <p>
             Send your completed package via email to disa.scott.ditco.mbx.ditco-jwcc@mail.mil
           </p>
             <v-btn
-              class="d-flex align-center _button-text justify-space-around primary"
+              class="d-flex align-center primary"
+              width="278px"
               @click="openMail"
               @keydown.enter="openMail"
               @keydown.space="openMail"
