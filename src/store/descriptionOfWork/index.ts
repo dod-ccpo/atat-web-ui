@@ -563,7 +563,7 @@ const deleteOtherOfferingInstanceFromSNOW = (sysId: string, groupId: string) => 
     api.databaseEnvironmentInstanceTable.remove(sysId);
     break;
   case "storage":
-    api.databaseEnvironmentInstanceTable.remove(sysId);
+    api.storageEnvironmentInstanceTable.remove(sysId);
     break;
   case "general_xaas":
     api.xaaSEnvironmentInstanceTable.remove(sysId);

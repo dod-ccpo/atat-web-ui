@@ -22,6 +22,7 @@
             icon="arrow_drop_down"
           />
 
+          <!-- add link when functionality completed in future ticket
           <a
             role="button"
             id="RequestAgencyAdded"
@@ -31,6 +32,7 @@
           >
             Request to have your agency added
           </a>
+          -->
 
           <div v-if="selectedAgency" class="mt-10">
             <hr />
