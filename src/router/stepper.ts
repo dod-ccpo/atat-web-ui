@@ -165,7 +165,7 @@ import {
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
-  IGCETrainingPathResolver,
+  IGCETrainingPathResolver, IGCESurgeCapacityResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -969,6 +969,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SurgeCapacity,
         completePercentageWeight: 1,
         component: SurgeCapacity,
+        routeResolver: IGCESurgeCapacityResolver
       },
       {
         menuText: "Surge Capabilities",

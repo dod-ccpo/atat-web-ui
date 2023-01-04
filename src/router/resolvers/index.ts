@@ -908,7 +908,17 @@ const IGCERouteNext = (current: string): string => {
   ) {
     return routeNames.TravelEstimates;
   }
-  return routeNames.SurgeCapacity;
+  if(!contractingShopIsDitco() &&
+      (current === routeNames.CreatePriceEstimate
+          || current === routeNames.OptimizeOrReplicate
+          || current === routeNames.ArchitecturalDesignSolutions
+          || current === routeNames.GatherPriceEstimates
+          || current === routeNames.IGCETraining
+          || current === routeNames.TravelEstimates)
+  ){
+    return routeNames.SurgeCapacity;
+  }
+  return routeNames.FeeCharged;
 
 }
 
@@ -1068,6 +1078,10 @@ const needsTravelEstimate = (): boolean => {
   return DescriptionOfWork.travelSummaryInstances.length>0;
 }
 
+const contractingShopIsDitco =(): boolean=>{
+  return AcquisitionPackage.contractingShop === "DITCO"
+}
+
 const isFirstIGCETraining = (): boolean => {
   const trainingIndex = IGCE.igceTrainingIndex;
   return trainingIndex <= 0;
@@ -1107,6 +1121,25 @@ const dowHasTraining = (): boolean => {
     ? trainingOfferings.otherOfferingData.length > 0 : false;
 }
 
+export const IGCESurgeCapacityResolver =  (current:string): string =>{
+  const contractingShop = AcquisitionPackage.contractingShop
+  debugger
+  //forward
+  const forwardRoutes = [
+    routeNames.GatherPriceEstimates,
+    routeNames.IGCETraining,
+    routeNames.TravelEstimates
+  ]
+  if(contractingShop !== 'DITCO' && forwardRoutes.includes(current) ){
+    return routeNames.SurgeCapacity
+  }
+  //backward
+  if(contractingShop === 'DITCO' && (current === routeNames.SurgeCapabilities ||
+      current === routeNames.FeeCharged)){
+    return routeNames.GatherPriceEstimates
+  }
+  return routeNames.SurgeCapacity
+}
 export const IGCESurgeCapabilities =  (current:string): string =>{
   const surgeCapacity =
     IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
@@ -1286,6 +1319,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   IGCESupportingDocumentationResolver,
   MIPRResolver,
   IGCESurgeCapabilities,
+  IGCESurgeCapacityResolver,
   GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,

@@ -86,7 +86,7 @@
         </div>
       </v-col>
       <v-col cols="4">
-        <div
+        <div v-if="contractingShop === 'DITCO' "
           id="emailCard"
           class="border1 border-rounded border-base-lighter pa-6 mb-7 elevation-2"
         >
@@ -150,12 +150,14 @@ export default class ReviewDocuments extends Vue {
   @Prop({default: false }) private isErrored!: boolean;
   public packageId = "";
 
+  private contractingShop = ""
   private openMail(): void {
     const mailStr = "mailto:disa.scott.ditco.mbx.ditco-jwcc@mail.mil";
     window.open(mailStr, "_blank");
   }
   async mounted(): Promise<void>{
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
+    this.contractingShop = AcquisitionPackage.contractingShop
   }
 
 }
