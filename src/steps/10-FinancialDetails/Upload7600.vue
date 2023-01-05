@@ -67,8 +67,6 @@
           :validFiles.sync="uploadedFiles"
           :requiredMessage="requiredMessage"
           :rules="getRulesArray()"
-          @mouseleave="onFileUploadChanged"
-          @blur="onFileUploadChanged"
         />
         <ATATAlert
           id="UPload7600Alert"
