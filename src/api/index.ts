@@ -56,6 +56,8 @@ import { GInvoicingApi } from "@/api/gInvoicing";
 import { TrainingEstimateAPI } from "@/api/trainingEstimate";
 import {IgceEstimateApi} from "@/api/igceEstimate";
 import { travelRequirementApi } from "./travelRequirement";
+import { RegionsAPI } from "./regions";
+
 
 export const api = {
 
@@ -117,7 +119,8 @@ export const api = {
   xaaSEnvironmentInstanceTable: new XaaSEnvironmentInstanceAPI(),
   crossDomainSolutionTable: new CrossDomainSolutionAPI(),
   travelRequirementTable: new travelRequirementApi(),
-  trainingEstimateTable: new TrainingEstimateAPI()
+  trainingEstimateTable: new TrainingEstimateAPI(),
+  regionsTable: new RegionsAPI()
 }
 
 export default {

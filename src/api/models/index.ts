@@ -832,3 +832,17 @@ export interface IgceEstimateDTO extends BaseTableDTO {
   unit_quantity: string;
   dow_task_number?: string;
 }
+
+export interface RegionsDTO extends BaseTableDTO {
+  sequence: string
+  sys_id: string
+  sys_updated_by: string
+  sys_created_on: string
+  name: string
+  sys_mod_count: string
+  description: string
+  sys_updated_on: string
+  sys_tags: string
+  sys_created_by: string
+  group: string
+}

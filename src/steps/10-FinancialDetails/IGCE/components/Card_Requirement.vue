@@ -1,17 +1,18 @@
 <template>
-  <div>
-    <div
-      class="d-flex align-start px-6 pt-2 _requirement-card"
+  <v-container>
+    <v-row
+      style="flex-wrap: nowrap;"
+      class=" _requirement-card"
       :class="[{ 'bg-error-lighter': noMonthlyValue}]"
     >
-      <div class="font-size-14 font-weight-700 pt-2">
+      <v-col class="font-size-14 font-weight-700 pt-5 pl-6 pr-5 flex-grow-0 flex-shrink-0">
         {{index}}
-      </div>
-      <div class="pl-4" style="width: 100%">
+      </v-col>
+      <v-col class="flex-grow-1 flex-shrink-1">
         <v-text-field
-          id="HeaderTextField"
+          :id="'HeaderTextField_' + index"
           dense
-          class="_requirement-head my-1 "
+          class="_requirement-head my-1 width-100"
           hide-details
           autocomplete="off"
           width="100%"
@@ -19,9 +20,10 @@
           @blur="saveTitle()"
         />
         <v-textarea
-          class="_requirement-description pt-0"
+          :id="'Description_' + index"
+          class="_requirement-description pt-0 width-100"
           auto-grow
-          rows="2"
+          rows="1"
           hide-details
           v-model="description"
           @blur="saveDescription()"
@@ -33,27 +35,33 @@
           :errorMessages="['Enter your estimated monthly price for this requirement.']"
           v-if="noMonthlyValue"
         />
-      </div>
+      </v-col>
+      <v-col class="flex-grow-0 flex-shrink-0">
       <ATATTextField
-        :value.sync="_cardData.monthly_price"
+        :value.sync="estimate"
         :isCurrency="true"
         :showErrorMessages="false"
-        :appendText= type
-        width="160"
+        :appendText=type
+        width="220"
+        :id="'EstimateTextField_' + index"
         @blur="checkMonthlyValue()"
+        :alignRight="true"
         class="ml-auto pt-3 _requirement-currency"
         :class="[{ 'error--text': noMonthlyValue},]"
         />
-    </div>
-  </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-import { Checkbox } from "../../../../../types/Global";
+import { Component, Prop, PropSync, Watch} from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import { currencyStringToNumber, toCurrencyString } from "@/helpers";
+
 @Component({
   components:{
     ATATTextField,
@@ -68,6 +76,8 @@ export default class CardRequirement extends Vue {
   public description = ""
   public type = ""
   public noMonthlyValue = false
+  public estimate = "";
+  public moneyNumber = 0; 
 
   public saveTitle(): void {
     if(this.title !== ""){
@@ -87,14 +97,28 @@ export default class CardRequirement extends Vue {
   }
 
   public checkMonthlyValue(): void {
-    this.noMonthlyValue = Number(this._cardData.monthly_price) < 1;
+    // eslint-disable-next-line camelcase
+    this._cardData.monthly_price = this.estimate;
+    this.noMonthlyValue = this.moneyNumber < 1;
   }
   public async loadOnEnter(): Promise<void> {
+    
     Vue.nextTick(() => {
       this.title = this._cardData.IGCE_title
-      this.description = this._cardData.IGCE_description
-      this.type = this._cardData.unit
+      this.description = this._cardData.IGCE_description;
+      this.type = "/" + this._cardData.unit.toLowerCase();
+      this.moneyNumber = currencyStringToNumber(this._cardData.monthly_price);
+      this.estimate = this.moneyNumber >0 
+        ? toCurrencyString(this.moneyNumber, true) 
+        : "";
     })
+  }
+
+  @Watch("estimate")
+  protected monthlyPriceChange(newVal: string): void {
+    this.moneyNumber = currencyStringToNumber(newVal);
+    // eslint-disable-next-line camelcase
+    this._cardData.monthly_price = newVal;
   }
 
   public async mounted(): Promise<void> {
