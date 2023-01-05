@@ -8,6 +8,8 @@
         :value.sync="_value"
         :optional="isOptional"
         :tooltip-text="tooltipText"
+        :isMaskRegex="true"
+        :mask="['[a-zA-Z 0-9]+/g']"
     />
   </div>
   <div v-else>
