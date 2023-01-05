@@ -421,8 +421,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action
-  public async getJamrrTemplateUrl(type: string): Promise<string>{
-    let url = '';
+  public async getJamrrTemplateSysID(type: string): Promise<string>{
     let attachment: AttachmentDTO[] = [{
       file_name: "",
       table_sys_id: ""
@@ -438,10 +437,7 @@ export class AcquisitionPackageStore extends VuexModule {
       }
     };
     attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
-    if(attachment){
-      url = attachment[0].download_link as string;
-    }
-    return url;
+    return document.location.origin + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || "";
   }
 
   @Action
