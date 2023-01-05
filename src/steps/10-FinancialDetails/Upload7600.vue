@@ -268,15 +268,6 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-
-    //listen for attachment service upload callbacks
-    //and update attachments
-    AttachmentServiceCallbacks.registerUploadCallBack(
-      FUNDING_REQUEST_FSFORM_TABLE,
-      async () => {
-        // await this.loadFundingRequestData();
-      }
-    );
   }
 
   protected async saveOnLeave(): Promise<boolean> {

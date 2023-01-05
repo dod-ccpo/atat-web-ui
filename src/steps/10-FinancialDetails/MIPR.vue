@@ -165,7 +165,6 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
       async () => {
         //reload data when files are uploaded
         this.saved = await FinancialDetails.loadFundingRequestMIPRForm();
-        // this.MIPRNumber = this.saved.mipr_number;
       }
     );
   }

@@ -47,40 +47,7 @@
               :value.sync="gInvoiceNumber"
               helpText="Format: OYYMM-000-000-000000"
               searchType="G-Invoicing"
-
-              :rules="[
-                $validators.isMaskValid(
-                  ['O[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
-                  `We could not find your order within G-Invoicing.
-                    Please enter a valid order number and search again.</br></br>
-                    If you confimed your order within G-Invoicing and continue to
-                    receive this message, please contact Customer Support<ul>
-                    <li>Customer support link -
-                    <a href='https://community.hacc.mil/s/contact?RequestTopic=Account%20Tra
-                    cking%20and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer'>
-                    HaCC Community</a>
-                    </li>
-                    </ul>`,
-                  true
-                )
-              ]"
             />
-
-<!--          <ATATAlert
-              id="GInvoicingOrderNumberWarning"
-              v-show="uploadedFiles.length > 0 && uploadedFiles.length < 2"
-              type="error"
-              class="mt-10"
-          >
-            <template v-slot:content>
-              <p class="mb-0">
-                You may be missing a funding document. Please ensure that both
-                authorized forms are uploaded. If your 7600A and 7600B were
-                combined into a single file before uploading, ignore this message.
-              </p>
-            </template>
-          </ATATAlert>-->
-
         </div>
       </v-col>
     </v-row>
