@@ -274,7 +274,8 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
     this.isPeriodsDataMissing = (periods && periods.length === 0);
     const estimatedTOValue = await FinancialDetails.getEstimatedTaskOrderValue();
     this.isCostEstimateMissing = !estimatedTOValue;
-    this.savedFundOption = FinancialDetails.isIncrementallyFunded as string;
+    await FinancialDetails.loadFundingRequirement();
+    this.savedFundOption = FinancialDetails.fundingRequirement?.incrementally_funded as string;
     this.selectedFundOption = this.savedFundOption;
     this.base = periods[0];
   }
@@ -294,19 +295,14 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-     
       if (this.hasChanged()) {
-        const taskOrder = {
-          ...TaskOrder.value,
-          // eslint-disable-next-line camelcase
-          incrementally_funded: this.selectedFundOption
-        };
-        await TaskOrder.save(taskOrder);
+        const fundingRequirement = await FinancialDetails.getFundingRequirement();
+        fundingRequirement.incrementally_funded = this.selectedFundOption;
+        await FinancialDetails.saveFundingRequirement();
       }
     } catch (error) {
       console.log(error);
     }
-
     return true;
   }
 

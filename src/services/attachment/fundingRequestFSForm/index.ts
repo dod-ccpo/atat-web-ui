@@ -1,15 +1,14 @@
 /* eslint-disable camelcase */
-import { FundingRequestFSFormApi } from "@/api/fundingRequestFSForm";
-import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
-import { AttachmentServiceCallbacks, RecordManager } from "..";
-import { AttachmentServiceBase } from "../base";
+import {FundingRequestFSFormApi} from "@/api/fundingRequestFSForm";
+import {AttachmentDTO, FundingRequestFSFormDTO} from "@/api/models";
+import {AttachmentServiceCallbacks, RecordManager} from "..";
+import {AttachmentServiceBase} from "../base";
 import FinancialDetails from "@/store/financialDetails";
 
 // record manager to coordinate record creation saving with attachment service
 const recordManager : RecordManager<FundingRequestFSFormDTO> = {
   retrieveOrCreate: async function (): Promise<FundingRequestFSFormDTO> {
-    const record = await FinancialDetails.loadFundingRequestFSForm();
-    return record;
+    return await FinancialDetails.loadFundingRequestFSForm();
   },
   save: async function (record: string): Promise<void> {
     const data = JSON.parse(record) as FundingRequestFSFormDTO;
@@ -21,7 +20,7 @@ const recordManager : RecordManager<FundingRequestFSFormDTO> = {
 
     // the assumption being made here is if the 7600 a file attachment 
     // has a value, then it's already been uploaded to
-    if(data.fs_form_7600b_attachment.length > 0)
+    if(data.fs_form_7600a_attachment.length > 0)
     {
       // eslint-disable-next-line camelcase
       data.fs_form_7600b_filename = fileName;

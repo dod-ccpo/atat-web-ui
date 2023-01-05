@@ -51,7 +51,7 @@
               :rules="[
                 $validators.isMaskValid(
                   ['O[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
-                  `Your order number should be 20 or 22 characters (including hyphens 
+                  `Your order number should be 20 or 22 characters (including hyphens
                     and periods) and use the format:<ul>
                     <li>OYYMM-000-000-000000</li>
                     <li>OYYMM-000-000-000000.0 (with version number)</li></ul>`,
@@ -59,6 +59,21 @@
                 )
               ]"
             />
+
+<!--          <ATATAlert
+              id="GInvoicingOrderNumberWarning"
+              v-show="uploadedFiles.length > 0 && uploadedFiles.length < 2"
+              type="error"
+              class="mt-10"
+          >
+            <template v-slot:content>
+              <p class="mb-0">
+                You may be missing a funding document. Please ensure that both
+                authorized forms are uploaded. If your 7600A and 7600B were
+                combined into a single file before uploading, ignore this message.
+              </p>
+            </template>
+          </ATATAlert>-->
 
         </div>
       </v-col>
