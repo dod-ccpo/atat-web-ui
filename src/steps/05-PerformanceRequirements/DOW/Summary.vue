@@ -149,7 +149,7 @@ import ATATTooltip from "@/components/ATATTooltip.vue"
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import { DOWServiceOffering, DOWServiceOfferingGroup } from "../../../../types/Global";
 import Periods from "@/store/periods";
-import DescriptionOfWork from "@/store/descriptionOfWork";
+import DescriptionOfWork, { setSelectedGroupsMissingData } from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 import { getIdText, toTitleCase } from "@/helpers";
@@ -293,39 +293,6 @@ export default class Summary extends Mixins(SaveOnLeave) {
     return serviceArr.join();
   };
 
-  public setSelectedGroupsMissingData(value: DOWServiceOfferingGroup[]): void {
-    let outputArr :string[] = [];
-    value.forEach((obj)=>{
-      let id = obj.serviceOfferingGroupId;
-      if (this.isClassificationDataMissing || 
-        (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||
-        (obj.otherOfferingData && obj.otherOfferingData.length === 0)) {
-        outputArr.push(id);
-      } else {
-        obj.serviceOfferings.forEach((offering)=>{
-          if(offering.classificationInstances && offering.classificationInstances.length === 0) {
-            if(outputArr.indexOf(id) < 0){
-              outputArr.push(id);
-            };
-          } else {
-            offering.classificationInstances?.forEach((instance)=>{
-              if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
-                if(outputArr.indexOf(id) < 0){
-                  outputArr.push(id);
-                };
-              } else if (instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
-                if(outputArr.indexOf(id) < 0){
-                  outputArr.push(id);
-                }
-              };
-            });
-          }
-        });
-      }
-    });
-    this.serviceGroupsMissingData = outputArr;
-  };
-
   public missingData(value: string): boolean {
     return this.serviceGroupsMissingData.includes(value) ? true : false;
   };
@@ -369,21 +336,13 @@ export default class Summary extends Mixins(SaveOnLeave) {
     this.selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
       e => e.serviceOfferingGroupId.indexOf("NONE") === -1
     );
-
-    this.setSelectedGroupsMissingData(this.selectedServiceGroups);
-
+    this.serviceGroupsMissingData = 
+      await setSelectedGroupsMissingData(this.selectedServiceGroups);
   };
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    this.setIsIncomplete();
   };
-
-  public setIsIncomplete(): void {
-    DescriptionOfWork.setIsIncomplete(
-      this.serviceGroupsMissingData.length>0
-    );
-  }
 
   protected async saveOnLeave(): Promise<boolean> {
     Steps.clearAltBackButtonText();

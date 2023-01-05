@@ -47,6 +47,7 @@ import Periods from "../periods";
 import { buildClassificationLabel } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import classificationRequirements from "@/store/classificationRequirements";
 
 
 // Classification Proxy helps keep track of saved
@@ -580,6 +581,47 @@ const deleteOtherOfferingInstanceFromSNOW = (sysId: string, groupId: string) => 
   }
 }  
 
+/**
+ * @param value - selected DOWServiceOfferingGroup
+ * @returns string array of incomplete service offering group titles
+ */
+export const setSelectedGroupsMissingData = 
+  async (value: DOWServiceOfferingGroup[]): Promise<string[]> => {
+    const classifications = await classificationRequirements.getSelectedClassificationLevels();
+    const outputArr :string[] = [];
+    value.forEach((obj)=>{
+      const id = obj.serviceOfferingGroupId;
+      if (classifications && classifications.length <= 0 || 
+      (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||
+      (obj.otherOfferingData && obj.otherOfferingData.length === 0)) {
+        outputArr.push(id);
+      } else {
+        obj.serviceOfferings.forEach((offering)=>{
+          if(offering.classificationInstances && offering.classificationInstances.length === 0) {
+            if(outputArr.indexOf(id) < 0){
+              outputArr.push(id);
+            };
+          } else {
+          offering.classificationInstances?.forEach((instance)=>{
+            if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
+              if(outputArr.indexOf(id) < 0){
+                outputArr.push(id);
+              };
+            } else if (instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
+              if(outputArr.indexOf(id) < 0){
+                outputArr.push(id);
+              }
+            };
+          });
+          }
+        });
+      }
+    });
+    DescriptionOfWork.setIsIncomplete(outputArr.length>0);
+    return outputArr;
+  };
+
+
 @Module({
   name: "DescriptionOfWork",
   namespaced: true,
@@ -589,7 +631,7 @@ const deleteOtherOfferingInstanceFromSNOW = (sysId: string, groupId: string) => 
 
 export class DescriptionOfWorkStore extends VuexModule {
   initialized = false;
-  isIncomplete = true;
+  isIncomplete = false;
   serviceOfferings: ServiceOfferingDTO[] = [];
   serviceOfferingGroups: SystemChoiceDTO[] = [];
 
@@ -1174,6 +1216,13 @@ export class DescriptionOfWorkStore extends VuexModule {
       }
     }
 
+    const selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
+      e => e.serviceOfferingGroupId.indexOf("NONE") === -1
+    );
+    
+    //sets this.isIncomplete variable
+    setSelectedGroupsMissingData(selectedServiceGroups)
+
     this.setCurrentOfferingGroupId("");
 
   }
@@ -1436,7 +1485,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public setServiceOfferingGroups(value: SystemChoiceDTO[]) {
+  public setServiceOfferingGroups(value: SystemChoiceDTO[]): void {
     value.forEach((value, index) => {
       // ensure "none apply" options are last in sequence
       value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index + 1;

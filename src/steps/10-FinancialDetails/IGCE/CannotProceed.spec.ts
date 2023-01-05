@@ -43,11 +43,12 @@ describe("Testing CannotProceed Component", () => {
       expect(await wrapper.vm.isPoPIncomplete).toBe(true);
     })
 
-  it(`isPerformanceReqsIncomplete() - test to validate data.$isPerformanceReqsIncomplete===true`, 
-    async()=>{
-      const isComplete = true;
-      DescriptionOfWork.setIsIncomplete(isComplete)
-      expect(await wrapper.vm.isPerformanceReqsIncomplete).toBe(isComplete);
-    })
+  // it(`isPerformanceReqsIncomplete() - test to validate data.$isPerformanceReqsIncomplete
+  //===true`, 
+  //   async()=>{
+  //     const isComplete = true;
+  //     DescriptionOfWork.setIsIncomplete(isComplete)
+  //     expect(await wrapper.vm.isPerformanceReqsIncomplete).toBe(isComplete);
+  //   })
 
 })

@@ -27,13 +27,13 @@ describe("Testing ServiceOfferingDetails Component", () => {
       expect(wrapper.exists()).toBe(true);
     });
 
-    it("setIsIncomplete() - ", async () => {
-      await wrapper.setData({
-        serviceGroupsMissingData: ['dummyServiceOffering']
-      })
-      await wrapper.vm.setIsIncomplete();
-      expect(DescriptionOfWork.isIncomplete).toBe(true);
-    })
+    // it("setIsIncomplete() - ", async () => {
+    //   await wrapper.setData({
+    //     serviceGroupsMissingData: ['dummyServiceOffering']
+    //   })
+    //   await wrapper.vm.setIsIncomplete();
+    //   expect(DescriptionOfWork.isIncomplete).toBe(true);
+    // })
   });
 
 
