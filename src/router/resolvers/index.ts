@@ -1057,6 +1057,45 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
   return hasTravel ? travelEstimatePath : surgeCapacityPath; 
 }
 
+export const IGCESurgeCapabilities =  (current:string): string =>{
+  const surgeCapacity =
+    IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
+
+  if (surgeCapacity.toUpperCase() !== "YES") {
+    if (current === routeNames.SurgeCapacity){
+      // TODO: change routeNames.EstimatesDeveloped below to routeNames.CostSummary
+      // when cost summary page is reinstated
+      return contractingShopIsDitco() ? routeNames.EstimatesDeveloped : routeNames.FeeCharged;
+    }
+    if (current === routeNames.FeeCharged){
+      return routeNames.SurgeCapacity;
+    }
+  } 
+  return routeNames.SurgeCapabilities;
+}
+
+export const FeeChargedResolver = (current: string): string => {
+  const surgeCapacity =
+    IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
+
+  if (!contractingShopIsDitco()) {
+    return routeNames.FeeCharged
+  }
+
+  if (current === routeNames.EstimatesDeveloped) {
+    return surgeCapacity === "YES" 
+      ? routeNames.SurgeCapabilities
+      : routeNames.SurgeCapacity;
+  }
+  // TODO: change routeNames.EstimatesDeveloped below to routeNames.CostSummary
+  // when cost summary page is reinstated
+  return routeNames.EstimatesDeveloped;
+}
+
+const contractingShopIsDitco = (): boolean => {
+  return AcquisitionPackage.contractingShop === "DITCO"
+}
+
 const hasServiceOfferings = (): boolean => {
   const offerings = DescriptionOfWork.DOWObject.filter(
     obj => obj.serviceOfferingGroupId !== "TRAINING"
@@ -1105,18 +1144,6 @@ const dowHasTraining = (): boolean => {
 
   return trainingOfferings?.otherOfferingData 
     ? trainingOfferings.otherOfferingData.length > 0 : false;
-}
-
-export const IGCESurgeCapabilities =  (current:string): string =>{
-  const surgeCapacity =
-    IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
-  if (surgeCapacity.toUpperCase() !== "YES" && current === routeNames.SurgeCapacity){
-    return routeNames.FeeCharged;
-  }
-  if (surgeCapacity.toUpperCase() !== "YES" && current === routeNames.FeeCharged){
-    return routeNames.SurgeCapacity;
-  }
-  return routeNames.SurgeCapabilities;
 }
 
 const needsReplicateOrOptimize = (): boolean => {
@@ -1286,6 +1313,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   IGCESupportingDocumentationResolver,
   MIPRResolver,
   IGCESurgeCapabilities,
+  FeeChargedResolver,
   GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,

@@ -70,6 +70,7 @@ import Warning from "@/components/icons/Warning.vue";
 import WarningAmber from "@/components/icons/WarningAmber.vue";
 import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vue";
 import Place from "@/components/icons/Place.vue";
+import SendEmail from "@/components/icons/SendEmail.vue";
 
 
 @Component({
@@ -118,6 +119,7 @@ import Place from "@/components/icons/Place.vue";
     Role,
     Remove,
     Search,
+    SendEmail,
     Service,
     SignOut,
     Support,
