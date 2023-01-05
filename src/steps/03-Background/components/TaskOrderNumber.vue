@@ -9,7 +9,7 @@
         :optional="isOptional"
         :tooltip-text="tooltipText"
         :isMaskRegex="true"
-        :mask="['[a-zA-Z 0-9]+/g']"
+        :mask="['^[a-zA-Z0-9]*$']"
     />
   </div>
   <div v-else>

@@ -7,7 +7,7 @@
         class="_input-max-width"
         :value.sync="_value"
         :isMaskRegex="true"
-        :mask="['[a-zA-Z 0-9]+/g']"
+        :mask="['^[a-zA-Z0-9]*$']"
     />
   </div>
   <div v-else>
