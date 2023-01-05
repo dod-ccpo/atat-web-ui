@@ -91,10 +91,17 @@
           order number and search again.
         </p>
         <p class="mb-0">
-          If you confirmed your order number within {{ searchType }} and continue to
-          receive this message, please reach out to our User Engagement Team for
-          support.
+          If you confirmed your order within {{ searchType }} and continue to
+          receive this message, please contact Customer Support.
         </p>
+        <ul>
+          <li>Customer support link -
+            <a href="https://community.hacc.mil/s/contact?RequestTopic=Account%20Trackin
+            g%20and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer">
+              HaCC Community
+            </a>
+          </li>
+        </ul>
       </template>
     </ATATAlert>
 
