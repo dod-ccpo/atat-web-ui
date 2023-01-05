@@ -51,10 +51,16 @@
               :rules="[
                 $validators.isMaskValid(
                   ['O[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
-                  `Your order number should be 20 or 22 characters (including hyphens
-                    and periods) and use the format:<ul>
-                    <li>OYYMM-000-000-000000</li>
-                    <li>OYYMM-000-000-000000.0 (with version number)</li></ul>`,
+                  `We could not find your order within G-Invoicing.
+                    Please enter a valid order number and search again.</br></br>
+                    If you confimed your order within G-Invoicing and continue to
+                    receive this message, please contact Customer Support<ul>
+                    <li>Customer support link -
+                    <a href='https://community.hacc.mil/s/contact?RequestTopic=Account%20Tra
+                    cking%20and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer'>
+                    HaCC Community</a>
+                    </li>
+                    </ul>`,
                   true
                 )
               ]"
