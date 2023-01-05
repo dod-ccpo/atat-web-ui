@@ -1523,9 +1523,15 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async removeCurrentOfferingGroup(): Promise<void> {
-    await this.deleteOfferingGroupInstances();
-    await this.setSelectedOfferings({selectedOfferingSysIds: [], otherValue: ""});
-    this.doRemoveCurrentOfferingGroup();
+    if (this.otherServiceOfferings.includes(this.currentGroupId)
+      || this.cloudSupportServices.includes(this.currentGroupId)
+    ) {
+      await this.deleteOtherOffering();
+    } else {
+      await this.deleteOfferingGroupInstances();
+      await this.setSelectedOfferings({selectedOfferingSysIds: [], otherValue: ""});
+      this.doRemoveCurrentOfferingGroup();  
+    }
   }
 
   @Action({rawError: true})
