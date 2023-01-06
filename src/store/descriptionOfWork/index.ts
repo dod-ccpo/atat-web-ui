@@ -47,6 +47,7 @@ import Periods from "../periods";
 import { buildClassificationLabel } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import { group } from "console";
 
 
 // Classification Proxy helps keep track of saved
@@ -1992,33 +1993,38 @@ export class DescriptionOfWorkStore extends VuexModule {
     removedClassificationLevelSysIds: string[]
   ): Promise<void> {
     debugger;
+    const groupsToRemove: string[] = [];
+    const serviceOfferingsToDeletefromSNOW: string[] = [];
+    const classificationInstancesToDeleteFromSNOW: string[] = [];
+
     removedClassificationLevelSysIds.forEach(removedClassificationLevelSysId => {
-      this.DOWObject.forEach((offeringGroup, groupIndex) => {
+      this.DOWObject.forEach(offeringGroup => {
         if (offeringGroup.otherOfferingData?.length) {
           offeringGroup.otherOfferingData.forEach(async offering => {
             if (offering.classificationLevel === removedClassificationLevelSysId) {
               await this.setCurrentOfferingGroupId(offeringGroup.serviceOfferingGroupId); 
               await this.deleteOtherOfferingInstance(offering.instanceNumber);
               if (offeringGroup.otherOfferingData?.length === 0) {
-                this.DOWObject.splice(groupIndex, 1);
+                groupsToRemove.push(offeringGroup.serviceOfferingGroupId);
               }
             }
           })
         } else if (offeringGroup.serviceOfferings.length) {
           offeringGroup.serviceOfferings.forEach(offering => {
             if (offering.classificationInstances?.length) {
-              offering.classificationInstances.forEach(async (instance, index) => {
+              offering.classificationInstances.forEach(async instance => {
                 debugger;
                 if (instance.classificationLevelSysId === removedClassificationLevelSysId
                   && instance.sysId
                 ) {
-                  const instanceSysId = instance.sysId
-                  offering.classificationInstances?.splice(index, 1);
+                  classificationInstancesToDeleteFromSNOW.push(instance.sysId)
+                  offering.classificationInstances = offering.classificationInstances?.filter(
+                    obj => obj.sysId !== instance.sysId
+                  );
+                  
                   if (offering.classificationInstances?.length === 0) {
-                    this.DOWObject.splice(groupIndex, 1);
-                    await this.deleteServiceOfferingFromSNOW(offering.sys_id);
+                    serviceOfferingsToDeletefromSNOW.push(offering.sys_id);
                   }
-                  await this.removeClassificationInstances([instanceSysId]);
                 }
               });
             }
@@ -2026,8 +2032,53 @@ export class DescriptionOfWorkStore extends VuexModule {
         }
       });
     });
+    
+    await this.removeClassificationInstances(classificationInstancesToDeleteFromSNOW);
+
+    if (serviceOfferingsToDeletefromSNOW.length) {
+      serviceOfferingsToDeletefromSNOW.forEach(async sysId => {
+        await this.deleteServiceOfferingFromSNOW(sysId);
+      })
+    }
+
+    if (groupsToRemove.length) {
+      await this.removeGroupsFromStore(groupsToRemove);
+    }
+    await this.purgeEmptyOfferings();
   }
 
+  @Mutation
+  public async removeGroupsFromStore(groups: string[]): Promise<void> {
+    groups.forEach(groupId => {
+      this.DOWObject = this.DOWObject.filter(obj => obj.serviceOfferingGroupId !== groupId);
+    })
+  }
+
+  @Mutation
+  public async purgeEmptyOfferings(): Promise<void> {
+    this.DOWObject.forEach(groupObj => {
+      if (this.otherServiceOfferings.includes(groupObj.serviceOfferingGroupId)) {
+        if (groupObj.otherOfferingData?.length === 0) {
+          this.removeGroupsFromStore([groupObj.serviceOfferingGroupId]);
+        }
+      } else {
+        if (groupObj.serviceOfferings.length === 0) {
+          this.removeGroupsFromStore([groupObj.serviceOfferingGroupId]);
+        } else {
+          groupObj.serviceOfferings.forEach(offering => {
+            if (offering.classificationInstances?.length === 0) {
+              groupObj.serviceOfferings = groupObj.serviceOfferings.filter(
+                obj => obj.name !== offering.name
+              );
+            }
+          });
+          if (groupObj.serviceOfferings.length === 0) {
+            this.removeGroupsFromStore([groupObj.serviceOfferingGroupId]);
+          }          
+        }
+      } 
+    })
+  }
 
   @Action
   public async deleteOtherOfferingInstance(instanceNumber: number): Promise<void> {
