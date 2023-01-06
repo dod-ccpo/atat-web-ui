@@ -271,6 +271,23 @@ export class AttachmentStore extends VuexModule {
     return attachmentList;
   }
 
+  /**
+   * Gets the attachments by primary key sys id, sets it to the store and returns the attachment.
+   */
+  @Action({rawError: true})
+  public async getAttachmentById(
+    {serviceKey, sysID,}: {
+      serviceKey: string;
+      sysID: string;
+    }): Promise<AttachmentDTO> {
+    const attachment = await api.attachments.retrieve(sysID);
+    // below call sets the attachments to the store
+    this.updateAttachments({
+      key: serviceKey,
+      attachments: [attachment]});
+    return attachment;
+  }
+
   @Action({rawError: true})
   public async reset(): Promise<void> {
     sessionStorage.removeItem(ATAT_ATTACHMENTS_KEY);

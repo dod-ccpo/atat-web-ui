@@ -4,6 +4,7 @@ import Vuex, {Store} from "vuex";
 import {getModule} from "vuex-module-decorators";
 import {FinancialDetailsStore} from "@/store/financialDetails/index";
 import {
+  FundingRequestDTO,
   FundingRequestFSFormDTO,
   FundingRequestMIPRFormDTO
 } from "@/api/models";
@@ -16,6 +17,7 @@ localVue.use(Vuex);
 describe("FinancialDetails Store",
   () => {
     let financialDetailsStore: FinancialDetailsStore;
+    let fundingRequest: FundingRequestDTO;
     let fundingRequestFSFormDTO: FundingRequestFSFormDTO
     let fundingRequestMIPRFormDTO: FundingRequestMIPRFormDTO
 
@@ -23,6 +25,9 @@ describe("FinancialDetails Store",
       const createStore = (storeOptions: any = {}):
         Store<{ financialDetails: any }> => new Vuex.Store({...storeOptions});
       financialDetailsStore = getModule(FinancialDetailsStore, createStore());
+      fundingRequest = {
+        fs_form: "", funding_request_type: "", mipr: ""
+      }
       fundingRequestFSFormDTO = {
         fs_form_7600a_filename: "Test 7600",
         fs_form_7600a_attachment: "123",
@@ -53,21 +58,24 @@ describe("FinancialDetails Store",
       await financialDetailsStore.ensureInitialized();
       expect(financialDetailsStore.initialize).toHaveBeenCalled();
     })
-    
-    it('Test loadFundingRequestFSForm()- should not load requirements' +
-      'cost estimate from the api if not already created', async () => {
-      jest.spyOn(api.fundingRequestFSFormTable, "retrieve");
-      await financialDetailsStore.loadFundingRequestFSForm();
-      expect(api.fundingRequestFSFormTable.retrieve).not.toHaveBeenCalled();
-    })
 
     it('Test loadFundingRequestFSForm()- should load req cost estimate from api', async () => {
-      jest.spyOn(api.fundingRequestFSFormTable, "retrieve").mockReturnValue(
-        Promise.resolve(fundingRequestFSFormDTO)
-      )
-      financialDetailsStore.setFundingRequestFSForm(fundingRequestFSFormDTO);
+      jest.spyOn(api.fundingRequestFSFormTable, "create")
+        .mockImplementation((): Promise<FundingRequestFSFormDTO> => {
+          return Promise.resolve(fundingRequestFSFormDTO)
+        })
+      jest.spyOn(financialDetailsStore, "loadFundingRequest")
+        .mockImplementation((): Promise<void> => {
+          return Promise.resolve()
+        })
+      jest.spyOn(financialDetailsStore, "saveFundingRequestToDISA")
+        .mockImplementation((): Promise<FundingRequestDTO> => {
+          return Promise.resolve(fundingRequest)
+        })
+      financialDetailsStore.setFundingRequest(fundingRequest);
+      financialDetailsStore.setFundingRequestFSForm(null as unknown as FundingRequestFSFormDTO);
       await financialDetailsStore.loadFundingRequestFSForm();
-      expect(api.fundingRequestFSFormTable.retrieve).toHaveBeenCalled();
+      expect(api.fundingRequestFSFormTable.create).toHaveBeenCalled();
     })
 
     it('Test loadFundingRequestFSForm()- should catch the error', async () => {
@@ -83,20 +91,23 @@ describe("FinancialDetails Store",
       }
     })
 
-    it('Test loadFundingRequestMIPRForm()- should not load requirements' +
-      'cost estimate from the api if not already created', async () => {
-      jest.spyOn(api.fundingRequestMIPRFormTable, "retrieve");
-      await financialDetailsStore.loadFundingRequestMIPRForm();
-      expect(api.fundingRequestMIPRFormTable.retrieve).not.toHaveBeenCalled();
-    })
-
     it('Test loadFundingRequestMIPRForm()- should load req cost estimate from api', async () => {
-      jest.spyOn(api.fundingRequestMIPRFormTable, "retrieve").mockReturnValue(
-        Promise.resolve(fundingRequestMIPRFormDTO)
-      )
-      financialDetailsStore.setFundingRequestMIPRForm(fundingRequestMIPRFormDTO);
+      jest.spyOn(api.fundingRequestMIPRFormTable, "create")
+        .mockImplementation((): Promise<FundingRequestMIPRFormDTO> => {
+          return Promise.resolve(fundingRequestMIPRFormDTO)
+        })
+      jest.spyOn(financialDetailsStore, "loadFundingRequest")
+        .mockImplementation((): Promise<void> => {
+          return Promise.resolve()
+        })
+      jest.spyOn(financialDetailsStore, "saveFundingRequestToDISA")
+        .mockImplementation((): Promise<FundingRequestDTO> => {
+          return Promise.resolve(fundingRequest)
+        })
+      financialDetailsStore.setFundingRequest(fundingRequest);
+      financialDetailsStore.setFundingRequestMIPRForm(null as unknown as FundingRequestMIPRFormDTO);
       await financialDetailsStore.loadFundingRequestMIPRForm();
-      expect(api.fundingRequestMIPRFormTable.retrieve).toHaveBeenCalled();
+      expect(api.fundingRequestMIPRFormTable.create).toHaveBeenCalled();
     })
 
     it('Test loadFundingRequestMIPRForm()- should catch the error', async () => {

@@ -88,8 +88,9 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
     try {
       this.saved = await FinancialDetails.loadFundingRequestMIPRForm();
       this.MIPRNumber = this.saved.mipr_number;
-      const attachments = await Attachments.getAttachments(this.attachmentServiceName);
-      const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
+      const attachment = await Attachments.getAttachmentById({
+        serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: this.saved.mipr_attachment});
+      if (attachment) {
         const file = new File([], attachment.file_name, {
           lastModified: Date.parse(attachment.sys_created_on || "")
         });
@@ -104,13 +105,10 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
           isErrored: false,
           isUploaded: true
         }
-        return upload;
-      });
-
-      this.uploadedFiles = [...uploadedFiles];
-
+        this.uploadedFiles = [upload];
+      }
     } catch (error) {
-      throw new Error("an error occurred loading funding plans data");
+      throw new Error("an error occurred loading MIPR data");
     }
   }
 
@@ -132,7 +130,7 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
           ...this.saved || initialFundingRequestMIPRForm,
           ...this.current
         };
-        FinancialDetails.saveFundingRequestMIPRForm(updated);
+        await FinancialDetails.saveFundingRequestMIPRForm(updated);
       }
     } catch (error) {
       console.log(error);
@@ -167,7 +165,6 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
       async () => {
         //reload data when files are uploaded
         this.saved = await FinancialDetails.loadFundingRequestMIPRForm();
-        this.MIPRNumber = this.saved.mipr_number;
       }
     );
   }
