@@ -1992,9 +1992,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async removeAllInstancesInClassificationLevel(
     removedClassificationLevelSysIds: string[]
   ): Promise<void> {
-    debugger;
-    const groupsToRemove: string[] = [];
-    const serviceOfferingsToDeletefromSNOW: string[] = [];
     const classificationInstancesToDeleteFromSNOW: string[] = [];
 
     removedClassificationLevelSysIds.forEach(removedClassificationLevelSysId => {
@@ -2004,16 +2001,12 @@ export class DescriptionOfWorkStore extends VuexModule {
             if (offering.classificationLevel === removedClassificationLevelSysId) {
               await this.setCurrentOfferingGroupId(offeringGroup.serviceOfferingGroupId); 
               await this.deleteOtherOfferingInstance(offering.instanceNumber);
-              if (offeringGroup.otherOfferingData?.length === 0) {
-                groupsToRemove.push(offeringGroup.serviceOfferingGroupId);
-              }
             }
           })
         } else if (offeringGroup.serviceOfferings.length) {
           offeringGroup.serviceOfferings.forEach(offering => {
             if (offering.classificationInstances?.length) {
               offering.classificationInstances.forEach(async instance => {
-                debugger;
                 if (instance.classificationLevelSysId === removedClassificationLevelSysId
                   && instance.sysId
                 ) {
@@ -2021,10 +2014,6 @@ export class DescriptionOfWorkStore extends VuexModule {
                   offering.classificationInstances = offering.classificationInstances?.filter(
                     obj => obj.sysId !== instance.sysId
                   );
-                  
-                  if (offering.classificationInstances?.length === 0) {
-                    serviceOfferingsToDeletefromSNOW.push(offering.sys_id);
-                  }
                 }
               });
             }
@@ -2032,52 +2021,9 @@ export class DescriptionOfWorkStore extends VuexModule {
         }
       });
     });
-    
-    await this.removeClassificationInstances(classificationInstancesToDeleteFromSNOW);
-
-    if (serviceOfferingsToDeletefromSNOW.length) {
-      serviceOfferingsToDeletefromSNOW.forEach(async sysId => {
-        await this.deleteServiceOfferingFromSNOW(sysId);
-      })
+    if (classificationInstancesToDeleteFromSNOW.length) {
+      await this.removeClassificationInstances(classificationInstancesToDeleteFromSNOW);
     }
-
-    if (groupsToRemove.length) {
-      await this.removeGroupsFromStore(groupsToRemove);
-    }
-    await this.purgeEmptyOfferings();
-  }
-
-  @Mutation
-  public async removeGroupsFromStore(groups: string[]): Promise<void> {
-    groups.forEach(groupId => {
-      this.DOWObject = this.DOWObject.filter(obj => obj.serviceOfferingGroupId !== groupId);
-    })
-  }
-
-  @Mutation
-  public async purgeEmptyOfferings(): Promise<void> {
-    this.DOWObject.forEach(groupObj => {
-      if (this.otherServiceOfferings.includes(groupObj.serviceOfferingGroupId)) {
-        if (groupObj.otherOfferingData?.length === 0) {
-          this.removeGroupsFromStore([groupObj.serviceOfferingGroupId]);
-        }
-      } else {
-        if (groupObj.serviceOfferings.length === 0) {
-          this.removeGroupsFromStore([groupObj.serviceOfferingGroupId]);
-        } else {
-          groupObj.serviceOfferings.forEach(offering => {
-            if (offering.classificationInstances?.length === 0) {
-              groupObj.serviceOfferings = groupObj.serviceOfferings.filter(
-                obj => obj.name !== offering.name
-              );
-            }
-          });
-          if (groupObj.serviceOfferings.length === 0) {
-            this.removeGroupsFromStore([groupObj.serviceOfferingGroupId]);
-          }          
-        }
-      } 
-    })
   }
 
   @Action
