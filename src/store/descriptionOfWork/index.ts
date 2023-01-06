@@ -1993,7 +1993,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     removedClassificationLevelSysIds: string[]
   ): Promise<void> {
     const classificationInstancesToDeleteFromSNOW: string[] = [];
-
     removedClassificationLevelSysIds.forEach(removedClassificationLevelSysId => {
       this.DOWObject.forEach(offeringGroup => {
         if (offeringGroup.otherOfferingData?.length) {
@@ -2033,7 +2032,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public doDeleteOtherOfferingInstance(instanceNumber: number): void {
-    debugger;
     const otherOfferingId = this.currentGroupId.toLowerCase();
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === otherOfferingId

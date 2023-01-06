@@ -117,7 +117,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
           = this.savedSelectedClassLevelList.map(obj => obj.classification_level as string);
         const removed = selectedClassificationLevelSysIdsOnLoad.filter(
           sysId => !this.selectedOptions.includes(sysId)
-        );       
+        );
         if (removed.length) {
           await DescriptionOfWork.removeAllInstancesInClassificationLevel(removed);        
         }
