@@ -136,7 +136,7 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     await FinancialDetails.loadFundingRequest();
     this.selectedFundingTypes = FinancialDetails.fundingRequestType || "";
-    this.savedData = await FinancialDetails.fundingRequestType || "";
+    this.savedData = FinancialDetails.fundingRequestType || "";
   };
 
   public async mounted(): Promise<void> {

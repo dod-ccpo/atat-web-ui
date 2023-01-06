@@ -1,20 +1,14 @@
 /* eslint-disable camelcase */
-import api from "@/api";
-import { FundingRequestMIPRFormApi } from "@/api/fundingRequestMIPRForm";
-import { AttachmentDTO, FundingRequestMIPRFormDTO } from "@/api/models";
-import FinancialDetails, { initialFundingRequestMIPRForm } from "@/store/financialDetails";
-import { AttachmentServiceCallbacks, RecordManager } from "..";
-import { AttachmentServiceBase } from "../base";
+import {FundingRequestMIPRFormApi} from "@/api/fundingRequestMIPRForm";
+import {AttachmentDTO, FundingRequestMIPRFormDTO} from "@/api/models";
+import FinancialDetails from "@/store/financialDetails";
+import {AttachmentServiceCallbacks, RecordManager} from "..";
+import {AttachmentServiceBase} from "../base";
 
 // record manager to coordinate record creation saving with attachment service
 const recordManager: RecordManager<FundingRequestMIPRFormDTO> = {
   retrieveOrCreate: async function (): Promise<FundingRequestMIPRFormDTO> {
-    let record = await FinancialDetails.loadFundingRequestMIPRForm();
-    if(record === initialFundingRequestMIPRForm)
-    {
-      record =  await api.fundingRequestMIPRFormTable.create();
-    }
-    return record;
+    return await FinancialDetails.loadFundingRequestMIPRForm();
   },
   save: async function (record: string): Promise<void> {
     const data = JSON.parse(record) as FundingRequestMIPRFormDTO;

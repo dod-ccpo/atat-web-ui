@@ -1252,7 +1252,7 @@ export const IncrementalFundingResolver = (current: string): string => {
     baseDuration = value
   })
 
-  const isIncrementallyFunded = TaskOrder.value.incrementally_funded
+  const isIncrementallyFunded = FinancialDetails.fundingRequirement?.incrementally_funded;
 
   if (baseDuration && baseDuration < cutOff || isIncrementallyFunded === "NO") {
     return routeNames.UploadJAMRRDocuments;
@@ -1264,7 +1264,7 @@ export const IncrementalFundingResolver = (current: string): string => {
 }
 
 export const FinancialPOCResolver =  (current: string): string => {
-  const isIncrementallyFunded = TaskOrder.value.incrementally_funded
+  const isIncrementallyFunded = FinancialDetails.fundingRequirement?.incrementally_funded;
   let baseDuration
   calcBasePeriod().then(value => {
     baseDuration = value

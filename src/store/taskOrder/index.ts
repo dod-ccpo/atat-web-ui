@@ -132,7 +132,9 @@ export class TaskOrderStore extends VuexModule {
       const saveFundingRequirement =
         fundingReqSysId.length > 0
           ? api.fundingRequirementTable.update(fundingReqSysId, fundingRequirementForSave)
-          : api.fundingRequirementTable.create(fundingRequirementForSave);
+          : api.fundingRequirementTable.create(
+            {...fundingRequirementForSave, acquisition_package:
+                AcquisitionPackage.acquisitionPackage?.sys_id as string});
       let savedFundingReq = await saveFundingRequirement;
       savedFundingReq = convertColumnReferencesToValues(savedFundingReq)
 
