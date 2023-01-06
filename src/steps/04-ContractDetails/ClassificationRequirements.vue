@@ -72,6 +72,7 @@ import _ from "lodash";
 import {
   buildCurrentSelectedClassLevelList
 } from "@/packages/helpers/ClassificationRequirementsHelper";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -111,6 +112,16 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
+
+        const selectedClassificationLevelSysIdsOnLoad: string[] 
+          = this.savedSelectedClassLevelList.map(obj => obj.classification_level as string);
+        const removed = selectedClassificationLevelSysIdsOnLoad.filter(
+          sysId => !this.selectedOptions.includes(sysId)
+        );
+        if (removed.length) {
+          await DescriptionOfWork.removeAllInstancesInClassificationLevel(removed);        
+        }
+
         await classificationRequirements.saveSelectedClassificationLevels(this.currentData)
         await classificationRequirements.loadSelectedClassificationLevelsByAqId(
             this.acquisitionPackage?.sys_id as string);

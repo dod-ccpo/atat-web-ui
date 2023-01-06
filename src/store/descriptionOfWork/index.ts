@@ -1993,6 +1993,43 @@ export class DescriptionOfWorkStore extends VuexModule {
     return [];
   }
 
+  @Action({rawError: true})
+  public async removeAllInstancesInClassificationLevel(
+    removedClassificationLevelSysIds: string[]
+  ): Promise<void> {
+    const classificationInstancesToDeleteFromSNOW: string[] = [];
+    removedClassificationLevelSysIds.forEach(removedClassificationLevelSysId => {
+      this.DOWObject.forEach(offeringGroup => {
+        if (offeringGroup.otherOfferingData?.length) {
+          offeringGroup.otherOfferingData.forEach(async offering => {
+            if (offering.classificationLevel === removedClassificationLevelSysId) {
+              await this.setCurrentOfferingGroupId(offeringGroup.serviceOfferingGroupId); 
+              await this.deleteOtherOfferingInstance(offering.instanceNumber);
+            }
+          })
+        } else if (offeringGroup.serviceOfferings.length) {
+          offeringGroup.serviceOfferings.forEach(offering => {
+            if (offering.classificationInstances?.length) {
+              offering.classificationInstances.forEach(async instance => {
+                if (instance.classificationLevelSysId === removedClassificationLevelSysId
+                  && instance.sysId
+                ) {
+                  classificationInstancesToDeleteFromSNOW.push(instance.sysId)
+                  offering.classificationInstances = offering.classificationInstances?.filter(
+                    obj => obj.sysId !== instance.sysId
+                  );
+                }
+              });
+            }
+          });
+        }
+      });
+    });
+    if (classificationInstancesToDeleteFromSNOW.length) {
+      await this.removeClassificationInstances(classificationInstancesToDeleteFromSNOW);
+    }
+  }
+
   @Action
   public async deleteOtherOfferingInstance(instanceNumber: number): Promise<void> {
     this.doDeleteOtherOfferingInstance(instanceNumber);
@@ -2134,7 +2171,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public setCurrentOfferingGroupId(value: string): void {
+  public async setCurrentOfferingGroupId(value: string): Promise<void> {
     this.currentGroupId = value;
   }
 
