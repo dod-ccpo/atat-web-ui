@@ -62,12 +62,15 @@
 
     <v-dialog
       v-model="isLoading"
-      :max-width="'520px'"
+      :max-width="'640px'"
       persistent
+      id="LoadingDialog"
     >
-      <v-card class="pa-10">
+      <v-card style="padding: 80px 100px">
         <div class="text-center">
-          <div class="h1 mb-4">Loading your package details<span class="ellipsis"></span></div>
+          <div class="h1 mb-4" id="LoadingModalTitle">
+            Loading your package details<span class="ellipsis"></span>
+          </div>
           <p>Please wait while we finish getting your package ready.</p>
           <div class="px-4">
             <v-progress-linear
@@ -78,7 +81,14 @@
               rounded  
             />
           </div>
-          <a @click="cancelLoad" role="button">Go back</a>
+          <v-btn 
+            id="CancelLoadingButton" 
+            @click="cancelLoad" 
+            class="_quaternary mx-auto"
+            
+          >
+            Go back
+          </v-btn>
         </div>
       </v-card>
     </v-dialog>

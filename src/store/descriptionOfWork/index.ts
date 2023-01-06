@@ -1987,6 +1987,48 @@ export class DescriptionOfWorkStore extends VuexModule {
     return [];
   }
 
+  @Action({rawError: true})
+  public async removeAllInstancesInClassificationLevel(
+    removedClassificationLevelSysIds: string[]
+  ): Promise<void> {
+    debugger;
+    removedClassificationLevelSysIds.forEach(removedClassificationLevelSysId => {
+      this.DOWObject.forEach((offeringGroup, groupIndex) => {
+        if (offeringGroup.otherOfferingData?.length) {
+          offeringGroup.otherOfferingData.forEach(async offering => {
+            if (offering.classificationLevel === removedClassificationLevelSysId) {
+              await this.setCurrentOfferingGroupId(offeringGroup.serviceOfferingGroupId); 
+              await this.deleteOtherOfferingInstance(offering.instanceNumber);
+              if (offeringGroup.otherOfferingData?.length === 0) {
+                this.DOWObject.splice(groupIndex, 1);
+              }
+            }
+          })
+        } else if (offeringGroup.serviceOfferings.length) {
+          offeringGroup.serviceOfferings.forEach(offering => {
+            if (offering.classificationInstances?.length) {
+              offering.classificationInstances.forEach(async (instance, index) => {
+                debugger;
+                if (instance.classificationLevelSysId === removedClassificationLevelSysId
+                  && instance.sysId
+                ) {
+                  const instanceSysId = instance.sysId
+                  offering.classificationInstances?.splice(index, 1);
+                  if (offering.classificationInstances?.length === 0) {
+                    this.DOWObject.splice(groupIndex, 1);
+                    await this.deleteServiceOfferingFromSNOW(offering.sys_id);
+                  }
+                  await this.removeClassificationInstances([instanceSysId]);
+                }
+              });
+            }
+          });
+        }
+      });
+    });
+  }
+
+
   @Action
   public async deleteOtherOfferingInstance(instanceNumber: number): Promise<void> {
     this.doDeleteOtherOfferingInstance(instanceNumber);
@@ -1994,6 +2036,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public doDeleteOtherOfferingInstance(instanceNumber: number): void {
+    debugger;
     const otherOfferingId = this.currentGroupId.toLowerCase();
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === otherOfferingId
@@ -2128,7 +2171,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public setCurrentOfferingGroupId(value: string): void {
+  public async setCurrentOfferingGroupId(value: string): Promise<void> {
     this.currentGroupId = value;
   }
 
