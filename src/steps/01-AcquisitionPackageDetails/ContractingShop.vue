@@ -85,7 +85,6 @@
             id="CancelLoadingButton" 
             @click="cancelLoad" 
             class="_quaternary mx-auto"
-            
           >
             Go back
           </v-btn>

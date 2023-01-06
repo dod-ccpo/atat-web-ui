@@ -47,7 +47,6 @@ import Periods from "../periods";
 import { buildClassificationLabel } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import { group } from "console";
 
 
 // Classification Proxy helps keep track of saved
