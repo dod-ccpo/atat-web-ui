@@ -120,6 +120,18 @@
     }
   }
 
+  &._quaternary.theme--light {
+    background-color: transparent !important;
+    .v-btn__content {
+      text-decoration: none;
+      color: $primary;
+      font-weight: normal;
+    }
+    &:hover {
+      background-color: $primary-lighter !important;
+    }
+  }
+
   &.v-btn--text.theme--light {
     .v-icon {
       color: $primary !important;
