@@ -1628,6 +1628,12 @@ export class DescriptionOfWorkStore extends VuexModule {
       serviceOfferings: []
     }
     this.DOWObject.push(offeringGroup);
+    
+    const noneGroupId = this.xaasServices.includes(groupId) ? "XaaS_NONE" : "Cloud_NONE";
+    const noneIndex = this.DOWObject.findIndex(obj => obj.serviceOfferingGroupId === noneGroupId);
+    if (noneIndex) {
+      this.DOWObject.splice(noneIndex, 1);
+    }
   }
 
   @Action
