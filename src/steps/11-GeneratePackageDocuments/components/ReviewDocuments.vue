@@ -34,7 +34,7 @@
                 Your acquisition package
               </h2>
               <span class="font-weight-500 text-base font-size-14">
-                ({{_packageDocuments.length + 5}} documents)
+                ({{packageCheckList.length}} documents)
               </span>
             </v-col>
             <v-col cols="3" align-self="end">
@@ -53,27 +53,11 @@
           <v-row>
             <v-col>
               <PackageItem
-                itemNumber="01"
-                itemName="Requirements Checklist"
-                requiresSignature=true
-              ></PackageItem>
-              <PackageItem
-                itemNumber="02"
-                itemName="Description of Work"
-              ></PackageItem>
-              <PackageItem
-                itemNumber="03"
-                itemName="Evaluation Plan"
-              ></PackageItem>
-              <PackageItem
-                itemNumber="04"
-                itemName="Independent Government Cost Estimate (IGCE)"
-                requiresSignature=true
-              ></PackageItem>
-              <PackageItem
-                itemNumber="05"
-                itemName="Incremental Funding Plan"
-                requiresSignature=true
+                v-for="(acPackage, idx) of packageCheckList" :key="idx"
+                :itemNumber="String(idx + 1)"
+                :itemName="acPackage.itemName"
+                :requiresSignature="acPackage.requiresSignature"
+                v-show="acPackage.show"
               ></PackageItem>
               <PackageItem
                 v-for="(document, idx) of _packageDocuments" :key="idx"
@@ -131,6 +115,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PackageItem from "./PackageItem.vue";
 import ATATAlert from "@/components/ATATAlert.vue"
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import FinancialDetails from "@/store/financialDetails";
 
 @Component({
   components: {
@@ -148,12 +133,48 @@ export default class ReviewDocuments extends Vue {
   @Prop({default: false }) private isErrored!: boolean;
   public packageId = "";
 
-  private contractingShop = ""
+
+  private contractingShop = "";
+  get fairOpportunity():string {
+    return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
+  }
+  get incrementallyFunded():string {
+    return FinancialDetails.fundingRequirement?.incrementally_funded || "";
+  }
+  private packageCheckList: Record<string,string|boolean>[] = []
+  private packages = [
+    {
+      itemName:"Requirements Checklist",
+      requiresSignature:true,
+      show:true
+    },{
+      itemName:"Description of Work",
+      requiresSignature:false,
+      show:true
+    },{
+      itemName:"Evaluation Plan",
+      requiresSignature:false,
+      show:this.fairOpportunity === "NO_NONE"
+    },{
+      itemName:"Independent Government Cost Estimate (IGCE)",
+      requiresSignature:true,
+      show:true
+    },{
+      itemName:"Incremental Funding Plan",
+      requiresSignature:false,
+      show:this.incrementallyFunded === "NO"
+    },
+  ]
   private openMail(): void {
     const mailStr = "mailto:disa.scott.ditco.mbx.ditco-jwcc@mail.mil";
     window.open(mailStr, "_blank");
   }
   async mounted(): Promise<void>{
+    this.packages.forEach(item => {
+      if(item.show){
+        this.packageCheckList.push(item)
+      }
+    })
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
     this.contractingShop = AcquisitionPackage.contractingShop
   }
