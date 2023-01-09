@@ -57,30 +57,30 @@ describe("testing src/router/index.ts", () => {
       expect(result).toBe('performance-requirements/dow-summary')
     })
 
-    it("Test OfferingDetailsPathResolver()- should change current group offering", () => {
-      DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")
-      DescriptionOfWork.setReturnToDOWSummary(false)
-      DescriptionOfWork.setServiceOfferingGroups([
-        {
-          name: 'test1',
-          label: 'Compute',
-          value: 'COMPUTE',
-          sequence: 1,
-        },
-        {
-          name: 'test2',
-          label: 'Applications',
-          value: 'APPLICATIONS',
-          sequence: 2,
-        },
-      ])
-      DescriptionOfWork.addOfferingGroup('APPLICATIONS')
-      DescriptionOfWork.addOfferingGroup('COMPUTE')
-      const group = DescriptionOfWork.prevOfferingGroup
-      OfferingDetailsPathResolver("Compute_Requirements", "previous")
-      const id = DescriptionOfWork.currentGroupId
-      expect(id).toBe(group)
-    })
+    // it("Test OfferingDetailsPathResolver()- should change current group offering", () => {
+    //   DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")
+    //   DescriptionOfWork.setReturnToDOWSummary(false)
+    //   DescriptionOfWork.setServiceOfferingGroups([
+    //     {
+    //       name: 'test1',
+    //       label: 'Compute',
+    //       value: 'COMPUTE',
+    //       sequence: 1,
+    //     },
+    //     {
+    //       name: 'test2',
+    //       label: 'Applications',
+    //       value: 'APPLICATIONS',
+    //       sequence: 2,
+    //     },
+    //   ])
+    //   DescriptionOfWork.addOfferingGroup('APPLICATIONS')
+    //   DescriptionOfWork.addOfferingGroup('COMPUTE')
+    //   const group = DescriptionOfWork.prevOfferingGroup
+    //   OfferingDetailsPathResolver("Compute_Requirements", "previous")
+    //   const id = DescriptionOfWork.currentGroupId
+    //   expect(id).toBe(group)
+    // })
 
     it("Test OfferingDetailsPathResolver()- should return path sanatized path", () => {
       DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE")

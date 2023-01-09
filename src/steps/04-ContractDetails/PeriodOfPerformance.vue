@@ -497,7 +497,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   private get currentData(): PeriodDTO[] {
 
-    const periods = this.optionPeriods.map(pop=>convertPoPToPeriod(pop));
+    const periods = this.optionPeriods.map(pop=>convertPoPToPeriod(pop))
     return periods;
   }
 
@@ -505,17 +505,16 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.getAllPeriods() as PeriodDTO[];
-    this.savedData = periods.map(period=> {
-
-      return {
-        option_order: period.option_order,
-        period_unit_count: period.period_unit_count,
-        period_unit: period.period_unit,
-        period_type: period.period_type,
-        sys_id: period.sys_id,
-      }
-    });
-
+    this.savedData = periods.sort((a, b) => a.option_order > b.option_order ? 1 : -1)
+      .map(period=> {
+        return {
+          option_order: period.option_order,
+          period_unit_count: period.period_unit_count,
+          period_unit: period.period_unit,
+          period_type: period.period_type,
+          sys_id: period.sys_id,
+        }
+      });
     this.optionPeriods = periods.length ? periods.map(period=> {
 
       const optionPeriod: PoP = {

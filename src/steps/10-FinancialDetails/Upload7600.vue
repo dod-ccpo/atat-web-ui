@@ -67,8 +67,6 @@
           :validFiles.sync="uploadedFiles"
           :requiredMessage="requiredMessage"
           :rules="getRulesArray()"
-          @mouseleave="onFileUploadChanged"
-          @blur="onFileUploadChanged"
         />
         <ATATAlert
           id="UPload7600Alert"
@@ -213,14 +211,30 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
 
   async loadFundingRequestData(): Promise<void>{
     this.loaded = await FinancialDetails.loadFundingRequestFSForm();
-    this.saved =await FinancialDetails.load7600();
-    this.gtcNumber = this.saved.gtcNumber;
-    this.orderNumber = this.saved.orderNumber;
+    this.saved = {
+      gtcNumber: this.loaded.gt_c_number,
+      orderNumber: this.loaded.order_number
+    }
+    this.gtcNumber = this.loaded.gt_c_number;
+    this.orderNumber = this.loaded.order_number;
   }
 
+  /**
+   * Constructs an array of attachment table primary key sys ids based on the forms
+   * uploaded. Uses the array to load the attachments.
+   */
   async loadAttachments(): Promise<void>{
-
-    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
+    const attachmentSysIds = [];
+    if (this.loaded?.fs_form_7600a_attachment && this.loaded?.fs_form_7600a_attachment.length > 0) {
+      attachmentSysIds.push(this.loaded?.fs_form_7600a_attachment)
+    }
+    if (this.loaded?.fs_form_7600b_attachment && this.loaded?.fs_form_7600b_attachment.length > 0) {
+      attachmentSysIds.push(this.loaded?.fs_form_7600b_attachment)
+    }
+    const attachments = await Attachments.getAttachmentsBySysIds({
+      serviceKey: FUNDING_REQUEST_FSFORM_TABLE,
+      sysIds: attachmentSysIds 
+    });
     const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
       const file = new File([], attachment.file_name, {
         lastModified: Date.parse(attachment.sys_created_on || "")
@@ -236,10 +250,8 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
         isErrored: false,
         isUploaded: true
       }
-
       return upload;
     });
-
     this.uploadedFiles = [...uploadedFiles];
   }
 
@@ -256,15 +268,6 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-
-    //listen for attachment service upload callbacks
-    //and update attachments
-    AttachmentServiceCallbacks.registerUploadCallBack(
-      FUNDING_REQUEST_FSFORM_TABLE,
-      async () => {
-        await this.loadFundingRequestData();
-      }
-    );
   }
 
   protected async saveOnLeave(): Promise<boolean> {
@@ -276,7 +279,7 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
           order_number: this.current.orderNumber,
           gt_c_number: this.current.gtcNumber,
         }
-        FinancialDetails.saveFundingRequestFSForm(data);
+        await FinancialDetails.saveFundingRequestFSForm(data);
       }
     } catch (error) {
       console.log(error);
@@ -295,12 +298,6 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
     }
 
     return GTCMRegex.test(this.gtcNumber);
-  }
-
-  private onFileUploadChanged(): void {
-    if (this.uploadedFiles.length == 0) {
-      // todo do something
-    }
   }
 }
 </script>

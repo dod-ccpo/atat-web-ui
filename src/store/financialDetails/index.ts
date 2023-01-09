@@ -6,12 +6,15 @@ import rootStore from "../index";
 import { baseGInvoiceData, fundingIncrement, IFPData } from "types/Global";
 import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers";
 import {
+  AcquisitionPackageDTO,
   FundingIncrementDTO, FundingPlanDTO, FundingRequestDTO, FundingRequestFSFormDTO,
-  FundingRequestMIPRFormDTO, ReferenceColumn, TaskOrderDTO
+  FundingRequestMIPRFormDTO, FundingRequirementDTO, ReferenceColumn, TaskOrderDTO
 } from "@/api/models";
 import TaskOrder from "../taskOrder";
 import api from "@/api";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import {AxiosRequestConfig} from "axios";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 const ATAT_FINANCIAL_DETAILS__KEY = "ATAT_FINANCIAL_DETAILS__KEY";
 
@@ -60,15 +63,6 @@ export const initialFundingRequestMIPRForm: FundingRequestMIPRFormDTO = {
   mipr_attachment: "",
 }
 
-const saveFundingRequestToDISA = async (data: FundingRequestDTO):
- Promise<FundingRequestDTO>=>{
-  const saveFundingRequest = (data.sys_id && data.sys_id.length > 0) ?
-    api.fundingRequestTable.update(data.sys_id, data) :
-    api.fundingRequestTable.create(data);
-  const savedFundingRequest = await saveFundingRequest;
-  return savedFundingRequest;
-}
-
 @Module({
   name: 'FinancialDetails',
   namespaced: true,
@@ -92,6 +86,7 @@ export class FinancialDetailsStore extends VuexModule {
   fundingRequest: FundingRequestDTO | null = null;
   fundingRequestFSForm: FundingRequestFSFormDTO | null = null;
   fundingRequestMIPRForm: FundingRequestMIPRFormDTO | null = null;
+  fundingRequirement: FundingRequirementDTO | null = null;
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -106,6 +101,15 @@ export class FinancialDetailsStore extends VuexModule {
     nameofProperty(this, (x)=> x.orderNumber),
   ];
 
+  @Action
+  public async getFundingRequest(): Promise<FundingRequestDTO> {
+    return this.fundingRequest as FundingRequestDTO;
+  }
+
+  @Action
+  public async getFundingRequirement(): Promise<FundingRequirementDTO> {
+    return this.fundingRequirement as FundingRequirementDTO;
+  }
 
   public get fundingRequestType(): string {
 
@@ -380,7 +384,7 @@ export class FinancialDetailsStore extends VuexModule {
   public async saveFundingRequest(data: FundingRequestDTO): Promise<void> {
 
     try {
-      const savedFundingRequest = await saveFundingRequestToDISA(data);
+      const savedFundingRequest = await this.saveFundingRequestToDISA(data);
       this.setFundingRequest(savedFundingRequest);
     } catch (error) {
 
@@ -391,115 +395,232 @@ export class FinancialDetailsStore extends VuexModule {
   }
 
   @Action({rawError: true})
- async loadFundingRequest():Promise<FundingRequestDTO>{
-   this.ensureInitialized();
-
-   try {
-     if(this.fundingRequest == null){
-       const fundingRequest: FundingRequestDTO = {
-         fs_form: "",
-         funding_request_type: "",
-         mipr: ""
-       }
-
-       return fundingRequest;
-     }
-
-     const fundingRequest = await api.fundingRequestTable
-       .retrieve(this.fundingRequest.sys_id);
-     this.setFundingRequest(fundingRequest);
-     return fundingRequest;
-   } catch (error) {
-     throw new Error(`error occurred retrieving funding request ${error}`);
-   }
+ async saveFundingRequestToDISA(data: FundingRequestDTO): Promise<FundingRequestDTO> {
+   data = convertColumnReferencesToValues(data);
+   const saveFundingRequest = (data.sys_id && data.sys_id.length > 0) ?
+     api.fundingRequestTable.update(data.sys_id, data) :
+     api.fundingRequestTable.create(data);
+   const savedFundingRequest = await saveFundingRequest;
+   return savedFundingRequest;
  }
 
- @Action({rawError: true})
-  async loadFundingRequestFSForm():Promise<FundingRequestFSFormDTO>{
-    this.ensureInitialized();
-
+  /**
+   * Gets the acquisition package from the acquisition package store. Then
+   * uses the funding request sys_id to load the funding request. If the
+   * funding request reference is null and tied to acquisition, then loads
+   * the funding request.
+   *
+   * Otherwise, if funding request is null and NOT tied to acquisition, then
+   * initializes the funding request and ties that to the acquisition.
+   *
+   * This function takes out the burden of doing all the above steps in several places
+   * of the acquisition package store. Also helps performance by loading data from the
+   * API on demand. Acquisition package store impl should be refactored to this approach.
+   */
+  @Action({rawError: true})
+  public async loadFundingRequest(): Promise<void> {
     try {
-      if(this.fundingRequestFSForm == null){
-        return initialFundingRequestFSForm;
+      const acquisitionPackageDTO: AcquisitionPackageDTO =
+        AcquisitionPackage.acquisitionPackage as AcquisitionPackageDTO;
+      const fundingRequestDTO = await this.getFundingRequest();
+      if (fundingRequestDTO === null && acquisitionPackageDTO.funding_request) {
+        // load funding request
+        const fundingRequestSysId = typeof acquisitionPackageDTO.funding_request === "object"
+          ? acquisitionPackageDTO.funding_request.value as string
+          : acquisitionPackageDTO.funding_request as string;
+        const fundingRequest = await api.fundingRequestTable
+          .retrieve(fundingRequestSysId);
+        this.setFundingRequest(fundingRequest);
+      } else if (fundingRequestDTO === null && !acquisitionPackageDTO.funding_request) {
+        // initialize funding request and set it to acquisition package
+        const defaultFundingRequest: FundingRequestDTO = {
+          fs_form: "",
+          funding_request_type: "",
+          mipr: ""
+        }
+        const fundingRequest = await api.fundingRequestTable
+          .create(defaultFundingRequest);
+        acquisitionPackageDTO.funding_request = fundingRequest.sys_id;
+        await AcquisitionPackage.saveAcquisitionPackage();
+        this.setFundingRequest(fundingRequest);
       }
-      const fundingRequestForm = await api.fundingRequestFSFormTable
-        .retrieve(this.fundingRequestFSForm.sys_id);
-      this.setFundingRequestFSForm(fundingRequestForm);
-      this.setGTCNumber(fundingRequestForm.gt_c_number);
-      this.setOrderNumber(fundingRequestForm.order_number);
-      return fundingRequestForm;
     } catch (error) {
-      throw new Error(`error occurred retrieving funding request form ${error}`);
+      throw new Error(`Error occurred loading funding request ${error}`);
     }
   }
 
+  /**
+   * Gets the funding request. Then uses the fs_form reference value to load the 
+   * FS Form data (FSF). If the FSF is null and tied to acquisition, then loads FSF.
+   *
+   * Otherwise, if FSF is null and NOT tied to funding request, then
+   * initializes FSF and ties that to the funding request.
+   */
   @Action({rawError: true})
- async loadFundingRequestMIPRForm():Promise<FundingRequestMIPRFormDTO>{
-   this.ensureInitialized();
+  public async loadFundingRequestFSForm(): Promise<FundingRequestFSFormDTO> {
+    try {
+      await this.loadFundingRequest();
+      const fundingRequestDTO = await this.getFundingRequest();
+      const fsFormDTO = this.fundingRequestFSForm;
+      if (fsFormDTO === null && fundingRequestDTO.fs_form) {
+        // load funding request
+        const fsFormSysId = typeof fundingRequestDTO.fs_form === "object"
+          ? (fundingRequestDTO.fs_form as unknown as ReferenceColumn).value as string
+          : fundingRequestDTO.fs_form;
+        const fsForm = await api.fundingRequestFSFormTable.retrieve(fsFormSysId);
+        this.setFundingRequestFSForm(fsForm);
+      } else if (fsFormDTO === null && !fundingRequestDTO.fs_form) {
+        // initialize funding request and set it to acquisition package
+        const fsForm = await api.fundingRequestFSFormTable
+          .create(initialFundingRequestFSForm);
+        fundingRequestDTO.fs_form = fsForm.sys_id as string;
+        await this.saveFundingRequestToDISA(fundingRequestDTO);
+        this.setFundingRequestFSForm(fsForm);
+      }
+      this.setGTCNumber((this.fundingRequestFSForm as FundingRequestFSFormDTO).gt_c_number);
+      this.setOrderNumber((this.fundingRequestFSForm as FundingRequestFSFormDTO).order_number);
+      return this.fundingRequestFSForm as FundingRequestFSFormDTO;
+    } catch (error) {
+      throw new Error(`Error occurred loading funding request FS Form data ${error}`);
+    }
+  }
 
-   try {
-     if(this.fundingRequestMIPRForm == null){
-       return initialFundingRequestMIPRForm;
-     }
-     const fundingRequestForm = await api.fundingRequestMIPRFormTable
-       .retrieve(this.fundingRequestMIPRForm.sys_id);
-     this.setFundingRequestMIPRForm(fundingRequestForm);
-     return fundingRequestForm;
-   } catch (error) {
-     throw new Error(`error occurred retrieving funding request form ${error}`);
-   }
- }
+  /**
+   * Gets the funding request. Then uses the mipr_form reference value to load the
+   * MIPR Form data (MIPRF). If the MIPRF is null and tied to acquisition, then loads MIPRF.
+   *
+   * Otherwise, if MIPRF is null and NOT tied to funding request, then
+   * initializes MIPRF and ties that to the funding request.
+   */
+  @Action({rawError: true})
+  public async loadFundingRequestMIPRForm(): Promise<FundingRequestMIPRFormDTO> {
+    try {
+      await this.loadFundingRequest();
+      const fundingRequestDTO = await this.getFundingRequest();
+      const miprFormDTO = this.fundingRequestMIPRForm;
+      if (miprFormDTO === null && fundingRequestDTO.mipr) {
+        // load funding request
+        const miprFormSysId = typeof fundingRequestDTO.mipr === "object"
+          ? (fundingRequestDTO.mipr as unknown as ReferenceColumn).value as string
+          : fundingRequestDTO.mipr;
+        const miprForm = await api.fundingRequestMIPRFormTable.retrieve(miprFormSysId);
+        this.setFundingRequestMIPRForm(miprForm);
+      } else if (miprFormDTO === null && !fundingRequestDTO.mipr) {
+        // initialize funding request and set it to acquisition package
+        const miprForm = await api.fundingRequestMIPRFormTable
+          .create(initialFundingRequestMIPRForm);
+        fundingRequestDTO.mipr = miprForm.sys_id as string;
+        await this.saveFundingRequestToDISA(fundingRequestDTO);
+        this.setFundingRequestMIPRForm(miprForm);
+      }
+      return this.fundingRequestMIPRForm as FundingRequestMIPRFormDTO;
+    } catch (error) {
+      throw new Error(`Error occurred loading funding request MIPR Form data ${error}`);
+    }
+  }
+
+
+  /**
+   * Gets the acquisition package from the acquisition package store and uses the
+   * acquisition package sys_id to load the funding requirements.
+   *
+   * If the funding requirements list comes back as empty array, then initializes
+   * the funding requirement
+   *
+   * If the funding requirements list comes back as array with size 1, then sets the
+   * funding requirement to this store
+   */
+  @Action({rawError: true})
+  public async loadFundingRequirement(): Promise<void> {
+    try {
+      const fundingRequirement = await this.getFundingRequirement();
+      if (!fundingRequirement) {
+        const acquisitionPackageDTO: AcquisitionPackageDTO =
+          AcquisitionPackage.acquisitionPackage as AcquisitionPackageDTO;
+        const fundingRequirementRequestConfig: AxiosRequestConfig = {
+          params: {
+            sysparm_query: "^acquisition_packageIN" + acquisitionPackageDTO?.sys_id
+          }
+        };
+        const fundingRequirementList = await api.fundingRequirementTable
+          .getQuery(fundingRequirementRequestConfig);
+        if(fundingRequirementList.length > 0) {
+          this.setFundingRequirement(convertColumnReferencesToValues(fundingRequirementList[0]));
+        } else {
+          // initialize funding request and set it to acquisition package
+          await this.loadFundingRequest()
+          const defaultFundingRequirement: FundingRequirementDTO = {
+            acquisition_package: acquisitionPackageDTO?.sys_id as string,
+            funding_plan: "",
+            funding_request: this.fundingRequest?.sys_id as string,
+            funds_obligated: "",
+            funds_total: "",
+            incrementally_funded: "",
+            pop_end_date: "",
+            pop_start_date: "",
+            task_order_number: ""
+          }
+          const fundingRequirementResp = await api.fundingRequirementTable
+            .create(defaultFundingRequirement);
+          this.setFundingRequirement(convertColumnReferencesToValues(fundingRequirementResp));
+        }
+      }
+    } catch (error) {
+      throw new Error(`Error occurred loading funding requirement ${error}`);
+    }
+  }
+
+  /**
+   * Uses the latest store data and makes an api call to save. The caller should
+   * ensure that the store data is up-to-date before calling this function.
+   */
+  @Action
+  public async saveFundingRequirement(): Promise<void> {
+    const savedFundingRequirement = await api.fundingRequirementTable
+      .update((this.fundingRequirement as FundingRequirementDTO).sys_id as string,
+        convertColumnReferencesToValues(this.fundingRequirement as FundingRequirementDTO));
+    this.setFundingRequirement(convertColumnReferencesToValues(savedFundingRequirement));
+  }
 
  @Action({rawError: true})
   async saveFundingRequestType(value: string): Promise<void> {
-
-    const fundingRequest = this.fundingRequest === null ?
-      {
-        fs_form: "",
-        funding_request_type: value,
-        mipr: ""
-      } : {
-        ...this.fundingRequest,
-        funding_request_type: value,
-      }
-
-    const savedFundingRequest = await saveFundingRequestToDISA(fundingRequest);
+    const savedFundingRequest =
+      await this.saveFundingRequestToDISA({
+        ...this.fundingRequest as FundingRequestDTO,
+        funding_request_type: value
+      });
     this.setFundingRequest(savedFundingRequest);
   }
 
+  /**
+   * Since @loadFundingRequestFSForm function handles the loading/ initializing, this
+   * function is just responsible for updating the record.
+   */
   @Action({rawError: true})
  public async saveFundingRequestFSForm(data:
   FundingRequestFSFormDTO): Promise<FundingRequestFSFormDTO>{
-
    try {
-
-     const saveFundingRequestFSForm = (data.sys_id && data.sys_id.length > 0) ?
-       api.fundingRequestFSFormTable.update(data.sys_id, data) :
-       api.fundingRequestFSFormTable.create(data);
-     const savedFundingRequestFSForm = await saveFundingRequestFSForm;
+     const savedFundingRequestFSForm =
+       await api.fundingRequestFSFormTable.update(data.sys_id as string, data);
      this.setFundingRequestFSForm(savedFundingRequestFSForm);
-
      return savedFundingRequestFSForm;
-
    } catch (error) {
      throw new Error( `error occurred saving funding request form ${error}`);
    }
  }
 
+  /**
+   * Since @loadFundingRequestMIPRForm function handles the loading/ initializing, this
+   * function is just responsible for updating the record.
+   */
   @Action({rawError: true})
   public async saveFundingRequestMIPRForm(data:
   FundingRequestMIPRFormDTO): Promise<FundingRequestMIPRFormDTO>{
-
     try {
-
-      const saveFundingRequesMIPRForm = (data.sys_id && data.sys_id.length > 0) ?
-        api.fundingRequestMIPRFormTable.update(data.sys_id, data) :
-        api.fundingRequestMIPRFormTable.create(data);
-      const savedFundingRequestMIPRForm = await saveFundingRequesMIPRForm;
+      const savedFundingRequestMIPRForm =
+        await api.fundingRequestMIPRFormTable.update(data.sys_id as string, data);
       this.setFundingRequestMIPRForm(savedFundingRequestMIPRForm);
-
       return savedFundingRequestMIPRForm;
-
     } catch (error) {
       throw new Error( `error occurred saving funding request form ${error}`);
     }
@@ -584,6 +705,11 @@ export class FinancialDetailsStore extends VuexModule {
       this.sessionProperties,
       ATAT_FINANCIAL_DETAILS__KEY
     );
+  }
+
+  @Mutation
+  public setFundingRequirement(value: FundingRequirementDTO): void {
+    this.fundingRequirement = value;
   }
 
   @Mutation
