@@ -110,7 +110,10 @@ export class IncrementalFundingStore extends VuexModule {
           };
           const fundingIncrementsList = await api.fundingIncrementTable
             .getQuery(fundingIncrementsRequestConfig);
-          this.setFundingIncrementsList(fundingIncrementsList);
+          this.setFundingIncrementsList(fundingIncrementsList
+            .sort((a, b) => {
+              return parseInt(a.order)-parseInt(b.order)
+            }));
         } else {
           this.setFundingIncrementsList([])
         }
@@ -151,7 +154,7 @@ export class IncrementalFundingStore extends VuexModule {
     const createAndUpdateApiCallList: Promise<FundingIncrementDTO>[] = [];
     createList.forEach(markedForCreate => {
       createAndUpdateApiCallList.push(api.fundingIncrementTable
-        .create(markedForCreate));
+        .create({...markedForCreate, sys_id: undefined}));
     })
     updateList.forEach(markedForUpdate => {
       createAndUpdateApiCallList.push(api.fundingIncrementTable
@@ -163,7 +166,10 @@ export class IncrementalFundingStore extends VuexModule {
         .remove(markedForDelete.sys_id as string));
     })
     const createAndUpdateFIResponseList = await Promise.all(createAndUpdateApiCallList);
-    this.setFundingIncrementsList(createAndUpdateFIResponseList);
+    this.setFundingIncrementsList(createAndUpdateFIResponseList
+      .sort((a, b) => {
+        return parseInt(a.order)-parseInt(b.order)
+      }));
     const fundingPlanBaseYear = await this.getFundingPlanBaseYear();
     fundingPlanBaseYear.remaining_amount_increments = createAndUpdateFIResponseList
       .map(newFI => newFI.sys_id).toString();
