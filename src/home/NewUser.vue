@@ -106,18 +106,6 @@
         <h1 class="text-primary large text-center mb-10">
           Provision your cloud resources
         </h1>
-        
-        <ATATAlert
-          type="info"
-        >
-          <template slot="content">
-            <span class="text-center">
-              Cloud account provisioning is not available at this time. 
-              This feature will be coming soon.
-            </span>
-          </template>
-        </ATATAlert>
-
         <br /><br/>
         <v-row>
           <v-col class="pr-10">
@@ -133,6 +121,15 @@
               understanding of how your team is using cloud to help you manage 
               spending throughout the duration of your task order.
             </p>
+             <v-btn
+              id="ProvisionNewCloudResources"
+              class="primary mb-4"
+              @click="provisionNewCloudResources"
+              @keydown.enter="provisionNewCloudResources"
+              @keydown.space="provisionNewCloudResources"
+            >
+              Provision new cloud resources
+            </v-btn>
 
           </v-col>
           <v-col class="pl-10">
@@ -211,6 +208,9 @@ export default class NewUser extends Vue {
     this.showNewFeatures = !this.showNewFeatures;
   }
 
+  public provisionNewCloudResources(): void {
+    alert("hi there");
+  }
 }
 
-</script>
+</script>  

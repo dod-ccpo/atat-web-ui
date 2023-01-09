@@ -16,13 +16,6 @@
     >
       Start a new acquisition
     </v-btn>
-    <v-btn 
-      id="LearnMoreBuilding"
-      class="secondary"
-      @click="scrollToLearnMore"
-    >
-      Learn More
-    </v-btn>
 
   </v-card>
 </template>

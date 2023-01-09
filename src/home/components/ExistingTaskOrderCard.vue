@@ -4,23 +4,15 @@
       Already have an existing JWCC task order?
     </h2>
     <p>
-      We’ll gather a few details about your task order and start provisioning 
-      your cloud resources with your CSP.
+      We’ll gather details about your task order to start provisioning your cloud resources.
     </p>
 
     <ATATSearch 
       buttonText="Search"
       placeHolder="Search Task Order Number"
-      class="mb-4 d-inline-block"
+      class="text-left mb-4 d-inline-block"
+      helpText="Format: Must be 13 or 19 digits"
     />
-
-    <v-btn 
-      id="LearnMoreTOSearch"
-      class="secondary"
-      @click="scrollToLearnMore"
-    >
-      Learn More
-    </v-btn>
 
   </v-card>
 </template>
