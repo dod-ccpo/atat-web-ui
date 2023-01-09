@@ -253,6 +253,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -264,6 +265,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
 import PeriodOfPerformance from "@/store/periods";
+import IncrementalFundingStore from "@/store/financialDetails/incrementalFunding";
 
 import { PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models";
 import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
@@ -695,7 +697,24 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
     this.initializeIncrements();
 
-    const storeData = await FinancialDetails.loadIFPData();
+    await IncrementalFundingStore.loadFundingPlanBaseYear();
+    await IncrementalFundingStore.loadFundingIncrementList();
+    const fundingPlanBaseYear = await IncrementalFundingStore.getFundingPlanBaseYear();
+    const fundingIncrementList = await IncrementalFundingStore.getFundingIncrementsList();
+    // const storeData = await FinancialDetails.loadIFPData();
+    const storeData: IFPData = {
+      initialFundingIncrementStr: fundingPlanBaseYear.initial_amount,
+      fundingIncrements: fundingIncrementList.map(fundingIncrement => {
+        return {
+          text: fundingIncrement.description,
+          amt: fundingIncrement.amount,
+          order: parseInt(fundingIncrement.order),
+          sysId: fundingIncrement.sys_id,
+          qtrOrder: 0, // used for sorting on IFP page
+          hasPeriodGap: false // TODO: there is no column for this in funding_increment table
+        }
+      })
+    }
     if (storeData) {
       this.savedData = storeData;
       this.initialAmountStr = storeData.initialFundingIncrementStr;
@@ -792,10 +811,16 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         this.fundingIncrements = sortedIncrements;
 
         if (this.hasChanged()) {
-          FinancialDetails.saveIFPData({
+          const fundingPlanStore = await IncrementalFundingStore.getFundingPlanBaseYear();
+          fundingPlanStore.initial_amount = this.currentData.initialFundingIncrementStr;
+          await IncrementalFundingStore.saveFundingPlanBaseYear();
+          await IncrementalFundingStore
+            .saveFundingIncrementList(this.currentData.fundingIncrements);
+
+          /*FinancialDetails.saveIFPData({
             data: this.currentData,
             removed: this.removedIncrements,
-          });
+          });*/
         }
       }
     } catch (error) {
