@@ -1099,7 +1099,7 @@ const contractingShopIsDitco = (): boolean => {
 const hasServiceOfferings = (): boolean => {
   const offerings = DescriptionOfWork.DOWObject.filter(
     obj => obj.serviceOfferingGroupId !== "TRAINING"
-  )
+  );
   return offerings.length >= 1;
 }
 
