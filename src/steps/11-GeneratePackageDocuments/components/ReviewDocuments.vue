@@ -162,7 +162,7 @@ export default class ReviewDocuments extends Vue {
     },{
       itemName:"Incremental Funding Plan",
       requiresSignature:false,
-      show:this.incrementallyFunded === "NO"
+      show:this.incrementallyFunded === "YES"
     },
   ]
   private openMail(): void {
