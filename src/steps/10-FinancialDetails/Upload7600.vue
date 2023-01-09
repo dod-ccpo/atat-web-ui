@@ -273,7 +273,7 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-    
+        this.loaded = await FinancialDetails.loadFundingRequestFSForm();
         let data: FundingRequestFSFormDTO = {
           ...this.loaded || initialFundingRequestFSForm,
           order_number: this.current.orderNumber,
