@@ -116,8 +116,7 @@ import MIPR from "../steps/10-FinancialDetails/MIPR.vue";
 import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
-import IncrementalFunding 
-  from "../steps/10-FinancialDetails/IncrementalFunding.vue";
+import IncFundingPlan from "@/steps/10-FinancialDetails/IncrementalFunding/IncFundingPlan.vue";
 import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
 import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
@@ -1061,7 +1060,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "incremental-funding",
         name: routeNames.IncrementalFunding,
         completePercentageWeight: 1,
-        component: IncrementalFunding,
+        component: IncFundingPlan,
         routeResolver: IncrementalFundingResolver
       },
       {
