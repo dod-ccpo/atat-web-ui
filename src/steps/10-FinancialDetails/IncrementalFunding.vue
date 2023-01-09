@@ -378,7 +378,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     const newVal = args.newSelectedValue;
     const oldVal = args.selectedBeforeChange;
     const changedItemIndex = this.fundingIncrements.findIndex(
-        incr => incr.text === oldVal.text
+      incr => incr.text === oldVal.text
     );
 
     this.fundingIncrements[changedItemIndex].text = newVal.text;
@@ -499,13 +499,13 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     const lastFundingIncrement = this.fundingIncrements.at(-1);
     const lastSelectedQtr = lastFundingIncrement?.text;
     let selectedQtrIndex = this.fiscalQuarters.findIndex(
-        (p) => p.text === lastSelectedQtr
+      (p) => p.text === lastSelectedQtr
     );
 
     let nextQtr;
     let nextQtrOrder = 0;
     if (
-        selectedQtrIndex > -1 &&
+      selectedQtrIndex > -1 &&
         selectedQtrIndex !== this.fiscalQuarters.length
     ) {
       nextQtr = this.fiscalQuarters[selectedQtrIndex + 1].text;
@@ -538,7 +538,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public insertIncrement(index: number): void {
     const insertAfterIncrementText = this.fundingIncrements[index].text;
     const nextFiscalQuarterIndex = this.fiscalQuarters.findIndex(
-        q => q.text === insertAfterIncrementText
+      q => q.text === insertAfterIncrementText
     ) + 1;
 
     const nextPeriod = this.fiscalQuarters[nextFiscalQuarterIndex];
@@ -567,29 +567,29 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public calcAmounts(field: string): void {
     let incrementsTotal = this.fundingIncrements.reduce(
-        (accumulator, current) =>
-            accumulator + Number(currencyStringToNumber(current.amt)),
-        0
+      (accumulator, current) =>
+        accumulator + Number(currencyStringToNumber(current.amt)),
+      0
     );
     this.initialAmount = currencyStringToNumber(this.initialAmountStr);
     this.totalAmount = this.initialAmount
-        ? this.initialAmount + incrementsTotal
-        : incrementsTotal;
+      ? this.initialAmount + incrementsTotal
+      : incrementsTotal;
     // this.isFundingMet = this.totalAmount >= this.costEstimate;
 
     this.amountRemaining = this.costEstimate - this.totalAmount;
     this.amountRemainingStr = this.amountRemaining
-        ? toCurrencyString(this.amountRemaining)
-        : "";
+      ? toCurrencyString(this.amountRemaining)
+      : "";
     this.initialAmountStr = this.initialAmount
-        ? toCurrencyString(this.initialAmount)
-        : "";
+      ? toCurrencyString(this.initialAmount)
+      : "";
     this.$nextTick(() => {
       this.fundingIncrements.forEach((incr) => {
         return (incr.amt =
             incr.amt && incr.amt !== "0.00"
-                ? toCurrencyString(currencyStringToNumber(incr.amt))
-                : "");
+              ? toCurrencyString(currencyStringToNumber(incr.amt))
+              : "");
       });
     });
 
@@ -636,7 +636,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
     const firstSelectedQtr = fundingIncrements[0].text;
     const firstSelectedQtrIndex = this.fiscalQuarters.findIndex(
-        (qtr) => qtr.text === firstSelectedQtr
+      (qtr) => qtr.text === firstSelectedQtr
     );
 
     const lastFiscalQtrIndex = this.fiscalQuarters.length - 1;
@@ -646,8 +646,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     if (index > 0) {
       const sliceEnd = lastPastMax ? lastFiscalQtrIndex + 1 : lastAllowedQuarterIndex;
       optionsArr = optionsArr.slice(
-          firstSelectedQtrIndex + 1,
-          sliceEnd
+        firstSelectedQtrIndex + 1,
+        sliceEnd
       );
     }
 
@@ -727,9 +727,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     const requestedPopStartDate = this.periodOfPerformance.requested_pop_start_date;
     this.startDate =
         await new Date(
-            format(parseISO(requestedPopStartDate !== ""
-                ? requestedPopStartDate : formatISO(new Date())
-            ), 'MM/dd/yyyy')
+          format(parseISO(requestedPopStartDate !== ""
+            ? requestedPopStartDate : formatISO(new Date())
+          ), 'MM/dd/yyyy')
         );
 
     this.periods = await Periods.loadPeriods();
@@ -743,20 +743,20 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         }
         this.periodLengthStr = unitCount + " " + unit;
         switch (unit) {
-          case "days":
-            this.maxAllowedIncrements = unitCount > 270 ? 5 : 4;
-            break;
-          case "weeks":
-            this.maxAllowedIncrements = unitCount > 36 ? 5 : 4;
-            break;
-          case "months":
-            this.maxAllowedIncrements = unitCount > 9 ? 5 : 4;
-            break;
-          case "year":
-            this.maxAllowedIncrements = 5;
-            break;
-          default:
-            this.maxAllowedIncrements = 1;
+        case "days":
+          this.maxAllowedIncrements = unitCount > 270 ? 5 : 4;
+          break;
+        case "weeks":
+          this.maxAllowedIncrements = unitCount > 36 ? 5 : 4;
+          break;
+        case "months":
+          this.maxAllowedIncrements = unitCount > 9 ? 5 : 4;
+          break;
+        case "year":
+          this.maxAllowedIncrements = 5;
+          break;
+        default:
+          this.maxAllowedIncrements = 1;
         }
       }
     }
