@@ -21,24 +21,24 @@
               <div class="d-flex justify-space-between align-center">
                 <label for="InitialAmount"> Initial funding increment </label>
                 <ATATTextField
-                    id="InitialAmount"
-                    :value.sync="initialAmountStr"
-                    :alignRight="true"
-                    :isCurrency="true"
-                    :showErrorMessages="false"
-                    width="190"
-                    class="mr-2"
-                    :class="[{ 'error--text': errorMissingInitialIncrement },]"
-                    style="margin-left: 39px;"
-                    :validateOnBlur="false"
-                    :rules="[$validators.required('', true)]"
-                    @blur="calcAmounts('initialIncrement')"
+                  id="InitialAmount"
+                  :value.sync="initialAmountStr"
+                  :alignRight="true"
+                  :isCurrency="true"
+                  :showErrorMessages="false"
+                  width="190"
+                  class="mr-2"
+                  :class="[{ 'error--text': errorMissingInitialIncrement },]"
+                  style="margin-left: 39px;"
+                  :validateOnBlur="false"
+                  :rules="[$validators.required('', true)]"
+                  @blur="calcAmounts('initialIncrement')"
                 />
                 <span class="d-block" style="width: 9px"></span>
               </div>
               <div
-                  v-if="errorMissingInitialIncrement"
-                  class="
+                v-if="errorMissingInitialIncrement"
+                class="
                   d-flex
                   justify-start
                   align-top
@@ -46,14 +46,14 @@
                   mb-1
                   mt-3
                 "
-                  id="InitialIncrementError"
+                id="InitialIncrementError"
               >
                 <ATATSVGIcon
-                    style="margin-top: 2px"
-                    name="exclamationMark"
-                    :width="18"
-                    :height="18"
-                    color="error"
+                  style="margin-top: 2px"
+                  name="exclamationMark"
+                  :width="18"
+                  :height="18"
+                  color="error"
                 />
                 <div class="field-error ml-2">
                   {{ errorMissingInitialIncrementMessage }}
@@ -63,24 +63,24 @@
               <hr class="my-6" />
               <transition-group name="funding-increments" tag="div">
                 <div
-                    v-for="(fundingIncrement, index) in fundingIncrements"
-                    :key="fundingIncrement.text"
-                    :id="'Increment' + index"
-                    class="funding-increments-item"
+                  v-for="(fundingIncrement, index) in fundingIncrements"
+                  :key="fundingIncrement.text"
+                  :id="'Increment' + index"
+                  class="funding-increments-item"
                 >
                   <div class="mb-4">
                     <div class="d-flex justify-space-between align-center mb-4 position-relative">
                       <span class="_insert-increment">
                         <v-btn
-                            :id="'InsertIncrement' + index"
-                            class="_icon-only _plus position-relative"
-                            v-if="fundingIncrement.hasPeriodGap"
-                            @click="insertIncrement(index)"
+                          :id="'InsertIncrement' + index"
+                          class="_icon-only _plus position-relative"
+                          v-if="fundingIncrement.hasPeriodGap"
+                          @click="insertIncrement(index)"
                         >
                           <ATATSVGIcon color="base" :height="12" :width="12" name="plusSign" />
                           <div
-                              :id="'AddIncrementTooltipText' + index"
-                              class="_button-help"
+                            :id="'AddIncrementTooltipText' + index"
+                            class="_button-help"
                           >
                             Add increment below
                           </div>
@@ -92,38 +92,38 @@
                       </span>
 
                       <ATATSelect
-                          :id="'IncrementPeriod' + index"
-                          :items="getFiscalQuarters(index)"
-                          width="190"
-                          :selectedValue.sync="selectedQuarters[index]"
-                          class="mr-4"
-                          :class="{
+                        :id="'IncrementPeriod' + index"
+                        :items="getFiscalQuarters(index)"
+                        width="190"
+                        :selectedValue.sync="selectedQuarters[index]"
+                        class="mr-4"
+                        :class="{
                           'customized-error-control error--text': index === outOfRangeIndex
                         }"
-                          :showErrorMessages="false"
-                          @selectValueChange="quarterChange"
-                          :returnObject="true"
+                        :showErrorMessages="false"
+                        @selectValueChange="quarterChange"
+                        :returnObject="true"
                       />
 
                       <ATATTextField
-                          :id="'Amount' + index"
-                          :ref="'Amount' + index"
-                          :value.sync="fundingIncrements[index].amt"
-                          :alignRight="true"
-                          :isCurrency="true"
-                          :showErrorMessages="false"
-                          :validateOnBlur="false"
-                          width="190"
-                          class="mr-2"
-                          :class="[{ 'error--text': errorMissingFirstIncrement && index === 0},]"
-                          @blur="calcAmounts('increment' + index)"
-                          :rules="[$validators.required('', true)]"
+                        :id="'Amount' + index"
+                        :ref="'Amount' + index"
+                        :value.sync="fundingIncrements[index].amt"
+                        :alignRight="true"
+                        :isCurrency="true"
+                        :showErrorMessages="false"
+                        :validateOnBlur="false"
+                        width="190"
+                        class="mr-2"
+                        :class="[{ 'error--text': errorMissingFirstIncrement && index === 0},]"
+                        @blur="calcAmounts('increment' + index)"
+                        :rules="[$validators.required('', true)]"
                       />
                       <v-btn
-                          :id="'DeleteIncrement' + index"
-                          class="_icon-only"
-                          @click="deleteFundingIncrement(index)"
-                          :disabled="fundingIncrements.length === 1"
+                        :id="'DeleteIncrement' + index"
+                        class="_icon-only"
+                        @click="deleteFundingIncrement(index)"
+                        :disabled="fundingIncrements.length === 1"
                       >
                         <v-icon> delete </v-icon>
                       </v-btn>
@@ -131,31 +131,31 @@
                     <div>
                       <!-- error validation for last quarter out of range -->
                       <ATATErrorValidation
-                          id="OutOfRangeAlert"
-                          class="atat-text-field-error"
-                          :errorMessages="[outOfRangeErrorMessage]"
-                          v-if="outOfRangeIndex && index === outOfRangeIndex"
+                        id="OutOfRangeAlert"
+                        class="atat-text-field-error"
+                        :errorMessages="[outOfRangeErrorMessage]"
+                        v-if="outOfRangeIndex && index === outOfRangeIndex"
                       />
 
                       <!-- error validation for missing first increment -->
                       <ATATErrorValidation
-                          :id="'isDuplicated_' + index"
-                          class="atat-text-field-error"
-                          :errorMessages="[errorMissingFirstIncrementMessage]"
-                          v-if="errorMissingFirstIncrement && index === 0"
+                        :id="'isDuplicated_' + index"
+                        class="atat-text-field-error"
+                        :errorMessages="[errorMissingFirstIncrementMessage]"
+                        v-if="errorMissingFirstIncrement && index === 0"
                       />
                     </div>
                   </div>
                 </div>
               </transition-group>
               <v-btn
-                  id="AddIncrementButton"
-                  v-if="showAddIncrementButton"
-                  plain
-                  text
-                  class=" link-button no-border mt-5"
-                  :ripple="false"
-                  @click="addIncrement()"
+                id="AddIncrementButton"
+                v-if="showAddIncrementButton"
+                plain
+                text
+                class=" link-button no-border mt-5"
+                :ripple="false"
+                @click="addIncrement()"
               >
                 <v-icon color="primary" class="mr-2">control_point</v-icon>
                 <span>Add funding increment</span>
@@ -167,13 +167,13 @@
                 <label for="TotalAmount" class="mr-4"> Total </label>
 
                 <ATATTextField
-                    id="TotalAmount"
-                    :value.sync="totalAmount"
-                    :alignRight="true"
-                    :isCurrency="true"
-                    width="190"
-                    style="margin-right: -10px;"
-                    :disabled="true"
+                  id="TotalAmount"
+                  :value.sync="totalAmount"
+                  :alignRight="true"
+                  :isCurrency="true"
+                  width="190"
+                  style="margin-right: -10px;"
+                  :disabled="true"
                 />
                 <span class="d-block" style="width: 36px"></span>
               </div>
@@ -181,15 +181,15 @@
 
             <div class="ml-10 width-100">
               <div
-                  class="bg-primary-lighter width-100 border-rounded-more pa-6"
+                class="bg-primary-lighter width-100 border-rounded-more pa-6"
               >
                 <div class="d-flex">
                   <div class="pr-5">
                     <ATATSVGIcon
-                        name="calendar"
-                        :width="34"
-                        :height="37"
-                        color="primary"
+                      name="calendar"
+                      :width="34"
+                      :height="37"
+                      color="primary"
                     />
                   </div>
                   <div>
@@ -217,7 +217,7 @@
                       Total cost estimate: ${{ costEstimateStr }}
                     </span>
                     <p class="mb-0" v-if="!isFundingMet">
-
+                      
                       You need to add
                       <span id="AmountRemaining" class="bold">
                         ${{ amountRemainingStr }}
@@ -235,15 +235,15 @@
           </div>
         </div>
         <ATATAlert
-            id="OverUnderFundedAlert"
-            class="width-70 mt-5"
-            v-if=" isIFPOverfunded|| isIFPUnderfunded "
+          id="OverUnderFundedAlert"
+          class="width-70 mt-5"
+          v-if=" isIFPOverfunded|| isIFPUnderfunded "
         >
           <template slot="content">
             <p class="mb-0">
               Based on your requirement’s cost estimate, your plan is
-              <strong>{{ isIFPOverfunded ? 'over' : 'under'}}funded</strong>.
-              Please adjust your increments to ensure the total equals ${{ costEstimateStr }}
+              <strong>{{ isIFPOverfunded ? 'over' : 'under'}}funded</strong>. 
+              Please adjust your increments to ensure the total equals ${{ costEstimateStr }} 
             </p>
           </template>
         </ATATAlert>
@@ -294,8 +294,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public maxAllowedIncrements = 1;
   public periodLengthStr = "";
   public requestedPopStartDate =
-      Periods.periodOfPerformance?.requested_pop_start_date;
-  public periodOfPerformance!: PeriodOfPerformanceDTO;
+    Periods.periodOfPerformance?.requested_pop_start_date;
+  public periodOfPerformance!: PeriodOfPerformanceDTO; 
   public startDate = new Date();//(): Date => {
 
   public currentQuarter():number {
@@ -320,10 +320,10 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   private errorMessages: string[] = [];
   public errorMissingInitialIncrement = false;
   public errorMissingInitialIncrementMessage =
-      "Please enter the amount of your initial funding.";
+    "Please enter the amount of your initial funding.";
   public errorMissingFirstIncrement = false;
   public errorMissingFirstIncrementMessage =
-      "Please enter the amount of your first increment.";
+    "Please enter the amount of your first increment.";
   public outOfRangeIndex: number | null = null;
   public outOfRangeErrorMessage = `Your funding plan exceeds your base period length.
     Remove this increment or adjust the 1st increment date to ensure your plan does
@@ -362,7 +362,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public async validateOnContinue(): Promise<void> {
     this.calcAmounts("initialIncrement");
     this.calcAmounts("increment0");
-    // this.isUnderfunded();
+    // this.isUnderfunded(); 
     // this.isOverfunded();
 
     // if (!this.hasValidatedOnContinue && (this.outOfRangeIndex && this.outOfRangeIndex >= 0
@@ -490,7 +490,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         const lastQuarterSelected = this.selectedQuarters[this.selectedQuarters.length - 1].text;
         const outOfRange = this.outOfRangeIndex && this.outOfRangeIndex >= 0;
         this.showAddIncrementButton
-            = lastQuarterSelected !== lastIncrementQuarter && !outOfRange ? true : false;
+          = lastQuarterSelected !== lastIncrementQuarter && !outOfRange ? true : false;
       }
     }
   }
@@ -506,7 +506,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     let nextQtrOrder = 0;
     if (
       selectedQtrIndex > -1 &&
-        selectedQtrIndex !== this.fiscalQuarters.length
+      selectedQtrIndex !== this.fiscalQuarters.length
     ) {
       nextQtr = this.fiscalQuarters[selectedQtrIndex + 1].text;
       nextQtrOrder = this.fiscalQuarters[selectedQtrIndex + 1].multiSelectOrder;
@@ -587,9 +587,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.$nextTick(() => {
       this.fundingIncrements.forEach((incr) => {
         return (incr.amt =
-            incr.amt && incr.amt !== "0.00"
-              ? toCurrencyString(currencyStringToNumber(incr.amt))
-              : "");
+          incr.amt && incr.amt !== "0.00"
+            ? toCurrencyString(currencyStringToNumber(incr.amt))
+            : "");
       });
     });
 
@@ -687,7 +687,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const estimatedTOValue =
-        await FinancialDetails.getEstimatedTaskOrderValue();
+      await FinancialDetails.getEstimatedTaskOrderValue();
     if (estimatedTOValue) {
       this.costEstimate = currencyStringToNumber(estimatedTOValue);
       this.costEstimateStr = toCurrencyString(this.costEstimate);
@@ -722,15 +722,15 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
 
     this.calcAmounts("");
-
+    
     this.periodOfPerformance = await PeriodOfPerformance.loadPeriodOfPerformance();
     const requestedPopStartDate = this.periodOfPerformance.requested_pop_start_date;
-    this.startDate =
-        await new Date(
-          format(parseISO(requestedPopStartDate !== ""
-            ? requestedPopStartDate : formatISO(new Date())
-          ), 'MM/dd/yyyy')
-        );
+    this.startDate = 
+      await new Date(
+        format(parseISO(requestedPopStartDate !== "" 
+          ? requestedPopStartDate : formatISO(new Date())
+        ), 'MM/dd/yyyy')
+      );
 
     this.periods = await Periods.loadPeriods();
     if (this.periods) {
@@ -779,7 +779,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         let sortedIncrements: fundingIncrement[] = [];
         this.fundingIncrements.forEach((incr) => {
           incr.order =
-              this.fiscalQuarters.findIndex((q) => q.text === incr.text) + 1;
+            this.fiscalQuarters.findIndex((q) => q.text === incr.text) + 1;
           sortedIncrements.push(incr);
         });
         sortedIncrements.sort((a, b) => {
