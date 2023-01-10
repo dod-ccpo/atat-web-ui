@@ -12,6 +12,8 @@
       placeHolder="Search Task Order Number"
       class="text-left mb-4 d-inline-block"
       helpText="Format: Must be 13 or 19 digits"
+      :value.sync="searchString"
+      @search = "startProvisionWorkflow"
     />
 
   </v-card>
@@ -32,11 +34,14 @@ import { scrollToId } from "@/helpers";
 })
 
 export default class ExistingTaskOrderCard extends Vue {
-
+  public searchString = "";
   public scrollToLearnMore(): void {
     scrollToId("SectionProvisionResources");
   }
 
+  public async startProvisionWorkflow(): Promise<void> {
+    this.$emit("startProvisionWorkflow", this.searchString);
+  }
 }
 
 </script>

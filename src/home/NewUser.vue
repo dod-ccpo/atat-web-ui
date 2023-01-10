@@ -3,7 +3,7 @@
     <section id="SectionCards" class="container-max-width mx-auto _mt-80 _mb-80">
       <div class="_new-user-cards d-flex justify-space-between">
         <NewAcquisitionCard @startNewAcquisition="startNewAcquisition" />
-        <ExistingTaskOrderCard />
+        <ExistingTaskOrderCard @startProvisionWorkflow="startProvisionWorkflow"/>
       </div>
     </section>
     <section 
@@ -124,10 +124,11 @@
              <v-btn
               id="ProvisionNewCloudResources"
               class="primary mb-4"
-              @click="provisionNewCloudResources"
-              @keydown.enter="provisionNewCloudResources"
-              @keydown.space="provisionNewCloudResources"
+             
             >
+             <!-- @click="startProvisionWorkflow"
+              @keydown.enter="startProvisionWorkflow"
+              @keydown.space="startProvisionWorkflow" -->
               Provision new cloud resources
             </v-btn>
 
@@ -168,6 +169,7 @@ import NewAcquisitionCard from "./components/NewAcquisitionCard.vue";
 import ExistingTaskOrderCard from "./components/ExistingTaskOrderCard.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDivider from "@/components/ATATDivider.vue";
+import router from "@/router";
 
 @Component({
   components: {
@@ -182,6 +184,10 @@ export default class NewUser extends Vue {
 
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
+  }
+
+  public startProvisionWorkflow(searchString: string): void{
+    this.$emit("startProvisionWorkflow", searchString);
   }
 
   public prepareStepsText = [
@@ -208,9 +214,6 @@ export default class NewUser extends Vue {
     this.showNewFeatures = !this.showNewFeatures;
   }
 
-  public provisionNewCloudResources(): void {
-    alert("hi there");
-  }
 }
 
 </script>  

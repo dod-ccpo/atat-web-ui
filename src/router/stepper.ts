@@ -288,7 +288,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Contracting Shop",
         path: "/",
-        name: routeNames.ContractingShop,
+        name: routeNames.ContractingShop, 
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,

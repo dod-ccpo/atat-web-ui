@@ -1,17 +1,25 @@
 import VueRouter from "vue-router";
 import {stepperRoutes} from "./stepper";
+import { provisionWorkFlowRoutes } from "./provisionWorkflow";
 import PathResolver from "./resolvers/PathResolver.vue";
 import RouteResolver from "./resolvers/RouteResolver.vue";
 import Home from "../home/Index.vue";
+import ProvisionWorkflow from "../home/ProvisionWorkflow.vue"
 import { scrollToMainTop } from "@/helpers";
 
 const routes = [
   {
-    name: "home",
+    name: "home", 
     component: Home,
     path: "/"
   },
+  // {
+  //   name: "provisionWorkflow", 
+  //   component: ProvisionWorkflow,
+  //   path: "/provision-workflow"
+  // },
   ...stepperRoutes,
+  ...provisionWorkFlowRoutes,
   {
     name: 'routeResolver',
     component: RouteResolver,

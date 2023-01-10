@@ -1,17 +1,11 @@
 <template>
   <div  style="overflow: hidden;">
-    <ATATSideStepper ref="sideStepper" :stepperData="stepperData" />
-
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
-
-    <ATATToast />
-
-    <ATATPageHead :headline="projectTitle" />
-
     <v-main>
       <div id="app-content" class="d-flex flex-column">
+
         <div  class="mb-auto">
           <router-view></router-view>
         </div>
@@ -27,30 +21,19 @@
           :noPrevious="noPrevious"
           class="mb-8"
         />
-
-        <ATATFooter/>
-
+         <ATATFooter/>
       </div>
     </v-main>
   </div>
 </template>
 
-<style lang="scss">
-@import "./sass/atat.scss";
-</style>
-
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 
-import ATATFooter from "./components/ATATFooter.vue";
-import ATATPageHead from "./components/ATATPageHead.vue";
-import ATATSideStepper from "./components/ATATSideStepper.vue";
-import ATATSlideoutPanel from "./components/ATATSlideoutPanel.vue";
-import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
-import ATATToast from "./components/ATATToast.vue";
-
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
+import ATATStepperNavigation from "@/components/ATATStepperNavigation.vue";
+import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import Steps from "@/store/steps";
 
@@ -66,33 +49,30 @@ import {
   isPathResolver
 } from "@/store/steps/helpers";
 
-import { buildStepperData, routeNames } from "./router/stepper";
-import actionHandler from "./action-handlers/index";
-import AppSections from "./store/appSections";
+import actionHandler from "@/action-handlers/index";
+import AppSections from "@/store/appSections";
+import {
+  buildProvisionWorkflowRouterData, 
+  provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import { StepperStep } from "types/Global";
 
 @Component({
   components: {
-    ATATFooter,
-    ATATPageHead,
-    ATATSideStepper,
     ATATSlideoutPanel,
     ATATStepperNavigation,
-    ATATToast,
+    ATATFooter
   },
 })
 
-export default class AppPackageBuilder extends Vue {
-  $refs!: {
-    sideStepper: ATATSideStepper;
-  };
-
+export default class ProvisionWorkflow extends Vue {
+ 
   public routeNames: Record<string, string> = {};
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent || undefined;
   };
 
-  private stepperData = buildStepperData();
+  private stepperData:StepperStep[] = []; 
   private additionalButtons: AdditionalButton[] = [];
   private noPrevious = false;
   private backButtonText = "Back";
@@ -101,10 +81,11 @@ export default class AppPackageBuilder extends Vue {
   private hideContinueButton = false;
 
   async mounted(): Promise<void> {
-    this.routeNames = routeNames;
-    debugger;
+    this.stepperData = await buildProvisionWorkflowRouterData();
+    this.routeNames = provWorkflowRouteNames;
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
+    debugger;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
       const { stepName } = step;
@@ -121,8 +102,6 @@ export default class AppPackageBuilder extends Vue {
       const { stepName, stepNumber } = step;
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
-      this.$refs.sideStepper.setCurrentStep(stepNumber);
-
       SlideoutPanel.closeSlideoutPanel();
     }
   }
@@ -184,12 +163,6 @@ export default class AppPackageBuilder extends Vue {
     }
   }
 
-  public get projectTitle(): string {
-    return AcquisitionPackage.projectTitle !== ""
-      ? AcquisitionPackage.projectTitle
-      : "New Acquisition";
-  }
-
   private setNavButtons(step: StepInfo): void {
     this.altBackDestination = Steps.altBackDestination;
     this.noPrevious = !step.prev && !this.altBackDestination;
@@ -198,7 +171,7 @@ export default class AppPackageBuilder extends Vue {
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
-    this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments;
+    //this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments;
   }
 
   private async additionalButtonClick(button: AdditionalButton) {

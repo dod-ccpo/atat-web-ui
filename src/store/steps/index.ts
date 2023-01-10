@@ -110,6 +110,7 @@ export class StepsStore extends VuexModule implements StepsState {
 
     @Mutation
     [Mutations.SET_CURRENT_STEP](stepName: string): void {
+      debugger;
       const step = this.stepMap.get(stepName);
       if (step) {
         this.currentStep = step;
@@ -143,6 +144,7 @@ export class StepsStore extends VuexModule implements StepsState {
 
     @Action({ rawError: true })
     public setCurrentStep(stepName: string): void {
+      debugger;
       this.context.commit(Mutations.SET_CURRENT_STEP, stepName);
     }
 

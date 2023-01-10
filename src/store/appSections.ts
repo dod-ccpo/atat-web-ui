@@ -29,6 +29,7 @@ export class AppSectionsStore extends VuexModule {
     PortfolioSummary: "Portfolio Summary",
     DocumentReview: "Document Review",
     Packages: "Packages",
+    ProvisionWorkflow: "ProvisionWorkflow"
   }
 
   activeAppSection = this.sectionTitles.Home;
@@ -39,7 +40,8 @@ export class AppSectionsStore extends VuexModule {
     { title: this.sectionTitles.TOLookup },
     { title: this.sectionTitles.Portfolios },
     { title: this.sectionTitles.DocumentReview },
-    { title: this.sectionTitles.Packages }
+    { title: this.sectionTitles.Packages },
+    { title: this.sectionTitles.ProvisionWorkflow }
   ];
 
   activeTabIndex = 0;
