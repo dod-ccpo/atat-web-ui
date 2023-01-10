@@ -76,17 +76,32 @@
     <v-form ref="form" lazy-validation>
 
       <div v-if="selectedClassificationLevelList.length > 1" class="mb-10">
-        <ATATRadioGroup
-          id="ClassificationLevel"
-          legend="What classification level is this instance deployed in?"
-          :value.sync="_serviceOfferingData.classificationLevel"
-          :items="classificationRadioOptions"
-          name="ClassificationLevel"
-          class="mt-3 mb-2"
-          :tooltipText="classificationTooltipText"
-          tooltipLabel="Classification level for this instance"
-          :rules="[$validators.required('Please select a classification level.')]"
-        />
+        <div>
+          <ATATCheckboxGroup
+            v-if="isPortabilityPlan"
+            id="ClassificationLevel"
+            groupLabel="What classification level is this instance deployed in?"
+            :value.sync="_serviceOfferingData.classificationLevel"
+            :items="classificationCheckboxOptions"
+            name="ClassificationLevel"
+            class="mt-3 mb-2"
+            :tooltipText="classificationTooltipText"
+            tooltipLabel="Classification level for this instance"
+            :rules="[$validators.required('Please select a classification level.')]"
+          />
+          <ATATRadioGroup
+            v-else
+            id="ClassificationLevel"
+            legend="What classification level is this instance deployed in?"
+            :value.sync="_serviceOfferingData.classificationLevel"
+            :items="classificationRadioOptions"
+            name="ClassificationLevel"
+            class="mt-3 mb-2"
+            :tooltipText="classificationTooltipText"
+            tooltipLabel="Classification level for this instance"
+            :rules="[$validators.required('Please select a classification level.')]"
+          />
+        </div>
         <a 
           role="button" 
           id="UpdateClassificationFromRadios"
@@ -237,6 +252,7 @@ import {
 } from "@/packages/helpers/ClassificationRequirementsHelper";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import classificationRequirements from "@/store/classificationRequirements";
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 @Component({
   components: {
@@ -251,6 +267,7 @@ import classificationRequirements from "@/store/classificationRequirements";
     StorageFormElements,
     TrainingFormElements,
     ATATRadioGroup,
+    ATATCheckboxGroup
   }
 })
 
@@ -280,6 +297,7 @@ export default class OtherOfferings extends Vue {
   public allClassificationLevels:ClassificationLevelDTO[] = [];
   public selectedClassificationLevelList: SelectedClassificationLevelDTO[] = [];
   public classificationRadioOptions: RadioButton[] = [];
+  public classificationCheckboxOptions: Checkbox[] = [];
   public singleClassificationLevelName: string | undefined = "";
   public availablePeriodCheckboxItems: Checkbox[] = [];
   public formHasBeenTouched = false;
@@ -360,6 +378,8 @@ export default class OtherOfferings extends Vue {
   public setAvlClassificationLevels(): void {
     this.classificationRadioOptions 
       = this.createCheckboxOrRadioItems(this.selectedClassificationLevelList, "Radio");
+    this.classificationCheckboxOptions
+      =this.createCheckboxOrRadioItems(this.selectedClassificationLevelList, "Checkbox");
   }
 
   public checkSingleClassification(): void {
@@ -370,8 +390,13 @@ export default class OtherOfferings extends Vue {
       && this.selectedClassificationLevelList[0].classification_level
     ) {
       const classificationObj = this.selectedClassificationLevelList[0];
-      this._serviceOfferingData.classificationLevel
-        = classificationObj.classification_level as string;
+      if(this.isPortabilityPlan){
+        this._serviceOfferingData.classificationLevel
+          = [classificationObj.classification_level as string];
+      }else{
+        this._serviceOfferingData.classificationLevel
+          = classificationObj.classification_level as string;
+      }
       this.singleClassificationLevelName 
         = buildClassificationLabel(classificationObj, "short");
     }
@@ -392,8 +417,20 @@ export default class OtherOfferings extends Vue {
       // if the classification level that was selected was removed via the modal,
       // clear out this._serviceOfferingData.classificationLevel
       const selectedSysId = this._serviceOfferingData.classificationLevel;
-      if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
-        this._serviceOfferingData.classificationLevel = "";
+      if(this.isPortabilityPlan && Array.isArray(this._serviceOfferingData.classificationLevel)){
+        const selected: string[] = []
+        this._serviceOfferingData.classificationLevel.forEach(CL=>{
+          const found = this.modalSelectedOptions.indexOf(CL) > 0
+          if(found){
+            selected.push(CL)
+          }
+        })
+        this._serviceOfferingData.classificationLevel = selected
+      }else{
+        if(typeof selectedSysId === 'string'
+          && this.modalSelectedOptions.indexOf(selectedSysId) === -1){
+          this._serviceOfferingData.classificationLevel = "";
+        }
       }
     }
     Toast.setToast(this.classificationLevelToast);
