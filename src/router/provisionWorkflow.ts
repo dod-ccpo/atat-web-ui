@@ -2,10 +2,10 @@ import {StepperRouteConfig, StepperStep} from "../../types/Global";
 
 // Step 1 - Acquisition Package Details
 import RouterIndex from "@/home/RouterIndex.vue";
-import ProvisionWorkflow from "@/home/ProvisionWorkflow.vue";
 import AwardedTaskOrder from "@/home/AwardedTaskOrder.vue";
 import AddCSPAdmin from "@/home/AddCSPAdmin.vue";
-import ReadyToProvision from "@/home/ReadyToProvision.vue"
+import ReadyToProvision from "@/home/ReadyToProvision.vue";
+import Provisioned from "@/home/Provisioned.vue";
 
 
 // import {
@@ -15,10 +15,11 @@ import ReadyToProvision from "@/home/ReadyToProvision.vue"
 
 export const provWorkflowRouteNames = {
   RouterIndex: "Router_Index",
-  ProvisionWorkflow: "ProvisionWorkflow",
+  ProvisionWorkflow: "Provision_Workflow",
   AwardedTaskOrder: "Awarded_Task_Order",
   AddCSPAdmin: "Add_CSP_Admin",
   ReadyToProvision: "Ready_To_Provision",
+  Provisioned: "Provisioned"
 };
 
 /**
@@ -37,26 +38,27 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
     component: RouterIndex,
     stepNumber: "02",
     completed: false,
-    children: [
-      {
-        name: provWorkflowRouteNames.AwardedTaskOrder,
-        path: "/awarded-task-order",
-        component: AwardedTaskOrder, 
-      },
-      {
-        name: provWorkflowRouteNames.AddCSPAdmin,
-        path: "/add-csp-admin",
-        component: AddCSPAdmin,
-      },
-      {
-        name: provWorkflowRouteNames.ReadyToProvision,
-        path: "/ready-to-provision",
-        component: ReadyToProvision,
-      }
-    ]
   },
-  
-
+  {
+    name: provWorkflowRouteNames.AwardedTaskOrder,
+    path: "/awarded-task-order",
+    component: AwardedTaskOrder, 
+  },
+  {
+    name: provWorkflowRouteNames.AddCSPAdmin,
+    path: "/add-csp-admin",
+    component: AddCSPAdmin,
+  },
+  {
+    name: provWorkflowRouteNames.ReadyToProvision,
+    path: "/ready-to-provision",
+    component: ReadyToProvision,
+  },
+  {
+    name: provWorkflowRouteNames.Provisioned,
+    path: "/provisioned",
+    component: Provisioned,
+  }
 ];
 
 /**

@@ -156,7 +156,6 @@ export default class Home extends Vue {
   }
 
   public provisionNewCloudResources(value?: string): void{
-    debugger;
     alert(value);
   }
 

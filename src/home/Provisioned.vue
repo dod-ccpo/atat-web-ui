@@ -3,16 +3,13 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
-          <h1 class="page-header mb-3"> Ready to provision your new ATAT portfolio?</h1>
+          <h1 class="page-header mb-3">Your portfolio is being provisioned!</h1>
           <div class="copy-max-width">
             <p class="mb-6">
-              Upon initiation of this process, we’ll submit your task order and administrator 
-              details to Microsoft Azure to create your cloud environment and user accounts. 
-              This process cannot be undone.
-              Once complete,CSP Name will notify your CSP administrators with instructions 
-              for obtaining access to the cloud console.
-              You will automatically become a portfolio manager within ATAT and will be able 
-              to track cloud usage and manage spending throughout the duration of your task order. You can invite other people from your organization to access the ATAT portfolio, if needed.
+              We’re working with [Microsoft Azure] to provision your cloud
+              resources. This process can take up to 2 hours. We’ll email you
+              when the process is complete, but you can come back here anytime
+              for an up-to-date status of your portfolio and funding details.
             </p>
           </div>
         </v-col>
@@ -55,7 +52,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
     ATATSVGIcon
   },
 })
-export default class ReadyToProvision extends Vue {
+export default class Provisioned extends Vue {
 
   public cardData = [
     {

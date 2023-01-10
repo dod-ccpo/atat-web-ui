@@ -53,6 +53,7 @@ import actionHandler from "@/action-handlers/index";
 import AppSections from "@/store/appSections";
 import {
   buildProvisionWorkflowRouterData, 
+  provisionWorkFlowRoutes, 
   provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { StepperStep } from "types/Global";
 
@@ -82,10 +83,11 @@ export default class ProvisionWorkflow extends Vue {
 
   async mounted(): Promise<void> {
     this.stepperData = await buildProvisionWorkflowRouterData();
+    await Steps.setSteps(provisionWorkFlowRoutes);
+    
     this.routeNames = provWorkflowRouteNames;
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
-    debugger;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
       const { stepName } = step;

@@ -66,7 +66,7 @@ import {
   isPathResolver
 } from "@/store/steps/helpers";
 
-import { buildStepperData, routeNames } from "./router/stepper";
+import { buildStepperData, routeNames, stepperRoutes } from "./router/stepper";
 import actionHandler from "./action-handlers/index";
 import AppSections from "./store/appSections";
 
@@ -101,8 +101,8 @@ export default class AppPackageBuilder extends Vue {
   private hideContinueButton = false;
 
   async mounted(): Promise<void> {
+    await Steps.setSteps(stepperRoutes);
     this.routeNames = routeNames;
-    debugger;
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
