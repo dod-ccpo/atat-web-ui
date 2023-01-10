@@ -824,13 +824,14 @@ export interface IgceEstimateDTO extends BaseTableDTO {
   classification_instance: ReferenceColumn | string;
   environment_instance: ReferenceColumn | string;
   cross_domain_solution: ReferenceColumn | string;
-  contract_type: "" | "FFP" | "T&M" | "TBD";
+  contract_type: "FFP" | "T&M" | "TBD"; //zach note -> contract_type should never be "", only choices in DB are FFP, T&M, TBD
   title: string;
   description: string;
   unit: string;
-  unit_price: number | null;
+  unit_price: number; // zach note -> unit price can never be null on the excel page
   unit_quantity: string;
-  dow_task_number?: string;
+  dow_task_number: string; //zach note -> DOW task number is required on the excel page, not optional.
+  idiq_clin_type: "CLOUD" | "CLOUD_SUPPORT"; //zach note -> added idiq_clin_type
 }
 
 export interface RegionsDTO extends BaseTableDTO {
