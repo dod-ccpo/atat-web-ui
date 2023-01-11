@@ -43,6 +43,14 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
     name: provWorkflowRouteNames.AwardedTaskOrder,
     path: "/awarded-task-order",
     component: AwardedTaskOrder, 
+    additionalButtons: [
+      {
+        buttonText: "I need to enter a different task order number",
+        buttonId: "EnterAnotherTaskOrderNumber",
+        buttonClass: "secondary",
+        // name: routeNames.EvalPlanSummary, // TODO: restore when summaryu page added
+      },
+    ]
   },
   {
     name: provWorkflowRouteNames.AddCSPAdmin,
@@ -53,6 +61,8 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
     name: provWorkflowRouteNames.ReadyToProvision,
     path: "/ready-to-provision",
     component: ReadyToProvision,
+    continueButtonText: "Start Provisioning",
+    continueButtonColor: "primary"
   },
   {
     name: provWorkflowRouteNames.Provisioned,

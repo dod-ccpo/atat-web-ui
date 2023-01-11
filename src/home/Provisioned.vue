@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container fluid class="container-max-width">
+    <v-container fluid class="container-max-width mb-15">
       <v-row>
         <v-col>
           <h1 class="page-header mb-3">Your portfolio is being provisioned!</h1>

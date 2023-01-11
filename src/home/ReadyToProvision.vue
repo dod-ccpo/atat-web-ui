@@ -3,45 +3,46 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
-          <h1 class="page-header mb-3"> Ready to provision your new ATAT portfolio?</h1>
-          <div class="copy-max-width">
-            <p class="mb-6">
-              Upon initiation of this process, we’ll submit your task order and administrator 
-              details to Microsoft Azure to create your cloud environment and user accounts. 
-              This process cannot be undone.
-              Once complete,CSP Name will notify your CSP administrators with instructions 
-              for obtaining access to the cloud console.
-              You will automatically become a portfolio manager within ATAT and will be able 
-              to track cloud usage and manage spending throughout the duration of your task order. You can invite other people from your organization to access the ATAT portfolio, if needed.
-            </p>
-          </div>
+          <h1 class="page-header mb-1">
+            Ready to provision your new ATAT portfolio?
+          </h1>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <div class="provisioned d-flex justify-space-between width-100">
-            <v-card 
-              v-for="(item, idx) in cardData"
-              :key=idx
-              id="Provisioning" class="d-flex align-start pa-6 mr-6">
-             <div class="mt-1">
-             <ATATSVGIcon
-                :name="item.icon"
-                :width="item.iconWidth"
-                :height="item.iconHeight"
-                color="primary"
-              />
-             </div>
-             <div class="ml-3">
-              <h3>{{ item.headline }}</h3>
-              <p v-html="item.text" class="ma-0 mt-2 body-sm">
-              </p>
-            </div>
-            </v-card>
+          <div class="copy-max-width">
+            <p>
+              Great news! We have everything we need to provision your cloud
+              resources within {{ csp }}.
+            </p>
+            <p class="mb-6">
+              <ul>
+                <li class="mb-2">
+                  Upon initiation of this process, we’ll submit your task order
+                  and administrator details to {{ csp }} to create your cloud
+                  environment and user accounts.
+                  <strong>This process cannot be undone.</strong>
+                </li>
+                <li class="mb-2">
+                  Once complete,CSP Name will notify your CSP administrators with
+                  instructions for obtaining access to the cloud console.
+                </li>
+                <li>
+                  You will automatically become a portfolio manager within ATAT
+                  and will be able to track cloud usage and manage spending
+                  throughout the duration of your task order. You can invite other
+                  people from your organization to access the ATAT portfolio, if
+                  needed.
+                </li>
+              </ul>
+            </p>
           </div>
         </v-col>
+         <v-col>  
+          <ATATSVGIcon :name="getCSPLogo()" width="460px" height="406px" />
+        </v-col>
       </v-row>
-    </v-container>
+      </v-container>
   </div>
 </template>
 
@@ -52,36 +53,33 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
   components: {
-    ATATSVGIcon
+    ATATSVGIcon,
   },
 })
 export default class ReadyToProvision extends Vue {
+  public csp = "";
 
-  public cardData = [
-    {
-      icon: "CloudUpload",
-      iconWidth: "36",
-      iconHeight: "24",
-      headline: "Provisioning",
-      text: "We’re taking care of everything to set up your cloud resources and administrator " +
-            "access, so there is nothing else you need to do."
-    },  {
-      icon: "People",
-      iconWidth: "33",
-      iconHeight: "21",
-      headline: "CSP portal access",
-      text: "Once provisioned, Microsoft Azure will notify your administrators with instructions " +
-            "for obtaining access to the cloud console."
-    },  {
-      icon: "HelpOutline",
-      iconWidth: "30",
-      iconHeight: "30",
-      headline: "Need help?",
-      text: "Feel free to <a href='https://community.hacc.mil/s/contact' target='blank'>contact " +
-            "us</a> if you have any questions. We are here to help!"
+  public getCSPLogo(): string {
+    let logo = "";
+    switch (this.csp.toLowerCase()) {
+    case "microsoft azure":
+      logo = "ProvisionAzure";
+      break;
+    case "google gcp":
+      logo = "ProvisionGCP";
+      break;
+    case "oracle":
+      logo = "ProvisionOracle";
+      break;
+    case "amazon aws":
+      logo = "ProvisionAWS";
+      break;
     }
+    return logo;
+  }
 
-  ]
-
+  public mounted(): void {
+    this.csp = "Microsoft Azure";
+  }
 }
 </script>

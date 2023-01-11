@@ -19,6 +19,7 @@ export class StepsStore extends VuexModule implements StepsState {
       additionalButtons: [],
       backButtonText: '',
       continueButtonText:'',
+      continueButtonColor: '',
       completed: false,
       completePercentageWeight: 0,
       stepCompleteOnEnter: undefined,

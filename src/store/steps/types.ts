@@ -1,6 +1,7 @@
 export type StepRouteResolver = (current: string) => string;
 export type StepPathResolver = (current: string, direction: string)=> string;
 export interface StepInfo {
+    continueButtonColor: string;
     stepNumber: string;
     stepName: string;
     stepLabel: string;

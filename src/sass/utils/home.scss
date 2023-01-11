@@ -215,3 +215,10 @@
     width: 330px;
   } 
 }
+
+.awarded-task-order-details{
+  dt, dd{
+    @extend .width-50;
+    margin-bottom: 8px;
+  }
+}

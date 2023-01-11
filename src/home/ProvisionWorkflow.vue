@@ -11,12 +11,14 @@
         </div>
 
         <ATATStepperNavigation
+          v-if="showStepper"
           @next="navigate('next')"
           @previous="navigate('previous')"
           @additionalButtonClick="additionalButtonClick"
           :additionalButtons="additionalButtons"
           :backButtonText="backButtonText"
           :continueButtonText="continueButtonText"
+          :continueButtonColor="continueButtonColor"
           :hideContinueButton="hideContinueButton"
           :noPrevious="noPrevious"
           class="mb-8"
@@ -78,6 +80,7 @@ export default class ProvisionWorkflow extends Vue {
   private noPrevious = false;
   private backButtonText = "Back";
   private continueButtonText = "Continue";
+  private continueButtonColor = "";
   private altBackDestination = "";
   private hideContinueButton = false;
 
@@ -106,6 +109,11 @@ export default class ProvisionWorkflow extends Vue {
       this.setNavButtons(step);
       SlideoutPanel.closeSlideoutPanel();
     }
+  }
+
+  get showStepper(): boolean{
+    return ["Provisioned"].some(
+      routeName => routeName.toLowerCase() !== this.$route.name?.toLowerCase());
   }
 
   async navigate(direction: string): Promise<void> {
@@ -169,11 +177,11 @@ export default class ProvisionWorkflow extends Vue {
     this.altBackDestination = Steps.altBackDestination;
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
+    this.continueButtonColor = step.continueButtonColor || "primary"
     this.continueButtonText = step.continueButtonText || "Continue";
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
-    //this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments;
   }
 
   private async additionalButtonClick(button: AdditionalButton) {

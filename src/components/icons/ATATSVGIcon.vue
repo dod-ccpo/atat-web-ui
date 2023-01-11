@@ -74,6 +74,10 @@ import SendEmail from "@/components/icons/SendEmail.vue";
 import CloudUpload from "@/components/icons/CloudUpload.vue";
 import People from "@/components/icons/People.vue";
 import HelpOutline from "@/components/icons/HelpOutline.vue";
+import ProvisionOracle from "@/components/icons/ProvisionOracle.vue";
+import ProvisionAWS from "@/components/icons/ProvisionAWS.vue";
+import ProvisionAzure from "@/components/icons/ProvisionAzure.vue";
+import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
 
 
 @Component({
@@ -120,7 +124,11 @@ import HelpOutline from "@/components/icons/HelpOutline.vue";
     Phone,
     PlusSign,
     Processing,
+    ProvisionAWS,
+    ProvisionAzure,
     Provisioned,
+    ProvisionGCP,
+    ProvisionOracle,
     RequestQuote,
     Role,
     Remove,

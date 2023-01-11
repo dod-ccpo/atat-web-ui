@@ -130,6 +130,7 @@ interface StepperRouteBase {
   additionalButtons?: AdditionalButton[];
   backButtonText?: string;
   continueButtonText?: string;
+  continueButtonColor?: string;
   stepCompleteOnEnter?: string;
   stepCompleteOnLeave?: string;
 }
@@ -515,6 +516,16 @@ export interface TaskOrderCardData {
   status?: string,
   sys_id?: string,
   clins?:ClinDTO[],
+}
+
+export interface AwardedTaskOrderDetails {
+  taskOrderNumber: string,
+  contractor: string,
+  contractIssuingOffice: string,
+  periodOfPerformance: string,
+  totalObligatedAmount: number,
+  totalAmount: number,
+  classificationLevel: string
 }
 
 export interface ClinTableRowData {
