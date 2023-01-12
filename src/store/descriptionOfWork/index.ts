@@ -820,7 +820,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         obj => obj.name === this.currentOfferingName
       );
       if (serviceOfferingObj) {
-        debugger;
         const title = serviceOfferingObj.serviceId;
         const serviceOfferingName = serviceOfferingObj.name;
         serviceOfferingObj.classificationInstances?.forEach(instance => {
@@ -1553,6 +1552,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     const offeringGroupObj = this.DOWObject.find(
       group => group.serviceOfferingGroupId === this.currentGroupId
     );
+
     if (offeringGroupObj) {
       const offeringObj = offeringGroupObj.serviceOfferings.find(
         offering => offering.name === offeringName
@@ -2454,7 +2454,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
       const calls:Promise<void>[] = [];
       const igceEstimateCalls: Promise<void>[] = [];
-
       classificationInstances.forEach(instance=> {
 
         if(instance.length> 0){

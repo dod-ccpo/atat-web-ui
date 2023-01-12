@@ -477,7 +477,10 @@ export class IGCEStore extends VuexModule {
    */
   @Action({rawError: true})
   public async syncUpIgceEstimateCDS(cdsRef: {
-    cdsSysId: string, crossDomainPairTypeList: string[]}):
+      cdsSysId: string, 
+      crossDomainPairTypeList: string[],
+      description: string
+    }):
     Promise<void> {
     const igceEstimateList = await api.igceEstimateTable.getQuery({
       params: {
@@ -494,7 +497,10 @@ export class IGCEStore extends VuexModule {
     createList.forEach(markedForCreate => {
       apiCallList.push(this.createIgceEstimateRecord({...defaultIgceEstimate(),
         cross_domain_solution: cdsRef.cdsSysId,
-        cross_domain_pair: markedForCreate}));
+        cross_domain_pair: markedForCreate,
+        title: "Cross Domain Solution (CDS)",
+        description: cdsRef.description
+      }));
     })
     deleteList.forEach(markedForDelete => {
       apiCallList.push(this.deleteIgceEstimateCDS(markedForDelete.sys_id as string));

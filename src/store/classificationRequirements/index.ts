@@ -354,7 +354,8 @@ export class ClassificationRequirementsStore extends VuexModule {
         JSON.parse(value.traffic_per_domain_pair) as CrossDomainSolution["solutionType"];
       await IGCEStore.syncUpIgceEstimateCDS({
         cdsSysId: objSysId,
-        crossDomainPairTypeList: domainPairTypeList.map(domainPairType => domainPairType.type)
+        crossDomainPairTypeList: domainPairTypeList.map(domainPairType => domainPairType.type),
+        description: value.anticipated_need_or_usage,
       })
     } else {
       await IGCEStore.deleteIgceEstimateCDS(objSysId)
