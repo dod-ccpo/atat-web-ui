@@ -81,6 +81,7 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   impact_level: string;
   classification: string;
   classification_level?: ReferenceColumn | string;
+  display?: string;
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
@@ -831,6 +832,7 @@ export interface IgceEstimateDTO extends BaseTableDTO {
   unit_price: number | null;
   unit_quantity: string;
   dow_task_number?: string;
+  classification_display?: string;
 }
 
 export interface RegionsDTO extends BaseTableDTO {
