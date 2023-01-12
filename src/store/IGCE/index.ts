@@ -500,7 +500,7 @@ export class IGCEStore extends VuexModule {
       // await api.travelRequirementTable.remove(igceEstimateList[0].sys_id as string);
       const apiCallList: Promise<void>[] = [];
       igceEstimateList.forEach(igceEstimate => {
-        apiCallList.push(api.travelRequirementTable.remove(igceEstimate.sys_id as string));
+        apiCallList.push(api.igceEstimateTable.remove(igceEstimate.sys_id as string));
       })
       await Promise.all(apiCallList);
     }
