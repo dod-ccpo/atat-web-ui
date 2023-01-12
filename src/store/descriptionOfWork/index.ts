@@ -44,6 +44,7 @@ import _, { differenceWith, first, last } from "lodash";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "../acquisitionPackage";
 import Periods from "../periods";
+import IGCEStore from "@/store/IGCE";
 import { buildClassificationLabel } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
@@ -158,8 +159,11 @@ const saveOrUpdateClassificationInstance =
         const savedObject = await api.classificationInstanceTable.create(
             tempObject as ClassificationInstanceDTO
         );
-
         objSysId = savedObject.sys_id as string;
+        await IGCEStore.createIgceEstimateClassificationInstance({
+          classificationInstanceSysId: objSysId,
+          classificationLevelSysId: savedObject.classification_level
+        });
       }
 
       return objSysId;
@@ -213,6 +217,10 @@ const saveOrUpdateOtherServiceOffering =
                 tempObject as ComputeEnvironmentInstanceDTO
           );
           objSysId = savedObject.sys_id as string;
+          await IGCEStore.createIgceEstimateEnvironmentInstance({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: savedObject.classification_level
+          });
         }
         break;
       case "database":
@@ -231,6 +239,10 @@ const saveOrUpdateOtherServiceOffering =
                 tempObject as DatabaseEnvironmentInstanceDTO
           );
           objSysId = savedObject.sys_id as string;
+          await IGCEStore.createIgceEstimateEnvironmentInstance({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: savedObject.classification_level
+          });
         }
         break;
       case "storage":
@@ -245,6 +257,10 @@ const saveOrUpdateOtherServiceOffering =
                 tempObject as StorageEnvironmentInstanceDTO
           );
           objSysId = savedObject.sys_id as string;
+          await IGCEStore.createIgceEstimateEnvironmentInstance({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: savedObject.classification_level
+          });
         }
         break;
       case "general_xaas":
@@ -259,6 +275,10 @@ const saveOrUpdateOtherServiceOffering =
                 tempObject as XaasEnvironmentInstanceDTO
           );
           objSysId = savedObject.sys_id as string;
+          await IGCEStore.createIgceEstimateEnvironmentInstance({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: savedObject.classification_level
+          });
         }
         break;
       case "advisory_assistance":
@@ -288,6 +308,10 @@ const saveOrUpdateOtherServiceOffering =
                 tempObject as CloudSupportEnvironmentInstanceDTO
           );
           objSysId = savedObject.sys_id as string;
+          await IGCEStore.createIgceEstimateEnvironmentInstance({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: savedObject.classification_level
+          });
         }
         break;
       default:
@@ -578,6 +602,7 @@ const deleteOtherOfferingInstanceFromSNOW = (sysId: string, groupId: string) => 
   case "portability_plan":
     api.cloudSupportEnvironmentInstanceTable.remove(sysId);
   }
+  IGCEStore.deleteIgceEstimateEnvironmentInstance(sysId); // promise ignored in-sync with removes
 }  
 
 @Module({
@@ -2394,6 +2419,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
         if(instance.length> 0){
           calls.push(api.classificationInstanceTable.remove(instance))
+          calls.push(IGCEStore.deleteIgceEstimateClassificationInstance(instance))
         }
       })
       await Promise.all(calls);
