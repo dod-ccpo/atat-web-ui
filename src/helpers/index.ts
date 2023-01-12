@@ -357,3 +357,12 @@ export function getStatusLabelFromValue(value: string): string {
 export function setItemToPlural(numberOfItems: number, noun: string): string {
   return numberOfItems >1 ? noun + "s" : noun;
 }
+
+export function capitalizeEachWord(str: string, delimiter?: string): string{
+  delimiter = delimiter || " ";
+  const splitString = str.split(delimiter);
+  for (let i = 0; i < splitString.length; i++) {
+    splitString[i] = splitString[i][0].toUpperCase() + splitString[i].substring(1).toLowerCase();
+  }
+  return splitString.join(" ");
+}

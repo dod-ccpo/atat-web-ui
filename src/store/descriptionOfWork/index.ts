@@ -45,7 +45,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "../acquisitionPackage";
 import Periods from "../periods";
 import IGCEStore from "@/store/IGCE";
-import { buildClassificationLabel } from "@/helpers";
+import { buildClassificationLabel, capitalizeEachWord } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 
@@ -126,7 +126,9 @@ const saveOrUpdateSelectedServiceOffering =
 
 const saveOrUpdateClassificationInstance =
     async (
-      classificationInstance: DOWClassificationInstance
+      classificationInstance: DOWClassificationInstance,
+      title: string,
+      serviceOfferingName: string
     ):Promise<string> => {
       const tempObject: any = {};
       let objSysId = "";
@@ -145,6 +147,7 @@ const saveOrUpdateClassificationInstance =
       tempObject.type_of_mobility = classificationInstance.typeOfMobility;
       tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
       tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
+   
 
       if(classificationInstance.sysId)
         tempObject.sys_id = classificationInstance.sysId;
@@ -162,7 +165,9 @@ const saveOrUpdateClassificationInstance =
         objSysId = savedObject.sys_id as string;
         await IGCEStore.createIgceEstimateClassificationInstance({
           classificationInstanceSysId: objSysId,
-          classificationLevelSysId: savedObject.classification_level
+          classificationLevelSysId: savedObject.classification_level,
+          title: capitalizeEachWord(title, "_") + " - " + serviceOfferingName, 
+          description: classificationInstance.anticipatedNeedUsage
         });
       }
 
@@ -200,7 +205,9 @@ const saveOrUpdateOtherServiceOffering =
 
       if(serviceOffering.sysId)
         tempObject.sys_id = serviceOffering.sysId;
-
+      let title = serviceGroupVerbiageInfo[offeringType.toUpperCase()].offeringName;
+      let instanceType = "Instance";
+    
       switch(offeringType){
       case "compute":
         tempObject.environment_type = serviceOffering.environmentType;
@@ -219,7 +226,10 @@ const saveOrUpdateOtherServiceOffering =
           objSysId = savedObject.sys_id as string;
           await IGCEStore.createIgceEstimateEnvironmentInstance({
             environmentInstanceSysId: objSysId,
-            classificationLevelSysId: savedObject.classification_level
+            classificationLevelSysId: savedObject.classification_level,
+            title: title + " - " + instanceType + " #" + serviceOffering.instanceNumber,
+            description: savedObject.anticipated_need_or_usage,
+            unit: "month"
           });
         }
         break;
@@ -241,7 +251,10 @@ const saveOrUpdateOtherServiceOffering =
           objSysId = savedObject.sys_id as string;
           await IGCEStore.createIgceEstimateEnvironmentInstance({
             environmentInstanceSysId: objSysId,
-            classificationLevelSysId: savedObject.classification_level
+            classificationLevelSysId: savedObject.classification_level,
+            title: title + " - " + instanceType + " #" + serviceOffering.instanceNumber,
+            description: savedObject.anticipated_need_or_usage,
+            unit: "month"
           });
         }
         break;
@@ -259,7 +272,10 @@ const saveOrUpdateOtherServiceOffering =
           objSysId = savedObject.sys_id as string;
           await IGCEStore.createIgceEstimateEnvironmentInstance({
             environmentInstanceSysId: objSysId,
-            classificationLevelSysId: savedObject.classification_level
+            classificationLevelSysId: savedObject.classification_level,
+            title: title + " - " + instanceType + " #" + serviceOffering.instanceNumber, 
+            description: savedObject.anticipated_need_or_usage,
+            unit: "month"
           });
         }
         break;
@@ -275,9 +291,13 @@ const saveOrUpdateOtherServiceOffering =
                 tempObject as XaasEnvironmentInstanceDTO
           );
           objSysId = savedObject.sys_id as string;
+          instanceType = serviceOffering.requirementTitle || "Requirement"
           await IGCEStore.createIgceEstimateEnvironmentInstance({
             environmentInstanceSysId: objSysId,
-            classificationLevelSysId: savedObject.classification_level
+            classificationLevelSysId: savedObject.classification_level,
+            title: title + " - " + instanceType + " #" + serviceOffering.instanceNumber,
+            description: savedObject.anticipated_need_or_usage,
+            unit: "month"
           });
         }
         break;
@@ -297,6 +317,14 @@ const saveOrUpdateOtherServiceOffering =
         tempObject.training_requirement_title = serviceOffering.trainingRequirementTitle;
         tempObject.training_time_zone = serviceOffering.trainingTimeZone;
         tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
+
+        instanceType = "Service";
+        title = title + 
+            (offeringType !== "portability_plan" 
+              ? " - " + instanceType + " #" + serviceOffering.instanceNumber
+              :"")
+
+
         if(tempObject.sys_id){
           await api.cloudSupportEnvironmentInstanceTable.update(
             tempObject.sys_id,
@@ -310,7 +338,10 @@ const saveOrUpdateOtherServiceOffering =
           objSysId = savedObject.sys_id as string;
           await IGCEStore.createIgceEstimateEnvironmentInstance({
             environmentInstanceSysId: objSysId,
-            classificationLevelSysId: savedObject.classification_level
+            classificationLevelSysId: savedObject.classification_level,
+            title: title,
+            description: savedObject.anticipated_need_or_usage,
+            unit: offeringType === "portability_plan" ? "each" : "month"
           });
         }
         break;
@@ -789,10 +820,14 @@ export class DescriptionOfWorkStore extends VuexModule {
         obj => obj.name === this.currentOfferingName
       );
       if (serviceOfferingObj) {
+        debugger;
+        const title = serviceOfferingObj.serviceId;
+        const serviceOfferingName = serviceOfferingObj.name;
         serviceOfferingObj.classificationInstances?.forEach(instance => {
           if (instance.classificationLevelSysId === secretSysId) {
             instance.classifiedInformationTypes = secretReqs;
-            saveOrUpdateClassificationInstance(instance);
+            saveOrUpdateClassificationInstance(
+              instance, title, serviceOfferingName);
           }
         });
       }
@@ -1215,8 +1250,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async getServiceGroupVerbiageInfo(): Promise<Record<string, string>> {
     return serviceGroupVerbiageInfo[this.currentGroupId];
   }
-
-
 
   @Action
   public async getDOWObject(): Promise<DOWServiceOfferingGroup[]> {
@@ -1790,11 +1823,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
     const updatedInstancesData: DOWClassificationInstance[] = [];
-    for(const instanceData of instancesData){
-      const dataSysId = await saveOrUpdateClassificationInstance(instanceData);
-      instanceData.sysId = dataSysId as string;
-      updatedInstancesData.push(instanceData);
-    }
 
     const groupIndex = this.DOWObject.findIndex(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
@@ -1805,8 +1833,19 @@ export class DescriptionOfWorkStore extends VuexModule {
       obj => obj.name === this.currentOfferingName
     );
 
+    const selectedServiceOffering = this.DOWObject[groupIndex].serviceOfferings[offeringIndex];
+
+    for(const instanceData of instancesData){
+      const dataSysId = await saveOrUpdateClassificationInstance(
+        instanceData,
+        selectedServiceOffering.serviceId,
+        selectedServiceOffering.name);
+      instanceData.sysId = dataSysId as string;
+      updatedInstancesData.push(instanceData);
+    }
+
     const currentInstances = _.cloneDeep(
-      this.DOWObject[groupIndex].serviceOfferings[offeringIndex].classificationInstances
+      selectedServiceOffering.classificationInstances
     )
     if (currentInstances && currentInstances.length) {
       const currentSysIds = currentInstances.map(obj => obj.sysId);

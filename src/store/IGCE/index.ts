@@ -424,14 +424,24 @@ export class IGCEStore extends VuexModule {
    * Database EI, Cloud Support EI, Storage EI, General Xass EI, Estimated EI"
    */
   @Action({rawError: true})
-  public async createIgceEstimateEnvironmentInstance(envInstanceRef: {
-    environmentInstanceSysId: string, classificationLevelSysId: string  | ReferenceColumn}):
+  public async createIgceEstimateEnvironmentInstance(
+    envInstanceRef: {
+      environmentInstanceSysId: string, 
+      classificationLevelSysId: string  | ReferenceColumn,
+      title: string,
+      description: string,
+      unit: string
+    }):
     Promise<void> {
     await this.createIgceEstimateRecord({...defaultIgceEstimate(),
       environment_instance: envInstanceRef.environmentInstanceSysId,
       classification_level: typeof envInstanceRef.classificationLevelSysId === "object"
         ? envInstanceRef.classificationLevelSysId.value as string
-        : envInstanceRef.classificationLevelSysId as string});
+        : envInstanceRef.classificationLevelSysId as string,
+      title: envInstanceRef.title,
+      description: envInstanceRef.description,
+      unit: envInstanceRef.unit
+    });
   }
 
   /**
@@ -439,14 +449,23 @@ export class IGCEStore extends VuexModule {
    * or one of its child tables.
    */
   @Action({rawError: true})
-  public async createIgceEstimateClassificationInstance(classInstanceRef: {
-    classificationInstanceSysId: string, classificationLevelSysId: string  | ReferenceColumn}):
+  public async createIgceEstimateClassificationInstance(
+    classInstanceRef: {
+      classificationInstanceSysId: string, 
+      classificationLevelSysId: string  | ReferenceColumn
+      title: string,
+      description: string
+    }):
     Promise<void> {
     await this.createIgceEstimateRecord({...defaultIgceEstimate(),
       classification_instance: classInstanceRef.classificationInstanceSysId,
       classification_level: typeof classInstanceRef.classificationLevelSysId === "object"
         ? classInstanceRef.classificationLevelSysId.value as string
-        : classInstanceRef.classificationLevelSysId as string});
+        : classInstanceRef.classificationLevelSysId as string,
+      title: classInstanceRef.title,
+      description: classInstanceRef.description,
+      unit: "month"
+    });
   }
 
   /**
