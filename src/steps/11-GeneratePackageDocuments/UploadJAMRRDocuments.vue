@@ -128,6 +128,7 @@ import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
+import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
 import Attachments from "@/store/attachments";
 import {AttachmentServiceCallbacks} from "@/services/attachment";
 
@@ -140,10 +141,10 @@ import {AttachmentServiceCallbacks} from "@/services/attachment";
 export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   private fairOppDTO = AcquisitionPackage.getInitialFairOpportunity();
 
-  private attachmentServiceName = FAIR_OPPORTUNITY_TABLE;
+  private attachmentServiceName = ACQUISITION_PACKAGE_TABLE;
   private maxFileSizeInBytes = 1073741824;
   private invalidFiles: invalidFile[] = [];
-  private validFileFormats = ["pdf","jpg","png"];
+  private validFileFormats = ["pdf","jpg","png","docx"];
   private uploadedFiles: uploadingFile[] = [];
   public removeAll = false;
 
@@ -201,14 +202,18 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   }
 
   async loadAttachments(): Promise<void>{
-    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
+    const attachments = await Attachments.getAttachmentsByTableSysIds(
+      {
+        serviceKey: this.attachmentServiceName,
+        tableSysId: await AcquisitionPackage.getAcquisitionPackageSysId()
+      });
 
-    console.log(attachments);
+    console.log(attachments, 'Attachments');
 
     const uploadedFiles = attachments
       .filter((attachment: AttachmentDTO) => {
         return (
-          AcquisitionPackage.fairOpportunity?.sys_id === attachment.table_sys_id
+          AcquisitionPackage.acquisitionPackage?.sys_id === attachment.table_sys_id
         )
       })
       .map((attachment: AttachmentDTO) => {
@@ -245,11 +250,6 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
    */
   public async loadOnEnter(): Promise<void> {
     let storeData = await AcquisitionPackage.getFairOpportunity();
-    await AcquisitionPackage.saveData({
-      data: storeData as FairOpportunityDTO,
-      storeProperty: StoreProperties.FairOpportunity,
-    }, )
-    storeData = await AcquisitionPackage.getFairOpportunity();
     if (storeData) {
       this.fairOppDTO = storeData;
       this.exception_to_fair_opportunity = storeData.exception_to_fair_opportunity;
@@ -268,9 +268,9 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
     await this.loadAttachments();
 
     AttachmentServiceCallbacks.registerUploadCallBack(
-      FAIR_OPPORTUNITY_TABLE,
+      ACQUISITION_PACKAGE_TABLE,
       async () => {
-        await AcquisitionPackage.getFairOpportunity();
+        await AcquisitionPackage.getAcquisitionPackage();
       }
     );
   }
