@@ -71,7 +71,8 @@ export const defaultTrainingEstimate = (): TrainingEstimate => {
 
 export interface CostEstimate {
   labelShort: string,
-  sysId: string,
+  classificationInstanceSysId: string,
+  classificationLevelSysId: string,
   offerings: Record<string, string|string[]|boolean|number|null>[]
 }
 

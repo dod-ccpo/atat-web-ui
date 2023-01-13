@@ -223,11 +223,11 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         // eslint-disable-next-line camelcase
         const classification_instance: CostEstimate = {
           labelShort: buildClassificationLabel(classification, "short", true),
-          sysId:
-            typeof classification.classification_level === "object"
-              ? ((classification.classification_level as ReferenceColumn)
-                .value as string)
-              : (classification.classification_level as string),
+          classificationInstanceSysId: classification.sys_id || "",
+          classificationLevelSysId: typeof classification.classification_level === "object"
+            ? ((classification.classification_level as ReferenceColumn)
+              .value as string)
+            : (classification.classification_level as string),
           offerings: [],
         };
         this.instanceData.push(classification_instance);
@@ -235,7 +235,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       this.instanceData.forEach((instance) => {
         dataFromSnow.forEach((estimate) => {
           const flatData = convertColumnReferencesToValues(estimate);
-          if (instance.sysId === flatData.classification_instance) {
+          if (instance.classificationInstanceSysId === flatData.classification_instance) {
             const obj = {
               IGCE_title: flatData.title,
               IGCE_description: flatData.description,
@@ -243,7 +243,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
               isCloudServicePackage: false,
               sysIdCDS: (flatData.cross_domain_solution as ReferenceColumn)
                 .value as string,
-              sysIdClassificationInstance: flatData.classification_instance,
+              sysIdClassificationInstance: instance.classificationInstanceSysId,
+              sysIdClassificationLevel: instance.classificationLevelSysId,
               sysIdEnvironmentInstance: (
                 flatData.environment_instance as ReferenceColumn
               ).value as string,
@@ -262,11 +263,11 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
           // eslint-disable-next-line camelcase
           const classification_instance: CostEstimate = {
             labelShort: buildClassificationLabel(classification, "short", true),
-            sysId:
-              typeof classification.classification_level === "object"
-                ? ((classification.classification_level as ReferenceColumn)
-                  .value as string)
-                : (classification.classification_level as string),
+            classificationInstanceSysId: classification.sys_id || "",
+            classificationLevelSysId: typeof classification.classification_level === "object"
+              ? ((classification.classification_level as ReferenceColumn)
+                .value as string)
+              : (classification.classification_level as string),
             offerings: [],
           };
           this.instanceData.push(classification_instance);
@@ -282,7 +283,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
           service.otherOfferingData.forEach((offering) => {
             if (offering.classificationLevel) {
               this.instanceData.forEach((instance) => {
-                if (instance.sysId === offering.classificationLevel) {
+                if (instance.classificationLevelSysId === offering.classificationLevel) {
                   const classificationOfferings: {
                     IGCE_title: string;
                     IGCE_description: string;
@@ -343,7 +344,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                       JSON.stringify(quantityObj);
                   }
                   classificationOfferings.sysIdClassificationInstance =
-                    instance.sysId;
+                    instance.classificationInstanceSysId;
+                  classificationOfferings.sysIdClassificationLevel = 
+                    instance.classificationLevelSysId;
                   classificationOfferings.isCloudServicePackage =
                     cloudServices.includes(serviceName);
                   const formData = this.createFormData(serviceName, offering);
@@ -376,14 +379,14 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                           classificationInstance.classificationLevelSysId as ReferenceColumn
                         ).value as string)
                       : (classificationInstance.classificationLevelSysId as string);
-                  if (instance.sysId === classificationId) {
-                    const classificationOfferings: {
+                  const classificationOfferings: {
                       IGCE_title: string;
                       IGCE_description: string;
                       monthly_price: number;
                       isCloudServicePackage: boolean;
                       sysIdCDS: string;
                       sysIdClassificationInstance: string;
+                      sysIdClassificationLevel: string,
                       sysIdServicesOffering: string;
                       sysId: string;
                       unit: string;
@@ -395,53 +398,56 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                       isCloudServicePackage: false,
                       sysIdCDS: "",
                       sysIdClassificationInstance: "",
+                      sysIdClassificationLevel: "",
                       sysIdServicesOffering: "",
                       sysId: "",
                       unit: "",
                       unit_quantity: "",
                     };
-                    const quantityObj: Record<string, number> = {};
-                    if (
-                      classificationInstance.entireDuration === "NO" &&
+                  const quantityObj: Record<string, number> = {};
+                  if (
+                    classificationInstance.entireDuration === "NO" &&
                       classificationInstance.selectedPeriods
-                    ) {
-                      classificationInstance.selectedPeriods.forEach(
-                        (period) => {
-                          let selected = Periods.periods.filter(
-                            (selectedPeriod) => selectedPeriod.sys_id === period
-                          );
-                          quantityObj[period] = this.convertToMonths(
-                            Number(selected[0].period_unit_count),
-                            selected[0].period_unit
-                          );
-                        }
-                      );
-                      classificationOfferings.unit_quantity =
+                  ) {
+                    classificationInstance.selectedPeriods.forEach(
+                      (period) => {
+                        let selected = Periods.periods.filter(
+                          (selectedPeriod) => selectedPeriod.sys_id === period
+                        );
+                        quantityObj[period] = this.convertToMonths(
+                          Number(selected[0].period_unit_count),
+                          selected[0].period_unit
+                        );
+                      }
+                    );
+                    classificationOfferings.unit_quantity =
                         JSON.stringify(quantityObj);
-                    } else {
-                      Periods.periods.forEach((period) => {
-                        if (period.sys_id) {
-                          quantityObj[period.sys_id] = this.convertToMonths(
-                            Number(period.period_unit_count),
-                            period.period_unit
-                          );
-                        }
-                      });
-                      classificationOfferings.unit_quantity =
+                  } else {
+                    Periods.periods.forEach((period) => {
+                      if (period.sys_id) {
+                        quantityObj[period.sys_id] = this.convertToMonths(
+                          Number(period.period_unit_count),
+                          period.period_unit
+                        );
+                      }
+                    });
+                    classificationOfferings.unit_quantity =
                         JSON.stringify(quantityObj);
-                    }
-                    classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
-                    classificationOfferings.sysIdClassificationInstance =
-                      instance.sysId;
-                    classificationOfferings.isCloudServicePackage =
-                      cloudServices.includes(serviceName);
-                    classificationOfferings.IGCE_description =
-                      classificationInstance.anticipatedNeedUsage;
-                    classificationOfferings.unit = "month";
-                    if (serviceName !== "Training") {
-                      instance.offerings.push(classificationOfferings);
-                    }
                   }
+                  classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
+                  classificationOfferings.sysIdClassificationInstance =
+                      instance.classificationInstanceSysId;
+                  classificationOfferings.sysIdClassificationLevel = 
+                      instance.classificationLevelSysId;
+                  classificationOfferings.isCloudServicePackage =
+                      cloudServices.includes(serviceName);
+                  classificationOfferings.IGCE_description =
+                      classificationInstance.anticipatedNeedUsage;
+                  classificationOfferings.unit = "month";
+                  if (serviceName !== "Training") {
+                    instance.offerings.push(classificationOfferings);
+                  }
+                  //}
                 });
               }
             );
@@ -461,7 +467,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
               sysIdCDS: ClassificationRequirements.cdsSolution?.sys_id || "",
               monthly_price: "",
               isCloudServicePackage: false,
-              sysIdClassificationInstance: instance.sysId,
+              sysIdClassificationInstance: instance.classificationInstanceSysId,
+              sysIdClassificationLevel: instance.classificationLevelSysId,
               sysIdServicesOffering: "",
               sysId: "",
               unit: "month",
