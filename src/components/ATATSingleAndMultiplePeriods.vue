@@ -1,5 +1,5 @@
 <template>
-  <fieldset class="no-border">
+  <fieldset class="no-border" >
     
     <template v-if="!isMultiple">
       <div class="d-flex align-center mb-2">
@@ -21,6 +21,7 @@
         :isCurrency="textboxSuffix === ''"
         :appendText="textboxSuffix !== '' ? textboxSuffix : null"
         :tooltipText="showSinglePeriodTooltip ? singlePeriodTooltipText : null"
+        @blur="setsysIdArrayStringified(_values[0], 'PER_PERIOD')"
         :showErrorMessages="true"
         :rules="[
           $validators.required(
@@ -59,6 +60,7 @@
             class="ml-5"
             :alignRight="true"
             :value.sync="_values[idx]"
+            @blur="setsysIdArrayStringified(_values[idx], period.sys_id)"
             :isCurrency="textboxSuffix === ''"
             :appendText="textboxSuffix !== '' ? textboxSuffix : null"
             :showErrorMessages="true"
@@ -104,6 +106,20 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
   @Prop() private periods!: PeriodDTO[];
 
   @PropSync("values", {default: () => []}) private _values!: string[];
+
+  /** 
+   * Returns [{periodSysId: value}] 
+  */
+  @PropSync("sysIdValueArray", {default: () => []}) 
+    _sysIdValueArray!:Record<string, string>[];
+
+  private setsysIdArrayStringified(val: string, sysId: string): void{
+    if (val !== "0.00"){
+      let obj:Record<string, string>= {};
+      obj[sysId] = val;
+      this._sysIdValueArray.push(obj);
+    }
+  }
 
   @Watch("isMultiple")
   public isMultipleChanged(newValue: boolean): void {

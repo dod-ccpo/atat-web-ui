@@ -62,7 +62,7 @@ export const defaultTrainingEstimate = (): TrainingEstimate => {
   return {
     costEstimateType: "",
     estimate: {
-      estimated_values: [],
+      estimated_values: "",
     },
     estimatedTrainingPrice: "",
     trainingOption: ""
@@ -114,12 +114,27 @@ export class IGCEStore extends VuexModule {
       }
     };
     const trainingEstimates = await api.trainingEstimateTable.getQuery(requestConfig);
-
+    
     trainingEstimates.forEach(item => {
+      const estimatesFormatted = item.training_estimated_values?.replaceAll("{", "")
+        .replaceAll("}", "").replaceAll("\"", "").split(",");
+      const estimates:Record<string, string>[] = [];
+      estimatesFormatted?.forEach(
+        (item) => {
+          const est = item.split(":");
+          if (est[0] !== ""){
+            estimates.push({[est[0]] : est[1]})
+          }
+        }
+      )
+
       const trainingItem: TrainingEstimate = {
         sysId: item.sys_id,
         costEstimateType: item.training_unit,
-        estimate: JSON.parse(item.training_estimated_values),
+        estimate: {
+          option: estimates.length>1 ? "MULTIPLE" : "SINGLE",
+          estimated_values: JSON.stringify(estimates)
+        },
         estimatedTrainingPrice: item.estimated_price_per_training_unit,
         trainingOption: item.training_option as SingleMultiple
       };
@@ -150,12 +165,11 @@ export class IGCEStore extends VuexModule {
     let objSysId = "";
 
     const packageId = AcquisitionPackage.acquisitionPackage?.sys_id;
-
     const trainingDTOItem: TrainingEstimateDTO = {
       acquisition_package: packageId || "",
       estimated_price_per_training_unit: value.estimatedTrainingPrice,
       training_option: value.trainingOption,
-      training_estimated_values: JSON.stringify(value.estimate),
+      training_estimated_values: value.estimate.estimated_values || "",
       training_unit: value.costEstimateType
     };
 
@@ -177,6 +191,17 @@ export class IGCEStore extends VuexModule {
     }
 
     return objSysId;
+  }
+
+  @Action  
+  public transformEstimateData(sysIdArray: Record<string, string>[]): string {
+    let records = "";
+    sysIdArray.forEach(
+      (record) =>{ 
+        records = "\"" + Object.keys(record) +"\":" + Object.values(record) + "," + records;
+      }
+    )
+    return "{" + records + "}";
   }
 
   @Action

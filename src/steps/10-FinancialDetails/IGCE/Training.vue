@@ -94,11 +94,13 @@
                   :singlePeriodLabel="periodsLabel"
                   :multiplePeriodLabel="periodsLabel"
                   :isMultiple="instanceData.trainingOption === 'MULTIPLE'"
-                  :values.sync="instanceData.estimate.estimated_values"
                   :showSinglePeriodTooltip="false"
                   :singlePeriodErrorMessage="singlePeriodErrorMessage"
                   :multiplePeriodErrorMessage="multiplePeriodErrorMessage"
+                  :values.sync="valueArray"
+                  :sysIdValueArray.sync="sysIdValueArray"
                 />
+                
               </div>
             </div>
 
@@ -131,6 +133,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import _ from "lodash";
 import { defaultTrainingEstimate } from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
+import { json } from "stream/consumers";
 
 @Component({
   components: {
@@ -185,6 +188,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
   public get currentData(): TrainingEstimate {
     return this.instanceData;
   }
+  public sysIdValueArray: Record<string, string>[] = [];
+  public valueArray: string[] = [];
 
   public savedData: TrainingEstimate = defaultTrainingEstimate();
 
@@ -277,12 +282,12 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.costEstimateRules = [];
       break;
     }
-
-    this.instanceData.estimate.estimated_values = [];
+    this.instanceData.estimate.estimated_values = "";
     this.instanceData.trainingOption = "";
   }
 
-  protected async loadOnEnter(): Promise<boolean> {
+  protected loadOnEnter(): boolean {
+    debugger;
     this.periods = Periods.periods;
 
     this.trainingIndex = IGCE.igceTrainingIndex;
@@ -318,8 +323,13 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.savedData = _.cloneDeep(IGCE.trainingItems[this.trainingIndex]);
 
       this.$nextTick(() => {
-        if(this.savedData.estimate)
+        if(this.savedData.estimate){
+          const estValues = JSON.parse(this.savedData.estimate.estimated_values || "");
           this.instanceData.estimate = _.cloneDeep(this.savedData.estimate);
+          this.setPeriodsWithValue(estValues);
+          this.instanceData.estimate.option = 
+            estValues.length>1 ? "MULTIPLE" : "SINGLE";
+        }
         if(this.savedData.costEstimateType)
           this.instanceData.costEstimateType = _.cloneDeep(this.savedData.costEstimateType);
         if(this.savedData.trainingOption)
@@ -332,12 +342,24 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         });
         
       });
-      
     }
-      
-
     return true;
   }
+
+  public setPeriodsWithValue(estValues: Record<string, string>[]): void{
+    // iterate through periods, then use that to retrieve the value
+    this.periods?.forEach(
+      (p) => {
+        estValues.forEach((estVal) => 
+        { 
+          if(Object.keys(estVal)[0] === p.sys_id){
+            this.valueArray.push(Object.values(estVal)[0])
+          }
+        }
+        )
+      })
+  }
+  
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -349,13 +371,20 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try{
-      if(this.hasChanged())
+      debugger;
+      this.currentData.estimate.estimated_values = 
+          IGCE.transformEstimateData(this.sysIdValueArray);
+      if(this.hasChanged()){
+       
         await IGCE.setTrainingEstimate(this.currentData);
+      }
     } catch (error){
       console.log(error);
     }
     return true;
   }
+
+
 
 }
 </script>
