@@ -379,7 +379,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                           classificationInstance.classificationLevelSysId as ReferenceColumn
                         ).value as string)
                       : (classificationInstance.classificationLevelSysId as string);
-                  const classificationOfferings: {
+                  if (instance.classificationLevelSysId === classificationId) {
+                    const classificationOfferings: {
                       IGCE_title: string;
                       IGCE_description: string;
                       monthly_price: number;
@@ -404,50 +405,50 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
                       unit: "",
                       unit_quantity: "",
                     };
-                  const quantityObj: Record<string, number> = {};
-                  if (
-                    classificationInstance.entireDuration === "NO" &&
+                    const quantityObj: Record<string, number> = {};
+                    if (
+                      classificationInstance.entireDuration === "NO" &&
                       classificationInstance.selectedPeriods
-                  ) {
-                    classificationInstance.selectedPeriods.forEach(
-                      (period) => {
-                        let selected = Periods.periods.filter(
-                          (selectedPeriod) => selectedPeriod.sys_id === period
-                        );
-                        quantityObj[period] = this.convertToMonths(
-                          Number(selected[0].period_unit_count),
-                          selected[0].period_unit
-                        );
-                      }
-                    );
-                    classificationOfferings.unit_quantity =
+                    ) {
+                      classificationInstance.selectedPeriods.forEach(
+                        (period) => {
+                          let selected = Periods.periods.filter(
+                            (selectedPeriod) => selectedPeriod.sys_id === period
+                          );
+                          quantityObj[period] = this.convertToMonths(
+                            Number(selected[0].period_unit_count),
+                            selected[0].period_unit
+                          );
+                        }
+                      );
+                      classificationOfferings.unit_quantity =
                         JSON.stringify(quantityObj);
-                  } else {
-                    Periods.periods.forEach((period) => {
-                      if (period.sys_id) {
-                        quantityObj[period.sys_id] = this.convertToMonths(
-                          Number(period.period_unit_count),
-                          period.period_unit
-                        );
-                      }
-                    });
-                    classificationOfferings.unit_quantity =
+                    } else {
+                      Periods.periods.forEach((period) => {
+                        if (period.sys_id) {
+                          quantityObj[period.sys_id] = this.convertToMonths(
+                            Number(period.period_unit_count),
+                            period.period_unit
+                          );
+                        }
+                      });
+                      classificationOfferings.unit_quantity =
                         JSON.stringify(quantityObj);
-                  }
-                  classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
-                  classificationOfferings.sysIdClassificationInstance =
+                    }
+                    classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
+                    classificationOfferings.sysIdClassificationInstance =
                       instance.classificationInstanceSysId;
-                  classificationOfferings.sysIdClassificationLevel = 
+                    classificationOfferings.sysIdClassificationLevel = 
                       instance.classificationLevelSysId;
-                  classificationOfferings.isCloudServicePackage =
+                    classificationOfferings.isCloudServicePackage =
                       cloudServices.includes(serviceName);
-                  classificationOfferings.IGCE_description =
+                    classificationOfferings.IGCE_description =
                       classificationInstance.anticipatedNeedUsage;
-                  classificationOfferings.unit = "month";
-                  if (serviceName !== "Training") {
-                    instance.offerings.push(classificationOfferings);
+                    classificationOfferings.unit = "month";
+                    if (serviceName !== "Training") {
+                      instance.offerings.push(classificationOfferings);
+                    }
                   }
-                  //}
                 });
               }
             );
