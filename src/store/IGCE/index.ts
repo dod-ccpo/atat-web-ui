@@ -127,7 +127,6 @@ export class IGCEStore extends VuexModule {
           }
         }
       )
-      debugger;
       const trainingItem: TrainingEstimate = {
         sysId: item.sys_id,
         costEstimateType: item.training_unit,
