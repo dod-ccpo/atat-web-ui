@@ -324,9 +324,10 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
       this.$nextTick(() => {
         if(this.savedData.estimate){
+          debugger;
           const estValues = JSON.parse(this.savedData.estimate.estimated_values || "");
           this.instanceData.estimate = _.cloneDeep(this.savedData.estimate);
-          this.setPeriodsWithValue(estValues);
+          this.setPeriodsWithValue(Object.values(estValues));
           this.instanceData.estimate.option = 
             estValues.length>1 ? "MULTIPLE" : "SINGLE";
         }
@@ -373,7 +374,7 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     try{
       debugger;
       this.currentData.estimate.estimated_values = 
-          IGCE.transformEstimateData(this.sysIdValueArray);
+          this.transformEstimateData(this.sysIdValueArray);
       if(this.hasChanged()){
        
         await IGCE.setTrainingEstimate(this.currentData);
@@ -383,8 +384,18 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     }
     return true;
   }
-
-
+  
+  public transformEstimateData(sysIdArray: Record<string, string>[]): string {
+    let records = "";
+    sysIdArray.forEach(
+      (record) =>{ 
+        records = "\"" + Object.keys(record) +"\":" + Object.values(record) + "," + records;
+      }
+    )
+    debugger;
+    //remove trailing commaa
+    return "{" + records.substring(0,records.length - 1) + "}";
+  }
 
 }
 </script>

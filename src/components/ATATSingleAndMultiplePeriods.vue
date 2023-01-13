@@ -114,7 +114,7 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
     _sysIdValueArray!:Record<string, string>[];
 
   private setsysIdArrayStringified(val: string, sysId: string): void{
-    if (val !== "0.00"){
+    if (val && parseInt(val)>0 ){
       let obj:Record<string, string>= {};
       obj[sysId] = val;
       this._sysIdValueArray.push(obj);

@@ -127,7 +127,7 @@ export class IGCEStore extends VuexModule {
           }
         }
       )
-
+      debugger;
       const trainingItem: TrainingEstimate = {
         sysId: item.sys_id,
         costEstimateType: item.training_unit,
@@ -165,6 +165,7 @@ export class IGCEStore extends VuexModule {
     let objSysId = "";
 
     const packageId = AcquisitionPackage.acquisitionPackage?.sys_id;
+
     const trainingDTOItem: TrainingEstimateDTO = {
       acquisition_package: packageId || "",
       estimated_price_per_training_unit: value.estimatedTrainingPrice,
@@ -191,17 +192,6 @@ export class IGCEStore extends VuexModule {
     }
 
     return objSysId;
-  }
-
-  @Action  
-  public transformEstimateData(sysIdArray: Record<string, string>[]): string {
-    let records = "";
-    sysIdArray.forEach(
-      (record) =>{ 
-        records = "\"" + Object.keys(record) +"\":" + Object.values(record) + "," + records;
-      }
-    )
-    return "{" + records + "}";
   }
 
   @Action
