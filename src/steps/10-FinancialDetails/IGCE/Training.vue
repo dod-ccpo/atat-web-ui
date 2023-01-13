@@ -287,7 +287,6 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
   }
 
   protected loadOnEnter(): boolean {
-    debugger;
     this.periods = Periods.periods;
 
     this.trainingIndex = IGCE.igceTrainingIndex;
@@ -324,10 +323,11 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
       this.$nextTick(() => {
         if(this.savedData.estimate){
-          debugger;
-          const estValues = JSON.parse(this.savedData.estimate.estimated_values || "");
-          this.instanceData.estimate = _.cloneDeep(this.savedData.estimate);
-          this.setPeriodsWithValue(Object.values(estValues));
+          const scrubbedEstimates =
+            (this.savedData.estimate.estimated_values?.replaceAll("\\", "") || "")
+          const estValues = JSON.parse(scrubbedEstimates);
+          this.instanceData.estimate.estimated_values = scrubbedEstimates;
+          this.setValueArray(estValues);
           this.instanceData.estimate.option = 
             estValues.length>1 ? "MULTIPLE" : "SINGLE";
         }
@@ -347,25 +347,32 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     return true;
   }
 
-  public setPeriodsWithValue(estValues: Record<string, string>[]): void{
-    // iterate through periods, then use that to retrieve the value
+  /**
+   * iterate through periods to ensure they are in chronogical order 
+   * based on period.sys_ids
+   * 
+   * sets this.Value Array with correctly ordered period/valus 
+   */
+  public setValueArray(estValues: Record<string, string>): void{
 
-    // const tempArray = [];
-    // Object.keys(estValues).forEach((key: string) => tempArray.push({
-    //   key,
-    //   "value": estValues[key]
-    // }));
-
-    this.periods?.forEach(
-      (p) => {
-        estValues.forEach((estVal) => 
-        { 
-          if(Object.keys(estVal)[0] === p.sys_id){
-            this.valueArray.push(Object.values(estVal)[0])
+    if (Array.isArray(estValues)){ //isArray
+      this.sysIdValueArray = estValues;
+       this.periods?.sort().forEach(
+         (p) => {
+           const obj = estValues.find(ev => Object.keys(ev)[0] === p.sys_id);
+           this.valueArray.push(obj[p.sys_id || 0]);
+         })
+    } else { //Is Object
+      this.periods?.sort().forEach(
+        (p) => {
+          for(const estVal in estValues){
+            if (estVal === p.sys_id){
+              this.sysIdValueArray.push({[estVal] : estValues[estVal]});
+              this.valueArray.push(estValues[estVal])
+            }
           }
-        }
-        )
-      })
+        })
+    }
   }
   
 
@@ -379,7 +386,6 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try{
-      debugger;
       this.currentData.estimate.estimated_values = 
           this.transformEstimateData(this.sysIdValueArray);
       if(this.hasChanged()){
@@ -399,7 +405,6 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         records = "\"" + Object.keys(record) +"\":" + Object.values(record) + "," + records;
       }
     )
-    debugger;
     //remove trailing commaa
     return "{" + records.substring(0,records.length - 1) + "}";
   }
