@@ -349,6 +349,13 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
   public setPeriodsWithValue(estValues: Record<string, string>[]): void{
     // iterate through periods, then use that to retrieve the value
+
+    // const tempArray = [];
+    // Object.keys(estValues).forEach((key: string) => tempArray.push({
+    //   key,
+    //   "value": estValues[key]
+    // }));
+
     this.periods?.forEach(
       (p) => {
         estValues.forEach((estVal) => 
