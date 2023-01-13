@@ -93,7 +93,7 @@
                 :removeAll.sync="removeAll"
                 @delete="onRemoveAttachment"
                 @uploaded="onUpload"
-                :rules="[$validators.required('Please upload a file')]"
+                :rules="getRulesArray()"
               />
             </div>
             <ATATAlert
@@ -127,7 +127,6 @@ import { hasChanges } from "@/helpers";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
-import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
 import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
 import Attachments from "@/store/attachments";
 import {AttachmentServiceCallbacks} from "@/services/attachment";
@@ -147,6 +146,7 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   private validFileFormats = ["pdf","jpg","png","docx"];
   private uploadedFiles: uploadingFile[] = [];
   public removeAll = false;
+  public requiredMessage = "Please upload a file"
 
   private jaTemplateUrl = "";
   private mrrTemplateUrl = "";
@@ -173,11 +173,30 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 
+  private getRulesArray(): ((v: string) => string|true|undefined)[] {
+    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+
+    rulesArr.push(this.$validators.required(this.requiredMessage));
+    this.invalidFiles.forEach((iFile) => {
+      rulesArr.push(
+        this.$validators.isFileValid(
+          iFile.file,
+          this.validFileFormats,
+          this.maxFileSizeInBytes,
+          iFile.doesFileExist,
+          iFile.SNOWError,
+          iFile.statusCode,
+          true
+        )
+      );
+    });
+    return rulesArr;
+  }
+
   public async onUpload(file: uploadingFile): Promise<void> {
     try {
       if(file){
         const attachmentSysId = file.attachmentId;
-        console.log(attachmentSysId);
       }
     } catch (error) {
       console.error(`error completing file upload with id ${file?.attachmentId}`);
@@ -207,8 +226,6 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
         serviceKey: this.attachmentServiceName,
         tableSysId: await AcquisitionPackage.getAcquisitionPackageSysId()
       });
-
-    console.log(attachments, 'Attachments');
 
     const uploadedFiles = attachments
       .filter((attachment: AttachmentDTO) => {
@@ -266,7 +283,6 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
     await this.loadAttachments();
-
     AttachmentServiceCallbacks.registerUploadCallBack(
       ACQUISITION_PACKAGE_TABLE,
       async () => {

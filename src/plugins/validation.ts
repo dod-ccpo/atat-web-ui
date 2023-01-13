@@ -251,12 +251,18 @@ export class ValidationPlugin {
   };
 
   /**
- * Validator that ensures the file is valid.
- * Returns the error message otherwise.
- *
- * @param message
- * @returns {function(*): boolean}
- */
+   * Validator that ensures the file is valid.
+   * Returns the error message otherwise.
+   *
+   * @returns {function(*): boolean}
+   * @param file
+   * @param validExtensions
+   * @param maxFileSize
+   * @param doesFileExist
+   * @param SNOWError
+   * @param statusCode
+   * @param restrictNames
+   */
 
   isFileValid = (
     file: File, 
@@ -265,51 +271,63 @@ export class ValidationPlugin {
     doesFileExist: boolean,
     SNOWError?: string,
     statusCode?: number,
+    restrictNames?:boolean,
   ):((v: string) => string | true | undefined) => {
+    console.log()
+    debugger
     return () => {
-      const fileName = file.name.length>20 
-        ? file.name.substring(0, 12) + '...' 
+      debugger
+      const fileName = file.name.length>20
+        ? file.name.substring(0, 12) + '...'
             + file.name.substring(file.name.length-8, file.name.length)
         : file.name;
       const fileSize = file.size;
       const isValidExtension = validExtensions.some((ext)=>
         fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase() === ext
       )
+      const restrictedNames = ["DescriptionOfWork.docx",
+        "IncrementalFundingPlan.docx",
+        "RequirementsChecklist.docx",
+        "IGCE.xlsx",
+        "EvaluationPlan.docx",]
       if (!isValidExtension){
         return `'${fileName}' is not a valid format or has been corrupted. ` +
                 `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
                 `.${validExtensions.slice(-1)} file.`
       }
+      // list of names that a file can not have
+      else if(restrictNames && restrictedNames.includes(file.name)){
+        return "File name already exist. Please rename the file."
+      }
 
       // does file aleady exist?
-      if (doesFileExist){
+      else if (doesFileExist){
         return `'${fileName}' was already uploaded.`
       }
-      
+
       // is file too big?
-      if (fileSize>maxFileSize){
+      else if (fileSize>maxFileSize){
         return `Your file '${fileName}' is too large. Please upload a file that is 1GB or less.`
       }
 
-      if (SNOWError !== "" && SNOWError !== undefined){
+      else if (SNOWError !== "" && SNOWError !== undefined){
         const error = SNOWError.toLowerCase();
         let invalidMessage = "";
 
-        // during upload, did SNOW detect that the 
+        // during upload, did SNOW detect that the
         // file type was incorrect (eg, changing .txt to .pdf file)
         if (error.indexOf("invalid file type")>-1){
           invalidMessage = `'${fileName}' is not a valid format or has been corrupted. ` +
             `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
             `.${validExtensions.slice(-1)} file.`
-        } else { 
-          // generic message to accommodate for all other errors 
+        } else {
+          // generic message to accommodate for all other errors
           //that are returned from SNOW
           invalidMessage = "We have encountered unexpected problems uploading your file '" +
             fileName +"'. Please try again later."
         }
         return invalidMessage;
       }
-      return true;
     }
   };
 }
