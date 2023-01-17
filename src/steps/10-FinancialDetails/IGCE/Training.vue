@@ -82,6 +82,7 @@
                 :legend="periodTypeLabel"
                 :items="periodTypeOptions"
                 :value.sync="instanceData.trainingOption"
+                @radioButtonClicked="radioButtonClicked"
                 :rules="[
                   $validators.required('Please select an option.')
                 ]"
@@ -94,11 +95,13 @@
                   :singlePeriodLabel="periodsLabel"
                   :multiplePeriodLabel="periodsLabel"
                   :isMultiple="instanceData.trainingOption === 'MULTIPLE'"
-                  :values.sync="instanceData.estimate.estimated_values"
                   :showSinglePeriodTooltip="false"
                   :singlePeriodErrorMessage="singlePeriodErrorMessage"
                   :multiplePeriodErrorMessage="multiplePeriodErrorMessage"
+                  :values.sync="valueArray"
+                  :sysIdValueArray.sync="sysIdValueArray"
                 />
+                
               </div>
             </div>
 
@@ -185,6 +188,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
   public get currentData(): TrainingEstimate {
     return this.instanceData;
   }
+  public sysIdValueArray: Record<string, string>[] = [];
+  public valueArray: string[] = [];
 
   public savedData: TrainingEstimate = defaultTrainingEstimate();
 
@@ -204,6 +209,16 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
   public trainingTitle = "[User's training title]";
   public trainingLocation = `On-site instructor led CONUS 
     (government facility, Washington, DC, 10 people)`;
+
+  /**
+   * keeps instanceData.estimate.option in sync with 
+   * instanceData.trainingOption
+   */
+  @Watch("instanceData.trainingOption")
+  protected trainingOptions(val: SingleMultiple): void {
+    this.instanceData.estimate.option = val;
+    
+  }
 
   @Watch("instanceData.costEstimateType")
   private updateSelections(): void {
@@ -277,12 +292,16 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.costEstimateRules = [];
       break;
     }
-
-    this.instanceData.estimate.estimated_values = [];
+    this.instanceData.estimate.estimated_values = "";
     this.instanceData.trainingOption = "";
   }
 
-  protected async loadOnEnter(): Promise<boolean> {
+  private radioButtonClicked(): void {
+    this.sysIdValueArray = [];
+    this.valueArray = [];
+  }
+
+  protected loadOnEnter(): boolean {
     this.periods = Periods.periods;
 
     this.trainingIndex = IGCE.igceTrainingIndex;
@@ -318,12 +337,38 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.savedData = _.cloneDeep(IGCE.trainingItems[this.trainingIndex]);
 
       this.$nextTick(() => {
-        if(this.savedData.estimate)
-          this.instanceData.estimate = _.cloneDeep(this.savedData.estimate);
-        if(this.savedData.costEstimateType)
-          this.instanceData.costEstimateType = _.cloneDeep(this.savedData.costEstimateType);
-        if(this.savedData.trainingOption)
-          this.instanceData.trainingOption = _.cloneDeep(this.savedData.trainingOption);
+        if(this.savedData.estimate){
+          const scrubbedEstimates =
+            (this.savedData.estimate.estimated_values?.replaceAll("\\", "") || "")
+          const estValues = JSON.parse(scrubbedEstimates);
+          this.instanceData.estimate.estimated_values = scrubbedEstimates;
+
+          /** ON first component load instanceData.estimate.option is an []
+           *  OTHERWISE instanceData.estimate.option is an {}
+           * 
+           *  code below accommodates for both [] && {}
+          */
+          let hasEstimates = false;
+          if (Array.isArray(estValues) && estValues.length>0){
+            this.instanceData.estimate.option = 
+              Object.keys(estValues[0])[0].toUpperCase() === "PER_PERIOD" 
+                ? "SINGLE" : "MULTIPLE";
+            hasEstimates = true;
+          } else if (estValues && Object.keys(estValues).length > 0){
+            this.instanceData.estimate.option = 
+              Object.keys(estValues)[0].toUpperCase() === "PER_PERIOD" 
+                ? "SINGLE" : "MULTIPLE";
+            hasEstimates = true;
+          }
+          
+          if (hasEstimates){
+            this.instanceData.trainingOption = this.instanceData.estimate.option || "";
+            this.setValueArray(estValues);
+          }
+        }
+        if(this.savedData.costEstimateType){
+          this.instanceData.costEstimateType = this.savedData.costEstimateType;
+        }
         
         this.$nextTick(() => {
           if(this.savedData.estimatedTrainingPrice)
@@ -332,12 +377,48 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         });
         
       });
-      
     }
-      
-
     return true;
   }
+
+  /**
+   * iterate through periods to ensure they are in chronogical order 
+   * based on period.sys_ids
+   * 
+   * sets this.Value Array with correctly ordered period/valus 
+   */
+  public setValueArray(estValues: Record<string, string>): void{
+    const isSingle = this.instanceData.estimate.option === "SINGLE";
+
+    if (Array.isArray(estValues)){ //isArray
+      this.sysIdValueArray = estValues;
+      if (isSingle){
+        this.valueArray.push(Object.values(estValues[0])[0] as string)
+      }else{
+        this.periods?.sort().forEach(
+          (p) => {
+            const obj = estValues.find(ev => Object.keys(ev)[0] === p.sys_id);
+            this.valueArray.push(obj[p.sys_id || 0]);
+          })
+      }
+    } else { //Is Object
+      if (isSingle){ // retrieving single value
+        this.sysIdValueArray.push(estValues);
+        this.valueArray.push(Object.values(estValues)[0])
+      } else {
+      this.periods?.sort().forEach(
+        (p) => {
+          for(const estVal in estValues){ // retreiving multiple values
+            if (estVal === p.sys_id){
+              this.sysIdValueArray.push({[estVal] : estValues[estVal]});
+              this.valueArray.push(estValues[estVal])
+            }
+          }
+        })
+      }
+    }
+  }
+  
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -349,12 +430,33 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try{
-      if(this.hasChanged())
+      if (this.instanceData.trainingOption.toLowerCase()==="single"){
+        this.sysIdValueArray = [];
+        let obj:Record<string, string>= {};
+        obj["PER_PERIOD"] = this.valueArray[0];
+        this.sysIdValueArray.push(obj);
+      }
+      this.currentData.estimate.estimated_values = 
+          this.transformEstimateData(this.sysIdValueArray);
+      
+      if(this.hasChanged()){  
         await IGCE.setTrainingEstimate(this.currentData);
+      }
     } catch (error){
       console.log(error);
     }
     return true;
+  }
+  
+  public transformEstimateData(sysIdArray: Record<string, string>[]): string {
+    let records = "";
+    sysIdArray.forEach(
+      (record) =>{ 
+        records = "\"" + Object.keys(record) +"\":" + Object.values(record) + "," + records;
+      }
+    )
+    //remove trailing commaa
+    return "{" + records.substring(0,records.length - 1) + "}";
   }
 
 }
