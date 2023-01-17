@@ -63,6 +63,7 @@
             @blur="setsysIdArrayStringified(_values[idx], period.sys_id)"
             :isCurrency="textboxSuffix === ''"
             :appendText="textboxSuffix !== '' ? textboxSuffix : null"
+            type="number"
             :showErrorMessages="true"
             :rules="[
               $validators.required(
@@ -70,6 +71,7 @@
               ),
             ]"
           />
+          <!-- todo change that back to :number -->
         </div>
       </div>
     </template>
@@ -113,7 +115,21 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
   @PropSync("sysIdValueArray", {default: () => []}) 
     _sysIdValueArray!:Record<string, string>[];
 
+  /**
+   * @params - val: string
+   *         - sysID to be added: string
+   * 
+   * 1. formats array to be stringified 
+   * 2. sets this._sysIdValueArray and modifies array values as necessary
+   * Sometimes necessary for the backend value
+   * 
+   * Sets this._sysIdValueArray
+   */
   private setsysIdArrayStringified(val: string, sysId: string): void{
+    if (!this.isMultiple){
+      this._sysIdValueArray = [];
+    }
+
     if (val && parseInt(val)>0 ){
       const existingKeyIndex = this._sysIdValueArray.findIndex(
         obj => Object.keys(obj)[0] === sysId);

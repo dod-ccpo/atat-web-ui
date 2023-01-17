@@ -246,6 +246,7 @@ export default class ATATRadioGroup extends Vue {
 
   // events
   private onClick(): void {
+    this.$emit("radioButtonClicked", this._selectedValue);
     this.clearErrorMessage();
   }
 
