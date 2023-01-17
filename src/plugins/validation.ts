@@ -273,10 +273,7 @@ export class ValidationPlugin {
     statusCode?: number,
     restrictNames?:boolean,
   ):((v: string) => string | true | undefined) => {
-    console.log()
-    debugger
     return () => {
-      debugger
       const fileName = file.name.length>20
         ? file.name.substring(0, 12) + '...'
             + file.name.substring(file.name.length-8, file.name.length)

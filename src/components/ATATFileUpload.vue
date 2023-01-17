@@ -188,7 +188,7 @@ export default class ATATFileUpload extends Vue {
   }
 
   get setRules():((v: string) => string | true | undefined)[] {
-    return this._validFiles.length>0 ? [] : this._rules;
+    return this._validFiles.length>0 && this._invalidFiles.length<0 ? [] : this._rules;
   }
 
   //Events
