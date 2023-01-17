@@ -164,9 +164,12 @@ export const toCurrencyString = (num: number, decimals?: boolean): string => {
 }
 
 // converts a formatted currency string back to a number
-export const currencyStringToNumber = (str: string): number => {
-  str = str.charAt(0) === "$" ? str.substring(1) : str;
-  return str ? parseFloat(str.replaceAll(",", "")) : 0;
+export const currencyStringToNumber = (str: string): number | null => {
+  if (str && typeof str === "string") {
+    str = str.charAt(0) === "$" ? str.substring(1) : str;
+    return str ? parseFloat(str.replaceAll(",", "")) : 0;  
+  }
+  return null;
 }
 
 
