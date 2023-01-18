@@ -274,6 +274,7 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
     this.isPeriodsDataMissing = (periods && periods.length === 0);
     const estimatedTOValue = await FinancialDetails.getEstimatedTaskOrderValue();
     this.isCostEstimateMissing = !estimatedTOValue;
+    await FinancialDetails.loadFundingRequirement();
     const fundingReq = await FinancialDetails.getFundingRequirement();
     this.savedFundOption = fundingReq?.incrementally_funded as string;
     this.selectedFundOption = this.savedFundOption;
@@ -292,8 +293,7 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        const fundingRequirement = await FinancialDetails.getFundingRequirement();
-        fundingRequirement.incrementally_funded = this.selectedFundOption;
+        await FinancialDetails.setIsIncrementallyFunded(this.selectedFundOption);
         await FinancialDetails.saveFundingRequirement();
       }
     } catch (error) {

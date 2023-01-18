@@ -14,6 +14,7 @@ import api from "@/api";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import {AxiosRequestConfig} from "axios";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import _ from "lodash";
 
 const ATAT_FINANCIAL_DETAILS__KEY = "ATAT_FINANCIAL_DETAILS__KEY";
 
@@ -200,6 +201,9 @@ export class FinancialDetailsStore extends VuexModule {
   @Mutation
   public doSetIsIncrementallyFunded(val: string): void {
     this.isIncrementallyFunded = val;
+    if (this.fundingRequirement) {
+      this.fundingRequirement.incrementally_funded = val;
+    }
   }
 
   @Mutation
@@ -246,7 +250,7 @@ export class FinancialDetailsStore extends VuexModule {
   }
 
   public get fundingPlanValue(): FundingPlanDTO {
-    return this.fundingPlan || initialFundingPlan;
+    return this.fundingPlan || _.cloneDeep(initialFundingPlan);
   }
 
   @Mutation
@@ -582,9 +586,10 @@ export class FinancialDetailsStore extends VuexModule {
    */
   @Action
   public async saveFundingRequirement(): Promise<void> {
+    const fundingReq 
+      = convertColumnReferencesToValues(this.fundingRequirement as FundingRequirementDTO);
     const savedFundingRequirement = await api.fundingRequirementTable
-      .update((this.fundingRequirement as FundingRequirementDTO).sys_id as string,
-        convertColumnReferencesToValues(this.fundingRequirement as FundingRequirementDTO));
+      .update(fundingReq.sys_id as string, fundingReq);
     this.setFundingRequirement(convertColumnReferencesToValues(savedFundingRequirement));
   }
 
@@ -746,7 +751,7 @@ export class FinancialDetailsStore extends VuexModule {
   private doReset(): void {
     this.initialized = false;
     this.fundingRequirement = null;
-    this.fundingPlan = initialFundingPlan;
+    this.fundingPlan = _.cloneDeep(initialFundingPlan);
     this.estimatedTaskOrderValue = "";
     this.miprNumber = null;
     this.initialFundingIncrementStr = "";
