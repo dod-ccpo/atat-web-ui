@@ -98,31 +98,298 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   igceEstimateData: IgceEstimateDTO[] = [];
   estimateDataSource: never[] = [];
 
-  async loadOnEnter(): Promise<void> {
+
+  private async loadOnEnter(): Promise<void> {
     await IGCE.loadIgceEstimateByPackageId(AcquisitionPackage.packageId);
-    await this.createDataSource();
+    const classifications =
+      await ClassificationRequirements.getSelectedClassificationLevels();
+    const cloudServices = DescriptionOfWork.cloudSupportServices;
+    this.selectedClassifications = classifications.sort((a, b) =>
+      a.impact_level > b.impact_level ? 1 : -1
+    );
+    // this.savedData = IGCE.costEstimates
+    //TODO re-map this.savedData
+    const dataFromSnow = _.cloneDeep(IGCE.igceEstimateList);
+    if (dataFromSnow.length > 0) {
+      this.selectedClassifications.forEach((classification) => {
+        // eslint-disable-next-line camelcase
+        const classification_instance: CostEstimate = {
+          labelShort: buildClassificationLabel(classification, "short", true),
+          classificationInstanceSysId: classification.sys_id || "",
+          classificationLevelSysId: typeof classification.classification_level === "object"
+            ? ((classification.classification_level as ReferenceColumn)
+              .value as string)
+            : (classification.classification_level as string),
+          offerings: [],
+        };
+        this.instanceData.push(classification_instance);
+      });
+      this.instanceData.forEach((instance) => {
+        dataFromSnow.forEach((estimate) => {
+          const flatData = convertColumnReferencesToValues(estimate);
+          if (instance.classificationInstanceSysId === flatData.classification_instance) {
+            const obj = {
+              IGCE_title: flatData.title,
+              IGCE_description: flatData.description,
+              monthly_price: flatData.unit_price,
+              isCloudServicePackage: false,
+              sysIdCDS: (flatData.cross_domain_solution as ReferenceColumn)
+                .value as string,
+              sysIdClassificationInstance: instance.classificationInstanceSysId,
+              sysIdClassificationLevel: instance.classificationLevelSysId,
+              sysIdEnvironmentInstance: (
+                flatData.environment_instance as ReferenceColumn
+              ).value as string,
+              sysId: flatData.sys_id || "",
+              unit: flatData.unit,
+              quantity: flatData.unit_quantity,
+            };
+            instance.offerings.push(obj);
+          }
+        });
+      });
+      this.savedData = _.cloneDeep(this.instanceData);
+    } else {
+      this.selectedClassifications.forEach((classification) => {
+        if (classification.classification_level !== "") {
+          // eslint-disable-next-line camelcase
+          const classification_instance: CostEstimate = {
+            labelShort: buildClassificationLabel(classification, "short", true),
+            classificationInstanceSysId: classification.sys_id || "",
+            classificationLevelSysId: typeof classification.classification_level === "object"
+              ? ((classification.classification_level as ReferenceColumn)
+                .value as string)
+              : (classification.classification_level as string),
+            offerings: [],
+          };
+          this.instanceData.push(classification_instance);
+        }
+      });
+
+      const dowObject = DescriptionOfWork.DOWObject;
+      dowObject.forEach((service) => {
+        const serviceName = this.getFormattedNames(
+          service.serviceOfferingGroupId
+        );
+        if (service.otherOfferingData && service.otherOfferingData.length > 0) {
+          service.otherOfferingData.forEach((offering) => {
+            if (offering.classificationLevel) {
+              this.instanceData.forEach((instance) => {
+                if (instance.classificationLevelSysId === offering.classificationLevel) {
+                  const classificationOfferings: {
+                    IGCE_title: string;
+                    IGCE_description: string;
+                    monthly_price: number;
+                    isCloudServicePackage: boolean;
+                    sysIdCDS: string;
+                    sysIdClassificationInstance: string;
+                    sysIdClassificationLevel: string;
+                    sysIdEnvironmentInstance: string;
+                    sysId: string;
+                    unit: string;
+                    unit_quantity: string;
+                  } = {
+                    IGCE_title: "",
+                    IGCE_description: "",
+                    monthly_price: 0,
+                    isCloudServicePackage: false,
+                    sysIdCDS: "",
+                    sysIdClassificationInstance: "",
+                    sysIdClassificationLevel: "",
+                    sysIdEnvironmentInstance: "",
+                    sysId: "",
+                    unit: "",
+                    unit_quantity: "",
+                  };
+                  if (offering.instanceNumber) {
+                    classificationOfferings.IGCE_title =
+                      // eslint-disable-next-line max-len
+                      `${serviceName} - ${this.serviceOrInstance(
+                        service.serviceOfferingGroupId
+                      )} #${offering.instanceNumber}`;
+                  } else {
+                    classificationOfferings.IGCE_title = serviceName;
+                  }
+                  const quantityObj: Record<string, number> = {};
+                  if (offering.entireDuration === "NO") {
+                    offering.periodsNeeded.forEach((period) => {
+                      let selected = Periods.periods.filter(
+                        (selectedPeriod) => selectedPeriod.sys_id === period
+                      );
+                      quantityObj[period] = this.convertToMonths(
+                        Number(selected[0].period_unit_count),
+                        selected[0].period_unit
+                      );
+                    });
+                    classificationOfferings.unit_quantity =
+                      JSON.stringify(quantityObj);
+                  } else {
+                    Periods.periods.forEach((period) => {
+                      if (period.sys_id) {
+                        quantityObj[period.sys_id] = this.convertToMonths(
+                          Number(period.period_unit_count),
+                          period.period_unit
+                        );
+                      }
+                    });
+                    classificationOfferings.unit_quantity =
+                      JSON.stringify(quantityObj);
+                  }
+                  classificationOfferings.sysIdClassificationInstance =
+                    instance.classificationInstanceSysId;
+                  classificationOfferings.sysIdClassificationLevel = 
+                    instance.classificationLevelSysId;
+                  classificationOfferings.isCloudServicePackage =
+                    cloudServices.includes(serviceName);
+                  const formData = this.createFormData(serviceName, offering);
+                  classificationOfferings.IGCE_description =
+                    formData || offering.usageDescription || "";
+                  classificationOfferings.unit = serviceName
+                    .toLowerCase()
+                    .includes("portability")
+                    ? "each"
+                    : "month";
+                  if (serviceName !== "Training") {
+                    instance.offerings.push(classificationOfferings);
+                  }
+                }
+              });
+            }
+          });
+        }
+        if (service.serviceOfferings.length > 0) {
+          service.serviceOfferings.forEach((offering) => {
+            offering.classificationInstances?.forEach(
+              (classificationInstance) => {
+                this.instanceData.forEach((instance) => {
+                  // eslint-disable-next-line max-len
+                  let classificationId =
+                    typeof classificationInstance.classificationLevelSysId ===
+                    "object"
+                      ? // eslint-disable-next-line max-len
+                      ((
+                          classificationInstance.classificationLevelSysId as ReferenceColumn
+                        ).value as string)
+                      : (classificationInstance.classificationLevelSysId as string);
+                  if (instance.classificationLevelSysId === classificationId) {
+                    const classificationOfferings: {
+                      IGCE_title: string;
+                      IGCE_description: string;
+                      monthly_price: number;
+                      isCloudServicePackage: boolean;
+                      sysIdCDS: string;
+                      sysIdClassificationInstance: string;
+                      sysIdClassificationLevel: string,
+                      sysIdServicesOffering: string;
+                      sysId: string;
+                      unit: string;
+                      unit_quantity: string;
+                    } = {
+                      IGCE_title: "",
+                      IGCE_description: "",
+                      monthly_price: 0,
+                      isCloudServicePackage: false,
+                      sysIdCDS: "",
+                      sysIdClassificationInstance: "",
+                      sysIdClassificationLevel: "",
+                      sysIdServicesOffering: "",
+                      sysId: "",
+                      unit: "",
+                      unit_quantity: "",
+                    };
+                    const quantityObj: Record<string, number> = {};
+                    if (
+                      classificationInstance.entireDuration === "NO" &&
+                      classificationInstance.selectedPeriods
+                    ) {
+                      classificationInstance.selectedPeriods.forEach(
+                        (period) => {
+                          let selected = Periods.periods.filter(
+                            (selectedPeriod) => selectedPeriod.sys_id === period
+                          );
+                          quantityObj[period] = this.convertToMonths(
+                            Number(selected[0].period_unit_count),
+                            selected[0].period_unit
+                          );
+                        }
+                      );
+                      classificationOfferings.unit_quantity =
+                        JSON.stringify(quantityObj);
+                    } else {
+                      Periods.periods.forEach((period) => {
+                        if (period.sys_id) {
+                          quantityObj[period.sys_id] = this.convertToMonths(
+                            Number(period.period_unit_count),
+                            period.period_unit
+                          );
+                        }
+                      });
+                      classificationOfferings.unit_quantity =
+                        JSON.stringify(quantityObj);
+                    }
+                    classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
+                    classificationOfferings.sysIdClassificationInstance =
+                      instance.classificationInstanceSysId;
+                    classificationOfferings.sysIdClassificationLevel = 
+                      instance.classificationLevelSysId;
+                    classificationOfferings.isCloudServicePackage =
+                      cloudServices.includes(serviceName);
+                    classificationOfferings.IGCE_description =
+                      classificationInstance.anticipatedNeedUsage;
+                    classificationOfferings.unit = "month";
+                    if (serviceName !== "Training") {
+                      instance.offerings.push(classificationOfferings);
+                    }
+                  }
+                });
+              }
+            );
+          });
+        }
+      });
+      this.instanceData.forEach((instance) => {
+        if (instance.labelShort === "Secret / IL6") {
+          if (
+            ClassificationRequirements.cdsSolution?.anticipated_need_or_usage
+          ) {
+            const object = {
+              IGCE_title: "Cross-domain solution (CDS)",
+              IGCE_description:
+                ClassificationRequirements.cdsSolution
+                  ?.anticipated_need_or_usage,
+              sysIdCDS: ClassificationRequirements.cdsSolution?.sys_id || "",
+              monthly_price: "",
+              isCloudServicePackage: false,
+              sysIdClassificationInstance: instance.classificationInstanceSysId,
+              sysIdClassificationLevel: instance.classificationLevelSysId,
+              sysIdServicesOffering: "",
+              sysId: "",
+              unit: "month",
+              trafficPerDomain: "update",
+            };
+            instance.offerings.push(object);
+          }
+        }
+      });
+    }
+    this.instanceData.forEach((instance) => {
+      instance;
+      if (instance.offerings.length <= 0) {
+        this.accordionClosed.push(1);
+      } else {
+        this.accordionClosed.push(0);
+      }
+    });
   }
-
-  async createDataSource(): Promise<void>{
-    this.igceEstimateData = await IGCE.igceEstimateList;
-
-    // populate classification_display attrib
-    this.igceEstimateData.forEach((est)=>{
-      const classLevelSysId = (est.classification_instance as ReferenceColumn).value || "";
-      const level = ClassificationRequirements.classificationLevels.find(
-        (level) => {
-          return level.sys_id === classLevelSysId
-        })
-      est.classification_display = level?.display || "";
-    })
-    
-    // group by classification_display attrib
-    this.estimateDataSource =  this.igceEstimateData.reduce(function (acc, current) {
-      acc[current.classification_display || ""] = acc[current.classification_display || ""] || [];
-      acc[current.classification_display || ""].push(current);
-      return acc;
-    }, Object.create(null));
-
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await IGCE.setCostEstimate(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
   }
 
   public async mounted(): Promise<void> {

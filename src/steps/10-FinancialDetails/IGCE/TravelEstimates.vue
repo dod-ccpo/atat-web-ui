@@ -85,6 +85,7 @@
               summary."
             singlePeriodErrorMessage="Enter your estimated travel costs per period"
             multiplePeriodErrorMessage="Enter your estimated travel costs for this period"
+            :sysIdArrayStringified.sync="sysIdArrayStringified"
           ></ATATSingleAndMultiplePeriods>
         </div>
       </v-col>
@@ -96,6 +97,7 @@
 import {
   Checkbox,
   EstimateOptionValue,
+  EstimateOptionValueObjectArray,
   RadioButton,
   SingleMultiple,
   TravelCalloutDataItem,
@@ -131,16 +133,17 @@ import _ from "lodash";
 export default class TravelEstimates extends Mixins(SaveOnLeave) {
   private periods: PeriodDTO[] | null = [];
   private ceilingPrice: SingleMultiple | undefined = "";
-  private estimatedTravelCosts = [""];
+  private estimatedTravelCosts = "";
   private percentages = [""];
   private numberOfAllTrips = 0;
   private selectedPeriods: Checkbox[] = [];
   private travelDOWData: TravelSummaryTableData[] = [];
   private calloutData: TravelCalloutDataItem[] = [];
-  public savedData: EstimateOptionValue = {
+  public savedData: EstimateOptionValueObjectArray = {
     option: "",
-    estimated_values: [],
+    estimated_values: "",
   };
+  public sysIdValueArray: Record<string, string>[] = [];
   
   private travelEstimateOptions: RadioButton[] = [
     {
@@ -157,7 +160,7 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     },
   ];
   
-  get currentData(): EstimateOptionValueDTO {
+  get currentData(): EstimateOptionValueObjectArray{
     return {
       option: this.ceilingPrice || "",
       estimated_values: this.estimatedTravelCosts,
@@ -167,15 +170,11 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   @Watch("ceilingPrice")
   protected changeSelection(newVal: string): void {
     if (newVal !== this.savedData.option) {
-      this.estimatedTravelCosts = [];
+      this.estimatedTravelCosts = "";
     }
   }
 
   private hasChanged(): boolean {
-    console.log("Current Data");
-    console.log(this.currentData);
-    console.log("Saved Data");
-    console.log(this.savedData);
     return hasChanges(this.currentData, this.savedData);
   }
 
@@ -189,7 +188,7 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     const store = await IGCEStore.getRequirementsCostEstimate();
     this.savedData = _.cloneDeep(store.travel);
     this.ceilingPrice = store.travel.option
-    this.estimatedTravelCosts = store.travel.estimated_values;
+    this.estimatedTravelCosts = store.travel.estimated_values || "";
   }
 
   protected async loadDOWTravelData(): Promise<void> {
@@ -247,6 +246,7 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     if (this.hasChanged()) {
       const store = await IGCEStore.getRequirementsCostEstimate();
+      this.currentData.estimated_values = IGCEStore.transformEstimateData(this.sysIdValueArray);
       store.travel = this.currentData;
       await IGCEStore.setRequirementsCostEstimate(store);
       await IGCEStore.saveRequirementsCostEstimate();
