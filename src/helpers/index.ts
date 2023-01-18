@@ -360,3 +360,14 @@ export function getStatusLabelFromValue(value: string): string {
 export function setItemToPlural(numberOfItems: number, noun: string): string {
   return numberOfItems >1 ? noun + "s" : noun;
 }
+
+export function convertEstimateData(sysIdArray: Record<string, string>[]): string {
+  let records = "";
+  sysIdArray.forEach(
+    (record) =>{ 
+      records = "\"" + Object.keys(record) +"\":" + Object.values(record) + "," + records;
+    }
+  )
+  //remove trailing commaa
+  return "{" + records.substring(0,records.length - 1) + "}";
+}

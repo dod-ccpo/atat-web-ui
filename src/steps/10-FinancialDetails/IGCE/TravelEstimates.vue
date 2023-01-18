@@ -18,6 +18,7 @@
               id="TravelEstimates"
               legend="How do you want to estimate your travel needs?"
               :items="travelEstimateOptions"
+              @radioButtonClicked="radioButtonClicked"
               :value.sync="ceilingPrice"
               :rules="[$validators.required('Please select an option')]"
             />
@@ -77,15 +78,16 @@
 
         <div v-if="ceilingPrice !== ''">
           <ATATSingleAndMultiplePeriods
-            :periods.sync="periods"
+            :periods="periods"
             :isMultiple="ceilingPrice === 'MULTIPLE'"
-            :values.sync="estimatedTravelCosts"
+            
             singlePeriodTooltipText=
               "Customize a price estimate for each performance period specified in the travel 
               summary."
             singlePeriodErrorMessage="Enter your estimated travel costs per period"
             multiplePeriodErrorMessage="Enter your estimated travel costs for this period"
-            :sysIdArrayStringified.sync="sysIdArrayStringified"
+            :values.sync="valueArray"
+            :sysIdValueArray.sync="sysIdValueArray"
           ></ATATSingleAndMultiplePeriods>
         </div>
       </v-col>
@@ -114,6 +116,7 @@ import {
   createPeriodCheckboxItems,
   hasChanges,
   setItemToPlural,
+  convertEstimateData
 } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
@@ -144,6 +147,7 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     estimated_values: "",
   };
   public sysIdValueArray: Record<string, string>[] = [];
+  public valueArray: string[] = [];
   
   private travelEstimateOptions: RadioButton[] = [
     {
@@ -166,6 +170,12 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
       estimated_values: this.estimatedTravelCosts,
     };
   }
+
+  private radioButtonClicked(): void {
+    this.sysIdValueArray = [];
+    this.estimatedTravelCosts = "";
+  }
+
 
   @Watch("ceilingPrice")
   protected changeSelection(newVal: string): void {
@@ -246,7 +256,7 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     if (this.hasChanged()) {
       const store = await IGCEStore.getRequirementsCostEstimate();
-      //this.currentData.estimated_values = IGCEStore.transformEstimateData(this.sysIdValueArray);
+      this.currentData.estimated_values = convertEstimateData(this.sysIdValueArray);
       store.travel = this.currentData;
       await IGCEStore.setRequirementsCostEstimate(store);
       await IGCEStore.saveRequirementsCostEstimate();

@@ -437,7 +437,7 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         this.sysIdValueArray.push(obj);
       }
       this.currentData.estimate.estimated_values = 
-          this.transformEstimateData(this.sysIdValueArray);
+          transformEstimateData(this.sysIdValueArray);
       
       if(this.hasChanged()){  
         await IGCE.setTrainingEstimate(this.currentData);
@@ -448,16 +448,11 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     return true;
   }
   
-  public transformEstimateData(sysIdArray: Record<string, string>[]): string {
-    let records = "";
-    sysIdArray.forEach(
-      (record) =>{ 
-        records = "\"" + Object.keys(record) +"\":" + Object.values(record) + "," + records;
-      }
-    )
-    //remove trailing commaa
-    return "{" + records.substring(0,records.length - 1) + "}";
-  }
+  
 
+}
+
+function transformEstimateData(sysIdValueArray: Record<string, string>[]): string {
+  throw new Error("Function not implemented.");
 }
 </script>

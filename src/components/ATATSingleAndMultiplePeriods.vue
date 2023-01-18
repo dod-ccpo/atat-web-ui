@@ -21,6 +21,7 @@
         :isCurrency="textboxSuffix === ''"
         :appendText="textboxSuffix !== '' ? textboxSuffix : null"
         :tooltipText="showSinglePeriodTooltip ? singlePeriodTooltipText : null"
+        type="number"
         @blur="setsysIdArrayStringified(_values[0], 'PER_PERIOD')"
         :showErrorMessages="true"
         :rules="[
