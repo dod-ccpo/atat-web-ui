@@ -21,7 +21,7 @@
         ]"
         multiple
         prepend-icon=""
-        accept="application/pdf,application/vnd.ms-excel, .xlsx"
+        accept="application/pdf,application/vnd.ms-excel, .xlsx, .doc, .docx"
         :truncate-length="truncateLength"
         :clearable="true"
         @change="fileUploadChanged"
@@ -288,6 +288,14 @@ export default class ATATFileUpload extends Vue {
    */
   private removeInvalidFiles(files: FileList): void {
     let _validFiles = Array.from(files || []).filter((vFile) => {
+      const restrictedNames = [
+        "DescriptionOfWork.docx",
+        "IncrementalFundingPlan.docx",
+        "RequirementsChecklist.docx",
+        "IGCE.xlsx",
+        "EvaluationPlan.docx",
+      ]
+      const isRestrictedName = restrictedNames.includes(vFile.name)
       const thisFileFormat = vFile.name.substring(
         vFile.name.lastIndexOf(".") + 1
       );
@@ -304,6 +312,7 @@ export default class ATATFileUpload extends Vue {
       });
       const isFileSizeValid = vFile.size < this.maxFileSizeInBytes;
 
+
       //log Invalid Files
       if (!isValidFormat) {
         this.logInvalidFiles(vFile, doesFileExist);
@@ -314,8 +323,11 @@ export default class ATATFileUpload extends Vue {
       if (!isFileSizeValid) {
         this.logInvalidFiles(vFile, doesFileExist);
       }
+      if(isRestrictedName){
+        this.logInvalidFiles(vFile, doesFileExist);
+      }
       
-      return isValidFormat && !doesFileExist && isFileSizeValid;
+      return isValidFormat && !doesFileExist && isFileSizeValid && !isRestrictedName;
     });
 
    
