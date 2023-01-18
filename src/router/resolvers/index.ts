@@ -1097,9 +1097,10 @@ const contractingShopIsDitco = (): boolean => {
 }
 
 const hasServiceOfferings = (): boolean => {
-  const offerings = DescriptionOfWork.DOWObject.filter(
-    obj => obj.serviceOfferingGroupId !== "TRAINING"
-  );
+  const offerings = DescriptionOfWork.DOWObject.filter(obj => {
+    return obj.serviceOfferingGroupId !== "TRAINING" 
+      && obj.serviceOfferingGroupId.indexOf("NONE") === -1
+  });
   return offerings.length >= 1;
 }
 

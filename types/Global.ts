@@ -671,11 +671,16 @@ export interface EstimateOptionValue {
   estimated_values: string[];
 }
 
+export interface EstimateOptionValueObjectArray {
+  option?: SingleMultiple;
+  estimated_values?: string;
+}
+
 export interface TrainingEstimate {
   sysId?: string;
   costEstimateType: 
     "" | "PER_PERSON" | "PER_SESSION" | "ANNUAL_SUBSCRIPTION" | "MONTHLY_SUBSCRIPTION" | string;
-  estimate: EstimateOptionValue;
+  estimate: EstimateOptionValueObjectArray;
   estimatedTrainingPrice: string;
   trainingOption: SingleMultiple;
 }
