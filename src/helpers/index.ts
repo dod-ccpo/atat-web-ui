@@ -365,7 +365,11 @@ export function convertEstimateData(sysIdArray: Record<string, string>[]): strin
   let records = "";
   sysIdArray.forEach(
     (record) =>{ 
-      records = "\"" + Object.keys(record) +"\":" + Object.values(record) + "," + records;
+      const val = typeof Object.values(record)[0] === "string" 
+        ? Object.values(record)[0]?.replaceAll(",","")
+        : Object.values(record)[0];
+         
+      records = "\"" + Object.keys(record) +"\":" + val  + "," + records;
     }
   )
   //remove trailing commaa
