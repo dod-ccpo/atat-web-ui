@@ -63,7 +63,6 @@
             @blur="setsysIdArrayStringified(_values[idx], period.sys_id)"
             :isCurrency="textboxSuffix === ''"
             :appendText="textboxSuffix !== '' ? textboxSuffix : null"
-            type="number"
             :showErrorMessages="true"
             :rules="[
               $validators.required(
