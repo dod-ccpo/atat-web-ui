@@ -12,7 +12,7 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
-          <div v-if="!isNewUser" class="_welcome-bar">
+          <div class="_welcome-bar">
             <div class="d-flex justify-start">
               <h1 class="text-primary">
                 Hi {{currentUser.first_name}}! How can we help you?
@@ -20,41 +20,24 @@
             </div>
             <div class="d-flex justify-end">
               <v-btn 
+                v-if="!isNewUser"
                 class="v-btn primary"
                 @click="startNewAcquisition"
               >
                 Start a new acquisition
               </v-btn>
+              <v-btn
+                v-else
+                href="https://community.hacc.mil/s/jwcc"
+                target="_blank"
+                id="HelpfulResourcesButton"
+                class="secondary no-text-decoration"
+                @click="scrollToResources"
+              >
+                Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
+              </v-btn>
             </div>
           </div>
-          <section v-if="isNewUser" class="_py-80">
-            
-            <div class="d-flex flex-row-reverse">
-              <div class="d-flex align-flex-end">       
-                <div class="bg-white border-rounded-more pa-8">
-                  <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
-                  <br />
-                  <div class="d-flex">
-                    <v-btn
-                      class="v-btn primary mr-4"
-                      @click="startNewAcquisition"
-                    >
-                      Start a new acquisition
-                    </v-btn>
-                    <v-btn
-                      href="https://community.hacc.mil/s/jwcc"
-                      target="_blank"
-                      id="HelpfulResourcesButton"
-                      class="secondary no-text-decoration"
-                      @click="scrollToResources"
-                    >
-                      Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
-                    </v-btn>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
         </div>
 
         <NewUser 

@@ -1,5 +1,12 @@
 <template>
   <div>
+    <section id="SectionCards" class="container-max-width mx-auto _mt-80 _mb-80">
+      <div class="_new-user-cards d-flex justify-space-between">
+        <NewAcquisitionCard @startNewAcquisition="startNewAcquisition" />
+        <ExistingTaskOrderCard />
+      </div>
+    </section>
+        
     <section 
       id="SectionPreparePackage" 
       class="_learn-more-section bg-white _py-80"
