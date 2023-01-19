@@ -1098,7 +1098,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.UploadJAMRRDocuments,
         completePercentageWeight: 0,
         component: UploadJAMRRDocuments,
-        routeResolver: UploadJAMRRDocumentsRouteResolver
+        routeResolver: UploadJAMRRDocumentsRouteResolver,
       },
       {
         menuText: "Ready To Generate Package",
