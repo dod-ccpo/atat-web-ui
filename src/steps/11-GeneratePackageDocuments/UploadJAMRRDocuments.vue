@@ -233,7 +233,7 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
 
-    AcquisitionPackage.setValidateNow(true);
+    await AcquisitionPackage.setValidateNow(true);
 
     return true;
   }
@@ -261,9 +261,20 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
     this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('mrr');
   }
 
-  
+  public async skipPage(): Promise<void> {
+    if(AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE"){
+      await this.$router.push(
+        {
+          path:"ready-to-generate-package"
+        }
+      );
+    }
+  }
+
+
 
   public async mounted(): Promise<void> {
+    await this.skipPage();
     await this.loadOnEnter();
     await this.loadAttachments();
 
