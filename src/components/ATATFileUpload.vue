@@ -141,6 +141,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: true}) private multiplesAllowed!: boolean;
+  @Prop() private restrictedNames?: string[];
   @Prop({ default: "required"}) private requiredMessage!: string;
   @Prop({ default: 20 }) private maxNumberOfFiles!: number;
   @Prop({ default: false }) private startCompact?: boolean;
@@ -288,14 +289,8 @@ export default class ATATFileUpload extends Vue {
    */
   private removeInvalidFiles(files: FileList): void {
     let _validFiles = Array.from(files || []).filter((vFile) => {
-      const restrictedNames = [
-        "DescriptionOfWork.docx",
-        "IncrementalFundingPlan.docx",
-        "RequirementsChecklist.docx",
-        "IGCE.xlsx",
-        "EvaluationPlan.docx",
-      ]
-      const isRestrictedName = restrictedNames.includes(vFile.name)
+
+      const isRestrictedName = this.restrictedNames?.includes(vFile.name)
       const thisFileFormat = vFile.name.substring(
         vFile.name.lastIndexOf(".") + 1
       );

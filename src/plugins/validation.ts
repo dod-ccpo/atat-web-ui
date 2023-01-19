@@ -271,7 +271,7 @@ export class ValidationPlugin {
     doesFileExist: boolean,
     SNOWError?: string,
     statusCode?: number,
-    restrictNames?:boolean,
+    restrictedNames?:string[],
   ):((v: string) => string | true | undefined) => {
     return () => {
       const fileName = file.name.length>20
@@ -282,18 +282,14 @@ export class ValidationPlugin {
       const isValidExtension = validExtensions.some((ext)=>
         fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase() === ext
       )
-      const restrictedNames = ["DescriptionOfWork.docx",
-        "IncrementalFundingPlan.docx",
-        "RequirementsChecklist.docx",
-        "IGCE.xlsx",
-        "EvaluationPlan.docx",]
+
       if (!isValidExtension){
         return `'${fileName}' is not a valid format or has been corrupted. ` +
                 `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
                 `.${validExtensions.slice(-1)} file.`
       }
       // list of names that a file can not have
-      else if(restrictNames && restrictedNames.includes(file.name)){
+      else if(restrictedNames?.includes(file.name)){
         return "File name already exist. Please rename the file."
       }
 

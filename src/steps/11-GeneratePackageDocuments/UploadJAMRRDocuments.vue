@@ -83,6 +83,7 @@
               <ATATFileUpload
                 id="JAMRRFiles"
                 tabindex="-1"
+                :restrictedNames="restrictedNames"
                 :maxNumberOfFiles="2"
                 :maxFileSizeInBytes="maxFileSizeInBytes"
                 :validFileFormats="validFileFormats"
@@ -147,7 +148,13 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   private uploadedFiles: uploadingFile[] = [];
   public removeAll = false;
   public requiredMessage = "Please upload a file"
-
+  public restrictedNames = [
+    "DescriptionOfWork.docx",
+    "IncrementalFundingPlan.docx",
+    "RequirementsChecklist.docx",
+    "IGCE.xlsx",
+    "EvaluationPlan.docx",
+  ]
   private jaTemplateUrl = "";
   private mrrTemplateUrl = "";
 
@@ -186,7 +193,7 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
           iFile.doesFileExist,
           iFile.SNOWError,
           iFile.statusCode,
-          true
+          this.restrictedNames
         )
       );
     });
