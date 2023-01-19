@@ -85,7 +85,7 @@
       </v-file-input>
       <ATATErrorValidation
         class="file-upload-validation-messages"
-        :showAllErrors="true"
+        :showAllErrors="showAllErrors"
         :errorMessages="errorMessages"
       />
     </div>
@@ -141,6 +141,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: true}) private multiplesAllowed!: boolean;
+  @Prop({ default: true}) private showAllErrors?: boolean;
   @Prop() private restrictedNames?: string[];
   @Prop({ default: "required"}) private requiredMessage!: string;
   @Prop({ default: 20 }) private maxNumberOfFiles!: number;

@@ -92,6 +92,7 @@
                 :invalidFiles.sync="invalidFiles"
                 :validFiles.sync="uploadedFiles"
                 :removeAll.sync="removeAll"
+                :showAllErrors="false"
                 @delete="onRemoveAttachment"
                 @uploaded="onUpload"
                 :rules="getRulesArray()"
@@ -182,8 +183,6 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
 
   private getRulesArray(): ((v: string) => string|true|undefined)[] {
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
-
-    rulesArr.push(this.$validators.required(this.requiredMessage));
     this.invalidFiles.forEach((iFile) => {
       rulesArr.push(
         this.$validators.isFileValid(
@@ -197,6 +196,7 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
         )
       );
     });
+    rulesArr.push(this.$validators.required(this.requiredMessage));
     return rulesArr;
   }
 
