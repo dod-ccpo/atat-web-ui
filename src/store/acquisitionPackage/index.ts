@@ -583,18 +583,6 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.fairOpportunity;
   }
 
-  @Mutation
-  public setFundingRequirement(value: FundingRequirementDTO): void {
-    if (this.acquisitionPackage && !this.acquisitionPackage.funding_requirement) {
-      this.acquisitionPackage.funding_requirement = value.sys_id || "";
-    }
-  }
-
-  @Action({rawError: true})
-  public getFundingRequirement(): FundingRequirementDTO | null{
-    return this.fundingRequirement;
-  }
-
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
     console.log("in store: actionArgs", actionArgs);
@@ -674,7 +662,6 @@ export class AcquisitionPackageStore extends VuexModule {
       const corSysId = acquisitionPackage.cor as string;
       const aCorSysId = acquisitionPackage.acor as string;
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
-      const fundingRequirementSysId = acquisitionPackage.funding_requirement as string;
 
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -691,7 +678,6 @@ export class AcquisitionPackageStore extends VuexModule {
         cor: corSysId,
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
-        funding_requirement: fundingRequirementSysId
       });
 
       await ClassificationRequirements.getAllClassificationLevels();
@@ -881,35 +867,8 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       this.setPackagePercentLoaded(90);
 
-      if(fundingRequirementSysId){
-        let fundingRequirement = await api.fundingRequirementTable.retrieve(
-          fundingRequirementSysId
-        );
-        fundingRequirement = convertColumnReferencesToValues(fundingRequirement);
+      await FinancialDetails.loadFundingRequirement();
 
-        if(fundingRequirement){
-          this.setFundingRequirement(fundingRequirement);
-          await FinancialDetails.setIsIncrementallyFunded(fundingRequirement.incrementally_funded);
-          if (fundingRequirement.funding_plan) {
-            await FinancialDetails.setFundingPlanData(fundingRequirement.funding_plan)
-          }
-
-          // load the financial Poc  of the funding requirement and store
-          // the contact to the "financialPocInfo property
-          const financialPocSysId =
-            typeof fundingRequirement.financial_poc === "object" ?
-              (fundingRequirement.financial_poc as ReferenceColumn).value as string
-              : fundingRequirement.financial_poc as string;
-          if(financialPocSysId) {
-            const financialPocInfo = await api.contactsTable.retrieve(
-              financialPocSysId
-            );
-            if(financialPocInfo){
-              this.setContact({ data: financialPocInfo, type: "Financial POC"});
-            }
-          }
-        }
-      }
       this.setPackagePercentLoaded(92);
 
       await DescriptionOfWork.loadDOWfromAcquistionPackageId(packageId);
@@ -1002,11 +961,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPackagePercentLoaded(80);
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
           acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
-          const taskOrderObj = await TaskOrder.initialize(acquisitionPackage.sys_id || "");
           this.setPackagePercentLoaded(90);
-
-          acquisitionPackage.funding_requirement 
-            = taskOrderObj.funding_requirement?.sys_id as string;
 
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
@@ -1184,14 +1139,11 @@ export class AcquisitionPackageStore extends VuexModule {
         } as AcquisitionPackageDTO);
         this.setHasAlternateCOR(true);
       } else if (dataKey === "financialPocInfo") {
-        const fundingRequirement = TaskOrder.value.funding_requirement;
-        if(fundingRequirement?.sys_id) {
+        const fundingReq = await FinancialDetails.getFundingRequirement();
+        if (fundingReq.sys_id) {
           await api.fundingRequirementTable.update(
-            fundingRequirement?.sys_id,
-            {...fundingRequirement, financial_poc: savedContact.sys_id as string})
-          if (this.acquisitionPackage && !this.acquisitionPackage.funding_requirement) {
-            this.acquisitionPackage.funding_requirement = fundingRequirement.sys_id;
-          }
+            fundingReq.sys_id,
+            {...fundingReq, financial_poc: savedContact.sys_id as string})
         }
       } else {
         this.setAcquisitionPackage({
@@ -1446,7 +1398,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async reset(): Promise<void>{
-
     await ContactData.reset();
     await OrganiationData.reset();
     await DescriptionOfWork.reset();
