@@ -289,21 +289,21 @@ export class ValidationPlugin {
                 `.${validExtensions.slice(-1)} file.`
       }
       // list of names that a file can not have
-      else if(restrictedNames?.includes(file.name)){
+      if(restrictedNames?.includes(file.name)){
         return "File name already exist. Please rename the file."
       }
 
       // does file aleady exist?
-      else if (doesFileExist){
+      if (doesFileExist){
         return `'${fileName}' was already uploaded.`
       }
 
       // is file too big?
-      else if (fileSize>maxFileSize){
+      if (fileSize>maxFileSize){
         return `Your file '${fileName}' is too large. Please upload a file that is 1GB or less.`
       }
 
-      else if (SNOWError !== "" && SNOWError !== undefined){
+      if (SNOWError !== "" && SNOWError !== undefined){
         const error = SNOWError.toLowerCase();
         let invalidMessage = "";
 
