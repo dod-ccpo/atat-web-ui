@@ -321,6 +321,7 @@ export class ValidationPlugin {
         }
         return invalidMessage;
       }
+      return true
     }
   };
 }
