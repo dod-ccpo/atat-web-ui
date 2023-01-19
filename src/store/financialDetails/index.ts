@@ -8,13 +8,13 @@ import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers"
 import {
   AcquisitionPackageDTO,
   FundingIncrementDTO, FundingPlanDTO, FundingRequestDTO, FundingRequestFSFormDTO,
-  FundingRequestMIPRFormDTO, FundingRequirementDTO, ReferenceColumn, TaskOrderDTO
+  FundingRequestMIPRFormDTO, FundingRequirementDTO, ReferenceColumn
 } from "@/api/models";
-import TaskOrder from "../taskOrder";
 import api from "@/api";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import {AxiosRequestConfig} from "axios";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import _ from "lodash";
 
 const ATAT_FINANCIAL_DETAILS__KEY = "ATAT_FINANCIAL_DETAILS__KEY";
 
@@ -82,7 +82,6 @@ export class FinancialDetailsStore extends VuexModule {
 
   gtcNumber: string | null = null;
   orderNumber: string | null = null;
-  taskOrder: TaskOrderDTO | null = null;
   fundingRequest: FundingRequestDTO | null = null;
   fundingRequestFSForm: FundingRequestFSFormDTO | null = null;
   fundingRequestMIPRForm: FundingRequestMIPRFormDTO | null = null;
@@ -202,13 +201,16 @@ export class FinancialDetailsStore extends VuexModule {
   @Mutation
   public doSetIsIncrementallyFunded(val: string): void {
     this.isIncrementallyFunded = val;
+    if (this.fundingRequirement) {
+      this.fundingRequirement.incrementally_funded = val;
+    }
   }
 
   @Mutation
-  public async setFundingIncrements(remainingAmountIncrements: string): Promise<void> {
+  public async setFundingIncrements(remainingAmountIncrementsSysIds: string): Promise<void> {
     this.fundingIncrements = [];
-    if (remainingAmountIncrements.length) {
-      const incrementSysIds = remainingAmountIncrements.split(',');
+    if (remainingAmountIncrementsSysIds.length) {
+      const incrementSysIds = remainingAmountIncrementsSysIds.split(',');
       const requests = incrementSysIds.map(sysId => api.fundingIncrementTable.retrieve(sysId));
       const results = await Promise.all(requests);
 
@@ -248,7 +250,7 @@ export class FinancialDetailsStore extends VuexModule {
   }
 
   public get fundingPlanValue(): FundingPlanDTO {
-    return this.fundingPlan || initialFundingPlan;
+    return this.fundingPlan || _.cloneDeep(initialFundingPlan);
   }
 
   @Mutation
@@ -293,8 +295,7 @@ export class FinancialDetailsStore extends VuexModule {
       savedFundingPlan = convertColumnReferencesToValues(savedFundingPlan);
       // add sysIds to this.fundingIncrements
       const remainingAmountIncrements = savedFundingPlan.remaining_amount_increments
-      this.setFundingIncrements(remainingAmountIncrements);
-
+      await this.setFundingIncrements(remainingAmountIncrements);
 
       storeDataToSession(
         this,
@@ -302,17 +303,11 @@ export class FinancialDetailsStore extends VuexModule {
         ATAT_FINANCIAL_DETAILS__KEY
       );
 
-      // save funding plan sys_id to TaskOrder table
-      const fundingPlanSysId = savedFundingPlan.sys_id;
-      const taskOrder = TaskOrder.taskOrder;
-      if (taskOrder) {
-        Object.assign(taskOrder, { funding_plan: fundingPlanSysId });
-        const taskOrderSysId = taskOrder.sys_id;
-        if (taskOrderSysId) {
-          // since only update is performed here, need to check for task order sys id
-          // before calling save. Otherwise, record gets created and may be undesirable
-          await TaskOrder.save(taskOrder);
-        }
+      // save funding plan sys_id to Funding Requirement table if doesn't exist yet
+      const fundingPlanSysId = savedFundingPlan.sys_id;      
+      if (fundingPlanSysId && this.fundingRequirement && !this.fundingRequirement.funding_plan) {
+        this.fundingRequirement.funding_plan = fundingPlanSysId;
+        this.saveFundingRequirement();
       }
 
     } catch(error) {
@@ -545,7 +540,22 @@ export class FinancialDetailsStore extends VuexModule {
         const fundingRequirementList = await api.fundingRequirementTable
           .getQuery(fundingRequirementRequestConfig);
         if(fundingRequirementList.length > 0) {
-          this.setFundingRequirement(convertColumnReferencesToValues(fundingRequirementList[0]));
+          const fundingRequirement = convertColumnReferencesToValues(fundingRequirementList[0]);
+          this.setFundingRequirement(fundingRequirement);
+          await this.setIsIncrementallyFunded(fundingRequirement.incrementally_funded);
+          if (fundingRequirement.funding_plan) {
+            await this.setFundingPlanData(fundingRequirement.funding_plan)
+          }
+          // load the financial Poc  of the funding requirement and store
+          // the contact to the "financialPocInfo" property in Acquisition Package store
+          if(fundingRequirement.financial_poc) {
+            const financialPocInfo = await api.contactsTable.retrieve(
+              fundingRequirement.financial_poc
+            );
+            if (financialPocInfo) {
+              AcquisitionPackage.setContact({ data: financialPocInfo, type: "Financial POC"});
+            }
+          }
         } else {
           // initialize funding request and set it to acquisition package
           await this.loadFundingRequest()
@@ -576,9 +586,10 @@ export class FinancialDetailsStore extends VuexModule {
    */
   @Action
   public async saveFundingRequirement(): Promise<void> {
+    const fundingReq 
+      = convertColumnReferencesToValues(this.fundingRequirement as FundingRequirementDTO);
     const savedFundingRequirement = await api.fundingRequirementTable
-      .update((this.fundingRequirement as FundingRequirementDTO).sys_id as string,
-        convertColumnReferencesToValues(this.fundingRequirement as FundingRequirementDTO));
+      .update(fundingReq.sys_id as string, fundingReq);
     this.setFundingRequirement(convertColumnReferencesToValues(savedFundingRequirement));
   }
 
@@ -739,14 +750,14 @@ export class FinancialDetailsStore extends VuexModule {
   @Mutation
   private doReset(): void {
     this.initialized = false;
-    this.fundingPlan = initialFundingPlan;
+    this.fundingRequirement = null;
+    this.fundingPlan = _.cloneDeep(initialFundingPlan);
     this.estimatedTaskOrderValue = "";
     this.miprNumber = null;
     this.initialFundingIncrementStr = "";
     this.fundingIncrements = [];
     this.gtcNumber = null;
     this.orderNumber = null;
-    this.taskOrder = null;
     this.fundingRequest = null;
     this.fundingRequestFSForm = null;
     this.fundingRequestMIPRForm = null;
