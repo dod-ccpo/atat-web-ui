@@ -66,7 +66,7 @@ type ServiceOfferingProxy =  {
   dowServiceIndex: number
 }
 
-const saveOrUpdateSelectedServiceOffering =
+export const saveOrUpdateSelectedServiceOffering =
     async (
       selectedServiceOffering: DOWServiceOffering,
       serviceOfferingId: string
@@ -165,7 +165,7 @@ const saveOrUpdateClassificationInstance =
       return objSysId;
     };
 
-const saveOrUpdateOtherServiceOffering =
+export const saveOrUpdateOtherServiceOffering =
     async (
       serviceOffering: OtherServiceOfferingData,
       offeringType: string
@@ -267,6 +267,7 @@ const saveOrUpdateOtherServiceOffering =
       case "general_cloud_support":
       case "training":
       case "portability_plan":
+        debugger;
         tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
         tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
         tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
@@ -276,6 +277,7 @@ const saveOrUpdateOtherServiceOffering =
         tempObject.training_location = serviceOffering.trainingLocation;
         tempObject.training_requirement_title = serviceOffering.trainingRequirementTitle;
         tempObject.training_time_zone = serviceOffering.trainingTimeZone;
+        tempObject.instance_number = serviceOffering.instanceNumber;
         tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
         if(tempObject.sys_id){
           await api.cloudSupportEnvironmentInstanceTable.update(
