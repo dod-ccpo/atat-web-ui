@@ -230,9 +230,8 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     await DescriptionOfWork.deleteOtherOfferingInstance(this.instanceNumberToDelete);
     await this.buildTableData();
     debugger;
-    this.tableData.forEach((instance)=>{
+    this.offeringInstances.forEach(async (instance)=>{
       await saveOrUpdateOtherServiceOffering(instance, this.currentGroupId);
-    
     })
     this.showDeleteInstanceDialog = false;
   }

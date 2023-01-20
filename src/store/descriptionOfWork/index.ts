@@ -193,12 +193,15 @@ export const saveOrUpdateOtherServiceOffering =
       tempObject.storage_type = serviceOffering.storageType;
       tempObject.storage_unit = serviceOffering.storageUnit;
       tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
+      tempObject.instance_number = serviceOffering.instanceNumber;
 
       if(serviceOffering.sysId)
         tempObject.sys_id = serviceOffering.sysId;
 
       switch(offeringType){
       case "compute":
+        tempObject.instance_name = "Database Instance #" + serviceOffering.instanceNumber;
+        
         tempObject.environment_type = serviceOffering.environmentType;
         tempObject.operating_environment = serviceOffering.operatingEnvironment;
         tempObject.operating_system_licensing = serviceOffering.operatingSystemAndLicensing;
@@ -216,6 +219,7 @@ export const saveOrUpdateOtherServiceOffering =
         }
         break;
       case "database":
+        tempObject.instance_name = "Database Instance #" + serviceOffering.instanceNumber;
         tempObject.database_licensing = serviceOffering.databaseLicensing;
         tempObject.database_type = serviceOffering.databaseType;
         tempObject.database_type_other = serviceOffering.databaseTypeOther;
@@ -234,6 +238,7 @@ export const saveOrUpdateOtherServiceOffering =
         }
         break;
       case "storage":
+        tempObject.instance_name = "Storage Instance #" + serviceOffering.instanceNumber;
         if(tempObject.sys_id){
           await api.storageEnvironmentInstanceTable.update(
             tempObject.sys_id,
@@ -277,7 +282,6 @@ export const saveOrUpdateOtherServiceOffering =
         tempObject.training_location = serviceOffering.trainingLocation;
         tempObject.training_requirement_title = serviceOffering.trainingRequirementTitle;
         tempObject.training_time_zone = serviceOffering.trainingTimeZone;
-        tempObject.instance_number = serviceOffering.instanceNumber;
         tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
         if(tempObject.sys_id){
           await api.cloudSupportEnvironmentInstanceTable.update(
