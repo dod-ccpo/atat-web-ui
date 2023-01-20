@@ -171,9 +171,7 @@ export class IGCEStore extends VuexModule {
       training_estimated_values: value.estimate.estimated_values || "",
       training_unit: value.costEstimateType
     };
-
-    console.log(trainingDTOItem.acquisition_package);
-
+    
     if(value.sysId){
       await api.trainingEstimateTable.update(
         value.sysId,
