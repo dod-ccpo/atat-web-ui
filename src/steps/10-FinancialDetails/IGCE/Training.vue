@@ -133,7 +133,7 @@ import IGCE from "@/store/IGCE";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import _ from "lodash";
 import { defaultTrainingEstimate } from "@/store/IGCE";
-import { hasChanges } from "@/helpers";
+import { hasChanges, convertEstimateData } from "@/helpers";
 
 @Component({
   components: {
@@ -437,7 +437,7 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         this.sysIdValueArray.push(obj);
       }
       this.currentData.estimate.estimated_values = 
-          this.transformEstimateData(this.sysIdValueArray);
+          convertEstimateData(this.sysIdValueArray);
       
       if(this.hasChanged()){  
         await IGCE.setTrainingEstimate(this.currentData);
@@ -448,16 +448,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     return true;
   }
   
-  public transformEstimateData(sysIdArray: Record<string, string>[]): string {
-    let records = "";
-    sysIdArray.forEach(
-      (record) =>{ 
-        records = "\"" + Object.keys(record) +"\":" + Object.values(record) + "," + records;
-      }
-    )
-    //remove trailing commaa
-    return "{" + records.substring(0,records.length - 1) + "}";
-  }
+  
 
 }
+
 </script>
