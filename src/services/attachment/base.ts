@@ -3,6 +3,7 @@ import { AttachmentApi } from "@/api/attachments";
 import { BaseTableDTO, AttachmentDTO } from "@/api/models";
 import { TableApiBase } from "@/api/tableApiBase";
 import { RecordManager, AttachmentServiceCallbacks } from ".";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 const getExtension = (filename: string): string => {
   return filename.substring(filename.lastIndexOf(".") + 1);
@@ -75,10 +76,11 @@ export class AttachmentServiceBase<
       );
     }
 
-    const updatedRecord = await this.tableApi.update(
+    let updatedRecord = await this.tableApi.update(
       record.sys_id || "",
       record
     );
+    updatedRecord = convertColumnReferencesToValues(updatedRecord)
 
     // if record manager exists call it's save method
     // so that the updated record can be processed.
