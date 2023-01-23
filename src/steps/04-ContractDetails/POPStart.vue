@@ -19,6 +19,7 @@
                 :items="startPoPDateOptions"
                 :value.sync="selectedPoPStartDateOption"
                 :rules="[$validators.required('Please select an option')]"
+                width="200"
               />
             </div>
 

@@ -108,18 +108,6 @@ export class TaskOrderStore extends VuexModule {
         task_order_status: value.task_order_status
       }
 
-      const fundingRequirementForSave: FundingRequirementDTO = {
-        acquisition_package: value.acquisition_package,
-        funding_plan: value.funding_plan,
-        funding_request: "",
-        funds_obligated: value.funds_obligated,
-        funds_total: value.funds_total,
-        incrementally_funded: value.incrementally_funded,
-        pop_end_date: value.pop_end_date,
-        pop_start_date: value.pop_start_date,
-        task_order_number: value.task_order_number
-      }
-
       const sysId = this.taskOrder?.sys_id || "";
       const saveTaskOrder =
         sysId.length > 0
@@ -127,28 +115,6 @@ export class TaskOrderStore extends VuexModule {
           : api.taskOrderTable.create(taskOrderForSave);
       let savedTaskOrder = await saveTaskOrder;
       savedTaskOrder = convertColumnReferencesToValues(savedTaskOrder);
-
-      const fundingReqSysId = this.taskOrder?.funding_requirement?.sys_id || "";
-      const saveFundingRequirement =
-        fundingReqSysId.length > 0
-          ? api.fundingRequirementTable.update(fundingReqSysId, fundingRequirementForSave)
-          : api.fundingRequirementTable.create(
-            {...fundingRequirementForSave, acquisition_package:
-                AcquisitionPackage.acquisitionPackage?.sys_id as string});
-      let savedFundingReq = await saveFundingRequirement;
-      savedFundingReq = convertColumnReferencesToValues(savedFundingReq)
-
-      savedTaskOrder.funding_requirement = savedFundingReq;
-      // set the funding properties of task order dto for backward compatibility
-      savedTaskOrder.incrementally_funded = savedFundingReq.incrementally_funded;
-      savedTaskOrder.funds_obligated = savedFundingReq.funds_obligated;
-      savedTaskOrder.acquisition_package = savedFundingReq.acquisition_package;
-
-      savedTaskOrder.funding_plan = savedFundingReq.funding_plan;
-      savedTaskOrder.funds_total = savedFundingReq.funds_total;
-      this.setTaskOrder(savedTaskOrder);
-
-      AcquisitionPackage.setFundingRequirement(savedFundingReq);
 
       return savedTaskOrder;
     } catch (error) {

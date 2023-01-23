@@ -164,9 +164,12 @@ export const toCurrencyString = (num: number, decimals?: boolean): string => {
 }
 
 // converts a formatted currency string back to a number
-export const currencyStringToNumber = (str: string): number => {
-  str = str.charAt(0) === "$" ? str.substring(1) : str;
-  return str ? parseFloat(str.replaceAll(",", "")) : 0;
+export const currencyStringToNumber = (str: string): number | null => {
+  if (str && typeof str === "string") {
+    str = str.charAt(0) === "$" ? str.substring(1) : str;
+    return str ? parseFloat(str.replaceAll(",", "")) : 0;  
+  }
+  return null;
 }
 
 
@@ -356,4 +359,19 @@ export function getStatusLabelFromValue(value: string): string {
 
 export function setItemToPlural(numberOfItems: number, noun: string): string {
   return numberOfItems >1 ? noun + "s" : noun;
+}
+
+export function convertEstimateData(sysIdArray: Record<string, string>[]): string {
+  let records = "";
+  sysIdArray.forEach(
+    (record) =>{ 
+      const val = typeof Object.values(record)[0] === "string" 
+        ? Object.values(record)[0]?.replaceAll(",","")
+        : Object.values(record)[0];
+         
+      records = "\"" + Object.keys(record) +"\":" + val  + "," + records;
+    }
+  )
+  //remove trailing commaa
+  return "{" + records.substring(0,records.length - 1) + "}";
 }

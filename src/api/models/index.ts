@@ -13,7 +13,8 @@ import {
   YesNo,
   SingleMultiple,
   EstimateOptionValue,
-  TrainingEstimate
+  TrainingEstimate,
+  EstimateOptionValueObjectArray
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -724,7 +725,7 @@ export interface UserDTO extends BaseTableDTO {
 export interface TrainingEstimateDTO extends BaseTableDTO{
   acquisition_package: string;
   estimated_price_per_training_unit: string;
-  training_estimated_values: string;
+  training_estimated_values?: string;
   training_option: string; //SINGLE or MULTIPLE
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
 }
@@ -741,7 +742,7 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   architectural_design_current_environment: EstimateOptionValue;
   architectural_design_performance_requirements: EstimateOptionValue;
   training: TrainingEstimateDTO[];
-  travel: EstimateOptionValue;
+  travel: EstimateOptionValueObjectArray;
   surge_requirements: {
     capabilities: YesNo;
     capacity: number | null;
