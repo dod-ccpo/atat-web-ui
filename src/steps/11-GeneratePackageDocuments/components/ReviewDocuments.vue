@@ -136,6 +136,8 @@ import { createDateStr } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Attachments from "@/store/attachments";
+import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
+
 
 @Component({
   components: {
@@ -153,6 +155,7 @@ export default class ReviewDocuments extends Mixins(SaveOnLeave) {
 
   public packageId = "";
   private lastUpdatedString = ""
+  private attachmentServiceName = ACQUISITION_PACKAGE_TABLE;
 
   private needsSignatureLength = 0
   get fairOpportunity():string {
@@ -242,7 +245,7 @@ export default class ReviewDocuments extends Mixins(SaveOnLeave) {
     return true;
   }
 
-  async mounted(): Promise<void>{
+  public async loadOnEnter(): Promise<void> {
     this.packages.forEach(item => {
       if(item.show){
         this.packageCheckList.push(item)
@@ -262,7 +265,17 @@ export default class ReviewDocuments extends Mixins(SaveOnLeave) {
       this.lastUpdatedString =
         `Last updated ${createDateStr(AcquisitionPackage.acquisitionPackage.sys_updated_on, true)}`
     }
+    const attachments = await Attachments.getAttachmentsByTableSysIds(
+      {
+        serviceKey: this.attachmentServiceName,
+        tableSysId: await AcquisitionPackage.getAcquisitionPackageSysId()
+      });
+    console.log(attachments)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
+  }
+
+  async mounted(): Promise<void>{
+    await this.loadOnEnter()
   }
 
 }
