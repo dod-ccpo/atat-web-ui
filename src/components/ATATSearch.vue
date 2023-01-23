@@ -168,11 +168,7 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "" }) private buttonText?: string;
   @Prop({ default: false }) private searchButtonDisabled?: boolean;
 
-
   @PropSync("value", { default: "" }) public _value!: string;
-
-  // remove isSimulation and all other simulation code when G-Invoicing search is actual
-  @Prop({ default: false} ) private isSimulation?: boolean;
 
   private error = false;
   private errorMessages: string[] = [];
@@ -180,9 +176,8 @@ export default class ATATSearch extends Vue {
   private showHelpText = true;
   private showLoader = false;
   
-  private searchCount = 0;          // for search simulation
-  private showSuccessAlert = false; // for search simulation
-  private showErrorAlert = false;   // for search simulation
+  private showSuccessAlert = false;
+  private showErrorAlert = false;
   private maskObj: mask = {};
 
   private searchDisabled = true;
@@ -213,71 +208,39 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
-    debugger;
-    if (this.isSimulation && this.errorMessages.length === 0 && this._value) {
-
-      // simulate success on first search, error on second.
-      this.showLoader = true;
-      this.showSuccessAlert = false;
-      this.showErrorAlert = false;
-      this.showHelpText = false;
-      this.searchCount = this.searchCount + 1;
-
-      setTimeout(() => {
-        this.showLoader = false;
-        this.showSuccessAlert = this.searchCount % 2 !== 0;
-        this.showErrorAlert = !this.showSuccessAlert;
-      }, 3000);
-    }
+    this.showLoader = true;
+    this.showSuccessAlert = false;
+    this.showErrorAlert = false;
+    this.showHelpText = false;
     
     if(this.searchType === "EDA"){
-
-      // EJY - FIRST, check to see if TO is already associated with a portfolio
       debugger
       try {
-
-        this.showLoader = true;
-        this.showSuccessAlert = false;
-        this.showErrorAlert = false;
-        this.showHelpText = false;
-
         const response = await api.edaApi.search(this._value);
         if(response.success){
           this.showSuccessAlert = true;
-        }
-        else{
+          
+        } else {
           this.showErrorAlert = true;
         }
-        
       } catch (error) {
         this.showErrorAlert = true;
-      }finally{
-
+      } finally {
         this.showLoader = false;
       }
     } else if (this.searchType === "G-Invoicing") {
       try {
-
-        this.showLoader = true;
-        this.showSuccessAlert = false;
-        this.showErrorAlert = false;
-        this.showHelpText = false;
-
         const gInvoicingResponse = await api.gInvoicingApi.search(this._value);
-        if(gInvoicingResponse.valid){
+        if (gInvoicingResponse.valid){
           this.showSuccessAlert = true;
-        }
-        else{
+        } else {
           this.showErrorAlert = true;
         }
-
       } catch (error) {
         this.showErrorAlert = true;
-      }finally{
-
+      } finally {
         this.showLoader = false;
       }
-
     }
 
     this.$emit("search");
