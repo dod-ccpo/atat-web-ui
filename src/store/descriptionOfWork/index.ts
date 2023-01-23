@@ -44,7 +44,7 @@ import _, { differenceWith, first, last } from "lodash";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "../acquisitionPackage";
 import Periods from "../periods";
-import { buildClassificationLabel } from "@/helpers";
+import { buildClassificationLabel, toTitleCase } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 
@@ -175,7 +175,6 @@ export const saveOrUpdateOtherServiceOffering =
       tempObject.acquisition_package = AcquisitionPackage.packageId;
       tempObject.anticipated_need_or_usage = serviceOffering.descriptionOfNeed;
       tempObject.classification_level = serviceOffering.classificationLevel;
-      tempObject.instance_name = serviceOffering.requirementTitle;
       tempObject.licensing = serviceOffering.licensing;
       tempObject.memory_amount = serviceOffering.memoryAmount;
       tempObject.memory_unit = serviceOffering.memoryUnit || "GB";
@@ -200,8 +199,7 @@ export const saveOrUpdateOtherServiceOffering =
 
       switch(offeringType){
       case "compute":
-        tempObject.instance_name = "Database Instance #" + serviceOffering.instanceNumber;
-        
+        tempObject.instance_name = "Compute Instance #" + serviceOffering.instanceNumber;
         tempObject.environment_type = serviceOffering.environmentType;
         tempObject.operating_environment = serviceOffering.operatingEnvironment;
         tempObject.operating_system_licensing = serviceOffering.operatingSystemAndLicensing;
@@ -253,6 +251,7 @@ export const saveOrUpdateOtherServiceOffering =
         }
         break;
       case "general_xaas":
+        tempObject.instance_name = "Requirement #" + serviceOffering.instanceNumber;
         if(tempObject.sys_id){
           await api.xaaSEnvironmentInstanceTable.update(
             tempObject.sys_id,
@@ -272,16 +271,21 @@ export const saveOrUpdateOtherServiceOffering =
       case "general_cloud_support":
       case "training":
       case "portability_plan":
-        debugger;
         tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
         tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
         tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
+        tempObject.instance_name = 
+          toTitleCase(offeringType.replaceAll("_", " ")) + " #" + serviceOffering.instanceNumber;
         tempObject.service_type = offeringType.toUpperCase();
-        tempObject.training_facility_type = serviceOffering.trainingFacilityType;
-        tempObject.training_format = serviceOffering.trainingType;
-        tempObject.training_location = serviceOffering.trainingLocation;
-        tempObject.training_requirement_title = serviceOffering.trainingRequirementTitle;
-        tempObject.training_time_zone = serviceOffering.trainingTimeZone;
+
+        if (offeringType === "training"){
+          tempObject.training_facility_type = serviceOffering.trainingFacilityType;
+          tempObject.training_format = serviceOffering.trainingType;
+          tempObject.training_location = serviceOffering.trainingLocation;
+          tempObject.training_requirement_title = serviceOffering.requirementTitle;
+          tempObject.training_time_zone = serviceOffering.trainingTimeZone;
+        }
+        
         tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
         if(tempObject.sys_id){
           await api.cloudSupportEnvironmentInstanceTable.update(
