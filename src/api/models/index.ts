@@ -515,8 +515,21 @@ export interface ClinDisplayDTO {
 }
 
 export interface EDAResponse {
-  success: boolean;
-  message: string;
+  success?: boolean;
+  // if 400 error, will have code and message
+  code?: string;
+  message?: string;
+  // if 200 success, will have data below
+  taskOrderNumber?: string;
+  contractor?: string; // "Microsoft Corporation",
+  csp?: string; // "Azure",
+  contractIssuingOffice?: string; // "DITCO",
+  totalObligatedAmount?: number | null;
+  totalAmount?: number | null;
+  popStartDate?: string; // "2021-07-01",
+  popEndDate?: string; // "2026-07-01",
+  classificationLevels?: string[]; //  ["Unclassified", "Secret"] or sysIds?
+
 }
 
 

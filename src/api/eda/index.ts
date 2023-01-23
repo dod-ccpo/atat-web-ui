@@ -13,7 +13,6 @@ export class EDAApi extends ApiBase{
 
  
   public async search(taskOrderNumber: string): Promise<EDAResponse> {
-    
     try {
       const response = await this.post({
         delivery_order_number : taskOrderNumber
@@ -22,16 +21,23 @@ export class EDAApi extends ApiBase{
         const { result } = response.data;
         const edaResponse: EDAResponse = {
           success: true,
-          message: result.success
+          taskOrderNumber: result.taskOrderNumber,
+          contractor: result.contractor,
+          csp: result.csp,
+          contractIssuingOffice: result.contractIssuingOffice,
+          totalObligatedAmount: result.totalObligatedAmount,
+          totalAmount: result.totalAmount,
+          popStartDate: result.popStartDate,
+          popEndDate: result.popEndDate,
+          classificationLevels: result.classificationLevels,
         }
         return edaResponse;
       } else {
         const { error } = response.data;
         const edaResponse: EDAResponse = {
           success: false,
-          message: error.message || "unknown error"
+          message: error.message || "unknown error",
         }
-
         return edaResponse;
       }
     } catch (error) {

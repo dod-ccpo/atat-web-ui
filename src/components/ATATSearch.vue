@@ -217,12 +217,12 @@ export default class ATATSearch extends Vue {
       debugger
       try {
         const response = await api.edaApi.search(this._value);
-        if(response.success){
-          this.showSuccessAlert = true;
-          
+        if (!response.success) {
+          this.$refs.atatSearchInput.errorBucket = [response.message || "Unknown error"];
         } else {
-          this.showErrorAlert = true;
+          //
         }
+
       } catch (error) {
         this.showErrorAlert = true;
       } finally {

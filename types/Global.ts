@@ -15,6 +15,7 @@ import {
   ContactDTO,
   BaseTableDTO,
   ClinDTO,
+  EDAResponse,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -487,6 +488,20 @@ export interface PortfolioSummaryQueryParams {
   portfolioStatus?: string;
   sort?: string;
   searchString?: string;
+}
+
+export interface PortfolioAdmins {
+  DoDId: string;
+  hasUnclassifiedAccess?: YesNo;
+  unclassifiedEmail?: string;
+  hasSecretAccess?: YesNo;
+  secretEmail?: string;
+}
+
+export interface PortfolioProvisioning extends EDAResponse {
+  portfolioTitle?: string;
+  serviceOrAgency?: string;
+  admins?: PortfolioAdmins[];  
 }
 
 export interface EmailEntry {
