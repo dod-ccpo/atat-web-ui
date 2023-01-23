@@ -51,7 +51,7 @@
       role="button"
       class="mt-10"
     >
-      <span>Toggle Developer Navigation {{ developerNavState }}</span>
+      <span>Turn Developer Navigation {{ developerNavState }}</span>
     </v-btn>    
   </nav>
 </template>

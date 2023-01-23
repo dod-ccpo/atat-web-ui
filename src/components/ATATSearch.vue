@@ -1,5 +1,5 @@
 <template>
-  <div id="SearchWrapper" :style="'width: ' + wrapperWidth">
+  <div id="SearchWrapperX" :style="'width: ' + wrapperWidth + '; max-width: ' + wrapperWidth">
 
     <div class="d-flex align-center mb-2" v-if="label">
       <label
@@ -45,6 +45,7 @@
         @click="search"
         @keydown.enter="search"
         @keydown.space="search"
+        :disabled="searchButtonDisabled || searchDisabled"
       >
         <ATATSVGIcon 
           v-if="!buttonText"
@@ -165,6 +166,8 @@ export default class ATATSearch extends Vue {
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop({ default: "" }) private searchType?: string;
   @Prop({ default: "" }) private buttonText?: string;
+  @Prop({ default: false }) private searchButtonDisabled?: boolean;
+
 
   @PropSync("value", { default: "" }) public _value!: string;
 
@@ -182,6 +185,18 @@ export default class ATATSearch extends Vue {
   private showErrorAlert = false;   // for search simulation
   private maskObj: mask = {};
 
+  private searchDisabled = true;
+
+  @Watch("_value")
+  public valueChanged(newVal: string): void {
+    debugger;
+    const hasErrors = this.$refs.atatSearchInput?.errorBucket.length > 0
+    const hasContent = newVal.length > 0;
+    this.searchDisabled = hasErrors || !hasContent;
+  }
+
+
+
   @Watch("errorMessages")
   private errorMessagesChanged(newVal: Array<unknown>): void {
     this.showHelpText = newVal.length === 0 && !this.showLoader;
@@ -198,6 +213,7 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
+    debugger;
     if (this.isSimulation && this.errorMessages.length === 0 && this._value) {
 
       // simulate success on first search, error on second.
@@ -216,6 +232,8 @@ export default class ATATSearch extends Vue {
     
     if(this.searchType === "EDA"){
 
+      // EJY - FIRST, check to see if TO is already associated with a portfolio
+      debugger
       try {
 
         this.showLoader = true;

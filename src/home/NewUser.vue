@@ -66,32 +66,38 @@
                 <v-icon v-if="showNewFeatures">expand_more</v-icon>
                 <span><strong>Stay tuned for upcoming features! Read more</strong></span>
               </v-btn>
-              <div v-if="showNewFeatures">
-                <br />
-                <p class="mb-0">
-                  Soon, you will be able to:
-                </p>
-                <br/>
-                <v-list class="_atat-stepper">
-                  <v-list-item-group >
-                    <v-list-item>
-                      <span class="_step-circle">1</span>
-                      <v-list-item-content>
-                        Review and digitally sign documents prior to
-                        submission.
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item>
-                      <span class="_step-circle">2</span>
-                      <v-list-item-content>
-                        Submit your completed package directly within
-                        DAPPS, if you are using Defense Information
-                        Technology Contracting Organization (DITCO).
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </div>
+              <v-expand-transition>
+                <div v-if="showNewFeatures">
+                  <p class="mt-4 mb-0">
+                    Soon, you will be able to:
+                  </p>
+                  <v-list class="_atat-stepper">
+                    <v-list-item-group >
+                      <v-list-item>
+                        <span class="_step-circle">1</span>
+                        <v-list-item-content>
+                          Review and digitally sign documents prior to
+                          submission.
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-list-item>
+                        <span class="_step-circle">2</span>
+                        <v-list-item-content>
+                          <p class="font-size-16 mb-4">
+                            Submit your completed package directly within
+                            DAPPS, if you are using Defense Information
+                            Technology Contracting Organization (DITCO).
+                          </p>
+                          <p class="font-size-16 mb-0">
+                            Or, download your finalized documents and submit
+                            them to your Contracting Office for processing.
+                          </p>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </v-list>
+                </div>
+              </v-expand-transition>
             </div>
 
           </v-col>
@@ -107,22 +113,9 @@
         <h1 class="text-primary large text-center mb-10">
           Provision your cloud resources
         </h1>
-        
-        <ATATAlert
-          type="info"
-        >
-          <template slot="content">
-            <span class="text-center">
-              Cloud account provisioning is not available at this time. 
-              This feature will be coming soon.
-            </span>
-          </template>
-        </ATATAlert>
-
-        <br /><br/>
         <v-row>
           <v-col class="pr-10">
-            <p class="mt-5">
+            <p class="mt-8">
               Whether you used DAPPS to generate your acquisition package or obtained 
               a JWCC task order from your own Contracting Office, the Account Tracking 
               and Automation Tool (ATAT) will enable you to provision accounts and 
@@ -134,6 +127,16 @@
               understanding of how your team is using cloud to help you manage 
               spending throughout the duration of your task order.
             </p>
+
+            <v-btn
+              id="ProvisionButton"
+              class="primary mb-4 mt-4"
+              @click="OpenTOSearchModal"
+              @keydown.enter="OpenTOSearchModal"
+              @keydown.space="OpenTOSearchModal"
+            >
+              Provision new cloud resources
+            </v-btn>            
 
           </v-col>
           <v-col class="pl-10">
@@ -203,13 +206,17 @@ export default class NewUser extends Vue {
     `Initiate provisioning and ATAT will automate the creation of your account 
      and environment with your Cloud Service Provider (CSP).`,
     `Track your cloud usage and manage spending throughout the duration of 
-     the task order`,
+     the task order.`,
   ];
 
   public showNewFeatures = false;
 
   public toggleShowNewFeatures(): void {
     this.showNewFeatures = !this.showNewFeatures;
+  }
+
+  public OpenTOSearchModal(): void {
+    // TODO task AT-8405
   }
 
 }

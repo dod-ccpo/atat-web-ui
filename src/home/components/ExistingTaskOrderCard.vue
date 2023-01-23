@@ -1,37 +1,34 @@
 <template>
   <v-card id="StartBuildingPackageCard" class="text-center">
-    <h2 class="h1 text-primary mb-3">
+    <h2 class="h1 text-primary mb-5">
       Already have an existing JWCC task order?
     </h2>
-    <p>
-      We’ll gather a few details about your task order and start provisioning 
-      your cloud resources with your CSP.
+    <p class="mb-8">
+      We’ll gather details about your task order to start provisioning your cloud resources.
     </p>
 
     <ATATSearch 
       buttonText="Search"
+      id="TOSearchNewUser"
+      :value.sync="TONumber"
       placeHolder="Search Task Order Number"
-      class="mb-4 d-inline-block"
+      class="mb-0 d-inline-block"
+      helpText="Format: Must be 13 or 19 digits"
+      :rules="rules"
+      searchType="EDA"
+      wrapperWidth="320px"
+      :validateOnBlur="true"
+      :searchButtonDisabled="searchButtonDisabled"   
     />
-
-    <v-btn 
-      id="LearnMoreTOSearch"
-      class="secondary"
-      @click="scrollToLearnMore"
-    >
-      Learn More
-    </v-btn>
 
   </v-card>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATSearch from "@/components/ATATSearch.vue";
-
-import { scrollToId } from "@/helpers";
 
 @Component({
   components: {
@@ -40,9 +37,20 @@ import { scrollToId } from "@/helpers";
 })
 
 export default class ExistingTaskOrderCard extends Vue {
+  public TONumber = "";
 
-  public scrollToLearnMore(): void {
-    scrollToId("SectionProvisionResources");
+  public rules = [
+    this.$validators.allowedLengths(
+      [13,19], 
+      'Your task order number must be either 13 or 19 characters.'
+    ),
+  ];
+
+  public searchButtonDisabled = true;
+
+  @Watch("TONumber")
+  public TONumberChanged(newVal: string): void {
+    this.searchButtonDisabled = newVal.length !== 13 && newVal.length !== 19;
   }
 
 }
