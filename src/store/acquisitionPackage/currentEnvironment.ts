@@ -336,7 +336,9 @@ export class CurrentEnvironmentStore extends VuexModule {
       this.mapCurrentEnvironmentFromResponse(currentEnvironment);
       await this.setCurrentEnvironment(currentEnvironment);
       if(currentEnvironment.env_instances.length > 0){
-        const queryString = "sys_id=" + currentEnvironment.env_instances.join("^ORsys_id=");
+        const queryString = "sys_id=" 
+          + currentEnvironment.env_instances.join("^ORsys_id=")
+          + "^ORDERBYinstance_number";
 
         const config: AxiosRequestConfig = {
           params: {

@@ -1036,7 +1036,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async loadDOWfromAcquistionPackageId(sysId: string): Promise<void> {
     const requestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_query: "^acquisition_packageIN" + sysId,
+        sysparm_query: "^acquisition_packageIN" + sysId + "^ORDERBYinstance_number",
         sysparm_display_value: "false"
       }
     };
