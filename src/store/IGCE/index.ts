@@ -11,9 +11,9 @@ import { AxiosRequestConfig } from "axios";
 import {
   IgceEstimateDTO,
   RequirementsCostEstimateFlat,
-  RequirementsCostEstimateDTO, 
+  RequirementsCostEstimateDTO,
   ContractTypeDTO,
-  TrainingEstimateDTO
+  TrainingEstimateDTO, ReferenceColumn, TravelRequirementDTO
 } from "@/api/models";
 import {currencyStringToNumber} from "@/helpers";
 
@@ -53,7 +53,7 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
     training: [],
     travel: {
       option: "",
-      estimated_values: []
+      estimated_values: ""
     }
   }
 }
@@ -62,16 +62,34 @@ export const defaultTrainingEstimate = (): TrainingEstimate => {
   return {
     costEstimateType: "",
     estimate: {
-      estimated_values: [],
+      estimated_values: "",
     },
     estimatedTrainingPrice: "",
     trainingOption: ""
   };
 }
 
+export const defaultIgceEstimate = (): IgceEstimateDTO => {
+  return {
+    acquisition_package: "",
+    classification_instance: "",
+    classification_level: "",
+    contract_type: "",
+    cross_domain_solution: "",
+    cross_domain_pair: "",
+    description: "",
+    environment_instance: "",
+    title: "",
+    unit: "",
+    unit_price: null,
+    unit_quantity: ""
+  }
+}
+
 export interface CostEstimate {
   labelShort: string,
-  sysId: string,
+  classificationInstanceSysId: string,
+  classificationLevelSysId: string,
   offerings: Record<string, string|string[]|boolean|number|null>[]
 }
 
@@ -114,12 +132,26 @@ export class IGCEStore extends VuexModule {
       }
     };
     const trainingEstimates = await api.trainingEstimateTable.getQuery(requestConfig);
-
+    
     trainingEstimates.forEach(item => {
+      const estimatesFormatted = item.training_estimated_values?.replaceAll("{", "")
+        .replaceAll("}", "").replaceAll("\"", "").split(",");
+      const estimates:Record<string, string>[] = [];
+      estimatesFormatted?.forEach(
+        (item) => {
+          const est = item.split(":");
+          if (est[0] !== ""){
+            estimates.push({[est[0]] : est[1]})
+          }
+        }
+      )
       const trainingItem: TrainingEstimate = {
         sysId: item.sys_id,
         costEstimateType: item.training_unit,
-        estimate: JSON.parse(item.training_estimated_values),
+        estimate: {
+          option: estimates.length>1 ? "MULTIPLE" : "SINGLE",
+          estimated_values: JSON.stringify(estimates)
+        },
         estimatedTrainingPrice: item.estimated_price_per_training_unit,
         trainingOption: item.training_option as SingleMultiple
       };
@@ -149,16 +181,14 @@ export class IGCEStore extends VuexModule {
   public async saveTrainingEstimate(value: TrainingEstimate): Promise<string> {
     let objSysId = "";
 
-    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id;
-
     const trainingDTOItem: TrainingEstimateDTO = {
-      acquisition_package: packageId || "",
+      acquisition_package: AcquisitionPackage.packageId,
       estimated_price_per_training_unit: value.estimatedTrainingPrice,
       training_option: value.trainingOption,
-      training_estimated_values: JSON.stringify(value.estimate),
+      training_estimated_values: value.estimate.estimated_values || "",
       training_unit: value.costEstimateType
     };
-
+    
     if(value.sysId){
       await api.trainingEstimateTable.update(
         value.sysId,
@@ -264,7 +294,7 @@ export class IGCEStore extends VuexModule {
       training: rceFlat.training ? JSON.parse(rceFlat.training) : [],
       travel: {
         option: rceFlat.travel_option,
-        estimated_values: rceFlat.travel_estimated_values?.split(",")
+        estimated_values: rceFlat.travel_estimated_values,
       },
       sys_created_by: rceFlat.sys_created_by,
       sys_created_on: rceFlat.sys_created_on,
@@ -324,8 +354,7 @@ export class IGCEStore extends VuexModule {
       surge_requirement_capabilities: rceTree.surge_requirements.capabilities,
       training: JSON.stringify(rceTree.training ? rceTree.training : []),
       travel_option: rceTree.travel.option,
-      travel_estimated_values: rceTree.travel.estimated_values
-        ?.map(currency => currencyStringToNumber(currency)).toString(),
+      travel_estimated_values: rceTree.travel.estimated_values || "",
       sys_created_by: rceTree.sys_created_by,
       sys_created_on: rceTree.sys_created_on,
       sys_id: rceTree.sys_id,
@@ -384,6 +413,179 @@ export class IGCEStore extends VuexModule {
   }
 
   /**
+   * Creates the IGCEEstimate table record by sticking in the acquisition package sys_id to
+   * the object that is passed in
+   */
+  @Action({rawError: true})
+  public async createIgceEstimateRecord(igceEstimateDTO: IgceEstimateDTO): Promise<void> {
+    let contractTypeChoice: IgceEstimateDTO["contract_type"] = "TBD";
+    const contractType: ContractTypeDTO = AcquisitionPackage.contractType as ContractTypeDTO;
+    if (contractType?.firm_fixed_price === "true") {
+      contractTypeChoice = "FFP";
+    } else if (contractType?.time_and_materials === "true") {
+      contractTypeChoice = "T&M";
+    }
+    await api.igceEstimateTable.create({...igceEstimateDTO,
+      acquisition_package: AcquisitionPackage.acquisitionPackage?.sys_id as string,
+      contract_type: contractTypeChoice});
+  }
+
+  /**
+   * This is expected to be called whenever a record gets created in one of the child
+   * tables of the Environment Instance table. Some child tables include "Current EI, Compute EI,
+   * Database EI, Cloud Support EI, Storage EI, General Xass EI, Estimated EI"
+   */
+  @Action({rawError: true})
+  public async createIgceEstimateEnvironmentInstance(
+    envInstanceRef: {
+      environmentInstanceSysId: string, 
+      classificationLevelSysId: string  | ReferenceColumn,
+      title: string,
+      description: string,
+      unit: string
+    }):
+    Promise<void> {
+    await this.createIgceEstimateRecord({...defaultIgceEstimate(),
+      environment_instance: envInstanceRef.environmentInstanceSysId,
+      classification_level: typeof envInstanceRef.classificationLevelSysId === "object"
+        ? envInstanceRef.classificationLevelSysId.value as string
+        : envInstanceRef.classificationLevelSysId as string,
+      title: envInstanceRef.title,
+      description: envInstanceRef.description,
+      unit: envInstanceRef.unit
+    });
+  }
+
+  /**
+   * This is expected to be called whenever a record gets created in the Classification Instance
+   * or one of its child tables.
+   */
+  @Action({rawError: true})
+  public async createIgceEstimateClassificationInstance(
+    classInstanceRef: {
+      classificationInstanceSysId: string, 
+      classificationLevelSysId: string  | ReferenceColumn
+      title: string,
+      description: string
+    }):
+    Promise<void> {
+    await this.createIgceEstimateRecord({...defaultIgceEstimate(),
+      classification_instance: classInstanceRef.classificationInstanceSysId,
+      classification_level: typeof classInstanceRef.classificationLevelSysId === "object"
+        ? classInstanceRef.classificationLevelSysId.value as string
+        : classInstanceRef.classificationLevelSysId as string,
+      title: classInstanceRef.title,
+      description: classInstanceRef.description,
+      unit: "month"
+    });
+  }
+
+  /**
+   * This is expected to be called whenever a record gets created in the Cross Domain Solution
+   * table and if the "cross_domain_solution_required" is "YES"
+   *
+   * Since the user can toggle between "YES" and "NO", to avoid several other edge cases, it's
+   * best to the check if a CDS record exists, before creating.
+   */
+  @Action({rawError: true})
+  public async syncUpIgceEstimateCDS(cdsRef: {
+      cdsSysId: string, 
+      crossDomainPairTypeList: string[],
+      description: string
+    }):
+    Promise<void> {
+    const igceEstimateList = await api.igceEstimateTable.getQuery({
+      params: {
+        sysparm_query: "^cross_domain_solution" + cdsRef.cdsSysId
+      }
+    });
+    const createList = cdsRef.crossDomainPairTypeList
+      .filter(cdPairType => (igceEstimateList
+        .map(igceEstimate => igceEstimate.cross_domain_pair).indexOf(cdPairType) === -1));
+    const deleteList = igceEstimateList.filter(igceEstimate =>
+      (cdsRef.crossDomainPairTypeList.indexOf(igceEstimate.cross_domain_pair as string) === -1))
+    // updates to igce estimate record is irrelevant in the context of DOW updates
+    const apiCallList: Promise<IgceEstimateDTO | void>[] = [];
+    createList.forEach(markedForCreate => {
+      apiCallList.push(this.createIgceEstimateRecord({...defaultIgceEstimate(),
+        cross_domain_solution: cdsRef.cdsSysId,
+        cross_domain_pair: markedForCreate,
+        title: "Cross Domain Solution (CDS)",
+        description: cdsRef.description
+      }));
+    })
+    deleteList.forEach(markedForDelete => {
+      apiCallList.push(this.deleteIgceEstimateCDS(markedForDelete.sys_id as string));
+    })
+    await Promise.all(apiCallList);
+  }
+
+  /**
+   * Performs a query on the request config and deletes the first match from the IGCE Estimate
+   * table. It is expected to always have a single match at most. If there are more than
+   * one matching records, then there is an issue else where, that is creating multiple
+   * records of the same instance
+   */
+  @Action({rawError: true})
+  public async deleteIgceEstimateByRequestConfig(deleteRequestConfig: AxiosRequestConfig):
+    Promise<void> {
+    const igceEstimateList = await api.igceEstimateTable.getQuery(deleteRequestConfig);
+    if (igceEstimateList?.length > 0) {
+      // TODO: double check which option is better. For CDS there could be multiple records
+      //  per cross domain. So, may need to delete more than one record when user toggles from
+      //  "YES" to a "NO"
+      // await api.travelRequirementTable.remove(igceEstimateList[0].sys_id as string);
+      const apiCallList: Promise<void>[] = [];
+      igceEstimateList.forEach(igceEstimate => {
+        apiCallList.push(api.igceEstimateTable.remove(igceEstimate.sys_id as string));
+      })
+      await Promise.all(apiCallList);
+    }
+  }
+
+  /**
+   * This is expected to be called whenever a record gets deleted from Environment Instance
+   * table and its child tables.
+   */
+  @Action({rawError: true})
+  public async deleteIgceEstimateEnvironmentInstance(environmentInstanceSysId: string):
+    Promise<void> {
+    await this.deleteIgceEstimateByRequestConfig({
+      params: {
+        sysparm_query: "^environment_instanceIN" + environmentInstanceSysId
+      }
+    })
+  }
+
+  /**
+   * This is expected to be called whenever a record gets deleted from Classification Instance
+   * table and any of its child tables.
+   */
+  @Action({rawError: true})
+  public async deleteIgceEstimateClassificationInstance(classificationInstanceSysId: string):
+    Promise<void> {
+    await this.deleteIgceEstimateByRequestConfig({
+      params: {
+        sysparm_query: "^classification_instanceIN" + classificationInstanceSysId
+      }
+    })
+  }
+
+  /**
+   * This is expected to be called whenever a record gets deleted from Cross Domain Solution
+   * table and also if the "cross_domain_solution_required" is "NO" or "UNSELECTED"
+   */
+  @Action({rawError: true})
+  public async deleteIgceEstimateCDS(cdsSysId: string):
+    Promise<void> {
+    await this.deleteIgceEstimateByRequestConfig({
+      params: {
+        sysparm_query: "^cross_domain_solutionIN" + cdsSysId
+      }
+    })
+  }
+
+  /**
    * Loads the igce estimate data using the acquisition package sys id.
    * And then sets the context such that the data could be retrieved using the
    * getters (getIgceCostEstimate)
@@ -405,23 +607,9 @@ export class IGCEStore extends VuexModule {
    * a callout to save and the sets the igce estimate to this store.
    */
   @Action({rawError: true})
-  public async setCostEstimate(value: CostEstimate[]): Promise<void> {
+  public async setCostEstimate(costEstimatList: CostEstimate[]): Promise<void> {
+    await this.saveIgceEstimates(costEstimatList);
     const aqPackageSysId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
-    // const crossDomainSysId = ClassificationRequirements.cdsSolution?.sys_id as string;
-    let contractTypeChoice: IgceEstimateDTO["contract_type"] = "TBD";
-    const contractType: ContractTypeDTO = AcquisitionPackage.contractType as ContractTypeDTO;
-    if (contractType?.firm_fixed_price === "true") {
-      contractTypeChoice = "FFP";
-    } else if (contractType?.time_and_materials === "true") {
-      contractTypeChoice = "T&M";
-    }
-
-    await this.saveIgceEstimates(
-      {
-        costEstimatList: value,
-        aqPackageSysId: aqPackageSysId,
-        contractTypeChoice: contractTypeChoice
-      });
     await this.loadIgceEstimateByPackageId(aqPackageSysId);
   }
 
@@ -430,38 +618,24 @@ export class IGCEStore extends VuexModule {
     this.igceEstimateList = igceEstimateList;
   }
 
+  /**
+   * Updates the IGCE Estimate records based on the values entered and or updated for each of the
+   * IGCE record on the IGCE Estimate page.
+   */
   @Action({rawError: true})
-  public async saveIgceEstimates(saveIgceObject: {
-    costEstimatList: CostEstimate[],
-    aqPackageSysId: string,
-    contractTypeChoice: "" | "FFP" | "T&M" | "TBD"
-  }): Promise<void>{
+  public async saveIgceEstimates(costEstimatList: CostEstimate[]): Promise<void>{
     const apiCallList: Promise<IgceEstimateDTO>[] = [];
-    saveIgceObject.costEstimatList.forEach(costEstimate => {
+    costEstimatList.forEach(costEstimate => {
       costEstimate.offerings.forEach(offering => {
         const igceEstimateSysId = offering.sysId as string;
         const igceEstimate: IgceEstimateDTO = {
-          acquisition_package: saveIgceObject.aqPackageSysId,
-          classification_level: offering.sysIdClassificationLevel ?
-            offering.sysIdClassificationLevel as string : "",
-          classification_instance: offering.sysIdClassificationInstance ?
-            offering.sysIdClassificationInstance as string : "",
-          environment_instance: offering.sysIdEnvironmentInstance ?
-            offering.sysIdEnvironmentInstance as string : "",
-          cross_domain_solution: offering.sysIdCDS ?
-            offering.sysIdCDS as string : "",
-          contract_type: saveIgceObject.contractTypeChoice,
           description: offering.IGCE_description as string,
           title: offering.IGCE_title as string,
           unit: offering.unit as string,
           unit_price: offering.monthly_price as number,
           unit_quantity: offering.unit_quantity as string
         }
-        if(igceEstimateSysId && igceEstimateSysId.length > 0) {
-          apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate));
-        } else {
-          apiCallList.push(api.igceEstimateTable.create(igceEstimate));
-        }
+        apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate));
       })
     })
     await Promise.all(apiCallList);

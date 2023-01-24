@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Tracing } from "trace_events";
 import { 
   EnvironmentInstanceLocation,
   EnvironmentInstanceUsage,
@@ -13,7 +14,8 @@ import {
   YesNo,
   SingleMultiple,
   EstimateOptionValue,
-  TrainingEstimate
+  TrainingEstimate,
+  EstimateOptionValueObjectArray
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -138,7 +140,10 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
 }
 
 export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   instance_location: EnvironmentInstanceLocation;
+  instance_number: number,
+  instance_name: string,
   deployed_regions?: string[];
   classification_level: string; // classification level sys_id
   current_usage_description: EnvironmentInstanceUsage;
@@ -725,7 +730,7 @@ export interface UserDTO extends BaseTableDTO {
 export interface TrainingEstimateDTO extends BaseTableDTO{
   acquisition_package: string;
   estimated_price_per_training_unit: string;
-  training_estimated_values: string;
+  training_estimated_values?: string;
   training_option: string; //SINGLE or MULTIPLE
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
 }
@@ -742,7 +747,7 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   architectural_design_current_environment: EstimateOptionValue;
   architectural_design_performance_requirements: EstimateOptionValue;
   training: TrainingEstimateDTO[];
-  travel: EstimateOptionValue;
+  travel: EstimateOptionValueObjectArray;
   surge_requirements: {
     capabilities: YesNo;
     capacity: number | null;
@@ -820,12 +825,13 @@ export interface RequirementsCostEstimateFlat extends BaseTableDTO{
 }
 
 export interface IgceEstimateDTO extends BaseTableDTO {
-  acquisition_package: ReferenceColumn | string;
-  classification_level: ReferenceColumn | string;
-  classification_instance: ReferenceColumn | string;
-  environment_instance: ReferenceColumn | string;
-  cross_domain_solution: ReferenceColumn | string;
-  contract_type: "" | "FFP" | "T&M" | "TBD";
+  acquisition_package?: ReferenceColumn | string;
+  classification_level?: ReferenceColumn | string;
+  classification_instance?: ReferenceColumn | string;
+  environment_instance?: ReferenceColumn | string;
+  cross_domain_solution?: ReferenceColumn | string;
+  cross_domain_pair?: string; // "U_TO_S", "S_TO_U". Only these are stored in CDS table not sys_ids
+  contract_type?: "" | "FFP" | "T&M" | "TBD";
   title: string;
   description: string;
   unit: string;

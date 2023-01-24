@@ -1,5 +1,5 @@
 <template>
-  <fieldset class="no-border">
+  <fieldset class="no-border" >
     
     <template v-if="!isMultiple">
       <div class="d-flex align-center mb-2">
@@ -21,6 +21,7 @@
         :isCurrency="textboxSuffix === ''"
         :appendText="textboxSuffix !== '' ? textboxSuffix : null"
         :tooltipText="showSinglePeriodTooltip ? singlePeriodTooltipText : null"
+        @blur="setsysIdArrayStringified(_values[0], 'PER_PERIOD')"
         :showErrorMessages="true"
         :rules="[
           $validators.required(
@@ -59,6 +60,7 @@
             class="ml-5"
             :alignRight="true"
             :value.sync="_values[idx]"
+            @blur="setsysIdArrayStringified(_values[idx], period.sys_id)"
             :isCurrency="textboxSuffix === ''"
             :appendText="textboxSuffix !== '' ? textboxSuffix : null"
             :showErrorMessages="true"
@@ -68,6 +70,7 @@
               ),
             ]"
           />
+          <!-- todo change that back to :number -->
         </div>
       </div>
     </template>
@@ -104,6 +107,40 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
   @Prop() private periods!: PeriodDTO[];
 
   @PropSync("values", {default: () => []}) private _values!: string[];
+
+  /** 
+   * Returns [{periodSysId: value}] 
+  */
+  @PropSync("sysIdValueArray", {default: () => []}) 
+    _sysIdValueArray!:Record<string, string>[];
+
+  /**
+   * @params - val: string
+   *         - sysID to be added: string
+   * 
+   * 1. formats array to be stringified 
+   * 2. sets this._sysIdValueArray and modifies array values as necessary
+   * Sometimes necessary for the backend value
+   * 
+   * Sets this._sysIdValueArray
+   */
+  private setsysIdArrayStringified(val: string, sysId: string): void{
+    if (!this.isMultiple){
+      this._sysIdValueArray = [];
+    }
+
+    if (val && parseInt(val)>0 ){
+      const existingKeyIndex = this._sysIdValueArray.findIndex(
+        obj => Object.keys(obj)[0] === sysId);
+
+      let obj:Record<string, string>= {};
+      obj[sysId] = val;
+      
+      existingKeyIndex>-1 
+        ? this._sysIdValueArray[existingKeyIndex] = obj
+        : this._sysIdValueArray.push(obj);
+    }
+  }
 
   @Watch("isMultiple")
   public isMultipleChanged(newValue: boolean): void {

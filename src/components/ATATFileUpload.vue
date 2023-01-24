@@ -21,7 +21,7 @@
         ]"
         multiple
         prepend-icon=""
-        accept="application/pdf,application/vnd.ms-excel, .xlsx"
+        accept="application/pdf,application/vnd.ms-excel, .xlsx, .doc, .docx"
         :truncate-length="truncateLength"
         :clearable="true"
         @change="fileUploadChanged"
@@ -85,7 +85,7 @@
       </v-file-input>
       <ATATErrorValidation
         class="file-upload-validation-messages"
-        :showAllErrors="true"
+        :showAllErrors="showAllErrors"
         :errorMessages="errorMessages"
       />
     </div>
@@ -141,6 +141,8 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: true}) private multiplesAllowed!: boolean;
+  @Prop({ default: true}) private showAllErrors?: boolean;
+  @Prop() private restrictedNames?: string[];
   @Prop({ default: "required"}) private requiredMessage!: string;
   @Prop({ default: 20 }) private maxNumberOfFiles!: number;
   @Prop({ default: false }) private startCompact?: boolean;
@@ -188,7 +190,7 @@ export default class ATATFileUpload extends Vue {
   }
 
   get setRules():((v: string) => string | true | undefined)[] {
-    return this._validFiles.length>0 ? [] : this._rules;
+    return this._validFiles.length>0 && this._invalidFiles.length === 0 ? [] : this._rules;
   }
 
   //Events
@@ -288,6 +290,8 @@ export default class ATATFileUpload extends Vue {
    */
   private removeInvalidFiles(files: FileList): void {
     let _validFiles = Array.from(files || []).filter((vFile) => {
+
+      const isRestrictedName = this.restrictedNames?.includes(vFile.name)
       const thisFileFormat = vFile.name.substring(
         vFile.name.lastIndexOf(".") + 1
       );
@@ -304,6 +308,7 @@ export default class ATATFileUpload extends Vue {
       });
       const isFileSizeValid = vFile.size < this.maxFileSizeInBytes;
 
+
       //log Invalid Files
       if (!isValidFormat) {
         this.logInvalidFiles(vFile, doesFileExist);
@@ -314,8 +319,11 @@ export default class ATATFileUpload extends Vue {
       if (!isFileSizeValid) {
         this.logInvalidFiles(vFile, doesFileExist);
       }
+      if(isRestrictedName){
+        this.logInvalidFiles(vFile, doesFileExist);
+      }
       
-      return isValidFormat && !doesFileExist && isFileSizeValid;
+      return isValidFormat && !doesFileExist && isFileSizeValid && !isRestrictedName;
     });
 
    

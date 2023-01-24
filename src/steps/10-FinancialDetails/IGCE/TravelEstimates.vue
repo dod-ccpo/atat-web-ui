@@ -18,6 +18,7 @@
               id="TravelEstimates"
               legend="How do you want to estimate your travel needs?"
               :items="travelEstimateOptions"
+              @radioButtonClicked="clearSelectedValues"
               :value.sync="ceilingPrice"
               :rules="[$validators.required('Please select an option')]"
             />
@@ -54,16 +55,17 @@
                     v-for="(item, index) in calloutData"
                     :key="index"
                   >
-                    <v-expansion-panel-header :id="item.id + '_Button'" class="no-hover">
-                      <strong>{{ item.period }}</strong> 
+                    <v-expansion-panel-header
+                      :id="item.id + '_Button'"
+                      class="no-hover"
+                    >
+                      <strong>{{ item.period }}</strong>
                       <span class="font-weight-400">
                         ({{ pluralizeTrip(item.totalNumberOfTripsPerPeriod) }})
                       </span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content :id="item.id + '_Content'">
-                      <div 
-                        v-for="(trip, tripIdx) in item.trips" 
-                        :key="tripIdx">
+                      <div v-for="(trip, tripIdx) in item.trips" :key="tripIdx">
                         <div v-html="trip" class="d-flex align-top"></div>
                       </div>
                     </v-expansion-panel-content>
@@ -77,14 +79,14 @@
 
         <div v-if="ceilingPrice !== ''">
           <ATATSingleAndMultiplePeriods
-            :periods.sync="periods"
+            :periods="periods"
             :isMultiple="ceilingPrice === 'MULTIPLE'"
-            :values.sync="estimatedTravelCosts"
-            singlePeriodTooltipText=
-              "Customize a price estimate for each performance period specified in the travel 
-              summary."
+            singlePeriodTooltipText="Customize a price estimate for each performance 
+              period specified in the travel summary."
             singlePeriodErrorMessage="Enter your estimated travel costs per period"
             multiplePeriodErrorMessage="Enter your estimated travel costs for this period"
+            :values.sync="valueArray"
+            :sysIdValueArray.sync="sysIdValueArray"
           ></ATATSingleAndMultiplePeriods>
         </div>
       </v-col>
@@ -96,6 +98,7 @@
 import {
   Checkbox,
   EstimateOptionValue,
+  EstimateOptionValueObjectArray,
   RadioButton,
   SingleMultiple,
   TravelCalloutDataItem,
@@ -112,6 +115,7 @@ import {
   createPeriodCheckboxItems,
   hasChanges,
   setItemToPlural,
+  convertEstimateData
 } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
@@ -131,16 +135,18 @@ import _ from "lodash";
 export default class TravelEstimates extends Mixins(SaveOnLeave) {
   private periods: PeriodDTO[] | null = [];
   private ceilingPrice: SingleMultiple | undefined = "";
-  private estimatedTravelCosts = [""];
+  private estimatedTravelCosts = "";
   private percentages = [""];
   private numberOfAllTrips = 0;
   private selectedPeriods: Checkbox[] = [];
   private travelDOWData: TravelSummaryTableData[] = [];
   private calloutData: TravelCalloutDataItem[] = [];
-  public savedData: EstimateOptionValue = {
+  public savedData: EstimateOptionValueObjectArray = {
     option: "",
-    estimated_values: [],
+    estimated_values: "",
   };
+  public sysIdValueArray: Record<string, string>[] = [];
+  public valueArray: string[] = [];
   
   private travelEstimateOptions: RadioButton[] = [
     {
@@ -157,39 +163,71 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     },
   ];
   
-  get currentData(): EstimateOptionValueDTO {
+  get currentData(): EstimateOptionValueObjectArray{
     return {
       option: this.ceilingPrice || "",
       estimated_values: this.estimatedTravelCosts,
     };
   }
 
+
+
   @Watch("ceilingPrice")
   protected changeSelection(newVal: string): void {
     if (newVal !== this.savedData.option) {
-      this.estimatedTravelCosts = [];
+      this.clearSelectedValues();
     }
   }
 
+  private clearSelectedValues():void {
+    this.sysIdValueArray = [];
+    this.valueArray = [];
+  }
+
   private hasChanged(): boolean {
-    console.log("Current Data");
-    console.log(this.currentData);
-    console.log("Saved Data");
-    console.log(this.savedData);
     return hasChanges(this.currentData, this.savedData);
   }
 
   private async mounted(): Promise<void> {
-    await this.loadOnEnter();
     this.periods = Periods.periods;
+    await this.loadOnEnter();
     await this.loadDOWTravelData();
   }
 
   private async loadOnEnter(): Promise<void> {
-    const store = await IGCEStore.getRequirementsCostEstimate();
-    this.savedData = _.cloneDeep(store.travel);
-    this.ceilingPrice = store.travel.option
-    this.estimatedTravelCosts = store.travel.estimated_values;
+    const savedRCE = await IGCEStore.getRequirementsCostEstimate();
+    this.savedData = _.cloneDeep(savedRCE.travel);
+    this.$nextTick(() => {
+      if(this.savedData.estimated_values){
+        this.ceilingPrice = this.savedData.option
+        const scrubbedEstimates =
+            (this.savedData.estimated_values?.replaceAll("\\", "") || "");
+        const estValues = JSON.parse(scrubbedEstimates);     
+        this.estimatedTravelCosts = scrubbedEstimates;
+
+        /** ON first component load instanceData.estimate.option is an []
+           *  OTHERWISE instanceData.estimate.option is an {}
+           * 
+           *  code below accommodates for both [] && {}
+          */
+        let hasEstimates = false;
+        if (Array.isArray(estValues) && estValues.length>0){
+          this.currentData.option = 
+              Object.keys(estValues[0])[0].toUpperCase() === "PER_PERIOD" 
+                ? "SINGLE" : "MULTIPLE";
+          hasEstimates = true;
+        } else if (estValues && Object.keys(estValues).length > 0){
+          this.currentData.option = 
+              Object.keys(estValues)[0].toUpperCase() === "PER_PERIOD" 
+                ? "SINGLE" : "MULTIPLE";
+          hasEstimates = true;
+        }
+
+        if (hasEstimates){
+          this.setValueArray(estValues);
+        }
+      }
+    })
   }
 
   protected async loadDOWTravelData(): Promise<void> {
@@ -244,7 +282,53 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     return numberOfTrips + " " + setItemToPlural(numberOfTrips, "trip");
   }
 
+  /**
+   * iterate through periods to ensure they are in chronogical order 
+   * based on period.sys_ids
+   * 
+   * sets this.Value Array with correctly ordered period/valus 
+   */
+  public setValueArray(estValues: Record<string, string>): void{
+    const isSingle = this.currentData.option === "SINGLE";
+
+    if (Array.isArray(estValues)){ //isArray
+      this.sysIdValueArray = estValues;
+      if (isSingle){
+        this.valueArray.push(Object.values(estValues[0])[0] as string)
+      }else{
+        this.periods?.sort().forEach(
+          (p) => {
+            const obj = estValues.find(ev => Object.keys(ev)[0] === p.sys_id);
+            this.valueArray.push(obj[p.sys_id || 0]);
+          })
+      }
+    } else { //Is Object
+      if (isSingle){ // retrieving single value
+        this.sysIdValueArray.push(estValues);
+        this.valueArray.push(Object.values(estValues)[0])
+      } else {
+      this.periods?.sort().forEach(
+        (p) => {
+          for(const estVal in estValues){ // retreiving multiple values
+            if (estVal === p.sys_id){
+              this.sysIdValueArray.push({[estVal] : estValues[estVal]});
+              this.valueArray.push(estValues[estVal])
+            }
+          }
+        })
+      }
+    }
+  }
+  
+
   protected async saveOnLeave(): Promise<boolean> {
+    if (this.currentData.option?.toLowerCase()==="single"){
+      this.sysIdValueArray = [];
+      let obj:Record<string, string>= {};
+      obj["PER_PERIOD"] = this.valueArray[0];
+      this.sysIdValueArray.push(obj);
+    }
+    this.currentData.estimated_values = convertEstimateData(this.sysIdValueArray);
     if (this.hasChanged()) {
       const store = await IGCEStore.getRequirementsCostEstimate();
       store.travel = this.currentData;
