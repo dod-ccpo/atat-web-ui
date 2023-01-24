@@ -126,23 +126,13 @@
               understanding of how your team is using cloud to help you manage 
               spending throughout the duration of your task order.
             </p>
-             <v-btn
-              id="ProvisionNewCloudResources"
-              class="primary mb-4"
-             
-            >
-             <!-- @click="startProvisionWorkflow"
-              @keydown.enter="startProvisionWorkflow"
-              @keydown.space="startProvisionWorkflow" -->
-              Provision new cloud resources
-            </v-btn>
 
             <v-btn
               id="ProvisionButton"
               class="primary mb-4 mt-4"
-              @click="OpenTOSearchModal"
-              @keydown.enter="OpenTOSearchModal"
-              @keydown.space="OpenTOSearchModal"
+              @click="openTOSearchModal"
+              @keydown.enter="openTOSearchModal"
+              @keydown.space="openTOSearchModal"
             >
               Provision new cloud resources
             </v-btn>            
@@ -184,7 +174,6 @@ import NewAcquisitionCard from "./components/NewAcquisitionCard.vue";
 import ExistingTaskOrderCard from "./components/ExistingTaskOrderCard.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDivider from "@/components/ATATDivider.vue";
-import router from "@/router";
 
 @Component({
   components: {
@@ -201,8 +190,8 @@ export default class NewUser extends Vue {
     this.$emit("startNewAcquisition");
   }
 
-  public startProvisionWorkflow(searchString: string): void{
-    this.$emit("startProvisionWorkflow", searchString);
+  public startProvisionWorkflow(): void{
+    this.$emit("startProvisionWorkflow");
   }
 
   public prepareStepsText = [
@@ -229,7 +218,7 @@ export default class NewUser extends Vue {
     this.showNewFeatures = !this.showNewFeatures;
   }
 
-  public OpenTOSearchModal(): void {
+  public openTOSearchModal(): void {
     // TODO task AT-8405
   }
 

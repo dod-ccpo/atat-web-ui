@@ -185,13 +185,10 @@ export default class ATATSearch extends Vue {
 
   @Watch("_value")
   public valueChanged(newVal: string): void {
-    debugger;
     const hasErrors = this.$refs.atatSearchInput?.errorBucket.length > 0
     const hasContent = newVal.length > 0;
     this.searchDisabled = hasErrors || !hasContent;
   }
-
-
 
   @Watch("errorMessages")
   private errorMessagesChanged(newVal: Array<unknown>): void {
@@ -218,11 +215,12 @@ export default class ATATSearch extends Vue {
       debugger
       try {
         const response = await api.edaApi.search(this._value);
-        if (!response.success) {
+        debugger;
+        if (response.success !== undefined && !response.success) {
           this.$refs.atatSearchInput.errorBucket = [response.message || "Unknown error"];
         } else {
           await PortfolioStore.setPortfolioProvisioning(response);
-          // EJY push next page to router
+          this.$emit("search");
         }
       } catch (error) {
         this.showErrorAlert = true;
@@ -241,10 +239,9 @@ export default class ATATSearch extends Vue {
         this.showErrorAlert = true;
       } finally {
         this.showLoader = false;
+        this.$emit("search");
       }
     }
-
-    this.$emit("search");
 
   }
 

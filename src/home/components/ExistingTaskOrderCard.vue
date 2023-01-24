@@ -16,19 +16,17 @@
       searchType="EDA"
       wrapperWidth="320px"
       :validate-on-blur="true"
-      :value.sync="searchString"
+      :value.sync="TONumber"
+      :searchButtonDisabled="searchButtonDisabled"
       @search="startProvisionWorkflow"
-      :rules="[
-        $validators.required('Please enter your awarded task order number.'),
-        $validators.isMaskValid(
-          ['^([0-9A-Z]{13})([0-9A-Z]{4})?$'],
-          `Your task order number must be either 13 or 19 characters.`,
-          true
-        ),
-      ]"
+      :rules="rules"
+      :mask="['^([0-9A-Za-z]{13})([0-9A-Za-z]{6})?$']"
+      :isMaskRegex="true"
     />
+
   </v-card>
 </template>
+
 
 <script lang="ts">
 import Vue from "vue";
@@ -56,12 +54,14 @@ public TONumber = "";
 
   @Watch("TONumber")
   public TONumberChanged(newVal: string): void {
+    if (this.TONumber !== newVal.toUpperCase()) {
+      this.TONumber = newVal.toUpperCase();
+    }
     this.searchButtonDisabled = newVal.length !== 13 && newVal.length !== 19;
   }
-  public searchString = "";
 
   public async startProvisionWorkflow(): Promise<void> {
-    this.$emit("startProvisionWorkflow", this.searchString);
+    this.$emit("startProvisionWorkflow");
   }
 }
 </script>

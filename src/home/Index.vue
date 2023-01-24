@@ -98,7 +98,6 @@ import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 export default class Home extends Vue {
   public isNewUser = false;
-  public toSearchString = "";
   private currentUser: UserDTO = {};
 
   public get getCurrentUser(): UserDTO {
@@ -128,8 +127,7 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
-  public async startProvisionWorkflow(searchString: string): Promise<void>{
-    this.toSearchString = searchString;
+  public async startProvisionWorkflow(): Promise<void>{
     await Steps.setAltBackDestination(AppSections.sectionTitles.ProvisionWorkflow);
     await AcquisitionPackage.reset();
     this.$router.push({
