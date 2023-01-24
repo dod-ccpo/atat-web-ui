@@ -317,6 +317,7 @@ export class AcquisitionPackageStore extends VuexModule {
   allowDeveloperNavigation = false;
 
   contractingShop = "";
+  attachmentNames: string[] = []
 
   fundingRequestType: string | null =  null;
 

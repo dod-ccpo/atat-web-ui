@@ -279,6 +279,10 @@ export default class ReviewDocuments extends Vue {
     fundingRequestAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'8 (Funding)')
     })
+    this.packageCheckList.forEach(listItem => {
+      if(typeof listItem.itemName === "string")
+        AcquisitionPackage.attachmentNames.push(listItem.itemName)
+    })
 
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
   }
