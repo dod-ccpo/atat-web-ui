@@ -1,5 +1,5 @@
 <template>
-  <div id="SearchWrapperX" :style="'width: ' + wrapperWidth + '; max-width: ' + wrapperWidth">
+  <div id="SearchWrapper" :style="'width: ' + wrapperWidth + '; max-width: ' + wrapperWidth">
 
     <div class="d-flex align-center mb-2" v-if="label">
       <label
@@ -212,10 +212,8 @@ export default class ATATSearch extends Vue {
     this.showHelpText = false;
     
     if(this.searchType === "EDA"){
-      debugger
       try {
         const response = await api.edaApi.search(this._value);
-        debugger;
         if (response.success !== undefined && !response.success) {
           this.$refs.atatSearchInput.errorBucket = [response.message || "Unknown error"];
         } else {

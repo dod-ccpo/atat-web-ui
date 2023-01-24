@@ -7,12 +7,6 @@ import AddCSPAdmin from "@/home/AddCSPAdmin.vue";
 import ReadyToProvision from "@/home/ReadyToProvision.vue";
 import Provisioned from "@/home/Provisioned.vue";
 
-
-// import {
-//   AcorsRouteResolver,
- 
-// } from "./resolvers";
-
 export const provWorkflowRouteNames = {
   RouterIndex: "Router_Index",
   ProvisionWorkflow: "Provision_Workflow",
@@ -48,7 +42,6 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
         buttonText: "I need to enter a different task order number",
         buttonId: "EnterAnotherTaskOrderNumber",
         buttonClass: "secondary",
-        // name: routeNames.EvalPlanSummary, // TODO: restore when summaryu page added
       },
     ]
   },

@@ -32,7 +32,6 @@
                 target="_blank"
                 id="HelpfulResourcesButton"
                 class="secondary no-text-decoration"
-                @click="scrollToResources"
               >
                 Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
               </v-btn>
@@ -110,10 +109,6 @@ export default class Home extends Vue {
     await this.checkIfIsNewUser();
   }  
 
-  public scrollToResources(): void {
-    scrollToId("HelpfulResourcesCards");
-  }
-
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await AcquisitionPackage.reset();
@@ -153,9 +148,6 @@ export default class Home extends Vue {
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
   }
 
-  public provisionNewCloudResources(value?: string): void{
-    alert(value);
-  }
 
 }
 

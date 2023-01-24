@@ -14,14 +14,14 @@ export class EDAApi extends ApiBase{
     const custSupportUrl = "https://community.hacc.mil/s/contact?RequestTopic=DAPPS"
     const errorMessages: Record<string, string> = {
       "0001": `Task order is already funding a portfolio. If you need assistance, 
-        <a href="${custSupportUrl}" class="external-link" target="_blank">contact Customer 
-        Support</a>.`,
+        <a href="${custSupportUrl}" id="SupportLink" class="external-link" target="_blank">contact 
+        Customer Support</a>.`,
       "0002": `Unable to locate your task order. If you need assistance, 
-        <a href="${custSupportUrl}" class="external-link" target="_blank">contact Customer 
-        Support</a>.`,
+        <a href="${custSupportUrl}" id="SupportLink" class="external-link" target="_blank">contact 
+        Customer Support</a>.`,
       "0003": `Task order not awarded under JWCC Contract.
-        <a href="${custSupportUrl}" class="external-link" target="_blank">Contact Customer 
-        Support</a> for assistance.`
+        <a href="${custSupportUrl}" id="SupportLink" class="external-link" target="_blank">Contact 
+        Customer Support</a> for assistance.`
     }    
     try {
       const response = await this.post({
