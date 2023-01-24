@@ -164,16 +164,14 @@ export class IGCEStore extends VuexModule {
   public async saveTrainingEstimate(value: TrainingEstimate): Promise<string> {
     let objSysId = "";
 
-    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id;
-
     const trainingDTOItem: TrainingEstimateDTO = {
-      acquisition_package: packageId || "",
+      acquisition_package: AcquisitionPackage.packageId,
       estimated_price_per_training_unit: value.estimatedTrainingPrice,
       training_option: value.trainingOption,
       training_estimated_values: value.estimate.estimated_values || "",
       training_unit: value.costEstimateType
     };
-
+    
     if(value.sysId){
       await api.trainingEstimateTable.update(
         value.sysId,

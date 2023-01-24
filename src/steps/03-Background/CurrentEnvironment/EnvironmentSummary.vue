@@ -1,4 +1,3 @@
-
 <template>
   <v-form ref="form" class="mb-7" lazy-validation>
     <v-container fluid class="container-max-width">
@@ -279,8 +278,29 @@ export default class EnvironmentSummary extends Vue {
       await this.buildTableData();
       this.showDeleteInstanceDialog = false;
       this.instanceToDeleteSysId = "";
+      this.resetInstanceNumbers();
     })
   }
+
+  /**
+   * when an item is deleted, both the instance_number and instance_name need to be reset
+   * InstanceNumbers to accurately reflect the new dataset after deletion.
+   * 
+   * For instance, if instance 2 was deleted from instances [1,2,3] then the new dataset is [1,2] &
+   * the database data should reflect that.
+   */
+  private resetInstanceNumbers(): void {
+    this.envInstances.forEach(async (instance)=>{
+      // eslint-disable-next-line camelcase
+      instance.instance_number = this.tableData.find(
+        id => id.instanceSysId === instance.sys_id
+      )?.instanceNumber || 0;
+      // eslint-disable-next-line camelcase
+      instance.instance_name = "Instance #" + instance.instance_number;
+      await CurrentEnvironment.saveCurrentEnvironmentInstance(instance);
+    });
+  }
+
 
   public async validateInstance(
     instance: CurrentEnvironmentInstanceDTO,

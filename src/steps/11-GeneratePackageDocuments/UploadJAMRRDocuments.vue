@@ -83,6 +83,7 @@
               <ATATFileUpload
                 id="JAMRRFiles"
                 tabindex="-1"
+                :restrictedNames="restrictedNames"
                 :maxNumberOfFiles="2"
                 :maxFileSizeInBytes="maxFileSizeInBytes"
                 :validFileFormats="validFileFormats"
@@ -91,9 +92,10 @@
                 :invalidFiles.sync="invalidFiles"
                 :validFiles.sync="uploadedFiles"
                 :removeAll.sync="removeAll"
+                :showAllErrors="false"
                 @delete="onRemoveAttachment"
                 @uploaded="onUpload"
-                :rules="[$validators.required('Please upload a file')]"
+                :rules="getRulesArray()"
               />
             </div>
             <ATATAlert
@@ -127,7 +129,7 @@ import { hasChanges } from "@/helpers";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
-import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
+import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
 import Attachments from "@/store/attachments";
 import {AttachmentServiceCallbacks} from "@/services/attachment";
 
@@ -140,13 +142,20 @@ import {AttachmentServiceCallbacks} from "@/services/attachment";
 export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   private fairOppDTO = AcquisitionPackage.getInitialFairOpportunity();
 
-  private attachmentServiceName = FAIR_OPPORTUNITY_TABLE;
+  private attachmentServiceName = ACQUISITION_PACKAGE_TABLE;
   private maxFileSizeInBytes = 1073741824;
   private invalidFiles: invalidFile[] = [];
-  private validFileFormats = ["pdf","jpg","png"];
+  private validFileFormats = ["pdf","jpg","png","docx"];
   private uploadedFiles: uploadingFile[] = [];
   public removeAll = false;
-
+  public requiredMessage = "Please upload a file"
+  public restrictedNames = [
+    "DescriptionOfWork.docx",
+    "IncrementalFundingPlan.docx",
+    "RequirementsChecklist.docx",
+    "IGCE.xlsx",
+    "EvaluationPlan.docx",
+  ]
   private jaTemplateUrl = "";
   private mrrTemplateUrl = "";
 
@@ -172,11 +181,29 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 
+  private getRulesArray(): ((v: string) => string|true|undefined)[] {
+    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+    this.invalidFiles.forEach((iFile) => {
+      rulesArr.push(
+        this.$validators.isFileValid(
+          iFile.file,
+          this.validFileFormats,
+          this.maxFileSizeInBytes,
+          iFile.doesFileExist,
+          iFile.SNOWError,
+          iFile.statusCode,
+          this.restrictedNames
+        )
+      );
+    });
+    rulesArr.push(this.$validators.required(this.requiredMessage));
+    return rulesArr;
+  }
+
   public async onUpload(file: uploadingFile): Promise<void> {
     try {
       if(file){
         const attachmentSysId = file.attachmentId;
-        console.log(attachmentSysId);
       }
     } catch (error) {
       console.error(`error completing file upload with id ${file?.attachmentId}`);
@@ -201,14 +228,16 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   }
 
   async loadAttachments(): Promise<void>{
-    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
-
-    console.log(attachments);
+    const attachments = await Attachments.getAttachmentsByTableSysIds(
+      {
+        serviceKey: this.attachmentServiceName,
+        tableSysId: await AcquisitionPackage.getAcquisitionPackageSysId()
+      });
 
     const uploadedFiles = attachments
       .filter((attachment: AttachmentDTO) => {
         return (
-          AcquisitionPackage.fairOpportunity?.sys_id === attachment.table_sys_id
+          AcquisitionPackage.acquisitionPackage?.sys_id === attachment.table_sys_id
         )
       })
       .map((attachment: AttachmentDTO) => {
@@ -233,7 +262,7 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
 
-    AcquisitionPackage.setValidateNow(true);
+    await AcquisitionPackage.setValidateNow(true);
 
     return true;
   }
@@ -245,11 +274,6 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
    */
   public async loadOnEnter(): Promise<void> {
     let storeData = await AcquisitionPackage.getFairOpportunity();
-    await AcquisitionPackage.saveData({
-      data: storeData as FairOpportunityDTO,
-      storeProperty: StoreProperties.FairOpportunity,
-    }, )
-    storeData = await AcquisitionPackage.getFairOpportunity();
     if (storeData) {
       this.fairOppDTO = storeData;
       this.exception_to_fair_opportunity = storeData.exception_to_fair_opportunity;
@@ -261,16 +285,26 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
     this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('mrr');
   }
 
-  
+  public async skipPage(): Promise<void> {
+    if(AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE"){
+      await this.$router.push(
+        {
+          path:"ready-to-generate-package"
+        }
+      );
+    }
+  }
+
+
 
   public async mounted(): Promise<void> {
+    await this.skipPage();
     await this.loadOnEnter();
     await this.loadAttachments();
-
     AttachmentServiceCallbacks.registerUploadCallBack(
-      FAIR_OPPORTUNITY_TABLE,
+      ACQUISITION_PACKAGE_TABLE,
       async () => {
-        await AcquisitionPackage.getFairOpportunity();
+        await AcquisitionPackage.getAcquisitionPackage();
       }
     );
   }
