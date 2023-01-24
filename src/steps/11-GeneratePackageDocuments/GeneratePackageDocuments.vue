@@ -50,7 +50,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
     this.isErrored = false;
     this.isGenerating = true;
     this.packageDocComponent = GeneratingDocuments;
-    this.getStatus();
+    await this.getStatus();
   }
  
   public async getStatus(): Promise<void> {
@@ -60,7 +60,6 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
       await this.getDocJobStatus();
       ["COMPLETE", "FAILED"].some(
         (status)=>{
-          console.log(intervalId)
           if (status === this.docJobStatus.toUpperCase()){
             clearInterval(intervalId);
             this.isGenerating = false;
@@ -79,7 +78,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
 
   public async mounted(): Promise<void> {
     await this.getDocJobStatus();
-    this.generateDocuments();
+    await this.generateDocuments();
   }
 
   public async saveOnLeave(): Promise<boolean> {

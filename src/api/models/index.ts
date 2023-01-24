@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Tracing } from "trace_events";
 import { 
   EnvironmentInstanceLocation,
   EnvironmentInstanceUsage,
@@ -139,7 +140,10 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
 }
 
 export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   instance_location: EnvironmentInstanceLocation;
+  instance_number: number,
+  instance_name: string,
   deployed_regions?: string[];
   classification_level: string; // classification level sys_id
   current_usage_description: EnvironmentInstanceUsage;
