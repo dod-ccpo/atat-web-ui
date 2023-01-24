@@ -3,7 +3,7 @@
     <ATATTextField
       id="TrainingTitle"
       class="_input-wrapper-max-width mb-10"
-      :value.sync="offeringData.requirementTitle"
+      :value.sync="offeringData.trainingRequirementTitle"
       label="Training title"
       tooltipText="Enter a title that briefly describes this specific training requirement."
       :rules="[

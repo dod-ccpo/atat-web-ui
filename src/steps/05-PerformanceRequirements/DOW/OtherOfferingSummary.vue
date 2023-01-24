@@ -324,7 +324,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           { text: "Duration", value: "duration", width: "20%"},
           { text: "", value: "actions", width: "75" },
         ];
-        typeOrTitle = instanceClone.requirementTitle || "";
+        typeOrTitle = instanceClone.trainingRequirementTitle || "";
 
         const selectedTrainingType = trainingTypeOptions.find(
           obj => obj.value === instanceClone.trainingType

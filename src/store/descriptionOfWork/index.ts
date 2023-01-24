@@ -282,7 +282,7 @@ export const saveOrUpdateOtherServiceOffering =
           tempObject.training_facility_type = serviceOffering.trainingFacilityType;
           tempObject.training_format = serviceOffering.trainingType;
           tempObject.training_location = serviceOffering.trainingLocation;
-          tempObject.training_requirement_title = serviceOffering.requirementTitle;
+          tempObject.training_requirement_title = serviceOffering.trainingRequirementTitle;
           tempObject.training_time_zone = serviceOffering.trainingTimeZone;
         }
         
