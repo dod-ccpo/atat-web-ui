@@ -181,7 +181,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
 import { MeatballMenuItem, PortfolioCardData } from "types/Global";
-import PortfolioData, { cspConsoleURLs } from "@/store/portfolio";
+import PortfolioStore, { cspConsoleURLs } from "@/store/portfolio";
 import { getStatusChipBgColor, toTitleCase } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
@@ -258,7 +258,7 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
-    await PortfolioData.setCurrentPortfolio(this.cardData);
+    await PortfolioStore.setCurrentPortfolio(this.cardData);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
       await AppSections.setActiveTabIndex(0);

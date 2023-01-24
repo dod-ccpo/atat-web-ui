@@ -184,7 +184,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PortfolioRolesLearnMore from
   "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
 
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 import SlideoutPanel from "@/store/slideoutPanel";
 import Toast from "@/store/toast";
 
@@ -242,11 +242,11 @@ export default class PortfolioDrawer extends Vue {
   ];
 
   public get showMembersModal(): boolean {
-    return PortfolioData.getShowAddMembersModal;
+    return PortfolioStore.getShowAddMembersModal;
   }
 
   public set showMembersModal(value: boolean) {
-    PortfolioData.setShowAddMembersModal(value);
+    PortfolioStore.setShowAddMembersModal(value);
   }
 
   public getMemberMenuItems(member: User): SelectData[] {
@@ -259,7 +259,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public saveDescription(): void {
-    PortfolioData.setPortfolioData(this.portfolio);
+    PortfolioStore.setPortfolioData(this.portfolio);
   }
 
   public formatDate(date: string): string {
@@ -271,7 +271,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async loadPortfolio(): Promise<void> {
-    const storeData = _.cloneDeep(await PortfolioData.getPortfolioData());
+    const storeData = _.cloneDeep(await PortfolioStore.getPortfolioData());
     if (storeData) {
       this.portfolio = _.cloneDeep(storeData);
       if (storeData.provisioned && storeData.updated && storeData.csp) {
@@ -281,7 +281,7 @@ export default class PortfolioDrawer extends Vue {
 
       }
       this.portfolioMembers = _.cloneDeep(storeData.members) || [];
-      this.portfolioStatus = PortfolioData.getStatus;
+      this.portfolioStatus = PortfolioStore.getStatus;
     }
     // TEMP hardcoded current user
     this.currentUser = {
@@ -321,7 +321,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public openMembersModal(): void {
-    PortfolioData.setShowAddMembersModal(true);
+    PortfolioStore.setShowAddMembersModal(true);
   }
 
   private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
@@ -329,10 +329,10 @@ export default class PortfolioDrawer extends Vue {
       const memberMenuItems = ["Manager", "Viewer"]
       if (memberMenuItems.indexOf(val) > -1) {
         this.portfolio.members[index].role = val;
-        PortfolioData.setPortfolioData(this.portfolio);
+        PortfolioStore.setPortfolioData(this.portfolio);
       } else {
         // reset role back to saved value in store
-        const storeData = await PortfolioData.getPortfolioData();
+        const storeData = await PortfolioStore.getPortfolioData();
         this.portfolioMembers[index].role = storeData.members?.[index].role;
         if (val === "Remove" && this.portfolio.members && this.portfolio.members.length > 1) {
           this.deleteMemberName = this.displayName(this.portfolioMembers[index]);
@@ -353,7 +353,7 @@ export default class PortfolioDrawer extends Vue {
     this.showDeleteMemberDialog = false;
     if (this.portfolio.members) {
       this.portfolio.members.splice(this.deleteMemberIndex, 1);
-      PortfolioData.setPortfolioData(this.portfolio);
+      PortfolioStore.setPortfolioData(this.portfolio);
       await this.loadPortfolio();
       Toast.setToast(this.accessRemovedToast);
     }

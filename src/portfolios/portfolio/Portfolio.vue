@@ -867,7 +867,7 @@ import _ from "lodash";
 import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({
   components: {
@@ -1463,7 +1463,7 @@ export default class PortfolioDashboard extends Vue {
   }
   public activeTaskOrderNumber = "";
   public async loadOnEnter(): Promise<void> {
-    this.activeTaskOrderNumber = PortfolioData.activeTaskOrderNumber;
+    this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     const data = await this.getDashboardData();
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;

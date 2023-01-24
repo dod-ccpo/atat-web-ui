@@ -132,7 +132,7 @@ import {
 import PortfolioSummary from "@/store/portfolioSummary";
 import Toast from "@/store/toast";
 import SlideoutPanel from "@/store/slideoutPanel";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 
 import { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
@@ -177,7 +177,7 @@ export default class PortfoliosSummary extends Vue {
 
   public filterChips: FilterOption[] = []
 
-  public roles = PortfolioData.summaryFilterRoles; // EJY figure this out
+  public roles = PortfolioStore.summaryFilterRoles; // EJY figure this out
 
   public async generateFilterChips(): Promise<void> {
     this.filterChips = [];
@@ -215,7 +215,7 @@ export default class PortfoliosSummary extends Vue {
         const filters = this.queryParams[key]?.filter(
           obj => obj.value !== removedFilter.value
         ) || [];
-        await PortfolioData.setPortfolioSummaryQueryParams({[key]: filters });
+        await PortfolioStore.setPortfolioSummaryQueryParams({[key]: filters });
       }
       break;
     }
@@ -225,7 +225,7 @@ export default class PortfoliosSummary extends Vue {
   public async clearSearchOrFilters(whatToClear: string): Promise<void> {
     switch(whatToClear) {
     case "both":
-      await PortfolioData.resetQueryParams();
+      await PortfolioStore.resetQueryParams();
       this.searchString = "";
       this.searchedString = "";
       break;
@@ -239,11 +239,11 @@ export default class PortfoliosSummary extends Vue {
 
   public async clearAllFilters(): Promise<void> {
     this.filterChips = [];
-    PortfolioData.resetFilters();
+    PortfolioStore.resetFilters();
   }
 
   public get queryParams(): PortfolioSummaryQueryParams {
-    return PortfolioData.portfolioSummaryQueryParams;
+    return PortfolioStore.portfolioSummaryQueryParams;
   }
 
   public getValuesFromFilterOptions(objects: FilterOption[] | undefined): string[] {
@@ -309,7 +309,7 @@ export default class PortfoliosSummary extends Vue {
   }
 
   public async setQueryParams(key: string, value: string): Promise<void> {
-    await PortfolioData.setPortfolioSummaryQueryParams({
+    await PortfolioStore.setPortfolioSummaryQueryParams({
       [key]: value
     });
   }

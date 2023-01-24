@@ -130,6 +130,7 @@ import api from "@/api";
 
 import { mask } from "types/Global";
 import Inputmask from "inputmask/";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({
   components: {
@@ -220,9 +221,9 @@ export default class ATATSearch extends Vue {
         if (!response.success) {
           this.$refs.atatSearchInput.errorBucket = [response.message || "Unknown error"];
         } else {
-          //
+          await PortfolioStore.setPortfolioProvisioning(response);
+          // EJY push next page to router
         }
-
       } catch (error) {
         this.showErrorAlert = true;
       } finally {

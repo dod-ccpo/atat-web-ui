@@ -76,14 +76,16 @@ const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
 }
 
 @Module({
-  name: "PortfolioData",
+  name: "PortfolioStore",
   namespaced: true,
   dynamic: true,
   store: rootStore,
 })
+
 export class PortfolioDataStore extends VuexModule {
 
-  public portfolioProvisioningObj: PortfolioProvisioning = initialPortfolioProvisioningObj();
+  public portfolioProvisioningObj: PortfolioProvisioning 
+    = _.cloneDeep(initialPortfolioProvisioningObj());
 
   private alertService = new AlertService();
   public activeTaskOrderNumber = "";
@@ -432,5 +434,5 @@ export class PortfolioDataStore extends VuexModule {
 
 }
 
-const PortfolioData = getModule(PortfolioDataStore);
-export default PortfolioData;
+const PortfolioStore = getModule(PortfolioDataStore);
+export default PortfolioStore;

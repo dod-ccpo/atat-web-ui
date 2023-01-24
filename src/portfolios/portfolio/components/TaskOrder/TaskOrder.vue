@@ -37,7 +37,7 @@ import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOr
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
 import { createDateStr, getStatusLabelFromValue, toCurrencyString } from "@/helpers";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({
   components: {
@@ -56,7 +56,7 @@ export default class TaskOrder extends Vue {
    */
 
   public async loadOnEnter(): Promise<void> {
-    this.activeTaskOrderNumber = PortfolioData.activeTaskOrderNumber;
+    this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     const portfolioSummaryList = 
       await PortfolioSummary.getAllPortfolioSummaryList() as unknown as PortfolioSummaryDTO[];
     if (portfolioSummaryList !== null){

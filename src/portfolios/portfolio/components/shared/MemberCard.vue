@@ -124,7 +124,7 @@ import { getUserInitials } from "../../../../helpers"
 import { Component, Prop } from "vue-property-decorator";
 import { User } from "../../../../../types/Global";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 @Component({
   components: {
     ATATSVGIcon
@@ -151,7 +151,7 @@ export default class MemberCard extends Vue {
     return "";
   }
   public async mounted(): Promise<void> {
-    const storeData = await PortfolioData.getPortfolioData();
+    const storeData = await PortfolioStore.getPortfolioData();
     if(storeData.members){
       this.member = storeData.members[this.index]
       this.initials = this.getUserInitials(this.member)
