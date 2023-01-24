@@ -71,6 +71,13 @@ import WarningAmber from "@/components/icons/WarningAmber.vue";
 import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vue";
 import Place from "@/components/icons/Place.vue";
 import SendEmail from "@/components/icons/SendEmail.vue";
+import CloudUpload from "@/components/icons/CloudUpload.vue";
+import People from "@/components/icons/People.vue";
+import HelpOutline from "@/components/icons/HelpOutline.vue";
+import ProvisionOracle from "@/components/icons/ProvisionOracle.vue";
+import ProvisionAWS from "@/components/icons/ProvisionAWS.vue";
+import ProvisionAzure from "@/components/icons/ProvisionAzure.vue";
+import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
 
 
 @Component({
@@ -84,6 +91,7 @@ import SendEmail from "@/components/icons/SendEmail.vue";
     ChevronDown,
     ChevronRight,
     Close,
+    CloudUpload,
     CommentBubble,
     ContactSupport,
     ContentCopy,
@@ -101,6 +109,7 @@ import SendEmail from "@/components/icons/SendEmail.vue";
     FilePresent,
     FileSignature,
     Gcp,
+    HelpOutline,
     InfoOutline,
     Launch,
     ManageAccount,
@@ -109,12 +118,17 @@ import SendEmail from "@/components/icons/SendEmail.vue";
     OptionPending,
     Oracle,
     Pdf,
+    People,
     Person,
     PersonAddAlt,
     Phone,
     PlusSign,
     Processing,
+    ProvisionAWS,
+    ProvisionAzure,
     Provisioned,
+    ProvisionGCP,
+    ProvisionOracle,
     RequestQuote,
     Role,
     Remove,

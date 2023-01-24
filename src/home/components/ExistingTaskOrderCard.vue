@@ -7,20 +7,26 @@
       We’ll gather details about your task order to start provisioning your cloud resources.
     </p>
 
-    <ATATSearch 
+    <ATATSearch
+      id="SearchTaskOrderNumber"
       buttonText="Search"
-      id="TOSearchNewUser"
-      :value.sync="TONumber"
+      helpText="Format: Must be either 13 or 19 digits"
       placeHolder="Search Task Order Number"
-      class="mb-0 d-inline-block"
-      helpText="Format: Must be 13 or 19 digits"
-      :rules="rules"
+      class="text-left mb-4 d-inline-block"
       searchType="EDA"
       wrapperWidth="320px"
-      :validateOnBlur="true"
-      :searchButtonDisabled="searchButtonDisabled"   
+      :validate-on-blur="true"
+      :value.sync="searchString"
+      @search="startProvisionWorkflow"
+      :rules="[
+        $validators.required('Please enter your awarded task order number.'),
+        $validators.isMaskValid(
+          ['^([0-9A-Z]{13})([0-9A-Z]{4})?$'],
+          `Your task order number must be either 13 or 19 characters.`,
+          true
+        ),
+      ]"
     />
-
   </v-card>
 </template>
 
@@ -33,11 +39,11 @@ import ATATSearch from "@/components/ATATSearch.vue";
 @Component({
   components: {
     ATATSearch,
-  }
+  },
 })
-
 export default class ExistingTaskOrderCard extends Vue {
-  public TONumber = "";
+
+public TONumber = "";
 
   public rules = [
     this.$validators.allowedLengths(
@@ -52,7 +58,10 @@ export default class ExistingTaskOrderCard extends Vue {
   public TONumberChanged(newVal: string): void {
     this.searchButtonDisabled = newVal.length !== 13 && newVal.length !== 19;
   }
+  public searchString = "";
 
+  public async startProvisionWorkflow(): Promise<void> {
+    this.$emit("startProvisionWorkflow", this.searchString);
+  }
 }
-
 </script>

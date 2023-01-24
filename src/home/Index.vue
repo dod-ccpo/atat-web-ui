@@ -44,6 +44,7 @@
           v-if="isNewUser" 
           class="mt-15" 
           @startNewAcquisition="startNewAcquisition" 
+          @startProvisionWorkflow="startProvisionWorkflow"
         />
 
         <ExistingUser 
@@ -83,6 +84,7 @@ import UserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
+import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 @Component({
   components: {
@@ -96,7 +98,7 @@ import CurrentUserStore from "@/store/user";
 
 export default class Home extends Vue {
   public isNewUser = false;
-
+  public toSearchString = "";
   private currentUser: UserDTO = {};
 
   public get getCurrentUser(): UserDTO {
@@ -126,6 +128,21 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
+  public async startProvisionWorkflow(searchString: string): Promise<void>{
+    this.toSearchString = searchString;
+    await Steps.setAltBackDestination(AppSections.sectionTitles.ProvisionWorkflow);
+    await AcquisitionPackage.reset();
+    this.$router.push({
+      name: provWorkflowRouteNames.AwardedTaskOrder,
+      params: {
+        direction: "next"
+      },
+      replace: true
+    }).catch(() => console.log("avoiding redundant navigation"));
+    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
+    
+  }
+
   public async checkIfIsNewUser(): Promise<void> {
     const userHasPackages = await UserStore.hasPackages();
     this.isNewUser = !userHasPackages;
@@ -136,6 +153,10 @@ export default class Home extends Vue {
     await this.checkIfIsNewUser();
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
+  }
+
+  public provisionNewCloudResources(value?: string): void{
+    alert(value);
   }
 
 }
