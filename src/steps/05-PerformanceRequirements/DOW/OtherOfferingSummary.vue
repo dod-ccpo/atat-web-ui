@@ -135,7 +135,10 @@ import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import DescriptionOfWork, 
-{ instanceEnvTypeOptions, trainingTypeOptions } from "@/store/descriptionOfWork";
+{ instanceEnvTypeOptions, 
+  trainingTypeOptions, 
+  saveOrUpdateOtherServiceOffering
+} from "@/store/descriptionOfWork";
 
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
@@ -173,6 +176,8 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public showDeleteOfferingDialog = false;
   public missingEnvironmentType = false;
   public returnToDOWSummary = false;
+
+  public currentGroupId = "";
 
   public serviceGroupVerbiageInfo: Record<string, string> = {};
 
@@ -224,6 +229,9 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public async deleteInstance(): Promise<void> {
     await DescriptionOfWork.deleteOtherOfferingInstance(this.instanceNumberToDelete);
     await this.buildTableData();
+    this.offeringInstances.forEach(async (instance)=>{
+      await saveOrUpdateOtherServiceOffering(instance, this.currentGroupId);
+    })
     this.showDeleteInstanceDialog = false;
   }
 
@@ -316,7 +324,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           { text: "Duration", value: "duration", width: "20%"},
           { text: "", value: "actions", width: "75" },
         ];
-        typeOrTitle = instanceClone.requirementTitle || "";
+        typeOrTitle = instanceClone.trainingRequirementTitle || "";
 
         const selectedTrainingType = trainingTypeOptions.find(
           obj => obj.value === instanceClone.trainingType
@@ -463,8 +471,8 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.returnToDOWSummary = await DescriptionOfWork.getReturnToDOWSummary();
     this.serviceGroupVerbiageInfo = await DescriptionOfWork.getServiceGroupVerbiageInfo();
 
-    const currentGroupId = await DescriptionOfWork.getCurrentOfferingGroupId();
-    const offering = currentGroupId.toLowerCase();
+    this.currentGroupId = await (await DescriptionOfWork.getCurrentOfferingGroupId()).toLowerCase();
+    const offering = this.currentGroupId.toLowerCase();
     this.isCompute = offering === "compute";
     this.isGeneralXaaS = offering === "general_xaas";
     this.isDatabase = offering === "database";
