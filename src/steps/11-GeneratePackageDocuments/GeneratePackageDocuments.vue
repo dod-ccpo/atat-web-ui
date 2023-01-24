@@ -24,6 +24,8 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocuments from "./components/GeneratingDocuments.vue";
 import ReviewDocuments from "./components/ReviewDocuments.vue";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -38,7 +40,9 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
   private docJobStatus = "" ;
 
   public packageDocComponent = GeneratingDocuments;
-
+  get isDitco():boolean {
+    return AcquisitionPackage.acquisitionPackage?.contracting_shop ==="DITCO"
+  }
   @Watch('isGenerating')
   public toggleNavigation(): void {
     let el = document.getElementById('stepperNavigation');
@@ -84,6 +88,12 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
   public async saveOnLeave(): Promise<boolean> {
     this.isGenerating = false; //to restore bottom navigation
     await AcquisitionPackage.setValidateNow(true);
+    if(this.isDitco){
+      await AcquisitionPackageSummary.updateAcquisitionPackageStatus({
+        acquisitionPackageSysId: AcquisitionPackage.acquisitionPackage?.sys_id||"",
+        newStatus: "WAITING_FOR_SIGNATURES"
+      })
+    }
     return true;
   }
 }

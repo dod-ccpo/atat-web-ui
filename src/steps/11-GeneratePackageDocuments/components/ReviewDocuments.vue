@@ -137,6 +137,11 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Attachments from "@/store/attachments";
 import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
+import {TABLENAME as CURRENT_ENVIRONMENT_TABLE} from "@/api/currentEnvironment";
+import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
+import Vue from "vue";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
 
 
 @Component({
@@ -147,7 +152,7 @@ import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackage
   }
 })
 
-export default class ReviewDocuments extends Mixins(SaveOnLeave) {
+export default class ReviewDocuments extends Vue {
   @PropSync(
     "packageDocuments",{default: () => []}
   ) private _packageDocuments!: [];
@@ -155,7 +160,10 @@ export default class ReviewDocuments extends Mixins(SaveOnLeave) {
 
   public packageId = "";
   private lastUpdatedString = ""
-  private attachmentServiceName = ACQUISITION_PACKAGE_TABLE;
+  private acquisitionServiceName = ACQUISITION_PACKAGE_TABLE;
+  private currentEnvServiceName = CURRENT_ENVIRONMENT_TABLE;
+  private MIPRServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
+
 
   private needsSignatureLength = 0
   get fairOpportunity():string {
@@ -216,61 +224,69 @@ export default class ReviewDocuments extends Mixins(SaveOnLeave) {
       requiresSignature:false,
       show:this.fairOpportunity !== "NO_NONE"
     },
-    {
-      itemName:"system diagram of current environment.pdf",
-      requiresSignature:false,
-      show:true,
-      description: "Uploaded in Step 4 (Current Environment)"
-    },
-    {
-      itemName:"file-name-for-7600B-order-document.pdf",
-      requiresSignature:false,
-      show:true,
-      description: "Uploaded in Step 8 (Funding)"
-    },
-    {
-      itemName:"long_file_name_fo...documentation.pdf",
-      requiresSignature:false,
-      show:true,
-      description: "Uploaded in Step 8 (Requirements Cost Estimate)"
-    },
   ];
 
-  public async saveOnLeave(): Promise<boolean> {
-    console.log('hello')
-    await AcquisitionPackageSummary.updateAcquisitionPackageStatus({
-      acquisitionPackageSysId: AcquisitionPackage.acquisitionPackage?.sys_id||"",
-      newStatus: "WAITING_FOR_SIGNATURES"
-    })
-    return true;
+  private createAttachmentObject(attachment:any, step:string):void{
+    const obj = {
+      itemName:attachment.file_name,
+      requiresSignature:false,
+      show:true,
+      description: `Uploaded in step ${step}`
+    }
+    this.packageCheckList.push(obj)
   }
-
   public async loadOnEnter(): Promise<void> {
     this.packages.forEach(item => {
       if(item.show){
         this.packageCheckList.push(item)
       }
     })
-    if(AcquisitionPackage.acquisitionPackage){
-      console.log(await Attachments
-        .getAttachments(AcquisitionPackage.acquisitionPackage?.sys_id||""))
-    }
     this.packageCheckList.forEach(item =>{
       if(item.requiresSignature){
         this.needsSignatureLength++
       }
     })
+    const currentEnv = await CurrentEnvironment.getCurrentEnvironment()
+    const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
+    const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
+    const fundingRequestIds = []
+
     if(AcquisitionPackage.acquisitionPackage
       && AcquisitionPackage.acquisitionPackage.sys_updated_on){
       this.lastUpdatedString =
         `Last updated ${createDateStr(AcquisitionPackage.acquisitionPackage.sys_updated_on, true)}`
     }
-    const attachments = await Attachments.getAttachmentsByTableSysIds(
-      {
-        serviceKey: this.attachmentServiceName,
-        tableSysId: await AcquisitionPackage.getAcquisitionPackageSysId()
-      });
-    console.log(attachments)
+    const migrationAttachments = await Attachments.getAttachmentsBySysIds({
+      serviceKey: this.currentEnvServiceName,
+      sysIds: currentEnv?.migration_documentation||[]
+    });
+    migrationAttachments.forEach(attachment => {
+      this.createAttachmentObject(attachment,'4 (Current Environment)')
+    })
+    const sysDocAttachments = await Attachments.getAttachmentsBySysIds({
+      serviceKey: this.currentEnvServiceName,
+      sysIds: currentEnv?.system_documentation||[]
+    });
+    sysDocAttachments.forEach(attachment => {
+      this.createAttachmentObject(attachment,'4 (Current Environment)')
+    })
+    const MIPRAttachment = await Attachments.getAttachmentById({
+      serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
+    this.createAttachmentObject(MIPRAttachment,'8 (Funding)')
+    if (fundingRequest?.fs_form_7600a_attachment.length > 0) {
+      fundingRequestIds.push(fundingRequest?.fs_form_7600a_attachment)
+    }
+    if (fundingRequest?.fs_form_7600b_attachment.length > 0) {
+      fundingRequestIds.push(fundingRequest?.fs_form_7600b_attachment)
+    }
+    const fundingRequestAttachments = await Attachments.getAttachmentsBySysIds({
+      serviceKey: FUNDING_REQUEST_FSFORM_TABLE,
+      sysIds: fundingRequestIds
+    });
+    fundingRequestAttachments.forEach(attachment => {
+      this.createAttachmentObject(attachment,'8 (Funding)')
+    })
+
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
   }
 
