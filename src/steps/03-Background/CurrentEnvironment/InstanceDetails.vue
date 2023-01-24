@@ -488,6 +488,10 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     const isValid = this.$refs.form.validate();
 
     try {
+      this.instanceData.instance_number = this.instanceNumber;
+      this.instanceData.instance_name = "Instance #" + this.instanceNumber;
+      this.instanceData.acquisition_package = AcquisitionPackage.packageId;
+
       if (this.hasChanged() && isValid) {
         await CurrentEnvironment.saveCurrentEnvironmentInstance(this.instanceData);
       } else if (!isValid) {

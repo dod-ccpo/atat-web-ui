@@ -58,7 +58,10 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
 };
 
 export const UploadJAMRRDocumentsRouteResolver = (current: string): string => {
-  return !evalPlanRequired() 
+  if(current === routeNames.ReadyToGeneratePackage && evalPlanRequired()){
+    return routeNames.FinancialPOCForm
+  }
+  return !evalPlanRequired()
     ? routeNames.UploadJAMRRDocuments 
     : routeNames.ReadyToGeneratePackage;
 };
@@ -1097,9 +1100,10 @@ const contractingShopIsDitco = (): boolean => {
 }
 
 const hasServiceOfferings = (): boolean => {
-  const offerings = DescriptionOfWork.DOWObject.filter(
-    obj => obj.serviceOfferingGroupId !== "TRAINING"
-  );
+  const offerings = DescriptionOfWork.DOWObject.filter(obj => {
+    return obj.serviceOfferingGroupId !== "TRAINING" 
+      && obj.serviceOfferingGroupId.indexOf("NONE") === -1
+  });
   return offerings.length >= 1;
 }
 
@@ -1273,7 +1277,6 @@ export const FinancialPOCResolver =  (current: string): string => {
       current === routeNames.UploadJAMRRDocuments && isIncrementallyFunded === "NO") {
     return routeNames.SeverabilityAndIncrementalFunding;
   }
-
   return current === routeNames.FinancialPOCForm
     ? routeNames.UploadJAMRRDocuments
     : routeNames.FinancialPOCForm

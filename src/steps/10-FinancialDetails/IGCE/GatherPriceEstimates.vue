@@ -223,11 +223,11 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         // eslint-disable-next-line camelcase
         const classification_instance: CostEstimate = {
           labelShort: buildClassificationLabel(classification, "short", true),
-          sysId:
-            typeof classification.classification_level === "object"
-              ? ((classification.classification_level as ReferenceColumn)
-                .value as string)
-              : (classification.classification_level as string),
+          classificationInstanceSysId: classification.sys_id || "",
+          classificationLevelSysId: typeof classification.classification_level === "object"
+            ? ((classification.classification_level as ReferenceColumn)
+              .value as string)
+            : (classification.classification_level as string),
           offerings: [],
         };
         this.instanceData.push(classification_instance);
@@ -235,7 +235,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       this.instanceData.forEach((instance) => {
         dataFromSnow.forEach((estimate) => {
           const flatData = convertColumnReferencesToValues(estimate);
-          if (instance.sysId === flatData.classification_instance) {
+          if (instance.classificationInstanceSysId === flatData.classification_instance) {
             const obj = {
               IGCE_title: flatData.title,
               IGCE_description: flatData.description,
@@ -243,7 +243,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
               isCloudServicePackage: false,
               sysIdCDS: (flatData.cross_domain_solution as ReferenceColumn)
                 .value as string,
-              sysIdClassificationInstance: flatData.classification_instance,
+              sysIdClassificationInstance: instance.classificationInstanceSysId,
+              sysIdClassificationLevel: instance.classificationLevelSysId,
               sysIdEnvironmentInstance: (
                 flatData.environment_instance as ReferenceColumn
               ).value as string,

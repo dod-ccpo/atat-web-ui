@@ -53,7 +53,7 @@ export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO =
     training: [],
     travel: {
       option: "",
-      estimated_values: []
+      estimated_values: ""
     }
   }
 }
@@ -62,7 +62,7 @@ export const defaultTrainingEstimate = (): TrainingEstimate => {
   return {
     costEstimateType: "",
     estimate: {
-      estimated_values: [],
+      estimated_values: "",
     },
     estimatedTrainingPrice: "",
     trainingOption: ""
@@ -88,7 +88,8 @@ export const defaultIgceEstimate = (): IgceEstimateDTO => {
 
 export interface CostEstimate {
   labelShort: string,
-  sysId: string,
+  classificationInstanceSysId: string,
+  classificationLevelSysId: string,
   offerings: Record<string, string|string[]|boolean|number|null>[]
 }
 
@@ -131,12 +132,26 @@ export class IGCEStore extends VuexModule {
       }
     };
     const trainingEstimates = await api.trainingEstimateTable.getQuery(requestConfig);
-
+    
     trainingEstimates.forEach(item => {
+      const estimatesFormatted = item.training_estimated_values?.replaceAll("{", "")
+        .replaceAll("}", "").replaceAll("\"", "").split(",");
+      const estimates:Record<string, string>[] = [];
+      estimatesFormatted?.forEach(
+        (item) => {
+          const est = item.split(":");
+          if (est[0] !== ""){
+            estimates.push({[est[0]] : est[1]})
+          }
+        }
+      )
       const trainingItem: TrainingEstimate = {
         sysId: item.sys_id,
         costEstimateType: item.training_unit,
-        estimate: JSON.parse(item.training_estimated_values),
+        estimate: {
+          option: estimates.length>1 ? "MULTIPLE" : "SINGLE",
+          estimated_values: JSON.stringify(estimates)
+        },
         estimatedTrainingPrice: item.estimated_price_per_training_unit,
         trainingOption: item.training_option as SingleMultiple
       };
@@ -166,16 +181,14 @@ export class IGCEStore extends VuexModule {
   public async saveTrainingEstimate(value: TrainingEstimate): Promise<string> {
     let objSysId = "";
 
-    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id;
-
     const trainingDTOItem: TrainingEstimateDTO = {
-      acquisition_package: packageId || "",
+      acquisition_package: AcquisitionPackage.packageId,
       estimated_price_per_training_unit: value.estimatedTrainingPrice,
       training_option: value.trainingOption,
-      training_estimated_values: JSON.stringify(value.estimate),
+      training_estimated_values: value.estimate.estimated_values || "",
       training_unit: value.costEstimateType
     };
-
+    
     if(value.sysId){
       await api.trainingEstimateTable.update(
         value.sysId,
@@ -281,7 +294,7 @@ export class IGCEStore extends VuexModule {
       training: rceFlat.training ? JSON.parse(rceFlat.training) : [],
       travel: {
         option: rceFlat.travel_option,
-        estimated_values: rceFlat.travel_estimated_values?.split(",")
+        estimated_values: rceFlat.travel_estimated_values,
       },
       sys_created_by: rceFlat.sys_created_by,
       sys_created_on: rceFlat.sys_created_on,
@@ -341,8 +354,7 @@ export class IGCEStore extends VuexModule {
       surge_requirement_capabilities: rceTree.surge_requirements.capabilities,
       training: JSON.stringify(rceTree.training ? rceTree.training : []),
       travel_option: rceTree.travel.option,
-      travel_estimated_values: rceTree.travel.estimated_values
-        ?.map(currency => currencyStringToNumber(currency)).toString(),
+      travel_estimated_values: rceTree.travel.estimated_values || "",
       sys_created_by: rceTree.sys_created_by,
       sys_created_on: rceTree.sys_created_on,
       sys_id: rceTree.sys_id,

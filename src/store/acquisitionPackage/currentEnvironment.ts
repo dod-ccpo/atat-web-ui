@@ -43,29 +43,32 @@ export const defaultCurrentEnvironment: CurrentEnvironmentDTO = {
 export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = {
   instance_location: "",
   deployed_regions: [],
-  classification_level: "", // classification level sys_id
+  classification_level: "",
   current_usage_description: "",
   is_traffic_spike_event_based: "",
   is_traffic_spike_period_based: "",
   traffic_spike_event_description: "",
   traffic_spike_period_description: "",
-  users_per_region: "", // json stringified sys_id/count pairs
+  users_per_region: "",
   operating_system: "",
   licensing: "",
   number_of_vcpus: null,
-  processor_speed: null, 
+  processor_speed: null,
   memory_amount: null,
   memory_unit: "GB",
   storage_type: "",
   storage_amount: null,
   storage_unit: "GB",
   performance_tier: "",
-  number_of_instances: null, 
-  data_egress_monthly_amount: null,   
+  number_of_instances: null,
+  data_egress_monthly_amount: null,
   data_egress_monthly_unit: "GB",
   pricing_model: "",
   pricing_model_expiration: "",
-  additional_information: "", 
+  additional_information: "",
+  acquisition_package: "",
+  instance_number: 0,
+  instance_name: ""
 }
 
 export const defaultCurrentEnvironmentArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
@@ -333,7 +336,9 @@ export class CurrentEnvironmentStore extends VuexModule {
       this.mapCurrentEnvironmentFromResponse(currentEnvironment);
       await this.setCurrentEnvironment(currentEnvironment);
       if(currentEnvironment.env_instances.length > 0){
-        const queryString = "sys_id=" + currentEnvironment.env_instances.join("^ORsys_id=");
+        const queryString = "sys_id=" 
+          + currentEnvironment.env_instances.join("^ORsys_id=")
+          + "^ORDERBYinstance_number";
 
         const config: AxiosRequestConfig = {
           params: {
