@@ -133,10 +133,7 @@ import ATATAlert from "@/components/ATATAlert.vue"
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import FinancialDetails from "@/store/financialDetails";
 import { createDateStr } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Attachments from "@/store/attachments";
-import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
 import {TABLENAME as CURRENT_ENVIRONMENT_TABLE} from "@/api/currentEnvironment";
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
 import Vue from "vue";
@@ -160,11 +157,7 @@ export default class ReviewDocuments extends Vue {
 
   public packageId = "";
   private lastUpdatedString = ""
-  private acquisitionServiceName = ACQUISITION_PACKAGE_TABLE;
   private currentEnvServiceName = CURRENT_ENVIRONMENT_TABLE;
-  private MIPRServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
-
-
   private needsSignatureLength = 0
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
@@ -235,7 +228,13 @@ export default class ReviewDocuments extends Vue {
     }
     this.packageCheckList.push(obj)
   }
+
   public async loadOnEnter(): Promise<void> {
+    if(AcquisitionPackage.acquisitionPackage
+      && AcquisitionPackage.acquisitionPackage.sys_updated_on){
+      this.lastUpdatedString =
+        `Last updated ${createDateStr(AcquisitionPackage.acquisitionPackage.sys_updated_on, true)}`
+    }
     this.packages.forEach(item => {
       if(item.show){
         this.packageCheckList.push(item)
@@ -250,12 +249,6 @@ export default class ReviewDocuments extends Vue {
     const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
     const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
     const fundingRequestIds = []
-
-    if(AcquisitionPackage.acquisitionPackage
-      && AcquisitionPackage.acquisitionPackage.sys_updated_on){
-      this.lastUpdatedString =
-        `Last updated ${createDateStr(AcquisitionPackage.acquisitionPackage.sys_updated_on, true)}`
-    }
     const migrationAttachments = await Attachments.getAttachmentsBySysIds({
       serviceKey: this.currentEnvServiceName,
       sysIds: currentEnv?.migration_documentation||[]
