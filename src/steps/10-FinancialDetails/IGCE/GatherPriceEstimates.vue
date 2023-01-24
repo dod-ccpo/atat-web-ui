@@ -97,6 +97,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   
   igceEstimateData: IgceEstimateDTO[] = [];
   estimateDataSource: never[] = [];
+  classLevels = ClassificationRequirements.classificationLevels;
 
   async loadOnEnter(): Promise<void> {
     await IGCE.loadIgceEstimateByPackageId(AcquisitionPackage.packageId);
@@ -108,7 +109,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
 
     // populate classification_display attrib
     this.igceEstimateData.forEach((est)=>{
-      const classLevelSysId = (est.classification_instance as ReferenceColumn).value || "";
+      const classLevelSysId = (est.classification_level as ReferenceColumn).value || "";
       const level = ClassificationRequirements.classificationLevels.find(
         (level) => {
           return level.sys_id === classLevelSysId
@@ -133,6 +134,18 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     //   title: "Learn More",
     // };
     // await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
+
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      // if (this.hasChanged()) {
+      //   await IGCE.setCostEstimate(this.currentData);
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
   }
 }
 </script>
