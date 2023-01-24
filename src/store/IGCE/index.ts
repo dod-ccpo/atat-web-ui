@@ -65,7 +65,8 @@ export const defaultTrainingEstimate = (): TrainingEstimate => {
       estimated_values: "",
     },
     estimatedTrainingPrice: "",
-    trainingOption: ""
+    trainingOption: "",
+    cloudSupportEnvironmentInstance: ""
   };
 }
 
@@ -132,11 +133,12 @@ export class IGCEStore extends VuexModule {
         sysId: item.sys_id,
         costEstimateType: item.training_unit,
         estimate: {
-          option: estimates.length>1 ? "MULTIPLE" : "SINGLE",
+          option: estimates.length > 1 ? "MULTIPLE" : "SINGLE",
           estimated_values: JSON.stringify(estimates)
         },
         estimatedTrainingPrice: item.estimated_price_per_training_unit,
-        trainingOption: item.training_option as SingleMultiple
+        trainingOption: item.training_option as SingleMultiple,
+        cloudSupportEnvironmentInstance: ""
       };
 
       this.trainingItems.push(trainingItem);
@@ -169,7 +171,8 @@ export class IGCEStore extends VuexModule {
       estimated_price_per_training_unit: value.estimatedTrainingPrice,
       training_option: value.trainingOption,
       training_estimated_values: value.estimate.estimated_values || "",
-      training_unit: value.costEstimateType
+      training_unit: value.costEstimateType,
+      cloud_support_environment_instance: value.cloudSupportEnvironmentInstance
     };
     
     if(value.sysId){

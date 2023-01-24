@@ -310,12 +310,16 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       item => item.serviceOfferingGroupId === "TRAINING"
     );
 
+    let cloudSupportEnvironmentInstance = "";
+
     if(dowTrainingItems && dowTrainingItems.otherOfferingData){
+
       this.trainingCount = dowTrainingItems.otherOfferingData.length;
       const trainingItem = dowTrainingItems.otherOfferingData[this.trainingIndex];
+      cloudSupportEnvironmentInstance = trainingItem.sysId || "";
 
       if(trainingItem){
-        this.trainingTitle = trainingItem.requirementTitle as string;
+        this.trainingTitle = trainingItem.trainingRequirementTitle as string;
 
         const trainingType = TRAINING_TYPE[trainingItem.trainingType as keyof typeof TRAINING_TYPE];
 
@@ -333,6 +337,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     if(this.trainingIndex > -1 && 
       this.trainingIndex < IGCE.trainingItems.length
     ){
+      IGCE.trainingItems[this.trainingIndex].cloudSupportEnvironmentInstance = 
+        cloudSupportEnvironmentInstance;
       this.instanceData = _.cloneDeep(IGCE.trainingItems[this.trainingIndex]);
       this.savedData = _.cloneDeep(IGCE.trainingItems[this.trainingIndex]);
 
