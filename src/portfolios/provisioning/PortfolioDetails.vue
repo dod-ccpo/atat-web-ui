@@ -17,20 +17,23 @@
             label="Portfolio title"
             class="_input-max-width mb-10"
             :value.sync="portfolioTitle"
-            :rules="[$validators.required('Please enter your portfolio title.')]"
+            :rules="[
+              $validators.required('Please enter your project title.'),
+              $validators.maxLength(60, 'Title cannot exceed 60 characters')
+            ]"
           />
 
           <ATATAutoComplete
             id="Agency"
             class="_input-max-width mb-10"
-            label="What service or agency are you affiliated with?"
+            label="What service or agency is this portfolio affiliated with?"
             :label-sr-only="false"
             titleKey="text"
             :searchFields="['text']"
             :items="agencyData"
             :selectedItem.sync="serviceOrAgency"
-            :rules="[$validators.required('Please select your agency or service.')]"
-            placeholder="Find your agency or service"
+            :rules="[$validators.required('Please select your service or agency.')]"
+            placeholder="Find your service/agency"
             icon="arrow_drop_down"
           />
         </v-col>
