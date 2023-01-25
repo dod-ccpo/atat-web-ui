@@ -323,13 +323,15 @@ export default class ATATFileUpload extends Vue {
       if(isRestrictedName){
         this.logInvalidFiles(vFile, doesFileExist);
       }
-      
+
       return isValidFormat && !doesFileExist && isFileSizeValid && !isRestrictedName;
     });
 
+    // if(_validFiles.length > this.maxNumberOfFiles){
+    //   return
+    // }
    
     //allows for maxNumberOfFiles to be uploaded
-    
     if(this.maxNumberOfFiles<_validFiles.length){
       _validFiles = _validFiles.filter((obj, idx)=>{
         return idx<this.maxNumberOfFiles

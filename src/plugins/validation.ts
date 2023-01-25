@@ -261,7 +261,8 @@ export class ValidationPlugin {
    * @param doesFileExist
    * @param SNOWError
    * @param statusCode
-   * @param restrictNames
+   * @param restrictedNames
+   * @param maxFileNumber
    */
 
   isFileValid = (
@@ -272,8 +273,10 @@ export class ValidationPlugin {
     SNOWError?: string,
     statusCode?: number,
     restrictedNames?:string[],
+    maxFileNumber?:number
   ):((v: string) => string | true | undefined) => {
     return () => {
+      let fileNumber = 1
       const fileName = file.name.length>20
         ? file.name.substring(0, 12) + '...'
             + file.name.substring(file.name.length-8, file.name.length)
@@ -303,6 +306,11 @@ export class ValidationPlugin {
         return `Your file '${fileName}' is too large. Please upload a file that is 1GB or less.`
       }
 
+      if(maxFileNumber && fileNumber > maxFileNumber){
+        console.log('in here')
+        return `Too many files selected. You can upload up to ${maxFileNumber} files.`
+      }
+
       if (SNOWError !== "" && SNOWError !== undefined){
         const error = SNOWError.toLowerCase();
         let invalidMessage = "";
@@ -321,6 +329,8 @@ export class ValidationPlugin {
         }
         return invalidMessage;
       }
+      fileNumber++
+      console.log(fileNumber)
       return true
     }
   };

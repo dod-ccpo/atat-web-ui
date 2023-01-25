@@ -182,7 +182,7 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
           this.maxFileSizeInBytes,
           iFile.doesFileExist,
           iFile.SNOWError,
-          iFile.statusCode
+          iFile.statusCode,
         )
       );
     });

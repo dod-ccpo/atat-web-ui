@@ -9,21 +9,81 @@
         your approving officials. Upload your individually signed documents below.
       </p>
       <hr class="base-lighter" />
-      <div>
-        <ATATFileUpload
-          :validFileFormats="validFileFormats"
-          :attachmentServiceName="attachmentServiceName"
-          :maxFileSizeInBytes="maxFileSizeInBytes"
-          id="FundingPlan"
-          @delete="onRemoveAttachment"
-          fileListTitle="Your files"
-          :invalidFiles.sync="invalidFiles"
-          :maxNumberOfFiles="2"
-          :validFiles.sync="uploadedFiles"
-          :rules="getRulesArray()"
-        />
-
-      </div>
+      <v-row class="d-flex">
+        <v-col cols="8">
+          <ATATFileUpload
+            :validFileFormats="validFileFormats"
+            :attachmentServiceName="attachmentServiceName"
+            :maxFileSizeInBytes="maxFileSizeInBytes"
+            id="FundingPlan"
+            @delete="onRemoveAttachment"
+            fileListTitle="Your files"
+            :invalidFiles.sync="invalidFiles"
+            :maxNumberOfFiles="2"
+            :validFiles.sync="uploadedFiles"
+            :rules="getRulesArray()"
+          />
+        </v-col>
+        <v-col cols="2">
+          <div
+            style="width: 330px;"
+            class="pl-5">
+            <ATATAlert
+              v-if="needsSignatureLength > uploadedFiles.length"
+              id="warning"
+              class="mb-4"
+              type="warning"
+            >
+              <template v-slot:content>
+                <p class="mt-1 mb-0">
+                  <strong>
+                    Missing {{needsSignatureLength - uploadedFiles.length}} {{missingDocsText}}
+                  </strong>
+                </p>
+                <p class="mb-0">
+                  Please upload any missing document
+                </p>
+              </template>
+            </ATATAlert>
+            <div
+              class="
+              border1
+              border-rounded-more
+              border-base-lighter
+              bg-primary-lighter
+              pa-6"
+            >
+              <div class="d-flex align-center mb-4">
+                <ATATSVGIcon
+                  class="mr-2"
+                  name="fileSignature"
+                  width="39"
+                  height="35"
+                  color="primary"
+                />
+                <h3 class="mb-2">
+                 {{needsSignatureLength}} signatures required</h3>
+              </div>
+              <div
+                v-for="(item,idx) in filesNeeded"
+                :key="idx"
+                class="d-flex"
+              >
+                <ATATSVGIcon
+                  class="mr-2"
+                  name="filePresent"
+                  width="13"
+                  height="16"
+                  color="primary"
+                />
+                <span class="text-primary text-decoration-underline">
+                  {{item}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -36,9 +96,14 @@ import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
 import { invalidFile, uploadingFile } from "../../../types/Global";
 import Attachments from "@/store/attachments";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import FinancialDetails from "@/store/financialDetails";
+import ATATAlert from "@/components/ATATAlert.vue";
 @Component({
   components:{
-    ATATFileUpload
+    ATATFileUpload,
+    ATATSVGIcon,
+    ATATAlert,
   }
 })
 export default class UploadSignedDocuments extends Vue {
@@ -47,7 +112,61 @@ export default class UploadSignedDocuments extends Vue {
   private validFileFormats = ["pdf","jpg","png","docx"];
   private invalidFiles: invalidFile[] = [];
   private uploadedFiles: uploadingFile[] = [];
+  private needsSignatureLength = 0;
+  private filesNeeded:string[] = [];
   private greaterThanMessage = "Too many files selected. You can upload up to 5 files";
+  get fairOpportunity():string {
+    return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
+  }
+  get incrementallyFunded():string {
+    return FinancialDetails.fundingRequirement?.incrementally_funded || "";
+  }
+  private packages = [
+    {
+      itemName:"Requirements Checklist",
+      requiresSignature:true,
+      alertText:"Requires signatures",
+      show:true
+    },
+    {
+      itemName:"Independent Government Cost Estimate",
+      requiresSignature:true,
+      alertText:"Requires signatures",
+      show:true
+    },
+    {
+      itemName:"Incremental Funding Plan",
+      requiresSignature:false,
+      alertText:"Requires signatures",
+      show:this.incrementallyFunded === "YES"
+    },
+    {
+      itemName:"Justification and Approval (Template)",
+      requiresSignature:true,
+      alertText:"Complete and sign",
+      show:this.fairOpportunity !== "NO_NONE"
+    },
+    {
+      itemName:"Sole Source Market Research Report (Template)",
+      requiresSignature:true,
+      alertText:"Complete and sign",
+      show:this.fairOpportunity !== "NO_NONE"
+    },
+    {
+      itemName:"Description of Work",
+      requiresSignature:false,
+      show:true
+    },
+    {
+      itemName:"Evaluation Plan",
+      requiresSignature:false,
+      show:this.fairOpportunity !== "NO_NONE"
+    },
+  ];
+  get missingDocsText(): string{
+    return this.filesNeeded.length - this.uploadedFiles.length === 1?
+      "signed document":"signed documents"
+  }
   public async onRemoveAttachment(file: uploadingFile): Promise<void> {
     try {
       if (file) {
@@ -64,8 +183,8 @@ export default class UploadSignedDocuments extends Vue {
       console.error(`error removing attachment with id ${file?.attachmentId}`);
     }
   }
-  private getRulesArray(): ((v: string|number) => string | true | undefined)[] {
-    let rulesArr: ((v: string|number) => string | true | undefined)[] = [];
+  private getRulesArray(): ((v: string) => string | true | undefined)[] {
+    let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
     this.invalidFiles.forEach((iFile) => {
       rulesArr.push(
@@ -75,16 +194,23 @@ export default class UploadSignedDocuments extends Vue {
           this.maxFileSizeInBytes,
           iFile.doesFileExist,
           iFile.SNOWError,
-          iFile.statusCode
+          iFile.statusCode,
+          [],
+          5
         )
       );
     });
-    rulesArr.push(this.$validators.lessThan(5,this.greaterThanMessage));
 
     return rulesArr;
   }
   public async loadOnEnter(): Promise<void> {
-    console.log(AcquisitionPackage.attachmentNames)
+    this.packages.forEach(item =>{
+      if(item.show && item.requiresSignature){
+        this.needsSignatureLength++
+        this.filesNeeded.push(item.itemName)
+      }
+    })
+    console.log(this.filesNeeded)
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
