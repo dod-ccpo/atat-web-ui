@@ -48,7 +48,7 @@ export class OrganizationDataStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  private async getAgencyData():Promise<void>
+  public async getAgencyData():Promise<void>
   {
     const agencyRequestConfig: AxiosRequestConfig = {
       params: {
