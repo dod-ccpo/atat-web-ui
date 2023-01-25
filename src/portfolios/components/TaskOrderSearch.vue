@@ -2,7 +2,7 @@
   <ATATSearch
     id="SearchTaskOrderNumber"
     buttonText="Search"
-    helpText="Format: Must be either 13 or 19 digits"
+    helpText="Format: Must be 13 or 19 characters"
     placeHolder="Search Task Order Number"
     class="text-left mb-0 d-inline-block"
     searchType="EDA"
