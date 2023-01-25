@@ -12,7 +12,7 @@
       buttonText="Search"
       helpText="Format: Must be either 13 or 19 digits"
       placeHolder="Search Task Order Number"
-      class="text-left mb-4 d-inline-block"
+      class="text-left mb-0 d-inline-block"
       searchType="EDA"
       wrapperWidth="320px"
       :validate-on-blur="true"
