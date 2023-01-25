@@ -197,12 +197,9 @@ export default class ATATSearch extends Vue {
     if (newVal) {
       await this.resetValidation();
       this.clearErrorMessages();
-      debugger;
       this.$nextTick(() => {
         this._resetValidationNow = false;
-        debugger;
-      })
-      debugger;
+      });
     }
   }
 
@@ -306,7 +303,6 @@ export default class ATATSearch extends Vue {
       this.$refs.atatSearchInputModal.errorBucket = [];
       this.$refs.atatSearchInputModal.resetValidation();
     }
-    // this._resetValidationNow = false;
   }
 
   private setMask(): void {
