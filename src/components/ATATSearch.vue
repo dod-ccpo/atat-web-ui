@@ -186,7 +186,7 @@ export default class ATATSearch extends Vue {
   @Watch("_value")
   public valueChanged(newVal: string): void {
     const hasErrors = this.$refs.atatSearchInput?.errorBucket.length > 0
-    const hasContent = newVal.length > 0;
+    const hasContent = newVal && newVal.length > 0;
     this.searchDisabled = hasErrors || !hasContent;
   }
 

@@ -54,10 +54,12 @@ public TONumber = "";
 
   @Watch("TONumber")
   public TONumberChanged(newVal: string): void {
-    if (this.TONumber !== newVal.toUpperCase()) {
-      this.TONumber = newVal.toUpperCase();
+    if (newVal) {
+      if (this.TONumber !== newVal.toUpperCase()) {
+        this.TONumber = newVal.toUpperCase();
+      }
+      this.searchButtonDisabled = newVal.length !== 13 && newVal.length !== 19;
     }
-    this.searchButtonDisabled = newVal.length !== 13 && newVal.length !== 19;
   }
 
   public async startProvisionWorkflow(): Promise<void> {
