@@ -44,6 +44,7 @@
           class="mt-15" 
           @startNewAcquisition="startNewAcquisition" 
           @startProvisionWorkflow="startProvisionWorkflow"
+          @openTOSearchModal="openSearchTOModal"
         />
 
         <ExistingUser 
@@ -51,6 +52,7 @@
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
           @allPackagesCleared="isNewUser = true"
+          @openTOSearchModal="openSearchTOModal"
         />      
 
         <div class="bg-white">
@@ -60,6 +62,14 @@
       </div>
 
     </v-main>
+
+    <TaskOrderSearchModal
+      :showTOSearchModal.sync="showTOSearchModal"
+      :TONumber.sync="TONumber"
+      :resetValidationNow.sync="resetValidationNow"
+      @TOSearchCancelled="TOSearchCancelled"
+      @startProvisionWorkflow="startProvisionWorkflow"
+    />    
 
   </div>
 </template>
@@ -72,6 +82,7 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 import ATATToast from "@/components/ATATToast.vue";
+import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
@@ -93,10 +104,27 @@ import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
     ExistingUser,
     HelpfulResourcesCards,
     NewUser,
+    TaskOrderSearchModal,
   }
 })
 
 export default class Home extends Vue {
+
+  public showTOSearchModal = false;
+  public TONumber = "";
+  public resetValidationNow = false;
+  
+  public openSearchTOModal(): void {
+    this.showTOSearchModal = true;
+  }
+
+  public TOSearchCancelled(): void {
+    debugger;
+    this.TONumber = "";
+    this.resetValidationNow = true;
+    this.showTOSearchModal = false;
+  }
+
   public isNewUser = false;
   private currentUser: UserDTO = {};
 

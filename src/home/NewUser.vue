@@ -163,39 +163,6 @@
       </div>
     </section>
 
-    <ATATDialog 
-      id="TOSearchModal"
-      :showDialog.sync="showTOSearchModal"
-      title="Search for your task order"
-      no-click-animation
-      :hideOkButton="true"
-      width="632"
-      @cancelClicked="TOSearchCancelled"
-      cancelButtonId="TOSearchCancel"
-      
-    >
-      <template #content>
-        <div class="body">
-          <p>
-            To fund your ATAT portfolio, you will need an awarded task order. Enter 
-            your task order number and we’ll retrieve the funding information.
-          </p>
-          <TaskOrderSearch 
-            label="Task order number"
-            tooltipText="This is a 13-character alphanumeric value found on your 
-              awarded task order. You may also enter 19 characters for a task order 
-              modification. Depending on which form was used, this may be referred 
-              to as the “Order Number” or “Delivery Order/Call No.”"
-            @startProvisionWorkflow="startProvisionWorkflow"
-            :TONumber.sync="TONumber"
-            :resetValidationNow.sync="resetValidationNow"
-            :isModal="true"
-          />
-
-        </div>
-      </template>
-    </ATATDialog>
-
   </div>
 </template>
 
@@ -207,8 +174,6 @@ import NewAcquisitionCard from "./components/NewAcquisitionCard.vue";
 import ExistingTaskOrderCard from "./components/ExistingTaskOrderCard.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDivider from "@/components/ATATDivider.vue";
-import ATATDialog from "@/components/ATATDialog.vue";
-import TaskOrderSearch from "@/portfolios/components/TaskOrderSearch.vue";
 
 @Component({
   components: {
@@ -216,28 +181,17 @@ import TaskOrderSearch from "@/portfolios/components/TaskOrderSearch.vue";
     ExistingTaskOrderCard,
     ATATAlert,
     ATATDivider,
-    ATATDialog,
-    TaskOrderSearch,
   }
 })
 
 export default class NewUser extends Vue {
-  public showTOSearchModal = false;
-  public TONumber = "";
-  public resetValidationNow = false;
-  
-  public TOSearchCancelled(): void {
-    this.TONumber = "";
-    this.resetValidationNow = true;
-    this.showTOSearchModal = false;
-  }
 
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
   }
 
-  public startProvisionWorkflow(): void{
-    this.$emit("startProvisionWorkflow");
+  public openTOSearchModal(): void {
+    this.$emit("openTOSearchModal");
   }
 
   public prepareStepsText = [
@@ -262,11 +216,6 @@ export default class NewUser extends Vue {
 
   public toggleShowNewFeatures(): void {
     this.showNewFeatures = !this.showNewFeatures;
-  }
-
-  public openTOSearchModal(): void {
-    // TODO task AT-8405
-    this.showTOSearchModal = true;
   }
 
 }
