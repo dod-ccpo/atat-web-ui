@@ -168,7 +168,8 @@ const saveOrUpdateClassificationInstance =
           classificationInstanceSysId: objSysId,
           classificationLevelSysId: savedObject.classification_level,
           title: capitalizeEachWord(title, "_") + " - " + serviceOfferingName, 
-          description: classificationInstance.anticipatedNeedUsage
+          description: classificationInstance.anticipatedNeedUsage,
+          idiqClinType: "CLOUD"
         });
       }
 
@@ -182,6 +183,7 @@ export const saveOrUpdateOtherServiceOffering =
     ):Promise<string> => {
       const tempObject: any = {};
       let objSysId = "";
+      let idiqClinType = "CLOUD";
       tempObject.acquisition_package = AcquisitionPackage.packageId;
       tempObject.anticipated_need_or_usage = serviceOffering.descriptionOfNeed;
       tempObject.classification_level = serviceOffering.classificationLevel;
@@ -203,7 +205,7 @@ export const saveOrUpdateOtherServiceOffering =
       tempObject.storage_unit = serviceOffering.storageUnit;
       tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
       tempObject.instance_number = serviceOffering.instanceNumber;
-
+      
       if(serviceOffering.sysId)
         tempObject.sys_id = serviceOffering.sysId;
       let title = serviceGroupVerbiageInfo[offeringType.toUpperCase()].offeringName;
@@ -216,11 +218,15 @@ export const saveOrUpdateOtherServiceOffering =
         tempObject.operating_environment = serviceOffering.operatingEnvironment;
         tempObject.operating_system_licensing = serviceOffering.operatingSystemAndLicensing;
         if(tempObject.sys_id){
+          objSysId = tempObject.sys_id;
           await api.computeEnvironmentInstanceTable.update(
             tempObject.sys_id,
                 tempObject as ComputeEnvironmentInstanceDTO
           );
-          objSysId = tempObject.sys_id;
+          await IGCEStore.updateIgceEstimateEnvironmentInstance({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: tempObject.classification_level,
+          });
         } else {
           const savedObject = await api.computeEnvironmentInstanceTable.create(
                 tempObject as ComputeEnvironmentInstanceDTO
@@ -233,7 +239,8 @@ export const saveOrUpdateOtherServiceOffering =
             description: savedObject.anticipated_need_or_usage,
             unit: "month",
             otherServiceOfferingData: serviceOffering,
-            offeringType
+            offeringType,
+            idiqClinType
           });
         }
         break;
@@ -267,24 +274,23 @@ export const saveOrUpdateOtherServiceOffering =
             description: savedObject.anticipated_need_or_usage,
             unit: "month",
             otherServiceOfferingData: serviceOffering,
-            offeringType
+            offeringType,
+            idiqClinType
           });
         }
         break;
       case "storage":
         tempObject.instance_name = "Storage Instance #" + serviceOffering.instanceNumber;
         if(tempObject.sys_id){
+          objSysId = tempObject.sys_id;
           await api.storageEnvironmentInstanceTable.update(
             tempObject.sys_id,
                 tempObject as StorageEnvironmentInstanceDTO
           );
-
           await IGCEStore.updateIgceEstimateEnvironmentInstance({
             environmentInstanceSysId: tempObject.sys_id,
             classificationLevelSysId: tempObject.classification_level,
           });
-
-          objSysId = tempObject.sys_id;
         } else {
           const savedObject = await api.storageEnvironmentInstanceTable.create(
                 tempObject as StorageEnvironmentInstanceDTO
@@ -297,18 +303,23 @@ export const saveOrUpdateOtherServiceOffering =
             description: savedObject.anticipated_need_or_usage,
             unit: "month",
             otherServiceOfferingData: serviceOffering,
-            offeringType
+            offeringType,
+            idiqClinType
           });
         }
         break;
       case "general_xaas":
         tempObject.instance_name = "Requirement #" + serviceOffering.instanceNumber;
         if(tempObject.sys_id){
+          objSysId = tempObject.sys_id;
           await api.xaaSEnvironmentInstanceTable.update(
             tempObject.sys_id,
                 tempObject as XaasEnvironmentInstanceDTO
           )
-          objSysId = tempObject.sys_id;
+          await IGCEStore.updateIgceEstimateEnvironmentInstance({
+            environmentInstanceSysId: tempObject.sys_id,
+            classificationLevelSysId: tempObject.classification_level,
+          });
         } else {
           const savedObject = await api.xaaSEnvironmentInstanceTable.create(
                 tempObject as XaasEnvironmentInstanceDTO
@@ -322,7 +333,8 @@ export const saveOrUpdateOtherServiceOffering =
             description: savedObject.anticipated_need_or_usage,
             unit: "month",
             otherServiceOfferingData: serviceOffering,
-            offeringType
+            offeringType,
+            idiqClinType
           });
         }
         break;
@@ -350,6 +362,7 @@ export const saveOrUpdateOtherServiceOffering =
         tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
 
         instanceType = "Service";
+        idiqClinType =  "CLOUD_SUPPORT"
         title = title + 
             (offeringType !== "portability_plan" 
               ? " - " + instanceType + " #" + serviceOffering.instanceNumber
@@ -357,11 +370,15 @@ export const saveOrUpdateOtherServiceOffering =
 
 
         if(tempObject.sys_id){
+          objSysId = tempObject.sys_id;
           await api.cloudSupportEnvironmentInstanceTable.update(
             tempObject.sys_id,
                 tempObject as CloudSupportEnvironmentInstanceDTO
           );
-          objSysId = tempObject.sys_id;
+          await IGCEStore.updateIgceEstimateEnvironmentInstance({
+            environmentInstanceSysId: tempObject.sys_id,
+            classificationLevelSysId: tempObject.classification_level,
+          });
         } else {
           const savedObject = await api.cloudSupportEnvironmentInstanceTable.create(
                 tempObject as CloudSupportEnvironmentInstanceDTO
@@ -375,7 +392,8 @@ export const saveOrUpdateOtherServiceOffering =
               description: savedObject.anticipated_need_or_usage,
               unit: offeringType === "portability_plan" ? "each" : "month",
               otherServiceOfferingData: serviceOffering,
-              offeringType
+              offeringType, 
+              idiqClinType
             });
           }
         }
