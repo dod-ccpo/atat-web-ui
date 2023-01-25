@@ -133,7 +133,7 @@ import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembers
 import PortfolioDrawer from "@/portfolios/portfolio/components/shared/PortfolioDrawer.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { SlideoutPanelContent } from "../../../../../types/Global";
@@ -159,14 +159,14 @@ export default class PortfolioSummaryPageHead extends Vue {
   public showDrawer = false;
 
   public openModal():void {
-    PortfolioData.setShowAddMembersModal(true);
+    PortfolioStore.setShowAddMembersModal(true);
   }
 
   public saveTitle(): void {
     const obj ={
       title: this._title
     }
-    PortfolioData.setPortfolioData(obj)
+    PortfolioStore.setPortfolioData(obj)
   }
   
   public async openSlideoutPanel(e: Event): Promise<void> {

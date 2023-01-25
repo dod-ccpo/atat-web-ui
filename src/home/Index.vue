@@ -12,7 +12,7 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
-          <div v-if="!isNewUser" class="_welcome-bar">
+          <div class="_welcome-bar">
             <div class="d-flex justify-start">
               <h1 class="text-primary">
                 Hi {{currentUser.first_name}}! How can we help you?
@@ -20,47 +20,30 @@
             </div>
             <div class="d-flex justify-end">
               <v-btn 
+                v-if="!isNewUser"
                 class="v-btn primary"
                 @click="startNewAcquisition"
               >
                 Start a new acquisition
               </v-btn>
+              <v-btn
+                v-else
+                href="https://community.hacc.mil/s/jwcc"
+                target="_blank"
+                id="HelpfulResourcesButton"
+                class="secondary no-text-decoration"
+              >
+                Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
+              </v-btn>
             </div>
           </div>
-          <section v-if="isNewUser" class="_py-80">
-            
-            <div class="d-flex flex-row-reverse">
-              <div class="d-flex align-flex-end">       
-                <div class="bg-white border-rounded-more pa-8">
-                  <h1 class="text-primary">Hi {{currentUser.first_name}}! How can we help you?</h1>
-                  <br />
-                  <div class="d-flex">
-                    <v-btn
-                      class="v-btn primary mr-4"
-                      @click="startNewAcquisition"
-                    >
-                      Start a new acquisition
-                    </v-btn>
-                    <v-btn
-                      href="https://community.hacc.mil/s/jwcc"
-                      target="_blank"
-                      id="HelpfulResourcesButton"
-                      class="secondary no-text-decoration"
-                      @click="scrollToResources"
-                    >
-                      Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
-                    </v-btn>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
         </div>
 
         <NewUser 
           v-if="isNewUser" 
           class="mt-15" 
           @startNewAcquisition="startNewAcquisition" 
+          @startProvisionWorkflow="startProvisionWorkflow"
         />
 
         <ExistingUser 
@@ -77,6 +60,7 @@
       </div>
 
     </v-main>
+
   </div>
 </template>
 
@@ -100,6 +84,7 @@ import UserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
+import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 @Component({
   components: {
@@ -113,7 +98,6 @@ import CurrentUserStore from "@/store/user";
 
 export default class Home extends Vue {
   public isNewUser = false;
-
   private currentUser: UserDTO = {};
 
   public get getCurrentUser(): UserDTO {
@@ -125,10 +109,6 @@ export default class Home extends Vue {
     this.currentUser = newVal;
     await this.checkIfIsNewUser();
   }  
-
-  public scrollToResources(): void {
-    scrollToId("HelpfulResourcesCards");
-  }
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
@@ -143,6 +123,20 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
+  public async startProvisionWorkflow(): Promise<void>{
+    await Steps.setAltBackDestination(AppSections.sectionTitles.ProvisionWorkflow);
+    await AcquisitionPackage.reset();
+    this.$router.push({
+      name: provWorkflowRouteNames.AwardedTaskOrder,
+      params: {
+        direction: "next"
+      },
+      replace: true
+    }).catch(() => console.log("avoiding redundant navigation"));
+    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
+    
+  }
+
   public async checkIfIsNewUser(): Promise<void> {
     const userHasPackages = await UserStore.hasPackages();
     this.isNewUser = !userHasPackages;
@@ -154,6 +148,7 @@ export default class Home extends Vue {
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
   }
+
 
 }
 

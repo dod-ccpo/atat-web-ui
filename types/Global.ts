@@ -15,6 +15,7 @@ import {
   ContactDTO,
   BaseTableDTO,
   ClinDTO,
+  EDAResponse,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -130,6 +131,7 @@ interface StepperRouteBase {
   additionalButtons?: AdditionalButton[];
   backButtonText?: string;
   continueButtonText?: string;
+  continueButtonColor?: string;
   stepCompleteOnEnter?: string;
   stepCompleteOnLeave?: string;
 }
@@ -489,6 +491,20 @@ export interface PortfolioSummaryQueryParams {
   searchString?: string;
 }
 
+export interface PortfolioAdmins {
+  DoDId: string;
+  hasUnclassifiedAccess?: YesNo;
+  unclassifiedEmail?: string;
+  hasSecretAccess?: YesNo;
+  secretEmail?: string;
+}
+
+export interface PortfolioProvisioning extends EDAResponse {
+  portfolioTitle?: string;
+  serviceOrAgency?: string;
+  admins?: PortfolioAdmins[];  
+}
+
 export interface EmailEntry {
   key: string;
   email: string;
@@ -515,6 +531,16 @@ export interface TaskOrderCardData {
   status?: string,
   sys_id?: string,
   clins?:ClinDTO[],
+}
+
+export interface AwardedTaskOrderDetails {
+  taskOrderNumber: string,
+  contractor: string,
+  contractIssuingOffice: string,
+  periodOfPerformance: string,
+  totalObligatedAmount: number,
+  totalAmount: number,
+  classificationLevel: string
 }
 
 export interface ClinTableRowData {

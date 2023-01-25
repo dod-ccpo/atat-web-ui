@@ -7,6 +7,7 @@ import {
   MemberInvites, 
   Portfolio, 
   PortfolioCardData, 
+  PortfolioProvisioning, 
   PortfolioSummaryQueryParams, 
   User,
 } from "../../../types/Global"
@@ -56,14 +57,36 @@ export const cspConsoleURLs: Record<string, string> = {
   oracle: "https://console.oraclecloud.com",
 }
 
+const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
+  return {
+    taskOrderNumber: "",
+    contractor: "",
+    csp: "",
+    contractIssuingOffice: "",
+    totalObligatedAmount: null,
+    totalAmount: null,
+    popStartDate: "",
+    popEndDate: "",
+    classificationLevels: [],
+    portfolioTitle: "",
+    serviceOrAgency: "",
+    admins: [],  
+  }
+
+}
 
 @Module({
-  name: "PortfolioData",
+  name: "PortfolioStore",
   namespaced: true,
   dynamic: true,
   store: rootStore,
 })
+
 export class PortfolioDataStore extends VuexModule {
+
+  public portfolioProvisioningObj: PortfolioProvisioning 
+    = _.cloneDeep(initialPortfolioProvisioningObj());
+
   private alertService = new AlertService();
   public activeTaskOrderNumber = "";
   
@@ -166,6 +189,18 @@ export class PortfolioDataStore extends VuexModule {
 
   public get portfolioSummaryQPs(): PortfolioSummaryQueryParams {
     return this.portfolioSummaryQueryParams;
+  }
+
+  @Action({rawError: true}) 
+  public async setPortfolioProvisioning(data: PortfolioProvisioning): Promise<void> {
+    this.doSetPortfolioProvisioning(data);
+  }
+
+  @Mutation
+  public async doSetPortfolioProvisioning(data: PortfolioProvisioning): Promise<void> {
+    this.portfolioProvisioningObj = this.portfolioProvisioningObj
+      ? Object.assign(this.portfolioProvisioningObj, data)
+      : data; 
   }
 
   @Action
@@ -399,5 +434,5 @@ export class PortfolioDataStore extends VuexModule {
 
 }
 
-const PortfolioData = getModule(PortfolioDataStore);
-export default PortfolioData;
+const PortfolioStore = getModule(PortfolioDataStore);
+export default PortfolioStore;

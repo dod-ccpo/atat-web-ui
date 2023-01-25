@@ -50,6 +50,22 @@ export class ValidationPlugin {
  * @returns {function(*=): boolean}
  */
 
+  allowedLengths(
+    lengths: number[], 
+    message?: string
+  ): ((v: string) => string | true | undefined) {
+
+    let lengthsStr: string = lengths.length > 1 
+      ? lengths.join(", ")
+      : lengths[0].toString();
+    lengthsStr = lengthsStr.replace(/,(?=[^,]+$)/, ' or');
+
+    message = message || `Must be ${lengthsStr} characters.`;
+    return (v: string) => {
+      return v && !lengths.includes(v.length) ? message : true;
+    };
+  };
+
   required(
     message?: string, isCurrency?: string
   ): ((v: string) => string | true | undefined) {

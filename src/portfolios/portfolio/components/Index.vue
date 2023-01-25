@@ -49,7 +49,7 @@ import PortfolioSummaryPageHead from
 import CSPPortalAccess from "@/portfolios/portfolio/components/CSPPortalAccess/CSPPortalAccess.vue";
 import FundingTracker from "@/portfolios/portfolio/components/FundingTracker/FundingTracker.vue";
 import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
 
 @Component({
@@ -81,7 +81,7 @@ export default class PortfolioSummary extends Vue {
   public portfolioCSP = ""
 
   public async loadOnEnter(): Promise<void>  {
-    const portfolio = PortfolioData.currentPortfolio;
+    const portfolio = PortfolioStore.currentPortfolio;
     if(portfolio){
       this.title = portfolio.title || "";
       this.portfolioStatus = portfolio.status || "";

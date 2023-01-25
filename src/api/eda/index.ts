@@ -10,37 +10,101 @@ export class EDAApi extends ApiBase{
     super(ENDPOINTNAME);
   }
 
-
- 
   public async search(taskOrderNumber: string): Promise<EDAResponse> {
-    
+    const custSupportUrl = "https://community.hacc.mil/s/contact?RequestTopic=DAPPS"
+    const errorMessages: Record<string, string> = {
+      "0001": `Task order is already funding a portfolio. If you need assistance, 
+        <a href="${custSupportUrl}" id="SupportLink" class="external-link" target="_blank">contact 
+        Customer Support</a>.`,
+      "0002": `Unable to locate your task order. If you need assistance, 
+        <a href="${custSupportUrl}" id="SupportLink" class="external-link" target="_blank">contact 
+        Customer Support</a>.`,
+      "0003": `Task order not awarded under JWCC Contract.
+        <a href="${custSupportUrl}" id="SupportLink" class="external-link" target="_blank">Contact 
+        Customer Support</a> for assistance.`
+    }    
     try {
       const response = await this.post({
         delivery_order_number : taskOrderNumber
       });
+      let edaResponse: EDAResponse = {};
       if (response.status === 200) {
         const { result } = response.data;
-        const edaResponse: EDAResponse = {
+        edaResponse = {
           success: true,
-          message: result.success
+          taskOrderNumber: result.taskOrderNumber,
+          contractor: result.contractor,
+          csp: result.csp,
+          contractIssuingOffice: result.contractIssuingOffice,
+          totalObligatedAmount: result.totalObligatedAmount,
+          totalAmount: result.totalAmount,
+          popStartDate: result.popStartDate,
+          popEndDate: result.popEndDate,
+          classificationLevels: result.classificationLevels,
         }
-        return edaResponse;
       } else {
         const { error } = response.data;
-        const edaResponse: EDAResponse = {
+        edaResponse = {
           success: false,
-          message: error.message || "unknown error"
+          code: error.code,
+          message: errorMessages[error.code] || "unknown error",
         }
-
-        return edaResponse;
       }
-    } catch (error) {
-      const edaResponse: EDAResponse = {
-        success: false,
-        message: "unknown error"
-      }
-
       return edaResponse;
+    } catch (error) {
+      // TODO: reinstate after API call wired up from backend
+      // const edaResponse: EDAResponse = {
+      //   success: false,
+      //   message: "Unknown error contacting EDA"
+      // }
+      // return edaResponse;
+
+      // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      // CODE BELOW for testing only - remove when EDA API call wired up
+      // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      let tempEdaResponse: EDAResponse = {};
+      if (taskOrderNumber === "4000000000000") {
+        tempEdaResponse = {
+          success: true,
+          taskOrderNumber: taskOrderNumber,
+          contractor: "Microsoft Corporation",
+          csp: "Azure",
+          contractIssuingOffice: "DITCO",
+          totalObligatedAmount: 10000000,
+          totalAmount: 50000000,
+          popStartDate: "2021-07-01",
+          popEndDate: "2026-07-01",
+          classificationLevels: ["Unclassified", "Secret"]          
+        }
+      } else {
+        let tempErrorCode = "";
+        switch (taskOrderNumber) {
+        case "1000000000000":
+          tempErrorCode = "0001";
+          break;
+        case "2000000000000":
+          tempErrorCode = "0002";
+          break;
+        case "3000000000000": 
+          tempErrorCode = "0003";
+          break;
+        }
+        if (tempErrorCode) {
+          tempEdaResponse = {
+            code: tempErrorCode,
+            success: false,
+            message: errorMessages[tempErrorCode] || "unknown error",
+          }
+        } else {
+          tempEdaResponse = {
+            success: false,
+            message: "Task order search not yet implemented."
+          }
+        } 
+      }  
+
+      return tempEdaResponse;
+
     }
   }
 

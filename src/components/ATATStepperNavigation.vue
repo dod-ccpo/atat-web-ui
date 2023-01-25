@@ -34,7 +34,8 @@
           @click="$emit('next')" 
           v-if="!hideContinueButton"
           depressed 
-          :color="this.continueButtonText == 'Continue'? 'primary' : 'secondary'"
+          :color="continueButtonColor
+            || this.continueButtonText === 'Continue'? 'primary' : 'secondary'"
           role="link" 
           class="ml-4"
           id="ContinueButton"
@@ -51,7 +52,7 @@
       role="button"
       class="mt-10"
     >
-      <span>Toggle Developer Navigation {{ developerNavState }}</span>
+      <span>Turn Developer Navigation {{ developerNavState }}</span>
     </v-btn>    
   </nav>
 </template>
@@ -71,7 +72,7 @@ export default class ATATStepperNavigation extends Vue {
   @Prop({ default: false }) private noPrevious?: boolean;
   @Prop({ default: "stepperNavigation" }) private id?: string;
   @Prop({ default: false }) private hideContinueButton?: boolean;
-
+  @Prop({ default: "" }) private continueButtonColor?: string;
   private getButtonClass(button: AdditionalButton) {
     return button.buttonClass || "secondary";
   }
