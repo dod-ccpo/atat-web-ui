@@ -33,8 +33,10 @@
             :key="index"
             class="mb-4"
             flat
+            multiple
+            :value="isPanelOpen"
           >
-            <v-expansion-panel expand>
+            <v-expansion-panel>
               <v-expansion-panel-header>
                 <div class="d-flex">
                   <div class="h4 _expansion-panel-header">
@@ -96,8 +98,10 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   
   igceEstimateData: IgceEstimateDTO[] = [];
-  estimateDataSource: never[] = [];
+  tempEstimateDataSource: IgceEstimateDTO[][] = [];
+  estimateDataSource: IgceEstimateDTO[][] = [];
   classLevels = ClassificationRequirements.classificationLevels;
+  isPanelOpen = [0]; //0 is open; 1 is closed.
 
   async loadOnEnter(): Promise<void> {
     await IGCE.loadIgceEstimateByPackageId(AcquisitionPackage.packageId);
@@ -106,9 +110,15 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
 
   async createDataSource(): Promise<void>{
     this.igceEstimateData = await IGCE.igceEstimateList;
+    await this.populateClassificationDisplay();
+    await this.groupByClassificationDisplay();
+    await this.sortDataSource();
+    this.estimateDataSource = await this.tempEstimateDataSource;
+  }
 
-    // populate classification_display attrib
-    this.igceEstimateData.forEach((est)=>{
+  // prep data source - populate classification_display attrib 
+  async populateClassificationDisplay(): Promise<void>{
+    await this.igceEstimateData.forEach((est)=>{
       const classLevelSysId = (est.classification_level as ReferenceColumn).value || "";
       const level = ClassificationRequirements.classificationLevels.find(
         (level) => {
@@ -116,15 +126,26 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         })
       est.classification_display = level?.display || "";
     })
-    
-    // group by classification_display attrib
-    this.estimateDataSource =  this.igceEstimateData.reduce(function (acc, current) {
+  }
+  
+  // group by classification_display attrib
+  async groupByClassificationDisplay(): Promise<void>{
+    this.tempEstimateDataSource = await this.igceEstimateData.reduce(function (acc, current) {
       acc[current.classification_display || ""] = acc[current.classification_display || ""] || [];
       acc[current.classification_display || ""].push(current);
       return acc;
     }, Object.create(null));
-
   }
+
+
+  async sortDataSource(): Promise<void>{
+    // sort nested arrays
+    for (const classLevelsArray in this.tempEstimateDataSource){
+      await this.tempEstimateDataSource[classLevelsArray].sort((a,b) => (a.title>b.title) ? 1 : -1 )
+    }
+    
+  }
+
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -140,7 +161,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       // if (this.hasChanged()) {
-      //   await IGCE.setCostEstimate(this.currentData);
+      await IGCE.setCostEstimate(this.estimateDataSource);
       // }
     } catch (error) {
       console.log(error);
