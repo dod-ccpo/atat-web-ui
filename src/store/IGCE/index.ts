@@ -93,6 +93,17 @@ export interface CostEstimate {
   offerings: Record<string, string|string[]|boolean|number|null>[]
 }
 
+export const getContractType = (): IgceEstimateDTO["contract_type"] =>{
+  let contractTypeChoice: IgceEstimateDTO["contract_type"] = "TBD";
+  const contractType: ContractTypeDTO = AcquisitionPackage.contractType as ContractTypeDTO;
+  if (contractType?.firm_fixed_price === "true") {
+    contractTypeChoice = "FFP";
+  } else if (contractType?.time_and_materials === "true") {
+    contractTypeChoice = "T&M";
+  }
+  return contractTypeChoice;
+}
+
 export const createCostEstimateDescription = (
   serviceName: string,
   service: OtherServiceOfferingData
@@ -484,16 +495,9 @@ export class IGCEStore extends VuexModule {
    */
   @Action({rawError: true})
   public async createIgceEstimateRecord(igceEstimateDTO: IgceEstimateDTO): Promise<void> {
-    let contractTypeChoice: IgceEstimateDTO["contract_type"] = "TBD";
-    const contractType: ContractTypeDTO = AcquisitionPackage.contractType as ContractTypeDTO;
-    if (contractType?.firm_fixed_price === "true") {
-      contractTypeChoice = "FFP";
-    } else if (contractType?.time_and_materials === "true") {
-      contractTypeChoice = "T&M";
-    }
     await api.igceEstimateTable.create({...igceEstimateDTO,
       acquisition_package: AcquisitionPackage.acquisitionPackage?.sys_id as string,
-      contract_type: contractTypeChoice});
+      contract_type: getContractType()});
   }
 
 
@@ -501,9 +505,8 @@ export class IGCEStore extends VuexModule {
   public async updateIgceEstimateRecord(
     envInstanceRef: {
       environmentInstanceSysId: string, 
-      classificationLevelSysId: string ,
+      classificationLevelSysId: string,
     }
-   
   ): Promise<void> {
     const isClassificationInstance = envInstanceRef.classificationLevelSysId === "";
 
@@ -518,8 +521,30 @@ export class IGCEStore extends VuexModule {
 
     if (costEstimateSysId){
       await api.igceEstimateTable.update(
-        costEstimateSysId,
-        { classification_level: envInstanceRef.classificationLevelSysId }); 
+        costEstimateSysId,{ 
+          classification_level: envInstanceRef.classificationLevelSysId,
+          contract_type: getContractType() 
+        }); 
+    }
+  }
+
+  @Action({rawError: true})
+  public async updateIgceEstimateRecordWithContractType(): Promise<void> {
+    const query: AxiosRequestConfig = {
+      params: { sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId },
+    };
+    const costEstimatesToBeUpdated = (await api.igceEstimateTable.getQuery(query));
+
+    if (costEstimatesToBeUpdated.length>0){
+      costEstimatesToBeUpdated.forEach(
+        async (estimateRow) => {
+          await api.igceEstimateTable.update(
+            estimateRow.sys_id || "",
+            { contract_type: getContractType() }
+          ); 
+        }
+      )
+     
     }
   }
 
@@ -538,7 +563,8 @@ export class IGCEStore extends VuexModule {
       description: string,
       unit: string,
       otherServiceOfferingData: OtherServiceOfferingData,
-      offeringType: string
+      offeringType: string,
+      idiqClinType: string
     }):
     Promise<void> {
     await this.createIgceEstimateRecord({...defaultIgceEstimate(),
@@ -551,7 +577,8 @@ export class IGCEStore extends VuexModule {
         envInstanceRef.offeringType,
         envInstanceRef.otherServiceOfferingData
       ),
-      unit: envInstanceRef.unit
+      unit: envInstanceRef.unit,
+      idiq_clin_type: envInstanceRef.idiqClinType
     });
   }
 
@@ -581,7 +608,8 @@ export class IGCEStore extends VuexModule {
       classificationInstanceSysId: string, 
       classificationLevelSysId: string  | ReferenceColumn
       title: string,
-      description: string
+      description: string,
+      idiqClinType: string
     }):
     Promise<void> {
     await this.createIgceEstimateRecord({...defaultIgceEstimate(),
@@ -591,7 +619,8 @@ export class IGCEStore extends VuexModule {
         : classInstanceRef.classificationLevelSysId as string,
       title: classInstanceRef.title,
       description: classInstanceRef.description,
-      unit: "month"
+      unit: "month",
+      idiq_clin_type: classInstanceRef.idiqClinType
     });
   }
 
