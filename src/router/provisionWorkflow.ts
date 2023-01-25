@@ -42,6 +42,7 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
         buttonText: "I need to enter a different task order number",
         buttonId: "EnterAnotherTaskOrderNumber",
         buttonClass: "secondary",
+        actionName: "openTOSearchModal",
       },
     ]
   },

@@ -2,6 +2,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
 import router from "@/router";
+import PortfolioStore from "@/store/portfolio";
 
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
@@ -9,7 +10,8 @@ const actionHandlerNames = {
   confirmComputeDeletion: "confirmComputeDeletion",
   confirmServiceDeletion: "confirmServiceDeletion",
   clearCurrentContractInfo: "clearCurrentContractInfo",
-  confirmDeleteTravelAll: "confirmDeleteTravelAll"
+  confirmDeleteTravelAll: "confirmDeleteTravelAll",
+  openTOSearchModal: "openTOSearchModal",
 }
 
 const actions =  {
@@ -19,6 +21,7 @@ const actions =  {
   [actionHandlerNames.confirmServiceDeletion]: confirmServiceDeletion,
   [actionHandlerNames.clearCurrentContractInfo]: clearCurrentContractInfo,
   [actionHandlerNames.confirmDeleteTravelAll]: confirmDeleteTravelAll,
+  [actionHandlerNames.openTOSearchModal]: openTOSearchModal,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -62,6 +65,10 @@ async function confirmServiceDeletion() {
 
 async function confirmDeleteTravelAll() {
   await DescriptionOfWork.setConfirmTravelDeleteAll(true);
+}
+
+async function openTOSearchModal() {
+  await PortfolioStore.setOpenTOSearchModal(true);
 }
 
 export default actionHandler;
