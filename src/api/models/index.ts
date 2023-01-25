@@ -838,17 +838,18 @@ export interface RequirementsCostEstimateFlat extends BaseTableDTO{
 }
 
 export interface IgceEstimateDTO extends BaseTableDTO {
-  acquisition_package: ReferenceColumn | string;
-  classification_level: ReferenceColumn | string;
-  classification_instance: ReferenceColumn | string;
-  environment_instance: ReferenceColumn | string;
-  cross_domain_solution: ReferenceColumn | string;
-  contract_type: "" | "FFP" | "T&M" | "TBD";
-  title: string;
-  description: string;
-  unit: string;
-  unit_price: number | null;
-  unit_quantity: string;
+  acquisition_package?: ReferenceColumn | string;
+  classification_level?: ReferenceColumn | string;
+  classification_instance?: ReferenceColumn | string;
+  environment_instance?: ReferenceColumn | string;
+  cross_domain_solution?: ReferenceColumn | string;
+  cross_domain_pair?: string; // "U_TO_S", "S_TO_U". Only these are stored in CDS table not sys_ids
+  contract_type?: "" | "FFP" | "T&M" | "TBD";
+  title?: string;
+  description?: string;
+  unit?: string;
+  unit_price?: number | null;
+  unit_quantity?: string;
   dow_task_number?: string;
   classification_display?: string;
 }

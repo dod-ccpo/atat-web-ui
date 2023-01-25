@@ -119,7 +119,6 @@ export default class Home extends Vue {
   }
 
   public TOSearchCancelled(): void {
-    debugger;
     this.TONumber = "";
     this.resetValidationNow = true;
     this.showTOSearchModal = false;
