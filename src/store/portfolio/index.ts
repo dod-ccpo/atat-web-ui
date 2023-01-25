@@ -432,6 +432,10 @@ export class PortfolioDataStore extends VuexModule {
     return fundingAlertData;
   }
 
+  public async reset(): Promise<void> {
+    this.portfolioProvisioningObj = _.cloneDeep(initialPortfolioProvisioningObj());
+  }
+
 }
 
 const PortfolioStore = getModule(PortfolioDataStore);

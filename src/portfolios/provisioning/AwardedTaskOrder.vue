@@ -78,6 +78,7 @@ import { AwardedTaskOrderDetails } from "types/Global";
 import { getCurrencyString } from "@/helpers";
 
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({
   components:{
@@ -86,17 +87,37 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 })
 export default class AwardedTaskOrder extends Vue {
   public awardedTaskOrder: AwardedTaskOrderDetails = {
-    taskOrderNumber: "HC102817F1349",
-    contractor: "Microsoft, Inc.",
-    contractIssuingOffice: "DITCO",
-    periodOfPerformance: "10/01/2022-09/20/2023",
-    totalObligatedAmount: 10000000,
-    totalAmount: 50000000,
-    classificationLevel: "Unclassified"
+    taskOrderNumber: "",
+    contractor: "",
+    contractIssuingOffice: "",
+    periodOfPerformance: "",
+    totalObligatedAmount: 0,
+    totalAmount: 0,
+    classificationLevel: ""
   };
 
   public convertToCurrency(num: number): string{
     return getCurrencyString(num);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const data = PortfolioStore.portfolioProvisioningObj;
+    if (data) {
+      this.awardedTaskOrder = {
+        taskOrderNumber: data.taskOrderNumber as string,
+        contractor: data.contractor as string,
+        contractIssuingOffice: data.contractIssuingOffice as string,
+        periodOfPerformance: data.popStartDate + "—" + data.popEndDate,
+        totalObligatedAmount: data.totalObligatedAmount as number,
+        totalAmount: data.totalAmount as number,
+        classificationLevel: data.classificationLevels?.length 
+          ? data.classificationLevels.join(", ") : "",
+      }
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 
 }
