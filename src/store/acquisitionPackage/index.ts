@@ -373,6 +373,15 @@ export class AcquisitionPackageStore extends VuexModule {
       this.acquisitionPackage.contracting_shop = value;
   }
 
+  @Action({rawError: false})
+  public async setAttachmentNames(value: string[]): Promise<void> {
+    this.doSetAttachmentNames(value);
+  }
+  @Mutation
+  private doSetAttachmentNames(value: string[]): void {
+    this.attachmentNames = value;
+  }
+
   @Action
   public async setValidateNow(value: boolean): Promise<void> {
     this.doSetValidateNow(value);

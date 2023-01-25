@@ -289,6 +289,7 @@ export default class ATATFileUpload extends Vue {
    *
    */
   private removeInvalidFiles(files: FileList): void {
+
     let _validFiles = Array.from(files || []).filter((vFile) => {
 
       const isRestrictedName = this.restrictedNames?.includes(vFile.name)
