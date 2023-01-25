@@ -1,14 +1,14 @@
 import {StepperRouteConfig, StepperStep} from "../../types/Global";
 
 // Step 1 - Acquisition Package Details
-import RouterIndex from "@/home/RouterIndex.vue";
-import AwardedTaskOrder from "@/home/AwardedTaskOrder.vue";
-import AddCSPAdmin from "@/home/AddCSPAdmin.vue";
-import ReadyToProvision from "@/home/ReadyToProvision.vue";
-import Provisioned from "@/home/Provisioned.vue";
+import ProvisioningIndex from "@/portfolios/provisioning/Index.vue";
+import AwardedTaskOrder from "@/portfolios/provisioning/AwardedTaskOrder.vue";
+import AddCSPAdmin from "@/portfolios/provisioning/AddCSPAdmin.vue";
+import ReadyToProvision from "@/portfolios/provisioning/ReadyToProvision.vue";
+import Provisioned from "@/portfolios/provisioning/Provisioned.vue";
 
 export const provWorkflowRouteNames = {
-  RouterIndex: "Router_Index",
+  ProvisioningIndex: "Provisioning_Index",
   ProvisionWorkflow: "Provision_Workflow",
   AwardedTaskOrder: "Awarded_Task_Order",
   AddCSPAdmin: "Add_CSP_Admin",
@@ -28,8 +28,8 @@ export const provWorkflowRouteNames = {
  */
 export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
   {
-    path: "/router-index-home",
-    component: RouterIndex,
+    path: "/provisioning",
+    component: ProvisioningIndex,
     stepNumber: "02",
     completed: false,
   },

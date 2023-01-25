@@ -63,25 +63,7 @@ export class EDAApi extends ApiBase{
       // CODE BELOW for testing only - remove when EDA API call wired up
       // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       let tempEdaResponse: EDAResponse = {};
-      let tempErrorCode = "";
-      switch (taskOrderNumber) {
-      case "1111111111111":
-        tempErrorCode = "0001";
-        break;
-      case "2222222222222":
-        tempErrorCode = "0002";
-        break;
-      case "3333333333333": 
-        tempErrorCode = "0003";
-        break;
-      }
-      if (tempErrorCode) {
-        tempEdaResponse = {
-          code: tempErrorCode,
-          success: false,
-          message: errorMessages[tempErrorCode] || "unknown error",
-        }
-      } else {
+      if (taskOrderNumber === "4000000000000") {
         tempEdaResponse = {
           success: true,
           taskOrderNumber: taskOrderNumber,
@@ -94,7 +76,33 @@ export class EDAApi extends ApiBase{
           popEndDate: "2026-07-01",
           classificationLevels: ["Unclassified", "Secret"]          
         }
-      }
+      } else {
+        let tempErrorCode = "";
+        switch (taskOrderNumber) {
+        case "1000000000000":
+          tempErrorCode = "0001";
+          break;
+        case "2000000000000":
+          tempErrorCode = "0002";
+          break;
+        case "3000000000000": 
+          tempErrorCode = "0003";
+          break;
+        }
+        if (tempErrorCode) {
+          tempEdaResponse = {
+            code: tempErrorCode,
+            success: false,
+            message: errorMessages[tempErrorCode] || "unknown error",
+          }
+        } else {
+          tempEdaResponse = {
+            success: false,
+            message: "Task order search not yet implemented."
+          }
+        } 
+      }  
+
       return tempEdaResponse;
 
     }

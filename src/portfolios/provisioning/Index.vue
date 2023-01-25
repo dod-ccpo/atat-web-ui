@@ -7,6 +7,6 @@ import { Component } from "vue-property-decorator";
 
 @Component({
 })
-export default class RouterIndex extends Vue {
+export default class ProvisioningIndex extends Vue {
 }
 </script>
