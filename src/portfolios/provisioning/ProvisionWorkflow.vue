@@ -153,7 +153,7 @@ export default class ProvisionWorkflow extends Vue {
 
     } else if (direction === "previous" && this.altBackDestination) { 
 
-      if (this.$route.name === this.routeNames.ProjectOverview) {
+      if (this.$route.name === this.routeNames.AwardedTaskOrder) {
         Steps.setAltBackDestination("");
 
         switch (this.altBackDestination) {
@@ -168,7 +168,6 @@ export default class ProvisionWorkflow extends Vue {
           break;
         }
         }
-
       }
     }
   }
