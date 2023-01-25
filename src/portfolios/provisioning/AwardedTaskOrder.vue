@@ -60,7 +60,7 @@
                 <p class="mb-4">
                   In addition to the details listed above, ATAT imports the total and obligated 
                   values for each CLIN within all performance periods. This funding information 
-                  will be used to track your cloud usage and manage spending throughout the \
+                  will be used to track your cloud usage and manage spending throughout the
                   duration of the task order.
                 </p>
               </template>
