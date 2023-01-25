@@ -21,7 +21,7 @@
       :style="'width: ' + width"
     >
       <v-text-field
-        ref="atatSearchInput"
+        :ref="isModal ? 'atatSearchInputModal' : 'atatSearchInput'"
         :id="id + '_SearchInput'"
         class="_search-input"
         clearable
@@ -34,7 +34,7 @@
         :rules="rules"
         :validate-on-blur="validateOnBlur"
         @update:error="setErrorMessage"
-        @click:clear="clear"
+        @click:clear="clearErrorMessages"
         @blur="onBlur"
         autocomplete="off"
         @keydown.enter="search"
@@ -150,6 +150,13 @@ export default class ATATSearch extends Vue {
       resetValidation(): void;
       value: string;
     };
+    atatSearchInputModal: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      resetValidation(): void;
+      value: string;
+    };
+
   }; 
 
   @Prop({ default: "Search" }) private id!: string;
@@ -168,8 +175,10 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "" }) private searchType?: string;
   @Prop({ default: "" }) private buttonText?: string;
   @Prop({ default: false }) private searchButtonDisabled?: boolean;
+  @Prop({ default: false }) private isModal?: boolean;
 
   @PropSync("value", { default: "" }) public _value!: string;
+  @PropSync("resetValidationNow") public _resetValidationNow!: boolean;
 
   private error = false;
   private errorMessages: string[] = [];
@@ -183,9 +192,19 @@ export default class ATATSearch extends Vue {
 
   private searchDisabled = true;
 
+  @Watch("_resetValidationNow")
+  public async resetValidationNowChange(newVal: boolean): Promise<void> {
+    if (newVal) {
+      await this.resetValidation();
+      this.clearErrorMessages();
+    }
+  }
+
   @Watch("_value")
   public valueChanged(newVal: string): void {
-    const hasErrors = this.$refs.atatSearchInput?.errorBucket.length > 0
+    const hasErrors = !this.isModal 
+      ? this.$refs.atatSearchInput?.errorBucket.length > 0
+      : this.$refs.atatSearchInputModal?.errorBucket.length > 0
     const hasContent = newVal && newVal.length > 0;
     this.searchDisabled = hasErrors || !hasContent;
   }
@@ -198,7 +217,7 @@ export default class ATATSearch extends Vue {
   public onInput(v: string): void {
     this._value = v;
     if (this.errorMessages.length > 0) {
-      this.clear();
+      this.clearErrorMessages();
     }
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
@@ -215,7 +234,11 @@ export default class ATATSearch extends Vue {
       try {
         const response = await api.edaApi.search(this._value);
         if (response.success !== undefined && !response.success) {
-          this.$refs.atatSearchInput.errorBucket = [response.message || "Unknown error"];
+          if (!this.isModal) {
+            this.$refs.atatSearchInput.errorBucket = [response.message || "Unknown error"];
+          } else {
+            this.$refs.atatSearchInputModal.errorBucket = [response.message || "Unknown error"];
+          }
         } else {
           await PortfolioStore.setPortfolioProvisioning(response);
           this.$emit("search");
@@ -245,13 +268,19 @@ export default class ATATSearch extends Vue {
 
   private setErrorMessage(): void {
     Vue.nextTick(()=>{
-      this.errorMessages = this.$refs.atatSearchInput.errorBucket;
+      this.errorMessages = !this.isModal 
+        ? this.$refs.atatSearchInput.errorBucket
+        : this.$refs.atatSearchInputModal.errorBucket;
     });
   }
 
-  private clear(): void {
+  private clearErrorMessages(): void {
     Vue.nextTick(()=>{
-      this.$refs.atatSearchInput.errorBucket = [];
+      if (!this.isModal) {
+        this.$refs.atatSearchInput.errorBucket = [];
+      } else {
+        this.$refs.atatSearchInputModal.errorBucket = []; 
+      }
       this.errorMessages = [];
     });
     this.$emit("clear");
@@ -263,9 +292,15 @@ export default class ATATSearch extends Vue {
     this.$emit('blur', input.value);
   }
 
-  public resetValidation(): void {
-    this.$refs.atatSearchInput.errorBucket = [];
-    this.$refs.atatSearchInput.resetValidation();
+  public async resetValidation(): Promise<void> {
+    if (!this.isModal) {
+      this.$refs.atatSearchInput.errorBucket = [];
+      this.$refs.atatSearchInput.resetValidation();
+    } else {
+      this.$refs.atatSearchInputModal.errorBucket = [];
+      this.$refs.atatSearchInputModal.resetValidation();
+    }
+    this._resetValidationNow = false;
   }
 
   private setMask(): void {

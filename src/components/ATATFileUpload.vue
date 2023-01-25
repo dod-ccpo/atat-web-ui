@@ -274,7 +274,6 @@ export default class ATATFileUpload extends Vue {
    *
    */
   private addDropFile(e: DragEvent): void {
-    debugger;
     if (this.isFileUploadDisabled === false){
       const dt = e.dataTransfer as DataTransfer;
       this.removeInvalidFiles(dt.files as FileList);

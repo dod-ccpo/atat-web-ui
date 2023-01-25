@@ -27,9 +27,10 @@ export class EDAApi extends ApiBase{
       const response = await this.post({
         delivery_order_number : taskOrderNumber
       });
+      let edaResponse: EDAResponse = {};
       if (response.status === 200) {
         const { result } = response.data;
-        const edaResponse: EDAResponse = {
+        edaResponse = {
           success: true,
           taskOrderNumber: result.taskOrderNumber,
           contractor: result.contractor,
@@ -41,16 +42,15 @@ export class EDAApi extends ApiBase{
           popEndDate: result.popEndDate,
           classificationLevels: result.classificationLevels,
         }
-        return edaResponse;
       } else {
         const { error } = response.data;
-        const edaResponse: EDAResponse = {
-          code: error.code,
+        edaResponse = {
           success: false,
+          code: error.code,
           message: errorMessages[error.code] || "unknown error",
         }
-        return edaResponse;
       }
+      return edaResponse;
     } catch (error) {
       // TODO: reinstate after API call wired up from backend
       // const edaResponse: EDAResponse = {

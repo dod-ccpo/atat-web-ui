@@ -26,11 +26,12 @@
         >{{ cancelText }}
         </v-btn>
         <v-btn
+          v-if="!hideOkButton"
           :color="buttonColor"
           :ripple="false"
           id="dialog_ok"
           :disabled="OKDisabled"
-          @click="onOK"
+          @click="onOK"          
         >
           {{ okText }}
         </v-btn>
@@ -100,6 +101,7 @@ export default class ATATDialog extends Vue {
   @Prop() private focusOnCancel!: string;
   @Prop() private focusOnOk!: string;
   @Prop({ default: false }) private OKDisabled!: boolean;
+  @Prop({ default: false }) private hideOkButton!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
   @Prop({ default: "primary" }) private buttonColor?: string;
 
