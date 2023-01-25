@@ -50,7 +50,9 @@
               </a>
             </p>
             <p class="mt-3 mb-9 text-base">
-              Supported file types: {{formatFileTypes}}  • Max file size: {{fileSizeConversion}}GB
+              <span v-if="filesRequired">{{maxNumberOfFiles}} files required</span>
+              <span v-else>Supported file types: {{formatFileTypes}}</span>
+              • Max file size: {{fileSizeConversion}}GB
             </p>
           </div>
           <div
@@ -77,7 +79,9 @@
                 </a>
               </p>
               <p class="ml-auto mb-0 mt-2 text-base">
-                Supported file types: {{formatFileTypes}}  • Max file size: {{fileSizeConversion}}GB
+                <span v-if="filesRequired">{{maxNumberOfFiles}} files required</span>
+                <span v-else>Supported file types: {{formatFileTypes}}</span>
+                  • Max file size: {{fileSizeConversion}}GB
               </p>
             </div>
           </div>
@@ -142,6 +146,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: true}) private multiplesAllowed!: boolean;
   @Prop({ default: true}) private showAllErrors?: boolean;
+  @Prop({ default: true}) private filesRequired?: boolean;
   @Prop() private restrictedNames?: string[];
   @Prop({ default: "required"}) private requiredMessage!: string;
   @Prop({ default: 20 }) private maxNumberOfFiles!: number;
@@ -169,6 +174,7 @@ export default class ATATFileUpload extends Vue {
   private fileAttachmentService?: typeof AttachmentServiceTypes;
   private errorMessages: string[] = [];
   private validateOnBlur = true;
+  private moreThanMax = false
   get isFileUploadDisabled():boolean{
     return this.maxNumberOfFiles<=this._validFiles.length;
   }
@@ -326,10 +332,16 @@ export default class ATATFileUpload extends Vue {
 
       return isValidFormat && !doesFileExist && isFileSizeValid && !isRestrictedName;
     });
-
-    // if(_validFiles.length > this.maxNumberOfFiles){
-    //   return
-    // }
+    if(_validFiles.length > this.maxNumberOfFiles){
+      this.moreThanMax = true
+      const errorText = this.maxNumberOfFiles === 1?
+        `Too many files selected. You can upload up to ${this.maxNumberOfFiles} file.`
+        :`Too many files selected. You can upload up to ${this.maxNumberOfFiles} files.`
+      this.$refs.atatFileUpload.errorBucket
+        .push(errorText)
+      this.setErrorMessage()
+      return
+    }
    
     //allows for maxNumberOfFiles to be uploaded
     if(this.maxNumberOfFiles<_validFiles.length){
@@ -442,7 +454,7 @@ export default class ATATFileUpload extends Vue {
   private setErrorMessage(): void {
     this.$nextTick(() => {
       this.errorMessages = this.$refs.atatFileUpload.errorBucket;
-      if (this._invalidFiles.length > 0){
+      if (this._invalidFiles.length > 0 || this.moreThanMax){
         this.errorMessages = this.errorMessages.filter(
           (msg)=>msg !== this.requiredMessage
         );

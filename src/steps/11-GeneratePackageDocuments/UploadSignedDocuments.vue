@@ -15,13 +15,14 @@
             :validFileFormats="validFileFormats"
             :attachmentServiceName="attachmentServiceName"
             :maxFileSizeInBytes="maxFileSizeInBytes"
-            id="FundingPlan"
+            id="SignedDocs"
             @delete="onRemoveAttachment"
             fileListTitle="Your files"
             :invalidFiles.sync="invalidFiles"
-            :maxNumberOfFiles="2"
+            :maxNumberOfFiles="filesNeeded.length"
             :validFiles.sync="uploadedFiles"
             :rules="getRulesArray()"
+            :filesRequired="true"
           />
         </v-col>
         <v-col cols="2">
@@ -67,7 +68,7 @@
               <div
                 v-for="(item,idx) in filesNeeded"
                 :key="idx"
-                class="d-flex"
+                class="d-flex align-center"
               >
                 <ATATSVGIcon
                   class="mr-2"
