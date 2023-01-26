@@ -33,7 +33,7 @@
             class="primary mx-auto mb-2"
             @click="openAddCSPModal"
             @keydown.enter="openAddCSPModal"
-            @keydown.space="openAddCSPModal">
+            @keydown.space="openAddCSPModal"
           >
             <ATATSVGIcon 
               color="white"
@@ -45,32 +45,151 @@
             Add a CSP Administrator
           </v-btn> 
         </div>
+        <div v-else>
+          <v-data-table 
+            :headers="tableHeaders"
+            :items="tableData"
+            :items-per-page="-1"
+            class="elevation-0 _offering-instances _base-table-style mt-10"
+            :hide-default-footer="true"
+          >
 
+            <!-- eslint-disable vue/valid-v-slot -->
+            <template v-slot:item.adminEmails="{ item }">
+              <span v-html="item.adminEmails"></span>
+            </template>
+            <!-- eslint-disable vue/valid-v-slot -->
+            <template v-slot:item.adminClassificationLevels="{ item }">
+              <span v-html="item.adminClassificationLevels"></span>
+            </template>
+            <!-- eslint-disable vue/valid-v-slot -->
+            <template v-slot:item.actions="{ item }">
+              <button
+                :id="'EditButton_' + item.instanceNumber"
+                @click="editInstance(item)"
+                class="mr-2"
+              >
+                <ATATSVGIcon name="edit" height="19" width="19" />
+              </button>
+
+              <button
+                :id="'DeleteButton_' + item.instanceNumber"
+                @click="confirmDeleteInstance(item)"
+                class="ml-2"
+              >
+                <ATATSVGIcon name="remove" height="18" width="14" />
+              </button>
+            </template>
+            
+          </v-data-table>
+          <v-btn
+            id="AddAnotherAdmin"
+            role="link" 
+            class="secondary _normal _small-text mt-5"
+            :ripple="false"
+            @click="openAddCSPModal()"
+          >
+            <ATATSVGIcon 
+              color="primary" 
+              height="17" 
+              width="18" 
+              name="control-point" 
+              class="mr-2"
+            />
+            Add another CSP Administrator
+          </v-btn>  
+        </div>
       
-      <ATATDialog 
-        id="AddCSPAdminModal"
-        :showDialog.sync="openModal"
-        title="Add a CSP administrator"
-        no-click-animation
-        okText="Add administrator"
-        width="632"
-        :OKDisabled="ModalOKDisabled"
-        @ok="AddCSPAdmin"
-        :modalSlideoutComponent="modalSlideoutComponent"
-        modalSlideoutTitle="Learn more about CSP administrators"
-        :modalDrawerIsOpen.sync="modalDrawerIsOpen"
-      >
-        <template #content>
-          <p class="body">
-            This individual will be granted full access to the CSP console to manage 
-            user accounts and configure workspace settings. 
-            <a id="LearnMoreLink" role="button" @click="openLearnMoreDrawer">
-              Learn more
-            </a>
+        <ATATDialog 
+          id="AddCSPAdminModal"
+          :showDialog.sync="openModal"
+          title="Add a CSP administrator"
+          no-click-animation
+          okText="Add administrator"
+          width="632"
+          :OKDisabled="ModalOKDisabled"
+          @ok="AddCSPAdmin"
+          :modalSlideoutComponent="modalSlideoutComponent"
+          modalSlideoutTitle="Learn more about CSP administrators"
+          :modalDrawerIsOpen.sync="modalDrawerIsOpen"
+        >
+          <template #content>
+            <p class="body">
+              This individual will be granted full access to the CSP console to manage 
+              user accounts and configure workspace settings. 
+              <a id="LearnMoreLink" role="button" @click="openLearnMoreDrawer">
+                Learn more
+              </a>
+            </p>
 
-          </p>
-        </template>
-      </ATATDialog>
+            <form ref="CSPAdminForm">
+            
+              <ATATTextField 
+                id="AdminDoDId"
+                :value.sync="adminDoDId"
+                label="Administrator’s DoD ID"
+                tooltipText="This 10-digit number is printed on the back of your 
+                  administrator's Common Access Card (CAC). You may also ask your 
+                  administrator to log into DoD ID Card Office Online and locate it 
+                  under “My Profile.”"
+                class="_input-max-width"
+                :mask="['^([0-9]{10})$']"
+                :isMaskRegex="true"
+                :rules="DoDIdRules"
+              />
+
+              <div v-if="classificationLevels.length > 1">
+                <ATATCheckboxGroup 
+                  id="ClassificationSelection"
+                  class="mt-10"
+                  groupLabel="What classification level should this individual have access to?"
+                  :value.sync="selectedClassificationLevels"
+                  :items="classificationLevelOptions"
+                  :card="true"
+                  :inline="true"
+                  cardWidth="180"
+                  :noDescriptions="true"
+                />
+              </div>
+
+              <ATATTextField 
+                id="UnclassifiedEmail"
+                v-if="selectedClassificationLevels.includes('Unclassified')"
+                :value.sync="unclassifiedEmail"
+                label="Unclassified email address"
+                tooltipText="Use a Non-classified Internet Protocol Router Network (NIPRNet) 
+                  email address. This is where the CSP will send instructions for accessing
+                  the Unclassified/IL5 cloud console."
+                class="_input-max-width mt-10"
+                helpText="Must use a .mil or .gov email address."
+                :rules="[
+                  $validators.required(
+                    'Please enter your administrator’s email address.'
+                  ),              
+                  $validators.isEmail('Please use a .mil or .gov email address')
+                ]"
+              />
+              <ATATTextField 
+                id="ScrtEmail"
+                v-if="scrtSelected"
+                :value.sync="scrtEmail"
+                label="SIPRNet email address"
+                tooltipText="Use a Secure Internet Protocol Router Network (SIPRNet) 
+                  email address. This is where the CSP will send instructions for 
+                  accessing the FOO/IL6 cloud console."
+                class="_input-max-width mt-10"
+                helpText="Must use a .smil or .sgov email address."
+                :rules="[
+                  $validators.required(
+                    'Please enter your administrator’s email address.'
+                  ),              
+                  $validators.isEmail('Please use a .smil or .sgov email address', true)
+                ]"
+              />
+
+            </form>
+          </template>
+        </ATATDialog>
 
       </v-col>
     </v-row>
@@ -81,38 +200,109 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
+
 import CSPAdminLearnMore from "./AddCSPAdminLearnMore.vue";
 import CSPAdminLearnMoreText from "./AddCSPAdminLearnMoreText.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel";
-import { PortfolioAdmins, SlideoutPanelContent } from "types/Global";
+import { 
+  Checkbox, 
+  ClassificationLevels, 
+  PortfolioAdmin, 
+  SlideoutPanelContent 
+} from "types/Global";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
 
 @Component({
   components: {
+    ATATCheckboxGroup,
     ATATDialog,
     ATATSVGIcon,
+    ATATTextField,
     CSPAdminLearnMore,
     CSPAdminLearnMoreText
   }
 })
 
 export default class AddCSPAdmin extends Vue {
+  $refs!: {
+    CSPAdminForm: Vue & {
+      resetValidation: () => void;
+      errorBucket: string[];
+      reset: () => void;
+      validate: () => boolean;
+      errorBag: Record<number, boolean>;
+    },
+  };
 
-  public admins: PortfolioAdmins[] = [];
+  public admins: PortfolioAdmin[] = [];
   public csp = "";
+  public classificationLevels: string[] = [];
   public openModal = false;
-  public ModalOKDisabled = false;
   public modalSlideoutComponent = CSPAdminLearnMoreText;
   public modalDrawerIsOpen = false;
 
-  public get currentData(): PortfolioAdmins[] {
+  public adminDoDId = "";
+  public hasUnclassifiedAccess = ""; // YES/NO
+  public unclassifiedEmail = "";
+  public hasScrtAccess = ""; // YES/NO
+  public scrtEmail = "";
+
+  public scrtStr = ClassificationLevels.SCRT;
+  public unclStr = ClassificationLevels.UNCL;
+
+  public selectedClassificationLevels: string[] = [];
+  public classificationLevelOptions: Checkbox[] = [
+    { id: this.unclStr, label: this.unclStr, value: this.unclStr },
+    { id: this.scrtStr, label: this.scrtStr, value: this.scrtStr }
+  ];
+
+  public get scrtSelected(): boolean {
+    return this.selectedClassificationLevels.includes(this.scrtStr);
+  }
+
+  public DoDIdRules = [
+    this.$validators.allowedLengths(
+      [10], 'The DoD ID must be 10 characters.'
+    ),
+    this.$validators.required("Please enter your administrator’s 10-digit DoD ID.")
+  ]
+
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.CSPAdminForm as Vue & { validate: () => boolean };
+  }
+
+  public get ModalOKDisabled(): boolean {
+    const idOK = this.adminDoDId.length === 10;
+    const classificationSelected = this.selectedClassificationLevels.length > 0;
+    let unclassEmailValid = true;
+    if (this.selectedClassificationLevels.includes(this.unclStr)) {
+      unclassEmailValid = /^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i
+        .test(this.unclassifiedEmail);
+    }
+    let scrtEmailValid = true;
+    if (this.selectedClassificationLevels.includes(this.scrtStr)) {
+      scrtEmailValid = /^\S[a-z-_.0-9]+@[a-z-]+\.(?:sgov|smil)+\.(?:gov|mil)$/i
+        .test(this.scrtEmail);
+    }
+    return !idOK || !classificationSelected || !unclassEmailValid || !scrtEmailValid;
+  };
+
+  public async validate(): Promise<void> {
+    this.$nextTick(() => {
+      this.Form.validate();
+    });
+  }
+
+  public get currentData(): PortfolioAdmin[] {
     return this.admins;
   } 
-  public savedData: PortfolioAdmins[] = [];
+  public savedData: PortfolioAdmin[] = [];
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -129,7 +319,61 @@ export default class AddCSPAdmin extends Vue {
   }
 
   public AddCSPAdmin(): void {
-    debugger;
+    const hasUnclassifiedAccess 
+      = this.selectedClassificationLevels.includes(this.unclStr) ? "YES" : "NO";
+    const hasScrtAccess = this.selectedClassificationLevels.includes(this.scrtStr) ? "YES" : "NO";
+    const admin: PortfolioAdmin = {
+      DoDId: this.adminDoDId,
+      hasUnclassifiedAccess,
+      hasScrtAccess,
+      unclassifiedEmail: hasUnclassifiedAccess ? this.unclassifiedEmail : "",
+      scrtEmail: hasScrtAccess ? this.scrtEmail : "",
+    };
+
+    this.admins.push(admin);
+
+    this.adminDoDId = "";
+    this.hasUnclassifiedAccess = ""; // YES/NO
+    this.unclassifiedEmail = "";
+    this.hasScrtAccess = ""; // YES/NO
+    this.scrtEmail = "";
+    this.selectedClassificationLevels = [];
+  }
+
+  public get tableHeaders(): Record<string, string>[] {
+    return [
+      { text: "DoD ID", value: "DoDId" },
+      { text: "Administrator email", value: "adminEmails" },
+      { text: "Classification level", value: "adminClassificationLevels" },
+      { text: "Status", value: "status" },
+      { text: "", value: "actions", width: "100" },
+    ]
+  }
+
+  public get tableData(): Record<string, string>[] {
+    const data: Record<string, string>[] = [];
+    this.admins.forEach(admin => {
+      const classificationLevels = []
+      if (admin.hasUnclassifiedAccess === "YES") classificationLevels.push(this.unclStr);
+      if (admin.hasScrtAccess === "YES") classificationLevels.push(this.scrtStr);
+      const adminClassificationLevels = classificationLevels.join("<br />");
+      const emails = [];
+      if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
+        emails.push(admin.unclassifiedEmail);
+      }
+      if (admin.hasScrtAccess === "YES" && admin.scrtEmail) {
+        emails.push(admin.scrtEmail);
+      }
+      const adminEmails = emails.join("<br />");
+      const record: Record<string, string> = {
+        DoDId: admin.DoDId as string,
+        adminEmails,
+        adminClassificationLevels,
+        status: "In queue",
+      }
+      data.push(record);
+    });
+    return data;
   }
 
 
@@ -139,6 +383,17 @@ export default class AddCSPAdmin extends Vue {
       this.admins = _.cloneDeep(storeData.admins) || [];
       this.savedData = _.cloneDeep(this.admins);
       this.csp = storeData.csp as string;
+      this.classificationLevels = storeData.classificationLevels || [];
+      if (this.classificationLevels.length === 1) {
+        this.selectedClassificationLevels.push(this.classificationLevels[0])
+        if (this.classificationLevels[0] === this.unclStr) {
+          this.hasUnclassifiedAccess = "YES";
+          this.hasScrtAccess = "NO";
+        } else if (this.classificationLevels[0] === this.scrtStr) {
+          this.hasScrtAccess = "YES";
+          this.hasUnclassifiedAccess = "NO";
+        }
+      } 
     }
   }
 

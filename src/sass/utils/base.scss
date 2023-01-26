@@ -225,7 +225,9 @@ textarea {
   }
 }
 
-._instances-table.v-data-table, ._offering-instances.v-data-table {
+._base-table-style.v-data-table,
+._instances-table.v-data-table, 
+._offering-instances.v-data-table {
   > .v-data-table__wrapper > table > thead > tr {
     background-color: $base-lightest;
     & > th {
@@ -236,6 +238,37 @@ textarea {
       white-space: nowrap;
       padding: 8px;
     } 
+  }
+}
+
+._base-table-style.v-data-table {
+  border-collapse: collapse;
+  border: 1px solid $base-lighter;
+  border-radius: 4px;
+  > .v-data-table__wrapper > table > thead > tr {
+    & > th {
+      height: 40px;
+      background: $base-lightest;
+      border-bottom: 1px solid $base-lighter !important;
+      &:first-of-type {
+        padding-left: 24px;
+        border-top-left-radius: 3px;
+      }
+      &:last-of-type {
+        border-top-right-radius: 3px;
+      }
+    }
+  }
+  > .v-data-table__wrapper > table > tbody > tr {
+    & > td {
+      padding-top: 16px;
+      padding-bottom: 16px;
+      vertical-align: top;
+      &:first-of-type {
+        padding-left: 24px;
+        font-weight: normal;
+      }
+    }
   }
 }
 

@@ -491,18 +491,18 @@ export interface PortfolioSummaryQueryParams {
   searchString?: string;
 }
 
-export interface PortfolioAdmins {
+export interface PortfolioAdmin {
   DoDId?: string;
   hasUnclassifiedAccess?: YesNo;
   unclassifiedEmail?: string;
-  hasSecretAccess?: YesNo;
-  secretEmail?: string;
+  hasScrtAccess?: YesNo;
+  scrtEmail?: string;
 }
 
 export interface PortfolioProvisioning extends EDAResponse {
   portfolioTitle?: string;
   serviceOrAgency?: string;
-  admins?: PortfolioAdmins[];  
+  admins?: PortfolioAdmin[];  
 }
 
 export interface EmailEntry {
@@ -709,4 +709,10 @@ export interface TrainingEstimate {
   estimate: EstimateOptionValueObjectArray;
   estimatedTrainingPrice: string;
   trainingOption: SingleMultiple;
+}
+
+export enum ClassificationLevels {
+  UNCL = "Unclassified",
+  SCRT = "Secret",
+  TSCRT = "Top Secret"
 }
