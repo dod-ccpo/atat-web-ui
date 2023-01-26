@@ -476,4 +476,22 @@ textarea {
   }
 }
 
+._center-page-content {
+  margin: 0 auto;
+  .stepper-nav, ._page-content {
+    margin: 0 auto;
+  }
+}
+._provisioning {
+  .stepper-nav, ._page-content {
+    width: 100%;
+    max-width: 1040px;
+  }
+  .v-main__wrap {
+    padding-top: 68px;
+    height: 100vh !important;
+  }
+}
+
+
 

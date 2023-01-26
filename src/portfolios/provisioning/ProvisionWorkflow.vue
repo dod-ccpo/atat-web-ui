@@ -1,12 +1,12 @@
 <template>
-  <div  style="overflow: hidden;">
+  <div style="overflow: hidden;">
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
-    <v-main>
+    <v-main class="_center-page-content _provisioning">
       <div id="app-content" class="d-flex flex-column">
 
-        <div  class="mb-auto">
+        <div  class="mb-auto _page-content">
           <router-view></router-view>
         </div>
 
