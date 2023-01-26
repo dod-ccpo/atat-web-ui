@@ -105,7 +105,7 @@
           :showDialog.sync="openModal"
           title="Add a CSP administrator"
           no-click-animation
-          okText="Add administrator"
+          :okText="isEdit ? 'Update administrator' : 'Add administrator'"
           width="632"
           :OKDisabled="ModalOKDisabled"
           @ok="AddCSPAdmin"
@@ -254,6 +254,8 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     { id: this.scrtStr, label: this.scrtStr, value: this.scrtStr }
   ];
 
+  public tableData: Record<string, string>[] = [];
+
   public get scrtSelected(): boolean {
     return this.selectedClassificationLevels.includes(this.scrtStr);
   }
@@ -322,7 +324,16 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       scrtEmail: hasScrtAccess ? this.scrtEmail : "",
     };
 
-    this.admins.push(admin);
+    const adminIndex = this.admins.findIndex(obj => obj.DoDId === this.adminDoDId);
+    if (this.isEdit && this.editAdminIndex > -1) {
+      this.admins[this.editAdminIndex] = admin;
+    } else {
+      if (adminIndex > -1) {
+        this.admins[adminIndex] = admin;
+      } else {
+        this.admins.push(admin);
+      }
+    }
 
     this.adminDoDId = "";
     this.hasUnclassifiedAccess = ""; // YES/NO
@@ -330,10 +341,34 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.hasScrtAccess = ""; // YES/NO
     this.scrtEmail = "";
     this.selectedClassificationLevels = [];
+
+    this.buildTableData();
+    this.isEdit = false;
+    this.editAdminIndex = -1;
   }
 
-  public editAdmin(admin: Record<string, string>): void {
+  public isEdit = false;
+  public editAdminIndex = -1;
+
+  public editAdmin(adminToEdit: Record<string, string>): void {
+    this.isEdit = true;
+    const admin = this.admins.find(obj => obj.DoDId === adminToEdit.DoDId);
     debugger;
+    if (admin) {
+      this.editAdminIndex = this.admins.findIndex(obj => obj.DoDId === adminToEdit.DoDId);
+      this.adminDoDId = admin.DoDId as string;
+      this.hasUnclassifiedAccess = admin.hasUnclassifiedAccess as string;
+      this.unclassifiedEmail = admin.unclassifiedEmail as string;
+      this.hasScrtAccess = admin.hasScrtAccess as string;
+      this.scrtEmail = admin.scrtEmail as string;
+      
+      if (this.hasUnclassifiedAccess === "YES") 
+        this.selectedClassificationLevels.push(this.unclStr);
+      if (this.hasScrtAccess === "YES")
+        this.selectedClassificationLevels.push(this.scrtStr);
+
+      this.openAddCSPModal();
+    }
   }
 
   public get tableHeaders(): Record<string, string>[] {
@@ -346,8 +381,8 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     ]
   }
 
-  public get tableData(): Record<string, string>[] {
-    const data: Record<string, string>[] = [];
+  public buildTableData(): void {
+    this.tableData = [];
     this.admins.forEach((admin, index) => {
       const classificationLevels = []
       if (admin.hasUnclassifiedAccess === "YES") classificationLevels.push(this.unclStr);
@@ -368,11 +403,9 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
         adminClassificationLevels,
         status: "In queue",
       }
-      data.push(record);
+      this.tableData.push(record);
     });
-    return data;
   }
-
 
   public async loadOnEnter(): Promise<void> {
     const storeData = PortfolioStore.portfolioProvisioningObj;
@@ -391,6 +424,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
           this.hasUnclassifiedAccess = "NO";
         }
       } 
+      this.buildTableData();
     }
   }
 
