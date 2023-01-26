@@ -477,11 +477,15 @@ textarea {
 }
 
 ._center-page-content {
-  margin: 0 auto;
-  .stepper-nav, ._page-content {
-    margin: 0 auto;
+  // use left and right specifically to not override top/bottom
+  margin-right: auto;
+  margin-left: auto;
+  .stepper-nav, ._page-content, .atat-page-footer {
+    margin-right: auto;
+    margin-left: auto;
   }
 }
+
 ._provisioning {
   .stepper-nav, ._page-content {
     width: 100%;
@@ -490,8 +494,6 @@ textarea {
   .v-main__wrap {
     padding-top: 68px;
     height: 100vh !important;
+    max-height: calc(100vh - 56px);
   }
 }
-
-
-
