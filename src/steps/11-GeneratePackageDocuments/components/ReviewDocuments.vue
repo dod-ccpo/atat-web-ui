@@ -249,6 +249,7 @@ export default class ReviewDocuments extends Vue {
     const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
     const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
     const fundingRequestIds = []
+
     const migrationAttachments = await Attachments.getAttachmentsBySysIds({
       serviceKey: this.currentEnvServiceName,
       sysIds: currentEnv?.migration_documentation||[]
@@ -256,6 +257,7 @@ export default class ReviewDocuments extends Vue {
     migrationAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'4 (Current Environment)')
     })
+
     const sysDocAttachments = await Attachments.getAttachmentsBySysIds({
       serviceKey: this.currentEnvServiceName,
       sysIds: currentEnv?.system_documentation||[]
@@ -263,9 +265,13 @@ export default class ReviewDocuments extends Vue {
     sysDocAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'4 (Current Environment)')
     })
-    const MIPRAttachment = await Attachments.getAttachmentById({
-      serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
-    this.createAttachmentObject(MIPRAttachment,'8 (Funding)')
+
+    if(MIPR.mipr_attachment){
+      const MIPRAttachment = await Attachments.getAttachmentById({
+        serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
+      this.createAttachmentObject(MIPRAttachment,'8 (Funding)')
+    }
+
     if (fundingRequest?.fs_form_7600a_attachment.length > 0) {
       fundingRequestIds.push(fundingRequest?.fs_form_7600a_attachment)
     }
