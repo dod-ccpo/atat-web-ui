@@ -2,7 +2,8 @@
 import { ApiBase } from "../apiBase";
 import { EDAResponse } from "../models"
 
-export const ENDPOINTNAME = "x_g_dis_atat/eda/pds";
+// export const ENDPOINTNAME = "x_g_dis_atat/eda/pds";
+export const ENDPOINTNAME = "x_g_dis_atat/provisioning";
 
 
 export class EDAApi extends ApiBase{
@@ -27,6 +28,7 @@ export class EDAApi extends ApiBase{
       const response = await this.post({
         delivery_order_number : taskOrderNumber
       });
+      debugger;
       let edaResponse: EDAResponse = {};
       if (response.status === 200) {
         const { result } = response.data;

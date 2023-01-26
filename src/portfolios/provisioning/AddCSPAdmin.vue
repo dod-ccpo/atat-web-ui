@@ -198,7 +198,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -213,10 +213,12 @@ import {
   Checkbox, 
   ClassificationLevels, 
   PortfolioAdmin, 
+  PortfolioProvisioning, 
   SlideoutPanelContent 
-} from "types/Global";
+} from "../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -229,17 +231,7 @@ import _ from "lodash";
   }
 })
 
-export default class AddCSPAdmin extends Vue {
-  $refs!: {
-    CSPAdminForm: Vue & {
-      resetValidation: () => void;
-      errorBucket: string[];
-      reset: () => void;
-      validate: () => boolean;
-      errorBag: Record<number, boolean>;
-    },
-  };
-
+export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public admins: PortfolioAdmin[] = [];
   public csp = "";
   public classificationLevels: string[] = [];
@@ -404,6 +396,21 @@ export default class AddCSPAdmin extends Vue {
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
+  }
+
+  public async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.admins.length > 0) {
+        const data: PortfolioProvisioning = {
+          admins: this.admins,
+        }
+        await PortfolioStore.setPortfolioProvisioning(data);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    return true;
   }
 
 
