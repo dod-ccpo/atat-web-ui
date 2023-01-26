@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Tracing } from "trace_events";
 import { 
   EnvironmentInstanceLocation,
   EnvironmentInstanceUsage,
@@ -82,6 +83,7 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   impact_level: string;
   classification: string;
   classification_level?: ReferenceColumn | string;
+  display?: string;
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
@@ -138,7 +140,10 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
 }
 
 export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   instance_location: EnvironmentInstanceLocation;
+  instance_number: number,
+  instance_name: string,
   deployed_regions?: string[];
   classification_level: string; // classification level sys_id
   current_usage_description: EnvironmentInstanceUsage;
@@ -820,18 +825,21 @@ export interface RequirementsCostEstimateFlat extends BaseTableDTO{
 }
 
 export interface IgceEstimateDTO extends BaseTableDTO {
-  acquisition_package: ReferenceColumn | string;
-  classification_level: ReferenceColumn | string;
-  classification_instance: ReferenceColumn | string;
-  environment_instance: ReferenceColumn | string;
-  cross_domain_solution: ReferenceColumn | string;
-  contract_type: "" | "FFP" | "T&M" | "TBD";
-  title: string;
-  description: string;
-  unit: string;
-  unit_price: number | null;
-  unit_quantity: string;
+  acquisition_package?: ReferenceColumn | string;
+  classification_level?: ReferenceColumn | string;
+  classification_instance?: ReferenceColumn | string;
+  environment_instance?: ReferenceColumn | string;
+  cross_domain_solution?: ReferenceColumn | string;
+  cross_domain_pair?: string; // "U_TO_S", "S_TO_U". Only these are stored in CDS table not sys_ids
+  contract_type?: "" | "FFP" | "T&M" | "TBD";
+  title?: string;
+  description?: string;
+  unit?: string;
+  unit_price?: number | null;
+  unit_quantity?: string;
   dow_task_number?: string;
+  classification_display?: string;
+  idiq_clin_type?: string
 }
 
 export interface RegionsDTO extends BaseTableDTO {

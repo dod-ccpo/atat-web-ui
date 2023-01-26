@@ -26,34 +26,35 @@
         </p>
         <div class="_price-estimates-accordion">
           <v-expansion-panels
-            v-model="accordionClosed[index]"
-            v-for="(classification, index) in instanceData"
+           
+            v-for="(value, name, index) in estimateDataSource"
             :id="'AnticipatedUserAndDataNeedsAccordion' + index"
             :key="index"
             class="mb-4"
             flat
+            multiple
+            :value="isPanelOpen"
           >
-            <v-expansion-panel expand>
+            <v-expansion-panel>
               <v-expansion-panel-header>
                 <div class="d-flex">
                   <div class="h4 _expansion-panel-header">
-                    {{ classification.labelShort }}
+                    {{ name }}
                   </div>
                   <div class="offering-number">
-                    {{ classification.offerings.length }}
+                    {{ value.length }}
                   </div>
                 </div>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <div v-if="classification.offerings.length > 0">
+                <div>
                   <div class="_expansion-panel-content-header">
                     <div class="summary-text">Service Name and Configuration Summary</div>
                     <div class="estimate-price-text">Estimated price per unit</div>
                   </div>
-
                   <Card_Requirement
-                    v-for="(requirement, idx) in classification.offerings"
-                    :cardData="requirement"
+                    v-for="(requirement, idx) in value"
+                    :cardData="value[idx]"
                     :key="idx"
                     :index="idx + 1"
                   />
@@ -72,433 +73,84 @@
 import { Component, Mixins } from "vue-property-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import {
-  OtherServiceOfferingData,
   SlideoutPanelContent,
 } from "../../../../types/Global";
 // eslint-disable-next-line camelcase
 /* eslint-disable camelcase */
 import SlideOut_GatherPricesEstimates from 
   "@/steps/10-FinancialDetails/IGCE/components/SlideOut_GatherPricesEstimates.vue";
-import { buildClassificationLabel, hasChanges } from "@/helpers";
-import ClassificationRequirements from "@/store/classificationRequirements";
-import { ReferenceColumn, SelectedClassificationLevelDTO } from "@/api/models";
-import DescriptionOfWork from "@/store/descriptionOfWork";
 import Card_Requirement from "@/steps/10-FinancialDetails/IGCE/components/Card_Requirement.vue";
-import IGCE, { CostEstimate } from "@/store/IGCE";
+import IGCE from "@/store/IGCE";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { convertColumnReferencesToValues } from "@/api/helpers";
-import Periods from "@/store/periods";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { IgceEstimateDTO, ReferenceColumn } from "@/api/models";
+import ClassificationRequirements from "@/store/classificationRequirements";
+
 
 @Component({
-  components: { Card_Requirement },
+  components: { 
+    Card_Requirement
+  },
 })
 export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
-  public selectedClassifications: SelectedClassificationLevelDTO[] = [];
-  public accordionClosed: number[] = [];
-  public instanceData: CostEstimate[] = [];
+  
+  igceEstimateData: IgceEstimateDTO[] = [];
+  tempEstimateDataSource: IgceEstimateDTO[][] = [];
+  estimateDataSource: IgceEstimateDTO[][] = [];
+  classLevels = ClassificationRequirements.classificationLevels;
+  isPanelOpen = [0]; //0 is open; 1 is closed.
 
-  public buildClassificationLabel = buildClassificationLabel;
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
   }
-  public getFormattedNames(value: string): string {
-    let avlOfferings = DescriptionOfWork.serviceOfferingGroups;
-    const filtered = avlOfferings.filter((obj) => obj.value == value);
-    return filtered.length > 0 ? filtered[0].label : "";
-  }
 
-  public createFormData(
-    serviceName: string,
-    service: OtherServiceOfferingData
-  ): string {
-    switch (serviceName) {
-    case "Compute":
-      return (
-        service.numberOfInstances +
-          " x (" +
-          service.environmentType +
-          ", " +
-          service.operatingEnvironment?.toLowerCase() +
-          ", " +
-          service.operatingSystemAndLicensing +
-          ", " +
-          service.numberOfVCPUs +
-          " vCPUs, " +
-          service.memoryAmount +
-          " GB RAM, " +
-          service.storageType?.toLowerCase() +
-          " storage: " +
-          service.storageAmount +
-          " " +
-          service.storageUnit +
-          ", " +
-          service.performanceTier +
-          ")"
-      );
-    case "Database":
-      return (
-        service.numberOfInstances +
-          " x (" +
-          service.databaseType +
-          ", " +
-          service.operatingSystemAndLicensing +
-          ", " +
-          service.databaseLicensing +
-          ", " +
-          service.numberOfVCPUs +
-          " vCPUs, " +
-          service.memoryAmount +
-          " GB RAM, " +
-          service.storageType?.toLowerCase() +
-          " storage: " +
-          service.storageAmount +
-          " " +
-          service.storageUnit +
-          ")"
-      );
-    case "Storage":
-      return (
-        service.numberOfInstances +
-          " x (" +
-          service.storageType?.toLowerCase() +
-          " storage: " +
-          service.storageAmount +
-          " " +
-          service.storageUnit +
-          ")"
-      );
-    default:
-      return service.usageDescription || service.descriptionOfNeed || "";
-    }
-  }
-  private serviceOrInstance(value: string): string {
-    return DescriptionOfWork.xaasServices.includes(value)
-      ? "Instance"
-      : "Service";
-  }
-
-  private get currentData(): CostEstimate[] {
-    return _.cloneDeep(this.instanceData);
-  }
-
-  private savedData: CostEstimate[] = [];
-
-  private convertToMonths(value: number, unit: string): number {
-    switch (unit) {
-    case "YEAR":
-      return 12;
-    case "MONTH":
-      return value;
-    case "WEEK":
-      return Math.ceil(value / 4.345);
-    case "DAY":
-      return Math.ceil(value / 30.4167);
-    default:
-      return 0;
-    }
-  }
-
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
-  }
-
-  private async loadOnEnter(): Promise<void> {
+  async loadOnEnter(): Promise<void> {
     await IGCE.loadIgceEstimateByPackageId(AcquisitionPackage.packageId);
-    const classifications =
-      await ClassificationRequirements.getSelectedClassificationLevels();
-    const cloudServices = DescriptionOfWork.cloudSupportServices;
-    this.selectedClassifications = classifications.sort((a, b) =>
-      a.impact_level > b.impact_level ? 1 : -1
-    );
-    // this.savedData = IGCE.costEstimates
-    //TODO re-map this.savedData
-    const dataFromSnow = _.cloneDeep(IGCE.igceEstimateList);
-    if (dataFromSnow.length > 0) {
-      this.selectedClassifications.forEach((classification) => {
-        // eslint-disable-next-line camelcase
-        const classification_instance: CostEstimate = {
-          labelShort: buildClassificationLabel(classification, "short", true),
-          classificationInstanceSysId: classification.sys_id || "",
-          classificationLevelSysId: typeof classification.classification_level === "object"
-            ? ((classification.classification_level as ReferenceColumn)
-              .value as string)
-            : (classification.classification_level as string),
-          offerings: [],
-        };
-        this.instanceData.push(classification_instance);
-      });
-      this.instanceData.forEach((instance) => {
-        dataFromSnow.forEach((estimate) => {
-          const flatData = convertColumnReferencesToValues(estimate);
-          if (instance.classificationInstanceSysId === flatData.classification_instance) {
-            const obj = {
-              IGCE_title: flatData.title,
-              IGCE_description: flatData.description,
-              monthly_price: flatData.unit_price,
-              isCloudServicePackage: false,
-              sysIdCDS: (flatData.cross_domain_solution as ReferenceColumn)
-                .value as string,
-              sysIdClassificationInstance: instance.classificationInstanceSysId,
-              sysIdClassificationLevel: instance.classificationLevelSysId,
-              sysIdEnvironmentInstance: (
-                flatData.environment_instance as ReferenceColumn
-              ).value as string,
-              sysId: flatData.sys_id || "",
-              unit: flatData.unit,
-              quantity: flatData.unit_quantity,
-            };
-            instance.offerings.push(obj);
-          }
-        });
-      });
-      this.savedData = _.cloneDeep(this.instanceData);
-    } else {
-      this.selectedClassifications.forEach((classification) => {
-        if (classification.classification_level !== "") {
-          // eslint-disable-next-line camelcase
-          const classification_instance: CostEstimate = {
-            labelShort: buildClassificationLabel(classification, "short", true),
-            classificationInstanceSysId: classification.sys_id || "",
-            classificationLevelSysId: typeof classification.classification_level === "object"
-              ? ((classification.classification_level as ReferenceColumn)
-                .value as string)
-              : (classification.classification_level as string),
-            offerings: [],
-          };
-          this.instanceData.push(classification_instance);
-        }
-      });
+    await this.createDataSource();
+  }
 
-      const dowObject = DescriptionOfWork.DOWObject;
-      dowObject.forEach((service) => {
-        const serviceName = this.getFormattedNames(
-          service.serviceOfferingGroupId
-        );
-        if (service.otherOfferingData && service.otherOfferingData.length > 0) {
-          service.otherOfferingData.forEach((offering) => {
-            if (offering.classificationLevel) {
-              this.instanceData.forEach((instance) => {
-                if (instance.classificationLevelSysId === offering.classificationLevel) {
-                  const classificationOfferings: {
-                    IGCE_title: string;
-                    IGCE_description: string;
-                    monthly_price: number;
-                    isCloudServicePackage: boolean;
-                    sysIdCDS: string;
-                    sysIdClassificationInstance: string;
-                    sysIdClassificationLevel: string;
-                    sysIdEnvironmentInstance: string;
-                    sysId: string;
-                    unit: string;
-                    unit_quantity: string;
-                  } = {
-                    IGCE_title: "",
-                    IGCE_description: "",
-                    monthly_price: 0,
-                    isCloudServicePackage: false,
-                    sysIdCDS: "",
-                    sysIdClassificationInstance: "",
-                    sysIdClassificationLevel: "",
-                    sysIdEnvironmentInstance: "",
-                    sysId: "",
-                    unit: "",
-                    unit_quantity: "",
-                  };
-                  if (offering.instanceNumber) {
-                    classificationOfferings.IGCE_title =
-                      // eslint-disable-next-line max-len
-                      `${serviceName} - ${this.serviceOrInstance(
-                        service.serviceOfferingGroupId
-                      )} #${offering.instanceNumber}`;
-                  } else {
-                    classificationOfferings.IGCE_title = serviceName;
-                  }
-                  const quantityObj: Record<string, number> = {};
-                  if (offering.entireDuration === "NO") {
-                    offering.periodsNeeded.forEach((period) => {
-                      let selected = Periods.periods.filter(
-                        (selectedPeriod) => selectedPeriod.sys_id === period
-                      );
-                      quantityObj[period] = this.convertToMonths(
-                        Number(selected[0].period_unit_count),
-                        selected[0].period_unit
-                      );
-                    });
-                    classificationOfferings.unit_quantity =
-                      JSON.stringify(quantityObj);
-                  } else {
-                    Periods.periods.forEach((period) => {
-                      if (period.sys_id) {
-                        quantityObj[period.sys_id] = this.convertToMonths(
-                          Number(period.period_unit_count),
-                          period.period_unit
-                        );
-                      }
-                    });
-                    classificationOfferings.unit_quantity =
-                      JSON.stringify(quantityObj);
-                  }
-                  classificationOfferings.sysIdClassificationInstance =
-                    instance.classificationInstanceSysId;
-                  classificationOfferings.sysIdClassificationLevel = 
-                    instance.classificationLevelSysId;
-                  classificationOfferings.isCloudServicePackage =
-                    cloudServices.includes(serviceName);
-                  const formData = this.createFormData(serviceName, offering);
-                  classificationOfferings.IGCE_description =
-                    formData || offering.usageDescription || "";
-                  classificationOfferings.unit = serviceName
-                    .toLowerCase()
-                    .includes("portability")
-                    ? "each"
-                    : "month";
-                  if (serviceName !== "Training") {
-                    instance.offerings.push(classificationOfferings);
-                  }
-                }
-              });
-            }
-          });
-        }
-        if (service.serviceOfferings.length > 0) {
-          service.serviceOfferings.forEach((offering) => {
-            offering.classificationInstances?.forEach(
-              (classificationInstance) => {
-                this.instanceData.forEach((instance) => {
-                  // eslint-disable-next-line max-len
-                  let classificationId =
-                    typeof classificationInstance.classificationLevelSysId ===
-                    "object"
-                      ? // eslint-disable-next-line max-len
-                      ((
-                          classificationInstance.classificationLevelSysId as ReferenceColumn
-                        ).value as string)
-                      : (classificationInstance.classificationLevelSysId as string);
-                  if (instance.classificationLevelSysId === classificationId) {
-                    const classificationOfferings: {
-                      IGCE_title: string;
-                      IGCE_description: string;
-                      monthly_price: number;
-                      isCloudServicePackage: boolean;
-                      sysIdCDS: string;
-                      sysIdClassificationInstance: string;
-                      sysIdClassificationLevel: string,
-                      sysIdServicesOffering: string;
-                      sysId: string;
-                      unit: string;
-                      unit_quantity: string;
-                    } = {
-                      IGCE_title: "",
-                      IGCE_description: "",
-                      monthly_price: 0,
-                      isCloudServicePackage: false,
-                      sysIdCDS: "",
-                      sysIdClassificationInstance: "",
-                      sysIdClassificationLevel: "",
-                      sysIdServicesOffering: "",
-                      sysId: "",
-                      unit: "",
-                      unit_quantity: "",
-                    };
-                    const quantityObj: Record<string, number> = {};
-                    if (
-                      classificationInstance.entireDuration === "NO" &&
-                      classificationInstance.selectedPeriods
-                    ) {
-                      classificationInstance.selectedPeriods.forEach(
-                        (period) => {
-                          let selected = Periods.periods.filter(
-                            (selectedPeriod) => selectedPeriod.sys_id === period
-                          );
-                          quantityObj[period] = this.convertToMonths(
-                            Number(selected[0].period_unit_count),
-                            selected[0].period_unit
-                          );
-                        }
-                      );
-                      classificationOfferings.unit_quantity =
-                        JSON.stringify(quantityObj);
-                    } else {
-                      Periods.periods.forEach((period) => {
-                        if (period.sys_id) {
-                          quantityObj[period.sys_id] = this.convertToMonths(
-                            Number(period.period_unit_count),
-                            period.period_unit
-                          );
-                        }
-                      });
-                      classificationOfferings.unit_quantity =
-                        JSON.stringify(quantityObj);
-                    }
-                    classificationOfferings.IGCE_title = `${serviceName} - ${offering.name}`;
-                    classificationOfferings.sysIdClassificationInstance =
-                      instance.classificationInstanceSysId;
-                    classificationOfferings.sysIdClassificationLevel = 
-                      instance.classificationLevelSysId;
-                    classificationOfferings.isCloudServicePackage =
-                      cloudServices.includes(serviceName);
-                    classificationOfferings.IGCE_description =
-                      classificationInstance.anticipatedNeedUsage;
-                    classificationOfferings.unit = "month";
-                    if (serviceName !== "Training") {
-                      instance.offerings.push(classificationOfferings);
-                    }
-                  }
-                });
-              }
-            );
-          });
-        }
-      });
-      this.instanceData.forEach((instance) => {
-        if (instance.labelShort === "Secret / IL6") {
-          if (
-            ClassificationRequirements.cdsSolution?.anticipated_need_or_usage
-          ) {
-            const object = {
-              IGCE_title: "Cross-domain solution (CDS)",
-              IGCE_description:
-                ClassificationRequirements.cdsSolution
-                  ?.anticipated_need_or_usage,
-              sysIdCDS: ClassificationRequirements.cdsSolution?.sys_id || "",
-              monthly_price: "",
-              isCloudServicePackage: false,
-              sysIdClassificationInstance: instance.classificationInstanceSysId,
-              sysIdClassificationLevel: instance.classificationLevelSysId,
-              sysIdServicesOffering: "",
-              sysId: "",
-              unit: "month",
-              trafficPerDomain: "update",
-            };
-            instance.offerings.push(object);
-          }
-        }
-      });
-    }
-    this.instanceData.forEach((instance) => {
-      instance;
-      if (instance.offerings.length <= 0) {
-        this.accordionClosed.push(1);
-      } else {
-        this.accordionClosed.push(0);
-      }
-    });
+  async createDataSource(): Promise<void>{
+    this.igceEstimateData = await IGCE.igceEstimateList;
+    await this.populateClassificationDisplay();
+    await this.groupByClassificationDisplay();
+    await this.sortDataSource();
+    this.estimateDataSource = await this.tempEstimateDataSource;
   }
-  protected async saveOnLeave(): Promise<boolean> {
-    try {
-      if (this.hasChanged()) {
-        await IGCE.setCostEstimate(this.currentData);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    return true;
+
+  // prep data source - populate classification_display attrib 
+  async populateClassificationDisplay(): Promise<void>{
+    await this.igceEstimateData.forEach((est)=>{
+      const classLevelSysId = (est.classification_level as ReferenceColumn).value || "";
+      const level = ClassificationRequirements.classificationLevels.find(
+        (level) => {
+          return level.sys_id === classLevelSysId
+        })
+      est.classification_display = level?.display || "";
+    })
   }
+  
+  // group by classification_display attrib
+  async groupByClassificationDisplay(): Promise<void>{
+    this.tempEstimateDataSource = await this.igceEstimateData.reduce(function (acc, current) {
+      acc[current.classification_display || ""] = acc[current.classification_display || ""] || [];
+      acc[current.classification_display || ""].push(current);
+      return acc;
+    }, Object.create(null));
+  }
+
+
+  async sortDataSource(): Promise<void>{
+    // sort nested arrays
+    for (const classLevelsArray in this.tempEstimateDataSource){
+      await this.tempEstimateDataSource[classLevelsArray].sort((a,b) => (a.title>b.title) ? 1 : -1 )
+    }
+    
+  }
+
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -508,6 +160,18 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
+
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      // if (this.hasChanged()) {
+      await IGCE.setCostEstimate(this.estimateDataSource);
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
   }
 }
 </script>
