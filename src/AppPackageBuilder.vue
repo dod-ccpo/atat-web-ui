@@ -201,7 +201,6 @@ export default class AppPackageBuilder extends Vue {
 
   @Watch('disableContinue')
   public disableContinueChanged(newVal:boolean): void {
-    debugger
     this.disableContinueButton = newVal
   }
   private setNavButtons(step: StepInfo): void {

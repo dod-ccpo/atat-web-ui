@@ -206,7 +206,6 @@ export default class UploadSignedDocuments extends Vue {
           iFile.SNOWError,
           iFile.statusCode,
           [],
-          5
         )
       );
     });

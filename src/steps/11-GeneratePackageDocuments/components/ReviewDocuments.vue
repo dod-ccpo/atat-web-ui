@@ -285,6 +285,7 @@ export default class ReviewDocuments extends Vue {
       if(typeof listItem.itemName === "string")
         docNames.push(listItem.itemName)
     })
+    console.log(docNames)
     await acquisitionPackage.setAttachmentNames(docNames)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
   }

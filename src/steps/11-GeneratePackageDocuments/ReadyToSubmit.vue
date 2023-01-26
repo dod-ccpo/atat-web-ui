@@ -3,13 +3,27 @@
     <h1>
       Ready to submit your acquisition package?
     </h1>
-    <div class="copy-max-width">
-      <p class="mt-2 mb-4">
-        We’ve generated your required documents based on the information that you have provided in
-        steps 1-8. Download your entire package below and review each document. If needed, you can
-        revisit the previous steps to make changes and click the “Update” button to re-generate your
-        documents.
-      </p>
+    <div class="copy-max-width d-flex mt-10">
+      <div>
+        <p class="font-size-20 font-weight-500 mb-0">
+          Great news! We have everything ready to send your package to DITCO for processing.
+        </p>
+        <p class="mt-2 mb-4">
+          Upon submission, a Contracting Specialist will review your documents and
+          contact you if any changes are required. You’ll continue to have access
+          to your completed documents within DAPPS.
+        </p>
+      </div>
+      <v-card
+        class="
+          border1
+          border-base-lighter
+          pa-6"
+        :elevation="2"
+      >
+
+      </v-card>
+
     </div>
   </div>
 </template>
