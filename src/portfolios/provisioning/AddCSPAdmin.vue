@@ -65,16 +65,16 @@
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
               <button
-                :id="'EditButton_' + item.instanceNumber"
-                @click="editInstance(item)"
+                :id="'EditButton_' + item.index"
+                @click="editAdmin(item)"
                 class="mr-2"
               >
                 <ATATSVGIcon name="edit" height="19" width="19" />
               </button>
 
               <button
-                :id="'DeleteButton_' + item.instanceNumber"
-                @click="confirmDeleteInstance(item)"
+                :id="'DeleteButton_' + item.index"
+                @click="confirmDeleteAdmin(item)"
                 class="ml-2"
               >
                 <ATATSVGIcon name="remove" height="18" width="14" />
@@ -332,6 +332,10 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.selectedClassificationLevels = [];
   }
 
+  public editAdmin(admin: Record<string, string>): void {
+    debugger;
+  }
+
   public get tableHeaders(): Record<string, string>[] {
     return [
       { text: "DoD ID", value: "DoDId" },
@@ -344,7 +348,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
   public get tableData(): Record<string, string>[] {
     const data: Record<string, string>[] = [];
-    this.admins.forEach(admin => {
+    this.admins.forEach((admin, index) => {
       const classificationLevels = []
       if (admin.hasUnclassifiedAccess === "YES") classificationLevels.push(this.unclStr);
       if (admin.hasScrtAccess === "YES") classificationLevels.push(this.scrtStr);
@@ -358,6 +362,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       }
       const adminEmails = emails.join("<br />");
       const record: Record<string, string> = {
+        index: index.toString(),
         DoDId: admin.DoDId as string,
         adminEmails,
         adminClassificationLevels,
