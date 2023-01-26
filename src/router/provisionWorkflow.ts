@@ -3,6 +3,7 @@ import {StepperRouteConfig, StepperStep} from "../../types/Global";
 // Step 1 - Acquisition Package Details
 import ProvisioningIndex from "@/portfolios/provisioning/Index.vue";
 import AwardedTaskOrder from "@/portfolios/provisioning/AwardedTaskOrder.vue";
+import PortfolioDetails from "@/portfolios/provisioning/PortfolioDetails.vue";
 import AddCSPAdmin from "@/portfolios/provisioning/AddCSPAdmin.vue";
 import ReadyToProvision from "@/portfolios/provisioning/ReadyToProvision.vue";
 import Provisioned from "@/portfolios/provisioning/Provisioned.vue";
@@ -11,6 +12,7 @@ export const provWorkflowRouteNames = {
   ProvisioningIndex: "Provisioning_Index",
   ProvisionWorkflow: "Provision_Workflow",
   AwardedTaskOrder: "Awarded_Task_Order",
+  PortfolioDetails: "Portfolio_Details",
   AddCSPAdmin: "Add_CSP_Admin",
   ReadyToProvision: "Ready_To_Provision",
   Provisioned: "Provisioned"
@@ -45,6 +47,11 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
         actionName: "openTOSearchModal",
       },
     ]
+  },
+  {
+    name: provWorkflowRouteNames.PortfolioDetails,
+    path: "/portfolio-details",
+    component: PortfolioDetails,
   },
   {
     name: provWorkflowRouteNames.AddCSPAdmin,
