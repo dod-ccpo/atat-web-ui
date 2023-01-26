@@ -131,6 +131,7 @@ import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToG
 import GeneratingPackageDocuments
   from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
 import UploadSignedDocuments from "@/steps/11-GeneratePackageDocuments/UploadSignedDocuments.vue";
+import ReadyToSubmit from "@/steps/11-GeneratePackageDocuments/ReadyToSubmit.vue";
 
 import {
   AcorsRouteResolver,
@@ -266,6 +267,7 @@ export const routeNames = {
   GeneratePackageDocuments: "Generate_Package_Documents",
   AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs",
   UploadSignedDocuments:"Upload_Signed_Documents",
+  ReadyToSubmit:"Ready_To_Submit"
 };
 
 /**
@@ -1126,6 +1128,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.UploadSignedDocuments,
         completePercentageWeight: 0,
         component: UploadSignedDocuments
+      },
+      {
+        menuText: "Ready To Submit",
+        path:"ready-to-submit",
+        excludeFromMenu: true,
+        name: routeNames.ReadyToSubmit,
+        completePercentageWeight: 0,
+        component: ReadyToSubmit
       }
     ],
   },
