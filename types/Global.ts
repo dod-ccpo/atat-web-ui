@@ -492,7 +492,7 @@ export interface PortfolioSummaryQueryParams {
 }
 
 export interface PortfolioAdmins {
-  DoDId: string;
+  DoDId?: string;
   hasUnclassifiedAccess?: YesNo;
   unclassifiedEmail?: string;
   hasSecretAccess?: YesNo;

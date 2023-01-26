@@ -48,6 +48,7 @@ import OptionPending from "@/components/icons/OptionPending.vue";
 import Oracle from "@/components/icons/Oracle.vue";
 import Pdf from "@/components/icons/Pdf.vue";
 import Person from "@/components/icons/Person.vue";
+import PersonAdd from "@/components/icons/PersonAdd.vue";
 import PersonAddAlt from "@/components/icons/PersonAddAlt.vue";
 import Phone from "@/components/icons/Phone.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
@@ -120,6 +121,7 @@ import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
     Pdf,
     People,
     Person,
+    PersonAdd,
     PersonAddAlt,
     Phone,
     PlusSign,
@@ -179,7 +181,7 @@ export default class ATATSVGIcon extends Vue {
     { "base-light": "959a9d"},
     { "primary": "544496" },
     { "info": "009ddd" },
-    {"info-dark":"0076A6"},
+    { "info-dark":"0076A6" },
     { "success": "62bd59" },
     { "success-dark": "498e43" },    
     { "error": "c60634" },
