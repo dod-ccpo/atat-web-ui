@@ -27,6 +27,7 @@
                     :index="index"
                     :isLastCard="index === packageData.length - 1"
                     @updateStatus="loadPackageData"
+                    @openTOSearchModal="openTOSearchModal"
                   />
 
                 </v-expansion-panel-content>
@@ -173,6 +174,10 @@ export default class ExistingUser extends Vue {
     return this.draftPackageCount > 0
   }
 
+  public openTOSearchModal(): void {
+    this.$emit("openTOSearchModal");
+  }
+  
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
   }

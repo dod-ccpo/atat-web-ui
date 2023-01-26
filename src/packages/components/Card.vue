@@ -126,6 +126,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
+import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
+
 import UserStore from "@/store/user";
 import {
   AcquisitionPackageSummaryDTO, UserDTO,
@@ -140,7 +142,8 @@ import Toast from "@/store/toast";
     ATATSVGIcon,
     ATATMeatballMenu,
     DeletePackageModal,
-    ArchiveModal
+    ArchiveModal,
+    TaskOrderSearchModal,
   }
 })
 export default class Card extends Vue {
@@ -275,7 +278,11 @@ export default class Card extends Vue {
     case "Restore package to draft":
       this.updateStatus('DRAFT')
       break;
+    case "Add awarded task order":
+      this.$emit("openTOSearchModal");
+      break;
     }
+
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -335,8 +342,8 @@ export default class Card extends Vue {
         {
           title: "Add awarded task order",
           action: "Add awarded task order",
-          disabled:true
-        },{
+        },
+        {
           title: "View completed package",
           action: "View completed package",
           disabled:true
