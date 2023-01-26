@@ -318,7 +318,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   contractingShop = "";
   attachmentNames: string[] = []
-
+  disableContinue = false
   fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact()
@@ -380,6 +380,14 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   private doSetAttachmentNames(value: string[]): void {
     this.attachmentNames = value;
+  }
+  @Action({rawError: false})
+  public async setDisableContinue(value: boolean): Promise<void> {
+    this.doSetDisableContinue(value);
+  }
+  @Mutation
+  private doSetDisableContinue(value: boolean): void {
+    this.disableContinue = value;
   }
 
   @Action

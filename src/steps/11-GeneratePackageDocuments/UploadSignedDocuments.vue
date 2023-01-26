@@ -68,10 +68,10 @@
               <div
                 v-for="(item,idx) in filesNeeded"
                 :key="idx"
-                class="d-flex align-center"
+                class="d-flex"
               >
                 <ATATSVGIcon
-                  class="mr-2"
+                  class="mr-2 pt-1"
                   name="filePresent"
                   width="13"
                   height="16"
@@ -91,7 +91,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
@@ -100,6 +100,7 @@ import Attachments from "@/store/attachments";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FinancialDetails from "@/store/financialDetails";
 import ATATAlert from "@/components/ATATAlert.vue";
+import acquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components:{
     ATATFileUpload,
@@ -184,6 +185,14 @@ export default class UploadSignedDocuments extends Vue {
       console.error(`error removing attachment with id ${file?.attachmentId}`);
     }
   }
+  @Watch("uploadedFiles")
+  private async filesUploaded(): Promise<void>{
+    if(this.uploadedFiles.length === this.needsSignatureLength){
+      await acquisitionPackage.setDisableContinue(false)
+    }else{
+      await acquisitionPackage.setDisableContinue(true)
+    }
+  }
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
@@ -211,7 +220,7 @@ export default class UploadSignedDocuments extends Vue {
         this.filesNeeded.push(item.itemName)
       }
     })
-    console.log(this.filesNeeded)
+    await acquisitionPackage.setDisableContinue(true)
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
