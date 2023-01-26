@@ -176,7 +176,7 @@
                 label="SIPRNet email address"
                 tooltipText="Use a Secure Internet Protocol Router Network (SIPRNet) 
                   email address. This is where the CSP will send instructions for 
-                  accessing the FOO/IL6 cloud console."
+                  accessing the Secret/IL6 cloud console."
                 class="_input-max-width mt-10"
                 helpText="Must use a .smil or .sgov email address."
                 :rules="[
