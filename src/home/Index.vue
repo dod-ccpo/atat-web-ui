@@ -151,7 +151,7 @@ export default class Home extends Vue {
   }
 
   public async startProvisionWorkflow(): Promise<void>{
-    await Steps.setAltBackDestination(AppSections.sectionTitles.ProvisionWorkflow);
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await AcquisitionPackage.reset();
     this.$router.push({
       name: provWorkflowRouteNames.AwardedTaskOrder,

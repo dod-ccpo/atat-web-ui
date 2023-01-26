@@ -164,7 +164,7 @@ export default class AppPackageBuilder extends Vue {
 
     } else if (direction === "previous" && this.altBackDestination) { 
 
-      if (this.$route.name === this.routeNames.ProjectOverview) {
+      if (this.$route.name === this.routeNames.ContractingShop) {
         Steps.setAltBackDestination("");
 
         switch (this.altBackDestination) {
