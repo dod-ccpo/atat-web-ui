@@ -218,6 +218,10 @@ export default class NewUser extends Vue {
     this.showNewFeatures = !this.showNewFeatures;
   }
 
+  public startProvisionWorkflow(): void {
+    this.$emit("startProvisionWorkflow");
+  }
+
 }
 
 </script>  
