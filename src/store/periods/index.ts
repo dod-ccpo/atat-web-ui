@@ -30,7 +30,7 @@ const savePeriod = async (period: PeriodDTO): Promise<PeriodDTO> => {
   try {
     const periodSysId = period.sys_id;
 
-    const savedPeriod = periodSysId?.length
+    const savedPeriod = periodSysId
       ? await api.periodTable.update(periodSysId, period)
       : await api.periodTable.create(period);
 
