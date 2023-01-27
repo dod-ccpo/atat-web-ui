@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="copy-max-width">
     <h1>
-      Your documents are ready to download and review.
+      Your documents are ready to download and review
     </h1>
-    <div class="copy-max-width">
+    <div >
       <p class="mt-2 mb-4">
         We’ve generated your required documents based on the information that you have provided in
         steps 1-8. Download your entire package below and review each document. If needed, you can
@@ -191,7 +191,7 @@ export default class ReviewDocuments extends Vue {
     },
     {
       itemName:"Incremental Funding Plan",
-      requiresSignature:false,
+      requiresSignature:true,
       alertText:"Requires signatures",
       show:this.incrementallyFunded === "YES"
     },
