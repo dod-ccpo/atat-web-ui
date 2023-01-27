@@ -183,7 +183,7 @@ const saveOrUpdateClassificationInstance =
           title: capitalizeEachWord(title, "_") + " - " + serviceOfferingName, 
           description: classificationInstance.anticipatedNeedUsage,
           idiqClinType: "CLOUD", 
-          unit_quantity: ""
+          unit_quantity
         });
       }
 

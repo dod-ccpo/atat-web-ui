@@ -293,7 +293,6 @@ export class PeriodsStore extends VuexModule {
     periods: PeriodDTO[];
     removed: PeriodDTO[];
   }): Promise<PeriodDTO[]> {
-    debugger;
     try {
       const removeRequests = removed.map((period) =>
         api.periodTable.remove(period.sys_id || "")
@@ -301,16 +300,9 @@ export class PeriodsStore extends VuexModule {
       if (removeRequests) {
         await Promise.all(removeRequests);
       }
-      // const saveRequests = periods.map((period) => savePeriod(period));
-      // const savedPeriods = await Promise.all(saveRequests);
-      // this.setPeriods(savedPeriods);
-
-      periods.forEach(async(p)=>{
-        await savePeriod(p);
-      })
-
-      const savedPeriods = periods;
-
+      const saveRequests = periods.map((period) => savePeriod(period));
+      const savedPeriods = await Promise.all(saveRequests);
+      this.setPeriods(savedPeriods);
 
       const basePeriod = savedPeriods.find(
         (period) => period.period_type === "BASE"
