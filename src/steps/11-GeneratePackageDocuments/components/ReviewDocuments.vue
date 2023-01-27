@@ -1,10 +1,11 @@
 <template>
-  <div class="copy-max-width">
+  <div
+    :class="{'copy-max-width':ditcoUser}">
     <h1>
       Your documents are ready to download and review
     </h1>
     <div >
-      <p class="mt-2 mb-4">
+      <p class="mt-2 mb-4 copy-max-width">
         We’ve generated your required documents based on the information that you have provided in
         steps 1-8. Download your entire package below and review each document. If needed, you can
         revisit the previous steps to make changes and click the “Update” button to re-generate your
@@ -41,7 +42,10 @@
     </ATATAlert>
 
     <div class="d-flex">
-        <div class="package-list pa-6">
+        <div
+          class="package-list pa-6"
+          :class="{'width-100':ditcoUser}"
+        >
           <v-row class="d-flex justify-space-between">
             <v-col>
               <h2>
