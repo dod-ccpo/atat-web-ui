@@ -177,6 +177,8 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private noDescriptions?: boolean;
   @Prop({ default: false }) private hasTextFields?: boolean;
   @Prop() private labelWidth?: string;
+  @Prop() private labelFontSize?: string;
+  @Prop() private labelFontWeight?: string;
   @Prop() private textFieldAppendText?: string;
   @Prop() private textFieldWidth?: number;
   @Prop({ default: "text" }) private textFieldType?: string;
@@ -356,10 +358,22 @@ export default class ATATCheckboxGroup extends Vue {
   }
   
   public get labelStyles(): string {
-    return this.labelWidth ? `min-width: ${this.labelWidth}px;` : "";
+    debugger
+    let style = ""
+    if(this.labelWidth){
+      style += `min-width: ${this.labelWidth}px; `
+    }
+    if(this.labelFontSize){
+      style += `font-size: ${this.labelFontSize}px; `
+    }
+    if(this.labelFontWeight){
+      style += `font-weight: ${this.labelFontWeight}px; `
+    }
+    return style
   }
 
   public mounted(): void {
+    console.log(this.labelStyles)
     this.setEventListeners();
   }
 

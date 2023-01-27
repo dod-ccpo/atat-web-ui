@@ -72,6 +72,7 @@ import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vu
 import Place from "@/components/icons/Place.vue";
 import SendEmail from "@/components/icons/SendEmail.vue";
 import Update from "@/components/icons/Update.vue";
+import Download from "@/components/icons/Download.vue";
 
 
 @Component({
@@ -91,6 +92,7 @@ import Update from "@/components/icons/Update.vue";
     ControlPoint,
     Currency,
     DisaLogo,
+    Download,
     Edit,
     Email,
     ErrorFilled,
