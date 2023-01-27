@@ -148,9 +148,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     for (const classLevelsArray in this.tempEstimateDataSource){
       await this.tempEstimateDataSource[classLevelsArray].sort((a,b) => (a.title>b.title) ? 1 : -1 )
     }
-    
   }
-
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -161,7 +159,6 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
-
 
   protected async saveOnLeave(): Promise<boolean> {
     try {

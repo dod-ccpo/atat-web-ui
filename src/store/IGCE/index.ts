@@ -5,7 +5,7 @@ import api from "@/api";
 import {OtherServiceOfferingData, SingleMultiple, TrainingEstimate} from "../../../types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
-import DescriptionOfWork from "@/store/descriptionOfWork";
+import DescriptionOfWork, { stringifyPeriodsForIGCECostEstimates } from "@/store/descriptionOfWork";
 import AcquisitionPackage from "../acquisitionPackage";
 import { AxiosRequestConfig } from "axios";
 import {
@@ -503,27 +503,31 @@ export class IGCEStore extends VuexModule {
 
   @Action({rawError: true})
   public async updateIgceEstimateRecord(
-    envInstanceRef: {
-      environmentInstanceSysId: string, 
-      classificationLevelSysId: string,
+    instanceRef: {
+      environmentInstanceSysId?: string, 
+      classificationLevelSysId?: string,
+      classificationInstanceSysId?: string,
+      unit_quantity: string,
     }
   ): Promise<void> {
-    const isClassificationInstance = envInstanceRef.classificationLevelSysId === "";
+    const isClassificationInstance = instanceRef.classificationInstanceSysId !== undefined;
 
     const instanceQueryString = isClassificationInstance 
-      ? "classification_instance=" + envInstanceRef.classificationLevelSysId
-      : "environment_instance=" + envInstanceRef.environmentInstanceSysId
+      ? "classification_instance=" + instanceRef.classificationInstanceSysId
+      : "environment_instance=" + instanceRef.environmentInstanceSysId
 
     const instanceQuery: AxiosRequestConfig = {
       params: { sysparm_query: instanceQueryString },
     };
+    
     const costEstimateSysId = (await api.igceEstimateTable.getQuery(instanceQuery))[0].sys_id || "";
 
     if (costEstimateSysId){
       await api.igceEstimateTable.update(
         costEstimateSysId,{ 
-          classification_level: envInstanceRef.classificationLevelSysId,
-          contract_type: getContractType() 
+          classification_level: instanceRef.classificationLevelSysId,
+          contract_type: getContractType(),
+          unit_quantity: instanceRef.unit_quantity
         }); 
     }
   }
@@ -548,6 +552,30 @@ export class IGCEStore extends VuexModule {
     }
   }
 
+  /**
+   * user is to update unit_quantity when Period of Performance changes
+   */
+
+  @Action({rawError: true})
+  public async updateIgceEstimatePeriodOfPerformance(): Promise<void> {
+    const query: AxiosRequestConfig = {
+      params: { sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId },
+    };
+    const popsToBeUpdated = (await api.igceEstimateTable.getQuery(query));
+
+    if (popsToBeUpdated.length>0){
+      popsToBeUpdated.forEach(
+        async (estimateRow) => {
+          await api.igceEstimateTable.update(
+            estimateRow.sys_id || "",
+            { unit_quantity: await stringifyPeriodsForIGCECostEstimates() }
+          ); 
+        }
+      )
+     
+    }
+  }
+
 
   /**
    * This is expected to be called whenever a record gets created in one of the child
@@ -564,7 +592,8 @@ export class IGCEStore extends VuexModule {
       unit: string,
       otherServiceOfferingData: OtherServiceOfferingData,
       offeringType: string,
-      idiqClinType: string
+      idiqClinType: string,
+      unit_quantity: string,
     }):
     Promise<void> {
     await this.createIgceEstimateRecord({...defaultIgceEstimate(),
@@ -578,22 +607,24 @@ export class IGCEStore extends VuexModule {
         envInstanceRef.otherServiceOfferingData
       ),
       unit: envInstanceRef.unit,
-      idiq_clin_type: envInstanceRef.idiqClinType
+      idiq_clin_type: envInstanceRef.idiqClinType,
+      unit_quantity: envInstanceRef.unit_quantity
     });
   }
 
 
-  @Action({rawError: true})
-  public async updateIgceEstimateEnvironmentInstance(
-    envInstanceRef: {
-      environmentInstanceSysId: string, 
-      classificationLevelSysId: string ,
-    }):
-    Promise<void> {
-    this.updateIgceEstimateRecord(
-      envInstanceRef
-    );
-  }
+  // @Action({rawError: true})
+  // public async updateIgceEstimateRecord(
+  //   envInstanceRef: {
+  //     environmentInstanceSysId: string, 
+  //     classificationLevelSysId: string,
+  //     unit_quantity:string
+  //   }):
+  //   Promise<void> {
+  //   await this.updateIgceEstimateRecord(
+  //     envInstanceRef
+  //   );
+  // }
 
 
  
@@ -609,7 +640,8 @@ export class IGCEStore extends VuexModule {
       classificationLevelSysId: string  | ReferenceColumn
       title: string,
       description: string,
-      idiqClinType: string
+      idiqClinType: string,
+      unit_quantity: string
     }):
     Promise<void> {
     await this.createIgceEstimateRecord({...defaultIgceEstimate(),
@@ -620,7 +652,8 @@ export class IGCEStore extends VuexModule {
       title: classInstanceRef.title,
       description: classInstanceRef.description,
       unit: "month",
-      idiq_clin_type: classInstanceRef.idiqClinType
+      idiq_clin_type: classInstanceRef.idiqClinType,
+      unit_quantity: classInstanceRef.unit_quantity
     });
   }
 
