@@ -17,11 +17,10 @@
             role="button"
             id="OpenLearnMore"
             tabindex="0"
-            
-          >
-          <!-- @click="openSlideoutPanel"
+            @click="openSlideoutPanel"
             @keydown.enter="openSlideoutPanel"
-            @keydown.space="openSlideoutPanel" -->
+            @keydown.space="openSlideoutPanel"
+          >
             View Price Estimate FAQs
           </a>
         </p>
@@ -74,7 +73,6 @@
 import { Component, Mixins } from "vue-property-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import {
-  OtherServiceOfferingData,
   SlideoutPanelContent,
 } from "../../../../types/Global";
 // eslint-disable-next-line camelcase
@@ -102,6 +100,13 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   estimateDataSource: IgceEstimateDTO[][] = [];
   classLevels = ClassificationRequirements.classificationLevels;
   isPanelOpen = [0]; //0 is open; 1 is closed.
+
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
 
   async loadOnEnter(): Promise<void> {
     await IGCE.loadIgceEstimateByPackageId(AcquisitionPackage.packageId);
@@ -143,20 +148,17 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     for (const classLevelsArray in this.tempEstimateDataSource){
       await this.tempEstimateDataSource[classLevelsArray].sort((a,b) => (a.title>b.title) ? 1 : -1 )
     }
-    
   }
-
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    // const slideoutPanelContent: SlideoutPanelContent = {
-    //   // eslint-disable-next-line camelcase
-    //   component: SlideOut_GatherPricesEstimates,
-    //   title: "Learn More",
-    // };
-    // await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    const slideoutPanelContent: SlideoutPanelContent = {
+      // eslint-disable-next-line camelcase
+      component: SlideOut_GatherPricesEstimates,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
-
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
