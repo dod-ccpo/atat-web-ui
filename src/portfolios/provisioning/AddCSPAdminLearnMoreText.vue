@@ -30,6 +30,15 @@
       user accounts made directly in the cloud portal are not reflected within 
       your ATAT portfolio details.
     </p>
+    <ATATAlert 
+      type="info"
+    >
+      <template v-slot:content>
+        Administrators will only be granted access to the cloud provider’s console. 
+        In order to view portfolio details or track funding within ATAT, you can 
+        invite people as portfolio members and assign user roles.
+      </template>
+    </ATATAlert>
  </div>
 </template>
 
@@ -39,7 +48,13 @@ import { ClassificationLevels } from "../../../types/Global";
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-@Component({})
+import ATATAlert from "@/components/ATATAlert.vue"
+
+@Component({
+  components: {
+    ATATAlert
+  }
+})
 
 export default class CSPAdminLearnMoreText extends Vue {
   public scrtStr = ClassificationLevels.SCRT;
@@ -48,7 +63,6 @@ export default class CSPAdminLearnMoreText extends Vue {
 
   public processLength = "2 hours";
   public mounted(): void {
-    debugger;
     const storeData = PortfolioStore.portfolioProvisioningObj;
     const cl = storeData.classificationLevels;
     this.processLength = cl && (cl.includes(this.scrtStr) || cl.includes(this.tsStr))
