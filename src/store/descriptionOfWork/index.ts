@@ -15,6 +15,7 @@ import {
   ComputeEnvironmentInstanceDTO,
   DatabaseEnvironmentInstanceDTO,
   EnvironmentInstanceDTO,
+  PeriodDTO,
   ReferenceColumn, SelectedClassificationLevelDTO,
   SelectedServiceOfferingDTO,
   ServiceOfferingDTO,
@@ -45,10 +46,13 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "../acquisitionPackage";
 import Periods from "../periods";
 import IGCEStore from "@/store/IGCE";
-import { buildClassificationLabel, toTitleCase, capitalizeEachWord } from "@/helpers";
+import { 
+  buildClassificationLabel, 
+  toTitleCase, 
+  capitalizeEachWord, 
+} from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import { nextTick } from "process";
 
 
 // Classification Proxy helps keep track of saved
@@ -133,6 +137,10 @@ const saveOrUpdateClassificationInstance =
     ):Promise<string> => {
       const tempObject: any = {};
       let objSysId = "";
+      
+      const unit_quantity = await stringifyPeriodsForIGCECostEstimates(
+        classificationInstance.selectedPeriods
+      );
 
       if(classificationInstance.selectedPeriods){
         tempObject.selected_periods = classificationInstance.selectedPeriods.join(",") || "";
@@ -154,11 +162,16 @@ const saveOrUpdateClassificationInstance =
         tempObject.sys_id = classificationInstance.sysId;
 
       if(tempObject.sys_id){
+        objSysId = tempObject.sys_id;
         await api.classificationInstanceTable.update(
           tempObject.sys_id,
             tempObject as ClassificationInstanceDTO
         );
-        objSysId = tempObject.sys_id;
+        await IGCEStore.updateIgceEstimateRecord({
+          classificationInstanceSysId: objSysId,
+          classificationLevelSysId: classificationLevel,
+          unit_quantity
+        });
       } else {
         const savedObject = await api.classificationInstanceTable.create(
             tempObject as ClassificationInstanceDTO
@@ -168,12 +181,39 @@ const saveOrUpdateClassificationInstance =
           classificationInstanceSysId: objSysId,
           classificationLevelSysId: savedObject.classification_level,
           title: capitalizeEachWord(title, "_") + " - " + serviceOfferingName, 
-          description: classificationInstance.anticipatedNeedUsage
+          description: classificationInstance.anticipatedNeedUsage,
+          idiqClinType: "CLOUD", 
+          unit_quantity
         });
       }
 
       return objSysId;
     };
+
+// prep global period selection as stringified obj to store in IGCE Cost Estimate table
+export const stringifyPeriodsForIGCECostEstimates = 
+  async(customPeriods?: string[]):Promise<string> =>{
+    const periodsToStringify: {[x: string]: string} = {};
+    const globalPeriods = await Periods.loadPeriods();
+    let periodsToUse: PeriodDTO[] = [];
+
+    if (customPeriods && customPeriods.length>0){
+      periodsToUse = globalPeriods.filter(
+        period => {
+          return customPeriods.some(sysId => sysId === period.sys_id); 
+        }
+      )
+    } else {
+      periodsToUse = globalPeriods;
+    } 
+
+    periodsToUse.forEach(
+      ({ sys_id , period_unit_count })=>(
+        periodsToStringify[sys_id?.toString() || ""] = period_unit_count
+      )
+    )
+    return JSON.stringify(periodsToStringify);
+  }
 
 export const saveOrUpdateOtherServiceOffering =
     async (
@@ -182,6 +222,10 @@ export const saveOrUpdateOtherServiceOffering =
     ):Promise<string> => {
       const tempObject: any = {};
       let objSysId = "";
+      let idiqClinType = "CLOUD";
+      const unit_quantity = await stringifyPeriodsForIGCECostEstimates(
+        serviceOffering.periodsNeeded
+      );
       tempObject.acquisition_package = AcquisitionPackage.packageId;
       tempObject.anticipated_need_or_usage = serviceOffering.descriptionOfNeed;
       tempObject.classification_level = serviceOffering.classificationLevel;
@@ -197,18 +241,21 @@ export const saveOrUpdateOtherServiceOffering =
       tempObject.performance_tier = serviceOffering.performanceTier;
       tempObject.processor_speed = serviceOffering.processorSpeed;
       tempObject.region = serviceOffering.region;
-      tempObject.selected_periods = serviceOffering.periodsNeeded.join(",");
+
+      
+      // if no custom selected periods         
+      tempObject.selected_periods = serviceOffering.periodsNeeded.join(","); 
       tempObject.storage_amount = serviceOffering.storageAmount;
       tempObject.storage_type = serviceOffering.storageType;
       tempObject.storage_unit = serviceOffering.storageUnit;
       tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
       tempObject.instance_number = serviceOffering.instanceNumber;
-
+      
       if(serviceOffering.sysId)
         tempObject.sys_id = serviceOffering.sysId;
       let title = serviceGroupVerbiageInfo[offeringType.toUpperCase()].offeringName;
       let instanceType = "Instance";
-    
+   
       switch(offeringType){
       case "compute":
         tempObject.instance_name = "Compute Instance #" + serviceOffering.instanceNumber;
@@ -216,11 +263,16 @@ export const saveOrUpdateOtherServiceOffering =
         tempObject.operating_environment = serviceOffering.operatingEnvironment;
         tempObject.operating_system_licensing = serviceOffering.operatingSystemAndLicensing;
         if(tempObject.sys_id){
+          objSysId = tempObject.sys_id;
           await api.computeEnvironmentInstanceTable.update(
             tempObject.sys_id,
                 tempObject as ComputeEnvironmentInstanceDTO
           );
-          objSysId = tempObject.sys_id;
+          await IGCEStore.updateIgceEstimateRecord({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: tempObject.classification_level,
+            unit_quantity
+          });
         } else {
           const savedObject = await api.computeEnvironmentInstanceTable.create(
                 tempObject as ComputeEnvironmentInstanceDTO
@@ -233,7 +285,9 @@ export const saveOrUpdateOtherServiceOffering =
             description: savedObject.anticipated_need_or_usage,
             unit: "month",
             otherServiceOfferingData: serviceOffering,
-            offeringType
+            offeringType,
+            idiqClinType,
+            unit_quantity
           });
         }
         break;
@@ -251,10 +305,12 @@ export const saveOrUpdateOtherServiceOffering =
             tempObject as DatabaseEnvironmentInstanceDTO
           );
           
-          await IGCEStore.updateIgceEstimateEnvironmentInstance({
+          await IGCEStore.updateIgceEstimateRecord({
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
+            unit_quantity
           });
+
         } else {
           const savedObject = await api.databaseEnvironmentInstanceTable.create(
                 tempObject as DatabaseEnvironmentInstanceDTO
@@ -267,24 +323,26 @@ export const saveOrUpdateOtherServiceOffering =
             description: savedObject.anticipated_need_or_usage,
             unit: "month",
             otherServiceOfferingData: serviceOffering,
-            offeringType
+            offeringType,
+            idiqClinType,
+            unit_quantity
           });
         }
         break;
       case "storage":
         tempObject.instance_name = "Storage Instance #" + serviceOffering.instanceNumber;
         if(tempObject.sys_id){
+          objSysId = tempObject.sys_id;
           await api.storageEnvironmentInstanceTable.update(
             tempObject.sys_id,
                 tempObject as StorageEnvironmentInstanceDTO
           );
-
-          await IGCEStore.updateIgceEstimateEnvironmentInstance({
-            environmentInstanceSysId: tempObject.sys_id,
+          
+          await IGCEStore.updateIgceEstimateRecord({
+            environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
+            unit_quantity
           });
-
-          objSysId = tempObject.sys_id;
         } else {
           const savedObject = await api.storageEnvironmentInstanceTable.create(
                 tempObject as StorageEnvironmentInstanceDTO
@@ -297,18 +355,26 @@ export const saveOrUpdateOtherServiceOffering =
             description: savedObject.anticipated_need_or_usage,
             unit: "month",
             otherServiceOfferingData: serviceOffering,
-            offeringType
+            offeringType,
+            idiqClinType,
+            unit_quantity
           });
         }
         break;
       case "general_xaas":
         tempObject.instance_name = "Requirement #" + serviceOffering.instanceNumber;
         if(tempObject.sys_id){
+          objSysId = tempObject.sys_id;
           await api.xaaSEnvironmentInstanceTable.update(
             tempObject.sys_id,
                 tempObject as XaasEnvironmentInstanceDTO
           )
-          objSysId = tempObject.sys_id;
+
+          await IGCEStore.updateIgceEstimateRecord({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: tempObject.classification_level,
+            unit_quantity
+          });
         } else {
           const savedObject = await api.xaaSEnvironmentInstanceTable.create(
                 tempObject as XaasEnvironmentInstanceDTO
@@ -322,7 +388,9 @@ export const saveOrUpdateOtherServiceOffering =
             description: savedObject.anticipated_need_or_usage,
             unit: "month",
             otherServiceOfferingData: serviceOffering,
-            offeringType
+            offeringType,
+            idiqClinType,
+            unit_quantity
           });
         }
         break;
@@ -350,6 +418,7 @@ export const saveOrUpdateOtherServiceOffering =
         tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
 
         instanceType = "Service";
+        idiqClinType =  "CLOUD_SUPPORT"
         title = title + 
             (offeringType !== "portability_plan" 
               ? " - " + instanceType + " #" + serviceOffering.instanceNumber
@@ -357,11 +426,18 @@ export const saveOrUpdateOtherServiceOffering =
 
 
         if(tempObject.sys_id){
+          objSysId = tempObject.sys_id;
           await api.cloudSupportEnvironmentInstanceTable.update(
             tempObject.sys_id,
                 tempObject as CloudSupportEnvironmentInstanceDTO
           );
-          objSysId = tempObject.sys_id;
+
+          await IGCEStore.updateIgceEstimateRecord({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: tempObject.classification_level,
+            unit_quantity
+          });
+
         } else {
           const savedObject = await api.cloudSupportEnvironmentInstanceTable.create(
                 tempObject as CloudSupportEnvironmentInstanceDTO
@@ -375,7 +451,9 @@ export const saveOrUpdateOtherServiceOffering =
               description: savedObject.anticipated_need_or_usage,
               unit: offeringType === "portability_plan" ? "each" : "month",
               otherServiceOfferingData: serviceOffering,
-              offeringType
+              offeringType, 
+              idiqClinType,
+              unit_quantity
             });
           }
         }
@@ -1864,7 +1942,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     );
 
     const selectedServiceOffering = this.DOWObject[groupIndex].serviceOfferings[offeringIndex];
-
     for(const instanceData of instancesData){
       const dataSysId = await saveOrUpdateClassificationInstance(
         instanceData,

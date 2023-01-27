@@ -77,6 +77,7 @@ import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage"
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { ContractTypeDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
+import IGCE  from "@/store/IGCE";
 
 @Component({
   components: {
@@ -183,6 +184,7 @@ export default class ContractType extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveData<ContractTypeDTO>({data: this.currentData, 
           storeProperty: StoreProperties.ContractType});
+        await IGCE.updateIgceEstimateRecordWithContractType();
       }
     } catch (error) {
       console.log(error);
