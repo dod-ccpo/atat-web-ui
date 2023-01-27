@@ -438,7 +438,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
     if (storeData) {
       this.admins = _.cloneDeep(storeData.admins) || [];
-      await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
 
       this.savedData = _.cloneDeep(this.admins);
       this.csp = storeData.csp as string;
@@ -454,10 +453,8 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
         }
       } 
       this.buildTableData();
-    } else {
-      await AcquisitionPackage.setDisableContinue(true);
-    }
-
+    } 
+    await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
   }
 
   public async mounted(): Promise<void> {
@@ -470,6 +467,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   }
 
   public async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setDisableContinue(false);
     try {
       if (this.admins.length > 0) {
         const data: PortfolioProvisioning = {

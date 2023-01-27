@@ -235,6 +235,7 @@ export default class ATATSearch extends Vue {
     
     if(this.searchType === "EDA"){
       try {
+        await PortfolioStore.reset();
         const response = await api.edaApi.search(this._value);
         if (response.success !== undefined && !response.success) {
           if (!this.isModal) {
