@@ -443,7 +443,12 @@ export class PortfolioDataStore extends VuexModule {
     return fundingAlertData;
   }
 
+  @Action({rawError: true})
   public async reset(): Promise<void> {
+    this.doReset();
+  }
+  @Mutation
+  public async doReset(): Promise<void> {
     this.portfolioProvisioningObj = _.cloneDeep(initialPortfolioProvisioningObj());
   }
 
