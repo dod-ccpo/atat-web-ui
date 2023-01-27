@@ -13,7 +13,7 @@
     <p>
       Upon starting the provisioning process, ATAT will send your administrator’s 
       information to the CSP to create a new user account or connect an existing 
-      account to your portfolio’s resources. This process could take up to 2 hours.
+      account to your portfolio’s resources. This process could take up to {{ processLength }}.
     </p>
     <p>
       Once processed, your administrator will receive an email from the CSP with 
@@ -34,11 +34,25 @@
 </template>
 
 <script lang="ts">
+import PortfolioStore from "@/store/portfolio";
+import { ClassificationLevels } from "../../../types/Global";
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 @Component({})
 
-export default class CSPAdminLearnMoreText extends Vue {}
-</script>
+export default class CSPAdminLearnMoreText extends Vue {
+  public scrtStr = ClassificationLevels.SCRT;
+  public unclStr = ClassificationLevels.UNCL;
+  public tsStr = ClassificationLevels.TSCRT;
 
+  public processLength = "2 hours";
+  public mounted(): void {
+    debugger;
+    const storeData = PortfolioStore.portfolioProvisioningObj;
+    const cl = storeData.classificationLevels;
+    this.processLength = cl && (cl.includes(this.scrtStr) || cl.includes(this.tsStr))
+      ? "72 hours" : "2 hours";
+  }
+}
+</script>
