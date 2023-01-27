@@ -40,7 +40,7 @@
               height="14"
               width="20"
               name="personAdd"
-              class="mr-4 mt-1"
+              class="mr-4"
             />
             Add a CSP Administrator
           </v-btn> 
@@ -63,6 +63,22 @@
               <span v-html="item.adminClassificationLevels"></span>
             </template>
             <!-- eslint-disable vue/valid-v-slot -->
+            <template v-slot:item.status="{ item }">
+              <div class="d-flex align-center" style="margin-top: -6px;">
+                <div class="_icon-circle bg-info-lighter">
+                  <ATATSVGIcon
+                    name="cloud"
+                    width="21"
+                    height="14"
+                    color="info-dark"
+                  />
+                </div>
+                <div>
+                  {{ item.status }}
+                </div>
+              </div>
+            </template>
+            <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
               <button
                 :id="'EditButton_' + item.index"
@@ -74,7 +90,7 @@
 
               <button
                 :id="'DeleteButton_' + item.index"
-                @click="confirmDeleteAdmin(item)"
+                @click="deleteAdmin(item)"
                 class="ml-2"
               >
                 <ATATSVGIcon name="remove" height="18" width="14" />
@@ -103,9 +119,9 @@
         <ATATDialog 
           id="AddCSPAdminModal"
           :showDialog.sync="openModal"
-          title="Add a CSP administrator"
+          :title="isEdit ? 'Edit administrator details' : 'Add a CSP administrator'"
           no-click-animation
-          :okText="isEdit ? 'Update administrator' : 'Add administrator'"
+          :okText="isEdit ? 'Update' : 'Add administrator'"
           width="632"
           :OKDisabled="ModalOKDisabled"
           @ok="AddCSPAdmin"
@@ -219,6 +235,7 @@ import {
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -312,7 +329,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.openModal = true;
   }
 
-  public AddCSPAdmin(): void {
+  public async AddCSPAdmin(): Promise<void> {
     const hasUnclassifiedAccess 
       = this.selectedClassificationLevels.includes(this.unclStr) ? "YES" : "NO";
     const hasScrtAccess = this.selectedClassificationLevels.includes(this.scrtStr) ? "YES" : "NO";
@@ -333,6 +350,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       } else {
         this.admins.push(admin);
       }
+      await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
     }
 
     this.adminDoDId = "";
@@ -340,7 +358,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.unclassifiedEmail = "";
     this.hasScrtAccess = ""; // YES/NO
     this.scrtEmail = "";
-    this.selectedClassificationLevels = [];
+    if (this.classificationLevels.length > 1) this.selectedClassificationLevels = [];
 
     this.buildTableData();
     this.isEdit = false;
@@ -353,7 +371,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public editAdmin(adminToEdit: Record<string, string>): void {
     this.isEdit = true;
     const admin = this.admins.find(obj => obj.DoDId === adminToEdit.DoDId);
-    debugger;
     if (admin) {
       this.editAdminIndex = this.admins.findIndex(obj => obj.DoDId === adminToEdit.DoDId);
       this.adminDoDId = admin.DoDId as string;
@@ -371,12 +388,21 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     }
   }
 
+  public async deleteAdmin(adminToDelete: Record<string, string>): Promise<void> {
+    const index = this.admins.findIndex(obj => obj.DoDId === adminToDelete.DoDId);
+    if (index > -1) {
+      this.admins.splice(index, 1);
+      this.buildTableData();
+    }
+    await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
+  }
+
   public get tableHeaders(): Record<string, string>[] {
     return [
       { text: "DoD ID", value: "DoDId" },
       { text: "Administrator email", value: "adminEmails" },
       { text: "Classification level", value: "adminClassificationLevels" },
-      { text: "Status", value: "status" },
+      { text: "Status", value: "status", width: "200" },
       { text: "", value: "actions", width: "100" },
     ]
   }
@@ -409,8 +435,11 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = PortfolioStore.portfolioProvisioningObj;
+
     if (storeData) {
       this.admins = _.cloneDeep(storeData.admins) || [];
+      await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
+
       this.savedData = _.cloneDeep(this.admins);
       this.csp = storeData.csp as string;
       this.classificationLevels = storeData.classificationLevels || [];
@@ -425,7 +454,10 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
         }
       } 
       this.buildTableData();
+    } else {
+      await AcquisitionPackage.setDisableContinue(true);
     }
+
   }
 
   public async mounted(): Promise<void> {

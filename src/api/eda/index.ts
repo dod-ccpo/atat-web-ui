@@ -65,7 +65,7 @@ export class EDAApi extends ApiBase{
       // CODE BELOW for testing only - remove when EDA API call wired up
       // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       let tempEdaResponse: EDAResponse = {};
-      if (taskOrderNumber === "4000000000000") {
+      if (taskOrderNumber.includes("400000000000")) {
         tempEdaResponse = {
           success: true,
           taskOrderNumber: taskOrderNumber,
@@ -78,6 +78,12 @@ export class EDAApi extends ApiBase{
           popEndDate: "2026-07-01",
           classificationLevels: ["Unclassified", "Secret"]          
         }
+        if (taskOrderNumber === "4000000000001") {
+          tempEdaResponse.classificationLevels = ["Unclassified"];
+        }     
+        if (taskOrderNumber === "4000000000002") {
+          tempEdaResponse.classificationLevels = ["Secret"];
+        }     
       } else {
         let tempErrorCode = "";
         switch (taskOrderNumber) {

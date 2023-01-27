@@ -39,6 +39,7 @@
           role="link" 
           class="ml-4"
           id="ContinueButton"
+          :disabled="disableContinue"
         >
           {{ continueButtonText }}
         </v-btn>
@@ -72,6 +73,7 @@ export default class ATATStepperNavigation extends Vue {
   @Prop({ default: false }) private noPrevious?: boolean;
   @Prop({ default: "stepperNavigation" }) private id?: string;
   @Prop({ default: false }) private hideContinueButton?: boolean;
+  @Prop({ default: false }) private disableContinue!: boolean;
   @Prop({ default: "" }) private continueButtonColor?: string;
   private getButtonClass(button: AdditionalButton) {
     return button.buttonClass || "secondary";

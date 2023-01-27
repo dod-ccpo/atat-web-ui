@@ -22,6 +22,8 @@ import Calendar from "@/components/icons/Calendar.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
+import Cloud from "@/components/icons/Cloud.vue";
+import CloudUpload from "@/components/icons/CloudUpload.vue";
 import CommentBubble from "@/components/icons/CommentBubble.vue";
 import ContactSupport from "@/components/icons/ContactSupport.vue";
 import ContentCopy from "@/components/icons/ContentCopy.vue";
@@ -72,7 +74,6 @@ import WarningAmber from "@/components/icons/WarningAmber.vue";
 import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vue";
 import Place from "@/components/icons/Place.vue";
 import SendEmail from "@/components/icons/SendEmail.vue";
-import CloudUpload from "@/components/icons/CloudUpload.vue";
 import People from "@/components/icons/People.vue";
 import HelpOutline from "@/components/icons/HelpOutline.vue";
 import ProvisionOracle from "@/components/icons/ProvisionOracle.vue";
@@ -92,6 +93,7 @@ import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
     ChevronDown,
     ChevronRight,
     Close,
+    Cloud,
     CloudUpload,
     CommentBubble,
     ContactSupport,

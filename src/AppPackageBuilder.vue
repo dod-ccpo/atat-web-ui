@@ -24,6 +24,7 @@
           :backButtonText="backButtonText"
           :continueButtonText="continueButtonText"
           :hideContinueButton="hideContinueButton"
+          :disableContinue="disableContinueButton"
           :noPrevious="noPrevious"
           class="mb-8"
         />
@@ -99,6 +100,7 @@ export default class AppPackageBuilder extends Vue {
   private continueButtonText = "Continue";
   private altBackDestination = "";
   private hideContinueButton = false;
+  private disableContinueButton = false;
 
   async mounted(): Promise<void> {
     await Steps.setSteps(stepperRoutes);
@@ -200,6 +202,15 @@ export default class AppPackageBuilder extends Vue {
     }
     this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments;
   }
+
+  public get disableContinue(): boolean {
+    return AcquisitionPackage.disableContinue;
+  }
+
+  @Watch('disableContinue')
+  public disableContinueChanged(newVal:boolean): void {
+    this.disableContinueButton = newVal
+  }  
 
   private async additionalButtonClick(button: AdditionalButton) {
     if (button.emitText) {

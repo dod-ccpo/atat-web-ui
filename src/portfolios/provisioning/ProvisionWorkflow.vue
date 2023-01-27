@@ -20,6 +20,7 @@
           :continueButtonText="continueButtonText"
           :continueButtonColor="continueButtonColor"
           :hideContinueButton="hideContinueButton"
+          :disableContinue="disableContinueButton"
           :noPrevious="noPrevious"
           class="mb-8"
         />
@@ -58,6 +59,7 @@ import {
   provisionWorkFlowRoutes, 
   provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { StepperStep } from "types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -83,6 +85,17 @@ export default class ProvisionWorkflow extends Vue {
   private continueButtonColor = "";
   private altBackDestination = "";
   private hideContinueButton = false;
+  private disableContinueButton = false;
+
+
+  public get disableContinue(): boolean {
+    return AcquisitionPackage.disableContinue;
+  }
+
+  @Watch('disableContinue')
+  public disableContinueChanged(newVal:boolean): void {
+    this.disableContinueButton = newVal
+  }  
 
   async mounted(): Promise<void> {
     this.stepperData = await buildProvisionWorkflowRouterData();
