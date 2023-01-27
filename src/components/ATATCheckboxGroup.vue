@@ -18,7 +18,7 @@
     <p v-if="groupLabelHelpText" class="text-base font-size-14 mb-3">
       {{ groupLabelHelpText }}
     </p>
-    <div class="_checkboxes">
+    <div class="_checkboxes" :class="{'_inline' : inline}">
       <v-checkbox
         v-for="(item, index) in _items"
         v-model="_selected"
@@ -31,6 +31,7 @@
           { '_no-description': noDescriptions },
           { '_has-text-fields' : hasTextFields }
         ]"
+        :style="cardStyles"
         :key="id + '_' + item.value"
         :label="item.label"
         :value="item.value"
@@ -177,10 +178,14 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private noDescriptions?: boolean;
   @Prop({ default: false }) private hasTextFields?: boolean;
   @Prop() private labelWidth?: string;
+  @Prop() private cardWidth?: string;
+  @Prop({ default: false }) private cardNormal?: boolean;
   @Prop() private textFieldAppendText?: string;
   @Prop() private textFieldWidth?: number;
   @Prop({ default: "text" }) private textFieldType?: string;
   @Prop({ default: false }) private isFormattedNumber?: boolean;
+  @Prop({ default: false }) private inline?: boolean;
+
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -355,6 +360,10 @@ export default class ATATCheckboxGroup extends Vue {
     }
   }
   
+  public get cardStyles(): string {
+    return this.cardWidth ? `min-width: ${this.cardWidth}px; max-width: ${this.cardWidth}px;` : "";
+  }
+
   public get labelStyles(): string {
     return this.labelWidth ? `min-width: ${this.labelWidth}px;` : "";
   }

@@ -319,6 +319,7 @@ export class AcquisitionPackageStore extends VuexModule {
   contractingShop = "";
 
   fundingRequestType: string | null =  null;
+  disableContinue = false
 
   public initContact: ContactDTO = initialContact()
 
@@ -380,6 +381,16 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public async doSetValidateNow(value: boolean): Promise<void>{
     this.validateNow = value;
+  }
+
+  @Action({rawError: false})
+  public async setDisableContinue(value: boolean): Promise<void> {
+    this.doSetDisableContinue(value);
+  }
+
+  @Mutation
+  private doSetDisableContinue(value: boolean): void {
+    this.disableContinue = value;
   }
 
   public get getAllowDeveloperNavigation(): boolean {
