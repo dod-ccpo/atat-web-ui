@@ -34,7 +34,8 @@
           @click="$emit('next')" 
           v-if="!hideContinueButton"
           depressed 
-          :color="this.continueButtonText == 'Continue'? 'primary' : 'secondary'"
+          :color="this.continueButtonText == 'Continue' || 'Submit my acquisition package'
+          ? 'primary' : 'secondary'"
           role="link" 
           class="ml-4"
           id="ContinueButton"

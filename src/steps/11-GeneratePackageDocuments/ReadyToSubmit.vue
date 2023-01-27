@@ -8,7 +8,7 @@
         <p class="font-size-20 font-weight-500 mb-3">
           Great news! We have everything ready to send your package to DITCO for processing.
         </p>
-        <p class="mt-2 mb-4">
+        <p class="mt-2 mb-10">
           Upon submission, a Contracting Specialist will review your documents and
           contact you if any changes are required. You’ll continue to have access
           to your completed documents within DAPPS.
@@ -19,15 +19,14 @@
             aria-describedby="CertifiedCheckbox"
             :value.sync="certified"
             :items="checkboxItem"
-            labelFontWeight="500"
-            labelFontSize="14"
+            :boldText="true"
             :card="false"
           />
           <ol class="ml-6">
-            <li>
+            <li class="pb-3">
               All information in my package is accurate and complete to the best of my knowledge.
             </li>
-            <li>
+            <li class="pb-3">
               All documents requiring certification have been signed and uploaded.
             </li>
           </ol>
@@ -70,7 +69,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -93,10 +92,22 @@ export default class ReadyToSubmit extends Vue {
     },
   ]
 
+  @Watch('certified')
+  public async certifiedChecked(): Promise<void>{
+    if(this.certified.length > 0){
+      await acquisitionPackage.setDisableContinue(false)
+    }
+    else{
+      await acquisitionPackage.setDisableContinue(true)
+    }
+  }
+
   public async loadOnEnter(): Promise<void> {
     if(acquisitionPackage.attachmentNames){
       this.documentList = acquisitionPackage.attachmentNames
     }
+    console.log(this.certified.length)
+    await acquisitionPackage.setDisableContinue(true)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
   }
   async mounted(): Promise<void>{

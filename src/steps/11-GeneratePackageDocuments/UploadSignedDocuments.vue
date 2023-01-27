@@ -116,7 +116,6 @@ export default class UploadSignedDocuments extends Vue {
   private uploadedFiles: uploadingFile[] = [];
   private needsSignatureLength = 0;
   private filesNeeded:string[] = [];
-  private greaterThanMessage = "Too many files selected. You can upload up to 5 files";
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
   }
