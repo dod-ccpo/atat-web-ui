@@ -275,6 +275,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           this.otherOfferingData.instanceNumber = 1;
           DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(1);
         }
+        
       }
     }
 
@@ -283,9 +284,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     this.isPeriodsDataMissing = periods.length === 0 ? true : false;
     this.isClassificationDataMissing = classifications.length === 0 ? true : false;
     this.showSubtleAlert = this.isPeriodsDataMissing || this.isClassificationDataMissing;
-
+    debugger;
     this.previousSelectedOptions = this.selectedOptions.slice();
     await DescriptionOfWork.setConfirmServiceOfferingDelete(false);
+
+    //`previous` item below needed to successfully save to the IGCE Cost Estimate table
+    this.otherOfferingData.descriptionOfNeedPrevious = this.otherOfferingData.descriptionOfNeed;
   } 
 
   public async mounted(): Promise<void> {
@@ -302,6 +306,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
           } else {
+            debugger;
             await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
         }

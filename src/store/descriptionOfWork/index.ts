@@ -168,8 +168,7 @@ const saveOrUpdateClassificationInstance =
             tempObject as ClassificationInstanceDTO
         );
         await IGCEStore.updateIgceEstimateRecord({
-          classificationInstanceSysId: objSysId,
-          classificationLevelSysId: classificationLevel,
+          classInstance: classificationInstance,
           unit_quantity
         });
       } else {
@@ -269,9 +268,9 @@ export const saveOrUpdateOtherServiceOffering =
                 tempObject as ComputeEnvironmentInstanceDTO
           );
           await IGCEStore.updateIgceEstimateRecord({
-            environmentInstanceSysId: objSysId,
-            classificationLevelSysId: tempObject.classification_level,
-            unit_quantity
+            environmentInstance: serviceOffering,
+            unit_quantity,
+            offeringType,
           });
         } else {
           const savedObject = await api.computeEnvironmentInstanceTable.create(
@@ -306,9 +305,9 @@ export const saveOrUpdateOtherServiceOffering =
           );
           
           await IGCEStore.updateIgceEstimateRecord({
-            environmentInstanceSysId: objSysId,
-            classificationLevelSysId: tempObject.classification_level,
-            unit_quantity
+            environmentInstance: serviceOffering,
+            unit_quantity,
+            offeringType,
           });
 
         } else {
@@ -339,9 +338,9 @@ export const saveOrUpdateOtherServiceOffering =
           );
           
           await IGCEStore.updateIgceEstimateRecord({
-            environmentInstanceSysId: objSysId,
-            classificationLevelSysId: tempObject.classification_level,
-            unit_quantity
+            environmentInstance: serviceOffering,
+            unit_quantity,
+            offeringType,
           });
         } else {
           const savedObject = await api.storageEnvironmentInstanceTable.create(
@@ -371,10 +370,11 @@ export const saveOrUpdateOtherServiceOffering =
           )
 
           await IGCEStore.updateIgceEstimateRecord({
-            environmentInstanceSysId: objSysId,
-            classificationLevelSysId: tempObject.classification_level,
-            unit_quantity
+            environmentInstance: serviceOffering,
+            unit_quantity,
+            offeringType,
           });
+
         } else {
           const savedObject = await api.xaaSEnvironmentInstanceTable.create(
                 tempObject as XaasEnvironmentInstanceDTO
@@ -431,11 +431,11 @@ export const saveOrUpdateOtherServiceOffering =
             tempObject.sys_id,
                 tempObject as CloudSupportEnvironmentInstanceDTO
           );
-
+          debugger;
           await IGCEStore.updateIgceEstimateRecord({
-            environmentInstanceSysId: objSysId,
-            classificationLevelSysId: tempObject.classification_level,
-            unit_quantity
+            environmentInstance: serviceOffering,
+            unit_quantity,
+            offeringType,
           });
 
         } else {
@@ -2020,6 +2020,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     trainingTimeZone: "",
     trainingPersonnel: "",
     classifiedInformationTypes: "",
+    descriptionOfNeedPrevious: "",
   }
 
   otherOfferingInstancesTouched: Record<string, number[]> = {};

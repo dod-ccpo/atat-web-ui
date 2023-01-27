@@ -354,6 +354,7 @@ export interface OtherServiceOfferingData {
   deployedRegions?: string[];
   deployedRegionsOther?: string;
   descriptionOfNeed: string;
+  descriptionOfNeedPrevious?: string,
   entireDuration: string;
   periodsNeeded: string[];
   operatingSystemAndLicensing?: string;

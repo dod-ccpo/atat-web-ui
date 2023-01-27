@@ -2,10 +2,15 @@
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import {OtherServiceOfferingData, SingleMultiple, TrainingEstimate} from "../../../types/Global";
+import {
+  DOWClassificationInstance, 
+  OtherServiceOfferingData, 
+  SingleMultiple, 
+  TrainingEstimate
+} from "../../../types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
-import DescriptionOfWork, { stringifyPeriodsForIGCECostEstimates } from "@/store/descriptionOfWork";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 import AcquisitionPackage from "../acquisitionPackage";
 import { AxiosRequestConfig } from "axios";
 import {
@@ -13,7 +18,8 @@ import {
   RequirementsCostEstimateFlat,
   RequirementsCostEstimateDTO,
   ContractTypeDTO,
-  TrainingEstimateDTO, ReferenceColumn, TravelRequirementDTO
+  TrainingEstimateDTO, 
+  ReferenceColumn
 } from "@/api/models";
 import {currencyStringToNumber} from "@/helpers";
 
@@ -500,34 +506,96 @@ export class IGCEStore extends VuexModule {
       contract_type: getContractType()});
   }
 
-
+  // environmentInstanceSysId?: string, 
+  // classificationLevelSysId?: string,
+  // classificationInstanceSysId?: string,
   @Action({rawError: true})
   public async updateIgceEstimateRecord(
     instanceRef: {
-      environmentInstanceSysId?: string, 
-      classificationLevelSysId?: string,
-      classificationInstanceSysId?: string,
+      isClassificationInstance?: boolean,
+      classInstance?: DOWClassificationInstance,
+      environmentInstance?: OtherServiceOfferingData,
+      offeringType?: string,
       unit_quantity: string,
     }
   ): Promise<void> {
-    const isClassificationInstance = instanceRef.classificationInstanceSysId !== undefined;
+    debugger;
+    const isClassInstance = 
+      instanceRef.classInstance !== undefined;
 
-    const instanceQueryString = isClassificationInstance 
-      ? "classification_instance=" + instanceRef.classificationInstanceSysId
-      : "environment_instance=" + instanceRef.environmentInstanceSysId
+    const classLevelSysId = isClassInstance
+      ? instanceRef.classInstance?.classificationLevelSysId
+      : instanceRef.environmentInstance?.classificationLevel;
 
+    const instanceSysId = isClassInstance
+      ? instanceRef.classInstance?.sysId
+      : instanceRef.environmentInstance?.sysId;
+
+    let statementOfObjectives = isClassInstance
+      ? instanceRef.classInstance?.anticipatedNeedUsage
+      : instanceRef.environmentInstance?.descriptionOfNeed
+
+    const statementOfObjectivesPrevious = 
+      instanceRef.environmentInstance?.descriptionOfNeedPrevious;
+
+    /**
+     * retrieve sysId (costEstimateSysId) of IGCE record to be updated
+     */
+    const instanceQueryString = isClassInstance 
+      ? "classification_instance=" + instanceSysId
+      : "environment_instance=" + instanceSysId
     const instanceQuery: AxiosRequestConfig = {
       params: { sysparm_query: instanceQueryString },
     };
-    
-    const costEstimateSysId = (await api.igceEstimateTable.getQuery(instanceQuery))[0].sys_id || "";
+    const igceRecord = (await api.igceEstimateTable.getQuery(instanceQuery))[0]
+    const costEstimateSysId = igceRecord.sys_id || "";
+  
+    /**
+     * update description if any items in Compute/Storage/Database 
+     * service offering were modified
+     */
+    if (["compute", "database", "storage"].some(o => instanceRef.offeringType === o)){
+      statementOfObjectives = createCostEstimateDescription(
+        instanceRef.offeringType || "",
+        instanceRef.environmentInstance as OtherServiceOfferingData
+      )
+    }
 
+    /**
+     * use igceRecord.description ONLY if the user has MODIFIED the igceRecord.description
+     * from UI, otherwise use instanceRef.statementOfObjectives from DOW
+    */
+    // let description: string | undefined;
+    // const descriptionHasChangedInDow = 
+    //   statementOfObjectives !== statementOfObjectivesPrevious;
+    const description = igceRecord.description !== statementOfObjectivesPrevious 
+      ? igceRecord.description
+      : statementOfObjectives
+
+    
+   
+    
+    // //IGCE record was changed from IGCE UI
+    // if (igceRecord !== statementOfObjectivesPrevious){
+    //   description = igceRecord.description;
+    // } else {
+    //   //if description was not modified from DOW
+    //   description = statementOfObjectives;
+    // } //else if (igceRecord.description !== statementOfObjectivesPrevious){
+    //if description was modified from DOW
+    //description = igceRecord.description;
+    //}
+    
+    /**
+     * update igce record
+     */
     if (costEstimateSysId){
       await api.igceEstimateTable.update(
         costEstimateSysId,{ 
-          classification_level: instanceRef.classificationLevelSysId,
+          classification_level: classLevelSysId,
           contract_type: getContractType(),
-          unit_quantity: instanceRef.unit_quantity
+          unit_quantity: instanceRef.unit_quantity,
+          description: description
         }); 
     }
   }
@@ -553,28 +621,29 @@ export class IGCEStore extends VuexModule {
   }
 
   /**
-   * user is to update unit_quantity when Period of Performance changes
+   * todo: user is to update unit_quantity when Period of Performance changes
+   * //commented out for now but needs to be fleshed out later
    */
 
-  @Action({rawError: true})
-  public async updateIgceEstimatePeriodOfPerformance(): Promise<void> {
-    const query: AxiosRequestConfig = {
-      params: { sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId },
-    };
-    const popsToBeUpdated = (await api.igceEstimateTable.getQuery(query));
+  // @Action({rawError: true})
+  // public async updateIgceEstimatePeriodOfPerformance(): Promise<void> {
+  //   const query: AxiosRequestConfig = {
+  //     params: { sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId },
+  //   };
+  //   const popsToBeUpdated = (await api.igceEstimateTable.getQuery(query));
 
-    if (popsToBeUpdated.length>0){
-      popsToBeUpdated.forEach(
-        async (estimateRow) => {
-          await api.igceEstimateTable.update(
-            estimateRow.sys_id || "",
-            { unit_quantity: await stringifyPeriodsForIGCECostEstimates() }
-          ); 
-        }
-      )
+  //   if (popsToBeUpdated.length>0){
+  //     popsToBeUpdated.forEach(
+  //       async (estimateRow) => {
+  //         await api.igceEstimateTable.update(
+  //           estimateRow.sys_id || "",
+  //           { unit_quantity: await stringifyPeriodsForIGCECostEstimates() }
+  //         ); 
+  //       }
+  //     )
      
-    }
-  }
+  //   }
+  // }
 
 
   /**
