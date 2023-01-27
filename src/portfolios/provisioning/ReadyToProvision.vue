@@ -1,49 +1,46 @@
 <template>
-  <div>
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col>
-          <h1 class="page-header mb-1">
-            Ready to provision your new ATAT portfolio?
-          </h1>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <div class="copy-max-width">
-            <p>
-              Great news! We have everything we need to provision your cloud
-              resources within {{ csp }}.
-            </p>
-            <p class="mb-6">
-              <ul>
-                <li class="mb-2">
-                  Upon initiation of this process, we’ll submit your task order
-                  and administrator details to {{ csp }} to create your cloud
-                  environment and user accounts.
-                  <strong>This process cannot be undone.</strong>
-                </li>
-                <li class="mb-2">
-                  Once complete,CSP Name will notify your CSP administrators with
-                  instructions for obtaining access to the cloud console.
-                </li>
-                <li>
-                  You will automatically become a portfolio manager within ATAT
-                  and will be able to track cloud usage and manage spending
-                  throughout the duration of your task order. You can invite other
-                  people from your organization to access the ATAT portfolio, if
-                  needed.
-                </li>
-              </ul>
-            </p>
+  <v-container fluid class="container-max-width">
+    <v-row>
+      <v-col>
+        <h1 class="page-header">
+          Ready to provision your new ATAT portfolio?
+        </h1>
+        <p class="page-intro copy-max-width">
+          Review your provisioning details below to ensure information is accurate. 
+          When you are ready, click “Start provisioning” and we’ll submit this 
+          information to Microsoft Azure to create your portfolio. <strong>The 
+          provisioning process cannot be undone.</strong>    
+        </p>
+
+        <div class="d-flex width-100">
+          <div class="flex-grow-1 mr-10">
+            <div class="border1 border-rounded border-base-lighter pa-8">
+              <h2 class="h3">Provisioning details</h2>
+
+              <div class="d-flex">
+                <ATATSVGIcon 
+                  name="monetizationOn"
+                  width="20"
+                  height="20"
+                  color="base-light"
+                />
+                <div>
+                  money money money
+                </div>
+
+                
+              </div>
+
+            </div>
           </div>
-        </v-col>
-         <v-col>  
+
+
           <ATATSVGIcon :name="getCSPLogo()" width="460px" height="406px" />
-        </v-col>
-      </v-row>
-      </v-container>
-  </div>
+        </div>
+
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
