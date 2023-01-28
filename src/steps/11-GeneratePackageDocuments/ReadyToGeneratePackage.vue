@@ -17,14 +17,18 @@
             <br/>
             <span class="mt-2 mb-0">
               <ul>
-                <li>
+                <li class="mb-5">
                   We’ll use the information that you provided to generate your required 
                   documents for this acquisition package. This process will take a few minutes.
-                  <br/><br/>
                 </li>
-                <li>
+                <li class="mb-5">
                   Once complete, you’ll be able to download and review your package. If needed, 
                   you can make edits within the wizard and re-generate your package documents.
+                </li>
+                <li v-show="contractingShop === 'DITCO'">
+                  Prior to submitting your package to Defense Information Technology Contracting
+                  Organization (DITCO), you must obtain signatures and upload any documents
+                  requiring certification.
                 </li>
               </ul>
             </span>
@@ -54,6 +58,10 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
   }
 })
 export default class ReadyToGeneratePackage extends Mixins(SaveOnLeave) {
+
+  get contractingShop():string {
+    return AcquisitionPackage.contractingShop
+  }
 
   public async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
