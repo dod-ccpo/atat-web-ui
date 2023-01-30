@@ -79,9 +79,18 @@ export class EDAApi extends ApiBase{
         }
         if (taskOrderNumber === "4000000000001") {
           tempEdaResponse.classificationLevels = ["Unclassified"];
+          tempEdaResponse.csp = "GCP"
+          tempEdaResponse.contractor = "Google Support Services LLC"
         }     
         if (taskOrderNumber === "4000000000002") {
           tempEdaResponse.classificationLevels = ["Secret"];
+          tempEdaResponse.csp = "AWS"
+          tempEdaResponse.contractor = "Amazon Web Services Inc."
+        }     
+        if (taskOrderNumber === "4000000000003") {
+          tempEdaResponse.classificationLevels = ["Secret"];
+          tempEdaResponse.csp = "Oracle"
+          tempEdaResponse.contractor = "Oracle America Inc."
         }     
       } else {
         let tempErrorCode = "";
