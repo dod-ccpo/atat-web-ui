@@ -353,13 +353,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
     }
 
-    this.adminDoDId = "";
-    this.hasUnclassifiedAccess = ""; // YES/NO
-    this.unclassifiedEmail = "";
-    this.hasScrtAccess = ""; // YES/NO
-    this.scrtEmail = "";
-    if (this.classificationLevels.length > 1) this.selectedClassificationLevels = [];
-
+    this.resetAdminData();
     this.buildTableData();
     this.isEdit = false;
     this.editAdminIndex = -1;
@@ -393,8 +387,20 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     if (index > -1) {
       this.admins.splice(index, 1);
       this.buildTableData();
+      this.isEdit = false;
+      this.editAdminIndex = -1;
+      this.resetAdminData();
     }
     await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
+  }
+
+  public resetAdminData(): void {
+    this.adminDoDId = "";
+    this.hasUnclassifiedAccess = ""; // YES/NO
+    this.unclassifiedEmail = "";
+    this.hasScrtAccess = ""; // YES/NO
+    this.scrtEmail = "";
+    if (this.classificationLevels.length > 1) this.selectedClassificationLevels = [];
   }
 
   public get tableHeaders(): Record<string, string>[] {

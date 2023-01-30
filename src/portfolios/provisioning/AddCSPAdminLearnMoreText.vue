@@ -44,9 +44,9 @@
 
 <script lang="ts">
 import PortfolioStore from "@/store/portfolio";
-import { ClassificationLevels } from "../../../types/Global";
+import { ClassificationLevels, PortfolioProvisioning } from "../../../types/Global";
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue"
 
@@ -62,11 +62,28 @@ export default class CSPAdminLearnMoreText extends Vue {
   public tsStr = ClassificationLevels.TSCRT;
 
   public processLength = "2 hours";
-  public mounted(): void {
-    const storeData = PortfolioStore.portfolioProvisioningObj;
-    const cl = storeData.classificationLevels;
+
+  public setProcessLength(cl: string[]): void {
     this.processLength = cl && (cl.includes(this.scrtStr) || cl.includes(this.tsStr))
       ? "72 hours" : "2 hours";
+  }
+
+  public get provisioningData(): PortfolioProvisioning {
+    return PortfolioStore.portfolioProvisioningObj;
+  } 
+
+  @Watch("provisioningData", {deep: true})
+  public provisioningDataChanged(newVal: PortfolioProvisioning): void {
+    if (newVal.classificationLevels?.length) {
+      this.setProcessLength(newVal.classificationLevels);
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    const storeData = await PortfolioStore.getPortfolioProvisioningObj();
+    if (storeData.classificationLevels?.length) {
+      this.setProcessLength(storeData.classificationLevels);
+    } 
   }
 }
 </script>
