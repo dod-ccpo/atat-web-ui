@@ -86,6 +86,11 @@ export class PortfolioDataStore extends VuexModule {
 
   public portfolioProvisioningObj: PortfolioProvisioning 
     = _.cloneDeep(initialPortfolioProvisioningObj());
+ 
+  @Action({rawError: true})
+  public async getPortfolioProvisioningObj(): Promise<PortfolioProvisioning> {
+    return this.portfolioProvisioningObj;
+  }
 
   public openTOSearchPortfolio = false;
 
