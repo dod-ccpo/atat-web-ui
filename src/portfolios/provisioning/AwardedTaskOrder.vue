@@ -91,6 +91,7 @@ import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.v
 
 import PortfolioStore from "@/store/portfolio";
 import { format } from 'date-fns';
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components:{
@@ -162,6 +163,7 @@ export default class AwardedTaskOrder extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    await AcquisitionPackage.setDisableContinue(false);
     await this.setTaskOrderData();
   }
 

@@ -48,16 +48,17 @@
           </v-col>
 
           <v-col class="col-sm-12 col-md-5 pl-5">
-            <ATATAlert
-              type="info"
-            >
-              <template slot="content">
-                Provisioning of cloud resources is not available at this time. In the coming 
-                weeks, you will be able to add an awarded JWCC task order, and ATAT will 
-                create accounts and environments within your CSP portal.
-              </template>
-            </ATATAlert>
-            <br/>
+            <v-card flat class="pa-6 mb-10 _simple-border">
+              <h3 class="text-primary mb-4">Do you already have an awarded task order?</h3>
+              <p class="body">
+                We’ll gather details about your task order to start provisioning new 
+                cloud resources or to continue funding an existing portfolio.
+              </p>
+              <TaskOrderSearch
+                :TONumber.sync="TONumber"
+                @startProvisionWorkflow="startProvisionWorkflow"
+              />
+            </v-card>            
 
             <v-card flat class="pa-6 mb-10 _simple-border">
               <h3 class="text-primary mb-4">What else could we help you with?</h3>
@@ -133,6 +134,8 @@ import AppSections from "@/store/appSections";
 import Packages from "@/packages/Index.vue";
 import Card from "@/packages/components/Card.vue";
 
+import TaskOrderSearch from "@/portfolios/components/TaskOrderSearch.vue";
+
 import Portfolios from "../portfolios/Index.vue";
 import PortfoliosSummary from "../portfolios/components/PortfoliosSummary.vue"
 import { 
@@ -150,7 +153,8 @@ import CurrentUserStore from "@/store/user";
     ATATSearch,
     "PackageCards": Card,
     PortfoliosSummary,
-    ATATSVGIcon
+    ATATSVGIcon,
+    TaskOrderSearch,
   }
 })
 
@@ -170,6 +174,10 @@ export default class ExistingUser extends Vue {
   public portfolioPanel = 0; // open by default
   public portfolioCount = 0;
 
+  public TONumber = "";
+  public async startProvisionWorkflow(): Promise<void> {
+    this.$emit("startProvisionWorkflow");
+  }
   public get showAlert(): boolean {
     return this.draftPackageCount > 0
   }

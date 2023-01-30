@@ -53,6 +53,7 @@
           @startNewAcquisition="startNewAcquisition" 
           @allPackagesCleared="isNewUser = true"
           @openTOSearchModal="openSearchTOModal"
+          @startProvisionWorkflow="startProvisionWorkflow"
         />      
 
         <div class="bg-white">

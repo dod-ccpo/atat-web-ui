@@ -3,6 +3,8 @@ import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import ExistingUser from "./ExistingUser.vue";
+import validators from "@/plugins/validation";
+
 import VueRouter from "vue-router";
 import { 
   AcquisitionPackageSummaryDTO,
@@ -72,6 +74,7 @@ Vue.use(Vuetify);
 describe("Existing User Component", () => {
   const localVue = createLocalVue();
   localVue.use(VueRouter);
+  localVue.use(validators);
 
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;

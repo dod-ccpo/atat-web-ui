@@ -28,7 +28,6 @@ export class EDAApi extends ApiBase{
       const response = await this.post({
         delivery_order_number : taskOrderNumber
       });
-      debugger;
       let edaResponse: EDAResponse = {};
       if (response.status === 200) {
         const { result } = response.data;
