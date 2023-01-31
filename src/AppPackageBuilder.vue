@@ -230,5 +230,12 @@ export default class AppPackageBuilder extends Vue {
       this.$router.push({ name: button.name });
     }
   }
+
+  private async takeAltContinueAction() {
+    if (this.altContinueAction) {
+      await actionHandler(this.altContinueAction, []);
+    }
+  }
+    
 }
 </script>
