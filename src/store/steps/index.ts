@@ -19,6 +19,7 @@ export class StepsStore extends VuexModule implements StepsState {
       additionalButtons: [],
       backButtonText: '',
       continueButtonText:'',
+      altContinueAction: '',
       continueButtonColor: '',
       completed: false,
       completePercentageWeight: 0,
@@ -119,6 +120,7 @@ export class StepsStore extends VuexModule implements StepsState {
         this.currentStep.backButtonText = this.altBackButtonText 
           ? this.altBackButtonText 
           : "Back";
+
         if (
           this.currentStep.additionalButtons.length > 0
           && ((this.altAdditionalButtonText && this.additionalButtonId) 

@@ -11,6 +11,7 @@ export interface StepInfo {
     additionalButtons: AdditionalButton[];
     backButtonText: string | undefined;
     continueButtonText: string | undefined;
+    altContinueAction?: string | undefined;
     completed: boolean | undefined;
     completePercentageWeight: number | undefined;
     stepCompleteOnEnter: string | undefined;

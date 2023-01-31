@@ -18,12 +18,13 @@ export const mapStepConfigs = (
       backButtonText: routeConfig.backButtonText || "Back",
       continueButtonText: routeConfig.continueButtonText || "Continue",
       continueButtonColor: routeConfig.continueButtonColor || "primary",
+      altContinueAction: routeConfig.altContinueAction || "",
       completed: routeConfig.completed || false,
       completePercentageWeight: routeConfig.completePercentageWeight || 0,
       stepCompleteOnEnter: routeConfig.stepCompleteOnEnter || undefined,
       stepCompleteOnLeave: routeConfig.stepCompleteOnLeave || undefined
     };
-   
+  
     const lastStep = map?.get(last || "");
 
     if (lastStep) {

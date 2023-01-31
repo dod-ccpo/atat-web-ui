@@ -20,9 +20,11 @@
           @next="navigate('next')"
           @previous="navigate('previous')"
           @additionalButtonClick="additionalButtonClick"
+          @takeAltContinueAction="takeAltContinueAction"
           :additionalButtons="additionalButtons"
           :backButtonText="backButtonText"
           :continueButtonText="continueButtonText"
+          :altContinueAction="altContinueAction"
           :hideContinueButton="hideContinueButton"
           :disableContinue="disableContinueButton"
           :noPrevious="noPrevious"
@@ -98,6 +100,7 @@ export default class AppPackageBuilder extends Vue {
   private noPrevious = false;
   private backButtonText = "Back";
   private continueButtonText = "Continue";
+  private altContinueAction = "";
   private altBackDestination = "";
   private hideContinueButton = false;
   private disableContinueButton = false;
@@ -197,6 +200,7 @@ export default class AppPackageBuilder extends Vue {
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
     this.continueButtonText = step.continueButtonText || "Continue";
+    this.altContinueAction = step.altContinueAction || "";
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
@@ -226,5 +230,12 @@ export default class AppPackageBuilder extends Vue {
       this.$router.push({ name: button.name });
     }
   }
+
+  private async takeAltContinueAction() {
+    if (this.altContinueAction) {
+      await actionHandler(this.altContinueAction, []);
+    }
+  }
+    
 }
 </script>
