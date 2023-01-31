@@ -384,3 +384,4 @@ export function convertEstimateData(sysIdArray: Record<string, string>[]): strin
   //remove trailing commaa
   return "{" + records.substring(0,records.length - 1) + "}";
 }
+

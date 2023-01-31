@@ -148,6 +148,7 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   private validFileFormats = ["pdf","jpg","png","docx"];
   private uploadedFiles: uploadingFile[] = [];
   public removeAll = false;
+  public isDitco = false
   public requiredMessage = "Please upload a file"
   public restrictedNames = [
     "DescriptionOfWork.docx",
@@ -283,10 +284,12 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
     }
     this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('ja');
     this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('mrr');
+
   }
 
   public async skipPage(): Promise<void> {
-    if(AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE"){
+    if(AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE"||
+    AcquisitionPackage.contractingShop ==='DITCO'){
       await this.$router.push(
         {
           path:"ready-to-generate-package"
