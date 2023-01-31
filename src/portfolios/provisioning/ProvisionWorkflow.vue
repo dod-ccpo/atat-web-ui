@@ -15,10 +15,12 @@
           @next="navigate('next')"
           @previous="navigate('previous')"
           @additionalButtonClick="additionalButtonClick"
+          @takeAltContinueAction="takeAltContinueAction"
           :additionalButtons="additionalButtons"
           :backButtonText="backButtonText"
           :continueButtonText="continueButtonText"
           :continueButtonColor="continueButtonColor"
+          :altContinueAction="altContinueAction"
           :hideContinueButton="hideContinueButton"
           :disableContinue="disableContinueButton"
           :noPrevious="noPrevious"
@@ -83,6 +85,7 @@ export default class ProvisionWorkflow extends Vue {
   private backButtonText = "Back";
   private continueButtonText = "Continue";
   private continueButtonColor = "";
+  private altContinueAction = "";
   private altBackDestination = "";
   private hideContinueButton = false;
   private disableContinueButton = false;
@@ -189,8 +192,9 @@ export default class ProvisionWorkflow extends Vue {
     this.altBackDestination = Steps.altBackDestination;
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
-    this.continueButtonColor = step.continueButtonColor || "primary"
+    this.continueButtonColor = step.continueButtonColor || "primary";
     this.continueButtonText = step.continueButtonText || "Continue";
+    this.altContinueAction = step.altContinueAction || "";
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
@@ -210,5 +214,12 @@ export default class ProvisionWorkflow extends Vue {
       this.$router.push({ name: button.name });
     }
   }
+
+  private async takeAltContinueAction() {
+    if (this.altContinueAction) {
+      await actionHandler(this.altContinueAction, []);
+    }
+  }
+
 }
 </script>

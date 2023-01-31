@@ -3,6 +3,8 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 
 import router from "@/router";
 import PortfolioStore from "@/store/portfolio";
+import AppSections from "@/store/appSections";
+import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
 
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
@@ -12,6 +14,7 @@ const actionHandlerNames = {
   clearCurrentContractInfo: "clearCurrentContractInfo",
   confirmDeleteTravelAll: "confirmDeleteTravelAll",
   openTOSearchModal: "openTOSearchModal",
+  startProvisioning: "startProvisioning",
 }
 
 const actions =  {
@@ -22,6 +25,7 @@ const actions =  {
   [actionHandlerNames.clearCurrentContractInfo]: clearCurrentContractInfo,
   [actionHandlerNames.confirmDeleteTravelAll]: confirmDeleteTravelAll,
   [actionHandlerNames.openTOSearchModal]: openTOSearchModal,
+  [actionHandlerNames.startProvisioning]: startProvisioning,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -69,6 +73,11 @@ async function confirmDeleteTravelAll() {
 
 async function openTOSearchModal() {
   await PortfolioStore.setOpenTOSearchModal(true);
+}
+
+async function startProvisioning() {
+  await AppSections.setAppContentComponent(PortfolioSummary);
+  ;
 }
 
 export default actionHandler;

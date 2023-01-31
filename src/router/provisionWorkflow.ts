@@ -63,13 +63,8 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
     path: "/ready-to-provision",
     component: ReadyToProvision,
     continueButtonText: "Start Provisioning",
-    continueButtonColor: "primary"
+    altContinueAction: "startProvisioning",
   },
-  {
-    name: provWorkflowRouteNames.Provisioned,
-    path: "/provisioned",
-    component: Provisioned,
-  }
 ];
 
 /**
@@ -91,6 +86,7 @@ const mapStepRouteToStepperData = (
     additionalButtons,
     backButtonText,
     continueButtonText,
+    altContinueAction,
   } = stepperRouteConfig;
 
   let {name} = stepperRouteConfig;
@@ -110,6 +106,7 @@ const mapStepRouteToStepperData = (
     additionalButtons,
     backButtonText,
     continueButtonText,
+    altContinueAction,
   };
   return stepperStep;
 };

@@ -31,7 +31,7 @@
         </span>
 
         <v-btn 
-          @click="$emit('next')" 
+          @click="continueClicked()" 
           v-if="!hideContinueButton"
           depressed 
           :color="continueButtonColor
@@ -75,6 +75,8 @@ export default class ATATStepperNavigation extends Vue {
   @Prop({ default: false }) private hideContinueButton?: boolean;
   @Prop({ default: false }) private disableContinue!: boolean;
   @Prop({ default: "" }) private continueButtonColor?: string;
+  @Prop({ default: "" }) private altContinueAction?: string;
+
   private getButtonClass(button: AdditionalButton) {
     return button.buttonClass || "secondary";
   }
@@ -89,6 +91,14 @@ export default class ATATStepperNavigation extends Vue {
 
   private toggleDeveloperNavigation(): void {
     AcquisitionPackage.setAllowDeveloperNavigation(!AcquisitionPackage.getAllowDeveloperNavigation);
+  }
+
+  private continueClicked(): void {
+    if (!this.altContinueAction) {
+      this.$emit("next");
+    } else {
+      this.$emit("takeAltContinueAction");
+    }
   }
 
 }

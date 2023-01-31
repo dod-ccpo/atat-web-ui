@@ -100,7 +100,7 @@
 
           <ATATSVGIcon :name="cspLogoName" width="460px" height="406px" />
         </div>      
-
+        <a @click="foo">FOO</a>
       </v-col>
     </v-row>
   </v-container>
@@ -116,6 +116,10 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import PortfolioStore from "@/store/portfolio";
 import { ClassificationLevels, PortfolioProvisioning } from "../../../types/Global";
 import _ from "lodash";
+import AppSections from "@/store/appSections";
+
+import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
+
 
 @Component({
   components: {
@@ -132,6 +136,10 @@ export default class ReadyToProvision extends Vue {
   public processLength = "2 hours";
   public classificationLevels = "";
   public adminCount = "";
+
+  public foo(): void {
+    AppSections.setAppContentComponent(PortfolioSummary);
+  }
 
   @Watch("provisioningData")
   public provisioningDataChanged(newVal: PortfolioProvisioning): void {

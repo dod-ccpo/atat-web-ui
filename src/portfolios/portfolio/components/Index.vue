@@ -9,28 +9,35 @@
 
     <v-main
       class="_dashboard"
-      :class="[tabItems[tabIndex] === 'Funding Tracker'? '_funding-dashboard':'']"
+      :class="[
+        {'_funding-dashboard': tabItems[tabIndex] === 'Funding Tracker'},
+        {'bg-white': isPortfolioProvisioning}
+      ]"
     >
-      <PortfolioSummaryPageHead
-        headline="Portfolio Summary"
-        :items ="tabItems"
-        :value.sync="tabIndex"
-        :title.sync="title"
-        :portfolioStatus="portfolioStatus"
-      />
-      <v-container
-        :class="[tabItems[tabIndex] === 'Task Orders'?
-         'container-max-width-wide':'container-max-width'
-         ]"
-        style="margin-bottom:300px !important"
-      >
-          <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
-          <TaskOrder v-if="tabItems[tabIndex] === 'Task Orders'"/>
-          <CSPPortalAccess
-            v-if="tabItems[tabIndex] === 'CSP Portal Access'"
-            :portfolioCSP="portfolioCSP"
-          />
-      </v-container>
+        <PortfolioSummaryPageHead
+          headline="Portfolio Summary"
+          :items ="tabItems"
+          :value.sync="tabIndex"
+          :title.sync="title"
+          :portfolioStatus="portfolioStatus"
+        />
+        <v-container
+          v-if="!isPortfolioProvisioning"
+          :class="[tabItems[tabIndex] === 'Task Orders'?
+          'container-max-width-wide':'container-max-width'
+          ]"
+          style="margin-bottom:300px !important"
+        >
+            <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
+            <TaskOrder v-if="tabItems[tabIndex] === 'Task Orders'"/>
+            <CSPPortalAccess
+              v-if="tabItems[tabIndex] === 'CSP Portal Access'"
+              :portfolioCSP="portfolioCSP"
+            />
+        </v-container>
+
+        <Provisioned v-else style="margin-bottom: 100px;"/>
+
       <ATATFooter/>
 
     </v-main>
@@ -49,6 +56,9 @@ import PortfolioSummaryPageHead from
 import CSPPortalAccess from "@/portfolios/portfolio/components/CSPPortalAccess/CSPPortalAccess.vue";
 import FundingTracker from "@/portfolios/portfolio/components/FundingTracker/FundingTracker.vue";
 import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
+
+import Provisioned from "@/portfolios/provisioning/Provisioned.vue";
+
 import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
 
@@ -61,6 +71,7 @@ import AppSections from "@/store/appSections";
     ATATFooter,
     ATATSlideoutPanel,
     ATATToast,
+    Provisioned,
   }
 })
 export default class PortfolioSummary extends Vue {
@@ -68,7 +79,7 @@ export default class PortfolioSummary extends Vue {
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
   }
-
+  public isPortfolioProvisioning = false;
   public tabIndex = 0;
   public tabItems = [
     "Funding Tracker",
@@ -82,11 +93,14 @@ export default class PortfolioSummary extends Vue {
 
   public async loadOnEnter(): Promise<void>  {
     const portfolio = PortfolioStore.currentPortfolio;
-    if(portfolio){
+    if(portfolio.sysId){
       this.title = portfolio.title || "";
       this.portfolioStatus = portfolio.status || "";
       this.portfolioDescription = portfolio.description || "";
       this.portfolioCSP = portfolio.csp || "";
+    } else {
+      this.isPortfolioProvisioning = true;
+      this.title = "Hosting and Compute Center (HaCC)"
     }
   }
   public async mounted(): Promise<void>{
