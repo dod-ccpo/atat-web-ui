@@ -1306,7 +1306,8 @@ export const SecurityRequirementsResolver = (current: string): string => {
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
-  if (!acqPkgSysId) {
+  const showPackageSelection = PortfolioStore.showTOPackageSelection;
+  if (!acqPkgSysId || showPackageSelection) {
     return provWorkflowRouteNames.GeneratedFromPackage;
   }
   return current === provWorkflowRouteNames.PortfolioDetails

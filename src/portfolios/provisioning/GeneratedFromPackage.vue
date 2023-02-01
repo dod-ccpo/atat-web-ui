@@ -15,7 +15,7 @@
         <v-card
           v-for="(pkg, index) in packageData"
           :key="pkg.sys_id"
-          class="_summary-card-wrapper _selectable"
+          class="_summary-card-wrapper _selectable"          
           :class="{ 
             '_first': index === 0, 
             '_last': index === packageData.length - 1,
@@ -23,6 +23,9 @@
           }"
           :id="'Package'+ index"
           elevation="0"
+          @click="packageSelected(index)"
+          @keydown.enter="packageSelected(index)"
+          @keydown.space="packageSelected(index)"
         >
           <div class="flex-grow-1">
             <div class="d-flex">
@@ -76,7 +79,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import Card from "@/packages/components/Card.vue";
@@ -84,6 +87,10 @@ import { AcquisitionPackageSummarySearchDTO, UserDTO } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import CurrentUserStore from "@/store/user";
 import { createDateStr } from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { PortfolioApi } from "@/api/portfolio";
+import PortfolioStore from "@/store/portfolio";
 
 export interface packageCardData {
   isSelected?: boolean;
@@ -101,7 +108,7 @@ export interface packageCardData {
   }
 })
 
-export default class GeneratedFromPackage extends Vue {
+export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   public packageData: packageCardData[] = [];
   public selectedPackageSysId = "";
 
@@ -127,9 +134,12 @@ export default class GeneratedFromPackage extends Vue {
     this.packageData.forEach(pkg => pkg.isSelected = false);
     this.packageData[index].isSelected = true;
     this.selectedPackageSysId = this.packageData[index].sysId as string;
+    AcquisitionPackage.setDisableContinue(false);
   }
 
   public async loadOnEnter(): Promise<void> {
+    await AcquisitionPackage.setDisableContinue(true);
+    const selectedPackageSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
     const packageData = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO);
     packageData.acquisitionPackageSummaryList.forEach(pkg => {
@@ -140,7 +150,7 @@ export default class GeneratedFromPackage extends Vue {
       const updatedDate = createDateStr(pkg.sys_updated_on as string, true);
 
       const cardData: packageCardData = {
-        isSelected: false,
+        isSelected: selectedPackageSysId !== undefined && pkg.sys_id === selectedPackageSysId,
         packageStatus: pkg.package_status?.display_value as string,
         createdBy: isOwner && this.currentUser.name ? this.currentUser.name : "Maria Missionowner",
         updated: "Last modified " + updatedDate,
@@ -149,11 +159,26 @@ export default class GeneratedFromPackage extends Vue {
       }
       this.packageData.push(cardData);
     });
+    const selectedIndex = this.packageData.findIndex(obj => obj.isSelected === true);
+    if (selectedIndex > -1) {
+      AcquisitionPackage.setDisableContinue(false);
+    }
 
   }
 
   public async mounted(): Promise<void> {
+    await PortfolioStore.setDidNotUseDAPPS(false);
     await this.loadOnEnter();
+  }
+
+  public async saveOnLeave(): Promise<boolean> {
+    try {
+      const sysId = PortfolioStore.didNotUseDAPPS ? "" : this.selectedPackageSysId;
+      PortfolioStore.setSelectedAcquisitionPackageSysId(sysId);
+    } 
+    catch { console.log("Error saving data") }
+
+    return true;
   }
 
 }

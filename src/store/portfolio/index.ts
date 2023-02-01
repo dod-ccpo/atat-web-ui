@@ -84,6 +84,27 @@ const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
 
 export class PortfolioDataStore extends VuexModule {
 
+  public showTOPackageSelection = true;
+  @Action({rawError: true})
+  public async setShowTOPackageSelection(bool: boolean): Promise<void> {
+    this.doSetShowTOPackageSelection(bool);
+  }
+  @Mutation
+  public doSetShowTOPackageSelection(bool: boolean): void {
+    this.showTOPackageSelection = bool;
+  }
+
+
+  public didNotUseDAPPS = false;
+  @Action({rawError: true})
+  public async setDidNotUseDAPPS(bool: boolean): Promise<void> {
+    this.doSetDidNotUseDAPPS(bool);
+  }
+  @Mutation
+  public doSetDidNotUseDAPPS(bool: boolean): void {
+    this.didNotUseDAPPS = bool;
+  }
+
   public selectedAcquisitionPackageSysId = "";
   @Action({rawError: true})
   public async setSelectedAcquisitionPackageSysId(sysId: string): Promise<void> {
@@ -110,6 +131,7 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true})
   public async setOpenTOSearchModal(val: boolean): Promise<void> {
+    this.setShowTOPackageSelection(true);
     this.doSetOpenTOSearchModal(val);
   }
   @Mutation
@@ -469,6 +491,8 @@ export class PortfolioDataStore extends VuexModule {
   @Mutation
   public async doReset(): Promise<void> {
     this.portfolioProvisioningObj = _.cloneDeep(initialPortfolioProvisioningObj());
+    this.didNotUseDAPPS = false;
+    this.showTOPackageSelection = true;
   }
 
 }

@@ -157,7 +157,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     searchQuery: string,
     searchDTO: AcquisitionPackageSummarySearchDTO
   }): Promise<AcquisitionPackageSummaryDTO[]> {
-    debugger;
     const searchQuery = filterObject.searchQuery;
     const searchDTO = filterObject.searchDTO;
     await this.ensureInitialized();
@@ -196,7 +195,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   public async searchAcquisitionPackageSummaryList(searchDTO: AcquisitionPackageSummarySearchDTO):
     Promise<AcquisitionPackageSummaryMetadataAndDataDTO> {
     try {
-      debugger;
       const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
       let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO);
       if (optionalSearchQuery.length > 0) {

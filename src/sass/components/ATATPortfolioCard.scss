@@ -72,16 +72,18 @@
     }
   }
   &._selectable {
-    padding: 25px 33px !important;
+    &:hover {
+      cursor: pointer;
+    }
   }
   &._card-selected {
-    padding: 24px 32px !important;
+    padding: 23px 31px !important;
     background-color: $primary-lighter;
     border: 2px solid $primary !important;
-
-    // border-color: $primary !important;
-    // // outline: 1px solid $primary !important;
-    // border-bottom: 2px solid $primary !important;
+    &::before {
+      opacity: 0 !important;
+      background: transparent !important;
+    }
   }
 }
 

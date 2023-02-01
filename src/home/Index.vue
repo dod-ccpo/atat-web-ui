@@ -128,6 +128,7 @@ export default class Home extends Vue {
     this.showTOSearchModal = false;
     this.selectedAcquisitionPackageSysId = "";
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
+    await PortfolioStore.setShowTOPackageSelection(true);
   }
 
   public isNewUser = false;
@@ -160,8 +161,11 @@ export default class Home extends Vue {
   public async startProvisionWorkflow(): Promise<void>{
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await AcquisitionPackage.reset();
-    
+    if (this.selectedAcquisitionPackageSysId) {
+      await PortfolioStore.setShowTOPackageSelection(false);
+    }
     await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedAcquisitionPackageSysId);
+
 
     this.$router.push({
       name: provWorkflowRouteNames.AwardedTaskOrder,
@@ -185,6 +189,7 @@ export default class Home extends Vue {
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
+    await PortfolioStore.setShowTOPackageSelection(true);
   }
 
 
