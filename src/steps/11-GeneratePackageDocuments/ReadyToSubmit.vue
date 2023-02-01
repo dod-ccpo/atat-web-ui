@@ -106,7 +106,6 @@ export default class ReadyToSubmit extends Vue {
     if(acquisitionPackage.attachmentNames){
       this.documentList = acquisitionPackage.attachmentNames
     }
-    console.log(this.certified.length)
     await acquisitionPackage.setDisableContinue(true)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
   }
