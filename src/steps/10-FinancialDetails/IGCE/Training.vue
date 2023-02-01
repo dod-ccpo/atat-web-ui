@@ -205,6 +205,7 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
   public trainingIndex = 0;
   public trainingCount = 0;
+  public cloudSupportEnvironmentInstance = "";
 
   public trainingTitle = "[User's training title]";
   public trainingLocation = `On-site instructor led CONUS 
@@ -217,7 +218,6 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
   @Watch("instanceData.trainingOption")
   protected trainingOptions(val: SingleMultiple): void {
     this.instanceData.estimate.option = val;
-    
   }
 
   @Watch("instanceData.costEstimateType")
@@ -309,14 +309,11 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     const dowTrainingItems = DescriptionOfWork.DOWObject.find(
       item => item.serviceOfferingGroupId === "TRAINING"
     );
-
-    let cloudSupportEnvironmentInstance = "";
-
     if(dowTrainingItems && dowTrainingItems.otherOfferingData){
 
       this.trainingCount = dowTrainingItems.otherOfferingData.length;
       const trainingItem = dowTrainingItems.otherOfferingData[this.trainingIndex];
-      cloudSupportEnvironmentInstance = trainingItem.sysId || "";
+      this.cloudSupportEnvironmentInstance = trainingItem.sysId || "";
 
       if(trainingItem){
         this.trainingTitle = trainingItem.trainingRequirementTitle as string;
@@ -338,7 +335,7 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
       this.trainingIndex < IGCE.trainingItems.length
     ){
       IGCE.trainingItems[this.trainingIndex].cloudSupportEnvironmentInstance = 
-        cloudSupportEnvironmentInstance;
+        this.cloudSupportEnvironmentInstance;
       this.instanceData = _.cloneDeep(IGCE.trainingItems[this.trainingIndex]);
       this.savedData = _.cloneDeep(IGCE.trainingItems[this.trainingIndex]);
 
@@ -443,7 +440,9 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         this.sysIdValueArray.push(obj);
       }
       this.currentData.estimate.estimated_values = 
-          convertEstimateData(this.sysIdValueArray);
+        convertEstimateData(this.sysIdValueArray);
+      this.currentData.cloudSupportEnvironmentInstance = 
+        this.cloudSupportEnvironmentInstance;
       
       if(this.hasChanged()){  
         await IGCE.setTrainingEstimate(this.currentData);
