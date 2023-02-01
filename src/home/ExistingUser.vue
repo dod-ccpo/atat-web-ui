@@ -182,8 +182,8 @@ export default class ExistingUser extends Vue {
     return this.draftPackageCount > 0
   }
 
-  public openTOSearchModal(): void {
-    this.$emit("openTOSearchModal");
+  public openTOSearchModal(acqPackageSysId: string): void {
+    this.$emit("openTOSearchModal", acqPackageSysId);
   }
   
   public startNewAcquisition(): void {

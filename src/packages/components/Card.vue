@@ -279,7 +279,7 @@ export default class Card extends Vue {
       this.updateStatus('DRAFT')
       break;
     case "Add awarded task order":
-      this.$emit("openTOSearchModal");
+      this.$emit("openTOSearchModal", this.cardData.sys_id);
       break;
     }
 

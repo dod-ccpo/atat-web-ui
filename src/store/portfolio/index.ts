@@ -84,6 +84,20 @@ const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
 
 export class PortfolioDataStore extends VuexModule {
 
+  public selectedAcquisitionPackageSysId = "";
+  @Action({rawError: true})
+  public async setSelectedAcquisitionPackageSysId(sysId: string): Promise<void> {
+    this.doSetSelectedAcquisitionPackageSysId(sysId);
+  }
+  @Mutation
+  public doSetSelectedAcquisitionPackageSysId(sysId: string): void {
+    this.selectedAcquisitionPackageSysId = sysId;
+  }
+  public get getSelectedAcquisitionPackageSysId(): string {
+    return this.selectedAcquisitionPackageSysId;
+  }
+  
+
   public portfolioProvisioningObj: PortfolioProvisioning 
     = _.cloneDeep(initialPortfolioProvisioningObj());
  

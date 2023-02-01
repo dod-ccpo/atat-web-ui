@@ -16,6 +16,8 @@ import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
+import { provWorkflowRouteNames } from "../provisionWorkflow"
+import PortfolioStore from "@/store/portfolio";
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
@@ -1302,6 +1304,16 @@ export const SecurityRequirementsResolver = (current: string): string => {
     : routeNames.ClassificationRequirements
 }
 
+export const GeneratedFromPackageRouteResolver = (current: string): string => {
+  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
+  if (!acqPkgSysId) {
+    return provWorkflowRouteNames.GeneratedFromPackage;
+  }
+  return current === provWorkflowRouteNames.PortfolioDetails
+    ? provWorkflowRouteNames.AwardedTaskOrder
+    : provWorkflowRouteNames.PortfolioDetails;
+}
+
 
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
@@ -1333,6 +1345,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
   // IGCEGatherPriceResolver,
+  GeneratedFromPackageRouteResolver,
 };
 
 // add path resolvers here 
