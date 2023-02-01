@@ -78,7 +78,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -89,7 +88,6 @@ import CurrentUserStore from "@/store/user";
 import { createDateStr } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { PortfolioApi } from "@/api/portfolio";
 import PortfolioStore from "@/store/portfolio";
 
 export interface packageCardData {
@@ -143,16 +141,11 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
     const packageData = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO);
     packageData.acquisitionPackageSummaryList.forEach(pkg => {
-      let isOwner = false;
-      if(pkg.mission_owners && this.currentUser.sys_id) {
-        isOwner = pkg.mission_owners?.value.indexOf(this.currentUser.sys_id) > -1
-      }
-      const updatedDate = createDateStr(pkg.sys_updated_on as string, true);
-
+      const updatedDate = createDateStr(pkg.sys_updated_on as string, true);     
       const cardData: packageCardData = {
         isSelected: selectedPackageSysId !== undefined && pkg.sys_id === selectedPackageSysId,
         packageStatus: pkg.package_status?.display_value as string,
-        createdBy: isOwner && this.currentUser.name ? this.currentUser.name : "Maria Missionowner",
+        createdBy: pkg.mission_owners?.display_value as string,
         updated: "Last modified " + updatedDate,
         title: pkg.project_overview?.display_value as string,
         sysId: pkg.sys_id as string,

@@ -18,6 +18,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
@@ -1305,9 +1306,10 @@ export const SecurityRequirementsResolver = (current: string): string => {
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
+  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrder;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
   const showPackageSelection = PortfolioStore.showTOPackageSelection;
-  if (!acqPkgSysId || showPackageSelection) {
+  if (packageCount && (!acqPkgSysId || showPackageSelection)) {
     return provWorkflowRouteNames.GeneratedFromPackage;
   }
   return current === provWorkflowRouteNames.PortfolioDetails
