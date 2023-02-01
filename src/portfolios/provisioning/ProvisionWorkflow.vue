@@ -79,7 +79,7 @@ export default class ProvisionWorkflow extends Vue {
     return SlideoutPanel.slideoutPanelComponent || undefined;
   };
 
-  private stepperData = buildProvisionWorkflowRouterData(); //:StepperStep[] = []; 
+  private stepperData = buildProvisionWorkflowRouterData();
   private additionalButtons: AdditionalButton[] = [];
   private noPrevious = false;
   private backButtonText = "Back";

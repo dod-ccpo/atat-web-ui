@@ -131,7 +131,6 @@ import api from "@/api";
 import { mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
-import Portfolios from "@/portfolios/Index.vue";
 
 @Component({
   components: {

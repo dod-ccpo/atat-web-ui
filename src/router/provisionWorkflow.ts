@@ -7,7 +7,6 @@ import PortfolioDetails from "@/portfolios/provisioning/PortfolioDetails.vue";
 import AddCSPAdmin from "@/portfolios/provisioning/AddCSPAdmin.vue";
 import ReadyToProvision from "@/portfolios/provisioning/ReadyToProvision.vue";
 
-// import { GeneratedFromPackageRouteResolver } from "./resolvers"
 const GeneratedFromPackageRouteResolver = (): string => {
   return "";
 }
