@@ -89,6 +89,7 @@ import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
+import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 import { scrollToId } from "@/helpers";
 
@@ -96,7 +97,7 @@ import UserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({
   components: {
@@ -114,15 +115,20 @@ export default class Home extends Vue {
   public showTOSearchModal = false;
   public TONumber = "";
   public resetValidationNow = false;
+  public selectedAcquisitionPackageSysId = "";
   
-  public openSearchTOModal(): void {
+  public openSearchTOModal(acqPackageSysId: string): void {
+    this.selectedAcquisitionPackageSysId = acqPackageSysId;
     this.showTOSearchModal = true;
   }
 
-  public TOSearchCancelled(): void {
+  public async TOSearchCancelled(): Promise<void> {
     this.TONumber = "";
     this.resetValidationNow = true;
     this.showTOSearchModal = false;
+    this.selectedAcquisitionPackageSysId = "";
+    await PortfolioStore.setSelectedAcquisitionPackageSysId("");
+    await PortfolioStore.setShowTOPackageSelection(true);
   }
 
   public isNewUser = false;
@@ -141,6 +147,7 @@ export default class Home extends Vue {
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await AcquisitionPackage.reset();
+    await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     this.$router.push({
       name: routeNames.ContractingShop,
       params: {
@@ -154,6 +161,12 @@ export default class Home extends Vue {
   public async startProvisionWorkflow(): Promise<void>{
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await AcquisitionPackage.reset();
+    if (this.selectedAcquisitionPackageSysId) {
+      await PortfolioStore.setShowTOPackageSelection(false);
+    }
+    await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedAcquisitionPackageSysId);
+
+
     this.$router.push({
       name: provWorkflowRouteNames.AwardedTaskOrder,
       params: {
@@ -175,6 +188,8 @@ export default class Home extends Vue {
     await this.checkIfIsNewUser();
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
+    await PortfolioStore.setSelectedAcquisitionPackageSysId("");
+    await PortfolioStore.setShowTOPackageSelection(true);
   }
 
 

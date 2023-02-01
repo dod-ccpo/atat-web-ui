@@ -107,6 +107,7 @@ export default class Provisioned extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    await PortfolioStore.setSelectedAcquisitionPackageSysId("");
   }
 
 }

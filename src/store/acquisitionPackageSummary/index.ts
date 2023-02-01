@@ -219,6 +219,26 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     }
   }
 
+  public packagesWaitingForTaskOrder = 0;
+  @Action({rawError: true})
+  public async setPackagesWaitingForTaskOrder(): Promise<void> {
+    const searchDTO:AcquisitionPackageSummarySearchDTO = {
+      acquisitionPackageStatus: "WAITING_FOR_TASK_ORDER",
+      searchString: "",
+      sort: "DESCsys_updated_on",
+      offset: 0
+    };
+    const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
+    let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO);
+    searchQuery = optionalSearchQuery + searchQuery;
+    const count = await this.getAcquisitionPackageSummaryCount(searchQuery);
+    this.doSetPackagesWaitingForTaskOrder(count);
+  }
+  @Mutation
+  public doSetPackagesWaitingForTaskOrder(count: number): void {
+    this.packagesWaitingForTaskOrder = count;
+  }
+
   /**
    * Updates the status of an acquisition package and returns a boolean.
    * @param packageStatus - because of store restriction of just one parameter, a new local

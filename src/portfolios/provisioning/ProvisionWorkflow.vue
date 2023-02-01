@@ -59,8 +59,8 @@ import AppSections from "@/store/appSections";
 import {
   buildProvisionWorkflowRouterData, 
   provisionWorkFlowRoutes, 
-  provWorkflowRouteNames } from "@/router/provisionWorkflow";
-import { StepperStep } from "types/Global";
+  provWorkflowRouteNames 
+} from "@/router/provisionWorkflow";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
@@ -79,7 +79,7 @@ export default class ProvisionWorkflow extends Vue {
     return SlideoutPanel.slideoutPanelComponent || undefined;
   };
 
-  private stepperData:StepperStep[] = []; 
+  private stepperData = buildProvisionWorkflowRouterData();
   private additionalButtons: AdditionalButton[] = [];
   private noPrevious = false;
   private backButtonText = "Back";
@@ -101,7 +101,6 @@ export default class ProvisionWorkflow extends Vue {
   }  
 
   async mounted(): Promise<void> {
-    this.stepperData = await buildProvisionWorkflowRouterData();
     await Steps.setSteps(provisionWorkFlowRoutes);
     
     this.routeNames = provWorkflowRouteNames;

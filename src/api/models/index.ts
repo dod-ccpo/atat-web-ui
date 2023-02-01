@@ -675,7 +675,7 @@ export interface PackageSummaryDTO { // TODO: delete this interface after acq pa
 
 export interface AcquisitionPackageSummarySearchDTO {
   acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER" | // open
-  "TASK_ORDER_AWARDED" | "ARCHIVED" |
+  "TASK_ORDER_AWARDED" | "ARCHIVED" | "WAITING_FOR_TASK_ORDER" |
   "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER,TASK_ORDER_AWARDED,ARCHIVED";
   sort: "project_overview" | "DESCsys_updated_on"; // one of these two values should always exist
   searchString?: string;
