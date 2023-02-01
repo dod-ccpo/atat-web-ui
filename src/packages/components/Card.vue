@@ -20,15 +20,17 @@
             {{ modifiedData.projectOverview || 'Untitled package'}}
           </a>
         </div>
-          <v-chip
-            :id="'StatusChip' + index"
-            :class="statusChipBgColor"
-            label
-          >
-            {{modifiedData.packageStatus}}
-          </v-chip>
+        <v-chip
+          :id="'StatusChip' + index"
+          :class="statusChipBgColor"
+          label
+        >
+          {{modifiedData.packageStatus}}
+        </v-chip>
       </div>
       <div class="text-base -size-14 d-flex align-center">
+        <!-- 
+        TODO: Add back in when saving progress to snow  
         <div
           :id="'Percentage'+ index"
           v-if="modifiedData.packageStatus.toLowerCase() === 'draft' ||
@@ -42,8 +44,6 @@
             color="base"
             class="mr-1"
           />
-          <!-- 
-          TODO: Add back in when saving progress to snow  
           <span v-if="modifiedData.packageStatus.toLowerCase() === 'draft'" >
             30% complete
           </span>
@@ -56,8 +56,9 @@
             :width="9"
             :height="9"
             class="d-inline-block mx-1"
-          /> -->
-        </div>
+          /> 
+        </div> -->
+
         <div
           v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
           class=" d-flex align-center">
@@ -75,6 +76,7 @@
             class="d-inline-block mx-1"
           />
         </div>
+
         <div :id="'CreatedBy'+ index" class="d-flex align-center _created-by">
           {{modifiedData.createdBy}}
           <ATATSVGIcon
@@ -91,7 +93,7 @@
           {{lastModifiedStr}}
         </div>
       </div>
-      </div>
+    </div>
     <ATATMeatballMenu
       :id="'CardMenu' + index"
       :left="true"
@@ -210,9 +212,12 @@ export default class Card extends Vue {
     this.modifiedData.packageStatus = cardData.package_status?.display_value || ""
     this.modifiedData.projectOverview = cardData.project_overview?.display_value || ""
     this.modifiedData.secondaryReviewers = cardData.secondary_reviewers?.value || ""
+
+    // TODO: need actual creator name string
     this.modifiedData.createdBy = this.isOwner 
       ? this.currentUser.name as string 
       : "Maria Missionowner "
+    
     this.modifiedData.updated = cardData.sys_updated_on || ""
     this.modifiedData.contributors = cardData.contributors?.value || ""
   }

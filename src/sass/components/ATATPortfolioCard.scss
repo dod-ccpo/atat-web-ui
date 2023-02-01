@@ -71,5 +71,17 @@
       }
     }
   }
+  &._selectable {
+    padding: 25px 33px !important;
+  }
+  &._card-selected {
+    padding: 24px 32px !important;
+    background-color: $primary-lighter;
+    border: 2px solid $primary !important;
+
+    // border-color: $primary !important;
+    // // outline: 1px solid $primary !important;
+    // border-bottom: 2px solid $primary !important;
+  }
 }
 
