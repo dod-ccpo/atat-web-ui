@@ -16,6 +16,7 @@ import {
   BaseTableDTO,
   ClinDTO,
   EDAResponse,
+  ReferenceColumn,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -711,6 +712,7 @@ export interface TrainingEstimate {
   estimate: EstimateOptionValueObjectArray;
   estimatedTrainingPrice: string;
   trainingOption: SingleMultiple;
+  cloudSupportEnvironmentInstance: ReferenceColumn | string;
 }
 
 export enum ClassificationLevels {
