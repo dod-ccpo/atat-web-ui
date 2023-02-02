@@ -45,6 +45,48 @@
               </a>
             </div>
 
+
+
+          <v-expansion-panels id="PortfoliosAccordion" flat v-model="portfolioPanel">
+            <v-expansion-panel expand>
+              <v-expansion-panel-header>
+                <div class="d-flex justify-space-between">
+                  <div class="h3">
+                    Porfolios
+                  </div>
+                  <div class="h3 text-base-light _item-count pr-4">
+                    {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>
+                  </div>
+                </div>
+
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+
+                <PortfoliosSummary 
+                  active-tab="ALL" 
+                  default-sort="DESCsys_updated_on"
+                  :isHomeView="true" 
+                  @totalCount="updateTotalPortfolios"
+                />
+
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+
+          <div class="_view-all">
+            <a
+              id="ViewAllPortfoliosLink"
+              role="button"
+              @click="viewAllPortfolios"
+              @keydown.enter="viewAllPortfolios"
+              @keydown.space="viewAllPortfolios"
+            >
+              View all portfolios
+            </a>
+          </div>
+
+
+
           </v-col>
 
           <v-col class="col-sm-12 col-md-5 pl-5">

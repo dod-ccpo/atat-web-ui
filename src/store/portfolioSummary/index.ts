@@ -113,11 +113,11 @@ export class PortfolioSummaryStore extends VuexModule {
     let query = "";
     if (searchDTO.role === "ALL") {
       query = query +
-        "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356^OR" + // pragma: allowlist secret
-        "portfolio_viewersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+        "^portfolio_managersLIKE073fd379470021104a251bd8c26d434a^OR" + // pragma: allowlist secret
+        "portfolio_viewersLIKE073fd379470021104a251bd8c26d434a"; // pragma: allowlist secret
     } else { // "MANAGED"
       query = query +
-        "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+        "^portfolio_managersLIKE073fd379470021104a251bd8c26d434a"; // pragma: allowlist secret
     }
     query = query + "^portfolio_status!=ARCHIVED"
     query = query + "^ORDERBY" + searchDTO.sort;
