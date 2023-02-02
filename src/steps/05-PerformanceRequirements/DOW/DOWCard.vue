@@ -24,29 +24,39 @@
         </h3>
         <p class="">
           {{ cardData.label }} 
-            <!-- @click="openSlideoutPanel"
-            @keydown.enter="openSlideoutPanel"
-            @keydown.space="openSlideoutPanel" -->
           <a
-            v-if="cardData.learnMore"
+            v-if="cardData.title === 'Anything as a Service (XaaS)'"
             role="button"
             id="LearnMore"
             class="_text-link"
             tabindex="0"
+            @click="openXaasSlideoutPanel"
+            @keydown.enter="openXaasSlideoutPanel"
+            @keydown.space="openXaasSlideoutPanel"
+          >
+            {{ cardData.learnMore }}
+          </a>
+          <a
+            v-if="cardData.title === 'Cloud Support Package'"
+            role="button"
+            id="LearnMore"
+            class="_text-link"
+            tabindex="0"
+            @click="openSupportSlideoutPanel"
+            @keydown.enter="openSupportSlideoutPanel"
+            @keydown.space="openSupportSlideoutPanel"
           >
             {{ cardData.learnMore }}
           </a>
         </p>
       </v-col>
       <v-col class="d-flex align-center justify-center">
-        <!-- @click="$emit('next')"  -->
-        <!-- v-if="!hideContinueButton" -->
-        <!-- role="link"  -->
-        <!-- class="ml-4" -->
+          <!-- @click="$emit('next')"  -->
         <v-btn 
           depressed 
           color="primary"
           id="StartButton"
+          role="link"
         >
           Start
         </v-btn>
@@ -60,6 +70,11 @@
 <script lang="ts">
 import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
+import SlideoutPanel from "@/store/slideoutPanel/index";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import XaasLearnMore from "./XaasLearnMore.vue";
+import CloudSupportLearnMore from "./CloudSupportLearnMore.vue";
+import { SlideoutPanelContent } from "../../../../types/Global";
 
 import Vue from "vue";
 
@@ -72,12 +87,48 @@ import Vue from "vue";
 export default class DOWCard extends Vue {
   @Prop() private cardData!: Record<string, string>;
 
-  // public openSlideoutPanel(e: Event): void {
-  //   if (e && e.currentTarget) {
-  //     const opener = e.currentTarget as HTMLElement;
-  //     SlideoutPanel.openSlideoutPanel(opener.id);
-  //   }
-  // }
+  private currentEnvironmentExists = "";
+  private setPanelComponent: any;
+  private xaasSlideoutPanelContent = {} as SlideoutPanelContent;
+  private supportSlideoutPanelContent = {} as SlideoutPanelContent;
+
+  public openXaasSlideoutPanel(e: Event): void {
+    this.setPanelComponent(this.xaasSlideoutPanelContent);
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    };
+  };
+  public openSupportSlideoutPanel(e: Event): void {
+    this.setPanelComponent(this.supportSlideoutPanelContent);
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    };
+  };
+
+
+  public async loadOnEnter(): Promise<void> {
+    await CurrentEnvironment.getCurrentEnvironment();
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+    if (CurrentEnvironment.currentEnvironment) {
+      this.currentEnvironmentExists
+        = CurrentEnvironment.currentEnvironment.current_environment_exists ? "YES" : "NO"
+    }
+    this.xaasSlideoutPanelContent = {
+      component: XaasLearnMore,
+      title: "Learn More",
+    };
+    this.supportSlideoutPanelContent = {
+      component: CloudSupportLearnMore,
+      title: "Learn More",
+    };
+
+    this.setPanelComponent = await SlideoutPanel.setSlideoutPanelComponent;
+  };
  
 }
 

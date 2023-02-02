@@ -32,11 +32,11 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
-
-import Vue from "vue";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -46,6 +46,9 @@ import Vue from "vue";
 })
 
 export default class DOWLandingPageDraft extends Vue {
+  // TODO: don't show Current functions if No current environment exists
+  public currentEnvironmentExists = "";
+
   public requirementSections: Record<string, string>[] = [
     {
       title: "Your Current Functions",
@@ -62,7 +65,6 @@ export default class DOWLandingPageDraft extends Vue {
     },
     {
       title: "Anything as a Service (XaaS)",
-      // eslint-disable-next-line max-len
       label: "Select offerings from 11 categories to build your own requirements.",
       icon: "xaas-circle",
       learnMore: "Learn more about XaaS",
@@ -74,6 +76,15 @@ export default class DOWLandingPageDraft extends Vue {
       learnMore: "Learn more about support services",
     }
   ];
+
+  public async mounted(): Promise<void> {
+    if (CurrentEnvironment.currentEnvironment) {
+      this.currentEnvironmentExists
+        = CurrentEnvironment.currentEnvironment.current_environment_exists ? "YES" : "NO"
+    }
+  };
 }
+
+
 
 </script>
