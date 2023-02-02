@@ -62,6 +62,7 @@ import CrossDomain from "@/steps/04-ContractDetails/CrossDomain.vue";
 
 // Step 5 - Performance Requirements
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
+import DOWLandingPageDraft from "../steps/05-PerformanceRequirements/DOW/DOWLandingPageDraft.vue";
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
 import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
@@ -194,6 +195,7 @@ export const routeNames = {
   CurrentContract: "Current_Contract",
   CurrentContractDetails: "Current_Contract_Details",
   CurrentEnvironment:"Current_Environment",
+  DOWLandingPageDraft: "DOW_Landing_Page_Test",
   RequirementCategories: "Requirement_Categories",
   DOWArchitecturalDesign: "DOW_Architectural_Design",
   ServiceOfferings: "Service_Offerings",
@@ -683,11 +685,21 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: PerformanceRequirementsIndex,
     children: [
       {
-        menuText: "Performance Requirements",
+        menuText: "Landing Page",
         path: "/",
         excludeFromMenu: true,
+        name: routeNames.DOWLandingPageDraft,
+        stepCompleteOnEnter: routeNames.RequirementCategories,
+        completePercentageWeight: 1,
+        component: DOWLandingPageDraft,
+        continueButtonText: 'Wrap up this section',
+      },
+      {
+        menuText: "Requirement Categories",
+        path: "/requirement-categories",
+        excludeFromMenu: false,
         name: routeNames.RequirementCategories,
-        stepCompleteOnEnter: routeNames.CurrentContract,
+        stepCompleteOnEnter: routeNames.DOWLandingPageDraft,
         completePercentageWeight: 1,
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
