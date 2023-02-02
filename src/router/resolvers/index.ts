@@ -58,15 +58,15 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
     : routeNames.Exceptions;
 };
 
-export const UploadJAMRRDocumentsRouteResolver = (current: string): string => {
-  const isDitco = AcquisitionPackage.contractingShop === 'DITCO'
-  if(current === routeNames.ReadyToGeneratePackage && (evalPlanRequired()|| isDitco)){
-    return routeNames.FinancialPOCForm
-  }
-  return !evalPlanRequired()
-    ? routeNames.UploadJAMRRDocuments 
-    : routeNames.ReadyToGeneratePackage;
-};
+// export const UploadJAMRRDocumentsRouteResolver = (current: string): string => {
+//   const isDitco = AcquisitionPackage.contractingShop === 'DITCO'
+//   if(current === routeNames.ReadyToGeneratePackage && (evalPlanRequired()|| isDitco)){
+//     return routeNames.FinancialPOCForm
+//   }
+//   return !evalPlanRequired()
+//     ? routeNames.UploadJAMRRDocuments
+//     : routeNames.ReadyToGeneratePackage;
+// };
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
@@ -1329,7 +1329,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-  UploadJAMRRDocumentsRouteResolver,
+  // UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
   // IGCEGatherPriceResolver,
