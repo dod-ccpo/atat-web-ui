@@ -347,8 +347,12 @@ export default class Travel extends Mixins(SaveOnLeave) {
       this.tableData = [];
       DescriptionOfWork.setConfirmTravelDeleteAll(false);
     } else {
+      if (this.tableData.length > 1){
+        await DescriptionOfWork.deleteTravelInstance(this.travelItem.sys_id as string);
+      } else if (this.tableData.length === 1) {
+        await DescriptionOfWork.deleteTravelAll([this.travelItem.sys_id as string])
+      }
       this.tableData.splice(this.travelItem.instanceNumber-1, 1);
-      await DescriptionOfWork.deleteTravelInstance(this.travelItem.sys_id as string);
       this.setTableData();
     }
     this.showDeleteInstanceDialog = false;

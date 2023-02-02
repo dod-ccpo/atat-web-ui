@@ -400,7 +400,7 @@ export class IGCEStore extends VuexModule {
   }
 
   @Action({rawError: true })
-  private async transformRequirementsCostEstimateFromTreeToFlat(
+  public async transformRequirementsCostEstimateFromTreeToFlat(
     rceTree: RequirementsCostEstimateDTO): Promise<RequirementsCostEstimateFlat> {
     return {
       acquisition_package: typeof rceTree.acquisition_package === "object"
@@ -525,7 +525,8 @@ export class IGCEStore extends VuexModule {
       params: { sysparm_query: instanceQueryString },
     };
 
-    const costEstimateSysId = (await api.igceEstimateTable.getQuery(instanceQuery))[0].sys_id || "";
+    const costEstimateRowData = await api.igceEstimateTable.getQuery(instanceQuery)
+    const costEstimateSysId = costEstimateRowData[0]?.sys_id || "";
 
     if (costEstimateSysId) {
       await api.igceEstimateTable.update(
@@ -784,6 +785,14 @@ export class IGCEStore extends VuexModule {
   @Action({ rawError: true })
   public async deleteIgceEstimateTrainingInstance(environmentInstanceSysId: string):
     Promise<void> {
+      
+    // delete from IGCEStore.trainingItems
+    const itemIdx = this.trainingItems.findIndex(
+      trainingItem => trainingItem.cloudSupportEnvironmentInstance === environmentInstanceSysId
+    )
+    this.trainingItems.splice(itemIdx, 1);
+
+    // delete from SNOW
     const query = {
       params: {
         sysparm_query: "cloud_support_environment_instance=" + environmentInstanceSysId

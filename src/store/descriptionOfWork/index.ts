@@ -1090,15 +1090,43 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   /**
-     * deletes all travel instances associated with acqpackage
-     * @param sysIds: string [] - sysId of travel instance to be removed
-     */
+   * deletes all travel instances associated with acqpackage
+   * @param sysIds: string [] - sysId of travel instance to be removed
+  */
   @Action({rawError: true})
   public async deleteTravelAll(sysIds: string[]): Promise<void> {
+    await this.deleteTravelFromIGCEEstimateTable(sysIds);
+    await this.deleteTravelFromRequirementsCostEstimateTable();
+  }
+
+  /**
+   * deletes all travel instances from IGCE Estimate table
+   * @param sysIds: string [] - sysId of travel instance to be removed
+   */
+  @Action({rawError: true})
+  public async deleteTravelFromIGCEEstimateTable(sysIds: string[]): Promise<void> {
     await sysIds.forEach(async (sysId)=>{
       await api.travelRequirementTable.remove(sysId);
     });
   }
+
+  /**
+    * deletes travel_options and travel_estimated_values from 
+    * `DAPPS:Requirements Cost Estimate` table
+   */
+  @Action({rawError: true})
+  public async deleteTravelFromRequirementsCostEstimateTable(): Promise<void> {
+    const storeRCE = await IGCEStore.getRequirementsCostEstimate();
+    storeRCE.travel.estimated_values = "";
+    storeRCE.travel.option = "";
+    
+    await api.requirementsCostEstimateTable.update(
+      storeRCE.sys_id as string,
+      await IGCEStore.transformRequirementsCostEstimateFromTreeToFlat(storeRCE)
+    );
+  }
+
+
 
   @Action({rawError: true})
   public async setDOWHasArchitecturalDesign(value: boolean): Promise<void> {
