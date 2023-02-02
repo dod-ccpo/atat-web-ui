@@ -395,7 +395,7 @@ export default class ATATFileUpload extends Vue {
               //download link - link to the file download
               //sys_id the unique id of the attachment in the attachment table
               //table_sys_id the unique id of the table/record
-
+              debugger
               const { download_link, sys_id, table_sys_id } = result.attachment;
               uploadingFileObj.link = download_link || "";
               uploadingFileObj.attachmentId = sys_id || "";

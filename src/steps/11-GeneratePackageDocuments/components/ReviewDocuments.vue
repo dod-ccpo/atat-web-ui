@@ -176,7 +176,7 @@ export default class ReviewDocuments extends Vue {
     },
     {
       itemName:"Incremental Funding Plan",
-      requiresSignature:false,
+      requiresSignature:true,
       alertText:"Requires signatures",
       show:this.incrementallyFunded === "YES"
     },
@@ -274,6 +274,7 @@ export default class ReviewDocuments extends Vue {
   }
 
   async mounted(): Promise<void>{
+    await acquisitionPackage.setDisableContinue(false)1
     await this.loadOnEnter()
   }
 

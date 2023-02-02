@@ -30,7 +30,7 @@ import {
   SensitiveInformationDTO,
   ReferenceColumn,
   FundingRequirementDTO,
-  RegionsDTO,
+  RegionsDTO, PackageDocumentsSignedDTO,
 } from "@/api/models";
 
 import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
@@ -49,6 +49,7 @@ import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import { homedir } from "os";
+import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -65,7 +66,8 @@ export const StoreProperties = {
   ClassificationLevel: "ClassificationRequirements",
   CurrentEnvironment: "currentEnvironment",
   ContractConsiderations: "contractConsiderations",
-  Regions:"regions"
+  Regions:"regions",
+  PackageDocumentsSigned:"packageDocumentsSigned"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -246,6 +248,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       contractType: store.contractType,
       currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
+      packageDocumentsSigned:store.packageDocumentsSigned,
       evaluationPlan: store.evaluationPlan,
       // periods: store.periods,
       // periodOfPerformance: store.periodOfPerformance,
@@ -298,6 +301,7 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
+  packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
@@ -383,6 +387,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
   @Action({rawError: false})
   public async setDisableContinue(value: boolean): Promise<void> {
+    debugger
     this.doSetDisableContinue(value);
   }
   @Mutation
@@ -578,6 +583,10 @@ export class AcquisitionPackageStore extends VuexModule {
   public setFairOpportunity(value: FairOpportunityDTO): void {
     this.fairOpportunity = value;
   }
+  @Mutation
+  public setPackageDocumentsSigned(value: PackageDocumentsSignedDTO): void {
+    this.packageDocumentsSigned = value;
+  }
 
   public get exceptionToFairOpportunity(): string | undefined {
     return this.fairOpportunity?.exception_to_fair_opportunity;
@@ -599,6 +608,10 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
     return this.fairOpportunity;
+  }
+  @Action({rawError: true})
+  public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
+    return this.packageDocumentsSigned;
   }
 
   @Action
@@ -635,6 +648,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.contractType = sessionData.contractType;
     this.currentContract = sessionData.currentContract;
     this.fairOpportunity = sessionData.fairOpportunity;
+    this.packageDocumentsSigned = sessionData.packageDocumentsSigned;
     this.evaluationPlan = sessionData.evaluationPlan;
     this.organization = sessionData.organization;
     // this.periods = sessionData.periods;
@@ -1447,6 +1461,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.financialPocInfo = null;
     this.hasAlternativeContactRep = null;
     this.fairOpportunity = null;
+    this.packageDocumentsSigned = null;
     this.evaluationPlan = null;
     this.currentContract = null;
     this.sensitiveInformation = null;

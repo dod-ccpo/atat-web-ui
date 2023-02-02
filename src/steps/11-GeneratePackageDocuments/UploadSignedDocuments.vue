@@ -5,8 +5,13 @@
     </h1>
     <div class="copy-max-width">
       <p class="mt-2 mb-4">
-        To submit your package to DITCO, all documents that require certification must be signed by
-        your approving officials. Upload your individually signed documents below.
+        To submit your package, all documents that require certification must
+        be signed by your approving officials and uploaded below.
+        <span v-if="fairOpportunity !=='NO_NONE'">
+        For the <span class="font-weight-500">Justification & Approval (J&A)</span>
+        and <span class="font-weight-500">Market Research Report</span>, you must also
+        upload the completed template in an editable format to help your
+        Contracting Office track changes during the review process.</span>
       </p>
       <hr class="base-lighter" />
       <v-row class="d-flex">
@@ -19,7 +24,8 @@
             @delete="onRemoveAttachment"
             fileListTitle="Your files"
             :invalidFiles.sync="invalidFiles"
-            :maxNumberOfFiles="filesNeeded.length"
+            :maxNumberOfFiles="fairOpportunity !== 'NO_NONE'?
+            filesNeeded.length + 2:filesNeeded.length"
             :validFiles.sync="uploadedFiles"
             :rules="getRulesArray()"
             :filesRequired="true"
@@ -47,6 +53,40 @@
               </template>
             </ATATAlert>
             <div
+              v-if="fairOpportunity !== 'NO_NONE'"
+              class="
+              border1
+              border-rounded-more
+              border-base-lighter
+              bg-primary-lighter
+              pa-6
+              mb-4"
+            >
+              <div class="d-flex align-center mb-4">
+                <ATATSVGIcon
+                  class="mr-2"
+                  name="checkedBag"
+                  width="39"
+                  height="35"
+                  color="primary"
+                />
+                <div class="d-flex flex-column">
+                  <h3>
+                    2 completed templates
+                  </h3>
+                  <span class="font-size-14 help-text">Upload .doc or .docx files</span>
+                </div>
+              </div>
+              <ol>
+                <li>
+                  Justification and Approval
+                </li>
+                <li>
+                  Sole Source Market Research Report
+                </li>
+              </ol>
+            </div>
+            <div
               class="
               border1
               border-rounded-more
@@ -62,25 +102,22 @@
                   height="35"
                   color="primary"
                 />
-                <h3 class="mb-2">
-                 {{needsSignatureLength}} signatures required</h3>
+                <div class="d-flex flex-column">
+                  <h3>
+                    {{needsSignatureLength}} signatures required
+                  </h3>
+                  <span class="font-size-14 help-text">Upload .pdf, .png, or .jpg files</span>
+                </div>
               </div>
-              <div
-                v-for="(item,idx) in filesNeeded"
-                :key="idx"
-                class="d-flex"
-              >
-                <ATATSVGIcon
-                  class="mr-2 pt-1"
-                  name="filePresent"
-                  width="13"
-                  height="16"
-                  color="primary"
-                />
-                <span class="text-primary text-decoration-underline">
+              <ol>
+                <li
+                  v-for="(item,idx) in filesNeeded"
+                  :key="idx"
+                  class="pb-1"
+                >
                   {{item}}
-                </span>
-              </div>
+                </li>
+              </ol>
             </div>
           </div>
         </v-col>
@@ -94,13 +131,15 @@ import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
-import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
+import { TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import { invalidFile, uploadingFile } from "../../../types/Global";
 import Attachments from "@/store/attachments";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FinancialDetails from "@/store/financialDetails";
 import ATATAlert from "@/components/ATATAlert.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import { PackageDocumentsSignedDTO, ReferenceColumn } from "@/api/models";
+import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
 @Component({
   components:{
     ATATFileUpload,
@@ -109,14 +148,24 @@ import acquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 export default class UploadSignedDocuments extends Vue {
-  private attachmentServiceName = ACQUISITION_PACKAGE_TABLE;
+  private attachmentServiceName = PACKAGE_DOCUMENTS_SIGNED;
   private maxFileSizeInBytes = 1073741824;
   private validFileFormats = ["pdf","jpg","png","docx"];
   private invalidFiles: invalidFile[] = [];
   private uploadedFiles: uploadingFile[] = [];
   private needsSignatureLength = 0;
+  private saved:PackageDocumentsSignedDTO | null = {
+    /* eslint-disable camelcase */
+    sys_id: "",
+    sys_updated_by: "",
+    sys_created_on: "",
+    sys_mod_count: "",
+    acquisition_package: {},
+    sys_updated_on: "",
+    sys_tags: "",
+    sys_created_by: ""
+  };
   private filesNeeded:string[] = [];
-  private greaterThanMessage = "Too many files selected. You can upload up to 5 files";
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
   }
@@ -124,6 +173,17 @@ export default class UploadSignedDocuments extends Vue {
     return FinancialDetails.fundingRequirement?.incrementally_funded || "";
   }
   private packages = [
+    {
+      itemName:"Justification and Approval",
+      requiresSignature:true,
+      alertText:"Complete and sign",
+      show:true
+    },{
+      itemName:"Sole Source Market Research Report",
+      requiresSignature:true,
+      alertText:"Complete and sign",
+      show:true
+    },
     {
       itemName:"Requirements Checklist",
       requiresSignature:true,
@@ -138,7 +198,7 @@ export default class UploadSignedDocuments extends Vue {
     },
     {
       itemName:"Incremental Funding Plan",
-      requiresSignature:false,
+      requiresSignature:true,
       alertText:"Requires signatures",
       show:this.incrementallyFunded === "YES"
     },
@@ -165,10 +225,12 @@ export default class UploadSignedDocuments extends Vue {
       show:this.fairOpportunity !== "NO_NONE"
     },
   ];
+
   get missingDocsText(): string{
     return this.filesNeeded.length - this.uploadedFiles.length === 1?
       "signed document":"signed documents"
   }
+
   public async onRemoveAttachment(file: uploadingFile): Promise<void> {
     try {
       if (file) {
@@ -178,7 +240,7 @@ export default class UploadSignedDocuments extends Vue {
         await Attachments.removeAttachment({
           key,
           attachmentId,
-          recordId, // recordId is the "table_sys_id" in the context of ATTACHMENT API
+          recordId,
         });
       }
     } catch (error) {
@@ -206,7 +268,6 @@ export default class UploadSignedDocuments extends Vue {
           iFile.SNOWError,
           iFile.statusCode,
           [],
-          5
         )
       );
     });
@@ -214,16 +275,43 @@ export default class UploadSignedDocuments extends Vue {
     return rulesArr;
   }
   public async loadOnEnter(): Promise<void> {
+    await acquisitionPackage.setDisableContinue(true)
     this.packages.forEach(item =>{
       if(item.show && item.requiresSignature){
         this.needsSignatureLength++
         this.filesNeeded.push(item.itemName)
       }
     })
-    await acquisitionPackage.setDisableContinue(true)
+    this.saved = await acquisitionPackage.getPackageDocumentsSigned()
+    if(this.saved){
+      try {
+        const attachment = await Attachments.getAttachmentById({
+          serviceKey: PACKAGE_DOCUMENTS_SIGNED, sysID: this.saved?.sys_id||""});
+        if (attachment) {
+          const file = new File([], attachment.file_name, {
+            lastModified: Date.parse(attachment.sys_created_on || "")
+          });
+          const upload: uploadingFile = {
+            attachmentId: attachment.sys_id || "",
+            fileName: attachment.file_name,
+            file: file,
+            created: file.lastModified,
+            progressStatus: 100,
+            link: attachment.download_link || "",
+            recordId: attachment.table_sys_id,
+            isErrored: false,
+            isUploaded: true
+          }
+          this.uploadedFiles = [upload];
+        }
+      } catch (error) {
+        throw new Error("an error occurred loading Package Signed Documents data");
+      }
+    }
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
+
   }
 }
 </script>
