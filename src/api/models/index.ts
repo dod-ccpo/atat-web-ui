@@ -745,7 +745,7 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   has_DOW_and_PoP: YesNo;
   optimize_replicate: EstimateOptionValue;
   architectural_design_current_environment: EstimateOptionValue;
-  architectural_design_performance_requirements: EstimateOptionValue;
+  architectural_design_performance_requirements: EstimateOptionValueDTO;
   training: TrainingEstimateDTO[];
   travel: EstimateOptionValueObjectArray;
   surge_requirements: {

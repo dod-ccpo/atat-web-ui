@@ -343,7 +343,7 @@ export class IGCEStore extends VuexModule {
         rceFlat.architectural_design_current_environment_estimated_values?.split(",")
       },
       architectural_design_performance_requirements: {
-        option: rceFlat.architectural_design_performance_requirements_option,
+        option: rceFlat.architectural_design_performance_requirements_option as SingleMultiple,
         estimated_values:
           rceFlat.architectural_design_performance_requirements_estimated_values?.split(",")
       },
