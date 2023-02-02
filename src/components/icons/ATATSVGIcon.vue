@@ -14,6 +14,7 @@ import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ArrowBack from "@/components/icons/ArrowBack.vue";
+import ArchitectureCircle from "@/components/icons/ArchitectureCircle.vue"
 import Aws from "@/components/icons/Aws.vue";
 import Azure from "@/components/icons/Azure.vue";
 import BugReport from "@/components/icons/BugReport.vue";
@@ -27,6 +28,7 @@ import ContactSupport from "@/components/icons/ContactSupport.vue";
 import ContentCopy from "@/components/icons/ContentCopy.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
+import CurrentFunctionsCircle from "@/components/icons/CurrentFunctionsCircle.vue"
 import DisaLogo from "@/components/icons/DisaLogo.vue";
 import Email from "@/components/icons/Email.vue";
 import ErrorFilled from "@/components/icons/ErrorFilled.vue";
@@ -60,6 +62,7 @@ import Search from "@/components/icons/Search.vue";
 import Service from "@/components/icons/Service.vue";
 import SignOut from "@/components/icons/SignOut.vue";
 import Support from "@/components/icons/Support.vue";
+import SupportCircle from "@/components/icons/SupportCircle.vue"
 import TaskAlt from "@/components/icons/TaskAlt.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
@@ -71,11 +74,13 @@ import WarningAmber from "@/components/icons/WarningAmber.vue";
 import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vue";
 import Place from "@/components/icons/Place.vue";
 import SendEmail from "@/components/icons/SendEmail.vue";
+import XaasCircle from "@/components/icons/XaasCircle.vue"
 
 
 @Component({
   components: {
     ArrowBack,
+    ArchitectureCircle,
     Aws,
     Azure,
     BugReport,
@@ -89,6 +94,7 @@ import SendEmail from "@/components/icons/SendEmail.vue";
     ContentCopy,
     ControlPoint,
     Currency,
+    CurrentFunctionsCircle,
     DisaLogo,
     Edit,
     Email,
@@ -123,6 +129,7 @@ import SendEmail from "@/components/icons/SendEmail.vue";
     Service,
     SignOut,
     Support,
+    SupportCircle,
     TaskAlt,
     TriangleUp,
     TriangleDown,
@@ -132,7 +139,8 @@ import SendEmail from "@/components/icons/SendEmail.vue";
     Warning,
     WarningAmber,
     ReadyToGeneratePackage,
-    Place
+    Place,
+    XaasCircle,
   }
 })
 
