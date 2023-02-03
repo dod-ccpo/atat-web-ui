@@ -733,6 +733,7 @@ export interface TrainingEstimateDTO extends BaseTableDTO{
   training_estimated_values?: string;
   training_option: string; //SINGLE or MULTIPLE
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
+  cloud_support_environment_instance: ReferenceColumn | string;
 }
 
 export interface EstimateOptionValueDTO {

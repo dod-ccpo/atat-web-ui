@@ -748,8 +748,10 @@ const deleteOtherOfferingInstanceFromSNOW = (sysId: string, groupId: string) => 
   }
 } 
 
-const deleteOtherOfferingInstanceFromIGCECostEstimate = (envSysId: string) => {
-  IGCEStore.deleteIgceEstimateEnvironmentInstance(envSysId); 
+const deleteOtherOfferingInstanceFromIGCECostEstimate = (
+  envSysId: string,
+  serviceOfferingGroupId: string) => {
+  IGCEStore.deleteIgceEstimateEnvironmentInstance({envSysId, serviceOfferingGroupId}); 
 }
 
 
@@ -1063,9 +1065,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       })
     const createList = newTravelDTO.filter(travel => !(travel.sys_id && travel.sys_id.length > 0));
     const updateList = newTravelDTO.filter(travel => (travel.sys_id && travel.sys_id.length > 0));
-    const deleteList = this.travelSummaryInstances.filter(travel => {
-      return newTravelDTO.map(newTravel => newTravel.sys_id).indexOf(travel.sys_id) === -1;
-    })
     const apiCallList: Promise<TravelRequirementDTO | void>[] = [];
     createList.forEach(markedForCreate => {
       apiCallList.push(api.travelRequirementTable
@@ -1077,13 +1076,57 @@ export class DescriptionOfWorkStore extends VuexModule {
       apiCallList.push(api.travelRequirementTable
         .update(markedForUpdate.sys_id as string, markedForUpdate));
     })
-    deleteList.forEach(markedForDelete => {
-      apiCallList.push(api.travelRequirementTable
-        .remove(markedForDelete.sys_id as string));
-    })
     await Promise.all(apiCallList);
     return true;
   }
+
+  /**
+     * deletes one travel instance
+     * @param sysId sysId of travel instance to be removed
+     */
+  @Action({rawError: true})
+  public async deleteTravelInstance(sysId: string): Promise<void> {
+    await api.travelRequirementTable.remove(sysId);
+  }
+
+  /**
+   * deletes all travel instances associated with acqpackage
+   * @param sysIds: string [] - sysId of travel instance to be removed
+  */
+  @Action({rawError: true})
+  public async deleteTravelAll(sysIds: string[]): Promise<void> {
+    await this.deleteTravelFromIGCEEstimateTable(sysIds);
+    await this.deleteTravelFromRequirementsCostEstimateTable();
+  }
+
+  /**
+   * deletes all travel instances from IGCE Estimate table
+   * @param sysIds: string [] - sysId of travel instance to be removed
+   */
+  @Action({rawError: true})
+  public async deleteTravelFromIGCEEstimateTable(sysIds: string[]): Promise<void> {
+    await sysIds.forEach(async (sysId)=>{
+      await api.travelRequirementTable.remove(sysId);
+    });
+  }
+
+  /**
+    * deletes travel_options and travel_estimated_values from 
+    * `DAPPS:Requirements Cost Estimate` table
+   */
+  @Action({rawError: true})
+  public async deleteTravelFromRequirementsCostEstimateTable(): Promise<void> {
+    const storeRCE = await IGCEStore.getRequirementsCostEstimate();
+    storeRCE.travel.estimated_values = "";
+    storeRCE.travel.option = "";
+    
+    await api.requirementsCostEstimateTable.update(
+      storeRCE.sys_id as string,
+      await IGCEStore.transformRequirementsCostEstimateFromTreeToFlat(storeRCE)
+    );
+  }
+
+
 
   @Action({rawError: true})
   public async setDOWHasArchitecturalDesign(value: boolean): Promise<void> {
@@ -2233,7 +2276,9 @@ export class DescriptionOfWorkStore extends VuexModule {
         );
         if (instanceToDelete && instanceToDelete.sysId) {
           const sysId = instanceToDelete.sysId as string;
-          deleteOtherOfferingInstanceFromIGCECostEstimate(sysId);
+          deleteOtherOfferingInstanceFromIGCECostEstimate(
+            sysId, otherOfferingObj.serviceOfferingGroupId
+          );
           
           setTimeout(()=>
             deleteOtherOfferingInstanceFromSNOW(sysId , this.currentGroupId), 0
@@ -2248,6 +2293,15 @@ export class DescriptionOfWorkStore extends VuexModule {
           otherOfferingObj.otherOfferingData[i].instanceNumber
               = otherOfferingObj.otherOfferingData[i].instanceNumber - 1;
         }
+
+        /**
+         * if manually deleting the last instance, remove the otherOfferingObj
+         * from the DOW object
+         */
+        if(otherOfferingObj.otherOfferingData.length===0){
+          this.DOWObject.splice(offeringIndex,1);
+        }
+
       }
     }
     // remove instanceNumber from touched ones - this.otherOfferingInstancesTouched
@@ -2322,10 +2376,12 @@ export class DescriptionOfWorkStore extends VuexModule {
       && offeringToDelete.otherOfferingData 
       && offeringToDelete.otherOfferingData.length > 0
     ) {
-
-      
+      const serviceOfferingGroupId = offeringToDelete.serviceOfferingGroupId;
         offeringToDelete.otherOfferingData?.forEach((instance) => {
-          deleteOtherOfferingInstanceFromIGCECostEstimate(instance.sysId as string);
+          deleteOtherOfferingInstanceFromIGCECostEstimate(
+          instance.sysId as string,
+          serviceOfferingGroupId
+          );
         })
       
         setTimeout(()=>{
