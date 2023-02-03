@@ -412,6 +412,7 @@ export default class PortfoliosSummary extends Vue {
       storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
     }
     storeData.portfolioSummaryList.forEach((portfolio) => {
+      debugger;
       let cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
       cardData.csp = "aws"; // csps[cspStubs.indexOf(portfolio.csp_display)];
@@ -421,6 +422,7 @@ export default class PortfoliosSummary extends Vue {
       cardData.status = portfolio.portfolio_status;
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.agency = portfolio.dod_component;
+      cardData.taskOrderNumber = portfolio.active_task_order.value as string;
 
       // lastModified - if status is "Processing" use "Started ... ago" string
       if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {

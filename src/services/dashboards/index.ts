@@ -106,14 +106,15 @@ export class DashboardService {
     taskOrderNumber: string
   ): Promise<PortFolioDashBoardDTO> {
     try {
-      const taskOrderRequestConfig: AxiosRequestConfig = {
-        params: {
-          sysparm_query: `task_order_number=${taskOrderNumber}`,
-        },
-      };
+      // const taskOrderRequestConfig: AxiosRequestConfig = {
+      //   params: {
+      //     sysparm_query: `task_order_number=${taskOrderNumber}`,
+      //   },
+      // };
 
-      const taskOrders = await api.taskOrderTable.all(taskOrderRequestConfig);
-      const taskOrder = taskOrders.length > 0 ? taskOrders[0] : undefined;
+      const taskOrder = await api.taskOrderTable.retrieve(taskOrderNumber);
+      // const taskOrders = await api.taskOrderTable.all(taskOrderRequestConfig);
+      // const taskOrder = taskOrders.length > 0 ? taskOrders[0] : undefined;
 
       if (taskOrder === undefined) {
         throw new Error(

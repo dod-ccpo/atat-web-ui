@@ -308,6 +308,7 @@ export class PortfolioDataStore extends VuexModule {
 
   @Mutation
   public async doSetCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
+    debugger;
     const dataFromSummaryCard = {
       sysId: portfolioData.sysId,
       title: portfolioData.title,
@@ -329,6 +330,7 @@ export class PortfolioDataStore extends VuexModule {
   }
   @Mutation
   public doSetActiveTaskOrderNumber(taskOrderNum: string): void {
+    debugger;
     this.activeTaskOrderNumber = taskOrderNum;
   }
 
