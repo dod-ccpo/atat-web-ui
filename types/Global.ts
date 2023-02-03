@@ -539,6 +539,8 @@ export interface TaskOrderCardData {
 export interface AwardedTaskOrderDetails {
   taskOrderNumber: string,
   contractor: string,
+  csp: string,
+  cspLong: string,
   contractIssuingOffice: string,
   periodOfPerformance: string,
   totalObligatedAmount: number,

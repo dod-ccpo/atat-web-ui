@@ -70,6 +70,7 @@ export class EDAApi extends ApiBase{
           taskOrderNumber: taskOrderNumber,
           contractor: "Microsoft Corporation",
           csp: "Azure",
+          cspLong: "Microsoft Azure",
           contractIssuingOffice: "DITCO",
           totalObligatedAmount: 10000000,
           totalAmount: 50000000,
@@ -79,18 +80,21 @@ export class EDAApi extends ApiBase{
         }
         if (taskOrderNumber === "4000000000001") {
           tempEdaResponse.classificationLevels = ["Unclassified"];
-          tempEdaResponse.csp = "GCP"
-          tempEdaResponse.contractor = "Google Support Services LLC"
+          tempEdaResponse.csp = "GCP";
+          tempEdaResponse.cspLong = "Google Cloud Platform (GCP)";
+          tempEdaResponse.contractor = "Google Support Services LLC";
         }     
         if (taskOrderNumber === "4000000000002") {
           tempEdaResponse.classificationLevels = ["Secret"];
-          tempEdaResponse.csp = "AWS"
-          tempEdaResponse.contractor = "Amazon Web Services Inc."
+          tempEdaResponse.csp = "AWS";
+          tempEdaResponse.cspLong = "Amazon Web Services (AWS)";
+          tempEdaResponse.contractor = "Amazon Web Services Inc.";
         }     
         if (taskOrderNumber === "4000000000003") {
           tempEdaResponse.classificationLevels = ["Secret"];
-          tempEdaResponse.csp = "Oracle"
-          tempEdaResponse.contractor = "Oracle America Inc."
+          tempEdaResponse.csp = "Oracle";
+          tempEdaResponse.cspLong = "Oracle Cloud";
+          tempEdaResponse.contractor = "Oracle America Inc.";
         }     
       } else {
         let tempErrorCode = "";

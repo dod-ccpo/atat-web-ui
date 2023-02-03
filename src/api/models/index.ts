@@ -528,6 +528,7 @@ export interface EDAResponse {
   taskOrderNumber?: string;
   contractor?: string; // "Microsoft Corporation",
   csp?: string; // "Azure",
+  cspLong?: string; // "Microsoft Azure"
   contractIssuingOffice?: string; // "DITCO",
   totalObligatedAmount?: number | null;
   totalAmount?: number | null;
