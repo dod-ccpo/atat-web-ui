@@ -627,26 +627,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
       },
       {
-        menuText: "Replicate And Optimize",
-        path: "replicate-and-optimize",
-        excludeFromMenu: true,
-        name: routeNames.ReplicateAndOptimize,
-        component: ReplicateAndOptimize,
-        completePercentageWeight: 5,
-        completed: false,
-
-      },
-      {
-        menuText: "Replicate Details",
-        path: "replicate-details",
-        excludeFromMenu: true,
-        name: routeNames.ReplicateDetails,
-        component: ReplicateDetails,
-        completePercentageWeight: 5,
-        completed: false,
-        routeResolver: ReplicateDetailsResolver,
-      },
-      {
         menuText: "Architectural Design",
         path: "architectural-design",
         excludeFromMenu: true,
@@ -693,6 +673,26 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: DOWLandingPageDraft,
         continueButtonText: 'Wrap up this section',
+      },
+      {
+        menuText: "Replicate And Optimize",
+        path: "replicate-and-optimize",
+        excludeFromMenu: true,
+        name: routeNames.ReplicateAndOptimize,
+        component: ReplicateAndOptimize,
+        completePercentageWeight: 5,
+        completed: false,
+
+      },
+      {
+        menuText: "Replicate Details",
+        path: "replicate-details",
+        excludeFromMenu: true,
+        name: routeNames.ReplicateDetails,
+        component: ReplicateDetails,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: ReplicateDetailsResolver,
       },
       {
         menuText: "Requirement Categories",
