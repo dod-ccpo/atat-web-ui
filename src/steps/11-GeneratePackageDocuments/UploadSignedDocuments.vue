@@ -14,8 +14,8 @@
         Contracting Office track changes during the review process.</span>
       </p>
       <hr class="base-lighter" />
-      <v-row class="d-flex">
-        <v-col cols="8">
+      <div class="d-flex">
+        <div>
           <ATATFileUpload
             :validFileFormats="validFileFormats"
             :attachmentServiceName="attachmentServiceName"
@@ -30,8 +30,8 @@
             :rules="getRulesArray()"
             :filesRequired="true"
           />
-        </v-col>
-        <v-col cols="2">
+        </div>
+        <div>
           <div
             style="width: 330px;"
             class="pl-5">
@@ -120,8 +120,8 @@
               </ol>
             </div>
           </div>
-        </v-col>
-      </v-row>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -139,7 +139,6 @@ import FinancialDetails from "@/store/financialDetails";
 import ATATAlert from "@/components/ATATAlert.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import { PackageDocumentsSignedDTO, ReferenceColumn } from "@/api/models";
-import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
 @Component({
   components:{
     ATATFileUpload,
@@ -283,6 +282,7 @@ export default class UploadSignedDocuments extends Vue {
       }
     })
     this.saved = await acquisitionPackage.getPackageDocumentsSigned()
+    console.log(this.saved)
     if(this.saved){
       try {
         const attachment = await Attachments.getAttachmentById({

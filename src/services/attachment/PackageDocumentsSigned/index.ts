@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { AttachmentDTO, AcquisitionPackageDTO, PackageDocumentsSignedDTO } from "@/api/models";
+import { AttachmentDTO, PackageDocumentsSignedDTO } from "@/api/models";
 import {AttachmentServiceCallbacks, RecordManager} from "..";
 import {AttachmentServiceBase} from "../base";
 import AcquisitionPackage from "@/store/acquisitionPackage/index";

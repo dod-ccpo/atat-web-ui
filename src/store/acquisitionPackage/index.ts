@@ -30,7 +30,8 @@ import {
   SensitiveInformationDTO,
   ReferenceColumn,
   FundingRequirementDTO,
-  RegionsDTO, PackageDocumentsSignedDTO,
+  RegionsDTO,
+  PackageDocumentsSignedDTO,
 } from "@/api/models";
 
 import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
@@ -173,6 +174,12 @@ const initialContractConsiderations = ()=> {
 const initialFairOpportunity = () => {
   return {
     exception_to_fair_opportunity: "",
+  };
+};
+
+const initialPackageDocumentsSigned = () => {
+  return {
+    acquisition_package: {},
   };
 };
 
@@ -387,7 +394,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
   @Action({rawError: false})
   public async setDisableContinue(value: boolean): Promise<void> {
-    debugger
     this.doSetDisableContinue(value);
   }
   @Mutation
@@ -481,6 +487,15 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public getInitialFairOpportunity() {
     return initialFairOpportunity();
+  }
+  @Mutation
+  public getInitialPackageDocumentsSigned() {
+    return this.packageDocumentsSigned;
+  }
+
+  public async createInitialPackageDocuments(): Promise<void> {
+    const data = await api.packageDocumentsSignedTable.create(initialPackageDocumentsSigned())
+    this.setPackageDocumentsSigned(data)
   }
 
   @Mutation
@@ -897,6 +912,8 @@ export class AcquisitionPackageStore extends VuexModule {
           });
         }
       }
+      const packageDocumentsSigned = await api.packageDocumentsSignedTable.create()
+      this.setPackageDocumentsSigned(packageDocumentsSigned)
       this.setPackagePercentLoaded(90);
 
       await FinancialDetails.loadFundingRequirement();
@@ -949,7 +966,8 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
-
+    const packageDocumentsSigned = await api.packageDocumentsSignedTable.create()
+    this.setPackageDocumentsSigned(packageDocumentsSigned)
     const loggedInUser = await UserStore.getCurrentUser();
 
     if (storedSessionData && storedSessionData.length > 0) {
@@ -1054,6 +1072,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
     [StoreProperties.ContractConsiderations]: api.contractConsiderationsTable,
     [StoreProperties.Regions]:api.regionsTable,
+    [StoreProperties.PackageDocumentsSigned]:api.packageDocumentsSignedTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -1071,6 +1090,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.CurrentEnvironment]: "current_environment",
     [StoreProperties.ContractConsiderations]: "contract_considerations",
     [StoreProperties.Regions]: "regions",
+    [StoreProperties.PackageDocumentsSigned]: "package_documents_signed",
   }
 
   @Action({ rawError: true })

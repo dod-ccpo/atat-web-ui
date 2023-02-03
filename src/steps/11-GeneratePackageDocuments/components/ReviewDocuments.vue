@@ -14,12 +14,23 @@
 
     <ATATAlert
       v-if="needsSignatureLength"
-      id="warning"
+      id="Callout"
       class="my-10"
-      type="warning"
+      :type="ditcoUser?'warning':'info'"
     >
       <template v-slot:content>
-        <p class="mt-1 mb-0">
+        <h3 v-if="!ditcoUser">What's next?</h3>
+        <ol v-if="!ditcoUser">
+          <li class="mb-1">Obtain signatures from certifying officials on the
+            <strong>{{needsSignatureLength}} documents </strong>
+            indicated above.</li>
+          <li class="mb-1">Send your downloaded package and signed documents to your Contracting
+            Office for processing.</li>
+          <li class="mb-1">Once a task order is awarded, you can return to ATAT and we’ll help you
+            provision your accounts and environments with your Cloud Service Provider.</li>
+        </ol>
+
+        <p v-if="ditcoUser" class="mt-1 mb-0">
           During your review process, be sure to obtain signatures from
           certifying officials on the <strong>{{needsSignatureLength}} documents </strong>
           indicated below. We’ll help you upload these signed documents next.
@@ -234,36 +245,42 @@ export default class ReviewDocuments extends Vue {
     const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
     const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
     const fundingRequestIds = []
-    const migrationAttachments = await Attachments.getAttachmentsBySysIds({
-      serviceKey: this.currentEnvServiceName,
-      sysIds: currentEnv?.migration_documentation||[]
-    });
-    migrationAttachments.forEach(attachment => {
-      this.createAttachmentObject(attachment,'4 (Current Environment)')
-    })
-    const sysDocAttachments = await Attachments.getAttachmentsBySysIds({
-      serviceKey: this.currentEnvServiceName,
-      sysIds: currentEnv?.system_documentation||[]
-    });
-    sysDocAttachments.forEach(attachment => {
-      this.createAttachmentObject(attachment,'4 (Current Environment)')
-    })
-    const MIPRAttachment = await Attachments.getAttachmentById({
-      serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
-    this.createAttachmentObject(MIPRAttachment,'8 (Funding)')
-    if (fundingRequest?.fs_form_7600a_attachment.length > 0) {
-      fundingRequestIds.push(fundingRequest?.fs_form_7600a_attachment)
+    if(currentEnv){
+      const migrationAttachments = await Attachments.getAttachmentsBySysIds({
+        serviceKey: this.currentEnvServiceName,
+        sysIds: currentEnv?.migration_documentation||[]
+      });
+      migrationAttachments.forEach(attachment => {
+        this.createAttachmentObject(attachment,'4 (Current Environment)')
+      })
+      const sysDocAttachments = await Attachments.getAttachmentsBySysIds({
+        serviceKey: this.currentEnvServiceName,
+        sysIds: currentEnv?.system_documentation||[]
+      });
+      sysDocAttachments.forEach(attachment => {
+        this.createAttachmentObject(attachment,'4 (Current Environment)')
+      })
     }
-    if (fundingRequest?.fs_form_7600b_attachment.length > 0) {
-      fundingRequestIds.push(fundingRequest?.fs_form_7600b_attachment)
+    if(MIPR.mipr_attachment){
+      const MIPRAttachment = await Attachments.getAttachmentById({
+        serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
+      this.createAttachmentObject(MIPRAttachment,'8 (Funding)')
     }
-    const fundingRequestAttachments = await Attachments.getAttachmentsBySysIds({
-      serviceKey: FUNDING_REQUEST_FSFORM_TABLE,
-      sysIds: fundingRequestIds
-    });
-    fundingRequestAttachments.forEach(attachment => {
-      this.createAttachmentObject(attachment,'8 (Funding)')
-    })
+    if(fundingRequest){
+      if (fundingRequest?.fs_form_7600a_attachment.length > 0) {
+        fundingRequestIds.push(fundingRequest?.fs_form_7600a_attachment)
+      }
+      if (fundingRequest?.fs_form_7600b_attachment.length > 0) {
+        fundingRequestIds.push(fundingRequest?.fs_form_7600b_attachment)
+      }
+      const fundingRequestAttachments = await Attachments.getAttachmentsBySysIds({
+        serviceKey: FUNDING_REQUEST_FSFORM_TABLE,
+        sysIds: fundingRequestIds
+      });
+      fundingRequestAttachments.forEach(attachment => {
+        this.createAttachmentObject(attachment,'8 (Funding)')
+      })
+    }
     const docNames:string[] = []
     this.packageCheckList.forEach(listItem => {
       if(typeof listItem.itemName === "string")
@@ -274,7 +291,7 @@ export default class ReviewDocuments extends Vue {
   }
 
   async mounted(): Promise<void>{
-    await acquisitionPackage.setDisableContinue(false)1
+    await acquisitionPackage.setDisableContinue(false)
     await this.loadOnEnter()
   }
 

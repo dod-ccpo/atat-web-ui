@@ -14,6 +14,7 @@ import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirement
 import { TABLENAME as CURRENT_ENVIRONMENT_TABLE } from "@/api/currentEnvironment";
 import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
 import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
+import { TABLENAME as PACKAGE_DOCUMENTS_SIGNED_TABLE } from "@/api/packageDocumentsSigned";
 import { AttachmentDTO } from "@/api/models";
 import {
   AttachmentServiceCallbacks,
@@ -42,7 +43,8 @@ export class AttachmentStore extends VuexModule {
   // store session properties
   protected sessionProperties: string[] = [FUNDING_REQUEST_FSFORM_TABLE,
     FUNDING_REQUEST_MIPRFORM_TABLE, REQUIREMENTS_COST_ESTIMATE_TABLE,
-    CURRENT_ENVIRONMENT_TABLE, FAIR_OPPORTUNITY_TABLE, ACQUISITION_PACKAGE_TABLE];
+    CURRENT_ENVIRONMENT_TABLE, FAIR_OPPORTUNITY_TABLE, ACQUISITION_PACKAGE_TABLE,
+    PACKAGE_DOCUMENTS_SIGNED_TABLE];
 
   public [FUNDING_REQUEST_FSFORM_TABLE]: AttachmentDTO[] = [];
   public [FUNDING_REQUEST_MIPRFORM_TABLE]: AttachmentDTO[] = [];
@@ -50,6 +52,7 @@ export class AttachmentStore extends VuexModule {
   public [CURRENT_ENVIRONMENT_TABLE]: AttachmentDTO[] = [];
   public [FAIR_OPPORTUNITY_TABLE]: AttachmentDTO[] = [];
   public [ACQUISITION_PACKAGE_TABLE]: AttachmentDTO[] = [];
+  public [PACKAGE_DOCUMENTS_SIGNED_TABLE]: AttachmentDTO[] = [];
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -197,6 +200,15 @@ export class AttachmentStore extends VuexModule {
         })
       }
     );
+    AttachmentServiceCallbacks.registerUploadCallBack(
+      PACKAGE_DOCUMENTS_SIGNED_TABLE,
+      (attachment) => {
+        this.addAttachment({
+          key: PACKAGE_DOCUMENTS_SIGNED_TABLE,
+          attachment
+        })
+      }
+    );
 
     const sessionRestored = retrieveSession(ATAT_ATTACHMENTS_KEY);
     if (sessionRestored) {
@@ -314,6 +326,7 @@ export class AttachmentStore extends VuexModule {
     this[CURRENT_ENVIRONMENT_TABLE] = [];
     this[FAIR_OPPORTUNITY_TABLE] = [];
     this[ACQUISITION_PACKAGE_TABLE] = [];
+    this[PACKAGE_DOCUMENTS_SIGNED_TABLE] = [];
   }
 }
 

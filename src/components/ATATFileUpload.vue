@@ -146,7 +146,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: true}) private multiplesAllowed!: boolean;
   @Prop({ default: true}) private showAllErrors?: boolean;
-  @Prop({ default: true}) private filesRequired?: boolean;
+  @Prop({ default: false}) private filesRequired?: boolean;
   @Prop() private restrictedNames?: string[];
   @Prop({ default: "required"}) private requiredMessage!: string;
   @Prop({ default: 20 }) private maxNumberOfFiles!: number;
@@ -373,7 +373,7 @@ export default class ATATFileUpload extends Vue {
     for (let i = 0; i < this._validFiles.length; i++) {
       //wire up file upload here
       let uploadingFileObj = this._validFiles[i] as uploadingFile;
-
+      debugger
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
         window.setTimeout(() => {
