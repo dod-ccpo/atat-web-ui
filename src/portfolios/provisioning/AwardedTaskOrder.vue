@@ -22,7 +22,7 @@
               <h2 class="mb-4">Task Order #{{ awardedTaskOrder.taskOrderNumber }} </h2>
               <dl class="d-flex flex-wrap">
                 <dt class="text-base">Cloud Service Provider (CSP)</dt>
-                <dd>{{ awardedTaskOrder.contractor }}</dd>
+                <dd>{{ awardedTaskOrder.cspLong }}</dd>
                 <dt class="text-base">Contract Issuing Office</dt>
                 <dd>{{ awardedTaskOrder.contractIssuingOffice }}</dd>
               </dl>
@@ -127,6 +127,8 @@ export default class AwardedTaskOrder extends Vue {
   public awardedTaskOrder: AwardedTaskOrderDetails = {
     taskOrderNumber: "",
     contractor: "",
+    csp: "",
+    cspLong: "",
     contractIssuingOffice: "",
     periodOfPerformance: "",
     totalObligatedAmount: 0,
@@ -153,6 +155,8 @@ export default class AwardedTaskOrder extends Vue {
       this.awardedTaskOrder = {
         taskOrderNumber: data.taskOrderNumber as string,
         contractor: data.contractor as string,
+        csp: data.csp as string,
+        cspLong: data.cspLong as string,
         contractIssuingOffice: data.contractIssuingOffice as string,
         periodOfPerformance: pop,
         totalObligatedAmount: data.totalObligatedAmount as number,

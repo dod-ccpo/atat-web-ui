@@ -99,8 +99,9 @@ export default class PortfolioSummary extends Vue {
       this.portfolioDescription = portfolio.description || "";
       this.portfolioCSP = portfolio.csp || "";
     } else {
+      const provisioningData = await PortfolioStore.getPortfolioProvisioningObj();
       this.isPortfolioProvisioning = true;
-      this.title = "Hosting and Compute Center (HaCC)"
+      this.title = provisioningData.portfolioTitle || "Untitled Portfolio"
     }
   }
   public async mounted(): Promise<void>{

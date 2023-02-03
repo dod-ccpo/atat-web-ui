@@ -62,6 +62,7 @@ const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
     taskOrderNumber: "",
     contractor: "",
     csp: "",
+    cspLong: "",
     contractIssuingOffice: "",
     totalObligatedAmount: null,
     totalAmount: null,
@@ -99,6 +100,9 @@ export class PortfolioDataStore extends VuexModule {
   @Action({rawError: true})
   public async setDidNotUseDAPPS(bool: boolean): Promise<void> {
     this.doSetDidNotUseDAPPS(bool);
+    if (bool) {
+      await AcquisitionPackage.setDisableContinue(false);
+    }
   }
   @Mutation
   public doSetDidNotUseDAPPS(bool: boolean): void {
