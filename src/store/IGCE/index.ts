@@ -351,8 +351,8 @@ export class IGCEStore extends VuexModule {
           rceFlat.architectural_design_performance_requirements_estimated_values?.split(",")
       },
       fee_specs: {
-        is_charged: rceFlat.contracting_office_other_charges_fee,
-        percentage: rceFlat.contracting_office_other_fee_percentage
+        is_charged: rceFlat.how_est_dev_contracting_office_other_charges_fee,
+        percentage: rceFlat.how_est_dev_contracting_office_other_fee_percentage
       },
       has_DOW_and_PoP: rceFlat.has_dow_and_pop,
       how_estimates_developed: {
@@ -417,8 +417,10 @@ export class IGCEStore extends VuexModule {
         rceTree.architectural_design_performance_requirements.estimated_values
           ?.map(currency => currencyStringToNumber(currency)).toString(),
       contracting_office_other_charges_fee: rceTree.fee_specs.is_charged,
-      contracting_office_other_fee_percentage: rceTree.fee_specs.percentage,
+      contracting_office_other_fee_percentage: rceTree.fee_specs.percentage || 0,
       has_dow_and_pop: rceTree.has_DOW_and_PoP,
+      how_est_dev_contracting_office_other_charges_fee: rceTree.fee_specs.is_charged,
+      how_est_dev_contracting_office_other_fee_percentage: rceTree.fee_specs.percentage || 0,
       how_est_dev_tools_used: rceTree.how_estimates_developed.tools_used,
       how_est_dev_other_tools_used: rceTree.how_estimates_developed.other_tools_used,
       how_est_dev_cost_estimate_description:
@@ -430,7 +432,7 @@ export class IGCEStore extends VuexModule {
       optimize_replicate_option: rceTree.optimize_replicate.option,
       optimize_replicate_estimated_values: rceTree.optimize_replicate.estimated_values
         ?.map(currency => currencyStringToNumber(currency)).toString(),
-      surge_requirement_capacity: rceTree.surge_requirements.capacity,
+      surge_requirement_capacity: rceTree.surge_requirements.capacity || 0,
       surge_requirement_capabilities: rceTree.surge_requirements.capabilities,
       training: JSON.stringify(rceTree.training ? rceTree.training : []),
       travel_option: rceTree.travel.option,
