@@ -139,6 +139,8 @@ import FinancialDetails from "@/store/financialDetails";
 import ATATAlert from "@/components/ATATAlert.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import { AttachmentDTO, PackageDocumentsSignedDTO, ReferenceColumn } from "@/api/models";
+import { AxiosRequestConfig } from "axios";
+import { api } from "@/api";
 @Component({
   components:{
     ATATFileUpload,
@@ -280,12 +282,19 @@ export default class UploadSignedDocuments extends Vue {
         this.filesNeeded.push(item.itemName)
       }
     })
-    this.saved = await acquisitionPackage.getPackageDocumentsSigned()
-    console.log(this.saved)
-    if(this.saved){
+    const query: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
+      }
+    };
+    const signedDocumentSysId = await api.packageDocumentsSignedTable
+      .getQuery(query);
+    console.log('pkgDocsAQ', await acquisitionPackage.getPackageDocumentsSigned())
+    console.log('sys_id',signedDocumentSysId)
+    if(signedDocumentSysId.length > 0){
       try {
         const attachment = await Attachments.getAttachmentsByTableSysIds({
-          serviceKey: PACKAGE_DOCUMENTS_SIGNED, tableSysId: this.saved?.sys_id||""});
+          serviceKey: PACKAGE_DOCUMENTS_SIGNED, tableSysId: signedDocumentSysId[0].sys_id||""});
         const uploadedFiles = attachment.map((attachment: AttachmentDTO) => {
           const file = new File([], attachment.file_name, {
             lastModified: Date.parse(attachment.sys_created_on || "")
@@ -308,11 +317,9 @@ export default class UploadSignedDocuments extends Vue {
         throw new Error("an error occurred loading Package Signed Documents data");
       }
     }
-    //getbyrecordid
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
-
   }
 }
 </script>

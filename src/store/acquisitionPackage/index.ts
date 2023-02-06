@@ -596,9 +596,11 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setPackageDocumentsSigned(value: PackageDocumentsSignedDTO): void {
     debugger
-    typeof value.acquisition_package === "object"
+    const acquisition_package = typeof value.acquisition_package === "object"
       ? (value.acquisition_package as ReferenceColumn).value as string
-      : value.acquisition_package as string,
+      : value.acquisition_package as string;
+    value.acquisition_package = acquisition_package
+
     this.packageDocumentsSigned = value;
   }
 
@@ -911,9 +913,23 @@ export class AcquisitionPackageStore extends VuexModule {
           });
         }
       }
-      const packageDocumentsSigned = await api.packageDocumentsSignedTable
-        .create({acquisition_package:acquisitionPackage.sys_id})
-      this.setPackageDocumentsSigned(packageDocumentsSigned)
+      const query: AxiosRequestConfig = {
+        params: {
+          sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
+        }
+      };
+      const signedDocuments = await api.packageDocumentsSignedTable
+        .getQuery(query);
+      if(signedDocuments.length <= 0){
+        const packageDocumentsSigned = await api.packageDocumentsSignedTable
+          .create({acquisition_package:acquisitionPackage.sys_id})
+        this.setPackageDocumentsSigned(packageDocumentsSigned)
+        console.log(await this.getPackageDocumentsSigned())
+      }else{
+        this.setPackageDocumentsSigned(signedDocuments[0])
+        console.log(await this.getPackageDocumentsSigned())
+      }
+
       this.setPackagePercentLoaded(90);
 
       await FinancialDetails.loadFundingRequirement();
