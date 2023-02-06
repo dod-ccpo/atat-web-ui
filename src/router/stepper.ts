@@ -161,11 +161,9 @@ import {
   BVTOResolver,
   NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
-  ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
-  DOWArchitecturalDesignResolver,
   IGCETrainingPathResolver, 
   FeeChargedResolver,
 } from "./resolvers";
@@ -626,6 +624,54 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
       },
+      // {
+      //   menuText: "Architectural Design",
+      //   path: "architectural-design",
+      //   excludeFromMenu: true,
+      //   name: routeNames.ArchitecturalDesign,
+      //   component: ArchitecturalDesign,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      // },
+      // {
+      //   menuText: "Architectural Design Details",
+      //   path: "architectural-design-details",
+      //   excludeFromMenu: true,
+      //   name: routeNames.ArchitecturalDesignDetails,
+      //   component: ArchitecturalDesignDetails,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      //   routeResolver: ArchitecturalDesignDetailsRouteResolver
+      // },
+      // {
+      //   menuText: "Summary",
+      //   path: "background-summary",
+      //   excludeFromMenu: true,
+      //   name: routeNames.BackgroundSummary,
+      //   stepCompleteOnEnter: routeNames.CurrentEnvironment,
+      //   component: BackgroundSummary,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      // },
+    ]
+  },
+  {
+    stepNumber: "05",
+    completePercentageWeight: 7,
+    menuText: "Performance Requirements",
+    path: "/performance-requirements",
+    component: PerformanceRequirementsIndex,
+    children: [
+      {
+        menuText: "Landing Page",
+        path: "/",
+        excludeFromMenu: true,
+        name: routeNames.DOWLandingPageDraft,
+        completePercentageWeight: 1,
+        component: DOWLandingPageDraft,
+        continueButtonText: 'Wrap up this section',
+        completed: false
+      },
       {
         menuText: "Replicate And Optimize",
         path: "replicate-and-optimize",
@@ -663,36 +709,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ArchitecturalDesignDetails,
         completePercentageWeight: 5,
         completed: false,
-        routeResolver: ArchitecturalDesignDetailsRouteResolver
-      },
-      // {
-      //   menuText: "Summary",
-      //   path: "background-summary",
-      //   excludeFromMenu: true,
-      //   name: routeNames.BackgroundSummary,
-      //   stepCompleteOnEnter: routeNames.CurrentEnvironment,
-      //   component: BackgroundSummary,
-      //   completePercentageWeight: 5,
-      //   completed: false,
-      // },
-    ]
-  },
-  {
-    stepNumber: "05",
-    completePercentageWeight: 7,
-    menuText: "Performance Requirements",
-    path: "/performance-requirements",
-    component: PerformanceRequirementsIndex,
-    children: [
-      {
-        menuText: "Landing Page",
-        path: "/",
-        excludeFromMenu: true,
-        name: routeNames.DOWLandingPageDraft,
-        stepCompleteOnEnter: routeNames.RequirementCategories,
-        completePercentageWeight: 1,
-        component: DOWLandingPageDraft,
-        continueButtonText: 'Wrap up this section',
       },
       {
         menuText: "Requirement Categories",
@@ -705,16 +721,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: PerformanceRequirementsPathResolver,
       },
 
-      {
-        menuText: "Architectural Design Requirements DOW",
-        excludeFromMenu: true,
-        path: "architectural-design-requirements-dow",
-        name: routeNames.DOWArchitecturalDesign,
-        completePercentageWeight: 5,
-        completed: false,
-        routeResolver: DOWArchitecturalDesignResolver,
-        component: ArchitectureDesignDOW,
-      },
+      // {
+      //   menuText: "Architectural Design Requirements DOW",
+      //   excludeFromMenu: true,
+      //   path: "architectural-design-requirements-dow",
+      //   name: routeNames.DOWArchitecturalDesign,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      //   routeResolver: DOWArchitecturalDesignResolver,
+      //   component: ArchitectureDesignDOW,
+      // },
 
       {
         menuText: "Anticipated Users and Data Needs",

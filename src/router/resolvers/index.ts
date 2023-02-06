@@ -15,6 +15,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import DOWLandingPageDraft from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPageDraft.vue";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -142,31 +143,7 @@ export const ReplicateDetailsResolver = (current: string): string => {
     : routeNames.ReplicateAndOptimize;
 }
 
-export const ArchitecturalDesignDetailsRouteResolver = (current: string): string => {
-  const needsArchitectureDesign
-      = CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
-  const hasCurrentEnv
-      = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
-  const hasCurrentContract 
-      = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
- 
-  if (current === routeNames.DOWSummary || 
-      current === routeNames.RequirementCategories){
-    if (!hasCurrentContract){  // if no current contract
-      return routeNames.CurrentContract;
-    } else if (hasCurrentContract && !hasCurrentEnv){ // if current contract & NO current env
-      return routeNames.CurrentEnvironment;
-    } else if (hasCurrentEnv){
-      return needsArchitectureDesign 
-        ? routeNames.ArchitecturalDesignDetails
-        : routeNames.ArchitecturalDesign
-    }
-  }
-  return needsArchitectureDesign
-    ? routeNames.ArchitecturalDesignDetails 
-    : (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
-      ? routeNames.DOWSummary : routeNames.RequirementCategories
-};
+
 
 export const CurrentEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
@@ -268,6 +245,10 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 /****************************************************************************/
 
 export const RequirementsPathResolver = (current: string, direction: string): string => {
+  if (current === routeNames.ArchitecturalDesignDetails){
+    return basePerformanceRequirementsPath;
+  }
+  
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
   if (current === routeNames.ServiceOfferings
@@ -334,18 +315,8 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 
 
 /****************************************************************************/
-// hit when leaving first main DOW offering category checkbox page
-export const DOWArchitecturalDesignResolver = (current: string): string => {
-  const DOWNeedsArch = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
-  if (DOWNeedsArch) {
-    // coming from either direction, if needs architectural design, go there
-    return routeNames.DOWArchitecturalDesign;
-  }
-  const xaasServices = DescriptionOfWork.hasXaasService;
-  return current === routeNames.RequirementCategories 
-    ? xaasServices ? routeNames.AnticipatedUserAndDataNeeds : routeNames.ServiceOfferings
-    : routeNames.RequirementCategories;
-}
+
+
 
 /****************************************************************************
 
@@ -1327,11 +1298,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   BVTOResolver,
   NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
-  ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
   UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
-  DOWArchitecturalDesignResolver,
   // IGCEGatherPriceResolver,
 };
 
@@ -1343,7 +1312,7 @@ const pathResolvers: Record<string, StepPathResolver> = {
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   RequirementsPathResolver,
-  IGCETrainingPathResolver
+  IGCETrainingPathResolver,
 }
 
 export const InvokeRouteResolver = (
