@@ -8,7 +8,7 @@
         <p class="page-intro copy-max-width">
           Review your provisioning details below to ensure information is accurate. 
           When you are ready, click “Start provisioning” and we’ll submit this 
-          information to  {{ provisioningData.contractor }} to create your portfolio. 
+          information to  {{ provisioningData.cspLong }} to create your portfolio. 
           <strong>The provisioning process cannot be undone.</strong>    
         </p>
 
@@ -46,7 +46,7 @@
                   <span class="_line-height-1 font-size-12 font-weight-700 text-base-light d-block">
                     CLOUD SERVICE PROVIDER
                   </span>
-                  {{ provisioningData.contractor }}
+                  {{ provisioningData.cspLong }}
                 </div>                
               </div>
               <div class="d-flex">
@@ -84,7 +84,7 @@
                   anytime for an up-to-date status of your portfolio and funding details.
                 </p>
                 <p>
-                  Once complete, {{ provisioningData.contractor }} will notify your CSP 
+                  Once complete, {{ provisioningData.csp }} will notify your CSP 
                   administrators with instructions for obtaining access to the cloud console.
                 </p>
                 <p>

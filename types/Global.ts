@@ -16,6 +16,7 @@ import {
   BaseTableDTO,
   ClinDTO,
   EDAResponse,
+  ReferenceColumn,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -538,6 +539,8 @@ export interface TaskOrderCardData {
 export interface AwardedTaskOrderDetails {
   taskOrderNumber: string,
   contractor: string,
+  csp: string,
+  cspLong: string,
   contractIssuingOffice: string,
   periodOfPerformance: string,
   totalObligatedAmount: number,
@@ -711,6 +714,7 @@ export interface TrainingEstimate {
   estimate: EstimateOptionValueObjectArray;
   estimatedTrainingPrice: string;
   trainingOption: SingleMultiple;
+  cloudSupportEnvironmentInstance: ReferenceColumn | string;
 }
 
 export enum ClassificationLevels {

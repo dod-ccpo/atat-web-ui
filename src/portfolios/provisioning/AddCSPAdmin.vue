@@ -8,7 +8,7 @@
         <p class="page-intro">
           Before we can start provisioning, you need to add at least one Cloud 
           Service Provider (CSP) administrator. These individuals will be granted 
-          full access to your cloud resources within the {{ csp }} portal, enabling 
+          full access to your cloud resources within the {{ cspLong }} portal, enabling 
           them to manage user accounts and configure workspace settings. 
           <a
             role="button"
@@ -250,7 +250,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 
 export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public admins: PortfolioAdmin[] = [];
-  public csp = "";
+  public cspLong = "";
   public classificationLevels: string[] = [];
   public openModal = false;
   public modalSlideoutComponent = CSPAdminLearnMoreText;
@@ -446,7 +446,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.admins = _.cloneDeep(storeData.admins) || [];
 
       this.savedData = _.cloneDeep(this.admins);
-      this.csp = storeData.csp as string;
+      this.cspLong = storeData.cspLong as string;
       this.classificationLevels = storeData.classificationLevels || [];
       if (this.classificationLevels.length === 1) {
         this.selectedClassificationLevels.push(this.classificationLevels[0])
