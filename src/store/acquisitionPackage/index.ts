@@ -493,11 +493,6 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.packageDocumentsSigned;
   }
 
-  public async createInitialPackageDocuments(): Promise<void> {
-    const data = await api.packageDocumentsSignedTable.create(initialPackageDocumentsSigned())
-    this.setPackageDocumentsSigned(data)
-  }
-
   @Mutation
   public setContact(saveData: { data: ContactDTO; type: string }): void {
     const isCor = saveData.type === "COR";
@@ -600,6 +595,10 @@ export class AcquisitionPackageStore extends VuexModule {
   }
   @Mutation
   public setPackageDocumentsSigned(value: PackageDocumentsSignedDTO): void {
+    debugger
+    typeof value.acquisition_package === "object"
+      ? (value.acquisition_package as ReferenceColumn).value as string
+      : value.acquisition_package as string,
     this.packageDocumentsSigned = value;
   }
 
@@ -912,7 +911,8 @@ export class AcquisitionPackageStore extends VuexModule {
           });
         }
       }
-      const packageDocumentsSigned = await api.packageDocumentsSignedTable.create()
+      const packageDocumentsSigned = await api.packageDocumentsSignedTable
+        .create({acquisition_package:acquisitionPackage.sys_id})
       this.setPackageDocumentsSigned(packageDocumentsSigned)
       this.setPackagePercentLoaded(90);
 
@@ -966,8 +966,6 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
-    const packageDocumentsSigned = await api.packageDocumentsSignedTable.create()
-    this.setPackageDocumentsSigned(packageDocumentsSigned)
     const loggedInUser = await UserStore.getCurrentUser();
 
     if (storedSessionData && storedSessionData.length > 0) {
@@ -1015,7 +1013,9 @@ export class AcquisitionPackageStore extends VuexModule {
 
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
-
+          const packageDocumentsSigned = await api.packageDocumentsSignedTable
+            .create({acquisition_package:acquisitionPackage.sys_id})
+          this.setPackageDocumentsSigned(packageDocumentsSigned)
           this.setInitialized(true);
         }
       } catch (error) {

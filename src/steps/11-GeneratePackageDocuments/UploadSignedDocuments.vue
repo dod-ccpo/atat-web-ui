@@ -138,7 +138,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FinancialDetails from "@/store/financialDetails";
 import ATATAlert from "@/components/ATATAlert.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
-import { PackageDocumentsSignedDTO, ReferenceColumn } from "@/api/models";
+import { AttachmentDTO, PackageDocumentsSignedDTO, ReferenceColumn } from "@/api/models";
 @Component({
   components:{
     ATATFileUpload,
@@ -159,7 +159,6 @@ export default class UploadSignedDocuments extends Vue {
     sys_updated_by: "",
     sys_created_on: "",
     sys_mod_count: "",
-    acquisition_package: {},
     sys_updated_on: "",
     sys_tags: "",
     sys_created_by: ""
@@ -285,9 +284,9 @@ export default class UploadSignedDocuments extends Vue {
     console.log(this.saved)
     if(this.saved){
       try {
-        const attachment = await Attachments.getAttachmentById({
-          serviceKey: PACKAGE_DOCUMENTS_SIGNED, sysID: this.saved?.sys_id||""});
-        if (attachment) {
+        const attachment = await Attachments.getAttachmentsByTableSysIds({
+          serviceKey: PACKAGE_DOCUMENTS_SIGNED, tableSysId: this.saved?.sys_id||""});
+        const uploadedFiles = attachment.map((attachment: AttachmentDTO) => {
           const file = new File([], attachment.file_name, {
             lastModified: Date.parse(attachment.sys_created_on || "")
           });
@@ -302,12 +301,14 @@ export default class UploadSignedDocuments extends Vue {
             isErrored: false,
             isUploaded: true
           }
-          this.uploadedFiles = [upload];
-        }
+          return upload;
+        });
+        this.uploadedFiles = [...uploadedFiles];
       } catch (error) {
         throw new Error("an error occurred loading Package Signed Documents data");
       }
     }
+    //getbyrecordid
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()

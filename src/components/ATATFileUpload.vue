@@ -373,7 +373,6 @@ export default class ATATFileUpload extends Vue {
     for (let i = 0; i < this._validFiles.length; i++) {
       //wire up file upload here
       let uploadingFileObj = this._validFiles[i] as uploadingFile;
-      debugger
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
         window.setTimeout(() => {
@@ -395,7 +394,6 @@ export default class ATATFileUpload extends Vue {
               //download link - link to the file download
               //sys_id the unique id of the attachment in the attachment table
               //table_sys_id the unique id of the table/record
-              debugger
               const { download_link, sys_id, table_sys_id } = result.attachment;
               uploadingFileObj.link = download_link || "";
               uploadingFileObj.attachmentId = sys_id || "";

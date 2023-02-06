@@ -861,7 +861,7 @@ export interface PackageDocumentsSignedDTO extends BaseTableDTO {
   sys_updated_by?: string
   sys_created_on?: string
   sys_mod_count?: string
-  acquisition_package?: ReferenceColumn
+  acquisition_package?: string
   sys_updated_on?: string
   sys_tags?: string
   sys_created_by?: string
