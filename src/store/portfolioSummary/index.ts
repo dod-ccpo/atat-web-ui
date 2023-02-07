@@ -13,6 +13,7 @@ import Vue from "vue";
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
 import { Statuses } from "../acquisitionPackage";
+import CurrentUserStore from "../user";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
@@ -110,14 +111,16 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
     Promise<string> {
+    const currentUser = await CurrentUserStore.getCurrentUser();
+    const userSysId = currentUser.sys_id;
     let query = "";
+    debugger;
     if (searchDTO.role === "ALL") {
       query = query +
-        "^portfolio_managersLIKE073fd379470021104a251bd8c26d434a^OR" + // pragma: allowlist secret
-        "portfolio_viewersLIKE073fd379470021104a251bd8c26d434a"; // pragma: allowlist secret
+        `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
     } else { // "MANAGED"
       query = query +
-        "^portfolio_managersLIKE073fd379470021104a251bd8c26d434a"; // pragma: allowlist secret
+        `^portfolio_managersLIKE${userSysId}`;
     }
     query = query + "^portfolio_status!=ARCHIVED"
     query = query + "^ORDERBY" + searchDTO.sort;

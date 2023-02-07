@@ -139,7 +139,7 @@ import { createDateStr, toCurrencyString } from "@/helpers";
 import { differenceInDays, formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
 import _ from "lodash";
-import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
@@ -377,12 +377,12 @@ export default class PortfoliosSummary extends Vue {
     limit: this.recordsPerPage,
     offset: this.offset,
   }
-  
-  // TEMP hard-coded logged-in user Maria Missionowner
-  // public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
-  public currentUserSysId = "073fd379470021104a251bd8c26d434a"; // pragma: allowlist secret
+   
+  public currentUserSysId = "";
 
   public async loadPortfolioData(): Promise<void> {
+    const currentUser = await CurrentUserStore.getCurrentUser();
+    this.currentUserSysId = currentUser.sys_id as string;
     
     this.isLoading = true;
     this.portfolioCardData = [];

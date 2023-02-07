@@ -115,6 +115,7 @@ export class DashboardService {
       const taskOrder = await api.taskOrderTable.retrieve(taskOrderNumber);
       // const taskOrders = await api.taskOrderTable.all(taskOrderRequestConfig);
       // const taskOrder = taskOrders.length > 0 ? taskOrders[0] : undefined;
+      debugger;
 
       if (taskOrder === undefined) {
         throw new Error(
@@ -162,7 +163,7 @@ export class DashboardService {
       };
 
       const costs = await api.costsTable.all(costsRequestConfig);
-
+      // EJY TODO need to account for no costs
       return {
         taskOrder,
         clins,
