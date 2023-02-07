@@ -116,6 +116,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   async createDataSource(): Promise<void>{
     this.igceEstimateData = await IGCE.igceEstimateList;
     await this.populateClassificationDisplay();
+    debugger;
     await this.groupByClassificationDisplay();
     await this.sortDataSource();
     this.estimateDataSource = await this.tempEstimateDataSource;
@@ -129,15 +130,17 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         (level) => {
           return level.sys_id === classLevelSysId
         })
-      est.classification_display = level?.display || "";
+      est.classification_display =  level?.display ||  "";
+      // est.cross_domain_solution ? "Cross Domain Solution (CDS)" : ""
     })
   }
   
   // group by classification_display attrib
   async groupByClassificationDisplay(): Promise<void>{
     this.tempEstimateDataSource = await this.igceEstimateData.reduce(function (acc, current) {
-      acc[current.classification_display || ""] = acc[current.classification_display || ""] || [];
-      acc[current.classification_display || ""].push(current);
+      acc[(current.classification_display || current.title) || ""] = 
+        acc[(current.classification_display || current.title) || ""] || [];
+      acc[(current.classification_display || current.title) || ""].push(current);
       return acc;
     }, Object.create(null));
   }
