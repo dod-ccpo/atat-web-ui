@@ -1,67 +1,90 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <ArchitecturalDesignForm
-      :isDOW="true"
-      :statementArchitecturalDesign.sync="DOWArchNeeds.statement"
-      :applicationsNeedArchitecturalDesign.sync="DOWArchNeeds.applications_needing_design"
-      :dataClassificationsImpactLevels.sync="DOWArchNeeds.data_classification_levels"
-      :externalFactors.sync="DOWArchNeeds.external_factors"
-    />
+    <v-container class="container-max-width" fluid>
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+            Do you need an architectural design solution to address a known problem or use-case?
+          </h1>
+          <div class="copy-max-width">
+            <p id="IntroP" class="mb-8">
+              This objective-based requirement is a good option if you need help with: determining
+              the most effective cloud resources, tools, or services needed for your project;
+              translating functional requirements into a new technology solution; or guidance on
+              the strategic direction of your project. We'll gather details about your situation
+              and request CSPs to propose a customized cloud solution based on your unique
+              objectives.
+            </p>
+
+            <ATATRadioGroup
+              id="ArchitectureOptions"
+              :card="true"
+              :width="180"
+              :items="radioOptions"
+              :value.sync="currEnvDTO.needs_architectural_design_services"
+              :rules="[$validators.required('Please select an option.')]"
+             />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-form>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 
-import ArchitecturalDesignForm from "@/components/DOW/ArchitecturalDesignForm.vue"
-
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import { RadioButton } from "types/Global";
+import CurrentEnvironment,
+{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import DescriptionOfWork, { defaultDOWArchitecturalNeeds } from "@/store/descriptionOfWork";
-import { ArchitecturalDesignRequirementDTO } from "@/api/models";
 
 @Component({
   components: {
-    ArchitecturalDesignForm
+    ATATRadioGroup
   }
 })
 
-export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
-  public DOWArchNeeds = defaultDOWArchitecturalNeeds;
+export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
+  public currEnvDTO = defaultCurrentEnvironment;
 
-  /* eslint-disable camelcase */
-  public get currentData(): ArchitecturalDesignRequirementDTO {
+
+  public radioOptions: RadioButton[] = [
+    {
+      id: "YesArchitecture",
+      value: "YES",
+      label: "Yes.",
+    },
+    {
+      id: "NoArchitecture",
+      value: "NO",
+      label: "No.",
+    },
+  ];
+
+  public get currentData(): Record<string, string> {
     return {
-      source: "DOW",
-      statement: this.DOWArchNeeds.statement,
-      applications_needing_design: this.DOWArchNeeds.applications_needing_design,
-      data_classification_levels: this.DOWArchNeeds.data_classification_levels,
-      external_factors: this.DOWArchNeeds.external_factors,
-      acquisition_package: this.DOWArchNeeds.acquisition_package
+      needsArchitectureDesign: this.currEnvDTO.needs_architectural_design_services,
     }
   };
 
-  public savedData: ArchitecturalDesignRequirementDTO = {
-    source: "DOW",
-    statement: "",
-    applications_needing_design: "",
-    data_classification_levels: "",
-    external_factors: "",
-    acquisition_package: ""
+  public savedData: Record<string, string> = {
+    needsArchitectureDesign: ""
   }
-  /* eslint-enable camelcase */
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await DescriptionOfWork.getDOWArchitecturalNeeds();
+    const storeData = await CurrentEnvironment.getCurrentEnvironment();
     if (storeData) {
-      this.DOWArchNeeds = _.cloneDeep(storeData);
-      this.savedData = _.cloneDeep(storeData);
+      this.currEnvDTO = _.cloneDeep(storeData);
+      this.savedData.needsArchitectureDesign = storeData.needs_architectural_design_services;
     }
   }
 
@@ -70,13 +93,12 @@ export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-
-    await AcquisitionPackage.setValidateNow(true);
-
     try {
       if (this.hasChanged()) {
-        DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);
-
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
+        const needsArchDesign = this.currEnvDTO.needs_architectural_design_services === "YES"
+          ? true : false;
+        await CurrentEnvironment.setCurrentEnvironmentHasArchitecturalDesign(needsArchDesign);
       }
     } catch (error) {
       console.log(error);
