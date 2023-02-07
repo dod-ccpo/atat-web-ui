@@ -182,6 +182,7 @@ export default class PortfoliosSummary extends Vue {
   public async generateFilterChips(): Promise<void> {
     this.filterChips = [];
     if (this.queryParams.role && this.queryParams.role.toLowerCase() !== "all") {
+      debugger;
       const role = this.roles.find(
         (obj: FilterOption) => obj.value.toLowerCase() === this.queryParams.role?.toLowerCase()
       );
@@ -212,6 +213,7 @@ export default class PortfoliosSummary extends Vue {
     case "fundingStatuses": 
     case "csps": {
       if (this.queryParams) {
+        debugger
         const filters = this.queryParams[key]?.filter(
           obj => obj.value !== removedFilter.value
         ) || [];
@@ -248,6 +250,7 @@ export default class PortfoliosSummary extends Vue {
 
   public getValuesFromFilterOptions(objects: FilterOption[] | undefined): string[] {
     const values: string[] = [];
+    debugger;
     if (objects && objects.length) {
       objects.forEach(obj => values.push(obj.value));
     }
@@ -409,6 +412,7 @@ export default class PortfoliosSummary extends Vue {
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
     if (this.isHomeView) {
+      debugger;
       storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
     }
     storeData.portfolioSummaryList.forEach((portfolio) => {
@@ -422,9 +426,12 @@ export default class PortfoliosSummary extends Vue {
       cardData.status = portfolio.portfolio_status;
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.agency = portfolio.dod_component;
+
+      debugger;
       cardData.taskOrderNumber = portfolio.active_task_order.value as string;
 
       // lastModified - if status is "Processing" use "Started ... ago" string
+      debugger;
       if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
         
         debugger;

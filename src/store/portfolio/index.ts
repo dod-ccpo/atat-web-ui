@@ -131,6 +131,41 @@ export class PortfolioDataStore extends VuexModule {
     return this.portfolioProvisioningObj;
   }
 
+  @Action({rawError: true})
+  public async startProvisioning(): Promise<void> {
+    debugger;
+    const unclassifiedOperators: Record<string, string>[] = [];
+    const scrtOperators: Record<string, string>[] = [] 
+    this.portfolioProvisioningObj.admins?.forEach(admin => {
+      if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
+        unclassifiedOperators.push({ dodId: admin.DoDId, email: admin.unclassifiedEmail });
+      }
+      if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
+        scrtOperators.push({ dodId: admin.DoDId, email: admin.scrtEmail });
+      }
+    });
+
+    const provisioningPostObj = {
+      portfolioName: this.portfolioProvisioningObj.portfolioTitle,
+      portfolioAgency: this.portfolioProvisioningObj.serviceOrAgency,
+      environments: {
+        Unclassified: {
+          operators: unclassifiedOperators
+        },
+        Secret: {
+          operators: scrtOperators
+        }
+      }
+    }
+    debugger;
+    
+    // TODO: make API call POST to /provisioning with above provisioningPostObj
+    // send as request parameters: 
+    //   taskOrderNumber -- this.portfolioProvisioningObj.taskOrderNumber
+    //   acquisitionPackageSysId  -- this.selectedAcquisitionPackageSysId
+
+  }
+
   public openTOSearchPortfolio = false;
 
   @Action({rawError: true})
