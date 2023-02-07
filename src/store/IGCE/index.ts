@@ -706,6 +706,36 @@ export class IGCEStore extends VuexModule {
     await Promise.all(apiCallList);
   }
 
+  // retrieve cds row from IGCEEstimates table
+  public async getIgceEstimateCDS(
+    cdsRef: {
+      cdsSysId: string,
+    }
+  ):Promise<IgceEstimateDTO[]> {
+    return await api.igceEstimateTable.getQuery({
+      params: {
+        sysparm_query: "^cross_domain_solution" + cdsRef.cdsSysId
+      }
+    });
+  }
+
+  public async createIgceEstimateCDS(
+    cdsRef: {
+      cdsSysId: string,
+      crossDomainPairTypeList: string[],
+      description: string
+    }
+  ):Promise<void> {
+    const igceEstimateList = this.getIgceEstimateCDS({ 
+      cdsSysId: cdsRef.cdsSysId 
+    })
+
+    const createList = cdsRef.crossDomainPairTypeList
+      .filter(cdPairType => (igceEstimateList
+        .map(igceEstimate => igceEstimate.cross_domain_pair).indexOf(cdPairType) === -1));
+  }
+
+
   /**
    * Performs a query on the request config and deletes the first match from the IGCE Estimate
    * table. It is expected to always have a single match at most. If there are more than

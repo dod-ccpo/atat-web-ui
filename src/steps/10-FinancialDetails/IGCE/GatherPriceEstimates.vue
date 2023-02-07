@@ -25,6 +25,7 @@
           </a>
         </p>
         <div class="_price-estimates-accordion">
+          
           <v-expansion-panels
            
             v-for="(value, name, index) in estimateDataSource"
@@ -114,43 +115,55 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   }
 
   async createDataSource(): Promise<void>{
-    this.igceEstimateData = await IGCE.igceEstimateList;
+    this.igceEstimateData = IGCE.igceEstimateList.filter(
+      (item) => item.classification_level
+    );
+
     await this.populateClassificationDisplay();
-    debugger;
     await this.groupByClassificationDisplay();
     await this.sortDataSource();
-    this.estimateDataSource = await this.tempEstimateDataSource;
+    await this.addCDS();
+    this.estimateDataSource = this.tempEstimateDataSource
   }
 
   // prep data source - populate classification_display attrib 
   async populateClassificationDisplay(): Promise<void>{
-    await this.igceEstimateData.forEach((est)=>{
+    this.igceEstimateData.forEach((est) => {
       const classLevelSysId = (est.classification_level as ReferenceColumn).value || "";
       const level = ClassificationRequirements.classificationLevels.find(
         (level) => {
-          return level.sys_id === classLevelSysId
-        })
-      est.classification_display =  level?.display ||  "";
-      // est.cross_domain_solution ? "Cross Domain Solution (CDS)" : ""
-    })
+          return level.sys_id === classLevelSysId;
+        });
+      est.classification_display = level?.display || "";
+    });
   }
   
   // group by classification_display attrib
   async groupByClassificationDisplay(): Promise<void>{
     this.tempEstimateDataSource = await this.igceEstimateData.reduce(function (acc, current) {
-      acc[(current.classification_display || current.title) || ""] = 
-        acc[(current.classification_display || current.title) || ""] || [];
-      acc[(current.classification_display || current.title) || ""].push(current);
+      acc[current.classification_display || ""] = acc[current.classification_display || ""] || [];
+      acc[current.classification_display || ""].push(current);
       return acc;
     }, Object.create(null));
   }
 
-
+  // sort nested arrays
   async sortDataSource(): Promise<void>{
-    // sort nested arrays
     for (const classLevelsArray in this.tempEstimateDataSource){
-      await this.tempEstimateDataSource[classLevelsArray].sort((a,b) => (a.title>b.title) ? 1 : -1 )
+      this.tempEstimateDataSource[classLevelsArray].sort(
+        (a, b) => ((a?.title || "") > (b?.title || "")) ? 1 : -1)
     }
+  }
+
+  async addCDS(): Promise<void>{
+    const cds = IGCE.igceEstimateList.filter(
+      (item) => !item.classification_level
+    )
+    
+    // this.tempEstimateDataSource.push({
+
+    // })
+
   }
 
   public async mounted(): Promise<void> {
