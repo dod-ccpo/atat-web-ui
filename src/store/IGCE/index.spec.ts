@@ -33,8 +33,9 @@ describe("IGCE Store", () => {
     surge_requirement_capacity: null,
     training: "",
     travel_estimated_values: "",
-    travel_option: ""
-
+    travel_option: "",
+    how_est_dev_contracting_office_other_charges_fee: '',
+    how_est_dev_contracting_office_other_fee_percentage: null
   }
 
   beforeEach(() => {
