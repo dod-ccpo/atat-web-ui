@@ -69,18 +69,20 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 @Component({
   components: {
     ATATSVGIcon,
     ATATCheckboxGroup
   }
 })
-export default class ReadyToSubmit extends Vue {
+export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
   public packageId = "";
   private documentList:string[]=[];
   private certified = []
@@ -100,6 +102,14 @@ export default class ReadyToSubmit extends Vue {
     else{
       await acquisitionPackage.setDisableContinue(true)
     }
+  }
+  public async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
+    await AcquisitionPackageSummary.updateAcquisitionPackageStatus({
+      acquisitionPackageSysId: AcquisitionPackage.acquisitionPackage?.sys_id||"",
+      newStatus: "WAITING_FOR_TASK_ORDER"
+    })
+    return true;
   }
 
   public async loadOnEnter(): Promise<void> {
