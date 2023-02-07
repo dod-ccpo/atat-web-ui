@@ -139,7 +139,7 @@ export const ReplicateDetailsResolver = (current: string): string => {
     return routeNames.ReplicateDetails;
   }
   return current === routeNames.ReplicateAndOptimize
-    ? routeNames.ArchitecturalDesign
+    ? routeNames.DOWLandingPageDraft
     : routeNames.ReplicateAndOptimize;
 }
 
