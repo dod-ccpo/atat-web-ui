@@ -7,10 +7,14 @@
           View details about the task orders associated with your portfolio
           below. You can request to modify an active task order to exercise an
           option or to change CLIN funding and period of performance details.
+          <!--
           You can also add a new task order to continue funding your cloud
           resources and support for this portfolio.
+          -->
         </p>
+        <!-- 
         <v-btn outlined class="ml-10 secondary"> Add a new task order </v-btn>
+        -->
       </div>
       <TaskOrderCard
         :isHistory="false"
