@@ -319,6 +319,7 @@ export class AcquisitionPackageStore extends VuexModule {
   contractingShop = "";
   attachmentNames: string[] = []
   disableContinue = false
+  hideNavigation = false
   fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact()
@@ -388,6 +389,14 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   private doSetDisableContinue(value: boolean): void {
     this.disableContinue = value;
+  }
+  @Action({rawError: false})
+  public async setHideNavigation(value: boolean): Promise<void> {
+    this.doSetHideNavigation(value);
+  }
+  @Mutation
+  private doSetHideNavigation(value: boolean): void {
+    this.hideNavigation = value;
   }
 
   @Action

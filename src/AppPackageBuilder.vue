@@ -1,6 +1,6 @@
 <template>
   <div  style="overflow: hidden;">
-    <ATATSideStepper ref="sideStepper" :stepperData="stepperData" />
+    <ATATSideStepper v-if="!hideNavigation" ref="sideStepper" :stepperData="stepperData" />
 
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
@@ -17,6 +17,7 @@
         </div>
 
         <ATATStepperNavigation
+          v-if="!hideNavigation"
           @next="navigate('next')"
           @previous="navigate('previous')"
           @additionalButtonClick="additionalButtonClick"
@@ -102,6 +103,7 @@ export default class AppPackageBuilder extends Vue {
   private altBackDestination = "";
   private hideContinueButton = false;
   private disableContinueButton = false;
+  private hideNavigation = false;
 
   async mounted(): Promise<void> {
     this.routeNames = routeNames;
@@ -198,10 +200,17 @@ export default class AppPackageBuilder extends Vue {
   public get disableContinue(): boolean {
     return acquisitionPackage.disableContinue
   }
+  public get hideNav(): boolean {
+    return acquisitionPackage.hideNavigation
+  }
 
   @Watch('disableContinue')
   public disableContinueChanged(newVal:boolean): void {
     this.disableContinueButton = newVal
+  }
+  @Watch('hideNav')
+  public hideNavigationChanged(newVal:boolean): void {
+    this.hideNavigation = newVal
   }
   private setNavButtons(step: StepInfo): void {
     this.altBackDestination = Steps.altBackDestination;

@@ -175,6 +175,15 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
     this.contractingShop = AcquisitionPackage.contractingShop || "";
     this.isPageLoading = false;
   }
+  public async skipPage(): Promise<void> {
+    if(AcquisitionPackage.acquisitionPackage?.package_status === "WAITING_FOR_TASK_ORDERS"){
+      await this.$router.push(
+        {
+          path:"under-review"
+        }
+      );
+    }
+  }
 
   public async mounted(): Promise<void> {
     AcquisitionPackage.setPackagePercentLoaded(0);
