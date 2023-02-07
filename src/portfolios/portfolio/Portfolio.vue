@@ -996,7 +996,6 @@ export default class PortfolioDashboard extends Vue {
     const popEndDate = parseISO(this.taskOrder.pop_end_date, {
       additionalDigits: 1,
     });
-    debugger;
 
     const end = new Date(popEndDate.setHours(0, 0, 0, 0));
     const todayDate = new Date();
@@ -1021,7 +1020,6 @@ export default class PortfolioDashboard extends Vue {
     const popStartDate = parseISO(this.taskOrder.pop_start_date, {
       additionalDigits: 1,
     });
-    debugger
     const start = new Date(popStartDate.setHours(0, 0, 0, 0));
     this.monthsIntoPoP = differenceInCalendarMonths(today, start);
     let endOfSpending = startOfMonth(today);
@@ -1031,7 +1029,6 @@ export default class PortfolioDashboard extends Vue {
       const dailySpend = this.fundsSpent / daysSinceStartDate;
       const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
       const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
-      debugger;
       const runOutISODate = formatISO(runOutOfFundsDate, {
         representation: "date",
       });
@@ -1105,7 +1102,6 @@ export default class PortfolioDashboard extends Vue {
       month = add(popStartDate, { months: i + 1 });
       periodDates.push(month);
 
-      debugger;
       periodDatesISO.push(formatISO(month, { representation: "date" }));
     }
 

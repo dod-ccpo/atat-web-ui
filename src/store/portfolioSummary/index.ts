@@ -114,7 +114,6 @@ export class PortfolioSummaryStore extends VuexModule {
     const currentUser = await CurrentUserStore.getCurrentUser();
     const userSysId = currentUser.sys_id;
     let query = "";
-    debugger;
     if (searchDTO.role === "ALL") {
       query = query +
         `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
@@ -142,7 +141,6 @@ export class PortfolioSummaryStore extends VuexModule {
         sysparm_query: searchQuery
       }
     };
-    debugger;
     const portfolioList = await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
     return portfolioList.length;
   }
@@ -199,7 +197,6 @@ export class PortfolioSummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    debugger;
     
     // CSPs are no longer stored at the portfolio level - they are per environment
 
@@ -410,7 +407,6 @@ export class PortfolioSummaryStore extends VuexModule {
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
       }
-      debugger;
 
       const portfolioSummaryCount = await this.getPortfolioSummaryCount(searchQuery);
       let portfolioSummaryList: PortfolioSummaryDTO[];

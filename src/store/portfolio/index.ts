@@ -133,7 +133,6 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true})
   public async startProvisioning(): Promise<void> {
-    debugger;
     const unclassifiedOperators: Record<string, string>[] = [];
     const scrtOperators: Record<string, string>[] = [] 
     this.portfolioProvisioningObj.admins?.forEach(admin => {
@@ -157,7 +156,6 @@ export class PortfolioDataStore extends VuexModule {
         }
       }
     }
-    debugger;
     
     // TODO: make API call POST to /provisioning with above provisioningPostObj
     // send as request parameters: 
@@ -347,7 +345,6 @@ export class PortfolioDataStore extends VuexModule {
 
   @Mutation
   public async doSetCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
-    debugger;
     const dataFromSummaryCard = {
       sysId: portfolioData.sysId,
       title: portfolioData.title,
@@ -369,7 +366,6 @@ export class PortfolioDataStore extends VuexModule {
   }
   @Mutation
   public doSetActiveTaskOrderNumber(taskOrderNum: string): void {
-    debugger;
     this.activeTaskOrderNumber = taskOrderNum;
   }
 
