@@ -161,6 +161,7 @@ export default class ReviewDocuments extends Vue {
 
   public packageId = "";
   private lastUpdatedString = ""
+  private ditcoUser = AcquisitionPackage.isDitcoUser
   private currentEnvServiceName = CURRENT_ENVIRONMENT_TABLE;
   private needsSignatureLength = 0
   get fairOpportunity():string {
@@ -168,9 +169,6 @@ export default class ReviewDocuments extends Vue {
   }
   get incrementallyFunded():string {
     return FinancialDetails.fundingRequirement?.incrementally_funded || "";
-  }
-  get ditcoUser():boolean {
-    return AcquisitionPackage.acquisitionPackage?.contracting_shop === "DITCO"
   }
   private async update(): Promise<void> {
     await this.$router.push(

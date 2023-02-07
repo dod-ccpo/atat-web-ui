@@ -99,6 +99,7 @@ export default class AppPackageBuilder extends Vue {
   private backButtonText = "Back";
   private continueButtonText = "Continue";
   private altBackDestination = "";
+  private isDitcoUser = AcquisitionPackage.isDitcoUser;
   private hideContinueButton = false;
 
   async mounted(): Promise<void> {
@@ -188,10 +189,6 @@ export default class AppPackageBuilder extends Vue {
     return AcquisitionPackage.projectTitle !== ""
       ? AcquisitionPackage.projectTitle
       : "New Acquisition";
-  }
-
-  public get isDitcoUser(): boolean {
-    return acquisitionPackage.contractingShop === "DITCO"
   }
 
   private setNavButtons(step: StepInfo): void {

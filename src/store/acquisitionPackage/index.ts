@@ -315,7 +315,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   validateNow = false;
   allowDeveloperNavigation = false;
-
+  isDitcoUser = AcquisitionPackage.acquisitionPackage?.contracting_shop === 'DITCO'
   contractingShop = "";
 
   fundingRequestType: string | null =  null;
