@@ -198,7 +198,8 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
     
-    // CSPs are no longer stored at the portfolio level - they are per environment
+    // TODO: AT-8744 - rewire CSPs to environments
+    // CSPs are no longer stored at the portfolio level - they are per environment   
 
     // const cspSysIds = portfolioSummaryList.map(portfolio => portfolio.csp.value);
     // const allCspList = await api.cloudServiceProviderTable.getQuery(
@@ -415,6 +416,7 @@ export class PortfolioSummaryStore extends VuexModule {
         // callouts to other functions to set data from other tables
         await this.setAlertsForPortfolios(portfolioSummaryList);
         
+        // TODO: AT-8744 - rewire CSPs to environments
         // CSP data is now stored at the environment level, not portfolio
         // await this.setCspDisplay(portfolioSummaryList);
 

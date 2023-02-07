@@ -412,7 +412,6 @@ export default class PortfoliosSummary extends Vue {
       storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
     }
     storeData.portfolioSummaryList.forEach((portfolio) => {
-      // portfolio = convertColumnReferencesToValues(portfolio);
       let cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
       

@@ -154,7 +154,7 @@ export class DashboardService {
       };
 
       const costs = await api.costsTable.all(costsRequestConfig);
-      // EJY TODO need to account for no costs
+      // TODO - account for no cost data in AT-8734
       return {
         taskOrder,
         clins,

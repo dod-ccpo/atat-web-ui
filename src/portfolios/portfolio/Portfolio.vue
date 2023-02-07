@@ -1465,7 +1465,7 @@ export default class PortfolioDashboard extends Vue {
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     const data = await this.getDashboardData();
-    // EJY NEED TO ACCOUNT FOR NO COSTS DATA AFTER THE ABOVE CALL
+    // TODO - account for no cost data in AT-8734
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
     this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
