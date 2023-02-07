@@ -26,10 +26,6 @@ export class EDAApi extends ApiBase{
         Customer Support</a> for assistance.`
     }    
     try {
-      // const response = await this.post({
-      //   delivery_order_number : taskOrderNumber
-      // });
-
       const requestConfig: AxiosRequestConfig = {
         params: {
           taskOrderNumber: taskOrderNumber
