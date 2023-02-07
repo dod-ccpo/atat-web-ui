@@ -44,9 +44,6 @@ import UploadMigrationDocuments
 import ReplicateAndOptimize
   from "@/steps/03-Background/CurrentEnvironment/ReplicateAndOptimize.vue";
 import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/ReplicateDetails.vue";
-import ArchitecturalDesign from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesign.vue";
-import ArchitecturalDesignDetails
-  from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesignDetails.vue";
 import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/EnvironmentSummary.vue";
 
 // Step 4 - Contract Details
@@ -63,11 +60,14 @@ import CrossDomain from "@/steps/04-ContractDetails/CrossDomain.vue";
 // Step 5 - Performance Requirements
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
 import DOWLandingPageDraft from "../steps/05-PerformanceRequirements/DOW/DOWLandingPageDraft.vue";
+import ArchitecturalDesign from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
+import ArchitecturalDesignDetails
+  from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDetails.vue";
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
-import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
 import ArchitectureDesignDOW
   from "../steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
+import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
 import ServiceOfferingDetails 
   from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue";
 import OtherOfferingSummary 
@@ -625,25 +625,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
       },
       // {
-      //   menuText: "Architectural Design",
-      //   path: "architectural-design",
-      //   excludeFromMenu: true,
-      //   name: routeNames.ArchitecturalDesign,
-      //   component: ArchitecturalDesign,
-      //   completePercentageWeight: 5,
-      //   completed: false,
-      // },
-      // {
-      //   menuText: "Architectural Design Details",
-      //   path: "architectural-design-details",
-      //   excludeFromMenu: true,
-      //   name: routeNames.ArchitecturalDesignDetails,
-      //   component: ArchitecturalDesignDetails,
-      //   completePercentageWeight: 5,
-      //   completed: false,
-      //   routeResolver: ArchitecturalDesignDetailsRouteResolver
-      // },
-      // {
       //   menuText: "Summary",
       //   path: "background-summary",
       //   excludeFromMenu: true,
@@ -673,24 +654,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false
       },
       {
-        menuText: "Architectural Design",
-        path: "architectural-design",
-        excludeFromMenu: true,
-        name: routeNames.ArchitecturalDesign,
-        component: ArchitecturalDesign,
-        completePercentageWeight: 5,
-        completed: false,
-      },
-      {
-        menuText: "Architectural Design Details",
-        path: "architectural-design-details",
-        excludeFromMenu: true,
-        name: routeNames.ArchitecturalDesignDetails,
-        component: ArchitecturalDesignDetails,
-        completePercentageWeight: 5,
-        completed: false,
-      },
-      {
         menuText: "Replicate And Optimize",
         path: "replicate-and-optimize",
         excludeFromMenu: true,
@@ -711,6 +674,25 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: ReplicateDetailsResolver,
       },
       {
+        menuText: "Architectural Design",
+        path: "architectural-design",
+        excludeFromMenu: true,
+        name: routeNames.ArchitecturalDesign,
+        component: ArchitecturalDesign,
+        completePercentageWeight: 5,
+        completed: false,
+      },
+      {
+        menuText: "Architectural Design Details",
+        path: "architectural-design-details",
+        excludeFromMenu: true,
+        name: routeNames.ArchitecturalDesignDetails,
+        component: ArchitecturalDesignDetails,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: PerformanceRequirementsPathResolver,
+      },
+      {
         menuText: "Requirement Categories",
         path: "/requirement-categories",
         excludeFromMenu: false,
@@ -720,7 +702,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
       },
-
       // {
       //   menuText: "Architectural Design Requirements DOW",
       //   excludeFromMenu: true,
@@ -732,82 +713,82 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       //   component: ArchitectureDesignDOW,
       // },
 
-      {
-        menuText: "Anticipated Users and Data Needs",
-        excludeFromMenu: true,
-        path: "anticipated-users-and-data-needs",
-        name: routeNames.AnticipatedUserAndDataNeeds,
-        completePercentageWeight: 5,
-        completed: false,
-        routeResolver: AnticipatedUserAndDataNeedsResolver,
-        component: AnticipatedUserAndDataNeeds,
-      },
-      {
-        menuText: "Service Offerings",
-        path: "service-offerings/:groupName",
-        excludeFromMenu: true,
-        name: routeNames.ServiceOfferings,
-        completePercentageWeight: 1,
-        component: ServiceOfferings,
-        routeResolver: ServiceOfferingsPathResolver,
-        additionalButtons: [
-          {
-            buttonText: "I don’t need these cloud resources",
-            buttonId: "DontNeedResources",
-            buttonClass: "secondary",
-            actionName: "confirmServiceDeletion",
-            emitText: "confirmDeleteService",
-          },
-        ],
-      },
-      {
-        menuText: "Service Offering Details",
-        path: "service-offering-details/:groupName/:serviceOffering",
-        excludeFromMenu: true,
-        name: routeNames.ServiceOfferingDetails,
-        completePercentageWeight: 1,
-        component: ServiceOfferingDetails,
-        routeResolver: OfferingDetailsPathResolver,
-      },
-      {
-        menuText: "Other Service Offering Summary",
-        path: "service-offerings/other/summary",
-        excludeFromMenu: true,
-        name: routeNames.OtherOfferingSummary,
-        completePercentageWeight: 1,
-        component: OtherOfferingSummary,
-        routeResolver: OtherOfferingSummaryPathResolver, 
-        additionalButtons: [
-          {
-            buttonText: "I don’t need compute resources",
-            buttonId: "DontNeedResources",
-            buttonClass: "secondary",
-            actionName: "confirmComputeDeletion",
-            emitText: "confirmDeleteCompute",
-          },
-        ],
-      },
-      {
-        menuText: "Security Requirements",
-        path: "dow-security-requirements",
-        excludeFromMenu: true,
-        name: routeNames.DOWSecurityRequirements,
-        completePercentageWeight: 1,
-        component: DOWSecurityRequirements,
-        routeResolver: DOWSecurityRequirementsPathResolver,
-      },
+      // {
+      //   menuText: "Anticipated Users and Data Needs",
+      //   excludeFromMenu: true,
+      //   path: "anticipated-users-and-data-needs",
+      //   name: routeNames.AnticipatedUserAndDataNeeds,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      //   routeResolver: AnticipatedUserAndDataNeedsResolver,
+      //   component: AnticipatedUserAndDataNeeds,
+      // },
+      // {
+      //   menuText: "Service Offerings",
+      //   path: "service-offerings/:groupName",
+      //   excludeFromMenu: true,
+      //   name: routeNames.ServiceOfferings,
+      //   completePercentageWeight: 1,
+      //   component: ServiceOfferings,
+      //   routeResolver: ServiceOfferingsPathResolver,
+      //   additionalButtons: [
+      //     {
+      //       buttonText: "I don’t need these cloud resources",
+      //       buttonId: "DontNeedResources",
+      //       buttonClass: "secondary",
+      //       actionName: "confirmServiceDeletion",
+      //       emitText: "confirmDeleteService",
+      //     },
+      //   ],
+      // },
+      // {
+      //   menuText: "Service Offering Details",
+      //   path: "service-offering-details/:groupName/:serviceOffering",
+      //   excludeFromMenu: true,
+      //   name: routeNames.ServiceOfferingDetails,
+      //   completePercentageWeight: 1,
+      //   component: ServiceOfferingDetails,
+      //   routeResolver: OfferingDetailsPathResolver,
+      // },
+      // {
+      //   menuText: "Other Service Offering Summary",
+      //   path: "service-offerings/other/summary",
+      //   excludeFromMenu: true,
+      //   name: routeNames.OtherOfferingSummary,
+      //   completePercentageWeight: 1,
+      //   component: OtherOfferingSummary,
+      //   routeResolver: OtherOfferingSummaryPathResolver,
+      //   additionalButtons: [
+      //     {
+      //       buttonText: "I don’t need compute resources",
+      //       buttonId: "DontNeedResources",
+      //       buttonClass: "secondary",
+      //       actionName: "confirmComputeDeletion",
+      //       emitText: "confirmDeleteCompute",
+      //     },
+      //   ],
+      // },
+      // {
+      //   menuText: "Security Requirements",
+      //   path: "dow-security-requirements",
+      //   excludeFromMenu: true,
+      //   name: routeNames.DOWSecurityRequirements,
+      //   completePercentageWeight: 1,
+      //   component: DOWSecurityRequirements,
+      //   routeResolver: DOWSecurityRequirementsPathResolver,
+      // },
 
-      {
-        menuText: "DOW Summary",
-        path: "dow-summary",
-        excludeFromMenu: true,
-        name: routeNames.DOWSummary,
-        completePercentageWeight: 1,
-        component: DOWSummary,
-        routeResolver: DowSummaryPathResolver,
-        backButtonText: "Back",
-        continueButtonText: 'Wrap up this section',
-      },
+      // {
+      //   menuText: "DOW Summary",
+      //   path: "dow-summary",
+      //   excludeFromMenu: true,
+      //   name: routeNames.DOWSummary,
+      //   completePercentageWeight: 1,
+      //   component: DOWSummary,
+      //   routeResolver: DowSummaryPathResolver,
+      //   backButtonText: "Back",
+      //   continueButtonText: 'Wrap up this section',
+      // },
     ],
   },
   {

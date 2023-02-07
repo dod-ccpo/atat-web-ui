@@ -47,7 +47,6 @@ import { routeNames } from "../../../router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
-import { routeNames } from "../../../router/stepper";
 
 @Component({
   components: {

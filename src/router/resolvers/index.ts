@@ -143,8 +143,6 @@ export const ReplicateDetailsResolver = (current: string): string => {
     : routeNames.ReplicateAndOptimize;
 }
 
-
-
 export const CurrentEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
     = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
@@ -220,6 +218,8 @@ export const A11yRequirementResolver = (current: string): string => {
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings;
 
 const basePerformanceRequirementsPath =  "performance-requirements";
+const currentArchitecturalDesignDetailsPath =
+  basePerformanceRequirementsPath + "/architectural-design-details";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 const DOWSecurityRequitementsPath = "performance-requirements/dow-security-requirements";
 const otherServiceOfferingSummaryPath = "performance-requirements/service-offerings/other/summary";
@@ -245,7 +245,14 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 /****************************************************************************/
 
 export const RequirementsPathResolver = (current: string, direction: string): string => {
+  const hasCurEnvArchDesignNeeds = CurrentEnvironment.CurrentEnvironmentHasArchitecturalDesignNeeds;
   if (current === routeNames.ArchitecturalDesignDetails){
+    return basePerformanceRequirementsPath;
+  }
+  if (current === routeNames.ArchitecturalDesign && hasCurEnvArchDesignNeeds) {
+    return currentArchitecturalDesignDetailsPath;
+  }
+  if (current === routeNames.ArchitecturalDesign && !hasCurEnvArchDesignNeeds) {
     return basePerformanceRequirementsPath;
   }
   
