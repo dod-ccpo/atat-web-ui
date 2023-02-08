@@ -2,7 +2,11 @@
 import { Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import { OtherServiceOfferingData, SingleMultiple, TrainingEstimate } from "../../../types/Global";
+import { 
+  CrossDomainSolution, 
+  OtherServiceOfferingData, 
+  SingleMultiple, 
+  TrainingEstimate } from "../../../types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import DescriptionOfWork, { stringifyPeriodsForIGCECostEstimates } from "@/store/descriptionOfWork";
@@ -666,73 +670,23 @@ export class IGCEStore extends VuexModule {
   }
 
   /**
-   * This is expected to be called whenever a record gets created in the Cross Domain Solution
-   * table and if the "cross_domain_solution_required" is "YES"
-   *
-   * Since the user can toggle between "YES" and "NO", to avoid several other edge cases, it's
-   * best to the check if a CDS record exists, before creating.
+   * Creates a new listing for CDS in the IGCE domain table
    */
   @Action({ rawError: true })
-  public async syncUpIgceEstimateCDS(cdsRef: {
-    cdsSysId: string,
-    crossDomainPairTypeList: string[],
-    description: string
-  }):
-    Promise<void> {
-    const igceEstimateList = await api.igceEstimateTable.getQuery({
-      params: {
-        sysparm_query: "^cross_domain_solution" + cdsRef.cdsSysId
-      }
-    });
-    const createList = cdsRef.crossDomainPairTypeList
-      .filter(cdPairType => (igceEstimateList
-        .map(igceEstimate => igceEstimate.cross_domain_pair).indexOf(cdPairType) === -1));
-    const deleteList = igceEstimateList.filter(igceEstimate =>
-      (cdsRef.crossDomainPairTypeList.indexOf(igceEstimate.cross_domain_pair as string) === -1))
-    // updates to igce estimate record is irrelevant in the context of DOW updates
-    const apiCallList: Promise<IgceEstimateDTO | void>[] = [];
-    createList.forEach(markedForCreate => {
-      apiCallList.push(this.createIgceEstimateRecord({
-        ...defaultIgceEstimate(),
-        cross_domain_solution: cdsRef.cdsSysId,
-        cross_domain_pair: markedForCreate,
-        title: "Cross Domain Solution (CDS)",
-        description: cdsRef.description
-      }));
-    })
-    deleteList.forEach(markedForDelete => {
-      apiCallList.push(this.deleteIgceEstimateCDS(markedForDelete.sys_id as string));
-    })
-    await Promise.all(apiCallList);
-  }
-
-  // retrieve cds row from IGCEEstimates table
-  public async getIgceEstimateCDS(
-    cdsRef: {
-      cdsSysId: string,
-    }
-  ):Promise<IgceEstimateDTO[]> {
-    return await api.igceEstimateTable.getQuery({
-      params: {
-        sysparm_query: "^cross_domain_solution" + cdsRef.cdsSysId
-      }
-    });
-  }
-
   public async createIgceEstimateCDS(
     cdsRef: {
       cdsSysId: string,
-      crossDomainPairTypeList: string[],
+      crossDomainPairTypeList: CrossDomainSolution["solutionType"],
       description: string
     }
   ):Promise<void> {
-    const igceEstimateList = this.getIgceEstimateCDS({ 
-      cdsSysId: cdsRef.cdsSysId 
+    await this.createIgceEstimateRecord({
+      ...defaultIgceEstimate(),
+      cross_domain_solution: cdsRef.cdsSysId,
+      cross_domain_pair: JSON.stringify(cdsRef.crossDomainPairTypeList),
+      title: "Cross Domain Solution (CDS)",
+      description: cdsRef.description
     })
-
-    const createList = cdsRef.crossDomainPairTypeList
-      .filter(cdPairType => (igceEstimateList
-        .map(igceEstimate => igceEstimate.cross_domain_pair).indexOf(cdPairType) === -1));
   }
 
 

@@ -335,33 +335,56 @@ export class ClassificationRequirementsStore extends VuexModule {
   @Action({rawError: true})
   public async saveCdsSolution(value: CrossDomainSolutionDTO): Promise<string>{
     let objSysId = "";
-
-    if(value.sys_id){
-      await api.crossDomainSolutionTable.update(
-        value.sys_id,
-        value
-      );
-      objSysId = value.sys_id;
-    } else {
-      const savedObject = await api.crossDomainSolutionTable.create(
-        value
-      );
+    const isRequestingCDS = value.cross_domain_solution_required === "YES";
+    const doesCDSExist = value.sys_id !== "";
+    if (isRequestingCDS && doesCDSExist){ 
+      // update, if CDS exists
+      await api.crossDomainSolutionTable.update( value.sys_id || "", value );
+      objSysId = value.sys_id || "";
+    } else if (isRequestingCDS) { 
+      //create, if CDS doesn't exist
+      const savedObject = await api.crossDomainSolutionTable.create(value);
       objSysId = savedObject.sys_id as string;
+    } else if (!isRequestingCDS){ 
+      // delete, if not isRequesting CDS
+      await api.crossDomainSolutionTable.remove(value.sys_id || "");
     }
+    
+    this.syncCDStoIGCEEstimate(
+      value, 
+      objSysId, 
+      doesCDSExist
+    );
+    
     // need to sync up IGCE estimate records based on user selections on the CDS screen.
-    if (value.cross_domain_solution_required === "YES") {
-      const domainPairTypeList =
-        JSON.parse(value.traffic_per_domain_pair) as CrossDomainSolution["solutionType"];
-      await IGCEStore.syncUpIgceEstimateCDS({
-        cdsSysId: objSysId,
-        crossDomainPairTypeList: domainPairTypeList.map(domainPairType => domainPairType.type),
-        description: value.anticipated_need_or_usage,
-      })
-    } else {
+    
+   
+
+    return objSysId;
+  }
+
+  @Action({rawError: true})
+  public async syncCDStoIGCEEstimate(
+    value: CrossDomainSolutionDTO,
+    objSysId: string,
+    doesCDSExist: boolean,
+  ): Promise<void>{
+
+    //delete the existing record
+    if (doesCDSExist){
       await IGCEStore.deleteIgceEstimateCDS(objSysId)
     }
 
-    return objSysId;
+    // if CDS is selected, add record
+    if (value.cross_domain_solution_required === "YES") {
+      const domainPairTypeList =
+         JSON.parse(value.traffic_per_domain_pair) as CrossDomainSolution["solutionType"];
+      await IGCEStore.createIgceEstimateCDS({
+        cdsSysId: objSysId,
+        crossDomainPairTypeList: domainPairTypeList,
+        description: value.anticipated_need_or_usage,
+      })
+    }
   }
 
   @Action({rawError: true})
