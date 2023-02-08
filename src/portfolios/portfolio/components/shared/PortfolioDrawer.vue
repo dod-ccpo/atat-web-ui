@@ -66,21 +66,39 @@
             ({{ getPortfolioMembersCount() }})
           </div>
         </div>
-        <v-btn
-          id="AddPortfolioMember"
-          class="_icon-only"
-          @click="openMembersModal"
-          @keydown.enter="openMembersModal"
-          @keydown.space="openMembersModal"
-        >
-          <ATATSVGIcon
-            @click="openMembersModal"
-            name="PersonAddAlt"
-            color="base"
-            :width="22"
-            :height="16"
-          />
-        </v-btn>
+        <v-tooltip left nudge-right="20">
+          <template v-slot:activator="{ on, attrs }">
+            <span
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-btn
+              id="AddPortfolioMember"
+              class="_icon-only"
+              disabled
+              @click="openMembersModal"
+              @keydown.enter="openMembersModal"
+              @keydown.space="openMembersModal"
+            >
+              <ATATSVGIcon
+                @click="openMembersModal"
+                name="PersonAddAlt"
+                color="base"
+                :width="22"
+                :height="16"
+              />
+            </v-btn>
+          </span>
+        </template>
+        <div class="_tooltip-content-wrap _left" style="width: 255px">
+          <span class="font-weight-bold d-block mb-1">
+            Coming Soon!
+          </span>
+          You will be able to invite others to access this portfolio witin ATAT.
+        </div>
+
+
+        </v-tooltip>
       </div>
       <div
         id="PortfolioMembersList"
@@ -106,7 +124,7 @@
             </template>
             <div class="_tooltip-content-wrap _left" style="width: 250px;">
               <div>
-                You are the last manager of this portfolio. There must be at least
+                You are the only manager of this portfolio. There must be at least
                 one other manager for you to leave this portfolio or change roles.
               </div>
             </div>
