@@ -79,6 +79,7 @@ async function openTOSearchModal() {
 }
 
 async function startProvisioning() {
+  await PortfolioStore.startProvisioning();
   await AppSections.setAppContentComponent(PortfolioSummary);
 }
 

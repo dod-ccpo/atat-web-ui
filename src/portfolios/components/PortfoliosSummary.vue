@@ -139,7 +139,7 @@ import { createDateStr, toCurrencyString } from "@/helpers";
 import { differenceInDays, formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
 import _ from "lodash";
-import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
@@ -374,15 +374,17 @@ export default class PortfoliosSummary extends Vue {
     limit: this.recordsPerPage,
     offset: this.offset,
   }
-  
-  // TEMP hard-coded logged-in user Maria Missionowner
-  public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
+   
+  public currentUserSysId = "";
 
   public async loadPortfolioData(): Promise<void> {
+    const currentUser = await CurrentUserStore.getCurrentUser();
+    this.currentUserSysId = currentUser.sys_id as string;
     
     this.isLoading = true;
     this.portfolioCardData = [];
 
+    // TODO - properly wire CSP in task AT-8744 
     // below used to map stub CSPs to actual CSPs until have actual CSP data
     const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
     const csps = ["aws", "azure", "google", "oracle", "oracle"];
@@ -401,6 +403,7 @@ export default class PortfoliosSummary extends Vue {
     this.portfolioSearchDTO.offset = this.offset;
 
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
+
     this.portfolioCount = storeData.total_count;
     this.$emit("totalCount", storeData.total_count);
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
@@ -411,16 +414,27 @@ export default class PortfoliosSummary extends Vue {
     storeData.portfolioSummaryList.forEach((portfolio) => {
       let cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
-      cardData.csp = csps[cspStubs.indexOf(portfolio.csp_display)];
+      
+      // TODO - properly wire CSP in task AT-8744 
+      cardData.csp = "aws"; // csps[cspStubs.indexOf(portfolio.csp_display)];
+
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
       cardData.status = portfolio.portfolio_status;
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.agency = portfolio.dod_component;
 
+      const activeTaskOrderSysId = portfolio.active_task_order.value as string;
+      const activeTaskOrder = portfolio.task_orders.find(
+        obj => obj.sys_id === activeTaskOrderSysId
+      );
+
+      cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
+
       // lastModified - if status is "Processing" use "Started ... ago" string
       if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
         const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
+
         cardData.lastModifiedStr = "Started " + agoString + " ago";
       } else {
         const updatedDate = createDateStr(portfolio.sys_updated_on, true);

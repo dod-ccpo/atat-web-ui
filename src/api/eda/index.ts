@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { AxiosRequestConfig } from "axios";
 import { ApiBase } from "../apiBase";
 import { EDAResponse } from "../models"
 
@@ -25,9 +26,15 @@ export class EDAApi extends ApiBase{
         Customer Support</a> for assistance.`
     }    
     try {
-      const response = await this.post({
-        delivery_order_number : taskOrderNumber
-      });
+      const requestConfig: AxiosRequestConfig = {
+        params: {
+          taskOrderNumber: taskOrderNumber
+        }
+      };      
+      const response = await this.instance.get(this.endPoint,
+        requestConfig
+      );
+
       let edaResponse: EDAResponse = {};
       if (response.status === 200) {
         const { result } = response.data;

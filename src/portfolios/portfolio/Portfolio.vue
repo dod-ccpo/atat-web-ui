@@ -996,6 +996,7 @@ export default class PortfolioDashboard extends Vue {
     const popEndDate = parseISO(this.taskOrder.pop_end_date, {
       additionalDigits: 1,
     });
+
     const end = new Date(popEndDate.setHours(0, 0, 0, 0));
     const todayDate = new Date();
     const today = new Date(todayDate.setHours(0, 0, 0, 0));
@@ -1011,12 +1012,8 @@ export default class PortfolioDashboard extends Vue {
     const singular = unitsRemaining === 1;
 
     let timeUnit = useMonths
-      ? singular
-        ? "month"
-        : "months"
-      : singular
-        ? "day"
-        : "days";
+      ? singular ? "month" : "months"
+      : singular ? "day" : "days";
     this.timeToExpiration = unitsRemaining + " " + timeUnit;
 
     // calculate when will run out of funds based on current rate of spending
@@ -1028,13 +1025,15 @@ export default class PortfolioDashboard extends Vue {
     let endOfSpending = startOfMonth(today);
     endOfSpending = subDays(endOfSpending, 1);
     const daysSinceStartDate = differenceInCalendarDays(endOfSpending, start);
-    const dailySpend = this.fundsSpent / daysSinceStartDate;
-    const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
-    const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
-    const runOutISODate = formatISO(runOutOfFundsDate, {
-      representation: "date",
-    });
-    this.runOutOfFundsDate = createDateStr(runOutISODate, true);
+    if (daysSinceStartDate > -1) {
+      const dailySpend = this.fundsSpent / daysSinceStartDate;
+      const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
+      const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
+      const runOutISODate = formatISO(runOutOfFundsDate, {
+        representation: "date",
+      });
+      this.runOutOfFundsDate = createDateStr(runOutISODate, true);
+    }
   }
 
   public donutChartPercentages: number[] = [];
@@ -1102,6 +1101,7 @@ export default class PortfolioDashboard extends Vue {
     for (let i = 0; i < monthsToAdd; i++) {
       month = add(popStartDate, { months: i + 1 });
       periodDates.push(month);
+
       periodDatesISO.push(formatISO(month, { representation: "date" }));
     }
 
@@ -1465,6 +1465,7 @@ export default class PortfolioDashboard extends Vue {
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     const data = await this.getDashboardData();
+    // TODO - account for no cost data in AT-8734
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
     this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
