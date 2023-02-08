@@ -315,7 +315,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   validateNow = false;
   allowDeveloperNavigation = false;
-  isDitcoUser = AcquisitionPackage.acquisitionPackage?.contracting_shop === 'DITCO'
   contractingShop = "";
 
   fundingRequestType: string | null =  null;
@@ -328,6 +327,9 @@ export class AcquisitionPackageStore extends VuexModule {
 
   public get getValidateNow(): boolean {
     return this.validateNow;
+  }
+  public get isDitcoUser():boolean {
+    return AcquisitionPackage.acquisitionPackage?.contracting_shop === 'DITCO'
   }
 
   public cancelLoadDest = "Home";
