@@ -637,6 +637,8 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];
+  title?: string;
+  description?: string;
 }
 
 export interface PortfolioSummaryMetadataAndDataDTO {

@@ -13,9 +13,10 @@ import {
 } from "../../../types/Global"
 
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
-import { AlertDTO } from "@/api/models";
+import {AlertDTO, PortfolioSummaryDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
+import {api} from "@/api";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -162,6 +163,26 @@ export class PortfolioDataStore extends VuexModule {
     //   taskOrderNumber -- this.portfolioProvisioningObj.taskOrderNumber
     //   acquisitionPackageSysId  -- this.selectedAcquisitionPackageSysId
 
+  }
+
+  /**
+   * Updates just the "title" (name) property of the portfolio record
+   */
+  @Action({rawError: true})
+  public async updatePortfolioTitle(title: string | undefined): Promise<void> {
+    await api.portfolioTable.update(this.currentPortfolio.sysId as string,
+      {name: title} as unknown as PortfolioSummaryDTO
+    )
+  }
+
+  /**
+   * Updates just the description property of the portfolio record
+   */
+  @Action({rawError: true})
+  public async updatePortfolioDescription(description: string | undefined): Promise<void> {
+    await api.portfolioTable.update(this.currentPortfolio.sysId as string,
+      {description: description} as unknown as PortfolioSummaryDTO
+    )
   }
 
   public openTOSearchPortfolio = false;
@@ -348,6 +369,7 @@ export class PortfolioDataStore extends VuexModule {
     const dataFromSummaryCard = {
       sysId: portfolioData.sysId,
       title: portfolioData.title,
+      description: portfolioData.description,
       status: portfolioData.status,
       csp: portfolioData.csp,
       agency: portfolioData.agency,

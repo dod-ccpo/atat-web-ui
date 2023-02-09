@@ -198,7 +198,7 @@ import {
 import { format, parseISO } from "date-fns";
 import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
-import { getStatusChipBgColor } from "@/helpers";
+import {getStatusChipBgColor, hasChanges} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 
 @Component({
@@ -214,6 +214,7 @@ import { Statuses } from "@/store/acquisitionPackage";
 
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio = {};
+  public portfolioDescription: string | undefined = "";
   public portfolioStatus: string = Statuses.Active.label;
   public provisionedTime = "";
   public updateTime = "";
@@ -259,7 +260,9 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public saveDescription(): void {
-    PortfolioStore.setPortfolioData(this.portfolio);
+    if(hasChanges(this.portfolioDescription, this.portfolio.description)) {
+      PortfolioStore.updatePortfolioDescription(this.portfolio.description);
+    }
   }
 
   public formatDate(date: string): string {
@@ -274,6 +277,7 @@ export default class PortfolioDrawer extends Vue {
     const storeData = _.cloneDeep(await PortfolioStore.getPortfolioData());
     if (storeData) {
       this.portfolio = _.cloneDeep(storeData);
+      this.portfolioDescription = this.portfolio.description;
       if (storeData.provisioned && storeData.updated && storeData.csp) {
         this.provisionedTime = this.formatDate(storeData.provisioned);
         this.updateTime = this.formatDate(storeData.updated);
