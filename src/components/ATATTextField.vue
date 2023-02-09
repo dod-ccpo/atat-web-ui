@@ -180,7 +180,7 @@ export default class ATATTextField extends Vue  {
     if (this.validateOnBlur) {
       this.setErrorMessage();
       if (this.isCurrency) {
-        this._value = toCurrencyString(currencyStringToNumber(input.value));
+        this._value = toCurrencyString(currencyStringToNumber(input.value) || 0);
       }   
     } else {
       this.resetValidation();

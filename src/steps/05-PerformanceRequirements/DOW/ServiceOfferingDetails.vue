@@ -374,7 +374,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       await this.buildNewClassificationInstances();
     } else {
       await this.setSavedInstanceLabels();
-      this.savedData = [...this.classificationInstances];
+      const tempClassInstances = _.cloneDeep(this.classificationInstances)
+      this.savedData = [...tempClassInstances];
       this.classificationInstances.forEach((instance) => {
         if (instance.classificationLevelSysId) {
           if (typeof instance.classificationLevelSysId === "object") {

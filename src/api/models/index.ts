@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Tracing } from "trace_events";
 import { 
   EnvironmentInstanceLocation,
   EnvironmentInstanceUsage,
@@ -82,6 +83,7 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   impact_level: string;
   classification: string;
   classification_level?: ReferenceColumn | string;
+  display?: string;
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
@@ -138,7 +140,10 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
 }
 
 export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   instance_location: EnvironmentInstanceLocation;
+  instance_number: number,
+  instance_name: string,
   deployed_regions?: string[];
   classification_level: string; // classification level sys_id
   current_usage_description: EnvironmentInstanceUsage;
@@ -728,6 +733,7 @@ export interface TrainingEstimateDTO extends BaseTableDTO{
   training_estimated_values?: string;
   training_option: string; //SINGLE or MULTIPLE
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
+  cloud_support_environment_instance: ReferenceColumn | string;
 }
 
 export interface EstimateOptionValueDTO {
@@ -784,6 +790,8 @@ export interface RequirementsCostEstimateFlat extends BaseTableDTO{
   how_est_dev_cost_estimate_description: string;
   how_est_dev_prev_cost_estimate_comp_option: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
   how_est_dev_prev_cost_estimate_comp_percentage: number | null;
+  how_est_dev_contracting_office_other_charges_fee: YesNo,
+  how_est_dev_contracting_office_other_fee_percentage: number | null;
   travel_option?: SingleMultiple;
   travel_estimated_values: string;// csv
   training: string // json of TrainingEstimateDTO
@@ -820,18 +828,21 @@ export interface RequirementsCostEstimateFlat extends BaseTableDTO{
 }
 
 export interface IgceEstimateDTO extends BaseTableDTO {
-  acquisition_package: ReferenceColumn | string;
-  classification_level: ReferenceColumn | string;
-  classification_instance: ReferenceColumn | string;
-  environment_instance: ReferenceColumn | string;
-  cross_domain_solution: ReferenceColumn | string;
-  contract_type: "" | "FFP" | "T&M" | "TBD";
-  title: string;
-  description: string;
-  unit: string;
-  unit_price: number | null;
-  unit_quantity: string;
+  acquisition_package?: ReferenceColumn | string;
+  classification_level?: ReferenceColumn | string;
+  classification_instance?: ReferenceColumn | string;
+  environment_instance?: ReferenceColumn | string;
+  cross_domain_solution?: ReferenceColumn | string;
+  cross_domain_pair?: string; // "U_TO_S", "S_TO_U". Only these are stored in CDS table not sys_ids
+  contract_type?: "" | "FFP" | "T&M" | "TBD";
+  title?: string;
+  description?: string;
+  unit?: string;
+  unit_price?: number | null;
+  unit_quantity?: string;
   dow_task_number?: string;
+  classification_display?: string;
+  idiq_clin_type?: string
 }
 
 export interface RegionsDTO extends BaseTableDTO {

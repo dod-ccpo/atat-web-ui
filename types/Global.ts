@@ -15,6 +15,7 @@ import {
   ContactDTO,
   BaseTableDTO,
   ClinDTO,
+  ReferenceColumn,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -683,4 +684,5 @@ export interface TrainingEstimate {
   estimate: EstimateOptionValueObjectArray;
   estimatedTrainingPrice: string;
   trainingOption: SingleMultiple;
+  cloudSupportEnvironmentInstance: ReferenceColumn | string;
 }

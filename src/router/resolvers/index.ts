@@ -14,6 +14,7 @@ import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -58,7 +59,11 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
 };
 
 export const UploadJAMRRDocumentsRouteResolver = (current: string): string => {
-  return !evalPlanRequired() 
+  const isDitco = AcquisitionPackage.contractingShop === 'DITCO'
+  if(current === routeNames.ReadyToGeneratePackage && (evalPlanRequired()|| isDitco)){
+    return routeNames.FinancialPOCForm
+  }
+  return !evalPlanRequired()
     ? routeNames.UploadJAMRRDocuments 
     : routeNames.ReadyToGeneratePackage;
 };
@@ -1274,7 +1279,6 @@ export const FinancialPOCResolver =  (current: string): string => {
       current === routeNames.UploadJAMRRDocuments && isIncrementallyFunded === "NO") {
     return routeNames.SeverabilityAndIncrementalFunding;
   }
-
   return current === routeNames.FinancialPOCForm
     ? routeNames.UploadJAMRRDocuments
     : routeNames.FinancialPOCForm

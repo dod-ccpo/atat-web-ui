@@ -61,6 +61,7 @@ import { Component, Prop, PropSync, Watch} from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import { currencyStringToNumber, toCurrencyString } from "@/helpers";
+import { IgceEstimateDTO } from "@/api/models";
 
 @Component({
   components:{
@@ -69,7 +70,7 @@ import { currencyStringToNumber, toCurrencyString } from "@/helpers";
   }
 })
 export default class CardRequirement extends Vue {
-  @PropSync("cardData") private _cardData!: Record<string, string>;
+  @PropSync("cardData") private _cardData!: IgceEstimateDTO;
   @Prop() private index!: number;
 
   public title = ""
@@ -82,32 +83,32 @@ export default class CardRequirement extends Vue {
   public saveTitle(): void {
     if(this.title !== ""){
       // eslint-disable-next-line camelcase
-      this._cardData.IGCE_title = this.title;
+      this._cardData.title = this.title;
     }else{
-      this.title = this._cardData.IGCE_title;
+      this.title = this._cardData.title;
     }
   }
   public saveDescription(): void {
     if(this.description !== ""){
       // eslint-disable-next-line camelcase
-      this._cardData.IGCE_description = this.description;
+      this._cardData.description = this.description;
     }else{
-      this.description = this._cardData.IGCE_description;
+      this.description = this._cardData.description;
     }
   }
 
   public checkMonthlyValue(): void {
     // eslint-disable-next-line camelcase
-    this._cardData.monthly_price = this.estimate;
+    this._cardData.unit_price = parseFloat(this.estimate)|| 0;
     this.noMonthlyValue = this.moneyNumber < 1;
   }
   public async loadOnEnter(): Promise<void> {
     
     Vue.nextTick(() => {
-      this.title = this._cardData.IGCE_title
-      this.description = this._cardData.IGCE_description;
+      this.title = this._cardData.title
+      this.description = this._cardData.description;
       this.type = "/" + this._cardData.unit.toLowerCase();
-      this.moneyNumber = currencyStringToNumber(this._cardData.monthly_price);
+      this.moneyNumber = this._cardData.unit_price || 0;
       this.estimate = this.moneyNumber >0 
         ? toCurrencyString(this.moneyNumber, true) 
         : "";
@@ -118,7 +119,7 @@ export default class CardRequirement extends Vue {
   protected monthlyPriceChange(newVal: string): void {
     this.moneyNumber = currencyStringToNumber(newVal);
     // eslint-disable-next-line camelcase
-    this._cardData.monthly_price = newVal;
+    this._cardData.unit_price = this.moneyNumber;
   }
 
   public async mounted(): Promise<void> {
