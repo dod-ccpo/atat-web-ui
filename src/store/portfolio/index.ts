@@ -158,12 +158,10 @@ export class PortfolioDataStore extends VuexModule {
         }
       }
     }
-    
-    // TODO: AT-8743 - make API call POST to /provisioning with above provisioningPostObj
-    // send as request parameters: 
-    //   taskOrderNumber -- this.portfolioProvisioningObj.taskOrderNumber
-    //   acquisitionPackageSysId  -- this.selectedAcquisitionPackageSysId
-
+    await api.edaApi.provisionPortfolio(
+      provisioningPostObj,
+      this.portfolioProvisioningObj.taskOrderNumber as string,
+      this.selectedAcquisitionPackageSysId)
   }
 
   /**

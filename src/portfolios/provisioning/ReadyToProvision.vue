@@ -107,8 +107,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import {Component, Mixins, Watch} from "vue-property-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -116,6 +115,8 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import PortfolioStore from "@/store/portfolio";
 import { ClassificationLevels, PortfolioProvisioning } from "../../../types/Global";
 import _ from "lodash";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -123,7 +124,7 @@ import _ from "lodash";
     ATATSVGIcon,
   },
 })
-export default class ReadyToProvision extends Vue {
+export default class ReadyToProvision extends Mixins(SaveOnLeave) {
   public provisioningData: PortfolioProvisioning = {};
   public cspLogoName = "";
   public scrtStr = ClassificationLevels.SCRT;
@@ -173,6 +174,20 @@ export default class ReadyToProvision extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+  }
+
+  /**
+   * By this step, all the data for provisioning of a portfolio had been collected from the user.
+   * This function simply makes a call to the store to start the provisioning process.
+   */
+  public async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setDisableContinue(false);
+    try {
+      await PortfolioStore.startProvisioning();
+    } catch (error) {
+      console.error(error)
+    }
+    return true;
   }
 }
 </script>
