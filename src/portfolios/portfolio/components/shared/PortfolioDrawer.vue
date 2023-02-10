@@ -1,6 +1,6 @@
 <template>
   <div class="_portfolio-drawer">
-    <div id="AboutPortfolioSection" class="_portfolio-panel _panel-padding">
+    <div id="AboutPortfolioSection" class="_portfolio-panel _panel-padding pb-8">
       <h3 id="AboutSectionHeader" class="mb-4">About Portfolio</h3>
       <div>
         <v-textarea
@@ -22,17 +22,17 @@
             {{ portfolioStatus }}
           </v-chip>
         </div>
-        <div class="d-flex justify-space-between pb-4">
+        <div class="d-flex align-center justify-space-between pb-4">
           <span id="CSPLabel">Cloud Service Provider</span>
           <div id="CSP" class="d-flex align-center">
             <ATATSVGIcon
-              :name="csp.toLowerCase()"
-              width="20"
-              height="16"
-              class="mr-1"
+              :name="cspData[cspKey].svgName"
+              :width="cspData[cspKey].width"
+              :height="cspData[cspKey].height"
+              class="d-flex align-center mr-2"
             />
             <div>
-              {{ portfolio.csp }}
+              {{ cspData[cspKey].displayName }}
             </div>
           </div>
         </div>
@@ -44,6 +44,8 @@
         </div>
         <div class="d-flex justify-space-between align-center">
           <span id="CreatedByLabel">Created by</span>
+          <!-- TODO: AT-8747 - get actual created_by user -->
+          <!-- code below simply puts first member in portfolio members array as creator -->
           <MemberCard id="CreatedBy" :index="0" />
         </div>
       </div>
@@ -51,7 +53,7 @@
 
     <hr class="my-0" />
 
-    <div id="PortfolioMembersSection" class="_portfolio-panel _panel-padding">
+    <div id="PortfolioMembersSection" class="_portfolio-panel _panel-padding pb-8">
       <div
         id="PortfolioMembersHeader"
         class="d-flex flex-columm justify-space-between"
@@ -66,21 +68,38 @@
             ({{ getPortfolioMembersCount() }})
           </div>
         </div>
-        <v-btn
-          id="AddPortfolioMember"
-          class="_icon-only"
-          @click="openMembersModal"
-          @keydown.enter="openMembersModal"
-          @keydown.space="openMembersModal"
-        >
-          <ATATSVGIcon
-            @click="openMembersModal"
-            name="PersonAddAlt"
-            color="base"
-            :width="22"
-            :height="16"
-          />
-        </v-btn>
+        <v-tooltip left nudge-right="20">
+          <template v-slot:activator="{ on, attrs }">
+            <span
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-btn
+                id="AddPortfolioMember"
+                class="_icon-only"
+                disabled
+                @click="openMembersModal"
+                @keydown.enter="openMembersModal"
+                @keydown.space="openMembersModal"
+              >
+                <ATATSVGIcon
+                  @click="openMembersModal"
+                  name="PersonAddAlt"
+                  color="base"
+                  :width="22"
+                  :height="16"
+                />
+              </v-btn>
+            </span>
+          </template>
+        <div class="_tooltip-content-wrap _left" style="width: 255px">
+          <span class="font-weight-bold d-block mb-1">
+            Coming Soon!
+          </span>
+          You will be able to invite others to access this portfolio witin ATAT.
+        </div>
+        </v-tooltip>
+
       </div>
       <div
         id="PortfolioMembersList"
@@ -106,7 +125,7 @@
             </template>
             <div class="_tooltip-content-wrap _left" style="width: 250px;">
               <div>
-                You are the last manager of this portfolio. There must be at least
+                You are the only manager of this portfolio. There must be at least
                 one other manager for you to leave this portfolio or change roles.
               </div>
             </div>
@@ -133,6 +152,10 @@
     <hr class="my-0" />
 
     <div id="DatesSection" class="_portfolio-panel _portfolio-panel _panel-padding">
+      <!-- 
+        
+        TODO: refactor with environments after AT-8744 complete
+      
       <div>
         <span id="ProvisionedOnLabel">Provisioned on&nbsp;</span>
         <span id="ProvisionedOnDate">{{ provisionedTime }}</span>
@@ -141,7 +164,9 @@
         <span id="LastUpdatedLabel">Last updated&nbsp;</span>
         <span id="LastUpdatedDate">{{ updateTime }}</span>
       </div>
+      -->
     </div>
+
     <AddMembersModal 
       :showModal.sync="showMembersModal" 
       @members-invited="membersInvited"
@@ -200,6 +225,7 @@ import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import { getStatusChipBgColor } from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
+import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
@@ -223,6 +249,17 @@ export default class PortfolioDrawer extends Vue {
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
+
+  public get cspKey(): string {
+    return this.csp ? this.csp.toLowerCase() : "aws";
+  }
+
+  public cspData = {
+    aws: { displayName: "AWS", svgName: "aws", height: "18", width: "30" },
+    azure: { displayName: "Azure", svgName: "azure", height: "23", width: "30" },
+    gcp: { displayName: "Google Cloud", svgName: "gcp", height: "27", width: "30" },
+    oracle: { displayName: "Oracle Cloud", svgName: "oracle", height: "19", width: "30" },
+  }
 
   public accessRemovedToast: ToastObj = {
     type: "success",
@@ -274,22 +311,20 @@ export default class PortfolioDrawer extends Vue {
     const storeData = _.cloneDeep(await PortfolioStore.getPortfolioData());
     if (storeData) {
       this.portfolio = _.cloneDeep(storeData);
-      if (storeData.provisioned && storeData.updated && storeData.csp) {
+      this.csp = storeData.csp?.toLowerCase() as string;      
+      if (storeData.provisioned) {
         this.provisionedTime = this.formatDate(storeData.provisioned);
+      }
+      if (storeData.updated) {
         this.updateTime = this.formatDate(storeData.updated);
-        this.csp = storeData.csp;
-
       }
       this.portfolioMembers = _.cloneDeep(storeData.members) || [];
       this.portfolioStatus = PortfolioStore.getStatus;
     }
-    // TEMP hardcoded current user
-    this.currentUser = {
-      firstName: "Maria",
-      lastName: "Missionowner",
-      email: "maria.missionowner.civ@mail.mil",
-      role: "Manager",
-    }
+    this.currentUser = await CurrentUserStore.getCurrentUser();
+    // TODO AT-8747 - check if current user is Manager or Viewer
+    // TEMP HARDCODE ROLE
+    this.currentUser.role = "Manager";
   }
 
   public async mounted(): Promise<void> {
