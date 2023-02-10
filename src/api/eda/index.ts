@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import { AxiosRequestConfig } from "axios";
-import { ApiBase } from "../apiBase";
-import { EDAResponse } from "../models"
+import {AxiosRequestConfig} from "axios";
+import {ApiBase} from "../apiBase";
+import {EDAResponse} from "../models"
 
 // export const ENDPOINTNAME = "x_g_dis_atat/eda/pds";
 export const ENDPOINTNAME = "x_g_dis_atat/provisioning";
@@ -135,4 +135,39 @@ export class EDAApi extends ApiBase{
     }
   }
 
+  public async provisionPortfolio(
+    provisioningPostObj: unknown,
+    taskOrderNumber: string,
+    acquisitionPackageSysId: string): Promise<EDAResponse> {
+    try {
+      const requestConfig: AxiosRequestConfig = {
+        params: {
+          taskOrderNumber: taskOrderNumber,
+          acquisitionPackageSysId: acquisitionPackageSysId
+        }
+      };
+      const response = await this.instance.post(this.endPoint, provisioningPostObj, requestConfig);
+      let edaResponse: EDAResponse = {};
+      if (response.status === 200) {
+        const { result } = response.data;
+        edaResponse = {
+          success: true,
+          taskOrderNumber: taskOrderNumber
+        }
+      } else {
+        const { error } = response.data;
+        edaResponse = {
+          success: false,
+          code: error.code,
+          message: error.code || "unknown error",
+        }
+      }
+      return edaResponse;
+    } catch (error) {
+      return {
+        success: false,
+        message: "Unknown error contacting EDA"
+      };
+    }
+  }
 }
