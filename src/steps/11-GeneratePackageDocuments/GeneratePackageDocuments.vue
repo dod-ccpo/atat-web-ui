@@ -8,6 +8,7 @@
             <component 
               :is="packageDocComponent" 
               :isErrored="isErrored"
+              :isGenerating.sync="isGenerating"
               @regenerate="generateDocuments()"            
             />
           </div>
@@ -35,7 +36,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 })
 export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
 
-  private isGenerating = true;
+  public isGenerating = true;
   private isErrored = false;
   private docJobStatus = "" ;
 
@@ -43,16 +44,27 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
   get isDitco():boolean {
     return AcquisitionPackage.acquisitionPackage?.contracting_shop ==="DITCO"
   }
-  @Watch('isGenerating')
-  public toggleNavigation(): void {
-    let el = document.getElementById('stepperNavigation');
-    if(el) { el.hidden = this.isGenerating; }
+  
+  @Watch("isGenerating")
+  public watchIsGenerating(generateDocs: boolean): void{
+    if (generateDocs){
+      this.generateDocuments();
+    }
+
+    this.toggleNavigation(generateDocs);
+  }
+
+
+  public toggleNavigation(value: boolean): void {
+    (document.getElementById('stepperNavigation') as HTMLElement).hidden = value;
+    (document.getElementsByTagName('footer'))[0].hidden = value;
   }
 
   async generateDocuments(): Promise<void>{
     await AcquisitionPackage.saveDocGenStatus('IN_PROGRESS')
     this.isErrored = false;
     this.isGenerating = true;
+    this.toggleNavigation(true);
     this.packageDocComponent = GeneratingDocuments;
     await this.getStatus();
   }
@@ -67,6 +79,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
           if (status === this.docJobStatus.toUpperCase()){
             clearInterval(intervalId);
             this.isGenerating = false;
+            this.toggleNavigation(false)
             this.packageDocComponent = ReviewDocuments;
             this.isErrored = status === "FAILED";
           }
@@ -83,6 +96,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
   public async mounted(): Promise<void> {
     await this.getDocJobStatus();
     await this.generateDocuments();
+    this.isGenerating = true;
   }
 
   public async saveOnLeave(): Promise<boolean> {

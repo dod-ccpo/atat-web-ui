@@ -73,15 +73,14 @@
               </v-btn>
               <v-btn
                 class="primary _text-decoration-none px-6"
-                large
                 v-if="isErrored === false"
-                target="_blank"
+                large
                 width="137"
-                :href="'/download_all_attachments.do?sysparm_sys_id=' + packageId" 
-              >
+                role="button"
+                :href="downloadLink" >
                 Download 
                 <v-icon class="ml-2">download</v-icon>
-              </v-btn>
+            </v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -143,6 +142,7 @@ import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingReques
 import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 
 @Component({
@@ -158,11 +158,17 @@ export default class ReviewDocuments extends Vue {
     "packageDocuments",{default: () => []}
   ) private _packageDocuments!: [];
   @Prop({default: false }) private isErrored!: boolean;
+  @PropSync(
+    "isGenerating",{default: false}
+  ) private _isGenerating!: boolean;
+  
 
   public packageId = "";
   private lastUpdatedString = ""
   private currentEnvServiceName = CURRENT_ENVIRONMENT_TABLE;
   private needsSignatureLength = 0
+  private downloadLink = "";
+  private domain="";
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
   }
@@ -173,12 +179,9 @@ export default class ReviewDocuments extends Vue {
     return AcquisitionPackage.acquisitionPackage?.contracting_shop === "DITCO"
   }
   private async update(): Promise<void> {
-    await this.$router.push(
-      {
-        path:"ready-to-generate-package"
-      }
-    );
+    this._isGenerating = true;
   }
+
   private packageCheckList: Record<string,string|boolean|undefined>[] = []
   private packages = [
     {
@@ -252,7 +255,8 @@ export default class ReviewDocuments extends Vue {
     const currentEnv = await CurrentEnvironment.getCurrentEnvironment()
     const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
     const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
-    const fundingRequestIds = []
+    const fundingRequestIds = [];
+
 
     const migrationAttachments = await Attachments.getAttachmentsBySysIds({
       serviceKey: this.currentEnvServiceName,
@@ -291,6 +295,12 @@ export default class ReviewDocuments extends Vue {
     })
 
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
+    
+    this.domain = document.location.origin.indexOf("localhost") > 0
+      ? 'https://services-dev.disa.mil/'
+      : document.location.origin
+    this.downloadLink =  this.domain + 'download_all_attachments.do?sysparm_sys_id='
+      + this.packageId;
   }
 
   async mounted(): Promise<void>{
