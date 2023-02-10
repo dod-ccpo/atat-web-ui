@@ -223,7 +223,7 @@ import {
 import { format, parseISO } from "date-fns";
 import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
-import { getStatusChipBgColor } from "@/helpers";
+import {getStatusChipBgColor, hasChanges} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 
@@ -296,7 +296,9 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public saveDescription(): void {
-    PortfolioStore.setPortfolioData(this.portfolio);
+    if(hasChanges(PortfolioStore.currentPortfolio.description, this.portfolio.description)) {
+      PortfolioStore.updatePortfolioDescription(this.portfolio.description);
+    }
   }
 
   public formatDate(date: string): string {
