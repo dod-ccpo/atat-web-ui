@@ -853,7 +853,7 @@ import Portfolio, {
 import { createDateStr, toCurrencyString, getIdText, roundTo100 } from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
-import { add, startOfMonth, subDays } from "date-fns";
+import { add, addDays, isBefore, isSameMonth, isThisMonth, startOfMonth, subDays } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO";
 import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
@@ -1025,7 +1025,7 @@ export default class PortfolioDashboard extends Vue {
     let endOfSpending = startOfMonth(today);
     endOfSpending = subDays(endOfSpending, 1);
     const daysSinceStartDate = differenceInCalendarDays(endOfSpending, start);
-    if (daysSinceStartDate > -1) {
+    if (daysSinceStartDate > 0 && this.fundsSpent) {
       const dailySpend = this.fundsSpent / daysSinceStartDate;
       const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
       const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
@@ -1106,29 +1106,34 @@ export default class PortfolioDashboard extends Vue {
     }
 
     const startMonthNo = popStartDate.getMonth();
+    const popStartYear = popStartDate.getFullYear();
     const popEndYear = popEndDate.getFullYear();
+    const burnChartEndYear = periodDatesISO.length > 11 && popStartYear === popEndYear
+      ? (popEndYear + 1) : popEndYear;
+    debugger;
     let januaryCount = 0;
     for (let i = startMonthNo; i < startMonthNo + monthsToAdd + 2; i++) {
-      let monthAbbr =
-        i <= 11 ? this.monthAbbreviations[i] : this.monthAbbreviations[12 - i];
-      if (monthAbbr === "Jan") {
-        monthAbbr =
-          januaryCount === 0
-            ? monthAbbr + " " + popEndYear
-            : monthAbbr + " " + (popEndYear + 1);
-        januaryCount++;
+      const monthIndex = i > 11 ? i - 12 : i;
+      let monthAbbr = this.monthAbbreviations[monthIndex];
+      if (i === startMonthNo || i === startMonthNo + monthsToAdd + 1 || monthAbbr === "Jan") {
+        monthAbbr = januaryCount === 0
+          ? monthAbbr + " " + popStartYear
+          : monthAbbr + " " + burnChartEndYear;
+        if (monthAbbr === "Jan") {
+          januaryCount++;
+        }   
       }
+   
       this.burnChartXLabels.push(monthAbbr);
     }
 
     let actualBurn: Record<string, (number | null)[]> = {};
     let projectedBurn: Record<string, (number | null)[]> = {};
-    const totalActualBurnData: (number | null)[] = [this.totalPortfolioFunds];
-    const totalProjectedBurnData: (number | null)[] = [null];
+    const totalActualBurnData: (number | null)[] = [] // [this.totalPortfolioFunds];
+    const totalProjectedBurnData: (number | null)[] = [];// [null];
 
     const now = new Date();
-    const currentMonth = now.getMonth() + 1;
-
+    
     uniqueIdiqClins.forEach((idiqClinNo) => {
       const thisIdiqClin = this.idiqClins.find(
         (clin) => clin.idiq_clin === idiqClinNo
@@ -1141,10 +1146,10 @@ export default class PortfolioDashboard extends Vue {
           : 0;
 
         if (fundsAvailable) {
-          const thisclinCosts = clinCosts;
-          const actual: (number | null)[] = [
-            parseFloat(thisIdiqClin.funds_obligated),
-          ];
+          const thisclinCosts = _.cloneDeep(clinCosts);
+          const actual: (number | null)[] = [];
+          //   parseFloat(thisIdiqClin.funds_obligated),
+          // ];
           const projected: (number | null)[] = [];
 
           periodDatesISO.forEach((monthISO, i) => {
@@ -1153,10 +1158,12 @@ export default class PortfolioDashboard extends Vue {
             fundsAvailable = thisMonthAmount
               ? fundsAvailable - thisMonthAmount
               : fundsAvailable;
+            let month = addDays((new Date(monthISO).setHours(0,0,0,0)), 1);
+            const isCurrentMonth = isThisMonth(new Date(month)) 
+            const isActual = isBefore(new Date(month), now);
 
-            const month = parseISO(monthISO).getMonth() + 1;
-            const isCurrentMonth = month === currentMonth;
-            const isActual = month < currentMonth;
+
+            debugger;
 
             const actualVal = isActual ? fundsAvailable : null;
             actual.push(actualVal);
@@ -1164,11 +1171,11 @@ export default class PortfolioDashboard extends Vue {
             const projectedVal = isCurrentMonth ? fundsAvailable : null;
             projected.push(projectedVal);
 
-            const monthTotalActual = totalActualBurnData[i + 1];
+            const monthTotalActual = totalActualBurnData[i];
             if (!monthTotalActual) {
-              totalActualBurnData[i + 1] = actualVal;
+              totalActualBurnData[i] = actualVal;
             } else if (actualVal) {
-              totalActualBurnData[i + 1] = actualVal + monthTotalActual;
+              totalActualBurnData[i] = actualVal + monthTotalActual;
             }
 
             const monthTotalProjected = totalProjectedBurnData[i];
@@ -1182,11 +1189,14 @@ export default class PortfolioDashboard extends Vue {
           actualBurn[idiqClinNo] = actual;
           projected.push(0);
           projectedBurn[idiqClinNo] = projected;
+          debugger;
         }
       }
     });
 
     totalProjectedBurnData.push(0);
+
+    debugger;
 
     uniqueIdiqClins.forEach((idiqClinNo) => {
       const thisIdiqClin = this.idiqClins.find(
@@ -1251,6 +1261,9 @@ export default class PortfolioDashboard extends Vue {
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
     let burnChartDataSets: lineChartDataSet[] = [];
+
+
+    debugger;
 
     let clinTotalActualDataSet: lineChartDataSet =
       this.burnChartActualCommonDataSet;
@@ -1459,13 +1472,16 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async getDashboardData():Promise<PortFolioDashBoardDTO>{
-    return this.dashboardService.getdata(this.activeTaskOrderNumber);
+    return this.dashboardService.getdata(this.activeTaskOrderNumber, this.activeTaskOrderSysId);
   }
   public activeTaskOrderNumber = "";
+  public activeTaskOrderSysId = "";
+
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
+    this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId;
     const data = await this.getDashboardData();
-    // TODO - account for no cost data in AT-8734
+
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
     this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
@@ -1495,7 +1511,6 @@ export default class PortfolioDashboard extends Vue {
 
     this.popStart = createDateStr(this.taskOrder.pop_start_date, true);
     this.popEnd = createDateStr(this.taskOrder.pop_end_date, true);
-
     this.calculateTimeToExpiration();
 
     this.calculateBurnDown();

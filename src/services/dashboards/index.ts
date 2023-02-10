@@ -103,10 +103,11 @@ export class DashboardService {
    * the UI, comes from the clins and costs table.
    */
   public async getdata(
-    taskOrderNumber: string
+    taskOrderNumber: string,
+    taskOrderSysId: string,
   ): Promise<PortFolioDashBoardDTO> {
     try {
-      const taskOrder = await api.taskOrderTable.retrieve(taskOrderNumber);
+      const taskOrder = await api.taskOrderTable.retrieve(taskOrderSysId);
 
       if (taskOrder === undefined) {
         throw new Error(

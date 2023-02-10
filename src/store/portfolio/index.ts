@@ -178,6 +178,7 @@ export class PortfolioDataStore extends VuexModule {
 
   private alertService = new AlertService();
   public activeTaskOrderNumber = "";
+  public activeTaskOrderSysId = "";
   
   public alerts: AlertDTO[]= [];
   currentPortfolio: Portfolio = { 
@@ -352,22 +353,25 @@ export class PortfolioDataStore extends VuexModule {
       csp: portfolioData.csp,
       agency: portfolioData.agency,
       taskOrderNumber: portfolioData.taskOrderNumber,
+      taskOrderSysId: portfolioData.taskOrderSysId,
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
     this.activeTaskOrderNumber = portfolioData.taskOrderNumber 
       ? portfolioData.taskOrderNumber : "";
+    this.activeTaskOrderSysId = portfolioData.taskOrderSysId ? portfolioData.taskOrderSysId : "";
   }
 
-  @Action
-  public setActiveTaskOrderNumber(taskOrderNum: string | undefined): void {
-    if (taskOrderNum) {
-      this.doSetActiveTaskOrderNumber(taskOrderNum);
-    }
-  }
-  @Mutation
-  public doSetActiveTaskOrderNumber(taskOrderNum: string): void {
-    this.activeTaskOrderNumber = taskOrderNum;
-  }
+  // @Action
+  // public setActiveTaskOrderNumber(taskOrderNum: string | undefined): void {
+  //   debugger;
+  //   if (taskOrderNum) {
+  //     this.doSetActiveTaskOrderNumber(taskOrderNum);
+  //   }
+  // }
+  // @Mutation
+  // public doSetActiveTaskOrderNumber(taskOrderNum: string): void {
+  //   this.activeTaskOrderNumber = taskOrderNum;
+  // }
 
   @Action
   public setShowAddMembersModal(show: boolean): void {

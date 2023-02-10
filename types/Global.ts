@@ -468,6 +468,7 @@ export interface Portfolio extends BaseTableDTO {
   members?: User[];
   updated?: string;
   taskOrderNumber?: string;
+  taskOrderSysId?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {

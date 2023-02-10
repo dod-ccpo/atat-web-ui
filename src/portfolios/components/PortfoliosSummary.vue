@@ -424,11 +424,10 @@ export default class PortfoliosSummary extends Vue {
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.agency = portfolio.dod_component;
 
-      const activeTaskOrderSysId = portfolio.active_task_order.value as string;
+      cardData.taskOrderSysId = portfolio.active_task_order.value as string;
       const activeTaskOrder = portfolio.task_orders.find(
-        obj => obj.sys_id === activeTaskOrderSysId
+        obj => obj.sys_id === cardData.taskOrderSysId
       );
-
       cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
 
       // lastModified - if status is "Processing" use "Started ... ago" string
