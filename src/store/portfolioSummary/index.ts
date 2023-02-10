@@ -137,7 +137,7 @@ export class PortfolioSummaryStore extends VuexModule {
     await this.ensureInitialized();
     const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_fields: 'name',
+        sysparm_fields: 'name,description',
         sysparm_query: searchQuery
       }
     };
