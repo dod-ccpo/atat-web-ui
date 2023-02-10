@@ -214,7 +214,6 @@ import { Statuses } from "@/store/acquisitionPackage";
 
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio = {};
-  public portfolioDescription: string | undefined = "";
   public portfolioStatus: string = Statuses.Active.label;
   public provisionedTime = "";
   public updateTime = "";
@@ -260,7 +259,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public saveDescription(): void {
-    if(hasChanges(this.portfolioDescription, this.portfolio.description)) {
+    if(hasChanges(PortfolioStore.currentPortfolio.description, this.portfolio.description)) {
       PortfolioStore.updatePortfolioDescription(this.portfolio.description);
     }
   }
@@ -277,7 +276,6 @@ export default class PortfolioDrawer extends Vue {
     const storeData = _.cloneDeep(await PortfolioStore.getPortfolioData());
     if (storeData) {
       this.portfolio = _.cloneDeep(storeData);
-      this.portfolioDescription = this.portfolio.description;
       if (storeData.provisioned && storeData.updated && storeData.csp) {
         this.provisionedTime = this.formatDate(storeData.provisioned);
         this.updateTime = this.formatDate(storeData.updated);

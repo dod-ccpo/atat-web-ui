@@ -173,6 +173,7 @@ export class PortfolioDataStore extends VuexModule {
     await api.portfolioTable.update(this.currentPortfolio.sysId as string,
       {name: title} as unknown as PortfolioSummaryDTO
     )
+    this.currentPortfolio.title = title;
   }
 
   /**
@@ -183,6 +184,7 @@ export class PortfolioDataStore extends VuexModule {
     await api.portfolioTable.update(this.currentPortfolio.sysId as string,
       {description: description} as unknown as PortfolioSummaryDTO
     )
+    this.currentPortfolio.description = description;
   }
 
   public openTOSearchPortfolio = false;
