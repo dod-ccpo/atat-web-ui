@@ -243,13 +243,16 @@ export default class PortfolioDrawer extends Vue {
   public portfolioStatus: string = Statuses.Active.label;
   public provisionedTime = "";
   public updateTime = "";
-  public cspKey = "";
+  public csp = "";
   public currentUser: User = {};
 
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
 
+  public get cspKey(): string {
+    return this.csp ? this.csp.toLowerCase() : "aws";
+  }
 
   public cspData = {
     aws: { displayName: "AWS", svgName: "aws", height: "18", width: "30" },
@@ -308,7 +311,7 @@ export default class PortfolioDrawer extends Vue {
     const storeData = _.cloneDeep(await PortfolioStore.getPortfolioData());
     if (storeData) {
       this.portfolio = _.cloneDeep(storeData);
-      this.cspKey = storeData.csp?.toLowerCase() as string;      
+      this.csp = storeData.csp?.toLowerCase() as string;      
       if (storeData.provisioned) {
         this.provisionedTime = this.formatDate(storeData.provisioned);
       }
