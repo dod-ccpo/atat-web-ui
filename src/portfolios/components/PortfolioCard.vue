@@ -6,7 +6,7 @@
   >
 
     <div class="pr-5">
-      <div class="_csp-icon-wrap" :data-csp="CSPs[cardData.csp].title">
+      <div class="_csp-icon-wrap" :data-csp="CSPs[cspKey].title">
         <v-tooltip
           transition="slide-y-reverse-transition"
           color="rgba(0,0,0,1)"
@@ -20,14 +20,14 @@
               v-on="on"
             >
               <ATATSVGIcon 
-                :name="CSPs[cardData.csp].img.name" 
-                :width="CSPs[cardData.csp].img.width" 
-                :height="CSPs[cardData.csp].img.height" 
+                :name="CSPs[cspKey].img.name" 
+                :width="CSPs[cspKey].img.width" 
+                :height="CSPs[cspKey].img.height" 
               />
             </span>
           </template>
           <div class="_tooltip-content-wrap">
-            {{ CSPs[cardData.csp].title }}
+            {{ CSPs[cspKey].title }}
           </div>
         </v-tooltip>
       </div>
@@ -251,6 +251,10 @@ export default class PortfolioCard extends Vue {
     return this.cardData.fundingStatus === Statuses.Delinquent.value;
   }
 
+  public get cspKey(): string {
+    return this.cardData.csp?.toLowerCase() as string;
+  }
+
   public getCSPConsoleURL(): string {
     return this.cardData.csp ? cspConsoleURLs[this.cardData.csp] : "";
   }
@@ -316,8 +320,8 @@ export default class PortfolioCard extends Vue {
         height:"31",
       }
     },
-    google: {
-      title: "Google Cloud Platform",
+    gcp: {
+      title: "Google Cloud",
       img: {
         name:"gcp",
         width:"40",
@@ -325,7 +329,7 @@ export default class PortfolioCard extends Vue {
       }
     },
     oracle: {
-      title: "Oracle",
+      title: "Oracle Cloud",
       img: {
         name:"oracle",
         width:"40",
