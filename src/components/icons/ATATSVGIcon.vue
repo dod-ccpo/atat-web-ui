@@ -71,6 +71,7 @@ import WarningAmber from "@/components/icons/WarningAmber.vue";
 import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vue";
 import Place from "@/components/icons/Place.vue";
 import SendEmail from "@/components/icons/SendEmail.vue";
+import Update from "@/components/icons/Update.vue";
 
 
 @Component({
@@ -129,6 +130,7 @@ import SendEmail from "@/components/icons/SendEmail.vue";
     TrendingDown,
     TrendingUp,
     UploadFile,
+    Update,
     Warning,
     WarningAmber,
     ReadyToGeneratePackage,

@@ -130,6 +130,7 @@ import UploadJAMRRDocuments from "@/steps/11-GeneratePackageDocuments/UploadJAMR
 import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToGeneratePackage.vue";
 import GeneratingPackageDocuments
   from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
+import UploadSignedDocuments from "@/steps/11-GeneratePackageDocuments/UploadSignedDocuments.vue";
 
 import {
   AcorsRouteResolver,
@@ -263,7 +264,8 @@ export const routeNames = {
   UploadJAMRRDocuments:"JA_MRR_Documents",
   ReadyToGeneratePackage:"Ready_To_Generate_Package",
   GeneratePackageDocuments: "Generate_Package_Documents",
-  AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs"
+  AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs",
+  UploadSignedDocuments:"Upload_Signed_Documents",
 };
 
 /**
@@ -1116,6 +1118,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GeneratingPackageDocuments,
         completePercentageWeight: 0,
         component: GeneratingPackageDocuments
+      },
+      {
+        menuText: "Upload Signed Documents",
+        path:"upload-signed-documents",
+        excludeFromMenu: true,
+        name: routeNames.UploadSignedDocuments,
+        completePercentageWeight: 0,
+        component: UploadSignedDocuments
       }
     ],
   },
