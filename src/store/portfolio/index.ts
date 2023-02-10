@@ -17,6 +17,7 @@ import {AlertDTO, PortfolioSummaryDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
 import {api} from "@/api";
+import CurrentUserStore from "../user";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -417,17 +418,6 @@ export class PortfolioDataStore extends VuexModule {
     this.alerts = value;
   }
 
-  public placeholderMember = {
-    firstName:"Maria",
-    lastName: "Missionowner",
-    email:"maria.missionowner.civ@mail.mil",
-    role: "Manager",
-    phoneNumber:"5555555555",
-    phoneExt:"1234",
-    designation: "Civilian",
-    agency: "U.S. Army"
-  };
-
   @Action({rawError: true})
   public async saveMembers(newMembers: MemberInvites): Promise<void> {
     newMembers.emails.forEach((email) => {
@@ -438,13 +428,29 @@ export class PortfolioDataStore extends VuexModule {
         role: newMembers.role,
       };
       this.currentPortfolio.members?.push(newMember);
+      // TODO: AT-8747 - CREATE/UPDATE USER TO SNOW
+      // in x_g_dis_atat_portfolio - either portfolio_managers or portfolio_viewers
+      // depending on role
     });
   }
 
   @Action({rawError: true})
   public async getPortfolioData(): Promise<Portfolio> {
+    // TODO: can likely remove logic below to add current user as Manager if no members
+    // after AT-8747 is completed
     if (this.currentPortfolio.members?.length === 0) {
-      this.currentPortfolio.members = [this.placeholderMember];
+      const currentUser = await CurrentUserStore.getCurrentUser();
+      const placeholderMember = {
+        firstName: currentUser.first_name,
+        lastName: currentUser.last_name,
+        email: currentUser.email,
+        role: "Manager",
+        phoneNumber: "5555555555",
+        phoneExt: "1234",
+        designation: "Civilian",
+        agency: "U.S. Army"
+      };
+      this.currentPortfolio.members = [placeholderMember];
     }
     return this.currentPortfolio;
   }

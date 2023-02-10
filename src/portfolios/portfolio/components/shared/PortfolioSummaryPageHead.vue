@@ -49,7 +49,7 @@
             color="base-dark"
           />
         </v-btn>
-
+        <!-- TODO: Reinstate menu in future ticket when functionality complete
         <v-menu
           :offset-y="true"
           left
@@ -118,6 +118,7 @@
             </v-list-item>
           </v-list>
         </v-menu>
+        -->
       </div>
     </div>
   </v-app-bar>
