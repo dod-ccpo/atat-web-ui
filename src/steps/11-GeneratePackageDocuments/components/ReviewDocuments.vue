@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div
+    :class="{'copy-max-width':ditcoUser}">
     <h1>
-      Your documents are ready to download and review.
+      Your documents are ready to download and review
     </h1>
-    <div class="copy-max-width">
-      <p class="mt-2 mb-4">
+    <div >
+      <p class="mt-2 mb-4 copy-max-width">
         We’ve generated your required documents based on the information that you have provided in
         steps 1-8. Download your entire package below and review each document. If needed, you can
         revisit the previous steps to make changes and click the “Update” button to re-generate your
@@ -51,7 +52,10 @@
     </ATATAlert>
 
     <div class="d-flex">
-        <div class="package-list pa-6">
+        <div
+          class="package-list pa-6"
+          :class="{'width-100':ditcoUser}"
+        >
           <v-row class="d-flex justify-space-between">
             <v-col>
               <h2>
@@ -63,7 +67,7 @@
             </v-col>
             <v-col class="d-flex justify-end" align-self="end">
               <v-btn
-                v-if="isErrored === false"
+                v-if="ditcoUser &&isErrored === false"
                 class="secondary _text-decoration-none px-6 mr-5"
                 large
                 target="_blank"
@@ -76,15 +80,14 @@
               </v-btn>
               <v-btn
                 class="primary _text-decoration-none px-6"
-                large
                 v-if="isErrored === false"
-                target="_blank"
+                large
                 width="137"
-                :href="'/download_all_attachments.do?sysparm_sys_id=' + packageId" 
-              >
+                role="button"
+                :href="downloadLink" >
                 Download 
                 <v-icon class="ml-2">download</v-icon>
-              </v-btn>
+            </v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -123,6 +126,7 @@ import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingReques
 import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 
@@ -139,11 +143,17 @@ export default class ReviewDocuments extends Vue {
     "packageDocuments",{default: () => []}
   ) private _packageDocuments!: [];
   @Prop({default: false }) private isErrored!: boolean;
+  @PropSync(
+    "isGenerating",{default: false}
+  ) private _isGenerating!: boolean;
+
 
   public packageId = "";
   private lastUpdatedString = ""
   private currentEnvServiceName = CURRENT_ENVIRONMENT_TABLE;
   private needsSignatureLength = 0
+  private downloadLink = "";
+  private domain="";
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
   }
@@ -154,25 +164,11 @@ export default class ReviewDocuments extends Vue {
     return AcquisitionPackage.acquisitionPackage?.contracting_shop === "DITCO"
   }
   private async update(): Promise<void> {
-    await this.$router.push(
-      {
-        path:"ready-to-generate-package"
-      }
-    );
+    this._isGenerating = true;
   }
+
   private packageCheckList: Record<string,string|boolean|undefined>[] = []
   private packages = [
-    {
-      itemName:"Justification and Approval (Template)",
-      requiresSignature:true,
-      alertText:"Complete and sign",
-      show:true
-    },{
-      itemName:"Sole Source Market Research Report (Template)",
-      requiresSignature:true,
-      alertText:"Complete and sign",
-      show:true
-    },
     {
       itemName:"Requirements Checklist",
       requiresSignature:true,
@@ -244,7 +240,7 @@ export default class ReviewDocuments extends Vue {
     const currentEnv = await CurrentEnvironment.getCurrentEnvironment()
     const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
     const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
-    const fundingRequestIds = []
+    const fundingRequestIds = [];
     if(currentEnv){
       const migrationAttachments = await Attachments.getAttachmentsBySysIds({
         serviceKey: this.currentEnvServiceName,
@@ -253,6 +249,7 @@ export default class ReviewDocuments extends Vue {
       migrationAttachments.forEach(attachment => {
         this.createAttachmentObject(attachment,'4 (Current Environment)')
       })
+
       const sysDocAttachments = await Attachments.getAttachmentsBySysIds({
         serviceKey: this.currentEnvServiceName,
         sysIds: currentEnv?.system_documentation||[]
@@ -288,6 +285,12 @@ export default class ReviewDocuments extends Vue {
     })
     await acquisitionPackage.setAttachmentNames(docNames)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
+
+    this.domain = document.location.origin.indexOf("localhost") > 0
+      ? 'https://services-dev.disa.mil/'
+      : document.location.origin
+    this.downloadLink =  this.domain + 'download_all_attachments.do?sysparm_sys_id='
+      + this.packageId;
   }
 
   async mounted(): Promise<void>{
