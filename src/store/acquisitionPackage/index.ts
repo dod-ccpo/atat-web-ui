@@ -595,7 +595,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
   @Mutation
   public setPackageDocumentsSigned(value: PackageDocumentsSignedDTO): void {
-    debugger
     const acquisition_package = typeof value.acquisition_package === "object"
       ? (value.acquisition_package as ReferenceColumn).value as string
       : value.acquisition_package as string;

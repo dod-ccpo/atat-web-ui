@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>
-      Upload your signed documents
+      Upload your completed template and signed documents
     </h1>
     <div class="copy-max-width">
       <p class="mt-2 mb-4">
@@ -20,6 +20,7 @@
             :validFileFormats="validFileFormats"
             :attachmentServiceName="attachmentServiceName"
             :maxFileSizeInBytes="maxFileSizeInBytes"
+            :restrictedNames="restrictedNames"
             id="SignedDocs"
             @delete="onRemoveAttachment"
             fileListTitle="Your files"
@@ -166,6 +167,13 @@ export default class UploadSignedDocuments extends Vue {
     sys_created_by: ""
   };
   private filesNeeded:string[] = [];
+  public restrictedNames = [
+    "DescriptionOfWork.docx",
+    "IncrementalFundingPlan.docx",
+    "RequirementsChecklist.docx",
+    "IGCE.xlsx",
+    "EvaluationPlan.docx",
+  ]
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
   }
@@ -173,17 +181,6 @@ export default class UploadSignedDocuments extends Vue {
     return FinancialDetails.fundingRequirement?.incrementally_funded || "";
   }
   private packages = [
-    {
-      itemName:"Justification and Approval",
-      requiresSignature:true,
-      alertText:"Complete and sign",
-      show:true
-    },{
-      itemName:"Sole Source Market Research Report",
-      requiresSignature:true,
-      alertText:"Complete and sign",
-      show:true
-    },
     {
       itemName:"Requirements Checklist",
       requiresSignature:true,
@@ -267,7 +264,7 @@ export default class UploadSignedDocuments extends Vue {
           iFile.doesFileExist,
           iFile.SNOWError,
           iFile.statusCode,
-          [],
+          this.restrictedNames
         )
       );
     });
@@ -282,6 +279,9 @@ export default class UploadSignedDocuments extends Vue {
         this.filesNeeded.push(item.itemName)
       }
     })
+    if(this.fairOpportunity !== 'NO_NONE'){
+      this.needsSignatureLength += 2
+    }
     const query: AxiosRequestConfig = {
       params: {
         sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
@@ -289,8 +289,6 @@ export default class UploadSignedDocuments extends Vue {
     };
     const signedDocumentSysId = await api.packageDocumentsSignedTable
       .getQuery(query);
-    console.log('pkgDocsAQ', await acquisitionPackage.getPackageDocumentsSigned())
-    console.log('sys_id',signedDocumentSysId)
     if(signedDocumentSysId.length > 0){
       try {
         const attachment = await Attachments.getAttachmentsByTableSysIds({
