@@ -80,6 +80,7 @@ import ProvisionOracle from "@/components/icons/ProvisionOracle.vue";
 import ProvisionAWS from "@/components/icons/ProvisionAWS.vue";
 import ProvisionAzure from "@/components/icons/ProvisionAzure.vue";
 import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
+import Update from "@/components/icons/Update.vue";
 
 
 @Component({
@@ -147,6 +148,7 @@ import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
     TrendingDown,
     TrendingUp,
     UploadFile,
+    Update,
     Warning,
     WarningAmber,
     ReadyToGeneratePackage,

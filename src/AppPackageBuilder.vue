@@ -72,6 +72,7 @@ import {
 import { buildStepperData, routeNames, stepperRoutes } from "./router/stepper";
 import actionHandler from "./action-handlers/index";
 import AppSections from "./store/appSections";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -195,6 +196,10 @@ export default class AppPackageBuilder extends Vue {
       : "New Acquisition";
   }
 
+  public get isDitcoUser(): boolean {
+    return acquisitionPackage.contractingShop === "DITCO"
+  }
+
   private setNavButtons(step: StepInfo): void {
     this.altBackDestination = Steps.altBackDestination;
     this.noPrevious = !step.prev && !this.altBackDestination;
@@ -204,7 +209,8 @@ export default class AppPackageBuilder extends Vue {
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
-    this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments;
+    this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments
+      && !this.isDitcoUser;
   }
 
   public get disableContinue(): boolean {
