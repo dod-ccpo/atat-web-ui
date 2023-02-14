@@ -299,7 +299,7 @@ export default class ReviewDocuments extends Vue {
     this.domain = document.location.origin.indexOf("localhost") > 0
       ? 'https://services-dev.disa.mil/'
       : document.location.origin
-    this.downloadLink =  this.domain + 'download_all_attachments.do?sysparm_sys_id='
+    this.downloadLink =  this.domain + '/download_all_attachments.do?sysparm_sys_id='
       + this.packageId;
   }
 
