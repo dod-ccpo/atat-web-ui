@@ -1306,6 +1306,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
+  debugger;
   const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrder;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
   const showPackageSelection = PortfolioStore.showTOPackageSelection;
