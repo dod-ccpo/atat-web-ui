@@ -22,6 +22,21 @@
           </a>         
         </p>
 
+        <ATATAlert 
+          id="MissingAdmin"
+          v-if="showMissingAdminAlert"
+          type="warning"
+          class="mb-10"
+        >
+        <template v-slot:content>
+          <p class="mb-0">
+            <strong>Missing administrator for {{ missingEnv }} environment.</strong>
+            Please add an administrator or edit details from an existing administrator
+            to grant access to the unclassified environment within your CSP portal.
+          </p>
+        </template>
+        </ATATAlert>
+
         <div 
           v-if="admins.length === 0"
           class="w-100 py-10 border1 border-rounded border-base-lighter 
@@ -216,6 +231,7 @@
 import Vue from "vue";
 import { Component, Mixins } from "vue-property-decorator";
 
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -239,6 +255,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
+    ATATAlert,
     ATATCheckboxGroup,
     ATATDialog,
     ATATSVGIcon,
@@ -264,6 +281,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
   public scrtStr = ClassificationLevels.SCRT;
   public unclStr = ClassificationLevels.UNCL;
+  public missingEnv = "";
 
   public selectedClassificationLevels: string[] = [];
   public classificationLevelOptions: Checkbox[] = [
@@ -272,6 +290,21 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   ];
 
   public tableData: Record<string, string>[] = [];
+
+  public showMissingAdminAlert = false;
+  public async setShowMissingAdminAlert(): Promise<void> {
+    const missingUnclass = (this.admins.findIndex(a => a.hasUnclassifiedAccess === "YES")) === -1;
+    const missingScrt = (this.admins.findIndex(a => a.hasScrtAccess === "YES")) === -1;
+    if (this.classificationLevels.length > 1 
+      && this.admins.length > 0 
+      && (missingUnclass || missingScrt)
+    ) {
+      this.missingEnv = missingUnclass ? "unclassified" : "secret";
+      this.showMissingAdminAlert = true;
+    } else {
+      this.showMissingAdminAlert = false;
+    }
+  }
 
   public get scrtSelected(): boolean {
     return this.selectedClassificationLevels.includes(this.scrtStr);
@@ -350,13 +383,18 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       } else {
         this.admins.push(admin);
       }
-      await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
     }
 
     this.resetAdminData();
     this.buildTableData();
     this.isEdit = false;
     this.editAdminIndex = -1;
+  }
+
+  public async setDisableContinue(): Promise<void> {
+    await this.setShowMissingAdminAlert();
+    const disableContinue = this.admins.length === 0 || this.showMissingAdminAlert;
+    await AcquisitionPackage.setDisableContinue(disableContinue);    
   }
 
   public isEdit = false;
@@ -391,7 +429,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.editAdminIndex = -1;
       this.resetAdminData();
     }
-    await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
   }
 
   public resetAdminData(): void {
@@ -437,6 +474,8 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       }
       this.tableData.push(record);
     });
+
+    this.setDisableContinue();
   }
 
   public async loadOnEnter(): Promise<void> {
