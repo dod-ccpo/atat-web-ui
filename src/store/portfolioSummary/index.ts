@@ -137,7 +137,7 @@ export class PortfolioSummaryStore extends VuexModule {
     await this.ensureInitialized();
     const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_fields: 'name',
+        sysparm_fields: 'name,description',
         sysparm_query: searchQuery
       }
     };
@@ -338,7 +338,11 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private computeAllAggregationsAndPopRollup(portfolioSummaryList: PortfolioSummaryDTO[]) {
     portfolioSummaryList.forEach(portfolio => {
-      portfolio.dod_component = 'ARMY' // FIXME: delete this line after API starts returning
+      
+      // TODO: after schema changes made for /provisioning POST call, use `portfolio.agency` 
+      // instead of `portfolio.dod_component`
+      portfolio.dod_component = 'ARMY' 
+
       let totalObligatedForPortfolio = 0;
       let fundsSpentForPortfolio = 0;
       portfolio.task_orders.forEach(taskOrder => {

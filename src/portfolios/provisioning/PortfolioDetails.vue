@@ -111,7 +111,7 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
     try {
       await PortfolioStore.setPortfolioProvisioning(this.currentData);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     return true;
   }

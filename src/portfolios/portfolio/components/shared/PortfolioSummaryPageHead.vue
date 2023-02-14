@@ -49,7 +49,7 @@
             color="base-dark"
           />
         </v-btn>
-
+        <!-- TODO: Reinstate menu in future ticket when functionality complete
         <v-menu
           :offset-y="true"
           left
@@ -118,6 +118,7 @@
             </v-list-item>
           </v-list>
         </v-menu>
+        -->
       </div>
     </div>
   </v-app-bar>
@@ -137,7 +138,7 @@ import PortfolioStore from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { SlideoutPanelContent } from "../../../../../types/Global";
-import { getIdText } from "@/helpers";
+import {getIdText, hasChanges} from "@/helpers";
 
 @Component({
   components: {
@@ -163,10 +164,9 @@ export default class PortfolioSummaryPageHead extends Vue {
   }
 
   public saveTitle(): void {
-    const obj ={
-      title: this._title
+    if(hasChanges(PortfolioStore.currentPortfolio.title, this._title)) {
+      PortfolioStore.updatePortfolioTitle(this._title);
     }
-    PortfolioStore.setPortfolioData(obj)
   }
   
   public async openSlideoutPanel(e: Event): Promise<void> {

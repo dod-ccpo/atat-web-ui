@@ -412,14 +412,19 @@ export default class PortfoliosSummary extends Vue {
       storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
     }
     storeData.portfolioSummaryList.forEach((portfolio) => {
+      
+      // TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
+      // from portfolio_managers and portfolio_viewers sysIds lists
+
       let cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
       
       // TODO - properly wire CSP in task AT-8744 
-      cardData.csp = "aws"; // csps[cspStubs.indexOf(portfolio.csp_display)];
+      cardData.csp = "AWS"; // csps[cspStubs.indexOf(portfolio.csp_display)];
 
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
+      cardData.description = portfolio.description;
       cardData.status = portfolio.portfolio_status;
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.agency = portfolio.dod_component;
