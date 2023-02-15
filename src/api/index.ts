@@ -58,6 +58,7 @@ import { TrainingEstimateAPI } from "@/api/trainingEstimate";
 import {IgceEstimateApi} from "@/api/igceEstimate";
 import { travelRequirementApi } from "./travelRequirement";
 import { RegionsAPI } from "./regions";
+import {EnvironmentApi} from "@/api/environment";
 
 
 export const api = {
@@ -104,6 +105,7 @@ export const api = {
   aggregate: new AggregateApi(),
   environmentInstanceTable: new EnvironmentInstanceAPI(),
   portfolioTable: new PortfolioApi(),
+  environmentTable: new EnvironmentApi(),
   cloudServiceProviderTable: new CloudServiceProviderApi(),
   userTable: new UserApi(),
   evaluationPlanTable: new EvaluationPlanApi(),

@@ -639,11 +639,26 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   alerts: AlertDTO[];
   title?: string;
   description?: string;
+  environments?: EnvironmentDTO[];
 }
 
 export interface PortfolioSummaryMetadataAndDataDTO {
   total_count: number;
   portfolioSummaryList: PortfolioSummaryDTO[];
+}
+
+export interface EnvironmentDTO extends BaseTableDTO {
+  csp: ReferenceColumn;
+  csp_id: string;
+  csp_display: string;
+  name: string;
+  dashboard_link: string;
+  pending_operators: string[];
+  portfolio: PortfolioSummaryDTO;
+  provisioned: YesNo;
+  provisioned_date: string;
+  provisioning_failure_cause: string;
+  provisioning_request_date: string;
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{

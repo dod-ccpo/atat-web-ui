@@ -98,9 +98,11 @@ export class PortfolioSummaryStore extends VuexModule {
     if (searchDTO.searchString) {
       query = query + "^nameLIKE" + searchDTO.searchString;
     }
-    if (searchDTO.csps?.length > 0) {
+    // TODO: below block is commented out because "csp" column is moved to "environment" table and
+    //  cannot be part of the search for portfolio with offsets and limits for pagination.
+    /*if (searchDTO.csps?.length > 0) {
       query = query + "^csp.nameIN" + searchDTO.csps;
-    }
+    }*/
     return query;
   }
 
@@ -192,30 +194,53 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   /**
-   * Constructs a single query that gets all the CSP records across all the portfolis. Parses
-   * the response and sets the 'csp_display' to the respective portfolio.
+   * Constructs a single API call that gets all the environments across all the portfolios. Parses
+   * the response and sets the 'environments' to the respective portfolio.
+   */
+  @Action({rawError: true})
+  private async setEnvironmentsForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    const allEnvironmentsList = await api.environmentTable.getQuery(
+      {
+        params:
+          { // bring all fields
+            sysparm_query: "portfolio.nameIN" + portfolioSummaryList
+              .map(portfolio => portfolio.name)
+          }
+      }
+    )
+    portfolioSummaryList.forEach(portfolio => {
+      portfolio.environments = allEnvironmentsList
+        .filter((environment) => {
+          return (environment.portfolio as ReferenceColumn).value === portfolio.sys_id
+        });
+    })
+    return portfolioSummaryList;
+  }
+
+  /**
+   * Constructs a single query that gets all the CSP records across all the portfolio environments.
+   * Parses the response and sets the 'csp_display' to the respective environment.
    */
   @Action({rawError: true})
   private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    
-    // TODO: AT-8744 - rewire CSPs to environments
-    // CSPs are no longer stored at the portfolio level - they are per environment   
-
-    // const cspSysIds = portfolioSummaryList.map(portfolio => portfolio.csp.value);
-    // const allCspList = await api.cloudServiceProviderTable.getQuery(
-    //   {
-    //     params:
-    //       {
-    //         sysparm_fields: "sys_id,name",
-    //         sysparm_query: "sys_idIN" + cspSysIds
-    //       }
-    //   }
-    // )
-    // portfolioSummaryList.forEach(portfolio => {
-    //   portfolio.csp_display =
-    //     (allCspList.find(
-    //       (csp: CloudServiceProviderDTO) => portfolio.csp.value === csp.sys_id)?.name) || "";
-    // });
+    const cspSysIds = portfolioSummaryList.map(portfolio =>
+      portfolio.environments?.map(environment => environment.csp.value));
+    const allCspList = await api.cloudServiceProviderTable.getQuery(
+      {
+        params:
+          {
+            sysparm_fields: "sys_id,name",
+            sysparm_query: "sys_idIN" + cspSysIds
+          }
+      }
+    )
+    portfolioSummaryList.forEach(portfolio => {
+      portfolio.environments?.forEach(environment => {
+        environment.csp_display =
+          (allCspList.find(
+            (csp: CloudServiceProviderDTO) => environment.csp.value === csp.sys_id)?.name) || "";
+      })
+    });
   }
 
   /**
@@ -419,11 +444,8 @@ export class PortfolioSummaryStore extends VuexModule {
         portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
         // callouts to other functions to set data from other tables
         await this.setAlertsForPortfolios(portfolioSummaryList);
-        
-        // TODO: AT-8744 - rewire CSPs to environments
-        // CSP data is now stored at the environment level, not portfolio
-        // await this.setCspDisplay(portfolioSummaryList);
-
+        await this.setEnvironmentsForPortfolios(portfolioSummaryList);
+        await this.setCspDisplay(portfolioSummaryList);
         await this.setTaskOrdersForPortfolios(portfolioSummaryList);
         await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
         await this.setCostsToTaskOrderClins(portfolioSummaryList);
