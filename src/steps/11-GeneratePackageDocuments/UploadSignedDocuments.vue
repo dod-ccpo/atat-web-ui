@@ -15,7 +15,9 @@
       </p>
       <hr class="base-lighter" />
       <div class="d-flex">
-        <div>
+        <div
+          style="width: 588px;"
+        >
           <ATATFileUpload
             :validFileFormats="validFileFormats"
             :attachmentServiceName="attachmentServiceName"
@@ -34,10 +36,10 @@
         </div>
         <div>
           <div
-            style="width: 330px;"
+            style="width: 380px;"
             class="pl-5">
             <ATATAlert
-              v-if="needsSignatureLength > uploadedFiles.length"
+              v-if="allSignaturesLength > uploadedFiles.length"
               id="warning"
               class="mb-4"
               type="warning"
@@ -45,7 +47,7 @@
               <template v-slot:content>
                 <p class="mt-1 mb-0">
                   <strong>
-                    Missing {{needsSignatureLength - uploadedFiles.length}} {{missingDocsText}}
+                    Missing {{allSignaturesLength - uploadedFiles.length}} {{missingDocsText}}
                   </strong>
                 </p>
                 <p class="mb-0">
@@ -156,6 +158,7 @@ export default class UploadSignedDocuments extends Vue {
   private invalidFiles: invalidFile[] = [];
   private uploadedFiles: uploadingFile[] = [];
   private needsSignatureLength = 0;
+  private allSignaturesLength = 0
   private saved:PackageDocumentsSignedDTO | null = {
     /* eslint-disable camelcase */
     sys_id: "",
@@ -246,7 +249,7 @@ export default class UploadSignedDocuments extends Vue {
   }
   @Watch("uploadedFiles")
   private async filesUploaded(): Promise<void>{
-    if(this.uploadedFiles.length === this.needsSignatureLength){
+    if(this.uploadedFiles.length === this.allSignaturesLength){
       await acquisitionPackage.setDisableContinue(false)
     }else{
       await acquisitionPackage.setDisableContinue(true)
@@ -279,9 +282,8 @@ export default class UploadSignedDocuments extends Vue {
         this.filesNeeded.push(item.itemName)
       }
     })
-    if(this.fairOpportunity !== 'NO_NONE'){
-      this.needsSignatureLength += 2
-    }
+    this.allSignaturesLength = this.fairOpportunity !== 'NO_NONE'?
+      this.needsSignatureLength + 2 : this.needsSignatureLength
     const query: AxiosRequestConfig = {
       params: {
         sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
