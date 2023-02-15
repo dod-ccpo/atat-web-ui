@@ -163,7 +163,6 @@ import {
   EvalPlanDetailsRouteResolver,
   ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
-  UploadJAMRRDocumentsRouteResolver,
   AnticipatedUserAndDataNeedsResolver,
   DOWArchitecturalDesignResolver,
   IGCETrainingPathResolver, 
@@ -1093,15 +1092,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     path: "/upload-ja-mrr-documents",
     component: GeneratePackageDocuments,
     children: [
-      {
-        menuText: "Upload J&A and MRR Documents",
-        path:"upload-ja-mrr-documents",
-        excludeFromMenu: true,
-        name: routeNames.UploadJAMRRDocuments,
-        completePercentageWeight: 0,
-        component: UploadJAMRRDocuments,
-        routeResolver: UploadJAMRRDocumentsRouteResolver,
-      },
       {
         menuText: "Ready To Generate Package",
         path:"ready-to-generate-package",

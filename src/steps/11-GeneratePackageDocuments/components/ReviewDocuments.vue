@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{'copy-max-width':ditcoUser}">
+    class="copy-max-width">
     <h1>
       Your documents are ready to download and review
     </h1>
@@ -21,13 +21,36 @@
     >
       <template v-slot:content>
         <p class="mt-1 mb-0">
-          Your package has
-          <strong>{{needsSignatureLength}} documents requiring certification.</strong>
-          During your review process, be sure to obtain signatures from your approving officials,
-          and we’ll upload them on the following page.
+          During your review process, be sure to obtain signatures from certifying officials on 
+          the <strong>{{needsSignatureLength}} documents </strong> indicated below. 
+          We’ll help you upload these signed documents next.
         </p>
       </template>
     </ATATAlert>
+
+    <ATATAlert
+    v-if="!ditcoUser"
+    id="DITCOWhatsNextInfo"
+    class="my-10"
+    type="info"
+  >
+    <template v-slot:content>
+      <h3 class="mb-1">What’s next?</h3>
+      <ol type="1">
+        <li class="mb-2">
+          Obtain signatures from certifying officials on the <strong>{{needsSignatureLength}} 
+          documents</strong> indicated below. 
+        </li>
+        <li class="mb-2">Send your downloaded package and signed documents 
+          to your Contracting Office for processing. 
+        </li>
+        <li class="mb-2">
+          Once a task order is awarded, you can return to ATAT and we’ll help you provision
+          your accounts and environments with your Cloud Service Provider.
+        </li>
+      </ol>
+    </template>
+  </ATATAlert>
     <ATATAlert 
       v-if="isErrored" 
       id="ErrorAlert" 
@@ -43,24 +66,20 @@
 
     <div class="d-flex">
         <div
-          class="package-list pa-6"
-          :class="{'width-100':ditcoUser}"
+          class="package-list pa-6 width-100"
         >
           <v-row class="d-flex justify-space-between">
             <v-col>
               <h2>
                 Your acquisition package
               </h2>
-              <span v-if="!ditcoUser" class="font-weight-500 text-base font-size-14">
-                ({{packageCheckList.length}} documents)
-              </span>
-              <span v-else class="font-weight-500 text-base font-size-14">
+              <span class="font-weight-500 text-base font-size-14">
                 {{packageCheckList.length}} documents • {{lastUpdatedString}}
               </span>
             </v-col>
             <v-col class="d-flex justify-end" align-self="end">
               <v-btn
-                v-if="ditcoUser && isErrored === false"
+                v-if="isErrored === false"
                 class="secondary _text-decoration-none px-6 mr-5"
                 large
                 target="_blank"
@@ -82,12 +101,12 @@
                 <v-icon class="ml-2">download</v-icon>
             </v-btn>
             </v-col>
-          </v-row>
+          </v-row> 
           <v-row>
             <v-col>
               <PackageItem
                 v-for="(acPackage, idx) of packageCheckList" :key="idx"
-                :itemNumber="String(idx + 1)"
+                :itemNumber="String(idx<9 ? '0' + (idx + 1) : idx + 1)"
                 :itemName="acPackage.itemName"
                 :requiresSignature="acPackage.requiresSignature"
                 :additionalInfo="acPackage.description"
@@ -101,29 +120,6 @@
               ></PackageItem>
             </v-col>
           </v-row>
-      </div>
-
-      <div
-        style="width: 400px;"
-        v-if="!ditcoUser"
-        class="pl-5">
-        <div 
-          id="regenerateCard" 
-          class="border1 border-rounded-more border-base-lighter pa-6"
-        >
-          <h3 class="mb-2">Need to update your documents?</h3>
-          <p>
-            You can make changes to information within steps 1-8 
-            at any time and re-generate new documents, as needed.
-          </p> 
-          <v-btn
-            class="secondary width-100"
-            @click="$emit('regenerate')"
-          >
-            Re-generate my documents&nbsp;
-            <v-icon>sync</v-icon>
-          </v-btn>
-        </div>
       </div>
     </div>
   </div>
