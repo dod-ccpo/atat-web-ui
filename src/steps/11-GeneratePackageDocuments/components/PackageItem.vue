@@ -16,7 +16,7 @@
       </v-list-item-content>
       <v-list-item-action v-if="requiresSignature">
         <span class="d-flex signature-required">
-          <div class="d-flex">
+          <div class="d-flex align-center">
             <ATATSVGIcon
               class="mr-2"
               name="warning"

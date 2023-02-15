@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{'copy-max-width':ditcoUser}">
+    class="copy-max-width">
     <h1>
       Your documents are ready to download and review
     </h1>
@@ -21,10 +21,9 @@
     >
       <template v-slot:content>
         <p class="mt-1 mb-0">
-          Your package has
-          <strong>{{needsSignatureLength}} documents requiring certification.</strong>
-          During your review process, be sure to obtain signatures from your approving officials,
-          and we’ll upload them on the following page.
+          During your review process, be sure to obtain signatures from certifying officials on 
+          the <strong>{{needsSignatureLength}} documents </strong> indicated below. 
+          We’ll help you upload these signed documents next.
         </p>
       </template>
     </ATATAlert>
@@ -39,7 +38,8 @@
       <h3 class="mb-1">What’s next?</h3>
       <ol type="1">
         <li class="mb-2">
-          Obtain signatures from certifying officials on the 5 documents indicated above. 
+          Obtain signatures from certifying officials on the <strong>{{needsSignatureLength}} 
+          documents</strong> indicated below. 
         </li>
         <li class="mb-2">Send your downloaded package and signed documents 
           to your Contracting Office for processing. 
