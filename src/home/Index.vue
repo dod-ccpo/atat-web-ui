@@ -51,9 +51,11 @@
           v-else 
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
-          @allPackagesCleared="isNewUser = true"
+          @allPackagesCleared="checkIfIsNewUser"
           @openTOSearchModal="openSearchTOModal"
           @startProvisionWorkflow="startProvisionWorkflow"
+          :userHasPackages="userHasPackages"
+          :userHasPortfolios="userHasPortfolios"
         />      
 
         <div class="bg-white">
@@ -116,6 +118,8 @@ export default class Home extends Vue {
   public TONumber = "";
   public resetValidationNow = false;
   public selectedAcquisitionPackageSysId = "";
+  public userHasPackages = false;
+  public userHasPortfolios = false;
   
   public openSearchTOModal(acqPackageSysId: string): void {
     this.selectedAcquisitionPackageSysId = acqPackageSysId;
@@ -174,13 +178,13 @@ export default class Home extends Vue {
       },
       replace: true
     }).catch(() => console.log("avoiding redundant navigation"));
-    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
-    
+    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);  
   }
 
   public async checkIfIsNewUser(): Promise<void> {
-    const userHasPackages = await UserStore.hasPackages();
-    this.isNewUser = !userHasPackages;
+    this.userHasPackages = await UserStore.hasPackages();
+    this.userHasPortfolios = await UserStore.hasPortfolios();
+    this.isNewUser = !this.userHasPackages && !this.userHasPortfolios;
   }
 
   public async mounted(): Promise<void> {

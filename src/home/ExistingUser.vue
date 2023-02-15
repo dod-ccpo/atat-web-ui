@@ -5,85 +5,92 @@
         <v-row>    
           <v-col class="col-sm-12 col-md-7 pr-5">
 
-            <v-expansion-panels id="PackagesAccordion" flat v-model="packagesPanel">
-              <v-expansion-panel expand>
-                <v-expansion-panel-header>
-                  <div class="d-flex justify-space-between">
-                    <div class="h3">
-                      Open Acquisition Packages
+            <div v-if="userHasPackages">
+              <v-expansion-panels id="PackagesAccordion" flat v-model="packagesPanel">
+                <v-expansion-panel expand>
+                  <v-expansion-panel-header>
+                    <div class="d-flex justify-space-between">
+                      <div class="h3">
+                        Open Acquisition Packages
+                      </div>
+                      <div class="h3 _item-count pr-4">
+                        {{ packageCount }} package<span v-if="packageCount !== 1">s</span>
+                      </div>
                     </div>
-                    <div class="h3 _item-count pr-4">
-                      {{ packageCount }} package<span v-if="packageCount !== 1">s</span>
-                    </div>
-                  </div>
 
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
 
-                  <PackageCards
-                    v-for="(cardData, index) in packageData"
-                    :key="cardData.sys_id"
-                    :cardData="cardData"
-                    :index="index"
-                    :isLastCard="index === packageData.length - 1"
-                    @updateStatus="loadPackageData"
-                    @openTOSearchModal="openTOSearchModal"
-                  />
+                    <PackageCards
+                      v-for="(cardData, index) in packageData"
+                      :key="cardData.sys_id"
+                      :cardData="cardData"
+                      :index="index"
+                      :isLastCard="index === packageData.length - 1"
+                      @updateStatus="loadPackageData"
+                      @openTOSearchModal="openTOSearchModal"
+                    />
 
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-            <div class="_view-all mb-10 bg-white">
-              <a
-                id="viewAllPackagesLink"
-                role="button"
-                @click="viewAllPackages"
-                @keydown.enter="viewAllPackages"
-                @keydown.space="viewAllPackages"
-              >
-                View all packages
-              </a>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+              <div class="_view-all mb-10 bg-white">
+                <a
+                  id="viewAllPackagesLink"
+                  role="button"
+                  @click="viewAllPackages"
+                  @keydown.enter="viewAllPackages"
+                  @keydown.space="viewAllPackages"
+                >
+                  View all packages
+                </a>
+              </div>
             </div>
 
 
+            <div v-if="userHasPortfolios">
+              <v-expansion-panels 
+                id="PortfoliosAccordion" 
+                flat 
+                v-model="portfolioPanel" 
+              >
+                <v-expansion-panel expand>
+                  <v-expansion-panel-header>
+                    <div class="d-flex justify-space-between">
+                      <div class="h3">
+                        Porfolios
+                      </div>
+                      <div class="h3 text-base-light _item-count pr-4">
+                        {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>
+                      </div>
+                    </div>
 
-          <v-expansion-panels id="PortfoliosAccordion" flat v-model="portfolioPanel">
-            <v-expansion-panel expand>
-              <v-expansion-panel-header>
-                <div class="d-flex justify-space-between">
-                  <div class="h3">
-                    Porfolios
-                  </div>
-                  <div class="h3 text-base-light _item-count pr-4">
-                    {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>
-                  </div>
-                </div>
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
 
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
+                    <PortfoliosSummary 
+                      active-tab="ALL" 
+                      default-sort="DESCsys_updated_on"
+                      :isHomeView="true" 
+                      @totalCount="updateTotalPortfolios"
+                    />
 
-                <PortfoliosSummary 
-                  active-tab="ALL" 
-                  default-sort="DESCsys_updated_on"
-                  :isHomeView="true" 
-                  @totalCount="updateTotalPortfolios"
-                />
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
 
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
-          <div class="_view-all">
-            <a
-              id="ViewAllPortfoliosLink"
-              role="button"
-              @click="viewAllPortfolios"
-              @keydown.enter="viewAllPortfolios"
-              @keydown.space="viewAllPortfolios"
-            >
-              View all portfolios
-            </a>
-          </div>
+              <div class="_view-all">
+                <a
+                  id="ViewAllPortfoliosLink"
+                  role="button"
+                  @click="viewAllPortfolios"
+                  @keydown.enter="viewAllPortfolios"
+                  @keydown.space="viewAllPortfolios"
+                >
+                  View all portfolios
+                </a>
+              </div>
+            </div>
 
 
 
@@ -167,7 +174,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
@@ -201,6 +208,9 @@ import CurrentUserStore from "@/store/user";
 })
 
 export default class ExistingUser extends Vue {
+  @Prop({default: false}) public userHasPackages!: boolean;
+  @Prop({default: false}) public userHasPortfolios!: boolean;
+
   public packageData:AcquisitionPackageSummaryDTO[] = []
   public draftPackageCount = 0;
 

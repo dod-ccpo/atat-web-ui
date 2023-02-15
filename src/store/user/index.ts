@@ -10,8 +10,13 @@ import rootStore from "../index";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import api from "@/api";
 import Vue from "vue";
-import { AcquisitionPackageSummarySearchDTO, UserDTO } from "@/api/models";
+import { 
+  AcquisitionPackageSummarySearchDTO, 
+  PortfolioSummarySearchDTO, 
+  UserDTO 
+} from "@/api/models";
 import AcquisitionPackageSummary from "../acquisitionPackageSummary";
+import PortfolioSummary from "../portfolioSummary";
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
 
@@ -103,6 +108,20 @@ export class UserStore extends VuexModule {
     userHasPackages = packageData.total_count > 0;
 
     return userHasPackages;
+  }
+  @Action({rawError: true})
+  public async hasPortfolios(): Promise<boolean> {
+    const baseSearchDTO: PortfolioSummarySearchDTO = {
+      portfolioStatus: "",
+      sort: "DESCsys_updated_on",
+      offset: 0,
+      role: "ALL",
+      fundingStatuses: [],
+      csps: [],  
+    }
+    const searchQuery = await PortfolioSummary.getMandatorySearchParameterQuery(baseSearchDTO);
+    const count = await PortfolioSummary.getPortfolioSummaryCount(searchQuery);
+    return count > 0;
   }
 
   @Action({rawError: true})

@@ -109,7 +109,7 @@ export class PortfolioSummaryStore extends VuexModule {
    * each search parameter, no need to check if the value exists since the value is mandatory.
    */
   @Action({rawError: true})
-  private async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
+  public async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
     Promise<string> {
     const currentUser = await CurrentUserStore.getCurrentUser();
     const userSysId = currentUser.sys_id;
@@ -133,7 +133,7 @@ export class PortfolioSummaryStore extends VuexModule {
    * TODO: this call can be avoided if server exposes "x-Total-Count" from the backend
    */
   @Action({rawError: true})
-  private async getPortfolioSummaryCount(searchQuery: string): Promise<number> {
+  public async getPortfolioSummaryCount(searchQuery: string): Promise<number> {
     await this.ensureInitialized();
     const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
       params: {
