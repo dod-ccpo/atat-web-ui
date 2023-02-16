@@ -49,8 +49,6 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import { homedir } from "os";
-import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -174,12 +172,6 @@ const initialContractConsiderations = ()=> {
 const initialFairOpportunity = () => {
   return {
     exception_to_fair_opportunity: "",
-  };
-};
-
-const initialPackageDocumentsSigned = () => {
-  return {
-    acquisition_package: {},
   };
 };
 

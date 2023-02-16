@@ -62,8 +62,7 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
       }
     }
     const attachments = this.getQuery(config);
-    //const data = await this.retrieve(undefined, config);
-
+    
     return attachments;
   }
 

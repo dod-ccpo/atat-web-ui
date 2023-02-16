@@ -304,7 +304,6 @@ export class ValidationPlugin {
         return `Your file '${fileName}' is too large. Please upload a file that is 1GB or less.`
       }
 
-
       if (SNOWError !== "" && SNOWError !== undefined){
         const error = SNOWError.toLowerCase();
         let invalidMessage = "";

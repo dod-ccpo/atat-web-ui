@@ -58,7 +58,6 @@ export const CreateEvalPlanRouteResolver = (current: string): string => {
     : routeNames.Exceptions;
 };
 
-
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (missingEvalPlanMethod(evalPlan)) {
