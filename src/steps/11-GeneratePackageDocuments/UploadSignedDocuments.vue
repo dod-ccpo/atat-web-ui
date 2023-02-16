@@ -25,8 +25,7 @@
             @delete="onRemoveAttachment"
             fileListTitle="Your files"
             :invalidFiles.sync="invalidFiles"
-            :maxNumberOfFiles="fairOpportunity !== 'NO_NONE'?
-            filesNeeded.length + 2:filesNeeded.length"
+            :maxNumberOfFiles="getMaxNumberOfFiles"
             :validFiles.sync="uploadedFiles"
             :rules="getRulesArray()"
             :filesRequired="true"
@@ -37,7 +36,7 @@
             style="width: 330px;"
             class="pl-5">
             <ATATAlert
-              v-if="needsSignatureLength > uploadedFiles.length"
+              v-if="!isCompleted"
               id="warning"
               class="mb-4"
               type="warning"
@@ -45,7 +44,7 @@
               <template v-slot:content>
                 <p class="mt-1 mb-0">
                   <strong>
-                    Missing {{needsSignatureLength - uploadedFiles.length}} {{missingDocsText}}
+                    Missing {{getMaxNumberOfFiles - uploadedFiles.length}} {{missingDocsText}}
                   </strong>
                 </p>
                 <p class="mb-0">
@@ -180,6 +179,12 @@ export default class UploadSignedDocuments extends Vue {
   get incrementallyFunded():string {
     return FinancialDetails.fundingRequirement?.incrementally_funded || "";
   }
+
+  get getMaxNumberOfFiles():number{
+    return this.fairOpportunity !== 'NO_NONE'
+      ?(this.filesNeeded.length + 2)
+      :this.filesNeeded.length
+  }
   private packages = [
     {
       itemName:"Requirements Checklist",
@@ -246,12 +251,22 @@ export default class UploadSignedDocuments extends Vue {
   }
   @Watch("uploadedFiles")
   private async filesUploaded(): Promise<void>{
-    if(this.uploadedFiles.length === this.needsSignatureLength){
-      await acquisitionPackage.setDisableContinue(false)
-    }else{
-      await acquisitionPackage.setDisableContinue(true)
-    }
+    await this.setDisableContinue();
   }
+
+  private async setDisableContinue(): Promise<void>{
+    await acquisitionPackage.setDisableContinue(
+      !this.isCompleted
+    )
+  }
+
+  /**
+   * returns if all expected files have been uploaded 
+   **/
+  get isCompleted(): boolean {
+    return this.uploadedFiles.length === this.getMaxNumberOfFiles
+  }
+
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
@@ -272,16 +287,14 @@ export default class UploadSignedDocuments extends Vue {
     return rulesArr;
   }
   public async loadOnEnter(): Promise<void> {
-    await acquisitionPackage.setDisableContinue(true)
+    
     this.packages.forEach(item =>{
       if(item.show && item.requiresSignature){
         this.needsSignatureLength++
-        this.filesNeeded.push(item.itemName)
+        this.filesNeeded.push(item.itemName.replace("(Template)", ""))
       }
     })
-    if(this.fairOpportunity !== 'NO_NONE'){
-      this.needsSignatureLength += 2
-    }
+    
     const query: AxiosRequestConfig = {
       params: {
         sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
@@ -318,6 +331,7 @@ export default class UploadSignedDocuments extends Vue {
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
+    await this.setDisableContinue();
   }
 }
 </script>

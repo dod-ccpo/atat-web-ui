@@ -176,7 +176,7 @@ export default class ATATFileUpload extends Vue {
   private validateOnBlur = true;
   private moreThanMax = false
   get isFileUploadDisabled():boolean{
-    return this.maxNumberOfFiles<=this._validFiles.length;
+    return this.maxNumberOfFiles <= this._validFiles.length;
   }
 
   get fileSizeConversion(): number {
@@ -332,7 +332,7 @@ export default class ATATFileUpload extends Vue {
 
       return isValidFormat && !doesFileExist && isFileSizeValid && !isRestrictedName;
     });
-    if(_validFiles.length > this.maxNumberOfFiles){
+    if((this._validFiles.length + _validFiles.length) > this.maxNumberOfFiles){
       this.moreThanMax = true
       const errorText = this.maxNumberOfFiles === 1?
         `Too many files selected. You can upload up to ${this.maxNumberOfFiles} file.`
