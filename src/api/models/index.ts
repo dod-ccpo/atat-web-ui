@@ -624,7 +624,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   csp: ReferenceColumn;
   active_task_order: ReferenceColumn;
   csp_display: string; // "<<cloud_service_package.name >>"
-  dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
+  agency: string;
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
   sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
   task_order_status: string; // "EXPIRED << task_order.task_order_status >>",
@@ -648,13 +648,13 @@ export interface PortfolioSummaryMetadataAndDataDTO {
 }
 
 export interface EnvironmentDTO extends BaseTableDTO {
-  csp: ReferenceColumn;
+  csp: string;
   csp_id: string;
   csp_display: string;
   name: string;
   dashboard_link: string;
   pending_operators: string[];
-  portfolio: PortfolioSummaryDTO;
+  portfolio: string;
   provisioned: YesNo;
   provisioned_date: string;
   provisioning_failure_cause: string;

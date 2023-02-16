@@ -427,7 +427,7 @@ export default class PortfoliosSummary extends Vue {
       cardData.description = portfolio.description;
       cardData.status = portfolio.portfolio_status;
       cardData.fundingStatus = portfolio.portfolio_funding_status;
-      cardData.agency = portfolio.dod_component;
+      cardData.agency = portfolio.agency;
 
       const activeTaskOrderSysId = portfolio.active_task_order.value as string;
       const activeTaskOrder = portfolio.task_orders.find(

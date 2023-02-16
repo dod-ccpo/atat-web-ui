@@ -24,7 +24,7 @@
     "task_order_number": "1000000008765",
     "task_order_status": "ACTIVE",
     "task_orders": [],
-    "dod_component": "ARMY",
+    "agency": "ARMY",
     "pop_start_date": "2022-01-01",
     "pop_end_date": "2022-12-31",
     "funds_obligated": 1250000,

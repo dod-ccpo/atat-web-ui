@@ -28,7 +28,7 @@ describe("Testing TaskOrder Component", () => {
         "value": "01a"
       },
       csp_display: "",
-      dod_component: "",
+      agency: "",
       task_order_number: "",
       sys_updated_on: "",
       task_order_status: "",

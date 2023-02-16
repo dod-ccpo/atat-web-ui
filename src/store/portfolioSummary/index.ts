@@ -14,6 +14,7 @@ import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
 import { Statuses } from "../acquisitionPackage";
 import CurrentUserStore from "../user";
+import {convertColumnReferencesToValues} from "@/api/helpers";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
@@ -199,7 +200,7 @@ export class PortfolioSummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   private async setEnvironmentsForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    const allEnvironmentsList = await api.environmentTable.getQuery(
+    let allEnvironmentsList = await api.environmentTable.getQuery(
       {
         params:
           { // bring all fields
@@ -208,11 +209,11 @@ export class PortfolioSummaryStore extends VuexModule {
           }
       }
     )
+    allEnvironmentsList = allEnvironmentsList
+      .map(environment => convertColumnReferencesToValues(environment));
     portfolioSummaryList.forEach(portfolio => {
       portfolio.environments = allEnvironmentsList
-        .filter((environment) => {
-          return (environment.portfolio as ReferenceColumn).value === portfolio.sys_id
-        });
+        .filter((environment) => environment.portfolio === portfolio.sys_id);
     })
     return portfolioSummaryList;
   }
@@ -224,7 +225,7 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
     const cspSysIds = portfolioSummaryList.map(portfolio =>
-      portfolio.environments?.map(environment => environment.csp.value));
+      portfolio.environments?.map(environment => environment.csp));
     const allCspList = await api.cloudServiceProviderTable.getQuery(
       {
         params:
@@ -238,7 +239,7 @@ export class PortfolioSummaryStore extends VuexModule {
       portfolio.environments?.forEach(environment => {
         environment.csp_display =
           (allCspList.find(
-            (csp: CloudServiceProviderDTO) => environment.csp.value === csp.sys_id)?.name) || "";
+            (csp: CloudServiceProviderDTO) => environment.csp === csp.sys_id)?.name) || "";
       })
     });
   }
@@ -363,11 +364,6 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private computeAllAggregationsAndPopRollup(portfolioSummaryList: PortfolioSummaryDTO[]) {
     portfolioSummaryList.forEach(portfolio => {
-      
-      // TODO: after schema changes made for /provisioning POST call, use `portfolio.agency` 
-      // instead of `portfolio.dod_component`
-      portfolio.dod_component = 'ARMY' 
-
       let totalObligatedForPortfolio = 0;
       let fundsSpentForPortfolio = 0;
       portfolio.task_orders.forEach(taskOrder => {
