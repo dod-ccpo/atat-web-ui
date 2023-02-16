@@ -38,7 +38,7 @@
             style="width: 380px;"
             class="pl-5">
             <ATATAlert
-              v-if="!isCompleted"
+              v-if="!isCompleted && uploadedFiles.length>0"
               id="warning"
               class="mb-4"
               type="warning"
