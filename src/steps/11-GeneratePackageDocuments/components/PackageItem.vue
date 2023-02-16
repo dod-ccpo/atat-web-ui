@@ -16,17 +16,7 @@
       </v-list-item-content>
       <v-list-item-action v-if="requiresSignature">
         <span class="d-flex signature-required">
-          <div v-if="!ditcoUser" class="d-flex">
-            <ATATSVGIcon
-              class="mr-2"
-              name="fileSignature"
-              width="22"
-              height="20"
-              color="base"
-            />
-          <span>Signature Required</span>
-          </div>
-          <div v-else class="d-flex">
+          <div class="d-flex align-center">
             <ATATSVGIcon
               class="mr-2"
               name="warning"
