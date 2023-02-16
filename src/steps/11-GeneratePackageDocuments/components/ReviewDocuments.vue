@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{'copy-max-width':ditcoUser}">
+    class="copy-max-width">
     <h1>
       Your documents are ready to download and review
     </h1>
@@ -17,28 +17,41 @@
       v-if="needsSignatureLength"
       id="Callout"
       class="my-10"
-      :type="ditcoUser?'warning':'info'"
+      type="warning"
     >
       <template v-slot:content>
-        <h3 v-if="!ditcoUser">What's next?</h3>
-        <ol v-if="!ditcoUser">
-          <li class="mb-1">Obtain signatures from certifying officials on the
-            <strong>{{needsSignatureLength}} documents </strong>
-            indicated above.</li>
-          <li class="mb-1">Send your downloaded package and signed documents to your Contracting
-            Office for processing.</li>
-          <li class="mb-1">Once a task order is awarded, you can return to ATAT and we’ll help you
-            provision your accounts and environments with your Cloud Service Provider.</li>
-        </ol>
-
-        <p v-if="ditcoUser" class="mt-1 mb-0">
-          During your review process, be sure to obtain signatures from
-          certifying officials on the <strong>{{needsSignatureLength}} documents </strong>
-          indicated below. We’ll help you upload these signed documents next.
+        <p class="mt-1 mb-0">
+          During your review process, be sure to obtain signatures from certifying officials on
+          the <strong>{{needsSignatureLength}} documents </strong> indicated below.
+          We’ll help you upload these signed documents next.
         </p>
       </template>
     </ATATAlert>
-    <ATATAlert 
+
+    <ATATAlert
+    v-if="!ditcoUser"
+    id="DITCOWhatsNextInfo"
+    class="my-10"
+    type="info"
+  >
+    <template v-slot:content>
+      <h3 class="mb-1">What’s next?</h3>
+      <ol type="1">
+        <li class="mb-2">
+          Obtain signatures from certifying officials on the <strong>{{needsSignatureLength}}
+          documents</strong> indicated below.
+        </li>
+        <li class="mb-2">Send your downloaded package and signed documents
+          to your Contracting Office for processing.
+        </li>
+        <li class="mb-2">
+          Once a task order is awarded, you can return to ATAT and we’ll help you provision
+          your accounts and environments with your Cloud Service Provider.
+        </li>
+      </ol>
+    </template>
+  </ATATAlert>
+    <ATATAlert
       v-if="isErrored" 
       id="ErrorAlert" 
       class="my-10"
@@ -53,8 +66,7 @@
 
     <div class="d-flex">
         <div
-          class="package-list pa-6"
-          :class="{'width-100':ditcoUser}"
+          class="package-list pa-6 width-100"
         >
           <v-row class="d-flex justify-space-between">
             <v-col>
@@ -67,7 +79,7 @@
             </v-col>
             <v-col class="d-flex justify-end" align-self="end">
               <v-btn
-                v-if="ditcoUser &&isErrored === false"
+                v-if="isErrored === false"
                 class="secondary _text-decoration-none px-6 mr-5"
                 large
                 target="_blank"
@@ -94,7 +106,7 @@
             <v-col>
               <PackageItem
                 v-for="(acPackage, idx) of packageCheckList" :key="idx"
-                :itemNumber="String(idx + 1)"
+                :itemNumber="String(idx<9 ? '0' + (idx + 1) : idx + 1)"
                 :itemName="acPackage.itemName"
                 :requiresSignature="acPackage.requiresSignature"
                 :additionalInfo="acPackage.description"

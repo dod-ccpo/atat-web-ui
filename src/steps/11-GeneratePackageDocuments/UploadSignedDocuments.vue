@@ -15,7 +15,9 @@
       </p>
       <hr class="base-lighter" />
       <div class="d-flex">
-        <div>
+        <div
+          style="width: 588px;"
+        >
           <ATATFileUpload
             :validFileFormats="validFileFormats"
             :attachmentServiceName="attachmentServiceName"
@@ -33,7 +35,7 @@
         </div>
         <div>
           <div
-            style="width: 330px;"
+            style="width: 380px;"
             class="pl-5">
             <ATATAlert
               v-if="!isCompleted"
@@ -155,6 +157,7 @@ export default class UploadSignedDocuments extends Vue {
   private invalidFiles: invalidFile[] = [];
   private uploadedFiles: uploadingFile[] = [];
   private needsSignatureLength = 0;
+  private allSignaturesLength = 0
   private saved:PackageDocumentsSignedDTO | null = {
     /* eslint-disable camelcase */
     sys_id: "",
