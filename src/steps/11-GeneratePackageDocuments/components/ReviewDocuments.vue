@@ -139,6 +139,7 @@ import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 
 @Component({
@@ -289,6 +290,14 @@ export default class ReviewDocuments extends Vue {
     fundingRequestAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'8 (Funding)')
     })
+
+    const docNames:string[] = []
+    this.packageCheckList.forEach(listItem => {
+      if(typeof listItem.itemName === "string")
+        docNames.push(listItem.itemName)
+    })
+    await acquisitionPackage.setAttachmentNames(docNames)
+    await acquisitionPackage.setDisableContinue(false);
 
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
 
