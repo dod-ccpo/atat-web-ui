@@ -149,6 +149,7 @@ export default class Card extends Vue {
   @Prop() private isLastCard!: boolean;
   
   public isOwner = false;
+  public isDitco = false;
   public hasContributor = false;
   public isWaitingForSignatures = false
   public showDeleteModal = false
@@ -164,6 +165,7 @@ export default class Card extends Vue {
     updated: string;
     title: string;
     contributors:string;
+    contractingShop: string;
   } = {
     contractAward: "",
     missionOwners: "",
@@ -174,6 +176,7 @@ export default class Card extends Vue {
     updated: "",
     title: "",
     contributors:"",
+    contractingShop: "",
   }
 
   private currentUser: UserDTO = {};
@@ -202,6 +205,7 @@ export default class Card extends Vue {
     if(cardData && cardData.mission_owners && this.currentUser.sys_id) {
       this.isOwner = cardData.mission_owners?.value.indexOf(this.currentUser.sys_id) > -1
     }
+    this.isDitco = cardData.contracting_shop?.value.toUpperCase() === "DITCO";
     this.modifiedData.contractAward = cardData.contract_award?.value || ""
     this.modifiedData.missionOwners = cardData.mission_owners?.value || ""
     this.modifiedData.packageStatus = cardData.package_status?.display_value || ""
@@ -246,8 +250,14 @@ export default class Card extends Vue {
   }
 
   public packageTitleClick(status: string): void {
-    if (status.toLowerCase() === "draft") {
-      this.cardMenuClick({action: 'Edit draft package', title: ""})    
+    const isEditable = ["draft", "waiting for signatures"].some(
+      s => s === status.toLowerCase()
+    )
+    if (isEditable){
+      this.cardMenuClick({
+        action: "Edit draft package",
+        title: ""
+      });
     }
   }
 
@@ -264,6 +274,19 @@ export default class Card extends Vue {
           packageId: this.cardData.sys_id
         }
       }).catch(() => console.log("avoiding redundant navigation"));
+      AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
+      break;
+    case "Upload Signed Documents":
+      this.$router.replace({
+        name: routeNames.UploadSignedDocuments,
+        replace: true,
+        params: {
+          direction: "next"
+        },
+        query: {
+          packageId: this.cardData.sys_id
+        }
+      }).catch(() => console.log("navigation error for Upload Signed Documents"));
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
       break;
     case "Archive acquisition":

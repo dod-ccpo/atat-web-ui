@@ -17,6 +17,11 @@ import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 
+export const LoadStepResolver = (current: string): string =>{
+  debugger;
+  return routeNames.UploadSignedDocuments;
+}
+
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
 
@@ -1295,6 +1300,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
 
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
+  LoadStepResolver,
   AcorsRouteResolver,
   CurrentContractDetailsRouteResolver,
   ReplicateDetailsResolver,

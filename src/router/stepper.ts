@@ -168,6 +168,7 @@ import {
   DOWArchitecturalDesignResolver,
   IGCETrainingPathResolver, 
   FeeChargedResolver,
+  LoadStepResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -295,7 +296,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
-        component: ContractingShop
+        component: ContractingShop,
+        //routeResolver: LoadStepResolver,
       },
       {
         menuText: "Project Overview",

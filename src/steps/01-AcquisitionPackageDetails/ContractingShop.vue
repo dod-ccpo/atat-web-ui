@@ -158,22 +158,9 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
 
   private async loadOnEnter(): Promise<void> {
     this.isPageLoading = true;
-
-    const packageId = this.$route.query['packageId'] || "";
-
-    if(packageId){
-      await AcquisitionPackage.reset();
-      await AcquisitionPackage.setPackageId(packageId as string);
-      await AcquisitionPackage.loadPackageFromId(packageId as string);
-    }
-    // make sure package is initialized
-    const storeData = AcquisitionPackage.projectOverview
-      || await AcquisitionPackage.loadData<ProjectOverviewDTO>({
-        storeProperty: StoreProperties.ProjectOverview,
-      });
-
     this.contractingShop = AcquisitionPackage.contractingShop || "";
     this.isPageLoading = false;
+    this.goToInitialRoute();
   }
 
   public async mounted(): Promise<void> {
@@ -184,6 +171,14 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
+    
+  }
+
+  
+  async goToInitialRoute():Promise<void>{
+    this.$router.push(
+      {name: await AcquisitionPackage.getInitialRoute()}
+    )
   }
 
   protected async saveOnLeave(): Promise<boolean> {

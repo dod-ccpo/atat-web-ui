@@ -49,6 +49,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import { routeNames } from "@/router/stepper";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -320,6 +321,7 @@ export class AcquisitionPackageStore extends VuexModule {
   allowDeveloperNavigation = false;
 
   contractingShop = "";
+  packageStatus = "";
   attachmentNames: string[] = []
   disableContinue = false
   fundingRequestType: string | null =  null;
@@ -375,6 +377,20 @@ export class AcquisitionPackageStore extends VuexModule {
     if(this.acquisitionPackage)
       this.acquisitionPackage.contracting_shop = value;
   }
+
+  
+  @Action({rawError: false})
+  public async setPackageStatus(value: string): Promise<void> {
+    this.doSetPackageStatus(value);
+  }
+
+  @Mutation
+  private doSetPackageStatus(value: string): void {
+    this.packageStatus = value;
+    if(this.acquisitionPackage)
+      this.acquisitionPackage.package_status = value;
+  }
+
 
   @Action({rawError: false})
   public async setAttachmentNames(value: string[]): Promise<void> {
@@ -730,6 +746,10 @@ export class AcquisitionPackageStore extends VuexModule {
       if(acquisitionPackage.contracting_shop)
         await this.setContractingShop(acquisitionPackage.contracting_shop);
       
+      if (acquisitionPackage.package_status){
+        await this.setPackageStatus(acquisitionPackage.package_status);
+      }
+
       if(projectOverviewSysId) {
         const projectOverview = await api.projectOverviewTable.retrieve(
           projectOverviewSysId
@@ -1504,6 +1524,23 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fundingRequestType =  null;
     this.fundingRequirement = null;
     this.contractingShop = "";
+    this.packageStatus = "";
+  }
+
+  @Action({rawError: true})
+  public async resetAndLoadPackage(packageId: string): Promise<void>{
+    if (packageId){
+      await this.reset();
+      await this.setPackageId(packageId);
+      await this.loadPackageFromId(packageId);
+    }
+  }
+
+  @Action({rawError: true})
+  public async getInitialRoute(): Promise<string>{
+    return this.packageStatus.toLowerCase() === "waiting_for_signatures" 
+      ? routeNames.UploadSignedDocuments
+      : routeNames.ContractingShop;
   }
 }
 

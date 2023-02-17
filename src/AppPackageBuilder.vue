@@ -104,8 +104,9 @@ export default class AppPackageBuilder extends Vue {
   private disableContinueButton = false;
 
   async mounted(): Promise<void> {
+    const packageId = this.$route.query.packageId as string;
+    await AcquisitionPackage.resetAndLoadPackage(packageId);
     this.routeNames = routeNames;
-    //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
@@ -113,12 +114,14 @@ export default class AppPackageBuilder extends Vue {
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
     }
+    
   }
 
   @Watch("$route")
   async onRouteChanged(): Promise<void> {
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
+    debugger;
     if (routeName && step) {
       const { stepName, stepNumber } = step;
       Steps.setCurrentStep(stepName);
