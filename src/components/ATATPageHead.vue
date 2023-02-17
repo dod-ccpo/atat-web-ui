@@ -8,11 +8,25 @@
     <div class="d-flex justify-space-between width-100 align-center">
       <div id="PackageNameHeader" tabindex="-1" class="h3">{{ headline }}</div>
       <div class="d-flex justify-end align-center">
-        <!-- TODO: restore in future ticket
-        <v-btn icon class="mr-5 _header-button _add-user-button" id="Person_Button">
-          <v-icon class="icon-20 text-base-dark">person_add_alt_1</v-icon>
-        </v-btn>
-
+        <v-tooltip
+          transition="slide-y-reverse-transition"
+          :id="'Contributor_Tooltip'"
+          max-width="250px"
+          bottom
+          eager
+        >
+          <template v-slot:activator="{ on }">
+          <v-btn
+            v-on="on"
+            icon class="mr-5 _header-button _add-user-button" id="Person_Button">
+            <v-icon class="icon-20 text-base-dark">person_add_alt_1</v-icon>
+          </v-btn>
+          </template>
+          <div id="ContributorTooltipText" class="_tooltip-content-wrap _no-pointer">
+          <div v-html="contributorTooltipText">
+          </div>
+          </div>
+        </v-tooltip>
         <v-menu
           :offset-y="true"
           left
@@ -30,7 +44,7 @@
               <v-icon class="text-base-dark">more_horiz</v-icon>
             </v-btn>
           </template>
-    
+
           <v-list>
             <v-list-item
               v-for="(item, index) in moreMenuItems"
@@ -42,8 +56,7 @@
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
-        </v-menu>   
-        -->     
+        </v-menu>
       </div>
     </div>
   </v-app-bar>
@@ -63,8 +76,29 @@ export default class ATATPageHead extends Vue {
   @Prop({ default: "Headline" }) private headline!: string;
 
   public moreMenuOpen = false;
-  public moreMenuItems = AppSections.appSectionMenuItems;
   public activeAppSection = AppSections.activeAppSection;
+  public isOwner = true
+  public contributorTooltipText = "Invite contributors"
+  public moreOptionsTooltipText = "More options"
+
+  public moreMenuItems = [
+    {
+      title: "View package details",
+      show: true
+    },
+    {
+      title: "Invite contributors",
+      show: true
+    },
+    {
+      title: "Archive acquisition",
+      show: this.isOwner
+    },
+    {
+      title: "Delete acquisition package",
+      show: this.isOwner
+    },
+  ]
 
   public async moreMenuClick(index: number): Promise<void> {
     await SlideoutPanel.closeSlideoutPanel()
