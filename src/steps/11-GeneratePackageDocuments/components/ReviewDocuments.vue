@@ -134,11 +134,12 @@ import FinancialDetails from "@/store/financialDetails";
 import { createDateStr } from "@/helpers";
 import Attachments from "@/store/attachments";
 import {TABLENAME as CURRENT_ENVIRONMENT_TABLE} from "@/api/currentEnvironment";
-import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
+import {TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE} from "@/api/fundingRequestMIPRForm";
+import {TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE} from "@/api/requirementsCostEstimate";
 import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
-import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import {TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
+import IGCE from "@/store/IGCE";
 
 
 @Component({
@@ -162,6 +163,7 @@ export default class ReviewDocuments extends Vue {
   public packageId = "";
   private lastUpdatedString = ""
   private currentEnvServiceName = CURRENT_ENVIRONMENT_TABLE;
+  private reqCostEstimateServiceName = REQUIREMENTS_COST_ESTIMATE_TABLE;
   private needsSignatureLength = 0
   private downloadLink = "";
   private domain="";
@@ -218,7 +220,7 @@ export default class ReviewDocuments extends Vue {
     {
       itemName:"Evaluation Plan",
       requiresSignature:false,
-      show:this.fairOpportunity !== "NO_NONE"
+      show:this.fairOpportunity === "NO_NONE"
     },
   ];
 
@@ -251,7 +253,16 @@ export default class ReviewDocuments extends Vue {
     const currentEnv = await CurrentEnvironment.getCurrentEnvironment()
     const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
     const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
+    const reqCostEstimate = await IGCE.getRequirementsCostEstimate();
     const fundingRequestIds = [];
+
+    const supportingDocumentsAttachments = await Attachments.getAttachmentsByTableSysIds({
+      serviceKey: this.reqCostEstimateServiceName,
+      tableSysId: reqCostEstimate?.sys_id as string
+    });
+    supportingDocumentsAttachments.forEach(attachment => {
+      this.createAttachmentObject(attachment,'8 (Requirements Cost Estimate)')
+    })
 
 
     const migrationAttachments = await Attachments.getAttachmentsBySysIds({
