@@ -34,17 +34,30 @@
           class="_more-menu _header-menu"
           attach
         >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              id="MoreMenuButton"
-              class="_more-menu-button _header-button"
+          <template v-slot:activator="{ on: onMenu, attrs }">
+            <v-tooltip
+              transition="slide-y-reverse-transition"
+              :id="'Contributor_Tooltip'"
+              max-width="250px"
+              bottom
+              eager
             >
-              <v-icon class="text-base-dark">more_horiz</v-icon>
-            </v-btn>
+              <template v-slot:activator="{ on: onTooltip }">
+                <v-btn
+                  v-bind="attrs"
+                  v-on="{...onMenu, ...onTooltip}"
+                  id="MoreMenuButton"
+                  class="_more-menu-button _header-button"
+                >
+                  <v-icon class="text-base-dark">more_horiz</v-icon>
+                </v-btn>
+              </template>
+              <div id="ContributorTooltipText" class="_tooltip-content-wrap _no-pointer">
+                <div v-html="moreOptionsTooltipText">
+                </div>
+              </div>
+            </v-tooltip>
           </template>
-
           <v-list>
             <v-list-item
               v-for="(item, index) in moreMenuItems"
@@ -59,6 +72,20 @@
         </v-menu>
       </div>
     </div>
+    <DeletePackageModal
+      :showModal.sync="showDeleteModal"
+      :packageName="packageName"
+      :hasContributor="hasContributor"
+      :waitingForSignature="isWaitingForSignature"
+      @okClicked="updateStatus('DELETED')"
+    />
+    <ArchiveModal
+      :showModal.sync="showArchiveModal"
+      :hasContributor="hasContributor"
+      :packageName="packageName"
+      :waitingForSignature="isWaitingForSignature"
+      @okClicked="updateStatus('ARCHIVED')"
+    />
   </v-app-bar>
 </template>
 
@@ -69,17 +96,55 @@ import { Component, Prop } from "vue-property-decorator";
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { getIdText } from "@/helpers";
+import CurrentUserStore from "@/store/user";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import acquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import ArchiveModal from "@/packages/components/ArchiveModal.vue";
+import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 
-@Component({})
+@Component({
+  components:{
+    ArchiveModal,
+    DeletePackageModal,
+  }
+})
 
 export default class ATATPageHead extends Vue {
   @Prop({ default: "Headline" }) private headline!: string;
 
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
-  public isOwner = true
   public contributorTooltipText = "Invite contributors"
   public moreOptionsTooltipText = "More options"
+  public showDeleteModal = false
+  public showArchiveModal = false
+  public packageName = acquisitionPackage.projectTitle
+  public hasContributor():boolean{
+    if(AcquisitionPackage
+      && AcquisitionPackage.acquisitionPackage
+      && AcquisitionPackage.acquisitionPackage.contributors){
+      return AcquisitionPackage.acquisitionPackage.contributors.length > 0
+    }
+    return false
+  }
+  public isWaitingForSignature():boolean{
+    if(AcquisitionPackage && AcquisitionPackage.acquisitionPackage){
+      return AcquisitionPackage.acquisitionPackage.package_status === 'WAITING_FOR_SIGNATURE'
+    }
+    return false
+  }
+  public get isMissionOwner(): boolean|undefined {
+    const currentUserId = CurrentUserStore.currentUser.sys_id||""
+    return AcquisitionPackage.acquisitionPackage?.mission_owners?.includes(currentUserId);
+  }
+  public async updateStatus(newStatus: string): Promise<void> {
+    await AcquisitionPackageSummary
+      .updateAcquisitionPackageStatus({
+        acquisitionPackageSysId: acquisitionPackage.packageId,
+        newStatus
+      });
+  }
 
   public moreMenuItems = [
     {
@@ -92,11 +157,11 @@ export default class ATATPageHead extends Vue {
     },
     {
       title: "Archive acquisition",
-      show: this.isOwner
+      show: this.isMissionOwner
     },
     {
       title: "Delete acquisition package",
-      show: this.isOwner
+      show: this.isMissionOwner
     },
   ]
 
