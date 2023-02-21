@@ -1,70 +1,63 @@
 <template>
-<div>
-  <!-- <v-container class="container-max-width" fluid> -->
+  <div>
+    <!-- <v-container class="container-max-width" fluid> -->
     <!-- class="_dow-card-wrapper" -->
-  <v-card
-    width="1000px"
-    height="112px"
-    class="d-flex align-center justify-space-around mb-6"
-    outlined
-    elevation="1"
-  >
-    <v-row justify="space-around">
-      <v-col class="d-flex align-center justify-end col-2 pr-4">
+    <v-card 
+      class="d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
+      outlined>
         <ATATSVGIcon 
-          :name="cardData.icon"
-          color="primary"
-          width="64"
-          height="64"
+          v-if="cardData.defineRequirements===true"
+          name="StarInTriangle" 
+          color="primary" 
+          width="49" 
+          height="48" 
+          class="define-requirements"
         />
-      </v-col>
-      <v-col class=" align-center justify-center col-8 py-0 mt-4 px-0">
-        <h3>
-          {{ cardData.title }}
-        </h3>
-        <p class="">
-          {{ cardData.label }} 
-          <a
-            v-if="cardData.title === 'Anything as a Service (XaaS)'"
-            role="button"
-            id="LearnMore"
-            class="_text-link"
-            tabindex="0"
-            @click="openXaasSlideoutPanel"
-            @keydown.enter="openXaasSlideoutPanel"
-            @keydown.space="openXaasSlideoutPanel"
-          >
-            {{ cardData.learnMore }}
-          </a>
-          <a
-            v-if="cardData.title === 'Cloud Support Package'"
-            role="button"
-            id="LearnMore"
-            class="_text-link"
-            tabindex="0"
-            @click="openSupportSlideoutPanel"
-            @keydown.enter="openSupportSlideoutPanel"
-            @keydown.space="openSupportSlideoutPanel"
-          >
-            {{ cardData.learnMore }}
-          </a>
-        </p>
-      </v-col>
-      <v-col class="d-flex align-center justify-center">
-          <!-- @click="$emit('next')"  -->
-        <v-btn 
-          depressed 
-          color="primary"
-          id="StartButton"
-          role="link"
-        >
-          Start
-        </v-btn>
-      </v-col>
-    </v-row>
-  </v-card>
-  <!-- </v-container> -->
-</div>
+        <div class="d-flex justify-center flex-column">
+          <ATATSVGIcon :name="cardData.icon" color="primary" width="64" height="64" />
+        </div>
+        <div class="d-flex align-left justify-center flex-column ml-4">
+          <h3 class="mb-1">
+            {{ cardData.title }}
+          </h3>
+          <div>
+            {{ cardData.label }}
+            <a v-if="cardData.title === 'Anything as a Service (XaaS)'" 
+              role="button" 
+              id="LearnMoreXaas" class="_text-link"
+              tabindex="0" 
+              @click="openXaasSlideoutPanel" 
+              @keydown.enter="openXaasSlideoutPanel"
+              @keydown.space="openXaasSlideoutPanel">
+              {{ cardData.learnMore }}
+            </a>
+            <a v-if="cardData.title === 'Cloud Support Package'" 
+              role="button" 
+              id="LearnMoreCloudSupportPackage" 
+              class="_text-link"
+              tabindex="0" 
+              @click="openSupportSlideoutPanel" 
+              @keydown.enter="openSupportSlideoutPanel"
+              @keydown.space="openSupportSlideoutPanel">
+              {{ cardData.learnMore }}
+            </a>
+          </div>
+        </div>
+        <div class="d-flex align-center justify-center flex-column ml-auto">
+          <router-link :id="cardData.route" :to="{ name: cardData.route }">
+            <v-btn
+              color="primary" 
+              id="StartButton" 
+              width="110"
+              role="link">
+              Start
+            </v-btn>
+          </router-link>
+
+        </div>
+    </v-card>
+    <!-- </v-container> -->
+  </div>
 </template>
 
 <script lang="ts">
@@ -77,6 +70,7 @@ import CloudSupportLearnMore from "./CloudSupportLearnMore.vue";
 import { SlideoutPanelContent } from "../../../../types/Global";
 
 import Vue from "vue";
+import StarInTriangle from "@/components/icons/StarInTriangle.vue";
 
 @Component({
   components: {
@@ -85,10 +79,10 @@ import Vue from "vue";
 })
 
 export default class DOWCard extends Vue {
-  @Prop() private cardData!: Record<string, string>;
+  @Prop() public cardData!: Record<string, string | boolean>;
 
   private currentEnvironmentExists = "";
-  private setPanelComponent: any;
+  private setPanelComponent: any = {};
   private xaasSlideoutPanelContent = {} as SlideoutPanelContent;
   private supportSlideoutPanelContent = {} as SlideoutPanelContent;
 
@@ -129,7 +123,7 @@ export default class DOWCard extends Vue {
 
     this.setPanelComponent = await SlideoutPanel.setSlideoutPanelComponent;
   };
- 
+
 }
 
 </script>

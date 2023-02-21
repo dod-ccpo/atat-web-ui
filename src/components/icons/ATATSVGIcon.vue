@@ -62,7 +62,9 @@ import Search from "@/components/icons/Search.vue";
 import Service from "@/components/icons/Service.vue";
 import SignOut from "@/components/icons/SignOut.vue";
 import Support from "@/components/icons/Support.vue";
-import SupportCircle from "@/components/icons/SupportCircle.vue"
+import SupportCircle from "@/components/icons/SupportCircle.vue";
+import Star from "@/components/icons/Star.vue";
+import StarInTriangle from "@/components/icons/StarInTriangle.vue";
 import TaskAlt from "@/components/icons/TaskAlt.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
@@ -129,6 +131,8 @@ import Update from "@/components/icons/Update.vue";
     SendEmail,
     Service,
     SignOut,
+    Star,
+    StarInTriangle,
     Support,
     SupportCircle,
     TaskAlt,
