@@ -273,14 +273,14 @@ export default class ReviewDocuments extends Vue {
       this.createAttachmentObject(attachment,'4 (Current Environment)')
     })
 
-      const sysDocAttachments = await Attachments.getAttachmentsBySysIds({
-        serviceKey: this.currentEnvServiceName,
-        sysIds: currentEnv?.system_documentation||[]
-      });
-      sysDocAttachments.forEach(attachment => {
-        this.createAttachmentObject(attachment,'4 (Current Environment)')
-      })
-    }
+    const sysDocAttachments = await Attachments.getAttachmentsBySysIds({
+      serviceKey: this.currentEnvServiceName,
+      sysIds: currentEnv?.system_documentation||[]
+    });
+    sysDocAttachments.forEach(attachment => {
+      this.createAttachmentObject(attachment,'4 (Current Environment)')
+    })
+    
     if(MIPR.mipr_attachment){
       const MIPRAttachment = await Attachments.getAttachmentById({
         serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
