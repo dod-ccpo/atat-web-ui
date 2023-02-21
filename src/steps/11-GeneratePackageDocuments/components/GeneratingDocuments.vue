@@ -16,18 +16,21 @@
         <br />
         <p class="text-center">
           Hold tight while we generate your required documents and package
-          your files for download. This<br /> process could take about 5 minutes.
+          your files for download. <br /> This process could take about 5 minutes.
         </p>
       </div>
     </v-col>
   </v-row>
 </template>
 <script lang="ts">
-import { Component } from "vue-property-decorator";
+import { Component, PropSync } from "vue-property-decorator";
 import Vue from "vue";
 
 @Component({})
 export default class GeneratingDocuments extends Vue {
+  @PropSync(
+    "isGenerating",{default: true}
+  ) private _isGenerating!: boolean;
 
 }
 </script>

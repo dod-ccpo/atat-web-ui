@@ -75,6 +75,7 @@ import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vu
 import Place from "@/components/icons/Place.vue";
 import SendEmail from "@/components/icons/SendEmail.vue";
 import XaasCircle from "@/components/icons/XaasCircle.vue"
+import Update from "@/components/icons/Update.vue";
 
 
 @Component({
@@ -136,6 +137,7 @@ import XaasCircle from "@/components/icons/XaasCircle.vue"
     TrendingDown,
     TrendingUp,
     UploadFile,
+    Update,
     Warning,
     WarningAmber,
     ReadyToGeneratePackage,
