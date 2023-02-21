@@ -63,7 +63,7 @@
               v-for="(item, index) in moreMenuItems"
               :key="index"
               :id="getIdText(item.title) + '_MenuItem'"
-              @click="moreMenuClick(index)"
+              @click="moreMenuClick(item.title)"
               :class="{active : item.title === activeAppSection}"
             >
               <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -165,10 +165,16 @@ export default class ATATPageHead extends Vue {
     },
   ]
 
-  public async moreMenuClick(index: number): Promise<void> {
+  public async moreMenuClick(title: string ): Promise<void> {
     await SlideoutPanel.closeSlideoutPanel()
-    const selectedSection = this.moreMenuItems[index].title;
-    AppSections.changeActiveSection(selectedSection);
+    switch(title){
+    case 'Archive acquisition':
+      this.showArchiveModal = true
+      break;
+    case 'Delete acquisition package':
+      this.showDeleteModal = true
+      break;
+    }
   }
 
   private getIdText(string: string) {
