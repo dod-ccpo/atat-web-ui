@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="cardData.visible">
     <!-- <v-container class="container-max-width" fluid> -->
     <!-- class="_dow-card-wrapper" -->
     <v-card 
@@ -8,13 +8,16 @@
         <ATATSVGIcon 
           v-if="cardData.defineRequirements===true"
           name="StarInTriangle" 
-          color="primary" 
+          :color="setColor" 
           width="49" 
           height="48" 
           class="define-requirements"
         />
         <div class="d-flex justify-center flex-column">
-          <ATATSVGIcon :name="cardData.icon" color="primary" width="64" height="64" />
+          <ATATSVGIcon :name="cardData.icon"  :color="setColor" width="64" height="64" />
+          <ATATSVGIcon 
+            v-if="cardData.isComplete"
+            name="cardData.icon"  :color="setColor" width="64" height="64" />
         </div>
         <div class="d-flex align-left justify-center flex-column ml-4">
           <h3 class="mb-1">
@@ -86,6 +89,10 @@ export default class DOWCard extends Vue {
   private xaasSlideoutPanelContent = {} as SlideoutPanelContent;
   private supportSlideoutPanelContent = {} as SlideoutPanelContent;
 
+  get setColor(): string{
+    return this.cardData.isComplete ? "success" : "primary";
+  }
+
   public openXaasSlideoutPanel(e: Event): void {
     this.setPanelComponent(this.xaasSlideoutPanelContent);
     if (e && e.currentTarget) {
@@ -108,10 +115,7 @@ export default class DOWCard extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    if (CurrentEnvironment.currentEnvironment) {
-      this.currentEnvironmentExists
-        = CurrentEnvironment.currentEnvironment.current_environment_exists ? "YES" : "NO"
-    }
+    
     this.xaasSlideoutPanelContent = {
       component: XaasLearnMore,
       title: "Learn More",

@@ -47,6 +47,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import { routeNames } from "../../../router/stepper";
+import { DOWLandingPageCard } from "types/Global";
 
 @Component({
   components: {
@@ -55,19 +56,20 @@ import { routeNames } from "../../../router/stepper";
   }
 })
 
-export default class DOWLandingPageDraft extends Vue {
-  // TODO: don't show Current functions if No current environment exists
-  public currentEnvironmentExists = "";
-
-  public requirementSections: Record<string, string | boolean>[] = [
+export default class DOWLandingPage extends Vue {
+  
+  public requirementSections: DOWLandingPageCard[] = [
     {
       title: "Your Current Functions",
-      // eslint-disable-next-line max-len
-      label: "Choose to either replicate or optimize your current environment using JWCC offerings.",
+      label: "Choose to either replicate or optimize your current " +
+              "environment using JWCC offerings.",
       icon: "current-functions-circle",
       learnMore: "",
       route: routeNames.ReplicateAndOptimize,
       defineRequirements: true,
+      section: "ReplicateOptimize",
+      visible: this.doesCurrentEnvExist,
+      isComplete: true
     },
     {
       title: "Architectural Design Solution",
@@ -76,6 +78,9 @@ export default class DOWLandingPageDraft extends Vue {
       learnMore: "",
       route: routeNames.ArchitecturalDesign,
       defineRequirements: true,
+      section: "ArchitecturalDesign",
+      visible: true,
+      isComplete: true
     },
     {
       title: "Anything as a Service (XaaS)",
@@ -84,6 +89,9 @@ export default class DOWLandingPageDraft extends Vue {
       learnMore: "Learn more about XaaS",
       route: routeNames.RequirementCategories,
       defineRequirements: true,
+      section: "XaaS",
+      visible: true,
+      isComplete: true
     },
     {
       title: "Cloud Support Package",
@@ -92,15 +100,18 @@ export default class DOWLandingPageDraft extends Vue {
       learnMore: "Learn more about support services",
       route: routeNames.RequirementCategories,
       defineRequirements: false,
+      section: "CloudSupportPackage",
+      visible: true,
+      isComplete: true
     }
   ];
 
-  public async mounted(): Promise<void> {
-    if (CurrentEnvironment.currentEnvironment) {
-      this.currentEnvironmentExists
-        = CurrentEnvironment.currentEnvironment.current_environment_exists ? "YES" : "NO"
-    }
-  };
+  get doesCurrentEnvExist(): boolean {
+    return CurrentEnvironment.currentEnvironment && 
+            CurrentEnvironment.currentEnvironment.current_environment_exists === "YES";
+  }
+
+  
 }
 
 
