@@ -14,15 +14,15 @@
     </div>
 
     <ATATAlert
-      v-if="needsSignatureLength && ditcoUser"
-      id="warning"
+      v-if="needsSignatureLength"
+      id="Callout"
       class="my-10"
       type="warning"
     >
       <template v-slot:content>
         <p class="mt-1 mb-0">
-          During your review process, be sure to obtain signatures from certifying officials on 
-          the <strong>{{needsSignatureLength}} documents </strong> indicated below. 
+          During your review process, be sure to obtain signatures from certifying officials on
+          the <strong>{{needsSignatureLength}} documents </strong> indicated below.
           We’ll help you upload these signed documents next.
         </p>
       </template>
@@ -38,11 +38,11 @@
       <h3 class="mb-1">What’s next?</h3>
       <ol type="1">
         <li class="mb-2">
-          Obtain signatures from certifying officials on the <strong>{{needsSignatureLength}} 
-          documents</strong> indicated below. 
+          Obtain signatures from certifying officials on the <strong>{{needsSignatureLength}}
+          documents</strong> indicated below.
         </li>
-        <li class="mb-2">Send your downloaded package and signed documents 
-          to your Contracting Office for processing. 
+        <li class="mb-2">Send your downloaded package and signed documents
+          to your Contracting Office for processing.
         </li>
         <li class="mb-2">
           Once a task order is awarded, you can return to ATAT and we’ll help you provision
@@ -51,7 +51,7 @@
       </ol>
     </template>
   </ATATAlert>
-    <ATATAlert 
+    <ATATAlert
       v-if="isErrored" 
       id="ErrorAlert" 
       class="my-10"
@@ -101,7 +101,7 @@
                 <v-icon class="ml-2">download</v-icon>
             </v-btn>
             </v-col>
-          </v-row> 
+          </v-row>
           <v-row>
             <v-col>
               <PackageItem
@@ -158,7 +158,7 @@ export default class ReviewDocuments extends Vue {
   @PropSync(
     "isGenerating",{default: false}
   ) private _isGenerating!: boolean;
-  
+
 
   public packageId = "";
   private lastUpdatedString = ""
@@ -280,29 +280,35 @@ export default class ReviewDocuments extends Vue {
     sysDocAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'4 (Current Environment)')
     })
-
+    
     if(MIPR.mipr_attachment){
       const MIPRAttachment = await Attachments.getAttachmentById({
         serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
       this.createAttachmentObject(MIPRAttachment,'8 (Funding)')
     }
-
-    if (fundingRequest?.fs_form_7600a_attachment.length > 0) {
-      fundingRequestIds.push(fundingRequest?.fs_form_7600a_attachment)
+    if(fundingRequest){
+      if (fundingRequest?.fs_form_7600a_attachment.length > 0) {
+        fundingRequestIds.push(fundingRequest?.fs_form_7600a_attachment)
+      }
+      if (fundingRequest?.fs_form_7600b_attachment.length > 0) {
+        fundingRequestIds.push(fundingRequest?.fs_form_7600b_attachment)
+      }
+      const fundingRequestAttachments = await Attachments.getAttachmentsBySysIds({
+        serviceKey: FUNDING_REQUEST_FSFORM_TABLE,
+        sysIds: fundingRequestIds
+      });
+      fundingRequestAttachments.forEach(attachment => {
+        this.createAttachmentObject(attachment,'8 (Funding)')
+      })
     }
-    if (fundingRequest?.fs_form_7600b_attachment.length > 0) {
-      fundingRequestIds.push(fundingRequest?.fs_form_7600b_attachment)
-    }
-    const fundingRequestAttachments = await Attachments.getAttachmentsBySysIds({
-      serviceKey: FUNDING_REQUEST_FSFORM_TABLE,
-      sysIds: fundingRequestIds
-    });
-    fundingRequestAttachments.forEach(attachment => {
-      this.createAttachmentObject(attachment,'8 (Funding)')
+    const docNames:string[] = []
+    this.packageCheckList.forEach(listItem => {
+      if(typeof listItem.itemName === "string")
+        docNames.push(listItem.itemName)
     })
-
+    await AcquisitionPackage.setAttachmentNames(docNames)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
-    
+
     this.domain = document.location.origin.indexOf("localhost") > 0
       ? 'https://services-dev.disa.mil'
       : document.location.origin
@@ -311,6 +317,7 @@ export default class ReviewDocuments extends Vue {
   }
 
   async mounted(): Promise<void>{
+    await AcquisitionPackage.setDisableContinue(false)
     await this.loadOnEnter()
   }
 

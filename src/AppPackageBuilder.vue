@@ -24,6 +24,7 @@
           :backButtonText="backButtonText"
           :continueButtonText="continueButtonText"
           :hideContinueButton="hideContinueButton"
+          :disableContinueButton="disableContinueButton"
           :noPrevious="noPrevious"
           class="mb-8"
         />
@@ -100,6 +101,7 @@ export default class AppPackageBuilder extends Vue {
   private continueButtonText = "Continue";
   private altBackDestination = "";
   private hideContinueButton = false;
+  private disableContinueButton = false;
 
   async mounted(): Promise<void> {
     this.routeNames = routeNames;
@@ -193,7 +195,14 @@ export default class AppPackageBuilder extends Vue {
   public get isDitcoUser(): boolean {
     return acquisitionPackage.contractingShop === "DITCO"
   }
+  public get disableContinue(): boolean {
+    return acquisitionPackage.disableContinue
+  }
 
+  @Watch('disableContinue')
+  public disableContinueChanged(newVal:boolean): void {
+    this.disableContinueButton = newVal
+  }
   private setNavButtons(step: StepInfo): void {
     this.altBackDestination = Steps.altBackDestination;
     this.noPrevious = !step.prev && !this.altBackDestination;
@@ -204,6 +213,7 @@ export default class AppPackageBuilder extends Vue {
     }
     this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments
       && !this.isDitcoUser;
+
   }
 
   private async additionalButtonClick(button: AdditionalButton) {

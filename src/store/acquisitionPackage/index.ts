@@ -31,6 +31,7 @@ import {
   ReferenceColumn,
   FundingRequirementDTO,
   RegionsDTO,
+  PackageDocumentsSignedDTO,
 } from "@/api/models";
 
 import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
@@ -48,7 +49,6 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import { homedir } from "os";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -65,7 +65,8 @@ export const StoreProperties = {
   ClassificationLevel: "ClassificationRequirements",
   CurrentEnvironment: "currentEnvironment",
   ContractConsiderations: "contractConsiderations",
-  Regions:"regions"
+  Regions:"regions",
+  PackageDocumentsSigned:"packageDocumentsSigned"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -246,6 +247,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       contractType: store.contractType,
       currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
+      packageDocumentsSigned:store.packageDocumentsSigned,
       evaluationPlan: store.evaluationPlan,
       // periods: store.periods,
       // periodOfPerformance: store.periodOfPerformance,
@@ -298,6 +300,7 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
+  packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
@@ -317,7 +320,8 @@ export class AcquisitionPackageStore extends VuexModule {
   allowDeveloperNavigation = false;
 
   contractingShop = "";
-
+  attachmentNames: string[] = []
+  disableContinue = false
   fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact()
@@ -370,6 +374,23 @@ export class AcquisitionPackageStore extends VuexModule {
     this.contractingShop = value;
     if(this.acquisitionPackage)
       this.acquisitionPackage.contracting_shop = value;
+  }
+
+  @Action({rawError: false})
+  public async setAttachmentNames(value: string[]): Promise<void> {
+    this.doSetAttachmentNames(value);
+  }
+  @Mutation
+  private doSetAttachmentNames(value: string[]): void {
+    this.attachmentNames = value;
+  }
+  @Action({rawError: false})
+  public async setDisableContinue(value: boolean): Promise<void> {
+    this.doSetDisableContinue(value);
+  }
+  @Mutation
+  private doSetDisableContinue(value: boolean): void {
+    this.disableContinue = value;
   }
 
   @Action
@@ -458,6 +479,10 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public getInitialFairOpportunity() {
     return initialFairOpportunity();
+  }
+  @Mutation
+  public getInitialPackageDocumentsSigned() {
+    return this.packageDocumentsSigned;
   }
 
   @Mutation
@@ -560,6 +585,15 @@ export class AcquisitionPackageStore extends VuexModule {
   public setFairOpportunity(value: FairOpportunityDTO): void {
     this.fairOpportunity = value;
   }
+  @Mutation
+  public setPackageDocumentsSigned(value: PackageDocumentsSignedDTO): void {
+    const acquisition_package = typeof value.acquisition_package === "object"
+      ? (value.acquisition_package as ReferenceColumn).value as string
+      : value.acquisition_package as string;
+    value.acquisition_package = acquisition_package
+
+    this.packageDocumentsSigned = value;
+  }
 
   public get exceptionToFairOpportunity(): string | undefined {
     return this.fairOpportunity?.exception_to_fair_opportunity;
@@ -581,6 +615,10 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
     return this.fairOpportunity;
+  }
+  @Action({rawError: true})
+  public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
+    return this.packageDocumentsSigned;
   }
 
   @Action
@@ -617,6 +655,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.contractType = sessionData.contractType;
     this.currentContract = sessionData.currentContract;
     this.fairOpportunity = sessionData.fairOpportunity;
+    this.packageDocumentsSigned = sessionData.packageDocumentsSigned;
     this.evaluationPlan = sessionData.evaluationPlan;
     this.organization = sessionData.organization;
     // this.periods = sessionData.periods;
@@ -865,6 +904,23 @@ export class AcquisitionPackageStore extends VuexModule {
           });
         }
       }
+      const query: AxiosRequestConfig = {
+        params: {
+          sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
+        }
+      };
+      const signedDocuments = await api.packageDocumentsSignedTable
+        .getQuery(query);
+      if(signedDocuments.length <= 0){
+        const packageDocumentsSigned = await api.packageDocumentsSignedTable
+          .create({acquisition_package:acquisitionPackage.sys_id})
+        this.setPackageDocumentsSigned(packageDocumentsSigned)
+        console.log(await this.getPackageDocumentsSigned())
+      }else{
+        this.setPackageDocumentsSigned(signedDocuments[0])
+        console.log(await this.getPackageDocumentsSigned())
+      }
+
       this.setPackagePercentLoaded(90);
 
       await FinancialDetails.loadFundingRequirement();
@@ -917,7 +973,6 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
-
     const loggedInUser = await UserStore.getCurrentUser();
 
     if (storedSessionData && storedSessionData.length > 0) {
@@ -965,7 +1020,9 @@ export class AcquisitionPackageStore extends VuexModule {
 
           this.setAcquisitionPackage(acquisitionPackage);
           saveAcquisitionPackage(acquisitionPackage);
-
+          const packageDocumentsSigned = await api.packageDocumentsSignedTable
+            .create({acquisition_package:acquisitionPackage.sys_id})
+          this.setPackageDocumentsSigned(packageDocumentsSigned)
           this.setInitialized(true);
         }
       } catch (error) {
@@ -1022,6 +1079,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
     [StoreProperties.ContractConsiderations]: api.contractConsiderationsTable,
     [StoreProperties.Regions]:api.regionsTable,
+    [StoreProperties.PackageDocumentsSigned]:api.packageDocumentsSignedTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -1039,6 +1097,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.CurrentEnvironment]: "current_environment",
     [StoreProperties.ContractConsiderations]: "contract_considerations",
     [StoreProperties.Regions]: "regions",
+    [StoreProperties.PackageDocumentsSigned]: "package_documents_signed",
   }
 
   @Action({ rawError: true })
@@ -1429,6 +1488,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.financialPocInfo = null;
     this.hasAlternativeContactRep = null;
     this.fairOpportunity = null;
+    this.packageDocumentsSigned = null;
     this.evaluationPlan = null;
     this.currentContract = null;
     this.sensitiveInformation = null;
