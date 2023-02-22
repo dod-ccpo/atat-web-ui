@@ -31,6 +31,7 @@
             :validFiles.sync="uploadedFiles"
             :rules="getRulesArray()"
             :filesRequired="true"
+            :showSupportedFileTypes="false"
           />
         </div>
         <div>
@@ -136,10 +137,10 @@ import Attachments from "@/store/attachments";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FinancialDetails from "@/store/financialDetails";
 import ATATAlert from "@/components/ATATAlert.vue";
-import acquisitionPackage from "@/store/acquisitionPackage";
-import { AttachmentDTO, PackageDocumentsSignedDTO, ReferenceColumn } from "@/api/models";
+import { AttachmentDTO, PackageDocumentsSignedDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
 import { api } from "@/api";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 @Component({
   components:{
     ATATFileUpload,
@@ -147,7 +148,7 @@ import { api } from "@/api";
     ATATAlert,
   }
 })
-export default class UploadSignedDocuments extends Vue {
+export default class UploadSignedDocuments extends SaveOnLeave {
   private attachmentServiceName = PACKAGE_DOCUMENTS_SIGNED;
   private maxFileSizeInBytes = 1073741824;
   private validFileFormats = ["pdf","jpg","png","docx"];
@@ -254,7 +255,7 @@ export default class UploadSignedDocuments extends Vue {
   }
 
   private async setDisableContinue(): Promise<void>{
-    await acquisitionPackage.setDisableContinue(
+    await AcquisitionPackage.setDisableContinue(
       !this.isCompleted
     )
   }
@@ -332,6 +333,11 @@ export default class UploadSignedDocuments extends Vue {
     await this.loadOnEnter()
     await this.setDisableContinue();
   }
+
+  async saveOnLeave(): Promise<boolean>{
+    return true;
+  }
+
 }
 </script>
 
