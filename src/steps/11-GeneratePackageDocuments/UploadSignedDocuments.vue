@@ -46,11 +46,8 @@
               <template v-slot:content>
                 <p class="mt-1 mb-0">
                   <strong>
-                    Missing {{getMaxNumberOfFiles - uploadedFiles.length}} {{missingDocsText}}
-                  </strong>
-                </p>
-                <p class="mb-0">
-                  Please upload any missing document
+                    Missing {{ numberOfMissingFiles }} file{{ numberOfMissingFiles > 1 ? 's' : ''}}.
+                  </strong>Please upload any missing templates or signed documents.
                 </p>
               </template>
             </ATATAlert>
@@ -231,9 +228,8 @@ export default class UploadSignedDocuments extends Vue {
     },
   ];
 
-  get missingDocsText(): string{
-    return this.filesNeeded.length - this.uploadedFiles.length === 1?
-      "signed document":"signed documents"
+  get numberOfMissingFiles(): number {
+    return this.getMaxNumberOfFiles - this.uploadedFiles.length;
   }
 
   public async onRemoveAttachment(file: uploadingFile): Promise<void> {
