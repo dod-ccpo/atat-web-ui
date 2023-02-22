@@ -18,15 +18,15 @@
           Add requirements for each performance area
         </h2>
         <p class="text-base">
-          You must define requirements within at least one of the star-icon-here
+          You must define requirements within at least one of the
           <strong>
             <ATATSVGIcon 
               name="star" 
               :width="15" 
               :height="15" 
               color="base"
-              class="d-inline-flex"
-              />starred
+              class="d-inline-flex mr-1"
+            />starred
           </strong>
           areas.
         </p>
@@ -47,6 +47,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import { routeNames } from "../../../router/stepper";
+import { DOWCardData } from "types/Global";
 
 @Component({
   components: {
@@ -55,20 +56,9 @@ import { routeNames } from "../../../router/stepper";
   }
 })
 
-export default class DOWLandingPageDraft extends Vue {
-  // TODO: don't show Current functions if No current environment exists
-  public currentEnvironmentExists = "";
+export default class DOWLandingPage extends Vue {
 
-  public requirementSections: Record<string, string | boolean>[] = [
-    {
-      title: "Your Current Functions",
-      // eslint-disable-next-line max-len
-      label: "Choose to either replicate or optimize your current environment using JWCC offerings.",
-      icon: "current-functions-circle",
-      learnMore: "",
-      route: routeNames.ReplicateAndOptimize,
-      defineRequirements: true,
-    },
+  public requirementSections: DOWCardData[] = [
     {
       title: "Architectural Design Solution",
       label: "Request a customized cloud solution for your known problem or use-case.",
@@ -76,6 +66,7 @@ export default class DOWLandingPageDraft extends Vue {
       learnMore: "",
       route: routeNames.ArchitecturalDesign,
       defineRequirements: true,
+      section: "ArchitecturalDesign",
     },
     {
       title: "Anything as a Service (XaaS)",
@@ -84,6 +75,7 @@ export default class DOWLandingPageDraft extends Vue {
       learnMore: "Learn more about XaaS",
       route: routeNames.RequirementCategories,
       defineRequirements: true,
+      section: "XaaS",
     },
     {
       title: "Cloud Support Package",
@@ -92,17 +84,30 @@ export default class DOWLandingPageDraft extends Vue {
       learnMore: "Learn more about support services",
       route: routeNames.RequirementCategories,
       defineRequirements: false,
+      section: "CloudSupportPackage"
     }
   ];
 
   public async mounted(): Promise<void> {
     if (CurrentEnvironment.currentEnvironment) {
-      this.currentEnvironmentExists
-        = CurrentEnvironment.currentEnvironment.current_environment_exists ? "YES" : "NO"
+      debugger;
+      const currentEnvironmentExists
+        = CurrentEnvironment.currentEnvironment.current_environment_exists === "YES";
+      if (currentEnvironmentExists) {
+        const currentEnvCardData: DOWCardData = {
+          title: "Your Current Functions",
+          label: `Choose to either replicate or optimize your current environment using 
+            JWCC offerings.`,
+          icon: "current-functions-circle",
+          learnMore: "",
+          route: routeNames.ReplicateAndOptimize,
+          defineRequirements: true,
+          section: "ReplicateOptimize",
+        };
+        this.requirementSections.unshift(currentEnvCardData)
+      }
     }
-  };
+  }
 }
-
-
 
 </script>

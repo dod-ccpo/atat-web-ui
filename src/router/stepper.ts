@@ -62,7 +62,7 @@ import CrossDomain from "@/steps/04-ContractDetails/CrossDomain.vue";
 
 // Step 5 - Performance Requirements
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
-import DOWLandingPageDraft from "../steps/05-PerformanceRequirements/DOW/DOWLandingPageDraft.vue";
+import DOWLandingPage from "../steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
 import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
@@ -193,7 +193,7 @@ export const routeNames = {
   CurrentContract: "Current_Contract",
   CurrentContractDetails: "Current_Contract_Details",
   CurrentEnvironment:"Current_Environment",
-  DOWLandingPageDraft: "DOW_Landing_Page_Test",
+  DOWLandingPage: "DOW_Landing_Page",
   RequirementCategories: "Requirement_Categories",
   DOWArchitecturalDesign: "DOW_Architectural_Design",
   ServiceOfferings: "Service_Offerings",
@@ -667,9 +667,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Landing Page",
         path: "/",
         excludeFromMenu: true,
-        name: routeNames.DOWLandingPageDraft,
+        name: routeNames.DOWLandingPage,
         completePercentageWeight: 1,
-        component: DOWLandingPageDraft,
+        component: DOWLandingPage,
         continueButtonText: 'Wrap up this section',
         completed: false
       },
@@ -716,7 +716,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "/requirement-categories",
         excludeFromMenu: false,
         name: routeNames.RequirementCategories,
-        stepCompleteOnEnter: routeNames.DOWLandingPageDraft,
+        stepCompleteOnEnter: routeNames.DOWLandingPage,
         completePercentageWeight: 1,
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,

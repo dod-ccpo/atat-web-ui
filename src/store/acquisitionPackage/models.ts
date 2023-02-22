@@ -28,7 +28,7 @@ export interface SessionData {
   corInfo: ContactDTO;
   contractType: ContractTypeDTO;
   currentContract: CurrentContractDTO;
-  fairOpportunity: FairOpportunityDTO; // EJY
+  fairOpportunity: FairOpportunityDTO;
   evaluationPlan: EvaluationPlanDTO;
   gfeOverview: GFEOverviewDTO;
   organization: OrganizationDTO;

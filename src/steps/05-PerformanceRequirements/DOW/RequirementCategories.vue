@@ -4,7 +4,8 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Let’s work on your performance requirements
+            Let’s work on your 
+            <!-- {{ offeringTypeHeading }} -->
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
@@ -29,20 +30,6 @@
               :isPeriodsDataMissing="isPeriodsDataMissing"
             />
           </div>
-          <div class="copy-max-width">
-            <ATATRadioGroup 
-              id="ArchitectureOptions"
-              legend="Do you need an architectural design solution to address a known
-                problem or use-case?"
-              helpText="This is in addition to any known problems 
-                that you told us about for your current environment."
-              :width="180"
-              :items="radioOptions"
-              :value.sync="DOWNeedsArchitecturalDesign"
-              :rules="[$validators.required('Please select an option.')]"
-            />
-          </div>
-          <hr/>
           <div class="copy-max-width">
             <ATATCheckboxGroup
               id="XaaSCheckboxes"
@@ -123,23 +110,9 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   private showAlert = false
   private routeNames = routeNames
   private goToSummary = false;
-  public DOWNeedsArchitecturalDesign = "";
 
   public introSentence = `Through JWCC, you have the ability to procure many offerings for
     Anything as a Service (XaaS) and Cloud Support Packages.`;
-
-  public radioOptions: RadioButton[] = [
-    {
-      id: "YesArchitecture",
-      value: "YES",
-      label: "Yes.",
-    },
-    {
-      id: "NoArchitecture",
-      value: "NO",
-      label: "No.",
-    },
-  ];
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -209,10 +182,6 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
-    if (DescriptionOfWork.DOWHasArchitecturalDesignNeeds) {
-      this.DOWNeedsArchitecturalDesign 
-        = DescriptionOfWork.DOWHasArchitecturalDesignNeeds ? "YES" : "NO"
-    }
     this.goToSummary = DescriptionOfWork.DOWObject.length > 0;
     if (this.goToSummary) {
       DescriptionOfWork.setBackToContractDetails(true);
@@ -238,9 +207,6 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
           = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
 
         await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferingGroups);
-        
-        const bool = this.DOWNeedsArchitecturalDesign === "YES" ? true : false;
-        await DescriptionOfWork.setDOWHasArchitecturalDesign(bool);
       }
     } catch (error) {
       throw new Error('error saving requirement data');

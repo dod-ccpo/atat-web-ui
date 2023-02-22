@@ -15,7 +15,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
-import DOWLandingPageDraft from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPageDraft.vue";
+import DOWLandingPage from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -129,7 +129,7 @@ export const ReplicateDetailsResolver = (current: string): string => {
     return routeNames.ReplicateDetails;
   }
   return current === routeNames.ReplicateAndOptimize
-    ? routeNames.DOWLandingPageDraft
+    ? routeNames.DOWLandingPage
     : routeNames.ReplicateAndOptimize;
 }
 
@@ -629,8 +629,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     return descriptionOfWorkSummaryPath;   
   }
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
-    // EJY OOF
-
     const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
     if (offering) {
       return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
@@ -762,7 +760,6 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   }
 
   // coming from service offering details step
-  // EJY OR SECURITY REQ ?
   if(current === routeNames.ServiceOfferingDetails
     || current === routeNames.DOWSecurityRequirements
   ){

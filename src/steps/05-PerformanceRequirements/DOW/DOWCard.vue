@@ -47,9 +47,13 @@
           <router-link :id="cardData.route" :to="{ name: cardData.route }">
             <v-btn
               color="primary" 
-              id="StartButton" 
+              :id="`StartButton` + cardData.section" 
               width="110"
-              role="link">
+              role="link"
+              @click="setDOWSection"
+              @keydown.enter="setDOWSection"
+              @keydown.space="setDOWSection"
+            >
               Start
             </v-btn>
           </router-link>
@@ -67,10 +71,10 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import XaasLearnMore from "./XaasLearnMore.vue";
 import CloudSupportLearnMore from "./CloudSupportLearnMore.vue";
-import { SlideoutPanelContent } from "../../../../types/Global";
+import { DOWCardData, SlideoutPanelContent } from "../../../../types/Global";
 
 import Vue from "vue";
-import StarInTriangle from "@/components/icons/StarInTriangle.vue";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -79,9 +83,8 @@ import StarInTriangle from "@/components/icons/StarInTriangle.vue";
 })
 
 export default class DOWCard extends Vue {
-  @Prop() public cardData!: Record<string, string | boolean>;
+  @Prop() public cardData!: DOWCardData;
 
-  private currentEnvironmentExists = "";
   private setPanelComponent: any = {};
   private xaasSlideoutPanelContent = {} as SlideoutPanelContent;
   private supportSlideoutPanelContent = {} as SlideoutPanelContent;
@@ -101,6 +104,9 @@ export default class DOWCard extends Vue {
     };
   };
 
+  public setDOWSection(): void {
+    DescriptionOfWork.setCurrentDOWSection(this.cardData.section as string)
+  }
 
   public async loadOnEnter(): Promise<void> {
     await CurrentEnvironment.getCurrentEnvironment();
@@ -108,10 +114,6 @@ export default class DOWCard extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    if (CurrentEnvironment.currentEnvironment) {
-      this.currentEnvironmentExists
-        = CurrentEnvironment.currentEnvironment.current_environment_exists ? "YES" : "NO"
-    }
     this.xaasSlideoutPanelContent = {
       component: XaasLearnMore,
       title: "Learn More",

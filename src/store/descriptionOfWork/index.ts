@@ -767,7 +767,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   isIncomplete = true;
   serviceOfferings: ServiceOfferingDTO[] = [];
   serviceOfferingGroups: SystemChoiceDTO[] = [];
-
+  
   // selectedOfferingGroups: stringObj[] = [];
   DOWObject: DOWServiceOfferingGroup[] = [];
 
@@ -784,6 +784,17 @@ export class DescriptionOfWorkStore extends VuexModule {
   returnToDOWSummary = false;
   reviewGroupFromSummary = false;
   addGroupFromSummary = false;
+
+  currentDOWSection = "";
+  @Action
+  public async setCurrentDOWSection(section: string): Promise<void> {
+    this.doSetCurrentDOWSection(section);
+  }
+  @Mutation
+  public doSetCurrentDOWSection(section: string): void {
+    this.currentDOWSection = section;
+  }
+
   xaasServices = [
     'STORAGE',
     'DATABASE',
@@ -2529,20 +2540,15 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     });
 
-    // EJY need to update?
-    const groupsWithNoOtherOption = ["ADVISORY", "TRAINING"];
-
-    if (groupsWithNoOtherOption.indexOf(this.currentGroupId) === -1) {
-      const otherOffering: DOWServiceOffering = {
-        name: "Other",
-        sys_id: "Other",
-        acquisitionPackageSysId: acquisitionPackageId,
-        sequence: "99",
-        description: "",
-        serviceId: "",
-      };
-      serviceOfferings.push(otherOffering);
-    }
+    const otherOffering: DOWServiceOffering = {
+      name: "Other",
+      sys_id: "Other",
+      acquisitionPackageSysId: acquisitionPackageId,
+      sequence: "99",
+      description: "",
+      serviceId: "",
+    };
+    serviceOfferings.push(otherOffering);
 
 
     //now map any from the DOW that might've been saved
