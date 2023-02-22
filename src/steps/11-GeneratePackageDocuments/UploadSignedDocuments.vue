@@ -151,7 +151,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 export default class UploadSignedDocuments extends SaveOnLeave {
   private attachmentServiceName = PACKAGE_DOCUMENTS_SIGNED;
   private maxFileSizeInBytes = 1073741824;
-  private validFileFormats = ["pdf","jpg","png","docx"];
+  private validFileFormats = ["pdf","jpg","png","docx","doc"];
   private invalidFiles: invalidFile[] = [];
   private uploadedFiles: uploadingFile[] = [];
   private needsSignatureLength = 0;
