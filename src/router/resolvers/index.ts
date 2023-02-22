@@ -1256,7 +1256,7 @@ export const IncrementalFundingResolver = (current: string): string => {
   const isIncrementallyFunded = FinancialDetails.fundingRequirement?.incrementally_funded;
 
   if (baseDuration && baseDuration < cutOff || isIncrementallyFunded === "NO") {
-    return routeNames.UploadJAMRRDocuments;
+    return routeNames.ReadyToGeneratePackage;
   }
 
   return current === routeNames.IncrementalFunding
@@ -1270,14 +1270,13 @@ export const FinancialPOCResolver =  (current: string): string => {
   calcBasePeriod().then(value => {
     baseDuration = value
   })
-  if (current === routeNames.UploadJAMRRDocuments && baseDuration && baseDuration < cutOff ||
-      current === routeNames.UploadJAMRRDocuments && isIncrementallyFunded === "NO") {
+  if (current === routeNames.ReadyToGeneratePackage && baseDuration && baseDuration < cutOff ||
+      current === routeNames.ReadyToGeneratePackage && isIncrementallyFunded === "NO") {
     return routeNames.SeverabilityAndIncrementalFunding;
   }
   return current === routeNames.FinancialPOCForm
-    ? routeNames.UploadJAMRRDocuments
+    ? routeNames.ReadyToGeneratePackage
     : routeNames.FinancialPOCForm
-
 }
 
 export const SecurityRequirementsResolver = (current: string): string => {
