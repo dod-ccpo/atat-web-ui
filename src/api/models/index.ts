@@ -733,6 +733,7 @@ export interface TrainingEstimateDTO extends BaseTableDTO{
   training_estimated_values?: string;
   training_option: string; //SINGLE or MULTIPLE
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
+  cloud_support_environment_instance: ReferenceColumn | string;
 }
 
 export interface EstimateOptionValueDTO {
@@ -789,6 +790,8 @@ export interface RequirementsCostEstimateFlat extends BaseTableDTO{
   how_est_dev_cost_estimate_description: string;
   how_est_dev_prev_cost_estimate_comp_option: "" | "MORE_THAN" | "LESS_THAN" | "SAME";
   how_est_dev_prev_cost_estimate_comp_percentage: number | null;
+  how_est_dev_contracting_office_other_charges_fee: YesNo,
+  how_est_dev_contracting_office_other_fee_percentage: number | null;
   travel_option?: SingleMultiple;
   travel_estimated_values: string;// csv
   training: string // json of TrainingEstimateDTO
