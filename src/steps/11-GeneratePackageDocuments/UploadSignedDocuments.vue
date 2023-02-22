@@ -103,7 +103,7 @@
                 />
                 <div class="d-flex flex-column">
                   <h3>
-                    {{needsSignatureLength}} signatures required
+                    {{needsSignatureLength}} signed documents
                   </h3>
                   <span class="font-size-14 help-text">Upload .pdf, .png, or .jpg files</span>
                 </div>
