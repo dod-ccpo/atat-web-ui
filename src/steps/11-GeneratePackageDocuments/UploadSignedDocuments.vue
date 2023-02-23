@@ -1,36 +1,45 @@
 <template>
   <div>
     <h1>
-      Upload your signed documents
+      Upload your completed template and signed documents
     </h1>
     <div class="copy-max-width">
       <p class="mt-2 mb-4">
-        To submit your package to DITCO, all documents that require certification must be signed by
-        your approving officials. Upload your individually signed documents below.
+        To submit your package, all documents that require certification must
+        be signed by your approving officials and uploaded below.
+        <span v-if="fairOpportunity !=='NO_NONE'">
+        For the <span class="font-weight-500">Justification & Approval (J&A)</span>
+        and <span class="font-weight-500">Market Research Report</span>, you must also
+        upload the completed template in an editable format to help your
+        Contracting Office track changes during the review process.</span>
       </p>
       <hr class="base-lighter" />
-      <v-row class="d-flex">
-        <v-col cols="8">
+      <div class="d-flex">
+        <div
+          style="width: 588px;"
+        >
           <ATATFileUpload
             :validFileFormats="validFileFormats"
             :attachmentServiceName="attachmentServiceName"
             :maxFileSizeInBytes="maxFileSizeInBytes"
+            :restrictedNames="restrictedNames"
             id="SignedDocs"
             @delete="onRemoveAttachment"
             fileListTitle="Your files"
             :invalidFiles.sync="invalidFiles"
-            :maxNumberOfFiles="filesNeeded.length"
+            :maxNumberOfFiles="getMaxNumberOfFiles"
             :validFiles.sync="uploadedFiles"
             :rules="getRulesArray()"
             :filesRequired="true"
+            :showSupportedFileTypes="false"
           />
-        </v-col>
-        <v-col cols="2">
+        </div>
+        <div>
           <div
-            style="width: 330px;"
+            style="width: 380px;"
             class="pl-5">
             <ATATAlert
-              v-if="needsSignatureLength > uploadedFiles.length"
+              v-if="!isCompleted && uploadedFiles.length>0"
               id="warning"
               class="mb-4"
               type="warning"
@@ -38,14 +47,45 @@
               <template v-slot:content>
                 <p class="mt-1 mb-0">
                   <strong>
-                    Missing {{needsSignatureLength - uploadedFiles.length}} {{missingDocsText}}
-                  </strong>
-                </p>
-                <p class="mb-0">
-                  Please upload any missing document
+                    Missing {{ numberOfMissingFiles }} file{{ numberOfMissingFiles > 1 ? 's' : ''}}.
+                  </strong>Please upload any missing templates or signed documents.
                 </p>
               </template>
             </ATATAlert>
+            <div
+              v-if="fairOpportunity !== 'NO_NONE'"
+              class="
+              border1
+              border-rounded-more
+              border-base-lighter
+              bg-primary-lighter
+              pa-6
+              mb-4"
+            >
+              <div class="d-flex align-center mb-4">
+                <ATATSVGIcon
+                  class="mr-2"
+                  name="checkedBag"
+                  width="39"
+                  height="35"
+                  color="primary"
+                />
+                <div class="d-flex flex-column">
+                  <h3>
+                    2 completed templates
+                  </h3>
+                  <span class="font-size-14 help-text">Upload .doc or .docx files</span>
+                </div>
+              </div>
+              <ol>
+                <li>
+                  Justification and Approval
+                </li>
+                <li>
+                  Sole Source Market Research Report
+                </li>
+              </ol>
+            </div>
             <div
               class="
               border1
@@ -62,29 +102,26 @@
                   height="35"
                   color="primary"
                 />
-                <h3 class="mb-2">
-                 {{needsSignatureLength}} signatures required</h3>
+                <div class="d-flex flex-column">
+                  <h3>
+                    {{needsSignatureLength}} signed documents
+                  </h3>
+                  <span class="font-size-14 help-text">Upload .pdf, .png, or .jpg files</span>
+                </div>
               </div>
-              <div
-                v-for="(item,idx) in filesNeeded"
-                :key="idx"
-                class="d-flex"
-              >
-                <ATATSVGIcon
-                  class="mr-2 pt-1"
-                  name="filePresent"
-                  width="13"
-                  height="16"
-                  color="primary"
-                />
-                <span class="text-primary text-decoration-underline">
+              <ol>
+                <li
+                  v-for="(item,idx) in filesNeeded"
+                  :key="idx"
+                  class="pb-1"
+                >
                   {{item}}
-                </span>
-              </div>
+                </li>
+              </ol>
             </div>
           </div>
-        </v-col>
-      </v-row>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -94,13 +131,16 @@ import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
-import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
+import { TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import { invalidFile, uploadingFile } from "../../../types/Global";
 import Attachments from "@/store/attachments";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FinancialDetails from "@/store/financialDetails";
 import ATATAlert from "@/components/ATATAlert.vue";
-import acquisitionPackage from "@/store/acquisitionPackage";
+import { AttachmentDTO, PackageDocumentsSignedDTO } from "@/api/models";
+import { AxiosRequestConfig } from "axios";
+import { api } from "@/api";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 @Component({
   components:{
     ATATFileUpload,
@@ -108,19 +148,43 @@ import acquisitionPackage from "@/store/acquisitionPackage";
     ATATAlert,
   }
 })
-export default class UploadSignedDocuments extends Vue {
-  private attachmentServiceName = ACQUISITION_PACKAGE_TABLE;
+export default class UploadSignedDocuments extends SaveOnLeave {
+  private attachmentServiceName = PACKAGE_DOCUMENTS_SIGNED;
   private maxFileSizeInBytes = 1073741824;
-  private validFileFormats = ["pdf","jpg","png","docx"];
+  private validFileFormats = ["pdf","jpg","png","docx","doc"];
   private invalidFiles: invalidFile[] = [];
   private uploadedFiles: uploadingFile[] = [];
   private needsSignatureLength = 0;
+  private allSignaturesLength = 0
+  private saved:PackageDocumentsSignedDTO | null = {
+    /* eslint-disable camelcase */
+    sys_id: "",
+    sys_updated_by: "",
+    sys_created_on: "",
+    sys_mod_count: "",
+    sys_updated_on: "",
+    sys_tags: "",
+    sys_created_by: ""
+  };
   private filesNeeded:string[] = [];
+  public restrictedNames = [
+    "DescriptionOfWork.docx",
+    "IncrementalFundingPlan.docx",
+    "RequirementsChecklist.docx",
+    "IGCE.xlsx",
+    "EvaluationPlan.docx",
+  ]
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
   }
   get incrementallyFunded():string {
     return FinancialDetails.fundingRequirement?.incrementally_funded || "";
+  }
+
+  get getMaxNumberOfFiles():number{
+    return this.fairOpportunity !== 'NO_NONE'
+      ?(this.filesNeeded.length + 2)
+      :this.filesNeeded.length
   }
   private packages = [
     {
@@ -137,7 +201,7 @@ export default class UploadSignedDocuments extends Vue {
     },
     {
       itemName:"Incremental Funding Plan",
-      requiresSignature:false,
+      requiresSignature:true,
       alertText:"Requires signatures",
       show:this.incrementallyFunded === "YES"
     },
@@ -164,10 +228,11 @@ export default class UploadSignedDocuments extends Vue {
       show:this.fairOpportunity !== "NO_NONE"
     },
   ];
-  get missingDocsText(): string{
-    return this.filesNeeded.length - this.uploadedFiles.length === 1?
-      "signed document":"signed documents"
+
+  get numberOfMissingFiles(): number {
+    return this.getMaxNumberOfFiles - this.uploadedFiles.length;
   }
+
   public async onRemoveAttachment(file: uploadingFile): Promise<void> {
     try {
       if (file) {
@@ -177,7 +242,7 @@ export default class UploadSignedDocuments extends Vue {
         await Attachments.removeAttachment({
           key,
           attachmentId,
-          recordId, // recordId is the "table_sys_id" in the context of ATTACHMENT API
+          recordId,
         });
       }
     } catch (error) {
@@ -186,12 +251,22 @@ export default class UploadSignedDocuments extends Vue {
   }
   @Watch("uploadedFiles")
   private async filesUploaded(): Promise<void>{
-    if(this.uploadedFiles.length === this.needsSignatureLength){
-      await acquisitionPackage.setDisableContinue(false)
-    }else{
-      await acquisitionPackage.setDisableContinue(true)
-    }
+    await this.setDisableContinue();
   }
+
+  private async setDisableContinue(): Promise<void>{
+    await AcquisitionPackage.setDisableContinue(
+      !this.isCompleted
+    )
+  }
+
+  /**
+   * returns if all expected files have been uploaded
+   **/
+  get isCompleted(): boolean {
+    return this.uploadedFiles.length === this.getMaxNumberOfFiles
+  }
+
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
@@ -204,7 +279,7 @@ export default class UploadSignedDocuments extends Vue {
           iFile.doesFileExist,
           iFile.SNOWError,
           iFile.statusCode,
-          [],
+          this.restrictedNames
         )
       );
     });
@@ -212,17 +287,57 @@ export default class UploadSignedDocuments extends Vue {
     return rulesArr;
   }
   public async loadOnEnter(): Promise<void> {
+
     this.packages.forEach(item =>{
       if(item.show && item.requiresSignature){
         this.needsSignatureLength++
-        this.filesNeeded.push(item.itemName)
+        this.filesNeeded.push(item.itemName.replace("(Template)", ""))
       }
     })
-    await acquisitionPackage.setDisableContinue(true)
+
+    const query: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
+      }
+    };
+    const signedDocumentSysId = await api.packageDocumentsSignedTable
+      .getQuery(query);
+    if(signedDocumentSysId.length > 0){
+      try {
+        const attachment = await Attachments.getAttachmentsByTableSysIds({
+          serviceKey: PACKAGE_DOCUMENTS_SIGNED, tableSysId: signedDocumentSysId[0].sys_id||""});
+        const uploadedFiles = attachment.map((attachment: AttachmentDTO) => {
+          const file = new File([], attachment.file_name, {
+            lastModified: Date.parse(attachment.sys_created_on || "")
+          });
+          const upload: uploadingFile = {
+            attachmentId: attachment.sys_id || "",
+            fileName: attachment.file_name,
+            file: file,
+            created: file.lastModified,
+            progressStatus: 100,
+            link: attachment.download_link || "",
+            recordId: attachment.table_sys_id,
+            isErrored: false,
+            isUploaded: true
+          }
+          return upload;
+        });
+        this.uploadedFiles = [...uploadedFiles];
+      } catch (error) {
+        throw new Error("an error occurred loading Package Signed Documents data");
+      }
+    }
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
+    await this.setDisableContinue();
   }
+
+  async saveOnLeave(): Promise<boolean>{
+    return true;
+  }
+
 }
 </script>
 

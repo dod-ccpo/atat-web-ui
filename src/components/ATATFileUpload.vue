@@ -51,8 +51,17 @@
             </p>
             <p class="mt-3 mb-9 text-base">
               <span v-if="filesRequired">{{maxNumberOfFiles}} files required</span>
-              <span v-else>Supported file types: {{formatFileTypes}}</span>
-              • Max file size: {{fileSizeConversion}}GB
+              <span v-if="filesRequired && showSupportedFileTypes">
+                • 
+              </span>
+              <span v-if="showSupportedFileTypes">
+                  Supported file types: {{formatFileTypes}} 
+              </span>
+              <span v-if="(showSupportedFileTypes && showMaxSize) ||
+                            (filesRequired && showMaxSize)">
+                • 
+              </span>
+              <span v-if="showMaxSize">Max file size: {{fileSizeConversion}}GB</span>
             </p>
           </div>
           <div
@@ -80,8 +89,17 @@
               </p>
               <p class="ml-auto mb-0 mt-2 text-base">
                 <span v-if="filesRequired">{{maxNumberOfFiles}} files required</span>
-                <span v-else>Supported file types: {{formatFileTypes}}</span>
-                  • Max file size: {{fileSizeConversion}}GB
+                <span v-if="filesRequired && showSupportedFileTypes">
+                  • 
+                </span>
+                <span v-if="showSupportedFileTypes">
+                    Supported file types: {{formatFileTypes}} 
+                </span>
+                <span v-if="(showSupportedFileTypes && showMaxSize) ||
+                              (filesRequired && showMaxSize)">
+                  • 
+                </span>
+                <span v-if="showMaxSize">Max file size: {{fileSizeConversion}}GB</span>
               </p>
             </div>
           </div>
@@ -120,6 +138,7 @@ import {
 import { invalidFile, uploadingFile } from "types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { setItemToPlural } from "@/helpers";
 
 @Component({
   components: {
@@ -146,10 +165,12 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: true}) private multiplesAllowed!: boolean;
   @Prop({ default: true}) private showAllErrors?: boolean;
-  @Prop({ default: true}) private filesRequired?: boolean;
+  @Prop({ default: false}) private filesRequired?: boolean;
   @Prop() private restrictedNames?: string[];
   @Prop({ default: "required"}) private requiredMessage!: string;
   @Prop({ default: 20 }) private maxNumberOfFiles!: number;
+  @Prop({ default: true }) private showSupportedFileTypes!: boolean;
+  @Prop({ default: true }) private showMaxSize!: boolean;
   @Prop({ default: false }) private startCompact?: boolean;
   @Prop({ default: () => [] }) private validFileFormats!: string[];
   @PropSync("invalidFiles", { default: () => [] }) private _invalidFiles!: invalidFile[];
@@ -176,7 +197,7 @@ export default class ATATFileUpload extends Vue {
   private validateOnBlur = true;
   private moreThanMax = false
   get isFileUploadDisabled():boolean{
-    return this.maxNumberOfFiles<=this._validFiles.length;
+    return this.maxNumberOfFiles <= this._validFiles.length;
   }
 
   get fileSizeConversion(): number {
@@ -332,11 +353,10 @@ export default class ATATFileUpload extends Vue {
 
       return isValidFormat && !doesFileExist && isFileSizeValid && !isRestrictedName;
     });
-    if(_validFiles.length > this.maxNumberOfFiles){
+    if((this._validFiles.length + _validFiles.length) > this.maxNumberOfFiles){
       this.moreThanMax = true
-      const errorText = this.maxNumberOfFiles === 1?
-        `Too many files selected. You can upload up to ${this.maxNumberOfFiles} file.`
-        :`Too many files selected. You can upload up to ${this.maxNumberOfFiles} files.`
+      const errorText = "Too many files selected. You can upload up to " + 
+          this.maxNumberOfFiles + " " + setItemToPlural(this.maxNumberOfFiles, "file") + "."
       this.$refs.atatFileUpload.errorBucket
         .push(errorText)
       this.setErrorMessage()
@@ -373,7 +393,6 @@ export default class ATATFileUpload extends Vue {
     for (let i = 0; i < this._validFiles.length; i++) {
       //wire up file upload here
       let uploadingFileObj = this._validFiles[i] as uploadingFile;
-
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
         window.setTimeout(() => {
@@ -395,7 +414,6 @@ export default class ATATFileUpload extends Vue {
               //download link - link to the file download
               //sys_id the unique id of the attachment in the attachment table
               //table_sys_id the unique id of the table/record
-
               const { download_link, sys_id, table_sys_id } = result.attachment;
               uploadingFileObj.link = download_link || "";
               uploadingFileObj.attachmentId = sys_id || "";

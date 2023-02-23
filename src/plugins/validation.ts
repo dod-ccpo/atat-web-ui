@@ -291,7 +291,7 @@ export class ValidationPlugin {
       }
       // list of names that a file can not have
       if(restrictedNames?.includes(file.name)){
-        return "File name already exist. Please rename the file."
+        return "'" + file.name + "' already exists. Please rename the file<br />and upload again."
       }
 
       // does file aleady exist?
@@ -303,7 +303,6 @@ export class ValidationPlugin {
       if (fileSize>maxFileSize){
         return `Your file '${fileName}' is too large. Please upload a file that is 1GB or less.`
       }
-
 
       if (SNOWError !== "" && SNOWError !== undefined){
         const error = SNOWError.toLowerCase();
