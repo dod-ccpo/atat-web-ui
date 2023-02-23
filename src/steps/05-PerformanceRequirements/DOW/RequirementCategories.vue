@@ -8,9 +8,7 @@
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              {{introSentence}}
-              Specify any categories that may apply to your acquisition below, and
-              we’ll walk through each selection to get more details.
+              {{ introText }}
               <a
                 role="button"
                 tabindex="0"
@@ -18,7 +16,7 @@
                 @keydown.enter="openSlideoutPanel"
                 @keydown.space="openSlideoutPanel"
               >
-                Learn more about categories.
+                Learn more about {{ learnMoreWhat }}.
               </a>
             </p>
           </div>
@@ -87,7 +85,7 @@ import { getIdText } from "@/helpers";
 import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
-
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 @Component({
   components: {
@@ -111,15 +109,21 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   private showAlert = false
   private routeNames = routeNames
   private goToSummary = false;
+
   public currentDOWSection = "";
+  public needsReplicate = false;
+  public needsOptimize = false;
+  public needsReplicateOrOptimize = false;
+  public needsArchitecturalDesign = false;
+  public learnMoreWhat = "";
+
   public get offeringTypeHeading(): string {
     return this.currentDOWSection === "XaaS" 
       ? "Anything as a Service (XaaS) requirements"
       : "cloud support package";
   }
 
-  public introSentence = `Through JWCC, you have the ability to procure many offerings for
-    Anything as a Service (XaaS) and Cloud Support Packages.`;
+  public introText = "";
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -128,9 +132,47 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     };
   };
 
+  public setIntroText(): void {
+    if (this.currentDOWSection === "CloudSupportPackage") {
+      this.introText = `Specify any support services below that may apply to your 
+        acquisition, and we’ll walk through each selection to get more details. If 
+        you don’t need a cloud support package, select “None of these apply to my 
+        acquisition.”`;
+    } else if (!this.needsReplicateOrOptimize && !this.needsArchitecturalDesign) {
+      this.introText = `Specify any XaaS categories below that may apply to your 
+        acquisition, and we’ll walk through each selection to get more details. 
+        If you don’t want to add specific offerings, select “None of these apply 
+        to my acquisition,” and you can define objective-based requirements within 
+        another performance area.`
+    } else {
+      const needStr = this.needsArchitecturalDesign && !this.needsReplicateOrOptimize
+        ? "requesting an architectural design"
+        : this.needsReplicate 
+          ? "replicating your current environment"
+          : "optimizing your current environment";
+      this.introText = `In addition to ${needStr}, you can select additional offerings 
+        from 11 different XaaS categories below. We’ll walk through each selection to 
+        gather more details. If you don’t want to add specific offerings in addition 
+        to those proposed by the CSPs, select “None of these apply to my acquisition.”`
+    }
+
+  }
 
   public async loadOnEnter(): Promise<void> {
     this.currentDOWSection = DescriptionOfWork.currentDOWSection;
+    this.learnMoreWhat = this.currentDOWSection === "XaaS" 
+      ? "XaaS categories" : "support services";
+    this.needsReplicate = 
+      CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized 
+        === "YES_REPLICATE";
+    this.needsOptimize = 
+      CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized 
+        === "YES_OPTIMIZE";
+    this.needsReplicateOrOptimize = this.needsReplicate || this.needsOptimize;
+    this.needsArchitecturalDesign 
+      = CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
+    this.setIntroText();
+
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels()
     if (periods && periods.length <= 0) {
