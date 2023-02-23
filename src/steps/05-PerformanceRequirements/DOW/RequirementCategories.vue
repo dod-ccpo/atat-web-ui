@@ -4,8 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Let’s work on your 
-            <!-- {{ offeringTypeHeading }} -->
+            Let’s work on your {{ offeringTypeHeading }}
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
@@ -32,6 +31,7 @@
           </div>
           <div class="copy-max-width">
             <ATATCheckboxGroup
+              v-if="currentDOWSection === 'XaaS'"
               id="XaaSCheckboxes"
               :card="false"
               :items="xaasCheckboxItems"
@@ -47,6 +47,7 @@
             />
             <hr/>
             <ATATCheckboxGroup
+              v-if="currentDOWSection === 'CloudSupportPackage'"
               id="CloudSupportCheckboxes"
               :card="false"
               :items="cloudSupportCheckboxItems"
@@ -110,6 +111,12 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   private showAlert = false
   private routeNames = routeNames
   private goToSummary = false;
+  public currentDOWSection = "";
+  public get offeringTypeHeading(): string {
+    return this.currentDOWSection === "XaaS" 
+      ? "Anything as a Service (XaaS) requirements"
+      : "cloud support package";
+  }
 
   public introSentence = `Through JWCC, you have the ability to procure many offerings for
     Anything as a Service (XaaS) and Cloud Support Packages.`;
@@ -121,7 +128,9 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     };
   };
 
+
   public async loadOnEnter(): Promise<void> {
+    this.currentDOWSection = DescriptionOfWork.currentDOWSection;
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels()
     if (periods && periods.length <= 0) {

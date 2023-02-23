@@ -90,7 +90,9 @@ export default class DOWLandingPage extends Vue {
 
   public async mounted(): Promise<void> {
     if (CurrentEnvironment.currentEnvironment) {
+      
       debugger;
+
       const currentEnvironmentExists
         = CurrentEnvironment.currentEnvironment.current_environment_exists === "YES";
       if (currentEnvironmentExists) {
