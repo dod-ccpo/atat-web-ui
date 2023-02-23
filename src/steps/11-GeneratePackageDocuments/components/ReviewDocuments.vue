@@ -96,7 +96,7 @@
                 large
                 width="137"
                 role="button"
-                :href="downloadLink" >
+                :href="downloadPackageLink" >
                 Download 
                 <v-icon class="ml-2">download</v-icon>
             </v-btn>
@@ -167,7 +167,7 @@ export default class ReviewDocuments extends Vue {
   private currentEnvServiceName = CURRENT_ENVIRONMENT_TABLE;
   private reqCostEstimateServiceName = REQUIREMENTS_COST_ESTIMATE_TABLE;
   private needsSignatureLength = 0
-  private downloadLink = "";
+  private downloadPackageLink = "";
   private domain="";
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
@@ -311,12 +311,7 @@ export default class ReviewDocuments extends Vue {
     await AcquisitionPackage.setAttachmentNames(docNames)
 
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
-
-    this.domain = document.location.origin.indexOf("localhost") > 0
-      ? 'https://services-dev.disa.mil'
-      : document.location.origin
-    this.downloadLink =  this.domain + '/download_all_attachments.do?sysparm_sys_id='
-      + this.packageId;
+    this.downloadPackageLink = await acquisitionPackage.setDownloadPackageLink();
   }
 
   async mounted(): Promise<void>{

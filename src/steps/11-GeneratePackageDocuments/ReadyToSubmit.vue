@@ -40,7 +40,7 @@
             pa-4"
           :elevation="2"
         >
-          <h2>Your completed package includes:</h2>
+          <h3 class="mb-2">Your completed package includes:</h3>
           <ul>
             <li
               v-for="(item,idx) in documentList"
@@ -53,8 +53,8 @@
           <v-btn
             class="secondary _text-decoration-none px-6 mt-3"
             large
-            target="_blank"
-            :href="'/download_all_attachments.do?sysparm_sys_id=' + packageId"
+            role="button"
+            :href="downloadPackageLink"
           >
           <ATATSVGIcon
             class="mr-2" width="14" height="19" name="download" color="primary"
@@ -85,7 +85,8 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
   public packageId = "";
   private documentList:string[]=[];
-  private certified = []
+  private certified = [];
+  private downloadPackageLink = "";
   private checkboxItem = [
     {
       id: "Programming",
@@ -118,6 +119,7 @@ export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
     }
     await acquisitionPackage.setDisableContinue(true)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
+    this.downloadPackageLink = await AcquisitionPackage.setDownloadPackageLink();
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
