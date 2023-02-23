@@ -1111,7 +1111,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         name: routeNames.GeneratingPackageDocuments,
         completePercentageWeight: 0,
-        component: GeneratingPackageDocuments
+        component: GeneratingPackageDocuments,
       },
       {
         menuText: "Upload Signed Documents",
