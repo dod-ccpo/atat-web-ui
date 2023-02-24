@@ -204,13 +204,13 @@ export default class ReviewDocuments extends Vue {
       itemName:"Justification and Approval (Template)",
       requiresSignature:true,
       alertText:"Complete and sign",
-      show:this.fairOpportunity !== "NO_NONE"
+      show:this.fairOpportunity === "NO_NONE"
     },
     {
       itemName:"Sole Source Market Research Report (Template)",
       requiresSignature:true,
       alertText:"Complete and sign",
-      show:this.fairOpportunity !== "NO_NONE"
+      show:this.fairOpportunity === "NO_NONE"
     },
     {
       itemName:"Description of Work",
@@ -220,7 +220,7 @@ export default class ReviewDocuments extends Vue {
     {
       itemName:"Evaluation Plan",
       requiresSignature:false,
-      show:this.fairOpportunity === "NO_NONE"
+      show:this.fairOpportunity !== "NO_NONE"
     },
   ];
 
