@@ -14,7 +14,7 @@
     </div>
 
     <ATATAlert
-      v-if="needsSignatureLength"
+      v-if="needsSignatureLength && ditcoUser"
       id="Callout"
       class="my-10"
       type="warning"
