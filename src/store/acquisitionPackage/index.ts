@@ -1459,6 +1459,14 @@ export class AcquisitionPackageStore extends VuexModule {
     this.doSetPackageId(value);
   }
 
+  @Action({rawError: true})
+  public async setDownloadPackageLink(): Promise<string> {
+    const domain = document.location.origin.indexOf("localhost") > 0
+      ? 'https://services-dev.disa.mil'
+      : document.location.origin
+    return await domain + '/download_all_attachments.do?sysparm_sys_id=' + this.packageId;
+  }
+
   @Mutation
   public doSetPackageId(value: string): void {
     this.packageId = value;

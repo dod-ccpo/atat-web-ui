@@ -246,9 +246,14 @@ export default class Card extends Vue {
   }
 
   public packageTitleClick(status: string): void {
-    if (status.toLowerCase() === "draft") {
-      this.cardMenuClick({action: 'Edit draft package', title: ""})    
+    const isEditable = ['draft', 'waiting for task order'].some(
+      s => s === status.toLowerCase()
+    )
+    
+    if (isEditable){
+      this.cardMenuClick({action: 'Edit draft package', title: ""})  
     }
+
   }
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
