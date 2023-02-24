@@ -14,7 +14,7 @@
     </div>
 
     <ATATAlert
-      v-if="needsSignatureLength"
+      v-if="needsSignatureLength && ditcoUser"
       id="Callout"
       class="my-10"
       type="warning"
@@ -96,7 +96,7 @@
                 large
                 width="137"
                 role="button"
-                :href="downloadLink" >
+                :href="downloadPackageLink" >
                 Download 
                 <v-icon class="ml-2">download</v-icon>
             </v-btn>
@@ -140,6 +140,8 @@ import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import {TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
 import IGCE from "@/store/IGCE";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 
 @Component({
@@ -165,7 +167,7 @@ export default class ReviewDocuments extends Vue {
   private currentEnvServiceName = CURRENT_ENVIRONMENT_TABLE;
   private reqCostEstimateServiceName = REQUIREMENTS_COST_ESTIMATE_TABLE;
   private needsSignatureLength = 0
-  private downloadLink = "";
+  private downloadPackageLink = "";
   private domain="";
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
@@ -204,13 +206,13 @@ export default class ReviewDocuments extends Vue {
       itemName:"Justification and Approval (Template)",
       requiresSignature:true,
       alertText:"Complete and sign",
-      show:this.fairOpportunity === "NO_NONE"
+      show:this.fairOpportunity !== "NO_NONE"
     },
     {
       itemName:"Sole Source Market Research Report (Template)",
       requiresSignature:true,
       alertText:"Complete and sign",
-      show:this.fairOpportunity === "NO_NONE"
+      show:this.fairOpportunity !== "NO_NONE"
     },
     {
       itemName:"Description of Work",
@@ -220,7 +222,7 @@ export default class ReviewDocuments extends Vue {
     {
       itemName:"Evaluation Plan",
       requiresSignature:false,
-      show:this.fairOpportunity !== "NO_NONE"
+      show:this.fairOpportunity === "NO_NONE"
     },
   ];
 
@@ -280,7 +282,7 @@ export default class ReviewDocuments extends Vue {
     sysDocAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'4 (Current Environment)')
     })
-    
+
     if(MIPR.mipr_attachment){
       const MIPRAttachment = await Attachments.getAttachmentById({
         serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
@@ -307,13 +309,9 @@ export default class ReviewDocuments extends Vue {
         docNames.push(listItem.itemName)
     })
     await AcquisitionPackage.setAttachmentNames(docNames)
-    this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
 
-    this.domain = document.location.origin.indexOf("localhost") > 0
-      ? 'https://services-dev.disa.mil'
-      : document.location.origin
-    this.downloadLink =  this.domain + '/download_all_attachments.do?sysparm_sys_id='
-      + this.packageId;
+    this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
+    this.downloadPackageLink = await acquisitionPackage.setDownloadPackageLink();
   }
 
   async mounted(): Promise<void>{

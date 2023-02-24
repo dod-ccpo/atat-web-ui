@@ -458,7 +458,7 @@ export class AcquisitionPackageStore extends VuexModule {
       }
     };
     attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
-    return document.location.origin + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || "";
+    return this.getDomain + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || "";
   }
 
   @Action
@@ -1449,6 +1449,18 @@ export class AcquisitionPackageStore extends VuexModule {
   public async setPackageId(value: string): Promise<void> {
     this.doSetPackageId(value);
   }
+
+  @Action({rawError: true})
+  public async setDownloadPackageLink(): Promise<string> {
+    return this.getDomain + '/download_all_attachments.do?sysparm_sys_id=' + this.packageId;
+  }
+
+  public get getDomain(): string {
+    return document.location.origin.indexOf("localhost") > -1
+      ? 'https://services-dev.disa.mil'
+      : document.location.origin
+  }
+
 
   @Mutation
   public doSetPackageId(value: string): void {

@@ -261,7 +261,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   }
 
   /**
-   * returns if all expected files have been uploaded 
+   * returns if all expected files have been uploaded
    **/
   get isCompleted(): boolean {
     return this.uploadedFiles.length === this.getMaxNumberOfFiles
@@ -287,14 +287,14 @@ export default class UploadSignedDocuments extends SaveOnLeave {
     return rulesArr;
   }
   public async loadOnEnter(): Promise<void> {
-    
+
     this.packages.forEach(item =>{
       if(item.show && item.requiresSignature){
         this.needsSignatureLength++
         this.filesNeeded.push(item.itemName.replace("(Template)", ""))
       }
     })
-    
+
     const query: AxiosRequestConfig = {
       params: {
         sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
