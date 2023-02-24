@@ -26,21 +26,15 @@
             <li class="pb-3">
               All information in my package is accurate and complete to the best of my knowledge.
             </li>
-            <li class="pb-3">
+            <li>
               All documents requiring certification have been signed and uploaded.
             </li>
           </ol>
         </div>
       </div>
       <div class="ml-10">
-        <v-card
-          class="
-            border1
-            border-base-lighter
-            pa-4"
-          :elevation="2"
-        >
-          <h3 class="mb-2">Your completed package includes:</h3>
+        <v-card class="border1 border-base-lighter pa-6 _shadow border-rounded-more">
+          <h3 class="mb-3 nowrap">Your completed package includes:</h3>
           <ul>
             <li
               v-for="(item,idx) in documentList"
@@ -54,7 +48,7 @@
             class="secondary _text-decoration-none px-6 mt-3"
             large
             role="button"
-            :href="downloadPackageLink"
+            :href="$sanitize(downloadPackageLink)"
           >
           <ATATSVGIcon
             class="mr-2" width="14" height="19" name="download" color="primary"
@@ -120,6 +114,7 @@ export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
     await acquisitionPackage.setDisableContinue(true)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
     this.downloadPackageLink = await AcquisitionPackage.setDownloadPackageLink();
+    
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
