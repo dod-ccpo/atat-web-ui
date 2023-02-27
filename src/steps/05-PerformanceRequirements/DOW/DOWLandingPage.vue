@@ -48,6 +48,7 @@ import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import { routeNames } from "../../../router/stepper";
 import { DOWCardData } from "types/Global";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -90,9 +91,6 @@ export default class DOWLandingPage extends Vue {
 
   public async mounted(): Promise<void> {
     if (CurrentEnvironment.currentEnvironment) {
-      
-      debugger;
-
       const currentEnvironmentExists
         = CurrentEnvironment.currentEnvironment.current_environment_exists === "YES";
       if (currentEnvironmentExists) {
@@ -109,6 +107,49 @@ export default class DOWLandingPage extends Vue {
         this.requirementSections.unshift(currentEnvCardData)
       }
     }
+    
+    debugger;
+
+    if (DescriptionOfWork.hasXaasService || DescriptionOfWork.hasCloudService) {
+      const selectedXaasServices: string[] = [];
+      const selectedCloudServices: string[] = [];
+      const DOWObject = DescriptionOfWork.DOWObject;
+      const offerings = DescriptionOfWork.serviceOfferingGroups;
+      const xaasServices = DescriptionOfWork.xaasServices;
+      const cloudSupportServices = DescriptionOfWork.cloudSupportServices;
+
+      DOWObject.forEach((selectedOffering) => {
+        const offering =  offerings.find(obj =>      
+          obj.value === selectedOffering.serviceOfferingGroupId);
+        debugger;
+        if (offering) {
+          if (xaasServices.includes(offering.value)) {
+            selectedXaasServices.push(offering.label);
+          }
+          if (cloudSupportServices.includes(offering.value)) {
+            selectedCloudServices.push(offering.label);
+          }
+        }
+      });
+      if (selectedXaasServices.length > 0) {
+        const xaasIndex = this.requirementSections.findIndex(obj => obj.section === "XaaS");
+        if (xaasIndex) {
+          this.requirementSections[xaasIndex].learnMore = "";
+          this.requirementSections[xaasIndex].label = selectedXaasServices.join(", ");
+        }
+      }
+      if (selectedCloudServices.length > 0) {
+        const cloudIndex = this.requirementSections.findIndex(
+          obj => obj.section === "CloudSupportPackage"
+        );
+        if (cloudIndex) {
+          this.requirementSections[cloudIndex].learnMore = "";
+          this.requirementSections[cloudIndex].label = selectedCloudServices.join(", ");
+        }
+      }
+
+    };
+
   }
 }
 

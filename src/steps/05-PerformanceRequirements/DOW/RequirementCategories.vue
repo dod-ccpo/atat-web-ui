@@ -71,7 +71,9 @@ import { Component, Mixins } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import PerfReqLearnMore from "./PerfReqLearnMore.vue";
+import XaasLearnMore from "./XaasLearnMore.vue";
+import CloudSupportLearnMore from "./CloudSupportLearnMore.vue";
+
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { Checkbox, RadioButton, SlideoutPanelContent } from "../../../../types/Global";
@@ -91,8 +93,9 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
   components: {
     ATATCheckboxGroup,
     ATATRadioGroup,
-    PerfReqLearnMore,
-    DOWAlert
+    DOWAlert,
+    CloudSupportLearnMore,
+    XaasLearnMore,
   }
 })
 
@@ -241,8 +244,10 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       }).catch(() => console.log("error navigating to DOW Summary"));
     }    
     await this.loadOnEnter();
+    const slideoutComponent = this.currentDOWSection === "XaaS" 
+      ? XaasLearnMore : CloudSupportLearnMore;
     const slideoutPanelContent: SlideoutPanelContent = {
-      component: PerfReqLearnMore,
+      component: slideoutComponent,
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);

@@ -779,7 +779,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   currentOfferingSysId = "";
   xaaSNoneValue = "XaaS_NONE";
   cloudNoneValue = "Cloud_NONE";
-  hasXaasService = false
+  hasXaasService = false;
+  hasCloudService = false;
   anticipatedUsersAndDataHasBeenVisited = false
   returnToDOWSummary = false;
   reviewGroupFromSummary = false;
@@ -1405,7 +1406,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
 
     this.setCurrentOfferingGroupId("");
-
+    debugger;
+    this.checkServiceOfferingTypesSelected();
   }
 
   // store session properties
@@ -1616,16 +1618,23 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public checkForXaas(): void {
+  public checkServiceOfferingTypesSelected(): void {
     if(this.DOWObject){
-      let xaasServiceFound = false
+      let serviceFound = false
       this.DOWObject.forEach((service)=>{
         this.xaasServices.forEach((xaas)=>{
           if(xaas === service.serviceOfferingGroupId){
-            xaasServiceFound = true
+            serviceFound = true
           }
         })
-        this.hasXaasService = xaasServiceFound;
+        this.hasXaasService = serviceFound;
+        serviceFound = false;
+        this.cloudSupportServices.forEach((cloudId)=>{
+          if(cloudId === service.serviceOfferingGroupId){
+            serviceFound = true
+          }
+        })
+        this.hasCloudService = serviceFound;
       })
     }
   }
@@ -1716,6 +1725,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeServiceOffering(offeringName: string): Promise<void> {
+    debugger;
     const offeringGroupIndex = this.DOWObject.findIndex(
       group => group.serviceOfferingGroupId === this.currentGroupId
     );
@@ -1752,6 +1762,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async removeCurrentOfferingGroup(): Promise<void> {
+    debugger;
     if (this.otherServiceOfferings.includes(this.currentGroupId)
       || this.cloudSupportServices.includes(this.currentGroupId)
     ) {
@@ -1862,7 +1873,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action
   public async setSelectedOfferingGroups(selectedOfferingGroupIds: string[]): Promise<void> {
     await this.doSetSelectedOfferingGroups(selectedOfferingGroupIds);
-    this.checkForXaas()
+    debugger;
+    this.checkServiceOfferingTypesSelected()
     this.setAnticipatedUsersAndDataHasBeenVisited()
   }
 
@@ -1902,6 +1914,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       : "";
     this.currentOfferingName = "";
     this.currentOfferingSysId = "";
+    debugger;
+    this.checkServiceOfferingTypesSelected();
   }
 
   @Action
@@ -1980,6 +1994,9 @@ export class DescriptionOfWorkStore extends VuexModule {
       this.currentOfferingSysId = currentOfferings.length > 0
         ? currentOfferings[0].sys_id : "";
     }
+    debugger;
+    this.checkServiceOfferingTypesSelected();
+
   }
 
   @Action
@@ -2311,6 +2328,8 @@ export class DescriptionOfWorkStore extends VuexModule {
          */
         if(otherOfferingObj.otherOfferingData.length===0){
           this.DOWObject.splice(offeringIndex,1);
+          debugger;
+          this.checkServiceOfferingTypesSelected();
         }
 
       }
@@ -2373,7 +2392,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action
   public async deleteOtherOffering(): Promise<void> {
     this.doDeleteOtherOffering();
-    this.checkForXaas()
+    this.checkServiceOfferingTypesSelected()
     this.setAnticipatedUsersAndDataHasBeenVisited()
   }
 
@@ -2416,6 +2435,8 @@ export class DescriptionOfWorkStore extends VuexModule {
         this.currentGroupId = nextGroupId;
       }
     }
+    debugger;
+    this.checkServiceOfferingTypesSelected();
   }
   // ******************************************************************
   // ******************************************************************
@@ -2603,6 +2624,8 @@ export class DescriptionOfWorkStore extends VuexModule {
         console.error(error);
       }
     }
+    debugger;
+    this.checkServiceOfferingTypesSelected();
   }
 
   @Action({ rawError: true })
