@@ -124,7 +124,6 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     : routeNames.CurrentContract;
 };
 export const ReplicateAndOptimizeResolver = (current: string): string => {
-  console.log(current)
   //back from Architectural design
   if(current === routeNames.ArchitecturalDesign){
     return routeNames.DOWLandingPageDraft
@@ -140,7 +139,6 @@ export const ReplicateDetailsResolver = (current: string): string => {
   }
   //back from Architectural design
   if(current === routeNames.ArchitecturalDesign){
-    console.log('here')
     return routeNames.DOWLandingPageDraft
   }
   return current === routeNames.ReplicateAndOptimize
@@ -251,7 +249,7 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 
 export const RequirementsPathResolver = (current: string, direction: string): string => {
   const hasCurEnvArchDesignNeeds = CurrentEnvironment.CurrentEnvironmentHasArchitecturalDesignNeeds;
-  debugger
+
   if (current === routeNames.ArchitecturalDesignDetails){
     return basePerformanceRequirementsPath;
   }
