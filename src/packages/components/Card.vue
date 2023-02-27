@@ -6,8 +6,8 @@
     elevation="0"
   >
     <div class="pr-8 flex-grow-1">
-      <div class="d-flex">
-        <div class="card-header flex-grow-1">
+      <div class="d-flex align-start justify-space-between">
+        <div class="card-header mr-2">
           <a
             :id="'Portfolio' + index"
             role="button"
@@ -23,9 +23,10 @@
           <v-chip
             :id="'StatusChip' + index"
             :class="statusChipBgColor"
+            class="_status-chip"
             label
           >
-            {{modifiedData.packageStatus}}
+            {{ modifiedData.packageStatus }}
           </v-chip>
       </div>
       <div class="text-base -size-14 d-flex align-center">
@@ -246,8 +247,11 @@ export default class Card extends Vue {
   }
 
   public packageTitleClick(status: string): void {
-    if (status.toLowerCase() === "draft") {
-      this.cardMenuClick({action: 'Edit draft package', title: ""})    
+    const isEditable = ['draft', 'waiting for signatures'].some(
+      s => s === status.toLowerCase()
+    )
+    if (isEditable){
+      this.cardMenuClick({action: 'Edit draft package', title: ""}) 
     }
   }
 
@@ -313,13 +317,8 @@ export default class Card extends Vue {
       if(this.isOwner){
         this.cardMenuItems.push(
           {
-            title: "Resend signature request",
-            action: "Resend signature request",
-            disabled:true
-          },{
-            title: "Cancel signature request",
-            action: "Cancel signature request",
-            disabled:true
+            title: "Edit draft package",
+            action: "Edit draft package"
           },{
             title: "Archive acquisition",
             action: "Archive acquisition"

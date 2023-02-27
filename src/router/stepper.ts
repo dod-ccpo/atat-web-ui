@@ -132,6 +132,8 @@ import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToG
 import GeneratingPackageDocuments
   from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
 import UploadSignedDocuments from "@/steps/11-GeneratePackageDocuments/UploadSignedDocuments.vue";
+import ReadyToSubmit from "@/steps/11-GeneratePackageDocuments/ReadyToSubmit.vue";
+import UnderReview from "@/steps/11-GeneratePackageDocuments/UnderReview.vue";
 
 import {
   AcorsRouteResolver,
@@ -265,6 +267,8 @@ export const routeNames = {
   GeneratePackageDocuments: "Generate_Package_Documents",
   AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs",
   UploadSignedDocuments:"Upload_Signed_Documents",
+  ReadyToSubmit:"Ready_To_Submit",
+  UnderReview:"Under_Review"
 };
 
 /**
@@ -1135,7 +1139,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         name: routeNames.GeneratingPackageDocuments,
         completePercentageWeight: 0,
-        component: GeneratingPackageDocuments
+        component: GeneratingPackageDocuments,
       },
       {
         menuText: "Upload Signed Documents",
@@ -1144,6 +1148,23 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.UploadSignedDocuments,
         completePercentageWeight: 0,
         component: UploadSignedDocuments
+      },
+      {
+        menuText: "Ready To Submit",
+        path:"ready-to-submit",
+        excludeFromMenu: true,
+        name: routeNames.ReadyToSubmit,
+        completePercentageWeight: 0,
+        component: ReadyToSubmit,
+        continueButtonText: "Submit my acquisition package"
+      },
+      {
+        menuText: "Under Review",
+        path:"under-review",
+        excludeFromMenu: true,
+        name: routeNames.UnderReview,
+        completePercentageWeight: 0,
+        component: UnderReview,
       }
     ],
   },

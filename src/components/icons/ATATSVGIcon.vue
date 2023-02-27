@@ -20,6 +20,7 @@ import Azure from "@/components/icons/Azure.vue";
 import BugReport from "@/components/icons/BugReport.vue";
 import Bullet from "@/components/icons/Bullet.vue";
 import Calendar from "@/components/icons/Calendar.vue";
+import CheckedBag from "@/components/icons/CheckedBag.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
@@ -78,6 +79,7 @@ import Place from "@/components/icons/Place.vue";
 import SendEmail from "@/components/icons/SendEmail.vue";
 import XaasCircle from "@/components/icons/XaasCircle.vue"
 import Update from "@/components/icons/Update.vue";
+import Download from "@/components/icons/Download.vue";
 
 
 @Component({
@@ -89,6 +91,7 @@ import Update from "@/components/icons/Update.vue";
     BugReport,
     Bullet,
     Calendar,
+    CheckedBag,
     ChevronDown,
     ChevronRight,
     Close,
@@ -99,6 +102,7 @@ import Update from "@/components/icons/Update.vue";
     Currency,
     CurrentFunctionsCircle,
     DisaLogo,
+    Download,
     Edit,
     Email,
     ErrorFilled,
