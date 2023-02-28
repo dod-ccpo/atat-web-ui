@@ -44,9 +44,6 @@ import UploadMigrationDocuments
 import ReplicateAndOptimize
   from "@/steps/03-Background/CurrentEnvironment/ReplicateAndOptimize.vue";
 import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/ReplicateDetails.vue";
-import ArchitecturalDesign from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesign.vue";
-import ArchitecturalDesignDetails
-  from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesignDetails.vue";
 import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/EnvironmentSummary.vue";
 
 // Step 4 - Contract Details
@@ -63,11 +60,14 @@ import CrossDomain from "@/steps/04-ContractDetails/CrossDomain.vue";
 // Step 5 - Performance Requirements
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
 import DOWLandingPage from "../steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
+import ArchitecturalDesign from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
+import ArchitecturalDesignDetails
+  from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDetails.vue";
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
-import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
 import ArchitectureDesignDOW
   from "../steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
+import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
 import ServiceOfferingDetails 
   from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue";
 import OtherOfferingSummary 
@@ -137,8 +137,10 @@ import UnderReview from "@/steps/11-GeneratePackageDocuments/UnderReview.vue";
 
 import {
   AcorsRouteResolver,
+  ArchitecturalDesignResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
+  ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   PIIRecordResolver,
   FOIARecordResolver,
@@ -631,25 +633,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
       },
       // {
-      //   menuText: "Architectural Design",
-      //   path: "architectural-design",
-      //   excludeFromMenu: true,
-      //   name: routeNames.ArchitecturalDesign,
-      //   component: ArchitecturalDesign,
-      //   completePercentageWeight: 5,
-      //   completed: false,
-      // },
-      // {
-      //   menuText: "Architectural Design Details",
-      //   path: "architectural-design-details",
-      //   excludeFromMenu: true,
-      //   name: routeNames.ArchitecturalDesignDetails,
-      //   component: ArchitecturalDesignDetails,
-      //   completePercentageWeight: 5,
-      //   completed: false,
-      //   routeResolver: ArchitecturalDesignDetailsRouteResolver
-      // },
-      // {
       //   menuText: "Summary",
       //   path: "background-summary",
       //   excludeFromMenu: true,
@@ -686,7 +669,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ReplicateAndOptimize,
         completePercentageWeight: 5,
         completed: false,
-
+        routeResolver:ReplicateAndOptimizeResolver,
       },
       {
         menuText: "Replicate Details",
@@ -706,6 +689,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ArchitecturalDesign,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: ArchitecturalDesignResolver,
       },
       {
         menuText: "Architectural Design Details",
@@ -715,15 +699,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ArchitecturalDesignDetails,
         completePercentageWeight: 5,
         completed: false,
-      },      
-      {
-        menuText: "Requirement Categories",
-        path: "/requirement-categories",
-        excludeFromMenu: false,
-        name: routeNames.RequirementCategories,
-        stepCompleteOnEnter: routeNames.DOWLandingPage,
-        completePercentageWeight: 1,
-        component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
       },
       {
@@ -770,7 +745,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.OtherOfferingSummary,
         completePercentageWeight: 1,
         component: OtherOfferingSummary,
-        routeResolver: OtherOfferingSummaryPathResolver, 
+        routeResolver: OtherOfferingSummaryPathResolver,
         additionalButtons: [
           {
             buttonText: "I don’t need compute resources",
