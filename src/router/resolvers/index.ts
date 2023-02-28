@@ -246,11 +246,23 @@ const getOfferingGroupServicesPath = (groupId: string)=>
  ██████ ██   ██    ██    ███████  ██████   ██████  ██   ██ ██ ███████ ███████ 
 
 /****************************************************************************/
-
+export const ArchitecturalDesignResolver = (current: string): string => {
+  //coming from replicate and optimize or replicate details
+  if(current === routeNames.ReplicateAndOptimize ||
+    current === routeNames.ReplicateDetails){
+    return routeNames.DOWLandingPageDraft
+  }
+  //coming back from Architectural Design details
+  if(current === routeNames.ArchitecturalDesignDetails){
+    return routeNames.ArchitecturalDesign
+  }
+  return current === routeNames.DOWLandingPageDraft
+    ? routeNames.ArchitecturalDesign
+    : routeNames.DOWLandingPageDraft;
+}
 export const RequirementsPathResolver = (current: string, direction: string): string => {
   const hasCurEnvArchDesignNeeds = CurrentEnvironment.currentEnvironment
     .needs_architectural_design_services === 'YES';
-  debugger
   if (current === routeNames.ArchitecturalDesignDetails){
     return basePerformanceRequirementsPath;
   }
@@ -1288,6 +1300,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
+  ArchitecturalDesignResolver,
   CurrentContractDetailsRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,

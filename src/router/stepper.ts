@@ -135,6 +135,7 @@ import UploadSignedDocuments from "@/steps/11-GeneratePackageDocuments/UploadSig
 
 import {
   AcorsRouteResolver,
+  ArchitecturalDesignResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   ReplicateAndOptimizeResolver,
@@ -684,6 +685,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ArchitecturalDesign,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: ArchitecturalDesignResolver,
       },
       {
         menuText: "Architectural Design Details",
