@@ -16,6 +16,7 @@ import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import DOWLandingPageDraft from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPageDraft.vue";
+import {Debugger} from "inspector";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -125,6 +126,8 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 };
 
 export const ReplicateDetailsResolver = (current: string): string => {
+  // console.log("Current ReplicateDetailsResolver: " + current);
+  debugger
   if (needsReplicateOrOptimize()) {
     return routeNames.ReplicateDetails;
   }
@@ -136,6 +139,7 @@ export const ReplicateDetailsResolver = (current: string): string => {
 
 
 export const CurrentEnvRouteResolver = (current: string): string => {
+  console.log("Current CurrentEnvRouteResolver: " + current);
   const hasCurrentEnv
     = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
   if (hasCurrentEnv) {
@@ -235,6 +239,7 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 /****************************************************************************/
 
 export const RequirementsPathResolver = (current: string, direction: string): string => {
+  console.log("Requirements path resolver");
   if (current === routeNames.ArchitecturalDesignDetails){
     return basePerformanceRequirementsPath;
   }
