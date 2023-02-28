@@ -94,6 +94,7 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
+      console.log(this.hasChanged())
       if (this.hasChanged()) {
         await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         const needsArchDesign = this.currEnvDTO.needs_architectural_design_services === "YES"

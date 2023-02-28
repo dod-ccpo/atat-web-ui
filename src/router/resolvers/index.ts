@@ -248,8 +248,9 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 /****************************************************************************/
 
 export const RequirementsPathResolver = (current: string, direction: string): string => {
-  const hasCurEnvArchDesignNeeds = CurrentEnvironment.CurrentEnvironmentHasArchitecturalDesignNeeds;
-
+  const hasCurEnvArchDesignNeeds = CurrentEnvironment.currentEnvironment
+    .needs_architectural_design_services === 'YES';
+  debugger
   if (current === routeNames.ArchitecturalDesignDetails){
     return basePerformanceRequirementsPath;
   }
