@@ -702,6 +702,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: PerformanceRequirementsPathResolver,
       },
       {
+        menuText: "Requirement Categories",
+        path: "/requirement-categories",
+        excludeFromMenu: false,
+        name: routeNames.RequirementCategories,
+        stepCompleteOnEnter: routeNames.DOWLandingPage, // TODO - double-check when wired up
+        completePercentageWeight: 1,
+        component: RequirementCategories,
+        routeResolver: PerformanceRequirementsPathResolver,
+      },      
+      {
         menuText: "Anticipated Users and Data Needs",
         excludeFromMenu: true,
         path: "anticipated-users-and-data-needs",

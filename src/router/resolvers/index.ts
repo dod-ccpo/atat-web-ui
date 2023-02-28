@@ -126,11 +126,11 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 export const ReplicateAndOptimizeResolver = (current: string): string => {
   //back from Architectural design
   if(current === routeNames.ArchitecturalDesign){
-    return routeNames.DOWLandingPageDraft
+    return routeNames.DOWLandingPage
   }
-  return current === routeNames.DOWLandingPageDraft
+  return current === routeNames.DOWLandingPage
     ? routeNames.ReplicateAndOptimize
-    : routeNames.DOWLandingPageDraft;
+    : routeNames.DOWLandingPage;
 }
 
 export const ReplicateDetailsResolver = (current: string): string => {
@@ -139,7 +139,7 @@ export const ReplicateDetailsResolver = (current: string): string => {
   }
   //back from Architectural design
   if(current === routeNames.ArchitecturalDesign){
-    return routeNames.DOWLandingPageDraft
+    return routeNames.DOWLandingPage
   }
   return current === routeNames.ReplicateAndOptimize
     ? routeNames.DOWLandingPage
@@ -250,15 +250,15 @@ export const ArchitecturalDesignResolver = (current: string): string => {
   //coming from replicate and optimize or replicate details
   if(current === routeNames.ReplicateAndOptimize ||
     current === routeNames.ReplicateDetails){
-    return routeNames.DOWLandingPageDraft
+    return routeNames.DOWLandingPage
   }
   //coming back from Architectural Design details
   if(current === routeNames.ArchitecturalDesignDetails){
     return routeNames.ArchitecturalDesign
   }
-  return current === routeNames.DOWLandingPageDraft
+  return current === routeNames.DOWLandingPage
     ? routeNames.ArchitecturalDesign
-    : routeNames.DOWLandingPageDraft;
+    : routeNames.DOWLandingPage;
 }
 export const RequirementsPathResolver = (current: string, direction: string): string => {
   const hasCurEnvArchDesignNeeds = CurrentEnvironment.currentEnvironment
