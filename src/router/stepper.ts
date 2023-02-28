@@ -714,7 +714,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.DOWArchitecturalDesign,
         completePercentageWeight: 5,
         completed: false,
-        routeResolver: DOWArchitecturalDesignResolver,
+        // routeResolver: DOWArchitecturalDesignResolver,
         component: ArchitectureDesignDOW,
       },
 
