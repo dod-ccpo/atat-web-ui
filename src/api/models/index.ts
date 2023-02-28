@@ -858,3 +858,13 @@ export interface RegionsDTO extends BaseTableDTO {
   sys_created_by: string
   group: string
 }
+export interface PackageDocumentsSignedDTO extends BaseTableDTO {
+  sys_id?: string
+  sys_updated_by?: string
+  sys_created_on?: string
+  sys_mod_count?: string
+  acquisition_package?: string
+  sys_updated_on?: string
+  sys_tags?: string
+  sys_created_by?: string
+}

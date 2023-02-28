@@ -44,10 +44,22 @@
     margin-top: 0;
     padding-top: 0;
   }
+  &._big-bold-label {
+    label {
+      color: $base-darkest !important;
+      font-size: 20px !important;
+      font-weight: 500 !important;
+      &.error--text {
+        color: $error-dark !important;
+      }
+    }
+    .v-input__slot {
+      align-items: center;
+    }
+  }
 
   label {
     color: $base-darkest !important;
-
     &.error--text {
       color: $error-dark !important;
     }

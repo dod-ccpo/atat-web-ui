@@ -8,6 +8,7 @@ import { TABLENAME as RequirementsCostEstimateTableName } from "@/api/requiremen
 import { TABLENAME as CurrentEnvironmentTableName } from "@/api/currentEnvironment";
 import { TABLENAME as FairOpportunityTableName } from "@/api/fairOpportunity";
 import { TABLENAME as AcquisitionPackageTableName } from "@/api/acquisitionPackages";
+import { TABLENAME as PackageDocumentsSignedTableName } from "@/api/packageDocumentsSigned"
 import { FundingRequestFSAttachmentService } from "./fundingRequestFSForm";
 import { AttachmentServiceBase } from "./base";
 import { FundingRequestMIPRAttachmentService } from "./fundingRequestMIPRForm";
@@ -16,7 +17,8 @@ import {RequirementsCostEstimateAttachmentService} from
 import {CurrentEnvironmentDocumentService} from "@/services/attachment/currentEnvironmentDocument";
 import {FairOpportunityDocumentService} from "@/services/attachment/fairOpportunity";
 import {AcquisitionPackageDocumentService} from "@/services/attachment/AcquisitionPackage";
-
+import { PackageDocumentsSignedAttachmentService } from
+  "@/services/attachment/PackageDocumentsSigned";
 export const AttachmentServiceCallbacks = (() => {
   const uploadCallbacks: Record<
     string,
@@ -97,7 +99,8 @@ export const AttachmentServiceTypes = {
   RequirementsCostEstimate: RequirementsCostEstimateTableName,
   CurrentEnvironment: CurrentEnvironmentTableName,
   FairOpportunity: FairOpportunityTableName,
-  AcquisitionPackage: AcquisitionPackageTableName
+  AcquisitionPackage: AcquisitionPackageTableName,
+  PackageDocumentsSigned: PackageDocumentsSignedTableName,
 };
 export const AttachmentServiceFactory = (
   attachmentServiceType: string
@@ -142,6 +145,12 @@ export const AttachmentServiceFactory = (
       attachmentServiceType,
       AcquisitionPackageTableName,
       api.acquisitionPackageTable
+    );
+  case AttachmentServiceTypes.PackageDocumentsSigned:
+    return new PackageDocumentsSignedAttachmentService(
+      attachmentServiceType,
+      PackageDocumentsSignedTableName,
+      api.packageDocumentsSignedTable
     );
   
   default:

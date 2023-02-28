@@ -1289,7 +1289,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
-  // IGCEGatherPriceResolver,
+  // DOWArchitecturalDesignResolver,
 };
 
 // add path resolvers here 
