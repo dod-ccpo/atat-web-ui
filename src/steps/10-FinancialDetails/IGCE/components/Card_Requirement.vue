@@ -99,7 +99,7 @@ export default class CardRequirement extends Vue {
 
   public checkMonthlyValue(): void {
     // eslint-disable-next-line camelcase
-    this._cardData.unit_price = parseFloat(this.estimate)|| 0;
+    this._cardData.unit_price = parseFloat(this.estimate.replaceAll(",", ""))|| 0;
     this.noMonthlyValue = this.moneyNumber < 1;
   }
   public async loadOnEnter(): Promise<void> {
