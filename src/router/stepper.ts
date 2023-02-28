@@ -147,6 +147,7 @@ import {
   ServiceOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
+  COIRouteResolver,
   MIPRResolver,
   GInvoicingResolver,
   Upload7600Resolver,
@@ -678,24 +679,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false
       },
       {
-        menuText: "Architectural Design",
-        path: "architectural-design",
-        excludeFromMenu: true,
-        name: routeNames.ArchitecturalDesign,
-        component: ArchitecturalDesign,
-        completePercentageWeight: 5,
-        completed: false,
-      },
-      {
-        menuText: "Architectural Design Details",
-        path: "architectural-design-details",
-        excludeFromMenu: true,
-        name: routeNames.ArchitecturalDesignDetails,
-        component: ArchitecturalDesignDetails,
-        completePercentageWeight: 5,
-        completed: false,
-      },
-      {
         menuText: "Replicate And Optimize",
         path: "replicate-and-optimize",
         excludeFromMenu: true,
@@ -716,6 +699,24 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: ReplicateDetailsResolver,
       },
       {
+        menuText: "Architectural Design",
+        path: "architectural-design",
+        excludeFromMenu: true,
+        name: routeNames.ArchitecturalDesign,
+        component: ArchitecturalDesign,
+        completePercentageWeight: 5,
+        completed: false,
+      },
+      {
+        menuText: "Architectural Design Details",
+        path: "architectural-design-details",
+        excludeFromMenu: true,
+        name: routeNames.ArchitecturalDesignDetails,
+        component: ArchitecturalDesignDetails,
+        completePercentageWeight: 5,
+        completed: false,
+      },      
+      {
         menuText: "Requirement Categories",
         path: "/requirement-categories",
         excludeFromMenu: false,
@@ -725,18 +726,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
       },
-
-      // {
-      //   menuText: "Architectural Design Requirements DOW",
-      //   excludeFromMenu: true,
-      //   path: "architectural-design-requirements-dow",
-      //   name: routeNames.DOWArchitecturalDesign,
-      //   completePercentageWeight: 5,
-      //   completed: false,
-      //   routeResolver: DOWArchitecturalDesignResolver,
-      //   component: ArchitectureDesignDOW,
-      // },
-
       {
         menuText: "Anticipated Users and Data Needs",
         excludeFromMenu: true,
@@ -829,6 +818,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.ConflictOfInterest,
         component: ConflictOfInterest,
+        routeResolver: COIRouteResolver,
       },
       {
         name: routeNames.PackagingPackingAndShipping,

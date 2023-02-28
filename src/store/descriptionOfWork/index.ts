@@ -1914,8 +1914,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       : "";
     this.currentOfferingName = "";
     this.currentOfferingSysId = "";
-    debugger;
-    this.checkServiceOfferingTypesSelected();
   }
 
   @Action
@@ -1923,6 +1921,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): Promise<void> {
     this.doSetSelectedServiceOffering({ selectedOfferingSysIds, otherValue });
+    this.checkServiceOfferingTypesSelected();
   }
 
   @Action
@@ -1994,9 +1993,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       this.currentOfferingSysId = currentOfferings.length > 0
         ? currentOfferings[0].sys_id : "";
     }
-    debugger;
-    this.checkServiceOfferingTypesSelected();
-
   }
 
   @Action
@@ -2392,8 +2388,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action
   public async deleteOtherOffering(): Promise<void> {
     this.doDeleteOtherOffering();
-    this.checkServiceOfferingTypesSelected()
-    this.setAnticipatedUsersAndDataHasBeenVisited()
+    this.checkServiceOfferingTypesSelected();
+    this.setAnticipatedUsersAndDataHasBeenVisited();
   }
 
   @Mutation
@@ -2435,8 +2431,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         this.currentGroupId = nextGroupId;
       }
     }
-    debugger;
-    this.checkServiceOfferingTypesSelected();
   }
   // ******************************************************************
   // ******************************************************************
