@@ -42,7 +42,7 @@ import UploadSystemDocuments
 import UploadMigrationDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.vue";
 import ReplicateAndOptimize
-  from "@/steps/03-Background/CurrentEnvironment/ReplicateAndOptimize.vue";
+  from "@/steps/05-PerformanceRequirements/CurrentFunctions/ReplicateAndOptimize.vue";
 import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/ReplicateDetails.vue";
 import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/EnvironmentSummary.vue";
 
