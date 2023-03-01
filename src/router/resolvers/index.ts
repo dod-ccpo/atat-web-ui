@@ -128,6 +128,8 @@ export const ReplicateAndOptimizeResolver = (current: string): string => {
   //back from Architectural design
   if(current === routeNames.ArchitecturalDesign){
     return routeNames.DOWLandingPageDraft
+  } else if(current === routeNames.ReplicateDetails){
+    return routeNames.ReplicateAndOptimize
   }
   return current === routeNames.DOWLandingPageDraft
     ? routeNames.ReplicateAndOptimize
