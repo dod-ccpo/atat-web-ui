@@ -311,7 +311,7 @@ export default class ReviewDocuments extends Vue {
     await AcquisitionPackage.setAttachmentNames(docNames)
 
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
-    this.downloadPackageLink = await acquisitionPackage.setDownloadPackageLink();
+    this.downloadPackageLink = await acquisitionPackage.setDownloadPackageLink(false);
   }
 
   async mounted(): Promise<void>{

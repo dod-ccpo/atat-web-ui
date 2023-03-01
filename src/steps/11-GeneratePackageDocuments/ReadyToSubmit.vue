@@ -114,7 +114,7 @@ export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
     }
     await acquisitionPackage.setDisableContinue(true)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
-    this.downloadPackageLink = await AcquisitionPackage.setDownloadPackageLink();
+    this.downloadPackageLink = await AcquisitionPackage.setDownloadPackageLink(false);
     
   }
   async mounted(): Promise<void>{

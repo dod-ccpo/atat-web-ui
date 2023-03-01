@@ -1450,9 +1450,22 @@ export class AcquisitionPackageStore extends VuexModule {
     this.doSetPackageId(value);
   }
 
+  /**
+   * @param isDocumentTypeSigned 
+   * @returns link to download unsigned or signed documents 
+   */
   @Action({rawError: true})
-  public async setDownloadPackageLink(): Promise<string> {
-    return this.getDomain + '/download_all_attachments.do?sysparm_sys_id=' + this.packageId;
+  public async setDownloadPackageLink(isDocumentTypeSigned: boolean): Promise<string> {
+    const getdocumentsSysIDQuery: AxiosRequestConfig = {
+      params: {
+        sysparm_fields: "sys_id",
+        sysparm_query: "acquisition_package=" + this.packageId
+      }
+    };
+    const sysID = (isDocumentTypeSigned
+      ? await api.packageDocumentsSignedTable.getQuery(getdocumentsSysIDQuery)
+      : await api.packageDocumentsUnsignedTable.getQuery(getdocumentsSysIDQuery))[0].sys_id;
+    return this.getDomain + '/download_all_attachments.do?sysparm_sys_id=' + sysID;
   }
 
   public get getDomain(): string {
