@@ -221,8 +221,7 @@ export const A11yRequirementResolver = (current: string): string => {
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings;
 
 const basePerformanceRequirementsPath =  "performance-requirements";
-const currentArchitecturalDesignDetailsPath =
-  basePerformanceRequirementsPath + "/architectural-design-details";
+const requirementCategories = "/requirement-categories";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 const DOWSecurityRequitementsPath = "performance-requirements/dow-security-requirements";
 const otherServiceOfferingSummaryPath = "performance-requirements/service-offerings/other/summary";
@@ -260,19 +259,33 @@ export const ArchitecturalDesignResolver = (current: string): string => {
     ? routeNames.ArchitecturalDesign
     : routeNames.DOWLandingPage;
 }
-export const RequirementsPathResolver = (current: string, direction: string): string => {
+
+export const ArchitecturalDesignDetailsResolver = (current: string): string => {
+  if (current === routeNames.RequirementCategories) {
+    return routeNames.DOWLandingPage
+  }
   const hasCurEnvArchDesignNeeds = CurrentEnvironment.currentEnvironment
     .needs_architectural_design_services === 'YES';
-  if (current === routeNames.ArchitecturalDesignDetails){
-    return basePerformanceRequirementsPath;
+
+  return hasCurEnvArchDesignNeeds 
+    ? routeNames.ArchitecturalDesignDetails 
+    : routeNames.DOWLandingPage;
+}
+
+export const RequirementsPathResolver = (current: string, direction: string): string => {
+  debugger;
+  if (current === routeNames.DOWLandingPage) {
+    if ((DescriptionOfWork.currentDOWSection === "XaaS" 
+      && !DescriptionOfWork.hasXaasService) 
+      || (DescriptionOfWork.currentDOWSection === "CloudSupportPackage" 
+      && !DescriptionOfWork.hasCloudService)
+    ) {
+      return requirementCategories;
+    } else {
+      return descriptionOfWorkSummaryPath;
+    }
   }
-  if (current === routeNames.ArchitecturalDesign && hasCurEnvArchDesignNeeds) {
-    return currentArchitecturalDesignDetailsPath;
-  }
-  if (current === routeNames.ArchitecturalDesign && !hasCurEnvArchDesignNeeds) {
-    return basePerformanceRequirementsPath;
-  }
-  
+
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
   if (current === routeNames.ServiceOfferings
@@ -299,8 +312,8 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   if(current === routeNames.ServiceOfferings && 
     !atBeginningOfOfferingGroups){ 
     const previousGroup = DescriptionOfWork.prevOfferingGroup;
-
     if (DescriptionOfWork.returnToDOWSummary) {
+      debugger;
       return descriptionOfWorkSummaryPath;
     }
 
@@ -354,19 +367,22 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 /****************************************************************************/
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
-  const xaasServices = DescriptionOfWork.hasXaasService;
-  const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
-  if ((current === routeNames.DOWArchitecturalDesign 
-    || current === routeNames.RequirementCategories)
-    && xaasServices && !hasBeenVisited
-  ) {
-    return routeNames.AnticipatedUserAndDataNeeds
+  debugger;
+  // HAVE TO CHECK IF USER SELECTED "NONE OF THESE APPLY"
+  
+  if (DescriptionOfWork.currentDOWSection === "XaaS") {
+    const xaasServices = DescriptionOfWork.hasXaasService;
+    const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
+    if ((current === routeNames.RequirementCategories)
+      && xaasServices && !hasBeenVisited
+    ) {
+      return routeNames.AnticipatedUserAndDataNeeds
+    }
   }
-  return current === routeNames.DOWArchitecturalDesign 
+  return current === routeNames.RequirementCategories 
     ? routeNames.ServiceOfferings
-    : routeNames.DOWArchitecturalDesign;
+    : routeNames.RequirementCategories;
 }
-
 /****************************************************************************
 
 ██████   █████   ██████  ███████     ██████  
@@ -384,6 +400,7 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 export const ServiceOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
+  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
   DescriptionOfWork.setCurrentGroupRemoved(false);
@@ -427,6 +444,7 @@ export const ServiceOfferingsPathResolver = (
     DescriptionOfWork.setReturnToDOWSummary(false);
     DescriptionOfWork.setLastGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false); 
+    debugger;
     return descriptionOfWorkSummaryPath;
   } 
 
@@ -582,6 +600,7 @@ export const ServiceOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
+  debugger;
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
   const groupId = DescriptionOfWork.currentGroupId;
@@ -597,6 +616,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   if(current === routeNames.OtherOfferingSummary && 
     isOtherOffering && direction === "previous"){
     if(DescriptionOfWork.returnToDOWSummary){
+      debugger;
       return descriptionOfWorkSummaryPath;
     }
     if(DescriptionOfWork.prevOfferingGroup){
@@ -604,6 +624,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
       DescriptionOfWork.setCurrentOfferingGroupId(group);
     }
     else{
+      debugger;
       return descriptionOfWorkSummaryPath;
     }
   }
@@ -616,6 +637,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     || (DescriptionOfWork.currentGroupRemovedForNav && DescriptionOfWork.lastGroupRemoved)) {
     // and no more groups after
     DescriptionOfWork.setReturnToDOWSummary(false);
+    debugger;
     return descriptionOfWorkSummaryPath;
   }
 
@@ -648,6 +670,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     } else {
       DescriptionOfWork.setLastGroupRemoved(false);
       DescriptionOfWork.setReturnToDOWSummary(false);
+      debugger;
       return descriptionOfWorkSummaryPath;    
     }
   }
@@ -660,6 +683,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     // if last group removed, currentGroupId === "", send to summary page
     DescriptionOfWork.setLastGroupRemoved(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
+    debugger;
     return descriptionOfWorkSummaryPath;   
   }
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
@@ -687,6 +711,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   }
 
   DescriptionOfWork.setReturnToDOWSummary(false);
+  debugger;
   return descriptionOfWorkSummaryPath
 }
 
@@ -700,6 +725,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 /****************************************************************************/
 
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
+  debugger;
   const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
   const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
   if (packageHasSecretOrHigher && showSecurityRequirements) {
@@ -721,6 +747,7 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
     return OfferingDetailsPathResolver(current, direction);
   }
 
+  debugger;
   return descriptionOfWorkSummaryPath;
 }
 
@@ -737,6 +764,7 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
 
 export const DOWSecurityRequirementsPathResolver 
   = (current: string, direction: string): string => {
+    debugger;
     const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
     const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
 
@@ -770,12 +798,13 @@ export const DOWSecurityRequirementsPathResolver
 
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-
+  debugger;
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if(current === routeNames.ConflictOfInterest){
     if(DescriptionOfWork.DOWObject.length > 0){
       DescriptionOfWork.setReturnToDOWSummary(false);
+      debugger;
       return descriptionOfWorkSummaryPath
     }
     else{
@@ -790,6 +819,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   // at last service in group, send back to summary page
   if (DescriptionOfWork.returnToDOWSummary && atServicesEnd) {
     DescriptionOfWork.setReturnToDOWSummary(false);
+    debugger;
     return descriptionOfWorkSummaryPath;
   }
 
@@ -801,6 +831,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
     //no more offerings or services to process go to summary
     if(atOfferingsEnd && atServicesEnd){
       DescriptionOfWork.setReturnToDOWSummary(false);
+      debugger;
       return descriptionOfWorkSummaryPath;
     }
 
@@ -1308,6 +1339,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
 const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
+  ArchitecturalDesignDetailsResolver,
   CurrentContractDetailsRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,

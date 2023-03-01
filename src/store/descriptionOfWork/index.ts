@@ -1618,8 +1618,12 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public checkServiceOfferingTypesSelected(): void {
-    if(this.DOWObject){
+  public async checkServiceOfferingTypesSelected(): Promise<void> {
+    debugger;
+
+    // EJY continue here tomorrow - logic is offfffff
+
+    if (this.DOWObject.length) {
       let serviceFound = false
       this.DOWObject.forEach((service)=>{
         this.xaasServices.forEach((xaas)=>{
@@ -1636,6 +1640,9 @@ export class DescriptionOfWorkStore extends VuexModule {
         })
         this.hasCloudService = serviceFound;
       })
+    } else {
+      this.hasXaasService = false;
+      this.hasCloudService = false;
     }
   }
 
@@ -1754,13 +1761,15 @@ export class DescriptionOfWorkStore extends VuexModule {
         offeringGroupObj.serviceOfferings.filter(obj => obj.name !== offeringName);
       this.DOWObject[offeringGroupIndex].serviceOfferings = updatedOfferings;
     }    
+    this.checkServiceOfferingTypesSelected();
   }
+
   @Action({rawError: true})
   public async deleteServiceOfferingFromSNOW(sysId: string): Promise<void> {
     await api.selectedServiceOfferingTable.remove(sysId);
   } 
 
-  @Action
+  @Action({rawError: true})
   public async removeCurrentOfferingGroup(): Promise<void> {
     debugger;
     if (this.otherServiceOfferings.includes(this.currentGroupId)
@@ -1772,6 +1781,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       await this.setSelectedOfferings({selectedOfferingSysIds: [], otherValue: ""});
       this.doRemoveCurrentOfferingGroup();  
     }
+    this.checkServiceOfferingTypesSelected();
   }
 
   @Action({rawError: true})
@@ -1875,12 +1885,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     await this.doSetSelectedOfferingGroups(selectedOfferingGroupIds);
     debugger;
     this.checkServiceOfferingTypesSelected()
-    this.setAnticipatedUsersAndDataHasBeenVisited()
+    // EJY  double-check this method below!!!!!!! 
+    this.setAnticipatedUsersAndDataHasBeenVisited();
   }
 
   @Mutation
   public doSetSelectedOfferingGroups(selectedOfferingGroupIds: string[]): void {
-    if (selectedOfferingGroupIds.length) {
+    if (selectedOfferingGroupIds.length) {        
       selectedOfferingGroupIds.forEach(async (selectedOfferingGroupId) => {
         if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroupId)) {
           const groupIndex = this.DOWObject.findIndex((obj) => {
@@ -1897,19 +1908,28 @@ export class DescriptionOfWorkStore extends VuexModule {
           }
         }
         // remove any groups that were previously checked and now unchecked
+        const inXaaS = this.currentDOWSection === "XaaS";
+        const inCloud = this.currentDOWSection === "CloudSupportPackage";  
+        debugger;
         this.DOWObject.forEach((offeringGroup, index) => {
           const groupId = offeringGroup.serviceOfferingGroupId;
-          if (!selectedOfferingGroupIds.includes(groupId)) {
+          const groupInThisSection = inXaaS && this.xaasServices.includes(groupId) 
+            || inCloud && this.cloudSupportServices.includes(groupId);
+
+          debugger;
+          if (groupInThisSection && !selectedOfferingGroupIds.includes(groupId)) {
             this.DOWObject.splice(index, 1);
           }
         });
         this.DOWObject.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
       });
+
     } else {
-      this.DOWObject = [];
+      // EJY does this need to exist???
+      //this.DOWObject = [];
     }
     this.currentGroupId = this.DOWObject.length > 0
-    && this.DOWObject[0].serviceOfferingGroupId.indexOf("NONE") === -1
+      && this.DOWObject[0].serviceOfferingGroupId.indexOf("NONE") === -1
       ? this.DOWObject[0].serviceOfferingGroupId
       : "";
     this.currentOfferingName = "";

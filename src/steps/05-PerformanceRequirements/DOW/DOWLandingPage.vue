@@ -74,7 +74,7 @@ export default class DOWLandingPage extends Vue {
       label: "Select offerings from 11 categories to build your own requirements.",
       icon: "xaas-circle",
       learnMore: "Learn more about XaaS",
-      route: routeNames.RequirementCategories,
+      route: "pathResolver",
       defineRequirements: true,
       section: "XaaS",
     },
@@ -83,7 +83,7 @@ export default class DOWLandingPage extends Vue {
       label: "Select services from six categories.",
       icon: "support-circle",
       learnMore: "Learn more about support services",
-      route: routeNames.RequirementCategories,
+      route: "pathResolver",
       defineRequirements: false,
       section: "CloudSupportPackage"
     }

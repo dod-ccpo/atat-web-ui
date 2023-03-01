@@ -138,6 +138,7 @@ import UnderReview from "@/steps/11-GeneratePackageDocuments/UnderReview.vue";
 import {
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
+  ArchitecturalDesignDetailsResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   ReplicateAndOptimizeResolver,
@@ -200,7 +201,7 @@ export const routeNames = {
   CurrentEnvironment:"Current_Environment",
   DOWLandingPage: "DOW_Landing_Page",
   RequirementCategories: "Requirement_Categories",
-  DOWArchitecturalDesign: "DOW_Architectural_Design",
+  // DOWArchitecturalDesign: "DOW_Architectural_Design",
   ServiceOfferings: "Service_Offerings",
   ServiceOfferingDetails: "Service_Offering_Details",
   OtherOfferingSummary: "Other_Offering_Summary",
@@ -699,7 +700,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ArchitecturalDesignDetails,
         completePercentageWeight: 5,
         completed: false,
-        routeResolver: PerformanceRequirementsPathResolver,
+        routeResolver: ArchitecturalDesignDetailsResolver,
       },
       {
         menuText: "Requirement Categories",

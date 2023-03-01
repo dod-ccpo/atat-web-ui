@@ -211,9 +211,11 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       };
 
       DescriptionOfWork.selectedServiceOfferingGroups.forEach((groupId) => {
-        if (cloudServiceCategories.indexOf(groupId.toLowerCase()) === -1) {
+        if (cloudServiceCategories.indexOf(groupId.toLowerCase()) === -1
+          && !this.selectedXaasOptions.includes(groupId)
+        ) {
           this.selectedXaasOptions.push(groupId)
-        } else {
+        } else if (!this.cloudSupportSelectedOptions.includes(groupId)) {
           this.cloudSupportSelectedOptions.push(groupId);
         }
       })
@@ -236,7 +238,12 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
-    this.goToSummary = DescriptionOfWork.DOWObject.length > 0;
+    const isXaaS = DescriptionOfWork.currentDOWSection === "XaaS";
+    const isCloud = DescriptionOfWork.currentDOWSection === "CloudSupportPackage";
+
+    this.goToSummary = (isXaaS && DescriptionOfWork.hasXaasService) 
+      || (isCloud && DescriptionOfWork.hasCloudService);
+
     if (this.goToSummary) {
       DescriptionOfWork.setBackToContractDetails(true);
       this.$router.push({

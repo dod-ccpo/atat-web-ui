@@ -88,13 +88,18 @@ export default class DOWCard extends Vue {
 
   public async setDOWSection(): Promise<void> {
     await DescriptionOfWork.setCurrentDOWSection(this.cardData.section as string);
-    this.$router.push({
+    const routerObj = {
       name: this.cardData.route,
       params: {
-        direction: "next"
+        direction: "next",
+        resolver: "",
       }
-    })
-
+    }
+    if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupportPackage") {
+      routerObj.params.resolver = "RequirementsPathResolver";
+    } 
+    debugger;
+    this.$router.push(routerObj)
   }
 
   public async loadOnEnter(): Promise<void> {
