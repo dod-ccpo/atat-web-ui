@@ -16,7 +16,6 @@ import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import DOWLandingPageDraft from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPageDraft.vue";
-import {Debugger} from "inspector";
 
 
 export const AcorsRouteResolver = (current: string): string => {
