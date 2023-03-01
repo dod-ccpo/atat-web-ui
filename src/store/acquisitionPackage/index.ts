@@ -34,7 +34,7 @@ import {
   PackageDocumentsSignedDTO,
 } from "@/api/models";
 
-import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
+import { SelectData, EvalPlanSourceSelection, EvalPlanMethod, uploadingFile } from "types/Global";
 import { SessionData } from "./models";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
@@ -49,7 +49,8 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-
+import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
+import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
@@ -1472,6 +1473,49 @@ export class AcquisitionPackageStore extends VuexModule {
     return document.location.origin.indexOf("localhost") > -1
       ? 'https://services-dev.disa.mil'
       : document.location.origin
+  }
+
+  @Action({rawError: true})
+  public async getDocuments(isSigned:boolean): Promise<uploadingFile[]> {
+    const query: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "acquisition_package.sys_id=" + this.packageId
+      }
+    };
+    const sysId = (isSigned 
+      ? await api.packageDocumentsSignedTable.getQuery(query)
+      : await api.packageDocumentsUnsignedTable.getQuery(query))[0].sys_id;
+
+    if(sysId !== ""){
+      try {
+        const attachments = await Attachments.getAttachmentsByTableSysIds({
+          serviceKey: isSigned ? PACKAGE_DOCUMENTS_SIGNED : PACKAGE_DOCUMENTS_UNSIGNED, 
+          tableSysId: sysId || ""
+        });
+        const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
+          const file = new File([], attachment.file_name, {
+            lastModified: Date.parse(attachment.sys_created_on || "")
+          });
+          const upload: uploadingFile = {
+            attachmentId: attachment.sys_id || "",
+            fileName: attachment.file_name,
+            file: file,
+            created: file.lastModified,
+            progressStatus: 100,
+            link: attachment.download_link || "",
+            recordId: attachment.table_sys_id,
+            isErrored: false,
+            isUploaded: true
+          }
+          return upload;
+        });
+        return [...uploadedFiles];
+      } catch (error) {
+        throw new Error("an error occurred loading Package " + 
+          (isSigned ? 'Signed' : 'Unsigned') + " Documents data");
+      }
+    }
+    return [];
   }
 
 

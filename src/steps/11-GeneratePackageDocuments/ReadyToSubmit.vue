@@ -48,13 +48,21 @@
             class="secondary _text-decoration-none px-6 mt-6"
             large
             role="button"
-            :href="$sanitize(downloadPackageLink)"
+            @click="downloadDocuments"
           >
           <ATATSVGIcon
             class="mr-2" width="14" height="19" name="download" color="primary"
           />
             Download your completed package
           </v-btn>
+          <a :href="$sanitize(downloadUnsignedPackagesLink)" 
+            id="unsignedDocumentsLink" 
+            class="download-docs-link"
+            download="Unsigned Documents"></a>
+          <a :href="$sanitize(downloadSignedPackagesLink)"
+            id="signedDocumentsLink"  
+            class="download-docs-link"
+            download="Signed Documents"></a>
         </v-card>
       </div>
     </div>
@@ -69,6 +77,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import api from "@/api";
 
 @Component({
   components: {
@@ -81,7 +90,8 @@ export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
   public packageId = "";
   private documentList:string[]=[];
   private certified = [];
-  private downloadPackageLink = "";
+  private downloadUnsignedPackagesLink = "";
+  private downloadSignedPackagesLink = "";
   private checkboxItem = [
     {
       id: "Programming",
@@ -108,14 +118,44 @@ export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
     return true;
   }
 
+  public async downloadDocuments(): Promise<void>{
+    // await document.getElementById("signedDocumentsLink")?.click();
+    // await document.getElementById("unsignedDocumentsLink")?.click();
+    var inputs = document.getElementsByClassName('download-docs-link'); 
+    for(var i=0; i<inputs.length;i++)
+    { 
+      inputs[i].click(); 
+    }
+
+
+    const urls =  [this.downloadUnsignedPackagesLink, this.downloadSignedPackagesLink];
+    for (let i=0;i<urls.length;i++){
+      const a = document.createElement('a');
+      a.href = urls[i];
+      a.target = '_blank';
+      a.download = i===0 ? 'unsigned': 'signed';
+      a.click();
+      a.remove();
+    }
+    //   setTimeout(()=>{
+    //     const a = document.createElement('a');
+    //     a.href = link;
+    //     a.target = '_blank';
+    //     a.download = idx === 0 ? 'unsigned': 'signed';
+    //     a.click();
+    //     a.remove();
+    //   }, 1000)
+    // });
+  }
+
   public async loadOnEnter(): Promise<void> {
     if(acquisitionPackage.attachmentNames){
       this.documentList = acquisitionPackage.attachmentNames
     }
     await acquisitionPackage.setDisableContinue(true)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
-    this.downloadPackageLink = await AcquisitionPackage.setDownloadPackageLink(false);
-    
+    this.downloadUnsignedPackagesLink = await AcquisitionPackage.setDownloadPackageLink(false);
+    this.downloadSignedPackagesLink = await AcquisitionPackage.setDownloadPackageLink(true);
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()

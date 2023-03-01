@@ -316,7 +316,7 @@ export default class ReviewDocuments extends Vue {
 
   async mounted(): Promise<void>{
     await AcquisitionPackage.setDisableContinue(false)
-    await this.loadOnEnter()
+    await this.loadOnEnter();
   }
 
 }
