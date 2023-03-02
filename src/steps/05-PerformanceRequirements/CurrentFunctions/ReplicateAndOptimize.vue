@@ -80,20 +80,17 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
     {
       id: "YesReplicate",
       value: "YES_REPLICATE",
-      label: "Replicate my current functions.",
-      description: ``
+      label: "Replicate my current functions."
     },
     {
       id: "YesOptimize",
       value: "YES_OPTIMIZE",
-      label: "Optimize my current functions.",
-      description: ``
+      label: "Optimize my current functions."
     },
     {
       id: "NoReplicateOrOptimize",
       value: "NO",
-      label: "No. I don’t want to replicate or optimize my current functions.",
-      description: ``
+      label: "No. I don’t want to replicate or optimize my current functions."
     },
   ];
 
