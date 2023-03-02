@@ -41,8 +41,6 @@ import UploadSystemDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadSystemDocuments.vue";
 import UploadMigrationDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.vue";
-import ReplicateAndOptimize
-  from "@/steps/03-Background/CurrentEnvironment/ReplicateAndOptimize.vue";
 import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/ReplicateDetails.vue";
 import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/EnvironmentSummary.vue";
 
@@ -78,6 +76,8 @@ import DOWSummary
   from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
 import AnticipatedUserAndDataNeeds
   from "@/steps/05-PerformanceRequirements/DOW/AnticipatedUserAndDataNeeds.vue";
+import ReplicateAndOptimize
+  from "@/steps/05-PerformanceRequirements/CurrentFunctions/ReplicateAndOptimize.vue";
 
 // Step 7 - Other Contract Considerations
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";

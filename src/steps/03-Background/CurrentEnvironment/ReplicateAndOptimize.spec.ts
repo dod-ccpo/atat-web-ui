@@ -3,7 +3,7 @@ import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import ReplicateAndOptimize
-  from "@/steps/03-Background/CurrentEnvironment/ReplicateAndOptimize.vue";
+  from "@/steps/05-PerformanceRequirements/CurrentFunctions/ReplicateAndOptimize.vue";
 
 Vue.use(Vuetify);
 
