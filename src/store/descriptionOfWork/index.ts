@@ -1450,8 +1450,12 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get validServiceGroups(): DOWServiceOfferingGroup[] {
+    const sectionOfferingGroups = this.currentDOWSection === "XaaS"
+      ? this.xaasServices : this.cloudSupportServices;
+
     return this.DOWObject.filter(
       obj => obj.serviceOfferingGroupId.indexOf("NONE") === -1
+      && sectionOfferingGroups.includes(obj.serviceOfferingGroupId)
     );
   }
 
