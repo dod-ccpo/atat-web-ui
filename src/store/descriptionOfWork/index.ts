@@ -781,6 +781,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   cloudNoneValue = "Cloud_NONE";
   hasXaasService = false;
   hasCloudService = false;
+  XaaSNoneSelected = false;
+  CloudNoneSelected = false;
   anticipatedUsersAndDataHasBeenVisited = false
   returnToDOWSummary = false;
   reviewGroupFromSummary = false;
@@ -1326,7 +1328,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         this.setCurrentOfferingGroupId(groupId.toUpperCase());
       }
 
-
       tempItems.forEach((item,index) => {
         const offeringData = mapOtherOfferingFromDTO(
           index + 1,
@@ -1406,8 +1407,9 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
 
     this.setCurrentOfferingGroupId("");
+    const foo = this.selectedServiceOfferingGroups;
     debugger;
-    this.checkServiceOfferingTypesSelected();
+    await this.checkServiceOfferingTypesSelected();
   }
 
   // store session properties
@@ -1594,6 +1596,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get selectedServiceOfferingGroups(): string[] {
+    debugger;
     return this.DOWObject.map(group=> group.serviceOfferingGroupId);
   }
 
@@ -1620,26 +1623,16 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public async checkServiceOfferingTypesSelected(): Promise<void> {
     debugger;
-
-    // EJY continue here tomorrow - logic is offfffff
-
-    if (this.DOWObject.length) {
-      let serviceFound = false
-      this.DOWObject.forEach((service)=>{
-        this.xaasServices.forEach((xaas)=>{
-          if(xaas === service.serviceOfferingGroupId){
-            serviceFound = true
-          }
-        })
-        this.hasXaasService = serviceFound;
-        serviceFound = false;
-        this.cloudSupportServices.forEach((cloudId)=>{
-          if(cloudId === service.serviceOfferingGroupId){
-            serviceFound = true
-          }
-        })
-        this.hasCloudService = serviceFound;
-      })
+    const selectedCategories = this.DOWObject.map(obj => obj.serviceOfferingGroupId);
+    if (this.DOWObject.length && selectedCategories.length) {
+      const selectedXaaS = this.xaasServices.filter(
+        cat => selectedCategories.includes(cat)
+      );
+      this.hasXaasService = selectedXaaS.length > 0;
+      const selectedCloud = this.cloudSupportServices.filter(
+        cat => selectedCategories.includes(cat)
+      );
+      this.hasCloudService = selectedCloud.length > 0;
     } else {
       this.hasXaasService = false;
       this.hasCloudService = false;
@@ -1891,6 +1884,9 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public doSetSelectedOfferingGroups(selectedOfferingGroupIds: string[]): void {
+    const inXaaS = this.currentDOWSection === "XaaS";
+    const inCloud = this.currentDOWSection === "CloudSupportPackage";  
+
     if (selectedOfferingGroupIds.length) {        
       selectedOfferingGroupIds.forEach(async (selectedOfferingGroupId) => {
         if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroupId)) {
@@ -1908,15 +1904,10 @@ export class DescriptionOfWorkStore extends VuexModule {
           }
         }
         // remove any groups that were previously checked and now unchecked
-        const inXaaS = this.currentDOWSection === "XaaS";
-        const inCloud = this.currentDOWSection === "CloudSupportPackage";  
-        debugger;
         this.DOWObject.forEach((offeringGroup, index) => {
           const groupId = offeringGroup.serviceOfferingGroupId;
           const groupInThisSection = inXaaS && this.xaasServices.includes(groupId) 
             || inCloud && this.cloudSupportServices.includes(groupId);
-
-          debugger;
           if (groupInThisSection && !selectedOfferingGroupIds.includes(groupId)) {
             this.DOWObject.splice(index, 1);
           }
@@ -1928,9 +1919,14 @@ export class DescriptionOfWorkStore extends VuexModule {
       // EJY does this need to exist???
       //this.DOWObject = [];
     }
-    this.currentGroupId = this.DOWObject.length > 0
-      && this.DOWObject[0].serviceOfferingGroupId.indexOf("NONE") === -1
-      ? this.DOWObject[0].serviceOfferingGroupId
+    const sectionServices = inXaaS ? this.xaasServices : this.cloudSupportServices;
+    const selectedSectionServices = selectedOfferingGroupIds.filter(
+      val => sectionServices.includes(val)
+    );
+    debugger;
+    this.currentGroupId = selectedSectionServices.length > 0
+      && selectedSectionServices[0].indexOf("NONE") === -1
+      ? selectedSectionServices[0]
       : "";
     this.currentOfferingName = "";
     this.currentOfferingSysId = "";

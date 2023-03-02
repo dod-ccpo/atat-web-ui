@@ -53,7 +53,7 @@
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
-              :value.sync="cloudSupportSelectedOptions"
+              :value.sync="selectedCloudOptions"
               aria-describedby="CloudSupportLabel"
               class="copy-max-width"
               groupLabel="What type of services do you need in a cloud support package?"
@@ -101,7 +101,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 export default class RequirementCategories extends Mixins(SaveOnLeave) {
   public selectedXaasOptions: string[] = [];
-  public cloudSupportSelectedOptions: string[] = [];
+  public selectedCloudOptions: string[] = [];
   private cloudSupportCheckboxItems: Checkbox[] = [];
   public xaaSNoneValue = DescriptionOfWork.xaaSNoneValue;
   public cloudNoneValue = DescriptionOfWork.cloudNoneValue;
@@ -210,15 +210,23 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         this.cloudSupportCheckboxItems.push(checkboxItem);
       };
 
-      DescriptionOfWork.selectedServiceOfferingGroups.forEach((groupId) => {
-        if (cloudServiceCategories.indexOf(groupId.toLowerCase()) === -1
-          && !this.selectedXaasOptions.includes(groupId)
-        ) {
-          this.selectedXaasOptions.push(groupId)
-        } else if (!this.cloudSupportSelectedOptions.includes(groupId)) {
-          this.cloudSupportSelectedOptions.push(groupId);
-        }
-      })
+      this.selectedXaasOptions = DescriptionOfWork.xaasServices.filter(
+        cat => DescriptionOfWork.selectedServiceOfferingGroups.includes(cat)
+      );
+      this.selectedCloudOptions = DescriptionOfWork.cloudSupportServices.filter(
+        cat => DescriptionOfWork.selectedServiceOfferingGroups.includes(cat)
+      );
+      
+
+      // DescriptionOfWork.selectedServiceOfferingGroups.forEach((groupId) => {
+      //   if (cloudServiceCategories.indexOf(groupId.toLowerCase()) === -1
+      //     && !this.selectedXaasOptions.includes(groupId)
+      //   ) {
+      //     this.selectedXaasOptions.push(groupId)
+      //   } else if (!this.selectedCloudOptions.includes(groupId)) {
+      //     this.selectedCloudOptions.push(groupId);
+      //   }
+      // })
     });
 
     const xaasNone: Checkbox = {
@@ -267,7 +275,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       if (!this.goToSummary) {
         // save to store
         const selectedOfferingGroups
-          = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
+          = this.selectedXaasOptions.concat(this.selectedCloudOptions);
 
         await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferingGroups);
       }

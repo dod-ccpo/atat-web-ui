@@ -369,7 +369,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
   debugger;
   // HAVE TO CHECK IF USER SELECTED "NONE OF THESE APPLY"
-  
+
   if (DescriptionOfWork.currentDOWSection === "XaaS") {
     const xaasServices = DescriptionOfWork.hasXaasService;
     const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
@@ -379,6 +379,7 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
       return routeNames.AnticipatedUserAndDataNeeds
     }
   }
+  
   return current === routeNames.RequirementCategories 
     ? routeNames.ServiceOfferings
     : routeNames.RequirementCategories;

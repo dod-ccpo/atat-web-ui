@@ -352,8 +352,16 @@ export default class Summary extends Mixins(SaveOnLeave) {
       this.isClassificationDataMissing = true;
     };
 
-    const selectedOfferingGroups: string[] = DescriptionOfWork.selectedServiceOfferingGroups;
-    this.allServiceGroups = DescriptionOfWork.serviceOfferingGroups;
+    let selectedOfferingGroups: string[] = DescriptionOfWork.selectedServiceOfferingGroups;
+    const sectionServices = DescriptionOfWork.currentDOWSection === "XaaS" 
+      ? DescriptionOfWork.xaasServices : DescriptionOfWork.cloudSupportServices;
+    debugger;
+    selectedOfferingGroups = selectedOfferingGroups.filter(id => sectionServices.includes(id));
+
+
+    this.allServiceGroups = DescriptionOfWork.serviceOfferingGroups.filter(
+      obj => sectionServices.includes(obj.value));
+    debugger;
     this.availableServiceGroups = this.allServiceGroups.filter((serviceGroup) => {
       return selectedOfferingGroups.indexOf(serviceGroup.value) === -1;
     });
@@ -367,7 +375,8 @@ export default class Summary extends Mixins(SaveOnLeave) {
     });
 
     this.selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
-      e => e.serviceOfferingGroupId.indexOf("NONE") === -1
+      e => e.serviceOfferingGroupId.indexOf("NONE") === -1 
+      && sectionServices.includes(e.serviceOfferingGroupId) 
     );
 
     this.setSelectedGroupsMissingData(this.selectedServiceGroups);
