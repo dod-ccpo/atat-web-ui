@@ -128,7 +128,7 @@ export const ReplicateAndOptimizeResolver = (current: string): string => {
   if(current === routeNames.ArchitecturalDesign){
     return routeNames.DOWLandingPage
   }
-  return current === routeNames.DOWLandingPage
+  return current === routeNames.DOWLandingPage || current === routeNames.ReplicateDetails
     ? routeNames.ReplicateAndOptimize
     : routeNames.DOWLandingPage;
 }
