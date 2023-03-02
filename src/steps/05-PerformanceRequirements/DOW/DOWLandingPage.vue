@@ -69,7 +69,7 @@ export default class DOWLandingPage extends Vue {
       defineRequirements: true,
       section: "ReplicateOptimize",
       visible: this.doesCurrentEnvExist,
-      isComplete: true
+      isComplete: this.isCurrentFunctionsComplete()
     },
     {
       title: "Architectural Design Solution",
@@ -109,6 +109,24 @@ export default class DOWLandingPage extends Vue {
   get doesCurrentEnvExist(): boolean {
     return CurrentEnvironment.currentEnvironment && 
             CurrentEnvironment.currentEnvironment.current_environment_exists === "YES";
+  }
+
+  /**
+   * Current functions are complete, if all the below are true;
+   * 1. If the user chooses NOT to optimize or replicate
+   * 2. AND If the user chooses to optimize or replicate AND
+   *      chooses (NO) or (YES for additional growth and enters anticipated capacity)
+   * 3. AND If the user chooses to optimize or replicate AND
+   *      chooses (NO) or (YES for phased approach and enters approach schedule)
+   */
+  isCurrentFunctionsComplete(): boolean {
+    const currEnv = CurrentEnvironment.currentEnvironment;
+    return (currEnv.current_environment_replicated_optimized === "NO") ||
+        ((currEnv.statement_replicated_optimized !== "") &&
+            ((currEnv.additional_growth === 'NO') || (currEnv.additional_growth === 'YES' &&
+                currEnv.anticipated_yearly_additional_capacity !== null)) &&
+            ((currEnv.has_phased_approach === "NO") ||
+                (currEnv.has_phased_approach === 'YES' && currEnv.phased_approach_schedule !== "")))
   }
 
   

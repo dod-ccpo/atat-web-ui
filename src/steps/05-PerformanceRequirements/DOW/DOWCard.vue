@@ -17,7 +17,7 @@
           <ATATSVGIcon :name="cardData.icon"  :color="setColor" width="64" height="64" />
           <ATATSVGIcon 
             v-if="cardData.isComplete"
-            name="cardData.icon"  :color="setColor" width="64" height="64" />
+            :name="cardData.icon"  :color="setColor" width="64" height="64" />
         </div>
         <div class="d-flex align-left justify-center flex-column ml-4">
           <h3 class="mb-1">
