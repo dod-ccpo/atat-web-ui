@@ -2398,6 +2398,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       && offeringToDelete.otherOfferingData 
       && offeringToDelete.otherOfferingData.length > 0
     ) {
+      this.currentGroupRemovedForNav = true;
       const serviceOfferingGroupId = offeringToDelete.serviceOfferingGroupId;
         offeringToDelete.otherOfferingData?.forEach((instance) => {
           deleteOtherOfferingInstanceFromIGCECostEstimate(
