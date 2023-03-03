@@ -1622,14 +1622,14 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public async checkServiceOfferingTypesSelected(): Promise<void> {
-    const selectedCategories = this.DOWObject.map(obj => obj.serviceOfferingGroupId);
-    if (this.DOWObject.length && selectedCategories.length) {
+    const selectedCategoryIds = this.DOWObject.map(obj => obj.serviceOfferingGroupId);
+    if (this.DOWObject.length && selectedCategoryIds.length) {
       const selectedXaaS = this.xaasServices.filter(
-        cat => selectedCategories.includes(cat)
+        cat => selectedCategoryIds.includes(cat)
       );
       this.hasXaasService = selectedXaaS.length > 0;
       const selectedCloud = this.cloudSupportServices.filter(
-        cat => selectedCategories.includes(cat)
+        cat => selectedCategoryIds.includes(cat)
       );
       this.hasCloudService = selectedCloud.length > 0;
     } else {
