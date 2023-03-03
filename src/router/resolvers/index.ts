@@ -277,7 +277,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   if (current === routeNames.DOWLandingPage) {
     if ((DescriptionOfWork.currentDOWSection === "XaaS" 
       && !DescriptionOfWork.hasXaasService) 
-      || (DescriptionOfWork.currentDOWSection === "CloudSupportPackage" 
+      || (DescriptionOfWork.currentDOWSection === "CloudSupport" 
       && !DescriptionOfWork.hasCloudService)
     ) {
       return requirementCategories;
@@ -368,7 +368,12 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
   debugger;
-  // HAVE TO CHECK IF USER SELECTED "NONE OF THESE APPLY"
+  if (
+    (DescriptionOfWork.XaaSNoneSelected && DescriptionOfWork.currentDOWSection === "XaaS") || 
+    (DescriptionOfWork.cloudNoneSelected && DescriptionOfWork.currentDOWSection === "CloudSupport")
+  ) {
+    return routeNames.DOWLandingPage;
+  }
 
   if (DescriptionOfWork.currentDOWSection === "XaaS") {
     const xaasServices = DescriptionOfWork.hasXaasService;

@@ -68,6 +68,7 @@ export default class DOWLandingPage extends Vue {
       route: routeNames.ArchitecturalDesign,
       defineRequirements: true,
       section: "ArchitecturalDesign",
+      isComplete: false,
     },
     {
       title: "Anything as a Service (XaaS)",
@@ -77,6 +78,7 @@ export default class DOWLandingPage extends Vue {
       route: "pathResolver",
       defineRequirements: true,
       section: "XaaS",
+      isComplete: false,
     },
     {
       title: "Cloud Support Package",
@@ -85,7 +87,8 @@ export default class DOWLandingPage extends Vue {
       learnMore: "Learn more about support services",
       route: "pathResolver",
       defineRequirements: false,
-      section: "CloudSupportPackage"
+      section: "CloudSupport",
+      isComplete: false,
     }
   ];
 
@@ -103,6 +106,7 @@ export default class DOWLandingPage extends Vue {
           route: routeNames.ReplicateAndOptimize,
           defineRequirements: true,
           section: "ReplicateOptimize",
+          isComplete: false,
         };
         this.requirementSections.unshift(currentEnvCardData)
       }
@@ -110,7 +114,9 @@ export default class DOWLandingPage extends Vue {
     
     debugger;
 
-    if (DescriptionOfWork.hasXaasService || DescriptionOfWork.hasCloudService) {
+    if (DescriptionOfWork.hasXaasService || DescriptionOfWork.hasCloudService
+      || DescriptionOfWork.XaaSNoneSelected || DescriptionOfWork.cloudNoneSelected
+    ) {
       const selectedXaasServices: string[] = [];
       const selectedCloudServices: string[] = [];
       const DOWObject = DescriptionOfWork.DOWObject;
@@ -131,20 +137,27 @@ export default class DOWLandingPage extends Vue {
           }
         }
       });
-      if (selectedXaasServices.length > 0) {
+
+      if (selectedXaasServices.length > 0 || DescriptionOfWork.XaaSNoneSelected) {
         const xaasIndex = this.requirementSections.findIndex(obj => obj.section === "XaaS");
-        if (xaasIndex) {
+        if (xaasIndex > -1) {
           this.requirementSections[xaasIndex].learnMore = "";
-          this.requirementSections[xaasIndex].label = selectedXaasServices.join(", ");
+          this.requirementSections[xaasIndex].label = DescriptionOfWork.XaaSNoneSelected
+            ? "No requirements" : selectedXaasServices.join(", ");
+          this.requirementSections[xaasIndex].isComplete 
+            = selectedXaasServices.length > 0 || DescriptionOfWork.XaaSNoneSelected;
         }
       }
-      if (selectedCloudServices.length > 0) {
+      if (selectedCloudServices.length > 0 || DescriptionOfWork.cloudNoneSelected) {
         const cloudIndex = this.requirementSections.findIndex(
-          obj => obj.section === "CloudSupportPackage"
+          obj => obj.section === "CloudSupport"
         );
-        if (cloudIndex) {
+        if (cloudIndex > -1) {
           this.requirementSections[cloudIndex].learnMore = "";
-          this.requirementSections[cloudIndex].label = selectedCloudServices.join(", ");
+          this.requirementSections[cloudIndex].label = DescriptionOfWork.cloudNoneSelected
+            ? "No requirements" : selectedCloudServices.join(", ");
+          this.requirementSections[cloudIndex].isComplete 
+            = selectedCloudServices.length > 0 || DescriptionOfWork.cloudNoneSelected;
         }
       }
 

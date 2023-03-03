@@ -1,6 +1,7 @@
 <template>
   <v-card 
     class="d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
+    :class="{'_card-complete': cardData.isComplete}"
     outlined>
       <ATATSVGIcon 
         v-if="cardData.defineRequirements===true"
@@ -35,7 +36,7 @@
       <div class="d-flex align-center justify-center flex-column ml-auto">
         <v-btn
           class="ml-5"
-          color="primary" 
+          :class="cardData.isComplete ? 'secondary' : 'primary'"
           :id="`StartButton` + cardData.section" 
           width="110"
           role="link"
@@ -43,7 +44,7 @@
           @keydown.enter="setDOWSection"
           @keydown.space="setDOWSection"
         >
-          Start
+          {{ cardData.isComplete ? 'View/Edit' : 'Start' }}
         </v-btn>
 
       </div>
@@ -95,7 +96,7 @@ export default class DOWCard extends Vue {
         resolver: "",
       }
     }
-    if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupportPackage") {
+    if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupport") {
       routerObj.params.resolver = "RequirementsPathResolver";
     } 
     debugger;
@@ -106,7 +107,7 @@ export default class DOWCard extends Vue {
     await CurrentEnvironment.getCurrentEnvironment();
     this.showLearnMore = this.cardData.learnMore !== "";
     
-    if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupportPackage") {
+    if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupport") {
       const slideoutComponent = this.cardData.section === "XaaS" 
         ? XaasLearnMore : CloudSupportLearnMore;
       this.slideoutPanelContent = {

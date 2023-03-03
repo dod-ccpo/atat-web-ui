@@ -45,7 +45,7 @@
             />
             <hr/>
             <ATATCheckboxGroup
-              v-if="currentDOWSection === 'CloudSupportPackage'"
+              v-if="currentDOWSection === 'CloudSupport'"
               id="CloudSupportCheckboxes"
               :card="false"
               :items="cloudSupportCheckboxItems"
@@ -136,7 +136,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   };
 
   public setIntroText(): void {
-    if (this.currentDOWSection === "CloudSupportPackage") {
+    if (this.currentDOWSection === "CloudSupport") {
       this.introText = `Specify any support services below that may apply to your 
         acquisition, and we’ll walk through each selection to get more details. If 
         you don’t need a cloud support package, select “None of these apply to my 
@@ -210,23 +210,17 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         this.cloudSupportCheckboxItems.push(checkboxItem);
       };
 
-      this.selectedXaasOptions = DescriptionOfWork.xaasServices.filter(
-        cat => DescriptionOfWork.selectedServiceOfferingGroups.includes(cat)
-      );
-      this.selectedCloudOptions = DescriptionOfWork.cloudSupportServices.filter(
-        cat => DescriptionOfWork.selectedServiceOfferingGroups.includes(cat)
-      );
-      
+      this.selectedXaasOptions = DescriptionOfWork.XaaSNoneSelected
+        ? [DescriptionOfWork.xaaSNoneValue]
+        : DescriptionOfWork.xaasServices.filter(
+          cat => DescriptionOfWork.selectedServiceOfferingGroups.includes(cat)
+        );
 
-      // DescriptionOfWork.selectedServiceOfferingGroups.forEach((groupId) => {
-      //   if (cloudServiceCategories.indexOf(groupId.toLowerCase()) === -1
-      //     && !this.selectedXaasOptions.includes(groupId)
-      //   ) {
-      //     this.selectedXaasOptions.push(groupId)
-      //   } else if (!this.selectedCloudOptions.includes(groupId)) {
-      //     this.selectedCloudOptions.push(groupId);
-      //   }
-      // })
+      this.selectedCloudOptions = DescriptionOfWork.cloudNoneSelected
+        ? [DescriptionOfWork.cloudNoneValue]
+        : DescriptionOfWork.cloudSupportServices.filter(
+          cat => DescriptionOfWork.selectedServiceOfferingGroups.includes(cat)
+        );
     });
 
     const xaasNone: Checkbox = {
@@ -247,11 +241,10 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
 
   public async mounted(): Promise<void> {
     const isXaaS = DescriptionOfWork.currentDOWSection === "XaaS";
-    const isCloud = DescriptionOfWork.currentDOWSection === "CloudSupportPackage";
+    const isCloud = DescriptionOfWork.currentDOWSection === "CloudSupport";
 
     this.goToSummary = (isXaaS && DescriptionOfWork.hasXaasService) 
       || (isCloud && DescriptionOfWork.hasCloudService);
-
     if (this.goToSummary) {
       DescriptionOfWork.setBackToContractDetails(true);
       this.$router.push({
@@ -266,8 +259,6 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-
-
   };
 
   protected async saveOnLeave(): Promise<boolean> {

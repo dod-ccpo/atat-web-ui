@@ -280,7 +280,8 @@ export interface DOWCardData {
   learnMore: string,
   route: string;
   defineRequirements: boolean,
-  section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupportPackage";
+  section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupport";
+  isComplete: boolean,
 }
 
 export interface DOWClassificationInstance {

@@ -3,13 +3,11 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          Your Performance Requirements
+          {{ heading }}
         </h1>
         <div class="copy-max-width">
           <p class="mb-10">
-            We need some more details for this section. You can add info now, or come back to make
-            edits at any time. When you are ready to wrap up this section, we will move on to
-            other contract considerations.
+            {{ introText }}
           </p>
         </div>
         <div class="container-max-width">
@@ -174,16 +172,18 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public selectedServiceGroups: DOWServiceOfferingGroup[] = [];
   public showMore = false;
   public isDataComplete = true;
+  public heading = "";
+  public introText = "";
 
   public alternateGroupNames = [
     {
       value: "MACHINE_LEARNING",
       label: "Machine Learning",
     },
-    {
-      value: "EDGE_COMPUTING",
-      label: "Edge Computing and Tactical Edge",
-    },
+    // {
+    //   value: "EDGE_COMPUTING",
+    //   label: "Edge Computing and Tactical Edge",
+    // },
     {
       value: "IOT",
       label: "Internet of Things",
@@ -278,8 +278,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
         resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
-    })
-      .catch((error) => console.log("Routing error:" + error));
+    }).catch((error) => console.log("Routing error:" + error));
   };
 
   public getFormattedNames(value: string): string {
@@ -331,11 +330,18 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    if (DescriptionOfWork.summaryBackToContractDetails) {
-      Steps.setAltBackButtonText("Back to Background");
-    } else {
-      Steps.clearAltBackButtonText();
-    }
+    const isXaaS = DescriptionOfWork.currentDOWSection === "XaaS";
+    this.heading = isXaaS ? "Your XaaS Summary" : "Your Cloud Support Package";
+    const introTextSubstr = isXaaS ? "XaaS requirements" : "support services";
+    this.introText = `You are all done with your ${introTextSubstr}, but you can 
+        come back at any time to edit details. When you are ready, we’ll review 
+        your performance requirements summary.`;
+    // EJY will never go back to background now - other back text needed?
+    // if (DescriptionOfWork.summaryBackToContractDetails) {
+    //   Steps.setAltBackButtonText("Back to Background");
+    // } else {
+    //   Steps.clearAltBackButtonText();
+    // }
     DescriptionOfWork.setCurrentGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
@@ -353,15 +359,13 @@ export default class Summary extends Mixins(SaveOnLeave) {
     };
 
     let selectedOfferingGroups: string[] = DescriptionOfWork.selectedServiceOfferingGroups;
-    const sectionServices = DescriptionOfWork.currentDOWSection === "XaaS" 
+    const sectionServices = isXaaS 
       ? DescriptionOfWork.xaasServices : DescriptionOfWork.cloudSupportServices;
-    debugger;
     selectedOfferingGroups = selectedOfferingGroups.filter(id => sectionServices.includes(id));
-
 
     this.allServiceGroups = DescriptionOfWork.serviceOfferingGroups.filter(
       obj => sectionServices.includes(obj.value));
-    debugger;
+
     this.availableServiceGroups = this.allServiceGroups.filter((serviceGroup) => {
       return selectedOfferingGroups.indexOf(serviceGroup.value) === -1;
     });

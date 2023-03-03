@@ -782,7 +782,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   hasXaasService = false;
   hasCloudService = false;
   XaaSNoneSelected = false;
-  CloudNoneSelected = false;
+  cloudNoneSelected = false;
   anticipatedUsersAndDataHasBeenVisited = false
   returnToDOWSummary = false;
   reviewGroupFromSummary = false;
@@ -1889,7 +1889,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public doSetSelectedOfferingGroups(selectedOfferingGroupIds: string[]): void {
     const inXaaS = this.currentDOWSection === "XaaS";
-    const inCloud = this.currentDOWSection === "CloudSupportPackage";  
+    const inCloud = this.currentDOWSection === "CloudSupport";  
 
     if (selectedOfferingGroupIds.length) {        
       selectedOfferingGroupIds.forEach(async (selectedOfferingGroupId) => {
@@ -1919,9 +1919,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         this.DOWObject.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
       });
 
-    } else {
-      // EJY does this need to exist???
-      //this.DOWObject = [];
     }
     const sectionServices = inXaaS ? this.xaasServices : this.cloudSupportServices;
     const selectedSectionServices = selectedOfferingGroupIds.filter(
@@ -1934,6 +1931,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       : "";
     this.currentOfferingName = "";
     this.currentOfferingSysId = "";
+    this.XaaSNoneSelected = selectedOfferingGroupIds.includes(this.xaaSNoneValue);
+    this.cloudNoneSelected = selectedOfferingGroupIds.includes(this.cloudNoneValue);
   }
 
   @Action
