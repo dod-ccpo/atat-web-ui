@@ -1903,7 +1903,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     const selectedSectionServices = selectedOfferingGroupIds.filter(
       val => sectionServices.includes(val)
     );
-    debugger;
+
     this.currentGroupId = selectedSectionServices.length > 0
       && selectedSectionServices[0].indexOf("NONE") === -1
       ? selectedSectionServices[0]
@@ -2322,7 +2322,6 @@ export class DescriptionOfWorkStore extends VuexModule {
          */
         if(otherOfferingObj.otherOfferingData.length===0){
           this.DOWObject.splice(offeringIndex,1);
-          debugger;
           this.checkServiceOfferingTypesSelected();
         }
 
@@ -2615,7 +2614,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         console.error(error);
       }
     }
-    debugger;
     this.checkServiceOfferingTypesSelected();
   }
 

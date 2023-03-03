@@ -29,7 +29,7 @@
             <div class=" d-flex justify-space-between">
               <div>
                 <h3 class="mb-1" :id="getIdText(item.serviceOfferingGroupId) + '_Heading'">
-                  {{getFormattedNames(item.serviceOfferingGroupId)}}
+                  {{getFormattedName(item.serviceOfferingGroupId)}}
                 </h3>
                 <p 
                   class="mb-0 _selectedOfferings" 
@@ -140,7 +140,7 @@
 import { routeNames } from "../../../router/stepper"
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-
+import _ from "lodash";
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
@@ -180,14 +180,14 @@ export default class Summary extends Mixins(SaveOnLeave) {
       value: "MACHINE_LEARNING",
       label: "Machine Learning",
     },
-    // {
-    //   value: "EDGE_COMPUTING",
-    //   label: "Edge Computing and Tactical Edge",
-    // },
     {
       value: "IOT",
       label: "Internet of Things",
     },
+    {
+      value: "GENERAL_XAAS",
+      label: "General IaaS, PaaS, and SaaS"
+    }
   ];
 
   public tooltipText = [
@@ -281,10 +281,15 @@ export default class Summary extends Mixins(SaveOnLeave) {
     }).catch((error) => console.log("Routing error:" + error));
   };
 
-  public getFormattedNames(value: string): string {
-    let avlOfferings = DescriptionOfWork.serviceOfferingGroups;
-    const filtered = avlOfferings.filter(obj => obj.value == value);
-    return filtered.length > 0 ? filtered[0].label : "";
+  public getFormattedName(value: string): string {
+    const altNameIndex = this.alternateGroupNames.findIndex((altObj) => {
+      return altObj.value === value;
+    });
+    if (altNameIndex > -1) {
+      return this.alternateGroupNames[altNameIndex].label;
+    }
+    const filtered = this.allServiceGroups.find(obj => obj.value == value);
+    return filtered ? filtered.label : "";
   };
 
   public formattedOfferings(value: DOWServiceOffering[]): string {
@@ -336,12 +341,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
     this.introText = `You are all done with your ${introTextSubstr}, but you can 
         come back at any time to edit details. When you are ready, we’ll review 
         your performance requirements summary.`;
-    // EJY will never go back to background now - other back text needed?
-    // if (DescriptionOfWork.summaryBackToContractDetails) {
-    //   Steps.setAltBackButtonText("Back to Background");
-    // } else {
-    //   Steps.clearAltBackButtonText();
-    // }
+
     DescriptionOfWork.setCurrentGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
@@ -358,12 +358,12 @@ export default class Summary extends Mixins(SaveOnLeave) {
       this.isClassificationDataMissing = true;
     };
 
-    let selectedOfferingGroups: string[] = DescriptionOfWork.selectedServiceOfferingGroups;
+    let selectedOfferingGroups: string[] = _.clone(DescriptionOfWork.selectedServiceOfferingGroups);
     const sectionServices = isXaaS 
       ? DescriptionOfWork.xaasServices : DescriptionOfWork.cloudSupportServices;
     selectedOfferingGroups = selectedOfferingGroups.filter(id => sectionServices.includes(id));
 
-    this.allServiceGroups = DescriptionOfWork.serviceOfferingGroups.filter(
+    this.allServiceGroups = _.cloneDeep(DescriptionOfWork.serviceOfferingGroups).filter(
       obj => sectionServices.includes(obj.value));
 
     this.availableServiceGroups = this.allServiceGroups.filter((serviceGroup) => {

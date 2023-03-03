@@ -76,11 +76,9 @@ import CloudSupportLearnMore from "./CloudSupportLearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
-import { Checkbox, RadioButton, SlideoutPanelContent } from "../../../../types/Global";
+import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
 import { SystemChoiceDTO } from "@/api/models";
 import { routeNames } from "../../../router/stepper";
-import _ from "lodash";
-// import router from "@/router";
 
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { getIdText } from "@/helpers";
