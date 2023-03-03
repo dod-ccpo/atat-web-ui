@@ -1776,7 +1776,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     } else {
       await this.deleteOfferingGroupInstances();
       await this.setSelectedOfferings({selectedOfferingSysIds: [], otherValue: ""});
-      this.doRemoveCurrentOfferingGroup();  
+      await this.doRemoveCurrentOfferingGroup();  
     }
     this.checkServiceOfferingTypesSelected();
   }
@@ -1809,39 +1809,39 @@ export class DescriptionOfWorkStore extends VuexModule {
   // removes current offering group if user clicks  the "I don't need these cloud resources"
   // button or does not select any offerings and clicks "Continue" button
   @Mutation
-  public doRemoveCurrentOfferingGroup(): void {
+  public async doRemoveCurrentOfferingGroup(): Promise<void> {
     if (!this.currentGroupRemoved) {
       this.currentGroupRemovedForNav = true;
       const groupIdToRemove = this.currentGroupId;
-      const groupIndex = this.DOWObject.findIndex(
-        e => e.serviceOfferingGroupId === groupIdToRemove
+      const currentDOWSectionGroups = this.currentDOWSection === "XaaS"
+        ? this.xaasServices : this.cloudSupportServices;
+
+      const selectedGroupsInDOWSectionBefore = this.DOWObject.filter(
+        obj => currentDOWSectionGroups.includes(obj.serviceOfferingGroupId)        
       );
 
-      const DOWObjectBeforeRemoval = _.clone(this.DOWObject);
       // remove group from DOWObject
       this.DOWObject = this.DOWObject.filter(
         obj => obj.serviceOfferingGroupId !== groupIdToRemove
       );
 
-      const onlyNoneRemain = this.DOWObject.every((e) => {
-        return e.serviceOfferingGroupId.indexOf("NONE") > -1;
-      });
-      // check if last group was removed
-      if (groupIndex === DOWObjectBeforeRemoval.length - 1 || onlyNoneRemain) {
-        this.lastGroupRemoved = true;
-        // set currentGroupId to previous if has one
-        if (DOWObjectBeforeRemoval.length > 1 && !onlyNoneRemain) {
-          this.currentGroupId = DOWObjectBeforeRemoval[groupIndex -1].serviceOfferingGroupId;
+      const selectedGroupsInDOWSectionAfter = this.DOWObject.filter(
+        obj => currentDOWSectionGroups.includes(obj.serviceOfferingGroupId)        
+      );
 
-        } else {
-          // removed group was last in DOWObject, clear currentGroupId
-          this.currentGroupId = "";
-        }
+      if (selectedGroupsInDOWSectionAfter.length === 0) {
+        this.lastGroupRemoved = true;
+        this.currentGroupId = "";
       } else {
         this.lastGroupRemoved = false;
-        // set currentGroupId to next group in DOWObject
-        this.currentGroupId = DOWObjectBeforeRemoval[groupIndex + 1].serviceOfferingGroupId;
+        const indexBefore = selectedGroupsInDOWSectionBefore.findIndex(
+          obj => obj.serviceOfferingGroupId === groupIdToRemove
+        );
+        const i = indexBefore === selectedGroupsInDOWSectionBefore.length - 1 
+          ? indexBefore - 1 : indexBefore
+        this.currentGroupId = selectedGroupsInDOWSectionAfter[i].serviceOfferingGroupId;
       }
+
       this.currentGroupRemoved = true;
     }
   }

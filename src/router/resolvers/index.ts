@@ -399,7 +399,7 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 
 /****************************************************************************/
 
-// This is the "simple 6" 2nd-level checkbox list page for non-"other offering" categories
+// This is the "simple 7" 2nd-level checkbox list page for non-"other offering" categories
 // ... the service offering checkbox list for a selected offering group...
 // AND the "other offering" form page
 
@@ -416,7 +416,10 @@ export const ServiceOfferingsPathResolver = (
   const currentGroupId = DescriptionOfWork.currentGroupId;
   const isOtherOffering = otherServiceOfferings.indexOf(currentGroupId) > -1;
 
-  const atLastNoneApply = currentGroupId === DescriptionOfWork.cloudNoneValue;
+  const atLastNoneApply = DescriptionOfWork.currentDOWSection === "XaaS"
+    ? currentGroupId === DescriptionOfWork.xaaSNoneValue 
+    : currentGroupId === DescriptionOfWork.cloudNoneValue;
+
   const onlyNoneApplySelected = DOWObject.every((e) => {
     return e.serviceOfferingGroupId.indexOf("NONE") > -1;
   });
