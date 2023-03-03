@@ -15,7 +15,37 @@
               and request CSPs to propose a customized cloud solution based on your unique
               objectives.
             </p>
-
+            <div v-if="noEnvNoXaaS() || hasEnvNoXaaS()">
+              <ATATAlert 
+              id="ArchitecturalDesignAlert"
+              type="warning"
+              class="mb-10 mt-2"
+              :showIcon="true"
+            >
+              <template v-slot:content>
+                <p class="mr-5 mb-0 font-weight-400 font-size 16">
+                  Based on what you previously told us, we recommend selecting “Yes” below.
+                  If you don’t need an architectural design solution, you’ll need to revisit
+                  <span v-if="noEnvNoXaaS()">
+                    <router-link 
+                    id="CompleteCurrentEnv"
+                    :to="{ name: routeNames.CurrentEnvironment }"
+                  >
+                  Your Current Functions
+                  </router-link>
+                  or
+                  </span>
+                  <router-link 
+                    id="CompleteXaaS"
+                    :to="{ name: routeNames.RequirementCategories }"
+                  >
+                  XaaS
+                  </router-link>
+                  to define performance requirements for your Description of Work.
+                </p>
+              </template>
+            </ATATAlert>
+            </div>
             <ATATRadioGroup
               id="ArchitectureOptions"
               :card="true"
@@ -23,7 +53,7 @@
               :items="radioOptions"
               :value.sync="currEnvDTO.needs_architectural_design_services"
               :rules="[$validators.required('Please select an option.')]"
-             />
+            />
           </div>
         </v-col>
       </v-row>
@@ -42,17 +72,42 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { routeNames } from "@/router/stepper";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import ATATAlert from "@/components/ATATAlert.vue";
+
 
 @Component({
   components: {
-    ATATRadioGroup
+    ATATRadioGroup,
+    ATATAlert
   }
 })
 
 export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
   public currEnvDTO = defaultCurrentEnvironment;
+  public routeNames = routeNames
 
+  public get hasCurrentEnv(): boolean {
+    return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
+  }
 
+  public get hasReplicateAndOptimize():boolean {
+    return CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized !== "NO"
+  }
+
+  public get hasXaaSOffering():boolean {
+    if(DescriptionOfWork.DOWObject.length === 0)return false
+    return DescriptionOfWork.DOWObject[0].serviceOfferingGroupId !=="XaaS_NONE"
+  }
+
+  public noEnvNoXaaS():boolean {
+    return !this.hasCurrentEnv && !this.hasXaaSOffering
+  }
+
+  public hasEnvNoXaaS():boolean {
+    return this.hasCurrentEnv && !this.hasXaaSOffering
+  }
   public radioOptions: RadioButton[] = [
     {
       id: "YesArchitecture",
@@ -94,7 +149,6 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      console.log(this.hasChanged())
       if (this.hasChanged()) {
         await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
         const needsArchDesign = this.currEnvDTO.needs_architectural_design_services === "YES"
