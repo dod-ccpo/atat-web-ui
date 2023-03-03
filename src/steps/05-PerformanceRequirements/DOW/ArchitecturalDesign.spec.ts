@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
-import ArchitecturalDesign from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesign.vue";
+import ArchitecturalDesign from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
 
 Vue.use(Vuetify);
 

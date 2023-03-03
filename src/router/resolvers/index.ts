@@ -123,17 +123,30 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
       ? routeNames.DOWSummary : routeNames.RequirementCategories
     : routeNames.CurrentContract;
 };
+export const ReplicateAndOptimizeResolver = (current: string): string => {
+  //back from Architectural design
+  if(current === routeNames.ArchitecturalDesign){
+    return routeNames.DOWLandingPageDraft
+  } else if(current === routeNames.ReplicateDetails){
+    return routeNames.ReplicateAndOptimize
+  }
+  return current === routeNames.DOWLandingPageDraft
+    ? routeNames.ReplicateAndOptimize
+    : routeNames.DOWLandingPageDraft;
+}
 
 export const ReplicateDetailsResolver = (current: string): string => {
-  if (needsReplicateOrOptimize()) {
+  if (needsReplicateOrOptimize()&& current !== routeNames.ArchitecturalDesign) {
     return routeNames.ReplicateDetails;
+  }
+  //back from Architectural design
+  if(current === routeNames.ArchitecturalDesign){
+    return routeNames.DOWLandingPageDraft
   }
   return current === routeNames.ReplicateAndOptimize
     ? routeNames.DOWLandingPage
     : routeNames.ReplicateAndOptimize;
 }
-
-
 
 export const CurrentEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
@@ -210,6 +223,8 @@ export const A11yRequirementResolver = (current: string): string => {
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings;
 
 const basePerformanceRequirementsPath =  "performance-requirements";
+const currentArchitecturalDesignDetailsPath =
+  basePerformanceRequirementsPath + "/architectural-design-details";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 const DOWSecurityRequitementsPath = "performance-requirements/dow-security-requirements";
 const otherServiceOfferingSummaryPath = "performance-requirements/service-offerings/other/summary";
@@ -233,9 +248,30 @@ const getOfferingGroupServicesPath = (groupId: string)=>
  ██████ ██   ██    ██    ███████  ██████   ██████  ██   ██ ██ ███████ ███████ 
 
 /****************************************************************************/
-
+export const ArchitecturalDesignResolver = (current: string): string => {
+  //coming from replicate and optimize or replicate details
+  if(current === routeNames.ReplicateAndOptimize ||
+    current === routeNames.ReplicateDetails){
+    return routeNames.DOWLandingPageDraft
+  }
+  //coming back from Architectural Design details
+  if(current === routeNames.ArchitecturalDesignDetails){
+    return routeNames.ArchitecturalDesign
+  }
+  return current === routeNames.DOWLandingPageDraft
+    ? routeNames.ArchitecturalDesign
+    : routeNames.DOWLandingPageDraft;
+}
 export const RequirementsPathResolver = (current: string, direction: string): string => {
+  const hasCurEnvArchDesignNeeds = CurrentEnvironment.currentEnvironment
+    .needs_architectural_design_services === 'YES';
   if (current === routeNames.ArchitecturalDesignDetails){
+    return basePerformanceRequirementsPath;
+  }
+  if (current === routeNames.ArchitecturalDesign && hasCurEnvArchDesignNeeds) {
+    return currentArchitecturalDesignDetailsPath;
+  }
+  if (current === routeNames.ArchitecturalDesign && !hasCurEnvArchDesignNeeds) {
     return basePerformanceRequirementsPath;
   }
   
@@ -1266,7 +1302,9 @@ export const SecurityRequirementsResolver = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
+  ArchitecturalDesignResolver,
   CurrentContractDetailsRouteResolver,
+  ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   CurrentEnvRouteResolver,
   PIIRecordResolver,
@@ -1289,7 +1327,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
-  // IGCEGatherPriceResolver,
+  // DOWArchitecturalDesignResolver,
 };
 
 // add path resolvers here 

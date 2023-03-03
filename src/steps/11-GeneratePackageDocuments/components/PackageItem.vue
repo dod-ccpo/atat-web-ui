@@ -26,7 +26,6 @@
             />
           <span>{{alertText}}</span>
           </div>
-
         </span>
       </v-list-item-action>
     </v-list-item>   

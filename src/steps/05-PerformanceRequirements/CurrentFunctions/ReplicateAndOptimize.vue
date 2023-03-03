@@ -8,19 +8,44 @@
           </h1>
           <div class="copy-max-width">
             <p id="IntroP" class="mb-8">
-              Based on your response, we’ll include a task within your Description 
-              of Work to help CSPs better understand your current performance 
-              requirements in relation to your current environment. You will have 
-              an opportunity to add more JWCC offerings later, if needed.
+              If your current environment does not meet your current requirements,
+              select “No” below, and the instance details that you previously provided
+              will serve only as background information within your Description of Work.
             </p>
 
-            <ATATRadioGroup 
+            <ATATRadioGroup
+                class="mb-5"
               id="ReplicateOptimizeOptions"
               :card="true"
               :items="radioOptions"
               :value.sync="currEnvDTO.current_environment_replicated_optimized"
               :rules="[$validators.required('Please select an option.')]"
              />
+
+            <ATATExpandableLink aria-id="ROFAQ">
+              <template v-slot:header>
+                What does it mean to replicate or optimize current functions?
+              </template>
+              <template v-slot:content>
+                <p class="mb-4">
+                  During the solicitation process, Cloud Service Providers (CSPs) will
+                  be asked to reference the instance details you previously provided
+                  within the Background section and deliver a quote/proposal based on
+                  your choice to either “replicate” or “optimize” your current functions.
+                </p>
+                <ul>
+                  <li class="pb-2">
+                    To replicate your current functions, a CSP will be expected to perform
+                    a “lift and shift” to recreate your environment and configurations, as is.
+                  </li>
+                  <li class="pb-4">
+                    To optimize your current functions, a CSP will be expected to evaluate
+                    your current environment configurations and propose an improved or
+                    modernized solution.
+                  </li>
+                </ul>
+              </template>
+            </ATATExpandableLink>
           </div>
         </v-col>
       </v-row>
@@ -39,9 +64,11 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 
 @Component({
   components: {
+    ATATExpandableLink,
     ATATRadioGroup
   }
 })
@@ -53,23 +80,17 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
     {
       id: "YesReplicate",
       value: "YES_REPLICATE",
-      label: "We need the current functions replicated using JWCC offerings.",
-      description: `CSP needs to perform a “lift and shift” to recreate the environment 
-        and configurations, as is.`
+      label: "Replicate my current functions."
     },
     {
       id: "YesOptimize",
       value: "YES_OPTIMIZE",
-      label: "We need the current functions optimized using JWCC offerings.",
-      description: `CSP needs to evaluate the environment configurations and propose 
-        an improved/modernized solution.`
+      label: "Optimize my current functions."
     },
     {
       id: "NoReplicateOrOptimize",
       value: "NO",
-      label: "No. The current environment does not meet the current needs.",
-      description: `We want to identify new cloud resources and support requirements 
-        for this acquisition.`
+      label: "No. I don’t want to replicate or optimize my current functions."
     },
   ];
 

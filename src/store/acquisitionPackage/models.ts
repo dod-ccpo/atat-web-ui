@@ -16,7 +16,7 @@ import {
   SensitiveInformationDTO,
   CurrentEnvironmentDTO,
   EnvironmentInstanceDTO,
-  RegionsDTO
+  RegionsDTO, PackageDocumentsSignedDTO
 } from "@/api/models";
 
 export interface SessionData {
@@ -41,5 +41,6 @@ export interface SessionData {
   currentEnvironment:CurrentEnvironmentDTO;
   environmentInstance:EnvironmentInstanceDTO;
   allowDeveloperNavigation: boolean;
-  regions: RegionsDTO[]
+  regions: RegionsDTO[];
+  packageDocumentsSigned:PackageDocumentsSignedDTO
 }
