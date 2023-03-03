@@ -213,7 +213,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
-    debugger;
     // all other categories have a similar workflow with checkbox list of service offerings
     this.isServiceOfferingList = !this.otherOfferingList.includes(
       this.serviceGroupOnLoad.toLowerCase()

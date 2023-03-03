@@ -112,8 +112,6 @@ export default class DOWLandingPage extends Vue {
       }
     }
     
-    debugger;
-
     if (DescriptionOfWork.hasXaasService || DescriptionOfWork.hasCloudService
       || DescriptionOfWork.XaaSNoneSelected || DescriptionOfWork.cloudNoneSelected
     ) {
@@ -127,7 +125,7 @@ export default class DOWLandingPage extends Vue {
       DOWObject.forEach((selectedOffering) => {
         const offering =  offerings.find(obj =>      
           obj.value === selectedOffering.serviceOfferingGroupId);
-        debugger;
+
         if (offering) {
           if (xaasServices.includes(offering.value)) {
             selectedXaasServices.push(offering.label);

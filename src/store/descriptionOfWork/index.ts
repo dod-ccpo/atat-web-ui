@@ -783,7 +783,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   hasCloudService = false;
   XaaSNoneSelected = false;
   cloudNoneSelected = false;
-  anticipatedUsersAndDataHasBeenVisited = false
   returnToDOWSummary = false;
   reviewGroupFromSummary = false;
   addGroupFromSummary = false;
@@ -1407,8 +1406,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
 
     this.setCurrentOfferingGroupId("");
-    const foo = this.selectedServiceOfferingGroups;
-    debugger;
     await this.checkServiceOfferingTypesSelected();
   }
 
@@ -1600,7 +1597,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get selectedServiceOfferingGroups(): string[] {
-    debugger;
     return this.DOWObject.map(group=> group.serviceOfferingGroupId);
   }
 
@@ -1626,7 +1622,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public async checkServiceOfferingTypesSelected(): Promise<void> {
-    debugger;
     const selectedCategories = this.DOWObject.map(obj => obj.serviceOfferingGroupId);
     if (this.DOWObject.length && selectedCategories.length) {
       const selectedXaaS = this.xaasServices.filter(
@@ -1648,17 +1643,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public setBackToContractDetails(bool: boolean): void {
     this.summaryBackToContractDetails = bool;
-  }
-  @Action
-  public doSetAnticipatedUsersAndDataHasBeenVisited(): void {
-    this.setAnticipatedUsersAndDataHasBeenVisited()
-  }
-
-  @Mutation
-  public setAnticipatedUsersAndDataHasBeenVisited(): void {
-    if(!this.hasXaasService){
-      this.anticipatedUsersAndDataHasBeenVisited = false;
-    }
   }
 
   @Mutation
@@ -1729,7 +1713,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeServiceOffering(offeringName: string): Promise<void> {
-    debugger;
     const offeringGroupIndex = this.DOWObject.findIndex(
       group => group.serviceOfferingGroupId === this.currentGroupId
     );
@@ -1768,7 +1751,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeCurrentOfferingGroup(): Promise<void> {
-    debugger;
     if (this.otherServiceOfferings.includes(this.currentGroupId)
       || this.cloudSupportServices.includes(this.currentGroupId)
     ) {
@@ -1880,14 +1862,11 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action
   public async setSelectedOfferingGroups(selectedOfferingGroupIds: string[]): Promise<void> {
     await this.doSetSelectedOfferingGroups(selectedOfferingGroupIds);
-    debugger;
     this.checkServiceOfferingTypesSelected()
-    // EJY  double-check this method below!!!!!!! 
-    this.setAnticipatedUsersAndDataHasBeenVisited();
   }
 
   @Mutation
-  public doSetSelectedOfferingGroups(selectedOfferingGroupIds: string[]): void {
+  public async doSetSelectedOfferingGroups(selectedOfferingGroupIds: string[]): Promise<void> {
     const inXaaS = this.currentDOWSection === "XaaS";
     const inCloud = this.currentDOWSection === "CloudSupport";  
 
@@ -2406,13 +2385,12 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async deleteOtherOffering(): Promise<void> {
-    this.doDeleteOtherOffering();
-    this.checkServiceOfferingTypesSelected();
-    this.setAnticipatedUsersAndDataHasBeenVisited();
+    await this.doDeleteOtherOffering();
+    await this.checkServiceOfferingTypesSelected();
   }
 
   @Mutation
-  public doDeleteOtherOffering(): void {
+  public async doDeleteOtherOffering(): Promise<void> {
     const groupIdToDelete = this.currentGroupId.toLowerCase();
     const offeringToDelete = this.DOWObject.find(
       o => o.serviceOfferingGroupId.toLowerCase() === groupIdToDelete

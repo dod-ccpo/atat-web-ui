@@ -273,7 +273,6 @@ export const ArchitecturalDesignDetailsResolver = (current: string): string => {
 }
 
 export const RequirementsPathResolver = (current: string, direction: string): string => {
-  debugger;
   if (current === routeNames.DOWLandingPage) {
     if ((DescriptionOfWork.currentDOWSection === "XaaS" 
       && !DescriptionOfWork.hasXaasService) 
@@ -313,7 +312,6 @@ export const RequirementsPathResolver = (current: string, direction: string): st
     !atBeginningOfOfferingGroups){ 
     const previousGroup = DescriptionOfWork.prevOfferingGroup;
     if (DescriptionOfWork.returnToDOWSummary) {
-      debugger;
       return descriptionOfWorkSummaryPath;
     }
 
@@ -367,7 +365,6 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 /****************************************************************************/
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
-  debugger;
   if (
     (DescriptionOfWork.XaaSNoneSelected && DescriptionOfWork.currentDOWSection === "XaaS") || 
     (DescriptionOfWork.cloudNoneSelected && DescriptionOfWork.currentDOWSection === "CloudSupport")
@@ -375,14 +372,12 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
     return routeNames.DOWLandingPage;
   }
 
-  if (DescriptionOfWork.currentDOWSection === "XaaS") {
-    const xaasServices = DescriptionOfWork.hasXaasService;
-    const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
-    if ((current === routeNames.RequirementCategories)
-      && xaasServices && !hasBeenVisited
-    ) {
-      return routeNames.AnticipatedUserAndDataNeeds
-    }
+  if (current === routeNames.DOWSummary ||
+    current === routeNames.RequirementCategories
+    && DescriptionOfWork.currentDOWSection === "XaaS" 
+    && DescriptionOfWork.hasXaasService 
+  ) {
+    return routeNames.AnticipatedUserAndDataNeeds
   }
   
   return current === routeNames.RequirementCategories 
@@ -406,7 +401,6 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 export const ServiceOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
-  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
   DescriptionOfWork.setCurrentGroupRemoved(false);
@@ -453,7 +447,6 @@ export const ServiceOfferingsPathResolver = (
     DescriptionOfWork.setReturnToDOWSummary(false);
     DescriptionOfWork.setLastGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false); 
-    debugger;
     return descriptionOfWorkSummaryPath;
   } 
 
@@ -609,7 +602,6 @@ export const ServiceOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
-  debugger;
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
   const groupId = DescriptionOfWork.currentGroupId;
@@ -625,15 +617,12 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   if(current === routeNames.OtherOfferingSummary && 
     isOtherOffering && direction === "previous"){
     if(DescriptionOfWork.returnToDOWSummary){
-      debugger;
       return descriptionOfWorkSummaryPath;
     }
     if(DescriptionOfWork.prevOfferingGroup){
       const group = DescriptionOfWork.prevOfferingGroup
       DescriptionOfWork.setCurrentOfferingGroupId(group);
-    }
-    else{
-      debugger;
+    } else {
       return descriptionOfWorkSummaryPath;
     }
   }
@@ -646,7 +635,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     || (DescriptionOfWork.currentGroupRemovedForNav && DescriptionOfWork.lastGroupRemoved)) {
     // and no more groups after
     DescriptionOfWork.setReturnToDOWSummary(false);
-    debugger;
     return descriptionOfWorkSummaryPath;
   }
 
@@ -679,7 +667,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     } else {
       DescriptionOfWork.setLastGroupRemoved(false);
       DescriptionOfWork.setReturnToDOWSummary(false);
-      debugger;
       return descriptionOfWorkSummaryPath;    
     }
   }
@@ -692,7 +679,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     // if last group removed, currentGroupId === "", send to summary page
     DescriptionOfWork.setLastGroupRemoved(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
-    debugger;
     return descriptionOfWorkSummaryPath;   
   }
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
@@ -720,7 +706,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   }
 
   DescriptionOfWork.setReturnToDOWSummary(false);
-  debugger;
   return descriptionOfWorkSummaryPath
 }
 
@@ -734,7 +719,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 /****************************************************************************/
 
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
-  debugger;
   const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
   const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
   if (packageHasSecretOrHigher && showSecurityRequirements) {
@@ -756,7 +740,6 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
     return OfferingDetailsPathResolver(current, direction);
   }
 
-  debugger;
   return descriptionOfWorkSummaryPath;
 }
 
@@ -773,7 +756,6 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
 
 export const DOWSecurityRequirementsPathResolver 
   = (current: string, direction: string): string => {
-    debugger;
     const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
     const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
 
@@ -807,13 +789,11 @@ export const DOWSecurityRequirementsPathResolver
 
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-  debugger;
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if(current === routeNames.ConflictOfInterest){
     if(DescriptionOfWork.DOWObject.length > 0){
       DescriptionOfWork.setReturnToDOWSummary(false);
-      debugger;
       return descriptionOfWorkSummaryPath
     }
     else{
@@ -828,7 +808,6 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   // at last service in group, send back to summary page
   if (DescriptionOfWork.returnToDOWSummary && atServicesEnd) {
     DescriptionOfWork.setReturnToDOWSummary(false);
-    debugger;
     return descriptionOfWorkSummaryPath;
   }
 
@@ -840,7 +819,6 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
     //no more offerings or services to process go to summary
     if(atOfferingsEnd && atServicesEnd){
       DescriptionOfWork.setReturnToDOWSummary(false);
-      debugger;
       return descriptionOfWorkSummaryPath;
     }
 

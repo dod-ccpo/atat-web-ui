@@ -99,7 +99,6 @@ export default class DOWCard extends Vue {
     if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupport") {
       routerObj.params.resolver = "RequirementsPathResolver";
     } 
-    debugger;
     this.$router.push(routerObj)
   }
 
