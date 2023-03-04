@@ -32,39 +32,8 @@
           </ol>
         </div>
       </div>
-      <div class="ml-10">
-        <v-card class="border1 border-base-lighter pa-6 _shadow border-rounded-more">
-          <h3 class="mb-3 nowrap">Your completed package includes:</h3>
-          <ul>
-            <li
-              v-for="(item,idx) in documentList"
-              :key="idx"
-              class="text-base py-1"
-            >
-              {{item}}
-            </li>
-          </ul>
-          <v-btn
-            class="secondary _text-decoration-none px-6 mt-6"
-            large
-            role="button"
-            @click="downloadDocuments"
-          >
-          <ATATSVGIcon
-            class="mr-2" width="14" height="19" name="download" color="primary"
-          />
-            Download your completed package
-          </v-btn>
-          <a :href="$sanitize(downloadUnsignedPackagesLink)" 
-            id="unsignedDocumentsLink" 
-            class="download-docs-link"
-            download="Unsigned Documents"></a>
-          <a :href="$sanitize(downloadSignedPackagesLink)"
-            id="signedDocumentsLink"  
-            class="download-docs-link"
-            download="Signed Documents"></a>
-        </v-card>
-      </div>
+      <CompletePackageCard />
+
     </div>
   </div>
 </template>
@@ -73,25 +42,21 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
-import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import api from "@/api";
+import CompletePackageCard 
+  from "@/steps/11-GeneratePackageDocuments/components/CompletePackageCard.vue"
 
 @Component({
   components: {
-    ATATSVGIcon,
+    CompletePackageCard,
     ATATCheckboxGroup
   }
 })
 
 export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
-  public packageId = "";
-  private documentList:string[]=[];
   private certified = [];
-  private downloadUnsignedPackagesLink = "";
-  private downloadSignedPackagesLink = "";
   private checkboxItem = [
     {
       id: "Programming",
@@ -102,13 +67,9 @@ export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
 
   @Watch('certified')
   public async certifiedChecked(): Promise<void>{
-    if(this.certified.length > 0){
-      await acquisitionPackage.setDisableContinue(false)
-    }
-    else{
-      await acquisitionPackage.setDisableContinue(true)
-    }
+    acquisitionPackage.setDisableContinue(this.certified.length === 0);
   }
+
   public async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
     await AcquisitionPackageSummary.updateAcquisitionPackageStatus({
@@ -118,44 +79,8 @@ export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
     return true;
   }
 
-  public async downloadDocuments(): Promise<void>{
-    // await document.getElementById("signedDocumentsLink")?.click();
-    // await document.getElementById("unsignedDocumentsLink")?.click();
-    var inputs = document.getElementsByClassName('download-docs-link'); 
-    for(var i=0; i<inputs.length;i++)
-    { 
-      inputs[i].click(); 
-    }
-
-
-    const urls =  [this.downloadUnsignedPackagesLink, this.downloadSignedPackagesLink];
-    for (let i=0;i<urls.length;i++){
-      const a = document.createElement('a');
-      a.href = urls[i];
-      a.target = '_blank';
-      a.download = i===0 ? 'unsigned': 'signed';
-      a.click();
-      a.remove();
-    }
-    //   setTimeout(()=>{
-    //     const a = document.createElement('a');
-    //     a.href = link;
-    //     a.target = '_blank';
-    //     a.download = idx === 0 ? 'unsigned': 'signed';
-    //     a.click();
-    //     a.remove();
-    //   }, 1000)
-    // });
-  }
-
   public async loadOnEnter(): Promise<void> {
-    if(acquisitionPackage.attachmentNames){
-      this.documentList = acquisitionPackage.attachmentNames
-    }
     await acquisitionPackage.setDisableContinue(true)
-    this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
-    this.downloadUnsignedPackagesLink = await AcquisitionPackage.setDownloadPackageLink(false);
-    this.downloadSignedPackagesLink = await AcquisitionPackage.setDownloadPackageLink(true);
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()

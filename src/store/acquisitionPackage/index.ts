@@ -34,7 +34,12 @@ import {
   PackageDocumentsSignedDTO,
 } from "@/api/models";
 
-import { SelectData, EvalPlanSourceSelection, EvalPlanMethod, uploadingFile } from "types/Global";
+import { 
+  SelectData, 
+  EvalPlanSourceSelection, 
+  EvalPlanMethod, 
+  uploadingFile, 
+  signedDocument } from "types/Global";
 import { SessionData } from "./models";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
@@ -319,7 +324,13 @@ export class AcquisitionPackageStore extends VuexModule {
 
   validateNow = false;
   allowDeveloperNavigation = false;
-
+  generatedDocumentNames: string[] = [
+    "DescriptionOfWork.docx",
+    "IncrementalFundingPlan.docx",
+    "RequirementsChecklist.docx",
+    "IGCE.xlsx",
+    "EvaluationPlan.docx",
+  ]
   contractingShop = "";
   attachmentNames: string[] = []
   disableContinue = false
@@ -1470,9 +1481,11 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   public get getDomain(): string {
-    return document.location.origin.indexOf("localhost") > -1
-      ? 'https://services-dev.disa.mil'
-      : document.location.origin
+    // return document.location.origin.indexOf("localhost") > -1
+    //   ? 'https://services-dev.disa.mil'
+    //   : document.location.origin
+
+    return document.location.origin
   }
 
   @Action({rawError: true})
@@ -1518,6 +1531,78 @@ export class AcquisitionPackageStore extends VuexModule {
     return [];
   }
 
+
+  @Action({rawError: true})
+  public async getSignedDocumentsList(): Promise<signedDocument[]> {
+    const fairOpportunity = 
+     AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
+    
+    const incrementallyFunded =    
+      FinancialDetails.fundingRequirement?.incrementally_funded || "";
+    
+    return [
+      {
+        itemName:"Requirements Checklist",
+        requiresSignature:true,
+        alertText:"Requires signatures",
+        show:true
+      },
+      {
+        itemName:"Independent Government Cost Estimate",
+        requiresSignature:true,
+        alertText:"Requires signatures",
+        show:true
+      },
+      {
+        itemName:"Incremental Funding Plan",
+        requiresSignature:true,
+        alertText:"Requires signatures",
+        show:incrementallyFunded === "YES"
+      },
+      {
+        itemName:"Justification and Approval (Template)",
+        requiresSignature:true,
+        alertText:"Complete and sign",
+        show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
+      },
+      {
+        itemName:"Sole Source Market Research Report (Template)",
+        requiresSignature:true,
+        alertText:"Complete and sign",
+        show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
+      },
+      {
+        itemName:"Description of Work",
+        requiresSignature:false,
+        show:true
+      },
+      {
+        itemName:"Evaluation Plan",
+        requiresSignature:false,
+        show:fairOpportunity === "NO_NONE"
+      }
+    ] as signedDocument[]
+  }
+
+  @Action({rawError: true})
+  public async getCompletedPackageList(): Promise<string[]> {
+    const signedDocs = (await this.getSignedDocumentsList()).filter(
+      signedDoc => signedDoc.show
+    ).map(signedDoc => signedDoc.itemName.replace("(Template)", ""));
+
+    const unsignedDocs = (await this.getDocuments(false)).filter(
+      /**
+       * removes duplicated names of generated docs from the docs retrieved
+       * from package documents unsigned table
+       * (eg. `DocumentOfWork.pdf` is already accounted for in this list in
+       *       signedDocs list as `Document Of Work`)
+      **/
+      unsignedDoc => 
+        this.generatedDocumentNames.every(docName => docName !== unsignedDoc.fileName)
+    )
+    const supportingDocuments = ['Supporting Documents (' + unsignedDocs.length + ')'];
+    return signedDocs.concat(supportingDocuments)
+  }
 
   @Mutation
   public doSetPackageId(value: string): void {
