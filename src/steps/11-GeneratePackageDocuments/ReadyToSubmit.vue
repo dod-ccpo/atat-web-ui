@@ -5,7 +5,7 @@
     </h1>
     <div class="d-flex mt-10">
       <div class="copy-max-width">
-        <p class="font-size-20 font-weight-500 mb-3">
+        <p class="font-size-20 font-weight-500 mb-3" style="line-height: 1.6;">
           Great news! We have everything ready to send your package to DITCO for processing.
         </p>
         <p class="mt-2 mb-10">
@@ -26,21 +26,15 @@
             <li class="pb-3">
               All information in my package is accurate and complete to the best of my knowledge.
             </li>
-            <li class="pb-3">
+            <li>
               All documents requiring certification have been signed and uploaded.
             </li>
           </ol>
         </div>
       </div>
       <div class="ml-10">
-        <v-card
-          class="
-            border1
-            border-base-lighter
-            pa-4"
-          :elevation="2"
-        >
-          <h2>Your completed package includes:</h2>
+        <v-card class="border1 border-base-lighter pa-6 _shadow border-rounded-more">
+          <h3 class="mb-3 nowrap">Your completed package includes:</h3>
           <ul>
             <li
               v-for="(item,idx) in documentList"
@@ -51,10 +45,10 @@
             </li>
           </ul>
           <v-btn
-            class="secondary _text-decoration-none px-6 mt-3"
+            class="secondary _text-decoration-none px-6 mt-6"
             large
-            target="_blank"
-            :href="'/download_all_attachments.do?sysparm_sys_id=' + packageId"
+            role="button"
+            :href="$sanitize(downloadPackageLink)"
           >
           <ATATSVGIcon
             class="mr-2" width="14" height="19" name="download" color="primary"
@@ -67,7 +61,6 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
 
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -76,16 +69,19 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+
 @Component({
   components: {
     ATATSVGIcon,
     ATATCheckboxGroup
   }
 })
+
 export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
   public packageId = "";
   private documentList:string[]=[];
-  private certified = []
+  private certified = [];
+  private downloadPackageLink = "";
   private checkboxItem = [
     {
       id: "Programming",
@@ -118,6 +114,7 @@ export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
     }
     await acquisitionPackage.setDisableContinue(true)
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
+
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
