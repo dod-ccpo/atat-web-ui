@@ -1569,13 +1569,13 @@ export class AcquisitionPackageStore extends VuexModule {
         show:incrementallyFunded === "YES"
       },
       {
-        itemName:"Justification and Approval (Template)",
+        itemName:"Justification and Approval",
         requiresSignature:true,
         alertText:"Complete and sign",
         show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
       },
       {
-        itemName:"Sole Source Market Research Report (Template)",
+        itemName:"Sole Source Market Research Report",
         requiresSignature:true,
         alertText:"Complete and sign",
         show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
