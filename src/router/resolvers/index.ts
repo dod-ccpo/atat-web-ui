@@ -119,8 +119,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
-      ? routeNames.DOWSummary : routeNames.RequirementCategories
+    ? routeNames.DOWLandingPage 
     : routeNames.CurrentContract;
 };
 export const ReplicateAndOptimizeResolver = (current: string): string => {
@@ -153,8 +152,7 @@ export const CurrentEnvRouteResolver = (current: string): string => {
     return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment 
-    ? (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
-      ? routeNames.DOWSummary : routeNames.RequirementCategories
+    ? routeNames.DOWLandingPage
     : routeNames.CurrentEnvironment;
 };
 
