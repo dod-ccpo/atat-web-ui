@@ -27,7 +27,7 @@
               :isPeriodsDataMissing="isPeriodsDataMissing"
             />
           </div>
-          <div class="copy-max-width">
+          <v-form ref="form" class="copy-max-width">
             <ATATCheckboxGroup
               v-if="currentDOWSection === 'XaaS'"
               id="XaaSCheckboxes"
@@ -59,7 +59,7 @@
               groupLabel="What type of services do you need in a cloud support package?"
               groupLabelId="CloudSupportLabel"
             />
-          </div>
+          </v-form>
         </v-col>
       </v-row>
     </v-container>
@@ -86,6 +86,7 @@ import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -260,6 +261,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   };
 
   protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
     try {
       if (!this.goToSummary) {
         // save to store
