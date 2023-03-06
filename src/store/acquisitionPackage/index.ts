@@ -915,10 +915,8 @@ export class AcquisitionPackageStore extends VuexModule {
         const packageDocumentsSigned = await api.packageDocumentsSignedTable
           .create({acquisition_package:acquisitionPackage.sys_id})
         this.setPackageDocumentsSigned(packageDocumentsSigned)
-        console.log(await this.getPackageDocumentsSigned())
       }else{
         this.setPackageDocumentsSigned(signedDocuments[0])
-        console.log(await this.getPackageDocumentsSigned())
       }
 
       this.setPackagePercentLoaded(90);
