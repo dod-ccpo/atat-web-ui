@@ -273,6 +273,17 @@ export interface invalidFile{
   statusCode?: number;
 }
 
+export interface DOWCardData {
+  title: string;
+  label: string;
+  icon: string;
+  learnMore: string,
+  route: string;
+  defineRequirements: boolean,
+  section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupport";
+  isComplete: boolean,
+}
+
 export interface DOWClassificationInstance {
   sysId?: string;
   impactLevel: string; // for sorting

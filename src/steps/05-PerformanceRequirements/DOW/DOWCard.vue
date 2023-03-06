@@ -1,63 +1,55 @@
 <template>
-  <div>
-    <!-- <v-container class="container-max-width" fluid> -->
-    <!-- class="_dow-card-wrapper" -->
-    <v-card 
-      class="d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
-      outlined>
-        <ATATSVGIcon 
-          v-if="cardData.defineRequirements===true"
-          name="StarInTriangle" 
-          color="primary" 
-          width="49" 
-          height="48" 
-          class="define-requirements"
-        />
-        <div class="d-flex justify-center flex-column">
-          <ATATSVGIcon :name="cardData.icon" color="primary" width="64" height="64" />
-        </div>
-        <div class="d-flex align-left justify-center flex-column ml-4">
-          <h3 class="mb-1">
-            {{ cardData.title }}
-          </h3>
-          <div>
-            {{ cardData.label }}
-            <a v-if="cardData.title === 'Anything as a Service (XaaS)'" 
-              role="button" 
-              id="LearnMoreXaas" class="_text-link"
-              tabindex="0" 
-              @click="openXaasSlideoutPanel" 
-              @keydown.enter="openXaasSlideoutPanel"
-              @keydown.space="openXaasSlideoutPanel">
-              {{ cardData.learnMore }}
-            </a>
-            <a v-if="cardData.title === 'Cloud Support Package'" 
-              role="button" 
-              id="LearnMoreCloudSupportPackage" 
-              class="_text-link"
-              tabindex="0" 
-              @click="openSupportSlideoutPanel" 
-              @keydown.enter="openSupportSlideoutPanel"
-              @keydown.space="openSupportSlideoutPanel">
-              {{ cardData.learnMore }}
-            </a>
-          </div>
-        </div>
-        <div class="d-flex align-center justify-center flex-column ml-auto">
-          <router-link :id="cardData.route" :to="{ name: cardData.route }">
-            <v-btn
-              color="primary" 
-              id="StartButton" 
-              width="110"
-              role="link">
-              Start
-            </v-btn>
-          </router-link>
+  <v-card 
+    class="d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
+    :class="{'_card-complete': cardData.isComplete}"
+    outlined>
+      <ATATSVGIcon 
+        v-if="cardData.defineRequirements===true"
+        name="StarInTriangle" 
+        color="primary" 
+        width="49" 
+        height="48" 
+        class="define-requirements"
+      />
+      <div class="d-flex justify-center flex-column">
+        <ATATSVGIcon :name="cardData.icon" color="primary" width="64" height="64" />
+      </div>
+      <div class="d-flex align-left justify-center flex-column ml-4">
+        <h3 class="mb-1">
+          {{ cardData.title }}
+        </h3>
+        <div>
+          {{ cardData.label }}
 
+          <a v-if="showLearnMore" 
+            role="button" 
+            :id="`LearnMore` + cardData.section" 
+            class="_text-link"
+            tabindex="0" 
+            @click="openSlideoutPanel" 
+            @keydown.enter="openSlideoutPanel"
+            @keydown.space="openSlideoutPanel">
+            {{ cardData.learnMore }}
+          </a>
         </div>
-    </v-card>
-    <!-- </v-container> -->
-  </div>
+      </div>
+      <div class="d-flex align-center justify-center flex-column ml-auto">
+        <v-btn
+          class="ml-5"
+          :class="cardData.isComplete ? 'secondary' : 'primary'"
+          :id="`StartButton` + cardData.section" 
+          width="110"
+          role="link"
+          @click="setDOWSection"
+          @keydown.enter="setDOWSection"
+          @keydown.space="setDOWSection"
+        >
+          {{ cardData.isComplete ? 'View/Edit' : 'Start' }}
+        </v-btn>
+
+      </div>
+  </v-card>
+
 </template>
 
 <script lang="ts">
@@ -67,10 +59,10 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import XaasLearnMore from "./XaasLearnMore.vue";
 import CloudSupportLearnMore from "./CloudSupportLearnMore.vue";
-import { SlideoutPanelContent } from "../../../../types/Global";
+import { DOWCardData, SlideoutPanelContent } from "../../../../types/Global";
 
 import Vue from "vue";
-import StarInTriangle from "@/components/icons/StarInTriangle.vue";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -79,49 +71,55 @@ import StarInTriangle from "@/components/icons/StarInTriangle.vue";
 })
 
 export default class DOWCard extends Vue {
-  @Prop() public cardData!: Record<string, string | boolean>;
+  @Prop() public cardData!: DOWCardData;
 
-  private currentEnvironmentExists = "";
   private setPanelComponent: any = {};
-  private xaasSlideoutPanelContent = {} as SlideoutPanelContent;
-  private supportSlideoutPanelContent = {} as SlideoutPanelContent;
+  private slideoutPanelContent = {} as SlideoutPanelContent;
 
-  public openXaasSlideoutPanel(e: Event): void {
-    this.setPanelComponent(this.xaasSlideoutPanelContent);
-    if (e && e.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      SlideoutPanel.openSlideoutPanel(opener.id);
-    };
-  };
-  public openSupportSlideoutPanel(e: Event): void {
-    this.setPanelComponent(this.supportSlideoutPanelContent);
+  public showLearnMore = false;
+
+
+  public openSlideoutPanel(e: Event): void {
+    this.setPanelComponent(this.slideoutPanelContent);
     if (e && e.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     };
   };
 
+  public async setDOWSection(): Promise<void> {
+    await DescriptionOfWork.setCurrentDOWSection(this.cardData.section as string);
+    const routerObj = {
+      name: this.cardData.route,
+      params: {
+        direction: "next",
+        resolver: "",
+      }
+    }
+    if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupport") {
+      routerObj.params.resolver = "RequirementsPathResolver";
+    } 
+    this.$router.push(routerObj)
+  }
 
   public async loadOnEnter(): Promise<void> {
     await CurrentEnvironment.getCurrentEnvironment();
+    this.showLearnMore = this.cardData.learnMore !== "";
+    
+    if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupport") {
+      const slideoutComponent = this.cardData.section === "XaaS" 
+        ? XaasLearnMore : CloudSupportLearnMore;
+      this.slideoutPanelContent = {
+        component: slideoutComponent,
+        title: "Learn More",
+      };
+      this.setPanelComponent = await SlideoutPanel.setSlideoutPanelComponent;
+    }
+
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    if (CurrentEnvironment.currentEnvironment) {
-      this.currentEnvironmentExists
-        = CurrentEnvironment.currentEnvironment.current_environment_exists ? "YES" : "NO"
-    }
-    this.xaasSlideoutPanelContent = {
-      component: XaasLearnMore,
-      title: "Learn More",
-    };
-    this.supportSlideoutPanelContent = {
-      component: CloudSupportLearnMore,
-      title: "Learn More",
-    };
-
-    this.setPanelComponent = await SlideoutPanel.setSlideoutPanelComponent;
   };
 
 }
