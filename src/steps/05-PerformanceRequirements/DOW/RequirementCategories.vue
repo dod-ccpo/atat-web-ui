@@ -28,6 +28,39 @@
               :isClassificationDataMissing="isClassificationDataMissing"
               :isPeriodsDataMissing="isPeriodsDataMissing"
             />
+
+            <div v-if="noEnvNoArchitecturalDesign() || hasEnvOnly()">
+              <ATATAlert
+                id="ArchitecturalDesignAlert"
+                type="warning"
+                class="mb-10 mt-2"
+                :showIcon="true"
+              >
+                <template v-slot:content>
+                  <p class="mr-5 mb-0 font-weight-400 font-size 16">
+                    Based on what you previously told us, we recommend selecting at least one
+                    category below. If you don’t need specific cloud resources or tools,
+                    select “None of these apply to my acquisition” and revisit
+                    <span v-if="hasEnvOnly()">
+                    <router-link
+                      id="CompleteCurrentEnv"
+                      :to="{ name: routeNames.CurrentEnvironment }"
+                    >
+                    Your Current Functions
+                    </router-link>
+                    </span>
+                    or
+                     <router-link
+                       id="CompleteArchitectural"
+                       :to="{ name: routeNames.ArchitecturalDesign }"
+                     >
+                      Architectural Design Solution
+                     </router-link>
+                    to define performance requirements for your Description of Work.
+                  </p>
+                </template>
+              </ATATAlert>
+            </div>
           </div>
           <div class="copy-max-width">
             <ATATRadioGroup 
@@ -99,10 +132,13 @@ import { getIdText } from "@/helpers";
 import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 
 @Component({
   components: {
+    ATATAlert,
     ATATCheckboxGroup,
     ATATRadioGroup,
     PerfReqLearnMore,
@@ -127,7 +163,25 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
 
   public introSentence = `Through JWCC, you have the ability to procure many offerings for
     Anything as a Service (XaaS) and Cloud Support Packages.`;
+  public get hasCurrentEnv(): boolean {
+    return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
+  }
 
+  public get hasReplicateAndOptimize():boolean {
+    return CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized !== "NO"
+  }
+
+  public get hasArchitecturalDesign():boolean {
+    return CurrentEnvironment.currentEnvironment.needs_architectural_design_services === "YES"
+  }
+
+  public noEnvNoArchitecturalDesign():boolean {
+    return !this.hasCurrentEnv && !this.hasArchitecturalDesign
+  }
+
+  public hasEnvOnly():boolean {
+    return this.hasCurrentEnv && !this.hasArchitecturalDesign && !this.hasReplicateAndOptimize
+  }
   public radioOptions: RadioButton[] = [
     {
       id: "YesArchitecture",

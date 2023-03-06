@@ -92,10 +92,6 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
     return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
   }
 
-  public get hasReplicateAndOptimize():boolean {
-    return CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized !== "NO"
-  }
-
   public get hasXaaSOffering():boolean {
     if(DescriptionOfWork.DOWObject.length === 0)return false
     return DescriptionOfWork.DOWObject[0].serviceOfferingGroupId !=="XaaS_NONE"
