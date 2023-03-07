@@ -273,16 +273,16 @@ export interface invalidFile{
   statusCode?: number;
 }
 
-export interface DOWLandingPageCard {
+export interface DOWCardData {
   title: string;
   label: string;
   icon: string;
   learnMore: string,
   route: string;
   defineRequirements: boolean,
-  section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupportPackage";
   visible: boolean,
-  isComplete: boolean
+  section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupport";
+  isComplete: boolean,
 }
 
 export interface DOWClassificationInstance {

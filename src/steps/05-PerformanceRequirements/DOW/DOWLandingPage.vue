@@ -18,14 +18,14 @@
           Add requirements for each performance area
         </h2>
         <p class="text-base">
-          You must define requirements within at least one of the star-icon-here
+          You must define requirements within at least one of the
           <strong>
             <ATATSVGIcon 
               name="star" 
               :width="15" 
               :height="15" 
               color="base"
-              class="d-inline-flex"
+              class="d-inline-flex mr-1"
               />starred
           </strong>
           areas.
@@ -66,10 +66,11 @@ import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
-import { DOWLandingPageCard } from "types/Global";
 import {ClassificationLevelDTO} from "@/api/models";
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
+import { DOWCardData } from "types/Global";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -82,19 +83,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 export default class DOWLandingPage extends Vue {
   displayWarning = false;
 
-  public requirementSections: DOWLandingPageCard[] = [
-    {
-      title: "Your Current Functions",
-      label: "Choose to either replicate or optimize your current " +
-              "environment using JWCC offerings.",
-      icon: "current-functions-circle",
-      learnMore: "",
-      route: routeNames.ReplicateAndOptimize,
-      defineRequirements: true,
-      section: "ReplicateOptimize",
-      visible: this.doesCurrentEnvExist,
-      isComplete: false
-    },
+  public requirementSections: DOWCardData[] = [
     {
       title: "Architectural Design Solution",
       label: "Request a customized cloud solution for your known problem or use-case.",
@@ -103,30 +92,27 @@ export default class DOWLandingPage extends Vue {
       route: routeNames.ArchitecturalDesign,
       defineRequirements: true,
       section: "ArchitecturalDesign",
-      visible: true,
-      isComplete: false
+      isComplete: false,
     },
     {
       title: "Anything as a Service (XaaS)",
       label: "Select offerings from 11 categories to build your own requirements.",
       icon: "xaas-circle",
       learnMore: "Learn more about XaaS",
-      route: routeNames.RequirementCategories,
+      route: "pathResolver",
       defineRequirements: true,
       section: "XaaS",
-      visible: true,
-      isComplete: true
+      isComplete: false,
     },
     {
       title: "Cloud Support Package",
       label: "Select services from six categories.",
       icon: "support-circle",
       learnMore: "Learn more about support services",
-      route: routeNames.RequirementCategories,
+      route: "pathResolver",
       defineRequirements: false,
-      section: "CloudSupportPackage",
-      visible: true,
-      isComplete: true
+      section: "CloudSupport",
+      isComplete: false,
     }
   ];
 
@@ -248,9 +234,77 @@ export default class DOWLandingPage extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    if (CurrentEnvironment.currentEnvironment) {
+      const currentEnvironmentExists
+        = CurrentEnvironment.currentEnvironment.current_environment_exists === "YES";
+      if (currentEnvironmentExists) {
+        const currentEnvCardData: DOWCardData = {
+          title: "Your Current Functions",
+          label: `Choose to either replicate or optimize your current environment using 
+            JWCC offerings.`,
+          icon: "current-functions-circle",
+          learnMore: "",
+          route: routeNames.ReplicateAndOptimize,
+          defineRequirements: true,
+          section: "ReplicateOptimize",
+          isComplete: false,
+        };
+        this.requirementSections.unshift(currentEnvCardData)
+      }
+    }
+    
+    if (DescriptionOfWork.hasXaasService || DescriptionOfWork.hasCloudService
+      || DescriptionOfWork.XaaSNoneSelected || DescriptionOfWork.cloudNoneSelected
+    ) {
+      const selectedXaasServices: string[] = [];
+      const selectedCloudServices: string[] = [];
+      const DOWObject = DescriptionOfWork.DOWObject;
+      const offerings = DescriptionOfWork.serviceOfferingGroups;
+      const xaasServices = DescriptionOfWork.xaasServices;
+      const cloudSupportServices = DescriptionOfWork.cloudSupportServices;
+
+      DOWObject.forEach((selectedOffering) => {
+        const offering =  offerings.find(obj =>      
+          obj.value === selectedOffering.serviceOfferingGroupId);
+
+        if (offering) {
+          if (xaasServices.includes(offering.value)) {
+            selectedXaasServices.push(offering.label);
+          }
+          if (cloudSupportServices.includes(offering.value)) {
+            selectedCloudServices.push(offering.label);
+          }
+        }
+      });
+
+      if (selectedXaasServices.length > 0 || DescriptionOfWork.XaaSNoneSelected) {
+        const xaasIndex = this.requirementSections.findIndex(obj => obj.section === "XaaS");
+        if (xaasIndex > -1) {
+          this.requirementSections[xaasIndex].learnMore = "";
+          this.requirementSections[xaasIndex].label = DescriptionOfWork.XaaSNoneSelected
+            ? "No requirements" : selectedXaasServices.join(", ");
+          this.requirementSections[xaasIndex].isComplete 
+            = selectedXaasServices.length > 0 || DescriptionOfWork.XaaSNoneSelected;
+        }
+      }
+      if (selectedCloudServices.length > 0 || DescriptionOfWork.cloudNoneSelected) {
+        const cloudIndex = this.requirementSections.findIndex(
+          obj => obj.section === "CloudSupport"
+        );
+        if (cloudIndex > -1) {
+          this.requirementSections[cloudIndex].learnMore = "";
+          this.requirementSections[cloudIndex].label = DescriptionOfWork.cloudNoneSelected
+            ? "No requirements" : selectedCloudServices.join(", ");
+          this.requirementSections[cloudIndex].isComplete 
+            = selectedCloudServices.length > 0 || DescriptionOfWork.cloudNoneSelected;
+        }
+      }
+
+    }
     this.setCurrentFunctionsProperties();
     await this.setArchitecturalDesignProperties();
     this.checkDisplayWarning();
   }
 }
+
 </script>
