@@ -143,7 +143,7 @@ export default class DOWLandingPage extends Vue {
         (currEnv.current_environment_replicated_optimized === "NO") ||
         ((currEnv.statement_replicated_optimized !== "") &&
             ((currEnv.additional_growth === 'NO') || (currEnv.additional_growth === 'YES' &&
-                currEnv.anticipated_yearly_additional_capacity !== null)) &&
+                (currEnv.anticipated_yearly_additional_capacity as unknown as string) !== "")) &&
             ((currEnv.has_phased_approach === "NO") ||
                 (currEnv.has_phased_approach === 'YES' && currEnv.phased_approach_schedule !== "")))
     // label
@@ -227,8 +227,8 @@ export default class DOWLandingPage extends Vue {
     })
     if(allRequiredSectionsComplete &&
         currEnv.current_environment_replicated_optimized === "NO" &&
-        currEnv.needs_architectural_design_services === "NO") {
-      //TODO: need to add XaaS to the above if check. Not sure about the property
+        currEnv.needs_architectural_design_services === "NO" &&
+        DescriptionOfWork.XaaSNoneSelected) {
       this.displayWarning = true;
     }
   }
