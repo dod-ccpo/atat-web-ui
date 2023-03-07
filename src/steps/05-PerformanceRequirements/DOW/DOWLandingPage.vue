@@ -30,6 +30,25 @@
           </strong>
           areas.
         </p>
+        <div v-if="displayWarning" class="mb-4">
+          <ATATAlert
+              id="DOWLandingPageWarningAlert"
+              type="warning"
+              :showIcon="true">
+            <template v-slot:content>
+              <p class="mr-5 mb-0">
+                JWCC is not a support services contract, so you must define at
+                least one objective-based or cloud-specific requirement. Revisit
+                any of the starred performance areas to update your selection.
+                Once a requirement is added, all starred areas will be complete.
+                If you need assistance,
+                <a href="https://community.hacc.mil/s/contact" target="_blank">
+                  contact Customer Support
+                </a>.
+              </p>
+            </template>
+          </ATATAlert>
+        </div>
       </v-col>
     </v-row>
     <DOWCard 
@@ -48,16 +67,21 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import { DOWLandingPageCard } from "types/Global";
+import {ClassificationLevelDTO} from "@/api/models";
+import classificationRequirements from "@/store/classificationRequirements";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
+    ATATAlert,
     ATATSVGIcon,
     DOWCard,
   }
 })
 
 export default class DOWLandingPage extends Vue {
-  
+  displayWarning = false;
+
   public requirementSections: DOWLandingPageCard[] = [
     {
       title: "Your Current Functions",
@@ -69,7 +93,7 @@ export default class DOWLandingPage extends Vue {
       defineRequirements: true,
       section: "ReplicateOptimize",
       visible: this.doesCurrentEnvExist,
-      isComplete: this.isCurrentFunctionsComplete()
+      isComplete: false
     },
     {
       title: "Architectural Design Solution",
@@ -80,7 +104,7 @@ export default class DOWLandingPage extends Vue {
       defineRequirements: true,
       section: "ArchitecturalDesign",
       visible: true,
-      isComplete: true
+      isComplete: false
     },
     {
       title: "Anything as a Service (XaaS)",
@@ -112,26 +136,121 @@ export default class DOWLandingPage extends Vue {
   }
 
   /**
+   * Sets the 'label' and 'isComplete' properties of the optimize/replicate section.
+   *
+   * Label gets built using the classification level options that the user selects. Default label
+   * is left as is, if no levels are selected
+   *
    * Current functions are complete, if all the below are true;
    * 1. If the user chooses NOT to optimize or replicate
-   * 2. AND If the user chooses to optimize or replicate AND
+   * 2. If the user chooses to optimize or replicate AND
    *      chooses (NO) or (YES for additional growth and enters anticipated capacity)
-   * 3. AND If the user chooses to optimize or replicate AND
+   * 3. If the user chooses to optimize or replicate AND
    *      chooses (NO) or (YES for phased approach and enters approach schedule)
    */
-  isCurrentFunctionsComplete(): boolean {
+  setCurrentFunctionsProperties(): void {
     const currEnv = CurrentEnvironment.currentEnvironment;
-    return (currEnv.current_environment_replicated_optimized === "NO") ||
+    // is complete check
+    const reqSectionIndex =this.requirementSections
+      .findIndex(reqSection => reqSection.section === "ReplicateOptimize")
+    this.requirementSections[reqSectionIndex].isComplete =
+        (currEnv.current_environment_replicated_optimized === "NO") ||
         ((currEnv.statement_replicated_optimized !== "") &&
             ((currEnv.additional_growth === 'NO') || (currEnv.additional_growth === 'YES' &&
                 currEnv.anticipated_yearly_additional_capacity !== null)) &&
             ((currEnv.has_phased_approach === "NO") ||
                 (currEnv.has_phased_approach === 'YES' && currEnv.phased_approach_schedule !== "")))
+    // label
+    let label = null;
+    if (currEnv.current_environment_replicated_optimized === "YES_REPLICATE") {
+      label = "Replicate (lift and shift) using JWCC offerings";
+    } else if (currEnv.current_environment_replicated_optimized === "YES_OPTIMIZE") {
+      label = "Optimize (improve/modernize) using JWCC offerings";
+    } else if (currEnv.current_environment_replicated_optimized === "NO") {
+      label = "No requirements";
+    }
+    if (label !== null) { // only set the label if the user had selected one of the options
+      this.requirementSections[reqSectionIndex].label = label;
+    }
   }
 
-  
+  /**
+   * Sets the 'label' and 'isComplete' properties of the architectural section.
+   *
+   * Label gets built using the classification level options that the user selects. Default label
+   * is left as is, if no levels are selected
+   *
+   * Architectural design solution is complete, if all the below are true;
+   * 1. If the user does not need an architectural solution.
+   * 2. If the user needs an architectural solution AND
+   *      provides a detailed statement.
+   * 3. If the user needs an architectural solution AND
+   *      identifies at least one classification level that needs a solution.
+   */
+  async setArchitecturalDesignProperties(): Promise<void> {
+    const currEnv = CurrentEnvironment.currentEnvironment;
+    const currEnvArchNeeds = await CurrentEnvironment.getCurrentEnvironmentArchitecturalNeeds();
+    // is complete check
+    const reqSectionIndex =this.requirementSections
+      .findIndex(reqSection => reqSection.section === "ArchitecturalDesign")
+    this.requirementSections[reqSectionIndex].isComplete =
+        (currEnv.needs_architectural_design_services === "NO") ||
+        ((currEnvArchNeeds.statement?.trim().length > 0) &&
+            (currEnvArchNeeds.data_classification_levels?.length > 0))
+    // label
+    let label = "";
+    if(currEnvArchNeeds.data_classification_levels?.length > 0 ) {
+      const classificationLevels = await classificationRequirements
+        .getAllClassificationLevels();
+      label = "Required for ";
+      const selectedLevels = currEnvArchNeeds.data_classification_levels as unknown as string[];
+      selectedLevels.forEach((selectedLabel, index) => {
+        const selectedClasslevelObj = classificationLevels
+          .find(classificationLevel =>
+            classificationLevel.sys_id === selectedLabel) as ClassificationLevelDTO;
+        label = label + selectedClasslevelObj.display
+        if ((selectedLevels.length > 1) && (index === selectedLevels.length - 2)) {
+          label = label + " and ";
+        } else if (index < selectedLevels.length - 1) {
+          label = label + ", ";
+        }
+      })
+      label = label + (selectedLevels.length > 1 ? " environments" : " environment");
+    } else if (currEnv.needs_architectural_design_services === "NO") {
+      label = "No requirements";
+    }
+    if (label !== "") {
+      this.requirementSections[reqSectionIndex].label = label;
+    }
+  }
+
+  /**
+   * Checks all three sections and if the user explicitly selects no requirements across all the
+   * required sections. This check does not apply if the user does not start or completes one or
+   * more of the required sections.
+   */
+  checkDisplayWarning(): void {
+    const currEnv = CurrentEnvironment.currentEnvironment;
+    let allRequiredSectionsComplete = true;
+    ["ReplicateOptimize", "ArchitecturalDesign", "XaaS"].forEach(requiredSection => {
+      const reqSectionIndex =this.requirementSections
+        .findIndex(reqSection => reqSection.section === requiredSection);
+      if(allRequiredSectionsComplete && !this.requirementSections[reqSectionIndex].isComplete ) {
+        allRequiredSectionsComplete = false;
+      }
+    })
+    if(allRequiredSectionsComplete &&
+        currEnv.current_environment_replicated_optimized === "NO" &&
+        currEnv.needs_architectural_design_services === "NO") {
+      //TODO: need to add XaaS to the above if check. Not sure about the property
+      this.displayWarning = true;
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    this.setCurrentFunctionsProperties();
+    await this.setArchitecturalDesignProperties();
+    this.checkDisplayWarning();
+  }
 }
-
-
-
 </script>

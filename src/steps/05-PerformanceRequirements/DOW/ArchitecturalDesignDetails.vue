@@ -80,7 +80,7 @@ export default class ArchitectureDesign extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        CurrentEnvironment.setCurrentEnvironmentArchitecturalDesign(this.currentData);
+        await CurrentEnvironment.setCurrentEnvironmentArchitecturalDesign(this.currentData);
 
       }
     } catch (error) {
