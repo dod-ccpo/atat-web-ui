@@ -21,7 +21,7 @@
               :card="true"
               :width="180"
               :items="radioOptions"
-              :value.sync="currEnvDTO.needs_architectural_design_services"
+              :value.sync="architectureDesignNeeds"
               :rules="[$validators.required('Please select an option.')]"
              />
           </div>
@@ -36,12 +36,9 @@ import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
-import CurrentEnvironment,
-{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -50,7 +47,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
-  public currEnvDTO = defaultCurrentEnvironment;
+  public architectureDesignNeeds = ""
 
 
   public radioOptions: RadioButton[] = [
@@ -66,25 +63,23 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
     },
   ];
 
-  public get currentData(): Record<string, string> {
-    return {
-      needsArchitectureDesign: this.currEnvDTO.needs_architectural_design_services,
-    }
+  public get currentData(): string {
+    return this.architectureDesignNeeds
   };
 
-  public savedData: Record<string, string> = {
-    needsArchitectureDesign: ""
-  }
+  public savedData =""
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await CurrentEnvironment.getCurrentEnvironment();
-    if (storeData) {
-      this.currEnvDTO = _.cloneDeep(storeData);
-      this.savedData.needsArchitectureDesign = storeData.needs_architectural_design_services;
+    const storeData = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
+
+    if (storeData !== null ) {
+      debugger
+      this.savedData = storeData?"YES":"NO";
+      this.architectureDesignNeeds = this.savedData
     }
   }
 
@@ -94,12 +89,9 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      console.log(this.hasChanged())
       if (this.hasChanged()) {
-        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        const needsArchDesign = this.currEnvDTO.needs_architectural_design_services === "YES"
-          ? true : false;
-        await CurrentEnvironment.setCurrentEnvironmentHasArchitecturalDesign(needsArchDesign);
+        const needsArchDesign = this.architectureDesignNeeds === "YES";
+        await DescriptionOfWork.setDOWHasArchitecturalDesign(needsArchDesign);
       }
     } catch (error) {
       console.log(error);

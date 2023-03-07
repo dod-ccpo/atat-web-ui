@@ -263,8 +263,7 @@ export const ArchitecturalDesignResolver = (current: string): string => {
     : routeNames.DOWLandingPageDraft;
 }
 export const RequirementsPathResolver = (current: string, direction: string): string => {
-  const hasCurEnvArchDesignNeeds = CurrentEnvironment.currentEnvironment
-    .needs_architectural_design_services === 'YES';
+  const hasCurEnvArchDesignNeeds = DescriptionOfWork.DOWHasArchitecturalDesignNeeds === true;
   if (current === routeNames.ArchitecturalDesignDetails){
     return basePerformanceRequirementsPath;
   }
