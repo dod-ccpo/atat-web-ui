@@ -147,6 +147,17 @@ export class CurrentEnvironmentStore extends VuexModule {
     this.currentEnvironment = this.currentEnvironment
       ? Object.assign(this.currentEnvironment, value)
       : value;
+
+    if (this.currentEnvironment.current_environment_exists === "NO") {
+      this.currentEnvironment.current_environment_replicated_optimized = "";
+      // TODO - CREATE BUG TICKET - if user selects "No" after previously selecting "Yes"
+      // for the question "do you have a current environment, need to remove all data 
+      // from STORE and DATABASE associated with Current Environment, such as uploaded
+      // support docs, environment instances, DOW replicate/optimize response, etc.
+      // ALSO - if user had selected "Yes" for Current CONTRACT and returns to change
+      // to "No", need to clear out all Current Environment data from STORE and DATABASE
+    }
+
     storeDataToSession(
       this,
       this.sessionProperties,

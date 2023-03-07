@@ -4,13 +4,11 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Let’s work on your performance requirements
+            Let’s work on your {{ offeringTypeHeading }}
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              {{introSentence}}
-              Specify any categories that may apply to your acquisition below, and
-              we’ll walk through each selection to get more details.
+              {{ introText }}
               <a
                 role="button"
                 tabindex="0"
@@ -18,7 +16,7 @@
                 @keydown.enter="openSlideoutPanel"
                 @keydown.space="openSlideoutPanel"
               >
-                Learn more about categories.
+                Learn more about {{ learnMoreWhat }}.
               </a>
             </p>
           </div>
@@ -29,22 +27,9 @@
               :isPeriodsDataMissing="isPeriodsDataMissing"
             />
           </div>
-          <div class="copy-max-width">
-            <ATATRadioGroup 
-              id="ArchitectureOptions"
-              legend="Do you need an architectural design solution to address a known
-                problem or use-case?"
-              helpText="This is in addition to any known problems 
-                that you told us about for your current environment."
-              :width="180"
-              :items="radioOptions"
-              :value.sync="DOWNeedsArchitecturalDesign"
-              :rules="[$validators.required('Please select an option.')]"
-            />
-          </div>
-          <hr/>
-          <div class="copy-max-width">
+          <v-form ref="form" class="copy-max-width">
             <ATATCheckboxGroup
+              v-if="currentDOWSection === 'XaaS'"
               id="XaaSCheckboxes"
               :card="false"
               :items="xaasCheckboxItems"
@@ -60,6 +45,7 @@
             />
             <hr/>
             <ATATCheckboxGroup
+              v-if="currentDOWSection === 'CloudSupport'"
               id="CloudSupportCheckboxes"
               :card="false"
               :items="cloudSupportCheckboxItems"
@@ -67,13 +53,13 @@
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
-              :value.sync="cloudSupportSelectedOptions"
+              :value.sync="selectedCloudOptions"
               aria-describedby="CloudSupportLabel"
               class="copy-max-width"
               groupLabel="What type of services do you need in a cloud support package?"
               groupLabelId="CloudSupportLabel"
             />
-          </div>
+          </v-form>
         </v-col>
       </v-row>
     </v-container>
@@ -85,34 +71,36 @@ import { Component, Mixins } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import PerfReqLearnMore from "./PerfReqLearnMore.vue";
+import XaasLearnMore from "./XaasLearnMore.vue";
+import CloudSupportLearnMore from "./CloudSupportLearnMore.vue";
+
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
-import { Checkbox, RadioButton, SlideoutPanelContent } from "../../../../types/Global";
+import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
 import { SystemChoiceDTO } from "@/api/models";
 import { routeNames } from "../../../router/stepper";
-import _ from "lodash";
-// import router from "@/router";
 
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { getIdText } from "@/helpers";
 import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
-
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
     ATATCheckboxGroup,
     ATATRadioGroup,
-    PerfReqLearnMore,
-    DOWAlert
+    DOWAlert,
+    CloudSupportLearnMore,
+    XaasLearnMore,
   }
 })
 
 export default class RequirementCategories extends Mixins(SaveOnLeave) {
   public selectedXaasOptions: string[] = [];
-  public cloudSupportSelectedOptions: string[] = [];
+  public selectedCloudOptions: string[] = [];
   private cloudSupportCheckboxItems: Checkbox[] = [];
   public xaaSNoneValue = DescriptionOfWork.xaaSNoneValue;
   public cloudNoneValue = DescriptionOfWork.cloudNoneValue;
@@ -123,23 +111,21 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   private showAlert = false
   private routeNames = routeNames
   private goToSummary = false;
-  public DOWNeedsArchitecturalDesign = "";
 
-  public introSentence = `Through JWCC, you have the ability to procure many offerings for
-    Anything as a Service (XaaS) and Cloud Support Packages.`;
+  public currentDOWSection = "";
+  public needsReplicate = false;
+  public needsOptimize = false;
+  public needsReplicateOrOptimize = false;
+  public needsArchitecturalDesign = false;
+  public learnMoreWhat = "";
 
-  public radioOptions: RadioButton[] = [
-    {
-      id: "YesArchitecture",
-      value: "YES",
-      label: "Yes.",
-    },
-    {
-      id: "NoArchitecture",
-      value: "NO",
-      label: "No.",
-    },
-  ];
+  public get offeringTypeHeading(): string {
+    return this.currentDOWSection === "XaaS" 
+      ? "Anything as a Service (XaaS) requirements"
+      : "cloud support package";
+  }
+
+  public introText = "";
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -148,7 +134,47 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     };
   };
 
+  public setIntroText(): void {
+    if (this.currentDOWSection === "CloudSupport") {
+      this.introText = `Specify any support services below that may apply to your 
+        acquisition, and we’ll walk through each selection to get more details. If 
+        you don’t need a cloud support package, select “None of these apply to my 
+        acquisition.”`;
+    } else if (!this.needsReplicateOrOptimize && !this.needsArchitecturalDesign) {
+      this.introText = `Specify any XaaS categories below that may apply to your 
+        acquisition, and we’ll walk through each selection to get more details. 
+        If you don’t want to add specific offerings, select “None of these apply 
+        to my acquisition,” and you can define objective-based requirements within 
+        another performance area.`
+    } else {
+      const needStr = this.needsArchitecturalDesign && !this.needsReplicateOrOptimize
+        ? "requesting an architectural design"
+        : this.needsReplicate 
+          ? "replicating your current environment"
+          : "optimizing your current environment";
+      this.introText = `In addition to ${needStr}, you can select additional offerings 
+        from 11 different XaaS categories below. We’ll walk through each selection to 
+        gather more details. If you don’t want to add specific offerings in addition 
+        to those proposed by the CSPs, select “None of these apply to my acquisition.”`
+    }
+
+  }
+
   public async loadOnEnter(): Promise<void> {
+    this.currentDOWSection = DescriptionOfWork.currentDOWSection;
+    this.learnMoreWhat = this.currentDOWSection === "XaaS" 
+      ? "XaaS categories" : "support services";
+    this.needsReplicate = 
+      CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized 
+        === "YES_REPLICATE";
+    this.needsOptimize = 
+      CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized 
+        === "YES_OPTIMIZE";
+    this.needsReplicateOrOptimize = this.needsReplicate || this.needsOptimize;
+    this.needsArchitecturalDesign 
+      = CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
+    this.setIntroText();
+
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels()
     if (periods && periods.length <= 0) {
@@ -183,13 +209,17 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         this.cloudSupportCheckboxItems.push(checkboxItem);
       };
 
-      DescriptionOfWork.selectedServiceOfferingGroups.forEach((groupId) => {
-        if (cloudServiceCategories.indexOf(groupId.toLowerCase()) === -1) {
-          this.selectedXaasOptions.push(groupId)
-        } else {
-          this.cloudSupportSelectedOptions.push(groupId);
-        }
-      })
+      this.selectedXaasOptions = DescriptionOfWork.XaaSNoneSelected
+        ? [DescriptionOfWork.xaaSNoneValue]
+        : DescriptionOfWork.xaasServices.filter(
+          cat => DescriptionOfWork.selectedServiceOfferingGroups.includes(cat)
+        );
+
+      this.selectedCloudOptions = DescriptionOfWork.cloudNoneSelected
+        ? [DescriptionOfWork.cloudNoneValue]
+        : DescriptionOfWork.cloudSupportServices.filter(
+          cat => DescriptionOfWork.selectedServiceOfferingGroups.includes(cat)
+        );
     });
 
     const xaasNone: Checkbox = {
@@ -209,11 +239,11 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
-    if (DescriptionOfWork.DOWHasArchitecturalDesignNeeds) {
-      this.DOWNeedsArchitecturalDesign 
-        = DescriptionOfWork.DOWHasArchitecturalDesignNeeds ? "YES" : "NO"
-    }
-    this.goToSummary = DescriptionOfWork.DOWObject.length > 0;
+    const isXaaS = DescriptionOfWork.currentDOWSection === "XaaS";
+    const isCloud = DescriptionOfWork.currentDOWSection === "CloudSupport";
+
+    this.goToSummary = (isXaaS && DescriptionOfWork.hasXaasService) 
+      || (isCloud && DescriptionOfWork.hasCloudService);
     if (this.goToSummary) {
       DescriptionOfWork.setBackToContractDetails(true);
       this.$router.push({
@@ -221,26 +251,24 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       }).catch(() => console.log("error navigating to DOW Summary"));
     }    
     await this.loadOnEnter();
+    const slideoutComponent = this.currentDOWSection === "XaaS" 
+      ? XaasLearnMore : CloudSupportLearnMore;
     const slideoutPanelContent: SlideoutPanelContent = {
-      component: PerfReqLearnMore,
+      component: slideoutComponent,
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-
-
   };
 
   protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
     try {
       if (!this.goToSummary) {
         // save to store
         const selectedOfferingGroups
-          = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
+          = this.selectedXaasOptions.concat(this.selectedCloudOptions);
 
         await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferingGroups);
-        
-        const bool = this.DOWNeedsArchitecturalDesign === "YES" ? true : false;
-        await DescriptionOfWork.setDOWHasArchitecturalDesign(bool);
       }
     } catch (error) {
       throw new Error('error saving requirement data');

@@ -33,14 +33,7 @@ export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
 
   /* eslint-disable camelcase */
   public get currentData(): ArchitecturalDesignRequirementDTO {
-    return {
-      source: "DOW",
-      statement: this.DOWArchNeeds.statement,
-      applications_needing_design: this.DOWArchNeeds.applications_needing_design,
-      data_classification_levels: this.DOWArchNeeds.data_classification_levels,
-      external_factors: this.DOWArchNeeds.external_factors,
-      acquisition_package: this.DOWArchNeeds.acquisition_package
-    }
+    return this.DOWArchNeeds
   };
 
   public savedData: ArchitecturalDesignRequirementDTO = {
@@ -49,7 +42,7 @@ export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
     applications_needing_design: "",
     data_classification_levels: "",
     external_factors: "",
-    acquisition_package: ""
+    acquisition_package: AcquisitionPackage.packageId
   }
   /* eslint-enable camelcase */
 
@@ -58,6 +51,7 @@ export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    const data = await DescriptionOfWork.loadArchitecturalDesignByPackageId()
     const storeData = await DescriptionOfWork.getDOWArchitecturalNeeds();
     if (storeData) {
       this.DOWArchNeeds = _.cloneDeep(storeData);
@@ -75,8 +69,7 @@ export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);
-
+        await DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);
       }
     } catch (error) {
       console.log(error);

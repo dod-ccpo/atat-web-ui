@@ -77,7 +77,6 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
     const storeData = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
 
     if (storeData !== null ) {
-      debugger
       this.savedData = storeData?"YES":"NO";
       this.architectureDesignNeeds = this.savedData
     }

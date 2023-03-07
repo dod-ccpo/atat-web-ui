@@ -57,7 +57,7 @@ import CrossDomain from "@/steps/04-ContractDetails/CrossDomain.vue";
 
 // Step 5 - Performance Requirements
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
-import DOWLandingPageDraft from "../steps/05-PerformanceRequirements/DOW/DOWLandingPageDraft.vue";
+import DOWLandingPage from "../steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
 import ArchitecturalDesign from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
 import ArchitecturalDesignDetails
   from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDOW.vue";
@@ -138,6 +138,7 @@ import UnderReview from "@/steps/11-GeneratePackageDocuments/UnderReview.vue";
 import {
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
+  ArchitecturalDesignDetailsResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   ReplicateAndOptimizeResolver,
@@ -149,6 +150,7 @@ import {
   ServiceOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
+  COIRouteResolver,
   MIPRResolver,
   GInvoicingResolver,
   Upload7600Resolver,
@@ -197,9 +199,9 @@ export const routeNames = {
   CurrentContract: "Current_Contract",
   CurrentContractDetails: "Current_Contract_Details",
   CurrentEnvironment:"Current_Environment",
-  DOWLandingPageDraft: "DOW_Landing_Page_Test",
+  DOWLandingPage: "DOW_Landing_Page",
   RequirementCategories: "Requirement_Categories",
-  DOWArchitecturalDesign: "DOW_Architectural_Design",
+  // DOWArchitecturalDesign: "DOW_Architectural_Design",
   ServiceOfferings: "Service_Offerings",
   ServiceOfferingDetails: "Service_Offering_Details",
   OtherOfferingSummary: "Other_Offering_Summary",
@@ -654,9 +656,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Landing Page",
         path: "/",
         excludeFromMenu: true,
-        name: routeNames.DOWLandingPageDraft,
+        name: routeNames.DOWLandingPage,
         completePercentageWeight: 1,
-        component: DOWLandingPageDraft,
+        component: DOWLandingPage,
         continueButtonText: 'Wrap up this section',
         completed: false
       },
@@ -669,7 +671,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
         routeResolver:ReplicateAndOptimizeResolver,
-
       },
       {
         menuText: "Replicate Details",
@@ -699,29 +700,18 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ArchitecturalDesignDetails,
         completePercentageWeight: 5,
         completed: false,
-        routeResolver: PerformanceRequirementsPathResolver,
+        routeResolver: ArchitecturalDesignDetailsResolver,
       },
       {
         menuText: "Requirement Categories",
         path: "/requirement-categories",
         excludeFromMenu: false,
         name: routeNames.RequirementCategories,
-        stepCompleteOnEnter: routeNames.DOWLandingPageDraft,
+        stepCompleteOnEnter: routeNames.DOWLandingPage, // TODO - double-check when wired up
         completePercentageWeight: 1,
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
-      },
-      {
-        menuText: "Architectural Design Requirements DOW",
-        excludeFromMenu: true,
-        path: "architectural-design-requirements-dow",
-        name: routeNames.DOWArchitecturalDesign,
-        completePercentageWeight: 5,
-        completed: false,
-        // routeResolver: DOWArchitecturalDesignResolver,
-        component: ArchitectureDesignDOW,
-      },
-
+      },      
       {
         menuText: "Anticipated Users and Data Needs",
         excludeFromMenu: true,
@@ -814,6 +804,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.ConflictOfInterest,
         component: ConflictOfInterest,
+        routeResolver: COIRouteResolver,
       },
       {
         name: routeNames.PackagingPackingAndShipping,

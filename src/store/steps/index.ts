@@ -76,6 +76,16 @@ export class StepsStore extends VuexModule implements StepsState {
     public clearAltBackButtonText(): void {
       this.altBackButtonText = "";
     }
+    
+    @Action 
+    public clearAdditionalButtonText(): void {
+      this.doClearAdditionalButtonText();
+    }
+    @Mutation
+    public doClearAdditionalButtonText(): void {
+      this.altAdditionalButtonText = "";
+      this.additionalButtonId = "";
+    }
 
     @Action
     public setAdditionalButtonText(

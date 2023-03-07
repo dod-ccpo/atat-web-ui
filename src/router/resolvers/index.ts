@@ -15,7 +15,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
-import DOWLandingPageDraft from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPageDraft.vue";
+import DOWLandingPage from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -119,20 +119,17 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
-      ? routeNames.DOWSummary : routeNames.RequirementCategories
+    ? routeNames.DOWLandingPage
     : routeNames.CurrentContract;
 };
 export const ReplicateAndOptimizeResolver = (current: string): string => {
   //back from Architectural design
   if(current === routeNames.ArchitecturalDesign){
-    return routeNames.DOWLandingPageDraft
-  } else if(current === routeNames.ReplicateDetails){
-    return routeNames.ReplicateAndOptimize
+    return routeNames.DOWLandingPage
   }
-  return current === routeNames.DOWLandingPageDraft
+  return current === routeNames.DOWLandingPage || current === routeNames.ReplicateDetails
     ? routeNames.ReplicateAndOptimize
-    : routeNames.DOWLandingPageDraft;
+    : routeNames.DOWLandingPage;
 }
 
 export const ReplicateDetailsResolver = (current: string): string => {
@@ -141,10 +138,10 @@ export const ReplicateDetailsResolver = (current: string): string => {
   }
   //back from Architectural design
   if(current === routeNames.ArchitecturalDesign){
-    return routeNames.DOWLandingPageDraft
+    return routeNames.DOWLandingPage
   }
   return current === routeNames.ReplicateAndOptimize
-    ? routeNames.DOWLandingPageDraft
+    ? routeNames.DOWLandingPage
     : routeNames.ReplicateAndOptimize;
 }
 
@@ -155,8 +152,7 @@ export const CurrentEnvRouteResolver = (current: string): string => {
     return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment 
-    ? (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
-      ? routeNames.DOWSummary : routeNames.RequirementCategories
+    ? routeNames.DOWLandingPage
     : routeNames.CurrentEnvironment;
 };
 
@@ -223,8 +219,7 @@ export const A11yRequirementResolver = (current: string): string => {
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings;
 
 const basePerformanceRequirementsPath =  "performance-requirements";
-const currentArchitecturalDesignDetailsPath =
-  basePerformanceRequirementsPath + "/architectural-design-details";
+const requirementCategories = "/requirement-categories";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 const DOWSecurityRequitementsPath = "performance-requirements/dow-security-requirements";
 const otherServiceOfferingSummaryPath = "performance-requirements/service-offerings/other/summary";
@@ -252,28 +247,42 @@ export const ArchitecturalDesignResolver = (current: string): string => {
   //coming from replicate and optimize or replicate details
   if(current === routeNames.ReplicateAndOptimize ||
     current === routeNames.ReplicateDetails){
-    return routeNames.DOWLandingPageDraft
+    return routeNames.DOWLandingPage
   }
   //coming back from Architectural Design details
   if(current === routeNames.ArchitecturalDesignDetails){
     return routeNames.ArchitecturalDesign
   }
-  return current === routeNames.DOWLandingPageDraft
+  return current === routeNames.DOWLandingPage
     ? routeNames.ArchitecturalDesign
-    : routeNames.DOWLandingPageDraft;
+    : routeNames.DOWLandingPage;
 }
+
+export const ArchitecturalDesignDetailsResolver = (current: string): string => {
+  if (current === routeNames.RequirementCategories) {
+    return routeNames.DOWLandingPage
+  }
+  const hasCurEnvArchDesignNeeds = DescriptionOfWork
+    .DOWHasArchitecturalDesignNeeds === true;
+
+  return hasCurEnvArchDesignNeeds
+    ? routeNames.ArchitecturalDesignDetails
+    : routeNames.DOWLandingPage;
+}
+
 export const RequirementsPathResolver = (current: string, direction: string): string => {
-  const hasCurEnvArchDesignNeeds = DescriptionOfWork.DOWHasArchitecturalDesignNeeds === true;
-  if (current === routeNames.ArchitecturalDesignDetails){
-    return basePerformanceRequirementsPath;
+  if (current === routeNames.DOWLandingPage) {
+    if ((DescriptionOfWork.currentDOWSection === "XaaS"
+      && !DescriptionOfWork.hasXaasService)
+      || (DescriptionOfWork.currentDOWSection === "CloudSupport"
+      && !DescriptionOfWork.hasCloudService)
+    ) {
+      return requirementCategories;
+    } else {
+      return descriptionOfWorkSummaryPath;
+    }
   }
-  if (current === routeNames.ArchitecturalDesign && hasCurEnvArchDesignNeeds) {
-    return currentArchitecturalDesignDetailsPath;
-  }
-  if (current === routeNames.ArchitecturalDesign && !hasCurEnvArchDesignNeeds) {
-    return basePerformanceRequirementsPath;
-  }
-  
+
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
   if (current === routeNames.ServiceOfferings
@@ -300,7 +309,6 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   if(current === routeNames.ServiceOfferings && 
     !atBeginningOfOfferingGroups){ 
     const previousGroup = DescriptionOfWork.prevOfferingGroup;
-
     if (DescriptionOfWork.returnToDOWSummary) {
       return descriptionOfWorkSummaryPath;
     }
@@ -355,19 +363,25 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 /****************************************************************************/
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
-  const xaasServices = DescriptionOfWork.hasXaasService;
-  const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
-  if ((current === routeNames.DOWArchitecturalDesign 
-    || current === routeNames.RequirementCategories)
-    && xaasServices && !hasBeenVisited
+  if (
+    (DescriptionOfWork.XaaSNoneSelected && DescriptionOfWork.currentDOWSection === "XaaS") ||
+    (DescriptionOfWork.cloudNoneSelected && DescriptionOfWork.currentDOWSection === "CloudSupport")
+  ) {
+    return routeNames.DOWLandingPage;
+  }
+
+  if (current === routeNames.DOWSummary ||
+    current === routeNames.RequirementCategories
+    && DescriptionOfWork.currentDOWSection === "XaaS"
+    && DescriptionOfWork.hasXaasService
   ) {
     return routeNames.AnticipatedUserAndDataNeeds
   }
-  return current === routeNames.DOWArchitecturalDesign 
-    ? routeNames.ServiceOfferings
-    : routeNames.DOWArchitecturalDesign;
-}
 
+  return current === routeNames.RequirementCategories
+    ? routeNames.ServiceOfferings
+    : routeNames.RequirementCategories;
+}
 /****************************************************************************
 
 ██████   █████   ██████  ███████     ██████  
@@ -378,7 +392,7 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 
 /****************************************************************************/
 
-// This is the "simple 6" 2nd-level checkbox list page for non-"other offering" categories
+// This is the "simple 7" 2nd-level checkbox list page for non-"other offering" categories
 // ... the service offering checkbox list for a selected offering group...
 // AND the "other offering" form page
 
@@ -394,7 +408,10 @@ export const ServiceOfferingsPathResolver = (
   const currentGroupId = DescriptionOfWork.currentGroupId;
   const isOtherOffering = otherServiceOfferings.indexOf(currentGroupId) > -1;
 
-  const atLastNoneApply = currentGroupId === DescriptionOfWork.cloudNoneValue;
+  const atLastNoneApply = DescriptionOfWork.currentDOWSection === "XaaS"
+    ? currentGroupId === DescriptionOfWork.xaaSNoneValue
+    : currentGroupId === DescriptionOfWork.cloudNoneValue;
+
   const onlyNoneApplySelected = DOWObject.every((e) => {
     return e.serviceOfferingGroupId.indexOf("NONE") > -1;
   });
@@ -603,8 +620,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     if(DescriptionOfWork.prevOfferingGroup){
       const group = DescriptionOfWork.prevOfferingGroup
       DescriptionOfWork.setCurrentOfferingGroupId(group);
-    }
-    else{
+    } else {
       return descriptionOfWorkSummaryPath;
     }
   }
@@ -664,8 +680,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     return descriptionOfWorkSummaryPath;   
   }
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
-    // EJY OOF
-
     const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
     if (offering) {
       return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
@@ -773,7 +787,6 @@ export const DOWSecurityRequirementsPathResolver
 
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if(current === routeNames.ConflictOfInterest){
@@ -797,7 +810,6 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   }
 
   // coming from service offering details step
-  // EJY OR SECURITY REQ ?
   if(current === routeNames.ServiceOfferingDetails
     || current === routeNames.DOWSecurityRequirements
   ){
@@ -861,6 +873,16 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
 /****************************************************************************/
 /****************************************************************************/
+
+
+export const COIRouteResolver = (current: string): string => {
+  return current === routeNames.DOWSummary
+    ? routeNames.DOWLandingPage
+    : routeNames.ConflictOfInterest;
+}
+
+
+
 /****************************************************************************
 
 ██  ██████   ██████ ███████               ███████ ████████  █████  ██████  ████████ 
@@ -1302,6 +1324,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
 const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
+  ArchitecturalDesignDetailsResolver,
   CurrentContractDetailsRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
@@ -1326,6 +1349,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
+  COIRouteResolver,
   // DOWArchitecturalDesignResolver,
 };
 
