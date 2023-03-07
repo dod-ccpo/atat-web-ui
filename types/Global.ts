@@ -280,7 +280,6 @@ export interface DOWCardData {
   learnMore: string,
   route: string;
   defineRequirements: boolean,
-  visible: boolean,
   section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupport";
   isComplete: boolean,
 }
