@@ -321,6 +321,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   contractingShop = "";
   attachmentNames: string[] = []
+  anticipatedUsersAndDataNeedsVisited = false
   disableContinue = false
   fundingRequestType: string | null =  null;
 
@@ -384,6 +385,16 @@ export class AcquisitionPackageStore extends VuexModule {
   private doSetAttachmentNames(value: string[]): void {
     this.attachmentNames = value;
   }
+
+  @Action({rawError: false})
+  public async setAnticipatedUsersAndDataNeedsVisited(value: boolean): Promise<void> {
+    this.doSetAnticipatedUsersAndDataNeedsVisited(value);
+  }
+  @Mutation
+  private doSetAnticipatedUsersAndDataNeedsVisited(value: boolean): void {
+    this.anticipatedUsersAndDataNeedsVisited = value;
+  }
+
   @Action({rawError: false})
   public async setDisableContinue(value: boolean): Promise<void> {
     this.doSetDisableContinue(value);
