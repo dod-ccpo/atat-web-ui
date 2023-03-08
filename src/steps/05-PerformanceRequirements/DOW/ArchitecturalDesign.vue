@@ -99,9 +99,20 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    const emptyArchObject = {
+      statement: "",
+      applications_needing_design: "",
+      data_classification_levels: "",
+      external_factors: "",
+    }
     try {
       if (this.hasChanged()) {
-        await DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);
+        if(this.currentData.needs_architectural_design_services === "NO"){
+          let data = Object.assign(this.currentData, emptyArchObject)
+          await DescriptionOfWork.setDOWArchitecturalDesign(data);
+        }else{
+          await DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);
+        }
       }
     } catch (error) {
       console.log(error);
