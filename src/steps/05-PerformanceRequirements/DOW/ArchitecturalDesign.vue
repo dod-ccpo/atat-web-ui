@@ -21,7 +21,7 @@
               :card="true"
               :width="180"
               :items="radioOptions"
-              :value.sync="architectureDesignNeeds"
+              :value.sync="architectureDesignNeeds.needs_architectural_design_services"
               :rules="[$validators.required('Please select an option.')]"
              />
           </div>
@@ -38,7 +38,10 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import DescriptionOfWork from "@/store/descriptionOfWork";
+import DescriptionOfWork, { defaultDOWArchitecturalNeeds } from "@/store/descriptionOfWork";
+import { ArchitecturalDesignRequirementDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -47,7 +50,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 })
 
 export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
-  public architectureDesignNeeds = ""
+  public architectureDesignNeeds = defaultDOWArchitecturalNeeds;
 
 
   public radioOptions: RadioButton[] = [
@@ -63,34 +66,42 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
     },
   ];
 
-  public get currentData(): string {
+  public get currentData(): ArchitecturalDesignRequirementDTO {
     return this.architectureDesignNeeds
   };
 
-  public savedData =""
+  /* eslint-disable camelcase */
+  public savedData: ArchitecturalDesignRequirementDTO = {
+    source: "DOW",
+    statement: "",
+    applications_needing_design: "",
+    data_classification_levels: "",
+    external_factors: "",
+    acquisition_package: AcquisitionPackage.packageId,
+    needs_architectural_design_services:""
+  }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
-
-    if (storeData !== null ) {
-      this.savedData = storeData?"YES":"NO";
-      this.architectureDesignNeeds = this.savedData
+    const storeData = await DescriptionOfWork.getDOWArchitecturalNeeds();
+    if (storeData) {
+      this.savedData = _.cloneDeep(storeData);
+      this.architectureDesignNeeds = _.cloneDeep(storeData)
     }
   }
 
   private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
+    return hasChanges(this.currentData.needs_architectural_design_services,
+      this.savedData.needs_architectural_design_services);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        const needsArchDesign = this.architectureDesignNeeds === "YES";
-        await DescriptionOfWork.setDOWHasArchitecturalDesign(needsArchDesign);
+        await DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);
       }
     } catch (error) {
       console.log(error);

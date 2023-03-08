@@ -594,6 +594,7 @@ export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
   data_classification_levels: string | string[];
   external_factors: string;
   statement: string;
+  needs_architectural_design_services: string;
 }
 
 export interface TravelRequirementDTO extends BaseTableDTO {

@@ -263,7 +263,7 @@ export const ArchitecturalDesignDetailsResolver = (current: string): string => {
     return routeNames.DOWLandingPage
   }
   const hasCurEnvArchDesignNeeds = DescriptionOfWork
-    .DOWHasArchitecturalDesignNeeds === true;
+    .DOWArchitectureNeeds.needs_architectural_design_services === "YES";
 
   return hasCurEnvArchDesignNeeds
     ? routeNames.ArchitecturalDesignDetails

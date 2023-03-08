@@ -721,7 +721,8 @@ export const defaultDOWArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
   applications_needing_design: "",
   data_classification_levels: "",
   external_factors: "",
-  acquisition_package: ""
+  acquisition_package: "",
+  needs_architectural_design_services:""
 }
 
 const deleteOtherOfferingInstanceFromSNOW = (sysId: string, groupId: string) => {
@@ -2615,6 +2616,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
+    await DescriptionOfWork.loadArchitecturalDesignByPackageId()
     if (this.initialized) {
       return;
     }

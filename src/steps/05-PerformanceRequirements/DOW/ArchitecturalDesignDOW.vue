@@ -42,7 +42,8 @@ export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
     applications_needing_design: "",
     data_classification_levels: "",
     external_factors: "",
-    acquisition_package: AcquisitionPackage.packageId
+    acquisition_package: AcquisitionPackage.packageId,
+    needs_architectural_design_services:""
   }
   /* eslint-enable camelcase */
 
@@ -51,7 +52,6 @@ export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const data = await DescriptionOfWork.loadArchitecturalDesignByPackageId()
     const storeData = await DescriptionOfWork.getDOWArchitecturalNeeds();
     if (storeData) {
       this.DOWArchNeeds = _.cloneDeep(storeData);
