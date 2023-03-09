@@ -12,7 +12,7 @@
               select “No” below, and the instance details that you previously provided
               will serve only as background information within your Description of Work.
             </p>
-            <div v-if="hasCurrentEnv && !hasArchitecturalDesign && !hasXaaSOffering">
+            <div v-if="!emptyCheck && hasCurrentEnv && !hasArchitecturalDesign && !hasXaaSOffering">
               <ATATAlert
               id="ReplicateAndOptimizeAlert"
               type="warning"
@@ -132,8 +132,19 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
     return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
   }
 
+  public get emptyCheck():boolean {
+    if(CurrentEnvironment.currentEnvironment.current_environment_exists === ""){
+      return true
+    } else if(DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === ""){
+      return true
+    } else if(DescriptionOfWork.DOWObject.length === 0){
+      return true
+    }
+    return false
+  }
+
   public get hasArchitecturalDesign():boolean {
-    return CurrentEnvironment.currentEnvironment.needs_architectural_design_services === "YES"
+    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "YES"
   }
   public get hasXaaSOffering():boolean {
     if(DescriptionOfWork.DOWObject.length === 0)return false

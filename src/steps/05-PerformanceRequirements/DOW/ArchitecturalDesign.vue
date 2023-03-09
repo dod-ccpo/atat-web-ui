@@ -93,16 +93,22 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
   }
 
   public get hasXaaSOffering():boolean {
-    if(DescriptionOfWork.DOWObject.length === 0)return false
     return DescriptionOfWork.DOWObject[0].serviceOfferingGroupId !=="XaaS_NONE"
   }
-
+  public get isCurrentEnvironmentEmpty():boolean {
+    return CurrentEnvironment.currentEnvironment.current_environment_exists === ""
+  }
+  public get isXaaSOfferingEmpty():boolean {
+    return DescriptionOfWork.DOWObject.length === 0
+  }
   public noEnvNoXaaS():boolean {
     return !this.hasCurrentEnv && !this.hasXaaSOffering
+      && !this.isCurrentEnvironmentEmpty && !this.isXaaSOfferingEmpty
   }
 
   public hasEnvNoXaaS():boolean {
     return this.hasCurrentEnv && !this.hasXaaSOffering
+      && !this.isCurrentEnvironmentEmpty && !this.isXaaSOfferingEmpty
   }
   public radioOptions: RadioButton[] = [
     {

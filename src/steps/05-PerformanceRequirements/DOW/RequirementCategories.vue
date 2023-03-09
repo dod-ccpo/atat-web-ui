@@ -171,15 +171,28 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   }
 
   public get hasArchitecturalDesign():boolean {
-    return CurrentEnvironment.currentEnvironment.needs_architectural_design_services === "YES"
+    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "YES"
   }
 
+  public get isCurrentEnvEmpty(): boolean {
+    return CurrentEnvironment.currentEnvironment.current_environment_exists === ""
+  }
+
+  public get isReplicateAndOptimizeEmpty():boolean {
+    return CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized === ""
+  }
+  public get isArchDesignEmpty():boolean {
+    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === ""
+  }
   public noEnvNoArchitecturalDesign():boolean {
     return !this.hasCurrentEnv && !this.hasArchitecturalDesign
+      && !this.isArchDesignEmpty && !this.isCurrentEnvEmpty
   }
 
   public hasEnvOnly():boolean {
-    return this.hasCurrentEnv && !this.hasArchitecturalDesign && !this.hasReplicateAndOptimize
+    return this.hasCurrentEnv && !this.hasArchitecturalDesign
+      && !this.hasReplicateAndOptimize && !this.isArchDesignEmpty
+      && !this.isCurrentEnvEmpty && !this.isReplicateAndOptimizeEmpty
   }
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
