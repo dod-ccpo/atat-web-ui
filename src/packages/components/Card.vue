@@ -247,14 +247,22 @@ export default class Card extends Vue {
   }
 
   public packageTitleClick(status: string): void {
-    const isEditable = ['draft', 'waiting for task order'].some(
+    const isEditable = ['draft', 'waiting for signatures'].some(
       s => s === status.toLowerCase()
     )
-    
     if (isEditable){
-      this.cardMenuClick({action: 'Edit draft package', title: ""})  
+      this.cardMenuClick({action: 'Edit draft package', title: ""}) 
     }
-
+    if (status.toLowerCase() === "waiting for task order") {
+      this.$router.replace({
+        name: routeNames.UnderReview,
+        replace: true,
+        params: {
+          direction: "next"
+        }   
+      });
+      AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
+    }
   }
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
