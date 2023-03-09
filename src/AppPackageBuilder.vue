@@ -71,6 +71,7 @@ import { buildStepperData, routeNames } from "./router/stepper";
 import actionHandler from "./action-handlers/index";
 import AppSections from "./store/appSections";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import DescriptionOfWork from "./store/descriptionOfWork";
 
 @Component({
   components: {
@@ -208,6 +209,10 @@ export default class AppPackageBuilder extends Vue {
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
     this.continueButtonText = step.continueButtonText || "Continue";
+    if (step.stepName === routeNames.DOWSummary) {
+      this.continueButtonText = DescriptionOfWork.currentDOWSection === "XaaS"
+        ? "Wrap up XaaS requirements" : "Wrap up Cloud Support Package";
+    }
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }

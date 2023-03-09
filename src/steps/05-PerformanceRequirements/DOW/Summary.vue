@@ -3,13 +3,11 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          Your Performance Requirements
+          {{ heading }}
         </h1>
         <div class="copy-max-width">
           <p class="mb-10">
-            We need some more details for this section. You can add info now, or come back to make
-            edits at any time. When you are ready to wrap up this section, we will move on to
-            other contract considerations.
+            {{ introText }}
           </p>
         </div>
         <div class="container-max-width">
@@ -31,7 +29,7 @@
             <div class=" d-flex justify-space-between">
               <div>
                 <h3 class="mb-1" :id="getIdText(item.serviceOfferingGroupId) + '_Heading'">
-                  {{getFormattedNames(item.serviceOfferingGroupId)}}
+                  {{getFormattedName(item.serviceOfferingGroupId)}}
                 </h3>
                 <p 
                   class="mb-0 _selectedOfferings" 
@@ -142,7 +140,7 @@
 import { routeNames } from "../../../router/stepper"
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-
+import _ from "lodash";
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
@@ -174,6 +172,8 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public selectedServiceGroups: DOWServiceOfferingGroup[] = [];
   public showMore = false;
   public isDataComplete = true;
+  public heading = "";
+  public introText = "";
 
   public alternateGroupNames = [
     {
@@ -181,13 +181,13 @@ export default class Summary extends Mixins(SaveOnLeave) {
       label: "Machine Learning",
     },
     {
-      value: "EDGE_COMPUTING",
-      label: "Edge Computing and Tactical Edge",
-    },
-    {
       value: "IOT",
       label: "Internet of Things",
     },
+    {
+      value: "GENERAL_XAAS",
+      label: "General IaaS, PaaS, and SaaS"
+    }
   ];
 
   public tooltipText = [
@@ -278,14 +278,18 @@ export default class Summary extends Mixins(SaveOnLeave) {
         resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
-    })
-      .catch((error) => console.log("Routing error:" + error));
+    }).catch((error) => console.log("Routing error:" + error));
   };
 
-  public getFormattedNames(value: string): string {
-    let avlOfferings = DescriptionOfWork.serviceOfferingGroups;
-    const filtered = avlOfferings.filter(obj => obj.value == value);
-    return filtered.length > 0 ? filtered[0].label : "";
+  public getFormattedName(value: string): string {
+    const altNameIndex = this.alternateGroupNames.findIndex((altObj) => {
+      return altObj.value === value;
+    });
+    if (altNameIndex > -1) {
+      return this.alternateGroupNames[altNameIndex].label;
+    }
+    const filtered = this.allServiceGroups.find(obj => obj.value == value);
+    return filtered ? filtered.label : "";
   };
 
   public formattedOfferings(value: DOWServiceOffering[]): string {
@@ -331,11 +335,13 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    if (DescriptionOfWork.summaryBackToContractDetails) {
-      Steps.setAltBackButtonText("Back to Background");
-    } else {
-      Steps.clearAltBackButtonText();
-    }
+    const isXaaS = DescriptionOfWork.currentDOWSection === "XaaS";
+    this.heading = isXaaS ? "Your XaaS Summary" : "Your Cloud Support Package";
+    const introTextSubstr = isXaaS ? "XaaS requirements" : "support services";
+    this.introText = `You are all done with your ${introTextSubstr}, but you can 
+        come back at any time to edit details. When you are ready, we’ll review 
+        your performance requirements summary.`;
+
     DescriptionOfWork.setCurrentGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
@@ -352,8 +358,14 @@ export default class Summary extends Mixins(SaveOnLeave) {
       this.isClassificationDataMissing = true;
     };
 
-    const selectedOfferingGroups: string[] = DescriptionOfWork.selectedServiceOfferingGroups;
-    this.allServiceGroups = DescriptionOfWork.serviceOfferingGroups;
+    let selectedOfferingGroups: string[] = _.clone(DescriptionOfWork.selectedServiceOfferingGroups);
+    const sectionServices = isXaaS 
+      ? DescriptionOfWork.xaasServices : DescriptionOfWork.cloudSupportServices;
+    selectedOfferingGroups = selectedOfferingGroups.filter(id => sectionServices.includes(id));
+
+    this.allServiceGroups = _.cloneDeep(DescriptionOfWork.serviceOfferingGroups).filter(
+      obj => sectionServices.includes(obj.value));
+
     this.availableServiceGroups = this.allServiceGroups.filter((serviceGroup) => {
       return selectedOfferingGroups.indexOf(serviceGroup.value) === -1;
     });
@@ -367,7 +379,8 @@ export default class Summary extends Mixins(SaveOnLeave) {
     });
 
     this.selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
-      e => e.serviceOfferingGroupId.indexOf("NONE") === -1
+      e => e.serviceOfferingGroupId.indexOf("NONE") === -1 
+      && sectionServices.includes(e.serviceOfferingGroupId) 
     );
 
     this.setSelectedGroupsMissingData(this.selectedServiceGroups);
