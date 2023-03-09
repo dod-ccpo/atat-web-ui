@@ -21,7 +21,7 @@
               :card="true"
               :width="180"
               :items="radioOptions"
-              :value.sync="currEnvDTO.needs_architectural_design_services"
+              :value.sync="architectureDesignNeeds.needs_architectural_design_services"
               :rules="[$validators.required('Please select an option.')]"
              />
           </div>
@@ -36,12 +36,12 @@ import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
-import CurrentEnvironment,
-{ defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import DescriptionOfWork, { defaultDOWArchitecturalNeeds } from "@/store/descriptionOfWork";
+import { ArchitecturalDesignRequirementDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -50,7 +50,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
-  public currEnvDTO = defaultCurrentEnvironment;
+  public architectureDesignNeeds = defaultDOWArchitecturalNeeds;
 
 
   public radioOptions: RadioButton[] = [
@@ -66,14 +66,19 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
     },
   ];
 
-  public get currentData(): Record<string, string> {
-    return {
-      needsArchitectureDesign: this.currEnvDTO.needs_architectural_design_services,
-    }
+  public get currentData(): ArchitecturalDesignRequirementDTO {
+    return this.architectureDesignNeeds
   };
 
-  public savedData: Record<string, string> = {
-    needsArchitectureDesign: ""
+  /* eslint-disable camelcase */
+  public savedData: ArchitecturalDesignRequirementDTO = {
+    source: "DOW",
+    statement: "",
+    applications_needing_design: "",
+    data_classification_levels: "",
+    external_factors: "",
+    acquisition_package: AcquisitionPackage.packageId,
+    needs_architectural_design_services:""
   }
 
   public async mounted(): Promise<void> {
@@ -81,25 +86,33 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await CurrentEnvironment.getCurrentEnvironment();
+    const storeData = await DescriptionOfWork.getDOWArchitecturalNeeds();
     if (storeData) {
-      this.currEnvDTO = _.cloneDeep(storeData);
-      this.savedData.needsArchitectureDesign = storeData.needs_architectural_design_services;
+      this.savedData = _.cloneDeep(storeData);
+      this.architectureDesignNeeds = _.cloneDeep(storeData)
     }
   }
 
   private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
+    return hasChanges(this.currentData.needs_architectural_design_services,
+      this.savedData.needs_architectural_design_services);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    const emptyArchObject = {
+      statement: "",
+      applications_needing_design: "",
+      data_classification_levels: "",
+      external_factors: "",
+    }
     try {
-      console.log(this.hasChanged())
       if (this.hasChanged()) {
-        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
-        const needsArchDesign = this.currEnvDTO.needs_architectural_design_services === "YES"
-          ? true : false;
-        await CurrentEnvironment.setCurrentEnvironmentHasArchitecturalDesign(needsArchDesign);
+        if(this.currentData.needs_architectural_design_services === "NO"){
+          let data = Object.assign(this.currentData, emptyArchObject)
+          await DescriptionOfWork.setDOWArchitecturalDesign(data);
+        }else{
+          await DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);
+        }
       }
     } catch (error) {
       console.log(error);
