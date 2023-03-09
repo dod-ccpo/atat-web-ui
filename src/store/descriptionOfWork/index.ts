@@ -1199,7 +1199,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     let sysId = "";
     let classificationLevels = "";
 
-    debugger
     if(Array.isArray(value.data_classification_levels)){
       classificationLevels = value.data_classification_levels.join(",");
     } else {
