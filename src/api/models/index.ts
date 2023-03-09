@@ -591,9 +591,10 @@ export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
   acquisition_package: ReferenceColumn | string;
   source: "" | "CURRENT_ENVIRONMENT" | "DOW";
   applications_needing_design: string;
-  data_classification_levels: string;
+  data_classification_levels: string | string[];
   external_factors: string;
   statement: string;
+  needs_architectural_design_services: string;
 }
 
 export interface TravelRequirementDTO extends BaseTableDTO {

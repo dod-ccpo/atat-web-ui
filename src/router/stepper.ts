@@ -60,7 +60,7 @@ import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/In
 import DOWLandingPage from "../steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
 import ArchitecturalDesign from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
 import ArchitecturalDesignDetails
-  from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDetails.vue";
+  from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDOW.vue";
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
 import ArchitectureDesignDOW
