@@ -43,7 +43,8 @@
           @keydown.enter="setDOWSection"
           @keydown.space="setDOWSection"
         >
-          {{ cardData.isComplete ? 'View/Edit' : 'Start' }}
+          {{ cardData.isComplete ? 'View/Edit'
+            : cardData.buttonLabel ? cardData.buttonLabel :'Start' }}
         </v-btn>
 
       </div>

@@ -33,7 +33,7 @@
         <div v-if="displayWarning" class="mb-4">
           <ATATAlert
               id="DOWLandingPageWarningAlert"
-              type="warning"
+              type="error"
               :showIcon="true">
             <template v-slot:content>
               <p class="mr-5 mb-0">
@@ -43,8 +43,8 @@
                 Once a requirement is added, all starred areas will be complete.
                 If you need assistance,
                 <a href="https://community.hacc.mil/s/contact" target="_blank">
-                  contact Customer Support
-                </a>.
+                  contact Customer Support.
+                </a>
               </p>
             </template>
           </ATATAlert>
@@ -71,6 +71,7 @@ import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { DOWCardData } from "types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import {buildClassificationLabel} from "@/helpers";
 
 @Component({
   components: {
@@ -116,11 +117,6 @@ export default class DOWLandingPage extends Vue {
     }
   ];
 
-  get doesCurrentEnvExist(): boolean {
-    return CurrentEnvironment.currentEnvironment && 
-            CurrentEnvironment.currentEnvironment.current_environment_exists === "YES";
-  }
-
   /**
    * Sets the 'label' and 'isComplete' properties of the optimize/replicate section.
    *
@@ -139,13 +135,16 @@ export default class DOWLandingPage extends Vue {
     // is complete check
     const reqSectionIndex =this.requirementSections
       .findIndex(reqSection => reqSection.section === "ReplicateOptimize")
-    this.requirementSections[reqSectionIndex].isComplete =
-        (currEnv.current_environment_replicated_optimized === "NO") ||
-        ((currEnv.statement_replicated_optimized !== "") &&
+    if (reqSectionIndex !== -1) { // rep/opt won't display on landing page if there is no curr env.
+      this.requirementSections[reqSectionIndex].isComplete =
+          (currEnv.current_environment_replicated_optimized === "NO") ||
+          ((currEnv.statement_replicated_optimized !== "") &&
             ((currEnv.additional_growth === 'NO') || (currEnv.additional_growth === 'YES' &&
-                (currEnv.anticipated_yearly_additional_capacity as unknown as string) !== "")) &&
+              (currEnv.anticipated_yearly_additional_capacity !== null ||
+                  currEnv.anticipated_yearly_additional_capacity as unknown as string) !== "")) &&
             ((currEnv.has_phased_approach === "NO") ||
-                (currEnv.has_phased_approach === 'YES' && currEnv.phased_approach_schedule !== "")))
+              (currEnv.has_phased_approach === 'YES' && currEnv.phased_approach_schedule !== "")))
+    }
     // label
     let label = null;
     if (currEnv.current_environment_replicated_optimized === "YES_REPLICATE") {
@@ -194,7 +193,7 @@ export default class DOWLandingPage extends Vue {
         const selectedClasslevelObj = classificationLevels
           .find(classificationLevel =>
             classificationLevel.sys_id === selectedLabel) as ClassificationLevelDTO;
-        label = label + selectedClasslevelObj.display
+        label = label + buildClassificationLabel(selectedClasslevelObj, "short")
         if ((selectedLevels.length > 1) && (index === selectedLevels.length - 2)) {
           label = label + " and ";
         } else if (index < selectedLevels.length - 1) {
@@ -219,17 +218,32 @@ export default class DOWLandingPage extends Vue {
     const currEnv = CurrentEnvironment.currentEnvironment;
     let allRequiredSectionsComplete = true;
     ["ReplicateOptimize", "ArchitecturalDesign", "XaaS"].forEach(requiredSection => {
-      const reqSectionIndex =this.requirementSections
+      const reqSectionIndex = this.requirementSections
         .findIndex(reqSection => reqSection.section === requiredSection);
-      if(allRequiredSectionsComplete && !this.requirementSections[reqSectionIndex].isComplete ) {
-        allRequiredSectionsComplete = false;
+      if (reqSectionIndex !== -1) {
+        if(allRequiredSectionsComplete && !this.requirementSections[reqSectionIndex].isComplete ) {
+          allRequiredSectionsComplete = false;
+        }
       }
     })
+    const replicateOptimizeIndex = this.requirementSections
+      .findIndex(reqSection => reqSection.section === "ReplicateOptimize");
     if(allRequiredSectionsComplete &&
-        currEnv.current_environment_replicated_optimized === "NO" &&
+        (replicateOptimizeIndex === -1 ||
+            currEnv.current_environment_replicated_optimized === "NO") &&
         currEnv.needs_architectural_design_services === "NO" &&
         DescriptionOfWork.XaaSNoneSelected) {
       this.displayWarning = true;
+      // also need to mark all the sections as in-complete (or display purple color) and set
+      // DOWCard button text
+      ["ReplicateOptimize", "ArchitecturalDesign", "XaaS"].forEach(requiredSection => {
+        const reqSectionIndex = this.requirementSections
+          .findIndex(reqSection => reqSection.section === requiredSection);
+        if (reqSectionIndex !== -1) {
+          this.requirementSections[reqSectionIndex].isComplete = false;
+          this.requirementSections[reqSectionIndex].buttonLabel = "Revisit";
+        }
+      })
     }
   }
 

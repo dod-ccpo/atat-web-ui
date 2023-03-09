@@ -282,6 +282,7 @@ export interface DOWCardData {
   defineRequirements: boolean,
   section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupport";
   isComplete: boolean,
+  buttonLabel?: string
 }
 
 export interface DOWClassificationInstance {
