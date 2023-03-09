@@ -591,10 +591,10 @@ export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
   acquisition_package: ReferenceColumn | string;
   source: "" | "CURRENT_ENVIRONMENT" | "DOW";
   applications_needing_design: string;
-  data_classification_levels: string;
+  data_classification_levels: string | string[];
   external_factors: string;
   statement: string;
-  needs_architectural_design_services:string;
+  needs_architectural_design_services: string;
 }
 
 export interface TravelRequirementDTO extends BaseTableDTO {
@@ -860,6 +860,17 @@ export interface RegionsDTO extends BaseTableDTO {
   group: string
 }
 export interface PackageDocumentsSignedDTO extends BaseTableDTO {
+  sys_id?: string
+  sys_updated_by?: string
+  sys_created_on?: string
+  sys_mod_count?: string
+  acquisition_package?: string
+  sys_updated_on?: string
+  sys_tags?: string
+  sys_created_by?: string
+}
+
+export interface PackageDocumentsUnsignedDTO extends BaseTableDTO {
   sys_id?: string
   sys_updated_by?: string
   sys_created_on?: string

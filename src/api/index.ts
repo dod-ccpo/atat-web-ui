@@ -58,6 +58,7 @@ import {IgceEstimateApi} from "@/api/igceEstimate";
 import { travelRequirementApi } from "./travelRequirement";
 import { RegionsAPI } from "./regions";
 import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
+import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
 
 
 export const api = {
@@ -122,7 +123,8 @@ export const api = {
   travelRequirementTable: new travelRequirementApi(),
   trainingEstimateTable: new TrainingEstimateAPI(),
   regionsTable: new RegionsAPI(),
-  packageDocumentsSignedTable: new PackageDocumentsSignedAPI()
+  packageDocumentsSignedTable: new PackageDocumentsSignedAPI(),
+  packageDocumentsUnsignedTable: new PackageDocumentsUnsignedAPI(),
 }
 
 export default {

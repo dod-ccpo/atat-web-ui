@@ -2,7 +2,7 @@
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
 import {
-  ArchitecturalDesignRequirementDTO, 
+  ArchitecturalDesignRequirementDTO,
   CurrentEnvironmentDTO, 
   CurrentEnvironmentInstanceDTO, 
   ReferenceColumn

@@ -119,7 +119,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? routeNames.DOWLandingPage 
+    ? routeNames.DOWLandingPage
     : routeNames.CurrentContract;
 };
 export const ReplicateAndOptimizeResolver = (current: string): string => {
@@ -262,19 +262,19 @@ export const ArchitecturalDesignDetailsResolver = (current: string): string => {
   if (current === routeNames.RequirementCategories) {
     return routeNames.DOWLandingPage
   }
-  const hasCurEnvArchDesignNeeds = CurrentEnvironment.currentEnvironment
-    .needs_architectural_design_services === 'YES';
+  const hasCurEnvArchDesignNeeds = DescriptionOfWork
+    .DOWArchitectureNeeds.needs_architectural_design_services === "YES";
 
-  return hasCurEnvArchDesignNeeds 
-    ? routeNames.ArchitecturalDesignDetails 
+  return hasCurEnvArchDesignNeeds
+    ? routeNames.ArchitecturalDesignDetails
     : routeNames.DOWLandingPage;
 }
 
 export const RequirementsPathResolver = (current: string, direction: string): string => {
   if (current === routeNames.DOWLandingPage) {
-    if ((DescriptionOfWork.currentDOWSection === "XaaS" 
-      && !DescriptionOfWork.hasXaasService) 
-      || (DescriptionOfWork.currentDOWSection === "CloudSupport" 
+    if ((DescriptionOfWork.currentDOWSection === "XaaS"
+      && !DescriptionOfWork.hasXaasService)
+      || (DescriptionOfWork.currentDOWSection === "CloudSupport"
       && !DescriptionOfWork.hasCloudService)
     ) {
       return requirementCategories;
@@ -364,7 +364,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
   if (
-    (DescriptionOfWork.XaaSNoneSelected && DescriptionOfWork.currentDOWSection === "XaaS") || 
+    (DescriptionOfWork.XaaSNoneSelected && DescriptionOfWork.currentDOWSection === "XaaS") ||
     (DescriptionOfWork.cloudNoneSelected && DescriptionOfWork.currentDOWSection === "CloudSupport")
   ) {
     return routeNames.DOWLandingPage;
@@ -372,13 +372,13 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 
   if (current === routeNames.DOWSummary ||
     current === routeNames.RequirementCategories
-    && DescriptionOfWork.currentDOWSection === "XaaS" 
-    && DescriptionOfWork.hasXaasService 
+    && DescriptionOfWork.currentDOWSection === "XaaS"
+    && DescriptionOfWork.hasXaasService
   ) {
     return routeNames.AnticipatedUserAndDataNeeds
   }
-  
-  return current === routeNames.RequirementCategories 
+
+  return current === routeNames.RequirementCategories
     ? routeNames.ServiceOfferings
     : routeNames.RequirementCategories;
 }
@@ -409,7 +409,7 @@ export const ServiceOfferingsPathResolver = (
   const isOtherOffering = otherServiceOfferings.indexOf(currentGroupId) > -1;
 
   const atLastNoneApply = DescriptionOfWork.currentDOWSection === "XaaS"
-    ? currentGroupId === DescriptionOfWork.xaaSNoneValue 
+    ? currentGroupId === DescriptionOfWork.xaaSNoneValue
     : currentGroupId === DescriptionOfWork.cloudNoneValue;
 
   const onlyNoneApplySelected = DOWObject.every((e) => {
@@ -1182,7 +1182,7 @@ const currentEnvNeedsArchitectureDesign = (): boolean => {
   return CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
 }
 const DOWNeedsArchitectureDesign = (): boolean | null => {
-  return DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
+  return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "YES";
 }
 
 
