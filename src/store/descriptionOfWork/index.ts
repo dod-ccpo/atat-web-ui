@@ -1016,8 +1016,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     return securityReqs;
   }
 
-  public DOWHasArchitecturalDesignNeeds: boolean | null = null;
-  public DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;
+  public DOWArchitectureNeeds = _.cloneDeep(defaultDOWArchitecturalNeeds);
   travelSummaryInstances: TravelSummaryTableData[] = [];
 
   @Action({rawError: true})
@@ -1141,16 +1140,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async setDOWHasArchitecturalDesign(value: boolean): Promise<void> {
-    this.doSetDOWHasArchitecturalDesign(value);
-  }
-
-  @Mutation
-  public doSetDOWHasArchitecturalDesign(value: boolean): void {
-    this.DOWHasArchitecturalDesignNeeds = value;
-  }
-
-  @Action({rawError: true})
   public async setDOWArchitecturalDesign(value: ArchitecturalDesignRequirementDTO): Promise<void> {
     const sysId = await this.saveDOWArchitecturalDesign(value);
     value.sys_id = sysId;
@@ -1198,7 +1187,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const packageId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
     let sysId = "";
     let classificationLevels = "";
-
     if(Array.isArray(value.data_classification_levels)){
       classificationLevels = value.data_classification_levels.join(",");
     } else {
@@ -2615,7 +2603,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-    await DescriptionOfWork.loadArchitecturalDesignByPackageId()
     if (this.initialized) {
       return;
     }
@@ -2641,6 +2628,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       }
     }
     this.checkServiceOfferingTypesSelected();
+    await DescriptionOfWork.saveDOWArchitecturalDesign(this.DOWArchitectureNeeds)
+    await DescriptionOfWork.loadArchitecturalDesignByPackageId()
   }
 
   @Action({ rawError: true })
@@ -2761,8 +2750,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.otherOfferingInstancesTouched = {};
     this.confirmOtherOfferingDelete = false;
     this.confirmServiceOfferingDelete = false;
-    this.DOWHasArchitecturalDesignNeeds = null;
-    this.DOWArchitectureNeeds = defaultDOWArchitecturalNeeds;
+    this.DOWArchitectureNeeds = _.cloneDeep(defaultDOWArchitecturalNeeds);
   }
 }
 

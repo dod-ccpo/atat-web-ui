@@ -1182,7 +1182,7 @@ const currentEnvNeedsArchitectureDesign = (): boolean => {
   return CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
 }
 const DOWNeedsArchitectureDesign = (): boolean | null => {
-  return DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
+  return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "YES";
 }
 
 

@@ -915,10 +915,8 @@ export class AcquisitionPackageStore extends VuexModule {
         const packageDocumentsSigned = await api.packageDocumentsSignedTable
           .create({acquisition_package:acquisitionPackage.sys_id})
         this.setPackageDocumentsSigned(packageDocumentsSigned)
-        console.log(await this.getPackageDocumentsSigned())
       }else{
         this.setPackageDocumentsSigned(signedDocuments[0])
-        console.log(await this.getPackageDocumentsSigned())
       }
 
       this.setPackagePercentLoaded(90);
@@ -962,7 +960,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.setPackagePercentLoaded(5);
     await OrganiationData.initialize();
     this.setPackagePercentLoaded(10);
-    await DescriptionOfWork.initialize();
     this.setPackagePercentLoaded(15);
     await Attachments.initialize();
     this.setPackagePercentLoaded(20);
@@ -1029,6 +1026,7 @@ export class AcquisitionPackageStore extends VuexModule {
         console.log(`error creating acquisition package ${error}`);
       }
     }
+    await DescriptionOfWork.initialize();
     this.setPackagePercentLoaded(95);
     await Periods.initialize();
     this.setPackagePercentLoaded(100);
