@@ -100,7 +100,8 @@ export default class CardRequirement extends Vue {
   public checkMonthlyValue(): void {
     // eslint-disable-next-line camelcase
     this._cardData.unit_price = currencyStringToNumber(this.estimate);
-    if(this._cardData.unit_price){
+    if(this._cardData.unit_price !== null){
+      console.log(this._cardData.unit_price < 1)
       this.noMonthlyValue = this._cardData.unit_price < 1;
     }
   }
@@ -109,7 +110,7 @@ export default class CardRequirement extends Vue {
     this.description = this._cardData.description;
     this.type = "/" + this._cardData.unit.toLowerCase();
     this.moneyNumber = this._cardData.unit_price || 0;
-    this.estimate = await this.moneyNumber > 0 
+    this.estimate = await this.moneyNumber > 0
       ? toCurrencyString(this.moneyNumber, true) 
       : "" ;
   }
