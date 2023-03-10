@@ -173,27 +173,29 @@ export default class DOWLandingPage extends Vue {
    *      identifies at least one classification level that needs a solution.
    */
   async setArchitecturalDesignProperties(): Promise<void> {
-    const currEnv = CurrentEnvironment.currentEnvironment;
-    const currEnvArchNeeds = await CurrentEnvironment.getCurrentEnvironmentArchitecturalNeeds();
+    const dowArchNeeds = await DescriptionOfWork.getDOWArchitecturalNeeds();
     // is complete check
     const reqSectionIndex =this.requirementSections
       .findIndex(reqSection => reqSection.section === "ArchitecturalDesign")
     this.requirementSections[reqSectionIndex].isComplete =
-        (currEnv.needs_architectural_design_services === "NO") ||
-        ((currEnvArchNeeds.statement?.trim().length > 0) &&
-            (currEnvArchNeeds.data_classification_levels?.length > 0))
+        (dowArchNeeds.needs_architectural_design_services === "NO") ||
+        ((dowArchNeeds.statement?.trim().length > 0) &&
+            (dowArchNeeds.data_classification_levels?.length > 0))
     // label
     let label = "";
-    if(currEnvArchNeeds.data_classification_levels?.length > 0 ) {
+    if(dowArchNeeds.needs_architectural_design_services === "YES" &&
+        dowArchNeeds.data_classification_levels?.length > 0 ) {
       const classificationLevels = await classificationRequirements
         .getAllClassificationLevels();
       label = "Required for ";
-      const selectedLevels = currEnvArchNeeds.data_classification_levels as unknown as string[];
+      const selectedLevels = dowArchNeeds.data_classification_levels as unknown as string[];
       selectedLevels.forEach((selectedLabel, index) => {
         const selectedClasslevelObj = classificationLevels
           .find(classificationLevel =>
             classificationLevel.sys_id === selectedLabel) as ClassificationLevelDTO;
-        label = label + buildClassificationLabel(selectedClasslevelObj, "short")
+        if (selectedClasslevelObj) {
+          label = label + buildClassificationLabel(selectedClasslevelObj, "short")
+        }
         if ((selectedLevels.length > 1) && (index === selectedLevels.length - 2)) {
           label = label + " and ";
         } else if (index < selectedLevels.length - 1) {
@@ -201,7 +203,7 @@ export default class DOWLandingPage extends Vue {
         }
       })
       label = label + (selectedLevels.length > 1 ? " environments" : " environment");
-    } else if (currEnv.needs_architectural_design_services === "NO") {
+    } else if (dowArchNeeds.needs_architectural_design_services === "NO") {
       label = "No requirements";
     }
     if (label !== "") {
@@ -215,7 +217,6 @@ export default class DOWLandingPage extends Vue {
    * more of the required sections.
    */
   checkDisplayWarning(): void {
-    const currEnv = CurrentEnvironment.currentEnvironment;
     let allRequiredSectionsComplete = true;
     ["ReplicateOptimize", "ArchitecturalDesign", "XaaS"].forEach(requiredSection => {
       const reqSectionIndex = this.requirementSections
@@ -226,12 +227,14 @@ export default class DOWLandingPage extends Vue {
         }
       }
     })
+    const currEnv = CurrentEnvironment.currentEnvironment;
+    const dowArchNeeds = DescriptionOfWork.DOWArchitectureNeeds;
     const replicateOptimizeIndex = this.requirementSections
       .findIndex(reqSection => reqSection.section === "ReplicateOptimize");
     if(allRequiredSectionsComplete &&
-        (replicateOptimizeIndex === -1 ||
+        (replicateOptimizeIndex === -1 || // "-1" checks if rep/opt section is on landing page
             currEnv.current_environment_replicated_optimized === "NO") &&
-        currEnv.needs_architectural_design_services === "NO" &&
+        dowArchNeeds.needs_architectural_design_services === "NO" &&
         DescriptionOfWork.XaaSNoneSelected) {
       this.displayWarning = true;
       // also need to mark all the sections as in-complete (or display purple color) and set
@@ -244,6 +247,9 @@ export default class DOWLandingPage extends Vue {
           this.requirementSections[reqSectionIndex].buttonLabel = "Revisit";
         }
       })
+      DescriptionOfWork.setIsDOWComplete(false);
+    } else {
+      DescriptionOfWork.setIsDOWComplete(true);
     }
   }
 
