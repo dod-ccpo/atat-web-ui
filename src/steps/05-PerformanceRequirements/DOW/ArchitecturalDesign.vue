@@ -31,16 +31,16 @@
                     id="CompleteCurrentEnv"
                     :to="{ name: routeNames.ReplicateAndOptimize }"
                   >
-                  Your Current Functions
-                  </router-link>
+                  Your Current Functions</router-link>
                   or
                   </span>
-                  <router-link
+                  <a
                     id="CompleteXaaS"
-                    :to="{ name: routeNames.RequirementCategories }"
+                    @click="setDOWSection"
+                    @keydown.enter="setDOWSection"
+                    @keydown.space="setDOWSection"
                   >
-                  XaaS
-                  </router-link>
+                  XaaS</a>
                   to define performance requirements for your Description of Work.
                 </p>
               </template>
@@ -87,12 +87,24 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
   public routeNames = routeNames
   public architectureDesignNeeds = defaultDOWArchitecturalNeeds;
-
+  public async setDOWSection(): Promise<void> {
+    await DescriptionOfWork.setCurrentDOWSection("XaaS");
+    const routerObj = {
+      name: routeNames.RequirementCategories,
+      params: {
+        direction: "next",
+        resolver: "",
+      }
+    }
+    routerObj.params.resolver = "RequirementsPathResolver";
+    this.$router.push(routerObj)
+  }
   public get hasCurrentEnv(): boolean {
     return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
   }
 
   public get hasXaaSOffering():boolean {
+    if(DescriptionOfWork.DOWObject.length === 0)return false
     return DescriptionOfWork.DOWObject[0].serviceOfferingGroupId !=="XaaS_NONE"
   }
   public get isCurrentEnvironmentEmpty():boolean {

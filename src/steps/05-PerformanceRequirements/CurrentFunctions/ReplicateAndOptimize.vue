@@ -31,12 +31,13 @@
                   Architectural Design Solution
                   </router-link>
                   or
-                  <router-link
+                  <a
                     id="CompleteXaaS"
-                    :to="{ name: routeNames.RequirementCategories }"
+                    @click="setDOWSection"
+                    @keydown.enter="setDOWSection"
+                    @keydown.space="setDOWSection"
                   >
-                  XaaS
-                  </router-link>
+                    XaaS</a>
                   to define requirements for
                   your Description of Work.
                 </p>
@@ -127,7 +128,18 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
       label: "No. I don’t want to replicate or optimize my current functions."
     },
   ];
-
+  public async setDOWSection(): Promise<void> {
+    await DescriptionOfWork.setCurrentDOWSection("XaaS");
+    const routerObj = {
+      name: routeNames.RequirementCategories,
+      params: {
+        direction: "next",
+        resolver: "",
+      }
+    }
+    routerObj.params.resolver = "RequirementsPathResolver";
+    this.$router.push(routerObj)
+  }
   public get hasCurrentEnv(): boolean {
     return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
   }
