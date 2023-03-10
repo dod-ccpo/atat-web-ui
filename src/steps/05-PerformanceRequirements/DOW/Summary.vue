@@ -286,11 +286,11 @@ export default class Summary extends Mixins(SaveOnLeave) {
   }
   public async routeToAnticipatedUsersAndDataNeeds(): Promise<void> {
     DescriptionOfWork.setReturnToDOWSummary(true);
+    DescriptionOfWork.setFromAnticipatedUsersAndData(true);
     DescriptionOfWork.setReviewGroupFromSummary(true);
     this.$router.push({
       name: routeNames.AnticipatedUserAndDataNeeds,
       params: {
-        resolver: "AnticipatedUserAndDataNeedsResolver",
         direction: "next"
       },
     }).catch((error) => console.log("Routing error:" + error));
@@ -305,6 +305,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
     }
 
     DescriptionOfWork.setReturnToDOWSummary(true);
+    DescriptionOfWork.setFromAnticipatedUsersAndData(false);
 
     this.$router.push({
       name: "pathResolver",
@@ -379,6 +380,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
     DescriptionOfWork.setCurrentGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
+    DescriptionOfWork.setFromAnticipatedUsersAndData(false);
     DescriptionOfWork.setLastGroupRemoved(false);
 
     const periods = await Periods.loadPeriods();
