@@ -255,8 +255,6 @@ export default class DOWLandingPage extends Vue {
         }
       }
     })
-    console.log("Total: " + this.totalRequiredSections);
-    console.log("Total Complete: " + this.totalRequiredSectionnComplete);
     const currEnv = CurrentEnvironment.currentEnvironment;
     const dowArchNeeds = DescriptionOfWork.DOWArchitectureNeeds;
     const replicateOptimizeIndex = this.requirementSections
