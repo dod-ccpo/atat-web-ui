@@ -22,7 +22,7 @@
             :validFileFormats="validFileFormats"
             :attachmentServiceName="attachmentServiceName"
             :maxFileSizeInBytes="maxFileSizeInBytes"
-            :restrictedNames="restrictedNames"
+            :restrictedNames="generatedDocumentNames"
             id="SignedDocs"
             @delete="onRemoveAttachment"
             fileListTitle="Your files"
@@ -167,13 +167,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
     sys_created_by: ""
   };
   private filesNeeded:string[] = [];
-  public restrictedNames = [
-    "DescriptionOfWork.docx",
-    "IncrementalFundingPlan.docx",
-    "RequirementsChecklist.docx",
-    "IGCE.xlsx",
-    "EvaluationPlan.docx",
-  ]
+  public generatedDocumentNames: string[] = [];
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
   }
@@ -279,7 +273,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
           iFile.doesFileExist,
           iFile.SNOWError,
           iFile.statusCode,
-          this.restrictedNames
+          this.generatedDocumentNames
         )
       );
     });
@@ -287,7 +281,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
     return rulesArr;
   }
   public async loadOnEnter(): Promise<void> {
-
+    this.generatedDocumentNames = await AcquisitionPackage.generatedDocumentNames;
     this.packages.forEach(item =>{
       if(item.show && item.requiresSignature){
         this.needsSignatureLength++

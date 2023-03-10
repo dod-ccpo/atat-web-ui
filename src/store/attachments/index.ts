@@ -15,6 +15,7 @@ import { TABLENAME as CURRENT_ENVIRONMENT_TABLE } from "@/api/currentEnvironment
 import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
 import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
 import { TABLENAME as PACKAGE_DOCUMENTS_SIGNED_TABLE } from "@/api/packageDocumentsSigned";
+import { TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED_TABLE } from "@/api/packageDocumentsUnsigned";
 import { AttachmentDTO } from "@/api/models";
 import {
   AttachmentServiceCallbacks,
@@ -53,6 +54,7 @@ export class AttachmentStore extends VuexModule {
   public [FAIR_OPPORTUNITY_TABLE]: AttachmentDTO[] = [];
   public [ACQUISITION_PACKAGE_TABLE]: AttachmentDTO[] = [];
   public [PACKAGE_DOCUMENTS_SIGNED_TABLE]: AttachmentDTO[] = [];
+  public [PACKAGE_DOCUMENTS_UNSIGNED_TABLE]: AttachmentDTO[] = [];
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -209,6 +211,15 @@ export class AttachmentStore extends VuexModule {
         })
       }
     );
+    AttachmentServiceCallbacks.registerUploadCallBack(
+      PACKAGE_DOCUMENTS_UNSIGNED_TABLE,
+      (attachment) => {
+        this.addAttachment({
+          key: PACKAGE_DOCUMENTS_UNSIGNED_TABLE,
+          attachment
+        })
+      }
+    );
 
     const sessionRestored = retrieveSession(ATAT_ATTACHMENTS_KEY);
     if (sessionRestored) {
@@ -327,6 +338,7 @@ export class AttachmentStore extends VuexModule {
     this[FAIR_OPPORTUNITY_TABLE] = [];
     this[ACQUISITION_PACKAGE_TABLE] = [];
     this[PACKAGE_DOCUMENTS_SIGNED_TABLE] = [];
+    this[PACKAGE_DOCUMENTS_UNSIGNED_TABLE] = [];
   }
 }
 

@@ -65,7 +65,6 @@ import _ from "lodash";
   }
 })
 export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
-  private DOWHasArchDesignNeeds: boolean | null = false;
   private periods: PeriodDTO[] | null = [];
   private singlePeriodTooltipText = "This estimate will be applied to all performance periods.";
   private multiplePeriodTooltipText = `Customize a price estimate for 
@@ -111,9 +110,7 @@ export default class ArchitecturalDesignSolutions extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentDataPerfReq, this.savedPerfReqData);
   }
 
-  protected async loadOnEnter(): Promise<void> {
-    this.DOWHasArchDesignNeeds = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
-    
+  protected async loadOnEnter(): Promise<void> {    
     const store = await IGCEStore.getRequirementsCostEstimate();
     this.savedPerfReqData = _.cloneDeep(store.architectural_design_performance_requirements);
     this.perfReqOption = store.architectural_design_performance_requirements.option;

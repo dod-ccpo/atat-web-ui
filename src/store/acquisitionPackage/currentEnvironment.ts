@@ -2,7 +2,7 @@
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
 import {
-  ArchitecturalDesignRequirementDTO, 
+  ArchitecturalDesignRequirementDTO,
   CurrentEnvironmentDTO, 
   CurrentEnvironmentInstanceDTO, 
   ReferenceColumn
@@ -69,15 +69,6 @@ export const defaultCurrentEnvironmentInstance: CurrentEnvironmentInstanceDTO = 
   acquisition_package: "",
   instance_number: 0,
   instance_name: ""
-}
-
-export const defaultCurrentEnvironmentArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
-  source: "CURRENT_ENVIRONMENT",
-  statement: "",
-  applications_needing_design: "",
-  data_classification_levels: "",
-  external_factors: "",
-  acquisition_package: ""
 }
 
 /**
@@ -420,81 +411,6 @@ export class CurrentEnvironmentStore extends VuexModule {
     }
   }
 
-  public CurrentEnvironmentHasArchitecturalDesignNeeds: boolean | null = null;
-  public CurrentEnvironmentArchitectureNeeds = defaultCurrentEnvironmentArchitecturalNeeds;
-
-  @Action({rawError: true})
-  public async setCurrentEnvironmentHasArchitecturalDesign(value: boolean): Promise<void> {
-    this.doSetCurrentEnvironmentHasArchitecturalDesign(value);
-  }
-
-  @Mutation
-  public doSetCurrentEnvironmentHasArchitecturalDesign(value: boolean): void {
-    this.CurrentEnvironmentHasArchitecturalDesignNeeds = value;
-  }
-
-  @Action({rawError: true})
-  public async setCurrentEnvironmentArchitecturalDesign(
-    value: ArchitecturalDesignRequirementDTO): Promise<void> { 
-    const sysId = await this.saveCurrentEnvironmentArchitecturalDesign(value);
-    value.sys_id = sysId;
-    value.acquisition_package = AcquisitionPackage.acquisitionPackage?.sys_id as string;
-    this.doSetCurrentEnvironmentArchitecturalDesign(value);
-  }
-
-  @Mutation
-  public doSetCurrentEnvironmentArchitecturalDesign(
-    value: ArchitecturalDesignRequirementDTO): void {
-    this.CurrentEnvironmentArchitectureNeeds = this.CurrentEnvironmentArchitectureNeeds
-      ? Object.assign(this.CurrentEnvironmentArchitectureNeeds, value)
-      : value;
-  }
-
-  @Action({rawError: true})
-  public async saveCurrentEnvironmentArchitecturalDesign(
-    value: ArchitecturalDesignRequirementDTO): Promise<string> {
-
-    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
-    let sysId = "";
-    let classificationLevels = "";
-    
-
-    if(Array.isArray(value.data_classification_levels)){
-      classificationLevels = value.data_classification_levels.join(",");
-    } else {
-      classificationLevels = value.data_classification_levels;
-    }
-
-    if(value.sys_id){
-      await api.architecturalDesignRequirementTable.update(
-        value.sys_id,
-        {
-          ...value,
-          acquisition_package: packageId,
-          data_classification_levels: classificationLevels
-        }
-      );
-      sysId = value.sys_id as string;
-    } else {
-      const savedObject = await api.architecturalDesignRequirementTable.create(
-        {
-          ...value,
-          acquisition_package: packageId,
-          data_classification_levels: classificationLevels
-        }
-      );
-      sysId = savedObject.sys_id as string;
-    }
-
-    return sysId;
-  }
-
-  @Action({rawError: true})
-  public async getCurrentEnvironmentArchitecturalNeeds(): 
-    Promise<ArchitecturalDesignRequirementDTO> {
-    return this.CurrentEnvironmentArchitectureNeeds;
-  }
-
   @Action({rawError: true})
   public async reset(): Promise<void> {
     sessionStorage.removeItem(ATAT_CURRENT_ENVIRONMENT_KEY);
@@ -507,8 +423,6 @@ export class CurrentEnvironmentStore extends VuexModule {
     this.currentEnvironment = defaultCurrentEnvironment;
     this.currentEnvInstances = [];
     this.currentEnvInstanceNumber = 0;
-    this.CurrentEnvironmentHasArchitecturalDesignNeeds = null;
-    this.CurrentEnvironmentArchitectureNeeds = defaultCurrentEnvironmentArchitecturalNeeds;
   }
 }
 

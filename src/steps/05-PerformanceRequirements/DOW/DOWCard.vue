@@ -5,14 +5,14 @@
     outlined>
       <ATATSVGIcon 
         v-if="cardData.defineRequirements===true"
-        name="StarInTriangle" 
-        color="primary" 
+        name="StarInTriangle"
+        :color="setColor"
         width="49" 
         height="48" 
         class="define-requirements"
       />
       <div class="d-flex justify-center flex-column">
-        <ATATSVGIcon :name="cardData.icon" color="primary" width="64" height="64" />
+        <ATATSVGIcon :name="cardData.icon" :color="setColor" width="64" height="64" />
       </div>
       <div class="d-flex align-left justify-center flex-column ml-4">
         <h3 class="mb-1">
@@ -20,7 +20,6 @@
         </h3>
         <div>
           {{ cardData.label }}
-
           <a v-if="showLearnMore" 
             role="button" 
             :id="`LearnMore` + cardData.section" 
@@ -44,7 +43,8 @@
           @keydown.enter="setDOWSection"
           @keydown.space="setDOWSection"
         >
-          {{ cardData.isComplete ? 'View/Edit' : 'Start' }}
+          {{ cardData.isComplete ? 'View/Edit'
+            : cardData.buttonLabel ? cardData.buttonLabel :'Start' }}
         </v-btn>
 
       </div>
@@ -75,6 +75,10 @@ export default class DOWCard extends Vue {
 
   private setPanelComponent: any = {};
   private slideoutPanelContent = {} as SlideoutPanelContent;
+
+  get setColor(): string{
+    return this.cardData.isComplete ? "success" : "primary";
+  }
 
   public showLearnMore = false;
 

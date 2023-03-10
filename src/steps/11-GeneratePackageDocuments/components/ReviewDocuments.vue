@@ -142,6 +142,7 @@ import {TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFS
 import IGCE from "@/store/IGCE";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import { signedDocument } from "types/Global";
 
 
 @Component({
@@ -181,51 +182,8 @@ export default class ReviewDocuments extends Vue {
   private async update(): Promise<void> {
     this._isGenerating = true;
   }
-
-  private packageCheckList: Record<string,string|boolean|undefined>[] = []
-  private packages = [
-    {
-      itemName:"Requirements Checklist",
-      requiresSignature:true,
-      alertText:"Requires signatures",
-      show:true
-    },
-    {
-      itemName:"Independent Government Cost Estimate",
-      requiresSignature:true,
-      alertText:"Requires signatures",
-      show:true
-    },
-    {
-      itemName:"Incremental Funding Plan",
-      requiresSignature:true,
-      alertText:"Requires signatures",
-      show:this.incrementallyFunded === "YES"
-    },
-    {
-      itemName:"Justification and Approval (Template)",
-      requiresSignature:true,
-      alertText:"Complete and sign",
-      show:this.fairOpportunity !== "NO_NONE"
-    },
-    {
-      itemName:"Sole Source Market Research Report (Template)",
-      requiresSignature:true,
-      alertText:"Complete and sign",
-      show:this.fairOpportunity !== "NO_NONE"
-    },
-    {
-      itemName:"Description of Work",
-      requiresSignature:false,
-      show:true
-    },
-    {
-      itemName:"Evaluation Plan",
-      requiresSignature:false,
-      show:this.fairOpportunity === "NO_NONE"
-    },
-  ];
-
+  private packageCheckList: signedDocument[] = [];
+  
   private createAttachmentObject(attachment:any, step:string):void{
     const obj = {
       itemName:attachment.file_name,
@@ -242,16 +200,14 @@ export default class ReviewDocuments extends Vue {
       this.lastUpdatedString =
         `Last updated ${createDateStr(AcquisitionPackage.acquisitionPackage.sys_updated_on, true)}`
     }
-    this.packages.forEach(item => {
-      if(item.show){
-        this.packageCheckList.push(item)
-      }
-    })
-    this.packageCheckList.forEach(item =>{
-      if(item.requiresSignature){
-        this.needsSignatureLength++
-      }
-    })
+
+    this.packageCheckList = (await AcquisitionPackage.getSignedDocumentsList()).filter(
+      signedDoc => signedDoc.show === true
+    )
+
+    this.needsSignatureLength = 
+      this.packageCheckList.filter(signedDoc => signedDoc.requiresSignature).length;
+
     const currentEnv = await CurrentEnvironment.getCurrentEnvironment()
     const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
     const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
@@ -311,12 +267,12 @@ export default class ReviewDocuments extends Vue {
     await AcquisitionPackage.setAttachmentNames(docNames)
 
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
-    this.downloadPackageLink = await acquisitionPackage.setDownloadPackageLink();
+    this.downloadPackageLink = await acquisitionPackage.setDownloadPackageLink(false);
   }
 
   async mounted(): Promise<void>{
     await AcquisitionPackage.setDisableContinue(false)
-    await this.loadOnEnter()
+    await this.loadOnEnter();
   }
 
 }
