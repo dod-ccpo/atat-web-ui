@@ -3,6 +3,7 @@ node_modules
 /dist
 /dist_testing
 /coverage
+package-lock.json
 
 # Cypress 
 /log/**

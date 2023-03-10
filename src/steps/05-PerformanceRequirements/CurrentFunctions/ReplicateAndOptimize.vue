@@ -12,7 +12,37 @@
               select “No” below, and the instance details that you previously provided
               will serve only as background information within your Description of Work.
             </p>
-
+            <div v-if="showWarning">
+              <ATATAlert
+              id="ReplicateAndOptimizeAlert"
+              type="warning"
+              class="mb-10 mt-2"
+              :showIcon="true"
+            >
+              <template v-slot:content>
+                <p class="mr-5 mb-0 font-weight-400 font-size 16">
+                  Based on what you previously told us, we recommend selecting either
+                  “Replicate” or “Optimize” below. If you don’t have requirements
+                  related to your current functions, you’ll need to revisit
+                  <router-link
+                    id="CompleteArchitectural"
+                    :to="{ name: routeNames.ArchitecturalDesign }"
+                  >
+                  Architectural Design Solution</router-link>
+                  or
+                  <a
+                    id="CompleteXaaS"
+                    @click="setDOWSection"
+                    @keydown.enter="setDOWSection"
+                    @keydown.space="setDOWSection"
+                  >
+                    XaaS</a>
+                  to define requirements for
+                  your Description of Work.
+                </p>
+              </template>
+            </ATATAlert>
+            </div>
             <ATATRadioGroup
                 class="mb-5"
               id="ReplicateOptimizeOptions"
@@ -20,7 +50,7 @@
               :items="radioOptions"
               :value.sync="currEnvDTO.current_environment_replicated_optimized"
               :rules="[$validators.required('Please select an option.')]"
-             />
+            />
 
             <ATATExpandableLink aria-id="ROFAQ">
               <template v-slot:header>
@@ -63,19 +93,23 @@ import CurrentEnvironment,
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
+import { routeNames } from "@/router/stepper";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import ATATAlert from "@/components/ATATAlert.vue";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 
 @Component({
   components: {
     ATATExpandableLink,
-    ATATRadioGroup
+    ATATRadioGroup,
+    ATATAlert,
   }
 })
 
 export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
   public currEnvDTO = defaultCurrentEnvironment;
-
+  public routeNames = routeNames
   public radioOptions: RadioButton[] = [
     {
       id: "YesReplicate",
@@ -93,6 +127,33 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
       label: "No. I don’t want to replicate or optimize my current functions."
     },
   ];
+  public async setDOWSection(): Promise<void> {
+    await DescriptionOfWork.setCurrentDOWSection("XaaS");
+    const routerObj = {
+      name: routeNames.RequirementCategories,
+      params: {
+        direction: "next",
+        resolver: "",
+      }
+    }
+    routerObj.params.resolver = "RequirementsPathResolver";
+    this.$router.push(routerObj)
+  }
+
+  public get hasXaaSNoneApply():boolean {
+    return DescriptionOfWork.DOWObject.length === 1 
+      && DescriptionOfWork.DOWObject[0].serviceOfferingGroupId === "XaaS_NONE";
+  }
+
+  public get architecturalDesignIsNo():boolean {
+    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "NO"
+  }
+
+  public get showWarning(): boolean {
+    return this.hasXaaSNoneApply && this.architecturalDesignIsNo
+      && (this.savedData.replicatedOrOptimized === "" 
+      || this.savedData.replicatedOrOptimized === "NO");
+  }
 
   public get currentData(): Record<string, string> {
     return {

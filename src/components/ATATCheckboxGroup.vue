@@ -364,7 +364,6 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   public mounted(): void {
-    console.log(this.labelStyles)
     this.setEventListeners();
   }
 
