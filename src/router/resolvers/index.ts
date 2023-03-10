@@ -123,10 +123,6 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     : routeNames.CurrentContract;
 };
 export const ReplicateAndOptimizeResolver = (current: string): string => {
-  //back from Architectural design
-  if(current === routeNames.ArchitecturalDesign){
-    return routeNames.DOWLandingPage
-  }
   return current === routeNames.DOWLandingPage || current === routeNames.ReplicateDetails
     ? routeNames.ReplicateAndOptimize
     : routeNames.DOWLandingPage;
@@ -155,6 +151,12 @@ export const CurrentEnvRouteResolver = (current: string): string => {
     ? routeNames.DOWLandingPage
     : routeNames.CurrentEnvironment;
 };
+
+export const CurrentEnvironmentSummaryResolver = (current: string): string => {
+  return current === routeNames.ReplicateAndOptimize 
+    ? routeNames.DOWLandingPage
+    : routeNames.EnvironmentSummary;
+}
 
 export const PIIRecordResolver = (current: string): string => {
   const hasSystemOfRecord = AcquisitionPackage.sensitiveInformation?.pii_present === "YES";
@@ -785,17 +787,19 @@ export const DOWSecurityRequirementsPathResolver
 
 /****************************************************************************/
 
-
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
-  if(current === routeNames.ConflictOfInterest){
-    if(DescriptionOfWork.DOWObject.length > 0){
-      DescriptionOfWork.setReturnToDOWSummary(false);
-      return descriptionOfWorkSummaryPath
-    }
-    else{
-      return basePerformanceRequirementsPath;
+  if (current === routeNames.DOWLandingPage) {
+    const hasCurrentContract 
+      = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+    if (hasCurrentContract) {
+      return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" 
+        && CurrentEnvironment.currentEnvInstances.length > 0
+        ? "/current-contract/environment-summary"
+        : "/current-contract/current-environment"
+    } else {
+      return "/current-contract/current-contract"
     }
   }
 
@@ -873,16 +877,6 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
 /****************************************************************************/
 /****************************************************************************/
-
-
-export const COIRouteResolver = (current: string): string => {
-  return current === routeNames.DOWSummary
-    ? routeNames.DOWLandingPage
-    : routeNames.ConflictOfInterest;
-}
-
-
-
 /****************************************************************************
 
 ██  ██████   ██████ ███████               ███████ ████████  █████  ██████  ████████ 
@@ -1329,6 +1323,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   CurrentEnvRouteResolver,
+  CurrentEnvironmentSummaryResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
@@ -1349,8 +1344,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
-  COIRouteResolver,
-  // DOWArchitecturalDesignResolver,
 };
 
 // add path resolvers here 
