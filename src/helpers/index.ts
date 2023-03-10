@@ -156,9 +156,10 @@ export const sanitizeOfferingName = (offeringName: string): string => {
 export const toCurrencyString = (num: number, decimals?: boolean): string => {
   const d = decimals === false ? 0 : 2;
   if (!isNaN(num)) {
-    return num.toLocaleString(
-      undefined, {minimumFractionDigits: d, maximumFractionDigits: d}
-    );
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: d, 
+      maximumFractionDigits: d, 
+    }).format(num);
   }
   return "";
 }

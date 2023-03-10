@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Do you want to replicate or optimize your current environment within this acquisition?
+            Do you want to replicate or optimize your current functions using JWCC offerings?
           </h1>
           <div class="copy-max-width">
             <p id="IntroP" class="mb-8">
