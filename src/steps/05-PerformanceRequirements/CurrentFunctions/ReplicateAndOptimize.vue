@@ -133,11 +133,9 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
   }
 
   public get emptyCheck():boolean {
-    if(CurrentEnvironment.currentEnvironment.current_environment_exists === ""){
-      return true
-    } else if(DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === ""){
-      return true
-    } else if(DescriptionOfWork.DOWObject.length === 0){
+    if(CurrentEnvironment.currentEnvironment.current_environment_exists === ""
+    || DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === ""
+    || DescriptionOfWork.DOWObject.length === 0){
       return true
     }
     return false

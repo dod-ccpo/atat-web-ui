@@ -42,7 +42,7 @@
                     <span v-if="hasEnvOnly()">
                     <router-link
                       id="CompleteCurrentEnv"
-                      :to="{ name: routeNames.CurrentEnvironment }"
+                      :to="{ name: routeNames.ReplicateAndOptimize }"
                     >
                     Your Current Functions
                     </router-link>
@@ -167,7 +167,8 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   }
 
   public get hasReplicateAndOptimize():boolean {
-    return CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized !== "NO"
+    return CurrentEnvironment.currentEnvironment
+      .current_environment_replicated_optimized.indexOf("YES") > -1
   }
 
   public get hasArchitecturalDesign():boolean {

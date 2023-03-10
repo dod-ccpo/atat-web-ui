@@ -26,10 +26,10 @@
                 <p class="mr-5 mb-0 font-weight-400 font-size 16">
                   Based on what you previously told us, we recommend selecting “Yes” below.
                   If you don’t need an architectural design solution, you’ll need to revisit
-                  <span v-if="noEnvNoXaaS()">
+                  <span v-if="hasEnvNoXaaS()">
                     <router-link
                     id="CompleteCurrentEnv"
-                    :to="{ name: routeNames.CurrentEnvironment }"
+                    :to="{ name: routeNames.ReplicateAndOptimize }"
                   >
                   Your Current Functions
                   </router-link>
