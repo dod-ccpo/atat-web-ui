@@ -3,16 +3,16 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3"
-          v-if="totalRequiredSectionsComplete === 0">
+          v-if="totalSectionsComplete === 0">
           Let’s work on your performance requirements
         </h1>
         <h1 class="page-header mb-3"
-          v-if="(totalRequiredSections - totalRequiredSectionsComplete) !== totalRequiredSections">
+          v-if="(totalSections - totalSectionsComplete) !== totalSections">
           Your Performance Requirements Summary
         </h1>
         <div class="copy-max-width">
           <p class="mb-8"
-           v-if="totalRequiredSectionsComplete === 0">
+           v-if="totalSectionsComplete === 0">
             Through JWCC, you have the ability to set objective-based requirements, and/or 
             you can procure specific cloud resources, tools, and support services. We’ll walk 
             you through each performance area below to gather details for your Description of
@@ -20,15 +20,14 @@
             acquisition.
           </p>
           <p class="mb-8"
-           v-if="displayWarning || (totalRequiredSectionsComplete > 0 &&
-           totalRequiredSectionsComplete < totalRequiredSections)">
+           v-if="displayWarning || (totalSectionsComplete > 0 &&
+              totalSectionsComplete < totalSections)">
             We need some more details for this section. You can add info now, or come back to
             make edits at any time. When you are ready to wrap up this section, we’ll check for
             other contract considerations that may apply to your project.
           </p>
           <p class="mb-8"
-             v-if="!displayWarning &&
-             (totalRequiredSections === totalRequiredSectionsComplete)">
+             v-if="!displayWarning && (totalSections === totalSectionsComplete)">
             You are all done with this section, but you can come back at any time to edit
             details. When you are ready, we’ll check for other contract considerations that
             may apply to your project.
@@ -104,8 +103,8 @@ import {buildClassificationLabel} from "@/helpers";
 
 export default class DOWLandingPage extends Mixins(SaveOnLeave) {
   displayWarning = false;
-  totalRequiredSections = 0;
-  totalRequiredSectionsComplete = 0;
+  totalSections = 3;
+  totalSectionsComplete = 0;
 
   public requirementSections: DOWCardData[] = [
     {
@@ -240,16 +239,14 @@ export default class DOWLandingPage extends Mixins(SaveOnLeave) {
    * more of the required sections.
    */
   checkDisplayWarning(): void {
-    this.totalRequiredSections = 0;
-    this.totalRequiredSectionsComplete = 0;
+    this.totalSectionsComplete = 0;
     let allRequiredSectionsComplete = true;
     ["ReplicateOptimize", "ArchitecturalDesign", "XaaS"].forEach(requiredSection => {
       const reqSectionIndex = this.requirementSections
         .findIndex(reqSection => reqSection.section === requiredSection);
       if (reqSectionIndex !== -1) {
-        this.totalRequiredSections = this.totalRequiredSections + 1;
         if (this.requirementSections[reqSectionIndex].isComplete) {
-          this.totalRequiredSectionsComplete = this.totalRequiredSectionsComplete + 1;
+          this.totalSectionsComplete = this.totalSectionsComplete + 1;
         }
         if(allRequiredSectionsComplete && !this.requirementSections[reqSectionIndex].isComplete ) {
           allRequiredSectionsComplete = false;
@@ -280,14 +277,19 @@ export default class DOWLandingPage extends Mixins(SaveOnLeave) {
     } else {
       DescriptionOfWork.setIsDOWComplete(true);
     }
+    if (DescriptionOfWork.hasCloudService || DescriptionOfWork.cloudNoneSelected) {
+      this.totalSectionsComplete = this.totalSectionsComplete + 1;
+    }
   }
 
   public async mounted(): Promise<void> {
+
     Steps.setAltBackButtonText("Back to Step 4");
     if (CurrentEnvironment.currentEnvironment) {
       const currentEnvironmentExists
         = CurrentEnvironment.currentEnvironment.current_environment_exists === "YES";
       if (currentEnvironmentExists) {
+        this.totalSections = 4;
         const currentEnvCardData: DOWCardData = {
           title: "Your Current Functions",
           label: `Choose to either replicate or optimize your current environment using 
