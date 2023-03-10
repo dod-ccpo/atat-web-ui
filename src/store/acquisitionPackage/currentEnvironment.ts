@@ -410,45 +410,6 @@ export class CurrentEnvironmentStore extends VuexModule {
       throw new Error(`an error occurred saving current environment ${error}`);
     }
   }
-  @Action({rawError: true})
-  public async saveCurrentEnvironmentArchitecturalDesign(
-    value: ArchitecturalDesignRequirementDTO): Promise<string> {
-
-    const packageId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
-    let sysId = "";
-    let classificationLevels = "";
-    
-
-    if(Array.isArray(value.data_classification_levels)){
-      classificationLevels = value.data_classification_levels.join(",");
-    } else {
-      classificationLevels = value.data_classification_levels;
-    }
-
-    if(value.sys_id){
-      await api.architecturalDesignRequirementTable.update(
-        value.sys_id,
-        {
-          ...value,
-          acquisition_package: packageId,
-          data_classification_levels: classificationLevels
-        }
-      );
-      sysId = value.sys_id as string;
-    } else {
-      const savedObject = await api.architecturalDesignRequirementTable.create(
-        {
-          ...value,
-          acquisition_package: packageId,
-          data_classification_levels: classificationLevels
-        }
-      );
-      sysId = savedObject.sys_id as string;
-    }
-
-    return sysId;
-  }
-
 
   @Action({rawError: true})
   public async reset(): Promise<void> {
