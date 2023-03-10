@@ -785,6 +785,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   XaaSNoneSelected = false;
   cloudNoneSelected = false;
   returnToDOWSummary = false;
+  fromAnticipatedUsersAndData = false;
   reviewGroupFromSummary = false;
   addGroupFromSummary = false;
   isDOWComplete = false;
@@ -1852,10 +1853,18 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async getReturnToDOWSummary(): Promise<boolean> {
     return this.returnToDOWSummary;
   }
-
   @Mutation
   public setReturnToDOWSummary(bool: boolean): void {
     this.returnToDOWSummary = bool;
+  }
+    
+  public get getFromAnticipatedUsersAndData(): boolean {
+    return this.fromAnticipatedUsersAndData;
+  }
+
+  @Mutation
+  public setFromAnticipatedUsersAndData(bool: boolean): void {
+    this.fromAnticipatedUsersAndData = bool;
   }
 
   @Mutation
