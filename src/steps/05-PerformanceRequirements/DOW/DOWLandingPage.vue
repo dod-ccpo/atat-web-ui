@@ -3,16 +3,16 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3"
-          v-if="(totalRequiredSections - totalRequiredSectionnComplete) === totalRequiredSections">
+          v-if="totalRequiredSectionsComplete === 0">
           Let’s work on your performance requirements
         </h1>
         <h1 class="page-header mb-3"
-          v-if="(totalRequiredSections - totalRequiredSectionnComplete) !== totalRequiredSections">
+          v-if="(totalRequiredSections - totalRequiredSectionsComplete) !== totalRequiredSections">
           Your Performance Requirements Summary
         </h1>
         <div class="copy-max-width">
           <p class="mb-8"
-           v-if="(totalRequiredSections - totalRequiredSectionnComplete) === totalRequiredSections">
+           v-if="totalRequiredSectionsComplete === 0">
             Through JWCC, you have the ability to set objective-based requirements, and/or 
             you can procure specific cloud resources, tools, and support services. We’ll walk 
             you through each performance area below to gather details for your Description of
@@ -20,14 +20,15 @@
             acquisition.
           </p>
           <p class="mb-8"
-           v-if="displayWarning || (totalRequiredSections - totalRequiredSectionnComplete) > 0">
+           v-if="displayWarning || (totalRequiredSectionsComplete > 0 &&
+           totalRequiredSectionsComplete < totalRequiredSections)">
             We need some more details for this section. You can add info now, or come back to
             make edits at any time. When you are ready to wrap up this section, we’ll check for
             other contract considerations that may apply to your project.
           </p>
           <p class="mb-8"
              v-if="!displayWarning &&
-             (totalRequiredSections === totalRequiredSectionnComplete)">
+             (totalRequiredSections === totalRequiredSectionsComplete)">
             You are all done with this section, but you can come back at any time to edit
             details. When you are ready, we’ll check for other contract considerations that
             may apply to your project.
@@ -103,7 +104,7 @@ import {buildClassificationLabel} from "@/helpers";
 export default class DOWLandingPage extends Vue {
   displayWarning = false;
   totalRequiredSections = 0;
-  totalRequiredSectionnComplete = 0;
+  totalRequiredSectionsComplete = 0;
 
   public requirementSections: DOWCardData[] = [
     {
@@ -239,7 +240,7 @@ export default class DOWLandingPage extends Vue {
    */
   checkDisplayWarning(): void {
     this.totalRequiredSections = 0;
-    this.totalRequiredSectionnComplete = 0;
+    this.totalRequiredSectionsComplete = 0;
     let allRequiredSectionsComplete = true;
     ["ReplicateOptimize", "ArchitecturalDesign", "XaaS"].forEach(requiredSection => {
       const reqSectionIndex = this.requirementSections
@@ -247,7 +248,7 @@ export default class DOWLandingPage extends Vue {
       if (reqSectionIndex !== -1) {
         this.totalRequiredSections = this.totalRequiredSections + 1;
         if (this.requirementSections[reqSectionIndex].isComplete) {
-          this.totalRequiredSectionnComplete = this.totalRequiredSectionnComplete + 1;
+          this.totalRequiredSectionsComplete = this.totalRequiredSectionsComplete + 1;
         }
         if(allRequiredSectionsComplete && !this.requirementSections[reqSectionIndex].isComplete ) {
           allRequiredSectionsComplete = false;
