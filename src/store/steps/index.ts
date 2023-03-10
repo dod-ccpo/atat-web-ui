@@ -25,6 +25,8 @@ export class StepsStore extends VuexModule implements StepsState {
       stepCompleteOnLeave: undefined
     };
     
+    prevStepName = "";
+
     stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
 
     altBackButtonText = "";
@@ -56,6 +58,10 @@ export class StepsStore extends VuexModule implements StepsState {
           this.stepMap.set(step.stepCompleteOnLeave, leaveStep);
         }
       }
+    }
+    @Mutation
+    public setPrevStepName(pageName: string): void {
+      this.prevStepName = pageName;
     }
 
     @Action 

@@ -41,7 +41,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { routeNames } from "../../../router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
@@ -49,6 +48,8 @@ import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import { DOWCardData } from "types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import Steps from "@/store/steps";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -57,7 +58,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
   }
 })
 
-export default class DOWLandingPage extends Vue {
+export default class DOWLandingPage extends SaveOnLeave {
 
   public requirementSections: DOWCardData[] = [
     {
@@ -93,6 +94,7 @@ export default class DOWLandingPage extends Vue {
   ];
 
   public async mounted(): Promise<void> {
+    Steps.setAltBackButtonText("Back to Step 4");
     if (CurrentEnvironment.currentEnvironment) {
       const currentEnvironmentExists
         = CurrentEnvironment.currentEnvironment.current_environment_exists === "YES";
@@ -162,6 +164,17 @@ export default class DOWLandingPage extends Vue {
     };
 
   }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      Steps.clearAltBackButtonText();
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }  
+
+
 }
 
 </script>

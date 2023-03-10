@@ -65,6 +65,8 @@ import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
+import Steps from "@/store/steps";
+import { routeNames } from "@/router/stepper";
 
 @Component({
   components: {
@@ -105,6 +107,15 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
+    const comingFrom = Steps.prevStepName;
+    if (comingFrom !== routeNames.DOWLandingPage 
+      && comingFrom !== routeNames.ReplicateDetails
+      && comingFrom !== "routerResolver"
+    ) {
+      this.$router.push({
+        name: routeNames.DOWLandingPage,
+      }).catch(() => console.log("error navigating to DOW Landing Page"));      
+    }
     await this.loadOnEnter();
   }
 
