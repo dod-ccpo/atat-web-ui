@@ -794,7 +794,8 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
     const hasCurrentContract 
       = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
     if (hasCurrentContract) {
-      return CurrentEnvironment.currentEnvInstances.length > 0
+      return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" 
+        && CurrentEnvironment.currentEnvInstances.length > 0
         ? "/current-contract/environment-summary"
         : "/current-contract/current-environment"
     } else {

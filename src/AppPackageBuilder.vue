@@ -120,7 +120,7 @@ export default class AppPackageBuilder extends Vue {
   @Watch("$route")
   async onRouteChanged(newVal: Route, oldVal: Route): Promise<void> {
     if (oldVal.name !== "routeResolver") {
-      Steps.setPrevStepName(oldVal.name as string);
+      await Steps.setPrevStepName(oldVal.name as string);
     }
 
     const routeName = this.$route.name;

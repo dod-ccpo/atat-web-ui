@@ -59,9 +59,16 @@ export class StepsStore extends VuexModule implements StepsState {
         }
       }
     }
+    @Action
+    public async setPrevStepName(pageName: string): Promise<void> {
+      this.doSetPrevStepName(pageName);
+    }
     @Mutation
-    public setPrevStepName(pageName: string): void {
+    public async doSetPrevStepName(pageName: string): Promise<void> {
       this.prevStepName = pageName;
+    }
+    public get getPrevStepName(): string {
+      return this.prevStepName;
     }
 
     @Action 
