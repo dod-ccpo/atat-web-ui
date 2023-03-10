@@ -108,10 +108,7 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
 
   public async mounted(): Promise<void> {
     const comingFrom = Steps.prevStepName;
-    if (comingFrom !== routeNames.DOWLandingPage 
-      && comingFrom !== routeNames.ReplicateDetails
-      && comingFrom !== "routerResolver"
-    ) {
+    if (comingFrom !== routeNames.DOWLandingPage && comingFrom !== routeNames.ReplicateDetails) {
       this.$router.push({
         name: routeNames.DOWLandingPage,
       }).catch(() => console.log("error navigating to DOW Landing Page"));      

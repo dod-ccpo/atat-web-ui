@@ -151,7 +151,6 @@ import {
   ServiceOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
-  // COIRouteResolver,
   MIPRResolver,
   GInvoicingResolver,
   Upload7600Resolver,
@@ -804,7 +803,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.ConflictOfInterest,
         component: ConflictOfInterest,
-        // routeResolver: COIRouteResolver,
       },
       {
         name: routeNames.PackagingPackingAndShipping,

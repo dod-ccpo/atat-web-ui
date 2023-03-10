@@ -876,16 +876,6 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
 /****************************************************************************/
 /****************************************************************************/
-
-
-// export const COIRouteResolver = (current: string): string => {
-//   return current === routeNames.DOWSummary
-//     ? routeNames.DOWLandingPage
-//     : routeNames.ConflictOfInterest;
-// }
-
-
-
 /****************************************************************************
 
 ██  ██████   ██████ ███████               ███████ ████████  █████  ██████  ████████ 
@@ -1353,8 +1343,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
-  // COIRouteResolver,
-  // DOWArchitecturalDesignResolver,
 };
 
 // add path resolvers here 
