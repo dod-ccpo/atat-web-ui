@@ -90,7 +90,6 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 import CurrentEnvironment, 
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import { routeNames } from "@/router/stepper";
@@ -99,7 +98,6 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import Steps from "@/store/steps";
-import { routeNames } from "@/router/stepper";
 
 @Component({
   components: {
