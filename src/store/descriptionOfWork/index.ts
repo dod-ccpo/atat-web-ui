@@ -787,7 +787,15 @@ export class DescriptionOfWorkStore extends VuexModule {
   returnToDOWSummary = false;
   reviewGroupFromSummary = false;
   addGroupFromSummary = false;
-
+  isDOWComplete = false;
+  @Action
+  public async setIsDOWComplete(isComplete: boolean): Promise<void> {
+    this.doSetIsDOWComplete(isComplete);
+  }
+  @Mutation
+  public doSetIsDOWComplete(isComplete: boolean): void {
+    this.isDOWComplete = isComplete;
+  }
   currentDOWSection = "";
   @Action
   public async setCurrentDOWSection(section: string): Promise<void> {
