@@ -2768,6 +2768,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.confirmOtherOfferingDelete = false;
     this.confirmServiceOfferingDelete = false;
     this.DOWArchitectureNeeds = _.cloneDeep(defaultDOWArchitecturalNeeds);
+    this.XaaSNoneSelected = false;
+    this.cloudNoneSelected = false;
   }
 }
 
