@@ -404,6 +404,13 @@ export const ServiceOfferingsPathResolver = (
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
   DescriptionOfWork.setCurrentGroupRemoved(false);
+
+  if (DescriptionOfWork.returnToDOWSummary) {
+    DescriptionOfWork.setReturnToDOWSummary(false);
+    DescriptionOfWork.setLastGroupRemoved(false);
+    DescriptionOfWork.setCurrentGroupRemovedForNav(false);
+    return descriptionOfWorkSummaryPath;
+  }
   // if no options selected on category page, or if only "None apply" checkboxes checked, 
   // or if last group was removed, send to summary page
   const DOWObject = DescriptionOfWork.DOWObject;

@@ -19,7 +19,30 @@
           />
         </div>
         <div id="SelectedGroups">
+          <div v-if="selectedServiceGroups.length > 0">
+            <div class=" d-flex justify-space-between">
+              <div>
+                <h3 class="mb-1" id=" AnticipatedUsersAndDataNeeds_Heading">
+                  Anticipated Users And Data Needs
+                </h3>
+              </div>
+              <div class="d-flex align-start">
+                <div class="d-flex align-center">
+                  <v-btn
+                    width="111"
+                    class="secondary"
+                    @click="routeToAnticipatedUsersAndDataNeeds()"
+                    @keydown.enter="routeToAnticipatedUsersAndDataNeeds()"
+                    @keydown.space="routeToAnticipatedUsersAndDataNeeds()"
+                  >
+                    View/Edit
+                  </v-btn>
 
+                </div>
+              </div>
+            </div>
+            <hr/>
+          </div>
           <div 
             class="container-max-width"
             :id="getIdText(item.serviceOfferingGroupId )+ '_Wrapper'"
@@ -174,6 +197,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public isDataComplete = true;
   public heading = "";
   public introText = "";
+  public showAnticipatedUserAndDataNeeds = false;
 
   public alternateGroupNames = [
     {
@@ -260,7 +284,17 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public getIdText(val: string): string {
     return getIdText(toTitleCase(val));
   }
-
+  public async routeToAnticipatedUsersAndDataNeeds(): Promise<void> {
+    DescriptionOfWork.setReturnToDOWSummary(true);
+    DescriptionOfWork.setReviewGroupFromSummary(true);
+    this.$router.push({
+      name: routeNames.AnticipatedUserAndDataNeeds,
+      params: {
+        resolver: "AnticipatedUserAndDataNeedsResolver",
+        direction: "next"
+      },
+    }).catch((error) => console.log("Routing error:" + error));
+  }
   public async routeToSelection(groupID: string, addToStore:boolean ): Promise<void> {
     DescriptionOfWork.setCurrentOfferingGroupId(groupID);
     if (addToStore){
