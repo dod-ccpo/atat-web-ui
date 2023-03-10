@@ -404,9 +404,10 @@ export const ServiceOfferingsPathResolver = (
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
   DescriptionOfWork.setCurrentGroupRemoved(false);
-
-  if (DescriptionOfWork.returnToDOWSummary) {
+  
+  if (DescriptionOfWork.returnToDOWSummary && DescriptionOfWork.getFromAnticipatedUsersAndData) {
     DescriptionOfWork.setReturnToDOWSummary(false);
+    DescriptionOfWork.setFromAnticipatedUsersAndData(false);
     DescriptionOfWork.setLastGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false);
     return descriptionOfWorkSummaryPath;
