@@ -136,6 +136,7 @@ import AppSections from "@/store/appSections";
 import CurrentUserStore from "@/store/user";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Toast from "@/store/toast";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components:{
     ATATSVGIcon,
@@ -246,7 +247,7 @@ export default class Card extends Vue {
     this.$emit("updateStatus", this.cardData.sys_id, newStatus);
   }
 
-  public packageTitleClick(status: string): void {
+  public async packageTitleClick(status: string): Promise<void> {
     const isEditable = ['draft', 'waiting for signatures'].some(
       s => s === status.toLowerCase()
     )
@@ -261,6 +262,8 @@ export default class Card extends Vue {
           direction: "next"
         }   
       });
+      await AcquisitionPackage.setPackageId(this.cardData.sys_id as string);
+      AcquisitionPackage.setProjectTitle(this.modifiedData.projectOverview);
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
     }
   }
