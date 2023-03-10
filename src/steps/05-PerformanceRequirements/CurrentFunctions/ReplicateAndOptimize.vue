@@ -28,8 +28,7 @@
                     id="CompleteArchitectural"
                     :to="{ name: routeNames.ArchitecturalDesign }"
                   >
-                  Architectural Design Solution
-                  </router-link>
+                  Architectural Design Solution</router-link>
                   or
                   <a
                     id="CompleteXaaS"

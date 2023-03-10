@@ -110,6 +110,15 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
   public get isCurrentEnvironmentEmpty():boolean {
     return CurrentEnvironment.currentEnvironment.current_environment_exists === ""
   }
+
+  public get hasReplicateAndOptimize():boolean {
+    return CurrentEnvironment.currentEnvironment
+      .current_environment_replicated_optimized.indexOf("YES") > -1
+  }
+  public get replicateAndOptimizeIsNo():boolean {
+    return CurrentEnvironment.currentEnvironment
+      .current_environment_replicated_optimized === "NO"
+  }
   public get isXaaSOfferingEmpty():boolean {
     return DescriptionOfWork.DOWObject.length === 0
   }
@@ -121,6 +130,7 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
   public hasEnvNoXaaS():boolean {
     return this.hasCurrentEnv && !this.hasXaaSOffering
       && !this.isCurrentEnvironmentEmpty && !this.isXaaSOfferingEmpty
+      && this.replicateAndOptimizeIsNo
   }
   public radioOptions: RadioButton[] = [
     {

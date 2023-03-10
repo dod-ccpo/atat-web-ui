@@ -44,16 +44,14 @@
                       id="CompleteCurrentEnv"
                       :to="{ name: routeNames.ReplicateAndOptimize }"
                     >
-                    Your Current Functions
-                    </router-link>
+                    Your Current Functions</router-link>
                     </span>
                     or
                      <router-link
                        id="CompleteArchitectural"
                        :to="{ name: routeNames.ArchitecturalDesign }"
                      >
-                      Architectural Design Solution
-                     </router-link>
+                      Architectural Design Solution</router-link>
                     to define performance requirements for your Description of Work.
                   </p>
                 </template>
