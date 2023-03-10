@@ -26,6 +26,37 @@
               :isClassificationDataMissing="isClassificationDataMissing"
               :isPeriodsDataMissing="isPeriodsDataMissing"
             />
+
+            <ATATAlert
+              v-if="showWarning"
+              id="ArchitecturalDesignAlert"
+              type="warning"
+              class="mb-10 mt-2"
+              :showIcon="true"
+            >
+              <template v-slot:content>
+                <p class="mr-5 mb-0 font-weight-400 font-size 16">
+                  Based on what you previously told us, we recommend selecting at least one
+                  category below. If you don’t need specific cloud resources or tools,
+                  select “None of these apply to my acquisition” and revisit
+                  
+                  <span v-if="showCurrentFunctionsLink">
+                    <router-link
+                      id="CompleteCurrentEnv"
+                      :to="{ name: routeNames.ReplicateAndOptimize }"
+                    >Your Current Functions</router-link>
+                    or
+                  </span>
+                  
+                  <router-link
+                    id="CompleteArchitectural"
+                    :to="{ name: routeNames.ArchitecturalDesign }"
+                  >Architectural Design Solution</router-link>
+
+                  to define performance requirements for your Description of Work.
+                </p>
+              </template>
+            </ATATAlert>
           </div>
           <v-form ref="form" class="copy-max-width">
             <ATATCheckboxGroup
@@ -87,9 +118,11 @@ import classificationRequirements from "@/store/classificationRequirements";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
+    ATATAlert,
     ATATCheckboxGroup,
     ATATRadioGroup,
     DOWAlert,
@@ -120,12 +153,34 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   public learnMoreWhat = "";
 
   public get offeringTypeHeading(): string {
-    return this.currentDOWSection === "XaaS" 
+    return this.currentDOWSection === "XaaS"
       ? "Anything as a Service (XaaS) requirements"
       : "cloud support package";
   }
 
   public introText = "";
+
+  public get hasCurrentEnv(): boolean {
+    return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
+  }
+
+  public get replicateAndOptimizeIsNo():boolean {
+    return CurrentEnvironment.currentEnvironment
+      .current_environment_replicated_optimized === "NO"
+  }
+
+  public get architecturalDesignIsNo():boolean {
+    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "NO"
+  }
+
+  public get showCurrentFunctionsLink(): boolean {
+    return this.hasCurrentEnv && this.replicateAndOptimizeIsNo;
+  }
+
+  public get showWarning(): boolean {
+    return (!this.hasCurrentEnv || (this.hasCurrentEnv && this.replicateAndOptimizeIsNo))
+      && this.architecturalDesignIsNo
+  }
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -136,25 +191,25 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
 
   public setIntroText(): void {
     if (this.currentDOWSection === "CloudSupport") {
-      this.introText = `Specify any support services below that may apply to your 
-        acquisition, and we’ll walk through each selection to get more details. If 
-        you don’t need a cloud support package, select “None of these apply to my 
+      this.introText = `Specify any support services below that may apply to your
+        acquisition, and we’ll walk through each selection to get more details. If
+        you don’t need a cloud support package, select “None of these apply to my
         acquisition.”`;
     } else if (!this.needsReplicateOrOptimize && !this.needsArchitecturalDesign) {
-      this.introText = `Specify any XaaS categories below that may apply to your 
-        acquisition, and we’ll walk through each selection to get more details. 
-        If you don’t want to add specific offerings, select “None of these apply 
-        to my acquisition,” and you can define objective-based requirements within 
+      this.introText = `Specify any XaaS categories below that may apply to your
+        acquisition, and we’ll walk through each selection to get more details.
+        If you don’t want to add specific offerings, select “None of these apply
+        to my acquisition,” and you can define objective-based requirements within
         another performance area.`
     } else {
       const needStr = this.needsArchitecturalDesign && !this.needsReplicateOrOptimize
         ? "requesting an architectural design"
-        : this.needsReplicate 
+        : this.needsReplicate
           ? "replicating your current environment"
           : "optimizing your current environment";
-      this.introText = `In addition to ${needStr}, you can select additional offerings 
-        from 11 different XaaS categories below. We’ll walk through each selection to 
-        gather more details. If you don’t want to add specific offerings in addition 
+      this.introText = `In addition to ${needStr}, you can select additional offerings
+        from 11 different XaaS categories below. We’ll walk through each selection to
+        gather more details. If you don’t want to add specific offerings in addition
         to those proposed by the CSPs, select “None of these apply to my acquisition.”`
     }
 
@@ -162,16 +217,16 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.currentDOWSection = DescriptionOfWork.currentDOWSection;
-    this.learnMoreWhat = this.currentDOWSection === "XaaS" 
+    this.learnMoreWhat = this.currentDOWSection === "XaaS"
       ? "XaaS categories" : "support services";
-    this.needsReplicate = 
-      CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized 
+    this.needsReplicate =
+      CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized
         === "YES_REPLICATE";
-    this.needsOptimize = 
-      CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized 
+    this.needsOptimize =
+      CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized
         === "YES_OPTIMIZE";
     this.needsReplicateOrOptimize = this.needsReplicate || this.needsOptimize;
-    this.needsArchitecturalDesign 
+    this.needsArchitecturalDesign
       = CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
     this.setIntroText();
 
@@ -242,7 +297,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     const isXaaS = DescriptionOfWork.currentDOWSection === "XaaS";
     const isCloud = DescriptionOfWork.currentDOWSection === "CloudSupport";
 
-    this.goToSummary = (isXaaS && DescriptionOfWork.hasXaasService) 
+    this.goToSummary = (isXaaS && DescriptionOfWork.hasXaasService)
       || (isCloud && DescriptionOfWork.hasCloudService);
     if (this.goToSummary) {
       DescriptionOfWork.setBackToContractDetails(true);
@@ -251,7 +306,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       }).catch(() => console.log("error navigating to DOW Summary"));
     }    
     await this.loadOnEnter();
-    const slideoutComponent = this.currentDOWSection === "XaaS" 
+    const slideoutComponent = this.currentDOWSection === "XaaS"
       ? XaasLearnMore : CloudSupportLearnMore;
     const slideoutPanelContent: SlideoutPanelContent = {
       component: slideoutComponent,

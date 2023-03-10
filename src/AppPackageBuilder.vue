@@ -72,6 +72,7 @@ import actionHandler from "./action-handlers/index";
 import AppSections from "./store/appSections";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "./store/descriptionOfWork";
+import { Route } from "vue-router";
 
 @Component({
   components: {
@@ -117,7 +118,11 @@ export default class AppPackageBuilder extends Vue {
   }
 
   @Watch("$route")
-  async onRouteChanged(): Promise<void> {
+  async onRouteChanged(newVal: Route, oldVal: Route): Promise<void> {
+    if (oldVal.name !== "routeResolver") {
+      await Steps.setPrevStepName(oldVal.name as string);
+    }
+
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {

@@ -328,7 +328,7 @@ export class IGCEStore extends VuexModule {
   @Mutation
   public setHasDOWandPop(): void {
     const requirementCostEstimate = this.requirementsCostEstimate as RequirementsCostEstimateDTO;
-    if ((Periods.periods && Periods.periods.length > 0) && !DescriptionOfWork.isIncomplete) {
+    if ((Periods.periods && Periods.periods.length > 0) && DescriptionOfWork.isDOWComplete) {
       requirementCostEstimate.has_DOW_and_PoP = "YES";
     } else {
       requirementCostEstimate.has_DOW_and_PoP = "NO";

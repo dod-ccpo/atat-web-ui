@@ -141,6 +141,7 @@ import {
   ArchitecturalDesignDetailsResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
+  CurrentEnvironmentSummaryResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   PIIRecordResolver,
@@ -150,7 +151,6 @@ import {
   ServiceOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
-  COIRouteResolver,
   MIPRResolver,
   GInvoicingResolver,
   Upload7600Resolver,
@@ -632,6 +632,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: EnvironmentSummary,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: CurrentEnvironmentSummaryResolver,
       },
       // {
       //   menuText: "Summary",
@@ -652,16 +653,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     path: "/performance-requirements",
     component: PerformanceRequirementsIndex,
     children: [
-      {
-        menuText: "Landing Page",
-        path: "/",
-        excludeFromMenu: true,
-        name: routeNames.DOWLandingPage,
-        completePercentageWeight: 1,
-        component: DOWLandingPage,
-        continueButtonText: 'Wrap up this section',
-        completed: false
-      },
       {
         menuText: "Replicate And Optimize",
         path: "replicate-and-optimize",
@@ -705,7 +696,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Requirement Categories",
         path: "/requirement-categories",
-        excludeFromMenu: false,
+        excludeFromMenu: true,
         name: routeNames.RequirementCategories,
         stepCompleteOnEnter: routeNames.DOWLandingPage, // TODO - double-check when wired up
         completePercentageWeight: 1,
@@ -785,8 +776,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: DOWSummary,
         routeResolver: DowSummaryPathResolver,
-        backButtonText: "Back",
+      },
+      {
+        menuText: "Landing Page",
+        path: "/",
+        excludeFromMenu: true,
+        name: routeNames.DOWLandingPage,
+        completePercentageWeight: 1,
+        component: DOWLandingPage,
         continueButtonText: 'Wrap up this section',
+        completed: false,
       },
     ],
   },
@@ -804,7 +803,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.ConflictOfInterest,
         component: ConflictOfInterest,
-        routeResolver: COIRouteResolver,
       },
       {
         name: routeNames.PackagingPackingAndShipping,
