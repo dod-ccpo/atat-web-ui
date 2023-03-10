@@ -3,10 +3,22 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header">
-          First, tell us about your anticipated users and data needs
+          <span v-if="!comingFromReview">
+            First, tell
+          </span>
+          <span v-else>
+            Tell
+          </span>
+           us about your anticipated users and data needs
         </h1>
         <p class="page-intro">
-          Before we walk through each of your selected XaaS categories, we need
+          <span v-if="!comingFromReview">
+            Before we walk through each of your selected XaaS categories, we
+          </span>
+          <span v-else>
+            We
+          </span>
+            need
           to know some basic information about your users and data within each
           classification level.
         </p>
@@ -79,6 +91,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import classificationRequirements from "@/store/classificationRequirements";
 import _ from "lodash";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -91,6 +104,9 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   public accordionClosed: number[] = [];
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];
   public savedData: SelectedClassificationLevelDTO[] = []
+  public get comingFromReview():boolean {
+    return DescriptionOfWork.returnToDOWSummary === true
+  }
 
 
   private async mounted(): Promise<void> {
