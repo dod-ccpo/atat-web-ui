@@ -20,8 +20,7 @@
             acquisition.
           </p>
           <p class="mb-8"
-           v-if="(totalRequiredSections - totalRequiredSectionnComplete) > 0 &&
-           (totalRequiredSections - totalRequiredSectionnComplete) < totalRequiredSections">
+           v-if="displayWarning || (totalRequiredSections - totalRequiredSectionnComplete) > 0">
             We need some more details for this section. You can add info now, or come back to
             make edits at any time. When you are ready to wrap up this section, we’ll check for
             other contract considerations that may apply to your project.
