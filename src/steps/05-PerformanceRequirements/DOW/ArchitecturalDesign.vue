@@ -15,7 +15,7 @@
               and request CSPs to propose a customized cloud solution based on your unique
               objectives.
             </p>
-            <div v-if="noEnvNoXaaS() || hasEnvNoXaaS()">
+            <div v-if="showWarning">
               <ATATAlert
               id="ArchitecturalDesignAlert"
               type="warning"
@@ -26,21 +26,19 @@
                 <p class="mr-5 mb-0 font-weight-400 font-size 16">
                   Based on what you previously told us, we recommend selecting “Yes” below.
                   If you don’t need an architectural design solution, you’ll need to revisit
-                  <span v-if="hasEnvNoXaaS()">
+                  <span v-if="showCurrentFunctionsLink">
                     <router-link
-                    id="CompleteCurrentEnv"
-                    :to="{ name: routeNames.ReplicateAndOptimize }"
-                  >
-                  Your Current Functions</router-link>
-                  or
+                      id="CompleteCurrentEnv"
+                      :to="{ name: routeNames.ReplicateAndOptimize }"
+                    >Your Current Functions</router-link>
+                    or
                   </span>
                   <a
                     id="CompleteXaaS"
                     @click="setDOWSection"
                     @keydown.enter="setDOWSection"
                     @keydown.space="setDOWSection"
-                  >
-                  XaaS</a>
+                  >XaaS</a>
                   to define performance requirements for your Description of Work.
                 </p>
               </template>
@@ -99,39 +97,29 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
     routerObj.params.resolver = "RequirementsPathResolver";
     this.$router.push(routerObj)
   }
+
   public get hasCurrentEnv(): boolean {
     return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
-  }
-
-  public get hasXaaSOffering():boolean {
-    if(DescriptionOfWork.DOWObject.length === 0)return false
-    return DescriptionOfWork.DOWObject[0].serviceOfferingGroupId !=="XaaS_NONE"
-  }
-  public get isCurrentEnvironmentEmpty():boolean {
-    return CurrentEnvironment.currentEnvironment.current_environment_exists === ""
-  }
-
-  public get hasReplicateAndOptimize():boolean {
-    return CurrentEnvironment.currentEnvironment
-      .current_environment_replicated_optimized.indexOf("YES") > -1
   }
   public get replicateAndOptimizeIsNo():boolean {
     return CurrentEnvironment.currentEnvironment
       .current_environment_replicated_optimized === "NO"
   }
-  public get isXaaSOfferingEmpty():boolean {
-    return DescriptionOfWork.DOWObject.length === 0
-  }
-  public noEnvNoXaaS():boolean {
-    return !this.hasCurrentEnv && !this.hasXaaSOffering
-      && !this.isCurrentEnvironmentEmpty && !this.isXaaSOfferingEmpty
+  public get hasXaaSNoneApply():boolean {
+    return DescriptionOfWork.DOWObject.length === 1 
+      && DescriptionOfWork.DOWObject[0].serviceOfferingGroupId === "XaaS_NONE";
   }
 
-  public hasEnvNoXaaS():boolean {
-    return this.hasCurrentEnv && !this.hasXaaSOffering
-      && !this.isCurrentEnvironmentEmpty && !this.isXaaSOfferingEmpty
-      && this.replicateAndOptimizeIsNo
+  public get showCurrentFunctionsLink(): boolean {
+    return this.hasCurrentEnv && this.replicateAndOptimizeIsNo;
   }
+  public get showWarning(): boolean {
+    return (!this.hasCurrentEnv || (this.hasCurrentEnv && this.replicateAndOptimizeIsNo))
+      && this.hasXaaSNoneApply
+      && this.savedData.needs_architectural_design_services !== "YES"
+  }
+
+
   public radioOptions: RadioButton[] = [
     {
       id: "YesArchitecture",

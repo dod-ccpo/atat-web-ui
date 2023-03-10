@@ -12,7 +12,7 @@
               select “No” below, and the instance details that you previously provided
               will serve only as background information within your Description of Work.
             </p>
-            <div v-if="!emptyCheck && hasCurrentEnv && !hasArchitecturalDesign && !hasXaaSOffering">
+            <div v-if="showWarning">
               <ATATAlert
               id="ReplicateAndOptimizeAlert"
               type="warning"
@@ -139,25 +139,20 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
     routerObj.params.resolver = "RequirementsPathResolver";
     this.$router.push(routerObj)
   }
-  public get hasCurrentEnv(): boolean {
-    return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
+
+  public get hasXaaSNoneApply():boolean {
+    return DescriptionOfWork.DOWObject.length === 1 
+      && DescriptionOfWork.DOWObject[0].serviceOfferingGroupId === "XaaS_NONE";
   }
 
-  public get emptyCheck():boolean {
-    if(CurrentEnvironment.currentEnvironment.current_environment_exists === ""
-    || DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === ""
-    || DescriptionOfWork.DOWObject.length === 0){
-      return true
-    }
-    return false
+  public get architecturalDesignIsNo():boolean {
+    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "NO"
   }
 
-  public get hasArchitecturalDesign():boolean {
-    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "YES"
-  }
-  public get hasXaaSOffering():boolean {
-    if(DescriptionOfWork.DOWObject.length === 0)return false
-    return DescriptionOfWork.DOWObject[0].serviceOfferingGroupId !=="XaaS_NONE"
+  public get showWarning(): boolean {
+    return this.hasXaaSNoneApply && this.architecturalDesignIsNo
+      && (this.savedData.replicatedOrOptimized === "" 
+      || this.savedData.replicatedOrOptimized === "NO");
   }
 
   public get currentData(): Record<string, string> {

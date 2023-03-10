@@ -27,36 +27,36 @@
               :isPeriodsDataMissing="isPeriodsDataMissing"
             />
 
-            <div v-if="noEnvNoArchitecturalDesign() || hasEnvOnly()">
-              <ATATAlert
-                id="ArchitecturalDesignAlert"
-                type="warning"
-                class="mb-10 mt-2"
-                :showIcon="true"
-              >
-                <template v-slot:content>
-                  <p class="mr-5 mb-0 font-weight-400 font-size 16">
-                    Based on what you previously told us, we recommend selecting at least one
-                    category below. If you don’t need specific cloud resources or tools,
-                    select “None of these apply to my acquisition” and revisit
-                    <span v-if="hasEnvOnly()">
+            <ATATAlert
+              v-if="showWarning"
+              id="ArchitecturalDesignAlert"
+              type="warning"
+              class="mb-10 mt-2"
+              :showIcon="true"
+            >
+              <template v-slot:content>
+                <p class="mr-5 mb-0 font-weight-400 font-size 16">
+                  Based on what you previously told us, we recommend selecting at least one
+                  category below. If you don’t need specific cloud resources or tools,
+                  select “None of these apply to my acquisition” and revisit
+                  
+                  <span v-if="showCurrentFunctionsLink">
                     <router-link
                       id="CompleteCurrentEnv"
                       :to="{ name: routeNames.ReplicateAndOptimize }"
-                    >
-                    Your Current Functions</router-link>
-                    </span>
+                    >Your Current Functions</router-link>
                     or
-                     <router-link
-                       id="CompleteArchitectural"
-                       :to="{ name: routeNames.ArchitecturalDesign }"
-                     >
-                      Architectural Design Solution</router-link>
-                    to define performance requirements for your Description of Work.
-                  </p>
-                </template>
-              </ATATAlert>
-            </div>
+                  </span>
+                  
+                  <router-link
+                    id="CompleteArchitectural"
+                    :to="{ name: routeNames.ArchitecturalDesign }"
+                  >Architectural Design Solution</router-link>
+
+                  to define performance requirements for your Description of Work.
+                </p>
+              </template>
+            </ATATAlert>
           </div>
           <v-form ref="form" class="copy-max-width">
             <ATATCheckboxGroup
@@ -164,35 +164,24 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
   }
 
-  public get hasReplicateAndOptimize():boolean {
+  public get replicateAndOptimizeIsNo():boolean {
     return CurrentEnvironment.currentEnvironment
-      .current_environment_replicated_optimized.indexOf("YES") > -1
+      .current_environment_replicated_optimized === "NO"
   }
 
-  public get hasArchitecturalDesign():boolean {
-    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "YES"
+  public get architecturalDesignIsNo():boolean {
+    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "NO"
   }
 
-  public get isCurrentEnvEmpty(): boolean {
-    return CurrentEnvironment.currentEnvironment.current_environment_exists === ""
+  public get showCurrentFunctionsLink(): boolean {
+    return this.hasCurrentEnv && this.replicateAndOptimizeIsNo;
   }
 
-  public get isReplicateAndOptimizeEmpty():boolean {
-    return CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized === ""
-  }
-  public get isArchDesignEmpty():boolean {
-    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === ""
-  }
-  public noEnvNoArchitecturalDesign():boolean {
-    return !this.hasCurrentEnv && !this.hasArchitecturalDesign
-      && !this.isArchDesignEmpty && !this.isCurrentEnvEmpty
+  public get showWarning(): boolean {
+    return (!this.hasCurrentEnv || (this.hasCurrentEnv && this.replicateAndOptimizeIsNo))
+      && this.architecturalDesignIsNo
   }
 
-  public hasEnvOnly():boolean {
-    return this.hasCurrentEnv && !this.hasArchitecturalDesign
-      && !this.hasReplicateAndOptimize && !this.isArchDesignEmpty
-      && !this.isCurrentEnvEmpty && !this.isReplicateAndOptimizeEmpty
-  }
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
