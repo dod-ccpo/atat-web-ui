@@ -46,6 +46,7 @@ import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
 import Periods from "../periods";
+import Steps from "../steps";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
@@ -333,6 +334,7 @@ export class AcquisitionPackageStore extends VuexModule {
   ]
   contractingShop = "";
   attachmentNames: string[] = []
+  anticipatedUsersAndDataNeedsVisited = false
   disableContinue = false
   fundingRequestType: string | null =  null;
 
@@ -396,6 +398,16 @@ export class AcquisitionPackageStore extends VuexModule {
   private doSetAttachmentNames(value: string[]): void {
     this.attachmentNames = value;
   }
+
+  @Action({rawError: false})
+  public async setAnticipatedUsersAndDataNeedsVisited(value: boolean): Promise<void> {
+    this.doSetAnticipatedUsersAndDataNeedsVisited(value);
+  }
+  @Mutation
+  private doSetAnticipatedUsersAndDataNeedsVisited(value: boolean): void {
+    this.anticipatedUsersAndDataNeedsVisited = value;
+  }
+
   @Action({rawError: false})
   public async setDisableContinue(value: boolean): Promise<void> {
     this.doSetDisableContinue(value);
@@ -683,6 +695,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async loadPackageFromId(packageId: string): Promise<void> {
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
+    Steps.clearAltBackButtonText();
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
@@ -927,10 +940,8 @@ export class AcquisitionPackageStore extends VuexModule {
         const packageDocumentsSigned = await api.packageDocumentsSignedTable
           .create({acquisition_package:acquisitionPackage.sys_id})
         this.setPackageDocumentsSigned(packageDocumentsSigned)
-        console.log(await this.getPackageDocumentsSigned())
       }else{
         this.setPackageDocumentsSigned(signedDocuments[0])
-        console.log(await this.getPackageDocumentsSigned())
       }
 
       this.setPackagePercentLoaded(90);
@@ -969,12 +980,12 @@ export class AcquisitionPackageStore extends VuexModule {
     }
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
-
+    Steps.clearAltBackButtonText();
+    
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
     await OrganiationData.initialize();
     this.setPackagePercentLoaded(10);
-    await DescriptionOfWork.initialize();
     this.setPackagePercentLoaded(15);
     await Attachments.initialize();
     this.setPackagePercentLoaded(20);
@@ -1041,6 +1052,7 @@ export class AcquisitionPackageStore extends VuexModule {
         console.log(`error creating acquisition package ${error}`);
       }
     }
+    await DescriptionOfWork.initialize();
     this.setPackagePercentLoaded(95);
     await Periods.initialize();
     this.setPackagePercentLoaded(100);

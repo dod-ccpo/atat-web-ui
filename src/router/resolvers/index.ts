@@ -15,6 +15,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import DOWLandingPage from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -118,45 +119,27 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
-      ? routeNames.DOWSummary : routeNames.RequirementCategories
+    ? routeNames.DOWLandingPage
     : routeNames.CurrentContract;
 };
-
-export const ReplicateDetailsResolver = (current: string): string => {
-  if (needsReplicateOrOptimize()) {
-    return routeNames.ReplicateDetails;
-  }
-  return current === routeNames.ReplicateAndOptimize
-    ? routeNames.ArchitecturalDesign
-    : routeNames.ReplicateAndOptimize;
+export const ReplicateAndOptimizeResolver = (current: string): string => {
+  return current === routeNames.DOWLandingPage || current === routeNames.ReplicateDetails
+    ? routeNames.ReplicateAndOptimize
+    : routeNames.DOWLandingPage;
 }
 
-export const ArchitecturalDesignDetailsRouteResolver = (current: string): string => {
-  const needsArchitectureDesign
-      = CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
-  const hasCurrentEnv
-      = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
-  const hasCurrentContract 
-      = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
- 
-  if (current === routeNames.DOWSummary || 
-      current === routeNames.RequirementCategories){
-    if (!hasCurrentContract){  // if no current contract
-      return routeNames.CurrentContract;
-    } else if (hasCurrentContract && !hasCurrentEnv){ // if current contract & NO current env
-      return routeNames.CurrentEnvironment;
-    } else if (hasCurrentEnv){
-      return needsArchitectureDesign 
-        ? routeNames.ArchitecturalDesignDetails
-        : routeNames.ArchitecturalDesign
-    }
+export const ReplicateDetailsResolver = (current: string): string => {
+  if (needsReplicateOrOptimize()&& current !== routeNames.ArchitecturalDesign) {
+    return routeNames.ReplicateDetails;
   }
-  return needsArchitectureDesign
-    ? routeNames.ArchitecturalDesignDetails 
-    : (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
-      ? routeNames.DOWSummary : routeNames.RequirementCategories
-};
+  //back from Architectural design
+  if(current === routeNames.ArchitecturalDesign){
+    return routeNames.DOWLandingPage
+  }
+  return current === routeNames.ReplicateAndOptimize
+    ? routeNames.DOWLandingPage
+    : routeNames.ReplicateAndOptimize;
+}
 
 export const CurrentEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
@@ -165,10 +148,15 @@ export const CurrentEnvRouteResolver = (current: string): string => {
     return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment 
-    ? (IGCE.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
-      ? routeNames.DOWSummary : routeNames.RequirementCategories
+    ? routeNames.DOWLandingPage
     : routeNames.CurrentEnvironment;
 };
+
+export const CurrentEnvironmentSummaryResolver = (current: string): string => {
+  return current === routeNames.ReplicateAndOptimize 
+    ? routeNames.DOWLandingPage
+    : routeNames.EnvironmentSummary;
+}
 
 export const PIIRecordResolver = (current: string): string => {
   const hasSystemOfRecord = AcquisitionPackage.sensitiveInformation?.pii_present === "YES";
@@ -233,6 +221,7 @@ export const A11yRequirementResolver = (current: string): string => {
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings;
 
 const basePerformanceRequirementsPath =  "performance-requirements";
+const requirementCategories = "/requirement-categories";
 const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 const DOWSecurityRequitementsPath = "performance-requirements/dow-security-requirements";
 const otherServiceOfferingSummaryPath = "performance-requirements/service-offerings/other/summary";
@@ -256,8 +245,46 @@ const getOfferingGroupServicesPath = (groupId: string)=>
  ██████ ██   ██    ██    ███████  ██████   ██████  ██   ██ ██ ███████ ███████ 
 
 /****************************************************************************/
+export const ArchitecturalDesignResolver = (current: string): string => {
+  //coming from replicate and optimize or replicate details
+  if(current === routeNames.ReplicateAndOptimize ||
+    current === routeNames.ReplicateDetails){
+    return routeNames.DOWLandingPage
+  }
+  //coming back from Architectural Design details
+  if(current === routeNames.ArchitecturalDesignDetails){
+    return routeNames.ArchitecturalDesign
+  }
+  return current === routeNames.DOWLandingPage
+    ? routeNames.ArchitecturalDesign
+    : routeNames.DOWLandingPage;
+}
+
+export const ArchitecturalDesignDetailsResolver = (current: string): string => {
+  if (current === routeNames.RequirementCategories) {
+    return routeNames.DOWLandingPage
+  }
+  const hasCurEnvArchDesignNeeds = DescriptionOfWork
+    .DOWArchitectureNeeds.needs_architectural_design_services === "YES";
+
+  return hasCurEnvArchDesignNeeds
+    ? routeNames.ArchitecturalDesignDetails
+    : routeNames.DOWLandingPage;
+}
 
 export const RequirementsPathResolver = (current: string, direction: string): string => {
+  if (current === routeNames.DOWLandingPage) {
+    if ((DescriptionOfWork.currentDOWSection === "XaaS"
+      && !DescriptionOfWork.hasXaasService)
+      || (DescriptionOfWork.currentDOWSection === "CloudSupport"
+      && !DescriptionOfWork.hasCloudService)
+    ) {
+      return requirementCategories;
+    } else {
+      return descriptionOfWorkSummaryPath;
+    }
+  }
+
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
   if (current === routeNames.ServiceOfferings
@@ -284,7 +311,6 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   if(current === routeNames.ServiceOfferings && 
     !atBeginningOfOfferingGroups){ 
     const previousGroup = DescriptionOfWork.prevOfferingGroup;
-
     if (DescriptionOfWork.returnToDOWSummary) {
       return descriptionOfWorkSummaryPath;
     }
@@ -324,18 +350,8 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 
 
 /****************************************************************************/
-// hit when leaving first main DOW offering category checkbox page
-export const DOWArchitecturalDesignResolver = (current: string): string => {
-  const DOWNeedsArch = DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
-  if (DOWNeedsArch) {
-    // coming from either direction, if needs architectural design, go there
-    return routeNames.DOWArchitecturalDesign;
-  }
-  const xaasServices = DescriptionOfWork.hasXaasService;
-  return current === routeNames.RequirementCategories 
-    ? xaasServices ? routeNames.AnticipatedUserAndDataNeeds : routeNames.ServiceOfferings
-    : routeNames.RequirementCategories;
-}
+
+
 
 /****************************************************************************
 
@@ -349,19 +365,25 @@ export const DOWArchitecturalDesignResolver = (current: string): string => {
 /****************************************************************************/
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
-  const xaasServices = DescriptionOfWork.hasXaasService;
-  const hasBeenVisited = DescriptionOfWork.anticipatedUsersAndDataHasBeenVisited
-  if ((current === routeNames.DOWArchitecturalDesign 
-    || current === routeNames.RequirementCategories)
-    && xaasServices && !hasBeenVisited
+  if (
+    (DescriptionOfWork.XaaSNoneSelected && DescriptionOfWork.currentDOWSection === "XaaS") ||
+    (DescriptionOfWork.cloudNoneSelected && DescriptionOfWork.currentDOWSection === "CloudSupport")
+  ) {
+    return routeNames.DOWLandingPage;
+  }
+
+  if (current === routeNames.DOWSummary ||
+    current === routeNames.RequirementCategories
+    && DescriptionOfWork.currentDOWSection === "XaaS"
+    && DescriptionOfWork.hasXaasService
   ) {
     return routeNames.AnticipatedUserAndDataNeeds
   }
-  return current === routeNames.DOWArchitecturalDesign 
-    ? routeNames.ServiceOfferings
-    : routeNames.DOWArchitecturalDesign;
-}
 
+  return current === routeNames.RequirementCategories
+    ? routeNames.ServiceOfferings
+    : routeNames.RequirementCategories;
+}
 /****************************************************************************
 
 ██████   █████   ██████  ███████     ██████  
@@ -372,7 +394,7 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 
 /****************************************************************************/
 
-// This is the "simple 6" 2nd-level checkbox list page for non-"other offering" categories
+// This is the "simple 7" 2nd-level checkbox list page for non-"other offering" categories
 // ... the service offering checkbox list for a selected offering group...
 // AND the "other offering" form page
 
@@ -382,13 +404,24 @@ export const ServiceOfferingsPathResolver = (
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
   DescriptionOfWork.setCurrentGroupRemoved(false);
+  
+  if (DescriptionOfWork.returnToDOWSummary && DescriptionOfWork.getFromAnticipatedUsersAndData) {
+    DescriptionOfWork.setReturnToDOWSummary(false);
+    DescriptionOfWork.setFromAnticipatedUsersAndData(false);
+    DescriptionOfWork.setLastGroupRemoved(false);
+    DescriptionOfWork.setCurrentGroupRemovedForNav(false);
+    return descriptionOfWorkSummaryPath;
+  }
   // if no options selected on category page, or if only "None apply" checkboxes checked, 
   // or if last group was removed, send to summary page
   const DOWObject = DescriptionOfWork.DOWObject;
   const currentGroupId = DescriptionOfWork.currentGroupId;
   const isOtherOffering = otherServiceOfferings.indexOf(currentGroupId) > -1;
 
-  const atLastNoneApply = currentGroupId === DescriptionOfWork.cloudNoneValue;
+  const atLastNoneApply = DescriptionOfWork.currentDOWSection === "XaaS"
+    ? currentGroupId === DescriptionOfWork.xaaSNoneValue
+    : currentGroupId === DescriptionOfWork.cloudNoneValue;
+
   const onlyNoneApplySelected = DOWObject.every((e) => {
     return e.serviceOfferingGroupId.indexOf("NONE") > -1;
   });
@@ -597,8 +630,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     if(DescriptionOfWork.prevOfferingGroup){
       const group = DescriptionOfWork.prevOfferingGroup
       DescriptionOfWork.setCurrentOfferingGroupId(group);
-    }
-    else{
+    } else {
       return descriptionOfWorkSummaryPath;
     }
   }
@@ -658,8 +690,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     return descriptionOfWorkSummaryPath;   
   }
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
-    // EJY OOF
-
     const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
     if (offering) {
       return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
@@ -765,18 +795,19 @@ export const DOWSecurityRequirementsPathResolver
 
 /****************************************************************************/
 
-
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
-  if(current === routeNames.ConflictOfInterest){
-    if(DescriptionOfWork.DOWObject.length > 0){
-      DescriptionOfWork.setReturnToDOWSummary(false);
-      return descriptionOfWorkSummaryPath
-    }
-    else{
-      return basePerformanceRequirementsPath;
+  if (current === routeNames.DOWLandingPage) {
+    const hasCurrentContract 
+      = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+    if (hasCurrentContract) {
+      return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" 
+        && CurrentEnvironment.currentEnvInstances.length > 0
+        ? "/current-contract/environment-summary"
+        : "/current-contract/current-environment"
+    } else {
+      return "/current-contract/current-contract"
     }
   }
 
@@ -791,7 +822,6 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   }
 
   // coming from service offering details step
-  // EJY OR SECURITY REQ ?
   if(current === routeNames.ServiceOfferingDetails
     || current === routeNames.DOWSecurityRequirements
   ){
@@ -1154,7 +1184,7 @@ const currentEnvNeedsArchitectureDesign = (): boolean => {
   return CurrentEnvironment.currentEnvironment?.needs_architectural_design_services === "YES";
 }
 const DOWNeedsArchitectureDesign = (): boolean | null => {
-  return DescriptionOfWork.DOWHasArchitecturalDesignNeeds;
+  return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "YES";
 }
 
 
@@ -1295,9 +1325,13 @@ export const SecurityRequirementsResolver = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
+  ArchitecturalDesignResolver,
+  ArchitecturalDesignDetailsResolver,
   CurrentContractDetailsRouteResolver,
+  ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   CurrentEnvRouteResolver,
+  CurrentEnvironmentSummaryResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
@@ -1316,10 +1350,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   BVTOResolver,
   NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
-  ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
-  DOWArchitecturalDesignResolver,
 };
 
 // add path resolvers here 
@@ -1330,7 +1362,7 @@ const pathResolvers: Record<string, StepPathResolver> = {
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   RequirementsPathResolver,
-  IGCETrainingPathResolver
+  IGCETrainingPathResolver,
 }
 
 export const InvokeRouteResolver = (

@@ -3,7 +3,7 @@ import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import ArchitecturalDesignDetails
-  from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesignDetails.vue";
+  from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDOW.vue";
 
 Vue.use(Vuetify);
 
