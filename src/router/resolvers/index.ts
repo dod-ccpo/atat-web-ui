@@ -565,9 +565,14 @@ export const ServiceOfferingsPathResolver = (
     edge_computing: "Edge Computing and Tactical Edge",
     iot: "Internet of Things",
     general_xaas: "General IaaS, PaaS, and SaaS",
+    advisory_assistance: "Advisory and Assistance",
+    help_desk_services: "Help Desk Services",
+    training: "Training"
+
   }
   /* eslint-enable camelcase */
-  
+  debugger;
+
   const offeringStr = offeringNames[currentGroupId.toLowerCase()] || "these cloud resources";
   dontNeedButtonText += offeringStr;
 
