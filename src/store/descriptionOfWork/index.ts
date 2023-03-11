@@ -1682,7 +1682,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public setServiceOfferingGroups(value: SystemChoiceDTO[]) {
+  public setServiceOfferingGroups(value: SystemChoiceDTO[]): void {
     value.forEach((value, index) => {
       // ensure "none apply" options are last in sequence
       value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index + 1;
@@ -2664,7 +2664,9 @@ export class DescriptionOfWorkStore extends VuexModule {
     try {
       const serviceOfferingGroups = await api.systemChoices
         .getChoices(ServiceOfferingTableName, "service_offering_group");
-      this.setServiceOfferingGroups(serviceOfferingGroups);
+      // TODO - change values of none apply options in service now
+      const offeringGroups = serviceOfferingGroups.filter(obj => obj.value !== "NONE_APPLY");
+      this.setServiceOfferingGroups(offeringGroups);
     } catch (error) {
       throw new Error(`error loading Service Offering Groups ${error}`);
     }
