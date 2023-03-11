@@ -23,11 +23,12 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CompletePackageCard 
   from "@/steps/11-GeneratePackageDocuments/components/CompletePackageCard.vue"
+
 @Component({
   components: {
     ATATSVGIcon,
@@ -37,8 +38,10 @@ import CompletePackageCard
 export default class ReadyToSubmit extends Vue {
 
   async mounted(): Promise<void>{
+    debugger;
     await acquisitionPackage.setHideNavigation(true);
   }
+
 } 
 </script>
 

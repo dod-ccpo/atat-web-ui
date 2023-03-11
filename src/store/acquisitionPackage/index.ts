@@ -411,6 +411,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
   @Mutation
   private doSetHideNavigation(value: boolean): void {
+    debugger;
     this.hideNavigation = value;
   }
 

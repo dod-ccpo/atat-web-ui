@@ -210,6 +210,7 @@ export default class AppPackageBuilder extends Vue {
   }
   @Watch('hideNav')
   public hideNavigationChanged(newVal:boolean): void {
+    debugger;
     this.hideNavigation = newVal
   }
   private setNavButtons(step: StepInfo): void {
