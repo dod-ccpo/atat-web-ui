@@ -19,7 +19,7 @@
           />
         </div>
         <div id="SelectedGroups">
-          <div v-if="selectedServiceGroups.length > 0">
+          <div v-if="isXaaS">
             <div class=" d-flex justify-space-between">
               <div>
                 <h3 class="mb-1" id=" AnticipatedUsersAndDataNeeds_Heading">
@@ -198,6 +198,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public heading = "";
   public introText = "";
   public showAnticipatedUserAndDataNeeds = false;
+  public isXaaS = false;
 
   public alternateGroupNames = [
     {
@@ -370,9 +371,9 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    const isXaaS = DescriptionOfWork.currentDOWSection === "XaaS";
-    this.heading = isXaaS ? "Your XaaS Summary" : "Your Cloud Support Package";
-    const introTextSubstr = isXaaS ? "XaaS requirements" : "support services";
+    this.isXaaS = DescriptionOfWork.currentDOWSection === "XaaS";
+    this.heading = this.isXaaS ? "Your XaaS Summary" : "Your Cloud Support Package";
+    const introTextSubstr = this.isXaaS ? "XaaS requirements" : "support services";
     this.introText = `You are all done with your ${introTextSubstr}, but you can 
         come back at any time to edit details. When you are ready, we’ll review 
         your performance requirements summary.`;
@@ -395,7 +396,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
     };
 
     let selectedOfferingGroups: string[] = _.clone(DescriptionOfWork.selectedServiceOfferingGroups);
-    const sectionServices = isXaaS 
+    const sectionServices = this.isXaaS 
       ? DescriptionOfWork.xaasServices : DescriptionOfWork.cloudSupportServices;
     selectedOfferingGroups = selectedOfferingGroups.filter(id => sectionServices.includes(id));
 

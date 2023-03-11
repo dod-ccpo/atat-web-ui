@@ -6,7 +6,7 @@ import router from "@/router";
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
   deleteServiceOfferingGroup: "deleteServiceOfferingGroup",
-  confirmComputeDeletion: "confirmComputeDeletion",
+  confirmOtherOfferingDeletion: "confirmOtherOfferingDeletion",
   confirmServiceDeletion: "confirmServiceDeletion",
   clearCurrentContractInfo: "clearCurrentContractInfo",
   confirmDeleteTravelAll: "confirmDeleteTravelAll"
@@ -15,7 +15,7 @@ const actionHandlerNames = {
 const actions =  {
   [actionHandlerNames.sampleAdditionalButtonAction]: sampleAdditionalButtonAction,
   [actionHandlerNames.deleteServiceOfferingGroup]: deleteServiceOfferingGroup,
-  [actionHandlerNames.confirmComputeDeletion]: confirmComputeDeletion,
+  [actionHandlerNames.confirmOtherOfferingDeletion]: confirmOtherOfferingDeletion,
   [actionHandlerNames.confirmServiceDeletion]: confirmServiceDeletion,
   [actionHandlerNames.clearCurrentContractInfo]: clearCurrentContractInfo,
   [actionHandlerNames.confirmDeleteTravelAll]: confirmDeleteTravelAll,
@@ -51,8 +51,8 @@ async function deleteServiceOfferingGroup() {
   }).catch(() => console.log("avoiding redundant navigation"));
 }
 
-// used in Compute when user clicks "I don't need compute resources" button
-async function confirmComputeDeletion() {
+// used in Other Offerings when user clicks "I don't need ____ resources" button
+async function confirmOtherOfferingDeletion() {
   DescriptionOfWork.setConfirmOtherOfferingDelete(true);
 }
 

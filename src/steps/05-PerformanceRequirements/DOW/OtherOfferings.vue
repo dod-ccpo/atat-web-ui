@@ -2,17 +2,15 @@
   <div>
 
     <h1 class="page-header mb-3" tabindex="-1">
-      <span v-if="firstTimeHere">
+      <span v-if="firstTimeHere || isPortabilityPlan ">
         Let’s gather your requirements for {{ serviceGroupVerbiageInfo.offeringName }}
       </span>
       <span v-else>
-        Let’s gather some details 
-        for {{ serviceGroupVerbiageInfo.heading2 }} #{{ _serviceOfferingData.instanceNumber }}
+        Let’s gather some details for 
+        {{ serviceGroupVerbiageInfo.heading2 }} #{{ _serviceOfferingData.instanceNumber }}
       </span>
     </h1>
-    <p
-      v-if="isPortabilityPlan"
-    >
+    <p v-if="isPortabilityPlan">
       Refer to the JWCC Contract Performance Work 
       Statement (PWS) for the definition of a Portability Plan.
     </p>
