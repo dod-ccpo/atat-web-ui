@@ -71,6 +71,8 @@ import { buildStepperData, routeNames } from "./router/stepper";
 import actionHandler from "./action-handlers/index";
 import AppSections from "./store/appSections";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import DescriptionOfWork from "./store/descriptionOfWork";
+import { Route } from "vue-router";
 
 @Component({
   components: {
@@ -118,7 +120,11 @@ export default class AppPackageBuilder extends Vue {
   }
 
   @Watch("$route")
-  async onRouteChanged(): Promise<void> {
+  async onRouteChanged(newVal: Route, oldVal: Route): Promise<void> {
+    if (oldVal.name !== "routeResolver") {
+      await Steps.setPrevStepName(oldVal.name as string);
+    }
+
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
@@ -217,6 +223,10 @@ export default class AppPackageBuilder extends Vue {
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
     this.continueButtonText = step.continueButtonText || "Continue";
+    if (step.stepName === routeNames.DOWSummary) {
+      this.continueButtonText = DescriptionOfWork.currentDOWSection === "XaaS"
+        ? "Wrap up XaaS requirements" : "Wrap up Cloud Support Package";
+    }
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }

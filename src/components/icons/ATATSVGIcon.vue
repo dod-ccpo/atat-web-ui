@@ -14,6 +14,7 @@ import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ArrowBack from "@/components/icons/ArrowBack.vue";
+import ArchitectureCircle from "@/components/icons/ArchitectureCircle.vue"
 import Aws from "@/components/icons/Aws.vue";
 import Azure from "@/components/icons/Azure.vue";
 import BugReport from "@/components/icons/BugReport.vue";
@@ -28,6 +29,7 @@ import ContactSupport from "@/components/icons/ContactSupport.vue";
 import ContentCopy from "@/components/icons/ContentCopy.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
+import CurrentFunctionsCircle from "@/components/icons/CurrentFunctionsCircle.vue"
 import DisaLogo from "@/components/icons/DisaLogo.vue";
 import Email from "@/components/icons/Email.vue";
 import ErrorFilled from "@/components/icons/ErrorFilled.vue";
@@ -61,6 +63,9 @@ import Search from "@/components/icons/Search.vue";
 import Service from "@/components/icons/Service.vue";
 import SignOut from "@/components/icons/SignOut.vue";
 import Support from "@/components/icons/Support.vue";
+import SupportCircle from "@/components/icons/SupportCircle.vue";
+import Star from "@/components/icons/Star.vue";
+import StarInTriangle from "@/components/icons/StarInTriangle.vue";
 import TaskAlt from "@/components/icons/TaskAlt.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
@@ -73,6 +78,7 @@ import WarningAmber from "@/components/icons/WarningAmber.vue";
 import ReadyToGeneratePackage from "@/components/icons/ReadyToGeneratePackage.vue";
 import Place from "@/components/icons/Place.vue";
 import SendEmail from "@/components/icons/SendEmail.vue";
+import XaasCircle from "@/components/icons/XaasCircle.vue"
 import Update from "@/components/icons/Update.vue";
 import Download from "@/components/icons/Download.vue";
 
@@ -80,6 +86,7 @@ import Download from "@/components/icons/Download.vue";
 @Component({
   components: {
     ArrowBack,
+    ArchitectureCircle,
     Aws,
     Azure,
     BugReport,
@@ -94,6 +101,7 @@ import Download from "@/components/icons/Download.vue";
     ContentCopy,
     ControlPoint,
     Currency,
+    CurrentFunctionsCircle,
     DisaLogo,
     Download,
     Edit,
@@ -128,7 +136,10 @@ import Download from "@/components/icons/Download.vue";
     SendEmail,
     Service,
     SignOut,
+    Star,
+    StarInTriangle,
     Support,
+    SupportCircle,
     TaskAlt,
     TriangleUp,
     TriangleDown,
@@ -140,7 +151,8 @@ import Download from "@/components/icons/Download.vue";
     Warning,
     WarningAmber,
     ReadyToGeneratePackage,
-    Place
+    Place,
+    XaasCircle,
   }
 })
 
