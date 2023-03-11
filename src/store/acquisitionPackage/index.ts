@@ -46,6 +46,7 @@ import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
 import Periods from "../periods";
+import Steps from "../steps";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
@@ -694,6 +695,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async loadPackageFromId(packageId: string): Promise<void> {
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
+    Steps.clearAltBackButtonText();
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
@@ -978,7 +980,8 @@ export class AcquisitionPackageStore extends VuexModule {
     }
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
-
+    Steps.clearAltBackButtonText();
+    
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
     await OrganiationData.initialize();
