@@ -8,8 +8,8 @@
           </h1>
           <p class="page-intro">
             Consider the details you previously outlined for architectural design 
-            solutions to address your known problems or use-cases.
-            Estimate a price per period for this requirement below. If you know the 
+            solutions to address your known problems or use-cases. 
+            Estimate costs for each of these requirements below. If you know the 
             requirement will change over time, then you can customize the price 
             for each performance period.
           </p>
