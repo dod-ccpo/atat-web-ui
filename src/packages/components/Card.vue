@@ -411,6 +411,7 @@ export default class Card extends Vue {
     }
   }
   public async mounted(): Promise<void> {
+    await AcquisitionPackage.setHideNavigation(false);
     await this.loadOnEnter();
   }
 }
