@@ -44,7 +44,7 @@
           :textboxSuffix="'%'"
           :singlePeriodLabel="percentageLabel"
           :multiplePeriodLabel="percentageLabel"
-          :isMultiple="_growthSelection === 'multiple'"
+          :isMultiple="_growthSelection === 'MULTIPLE'"
           :values.sync="_percentages"
         ></ATATSingleAndMultiplePeriods>
       </div>
@@ -107,13 +107,13 @@ export default class AnticipatedDataNeeds extends Vue {
   private growthOptions: RadioButton[] = [
     {
       id: "single",
-      value: "single",
+      value: "SINGLE",
       label: `I want to estimate a single growth percentage 
         for the entire duration of the task order.`
     },
     {
       id: "multiple",
-      value: "multiple",
+      value: "MULTIPLE",
       label: `I want to customize growth percentage estimates 
         for the base and each option period.`
     }
