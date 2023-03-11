@@ -38,7 +38,6 @@ import CompletePackageCard
 export default class ReadyToSubmit extends Vue {
 
   async mounted(): Promise<void>{
-    debugger;
     await acquisitionPackage.setHideNavigation(true);
   }
 
