@@ -218,6 +218,40 @@ export const A11yRequirementResolver = (current: string): string => {
 /****************************************************************************/
 /****************************************************************************/
 
+const setDontNeedButton = (groupId: string) => {
+  /* eslint-disable camelcase */
+  const offeringText: Record<string, string> = {
+    compute: "Compute",
+    developer_tools: "Developer Tools and Services",
+    applications: "Application Services",
+    machine_learning: "Machine Learning",
+    networking: "Networking",
+    security: "Security",
+    database: "Database",
+    storage: "Storage",
+    edge_computing: "Edge Computing and Tactical Edge",
+    iot: "Internet of Things",
+    general_xaas: "General IaaS, PaaS, and SaaS",
+    advisory_assistance: "Advisory and Assistance",
+    help_desk_services: "Help Desk Services",
+    training: "Training",
+    portability_plan: "a Portability Plan",
+    documentation_support: "Documentation Support",
+    general_cloud_support: "General Cloud Support",
+  }
+  /* eslint-enable camelcase */
+  let dontNeedButtonText = "I don’t need ";
+  const offeringStr = offeringText[groupId.toLowerCase()] || "these cloud resources";
+  dontNeedButtonText += offeringStr;
+
+  Steps.setAdditionalButtonText({
+    buttonText: dontNeedButtonText, 
+    buttonId: "DontNeedResources"
+  });
+
+}
+
+
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings;
 
 const basePerformanceRequirementsPath =  "performance-requirements";
@@ -246,6 +280,8 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 
 /****************************************************************************/
 export const ArchitecturalDesignResolver = (current: string): string => {
+  const groupId = DescriptionOfWork.currentGroupId;
+  setDontNeedButton(groupId);
   //coming from replicate and optimize or replicate details
   if(current === routeNames.ReplicateAndOptimize ||
     current === routeNames.ReplicateDetails){
@@ -298,6 +334,8 @@ export const RequirementsPathResolver = (current: string, direction: string): st
       // send to group offerings page
       const serviceOffering = routeNames.ServiceOfferings
       DescriptionOfWork.setCurrentOfferingGroupId(group);
+      setDontNeedButton(group);
+    
       return ServiceOfferingsPathResolver(serviceOffering , direction);
     }
   }
@@ -320,6 +358,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
     }
 
     DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
+    setDontNeedButton(previousGroup);
     
     //Compute, General XaaS, etc. don't have service offerings
     if (otherServiceOfferings.indexOf(previousGroup) > -1) {
@@ -365,6 +404,9 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 /****************************************************************************/
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
+  const groupId = DescriptionOfWork.currentGroupId;
+  setDontNeedButton(groupId);
+
   if (
     (DescriptionOfWork.XaaSNoneSelected && DescriptionOfWork.currentDOWSection === "XaaS") ||
     (DescriptionOfWork.cloudNoneSelected && DescriptionOfWork.currentDOWSection === "CloudSupport")
@@ -505,6 +547,7 @@ export const ServiceOfferingsPathResolver = (
       }
 
       DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
+      setDontNeedButton(previousGroup);
       const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
 
       if (lastServiceOfferingForGroup === undefined) {
@@ -539,6 +582,7 @@ export const ServiceOfferingsPathResolver = (
         }
 
         DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
+        setDontNeedButton(previousGroup);
         const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
   
         if(lastServiceOfferingForGroup === undefined)
@@ -550,36 +594,8 @@ export const ServiceOfferingsPathResolver = (
       }
     }     
   }
-  
-  let dontNeedButtonText = "I don’t need ";
-  /* eslint-disable camelcase */
-  const offeringNames: Record<string, string> = {
-    compute: "Compute",
-    developer_tools: "Developer Tools and Services",
-    applications: "Application services",
-    machine_learning: "Machine Learning",
-    networking: "Networking",
-    security: "Security",
-    database: "Database",
-    storage: "Storage",
-    edge_computing: "Edge Computing and Tactical Edge",
-    iot: "Internet of Things",
-    general_xaas: "General IaaS, PaaS, and SaaS",
-    advisory_assistance: "Advisory and Assistance",
-    help_desk_services: "Help Desk Services",
-    training: "Training"
 
-  }
-  /* eslint-enable camelcase */
-  debugger;
-
-  const offeringStr = offeringNames[currentGroupId.toLowerCase()] || "these cloud resources";
-  dontNeedButtonText += offeringStr;
-
-  Steps.setAdditionalButtonText({
-    buttonText: dontNeedButtonText, 
-    buttonId: "DontNeedResources"
-  });
+  setDontNeedButton(currentGroupId);
 
   Steps.setAdditionalButtonHide(false);
 
@@ -618,6 +634,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
   const groupId = DescriptionOfWork.currentGroupId;
+  setDontNeedButton(groupId);
   const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
 
   if (DescriptionOfWork.summaryBackToContractDetails) {
@@ -635,6 +652,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     if(DescriptionOfWork.prevOfferingGroup){
       const group = DescriptionOfWork.prevOfferingGroup
       DescriptionOfWork.setCurrentOfferingGroupId(group);
+      setDontNeedButton(group);
     } else {
       return descriptionOfWorkSummaryPath;
     }
@@ -715,6 +733,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     // send to group offerings page
     const serviceOffering = routeNames.ServiceOfferings
     DescriptionOfWork.setCurrentOfferingGroupId(nextOrPrevGroup);
+    setDontNeedButton(nextOrPrevGroup);
     return ServiceOfferingsPathResolver(serviceOffering , direction);
   }
 
@@ -739,8 +758,7 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
     return DOWSecurityRequitementsPath;  
   }
 
-  const groupId = DescriptionOfWork.currentGroupId;    
-
+  const groupId = DescriptionOfWork.currentGroupId;
   if (otherServiceOfferings.indexOf(groupId) > -1) {
     return otherServiceOfferingSummaryPath; 
   }
@@ -777,7 +795,7 @@ export const DOWSecurityRequirementsPathResolver
       return DOWSecurityRequitementsPath;
     }
 
-    const groupId = DescriptionOfWork.currentGroupId;    
+    const groupId = DescriptionOfWork.currentGroupId;
     const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
 
     if (isOtherOffering && direction === "prev") {
@@ -871,6 +889,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
         throw new Error('unable to retrive next offering group');
       }
       DescriptionOfWork.setCurrentOfferingGroupId(nextOfferingGroup);
+      setDontNeedButton(nextOfferingGroup);
       return ServiceOfferingsPathResolver(current , direction);
     }
   }
