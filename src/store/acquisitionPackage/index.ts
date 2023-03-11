@@ -336,6 +336,7 @@ export class AcquisitionPackageStore extends VuexModule {
   attachmentNames: string[] = []
   anticipatedUsersAndDataNeedsVisited = false
   disableContinue = false
+  hideNavigation = false
   fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact()
@@ -415,6 +416,14 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   private doSetDisableContinue(value: boolean): void {
     this.disableContinue = value;
+  }
+  @Action({rawError: false})
+  public async setHideNavigation(value: boolean): Promise<void> {
+    this.doSetHideNavigation(value);
+  }
+  @Mutation
+  private doSetHideNavigation(value: boolean): void {
+    this.hideNavigation = value;
   }
 
   @Action
@@ -1572,13 +1581,13 @@ export class AcquisitionPackageStore extends VuexModule {
         show:incrementallyFunded === "YES"
       },
       {
-        itemName:"Justification and Approval (Template)",
+        itemName:"Justification and Approval",
         requiresSignature:true,
         alertText:"Complete and sign",
         show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
       },
       {
-        itemName:"Sole Source Market Research Report (Template)",
+        itemName:"Sole Source Market Research Report",
         requiresSignature:true,
         alertText:"Complete and sign",
         show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)

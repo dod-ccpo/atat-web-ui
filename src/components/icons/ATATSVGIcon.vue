@@ -71,6 +71,7 @@ import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
 import TriangleUp from "@/components/icons/TriangleUp.vue";
 import TriangleDown from "@/components/icons/TriangleDown.vue";
+import UnderReview from "@/components/icons/UnderReview.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
 import Warning from "@/components/icons/Warning.vue";
 import WarningAmber from "@/components/icons/WarningAmber.vue";
@@ -144,6 +145,7 @@ import Download from "@/components/icons/Download.vue";
     TriangleDown,
     TrendingDown,
     TrendingUp,
+    UnderReview,
     UploadFile,
     Update,
     Warning,
