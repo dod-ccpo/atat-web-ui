@@ -1,6 +1,6 @@
 <template>
   <div  style="overflow: hidden;">
-    <ATATSideStepper ref="sideStepper" :stepperData="stepperData" />
+    <ATATSideStepper v-if="!hideNavigation" ref="sideStepper" :stepperData="stepperData" />
 
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
@@ -17,6 +17,7 @@
         </div>
 
         <ATATStepperNavigation
+          v-if="!hideNavigation"
           @next="navigate('next')"
           @previous="navigate('previous')"
           @additionalButtonClick="additionalButtonClick"
@@ -53,7 +54,6 @@ import ATATSlideoutPanel from "./components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 import ATATToast from "./components/ATATToast.vue";
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import Steps from "@/store/steps";
 
@@ -72,6 +72,9 @@ import {
 import { buildStepperData, routeNames, stepperRoutes } from "./router/stepper";
 import actionHandler from "./action-handlers/index";
 import AppSections from "./store/appSections";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import DescriptionOfWork from "./store/descriptionOfWork";
+import { Route } from "vue-router";
 
 @Component({
   components: {
@@ -104,9 +107,11 @@ export default class AppPackageBuilder extends Vue {
   private altBackDestination = "";
   private hideContinueButton = false;
   private disableContinueButton = false;
+  private hideNavigation = false;
 
   async mounted(): Promise<void> {
     await Steps.setSteps(stepperRoutes);
+    this.hideNavigation = AcquisitionPackage.hideNavigation;
     this.routeNames = routeNames;
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
@@ -119,7 +124,11 @@ export default class AppPackageBuilder extends Vue {
   }
 
   @Watch("$route")
-  async onRouteChanged(): Promise<void> {
+  async onRouteChanged(newVal: Route, oldVal: Route): Promise<void> {
+    if (oldVal.name !== "routeResolver") {
+      await Steps.setPrevStepName(oldVal.name as string);
+    }
+
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
@@ -195,26 +204,41 @@ export default class AppPackageBuilder extends Vue {
       : "New Acquisition";
   }
 
+  public get isDitcoUser(): boolean {
+    return AcquisitionPackage.contractingShop === "DITCO"
+  }
+  public get disableContinue(): boolean {
+    return AcquisitionPackage.disableContinue
+  }
+  public get hideNav(): boolean {
+    return AcquisitionPackage.hideNavigation
+  }
+
+  @Watch('disableContinue')
+  public disableContinueChanged(newVal:boolean): void {
+    this.disableContinueButton = newVal
+  }
+  @Watch('hideNav')
+  public hideNavigationChanged(newVal:boolean): void {
+    this.hideNavigation = newVal
+  }
   private setNavButtons(step: StepInfo): void {
     this.altBackDestination = Steps.altBackDestination;
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
     this.continueButtonText = step.continueButtonText || "Continue";
     this.altContinueAction = step.altContinueAction || "";
+    if (step.stepName === routeNames.DOWSummary) {
+      this.continueButtonText = DescriptionOfWork.currentDOWSection === "XaaS"
+        ? "Wrap up XaaS requirements" : "Wrap up Cloud Support Package";
+    }
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
-    this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments;
-  }
+    this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments
+      && !this.isDitcoUser;
 
-  public get disableContinue(): boolean {
-    return AcquisitionPackage.disableContinue;
   }
-
-  @Watch('disableContinue')
-  public disableContinueChanged(newVal:boolean): void {
-    this.disableContinueButton = newVal
-  }  
 
   private async additionalButtonClick(button: AdditionalButton) {
     if (button.emitText) {

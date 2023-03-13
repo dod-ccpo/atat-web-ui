@@ -14,11 +14,13 @@ import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ArrowBack from "@/components/icons/ArrowBack.vue";
+import ArchitectureCircle from "@/components/icons/ArchitectureCircle.vue"
 import Aws from "@/components/icons/Aws.vue";
 import Azure from "@/components/icons/Azure.vue";
 import BugReport from "@/components/icons/BugReport.vue";
 import Bullet from "@/components/icons/Bullet.vue";
 import Calendar from "@/components/icons/Calendar.vue";
+import CheckedBag from "@/components/icons/CheckedBag.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
@@ -29,6 +31,7 @@ import ContactSupport from "@/components/icons/ContactSupport.vue";
 import ContentCopy from "@/components/icons/ContentCopy.vue";
 import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
+import CurrentFunctionsCircle from "@/components/icons/CurrentFunctionsCircle.vue"
 import DisaLogo from "@/components/icons/DisaLogo.vue";
 import Email from "@/components/icons/Email.vue";
 import ErrorFilled from "@/components/icons/ErrorFilled.vue";
@@ -63,11 +66,15 @@ import Search from "@/components/icons/Search.vue";
 import Service from "@/components/icons/Service.vue";
 import SignOut from "@/components/icons/SignOut.vue";
 import Support from "@/components/icons/Support.vue";
+import SupportCircle from "@/components/icons/SupportCircle.vue";
+import Star from "@/components/icons/Star.vue";
+import StarInTriangle from "@/components/icons/StarInTriangle.vue";
 import TaskAlt from "@/components/icons/TaskAlt.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
 import TriangleUp from "@/components/icons/TriangleUp.vue";
 import TriangleDown from "@/components/icons/TriangleDown.vue";
+import UnderReview from "@/components/icons/UnderReview.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
 import Warning from "@/components/icons/Warning.vue";
 import WarningAmber from "@/components/icons/WarningAmber.vue";
@@ -80,16 +87,21 @@ import ProvisionOracle from "@/components/icons/ProvisionOracle.vue";
 import ProvisionAWS from "@/components/icons/ProvisionAWS.vue";
 import ProvisionAzure from "@/components/icons/ProvisionAzure.vue";
 import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
+import XaasCircle from "@/components/icons/XaasCircle.vue"
+import Update from "@/components/icons/Update.vue";
+import Download from "@/components/icons/Download.vue";
 
 
 @Component({
   components: {
     ArrowBack,
+    ArchitectureCircle,
     Aws,
     Azure,
     BugReport,
     Bullet,
     Calendar,
+    CheckedBag,
     ChevronDown,
     ChevronRight,
     Close,
@@ -100,7 +112,9 @@ import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
     ContentCopy,
     ControlPoint,
     Currency,
+    CurrentFunctionsCircle,
     DisaLogo,
+    Download,
     Edit,
     Email,
     ErrorFilled,
@@ -140,17 +154,23 @@ import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
     SendEmail,
     Service,
     SignOut,
+    Star,
+    StarInTriangle,
     Support,
+    SupportCircle,
     TaskAlt,
     TriangleUp,
     TriangleDown,
     TrendingDown,
     TrendingUp,
+    UnderReview,
     UploadFile,
+    Update,
     Warning,
     WarningAmber,
     ReadyToGeneratePackage,
-    Place
+    Place,
+    XaasCircle,
   }
 })
 

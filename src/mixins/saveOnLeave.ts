@@ -33,11 +33,9 @@ export default class SaveOnLeave extends Vue {
     next: (n: void) => void
   ): Promise<void> {
     const goNext = await this.saveOnLeave();
-
     const formToValidate = this.$refs.form;
     let isValid = true;
     const direction = to.params.direction;
-
     if(direction === "next" && formToValidate){
       AcquisitionPackage.setValidateNow(true);
       isValid = this.$refs.form.validate();
@@ -46,7 +44,9 @@ export default class SaveOnLeave extends Vue {
     this.$nextTick(()=> {
       AcquisitionPackage.setValidateNow(false);
       if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
-        Steps.setLeaveStepComplete(from.name as string);   
+        Steps.setLeaveStepComplete(from.name as string);  
+        Steps.clearAdditionalButtonText();     
+        AcquisitionPackage.setDisableContinue(false);
         next();
       }
     })

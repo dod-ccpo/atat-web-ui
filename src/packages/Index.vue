@@ -322,7 +322,8 @@ export default class Packages extends Vue {
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Packages);
   }
 
-  public mounted():void{
+  public async mounted():Promise<void>{
+    await AcquisitionPackage.setHideNavigation(false);
     this.loadOnEnter();
   }
 

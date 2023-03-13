@@ -14,7 +14,10 @@
           </p>
 
 
-          <div class="mt-4 _light-gray-card">
+          <div 
+            class="mt-4 _light-gray-card"
+            v-if="environmentTypeText && classificationsText"
+          >
             <div class="d-flex">
               <div>
                 <span class="font-weight-500">{{ environmentTypeText }}</span>
