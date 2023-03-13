@@ -338,7 +338,6 @@ export class AcquisitionPackageStore extends VuexModule {
   disableContinue = false
   hideNavigation = false
   fundingRequestType: string | null =  null;
-  disableContinue = false
 
   public initContact: ContactDTO = initialContact()
 
@@ -410,14 +409,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.anticipatedUsersAndDataNeedsVisited = value;
   }
 
-  @Action({rawError: false})
-  public async setDisableContinue(value: boolean): Promise<void> {
-    this.doSetDisableContinue(value);
-  }
-  @Mutation
-  private doSetDisableContinue(value: boolean): void {
-    this.disableContinue = value;
-  }
   @Action({rawError: false})
   public async setHideNavigation(value: boolean): Promise<void> {
     this.doSetHideNavigation(value);
