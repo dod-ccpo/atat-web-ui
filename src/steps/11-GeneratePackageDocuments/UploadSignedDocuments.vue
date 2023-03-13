@@ -132,7 +132,7 @@ import { Component, Watch } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
-import { invalidFile, uploadingFile } from "../../../types/Global";
+import { invalidFile, signedDocument, uploadingFile } from "../../../types/Global";
 import Attachments from "@/store/attachments";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FinancialDetails from "@/store/financialDetails";
@@ -180,48 +180,8 @@ export default class UploadSignedDocuments extends SaveOnLeave {
       ?(this.filesNeeded.length + 2)
       :this.filesNeeded.length
   }
-  private packages = [
-    {
-      itemName:"Requirements Checklist",
-      requiresSignature:true,
-      alertText:"Requires signatures",
-      show:true
-    },
-    {
-      itemName:"Independent Government Cost Estimate",
-      requiresSignature:true,
-      alertText:"Requires signatures",
-      show:true
-    },
-    {
-      itemName:"Incremental Funding Plan",
-      requiresSignature:true,
-      alertText:"Requires signatures",
-      show:this.incrementallyFunded === "YES"
-    },
-    {
-      itemName:"Justification and Approval (Template)",
-      requiresSignature:true,
-      alertText:"Complete and sign",
-      show:this.fairOpportunity !== "NO_NONE"
-    },
-    {
-      itemName:"Sole Source Market Research Report (Template)",
-      requiresSignature:true,
-      alertText:"Complete and sign",
-      show:this.fairOpportunity !== "NO_NONE"
-    },
-    {
-      itemName:"Description of Work",
-      requiresSignature:false,
-      show:true
-    },
-    {
-      itemName:"Evaluation Plan",
-      requiresSignature:false,
-      show:this.fairOpportunity !== "NO_NONE"
-    },
-  ];
+  
+  private packages: signedDocument[] = [];
 
   get numberOfMissingFiles(): number {
     return this.getMaxNumberOfFiles - this.uploadedFiles.length;
@@ -281,47 +241,13 @@ export default class UploadSignedDocuments extends SaveOnLeave {
     return rulesArr;
   }
   public async loadOnEnter(): Promise<void> {
+    this.packages = (await AcquisitionPackage.getSignedDocumentsList()).filter(
+      signedDoc => signedDoc.show && signedDoc.requiresSignature
+    );
+    this.needsSignatureLength = this.packages.length;
+    this.filesNeeded = this.packages.map(signedDoc => signedDoc.itemName)
     this.generatedDocumentNames = await AcquisitionPackage.generatedDocumentNames;
-    this.packages.forEach(item =>{
-      if(item.show && item.requiresSignature){
-        this.needsSignatureLength++
-        this.filesNeeded.push(item.itemName.replace("(Template)", ""))
-      }
-    })
-
-    const query: AxiosRequestConfig = {
-      params: {
-        sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
-      }
-    };
-    const signedDocumentSysId = await api.packageDocumentsSignedTable
-      .getQuery(query);
-    if(signedDocumentSysId.length > 0){
-      try {
-        const attachment = await Attachments.getAttachmentsByTableSysIds({
-          serviceKey: PACKAGE_DOCUMENTS_SIGNED, tableSysId: signedDocumentSysId[0].sys_id||""});
-        const uploadedFiles = attachment.map((attachment: AttachmentDTO) => {
-          const file = new File([], attachment.file_name, {
-            lastModified: Date.parse(attachment.sys_created_on || "")
-          });
-          const upload: uploadingFile = {
-            attachmentId: attachment.sys_id || "",
-            fileName: attachment.file_name,
-            file: file,
-            created: file.lastModified,
-            progressStatus: 100,
-            link: attachment.download_link || "",
-            recordId: attachment.table_sys_id,
-            isErrored: false,
-            isUploaded: true
-          }
-          return upload;
-        });
-        this.uploadedFiles = [...uploadedFiles];
-      } catch (error) {
-        throw new Error("an error occurred loading Package Signed Documents data");
-      }
-    }
+    this.uploadedFiles = await AcquisitionPackage.getDocuments(true);
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
