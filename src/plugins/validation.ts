@@ -285,7 +285,8 @@ export class ValidationPlugin {
    * @param doesFileExist
    * @param SNOWError
    * @param statusCode
-   * @param restrictNames
+   * @param restrictedNames
+   * @param maxFileNumber
    */
 
   isFileValid = (
@@ -314,7 +315,7 @@ export class ValidationPlugin {
       }
       // list of names that a file can not have
       if(restrictedNames?.includes(file.name)){
-        return "File name already exist. Please rename the file."
+        return "'" + file.name + "' already exists. Please rename the file<br />and upload again."
       }
 
       // does file aleady exist?

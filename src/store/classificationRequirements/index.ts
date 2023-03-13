@@ -197,12 +197,24 @@ export class ClassificationRequirementsStore extends VuexModule {
             selectedClassLevel.impact_level = classLevelForMapping.impact_level;
             selectedClassLevel.classification = classLevelForMapping.classification;
           }
+          let dataGrowth 
+            = selectedClassLevel.data_growth_estimate_percentage as unknown as string;
+          if (dataGrowth.indexOf("[") > -1) {
+            dataGrowth = dataGrowth.substring(1, dataGrowth.length - 1);
+          }
+          dataGrowth = dataGrowth.replace(/\s/g, '');
           selectedClassLevel.data_growth_estimate_percentage
-              = (selectedClassLevel.data_growth_estimate_percentage as unknown as string)
-              .split(",").filter(nonEmptyVal => nonEmptyVal);
+              = dataGrowth.split(",").filter(nonEmptyVal => nonEmptyVal);
+
+          let userGrowth
+            = selectedClassLevel.user_growth_estimate_percentage as unknown as string;
+          if (userGrowth.indexOf("[") > - 1) {
+            userGrowth = userGrowth.substring(1, userGrowth.length - 1);
+          }
+          userGrowth = userGrowth.replace(/\s/g, '');
           selectedClassLevel.user_growth_estimate_percentage
-              = (selectedClassLevel.user_growth_estimate_percentage as unknown as string)
-              .split(",").filter(nonEmptyVal => nonEmptyVal);
+              = userGrowth.split(",").filter(nonEmptyVal => nonEmptyVal);
+
           if(selectedClassLevel.classification === "S"){        
             const index = tempRequirements.findIndex(item => item.type === "SECRET");
             let types: string[] = [];

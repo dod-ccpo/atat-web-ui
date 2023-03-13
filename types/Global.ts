@@ -270,11 +270,32 @@ export interface uploadingFile{
   isUploaded: boolean;
 }
 
+export interface signedDocument{
+  itemName:string,
+  requiresSignature:boolean,
+  alertText?:string,
+  show:boolean
+}
+
+
+
 export interface invalidFile{
   file: File;
   doesFileExist: boolean;
   SNOWError?: string;
   statusCode?: number;
+}
+
+export interface DOWCardData {
+  title: string;
+  label: string;
+  icon: string;
+  learnMore: string,
+  route: string;
+  defineRequirements: boolean,
+  section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupport";
+  isComplete: boolean,
+  buttonLabel?: string
 }
 
 export interface DOWClassificationInstance {

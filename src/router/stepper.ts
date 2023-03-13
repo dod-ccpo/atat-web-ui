@@ -41,12 +41,7 @@ import UploadSystemDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadSystemDocuments.vue";
 import UploadMigrationDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.vue";
-import ReplicateAndOptimize
-  from "@/steps/03-Background/CurrentEnvironment/ReplicateAndOptimize.vue";
 import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/ReplicateDetails.vue";
-import ArchitecturalDesign from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesign.vue";
-import ArchitecturalDesignDetails
-  from "@/steps/03-Background/CurrentEnvironment/ArchitecturalDesignDetails.vue";
 import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/EnvironmentSummary.vue";
 
 // Step 4 - Contract Details
@@ -62,11 +57,15 @@ import CrossDomain from "@/steps/04-ContractDetails/CrossDomain.vue";
 
 // Step 5 - Performance Requirements
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
+import DOWLandingPage from "../steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
+import ArchitecturalDesign from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
+import ArchitecturalDesignDetails
+  from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDOW.vue";
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
-import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
 import ArchitectureDesignDOW
   from "../steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
+import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
 import ServiceOfferingDetails 
   from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue";
 import OtherOfferingSummary 
@@ -77,6 +76,8 @@ import DOWSummary
   from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
 import AnticipatedUserAndDataNeeds
   from "@/steps/05-PerformanceRequirements/DOW/AnticipatedUserAndDataNeeds.vue";
+import ReplicateAndOptimize
+  from "@/steps/05-PerformanceRequirements/CurrentFunctions/ReplicateAndOptimize.vue";
 
 // Step 7 - Other Contract Considerations
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
@@ -131,11 +132,17 @@ import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToG
 import GeneratingPackageDocuments
   from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
 import UploadSignedDocuments from "@/steps/11-GeneratePackageDocuments/UploadSignedDocuments.vue";
+import ReadyToSubmit from "@/steps/11-GeneratePackageDocuments/ReadyToSubmit.vue";
+import UnderReview from "@/steps/11-GeneratePackageDocuments/UnderReview.vue";
 
 import {
   AcorsRouteResolver,
+  ArchitecturalDesignResolver,
+  ArchitecturalDesignDetailsResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
+  CurrentEnvironmentSummaryResolver,
+  ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   PIIRecordResolver,
   FOIARecordResolver,
@@ -161,10 +168,8 @@ import {
   BVTOResolver,
   NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
-  ArchitecturalDesignDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
-  DOWArchitecturalDesignResolver,
   IGCETrainingPathResolver, 
   FeeChargedResolver,
 } from "./resolvers";
@@ -194,8 +199,9 @@ export const routeNames = {
   CurrentContract: "Current_Contract",
   CurrentContractDetails: "Current_Contract_Details",
   CurrentEnvironment:"Current_Environment",
+  DOWLandingPage: "DOW_Landing_Page",
   RequirementCategories: "Requirement_Categories",
-  DOWArchitecturalDesign: "DOW_Architectural_Design",
+  // DOWArchitecturalDesign: "DOW_Architectural_Design",
   ServiceOfferings: "Service_Offerings",
   ServiceOfferingDetails: "Service_Offering_Details",
   OtherOfferingSummary: "Other_Offering_Summary",
@@ -265,6 +271,8 @@ export const routeNames = {
   GeneratePackageDocuments: "Generate_Package_Documents",
   AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs",
   UploadSignedDocuments:"Upload_Signed_Documents",
+  ReadyToSubmit:"Ready_To_Submit",
+  UnderReview:"Under_Review"
 };
 
 /**
@@ -624,45 +632,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: EnvironmentSummary,
         completePercentageWeight: 5,
         completed: false,
-      },
-      {
-        menuText: "Replicate And Optimize",
-        path: "replicate-and-optimize",
-        excludeFromMenu: true,
-        name: routeNames.ReplicateAndOptimize,
-        component: ReplicateAndOptimize,
-        completePercentageWeight: 5,
-        completed: false,
-
-      },
-      {
-        menuText: "Replicate Details",
-        path: "replicate-details",
-        excludeFromMenu: true,
-        name: routeNames.ReplicateDetails,
-        component: ReplicateDetails,
-        completePercentageWeight: 5,
-        completed: false,
-        routeResolver: ReplicateDetailsResolver,
-      },
-      {
-        menuText: "Architectural Design",
-        path: "architectural-design",
-        excludeFromMenu: true,
-        name: routeNames.ArchitecturalDesign,
-        component: ArchitecturalDesign,
-        completePercentageWeight: 5,
-        completed: false,
-      },
-      {
-        menuText: "Architectural Design Details",
-        path: "architectural-design-details",
-        excludeFromMenu: true,
-        name: routeNames.ArchitecturalDesignDetails,
-        component: ArchitecturalDesignDetails,
-        completePercentageWeight: 5,
-        completed: false,
-        routeResolver: ArchitecturalDesignDetailsRouteResolver
+        routeResolver: CurrentEnvironmentSummaryResolver,
       },
       // {
       //   menuText: "Summary",
@@ -684,27 +654,55 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: PerformanceRequirementsIndex,
     children: [
       {
-        menuText: "Performance Requirements",
-        path: "/",
+        menuText: "Replicate And Optimize",
+        path: "replicate-and-optimize",
+        excludeFromMenu: true,
+        name: routeNames.ReplicateAndOptimize,
+        component: ReplicateAndOptimize,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver:ReplicateAndOptimizeResolver,
+      },
+      {
+        menuText: "Replicate Details",
+        path: "replicate-details",
+        excludeFromMenu: true,
+        name: routeNames.ReplicateDetails,
+        component: ReplicateDetails,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: ReplicateDetailsResolver,
+      },
+      {
+        menuText: "Architectural Design",
+        path: "architectural-design",
+        excludeFromMenu: true,
+        name: routeNames.ArchitecturalDesign,
+        component: ArchitecturalDesign,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: ArchitecturalDesignResolver,
+      },
+      {
+        menuText: "Architectural Design Details",
+        path: "architectural-design-details",
+        excludeFromMenu: true,
+        name: routeNames.ArchitecturalDesignDetails,
+        component: ArchitecturalDesignDetails,
+        completePercentageWeight: 5,
+        completed: false,
+        routeResolver: ArchitecturalDesignDetailsResolver,
+      },
+      {
+        menuText: "Requirement Categories",
+        path: "/requirement-categories",
         excludeFromMenu: true,
         name: routeNames.RequirementCategories,
-        stepCompleteOnEnter: routeNames.CurrentContract,
+        stepCompleteOnEnter: routeNames.DOWLandingPage, // TODO - double-check when wired up
         completePercentageWeight: 1,
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,
-      },
-
-      {
-        menuText: "Architectural Design Requirements DOW",
-        excludeFromMenu: true,
-        path: "architectural-design-requirements-dow",
-        name: routeNames.DOWArchitecturalDesign,
-        completePercentageWeight: 5,
-        completed: false,
-        routeResolver: DOWArchitecturalDesignResolver,
-        component: ArchitectureDesignDOW,
-      },
-
+      },      
       {
         menuText: "Anticipated Users and Data Needs",
         excludeFromMenu: true,
@@ -749,13 +747,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.OtherOfferingSummary,
         completePercentageWeight: 1,
         component: OtherOfferingSummary,
-        routeResolver: OtherOfferingSummaryPathResolver, 
+        routeResolver: OtherOfferingSummaryPathResolver,
         additionalButtons: [
           {
             buttonText: "I don’t need compute resources",
             buttonId: "DontNeedResources",
             buttonClass: "secondary",
-            actionName: "confirmComputeDeletion",
+            actionName: "confirmOtherOfferingDeletion",
             emitText: "confirmDeleteCompute",
           },
         ],
@@ -778,8 +776,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: DOWSummary,
         routeResolver: DowSummaryPathResolver,
-        backButtonText: "Back",
+      },
+      {
+        menuText: "Landing Page",
+        path: "/",
+        excludeFromMenu: true,
+        name: routeNames.DOWLandingPage,
+        completePercentageWeight: 1,
+        component: DOWLandingPage,
         continueButtonText: 'Wrap up this section',
+        completed: false,
       },
     ],
   },
@@ -1107,7 +1113,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         name: routeNames.GeneratingPackageDocuments,
         completePercentageWeight: 0,
-        component: GeneratingPackageDocuments
+        component: GeneratingPackageDocuments,
       },
       {
         menuText: "Upload Signed Documents",
@@ -1116,6 +1122,23 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.UploadSignedDocuments,
         completePercentageWeight: 0,
         component: UploadSignedDocuments
+      },
+      {
+        menuText: "Ready To Submit",
+        path:"ready-to-submit",
+        excludeFromMenu: true,
+        name: routeNames.ReadyToSubmit,
+        completePercentageWeight: 0,
+        component: ReadyToSubmit,
+        continueButtonText: "Submit my acquisition package"
+      },
+      {
+        menuText: "Under Review",
+        path:"under-review",
+        excludeFromMenu: true,
+        name: routeNames.UnderReview,
+        completePercentageWeight: 0,
+        component: UnderReview,
       }
     ],
   },

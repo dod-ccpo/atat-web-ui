@@ -58,6 +58,8 @@ import { TrainingEstimateAPI } from "@/api/trainingEstimate";
 import {IgceEstimateApi} from "@/api/igceEstimate";
 import { travelRequirementApi } from "./travelRequirement";
 import { RegionsAPI } from "./regions";
+import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
+import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
 
 
 export const api = {
@@ -121,7 +123,9 @@ export const api = {
   crossDomainSolutionTable: new CrossDomainSolutionAPI(),
   travelRequirementTable: new travelRequirementApi(),
   trainingEstimateTable: new TrainingEstimateAPI(),
-  regionsTable: new RegionsAPI()
+  regionsTable: new RegionsAPI(),
+  packageDocumentsSignedTable: new PackageDocumentsSignedAPI(),
+  packageDocumentsUnsignedTable: new PackageDocumentsUnsignedAPI(),
 }
 
 export default {
