@@ -57,7 +57,6 @@ import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
-import Steps from "../steps";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
@@ -991,7 +990,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
     Steps.clearAltBackButtonText();
-
     
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
