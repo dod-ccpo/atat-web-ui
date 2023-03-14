@@ -33,7 +33,7 @@
             />
             <ATATAlert
               id="ClassificationRequirementsAlert"
-              v-show="isIL6Selected === 'true'"
+              v-if="isIL6Selected"
               type="info"
               class="copy-max-width my-10"
             >
@@ -46,10 +46,46 @@
                 </p>
               </template>
             </ATATAlert>
+            <ATATAlert
+              id="RemoveExistingSelectionsAlert"
+              v-if="showClassificationRequirementsAlert"
+              type="warning"
+              class="copy-max-width my-10"
+            >
+              <template v-slot:content>
+                <p class="mb-0">
+                  You currently have performance requirements for 
+                  {{ classReqsAsCommaList }}. 
+                  If you remove any of these selections, all requirements within the level will 
+                  be deleted
+                </p>
+              </template>
+            </ATATAlert>
           </v-col>
         </v-row>
       </v-container>
     </div>
+    <ATATDialog
+      id="DeleteClassificationRequirements"
+      :showDialog.sync="showDialog"
+      :title="'Delete all ' + deselectedItem.display + ' requirements?'"
+      no-click-animation
+      okText="Delete"
+      cancelText="Cancel"
+      width="450"
+      @cancelClicked="cancelClicked"
+     
+    >
+     <!-- @ok="okClicked"
+       -->
+      <template #content>
+        <div class="body">
+         This action will permanently delete {{ DOWOfferingsWithClassLevelLength  }} performance 
+         requirements that you previously entered within {{ deselectedItem.display }}. 
+         This cannot be undone.
+        </div>
+      </template>
+    </ATATDialog>
   </v-form>
 </template>
 <script lang="ts">
@@ -58,14 +94,18 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATDialog from "@/components/ATATDialog.vue";
 
 import { Checkbox } from "../../../types/Global";
 import {
   AcquisitionPackageDTO,
-  ClassificationLevelDTO, ReferenceColumn, SelectedClassificationLevelDTO
+  ClassificationLevelDTO, SelectedClassificationLevelDTO
 } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
+import { 
+  hasChanges, 
+  buildClassificationCheckboxList, 
+  convertStringArrayToCommaList} from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from '@/store/acquisitionPackage';
 import _ from "lodash";
@@ -73,11 +113,13 @@ import {
   buildCurrentSelectedClassLevelList
 } from "@/packages/helpers/ClassificationRequirementsHelper";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import { json } from "stream/consumers";
 
 @Component({
   components: {
     ATATCheckboxGroup,
-    ATATAlert
+    ATATAlert,
+    ATATDialog
   }
 })
 
@@ -85,18 +127,55 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedSelectedClassLevelList: SelectedClassificationLevelDTO[] = [];
+  public existingClassificationsLevels = [""];
+  public classReqsAsCommaList = "";
   public acquisitionPackage: AcquisitionPackageDTO | undefined;
-  public isIL6Selected = ""
-  public IL6SysId = ""
+  public isIL6Selected = false;
+  public IL6SysId = "";
+  public showClassificationRequirementsAlert = false;
+  public showDialog = false;
   private checkboxItems: Checkbox[] = []
+  private deselectedItem: ClassificationLevelDTO|undefined;
+  private DOWOfferingsWithClassLevelLength = 0;
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    return buildClassificationCheckboxList(data, "", true, false);
+    return buildClassificationCheckboxList(data, "", true, true);
   }
 
   @Watch("selectedOptions")
-  public selectedOptionsChange(newVal: string[]): void {
-    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false"
+  public selectedOptionsChange(newVal: string[], oldVal: string[]): void {
+    this.getDeselectedItem(oldVal, newVal);
+    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1;
+  }
+
+  /**
+   * @param selection - preexisting selectedOptions array of sys_ids
+   * @param updated - updated selectedOptions array of sys_ids
+   */
+  public getDeselectedItem(selection: string[], updated: string[]): void {
+    const deselectedItemSysId = (selection.filter(x => updated.indexOf(x) === -1))[0];
+    if (deselectedItemSysId !== ""){
+      this.deselectedItem = 
+        (this.classifications.filter(
+          classifs => classifs.sys_id === deselectedItemSysId)
+        )[0] || {};
+      if (this.deselectedItem){
+        this.deselectedItem.display = this.deselectedItem?.display?.replace(" - ", "/") || "";
+      }
+      this.getDOWOfferingsWithClassLevelLength(deselectedItemSysId);
+    }
+    this.showDialog = this.deselectedItem?.display !== "";
+  }
+
+  public getDOWOfferingsWithClassLevelLength(deselectedItemSysId: string): void{
+    const dowStringified  = JSON.stringify(DescriptionOfWork.DOWObject);
+    const re = new RegExp(deselectedItemSysId, 'g');
+    this.DOWOfferingsWithClassLevelLength = dowStringified.match(re)?.length || 0;
+  }
+
+  // restore the deselectedItem back to selectedOptions
+  public cancelClicked(): void{
+    this.selectedOptions.push(this.deselectedItem?.sys_id as string)
   }
 
   public get currentData(): SelectedClassificationLevelDTO[] {
@@ -108,11 +187,31 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedSelectedClassLevelList);
   }
 
+  public buildClassificationRequirementsAlert(): void {
+    this.showClassificationRequirementsAlert = DescriptionOfWork.DOWObject.length>0;
+    if (this.showClassificationRequirementsAlert){
+      this.existingClassificationsLevels = this.savedSelectedClassLevelList.map(
+        (selectedClassLevel)=>selectedClassLevel.classification_level) as string[];
+      this.buildClassReqsAsCommaList();
+    }
+  }
+
+  /**
+   * builds existing classified requirements as comma list 
+   */
+  public buildClassReqsAsCommaList(): void{
+    const existingClassLabels = this.classifications.filter(
+      classifs => this.existingClassificationsLevels.find(so => so === classifs.sys_id)
+    ).map(selectedClassifs => selectedClassifs.display?.replace(" - ", "/")) as string[];
+    this.classReqsAsCommaList = convertStringArrayToCommaList(
+      existingClassLabels.sort(), 'and'
+    );
+  }
+
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-
         const selectedClassificationLevelSysIdsOnLoad: string[] 
           = this.savedSelectedClassLevelList.map(obj => obj.classification_level as string);
         const removed = selectedClassificationLevelSysIdsOnLoad.filter(
@@ -150,6 +249,8 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     this.selectedOptions = this.savedSelectedClassLevelList
       .map(savedSelectedClassLevel =>
         savedSelectedClassLevel.classification_level) as string[];
+
+    this.buildClassificationRequirementsAlert();
   }
 
   public async mounted(): Promise<void> {
