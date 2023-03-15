@@ -74,10 +74,8 @@
       cancelText="Cancel"
       width="450"
       @cancelClicked="cancelClicked"
-     
+      @ok="deleteClicked"
     >
-     <!-- @ok="okClicked"
-       -->
       <template #content>
         <div class="body">
          This action will permanently delete {{ DOWOfferingsWithClassLevelLength  }} performance 
@@ -176,6 +174,11 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   // restore the deselectedItem back to selectedOptions
   public cancelClicked(): void{
     this.selectedOptions.push(this.deselectedItem?.sys_id as string)
+  }
+
+  // restore the deselectedItem back to selectedOptions
+  public async deleteClicked(): Promise<void>{
+    DescriptionOfWork.removeClassificationLevelsGlobally(this.deselectedItem?.sys_id as string);
   }
 
   public get currentData(): SelectedClassificationLevelDTO[] {

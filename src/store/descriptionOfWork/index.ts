@@ -10,7 +10,9 @@ import rootStore from "../index";
 import api from "@/api";
 import {
   ArchitecturalDesignRequirementDTO,
+  BaseTableDTO,
   ClassificationInstanceDTO,
+  CloudServiceProviderDTO,
   CloudSupportEnvironmentInstanceDTO,
   ComputeEnvironmentInstanceDTO,
   DatabaseEnvironmentInstanceDTO,
@@ -49,10 +51,11 @@ import IGCEStore from "@/store/IGCE";
 import { 
   buildClassificationLabel, 
   toTitleCase, 
-  capitalizeEachWord, 
+  capitalizeEachWord,
 } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import { TableApiBase } from "@/api/tableApiBase";
 
 
 // Classification Proxy helps keep track of saved
@@ -2024,6 +2027,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
+    debugger;
     const updatedInstancesData: DOWClassificationInstance[] = [];
 
     const groupIndex = this.DOWObject.findIndex(
@@ -2673,11 +2677,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async removeClassificationInstances(classificationInstances:
-                                                 string[]): Promise<void>{
-
-
-
+  public async removeClassificationInstances(classificationInstances:string[]): Promise<void>{
     try {
 
       const calls:Promise<void>[] = [];
@@ -2737,6 +2737,72 @@ export class DescriptionOfWorkStore extends VuexModule {
     } catch (error) {
       //to nothing here we're deleting stuff optimistically
     }
+  }
+
+  @Action({rawError: true})
+  public async removeClassificationLevelsGlobally (
+    classLevelSysIdToBeDeleted: string
+  ): Promise<void> {
+    await this.deleteClassLevelsFromSelectedServiceOfferings(classLevelSysIdToBeDeleted);
+    // await this.deleteClassLevelsFromInstanceTables(classLevelSysIdToBeDeleted);
+    
+  }
+
+  @Action({rawError: true})
+  public async deleteClassLevelsFromSelectedServiceOfferings(classLevelSysId: string): 
+    Promise<void> {
+    /*
+    * selected service offerings 
+      1. [x] select by acqpackageId
+      2. [x] get the classificationInstances sysIds
+      3. cycle through sysids and remove from classinstances tbl level === classLevelSysId  
+    */
+    const getClassInstancesQuery: AxiosRequestConfig = {
+      params: {
+        sysparm_fields: "classification_instances",
+        sysparm_query: "acquisition_package=" + AcquisitionPackage.acquisitionPackage?.sys_id
+      }
+    };
+    const allClassInstances = 
+      await api.selectedServiceOfferingTable.getQuery(getClassInstancesQuery);
+    let tempCIString ="";
+    allClassInstances.forEach(
+      (ci)=>{
+        tempCIString += ci.classification_instances + ","
+      })
+    const classInstances = tempCIString.split(",")
+    debugger;
+  }
+
+  @Action({rawError: true})
+  public async deleteClassLevelsFromInstanceTables(classLevelSysId: string): 
+    Promise<void> {
+    const instanceTables = [
+      "cloudSupportEnvironmentInstanceTable", 
+      "storageEnvironmentInstanceTable",
+      "databaseEnvironmentInstanceTable",
+      "computeEnvironmentInstanceTable",
+      "xaaSEnvironmentInstanceTable"
+    ]
+    const deleteQuery: AxiosRequestConfig = {
+      params: {
+        sysparm_fields: "sys_id",
+        sysparm_query: "acquisition_package=" + AcquisitionPackage.acquisitionPackage?.sys_id + 
+            "^classification_level=" + classLevelSysId
+      }
+    };
+
+    instanceTables.forEach(async (tblName)=>{
+      //retrieve the property dynamically from the api object.  
+      //(Note: the api object does NOT have an interface)
+      const tbl = api[(tblName) as keyof typeof api] as TableApiBase<BaseTableDTO>
+      const sysIdsToBeDeleted = await tbl.getQuery(deleteQuery);
+      sysIdsToBeDeleted.forEach(async (item)=>{
+        await tbl.remove(item.sys_id as string);
+      })
+    })
+  
+  
   }
 
   @Action({rawError: true})
