@@ -171,7 +171,7 @@ import {
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
-  IGCETrainingPathResolver, 
+  IGCETrainingPathResolver,
   FeeChargedResolver,
 } from "./resolvers";
 
@@ -303,7 +303,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
-        component: DAPPSChecklist
+        component: DAPPSChecklist,
       },
       {
         menuText: "Contracting Shop",

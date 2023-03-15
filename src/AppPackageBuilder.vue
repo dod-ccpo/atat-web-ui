@@ -78,6 +78,8 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "./store/descriptionOfWork";
 import { Route } from "vue-router";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import DAPPSChecklist from "@/steps/01-AcquisitionPackageDetails/DAPPSChecklist.vue";
+import steps from "@/store/steps";
 
 @Component({
   components: {
@@ -140,8 +142,9 @@ export default class AppPackageBuilder extends Vue {
       const { stepName, stepNumber } = step;
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
-      this.$refs.sideStepper.setCurrentStep(stepNumber);
-
+      if(!acquisitionPackage.hideSideNavigation && !acquisitionPackage.hideNavigation){
+        this.$refs.sideStepper.setCurrentStep(stepNumber);
+      }
       SlideoutPanel.closeSlideoutPanel();
     }
   }
@@ -151,6 +154,19 @@ export default class AppPackageBuilder extends Vue {
       ? await Steps.getNext() 
       : await Steps.getPrevious();
     if (nextStepName) {
+      if(nextStepName === 'DAPPSChecklist'){
+        if(acquisitionPackage.firstTimeVisit){
+          await this.$router.push({name: nextStepName as string, params: {direction}});
+          return
+        }else {
+          const activeSection = steps.altBackDestination === "Home"? AppSections.sectionTitles.Home
+            :AppSections.sectionTitles.Packages
+          await Steps.setAltBackDestination("");
+          await this.$router.push({name: "home", params: {direction}})
+          AppSections.changeActiveSection(activeSection);
+          return
+        }
+      }
       if (isRouteResolver(nextStepName)) {
         const routeResolver = nextStepName as StepRouteResolver;
         this.$router.push({
@@ -176,13 +192,11 @@ export default class AppPackageBuilder extends Vue {
 
         return ;
       }
-
-      await Steps.setAltBackDestination("");
       await this.$router.push({name: nextStepName as string, params: {direction}});
 
     } else if (direction === "previous" && this.altBackDestination) {
       if (this.$route.name === this.routeNames.DAPPSChecklist && this.firstTimeVisit
-      || this.$route.name === this.routeNames.contr && !this.firstTimeVisit) {
+      || this.$route.name === this.routeNames.ContractingShop && !this.firstTimeVisit) {
         await Steps.setAltBackDestination("");
         switch (this.altBackDestination) {
         case AppSections.sectionTitles.Home: {
