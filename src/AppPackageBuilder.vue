@@ -1,6 +1,7 @@
 <template>
   <div  style="overflow: hidden;">
-    <ATATSideStepper v-if="!hideNavigation" ref="sideStepper" :stepperData="stepperData" />
+    <ATATSideStepper v-if="!hideSideNavigation && !hideNavigation"
+      ref="sideStepper" :stepperData="stepperData" />
 
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
@@ -28,9 +29,12 @@
           :disableContinueButton="disableContinueButton"
           :noPrevious="noPrevious"
           class="mb-8"
+          :class="[currentRouteName === routeNames.DAPPSChecklist? 'mx-auto':'']"
         />
 
-        <ATATFooter/>
+        <ATATFooter
+          :class="[currentRouteName === routeNames.DAPPSChecklist? 'mx-auto':'']"
+        />
 
       </div>
     </v-main>
@@ -73,6 +77,7 @@ import AppSections from "./store/appSections";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "./store/descriptionOfWork";
 import { Route } from "vue-router";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -105,10 +110,14 @@ export default class AppPackageBuilder extends Vue {
   private hideContinueButton = false;
   private disableContinueButton = false;
   private hideNavigation = false;
+  private hideSideNavigation = false;
+  private firstTimeVisit = false
 
   async mounted(): Promise<void> {
     this.hideNavigation = AcquisitionPackage.hideNavigation;
+    this.hideSideNavigation = AcquisitionPackage.hideSideNavigation;
     this.routeNames = routeNames;
+    this.firstTimeVisit = acquisitionPackage.firstTimeVisit
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
@@ -141,7 +150,6 @@ export default class AppPackageBuilder extends Vue {
     const nextStepName = direction === "next" 
       ? await Steps.getNext() 
       : await Steps.getPrevious();
-
     if (nextStepName) {
       if (isRouteResolver(nextStepName)) {
         const routeResolver = nextStepName as StepRouteResolver;
@@ -169,22 +177,21 @@ export default class AppPackageBuilder extends Vue {
         return ;
       }
 
-      Steps.setAltBackDestination("");   
-      this.$router.push({ name: nextStepName as string, params: { direction } });
+      await Steps.setAltBackDestination("");
+      await this.$router.push({name: nextStepName as string, params: {direction}});
 
-    } else if (direction === "previous" && this.altBackDestination) { 
-
-      if (this.$route.name === this.routeNames.ProjectOverview) {
-        Steps.setAltBackDestination("");
-
+    } else if (direction === "previous" && this.altBackDestination) {
+      if (this.$route.name === this.routeNames.DAPPSChecklist && this.firstTimeVisit
+      || this.$route.name === this.routeNames.contr && !this.firstTimeVisit) {
+        await Steps.setAltBackDestination("");
         switch (this.altBackDestination) {
         case AppSections.sectionTitles.Home: {
-          this.$router.push({name: "home", params: { direction } })
+          await this.$router.push({name: "home", params: {direction}})
           AppSections.changeActiveSection(AppSections.sectionTitles.Home);
           break;
         }
         case AppSections.sectionTitles.Packages: {
-          this.$router.push({name: "home", params: { direction } })
+          await this.$router.push({name: "home", params: {direction}})
           AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
           break;
         }
@@ -192,6 +199,9 @@ export default class AppPackageBuilder extends Vue {
 
       }
     }
+  }
+  public get currentRouteName():string|null|undefined{
+    return this.$route.name
   }
 
   public get projectTitle(): string {
@@ -209,6 +219,9 @@ export default class AppPackageBuilder extends Vue {
   public get hideNav(): boolean {
     return AcquisitionPackage.hideNavigation
   }
+  public get hideSideNav(): boolean {
+    return AcquisitionPackage.hideSideNavigation
+  }
 
   @Watch('disableContinue')
   public disableContinueChanged(newVal:boolean): void {
@@ -217,6 +230,10 @@ export default class AppPackageBuilder extends Vue {
   @Watch('hideNav')
   public hideNavigationChanged(newVal:boolean): void {
     this.hideNavigation = newVal
+  }
+  @Watch('hideSideNav')
+  public hideSideNavigationChanged(newVal:boolean): void {
+    this.hideSideNavigation = newVal
   }
   private setNavButtons(step: StepInfo): void {
     this.altBackDestination = Steps.altBackDestination;
