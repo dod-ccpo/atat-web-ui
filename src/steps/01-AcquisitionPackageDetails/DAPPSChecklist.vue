@@ -65,14 +65,14 @@
                 >
                   Contact Information
                 </h3>
-                <p class="mb-1">
+                <p class="mb-2">
                   Gather names, emails, and phone numbers for your main points of contact (POC):
                 </p>
                 <ul>
-                  <li>
+                  <li class="mb-2">
                     Primary and Alternate Contracting Officer Representatives (COR/ACOR)
                   </li>
-                  <li>
+                  <li class="mb-2">
                     Financial POC (if incrementally funding)
                   </li>
                   <li>
@@ -95,7 +95,7 @@
                 >
                   CertifiedDocumentsForTransferringFunds
                 </h3>
-                <p class="mb-1">
+                <p class="mb-4">
                   Save time by completing your Fiscal Service Forms 7600A and 7600B within
                   G-Invoicing.
                   <a
@@ -152,13 +152,13 @@
                   forms or information:
                 </p>
                 <ul>
-                  <li>
+                  <li class="mb-2">
                     Previous contracts (e.g., contract number, contractor, and expiration date)
                   </li>
-                  <li>
+                  <li class="mb-2">
                     Business Associate Agreements, if applicable
                   </li>
-                  <li>
+                  <li class="mb-2">
                     Freedom of Information Act (FOIA) point of contact, if your requirement
                     contains protected information
                   </li>
