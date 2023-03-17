@@ -2770,8 +2770,11 @@ export class DescriptionOfWorkStore extends VuexModule {
       classLevelSysId: classLevelSysIdToBeDeleted
     });
     
-    // delete classification_instances from IGCE cost estimate table
-    // this.removeClassificationInstances
+    // delete classification_instances from igceEstimateTable
+    await this.deleteClassificationLevels({
+      tables: ["igceEstimateTable"],
+      classLevelSysId: classLevelSysIdToBeDeleted
+    });
   } 
 
   @Action({rawError: true})
