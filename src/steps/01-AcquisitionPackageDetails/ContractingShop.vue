@@ -107,6 +107,7 @@ import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage"
 import { ProjectOverviewDTO } from "@/api/models";
 import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 
 @Component({
@@ -160,7 +161,7 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
 
   private async loadOnEnter(): Promise<void> {
     this.isPageLoading = true;
-
+    await acquisitionPackage.setHideSideNavigation(false);
     const packageId = this.$route.query['packageId'] || "";
 
     if(packageId){
