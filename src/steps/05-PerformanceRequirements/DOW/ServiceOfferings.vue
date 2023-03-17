@@ -119,6 +119,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   @Watch("selectedOptions")
   public async selectedOptionsChange(newVal: string[]): Promise<void> {
+    debugger
     if(this.previousSelectedOptions.length > this.selectedOptions.length){
       const difference = this.previousSelectedOptions.filter(
         tempVal => this.selectedOptions.indexOf(tempVal) === -1
@@ -126,7 +127,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       const deselectedItem = this.checkboxItems.find(el => el.value === difference[0]);
       this.deselectedLabel = deselectedItem?.label || "";
       this.deleteMode = "item";
-
+      if(this.deselectedLabel === "Other"){
+        this.otherValueEntered = ""
+      }
       const hasInstances = 
         await DescriptionOfWork.serviceOfferingHasInstances(this.deselectedLabel);
       if (hasInstances) {
@@ -243,12 +246,17 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         const itemIndex = this.checkboxItems.findIndex(item=>item.label === current);
         const selected = itemIndex >=0 ? [...accumulator, 
           this.checkboxItems[itemIndex].value] : accumulator;
+        if(itemIndex < 0 && current !== ""){
+          const otherIndex = this.checkboxItems.findIndex(item=>item.label === "Other")
+          selected.push(this.checkboxItems[otherIndex].value)
+          this.otherValueEntered = current
+        }
         return selected;
       }, []);
 
       this.selectedOptions.push(...validSelections);
 
-      this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
+      // this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
     } else {
       const offeringIndex = DescriptionOfWork.DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() 
