@@ -75,6 +75,7 @@
       width="450"
       @cancelClicked="cancelClicked"
       @ok="deleteClicked"
+      :disableClickingOutside="true"
     >
       <template #content>
         <div class="body">
@@ -111,7 +112,6 @@ import {
   buildCurrentSelectedClassLevelList
 } from "@/packages/helpers/ClassificationRequirementsHelper";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import { json } from "stream/consumers";
 
 @Component({
   components: {

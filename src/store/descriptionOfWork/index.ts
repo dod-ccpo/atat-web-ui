@@ -2744,7 +2744,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     classLevelSysIdToBeDeleted: string
   ): Promise<void> {
     
-    // await this.deleteClassLevelsFromSelectedServiceOfferings(classLevelSysIdToBeDeleted);
     // delete classification_instances from classification_instance tbl
     await this.deleteClassificationLevels({
       tables: ["classificationInstanceTable"],
@@ -2763,8 +2762,9 @@ export class DescriptionOfWorkStore extends VuexModule {
       classLevelSysId: classLevelSysIdToBeDeleted
     });
 
-    // deletes `anticipated users and data` classification levels from 
-    // selected_classification_levels table
+    // Deletes from selectedClassificationLevelTable
+    // 1. `anticipated users and data` data 
+    // 2. security requirements for Secret and TS classification levels
     await this.deleteClassificationLevels({
       tables: ["selectedClassificationLevelTable"],
       classLevelSysId: classLevelSysIdToBeDeleted
@@ -2772,9 +2772,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     
     // delete classification_instances from IGCE cost estimate table
     // this.removeClassificationInstances
-   
-    // security requirements
-
   } 
 
   @Action({rawError: true})
@@ -2825,7 +2822,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     const selectedServiceOfferings = 
       await api.selectedServiceOfferingTable.getQuery(getSelectedServiceOfferingsQuery);
-    selectedServiceOfferings.forEach((sso)=>{
+    selectedServiceOfferings.forEach(async (sso)=>{
       const instancesArray = sso.classification_instances.split(",");
       const updatedInstances = instancesArray.filter(
         (instance) => sysIdsToBeDeleted.indexOf(instance) === -1
@@ -2834,16 +2831,20 @@ export class DescriptionOfWorkStore extends VuexModule {
       if (instanceWasDeleted){
         if (updatedInstances.length>0){
           // if NOT all classification instances have been deleted
-          // remove the deleted classification instance from 
-          // select_service_offerings.classification_instances
-          sso.classification_instances = 
-            updatedInstances.join(",").replace(/,\x*$/, ""); //removes trailing comma & spaces
-          sso.acquisition_package = AcquisitionPackage.packageId;
-          api.selectedServiceOfferingTable.update(sso.sys_id as string,sso)
+          // update select_service_offerings.classification_instances
+          // with updatedInstances
+          await api.selectedServiceOfferingTable.update(
+              sso.sys_id as string,{
+                ...sso,
+                acquisition_package: AcquisitionPackage.packageId,
+                service_offering: (sso.service_offering as ReferenceColumn).value || "",
+                classification_instances: updatedInstances.join(",").replace(/,\x*$/, "")
+              }
+          )
         } else if (updatedInstances.length === 0){
           // if all classifications instances have been deleted
           // remove the selectedServiceOffering row
-          api.selectedServiceOfferingTable.remove(sso.sys_id as string);
+          await api.selectedServiceOfferingTable.remove(sso.sys_id as string);
         }
       }
     })
