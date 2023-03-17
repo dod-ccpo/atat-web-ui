@@ -77,7 +77,6 @@
               <v-btn
                 id="AddPortfolioMember"
                 class="_icon-only"
-                disabled
                 @click="openMembersModal"
                 @keydown.enter="openMembersModal"
                 @keydown.space="openMembersModal"
@@ -92,11 +91,8 @@
               </v-btn>
             </span>
           </template>
-        <div class="_tooltip-content-wrap _left" style="width: 255px">
-          <span class="font-weight-bold d-block mb-1">
-            Coming Soon!
-          </span>
-          You will be able to invite others to access this portfolio witin ATAT.
+        <div class="_tooltip-content-wrap _left">
+          Add members
         </div>
         </v-tooltip>
 
@@ -167,9 +163,15 @@
       -->
     </div>
 
-    <AddMembersModal 
+    <!-- TODO: remove below commented code after fully implementing InviteMembersModal -->
+    <!--
+    <AddMembersModal
       :showModal.sync="showMembersModal" 
       @members-invited="membersInvited"
+    />-->
+    <InviteMembersModal
+        :showModal.sync="showMembersModal"
+        @members-invited="membersInvited"
     />
 
     <ATATDialog
@@ -201,14 +203,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-
-import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembersModal.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PortfolioRolesLearnMore from
   "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
-
 import PortfolioStore from "@/store/portfolio";
 import SlideoutPanel from "@/store/slideoutPanel";
 import Toast from "@/store/toast";
@@ -226,13 +225,14 @@ import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue"
 import {getStatusChipBgColor, hasChanges} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
+import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
 
 @Component({
   components: {
+    InviteMembersModal,
     ATATDialog,
     ATATSVGIcon,
     ATATSelect,
-    AddMembersModal,
     PortfolioRolesLearnMore,
     MemberCard,
   },
