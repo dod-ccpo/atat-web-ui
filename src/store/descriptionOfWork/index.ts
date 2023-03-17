@@ -161,7 +161,6 @@ const saveOrUpdateClassificationInstance =
       tempObject.type_of_mobility = classificationInstance.typeOfMobility;
       tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
       tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
-      debugger;
       if(classificationInstance.sysId)
         tempObject.sys_id = classificationInstance.sysId;
 
@@ -2029,7 +2028,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
-    debugger;
     const updatedInstancesData: DOWClassificationInstance[] = [];
 
     const groupIndex = this.DOWObject.findIndex(
@@ -2801,7 +2799,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       // (Note: the api object does NOT have an interface)
       const tbl = api[(tblName) as keyof typeof api] as TableApiBase<BaseTableDTO>
       const sysIds = await tbl.getQuery(deleteQuery);
-      debugger;
       if (tblName === "classificationInstanceTable"){
         this.deleteSelectedServiceOfferingsClassificationInstances(sysIds);
       }
@@ -2817,7 +2814,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     sysIds: BaseTableDTO[]
   ): 
     Promise<void>{
-    debugger;
     const sysIdsToBeDeleted = Object.values(sysIds).map(x=>x.sys_id);
     //retrieve selectedServiceOfferings.classification_instances with acqPackageId 
     const getSelectedServiceOfferingsQuery: AxiosRequestConfig = {
