@@ -68,7 +68,7 @@
     <ATATDialog
       id="DeleteClassificationRequirements"
       :showDialog.sync="showDialog"
-      :title="'Delete all ' + deselectedItem.display + ' requirements?'"
+      :title="'Delete all ' + deselectedItem?.display + ' requirements?'"
       no-click-animation
       okText="Delete"
       cancelText="Cancel"
@@ -79,7 +79,7 @@
       <template #content>
         <div class="body">
          This action will permanently delete {{ DOWOfferingsWithClassLevelLength  }} performance 
-         requirements that you previously entered within {{ deselectedItem.display }}. 
+         requirements that you previously entered within {{ deselectedItem?.display }}. 
          This cannot be undone.
         </div>
       </template>
@@ -133,7 +133,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public showClassificationRequirementsAlert = false;
   public showDialog = false;
   private checkboxItems: Checkbox[] = []
-  private deselectedItem: ClassificationLevelDTO|undefined;
+  private deselectedItem: ClassificationLevelDTO|undefined|null = null;
   private DOWOfferingsWithClassLevelLength = 0;
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
@@ -161,8 +161,9 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
         this.deselectedItem.display = this.deselectedItem?.display?.replace(" - ", "/") || "";
       }
       this.getDOWOfferingsWithClassLevelLength(deselectedItemSysId);
+      this.showDialog = this.deselectedItem?.display !== "";
     }
-    this.showDialog = this.deselectedItem?.display !== "";
+    
   }
 
   public getDOWOfferingsWithClassLevelLength(deselectedItemSysId: string): void{
