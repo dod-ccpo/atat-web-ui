@@ -37,7 +37,7 @@
                 :href="requestAccessURL"
                 id="RequestAccess"
                 target="_blank"
-                class="primary mt-4 width-40 _text-decoration-none"
+                class="primary mt-4 width-45 _text-decoration-none"
                 >
                   Request access to CSP pricing calculators
                 <ATATSVGIcon
