@@ -39,9 +39,9 @@
                 target="_blank"
                 class="primary mt-4 width-40 _text-decoration-none"
                 >
-                Report a bug or technical issue
+                  Request access to CSP pricing calculators
                 <ATATSVGIcon
-                  id="ReportIssueButtonIcon"
+                  id="RequestAccessIcon"
                   width="15"
                   height="15"
                   name="launch"

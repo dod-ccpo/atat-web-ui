@@ -50,10 +50,5 @@ describe("Testing FundingTracker Component", () => {
     expect(router.app.$route.name).toBe("Contracting_Shop");
   });
 
-  // it("navigates() tests back to packages", async () => {
-  //   wrapper.vm.$data.altBackDestination = "Packages";
-  //   await wrapper.vm.navigate("previous");
-  //   expect(router.app.$route.name).toBe("Contracting_Shop");
-  // });
 
 })

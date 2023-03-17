@@ -77,8 +77,6 @@ import AppSections from "./store/appSections";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "./store/descriptionOfWork";
 import { Route } from "vue-router";
-import acquisitionPackage from "@/store/acquisitionPackage";
-import DAPPSChecklist from "@/steps/01-AcquisitionPackageDetails/DAPPSChecklist.vue";
 import steps from "@/store/steps";
 
 @Component({
@@ -119,7 +117,7 @@ export default class AppPackageBuilder extends Vue {
     this.hideNavigation = AcquisitionPackage.hideNavigation;
     this.hideSideNavigation = AcquisitionPackage.hideSideNavigation;
     this.routeNames = routeNames;
-    this.firstTimeVisit = acquisitionPackage.firstTimeVisit
+    this.firstTimeVisit = AcquisitionPackage.firstTimeVisit
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
@@ -142,7 +140,7 @@ export default class AppPackageBuilder extends Vue {
       const { stepName, stepNumber } = step;
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
-      if(!acquisitionPackage.hideSideNavigation && !acquisitionPackage.hideNavigation){
+      if(!AcquisitionPackage.hideSideNavigation && !AcquisitionPackage.hideNavigation){
         this.$refs.sideStepper.setCurrentStep(stepNumber);
       }
       SlideoutPanel.closeSlideoutPanel();
@@ -155,7 +153,7 @@ export default class AppPackageBuilder extends Vue {
       : await Steps.getPrevious();
     if (nextStepName) {
       if(nextStepName === 'DAPPSChecklist'){
-        if(acquisitionPackage.firstTimeVisit){
+        if(AcquisitionPackage.firstTimeVisit){
           await this.$router.push({name: nextStepName as string, params: {direction}});
           return
         }else {

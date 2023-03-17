@@ -138,7 +138,6 @@ import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Toast from "@/store/toast";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
-import appSections from "@/store/appSections";
 import Steps from "@/store/steps";
 @Component({
   components:{
