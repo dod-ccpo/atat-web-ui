@@ -240,38 +240,19 @@ export class ClassificationRequirementsStore extends VuexModule {
   }
 
   /**
-   * Compares the currently selected classification list from this store, with the new list
-   * passed into this function. Then marks classifications for either create or
-   * delete. No need to update since the selected classification level is already tied to the
-   * acquisition. Then performs the API calls to complete the save.
+   * @param itemsToBeAdded  SelectedClassificationLevelDTO[] items to be added to store
+   *                        and database
    */
   @Action({rawError: true})
-  async saveSelectedClassificationLevels(
-    newSelectedClassLevelList: SelectedClassificationLevelDTO[])
+  async createSelectedClassificationLevels(
+    itemsToBeAdded: SelectedClassificationLevelDTO[])
     : Promise<boolean> {
     try {
-      const markedForCreateList = newSelectedClassLevelList
-        .filter(newSelected => newSelected.sys_id ? newSelected.sys_id.length === 0 : true);
-      const currSelectedClasLevelList = await this.getSelectedClassificationLevels();
-      const markedForDeleteList = currSelectedClasLevelList
-        .filter(currSelected => (newSelectedClassLevelList.find(newSelected =>
-          newSelected.sys_id === currSelected.sys_id)) === undefined);
-      newSelectedClassLevelList.forEach((obj) => {
-        obj.data_growth_estimate_percentage
-            = obj.data_growth_estimate_percentage?.toString() as unknown as string[];
-        obj.user_growth_estimate_percentage
-            = obj.user_growth_estimate_percentage?.toString() as unknown as string[];
-      });
-      const apiCallList: Promise<SelectedClassificationLevelDTO | void>[] = [];
-      markedForCreateList.forEach(markedForCreate => {
-        apiCallList.push(api.selectedClassificationLevelTable
-          .create(markedForCreate));
+      // add to database and store
+      itemsToBeAdded.forEach(async item => {
+        await api.selectedClassificationLevelTable.create(item);
+        await this.selectedClassificationLevels.push(item);
       })
-      markedForDeleteList.forEach(markedForDelete => {
-        apiCallList.push(api.selectedClassificationLevelTable
-          .remove(markedForDelete.sys_id as string));
-      })
-      await Promise.all(apiCallList);
       return true;
     } catch (error) {
       throw new Error(`an error occurred saving selected classification levels ${error}`);

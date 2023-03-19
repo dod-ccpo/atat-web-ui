@@ -135,6 +135,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   private checkboxItems: Checkbox[] = []
   private deselectedItem: ClassificationLevelDTO|undefined|null = null;
   private DOWOfferingsWithClassLevelLength = 0;
+  private isDeletionSuccessful = true;
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     return buildClassificationCheckboxList(data, "", true, true);
@@ -179,7 +180,17 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
 
   // restore the deselectedItem back to selectedOptions
   public async deleteClicked(): Promise<void>{
-    DescriptionOfWork.removeClassificationLevelsGlobally(this.deselectedItem?.sys_id as string);
+    this.isDeletionSuccessful = await DescriptionOfWork.removeClassificationLevelsGlobally(
+      this.deselectedItem?.sys_id as string
+    );
+    await DescriptionOfWork.deleteClassificationLevelsfromDOWObject(
+      this.deselectedItem?.sys_id as string
+    )
+
+    if (this.isDeletionSuccessful){
+      this.buildClassificationRequirementsAlert();
+      this.isDeletionSuccessful = false;
+    }
   }
 
   public get currentData(): SelectedClassificationLevelDTO[] {
@@ -194,8 +205,12 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public buildClassificationRequirementsAlert(): void {
     this.showClassificationRequirementsAlert = DescriptionOfWork.DOWObject.length>0;
     if (this.showClassificationRequirementsAlert){
-      this.existingClassificationsLevels = this.savedSelectedClassLevelList.map(
-        (selectedClassLevel)=>selectedClassLevel.classification_level) as string[];
+      if (this.isDeletionSuccessful){
+        this.existingClassificationsLevels = this.selectedOptions;
+      } else {
+        this.existingClassificationsLevels = this.savedSelectedClassLevelList.map(
+          (selectedClassLevel)=>selectedClassLevel.classification_level) as string[];
+      }
       this.buildClassReqsAsCommaList();
     }
   }
@@ -216,16 +231,10 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-        const selectedClassificationLevelSysIdsOnLoad: string[] 
-          = this.savedSelectedClassLevelList.map(obj => obj.classification_level as string);
-        const removed = selectedClassificationLevelSysIdsOnLoad.filter(
-          sysId => !this.selectedOptions.includes(sysId)
-        );
-        if (removed.length) {
-          await DescriptionOfWork.removeAllInstancesInClassificationLevel(removed);        
-        }
-
-        await classificationRequirements.saveSelectedClassificationLevels(this.currentData)
+        const itemsToBeAdded = (this.currentData.filter(
+          x => this.savedSelectedClassLevelList.indexOf(x) === -1
+        ));
+        await classificationRequirements.createSelectedClassificationLevels(itemsToBeAdded)
         await classificationRequirements.loadSelectedClassificationLevelsByAqId(
             this.acquisitionPackage?.sys_id as string);
       }

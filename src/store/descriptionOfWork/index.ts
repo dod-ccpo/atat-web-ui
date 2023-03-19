@@ -2742,16 +2742,16 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({rawError: true})
   public async removeClassificationLevelsGlobally (
     classLevelSysIdToBeDeleted: string
-  ): Promise<void> {
-    
+  ): Promise<boolean> {
+    const success:boolean[] = []
     // delete classification_instances from classification_instance tbl
-    await this.deleteClassificationLevels({
+    success.push(await this.deleteClassificationLevels({
       tables: ["classificationInstanceTable"],
       classLevelSysId: classLevelSysIdToBeDeleted
-    });
+    }));
     
-    // delete classification_instances from instance Tables
-    await this.deleteClassificationLevels({
+    // // delete classification_instances from instance Tables
+    success.push(await this.deleteClassificationLevels({
       tables: [
         "cloudSupportEnvironmentInstanceTable", 
         "storageEnvironmentInstanceTable",
@@ -2760,21 +2760,22 @@ export class DescriptionOfWorkStore extends VuexModule {
         "xaaSEnvironmentInstanceTable"
       ],
       classLevelSysId: classLevelSysIdToBeDeleted
-    });
+    }));
 
-    // Deletes from selectedClassificationLevelTable
-    // 1. `anticipated users and data` data 
-    // 2. security requirements for Secret and TS classification levels
-    await this.deleteClassificationLevels({
+    // // Deletes from selectedClassificationLevelTable
+    // // 1. `anticipated users and data` data 
+    // // 2. security requirements for Secret and TS classification levels
+    success.push(await this.deleteClassificationLevels({
       tables: ["selectedClassificationLevelTable"],
       classLevelSysId: classLevelSysIdToBeDeleted
-    });
+    }));
     
-    // delete classification_instances from igceEstimateTable
-    await this.deleteClassificationLevels({
+    // // delete classification_instances from IGCE cost estimate table
+    success.push(await this.deleteClassificationLevels({
       tables: ["igceEstimateTable"],
       classLevelSysId: classLevelSysIdToBeDeleted
-    });
+    }));
+    return success.every(call => call);
   } 
 
   @Action({rawError: true})
@@ -2783,8 +2784,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       tables: string[], 
       classLevelSysId: string
     }): 
-    Promise<void> {
-   
+    Promise<boolean> {
+    let success = true;
     const deleteQuery: AxiosRequestConfig = {
       params: {
         sysparm_fields: "sys_id",
@@ -2797,23 +2798,28 @@ export class DescriptionOfWorkStore extends VuexModule {
     deleteItem.tables.forEach(async (tblName)=>{
       // retrieve the property dynamically from the api object.  
       // (Note: the api object does NOT have an interface)
-      const tbl = api[(tblName) as keyof typeof api] as TableApiBase<BaseTableDTO>
-      const sysIds = await tbl.getQuery(deleteQuery);
-      if (tblName === "classificationInstanceTable"){
-        this.deleteSelectedServiceOfferingsClassificationInstances(sysIds);
+      try{
+        const tbl = api[(tblName) as keyof typeof api] as TableApiBase<BaseTableDTO>
+        const sysIds = await tbl.getQuery(deleteQuery);
+        if (tblName === "classificationInstanceTable"){
+          this.deleteSelectedServiceOfferingsClassificationInstances(sysIds);
+        }
+        sysIds.forEach(async (itemToBeDeleted)=>{
+          await tbl.remove(itemToBeDeleted.sys_id as string);
+        })
+      } catch (error){
+        success = false;
+        throw new Error("Error: deleting from tbl " + tblName)
       }
-      sysIds.forEach(async (itemToBeDeleted)=>{
-        await tbl.remove(itemToBeDeleted.sys_id as string);
-      })
-    })
-  }
 
+    })
+    return success;
+  }
 
   @Action({rawError: true})
   public async deleteSelectedServiceOfferingsClassificationInstances(
     sysIds: BaseTableDTO[]
-  ): 
-    Promise<void>{
+  ):Promise<void>{
     const sysIdsToBeDeleted = Object.values(sysIds).map(x=>x.sys_id);
     //retrieve selectedServiceOfferings.classification_instances with acqPackageId 
     const getSelectedServiceOfferingsQuery: AxiosRequestConfig = {
@@ -2851,6 +2857,29 @@ export class DescriptionOfWorkStore extends VuexModule {
         }
       }
     })
+    this.DOWObject.forEach((dowObj)=>dowObj.serviceOfferingGroupId === "Applicaitons")
+  }
+
+  @Action({rawError: true})
+  public async deleteClassificationLevelsfromDOWObject(
+    classLevelSysIdToBeDeleted: string
+  ): Promise<void> {
+    this.DOWObject.forEach((dowObj)=>{
+      dowObj.serviceOfferings.forEach(
+        async (so) => {
+          debugger;
+          const ciIdxToBeDeleted = await so.classificationInstances?.findIndex(
+            cl=>cl.classificationLevelSysId === classLevelSysIdToBeDeleted
+          ) as number;
+          console.log(so.name)
+          console.log(ciIdxToBeDeleted);
+          if (ciIdxToBeDeleted>=0){
+            so.classificationInstances?.splice(ciIdxToBeDeleted,1);
+          }
+        }
+      )
+    })
+ 
   }
 
 
