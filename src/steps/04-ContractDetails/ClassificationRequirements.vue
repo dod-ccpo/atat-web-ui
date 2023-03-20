@@ -94,8 +94,9 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
+import Toast from "@/store/toast";
 
-import { Checkbox } from "../../../types/Global";
+import { Checkbox, ToastObj } from "../../../types/Global";
 import {
   AcquisitionPackageDTO,
   ClassificationLevelDTO, SelectedClassificationLevelDTO
@@ -188,8 +189,22 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     )
 
     if (this.isDeletionSuccessful){
+      //build warning alert
       this.buildClassificationRequirementsAlert();
+
+      // reset isDeletionSuccessful
       this.isDeletionSuccessful = false;
+
+      // build/display toast object
+      const toastObj: ToastObj = {
+        type: "success",
+        message: this.deselectedItem?.display + " requirements deleted",
+        isOpen: true,
+        hasUndo: false,
+        hasIcon: true,
+      };
+
+      Toast.setToast(toastObj);
     }
   }
 

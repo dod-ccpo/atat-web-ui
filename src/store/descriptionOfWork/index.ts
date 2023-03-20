@@ -2865,19 +2865,26 @@ export class DescriptionOfWorkStore extends VuexModule {
     classLevelSysIdToBeDeleted: string
   ): Promise<void> {
     this.DOWObject.forEach((dowObj)=>{
-      dowObj.serviceOfferings.forEach(
-        async (so) => {
-          debugger;
-          const ciIdxToBeDeleted = await so.classificationInstances?.findIndex(
-            cl=>cl.classificationLevelSysId === classLevelSysIdToBeDeleted
-          ) as number;
-          console.log(so.name)
-          console.log(ciIdxToBeDeleted);
-          if (ciIdxToBeDeleted>=0){
+      if (dowObj.serviceOfferings.length>0){
+        dowObj.serviceOfferings.forEach(
+          async (so) => {
+            debugger;
+            const ciIdxToBeDeleted = await so.classificationInstances?.findIndex(
+              cl=>cl.classificationLevelSysId === classLevelSysIdToBeDeleted
+            ) as number;
+            console.log(so.name)
+            console.log(ciIdxToBeDeleted);
+            if (ciIdxToBeDeleted>=0){
             so.classificationInstances?.splice(ciIdxToBeDeleted,1);
+            }
           }
-        }
-      )
+        )
+      } else if (dowObj.otherOfferingData){
+        const otherOfferingDataWithoutClassLevels = dowObj.otherOfferingData.filter(
+          (otherOfferings)=> 
+            otherOfferings.classificationLevel === classLevelSysIdToBeDeleted)
+        dowObj.otherOfferingData === otherOfferingDataWithoutClassLevels;
+      }
     })
  
   }
