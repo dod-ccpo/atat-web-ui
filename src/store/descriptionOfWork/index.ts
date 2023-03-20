@@ -2025,6 +2025,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
+    debugger
     const updatedInstancesData: DOWClassificationInstance[] = [];
 
     const groupIndex = this.DOWObject.findIndex(
@@ -2484,6 +2485,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({ rawError: true })
   public async getClassificationInstances(): Promise<DOWClassificationInstance[]> {
+    debugger
     const currentGroup
         = this.DOWObject.find((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     const currentOffering
