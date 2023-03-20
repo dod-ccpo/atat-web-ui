@@ -125,7 +125,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedSelectedClassLevelList: SelectedClassificationLevelDTO[] = [];
-  public existingClassificationsLevels = [""];
+  public existingClassificationsLevelsInDOW = [""];
   public classReqsAsCommaList = "";
   public acquisitionPackage: AcquisitionPackageDTO | undefined;
   public isIL6Selected = false;
@@ -164,12 +164,12 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
       this.getDOWOfferingsWithClassLevelLength(deselectedItemSysId);
       this.showDialog = this.deselectedItem?.display !== "";
     }
-    
   }
 
-  public getDOWOfferingsWithClassLevelLength(deselectedItemSysId: string): void{
+  public async getDOWOfferingsWithClassLevelLength(classLevelSysId: string): Promise<void>{
+    classLevelSysId = classLevelSysId || this.deselectedItem?.sys_id || "";
     const dowStringified  = JSON.stringify(DescriptionOfWork.DOWObject);
-    const re = new RegExp(deselectedItemSysId, 'g');
+    const re = new RegExp(classLevelSysId, 'g');
     this.DOWOfferingsWithClassLevelLength = dowStringified.match(re)?.length || 0;
   }
 
@@ -202,17 +202,21 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedSelectedClassLevelList);
   }
 
-  public buildClassificationRequirementsAlert(): void {
-    this.showClassificationRequirementsAlert = DescriptionOfWork.DOWObject.length>0;
-    if (this.showClassificationRequirementsAlert){
-      if (this.isDeletionSuccessful){
-        this.existingClassificationsLevels = this.selectedOptions;
-      } else {
-        this.existingClassificationsLevels = this.savedSelectedClassLevelList.map(
-          (selectedClassLevel)=>selectedClassLevel.classification_level) as string[];
+  /**
+   * iterated selectedOptions and returns the options that exist in DOWObject
+   */
+  public async buildClassificationRequirementsAlert(): Promise<void> {
+    this.existingClassificationsLevelsInDOW = [];
+    this.selectedOptions.forEach(
+      (optionSysId) => {
+        this.getDOWOfferingsWithClassLevelLength(optionSysId);
+        if (this.DOWOfferingsWithClassLevelLength>0){
+          this.existingClassificationsLevelsInDOW.push(optionSysId);
+        }
       }
-      this.buildClassReqsAsCommaList();
-    }
+    );
+    this.showClassificationRequirementsAlert = this.existingClassificationsLevelsInDOW.length>0;
+    this.buildClassReqsAsCommaList();
   }
 
   /**
@@ -220,7 +224,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
    */
   public buildClassReqsAsCommaList(): void{
     const existingClassLabels = this.classifications.filter(
-      classifs => this.existingClassificationsLevels.find(so => so === classifs.sys_id)
+      classifs => this.existingClassificationsLevelsInDOW.find(so => so === classifs.sys_id)
     ).map(selectedClassifs => selectedClassifs.display?.replace(" - ", "/")) as string[];
     this.classReqsAsCommaList = convertStringArrayToCommaList(
       existingClassLabels.sort(), 'and'
