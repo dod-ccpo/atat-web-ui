@@ -1976,6 +1976,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public doSetSelectedServiceOffering(
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): void {
+    debugger
     const acquisitionPackageId = AcquisitionPackage.packageId;
     const groupIndex
         = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);

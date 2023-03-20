@@ -304,6 +304,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       if (this.serviceGroupOnLoad) {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
         if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
+          debugger
           if (this.isServiceOfferingList) {
             await DescriptionOfWork.setSelectedOfferings(
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
