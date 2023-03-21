@@ -188,7 +188,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
         this.itemDeleted?.sys_id as string
       );
     await ClassificationReqs.removeClassificationLevelsFromStoreGlobally(
-      this.itemDeleted?.sys_id as string
+      this.itemDeleted
     )
 
     if (this.isDeletionSuccessful){
@@ -252,10 +252,6 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-        const itemsToBeAdded = (this.currentData.filter(
-          x => this.savedSelectedClassLevelList.indexOf(x) === -1
-        ));
-        await ClassificationReqs.createSelectedClassificationLevels(itemsToBeAdded)
         await ClassificationReqs.loadSelectedClassificationLevelsByAqId(
             this.acquisitionPackage?.sys_id as string);
       }

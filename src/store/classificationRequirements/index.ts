@@ -117,38 +117,43 @@ export class ClassificationRequirementsStore extends VuexModule {
 
   @Action({rawError: true})
   public async saveClassifiedInformationTypes(): Promise<void> {
+    const highSideQuery = this.highSideSysIds.map(
+      (sysId) => {
+        return "classification_level=" + sysId + "^OR"
+      }
+    ).join("").replace(/\^OR*$/, '');;
+
+    const queryForExistingSecurityRequirements: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "^acquisition_packageIN" + AcquisitionPackage.packageId + "^" + highSideQuery
+      }
+    };
+
+    const existingSecurityRequirements = await api.selectedClassificationLevelTable.getQuery(
+      queryForExistingSecurityRequirements
+    )
+
     const selectedClassLevelList = this.selectedClassificationLevels;
-    const requirements = this.securityRequirements;
-    const levelIndex = selectedClassLevelList.findIndex(item => item.classification === "S");
-    if(levelIndex > -1){
-      const classLevel = selectedClassLevelList[levelIndex];
-      const typeIndex = requirements.findIndex(item => item.type === "SECRET");
-      const informationType = typeIndex > -1 
-        ? requirements[typeIndex].classification_information_type.join(",") 
-        : "";
-
-      classLevel.classified_information_types = informationType;
-      classLevel.acquisition_package =
-        typeof classLevel.acquisition_package === "object"
-          ? classLevel.acquisition_package.value as string
-          : classLevel.acquisition_package as string
-
-      classLevel.classification_level =
-        typeof classLevel.classification_level === "object"
-          ? classLevel.classification_level.value as string
-          : classLevel.classification_level as string
-
-      const apiCall = classLevel.sys_id ? api.selectedClassificationLevelTable.update(
-        classLevel.sys_id,
-        classLevel
-      ) : api.selectedClassificationLevelTable.create(classLevel);
-
-      await Promise.all([apiCall]);
-
-      selectedClassLevelList[levelIndex] = classLevel;
-
-      await this.setSelectedClassificationLevels(selectedClassLevelList);
-    } 
+    this.securityRequirements.forEach(
+      async (sr) =>{
+        const classLevel = this.selectedClassificationLevels.find(
+          scl => scl.classification === (sr.type === "SECRET" ? "S" :"TS")
+        ) as SelectedClassificationLevelDTO;
+       
+        classLevel.classified_information_types =
+          sr.classification_information_type.join(",");
+  
+        const secReqExistsSNOW = existingSecurityRequirements.some(
+          scl => scl.sys_id === classLevel.sys_id
+        )
+        secReqExistsSNOW
+          ? await api.selectedClassificationLevelTable.update(
+              classLevel.sys_id as string,
+              classLevel
+          ) : await api.selectedClassificationLevelTable.create(classLevel);
+      }
+    )
+    await this.setSelectedClassificationLevels(selectedClassLevelList);
   }
 
   @Action({rawError: true})
@@ -217,24 +222,16 @@ export class ClassificationRequirementsStore extends VuexModule {
           userGrowth = userGrowth.replace(/\s/g, '');
           selectedClassLevel.user_growth_estimate_percentage
               = userGrowth.split(",").filter(nonEmptyVal => nonEmptyVal);
-
-          if(selectedClassLevel.classification === "S"){        
-            const index = tempRequirements.findIndex(item => item.type === "SECRET");
-            let types: string[] = [];
-            if(selectedClassLevel.classified_information_types)
-              types = selectedClassLevel.classified_information_types?.split(",") as string[];
-            if(index > -1) {
-              tempRequirements[index] = {
-                type: "SECRET",
-                classification_information_type: types
-              };
-            } else {
-              tempRequirements.push({
-                type: "SECRET",
-                classification_information_type: types
-              });
-            }            
+          if (["TS", "S"].includes(selectedClassLevel.classification)){
+            this.securityRequirements.push(
+              {
+                classification_information_type: 
+                  selectedClassLevel.classified_information_types?.split(",") as string[],
+                type: selectedClassLevel.classification === "S" ? "SECRET" : "TOPSECRET"
+              }
+            )
           }
+
           return selectedClassLevel;
         })
     }
@@ -242,24 +239,6 @@ export class ClassificationRequirementsStore extends VuexModule {
     await this.setSelectedClassificationLevels(selectedClassLevelList);
   }
 
-  /**
-   * @param itemsToBeAdded  SelectedClassificationLevelDTO[] items to be added to store
-   *                        and database
-   */
-  @Action({rawError: true})
-  async createSelectedClassificationLevels(
-    itemsToBeAdded: SelectedClassificationLevelDTO[])
-    : Promise<boolean> {
-    try {
-      // add to database and store
-      itemsToBeAdded.forEach(async item => {
-        await api.selectedClassificationLevelTable.create(item);
-      })
-      return true;
-    } catch (error) {
-      throw new Error(`an error occurred saving selected classification levels ${error}`);
-    }
-  }
 
   /**
    * Saves a single selected classification level and sets the context
@@ -515,12 +494,31 @@ export class ClassificationRequirementsStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeClassificationLevelsFromStoreGlobally(
-    classLevelSysIdToBeDeleted: string
+    classLevelItemToBeDeleted: ClassificationLevelDTO
   ): Promise<void> {
-    await this.removeClassificationLevelsFromDOWObject(classLevelSysIdToBeDeleted);
+
+    /**
+     * Deletes ALL service offerings and Cloud Support Instances
+    */
+    await this.removeClassificationLevelsFromDOWObject(
+      classLevelItemToBeDeleted.sys_id as string);
+
+    /**
+     * Deletes from selectedClassificationLevelTable
+     * 1. `anticipated users and data` data 
+     * 2. security requirements for Secret and TS classification levels
+    */
     await this.removeClassificationLevelsFromClassificationRequirementsStore(
-      classLevelSysIdToBeDeleted
+      classLevelItemToBeDeleted
     );
+
+    /**
+     * deletes IGCE items that have classLevelItemToBeDeleted
+     */
+    await this.removeClassificationLevelsFromIGCECostEstimate(
+      classLevelItemToBeDeleted.sys_id as string
+    )
+
   }
 
   @Action({rawError: true})
@@ -544,12 +542,85 @@ export class ClassificationRequirementsStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeClassificationLevelsFromClassificationRequirementsStore(
-    classLevelSysIdToBeDeleted: string
+    classLevelItemToBeDeleted: ClassificationLevelDTO
   ): Promise<void> {
-    const idxToBeDeleted = ClassificationRequirements.selectedClassificationLevels.findIndex (
-      (selClassLevel) => selClassLevel.classification_level === classLevelSysIdToBeDeleted
+
+    const highSideClassLevel = 
+      classLevelItemToBeDeleted.classification === "S" ? "SECRET" : "TOPSECRET"
+    await this.removeSelectedClassificationLevel(
+      classLevelItemToBeDeleted.sys_id as string);
+    await this.removeSecurityRequirements({
+      classLevelItemToBeDeleted: classLevelItemToBeDeleted, 
+      highSideClassLevel
+    });
+    // await this.removeAdditionalClassificationProperties(highSideClassLevel);
+    await this.removeClassificationLevelsFromIGCECostEstimate(
+      classLevelItemToBeDeleted.sys_id as string);
+  }
+
+  /**
+   * @param classLevelSysIdToBeDeleted 
+   * removes classificationLevel from ClassificationRequirements.selectedClassificationLevels
+   */
+  @Action({rawError: true})
+  public async removeSelectedClassificationLevel(
+    classLevelSysIdToBeDeleted: string
+  ): Promise<void>{
+    const updatedSelectedClassificationLevels = 
+        ClassificationRequirements.selectedClassificationLevels.filter (
+          (selClassLevel) => selClassLevel.classification_level === classLevelSysIdToBeDeleted
+        )
+    this.setSelectedClassificationLevels(updatedSelectedClassificationLevels)
+  }
+
+  /**
+   * 
+   * @param classLevelItemToBeDeleted 
+   * @param highSideClassLevel 
+   * 
+   * removes ClassificationRequirements.SecurityRequirement 
+   */
+  @Action({rawError: true})
+  public async removeSecurityRequirements(
+    deleteSecurityReqItem:{
+      classLevelItemToBeDeleted: ClassificationLevelDTO,
+      highSideClassLevel: string
+    }
+  ): Promise<void>{
+    const hasSecurityRequirements = ["TS","S"].includes(
+      deleteSecurityReqItem.classLevelItemToBeDeleted.classification
+    );
+    if (hasSecurityRequirements){
+      const updatedSecurityRequirements = this.securityRequirements.filter(
+        sr=>sr.type !== deleteSecurityReqItem.highSideClassLevel
+      )
+      this.setSecurityRequirements(updatedSecurityRequirements);
+    }
+  }
+
+  /**
+   * @param highSideClassLevel 
+   * syncs necessary ClassificationRequirements attribs if an item is deleted.
+   */
+  @Action({rawError: true})
+  public async removeAdditionalClassificationProperties(
+    highSideClassLevel: string
+  ): Promise<void>{
+    if (highSideClassLevel === "SECRET") {
+      this.classificationSecretSysId = "";
+    } else if (highSideClassLevel === "TOPSECRET"){
+      this.classificationTopSecretSysId = "";
+    }
+  }
+
+  @Action({rawError: true})
+  public async removeClassificationLevelsFromIGCECostEstimate(
+    classLevelSysIdToBeDeleted: string
+  ): Promise<void>{
+    const updatedIGCE = IGCEStore.igceEstimateList.filter(
+      igce => igce.classification_level as string !== classLevelSysIdToBeDeleted
     )
-    ClassificationRequirements.selectedClassificationLevels.splice(idxToBeDeleted, 1);
+    IGCEStore.setIgceEstimate(updatedIGCE);
   }
 
   /**
@@ -568,16 +639,32 @@ export class ClassificationRequirementsStore extends VuexModule {
         cl => cl.sys_id === selectedOption.sys_id
       )[0];
       const newSelectedClassificationLevel: SelectedClassificationLevelDTO =
-      {
-        classification_level: itemToBeAdded.sys_id || "",
-        acquisition_package: AcquisitionPackage.packageId,
-        impact_level: itemToBeAdded.impact_level,
-        classification: itemToBeAdded.classification
-      }
-      ClassificationRequirements.selectedClassificationLevels.push(newSelectedClassificationLevel);
+        {
+          classification_level: itemToBeAdded.sys_id || "",
+          acquisition_package: AcquisitionPackage.packageId,
+          impact_level: itemToBeAdded.impact_level,
+          classification: itemToBeAdded.classification
+        }
+      await this.addCurrentSelectedClassLevelListToStore(newSelectedClassificationLevel);
+      await this.addCurrentSelectedClassLevelListToDB(newSelectedClassificationLevel);
     }
   }
 
+  @Action({rawError: true})
+  public async addCurrentSelectedClassLevelListToStore(
+    newSelectedClassificationLevel: SelectedClassificationLevelDTO
+  ): Promise<void> {
+    ClassificationRequirements.selectedClassificationLevels.push(
+      newSelectedClassificationLevel
+    );
+  }
+
+  @Action({rawError: true})
+  public async addCurrentSelectedClassLevelListToDB(
+    newSelectedClassificationLevel: SelectedClassificationLevelDTO
+  ): Promise<void> {
+    await api.selectedClassificationLevelTable.create(newSelectedClassificationLevel);
+  }
 }
 
 const ClassificationRequirements = getModule(ClassificationRequirementsStore);
