@@ -68,7 +68,7 @@
     <ATATDialog
       id="DeleteClassificationRequirements"
       :showDialog.sync="showDialog"
-      :title="'Delete all ' + deselectedItem?.display + ' requirements?'"
+      :title="'Delete all ' + itemDeleted?.display + ' requirements?'"
       no-click-animation
       okText="Delete"
       cancelText="Cancel"
@@ -80,7 +80,7 @@
       <template #content>
         <div class="body">
          This action will permanently delete {{ DOWOfferingsWithClassLevelLength  }} performance 
-         requirements that you previously entered within {{ deselectedItem?.display }}. 
+         requirements that you previously entered within {{ itemDeleted?.display }}. 
          This cannot be undone.
         </div>
       </template>
@@ -106,12 +106,9 @@ import {
   hasChanges, 
   buildClassificationCheckboxList, 
   convertStringArrayToCommaList} from "@/helpers";
-import classificationRequirements from "@/store/classificationRequirements";
+import ClassificationReqs from "@/store/classificationRequirements";
 import AcquisitionPackage from '@/store/acquisitionPackage';
 import _ from "lodash";
-import {
-  buildCurrentSelectedClassLevelList
-} from "@/packages/helpers/ClassificationRequirementsHelper";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
@@ -134,58 +131,64 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public showClassificationRequirementsAlert = false;
   public showDialog = false;
   private checkboxItems: Checkbox[] = []
-  private deselectedItem: ClassificationLevelDTO|undefined|null = null;
+  private itemDeleted = {} as ClassificationLevelDTO;
+  private itemAdded = {} as ClassificationLevelDTO;
   private DOWOfferingsWithClassLevelLength = 0;
   private isDeletionSuccessful = true;
+  
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     return buildClassificationCheckboxList(data, "", true, true);
   }
 
   @Watch("selectedOptions")
-  public selectedOptionsChange(newVal: string[], oldVal: string[]): void {
-    this.getDeselectedItem(oldVal, newVal);
-    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1;
+  public selectedOptionsChange(updated: string[], current: string[]): void {
+    if (updated.length < current.length){ //selectedOptions was `unchecked`
+      this.itemDeleted = 
+        this.getClassificationItem((current.filter(x => updated.indexOf(x) === -1))[0])
+      this.itemDeleted.display = this.itemDeleted?.display?.replace(" - ", "/") || "";
+      this.showDeleteDialog();
+    } else if(updated.length > current.length){ //selectedOptions was `checked` 
+      this.itemAdded = 
+        this.getClassificationItem((updated.filter(x => current.indexOf(x) === -1))[0]);
+      this.processNewSelectedItem();
+    }
+    this.isIL6Selected = updated.indexOf(this.IL6SysId) > -1;
   }
 
-  /**
-   * @param selection - preexisting selectedOptions array of sys_ids
-   * @param updated - updated selectedOptions array of sys_ids
-   */
-  public getDeselectedItem(selection: string[], updated: string[]): void {
-    const deselectedItemSysId = (selection.filter(x => updated.indexOf(x) === -1))[0];
-    if (deselectedItemSysId !== ""){
-      this.deselectedItem = 
-        (this.classifications.filter(
-          classifs => classifs.sys_id === deselectedItemSysId)
-        )[0] || {};
-      if (this.deselectedItem){
-        this.deselectedItem.display = this.deselectedItem?.display?.replace(" - ", "/") || "";
-      }
-      this.getDOWOfferingsWithClassLevelLength(deselectedItemSysId);
-      this.showDialog = this.deselectedItem?.display !== "";
-    }
+  public getClassificationItem(sysId: string): ClassificationLevelDTO {
+    return this.classifications.find(c => c.sys_id === sysId) as ClassificationLevelDTO;
+  }
+
+  public showDeleteDialog(): void {
+    this.getDOWOfferingsWithClassLevelLength(this.itemDeleted.sys_id as string);
+    this.showDialog = this.itemDeleted?.display !== "";
+  }
+
+  public processNewSelectedItem(): void {
+    ClassificationReqs.addCurrentSelectedClassLevelList(this.itemAdded);
   }
 
   public async getDOWOfferingsWithClassLevelLength(classLevelSysId: string): Promise<void>{
-    classLevelSysId = classLevelSysId || this.deselectedItem?.sys_id || "";
+    classLevelSysId = classLevelSysId || this.itemDeleted?.sys_id || "";
     const dowStringified  = JSON.stringify(DescriptionOfWork.DOWObject);
     const re = new RegExp(classLevelSysId, 'g');
     this.DOWOfferingsWithClassLevelLength = dowStringified.match(re)?.length || 0;
   }
 
-  // restore the deselectedItem back to selectedOptions
+  // restore the itemDeleted back to selectedOptions
   public cancelClicked(): void{
-    this.selectedOptions.push(this.deselectedItem?.sys_id as string)
+    this.selectedOptions.push(this.itemDeleted?.sys_id as string)
   }
 
-  // restore the deselectedItem back to selectedOptions
+  // restore the itemDeleted back to selectedOptions
   public async deleteClicked(): Promise<void>{
-    this.isDeletionSuccessful = await DescriptionOfWork.removeClassificationLevelsGlobally(
-      this.deselectedItem?.sys_id as string
-    );
-    await DescriptionOfWork.deleteClassificationLevelsfromDOWObject(
-      this.deselectedItem?.sys_id as string
+    this.isDeletionSuccessful = 
+      await ClassificationReqs.removeClassificationLevelsFromDBGlobally(
+        this.itemDeleted?.sys_id as string
+      );
+    await ClassificationReqs.removeClassificationLevelsFromStoreGlobally(
+      this.itemDeleted?.sys_id as string
     )
 
     if (this.isDeletionSuccessful){
@@ -198,7 +201,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
       // build/display toast object
       const toastObj: ToastObj = {
         type: "success",
-        message: this.deselectedItem?.display + " requirements deleted",
+        message: this.itemDeleted?.display + " requirements deleted",
         isOpen: true,
         hasUndo: false,
         hasIcon: true,
@@ -209,8 +212,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   public get currentData(): SelectedClassificationLevelDTO[] {
-    return buildCurrentSelectedClassLevelList(this.selectedOptions,
-        this.acquisitionPackage?.sys_id as string, this.savedSelectedClassLevelList)
+    return ClassificationReqs.selectedClassificationLevels;
   }
 
   private hasChanged(): boolean {
@@ -253,8 +255,8 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
         const itemsToBeAdded = (this.currentData.filter(
           x => this.savedSelectedClassLevelList.indexOf(x) === -1
         ));
-        await classificationRequirements.createSelectedClassificationLevels(itemsToBeAdded)
-        await classificationRequirements.loadSelectedClassificationLevelsByAqId(
+        await ClassificationReqs.createSelectedClassificationLevels(itemsToBeAdded)
+        await ClassificationReqs.loadSelectedClassificationLevelsByAqId(
             this.acquisitionPackage?.sys_id as string);
       }
     } catch (error) {
@@ -270,17 +272,18 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     this.acquisitionPackage = await AcquisitionPackage
       .getAcquisitionPackage() as AcquisitionPackageDTO;
-    this.classifications = await classificationRequirements.getAllClassificationLevels();
+    this.classifications = await ClassificationReqs.getAllClassificationLevels();
     this.checkboxItems =this.createCheckboxItems(this.classifications);
     const IL6Checkbox = this.checkboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "false";
     // need to clone so that the store data is not modified. Store data needs to be intact
     // for comparison purposes during save
-    this.savedSelectedClassLevelList =
-        _.cloneDeep(await classificationRequirements.getSelectedClassificationLevels());
-    this.selectedOptions = this.savedSelectedClassLevelList
+    const selectedOptionsOnLoad = await ClassificationReqs.getSelectedClassificationLevels();
+    this.selectedOptions = (await ClassificationReqs.getSelectedClassificationLevels())
       .map(savedSelectedClassLevel =>
         savedSelectedClassLevel.classification_level) as string[];
+
+    this.savedSelectedClassLevelList =  _.cloneDeep(selectedOptionsOnLoad);
 
     this.buildClassificationRequirementsAlert();
   }

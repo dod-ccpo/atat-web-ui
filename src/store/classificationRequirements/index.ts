@@ -7,13 +7,16 @@ import {
   ClassifiedInformationTypeDTO,
   ReferenceColumn,
   CrossDomainSolutionDTO,
-  SelectedClassificationLevelDTO
+  SelectedClassificationLevelDTO,
+  BaseTableDTO
 } from "@/api/models";
 import {CrossDomainSolution, SecurityRequirement} from "../../../types/Global";
 import {AxiosRequestConfig} from "axios";
 import AcquisitionPackage from "../acquisitionPackage";
 import IGCEStore from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import { TableApiBase } from "@/api/tableApiBase";
+import DescriptionOfWork from "../descriptionOfWork";
 
 @Module({
   name: "ClassificationRequirements",
@@ -251,7 +254,6 @@ export class ClassificationRequirementsStore extends VuexModule {
       // add to database and store
       itemsToBeAdded.forEach(async item => {
         await api.selectedClassificationLevelTable.create(item);
-        await this.selectedClassificationLevels.push(item);
       })
       return true;
     } catch (error) {
@@ -388,6 +390,192 @@ export class ClassificationRequirementsStore extends VuexModule {
     this.selectedClassificationLevels = [];
     this.securityRequirements = [];
     this.cdsSolution = null;
+  }
+
+  @Action({rawError: true})
+  public async removeClassificationLevelsFromDBGlobally (
+    classLevelSysIdToBeDeleted: string
+  ): Promise<boolean> {
+    const success:boolean[] = []
+    // delete classification_instances from classification_instance tbl
+    success.push(await this.deleteClassificationLevels({
+      tables: ["classificationInstanceTable"],
+      classLevelSysId: classLevelSysIdToBeDeleted
+    }));
+    
+    // // delete classification_instances from instance Tables
+    success.push(await this.deleteClassificationLevels({
+      tables: [
+        "cloudSupportEnvironmentInstanceTable", 
+        "storageEnvironmentInstanceTable",
+        "databaseEnvironmentInstanceTable",
+        "computeEnvironmentInstanceTable",
+        "xaaSEnvironmentInstanceTable"
+      ],
+      classLevelSysId: classLevelSysIdToBeDeleted
+    }));
+
+    // // Deletes from selectedClassificationLevelTable
+    // // 1. `anticipated users and data` data 
+    // // 2. security requirements for Secret and TS classification levels
+    success.push(await this.deleteClassificationLevels({
+      tables: ["selectedClassificationLevelTable"],
+      classLevelSysId: classLevelSysIdToBeDeleted
+    }));
+    
+    // // delete classification_instances from IGCE cost estimate table
+    success.push(await this.deleteClassificationLevels({
+      tables: ["igceEstimateTable"],
+      classLevelSysId: classLevelSysIdToBeDeleted
+    }));
+    return success.every(call => call);
+  } 
+
+  @Action({rawError: true})
+  public async deleteClassificationLevels(
+    deleteItem:{
+      tables: string[], 
+      classLevelSysId: string
+    }): 
+    Promise<boolean> {
+    let success = true;
+    const deleteQuery: AxiosRequestConfig = {
+      params: {
+        sysparm_fields: "sys_id",
+        sysparm_query: "acquisition_package=" 
+            + AcquisitionPackage.acquisitionPackage?.sys_id + 
+            "^classification_level=" + deleteItem.classLevelSysId
+      }
+    };
+
+    deleteItem.tables.forEach(async (tblName)=>{
+      // retrieve the property dynamically from the api object.  
+      // (Note: the api object does NOT have an interface)
+      try{
+        const tbl = api[(tblName) as keyof typeof api] as TableApiBase<BaseTableDTO>
+        const sysIds = await tbl.getQuery(deleteQuery);
+        if (tblName === "classificationInstanceTable"){
+          this.deleteSelectedServiceOfferingsClassificationInstances(sysIds);
+        }
+        sysIds.forEach(async (itemToBeDeleted)=>{
+          await tbl.remove(itemToBeDeleted.sys_id as string);
+        })
+      } catch (error){
+        success = false;
+        throw new Error("Error: deleting from tbl " + tblName)
+      }
+
+    })
+    return success;
+  }
+
+  @Action({rawError: true})
+  public async deleteSelectedServiceOfferingsClassificationInstances(
+    sysIds: BaseTableDTO[]
+  ):Promise<void>{
+    const sysIdsToBeDeleted = Object.values(sysIds).map(x=>x.sys_id);
+    //retrieve selectedServiceOfferings.classification_instances with acqPackageId 
+    const getSelectedServiceOfferingsQuery: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "acquisition_package=" 
+          + AcquisitionPackage.acquisitionPackage?.sys_id
+      }
+    };
+
+    const selectedServiceOfferings = 
+      await api.selectedServiceOfferingTable.getQuery(getSelectedServiceOfferingsQuery);
+    selectedServiceOfferings.forEach(async (sso)=>{
+      const instancesArray = sso.classification_instances.split(",");
+      const updatedInstances = instancesArray.filter(
+        (instance) => sysIdsToBeDeleted.indexOf(instance) === -1
+      )
+      const instanceWasDeleted = updatedInstances.length < instancesArray.length;
+      if (instanceWasDeleted){
+        if (updatedInstances.length>0){
+          // if NOT all classification instances have been deleted
+          // update select_service_offerings.classification_instances
+          // with updatedInstances
+          await api.selectedServiceOfferingTable.update(
+              sso.sys_id as string,{
+                ...sso,
+                acquisition_package: AcquisitionPackage.packageId,
+                service_offering: (sso.service_offering as ReferenceColumn).value || "",
+                classification_instances: updatedInstances.join(",").replace(/,\x*$/, "")
+              }
+          )
+        } else if (updatedInstances.length === 0){
+          // if all classifications instances have been deleted
+          // remove the selectedServiceOffering row
+          await api.selectedServiceOfferingTable.remove(sso.sys_id as string);
+        }
+      }
+    })
+    DescriptionOfWork.DOWObject.forEach((dowObj)=>dowObj.serviceOfferingGroupId === "Applicaitons")
+  }
+
+  @Action({rawError: true})
+  public async removeClassificationLevelsFromStoreGlobally(
+    classLevelSysIdToBeDeleted: string
+  ): Promise<void> {
+    await this.removeClassificationLevelsFromDOWObject(classLevelSysIdToBeDeleted);
+    await this.removeClassificationLevelsFromClassificationRequirementsStore(
+      classLevelSysIdToBeDeleted
+    );
+  }
+
+  @Action({rawError: true})
+  public async removeClassificationLevelsFromDOWObject(
+    classLevelSysIdToBeDeleted: string
+  ): Promise<void> {
+    DescriptionOfWork.DOWObject.forEach(async (dowObj)=>{
+      if (dowObj.serviceOfferings.length>0){
+        dowObj.serviceOfferings.forEach(
+          async (so) => {
+            so.classificationInstances = await so.classificationInstances?.filter(
+              cl=>cl.classificationLevelSysId !== classLevelSysIdToBeDeleted
+            )
+          })
+      } else if (dowObj.otherOfferingData && dowObj.otherOfferingData.length>0){
+        dowObj.otherOfferingData = await dowObj.otherOfferingData.filter(
+          (others)=> others.classificationLevel !== classLevelSysIdToBeDeleted
+        )}
+    })
+  }
+
+  @Action({rawError: true})
+  public async removeClassificationLevelsFromClassificationRequirementsStore(
+    classLevelSysIdToBeDeleted: string
+  ): Promise<void> {
+    const idxToBeDeleted = ClassificationRequirements.selectedClassificationLevels.findIndex (
+      (selClassLevel) => selClassLevel.classification_level === classLevelSysIdToBeDeleted
+    )
+    ClassificationRequirements.selectedClassificationLevels.splice(idxToBeDeleted, 1);
+  }
+
+  /**
+ * Builds the current selected classification level list by using the saved list and the default
+ * object. For the default object, sets the selected classification_level sys_id
+ */
+
+  @Action({rawError: true})
+  public async addCurrentSelectedClassLevelList(
+    selectedOption: ClassificationLevelDTO): Promise<void> {
+    const isAlreadySelected = ClassificationRequirements.selectedClassificationLevels.findIndex(
+      level => level.classification_level === selectedOption.sys_id
+    )>-1;
+    if (!isAlreadySelected){
+      const itemToBeAdded = ClassificationRequirements.classificationLevels.filter(
+        cl => cl.sys_id === selectedOption.sys_id
+      )[0];
+      const newSelectedClassificationLevel: SelectedClassificationLevelDTO =
+      {
+        classification_level: itemToBeAdded.sys_id || "",
+        acquisition_package: AcquisitionPackage.packageId,
+        impact_level: itemToBeAdded.impact_level,
+        classification: itemToBeAdded.classification
+      }
+      ClassificationRequirements.selectedClassificationLevels.push(newSelectedClassificationLevel);
+    }
   }
 
 }
