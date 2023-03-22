@@ -568,8 +568,9 @@ export class ClassificationRequirementsStore extends VuexModule {
   ): Promise<void>{
     const updatedSelectedClassificationLevels = 
         ClassificationRequirements.selectedClassificationLevels.filter (
-          (selClassLevel) => selClassLevel.classification_level === classLevelSysIdToBeDeleted
+          (selClassLevel) => selClassLevel.classification_level !== classLevelSysIdToBeDeleted
         )
+    debugger;
     this.setSelectedClassificationLevels(updatedSelectedClassificationLevels)
   }
 
