@@ -219,7 +219,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     this.isServiceOfferingList = !this.otherOfferingList.includes(
       this.serviceGroupOnLoad.toLowerCase()
     );
-
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
     if (this.isServiceOfferingList) {
@@ -233,7 +232,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             description: offering.description,
           }
           this.checkboxItems.push(checkboxItem);
-          if (checkboxItem.value === "Other") {
+          if (checkboxItem.label === "Other") {
             this.otherValueEntered = offering.otherOfferingName || "";
           }
         });
@@ -245,17 +244,11 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         const itemIndex = this.checkboxItems.findIndex(item=>item.label === current);
         const selected = itemIndex >=0 ? [...accumulator, 
           this.checkboxItems[itemIndex].value] : accumulator;
-        if(itemIndex < 0 && current !== ""){
-          const otherIndex = this.checkboxItems.findIndex(item=>item.label === "Other")
-          selected.push(this.checkboxItems[otherIndex].value)
-          this.otherValueEntered = current
-        }
         return selected;
       }, []);
 
       this.selectedOptions.push(...validSelections);
 
-      // this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
     } else {
       const offeringIndex = DescriptionOfWork.DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() 
@@ -283,6 +276,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         }
       }
     }
+    //find sys_id for otherValue
+    let otherCheckBoxIndex = this.checkboxItems.findIndex((item) =>item.label === "Other")
+    this.otherValue = this.checkboxItems[otherCheckBoxIndex].value
 
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels();

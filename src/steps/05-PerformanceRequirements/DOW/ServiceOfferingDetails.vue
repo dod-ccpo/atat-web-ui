@@ -341,7 +341,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    debugger
     this.acquisitionPackage = await AcquisitionPackage
       .getAcquisitionPackage() as AcquisitionPackageDTO;
     // get classification levels selected in step 4 Contract Details
@@ -403,7 +402,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   // labels not saved to SNOW
   public async setSavedInstanceLabels(): Promise<void> {
-    debugger
     this.classificationInstances.forEach((instance) => {
       const classificationObj 
         = this.selectedClassificationLevelList.find(e => e.sys_id === instance.sysId);
@@ -421,7 +419,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
     const isValid = this.$refs.form.validate();
-    debugger
     try {
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {

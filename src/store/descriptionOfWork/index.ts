@@ -46,10 +46,10 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "../acquisitionPackage";
 import Periods from "../periods";
 import IGCEStore from "@/store/IGCE";
-import { 
-  buildClassificationLabel, 
-  toTitleCase, 
-  capitalizeEachWord, 
+import {
+  buildClassificationLabel,
+  toTitleCase,
+  capitalizeEachWord,
 } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
@@ -77,6 +77,7 @@ export const saveOrUpdateSelectedServiceOffering =
       selectedServiceOffering: DOWServiceOffering,
       serviceOfferingId: string
     ):Promise<string> => {
+      debugger
       const tempObject: any = {};
       let objSysId = "";
 
@@ -137,7 +138,7 @@ const saveOrUpdateClassificationInstance =
     ):Promise<string> => {
       const tempObject: any = {};
       let objSysId = "";
-      
+
       const unit_quantity = await stringifyPeriodsForIGCECostEstimates(
         classificationInstance.selectedPeriods
       );
@@ -156,7 +157,7 @@ const saveOrUpdateClassificationInstance =
       tempObject.type_of_mobility = classificationInstance.typeOfMobility;
       tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
       tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
-   
+
 
       if(classificationInstance.sysId)
         tempObject.sys_id = classificationInstance.sysId;
@@ -180,9 +181,9 @@ const saveOrUpdateClassificationInstance =
         await IGCEStore.createIgceEstimateClassificationInstance({
           classificationInstanceSysId: objSysId,
           classificationLevelSysId: savedObject.classification_level,
-          title: capitalizeEachWord(title, "_") + " - " + serviceOfferingName, 
+          title: capitalizeEachWord(title, "_") + " - " + serviceOfferingName,
           description: classificationInstance.anticipatedNeedUsage,
-          idiqClinType: "CLOUD", 
+          idiqClinType: "CLOUD",
           unit_quantity
         });
       }
@@ -191,29 +192,29 @@ const saveOrUpdateClassificationInstance =
     };
 
 // prep global period selection as stringified obj to store in IGCE Cost Estimate table
-export const stringifyPeriodsForIGCECostEstimates = 
-  async(customPeriods?: string[]):Promise<string> =>{
-    const periodsToStringify: {[x: string]: string} = {};
-    const globalPeriods = await Periods.loadPeriods();
-    let periodsToUse: PeriodDTO[] = [];
+export const stringifyPeriodsForIGCECostEstimates =
+    async(customPeriods?: string[]):Promise<string> =>{
+      const periodsToStringify: {[x: string]: string} = {};
+      const globalPeriods = await Periods.loadPeriods();
+      let periodsToUse: PeriodDTO[] = [];
 
-    if (customPeriods && customPeriods.length>0){
-      periodsToUse = globalPeriods.filter(
-        period => {
-          return customPeriods.some(sysId => sysId === period.sys_id); 
-        }
-      )
-    } else {
-      periodsToUse = globalPeriods;
-    } 
+      if (customPeriods && customPeriods.length>0){
+        periodsToUse = globalPeriods.filter(
+          period => {
+            return customPeriods.some(sysId => sysId === period.sys_id);
+          }
+        )
+      } else {
+        periodsToUse = globalPeriods;
+      }
 
-    periodsToUse.forEach(
-      ({ sys_id , period_unit_count })=>(
-        periodsToStringify[sys_id?.toString() || ""] = period_unit_count
+      periodsToUse.forEach(
+        ({ sys_id , period_unit_count })=>(
+          periodsToStringify[sys_id?.toString() || ""] = period_unit_count
+        )
       )
-    )
-    return JSON.stringify(periodsToStringify);
-  }
+      return JSON.stringify(periodsToStringify);
+    }
 
 export const saveOrUpdateOtherServiceOffering =
     async (
@@ -242,20 +243,20 @@ export const saveOrUpdateOtherServiceOffering =
       tempObject.processor_speed = serviceOffering.processorSpeed;
       tempObject.region = serviceOffering.region;
 
-      
+
       // if no custom selected periods         
-      tempObject.selected_periods = serviceOffering.periodsNeeded.join(","); 
+      tempObject.selected_periods = serviceOffering.periodsNeeded.join(",");
       tempObject.storage_amount = serviceOffering.storageAmount;
       tempObject.storage_type = serviceOffering.storageType;
       tempObject.storage_unit = serviceOffering.storageUnit;
       tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
       tempObject.instance_number = serviceOffering.instanceNumber;
-      
+
       if(serviceOffering.sysId)
         tempObject.sys_id = serviceOffering.sysId;
       let title = serviceGroupVerbiageInfo[offeringType.toUpperCase()].offeringName;
       let instanceType = "Instance";
-   
+
       switch(offeringType){
       case "compute":
         tempObject.instance_name = "Compute Instance #" + serviceOffering.instanceNumber;
@@ -299,12 +300,12 @@ export const saveOrUpdateOtherServiceOffering =
         tempObject.network_performance = serviceOffering.networkPerformance;
         if(tempObject.sys_id){
           objSysId = tempObject.sys_id;
-          
+
           await api.databaseEnvironmentInstanceTable.update(
             objSysId,
-            tempObject as DatabaseEnvironmentInstanceDTO
+                tempObject as DatabaseEnvironmentInstanceDTO
           );
-          
+
           await IGCEStore.updateIgceEstimateRecord({
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
@@ -337,7 +338,7 @@ export const saveOrUpdateOtherServiceOffering =
             tempObject.sys_id,
                 tempObject as StorageEnvironmentInstanceDTO
           );
-          
+
           await IGCEStore.updateIgceEstimateRecord({
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
@@ -351,7 +352,7 @@ export const saveOrUpdateOtherServiceOffering =
           await IGCEStore.createIgceEstimateEnvironmentInstance({
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: savedObject.classification_level,
-            title: title + " - " + instanceType + " #" + serviceOffering.instanceNumber, 
+            title: title + " - " + instanceType + " #" + serviceOffering.instanceNumber,
             description: savedObject.anticipated_need_or_usage,
             unit: "month",
             otherServiceOfferingData: serviceOffering,
@@ -403,8 +404,9 @@ export const saveOrUpdateOtherServiceOffering =
         tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
         tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
         tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
-        tempObject.instance_name = 
-          toTitleCase(offeringType.replaceAll("_", " ")) + " #" + serviceOffering.instanceNumber;
+        tempObject.instance_name =
+              toTitleCase(offeringType
+                .replaceAll("_", " ")) + " #" + serviceOffering.instanceNumber;
         tempObject.service_type = offeringType.toUpperCase();
 
         if (offeringType === "training"){
@@ -414,15 +416,15 @@ export const saveOrUpdateOtherServiceOffering =
           tempObject.training_requirement_title = serviceOffering.trainingRequirementTitle;
           tempObject.training_time_zone = serviceOffering.trainingTimeZone;
         }
-        
+
         tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
 
         instanceType = "Service";
         idiqClinType =  "CLOUD_SUPPORT"
-        title = title + 
-            (offeringType !== "portability_plan" 
-              ? " - " + instanceType + " #" + serviceOffering.instanceNumber
-              :"")
+        title = title +
+              (offeringType !== "portability_plan"
+                ? " - " + instanceType + " #" + serviceOffering.instanceNumber
+                :"")
 
 
         if(tempObject.sys_id){
@@ -451,7 +453,7 @@ export const saveOrUpdateOtherServiceOffering =
               description: savedObject.anticipated_need_or_usage,
               unit: offeringType === "portability_plan" ? "each" : "month",
               otherServiceOfferingData: serviceOffering,
-              offeringType, 
+              offeringType,
               idiqClinType,
               unit_quantity
             });
@@ -868,7 +870,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({rawError: true})
   public async setNeedsSecurityRequirements(): Promise<void> {
     const needsSecurityRequirements
-      = this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId);
+        = this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId);
     await this.doSetNeedsSecurityRequirements(needsSecurityRequirements);
     await this.setShowSecurityRequirements();
   }
@@ -904,7 +906,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
       if (offeringGroupObj) {
         if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
-        // check classificationInstances object
+          // check classificationInstances object
           const offering = offeringGroupObj.serviceOfferings.find(
             obj => obj.name === this.currentOfferingName
           );
@@ -946,7 +948,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );
     const isCloudSupportService =
-      DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+        DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
 
     if (offeringGroupObj && isCloudSupportService) {
       // save other offering instances with secret + classification level
@@ -989,7 +991,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     const secretSysId = ClassificationRequirements.classificationSecretSysId;
 
     const isCloudSupportService =
-      DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+        DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
 
     const offeringGroupObj = this.DOWObject.find(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
@@ -1074,17 +1076,17 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async saveTravel(
     newTravel: TravelSummaryTableData[]): Promise<boolean> {
     const newTravelDTO: TravelRequirementDTO[] =
-      newTravel.map((travel): TravelRequirementDTO  => {
-        return {
-          sys_id: travel.sys_id,
-          acquisition_package: travel.acquisition_package as string,
-          duration_in_days: travel.duration_in_days,
-          number_of_travelers: travel.number_of_travelers,
-          number_of_trips: travel.number_of_trips,
-          selected_periods: travel.selected_periods.toString(), // csv
-          trip_location: travel.trip_location
-        }
-      })
+        newTravel.map((travel): TravelRequirementDTO  => {
+          return {
+            sys_id: travel.sys_id,
+            acquisition_package: travel.acquisition_package as string,
+            duration_in_days: travel.duration_in_days,
+            number_of_travelers: travel.number_of_travelers,
+            number_of_trips: travel.number_of_trips,
+            selected_periods: travel.selected_periods.toString(), // csv
+            trip_location: travel.trip_location
+          }
+        })
     const createList = newTravelDTO.filter(travel => !(travel.sys_id && travel.sys_id.length > 0));
     const updateList = newTravelDTO.filter(travel => (travel.sys_id && travel.sys_id.length > 0));
     const apiCallList: Promise<TravelRequirementDTO | void>[] = [];
@@ -1103,9 +1105,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   /**
-     * deletes one travel instance
-     * @param sysId sysId of travel instance to be removed
-     */
+   * deletes one travel instance
+   * @param sysId sysId of travel instance to be removed
+   */
   @Action({rawError: true})
   public async deleteTravelInstance(sysId: string): Promise<void> {
     await api.travelRequirementTable.remove(sysId);
@@ -1114,7 +1116,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   /**
    * deletes all travel instances associated with acqpackage
    * @param sysIds: string [] - sysId of travel instance to be removed
-  */
+   */
   @Action({rawError: true})
   public async deleteTravelAll(sysIds: string[]): Promise<void> {
     await this.deleteTravelFromIGCEEstimateTable(sysIds);
@@ -1133,8 +1135,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   /**
-    * deletes travel_options and travel_estimated_values from
-    * `DAPPS:Requirements Cost Estimate` table
+   * deletes travel_options and travel_estimated_values from
+   * `DAPPS:Requirements Cost Estimate` table
    */
   @Action({rawError: true})
   public async deleteTravelFromRequirementsCostEstimateTable(): Promise<void> {
@@ -1143,8 +1145,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     storeRCE.travel.option = "";
 
     await api.requirementsCostEstimateTable.update(
-      storeRCE.sys_id as string,
-      await IGCEStore.transformRequirementsCostEstimateFromTreeToFlat(storeRCE)
+        storeRCE.sys_id as string,
+        await IGCEStore.transformRequirementsCostEstimateFromTreeToFlat(storeRCE)
     );
   }
 
@@ -1371,7 +1373,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       const offeringsForGroup: ServiceOfferingDTO[] = this.serviceOfferings.filter(
         item => item.service_offering_group === groupId.toUpperCase()
       );
-
       for(const group of offeringsForGroup){
         const tempOfferingsList = selectedOfferingsList.filter(
           item => (item.service_offering as ReferenceColumn).value === group.sys_id
@@ -1473,7 +1474,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     return this.DOWObject.filter(
       obj => obj.serviceOfferingGroupId.indexOf("NONE") === -1
-      && sectionOfferingGroups.includes(obj.serviceOfferingGroupId)
+            && sectionOfferingGroups.includes(obj.serviceOfferingGroupId)
     );
   }
 
@@ -1625,16 +1626,9 @@ export class DescriptionOfWorkStore extends VuexModule {
     const currentGroup = this.DOWObject.find(group =>
       group.serviceOfferingGroupId === this.currentGroupId);
     if (currentGroup?.serviceOfferings) {
-      return currentGroup.serviceOfferings.flatMap(offering =>
-        offering.sys_id === "Other" ? "Other" : offering.name);
+      return currentGroup.serviceOfferings.flatMap(offering => offering.name);
     }
     return [""];
-  }
-
-  public get otherServiceOfferingEntry(): string {
-    const otherServiceOffer = this.serviceOfferingsForGroup
-      .find(offering=>offering.sys_id === "Other");
-    return otherServiceOffer ? otherServiceOffer.name : "";
   }
 
   public get currentOfferingGroupHasOfferings(): boolean {
@@ -1716,15 +1710,15 @@ export class DescriptionOfWorkStore extends VuexModule {
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     )
     if (currentOfferingGroup
-      && currentOfferingGroup.serviceOfferings
-      && currentOfferingGroup.serviceOfferings.length > 0
+        && currentOfferingGroup.serviceOfferings
+        && currentOfferingGroup.serviceOfferings.length > 0
     ) {
       const serviceOfferingObj = currentOfferingGroup.serviceOfferings.find(
         obj => obj.name === offeringName
       );
       if (serviceOfferingObj
-        && serviceOfferingObj.classificationInstances
-        && serviceOfferingObj.classificationInstances.length > 0
+          && serviceOfferingObj.classificationInstances
+          && serviceOfferingObj.classificationInstances.length > 0
       ) {
         hasInstances = true;
       }
@@ -1748,8 +1742,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       );
 
       if (offeringObj
-        && offeringObj?.classificationInstances
-        && offeringObj.classificationInstances.length > 0
+          && offeringObj?.classificationInstances
+          && offeringObj.classificationInstances.length > 0
       ) {
         const sysIds: string[] = [];
         offeringObj.classificationInstances.forEach(instance => {
@@ -1759,7 +1753,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         await this.deleteServiceOfferingFromSNOW(offeringObj.sys_id);
       }
       const updatedOfferings =
-        offeringGroupObj.serviceOfferings.filter(obj => obj.name !== offeringName);
+          offeringGroupObj.serviceOfferings.filter(obj => obj.name !== offeringName);
       this.DOWObject[offeringGroupIndex].serviceOfferings = updatedOfferings;
     }
     this.checkServiceOfferingTypesSelected();
@@ -1773,7 +1767,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({rawError: true})
   public async removeCurrentOfferingGroup(): Promise<void> {
     if (this.otherServiceOfferings.includes(this.currentGroupId)
-      || this.cloudSupportServices.includes(this.currentGroupId)
+        || this.cloudSupportServices.includes(this.currentGroupId)
     ) {
       await this.deleteOtherOffering();
     } else {
@@ -1792,8 +1786,8 @@ export class DescriptionOfWorkStore extends VuexModule {
         e => e.serviceOfferingGroupId === groupIdToRemove
       );
       if (groupToRemoveObj
-        && groupToRemoveObj.serviceOfferings
-        && groupToRemoveObj.serviceOfferings.length > 0
+          && groupToRemoveObj.serviceOfferings
+          && groupToRemoveObj.serviceOfferings.length > 0
       ) {
         groupToRemoveObj.serviceOfferings.forEach(async offering => {
           const sysIds: string[] = [];
@@ -1857,7 +1851,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public setReturnToDOWSummary(bool: boolean): void {
     this.returnToDOWSummary = bool;
   }
-    
+
   public get getFromAnticipatedUsersAndData(): boolean {
     return this.fromAnticipatedUsersAndData;
   }
@@ -1919,7 +1913,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         this.DOWObject.forEach((offeringGroup, index) => {
           const groupId = offeringGroup.serviceOfferingGroupId;
           const groupInThisSection = inXaaS && this.xaasServices.includes(groupId)
-            || inCloud && this.cloudSupportServices.includes(groupId);
+              || inCloud && this.cloudSupportServices.includes(groupId);
           if (groupInThisSection && !selectedOfferingGroupIds.includes(groupId)) {
             this.DOWObject.splice(index, 1);
           }
@@ -1934,7 +1928,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     );
 
     this.currentGroupId = selectedSectionServices.length > 0
-      && selectedSectionServices[0].indexOf("NONE") === -1
+    && selectedSectionServices[0].indexOf("NONE") === -1
       ? selectedSectionServices[0]
       : "";
     this.currentOfferingName = "";
@@ -1976,7 +1970,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   public doSetSelectedServiceOffering(
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): void {
-    debugger
     const acquisitionPackageId = AcquisitionPackage.packageId;
     const groupIndex
         = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
@@ -1990,25 +1983,22 @@ export class DescriptionOfWorkStore extends VuexModule {
         selectedOfferingSysIds.forEach((selectedOfferingSysId) => {
           const foundOffering
               = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
-          if (!currentOfferings.some((e) => e.name === foundOffering?.name)) {
-            const name = foundOffering ? foundOffering.name : otherValue;
-            const description = foundOffering ? foundOffering.description : "";
-            const sequence = foundOffering ? foundOffering.sequence : "99";
-            const serviceId = foundOffering ? foundOffering.service_offering_group : "";
 
+          if (foundOffering && !currentOfferings.some((e) => e.name === foundOffering?.name)) {
+            // check to see if the offering is other and add otheroffering name
             const offering = {
-              name,
-              other: otherValue,
-              "sys_id": "",
+              name: foundOffering.name,
+              acquisitionPackageSysId: acquisitionPackageId,
+              otherOfferingName: "",
+              sys_id: "",
               classificationInstances: [],
-              description,
-              sequence,
-              serviceId
+              sequence: foundOffering.sequence,
+              serviceId: foundOffering.service_offering_group
             }
-            currentOfferings.push({
-              ...offering,
-              acquisitionPackageSysId: acquisitionPackageId
-            });
+            if(foundOffering.name === "Other"){
+              offering.otherOfferingName = otherValue
+            }
+            currentOfferings.push(offering);
           }
         });
 
@@ -2288,7 +2278,7 @@ export class DescriptionOfWorkStore extends VuexModule {
             if (offering.classificationInstances?.length) {
               offering.classificationInstances.forEach(async instance => {
                 if (instance.classificationLevelSysId === removedClassificationLevelSysId
-                  && instance.sysId
+                    && instance.sysId
                 ) {
                   classificationInstancesToDeleteFromSNOW.push(instance.sysId)
                   offering.classificationInstances = offering.classificationInstances?.filter(
@@ -2426,23 +2416,23 @@ export class DescriptionOfWorkStore extends VuexModule {
       o => o.serviceOfferingGroupId.toLowerCase() === groupIdToDelete
     );
     if (offeringToDelete
-      && offeringToDelete.otherOfferingData
-      && offeringToDelete.otherOfferingData.length > 0
+        && offeringToDelete.otherOfferingData
+        && offeringToDelete.otherOfferingData.length > 0
     ) {
       this.currentGroupRemovedForNav = true;
       const serviceOfferingGroupId = offeringToDelete.serviceOfferingGroupId;
-        offeringToDelete.otherOfferingData?.forEach((instance) => {
-          deleteOtherOfferingInstanceFromIGCECostEstimate(
-          instance.sysId as string,
-          serviceOfferingGroupId
-          );
-        })
+      offeringToDelete.otherOfferingData?.forEach((instance) => {
+        deleteOtherOfferingInstanceFromIGCECostEstimate(
+            instance.sysId as string,
+            serviceOfferingGroupId
+        );
+      })
 
-        setTimeout(()=>{
-            offeringToDelete.otherOfferingData?.forEach((instance) => {
-              deleteOtherOfferingInstanceFromSNOW(instance.sysId as string, this.currentGroupId);
-            }), 0
-        })
+      setTimeout(()=>{
+        offeringToDelete.otherOfferingData?.forEach((instance) => {
+          deleteOtherOfferingInstanceFromSNOW(instance.sysId as string, this.currentGroupId);
+        }), 0
+      })
     }
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === groupIdToDelete
@@ -2485,7 +2475,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({ rawError: true })
   public async getClassificationInstances(): Promise<DOWClassificationInstance[]> {
-    debugger
     const currentGroup
         = this.DOWObject.find((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     const currentOffering
@@ -2563,39 +2552,29 @@ export class DescriptionOfWorkStore extends VuexModule {
     //map services offerings from the service offering list
     const serviceOfferings: DOWServiceOffering[] = [];
     const dowOfferings = this.serviceOfferingsForGroup;
-
     const acquisitionPackageId = AcquisitionPackage.packageId;
 
     serviceOfferingsForGroup.forEach((obj) => {
 
       //does the saved offering exist in DOW store?
       const savedInDown = dowOfferings.find(offering=>offering.sys_id === obj.sys_id);
-
       const offering = savedInDown ? savedInDown :{
         name: obj.name,
-        "sys_id": obj.sys_id || "",
+        sys_id: obj.sys_id || "",
         acquisitionPackageSysId: acquisitionPackageId,
         sequence: obj.sequence,
         description: obj.description,
         serviceId: "",
+        otherOfferingName: "",
       };
+      if (obj.name === "Other") {
+        const otherOffering = dowOfferings.find(o => o.serviceId === this.currentGroupId);
+        offering.otherOfferingName = otherOffering ? otherOffering.otherOfferingName : "";
+      }
 
       serviceOfferings.push(offering);
 
     });
-
-    const otherOffering: DOWServiceOffering = {
-      name: "Other",
-      sys_id: "Other",
-      acquisitionPackageSysId: acquisitionPackageId,
-      sequence: "99",
-      description: "",
-      serviceId: "",
-    };
-    serviceOfferings.push(otherOffering);
-
-
-    //now map any from the DOW that might've been saved
 
     serviceOfferings.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     return serviceOfferings;

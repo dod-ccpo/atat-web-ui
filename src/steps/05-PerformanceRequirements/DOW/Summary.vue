@@ -23,7 +23,7 @@
             <div class=" d-flex justify-space-between">
               <div>
                 <h3 class="mb-1" id=" AnticipatedUsersAndDataNeeds_Heading">
-                  Anticipated Users And Data Needs
+                  Anticipated users and data
                 </h3>
               </div>
               <div class="d-flex align-start">
@@ -329,7 +329,12 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public formattedOfferings(value: DOWServiceOffering[]): string {
-    const serviceArr = value.map(obj => ` <span class="_selectedOffering">${obj.name}</span>`);
+    debugger
+    const serviceArr = value
+      .map(obj => obj.name === "Other"?
+        ` <span class="_selectedOffering">${obj.otherOfferingName}</span>`:
+        ` <span class="_selectedOffering">${obj.name}</span>`);
+    
     return serviceArr.join();
   };
 
@@ -414,7 +419,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
         group.label = this.alternateGroupNames[altNameIndex].label;
       }
     });
-
+    debugger
     this.selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
       e => e.serviceOfferingGroupId.indexOf("NONE") === -1 
       && sectionServices.includes(e.serviceOfferingGroupId) 
