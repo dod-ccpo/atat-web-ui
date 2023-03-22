@@ -119,7 +119,7 @@ describe("Testing Landing Page", () => {
 
     it("startNewAcquisition()", async () => {
       await wrapper.vm.startNewAcquisition();
-      expect(wrapper.vm.$route.name).toBe("Contracting_Shop");
+      expect(wrapper.vm.$route.name).toBe("DAPPSChecklist");
     });
 
     it("scrollToResources()", async () => {

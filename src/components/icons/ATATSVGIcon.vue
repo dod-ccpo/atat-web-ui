@@ -81,6 +81,14 @@ import SendEmail from "@/components/icons/SendEmail.vue";
 import XaasCircle from "@/components/icons/XaasCircle.vue"
 import Update from "@/components/icons/Update.vue";
 import Download from "@/components/icons/Download.vue";
+import CertifiedDocumentsForTransferringFunds
+  from "@/components/icons/CertifiedDocumentsForTransferringFunds.vue";
+import OtherCommonDocumentation from "@/components/icons/OtherCommonDocumentation.vue";
+import CloudManagementOfficeAuthorization
+  from "@/components/icons/CloudManagementOfficeAuthorization.vue";
+import ContactInformation from "@/components/icons/ContactInformation.vue";
+import JWCCPricingCalculator from "@/components/icons/JWCCPricingCalculator.vue";
+import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
 
 
 @Component({
@@ -92,12 +100,15 @@ import Download from "@/components/icons/Download.vue";
     BugReport,
     Bullet,
     Calendar,
+    CertifiedDocumentsForTransferringFunds,
     CheckedBag,
     ChevronDown,
     ChevronRight,
     Close,
+    CloudManagementOfficeAuthorization,
     CommentBubble,
     ContactSupport,
+    ContactInformation,
     ContentCopy,
     ControlPoint,
     Currency,
@@ -116,15 +127,18 @@ import Download from "@/components/icons/Download.vue";
     FileSignature,
     Gcp,
     InfoOutline,
+    JWCCPricingCalculator,
     Launch,
     ManageAccount,
     MenuBook,
     MonetizationOn,
     OptionPending,
     Oracle,
+    OtherCommonDocumentation,
     Pdf,
     Person,
     PersonAddAlt,
+    PeriodOfPerformance,
     Phone,
     PlusSign,
     Processing,
