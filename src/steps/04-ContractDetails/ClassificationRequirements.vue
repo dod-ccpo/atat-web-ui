@@ -57,7 +57,7 @@
                   You currently have performance requirements for 
                   {{ classReqsAsCommaList }}. 
                   If you remove any of these selections, all requirements within the level will 
-                  be deleted
+                  be deleted.
                 </p>
               </template>
             </ATATAlert>

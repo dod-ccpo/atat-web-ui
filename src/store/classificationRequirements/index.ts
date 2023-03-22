@@ -570,7 +570,6 @@ export class ClassificationRequirementsStore extends VuexModule {
         ClassificationRequirements.selectedClassificationLevels.filter (
           (selClassLevel) => selClassLevel.classification_level !== classLevelSysIdToBeDeleted
         )
-    debugger;
     this.setSelectedClassificationLevels(updatedSelectedClassificationLevels)
   }
 
