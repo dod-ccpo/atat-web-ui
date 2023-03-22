@@ -121,6 +121,7 @@ import AcquisitionPackageSummary, { PackageSort } from "@/store/acquisitionPacka
 import Search from "@/packages/components/Search.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -286,9 +287,10 @@ export default class Packages extends Vue {
   }
   public async toAcquisitions(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
+    await acquisitionPackage.setFirstTimeVisit(true)
     await AcquisitionPackage.reset();
     this.$router.push({
-      name: routeNames.ContractingShop,
+      name: routeNames.DAPPSChecklist,
       params: {
         direction: "next"
       },
