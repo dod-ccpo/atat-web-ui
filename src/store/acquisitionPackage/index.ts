@@ -943,6 +943,10 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setHasAlternateCOR(true);
         }
       }
+      
+      if(!aCorSysId){
+        this.setHasAlternateCOR(false);
+      }
 
       if(primaryContactSysId){
         const primaryContact = await api.contactsTable.retrieve(
