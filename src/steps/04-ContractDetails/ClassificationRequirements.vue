@@ -74,7 +74,7 @@
       cancelText="Cancel"
       width="450"
       @cancelClicked="cancelClicked"
-      @ok="deleteClicked"
+      @ok="deleteClicked(true)"
       :disableClickingOutside="true"
     >
       <template #content>
@@ -148,15 +148,20 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   @Watch("selectedOptions")
-  public selectedOptionsChange(updated: string[], current: string[]): void {
-    if (updated.length < current.length){ //selectedOptions was `unchecked`
+  public async selectedOptionsChange(updated: string[], current: string[]): Promise<void> {
+    if (updated.length < current.length){ //selectedOptions was `unchecked` and item removed
       this.itemDeleted = 
         this.getClassificationItem((current.filter(x => updated.indexOf(x) === -1))[0])
       this.itemDeleted.display = this.itemDeleted?.display?.replace(" - ", "/") || "";
+
+      //only show dialog for classLevels that are currently used in DOW
       if (this.existingClassificationsLevelsInDOW.includes(this.itemDeleted.sys_id as string)){
         this.showDeleteDialog();
+      } else {
+        //removes all store/database `residue` that was added when the item was added
+        this.deleteClicked(false);
       }
-    } else if(updated.length > current.length){ //selectedOptions was `checked` 
+    } else if(updated.length > current.length){ //selectedOptions was `checked` and Item added
       this.itemAdded = 
         this.getClassificationItem((updated.filter(x => current.indexOf(x) === -1))[0]);
       this.processNewSelectedItem();
@@ -190,7 +195,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   // restore the itemDeleted back to selectedOptions
-  public async deleteClicked(): Promise<void>{
+  public async deleteClicked(isClassLevelInDOW: boolean): Promise<void>{
     this.isDeletionSuccessful = 
       await ClassificationReqs.removeClassificationLevelsFromDBGlobally(
         this.itemDeleted?.sys_id as string
@@ -199,7 +204,8 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
       this.itemDeleted
     )
 
-    if (this.isDeletionSuccessful){
+    // build/modify ui elements
+    if (this.isDeletionSuccessful && isClassLevelInDOW){
       //build warning alert
       this.buildClassificationRequirementsAlert();
 
