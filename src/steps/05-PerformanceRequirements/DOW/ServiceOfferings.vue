@@ -231,8 +231,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             description: offering.description,
           }
           this.checkboxItems.push(checkboxItem);
-          if (checkboxItem.value === "Other") {
+          if (checkboxItem.label === "Other") {
             this.otherValueEntered = offering.otherOfferingName || "";
+            this.otherValue = checkboxItem.value;
           }
         });
       }
@@ -248,7 +249,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
       this.selectedOptions.push(...validSelections);
 
-      this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
     } else {
       const offeringIndex = DescriptionOfWork.DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() 

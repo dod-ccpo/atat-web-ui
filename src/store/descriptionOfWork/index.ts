@@ -1624,17 +1624,11 @@ export class DescriptionOfWorkStore extends VuexModule {
   public get selectedServiceOfferings(): string[] {
     const currentGroup = this.DOWObject.find(group =>
       group.serviceOfferingGroupId === this.currentGroupId);
+    debugger;
     if (currentGroup?.serviceOfferings) {
-      return currentGroup.serviceOfferings.flatMap(offering =>
-        offering.sys_id === "Other" ? "Other" : offering.name);
+      return currentGroup.serviceOfferings.flatMap(offering => offering.name);
     }
     return [""];
-  }
-
-  public get otherServiceOfferingEntry(): string {
-    const otherServiceOffer = this.serviceOfferingsForGroup
-      .find(offering=>offering.sys_id === "Other");
-    return otherServiceOffer ? otherServiceOffer.name : "";
   }
 
   public get currentOfferingGroupHasOfferings(): boolean {
@@ -1989,25 +1983,18 @@ export class DescriptionOfWorkStore extends VuexModule {
         selectedOfferingSysIds.forEach((selectedOfferingSysId) => {
           const foundOffering
               = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
-          if (!currentOfferings.some((e) => e.name === foundOffering?.name)) {
-            const name = foundOffering ? foundOffering.name : otherValue;
-            const description = foundOffering ? foundOffering.description : "";
-            const sequence = foundOffering ? foundOffering.sequence : "99";
-            const serviceId = foundOffering ? foundOffering.service_offering_group : "";
 
+          if (foundOffering && !currentOfferings.some((e) => e.name === foundOffering?.name)) {
             const offering = {
-              name,
-              other: otherValue,
-              "sys_id": "",
+              name: foundOffering.name,
+              acquisitionPackageSysId: acquisitionPackageId,
+              otherOfferingName: otherValue,             
+              sys_id: "",
               classificationInstances: [],
-              description,
-              sequence,
-              serviceId
+              sequence: foundOffering.sequence,
+              serviceId: foundOffering.service_offering_group
             }
-            currentOfferings.push({
-              ...offering,
-              acquisitionPackageSysId: acquisitionPackageId
-            });
+            currentOfferings.push(offering);
           }
         });
 
@@ -2560,14 +2547,12 @@ export class DescriptionOfWorkStore extends VuexModule {
     //map services offerings from the service offering list
     const serviceOfferings: DOWServiceOffering[] = [];
     const dowOfferings = this.serviceOfferingsForGroup;
-
     const acquisitionPackageId = AcquisitionPackage.packageId;
 
     serviceOfferingsForGroup.forEach((obj) => {
 
       //does the saved offering exist in DOW store?
       const savedInDown = dowOfferings.find(offering=>offering.sys_id === obj.sys_id);
-
       const offering = savedInDown ? savedInDown :{
         name: obj.name,
         "sys_id": obj.sys_id || "",
@@ -2575,21 +2560,27 @@ export class DescriptionOfWorkStore extends VuexModule {
         sequence: obj.sequence,
         description: obj.description,
         serviceId: "",
+        otherOfferingName: "",
       };
+      if (obj.name === "Other") {
+        debugger;
+        const otherOffering = dowOfferings.find(obj => obj.serviceId === this.currentGroupId);
+        offering.otherOfferingName = otherOffering ? otherOffering.otherOfferingName : "";
+      }
 
       serviceOfferings.push(offering);
 
     });
 
-    const otherOffering: DOWServiceOffering = {
-      name: "Other",
-      sys_id: "Other",
-      acquisitionPackageSysId: acquisitionPackageId,
-      sequence: "99",
-      description: "",
-      serviceId: "",
-    };
-    serviceOfferings.push(otherOffering);
+    // const otherOffering: DOWServiceOffering = {
+    //   name: "Other",
+    //   sys_id: "Other",
+    //   acquisitionPackageSysId: acquisitionPackageId,
+    //   sequence: "99",
+    //   description: "",
+    //   serviceId: "",
+    // };
+    // serviceOfferings.push(otherOffering);
 
 
     //now map any from the DOW that might've been saved
