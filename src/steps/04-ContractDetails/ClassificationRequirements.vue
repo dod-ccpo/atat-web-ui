@@ -80,7 +80,8 @@
       <template #content>
         <div class="body">
          This action will permanently delete {{ DOWOfferingsWithClassLevelLength  }} performance 
-         requirements that you previously entered within {{ itemDeleted?.display }}. 
+         {{ getPluralRequirement }} that you previously 
+         entered within {{ itemDeleted?.display }}. 
          This cannot be undone.
         </div>
       </template>
@@ -105,7 +106,8 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { 
   hasChanges, 
   buildClassificationCheckboxList, 
-  convertStringArrayToCommaList} from "@/helpers";
+  convertStringArrayToCommaList,
+  setItemToPlural} from "@/helpers";
 import ClassificationReqs from "@/store/classificationRequirements";
 import AcquisitionPackage from '@/store/acquisitionPackage';
 import _ from "lodash";
@@ -141,13 +143,19 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     return buildClassificationCheckboxList(data, "", true, true);
   }
 
+  get getPluralRequirement():string {
+    return setItemToPlural(this.DOWOfferingsWithClassLevelLength, "requirement");
+  }
+
   @Watch("selectedOptions")
   public selectedOptionsChange(updated: string[], current: string[]): void {
     if (updated.length < current.length){ //selectedOptions was `unchecked`
       this.itemDeleted = 
         this.getClassificationItem((current.filter(x => updated.indexOf(x) === -1))[0])
       this.itemDeleted.display = this.itemDeleted?.display?.replace(" - ", "/") || "";
-      this.showDeleteDialog();
+      if (this.existingClassificationsLevelsInDOW.includes(this.itemDeleted.sys_id as string)){
+        this.showDeleteDialog();
+      }
     } else if(updated.length > current.length){ //selectedOptions was `checked` 
       this.itemAdded = 
         this.getClassificationItem((updated.filter(x => current.indexOf(x) === -1))[0]);
