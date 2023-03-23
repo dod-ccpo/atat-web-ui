@@ -98,6 +98,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import PortfolioStore from "@/store/portfolio";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -146,10 +147,11 @@ export default class Home extends Vue {
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    await acquisitionPackage.setFirstTimeVisit(true)
     await AcquisitionPackage.reset();
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     this.$router.push({
-      name: routeNames.ContractingShop,
+      name: routeNames.DAPPSChecklist,
       params: {
         direction: "next"
       },

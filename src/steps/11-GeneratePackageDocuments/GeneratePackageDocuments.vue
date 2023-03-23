@@ -76,7 +76,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
 
     const checkDocJobStatus: unknown = (async ()=> {
       await this.getDocJobStatus();
-      ["COMPLETE", "FAILED"].some(
+      ["SUCCESS", "FAILURE"].some(
         (status)=>{
           if (status === this.docJobStatus.toUpperCase()){
             clearInterval(intervalId);
