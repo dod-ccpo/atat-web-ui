@@ -6,6 +6,7 @@
       no-click-animation
       okText="Invite"
       width="632"
+      max-height="600"
       @ok="inviteMembers"
       :modalSlideoutComponent="modalSlideoutComponent"
       modalSlideoutTitle="Learn more about portfolio roles"
@@ -19,28 +20,77 @@
         </a>
       </p>
       <div class="max-width-640">
-        <ATATAutoComplete
-            id="SearchContact"
-            :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
-            :label-sr-only="true"
-            :label="''"
-            titleKey="fullName"
-            subtitleKey="email"
-            :items="userSearchList"
-            :searchFields="['fullName', 'email']"
-            :selectedItem.sync="selectedContact"
-            placeholder="Search by name or email address"
-            icon="search"
-            :noResultsText="''"
-            :rules="getRules"
-            @autocompleteInputUpdate="searchUsers"
-        />
+        <v-text-field
+          ref="inviteMember"
+          :id="'SearchMember'"
+          class="_search-input"
+          v-model="searchObj.value"
+          clearable
+          :loading="searchObj.isLoading"
+          :append-icon="'search'"
+          @keyup="onUserSearchValueChange(searchObj.value); searchObj.noResults=false"
+          @click:clear="onUserSearchValueChange('')"
+          outlined
+          dense
+          :height="40"
+          :placeholder="'Search by name or email address'"
+          autocomplete="off"
+          />
+      </div>
+      <v-card elevation="0" max-height="300" v-if="searchObj.searchResults.length > 0" >
+        <v-list>
+          <v-list-item v-for="user of searchObj.searchResults" :key="user.sys_id"
+            @click="onUserSelection(user)"
+            class="pointer">
+            <v-list-item-content>
+              <v-list-item-title
+                  class="font-weight-bolder font-size-16"
+                  v-text="user.firstName + ' ' + user.lastName">
+              </v-list-item-title>
+              <v-list-item-subtitle class="font-size-14" v-text="user.email">
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-card>
+      <v-card v-if="searchObj.noResults">
+        <v-list class="py-1">
+          <v-list-item class="font-weight-bolder font-size-16">
+            No results for "{{searchObj.value}}"
+          </v-list-item>
+        </v-list>
+      </v-card>
+
+      <div id="portfolioPendingInviteList">
+        <v-list max-height="">
+          <v-list-item class="px-0"
+              v-for="(member, index) in userSelectedList" :key="member.sys_id">
+            <v-list-item-content>
+              <v-list-item-title
+                  class="font-weight-bolder font-size-16"
+                  v-text="member.firstName + ' ' + member.lastName">
+              </v-list-item-title>
+              <v-list-item-subtitle class="font-size-14" v-text="member.email">
+              </v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action>
+              <ATATSelect
+                  :id="'Role' + index"
+                  class="_small _alt-style-clean _invite-members-modal align-self-end"
+                  :items="memberMenuItems"
+                  width="105"
+                  :selectedValue.sync="member.role"
+                  iconType="chevron"
+              />
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
       </div>
     </template>
   </ATATDialog>
-
 </template>
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
 import { Component, PropSync, Watch } from "vue-property-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -55,17 +105,23 @@ import {
   User
 } from "../../../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
-import Toast from "@/store/toast";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
+import _ from "lodash";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import UserManagement from "@/store/user/userManagement";
+import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
+import portfolio from "@/store/portfolio";
 
 @Component({
   components: {
+    ATATSVGIcon,
     ATATAutoComplete,
     ATATDialog,
     ATATErrorValidation,
     ATATSelect,
     ATATTextArea,
     AddMembersModalLearnMore,
+    MemberCard
   }
 })
 
@@ -73,7 +129,24 @@ export default class InviteMembersModal extends Vue {
   @PropSync("showModal") public _showModal?: boolean;
   public portfolioData: Portfolio | null = null;
   public projectTitle = "";
-  public userSearchList: User[] = [];
+  public searchObj: {
+    value: string;
+    searchResults: User[];
+    isLoading: boolean;
+    noResults: boolean;
+  } = {
+    value: "",
+    searchResults: [],
+    isLoading: false,
+    noResults: false
+  };
+  public memberMenuItems: SelectData[] = [
+    { header: "Roles" },
+    { text: "Manager", value: "Manager" },
+    { text: "Viewer", value: "Viewer" },
+    { divider: true },
+    { text: "Remove", value: "Remove", isSelectable: false }
+  ];
   public userSelectedList: User[] = [];
   public modalSlideoutComponent = AddMembersModalLearnMore;
   public membersInvitedToast: ToastObj = {
@@ -91,61 +164,68 @@ export default class InviteMembersModal extends Vue {
   ];
   private modalDrawerIsOpen = false;
 
-  public async searchUsers(): Promise<void> {
-    console.log("Searching for users...");
+  /**
+   * Starts searching 500 milliseconds after user changes the search value. Only
+   * searches if there are at least 3 characters in the newValue
+   */
+  onUserSearchValueChange = _.debounce((newValue: string) => {
+    if (newValue && newValue?.trim().length > 2) {
+      this.searchObj.isLoading = true;
+      UserManagement.searchUserByNameAndEmail(newValue).then(userSearchResults => {
+        this.searchObj.searchResults = userSearchResults.map(userSearchDTO => {
+          return {
+            sys_id: userSearchDTO.sys_id,
+            firstName: userSearchDTO.first_name,
+            lastName: userSearchDTO.last_name,
+            fullName: userSearchDTO.name,
+            email: userSearchDTO.email,
+            phoneNumber: userSearchDTO.phone,
+            agency: userSearchDTO.department?.display_value
+          }
+        })
+        this.searchObj.noResults = this.searchObj.searchResults.length === 0;
+        this.searchObj.isLoading = false;
+      })
+    } else {
+      this.searchObj.searchResults = [];
+    }
+  }, 500)
+
+  /**
+   * Adds the selected user to the selected user list, if it is not already.
+   * Then clears the search string and makes a function call out to clear the search results
+   */
+  onUserSelection(newSelectedUser: User): void {
+    if(newSelectedUser && !this.userSelectedList.find(selectedUser =>
+      selectedUser.sys_id === newSelectedUser.sys_id)) {
+      this.userSelectedList.push(newSelectedUser);
+    }
+    this.userSelectedList.sort((a, b) => {
+      if (a.fullName && b.fullName) {
+        return a.fullName > b.fullName ? 1 : -1;
+      } else {
+        return 0;
+      }
+    })
+    this.searchObj.value = "";
+    this.onUserSearchValueChange("");
   }
 
   @Watch("_showModal")
   public async showModalChange(newVal: boolean): Promise<void> {
     if (newVal) {
-      this.userSearchList = [
-        {
-          // eslint-disable-next-line camelcase
-          sys_id: "1",
-          firstName: "Test0",
-          lastName: "Adamson",
-          email: "test.adamson-civ@mail.mil",
-          phoneNumber: "333-333-3333",
-          agency: "HQ1234 - Corresponding Organization Name"
-        },
-        {
-          // eslint-disable-next-line camelcase
-          sys_id: "2",
-          firstName: "Test1",
-          lastName: "Contractingofficerep",
-          email: "test.contractingofficerrep-civ@mail.mil",
-          phoneNumber: "555-555-5555",
-          agency: "HQ1234 - Corresponding Organization Name",
-
-        },
-        {
-          // eslint-disable-next-line camelcase
-          sys_id: "3",
-          firstName: "Test2",
-          lastName: "Wentzel",
-          email: "test.wentz@acusage.net",
-          phoneNumber: "444-444-4444",
-          agency: "HQ567 - Other Organization Name"
-        }
-      ];
       this.userSelectedList = [];
       this.portfolioData = await PortfolioStore.getPortfolioData();
       this.projectTitle = this.portfolioData.title || "New Acquisition";
-      await this.setExistingMembers();
       if (!this.inputWidthFaker) {
         this.$nextTick(() => {
           this.inputWidthFaker = document.getElementById("inputWidthFaker");
         });
       }
     } else {
-      PortfolioStore.setShowInviteMembersModal(false);
+      PortfolioStore.setShowAddMembersModal(false);
     }
   }
-
-  // use for validation - check entered emails against existing members list
-  public existingMembers: User[] = [];
-  // get existingMembers from store, then map emails only
-  public existingMemberEmails: string[] = [];
 
   // inputWidthFaker is used to dynamically adjust the width of the input
   // based on the characters entered - the "hidden" (abs pos off-screen) div
@@ -153,28 +233,16 @@ export default class InviteMembersModal extends Vue {
   // to the input -- see event listener on input
   public inputWidthFaker: HTMLElement | null = null;
 
-  public async setExistingMembers(): Promise<void> {
-    if (this.portfolioData && this.portfolioData.members) {
-      this.existingMemberEmails = [];
-      this.existingMembers = this.portfolioData.members;
-      this.existingMembers.forEach((member) => {
-        if (member.email) {
-          this.existingMemberEmails.push(member.email);
-        }
-      });
-    }
-  }
-
+  /**
+   * Makes a store call to invite the new members if the user had marked at least
+   * one new member to a specific role instead of 'remove'
+   */
   public async inviteMembers(): Promise<void> {
-    const invitedCount = this.userSelectedList.length;
-    const toastMsg = invitedCount > 1
-      ? invitedCount + " members added"
-      : invitedCount + " member added";
-    this.membersInvitedToast.message = toastMsg;
-    Toast.setToast(this.membersInvitedToast);
-    // TODO: update the below line after refactoring the store-saveMembers
-    // await PortfolioStore.saveMembers(this.userSelectedList);
-    this.$emit("members-invited")
+    const userSelectedNotRemovedList = this.userSelectedList.filter(selectedUser =>
+      (selectedUser.role === "Manager") || (selectedUser.role === "Viewer"))
+    if (userSelectedNotRemovedList.length > 0) {
+      await portfolio.inviteMembers(userSelectedNotRemovedList);
+    }
   }
 
   public openLearnMoreDrawer(): void {

@@ -635,6 +635,9 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
   portfolio_funding_status: string;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
+  portfolio_managers_detail?: UserManagementDTO[];
+  portfolio_viewers?: string;
+  portfolio_viewers_detail?: UserManagementDTO[];
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];
@@ -742,6 +745,15 @@ export interface UserDTO extends BaseTableDTO {
   last_name?: string;
   user_name?: string;
   email?: string;
+}
+
+export interface UserManagementDTO extends BaseTableDTO {
+  first_name?: string;
+  last_name?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  department?: DisplayColumn;
 }
 
 export interface TrainingEstimateDTO extends BaseTableDTO{

@@ -103,8 +103,8 @@
       >
         <div 
           class="d-flex flex-columm justify-space-between"
-          v-for="(member, index) in portfolioMembers" 
-          :key="member.email"
+          v-for="(member, index) in getPortfolioMembers()"
+          :key="member.sys_id"
         >
           <MemberCard :id="'MemberName' + index" :index="index" />
           <div v-if="managerCount === 1 && member.role.toLowerCase() === 'manager'">
@@ -310,9 +310,9 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async loadPortfolio(): Promise<void> {
-    const storeData = _.cloneDeep(await PortfolioStore.getPortfolioData());
+    const storeData = await PortfolioStore.getPortfolioData();
     if (storeData) {
-      this.portfolio = _.cloneDeep(storeData);
+      this.portfolio = storeData;
       this.csp = storeData.csp?.toLowerCase() as string;      
       if (storeData.provisioned) {
         this.provisionedTime = this.formatDate(storeData.provisioned);
@@ -320,7 +320,7 @@ export default class PortfolioDrawer extends Vue {
       if (storeData.updated) {
         this.updateTime = this.formatDate(storeData.updated);
       }
-      this.portfolioMembers = _.cloneDeep(storeData.members) || [];
+      this.portfolioMembers = storeData.members || [];
       this.portfolioStatus = PortfolioStore.getStatus;
     }
     this.currentUser = await CurrentUserStore.getCurrentUser();
@@ -352,8 +352,12 @@ export default class PortfolioDrawer extends Vue {
       : 0;
   }
 
+  public getPortfolioMembers(): User[] {
+    return this.portfolio?.members ? this.portfolio?.members : [];
+  }
+
   public get managerCount(): number {
-    const managers = this.portfolioMembers.filter(obj => obj.role?.toLowerCase() === "manager")
+    const managers = this.portfolioMembers.filter(obj => obj?.role?.toLowerCase() === "manager")
     return managers.length;
   }
 

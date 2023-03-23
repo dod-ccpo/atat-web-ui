@@ -109,6 +109,7 @@
   </div>
 </template>
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
@@ -428,6 +429,8 @@ export default class PortfoliosSummary extends Vue {
       cardData.status = portfolio.portfolio_status;
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.agency = portfolio.dod_component;
+      cardData.portfolio_managers = portfolio.portfolio_managers;
+      cardData.portfolio_viewers = portfolio.portfolio_viewers;
 
       const activeTaskOrderSysId = portfolio.active_task_order.value as string;
       const activeTaskOrder = portfolio.task_orders.find(

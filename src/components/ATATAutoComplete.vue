@@ -9,7 +9,7 @@
       :id="id"
       v-model="_selectedItem"
       :class="inputClass"
-      :items="items"
+      :items.sync="_items"
       :search-input.sync="searchText"
       :placeholder="placeholder"
       :append-icon="icon"
@@ -17,6 +17,7 @@
       :hide-details="true"
       :filter="customFilter"
       :rules="rules"
+      :loading="true"
       return-object
       clearable
       outlined
@@ -99,7 +100,7 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
   @Prop({ default: [], required: true }) private searchFields!: [];
-  @Prop({  default: () => [] , required: true }) private items!: [];
+  @PropSync("items") private _items!: [];
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
@@ -154,7 +155,8 @@ export default class ATATAutoComplete extends Vue {
     this.$emit('blur', value);
   }
 
-  private updateSearchInput(): void {
+  private updateSearchInput(value: string): void {
+    this.$emit("valueChanged", value);
     if (this.isReset) {
       this._selectedItem = {};
       this.searchText = null;

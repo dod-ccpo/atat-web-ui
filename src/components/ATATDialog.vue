@@ -9,7 +9,7 @@
     id="ATATDialog"
     ref="atatDialog"
   >
-    <v-card :id="id">
+    <v-card :id="id" :max-height="maxHeight">
       <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">
         {{ getTitle }}
       </v-card-title>
@@ -94,6 +94,7 @@ export default class ATATDialog extends Vue {
   @Prop({default: "Dialog-Title"}) private title!: string;
   @Prop({ default: "ATATModalContent"}) private id!: string;
   @Prop({default: "500px"}) private width!: string;
+  @Prop({default: "500"}) private maxHeight!: string;
   @Prop({default: "Cancel"}) private cancelText!: string;
   @Prop({default: "dialog_cancel"}) private cancelButtonId?: string;
   @Prop({default: "OK"}) private okText!: string;
