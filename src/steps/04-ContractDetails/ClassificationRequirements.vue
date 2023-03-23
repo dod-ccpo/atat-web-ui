@@ -56,8 +56,12 @@
                 <p class="mb-0">
                   You currently have performance requirements for 
                   {{ classReqsAsCommaList }}. 
-                  If you remove any of these selections, all requirements within the level will 
-                  be deleted.
+                  If you remove 
+                  {{ 
+                      DOWOfferingsWithClassLevelLength > 1 
+                      ? ' any of these selections' 
+                      : ' this selection' 
+                  }}, all requirements within the level will be deleted.
                 </p>
               </template>
             </ATATAlert>
