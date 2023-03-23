@@ -29,7 +29,8 @@
           { 'flex-column _has-other': item.value === otherValue },
           { '_other-selected': showOtherEntry(item.value) },
           { '_no-description': noDescriptions },
-          { '_has-text-fields' : hasTextFields }
+          { '_has-text-fields' : hasTextFields },
+          { '_big-bold-label' : boldText }
         ]"
         :style="cardStyles"
         :key="id + '_' + item.value"
@@ -177,9 +178,12 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private tooltipLabel?: string;
   @Prop({ default: false }) private noDescriptions?: boolean;
   @Prop({ default: false }) private hasTextFields?: boolean;
+  @Prop({ default: false }) private boldText?: boolean;
   @Prop() private labelWidth?: string;
   @Prop() private cardWidth?: string;
   @Prop({ default: false }) private cardNormal?: boolean;
+  @Prop() private labelFontSize?: string;
+  @Prop() private labelFontWeight?: string;
   @Prop() private textFieldAppendText?: string;
   @Prop() private textFieldWidth?: number;
   @Prop({ default: "text" }) private textFieldType?: string;
@@ -365,7 +369,7 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   public get labelStyles(): string {
-    return this.labelWidth ? `min-width: ${this.labelWidth}px;` : "";
+    return this.labelWidth? `min-width: ${this.labelWidth}px;`:""
   }
 
   public mounted(): void {

@@ -6,8 +6,8 @@
     elevation="0"
   >
     <div class="pr-8 flex-grow-1">
-      <div class="d-flex">
-        <div class="card-header flex-grow-1">
+      <div class="d-flex align-start justify-space-between">
+        <div class="card-header mr-2">
           <a
             :id="'Portfolio' + index"
             role="button"
@@ -139,6 +139,7 @@ import AppSections from "@/store/appSections";
 import CurrentUserStore from "@/store/user";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Toast from "@/store/toast";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components:{
     ATATSVGIcon,
@@ -253,9 +254,25 @@ export default class Card extends Vue {
     this.$emit("updateStatus", this.cardData.sys_id, newStatus);
   }
 
-  public packageTitleClick(status: string): void {
-    if (status.toLowerCase() === "draft") {
-      this.cardMenuClick({action: 'Edit draft package', title: ""})    
+  public async packageTitleClick(status: string): Promise<void> {
+    const isEditable = ['draft', 'waiting for signatures'].some(
+      s => s === status.toLowerCase()
+    )
+    if (isEditable){
+      this.cardMenuClick({action: 'Edit draft package', title: ""}) 
+    }
+    if (status.toLowerCase() === "waiting for task order") {
+      await AcquisitionPackage.setHideNavigation(true);
+      this.$router.replace({
+        name: routeNames.UnderReview,
+        replace: true,
+        params: {
+          direction: "next"
+        }   
+      }).catch(() => console.log("avoiding redundant navigation"));
+      await AcquisitionPackage.setPackageId(this.cardData.sys_id as string);
+      AcquisitionPackage.setProjectTitle(this.modifiedData.projectOverview);
+      AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
     }
   }
 
@@ -273,6 +290,9 @@ export default class Card extends Vue {
         }
       }).catch(() => console.log("avoiding redundant navigation"));
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
+      break;
+    case "View completed package":
+      this.packageTitleClick("Waiting for Task Order");
       break;
     case "Archive acquisition":
       this.showArchiveModal = true
@@ -325,13 +345,8 @@ export default class Card extends Vue {
       if(this.isOwner){
         this.cardMenuItems.push(
           {
-            title: "Resend signature request",
-            action: "Resend signature request",
-            disabled:true
-          },{
-            title: "Cancel signature request",
-            action: "Cancel signature request",
-            disabled:true
+            title: "Edit draft package",
+            action: "Edit draft package"
           },{
             title: "Archive acquisition",
             action: "Archive acquisition"
@@ -351,7 +366,6 @@ export default class Card extends Vue {
         {
           title: "View completed package",
           action: "View completed package",
-          disabled:true
         },
       ]
       if(this.isOwner){
@@ -408,6 +422,7 @@ export default class Card extends Vue {
     }
   }
   public async mounted(): Promise<void> {
+    await AcquisitionPackage.setHideNavigation(false);
     await this.loadOnEnter();
   }
 }

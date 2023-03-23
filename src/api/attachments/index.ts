@@ -52,19 +52,18 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
     
   }
 
-  public async getByRecordId(table_sys_id: string): Promise<AttachmentDTO>{
-    
-    // we will get the attachment based on the 
+  public async getAttachments(table_sys_id: string): Promise<AttachmentDTO[]>{
+
+    // we will get the attachment based on the
     // table sys id (the id of the record the file is attached to)
     const config: AxiosRequestConfig = {
       params: {
         table_sys_id
       }
     }
-
-    const data = await this.retrieve(undefined, config);
-
-    return data;
+    const attachments = this.getQuery(config);
+    
+    return attachments;
   }
 
 }

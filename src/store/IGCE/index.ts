@@ -328,7 +328,7 @@ export class IGCEStore extends VuexModule {
   @Mutation
   public setHasDOWandPop(): void {
     const requirementCostEstimate = this.requirementsCostEstimate as RequirementsCostEstimateDTO;
-    if ((Periods.periods && Periods.periods.length > 0) && !DescriptionOfWork.isIncomplete) {
+    if ((Periods.periods && Periods.periods.length > 0) && DescriptionOfWork.isDOWComplete) {
       requirementCostEstimate.has_DOW_and_PoP = "YES";
     } else {
       requirementCostEstimate.has_DOW_and_PoP = "NO";
@@ -346,7 +346,7 @@ export class IGCEStore extends VuexModule {
           rceFlat.architectural_design_current_environment_estimated_values?.split(",")
       },
       architectural_design_performance_requirements: {
-        option: rceFlat.architectural_design_performance_requirements_option,
+        option: rceFlat.architectural_design_performance_requirements_option as SingleMultiple,
         estimated_values:
           rceFlat.architectural_design_performance_requirements_estimated_values?.split(",")
       },
