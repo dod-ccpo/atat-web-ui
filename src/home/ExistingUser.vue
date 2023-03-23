@@ -47,7 +47,12 @@
 
 
 
-          <v-expansion-panels id="PortfoliosAccordion" flat v-model="portfolioPanel">
+          <v-expansion-panels 
+            id="PortfoliosAccordion" 
+            flat
+            v-model="portfolioPanel" 
+            v-show="showPortfolioPanel"
+          >
             <v-expansion-panel expand>
               <v-expansion-panel-header>
                 <div class="d-flex justify-space-between">
@@ -73,7 +78,11 @@
             </v-expansion-panel>
           </v-expansion-panels>
 
-          <div class="_view-all">
+          <!-- 
+            ---------------------------------------------------
+            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
+            ---------------------------------------------------
+            <div class="_view-all">
             <a
               id="ViewAllPortfoliosLink"
               role="button"
@@ -83,14 +92,13 @@
             >
               View all portfolios
             </a>
-          </div>
-
-
+          </div> 
+          -->
 
           </v-col>
 
           <v-col class="col-sm-12 col-md-5 pl-5">
-            <v-card flat class="pa-6 mb-10 _simple-border">
+            <v-card flat class="pa-6 mb-10 _simple-border" v-if="showTaskOrderSearch">
               <h3 class="text-primary mb-4">Do you already have an awarded task order?</h3>
               <p class="body">
                 We’ll gather details about your task order to start provisioning new 
@@ -216,6 +224,20 @@ export default class ExistingUser extends Vue {
   public portfolioPanel = 0; // open by default
   public portfolioCount = 0;
 
+  public get showPortfolioPanel(): boolean {
+    return this.portfolioCount > 0;
+  }
+
+  public showTaskOrderSearch = false;
+  public get portfoliosWaitingForTaskOrderCount(): number {
+    return AcquisitionPackageSummary.getPackagesWaitingForTaskOrderCount;
+  }
+
+  @Watch("portfoliosWaitingForTaskOrderCount")
+  public waitingForTaskOrderCountChanged(newVal: number): void {
+    this.showTaskOrderSearch = newVal > 0;
+  }
+
   public TONumber = "";
   public async startProvisionWorkflow(): Promise<void> {
     this.$emit("startProvisionWorkflow");
@@ -251,7 +273,7 @@ export default class ExistingUser extends Vue {
     limit: 5,
     offset: 0
   };
-
+  
   public get getCurrentUser(): UserDTO {
     return CurrentUserStore.currentUser;
   }
