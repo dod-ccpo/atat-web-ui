@@ -329,7 +329,6 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public formattedOfferings(value: DOWServiceOffering[]): string {
-    debugger
     const serviceArr = value
       .map(obj => obj.name === "Other"?
         ` <span class="_selectedOffering">${obj.otherOfferingName}</span>`:
@@ -419,7 +418,6 @@ export default class Summary extends Mixins(SaveOnLeave) {
         group.label = this.alternateGroupNames[altNameIndex].label;
       }
     });
-    debugger
     this.selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
       e => e.serviceOfferingGroupId.indexOf("NONE") === -1 
       && sectionServices.includes(e.serviceOfferingGroupId) 

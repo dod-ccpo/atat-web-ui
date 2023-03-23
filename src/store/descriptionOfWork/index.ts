@@ -809,6 +809,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.currentDOWSection = section;
   }
 
+
   xaasServices = [
     'STORAGE',
     'DATABASE',
@@ -1955,8 +1956,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       const currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
 
       for(const offering of currentOfferings){
-        const serviceOffering = this.serviceOfferings.find(item => item.name === offering.name);
-
+        const serviceOffering = this.serviceOfferings.find(item => item.name === offering.name
+            && item.service_offering_group === offering.serviceId);
         if(serviceOffering){
           const sysId = await saveOrUpdateSelectedServiceOffering(
             offering, serviceOffering.sys_id as string);
@@ -2015,7 +2016,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
-    debugger
     const updatedInstancesData: DOWClassificationInstance[] = [];
 
     const groupIndex = this.DOWObject.findIndex(
