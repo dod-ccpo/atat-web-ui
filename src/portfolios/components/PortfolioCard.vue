@@ -72,6 +72,7 @@
         </div>
       </div>
       <div class="text-base-dark mb-3">
+        <!-- ATAT TODO -- REINSTATE WHEN NOT HARD-CODING dod_component
         <span class="_agency">{{ cardData.agency }}</span>
         <ATATSVGIcon 
           name="bullet" 
@@ -80,6 +81,7 @@
           :height="9" 
           class="d-inline-block mx-1 _last-modified" 
         />
+        -->
         {{ cardData.lastModifiedStr }}
       </div>
 
