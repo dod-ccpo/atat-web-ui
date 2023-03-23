@@ -72,7 +72,7 @@
     <ATATDialog
       id="DeleteClassificationRequirements"
       :showDialog.sync="showDialog"
-      :title="'Delete all ' + itemDeleted?.display + ' requirements?'"
+      :title="'Delete all ' + getServiceOfferingName + ' requirements?'"
       no-click-animation
       okText="Delete"
       cancelText="Cancel"
@@ -85,7 +85,7 @@
         <div class="body">
          This action will permanently delete {{ DOWOfferingsWithClassLevelLength  }} performance 
          {{ getPluralRequirement }} that you previously 
-         entered within {{ itemDeleted?.display }}. 
+         entered within {{ getServiceOfferingName }}. 
          This cannot be undone.
         </div>
       </template>
@@ -145,6 +145,10 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     return buildClassificationCheckboxList(data, "", true, true);
+  }
+
+  get getServiceOfferingName():string {
+    return this.itemDeleted.display || "";
   }
 
   get getPluralRequirement():string {
