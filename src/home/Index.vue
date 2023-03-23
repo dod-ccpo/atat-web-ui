@@ -51,9 +51,10 @@
           v-else 
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
-          @allPackagesCleared="isNewUser = true"
+          @allPackagesCleared="allPackagesCleared"
           @openTOSearchModal="openSearchTOModal"
           @startProvisionWorkflow="startProvisionWorkflow"
+          @portfolioCountUpdated="portfolioCountUpdated"
         />      
 
         <div class="bg-white">
@@ -132,7 +133,17 @@ export default class Home extends Vue {
     await PortfolioStore.setShowTOPackageSelection(true);
   }
 
-  public isNewUser = false;
+  public get isNewUser(): boolean {
+    return !this.userHasPackages && !this.userHasPortfolios;
+  } 
+
+  public userHasPackages = false;
+  public userHasPortfolios = false;
+
+  public allPackagesCleared(): void {
+    this.userHasPackages = false;
+  }
+
   private currentUser: UserDTO = {};
 
   public get getCurrentUser(): UserDTO {
@@ -180,19 +191,25 @@ export default class Home extends Vue {
     
   }
 
+  public portfolioCountUpdated(portfolioCount: string): void {
+    this.userHasPortfolios = parseInt(portfolioCount) > 0;
+  }
+
   public async checkIfIsNewUser(): Promise<void> {
-    const userHasPackages = await UserStore.hasPackages();
-    this.isNewUser = !userHasPackages;
+    this.userHasPackages = await UserStore.hasPackages();
+    await UserStore.hasPortfolios();
+    this.userHasPortfolios = UserStore.getUserHasPortfolios;
   }
 
   public async mounted(): Promise<void> {
     await AcquisitionPackage.setHideNavigation(false);
     this.currentUser = await UserStore.getCurrentUser();
-    await this.checkIfIsNewUser();
+    // await this.checkIfIsNewUser();
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     await PortfolioStore.setShowTOPackageSelection(true);
+    await this.checkIfIsNewUser();
   }
 
 

@@ -46,6 +46,7 @@
             class="h3 _text-decoration-none d-flex align-center _portfolio-name"
             @click="cardMenuClick(portfolioCardMenuItems[0])"
           > -->
+          <span class="h3 text-base-darker d-flex align-center _portfolio-name">
             {{ cardData.title }}
             <ATATSVGIcon 
               v-if="cardData.isManager"
@@ -55,6 +56,8 @@
               color="base"
               class="ml-3"
             />
+          </span>
+
           <!-- </a> -->
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
