@@ -35,13 +35,18 @@
     <div class="pr-8 flex-grow-1">
       <div class="d-flex">
         <div class="card-header flex-grow-1">
+          <!-- 
+          ----------------------------------------------------------
+            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
+          ----------------------------------------------------------
           <a
             :id="'PortfolioName' + index"
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _portfolio-name"
             @click="cardMenuClick(portfolioCardMenuItems[0])"
-          >
+          > -->
+          <span class="h3 text-base-darker d-flex align-center _portfolio-name">
             {{ cardData.title }}
             <ATATSVGIcon 
               v-if="cardData.isManager"
@@ -51,7 +56,9 @@
               color="base"
               class="ml-3"
             />
-          </a>
+          </span>
+
+          <!-- </a> -->
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
           <v-chip
@@ -65,6 +72,7 @@
         </div>
       </div>
       <div class="text-base-dark mb-3">
+        <!-- ATAT TODO -- REINSTATE WHEN NOT HARD-CODING dod_component
         <span class="_agency">{{ cardData.agency }}</span>
         <ATATSVGIcon 
           name="bullet" 
@@ -73,6 +81,7 @@
           :height="9" 
           class="d-inline-block mx-1 _last-modified" 
         />
+        -->
         {{ cardData.lastModifiedStr }}
       </div>
 
@@ -156,13 +165,17 @@
       </div>
     </div>
 
-    <ATATMeatballMenu 
+    <!-- 
+      ------------------------------------------------------------
+      -- ATAT TODO -  UNHIDE MEATBALL when Portfolio Mgmt added -- 
+      ------------------------------------------------------------
+      <ATATMeatballMenu 
       :id="'PortfolioCardMenu' + index"
       :left="true"
       :menuIndex="index"
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
-    />
+    /> -->
 
     <LeavePortfolioModal
       :showModal.sync="showLeavePortfolioModal" 
