@@ -20,7 +20,7 @@
 
     <v-list>
       <v-list-item
-        v-for="(step, stepIndex) in stepperData.slice(1)"
+        v-for="(step, stepIndex) in stepperData"
         :key="stepIndex"
         :class="{ 'active-step': step.stepNumber === activeStep }"
       >

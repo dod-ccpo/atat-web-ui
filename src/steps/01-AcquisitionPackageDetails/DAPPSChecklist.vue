@@ -201,6 +201,9 @@ import { SlideoutPanelContent } from "../../../types/Global";
 import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATAlert from "@/components/ATATAlert.vue";
+import { routeNames } from "@/router/stepper";
+import Steps from "@/store/steps";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {ATATSVGIcon,ATATAlert}
@@ -223,6 +226,14 @@ export default class DAPPSChecklist extends Mixins(SaveOnLeave) {
    return true;
  }
  async mounted(): Promise<void>{
+   const comingFrom = Steps.prevStepName;
+   if (comingFrom !== routeNames.ContractingShop
+    && AcquisitionPackage.packageId !== "") {
+     this.$router.push({
+       name: routeNames.ContractingShop,
+     }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+   }
+    
    await acquisitionPackage.setHideSideNavigation(true);
    const slideoutPanelContent: SlideoutPanelContent = {
      component: FundingRequestLearnMore,
