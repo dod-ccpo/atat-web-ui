@@ -474,6 +474,10 @@ export class PortfolioDataStore extends VuexModule {
     return portfolio;
   }
 
+  /**
+   * By updating the new members to the current portfolio, all the screen where current
+   * portfolio is used for display, will get auto refreshed.
+   */
   @Mutation
   public async doUpdateCurrentPortfolioMembers(newMembers: User[]): Promise<void> {
     this.currentPortfolio.portfolio_managers_detail =
@@ -489,6 +493,13 @@ export class PortfolioDataStore extends VuexModule {
     this.currentPortfolio.portfolio_viewers =
       this.currentPortfolio.portfolio_viewers_detail?.map(
         viewerDetail => viewerDetail.sys_id).toString();
+    this.currentPortfolio.members?.sort((a, b) => {
+      if (a.fullName && b.fullName) {
+        return a.fullName > b.fullName ? 1 : -1;
+      } else {
+        return 0;
+      }
+    })
   }
 
   /**
@@ -517,10 +528,6 @@ export class PortfolioDataStore extends VuexModule {
     }
     await api.portfolioTable.update(this.currentPortfolio.sysId as string,
       membersPayload as PortfolioSummaryDTO);
-
-    // by adding new members to the current portfolio, all the screen where current
-    // portfolio is used for display, get auto refreshed
-
     await this.doUpdateCurrentPortfolioMembers(newMembers);
   }
 

@@ -134,7 +134,7 @@
               class="_small _alt-style-clean _invite-members-modal align-self-end"
               :items="getMemberMenuItems(member)"
               width="105"
-              :selectedValue.sync="portfolioMembers[index].role"
+              :selectedValue.sync="member.role"
               iconType="chevron"
               @onChange="(value)=>onSelectedMemberRoleChanged(value, index)"
               :menuDisabled="member.menuDisabled"
@@ -310,7 +310,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async loadPortfolio(): Promise<void> {
-    const storeData = await PortfolioStore.getPortfolioData();
+    const storeData = await PortfolioStore.currentPortfolio;
     if (storeData) {
       this.portfolio = storeData;
       this.csp = storeData.csp?.toLowerCase() as string;      
