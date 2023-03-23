@@ -28,8 +28,9 @@
           clearable
           :loading="searchObj.isLoading"
           :append-icon="'search'"
-          @keyup="onUserSearchValueChange(searchObj.value); searchObj.noResults=false"
-          @click:clear="onUserSearchValueChange('')"
+          @keyup="onUserSearchValueChange(searchObj.value);searchObj.noResults=false;
+          searchObj.alreadyInvited=false"
+          @click:clear="onUserSearchValueChange('');searchObj.alreadyInvited=false"
           outlined
           dense
           :height="40"
@@ -37,6 +38,13 @@
           autocomplete="off"
           />
       </div>
+      <v-card elevation="0" v-if="searchObj.alreadyInvited" class="bg-info-dark">
+        <v-list class="py-1">
+          <v-list-item class="font-weight-bolder font-size-16 bg-warning-lighter">
+            Member already invited
+          </v-list-item>
+        </v-list>
+      </v-card>
       <v-card elevation="0" max-height="300" v-if="searchObj.searchResults.length > 0" >
         <v-list>
           <v-list-item v-for="user of searchObj.searchResults" :key="user.sys_id"
@@ -131,14 +139,16 @@ export default class InviteMembersModal extends Vue {
   public projectTitle = "";
   public searchObj: {
     value: string;
-    searchResults: User[];
     isLoading: boolean;
+    searchResults: User[];
     noResults: boolean;
+    alreadyInvited: boolean;
   } = {
     value: "",
-    searchResults: [],
     isLoading: false,
-    noResults: false
+    searchResults: [],
+    noResults: false,
+    alreadyInvited: false
   };
   public memberMenuItems: SelectData[] = [
     { header: "Roles" },
@@ -192,23 +202,29 @@ export default class InviteMembersModal extends Vue {
   }, 500)
 
   /**
-   * Adds the selected user to the selected user list, if it is not already.
+   * Adds the selected user to the selected user list, if the selected user is not already in
+   * the new selection list or the current member list.
    * Then clears the search string and makes a function call out to clear the search results
    */
   onUserSelection(newSelectedUser: User): void {
     if(newSelectedUser && !this.userSelectedList.find(selectedUser =>
-      selectedUser.sys_id === newSelectedUser.sys_id)) {
+      selectedUser.sys_id === newSelectedUser.sys_id) &&
+        !this.portfolioData?.members?.find(currentMember =>
+          currentMember.sys_id === newSelectedUser.sys_id)) {
+      this.searchObj.alreadyInvited = false;
       this.userSelectedList.push(newSelectedUser);
+      this.userSelectedList.sort((a, b) => {
+        if (a.fullName && b.fullName) {
+          return a.fullName > b.fullName ? 1 : -1;
+        } else {
+          return 0;
+        }
+      })
+      this.searchObj.value = "";
+      this.onUserSearchValueChange("");
+    } else {
+      this.searchObj.alreadyInvited = true;
     }
-    this.userSelectedList.sort((a, b) => {
-      if (a.fullName && b.fullName) {
-        return a.fullName > b.fullName ? 1 : -1;
-      } else {
-        return 0;
-      }
-    })
-    this.searchObj.value = "";
-    this.onUserSearchValueChange("");
   }
 
   @Watch("_showModal")
