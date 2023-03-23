@@ -78,13 +78,19 @@ export class EDAApi extends ApiBase{
     provisioningPostObj: unknown,
     taskOrderNumber: string,
     acquisitionPackageSysId: string): Promise<EDAResponse> {
+    const params: { 
+      taskOrderNumber: string, 
+      acquisitionPackageSysId?: string 
+    } = {
+      taskOrderNumber: taskOrderNumber,      
+    }
+    
+    if (acquisitionPackageSysId) {
+      params.acquisitionPackageSysId = acquisitionPackageSysId
+    }
+
     try {
-      const requestConfig: AxiosRequestConfig = {
-        params: {
-          taskOrderNumber: taskOrderNumber,
-          acquisitionPackageSysId: acquisitionPackageSysId
-        }
-      };
+      const requestConfig: AxiosRequestConfig = { params };
       const response = await this.instance.post(this.endPoint, provisioningPostObj, requestConfig);
       let edaResponse: EDAResponse = {};
       if (response.status === 200) {

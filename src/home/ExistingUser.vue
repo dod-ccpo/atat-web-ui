@@ -105,7 +105,7 @@
           </v-col>
 
           <v-col class="col-sm-12 col-md-5 pl-5">
-            <v-card flat class="pa-6 mb-10 _simple-border" v-if="showTaskOrderSearch">
+            <v-card flat class="pa-6 mb-10 _simple-border">
               <h3 class="text-primary mb-4">Do you already have an awarded task order?</h3>
               <p class="body">
                 We’ll gather details about your task order to start provisioning new 
@@ -236,16 +236,6 @@ export default class ExistingUser extends Vue {
 
   public get userHasPortfolios(): boolean {
     return this.portfolioCount > 0;
-  }
-
-  public showTaskOrderSearch = false;
-  public get portfoliosWaitingForTaskOrderCount(): number {
-    return AcquisitionPackageSummary.getPackagesWaitingForTaskOrderCount;
-  }
-
-  @Watch("portfoliosWaitingForTaskOrderCount")
-  public waitingForTaskOrderCountChanged(newVal: number): void {
-    this.showTaskOrderSearch = newVal > 0;
   }
 
   public TONumber = "";
