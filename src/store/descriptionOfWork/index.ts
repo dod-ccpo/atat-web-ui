@@ -10,7 +10,9 @@ import rootStore from "../index";
 import api from "@/api";
 import {
   ArchitecturalDesignRequirementDTO,
+  BaseTableDTO,
   ClassificationInstanceDTO,
+  CloudServiceProviderDTO,
   CloudSupportEnvironmentInstanceDTO,
   ComputeEnvironmentInstanceDTO,
   DatabaseEnvironmentInstanceDTO,
@@ -49,10 +51,11 @@ import IGCEStore from "@/store/IGCE";
 import { 
   buildClassificationLabel, 
   toTitleCase, 
-  capitalizeEachWord, 
+  capitalizeEachWord,
 } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import { TableApiBase } from "@/api/tableApiBase";
 
 
 // Classification Proxy helps keep track of saved
@@ -137,6 +140,7 @@ const saveOrUpdateClassificationInstance =
     ):Promise<string> => {
       const tempObject: any = {};
       let objSysId = "";
+
       
       const unit_quantity = await stringifyPeriodsForIGCECostEstimates(
         classificationInstance.selectedPeriods
@@ -150,14 +154,13 @@ const saveOrUpdateClassificationInstance =
             ? (classificationInstance.classificationLevelSysId as ReferenceColumn).value as string
             : classificationInstance.classificationLevelSysId as string;
       tempObject.classification_level = classificationLevel;
+      tempObject.acquisition_package = AcquisitionPackage.acquisitionPackage?.sys_id;
       tempObject.usage_description = classificationInstance.anticipatedNeedUsage;
       tempObject.need_for_entire_task_order_duration = classificationInstance.entireDuration;
       tempObject.type_of_delivery = classificationInstance.typeOfDelivery;
       tempObject.type_of_mobility = classificationInstance.typeOfMobility;
       tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
       tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
-   
-
       if(classificationInstance.sysId)
         tempObject.sys_id = classificationInstance.sysId;
 
@@ -508,6 +511,7 @@ const mapClassificationInstanceFromDTO = (
     typeOfMobilityOther: value.type_of_mobility_other,
     classifiedInformationTypes: value.classified_information_types,
     sysId: value.sys_id,
+    acquisitionPackage: AcquisitionPackage.acquisitionPackage?.sys_id as string
   };
 
   return result;
@@ -2673,11 +2677,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async removeClassificationInstances(classificationInstances:
-                                                 string[]): Promise<void>{
-
-
-
+  public async removeClassificationInstances(classificationInstances:string[]): Promise<void>{
     try {
 
       const calls:Promise<void>[] = [];
