@@ -93,7 +93,7 @@
               <div>
                 <h3 class="font-weight-500 text-primary mb-1"
                 >
-                  Certified Documents For Transferring Funds
+                  Certified Documents for Transferring Funds
                 </h3>
                 <p class="mb-4">
                   Save time by completing your Fiscal Service Forms 7600A and 7600B within
