@@ -25,6 +25,7 @@
         name="checkboxes"
         :card="false"
         :truncate="false"
+        :showPerformanceRequirementTotal="true"
         class="copy-max-width"
         :rules="[
           $validators.required('Please select at least one classification level.')

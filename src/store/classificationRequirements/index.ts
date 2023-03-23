@@ -24,6 +24,7 @@ import DescriptionOfWork from "../descriptionOfWork";
   dynamic: true,
   store: rootStore,
 })
+
 export class ClassificationRequirementsStore extends VuexModule {
   public classificationLevels: ClassificationLevelDTO[] = [];
   public selectedClassificationLevels: SelectedClassificationLevelDTO[] = [];
@@ -56,6 +57,9 @@ export class ClassificationRequirementsStore extends VuexModule {
       this.classificationTopSecretSysId = topSecretObj.sys_id || "";
     }
   }
+
+
+
 
   @Action({ rawError: true })
   public async setSelectedClassificationLevels(

@@ -107,11 +107,12 @@ import {
   hasChanges, 
   buildClassificationCheckboxList, 
   convertStringArrayToCommaList,
-  setItemToPlural} from "@/helpers";
+  setItemToPlural,
+  getDOWOfferingsWithClassLevelTotal} from "@/helpers";
 import ClassificationReqs from "@/store/classificationRequirements";
 import AcquisitionPackage from '@/store/acquisitionPackage';
 import _ from "lodash";
-import DescriptionOfWork from "@/store/descriptionOfWork";
+
 
 @Component({
   components: {
@@ -174,7 +175,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   public showDeleteDialog(): void {
-    this.getDOWOfferingsWithClassLevelLength(this.itemDeleted.sys_id as string);
+    this.getTotalOfDOWObjsWithClassLevel(this.itemDeleted.sys_id as string);
     this.showDialog = this.itemDeleted?.display !== "";
   }
 
@@ -182,11 +183,10 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     ClassificationReqs.addCurrentSelectedClassLevelList(this.itemAdded);
   }
 
-  public async getDOWOfferingsWithClassLevelLength(classLevelSysId: string): Promise<void>{
+  public async getTotalOfDOWObjsWithClassLevel(classLevelSysId: string): Promise<void>{
     classLevelSysId = classLevelSysId || this.itemDeleted?.sys_id || "";
-    const dowStringified  = JSON.stringify(DescriptionOfWork.DOWObject);
-    const re = new RegExp(classLevelSysId, 'g');
-    this.DOWOfferingsWithClassLevelLength = dowStringified.match(re)?.length || 0;
+    this.DOWOfferingsWithClassLevelLength = 
+      await getDOWOfferingsWithClassLevelTotal(classLevelSysId);
   }
 
   // restore the itemDeleted back to selectedOptions
@@ -240,7 +240,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     this.existingClassificationsLevelsInDOW = [];
     this.selectedOptions.forEach(
       (optionSysId) => {
-        this.getDOWOfferingsWithClassLevelLength(optionSysId);
+        this.getTotalOfDOWObjsWithClassLevel(optionSysId);
         if (this.DOWOfferingsWithClassLevelLength>0){
           this.existingClassificationsLevelsInDOW.push(optionSysId);
         }
