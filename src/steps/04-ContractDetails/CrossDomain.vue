@@ -195,11 +195,12 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     const periods = await Periods.loadPeriods();
     this.isPeriodsDataMissing = (periods && periods.length === 0);
     this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
+    debugger
     const selectedClassifications = 
       await ClassificationRequirements.getSelectedClassificationLevels()
     const topSecretFound =
       selectedClassifications.findIndex(classification => classification.classification === "TS")
-    if(topSecretFound){
+    if(topSecretFound >= 0){
       this.cdsSolutionItems.push({
         id: "TStoU",
         label: "Top Secret to Unclassified",
