@@ -8,10 +8,12 @@
       width="632"
       max-height="600"
       @ok="inviteMembers"
+      @cancelClicked = "onCancel()"
       :modalSlideoutComponent="modalSlideoutComponent"
       modalSlideoutTitle="Learn more about portfolio roles"
       :modalDrawerIsOpen.sync="modalDrawerIsOpen">
     <template #content>
+
       <p class="body">
         Use “.mil” or “.gov” email addresses to ensure people can authenticate with
         a CAC to access your portfolio.
@@ -226,6 +228,17 @@ export default class InviteMembersModal extends Vue {
     } else {
       this.searchObj.alreadyInvited = true;
     }
+  }
+
+  /**
+   * Resets the state of the modal and all the properties.
+   */
+  onCancel(): void {
+    this.searchObj.value = "";
+    this.searchObj.alreadyInvited = false;
+    this.searchObj.searchResults = [];
+    this.searchObj.noResults = false;
+    this.searchObj.isLoading = false;
   }
 
   @Watch("_showModal")
