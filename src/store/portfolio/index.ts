@@ -158,6 +158,9 @@ export class PortfolioDataStore extends VuexModule {
         }
       }
     }
+
+    // const 
+
     await api.edaApi.provisionPortfolio(
       provisioningPostObj,
       this.portfolioProvisioningObj.taskOrderNumber as string,

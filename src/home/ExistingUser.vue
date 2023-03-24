@@ -5,7 +5,13 @@
         <v-row>    
           <v-col class="col-sm-12 col-md-7 pr-5">
 
-            <v-expansion-panels id="PackagesAccordion" flat v-model="packagesPanel">
+            <v-expansion-panels 
+              id="PackagesAccordion" 
+              flat 
+              v-model="packagesPanel"
+              v-if="showPackagesPanel"
+              style="z-index:10"
+            >
               <v-expansion-panel expand>
                 <v-expansion-panel-header>
                   <div class="d-flex justify-space-between">
@@ -33,7 +39,10 @@
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
-            <div class="_view-all mb-10 bg-white">
+            <div 
+              class="_view-all mb-10 bg-white"
+              v-if="showPackagesPanel"
+            >
               <a
                 id="viewAllPackagesLink"
                 role="button"
@@ -45,9 +54,12 @@
               </a>
             </div>
 
-
-
-          <v-expansion-panels id="PortfoliosAccordion" flat v-model="portfolioPanel">
+          <v-expansion-panels 
+            id="PortfoliosAccordion" 
+            flat
+            v-model="portfolioPanel" 
+            v-show="userHasPortfolios"
+          >
             <v-expansion-panel expand>
               <v-expansion-panel-header>
                 <div class="d-flex justify-space-between">
@@ -73,7 +85,11 @@
             </v-expansion-panel>
           </v-expansion-panels>
 
-          <div class="_view-all">
+          <!-- 
+            ---------------------------------------------------
+            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
+            ---------------------------------------------------
+            <div class="_view-all">
             <a
               id="ViewAllPortfoliosLink"
               role="button"
@@ -83,9 +99,8 @@
             >
               View all portfolios
             </a>
-          </div>
-
-
+          </div> 
+          -->
 
           </v-col>
 
@@ -212,9 +227,16 @@ export default class ExistingUser extends Vue {
     
   public packagesPanel = 0; // open by default
   public packageCount = 0;
+  public get showPackagesPanel(): boolean {
+    return this.packageCount > 0;
+  }
 
   public portfolioPanel = 0; // open by default
   public portfolioCount = 0;
+
+  public get userHasPortfolios(): boolean {
+    return this.portfolioCount > 0;
+  }
 
   public TONumber = "";
   public async startProvisionWorkflow(): Promise<void> {
@@ -234,7 +256,9 @@ export default class ExistingUser extends Vue {
 
   public updateTotalPortfolios(totalCount: number): void {
     this.portfolioCount = totalCount;
+    this.$emit("portfolioCountUpdated", totalCount);
   } 
+
 
   public viewAllPortfolios(): void {
     AppSections.setAppContentComponent(Portfolios);
@@ -251,7 +275,7 @@ export default class ExistingUser extends Vue {
     limit: 5,
     offset: 0
   };
-
+  
   public get getCurrentUser(): UserDTO {
     return CurrentUserStore.currentUser;
   }
