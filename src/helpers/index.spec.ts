@@ -46,6 +46,7 @@ describe("testing src/helpers/index.ts", () => {
     const arr = buildClassificationCheckboxList(
       classlevelDTOResults, props.idSuffix, props.descriptionNeeded, props.includeTS
     )
+    console.log(arr);
     expect(arr).toEqual([
       {
         id: 'IL4radio',
@@ -57,6 +58,12 @@ describe("testing src/helpers/index.ts", () => {
         id: 'IL6radio',
         value: 'class3',
         label: 'Secret / Impact Level 6 (IL6)',
+        description: ''
+      },
+      {
+        id: 'radio',
+        value: 'class2',
+        label: 'Top Secret',
         description: ''
       }
     ]);
@@ -79,6 +86,13 @@ describe("testing src/helpers/index.ts", () => {
           value: 'class3',
           label: 'Secret / Impact Level 6 (IL6)',
           description: buildClassificationDescription(classlevelDTOResults[2])
+        }
+        ,
+        {
+          id: 'radio',
+          value: 'class2',
+          label: 'Top Secret',
+          description: ''
         }
       ]);
     })
