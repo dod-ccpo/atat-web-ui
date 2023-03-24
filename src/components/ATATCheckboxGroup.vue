@@ -122,16 +122,17 @@
           </template>
           <template v-if="showMessage">
             <div v-if="showPerformanceRequirementTotal"
-              class="v-flex align-center width-100">
-              <!-- <ATATSVGIcon
+              class="d-flex align-center text-align-right width-100 text-no-wrap mr-4">
+              <ATATSVGIcon
                 v-if="getPerformanceRequirementTotal(item.value) !==''"
                 name="warning"
+                class="mt-n1"
                 color="warning-dark2"
                 width="16"
                 height="16"
               >
-              </ATATSVGIcon> -->
-              <div class="body-sm text-base-light">
+              </ATATSVGIcon>
+              <div class="body-sm text-base-light ml-2">
               {{ getPerformanceRequirementTotal(item.value) }}
               </div>
             </div>
