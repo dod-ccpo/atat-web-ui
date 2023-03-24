@@ -1421,12 +1421,10 @@ export class AcquisitionPackageStore extends VuexModule {
           })
           : await api.sensitiveInformationTable.create(data);
       this.setSensitiveInformation(savedSensitiveInformation);
-      debugger;
       this.setAcquisitionPackage({
         ...this.sensitiveInformation,
         sensitive_information: sys_id
       } as AcquisitionPackageDTO);
-      debugger;
     } catch (error) {
       throw new Error(`error occurred saving sensitive info data ${error}`);
     }
