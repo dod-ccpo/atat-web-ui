@@ -20,6 +20,7 @@
           :value.sync="tabIndex"
           :title.sync="title"
           :portfolioStatus="portfolioStatus"
+          :isPortfolioProvisioning="isPortfolioProvisioning"
         />
         <v-container
           v-if="!isPortfolioProvisioning"

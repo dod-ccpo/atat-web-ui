@@ -140,6 +140,8 @@ import CurrentUserStore from "@/store/user";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Toast from "@/store/toast";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import acquisitionPackage from "@/store/acquisitionPackage";
+import Steps from "@/store/steps";
 @Component({
   components:{
     ATATSVGIcon,
@@ -279,6 +281,7 @@ export default class Card extends Vue {
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
     switch (menuItem.action) {
     case "Edit draft package":
+      await Steps.setAltBackDestination(AppSections.activeAppSection);
       this.$router.replace({
         name: routeNames.ContractingShop,
         replace: true,
@@ -290,6 +293,7 @@ export default class Card extends Vue {
         }
       }).catch(() => console.log("avoiding redundant navigation"));
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
+      await acquisitionPackage.setFirstTimeVisit(false)
       break;
     case "View completed package":
       this.packageTitleClick("Waiting for Task Order");
