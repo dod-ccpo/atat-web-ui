@@ -77,7 +77,6 @@ export const saveOrUpdateSelectedServiceOffering =
       selectedServiceOffering: DOWServiceOffering,
       serviceOfferingId: string
     ):Promise<string> => {
-      debugger
       const tempObject: any = {};
       let objSysId = "";
 
