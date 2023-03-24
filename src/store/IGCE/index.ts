@@ -834,6 +834,11 @@ export class IGCEStore extends VuexModule {
     await this.loadIgceEstimateByPackageId(aqPackageSysId);
   }
 
+  @Action({rawError: true})
+  public async setIgceEstimate(igceEstimateList: IgceEstimateDTO[]): Promise<void> {
+    this.doSetIgceEstimate(igceEstimateList);
+  }
+
   @Mutation
   public async doSetIgceEstimate(igceEstimateList: IgceEstimateDTO[]): Promise<void> {
     this.igceEstimateList = igceEstimateList;
