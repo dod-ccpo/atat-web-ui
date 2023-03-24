@@ -485,6 +485,7 @@ export interface Portfolio extends BaseTableDTO {
   status?: string;
   csp?: string;
   agency?: string;
+  agencyDisplay?: string
   createdBy?: string;
   provisioned?: string;
   members?: User[];

@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import {
+  AgencyDTO,
   CloudServiceProviderDTO,
   PortfolioSummaryDTO,
   PortfolioSummaryMetadataAndDataDTO,
@@ -245,6 +246,31 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   /**
+   * Constructs a single query that gets all the Agency records across all the portfolios.
+   * Parses the response and sets the 'agency_display' to the respective portfolio.
+   */
+  @Action({rawError: true})
+  private async setAgencyDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    const agencySysIds = portfolioSummaryList.map(portfolio =>
+      (portfolio.agency as unknown as ReferenceColumn).value);
+    const allAgencyList = await api.agencyTable.getQuery(
+      {
+        params:
+          {
+            sysparm_fields: "sys_id,acronym",
+            sysparm_query: "sys_idIN" + agencySysIds
+          }
+      }
+    )
+    portfolioSummaryList.forEach(portfolio => {
+      portfolio.agency_display =
+        (allAgencyList.find(
+          (agency: AgencyDTO) => (portfolio.agency as unknown as ReferenceColumn).value
+            === agency.sys_id)?.acronym) || "";
+    });
+  }
+
+  /**
    * Given a list of portfolios, compiles a single API call and returns the portfolio list
    * with task orders populated.
    */
@@ -443,6 +469,7 @@ export class PortfolioSummaryStore extends VuexModule {
         await this.setAlertsForPortfolios(portfolioSummaryList);
         await this.setEnvironmentsForPortfolios(portfolioSummaryList);
         await this.setCspDisplay(portfolioSummaryList);
+        await this.setAgencyDisplay(portfolioSummaryList);
         await this.setTaskOrdersForPortfolios(portfolioSummaryList);
         await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
         await this.setCostsToTaskOrderClins(portfolioSummaryList);
