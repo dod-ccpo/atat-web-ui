@@ -212,6 +212,7 @@ export default class InviteMembersModal extends Vue {
         !this.portfolioData?.members?.find(currentMember =>
           currentMember.sys_id === newSelectedUser.sys_id)) {
       this.searchObj.alreadyInvited = false;
+      newSelectedUser.role = "Viewer"; // defaults to viewer
       this.userSelectedList.push(newSelectedUser);
       this.userSelectedList.sort((a, b) => {
         if (a.fullName && b.fullName) {
