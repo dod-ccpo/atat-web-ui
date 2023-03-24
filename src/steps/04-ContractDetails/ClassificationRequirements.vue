@@ -33,7 +33,7 @@
             />
             <ATATAlert
               id="ClassificationRequirementsAlert"
-              v-show="isIL6Selected === 'true'"
+              v-if="isIL6Selected"
               type="info"
               class="copy-max-width my-10"
             >
@@ -46,10 +46,50 @@
                 </p>
               </template>
             </ATATAlert>
+            <ATATAlert
+              id="RemoveExistingSelectionsAlert"
+              v-if="showClassificationRequirementsAlert"
+              type="warning"
+              class="copy-max-width my-10"
+            >
+              <template v-slot:content>
+                <p class="mb-0">
+                  You currently have performance requirements for 
+                  {{ classReqsAsCommaList }}. 
+                  If you remove 
+                  {{ 
+                      DOWOfferingsWithClassLevelLength > 1 
+                      ? ' any of these selections' 
+                      : ' this selection' 
+                  }}, all requirements within the level will be deleted.
+                </p>
+              </template>
+            </ATATAlert>
           </v-col>
         </v-row>
       </v-container>
     </div>
+    <ATATDialog
+      id="DeleteClassificationRequirements"
+      :showDialog.sync="showDialog"
+      :title="'Delete all ' + getServiceOfferingName + ' requirements?'"
+      no-click-animation
+      okText="Delete"
+      cancelText="Cancel"
+      width="450"
+      @cancelClicked="cancelClicked"
+      @ok="deleteClicked(true)"
+      :disableClickingOutside="true"
+    >
+      <template #content>
+        <div class="body">
+         This action will permanently delete {{ DOWOfferingsWithClassLevelLength  }} performance 
+         {{ getPluralRequirement }} that you previously 
+         entered within {{ getServiceOfferingName }}. 
+         This cannot be undone.
+        </div>
+      </template>
+    </ATATDialog>
   </v-form>
 </template>
 <script lang="ts">
@@ -58,26 +98,30 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATDialog from "@/components/ATATDialog.vue";
+import Toast from "@/store/toast";
 
-import { Checkbox } from "../../../types/Global";
+import { Checkbox, ToastObj } from "../../../types/Global";
 import {
   AcquisitionPackageDTO,
-  ClassificationLevelDTO, ReferenceColumn, SelectedClassificationLevelDTO
+  ClassificationLevelDTO, SelectedClassificationLevelDTO
 } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
-import classificationRequirements from "@/store/classificationRequirements";
+import { 
+  hasChanges, 
+  buildClassificationCheckboxList, 
+  convertStringArrayToCommaList,
+  setItemToPlural} from "@/helpers";
+import ClassificationReqs from "@/store/classificationRequirements";
 import AcquisitionPackage from '@/store/acquisitionPackage';
 import _ from "lodash";
-import {
-  buildCurrentSelectedClassLevelList
-} from "@/packages/helpers/ClassificationRequirementsHelper";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
     ATATCheckboxGroup,
-    ATATAlert
+    ATATAlert,
+    ATATDialog
   }
 })
 
@@ -85,45 +129,152 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedSelectedClassLevelList: SelectedClassificationLevelDTO[] = [];
+  public existingClassificationsLevelsInDOW = [""];
+  public classReqsAsCommaList = "";
   public acquisitionPackage: AcquisitionPackageDTO | undefined;
-  public isIL6Selected = ""
-  public IL6SysId = ""
+  public isIL6Selected = false;
+  public IL6SysId = "";
+  public showClassificationRequirementsAlert = false;
+  public showDialog = false;
   private checkboxItems: Checkbox[] = []
+  private itemDeleted = {} as ClassificationLevelDTO;
+  private itemAdded = {} as ClassificationLevelDTO;
+  private DOWOfferingsWithClassLevelLength = 0;
+  private isDeletionSuccessful = true;
+  
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    return buildClassificationCheckboxList(data, "", true, false);
+    return buildClassificationCheckboxList(data, "", true, true);
+  }
+
+  get getServiceOfferingName():string {
+    return this.itemDeleted.display || "";
+  }
+
+  get getPluralRequirement():string {
+    return setItemToPlural(this.DOWOfferingsWithClassLevelLength, "requirement");
   }
 
   @Watch("selectedOptions")
-  public selectedOptionsChange(newVal: string[]): void {
-    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false"
+  public async selectedOptionsChange(updated: string[], current: string[]): Promise<void> {
+    if (updated.length < current.length){ //selectedOptions was `unchecked` and item removed
+      this.itemDeleted = 
+        this.getClassificationItem((current.filter(x => updated.indexOf(x) === -1))[0])
+      this.itemDeleted.display = this.itemDeleted?.display?.replace(" - ", "/") || "";
+
+      //only show dialog for classLevels that are currently used in DOW
+      if (this.existingClassificationsLevelsInDOW.includes(this.itemDeleted.sys_id as string)){
+        this.showDeleteDialog();
+      } else {
+        //removes all store/database `residue` that was added when the item was added
+        this.deleteClicked(false);
+      }
+    } else if(updated.length > current.length){ //selectedOptions was `checked` and Item added
+      this.itemAdded = 
+        this.getClassificationItem((updated.filter(x => current.indexOf(x) === -1))[0]);
+      this.processNewSelectedItem();
+    }
+    this.isIL6Selected = updated.indexOf(this.IL6SysId) > -1;
+  }
+
+  public getClassificationItem(sysId: string): ClassificationLevelDTO {
+    return this.classifications.find(c => c.sys_id === sysId) as ClassificationLevelDTO;
+  }
+
+  public showDeleteDialog(): void {
+    this.getDOWOfferingsWithClassLevelLength(this.itemDeleted.sys_id as string);
+    this.showDialog = this.itemDeleted?.display !== "";
+  }
+
+  public processNewSelectedItem(): void {
+    ClassificationReqs.addCurrentSelectedClassLevelList(this.itemAdded);
+  }
+
+  public async getDOWOfferingsWithClassLevelLength(classLevelSysId: string): Promise<void>{
+    classLevelSysId = classLevelSysId || this.itemDeleted?.sys_id || "";
+    const dowStringified  = JSON.stringify(DescriptionOfWork.DOWObject);
+    const re = new RegExp(classLevelSysId, 'g');
+    this.DOWOfferingsWithClassLevelLength = dowStringified.match(re)?.length || 0;
+  }
+
+  // restore the itemDeleted back to selectedOptions
+  public cancelClicked(): void{
+    this.selectedOptions.push(this.itemDeleted?.sys_id as string)
+  }
+
+  // restore the itemDeleted back to selectedOptions
+  public async deleteClicked(isClassLevelInDOW: boolean): Promise<void>{
+    this.isDeletionSuccessful = 
+      await ClassificationReqs.removeClassificationLevelsFromDBGlobally(
+        this.itemDeleted?.sys_id as string
+      );
+    await ClassificationReqs.removeClassificationLevelsFromStoreGlobally(
+      this.itemDeleted
+    )
+
+    // build/modify ui elements
+    if (this.isDeletionSuccessful && isClassLevelInDOW){
+      //build warning alert
+      this.buildClassificationRequirementsAlert();
+
+      // reset isDeletionSuccessful
+      this.isDeletionSuccessful = false;
+
+      // build/display toast object
+      const toastObj: ToastObj = {
+        type: "success",
+        message: this.itemDeleted?.display + " requirements deleted",
+        isOpen: true,
+        hasUndo: false,
+        hasIcon: true,
+      };
+
+      Toast.setToast(toastObj);
+    }
   }
 
   public get currentData(): SelectedClassificationLevelDTO[] {
-    return buildCurrentSelectedClassLevelList(this.selectedOptions,
-        this.acquisitionPackage?.sys_id as string, this.savedSelectedClassLevelList)
+    return ClassificationReqs.selectedClassificationLevels;
   }
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedSelectedClassLevelList);
   }
 
+  /**
+   * iterated selectedOptions and returns the options that exist in DOWObject
+   */
+  public async buildClassificationRequirementsAlert(): Promise<void> {
+    this.existingClassificationsLevelsInDOW = [];
+    this.selectedOptions.forEach(
+      (optionSysId) => {
+        this.getDOWOfferingsWithClassLevelLength(optionSysId);
+        if (this.DOWOfferingsWithClassLevelLength>0){
+          this.existingClassificationsLevelsInDOW.push(optionSysId);
+        }
+      }
+    );
+    this.showClassificationRequirementsAlert = this.existingClassificationsLevelsInDOW.length>0;
+    this.buildClassReqsAsCommaList();
+  }
+
+  /**
+   * builds existing classified requirements as comma list 
+   */
+  public buildClassReqsAsCommaList(): void{
+    const existingClassLabels = this.classifications.filter(
+      classifs => this.existingClassificationsLevelsInDOW.find(so => so === classifs.sys_id)
+    ).map(selectedClassifs => selectedClassifs.display?.replace(" - ", "/")) as string[];
+    this.classReqsAsCommaList = convertStringArrayToCommaList(
+      existingClassLabels.sort(), 'and'
+    );
+  }
+
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
-
-        const selectedClassificationLevelSysIdsOnLoad: string[] 
-          = this.savedSelectedClassLevelList.map(obj => obj.classification_level as string);
-        const removed = selectedClassificationLevelSysIdsOnLoad.filter(
-          sysId => !this.selectedOptions.includes(sysId)
-        );
-        if (removed.length) {
-          await DescriptionOfWork.removeAllInstancesInClassificationLevel(removed);        
-        }
-
-        await classificationRequirements.saveSelectedClassificationLevels(this.currentData)
-        await classificationRequirements.loadSelectedClassificationLevelsByAqId(
+        await ClassificationReqs.loadSelectedClassificationLevelsByAqId(
             this.acquisitionPackage?.sys_id as string);
       }
     } catch (error) {
@@ -139,17 +290,20 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     this.acquisitionPackage = await AcquisitionPackage
       .getAcquisitionPackage() as AcquisitionPackageDTO;
-    this.classifications = await classificationRequirements.getAllClassificationLevels();
+    this.classifications = await ClassificationReqs.getAllClassificationLevels();
     this.checkboxItems =this.createCheckboxItems(this.classifications);
     const IL6Checkbox = this.checkboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "false";
     // need to clone so that the store data is not modified. Store data needs to be intact
     // for comparison purposes during save
-    this.savedSelectedClassLevelList =
-        _.cloneDeep(await classificationRequirements.getSelectedClassificationLevels());
-    this.selectedOptions = this.savedSelectedClassLevelList
+    const selectedOptionsOnLoad = await ClassificationReqs.getSelectedClassificationLevels();
+    this.selectedOptions = (await ClassificationReqs.getSelectedClassificationLevels())
       .map(savedSelectedClassLevel =>
         savedSelectedClassLevel.classification_level) as string[];
+
+    this.savedSelectedClassLevelList =  _.cloneDeep(selectedOptionsOnLoad);
+
+    this.buildClassificationRequirementsAlert();
   }
 
   public async mounted(): Promise<void> {
