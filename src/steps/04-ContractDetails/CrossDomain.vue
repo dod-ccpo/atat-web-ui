@@ -195,7 +195,6 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     const periods = await Periods.loadPeriods();
     this.isPeriodsDataMissing = (periods && periods.length === 0);
     this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
-    debugger
     const selectedClassifications = 
       await ClassificationRequirements.getSelectedClassificationLevels()
     const topSecretFound =
