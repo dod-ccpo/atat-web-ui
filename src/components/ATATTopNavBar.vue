@@ -232,10 +232,10 @@ export default class ATATTopNavBar extends Vue {
         //   },
         // ]
       },
-      {
-        title: "Portfolios",
-        spaSectionTitle: sectionData.sectionTitles.Portfolios,
-      },
+      // {
+      //   title: "Portfolios",
+      //   spaSectionTitle: sectionData.sectionTitles.Portfolios,
+      // },
       // {
       //   title: "Portals",
       //   align: "left",

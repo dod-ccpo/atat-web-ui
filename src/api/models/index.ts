@@ -415,6 +415,7 @@ export interface SelectedServiceOfferingDTO extends BaseTableDTO {
 }
 
 export interface ClassificationInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   selected_periods: string;
   classification_level: string;
   usage_description: string;

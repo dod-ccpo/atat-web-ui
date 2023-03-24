@@ -417,6 +417,7 @@ export class PortfolioSummaryStore extends VuexModule {
       let portfolioSummaryList: PortfolioSummaryDTO[];
       if (portfolioSummaryCount > 0) {
         portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
+
         // callouts to other functions to set data from other tables
         await this.setAlertsForPortfolios(portfolioSummaryList);
         

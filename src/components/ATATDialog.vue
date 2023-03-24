@@ -8,6 +8,7 @@
     aria-describedby="modalDialogMessage"
     id="ATATDialog"
     ref="atatDialog"
+    :persistent="disableClickingOutside"
   >
     <v-card :id="id" :max-height="maxHeight">
       <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">
@@ -105,7 +106,7 @@ export default class ATATDialog extends Vue {
   @Prop({ default: false }) private hideOkButton!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
   @Prop({ default: "primary" }) private buttonColor?: string;
-
+  @Prop({ default: false }) private disableClickingOutside?: boolean;
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;
 

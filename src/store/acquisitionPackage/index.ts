@@ -337,6 +337,8 @@ export class AcquisitionPackageStore extends VuexModule {
   anticipatedUsersAndDataNeedsVisited = false
   disableContinue = false
   hideNavigation = false
+  hideSideNavigation = false
+  firstTimeVisit = false
   fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact()
@@ -417,7 +419,23 @@ export class AcquisitionPackageStore extends VuexModule {
   private doSetHideNavigation(value: boolean): void {
     this.hideNavigation = value;
   }
+  @Action({rawError: false})
+  public async setHideSideNavigation(value: boolean): Promise<void> {
+    this.doSetHideSideNavigation(value);
+  }
+  @Mutation
+  private doSetHideSideNavigation(value: boolean): void {
+    this.hideSideNavigation = value;
+  }
 
+  @Action({rawError: false})
+  public async setFirstTimeVisit(value: boolean): Promise<void> {
+    this.doSetFirstTimeVisit(value);
+  }
+  @Mutation
+  private doSetFirstTimeVisit(value: boolean): void {
+    this.firstTimeVisit = value;
+  }
   @Action
   public async setValidateNow(value: boolean): Promise<void> {
     this.doSetValidateNow(value);
