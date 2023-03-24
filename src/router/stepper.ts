@@ -173,6 +173,7 @@ import {
   AnticipatedUserAndDataNeedsResolver,
   IGCETrainingPathResolver,
   FeeChargedResolver,
+  showDITCOPageResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -291,7 +292,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "01",
     menuText: "Acquisition Package Details",
-    path: "/package-details",
+    path: "/",
     completePercentageWeight: 14,
     component: AcquisitionPackageDetails,
     completed: false,
@@ -301,13 +302,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "/",
         name: routeNames.DAPPSChecklist,
         completePercentageWeight: 0,
+        routeResolver: showDITCOPageResolver,
         completed: false,
         excludeFromMenu: true,
         component: DAPPSChecklist,
       },
       {
         menuText: "Contracting Shop",
-        path: "/",
+        path: "contracting-shop",
         name: routeNames.ContractingShop,
         completePercentageWeight: 0,
         completed: false,
@@ -322,18 +324,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         stepCompleteOnLeave: routeNames.ProjectOverview,
         component: ProjectOverview,
-        // KEEP THIS FOR REFERENCE
-        // additionalButtons: [
-        //   {
-        //     name: routeNames.ProjectOverview,
-        //     buttonText: "Cancel",
-        //     buttonId: "CancelButton",
-        //     buttonClass: "tertirary",
-        //     emitText: "sampleEmitText",
-        //     actionName: "sampleAdditionalButtonAction",
-        //     actionArgs: ["foo", "bar"],
-        //   },
-        // ],
       },
       {
         menuText: "Organization",
