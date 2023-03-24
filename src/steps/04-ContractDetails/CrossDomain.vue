@@ -201,18 +201,44 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     const topSecretFound =
       selectedClassifications.findIndex(classification => classification.classification === "TS")
     if(topSecretFound >= 0){
-      this.cdsSolutionItems.push({
-        id: "TStoU",
-        label: "Top Secret to Unclassified",
-        value: "TS_TO_U",
-        textfieldValue: "",
-      },
-      {
-        id: "TStoS",
-        label: "Top Secret to Secret",
-        value: "TS_TO_S",
-        textfieldValue: "",
-      },)
+      this.cdsSolutionItems = [
+        {
+          id: "UtoS",
+          label: "Unclassified to Secret",
+          value: "U_TO_S",
+          textfieldValue: "",
+        },
+        {
+          id: "UtoTS",
+          label: "Unclassified to Top Secret",
+          value: "U_TO_TS",
+          textfieldValue: "",
+        },
+        {
+          id: "StoU",
+          label: "Secret to Unclassified",
+          value: "S_TO_U",
+          textfieldValue: "",
+        },
+        {
+          id: "StoTS",
+          label: "Secret to Top Secret",
+          value: "S_TO_TS",
+          textfieldValue: "",
+        },
+        {
+          id: "TStoU",
+          label: "Top Secret to Unclassified",
+          value: "TS_TO_U",
+          textfieldValue: "",
+        },
+        {
+          id: "TStoS",
+          label: "Top Secret to Secret",
+          value: "TS_TO_S",
+          textfieldValue: "",
+        }
+      ]
     }
     const cdsSolution = await ClassificationRequirements.getCdsSolution();
 
