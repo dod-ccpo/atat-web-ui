@@ -173,7 +173,7 @@
               id="DappsChecklistAlert"
               type="warning"
               :showIcon="false"
-              class="mb-0"
+              class="mb-0 mt-7"
             >
               <template v-slot:content>
                 <p>
