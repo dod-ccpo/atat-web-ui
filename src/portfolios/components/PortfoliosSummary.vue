@@ -415,7 +415,7 @@ export default class PortfoliosSummary extends Vue {
       let cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
       
-      cardData.csp = portfolio.csp;
+      cardData.csp = portfolio.vendor;
 
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
@@ -429,7 +429,7 @@ export default class PortfoliosSummary extends Vue {
       cardData.agencyDisplay = portfolio.agency_display;
       const activeTaskOrderSysId = portfolio.active_task_order.value as string;
       const activeTaskOrder = portfolio.task_orders.find(
-        obj => obj.sys_id === portfolio.active_task_order
+        obj => obj.sys_id === activeTaskOrderSysId
       );
 
       cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
