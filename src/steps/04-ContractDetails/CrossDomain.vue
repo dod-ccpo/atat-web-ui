@@ -240,7 +240,6 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
       ]
     }
     const cdsSolution = await ClassificationRequirements.getCdsSolution();
-
     if(cdsSolution){
       this.domainInfo.anticipatedNeedUsage = cdsSolution.anticipated_need_or_usage;
       this.domainInfo.crossDomainSolutionRequired = cdsSolution.cross_domain_solution_required;
@@ -253,9 +252,8 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
        = JSON.parse(cdsSolution.traffic_per_domain_pair);
 
       if(solutionTypes){
-
         const checkboxItems: any = [];
-
+        const savedSolutionsTypes: any = [];
         solutionTypes.forEach(item => {
           const checkBoxItemIndex = this.cdsSolutionItems.findIndex(
             cbItem => cbItem.value === item.type);
@@ -263,15 +261,14 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
           if(checkBoxItemIndex > -1){
             this.cdsSolutionItems[
               checkBoxItemIndex].textfieldValue = item.dataQuantity.toString();
-
+            savedSolutionsTypes.push({"type":item.type,"dataQuantity":item.dataQuantity})
             checkboxItems.push(item.type);
           }
-            
         });
         
         this.$nextTick(() => {
           this.selectedCDSCheckboxItems = checkboxItems;
-          this.domainInfo.solutionType = solutionTypes;
+          this.domainInfo.solutionType = savedSolutionsTypes;
         });
       }
     }
