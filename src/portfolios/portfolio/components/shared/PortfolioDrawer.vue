@@ -163,12 +163,6 @@
       -->
     </div>
 
-    <!-- TODO: remove below commented code after fully implementing InviteMembersModal -->
-    <!--
-    <AddMembersModal
-      :showModal.sync="showMembersModal" 
-      @members-invited="membersInvited"
-    />-->
     <InviteMembersModal
         :showModal.sync="showMembersModal"
         @members-invited="membersInvited"
