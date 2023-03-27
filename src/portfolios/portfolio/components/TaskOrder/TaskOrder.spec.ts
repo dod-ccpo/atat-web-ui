@@ -19,16 +19,10 @@ describe("Testing TaskOrder Component", () => {
   const dummyPortfolioSummaryList: (PortfolioSummaryDTO[]) = [
     {
       name: "",
-      csp:{
-        "link": "dummyLink.com/01a",
-        "value": "01a"
-      },
-      active_task_order: {
-        "link": "dummyLink.com/01a",
-        "value": "01a"
-      },
+      csp: "01a",
+      active_task_order: "01a",
       csp_display: "",
-      dod_component: "",
+      agency: "",
       task_order_number: "",
       sys_updated_on: "",
       task_order_status: "",
@@ -43,10 +37,7 @@ describe("Testing TaskOrder Component", () => {
         {
           "clins": "01,02,03",
           "sys_id": "sys01",
-          "portfolio": {
-            "link": "google.com",
-            "value": "port01"
-          },
+          "portfolio": "port01",
           "task_order_number": "1234",
           "pop_end_date": "2023-09-30",
           "pop_start_date": "2022-10-01",
