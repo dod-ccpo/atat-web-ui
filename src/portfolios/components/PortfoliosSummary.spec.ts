@@ -11,7 +11,7 @@ Vue.use(Vuetify);
 const portfolios: PortfolioSummaryDTO[] = [
   {
     name: "mock portfolio",
-    csp: { link: "", value: ""},
+    csp: "",
     /* eslint-disable camelcase */
     csp_display: "CSP_A",
     agency: "ARMY",
@@ -25,17 +25,14 @@ const portfolios: PortfolioSummaryDTO[] = [
     portfolio_managers: "",
     funds_spent: 5000,
     task_orders: [],
-    active_task_order: {
-      link: "",
-      value: ""
-    },
+    active_task_order: "",
     alerts: [],
     portfolio_funding_status: ""
     /* eslint-enable camelcase */
   },
   {
     name: "mock portfolio 2",
-    csp: { link: "", value: ""},
+    csp: "",
     /* eslint-disable camelcase */
     csp_display: "CSP_B",
     agency: "ARMY",
@@ -64,10 +61,7 @@ const portfolios: PortfolioSummaryDTO[] = [
         funds_total: "10000",    
       }
     ],
-    active_task_order: {
-      link: "",
-      value: ""
-    },
+    active_task_order: "",
     alerts: [],
     portfolio_funding_status: ""
     /* eslint-enable camelcase */

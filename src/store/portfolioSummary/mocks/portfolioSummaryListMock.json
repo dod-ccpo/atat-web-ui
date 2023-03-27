@@ -1,14 +1,8 @@
 [
   {
-    "csp": {
-      "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_cloud_service_provider/72",
-      "value": "72"
-    },
+    "csp": "72",
     "portfolio_managers": "71",
-    "active_task_order": {
-      "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_task_order/21",
-      "value": "21"
-    },
+    "active_task_order": "21",
     "sys_mod_count": "6",
     "sys_updated_on": "2022-09-29 16:24:07",
     "sys_tags": "",
