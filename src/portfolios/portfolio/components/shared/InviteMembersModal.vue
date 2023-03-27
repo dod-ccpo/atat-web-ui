@@ -6,14 +6,15 @@
       no-click-animation
       okText="Invite"
       width="632"
-      max-height="600"
       @ok="inviteMembers"
       @cancelClicked = "onCancel()"
       :modalSlideoutComponent="modalSlideoutComponent"
       modalSlideoutTitle="Learn more about portfolio roles"
-      :modalDrawerIsOpen.sync="modalDrawerIsOpen">
+      :modalDrawerIsOpen.sync="modalDrawerIsOpen"
+      modalClass="_invite-modal"
+      :OKDisabled="OKDisabled"
+    >
     <template #content>
-
       <p class="body">
         Use “.mil” or “.gov” email addresses to ensure people can authenticate with
         a CAC to access your portfolio.
@@ -21,59 +22,67 @@
           Learn more about portfolio roles
         </a>
       </p>
-      <div class="max-width-640">
+      <div class="_search-wrap">
         <v-text-field
           ref="inviteMember"
-          :id="'SearchMember'"
-          class="_search-input"
+          id="SearchMember"
           v-model="searchObj.value"
           clearable
-          :loading="searchObj.isLoading"
-          :append-icon="'search'"
+          append-icon="search"
           @keyup="onUserSearchValueChange(searchObj.value);searchObj.noResults=false;
           searchObj.alreadyInvited=false"
           @click:clear="onUserSearchValueChange('');searchObj.alreadyInvited=false"
           outlined
           dense
           :height="40"
-          :placeholder="'Search by name or email address'"
+          placeholder="Search by name or email address"
           autocomplete="off"
-          />
-      </div>
-      <v-card elevation="0" v-if="searchObj.alreadyInvited" class="bg-info-dark">
-        <v-list class="py-1">
-          <v-list-item class="font-weight-bolder font-size-16 bg-warning-lighter">
-            Member already invited
-          </v-list-item>
-        </v-list>
-      </v-card>
-      <v-card elevation="0" max-height="300" v-if="searchObj.searchResults.length > 0" >
-        <v-list>
-          <v-list-item v-for="user of searchObj.searchResults" :key="user.sys_id"
-            @click="onUserSelection(user)"
-            class="pointer">
-            <v-list-item-content>
-              <v-list-item-title
-                  class="font-weight-bolder font-size-16"
-                  v-text="user.firstName + ' ' + user.lastName">
-              </v-list-item-title>
-              <v-list-item-subtitle class="font-size-14" v-text="user.email">
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-card>
-      <v-card v-if="searchObj.noResults">
-        <v-list class="py-1">
-          <v-list-item class="font-weight-bolder font-size-16">
-            No results for "{{searchObj.value}}"
-          </v-list-item>
-        </v-list>
-      </v-card>
+        />
 
-      <div id="portfolioPendingInviteList">
-        <v-list max-height="">
-          <v-list-item class="px-0"
+        <v-progress-circular v-show="searchObj.isLoading"
+          indeterminate
+          color="#544496"
+          size="24"
+          width="3"
+          class="mr-2"
+        />
+
+        <div class="_search-result-dropdown">
+          <v-card elevation="0" max-height="200">
+            <v-list class="py-1" v-if="searchObj.alreadyInvited">
+              <v-list-item class="font-weight-bolder font-size-16 bg-warning-lighter">
+                Member already invited
+              </v-list-item>
+            </v-list>
+
+            <v-list v-if="searchObj.searchResults.length > 0">
+              <v-list-item v-for="user of searchObj.searchResults" :key="user.sys_id"
+                @click="onUserSelection(user)"
+                class="pointer">
+                <v-list-item-content>
+                  <v-list-item-title
+                      class="font-weight-bolder font-size-16"
+                      v-text="user.firstName + ' ' + user.lastName">
+                  </v-list-item-title>
+                  <v-list-item-subtitle class="font-size-14" v-text="user.email">
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+
+            <v-list class="py-1" v-if="searchObj.noResults && searchObj.value">
+              <v-list-item class="font-weight-bolder font-size-16">
+                No results for "{{searchObj.value}}"
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </div>
+      </div>
+
+      <div id="portfolioPendingInviteList" class="_modal-full-width-list">
+        <v-list>
+          <v-list-item
+              class="_search-results-list"
               v-for="(member, index) in userSelectedList" :key="member.sys_id">
             <v-list-item-content>
               <v-list-item-title
@@ -175,6 +184,10 @@ export default class InviteMembersModal extends Vue {
     { text: "Viewer", value: "Viewer" },
   ];
   private modalDrawerIsOpen = false;
+
+  public get OKDisabled(): boolean {
+    return this.userSelectedList.length === 0;
+  }
 
   /**
    * Starts searching 500 milliseconds after user changes the search value. Only
