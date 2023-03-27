@@ -242,6 +242,45 @@ export class ClassificationRequirementsStore extends VuexModule {
     await this.setSecurityRequirements(tempRequirements);
     await this.setSelectedClassificationLevels(selectedClassLevelList);
   }
+  
+ /**
+   * Compares the currently selected classification list from this store, with the new list
+   * passed into this function. Then marks classifications for either create or
+   * delete. No need to update since the selected classification level is already tied to the
+   * acquisition. Then performs the API calls to complete the save.
+   */
+ @Action({rawError: true})
+  async saveSelectedClassificationLevels(
+    newSelectedClassLevelList: SelectedClassificationLevelDTO[])
+   : Promise<boolean> {
+    try {
+      const markedForCreateList = newSelectedClassLevelList
+        .filter(newSelected => newSelected.sys_id ? newSelected.sys_id.length === 0 : true);
+      const currSelectedClasLevelList = await this.getSelectedClassificationLevels();
+      const markedForDeleteList = currSelectedClasLevelList
+        .filter(currSelected => (newSelectedClassLevelList.find(newSelected =>
+          newSelected.sys_id === currSelected.sys_id)) === undefined);
+      newSelectedClassLevelList.forEach((obj) => {
+        obj.data_growth_estimate_percentage
+           = obj.data_growth_estimate_percentage?.toString() as unknown as string[];
+        obj.user_growth_estimate_percentage
+           = obj.user_growth_estimate_percentage?.toString() as unknown as string[];
+      });
+      const apiCallList: Promise<SelectedClassificationLevelDTO | void>[] = [];
+      markedForCreateList.forEach(markedForCreate => {
+        apiCallList.push(api.selectedClassificationLevelTable
+          .create(markedForCreate));
+      })
+      markedForDeleteList.forEach(markedForDelete => {
+        apiCallList.push(api.selectedClassificationLevelTable
+          .remove(markedForDelete.sys_id as string));
+      })
+      await Promise.all(apiCallList);
+      return true;
+    } catch (error) {
+      throw new Error(`an error occurred saving selected classification levels ${error}`);
+    }
+  }
 
 
   /**
@@ -250,32 +289,32 @@ export class ClassificationRequirementsStore extends VuexModule {
    * and filtered using the call to "getSelectedClassificationLevels".
    */
   @Action({rawError: true})
-  async saveSingleSelectedClassificationLevel(
-    selectedClassificationLevel: SelectedClassificationLevelDTO)
+ async saveSingleSelectedClassificationLevel(
+   selectedClassificationLevel: SelectedClassificationLevelDTO)
     : Promise<boolean> {
-    try {
-      const packageId = 
+   try {
+     const packageId = 
         typeof selectedClassificationLevel.acquisition_package === "object"
           ? selectedClassificationLevel.acquisition_package.value as string
           : selectedClassificationLevel.acquisition_package as string;
       
-      const classLevel = 
+     const classLevel = 
         typeof selectedClassificationLevel.classification_level === "object"
           ? selectedClassificationLevel.classification_level.value as string
           : selectedClassificationLevel.classification_level as string;
 
-      selectedClassificationLevel = {
-        ...selectedClassificationLevel,
-        classification_level: classLevel,
-        acquisition_package: packageId
-      }
-      await api.selectedClassificationLevelTable
-        .update(selectedClassificationLevel.sys_id as string, selectedClassificationLevel);
-      return true;
-    } catch (error) {
-      throw new Error(`an error occurred saving a single selected classification level ${error}`);
-    }
-  }
+     selectedClassificationLevel = {
+       ...selectedClassificationLevel,
+       classification_level: classLevel,
+       acquisition_package: packageId
+     }
+     await api.selectedClassificationLevelTable
+       .update(selectedClassificationLevel.sys_id as string, selectedClassificationLevel);
+     return true;
+   } catch (error) {
+     throw new Error(`an error occurred saving a single selected classification level ${error}`);
+   }
+ }
 
   @Action({rawError: true})
   public async setCdsSolution(value: CrossDomainSolution): Promise<void> {
