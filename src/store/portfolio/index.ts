@@ -377,6 +377,7 @@ export class PortfolioDataStore extends VuexModule {
       status: portfolioData.status,
       csp: portfolioData.csp,
       agency: portfolioData.agency,
+      agencyDisplay: portfolioData.agencyDisplay,
       taskOrderNumber: portfolioData.taskOrderNumber,
       portfolio_managers: portfolioData.portfolio_managers,
       portfolio_managers_detail: portfolioData.portfolio_managers_detail,

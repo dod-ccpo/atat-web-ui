@@ -84,11 +84,6 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
-
-          <!-- 
-            ---------------------------------------------------
-            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
-            ---------------------------------------------------
             <div class="_view-all">
             <a
               id="ViewAllPortfoliosLink"
@@ -99,8 +94,7 @@
             >
               View all portfolios
             </a>
-          </div> 
-          -->
+          </div>
 
           </v-col>
 
