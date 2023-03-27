@@ -231,15 +231,15 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             value: offering.sys_id,
             description: offering.description,
           }
-          this.checkboxItems.push(checkboxItem);
           if (checkboxItem.label === "Other") {
             this.otherValueEntered = offering.otherOfferingName || "";
           }
+          this.checkboxItems.push(checkboxItem);
         });
       }
 
       const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
-      
+
       const validSelections = selectedOfferings.reduce<string[]>((accumulator, current)=>{  
         const itemIndex = this.checkboxItems.findIndex(item=>item.label === current);
         const selected = itemIndex >=0 ? [...accumulator, 
@@ -296,14 +296,17 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
+
       if (this.serviceGroupOnLoad) {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
         if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
           if (this.isServiceOfferingList) {
+
             await DescriptionOfWork.setSelectedOfferings(
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
           } else {
+
             await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
         }

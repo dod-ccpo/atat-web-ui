@@ -79,7 +79,6 @@ export const saveOrUpdateSelectedServiceOffering =
     ):Promise<string> => {
       const tempObject: any = {};
       let objSysId = "";
-
       const classificationInstances: string[] = [];
       if(selectedServiceOffering.classificationInstances &&
           selectedServiceOffering.classificationInstances.length > 0){
@@ -135,9 +134,9 @@ const saveOrUpdateClassificationInstance =
       title: string,
       serviceOfferingName: string
     ):Promise<string> => {
+
       const tempObject: any = {};
       let objSysId = "";
-
       const unit_quantity = await stringifyPeriodsForIGCECostEstimates(
         classificationInstance.selectedPeriods
       );
@@ -965,7 +964,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       );
       if (serviceOfferingObj) {
         const title = serviceOfferingObj.serviceId;
-        const serviceOfferingName = serviceOfferingObj.name;
+        const serviceOfferingName = serviceOfferingObj.name === "Other"?
+          serviceOfferingObj.otherOfferingName || "": serviceOfferingObj.name || "";
         serviceOfferingObj.classificationInstances?.forEach(instance => {
           if (instance.classificationLevelSysId === secretSysId) {
             instance.classifiedInformationTypes = secretReqs;
@@ -1950,10 +1950,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   ): Promise<void> {
     const groupIndex
         = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
-
     if (groupIndex >= 0) {
       const currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
-
       for(const offering of currentOfferings){
         const serviceOffering = this.serviceOfferings.find(item => item.name === offering.name
             && item.service_offering_group === offering.serviceId);
@@ -2027,11 +2025,14 @@ export class DescriptionOfWorkStore extends VuexModule {
     );
 
     const selectedServiceOffering = this.DOWObject[groupIndex].serviceOfferings[offeringIndex];
+    
+    const name = selectedServiceOffering.name === "Other"?
+      selectedServiceOffering.otherOfferingName || "": selectedServiceOffering.name || "";
     for(const instanceData of instancesData){
       const dataSysId = await saveOrUpdateClassificationInstance(
         instanceData,
         selectedServiceOffering.serviceId,
-        selectedServiceOffering.name);
+        name);
       instanceData.sysId = dataSysId as string;
       updatedInstancesData.push(instanceData);
     }
@@ -2556,8 +2557,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     serviceOfferingsForGroup.forEach((obj) => {
 
       //does the saved offering exist in DOW store?
-      const savedInDown = dowOfferings.find(offering=>offering.sys_id === obj.sys_id);
-      const offering = savedInDown ? savedInDown :{
+      const savedInDow = dowOfferings.find(offering=>offering.sys_id === obj.sys_id);
+      const offering = savedInDow ? savedInDow :{
         name: obj.name,
         sys_id: obj.sys_id || "",
         acquisitionPackageSysId: acquisitionPackageId,
@@ -2567,7 +2568,8 @@ export class DescriptionOfWorkStore extends VuexModule {
         otherOfferingName: "",
       };
       if (obj.name === "Other") {
-        const otherOffering = dowOfferings.find(o => o.serviceId === this.currentGroupId);
+        const otherOffering = dowOfferings.find(o => o.serviceId === this.currentGroupId
+            && o.name === "Other");
         offering.otherOfferingName = otherOffering ? otherOffering.otherOfferingName : "";
       }
 
