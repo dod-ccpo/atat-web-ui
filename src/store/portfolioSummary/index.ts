@@ -177,7 +177,7 @@ export class PortfolioSummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   private async setAlertsForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    const allAlertsList = await api.alertsTable.getQuery(
+    let allAlertsList = await api.alertsTable.getQuery(
       {
         params:
           { // bring all fields
@@ -186,11 +186,12 @@ export class PortfolioSummaryStore extends VuexModule {
           }
       }
     )
+    allAlertsList = allAlertsList
+      .map(alertObj => convertColumnReferencesToValues(alertObj));
     portfolioSummaryList.forEach(portfolio => {
       portfolio.alerts = allAlertsList
         .filter((alert) => {
-          return (alert.portfolio as ReferenceColumn).value === portfolio.sys_id
-        });
+          return alert.portfolio === portfolio.sys_id});
     })
     return portfolioSummaryList;
   }
@@ -251,8 +252,7 @@ export class PortfolioSummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   private async setAgencyDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    const agencySysIds = portfolioSummaryList.map(portfolio =>
-      (portfolio.agency as unknown as ReferenceColumn).value);
+    const agencySysIds = portfolioSummaryList.map(portfolio => portfolio.agency);
     const allAgencyList = await api.agencyTable.getQuery(
       {
         params:
@@ -265,8 +265,7 @@ export class PortfolioSummaryStore extends VuexModule {
     portfolioSummaryList.forEach(portfolio => {
       portfolio.agency_display =
         (allAgencyList.find(
-          (agency: AgencyDTO) => (portfolio.agency as unknown as ReferenceColumn).value
-            === agency.sys_id)?.acronym) || "";
+          (agency: AgencyDTO) => portfolio.agency === agency.sys_id)?.acronym) || "";
     });
   }
 
@@ -277,7 +276,7 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private async setTaskOrdersForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]):
     Promise<PortfolioSummaryDTO[]> {
-    const allTaskOrderList = await api.taskOrderTable.getQuery(
+    let allTaskOrderList = await api.taskOrderTable.getQuery(
       {
         params:
           {
@@ -289,11 +288,12 @@ export class PortfolioSummaryStore extends VuexModule {
           }
       }
     )
+    allTaskOrderList = allTaskOrderList
+      .map(taskOrder => convertColumnReferencesToValues(taskOrder));
     portfolioSummaryList.forEach(portfolio => {
       portfolio.task_orders = allTaskOrderList
         .filter((taskOrder) => {
-          const portfolioSysId = (taskOrder.portfolio as ReferenceColumn).value;
-          return portfolioSysId === portfolio.sys_id
+          return taskOrder.portfolio === portfolio.sys_id
         });
     })
     return portfolioSummaryList;
@@ -354,7 +354,7 @@ export class PortfolioSummaryStore extends VuexModule {
         })
       })
     });
-    const allCostList = await api.costsTable.getQuery(
+    let allCostList = await api.costsTable.getQuery(
       {
         params:
           {
@@ -364,13 +364,13 @@ export class PortfolioSummaryStore extends VuexModule {
           }
       }
     )
+    allCostList = allCostList.map(cost => convertColumnReferencesToValues(cost));
     portfolioSummaryList.forEach(portfolio => {
       portfolio.task_orders.forEach(taskOrder => {
         taskOrder.clin_records?.forEach(clinRecord => {
           clinRecord.cost_records =
             allCostList.filter(cost => {
-              const clinNumber = cost.clin as unknown as ReferenceColumn;
-              return clinNumber.value === clinRecord.sys_id
+              return cost.clin === clinRecord.sys_id
             });
         })
       })
@@ -423,7 +423,7 @@ export class PortfolioSummaryStore extends VuexModule {
           });
           clinRecord.funds_spent_clin = fundsSpentForClin;
         })
-        if (taskOrder.sys_id === portfolio.active_task_order.value) { // uses dates of active task
+        if (taskOrder.sys_id === portfolio.active_task_order) { // uses dates of active task
           portfolio.pop_start_date = taskOrder.pop_start_date;
           portfolio.pop_end_date = taskOrder.pop_end_date;
         }
@@ -464,7 +464,8 @@ export class PortfolioSummaryStore extends VuexModule {
       let portfolioSummaryList: PortfolioSummaryDTO[];
       if (portfolioSummaryCount > 0) {
         portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
-
+        portfolioSummaryList = portfolioSummaryList
+          .map(portfolioSummary => convertColumnReferencesToValues(portfolioSummary));
         // callouts to other functions to set data from other tables
         await this.setAlertsForPortfolios(portfolioSummaryList);
         await this.setEnvironmentsForPortfolios(portfolioSummaryList);

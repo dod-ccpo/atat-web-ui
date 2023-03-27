@@ -40,7 +40,7 @@ export interface AlertDTO extends BaseTableDTO {
   alert_type: string;
   clin: string;
   last_notification_date: string;
-  portfolio: string | ReferenceColumn;
+  portfolio: string;
   task_order: string;
   threshold_violation_amount: string;
 }
@@ -463,7 +463,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
 
     task_order_number: string;
     task_order_status: string;
-    portfolio: string | ReferenceColumn;
+    portfolio: string;
     pop_end_date: string;
     pop_start_date: string;
     total_task_order_value?: number; // total clin values that don't have expired/ option pending
@@ -473,13 +473,13 @@ export interface TaskOrderDTO extends BaseTableDTO {
 }
 
 export interface CostsDTO extends BaseTableDTO {
-  clin: ReferenceColumn["value"];
-  csp: ReferenceColumn | string;
+  clin: string;
+  csp: string;
   "csp.name"?:string;
   year_month: string;
   task_order_number: string;
-  portfolio: ReferenceColumn | string;
-  organization: ReferenceColumn | string;
+  portfolio: string;
+  organization: string;
   "agency.title"?: string;
   is_actual: string;
   value: string;
@@ -623,8 +623,8 @@ export interface TravelRequirementDTO extends BaseTableDTO {
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
-  csp: ReferenceColumn;
-  active_task_order: ReferenceColumn;
+  csp: string;
+  active_task_order: string;
   csp_display: string; // "<<cloud_service_package.name >>"
   agency: string;
   agency_display?: string;
