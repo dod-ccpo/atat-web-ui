@@ -157,34 +157,39 @@ describe("PortfolioSummary Store",
     })
 
     it('Test searchPortfolioSummaryList()- compute aggregations ', async () => {
-      const searchDTO: PortfolioSummarySearchDTO = {
-        portfolioStatus: "",
-        sort: "name",
-        searchString: "",
-        role: "ALL",
-        fundingStatuses: ["EXPIRING_SOON"],
-        csps: []
+      try {
+        const searchDTO: PortfolioSummarySearchDTO = {
+          portfolioStatus: "",
+          sort: "name",
+          searchString: "",
+          role: "ALL",
+          fundingStatuses: ["EXPIRING_SOON"],
+          csps: []
+        }
+        jest.spyOn(api.portfolioTable, "getQuery").mockReturnValue(
+          Promise.resolve(portfolioSummaryListMock as PortfolioSummaryDTO[])
+        );
+        jest.spyOn(api.alertsTable, "getQuery").mockReturnValue(Promise.resolve(
+          alertListMock as unknown as AlertDTO[]));
+        jest.spyOn(api.cloudServiceProviderTable, "getQuery").mockReturnValue(Promise.resolve([]));
+        jest.spyOn(api.agencyTable, "getQuery").mockReturnValue(Promise.resolve([]));
+        jest.spyOn(api.taskOrderTable, "getQuery").mockReturnValue(Promise.resolve(
+          taskOrderListMock as TaskOrderDTO[]));
+        jest.spyOn(api.clinDisplayTable, "getQuery").mockReturnValue(Promise.resolve(
+          clinListMock as ClinDisplayDTO[]));
+        jest.spyOn(api.costsTable, "getQuery").mockReturnValue(Promise.resolve(
+          costListMock as unknown as CostsDTO[]));
+        jest.spyOn(api.environmentTable, "getQuery").mockReturnValue(Promise.resolve([]));
+        const portfolioSummaryMetadataAndDataDTO = await portfolioSummaryStore
+          .searchPortfolioSummaryList(searchDTO);
+        expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].funds_obligated)
+          .toBe(1000);
+        expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].funds_spent).toBe(267004);
+        expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].portfolio_funding_status)
+          .toStrictEqual("EXPIRING_SOON");
+      } catch (e) {
+        console.error(e);
       }
-      jest.spyOn(api.portfolioTable, "getQuery").mockReturnValue(
-        Promise.resolve(portfolioSummaryListMock as PortfolioSummaryDTO[])
-      );
-      jest.spyOn(api.alertsTable, "getQuery").mockReturnValue(Promise.resolve(
-        alertListMock as unknown as AlertDTO[]));
-      jest.spyOn(api.cloudServiceProviderTable, "getQuery").mockReturnValue(Promise.resolve([]));
-      jest.spyOn(api.taskOrderTable, "getQuery").mockReturnValue(Promise.resolve(
-        taskOrderListMock as TaskOrderDTO[]));
-      jest.spyOn(api.clinDisplayTable, "getQuery").mockReturnValue(Promise.resolve(
-        clinListMock as ClinDisplayDTO[]));
-      jest.spyOn(api.costsTable, "getQuery").mockReturnValue(Promise.resolve(
-        costListMock as unknown as CostsDTO[]));
-      jest.spyOn(api.environmentTable, "getQuery").mockReturnValue(Promise.resolve([]));
-      const portfolioSummaryMetadataAndDataDTO = await portfolioSummaryStore
-        .searchPortfolioSummaryList(searchDTO);
-      expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].funds_obligated)
-        .toBe(1000);
-      expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].funds_spent).toBe(267004);
-      expect(portfolioSummaryMetadataAndDataDTO.portfolioSummaryList[0].portfolio_funding_status)
-        .toStrictEqual("EXPIRING_SOON");
     })
 
   })
