@@ -24,13 +24,11 @@
               id='removeACORWarning'
               type='warning'
               :showIcon="false"
-              class=''
-              v-if="removeAcor == true"
+              v-if="removeAcor === true"
               :maxWidth='740'
-              style='border-radius: 4px;'
             >
               <template v-slot:content>
-                <p style='margin-bottom:0 !important'>
+                <p class="mb-0">
                   This action will delete contact information that you previously 
                   entered for this individual.
                 </p>
@@ -48,7 +46,6 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { VForm, VContainer, VRow, VCol } from "vuetify/lib";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
@@ -81,16 +78,13 @@ export default class AlternateCOR extends Mixins(SaveOnLeave) {
   }
 
   public set hasAlternateCOR(value: string) {
-    if(value === "false" && AcquisitionPackage.hasAlternativeContactRep == true){
-      //console.log("acor",AcquisitionPackage.hasAlternativeContactRep)
-      //AcquisitionPackage.removeACORInformation()
+    if(value  === "false" && AcquisitionPackage.hasAlternativeContactRep === true){
       this.removeAcor = true;
-    }
-    if(value === "true"){
+    } else if(value === "true"){
       this.removeAcor = false
     }
 
-    AcquisitionPackage.setHasAlternateCOR(value === "true" ? true : false);
+    AcquisitionPackage.setHasAlternateCOR(value === "true");
   }
 
   protected async saveOnLeave(): Promise<boolean> {
