@@ -276,6 +276,7 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private async setTaskOrdersForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]):
     Promise<PortfolioSummaryDTO[]> {
+    // TODO - only get task order records where current user is manager or viewer
     let allTaskOrderList = await api.taskOrderTable.getQuery(
       {
         params:
