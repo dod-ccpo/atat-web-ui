@@ -252,8 +252,9 @@ export class ClassificationRequirementsStore extends VuexModule {
  @Action({rawError: true})
   async saveSelectedClassificationLevels(
     newSelectedClassLevelList: SelectedClassificationLevelDTO[])
-   : Promise<boolean> {
+   : Promise<string[]> {
     try {
+      const itemsModified: string[] | PromiseLike<string[]> = [];
       const markedForCreateList = newSelectedClassLevelList
         .filter(newSelected => newSelected.sys_id ? newSelected.sys_id.length === 0 : true);
       const currSelectedClasLevelList = await this.getSelectedClassificationLevels();
@@ -267,12 +268,14 @@ export class ClassificationRequirementsStore extends VuexModule {
            = obj.user_growth_estimate_percentage?.toString() as unknown as string[];
       });
       await markedForCreateList.forEach(async markedForCreate => {
+        itemsModified.push("+" + markedForCreate.classification_level as string )
         await this.addCurrentSelectedClassLevelList(
             markedForCreate.classification_level as string
         )
       })
 
       await markedForDeleteList.forEach(async markedForDelete => {
+        itemsModified.push("-" + markedForDelete.classification_level as string )
         await this.removeClassificationLevelsFromDBGlobally(
             markedForDelete.classification_level as string
         )
@@ -280,8 +283,8 @@ export class ClassificationRequirementsStore extends VuexModule {
           markedForDelete
         )
       })
-     
-      return await true;
+    
+      return await itemsModified;
     } catch (error) {
       throw new Error(`an error occurred saving selected classification levels ${error}`);
     }

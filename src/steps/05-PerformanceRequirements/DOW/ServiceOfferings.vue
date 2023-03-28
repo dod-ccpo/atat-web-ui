@@ -86,7 +86,7 @@ import _ from "lodash";
 import { 
   Checkbox, 
   OtherServiceOfferingData, 
-  DOWServiceOffering, 
+  DOWServiceOffering,
 } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
 
@@ -301,6 +301,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
           } else {
+            if (this.otherOfferingData.sysId !== ""){
+              await this.prepareCurrentOfferingToSave();
+            }
             await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
         }
@@ -310,6 +313,41 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     }
 
     return true;
+  }
+
+  /**
+   * The function prepares the current offering to save ONLY if the user deleted the classification
+   * level of the offering.
+   * 
+   * if the user removes the classification level on the instance currently being viewed,
+   * the instance is deleted from the store and the database, but the form fields remain filled in
+   * and the user remains on the page.
+   * 
+   * By removing the sys_id of this.otherOfferingData obj, the instance will successfully save to 
+   * the database and store and a new instance will be created. 
+   */
+  public async prepareCurrentOfferingToSave(): Promise<void> {
+    const existingOtherOfferings: OtherServiceOfferingData[] = [];
+    DescriptionOfWork.DOWObject.forEach(
+      (dow) => {
+        debugger;
+        if(dow.otherOfferingData !== undefined) {
+          dow.otherOfferingData.forEach(
+            ood => existingOtherOfferings.push(ood)
+          )
+        }
+      }
+    ) 
+
+    const displayedOtherOfferingHasNoClassLevel = existingOtherOfferings.some(
+      others => others.sysId !== this.otherOfferingData.sysId
+    ) 
+
+    if (displayedOtherOfferingHasNoClassLevel){
+      this.otherOfferingData.sysId = "";
+    }
+    
+    
   }
 
 }
