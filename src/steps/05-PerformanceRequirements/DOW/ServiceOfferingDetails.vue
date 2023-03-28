@@ -110,7 +110,7 @@ import ClassificationsModal from "./ClassificationsModal.vue";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
+import { Checkbox, DOWClassificationInstance, ToastObj } from "../../../../types/Global";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 
@@ -134,6 +134,7 @@ import {
 } from "@/packages/helpers/ClassificationRequirementsHelper";
 import classificationRequirements from "@/store/classificationRequirements";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import Toast from "@/store/toast";
 
 @Component({
   components: {
@@ -188,7 +189,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         ? (obj.classification_level as ReferenceColumn).value 
         : obj.classification_level;
       const instance: DOWClassificationInstance = {
-        sysId: "", // will be populated after saving
+        sysId: "",
         impactLevel: obj.impact_level,
         classificationLevelSysId: classificationLevelSysId as string,
         anticipatedNeedUsage: "",
@@ -200,6 +201,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         typeOfDelivery: "",
         typeOfMobility: "",
         typeOfMobilityOther: "",
+        acquisitionPackage: ""
       }
       this.classificationInstances.push(instance);
     }, this);
@@ -277,6 +279,20 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     await this.setAvailableClassificationLevels();
     await this.buildNewClassificationInstances();
     this.checkSingleClassification();
+    this.showToast();
+    this.modalSelectionsOnOpen = this.modalSelectedOptions;
+  }
+
+  public showToast(): void{
+    const toastObj: ToastObj = {
+      type: "success",
+      message: "Classification requirements updated",
+      isOpen: true,
+      hasUndo: false,
+      hasIcon: true,
+    };
+
+    Toast.setToast(toastObj);
   }
 
   public async clearUnselected(): Promise<void> {
