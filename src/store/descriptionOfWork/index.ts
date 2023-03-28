@@ -2557,8 +2557,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     serviceOfferingsForGroup.forEach((obj) => {
 
       //does the saved offering exist in DOW store?
-      const savedInDow = dowOfferings.find(offering=>offering.sys_id === obj.sys_id);
-      const offering = savedInDow ? savedInDow :{
+      const offering = {
         name: obj.name,
         sys_id: obj.sys_id || "",
         acquisitionPackageSysId: acquisitionPackageId,
@@ -2570,7 +2569,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       if (obj.name === "Other") {
         const otherOffering = dowOfferings.find(o => o.serviceId === this.currentGroupId
             && o.name === "Other");
-        offering.otherOfferingName = otherOffering ? otherOffering.otherOfferingName : "";
+        offering.otherOfferingName = otherOffering ? otherOffering.otherOfferingName as string : "";
       }
 
       serviceOfferings.push(offering);
