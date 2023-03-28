@@ -188,7 +188,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   public processNewSelectedItem(): void {
-    ClassificationReqs.addCurrentSelectedClassLevelList(this.itemAdded);
+    ClassificationReqs.addCurrentSelectedClassLevelList(this.itemAdded.sys_id as string);
   }
 
   public async getTotalOfDOWObjsWithClassLevel(classLevelSysId: string): Promise<void>{

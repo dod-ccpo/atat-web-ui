@@ -271,17 +271,27 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     this.selectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter((sysId) => {
       return keepSelected.indexOf(sysId) > -1;
     });
-    const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
+    const currentData = await buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
         this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
-    await classificationRequirements.saveSelectedClassificationLevels(currentData)
-    await classificationRequirements.loadSelectedClassificationLevelsByAqId(
-        this.acquisitionPackage?.sys_id as string);
-    await this.setAvailableClassificationLevels();
-    await this.buildNewClassificationInstances();
-    this.checkSingleClassification();
-    this.showToast();
-    this.modalSelectionsOnOpen = this.modalSelectedOptions;
+    await classificationRequirements.saveSelectedClassificationLevels(currentData);
+    setTimeout(async () => {
+     
+      // await classificationRequirements.loadSelectedClassificationLevelsByAqId(
+      //     this.acquisitionPackage?.sys_id as string);
+      
+      this.selectedClassificationLevelList = 
+          await ClassificationRequirements.getSelectedClassificationLevels();
+    
+      await this.setAvailableClassificationLevels();
+      await this.buildNewClassificationInstances();
+      await this.checkSingleClassification();
+      await this.showToast();
+    }, 1000);
+
+    
   }
+
+  
 
   public showToast(): void{
     const toastObj: ToastObj = {
@@ -320,9 +330,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public classificationInstances: DOWClassificationInstance[] = [];
 
   public async setAvailableClassificationLevels(): Promise<void> {
-    this.selectedClassificationLevelList 
-      = await ClassificationRequirements.getSelectedClassificationLevels();
-    this.selectedInstancesLength = this.selectedClassificationLevelList.length;
+    // this.selectedClassificationLevelList 
+    //  = await ClassificationRequirements.selectedClassificationLevels;
+    this.selectedInstancesLength = await this.selectedClassificationLevelList.length;
 
     this.selectedClassificationLevelSysIds = [];
     this.selectedClassificationLevelList.forEach(selectedClassLevel => {
@@ -335,7 +345,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       this.isIL6Selected = selectedClassLevel.impact_level === this.IL6SysId;
     });
     this.headerCheckboxItems
-        = this.createCheckboxItems(this.selectedClassificationLevelList, "");
+        = await this.createCheckboxItems(this.selectedClassificationLevelList, "");
   }
 
   public checkSingleClassification(): void {

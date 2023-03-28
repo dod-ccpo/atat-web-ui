@@ -109,12 +109,15 @@ export const buildClassificationLabel
       const classificationString = classLevel.classification === "U"
         ? "Unclassified"
         : "Secret";
-      const IL = classLevel.impact_level;
-      const ILNo = IL.charAt(IL.length - 1);
-      const ILString = "Impact Level " + ILNo + " (" + IL + ")";
+
       if (classLevel.classification === "TS") {
         return "Top Secret"
       }
+
+      const IL = classLevel.impact_level;
+      const ILNo = IL.charAt(IL.length - 1) || "";
+      const ILString = "Impact Level " + ILNo + " (" + IL + ")";
+     
       if (type === "long") {
         return classificationString + " / " + ILString;
       }
