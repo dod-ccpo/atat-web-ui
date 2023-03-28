@@ -85,7 +85,9 @@
         :isHomeView="isHomeView"
       />
 
-      <div class="_table-pagination mt-5" v-show="portfolioCount > recordsPerPage">
+      <div class="_table-pagination mt-5" 
+        v-show="showPagination"
+      >
         <span class="mr-11 font-weight-400 font-size-14">
           Showing {{ startingNumber }}-{{ endingNumber }} of {{ portfolioCount }}
         </span>
@@ -159,11 +161,17 @@ export default class PortfoliosSummary extends Vue {
   public isHaCCAdmin = false;
 
   public page = 1;
-  public recordsPerPage = 5;
+  public get recordsPerPage(): number {
+    return this.isHomeView ? 5 : 10;
+  };
   public numberOfPages = 0;
   public portfolioCount = 0;
   public offset = 0;
   public paging = false;
+
+  public get showPagination(): boolean {
+    return this.portfolioCount > this.recordsPerPage && !this.isHomeView;
+  }
 
   public portfolioCardData: PortfolioCardData[] = [];
   public isLoading = false;
