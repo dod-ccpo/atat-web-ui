@@ -99,6 +99,7 @@
                   :items="memberMenuItems"
                   width="105"
                   :selectedValue.sync="member.role"
+                  @onChange="(value)=>dropdownChanged(value, index)"
                   iconType="chevron"
               />
             </v-list-item-action>
@@ -161,6 +162,7 @@ export default class InviteMembersModal extends Vue {
     noResults: false,
     alreadyInvited: false
   };
+  public isSearching = false;
   public memberMenuItems: SelectData[] = [
     { header: "Roles" },
     { text: "Manager", value: "Manager" },
@@ -177,19 +179,19 @@ export default class InviteMembersModal extends Vue {
     hasUndo: false,
     hasIcon: true,
   };
-  public selectedRole = "Manager";
-  public roles: SelectData[] = [
-    { header: "Roles" },
-    { text: "Manager", value: "Manager" },
-    { text: "Viewer", value: "Viewer" },
-  ];
+
   private modalDrawerIsOpen = false;
+
+  public dropdownChanged(value: string, index: number): void {
+    if (value === "Remove") {
+      this.userSelectedList.splice(index, 1);
+    }
+  }
 
   public get OKDisabled(): boolean {
     return this.userSelectedList.length === 0;
   }
 
-  public isSearching = false;
   /**
    * Starts searching 500 milliseconds after user changes the search value. Only
    * searches if there are at least 3 characters in the newValue
@@ -282,12 +284,6 @@ export default class InviteMembersModal extends Vue {
       PortfolioStore.setShowAddMembersModal(false);
     }
   }
-
-  // inputWidthFaker is used to dynamically adjust the width of the input
-  // based on the characters entered - the "hidden" (abs pos off-screen) div
-  // gets the characters entered into the input, then the div's width is given
-  // to the input -- see event listener on input
-  public inputWidthFaker: HTMLElement | null = null;
 
   /**
    * Makes a store call to invite the new members if the user had marked at least
