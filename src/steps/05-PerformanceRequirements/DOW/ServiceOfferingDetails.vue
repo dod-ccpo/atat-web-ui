@@ -134,6 +134,7 @@ import {
 } from "@/packages/helpers/ClassificationRequirementsHelper";
 import classificationRequirements from "@/store/classificationRequirements";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import descriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -346,7 +347,14 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // get classification levels selected in step 4 Contract Details
     this.selectedClassificationLevelList 
       = await ClassificationRequirements.getSelectedClassificationLevels();
-
+    // set name for other
+    if(DescriptionOfWork.currentOfferingName === "Other"){
+      const offeringGroupIndex = DescriptionOfWork.currentOfferingGroupIndex
+      const OfferingIndex = DescriptionOfWork.currentOfferingIndex
+      const name = DescriptionOfWork.DOWObject[offeringGroupIndex]
+        .serviceOfferings[OfferingIndex].otherOfferingName
+      this.serviceOfferingName = name || ""
+    }
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if(this.selectedClassificationLevelList) {
       this.selectedClassificationLevelList.forEach((val) => {
@@ -388,7 +396,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     }
 
     this.checkSingleClassification();
-
     const periods = await Periods.loadPeriods();
     this.isPeriodsDataMissing = periods.length === 0 ? true : false;
 
@@ -419,7 +426,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
     const isValid = this.$refs.form.validate();
-    
     try {
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {
