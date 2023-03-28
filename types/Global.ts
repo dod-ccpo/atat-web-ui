@@ -295,6 +295,7 @@ export interface DOWCardData {
 }
 
 export interface DOWClassificationInstance {
+  acquisitionPackage: ReferenceColumn | string;
   sysId?: string;
   impactLevel: string; // for sorting
   classificationLevelSysId: string;

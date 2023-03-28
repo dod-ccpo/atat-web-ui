@@ -169,6 +169,23 @@
               </div>
             </div>
           </div>
+            <ATATAlert
+              id="DappsChecklistAlert"
+              type="warning"
+              :showIcon="false"
+              class="mb-0"
+            >
+              <template v-slot:content>
+                <p>
+                  You may need authorization from your Military Service prior to placing a task 
+                  order under the JWCC Contract. Customers are responsible for complying with 
+                  Military Service-specific cloud acquisition requirements. Prior to proceeding 
+                  with the development of your JWCC requirements package, each customer must 
+                  confirm their understanding of this responsibility.
+                  
+                </p>
+              </template>
+            </ATATAlert>
         </v-col>
       </v-row>
     </v-container>
@@ -183,9 +200,13 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 import { SlideoutPanelContent } from "../../../types/Global";
 import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
+import ATATAlert from "@/components/ATATAlert.vue";
+import { routeNames } from "@/router/stepper";
+import Steps from "@/store/steps";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  components: {ATATSVGIcon}
+  components: {ATATSVGIcon,ATATAlert}
 })
 
 export default class DAPPSChecklist extends Mixins(SaveOnLeave) {
@@ -205,6 +226,14 @@ export default class DAPPSChecklist extends Mixins(SaveOnLeave) {
    return true;
  }
  async mounted(): Promise<void>{
+   const comingFrom = Steps.prevStepName;
+   if (comingFrom !== routeNames.ContractingShop
+    && AcquisitionPackage.packageId !== "") {
+     this.$router.push({
+       name: routeNames.ContractingShop,
+     }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+   }
+    
    await acquisitionPackage.setHideSideNavigation(true);
    const slideoutPanelContent: SlideoutPanelContent = {
      component: FundingRequestLearnMore,
