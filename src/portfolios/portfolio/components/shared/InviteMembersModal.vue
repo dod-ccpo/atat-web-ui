@@ -189,30 +189,38 @@ export default class InviteMembersModal extends Vue {
     return this.userSelectedList.length === 0;
   }
 
+  public isSearching = false;
   /**
    * Starts searching 500 milliseconds after user changes the search value. Only
    * searches if there are at least 3 characters in the newValue
    */
-  onUserSearchValueChange = _.debounce((newValue: string) => {
-    if (newValue && newValue?.trim().length > 2) {
-      this.searchObj.isLoading = true;
-      UserManagement.searchUserByNameAndEmail(newValue).then(userSearchResults => {
-        this.searchObj.searchResults = userSearchResults.map(userSearchDTO => {
-          return {
-            sys_id: userSearchDTO.sys_id,
-            firstName: userSearchDTO.first_name,
-            lastName: userSearchDTO.last_name,
-            fullName: userSearchDTO.name,
-            email: userSearchDTO.email,
-            phoneNumber: userSearchDTO.phone,
-            agency: userSearchDTO.department?.display_value
-          }
-        })
-        this.searchObj.noResults = this.searchObj.searchResults.length === 0;
-        this.searchObj.isLoading = false;
-      })
-    } else {
+  onUserSearchValueChange = _.debounce(async (newValue: string) => {
+    if (newValue && newValue?.trim().length > 2 && !this.isSearching) {
+      this.isSearching = true;
       this.searchObj.searchResults = [];
+      this.searchObj.isLoading = true;
+      const response = await UserManagement.searchUserByNameAndEmail(newValue)
+      this.searchObj.searchResults = response.map(userSearchDTO => {
+        return {
+          sys_id: userSearchDTO.sys_id,
+          firstName: userSearchDTO.first_name,
+          lastName: userSearchDTO.last_name,
+          fullName: userSearchDTO.name,
+          email: userSearchDTO.email,
+          phoneNumber: userSearchDTO.phone,
+          agency: userSearchDTO.department?.display_value
+        }
+      })
+      this.searchObj.noResults = this.searchObj.searchResults.length === 0;
+      this.searchObj.isLoading = false;
+      this.isSearching = false;
+    } else {
+      UserManagement.triggerAbort();
+      this.searchObj.searchResults = [];
+      this.searchObj.noResults = false;
+      this.searchObj.alreadyInvited = false;         
+      this.isSearching = false;
+      this.onUserSearchValueChange(newValue);
     }
   }, 500)
 
@@ -252,6 +260,7 @@ export default class InviteMembersModal extends Vue {
     this.searchObj.searchResults = [];
     this.searchObj.noResults = false;
     this.searchObj.isLoading = false;
+    UserManagement.triggerAbort();    
   }
 
   @Watch("_showModal")
