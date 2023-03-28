@@ -59,3 +59,74 @@
     }
   }
 }
+
+._invite-modal {
+  
+  .v-card__text {
+    padding-bottom: 0 !important;
+  }
+
+  .v-progress-circular {
+    position: absolute;
+    top: 7px;
+    right: 38px;
+    background-color: white !important;
+    z-index: 10;
+  }
+
+  ._search-wrap {
+    position: relative;
+    ._search-result-dropdown {
+      position: absolute;
+      z-index: 10;
+      top: 40px;
+      width: 100%;
+      border-radius: 8px;
+      @extend ._shadow;
+      .v-card {
+        border-radius: 8px ;
+        overflow-y: scroll ;
+      }
+    }
+  }
+
+  .v-text-field__details {
+    display: none;
+  }
+
+  ._modal-full-width-list {
+    overflow-y: scroll; 
+    margin: 0 -40px;
+    padding: 0 24px 0 40px;  
+    min-height: 200px;
+    max-height: 400px;
+
+    ._search-results-list {
+      margin: 0 -40px;
+      padding: 0 40px;  
+      &:hover {
+        background-color: $base-lightest !important;
+      }
+    }
+
+    .atat-select._alt-style-clean {
+      &:hover fieldset {
+        background-color: transparent;
+      }
+      .v-select--is-menu-active {
+        background-color: $primary-lighter;
+      }
+    }
+  }
+
+  .v-input--is-focused {
+    fieldset {
+      border-color: $primary !important;
+    }
+  
+    button, i {
+      color: $base !important;
+    }
+  }
+
+}

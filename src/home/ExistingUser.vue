@@ -84,7 +84,7 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
-            <div class="_view-all">
+          <div class="_view-all" v-show="userHasPortfolios">
             <a
               id="ViewAllPortfoliosLink"
               role="button"

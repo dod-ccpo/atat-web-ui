@@ -13,7 +13,7 @@ import {
 } from "../../../types/Global"
 
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
-import {AlertDTO, PortfolioSummaryDTO} from "@/api/models";
+import {AlertDTO, PortfolioSummaryDTO, UserDTO, UserManagementDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
 import {api} from "@/api";
@@ -365,7 +365,7 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action
   public async setCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
-    this.doSetCurrentPortfolio(portfolioData);
+    await this.doSetCurrentPortfolio(portfolioData);
   }
 
   @Mutation
@@ -379,6 +379,11 @@ export class PortfolioDataStore extends VuexModule {
       agency: portfolioData.agency,
       agencyDisplay: portfolioData.agencyDisplay,
       taskOrderNumber: portfolioData.taskOrderNumber,
+      portfolio_managers: portfolioData.portfolio_managers,
+      portfolio_managers_detail: portfolioData.portfolio_managers_detail,
+      portfolio_viewers: portfolioData.portfolio_viewers,
+      portfolio_viewers_detail: portfolioData.portfolio_viewers_detail,
+      members: portfolioData.members
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
     this.activeTaskOrderNumber = portfolioData.taskOrderNumber 
@@ -420,40 +425,118 @@ export class PortfolioDataStore extends VuexModule {
     this.alerts = value;
   }
 
+  /**
+   * Populates the portfolio members detail for the portfolio managers and viewers.
+   * After populating, the list gets sorted by the user's name.
+   */
   @Action({rawError: true})
-  public async saveMembers(newMembers: MemberInvites): Promise<void> {
-    newMembers.emails.forEach((email) => {
-      const newMember: User = {
-        firstName: "",
-        lastName: "",
-        email,
-        role: newMembers.role,
-      };
-      this.currentPortfolio.members?.push(newMember);
-      // TODO: AT-8747 - CREATE/UPDATE USER TO SNOW
-      // in x_g_dis_atat_portfolio - either portfolio_managers or portfolio_viewers
-      // depending on role
-    });
+  public async populatePortfolioMembersDetail(portfolio: Portfolio): Promise<Portfolio> {
+    const userSysIds = portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
+    const allMembersDetailListDTO = await api.userTable.getQuery(
+      {
+        params:
+          {
+            sysparm_fields: 'sys_id,name,first_name,last_name,email,department',
+            sysparm_display_value: "department",
+            sysparm_query: "sys_idIN" + userSysIds
+          }
+      }
+    )
+    const allMembersDetailList: User[] = 
+      allMembersDetailListDTO.map((userSearchDTO: UserManagementDTO) => {
+        return {
+          sys_id: userSearchDTO.sys_id,
+          firstName: userSearchDTO.first_name,
+          lastName: userSearchDTO.last_name,
+          fullName: userSearchDTO.name,
+          email: userSearchDTO.email,
+          phoneNumber: userSearchDTO.phone,
+          agency: userSearchDTO.department?.display_value
+        }
+      })
+    portfolio.portfolio_managers_detail = [];
+    portfolio.portfolio_viewers_detail = [];
+    portfolio.members = [];
+    allMembersDetailList.forEach(member => {
+      if (portfolio.portfolio_managers?.indexOf(member.sys_id as string) !== -1) {
+        member.role = "Manager";
+        portfolio.portfolio_managers_detail?.push(member);
+        
+      } else {
+        member.role = "Viewer";
+        portfolio.portfolio_viewers_detail?.push(member);
+      }
+      portfolio.members?.push(member);
+    })
+    portfolio.members?.sort((a, b) => {
+      if (a.fullName && b.fullName) {
+        return a.fullName > b.fullName ? 1 : -1;
+      } else {
+        return 0;
+      }
+    })
+    return portfolio;
+  }
+
+  /**
+   * By updating the new members to the current portfolio, all the screen where current
+   * portfolio is used for display, will get auto refreshed.
+   */
+  @Mutation
+  public async doUpdateCurrentPortfolioMembers(newMembers: User[]): Promise<void> {
+    this.currentPortfolio.portfolio_managers_detail =
+      this.currentPortfolio.portfolio_managers_detail?.concat(
+        newMembers.filter(newMember => newMember.role === "Manager"))
+    this.currentPortfolio.portfolio_viewers_detail =
+      this.currentPortfolio.portfolio_viewers_detail?.concat(
+        newMembers.filter(newMember => newMember.role === "Viewer"))
+    this.currentPortfolio.members = this.currentPortfolio.members?.concat(newMembers);
+    this.currentPortfolio.portfolio_managers =
+      this.currentPortfolio.portfolio_managers_detail?.map(
+        managerDetail => managerDetail.sys_id).toString();
+    this.currentPortfolio.portfolio_viewers =
+      this.currentPortfolio.portfolio_viewers_detail?.map(
+        viewerDetail => viewerDetail.sys_id).toString();
+    this.currentPortfolio.members?.sort((a, b) => {
+      if (a.fullName && b.fullName) {
+        return a.fullName > b.fullName ? 1 : -1;
+      } else {
+        return 0;
+      }
+    })
+  }
+
+  /**
+   * Compiles a comma separated list of managers and viewers that is a union
+   * of new and existing members. Then saves the members to the Portfolio and then
+   * updates the current portfolio with the new members.
+   */
+  @Action({rawError: true})
+  public async inviteMembers(newMembers: User[]): Promise<void> {
+    const managersList = this.currentPortfolio.portfolio_managers_detail ?
+      this.currentPortfolio.portfolio_managers_detail.map(
+        manager => manager.sys_id) : [];
+    const viewersList = this.currentPortfolio.portfolio_viewers_detail ?
+      this.currentPortfolio.portfolio_viewers_detail.map(
+        viewer => viewer.sys_id) : [];
+    newMembers.forEach(newMember => {
+      if(newMember.role === "Manager") {
+        managersList.push(newMember.sys_id);
+      } else {
+        viewersList.push(newMember.sys_id);
+      }
+    })
+    const membersPayload = {
+      portfolio_managers: managersList.toString(),
+      portfolio_viewers: viewersList.toString()
+    }
+    await api.portfolioTable.update(this.currentPortfolio.sysId as string,
+      membersPayload as PortfolioSummaryDTO);
+    await this.doUpdateCurrentPortfolioMembers(newMembers);
   }
 
   @Action({rawError: true})
   public async getPortfolioData(): Promise<Portfolio> {
-    // TODO: can likely remove logic below to add current user as Manager if no members
-    // after AT-8747 is completed
-    if (this.currentPortfolio.members?.length === 0) {
-      const currentUser = await CurrentUserStore.getCurrentUser();
-      const placeholderMember = {
-        firstName: currentUser.first_name,
-        lastName: currentUser.last_name,
-        email: currentUser.email,
-        role: "Manager",
-        phoneNumber: "5555555555",
-        phoneExt: "1234",
-        designation: "Civilian",
-        agency: "U.S. Army"
-      };
-      this.currentPortfolio.members = [placeholderMember];
-    }
     return this.currentPortfolio;
   }
 

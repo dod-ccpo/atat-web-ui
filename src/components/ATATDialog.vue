@@ -10,7 +10,7 @@
     ref="atatDialog"
     :persistent="disableClickingOutside"
   >
-    <v-card :id="id">
+    <v-card :id="id" :class="modalClass">
       <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">
         {{ getTitle }}
       </v-card-title>
@@ -108,7 +108,8 @@ export default class ATATDialog extends Vue {
   @Prop({ default: false }) private disableClickingOutside?: boolean;
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;
-
+  @Prop() modalClass?: string;
+  
   @PropSync("showDialog") private _showDialog!: boolean;
   @PropSync("modalDrawerIsOpen") public _modalDrawerIsOpen!: boolean;
 

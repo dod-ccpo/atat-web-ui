@@ -5,6 +5,8 @@ import { DefaultProps } from "vue/types/options";
 import PortfolioCard from "@/portfolios/components/PortfolioCard.vue";
 import { PortfolioCardData } from "types/Global";
 import AppSections from "@/store/appSections";
+import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 
 Vue.use(Vuetify);
 
@@ -51,6 +53,8 @@ describe("Testing index Component", () => {
         isHaCCAdmin: true,
       })      
     });
+    jest.spyOn(PortfolioStore, "populatePortfolioMembersDetail").mockImplementation(
+      ()=>Promise.resolve(cardData));
   });
 
   it("renders successfully", async () => {

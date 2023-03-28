@@ -469,6 +469,7 @@ export interface EnvInstanceSummaryTableData {
 export interface User {
   firstName?: string;
   lastName?: string;
+  fullName?: string;
   email?: string;
   role?: string;
   phoneNumber?: string;
@@ -489,6 +490,10 @@ export interface Portfolio extends BaseTableDTO {
   createdBy?: string;
   provisioned?: string;
   members?: User[];
+  portfolio_managers?: string
+  portfolio_managers_detail?: User[];
+  portfolio_viewers?: string;
+  portfolio_viewers_detail?: User[];
   updated?: string;
   taskOrderNumber?: string;
 }

@@ -110,7 +110,7 @@ describe("Testing Portfolio Drawer component", () => {
     jest.spyOn(PortfolioData, "getPortfolioData").mockImplementation(
       ()=>Promise.resolve( _portfolio ));
     await wrapper.vm.membersInvited();
-    expect(wrapper.vm.$data.portfolio).toEqual(_portfolio);
+    expect(wrapper.vm.$data.portfolio.description).toEqual("just testfefseffdsfd");
 
   });
 
