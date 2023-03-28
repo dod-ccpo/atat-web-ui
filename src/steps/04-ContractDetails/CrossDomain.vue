@@ -37,6 +37,10 @@
                       :textFieldWidth="164"
                       :value.sync="selectedCDSCheckboxItems"
                       :groupLabelHelpText="cdsSolutionLabelHelpText"
+                      :rules="[
+                        $validators
+                        .required('Please select at least one type of cross-domain solution.')
+                      ]"
                       @checkboxTextfieldDataUpdate="solutionTypeDataUpdate"
                     />
                   </v-col>
@@ -47,6 +51,10 @@
                       id="projectedFileStreamType"
                       label="Projected file stream/type"
                       :value.sync="domainInfo.projectedFileStream"
+                      :rules="[
+                        $validators
+                        .required('Enter a projected file stream/type')
+                      ]"
                     />
                   </v-col>
                 </v-row>
