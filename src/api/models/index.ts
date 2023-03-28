@@ -665,6 +665,7 @@ export interface EnvironmentDTO extends BaseTableDTO {
   provisioned_date: string;
   provisioning_failure_cause: string;
   provisioning_request_date: string;
+  csp_admins?: OperatorDTO[]
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
@@ -771,6 +772,17 @@ export interface UserManagementDTO extends BaseTableDTO {
   email?: string;
   phone?: string;
   department?: DisplayColumn;
+}
+
+export interface OperatorDTO extends BaseTableDTO{
+  environment?: string;
+  email?: string;
+  dod_id?: string;
+  added_by?: string;
+  provisioned_date?: string;
+  provisioned?: string;
+  provisioning_failure_cause?: string;
+  provisioning_request_date?: string;
 }
 
 export interface TrainingEstimateDTO extends BaseTableDTO{

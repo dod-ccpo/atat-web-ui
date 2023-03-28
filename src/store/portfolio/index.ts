@@ -2,22 +2,25 @@
 import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
 
-import { 
-  FilterOption, 
-  MemberInvites, 
-  Portfolio, 
-  PortfolioCardData, 
-  PortfolioProvisioning, 
-  PortfolioSummaryQueryParams, 
+import {
+  FilterOption,
+  MemberInvites, Operator,
+  Portfolio,
+  PortfolioCardData,
+  PortfolioProvisioning,
+  PortfolioSummaryQueryParams,
   User,
 } from "../../../types/Global"
 
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
-import {AlertDTO, PortfolioSummaryDTO, UserDTO, UserManagementDTO} from "@/api/models";
+import {AlertDTO,
+  EnvironmentDTO, OperatorDTO, PortfolioSummaryDTO, UserManagementDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
 import {api} from "@/api";
 import CurrentUserStore from "../user";
+import {AxiosRequestConfig} from "axios";
+import {convertColumnReferencesToValues} from "@/api/helpers";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -383,7 +386,8 @@ export class PortfolioDataStore extends VuexModule {
       portfolio_managers_detail: portfolioData.portfolio_managers_detail,
       portfolio_viewers: portfolioData.portfolio_viewers,
       portfolio_viewers_detail: portfolioData.portfolio_viewers_detail,
-      members: portfolioData.members
+      members: portfolioData.members,
+      environments: portfolioData.environments
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
     this.activeTaskOrderNumber = portfolioData.taskOrderNumber 
@@ -533,6 +537,133 @@ export class PortfolioDataStore extends VuexModule {
     await api.portfolioTable.update(this.currentPortfolio.sysId as string,
       membersPayload as PortfolioSummaryDTO);
     await this.doUpdateCurrentPortfolioMembers(newMembers);
+  }
+
+  /**
+   * Loads all the operators of a portfolio and then groups them by environment. Then
+   * makes a call-out to sort the operators by each environment.
+   */
+  @Action({rawError: true})
+  public async loadAllOperatorsOfPortfolioEnvironment(environment: EnvironmentDTO): Promise<void> {
+    if (!environment.csp_admins || environment.csp_admins.length === 0) {
+      const queryForAllOperatorsOfPortfolio: AxiosRequestConfig = {
+        params: {
+          sysparm_query: "^environmentIN" + environment.sys_id
+        }
+      };
+      let allOperatorsOfPortfolioEnv = await api.operatorTable.getQuery(
+        queryForAllOperatorsOfPortfolio
+      )
+      allOperatorsOfPortfolioEnv = allOperatorsOfPortfolioEnv
+        .map(operator => convertColumnReferencesToValues(operator));
+      allOperatorsOfPortfolioEnv.forEach(operator =>
+        this.transformAndAddOperatorToPortfolioEnvironment({
+          environment: environment,
+          operatorDTO: operator
+        }))
+      await this.sortPortfolioEnvironmentOperators(environment);
+    }
+  }
+
+  /**
+   * Adds the new operator to the operators list of the environment of the
+   * current portfolio. It is the responsibility of the caller to ensure that
+   * this is not a duplicate entry.
+   */
+  @Mutation
+  public async transformAndAddOperatorToPortfolioEnvironment(
+    newOperatorToTransform: {environment: EnvironmentDTO,
+      operatorDTO: OperatorDTO}): Promise<void> {
+    const operatorDTO = newOperatorToTransform.operatorDTO;
+    let operatorStatus: Operator["status"] = "";
+    if (operatorDTO.provisioned === "false" &&
+      operatorDTO.provisioning_failure_cause?.trim().length === 0) {
+      operatorStatus = "Processing"
+    } else if (operatorDTO.provisioned === "false" &&
+      operatorDTO.provisioning_failure_cause &&
+      operatorDTO.provisioning_failure_cause.length > 0) {
+      operatorStatus = "Failed"
+    } else if (operatorDTO.provisioned === "true") {
+      operatorStatus = "Provisioned"
+    }
+    const operator: Operator = {
+      sysId: operatorDTO.sys_id,
+      environment: operatorDTO.environment,
+      email: operatorDTO.email,
+      dodId: operatorDTO.dod_id,
+      status: operatorStatus,
+      addedBy: operatorDTO.added_by,
+      provisionedDate: operatorDTO.provisioned_date,
+      provisioned: operatorDTO.provisioned,
+      provisioningFailureCause: operatorDTO.provisioning_failure_cause,
+      provisioningRequestDate: operatorDTO.provisioning_request_date
+    }
+    if (!newOperatorToTransform.environment.csp_admins) {
+      newOperatorToTransform.environment.csp_admins = [];
+    }
+    newOperatorToTransform.environment.csp_admins.unshift(operator);
+  }
+
+  /**
+   * Sorts the operators (or cspAdmins) of a specific environment of the portfolio. Here are the
+   * sorting rules.
+   * Descending by provisioned date BUT must list all with status Processing first
+   * alphabetically by email, then sort by Provisioned on date.
+   */
+  @Mutation
+  public async sortPortfolioEnvironmentOperators(environment: EnvironmentDTO): Promise<void> {
+    // first default sort by Processing
+    environment.csp_admins?.sort((a, b) => {
+      const operatorA = a as unknown as Operator;
+      const operatorB = b as unknown as Operator;
+      if (operatorA.status === "Processing" && operatorB.status !== "Processing") {
+        return -1;
+      } else if (operatorA.status === "Processing" &&
+        operatorB.status === "Processing") {
+        // sort by email
+        if (operatorA.email && operatorB.email) {
+          return operatorA.email > operatorB.email ? -1 : 1;
+        } else {
+          return 0;
+        }
+      } else {
+        // sort by provisioned date
+        if (operatorA.provisionedDate && operatorB.provisionedDate) {
+          return operatorB.provisionedDate > operatorA.provisionedDate ? -1 : 1;
+        } else {
+          return 0;
+        }
+      }
+    })
+  }
+
+  /**
+   * Expects to get one of the environments from the current portfolio of this
+   * store, to which the new operator needs to be added.
+   */
+  @Action({rawError: true})
+  public async addCSPOperator(newOperatorToAdd: {environment: EnvironmentDTO,
+    operator: Operator}): Promise<void> {
+    const newOperator = newOperatorToAdd.operator;
+    const operatorDTO: OperatorDTO = {
+      environment: newOperatorToAdd.environment.sys_id,
+      email: newOperator.email,
+      dod_id: newOperator.dodId,
+      // created_by is DB connection specific. Added by should be pulled from current user
+      added_by: CurrentUserStore.currentUser.sys_id,
+      provisioned_date: "",
+      provisioned: "false",
+      provisioning_failure_cause: "",
+      provisioning_request_date: new Date().getUTCDate().toString()
+    }
+    const operatorResponse = await api.operatorTable.create(operatorDTO);
+    await this.transformAndAddOperatorToPortfolioEnvironment(
+      {
+        environment: newOperatorToAdd.environment,
+        operatorDTO: operatorResponse
+      });
+    // leave below line commented out if newly added csp admins need to be displayed at the top
+    // await this.sortPortfolioEnvironmentOperators(newOperatorToAdd.environment);
   }
 
   @Action({rawError: true})

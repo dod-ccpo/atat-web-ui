@@ -61,6 +61,7 @@ import { RegionsAPI } from "./regions";
 import {EnvironmentApi} from "@/api/environment";
 import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
+import {OperatorAPI} from "@/api/operator";
 
 
 export const api = {
@@ -128,6 +129,7 @@ export const api = {
   regionsTable: new RegionsAPI(),
   packageDocumentsSignedTable: new PackageDocumentsSignedAPI(),
   packageDocumentsUnsignedTable: new PackageDocumentsUnsignedAPI(),
+  operatorTable: new OperatorAPI()
 }
 
 export default {
