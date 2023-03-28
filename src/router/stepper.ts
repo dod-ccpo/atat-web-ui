@@ -9,6 +9,7 @@ import OrganizationInfo from "../steps/01-AcquisitionPackageDetails/Organization
 import CorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/CorInfo.vue";
 import AcorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
 import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
+import DAPPSChecklist from "@/steps/01-AcquisitionPackageDetails/DAPPSChecklist.vue";
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Evaluation Criteria
@@ -170,8 +171,9 @@ import {
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
-  IGCETrainingPathResolver, 
+  IGCETrainingPathResolver,
   FeeChargedResolver,
+  showDITCOPageResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -272,7 +274,8 @@ export const routeNames = {
   AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs",
   UploadSignedDocuments:"Upload_Signed_Documents",
   ReadyToSubmit:"Ready_To_Submit",
-  UnderReview:"Under_Review"
+  UnderReview:"Under_Review",
+  DAPPSChecklist:"DAPPSChecklist"
 };
 
 /**
@@ -289,15 +292,25 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "01",
     menuText: "Acquisition Package Details",
-    path: "/package-details",
+    path: "/",
     completePercentageWeight: 14,
     component: AcquisitionPackageDetails,
     completed: false,
     children: [
       {
-        menuText: "Contracting Shop",
+        menuText: "DAPPS Checklist",
         path: "/",
-        name: routeNames.ContractingShop, 
+        name: routeNames.DAPPSChecklist,
+        completePercentageWeight: 0,
+        routeResolver: showDITCOPageResolver,
+        completed: false,
+        excludeFromMenu: true,
+        component: DAPPSChecklist,
+      },
+      {
+        menuText: "Contracting Shop",
+        path: "contracting-shop",
+        name: routeNames.ContractingShop,
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
@@ -311,18 +324,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         stepCompleteOnLeave: routeNames.ProjectOverview,
         component: ProjectOverview,
-        // KEEP THIS FOR REFERENCE
-        // additionalButtons: [
-        //   {
-        //     name: routeNames.ProjectOverview,
-        //     buttonText: "Cancel",
-        //     buttonId: "CancelButton",
-        //     buttonClass: "tertirary",
-        //     emitText: "sampleEmitText",
-        //     actionName: "sampleAdditionalButtonAction",
-        //     actionArgs: ["foo", "bar"],
-        //   },
-        // ],
       },
       {
         menuText: "Organization",

@@ -14,12 +14,16 @@ import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
-import acquisitionPackage from "@/store/acquisitionPackage";
-import DOWLandingPage from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
 
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+
+export const showDITCOPageResolver = (current: string): string => {
+  return current === routeNames.ContractingShop
+    ? routeNames.DAPPSChecklist 
+    : routeNames.ContractingShop;
+};
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
@@ -1363,6 +1367,7 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
 
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
+  showDITCOPageResolver,
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,

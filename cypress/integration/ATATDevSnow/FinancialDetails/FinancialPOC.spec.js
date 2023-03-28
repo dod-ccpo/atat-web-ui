@@ -173,7 +173,7 @@ describe("Test suite: Financial Details Step: Financial POC",() => {
     //list of Affiliationrole
     cy.findElement(fd.contactRoleTxt).then(($role) => {
       expect($role).to.have.text(
-        " What role best describes your affiliation with the DoD? "
+        " What role best describes your Financial POC's affiliation? "
       );
     });
     //select radio button

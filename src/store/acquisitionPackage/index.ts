@@ -337,6 +337,8 @@ export class AcquisitionPackageStore extends VuexModule {
   anticipatedUsersAndDataNeedsVisited = false
   disableContinue = false
   hideNavigation = false
+  hideSideNavigation = false
+  firstTimeVisit = false
   fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact()
@@ -417,7 +419,23 @@ export class AcquisitionPackageStore extends VuexModule {
   private doSetHideNavigation(value: boolean): void {
     this.hideNavigation = value;
   }
+  @Action({rawError: false})
+  public async setHideSideNavigation(value: boolean): Promise<void> {
+    this.doSetHideSideNavigation(value);
+  }
+  @Mutation
+  private doSetHideSideNavigation(value: boolean): void {
+    this.hideSideNavigation = value;
+  }
 
+  @Action({rawError: false})
+  public async setFirstTimeVisit(value: boolean): Promise<void> {
+    this.doSetFirstTimeVisit(value);
+  }
+  @Mutation
+  private doSetFirstTimeVisit(value: boolean): void {
+    this.firstTimeVisit = value;
+  }
   @Action
   public async setValidateNow(value: boolean): Promise<void> {
     this.doSetValidateNow(value);
@@ -660,7 +678,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
     console.log("in store: actionArgs", actionArgs);
   }
-  @Action
+  @Action ({rawError: true})
   public async getDocGenStatus(packageId: string): Promise<string> {
     if(this.acquisitionPackage){
       this.acquisitionPackage.docgen_job_status = 
@@ -669,12 +687,12 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.acquisitionPackage?.docgen_job_status || "";
   }
 
-  @Action
+  @Action ({rawError: true})
   public async saveDocGenStatus(newDocGenStatus: string): Promise<void> {
-    if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
+    if(this.acquisitionPackage && AcquisitionPackage.packageId){
       this.acquisitionPackage.docgen_job_status = newDocGenStatus;
       await api.acquisitionPackageTable.update(
-        this.acquisitionPackage.sys_id,
+        AcquisitionPackage.packageId,
         this.acquisitionPackage
       );
     }
@@ -1357,7 +1375,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async saveAcquisitionPackage(): Promise<void>{
     if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
       await api.acquisitionPackageTable.update(
-        this.acquisitionPackage.sys_id,
+        this.packageId,
         this.acquisitionPackage
       );
     }
@@ -1405,7 +1423,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setSensitiveInformation(savedSensitiveInformation);
       this.setAcquisitionPackage({
         ...this.sensitiveInformation,
-        sensitive_information: {value: sys_id}
+        sensitive_information: sys_id
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving sensitive info data ${error}`);
@@ -1499,7 +1517,7 @@ export class AcquisitionPackageStore extends VuexModule {
     };
     const sysID = (isDocumentTypeSigned
       ? await api.packageDocumentsSignedTable.getQuery(getdocumentsSysIDQuery)
-      : await api.packageDocumentsUnsignedTable.getQuery(getdocumentsSysIDQuery))[0].sys_id;
+      : await api.packageDocumentsUnsignedTable.getQuery(getdocumentsSysIDQuery))[0]?.sys_id || "";
     return this.getDomain + '/download_all_attachments.do?sysparm_sys_id=' + sysID;
   }
 

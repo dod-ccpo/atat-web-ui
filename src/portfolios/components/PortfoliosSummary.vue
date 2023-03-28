@@ -109,6 +109,7 @@
   </div>
 </template>
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
@@ -158,7 +159,7 @@ export default class PortfoliosSummary extends Vue {
   public isHaCCAdmin = false;
 
   public page = 1;
-  public recordsPerPage = 3;
+  public recordsPerPage = 5;
   public numberOfPages = 0;
   public portfolioCount = 0;
   public offset = 0;
@@ -384,11 +385,6 @@ export default class PortfoliosSummary extends Vue {
     this.isLoading = true;
     this.portfolioCardData = [];
 
-    // TODO - properly wire CSP in task AT-8744 
-    // below used to map stub CSPs to actual CSPs until have actual CSP data
-    const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
-    const csps = ["aws", "azure", "google", "oracle", "oracle"];
-
     if (this.activeTab) {
       this.portfolioSearchDTO.portfolioStatus = this.activeTab === "ALL" ? "" : this.activeTab;
     }
@@ -419,8 +415,7 @@ export default class PortfoliosSummary extends Vue {
       let cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
       
-      // TODO - properly wire CSP in task AT-8744 
-      cardData.csp = "AWS"; // csps[cspStubs.indexOf(portfolio.csp_display)];
+      cardData.csp = portfolio.vendor;
 
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
@@ -429,7 +424,9 @@ export default class PortfoliosSummary extends Vue {
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.agency = portfolio.dod_component;
 
-      cardData.taskOrderSysId = portfolio.active_task_order.value as string;
+      cardData.agency = portfolio.agency;
+      cardData.agencyDisplay = portfolio.agency_display;
+      cardData.taskOrderSysId = portfolio.active_task_order;
       const activeTaskOrder = portfolio.task_orders.find(
         obj => obj.sys_id === cardData.taskOrderSysId
       );

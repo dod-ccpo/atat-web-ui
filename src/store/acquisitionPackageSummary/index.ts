@@ -210,6 +210,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         acquisitionPackageSummaryList = [];
       }
       this.setAcquisitionPackageSummaryList(acquisitionPackageSummaryList); // caches the list
+      await this.setPackagesWaitingForTaskOrder();
       return {
         total_count: acquisitionPackageSummaryCount,
         acquisitionPackageSummaryList: acquisitionPackageSummaryList
@@ -237,6 +238,9 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   @Mutation
   public doSetPackagesWaitingForTaskOrder(count: number): void {
     this.packagesWaitingForTaskOrder = count;
+  }
+  public get getPackagesWaitingForTaskOrderCount(): number {
+    return this.packagesWaitingForTaskOrder;
   }
 
   /**

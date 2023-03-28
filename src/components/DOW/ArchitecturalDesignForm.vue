@@ -98,7 +98,7 @@ export default class ArchitectureDesignForm extends Vue {
   private classificationCheckboxes: Checkbox[] = [];
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    return buildClassificationCheckboxList(data, "", true, false);
+    return buildClassificationCheckboxList(data, "", true, true);
   }
 
   public async mounted(): Promise<void> {

@@ -386,3 +386,20 @@ export function convertEstimateData(sysIdArray: Record<string, string>[]): strin
   return "{" + records.substring(0,records.length - 1) + "}";
 }
 
+/**
+ * @param arr 
+ * @param conjunction 'and | or' 
+ * @returns comma separated list with conjunction
+ *    eg. ['apple'] => "apple"
+ *    eg. (['apple', 'orange']) => "apple and orange"
+ *    eg. (['apple', 'orange', 'pear'], 'or') => "apple, orange or pear"
+ */
+export function convertStringArrayToCommaList(arr: string[], conjunction?: string): string {
+  conjunction = conjunction || 'and';
+  let commaList = arr[0] || "";
+  if (arr.length > 1){
+    commaList = arr.slice(0, -1).join(", ") + " "  + conjunction + " " + arr.slice(-1);
+  }
+  return commaList;
+}
+

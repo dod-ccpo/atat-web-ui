@@ -39,7 +39,7 @@
         <div class="d-flex justify-space-between pb-2">
           <span id="AgencyLabel">Agency</span>
           <div id="Agency">
-            {{ portfolio.agency }}
+            {{ portfolio.agencyDisplay }}
           </div>
         </div>
         <div class="d-flex justify-space-between align-center">
@@ -77,7 +77,6 @@
               <v-btn
                 id="AddPortfolioMember"
                 class="_icon-only"
-                disabled
                 @click="openMembersModal"
                 @keydown.enter="openMembersModal"
                 @keydown.space="openMembersModal"
@@ -92,11 +91,8 @@
               </v-btn>
             </span>
           </template>
-        <div class="_tooltip-content-wrap _left" style="width: 255px">
-          <span class="font-weight-bold d-block mb-1">
-            Coming Soon!
-          </span>
-          You will be able to invite others to access this portfolio witin ATAT.
+        <div class="_tooltip-content-wrap _left">
+          Add members
         </div>
         </v-tooltip>
 
@@ -107,8 +103,8 @@
       >
         <div 
           class="d-flex flex-columm justify-space-between"
-          v-for="(member, index) in portfolioMembers" 
-          :key="member.email"
+          v-for="(member, index) in getPortfolioMembers()"
+          :key="member.sys_id"
         >
           <MemberCard :id="'MemberName' + index" :index="index" />
           <div v-if="managerCount === 1 && member.role.toLowerCase() === 'manager'">
@@ -138,7 +134,7 @@
               class="_small _alt-style-clean _invite-members-modal align-self-end"
               :items="getMemberMenuItems(member)"
               width="105"
-              :selectedValue.sync="portfolioMembers[index].role"
+              :selectedValue.sync="member.role"
               iconType="chevron"
               @onChange="(value)=>onSelectedMemberRoleChanged(value, index)"
               :menuDisabled="member.menuDisabled"
@@ -167,9 +163,9 @@
       -->
     </div>
 
-    <AddMembersModal 
-      :showModal.sync="showMembersModal" 
-      @members-invited="membersInvited"
+    <InviteMembersModal
+        :showModal.sync="showMembersModal"
+        @members-invited="membersInvited"
     />
 
     <ATATDialog
@@ -201,14 +197,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-
-import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembersModal.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PortfolioRolesLearnMore from
   "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
-
 import PortfolioStore from "@/store/portfolio";
 import SlideoutPanel from "@/store/slideoutPanel";
 import Toast from "@/store/toast";
@@ -226,13 +219,14 @@ import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue"
 import {getStatusChipBgColor, hasChanges} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
+import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
 
 @Component({
   components: {
+    InviteMembersModal,
     ATATDialog,
     ATATSVGIcon,
     ATATSelect,
-    AddMembersModal,
     PortfolioRolesLearnMore,
     MemberCard,
   },
@@ -310,9 +304,9 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async loadPortfolio(): Promise<void> {
-    const storeData = _.cloneDeep(await PortfolioStore.getPortfolioData());
+    const storeData = await PortfolioStore.currentPortfolio;
     if (storeData) {
-      this.portfolio = _.cloneDeep(storeData);
+      this.portfolio = storeData;
       this.csp = storeData.csp?.toLowerCase() as string;      
       if (storeData.provisioned) {
         this.provisionedTime = this.formatDate(storeData.provisioned);
@@ -320,7 +314,7 @@ export default class PortfolioDrawer extends Vue {
       if (storeData.updated) {
         this.updateTime = this.formatDate(storeData.updated);
       }
-      this.portfolioMembers = _.cloneDeep(storeData.members) || [];
+      this.portfolioMembers = storeData.members || [];
       this.portfolioStatus = PortfolioStore.getStatus;
     }
     this.currentUser = await CurrentUserStore.getCurrentUser();
@@ -352,8 +346,12 @@ export default class PortfolioDrawer extends Vue {
       : 0;
   }
 
+  public getPortfolioMembers(): User[] {
+    return this.portfolio?.members ? this.portfolio?.members : [];
+  }
+
   public get managerCount(): number {
-    const managers = this.portfolioMembers.filter(obj => obj.role?.toLowerCase() === "manager")
+    const managers = this.portfolioMembers.filter(obj => obj?.role?.toLowerCase() === "manager")
     return managers.length;
   }
 

@@ -5,7 +5,7 @@
     elevation="0"
   >
 
-    <div class="pr-5">
+    <div class="pr-5" v-if="hasCSP">
       <div class="_csp-icon-wrap" :data-csp="CSPs[cspKey].title">
         <v-tooltip
           transition="slide-y-reverse-transition"
@@ -51,6 +51,7 @@
               color="base"
               class="ml-3"
             />
+
           </a>
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
@@ -65,7 +66,7 @@
         </div>
       </div>
       <div class="text-base-dark mb-3">
-        <span class="_agency">{{ cardData.agency }}</span>
+        <span class="_agency">{{ cardData.agencyDisplay }}</span>
         <ATATSVGIcon 
           name="bullet" 
           color="base-light" 
@@ -155,8 +156,7 @@
 
       </div>
     </div>
-
-    <ATATMeatballMenu 
+      <ATATMeatballMenu 
       :id="'PortfolioCardMenu' + index"
       :left="true"
       :menuIndex="index"
@@ -252,7 +252,12 @@ export default class PortfolioCard extends Vue {
   }
 
   public get cspKey(): string {
-    return this.cardData.csp?.toLowerCase() as string;
+    return  this.cardData.csp.toLowerCase() as string;
+  }
+
+  public get hasCSP(): boolean {
+    const cspKeys = ["aws", "azure", "gcp", "oracle"];
+    return this.cardData.csp && cspKeys.indexOf(this.cardData.csp.toLowerCase()) > -1;
   }
 
   public getCSPConsoleURL(): string {
@@ -262,6 +267,7 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
+    this.cardData = await PortfolioStore.populatePortfolioMembersDetail(this.cardData);
     await PortfolioStore.setCurrentPortfolio(this.cardData);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:

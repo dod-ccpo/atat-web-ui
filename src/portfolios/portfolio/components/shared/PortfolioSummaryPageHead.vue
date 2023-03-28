@@ -23,8 +23,11 @@
           </v-text-field>
 
         <div>
-          <v-tabs class="_header-tab "
-          v-model="_selectedTab">
+          <v-tabs 
+            class="_header-tab "
+            v-model="_selectedTab"
+            v-if="!isPortfolioProvisioning"
+          >
             <v-tab
               v-for="tab in items"
               :key="tab"
@@ -34,7 +37,10 @@
           </v-tabs>
         </div>
       </div>
-      <div class="d-flex justify-end align-center">
+      <div 
+        class="d-flex justify-end align-center"
+        v-if="!isPortfolioProvisioning"      
+      >
         <v-btn
           class="_icon-only mr-2"
           id="Info_Button"
@@ -151,6 +157,7 @@ import {getIdText, hasChanges} from "@/helpers";
 export default class PortfolioSummaryPageHead extends Vue {
   @Prop({ default: "Headline" }) private headline!: string;
   @Prop() private portfolioStatus!: string;
+  @Prop() public isPortfolioProvisioning!: boolean;
   @Prop({ default: [""], required: true }) private items!: string[];
   @PropSync("value") private _selectedTab!: number ;
   @PropSync("title") private _title!: string;

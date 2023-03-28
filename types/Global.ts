@@ -299,6 +299,7 @@ export interface DOWCardData {
 }
 
 export interface DOWClassificationInstance {
+  acquisitionPackage: ReferenceColumn | string;
   sysId?: string;
   impactLevel: string; // for sorting
   classificationLevelSysId: string;
@@ -468,6 +469,7 @@ export interface EnvInstanceSummaryTableData {
 export interface User {
   firstName?: string;
   lastName?: string;
+  fullName?: string;
   email?: string;
   role?: string;
   phoneNumber?: string;
@@ -484,9 +486,14 @@ export interface Portfolio extends BaseTableDTO {
   status?: string;
   csp?: string;
   agency?: string;
+  agencyDisplay?: string
   createdBy?: string;
   provisioned?: string;
   members?: User[];
+  portfolio_managers?: string
+  portfolio_managers_detail?: User[];
+  portfolio_viewers?: string;
+  portfolio_viewers_detail?: User[];
   updated?: string;
   taskOrderNumber?: string;
   taskOrderSysId?: string;

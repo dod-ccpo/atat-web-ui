@@ -4,6 +4,7 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import Card from "./Card.vue";
 import UserStore from "@/store/user";
+import PortfolioStore from "@/store/portfolio";
 
 Vue.use(Vuetify);
 
@@ -71,6 +72,8 @@ describe("Testing Card Component", () => {
     })
 
     it('test cardMenuClick()',()=>{
+      jest.spyOn(PortfolioStore, "populatePortfolioMembersDetail").mockImplementation(
+        ()=>Promise.resolve(wrapper.vm.$data.propsData));
       const archiveItem={
         action: "Archive acquisition"
       }

@@ -40,7 +40,7 @@ export interface AlertDTO extends BaseTableDTO {
   alert_type: string;
   clin: string;
   last_notification_date: string;
-  portfolio: string | ReferenceColumn;
+  portfolio: string;
   task_order: string;
   threshold_violation_amount: string;
 }
@@ -415,6 +415,7 @@ export interface SelectedServiceOfferingDTO extends BaseTableDTO {
 }
 
 export interface ClassificationInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   selected_periods: string;
   classification_level: string;
   usage_description: string;
@@ -462,7 +463,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
 
     task_order_number: string;
     task_order_status: string;
-    portfolio: string | ReferenceColumn;
+    portfolio: string;
     pop_end_date: string;
     pop_start_date: string;
     total_task_order_value?: number; // total clin values that don't have expired/ option pending
@@ -472,13 +473,13 @@ export interface TaskOrderDTO extends BaseTableDTO {
 }
 
 export interface CostsDTO extends BaseTableDTO {
-  clin: ReferenceColumn["value"];
-  csp: ReferenceColumn | string;
+  clin: string;
+  csp: string;
   "csp.name"?:string;
   year_month: string;
   task_order_number: string;
-  portfolio: ReferenceColumn | string;
-  organization: ReferenceColumn | string;
+  portfolio: string;
+  organization: string;
   "agency.title"?: string;
   is_actual: string;
   value: string;
@@ -622,10 +623,11 @@ export interface TravelRequirementDTO extends BaseTableDTO {
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
-  csp: ReferenceColumn;
-  active_task_order: ReferenceColumn;
+  csp: string;
+  active_task_order: string;
   csp_display: string; // "<<cloud_service_package.name >>"
-  dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
+  agency: string;
+  agency_display?: string;
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
   sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
   task_order_status: string; // "EXPIRED << task_order.task_order_status >>",
@@ -635,16 +637,34 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
   portfolio_funding_status: string;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
+  portfolio_managers_detail?: UserManagementDTO[];
+  portfolio_viewers?: string;
+  portfolio_viewers_detail?: UserManagementDTO[];
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];
   title?: string;
   description?: string;
+  environments?: EnvironmentDTO[];
 }
 
 export interface PortfolioSummaryMetadataAndDataDTO {
   total_count: number;
   portfolioSummaryList: PortfolioSummaryDTO[];
+}
+
+export interface EnvironmentDTO extends BaseTableDTO {
+  csp: string;
+  csp_id: string;
+  csp_display: string;
+  name: string;
+  dashboard_link: string;
+  pending_operators: string[];
+  portfolio: string;
+  provisioned: YesNo;
+  provisioned_date: string;
+  provisioning_failure_cause: string;
+  provisioning_request_date: string;
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
@@ -742,6 +762,15 @@ export interface UserDTO extends BaseTableDTO {
   last_name?: string;
   user_name?: string;
   email?: string;
+}
+
+export interface UserManagementDTO extends BaseTableDTO {
+  first_name?: string;
+  last_name?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  department?: DisplayColumn;
 }
 
 export interface TrainingEstimateDTO extends BaseTableDTO{

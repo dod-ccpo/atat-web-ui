@@ -76,7 +76,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
 
     const checkDocJobStatus: unknown = (async ()=> {
       await this.getDocJobStatus();
-      ["COMPLETE", "FAILED"].some(
+      ["SUCCESS", "FAILURE"].some(
         (status)=>{
           if (status === this.docJobStatus.toUpperCase()){
             clearInterval(intervalId);
@@ -96,7 +96,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
 
   public async getDocJobStatus(): Promise<void> {
     this.docJobStatus = await AcquisitionPackage.getDocGenStatus(
-        AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "")
+      AcquisitionPackage.packageId.toUpperCase() || "")
   } 
 
   public async mounted(): Promise<void> {
@@ -113,7 +113,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
     await AcquisitionPackage.setValidateNow(true);
     if(this.isDitco){
       await AcquisitionPackageSummary.updateAcquisitionPackageStatus({
-        acquisitionPackageSysId: AcquisitionPackage.acquisitionPackage?.sys_id||"",
+        acquisitionPackageSysId: AcquisitionPackage.packageId,
         newStatus: "WAITING_FOR_SIGNATURES"
       })
     }

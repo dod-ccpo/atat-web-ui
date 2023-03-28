@@ -109,20 +109,35 @@ export class UserStore extends VuexModule {
 
     return userHasPackages;
   }
+
+  public userHasPortfolios = false;
+ 
   @Action({rawError: true})
   public async hasPortfolios(): Promise<boolean> {
-    const baseSearchDTO: PortfolioSummarySearchDTO = {
-      portfolioStatus: "",
-      sort: "DESCsys_updated_on",
-      offset: 0,
+    const searchDTO:PortfolioSummarySearchDTO = {
       role: "ALL",
       fundingStatuses: [],
-      csps: [],  
-    }
-    const searchQuery = await PortfolioSummary.getMandatorySearchParameterQuery(baseSearchDTO);
-    const count = await PortfolioSummary.getPortfolioSummaryCount(searchQuery);
-    return count > 0;
+      csps: [],
+      portfolioStatus: "",
+      sort: "DESCsys_updated_on",
+      limit: 1,
+      offset: 0
+    };
+
+    const portfolioData = await PortfolioSummary
+      .searchPortfolioSummaryList(searchDTO);
+    const hasPortfolios = portfolioData.total_count > 0;
+    await this.doSetUserHasPortfolios(hasPortfolios);
+    return this.userHasPortfolios;
   }
+  @Mutation
+  public async doSetUserHasPortfolios(bool: boolean): Promise<void> {
+    this.userHasPortfolios = bool;
+  }
+  public get getUserHasPortfolios(): boolean {
+    return this.userHasPortfolios;
+  }
+
 
   @Action({rawError: true})
   async ensureInitialized(): Promise<void> {
