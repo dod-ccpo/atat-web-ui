@@ -41,6 +41,9 @@
                         $validators
                         .required('Please select at least one type of cross-domain solution.')
                       ]"
+                      :textfieldRules="[
+                        $validators.required('Enter the number of users in this region.')
+                        ]"
                       @checkboxTextfieldDataUpdate="solutionTypeDataUpdate"
                     />
                   </v-col>
