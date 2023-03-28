@@ -10,7 +10,6 @@
                 id="PackagesAccordion" 
                 flat 
                 v-model="packagesPanel"
-                v-if="showPackagesPanel"
                 style="z-index:10"
               >
                 <v-expansion-panel expand>
@@ -226,16 +225,8 @@ export default class ExistingUser extends Vue {
     
   public packagesPanel = 0; // open by default
   public packageCount = 0;
-  public get showPackagesPanel(): boolean {
-    return this.packageCount > 0;
-  }
-
   public portfolioPanel = 0; // open by default
   public portfolioCount = 0;
-
-  public get userHasPortfolios(): boolean {
-    return this.portfolioCount > 0;
-  }
 
   public TONumber = "";
   public async startProvisionWorkflow(): Promise<void> {
