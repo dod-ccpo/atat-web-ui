@@ -196,6 +196,7 @@ export default class InviteMembersModal extends Vue {
    */
   onUserSearchValueChange = _.debounce(async (newValue: string) => {
     if (newValue && newValue?.trim().length > 2 && !this.isSearching) {
+      await UserManagement.doResetAbortController();
       this.isSearching = true;
       this.searchObj.searchResults = [];
       this.searchObj.isLoading = true;
@@ -245,7 +246,10 @@ export default class InviteMembersModal extends Vue {
         }
       })
       this.searchObj.value = "";
-      this.onUserSearchValueChange("");
+      this.searchObj.alreadyInvited = false;
+      this.searchObj.searchResults = [];
+      this.searchObj.noResults = false;
+      this.searchObj.isLoading = false;
     } else {
       this.searchObj.alreadyInvited = true;
     }
