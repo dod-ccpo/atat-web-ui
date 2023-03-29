@@ -9,6 +9,7 @@
     id="ATATDialog"
     ref="atatDialog"
     :persistent="disableClickingOutside"
+    @click:outside="outsideClicked"
   >
     <v-card :id="id">
       <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">
@@ -129,6 +130,12 @@ export default class ATATDialog extends Vue {
     this.$emit("ok");
     this._showDialog = false;
     this.returnFocus(this.focusOnOk);
+  }
+
+  private outsideClicked() {
+    console.log("outsideClicked")
+    this.$emit("outsideClicked");
+    this._showDialog = false;
   }
 
   private returnFocus(elementId: string): void {
