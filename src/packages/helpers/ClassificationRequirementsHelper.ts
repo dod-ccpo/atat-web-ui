@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import {ReferenceColumn, SelectedClassificationLevelDTO} from "@/api/models";
+import { SingleMultiple, StorageUnit, YesNo } from "types/Global";
 
 /**
  * Builds the current selected classification level list by using the saved list and the default
@@ -28,15 +29,15 @@ export const buildCurrentSelectedClassLevelList = (
         classification: "",
         classification_level: classificationLevelSysId as unknown as ReferenceColumn,
         acquisition_package: acquisitionPackageSysId as unknown as ReferenceColumn,
-        users_per_region: undefined,
-        increase_in_users: "" as const,
-        user_growth_estimate_type: undefined,
-        user_growth_estimate_percentage: [],
+        users_per_region: "",
+        increase_in_users: "" as YesNo,
+        user_growth_estimate_type: "" as SingleMultiple,
+        user_growth_estimate_percentage: [""],
         data_egress_monthly_amount: null,
-        data_egress_monthly_unit: "" as const,
-        data_increase: "" as const,
-        data_growth_estimate_type: undefined,
-        data_growth_estimate_percentage: []
+        data_egress_monthly_unit: "" as StorageUnit,
+        data_increase: "" as YesNo,
+        data_growth_estimate_type: "" as SingleMultiple,
+        data_growth_estimate_percentage: [""]
       }
       currentSelectedClassLevelList.push(defaultSelectedClassificationLevel);
     }

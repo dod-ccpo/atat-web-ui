@@ -13,6 +13,7 @@ import Periods from "@/store/periods";
 import { Statuses } from "@/store/acquisitionPackage";
 import ATATCharts from "@/store/charts";
 import { differenceInDays, differenceInMonths, parseISO } from "date-fns";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -76,10 +77,6 @@ export const buildClassificationCheckboxList = (
   const labelType = !labelLength || labelLength === "long" ? "long" : labelLength;
   const arr: Checkbox[] = [];
 
-  if (!includeTS) {
-    data = data.filter(obj => obj.classification !== "TS");
-  }
-
   data.forEach((classLevel) => {
     if (classLevel.classification
     && classLevel.sys_id
@@ -112,12 +109,15 @@ export const buildClassificationLabel
       const classificationString = classLevel.classification === "U"
         ? "Unclassified"
         : "Secret";
-      const IL = classLevel.impact_level;
-      const ILNo = IL.charAt(IL.length - 1);
-      const ILString = "Impact Level " + ILNo + " (" + IL + ")";
+
       if (classLevel.classification === "TS") {
         return "Top Secret"
       }
+
+      const IL = classLevel.impact_level;
+      const ILNo = IL.charAt(IL.length - 1) || "";
+      const ILString = "Impact Level " + ILNo + " (" + IL + ")";
+     
       if (type === "long") {
         return classificationString + " / " + ILString;
       }
@@ -145,6 +145,20 @@ export const buildClassificationDescription
         return ""
       }
     }
+
+/**
+ * 
+ * @param classLevelSysId - Classification Level Sys Id
+ * @returns the number of existing instances (both Xaas and Cloud Support) that have
+ *          the classLevelSysId
+ */
+export const getDOWOfferingsWithClassLevelTotal = (
+  classLevelSysId: string
+): number => {
+  const dowStringified  = JSON.stringify(DescriptionOfWork.DOWObject);
+  const re = new RegExp(classLevelSysId, 'g');
+  return dowStringified.match(re)?.length || 0;
+};
 
 //strips whitespace, and special characters
 export const sanitizeOfferingName = (offeringName: string): string => {
