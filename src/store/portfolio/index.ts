@@ -393,18 +393,6 @@ export class PortfolioDataStore extends VuexModule {
     this.activeTaskOrderSysId = portfolioData.taskOrderSysId ? portfolioData.taskOrderSysId : "";
   }
 
-  // @Action
-  // public setActiveTaskOrderNumber(taskOrderNum: string | undefined): void {
-  //   debugger;
-  //   if (taskOrderNum) {
-  //     this.doSetActiveTaskOrderNumber(taskOrderNum);
-  //   }
-  // }
-  // @Mutation
-  // public doSetActiveTaskOrderNumber(taskOrderNum: string): void {
-  //   this.activeTaskOrderNumber = taskOrderNum;
-  // }
-
   @Action
   public setShowAddMembersModal(show: boolean): void {
     this.doSetShowAddMembersModal(show);
