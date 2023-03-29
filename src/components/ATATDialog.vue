@@ -133,8 +133,9 @@ export default class ATATDialog extends Vue {
   }
 
   private outsideClicked() {
-    this.$emit("outsideClicked");
-    this._showDialog = false;
+    if(!this.disableClickingOutside){
+      this.onCancel();
+    }
   }
 
   private returnFocus(elementId: string): void {
