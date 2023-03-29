@@ -653,8 +653,7 @@ export class PortfolioDataStore extends VuexModule {
         environment: newOperatorToAdd.environment,
         operatorDTO: operatorResponse
       });
-    // leave below line commented out if newly added csp admins need to be displayed at the top
-    // await this.sortPortfolioEnvironmentOperators(newOperatorToAdd.environment);
+    await this.sortPortfolioEnvironmentOperators(newOperatorToAdd.environment);
   }
 
   @Action({rawError: true})

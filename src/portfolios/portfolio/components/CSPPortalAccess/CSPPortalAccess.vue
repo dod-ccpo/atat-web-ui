@@ -379,7 +379,7 @@ export default class CSPPortalAccess extends Vue {
       Portfolio.currentPortfolio.environments[0] :
         {sys_id: "7aafda19073121106417fa4d7c1ed04a"} as EnvironmentDTO;
     await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.environment);
-    this.tableData = _.cloneDeep(this.environment.csp_admins) as Operator[];
+    this.tableData = this.environment.csp_admins as Operator[];
     this.isLoading = false;
     this.transitionGroup = "transition-group";
   }
