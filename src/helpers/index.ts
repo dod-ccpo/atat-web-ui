@@ -314,6 +314,7 @@ export function getStatusChipBgColor(status: string): string {
 }
 
 const monthAbbreviations = ATATCharts.monthAbbreviations;
+const monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
 
 export function createDateStr(dateStr: string, period: boolean, hours?: boolean): string {
   hours = hours ? hours : false;
@@ -322,8 +323,7 @@ export function createDateStr(dateStr: string, period: boolean, hours?: boolean)
   const m = monthAbbreviations[date.getMonth()];
   const y = date.getFullYear();
   const d = date.getUTCDate();
-  const neverPeriodMonths = ["March", "April", "May", "June", "July"];
-  const noPeriodMonth = neverPeriodMonths.indexOf(m) !== -1;
+  const noPeriodMonth = monthsNotAbbreviated.indexOf(m) !== -1;
   const p = period && !noPeriodMonth ? "." : "";
   let formattedDate = m + p + " " + d + ", " + y;
   if (hours) {

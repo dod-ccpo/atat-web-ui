@@ -5,7 +5,7 @@
       left
       open-on-hover
       offset-x
-
+      v-if="member"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn

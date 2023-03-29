@@ -505,7 +505,7 @@ export interface Portfolio extends BaseTableDTO {
   status?: string;
   csp?: string;
   agency?: string;
-  agencyDisplay?: string
+  agencyDisplay?: string;
   createdBy?: string;
   provisioned?: string;
   members?: User[];
@@ -516,6 +516,7 @@ export interface Portfolio extends BaseTableDTO {
   updated?: string;
   taskOrderNumber?: string;
   environments?: EnvironmentDTO[];
+  taskOrderSysId?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {

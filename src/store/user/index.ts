@@ -10,14 +10,13 @@ import rootStore from "../index";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import api from "@/api";
 import Vue from "vue";
-import {
+import { 
   AcquisitionPackageSummarySearchDTO, 
   PortfolioSummarySearchDTO, 
   UserDTO 
 } from "@/api/models";
 import AcquisitionPackageSummary from "../acquisitionPackageSummary";
 import PortfolioSummary from "../portfolioSummary";
-
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
 
