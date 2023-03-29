@@ -36,7 +36,11 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
-import { SecurityRequirement, SlideoutPanelContent } from "types/Global";
+import { 
+  DOWClassificationInstance,
+  OtherServiceOfferingData, 
+  SecurityRequirement, 
+  SlideoutPanelContent } from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -84,7 +88,9 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
       requirements.push({
         type:"TOPSECRET",
         // eslint-disable-next-line camelcase
-        classification_information_type: this.selectedTopSecretSecurityRequirements
+        classification_information_type: this.selectedTopSecretSecurityRequirements,
+        // eslint-disable-next-line camelcase
+        ts_contractor_clearance_type: this.selectedClearanceLevel
       })
     }
     return requirements;
@@ -115,15 +121,6 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<boolean> {
-    this.selectedClassifications = classificationRequirements.selectedClassificationLevels;
-    this.selectedClassifications.forEach((classification) => {
-      if(classification.classification === "TS"){
-        this.hasTopSecret = true;
-      }
-      if(classification.classification === "S"){
-        this.hasSecret = true;
-      }
-    });
 
     const storeData = await DescriptionOfWork.getDOWSecurityRequirements();
     if (storeData) {
@@ -142,9 +139,47 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
     return true;
   }
 
+  /**
+   * cycle through respective DOwObject part (otherOfferingData or serviceOfferings),
+   * examine all classification levels to determine if classification level is TS or S 
+   * 
+   * Finally, set hasSecret, hasTopSecret variables 
+   */ 
+  public isSecretOrTopSecretSelected(): void {
+    let instance: OtherServiceOfferingData[] = [];
+    let classLevels: (DOWClassificationInstance | undefined)[] | undefined = [];
+    if (this.groupId !== "EDGE_COMPUTING") {
+      instance = DescriptionOfWork.DOWObject.find(
+        (dowObj) => dowObj.serviceOfferingGroupId === this.groupId
+      )?.otherOfferingData as OtherServiceOfferingData[];
+      
+      this.hasSecret = instance?.some(
+        (od) => 
+          od.classificationLevel === classificationRequirements.classificationSecretSysId
+      ) as boolean
+    
+      this.hasTopSecret = instance?.some(
+        (od) => 
+          od.classificationLevel === classificationRequirements.classificationTopSecretSysId
+      ) as boolean
+    } else if (this.groupId === "EDGE_COMPUTING"){
+      classLevels = DescriptionOfWork.DOWObject.find(
+        (dowObj) => dowObj.serviceOfferingGroupId === this.groupId
+      )?.serviceOfferings.map((i)=>i.classificationInstances).flat();
+      this.hasSecret = classLevels?.some(
+        (cl) => 
+          cl?.classificationLevelSysId === classificationRequirements.classificationSecretSysId
+      ) as boolean
+      this.hasTopSecret = classLevels?.some(
+        (cl) => 
+          cl?.classificationLevelSysId === classificationRequirements.classificationTopSecretSysId
+      ) as boolean
+    } 
+  }
+
   public async mounted(): Promise<void> {
     this.offeringName = DescriptionOfWork.DOWSecReqOfferingName;
-
+    this.isSecretOrTopSecretSelected();
     const slideoutPanelContent: SlideoutPanelContent = {
       component: SecurityRequirementsLearnMore,
       title: "Learn More",

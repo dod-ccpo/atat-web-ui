@@ -160,6 +160,7 @@ const saveOrUpdateClassificationInstance =
       tempObject.type_of_mobility = classificationInstance.typeOfMobility;
       tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
       tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
+      tempObject.ts_contractor_clearance_type = classificationInstance.tsContractorClearanceType;
       if(classificationInstance.sysId)
         tempObject.sys_id = classificationInstance.sysId;
 
@@ -935,7 +936,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async saveSecurityRequirements(securityReqs: SecurityRequirement[]): Promise<void> {
+  public async saveSecurityRequirements(
+    securityReqs: SecurityRequirement[],
+  ): Promise<void> {
     // pragma: allowlist secret
     const offeringGroupObj = this.DOWObject.find(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
@@ -958,6 +961,7 @@ export class DescriptionOfWorkStore extends VuexModule {
           offeringGroupObj.otherOfferingData?.forEach(instance => {
             if (instance.classificationLevel === classLevelSysId) {
               instance.classifiedInformationTypes = secretReqs;
+              instance.tsContractorClearanceType = secReqObj.ts_contractor_clearance_type;
               saveOrUpdateOtherServiceOffering(instance, this.currentGroupId.toLocaleLowerCase());
             }
           });
@@ -973,6 +977,7 @@ export class DescriptionOfWorkStore extends VuexModule {
             serviceOfferingObj.classificationInstances?.forEach(instance => {
               if (instance.classificationLevelSysId === classLevelSysId) {
                 instance.classifiedInformationTypes = secretReqs;
+                instance.tsContractorClearanceType = secReqObj.ts_contractor_clearance_type;
                 saveOrUpdateClassificationInstance(
                   instance, title, serviceOfferingName);
               }

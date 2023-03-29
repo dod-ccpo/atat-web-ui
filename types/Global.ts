@@ -306,6 +306,7 @@ export interface DOWClassificationInstance {
   labelLong?: string;
   labelShort?: string;
   classifiedInformationTypes?: string;
+  tsContractorClearanceType?: string;
   typeOfDelivery?: "" | "SHIPPED" | "PICK_UP";
   typeOfMobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   typeOfMobilityOther?: string;
@@ -680,7 +681,8 @@ export interface CurrentEnvironmentInstance {
 }
 export interface SecurityRequirement {
   type: SecurityClassification;
-  classification_information_type: string[]
+  classification_information_type: string[],
+  ts_contractor_clearance_type?: string,
 }
 
 export interface CrossDomainSolution {
