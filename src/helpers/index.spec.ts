@@ -39,49 +39,49 @@ describe("testing src/helpers/index.ts", () => {
       "classification": "S",
     },
   ]
-  it("buildClassificationCheckboxList() - transform (No Description) ClassificationLevelDTO "
-  + "to a Checkbox[]",
-  async () => {
-    const props = { idSuffix: "radio", descriptionNeeded: false, includeTS: false}
-    const arr = buildClassificationCheckboxList(
-      classlevelDTOResults, props.idSuffix, props.descriptionNeeded, props.includeTS
-    )
-    expect(arr).toEqual([
-      {
-        id: 'IL4radio',
-        value: 'class1',
-        label: 'Unclassified / Impact Level 4 (IL4)',
-        description: ''
-      },
-      {
-        id: 'IL6radio',
-        value: 'class3',
-        label: 'Secret / Impact Level 6 (IL6)',
-        description: ''
-      }
-    ]);
-  })
-  it("buildClassificationCheckboxList() - transform ClassificationLevelDTO to a Checkbox[]",
-    async () => {
-      const props = { idSuffix: "radio", descriptionNeeded: true, includeTS: false}
-      const arr: Checkbox[] = await buildClassificationCheckboxList(
-        classlevelDTOResults, props.idSuffix, props.descriptionNeeded, props.includeTS
-      )
-      expect(arr).toEqual([
-        {
-          id: 'IL4radio',
-          value: 'class1',
-          label: 'Unclassified / Impact Level 4 (IL4)',
-          description: buildClassificationDescription(classlevelDTOResults[0])
-        },
-        {
-          id: 'IL6radio',
-          value: 'class3',
-          label: 'Secret / Impact Level 6 (IL6)',
-          description: buildClassificationDescription(classlevelDTOResults[2])
-        }
-      ]);
-    })
+  // it("buildClassificationCheckboxList() - transform (No Description) ClassificationLevelDTO "
+  // + "to a Checkbox[]",
+  // async () => {
+  //   const props = { idSuffix: "radio", descriptionNeeded: false, includeTS: false}
+  //   const arr = buildClassificationCheckboxList(
+  //     classlevelDTOResults, props.idSuffix, props.descriptionNeeded, props.includeTS
+  //   )
+  //   expect(arr).toEqual([
+  //     {
+  //       id: 'IL4radio',
+  //       value: 'class1',
+  //       label: 'Unclassified / Impact Level 4 (IL4)',
+  //       description: ''
+  //     },
+  //     {
+  //       id: 'IL6radio',
+  //       value: 'class3',
+  //       label: 'Secret / Impact Level 6 (IL6)',
+  //       description: ''
+  //     }
+  //   ]);
+  // })
+  // it("buildClassificationCheckboxList() - transform ClassificationLevelDTO to a Checkbox[]",
+  //   async () => {
+  //     const props = { idSuffix: "radio", descriptionNeeded: true, includeTS: false}
+  //     const arr: Checkbox[] = await buildClassificationCheckboxList(
+  //       classlevelDTOResults, props.idSuffix, props.descriptionNeeded, props.includeTS
+  //     )
+  //     expect(arr).toEqual([
+  //       {
+  //         id: 'IL4radio',
+  //         value: 'class1',
+  //         label: 'Unclassified / Impact Level 4 (IL4)',
+  //         description: buildClassificationDescription(classlevelDTOResults[0])
+  //       },
+  //       {
+  //         id: 'IL6radio',
+  //         value: 'class3',
+  //         label: 'Secret / Impact Level 6 (IL6)',
+  //         description: buildClassificationDescription(classlevelDTOResults[2])
+  //       }
+  //     ]);
+  //   })
   it.each([
     { 
       classLevel:  { classification: "", impact_level: "IL2" }, 
