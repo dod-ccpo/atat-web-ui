@@ -30,7 +30,7 @@ import {
     },
   })
 export default class ProjectDisclaimer extends Vue {
-    @PropSync("projectDisclaimer", { default: "" }) //shouldn't this be unselected?
+    @PropSync("projectDisclaimer", { default: "" })
       private _projectDisclaimer!: string | null;
     @Prop({default: "project-disclaimer"}) private groupLabelId!: string;
     @Prop({default: true}) private isForm!: boolean;

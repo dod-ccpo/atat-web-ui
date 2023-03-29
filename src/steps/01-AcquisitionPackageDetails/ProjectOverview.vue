@@ -132,17 +132,6 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
     this.projectTitle = newTitle;
   }
 
-  @Watch("projectDisclaimer")
-  public projectDisclaimerChange(newDisclaimer: string[]): void {
-    if(newDisclaimer[0] === "YES"){
-      this.projectDisclaimer = "YES" as YesNo
-      this.currentData.project_disclaimer = "YES" as YesNo
-    } else if(newDisclaimer[0] === ""){
-      this.projectDisclaimer = "" as YesNo
-      this.currentData.project_disclaimer = "" as YesNo
-    }
-  }
-
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
