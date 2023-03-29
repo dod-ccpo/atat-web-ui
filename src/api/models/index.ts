@@ -624,8 +624,6 @@ export interface TravelRequirementDTO extends BaseTableDTO {
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
   csp: string;
-  vendor?: string;
-  active_task_order: string;
   csp_display: string; // "<<cloud_service_package.name >>"
   vendor: string;
   active_task_order: string;

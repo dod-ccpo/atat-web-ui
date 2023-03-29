@@ -277,9 +277,9 @@ export default class PortfoliosSummary extends Vue {
     };
     Object.assign(this.portfolioSearchDTO, newQPs);
     this.paging = false;
-    this. isSearchSortFilter = true;
+    this.isSearchSortFilter = true;
     await this.loadPortfolioData(); // 
-    this. isSearchSortFilter = false;
+    this.isSearchSortFilter = false;
     this.isLoading = false;
     this.searchedString = this.searchString;
   }
