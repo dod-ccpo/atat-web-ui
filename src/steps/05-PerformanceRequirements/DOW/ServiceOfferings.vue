@@ -335,7 +335,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     const existingOtherOfferings: OtherServiceOfferingData[] = [];
     DescriptionOfWork.DOWObject.forEach(
       (dow) => {
-        debugger;
         if(dow.otherOfferingData !== undefined) {
           dow.otherOfferingData.forEach(
             ood => existingOtherOfferings.push(ood)
