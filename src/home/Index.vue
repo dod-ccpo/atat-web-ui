@@ -51,9 +51,11 @@
           v-else 
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
-          @allPackagesCleared="allPackagesCleared"
           @openTOSearchModal="openSearchTOModal"
           @startProvisionWorkflow="startProvisionWorkflow"
+          :userHasPackages="userHasPackages"
+          :userHasPortfolios="userHasPortfolios"
+          @allPackagesCleared="allPackagesCleared"
           @portfolioCountUpdated="portfolioCountUpdated"
         />      
 
@@ -118,6 +120,8 @@ export default class Home extends Vue {
   public TONumber = "";
   public resetValidationNow = false;
   public selectedAcquisitionPackageSysId = "";
+  public userHasPackages = false;
+  public userHasPortfolios = false;
   
   public openSearchTOModal(acqPackageSysId: string): void {
     this.selectedAcquisitionPackageSysId = acqPackageSysId;
@@ -187,8 +191,7 @@ export default class Home extends Vue {
       },
       replace: true
     }).catch(() => console.log("avoiding redundant navigation"));
-    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
-    
+    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);  
   }
 
   public portfolioCountUpdated(portfolioCount: string): void {
@@ -204,7 +207,6 @@ export default class Home extends Vue {
   public async mounted(): Promise<void> {
     await AcquisitionPackage.setHideNavigation(false);
     this.currentUser = await UserStore.getCurrentUser();
-    // await this.checkIfIsNewUser();
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");

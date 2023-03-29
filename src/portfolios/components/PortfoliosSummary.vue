@@ -277,9 +277,9 @@ export default class PortfoliosSummary extends Vue {
     };
     Object.assign(this.portfolioSearchDTO, newQPs);
     this.paging = false;
-    this. isSearchSortFilter = true;
+    this.isSearchSortFilter = true;
     await this.loadPortfolioData(); // 
-    this. isSearchSortFilter = false;
+    this.isSearchSortFilter = false;
     this.isLoading = false;
     this.searchedString = this.searchString;
   }
@@ -435,11 +435,10 @@ export default class PortfoliosSummary extends Vue {
 
       cardData.agency = portfolio.agency;
       cardData.agencyDisplay = portfolio.agency_display;
-      const activeTaskOrderSysId = portfolio.active_task_order as string;
+      cardData.taskOrderSysId = portfolio.active_task_order;
       const activeTaskOrder = portfolio.task_orders.find(
-        obj => obj.sys_id === activeTaskOrderSysId
+        obj => obj.sys_id === cardData.taskOrderSysId
       );
-
       cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
 
       // lastModified - if status is "Processing" use "Started ... ago" string
@@ -471,9 +470,9 @@ export default class PortfoliosSummary extends Vue {
       if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
         cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
         cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
-        cardData.fundsSpentPercent = String(Math.round(
-          portfolio.funds_spent / portfolio.funds_obligated * 100
-        ));
+        cardData.fundsSpentPercent = portfolio.funds_spent ? 
+          String(Math.round(portfolio.funds_spent / portfolio.funds_obligated * 100))
+          : "0";
         const remainingAmt = portfolio.funds_obligated - portfolio.funds_spent;
         cardData.fundsRemaining 
           = "$" + toCurrencyString(Math.abs(remainingAmt)) 

@@ -203,6 +203,7 @@ export class PortfolioDataStore extends VuexModule {
 
   private alertService = new AlertService();
   public activeTaskOrderNumber = "";
+  public activeTaskOrderSysId = "";
   
   public alerts: AlertDTO[]= [];
   currentPortfolio: Portfolio = { 
@@ -379,6 +380,7 @@ export class PortfolioDataStore extends VuexModule {
       agency: portfolioData.agency,
       agencyDisplay: portfolioData.agencyDisplay,
       taskOrderNumber: portfolioData.taskOrderNumber,
+      taskOrderSysId: portfolioData.taskOrderSysId,
       portfolio_managers: portfolioData.portfolio_managers,
       portfolio_managers_detail: portfolioData.portfolio_managers_detail,
       portfolio_viewers: portfolioData.portfolio_viewers,
@@ -388,17 +390,7 @@ export class PortfolioDataStore extends VuexModule {
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
     this.activeTaskOrderNumber = portfolioData.taskOrderNumber 
       ? portfolioData.taskOrderNumber : "";
-  }
-
-  @Action
-  public setActiveTaskOrderNumber(taskOrderNum: string | undefined): void {
-    if (taskOrderNum) {
-      this.doSetActiveTaskOrderNumber(taskOrderNum);
-    }
-  }
-  @Mutation
-  public doSetActiveTaskOrderNumber(taskOrderNum: string): void {
-    this.activeTaskOrderNumber = taskOrderNum;
+    this.activeTaskOrderSysId = portfolioData.taskOrderSysId ? portfolioData.taskOrderSysId : "";
   }
 
   @Action
