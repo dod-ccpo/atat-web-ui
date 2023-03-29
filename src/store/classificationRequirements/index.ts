@@ -17,6 +17,7 @@ import IGCEStore from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import { TableApiBase } from "@/api/tableApiBase";
 import DescriptionOfWork from "../descriptionOfWork";
+import { getDOWOfferingsWithClassLevelTotal } from "@/helpers";
 
 @Module({
   name: "ClassificationRequirements",
@@ -32,6 +33,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   public classifiedInformationTypes: ClassifiedInformationTypeDTO[] = [];
   public classificationSecretSysId = "";
   public classificationTopSecretSysId = "";
+  public performanceRequirementsDeletedTotal = 0;
   public get highSideSysIds(): string[] {
     return [this.classificationSecretSysId, this.classificationTopSecretSysId];
   }
@@ -252,9 +254,8 @@ export class ClassificationRequirementsStore extends VuexModule {
  @Action({rawError: true})
   async saveSelectedClassificationLevels(
     newSelectedClassLevelList: SelectedClassificationLevelDTO[])
-   : Promise<string[]> {
+   : Promise<boolean> {
     try {
-      const itemsModified: string[] | PromiseLike<string[]> = [];
       const markedForCreateList = newSelectedClassLevelList
         .filter(newSelected => newSelected.sys_id ? newSelected.sys_id.length === 0 : true);
       const currSelectedClasLevelList = await this.getSelectedClassificationLevels();
@@ -268,28 +269,38 @@ export class ClassificationRequirementsStore extends VuexModule {
            = obj.user_growth_estimate_percentage?.toString() as unknown as string[];
       });
       await markedForCreateList.forEach(async markedForCreate => {
-        itemsModified.push("+" + markedForCreate.classification_level as string )
         await this.addCurrentSelectedClassLevelList(
             markedForCreate.classification_level as string
         )
       })
 
       await markedForDeleteList.forEach(async markedForDelete => {
-        itemsModified.push("-" + markedForDelete.classification_level as string )
-        await this.removeClassificationLevelsFromDBGlobally(
-            markedForDelete.classification_level as string
-        )
-        await this.removeClassificationLevelsFromStoreGlobally(
-          markedForDelete
-        )
+        this.setPerformanceRequirementsDeletedTotal(0);
+        const deleteItemSysId = markedForDelete.classification_level as string;
+        await this.getPerformanceRequirementsDeletedTotal(deleteItemSysId)
+        await this.removeClassificationLevelsFromDBGlobally(deleteItemSysId);
+        await this.removeClassificationLevelsFromStoreGlobally(markedForDelete);
       })
     
-      return await itemsModified;
+      return true;
     } catch (error) {
       throw new Error(`an error occurred saving selected classification levels ${error}`);
     }
   }
 
+ /**
+    * tabulates the total number of performanceRequirements that are deleted when the user
+    * removes a classification_level
+    */
+@Action({rawError: true})
+ async getPerformanceRequirementsDeletedTotal(
+   deletedClassLevelSysId: string)
+   : Promise<void> {
+   this.setPerformanceRequirementsDeletedTotal(
+     this.performanceRequirementsDeletedTotal 
+      + await getDOWOfferingsWithClassLevelTotal(deletedClassLevelSysId)
+   )
+ }
 
   /**
    * Saves a single selected classification level and sets the context
@@ -297,32 +308,32 @@ export class ClassificationRequirementsStore extends VuexModule {
    * and filtered using the call to "getSelectedClassificationLevels".
    */
   @Action({rawError: true})
- async saveSingleSelectedClassificationLevel(
-   selectedClassificationLevel: SelectedClassificationLevelDTO)
+async saveSingleSelectedClassificationLevel(
+  selectedClassificationLevel: SelectedClassificationLevelDTO)
     : Promise<boolean> {
-   try {
-     const packageId = 
+  try {
+    const packageId = 
         typeof selectedClassificationLevel.acquisition_package === "object"
           ? selectedClassificationLevel.acquisition_package.value as string
           : selectedClassificationLevel.acquisition_package as string;
       
-     const classLevel = 
+    const classLevel = 
         typeof selectedClassificationLevel.classification_level === "object"
           ? selectedClassificationLevel.classification_level.value as string
           : selectedClassificationLevel.classification_level as string;
 
-     selectedClassificationLevel = {
-       ...selectedClassificationLevel,
-       classification_level: classLevel,
-       acquisition_package: packageId
-     }
-     await api.selectedClassificationLevelTable
-       .update(selectedClassificationLevel.sys_id as string, selectedClassificationLevel);
-     return true;
-   } catch (error) {
-     throw new Error(`an error occurred saving a single selected classification level ${error}`);
-   }
- }
+    selectedClassificationLevel = {
+      ...selectedClassificationLevel,
+      classification_level: classLevel,
+      acquisition_package: packageId
+    }
+    await api.selectedClassificationLevelTable
+      .update(selectedClassificationLevel.sys_id as string, selectedClassificationLevel);
+    return true;
+  } catch (error) {
+    throw new Error(`an error occurred saving a single selected classification level ${error}`);
+  }
+}
 
   @Action({rawError: true})
   public async setCdsSolution(value: CrossDomainSolution): Promise<void> {
@@ -345,6 +356,17 @@ export class ClassificationRequirementsStore extends VuexModule {
       ...cdsSolution,
       sys_id: sysId
     });
+  }
+
+
+  @Action({rawError: true})
+  public async setPerformanceRequirementsDeletedTotal(value: number): Promise<void> {
+    this.doSetPerformanceRequirementsDeletedTotal(value);
+  }
+
+  @Mutation
+  private doSetPerformanceRequirementsDeletedTotal(value: number): void {
+    this.performanceRequirementsDeletedTotal = value;
   }
 
   @Mutation

@@ -228,6 +228,7 @@ import {
   buildClassificationCheckboxList, 
   buildClassificationLabel,
   createPeriodCheckboxItems,
+  setItemToPlural,
 } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {
@@ -299,7 +300,7 @@ export default class OtherOfferings extends Vue {
   public isSupport = false;
   public isTraining = false;
   public isPortabilityPlan = false;
-  public itemsForToast:string[] = [];
+  public itemSysIdsDeleted:string[] = [];
 
   public serviceGroupVerbiageInfo: Record<string, string> = {};
 
@@ -374,8 +375,8 @@ export default class OtherOfferings extends Vue {
     this.showDialog = false;
     const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
         this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
-    this.itemsForToast = 
-      await classificationRequirements.saveSelectedClassificationLevels(currentData)
+     
+    await classificationRequirements.saveSelectedClassificationLevels(currentData)
     // await classificationRequirements.loadSelectedClassificationLevelsByAqId(
     //     this.acquisitionPackage?.sys_id as string);
     setTimeout(async () => {
@@ -400,17 +401,18 @@ export default class OtherOfferings extends Vue {
   }
 
   private createToast():void{
-
-    const message = this.itemsForToast.map(
-      sysId => {
-        return ClassificationRequirements.classificationLevels.find(
-          cl => cl.sys_id === sysId.substring(1))?.display
-      }
-    )
+  
+    // craft toast text
+    const perfReqDeletedText = ClassificationRequirements.performanceRequirementsDeletedTotal > 0 
+      ? ClassificationRequirements.performanceRequirementsDeletedTotal + " performance " 
+        + setItemToPlural(
+          ClassificationRequirements.performanceRequirementsDeletedTotal, 'requirement'
+        ) + " deleted"
+      : "";
 
     const classificationLevelToast: ToastObj = {
       type: "success",
-      message: "Classification requirements updated<br/> + " + message,
+      message: "Classification requirements updated<br />" + perfReqDeletedText,  
       isOpen: true,
       hasUndo: false,
       hasIcon: true,
