@@ -1022,17 +1022,23 @@ export default class PortfolioDashboard extends Vue {
     });
     const start = new Date(popStartDate.setHours(0, 0, 0, 0));
     this.monthsIntoPoP = differenceInCalendarMonths(today, start);
-    let endOfSpending = startOfMonth(today);
-    endOfSpending = subDays(endOfSpending, 1);
-    const daysSinceStartDate = differenceInCalendarDays(endOfSpending, start);
-    if (daysSinceStartDate > 0 && this.fundsSpent) {
-      const dailySpend = this.fundsSpent / daysSinceStartDate;
-      const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
-      const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
-      const runOutISODate = formatISO(runOutOfFundsDate, {
-        representation: "date",
-      });
-      this.runOutOfFundsDate = createDateStr(runOutISODate, true);
+    debugger;
+    if (this.monthsIntoPoP > 0) {
+
+      let endOfSpending = startOfMonth(today);
+      endOfSpending = subDays(endOfSpending, 1);
+      const daysSinceStartDate = differenceInCalendarDays(endOfSpending, start);
+      if (daysSinceStartDate > 0 && this.fundsSpent) {
+        const dailySpend = this.fundsSpent / daysSinceStartDate;
+        const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
+        const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
+        const runOutISODate = formatISO(runOutOfFundsDate, {
+          representation: "date",
+        });
+        this.runOutOfFundsDate = createDateStr(runOutISODate, true);
+      }
+    } else {
+      this.runOutOfFundsDate = createDateStr(popEndDate, true);
     }
   }
 
