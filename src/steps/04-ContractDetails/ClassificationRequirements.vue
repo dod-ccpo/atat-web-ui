@@ -111,8 +111,7 @@ import {
   hasChanges, 
   buildClassificationCheckboxList, 
   convertStringArrayToCommaList,
-  setItemToPlural,
-  getDOWOfferingsWithClassLevelTotal} from "@/helpers";
+  setItemToPlural} from "@/helpers";
 import ClassificationReqs from "@/store/classificationRequirements";
 import AcquisitionPackage from '@/store/acquisitionPackage';
 import _ from "lodash";
@@ -194,7 +193,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public async getTotalOfDOWObjsWithClassLevel(classLevelSysId: string): Promise<void>{
     classLevelSysId = classLevelSysId || this.itemDeleted?.sys_id || "";
     this.DOWOfferingsWithClassLevelLength = 
-      await getDOWOfferingsWithClassLevelTotal(classLevelSysId);
+      await ClassificationReqs.getTotalClassLevelInDOW(classLevelSysId)
   }
 
   // restore the itemDeleted back to selectedOptions
@@ -246,15 +245,14 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
    */
   public async buildClassificationRequirementsAlert(): Promise<void> {
     this.existingClassificationsLevelsInDOW = [];
-    this.selectedOptions.forEach(
-      (optionSysId) => {
-        this.getTotalOfDOWObjsWithClassLevel(optionSysId);
-        if (this.DOWOfferingsWithClassLevelLength>0){
-          this.existingClassificationsLevelsInDOW.push(optionSysId);
-        }
+    for (const opt of this.selectedOptions){
+      const totalClassLevelInDOW = await ClassificationReqs.getTotalClassLevelInDOW(opt);
+      if (totalClassLevelInDOW>0){
+        await this.existingClassificationsLevelsInDOW.push(opt);
       }
-    );
-    this.showClassificationRequirementsAlert = this.existingClassificationsLevelsInDOW.length>0;
+    }
+    this.showClassificationRequirementsAlert = 
+        this.existingClassificationsLevelsInDOW.length>0;
     this.buildClassReqsAsCommaList();
   }
 

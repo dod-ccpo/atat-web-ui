@@ -253,6 +253,10 @@ export class ClassificationRequirementsStore extends VuexModule {
     await this.setSelectedClassificationLevels(selectedClassLevelList);
   }
 
+  /**
+   * creates an array of totalClassLevelsInDOWObject containing all class levels and 
+   * total number of each level in DOW object currently
+   */
   @Action({rawError: true})
   async getTotalClassLevelsInDOW(): Promise<void> {
     const totalArray: totalClassLevelsInDOWObject[] = [];
@@ -265,6 +269,17 @@ export class ClassificationRequirementsStore extends VuexModule {
     this.setClassLevelsInDOWTotal(totalArray);
   }
 
+  /**
+   * retrieves total number of a single class level in the DOW currently
+   * @param sysId 
+   */
+  @Action({rawError: true})
+  async getTotalClassLevelInDOW(sysId: string): Promise<number> {
+    await this.getTotalClassLevelsInDOW();
+    return this.classLevelsInDOWTotal.find(
+      cl => cl.classLevelSysId === sysId
+    )?.DOWObjectTotal || 0
+  }
 
   @Action({rawError: true})
   public async setClassLevelsInDOWTotal(total: totalClassLevelsInDOWObject[]): Promise<void> {
@@ -345,12 +360,12 @@ export class ClassificationRequirementsStore extends VuexModule {
    }
 
    const perfReqDeletedText = total > 0 
-     ? total + " performance " + setItemToPlural(total, 'requirement') + " deleted"
+     ? total + " performance " + setItemToPlural(total, 'requirement') + " deleted."
      : "";
 
    const classificationLevelToast: ToastObj = {
      type: "success",
-     message: "Classification requirements updated<br />" + perfReqDeletedText,  
+     message: "Classification requirements updated.<br />" + perfReqDeletedText,  
      isOpen: true,
      hasUndo: false,
      hasIcon: true,

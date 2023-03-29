@@ -154,9 +154,10 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
-import { Checkbox } from "../../types/Global";
-import { getDOWOfferingsWithClassLevelTotal, getIdText, setItemToPlural } from "@/helpers";
+import { Checkbox, totalClassLevelsInDOWObject } from "../../types/Global";
+import { getIdText, setItemToPlural } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import ClassificationRequirements from "@/store/classificationRequirements";
 
 @Component({
   components: {
@@ -221,6 +222,7 @@ export default class ATATCheckboxGroup extends Vue {
   private errorMessages: string[] = [];
   public blurredCheckboxes: Record<string, string[]> = {};
   private validateCheckboxesNow = false;
+  private totalRequirementsInDOW: totalClassLevelsInDOWObject[] = []
 
   public checkboxRules: Array<unknown> = [];
 
@@ -377,9 +379,11 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   private getPerformanceRequirementTotal(classLevelSysId: string): string{
-    const totalNumber = getDOWOfferingsWithClassLevelTotal(classLevelSysId);
-    return totalNumber > 0 
-      ? totalNumber + " " + setItemToPlural(totalNumber, 'requirement') 
+    const totalClassLevelInDOW = this.totalRequirementsInDOW.find(
+      req => req.classLevelSysId === classLevelSysId
+    )?.DOWObjectTotal || 0
+    return totalClassLevelInDOW > 0 
+      ? totalClassLevelInDOW + " " + setItemToPlural(totalClassLevelInDOW, 'requirement') 
       : "";
   }
 
@@ -407,6 +411,12 @@ export default class ATATCheckboxGroup extends Vue {
   public get labelStyles(): string {
     return this.labelWidth ? `min-width: ${this.labelWidth}px;` : "";
   }
+
+  public async created(): Promise<void>{
+    // necessary prep to show getPerformanceRequirementTotal
+    await ClassificationRequirements.getTotalClassLevelsInDOW();
+    this.totalRequirementsInDOW = await ClassificationRequirements.classLevelsInDOWTotal;
+  } 
 
   public mounted(): void {
     this.setEventListeners();
