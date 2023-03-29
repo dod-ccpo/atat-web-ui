@@ -228,6 +228,7 @@ import {
   buildClassificationCheckboxList, 
   buildClassificationLabel,
   createPeriodCheckboxItems,
+  setItemToPlural,
 } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {
@@ -299,6 +300,7 @@ export default class OtherOfferings extends Vue {
   public isSupport = false;
   public isTraining = false;
   public isPortabilityPlan = false;
+  public itemSysIdsDeleted:string[] = [];
 
   public serviceGroupVerbiageInfo: Record<string, string> = {};
 
@@ -318,13 +320,7 @@ export default class OtherOfferings extends Vue {
     return subhead;
   }
 
-  public classificationLevelToast: ToastObj = {
-    type: "success",
-    message: "Classification requirements updated",
-    isOpen: true,
-    hasUndo: false,
-    hasIcon: true,
-  };
+  
   public introOfferingString = "";
 
   public storageUnits: SelectData[] = [
@@ -379,23 +375,32 @@ export default class OtherOfferings extends Vue {
     this.showDialog = false;
     const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
         this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
+     
     await classificationRequirements.saveSelectedClassificationLevels(currentData)
-    await classificationRequirements.loadSelectedClassificationLevelsByAqId(
-        this.acquisitionPackage?.sys_id as string);
-    await this.setAvailableClassificationLevels()
-    this.setAvlClassificationLevels();
-    if (this.selectedClassificationLevelList.length === 1) {
-      this.checkSingleClassification();
-    } else if (this._serviceOfferingData.classificationLevel) {
+    // await classificationRequirements.loadSelectedClassificationLevelsByAqId(
+    //     this.acquisitionPackage?.sys_id as string);
+    setTimeout(async () => {
+      this.selectedClassificationLevelList = 
+        await ClassificationRequirements.getSelectedClassificationLevels();
+    
+      await this.setAvailableClassificationLevels()
+      this.setAvlClassificationLevels();
+      if (this.selectedClassificationLevelList.length === 1) {
+        this.checkSingleClassification();
+      } else if (this._serviceOfferingData.classificationLevel) {
       // if the classification level that was selected was removed via the modal,
       // clear out this._serviceOfferingData.classificationLevel
-      const selectedSysId = this._serviceOfferingData.classificationLevel;
-      if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
-        this._serviceOfferingData.classificationLevel = "";
+        const selectedSysId = this._serviceOfferingData.classificationLevel;
+        if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
+          this._serviceOfferingData.classificationLevel = "";
+        }
       }
-    }
-    Toast.setToast(this.classificationLevelToast);
+      ClassificationRequirements.createToast();
+     
+    }, 1000);
   }
+
+ 
 
   private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";

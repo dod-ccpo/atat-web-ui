@@ -99,6 +99,7 @@
                   :items="memberMenuItems"
                   width="105"
                   :selectedValue.sync="member.role"
+                  @onChange="(value)=>dropdownChanged(value, index)"
                   iconType="chevron"
               />
             </v-list-item-action>
@@ -161,6 +162,7 @@ export default class InviteMembersModal extends Vue {
     noResults: false,
     alreadyInvited: false
   };
+  public isSearching = false;
   public memberMenuItems: SelectData[] = [
     { header: "Roles" },
     { text: "Manager", value: "Manager" },
@@ -177,13 +179,14 @@ export default class InviteMembersModal extends Vue {
     hasUndo: false,
     hasIcon: true,
   };
-  public selectedRole = "Manager";
-  public roles: SelectData[] = [
-    { header: "Roles" },
-    { text: "Manager", value: "Manager" },
-    { text: "Viewer", value: "Viewer" },
-  ];
+
   private modalDrawerIsOpen = false;
+
+  public dropdownChanged(value: string, index: number): void {
+    if (value === "Remove") {
+      this.userSelectedList.splice(index, 1);
+    }
+  }
 
   public get OKDisabled(): boolean {
     return this.userSelectedList.length === 0;
@@ -193,26 +196,34 @@ export default class InviteMembersModal extends Vue {
    * Starts searching 500 milliseconds after user changes the search value. Only
    * searches if there are at least 3 characters in the newValue
    */
-  onUserSearchValueChange = _.debounce((newValue: string) => {
-    if (newValue && newValue?.trim().length > 2) {
-      this.searchObj.isLoading = true;
-      UserManagement.searchUserByNameAndEmail(newValue).then(userSearchResults => {
-        this.searchObj.searchResults = userSearchResults.map(userSearchDTO => {
-          return {
-            sys_id: userSearchDTO.sys_id,
-            firstName: userSearchDTO.first_name,
-            lastName: userSearchDTO.last_name,
-            fullName: userSearchDTO.name,
-            email: userSearchDTO.email,
-            phoneNumber: userSearchDTO.phone,
-            agency: userSearchDTO.department?.display_value
-          }
-        })
-        this.searchObj.noResults = this.searchObj.searchResults.length === 0;
-        this.searchObj.isLoading = false;
-      })
-    } else {
+  onUserSearchValueChange = _.debounce(async (newValue: string) => {
+    if (newValue && newValue?.trim().length > 2 && !this.isSearching) {
+      await UserManagement.doResetAbortController();
+      this.isSearching = true;
       this.searchObj.searchResults = [];
+      this.searchObj.isLoading = true;
+      const response = await UserManagement.searchUserByNameAndEmail(newValue)
+      this.searchObj.searchResults = response.map(userSearchDTO => {
+        return {
+          sys_id: userSearchDTO.sys_id,
+          firstName: userSearchDTO.first_name,
+          lastName: userSearchDTO.last_name,
+          fullName: userSearchDTO.name,
+          email: userSearchDTO.email,
+          phoneNumber: userSearchDTO.phone,
+          agency: userSearchDTO.department?.display_value
+        }
+      })
+      this.searchObj.noResults = this.searchObj.searchResults.length === 0;
+      this.searchObj.isLoading = false;
+      this.isSearching = false;
+    } else {
+      UserManagement.triggerAbort();
+      this.searchObj.searchResults = [];
+      this.searchObj.noResults = false;
+      this.searchObj.alreadyInvited = false;         
+      this.isSearching = false;
+      this.onUserSearchValueChange(newValue);
     }
   }, 500)
 
@@ -237,7 +248,10 @@ export default class InviteMembersModal extends Vue {
         }
       })
       this.searchObj.value = "";
-      this.onUserSearchValueChange("");
+      this.searchObj.alreadyInvited = false;
+      this.searchObj.searchResults = [];
+      this.searchObj.noResults = false;
+      this.searchObj.isLoading = false;
     } else {
       this.searchObj.alreadyInvited = true;
     }
@@ -252,6 +266,7 @@ export default class InviteMembersModal extends Vue {
     this.searchObj.searchResults = [];
     this.searchObj.noResults = false;
     this.searchObj.isLoading = false;
+    UserManagement.triggerAbort();    
   }
 
   @Watch("_showModal")
@@ -269,12 +284,6 @@ export default class InviteMembersModal extends Vue {
       PortfolioStore.setShowAddMembersModal(false);
     }
   }
-
-  // inputWidthFaker is used to dynamically adjust the width of the input
-  // based on the characters entered - the "hidden" (abs pos off-screen) div
-  // gets the characters entered into the input, then the div's width is given
-  // to the input -- see event listener on input
-  public inputWidthFaker: HTMLElement | null = null;
 
   /**
    * Makes a store call to invite the new members if the user had marked at least
