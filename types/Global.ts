@@ -209,6 +209,7 @@ export interface stringObj {
   [key: string]: string;
 }
 
+
 export interface PoP {
   duration: number | null;
   unitOfTime: string;
@@ -413,6 +414,11 @@ export interface OtherServiceOfferingData {
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
   classifiedInformationTypes?: string;
+}
+
+export interface totalClassLevelsInDOWObject {
+  classLevelSysId: string,
+  DOWObjectTotal: number
 }
 
 export interface OtherServiceSummaryTableData {

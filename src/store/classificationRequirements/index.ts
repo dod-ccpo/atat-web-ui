@@ -10,14 +10,20 @@ import {
   SelectedClassificationLevelDTO,
   BaseTableDTO
 } from "@/api/models";
-import {CrossDomainSolution, SecurityRequirement} from "../../../types/Global";
+import {
+  CrossDomainSolution, 
+  SecurityRequirement, 
+  ToastObj, 
+  totalClassLevelsInDOWObject
+} from "../../../types/Global";
 import {AxiosRequestConfig} from "axios";
 import AcquisitionPackage from "../acquisitionPackage";
 import IGCEStore from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import { TableApiBase } from "@/api/tableApiBase";
 import DescriptionOfWork from "../descriptionOfWork";
-import { getDOWOfferingsWithClassLevelTotal } from "@/helpers";
+import { getDOWOfferingsWithClassLevelTotal, setItemToPlural } from "@/helpers";
+import Toast from "../toast";
 
 @Module({
   name: "ClassificationRequirements",
@@ -34,6 +40,8 @@ export class ClassificationRequirementsStore extends VuexModule {
   public classificationSecretSysId = "";
   public classificationTopSecretSysId = "";
   public performanceRequirementsDeletedTotal = 0;
+  public classLevelsInDOWTotal: totalClassLevelsInDOWObject[] = [];
+  public classLevelsToBeDeleted: SelectedClassificationLevelDTO[] = [];
   public get highSideSysIds(): string[] {
     return [this.classificationSecretSysId, this.classificationTopSecretSysId];
   }
@@ -244,6 +252,41 @@ export class ClassificationRequirementsStore extends VuexModule {
     await this.setSecurityRequirements(tempRequirements);
     await this.setSelectedClassificationLevels(selectedClassLevelList);
   }
+
+  @Action({rawError: true})
+  async getTotalClassLevelsInDOW(): Promise<void> {
+    const totalArray: totalClassLevelsInDOWObject[] = [];
+    this.classificationLevels.forEach(
+      cl => totalArray.push({
+        classLevelSysId: cl.sys_id as string, 
+        DOWObjectTotal: getDOWOfferingsWithClassLevelTotal(cl.sys_id as string)
+      })
+    )
+    this.setClassLevelsInDOWTotal(totalArray);
+  }
+
+
+  @Action({rawError: true})
+  public async setClassLevelsInDOWTotal(total: totalClassLevelsInDOWObject[]): Promise<void> {
+    this.doSetClassLevelsInDOWTotal(total);
+  }
+
+  @Mutation
+  private doSetClassLevelsInDOWTotal(total: totalClassLevelsInDOWObject[]): void {
+    this.classLevelsInDOWTotal = total;
+  }
+  
+
+  @Action({rawError: true})
+  public async setClassLevelsToBeDeleted(items: SelectedClassificationLevelDTO[]): Promise<void> {
+    this.doSetClassLevelsToBeDeleted(items);
+  }
+
+  @Mutation
+  private doSetClassLevelsToBeDeleted(items: SelectedClassificationLevelDTO[]): void {
+    this.classLevelsToBeDeleted = items;
+  }
+  
   
  /**
    * Compares the currently selected classification list from this store, with the new list
@@ -256,6 +299,8 @@ export class ClassificationRequirementsStore extends VuexModule {
     newSelectedClassLevelList: SelectedClassificationLevelDTO[])
    : Promise<boolean> {
     try {
+      const itemsToBeDeleted:SelectedClassificationLevelDTO[] = [];
+      await this.getTotalClassLevelsInDOW();
       const markedForCreateList = newSelectedClassLevelList
         .filter(newSelected => newSelected.sys_id ? newSelected.sys_id.length === 0 : true);
       const currSelectedClasLevelList = await this.getSelectedClassificationLevels();
@@ -273,14 +318,14 @@ export class ClassificationRequirementsStore extends VuexModule {
             markedForCreate.classification_level as string
         )
       })
-
+      this.doSetClassLevelsToBeDeleted([]);
       await markedForDeleteList.forEach(async markedForDelete => {
-        this.setPerformanceRequirementsDeletedTotal(0);
+        itemsToBeDeleted.push(markedForDelete);
         const deleteItemSysId = markedForDelete.classification_level as string;
-        await this.getPerformanceRequirementsDeletedTotal(deleteItemSysId)
         await this.removeClassificationLevelsFromDBGlobally(deleteItemSysId);
         await this.removeClassificationLevelsFromStoreGlobally(markedForDelete);
       })
+      this.doSetClassLevelsToBeDeleted(itemsToBeDeleted);
     
       return true;
     } catch (error) {
@@ -288,18 +333,29 @@ export class ClassificationRequirementsStore extends VuexModule {
     }
   }
 
- /**
-    * tabulates the total number of performanceRequirements that are deleted when the user
-    * removes a classification_level
-    */
-@Action({rawError: true})
- async getPerformanceRequirementsDeletedTotal(
-   deletedClassLevelSysId: string)
-   : Promise<void> {
-   this.setPerformanceRequirementsDeletedTotal(
-     this.performanceRequirementsDeletedTotal 
-      + await getDOWOfferingsWithClassLevelTotal(deletedClassLevelSysId)
-   )
+ @Action({rawError: true})
+ async createToast():Promise<void>{
+   // craft toast text
+   
+   let total = 0;
+   for (let i=0;i<this.classLevelsToBeDeleted.length;i++){
+     total += this.classLevelsInDOWTotal.find(
+       total => total.classLevelSysId === this.classLevelsToBeDeleted[i].classification_level
+     )?.DOWObjectTotal || 0
+   }
+
+   const perfReqDeletedText = total > 0 
+     ? total + " performance " + setItemToPlural(total, 'requirement') + " deleted"
+     : "";
+
+   const classificationLevelToast: ToastObj = {
+     type: "success",
+     message: "Classification requirements updated<br />" + perfReqDeletedText,  
+     isOpen: true,
+     hasUndo: false,
+     hasIcon: true,
+   };
+   Toast.setToast(classificationLevelToast);
  }
 
   /**
@@ -308,32 +364,32 @@ export class ClassificationRequirementsStore extends VuexModule {
    * and filtered using the call to "getSelectedClassificationLevels".
    */
   @Action({rawError: true})
-async saveSingleSelectedClassificationLevel(
-  selectedClassificationLevel: SelectedClassificationLevelDTO)
+ async saveSingleSelectedClassificationLevel(
+   selectedClassificationLevel: SelectedClassificationLevelDTO)
     : Promise<boolean> {
-  try {
-    const packageId = 
+   try {
+     const packageId = 
         typeof selectedClassificationLevel.acquisition_package === "object"
           ? selectedClassificationLevel.acquisition_package.value as string
           : selectedClassificationLevel.acquisition_package as string;
       
-    const classLevel = 
+     const classLevel = 
         typeof selectedClassificationLevel.classification_level === "object"
           ? selectedClassificationLevel.classification_level.value as string
           : selectedClassificationLevel.classification_level as string;
 
-    selectedClassificationLevel = {
-      ...selectedClassificationLevel,
-      classification_level: classLevel,
-      acquisition_package: packageId
-    }
-    await api.selectedClassificationLevelTable
-      .update(selectedClassificationLevel.sys_id as string, selectedClassificationLevel);
-    return true;
-  } catch (error) {
-    throw new Error(`an error occurred saving a single selected classification level ${error}`);
-  }
-}
+     selectedClassificationLevel = {
+       ...selectedClassificationLevel,
+       classification_level: classLevel,
+       acquisition_package: packageId
+     }
+     await api.selectedClassificationLevelTable
+       .update(selectedClassificationLevel.sys_id as string, selectedClassificationLevel);
+     return true;
+   } catch (error) {
+     throw new Error(`an error occurred saving a single selected classification level ${error}`);
+   }
+ }
 
   @Action({rawError: true})
   public async setCdsSolution(value: CrossDomainSolution): Promise<void> {
@@ -358,16 +414,6 @@ async saveSingleSelectedClassificationLevel(
     });
   }
 
-
-  @Action({rawError: true})
-  public async setPerformanceRequirementsDeletedTotal(value: number): Promise<void> {
-    this.doSetPerformanceRequirementsDeletedTotal(value);
-  }
-
-  @Mutation
-  private doSetPerformanceRequirementsDeletedTotal(value: number): void {
-    this.performanceRequirementsDeletedTotal = value;
-  }
 
   @Mutation
   private doSetCdsSolution(value: CrossDomainSolutionDTO): void {
@@ -562,7 +608,7 @@ async saveSingleSelectedClassificationLevel(
         }
       }
     })
-    DescriptionOfWork.DOWObject.forEach((dowObj)=>dowObj.serviceOfferingGroupId === "Applicaitons")
+    DescriptionOfWork.DOWObject.forEach((dowObj)=>dowObj.serviceOfferingGroupId === "Applications")
   }
 
   @Action({rawError: true})

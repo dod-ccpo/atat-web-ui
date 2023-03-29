@@ -395,30 +395,12 @@ export default class OtherOfferings extends Vue {
           this._serviceOfferingData.classificationLevel = "";
         }
       }
-      this.createToast();
+      ClassificationRequirements.createToast();
      
     }, 1000);
   }
 
-  private createToast():void{
-  
-    // craft toast text
-    const perfReqDeletedText = ClassificationRequirements.performanceRequirementsDeletedTotal > 0 
-      ? ClassificationRequirements.performanceRequirementsDeletedTotal + " performance " 
-        + setItemToPlural(
-          ClassificationRequirements.performanceRequirementsDeletedTotal, 'requirement'
-        ) + " deleted"
-      : "";
-
-    const classificationLevelToast: ToastObj = {
-      type: "success",
-      message: "Classification requirements updated<br />" + perfReqDeletedText,  
-      isOpen: true,
-      hasUndo: false,
-      hasIcon: true,
-    };
-    Toast.setToast(classificationLevelToast);
-  }
+ 
 
   private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";
