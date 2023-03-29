@@ -126,7 +126,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       const deselectedItem = this.checkboxItems.find(el => el.value === difference[0]);
       this.deselectedLabel = deselectedItem?.label || "";
       this.deleteMode = "item";
-
+      if(this.deselectedLabel === "Other"){
+        this.otherValueEntered = ""
+      }
       const hasInstances = 
         await DescriptionOfWork.serviceOfferingHasInstances(this.deselectedLabel);
       if (hasInstances) {
@@ -217,7 +219,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     this.isServiceOfferingList = !this.otherOfferingList.includes(
       this.serviceGroupOnLoad.toLowerCase()
     );
-
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
     if (this.isServiceOfferingList) {
@@ -230,15 +231,15 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             value: offering.sys_id,
             description: offering.description,
           }
-          this.checkboxItems.push(checkboxItem);
-          if (checkboxItem.value === "Other") {
+          if (checkboxItem.label === "Other") {
             this.otherValueEntered = offering.otherOfferingName || "";
           }
+          this.checkboxItems.push(checkboxItem);
         });
       }
 
       const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
-      
+
       const validSelections = selectedOfferings.reduce<string[]>((accumulator, current)=>{  
         const itemIndex = this.checkboxItems.findIndex(item=>item.label === current);
         const selected = itemIndex >=0 ? [...accumulator, 
@@ -248,7 +249,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
       this.selectedOptions.push(...validSelections);
 
-      this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
     } else {
       const offeringIndex = DescriptionOfWork.DOWObject.findIndex(
         obj => obj.serviceOfferingGroupId.toLowerCase() 
@@ -276,6 +276,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         }
       }
     }
+    //find sys_id for otherValue
+    let otherCheckBoxIndex = this.checkboxItems.findIndex((item) =>item.label === "Other")
+    this.otherValue = this.checkboxItems[otherCheckBoxIndex].value
 
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels();
@@ -293,10 +296,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
+
       if (this.serviceGroupOnLoad) {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
         if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
           if (this.isServiceOfferingList) {
+
             await DescriptionOfWork.setSelectedOfferings(
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );

@@ -315,9 +315,9 @@ export interface DOWServiceOffering {
   name: string;
   acquisitionPackageSysId: string;
   otherOfferingName?: string;
-  "sys_id": string; //service offering sys id
+  sys_id: string;
   serviceId: string; // id of the service
-  description: string;
+  description?: string;
   classificationInstances?: DOWClassificationInstance[];
   sequence: string;
 }

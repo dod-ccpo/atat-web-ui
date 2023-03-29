@@ -317,12 +317,10 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   private showOtherEntry(value: string): boolean {
-    return (
-      this.hasOtherValue &&
-      value === this.otherValue &&
-      this._selected.indexOf(this.otherValue) > -1 &&
-      !this.hideOtherTextarea
-    );
+    return this.hasOtherValue
+      && value === this.otherValue
+      && this._selected.indexOf(this.otherValue) > -1
+      && !this.hideOtherTextarea;
   }
 
   private hideOtherTextarea = false;
