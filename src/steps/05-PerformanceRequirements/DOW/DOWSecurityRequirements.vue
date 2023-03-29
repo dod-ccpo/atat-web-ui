@@ -21,7 +21,7 @@
             :isDOW="true"
             :selectedSecretSecurityRequirements.sync="selectedSecretSecurityRequirements"
             :selectedTopSecretSecurityRequirements.sync="selectedTopSecretSecurityRequirements"
-            :selectedClearanceLevels="selectedClearanceLevels"
+            :selectedClearanceLevel.sync="selectedClearanceLevel"
           />
         </v-col>
       </v-row>
@@ -61,7 +61,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
   private selectedClassifications: ClassificationLevelDTO[] = [];
   private selectedSecretSecurityRequirements: string[] = [];
   private selectedTopSecretSecurityRequirements: string[] = [];
-  private selectedClearanceLevels: string[] = [];
+  private selectedClearanceLevel = "";
   // pragma: allowlist secret
   private hasSecret = false;
   // pragma: allowlist secret

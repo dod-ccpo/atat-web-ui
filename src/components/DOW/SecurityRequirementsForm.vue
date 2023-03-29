@@ -7,7 +7,7 @@
         legend="What clearance level is required for contractor employees to provide your
          training?"
         :items="clearanceLevels"
-        :value.sync="_selectedClearanceLevels"
+        :value.sync="_selectedClearanceLevel"
       />
       <hr />
     </div>
@@ -51,7 +51,8 @@ export default class SecurityRequirementsForm extends vue {
   @PropSync("selectedSecretSecurityRequirements") private _selectedSecretSecurityRequirements!: string[];
   // eslint-disable-next-line max-len
   @PropSync("selectedTopSecretSecurityRequirements") private _selectedTopSecretSecurityRequirements!: string[];
-  @PropSync("selectedClearanceLevels") private _selectedClearanceLevels!: string[];
+  @PropSync("selectedClearanceLevel", { default: "" }) 
+    private _selectedClearanceLevel!: string | null;
   // pragma: allowlist secret
   @Prop() private hasSecret!: boolean;
   // pragma: allowlist secret
@@ -67,9 +68,9 @@ export default class SecurityRequirementsForm extends vue {
       value: "TS",
     },
     {
-      id: "TS/SCI",
+      id: "TS_SCI",
       label: "Top Secret/Sensitive Compartmented Information (TS/SCI)",
-      value: "TS/SCI",
+      value: "TS_SCI",
     },
   ];
 
