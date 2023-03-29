@@ -147,20 +147,33 @@
 
     <hr class="my-0" />
 
-    <div id="DatesSection" class="_portfolio-panel _portfolio-panel _panel-padding">
-      <!-- 
-        
-        TODO: refactor with environments after AT-8744 complete
-      
-      <div>
-        <span id="ProvisionedOnLabel">Provisioned on&nbsp;</span>
-        <span id="ProvisionedOnDate">{{ provisionedTime }}</span>
+
+    <div id="EnvironmentsSection" class="_portfolio-panel _panel-padding pb-8">
+      <div
+        id="EnvironmentsHeader"
+        class="d-flex flex-columm justify-space-between"
+      >
+        <div id="EnvironmentsTitle" class="d-flex">
+          <div class="h3 mr-2">Environments</div>
+          <div
+            id="EnvironmentsCount"
+            class="color-base font-size-20"
+            v-if="getPortfolioMembersCount() > 0"
+          >
+            ({{ getPortfolioMembersCount() }})
+          </div>
+        </div>
       </div>
+    </div>
+
+
+    <hr class="my-0" />
+
+    <div id="DatesSection" class="_portfolio-panel _portfolio-panel _panel-padding">
       <div>
         <span id="LastUpdatedLabel">Last updated&nbsp;</span>
         <span id="LastUpdatedDate">{{ updateTime }}</span>
       </div>
-      -->
     </div>
 
     <InviteMembersModal
@@ -235,7 +248,6 @@ import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteM
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio = {};
   public portfolioStatus: string = Statuses.Active.label;
-  public provisionedTime = "";
   public updateTime = "";
   public csp = "";
   public currentUser: User = {};
@@ -307,10 +319,8 @@ export default class PortfolioDrawer extends Vue {
     const storeData = await PortfolioStore.currentPortfolio;
     if (storeData) {
       this.portfolio = storeData;
+      debugger;
       this.csp = storeData.csp?.toLowerCase() as string;      
-      if (storeData.provisioned) {
-        this.provisionedTime = this.formatDate(storeData.provisioned);
-      }
       if (storeData.updated) {
         this.updateTime = this.formatDate(storeData.updated);
       }
@@ -318,7 +328,7 @@ export default class PortfolioDrawer extends Vue {
       this.portfolioStatus = PortfolioStore.getStatus;
     }
     this.currentUser = await CurrentUserStore.getCurrentUser();
-    // TODO AT-8747 - check if current user is Manager or Viewer
+    // ATAT TODO AT-8747 - check if current user is Manager or Viewer
     // TEMP HARDCODE ROLE
     this.currentUser.role = "Manager";
   }
