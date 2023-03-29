@@ -470,9 +470,9 @@ export default class PortfoliosSummary extends Vue {
       if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
         cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
         cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
-        cardData.fundsSpentPercent = String(Math.round(
-          portfolio.funds_spent / portfolio.funds_obligated * 100
-        ));
+        cardData.fundsSpentPercent = portfolio.funds_spent ? 
+          String(Math.round(portfolio.funds_spent / portfolio.funds_obligated * 100))
+          : "0";
         const remainingAmt = portfolio.funds_obligated - portfolio.funds_spent;
         cardData.fundsRemaining 
           = "$" + toCurrencyString(Math.abs(remainingAmt)) 

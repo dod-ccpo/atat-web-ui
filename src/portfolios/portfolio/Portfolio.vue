@@ -1201,6 +1201,8 @@ export default class PortfolioDashboard extends Vue {
       );
       const costClinNo = thisIdiqClin?.clin_number;
       const costClinsForThisIdiqClin = this.costs.filter((cost) => {
+        // ATAT TODO - cost.clin is reference object, not a clin number
+        // update logic accordingly at beginning of next release Q2 2023
         return (
           cost.clin === costClinNo && cost.value && cost.is_actual === "true"
         );
@@ -1231,7 +1233,7 @@ export default class PortfolioDashboard extends Vue {
       this.idiqClinSpendData[idiqClinNo] = idiqClinSpendData;
     }, this);
     const monthsWithSpend = totalActualBurnData.filter((amt) => amt !== null);
-    const len = monthsWithSpend.length - 1; // EJY why is this - 1 ?
+    const len = monthsWithSpend.length - 1;
 
     this.monthlySpendAverage = Math.round((this.fundsSpent / len) * 100) / 100;
 
@@ -1250,11 +1252,11 @@ export default class PortfolioDashboard extends Vue {
       this.endOfPeriodForecast =
         this.fundsSpent + this.endOfMonthForecast + this.monthlySpendAverage * m;
     } else if (len === 1) {
-      // EJY set average to first month's actual spend
+      // ATAT TODO - set average to first month's actual spend
+      // see comment for cost.clin above
     } else if (monthsWithSpend.length === 0) {
       this.monthlySpendAverage = Math.round((this.availableFunds / 12) * 100) / 100;
     }
-
 
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
