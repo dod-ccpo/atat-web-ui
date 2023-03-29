@@ -133,7 +133,6 @@ export default class ATATDialog extends Vue {
   }
 
   private outsideClicked() {
-    console.log("outsideClicked")
     this.$emit("outsideClicked");
     this._showDialog = false;
   }
