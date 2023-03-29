@@ -3,15 +3,23 @@
     <h2>
         2. Compliance with Military Service-specific policies
     </h2>
+    <p class='d-flex align-start flex-column mt-5'>
+        You may need authorization from your Military Service prior to placing 
+         a task order under the JWCC Contract. Customers are responsible for complying 
+         with Military Service-specific cloud acquisition requirements. Prior to 
+         proceeding with the development of your JWCC requirements package, each customer 
+         must confirm their understanding of this responsibility.
+    </p>
       <ATATCheckboxGroup
         id="projectDisclaimer"
-        :groupLabel="groupLabel"
+        :card='false'
+        label='disclaimer.label'
         :groupLabelId="groupLabelId"
         :value.sync="_projectDisclaimer"
         :items="disclaimer"
         name="project-disclaimer-checkbox-group"
         :rules="_rules"
-        class='font-weight-regular !important'
+        :class="[{ '_big-bold-label' : boldText }]"
       />
     </div>
 </template>
@@ -37,6 +45,8 @@ export default class ProjectDisclaimer extends Vue {
     @Prop({default: ""}) private groupLabel!: string;
     
     @PropSync("rules") private _rules!: "";
+
+    @Prop({ default: true }) private boldText!: boolean;
     
 public disclaimer: Checkbox[] = [ 
   {

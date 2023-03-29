@@ -52,11 +52,6 @@
           <hr/>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectDisclaimer
-              groupLabel="You may need authorization from your Military Service prior to placing 
-              a task order under the JWCC Contract. Customers are responsible for complying 
-              with Military Service-specific cloud acquisition requirements. Prior to 
-              proceeding with the development of your JWCC requirements package, each customer 
-              must confirm their understanding of this responsibility. "
               groupLabelId="disclaimerGroupLabel"
               :projectDisclaimer.sync="projectDisclaimer"
               :rules="[$validators.required(`You must acknowledge compliance with your 
