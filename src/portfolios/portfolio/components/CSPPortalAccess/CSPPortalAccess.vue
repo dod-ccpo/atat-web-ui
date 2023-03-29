@@ -33,6 +33,8 @@
           :items="tableData"
           :page.sync="page"
           hide-default-footer
+          sort-by="provisionedDate"
+          sort-desc
           class="_csp-admin-log border1 border-base-lighter"
         >
           <!-- eslint-disable vue/valid-v-slot -->
@@ -60,18 +62,14 @@
                     </div>
                     <div class="d-flex flex-column font-weight-500">
                       {{item.status}}
-                      <span
-                        v-if="item.status === 'Failed'"
-                        class="font-size-12 text-base"
-                      >
-                        CSP account already exist
-                      </span>
                     </div>
                   </div>
 
                 </td>
                 <td>{{item.addedBy}}</td>
-                <td>{{item.provisionedDate}}</td>
+                <td>
+                  {{formatDate(item)}}
+                </td>
               </tr>
             </template>
             </tbody>
@@ -170,6 +168,10 @@ import AddAdminSlideOut from "@/portfolios/portfolio/components/shared/AddAdminS
 import {Operator} from "../../../../../types/Global";
 import Portfolio from "@/store/portfolio";
 import {EnvironmentDTO, OperatorDTO} from "@/api/models";
+import { formatISO, formatISO9075, startOfTomorrow } from "date-fns";
+import { createDateStr } from "../../../../helpers"
+import _ from "lodash";
+
 
 @Component({
   components: {
@@ -217,6 +219,7 @@ export default class CSPPortalAccess extends Vue {
   private modalDrawerIsOpen = false
   private adminAlreadyExists = false;
   private isLoading = false;
+  public tomorrow = startOfTomorrow();
 
   public tableHeaders: Record<string, string>[] = [
     { text: "Administrator email", value: "email" },
@@ -363,6 +366,12 @@ export default class CSPPortalAccess extends Vue {
     return isValid;
   }
   
+  public formatDate(item: Operator): string {
+    return item.status !== "Processing" 
+      ? createDateStr(item.provisionedDate as string, true, true)
+      : "";
+  }
+
   public async loadOnEnter(): Promise<void> {
     this.isLoading = true; // TODO: this can be used to show the spinner
     // TODO: remove below 3 lines after environment tabs based display is implemented
@@ -370,7 +379,16 @@ export default class CSPPortalAccess extends Vue {
       Portfolio.currentPortfolio.environments[0] :
         {sys_id: "7aafda19073121106417fa4d7c1ed04a"} as EnvironmentDTO;
     await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.environment);
-    this.tableData = this.environment.csp_admins as Operator[];
+    this.tableData = _.cloneDeep(this.environment.csp_admins) as Operator[];
+    // this.tableData.forEach(row => {
+    //   debugger;
+    //   if (row.provisioned === "false" && row.provisionedDate === "") {
+    //     row.provisionedDate = ;
+    //   }
+    // })
+    
+    // debugger;
+
     this.isLoading = false;
     this.transitionGroup = "transition-group";
   }

@@ -21,6 +21,7 @@ import {api} from "@/api";
 import CurrentUserStore from "../user";
 import {AxiosRequestConfig} from "axios";
 import {convertColumnReferencesToValues} from "@/api/helpers";
+import { formatISO9075, startOfTomorrow } from "date-fns";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -553,7 +554,7 @@ export class PortfolioDataStore extends VuexModule {
       };
       let allOperatorsOfPortfolioEnv = await api.operatorTable.getQuery(
         queryForAllOperatorsOfPortfolio
-      )
+      );
       allOperatorsOfPortfolioEnv = allOperatorsOfPortfolioEnv
         .map(operator => convertColumnReferencesToValues(operator));
       allOperatorsOfPortfolioEnv.forEach(operator =>
@@ -572,8 +573,10 @@ export class PortfolioDataStore extends VuexModule {
    */
   @Mutation
   public async transformAndAddOperatorToPortfolioEnvironment(
-    newOperatorToTransform: {environment: EnvironmentDTO,
-      operatorDTO: OperatorDTO}): Promise<void> {
+    newOperatorToTransform: {
+      environment: EnvironmentDTO,
+      operatorDTO: OperatorDTO
+    }): Promise<void> {
     const operatorDTO = newOperatorToTransform.operatorDTO;
     let operatorStatus: Operator["status"] = "";
     if (operatorDTO.provisioned === "false" &&
@@ -586,6 +589,15 @@ export class PortfolioDataStore extends VuexModule {
     } else if (operatorDTO.provisioned === "true") {
       operatorStatus = "Provisioned"
     }
+    
+    // Business rules require status of Processing to be listed first.
+    // Vuetify table sort decending puts empty values at end. 
+    // Add date of tomorrow to Processing operators. Date will be hidden
+    // with logic from the table. This will allow desired sorting.
+    const pDate = operatorStatus === "Processing"
+      ? formatISO9075(new Date(startOfTomorrow()))
+      : operatorDTO.provisioned_date;
+
     const operator: Operator = {
       sysId: operatorDTO.sys_id,
       environment: operatorDTO.environment,
@@ -593,7 +605,7 @@ export class PortfolioDataStore extends VuexModule {
       dodId: operatorDTO.dod_id,
       status: operatorStatus,
       addedBy: operatorDTO.added_by,
-      provisionedDate: operatorDTO.provisioned_date,
+      provisionedDate: pDate,
       provisioned: operatorDTO.provisioned,
       provisioningFailureCause: operatorDTO.provisioning_failure_cause,
       provisioningRequestDate: operatorDTO.provisioning_request_date
@@ -612,27 +624,14 @@ export class PortfolioDataStore extends VuexModule {
    */
   @Mutation
   public async sortPortfolioEnvironmentOperators(environment: EnvironmentDTO): Promise<void> {
-    // first default sort by Processing
     environment.csp_admins?.sort((a, b) => {
       const operatorA = a as unknown as Operator;
       const operatorB = b as unknown as Operator;
-      if (operatorA.status === "Processing" && operatorB.status !== "Processing") {
-        return -1;
-      } else if (operatorA.status === "Processing" &&
-        operatorB.status === "Processing") {
-        // sort by email
-        if (operatorA.email && operatorB.email) {
-          return operatorA.email > operatorB.email ? -1 : 1;
-        } else {
-          return 0;
-        }
+      // sort by provisioned date
+      if (operatorA.provisionedDate && operatorB.provisionedDate) {
+        return operatorB.provisionedDate > operatorA.provisionedDate ? -1 : 1;
       } else {
-        // sort by provisioned date
-        if (operatorA.provisionedDate && operatorB.provisionedDate) {
-          return operatorB.provisionedDate > operatorA.provisionedDate ? -1 : 1;
-        } else {
-          return 0;
-        }
+        return 0;
       }
     })
   }
