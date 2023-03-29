@@ -39,7 +39,8 @@ import {
   EvalPlanSourceSelection, 
   EvalPlanMethod, 
   uploadingFile, 
-  signedDocument } from "types/Global";
+  signedDocument,
+  YesNo } from "types/Global";
 import { SessionData } from "./models";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
@@ -109,11 +110,13 @@ export const initialCurrentContract = (): CurrentContractDTO => {
 }
 
 const initialProjectOverview = () => {
+  const disclaimer:YesNo = "";
   return {
     sys_id: "",
     title: "",
     scope: "",
     emergency_declaration: "",
+    project_disclaimer: disclaimer,
   };
 };
 

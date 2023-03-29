@@ -1,5 +1,9 @@
 <template>
   <div v-if="isForm">
+    <h2>
+      1. Basic project information
+    </h2>
+    
     <ATATTextField
       :id="id"
       :label="label"
