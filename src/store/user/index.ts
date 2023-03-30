@@ -124,9 +124,13 @@ export class UserStore extends VuexModule {
       offset: 0
     };
 
-    const portfolioData = await PortfolioSummary
-      .searchPortfolioSummaryList(searchDTO);
-    const hasPortfolios = portfolioData.total_count > 0;
+    
+    // EJY is this causing so many multiple calls?????
+
+    // const portfolioData = await PortfolioSummary
+    //   .searchPortfolioSummaryList(searchDTO);
+    // const hasPortfolios = portfolioData.total_count > 0;
+    const hasPortfolios = true;
     await this.doSetUserHasPortfolios(hasPortfolios);
     return this.userHasPortfolios;
   }

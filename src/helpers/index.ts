@@ -301,6 +301,8 @@ export function getStatusChipBgColor(status: string): string {
   case Statuses.ExpiringPop.label.toLowerCase():
   case Statuses.FundingAtRisk.value.toLowerCase():
   case Statuses.FundingAtRisk.label.toLowerCase():
+  case Statuses.ProvisioningIssue.value.toLowerCase():
+  case Statuses.ProvisioningIssue.label.toLowerCase():
     return "bg-warning";
   case Statuses.Deleted.value.toLowerCase():
   case Statuses.Delinquent.value.toLowerCase():

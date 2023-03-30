@@ -422,7 +422,7 @@ export default class PortfoliosSummary extends Vue {
 
       let cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
-      
+      cardData.lastUpdated = portfolio.last_updated;
       cardData.csp = portfolio.vendor;
 
       cardData.sysId = portfolio.sys_id;
