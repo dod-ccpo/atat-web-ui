@@ -16,7 +16,7 @@ import {
   BaseTableDTO,
   ClinDTO,
   EDAResponse,
-  ReferenceColumn,
+  ReferenceColumn, EnvironmentDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -485,6 +485,19 @@ export interface User {
   sys_id?: string;
 }
 
+export interface Operator {
+  sysId?: string;
+  environment?: string;
+  email?: string;
+  dodId?: string;
+  status?: "Processing" | "Failed" | "Provisioned" | "";
+  addedBy?: string;
+  provisionedDate?: string;
+  provisioned?: string;
+  provisioningFailureCause?: string;
+  provisioningRequestDate?: string;
+}
+
 export interface Portfolio extends BaseTableDTO {
   sysId?: string;
   title?: string;
@@ -502,6 +515,7 @@ export interface Portfolio extends BaseTableDTO {
   portfolio_viewers_detail?: User[];
   updated?: string;
   taskOrderNumber?: string;
+  environments?: EnvironmentDTO[];
   taskOrderSysId?: string;
 }
 

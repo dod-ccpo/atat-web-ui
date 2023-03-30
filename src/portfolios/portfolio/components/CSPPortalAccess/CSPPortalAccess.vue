@@ -33,6 +33,8 @@
           :items="tableData"
           :page.sync="page"
           hide-default-footer
+          sort-by="provisionedDate"
+          sort-desc
           class="_csp-admin-log border1 border-base-lighter"
         >
           <!-- eslint-disable vue/valid-v-slot -->
@@ -60,18 +62,14 @@
                     </div>
                     <div class="d-flex flex-column font-weight-500">
                       {{item.status}}
-                      <span
-                        v-if="item.status === 'Failed'"
-                        class="font-size-12 text-base"
-                      >
-                        CSP account already exist
-                      </span>
                     </div>
                   </div>
 
                 </td>
-                <td>{{item.createdBy}}</td>
-                <td>{{item.created}}</td>
+                <td>{{item.addedBy}}</td>
+                <td>
+                  {{formatDate(item)}}
+                </td>
               </tr>
             </template>
             </tbody>
@@ -107,11 +105,10 @@
     >
       <template #content>
         <p class="body">
-          This individual will be granted full access to your cloud resources within the
-          selected {{serviceProvider[portfolioCSP]}} portal, enabling them to manage user accounts
-          and configure workspace settings.
+          This individual will be granted full access to the {{serviceProvider[portfolioCSP]}} 
+          portal to manage user accounts and configure workspace settings. 
           <a id="LearnMoreLink" role="button" @click="openLearnMoreDrawer">
-            Learn more about CSP administrators
+            Learn more
           </a>
         </p>
         <v-form ref="modalForm" v-model="formIsValid" lazy-validation>
@@ -157,16 +154,23 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
 import CSPCard from "@/portfolios/portfolio/components/shared/CSPCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import format from "date-fns/format"
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AddAdminSlideOut from "@/portfolios/portfolio/components/shared/AddAdminSlideOut.vue";
+import {Operator} from "../../../../../types/Global";
+import Portfolio from "@/store/portfolio";
+import {EnvironmentDTO, OperatorDTO} from "@/api/models";
+import { formatISO, formatISO9075, startOfTomorrow } from "date-fns";
+import { createDateStr } from "../../../../helpers"
+import _ from "lodash";
+
 
 @Component({
   components: {
@@ -191,6 +195,9 @@ export default class CSPPortalAccess extends Vue {
   };
 
   @Prop({ default: "" }) private portfolioCSP!: string;
+  // TODO: defaults to the first environment (during loadOnEnter) from current portfolio until
+  //  portfolio env tabs based display gets implemented and environment gets passed as a property
+  public environment!: EnvironmentDTO;
 
   public page = 1;
   public today = new Date();
@@ -209,12 +216,15 @@ export default class CSPPortalAccess extends Vue {
   public transitionGroup = ""
   public modalSlideoutComponent = AddAdminSlideOut
   private modalDrawerIsOpen = false
+  private adminAlreadyExists = false;
+  private isLoading = false;
+  public tomorrow = startOfTomorrow();
 
   public tableHeaders: Record<string, string>[] = [
     { text: "Administrator email", value: "email" },
     { text: "Status", value: "status" },
-    { text: "Added by", value: "createdBy" },
-    { text: "Processed on", value: "created" },
+    { text: "Added by", value: "addedBy" },
+    { text: "Processed on", value: "provisionedDate" },
   ];
 
   public serviceProvider = {
@@ -224,27 +234,10 @@ export default class CSPPortalAccess extends Vue {
     Oracle:"Oracle Cloud"
   }
 
-  public tableData: {
-    email:string,status:string,createdBy:string,created:string
-  }[] = [];
-  public emails = [
-    "tyrone.brown@example.mil",
-    "kim.bryant@example.mil",
-    "burt.baxter@example.mil",
-  ];
-  public statuses = [
-    "Processing",
-    "Provisioned",
-    "Failed",
-  ];
-  public createdBy = [
-    "Maria Missionowner",
-    "Sam Something",
-    "Carl Contractor",
-  ];
+  public tableData: Operator[] = [];
 
   public maxPerPage = 10;
-  public numberOfPages = Math.ceil(this.emails.length/this.maxPerPage);
+  public numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage);
 
   @Watch("tableData")
   public tableDataUpdated(): void {
@@ -261,22 +254,6 @@ export default class CSPPortalAccess extends Vue {
   get startingNumber():number {
     const starting = (this.page - 1) * this.maxPerPage + 1;
     return starting;
-  }
-  public createTableData(): void {
-    for (let i = 0; i < this.emails.length; i++) {
-      const admin = {
-        email:"",
-        status:"",
-        createdBy:"",
-        created:""
-      };
-      let idx = i;
-      admin.email = this.emails[idx];
-      admin.status = this.statuses[idx];
-      admin.createdBy = this.createdBy[idx];
-      admin.created = admin.status !== "Processing" ? format(this.today,"MMM. dd, yyy hhmm") : "";
-      this.tableData.push(admin);
-    }
   }
 
   get okDisabled(): boolean {
@@ -329,17 +306,25 @@ export default class CSPPortalAccess extends Vue {
   };
 
   public addCSPMember():void {
-    const member = {
-      email:this.adminEmail,
-      status: "Processing",
-      createdBy:"Maria Missionowner",
-      created:""
-    };
-    this.tableData.unshift(member);
-    this.adminEmail = "";
-    this.dodID = "";
-    this.emailIsValid = false;
-    this.$refs.modalForm.reset();
+    const existingOperator = this.environment.csp_admins
+      ?.find(cspAdmin => cspAdmin.email === this.adminEmail);
+    if (!existingOperator) {
+      this.adminAlreadyExists = false;
+      const operator: Operator = {
+        email:this.adminEmail,
+        dodId: this.dodID
+      };
+      Portfolio.addCSPOperator({
+        environment: this.environment,
+        operator: operator
+      })
+      this.adminEmail = "";
+      this.dodID = "";
+      this.emailIsValid = false;
+      this.$refs.modalForm.reset();
+    } else {
+      this.adminAlreadyExists = true;
+    }
   }
 
   public openLearnMoreDrawer(): void {
@@ -380,8 +365,21 @@ export default class CSPPortalAccess extends Vue {
     return isValid;
   }
   
+  public formatDate(item: Operator): string {
+    return item.status !== "Processing" 
+      ? createDateStr(item.provisionedDate as string, true, true)
+      : "";
+  }
+
   public async loadOnEnter(): Promise<void> {
-    await this.createTableData();
+    this.isLoading = true; // TODO: this can be used to show the spinner
+    // TODO: remove below 3 lines after environment tabs based display is implemented
+    this.environment = Portfolio.currentPortfolio.environments ?
+      Portfolio.currentPortfolio.environments[0] :
+        {sys_id: "7aafda19073121106417fa4d7c1ed04a"} as EnvironmentDTO;
+    await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.environment);
+    this.tableData = this.environment.csp_admins as Operator[];
+    this.isLoading = false;
     this.transitionGroup = "transition-group";
   }
   public  mounted(): void {
