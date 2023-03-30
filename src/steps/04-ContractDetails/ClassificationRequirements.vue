@@ -115,7 +115,7 @@ import {
 import ClassificationReqs from "@/store/classificationRequirements";
 import AcquisitionPackage from '@/store/acquisitionPackage';
 import _ from "lodash";
-import DescriptionOfWork from "@/store/descriptionOfWork";
+
 
 @Component({
   components: {
@@ -182,19 +182,18 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   public showDeleteDialog(): void {
-    this.getDOWOfferingsWithClassLevelLength(this.itemDeleted.sys_id as string);
+    this.getTotalOfDOWObjsWithClassLevel(this.itemDeleted.sys_id as string);
     this.showDialog = this.itemDeleted?.display !== "";
   }
 
   public processNewSelectedItem(): void {
-    ClassificationReqs.addCurrentSelectedClassLevelList(this.itemAdded);
+    ClassificationReqs.addCurrentSelectedClassLevelList(this.itemAdded.sys_id as string);
   }
 
-  public async getDOWOfferingsWithClassLevelLength(classLevelSysId: string): Promise<void>{
+  public async getTotalOfDOWObjsWithClassLevel(classLevelSysId: string): Promise<void>{
     classLevelSysId = classLevelSysId || this.itemDeleted?.sys_id || "";
-    const dowStringified  = JSON.stringify(DescriptionOfWork.DOWObject);
-    const re = new RegExp(classLevelSysId, 'g');
-    this.DOWOfferingsWithClassLevelLength = dowStringified.match(re)?.length || 0;
+    this.DOWOfferingsWithClassLevelLength = 
+      await ClassificationReqs.getTotalClassLevelInDOW(classLevelSysId)
   }
 
   // restore the itemDeleted back to selectedOptions
@@ -246,15 +245,14 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
    */
   public async buildClassificationRequirementsAlert(): Promise<void> {
     this.existingClassificationsLevelsInDOW = [];
-    this.selectedOptions.forEach(
-      (optionSysId) => {
-        this.getDOWOfferingsWithClassLevelLength(optionSysId);
-        if (this.DOWOfferingsWithClassLevelLength>0){
-          this.existingClassificationsLevelsInDOW.push(optionSysId);
-        }
+    for (const opt of this.selectedOptions){
+      const totalClassLevelInDOW = await ClassificationReqs.getTotalClassLevelInDOW(opt);
+      if (totalClassLevelInDOW>0){
+        await this.existingClassificationsLevelsInDOW.push(opt);
       }
-    );
-    this.showClassificationRequirementsAlert = this.existingClassificationsLevelsInDOW.length>0;
+    }
+    this.showClassificationRequirementsAlert = 
+        this.existingClassificationsLevelsInDOW.length>0;
     this.buildClassReqsAsCommaList();
   }
 

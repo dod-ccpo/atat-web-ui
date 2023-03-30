@@ -110,7 +110,7 @@ import ClassificationsModal from "./ClassificationsModal.vue";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
+import { Checkbox, DOWClassificationInstance, ToastObj } from "../../../../types/Global";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 
@@ -188,7 +188,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         ? (obj.classification_level as ReferenceColumn).value 
         : obj.classification_level;
       const instance: DOWClassificationInstance = {
-        sysId: "", // will be populated after saving
+        sysId: "",
         impactLevel: obj.impact_level,
         classificationLevelSysId: classificationLevelSysId as string,
         anticipatedNeedUsage: "",
@@ -200,6 +200,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         typeOfDelivery: "",
         typeOfMobility: "",
         typeOfMobilityOther: "",
+        acquisitionPackage: ""
       }
       this.classificationInstances.push(instance);
     }, this);
@@ -256,29 +257,32 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public async modalOkClicked(): Promise<void> {
     this.showDialog = false;
     
-    if (!_.isEqual(this.modalSelectedOptions, this.modalSelectionsOnOpen)) {
-      const removed = this.modalSelectionsOnOpen.filter(
-        sysId => !this.modalSelectedOptions.includes(sysId)
-      );
-      if (removed.length) {
-        await DescriptionOfWork.removeAllInstancesInClassificationLevel(removed);
-      }
-    }
+   
     // remove any previously selected classifications no longer selected in modal
     const keepSelected = this.modalSelectedOptions;
     this.selectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter((sysId) => {
       return keepSelected.indexOf(sysId) > -1;
     });
-    const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
+    const currentData = await buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
         this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
-    await classificationRequirements.saveSelectedClassificationLevels(currentData)
-    await classificationRequirements.loadSelectedClassificationLevelsByAqId(
-        this.acquisitionPackage?.sys_id as string);
-    await this.setAvailableClassificationLevels();
-    await this.buildNewClassificationInstances();
-    this.checkSingleClassification();
-  }
+    await classificationRequirements.saveSelectedClassificationLevels(currentData);
+    setTimeout(async () => {
+     
+      // await classificationRequirements.loadSelectedClassificationLevelsByAqId(
+      //     this.acquisitionPackage?.sys_id as string);
+      
+      this.selectedClassificationLevelList = 
+          await ClassificationRequirements.getSelectedClassificationLevels();
+    
+      await this.setAvailableClassificationLevels();
+      await this.buildNewClassificationInstances();
+      await this.checkSingleClassification();
+      ClassificationRequirements.createToast();
+    }, 1000);
 
+    
+  }
+ 
   public async clearUnselected(): Promise<void> {
     const filteredSelectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter(
       classificationLevelSysId => 
@@ -304,9 +308,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public classificationInstances: DOWClassificationInstance[] = [];
 
   public async setAvailableClassificationLevels(): Promise<void> {
-    this.selectedClassificationLevelList 
-      = await ClassificationRequirements.getSelectedClassificationLevels();
-    this.selectedInstancesLength = this.selectedClassificationLevelList.length;
+    // this.selectedClassificationLevelList 
+    //  = await ClassificationRequirements.selectedClassificationLevels;
+    this.selectedInstancesLength = await this.selectedClassificationLevelList.length;
 
     this.selectedClassificationLevelSysIds = [];
     this.selectedClassificationLevelList.forEach(selectedClassLevel => {
@@ -319,7 +323,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       this.isIL6Selected = selectedClassLevel.impact_level === this.IL6SysId;
     });
     this.headerCheckboxItems
-        = this.createCheckboxItems(this.selectedClassificationLevelList, "");
+        = await this.createCheckboxItems(this.selectedClassificationLevelList, "");
   }
 
   public checkSingleClassification(): void {
@@ -346,7 +350,14 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // get classification levels selected in step 4 Contract Details
     this.selectedClassificationLevelList 
       = await ClassificationRequirements.getSelectedClassificationLevels();
-
+    // set name for other
+    if(DescriptionOfWork.currentOfferingName === "Other"){
+      const offeringGroupIndex = DescriptionOfWork.currentOfferingGroupIndex
+      const OfferingIndex = DescriptionOfWork.currentOfferingIndex
+      const name = DescriptionOfWork.DOWObject[offeringGroupIndex]
+        .serviceOfferings[OfferingIndex].otherOfferingName
+      this.serviceOfferingName = name || ""
+    }
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if(this.selectedClassificationLevelList) {
       this.selectedClassificationLevelList.forEach((val) => {
@@ -388,7 +399,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     }
 
     this.checkSingleClassification();
-
     const periods = await Periods.loadPeriods();
     this.isPeriodsDataMissing = periods.length === 0 ? true : false;
 
@@ -419,7 +429,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
     const isValid = this.$refs.form.validate();
-    
     try {
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {

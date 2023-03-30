@@ -3,9 +3,7 @@
   <section class="mt-10">
     <ATATRadioGroup
       id="ContactAffiliation"
-      :legend="
-        'What role best describes your affiliation with the DoD?'
-      "
+      :legend="legendText"
       :items="contactRoles"
       :value.sync="_selectedRole"
       :rules="[
@@ -184,7 +182,7 @@ export default class ATATContactForm extends Vue {
   @Prop() private loaded!: boolean
   @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
   @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
-
+  @PropSync("type") private _type?: string;
   @PropSync("selectedRole") private _selectedRole?: string;
   @PropSync("selectedRank") private _selectedRank?: RankData;
   @PropSync("selectedBranch") private _selectedBranch?: SelectData;
@@ -207,6 +205,7 @@ export default class ATATContactForm extends Vue {
   }
 
   // data
+  private legendText = "";
   private branchData: SelectData[] = [];
   private branchRanksData: AutoCompleteItemGroups = {};
   private selectedBranchRanksData: AutoCompleteItem[] = [];
@@ -263,6 +262,9 @@ export default class ATATContactForm extends Vue {
     });
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
     this.salutationData = convertSystemChoiceToSelect(ContactData.salutationChoices);
+    this.legendText = this._type === "financialPOCForm"?
+      'What role best describes your Financial POC\'s affiliation?':
+      'What role best describes your affiliation with the DoD?'
   }
 
   public async mounted(): Promise<void> {
