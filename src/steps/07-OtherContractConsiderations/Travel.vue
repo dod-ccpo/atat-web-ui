@@ -67,6 +67,7 @@
             <template v-slot:item.actions="{ item }">
               <div class="d-flex justify-space-between align-center">
               <button
+                type="button"
                 :id="'EditButton_' + item.instanceNumber"
                 @click="editInstance(item)"
                 
@@ -75,6 +76,7 @@
               </button>
 
               <button
+                type="button"
                 :id="'CopyButton_' + item.instanceNumber"
                 @click="copyInstance(item)"
               >
@@ -82,6 +84,7 @@
               </button>
 
               <button
+                type="button"
                 :id="'DeleteButton_' + item.instanceNumber"
                 @click="confirmDeleteModal(item)"
               >

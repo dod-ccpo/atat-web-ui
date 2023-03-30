@@ -209,6 +209,7 @@ export interface stringObj {
   [key: string]: string;
 }
 
+
 export interface PoP {
   duration: number | null;
   unitOfTime: string;
@@ -314,9 +315,9 @@ export interface DOWServiceOffering {
   name: string;
   acquisitionPackageSysId: string;
   otherOfferingName?: string;
-  "sys_id": string; //service offering sys id
+  sys_id: string;
   serviceId: string; // id of the service
-  description: string;
+  description?: string;
   classificationInstances?: DOWClassificationInstance[];
   sequence: string;
 }
@@ -413,6 +414,11 @@ export interface OtherServiceOfferingData {
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
   classifiedInformationTypes?: string;
+}
+
+export interface totalClassLevelsInDOWObject {
+  classLevelSysId: string,
+  DOWObjectTotal: number
 }
 
 export interface OtherServiceSummaryTableData {

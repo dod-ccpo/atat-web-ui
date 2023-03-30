@@ -191,25 +191,19 @@ export default class AppPackageBuilder extends Vue {
         return ;
       }
       await this.$router.push({name: nextStepName as string, params: {direction}});
-
     } else if (direction === "previous" && this.altBackDestination) {
-      if (this.$route.name === this.routeNames.DAPPSChecklist && this.firstTimeVisit
-      || this.$route.name === this.routeNames.ContractingShop && !this.firstTimeVisit) {
-        await Steps.setAltBackDestination("");
-        switch (this.altBackDestination) {
-        case AppSections.sectionTitles.Home: {
-          await this.$router.push({name: "home", params: {direction}})
-          AppSections.changeActiveSection(AppSections.sectionTitles.Home);
-          break;
-        }
-        case AppSections.sectionTitles.Packages: {
-          await this.$router.push({name: "home", params: {direction}})
-          AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
-          break;
-        }
-        }
-
+      await Steps.setAltBackDestination("");
+      switch (this.altBackDestination) {
+      case AppSections.sectionTitles.Home: {
+        await this.$router.push({name: "home", params: {direction}})
+        AppSections.changeActiveSection(AppSections.sectionTitles.Home);
+        break;
       }
+      case AppSections.sectionTitles.Packages: {
+        await this.$router.push({name: "home", params: {direction}})
+        AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
+        break;
+      }}
     }
   }
   public get currentRouteName():string|null|undefined{
