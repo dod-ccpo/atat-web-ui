@@ -121,7 +121,6 @@
       :OKDisabled="isAddTripsDisabled"
       @ok="addTravelItemToTable()"
       @cancelClicked="cancelDialog"
-      @outsideClicked="cancelDialog"
     >
       <template #content>
         <div class="mt-3">
