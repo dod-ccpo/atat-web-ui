@@ -1,9 +1,9 @@
 <template>
     <div class="d-flex align-start flex-column">
-    <h2>
+    <h2 class='mb-5'>
         2. Compliance with Military Service-specific policies
     </h2>
-    <p class='d-flex align-start flex-column mt-5'>
+    <p class='d-flex align-start flex-column'>
         You may need authorization from your Military Service prior to placing 
          a task order under the JWCC Contract. Customers are responsible for complying 
          with Military Service-specific cloud acquisition requirements. Prior to 

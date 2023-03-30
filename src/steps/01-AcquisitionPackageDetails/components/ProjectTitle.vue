@@ -1,6 +1,6 @@
 <template>
   <div v-if="isForm">
-    <h2>
+    <h2 class='mb-5'>
       1. Basic project information
     </h2>
     
