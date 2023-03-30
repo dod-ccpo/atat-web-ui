@@ -20,10 +20,22 @@
             class="mt-3 mb-8"
             width="180"
           />
-
+          <ATATAlert
+              id='removeACORWarning'
+              type='warning'
+              :showIcon="false"
+              v-if="removeAcor === true"
+              :maxWidth='740'
+            >
+              <template v-slot:content>
+                <p class="mb-0">
+                  This action will delete contact information that you previously 
+                  entered for this individual.
+                </p>
+              </template>
+            </ATATAlert>
         </v-col>
       </v-row>
-
     </v-container>
   </v-form>
 </template>
@@ -34,11 +46,11 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { VForm, VContainer, VRow, VCol } from "vuetify/lib";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
-    ATATRadioGroup,
+    ATATRadioGroup, ATATAlert
   },
 })
 export default class AlternateCOR extends Mixins(SaveOnLeave) {
@@ -54,6 +66,8 @@ export default class AlternateCOR extends Mixins(SaveOnLeave) {
       value: "false",
     },
   ];
+  
+  private removeAcor = false;
 
   public get hasAlternateCOR(): string {
     const ACORValue = AcquisitionPackage.hasAlternativeContactRep;
@@ -64,10 +78,19 @@ export default class AlternateCOR extends Mixins(SaveOnLeave) {
   }
 
   public set hasAlternateCOR(value: string) {
-    AcquisitionPackage.setHasAlternateCOR(value === "true" ? true : false);
+    if(value  === "false" && AcquisitionPackage.hasAlternativeContactRep === true){
+      this.removeAcor = true;
+    } else if(value === "true"){
+      this.removeAcor = false
+    }
+
+    AcquisitionPackage.setHasAlternateCOR(value === "true");
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    if(this.removeAcor){
+      AcquisitionPackage.removeACORInformation();
+    }
     return true;
   }
 }

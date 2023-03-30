@@ -944,6 +944,8 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: acorInfo, type: "ACOR"});
           this.setHasAlternateCOR(true);
         }
+      } else {
+        this.setHasAlternateCOR(false);
       }
 
       if(primaryContactSysId){
@@ -1519,6 +1521,17 @@ export class AcquisitionPackageStore extends VuexModule {
       ? await api.packageDocumentsSignedTable.getQuery(getdocumentsSysIDQuery)
       : await api.packageDocumentsUnsignedTable.getQuery(getdocumentsSysIDQuery))[0]?.sys_id || "";
     return this.getDomain + '/download_all_attachments.do?sysparm_sys_id=' + sysID;
+  }
+
+  @Action({rawError: true})
+  public async removeACORInformation(): Promise<void>{
+    try{
+      await api.contactsTable.remove(this.acorInfo?.sys_id as string)
+      this.setContact({ data: initialContact(), type: "ACOR" });
+    } catch (error){
+      throw new Error(`error removing Alternate Contracting Officers data ${error}`);
+    }
+    
   }
 
   public get getDomain(): string {
