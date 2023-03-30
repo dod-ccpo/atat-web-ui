@@ -104,9 +104,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   public set projectTitle(value: string) {
     AcquisitionPackage.setProjectTitle(value);
   }
-  // private set currentDisclaimer(value: string) {
 
-  // }
   private get currentData(): ProjectOverviewDTO {
     return {
       title: this.currentTitle,
