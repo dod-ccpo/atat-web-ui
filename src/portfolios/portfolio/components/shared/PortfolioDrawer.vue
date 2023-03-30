@@ -379,7 +379,6 @@ export default class PortfolioDrawer extends Vue {
 
   public getStatusKey(str: string): string {
     return _.startCase(str.toLowerCase().replaceAll("_", " ")).replaceAll(" ", "");
-
   }
 
   public async loadPortfolio(): Promise<void> {

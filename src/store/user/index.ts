@@ -123,14 +123,10 @@ export class UserStore extends VuexModule {
       limit: 1,
       offset: 0
     };
-
-    
-    // EJY is this causing so many multiple calls?????
-
-    // const portfolioData = await PortfolioSummary
-    //   .searchPortfolioSummaryList(searchDTO);
-    // const hasPortfolios = portfolioData.total_count > 0;
-    const hasPortfolios = true;
+   
+    const portfolioData = await PortfolioSummary
+      .searchPortfolioSummaryList(searchDTO);
+    const hasPortfolios = portfolioData.total_count > 0;
     await this.doSetUserHasPortfolios(hasPortfolios);
     return this.userHasPortfolios;
   }
