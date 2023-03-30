@@ -53,7 +53,7 @@
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectDisclaimer
               groupLabelId="disclaimerGroupLabel"
-              :projectDisclaimer.sync="projectDisclaimer"
+              :projectDisclaimer.sync="selectedDisclaimer"
               :rules="[$validators.required(`You must acknowledge compliance with your 
               Military-specific policies.`)]"
             />
@@ -95,6 +95,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   private projectScope = "";
   private emergencyDeclaration = "";
   private projectDisclaimer = "";
+  private selectedDisclaimer: string[] = [];
 
   public get projectTitle(): string {
     return AcquisitionPackage.getTitle();
@@ -103,7 +104,9 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   public set projectTitle(value: string) {
     AcquisitionPackage.setProjectTitle(value);
   }
+  // private set currentDisclaimer(value: string) {
 
+  // }
   private get currentData(): ProjectOverviewDTO {
     return {
       title: this.currentTitle,
@@ -147,10 +150,12 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
         this.emergencyDeclaration = storeData.emergency_declaration;
       }
       if (
-        storeData.project_disclaimer &&
-        storeData.project_disclaimer.length > 0
+        storeData.project_disclaimer
       ){
-        this.projectDisclaimer = storeData.project_disclaimer as YesNo
+        this.projectDisclaimer = storeData.project_disclaimer
+        if(this.projectDisclaimer === "YES"){
+          this.selectedDisclaimer.push("YES")
+        }
       }
       
     }
