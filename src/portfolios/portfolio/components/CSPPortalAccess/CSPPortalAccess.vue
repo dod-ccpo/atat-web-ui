@@ -105,11 +105,10 @@
     >
       <template #content>
         <p class="body">
-          This individual will be granted full access to your cloud resources within the
-          selected {{serviceProvider[portfolioCSP]}} portal, enabling them to manage user accounts
-          and configure workspace settings.
+          This individual will be granted full access to the {{serviceProvider[portfolioCSP]}} 
+          portal to manage user accounts and configure workspace settings. 
           <a id="LearnMoreLink" role="button" @click="openLearnMoreDrawer">
-            Learn more about CSP administrators
+            Learn more
           </a>
         </p>
         <v-form ref="modalForm" v-model="formIsValid" lazy-validation>
