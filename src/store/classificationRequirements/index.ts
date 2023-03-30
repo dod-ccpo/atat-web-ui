@@ -662,6 +662,7 @@ export class ClassificationRequirementsStore extends VuexModule {
       classLevelItemToBeDeleted.sys_id as string
     )
 
+    await this.getTotalClassLevelsInDOW();
   }
 
   @Action({rawError: true})

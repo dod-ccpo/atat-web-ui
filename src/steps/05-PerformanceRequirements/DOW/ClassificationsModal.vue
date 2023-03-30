@@ -33,7 +33,7 @@
       />
       <ATATAlert
         id="ClassificationRequirementsAlert"
-        v-show="_isIL6Selected === true"
+        v-show="showClassificationRequirementsAlert"
         type="warning"
         class="copy-max-width mt-10"
       >
@@ -47,7 +47,7 @@
       </ATATAlert>
        <ATATAlert
         id="TSSecretAlert"
-        v-show="showTSSecretAlert===true"
+        v-show="showTSSecretAlert"
         type="warning"
         class="copy-max-width mt-10"
       >
@@ -91,7 +91,6 @@ export default class ClassificationsModal extends Vue {
   @PropSync("modalSelectedOptions") public _modalSelectedOptions!: string[];
   @PropSync("isIL6Selected") public _isIL6Selected?: boolean;
   @PropSync("showDialog") public _showModal?: boolean;
-  public showTSSecretAlert = false;
   public selectedValue = "";
   public isItemAdded: boolean | null = null;
 
@@ -99,8 +98,6 @@ export default class ClassificationsModal extends Vue {
   public async modalSelectedOptionsChange(updated: string[], current: string[]): Promise<void> {
     this.isItemAdded = updated.length>current.length;
     await this.setSelectedValue(updated,current);
-    await this.setShowTSSecretAlert(updated);
-    await this.showClassificationRequirementsAlert(updated);  
   }
 
   public async setSelectedValue(
@@ -112,21 +109,17 @@ export default class ClassificationsModal extends Vue {
       : current.find(c=>updated.indexOf(c)===-1) as string
   }
 
-  public async setShowTSSecretAlert(updated: string[]): Promise<void>{
-    this.showTSSecretAlert = 
-      (this.modalSelectionsOnOpen.some(v => this.isSelectionOnHighSide(v)) 
-        || updated.some(o => this.isSelectionOnHighSide(o)));
+  get showTSSecretAlert(): boolean{
+    return this._modalSelectedOptions.some(o => 
+      ClassificationRequirements.highSideSysIds.indexOf(o)>-1);
   }
 
-  public async showClassificationRequirementsAlert(updated:string[]): Promise<void>{
-    this._isIL6Selected = updated.includes(this.IL6SysId || "");
+  get showClassificationRequirementsAlert(): boolean{
+    this._isIL6Selected = this._modalSelectedOptions.includes(
+      ClassificationRequirements.classificationSecretSysId);
+    return this._isIL6Selected
   }
 
-  private isSelectionOnHighSide(selectedSysId: string): boolean {
-    return ClassificationRequirements.classificationLevels.filter(
-      cl => cl.classification!=="U"&&cl.sys_id===selectedSysId
-    ).length>0;
-  }
 
   private hasChangedPackageClassificationLevels(): boolean {
     const arr1 = [...this.modalSelectionsOnOpen].sort();
@@ -146,12 +139,12 @@ export default class ClassificationsModal extends Vue {
   }
 
   public cleanUp(): void{
-    this.showTSSecretAlert = this._isIL6Selected as boolean;
     this._showModal = false;
   }
 
   public async mounted(): Promise<void>{
-    await this.showClassificationRequirementsAlert(this.modalSelectionsOnOpen);
+    this.showClassificationRequirementsAlert;
+    this.showTSSecretAlert;
   }
 }
 
