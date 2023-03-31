@@ -100,6 +100,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   estimateDataSource: IgceEstimateDTO[][] = [];
   classLevels = ClassificationRequirements.classificationLevels;
   isPanelOpen = [0]; //0 is open; 1 is closed.
+  cdsRecords: IgceEstimateDTO[] = [];
+  cdsRecord: IgceEstimateDTO = {};
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -114,10 +116,17 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   }
 
   async createDataSource(): Promise<void>{
-    this.igceEstimateData = await IGCE.igceEstimateList;
+    await IGCE.igceEstimateList.forEach(
+      item => {
+        item.classification_level !==""
+          ? this.igceEstimateData.push(item)
+          : this.cdsRecords.push(item)
+      }
+    )
     await this.populateClassificationDisplay();
     await this.groupByClassificationDisplay();
     await this.sortDataSource();
+    await this.addCDSEntry();
     this.estimateDataSource = await this.tempEstimateDataSource;
   }
 
@@ -142,6 +151,36 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     }, Object.create(null));
   }
 
+  addCDSEntry():void{
+    const existingClassLevels = Object.keys(this.tempEstimateDataSource);
+    const doesTSExist = existingClassLevels.includes("Top Secret");
+    const doesSecretExist = existingClassLevels.includes("Secret") && !doesTSExist
+    
+    this.cdsRecord = {
+      title: "Cross Domain Solution (CDS)",
+      description: this.formatCDSDescription(),
+      unit: "MONTH" 
+    }
+
+    for (const classLevel in this.tempEstimateDataSource){
+      if (doesTSExist && classLevel === "Top Secret"){
+        this.tempEstimateDataSource[classLevel].push(this.cdsRecord)
+      }
+      if (doesSecretExist && classLevel === "Secret"){
+        this.tempEstimateDataSource[classLevel].push(this.cdsRecord)
+      }
+    }
+  }
+
+  formatCDSDescription(): string{
+    const desc = this.cdsRecords.map(
+      record => record.cross_domain_pair
+    ).join(",");
+    return desc.toLowerCase().replaceAll("_", " ")
+      .replaceAll("ts", "Top Secret") 
+      .replaceAll("s", "Secret")
+      .replaceAll("u", "Unclassified")
+  }
 
   async sortDataSource(): Promise<void>{
     // sort nested arrays
