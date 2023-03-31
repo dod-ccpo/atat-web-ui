@@ -15,7 +15,8 @@ import {
   SingleMultiple,
   EstimateOptionValue,
   TrainingEstimate,
-  EstimateOptionValueObjectArray
+  EstimateOptionValueObjectArray,
+  Environment
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -233,6 +234,7 @@ export interface ProjectOverviewDTO extends BaseTableDTO {
   title: string;
   scope: string;
   emergency_declaration: string;
+  project_disclaimer: YesNo;
 }
 
 export interface MilitaryRankDTO extends BaseTableDTO {
@@ -646,7 +648,8 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   alerts: AlertDTO[];
   title?: string;
   description?: string;
-  environments?: EnvironmentDTO[];
+  environments?: Environment[];
+  last_updated?: string;
 }
 
 export interface PortfolioSummaryMetadataAndDataDTO {
@@ -662,11 +665,11 @@ export interface EnvironmentDTO extends BaseTableDTO {
   dashboard_link: string;
   pending_operators: string[];
   portfolio: string;
-  provisioned: YesNo;
+  provisioned: string;
   provisioned_date: string;
   provisioning_failure_cause: string;
   provisioning_request_date: string;
-  csp_admins?: OperatorDTO[]
+  csp_admins?: OperatorDTO[];
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{

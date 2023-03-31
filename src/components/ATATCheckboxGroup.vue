@@ -384,10 +384,12 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   private getPerformanceRequirementTotal(classLevelSysId: string): string{
-    const totalClassLevelInDOW = this.totalRequirementsInDOW.find(
-      req => req.classLevelSysId === classLevelSysId
-    )?.DOWObjectTotal || 0
-    return totalClassLevelInDOW > 0 
+    const totalClassLevelInDOW = ClassificationRequirements.classLevelsInDOWTotal.find(
+      cl => cl.classLevelSysId === classLevelSysId
+    )?.DOWObjectTotal || 0;
+    const hasBeenDeleted = totalClassLevelInDOW === 0;
+    if (hasBeenDeleted){ return ""; } 
+    return totalClassLevelInDOW > 0 && this._selected.includes(classLevelSysId)
       ? totalClassLevelInDOW + " " + setItemToPlural(totalClassLevelInDOW, 'requirement') 
       : "";
   }

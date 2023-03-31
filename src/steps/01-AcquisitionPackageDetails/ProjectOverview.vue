@@ -49,6 +49,15 @@
               :rules="[$validators.required('Please select an option')]"
             />
           </div>
+          <hr/>
+          <div class="d-flex align-start flex-column mt-10 textarea-max-width">
+            <ProjectDisclaimer
+              groupLabelId="disclaimerGroupLabel"
+              :projectDisclaimer.sync="selectedDisclaimer"
+              :rules="[$validators.required(`You must acknowledge compliance with your 
+              Military-specific policies.`)]"
+            />
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -63,6 +72,7 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";
 import EmergencyDeclarationSupport from "./components/EmergencyDeclarationSupport.vue";
+import ProjectDisclaimer from "./components/ProjectDisclaimer.vue"
 
 import AcquisitionPackage, {
   StoreProperties,
@@ -70,18 +80,22 @@ import AcquisitionPackage, {
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
+import { YesNo } from "types/Global";
 
 @Component({
   components: {
     ProjectTitle,
     ProjectScope,
     EmergencyDeclarationSupport,
+    ProjectDisclaimer
   },
 })
 export default class ProjectOverview extends Mixins(SaveOnLeave) {
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";
+  private projectDisclaimer = "";
+  private selectedDisclaimer: string[] = [];
 
   public get projectTitle(): string {
     return AcquisitionPackage.getTitle();
@@ -96,6 +110,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       title: this.currentTitle,
       scope: this.projectScope,
       emergency_declaration: this.emergencyDeclaration,
+      project_disclaimer: this.projectDisclaimer[0] as YesNo
     };
   }
 
@@ -104,6 +119,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       title: AcquisitionPackage.projectOverview?.title || "",
       scope: AcquisitionPackage.projectOverview?.scope || "",
       emergency_declaration: AcquisitionPackage.projectOverview?.emergency_declaration || "",
+      project_disclaimer: AcquisitionPackage.projectOverview?.project_disclaimer || ""
     };
   }
 
@@ -122,7 +138,6 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       || await AcquisitionPackage.loadData<ProjectOverviewDTO>({
         storeProperty: StoreProperties.ProjectOverview,
       });
-
     if (storeData) {
       this.currentTitle = storeData.title;
       this.projectScope = storeData.scope;
@@ -132,6 +147,15 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       ) {
         this.emergencyDeclaration = storeData.emergency_declaration;
       }
+      if (
+        storeData.project_disclaimer
+      ){
+        this.projectDisclaimer = storeData.project_disclaimer
+        if(this.projectDisclaimer === "YES"){
+          this.selectedDisclaimer.push("YES")
+        }
+      }
+      
     }
   }
 

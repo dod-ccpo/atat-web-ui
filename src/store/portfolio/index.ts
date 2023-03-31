@@ -221,8 +221,22 @@ export class PortfolioDataStore extends VuexModule {
     provisioned: "",
     members: [],
     taskOrderNumber: "",
+    environments: [],
+    lastUpdated: "",
   }
-   
+
+  public currentEnvironmentSysId = "";
+  @Action({rawError: true})
+  public async setCurrentEnvSysId(sysId: string): Promise<void> {
+    this.doSetCurrentEnvSysId(sysId);
+  }
+  @Mutation
+  public doSetCurrentEnvSysId(sysId: string): void {
+    this.currentEnvironmentSysId = sysId;
+  }
+  
+
+
   public summaryFilterRoles: FilterOption[] = [
     {
       label: "All of my portfolios",
@@ -390,7 +404,8 @@ export class PortfolioDataStore extends VuexModule {
       portfolio_viewers: portfolioData.portfolio_viewers,
       portfolio_viewers_detail: portfolioData.portfolio_viewers_detail,
       members: portfolioData.members,
-      environments: portfolioData.environments
+      environments: portfolioData.environments,
+      lastUpdated: portfolioData.lastUpdated,
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
     this.activeTaskOrderNumber = portfolioData.taskOrderNumber 

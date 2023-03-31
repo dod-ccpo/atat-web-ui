@@ -199,7 +199,6 @@ export default class Card extends Vue {
 
   public get statusChipBgColor(): string {
     const status = this.modifiedData.packageStatus
-
     return getStatusChipBgColor(status ? status : "");
   }
 
@@ -316,7 +315,7 @@ export default class Card extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.currentUser = await UserStore.getCurrentUser();
-    this.reformatData(this.cardData)
+    this.reformatData(this.cardData);
     if(this.cardData.package_status?.value === 'DRAFT'){
       this.cardMenuItems = [
         {

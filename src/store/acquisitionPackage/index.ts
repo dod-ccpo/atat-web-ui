@@ -39,7 +39,8 @@ import {
   EvalPlanSourceSelection, 
   EvalPlanMethod, 
   uploadingFile, 
-  signedDocument } from "types/Global";
+  signedDocument,
+  YesNo } from "types/Global";
 import { SessionData } from "./models";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
@@ -91,6 +92,8 @@ export const Statuses: Record<string, Record<string, string>> = {
   OptionExercised: { label: "Option Exercised", value: "OPTION_EXERCISED" }, // CLIN
   OptionPending: { label: "Option Pending", value: "OPTION_PENDING" }, // CLIN  
   Processing: { label: "Processing", value: "PROCESSING" }, // PORT
+  Provisioned: { label: "Provisioned", value: "PROVISIONED" }, // ENV
+  ProvisioningIssue: { label: "Provisioning issue", value: "PROVISIONING_ISSUE" }, // PORT, ENV  
   TaskOrderAwarded: { label: "Task Order Awarded", value: "TASK_ORDER_AWARDED" }, // ACQ
   Upcoming: { label: "Upcoming", value: "UPCOMING" }, // TO
   WaitingForSignatures: { label: "Waiting For Signatures", value: "WAITING_FOR_SIGNATURES" }, // ACQ
@@ -109,11 +112,13 @@ export const initialCurrentContract = (): CurrentContractDTO => {
 }
 
 const initialProjectOverview = () => {
+  const disclaimer:YesNo = "";
   return {
     sys_id: "",
     title: "",
     scope: "",
     emergency_declaration: "",
+    project_disclaimer: disclaimer,
   };
 };
 

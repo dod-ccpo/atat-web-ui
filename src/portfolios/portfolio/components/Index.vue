@@ -47,7 +47,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
@@ -91,6 +91,14 @@ export default class PortfolioSummary extends Vue {
   public portfolioStatus = ""
   public portfolioDescription = ""
   public portfolioCSP = ""
+ 
+  public get activeTabIndex(): number {
+    return AppSections.activeTabIndex;
+  }
+  @Watch("activeTabIndex")
+  public activeTabIndexChanged(newVal: number): void {
+    this.tabIndex = newVal;
+  }
 
   public async loadOnEnter(): Promise<void>  {
     const portfolio = PortfolioStore.currentPortfolio;
