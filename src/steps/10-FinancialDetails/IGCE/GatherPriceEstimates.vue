@@ -84,9 +84,8 @@ import IGCE from "@/store/IGCE";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { IgceEstimateDTO, ReferenceColumn } from "@/api/models";
+import { CrossDomainSolutionDTO, IgceEstimateDTO, ReferenceColumn } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
-
 
 @Component({
   components: { 
@@ -100,6 +99,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   estimateDataSource: IgceEstimateDTO[][] = [];
   classLevels = ClassificationRequirements.classificationLevels;
   isPanelOpen = [0]; //0 is open; 1 is closed.
+  cdsSNOWRecord: CrossDomainSolutionDTO|null|undefined ;
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -114,10 +114,14 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   }
 
   async createDataSource(): Promise<void>{
-    this.igceEstimateData = await IGCE.igceEstimateList;
+    //filter out useless cds records
+    this.igceEstimateData = await IGCE.igceEstimateList.filter(
+      iel => iel.title?.toLowerCase().indexOf("cross domain") === -1
+    )
     await this.populateClassificationDisplay();
     await this.groupByClassificationDisplay();
     await this.sortDataSource();
+    await this.addCDSEntry();
     this.estimateDataSource = await this.tempEstimateDataSource;
   }
 
@@ -142,6 +146,57 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     }, Object.create(null));
   }
 
+  async addCDSEntry():Promise<void>{
+    this.cdsSNOWRecord = await IGCE.getCDSRecord();
+    const existingCDSIGCERecord = await IGCE.igceEstimateList.find(
+      ied => ied.title?.toLowerCase().indexOf("cross domain") !== -1
+    )
+    const existingClassLevels = Object.keys(this.tempEstimateDataSource);
+    const doesTSExist = existingClassLevels.includes("Top Secret");
+    const doesSecretExist = existingClassLevels.includes("Secret - IL6") && !doesTSExist;
+    const blankRecord = {
+      title: "Cross Domain Solution (CDS)",
+      description: await this.formatCDSDescription(),
+      unit: "MONTH", 
+      unit_price: 0,
+      unit_quantity: "",
+      cross_domain_solution: this.cdsSNOWRecord?.sys_id,
+      cross_domain_pair: this.cdsSNOWRecord?.traffic_per_domain_pair,
+      acquisition_package: AcquisitionPackage.packageId,
+      classification_display:  "",
+      classification_instance: "",
+      classification_level: "",
+    }
+    
+    const cdsRecord = existingCDSIGCERecord !== undefined 
+      ? existingCDSIGCERecord
+      : blankRecord
+
+    // add item to the highest class level 
+    for (const classLevel in this.tempEstimateDataSource){
+      if (doesTSExist && classLevel === "Top Secret"){
+        this.tempEstimateDataSource[classLevel].push(cdsRecord)
+      }
+      if (doesSecretExist && classLevel === "Secret - IL6"){
+        this.tempEstimateDataSource[classLevel].push(cdsRecord)
+      }
+    }
+  }
+
+  async formatCDSDescription(): Promise<string>{
+    
+    const pairs = JSON.parse(this.cdsSNOWRecord?.traffic_per_domain_pair || "");
+    let desc = "";
+    pairs.forEach(
+      (p:  Record<string, string> ) =>{
+        desc += p.type.toLowerCase().replaceAll("_", " ")
+          .replaceAll("ts", "Top Secret") 
+          .replaceAll("s", "Secret")
+          .replaceAll("u", "Unclassified")
+        desc += " (" + p.dataQuantity + " GB/month), "
+      })
+    return desc.substring(0,desc.lastIndexOf(","));
+  }
 
   async sortDataSource(): Promise<void>{
     // sort nested arrays

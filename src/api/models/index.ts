@@ -426,6 +426,7 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
   type_of_delivery?: "" | "SHIPPED" | "PICK_UP";
   type_of_mobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   type_of_mobility_other?: string;
+  ts_contractor_clearance_type?: string;
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {

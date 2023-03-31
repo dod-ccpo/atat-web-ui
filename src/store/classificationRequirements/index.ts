@@ -455,18 +455,6 @@ export class ClassificationRequirementsStore extends VuexModule {
       );
       objSysId = savedObject.sys_id as string;
     }
-    // need to sync up IGCE estimate records based on user selections on the CDS screen.
-    if (value.cross_domain_solution_required === "YES") {
-      const domainPairTypeList =
-        JSON.parse(value.traffic_per_domain_pair) as CrossDomainSolution["solutionType"];
-      await IGCEStore.syncUpIgceEstimateCDS({
-        cdsSysId: objSysId,
-        crossDomainPairTypeList: domainPairTypeList.map(domainPairType => domainPairType.type),
-        description: value.anticipated_need_or_usage,
-      })
-    } else {
-      await IGCEStore.deleteIgceEstimateCDS(objSysId)
-    }
 
     return objSysId;
   }

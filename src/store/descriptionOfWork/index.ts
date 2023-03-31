@@ -160,6 +160,7 @@ const saveOrUpdateClassificationInstance =
       tempObject.type_of_mobility = classificationInstance.typeOfMobility;
       tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
       tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
+      tempObject.ts_contractor_clearance_type = classificationInstance.tsContractorClearanceType;
       if(classificationInstance.sysId)
         tempObject.sys_id = classificationInstance.sysId;
 
@@ -509,6 +510,7 @@ const mapClassificationInstanceFromDTO = (
     typeOfDelivery: value.type_of_delivery,
     typeOfMobility: value.type_of_mobility,
     typeOfMobilityOther: value.type_of_mobility_other,
+    tsContractorClearanceType: value.ts_contractor_clearance_type,
     classifiedInformationTypes: value.classified_information_types,
     sysId: value.sys_id,
     acquisitionPackage: AcquisitionPackage.acquisitionPackage?.sys_id as string
@@ -935,50 +937,59 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async saveSecurityRequirements(securityReqs: SecurityRequirement[]): Promise<void> {
+  public async saveSecurityRequirements(
+    securityReqs: SecurityRequirement[],
+  ): Promise<void> {
     // pragma: allowlist secret
-    const secretSysId = ClassificationRequirements.classificationSecretSysId;
-    // TODO: future ticket when implementing TOP secret. keep const around even if unused currently
-    // pragma: allowlist secret
-    // const topSecretSysId = ClassificationRequirements.classificationTopSecretSysId;
-
-    // pragma: allowlist secret
-    const secretReqsObj = securityReqs.find(obj => obj.type === "SECRET");
-    // pragma: allowlist secret
-    const secretReqs = (secretReqsObj?.classification_information_type)?.join(",");
-
     const offeringGroupObj = this.DOWObject.find(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );
-    const isCloudSupportService =
-        DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+    const isCloudSupportService = 
+          DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+    securityReqs.forEach(
+      secReqObj => {
+        // pragma: allowlist secret
+        const classLevelSysId = secReqObj.type === "SECRET"
+          ? ClassificationRequirements.classificationSecretSysId
+          : ClassificationRequirements.classificationTopSecretSysId
+        
+        // const secretReqsObj = securityReqs.find(obj => obj.type === "SECRET");
+        // pragma: allowlist secret
+        const secretReqs = (secReqObj?.classification_information_type)?.join(",");
 
-    if (offeringGroupObj && isCloudSupportService) {
-      // save other offering instances with secret + classification level
-      offeringGroupObj.otherOfferingData?.forEach(instance => {
-        if (instance.classificationLevel === secretSysId) {
-          instance.classifiedInformationTypes = secretReqs;
-          saveOrUpdateOtherServiceOffering(instance, this.currentGroupId.toLocaleLowerCase());
-        }
-      });
-    } else if (offeringGroupObj) {
-      // save classification instances with secret + classification level
-      const serviceOfferingObj = offeringGroupObj.serviceOfferings.find(
-        obj => obj.name === this.currentOfferingName
-      );
-      if (serviceOfferingObj) {
-        const title = serviceOfferingObj.serviceId;
-        const serviceOfferingName = serviceOfferingObj.name === "Other"?
-          serviceOfferingObj.otherOfferingName || "": serviceOfferingObj.name || "";
-        serviceOfferingObj.classificationInstances?.forEach(instance => {
-          if (instance.classificationLevelSysId === secretSysId) {
-            instance.classifiedInformationTypes = secretReqs;
-            saveOrUpdateClassificationInstance(
-              instance, title, serviceOfferingName);
+        if (offeringGroupObj && isCloudSupportService) {
+          // save other offering instances with secret + classification level
+          offeringGroupObj.otherOfferingData?.forEach(instance => {
+            if (instance.classificationLevel === classLevelSysId) {
+              instance.classifiedInformationTypes = secretReqs;
+              instance.tsContractorClearanceType = secReqObj.ts_contractor_clearance_type;
+              saveOrUpdateOtherServiceOffering(instance, this.currentGroupId.toLocaleLowerCase());
+            }
+          });
+        } else if (offeringGroupObj) {
+          // save classification instances with secret + classification level
+          const serviceOfferingObj = offeringGroupObj.serviceOfferings.find(
+            obj => obj.name === this.currentOfferingName
+          );
+          if (serviceOfferingObj) {
+            const title = serviceOfferingObj.serviceId;
+            const serviceOfferingName = serviceOfferingObj.name === "Other"?
+              serviceOfferingObj.otherOfferingName || "": serviceOfferingObj.name || "";
+            serviceOfferingObj.classificationInstances?.forEach(instance => {
+              if (instance.classificationLevelSysId === classLevelSysId) {
+                instance.classifiedInformationTypes = secretReqs;
+                instance.tsContractorClearanceType = secReqObj.ts_contractor_clearance_type;
+                saveOrUpdateClassificationInstance(
+                  instance, title, serviceOfferingName);
+              }
+            });
           }
-        });
+        }
+
       }
-    }
+    )
+
+    
   }
 
   @Action({rawError: true})
@@ -992,40 +1003,48 @@ export class DescriptionOfWorkStore extends VuexModule {
       classification_information_type: [],
     };
 
-    const secretSysId = ClassificationRequirements.classificationSecretSysId;
-
-    const isCloudSupportService =
-        DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
-
-    const offeringGroupObj = this.DOWObject.find(
-      obj => obj.serviceOfferingGroupId === this.currentGroupId
-    );
-    if (offeringGroupObj && isCloudSupportService) {
-      offeringGroupObj.otherOfferingData?.forEach(instance => {
-        if (instance.classificationLevel === secretSysId) {
-          const secReqSysIds = instance.classifiedInformationTypes
-            ? instance.classifiedInformationTypes.split(",")
-            : [];
-          secretObj.classification_information_type = secReqSysIds;
-        }
-
-      });
-    } else if (offeringGroupObj && !isCloudSupportService) {
-      const offering = offeringGroupObj.serviceOfferings.find(
-        obj => obj.name === this.currentOfferingName
-      );
-      if (offering) {
-        const secretInstance = offering.classificationInstances?.find(
-          obj => obj.classificationLevelSysId === secretSysId
+    [secretObj, topSecretObj].forEach(
+      (secReqObj) =>{
+        const secReqObjSysId = secReqObj.type === "SECRET"
+          ? ClassificationRequirements.classificationSecretSysId
+          : ClassificationRequirements.classificationTopSecretSysId
+        const isCloudSupportService =
+            DescriptionOfWork.cloudSupportServices.includes(this.currentGroupId);
+    
+        const offeringGroupObj = this.DOWObject.find(
+          obj => obj.serviceOfferingGroupId === this.currentGroupId
         );
-        if (secretInstance) {
-          const secReqSysIds = secretInstance.classifiedInformationTypes
-            ? secretInstance.classifiedInformationTypes.split(",")
-            : [];
-          secretObj.classification_information_type = secReqSysIds;
+        if (offeringGroupObj && isCloudSupportService) {
+          offeringGroupObj.otherOfferingData?.forEach(instance => {
+            if (instance.classificationLevel === secReqObjSysId) {
+              const secReqSysIds = instance.classifiedInformationTypes
+                ? instance.classifiedInformationTypes.split(",")
+                : [];
+              secReqObj.classification_information_type = secReqSysIds;
+              secReqObj.ts_contractor_clearance_type = instance.tsContractorClearanceType;
+            }
+    
+          });
+        } else if (offeringGroupObj && !isCloudSupportService) {
+          const offering = offeringGroupObj.serviceOfferings.find(
+            obj => obj.name === this.currentOfferingName
+          );
+          if (offering) {
+            const secretInstance = offering.classificationInstances?.find(
+              obj => obj.classificationLevelSysId === secReqObjSysId
+            );
+            if (secretInstance) {
+              const secReqSysIds = secretInstance.classifiedInformationTypes
+                ? secretInstance.classifiedInformationTypes.split(",")
+                : [];
+              secReqObj.classification_information_type = secReqSysIds;
+              secReqObj.ts_contractor_clearance_type = secretInstance.tsContractorClearanceType;
+            }
+          }
         }
       }
-    }
+    )
+    
 
     const securityReqs: SecurityRequirement[] = [ secretObj, topSecretObj ];
     return securityReqs;
@@ -2014,7 +2033,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       if(otherIndex >= 0 && otherValue){
         currentOfferings[otherIndex].otherOfferingName = otherValue
       }
-      if(otherIndex && !otherValue){
+      if(otherIndex >=0 && !otherValue){
         currentOfferings.splice(otherIndex,1)
       }
       this.currentOfferingName = currentOfferings.length > 0
