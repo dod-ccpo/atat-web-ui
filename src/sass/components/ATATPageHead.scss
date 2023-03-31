@@ -175,3 +175,18 @@ header._atat-page-header {
   }
 
 }
+
+._page-header {
+  margin-left: -56px;
+  padding-left: 56px;
+  margin-right: -84px;
+  padding-right: 84px;
+  margin-top: -40px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid $base-lighter;
+  background-color: $base-lightest;
+  .v-tabs-bar {
+    background-color: transparent !important;
+  }
+
+}

@@ -1,6 +1,13 @@
 
 <template>
   <div>
+    <div class="_page-header">
+      <v-tabs v-if="showEnvTabs" class="_portfolio-env-tabs">
+        <v-tab>Item One</v-tab>
+        <v-tab>Item Two</v-tab>
+        <v-tab>Item Three</v-tab>
+      </v-tabs>
+    </div>
     <div>
       <CSPCard
         :cloudServiceProvider="portfolioCSP"
@@ -15,6 +22,7 @@
           @click="openCSPModal"
           @keydown.enter="openCSPModal"
           @keydown.space="openCSPModal"
+          v-if="showAddCSPAdminButton"
         >
           <ATATSVGIcon
             class="mr-2"
@@ -164,12 +172,14 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AddAdminSlideOut from "@/portfolios/portfolio/components/shared/AddAdminSlideOut.vue";
-import {Operator} from "../../../../../types/Global";
+import {Environment, Operator} from "../../../../../types/Global";
 import Portfolio from "@/store/portfolio";
 import {EnvironmentDTO, OperatorDTO} from "@/api/models";
 import { formatISO, formatISO9075, startOfTomorrow } from "date-fns";
 import { createDateStr } from "../../../../helpers"
 import _ from "lodash";
+import PortfolioStore from "@/store/portfolio";
+import { Statuses } from "@/store/acquisitionPackage";
 
 
 @Component({
@@ -195,9 +205,9 @@ export default class CSPPortalAccess extends Vue {
   };
 
   @Prop({ default: "" }) private portfolioCSP!: string;
-  // TODO: defaults to the first environment (during loadOnEnter) from current portfolio until
-  //  portfolio env tabs based display gets implemented and environment gets passed as a property
-  public environment!: EnvironmentDTO;
+
+  public environments: Environment[] = [];
+  public selectedEnvironment = Portfolio.blankEnvironment;
 
   public page = 1;
   public today = new Date();
@@ -219,6 +229,7 @@ export default class CSPPortalAccess extends Vue {
   private adminAlreadyExists = false;
   private isLoading = false;
   public tomorrow = startOfTomorrow();
+  public showEnvTabs = false;
 
   public tableHeaders: Record<string, string>[] = [
     { text: "Administrator email", value: "email" },
@@ -238,6 +249,16 @@ export default class CSPPortalAccess extends Vue {
 
   public maxPerPage = 10;
   public numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage);
+
+  public get envSysId(): string {
+    return Portfolio.currentPortfolioEnvSysId;
+  }
+  @Watch("envSysId")
+  public envSysIdChanged(newVal: string): void {
+    const envIndex = this.environments.findIndex(obj => obj.sys_id === newVal);
+    this.selectedEnvironment = this.environments[envIndex];
+    this.tableData = this.selectedEnvironment.csp_admins as Operator[];
+  }
 
   @Watch("tableData")
   public tableDataUpdated(): void {
@@ -305,8 +326,12 @@ export default class CSPPortalAccess extends Vue {
     }
   };
 
+  public get showAddCSPAdminButton(): boolean {
+    return this.selectedEnvironment.environmentStatus === Statuses.Provisioned.value;
+  }
+
   public addCSPMember():void {
-    const existingOperator = this.environment.csp_admins
+    const existingOperator = this.selectedEnvironment.csp_admins
       ?.find(cspAdmin => cspAdmin.email === this.adminEmail);
     if (!existingOperator) {
       this.adminAlreadyExists = false;
@@ -315,7 +340,7 @@ export default class CSPPortalAccess extends Vue {
         dodId: this.dodID
       };
       Portfolio.addCSPOperator({
-        environment: this.environment,
+        environment: this.selectedEnvironment,
         operator: operator
       })
       this.adminEmail = "";
@@ -372,13 +397,20 @@ export default class CSPPortalAccess extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    this.isLoading = true; // TODO: this can be used to show the spinner
-    // TODO: remove below 3 lines after environment tabs based display is implemented
-    this.environment = Portfolio.currentPortfolio.environments ?
-      Portfolio.currentPortfolio.environments[0] :
-        {sys_id: "7aafda19073121106417fa4d7c1ed04a"} as EnvironmentDTO;
-    await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.environment);
-    this.tableData = this.environment.csp_admins as Operator[];
+    this.isLoading = true;  
+    this.environments = Portfolio.currentPortfolio.environments || [];
+    this.showEnvTabs = this.environments.length > 1;
+
+    if (Portfolio.currentPortfolio.environments) {
+      const selectedEnvSysId = Portfolio.currentPortfolioEnvSysId;
+      const envIndex = this.environments.findIndex(obj => obj.sys_id === selectedEnvSysId);
+      const idx = envIndex > -1 ? envIndex : 0;
+      this.selectedEnvironment = Portfolio.currentPortfolio.environments[idx] as Environment;
+      debugger;
+    }
+
+    await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
+    this.tableData = this.selectedEnvironment.csp_admins as Operator[];
     this.isLoading = false;
     this.transitionGroup = "transition-group";
   }

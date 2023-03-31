@@ -3,6 +3,7 @@ import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-dec
 import rootStore from "../index";
 
 import {
+  Environment,
   FilterOption,
   MemberInvites, Operator,
   Portfolio,
@@ -225,16 +226,32 @@ export class PortfolioDataStore extends VuexModule {
     lastUpdated: "",
   }
 
-  public currentEnvironmentSysId = "";
+  public blankEnvironment: Environment = {
+    csp: "",
+    csp_id: "",
+    csp_display: "",
+    name: "",
+    dashboard_link: "",
+    pending_operators: [],
+    portfolio: "",
+    provisioned: "",
+    provisioned_date: "",
+    provisioning_failure_cause: "",
+    provisioning_request_date: "",
+    csp_admins: [],
+    environmentStatus: "",
+  }  
+
+  public currentPortfolioEnvSysId = "";
   @Action({rawError: true})
   public async setCurrentEnvSysId(sysId: string): Promise<void> {
     this.doSetCurrentEnvSysId(sysId);
   }
   @Mutation
   public doSetCurrentEnvSysId(sysId: string): void {
-    this.currentEnvironmentSysId = sysId;
+    this.currentPortfolioEnvSysId = sysId;
   }
-  
+
 
 
   public summaryFilterRoles: FilterOption[] = [
