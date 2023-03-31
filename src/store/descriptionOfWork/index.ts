@@ -2014,7 +2014,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       if(otherIndex >= 0 && otherValue){
         currentOfferings[otherIndex].otherOfferingName = otherValue
       }
-      if(otherIndex && !otherValue){
+      if(otherIndex >=0 && !otherValue){
         currentOfferings.splice(otherIndex,1)
       }
       this.currentOfferingName = currentOfferings.length > 0
