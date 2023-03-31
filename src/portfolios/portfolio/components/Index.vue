@@ -7,6 +7,19 @@
 
     <ATATToast />
 
+    <div class="_secondary-page-tabs" v-if="showSecondaryTabs">
+      <v-tabs class="">
+        <v-tab 
+          v-for="(tabItem, index) in secondaryTabItems" 
+          :key="index"
+          :id="getIdText(tabItem + 'Tab')"
+          @click="secondaryTabClick(index)"
+        >
+          {{ tabItem }}
+        </v-tab>
+      </v-tabs>
+    </div>
+
     <v-main
       class="_dashboard"
       :class="[
@@ -22,6 +35,7 @@
           :portfolioStatus="portfolioStatus"
           :isPortfolioProvisioning="isPortfolioProvisioning"
         />
+        
         <v-container
           v-if="!isPortfolioProvisioning"
           :class="[tabItems[tabIndex] === 'Task Orders'?
@@ -34,6 +48,7 @@
             <CSPPortalAccess
               v-if="tabItems[tabIndex] === 'CSP Portal Access'"
               :portfolioCSP="portfolioCSP"
+              :environmentIndex="environmentIndex"
             />
         </v-container>
 
@@ -62,6 +77,7 @@ import Provisioned from "@/portfolios/provisioning/Provisioned.vue";
 
 import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
+import {getIdText} from "@/helpers";
 
 @Component({
   components: {
@@ -86,11 +102,26 @@ export default class PortfolioSummary extends Vue {
     "Funding Tracker",
     "Task Orders",
     "CSP Portal Access"
-  ]
+  ];
+
+  private getIdText(string: string) {
+    return getIdText(string);
+  }
+
+  public get showSecondaryTabs(): boolean {
+    return this.tabIndex === 2 && this.secondaryTabItems.length > 1;
+  } 
+  public secondaryTabItems: string[] = [];
+
   public title = ""
   public portfolioStatus = ""
   public portfolioDescription = ""
   public portfolioCSP = ""
+
+  public environmentIndex = 0;
+  public secondaryTabClick(index: number): void {
+    this.environmentIndex = index;
+  }
  
   public get activeTabIndex(): number {
     return AppSections.activeTabIndex;
@@ -107,6 +138,27 @@ export default class PortfolioSummary extends Vue {
       this.portfolioStatus = portfolio.status || "";
       this.portfolioDescription = portfolio.description || "";
       this.portfolioCSP = portfolio.csp || "";
+
+      const envs = portfolio.environments;
+      debugger;
+
+      if (envs?.length) {
+        const classificationLevels: Record<string, string> = {
+          U: "Unclassified",
+          S: "Secret",
+          TS: "Top Secret",
+        }
+
+        envs.forEach(env => {
+          const c = env.classification_level;
+          if (c) {
+            const classificationLevel = classificationLevels[c];
+            this.secondaryTabItems.push(classificationLevel);
+          }
+        })
+      }
+
+
     } else {
       const provisioningData = await PortfolioStore.getPortfolioProvisioningObj();
       this.isPortfolioProvisioning = true;

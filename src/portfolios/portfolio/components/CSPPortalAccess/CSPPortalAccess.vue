@@ -1,14 +1,7 @@
 
 <template>
   <div>
-    <div class="_page-header">
-      <v-tabs v-if="showEnvTabs" class="_portfolio-env-tabs">
-        <v-tab>Item One</v-tab>
-        <v-tab>Item Two</v-tab>
-        <v-tab>Item Three</v-tab>
-      </v-tabs>
-    </div>
-    <div>
+    <div class="mt-10">
       <CSPCard
         :cloudServiceProvider="portfolioCSP"
       />
@@ -205,6 +198,7 @@ export default class CSPPortalAccess extends Vue {
   };
 
   @Prop({ default: "" }) private portfolioCSP!: string;
+  @Prop({ default: 0}) public environmentIndex!: number;
 
   public environments: Environment[] = [];
   public selectedEnvironment = Portfolio.blankEnvironment;
@@ -250,18 +244,31 @@ export default class CSPPortalAccess extends Vue {
   public maxPerPage = 10;
   public numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage);
 
+  @Watch("environmentIndex")
+  public envIndexChanged(newVal: number) {
+    const envSysId = this.environments[newVal].sys_id;
+    debugger;
+    if (envSysId) Portfolio.setCurrentEnvSysId(envSysId);
+  }
+
   public get envSysId(): string {
     return Portfolio.currentPortfolioEnvSysId;
   }
   @Watch("envSysId")
-  public envSysIdChanged(newVal: string): void {
+  public async envSysIdChanged(newVal: string): Promise<void> {
+    debugger;
     const envIndex = this.environments.findIndex(obj => obj.sys_id === newVal);
     this.selectedEnvironment = this.environments[envIndex];
+    debugger;
+    if (!this.selectedEnvironment.csp_admins) {
+      await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
+    }
     this.tableData = this.selectedEnvironment.csp_admins as Operator[];
   }
 
   @Watch("tableData")
   public tableDataUpdated(): void {
+    debugger;
     this.numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage);
   }
 
@@ -408,8 +415,9 @@ export default class CSPPortalAccess extends Vue {
       this.selectedEnvironment = Portfolio.currentPortfolio.environments[idx] as Environment;
       debugger;
     }
-
-    await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
+    if (!this.selectedEnvironment.csp_admins) {
+      await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
+    }
     this.tableData = this.selectedEnvironment.csp_admins as Operator[];
     this.isLoading = false;
     this.transitionGroup = "transition-group";
