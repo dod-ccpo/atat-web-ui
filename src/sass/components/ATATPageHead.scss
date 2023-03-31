@@ -50,38 +50,6 @@ header._atat-page-header {
   &._portfolio-summary, &._portfolios, &._acquisitions {
     ._header-tab {
       @extend ._header-tab-styles;
-
-      // .v-tabs-slider-wrapper{
-      //   height: 4px !important;
-      //   padding-left:4px;
-      //   padding-right:4px;
-      //   .v-tabs-slider{
-      //     background-color: $primary !important;
-      //   }
-      // }
-      // .v-tab{
-      //   color: $base-dark !important;
-      //   border: 1px solid transparent !important;
-      //   text-transform: none !important;
-      //   letter-spacing: .025rem !important;
-      //   min-width: unset;
-      //   &:before{
-      //     background-color: transparent !important;
-      //   }
-      //   &:focus-visible {
-      //     background-color: transparent !important;
-      //     border: 1px solid $primary !important;
-      //     border-radius: 4px 4px 0 0;
-      //   }
-      //   &:hover{
-      //     &:before{
-      //       background-color: transparent !important;
-      //     }
-      //   }
-      //   &.v-tab--active{
-      //     color: $primary !important;
-      //   }
-      // }
     }
   }
 
@@ -232,7 +200,7 @@ header._atat-page-header {
   position: absolute;
   z-index: 1;
   width: 100%;
-  
+
   @extend ._header-tab-styles;
   .v-tabs-bar {
     background-color: $base-lightest !important;
