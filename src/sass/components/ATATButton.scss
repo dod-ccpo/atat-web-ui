@@ -247,3 +247,11 @@
   }
 }
 
+._faux-button {
+  padding: 8px;
+  border-radius: 4px;
+  &:hover:not(._faux-button--disabled) {
+    background-color: $primary-10;
+    cursor: pointer;
+  }
+}

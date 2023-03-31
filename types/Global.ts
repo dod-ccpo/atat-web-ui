@@ -500,6 +500,7 @@ export interface Operator {
 
 export interface Environment extends EnvironmentDTO {
   environmentStatus?: string;
+  classification_level?: string;
 }
 
 export interface Portfolio extends BaseTableDTO {
