@@ -91,6 +91,8 @@ export const Statuses: Record<string, Record<string, string>> = {
   OptionExercised: { label: "Option Exercised", value: "OPTION_EXERCISED" }, // CLIN
   OptionPending: { label: "Option Pending", value: "OPTION_PENDING" }, // CLIN  
   Processing: { label: "Processing", value: "PROCESSING" }, // PORT
+  Provisioned: { label: "Provisioned", value: "PROVISIONED" }, // ENV
+  ProvisioningIssue: { label: "Provisioning issue", value: "PROVISIONING_ISSUE" }, // PORT, ENV  
   TaskOrderAwarded: { label: "Task Order Awarded", value: "TASK_ORDER_AWARDED" }, // ACQ
   Upcoming: { label: "Upcoming", value: "UPCOMING" }, // TO
   WaitingForSignatures: { label: "Waiting For Signatures", value: "WAITING_FOR_SIGNATURES" }, // ACQ

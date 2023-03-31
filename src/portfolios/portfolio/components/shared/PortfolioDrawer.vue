@@ -16,7 +16,7 @@
           @blur="saveDescription"
         >
         </v-textarea>
-        <div class="d-flex justify-space-between pb-4">
+        <div class="d-flex justify-space-between pb-2">
           <span id="StatusLabel">Status</span>
           <v-chip id="StatusChip" :color="getBgColor()" label>
             {{ portfolioStatus }}
@@ -62,7 +62,7 @@
           <div class="h3 mr-2">Portfolio members</div>
           <div
             id="MemberCount"
-            class="color-base font-size-20"
+            class="color-base font-size-20 _condensed-font"
             v-if="getPortfolioMembersCount() > 0"
           >
             ({{ getPortfolioMembersCount() }})
@@ -147,20 +147,60 @@
 
     <hr class="my-0" />
 
-    <div id="DatesSection" class="_portfolio-panel _portfolio-panel _panel-padding">
-      <!-- 
-        
-        TODO: refactor with environments after AT-8744 complete
-      
-      <div>
-        <span id="ProvisionedOnLabel">Provisioned on&nbsp;</span>
-        <span id="ProvisionedOnDate">{{ provisionedTime }}</span>
+    <div id="EnvironmentsSection" class="_portfolio-panel _panel-padding pb-4">
+      <div id="EnvironmentsTitle" class="d-flex">
+        <div class="h3 mr-2">Environments</div>
+        <div
+          id="EnvironmentsCount"
+          class="color-base font-size-20 _condensed-font"
+          v-if="getEnironmentCount() > 0"
+        >
+          ({{ getEnironmentCount() }})
+        </div>
       </div>
+    </div>
+    <div id="EnvironmentsList" class="_hoverable-rows">
+      <div 
+        class="_hover-row d-flex align-center justify-space-between" 
+        v-for="(env, index) of portfolio.environments" 
+        :key="index"
+        tabindex="0"
+        @click="goToCSPAdmin(env.sys_id)"
+      >
+        <div class="font-weight-500"> 
+          {{ getClassificationLevel(env.classification_level) }}
+        </div>
+        <div class="d-flex align-center">
+          <div class="text-right mr-2">
+            <span class="font-weight-500 d-block" style="line-height: 1;">
+              {{ getEnvStatus(env) }}
+            </span>
+            <span class="font-size-12 text-base">
+              {{ getEnvDateStr(env) }}
+            </span>
+          </div>
+          <div
+            class="_icon-circle"
+            :class="statusImg[env.environmentStatus].bgColor"
+          >
+            <ATATSVGIcon
+              :name="statusImg[env.environmentStatus].name"
+              :width="statusImg[env.environmentStatus].width"
+              :height="statusImg[env.environmentStatus].height"
+              :color="statusImg[env.environmentStatus].color"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="my-0" />
+
+    <div id="DatesSection" class="_portfolio-panel _portfolio-panel _panel-padding">
       <div>
         <span id="LastUpdatedLabel">Last updated&nbsp;</span>
         <span id="LastUpdatedDate">{{ updateTime }}</span>
       </div>
-      -->
     </div>
 
     <InviteMembersModal
@@ -207,19 +247,28 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import Toast from "@/store/toast";
 
 import {
+  Environment,
   Portfolio,
   SelectData,
   SlideoutPanelContent,
   ToastObj,
   User
 } from "types/Global";
-import { format, parseISO } from "date-fns";
+import { 
+  differenceInDays, 
+  differenceInHours,
+  differenceInMinutes, 
+  format,
+  parseISO 
+} from "date-fns";
 import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
-import {getStatusChipBgColor, hasChanges} from "@/helpers";
+import {createDateStr, getStatusChipBgColor, hasChanges} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
+import { EnvironmentDTO } from "@/api/models";
+import AppSections from "@/store/appSections";
 
 @Component({
   components: {
@@ -233,9 +282,9 @@ import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteM
 })
 
 export default class PortfolioDrawer extends Vue {
+
   public portfolio: Portfolio = {};
-  public portfolioStatus: string = Statuses.Active.label;
-  public provisionedTime = "";
+  public portfolioStatus = "";
   public updateTime = "";
   public csp = "";
   public currentUser: User = {};
@@ -272,6 +321,31 @@ export default class PortfolioDrawer extends Vue {
     { text: "About Roles", value: "AboutRoles", isSelectable: false },
   ];
 
+  public statusImg = {
+    [Statuses.ProvisioningIssue.value]: {
+      name: "warningAmber",
+      width: "15",
+      height: "13",
+      color: "warning-dark2",
+      bgColor:"bg-warning-lighter"
+    },
+    [Statuses.Provisioned.value]: {
+      name: "provisioned",
+      width: "20",
+      height: "13",
+      color: "success-dark",
+      bgColor:"bg-success-lighter"
+    },
+    [Statuses.Processing.value]: {
+      name: "processing",
+      width: "20",
+      height: "13",
+      color: "info-dark",
+      bgColor:"bg-info-lighter"
+    }
+  };
+
+
   public get showMembersModal(): boolean {
     return PortfolioStore.getShowAddMembersModal;
   }
@@ -303,22 +377,29 @@ export default class PortfolioDrawer extends Vue {
     return getStatusChipBgColor(this.portfolioStatus);
   }
 
+  public getStatusKey(str: string): string {
+    return _.startCase(str.toLowerCase().replaceAll("_", " ")).replaceAll(" ", "");
+  }
+
   public async loadPortfolio(): Promise<void> {
     const storeData = await PortfolioStore.currentPortfolio;
+ 
     if (storeData) {
-      this.portfolio = storeData;
+      this.portfolio = _.cloneDeep(storeData);
       this.csp = storeData.csp?.toLowerCase() as string;      
-      if (storeData.provisioned) {
-        this.provisionedTime = this.formatDate(storeData.provisioned);
-      }
-      if (storeData.updated) {
-        this.updateTime = this.formatDate(storeData.updated);
+      if (storeData.lastUpdated) {
+        this.updateTime = createDateStr(storeData.lastUpdated, true, true);
       }
       this.portfolioMembers = storeData.members || [];
-      this.portfolioStatus = PortfolioStore.getStatus;
+      if (storeData.status) {
+        const statusKey = this.getStatusKey(storeData.status);
+        this.portfolioStatus = storeData.status 
+          ? Statuses[statusKey].label
+          : "";
+      }
     }
     this.currentUser = await CurrentUserStore.getCurrentUser();
-    // TODO AT-8747 - check if current user is Manager or Viewer
+    // ATAT TODO AT-8747 - check if current user is Manager or Viewer
     // TEMP HARDCODE ROLE
     this.currentUser.role = "Manager";
   }
@@ -337,6 +418,52 @@ export default class PortfolioDrawer extends Vue {
       ? member.firstName + " " + member.lastName
       : member.email || "";
   }
+
+  public getEnironmentCount(): number {
+    return this.portfolio.environments?.length || 0;
+  }
+  public classificationLevels: Record<string, string> = {
+    U: "Unclassified",
+    S: "Secret",
+    TS: "Top Secret",
+  }
+  public getClassificationLevel(abbr: string): string {
+    return this.classificationLevels[abbr];
+  }
+
+  public async goToCSPAdmin(envSysId: string): Promise<void> {
+    // go to CSP Admin page showing correct environment tab    
+    await PortfolioStore.setCurrentEnvSysId(envSysId);
+    AppSections.setActiveTabIndex(2);
+  }
+  public getEnvStatus(env: Environment): string {
+    if (env.environmentStatus) {
+      const statusKey = this.getStatusKey(env.environmentStatus);
+      return Statuses[statusKey].label;
+    } 
+    return "";
+  }
+
+  public getEnvDateStr(env: Environment): string {
+    if (env.environmentStatus === Statuses.Processing.value && env.sys_created_on) {
+      // return "Started x ago"
+      const now = new Date();
+      const created = new Date(env.sys_created_on);
+      const diffInMinutes = differenceInMinutes(now, created);
+      const diffInHours = differenceInHours(now, created);
+      if (diffInMinutes < 60) {
+        return "Started " +  differenceInMinutes(now, created) + " minutes ago";
+      } else if (diffInHours <= 72) {
+        const plural = diffInHours > 1 ? "s" : "";
+        return "Started " + diffInHours + ` hour${plural} ago`;
+      } 
+      const diffInDays = differenceInDays(now, created);
+      return "Started " + diffInDays + " days ago";
+    }
+
+    return createDateStr(env.provisioned_date, true, true);
+  }
+
 
   public portfolioMembers: User[] = [];
 

@@ -299,10 +299,12 @@ export default class PortfolioCard extends Vue {
   }
 
   public get statusChipBgColor(): string {
-    const status = this.cardData.status?.toLowerCase() === Statuses.Processing.value.toLowerCase()
-      ? this.cardData.status
-      : this.cardData.fundingAlertChipString;
-    return getStatusChipBgColor(status ? status : "");
+    // ATAT TODO - REVISIT WHEN WORKING WITH COST DATA NEXT RELEASE
+    // const status 
+    //   = this.cardData.status?.toLowerCase() === Statuses.Processing.value.toLowerCase()
+    //   ? this.cardData.status
+    //   : this.cardData.fundingAlertChipString;
+    return getStatusChipBgColor(this.cardData.status || "");
   }
 
   public leavePortfolio(): void {

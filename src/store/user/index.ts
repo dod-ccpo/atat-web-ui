@@ -123,7 +123,7 @@ export class UserStore extends VuexModule {
       limit: 1,
       offset: 0
     };
-
+   
     const portfolioData = await PortfolioSummary
       .searchPortfolioSummaryList(searchDTO);
     const hasPortfolios = portfolioData.total_count > 0;

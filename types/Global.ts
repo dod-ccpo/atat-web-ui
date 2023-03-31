@@ -498,6 +498,10 @@ export interface Operator {
   provisioningRequestDate?: string;
 }
 
+export interface Environment extends EnvironmentDTO {
+  environmentStatus?: string;
+}
+
 export interface Portfolio extends BaseTableDTO {
   sysId?: string;
   title?: string;
@@ -515,8 +519,9 @@ export interface Portfolio extends BaseTableDTO {
   portfolio_viewers_detail?: User[];
   updated?: string;
   taskOrderNumber?: string;
-  environments?: EnvironmentDTO[];
+  environments?: Environment[];
   taskOrderSysId?: string;
+  lastUpdated?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {

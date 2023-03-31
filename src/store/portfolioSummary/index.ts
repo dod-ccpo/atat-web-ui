@@ -16,6 +16,7 @@ import {AxiosRequestConfig} from "axios";
 import { Statuses } from "../acquisitionPackage";
 import CurrentUserStore from "../user";
 import {convertColumnReferencesToValues} from "@/api/helpers";
+import { Environment } from "types/Global";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
@@ -181,8 +182,8 @@ export class PortfolioSummaryStore extends VuexModule {
       {
         params:
           { // bring all fields
-            sysparm_query: "portfolio.nameIN" + portfolioSummaryList
-              .map(portfolio => portfolio.name)
+            sysparm_query: "portfolio.sys_idIN" + portfolioSummaryList
+              .map(portfolio => portfolio.sys_id)
           }
       }
     )
@@ -202,21 +203,46 @@ export class PortfolioSummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   private async setEnvironmentsForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    let allEnvironmentsList = await api.environmentTable.getQuery(
+    // get all environments for all user portfolios
+    const allEnvironmentsList = await api.environmentTable.getQuery(
       {
         params:
           { // bring all fields
-            sysparm_query: "portfolio.nameIN" + portfolioSummaryList
-              .map(portfolio => portfolio.name)
+            sysparm_query: "portfolio.sys_idIN" + portfolioSummaryList
+              .map(portfolio => portfolio.sys_id)
           }
       }
     )
-    allEnvironmentsList = allEnvironmentsList
-      .map(environment => convertColumnReferencesToValues(environment));
+    const allEnvs: Environment[] = allEnvironmentsList.map(
+      environment => convertColumnReferencesToValues(environment)
+    );
+
+    allEnvs.forEach(env => {
+      if (env.provisioned === "true") {
+        env.environmentStatus = Statuses.Provisioned.value;;
+      } else {
+        env.environmentStatus = env.provisioning_failure_cause  
+          ? Statuses.ProvisioningIssue.value 
+          : Statuses.Processing.value;
+      }
+    });
     portfolioSummaryList.forEach(portfolio => {
-      portfolio.environments = allEnvironmentsList
-        .filter((environment) => environment.portfolio === portfolio.sys_id);
-    })
+      portfolio.environments = allEnvs.filter(env => env.portfolio === portfolio.sys_id);
+      if (portfolio.portfolio_status !== Statuses.Archived.value) {
+        // portfolio status based on environment statuses
+        let hasProcessing = false;
+        let hasIssue = false;
+    
+        portfolio.environments.forEach(env => {
+          if (env.environmentStatus === Statuses.ProvisioningIssue.value) hasIssue = true;
+          if (env.environmentStatus === Statuses.Processing.value) hasProcessing = true;
+          portfolio.portfolio_status = hasIssue ? Statuses.ProvisioningIssue.value
+            : hasProcessing 
+              ? Statuses.Processing.value 
+              : portfolio.portfolio_status;
+        });
+      }
+    });
     return portfolioSummaryList;
   }
 
@@ -284,8 +310,8 @@ export class PortfolioSummaryStore extends VuexModule {
             sysparm_fields:
               "sys_id,clins,portfolio,task_order_number,task_order_status," +
               "pop_end_date,pop_start_date",
-            sysparm_query: "portfolio.nameIN" + portfolioSummaryList
-              .map(portfolio => portfolio.name)
+            sysparm_query: "portfolio.sys_idIN" + portfolioSummaryList
+              .map(portfolio => portfolio.sys_id)
           }
       }
     )

@@ -166,3 +166,13 @@
     }
   }
 }
+
+._hoverable-rows {
+  ._hover-row {
+    padding: 12px 16px 12px 24px;
+    &:hover {
+      cursor: pointer;
+      background-color: $base-lightest;
+    }
+  }
+}

@@ -29,11 +29,12 @@
             v-if="!isPortfolioProvisioning"
           >
             <v-tab
-              v-for="tab in items"
-              :key="tab"
+              v-for="(tab, index) in items"
+              :key="index"
               :id="getIdText(tab) + '_Tab'"
-              class="font-size-14 pa-1 pt-2  pb-5 mr-3">{{tab}}</v-tab>
-
+              class="font-size-14 pa-1 pt-2  pb-5 mr-3"
+              @click="tabClicked(index)"
+            >{{tab}}</v-tab>
           </v-tabs>
         </div>
       </div>
@@ -169,7 +170,9 @@ export default class PortfolioSummaryPageHead extends Vue {
   public openModal():void {
     PortfolioStore.setShowAddMembersModal(true);
   }
-
+  public tabClicked(index: number): void {0
+    AppSections.setActiveTabIndex(index);
+  }
   public saveTitle(): void {
     if(hasChanges(PortfolioStore.currentPortfolio.title, this._title)) {
       PortfolioStore.updatePortfolioTitle(this._title);
