@@ -233,6 +233,7 @@ export interface ProjectOverviewDTO extends BaseTableDTO {
   title: string;
   scope: string;
   emergency_declaration: string;
+  project_disclaimer: YesNo;
 }
 
 export interface MilitaryRankDTO extends BaseTableDTO {
