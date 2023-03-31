@@ -402,6 +402,10 @@ export class PortfolioDataStore extends VuexModule {
   @Action
   public async setCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
     await this.doSetCurrentPortfolio(portfolioData);
+    const env = portfolioData.environments ? portfolioData.environments[0] : null;
+    if (env && env.sys_id) {
+      await this.setCurrentEnvSysId(env.sys_id);
+    }
   }
 
   @Mutation

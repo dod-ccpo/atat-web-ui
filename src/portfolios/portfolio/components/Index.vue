@@ -15,7 +15,15 @@
           :id="getIdText(tabItem + 'Tab')"
           @click="secondaryTabClick(index)"
         >
-          {{ tabItem }}
+          {{ tabItem.tabText }}
+          <span v-if="showWarningIcon(tabItem.status)" class="pl-2">
+            <ATATSVGIcon 
+              name="warning"
+              color="warning-dark2"
+              width="16"
+              height="16"
+            />
+          </span>
         </v-tab>
       </v-tabs>
     </div>
@@ -66,6 +74,7 @@ import { Component, Watch } from "vue-property-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import ATATToast from "@/components/ATATToast.vue";
 import PortfolioSummaryPageHead from
   "@/portfolios/portfolio/components/shared/PortfolioSummaryPageHead.vue";
@@ -78,6 +87,7 @@ import Provisioned from "@/portfolios/provisioning/Provisioned.vue";
 import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
 import {getIdText} from "@/helpers";
+import { Statuses } from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -87,6 +97,7 @@ import {getIdText} from "@/helpers";
     PortfolioSummaryPageHead,
     ATATFooter,
     ATATSlideoutPanel,
+    ATATSVGIcon,
     ATATToast,
     Provisioned,
   }
@@ -111,7 +122,7 @@ export default class PortfolioSummary extends Vue {
   public get showSecondaryTabs(): boolean {
     return this.tabIndex === 2 && this.secondaryTabItems.length > 1;
   } 
-  public secondaryTabItems: string[] = [];
+  public secondaryTabItems: Record<string, string>[] = [];
 
   public title = ""
   public portfolioStatus = ""
@@ -121,6 +132,10 @@ export default class PortfolioSummary extends Vue {
   public selectedSecondaryTab = 0;
   public secondaryTabClick(index: number): void {
     this.selectedSecondaryTab = index;
+  }
+  public showWarningIcon(status: string): boolean {
+    debugger;
+    return status === Statuses.ProvisioningIssue.value;
   }
  
   public get activeTabIndex(): number {
@@ -153,7 +168,11 @@ export default class PortfolioSummary extends Vue {
           const c = env.classification_level;
           if (c) {
             const classificationLevel = classificationLevels[c];
-            this.secondaryTabItems.push(classificationLevel);
+            const envStatus = env.environmentStatus;
+            this.secondaryTabItems.push({
+              tabText: classificationLevel,
+              status: envStatus as string,
+            });
           }
         })
       }
