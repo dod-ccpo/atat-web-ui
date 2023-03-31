@@ -158,7 +158,7 @@
 /* eslint-disable camelcase */
 import Vue from "vue";
 
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import CSPCard from "@/portfolios/portfolio/components/shared/CSPCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -198,7 +198,7 @@ export default class CSPPortalAccess extends Vue {
   };
 
   @Prop({ default: "" }) private portfolioCSP!: string;
-  @Prop({ default: 0}) public environmentIndex!: number;
+  @PropSync("environmentIndex") public _environmentIndex!: number;
 
   public environments: Environment[] = [];
   public selectedEnvironment = Portfolio.blankEnvironment;
@@ -258,6 +258,7 @@ export default class CSPPortalAccess extends Vue {
   public async envSysIdChanged(newVal: string): Promise<void> {
     debugger;
     const envIndex = this.environments.findIndex(obj => obj.sys_id === newVal);
+    this._environmentIndex = envIndex;
     this.selectedEnvironment = this.environments[envIndex];
     debugger;
     if (!this.selectedEnvironment.csp_admins) {

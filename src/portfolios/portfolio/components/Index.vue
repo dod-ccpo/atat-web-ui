@@ -8,7 +8,7 @@
     <ATATToast />
 
     <div class="_secondary-page-tabs" v-if="showSecondaryTabs">
-      <v-tabs class="">
+      <v-tabs v-model="selectedSecondaryTab">
         <v-tab 
           v-for="(tabItem, index) in secondaryTabItems" 
           :key="index"
@@ -48,7 +48,7 @@
             <CSPPortalAccess
               v-if="tabItems[tabIndex] === 'CSP Portal Access'"
               :portfolioCSP="portfolioCSP"
-              :environmentIndex="environmentIndex"
+              :environmentIndex.sync="selectedSecondaryTab"
             />
         </v-container>
 
@@ -118,9 +118,9 @@ export default class PortfolioSummary extends Vue {
   public portfolioDescription = ""
   public portfolioCSP = ""
 
-  public environmentIndex = 0;
+  public selectedSecondaryTab = 0;
   public secondaryTabClick(index: number): void {
-    this.environmentIndex = index;
+    this.selectedSecondaryTab = index;
   }
  
   public get activeTabIndex(): number {
