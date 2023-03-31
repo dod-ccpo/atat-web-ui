@@ -6,6 +6,38 @@
         :cloudServiceProvider="portfolioCSP"
       />
     </div>
+
+    <ATATAlert 
+      id="EnvironmentAlert"
+      :type="alertContent.type"
+      :showIcon="false"
+      class="mt-10"
+      v-if="showAlert"
+    >
+      <template v-slot:content>
+        <div class="d-flex align-center">
+          <div class="mr-5">
+            <div class="_icon-circle _large"
+              :style="`background-color: ${alertContent.iconBgColor}`"
+            >
+              <ATATSVGIcon 
+                :name="alertContent.iconName"
+                :width="alertContent.iconWidth"
+                :height="alertContent.iconHeight"
+                :color="alertContent.iconColor"
+              />
+            </div>
+          </div>
+          <div>
+            <h3>{{ alertContent.heading }}</h3>
+            <p class="mb-0" v-html="alertContent.message"></p>
+          </div>
+
+        </div>
+      </template>
+    </ATATAlert>
+
+
     <div>
       <div class="d-flex justify-space-between mt-11 mb-6">
         <h1 class="h2 font-weight-500" id="TableHeader">CSP administrator log</h1>
@@ -161,6 +193,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import CSPCard from "@/portfolios/portfolio/components/shared/CSPCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -168,7 +201,7 @@ import AddAdminSlideOut from "@/portfolios/portfolio/components/shared/AddAdminS
 import {Environment, Operator} from "../../../../../types/Global";
 import Portfolio from "@/store/portfolio";
 import {EnvironmentDTO, OperatorDTO} from "@/api/models";
-import { formatISO, formatISO9075, startOfTomorrow } from "date-fns";
+import { differenceInCalendarDays, formatISO, formatISO9075, startOfTomorrow } from "date-fns";
 import { createDateStr } from "../../../../helpers"
 import _ from "lodash";
 import PortfolioStore from "@/store/portfolio";
@@ -177,6 +210,7 @@ import { Statuses } from "@/store/acquisitionPackage";
 
 @Component({
   components: {
+    ATATAlert,
     ATATDialog,
     ATATErrorValidation,
     ATATTextField,
@@ -232,11 +266,11 @@ export default class CSPPortalAccess extends Vue {
     { text: "Processed on", value: "provisionedDate" },
   ];
 
-  public serviceProvider = {
-    Azure:"Azure",
-    AWS:"AWS",
-    Google:"Google Cloud",
-    Oracle:"Oracle Cloud"
+  public serviceProvider: Record<string, string> = {
+    Azure: "Microsoft Azure",
+    AWS: "AWS",
+    Google: "Google Cloud",
+    Oracle: "Oracle Cloud"
   }
 
   public tableData: Operator[] = [];
@@ -245,7 +279,7 @@ export default class CSPPortalAccess extends Vue {
   public numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage);
 
   @Watch("environmentIndex")
-  public envIndexChanged(newVal: number) {
+  public envIndexChanged(newVal: number): void {
     const envSysId = this.environments[newVal].sys_id;
     debugger;
     if (envSysId) Portfolio.setCurrentEnvSysId(envSysId);
@@ -261,6 +295,9 @@ export default class CSPPortalAccess extends Vue {
     this._environmentIndex = envIndex;
     this.selectedEnvironment = this.environments[envIndex];
     debugger;
+    if (this.showAlert) {
+      this.buildAlertContent();
+    }
     if (!this.selectedEnvironment.csp_admins) {
       await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
     }
@@ -327,12 +364,100 @@ export default class CSPPortalAccess extends Vue {
     },
     "Processing":{
       name: "processing",
-      width: "20",
+      width: "17",
       height: "13",
       color: "info-dark",
       bgColor:"bg-info-lighter"
     }
   };
+
+
+  public get showAlert(): boolean {
+    // show alert if any status other than provisioned
+    if (this.selectedEnvironment.environmentStatus !== Statuses.Provisioned.value) {
+      return true;
+    }
+    // for provisioned portfolios, show success alert for 2 weeks
+    const provisionedDate = new Date(this.selectedEnvironment.provisioned_date);
+    const now = new Date();
+    return differenceInCalendarDays(now, provisionedDate) <= 14;
+  }
+
+  public classificationLevels: Record<string, string> = {
+    U: "Unclassified",
+    S: "Secret",
+    TS: "Top Secret",
+  }  
+
+  public alertContent: {
+    heading: string;
+    message: string;
+    type: string;
+    iconName: string;
+    iconWidth: string;
+    iconHeight: string;
+    iconColor: string;
+    iconBgColor: string;
+  } = {
+    heading: "",
+    message: "",
+    type: "",
+    iconName: "",
+    iconWidth: "",
+    iconHeight: "",
+    iconColor: "",
+    iconBgColor: "",
+  };
+
+  public buildAlertContent(): void {
+    const classificationLevel 
+      = this.classificationLevels[this.selectedEnvironment.classification_level as string];
+    const csp = this.serviceProvider[this.selectedEnvironment.csp_display as string];
+
+    debugger;
+
+    if (this.selectedEnvironment.environmentStatus === Statuses.Processing.value) {
+      
+      this.alertContent.heading = "Provisioning in progress";
+      this.alertContent.message = `Upon completion, administrators will have access to your 
+        ${classificationLevel.toLowerCase()} environment within the ${ csp } portal.`;
+      this.alertContent.type = "info"
+      this.alertContent.iconName = "processing"
+      this.alertContent.iconWidth = "33"
+      this.alertContent.iconHeight = "26"
+      this.alertContent.iconColor = "info-dark"
+      this.alertContent.iconBgColor = "#009DDD1A"
+
+    } else if (this.selectedEnvironment.environmentStatus === Statuses.ProvisioningIssue.value) {
+    
+      this.alertContent.heading = "Provisioning issue";    
+      // eslint-disable-next-line max-len
+      const url = "https://community.hacc.mil/s/contact?RequestTopic=Account%20Tracking%20and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer"; 
+      this.alertContent.message = `We are investigating an issue that occurred while 
+        provisioning your ${classificationLevel.toLowerCase()} environment. If you 
+        have any questions, <a href="${url}" target="_blank" class="_external-link">please 
+          contact customer support.</a>`;
+      this.alertContent.type = "warning"
+      this.alertContent.iconName = "warningAmber"
+      this.alertContent.iconWidth = "37"
+      this.alertContent.iconHeight = "32"
+      this.alertContent.iconColor = "warning-dark2"
+      this.alertContent.iconBgColor = "#e9a5141A"
+    
+    } else if (this.selectedEnvironment.environmentStatus === Statuses.Provisioned.value) {
+
+      this.alertContent.heading = "Provisioning complete";
+      this.alertContent.message = `Your ${classificationLevel.toLowerCase()} environment 
+        is now available for use. CSP administrator(s) will receive an email from ${ csp } 
+        with instructions for logging into the cloud portal.`
+      this.alertContent.type = "success"
+      this.alertContent.iconName = "provisioned"
+      this.alertContent.iconWidth = "34"
+      this.alertContent.iconHeight = "26"
+      this.alertContent.iconColor = "success-dark"
+      this.alertContent.iconBgColor = "#62bd591A"
+    }
+  }
 
   public get showAddCSPAdminButton(): boolean {
     return this.selectedEnvironment.environmentStatus === Statuses.Provisioned.value;
@@ -414,7 +539,10 @@ export default class CSPPortalAccess extends Vue {
       const envIndex = this.environments.findIndex(obj => obj.sys_id === selectedEnvSysId);
       const idx = envIndex > -1 ? envIndex : 0;
       this.selectedEnvironment = Portfolio.currentPortfolio.environments[idx] as Environment;
-      debugger;
+      if (this.showAlert) {
+        this.buildAlertContent();
+      }
+
     }
     if (!this.selectedEnvironment.csp_admins) {
       await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
