@@ -78,7 +78,6 @@ export default class CSPCard extends Vue {
   }
 
   public goToPortal(url: string): void {
-    debugger;
     if (!this.CSPButtonDisabled) {
       window.open(url, "_blank");
     }

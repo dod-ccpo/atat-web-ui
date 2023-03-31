@@ -299,7 +299,6 @@ export default class CSPPortalAccess extends Vue {
   @Watch("environmentIndex")
   public envIndexChanged(newVal: number): void {
     const envSysId = this.environments[newVal].sys_id;
-    debugger;
     if (envSysId) Portfolio.setCurrentEnvSysId(envSysId);
   }
 
@@ -308,11 +307,9 @@ export default class CSPPortalAccess extends Vue {
   }
   @Watch("envSysId")
   public async envSysIdChanged(newVal: string): Promise<void> {
-    debugger;
     const envIndex = this.environments.findIndex(obj => obj.sys_id === newVal);
     this._environmentIndex = envIndex;
     this.selectedEnvironment = this.environments[envIndex];
-    debugger;
     if (this.showAlert) {
       this.buildAlertContent();
     }
@@ -324,7 +321,6 @@ export default class CSPPortalAccess extends Vue {
 
   @Watch("tableData")
   public tableDataUpdated(): void {
-    debugger;
     this.numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage);
   }
 
@@ -436,8 +432,6 @@ export default class CSPPortalAccess extends Vue {
 
   public buildAlertContent(): void {
     const csp = this.serviceProvider[this.selectedEnvironment.csp_display as string];
-
-    debugger;
 
     if (this.selectedEnvironment.environmentStatus === Statuses.Processing.value) {
       

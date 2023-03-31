@@ -134,7 +134,6 @@ export default class PortfolioSummary extends Vue {
     this.selectedSecondaryTab = index;
   }
   public showWarningIcon(status: string): boolean {
-    debugger;
     return status === Statuses.ProvisioningIssue.value;
   }
  
@@ -155,7 +154,6 @@ export default class PortfolioSummary extends Vue {
       this.portfolioCSP = portfolio.csp || "";
 
       const envs = portfolio.environments;
-      debugger;
 
       if (envs?.length) {
         const classificationLevels: Record<string, string> = {
