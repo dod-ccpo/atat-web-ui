@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    <div class="mt-10">
+    <div :class="{'mt-10': needsExtraTopMargin}">
       <CSPCard
         :cloudServiceProvider="portfolioCSP"
         :envClassificationLevel="envClassificationLevel"
@@ -300,6 +300,10 @@ export default class CSPPortalAccess extends Vue {
   public envIndexChanged(newVal: number): void {
     const envSysId = this.environments[newVal].sys_id;
     if (envSysId) Portfolio.setCurrentEnvSysId(envSysId);
+  }
+
+  public get needsExtraTopMargin(): boolean {
+    return this.environments.length > 1;
   }
 
   public get envSysId(): string {
