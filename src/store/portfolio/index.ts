@@ -3,6 +3,7 @@ import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-dec
 import rootStore from "../index";
 
 import {
+  Environment,
   FilterOption,
   MemberInvites, Operator,
   Portfolio,
@@ -56,10 +57,12 @@ export const thresholdAtOrAbove = (value: string, threshold: number): boolean =>
   return !Number.isNaN(numVal) && numVal >=threshold;
 }
 
+// ATAT TODO - future ticket when implemented: get env specific url from 
+// atat_environments table - column `dashboard_link`
 export const cspConsoleURLs: Record<string, string> = {
-  azure: "https://portal.azure.com/abc123",
+  azure: "https://portal.azure.com/",
   aws: "https://signin.amazonaws-us-gov.com",
-  google: "https://console.cloud.google.com",
+  gcp: "https://console.cloud.google.com",
   oracle: "https://console.oraclecloud.com",
 }
 
@@ -225,16 +228,32 @@ export class PortfolioDataStore extends VuexModule {
     lastUpdated: "",
   }
 
-  public currentEnvironmentSysId = "";
+  public blankEnvironment: Environment = {
+    csp: "",
+    csp_id: "",
+    csp_display: "",
+    name: "",
+    dashboard_link: "",
+    pending_operators: [],
+    portfolio: "",
+    provisioned: "",
+    provisioned_date: "",
+    provisioning_failure_cause: "",
+    provisioning_request_date: "",
+    csp_admins: [],
+    environmentStatus: "",
+  }  
+
+  public currentPortfolioEnvSysId = "";
   @Action({rawError: true})
   public async setCurrentEnvSysId(sysId: string): Promise<void> {
     this.doSetCurrentEnvSysId(sysId);
   }
   @Mutation
   public doSetCurrentEnvSysId(sysId: string): void {
-    this.currentEnvironmentSysId = sysId;
+    this.currentPortfolioEnvSysId = sysId;
   }
-  
+
 
 
   public summaryFilterRoles: FilterOption[] = [
@@ -385,6 +404,10 @@ export class PortfolioDataStore extends VuexModule {
   @Action
   public async setCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
     await this.doSetCurrentPortfolio(portfolioData);
+    const env = portfolioData.environments ? portfolioData.environments[0] : null;
+    if (env && env.sys_id) {
+      await this.setCurrentEnvSysId(env.sys_id);
+    }
   }
 
   @Mutation

@@ -1,30 +1,79 @@
 
 <template>
   <div>
-    <div>
+    <div :class="{'mt-10': needsExtraTopMargin}">
       <CSPCard
         :cloudServiceProvider="portfolioCSP"
+        :envClassificationLevel="envClassificationLevel"
+        :envStatus="envStatus"
       />
     </div>
+
+    <ATATAlert 
+      id="EnvironmentAlert"
+      :type="alertContent.type"
+      :showIcon="false"
+      class="mt-6"
+      v-if="showAlert"
+    >
+      <template v-slot:content>
+        <div class="d-flex align-center">
+          <div class="mr-5">
+            <div class="_icon-circle _large"
+              :style="`background-color: ${alertContent.iconBgColor}`"
+            >
+              <ATATSVGIcon 
+                :name="alertContent.iconName"
+                :width="alertContent.iconWidth"
+                :height="alertContent.iconHeight"
+                :color="alertContent.iconColor"
+              />
+            </div>
+          </div>
+          <div>
+            <h3>{{ alertContent.heading }}</h3>
+            <p class="mb-0" v-html="alertContent.message"></p>
+          </div>
+
+        </div>
+      </template>
+    </ATATAlert>
+
     <div>
-      <div class="d-flex justify-space-between mt-11 mb-6">
-        <h1 class="h2 font-weight-500" id="TableHeader">CSP administrator log</h1>
-        <v-btn
-          id="AddCSPAdmin"
-          color="primary"
-          @click="openCSPModal"
-          @keydown.enter="openCSPModal"
-          @keydown.space="openCSPModal"
-        >
-          <ATATSVGIcon
-            class="mr-2"
-            width="17"
-            height="14"
-            name="manageAccount"
-            color="white"
-          />
-          Add a CSP Administrator
-        </v-btn>
+      <div class="_table-topper mt-10">
+        <div class="d-flex justify-space-between align-center">
+          <div>
+            <h2 class="h3 font-weight-500" id="TableHeader">CSP Administrators</h2>
+            <p class="mb-0 font-size-14 text-base-darker">
+              Grant access to your environment by provisioning Azure administrator accounts. 
+              <a role="button" id="LearnMoreLink"
+                tabindex="0"
+                @click="openSlideoutPanel"
+                @keydown.enter="openSlideoutPanel"
+                @keydown.space="openSlideoutPanel"
+              >
+                Learn more
+              </a>
+            </p>
+          </div>
+          <v-btn
+            id="AddCSPAdmin"
+            color="primary"
+            @click="openCSPModal"
+            @keydown.enter="openCSPModal"
+            @keydown.space="openCSPModal"
+            v-if="showAddCSPAdminButton"
+          >
+            <ATATSVGIcon
+              class="mr-2"
+              width="17"
+              height="14"
+              name="manageAccount"
+              color="white"
+            />
+            Add a CSP Administrator
+          </v-btn>
+        </div>
       </div>
 
       <div>
@@ -35,7 +84,7 @@
           hide-default-footer
           sort-by="provisionedDate"
           sort-desc
-          class="_csp-admin-log border1 border-base-lighter"
+          class="_csp-admin-log border1 border-base-lighter _border-top-square"
         >
           <!-- eslint-disable vue/valid-v-slot -->
           <template v-slot:body="props">
@@ -157,23 +206,29 @@
 /* eslint-disable camelcase */
 import Vue from "vue";
 
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import CSPCard from "@/portfolios/portfolio/components/shared/CSPCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AddAdminSlideOut from "@/portfolios/portfolio/components/shared/AddAdminSlideOut.vue";
-import {Operator} from "../../../../../types/Global";
+import {Environment, Operator, SlideoutPanelContent} from "../../../../../types/Global";
 import Portfolio from "@/store/portfolio";
 import {EnvironmentDTO, OperatorDTO} from "@/api/models";
-import { formatISO, formatISO9075, startOfTomorrow } from "date-fns";
+import { differenceInCalendarDays, formatISO, formatISO9075, startOfTomorrow } from "date-fns";
 import { createDateStr } from "../../../../helpers"
 import _ from "lodash";
+import PortfolioStore from "@/store/portfolio";
+import { Statuses } from "@/store/acquisitionPackage";
+import AccessingCSPLearnMore from "../shared/AccessingCSPLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel";
 
 
 @Component({
   components: {
+    ATATAlert,
     ATATDialog,
     ATATErrorValidation,
     ATATTextField,
@@ -195,9 +250,10 @@ export default class CSPPortalAccess extends Vue {
   };
 
   @Prop({ default: "" }) private portfolioCSP!: string;
-  // TODO: defaults to the first environment (during loadOnEnter) from current portfolio until
-  //  portfolio env tabs based display gets implemented and environment gets passed as a property
-  public environment!: EnvironmentDTO;
+  @PropSync("environmentIndex") public _environmentIndex!: number;
+
+  public environments: Environment[] = [];
+  public selectedEnvironment = Portfolio.blankEnvironment;
 
   public page = 1;
   public today = new Date();
@@ -219,6 +275,7 @@ export default class CSPPortalAccess extends Vue {
   private adminAlreadyExists = false;
   private isLoading = false;
   public tomorrow = startOfTomorrow();
+  public showEnvTabs = false;
 
   public tableHeaders: Record<string, string>[] = [
     { text: "Administrator email", value: "email" },
@@ -227,17 +284,44 @@ export default class CSPPortalAccess extends Vue {
     { text: "Processed on", value: "provisionedDate" },
   ];
 
-  public serviceProvider = {
-    Azure:"Azure",
-    AWS:"AWS",
-    Google:"Google Cloud",
-    Oracle:"Oracle Cloud"
+  public serviceProvider: Record<string, string> = {
+    AZURE: "Microsoft Azure",
+    AWS: "Amazon Web Services",
+    GCP: "Google Cloud",
+    ORACLE: "Oracle Cloud"
   }
 
   public tableData: Operator[] = [];
 
   public maxPerPage = 10;
   public numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage);
+
+  @Watch("environmentIndex")
+  public envIndexChanged(newVal: number): void {
+    const envSysId = this.environments[newVal].sys_id;
+    if (envSysId) Portfolio.setCurrentEnvSysId(envSysId);
+  }
+
+  public get needsExtraTopMargin(): boolean {
+    return this.environments.length > 1;
+  }
+
+  public get envSysId(): string {
+    return Portfolio.currentPortfolioEnvSysId;
+  }
+  @Watch("envSysId")
+  public async envSysIdChanged(newVal: string): Promise<void> {
+    const envIndex = this.environments.findIndex(obj => obj.sys_id === newVal);
+    this._environmentIndex = envIndex;
+    this.selectedEnvironment = this.environments[envIndex];
+    if (this.showAlert) {
+      this.buildAlertContent();
+    }
+    if (!this.selectedEnvironment.csp_admins) {
+      await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
+    }
+    this.tableData = this.selectedEnvironment.csp_admins as Operator[];
+  }
 
   @Watch("tableData")
   public tableDataUpdated(): void {
@@ -298,15 +382,110 @@ export default class CSPPortalAccess extends Vue {
     },
     "Processing":{
       name: "processing",
-      width: "20",
+      width: "17",
       height: "13",
       color: "info-dark",
       bgColor:"bg-info-lighter"
     }
   };
 
+
+  public get showAlert(): boolean {
+    // show alert if any status other than provisioned
+    if (this.selectedEnvironment.environmentStatus !== Statuses.Provisioned.value) {
+      return true;
+    }
+    // for provisioned portfolios, show success alert for 2 weeks
+    const provisionedDate = new Date(this.selectedEnvironment.provisioned_date);
+    const now = new Date();
+    return differenceInCalendarDays(now, provisionedDate) <= 14;
+  }
+
+  public classificationLevels: Record<string, string> = {
+    U: "Unclassified",
+    S: "Secret",
+    TS: "Top Secret",
+  }  
+  public get envClassificationLevel(): string {
+    return this.classificationLevels[this.selectedEnvironment.classification_level as string];
+  } 
+
+  public get envStatus(): string {
+    return this.selectedEnvironment.environmentStatus as string;
+  }
+
+  public alertContent: {
+    heading: string;
+    message: string;
+    type: string;
+    iconName: string;
+    iconWidth: string;
+    iconHeight: string;
+    iconColor: string;
+    iconBgColor: string;
+  } = {
+    heading: "",
+    message: "",
+    type: "",
+    iconName: "",
+    iconWidth: "",
+    iconHeight: "",
+    iconColor: "",
+    iconBgColor: "",
+  };
+
+  public buildAlertContent(): void {
+    const csp = this.serviceProvider[this.selectedEnvironment.csp_display as string];
+
+    if (this.selectedEnvironment.environmentStatus === Statuses.Processing.value) {
+      
+      this.alertContent.heading = "Provisioning in progress";
+      this.alertContent.message = `Upon completion, administrators will have access to your 
+        ${this.envClassificationLevel.toLowerCase()} environment within the ${ csp } portal.`;
+      this.alertContent.type = "info"
+      this.alertContent.iconName = "processing"
+      this.alertContent.iconWidth = "33"
+      this.alertContent.iconHeight = "26"
+      this.alertContent.iconColor = "info-dark"
+      this.alertContent.iconBgColor = "#009DDD1A"
+
+    } else if (this.selectedEnvironment.environmentStatus === Statuses.ProvisioningIssue.value) {
+    
+      this.alertContent.heading = "Provisioning issue";    
+      // eslint-disable-next-line max-len
+      const url = "https://community.hacc.mil/s/contact?RequestTopic=Account%20Tracking%20and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer"; 
+      this.alertContent.message = `We are investigating an issue that occurred while 
+        provisioning your ${this.envClassificationLevel.toLowerCase()} environment. If you 
+        have any questions, <a href="${url}" target="_blank" class="_external-link">please 
+          contact customer support.</a>`;
+      this.alertContent.type = "warning"
+      this.alertContent.iconName = "warningAmber"
+      this.alertContent.iconWidth = "37"
+      this.alertContent.iconHeight = "32"
+      this.alertContent.iconColor = "warning-dark2"
+      this.alertContent.iconBgColor = "#e9a5141A"
+    
+    } else if (this.selectedEnvironment.environmentStatus === Statuses.Provisioned.value) {
+
+      this.alertContent.heading = "Provisioning complete";
+      this.alertContent.message = `Your ${this.envClassificationLevel.toLowerCase()} environment 
+        is now available for use. CSP administrator(s) will receive an email from ${ csp } 
+        with instructions for logging into the cloud portal.`
+      this.alertContent.type = "success"
+      this.alertContent.iconName = "provisioned"
+      this.alertContent.iconWidth = "34"
+      this.alertContent.iconHeight = "26"
+      this.alertContent.iconColor = "success-dark"
+      this.alertContent.iconBgColor = "#62bd591A"
+    }
+  }
+
+  public get showAddCSPAdminButton(): boolean {
+    return this.selectedEnvironment.environmentStatus === Statuses.Provisioned.value;
+  }
+
   public addCSPMember():void {
-    const existingOperator = this.environment.csp_admins
+    const existingOperator = this.selectedEnvironment.csp_admins
       ?.find(cspAdmin => cspAdmin.email === this.adminEmail);
     if (!existingOperator) {
       this.adminAlreadyExists = false;
@@ -315,7 +494,7 @@ export default class CSPPortalAccess extends Vue {
         dodId: this.dodID
       };
       Portfolio.addCSPOperator({
-        environment: this.environment,
+        environment: this.selectedEnvironment,
         operator: operator
       })
       this.adminEmail = "";
@@ -371,14 +550,39 @@ export default class CSPPortalAccess extends Vue {
       : "";
   }
 
+  public async openSlideoutPanel(e: Event): Promise<void> {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      const slideoutPanelContent: SlideoutPanelContent = {
+        component: AccessingCSPLearnMore,
+        title: "Learn More",
+      }
+      await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
+
   public async loadOnEnter(): Promise<void> {
-    this.isLoading = true; // TODO: this can be used to show the spinner
-    // TODO: remove below 3 lines after environment tabs based display is implemented
-    this.environment = Portfolio.currentPortfolio.environments ?
-      Portfolio.currentPortfolio.environments[0] :
-        {sys_id: "7aafda19073121106417fa4d7c1ed04a"} as EnvironmentDTO;
-    await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.environment);
-    this.tableData = this.environment.csp_admins as Operator[];
+    this.isLoading = true;  
+    this.environments = Portfolio.currentPortfolio.environments || [];
+    this.showEnvTabs = this.environments.length > 1;
+
+    if (Portfolio.currentPortfolio.environments) {
+      const selectedEnvSysId = Portfolio.currentPortfolioEnvSysId;
+      const envIndex = this.environments.findIndex(obj => obj.sys_id === selectedEnvSysId);
+      const idx = envIndex > -1 ? envIndex : 0;
+      this.selectedEnvironment = Portfolio.currentPortfolio.environments[idx] as Environment;
+      if (this.showAlert) {
+        this.buildAlertContent();
+      }
+
+    }
+    if (!this.selectedEnvironment.csp_admins) {
+      await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
+    }
+    this.tableData = this.selectedEnvironment.csp_admins as Operator[];
     this.isLoading = false;
     this.transitionGroup = "transition-group";
   }

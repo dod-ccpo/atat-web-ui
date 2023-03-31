@@ -13,7 +13,7 @@
       :class="{ 'pt-6 pr-6': maxHeight }"
     >
       <div
-        v-if="type !== 'callout'"
+        v-if="type !== 'callout' && showIcon"
         class="pr-4"
       >
         <i
@@ -86,6 +86,7 @@ export default class ATATAlert extends Vue {
   @Prop({default: ""}) private maxHeight?: string;
   @Prop({default: ""}) private maxWidth?: string;
   @Prop({default: ""}) private minWidth?: string;
+  @Prop({default: true}) private showIcon?: boolean;
 
   /**
    * type: 1) info, 2) error, 3) warning, 4) success, 5) callout
