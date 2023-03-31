@@ -33,7 +33,7 @@
       />
       <ATATAlert
         id="ClassificationRequirementsAlert"
-        v-show="_isIL6Selected === true"
+        v-show="showClassificationRequirementsAlert"
         type="warning"
         class="copy-max-width mt-10"
       >
@@ -47,7 +47,7 @@
       </ATATAlert>
        <ATATAlert
         id="TSSecretAlert"
-        v-show="showTSSecretAlert===true"
+        v-show="showTSSecretAlert"
         type="warning"
         class="copy-max-width mt-10"
       >
@@ -91,16 +91,20 @@ export default class ClassificationsModal extends Vue {
   @PropSync("modalSelectedOptions") public _modalSelectedOptions!: string[];
   @PropSync("isIL6Selected") public _isIL6Selected?: boolean;
   @PropSync("showDialog") public _showModal?: boolean;
-  public showTSSecretAlert = false;
   public selectedValue = "";
-  public isItemAdded: boolean | null = null;
+  public isItemAdded = false;
+  public isTSSelected = false;
 
   @Watch("modalSelectedOptions")
   public async modalSelectedOptionsChange(updated: string[], current: string[]): Promise<void> {
     this.isItemAdded = updated.length>current.length;
     await this.setSelectedValue(updated,current);
-    await this.setShowTSSecretAlert(updated);
-    await this.showClassificationRequirementsAlert(updated);  
+    this._isIL6Selected =  updated.includes(
+      ClassificationRequirements.classificationSecretSysId
+    ) 
+    this.isTSSelected = updated.includes(
+      ClassificationRequirements.classificationTopSecretSysId
+    )
   }
 
   public async setSelectedValue(
@@ -112,20 +116,28 @@ export default class ClassificationsModal extends Vue {
       : current.find(c=>updated.indexOf(c)===-1) as string
   }
 
-  public async setShowTSSecretAlert(updated: string[]): Promise<void>{
-    this.showTSSecretAlert = 
-      (this.modalSelectionsOnOpen.some(v => this.isSelectionOnHighSide(v)) 
-        || updated.some(o => this.isSelectionOnHighSide(o)));
-  }
+  get showTSSecretAlert(): boolean{
+    /**ensure that when selected, the ts or secret checkbox  is 
+     * not in the this.modalSelectionsOnOpen as the alert should 
+     * display when ts or s is selected and not if either of those options
+     * are in this.modalSelectionsOnOpen
+     *  */
 
-  public async showClassificationRequirementsAlert(updated:string[]): Promise<void>{
-    this._isIL6Selected = updated.includes(this.IL6SysId || "");
+    return (this.isTSSelected && 
+      this.modalSelectionsOnOpen.indexOf(
+        ClassificationRequirements.classificationTopSecretSysId
+      ) === -1) 
+      ||  (this._isIL6Selected && 
+      this.modalSelectionsOnOpen.indexOf(
+        ClassificationRequirements.classificationSecretSysId
+      ) === -1) as boolean
   }
-
-  private isSelectionOnHighSide(selectedSysId: string): boolean {
-    return ClassificationRequirements.classificationLevels.filter(
-      cl => cl.classification!=="U"&&cl.sys_id===selectedSysId
-    ).length>0;
+  
+  get showClassificationRequirementsAlert(): boolean{
+    return (this._isIL6Selected && 
+      this.modalSelectionsOnOpen.indexOf(
+        ClassificationRequirements.classificationSecretSysId
+      ) === -1) as boolean
   }
 
   private hasChangedPackageClassificationLevels(): boolean {
@@ -146,13 +158,10 @@ export default class ClassificationsModal extends Vue {
   }
 
   public cleanUp(): void{
-    this.showTSSecretAlert = this._isIL6Selected as boolean;
     this._showModal = false;
   }
 
-  public async mounted(): Promise<void>{
-    await this.showClassificationRequirementsAlert(this.modalSelectionsOnOpen);
-  }
+ 
 }
 
 </script>
