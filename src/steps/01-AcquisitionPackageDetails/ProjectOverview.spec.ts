@@ -20,13 +20,15 @@ describe("Testing index Component", () => {
   const mockProjectOverviewDTO = {
     "scope": "Scope From Store",
     "title": "Title From Store",
-    "emergency_declaration": "yes"
+    "emergency_declaration": "yes",
+    "project_disclaimer": "YES"
   }; 
 
   const mockProjectOverviewDTOCurrent = {
     "scope": "current scope",
     "title": "current title",
-    "emergency_declaration": "yes"
+    "emergency_declaration": "yes",
+    "project_disclaimer": "YES"
   }; 
 
 
@@ -101,7 +103,8 @@ describe("Testing index Component", () => {
       {
         "scope": "scope goes here",
         "title": title,
-        "emergency_declaration": "yes"
+        "emergency_declaration": "yes",
+        "project_disclaimer": "YES"
       }
     )
     const savedData =  await wrapper.vm.savedData;
@@ -116,12 +119,14 @@ describe("Testing index Component", () => {
         currentData:{
           "scope": "currentScope",
           "title": "currentTitle",
-          "emergency_declaration": "yes"
+          "emergency_declaration": "yes",
+          "project_disclaimer": "YES"
         },
         savedData:{
           "scope": "savedScope",
           "title": "savedTitle",
-          "emergency_declaration": "yes"
+          "emergency_declaration": "yes",
+          "project_disclaimer": "YES"
         }
       }
     )

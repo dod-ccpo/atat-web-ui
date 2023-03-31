@@ -26,6 +26,7 @@
               </div>
               <div class="ml-6">
                 <button
+                  type="button"
                   id="EditEnvironment"
                   @click="editEnvironment()"
                   @keydown:enter="editEnvironment()"
@@ -82,6 +83,7 @@
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
               <button
+                type="button"
                 :id="'EditButton_' + item.instanceNumber"
                 @click="editInstance(item)"
                 class="mr-2"
@@ -90,6 +92,7 @@
               </button>
 
               <button
+                type="button"
                 :id="'DeleteButton_' + item.instanceNumber"
                 @click="confirmDeleteInstance(item)"
                 class="ml-2"
@@ -104,6 +107,7 @@
 
           <v-btn
             id="AddInstance"
+            type="button"
             role="link" 
             class="secondary _normal _small-text mt-5"
             :ripple="false"
@@ -402,9 +406,21 @@ export default class EnvironmentSummary extends Vue {
           location = "On-premise";
         } else {
           let instances: string[] = []
-          instance.deployed_regions?.forEach((instanceId) => {
-            instances.push(this.locationNames[instanceId])
-          })
+          if (typeof instance.deployed_regions === "string") {
+            const regionsSysIds = instance.deployed_regions?.split(',')
+            regionsSysIds.forEach((instanceId) => {
+              instances.push(this.locationNames[instanceId])
+            })
+          }
+          //TODO fix existing records so the data isn't pulled in as an array
+          //then we can remove this and cleanup the logic for this
+          if(Array.isArray(instance.deployed_regions)){
+            instance.deployed_regions.forEach((instanceId) => {
+              instances.push(this.locationNames[instanceId])
+            })
+            
+          }
+          
           let regions = instances?.length
             ? instances.join(", ")
             : "";

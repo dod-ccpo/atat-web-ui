@@ -224,6 +224,9 @@ export class CurrentEnvironmentStore extends VuexModule {
      * base current environment table with the updated instance id.\
      */
     if (!instance.sys_id) {
+      if(Array.isArray(instance.deployed_regions)) {
+        instance.deployed_regions = instance.deployed_regions.join(',')
+      }
       const currEnvInstanceResp = await api.currentEnvironmentInstanceTable
         .create(instance);
       instance.sys_id = currEnvInstanceResp.sys_id as string;
@@ -362,7 +365,7 @@ export class CurrentEnvironmentStore extends VuexModule {
                 : instance[key] as string;
             });
             if (instance.deployed_regions) {
-              instance.deployed_regions = (instance.deployed_regions.slice(1, -1)).split(",")
+              instance.deployed_regions = instance.deployed_regions.split(",")
             }
           });
           this.setCurrentEnvironmentInstances(currentEnvInstances);
