@@ -204,6 +204,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   public isValid = true;
 
   public get currentData(): CurrentEnvironmentInstanceDTO {
+
     return this.instanceData;
   }
   public savedData: CurrentEnvironmentInstanceDTO = _.cloneDeep(defaultCurrentEnvironmentInstance);
@@ -274,7 +275,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       && this.currEnvData.env_classifications_onprem.length === 1);
   }
 
-  public selectedDeployedRegionsOnLoad = "";
+  public selectedDeployedRegionsOnLoad: string[] = [];
   public regionsDeployedUpdate(selected: string[]): void {
     this.instanceData.deployed_regions = selected;
   }
@@ -429,14 +430,24 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     this.instanceNumber = CurrentEnvironment.currentEnvInstanceNumber + 1;
     const envStoreData = await CurrentEnvironment.getCurrentEnvironment();
     if (envStoreData) {
+      this.selectedDeployedRegionsOnLoad = [];
       this.currEnvData = envStoreData;
       this.envLocation = envStoreData.env_location;
       const instanceStoreData = await CurrentEnvironment.getCurrentEnvInstance();
       if (instanceStoreData) {
         this.instanceData = _.cloneDeep(instanceStoreData);
         this.savedData = _.cloneDeep(instanceStoreData);
+        if (typeof this.instanceData.deployed_regions === "string") {
+          const regionsSysIds = this.instanceData.deployed_regions?.split(',')
+          regionsSysIds.forEach((instanceId) => {
+            this.selectedDeployedRegionsOnLoad.push(instanceId)
+          })
+        }
+
+        if(Array.isArray(this.instanceData.deployed_regions)){
+          this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || [];
+        }
         
-        this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || "";
         this.regionUsersOnLoad = this.instanceData.users_per_region;
 
         if (this.instanceData.is_traffic_spike_event_based === "YES") {
