@@ -465,7 +465,13 @@ export default class OtherOfferings extends Vue {
   }
 
   public async setComponentSpecificData(): Promise<void> {
-    if (this.isCompute || this.isGeneralXaaS) {
+    if (this.isStorage   || 
+      this.isCompute   ||
+      this.isDatabase  ||
+      this.isSupport   ||
+      this.isTraining  ||
+      this.isPortabilityPlan || 
+      this.isGeneralXaaS) {
       this.formHasBeenTouched 
         = await DescriptionOfWork.hasInstanceBeenTouched(this._serviceOfferingData.instanceNumber);
     }
@@ -508,7 +514,7 @@ export default class OtherOfferings extends Vue {
       this.Form.validate();
     });
   }
-
+    
   private setErrorMessages(): void {
     if (!this.$refs.form) {
       return;
@@ -575,7 +581,12 @@ export default class OtherOfferings extends Vue {
               }
             }
           }
-
+          if(this.isDatabase){
+            if(key === 'radioButtonGroup'){
+              //TODO add missing components into here for database
+            }
+          }
+          
           if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")) {
             const errorBucket: string[] = childRef.errorBucket;
             if (errorBucket.length) {
