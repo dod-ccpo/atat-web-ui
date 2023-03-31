@@ -4,6 +4,8 @@
     <div class="mt-10">
       <CSPCard
         :cloudServiceProvider="portfolioCSP"
+        :envClassificationLevel="envClassificationLevel"
+        :envStatus="envStatus"
       />
     </div>
 
@@ -11,7 +13,7 @@
       id="EnvironmentAlert"
       :type="alertContent.type"
       :showIcon="false"
-      class="mt-10"
+      class="mt-6"
       v-if="showAlert"
     >
       <template v-slot:content>
@@ -37,27 +39,41 @@
       </template>
     </ATATAlert>
 
-
     <div>
-      <div class="d-flex justify-space-between mt-11 mb-6">
-        <h1 class="h2 font-weight-500" id="TableHeader">CSP administrator log</h1>
-        <v-btn
-          id="AddCSPAdmin"
-          color="primary"
-          @click="openCSPModal"
-          @keydown.enter="openCSPModal"
-          @keydown.space="openCSPModal"
-          v-if="showAddCSPAdminButton"
-        >
-          <ATATSVGIcon
-            class="mr-2"
-            width="17"
-            height="14"
-            name="manageAccount"
-            color="white"
-          />
-          Add a CSP Administrator
-        </v-btn>
+      <div class="_table-topper mt-10">
+        <div class="d-flex justify-space-between align-center">
+          <div>
+            <h2 class="h3 font-weight-500" id="TableHeader">CSP Administrators</h2>
+            <p class="mb-0 font-size-14 text-base-darker">
+              Grant access to your environment by provisioning Azure administrator accounts. 
+              <a role="button" id="LearnMoreLink"
+                tabindex="0"
+                @click="openSlideoutPanel"
+                @keydown.enter="openSlideoutPanel"
+                @keydown.space="openSlideoutPanel"
+              >
+                Learn more
+              </a>
+            </p>
+          </div>
+          <v-btn
+            id="AddCSPAdmin"
+            color="primary"
+            @click="openCSPModal"
+            @keydown.enter="openCSPModal"
+            @keydown.space="openCSPModal"
+            v-if="showAddCSPAdminButton"
+          >
+            <ATATSVGIcon
+              class="mr-2"
+              width="17"
+              height="14"
+              name="manageAccount"
+              color="white"
+            />
+            Add a CSP Administrator
+          </v-btn>
+        </div>
       </div>
 
       <div>
@@ -68,7 +84,7 @@
           hide-default-footer
           sort-by="provisionedDate"
           sort-desc
-          class="_csp-admin-log border1 border-base-lighter"
+          class="_csp-admin-log border1 border-base-lighter _border-top-square"
         >
           <!-- eslint-disable vue/valid-v-slot -->
           <template v-slot:body="props">
@@ -198,7 +214,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AddAdminSlideOut from "@/portfolios/portfolio/components/shared/AddAdminSlideOut.vue";
-import {Environment, Operator} from "../../../../../types/Global";
+import {Environment, Operator, SlideoutPanelContent} from "../../../../../types/Global";
 import Portfolio from "@/store/portfolio";
 import {EnvironmentDTO, OperatorDTO} from "@/api/models";
 import { differenceInCalendarDays, formatISO, formatISO9075, startOfTomorrow } from "date-fns";
@@ -206,6 +222,8 @@ import { createDateStr } from "../../../../helpers"
 import _ from "lodash";
 import PortfolioStore from "@/store/portfolio";
 import { Statuses } from "@/store/acquisitionPackage";
+import AccessingCSPLearnMore from "../shared/AccessingCSPLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel";
 
 
 @Component({
@@ -388,6 +406,13 @@ export default class CSPPortalAccess extends Vue {
     S: "Secret",
     TS: "Top Secret",
   }  
+  public get envClassificationLevel(): string {
+    return this.classificationLevels[this.selectedEnvironment.classification_level as string];
+  } 
+
+  public get envStatus(): string {
+    return this.selectedEnvironment.environmentStatus as string;
+  }
 
   public alertContent: {
     heading: string;
@@ -410,8 +435,6 @@ export default class CSPPortalAccess extends Vue {
   };
 
   public buildAlertContent(): void {
-    const classificationLevel 
-      = this.classificationLevels[this.selectedEnvironment.classification_level as string];
     const csp = this.serviceProvider[this.selectedEnvironment.csp_display as string];
 
     debugger;
@@ -420,7 +443,7 @@ export default class CSPPortalAccess extends Vue {
       
       this.alertContent.heading = "Provisioning in progress";
       this.alertContent.message = `Upon completion, administrators will have access to your 
-        ${classificationLevel.toLowerCase()} environment within the ${ csp } portal.`;
+        ${this.envClassificationLevel.toLowerCase()} environment within the ${ csp } portal.`;
       this.alertContent.type = "info"
       this.alertContent.iconName = "processing"
       this.alertContent.iconWidth = "33"
@@ -434,7 +457,7 @@ export default class CSPPortalAccess extends Vue {
       // eslint-disable-next-line max-len
       const url = "https://community.hacc.mil/s/contact?RequestTopic=Account%20Tracking%20and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer"; 
       this.alertContent.message = `We are investigating an issue that occurred while 
-        provisioning your ${classificationLevel.toLowerCase()} environment. If you 
+        provisioning your ${this.envClassificationLevel.toLowerCase()} environment. If you 
         have any questions, <a href="${url}" target="_blank" class="_external-link">please 
           contact customer support.</a>`;
       this.alertContent.type = "warning"
@@ -447,7 +470,7 @@ export default class CSPPortalAccess extends Vue {
     } else if (this.selectedEnvironment.environmentStatus === Statuses.Provisioned.value) {
 
       this.alertContent.heading = "Provisioning complete";
-      this.alertContent.message = `Your ${classificationLevel.toLowerCase()} environment 
+      this.alertContent.message = `Your ${this.envClassificationLevel.toLowerCase()} environment 
         is now available for use. CSP administrator(s) will receive an email from ${ csp } 
         with instructions for logging into the cloud portal.`
       this.alertContent.type = "success"
@@ -528,6 +551,20 @@ export default class CSPPortalAccess extends Vue {
       ? createDateStr(item.provisionedDate as string, true, true)
       : "";
   }
+
+  public async openSlideoutPanel(e: Event): Promise<void> {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      const slideoutPanelContent: SlideoutPanelContent = {
+        component: AccessingCSPLearnMore,
+        title: "Learn More",
+      }
+      await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
 
   public async loadOnEnter(): Promise<void> {
     this.isLoading = true;  
