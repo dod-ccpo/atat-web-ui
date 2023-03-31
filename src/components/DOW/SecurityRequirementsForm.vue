@@ -64,7 +64,7 @@ export default class SecurityRequirementsForm extends vue {
   private clearanceLevels: RadioButton[] = [
     {
       id: "TopSecret",
-      label: "TopSecret",
+      label: "Top Secret",
       value: "TS",
     },
     {

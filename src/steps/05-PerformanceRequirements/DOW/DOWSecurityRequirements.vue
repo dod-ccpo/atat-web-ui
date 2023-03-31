@@ -178,7 +178,11 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
-    this.offeringName = DescriptionOfWork.DOWSecReqOfferingName;
+    this.offeringName = DescriptionOfWork.DOWSecReqOfferingName.toLowerCase() !== "other"
+      ? DescriptionOfWork.DOWSecReqOfferingName
+      : DescriptionOfWork.serviceOfferingsForGroup.find(
+        sofg => sofg.name === "Other"
+      )?.otherOfferingName || "Other";
     this.isSecretOrTopSecretSelected();
     const slideoutPanelContent: SlideoutPanelContent = {
       component: SecurityRequirementsLearnMore,
