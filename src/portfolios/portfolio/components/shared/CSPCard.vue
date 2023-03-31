@@ -102,7 +102,7 @@ export default class CSPCard extends Vue {
         height:"24"
       }
     },
-    "google":{
+    "gcp":{
       title: "Google Cloud",
       url: cspConsoleURLs.google,
       img: {

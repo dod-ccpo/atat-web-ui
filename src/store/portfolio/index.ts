@@ -62,7 +62,7 @@ export const thresholdAtOrAbove = (value: string, threshold: number): boolean =>
 export const cspConsoleURLs: Record<string, string> = {
   azure: "https://portal.azure.com/",
   aws: "https://signin.amazonaws-us-gov.com",
-  google: "https://console.cloud.google.com",
+  gcp: "https://console.cloud.google.com",
   oracle: "https://console.oraclecloud.com",
 }
 

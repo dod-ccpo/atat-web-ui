@@ -285,10 +285,10 @@ export default class CSPPortalAccess extends Vue {
   ];
 
   public serviceProvider: Record<string, string> = {
-    Azure: "Microsoft Azure",
-    AWS: "AWS",
-    Google: "Google Cloud",
-    Oracle: "Oracle Cloud"
+    AZURE: "Microsoft Azure",
+    AWS: "Amazon Web Services",
+    GCP: "Google Cloud",
+    ORACLE: "Oracle Cloud"
   }
 
   public tableData: Operator[] = [];
