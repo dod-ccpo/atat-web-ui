@@ -406,9 +406,21 @@ export default class EnvironmentSummary extends Vue {
           location = "On-premise";
         } else {
           let instances: string[] = []
-          instance.deployed_regions?.forEach((instanceId) => {
-            instances.push(this.locationNames[instanceId])
-          })
+          if (typeof instance.deployed_regions === "string") {
+            const regionsSysIds = instance.deployed_regions?.split(',')
+            regionsSysIds.forEach((instanceId) => {
+              instances.push(this.locationNames[instanceId])
+            })
+          }
+          //TODO fix existing records so the data isn't pulled in as an array
+          //then we can remove this and cleanup the logic for this
+          if(Array.isArray(instance.deployed_regions)){
+            instance.deployed_regions.forEach((instanceId) => {
+              instances.push(this.locationNames[instanceId])
+            })
+            
+          }
+          
           let regions = instances?.length
             ? instances.join(", ")
             : "";
