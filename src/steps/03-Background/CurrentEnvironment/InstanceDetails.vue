@@ -274,7 +274,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       && this.currEnvData.env_classifications_onprem.length === 1);
   }
 
-  public selectedDeployedRegionsOnLoad: string[] = [];
+  public selectedDeployedRegionsOnLoad = "";
   public regionsDeployedUpdate(selected: string[]): void {
     this.instanceData.deployed_regions = selected;
   }
@@ -436,7 +436,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         this.instanceData = _.cloneDeep(instanceStoreData);
         this.savedData = _.cloneDeep(instanceStoreData);
         
-        this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || [];
+        this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || "";
         this.regionUsersOnLoad = this.instanceData.users_per_region;
 
         if (this.instanceData.is_traffic_spike_event_based === "YES") {
