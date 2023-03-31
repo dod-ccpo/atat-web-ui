@@ -92,12 +92,19 @@ export default class ClassificationsModal extends Vue {
   @PropSync("isIL6Selected") public _isIL6Selected?: boolean;
   @PropSync("showDialog") public _showModal?: boolean;
   public selectedValue = "";
-  public isItemAdded: boolean | null = null;
+  public isItemAdded = false;
+  public isTSSelected = false;
 
   @Watch("modalSelectedOptions")
   public async modalSelectedOptionsChange(updated: string[], current: string[]): Promise<void> {
     this.isItemAdded = updated.length>current.length;
     await this.setSelectedValue(updated,current);
+    this._isIL6Selected =  updated.includes(
+      ClassificationRequirements.classificationSecretSysId
+    ) 
+    this.isTSSelected = updated.includes(
+      ClassificationRequirements.classificationTopSecretSysId
+    )
   }
 
   public async setSelectedValue(
@@ -110,16 +117,28 @@ export default class ClassificationsModal extends Vue {
   }
 
   get showTSSecretAlert(): boolean{
-    return this._modalSelectedOptions.some(o => 
-      ClassificationRequirements.highSideSysIds.indexOf(o)>-1);
-  }
+    /**ensure that when selected, the ts or secret checkbox  is 
+     * not in the this.modalSelectionsOnOpen as the alert should 
+     * display when ts or s is selected and not if either of those options
+     * are in this.modalSelectionsOnOpen
+     *  */
 
+    return (this.isTSSelected && 
+      this.modalSelectionsOnOpen.indexOf(
+        ClassificationRequirements.classificationTopSecretSysId
+      ) === -1) 
+      ||  (this._isIL6Selected && 
+      this.modalSelectionsOnOpen.indexOf(
+        ClassificationRequirements.classificationSecretSysId
+      ) === -1) as boolean
+  }
+  
   get showClassificationRequirementsAlert(): boolean{
-    this._isIL6Selected = this._modalSelectedOptions.includes(
-      ClassificationRequirements.classificationSecretSysId);
-    return this._isIL6Selected
+    return (this._isIL6Selected && 
+      this.modalSelectionsOnOpen.indexOf(
+        ClassificationRequirements.classificationSecretSysId
+      ) === -1) as boolean
   }
-
 
   private hasChangedPackageClassificationLevels(): boolean {
     const arr1 = [...this.modalSelectionsOnOpen].sort();
@@ -142,10 +161,7 @@ export default class ClassificationsModal extends Vue {
     this._showModal = false;
   }
 
-  public async mounted(): Promise<void>{
-    this.showClassificationRequirementsAlert;
-    this.showTSSecretAlert;
-  }
+ 
 }
 
 </script>
