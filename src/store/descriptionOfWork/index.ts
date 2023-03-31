@@ -1977,7 +1977,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     if (groupIndex >= 0) {
       let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
-
       if (selectedOfferingSysIds.length === 0) {
         this.DOWObject[groupIndex].serviceOfferings = [];
         currentOfferings = [];
@@ -1997,16 +1996,26 @@ export class DescriptionOfWorkStore extends VuexModule {
               sequence: foundOffering.sequence,
               serviceId: foundOffering.service_offering_group
             }
-            if(foundOffering.name === "Other"){
+            if(foundOffering.name === "Other" && otherValue){
               offering.otherOfferingName = otherValue
+              currentOfferings.push(offering)
             }
-            currentOfferings.push(offering);
+            if(foundOffering.name !== "Other"){
+              currentOfferings.push(offering);
+            }
           }
         });
 
         this.DOWObject[groupIndex].serviceOfferings.sort(
           (a, b) => parseInt(a.sequence) > parseInt(b.sequence) ? 1 : -1
         );
+      }
+      const otherIndex = currentOfferings.findIndex(obj => obj.name === "Other");
+      if(otherIndex >= 0 && otherValue){
+        currentOfferings[otherIndex].otherOfferingName = otherValue
+      }
+      if(otherIndex && !otherValue){
+        currentOfferings.splice(otherIndex,1)
       }
       this.currentOfferingName = currentOfferings.length > 0
         ? currentOfferings[0].name : "";
