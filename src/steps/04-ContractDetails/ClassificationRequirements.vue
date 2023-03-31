@@ -33,7 +33,7 @@
             />
             <ATATAlert
               id="ClassificationRequirementsAlert"
-              v-if="isIL6Selected"
+              v-if="isHighSideSelected"
               type="info"
               class="copy-max-width my-10"
             >
@@ -132,7 +132,6 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public existingClassificationsLevelsInDOW = [""];
   public classReqsAsCommaList = "";
   public acquisitionPackage: AcquisitionPackageDTO | undefined;
-  public isIL6Selected = false;
   public IL6SysId = "";
   public showClassificationRequirementsAlert = false;
   public showDialog = false;
@@ -155,6 +154,12 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     return setItemToPlural(this.DOWOfferingsWithClassLevelLength, "requirement");
   }
 
+  get isHighSideSelected(): boolean{
+    return this.selectedOptions.some(
+      so => ClassificationReqs.highSideSysIds.indexOf(so) > -1
+    )
+  }
+
   @Watch("selectedOptions")
   public async selectedOptionsChange(updated: string[], current: string[]): Promise<void> {
     if (updated.length < current.length){ //selectedOptions was `unchecked` and item removed
@@ -174,7 +179,6 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
         this.getClassificationItem((updated.filter(x => current.indexOf(x) === -1))[0]);
       this.processNewSelectedItem();
     }
-    this.isIL6Selected = updated.indexOf(this.IL6SysId) > -1;
   }
 
   public getClassificationItem(sysId: string): ClassificationLevelDTO {
