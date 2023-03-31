@@ -205,7 +205,7 @@ export class IGCEStore extends VuexModule {
   public async loadTrainingEstimatesFromPackage(packageId: string): Promise<void> {
     const requestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_query: "^acquisition_packageIN" + packageId,
+        sysparm_query: "^acquisition_packageIN" + packageId + "^ORDERBYsys_created_on",
         sysparm_display_value: "false"
       }
     };
