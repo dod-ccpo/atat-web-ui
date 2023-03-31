@@ -134,6 +134,8 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
       if (topSecretReqsObj) {
         this.selectedTopSecretSecurityRequirements 
           = topSecretReqsObj.classification_information_type;
+        this.selectedClearanceLevel 
+         = topSecretReqsObj.ts_contractor_clearance_type as string;
       }
     }
     return true;

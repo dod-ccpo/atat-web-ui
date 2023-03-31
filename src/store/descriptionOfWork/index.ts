@@ -510,6 +510,7 @@ const mapClassificationInstanceFromDTO = (
     typeOfDelivery: value.type_of_delivery,
     typeOfMobility: value.type_of_mobility,
     typeOfMobilityOther: value.type_of_mobility_other,
+    tsContractorClearanceType: value.ts_contractor_clearance_type,
     classifiedInformationTypes: value.classified_information_types,
     sysId: value.sys_id,
     acquisitionPackage: AcquisitionPackage.acquisitionPackage?.sys_id as string
@@ -1020,6 +1021,7 @@ export class DescriptionOfWorkStore extends VuexModule {
                 ? instance.classifiedInformationTypes.split(",")
                 : [];
               secReqObj.classification_information_type = secReqSysIds;
+              secReqObj.ts_contractor_clearance_type = instance.tsContractorClearanceType;
             }
     
           });
@@ -1036,6 +1038,7 @@ export class DescriptionOfWorkStore extends VuexModule {
                 ? secretInstance.classifiedInformationTypes.split(",")
                 : [];
               secReqObj.classification_information_type = secReqSysIds;
+              secReqObj.ts_contractor_clearance_type = secretInstance.tsContractorClearanceType;
             }
           }
         }
