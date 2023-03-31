@@ -314,7 +314,6 @@ export class ClassificationRequirementsStore extends VuexModule {
     newSelectedClassLevelList: SelectedClassificationLevelDTO[])
    : Promise<boolean> {
     try {
-      const itemsToBeDeleted:SelectedClassificationLevelDTO[] = [];
       await this.getTotalClassLevelsInDOW();
       const markedForCreateList = newSelectedClassLevelList
         .filter(newSelected => newSelected.sys_id ? newSelected.sys_id.length === 0 : true);
@@ -333,15 +332,15 @@ export class ClassificationRequirementsStore extends VuexModule {
             markedForCreate.classification_level as string
         )
       })
-      this.doSetClassLevelsToBeDeleted([]);
+      
       await markedForDeleteList.forEach(async markedForDelete => {
-        itemsToBeDeleted.push(markedForDelete);
         const deleteItemSysId = markedForDelete.classification_level as string;
         await this.removeClassificationLevelsFromDBGlobally(deleteItemSysId);
         await this.removeClassificationLevelsFromStoreGlobally(markedForDelete);
       })
-      this.doSetClassLevelsToBeDeleted(itemsToBeDeleted);
-    
+      this.doSetClassLevelsToBeDeleted(markedForDeleteList);
+      
+      
       return true;
     } catch (error) {
       throw new Error(`an error occurred saving selected classification levels ${error}`);
@@ -516,10 +515,10 @@ export class ClassificationRequirementsStore extends VuexModule {
       classLevelSysId: classLevelSysIdToBeDeleted
     }));
     
-    // // delete classification_instances from instance Tables
+    // delete classification_instances from instance Tables
     success.push(await this.deleteClassificationLevels({
       tables: [
-        "cloudSupportEnvironmentInstanceTable", 
+        "cloudSupportEnvironmentInstanceTable",
         "storageEnvironmentInstanceTable",
         "databaseEnvironmentInstanceTable",
         "computeEnvironmentInstanceTable",
@@ -570,6 +569,9 @@ export class ClassificationRequirementsStore extends VuexModule {
         if (tblName === "classificationInstanceTable"){
           this.deleteSelectedServiceOfferingsClassificationInstances(sysIds);
         }
+        if (tblName === "cloudSupportEnvironmentInstanceTable"){
+          this.deleteTrainingEstimates(sysIds)
+        }
         sysIds.forEach(async (itemToBeDeleted)=>{
           await tbl.remove(itemToBeDeleted.sys_id as string);
         })
@@ -580,6 +582,27 @@ export class ClassificationRequirementsStore extends VuexModule {
 
     })
     return success;
+  }
+
+  @Action({rawError: true})
+  public async deleteTrainingEstimates(sysIds: BaseTableDTO[]):Promise<void>{
+    debugger;
+    const sysParmQuery = sysIds.map(
+      item => "cloud_support_environment_instance=" + item.sys_id + "^OR")
+      .join("").replace(/\^OR\s*$/, "");
+    
+    const getTrainingEstimatesQuery: AxiosRequestConfig = {
+      params: {sysparm_query: sysParmQuery}
+    };
+
+    const estimatesToBeDeleted = 
+      await api.trainingEstimateTable.getQuery(getTrainingEstimatesQuery);
+    if (estimatesToBeDeleted.length>0){
+      estimatesToBeDeleted.forEach(
+        async estimate => await api.trainingEstimateTable.remove(estimate.sys_id as string)
+      )
+    }
+    
   }
 
   @Action({rawError: true})
@@ -661,7 +684,6 @@ export class ClassificationRequirementsStore extends VuexModule {
     await this.removeClassificationLevelsFromIGCECostEstimate(
       classLevelItemToBeDeleted.sys_id as string
     )
-
   }
 
   @Action({rawError: true})

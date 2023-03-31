@@ -177,6 +177,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
     this.showDialog = true;
   }
+  public get isOther():boolean {
+    return DescriptionOfWork.currentOfferingName === "Other"
+  }
 
   public async buildNewClassificationInstances(): Promise<void> {
     this.classificationInstances = [];
@@ -436,7 +439,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         }
       });
 
-      if (this.hasChanged() && isValid) {
+      if ((this.hasChanged()|| this.isOther) && isValid) {
         await DescriptionOfWork.setOfferingDetails(this.instancesFormData);
       } else if (!isValid) {
         // scroll to first errored input/issue
