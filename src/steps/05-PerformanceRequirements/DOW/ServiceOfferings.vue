@@ -278,7 +278,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     }
     //find sys_id for otherValue
     let otherCheckBoxIndex = this.checkboxItems.findIndex((item) =>item.label === "Other")
-    this.otherValue = this.checkboxItems[otherCheckBoxIndex].value
+    this.otherValue = this.checkboxItems[otherCheckBoxIndex]?.value || ""
 
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels();
