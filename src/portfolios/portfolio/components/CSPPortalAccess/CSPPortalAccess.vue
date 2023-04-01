@@ -45,7 +45,9 @@
           <div>
             <h2 class="h3 font-weight-500" id="TableHeader">CSP Administrators</h2>
             <p class="mb-0 font-size-14 text-base-darker">
-              Grant access to your environment by provisioning Azure administrator accounts. 
+              Grant access to your environment by provisioning 
+              {{serviceProvider[portfolioCSP]}} 
+              administrator accounts. 
               <a role="button" id="LearnMoreLink"
                 tabindex="0"
                 @click="openSlideoutPanel"
