@@ -438,14 +438,16 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         this.instanceData = _.cloneDeep(instanceStoreData);
         this.savedData = _.cloneDeep(instanceStoreData);
         if (typeof this.instanceData.deployed_regions === "string") {
-          const regionsSysIds = this.instanceData.deployed_regions?.split(',')
-          regionsSysIds.forEach((instanceId) => {
-            this.selectedDeployedRegionsOnLoad.push(instanceId)
-          })
-        }
-
-        if(Array.isArray(this.instanceData.deployed_regions)){
-          this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || [];
+          let deployedRegionIds = this.instanceData.deployed_regions?.split(',')
+          if(deployedRegionIds.length != this.instanceData.deployed_regions?.length){
+            deployedRegionIds.forEach((instanceId) => {
+              console.log(instanceId)
+              this.selectedDeployedRegionsOnLoad.push(instanceId)
+            })
+          }
+          
+        } else {
+          console.log("error")
         }
         
         this.regionUsersOnLoad = this.instanceData.users_per_region;
