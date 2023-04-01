@@ -441,7 +441,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
           let deployedRegionIds = this.instanceData.deployed_regions?.split(',')
           if(deployedRegionIds.length != this.instanceData.deployed_regions?.length){
             deployedRegionIds.forEach((instanceId) => {
-              console.log(instanceId)
               this.selectedDeployedRegionsOnLoad.push(instanceId)
             })
           }
