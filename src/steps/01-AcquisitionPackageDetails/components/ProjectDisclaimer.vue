@@ -15,7 +15,7 @@
         :card='false'
         label='disclaimer.label'
         :groupLabelId="groupLabelId"
-        :value.sync="_projectDisclaimer"
+        :value.sync="_selectedDisclaimer"
         :items="disclaimer"
         name="project-disclaimer-checkbox-group"
         :rules="_rules"
@@ -39,7 +39,7 @@ import {
   })
 export default class ProjectDisclaimer extends Vue {
     @PropSync("projectDisclaimer", { default: "" })
-      private _projectDisclaimer!: string | null;
+      private _selectedDisclaimer!: string | null;
     @Prop({default: "project-disclaimer"}) private groupLabelId!: string;
     @Prop({default: true}) private isForm!: boolean;
     @Prop({default: ""}) private groupLabel!: string;
