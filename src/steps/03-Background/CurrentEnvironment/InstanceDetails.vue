@@ -277,7 +277,12 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
   public selectedDeployedRegionsOnLoad: string[] = [];
   public regionsDeployedUpdate(selected: string[]): void {
-    this.instanceData.deployed_regions = selected;
+    const santized = selected.map(
+      element => element.replaceAll("[", "").replaceAll("]","")
+    )
+    this.instanceData.deployed_regions = santized.length>0 
+      ? santized.join(",")
+      : ""
   }
 
   public regionUsersOnLoad = "";
