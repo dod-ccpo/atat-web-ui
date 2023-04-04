@@ -22,18 +22,6 @@
             icon="arrow_drop_down"
           />
 
-          <!-- TODO: add link when functionality completed in future ticket
-          <a
-            role="button"
-            id="RequestAgencyAdded"
-            class="_text-link"
-            :class="{ 'mb-10 d-inline-block': !selectedAgency }"
-            @click="showDialog = true"
-          >
-            Request to have your agency added
-          </a>
-          -->
-
           <div v-if="selectedAgency" class="mt-10">
             <hr />
             <section id="Section1">
@@ -213,8 +201,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // data
   private emptySelectData: SelectData = { text: "", value: "" };
 
-  private DisaOrgId = "fdd5245e875a9910bc86b889cebb35e3";
-
+ 
   private addressTypes = {
     USA: "US",
     MIL: "MILITARY",
@@ -310,6 +297,10 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   }
 
   // getters
+
+  get isAgencyDisa(): boolean{
+    return (this.selectedAgency.text as string)?.toUpperCase().indexOf("DISA")> -1
+  }
   private get currentData(): OrganizationDTO {
     let state = "";
     let city = this.city;

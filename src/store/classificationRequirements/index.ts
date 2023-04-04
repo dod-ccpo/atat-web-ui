@@ -574,7 +574,6 @@ export class ClassificationRequirementsStore extends VuexModule {
 
   @Action({rawError: true})
   public async deleteTrainingEstimates(sysIds: BaseTableDTO[]):Promise<void>{
-    debugger;
     const sysParmQuery = sysIds.map(
       item => "cloud_support_environment_instance=" + item.sys_id + "^OR")
       .join("").replace(/\^OR\s*$/, "");
