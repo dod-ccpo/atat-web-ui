@@ -116,7 +116,7 @@
                       class="atat-text-field-error ml-14"
                       v-if="durationErrorIndices.indexOf(index)>-1"
                       :errorMessages="[
-                        `Please specify the duration and/or length of your
+                        `Please specify the length of your
                         ${getOptionPeriodLabel(index)} period`
                         ]"
                     />
