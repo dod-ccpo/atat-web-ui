@@ -113,13 +113,14 @@
                    
                     <ATATErrorValidation
                       :id="'Required' + index"
-                      class="atat-text-field-error ml-14"
+                      class="atat-text-field-error ml-16 pl-8"
                       v-if="durationErrorIndices.indexOf(index)>-1"
                       :errorMessages="[
                         `Please specify the length of your
-                        ${getOptionPeriodLabel(index)} period`
+                        ${getOptionPeriodLabelError(index)}.`
                         ]"
                     />
+
                     <ATATErrorValidation
                       :id="'MoreThanAYear' + index"
                       class="atat-text-field-error ml-14"
@@ -361,6 +362,12 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   public getOptionPeriodLabel(index: number): string {
     return index === 0 ? "Base" : "Option " + index;
+  }
+
+  public getOptionPeriodLabelError(index: number): string {
+    const period = (index === 0 ? "base" : "option");
+    const isNotBase = (index > 0 ? " " + index.toString() : "");
+    return period + " period" + isNotBase;
   }
 
   public openSlideoutPanel(e: Event): void {
