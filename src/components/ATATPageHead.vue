@@ -119,7 +119,7 @@ export default class ATATPageHead extends Vue {
   public moreOptionsTooltipText = "More options"
   public showDeleteModal = false
   public showArchiveModal = false
-  public packageName = acquisitionPackage.projectTitle
+  public packageName = acquisitionPackage.projectTitle || "New Acquisition";
   public hasContributor():boolean{
     if(AcquisitionPackage
       && AcquisitionPackage.acquisitionPackage
