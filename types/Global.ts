@@ -209,6 +209,7 @@ export interface stringObj {
   [key: string]: string;
 }
 
+
 export interface PoP {
   duration: number | null;
   unitOfTime: string;
@@ -266,6 +267,15 @@ export interface uploadingFile{
   isUploaded: boolean;
 }
 
+export interface signedDocument{
+  itemName:string,
+  requiresSignature:boolean,
+  alertText?:string,
+  show:boolean
+}
+
+
+
 export interface invalidFile{
   file: File;
   doesFileExist: boolean;
@@ -273,7 +283,20 @@ export interface invalidFile{
   statusCode?: number;
 }
 
+export interface DOWCardData {
+  title: string;
+  label: string;
+  icon: string;
+  learnMore: string,
+  route: string;
+  defineRequirements: boolean,
+  section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupport";
+  isComplete: boolean,
+  buttonLabel?: string
+}
+
 export interface DOWClassificationInstance {
+  acquisitionPackage: ReferenceColumn | string;
   sysId?: string;
   impactLevel: string; // for sorting
   classificationLevelSysId: string;
@@ -283,18 +306,20 @@ export interface DOWClassificationInstance {
   labelLong?: string;
   labelShort?: string;
   classifiedInformationTypes?: string;
+  tsContractorClearanceType?: string;
   typeOfDelivery?: "" | "SHIPPED" | "PICK_UP";
   typeOfMobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   typeOfMobilityOther?: string;
+  ts_contractor_clearance_type?: string;
 }
 
 export interface DOWServiceOffering {
   name: string;
   acquisitionPackageSysId: string;
   otherOfferingName?: string;
-  "sys_id": string; //service offering sys id
+  sys_id: string;
   serviceId: string; // id of the service
-  description: string;
+  description?: string;
   classificationInstances?: DOWClassificationInstance[];
   sequence: string;
 }
@@ -391,6 +416,11 @@ export interface OtherServiceOfferingData {
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
   classifiedInformationTypes?: string;
+}
+
+export interface totalClassLevelsInDOWObject {
+  classLevelSysId: string,
+  DOWObjectTotal: number
 }
 
 export interface OtherServiceSummaryTableData {
@@ -652,7 +682,8 @@ export interface CurrentEnvironmentInstance {
 }
 export interface SecurityRequirement {
   type: SecurityClassification;
-  classification_information_type: string[]
+  classification_information_type: string[],
+  ts_contractor_clearance_type?: string,
 }
 
 export interface CrossDomainSolution {

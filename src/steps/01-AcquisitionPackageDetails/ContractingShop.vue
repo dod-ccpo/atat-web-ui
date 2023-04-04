@@ -106,6 +106,9 @@ import ContractingShopLearnMore from "./ContractingShopLearnMore.vue";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ProjectOverviewDTO } from "@/api/models";
 import AppSections from "@/store/appSections";
+import { routeNames } from "@/router/stepper";
+import acquisitionPackage from "@/store/acquisitionPackage";
+
 
 @Component({
   components: {
@@ -158,7 +161,7 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
 
   private async loadOnEnter(): Promise<void> {
     this.isPageLoading = true;
-
+    await acquisitionPackage.setHideSideNavigation(false);
     const packageId = this.$route.query['packageId'] || "";
 
     if(packageId){
@@ -175,6 +178,21 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
     this.contractingShop = AcquisitionPackage.contractingShop || "";
     this.isPageLoading = false;
   }
+  
+  public async skipPage(): Promise<void> {
+    if(AcquisitionPackage.acquisitionPackage?.package_status === "WAITING_FOR_TASK_ORDER"){
+      this.$router.replace({
+        name: routeNames.UnderReview,
+        replace: true,
+        params: {
+          direction: "next"
+        },
+        query: {
+          packageId: AcquisitionPackage.packageId
+        }
+      }).catch(() => console.log("avoiding redundant navigation"));
+    }
+  }
 
   public async mounted(): Promise<void> {
     AcquisitionPackage.setPackagePercentLoaded(0);
@@ -184,6 +202,7 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
+    await this.skipPage();
   }
 
   protected async saveOnLeave(): Promise<boolean> {

@@ -37,6 +37,13 @@
                       :textFieldWidth="164"
                       :value.sync="selectedCDSCheckboxItems"
                       :groupLabelHelpText="cdsSolutionLabelHelpText"
+                      :rules="[
+                        $validators
+                        .required('Please select at least one type of cross-domain solution.')
+                      ]"
+                      :textfieldRules="[
+                        $validators.required('Enter the number of users in this region.')
+                        ]"
                       @checkboxTextfieldDataUpdate="solutionTypeDataUpdate"
                     />
                   </v-col>
@@ -47,6 +54,10 @@
                       id="projectedFileStreamType"
                       label="Projected file stream/type"
                       :value.sync="domainInfo.projectedFileStream"
+                      :rules="[
+                        $validators
+                        .required('Enter a projected file stream/type')
+                      ]"
                     />
                   </v-col>
                 </v-row>
@@ -195,9 +206,51 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     const periods = await Periods.loadPeriods();
     this.isPeriodsDataMissing = (periods && periods.length === 0);
     this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
-
+    const selectedClassifications = 
+      await ClassificationRequirements.getSelectedClassificationLevels()
+    const topSecretFound =
+      selectedClassifications.findIndex(classification => classification.classification === "TS")
+    if(topSecretFound >= 0){
+      this.cdsSolutionItems = [
+        {
+          id: "UtoS",
+          label: "Unclassified to Secret",
+          value: "U_TO_S",
+          textfieldValue: "",
+        },
+        {
+          id: "UtoTS",
+          label: "Unclassified to Top Secret",
+          value: "U_TO_TS",
+          textfieldValue: "",
+        },
+        {
+          id: "StoU",
+          label: "Secret to Unclassified",
+          value: "S_TO_U",
+          textfieldValue: "",
+        },
+        {
+          id: "StoTS",
+          label: "Secret to Top Secret",
+          value: "S_TO_TS",
+          textfieldValue: "",
+        },
+        {
+          id: "TStoU",
+          label: "Top Secret to Unclassified",
+          value: "TS_TO_U",
+          textfieldValue: "",
+        },
+        {
+          id: "TStoS",
+          label: "Top Secret to Secret",
+          value: "TS_TO_S",
+          textfieldValue: "",
+        }
+      ]
+    }
     const cdsSolution = await ClassificationRequirements.getCdsSolution();
-
     if(cdsSolution){
       this.domainInfo.anticipatedNeedUsage = cdsSolution.anticipated_need_or_usage;
       this.domainInfo.crossDomainSolutionRequired = cdsSolution.cross_domain_solution_required;
@@ -210,9 +263,8 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
        = JSON.parse(cdsSolution.traffic_per_domain_pair);
 
       if(solutionTypes){
-
         const checkboxItems: any = [];
-
+        const savedSolutionsTypes: any = [];
         solutionTypes.forEach(item => {
           const checkBoxItemIndex = this.cdsSolutionItems.findIndex(
             cbItem => cbItem.value === item.type);
@@ -220,15 +272,14 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
           if(checkBoxItemIndex > -1){
             this.cdsSolutionItems[
               checkBoxItemIndex].textfieldValue = item.dataQuantity.toString();
-
+            savedSolutionsTypes.push({"type":item.type,"dataQuantity":item.dataQuantity})
             checkboxItems.push(item.type);
           }
-            
         });
         
         this.$nextTick(() => {
           this.selectedCDSCheckboxItems = checkboxItems;
-          this.domainInfo.solutionType = solutionTypes;
+          this.domainInfo.solutionType = savedSolutionsTypes;
         });
       }
     }

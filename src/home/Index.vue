@@ -100,6 +100,7 @@ import UserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -132,9 +133,10 @@ export default class Home extends Vue {
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    await acquisitionPackage.setFirstTimeVisit(true)
     await AcquisitionPackage.reset();
     this.$router.push({
-      name: routeNames.ContractingShop,
+      name: routeNames.DAPPSChecklist,
       params: {
         direction: "next"
       },
@@ -149,6 +151,7 @@ export default class Home extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    await AcquisitionPackage.setHideNavigation(false);
     this.currentUser = await UserStore.getCurrentUser();
     await this.checkIfIsNewUser();
     const sectionData = await AppSections.getSectionData();

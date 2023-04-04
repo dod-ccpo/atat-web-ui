@@ -144,7 +144,7 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   instance_location: EnvironmentInstanceLocation;
   instance_number: number,
   instance_name: string,
-  deployed_regions?: string[];
+  deployed_regions?: string[] | string;
   classification_level: string; // classification level sys_id
   current_usage_description: EnvironmentInstanceUsage;
   is_traffic_spike_event_based: YesNo;
@@ -233,6 +233,7 @@ export interface ProjectOverviewDTO extends BaseTableDTO {
   title: string;
   scope: string;
   emergency_declaration: string;
+  project_disclaimer: YesNo;
 }
 
 export interface MilitaryRankDTO extends BaseTableDTO {
@@ -415,6 +416,7 @@ export interface SelectedServiceOfferingDTO extends BaseTableDTO {
 }
 
 export interface ClassificationInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   selected_periods: string;
   classification_level: string;
   usage_description: string;
@@ -423,6 +425,7 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
   type_of_delivery?: "" | "SHIPPED" | "PICK_UP";
   type_of_mobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   type_of_mobility_other?: string;
+  ts_contractor_clearance_type?: string;
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {
@@ -591,9 +594,10 @@ export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
   acquisition_package: ReferenceColumn | string;
   source: "" | "CURRENT_ENVIRONMENT" | "DOW";
   applications_needing_design: string;
-  data_classification_levels: string;
+  data_classification_levels: string | string[];
   external_factors: string;
   statement: string;
+  needs_architectural_design_services: string;
 }
 
 export interface TravelRequirementDTO extends BaseTableDTO {
@@ -746,7 +750,7 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   has_DOW_and_PoP: YesNo;
   optimize_replicate: EstimateOptionValue;
   architectural_design_current_environment: EstimateOptionValue;
-  architectural_design_performance_requirements: EstimateOptionValue;
+  architectural_design_performance_requirements: EstimateOptionValueDTO;
   training: TrainingEstimateDTO[];
   travel: EstimateOptionValueObjectArray;
   surge_requirements: {
@@ -857,4 +861,25 @@ export interface RegionsDTO extends BaseTableDTO {
   sys_tags: string
   sys_created_by: string
   group: string
+}
+export interface PackageDocumentsSignedDTO extends BaseTableDTO {
+  sys_id?: string
+  sys_updated_by?: string
+  sys_created_on?: string
+  sys_mod_count?: string
+  acquisition_package?: string
+  sys_updated_on?: string
+  sys_tags?: string
+  sys_created_by?: string
+}
+
+export interface PackageDocumentsUnsignedDTO extends BaseTableDTO {
+  sys_id?: string
+  sys_updated_by?: string
+  sys_created_on?: string
+  sys_mod_count?: string
+  acquisition_package?: string
+  sys_updated_on?: string
+  sys_tags?: string
+  sys_created_by?: string
 }

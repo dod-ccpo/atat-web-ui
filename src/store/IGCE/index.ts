@@ -13,7 +13,7 @@ import {
   RequirementsCostEstimateFlat,
   RequirementsCostEstimateDTO,
   ContractTypeDTO,
-  TrainingEstimateDTO, ReferenceColumn, TravelRequirementDTO
+  TrainingEstimateDTO, ReferenceColumn, CrossDomainSolutionDTO
 } from "@/api/models";
 import { currencyStringToNumber } from "@/helpers";
 
@@ -205,7 +205,7 @@ export class IGCEStore extends VuexModule {
   public async loadTrainingEstimatesFromPackage(packageId: string): Promise<void> {
     const requestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_query: "^acquisition_packageIN" + packageId,
+        sysparm_query: "^acquisition_packageIN" + packageId + "^ORDERBYsys_created_on",
         sysparm_display_value: "false"
       }
     };
@@ -328,7 +328,7 @@ export class IGCEStore extends VuexModule {
   @Mutation
   public setHasDOWandPop(): void {
     const requirementCostEstimate = this.requirementsCostEstimate as RequirementsCostEstimateDTO;
-    if ((Periods.periods && Periods.periods.length > 0) && !DescriptionOfWork.isIncomplete) {
+    if ((Periods.periods && Periods.periods.length > 0) && DescriptionOfWork.isDOWComplete) {
       requirementCostEstimate.has_DOW_and_PoP = "YES";
     } else {
       requirementCostEstimate.has_DOW_and_PoP = "NO";
@@ -346,7 +346,7 @@ export class IGCEStore extends VuexModule {
           rceFlat.architectural_design_current_environment_estimated_values?.split(",")
       },
       architectural_design_performance_requirements: {
-        option: rceFlat.architectural_design_performance_requirements_option,
+        option: rceFlat.architectural_design_performance_requirements_option as SingleMultiple,
         estimated_values:
           rceFlat.architectural_design_performance_requirements_estimated_values?.split(",")
       },
@@ -667,46 +667,16 @@ export class IGCEStore extends VuexModule {
     });
   }
 
-  /**
-   * This is expected to be called whenever a record gets created in the Cross Domain Solution
-   * table and if the "cross_domain_solution_required" is "YES"
-   *
-   * Since the user can toggle between "YES" and "NO", to avoid several other edge cases, it's
-   * best to the check if a CDS record exists, before creating.
-   */
   @Action({ rawError: true })
-  public async syncUpIgceEstimateCDS(cdsRef: {
-    cdsSysId: string,
-    crossDomainPairTypeList: string[],
-    description: string
-  }):
-    Promise<void> {
-    const igceEstimateList = await api.igceEstimateTable.getQuery({
+  public async getCDSRecord(): Promise<CrossDomainSolutionDTO | null> {
+    const cdsRecord = await api.crossDomainSolutionTable.getQuery({
       params: {
-        sysparm_query: "^cross_domain_solution" + cdsRef.cdsSysId
+        sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId
       }
     });
-    const createList = cdsRef.crossDomainPairTypeList
-      .filter(cdPairType => (igceEstimateList
-        .map(igceEstimate => igceEstimate.cross_domain_pair).indexOf(cdPairType) === -1));
-    const deleteList = igceEstimateList.filter(igceEstimate =>
-      (cdsRef.crossDomainPairTypeList.indexOf(igceEstimate.cross_domain_pair as string) === -1))
-    // updates to igce estimate record is irrelevant in the context of DOW updates
-    const apiCallList: Promise<IgceEstimateDTO | void>[] = [];
-    createList.forEach(markedForCreate => {
-      apiCallList.push(this.createIgceEstimateRecord({
-        ...defaultIgceEstimate(),
-        cross_domain_solution: cdsRef.cdsSysId,
-        cross_domain_pair: markedForCreate,
-        title: "Cross Domain Solution (CDS)",
-        description: cdsRef.description
-      }));
-    })
-    deleteList.forEach(markedForDelete => {
-      apiCallList.push(this.deleteIgceEstimateCDS(markedForDelete.sys_id as string));
-    })
-    await Promise.all(apiCallList);
+    return cdsRecord.length>0 ? cdsRecord[0] : null
   }
+
 
   /**
    * Performs a query on the request config and deletes the first match from the IGCE Estimate
@@ -761,20 +731,6 @@ export class IGCEStore extends VuexModule {
     await this.deleteIgceEstimateByRequestConfig({
       params: {
         sysparm_query: "classification_instance=" + classificationInstanceSysId
-      }
-    })
-  }
-
-  /**
-   * This is expected to be called whenever a record gets deleted from Cross Domain Solution
-   * table and also if the "cross_domain_solution_required" is "NO" or "UNSELECTED"
-   */
-  @Action({ rawError: true })
-  public async deleteIgceEstimateCDS(cdsSysId: string):
-    Promise<void> {
-    await this.deleteIgceEstimateByRequestConfig({
-      params: {
-        sysparm_query: "cross_domain_solution=" + cdsSysId
       }
     })
   }
@@ -834,6 +790,11 @@ export class IGCEStore extends VuexModule {
     await this.loadIgceEstimateByPackageId(aqPackageSysId);
   }
 
+  @Action({rawError: true})
+  public async setIgceEstimate(igceEstimateList: IgceEstimateDTO[]): Promise<void> {
+    this.doSetIgceEstimate(igceEstimateList);
+  }
+
   @Mutation
   public async doSetIgceEstimate(igceEstimateList: IgceEstimateDTO[]): Promise<void> {
     this.igceEstimateList = igceEstimateList;
@@ -856,7 +817,9 @@ export class IGCEStore extends VuexModule {
           unit_price: offering.unit_price as number,
           unit_quantity: offering.unit_quantity as string
         }
-        apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate));
+        igceEstimateSysId !== undefined
+          ? apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate))
+          : apiCallList.push(api.igceEstimateTable.create(offering))
       })
     }
     await Promise.all(apiCallList);

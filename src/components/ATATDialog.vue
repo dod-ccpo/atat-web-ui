@@ -8,6 +8,8 @@
     aria-describedby="modalDialogMessage"
     id="ATATDialog"
     ref="atatDialog"
+    :persistent="disableClickingOutside"
+    @click:outside="outsideClicked"
   >
     <v-card :id="id">
       <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">
@@ -102,7 +104,7 @@ export default class ATATDialog extends Vue {
   @Prop({ default: false }) private OKDisabled!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
   @Prop({ default: "primary" }) private buttonColor?: string;
-
+  @Prop({ default: false }) private disableClickingOutside?: boolean;
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;
 
@@ -128,6 +130,12 @@ export default class ATATDialog extends Vue {
     this.$emit("ok");
     this._showDialog = false;
     this.returnFocus(this.focusOnOk);
+  }
+
+  private outsideClicked() {
+    if(!this.disableClickingOutside){
+      this.onCancel();
+    }
   }
 
   private returnFocus(elementId: string): void {

@@ -20,7 +20,7 @@ export class SlideoutPanelStore extends VuexModule {
   slideoutPanelHasComponent = false;
 
   @Action
-  async setSlideoutPanelComponent(panelContent: SlideoutPanelContent): Promise<void> {
+  public async setSlideoutPanelComponent(panelContent: SlideoutPanelContent): Promise<void> {
     this.doSetSlideoutPanelComponent(panelContent);
   }
 
