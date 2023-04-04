@@ -91,6 +91,7 @@
                           icon
                           class="mr-1"
                           @click="copyOptionPeriod(index)"
+                          :disabled="isOptionsMaxxedOut"
                           aria-label="Duplicate this option period"
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
                         >
@@ -141,18 +142,6 @@
               <v-icon color="primary" class="mr-2">control_point</v-icon>
               <span>Add an option period</span>
             </v-btn>
-
-            <div
-              class="justify-start align-center atat-text-field-error mt-2"
-              :class="{ 'd-flex': totalPoPDuration > maxTotalPoPDuration }"
-              v-show="totalPoPDuration > maxTotalPoPDuration"
-            >
-              <v-icon class="text-error icon-20"> error </v-icon>
-              <div class="field-error ml-2">
-                The total length of your base and option periods should be 5 years
-                or less.
-              </div>
-            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -212,7 +201,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public optionPeriods: PoP[] = [
     {
       duration: null,
-      unitOfTime: "Year",
+      unitOfTime: "",
       id: null,
       order: 1,
     },
@@ -301,8 +290,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   public addOptionPeriod(): void {
     const newOptionPeriod = {
-      duration: null,
-      unitOfTime: "",
+      duration: 1,
+      unitOfTime: "YEAR",
       id: null,
       order: this.optionPeriods.length + 1,
     };
@@ -348,21 +337,26 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     this.setTotalPoP();
   }
   public copyOptionPeriod(index: number): void {
+    if (!this.isOptionsMaxxedOut){
+      const {
+        duration,
+        order,
+        unitOfTime,
+      } = this.optionPeriods[index];
 
-    const {
-      duration,
-      order,
-      unitOfTime,
-    } = this.optionPeriods[index];
-
-    const duplicateObj: PoP ={
-      duration,
-      id: null,
-      order,
-      unitOfTime,
+      const duplicateObj: PoP ={
+        duration,
+        id: null,
+        order,
+        unitOfTime,
+      }
+      this.optionPeriods.splice(index + 1,0,duplicateObj)
+      this.setTotalPoP();
     }
-    this.optionPeriods.splice(index + 1,0,duplicateObj)
-    this.setTotalPoP();
+  }
+
+  get isOptionsMaxxedOut(): boolean{
+    return this.optionPeriodCount >= 5;
   }
 
   public getOptionPeriodLabel(index: number): string {
@@ -479,8 +473,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public optionPeriodClicked: PoP = {
-    duration: null,
-    unitOfTime: "Year",
+    duration: 1,
+    unitOfTime: "YEAR",
     id: null,
     order: 1,
   };
@@ -519,16 +513,16 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
       const optionPeriod: PoP = {
 
-        duration: Number(period.period_unit_count || ""),
-        unitOfTime: period.period_unit,
+        duration: Number(period.period_unit_count || 1),
+        unitOfTime: period.period_unit || "YEAR",
         id: period.sys_id || "",
         order: Number(period.option_order),
       };
 
       return optionPeriod;
     }) : [ {
-      duration:null ,
-      unitOfTime: "",
+      duration: 1,
+      unitOfTime: "YEAR",
       id: null,
       order: 1,
     }];
