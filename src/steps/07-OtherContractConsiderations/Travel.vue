@@ -342,18 +342,25 @@ export default class Travel extends Mixins(SaveOnLeave) {
       : "Delete trip to " + item?.trip_location + "?"
   }
 
+  /**
+   * Makes a call to the store only for travel items that are in the DB.
+   * Otherwise, just deletes it from the component's table.
+   */
   public async deleteInstance(): Promise<void>{
     if (this.deleteAll){
       await DescriptionOfWork.deleteTravelAll(
-        this.tableData.map(td => td.sys_id as string)
+        this.tableData.filter(td => td.sys_id && td.sys_id.trim().length > 0)
+          .map(td => td.sys_id as string)
       );
       this.tableData = [];
       DescriptionOfWork.setConfirmTravelDeleteAll(false);
     } else {
-      if (this.tableData.length > 1){
-        await DescriptionOfWork.deleteTravelInstance(this.travelItem.sys_id as string);
-      } else if (this.tableData.length === 1) {
-        await DescriptionOfWork.deleteTravelAll([this.travelItem.sys_id as string])
+      if (this.travelItem.sys_id && this.travelItem.sys_id.trim().length > 0) {
+        if (this.tableData.length > 1){
+          await DescriptionOfWork.deleteTravelInstance(this.travelItem.sys_id as string);
+        } else if (this.tableData.length === 1) {
+          await DescriptionOfWork.deleteTravelAll([this.travelItem.sys_id as string])
+        }
       }
       this.tableData.splice(this.travelItem.instanceNumber-1, 1);
       this.setTableData();
