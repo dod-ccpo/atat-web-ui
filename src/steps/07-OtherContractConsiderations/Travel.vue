@@ -333,6 +333,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
 
   public copyInstance(item: TravelSummaryTableData): void {
     const clonedItem = {...item};
+    clonedItem.sys_id = undefined;
     this.tableData.splice(item.instanceNumber, 0,clonedItem);
     this.setTableData();
   }
