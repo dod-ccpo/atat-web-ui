@@ -1896,13 +1896,20 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public addOfferingGroup(groupId: string): void {
-    const group = this.serviceOfferingGroups.find(e => e.value === groupId)
-    const offeringGroup: DOWServiceOfferingGroup = {
-      serviceOfferingGroupId: groupId,
-      sequence: group?.sequence || 99,
-      serviceOfferings: []
+    const doesGroupAlreadyExistingInDOWObj = this.DOWObject.some(
+      dow => dow.serviceOfferingGroupId === groupId
+    );
+    
+    // if group does NOT exist in DOW object, add it
+    if (!doesGroupAlreadyExistingInDOWObj){
+      const group = this.serviceOfferingGroups.find(e => e.value === groupId)
+      const offeringGroup: DOWServiceOfferingGroup = {
+        serviceOfferingGroupId: groupId,
+        sequence: group?.sequence || 99,
+        serviceOfferings: []
+      }
+      this.DOWObject.push(offeringGroup);
     }
-    this.DOWObject.push(offeringGroup);
   }
 
   @Action
@@ -2292,9 +2299,10 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
 
-  @Action
+  @Action({rawError: true})
   public async deleteOtherOfferingInstance(instanceNumber: number): Promise<void> {
     this.doDeleteOtherOfferingInstance(instanceNumber);
+    this.checkServiceOfferingTypesSelected();
   }
 
   @Mutation
@@ -2339,7 +2347,6 @@ export class DescriptionOfWorkStore extends VuexModule {
          */
         if(otherOfferingObj.otherOfferingData.length===0){
           this.DOWObject.splice(offeringIndex,1);
-          this.checkServiceOfferingTypesSelected();
         }
 
       }

@@ -554,15 +554,17 @@ export class ClassificationRequirementsStore extends VuexModule {
       try{
         const tbl = api[(tblName) as keyof typeof api] as TableApiBase<BaseTableDTO>
         const sysIds = await tbl.getQuery(deleteQuery);
-        if (tblName === "classificationInstanceTable"){
-          this.deleteSelectedServiceOfferingsClassificationInstances(sysIds);
+        if (sysIds.length>0){
+          if (tblName === "classificationInstanceTable"){
+            this.deleteSelectedServiceOfferingsClassificationInstances(sysIds);
+          }
+          if (tblName === "cloudSupportEnvironmentInstanceTable"){
+            this.deleteTrainingEstimates(sysIds)
+          }
+          sysIds.forEach(async (itemToBeDeleted)=>{
+            await tbl.remove(itemToBeDeleted.sys_id as string);
+          })
         }
-        if (tblName === "cloudSupportEnvironmentInstanceTable"){
-          this.deleteTrainingEstimates(sysIds)
-        }
-        sysIds.forEach(async (itemToBeDeleted)=>{
-          await tbl.remove(itemToBeDeleted.sys_id as string);
-        })
       } catch (error){
         success = false;
         throw new Error("Error: deleting from tbl " + tblName)
@@ -574,21 +576,22 @@ export class ClassificationRequirementsStore extends VuexModule {
 
   @Action({rawError: true})
   public async deleteTrainingEstimates(sysIds: BaseTableDTO[]):Promise<void>{
-    debugger;
-    const sysParmQuery = sysIds.map(
-      item => "cloud_support_environment_instance=" + item.sys_id + "^OR")
-      .join("").replace(/\^OR\s*$/, "");
+    if (sysIds.length>0){
+      const sysParmQuery = sysIds.map(
+        item => "cloud_support_environment_instance=" + item.sys_id + "^OR")
+        .join("").replace(/\^OR\s*$/, "");
     
-    const getTrainingEstimatesQuery: AxiosRequestConfig = {
-      params: {sysparm_query: sysParmQuery}
-    };
+      const getTrainingEstimatesQuery: AxiosRequestConfig = {
+        params: {sysparm_query: sysParmQuery}
+      };
 
-    const estimatesToBeDeleted = 
+      const estimatesToBeDeleted = 
       await api.trainingEstimateTable.getQuery(getTrainingEstimatesQuery);
-    if (estimatesToBeDeleted.length>0){
-      estimatesToBeDeleted.forEach(
-        async estimate => await api.trainingEstimateTable.remove(estimate.sys_id as string)
-      )
+      if (estimatesToBeDeleted.length>0){
+        estimatesToBeDeleted.forEach(
+          async estimate => await api.trainingEstimateTable.remove(estimate.sys_id as string)
+        )
+      }
     }
     
   }
