@@ -141,6 +141,7 @@ import { AttachmentDTO, PackageDocumentsSignedDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
 import { api } from "@/api";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import acquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components:{
     ATATFileUpload,
@@ -248,6 +249,9 @@ export default class UploadSignedDocuments extends SaveOnLeave {
     this.filesNeeded = this.packages.map(signedDoc => signedDoc.itemName)
     this.generatedDocumentNames = await AcquisitionPackage.generatedDocumentNames;
     this.uploadedFiles = await AcquisitionPackage.getDocuments(true);
+    if(!AcquisitionPackage.initialized){
+      await AcquisitionPackage.loadPackageFromId(AcquisitionPackage.packageId);
+    }
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
