@@ -157,6 +157,7 @@ export default class Card extends Vue {
   public isWaitingForSignatures = false
   public showDeleteModal = false
   public showArchiveModal = false
+  public isDitco = false
   public lastModifiedStr = "";
   public modifiedData: {
     contractAward: string;
@@ -275,16 +276,32 @@ export default class Card extends Vue {
     switch (menuItem.action) {
     case "Edit draft package":
       await Steps.setAltBackDestination(AppSections.activeAppSection);
-      this.$router.replace({
-        name: routeNames.ContractingShop,
-        replace: true,
-        params: {
-          direction: "next"
-        },
-        query: {
-          packageId: this.cardData.sys_id
-        }
-      }).catch(() => console.log("avoiding redundant navigation"));
+      if(this.isDitco && this.isWaitingForSignatures){
+        this.$router.replace({
+          name: routeNames.UploadSignedDocuments,
+          replace: true,
+          params: {
+            direction: "next"
+          },
+          query: {
+            packageId: this.cardData.sys_id
+          }
+        }).catch(() => console.log("avoiding redundant navigation"));
+        await AcquisitionPackage.setPackageId(this.cardData.sys_id as string);
+        console.log(Steps.currentStep)
+        AcquisitionPackage.setProjectTitle(this.modifiedData.projectOverview);
+      }else{
+        this.$router.replace({
+          name: routeNames.ContractingShop,
+          replace: true,
+          params: {
+            direction: "next"
+          },
+          query: {
+            packageId: this.cardData.sys_id
+          }
+        }).catch(() => console.log("avoiding redundant navigation"));
+      }
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
       await acquisitionPackage.setFirstTimeVisit(false)
       break;
@@ -305,6 +322,7 @@ export default class Card extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.currentUser = await UserStore.getCurrentUser();
+    this.isDitco = this.cardData.contracting_shop?.value === "DITCO"
     this.reformatData(this.cardData)
     if(this.cardData.package_status?.value === 'DRAFT'){
       this.cardMenuItems = [
@@ -338,7 +356,8 @@ export default class Card extends Vue {
       if(this.isOwner){
         this.cardMenuItems.push(
           {
-            title: "Edit draft package",
+            title: this.isDitco && this.isWaitingForSignatures?
+              "Upload Signed Documents":"Edit Draft Package",
             action: "Edit draft package"
           },{
             title: "Archive acquisition",
