@@ -556,10 +556,10 @@ export class ClassificationRequirementsStore extends VuexModule {
         const sysIds = await tbl.getQuery(deleteQuery);
         if (sysIds.length>0){
           if (tblName === "classificationInstanceTable"){
-            this.deleteSelectedServiceOfferingsClassificationInstances(sysIds);
+            await this.deleteSelectedServiceOfferingsClassificationInstances(sysIds);
           }
           if (tblName === "cloudSupportEnvironmentInstanceTable"){
-            this.deleteTrainingEstimates(sysIds)
+            await this.deleteTrainingEstimates(sysIds)
           }
           sysIds.forEach(async (itemToBeDeleted)=>{
             await tbl.remove(itemToBeDeleted.sys_id as string);
@@ -586,7 +586,7 @@ export class ClassificationRequirementsStore extends VuexModule {
       };
 
       const estimatesToBeDeleted = 
-      await api.trainingEstimateTable.getQuery(getTrainingEstimatesQuery);
+        await api.trainingEstimateTable.getQuery(getTrainingEstimatesQuery);
       if (estimatesToBeDeleted.length>0){
         estimatesToBeDeleted.forEach(
           async estimate => await api.trainingEstimateTable.remove(estimate.sys_id as string)
@@ -653,6 +653,12 @@ export class ClassificationRequirementsStore extends VuexModule {
       cl => cl.sys_id === sysIdToBeDeleted
     ) as ClassificationLevelDTO;
 
+    /**
+     * Deletes classification levels of items in 
+     * 1. IGCEStore.trainingItems
+    */
+    await this.removeTrainingItemsFromIGCEStore(
+    classLevelItemToBeDeleted.sys_id as string);
 
     /**
      * Deletes ALL service offerings and Cloud Support Instances
@@ -677,11 +683,40 @@ export class ClassificationRequirementsStore extends VuexModule {
     )
   }
 
+
+  @Action({rawError: true})
+  public async removeTrainingItemsFromIGCEStore(
+    classLevelSysIdToBeDeleted: string
+  ): Promise<void> {
+    // get training item in DOWObject
+    const training = DescriptionOfWork.DOWObject.find(
+      groupsId => groupsId.serviceOfferingGroupId.toUpperCase() === "TRAINING"
+    )
+
+    // iterate through training.otherOfferingData to get the sysIds \\
+    // that match classLevelSysIdToBeDeleted
+    const offeringsSysIdsToBeDeleted = training?.otherOfferingData?.filter(
+      offering => offering.classificationLevel === classLevelSysIdToBeDeleted
+    ).map(item => item.sysId);
+
+    // if any offeringsSysIdsToBeDeleted exist.....
+    if (offeringsSysIdsToBeDeleted){
+      // ...filter out deleted items, assign to updatedTrainingItems
+      const updatedTrainingItems = IGCEStore.trainingItems.filter(
+        trainingItem => offeringsSysIdsToBeDeleted.indexOf(
+        trainingItem.cloudSupportEnvironmentInstance as string
+        ) === -1
+      )
+      IGCEStore.setTrainingItems(updatedTrainingItems)
+    }
+  }
+
   @Action({rawError: true})
   public async removeClassificationLevelsFromDOWObject(
     classLevelSysIdToBeDeleted: string
   ): Promise<void> {
-    DescriptionOfWork.DOWObject.forEach(async (dowObj)=>{
+    const dowObject = DescriptionOfWork.DOWObject;
+    dowObject.forEach(async (dowObj)=>{
       if (dowObj.serviceOfferings.length>0){
         dowObj.serviceOfferings.forEach(
           async (so) => {
@@ -709,7 +744,6 @@ export class ClassificationRequirementsStore extends VuexModule {
       classLevelItemToBeDeleted: classLevelItemToBeDeleted, 
       highSideClassLevel
     });
-    // await this.removeAdditionalClassificationProperties(highSideClassLevel);
     await this.removeClassificationLevelsFromIGCECostEstimate(
       classLevelItemToBeDeleted.sys_id as string);
   }
