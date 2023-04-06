@@ -288,7 +288,6 @@ export default class Card extends Vue {
           }
         }).catch(() => console.log("avoiding redundant navigation"));
         await AcquisitionPackage.setPackageId(this.cardData.sys_id as string);
-        console.log(Steps.currentStep)
         AcquisitionPackage.setProjectTitle(this.modifiedData.projectOverview);
       }else{
         this.$router.replace({
@@ -357,7 +356,7 @@ export default class Card extends Vue {
         this.cardMenuItems.push(
           {
             title: this.isDitco && this.isWaitingForSignatures?
-              "Upload Signed Documents":"Edit Draft Package",
+              "Upload signed documents":"Edit draft package",
             action: "Edit draft package"
           },{
             title: "Archive acquisition",
