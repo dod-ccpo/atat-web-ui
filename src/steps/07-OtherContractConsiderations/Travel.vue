@@ -17,9 +17,10 @@
               later.
             </p>
           </div>
-          <div
-            v-if="!hasListings"
-            class="
+          <div v-if="!isLoading">
+            <div
+                v-if="!hasListings"
+                class="
               w-100
               py-10
               border1
@@ -28,73 +29,77 @@
               mb-10
               mt-10
             "
-          >
-            You do not have any travel requirements yet.
-          </div>
-          <div v-if="hasListings">
-          <v-data-table
-            v-if="hasListings"
-            :headers="setTableHeaders"
-            :items="tableData"
-            :items-per-page="-1"
-            class="elevation-0 _offering-instances mt-10"
-            :hide-default-footer="true"
-          >
-
-             <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.duration_in_days="{ item }">
-              {{ item.duration_in_days }} 
-              {{ item.duration_in_days>1 ? 'days': 'day'}}
-            </template>
-
-             <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.number_of_travelers="{ item }">
-              {{ item.number_of_travelers }} 
-              {{ item.number_of_travelers>1 ? 'travelers': 'traveler'}}
-            </template>
-
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.number_of_trips="{ item }">
-              {{ createNumberOfTripsTexts(item)  }} 
-            </template>
-
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.selected_periods="{ item }">
-              {{ createPeriodText(item.selected_periods) }}
-            </template>
-
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.actions="{ item }">
-              <div class="d-flex justify-space-between align-center">
-              <button
-                type="button"
-                :id="'EditButton_' + item.instanceNumber"
-                @click="editInstance(item)"
-                
-              >
-                <ATATSVGIcon name="edit" height="19" width="19" />
-              </button>
-
-              <button
-                type="button"
-                :id="'CopyButton_' + item.instanceNumber"
-                @click="copyInstance(item)"
-              >
-                <ATATSVGIcon name="content-copy" height="19" width="22" />
-              </button>
-
-              <button
-                type="button"
-                :id="'DeleteButton_' + item.instanceNumber"
-                @click="confirmDeleteModal(item)"
-              >
-                <ATATSVGIcon name="remove" height="18" width="14" />
-              </button>
+            >
+              You do not have any travel requirements yet.
             </div>
-            </template>
-          </v-data-table>
+            <div v-if="hasListings">
+              <v-data-table
+                  v-if="hasListings"
+                  :headers="setTableHeaders"
+                  :items="tableData"
+                  :items-per-page="-1"
+                  class="elevation-0 _offering-instances mt-10"
+                  :hide-default-footer="true"
+              >
+
+                <!-- eslint-disable vue/valid-v-slot -->
+                <template v-slot:item.duration_in_days="{ item }">
+                  {{ item.duration_in_days }}
+                  {{ item.duration_in_days>1 ? 'days': 'day'}}
+                </template>
+
+                <!-- eslint-disable vue/valid-v-slot -->
+                <template v-slot:item.number_of_travelers="{ item }">
+                  {{ item.number_of_travelers }}
+                  {{ item.number_of_travelers>1 ? 'travelers': 'traveler'}}
+                </template>
+
+                <!-- eslint-disable vue/valid-v-slot -->
+                <template v-slot:item.number_of_trips="{ item }">
+                  {{ createNumberOfTripsTexts(item)  }}
+                </template>
+
+                <!-- eslint-disable vue/valid-v-slot -->
+                <template v-slot:item.selected_periods="{ item }">
+                  {{ createPeriodText(item.selected_periods) }}
+                </template>
+
+                <!-- eslint-disable vue/valid-v-slot -->
+                <template v-slot:item.actions="{ item }">
+                  <div class="d-flex justify-space-between align-center">
+                    <button
+                        type="button"
+                        :id="'EditButton_' + item.instanceNumber"
+                        @click="editInstance(item)"
+
+                    >
+                      <ATATSVGIcon name="edit" height="19" width="19" />
+                    </button>
+
+                    <button
+                        type="button"
+                        :id="'CopyButton_' + item.instanceNumber"
+                        @click="copyInstance(item)"
+                    >
+                      <ATATSVGIcon name="content-copy" height="19" width="22" />
+                    </button>
+
+                    <button
+                        type="button"
+                        :id="'DeleteButton_' + item.instanceNumber"
+                        @click="confirmDeleteModal(item)"
+                    >
+                      <ATATSVGIcon name="remove" height="18" width="14" />
+                    </button>
+                  </div>
+                </template>
+              </v-data-table>
+            </div>
+            <hr class="mt-0" v-if="hasListings" />
           </div>
-          <hr class="mt-0" v-if="hasListings" />
+          <div v-if="isLoading">
+            Loading...
+          </div>
           <v-btn
             id="AddInstance"
             role="link"
@@ -260,6 +265,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
   public showDeleteInstanceDialog = false;
   public deleteInstanceModalTitle = "";
   public availablePeriodCheckboxItems: Checkbox[] = [];
+  public isLoading = true;
 
   get isAddTripsDisabled(): boolean {
     return Object.values(this.travelItem).some(
@@ -419,7 +425,9 @@ export default class Travel extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void>{
+    this.isLoading = true;
     await DescriptionOfWork.loadTravel();
+    this.isLoading = false;
     this.tableData = await DescriptionOfWork.getTravel();
   }
 
