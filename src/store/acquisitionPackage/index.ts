@@ -354,8 +354,16 @@ export class AcquisitionPackageStore extends VuexModule {
   public async setCurrentUser(): Promise<void> {
     const currentUser = await UserStore.getCurrentUser();
     await this.doSetCurrentUser(currentUser);
-    await this.doSetCurrentUserIsOwner(currentUser);
-    await this.doSetCurrentUserIsContributor(currentUser);
+
+    const isOwner = this.acquisitionPackage?.mission_owners && this.currentUser.sys_id
+      ? this.acquisitionPackage.mission_owners.includes(this.currentUser.sys_id)
+      : false;
+    await this.doSetCurrentUserIsOwner(isOwner);
+
+    const isContributor = this.acquisitionPackage?.contributors && this.currentUser.sys_id
+      ? this.acquisitionPackage.contributors.includes(this.currentUser.sys_id)
+      : false;
+    await this.doSetCurrentUserIsContributor(isContributor);
   }
 
   @Mutation
@@ -363,21 +371,11 @@ export class AcquisitionPackageStore extends VuexModule {
     this.currentUser = currentUser;
   }
 
-  @Mutation async doSetCurrentUserIsOwner(currentUser: User): Promise<void> {
-    if (this.acquisitionPackage?.mission_owners && currentUser.sys_id) {
-      this.currentUserIsPackageOwner = 
-        this.acquisitionPackage.mission_owners.includes(currentUser.sys_id);
-    } else {
-      this.currentUserIsPackageOwner = false;
-    }
+  @Mutation async doSetCurrentUserIsOwner(val: boolean): Promise<void> {
+    this.currentUserIsPackageOwner = val;
   }
-  @Mutation async doSetCurrentUserIsContributor(currentUser: User): Promise<void> {
-    if (this.acquisitionPackage?.contributors && currentUser.sys_id) {
-      this.currentUserIsPackageContributor = 
-        this.acquisitionPackage.contributors.includes(currentUser.sys_id);
-    } else {
-      this.currentUserIsPackageContributor = false;
-    }
+  @Mutation async doSetCurrentUserIsContributor(val: boolean): Promise<void> {
+    this.currentUserIsPackageContributor = val;
   }
 
   public get getCurrentUserIsPackageOwner(): boolean {
@@ -1076,6 +1074,7 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
+    const loggedInUser = await UserStore.getCurrentUser();
 
     if (storedSessionData && storedSessionData.length > 0) {
       const parsedData = JSON.parse(storedSessionData) as SessionData;
@@ -1117,6 +1116,7 @@ export class AcquisitionPackageStore extends VuexModule {
           const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
           this.setPackagePercentLoaded(80);
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
+          acquisitionPackage.mission_owners = loggedInUser.sys_id as string;          
           this.setPackagePercentLoaded(90);
 
           this.setAcquisitionPackage(acquisitionPackage);
@@ -1128,7 +1128,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPackageDocumentsSigned(packageDocumentsSigned)
           this.setPackagePercentLoaded(96);
           await this.setCurrentUser();
-          acquisitionPackage.mission_owners = this.currentUser.sys_id as string;
           this.setPackagePercentLoaded(100);
 
           this.setInitialized(true);
