@@ -30,10 +30,7 @@
               </h2>
               <ATATAutoComplete
                 id="DisaOrg"
-                v-if="
-                  selectedAgency &&
-                  selectedAgency.value === this.DisaOrgId
-                "
+                v-if="isAgencyDisa"
                 class="_input-max-width mb-10"
                 label="DISA Organization"
                 :label-sr-only="false"
@@ -48,10 +45,7 @@
 
               <ATATTextField
                 id="OrgName"
-                v-if="
-                  selectedAgency &&
-                  selectedAgency.value !== this.DisaOrgId
-                "
+                v-if="!isAgencyDisa"
                 label="Organization name"
                 class="_input-max-width mb-10"
                 :value.sync="organizationName"
@@ -301,6 +295,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   get isAgencyDisa(): boolean{
     return (this.selectedAgency.text as string)?.toUpperCase().indexOf("DISA")> -1
   }
+
   private get currentData(): OrganizationDTO {
     let state = "";
     let city = this.city;
