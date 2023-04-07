@@ -1,12 +1,16 @@
-import { bootstrapMockApis,randomAlphaNumeric } from "../../../helpers";
+import { bootstrapMockApis,randomAlphaNumeric,capitalizeFirstLetter } from "../../../helpers";
 import projectOverview from "../../../selectors/projectOverview.sel";
 import common from "../../../selectors/common.sel";
+import lp from "../../../selectors/landingPage.sel";
 
 
-describe("Test suite: Acquisition Package ", () => {
-    
-  let projectDetails;
-      
+describe("Test suite: Acquisition Package ", () => {    
+
+  const expectedEmail = Cypress.env("snowUser");
+  const expectedNames = expectedEmail.split('-ctr')[0].split('.');
+  const expectedFirstName = expectedNames[0];
+  const firstName = capitalizeFirstLetter(expectedFirstName);    
+  let projectDetails;   
   beforeEach(() => {
     bootstrapMockApis();
 
@@ -40,41 +44,31 @@ describe("Test suite: Acquisition Package ", () => {
       .click();
   });
 
-  it("TC3: Asserts on Let’s start with basic info about your new acquisition", () => {
+  it.only("TC3: Asserts on Let’s start with basic info about your new acquisition", () => {
 
-    // lands on New Acquistion Package
-    //header of the view
+    // lands on New Acquistion Package    
     cy.textExists(common.packageNameHeader, "New Acquisition");
         
     //Sub header
-    cy.textExists(common.header, " Let’s start with basic info about your new acquisition ");
+    cy.verifyPageHeader(" Let’s start with basic info about your new acquisition ");
         
     //label of the "Project/Requirement Title" text
     cy.textExists(projectOverview.projectTitleLabel, " Project/Requirement Title ");
 
     //tooltip
     const expectedText = "Provide a short, descriptive title of the work to be performed." +
-        " This will be used to refer to this project within ATAT and across all acquisition forms" +
-        "."
+      " This will be used to refer to this project within ATAT and across all acquisition" +
+      " documents."        
     cy.hoverToolTip(projectOverview.toolTipBtn, projectOverview.toolTipTxt, expectedText);
         
     //Enter the Value
-    cy.enterTextInTextField(projectOverview.projectTitleTxtBox, projectDetails.projectTitle)
-      .blur({ force: true })
-      .then(($el) => {
-        cy.log($el.val());
-        const enteredText = $el.val();
-        if (enteredText === "") {
-          cy.textExists(common.packageNameHeader, "New Acquisition");
-        } else {
-          cy.textExists(common.packageNameHeader, enteredText);
-        };
-      });
+    const pt = "Step-1-ProjectTitle-" + randomAlphaNumeric(5)
+    cy.verifyAcqPackageName(pt); 
         
     //label of the "Projectscope" text
     cy.textExists(projectOverview.scopeLabel, "What is the scope of your requirement?");
         
-    //Enter What the scope requirement
+    //Enter What the scope requirement      
     cy.enterTextInTextField(projectOverview.scopeTxtBox, projectDetails.scope).click();
         
     //Assert Emergency declaration text          
@@ -90,10 +84,28 @@ describe("Test suite: Acquisition Package ", () => {
     //select radio button
     cy.radioBtn(projectOverview.radioBtnYes, "YES").not("[disabled]")
       .click({ force: true });        
-        
+    //Project disclaimer
+    cy.textExists(
+      projectOverview.projDisLabel,
+      " 2. Compliance with Military Service-specific policies ");
+    cy.checkBoxOption(projectOverview.projDisChxkBox, "YES").click({force: true});
     //buttons that exists on the view
-    cy.btnExists(common.continueBtn, " Continue ");
     cy.btnExists(common.backBtn, "Back");
+    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.waitUntil(function () {
+      return Cypress.$(projectOverview.projDisChxkBox).is(":hidden") === true
+    }, { timeout: 30000 }).then(() => {
+      cy.verifyPageHeader(" Next, we’ll gather information about your organization ");
+    });
+    cy.findElement(common.dashboardTab).click();
+    cy.waitUntil(function () {
+      return Cypress.$(common.sideNavBar).is(":hidden") === true;
+    }, { timeout: 30000 }).then(() => {
+      cy.textExists(lp.welcomeBarText, "Hi " + firstName + "! How can we help you?");
+    });
+    cy.findElement(lp.acqPackageaccordion).should("exist");
+    cy.textExists(lp.acqCard0,pt)
+        
   });
 
   it("TC4: Validations on ProjectOverView", () => {

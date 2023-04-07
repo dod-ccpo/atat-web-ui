@@ -153,12 +153,26 @@ Cypress.Commands.add('homePageClickAcquisitionPackBtn', () => {
         "Are you using the Defense Information Technology Contracting Organization (DITCO)" +
         " for processing your JWCC task order?"
       );  
-      cy.findElement("#developerToggleButton").scrollIntoView();
-      cy.textExists("#developerToggleButton", "Toggle Developer Navigation ON").click().then(() => {
-        cy.textExists("#developerToggleButton", "Toggle Developer Navigation OFF");
-      });    
+      // cy.findElement("#developerToggleButton").scrollIntoView();
+      //cy.textExists("#developerToggleButton", "Toggle Developer Navigation ON")
+      //.click().then(() => {
+      //   cy.textExists("#developerToggleButton", "Toggle Developer Navigation OFF");
+      // });    
     });
   });
+});
+
+Cypress.Commands.add('selectDitcoOption', (selector, text) => {
+  cy.radioBtn(selector, text).click({ force: true });
+  cy.waitUntil(function () {
+    return Cypress.$(selector).is(":checked") === true
+  })
+  cy.btnExists(common.continueBtn, " Continue ").click();
+  cy.waitUntil(function () {
+    return Cypress.$(common.continueBtn).is(":hidden") === true;
+  }, { timeout: 30000 }).then(() => {
+    cy.verifyPageHeader("Let’s start with basic info about your new acquisition");
+  })
 });
 
 Cypress.Commands.add('textExists', (selector, expectedText) => {
@@ -449,6 +463,21 @@ Cypress.Commands.add("completePercent", () => {
     }).then(() => {
       return percentComplete;
     });
+});
+
+Cypress.Commands.add("verifyAcqPackageName", (pt) => {
+  cy.enterTextInTextField(projectOverview.projectTitleTxtBox, pt)
+    .blur({ force: true })
+    .then(($el) => {
+      cy.log($el.val());
+      const enteredText = $el.val();
+      if (enteredText === "") {
+        cy.textExists(common.packageNameHeader, "New Acquisition");
+      } else {
+        cy.textExists(common.packageNameHeader, pt);
+      };
+    });
+  
 });
 
 Cypress.Commands.add("fillNewAcquisition", (projectTitle, scope) => {    

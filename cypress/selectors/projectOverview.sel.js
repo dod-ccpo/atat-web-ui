@@ -15,5 +15,7 @@ module.exports = {
     " .field-error",
   radioBtnYes:"#Radio_YesEmergencyDeclaration",
   radioBtnNo: "#Radio_NoEmergencyDeclaration",  
-  
+  projDisAcknowledge: "#projectDisclaimer",
+  projDisChxkBox:"#Checkbox_YesProjectDisclaimer",
+  projDisLabel:"h2.mb-5"
 }
