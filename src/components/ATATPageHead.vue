@@ -139,7 +139,7 @@ export default class ATATPageHead extends Vue {
   }
 
   public get isMissionOwner(): boolean {
-    return AcquisitionPackage.getCurrentUserIsPackageOwner;
+    return AcquisitionPackage.getCurrentUserIsMissionOwner;
   }   
 
   public async updateStatus(newStatus: string): Promise<void> {

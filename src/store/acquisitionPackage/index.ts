@@ -347,8 +347,8 @@ export class AcquisitionPackageStore extends VuexModule {
   fundingRequestType: string | null =  null;
 
   currentUser: User = {};
-  currentUserIsPackageOwner = false;
-  currentUserIsPackageContributor = false;
+  currentUserIsMissionOwner = false;
+  currentUserIsContributor = false;
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
@@ -372,18 +372,18 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation async doSetCurrentUserIsOwner(val: boolean): Promise<void> {
-    this.currentUserIsPackageOwner = val;
+    this.currentUserIsMissionOwner = val;
   }
   @Mutation async doSetCurrentUserIsContributor(val: boolean): Promise<void> {
-    this.currentUserIsPackageContributor = val;
+    this.currentUserIsContributor = val;
   }
 
-  public get getCurrentUserIsPackageOwner(): boolean {
-    return this.currentUserIsPackageOwner;
+  public get getCurrentUserIsMissionOwner(): boolean {
+    return this.currentUserIsMissionOwner;
   }
 
-  public get getCurrentUserIsPackageContributor(): boolean {
-    return this.currentUserIsPackageContributor;
+  public get getCurrentUserIsContributor(): boolean {
+    return this.currentUserIsContributor;
   }
 
   public initContact: ContactDTO = initialContact()
