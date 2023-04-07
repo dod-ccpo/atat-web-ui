@@ -723,6 +723,7 @@ export interface AcquisitionPackageSummaryDisplay{
   mission_owners?: DisplayColumn;
   contract_award?: DisplayColumn;
   contributors?: DisplayColumn;
+  contracting_shop?: DisplayColumn;
 }
 
 export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
@@ -732,6 +733,7 @@ export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
   mission_owners?: DisplayColumn;
   contract_award?: DisplayColumn;
   contributors?: DisplayColumn;
+  contracting_shop?: DisplayColumn;
 }
 
 export interface AcquisitionPackageSummaryMetadataAndDataDTO {

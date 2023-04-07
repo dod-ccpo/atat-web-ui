@@ -441,6 +441,7 @@ export interface OtherServiceSummaryTableData {
   duration?: string;
   personnelOnsiteAccess?: string;
   trainingType?: string;
+  sysId?:string;
 }
 
 export interface TravelSummaryTableData {
