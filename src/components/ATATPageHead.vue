@@ -73,6 +73,7 @@
       </div>
     </div>
     <DeletePackageModal
+      v-if="isMissionOwner"
       :showModal.sync="showDeleteModal"
       :packageName="packageName"
       :hasContributor="hasContributor"
@@ -80,6 +81,7 @@
       @okClicked="updateStatus('DELETED')"
     />
     <ArchiveModal
+      v-if="isMissionOwner"
       :showModal.sync="showArchiveModal"
       :hasContributor="hasContributor"
       :packageName="packageName"
@@ -91,12 +93,11 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { getIdText } from "@/helpers";
-import CurrentUserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
