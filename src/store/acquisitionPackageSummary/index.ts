@@ -121,9 +121,8 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     const currentUser = await CurrentUserStore.getCurrentUser();
     const userSysId = currentUser.sys_id;
 
-    let query = "^mission_ownersLIKE" + userSysId;
-    // query = query + "^package_status!=DRAFT^ORmission_ownersISNOTEMPTY" // TODO: is this needed
-    query = query + "^mission_ownersISNOTEMPTY" // TODO: should mission owners be in the query
+    let query = "^mission_ownersLIKE" + userSysId + "^ORcontributorsLIKE" + userSysId;
+    query = query + "^mission_ownersISNOTEMPTY"
     query = query + "^ORDERBY" + searchDTO.sort;
     return query;
   }

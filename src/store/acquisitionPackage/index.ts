@@ -40,7 +40,9 @@ import {
   EvalPlanMethod, 
   uploadingFile, 
   signedDocument,
-  YesNo } from "types/Global";
+  YesNo, 
+  User,
+} from "types/Global";
 import { SessionData } from "./models";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
@@ -343,6 +345,48 @@ export class AcquisitionPackageStore extends VuexModule {
   hideSideNavigation = false
   firstTimeVisit = false
   fundingRequestType: string | null =  null;
+
+  currentUser: User = {};
+  currentUserIsPackageOwner = false;
+  currentUserIsPackageContributor = false;
+
+  @Action({rawError: true})
+  public async setCurrentUser(): Promise<void> {
+    const currentUser = await UserStore.getCurrentUser();
+    await this.doSetCurrentUser(currentUser);
+    await this.doSetCurrentUserIsOwner(currentUser);
+    await this.doSetCurrentUserIsContributor(currentUser);
+  }
+
+  @Mutation
+  public async doSetCurrentUser(currentUser: User): Promise<void> {
+    this.currentUser = currentUser;
+  }
+
+  @Mutation async doSetCurrentUserIsOwner(currentUser: User): Promise<void> {
+    if (this.acquisitionPackage?.mission_owners && currentUser.sys_id) {
+      this.currentUserIsPackageOwner = 
+        this.acquisitionPackage.mission_owners.includes(currentUser.sys_id);
+    } else {
+      this.currentUserIsPackageOwner = false;
+    }
+  }
+  @Mutation async doSetCurrentUserIsContributor(currentUser: User): Promise<void> {
+    if (this.acquisitionPackage?.contributors && currentUser.sys_id) {
+      this.currentUserIsPackageContributor = 
+        this.acquisitionPackage.contributors.includes(currentUser.sys_id);
+    } else {
+      this.currentUserIsPackageContributor = false;
+    }
+  }
+
+  public get getCurrentUserIsPackageOwner(): boolean {
+    return this.currentUserIsPackageOwner;
+  }
+
+  public get getCurrentUserIsPackageContributor(): boolean {
+    return this.currentUserIsPackageContributor;
+  }
 
   public initContact: ContactDTO = initialContact()
 
@@ -991,6 +1035,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(96);
       await IGCE.loadTrainingEstimatesFromPackage(packageId);
       this.setPackagePercentLoaded(98);
+      await this.setCurrentUser();
       await DescriptionOfWork.loadTravel();
       this.setPackagePercentLoaded(100);
 
@@ -1016,7 +1061,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
     Steps.clearAltBackButtonText();
-    
+
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
     await OrganiationData.initialize();
@@ -1031,7 +1076,6 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
-    const loggedInUser = await UserStore.getCurrentUser();
 
     if (storedSessionData && storedSessionData.length > 0) {
       const parsedData = JSON.parse(storedSessionData) as SessionData;
@@ -1073,14 +1117,20 @@ export class AcquisitionPackageStore extends VuexModule {
           const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
           this.setPackagePercentLoaded(80);
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
-          acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
           this.setPackagePercentLoaded(90);
 
           this.setAcquisitionPackage(acquisitionPackage);
+          this.setPackagePercentLoaded(93);
+
           saveAcquisitionPackage(acquisitionPackage);
           const packageDocumentsSigned = await api.packageDocumentsSignedTable
             .create({acquisition_package:acquisitionPackage.sys_id})
           this.setPackageDocumentsSigned(packageDocumentsSigned)
+          this.setPackagePercentLoaded(96);
+          await this.setCurrentUser();
+          acquisitionPackage.mission_owners = this.currentUser.sys_id as string;
+          this.setPackagePercentLoaded(100);
+
           this.setInitialized(true);
         }
       } catch (error) {

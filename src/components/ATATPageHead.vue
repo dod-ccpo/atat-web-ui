@@ -136,10 +136,11 @@ export default class ATATPageHead extends Vue {
     }
     return false
   }
-  public get isMissionOwner(): boolean|undefined {
-    const currentUserId = CurrentUserStore.currentUser.sys_id||""
-    return AcquisitionPackage.acquisitionPackage?.mission_owners?.includes(currentUserId);
-  }
+
+  public get isMissionOwner(): boolean {
+    return AcquisitionPackage.getCurrentUserIsPackageOwner;
+  }   
+
   public async updateStatus(newStatus: string): Promise<void> {
     await AcquisitionPackageSummary
       .updateAcquisitionPackageStatus({
@@ -150,24 +151,19 @@ export default class ATATPageHead extends Vue {
     AppSections.changeActiveSection(sectionData.sectionTitles.Home)
   }
 
-  public moreMenuItems = [
-    {
-      title: "View package details",
-      show: true
-    },
-    {
-      title: "Invite contributors",
-      show: true
-    },
-    {
-      title: "Archive acquisition",
-      show: this.isMissionOwner
-    },
-    {
-      title: "Delete acquisition package",
-      show: this.isMissionOwner
-    },
-  ]
+  public get moreMenuItems(): Record<string, string>[] {
+    const menuItems = [
+      { title: "View package details" },
+      { title: "Invite contributors" },
+    ];
+    if (this.isMissionOwner) {
+      menuItems.push(
+        { title: "Archive acquisition" },
+        { title: "Delete acquisition package" }
+      )
+    }
+    return menuItems;
+  } 
 
   public async moreMenuClick(title: string ): Promise<void> {
     await SlideoutPanel.closeSlideoutPanel()
@@ -186,4 +182,5 @@ export default class ATATPageHead extends Vue {
   }
 
 }
+
 </script>
