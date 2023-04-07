@@ -119,6 +119,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 })
 export default class ContractingShop extends Mixins(SaveOnLeave) {
   public isPageLoading = false;
+  public isDitco = false;
   public contractingShopOptions: RadioButton[] = [
     {
       id: "DITCO",
@@ -161,6 +162,7 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
 
   private async loadOnEnter(): Promise<void> {
     this.isPageLoading = true;
+    this.isDitco = acquisitionPackage.contractingShop === "DITCO"
     await acquisitionPackage.setHideSideNavigation(false);
     const packageId = this.$route.query['packageId'] || "";
 
