@@ -1,6 +1,6 @@
 <template>
   <ATATDialog
-    id="DeletePackageModal"
+    :id="id"
     :showDialog.sync="_showModal"
     title="Delete this acquisition package?"
     buttonColor="error"
@@ -45,6 +45,7 @@ export default class DeletePackageModal extends Vue {
   @Prop() public packageName!: string;
   @Prop() public hasContributor!: boolean;
   @Prop() public waitingForSignature!: boolean;
+  @Prop({ default: "DeletePackageModal"}) public id?: string;
 
 
   public okClicked(): void {

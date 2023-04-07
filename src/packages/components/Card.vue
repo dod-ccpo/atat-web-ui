@@ -106,6 +106,7 @@
       :hasContributor="hasContributor"
       :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
       @okClicked="updateStatus('DELETED')"
+      :id="'DeletePackageModal_' + index"
     />
     <ArchiveModal
       :showModal.sync="showArchiveModal"
@@ -113,6 +114,7 @@
       :packageName="modifiedData.projectOverview || 'Untitled package'"
       :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
       @okClicked="updateStatus('ARCHIVED')"
+      :id="'ArchivePackageModal_' + index"
     />
   </v-card>
 </template>
