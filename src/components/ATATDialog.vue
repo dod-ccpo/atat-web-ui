@@ -4,18 +4,18 @@
     v-model="_showDialog"
     eager
     role="alertdialog"
-    :aria-labelledby="modalTitle"
-    :aria-describedby="modalMessage"
+    :aria-labelledby="modalTitleId"
+    :aria-describedby="modalMessageId"
     :id="'ATATDialog_' + id"
     ref="atatDialog"
     :persistent="disableClickingOutside"
     @click:outside="outsideClicked"
   >
     <v-card :id="id">
-      <v-card-title class="h2 text-break" :id="modalTitle" tabindex="-1">
+      <v-card-title class="h2 text-break" :id="modalTitleId" tabindex="-1">
         {{ getTitle }}
       </v-card-title>
-      <v-card-text class="body-lg black--text px-10" :id="modalMessage">
+      <v-card-text class="body-lg black--text px-10" :id="modalMessageId">
         <slot name="content"></slot>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
@@ -120,11 +120,11 @@ export default class ATATDialog extends Vue {
     return this.title;
   }
 
-  public get modalTitle(): string {
+  public get modalTitleId(): string {
     return this.id + "Title";
   }
 
-  public get modalMessage(): string {
+  public get modalMessageId(): string {
     return this.id + "Message";
   }
 
