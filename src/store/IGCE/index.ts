@@ -232,7 +232,10 @@ export class IGCEStore extends VuexModule {
         },
         estimatedTrainingPrice: item.estimated_price_per_training_unit,
         trainingOption: item.training_option as SingleMultiple,
-        cloudSupportEnvironmentInstance: ""
+        cloudSupportEnvironmentInstance: 
+          typeof item.cloud_support_environment_instance === "string"
+            ? item.cloud_support_environment_instance as string
+            : item.cloud_support_environment_instance.value as string
       };
 
       this.trainingItems.push(trainingItem);
@@ -621,23 +624,6 @@ export class IGCEStore extends VuexModule {
     });
   }
 
-
-  // @Action({rawError: true})
-  // public async updateIgceEstimateRecord(
-  //   envInstanceRef: {
-  //     environmentInstanceSysId: string, 
-  //     classificationLevelSysId: string,
-  //     unit_quantity:string
-  //   }):
-  //   Promise<void> {
-  //   await this.updateIgceEstimateRecord(
-  //     envInstanceRef
-  //   );
-  // }
-
-
-
-
   /**
    * This is expected to be called whenever a record gets created in the Classification Instance
    * or one of its child tables.
@@ -798,6 +784,16 @@ export class IGCEStore extends VuexModule {
   @Mutation
   public async doSetIgceEstimate(igceEstimateList: IgceEstimateDTO[]): Promise<void> {
     this.igceEstimateList = igceEstimateList;
+  }
+
+  @Action({rawError: true})
+  public async setTrainingItems(items: TrainingEstimate[]): Promise<void> {
+    this.doSetTrainingItems(items);
+  }
+
+  @Mutation
+  public async doSetTrainingItems(items: TrainingEstimate[]): Promise<void> {
+    this.trainingItems = items;
   }
 
   /**

@@ -110,7 +110,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       title: this.currentTitle,
       scope: this.projectScope,
       emergency_declaration: this.emergencyDeclaration,
-      project_disclaimer: this.projectDisclaimer[0] as YesNo
+      project_disclaimer: this.selectedDisclaimer[0] as YesNo
     };
   }
 
