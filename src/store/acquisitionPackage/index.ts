@@ -1477,7 +1477,7 @@ export class AcquisitionPackageStore extends VuexModule {
           : await api.sensitiveInformationTable.create(data);
       this.setSensitiveInformation(savedSensitiveInformation);
       this.setAcquisitionPackage({
-        ...this.sensitiveInformation,
+        ...this.acquisitionPackage,
         sensitive_information: sys_id
       } as AcquisitionPackageDTO);
     } catch (error) {

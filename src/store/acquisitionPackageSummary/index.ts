@@ -164,7 +164,8 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         sysparm_query: searchQuery,
         sysparm_display_value: "all",
         sysparm_fields: "project_overview,mission_owners,secondary_reviewers," +
-          "package_status,contract_award,sys_id,sys_created_by,sys_updated_on,contributors",
+          "package_status,contract_award,sys_id,sys_created_by,sys_updated_on,contributors," +
+            "contracting_shop",
         sysparm_limit: searchDTO.limit,
         sysparm_offset: searchDTO.offset
       }
@@ -182,6 +183,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         mission_owners: acqPackageSummary.mission_owners,
         contract_award: acqPackageSummary.contract_award,
         contributors: acqPackageSummary.contributors,
+        contracting_shop: acqPackageSummary.contracting_shop,
       }
     })
   }
