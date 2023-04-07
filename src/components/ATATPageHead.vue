@@ -102,11 +102,15 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
+import ContributorsPanel from "@/packages/components/ContributorsPanel.vue"
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
+
+import { SlideoutPanelContent } from "types/Global";
 
 @Component({
   components:{
     ArchiveModal,
+    ContributorsPanel,
     DeletePackageModal,
   }
 })
@@ -118,6 +122,7 @@ export default class ATATPageHead extends Vue {
   public moreOptionsTooltipText = "More options"
   public showDeleteModal = false
   public showArchiveModal = false
+  public showDrawer = false;
 
   public get packageName(): string {
     return acquisitionPackage.getProjectTitle || "New Acquisition";
@@ -167,8 +172,12 @@ export default class ATATPageHead extends Vue {
   } 
 
   public async moreMenuClick(title: string ): Promise<void> {
-    await SlideoutPanel.closeSlideoutPanel()
+    await SlideoutPanel.closeSlideoutPanel();
+    this.showDrawer = false;
     switch(title){
+    case "Invite contributors":
+      this.openSlideoutPanel();
+      break;
     case 'Archive acquisition':
       this.showArchiveModal = true
       break;
@@ -181,6 +190,32 @@ export default class ATATPageHead extends Vue {
   private getIdText(string: string) {
     return getIdText(string);
   }
+
+
+  public async openSlideoutPanel(e?: Event): Promise<void> {
+    const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
+    if (e && e.currentTarget) {
+      e.preventDefault();
+      e.cancelBubble = true;
+    }
+
+    if (!this.showDrawer || currentSlideoutComponent !== ContributorsPanel) {
+      if (e && e.currentTarget) {
+        const opener = e.currentTarget as HTMLElement;
+        const slideoutPanelContent: SlideoutPanelContent = {
+          component: ContributorsPanel,
+        }
+        await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+        this.showDrawer = true;
+        SlideoutPanel.openSlideoutPanel(opener.id);
+      }
+    } else {
+      this.showDrawer = false
+      SlideoutPanel.closeSlideoutPanel()
+    }
+  }
+
+
 
 }
 
