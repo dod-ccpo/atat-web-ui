@@ -10,6 +10,8 @@
     width="450"
     @ok="okClicked"
     @cancelClicked="cancelClicked"
+    okButtonId="DeleteButton_OK"
+    cancelButtonId="DeleteButton_Cancel"
   >
     <template #content>
       <div class="body">
