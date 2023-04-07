@@ -6,7 +6,7 @@
     class="_atat-page-header"
   >
     <div class="d-flex justify-space-between width-100 align-center">
-      <div id="PackageNameHeader" tabindex="-1" class="h3">{{ headline }}</div>
+      <div id="PackageNameHeader" tabindex="-1" class="h3">{{ packageName }}</div>
       <div class="d-flex justify-end align-center">
         <v-tooltip
           transition="slide-y-reverse-transition"
@@ -91,7 +91,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -111,15 +111,17 @@ import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 })
 
 export default class ATATPageHead extends Vue {
-  @Prop({ default: "Headline" }) private headline!: string;
-
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public contributorTooltipText = "Invite contributors"
   public moreOptionsTooltipText = "More options"
   public showDeleteModal = false
   public showArchiveModal = false
-  public packageName = acquisitionPackage.projectTitle || "New Acquisition";
+
+  public get packageName(): string {
+    return acquisitionPackage.getProjectTitle || "New Acquisition";
+  } 
+  
   public hasContributor():boolean{
     if(AcquisitionPackage
       && AcquisitionPackage.acquisitionPackage
@@ -144,6 +146,8 @@ export default class ATATPageHead extends Vue {
         acquisitionPackageSysId: acquisitionPackage.packageId,
         newStatus
       });
+    const sectionData = await AppSections.getSectionData();
+    AppSections.changeActiveSection(sectionData.sectionTitles.Home)
   }
 
   public moreMenuItems = [

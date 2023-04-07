@@ -634,6 +634,9 @@ export class AcquisitionPackageStore extends VuexModule {
   public setProjectTitle(value: string): void {
     this.projectTitle = value;
   }
+  public get getProjectTitle(): string {
+    return this.projectTitle;
+  }
 
   @Mutation
   public setFairOpportunity(value: FairOpportunityDTO): void {
