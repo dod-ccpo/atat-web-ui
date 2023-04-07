@@ -208,9 +208,9 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   // restore the itemDeleted back to selectedOptions
   public async deleteClicked(isClassLevelInDOW: boolean): Promise<void>{
     this.isDeletionSuccessful = 
-      await ClassificationReqs.removeClassificationLevelsFromDBGlobally(
+    await ClassificationReqs.removeClassificationLevelsFromDBGlobally(
         this.itemDeleted?.sys_id as string
-      );
+    );
     await ClassificationReqs.removeClassificationLevelsFromStoreGlobally(
       this.itemDeleted
     )
