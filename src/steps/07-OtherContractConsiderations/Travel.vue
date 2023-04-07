@@ -269,7 +269,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
 
   get isAddTripsDisabled(): boolean {
     return Object.values(this.travelItem).some(
-      (travelItem) => travelItem.length === 0
+      (travelItem) => travelItem?.length === 0
     );
   }
 
