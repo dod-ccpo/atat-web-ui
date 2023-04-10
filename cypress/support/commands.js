@@ -1219,3 +1219,7 @@ Cypress.Commands.add("addAnotherRequirement", (addSelector, text) => {
   cy.findElement(addSelector).click();  
   cy.verifyPageHeader(" Let’s gather some details for " +  text )
 });
+
+Cypress.Commands.add("waitUntilElementIsGone", (selector) => {
+  cy.waitUntil(() => Cypress.$(selector).length === 0)   
+});

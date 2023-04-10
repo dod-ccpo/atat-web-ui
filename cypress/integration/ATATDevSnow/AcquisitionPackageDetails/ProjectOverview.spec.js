@@ -84,21 +84,17 @@ describe("Test suite: Acquisition Package ", () => {
     //buttons that exists on the view
     cy.btnExists(common.backBtn, "Back");
     cy.btnExists(common.continueBtn, " Continue ").click();
-    cy.waitUntil(function () {
-      return Cypress.$(projectOverview.projDisChxkBox).is(":hidden") === true
-    }, { timeout: 30000 }).then(() => {
-      cy.verifyPageHeader(" Next, we’ll gather information about your organization ");
-      cy.findElement(common.dashboardTab).click();
-      cy.waitUntil(function () {
-        return Cypress.$(common.sideNavBar).is(":hidden") === true;
-      }, { timeout: 30000 }).then(() => {
-        cy.textExists(lp.welcomeBarText, "Hi " + firstName + "! How can we help you?");
-      });
-      cy.findElement(lp.acqPackageaccordion).should("exist");
-      cy.textExists(lp.acqCard0,pt)
-        
-    });
-    
+    cy.waitUntilElementIsGone(projectOverview.projDisChxkBox);
+    // cy.waitUntil(() => Cypress.$(projectOverview.projDisChxkBox).length === 0)   
+    cy.verifyPageHeader(" Next, we’ll gather information about your organization ");
+    cy.findElement(common.dashboardTab).click();
+    cy.waitUntilElementIsGone(common.sideNavBar);
+    // cy.waitUntil(() => Cypress.$(common.sideNavBar).length === 0);
+    cy.textExists(lp.welcomeBarText, "Hi " + firstName + "! How can we help you?");
+    cy.findElement(lp.acqPackageaccordion).should("exist");
+    cy.textExists(lp.acqCard0,pt)
+
+      
   });
 
   it("TC3: Validations on ProjectOverView", () => {
