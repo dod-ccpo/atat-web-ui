@@ -729,6 +729,17 @@ export interface UserDTO extends BaseTableDTO {
   last_name?: string;
   user_name?: string;
   email?: string;
+  company?: string;
+  mobile_phone?: string;
+  phone?: string;
+  home_phone?: string;
+  title?: string;
+}
+
+export interface CompanyDTO extends BaseTableDTO {
+  name?: string;
+  long_name?: string;
+  u_short_name?: string;
 }
 
 export interface TrainingEstimateDTO extends BaseTableDTO{

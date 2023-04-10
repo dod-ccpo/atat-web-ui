@@ -124,7 +124,9 @@ export default class ATATPageHead extends Vue {
   public moreOptionsTooltipText = "More options"
   public showDeleteModal = false
   public showArchiveModal = false
-  public showDrawer = false;
+  public get showDrawer(): boolean {
+    return SlideoutPanel.getSlideoutPanelIsOpen;
+  } 
 
   public get packageName(): string {
     return acquisitionPackage.getProjectTitle || "New Acquisition";
@@ -174,11 +176,8 @@ export default class ATATPageHead extends Vue {
   } 
 
   public async moreMenuClick(title: string ): Promise<void> {
-    // await SlideoutPanel.closeSlideoutPanel();
-    // this.showDrawer = false;
     switch(title){
     case "View package details":
-      // EJY USE A GETTER FOR IF THE DRAWER IS OPEN OR NOT 
       if (!this.showDrawer) this.openSlideoutPanel();
       break;
     case 'Archive acquisition':
@@ -196,35 +195,25 @@ export default class ATATPageHead extends Vue {
 
 
   public async openSlideoutPanel(e?: Event): Promise<void> {
-    if (!this.showDrawer) {
-
-      const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
-      let openerId = "MoreMenuButton"
-      if (e && e.currentTarget) {
-        e.preventDefault();
-        e.cancelBubble = true;
-        const opener = e.currentTarget as HTMLElement;
-        openerId = opener.id;
-      }
-
-      if (currentSlideoutComponent !== ContributorsPanel) {
-        const slideoutPanelContent: SlideoutPanelContent = {
-          component: ContributorsPanel,
-        }
-        await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-        this.showDrawer = true;
-        SlideoutPanel.openSlideoutPanel(openerId);
-
-      } 
-      // else {
-      //   this.showDrawer = false
-      //   SlideoutPanel.closeSlideoutPanel()
-      // }
+    const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
+    let openerId = "MoreMenuButton"
+    if (e && e.currentTarget) {
+      e.preventDefault();
+      e.cancelBubble = true;
+      const opener = e.currentTarget as HTMLElement;
+      openerId = opener.id;
     }
 
+    if (currentSlideoutComponent !== ContributorsPanel) {
+      const slideoutPanelContent: SlideoutPanelContent = {
+        component: ContributorsPanel,
+        title: "ACQUISITION DETAILS"
+      }
+      await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    } 
+    SlideoutPanel.openSlideoutPanel(openerId);
+
   }
-
-
 
 }
 

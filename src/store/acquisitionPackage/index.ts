@@ -350,6 +350,17 @@ export class AcquisitionPackageStore extends VuexModule {
   currentUserIsMissionOwner = false;
   currentUserIsContributor = false;
 
+  packageCreator: User = {};
+
+  @Mutation
+  public doSetPackageCreator(user: User): void {
+    this.packageCreator = user;
+  }
+  public get getPackageCreator(): User {
+    return this.packageCreator;
+  }
+
+
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
     const currentUser = await UserStore.getCurrentUser();
@@ -783,8 +794,12 @@ export class AcquisitionPackageStore extends VuexModule {
       await Attachments.initialize();
       this.setPackagePercentLoaded(20);
       await FinancialDetails.initialize();
-      await this.setRegions()
+      await this.setRegions();
       this.setPackagePercentLoaded(25);
+      if (acquisitionPackage.sys_created_by) {
+        const creator = await UserStore.getUserByUserName(acquisitionPackage.sys_created_by);
+        this.doSetPackageCreator(creator);
+      }
 
       const currentEnvironmentSysId = acquisitionPackage.current_environment as string;
       const projectOverviewSysId = acquisitionPackage.project_overview as string;
@@ -1075,6 +1090,11 @@ export class AcquisitionPackageStore extends VuexModule {
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
     const loggedInUser = await UserStore.getCurrentUser();
+
+    if (loggedInUser && loggedInUser.user_name) {
+      const creator = await UserStore.getUserByUserName(loggedInUser.user_name);
+      this.doSetPackageCreator(creator);
+    }
 
     if (storedSessionData && storedSessionData.length > 0) {
       const parsedData = JSON.parse(storedSessionData) as SessionData;

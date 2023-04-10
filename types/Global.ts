@@ -473,12 +473,19 @@ export interface EnvInstanceSummaryTableData {
 export interface User {
   firstName?: string;
   lastName?: string;
+  fullName?: string;
   email?: string;
   role?: string;
   phoneNumber?: string;
   phoneExt?: string;
   designation?: string;
+  salutation?: string;
   agency?: string;
+  department?: string;
+  officePhone?: string; // labeled as "Commercial phone" field is "phone" in SNOW sys_user table
+  mobilePhone?: string;
+  dsnPhone?: string; // field is "home_phone" in SNOW sys_user table
+  userName?: string;
   sys_id?: string;
 }
 

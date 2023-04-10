@@ -10,8 +10,11 @@ import rootStore from "../index";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import api from "@/api";
 import Vue from "vue";
-import { AcquisitionPackageSummarySearchDTO, UserDTO } from "@/api/models";
+import { AcquisitionPackageSummarySearchDTO, CompanyDTO, UserDTO } from "@/api/models";
 import AcquisitionPackageSummary from "../acquisitionPackageSummary";
+import { AxiosRequestConfig } from "axios";
+import { User } from "types/Global";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
 
@@ -141,6 +144,64 @@ export class UserStore extends VuexModule {
         }
       }  
     }    
+  }
+
+  @Action({rawError: true})
+  public async getUserByUserName(username: string): Promise<User> {
+    const user: User = {};
+    const fields = `first_name,last_name,email,title,phone,
+      mobile_phone,home_phone,company,user_name,sys_id`;
+    const query = `user_name=${username}`;
+    try {
+      const config: AxiosRequestConfig = {
+        params: {
+          sysparm_fields: fields,
+          sysparm_query: query,
+        },
+      };
+      const response = await api.userTable.getQuery(config);
+      if (response.length) {
+        const userRecord: UserDTO = convertColumnReferencesToValues(response[0]);
+        if (userRecord.company) {
+          const companyConfig: AxiosRequestConfig = {
+            params: {
+              sysparm_query: `sys_id=${userRecord.company}`
+            }
+          }
+          const companyResponse = await api.companyTable.getQuery(companyConfig)
+          if (companyResponse.length) {
+            const company = companyResponse[0];
+            user.agency = company.u_short_name || company.name;
+          }
+        }
+        user.firstName = userRecord.first_name;
+        user.lastName = userRecord.last_name;
+        user.salutation = userRecord.title;
+        user.fullName = user.salutation 
+          ? user.salutation + " " + user.firstName + " " + user.lastName
+          : user.firstName + " " + user.lastName;
+        user.email = userRecord.email;
+        
+        user.phoneNumber = userRecord.phone;
+        user.officePhone = userRecord.phone;
+        user.mobilePhone = userRecord.mobile_phone;
+        user.dsnPhone = userRecord.home_phone;
+
+        const ext: string = username.substring(username.length - 3, username.length);
+        const designations: Record<string, string> = {
+          MIL: "Military",
+          CIV: "Civilian",
+          CTR: "Contractor",
+        }
+        user.designation = designations[ext];
+
+      }
+    }
+    catch(error){
+      throw new Error(`error retrieving alert data ${error}`);
+    }
+
+    return user;
   }
 }
 
