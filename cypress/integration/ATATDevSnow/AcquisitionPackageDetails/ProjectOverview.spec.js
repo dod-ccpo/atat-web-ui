@@ -20,6 +20,8 @@ describe("Test suite: Acquisition Package ", () => {
     
     cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
+    cy.selectDitcoOption("#Radio_DITCO", "DITCO");
+    cy.activeStep(common.subStepProjectOverviewTxt);
   });
 
   it("TC1: Acquisition Package Substeps on the Vertical Stepper", () => {
@@ -34,17 +36,7 @@ describe("Test suite: Acquisition Package ", () => {
             
   });
     
-  it("TC2: Acquisition Package step and substep ProjectOverview is active", () => {
-    cy.findElement(common.stepAcquisitionCircle)
-      .should("be.visible")
-      .and('have.css', 'color', 'rgb(84, 68, 150)');
-    cy.findElement(common.subStepProjectOverviewTxt)
-      .should("be.visible")
-      .and('have.css', 'color', 'rgb(84, 68, 150)')
-      .click();
-  });
-
-  it.only("TC3: Asserts on Let’s start with basic info about your new acquisition", () => {
+  it.only("TC2: Asserts on Let’s start with basic info about your new acquisition", () => {
 
     // lands on New Acquistion Package    
     cy.textExists(common.packageNameHeader, "New Acquisition");
@@ -96,19 +88,20 @@ describe("Test suite: Acquisition Package ", () => {
       return Cypress.$(projectOverview.projDisChxkBox).is(":hidden") === true
     }, { timeout: 30000 }).then(() => {
       cy.verifyPageHeader(" Next, we’ll gather information about your organization ");
-    });
-    cy.findElement(common.dashboardTab).click();
-    cy.waitUntil(function () {
-      return Cypress.$(common.sideNavBar).is(":hidden") === true;
-    }, { timeout: 30000 }).then(() => {
-      cy.textExists(lp.welcomeBarText, "Hi " + firstName + "! How can we help you?");
-    });
-    cy.findElement(lp.acqPackageaccordion).should("exist");
-    cy.textExists(lp.acqCard0,pt)
+      cy.findElement(common.dashboardTab).click();
+      cy.waitUntil(function () {
+        return Cypress.$(common.sideNavBar).is(":hidden") === true;
+      }, { timeout: 30000 }).then(() => {
+        cy.textExists(lp.welcomeBarText, "Hi " + firstName + "! How can we help you?");
+      });
+      cy.findElement(lp.acqPackageaccordion).should("exist");
+      cy.textExists(lp.acqCard0,pt)
         
+    });
+    
   });
 
-  it("TC4: Validations on ProjectOverView", () => {
+  it("TC3: Validations on ProjectOverView", () => {
     //ProjectTitle is blank
     cy.findElement(projectOverview.projectTitleTxtBox).should("be.visible").clear()
       .focus().blur({ force: true }).then(() => {
