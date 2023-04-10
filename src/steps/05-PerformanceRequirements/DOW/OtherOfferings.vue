@@ -520,7 +520,8 @@ export default class OtherOfferings extends Vue {
       return;
     }
     this.errorBagValues = Object.values(this.$refs.form.errorBag);
-    const formChildren = this.$refs.form.$children[0].$children;
+    let formChildren = this.$refs.form.$children[0].$children;
+    formChildren = formChildren.concat(this.$refs.form.$children)
     const inputRefs = [
       "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
     ];
