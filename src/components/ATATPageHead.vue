@@ -18,7 +18,9 @@
           <template v-slot:activator="{ on }">
           <v-btn
             v-on="on"
-            icon class="mr-5 _header-button _add-user-button" id="Person_Button">
+            icon class="mr-5 _header-button _add-user-button" 
+            id="Person_Button"
+          >
             <v-icon class="icon-20 text-base-dark">person_add_alt_1</v-icon>
           </v-btn>
           </template>
@@ -172,11 +174,12 @@ export default class ATATPageHead extends Vue {
   } 
 
   public async moreMenuClick(title: string ): Promise<void> {
-    await SlideoutPanel.closeSlideoutPanel();
-    this.showDrawer = false;
+    // await SlideoutPanel.closeSlideoutPanel();
+    // this.showDrawer = false;
     switch(title){
-    case "Invite contributors":
-      this.openSlideoutPanel();
+    case "View package details":
+      // EJY USE A GETTER FOR IF THE DRAWER IS OPEN OR NOT 
+      if (!this.showDrawer) this.openSlideoutPanel();
       break;
     case 'Archive acquisition':
       this.showArchiveModal = true
@@ -193,26 +196,32 @@ export default class ATATPageHead extends Vue {
 
 
   public async openSlideoutPanel(e?: Event): Promise<void> {
-    const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
-    if (e && e.currentTarget) {
-      e.preventDefault();
-      e.cancelBubble = true;
-    }
+    if (!this.showDrawer) {
 
-    if (!this.showDrawer || currentSlideoutComponent !== ContributorsPanel) {
+      const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
+      let openerId = "MoreMenuButton"
       if (e && e.currentTarget) {
+        e.preventDefault();
+        e.cancelBubble = true;
         const opener = e.currentTarget as HTMLElement;
+        openerId = opener.id;
+      }
+
+      if (currentSlideoutComponent !== ContributorsPanel) {
         const slideoutPanelContent: SlideoutPanelContent = {
           component: ContributorsPanel,
         }
         await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
         this.showDrawer = true;
-        SlideoutPanel.openSlideoutPanel(opener.id);
-      }
-    } else {
-      this.showDrawer = false
-      SlideoutPanel.closeSlideoutPanel()
+        SlideoutPanel.openSlideoutPanel(openerId);
+
+      } 
+      // else {
+      //   this.showDrawer = false
+      //   SlideoutPanel.closeSlideoutPanel()
+      // }
     }
+
   }
 
 
