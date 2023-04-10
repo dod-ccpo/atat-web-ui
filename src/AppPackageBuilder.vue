@@ -9,7 +9,7 @@
 
     <ATATToast />
 
-    <ATATPageHead :headline="projectTitle" />
+    <ATATPageHead />
 
     <v-main>
       <div id="app-content" class="d-flex flex-column">
@@ -208,12 +208,6 @@ export default class AppPackageBuilder extends Vue {
   }
   public get currentRouteName():string|null|undefined{
     return this.$route.name
-  }
-
-  public get projectTitle(): string {
-    return AcquisitionPackage.projectTitle !== ""
-      ? AcquisitionPackage.projectTitle
-      : "New Acquisition";
   }
 
   public get isDitcoUser(): boolean {

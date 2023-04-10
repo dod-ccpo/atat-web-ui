@@ -176,13 +176,12 @@
               class="mb-0 mt-7"
             >
               <template v-slot:content>
-                <p>
+                <p class="mb-0">
                   You may need authorization from your Military Service prior to placing a task 
                   order under the JWCC Contract. Customers are responsible for complying with 
                   Military Service-specific cloud acquisition requirements. Prior to proceeding 
                   with the development of your JWCC requirements package, each customer must 
                   confirm their understanding of this responsibility.
-                  
                 </p>
               </template>
             </ATATAlert>
