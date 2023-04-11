@@ -40,7 +40,7 @@
 
     <hr class="my-0">
 
-    <div class="_panel-padding _panel-user-list">
+    <div class="_panel-padding _panel-user-list pb-6">
       <div
         id="ContributorsSection"
         class="d-flex flex-columm justify-space-between"
@@ -67,7 +67,6 @@
           />
         </v-btn>
 
-
       </div>
       
       <div class="d-flex justify-space-between align-center font-size-14">
@@ -92,12 +91,18 @@
           <ATATProfileCard :person="packageMissionOwner" />
         </v-menu> 
         <div>
-          Owner
+          <v-tooltip left nudge-right="15">
+            <template v-slot:activator="{ on, attrs }">
+              <span v-bind="attrs" v-on="on">
+                Owner
+              </span>
+            </template>
+            <div class="_tooltip-content-wrap _left" style="width: 250px">
+              As the owner, you will need to transfer ownership in order to leave this package.
+            </div>
+          </v-tooltip>
         </div>
       </div>
-
-             
-
 
       <div v-for="(user, index) in contributors" :key="index">
         <div class="d-flex justify-space-between align-center font-size-14">
@@ -122,13 +127,48 @@
             <ATATProfileCard :person="user" />
 
           </v-menu>    
-          <div>
-            ... <!-- meatball menu -->
-          </div>
+
+          <ATATMeatballMenu
+            :id="'CardMenu' + index"
+            :left="true"
+            :index="index"
+            :menuItems="contributorMenuItems"
+            @menuItemClick="contributorMenuClick"
+          />
 
         </div>    
       </div>
     </div>
+
+    <hr class="my-0">
+
+    <div class="_panel-padding _panel-user-list pb-6">
+      <v-expansion-panels accordion flat>
+        <v-expansion-panel>
+          <v-expansion-panel-header class="font-size-14">
+            Learn about contributor roles
+          </v-expansion-panel-header>
+          <v-expansion-panel-content class="font-size-14">
+            <p>
+              <strong>Owner:</strong> Manages all aspects of a package, to include 
+              editing information, generating and submitting the completed package, 
+              managing contributor access, archiving, and deleting.
+            </p>
+            <p class="mb-0">
+              <strong>Contributor:</strong> Edits information and invites other 
+              people to contribute. However, they cannot submit, archive, or delete 
+              the acquisition package. 
+            </p>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </div>
+
+    <hr class="my-0">
+    <div class="_panel-padding _panel-user-list pb-6 font-size-14">
+      Last updated {{ lastUpdated }}
+    </div>
+
   </div>
 </template>
 
@@ -139,13 +179,17 @@ import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import ATATProfileCard from "@/components/ATATProfileCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { getStatusChipBgColor } from "@/helpers";
+import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import { User } from "types/Global";
+import { getIdText } from "@/helpers";
+import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
+import { MeatballMenuItem } from "types/Global";
 
 @Component({
   components: {
     ATATProfileCard,
     ATATSVGIcon,
+    ATATMeatballMenu,
   }
 })
 
@@ -153,6 +197,7 @@ export default class ContributorsPanel extends Vue {
   public portfolioStatus = AcquisitionPackage.getPackageStatus;
   public packageCreator = AcquisitionPackage.getPackageCreator;
   public packageMissionOwner = AcquisitionPackage.getPackageMissionOwner;
+  public lastUpdated = "";
 
   public contributorCount = 1;
   public get contributors(): User[] {
@@ -178,13 +223,31 @@ export default class ContributorsPanel extends Vue {
     return getStatusChipBgColor(this.portfolioStatus);
   }
 
-  public openContributorsModal(): void {
-    // 
+  private getIdText(string: string) {
+    return getIdText(string);
   }
+
+  public contributorMenuClick(menuItem: MeatballMenuItem, index: number): void {
+    // TODO Ticket AT-8791 (remove contributor)
+    // TODO Ticket AT-8792 (transfer ownership)
+  }
+
+  public openContributorsModal(): void {
+    // TODO Ticket AT-8756
+  }
+  public contributorMenuItems: MeatballMenuItem[] = [
+    {title: "Remove contributor"},
+    {title: "Transfer ownership"},
+  ]
 
   public async mounted(): Promise<void> {
     const acqPkg = AcquisitionPackage.acquisitionPackage;
-    debugger;
+    if (AcquisitionPackage.acquisitionPackage?.sys_updated_on) {
+      this.lastUpdated = createDateStr(
+        AcquisitionPackage.acquisitionPackage.sys_updated_on, true, true
+      );
+    }
+
     if (acqPkg?.contributors) {
       const len = acqPkg.contributors.split(",").length;
       this.contributorCount = len + 1;

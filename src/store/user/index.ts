@@ -148,13 +148,11 @@ export class UserStore extends VuexModule {
 
   @Action({rawError: true})
   public async getUserRecord(userInfo: {s: string, field: string}): Promise<User> {
-    debugger;
     const field = userInfo.field || "sys_id";
     const user: User = {};
     const fields = `first_name,last_name,email,title,phone,
       mobile_phone,home_phone,company,user_name,sys_id`;
     const query = `${field}=${userInfo.s}`;
-    debugger;
     try {
       const config: AxiosRequestConfig = {
         params: {
