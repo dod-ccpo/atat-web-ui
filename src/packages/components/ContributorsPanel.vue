@@ -84,7 +84,7 @@
               v-on="on"
               class="font-size-14 _profile-card__name-button"
             >
-              {{ packageMissionOwner.firstName }} {{ packageMissionOwner.lastName }} 
+              {{ packageMissionOwner.fullNameForSort }} 
             </v-btn>
           </template>
 
@@ -123,7 +123,7 @@
                 v-on="on"
                 class="font-size-14 _profile-card__name-button"
               >
-                {{ user.firstName }} {{ user.lastName }}
+                {{ user.fullNameForSort }}
               </v-btn>
             </template>
 
@@ -236,7 +236,12 @@ export default class ContributorsPanel extends Vue {
   }
 
   public get contributors(): User[] {
-    return AcquisitionPackage.getPackageContributors || [];
+    const users = AcquisitionPackage.getPackageContributors || [];
+    return users.sort((a,b) => {
+      return a.fullNameForSort && b.fullNameForSort 
+        ? a.fullNameForSort > b.fullNameForSort ? 1: -1
+        : -1;
+    });
   }
   
   public get selectedAgency(): string {

@@ -390,18 +390,21 @@ export class AcquisitionPackageStore extends VuexModule {
         this.doAddPackageContributor(contributor);
       }
     });
-    this.packageContributors.sort((a,b) => {
-      return a.fullNameForSort && b.fullNameForSort 
-        ? a.fullNameForSort > b.fullNameForSort ? 1: -1
-        : 1;
-    })
   }
 
   @Mutation
-  public async doAddPackageContributor(user: User): Promise<void> {
+  public doAddPackageContributor(user: User): void {
     this.packageContributors.push(user);
   }
 
+  @Mutation
+  public async sortPackageContributors(): Promise<void> {
+    this.packageContributors = this.packageContributors.sort((a,b) => {
+      return a.fullNameForSort && b.fullNameForSort 
+        ? a.fullNameForSort > b.fullNameForSort ? 1: -1
+        : -1;
+    });
+  }
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
@@ -895,7 +898,7 @@ export class AcquisitionPackageStore extends VuexModule {
       });
 
       if (acquisitionPackage.contributors) {
-        this.setPackageContributors(acquisitionPackage.contributors);
+        await this.setPackageContributors(acquisitionPackage.contributors);
       }
 
       await ClassificationRequirements.getAllClassificationLevels();
@@ -1120,6 +1123,11 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(98);
       await this.setCurrentUser();
       await DescriptionOfWork.loadTravel();
+
+      if (this.packageContributors.length) {
+        this.sortPackageContributors();
+      }
+  
       this.setPackagePercentLoaded(100);
 
       this.setInitialized(true);
