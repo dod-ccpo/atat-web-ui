@@ -216,6 +216,21 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public async addInstance(): Promise<void> {
     const lastInstanceNumber = await DescriptionOfWork.getLastOtherOfferingInstanceNumber();
     await DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(lastInstanceNumber + 1);
+
+    /**
+     * if user manually deleted all instances on the summary page and 
+     * clicked to `add instance`
+     * 
+     * 1 - Craft necessary DOWObject
+     * 2 - set necessary setReturnToDOWSummary to ensure listing appears as expected
+     *     on summary 
+     */
+    if (lastInstanceNumber === 1){
+      DescriptionOfWork.addOfferingGroup(this.currentGroupId.toUpperCase());
+      DescriptionOfWork.setAddGroupFromSummary(true);
+      DescriptionOfWork.setReturnToDOWSummary(true);
+      DescriptionOfWork.setFromAnticipatedUsersAndData(false);
+    }
     this.navigate();
   }
 
@@ -423,6 +438,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         performance,
         personnelOnsiteAccess,
         trainingType,
+        sysId: instanceClone.sysId
       };
 
       this.tableData.push(instanceData);

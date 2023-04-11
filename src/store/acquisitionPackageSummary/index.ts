@@ -121,9 +121,8 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     const currentUser = await CurrentUserStore.getCurrentUser();
     const userSysId = currentUser.sys_id;
 
-    let query = "^mission_ownersLIKE" + userSysId;
-    // query = query + "^package_status!=DRAFT^ORmission_ownersISNOTEMPTY" // TODO: is this needed
-    query = query + "^mission_ownersISNOTEMPTY" // TODO: should mission owners be in the query
+    let query = "^mission_ownersLIKE" + userSysId + "^ORcontributorsLIKE" + userSysId;
+    query = query + "^mission_ownersISNOTEMPTY"
     query = query + "^ORDERBY" + searchDTO.sort;
     return query;
   }
@@ -165,7 +164,8 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         sysparm_query: searchQuery,
         sysparm_display_value: "all",
         sysparm_fields: "project_overview,mission_owners,secondary_reviewers," +
-          "package_status,contract_award,sys_id,sys_created_by,sys_updated_on,contributors",
+          "package_status,contract_award,sys_id,sys_created_by,sys_updated_on,contributors," +
+            "contracting_shop",
         sysparm_limit: searchDTO.limit,
         sysparm_offset: searchDTO.offset
       }
@@ -183,6 +183,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         mission_owners: acqPackageSummary.mission_owners,
         contract_award: acqPackageSummary.contract_award,
         contributors: acqPackageSummary.contributors,
+        contracting_shop: acqPackageSummary.contracting_shop,
       }
     })
   }

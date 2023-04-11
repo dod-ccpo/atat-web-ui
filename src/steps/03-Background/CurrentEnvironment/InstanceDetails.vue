@@ -204,6 +204,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   public isValid = true;
 
   public get currentData(): CurrentEnvironmentInstanceDTO {
+
     return this.instanceData;
   }
   public savedData: CurrentEnvironmentInstanceDTO = _.cloneDeep(defaultCurrentEnvironmentInstance);
@@ -276,7 +277,12 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
   public selectedDeployedRegionsOnLoad: string[] = [];
   public regionsDeployedUpdate(selected: string[]): void {
-    this.instanceData.deployed_regions = selected;
+    const santized = selected.map(
+      element => element.replaceAll("[", "").replaceAll("]","")
+    )
+    this.instanceData.deployed_regions = santized.length>0 
+      ? santized.join(",")
+      : ""
   }
 
   public regionUsersOnLoad = "";
@@ -429,14 +435,25 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     this.instanceNumber = CurrentEnvironment.currentEnvInstanceNumber + 1;
     const envStoreData = await CurrentEnvironment.getCurrentEnvironment();
     if (envStoreData) {
+      this.selectedDeployedRegionsOnLoad = [];
       this.currEnvData = envStoreData;
       this.envLocation = envStoreData.env_location;
       const instanceStoreData = await CurrentEnvironment.getCurrentEnvInstance();
       if (instanceStoreData) {
         this.instanceData = _.cloneDeep(instanceStoreData);
         this.savedData = _.cloneDeep(instanceStoreData);
+        if (typeof this.instanceData.deployed_regions === "string") {
+          let deployedRegionIds = this.instanceData.deployed_regions?.split(',')
+          if(deployedRegionIds.length != this.instanceData.deployed_regions?.length){
+            deployedRegionIds.forEach((instanceId) => {
+              this.selectedDeployedRegionsOnLoad.push(instanceId)
+            })
+          }
+          
+        } else {
+          console.log("error")
+        }
         
-        this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || [];
         this.regionUsersOnLoad = this.instanceData.users_per_region;
 
         if (this.instanceData.is_traffic_spike_event_based === "YES") {

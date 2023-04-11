@@ -278,7 +278,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     }
     //find sys_id for otherValue
     let otherCheckBoxIndex = this.checkboxItems.findIndex((item) =>item.label === "Other")
-    this.otherValue = this.checkboxItems[otherCheckBoxIndex]?.value
+    this.otherValue = this.checkboxItems[otherCheckBoxIndex]?.value || ""
 
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels();
@@ -301,14 +301,14 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
         if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
           if (this.isServiceOfferingList) {
-
             await DescriptionOfWork.setSelectedOfferings(
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
           } else {
-            if (this.otherOfferingData.sysId !== ""){
-              await this.prepareCurrentOfferingToSave();
-            }
+            // this will be restored and made more bulletproof as it does kill the app
+            // if (this.otherOfferingData.sysId !== ""){
+            //   await this.prepareCurrentOfferingToSave();
+            // }
             await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
           }
         }

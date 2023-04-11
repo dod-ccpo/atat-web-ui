@@ -418,7 +418,6 @@ export default class EnvironmentSummary extends Vue {
             instance.deployed_regions.forEach((instanceId) => {
               instances.push(this.locationNames[instanceId])
             })
-            
           }
           
           let regions = instances?.length

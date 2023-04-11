@@ -233,6 +233,7 @@ export interface ProjectOverviewDTO extends BaseTableDTO {
   title: string;
   scope: string;
   emergency_declaration: string;
+  project_disclaimer: YesNo;
 }
 
 export interface MilitaryRankDTO extends BaseTableDTO {
@@ -424,6 +425,7 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
   type_of_delivery?: "" | "SHIPPED" | "PICK_UP";
   type_of_mobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   type_of_mobility_other?: string;
+  ts_contractor_clearance_type?: string;
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {
@@ -682,6 +684,7 @@ export interface AcquisitionPackageSummaryDisplay{
   mission_owners?: DisplayColumn;
   contract_award?: DisplayColumn;
   contributors?: DisplayColumn;
+  contracting_shop?: DisplayColumn;
 }
 
 export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
@@ -691,6 +694,7 @@ export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
   mission_owners?: DisplayColumn;
   contract_award?: DisplayColumn;
   contributors?: DisplayColumn;
+  contracting_shop?: DisplayColumn;
 }
 
 export interface AcquisitionPackageSummaryMetadataAndDataDTO {

@@ -83,6 +83,7 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
       title: "",
       scope: "",
       emergency_declaration: "",
+      project_disclaimer: "",
     },
     organization: {},
     fairOpportunity: {
