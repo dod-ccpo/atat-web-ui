@@ -18,5 +18,6 @@ module.exports = {
   helpButtons: ".pa-6 button",
   alert: "#Alert",
   acqPackageaccordion: "#PackagesAccordion",
-  acqCard0:"#PackagesAccordion #Package0"
+  acqCard0: "#PackagesAccordion #Package0",
+  acqPackage0:"#Portfolio0"
 }

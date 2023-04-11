@@ -132,6 +132,21 @@ Cypress.Commands.add("findElement", (selector) => {
   }
 });
 
+Cypress.Commands.add('waitUntilModalNotVisible', () => {
+  cy.waitUntil(() => {
+    return Cypress.$('#LoadingModalTitle').is(":visible") === true;
+  }).then(() => {
+    cy.waitUntil(() => {
+      return Cypress.$('#LoadingModalTitle').is(":hidden") === true;
+    }, { timeout: 30000 }).then(() => {
+      cy.verifyPageHeader(
+        "Are you using the Defense Information Technology Contracting Organization (DITCO)" +
+        " for processing your JWCC task order?"
+      );
+    });
+  });
+});
+
 Cypress.Commands.add('homePageClickAcquisitionPackBtn', () => {
   
   cy.findElement(lp.welcomeBarText).should("exist");
@@ -141,25 +156,8 @@ Cypress.Commands.add('homePageClickAcquisitionPackBtn', () => {
   cy.findElement("#stepperNavigation").scrollIntoView()
     .should("be.visible");
   cy.findElement(common.continueBtn).click();   
-
-
-  cy.waitUntil(() => {
-    return Cypress.$('#LoadingModalTitle').is(":visible") === true;
-  }).then(() => {
-    cy.waitUntil(() => {
-      return Cypress.$('#LoadingModalTitle').is(":hidden") === true;  
-    }, {timeout: 30000}).then(() => {
-      cy.verifyPageHeader(
-        "Are you using the Defense Information Technology Contracting Organization (DITCO)" +
-        " for processing your JWCC task order?"
-      );  
-      // cy.findElement("#developerToggleButton").scrollIntoView();
-      //cy.textExists("#developerToggleButton", "Toggle Developer Navigation ON")
-      //.click().then(() => {
-      //   cy.textExists("#developerToggleButton", "Toggle Developer Navigation OFF");
-      // });    
-    });
-  });
+  cy.waitUntilModalNotVisible(); 
+  
 });
 
 Cypress.Commands.add('selectDitcoOption', (selector, text) => {
@@ -237,7 +235,36 @@ Cypress.Commands.add("hoverToolTip", (selector, selector1, expectedText) => {
 });
 
 Cypress.Commands.add("checkErrorMessage", (selector, errorMessage) => {
-  cy.findElement(selector).should("contain.text", errorMessage);  
+  cy.findElement(selector).scrollIntoView().then(($el) => {
+    let actualTxt = $el.text();
+    const actualErrorMessage = cleanText(actualTxt);
+    cy.log(actualErrorMessage);
+    const errorMessageCleaned = cleanText(errorMessage);
+    expect(actualErrorMessage).contains(errorMessageCleaned);
+  });;  
+});
+
+Cypress.Commands.add("verifyEnteredInputTxt", (selector,it) => {
+  cy.findElement(selector).then(($inputText) => {
+    const text = $inputText.val()
+    cy.log(text);
+    expect(text).contain(it);
+  })
+  
+});
+
+Cypress.Commands.add("verifySelectedRadioOption", (selector,radioOption) => {
+  cy.findElement(selector).then(($radioOption) => {
+    const text = $radioOption.text()
+    cy.log(text);
+    expect(text).contain(radioOption);
+  })
+  
+});
+
+Cypress.Commands.add("verifySelectedCheckBoxOption", (selector) => {
+  cy.findElement(selector).should("be.checked");
+  
 });
 
 Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,errorMessage) => {
