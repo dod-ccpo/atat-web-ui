@@ -115,7 +115,7 @@ export class TableApiBase<TableDTO> extends baseApi {
       }
 
       config = config ||  { }
-      const request = sys_id?.length ? this.getById(sys_id) : this.get(config);
+      const request = sys_id?.length ? await this.getById(sys_id) : await this.get(config);
       
       const response = await request;
       if (response.status === 200) {
