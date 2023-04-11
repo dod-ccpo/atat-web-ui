@@ -128,10 +128,10 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   // prep data source - populate classification_display attrib 
   async populateClassificationDisplay(): Promise<void>{
     await this.igceEstimateData.forEach((est)=>{
-      const classLevelSysId = (est.classification_level as ReferenceColumn).value || "";
+      const classLevelSysId = (est.classification_level as ReferenceColumn).value as string;
       const level = ClassificationRequirements.classificationLevels.find(
         (level) => {
-          return level.sys_id === classLevelSysId
+          return classLevelSysId && level.sys_id === classLevelSysId
         })
       est.classification_display = level?.display || "";
     })
@@ -139,7 +139,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   
   // group by classification_display attrib
   async groupByClassificationDisplay(): Promise<void>{
-    this.tempEstimateDataSource = await this.igceEstimateData.reduce(function (acc, current) {
+    this.tempEstimateDataSource = await this.igceEstimateData.filter(
+      estimate => estimate.classification_level !== ""
+    ).reduce(function (acc, current) {
       acc[current.classification_display || ""] = acc[current.classification_display || ""] || [];
       acc[current.classification_display || ""].push(current);
       return acc;
@@ -184,18 +186,20 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   }
 
   async formatCDSDescription(): Promise<string>{
-    
-    const pairs = JSON.parse(this.cdsSNOWRecord?.traffic_per_domain_pair || "");
-    let desc = "";
-    pairs.forEach(
-      (p:  Record<string, string> ) =>{
-        desc += p.type.toLowerCase().replaceAll("_", " ")
-          .replaceAll("ts", "Top Secret") 
-          .replaceAll("s", "Secret")
-          .replaceAll("u", "Unclassified")
-        desc += " (" + p.dataQuantity + " GB/month), "
-      })
-    return desc.substring(0,desc.lastIndexOf(","));
+    if (this.cdsSNOWRecord){
+      const pairs = JSON.parse(this.cdsSNOWRecord?.traffic_per_domain_pair || "");
+      let desc = "";
+      pairs.forEach(
+        (p:  Record<string, string> ) =>{
+          desc += p.type.toLowerCase().replaceAll("_", " ")
+            .replaceAll("ts", "Top Secret") 
+            .replaceAll("s", "Secret")
+            .replaceAll("u", "Unclassified")
+          desc += " (" + p.dataQuantity + " GB/month), "
+        })
+      return desc.substring(0,desc.lastIndexOf(","));
+    }
+    return "";
   }
 
   async sortDataSource(): Promise<void>{
