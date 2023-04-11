@@ -520,8 +520,10 @@ export default class OtherOfferings extends Vue {
       return;
     }
     this.errorBagValues = Object.values(this.$refs.form.errorBag);
-    let formChildren = this.$refs.form.$children[0].$children;
-    formChildren = formChildren.concat(this.$refs.form.$children)
+    let formChildren = this.$refs.form.$children;
+    this.$refs.form.$children.forEach(children => {
+      formChildren = formChildren.concat(children.$children);
+    });
     const inputRefs = [
       "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
     ];
@@ -529,7 +531,6 @@ export default class OtherOfferings extends Vue {
     formChildren.forEach((child: any) => {
       const refs = child.$refs;
       const keys = Object.keys(refs);
-
       keys.forEach((key: string) => {
         if (inputRefs.indexOf(key) > -1 || customComponentRefs.indexOf(key) > -1) {
           const childRef: any = child.$refs[key];
