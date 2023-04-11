@@ -3,8 +3,8 @@
     <div class="_panel-padding mb-2 pb-0 font-size-14">
       <div class="d-flex justify-space-between align-center pb-4">
         <span id="StatusLabel">Status</span>
-        <v-chip id="StatusChip" :color="getBgColor" label>
-          {{ portfolioStatus }}
+        <v-chip id="StatusChip" :color="statusChipColor" label>
+          {{ packageStatus }}
         </v-chip>
       </div>
       <div v-if="selectedAgency" class="d-flex justify-space-between align-center pb-2">
@@ -52,7 +52,7 @@
           </span>
         </h3>
         <v-btn
-          id="AddPortfolioMember"
+          id="AddContributorButton"
           class="_icon-only"
           @click="openContributorsModal"
           @keydown.enter="openContributorsModal"
@@ -177,19 +177,19 @@
 </template>
 
 <script lang="ts">
-import AcquisitionPackage from "@/store/acquisitionPackage";
-
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
+
 import ATATProfileCard from "@/components/ATATProfileCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { createDateStr, getStatusChipBgColor } from "@/helpers";
-import { User } from "types/Global";
-import { getIdText } from "@/helpers";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
-import { MeatballMenuItem } from "types/Global";
+
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
-import { UserDTO } from "@/api/models";
+
+import { createDateStr, getStatusChipBgColor, getIdText } from "@/helpers";
+import { MeatballMenuItem, User } from "types/Global";
+import { AcquisitionPackageDTO, UserDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -200,19 +200,45 @@ import { UserDTO } from "@/api/models";
 })
 
 export default class ContributorsPanel extends Vue {
-  public portfolioStatus = AcquisitionPackage.getPackageStatus;
-  public packageCreator = AcquisitionPackage.getPackageCreator;
-  public packageMissionOwner = AcquisitionPackage.getPackageMissionOwner;
   public lastUpdated = "";
-  public currentUser: UserDTO = CurrentUserStore.currentUser;
   public currentUserIsOwner = false;
-
   public contributorCount = 1;
-  public get contributors(): User[] {
-    return AcquisitionPackage.getPackageContributors;
+  public agency = "";
+  public statusChipColor = "";
+  public packageStatus = "";
+
+  public get getPackageStatus(): string {
+    return AcquisitionPackage.getPackageStatus || "DRAFT";
+  };
+  @Watch("getPackageStatus")
+  public getPackageStatusChanged(newVal: string): void {
+    this.packageStatus = newVal;
+    this.getBgColor();
   }
 
-  public agency = "";
+  public get packageCreator(): User {
+    return AcquisitionPackage.getPackageCreator || {};
+  } 
+  public get packageMissionOwner(): User {
+    return AcquisitionPackage.getPackageMissionOwner || {};
+  } 
+  @Watch("packageMissionOwner")
+  public packageMissionOwnerChanged(newUser: UserDTO): void {
+    if (newUser.sys_id) this.checkIfCurrentUserIsOwner();   
+  }
+
+  public get currentUser(): UserDTO {
+    return CurrentUserStore.getCurrentUserData || {};
+  } 
+  @Watch("currentUser")
+  public currentUserChanged(newUser: UserDTO): void {
+    if (newUser.sys_id) this.checkIfCurrentUserIsOwner();   
+  }
+
+  public get contributors(): User[] {
+    return AcquisitionPackage.getPackageContributors || [];
+  }
+  
   public get selectedAgency(): string {
     return AcquisitionPackage.getSelectedAgencyAcronym;
   } 
@@ -227,8 +253,8 @@ export default class ContributorsPanel extends Vue {
       : this.packageCreator.email as string;
   }
 
-  public get getBgColor(): string {
-    return getStatusChipBgColor(this.portfolioStatus);
+  public getBgColor(): void {
+    this.statusChipColor = this.packageStatus ? getStatusChipBgColor(this.packageStatus) : "";
   }
 
   private getIdText(string: string) {
@@ -255,23 +281,42 @@ export default class ContributorsPanel extends Vue {
   ];
 
   public contributorMenuItems: MeatballMenuItem[] = [
-    {title: "Leave portfolio"},
+    {title: "Leave package"},
   ]
 
-  public async mounted(): Promise<void> {
-    const acqPkg = AcquisitionPackage.acquisitionPackage;
-    if (AcquisitionPackage.acquisitionPackage?.sys_updated_on) {
-      this.lastUpdated = createDateStr(
-        AcquisitionPackage.acquisitionPackage.sys_updated_on, true, true
-      );
-    }
+  public get acqPkg(): AcquisitionPackageDTO | null {
+    return AcquisitionPackage.getAcquisitionPackageData;
+  }
+  @Watch("acqPkg")
+  public acqPkgChanged(newPkg: AcquisitionPackageDTO | null): void {
+    this.setPackageData();
+  }
 
-    if (acqPkg?.contributors) {
-      const len = acqPkg.contributors.split(",").length;
+  public setPackageData(): void {
+    if (this.acqPkg?.sys_updated_on) {
+      this.lastUpdated = createDateStr(this.acqPkg.sys_updated_on, true, true);
+    } 
+    if (this.acqPkg?.contributors) {
+      const len = this.acqPkg.contributors.split(",").length;
       this.contributorCount = len + 1;
+    }    
+    if (this.acqPkg?.package_status) {
+      this.packageStatus = this.acqPkg.package_status.replaceAll("_", " ");
+      this.getBgColor();
     }
+  }
 
-    this.currentUserIsOwner = this.currentUser.sys_id === this.packageMissionOwner.sys_id;
+  public checkIfCurrentUserIsOwner(): void {
+    if (this.currentUser?.sys_id && this.packageMissionOwner?.sys_id) {
+      this.currentUserIsOwner = this.currentUser.sys_id === this.packageMissionOwner.sys_id;
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    if (AcquisitionPackage.acquisitionPackage?.sys_updated_on) {
+      this.setPackageData();
+    }
+    this.checkIfCurrentUserIsOwner();
   }
 }
 

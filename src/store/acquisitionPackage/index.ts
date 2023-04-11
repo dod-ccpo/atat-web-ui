@@ -389,6 +389,11 @@ export class AcquisitionPackageStore extends VuexModule {
       if (contributor) {
         this.doAddPackageContributor(contributor);
       }
+    });
+    this.packageContributors.sort((a,b) => {
+      return a.fullNameForSort && b.fullNameForSort 
+        ? a.fullNameForSort > b.fullNameForSort ? 1: -1
+        : 1;
     })
   }
 
@@ -582,6 +587,10 @@ export class AcquisitionPackageStore extends VuexModule {
   }
   @Action
   public async getAcquisitionPackage(): Promise<AcquisitionPackageDTO | null> {
+    return this.acquisitionPackage;
+  }
+
+  public get getAcquisitionPackageData(): AcquisitionPackageDTO | null {
     return this.acquisitionPackage;
   }
 
@@ -1849,6 +1858,7 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   private doReset(): void {
     this.initialized = false;
+    this.packagePercentLoaded = 0;
     this.projectTitle = "";
     this.acquisitionPackage = null;
     this.projectOverview = null;

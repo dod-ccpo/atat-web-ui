@@ -54,6 +54,9 @@ export class UserStore extends VuexModule {
     await this.ensureInitialized();
   }
 
+  public get getCurrentUserData(): UserDTO {
+    return this.currentUser;
+  }
 
   @Action({rawError: true})
   public async getCurrentUser(): Promise<UserDTO> {
@@ -181,6 +184,10 @@ export class UserStore extends VuexModule {
         user.fullName = user.salutation 
           ? user.salutation + " " + user.firstName + " " + user.lastName
           : user.firstName + " " + user.lastName;
+        user.fullNameForSort = user.salutation 
+          ? user.firstName + " " + user.lastName + ", " + user.salutation
+          : user.firstName + " " + user.lastName;
+        
         user.email = userRecord.email;
         
         user.phoneNumber = userRecord.phone;
