@@ -16,7 +16,7 @@
     <v-list>
       <v-list-item class="px-6 py-6">
         <v-list-item-content>
-          <div class="d-flex align-center ">
+          <div class="d-flex align-center">
             <ATATSVGIcon
               width="16"
               height="13"
@@ -72,7 +72,7 @@
           </div>
 
           <div
-            class="d-flex"
+            class="d-flex align-center"
             :class="agencyClass"
             v-if="person.agency"
           >
@@ -88,7 +88,7 @@
           </div>
 
           <div
-            class="d-flex"
+            class="d-flex align-center"
             :class="designationClass"
             v-if="person.designation"
           >

@@ -91,7 +91,7 @@
           <ATATProfileCard :person="packageMissionOwner" />
         </v-menu> 
         <div>
-          <v-tooltip left nudge-right="15">
+          <v-tooltip left nudge-right="15" v-if="currentUserIsOwner">
             <template v-slot:activator="{ on, attrs }">
               <span v-bind="attrs" v-on="on">
                 Owner
@@ -101,6 +101,9 @@
               As the owner, you will need to transfer ownership in order to leave this package.
             </div>
           </v-tooltip>
+          <div v-else>
+            Owner
+          </div>
         </div>
       </div>
 
@@ -129,10 +132,11 @@
           </v-menu>    
 
           <ATATMeatballMenu
+            v-if="currentUserIsOwner || user.sys_id === currentUser.sys_id"
             :id="'CardMenu' + index"
             :left="true"
             :index="index"
-            :menuItems="contributorMenuItems"
+            :menuItems="menuItems"
             @menuItemClick="contributorMenuClick"
           />
 
@@ -184,6 +188,8 @@ import { User } from "types/Global";
 import { getIdText } from "@/helpers";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import { MeatballMenuItem } from "types/Global";
+import CurrentUserStore from "@/store/user";
+import { UserDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -198,6 +204,8 @@ export default class ContributorsPanel extends Vue {
   public packageCreator = AcquisitionPackage.getPackageCreator;
   public packageMissionOwner = AcquisitionPackage.getPackageMissionOwner;
   public lastUpdated = "";
+  public currentUser: UserDTO = CurrentUserStore.currentUser;
+  public currentUserIsOwner = false;
 
   public contributorCount = 1;
   public get contributors(): User[] {
@@ -230,14 +238,24 @@ export default class ContributorsPanel extends Vue {
   public contributorMenuClick(menuItem: MeatballMenuItem, index: number): void {
     // TODO Ticket AT-8791 (remove contributor)
     // TODO Ticket AT-8792 (transfer ownership)
+    // TODO Ticket AT-8793 (leave package)
   }
 
   public openContributorsModal(): void {
     // TODO Ticket AT-8756
   }
-  public contributorMenuItems: MeatballMenuItem[] = [
+
+  public get menuItems(): MeatballMenuItem[] {
+    return this.currentUserIsOwner ? this.ownerMenuItems : this.contributorMenuItems;
+  }
+
+  public ownerMenuItems: MeatballMenuItem[] = [
     {title: "Remove contributor"},
     {title: "Transfer ownership"},
+  ];
+
+  public contributorMenuItems: MeatballMenuItem[] = [
+    {title: "Leave portfolio"},
   ]
 
   public async mounted(): Promise<void> {
@@ -252,6 +270,8 @@ export default class ContributorsPanel extends Vue {
       const len = acqPkg.contributors.split(",").length;
       this.contributorCount = len + 1;
     }
+
+    this.currentUserIsOwner = this.currentUser.sys_id === this.packageMissionOwner.sys_id;
   }
 }
 

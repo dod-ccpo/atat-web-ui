@@ -1876,6 +1876,9 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fundingRequestType =  null;
     this.fundingRequirement = null;
     this.contractingShop = "";
+    this.packageContributors = [];
+    this.packageCreator = {};
+    this.packageMissionOwner = {};
   }
 }
 

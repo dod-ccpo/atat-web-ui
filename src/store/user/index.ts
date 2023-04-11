@@ -196,6 +196,7 @@ export class UserStore extends VuexModule {
             CTR: "Contractor",
           }
           user.designation = designations[ext];
+          user.sys_id = userRecord.sys_id;
         }
 
       }
