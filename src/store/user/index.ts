@@ -147,11 +147,14 @@ export class UserStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async getUserByUserName(username: string): Promise<User> {
+  public async getUserRecord(userInfo: {s: string, field: string}): Promise<User> {
+    debugger;
+    const field = userInfo.field || "sys_id";
     const user: User = {};
     const fields = `first_name,last_name,email,title,phone,
       mobile_phone,home_phone,company,user_name,sys_id`;
-    const query = `user_name=${username}`;
+    const query = `${field}=${userInfo.s}`;
+    debugger;
     try {
       const config: AxiosRequestConfig = {
         params: {
@@ -186,14 +189,16 @@ export class UserStore extends VuexModule {
         user.officePhone = userRecord.phone;
         user.mobilePhone = userRecord.mobile_phone;
         user.dsnPhone = userRecord.home_phone;
-
-        const ext: string = username.substring(username.length - 3, username.length);
-        const designations: Record<string, string> = {
-          MIL: "Military",
-          CIV: "Civilian",
-          CTR: "Contractor",
+        const username = userRecord.user_name;
+        if (username) {
+          const ext: string = username.substring(username.length - 3, username.length);
+          const designations: Record<string, string> = {
+            MIL: "Military",
+            CIV: "Civilian",
+            CTR: "Contractor",
+          }
+          user.designation = designations[ext];
         }
-        user.designation = designations[ext];
 
       }
     }

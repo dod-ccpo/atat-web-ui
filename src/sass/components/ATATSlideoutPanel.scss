@@ -166,4 +166,7 @@
       background-color: transparent !important;
     }
   }
+  ._panel-user-list & {
+    padding-left: 0 !important;
+  }
 }

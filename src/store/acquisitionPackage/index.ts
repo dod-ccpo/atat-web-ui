@@ -351,7 +351,6 @@ export class AcquisitionPackageStore extends VuexModule {
   currentUserIsContributor = false;
 
   packageCreator: User = {};
-
   @Mutation
   public doSetPackageCreator(user: User): void {
     this.packageCreator = user;
@@ -360,9 +359,44 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.packageCreator;
   }
 
+  packageMissionOwner: User = {};
+  @Mutation
+  public doSetPackageMissionOwner(user: User): void {
+    this.packageMissionOwner = user;
+  }
+  public get getPackageMissionOwner(): User {
+    return this.packageMissionOwner;
+  }
+
   public get getPackageStatus(): string {
     return this.acquisitionPackage?.package_status as string;
   }
+
+  public packageContributors: User[] = [];
+
+  public get getPackageContributors(): User[] {
+    return this.packageContributors;
+  }
+
+  @Action({rawError: true})
+  public async setPackageContributors(contributorSysIds: string): Promise<void> {
+    // can be used for single or multiple - send csv string for multiple
+    const sysIds = contributorSysIds.split(",");
+    sysIds.forEach(async sysId => {
+      const contributor = await UserStore.getUserRecord(
+        {s: sysId, field: "sys_id"}
+      );        
+      if (contributor) {
+        this.doAddPackageContributor(contributor);
+      }
+    })
+  }
+
+  @Mutation
+  public async doAddPackageContributor(user: User): Promise<void> {
+    this.packageContributors.push(user);
+  }
+
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
@@ -800,8 +834,20 @@ export class AcquisitionPackageStore extends VuexModule {
       await this.setRegions();
       this.setPackagePercentLoaded(25);
       if (acquisitionPackage.sys_created_by) {
-        const creator = await UserStore.getUserByUserName(acquisitionPackage.sys_created_by);
+        const creator 
+          = await UserStore.getUserRecord(
+            {s: acquisitionPackage.sys_created_by, field: "user_name"}
+          );
         this.doSetPackageCreator(creator);
+      }
+      if (acquisitionPackage.mission_owners) {
+        // there should only be one mission owner, but the field in servicenow is a list,
+        // to be on the safe side, split the csv string of sysIds, take the first
+        const missionOwnerSysId = (acquisitionPackage.mission_owners.split(","))[0];
+        const missionOwner = await UserStore.getUserRecord(
+          {s: missionOwnerSysId, field: "sys_id"}
+        );      
+        this.doSetPackageMissionOwner(missionOwner);    
       }
 
       const currentEnvironmentSysId = acquisitionPackage.current_environment as string;
@@ -836,6 +882,10 @@ export class AcquisitionPackageStore extends VuexModule {
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
       });
+
+      if (acquisitionPackage.contributors) {
+        this.setPackageContributors(acquisitionPackage.contributors);
+      }
 
       await ClassificationRequirements.getAllClassificationLevels();
       this.setPackagePercentLoaded(30);
@@ -1101,8 +1151,11 @@ export class AcquisitionPackageStore extends VuexModule {
     const loggedInUser = await UserStore.getCurrentUser();
 
     if (loggedInUser && loggedInUser.user_name) {
-      const creator = await UserStore.getUserByUserName(loggedInUser.user_name);
+      const creator = await UserStore.getUserRecord(
+        {s: loggedInUser.user_name, field: "user_name"}
+      );      
       this.doSetPackageCreator(creator);
+      this.doSetPackageMissionOwner(creator);
     }
 
     if (storedSessionData && storedSessionData.length > 0) {
