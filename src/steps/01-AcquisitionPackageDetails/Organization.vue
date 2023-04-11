@@ -291,11 +291,10 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   }
 
   // getters
-
   get isAgencyDisa(): boolean{
     return (this.selectedAgency.text as string)?.toUpperCase().indexOf("DISA")> -1
   }
-
+ 
   private get currentData(): OrganizationDTO {
     let state = "";
     let city = this.city;
@@ -342,6 +341,10 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   @Watch("selectedAgency")
   protected agencyChanged(newVal: SelectData): void {
     AcquisitionPackage.setSelectedAgency(newVal);
+    
+    //reset two attribs below depending on agency dropdown update
+    this.selectedDisaOrg = this.isAgencyDisa ? this.selectedDisaOrg :  { text: "", value: ""};
+    this.organizationName = this.isAgencyDisa ? "" : this.organizationName;
   }
 
   // methods
@@ -383,13 +386,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
           this.agencyData[selectedAgencyIndex];
       }
 
-      const selectedDisaOrgIndx = this.disaOrgData.findIndex(
-        (org) => org.value === storeData.disa_organization
-      );
-
-      if (selectedDisaOrgIndx > -1) {
-        this.selectedDisaOrg = this.disaOrgData[selectedDisaOrgIndx];
-      }
+      this.selectedDisaOrg = this.disaOrgData.find(
+        (disaOrg) => disaOrg.value === storeData.disa_organization
+      ) as SelectData
 
       this.organizationName = storeData.organization_name;
       this.dodAddressCode = storeData.dodaac;
