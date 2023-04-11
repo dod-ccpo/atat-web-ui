@@ -70,31 +70,7 @@
 
       </div>
       
-      
-      <v-menu
-        :close-on-content-click="false"
-        left
-        open-on-hover
-        offset-x
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            plain
-            text
-            v-bind="attrs"
-            v-on="on"
-            class="font-size-14 _person-card__name-button"
-          >
-            {{ packageMissionOwner.firstName }} {{ packageMissionOwner.lastName }} 
-          </v-btn>
-        </template>
-
-        <ATATProfileCard :person="packageMissionOwner" />
-
-      </v-menu>        
-
-
-      <div v-for="(user, index) in contributors" :key="index">
+      <div class="d-flex justify-space-between align-center font-size-14">
         <v-menu
           :close-on-content-click="false"
           left
@@ -109,13 +85,48 @@
               v-on="on"
               class="font-size-14 _person-card__name-button"
             >
-              {{ user.firstName }} {{ user.lastName }}
+              {{ packageMissionOwner.firstName }} {{ packageMissionOwner.lastName }} 
             </v-btn>
           </template>
 
-          <ATATProfileCard :person="user" />
+          <ATATProfileCard :person="packageMissionOwner" />
+        </v-menu> 
+        <div>
+          Owner
+        </div>
+      </div>
 
-        </v-menu>        
+             
+
+
+      <div v-for="(user, index) in contributors" :key="index">
+        <div class="d-flex justify-space-between align-center font-size-14">
+          <v-menu
+            :close-on-content-click="false"
+            left
+            open-on-hover
+            offset-x
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                plain
+                text
+                v-bind="attrs"
+                v-on="on"
+                class="font-size-14 _person-card__name-button"
+              >
+                {{ user.firstName }} {{ user.lastName }}
+              </v-btn>
+            </template>
+
+            <ATATProfileCard :person="user" />
+
+          </v-menu>    
+          <div>
+            ... <!-- meatball menu -->
+          </div>
+
+        </div>    
       </div>
     </div>
   </div>
