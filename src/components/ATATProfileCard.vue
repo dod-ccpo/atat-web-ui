@@ -1,10 +1,7 @@
 <template>
   <v-card class="_profile-card">
-    <v-list  v-if="person.fullName"
-    >
-      <v-list-item
-        class="py-4 px-6"
-      >
+    <v-list  v-if="person.fullName">
+      <v-list-item class="py-4 px-6">
           <div class="_initials mr-2">
             {{ initials }}
           </div>
@@ -70,7 +67,6 @@
                   DSN
                 </span>
               </div>
-
 
             </div>
           </div>
@@ -152,7 +148,6 @@ export default class ATATProfileCard extends Vue {
   public get agencyClass(): string {
     return this.hasPhone ? 'mt-2': 'mt-3'
   }
-
 
   public get designationClass(): string {
     return this.hasPhone && !this.person.agency ? 'mt-2': 'mt-3'

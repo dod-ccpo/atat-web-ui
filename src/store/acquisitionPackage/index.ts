@@ -832,13 +832,14 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(20);
       await FinancialDetails.initialize();
       await this.setRegions();
-      this.setPackagePercentLoaded(25);
+      this.setPackagePercentLoaded(22);
       if (acquisitionPackage.sys_created_by) {
         const creator 
           = await UserStore.getUserRecord(
             {s: acquisitionPackage.sys_created_by, field: "user_name"}
           );
         this.doSetPackageCreator(creator);
+        this.setPackagePercentLoaded(25);
       }
       if (acquisitionPackage.mission_owners) {
         // there should only be one mission owner, but the field in servicenow is a list,
@@ -847,7 +848,8 @@ export class AcquisitionPackageStore extends VuexModule {
         const missionOwner = await UserStore.getUserRecord(
           {s: missionOwnerSysId, field: "sys_id"}
         );      
-        this.doSetPackageMissionOwner(missionOwner);    
+        this.doSetPackageMissionOwner(missionOwner);  
+        this.setPackagePercentLoaded(28);
       }
 
       const currentEnvironmentSysId = acquisitionPackage.current_environment as string;
@@ -888,7 +890,7 @@ export class AcquisitionPackageStore extends VuexModule {
       }
 
       await ClassificationRequirements.getAllClassificationLevels();
-      this.setPackagePercentLoaded(30);
+      this.setPackagePercentLoaded(32);
 
       // load selected call will take care of loading or setting an empty array
       await ClassificationRequirements
@@ -1225,7 +1227,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.setIsLoading(false);
   }
 
-  // EJY HERE
   // service or agency selected on Organiation page
   selectedAgency: SelectData = { text: "", value: "" };
   selectedAgencyAcronym = "";

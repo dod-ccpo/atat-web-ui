@@ -25,7 +25,7 @@
               text
               v-bind="attrs"
               v-on="on"
-              class="font-size-14 _person-card__name-button"
+              class="font-size-14 _profile-card__name-button"
             >
               {{ creatorName }}
             </v-btn>
@@ -82,7 +82,7 @@
               text
               v-bind="attrs"
               v-on="on"
-              class="font-size-14 _person-card__name-button"
+              class="font-size-14 _profile-card__name-button"
             >
               {{ packageMissionOwner.firstName }} {{ packageMissionOwner.lastName }} 
             </v-btn>
@@ -118,7 +118,7 @@
                 text
                 v-bind="attrs"
                 v-on="on"
-                class="font-size-14 _person-card__name-button"
+                class="font-size-14 _profile-card__name-button"
               >
                 {{ user.firstName }} {{ user.lastName }}
               </v-btn>
