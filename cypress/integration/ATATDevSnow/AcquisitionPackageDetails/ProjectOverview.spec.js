@@ -108,15 +108,13 @@ describe("Test suite: Acquisition Package: Project Overview ", () => {
     );
     const pt = randomAlphaNumeric(4);
     cy.findElement(projectOverview.projectTitleTxtBox).scrollIntoView()
-      .type(pt).click();    
-    // //scope is blank
-    cy.verifyRequiredInput(
-      projectOverview.scopeTxtBox,
-      projectOverview.scopeError,
-      "Please describe the scope of your requirement"
-    );
-    const projectTitle = randomAlphaNumeric(61);
+      .type(pt)
+    cy.clickSomethingElse(projectOverview.scopeTxtBox).then(() => {
+      cy.findElement(projectOverview.projectTitleTxtBox).scrollIntoView();
+      cy.findElement(projectOverview.projectTitleError).should("not.exist");      
+    });   
     //enter morethan 60 characters
+    const projectTitle = randomAlphaNumeric(61);
     cy.findElement(projectOverview.projectTitleTxtBox).scrollIntoView().should("be.visible")
       .clear().type(projectTitle).blur({ force: true }).then(() => {
         cy.checkErrorMessage(
@@ -124,8 +122,18 @@ describe("Test suite: Acquisition Package: Project Overview ", () => {
           "Title cannot exceed 60 characters"
         );
       });
+    //scope is blank
+    cy.verifyRequiredInput(
+      projectOverview.scopeTxtBox,
+      projectOverview.scopeError,
+      "Please describe the scope of your requirement"
+    );
     cy.findElement(projectOverview.scopeTxtBox).scrollIntoView()
-      .type(pt).click();   
+      .type(pt);
+    cy.clickSomethingElse(projectOverview.emergencyDeclarationControl).then(() => {
+      cy.findElement(projectOverview.scopeTxtBox).scrollIntoView();
+      cy.findElement(projectOverview.scopeError).should("not.exist");      
+    }); 
     //morethan 300 
     const scope = randomAlphaNumeric(301);
     cy.findElement(projectOverview.scopeTxtBox).scrollIntoView().should("be.visible")
