@@ -1897,6 +1897,9 @@ export class AcquisitionPackageStore extends VuexModule {
     this.packageContributors = [];
     this.packageCreator = {};
     this.packageMissionOwner = {};
+    this.selectedAgency = { text: "", value: "" };
+    this.selectedAgencyAcronym = "";
+  
   }
 }
 
