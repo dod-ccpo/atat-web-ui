@@ -583,11 +583,6 @@ export default class OtherOfferings extends Vue {
               }
             }
           }
-          if(this.isDatabase){
-            if(key === 'radioButtonGroup'){
-              //TODO add missing components into here for database
-            }
-          }
           
           if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")) {
             const errorBucket: string[] = childRef.errorBucket;
