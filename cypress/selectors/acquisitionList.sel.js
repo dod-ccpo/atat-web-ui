@@ -23,7 +23,7 @@ module.exports = {
   card0menuList: "#CardMenu0_0  .v-list",
   archiveLink: "#CardMenu0_0 #Archiveacquisition_MenuItem0",
   archiveModal: "#ArchivePackageModal",
-  archiveModaltitle: "#ArchivePackageModal #modalDialogTitle",
-  archiveBtn: "#ArchivePackageModal #dialog_ok",
+  archiveModaltitle: "#ArchivePackageModalTitle",
+  archiveBtn: "#ArchiveButton_OK",
   restorePackage:"#Restorepackagetodraft_MenuItem0"
 }
