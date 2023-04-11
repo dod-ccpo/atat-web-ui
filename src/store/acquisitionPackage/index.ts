@@ -10,7 +10,7 @@ import rootStore from "../index";
 
 import api from "@/api";
 import ContactData from "@/store/contactData";
-import OrganiationData from "../organizationData";
+import OrganizationData from "../organizationData";
 import { TableApiBase } from "@/api/tableApiBase";
 import {
   AcquisitionPackageDTO,
@@ -360,6 +360,9 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.packageCreator;
   }
 
+  public get getPackageStatus(): string {
+    return this.acquisitionPackage?.package_status as string;
+  }
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
@@ -787,7 +790,7 @@ export class AcquisitionPackageStore extends VuexModule {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
       await ContactData.initialize();
       this.setPackagePercentLoaded(5);
-      await OrganiationData.initialize();
+      await OrganizationData.initialize();
       this.setPackagePercentLoaded(10);
       await DescriptionOfWork.initialize();
       this.setPackagePercentLoaded(15);
@@ -877,11 +880,17 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(45);
 
       if(organizationSysId) {
-        const organization = await api.organizationTable.retrieve(
+        const organization: OrganizationDTO = await api.organizationTable.retrieve(
           organizationSysId
         );
-        if(organization)
-          this.setOrganization(organization);
+        if(organization) {
+          const orgData = convertColumnReferencesToValues(organization); 
+          this.setOrganization(orgData);
+          if (organization.agency) {
+            await this.setSelectedAgencyById(organization.agency);
+          }
+        }
+
       } else {
         this.setOrganization(
           initialOrganization()
@@ -1077,7 +1086,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
-    await OrganiationData.initialize();
+    await OrganizationData.initialize();
     this.setPackagePercentLoaded(10);
     this.setPackagePercentLoaded(15);
     await Attachments.initialize();
@@ -1163,16 +1172,44 @@ export class AcquisitionPackageStore extends VuexModule {
     this.setIsLoading(false);
   }
 
+  // EJY HERE
   // service or agency selected on Organiation page
   selectedAgency: SelectData = { text: "", value: "" };
+  selectedAgencyAcronym = "";
 
+  public get getSelectedAgencyAcronym(): string {
+    return this.selectedAgencyAcronym;
+  }
+
+  @Action({rawError: true})
+  public async setSelectedAgencyById(sysId: string): Promise<void> {
+    const agencyData = OrganizationData.agencyData.find(obj => obj.sys_id === sysId);
+    if (agencyData) {
+      const agencySelectData: SelectData = {
+        text: agencyData.label,
+        value: agencyData.sys_id as string,
+      }    
+      this.doSetSelectedAgency(agencySelectData);
+      this.doSetSelectedAgencyAcronym(agencyData.acronym);
+    }
+  }
+
+  @Mutation
+  public doSetSelectedAgencyAcronym(str: string): void {
+    this.selectedAgencyAcronym = str;
+  }
+  
   public getSelectedAgency(): SelectData {
     return this.selectedAgency;
   }
 
   @Action({ rawError: true })
-  public setSelectedAgency(value: SelectData): void {
-    this.doSetSelectedAgency(value);
+  public async setSelectedAgency(agencySelectData: SelectData): Promise<void> {
+    this.doSetSelectedAgency(agencySelectData);
+    const agencyData = OrganizationData.agencyData.find(
+      obj => obj.sys_id === agencySelectData.value
+    );
+    if (agencyData) this.doSetSelectedAgencyAcronym(agencyData.acronym);   
   }
 
   @Mutation
@@ -1739,7 +1776,7 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async reset(): Promise<void>{
     await ContactData.reset();
-    await OrganiationData.reset();
+    await OrganizationData.reset();
     await DescriptionOfWork.reset();
     await Attachments.reset();
     await FinancialDetails.reset();

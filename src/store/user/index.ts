@@ -168,7 +168,7 @@ export class UserStore extends VuexModule {
               sysparm_query: `sys_id=${userRecord.company}`
             }
           }
-          const companyResponse = await api.companyTable.getQuery(companyConfig)
+          const companyResponse: CompanyDTO[] = await api.companyTable.getQuery(companyConfig)
           if (companyResponse.length) {
             const company = companyResponse[0];
             user.agency = company.u_short_name || company.name;

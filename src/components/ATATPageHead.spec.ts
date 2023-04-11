@@ -10,7 +10,7 @@ describe("Testing ATATPageHead Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  const headline = "Test Heading";
+  const headline = "New Acquisition";
 
   beforeEach(() => {
     vuetify = new Vuetify();

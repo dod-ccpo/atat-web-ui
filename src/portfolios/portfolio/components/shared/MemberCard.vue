@@ -13,7 +13,7 @@
           text
           v-bind="attrs"
           v-on="on"
-          class="font-size-14 _member-button"
+          class="font-size-14 _person-card__name-button"
         >
           {{member.firstName}} {{ member.lastName}}
         </v-btn>
@@ -23,7 +23,7 @@
           text
           v-bind="attrs"
           v-on="on"
-          class="font-size-14 _member-button"
+          class="font-size-14 _person-card__name-button"
         >
           {{member.email}}
         </v-btn>
