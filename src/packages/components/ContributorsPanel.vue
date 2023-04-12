@@ -206,7 +206,7 @@ import Toast from "@/store/toast";
 import { createDateStr, getStatusChipBgColor, getIdText } from "@/helpers";
 import { MeatballMenuItem, ToastObj, User } from "types/Global";
 import { AcquisitionPackageDTO, UserDTO } from "@/api/models";
-import _ from "lodash";
+import AppSections from "@/store/appSections";
 
 @Component({
   components: {
@@ -296,11 +296,13 @@ export default class ContributorsPanel extends Vue {
     case "Remove contributor":
       this.removeContributor(index);
       break;
+    case "Leave package":
+      this.leavePackage(index);
+      break;
     }
     // TODO Ticket AT-8792 (transfer ownership)
-    // TODO Ticket AT-8793 (leave package)
   }
- 
+  
   public removeContributor(index: number): void {
     const user = this.contributors[index];
     this.confirmationModalTargetUserSysId = user.sys_id as string;
@@ -308,8 +310,19 @@ export default class ContributorsPanel extends Vue {
     this.confirmationModalBody = `<p>${user.fullName} will be removed from the
       conbtributors list. This individual will no longer have access to edit the 
       acquisition package details.</p><p class="mb-0">NOTE: Any contributor can 
-      restore their access to this package at any time.</p>`
-    this.confirmationModalOKButtonText = "Remove contributor"
+      restore their access to this package at any time.</p>`;
+    this.confirmationModalOKButtonText = "Remove contributor";
+    this.showConfirmationModal = true;
+  }
+
+  public leavePackage(index: number): void {
+    const user = this.contributors[index];
+    this.confirmationModalTargetUserSysId = user.sys_id as string;
+    this.confirmationModalTitle = `Leave acquisition package?`;
+    this.confirmationModalBody = `<p class="mb-0">You will <strong>no longer have 
+      access</strong> to edit acquisition package details. A contributor can restore
+      your access at any time.`;
+    this.confirmationModalOKButtonText = "Leave package";
     this.showConfirmationModal = true;
   }
 
@@ -317,11 +330,15 @@ export default class ContributorsPanel extends Vue {
     switch(this.confirmationModalOKButtonText) {
     case "Remove contributor":
       await AcquisitionPackage.removeContributor(this.confirmationModalTargetUserSysId);
-      this.confirmationModalTargetUserSysId = "";
       this.confirmationModalToast.message = "Contributor removed"
       break;
+    case "Leave package": 
+      await AcquisitionPackage.removeContributor(this.confirmationModalTargetUserSysId);
+      this.confirmationModalToast.message = "Access removed"
+      AppSections.changeActiveSection(AppSections.sectionTitles.Home)
     }
 
+    this.confirmationModalTargetUserSysId = "";
     Toast.setToast(this.confirmationModalToast);
   }
 
