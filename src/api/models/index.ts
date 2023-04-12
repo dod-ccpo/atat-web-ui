@@ -255,6 +255,7 @@ export interface SystemPropertiesDTO extends BaseTableDTO {
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
+  acquisition_package?: ReferenceColumn | string;
   pii_present?: string;
   system_of_record_name?: string;
   work_to_be_performed?: string;

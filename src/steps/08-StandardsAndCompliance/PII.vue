@@ -100,7 +100,7 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
-import { SensitiveInformationDTO} from "@/api/models"
+import { ReferenceColumn, SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
 import {RadioButton} from "../../../types/Global";
@@ -132,6 +132,7 @@ export default class PII extends  Mixins(LoadOnEnter,SaveOnLeave) {
   private get currentData(): SensitiveInformationDTO {
     return {
       pii_present: this.selectedPIIOption || "",
+      acquisition_package: AcquisitionPackage.packageId
     };
   }
 
@@ -150,7 +151,7 @@ export default class PII extends  Mixins(LoadOnEnter,SaveOnLeave) {
       );
     if (storeData) {
       this.savedData = {
-        pii_present: storeData.pii_present,
+        pii_present: storeData.pii_present
       }
     }
   }

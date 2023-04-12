@@ -248,6 +248,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
       foia_state_province_state_code: state,
       foia_zip_postal_code: this.zipCode,
       foia_country: this.selectedCountry.text,
+      acquisition_package: AcquisitionPackage.packageId
     };
   }
 

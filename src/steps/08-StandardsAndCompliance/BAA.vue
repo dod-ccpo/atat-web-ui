@@ -183,6 +183,7 @@ export default class BAA extends Mixins(LoadOnEnter,SaveOnLeave) {
   private get currentData(): SensitiveInformationDTO {
     return {
       baa_required: this.selectedBAAOption || "",
+      acquisition_package: AcquisitionPackage.packageId
     };
   }
 
