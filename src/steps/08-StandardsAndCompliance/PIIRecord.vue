@@ -68,6 +68,7 @@ export default class PIIRecord extends Mixins(SaveOnLeave) {
     return {
       system_of_record_name: this.systemName,
       work_to_be_performed: this.operationToBePerformed,
+      acquisition_package: AcquisitionPackage.packageId
 
     };
   }

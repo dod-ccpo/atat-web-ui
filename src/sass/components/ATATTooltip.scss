@@ -14,7 +14,8 @@
     border-radius: 4px;
     position: relative;
 
-    &:not(._left)::after {
+
+    &:not(._left, ._no-pointer)::after {
       content: "";
       position: absolute;
       bottom: -15px;

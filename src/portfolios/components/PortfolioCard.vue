@@ -159,7 +159,7 @@
     <ATATMeatballMenu 
       :id="'PortfolioCardMenu' + index"
       :left="true"
-      :menuIndex="index"
+      :index="index"
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
     />

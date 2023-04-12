@@ -51,7 +51,7 @@ module.exports = {
   countryInput: "#Country",
   countryListItems:"#Country_AutoComplete_Wrapper .v-list-item__title ",
   zipCodeTxtBox: "#ZIPCode_text_field",
-  requestModalTitle: "#modalDialogTitle",
+  requestModalTitle: "#AddAgencyModalTitle",
   requestAgencyLink: "#RequestAgencyAdded",
   agencyOrgNameTxtLabel: "#AgencyOrgName_text_field_label",
   streetError: "#StreetAddress_text_field_control .field-error",

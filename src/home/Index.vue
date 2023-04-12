@@ -88,6 +88,7 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 import ATATToast from "@/components/ATATToast.vue";
+import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
@@ -105,6 +106,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components: {
     ATATFooter,
+    ATATLoadingPackageModal,
     ATATToast,
     ExistingUser,
     HelpfulResourcesCards,
@@ -134,7 +136,6 @@ export default class Home extends Vue {
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await acquisitionPackage.setFirstTimeVisit(true)
-    await AcquisitionPackage.reset();
     this.$router.push({
       name: routeNames.DAPPSChecklist,
       params: {
@@ -151,6 +152,7 @@ export default class Home extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    await AcquisitionPackage.reset();
     await AcquisitionPackage.setHideNavigation(false);
     this.currentUser = await UserStore.getCurrentUser();
     await this.checkIfIsNewUser();
