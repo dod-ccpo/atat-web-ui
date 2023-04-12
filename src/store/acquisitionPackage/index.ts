@@ -398,6 +398,11 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public async removeContributorFromStore(sysId: string): Promise<void> {
+    this.packageContributors = this.packageContributors.filter(obj => obj.sys_id !== sysId);
+  }
+
+  @Mutation
   public async sortPackageContributors(): Promise<void> {
     this.packageContributors = this.packageContributors.sort((a,b) => {
       return a.fullNameForSort && b.fullNameForSort 
@@ -418,6 +423,41 @@ export class AcquisitionPackageStore extends VuexModule {
     this.packageContributors = this.packageContributors.filter(obj => obj.sys_id !== data.sysId);
     if (this.acquisitionPackage) {
       this.acquisitionPackage.contributors = data.sysIds;
+      await api.acquisitionPackageTable.update(
+        AcquisitionPackage.packageId,
+        this.acquisitionPackage
+      );
+    }
+  }
+
+  @Action({rawError: true})
+  public async transferOwnership(newOwnerSysId: string): Promise<void> {
+    const currentUserSysId = this.currentUser.sys_id;
+    if (currentUserSysId && this.acquisitionPackage && this.acquisitionPackage.contributors) {
+      this.doAddPackageContributor(this.packageMissionOwner);
+      const newOwnerUser = this.packageContributors.find(obj => obj.sys_id === newOwnerSysId);
+      if (newOwnerUser) {
+        this.doSetPackageMissionOwner(newOwnerUser);
+      }
+      await this.removeContributorFromStore(newOwnerSysId);
+      
+      let contributors = this.acquisitionPackage.contributors.split(","); 
+      contributors.push(currentUserSysId);
+      // remove new mission owner from contributors list
+      contributors = contributors.filter(id => id !== newOwnerSysId);
+      const newContributorsList = contributors?.join(",");
+      await this.doTransferOwnership(
+        { newOwnerSysId: newOwnerSysId, newContributorsList: newContributorsList}
+      );
+    }
+  }
+  @Mutation
+  public async doTransferOwnership(
+    data: { newOwnerSysId: string, newContributorsList: string}
+  ): Promise<void> {
+    if (this.acquisitionPackage) {
+      this.acquisitionPackage.contributors = data.newContributorsList;
+      this.acquisitionPackage.mission_owners = data.newOwnerSysId;
       await api.acquisitionPackageTable.update(
         AcquisitionPackage.packageId,
         this.acquisitionPackage

@@ -299,8 +299,10 @@ export default class ContributorsPanel extends Vue {
     case "Leave package":
       this.leavePackage(index);
       break;
+    case "Transfer ownership":
+      this.transferOwnership(index);
+      break;
     }
-    // TODO Ticket AT-8792 (transfer ownership)
   }
   
   public removeContributor(index: number): void {
@@ -326,16 +328,32 @@ export default class ContributorsPanel extends Vue {
     this.showConfirmationModal = true;
   }
 
+  public transferOwnership(index: number): void {
+    const user = this.contributors[index];
+    this.confirmationModalTargetUserSysId = user.sys_id as string;
+    this.confirmationModalTitle = `Transfer ownership to ${user.firstName}?`;
+    this.confirmationModalBody = `<p class="mb-0">${user.fullName} will be responsible 
+      for submitting the completed package. You can still edit package details, but 
+      will no longer be able to submit, archive, or delete the package.`;
+    this.confirmationModalOKButtonText = "Transfer ownership";
+    this.showConfirmationModal = true;
+  }
+
   public async okClicked(): Promise<void> {
     switch(this.confirmationModalOKButtonText) {
     case "Remove contributor":
       await AcquisitionPackage.removeContributor(this.confirmationModalTargetUserSysId);
-      this.confirmationModalToast.message = "Contributor removed"
+      this.confirmationModalToast.message = "Contributor removed";
       break;
     case "Leave package": 
       await AcquisitionPackage.removeContributor(this.confirmationModalTargetUserSysId);
       this.confirmationModalToast.message = "Access removed"
-      AppSections.changeActiveSection(AppSections.sectionTitles.Home)
+      AppSections.changeActiveSection(AppSections.sectionTitles.Home);
+      break;
+    case "Transfer ownership":
+      await AcquisitionPackage.transferOwnership(this.confirmationModalTargetUserSysId);
+      this.confirmationModalToast.message = "Ownership transfered"
+      break;
     }
 
     this.confirmationModalTargetUserSysId = "";
