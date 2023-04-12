@@ -127,7 +127,7 @@
   hr {
     z-index: auto;
     }
-._member-card {
+._profile-card {
   width: 360px;
   .v-list {
     padding: 0px !important;
@@ -151,7 +151,8 @@
     }
   }
 }
-._member-button {
+
+._profile-card__name-button {
   &.v-btn {
     padding: 0px !important;
     padding-left: 4px !important;
@@ -164,5 +165,8 @@
     &:hover {
       background-color: transparent !important;
     }
+  }
+  ._panel-user-list & {
+    padding-left: 0 !important;
   }
 }
