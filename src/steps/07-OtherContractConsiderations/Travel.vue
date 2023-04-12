@@ -349,6 +349,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
       );
       this.tableData = [];
       DescriptionOfWork.setConfirmTravelDeleteAll(false);
+      // TODO: call the route resolver to navigate to "PII"
     } else {
       if (this.tableData.length > 1){
         await DescriptionOfWork.deleteTravelInstance(this.travelItem.sys_id as string);
