@@ -39,6 +39,7 @@ import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
 import { UserApi } from "@/api/user";
+import { CompanyApi } from "./companies";
 import {EvaluationPlanApi} from "@/api/evaluationPlan";
 import {CurrentEnvironmentInstanceAPI} from "@/api/currentEnvironmentInstance";
 import {EvalPlanAssessmentAreaApi} from "@/api/evalPlanAssessmentArea";
@@ -111,6 +112,7 @@ export const api = {
   environmentTable: new EnvironmentApi(),
   cloudServiceProviderTable: new CloudServiceProviderApi(),
   userTable: new UserApi(),
+  companyTable: new CompanyApi(),
   evaluationPlanTable: new EvaluationPlanApi(),
   evalPlanAssessmentAreaTable: new EvalPlanAssessmentAreaApi(),
   evalPlanDifferentiatorTable: new EvalPlanDifferentiatorApi(),

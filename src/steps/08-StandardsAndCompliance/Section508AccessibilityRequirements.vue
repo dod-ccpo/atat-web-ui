@@ -88,6 +88,7 @@ export default class AccessibilityReq extends Mixins(SaveOnLeave) {
   private get currentData(): SensitiveInformationDTO {
     return {
       accessibility_reqs_508: this.accessibilityReqs,
+      acquisition_package: AcquisitionPackage.packageId
     };
   }
 

@@ -97,7 +97,7 @@
     <ATATMeatballMenu
       :id="'CardMenu' + index"
       :left="true"
-      :menuIndex="index"
+      :index="index"
       :menuItems="cardMenuItems"
       @menuItemClick="cardMenuClick"
     />

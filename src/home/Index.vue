@@ -87,6 +87,7 @@ import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
+import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
@@ -106,6 +107,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components: {
     ATATFooter,
+    ATATLoadingPackageModal,
     ATATToast,
     ExistingUser,
     HelpfulResourcesCards,
@@ -140,9 +142,6 @@ export default class Home extends Vue {
   public get isNewUser(): boolean {
     return !this.userHasPackages && !this.userHasPortfolios;
   } 
-
-  public userHasPackages = false;
-  public userHasPortfolios = false;
 
   public allPackagesCleared(): void {
     this.userHasPackages = false;
@@ -205,6 +204,7 @@ export default class Home extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    await AcquisitionPackage.reset();
     await AcquisitionPackage.setHideNavigation(false);
     this.currentUser = await UserStore.getCurrentUser();
     const sectionData = await AppSections.getSectionData();

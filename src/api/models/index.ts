@@ -256,6 +256,7 @@ export interface SystemPropertiesDTO extends BaseTableDTO {
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
+  acquisition_package?: ReferenceColumn | string;
   pii_present?: string;
   system_of_record_name?: string;
   work_to_be_performed?: string;
@@ -770,6 +771,18 @@ export interface UserDTO extends BaseTableDTO {
   last_name?: string;
   user_name?: string;
   email?: string;
+  company?: string;
+  mobile_phone?: string;
+  phone?: string;
+  home_phone?: string;
+  title?: string;
+}
+
+// used for User Profile cards - "Company" is the "Agency"
+export interface CompanyDTO extends BaseTableDTO {
+  name?: string;
+  long_name?: string;
+  u_short_name?: string;
 }
 
 export interface UserManagementDTO extends BaseTableDTO {
