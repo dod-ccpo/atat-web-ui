@@ -27,7 +27,7 @@
               v-on="on"
               class="font-size-14 _profile-card__name-button"
             >
-              {{ creatorName }}
+              {{ packageCreator.fullNameForSort }}
             </v-btn>
           </template>
 
@@ -250,12 +250,6 @@ export default class ContributorsPanel extends Vue {
   @Watch("selectedAgency")
   public agencyChanged(val: string): void {
     this.agency = val;
-  }
-
-  public get creatorName(): string {
-    return this.packageCreator.firstName && this.packageCreator.lastName
-      ? this.packageCreator.firstName + " " + this.packageCreator.lastName
-      : this.packageCreator.email as string;
   }
 
   public getBgColor(): void {
