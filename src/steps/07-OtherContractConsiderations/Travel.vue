@@ -97,10 +97,23 @@
             </div>
             <hr class="mt-0" v-if="hasListings" />
           </div>
-          <div v-if="isLoading">
-            Loading...
+          <div v-if="isLoading"
+            class="d-flex justify-space-around py-10 border1 border-rounded border-base-lighter
+            my-10 bg-offwhite width-100 text-center
+          "
+          >
+            <div class="d-flex align-center" style="margin: 0 auto">
+              <v-progress-circular
+                  indeterminate
+                  color="#544496"
+                  size="24"
+                  width="3"
+                  class="mr-2"
+              />
+              <span class="h3">Loading your travel details</span>
+            </div>
           </div>
-          <v-btn
+          <v-btn v-if="!isLoading"
             id="AddInstance"
             role="link"
             class="secondary _normal _small-text mt-5"
