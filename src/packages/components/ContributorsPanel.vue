@@ -173,6 +173,20 @@
       Last updated {{ lastUpdated }}
     </div>
 
+    <ATATDialog
+      id="ConfirmationModal"
+      :showDialog.sync="showConfirmationModal"
+      :title="confirmationModalTitle" 
+      no-click-animation
+      :okText="confirmationModalOKButtonText"
+      width="450"
+      @ok="okClicked"
+    >    
+      <template #content>
+        <div v-html="confirmationModalBody" class="body"></div>
+      </template>
+    </ATATDialog>    
+
   </div>
 </template>
 
@@ -180,9 +194,10 @@
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 
+import ATATDialog from "@/components/ATATDialog.vue";
+import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import ATATProfileCard from "@/components/ATATProfileCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
@@ -190,12 +205,14 @@ import CurrentUserStore from "@/store/user";
 import { createDateStr, getStatusChipBgColor, getIdText } from "@/helpers";
 import { MeatballMenuItem, User } from "types/Global";
 import { AcquisitionPackageDTO, UserDTO } from "@/api/models";
+import _ from "lodash";
 
 @Component({
   components: {
+    ATATDialog,
+    ATATMeatballMenu,
     ATATProfileCard,
     ATATSVGIcon,
-    ATATMeatballMenu,
   }
 })
 
@@ -206,6 +223,12 @@ export default class ContributorsPanel extends Vue {
   public agency = "";
   public statusChipColor = "";
   public packageStatus = "";
+
+  public showConfirmationModal = false;
+  public confirmationModalTitle = "";
+  public confirmationModalBody = "";
+  public confirmationModalOKButtonText = "";
+  public confirmationModalTargetUserSysId = "";
 
   public get getPackageStatus(): string {
     return AcquisitionPackage.getPackageStatus || "DRAFT";
@@ -261,9 +284,35 @@ export default class ContributorsPanel extends Vue {
   }
 
   public contributorMenuClick(menuItem: MeatballMenuItem, index: number): void {
-    // TODO Ticket AT-8791 (remove contributor)
+    switch(menuItem.title) {
+    case "Remove contributor":
+      this.removeContributor(index);
+      break;
+    }
     // TODO Ticket AT-8792 (transfer ownership)
     // TODO Ticket AT-8793 (leave package)
+  }
+ 
+  public removeContributor(index: number): void {
+    const user = this.contributors[index];
+    this.confirmationModalTargetUserSysId = user.sys_id as string;
+    this.confirmationModalTitle = `Remove ${user.firstName} from acquisition?`;
+    this.confirmationModalBody = `<p>${user.fullName} will be removed from the
+      conbtributors list. This individual will no longer have access to edit the 
+      acquisition package details.</p><p class="mb-0">NOTE: Any contributor can 
+      restore their access to this package at any time.</p>`
+    this.confirmationModalOKButtonText = "Remove contributor"
+    this.showConfirmationModal = true;
+  }
+
+  public async okClicked(): Promise<void> {
+    switch(this.confirmationModalOKButtonText) {
+    case "Remove contributor":
+      await AcquisitionPackage.removeContributor(this.confirmationModalTargetUserSysId);
+      this.confirmationModalTargetUserSysId = "";
+      break;
+    }
+
   }
 
   public openContributorsModal(): void {

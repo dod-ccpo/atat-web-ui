@@ -406,6 +406,25 @@ export class AcquisitionPackageStore extends VuexModule {
     });
   }
 
+  @Action({rawError: true}) 
+  public async removeContributor(sysId: string): Promise<void> {
+    const contributorSysIds = this.packageContributors.map(obj => obj.sys_id);
+    const newContributorSysIds = contributorSysIds.filter(id => id !== sysId).join(",");
+    await this.doRemoveContributor({sysId: sysId, sysIds: newContributorSysIds});
+  }
+
+  @Mutation
+  public async doRemoveContributor(data: { sysId: string, sysIds: string}): Promise<void> {
+    this.packageContributors = this.packageContributors.filter(obj => obj.sys_id !== data.sysId);
+    if (this.acquisitionPackage) {
+      this.acquisitionPackage.contributors = data.sysIds;
+      await api.acquisitionPackageTable.update(
+        AcquisitionPackage.packageId,
+        this.acquisitionPackage
+      );
+    }
+  }
+
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
     const currentUser = await UserStore.getCurrentUser();
