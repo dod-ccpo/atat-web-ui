@@ -29,18 +29,20 @@ export class OrganizationDataStore extends VuexModule {
   public agency_data: AgencyDTO[] = [];
   public disa_org_data: SystemChoiceDTO[] = [];
 
-    // store session properties
-    protected sessionProperties: string[] = [
-      nameofProperty(this,x=> x.agency_data),
-      nameofProperty(this, x=> x.disa_org_data),
-    ];
-  
+  public get agencyData(): AgencyDTO[] {
+    return this.agency_data;
+  }
 
+  // store session properties
+  protected sessionProperties: string[] = [
+    nameofProperty(this,x=> x.agency_data),
+    nameofProperty(this, x=> x.disa_org_data),
+  ];
 
   @Mutation
-    public setInitialized(value: boolean): void {
-      this.initialized = value;
-    }
+  public setInitialized(value: boolean): void {
+    this.initialized = value;
+  }
 
   @Mutation
   public setAgencyData(value: AgencyDTO[]): void {
@@ -57,25 +59,23 @@ export class OrganizationDataStore extends VuexModule {
       },
     };
     const agency_data = await api.agencyTable.all(agencyRequestConfig)
-    this.setAgencyData(agency_data)
+    this.setAgencyData(agency_data);
   }
 
   @Mutation
   public setDisOrgData(value: SystemChoiceDTO[]): void {
-
     this.disa_org_data = value;
-
   }
 
   @Action({rawError: true})
-  private async getDisaOrgData():Promise<void>
-  {
+  private async getDisaOrgData():Promise<void> {
     const disa_org_data = await api.systemChoices.getChoices(
       OrganizationTable,
       "disa_organization"
     );
     this.setDisOrgData(disa_org_data);
   }
+
   @Mutation
   public setStoreData(sessionData: string):void{
     try {
@@ -87,27 +87,20 @@ export class OrganizationDataStore extends VuexModule {
     } catch (error) {
       throw new Error('error restoring session for organization data store');
     }
-    
-
   }
+
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     try {
-
       const sessionRestored = retrieveSession(ATAT_ORGANIZATION_DATA_KEY);
-
-      if(sessionRestored){
+      if (sessionRestored) {
         this.setStoreData(sessionRestored);
-      }
-      else{
+      } else {
         await this.getAgencyData();
         await this.getDisaOrgData();
         this.setInitialized(true);
         storeDataToSession(this, this.sessionProperties, ATAT_ORGANIZATION_DATA_KEY);
-      }
-
-    
-        
+      }       
     } catch (error) {
       console.log(`error occurred loading organization data ${error}`)
     }
@@ -128,5 +121,5 @@ export class OrganizationDataStore extends VuexModule {
 
 }
 
-const OrganiationData = getModule(OrganizationDataStore);
-export default OrganiationData;
+const OrganizationData = getModule(OrganizationDataStore);
+export default OrganizationData;
