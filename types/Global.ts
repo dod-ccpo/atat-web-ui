@@ -479,6 +479,7 @@ export interface User {
   firstName?: string;
   lastName?: string;
   fullName?: string;
+  fullNameForSort?: string;
   email?: string;
   role?: string;
   phoneNumber?: string;
