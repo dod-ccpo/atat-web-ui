@@ -201,9 +201,10 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
+import Toast from "@/store/toast";
 
 import { createDateStr, getStatusChipBgColor, getIdText } from "@/helpers";
-import { MeatballMenuItem, User } from "types/Global";
+import { MeatballMenuItem, ToastObj, User } from "types/Global";
 import { AcquisitionPackageDTO, UserDTO } from "@/api/models";
 import _ from "lodash";
 
@@ -229,6 +230,13 @@ export default class ContributorsPanel extends Vue {
   public confirmationModalBody = "";
   public confirmationModalOKButtonText = "";
   public confirmationModalTargetUserSysId = "";
+  public confirmationModalToast: ToastObj = {
+    type: "success",
+    message: "",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  };
 
   public get getPackageStatus(): string {
     return AcquisitionPackage.getPackageStatus || "DRAFT";
@@ -310,9 +318,11 @@ export default class ContributorsPanel extends Vue {
     case "Remove contributor":
       await AcquisitionPackage.removeContributor(this.confirmationModalTargetUserSysId);
       this.confirmationModalTargetUserSysId = "";
+      this.confirmationModalToast.message = "Contributor removed"
       break;
     }
 
+    Toast.setToast(this.confirmationModalToast);
   }
 
   public openContributorsModal(): void {
