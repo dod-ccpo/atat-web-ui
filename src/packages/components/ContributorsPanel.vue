@@ -187,6 +187,8 @@
       </template>
     </ATATDialog>    
 
+    <ContributorInviteModal :showInviteModal.sync="showInviteModal" />
+
   </div>
 </template>
 
@@ -198,6 +200,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import ATATProfileCard from "@/components/ATATProfileCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import ContributorInviteModal from "../components/ContributorInviteModal.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
@@ -214,6 +217,7 @@ import AppSections from "@/store/appSections";
     ATATMeatballMenu,
     ATATProfileCard,
     ATATSVGIcon,
+    ContributorInviteModal,
   }
 })
 
@@ -224,6 +228,8 @@ export default class ContributorsPanel extends Vue {
   public agency = "";
   public statusChipColor = "";
   public packageStatus = "";
+
+  public showInviteModal = false;
 
   public showConfirmationModal = false;
   public confirmationModalTitle = "";
@@ -361,7 +367,7 @@ export default class ContributorsPanel extends Vue {
   }
 
   public openContributorsModal(): void {
-    // TODO Ticket AT-8756
+    this.showInviteModal = true;
   }
 
   public get menuItems(): MeatballMenuItem[] {

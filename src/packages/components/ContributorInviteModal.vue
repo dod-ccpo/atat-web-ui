@@ -1,31 +1,25 @@
 <template>
   <ATATDialog
-      id="InviteMembersModal"
-      :showDialog.sync="_showModal"
-      :title="'Invite people to “' + projectTitle + '”'"
+      id="InviteUsersModal"
+      :showDialog.sync="_showInviteModal"
+      title="Invite people to contribute to your acquisition"
       no-click-animation
       okText="Invite"
       width="632"
-      @ok="inviteMembers"
-      @cancelClicked = "onCancel()"
-      :modalSlideoutComponent="modalSlideoutComponent"
-      modalSlideoutTitle="Learn more about portfolio roles"
-      :modalDrawerIsOpen.sync="modalDrawerIsOpen"
+      @ok="inviteUsers"
+      @cancelClicked="onCancel()"
       modalClass="_invite-modal"
       :OKDisabled="OKDisabled"
     >
     <template #content>
       <p class="body">
         Use “.mil” or “.gov” email addresses to ensure people can authenticate with
-        a CAC to access your portfolio.
-        <a id="LearnMoreLink" role="button" @click="openLearnMoreDrawer">
-          Learn more about portfolio roles
-        </a>
+        a CAC to access your package.
       </p>
       <div class="_search-wrap">
         <v-text-field
-          ref="inviteMember"
-          id="SearchMember"
+          ref="inviteUser"
+          id="SearchUser"
           v-model="searchObj.value"
           clearable
           append-icon="search"
@@ -51,20 +45,21 @@
           <v-card elevation="0" max-height="200">
             <v-list class="py-1" v-if="searchObj.alreadyInvited">
               <v-list-item class="font-weight-bolder font-size-16 bg-warning-lighter">
-                Member already invited
+                User already invited
               </v-list-item>
             </v-list>
 
-            <v-list v-if="searchObj.searchResults.length > 0">
-              <v-list-item v-for="user of searchObj.searchResults" :key="user.sys_id"
+            <v-list v-if="showSearchResults">
+              <v-list-item v-for="user in searchObj.searchResults" :key="user.sys_id"
                 @click="onUserSelection(user)"
-                class="pointer">
+                class="pointer"
+              >
                 <v-list-item-content>
-                  <v-list-item-title
-                      class="font-weight-bolder font-size-16"
-                      v-text="user.firstName + ' ' + user.lastName">
+                  <v-list-item-title class="font-weight-bolder font-size-16">
+                    {{ user.firstName }} {{ user.lastName}}
                   </v-list-item-title>
-                  <v-list-item-subtitle class="font-size-14" v-text="user.email">
+                  <v-list-item-subtitle class="font-size-14">
+                    {{ user.email }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -79,30 +74,24 @@
         </div>
       </div>
 
-      <div id="portfolioPendingInviteList" class="_modal-full-width-list">
+      <div id="PendingInviteList" class="_modal-full-width-list">
         <v-list>
           <v-list-item
-              class="_search-results-list"
-              v-for="(member, index) in userSelectedList" :key="member.sys_id">
+            v-for="user in userSelectedList" :key="user.sys_id"
+            class="_search-results-list"
+          >
             <v-list-item-content>
-              <v-list-item-title
-                  class="font-weight-bolder font-size-16"
-                  v-text="member.firstName + ' ' + member.lastName">
+              <v-list-item-title class="font-weight-bolder font-size-16">
+                {{ user.firstName }} {{ user.lastName }}
               </v-list-item-title>
-              <v-list-item-subtitle class="font-size-14" v-text="member.email">
+              <v-list-item-subtitle class="font-size-14">
+                {{ user.email }}
               </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <ATATSelect
-                  :id="'Role' + index"
-                  class="_small _alt-style-clean _invite-members-modal align-self-end"
-                  :items="memberMenuItems"
-                  width="105"
-                  :selectedValue.sync="member.role"
-                  @onChange="(value)=>dropdownChanged(value, index)"
-                  iconType="chevron"
-              />
+              X <!-- remove from selectedUser list -->
             </v-list-item-action>
+
           </v-list-item>
         </v-list>
       </div>
@@ -117,20 +106,14 @@ import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import AddMembersModalLearnMore from "./AddMembersModalLearnMore.vue"
 import {
-  Portfolio,
-  SelectData,
-  ToastObj,
   User
-} from "../../../../../types/Global";
-import PortfolioStore from "@/store/portfolio";
+} from "../../../types/Global";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import _ from "lodash";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import UserManagement from "@/store/user/userManagement";
-import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
-import portfolio from "@/store/portfolio";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -140,15 +123,12 @@ import portfolio from "@/store/portfolio";
     ATATErrorValidation,
     ATATSelect,
     ATATTextArea,
-    AddMembersModalLearnMore,
-    MemberCard
   }
 })
 
-export default class InviteMembersModal extends Vue {
-  @PropSync("showModal") public _showModal?: boolean;
-  public portfolioData: Portfolio | null = null;
-  public projectTitle = "";
+export default class ContributorInviteModal extends Vue {
+  @PropSync("showInviteModal") public _showInviteModal?: boolean;
+
   public searchObj: {
     value: string;
     isLoading: boolean;
@@ -162,34 +142,20 @@ export default class InviteMembersModal extends Vue {
     noResults: false,
     alreadyInvited: false
   };
+
   public isSearching = false;
-  public memberMenuItems: SelectData[] = [
-    { header: "Roles" },
-    { text: "Manager", value: "Manager" },
-    { text: "Viewer", value: "Viewer" },
-    { divider: true },
-    { text: "Remove", value: "Remove", isSelectable: false }
-  ];
+
   public userSelectedList: User[] = [];
-  public modalSlideoutComponent = AddMembersModalLearnMore;
-  public membersInvitedToast: ToastObj = {
-    type: "success",
-    message: "",
-    isOpen: true,
-    hasUndo: false,
-    hasIcon: true,
+  public get alreadyInvitedUsers(): User[] {
+    return AcquisitionPackage.getPackageContributors;
   };
-
-  private modalDrawerIsOpen = false;
-
-  public dropdownChanged(value: string, index: number): void {
-    if (value === "Remove") {
-      this.userSelectedList.splice(index, 1);
-    }
-  }
 
   public get OKDisabled(): boolean {
     return this.userSelectedList.length === 0;
+  }
+
+  public get showSearchResults(): boolean {
+    return this.searchObj.searchResults.length > 0;
   }
 
   /**
@@ -229,16 +195,15 @@ export default class InviteMembersModal extends Vue {
 
   /**
    * Adds the selected user to the selected user list, if the selected user is not already in
-   * the new selection list or the current member list.
+   * the new selection list or the current user list.
    * Then clears the search string and makes a function call out to clear the search results
    */
   onUserSelection(newSelectedUser: User): void {
-    if(newSelectedUser && !this.userSelectedList.find(selectedUser =>
-      selectedUser.sys_id === newSelectedUser.sys_id) &&
-        !this.portfolioData?.members?.find(currentMember =>
-          currentMember.sys_id === newSelectedUser.sys_id)) {
+    const alreadySelected = this.userSelectedList.find(u => u.sys_id === newSelectedUser.sys_id)
+    const alreadyInvited = this.alreadyInvitedUsers.find(u => u.sys_id === newSelectedUser.sys_id);
+    debugger;
+    if (newSelectedUser && !alreadySelected && !alreadyInvited) {
       this.searchObj.alreadyInvited = false;
-      newSelectedUser.role = "Viewer"; // defaults to viewer
       this.userSelectedList.push(newSelectedUser);
       this.userSelectedList.sort((a, b) => {
         if (a.fullName && b.fullName) {
@@ -269,32 +234,24 @@ export default class InviteMembersModal extends Vue {
     UserManagement.triggerAbort();    
   }
 
-  @Watch("_showModal")
-  public async showModalChange(newVal: boolean): Promise<void> {
+  @Watch("_showInviteModal")
+  public async showInviteModalChange(newVal: boolean): Promise<void> {
     if (newVal) {
       this.userSelectedList = [];
-      // EJY why doing this every time modal opens?
-      this.portfolioData = await PortfolioStore.getPortfolioData();
-      this.projectTitle = this.portfolioData.title || "New Acquisition";
     } else {
-      PortfolioStore.setShowAddMembersModal(false);
+      AcquisitionPackage.setShowInviteContributorsModal(false);
     }
   }
 
-  /**
-   * Makes a store call to invite the new members if the user had marked at least
-   * one new member to a specific role instead of 'remove'
-   */
-  public async inviteMembers(): Promise<void> {
-    const userSelectedNotRemovedList = this.userSelectedList.filter(selectedUser =>
-      (selectedUser.role === "Manager") || (selectedUser.role === "Viewer"))
-    if (userSelectedNotRemovedList.length > 0) {
-      await portfolio.inviteMembers(userSelectedNotRemovedList);
-    }
+  public async inviteUsers(): Promise<void> {
+    const foo = this.userSelectedList;
+    debugger;
+    // const userSelectedNotRemovedList = this.userSelectedList.filter(selectedUser =>
+    //   (selectedUser.role === "Manager") || (selectedUser.role === "Viewer"))
+    // if (userSelectedNotRemovedList.length > 0) {
+    //   await portfolio.inviteMembers(userSelectedNotRemovedList);
+    // }
   }
 
-  public openLearnMoreDrawer(): void {
-    this.modalDrawerIsOpen = true;
-  }
 }
 </script>

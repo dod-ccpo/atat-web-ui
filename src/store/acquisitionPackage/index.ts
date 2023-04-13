@@ -465,6 +465,17 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+
+  public showInviteContributorsModal = false;
+  @Action
+  public setShowInviteContributorsModal(show: boolean): void {
+    this.doSetShowInviteContributorsModal(show);
+  }
+  @Mutation
+  public doSetShowInviteContributorsModal(show: boolean): void {
+    this.showInviteContributorsModal = show;
+  }
+
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
     const currentUser = await UserStore.getCurrentUser();
