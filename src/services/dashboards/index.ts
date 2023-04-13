@@ -155,7 +155,6 @@ export class DashboardService {
       };
 
       const costs = await api.costsTable.all(costsRequestConfig);
-      // TODO - account for no cost data in AT-8734
       return {
         taskOrder,
         clins,
