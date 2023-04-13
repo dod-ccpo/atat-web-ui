@@ -180,7 +180,7 @@ export class UserStore extends VuexModule {
         }
         user.firstName = userRecord.first_name;
         user.lastName = userRecord.last_name;
-        user.salutation = userRecord.title;
+        user.salutation = userRecord.title?.trim();
         user.fullName = user.salutation 
           ? user.salutation + " " + user.firstName + " " + user.lastName
           : user.firstName + " " + user.lastName;
