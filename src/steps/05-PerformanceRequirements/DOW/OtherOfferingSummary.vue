@@ -466,7 +466,11 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "performanceTier",
         "storageAmount",
         "storageType",
+        "entireDuration"
       ];
+      if (instanceData.entireDuration === "NO" && !instanceData.periodsNeeded.length) {
+        isValid = false;
+      }
 
     }
 
@@ -486,8 +490,12 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "operatingSystemLicense",
         "storageType",
         "storageAmount",
-        "storageUnit"
+        "storageUnit",
+        "entireDuration"
       ]
+      if (instanceData.entireDuration === "NO" && !instanceData.periodsNeeded.length) {
+        isValid = false;
+      }
     }
     
     else if(this.isStorage){
@@ -495,8 +503,12 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "numberOfInstances",
         "storageAmount",
         "storageType",
-        "storageUnit"
+        "storageUnit",
+        "entireDuration"
       ]
+      if (instanceData.entireDuration === "NO" && !instanceData.periodsNeeded.length) {
+        isValid = false;
+      }
     }
     else if(this.isTraining){
       requiredFields = [
@@ -504,6 +516,9 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "trainingType",
         "entireDuration"
       ]
+      if (instanceData.entireDuration === "NO" && !instanceData.periodsNeeded.length) {
+        isValid = false;
+      }
     }
     //soo, on-site access, duration
     else if(this.isAdvisoryAssistance || this.isDocumentation || 
@@ -513,6 +528,9 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "personnelOnsiteAccess",
         "entireDuration",
       ]
+      if (instanceData.entireDuration === "NO" && !instanceData.periodsNeeded.length) {
+        isValid = false;
+      }
     }
     else if (this.isGeneralXaaS) {
       requiredFields = [
