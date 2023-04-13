@@ -58,10 +58,6 @@
                         <ATATTextField
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Duration'"
                           class="mr-4"
-                          :class="[
-                            { 'error--text': !optionPeriods[index].duration &&
-                        optionPeriods[index].unitOfTime != ''  },
-                          {'error--text': oneYearCheck(optionPeriods[index])}]"
                           width="178"
                           :showErrorMessages="false"
                           @errorMessage = "setDurationErrorMessages($event, index)"
@@ -91,7 +87,7 @@
                           icon
                           class="mr-1"
                           @click="copyOptionPeriod(index)"
-                          :disabled="isOptionsMaxxedOut"
+                          :disabled="isOptionsMaxxedOut || hasErrors"
                           aria-label="Duplicate this option period"
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
                         >
@@ -158,6 +154,7 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
+import Vue from "vue";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -194,6 +191,12 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
   },
 })
 export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
+
+  $refs!: {
+    form : Vue & {
+      validate: () => boolean;
+    };
+  };
   public maxTotalPoPDuration = 365 * 5;
   public durationErrorMessage = "Please provide a valid period length."
   public optionPeriodCount = 1;
@@ -290,13 +293,15 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public addOptionPeriod(): void {
-    const newOptionPeriod = {
-      duration: 1,
-      unitOfTime: "YEAR",
-      id: null,
-      order: this.optionPeriods.length + 1,
-    };
-    this.optionPeriods.push(newOptionPeriod);
+    if (!this.isOptionsMaxxedOut){
+      const newOptionPeriod = {
+        duration: 1,
+        unitOfTime: "YEAR",
+        id: null,
+        order: this.optionPeriods.length + 1,
+      };
+      this.optionPeriods.push(newOptionPeriod);
+    }
   }
 
   public setTotalPoP(): void {
@@ -333,9 +338,17 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     if(optionPeriod.id){
       this.removed.push(convertPoPToPeriod(optionPeriod));
     }
-
     this.optionPeriods.splice(index, 1);
+    this.clearErrorMessages(index);
     this.setTotalPoP();
+  }
+
+  public clearErrorMessages(index:number):void {
+    this.durationErrorIndices = this.durationErrorIndices.filter(i=>i!==index);
+    this.setDurationErrorMessages([], index);
+    Vue.nextTick(()=>{
+      this.$refs.form.validate();
+    })
   }
   public copyOptionPeriod(index: number): void {
     if (!this.isOptionsMaxxedOut){
@@ -358,6 +371,10 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   get isOptionsMaxxedOut(): boolean{
     return this.optionPeriodCount >= 5;
+  }
+
+  get hasErrors(): boolean{
+    return this.durationErrorIndices.length > 0
   }
 
   public getOptionPeriodLabel(index: number): string {

@@ -173,6 +173,20 @@
       Last updated {{ lastUpdated }}
     </div>
 
+    <ATATDialog
+      id="ConfirmationModal"
+      :showDialog.sync="showConfirmationModal"
+      :title="confirmationModalTitle" 
+      no-click-animation
+      :okText="confirmationModalOKButtonText"
+      width="450"
+      @ok="okClicked"
+    >    
+      <template #content>
+        <div v-html="confirmationModalBody" class="body"></div>
+      </template>
+    </ATATDialog>    
+
   </div>
 </template>
 
@@ -180,22 +194,26 @@
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 
+import ATATDialog from "@/components/ATATDialog.vue";
+import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import ATATProfileCard from "@/components/ATATProfileCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
+import Toast from "@/store/toast";
 
 import { createDateStr, getStatusChipBgColor, getIdText } from "@/helpers";
-import { MeatballMenuItem, User } from "types/Global";
+import { MeatballMenuItem, ToastObj, User } from "types/Global";
 import { AcquisitionPackageDTO, UserDTO } from "@/api/models";
+import AppSections from "@/store/appSections";
 
 @Component({
   components: {
+    ATATDialog,
+    ATATMeatballMenu,
     ATATProfileCard,
     ATATSVGIcon,
-    ATATMeatballMenu,
   }
 })
 
@@ -206,6 +224,19 @@ export default class ContributorsPanel extends Vue {
   public agency = "";
   public statusChipColor = "";
   public packageStatus = "";
+
+  public showConfirmationModal = false;
+  public confirmationModalTitle = "";
+  public confirmationModalBody = "";
+  public confirmationModalOKButtonText = "";
+  public confirmationModalTargetUserSysId = "";
+  public confirmationModalToast: ToastObj = {
+    type: "success",
+    message: "",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  };
 
   public get getPackageStatus(): string {
     return AcquisitionPackage.getPackageStatus || "DRAFT";
@@ -261,9 +292,72 @@ export default class ContributorsPanel extends Vue {
   }
 
   public contributorMenuClick(menuItem: MeatballMenuItem, index: number): void {
-    // TODO Ticket AT-8791 (remove contributor)
-    // TODO Ticket AT-8792 (transfer ownership)
-    // TODO Ticket AT-8793 (leave package)
+    switch(menuItem.title) {
+    case "Remove contributor":
+      this.removeContributor(index);
+      break;
+    case "Leave package":
+      this.leavePackage(index);
+      break;
+    case "Transfer ownership":
+      this.transferOwnership(index);
+      break;
+    }
+  }
+  
+  public removeContributor(index: number): void {
+    const user = this.contributors[index];
+    this.confirmationModalTargetUserSysId = user.sys_id as string;
+    this.confirmationModalTitle = `Remove ${user.firstName} from acquisition?`;
+    this.confirmationModalBody = `<p>${user.fullName} will be removed from the
+      conbtributors list. This individual will no longer have access to edit the 
+      acquisition package details.</p><p class="mb-0">NOTE: Any contributor can 
+      restore their access to this package at any time.</p>`;
+    this.confirmationModalOKButtonText = "Remove contributor";
+    this.showConfirmationModal = true;
+  }
+
+  public leavePackage(index: number): void {
+    const user = this.contributors[index];
+    this.confirmationModalTargetUserSysId = user.sys_id as string;
+    this.confirmationModalTitle = `Leave acquisition package?`;
+    this.confirmationModalBody = `<p class="mb-0">You will <strong>no longer have 
+      access</strong> to edit acquisition package details. A contributor can restore
+      your access at any time.`;
+    this.confirmationModalOKButtonText = "Leave package";
+    this.showConfirmationModal = true;
+  }
+
+  public transferOwnership(index: number): void {
+    const user = this.contributors[index];
+    this.confirmationModalTargetUserSysId = user.sys_id as string;
+    this.confirmationModalTitle = `Transfer ownership to ${user.firstName}?`;
+    this.confirmationModalBody = `<p class="mb-0">${user.fullName} will be responsible 
+      for submitting the completed package. You can still edit package details, but 
+      will no longer be able to submit, archive, or delete the package.`;
+    this.confirmationModalOKButtonText = "Transfer ownership";
+    this.showConfirmationModal = true;
+  }
+
+  public async okClicked(): Promise<void> {
+    switch(this.confirmationModalOKButtonText) {
+    case "Remove contributor":
+      await AcquisitionPackage.removeContributor(this.confirmationModalTargetUserSysId);
+      this.confirmationModalToast.message = "Contributor removed";
+      break;
+    case "Leave package": 
+      await AcquisitionPackage.removeContributor(this.confirmationModalTargetUserSysId);
+      this.confirmationModalToast.message = "Access removed"
+      AppSections.changeActiveSection(AppSections.sectionTitles.Home);
+      break;
+    case "Transfer ownership":
+      await AcquisitionPackage.transferOwnership(this.confirmationModalTargetUserSysId);
+      this.confirmationModalToast.message = "Ownership transfered"
+      break;
+    }
+
+    this.confirmationModalTargetUserSysId = "";
+    Toast.setToast(this.confirmationModalToast);
   }
 
   public openContributorsModal(): void {
