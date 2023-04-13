@@ -129,7 +129,6 @@ import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import _ from "lodash";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import UserManagement from "@/store/user/userManagement";
-import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import portfolio from "@/store/portfolio";
 
 @Component({
@@ -141,7 +140,6 @@ import portfolio from "@/store/portfolio";
     ATATSelect,
     ATATTextArea,
     AddMembersModalLearnMore,
-    MemberCard
   }
 })
 
@@ -275,11 +273,6 @@ export default class InviteMembersModal extends Vue {
       this.userSelectedList = [];
       this.portfolioData = await PortfolioStore.getPortfolioData();
       this.projectTitle = this.portfolioData.title || "New Acquisition";
-      if (!this.inputWidthFaker) {
-        this.$nextTick(() => {
-          this.inputWidthFaker = document.getElementById("inputWidthFaker");
-        });
-      }
     } else {
       PortfolioStore.setShowAddMembersModal(false);
     }
