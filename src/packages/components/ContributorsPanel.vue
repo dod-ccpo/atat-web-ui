@@ -228,8 +228,16 @@ export default class ContributorsPanel extends Vue {
   public agency = "";
   public statusChipColor = "";
   public packageStatus = "";
-
   public showInviteModal = false;
+
+  public get showContributorInviteModal(): boolean {
+    return AcquisitionPackage.getShowInviteContributorsModal;
+  }
+  @Watch("showContributorInviteModal")
+  public showContributorInviteModalChange(val: boolean): void {
+    this.showInviteModal = val;
+  }
+
 
   public showConfirmationModal = false;
   public confirmationModalTitle = "";
@@ -367,7 +375,7 @@ export default class ContributorsPanel extends Vue {
   }
 
   public openContributorsModal(): void {
-    this.showInviteModal = true;
+    AcquisitionPackage.setShowInviteContributorsModal(true);
   }
 
   public get menuItems(): MeatballMenuItem[] {

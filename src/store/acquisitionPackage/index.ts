@@ -467,6 +467,9 @@ export class AcquisitionPackageStore extends VuexModule {
 
 
   public showInviteContributorsModal = false;
+  public get getShowInviteContributorsModal(): boolean {
+    return this.showInviteContributorsModal;
+  }
   @Action
   public setShowInviteContributorsModal(show: boolean): void {
     this.doSetShowInviteContributorsModal(show);

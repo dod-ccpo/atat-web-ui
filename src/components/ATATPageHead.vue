@@ -19,7 +19,10 @@
           <v-btn
             v-on="on"
             icon class="mr-5 _header-button _add-user-button" 
-            id="Person_Button"
+            id="InviteContributorButton"
+            @click="openInviteContributorModal"
+            @keydown.space="openInviteContributorModal"
+            @keydown.enter="openInviteContributorModal"
           >
             <v-icon class="icon-20 text-base-dark">person_add_alt_1</v-icon>
           </v-btn>
@@ -180,6 +183,9 @@ export default class ATATPageHead extends Vue {
     case "View package details":
       if (!this.showDrawer) this.openSlideoutPanel();
       break;
+    case "Invite contributors":
+      this.openInviteContributorModal();
+      break;
     case 'Archive acquisition':
       this.showArchiveModal = true
       break;
@@ -193,6 +199,9 @@ export default class ATATPageHead extends Vue {
     return getIdText(string);
   }
 
+  public openInviteContributorModal(): void {
+    AcquisitionPackage.setShowInviteContributorsModal(true);
+  }
 
   public async openSlideoutPanel(e?: Event): Promise<void> {
     const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
