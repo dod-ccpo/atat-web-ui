@@ -77,7 +77,7 @@
       <div id="PendingInviteList" class="_modal-full-width-list">
         <v-list>
           <v-list-item
-            v-for="user in userSelectedList" :key="user.sys_id"
+            v-for="(user, index) in userSelectedList" :key="user.sys_id"
             class="_search-results-list"
           >
             <v-list-item-content>
@@ -89,7 +89,21 @@
               </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              X <!-- remove from selectedUser list -->
+              <v-btn
+                :id="'RemoveSelectedUser' + index"
+                class="_icon-only"
+                @click="removeSelectedUser(index)"
+                @keydown.enter="removeSelectedUser(index)"
+                @keydown.space="removeSelectedUser(index)"
+              >
+                <ATATSVGIcon
+                  name="Close"
+                  color="base"
+                  :width="12"
+                  :height="12"
+                />
+              </v-btn>
+
             </v-list-item-action>
 
           </v-list-item>
@@ -193,15 +207,18 @@ export default class ContributorInviteModal extends Vue {
     }
   }, 500)
 
+  public removeSelectedUser(index: number): void {
+    this.userSelectedList.splice(index, 1);
+  }
+
   /**
    * Adds the selected user to the selected user list, if the selected user is not already in
    * the new selection list or the current user list.
    * Then clears the search string and makes a function call out to clear the search results
    */
-  onUserSelection(newSelectedUser: User): void {
+  public onUserSelection(newSelectedUser: User): void {
     const alreadySelected = this.userSelectedList.find(u => u.sys_id === newSelectedUser.sys_id)
     const alreadyInvited = this.alreadyInvitedUsers.find(u => u.sys_id === newSelectedUser.sys_id);
-    debugger;
     if (newSelectedUser && !alreadySelected && !alreadyInvited) {
       this.searchObj.alreadyInvited = false;
       this.userSelectedList.push(newSelectedUser);
@@ -225,7 +242,7 @@ export default class ContributorInviteModal extends Vue {
   /**
    * Resets the state of the modal and all the properties.
    */
-  onCancel(): void {
+  public onCancel(): void {
     this.searchObj.value = "";
     this.searchObj.alreadyInvited = false;
     this.searchObj.searchResults = [];
@@ -244,13 +261,8 @@ export default class ContributorInviteModal extends Vue {
   }
 
   public async inviteUsers(): Promise<void> {
-    const foo = this.userSelectedList;
-    debugger;
-    // const userSelectedNotRemovedList = this.userSelectedList.filter(selectedUser =>
-    //   (selectedUser.role === "Manager") || (selectedUser.role === "Viewer"))
-    // if (userSelectedNotRemovedList.length > 0) {
-    //   await portfolio.inviteMembers(userSelectedNotRemovedList);
-    // }
+    const invitesSysIds = this.userSelectedList.map(usr => usr.sys_id).join(",");
+    await AcquisitionPackage.inviteContributors(invitesSysIds);
   }
 
 }
