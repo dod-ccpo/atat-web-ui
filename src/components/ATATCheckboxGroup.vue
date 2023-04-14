@@ -397,9 +397,7 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("validateFormNow")
   public validateNowChange(): void {
-    if (!this.validateCheckboxesNow && this.rules.length) {
-      this.validateCheckboxesNow = true;
-    } else if (this.validateOnLoad){
+    if ((!this.validateCheckboxesNow && this.rules.length) || this.validateOnLoad) {
       this.validateCheckboxesNow = true;
     }
     this.setErrorMessage();
@@ -432,7 +430,7 @@ export default class ATATCheckboxGroup extends Vue {
       this.validateCheckboxesNow = true;
       setTimeout(()=>{
         this.setErrorMessage();
-      }, 1000)
+      }, 0)
     }
   }
 

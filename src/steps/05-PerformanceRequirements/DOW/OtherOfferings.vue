@@ -548,8 +548,8 @@ export default class OtherOfferings extends Vue {
               }
             }
           }
-          if (this.isCompute) {
-            if (key === "radioButtonGroup" 
+          if (!this.isPortabilityPlan) {
+            if (this.isCompute && key === "radioButtonGroup"
               && child.$el.attributes.id.value.indexOf("PerformanceTier")
               && this._serviceOfferingData.performanceTier === this.otherPerformanceTierValue
             ) {
@@ -576,8 +576,9 @@ export default class OtherOfferings extends Vue {
                     && this._serviceOfferingData.entireDuration.toLowerCase() === "no"
                     && this._serviceOfferingData.periodsNeeded.length === 0
                   ) {
-                    child.$children[i].errorMessages.push(`Please select at least one base 
-                      or option period to specify your requirement’s duration level.`);
+                    child.$children[i].errorMessages.push(
+                      `Please select at least one base or option period.`
+                    );
                   }                
                 })
               }

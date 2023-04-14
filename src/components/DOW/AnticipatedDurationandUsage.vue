@@ -134,13 +134,9 @@ export default class AnticipatedDurationandUsage extends Vue {
         : [];
     }
 
-    if (newVal === "NO"){
-      this.periodCheckboxRules.push(
-        this.$validators.required('Please select at least one base or option period.')
-      )
-    } else {
-      this.periodCheckboxRules = [];
-    }
+    this.periodCheckboxRules = newVal === "NO" 
+      ? [this.$validators.required('Please select at least one base or option period.')]
+      : [];
   }
 
   public get usageHelpText(): string {

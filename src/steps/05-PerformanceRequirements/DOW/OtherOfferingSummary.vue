@@ -532,7 +532,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "periodsNeeded"
       ];
     }
-    console.log(instanceData)
     isValid = requiredFields.every(f => {
       return f === "periodsNeeded"
         ? this.isPeriodsNeededValid(instanceData)
@@ -554,8 +553,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.currentGroupId = await (await DescriptionOfWork.getCurrentOfferingGroupId()).toLowerCase();
     const offering = this.currentGroupId.toLowerCase();
     this.isCompute = offering === "compute";
-    //depreciate since each serviceOfferingGroupId is unique 
-    //(ADVISORY_ASSISTANCE | HELP_DESK_SERVICES | DOCUMENTATION_SUPPORT | GENERAL_CLOUD_SUPPORT)
     this.isGeneralXaaS = offering === "general_xaas"; 
     this.isDatabase = offering === "database";
     this.isStorage = offering === "storage";
