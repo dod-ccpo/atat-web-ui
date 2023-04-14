@@ -87,7 +87,7 @@
                           icon
                           class="mr-1"
                           @click="copyOptionPeriod(index)"
-                          :disabled="isOptionsMaxxedOut || hasErrors"
+                          :disabled="isOptionsMaxxedOut || durationErrorIndices.includes(index)"
                           aria-label="Duplicate this option period"
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
                         >
@@ -339,6 +339,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       this.removed.push(convertPoPToPeriod(optionPeriod));
     }
     this.optionPeriods.splice(index, 1);
+    this.updateErrorIndex(index, false, false)
     this.clearErrorMessages(index);
     this.setTotalPoP();
   }
@@ -362,19 +363,38 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
         duration,
         id: null,
         order,
-        unitOfTime,
+        unitOfTime: unitOfTime || "1",
       }
       this.optionPeriods.splice(index + 1,0,duplicateObj)
+      this.updateErrorIndex(index, false, true)
       this.setTotalPoP();
+    }
+  }
+
+  /**
+   * updates error index in this.durationErrorIndices if item was added above it
+   * @param idx 
+   */
+
+  public updateErrorIndex(index:number, isDragging: boolean, isAdd?: boolean):void{
+    debugger;
+    const errorIndex = this.durationErrorIndices.findIndex(
+      idx => idx === (isDragging ? index : index+1));
+    if (errorIndex>-1){
+      this.clearErrorMessages(index);
+      if (isAdd){
+        this.durationErrorIndices[errorIndex] = isAdd 
+          ? this.durationErrorIndices[errorIndex] + 1
+          : this.durationErrorIndices[errorIndex] - 1;
+      } else {
+        this.durationErrorIndices[errorIndex] = this.durationErrorIndices[index]
+      }
+
     }
   }
 
   get isOptionsMaxxedOut(): boolean{
     return this.optionPeriodCount >= 5;
-  }
-
-  get hasErrors(): boolean{
-    return this.durationErrorIndices.length > 0
   }
 
   public getOptionPeriodLabel(index: number): string {
@@ -476,7 +496,10 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           this.durationLabelEl.classList.remove("d-none");
 
           // remove class "hide-icon" from all rows
-          draggableElements.forEach((e) => {
+          draggableElements.forEach((e, idx) => {
+            if (this.durationErrorIndices.includes(idx)){
+              this.updateErrorIndex(idx, true);
+            }
             const row = e as HTMLDivElement;
             const icon = row.getElementsByClassName("drag-icon")[0] as HTMLElement;
             icon.classList.remove("hide-icon");
