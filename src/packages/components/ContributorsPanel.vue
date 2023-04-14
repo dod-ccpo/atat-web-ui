@@ -59,7 +59,6 @@
           @keydown.space="openContributorsModal"
         >
           <ATATSVGIcon
-            @click="openContributorsModal"
             name="PersonAddAlt"
             color="base"
             :width="22"
@@ -225,6 +224,7 @@ export default class ContributorsPanel extends Vue {
   public statusChipColor = "";
   public packageStatus = "";
 
+
   public showConfirmationModal = false;
   public confirmationModalTitle = "";
   public confirmationModalBody = "";
@@ -361,7 +361,7 @@ export default class ContributorsPanel extends Vue {
   }
 
   public openContributorsModal(): void {
-    // TODO Ticket AT-8756
+    AcquisitionPackage.setShowInviteContributorsModal(true);
   }
 
   public get menuItems(): MeatballMenuItem[] {

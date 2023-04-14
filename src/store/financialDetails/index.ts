@@ -436,7 +436,7 @@ export class FinancialDetailsStore extends VuexModule {
         const fundingRequest = await api.fundingRequestTable
           .create(defaultFundingRequest);
         acquisitionPackageDTO.funding_request = fundingRequest.sys_id;
-        await AcquisitionPackage.saveAcquisitionPackage();
+        await AcquisitionPackage.updateAcquisitionPackage();
         this.setFundingRequest(fundingRequest);
       }
     } catch (error) {

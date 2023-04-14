@@ -469,7 +469,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "classificationLevel",
         "entireDuration",
         "memoryAmount",
-        "anticipatedNeedUsage",
+        "descriptionOfNeed",
         "numberOfInstances",
         "numberOfVCPUs",
         "operatingSystem",
@@ -477,8 +477,9 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "performanceTier",
         "storageAmount",
         "storageType",
+        "entireDuration",
+        "periodsNeeded"
       ];
-
     }
 
     else if (this.isDatabase) {
@@ -497,7 +498,10 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "operatingSystemLicense",
         "storageType",
         "storageAmount",
-        "storageUnit"
+        "storageUnit",
+        "descriptionOfNeed",
+        "entireDuration",
+        "periodsNeeded"
       ]
     }
     
@@ -506,14 +510,19 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "numberOfInstances",
         "storageAmount",
         "storageType",
-        "storageUnit"
+        "storageUnit",
+        "entireDuration",
+        "descriptionOfNeed",
+        "periodsNeeded"
       ]
     }
     else if(this.isTraining){
       requiredFields = [
         "trainingRequirementTitle",
         "trainingType",
-        "entireDuration"
+        "entireDuration",
+        "anticipatedNeedUsage",
+        "periodsNeeded"
       ]
     }
     //soo, on-site access, duration
@@ -523,26 +532,29 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "statementOfObjectives",
         "personnelOnsiteAccess",
         "entireDuration",
+        "periodsNeeded"
       ]
     }
     else if (this.isGeneralXaaS) {
       requiredFields = [
         "classificationLevel",
-        "anticipatedNeedUsage",
+        "descriptionOfNeed",
         "entireDuration",
+        "periodsNeeded"
       ];
-      if (instanceData.entireDuration === "NO" && !instanceData.periodsNeeded.length) {
-        isValid = false;
-      }
     }
-
-    requiredFields.forEach((field) => {
-      if (instanceData[field] === "") {
-        isValid = false;
-      }
-    });
-
+    isValid = requiredFields.every(f => {
+      return f === "periodsNeeded"
+        ? this.isPeriodsNeededValid(instanceData)
+        : instanceData[f] !== ""
+    })
     return isValid;
+  }
+
+  public isPeriodsNeededValid(instanceData: Record<string, any>): boolean {
+    return instanceData["entireDuration"] === "NO"
+      ? instanceData.periodsNeeded.length > 0
+      : true
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -552,9 +564,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.currentGroupId = await (await DescriptionOfWork.getCurrentOfferingGroupId()).toLowerCase();
     const offering = this.currentGroupId.toLowerCase();
     this.isCompute = offering === "compute";
-    //depreciate since each serviceOfferingGroupId is unique 
-    //(ADVISORY_ASSISTANCE | HELP_DESK_SERVICES | DOCUMENTATION_SUPPORT | GENERAL_CLOUD_SUPPORT)
-    //this.isGeneralXaaS = offering === "general_xaas"; 
+    this.isGeneralXaaS = offering === "general_xaas"; 
     this.isDatabase = offering === "database";
     this.isStorage = offering === "storage";
     this.isTraining = offering === "training";

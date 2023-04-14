@@ -222,6 +222,33 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         );
         if (instance) {
           this.instancesFormData.push(instance);
+        } else if (!instance) {
+          let newInstance = this.selectedClassificationLevelList
+            .find(obj => obj.classification_level === selectedOption)
+          if (newInstance) {
+            newInstance = convertColumnReferencesToValues(newInstance);
+            const labelLong = buildClassificationLabel(newInstance, "long");
+            const labelShort = buildClassificationLabel(newInstance, "short");
+            const classificationLevelSysId = typeof newInstance.classification_level === "object"
+              ? (newInstance.classification_level as ReferenceColumn).value
+              : newInstance.classification_level;
+            const classificationInstance: DOWClassificationInstance = {
+              sysId: "",
+              impactLevel: newInstance.impact_level,
+              classificationLevelSysId: classificationLevelSysId as string,
+              anticipatedNeedUsage: "",
+              entireDuration: "",
+              selectedPeriods: [],
+              labelLong,
+              labelShort,
+              classifiedInformationTypes: "",
+              typeOfDelivery: "",
+              typeOfMobility: "",
+              typeOfMobilityOther: "",
+              acquisitionPackage: "",
+            }
+            this.instancesFormData.push(classificationInstance);
+          }
         }
       }
     }, this);
