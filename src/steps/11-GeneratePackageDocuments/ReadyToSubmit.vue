@@ -51,7 +51,7 @@
         </div>
 
       </div>
-      <CompletePackageCard v-if="currentUserIsMissionOwner" />
+      <CompletePackageCard />
 
     </div>
   </div>
