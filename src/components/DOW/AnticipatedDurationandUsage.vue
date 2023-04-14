@@ -43,10 +43,9 @@
         :items="availablePeriodCheckboxItems"
         :card="false"
         :disabled="isPeriodsDataMissing"
-        :rules="[
-          $validators.required('Please select at least one base or option period.')
-        ]"
+        :rules="periodCheckboxRules"
         class="copy-max-width"
+        :validateOnLoad="true"
       />
       <ATATAlert
         :ref="'PeriodRequirementsAlert_' + (index + 1)"
@@ -111,7 +110,7 @@ export default class AnticipatedDurationandUsage extends Vue {
   @Prop() public availablePeriodCheckboxItems!: Checkbox[];
 
   public routeNames = routeNames;
-
+  public periodCheckboxRules: ((v: string) => string | true | undefined)[] = [];
   public entireDurationOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -129,8 +128,14 @@ export default class AnticipatedDurationandUsage extends Vue {
   // when user selects "NO", pre-select base period
   @Watch("_entireDuration")
   public entireDurationChanged(newVal: string): void {
-    this._selectedPeriods = newVal === "NO" && this.availablePeriodCheckboxItems[0].value !== "" 
-      ? [this.availablePeriodCheckboxItems[0].value]
+    if (this.availablePeriodCheckboxItems.length>0){
+      this._selectedPeriods = newVal === "NO" && this.availablePeriodCheckboxItems[0].value !== "" 
+        ? [this.availablePeriodCheckboxItems[0].value]
+        : [];
+    }
+
+    this.periodCheckboxRules = newVal === "NO" 
+      ? [this.$validators.required('Please select at least one base or option period.')]
       : [];
   }
 
