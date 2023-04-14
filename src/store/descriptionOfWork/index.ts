@@ -544,7 +544,9 @@ const mapOtherOfferingFromDTO = (
     performanceTier: value.performance_tier,
     processorSpeed: value.processor_speed,
     region: value.region as string,
-    periodsNeeded: value.selected_periods?.split(",") || [],
+    periodsNeeded: value.selected_periods && value.selected_periods.length>0
+      ? value.selected_periods?.split(",")
+      : [],
     storageAmount: value.storage_amount,
     storageType: value.storage_type,
     storageUnit: value.storage_unit as StorageUnit,
