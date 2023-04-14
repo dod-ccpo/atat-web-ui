@@ -372,6 +372,12 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.acquisitionPackage?.package_status as string;
   }
 
+  /* ===============================================
+  /* ===============================================
+  /* CONTRIBUTOR DISPLAY/INVITE/REMOVE ETC LOGIC
+  /* ===============================================
+  /* =============================================== */
+
   public packageContributors: User[] = [];
 
   public get getPackageContributors(): User[] {
@@ -424,10 +430,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.packageContributors = this.packageContributors.filter(obj => obj.sys_id !== data.sysId);
     if (this.acquisitionPackage) {
       this.acquisitionPackage.contributors = data.sysIds;
-      // await api.acquisitionPackageTable.update(
-      //   AcquisitionPackage.packageId,
-      //   this.acquisitionPackage
-      // );
     }
   }
 
@@ -448,34 +450,15 @@ export class AcquisitionPackageStore extends VuexModule {
       contributors = contributors.filter(id => id !== newOwnerSysId);
       const newContributorsList = contributors?.join(",");
 
-      // await this.doTransferOwnership(
-      //   { newOwnerSysId: newOwnerSysId, newContributorsList: newContributorsList}
-      // );
-
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
         contributors: newContributorsList,
         mission_owners: newOwnerSysId,
       } as AcquisitionPackageDTO);
-  
 
       await this.updateAcquisitionPackage();
     }
   }
-  // @Mutation
-  // public async doTransferOwnership(
-  //   data: { newOwnerSysId: string, newContributorsList: string}
-  // ): Promise<void> {
-  //   if (this.acquisitionPackage) {
-  //     this.acquisitionPackage.contributors = data.newContributorsList;
-  //     this.acquisitionPackage.mission_owners = data.newOwnerSysId;
-  //     // await api.acquisitionPackageTable.update(
-  //     //   AcquisitionPackage.packageId,
-  //     //   this.acquisitionPackage
-  //     // );
-  //   }
-  // }
-
 
   public showInviteContributorsModal = false;
   public get getShowInviteContributorsModal(): boolean {
@@ -501,7 +484,7 @@ export class AcquisitionPackageStore extends VuexModule {
     const allContributors = currentContributors
       ? [...currentContributors, uniqueNewContributors]
       : uniqueNewContributors;
-    // await this.doSetPackageContributors(allContributors.join(","));// EJY HERE
+
     this.setAcquisitionPackage({
       ...this.acquisitionPackage,
       contributors: allContributors.join(",") as string,
@@ -512,12 +495,11 @@ export class AcquisitionPackageStore extends VuexModule {
     await this.sortPackageContributors();
   }
 
-  // @Mutation
-  // public async doSetPackageContributors(sysIds: string): Promise<void> {
-  //   if (this.acquisitionPackage) {
-  //     this.acquisitionPackage.contributors = sysIds;
-  //   }
-  // }
+  /* ===============================================
+  /* ===============================================
+  /* END CONTRIBUTOR DISPLAY/INVITE/REMOVE ETC LOGIC
+  /* ===============================================
+  /* =============================================== */
 
 
   @Action({rawError: true})
@@ -912,11 +894,6 @@ export class AcquisitionPackageStore extends VuexModule {
     if(this.acquisitionPackage && AcquisitionPackage.packageId){
       this.acquisitionPackage.docgen_job_status = newDocGenStatus;
       await this.updateAcquisitionPackage();
-
-      // await api.acquisitionPackageTable.update(
-      //   AcquisitionPackage.packageId,
-      //   this.acquisitionPackage
-      // );
     }
   }
 
