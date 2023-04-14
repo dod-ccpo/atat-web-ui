@@ -58,10 +58,6 @@
                         <ATATTextField
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Duration'"
                           class="mr-4"
-                          :class="[
-                            { 'error--text': !optionPeriods[index].duration &&
-                        optionPeriods[index].unitOfTime != ''  },
-                          {'error--text': oneYearCheck(optionPeriods[index])}]"
                           width="178"
                           :showErrorMessages="false"
                           @errorMessage = "setDurationErrorMessages($event, index)"
@@ -91,6 +87,7 @@
                           icon
                           class="mr-1"
                           @click="copyOptionPeriod(index)"
+                          :disabled="isOptionsMaxxedOut || hasErrors"
                           aria-label="Duplicate this option period"
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
                         >
@@ -112,13 +109,14 @@
                    
                     <ATATErrorValidation
                       :id="'Required' + index"
-                      class="atat-text-field-error ml-14"
+                      class="atat-text-field-error ml-16 pl-8"
                       v-if="durationErrorIndices.indexOf(index)>-1"
                       :errorMessages="[
-                        `Please specify the duration and/or length of your
-                        ${getOptionPeriodLabel(index)} period`
+                        `Please specify the length of your
+                        ${getOptionPeriodLabelError(index)}.`
                         ]"
                     />
+
                     <ATATErrorValidation
                       :id="'MoreThanAYear' + index"
                       class="atat-text-field-error ml-14"
@@ -141,18 +139,6 @@
               <v-icon color="primary" class="mr-2">control_point</v-icon>
               <span>Add an option period</span>
             </v-btn>
-
-            <div
-              class="justify-start align-center atat-text-field-error mt-2"
-              :class="{ 'd-flex': totalPoPDuration > maxTotalPoPDuration }"
-              v-show="totalPoPDuration > maxTotalPoPDuration"
-            >
-              <v-icon class="text-error icon-20"> error </v-icon>
-              <div class="field-error ml-2">
-                The total length of your base and option periods should be 5 years
-                or less.
-              </div>
-            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -168,6 +154,7 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
+import Vue from "vue";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -204,6 +191,12 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
   },
 })
 export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
+
+  $refs!: {
+    form : Vue & {
+      validate: () => boolean;
+    };
+  };
   public maxTotalPoPDuration = 365 * 5;
   public durationErrorMessage = "Please provide a valid period length."
   public optionPeriodCount = 1;
@@ -212,7 +205,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public optionPeriods: PoP[] = [
     {
       duration: null,
-      unitOfTime: "Year",
+      unitOfTime: "",
       id: null,
       order: 1,
     },
@@ -300,13 +293,15 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public addOptionPeriod(): void {
-    const newOptionPeriod = {
-      duration: null,
-      unitOfTime: "",
-      id: null,
-      order: this.optionPeriods.length + 1,
-    };
-    this.optionPeriods.push(newOptionPeriod);
+    if (!this.isOptionsMaxxedOut){
+      const newOptionPeriod = {
+        duration: 1,
+        unitOfTime: "YEAR",
+        id: null,
+        order: this.optionPeriods.length + 1,
+      };
+      this.optionPeriods.push(newOptionPeriod);
+    }
   }
 
   public setTotalPoP(): void {
@@ -343,30 +338,53 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     if(optionPeriod.id){
       this.removed.push(convertPoPToPeriod(optionPeriod));
     }
-
     this.optionPeriods.splice(index, 1);
+    this.clearErrorMessages(index);
     this.setTotalPoP();
   }
+
+  public clearErrorMessages(index:number):void {
+    this.durationErrorIndices = this.durationErrorIndices.filter(i=>i!==index);
+    this.setDurationErrorMessages([], index);
+    Vue.nextTick(()=>{
+      this.$refs.form.validate();
+    })
+  }
   public copyOptionPeriod(index: number): void {
+    if (!this.isOptionsMaxxedOut){
+      const {
+        duration,
+        order,
+        unitOfTime,
+      } = this.optionPeriods[index];
 
-    const {
-      duration,
-      order,
-      unitOfTime,
-    } = this.optionPeriods[index];
-
-    const duplicateObj: PoP ={
-      duration,
-      id: null,
-      order,
-      unitOfTime,
+      const duplicateObj: PoP ={
+        duration,
+        id: null,
+        order,
+        unitOfTime,
+      }
+      this.optionPeriods.splice(index + 1,0,duplicateObj)
+      this.setTotalPoP();
     }
-    this.optionPeriods.splice(index + 1,0,duplicateObj)
-    this.setTotalPoP();
+  }
+
+  get isOptionsMaxxedOut(): boolean{
+    return this.optionPeriodCount >= 5;
+  }
+
+  get hasErrors(): boolean{
+    return this.durationErrorIndices.length > 0
   }
 
   public getOptionPeriodLabel(index: number): string {
     return index === 0 ? "Base" : "Option " + index;
+  }
+
+  public getOptionPeriodLabelError(index: number): string {
+    const period = (index === 0 ? "base" : "option");
+    const isNotBase = (index > 0 ? " " + index.toString() : "");
+    return period + " period" + isNotBase;
   }
 
   public openSlideoutPanel(e: Event): void {
@@ -479,8 +497,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public optionPeriodClicked: PoP = {
-    duration: null,
-    unitOfTime: "Year",
+    duration: 1,
+    unitOfTime: "YEAR",
     id: null,
     order: 1,
   };
@@ -519,16 +537,16 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
       const optionPeriod: PoP = {
 
-        duration: Number(period.period_unit_count || ""),
-        unitOfTime: period.period_unit,
+        duration: Number(period.period_unit_count || 1),
+        unitOfTime: period.period_unit || "YEAR",
         id: period.sys_id || "",
         order: Number(period.option_order),
       };
 
       return optionPeriod;
     }) : [ {
-      duration:null ,
-      unitOfTime: "",
+      duration: 1,
+      unitOfTime: "YEAR",
       id: null,
       order: 1,
     }];

@@ -1308,7 +1308,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         sysparm_display_value: "false"
       }
     };
-
     this.setCurrentOfferingGroupId("COMPUTE");
     const computeItems = await api.computeEnvironmentInstanceTable.getQuery(requestConfig);
     if(computeItems.length > 0)
@@ -1334,7 +1333,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     });
 
     this.setCurrentOfferingGroupId("STORAGE");
-    const storageItems = await api.databaseEnvironmentInstanceTable.getQuery(requestConfig);
+    const storageItems = await api.storageEnvironmentInstanceTable.getQuery(requestConfig);
     if(storageItems.length > 0)
       this.addOfferingGroup("STORAGE");
     storageItems.forEach((item,index) => {
@@ -1896,13 +1895,19 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public addOfferingGroup(groupId: string): void {
-    const group = this.serviceOfferingGroups.find(e => e.value === groupId)
-    const offeringGroup: DOWServiceOfferingGroup = {
-      serviceOfferingGroupId: groupId,
-      sequence: group?.sequence || 99,
-      serviceOfferings: []
+    const doesGroupAlreadyExistingInDOWObj = this.DOWObject.some(
+      dow => dow.serviceOfferingGroupId === groupId
+    );
+    // if group does NOT exist in DOW object, add it
+    if (!doesGroupAlreadyExistingInDOWObj){
+      const group = this.serviceOfferingGroups.find(e => e.value === groupId)
+      const offeringGroup: DOWServiceOfferingGroup = {
+        serviceOfferingGroupId: groupId,
+        sequence: group?.sequence || 99,
+        serviceOfferings: []
+      }
+      this.DOWObject.push(offeringGroup);
     }
-    this.DOWObject.push(offeringGroup);
   }
 
   @Action
@@ -1915,7 +1920,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async doSetSelectedOfferingGroups(selectedOfferingGroupIds: string[]): Promise<void> {
     const inXaaS = this.currentDOWSection === "XaaS";
     const inCloud = this.currentDOWSection === "CloudSupport";
-
     if (selectedOfferingGroupIds.length) {
       selectedOfferingGroupIds.forEach(async (selectedOfferingGroupId) => {
         if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroupId)) {
@@ -2292,9 +2296,10 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
 
-  @Action
+  @Action({rawError: true})
   public async deleteOtherOfferingInstance(instanceNumber: number): Promise<void> {
     this.doDeleteOtherOfferingInstance(instanceNumber);
+    this.checkServiceOfferingTypesSelected();
   }
 
   @Mutation
@@ -2339,7 +2344,6 @@ export class DescriptionOfWorkStore extends VuexModule {
          */
         if(otherOfferingObj.otherOfferingData.length===0){
           this.DOWObject.splice(offeringIndex,1);
-          this.checkServiceOfferingTypesSelected();
         }
 
       }

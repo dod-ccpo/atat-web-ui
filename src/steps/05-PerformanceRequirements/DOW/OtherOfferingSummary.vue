@@ -160,6 +160,11 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public isDatabase = false;
   public isStorage = false;
   public isTraining = false;
+  public isGeneralCloudSupport = false;
+  public isHelpDesk = false;
+  public isAdvisoryAssistance = false;
+  public isDocumentation = false;
+  
   public hasOnSiteColumn = false;
   public hasStatementColumn = false;
 
@@ -211,6 +216,21 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public async addInstance(): Promise<void> {
     const lastInstanceNumber = await DescriptionOfWork.getLastOtherOfferingInstanceNumber();
     await DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(lastInstanceNumber + 1);
+
+    /**
+     * if user manually deleted all instances on the summary page and 
+     * clicked to `add instance`
+     * 
+     * 1 - Craft necessary DOWObject
+     * 2 - set necessary setReturnToDOWSummary to ensure listing appears as expected
+     *     on summary 
+     */
+    if (lastInstanceNumber === 1){
+      DescriptionOfWork.addOfferingGroup(this.currentGroupId.toUpperCase());
+      DescriptionOfWork.setAddGroupFromSummary(true);
+      DescriptionOfWork.setReturnToDOWSummary(true);
+      DescriptionOfWork.setFromAnticipatedUsersAndData(false);
+    }
     this.navigate();
   }
 
@@ -307,11 +327,12 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
       } else if (this.isStorage) {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
+          { text: "Storage Type", value: "typeOrTitle", width: "50%" },
           { text: "Classification", value: "classification" },
-          { text: "Storage Type", value: "storageType", width: "50%" },
           { text: "Storage Size", value: "storageAmount", width: "50%" },
           { text: "", value: "actions", width: "75" },
         ];
+        typeOrTitle = instanceClone.storageType || "";
       // -----------------------------------------------------------------
       // TRAINING
       // -----------------------------------------------------------------
@@ -358,7 +379,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           ? `<div class="text-error font-weight-500">Unknown</div>`
           : instanceClone.descriptionOfNeed;
       }
-
       isValid = await this.validateInstance(instanceClone);
       if (!isValid) {
         typeOrTitle += this.rowErrorMessage
@@ -418,6 +438,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         performance,
         personnelOnsiteAccess,
         trainingType,
+        sysId: instanceClone.sysId
       };
 
       this.tableData.push(instanceData);
@@ -447,7 +468,53 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "storageType",
       ];
 
-    } else if (this.isGeneralXaaS) {
+    }
+
+    else if (this.isDatabase) {
+      requiredFields = [
+        "databaseType",
+        "databaseLicensing",
+        "licensing",
+        "memoryAmount",
+        "memoryUnit",
+        "networkPerformance",
+        "numberOfVCPUs",
+        "numberOfInstances",
+        "operatingSystem",
+        "databaseLicensing",
+        "classificationLevel",
+        "operatingSystemLicense",
+        "storageType",
+        "storageAmount",
+        "storageUnit"
+      ]
+    }
+    
+    else if(this.isStorage){
+      requiredFields = [
+        "numberOfInstances",
+        "storageAmount",
+        "storageType",
+        "storageUnit"
+      ]
+    }
+    else if(this.isTraining){
+      requiredFields = [
+        "trainingRequirementTitle",
+        "trainingType",
+        "entireDuration"
+      ]
+    }
+    //soo, on-site access, duration
+    else if(this.isAdvisoryAssistance || this.isDocumentation || 
+    this.isHelpDesk || this.isGeneralCloudSupport){
+      requiredFields = [
+        "statementOfObjectives",
+        "personnelOnsiteAccess",
+        "entireDuration",
+      ]
+    }
+    else if (this.isGeneralXaaS) {
       requiredFields = [
         "classificationLevel",
         "anticipatedNeedUsage",
@@ -474,10 +541,16 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.currentGroupId = await (await DescriptionOfWork.getCurrentOfferingGroupId()).toLowerCase();
     const offering = this.currentGroupId.toLowerCase();
     this.isCompute = offering === "compute";
-    this.isGeneralXaaS = offering === "general_xaas";
+    //depreciate since each serviceOfferingGroupId is unique 
+    //(ADVISORY_ASSISTANCE | HELP_DESK_SERVICES | DOCUMENTATION_SUPPORT | GENERAL_CLOUD_SUPPORT)
+    //this.isGeneralXaaS = offering === "general_xaas"; 
     this.isDatabase = offering === "database";
     this.isStorage = offering === "storage";
     this.isTraining = offering === "training";
+    this.isAdvisoryAssistance = offering === "advisory_assistance";
+    this.isHelpDesk = offering === "help_desk_services";
+    this.isDocumentation = offering === "documentation_support";
+    this.isGeneralCloudSupport = offering === "general_cloud_support";
     this.hasOnSiteColumn 
       = ["documentation_support", "help_desk_services", "advisory_assistance"].includes(offering);
     this.hasStatementColumn = this.hasOnSiteColumn || offering.indexOf("general") > -1;
