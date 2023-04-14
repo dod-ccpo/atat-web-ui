@@ -1972,6 +1972,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.packageMissionOwner = {};
     this.selectedAgency = { text: "", value: "" };
     this.selectedAgencyAcronym = "";
+    this.showInviteContributorsModal = false;
   
   }
 }

@@ -59,7 +59,6 @@
           @keydown.space="openContributorsModal"
         >
           <ATATSVGIcon
-            @click="openContributorsModal"
             name="PersonAddAlt"
             color="base"
             :width="22"
@@ -187,8 +186,6 @@
       </template>
     </ATATDialog>    
 
-    <ContributorInviteModal :showInviteModal.sync="showInviteModal" />
-
   </div>
 </template>
 
@@ -200,7 +197,6 @@ import ATATDialog from "@/components/ATATDialog.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import ATATProfileCard from "@/components/ATATProfileCard.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import ContributorInviteModal from "../components/ContributorInviteModal.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
@@ -217,7 +213,6 @@ import AppSections from "@/store/appSections";
     ATATMeatballMenu,
     ATATProfileCard,
     ATATSVGIcon,
-    ContributorInviteModal,
   }
 })
 
@@ -228,15 +223,6 @@ export default class ContributorsPanel extends Vue {
   public agency = "";
   public statusChipColor = "";
   public packageStatus = "";
-  public showInviteModal = false;
-
-  public get showContributorInviteModal(): boolean {
-    return AcquisitionPackage.getShowInviteContributorsModal;
-  }
-  @Watch("showContributorInviteModal")
-  public showContributorInviteModalChange(val: boolean): void {
-    this.showInviteModal = val;
-  }
 
 
   public showConfirmationModal = false;

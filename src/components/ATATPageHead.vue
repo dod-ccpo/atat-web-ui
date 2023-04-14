@@ -93,12 +93,15 @@
       :waitingForSignature="isWaitingForSignature"
       @okClicked="updateStatus('ARCHIVED')"
     />
+
+    <ContributorInviteModal :showInviteModal.sync="showInviteModal" />
+
   </v-app-bar>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -108,6 +111,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
 import ContributorsPanel from "@/packages/components/ContributorsPanel.vue"
+import ContributorInviteModal from "@/packages/components/ContributorInviteModal.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 
 import { SlideoutPanelContent } from "types/Global";
@@ -116,6 +120,7 @@ import { SlideoutPanelContent } from "types/Global";
   components:{
     ArchiveModal,
     ContributorsPanel,
+    ContributorInviteModal,
     DeletePackageModal,
   }
 })
@@ -127,6 +132,8 @@ export default class ATATPageHead extends Vue {
   public moreOptionsTooltipText = "More options"
   public showDeleteModal = false
   public showArchiveModal = false
+  public showInviteModal = false;
+
   public get showDrawer(): boolean {
     return SlideoutPanel.getSlideoutPanelIsOpen;
   } 
@@ -201,6 +208,14 @@ export default class ATATPageHead extends Vue {
 
   public openInviteContributorModal(): void {
     AcquisitionPackage.setShowInviteContributorsModal(true);
+  }
+
+  public get showContributorInviteModal(): boolean {
+    return AcquisitionPackage.getShowInviteContributorsModal;
+  }
+  @Watch("showContributorInviteModal")
+  public showContributorInviteModalChange(val: boolean): void {
+    this.showInviteModal = val;
   }
 
   public async openSlideoutPanel(e?: Event): Promise<void> {
