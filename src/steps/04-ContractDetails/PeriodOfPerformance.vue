@@ -31,7 +31,7 @@
             <div class="mb-4 _semibold" style="padding-left: 101px">
               Period of Performance length
             </div>
-            <div id="BaseAndOptionWrapper">
+            <div id="BaseAndOptionWrapper" class="dropzone">
               <draggable
                 v-model="optionPeriods"
                 ghost-class="ghost"
@@ -42,6 +42,7 @@
                     class="d-inline-block py-2 draggable"
                     :id="getIdText(getOptionPeriodLabel(index)) + 'Row'"
                     @click="preDrag($event, index)"
+                    @drop="drop($event, index)"
                     :data-index="index"
                   >
                     <div class="d-flex align-center">
@@ -153,7 +154,7 @@
 /* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import draggable from "vuedraggable";
+import draggable, { DropContext } from "vuedraggable";
 import Vue from "vue";
 
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -222,7 +223,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       if (existingIdx === -1){
         this.durationErrorIndices.push(idx)
       } 
-    } else if (existingIdx > -1) {
+    } else if (existingIdx > -1 && existingIdx !== undefined) {
       this.durationErrorIndices.splice(existingIdx, 1);
     }
   }
@@ -377,17 +378,20 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
    */
 
   public updateErrorIndex(index:number, isDragging: boolean, isAdd?: boolean):void{
-    debugger;
     const errorIndex = this.durationErrorIndices.findIndex(
       idx => idx === (isDragging ? index : index+1));
+    
     if (errorIndex>-1){
       this.clearErrorMessages(index);
       if (isAdd){
+        debugger;
         this.durationErrorIndices[errorIndex] = isAdd 
-          ? this.durationErrorIndices[errorIndex] + 1
-          : this.durationErrorIndices[errorIndex] - 1;
+          ? index + 1
+          : index - 1;
       } else {
-        this.durationErrorIndices[errorIndex] = this.durationErrorIndices[index]
+        if (this.durationErrorIndices[index]!==undefined){
+          this.durationErrorIndices[errorIndex] = this.durationErrorIndices[index];
+        }
       }
 
     }
@@ -506,12 +510,17 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           });
 
           draggableEl.classList.remove("dragging");
-
+          console.log(draggableEl.id);
           // hide the div that appears next to pointer when dragging
           this.showDragImg(false);
         });
+
+        // draggableEl.addEventListener("drop", () => {
+        //   debugger;
+        // });
       });
     }
+    
   }
 
   public showDragImg(show: boolean): void {
@@ -530,6 +539,17 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     if (index && this.optionPeriods[index]) {
       this.optionPeriodClicked = this.optionPeriods[index];
     }
+  }
+
+  public drop(e: Event, index: number): void {
+    const updatedItems = Array.from(document.getElementsByClassName("draggable"));
+    const erroredIndex = updatedItems.findIndex(
+      (item) => item.innerHTML.includes('error')
+    )
+    setTimeout(()=>{
+      this.durationErrorIndices = [];
+      this.durationErrorIndices[0] = erroredIndex;
+    },0)
   }
 
   private getIdText(string: string) {
