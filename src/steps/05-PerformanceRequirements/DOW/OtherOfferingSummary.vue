@@ -190,7 +190,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public currentGroupId = "";
 
   public serviceGroupVerbiageInfo: Record<string, string> = {};
-  hasSecretOrTopSecretInstance: boolean;
+  public hasSecretOrTopSecretInstance = false;
 
   get confirmOfferingDelete(): boolean {
     return DescriptionOfWork.confirmOtherOfferingDeleteVal;
@@ -274,6 +274,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
   public async buildTableData(): Promise<void> {
     this.tableData = [];
+    this.hasSecretOrTopSecretInstance = false;
     const allPeriods = await Periods.getAllPeriods();
     const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
 
@@ -420,7 +421,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         if (classificationObj) {
           classificationLevel = buildClassificationLabel(classificationObj, "short");
           if (classificationLevel === "Top Secret" ||
-              classificationLevel === "Secret") {
+              classificationLevel === "Secret/IL6") {
             this.hasSecretOrTopSecretInstance = true;
           }
         }
