@@ -253,6 +253,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { createPeriodCheckboxItems } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import {routeNames} from "@/router/stepper";
 
 @Component({
   components: {
@@ -308,10 +309,29 @@ export default class Travel extends Mixins(SaveOnLeave) {
     return DescriptionOfWork.confirmTravelDeleteAllVal;
   }
 
+  /**
+   * Checks if the component loaded all the travel items. If loaded, then
+   * makes a call-out if there are any travel listings. Otherwise, just routes to the
+   * next screen.
+   * @param showModal - 'deleteAll' value gets passed into showModal parameter.
+   */
   @Watch("deleteAll")
   public showDeleteAllModal(showModal: boolean): void {
-    if (showModal && this.hasListings){
-      this.confirmDeleteModal(); 
+    if (!this.isLoading && showModal) {
+      if (this.hasListings){
+        this.confirmDeleteModal();
+      } else {
+        DescriptionOfWork.setConfirmTravelDeleteAll(false);
+        this.$router.push({
+          name: routeNames.PII,
+          params: {
+            direction: "next"
+          },
+          replace: true
+        }).catch(() => console.log("avoiding redundant navigation"));
+      }
+    } else {
+      DescriptionOfWork.setConfirmTravelDeleteAll(false);
     }
   }
 
@@ -374,6 +394,13 @@ export default class Travel extends Mixins(SaveOnLeave) {
       );
       this.tableData = [];
       DescriptionOfWork.setConfirmTravelDeleteAll(false);
+      this.$router.push({
+        name: routeNames.PII,
+        params: {
+          direction: "next"
+        },
+        replace: true
+      }).catch(() => console.log("avoiding redundant navigation"));
     } else {
       if (this.travelItem.sys_id && this.travelItem.sys_id.trim().length > 0) {
         if (this.tableData.length > 1){
