@@ -20,12 +20,10 @@
         <v-text-field
           ref="inviteUser"
           id="SearchUser"
-          v-model="searchObj.value"
+          v-model="searchString"
           clearable
           append-icon="search"
-          @keyup="onUserSearchValueChange(searchObj.value);searchObj.noResults=false;
-          searchObj.alreadyInvited=false"
-          @click:clear="onUserSearchValueChange('');searchObj.alreadyInvited=false"
+          @click:clear="clearSearch()"
           outlined
           dense
           :height="40"
@@ -65,9 +63,15 @@
               </v-list-item>
             </v-list>
 
-            <v-list class="py-1" v-if="searchObj.noResults && searchObj.value">
+            <v-list class="py-1" v-if="searchObj.noResults && searchString">
               <v-list-item class="font-weight-bolder font-size-16">
-                No results for "{{searchObj.value}}"
+                No results for "{{searchString}}"
+              </v-list-item>
+              <hr class="my-0" />
+              <v-list-item>
+                <a href="https://community.hacc.mil/s/contact" target="_blank" class="body">
+                  Contact customer <span class="_external-link">support</span>
+                </a>
               </v-list-item>
             </v-list>
           </v-card>
@@ -129,6 +133,13 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import UserManagement from "@/store/user/userManagement";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
+export interface SearchObj {
+  isLoading: boolean;
+  searchResults: User[];
+  noResults: boolean;
+  alreadyInvited: boolean;
+}
+
 @Component({
   components: {
     ATATSVGIcon,
@@ -143,14 +154,8 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ContributorInviteModal extends Vue {
   @PropSync("showInviteModal") public _showInviteModal?: boolean;
 
-  public searchObj: {
-    value: string;
-    isLoading: boolean;
-    searchResults: User[];
-    noResults: boolean;
-    alreadyInvited: boolean;
-  } = {
-    value: "",
+  public searchString = "";
+  public searchObj: SearchObj = {
     isLoading: false,
     searchResults: [],
     noResults: false,
@@ -172,12 +177,26 @@ export default class ContributorInviteModal extends Vue {
     return this.searchObj.searchResults.length > 0;
   }
 
+  public clearSearch(): void {
+    this.searchString = "";
+    this.searchObj.alreadyInvited = false;
+  }
+
+  @Watch("searchString")
+  public searchStringChanged(newVal: string, oldVal: string): void {
+    if (newVal !== oldVal && newVal.trim().length > 2) {
+      this.searchObj.noResults = false;
+      this.searchObj.alreadyInvited = false
+      this.onUserSearchValueChange(newVal);
+    }
+  }
+
   /**
    * Starts searching 500 milliseconds after user changes the search value. Only
    * searches if there are at least 3 characters in the newValue
    */
-  onUserSearchValueChange = _.debounce(async (newValue: string) => {
-    if (newValue && newValue?.trim().length > 2 && !this.isSearching) {
+  public onUserSearchValueChange = _.debounce(async (newValue: string) => {
+    if (!this.isSearching) {
       await UserManagement.doResetAbortController();
       this.isSearching = true;
       this.searchObj.searchResults = [];
@@ -193,7 +212,7 @@ export default class ContributorInviteModal extends Vue {
           phoneNumber: userSearchDTO.phone,
           agency: userSearchDTO.department?.display_value
         }
-      })
+      });
       this.searchObj.noResults = this.searchObj.searchResults.length === 0;
       this.searchObj.isLoading = false;
       this.isSearching = false;
@@ -229,7 +248,7 @@ export default class ContributorInviteModal extends Vue {
           return 0;
         }
       })
-      this.searchObj.value = "";
+      this.searchString = "";
       this.searchObj.alreadyInvited = false;
       this.searchObj.searchResults = [];
       this.searchObj.noResults = false;
@@ -243,7 +262,7 @@ export default class ContributorInviteModal extends Vue {
    * Resets the state of the modal and all the properties.
    */
   public onCancel(): void {
-    this.searchObj.value = "";
+    this.searchString = "";
     this.searchObj.alreadyInvited = false;
     this.searchObj.searchResults = [];
     this.searchObj.noResults = false;
