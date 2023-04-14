@@ -45,6 +45,7 @@ import sac from '../selectors/standComp.sel';
 import occ from '../selectors/occ.sel';
 import fd from '../selectors/financialDetails.sel'
 import performanceReqs from '../selectors/performanceReqs.sel';
+import 'cypress-wait-until';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -135,58 +136,29 @@ Cypress.Commands.add('homePageClickAcquisitionPackBtn', () => {
   
   cy.findElement(lp.welcomeBarText).should("exist");
   cy.textExists(lp.startAcqWelcome, "Start a new acquisition").should("be.enabled").click();
-  cy.verifyPageHeader("Let’s start with basic info about your new acquisition");
-  cy.textExists("#developerToggleButton", "Toggle Developer Navigation ON").click().then(() => {
-    cy.textExists("#developerToggleButton", "Toggle Developer Navigation OFF");
-  });
-  cy.window()
-    .its("sessionStorage")
-    .invoke("getItem", "ATAT_CONTACT_DATA_KEY")
-    .should("exist");
-  cy.window()
-    .its("sessionStorage")
-    .invoke("getItem", "ATAT_ORGANIZATION_DATA_KEY")
-    .should("exist");
-  cy.window()
-    .its("sessionStorage")
-    .invoke("getItem", "ATAT_DESCRIPTION_OF_WORK_KEY")
-    .should("exist");
-  cy.window()
-    .its("sessionStorage")
-    .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
-    .should("exist");
+  cy.verifyPageHeader("Before you get started");
 
-  // ==========================================================================
-  // KEEP FOR LOCAL TESTING TO NOT LOG DATA IN CYPRESS RUNNER
-  // UNCOMMENT THIS BLOCK AND COMMENT OUT THE sessionStorage CODE ABOVE
-  // ==========================================================================
-  // //eslint-disable-next-line cypress/no-unnecessary-waiting
-  // cy.window().wait(1000)
-  //   .its("sessionStorage").invoke("getItem", "ATAT_CONTACT_DATA_KEY")
-  //   .then(data => {
-  //     cy.wrap(JSON.parse(data)).its("branchChoices").should("exist")
-  //       // eslint-disable-next-line cypress/no-unnecessary-waiting
-  //       .then(() => cy.window().wait(1000).its("sessionStorage")
-  //         .invoke("getItem", "ATAT_ORGANIZATION_DATA_KEY")
-  //         .then(data => {
-  //           cy.wrap(JSON.parse(data)).its("agency_data").should("exist")
-  //             // eslint-disable-next-line cypress/no-unnecessary-waiting
-  //             .then(() => cy.window().wait(1000).its("sessionStorage")
-  //               .invoke("getItem", "ATAT_DESCRIPTION_OF_WORK_KEY")
-  //               .then(data => {
-  //                 cy.wrap(JSON.parse(data)).its("serviceOfferings").should("exist")
-  //                   // eslint-disable-next-line cypress/no-unnecessary-waiting
-  //                   .then(() => cy.window().wait(1000).its("sessionStorage")
-  //                     .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
-  //                     .then(data => {
-  //                       cy.wrap(JSON.parse(data)).its("acorInfo").should("exist")
-  //                     })
-  //                   )
-  //               })
-  //             )
-  //         })
-  //       )
-  //   })
+  cy.findElement("#stepperNavigation").scrollIntoView()
+    .should("be.visible");
+  cy.findElement(common.continueBtn).click();   
+
+
+  cy.waitUntil(() => {
+    return Cypress.$('#LoadingModalTitle').is(":visible") === true;
+  }).then(() => {
+    cy.waitUntil(() => {
+      return Cypress.$('#LoadingModalTitle').is(":hidden") === true;  
+    }, {timeout: 30000}).then(() => {
+      cy.verifyPageHeader(
+        "Are you using the Defense Information Technology Contracting Organization (DITCO)" +
+        " for processing your JWCC task order?"
+      );  
+      cy.findElement("#developerToggleButton").scrollIntoView();
+      cy.textExists("#developerToggleButton", "Toggle Developer Navigation ON").click().then(() => {
+        cy.textExists("#developerToggleButton", "Toggle Developer Navigation OFF");
+      });    
+    });
+  });
 });
 
 Cypress.Commands.add('textExists', (selector, expectedText) => {
