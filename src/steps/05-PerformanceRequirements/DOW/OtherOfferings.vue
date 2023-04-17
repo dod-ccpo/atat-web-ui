@@ -465,7 +465,13 @@ export default class OtherOfferings extends Vue {
   }
 
   public async setComponentSpecificData(): Promise<void> {
-    if (this.isCompute || this.isGeneralXaaS) {
+    if (this.isStorage   || 
+      this.isCompute   ||
+      this.isDatabase  ||
+      this.isSupport   ||
+      this.isTraining  ||
+      this.isPortabilityPlan || 
+      this.isGeneralXaaS) {
       this.formHasBeenTouched 
         = await DescriptionOfWork.hasInstanceBeenTouched(this._serviceOfferingData.instanceNumber);
     }
@@ -508,13 +514,16 @@ export default class OtherOfferings extends Vue {
       this.Form.validate();
     });
   }
-
+    
   private setErrorMessages(): void {
     if (!this.$refs.form) {
       return;
     }
     this.errorBagValues = Object.values(this.$refs.form.errorBag);
-    const formChildren = this.$refs.form.$children[0].$children;
+    let formChildren = this.$refs.form.$children;
+    this.$refs.form.$children.forEach(children => {
+      formChildren = formChildren.concat(children.$children);
+    });
     const inputRefs = [
       "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
     ];
@@ -522,7 +531,6 @@ export default class OtherOfferings extends Vue {
     formChildren.forEach((child: any) => {
       const refs = child.$refs;
       const keys = Object.keys(refs);
-
       keys.forEach((key: string) => {
         if (inputRefs.indexOf(key) > -1 || customComponentRefs.indexOf(key) > -1) {
           const childRef: any = child.$refs[key];
@@ -540,8 +548,8 @@ export default class OtherOfferings extends Vue {
               }
             }
           }
-          if (this.isCompute) {
-            if (key === "radioButtonGroup" 
+          if (!this.isPortabilityPlan) {
+            if (this.isCompute && key === "radioButtonGroup"
               && child.$el.attributes.id.value.indexOf("PerformanceTier")
               && this._serviceOfferingData.performanceTier === this.otherPerformanceTierValue
             ) {
@@ -568,14 +576,15 @@ export default class OtherOfferings extends Vue {
                     && this._serviceOfferingData.entireDuration.toLowerCase() === "no"
                     && this._serviceOfferingData.periodsNeeded.length === 0
                   ) {
-                    child.$children[i].errorMessages.push(`Please select at least one base 
-                      or option period to specify your requirement’s duration level.`);
+                    child.$children[i].errorMessages.push(
+                      `Please select at least one base or option period.`
+                    );
                   }                
                 })
               }
             }
           }
-
+          
           if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")) {
             const errorBucket: string[] = childRef.errorBucket;
             if (errorBucket.length) {

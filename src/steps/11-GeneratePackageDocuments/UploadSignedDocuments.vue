@@ -123,33 +123,38 @@
         </div>
       </div>
     </div>
+    
+    <ATATLoadingPackageModal :isLoading="isLoading" />
+
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-
 import { Component, Watch } from "vue-property-decorator";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
+import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+
 import { TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import { invalidFile, signedDocument, uploadingFile } from "../../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import Attachments from "@/store/attachments";
-import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FinancialDetails from "@/store/financialDetails";
-import ATATAlert from "@/components/ATATAlert.vue";
-import { AttachmentDTO, PackageDocumentsSignedDTO } from "@/api/models";
-import { AxiosRequestConfig } from "axios";
-import { api } from "@/api";
+import { PackageDocumentsSignedDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import acquisitionPackage from "@/store/acquisitionPackage";
+
 @Component({
   components:{
-    ATATFileUpload,
-    ATATSVGIcon,
     ATATAlert,
+    ATATFileUpload,
+    ATATLoadingPackageModal,
+    ATATSVGIcon,
   }
 })
 export default class UploadSignedDocuments extends SaveOnLeave {
+  public packageNotInitialized = false;
+
   private attachmentServiceName = PACKAGE_DOCUMENTS_SIGNED;
   private maxFileSizeInBytes = 1073741824;
   private validFileFormats = ["pdf","jpg","png","docx","doc"];
@@ -241,7 +246,16 @@ export default class UploadSignedDocuments extends SaveOnLeave {
 
     return rulesArr;
   }
+
+  public get isLoading(): boolean {
+    return this.packageNotInitialized || this.isPackageLoading;
+  }
+  public get isPackageLoading(): boolean {
+    return AcquisitionPackage.getIsLoading;
+  }
+
   public async loadOnEnter(): Promise<void> {
+    this.packageNotInitialized = !AcquisitionPackage.initialized;
     this.packages = (await AcquisitionPackage.getSignedDocumentsList()).filter(
       signedDoc => signedDoc.show && signedDoc.requiresSignature
     );
@@ -251,6 +265,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
     this.uploadedFiles = await AcquisitionPackage.getDocuments(true);
     if(!AcquisitionPackage.initialized){
       await AcquisitionPackage.loadPackageFromId(AcquisitionPackage.packageId);
+      this.packageNotInitialized = false;
     }
   }
   async mounted(): Promise<void>{

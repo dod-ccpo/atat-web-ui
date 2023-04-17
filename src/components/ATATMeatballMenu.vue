@@ -2,7 +2,7 @@
   <v-menu
     :offset-y="true"
     :left="left"
-    :id="id + '_' + menuIndex"
+    :id="id + '_' + index"
     class="_meatball-menu"
     attach
   >
@@ -10,7 +10,7 @@
       <v-btn
         v-bind="attrs"
         v-on="on"
-        :id="id + 'Button_' + menuIndex"
+        :id="id + 'Button_' + index"
         class="_meatball-menu-button"
       >
         <v-icon class="text-base-dark">more_horiz</v-icon>
@@ -21,7 +21,7 @@
       <v-list-item
         v-for="(item, idx) in menuItems"
         :key="idx"
-        :id="getIdText(item.title) + '_MenuItem' + menuIndex"
+        :id="getIdText(item.title) + '_MenuItem' + index"
         :class="[
           { '_separator-before': item.separatorBefore },
           { '_disabled': item.disabled },
@@ -62,16 +62,15 @@ import { getIdText } from "@/helpers";
 export default class ATATMeatballMenu extends Vue {
   @Prop() public id!: string;
   @Prop({ default: false }) public left?: boolean;
-  @Prop({ default: "" }) public menuIndex!: number | string;
+  @Prop({ default: 0 }) public index!: number;
   @Prop() public menuItems!: MeatballMenuItem[];
-  @Prop() public cardIndex?: number | string;
 
   private getIdText(string: string) {
     return getIdText(string);
   }
 
   public menuItemClick(item: MeatballMenuItem): void {
-    this.$emit("menuItemClick", item, this.cardIndex);
+    this.$emit("menuItemClick", item, this.index);
   }
 
 }

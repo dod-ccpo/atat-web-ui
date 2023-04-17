@@ -36,6 +36,9 @@
            modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
           class=" d-flex align-center _percent-complete"
         >
+          <!-- 
+          TODO: Add back in when saving progress to snow  
+
           <ATATSVGIcon
             name="taskAlt"
             width="16"
@@ -43,8 +46,6 @@
             color="base"
             class="mr-1"
           />
-          <!-- 
-          TODO: Add back in when saving progress to snow  
           <span v-if="modifiedData.packageStatus.toLowerCase() === 'draft'" >
             30% complete
           </span>
@@ -59,6 +60,9 @@
             class="d-inline-block mx-1"
           /> -->
         </div>
+        
+        <!-- 
+          ATAT TODO - REPLACE HARDCODED TO# when working ATAT tickets
         <div
           v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
           class=" d-flex align-center">
@@ -76,8 +80,11 @@
             class="d-inline-block mx-1"
           />
         </div>
-        <div :id="'CreatedBy'+ index" class="d-flex align-center _created-by">
-          {{modifiedData.createdBy}}
+        -->
+
+
+        <div :id="'MissonOwner'+ index" class="d-flex align-center _created-by">
+          {{modifiedData.missionOwner}}
           <ATATSVGIcon
             name="bullet"
             color="base-light"
@@ -96,7 +103,7 @@
     <ATATMeatballMenu
       :id="'CardMenu' + index"
       :left="true"
-      :menuIndex="index"
+      :index="index"
       :menuItems="cardMenuItems"
       @menuItemClick="cardMenuClick"
     />
@@ -106,6 +113,7 @@
       :hasContributor="hasContributor"
       :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
       @okClicked="updateStatus('DELETED')"
+      :id="'DeletePackageModal_' + index"
     />
     <ArchiveModal
       :showModal.sync="showArchiveModal"
@@ -113,6 +121,7 @@
       :packageName="modifiedData.projectOverview || 'Untitled package'"
       :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
       @okClicked="updateStatus('ARCHIVED')"
+      :id="'ArchivePackageModal_' + index"
     />
   </v-card>
 </template>
@@ -159,23 +168,12 @@ export default class Card extends Vue {
   public showArchiveModal = false
   public isDitco = false
   public lastModifiedStr = "";
-  public modifiedData: {
-    contractAward: string;
-    missionOwners: string;
-    packageStatus: string;
-    projectOverview: string;
-    secondaryReviewers: string;
-    createdBy: string;
-    updated: string;
-    title: string;
-    contributors:string;
-  } = {
+  public modifiedData: Record<string, string> = {
     contractAward: "",
-    missionOwners: "",
+    missionOwner: "",
     packageStatus: "",
     projectOverview: "",
     secondaryReviewers: "",
-    createdBy: "",
     updated: "",
     title: "",
     contributors:"",
@@ -208,13 +206,10 @@ export default class Card extends Vue {
       this.isOwner = cardData.mission_owners?.value.indexOf(this.currentUser.sys_id) > -1
     }
     this.modifiedData.contractAward = cardData.contract_award?.value || ""
-    this.modifiedData.missionOwners = cardData.mission_owners?.value || ""
+    this.modifiedData.missionOwner = cardData.mission_owners?.display_value || ""
     this.modifiedData.packageStatus = cardData.package_status?.display_value || ""
     this.modifiedData.projectOverview = cardData.project_overview?.display_value || ""
     this.modifiedData.secondaryReviewers = cardData.secondary_reviewers?.value || ""
-    this.modifiedData.createdBy = this.isOwner 
-      ? this.currentUser.name as string 
-      : "Maria Missionowner "
     this.modifiedData.updated = cardData.sys_updated_on || ""
     this.modifiedData.contributors = cardData.contributors?.value || ""
   }

@@ -48,8 +48,7 @@
           class="ml-4"
           :left="true"
           :id="'MeatballMenu' + index"
-          :menuIndex="index"
-          :cardIndex="index"
+          :index="index"
           :menuItems="menuItems(cardData.status)"
           @menuItemClick="handleClick"
         />

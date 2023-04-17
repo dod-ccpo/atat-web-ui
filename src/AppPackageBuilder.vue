@@ -9,7 +9,7 @@
 
     <ATATToast />
 
-    <ATATPageHead :headline="projectTitle" />
+    <ATATPageHead />
 
     <v-main>
       <div id="app-content" class="d-flex flex-column">
@@ -210,12 +210,6 @@ export default class AppPackageBuilder extends Vue {
     return this.$route.name
   }
 
-  public get projectTitle(): string {
-    return AcquisitionPackage.projectTitle !== ""
-      ? AcquisitionPackage.projectTitle
-      : "New Acquisition";
-  }
-
   public get isDitcoUser(): boolean {
     return AcquisitionPackage.contractingShop === "DITCO"
   }
@@ -253,9 +247,9 @@ export default class AppPackageBuilder extends Vue {
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
-    this.hideContinueButton = step.stepName === routeNames.GeneratingPackageDocuments
-      && !this.isDitcoUser;
-
+    this.hideContinueButton = 
+      step.stepName === routeNames.GeneratingPackageDocuments && !this.isDitcoUser 
+      || step.stepName === routeNames.ReadyToSubmit && AcquisitionPackage.currentUserIsContributor;
   }
 
   private async additionalButtonClick(button: AdditionalButton) {

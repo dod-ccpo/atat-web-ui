@@ -18,7 +18,6 @@ module.exports = {
   //common id for modal button
   commonOkBtn: "#dialog_ok",
   dialogModal: ".v-dialog",
-  modalTitle:"#modalDialogTitle",
   
   //toast 
   toastText:".v-snack__content",
