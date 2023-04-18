@@ -15,14 +15,33 @@ import Summary from "../steps/Summary.vue";
 // Step 2 - Evaluation Criteria
 import FairOpportunityProcess from "../steps/02-EvaluationCriteria/Index.vue"
 import Exceptions from "../steps/02-EvaluationCriteria/Exceptions.vue";
-// KEEP JustificationAndApproval for future ticket
-// import JustificationAndApproval
-//   from "../steps/02-EvaluationCriteria/JustificationAndApproval.vue";
+
+// J&A
+import ProposedCSP from "../steps/02-EvaluationCriteria/JandA/ProposedCSP.vue";
+import DescriptionOfJustification 
+  from "../steps/02-EvaluationCriteria/JandA/DescriptionOfJustification.vue";
+import MinimumRequirements from "../steps/02-EvaluationCriteria/JandA/MinimumRequirements.vue";
+import SoleSourceCause from "../steps/02-EvaluationCriteria/JandA/SoleSourceCause.vue";
+import SoleSourceReview from "../steps/02-EvaluationCriteria/JandA/SoleSourceReview.vue";
+import UniqueSource from "../steps/02-EvaluationCriteria/JandA/UniqueSource.vue";
+import ProcurementDiscussion from "../steps/02-EvaluationCriteria/JandA/ProcurementDiscussion.vue";
+import ImpactOfRequirement from "../steps/02-EvaluationCriteria/JandA/ImpactOfRequirement.vue";
+// MRR
+import MRRNeed from "../steps/02-EvaluationCriteria/MRR/MRRNeed.vue";
+import MarketResearchEfforts from "../steps/02-EvaluationCriteria/MRR/MarketResearchEfforts.vue";
+import MarketResearchReview from "../steps/02-EvaluationCriteria/MRR/MarketResearchReview.vue";
+import WhoConductedResearch from "../steps/02-EvaluationCriteria/MRR/WhoConductedResearch.vue";
+import OtherSupportingFactors from "../steps/02-EvaluationCriteria/MRR/OtherSupportingFactors.vue";
+import RemoveBarriers from "../steps/02-EvaluationCriteria/MRR/RemoveBarriers.vue";
+import ReviewBarriers from "../steps/02-EvaluationCriteria/MRR/ReviewBarriers.vue";
+import CertificationPOCs from "../steps/02-EvaluationCriteria/MRR/CertificationPOCs.vue";
+
+
+// Eval Plan
 import CreateEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.vue";
 import EvalPlanDetails from "../steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.vue";
 import Differentiators from "../steps/02-EvaluationCriteria/EvalPlan/Differentiators.vue";
 import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
-import NoEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.vue";
 
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
@@ -167,7 +186,8 @@ import {
   IGCESupportingDocumentationResolver,
   CreateEvalPlanRouteResolver,
   BVTOResolver,
-  NoEvalPlanRouteResolver,
+  ProposedCSPRouteResolver,
+  CertificationPOCsRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
@@ -186,6 +206,7 @@ export const routeNames = {
   AcorInformation: "Acor_Information",
   ExistingContractBackground: "Existing_Contract_Background",
   AcqPackageSummary: "Acquisition_Package_Summary",
+  
   FairOpportunity: "Fair_Opportunity",
   Exceptions: "Exceptions",
   EvaluationPlan: "Evaluation_Plan",
@@ -193,9 +214,27 @@ export const routeNames = {
   EvalPlanDetails: "Eval_Plan_Details",
   Differentiators: "Proposal_Required_BVTO",
   EvalPlanSummary: "Eval_Plan_Summary",
-  NoEvalPlan: "No_Eval_Plan",
-  // KEEP JustificationAndApproval for future ticket
-  // JustificationAndApproval: "Justification_and_Approval",
+
+  //-----------------------------------------
+  // J&A
+  ProposedCSP: "Proposed_CSP",
+  DescriptionOfJustification: "Description_Of_Justification",
+  MinimumRequirements: "Minimum_Requirements",
+  SoleSourceCause: "Sole_Source_Cause",
+  SoleSourceReview: "Sole_Source_Review",
+  UniqueSource: "Unique_Source",
+  ProcurementDiscussion: "Procurement_Discussion",
+  ImpactOfRequirement: "Impact_Of_Requirement",
+  // MRR
+  MRRNeed: "MRR_Need",
+  MarketResearchEfforts: "Market_Research_Efforts",
+  MarketResearchReview: "Market_Research_Review",
+  WhoConductedResearch: "Who_Conducted_Research",
+  OtherSupportingFactors: "Other_Supporting_Factors",
+  RemoveBarriers: "Remove_Barriers",
+  ReviewBarriers: "Review_Barriers",
+  CertificationPOCs: "Certification_POCs",
+  //-----------------------------------------
 
   Background: "Background",
   CurrentContract: "Current_Contract",
@@ -395,17 +434,179 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
       },
+      
+      // ======================
+      // J & A
+      // ======================
       {
-        menuText: "No Evaluation Plan",
-        path: "no-eval-plan",
-        name: routeNames.NoEvalPlan,
-        component: NoEvalPlan,
+        menuText: "Proposed CSP",
+        path: "proposed-csp",
+        name: routeNames.ProposedCSP,
+        component: ProposedCSP,
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver: NoEvalPlanRouteResolver,
+        routeResolver: ProposedCSPRouteResolver,
       },
+      {
+        menuText: "Description of Justification",
+        path: "description-of-justification",
+        name: routeNames.DescriptionOfJustification,
+        component: DescriptionOfJustification,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },
+      {
+        menuText: "Minimum Requirements",
+        path: "minimum-requirements",
+        name: routeNames.MinimumRequirements,
+        component: MinimumRequirements,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },
+      {
+        menuText: "Cause of Sole Source",
+        path: "sole-source-cause",
+        name: routeNames.SoleSourceCause,
+        component: SoleSourceCause,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },
+      {
+        menuText: "Sole Source Review",
+        path: "sole-source-review",
+        name: routeNames.SoleSourceReview,
+        component: SoleSourceReview,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },      
+      {
+        menuText: "Unique Source",
+        path: "unique-source",
+        name: routeNames.UniqueSource,
+        component: UniqueSource,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },
+      {
+        menuText: "Procurement Discussion",
+        path: "procurement-discussion",
+        name: routeNames.ProcurementDiscussion,
+        component: ProcurementDiscussion,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },      
+      {
+        menuText: "Impact of Requirement",
+        path: "requirement-impact",
+        name: routeNames.ImpactOfRequirement,
+        component: ImpactOfRequirement,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },
+      // ======================
+      // MRR
+      // ======================
+      {
+        menuText: "Need MRR",
+        path: "need-mrr",
+        name: routeNames.MRRNeed,
+        component: MRRNeed,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },
+      {
+        menuText: "Market Research Efforts",
+        path: "market-research-efforts",
+        name: routeNames.MarketResearchEfforts,
+        component: MarketResearchEfforts,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },      
+      {
+        menuText: "Market Research Review",
+        path: "market-research-review",
+        name: routeNames.MarketResearchReview,
+        component: MarketResearchReview,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },      
+      {
+        menuText: "Who Conducted Research",
+        path: "who-conducted-research",
+        name: routeNames.WhoConductedResearch,
+        component: WhoConductedResearch,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },      
+      {
+        menuText: "Other Supporting Factors",
+        path: "other-supporting-factors",
+        name: routeNames.OtherSupportingFactors,
+        component: OtherSupportingFactors,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },      
+      {
+        menuText: "Remove Barriers",
+        path: "remove-barriers",
+        name: routeNames.RemoveBarriers,
+        component: RemoveBarriers,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },      
+      {
+        menuText: "Review Barriers",
+        path: "review-barriers",
+        name: routeNames.ReviewBarriers,
+        component: ReviewBarriers,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+      },      
+      {
+        menuText: "Certification POCs",
+        path: "certification-pocs",
+        name: routeNames.CertificationPOCs,
+        component: CertificationPOCs,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: CertificationPOCsRouteResolver,
+
+      },      
+      // END MRR
+      // ===================================
+      // Eval Plan
       {
         menuText: "Create Evaluation Plan",
         path: "create-eval-plan",
@@ -453,16 +654,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       //   completePercentageWeight: 0,
       //   completed: false,
       //   stepCompleteOnEnter: routeNames.CreateEvalPlan,
-      //   excludeFromMenu: true,
-      // },
-      // KEEP JustificationAndApproval for future ticket
-      // {
-      //   menuText: "Justification and Approval",
-      //   path: "justification-and-approval",
-      //   name: routeNames.JustificationAndApproval,
-      //   component: JustificationAndApproval,
-      //   completePercentageWeight: 5,
-      //   completed: false,
       //   excludeFromMenu: true,
       // },
     ],
