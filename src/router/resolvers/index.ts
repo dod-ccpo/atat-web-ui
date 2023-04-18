@@ -52,7 +52,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 }
 
 export const CreateEvalPlanRouteResolver = (current: string): string => {
-  if (current === routeNames.CertificationPOCs) { // EJY OK
+  if (current === routeNames.CertificationPOCs) {
     // moving forward
     return routeNames.PeriodOfPerformance;
   }
@@ -91,7 +91,7 @@ export const BVTOResolver = (current: string): string => {
   if (current === routeNames.PeriodOfPerformance){
     // moving backwards
     if (!evalPlanRequired()) {
-      return routeNames.CertificationPOCs; // EJY OK
+      return routeNames.CertificationPOCs;
     }
     if (missingEvalPlanMethod(evalPlan)) {
       return routeNames.CreateEvalPlan;

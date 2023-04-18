@@ -10,7 +10,6 @@ import {
   IGCECannotProceedResolver,
   IGCESupportingDocumentationResolver,
   IGCESurgeCapabilities,
-  // NoEvalPlanRouteResolver,
   ProposedCSPRouteResolver,
   EvalPlanDetailsRouteResolver, ArchitecturalDesignDetailsRouteResolver
 
