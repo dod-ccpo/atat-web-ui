@@ -117,17 +117,20 @@
 
         <hr />
 
+        <span v-if="envLocation !== 'ON_PREM'">
+          <h2 class="mb-4">
+            {{ hasTellUsAboutInstanceHeading ? "4." : "3." }}
+            Pricing details
+          </h2>
+
+          <PricingDetails :pricingDetails.sync="pricingDetails" />
+
+          <hr />
+        </span>
+
         <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "4." : "3." }}
-          Pricing details
-        </h2>
-
-        <PricingDetails :pricingDetails.sync="pricingDetails" />
-
-        <hr />
-
-        <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "5." : "4." }}
+          {{ hasTellUsAboutInstanceHeading ? (envLocation === "ON_PREM" ? "4." : "5.")
+            : (envLocation === "ON_PREM" ? "3." : "4.") }}
           Additional information 
           <span class="text-base font-weight-400">(Optional)</span>
         </h2>
