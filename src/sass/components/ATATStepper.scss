@@ -109,6 +109,9 @@
     margin-top: 8px;
   }
   &._selectable {
+    &:focus:before {
+      opacity: 0 !important;
+    }
     &:hover {
       border-color: $primary !important;
       outline: 1px solid $primary;
