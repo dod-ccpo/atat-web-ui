@@ -58,9 +58,14 @@
 
 
 // requirements cost estimate csp cards
-._calculator-card {
+._csp-card {
   width: 169px !important;
-  height: 245px;
+  
+  height: 160px;
+  &._calculator-card {
+    height: 245px;
+  }
+
   max-width: 169px;
   margin: 10px 16px 20px 0px;
   box-sizing: border-box;
@@ -102,5 +107,17 @@
     }
     width: 100%;
     margin-top: 8px;
+  }
+  &._selectable {
+    &:hover {
+      border-color: $primary !important;
+      outline: 1px solid $primary;
+      cursor: pointer;
+    }
+  }
+  &._selected {
+    border-color: $primary;
+    outline: 1px solid $primary;
+    background-color: $primary-lighter;
   }
 }
