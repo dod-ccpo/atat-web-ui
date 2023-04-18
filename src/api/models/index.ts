@@ -785,7 +785,7 @@ export interface CompanyDTO extends BaseTableDTO {
   u_short_name?: string;
 }
 
-export interface UserManagementDTO extends BaseTableDTO {
+export interface UserSearchResultDTO extends BaseTableDTO {
   first_name?: string;
   last_name?: string;
   name?: string;

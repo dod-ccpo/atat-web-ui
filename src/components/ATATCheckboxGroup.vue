@@ -71,7 +71,7 @@
               ]"
               :style="labelStyles"
             >
-              {{ item.label }}
+              {{ item.label }} 
             </div>
             <div
               v-if="item.description"
@@ -139,6 +139,7 @@
             </div>
           </template>
         </template>
+        
       </v-checkbox>
     </div>
 
@@ -219,7 +220,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private showIconWithMessage?: boolean;
   @Prop({ default: false }) private showPerformanceRequirementTotal?: boolean;
   @Prop({ default: false }) private inline?: boolean;
-
+  @Prop({ default: false }) private validateOnLoad?: boolean;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -400,7 +401,7 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("validateFormNow")
   public validateNowChange(): void {
-    if (!this.validateCheckboxesNow && this.rules.length) {
+    if ((!this.validateCheckboxesNow && this.rules.length) || this.validateOnLoad) {
       this.validateCheckboxesNow = true;
     }
     this.setErrorMessage();
@@ -431,6 +432,14 @@ export default class ATATCheckboxGroup extends Vue {
 
   public mounted(): void {
     this.setEventListeners();
+   
+    // if validateOnLoad, then validate checkboxes immediately
+    if (this.validateOnLoad){
+      this.validateCheckboxesNow = true;
+      setTimeout(()=>{
+        this.setErrorMessage();
+      }, 0)
+    }
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {

@@ -544,7 +544,9 @@ const mapOtherOfferingFromDTO = (
     performanceTier: value.performance_tier,
     processorSpeed: value.processor_speed,
     region: value.region as string,
-    periodsNeeded: value.selected_periods?.split(",") || [],
+    periodsNeeded: value.selected_periods && value.selected_periods.length>0
+      ? value.selected_periods?.split(",")
+      : [],
     storageAmount: value.storage_amount,
     storageType: value.storage_type,
     storageUnit: value.storage_unit as StorageUnit,
@@ -1308,7 +1310,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         sysparm_display_value: "false"
       }
     };
-
     this.setCurrentOfferingGroupId("COMPUTE");
     const computeItems = await api.computeEnvironmentInstanceTable.getQuery(requestConfig);
     if(computeItems.length > 0)
@@ -1334,7 +1335,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     });
 
     this.setCurrentOfferingGroupId("STORAGE");
-    const storageItems = await api.databaseEnvironmentInstanceTable.getQuery(requestConfig);
+    const storageItems = await api.storageEnvironmentInstanceTable.getQuery(requestConfig);
     if(storageItems.length > 0)
       this.addOfferingGroup("STORAGE");
     storageItems.forEach((item,index) => {
@@ -1899,7 +1900,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const doesGroupAlreadyExistingInDOWObj = this.DOWObject.some(
       dow => dow.serviceOfferingGroupId === groupId
     );
-    
     // if group does NOT exist in DOW object, add it
     if (!doesGroupAlreadyExistingInDOWObj){
       const group = this.serviceOfferingGroups.find(e => e.value === groupId)
@@ -1922,7 +1922,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async doSetSelectedOfferingGroups(selectedOfferingGroupIds: string[]): Promise<void> {
     const inXaaS = this.currentDOWSection === "XaaS";
     const inCloud = this.currentDOWSection === "CloudSupport";
-
     if (selectedOfferingGroupIds.length) {
       selectedOfferingGroupIds.forEach(async (selectedOfferingGroupId) => {
         if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroupId)) {

@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
-import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "@/store";
-import {UserManagementDTO} from "@/api/models";
-import {AxiosRequestConfig} from "axios";
-import {api} from "@/api";
+import { UserSearchResultDTO } from "@/api/models";
+import { AxiosRequestConfig } from "axios";
+import { api } from "@/api";
 
 /**
  * This module contains all the store and api support that is needed for searching the
@@ -30,7 +30,7 @@ export class UserManagementStore extends VuexModule {
    */
   @Action({rawError: true})
   public async searchUserByNameAndEmail(searchBy: string):
-    Promise<UserManagementDTO[]> {
+    Promise<UserSearchResultDTO[]> {
     try {
       const searchQuery 
         = `^nameLIKE${searchBy}^ORemailLIKE${searchBy}^emailISNOTEMPTY^active=true`;
