@@ -434,8 +434,9 @@ export class PortfolioSummaryStore extends VuexModule {
           if (validStatusesForTotalObligated.includes(clinRecord.clin_status)) {
             totalObligatedForPortfolio =
               totalObligatedForPortfolio + Number(clinRecord.funds_obligated);
+            // ATAT TODO:check if this should be outside if block
             fundsObligatedTaskOrder = fundsObligatedTaskOrder +
-              Number(clinRecord.funds_obligated); // ATAT TODO:check if this should be outside if block
+              Number(clinRecord.funds_obligated); 
             totalTaskOrderValue = totalTaskOrderValue + Number(clinRecord.funds_total);
           }
           // totalLifecycleAmount is calculated using all clins of a TO irrespective of status

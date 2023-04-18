@@ -37,9 +37,6 @@
            modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
           class=" d-flex align-center _percent-complete"
         >
-          <!-- 
-          TODO: Add back in when saving progress to snow  
-
           <ATATSVGIcon
             name="taskAlt"
             width="16"
@@ -82,7 +79,6 @@
           />
         </div>
         -->
-
 
         <div :id="'MissonOwner'+ index" class="d-flex align-center _created-by">
           {{modifiedData.missionOwner}}

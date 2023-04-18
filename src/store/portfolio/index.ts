@@ -15,7 +15,7 @@ import {
 
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import {AlertDTO,
-  EnvironmentDTO, OperatorDTO, PortfolioSummaryDTO, UserManagementDTO} from "@/api/models";
+  EnvironmentDTO, OperatorDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
 import {api} from "@/api";
@@ -478,7 +478,7 @@ export class PortfolioDataStore extends VuexModule {
       }
     )
     const allMembersDetailList: User[] = 
-      allMembersDetailListDTO.map((userSearchDTO: UserManagementDTO) => {
+      allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
         return {
           sys_id: userSearchDTO.sys_id,
           firstName: userSearchDTO.first_name,
