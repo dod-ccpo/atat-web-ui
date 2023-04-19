@@ -117,9 +117,9 @@
 
         <hr />
 
-        <span v-if="envLocation !== 'ON_PREM'">
+        <span v-if="instanceData.instance_location !== 'ON_PREM'">
           <h2 class="mb-4">
-            {{ hasTellUsAboutInstanceHeading ? "4." : "3." }}
+            {{getPricingDetailsSequenceNum()}}
             Pricing details
           </h2>
 
@@ -129,8 +129,7 @@
         </span>
 
         <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? (envLocation === "ON_PREM" ? "4." : "5.")
-            : (envLocation === "ON_PREM" ? "3." : "4.") }}
+          {{getAdditionalInfoSequenceNum()}}
           Additional information 
           <span class="text-base font-weight-400">(Optional)</span>
         </h2>
@@ -526,6 +525,36 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     }
 
     return isValid;
+  }
+
+  /**
+   * Compiles and returns the sequence number for pricing details section
+   */
+  getPricingDetailsSequenceNum(): string {
+    if (this.hasTellUsAboutInstanceHeading) {
+      return "4.";
+    } else {
+      return "3.";
+    }
+  }
+
+  /**
+   * Compiles and returns the sequence number for additional information section
+   */
+  getAdditionalInfoSequenceNum(): string {
+    if (this.hasTellUsAboutInstanceHeading) {
+      if (this.instanceData.instance_location === "ON_PREM") {
+        return "4.";
+      } else {
+        return "5.";
+      }
+    } else {
+      if (this.instanceData.instance_location === "ON_PREM") {
+        return "3.";
+      } else {
+        return "4.";
+      }
+    }
   }
 
 }
