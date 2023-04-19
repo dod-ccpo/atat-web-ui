@@ -73,7 +73,7 @@
         <hr v-if="hasTellUsAboutInstanceHeading" />
 
         <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "2." : "1." }}
+          {{getCurrentUsageAndUsersSequenceNum()}}
           Current usage and users
         </h2>
 
@@ -101,7 +101,7 @@
         <hr />
 
         <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "3." : "2." }}
+          {{getInstanceConfigurationsSequenceNum()}}
           Instance configurations
         </h2>
 
@@ -525,6 +525,20 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     }
 
     return isValid;
+  }
+
+  /**
+   * Compiles and returns the sequence number for current usage & user section
+   */
+  getCurrentUsageAndUsersSequenceNum(): string {
+    return this.hasTellUsAboutInstanceHeading ? "2." : "1.";
+  }
+
+  /**
+   * Compiles and returns the sequence number for instance configurations section
+   */
+  getInstanceConfigurationsSequenceNum(): string {
+    return this.hasTellUsAboutInstanceHeading ? "3." : "2.";
   }
 
   /**
