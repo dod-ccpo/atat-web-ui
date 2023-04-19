@@ -746,6 +746,15 @@ export interface CompanyDTO extends BaseTableDTO {
   u_short_name?: string;
 }
 
+export interface UserSearchResultDTO extends BaseTableDTO {
+  first_name?: string;
+  last_name?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  department?: DisplayColumn;
+}
+
 export interface TrainingEstimateDTO extends BaseTableDTO{
   acquisition_package: string;
   estimated_price_per_training_unit: string;

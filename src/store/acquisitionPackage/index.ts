@@ -372,6 +372,12 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.acquisitionPackage?.package_status as string;
   }
 
+  /* ===============================================
+  /* ===============================================
+  /* CONTRIBUTOR DISPLAY/INVITE/REMOVE ETC LOGIC
+  /* ===============================================
+  /* =============================================== */
+
   public packageContributors: User[] = [];
 
   public get getPackageContributors(): User[] {
@@ -416,6 +422,7 @@ export class AcquisitionPackageStore extends VuexModule {
     const contributorSysIds = this.packageContributors.map(obj => obj.sys_id);
     const newContributorSysIds = contributorSysIds.filter(id => id !== sysId).join(",");
     await this.doRemoveContributor({sysId: sysId, sysIds: newContributorSysIds});
+    await this.updateAcquisitionPackage();
   }
 
   @Mutation
@@ -423,10 +430,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.packageContributors = this.packageContributors.filter(obj => obj.sys_id !== data.sysId);
     if (this.acquisitionPackage) {
       this.acquisitionPackage.contributors = data.sysIds;
-      await api.acquisitionPackageTable.update(
-        AcquisitionPackage.packageId,
-        this.acquisitionPackage
-      );
     }
   }
 
@@ -446,24 +449,58 @@ export class AcquisitionPackageStore extends VuexModule {
       // remove new mission owner from contributors list
       contributors = contributors.filter(id => id !== newOwnerSysId);
       const newContributorsList = contributors?.join(",");
-      await this.doTransferOwnership(
-        { newOwnerSysId: newOwnerSysId, newContributorsList: newContributorsList}
-      );
+
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        contributors: newContributorsList,
+        mission_owners: newOwnerSysId,
+      } as AcquisitionPackageDTO);
+
+      await this.updateAcquisitionPackage();
     }
+  }
+
+  public showInviteContributorsModal = false;
+  public get getShowInviteContributorsModal(): boolean {
+    return this.showInviteContributorsModal;
+  }
+  @Action
+  public setShowInviteContributorsModal(show: boolean): void {
+    this.doSetShowInviteContributorsModal(show);
   }
   @Mutation
-  public async doTransferOwnership(
-    data: { newOwnerSysId: string, newContributorsList: string}
-  ): Promise<void> {
-    if (this.acquisitionPackage) {
-      this.acquisitionPackage.contributors = data.newContributorsList;
-      this.acquisitionPackage.mission_owners = data.newOwnerSysId;
-      await api.acquisitionPackageTable.update(
-        AcquisitionPackage.packageId,
-        this.acquisitionPackage
-      );
-    }
+  public doSetShowInviteContributorsModal(show: boolean): void {
+    this.showInviteContributorsModal = show;
   }
+
+  @Action({rawError: true})
+  public async inviteContributors(sysIds: string): Promise<void> {
+    const currentContributors = this.acquisitionPackage?.contributors?.split(",");
+    const newContributors = sysIds.split(",");
+    // double-check new contributor sys_id not in current contributors
+    const uniqueNewContributors = newContributors.filter(
+      n => !currentContributors?.includes(n)
+    );
+    const allContributors = currentContributors
+      ? [...currentContributors, uniqueNewContributors]
+      : uniqueNewContributors;
+
+    this.setAcquisitionPackage({
+      ...this.acquisitionPackage,
+      contributors: allContributors.join(",") as string,
+    } as AcquisitionPackageDTO);
+
+    await this.updateAcquisitionPackage();
+    await this.setPackageContributors(uniqueNewContributors.join(","));
+    await this.sortPackageContributors();
+  }
+
+  /* ===============================================
+  /* ===============================================
+  /* END CONTRIBUTOR DISPLAY/INVITE/REMOVE ETC LOGIC
+  /* ===============================================
+  /* =============================================== */
+
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
@@ -643,7 +680,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setAcquisitionPackage(value: AcquisitionPackageDTO): void {
+  public async setAcquisitionPackage(value: AcquisitionPackageDTO): Promise<void> {
     this.acquisitionPackage = value;
     saveSessionData(this);
   }
@@ -856,10 +893,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async saveDocGenStatus(newDocGenStatus: string): Promise<void> {
     if(this.acquisitionPackage && AcquisitionPackage.packageId){
       this.acquisitionPackage.docgen_job_status = newDocGenStatus;
-      await api.acquisitionPackageTable.update(
-        AcquisitionPackage.packageId,
-        this.acquisitionPackage
-      );
+      await this.updateAcquisitionPackage();
     }
   }
 
@@ -876,9 +910,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.packageDocumentsSigned = sessionData.packageDocumentsSigned;
     this.evaluationPlan = sessionData.evaluationPlan;
     this.organization = sessionData.organization;
-    // this.periods = sessionData.periods;
     this.projectOverview = sessionData.projectOverview;
-    // this.periodOfPerformance = sessionData.periodOfPerformance;
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.classificationLevel = sessionData.classificationLevel;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
@@ -1505,7 +1537,7 @@ export class AcquisitionPackageStore extends VuexModule {
           primary_contact: savedContact.sys_id as string,
         } as AcquisitionPackageDTO);
       }
-      await this.saveAcquisitionPackage();
+      await this.updateAcquisitionPackage();
     } catch (error) {
       throw new Error(`error occurred saving contact info ${error}`);
     }
@@ -1609,12 +1641,12 @@ export class AcquisitionPackageStore extends VuexModule {
     } catch (error) {
       throw new Error(`error occurred saving store data ${storeProperty}`);
     } finally {
-      await this.saveAcquisitionPackage();
+      await this.updateAcquisitionPackage();
     }
   }
 
   @Action({rawError: true})
-  public async saveAcquisitionPackage(): Promise<void>{
+  public async updateAcquisitionPackage(): Promise<void>{
     if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
       await api.acquisitionPackageTable.update(
         this.packageId,
@@ -1958,6 +1990,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.packageMissionOwner = {};
     this.selectedAgency = { text: "", value: "" };
     this.selectedAgencyAcronym = "";
+    this.showInviteContributorsModal = false;
   
   }
 }

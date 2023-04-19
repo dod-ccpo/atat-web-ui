@@ -176,7 +176,7 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setContractingShop(this.contractingShop);
-    await AcquisitionPackage.saveAcquisitionPackage();
+    await AcquisitionPackage.updateAcquisitionPackage();
     return true;
   }
 }
