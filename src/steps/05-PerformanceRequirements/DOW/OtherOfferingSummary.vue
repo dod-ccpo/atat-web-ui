@@ -7,18 +7,16 @@
             Your {{ serviceGroupVerbiageInfo.headingSummary }}
           </h1>
           <p>
-            If you have more requirements for this category, add them below. You can
-            also edit or delete any info from the services
+            If you need more {{ serviceGroupVerbiageInfo.typeForText }}s, add them below. You can
+            also edit or delete any info from the {{ serviceGroupVerbiageInfo.typeForText }}s
             that you have already entered. When you’re done, click “Continue” and we will
-            <span v-if="nextOfferingGroupStr && !returnToDOWSummary">
+            <span v-if="showSecurityNote">
+              find out about your security requirements for these services.
+            </span>
+            <span v-else-if="nextOfferingGroupStr && !returnToDOWSummary">
               move on to your {{ nextOfferingGroupStr }} requirements.
             </span>
-            <span v-else>
-              <span v-if="showSecurityNote">
-                find out about your security requirements for these services.
-              </span>
-              <span v-else>wrap up this category.</span>
-            </span>
+            <span v-else>wrap up this category.</span>
           </p>
 
           <div 
