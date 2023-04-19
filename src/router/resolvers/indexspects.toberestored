@@ -10,7 +10,7 @@ import {
   IGCECannotProceedResolver,
   IGCESupportingDocumentationResolver,
   IGCESurgeCapabilities,
-  NoEvalPlanRouteResolver,
+  ProposedCSPRouteResolver,
   EvalPlanDetailsRouteResolver, ArchitecturalDesignDetailsRouteResolver
 
 } from "./index"
@@ -102,6 +102,7 @@ describe("testing route resolvers", () => {
       expect(route).toBe(routeNames.CreateEvalPlan);
     });
 
+    /* NoEvalPlanRouteResolver is replaced with ProposedCSPRouteResolver
     it ("NoEvalPlanRouteResolver() - routes to Create Eval Plan", async () => {
       await AcquisitionPackage.setFairOpportunity(
         { exception_to_fair_opportunity: "NO_NONE" }
@@ -125,6 +126,7 @@ describe("testing route resolvers", () => {
       const route = NoEvalPlanRouteResolver(routeNames.CurrentContract);
       expect(route).toBe(routeNames.Exceptions);
     });
+    */
 
     it ("BVTOResolver() - routes to BVTO page", async () => {
       await EvaluationPlan.setEvaluationPlan(
