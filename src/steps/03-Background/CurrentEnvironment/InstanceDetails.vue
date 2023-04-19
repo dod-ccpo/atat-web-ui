@@ -531,11 +531,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
    * Compiles and returns the sequence number for pricing details section
    */
   getPricingDetailsSequenceNum(): string {
-    if (this.hasTellUsAboutInstanceHeading) {
-      return "4.";
-    } else {
-      return "3.";
-    }
+    return this.hasTellUsAboutInstanceHeading ? "4." : "3.";
   }
 
   /**
