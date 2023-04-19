@@ -6,23 +6,21 @@
           <h1 class="page-header mb-3">
             Your {{ serviceGroupVerbiageInfo.headingSummary }}
           </h1>
-          <p v-if="!hasSecretOrTopSecretInstance">
+          <p>
             If you have more requirements for this category, add them below. You can
-            also edit or delete any info from the {{ serviceGroupVerbiageInfo.typeForText }}
+            also edit or delete any info from the services
             that you have already entered. When you’re done, click “Continue” and we will
             <span v-if="nextOfferingGroupStr && !returnToDOWSummary">
               move on to your {{ nextOfferingGroupStr }} requirements.
             </span>
-            <span v-else>wrap up this category.</span>
+            <span v-else>
+              <span v-if="showSecurityNote">
+                find out about your security requirements for these services.
+              </span>
+              <span v-else>wrap up this category.</span>
+            </span>
           </p>
 
-          <p v-if="hasSecretOrTopSecretInstance">
-            If you have more requirements for this category, add them below. You can also
-            edit or delete any info from the {{ serviceGroupVerbiageInfo.typeForText }}
-            that you have already entered. When you’re done, click "Continue" and we will
-            find out about your security requirements for these
-            {{ serviceGroupVerbiageInfo.typeForText }}.
-          </p>
           <div 
             v-if="tableData.length === 0"
             class="w-100 py-10 border1 border-rounded border-base-lighter text-center mb-10 mt-10" 
@@ -190,7 +188,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public currentGroupId = "";
 
   public serviceGroupVerbiageInfo: Record<string, string> = {};
-  public hasSecretOrTopSecretInstance = false;
+  public showSecurityNote = false;
 
   get confirmOfferingDelete(): boolean {
     return DescriptionOfWork.confirmOtherOfferingDeleteVal;
@@ -274,7 +272,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
   public async buildTableData(): Promise<void> {
     this.tableData = [];
-    this.hasSecretOrTopSecretInstance = false;
+    this.showSecurityNote = false;
     const allPeriods = await Periods.getAllPeriods();
     const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
 
@@ -420,9 +418,14 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
         if (classificationObj) {
           classificationLevel = buildClassificationLabel(classificationObj, "short");
-          if (classificationLevel === "Top Secret" ||
-              classificationLevel === "Secret/IL6") {
-            this.hasSecretOrTopSecretInstance = true;
+          if ((this.isAdvisoryAssistance ||
+              this.isHelpDesk ||
+              this.isTraining ||
+              this.isDocumentation ||
+              this.isGeneralCloudSupport) &&
+              (classificationLevel === "Top Secret" ||
+              classificationLevel === "Secret/IL6")) {
+            this.showSecurityNote = true;
           }
         }
       } else {
