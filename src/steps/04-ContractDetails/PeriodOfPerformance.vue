@@ -193,6 +193,12 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 })
 export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
+/**
+ * todo
+ * 1 - duplicating one above error creates red text box in wrong place
+ * 2 - fifi
+ */
+
   $refs!: {
     form : Vue & {
       validate: () => boolean;
@@ -269,7 +275,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   ];
 
   public isDurationValid(period: PoP): boolean{
-    period.isErrored = period.duration === null ;
+    period.isErrored = !(period.duration as number >0) ;
     return period.isErrored;
   }
 
@@ -398,7 +404,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     if (errorIndex>-1){
       this.clearErrorMessages(index);
       if (isAdd){
-        debugger;
         this.durationErrorIndices[errorIndex] = isAdd 
           ? index + 1
           : index - 1;
@@ -524,14 +529,9 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           });
 
           draggableEl.classList.remove("dragging");
-          console.log(draggableEl.id);
           // hide the div that appears next to pointer when dragging
           this.showDragImg(false);
         });
-
-        // draggableEl.addEventListener("drop", () => {
-        //   debugger;
-        // });
       });
     }
     
