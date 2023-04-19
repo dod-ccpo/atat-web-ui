@@ -52,12 +52,10 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 }
 
 export const CreateEvalPlanRouteResolver = (current: string): string => {
-  if (current === routeNames.CertificationPOCs) {
-    // moving forward
+  if (current === routeNames.NoEvalPlan) {
     return routeNames.PeriodOfPerformance;
   }
   if(current === routeNames.EvalPlanDetails){
-    // moving backward
     return routeNames.CreateEvalPlan
   }
   return current === routeNames.Exceptions
@@ -89,9 +87,8 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 export const BVTOResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
-    // moving backwards
     if (!evalPlanRequired()) {
-      return routeNames.CertificationPOCs;
+      return routeNames.NoEvalPlan;
     }
     if (missingEvalPlanMethod(evalPlan)) {
       return routeNames.CreateEvalPlan;
@@ -107,22 +104,17 @@ export const BVTOResolver = (current: string): string => {
     : routeNames.EvalPlanDetails;
 };
 
-export const ProposedCSPRouteResolver = (current: string): string => {
-  if(current === routeNames.DescriptionOfJustification){
-    // moving backward
-    return routeNames.ProposedCSP
+export const NoEvalPlanRouteResolver = (current: string): string => {
+  if(current === routeNames.CreateEvalPlan){
+    return routeNames.Exceptions
   }
-  // moving forward
-  return evalPlanRequired() 
-    ? routeNames.CreateEvalPlan
-    : routeNames.ProposedCSP
+  if (evalPlanRequired()) {
+    return routeNames.CreateEvalPlan;
+  }
+  return current === routeNames.Exceptions
+    ? routeNames.NoEvalPlan
+    : routeNames.Exceptions;
 };
-
-export const CertificationPOCsRouteResolver = (current: string): string => {
-  return current === routeNames.CreateEvalPlan 
-    ? routeNames.Exceptions
-    : routeNames.CertificationPOCs;
-}
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
@@ -1385,8 +1377,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FinancialPOCResolver,
   CreateEvalPlanRouteResolver,
   BVTOResolver,
-  ProposedCSPRouteResolver,
-  CertificationPOCsRouteResolver,
+  NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
