@@ -215,6 +215,7 @@ export interface PoP {
   unitOfTime: string;
   id: string | null;
   order: number;
+  isErrored?: boolean;
 }
 
 export interface RankData {
