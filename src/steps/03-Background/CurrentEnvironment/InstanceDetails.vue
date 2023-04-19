@@ -543,17 +543,9 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
    */
   getAdditionalInfoSequenceNum(): string {
     if (this.hasTellUsAboutInstanceHeading) {
-      if (this.instanceData.instance_location === "ON_PREM") {
-        return "4.";
-      } else {
-        return "5.";
-      }
+      return this.instanceData.instance_location === "ON_PREM" ? "4." : "5.";
     } else {
-      if (this.instanceData.instance_location === "ON_PREM") {
-        return "3.";
-      } else {
-        return "4.";
-      }
+      return this.instanceData.instance_location === "ON_PREM" ? "3." : "4.";
     }
   }
 
