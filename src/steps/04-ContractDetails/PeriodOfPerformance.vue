@@ -66,6 +66,7 @@
                           type="number"
                           :rules="[
                             $validators.required(''),
+                            ((v)=> optionPeriods[index].isErrored === false || '')
                           ]"
                         />
                       </div>
@@ -111,7 +112,7 @@
                     <ATATErrorValidation
                       :id="'Required' + index"
                       class="atat-text-field-error ml-16 pl-8"
-                      v-if="isDurationValid(optionPeriods[index])"
+                      v-if="isDurationInvalid(index)"
                       :errorMessages="[
                         `Please specify the length of your
                         ${getOptionPeriodLabelError(index)}.`
@@ -121,9 +122,11 @@
                     <ATATErrorValidation
                       :id="'MoreThanAYear' + index"
                       class="atat-text-field-error ml-16 pl-8"
-                      :errorMessages="[isDurationLengthValid && optionPeriods[index].isErrored]"
-                      v-if="isDurationLengthValid"
+                      :errorMessages="[isDurationLengthInvalid(index)]"
+                      v-if="isDurationLengthInvalid(index) !== ''"
                     />
+                   
+                   
                   </div>
               </draggable>
             </div>
@@ -193,11 +196,11 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 })
 export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
-/**
- * todo
- * 1 - duplicating one above error creates red text box in wrong place
- * 2 - fifi
- */
+  /**
+   * todo
+   * 1 - duplicating one above error creates red text box in wrong place
+   * 2 - fifi
+   */
 
   $refs!: {
     form : Vue & {
@@ -205,7 +208,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     };
   };
   public maxTotalPoPDuration = 365 * 5;
-  public durationErrorMessage = "Please provide a valid period length."
+  public durationErrorMessage = "";
   public optionPeriodCount = 1;
   private removed: PeriodDTO[] = [];
   private isDurationLengthValid = false;
@@ -223,11 +226,9 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public durationErrorIndices: number[] = [];
   
   public setDurationErrorIndices(errors: string[], idx: number): void {
-    const optPeriod: PoP = this.optionPeriods[idx];
-    this.oneYearCheck(optPeriod);
-    const isErrored: boolean = this.isDurationValid(optPeriod) || this.isDurationLengthValid
+    const isErrored: boolean = this.isDurationInvalid(idx) 
+      || this.isDurationLengthInvalid(idx) !== "";
     const existingErrorIdx = this.durationErrorIndices.indexOf(idx);
-
     this.optionPeriods[idx].isErrored = isErrored;
 
     if (isErrored){
@@ -237,12 +238,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     } else (
       this.durationErrorIndices = this.durationErrorIndices.filter(ei => ei !== idx)
     )
-
     this.durationErrorIndices.sort();
-
-    // else if (existingErrorIdx > -1 && existingErrorIdx !== undefined) {
-    //   this.durationErrorIndices.splice(existingErrorIdx, 1);
-    // }
   }
 
 
@@ -274,41 +270,39 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     { text: "Day(s)", value: "DAY" },
   ];
 
-  public isDurationValid(period: PoP): boolean{
-    period.isErrored = !(period.duration as number >0) ;
-    return period.isErrored;
+  public isDurationInvalid(idx: number): boolean{
+    return !(this.optionPeriods[idx].duration as number>0);
   }
 
-  public oneYearCheck(period:PoP): void {
-    this.isDurationLengthValid = false;
-    this.durationErrorMessage = "";
-    if(period.duration){
-      switch(period.unitOfTime) {
-      case "YEAR":
-        if(period.duration > 1) {
-          this.durationErrorMessage =  "The length of this period must be 1 year or less."
-        }
-        break;
-      case "MONTH":
-        if(period.duration > 12) {
-          this.durationErrorMessage =  "The length of this period must be 12 months or less."
-        }
-        break;
-      case "WEEK":
-        if(period.duration > 52) {
-          this.durationErrorMessage =  "The length of this period must be 52 weeks or less."
-        }
-        break;
-      case "DAY":
-        if(period.duration > 365) {
-          this.durationErrorMessage =  "The length of this period must be 365 days or less."
-        }
-        break;
-      default:
+  public isDurationLengthInvalid(idx: number): string {
+    const period = this.optionPeriods[idx];
+    let errorMessage = "";
+    const duration = period.duration || 1;
+    switch(period.unitOfTime) {
+    case "YEAR":
+      if(duration > 1) {
+        errorMessage =  "The length of this period must be 1 year or less."
       }
+      break;
+    case "MONTH":
+      if(duration > 12) {
+        errorMessage =  "The length of this period must be 12 months or less."
+      }
+      break;
+    case "WEEK":
+      if(duration > 52) {
+        errorMessage =  "The length of this period must be 52 weeks or less."
+      }
+      break;
+    case "DAY":
+      if(duration > 365) {
+        errorMessage =  "The length of this period must be 365 days or less."
+      }
+      break;
+    default:
     }
-    period.isErrored = this.durationErrorMessage !== "";
-    this.isDurationLengthValid = this.durationErrorMessage !== "";
+    period.isErrored = errorMessage !==""
+    return errorMessage.trim();
   }
 
   public addOptionPeriod(): void {
@@ -377,6 +371,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
         duration,
         order,
         unitOfTime,
+        isErrored
       } = this.optionPeriods[index];
 
       const duplicateObj: PoP ={
@@ -384,7 +379,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
         id: null,
         order,
         unitOfTime: unitOfTime || "1",
-        isErrored: false
+        isErrored
       }
       this.optionPeriods.splice(index + 1,0,duplicateObj)
       this.updateErrorIndex(index, false, true)
