@@ -729,7 +729,9 @@ export class AcquisitionPackageStore extends VuexModule {
       }
     };
     attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
-    return this.getDomain + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || "";
+    return attachment.length 
+      ? this.getDomain + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || ""
+      : "";    
   }
 
   @Action

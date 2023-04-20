@@ -1367,6 +1367,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FinancialPOCResolver,
   BVTOResolver,
   EvalPlanDetailsRouteResolver,
+  ProposedCSPRouteResolver,
+  CertificationPOCsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
 };
