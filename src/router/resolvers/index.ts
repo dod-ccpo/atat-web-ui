@@ -51,7 +51,6 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
-  debugger;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
     return routeNames.PeriodOfPerformance;
   }
@@ -1367,7 +1366,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   IncrementalFundingResolver,
   FinancialPOCResolver,
   BVTOResolver,
-  NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
