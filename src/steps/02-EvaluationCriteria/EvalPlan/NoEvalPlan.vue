@@ -29,14 +29,18 @@
     </ATATAlert>
   </div>
 </template>
+
 <script lang="ts">
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import {Component, Mixins} from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
+
 @Component({
   components: {
     ATATAlert
   }
 })
+
 export default class NoEvalPlan extends Mixins(LoadOnEnter) {}
+
 </script>

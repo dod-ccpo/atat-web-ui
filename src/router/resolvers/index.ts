@@ -107,7 +107,6 @@ export const CertificationPOCsRouteResolver = (current: string): string => {
     : routeNames.CertificationPOCs
 }
 
-
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
@@ -1368,8 +1367,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   IncrementalFundingResolver,
   FinancialPOCResolver,
   BVTOResolver,
-  ProposedCSPRouteResolver,
-  CertificationPOCsRouteResolver,
+  NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
