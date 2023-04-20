@@ -7,15 +7,16 @@
             Your {{ serviceGroupVerbiageInfo.headingSummary }}
           </h1>
           <p>
-            If you need more {{ serviceGroupVerbiageInfo.typeForText }}s, add them below. 
-            You can also edit or delete any info from the 
-            {{ serviceGroupVerbiageInfo.typeForText }}s that 
-            you have already entered. When you’re done, click "Continue" and we will 
-            move on to your 
-            <span v-if="nextOfferingGroupStr && !returnToDOWSummary">
-              {{ nextOfferingGroupStr }} requirements.
-            </span> 
-            <span v-else>performance requirements summary.</span>
+            If you need more {{ serviceGroupVerbiageInfo.typeForText }}s, add them below. You can
+            also edit or delete any info from the {{ serviceGroupVerbiageInfo.typeForText }}s
+            that you have already entered. When you’re done, click “Continue” and we will
+            <span v-if="showSecurityNote">
+              find out about your security requirements for these services.
+            </span>
+            <span v-else-if="nextOfferingGroupStr && !returnToDOWSummary">
+              move on to your {{ nextOfferingGroupStr }} requirements.
+            </span>
+            <span v-else>wrap up this category.</span>
           </p>
 
           <div 
@@ -185,6 +186,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public currentGroupId = "";
 
   public serviceGroupVerbiageInfo: Record<string, string> = {};
+  public showSecurityNote = false;
 
   get confirmOfferingDelete(): boolean {
     return DescriptionOfWork.confirmOtherOfferingDeleteVal;
@@ -268,6 +270,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
   public async buildTableData(): Promise<void> {
     this.tableData = [];
+    this.showSecurityNote = false;
     const allPeriods = await Periods.getAllPeriods();
     const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
 
@@ -413,6 +416,15 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
         if (classificationObj) {
           classificationLevel = buildClassificationLabel(classificationObj, "short");
+          if ((this.isAdvisoryAssistance ||
+              this.isHelpDesk ||
+              this.isTraining ||
+              this.isDocumentation ||
+              this.isGeneralCloudSupport) &&
+              (classificationLevel === "Top Secret" ||
+              classificationLevel === "Secret/IL6")) {
+            this.showSecurityNote = true;
+          }
         }
       } else {
         this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
