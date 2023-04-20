@@ -61,7 +61,7 @@
                           class="mr-4"
                           width="178"
                           :showErrorMessages="false"
-                          @errorMessage = "setDurationErrorIndices($event, index)"
+                          @blur = "setDurationErrorIndices(index)"
                           :value.sync="optionPeriods[index].duration"
                           type="number"
                           :rules="[
@@ -77,7 +77,6 @@
                           width="178"
                           :showErrorMessages="false"
                           :selectedValue.sync="optionPeriods[index].unitOfTime"
-                          @errorMessage = "setDurationErrorIndices($event, index)"
                           class="mr-4"
                         />
                       </div>
@@ -109,7 +108,7 @@
 
                     </div>
                    
-                    <ATATErrorValidation
+                    <!-- <ATATErrorValidation
                       :id="'Required' + index"
                       class="atat-text-field-error ml-16 pl-8"
                       v-if="isDurationInvalid(index)"
@@ -124,7 +123,7 @@
                       class="atat-text-field-error ml-16 pl-8"
                       :errorMessages="[isDurationLengthInvalid(index)]"
                       v-if="isDurationLengthInvalid(index) !== ''"
-                    />
+                    /> -->
                    
                    
                   </div>
@@ -213,32 +212,25 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   private removed: PeriodDTO[] = [];
   private isDurationLengthValid = false;
 
-  public optionPeriods: PoP[] = [
-    {
-      duration: null,
-      unitOfTime: "",
-      id: null,
-      order: 1,
-      isErrored: false,
-    },
-  ];
+  public optionPeriods: PoP[] = [];
 
   public durationErrorIndices: number[] = [];
   
-  public setDurationErrorIndices(errors: string[], idx: number): void {
-    const isErrored: boolean = this.isDurationInvalid(idx) 
-      || this.isDurationLengthInvalid(idx) !== "";
-    const existingErrorIdx = this.durationErrorIndices.indexOf(idx);
-    this.optionPeriods[idx].isErrored = isErrored;
+  public setDurationErrorIndices(idx: number): void {
+    // const isErrored: boolean = this.isDurationInvalid(idx) 
+    //   || this.isDurationLengthInvalid(idx) !== "";
+    // const doesErrorIndexExist = this.durationErrorIndices.includes(idx);
+    this.onBlurUpdateErrors(idx,false,false)
 
-    if (isErrored){
-      if (existingErrorIdx === -1){
-        this.durationErrorIndices.push(idx)
-      } 
-    } else (
-      this.durationErrorIndices = this.durationErrorIndices.filter(ei => ei !== idx)
-    )
-    this.durationErrorIndices.sort();
+    // if (isErrored){
+    //   if (!doesErrorIndexExist){
+    //     this.durationErrorIndices.push(idx)
+    //   } 
+    // } else (
+    //   this.durationErrorIndices = this.durationErrorIndices.filter(ei => ei !== idx)
+    // )
+    // this.durationErrorIndices.sort();
+    // period["isErrored"] = isErrored;
   }
 
 
@@ -271,7 +263,10 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   ];
 
   public isDurationInvalid(idx: number): boolean{
-    return !(this.optionPeriods[idx].duration as number>0);
+    const period = this.optionPeriods[idx];
+    const duration = period.duration as number;
+    period.isErrored = !(duration>0)
+    return !(duration>0);
   }
 
   public isDurationLengthInvalid(idx: number): string {
@@ -352,15 +347,19 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     if(optionPeriod.id){
       this.removed.push(convertPoPToPeriod(optionPeriod));
     }
+
     this.optionPeriods.splice(index, 1);
-    this.updateErrorIndex(index, false, false)
-    this.clearErrorMessages(index);
-    this.setTotalPoP();
+    this.$nextTick(()=>{
+      this.addDeleteUpdateDurationErrorIndices(index,false)
+      this.syncIsErrored()
+      // this.clearErrorMessages(index);
+      this.setTotalPoP();
+    })
   }
 
   public clearErrorMessages(index:number):void {
-    this.durationErrorIndices = this.durationErrorIndices.filter(i=>i!==index);
-    this.setDurationErrorIndices([], index);
+    // this.durationErrorIndices = this.durationErrorIndices.filter(i=>i!==index);
+    this.setDurationErrorIndices(index);
     Vue.nextTick(()=>{
       this.$refs.form.validate();
     })
@@ -382,7 +381,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
         isErrored
       }
       this.optionPeriods.splice(index + 1,0,duplicateObj)
-      this.updateErrorIndex(index, false, true)
+      this.onBlurUpdateErrors(index, false, true)
+      this.addDeleteUpdateDurationErrorIndices(index, true)
       this.setTotalPoP();
     }
   }
@@ -392,23 +392,41 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
    * @param idx 
    */
 
-  public updateErrorIndex(index:number, isDragging: boolean, isAdd?: boolean):void{
-    const errorIndex = this.durationErrorIndices.findIndex(
-      idx => idx === (isDragging ? index : index+1));
-    
-    if (errorIndex>-1){
-      this.clearErrorMessages(index);
-      if (isAdd){
-        this.durationErrorIndices[errorIndex] = isAdd 
-          ? index + 1
-          : index - 1;
-      } else {
-        if (this.durationErrorIndices[index]!==undefined){
-          this.durationErrorIndices[errorIndex] = this.durationErrorIndices[index];
-        }
-      }
-
+  public onBlurUpdateErrors(index:number, isDragging: boolean, isAdd?: boolean):void{
+    if (!this.durationErrorIndices.includes(index)){
+      this.durationErrorIndices.push(index);
+    } else {
+      
+      this.durationErrorIndices = this.durationErrorIndices.filter(
+        i => i !== index
+      )
+      //if delete
+      
     }
+
+    this.durationErrorIndices.sort();
+  }
+
+  public addDeleteUpdateDurationErrorIndices(index: number, isAdd: boolean): void {
+    this.durationErrorIndices = this.durationErrorIndices.filter(
+      i => i !== index
+    )
+    for (let i=0; i<this.durationErrorIndices.length;i++){
+      const value = this.durationErrorIndices[i];
+      if (index<value){
+        this.durationErrorIndices[i] = isAdd ? value+1 : value-1;
+      }
+    }
+    this.durationErrorIndices.sort();
+    this.syncIsErrored();
+  }
+
+  public syncIsErrored(): void {
+    this.$nextTick(()=>{
+      this.optionPeriods.forEach(
+        (op, idx) => op.isErrored = this.durationErrorIndices.includes(idx)
+      )
+    })
   }
 
   get isOptionsMaxxedOut(): boolean{
@@ -516,7 +534,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           // remove class "hide-icon" from all rows
           draggableElements.forEach((e, idx) => {
             if (this.durationErrorIndices.includes(idx)){
-              this.updateErrorIndex(idx, true);
+              this.onBlurUpdateErrors(idx, true);
             }
             const row = e as HTMLDivElement;
             const icon = row.getElementsByClassName("drag-icon")[0] as HTMLElement;
