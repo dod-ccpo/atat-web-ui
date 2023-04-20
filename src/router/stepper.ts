@@ -43,6 +43,12 @@ import EvalPlanDetails from "../steps/02-EvaluationCriteria/EvalPlan/EvalPlanDet
 import Differentiators from "../steps/02-EvaluationCriteria/EvalPlan/Differentiators.vue";
 import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// TODO: REMOVE all code related to "NoEvalPlan" 
+// AFTER J&A/MRR CODE READY FOR PROD
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+import NoEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.vue";
+
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
 import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
@@ -184,8 +190,14 @@ import {
   IGCEOptimizeOrReplicateResolver,
   IGCEArchitecturalDesignSolutionsResolver,
   IGCESupportingDocumentationResolver,
-  CreateEvalPlanRouteResolver,
+  // CreateEvalPlanRouteResolver,
   BVTOResolver,
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // TODO: REMOVE all code related to "NoEvalPlan" 
+  // AFTER J&A/MRR CODE READY FOR PROD
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // NoEvalPlanRouteResolver,  
+
   ProposedCSPRouteResolver,
   CertificationPOCsRouteResolver,
   EvalPlanDetailsRouteResolver,
@@ -214,6 +226,12 @@ export const routeNames = {
   EvalPlanDetails: "Eval_Plan_Details",
   Differentiators: "Proposal_Required_BVTO",
   EvalPlanSummary: "Eval_Plan_Summary",
+  
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // TODO: REMOVE all code related to "NoEvalPlan" 
+  // AFTER J&A/MRR CODE READY FOR PROD
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+  NoEvalPlan: "No_Eval_Plan",
 
   //-----------------------------------------
   // J&A
@@ -420,7 +438,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "02",
     menuText: "Evaluation Criteria",
-    path: "/exceptions",
+    path: "/evaluation-criteria",
     completePercentageWeight: 10,
     component: FairOpportunityProcess,
     stepCompleteOnEnter: routeNames.ContactInformation,
@@ -607,15 +625,32 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       // END MRR
       // ===================================
       // Eval Plan
+
+      // // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      // // TODO: REMOVE all code related to "NoEvalPlan" 
+      // // AFTER J&A/MRR CODE READY FOR PROD
+      // // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      // {
+      //   menuText: "No Evaluation Plan",
+      //   path: "no-eval-plan",
+      //   name: routeNames.NoEvalPlan,
+      //   component: NoEvalPlan,
+      //   completePercentageWeight: 0,
+      //   completed: false,
+      //   excludeFromMenu: true,
+      //   stepCompleteOnEnter: routeNames.Exceptions,
+      //   routeResolver: NoEvalPlanRouteResolver,
+      // }, 
+
       {
         menuText: "Create Evaluation Plan",
-        path: "create-eval-plan",
+        path: "eval-plan",
         name: routeNames.CreateEvalPlan,
         component: CreateEvalPlan,
         completePercentageWeight: 5,
         stepCompleteOnEnter: routeNames.Exceptions,
         completed: false,
-        routeResolver: CreateEvalPlanRouteResolver,
+        // routeResolver: CreateEvalPlanRouteResolver,
       },
       {
         menuText: "Evaluation Plan Details",
