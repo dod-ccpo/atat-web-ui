@@ -1,20 +1,26 @@
-import { bootstrapMockApis,randomNumber,randomString} from "../../../helpers";
+import {
+  bootstrapMockApis,
+  randomNumber,
+  randomString,
+  randomAlphaNumeric,
+  prefixId,
+} from "../../../helpers";
+import co from "../../../selectors/contractOffice.sel";
 import common from "../../../selectors/common.sel";
 import org from "../../../selectors/org.sel";
 import contact from "../../../selectors/contact.sel";
+import commonCorAcor from "../../../selectors/commonCorAcor.sel";
 
-describe("Test suite: Acquisition Package: Contact Information ", () => {
-    
-  let projectDetails;
+describe("Test suite: Acquisition Package: Contact Information ", () => {    
+  
   let orgAddressType;
-  let contactInfo;
-    
+  let contactInfo;  
+  let pt = "TC-Step-1-ContactInfo-" + randomAlphaNumeric(5);
+  let scope = "Project Scope-" + randomString(5);  
+
   beforeEach(() => {
     bootstrapMockApis();
-
-    cy.fixture("projectOverview").then((details) => {
-      projectDetails = details;
-    });
+    
     cy.fixture("orgAddressType").then((types) => {
       orgAddressType = types;
     });
@@ -24,21 +30,14 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
 
     cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
+    cy.selectDitcoOption(co.radioDITCO, "DITCO");
+    cy.textExists("#Step_AcquisitionPackageDetails .step-text", " Acquisition Package Details ");
+    //Verify the Substeps are  visible
+    cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");    
+    cy.fillNewAcquisition(pt, scope);
   });
 
-  it("TC1: Contact Information step is active", () => {
-    cy.findElement(common.stepAcquisitionText)
-      .should("be.visible")
-      .and('have.css', 'color', 'rgb(84, 68, 150)')
-    cy.findElement(common.subStepContactInformationLink).click();
-    cy.findElement(common.subStepContactInformationTxt)
-      .should("be.visible")
-      .and('have.css', 'color', 'rgb(84, 68, 150)');
-  });
-
-  it("TC2: Asserts: Let’s confirm your contact information", () => {
-    cy.fillNewAcquisition(projectDetails.projectTitle3, projectDetails.scope3);
-    cy.textExists(common.header, " Next, we’ll gather information about your organization ");
+  it("TC1: Asserts: Let's find out about the primary poc for this requirement",() => {    
 
     //Service Agency is not DISA
     cy.agency("Communications");
@@ -58,11 +57,12 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     cy.enterOrganizationAddress(orgAddress);
 
     //Click on Continue button
-    cy.btnClick(common.continueBtn, " Continue ");       
+    cy.btnClick(common.continueBtn, " Continue ");    
+    cy.waitUntilElementIsGone(org.foreignradioBtn);
 
     //Navigates to Contact information    
-    cy.verifyPageHeader("Let’s confirm your contact information");
-        
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
+    
     //list of contactrole
     cy.findElement(contact.contactRoleTxt).then(($contactrole) => {
       expect($contactrole).to.have.text(
@@ -73,10 +73,13 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     //Assert radio options
     cy.radioBtn(contact.militaryRadioBtn, "MILITARY").not("[disabled]");
     cy.radioBtn(contact.civilianRadioBtn,"CIVILIAN").not("[disabled]");
-    cy.radioBtn(contact.contractorRadioBtn,"CONTRACTOR").not("[disabled]");
+    //cy.radioBtn(contact.contractorRadioBtn,"CONTRACTOR").not("[disabled]");
 
     //select radio button
-    cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIVILIAN");
+    cy.contactRoleRadioBtnOption(
+      contact.civilianRadioBtn,      
+      "CIVILIAN"
+    );
 
     //Salutation dropdown
     cy.dropDownClick(contact.salutationDropDownIcon);
@@ -118,10 +121,9 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
       lastNameSelector: contact.lNameTxtBox,
       lastName: contactInfo.lastName,
       emailSelector: contact.emailTxtBox,
-      email: contactInfo.email
-            
+      email: contactInfo.email            
     };
-        
+    cy.enterTextInTextField(contact.titleTxtBox, "POC");    
     //Enter the Contact Information
     cy.enterContactInformation(contactInformation);
     //select the country and enter phonenumber
@@ -133,13 +135,18 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
       contact.phoneInputBox,
       "5327845362"
     );
+    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.waitUntilElementIsGone(contact.phoneNumberLabel);
+    cy.verifyPageHeader("Let’s gather info about your Contracting Officer’s Representative (COR)");
   });
 
-  it("TC3: Role is Military", () => {
+  it("TC2: Role is Military", () => {
+    cy.clickDevToggleBtn();
     cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
+    cy.activeStep(common.subStepContactInformationTxt);
 
     //Navigates to Contact information
-    cy.textExists(common.header, "Let’s confirm your contact information"); 
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
         
     //select radio button
     cy.contactRoleRadioBtnOption(
@@ -167,6 +174,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
             
     };
     cy.enterContactInformation(contactInformation);
+    cy.enterTextInTextField(contact.titleTxtBox, "PVT");
     cy.enterPhoneNumber(
       contact.phoneControlIcon,
       contact.phoneDropdown,
@@ -174,14 +182,26 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
       contact.countryListItems,
       contact.phoneInputBox,
       "312-560-1000"); 
-        
+    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.waitUntilElementIsGone(contact.phoneInputBox);
+    cy.verifyPageHeader(
+      "Let’s gather info about your Contracting Officer’s Representative (COR)"
+    );  
+    cy.btnExists(common.backBtn, "Back").click();    
+    const contactHeaderTxtSelector = prefixId(commonCorAcor.contactHeaderTxt, "COR_");
+    cy.waitUntilElementIsGone(contactHeaderTxtSelector);
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
+    const selectedRadioOption ="radio_button_checkedMilitary"
+    cy.verifySelectedRadioOption(contact.contactRadioBtnActive, selectedRadioOption );
   });
 
-  it("TC4: Role is Civilian", () => {
-    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
-    
+  it("TC3: Role is Civilian", () => {
+    cy.clickDevToggleBtn();
+    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
+    cy.activeStep(common.subStepContactInformationTxt);
+
     //Navigates to Contact information
-    cy.textExists(common.header, "Let’s confirm your contact information");
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
 
     //select radio button
     cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIVILIAN");
@@ -215,44 +235,27 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     cy.textExists(contact.gradeLabel, " Grade  Optional ");
     cy.dropDownClick(contact.gradeDropDownIcon);
     cy.autoCompleteSelection(contact.gradeInput, "GS-05",contact.gradeDropDownList );
+    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.waitUntilElementIsGone(contact.phoneInputBox);
+    cy.verifyPageHeader(
+      "Let’s gather info about your Contracting Officer’s Representative (COR)"
+    );  
+    cy.btnExists(common.backBtn, "Back").click();    
+    const contactHeaderTxtSelector = prefixId(commonCorAcor.contactHeaderTxt, "COR_");
+    cy.waitUntilElementIsGone(contactHeaderTxtSelector);
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
+    const selectedRadioOption ="radio_button_checkedCivilian"
+    cy.verifySelectedRadioOption(contact.contactRadioBtnActive, selectedRadioOption);
     
   });
     
-  it("TC5: Role is Contractor", () => {
+  
+  it("TC4: Contact Information: Field Validations", () => {
+    cy.clickDevToggleBtn();
     cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
     
     //Navigates to Contact information
-    cy.textExists(common.header, "Let’s confirm your contact information");
-
-    //select radio button
-    cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CONTRACTOR");  
-    const contactInformation = {
-      firstNameSelector: contact.fNameTxtBox,
-      firstName: contactInfo.firstName3,
-      mNameSelector: contact.mNameTxtBox,
-      mName: contactInfo.middleName3,
-      lastNameSelector: contact.lNameTxtBox,
-      lastName: contactInfo.lastName3,
-      emailSelector: contact.emailTxtBox,
-      email: contactInfo.email3
-            
-    };
-    cy.enterContactInformation(contactInformation);
-
-    cy.enterPhoneNumber(
-      contact.phoneControlIcon,
-      contact.phoneDropdown,
-      "Alb",
-      contact.countryListItems,
-      contact.phoneInputBox,
-      "351245121"); 
-  });    
-
-  it("TC6: Contact Information: Field Validations", () => {
-    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
-    
-    //Navigates to Contact information
-    cy.verifyPageHeader("Let’s confirm your contact information");
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
 
     // FirstName is blank
     cy.verifyRequiredInput(
@@ -279,11 +282,17 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
       contact.phoneError,
       "Please enter your phone number"
     );
+    const pNo = randomNumber(10);
+    cy.findElement(contact.phoneTxtBox).type(pNo);
+    cy.clickSomethingElse(contact.emailTxtBox).then(() => {
+      cy.findElement(contact.phoneTxtBox).scrollIntoView();
+      cy.findElement(contact.phoneError).should("not.exist");      
+    });   
 
     //US phone Number is not in standard format
-    const phoneNumber = randomNumber(8)
-    cy.findElement(contact.phoneTxtBox).type(phoneNumber)
-      .focus().blur({ force: true })
+    const phoneNumber = randomNumber(5);    
+    cy.findElement(contact.phoneTxtBox).clear().type(phoneNumber);
+    cy.clickSomethingElse(contact.emailTxtBox)
       .then(() => {
         cy.checkErrorMessage(
           contact.phoneError,
@@ -296,8 +305,13 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
       contact.emailTxtBox,
       contact.emailError,
       "Please enter your email address."
-    );
-
+    ); 
+    const validEmail = randomString(5)+"@test.mil"
+    cy.findElement(contact.emailTxtBox).type(validEmail);
+    cy.clickSomethingElse(contact.phoneTxtBox).then(() => {
+      cy.findElement(contact.phoneTxtBox).scrollIntoView();
+      cy.findElement(contact.emailError).should("not.exist");      
+    });   
     //email isn't standard email format
     const email = randomString(5)+"@test.com"
     cy.findElement(contact.emailTxtBox).should("be.visible").clear()
@@ -310,12 +324,17 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
               
   });   
   
-  it("TC7: Military: Field Validations", () => {
+  it("TC5: Military: Field Validations", () => {
+    cy.clickDevToggleBtn();
     cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
     //Navigates to Contact information
-    cy.verifyPageHeader("Let’s confirm your contact information");
-    
+    cy.verifyPageHeader("Let’s  find out about the primary point of contact for this requirement");
+
+    cy.findElement(contact.civilianRadioBtn).focus();
+    cy.clickSomethingElse(contact.roleError).then(() => {
+      cy.checkErrorMessage(contact.roleError, "Please select your role.");
+    })
     //Agency is blank
     cy.findElement(contact.militaryRadioBtn).click({ force: true });
 
