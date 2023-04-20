@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-footer class="atat-page-footer container-max-width">
+  <div class="width-100">
+    <v-footer class="atat-page-footer container-max-width mx-auto">
       <div class="links">
         <!-- TODO: restore in future ticket
         <a href="#" class="_text-link">Security Notice</a>
@@ -12,7 +12,7 @@
         Last login: {{currentUser.last_login_time}}
       </div>
     </v-footer>
-    <div v-if="allowDeveloperNavigation()" class="container-max-width">
+    <div v-if="allowDeveloperNavigation()" class="container-max-width mx-auto">
       <hr />
       <div class="d-flex mb-10">
 
