@@ -23,8 +23,6 @@ jobs:
         with:
           node-version: 16.10
           cache: npm
-      - name: Install compatible NPM version
-        run: npm install -g npm@^6
       - name: Install project dependencies
         run: npm ci
       - name: Run linter
@@ -43,8 +41,6 @@ jobs:
         with:
           node-version: 16.10
           cache: npm
-      - name: Install compatible NPM version
-        run: npm install -g npm@^6
       - name: Install project dependencies
         run: npm ci
       - name: Build the project
