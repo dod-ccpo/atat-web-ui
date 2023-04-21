@@ -907,3 +907,16 @@ export interface PackageDocumentsUnsignedDTO extends BaseTableDTO {
   sys_tags?: string
   sys_created_by?: string
 }
+export interface AddressDTO extends BaseTableDTO {
+  name?:string;
+  address_type?: string;
+  city?: string;
+  apo_fpo_dpo?: string;
+  country?: string;
+  state?: string;
+  street_address?: string;
+  zip_code?: string;
+  category?: "" | "CONTRACTING_OFFICE" | "FOIA" | "ORGANIZATION";
+  unit?: string;
+  aa_ae_ap?: string;
+}

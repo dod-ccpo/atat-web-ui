@@ -32,6 +32,7 @@ import {
   FundingRequirementDTO,
   RegionsDTO,
   PackageDocumentsSignedDTO,
+  AddressDTO
 } from "@/api/models";
 
 import { 

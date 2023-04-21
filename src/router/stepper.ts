@@ -10,6 +10,7 @@ import CorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/CorInfo.vue"
 import AcorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
 import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import DAPPSChecklist from "@/steps/01-AcquisitionPackageDetails/DAPPSChecklist.vue";
+import ContractingOfficeInfo from "@/steps/01-AcquisitionPackageDetails/ContractingOfficeInfo.vue";
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Evaluation Criteria
@@ -275,7 +276,8 @@ export const routeNames = {
   UploadSignedDocuments:"Upload_Signed_Documents",
   ReadyToSubmit:"Ready_To_Submit",
   UnderReview:"Under_Review",
-  DAPPSChecklist:"DAPPSChecklist"
+  DAPPSChecklist:"DAPPSChecklist",
+  ContractingOfficeInfo:"Contracting_Office_Info"
 };
 
 /**
@@ -315,6 +317,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         component: ContractingShop
+      },{
+        menuText: "Contracting Office Info",
+        path: "contracting-office-info",
+        name: routeNames.ContractingOfficeInfo,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        component: ContractingOfficeInfo
       },
       {
         menuText: "Project Overview",
