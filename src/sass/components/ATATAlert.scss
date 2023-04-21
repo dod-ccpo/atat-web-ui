@@ -93,4 +93,10 @@
     border-left-width: 8px !important;
   }
 
+  ._content div.width-100 {
+    p:last-of-type {
+      margin-bottom: 0 !important;
+    }
+  }
+
 }
