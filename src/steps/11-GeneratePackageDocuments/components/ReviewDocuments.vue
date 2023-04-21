@@ -17,14 +17,24 @@
       v-if="needsSignatureLength && ditcoUser"
       id="Callout"
       class="my-10"
-      type="warning"
+      type="info"
     >
       <template v-slot:content>
-        <p class="mt-1 mb-0">
-          During your review process, be sure to obtain signatures from certifying officials on
-          the <strong>{{needsSignatureLength}} documents </strong> indicated below.
-          We’ll help you upload these signed documents next.
-        </p>
+        <h3 class="mb-1">What’s next?</h3>
+        <ol type="1">
+          <li class="mb-2">
+            Obtain signatures from certifying officials on the <strong>{{needsSignatureLength}}
+            documents</strong> indicated below.
+          </li>
+          <li class="mb-2">Email your downloaded package and signed documents to DITCO for 
+              processing. <a href="mailto:disa.scott.ditco.mbx.ditco-jwcc@mail.mil">
+                disa.scott.ditco.mbx.ditco-jwcc@mail.mil</a> 
+          </li>
+          <li class="mb-2">
+            Once a task order is awarded, you can return to ATAT and we’ll help you 
+            provision your accounts and environments with your Cloud Service Provider.
+          </li>
+        </ol>
       </template>
     </ATATAlert>
 
