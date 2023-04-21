@@ -213,7 +213,74 @@ export interface CrossDomainSolutionDTO extends BaseTableDTO {
 
 export interface FairOpportunityDTO extends BaseTableDTO {
   exception_to_fair_opportunity: string;
+  csp: string;
+  j_and_a: JandADTO;
+  mrr: MRRDTO;
+  demonstration_of_unique_source: string;
+  procurement_discussion: string;
+  impact: string;
 }
+
+export interface JandADTO {
+  justification: string;
+  min_govt_reqs: string;
+
+  ss_migration_addl_time_cost: YesNo;
+  ss_migration_est_cost: string;
+  ss_migration_est_delay_amount: number;
+  ss_migration_est_delay_unit: "" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
+  ss_govt_engineers_training_certified: YesNo;
+  ss_govt_engineers_platform_name: string;
+  ss_govt_engineers_insufficient_time_reason: string;
+  ss_product_feature_peculiar_to_CSP: YesNo;
+  ss_product_feature_product_or_feature: "" | "PRODUCT" | "FEATURE";
+  ss_product_feature_name: string;
+  ss_product_feature_why_essential: string;
+  ss_product_feature_why_others_inadequate: string;
+
+  ss_situation_cause: string;
+}
+
+export interface MRRDTO {
+  is_mrr_needed: "" | "MCA " | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE";
+
+  research_is_csp_only_source: YesNo;
+  research_date_start: string;
+  research_date_end: string;
+  research_supporting_data: string;
+  
+  review_catalogs_reviewed: YesNo;
+  review_catalogs_same_research_date: YesNo;
+  review_catalogs_new_startdate: string;
+  review_catalogs_new_enddate: string;
+  review_catalogs_review_results: string;
+  
+  other_techniques_used: string[];
+  other_technique: string;
+  
+  mrr_details: string;
+  
+  conducted_by: string; // JSON object - array of name, title, organization
+  
+  other_supporting_factors: YesNo;
+  other_supporting_factors_details: string;
+
+  barriers_follow_on_requirement: YesNo;
+  barriers_follow_on_expected_date: string;
+  barriers_pursuing_training_or_certs: YesNo;
+  barriers_planning_future_dev: YesNo;
+  barriers_prepared_ja: YesNo
+  barriers_prepared_ja_results: string;
+  
+  plans_to_remove_barriers: string;
+
+  technical_poc: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  technical_poc_new: ContactDTO 
+  requirements_poc: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  requirements_poc_new: ContactDTO
+}
+
+
 
 export interface OrganizationDTO extends BaseTableDTO {
   street_address_1?: string;
