@@ -216,34 +216,39 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   csp: string;
   j_and_a: JandADTO;
   mrr: MRRDTO;
-  demonstration_of_unique_source: string;
-  procurement_discussion: string;
-  impact: string;
 }
 
 export interface JandADTO {
   justification: string;
   min_govt_reqs: string;
 
+  // soul source form fields
   ss_migration_addl_time_cost: YesNo;
   ss_migration_est_cost: string;
   ss_migration_est_delay_amount: number;
   ss_migration_est_delay_unit: "" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
-  ss_govt_engineers_training_certified: YesNo;
-  ss_govt_engineers_platform_name: string;
-  ss_govt_engineers_insufficient_time_reason: string;
+
+  ss_govt_engs_training_certified: YesNo;
+  ss_govt_engs_platform_name: string;
+  ss_govt_engs_insufficient_time_reason: string;
+  
   ss_product_feature_peculiar_to_CSP: YesNo;
-  ss_product_feature_product_or_feature: "" | "PRODUCT" | "FEATURE";
+  ss_product_feature_type: "" | "PRODUCT" | "FEATURE";
   ss_product_feature_name: string;
   ss_product_feature_why_essential: string;
   ss_product_feature_why_others_inadequate: string;
+  // END soul source form fields 
 
   ss_situation_cause: string;
+  why_csp_is_only_capable_source: string;
+  procurement_discussion: string;
+  requirement_impact: string;
 }
 
 export interface MRRDTO {
   is_mrr_needed: "" | "MCA " | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE";
 
+  // market research efforts form
   research_is_csp_only_source: YesNo;
   research_date_start: string;
   research_date_end: string;
@@ -257,6 +262,7 @@ export interface MRRDTO {
   
   other_techniques_used: string[];
   other_technique: string;
+  // END market research efforts form
   
   mrr_details: string;
   
