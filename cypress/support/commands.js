@@ -174,11 +174,17 @@ Cypress.Commands.add('selectDitcoOption', (selector, text) => {
 });
 
 Cypress.Commands.add('clickDevToggleBtn', () => {
-  cy.findElement("#developerToggleButton").scrollIntoView();
-  cy.textExists("#developerToggleButton", "Toggle Developer Navigation ON").click().then(() => {
-    cy.textExists("#developerToggleButton", "Toggle Developer Navigation OFF");
+  const toggleSel="#developerToggleButton"
+  cy.findElement(".atat-page-footer").scrollIntoView();  
+  cy.waitUntil(function () {
+    return Cypress.$(toggleSel).attr('aria-checked') == 'false' 
+  }) 
+  cy.findElement(toggleSel).click({force: true}).then(() => {
     cy.waitUntil(function () {
-      return cy.findElement("#Step_EvaluationCriteria").not("have.class", "step disabled")
+      return Cypress.$(toggleSel).attr('aria-checked') == 'true'
+    });    
+    cy.waitUntil(function () {
+      return cy.findElement(common.stepEvaluationCriteriaLink).not("have.class", "step disabled")
     });
   });
 });
