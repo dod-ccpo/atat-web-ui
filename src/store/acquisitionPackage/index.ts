@@ -352,6 +352,26 @@ export class AcquisitionPackageStore extends VuexModule {
   currentUserIsMissionOwner = false;
   currentUserIsContributor = false;
 
+  isProdEnv: boolean | null = null;
+  @Action({rawError: true})
+  public async setIsProdEnv(): Promise<void> {
+    await this.doSetIsProdEnv();
+  }
+  @Mutation
+  public async doSetIsProdEnv(): Promise<void> {
+    this.isProdEnv = window.location.hostname === "services.disa.mil";
+  }
+  
+  emulateProdNav = false;
+  @Action({rawError: true})
+  public async setEmulateProdNav(bool: boolean): Promise<void> {
+    await this.doToggleEmulateProdEnv(bool);
+  }
+  @Mutation
+  public async doToggleEmulateProdEnv(bool: boolean): Promise<void> {
+    this.emulateProdNav = bool;
+  }
+
   packageCreator: User = {};
   @Mutation
   public doSetPackageCreator(user: User): void {
@@ -658,7 +678,6 @@ export class AcquisitionPackageStore extends VuexModule {
   public get getAllowDeveloperNavigation(): boolean {
     return this.allowDeveloperNavigation;
   }
-
   @Mutation
   public setAllowDeveloperNavigation(value: boolean): void{
     this.allowDeveloperNavigation = value;
@@ -714,7 +733,9 @@ export class AcquisitionPackageStore extends VuexModule {
       }
     };
     attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
-    return this.getDomain + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || "";
+    return attachment.length 
+      ? this.getDomain + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || ""
+      : "";    
   }
 
   @Action
