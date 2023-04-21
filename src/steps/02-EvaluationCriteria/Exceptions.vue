@@ -114,7 +114,8 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 export default class Exceptions extends Mixins(SaveOnLeave) {
   private jaTemplateUrl = "";
   private mrrTemplateUrl = "";
-  private selectedException = "";
+  private selectedException 
+    = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
 
   private get currentData(): FairOpportunityDTO {
     return {
