@@ -160,6 +160,11 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public isDatabase = false;
   public isStorage = false;
   public isTraining = false;
+  public isGeneralCloudSupport = false;
+  public isHelpDesk = false;
+  public isAdvisoryAssistance = false;
+  public isDocumentation = false;
+  
   public hasOnSiteColumn = false;
   public hasStatementColumn = false;
 
@@ -322,11 +327,12 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
       } else if (this.isStorage) {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
+          { text: "Storage Type", value: "typeOrTitle", width: "50%" },
           { text: "Classification", value: "classification" },
-          { text: "Storage Type", value: "storageType", width: "50%" },
           { text: "Storage Size", value: "storageAmount", width: "50%" },
           { text: "", value: "actions", width: "75" },
         ];
+        typeOrTitle = instanceClone.storageType || "";
       // -----------------------------------------------------------------
       // TRAINING
       // -----------------------------------------------------------------
@@ -373,7 +379,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           ? `<div class="text-error font-weight-500">Unknown</div>`
           : instanceClone.descriptionOfNeed;
       }
-
       isValid = await this.validateInstance(instanceClone);
       if (!isValid) {
         typeOrTitle += this.rowErrorMessage
@@ -453,7 +458,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "classificationLevel",
         "entireDuration",
         "memoryAmount",
-        "anticipatedNeedUsage",
+        "descriptionOfNeed",
         "numberOfInstances",
         "numberOfVCPUs",
         "operatingSystem",
@@ -461,26 +466,84 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "performanceTier",
         "storageAmount",
         "storageType",
-      ];
-
-    } else if (this.isGeneralXaaS) {
-      requiredFields = [
-        "classificationLevel",
-        "anticipatedNeedUsage",
         "entireDuration",
+        "periodsNeeded"
       ];
-      if (instanceData.entireDuration === "NO" && !instanceData.periodsNeeded.length) {
-        isValid = false;
-      }
     }
 
-    requiredFields.forEach((field) => {
-      if (instanceData[field] === "") {
-        isValid = false;
-      }
-    });
-
+    else if (this.isDatabase) {
+      requiredFields = [
+        "databaseType",
+        "databaseLicensing",
+        "licensing",
+        "memoryAmount",
+        "memoryUnit",
+        "networkPerformance",
+        "numberOfVCPUs",
+        "numberOfInstances",
+        "operatingSystem",
+        "databaseLicensing",
+        "classificationLevel",
+        "operatingSystemLicense",
+        "storageType",
+        "storageAmount",
+        "storageUnit",
+        "descriptionOfNeed",
+        "entireDuration",
+        "periodsNeeded"
+      ]
+    }
+    
+    else if(this.isStorage){
+      requiredFields = [
+        "numberOfInstances",
+        "storageAmount",
+        "storageType",
+        "storageUnit",
+        "entireDuration",
+        "descriptionOfNeed",
+        "periodsNeeded"
+      ]
+    }
+    else if(this.isTraining){
+      requiredFields = [
+        "trainingRequirementTitle",
+        "trainingType",
+        "entireDuration",
+        "anticipatedNeedUsage",
+        "periodsNeeded"
+      ]
+    }
+    //soo, on-site access, duration
+    else if(this.isAdvisoryAssistance || this.isDocumentation || 
+    this.isHelpDesk || this.isGeneralCloudSupport){
+      requiredFields = [
+        "statementOfObjectives",
+        "personnelOnsiteAccess",
+        "entireDuration",
+        "periodsNeeded"
+      ]
+    }
+    else if (this.isGeneralXaaS) {
+      requiredFields = [
+        "classificationLevel",
+        "descriptionOfNeed",
+        "entireDuration",
+        "periodsNeeded"
+      ];
+    }
+    isValid = requiredFields.every(f => {
+      return f === "periodsNeeded"
+        ? this.isPeriodsNeededValid(instanceData)
+        : instanceData[f] !== ""
+    })
     return isValid;
+  }
+
+  public isPeriodsNeededValid(instanceData: Record<string, any>): boolean {
+    return instanceData["entireDuration"] === "NO"
+      ? instanceData.periodsNeeded.length > 0
+      : true
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -490,10 +553,14 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.currentGroupId = await (await DescriptionOfWork.getCurrentOfferingGroupId()).toLowerCase();
     const offering = this.currentGroupId.toLowerCase();
     this.isCompute = offering === "compute";
-    this.isGeneralXaaS = offering === "general_xaas";
+    this.isGeneralXaaS = offering === "general_xaas"; 
     this.isDatabase = offering === "database";
     this.isStorage = offering === "storage";
     this.isTraining = offering === "training";
+    this.isAdvisoryAssistance = offering === "advisory_assistance";
+    this.isHelpDesk = offering === "help_desk_services";
+    this.isDocumentation = offering === "documentation_support";
+    this.isGeneralCloudSupport = offering === "general_cloud_support";
     this.hasOnSiteColumn 
       = ["documentation_support", "help_desk_services", "advisory_assistance"].includes(offering);
     this.hasStatementColumn = this.hasOnSiteColumn || offering.indexOf("general") > -1;

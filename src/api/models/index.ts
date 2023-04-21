@@ -256,6 +256,7 @@ export interface SystemPropertiesDTO extends BaseTableDTO {
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
+  acquisition_package?: ReferenceColumn | string;
   pii_present?: string;
   system_of_record_name?: string;
   work_to_be_performed?: string;
@@ -641,9 +642,9 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
   portfolio_funding_status: string;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
-  portfolio_managers_detail?: UserManagementDTO[];
+  portfolio_managers_detail?: UserSearchResultDTO[];
   portfolio_viewers?: string;
-  portfolio_viewers_detail?: UserManagementDTO[];
+  portfolio_viewers_detail?: UserSearchResultDTO[];
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];
@@ -770,9 +771,21 @@ export interface UserDTO extends BaseTableDTO {
   last_name?: string;
   user_name?: string;
   email?: string;
+  company?: string;
+  mobile_phone?: string;
+  phone?: string;
+  home_phone?: string;
+  title?: string;
 }
 
-export interface UserManagementDTO extends BaseTableDTO {
+// used for User Profile cards - "Company" is the "Agency"
+export interface CompanyDTO extends BaseTableDTO {
+  name?: string;
+  long_name?: string;
+  u_short_name?: string;
+}
+
+export interface UserSearchResultDTO extends BaseTableDTO {
   first_name?: string;
   last_name?: string;
   name?: string;

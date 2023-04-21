@@ -44,7 +44,7 @@
         </div>
         <div class="d-flex justify-space-between align-center">
           <span id="CreatedByLabel">Created by</span>
-          <!-- TODO: AT-8747 - get actual created_by user -->
+          <!-- ATAT TODO: AT-8747 - get actual created_by user -->
           <!-- code below simply puts first member in portfolio members array as creator -->
           <MemberCard id="CreatedBy" :index="0" />
         </div>

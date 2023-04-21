@@ -351,7 +351,7 @@ export default class PortfoliosSummary extends Vue {
 
     Toast.setToast(accessRemovedToast);
 
-    // future ticket, remove member from portfolio table in snow
+    // ATAT TODO - future ticket, remove member from portfolio table in snow
     // after removed, make new call to reload portfolio list if > 10 portfolios
     // to ensure 10 listed on page
   }
@@ -417,7 +417,7 @@ export default class PortfoliosSummary extends Vue {
     }
     storeData.portfolioSummaryList.forEach((portfolio) => {
       
-      // TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
+      // ATAT TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
       // from portfolio_managers and portfolio_viewers sysIds lists
 
       let cardData: PortfolioCardData = {};
@@ -486,7 +486,7 @@ export default class PortfoliosSummary extends Vue {
       this. isSearchSortFilter = false;
     });
 
-    // future ticket - set isHaCCAdmin value with data from backend when implemented
+    // ATAT TODO - future ticket - set isHaCCAdmin value with data from backend when implemented
     this.isHaCCAdmin = true;
   }
 }

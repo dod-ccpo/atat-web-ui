@@ -18,7 +18,12 @@
           <template v-slot:activator="{ on }">
           <v-btn
             v-on="on"
-            icon class="mr-5 _header-button _add-user-button" id="Person_Button">
+            icon class="mr-5 _header-button _add-user-button" 
+            id="InviteContributorButton"
+            @click="openInviteContributorModal"
+            @keydown.space="openInviteContributorModal"
+            @keydown.enter="openInviteContributorModal"
+          >
             <v-icon class="icon-20 text-base-dark">person_add_alt_1</v-icon>
           </v-btn>
           </template>
@@ -88,12 +93,15 @@
       :waitingForSignature="isWaitingForSignature"
       @okClicked="updateStatus('ARCHIVED')"
     />
+
+    <ContributorInviteModal :showInviteModal.sync="showInviteModal" />
+
   </v-app-bar>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -102,11 +110,17 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
+import ContributorsPanel from "@/packages/components/ContributorsPanel.vue"
+import ContributorInviteModal from "@/packages/components/ContributorInviteModal.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
+
+import { SlideoutPanelContent } from "types/Global";
 
 @Component({
   components:{
     ArchiveModal,
+    ContributorsPanel,
+    ContributorInviteModal,
     DeletePackageModal,
   }
 })
@@ -118,6 +132,11 @@ export default class ATATPageHead extends Vue {
   public moreOptionsTooltipText = "More options"
   public showDeleteModal = false
   public showArchiveModal = false
+  public showInviteModal = false;
+
+  public get showDrawer(): boolean {
+    return SlideoutPanel.getSlideoutPanelIsOpen;
+  } 
 
   public get packageName(): string {
     return acquisitionPackage.getProjectTitle || "New Acquisition";
@@ -167,8 +186,13 @@ export default class ATATPageHead extends Vue {
   } 
 
   public async moreMenuClick(title: string ): Promise<void> {
-    await SlideoutPanel.closeSlideoutPanel()
     switch(title){
+    case "View package details":
+      if (!this.showDrawer) this.openSlideoutPanel();
+      break;
+    case "Invite contributors":
+      this.openInviteContributorModal();
+      break;
     case 'Archive acquisition':
       this.showArchiveModal = true
       break;
@@ -180,6 +204,39 @@ export default class ATATPageHead extends Vue {
 
   private getIdText(string: string) {
     return getIdText(string);
+  }
+
+  public openInviteContributorModal(): void {
+    AcquisitionPackage.setShowInviteContributorsModal(true);
+  }
+
+  public get showContributorInviteModal(): boolean {
+    return AcquisitionPackage.getShowInviteContributorsModal;
+  }
+  @Watch("showContributorInviteModal")
+  public showContributorInviteModalChange(val: boolean): void {
+    this.showInviteModal = val;
+  }
+
+  public async openSlideoutPanel(e?: Event): Promise<void> {
+    const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
+    let openerId = "MoreMenuButton"
+    if (e && e.currentTarget) {
+      e.preventDefault();
+      e.cancelBubble = true;
+      const opener = e.currentTarget as HTMLElement;
+      openerId = opener.id;
+    }
+
+    if (currentSlideoutComponent !== ContributorsPanel) {
+      const slideoutPanelContent: SlideoutPanelContent = {
+        component: ContributorsPanel,
+        title: "ACQUISITION DETAILS"
+      }
+      await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    } 
+    SlideoutPanel.openSlideoutPanel(openerId);
+
   }
 
 }

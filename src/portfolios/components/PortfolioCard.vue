@@ -159,7 +159,7 @@
       <ATATMeatballMenu 
       :id="'PortfolioCardMenu' + index"
       :left="true"
-      :menuIndex="index"
+      :index="index"
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
     />
@@ -381,7 +381,7 @@ export default class PortfolioCard extends Vue {
       );
     }
 
-    // future ticket - when have data from backend, only include the menu
+    // ATAT TODO - future ticket - when have data from backend, only include the menu
     // option below if user is 1) a viewer, or 2) is manager and at least
     // one other manager exists for this portfolio. 
     // NOTE: Do not show for HaCC admin. Included currently for testing.
