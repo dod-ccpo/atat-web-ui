@@ -43,6 +43,7 @@
             />
 
             <ATATAlert
+                v-if="evalAlertDisplay"
               id="JandAMMRWarningAlert"
               :type="evalAlertType"
               :showIcon="false"
@@ -84,6 +85,13 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
     = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
 
   /**
+   * Returns whether the ATATAlert should be displayed or not
+   */
+  get evalAlertDisplay(): boolean {
+    return this.selectedException !== "";
+  }
+
+  /**
    * Returns the type value for the ATATAlert component, based
    * on the selected exception option.
    */
@@ -97,9 +105,7 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
    * on the selected exception option.
    */
   get evalAlertContent(): string {
-    if (this.selectedException === 'YES_FAR_16_505_B_2_I_B' ||
-        this.selectedException === 'YES_FAR_16_505_B_2_I_C') {
-      return `
+    const notNoneAlertContentDefault = `
       <p>
         Your final acquisition package will require a
         <strong>
@@ -107,15 +113,12 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
         </strong>
         . We’ll help you complete all of your required justification documentation.
       </p> `;
+    if (this.selectedException === 'YES_FAR_16_505_B_2_I_B' ||
+        this.selectedException === 'YES_FAR_16_505_B_2_I_C') {
+      return notNoneAlertContentDefault;
     } else if (this.selectedException === 'YES_FAR_16_505_B_2_I_A') {
       return `
-      <p>
-        Your final acquisition package will require a
-        <strong>
-          Justification & Approval (J&A)
-        </strong>
-        . We’ll help you complete all of your required justification documentation.
-      </p>
+      ${notNoneAlertContentDefault}
       <p>
         Note: This exception to fair opportunity process is rarely approved by the
         Contracting Office. To obtain approval, you will likely need to provide
@@ -125,11 +128,11 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
       return `
       <p>
         Your final acquisition package does NOT require a Justification & Approval (J&A).
-        If there are other authorities that apply to this effort that we did not address,
-        please contact your contracting office.
+        If there are other exceptions that apply to this effort that we did not address,
+        please contact your Contracting Office.
       </p>
       <p>
-        That’s all the info we need for this section.
+        That’s all the information we need for this section.
       </p>`;
     }
   }
