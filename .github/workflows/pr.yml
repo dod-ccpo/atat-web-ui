@@ -12,6 +12,23 @@ permissions:
   contents: read
 
 jobs:
+  assertPackageLockVersion:
+    name: Ensure package-lock lockfileVersion has not changed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Check package-lock.json
+        run: |
+          file="package-lock.json"
+          expectedVersion="2"
+          lockFileVersion="$(jq -r .lockfileVersion "$file")"
+          if [ "$lockFileVersion" != "$expectedVersion" ]; then
+            echo "$file: lockfileVersion ($lockFileVersion) is invalid (expected: $expectedVersion)"
+            exit 1
+          else
+            echo "$file: lockfileVersion ($lockFileVersion) is the expected value ($expectedVersion)"
+          fi
   lint:
     name: Run linter
     runs-on: ubuntu-latest
@@ -21,10 +38,8 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16.10.0
           cache: npm
-      - name: Install compatible NPM version
-        run: npm install -g npm@^6
       - name: Install project dependencies
         run: npm ci
       - name: Run linter
@@ -41,10 +56,8 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16.10.0
           cache: npm
-      - name: Install compatible NPM version
-        run: npm install -g npm@^6
       - name: Install project dependencies
         run: npm ci
       - name: Build the project
