@@ -19,8 +19,7 @@ describe("Testing Footer Component", () => {
   it("renders successfully", async () => {
     const footer = wrapper.findComponent(ATATFooter)
     expect(footer.exists()).toBe(true);
-    expect(footer.classes()).toContain("v-footer")
-    expect(footer.classes()).toContain("atat-page-footer")
+    expect(footer.classes()).toContain("width-100")
   });
   // DMG Test was failing after comment removing non-functional links and buttons 12/29/2022
   // it("should have three links", async () => {

@@ -59,21 +59,10 @@
                 </p>
                 <p>
                   We recommend downloading the
-                  <a 
-                    :href="jaTemplateUrl"
-                    download= "JWCC J&A Template_Template.docx"
-                    class="_text-link" id="JandATemplateLink"
-                  >
                     <span>J&amp;A template</span>
-                  </a>
                   and
                    <!-- eslint-disable-next-line max-len -->
-                  <a :href="mrrTemplateUrl"
-                   download="JWCC Market Research Report (Sole Source)_Template.docx"
-                    class="_text-link" id="MRRTemplateLink"
-                  >
-                    <span>MRR template</span>
-                  </a>
+                  <span>MRR template</span>
                   for reference as you work through this wizard. In the following sections, we'll 
                   help you prepare some details required in these templates, but you will need 
                   to complete them outside of DAPPS. At the end, you'll have an opportunity to 
@@ -112,11 +101,9 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class Exceptions extends Mixins(SaveOnLeave) {
-  private jaTemplateUrl = "";
-  private mrrTemplateUrl = "";
-  private selectedException 
-      = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
 
+  private selectedException 
+    = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
 
   private get currentData(): FairOpportunityDTO {
     return {
@@ -136,16 +123,16 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('ja');
-    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('mrr');
+    const storeData = AcquisitionPackage.fairOpportunity;
+    if (storeData) {
+      this.selectedException = storeData.exception_to_fair_opportunity;
+    }
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage
-          .saveData<FairOpportunityDTO>({data: this.currentData,
-            storeProperty: StoreProperties.FairOpportunity});
+        await AcquisitionPackage.setFairOpportunity(this.currentData)
       }
     } catch (error) {
       console.log(error);

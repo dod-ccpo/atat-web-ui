@@ -213,7 +213,76 @@ export interface CrossDomainSolutionDTO extends BaseTableDTO {
 
 export interface FairOpportunityDTO extends BaseTableDTO {
   exception_to_fair_opportunity: string;
+  proposed_csp?: "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
+  justification?: string;
+  min_govt_requirements?: string;
+
+  // cause of sole source form fields
+  cause_migration_addl_time_cost?: YesNo;
+  cause_migration_estimated_cost?: string;
+  cause_migration_estimated_delay_amount?: number;
+  cause_migration_est_delay_unit?: "" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
+
+  cause_govt_engineers_training_certified?: YesNo;
+  cause_govt_engineers_platform_name?: string;
+  cause_govt_engineers_insufficient_time_reason?: string;
+  
+  cause_product_feature_peculiar_to_csp?: YesNo;
+  cause_product_feature_type?: "" | "PRODUCT" | "FEATURE";
+  cause_product_feature_name?: string;
+  cause_product_feature_why_essential?: string;
+  cause_product_feature_why_others_inadequate?: string;
+  // END cause of sole source form fields 
+
+  cause_of_sole_source_situation?: string; // summary of cause fields
+
+  why_csp_is_only_capable_source?: string;
+  procurement_discussion?: string;
+  requirement_impact?: string;
+  contract_action?: "" | "UCA " | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE";
+
+  // market research efforts form
+  research_is_csp_only_source_capable?: YesNo;
+  research_start_date?: string;
+  research_end_date?: string;
+  research_supporting_data?: string;
+  
+  research_review_catalogs_reviewed?: YesNo;
+  research_review_catalogs_same_research_date?: YesNo;
+  research_review_catalogs_start_date?: string;
+  research_review_catalogs_end_date?: string;
+  research_review_catalogs_review_results?: string;
+  
+  research_other_techniques_used?: string; // array of sys_ids
+  research_other_technique?: string;
+  research_personal_knowledge_person_or_position?: string;
+  research_techniques_summary?: string;
+  // END market research efforts form
+  
+  market_research_details?: string; // summary of research fields
+  
+  market_research_conducted_by?: string; // JSON object - array of name, title, organization
+  
+  other_facts_to_support_logical_follow_on?: YesNo;
+  other_facts_to_support_logical_follow_on_details?: string;
+
+  barriers_follow_on_requirement?: YesNo;
+  barriers_follow_on_expected_date?: string;
+  barriers_agency_pursuing_training_or_certs?: YesNo;
+  barriers_planning_future_development?: YesNo; 
+  barriers_j_a_prepared?: YesNo
+  barriers_j_a_prepared_results?: string;
+
+  barriers_plans_to_remove_barriers?: string; // summary of barriers fields
+
+  technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  technical_poc_sys_id?: string;
+  requirements_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  requirements_poc_sys_id?: string;
+
 }
+
+
 
 export interface OrganizationDTO extends BaseTableDTO {
   street_address_1?: string;

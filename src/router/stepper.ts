@@ -184,7 +184,6 @@ import {
   IGCEOptimizeOrReplicateResolver,
   IGCEArchitecturalDesignSolutionsResolver,
   IGCESupportingDocumentationResolver,
-  CreateEvalPlanRouteResolver,
   BVTOResolver,
   ProposedCSPRouteResolver,
   CertificationPOCsRouteResolver,
@@ -214,7 +213,6 @@ export const routeNames = {
   EvalPlanDetails: "Eval_Plan_Details",
   Differentiators: "Proposal_Required_BVTO",
   EvalPlanSummary: "Eval_Plan_Summary",
-
   //-----------------------------------------
   // J&A
   ProposedCSP: "Proposed_CSP",
@@ -420,7 +418,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "02",
     menuText: "Evaluation Criteria",
-    path: "/exceptions",
+    path: "/evaluation-criteria",
     completePercentageWeight: 10,
     component: FairOpportunityProcess,
     stepCompleteOnEnter: routeNames.ContactInformation,
@@ -609,13 +607,12 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       // Eval Plan
       {
         menuText: "Create Evaluation Plan",
-        path: "create-eval-plan",
+        path: "eval-plan",
         name: routeNames.CreateEvalPlan,
         component: CreateEvalPlan,
         completePercentageWeight: 5,
         stepCompleteOnEnter: routeNames.Exceptions,
         completed: false,
-        routeResolver: CreateEvalPlanRouteResolver,
       },
       {
         menuText: "Evaluation Plan Details",
