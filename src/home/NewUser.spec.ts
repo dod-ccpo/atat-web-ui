@@ -4,11 +4,13 @@ import VueRouter from "vue-router";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import NewUser from "./NewUser.vue";
+import validators from "@/plugins/validation";
 
 Vue.use(Vuetify);
 
 describe("Testing New User Component", () => {
   const localVue = createLocalVue();
+  localVue.use(validators);
   localVue.use(VueRouter);
 
   let vuetify: Vuetify;

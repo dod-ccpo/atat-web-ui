@@ -15,6 +15,7 @@ import {
   ContactDTO,
   BaseTableDTO,
   ClinDTO,
+  EDAResponse,
   ReferenceColumn,
 } from "@/api/models";
 
@@ -81,6 +82,7 @@ export interface StepperStep {
   additionalButtons?: AdditionalButton[];
   backButtonText?: string;
   continueButtonText?:string;
+  altContinueAction?: string;
   lastStep?: boolean;
 }
 
@@ -131,6 +133,8 @@ interface StepperRouteBase {
   additionalButtons?: AdditionalButton[];
   backButtonText?: string;
   continueButtonText?: string;
+  altContinueAction?: string;
+  continueButtonColor?: string;
   stepCompleteOnEnter?: string;
   stepCompleteOnLeave?: string;
 }
@@ -529,6 +533,20 @@ export interface PortfolioSummaryQueryParams {
   searchString?: string;
 }
 
+export interface PortfolioAdmin {
+  DoDId?: string;
+  hasUnclassifiedAccess?: YesNo;
+  unclassifiedEmail?: string;
+  hasScrtAccess?: YesNo;
+  scrtEmail?: string;
+}
+
+export interface PortfolioProvisioning extends EDAResponse {
+  portfolioTitle?: string;
+  serviceOrAgency?: string;
+  admins?: PortfolioAdmin[];  
+}
+
 export interface EmailEntry {
   key: string;
   email: string;
@@ -555,6 +573,18 @@ export interface TaskOrderCardData {
   status?: string,
   sys_id?: string,
   clins?:ClinDTO[],
+}
+
+export interface AwardedTaskOrderDetails {
+  taskOrderNumber: string,
+  contractor: string,
+  csp: string,
+  cspLong: string,
+  contractIssuingOffice: string,
+  periodOfPerformance: string,
+  totalObligatedAmount: number,
+  totalAmount: number,
+  classificationLevel: string
 }
 
 export interface ClinTableRowData {
@@ -725,4 +755,10 @@ export interface TrainingEstimate {
   estimatedTrainingPrice: string;
   trainingOption: SingleMultiple;
   cloudSupportEnvironmentInstance: ReferenceColumn | string;
+}
+
+export enum ClassificationLevels {
+  UNCL = "Unclassified",
+  SCRT = "Secret",
+  TSCRT = "Top Secret"
 }

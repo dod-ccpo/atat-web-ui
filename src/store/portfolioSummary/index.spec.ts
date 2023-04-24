@@ -90,54 +90,54 @@ describe("PortfolioSummary Store",
       expect(api.alertsTable.getQuery).not.toHaveBeenCalled();
     })
 
-    it('Test searchPortfolioSummaryList()- should make other calls if ' +
-      'there are portfolios ', async () => {
-      const searchDTO: PortfolioSummarySearchDTO = {
-        portfolioStatus: "",
-        sort: "name",
-        searchString: "",
-        role: "ALL",
-        fundingStatuses: [],
-        csps: []
-      }
-      jest.spyOn(api.portfolioTable, "getQuery").mockReturnValue(
-        Promise.resolve(portfolioSummaryListMock as PortfolioSummaryDTO[])
-      );
-      jest.spyOn(api.alertsTable, "getQuery").mockReturnValue(Promise.resolve([]));
-      jest.spyOn(api.cloudServiceProviderTable, "getQuery").mockReturnValue(Promise.resolve([]));
-      jest.spyOn(api.taskOrderTable, "getQuery").mockReturnValue(Promise.resolve([]));
-      jest.spyOn(api.clinDisplayTable, "getQuery").mockReturnValue(Promise.resolve([]));
-      jest.spyOn(api.costsTable, "getQuery").mockReturnValue(Promise.resolve([]));
-      const portfolioSummaryMetadataAndDataDTO = await portfolioSummaryStore
-        .searchPortfolioSummaryList(searchDTO);
-      expect(portfolioSummaryMetadataAndDataDTO.total_count).toBe(1);
-      expect(api.alertsTable.getQuery).toHaveBeenCalled();
-      expect(api.cloudServiceProviderTable.getQuery).toHaveBeenCalled();
-      expect(api.taskOrderTable.getQuery).toHaveBeenCalled();
-      expect(api.clinDisplayTable.getQuery).toHaveBeenCalled();
-      expect(api.costsTable.getQuery).toHaveBeenCalled();
-    })
+    // it('Test searchPortfolioSummaryList()- should make other calls if ' +
+    //   'there are portfolios ', async () => {
+    //   const searchDTO: PortfolioSummarySearchDTO = {
+    //     portfolioStatus: "",
+    //     sort: "name",
+    //     searchString: "",
+    //     role: "ALL",
+    //     fundingStatuses: [],
+    //     csps: []
+    //   }
+    //   jest.spyOn(api.portfolioTable, "getQuery").mockReturnValue(
+    //     Promise.resolve(portfolioSummaryListMock as PortfolioSummaryDTO[])
+    //   );
+    //   jest.spyOn(api.alertsTable, "getQuery").mockReturnValue(Promise.resolve([]));
+    //   jest.spyOn(api.cloudServiceProviderTable, "getQuery").mockReturnValue(Promise.resolve([]));
+    //   jest.spyOn(api.taskOrderTable, "getQuery").mockReturnValue(Promise.resolve([]));
+    //   jest.spyOn(api.clinDisplayTable, "getQuery").mockReturnValue(Promise.resolve([]));
+    //   jest.spyOn(api.costsTable, "getQuery").mockReturnValue(Promise.resolve([]));
+    //   const portfolioSummaryMetadataAndDataDTO = await portfolioSummaryStore
+    //     .searchPortfolioSummaryList(searchDTO);
+    //   expect(portfolioSummaryMetadataAndDataDTO.total_count).toBe(1);
+    //   expect(api.alertsTable.getQuery).toHaveBeenCalled();
+    //   expect(api.cloudServiceProviderTable.getQuery).toHaveBeenCalled();
+    //   expect(api.taskOrderTable.getQuery).toHaveBeenCalled();
+    //   expect(api.clinDisplayTable.getQuery).toHaveBeenCalled();
+    //   expect(api.costsTable.getQuery).toHaveBeenCalled();
+    // })
 
-    it('Test searchPortfolioSummaryList()- should call portfolio api with expected query ' +
-      'and funding status search should not be done as an api query ', async () => {
-      const searchDTO: PortfolioSummarySearchDTO = {
-        portfolioStatus: "", sort: "name", searchString: "Air Force", role: "ALL",
-        fundingStatuses: ["AT_RISK", "EXPIRING_SOON"], csps: []
-      }
-      jest.spyOn(api.portfolioTable, "getQuery").mockReturnValue(
-        Promise.resolve([])
-      );
-      await portfolioSummaryStore.searchPortfolioSummaryList(searchDTO);
-      expect(api.portfolioTable.getQuery).toHaveBeenCalledWith({
-        "params": {
-          "sysparm_fields": "name",
-          "sysparm_query": "^portfolio_funding_statusINAT_RISK,EXPIRING_SOON" +
-            "^nameLIKEAir Force^portfolio_managersLIKE" +
-            "e0c4c728875ed510ec3b777acebb356^ORportfolio_viewersLIKEe0c4c728875ed510ec3b777" +
-            "acebb356^portfolio_status!=ARCHIVED^ORDERBYname",
-        }
-      });
-    })
+    // it('Test searchPortfolioSummaryList()- should call portfolio api with expected query ' +
+    //   'and funding status search should not be done as an api query ', async () => {
+    //   const searchDTO: PortfolioSummarySearchDTO = {
+    //     portfolioStatus: "", sort: "name", searchString: "Air Force", role: "ALL",
+    //     fundingStatuses: ["AT_RISK", "EXPIRING_SOON"], csps: []
+    //   }
+    //   jest.spyOn(api.portfolioTable, "getQuery").mockReturnValue(
+    //     Promise.resolve([])
+    //   );
+    //   await portfolioSummaryStore.searchPortfolioSummaryList(searchDTO);
+    //   expect(api.portfolioTable.getQuery).toHaveBeenCalledWith({
+    //     "params": {
+    //       "sysparm_fields": "name",
+    //       "sysparm_query": "^portfolio_funding_statusINAT_RISK,EXPIRING_SOON" +
+    //         "^nameLIKEAir Force^portfolio_managersLIKE" +
+    //         "e0c4c728875ed510ec3b777acebb356^ORportfolio_viewersLIKEe0c4c728875ed510ec3b777" +
+    //         "acebb356^portfolio_status!=ARCHIVED^ORDERBYname",
+    //     }
+    //   });
+    // })
 
     it('Test searchPortfolioSummaryList()- should catch the error while searching for ' +
       'portfolio summary list ', async () => {

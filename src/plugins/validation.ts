@@ -50,6 +50,22 @@ export class ValidationPlugin {
  * @returns {function(*=): boolean}
  */
 
+  allowedLengths(
+    lengths: number[], 
+    message?: string
+  ): ((v: string) => string | true | undefined) {
+
+    let lengthsStr: string = lengths.length > 1 
+      ? lengths.join(", ")
+      : lengths[0].toString();
+    lengthsStr = lengthsStr.replace(/,(?=[^,]+$)/, ' or');
+
+    message = message || `Must be ${lengthsStr} characters.`;
+    return (v: string) => {
+      return v && !lengths.includes(v.length) ? message : true;
+    };
+  };
+
   required(
     message?: string, isCurrency?: string
   ): ((v: string) => string | true | undefined) {
@@ -187,14 +203,22 @@ export class ValidationPlugin {
   /**
   * @returns {function(*): (boolean|string)}
   */
-  isEmail = (): ((v: string) => string | true | undefined) => {
+  isEmail = (
+    message?: string,
+    isScrt?: boolean
+  ): ((v: string) => string | true | undefined) => {
+    isScrt = isScrt === undefined ? false : isScrt;
     return (v: string) => {
       if (v && v !== "") {
         if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/i.test(v) === false) {
           return "Please use standard domain format, like ‘@mail.mil’"
-        } else if (/^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i.test(v) === false) {
-          return "Please use your .mil or .gov email address."
-        }
+        } else if (!isScrt && /^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i.test(v) === false) {
+          return message || "Please use your .mil or .gov email address."
+        } else if (isScrt && 
+          /^\S[a-z-_.0-9]+@[a-z-]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v) === false
+        ) {
+          return message || "Please use your .smil or .sgov email address."
+        }      
       }
       return true;
     };
