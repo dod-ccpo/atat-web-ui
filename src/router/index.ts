@@ -1,30 +1,36 @@
-import Vue from "vue";
-import VueRouter, { RouteConfig } from "vue-router";
-import Home from "../views/Home.vue";
+import VueRouter from "vue-router";
+import {stepperRoutes} from "./stepper";
+import { provisionWorkFlowRoutes } from "./provisionWorkflow";
+import PathResolver from "./resolvers/PathResolver.vue";
+import RouteResolver from "./resolvers/RouteResolver.vue";
+import Home from "../home/Index.vue";
+import { scrollToMainTop } from "@/helpers";
 
-Vue.use(VueRouter);
-
-const routes: Array<RouteConfig> = [
+const routes = [
   {
-    path: "/",
-    name: "Home",
+    name: "home", 
     component: Home,
+    path: "/"
+  },
+  ...stepperRoutes,
+  ...provisionWorkFlowRoutes,
+  {
+    name: 'routeResolver',
+    component: RouteResolver,
+    path: '/routeResolver'
   },
   {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
-  },
+    name: 'pathResolver',
+    component: PathResolver,
+    path: '/pathResolver'
+  }
 ];
 
 const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes,
+  routes, // short for `routes: routes`
+  scrollBehavior() {
+    scrollToMainTop();
+  },
 });
 
 export default router;

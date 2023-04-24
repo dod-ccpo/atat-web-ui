@@ -1,0 +1,68 @@
+._atat-toast {
+  .v-snack__content {
+    @extend .body;
+  }
+
+  .v-snack__action  {
+    margin-right: 0;
+    .v-btn {
+      padding-left: 0 !important;
+    }
+  }
+
+  &._has-icon {
+    .v-snack__content {
+      color: $base-darkest;
+      margin-left: 30px;
+      position: relative;
+      &:after {
+        position: absolute;
+        left: -16px;
+        top: 26px;
+        content: "check_circle_outline";
+        font-family: "Material Icons";
+        -webkit-font-feature-settings: "liga";
+        font-size: 24px;
+        font-weight: normal;
+        display: inline-block;
+        height: 9px;
+        line-height: 0;
+        text-decoration: none !important;
+      }
+    }
+  }
+
+  .v-snack__wrapper {
+    border: 1px solid;
+    min-width: unset;
+  }
+
+  &._toast-success {
+    .v-snack__wrapper {
+      background-color: $success-lighter;
+      border-color: $success !important;
+    }
+    .v-snack__content::after {
+      color: $success;
+    }
+  }
+
+  &._toast-info {
+    .v-snack__wrapper {
+      background-color: $info-lighter;
+      border-color: $info !important;
+    }
+
+    .v-snack__content::after {
+      color: $info;
+    }
+  }
+  
+  .v-btn {
+    .v-btn__content {
+      font-weight: normal;
+      color: $primary;
+      text-decoration: underline;
+    }    
+  }
+}

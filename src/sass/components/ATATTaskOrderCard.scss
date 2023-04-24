@@ -1,0 +1,32 @@
+._task-order-container{
+  display: flex;
+  width: 100%;
+  padding: 24px 32px !important;
+  border: 1px solid $base-lighter !important;
+  border-bottom: none !important;
+  border-radius: 0;
+  font-size: 1.4rem;
+
+&._first {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+&._last {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom: 1px solid $base-lighter !important;
+}
+
+  ._title {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.1rem;
+    color: $base-dark;
+  }
+  ._title-value {
+    color: $base-darkest;
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+}

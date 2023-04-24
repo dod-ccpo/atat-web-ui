@@ -1,0 +1,51 @@
+{
+  "result": [{
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Compute",
+    "value": "COMPUTE"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Developer Tools and Services",
+    "value": "DEVELOPER_TOOLS"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Applications",
+    "value": "APPLICATIONS"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Advanced Technology and Algorithmic Techniques (Machine Learning)",
+    "value": "MACHINE_LEARNING"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Networking",
+    "value": "NETWORKING"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Security",
+    "value": "SECURITY"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Database with Storage",
+    "value": "DATABASE"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Edge Computing and Tactical Edge (TE)",
+    "value": "EDGE_COMPUTING"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Internet of Things (IoT)",
+    "value": "IOT"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "General Iaas, PaaS, and SaaS",
+    "value": "GENERAL_XAAS"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Advisory and Assistance",
+    "value": "ADVISORY"
+  }, {
+    "name": "x_g_dis_atat_service_offering",
+    "label": "Training",
+    "value": "TRAINING"
+  }]
+}

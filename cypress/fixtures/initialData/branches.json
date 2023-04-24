@@ -1,0 +1,34 @@
+{
+    "result": [
+      {
+        "name": "x_g_dis_atat_military_rank",
+        "label": "Air Force",
+        "value": "AIR_FORCE"
+      },
+      {
+        "name": "x_g_dis_atat_military_rank",
+        "label": "Army",
+        "value": "ARMY"
+      },
+      {
+        "name": "x_g_dis_atat_military_rank",
+        "label": "Coast Guard",
+        "value": "COAST_GUARD"
+      },
+      {
+        "name": "x_g_dis_atat_military_rank",
+        "label": "Marine Corps",
+        "value": "MARINE_CORPS"
+      },
+      {
+        "name": "x_g_dis_atat_military_rank",
+        "label": "Navy",
+        "value": "NAVY"
+      },
+      {
+        "name": "x_g_dis_atat_military_rank",
+        "label": "Space Force",
+        "value": "SPACE_FORCE"
+      }
+    ]
+  }

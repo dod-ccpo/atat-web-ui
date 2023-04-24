@@ -1,0 +1,15 @@
+{
+  "result": [{
+    "name": "x_g_dis_atat_contacts",
+    "label": "Civilian",
+    "value": "CIVILIAN"
+  }, {
+    "name": "x_g_dis_atat_contacts",
+    "label": "Contractor",
+    "value": "CONTRACTOR"
+  }, {
+    "name": "x_g_dis_atat_contacts",
+    "label": "Military",
+    "value": "MILITARY"
+  }]
+}

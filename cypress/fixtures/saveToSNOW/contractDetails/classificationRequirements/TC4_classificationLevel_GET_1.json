@@ -1,0 +1,53 @@
+{
+    "result": [{
+        "sys_id": "0f3bde6f87970590ec3b777acebb35d0",
+        "sys_updated_by": "jason.burkert-ctr@ccpo.mil",
+        "sys_created_on": "2022-05-12 17:24:10",
+        "sys_mod_count": "0",
+        "impact_level": "IL4",
+        "sys_updated_on": "2022-05-12 17:24:10",
+        "classification": "U",
+        "sys_tags": "",
+        "sys_created_by": "jason.burkert-ctr@ccpo.mil"
+    }, {
+        "sys_id": "0f5bd2af87970590ec3b777acebb35af",
+        "sys_updated_by": "jason.burkert-ctr@ccpo.mil",
+        "sys_created_on": "2022-05-12 17:24:44",
+        "sys_mod_count": "0",
+        "impact_level": "",
+        "sys_updated_on": "2022-05-12 17:24:44",
+        "classification": "TS",
+        "sys_tags": "",
+        "sys_created_by": "jason.burkert-ctr@ccpo.mil"
+    }, {
+        "sys_id": "405b52af87970590ec3b777acebb3556",
+        "sys_updated_by": "jason.burkert-ctr@ccpo.mil",
+        "sys_created_on": "2022-05-12 17:24:35",
+        "sys_mod_count": "0",
+        "impact_level": "IL6",
+        "sys_updated_on": "2022-05-12 17:24:35",
+        "classification": "S",
+        "sys_tags": "",
+        "sys_created_by": "jason.burkert-ctr@ccpo.mil"
+    }, {
+        "sys_id": "cc3b52af87970590ec3b777acebb3581",
+        "sys_updated_by": "jason.burkert-ctr@ccpo.mil",
+        "sys_created_on": "2022-05-12 17:24:04",
+        "sys_mod_count": "0",
+        "impact_level": "IL2",
+        "sys_updated_on": "2022-05-12 17:24:04",
+        "classification": "U",
+        "sys_tags": "",
+        "sys_created_by": "jason.burkert-ctr@ccpo.mil"
+    }, {
+        "sys_id": "d84b1a6f87970590ec3b777acebb3566",
+        "sys_updated_by": "jason.burkert-ctr@ccpo.mil",
+        "sys_created_on": "2022-05-12 17:24:22",
+        "sys_mod_count": "0",
+        "impact_level": "IL5",
+        "sys_updated_on": "2022-05-12 17:24:22",
+        "classification": "U",
+        "sys_tags": "",
+        "sys_created_by": "jason.burkert-ctr@ccpo.mil"
+    }]
+}

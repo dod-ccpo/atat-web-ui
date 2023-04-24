@@ -1,0 +1,62 @@
+{
+  "fairOpportunity": {
+    "headerText": "Let’s see if you qualify for an exception to the fair opportunity process",
+    "alertHeaderText": "Fair opportunity",
+    "alertMessage": "Each Cloud Service Provider (CSP) available within the JWCC contract must be given a fair opportunity to be considered for task orders exceeding the micro-purchase threshold, unless a statutory exception applies. Any exceptions will require written justification, in accordance with FAR 16.505(b)(2). We will help you complete justification documentation, if needed.",
+    "radioGroupLabel": "Based on your market research, do any of the following exceptions to fair opportunity apply to your acquisition?"
+  },
+  "needEvalPlan": {
+    "headerText": "Based on what you told us, you do not need an evaluation plan for this acquisition.",
+    "alertHeaderText": "Why don’t I need an evaluation plan?",
+    "introMessage": "An evaluation plan is used to establish the basis for how your acquisition will be evaluated during the source selection process.",
+    "secondMessage": "Since your requirement qualifies for an exception to the fair opportunity process, your evaluation team will assess the CSP’s entire solicitation response for technical acceptability. A task order award will be issued on a sole-source basis to the CSP that you specified in the previous section."
+  },
+  "workEvalPlan": {
+    "headerText": "Let’s work on an evaluation plan for your requirement",
+    "introDescription": "In this section, we'll develop the basis for how your acquisition will be evaluated. To begin, select the applicable evaluation method below. In the following screens, we’ll identify any compliance standards, differentiators, or assessment areas that CSPs must address in their response to the solicitation. You’ll have an opportunity to customize these standards for your specific needs.",
+    "epRadioGroupLabel": "Which source selection process is applicable to your requirement? Learn more",
+    "panelHeader": "Understanding the source selection process for JWCC task orders"
+  },
+  "noTechProposal": {
+    "headerText": "Now let’s review compliance standards when no technical proposal is required",
+    "alertSubHeader": "Award will be made to the lowest priced offeror meeting the following compliance standards:",
+    "customRadioGroupLabel": "In addition to the required standards listed above, do you want to include any custom compliance standards that CSPs must meet to be determined technically acceptable?"
+  },
+  "setEqualLumpSum": {
+    "headerText": "Based on your evaluation method, there are no required compliance standards, differentiators, or assessment areas.",
+    "alertHeader": "Why are there no required standards?",
+    "alertIntro": "Since you would like to purchase an equal dollar amount from each CSP, your Contracting Officer (KO) will issue a Request for Quote (RFQ) and ask CSPs to respond if they are “interested” or “not interested.” Task orders will be issued to all interested CSPs.",
+    "alertSubHeader": "Award will be made in equal parts to each CSP that responds to the RFQ as “interested.”"
+  },
+  "bestUse": {
+    "otherAssessRadioLabel": "In addition to the required criteria listed above, what other assessment areas would you like to evaluate?",
+    "otherAssessmentCheckboxes": [
+      "Risk to the Government",
+      "Any automation capability proposed to improve reliability and reduce human-error",
+      "I want to write my own custom assessment area(s)"
+    ]
+  },
+  "lowestRisk": {
+    "otherAssessmentCheckboxes": [
+      "Any automation capability proposed to improve reliability and reduce human-error",
+      "I want to write my own custom assessment area(s)"
+    ]
+  },
+  "lpta": {
+    "headerText": "Now let’s review compliance standards when technical proposals are required"
+  },
+  "bvto": {
+    "headerText": "Now let’s review compliance standards when technical proposals are required",
+    "differentiatorsHeaderText": "What differentiator(s) should be used to distinguish between technical proposals?",
+    "diffIntroDesc": "Select at least one area that a CSP may offer the Government at a higher price for additional benefit, beyond the solution itself, that will distinguish it from other competitor’s solutions. During the source selection process, the evaluation team will evaluate these differentiators and document how the perceived benefits of the higher priced proposal merit additional cost.",
+    "differentiatorOptions": [
+      "Level of complexity reduced due to proposed solution",
+      "Any capability gained by implementing the solution (beyond the Government’s requirement)",
+      "Any schedule savings achieved due to proposed solution",
+      "Any lifecycle cost savings achieved due to proposed solution",
+      "Any enduring persistence (longevity) due to proposed solution",
+      "Any automation capability proposed to improve reliability and reduce human-error",
+      "Other - I want to write my own custom differentiator(s)."
+    ]
+  }
+}

@@ -1,0 +1,77 @@
+.expandable-content-opener {
+  display: inline-block;
+  text-decoration: underline;
+  &:after {
+    content: "chevron_right";
+    font-family: "Material Icons";
+    -webkit-font-feature-settings: "liga";
+    font-size: 24px;
+    font-weight: normal;
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    text-decoration: none !important;
+    vertical-align: text-bottom;
+    transform: rotate(0deg);
+    transition: transform 0.3s;
+  }
+  &.open:after {
+    transform: rotate(90deg);
+  }
+}
+
+.v-expansion-panel-content__wrap {
+  padding-left: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $base-lighter;
+  margin-bottom: 4px;
+  
+  li {
+    margin-bottom: 6px;
+  }
+}
+
+.v-expansion-panel {
+  &:last-child {
+    .v-expansion-panel-content__wrap {
+      border-bottom: none;
+    }
+  }
+}
+
+.v-expansion-panel-header {
+  @extend .body;
+  font-weight: 700 !important;
+  position: relative;
+  padding: 4px 8px 4px 32px !important;
+  margin: 8px 0;
+  min-height: auto;
+  display: inline-block;
+  width: auto;
+  border-radius: 4px;
+
+  .v-expansion-panel-header__icon {
+    position: absolute;
+    left: 4px;
+    top: 8px;
+
+    .v-icon {
+      color: $base !important;
+      transform: rotate(-90deg) !important;
+    }
+  }
+  
+  &:hover {
+    background-color: $base-lighter;
+  }
+
+  &.v-expansion-panel-header--active {
+    min-height: auto;
+
+    .v-expansion-panel-header__icon {
+      .v-icon {
+        transform: rotate(0deg) !important;
+      }
+    }
+  }
+}

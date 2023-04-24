@@ -1,0 +1,229 @@
+.v-input--radio-group {
+  .v-input--radio-group__input {
+    > fieldset {
+      border: none;
+    }      
+  }
+}
+._radio-focus {
+  background: $primary-lighter !important;
+  transform: scale(1) !important;
+  opacity: 1 !important;
+}
+
+._radio-button:not(._readonly) {
+  &.v-radio--is-focused,
+  .v-input--selection-controls__input:hover {
+    .v-input--selection-controls__ripple {
+      &:before {
+        @extend ._radio-focus;
+      }
+    }
+  }
+}
+
+._radio-button._readonly {
+  cursor: default;
+  .v-label, .v-input--selection-controls__ripple {
+    cursor: default;
+  }
+  &.v-radio--is-focused,
+  .v-input--selection-controls__input:hover {
+    .v-input--selection-controls__ripple {
+      &:before {
+        background: transparent !important;
+      }
+    }
+  }
+}
+
+._radio-button {
+  align-items: flex-start;
+
+  .v-label {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  &.v-item--active {
+    .v-icon {
+      color: $primary !important;
+      z-index: 2;
+    }
+  }
+
+  &.v-radio--is-focused {
+    color: $primary !important;
+  }
+
+  label {
+    color: $base-darkest !important;
+    padding-top: 1px;
+
+    &.error--text {
+      color: $error-dark !important;
+    }
+  }
+
+  .v-icon {
+    color: $base !important;
+    z-index: 2;
+    &.error--text {
+      color: $error !important;
+
+    }
+  }
+
+  .v-input--selection-controls__input {
+    margin-right: 12px !important;
+
+    &:after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 4px;
+      left: 4px;
+      border-radius: 50%;
+      background-color: $white;
+      z-index: 1;
+    }
+  }
+
+  &.v-radio--is-disabled {
+    .v-input--selection-controls__input {
+      &:after {
+        background-color: $base-lightest;
+      }
+    }
+    .v-label {
+      color: $disabled !important;
+    }
+  }
+  
+  .atat-text-field-error {
+    .v-icon, .field-error {
+      color: $error !important;
+    }
+  }
+
+}
+
+._radio-button-card {
+  @extend ._radio-button;
+  background-color: $base-lightest !important;
+  border: solid 1px $base-lighter;
+  border-radius: 4px !important;
+  padding: 10px;
+  margin-bottom: 12px !important;
+  align-items: start !important;
+
+  &.v-radio--is-focused {
+    box-shadow: 0px 0px 0px 2px white, 0px 0px 0px 4px $primary;
+  }
+
+  &.v-item--active {
+    background-color: $primary-lighter !important;
+    border: solid 1px $primary;
+    outline: solid 1px $primary;
+    border-radius: 4px !important;
+    &.v-radio--is-focused {
+      box-shadow:0px 0px 0px 1px $primary, 0px 0px 0px 3px white, 0px 0px 0px 6px $primary;
+    }
+  }
+
+  label {
+    color: $base-darkest !important;
+    padding-top: 1px;
+
+    &.error--text {
+      color: $error-dark !important;
+
+    }
+  }
+
+  &:hover:not(.v-item--active)  {
+    border: solid 1px $primary;
+    color: $primary;
+  }
+
+  .card-label {
+    font-weight: 700 !important;
+    font-size: 1.6rem;
+  }
+
+  label {
+    color: $base-darkest !important;
+    padding-top: 1px;
+  }
+  &.error--text {
+    border-color: $error;
+  }
+}
+
+.v-input--radio-group--column {
+  margin-top: 0px !important;
+  
+  .v-radio {
+    &:not(:last-child):not(:only-child) {
+      margin-bottom: 12px !important
+    }
+  }
+}
+
+._atat-radio-group.v-input.v-input--radio-group {
+  legend {
+    font-weight: 500;
+  }
+  
+  &.error--text {
+    color: $error !important;
+
+    label.error--text {
+      color: $error !important;
+    }
+
+    legend {
+      color: $base-darker !important;
+    }
+
+    .tooltip-button i {
+      color: $primary !important;
+    }
+  }
+  .v-input__control {
+    .v-messages.error--text {
+      display: none !important;
+      .v-messages__wrapper {
+        display: none !important;
+          .v-messages__message {
+          display: none !important;
+        }
+      }
+    }
+    .v-messages {       
+      position: relative;
+      .message-transition-leave-active.message-transition-leave-to {
+        position: absolute;
+        display: none !important;
+        transition: none !important;  
+        transform: none !important;
+        left: -10000;
+        top: -10000;
+      }
+    }
+
+  }
+
+}
+
+._description-small {
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: $base;
+  
+  .error--text & {
+    color: $error;
+  }
+}

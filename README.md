@@ -1,29 +1,4 @@
-# ATAT Web UI
-The ATAT Web user interface is implemented as a single-page application (SPA) using the Vue framework and invokes the [ATAT Web API](https://github.com/dod-ccpo/atat-web-api).
-
-## nvm install
-
-Install: To install, run the following command:
-
-```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-```
-
-Set up for use: The script clones the nvm repository to ~/.nvm, and attempts to add the source lines from the snippet below to the correct profile file (~/.bash_profile, ~/.zshrc, ~/.profile, or ~/.bashrc).
-
-```
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-```
-
-
-## global install
-
-```
- nvm use lts/fermium 
- npm install -g @vue/cli
- npm i -g @vue/cli-service-global
-```
+# sn-hello
 
 ## Project setup
 ```
@@ -36,18 +11,9 @@ npm run serve
 ```
 
 ### Compiles and minifies for production
+Do file replace 'x_744337' with your desired name
 ```
 npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
 ```
 
 ### Lints and fixes files
@@ -58,72 +24,56 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-### Updating dependencies:
-After a version change or any dependencies change please run also if you're switching branches.: 
+
+### Add App to Service Now ###
+Open your service now personal developer instance....
+1. Search for 'Retrieved Update Set', click 'Import Update Set from XML' and upload `\vue-container-servicenow.xml` from the codebase. 
+2. Update and then commit the updateset.  The updateset will be committed with 'Vue App' as the name.
+3. Build the app in IDE by running `npm serve build.`  
+4. Search for 'vue' in ServiceNow.  The following items will appear...
+   Vue Container
+     UI Page
+     REST API
+5. Click UI Page and transfer the contents from `atat-web-ui\dist\index.html` to the HTML section.
+6. Add this code to the client script section.
+   ``` 	
+   window.onload = function() {
+    Array.prototype.forEach.call(window.parent.document.querySelectorAll("link[rel=stylesheet]"), function(link) {
+        var newLink = document.createElement("link");
+        newLink.rel  = link.rel;
+        newLink.href = link.href;
+        document.head.appendChild(newLink);
+      })
+    } 
+   ```
+7. Click Update.  
+8. in the left hand nav bar, right click `Vue Container`, then `Rest API` and open the Rest API page in a new tab. 
+9. Click `JS` link in the bottom resources table.
+10. Click Attachment icon in the upper right hand corner. 
+11. Remove any existing attachments in the modal popup.
+12. Browse to the `atat-web-ui\dist\js` and upload both .js files as attachments. 
+13. Return to the UI page and click the Endpoint link (in the upper hand corner).
+14. A new tab opens displaying the SPA.
+
+
+### To run Cypress tests on localhost
 
 ```
-npm ci 
-
+npm run serve
 ```
 
-## Setting IDE
+Open another IDE terminal window and run 
 
-### Visual Studio Code
-Use the dbaeumer.vscode-eslint (opens new window) extension that Microsoft provides officially.
-
-You have to configure the eslint.validate option of the extension to check .vue files, because the extension targets only *.js or *.jsx files by default.
-
-Example .vscode/settings.json:
 ```
-{
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        "vue"
-    ]
-}
+npx cypress open
 ```
-If you use the Vetur plugin, set "vetur.validation.template": false to avoid default Vetur template validation. Check out [vetur documentation](https://vuejs.github.io/vetur/guide/linting-error.html#linting) for more info.
+### Setting Environment Variables for localhost testing
 
+Create a `.env` file in the project's root directory and use the following Environment Variables:
 
-### IntelliJ IDEA / JetBrains WebStorm
+| Environment Variable Name | Description          |
+| ------------------------- | -------------------- |
+| 'localTestUrl'            | http://localhost:8080/testing.html |
+| 'isTestingLocally'        | true                |
 
-In the Settings/Preferences dialog (Cmd+,/Ctrl+Alt+S), choose JavaScript under Languages and Frameworks and then choose ESLint under Code Quality Tools. On the ESLint page that opens, select the Enable checkbox.
-
-If your ESLint configuration is updated (manually or from your version control), open it in the editor and choose Apply ESLint Code Style Rules in the context menu.
-
-read more: [JetBrains - ESLint](https://www.jetbrains.com/help/idea/eslint.html)
-
-#
-
-
-#
-
-
-## More references:
-
-### Installed CLI Plugins
-- [vue-cli](https://cli.vuejs.org/)
-- [babel](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel)
-- [pwa](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa)
-- [router](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router)
-- [vuex](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-vuex)
-- [eslint](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint)
-- [unit-jest](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-unit-jest)
-- [e2e-webdriverio](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-e2e-webdriverio)
-- [typescript](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-typescript)
-
-### Essential Links
-
-- [Core Docs](https://vuejs.org/)
-- [Forum](https://forum.vuejs.org/)
-- [Community Chat](https://chat.vuejs.org/)
-- [Twitter](https://twitter.com/vuejs)
-- [News](https://news.vuejs.org/)
-
-### Ecosystem
-- [vue-router](https://router.vuejs.org/)
-- [vuex](https://vuex.vuejs.org/)
-- [vue-devtools](https://github.com/vuejs/vue-devtools#vue-devtools)
-- [vue-loader](https://vue-loader.vuejs.org/)
-- [awesome-vue](https://github.com/vuejs/awesome-vue)
+```

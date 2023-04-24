@@ -1,0 +1,219 @@
+{
+  "result": [{
+    "name": "x_g_dis_atat_organization",
+    "label": "Communications & Electronics Command",
+    "value": "COMMUNICATIONS_AND_ELECTRONICS_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Advanced Research Project Agency (DARPA)",
+    "value": "DEFENSE_ADVANCED_RESEARCH_PROJECT_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Commissary Agency",
+    "value": "DEFENSE_COMMISSARY_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Contract Audit Agency (DCAA)",
+    "value": "DEFENSE_CONTRACT_AUDIT_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Contract Management Agency (DCMA)",
+    "value": "DEFENSE_CONTRACT_MANAGEMENT_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Counterintelligence and Security Agency",
+    "value": "DEFENSE_COUNTERINTELLIGENCE_AND_SECURITY_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Criminal Investigation Service",
+    "value": "DEFENSE_CRIMINAL_INVESTIGATION_SERVICE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Finance and Accounting Service",
+    "value": "DEFENSE_FINANCE_AND_ACCOUNTING_SERVICE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Information Systems Agency (DISA)",
+    "value": "DEFENSE_INFORMATION_SYSTEMS_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Intelligence Agency (DIA)",
+    "value": "DEFENSE_INTELLIGENCE_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Logistics Agency (DLA)",
+    "value": "DEFENESE_LOGISTICS_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Media Activity (DMA)",
+    "value": "DEFENSE_MEDIA_ACTIVITY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Security Cooperation Agency",
+    "value": "DEFENSE_SECURITY_COOPERATION_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Technical Information Center",
+    "value": "DEFENSE_TECHNICAL_INFORMATION_CENTER"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Defense Threat Reduction Center (DTRA)",
+    "value": "DEFENSE_THREAT_REDUCTION_CENTER"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Department of Defense",
+    "value": "DEPARTMENT_OF_DEFENSE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Department of Homeland Security",
+    "value": "DEPARTMENT_OF_HOMELAND_SECURITY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Department of Housing and Urban Development",
+    "value": "DEPARTMENT_OF_HOUSING_AND_URBAN_DEVELOPMENT"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Department of State",
+    "value": "DEPARTMENT_OF_STATE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Drug Enforcement Agency",
+    "value": "DRUG_ENFORCEMENT_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Executive Office of the President",
+    "value": "EXECUTIVE_OFFICE_OF_THE_PRESIDENT"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Federal Aviation Administration",
+    "value": "FEDERAL_AVIATION_ADMINISTRATION"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Federal Bureau of Investigation",
+    "value": "FEDERAL_BUREAU_OF_INVESTIGATION"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Federal Communications Commission",
+    "value": "FEDERAL_COMMUNICATIONS_COMMISSION"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Joint Chiefs of Staff",
+    "value": "JOINT_CHIEFS_OF_STAFF"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Joint Forces Command",
+    "value": "JOINT_FORCES_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Joint Information Operations Warfare Command",
+    "value": "JOINT_INFORMATION_OPERATIONS_WARFARE_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Joint Logistics Systems Center",
+    "value": "JOINT_LOGISTICS_SYSTEMS_CENTER"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Joint Staff Comptroller",
+    "value": "JOINT_STAFF_COMPTROLLER"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Joint System Engineering & Integration Office (JSEIO)",
+    "value": "JOINT_SYSTEM_ENGINEERING_AND_INTEGRATION_OFFICE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Military Health System (MHS) Defense Health Agency (DHA)",
+    "value": "MILITARY_HEALTH_SYSTEM_DEFENSE_HEALTH_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Military Sealift Command",
+    "value": "MILITARY_SEALIFT_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "National Geospatial Intelligence Agency",
+    "value": "NATIONAL_GEOSPATIAL_INTELLIGENCE_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "National Ground Intelligence Agency",
+    "value": "NATIONAL_GROUND_INTELLIGENCE_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "National Guard Bureau",
+    "value": "NATIONAL_GUARD_BUREAU"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "National Security Agency",
+    "value": "NATIONAL_SECURITY_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Office of the Security of Defense (OSD)",
+    "value": "OFFICE_OF_THE_SECURITY_OF_DEFENSE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Africa Command",
+    "value": "US_AFRICA_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Air Force",
+    "value": "US_AIR_FORCE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Air Force Europe (USAFE)",
+    "value": "US_AIR_FORCE_EUROPE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Army",
+    "value": "US_ARMY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Central Command (USCENTCOM)",
+    "value": "US_CENTRAL_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Coast Guard",
+    "value": "US_COAST_GUARD"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Cyber Command",
+    "value": "US_CYBER_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Department of Agriculture",
+    "value": "US_DEPARTMENT_OF_AGRICULTURE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. European Command (USEUCOM)",
+    "value": "US_EUROPEAN_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Marine Corps",
+    "value": "US_MARINE_CORPS"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Navy",
+    "value": "US_NAVY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Northern Command (USNORTHCOM)",
+    "value": "US_NORTHERN_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Pacific Command (USPACCOM)",
+    "value": "US_PACIFIC_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Southern Command (USSOUTHCOM)",
+    "value": "US_SOUTHERN_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Special Operations Command (USSOCOM)",
+    "value": "US_SPECIAL_OPERATIONS_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Strategic Command (USSTRATCOM)",
+    "value": "US_STRATEGIC_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "U.S. Transportation Command (USTRANSCOM)",
+    "value": "US_TRANSPORTATION_COMMAND"
+  }]
+}

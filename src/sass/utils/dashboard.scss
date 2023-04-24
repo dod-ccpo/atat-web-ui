@@ -1,0 +1,25 @@
+._dashboard {
+  &._funding-dashboard:not(.bg-white){
+    .v-main__wrap {
+      background-color: $base-lightest;
+    }
+  }
+  .container-max-width {
+    margin: 0 auto !important;
+  }
+
+  .v-input--checkbox {
+    label {
+      font-size: 12px !important;
+      margin-right: 20px;
+    }
+  }
+}
+
+._trending-up {
+  color: $error;
+}
+
+.trending-down {
+  color: $success-dark;
+}

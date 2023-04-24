@@ -1,0 +1,47 @@
+.v-tooltip__content {
+  display: block !important;
+  background-color: transparent !important;
+  opacity: 1 !important;
+  z-index: 300 !important;
+
+  ._tooltip-content-wrap {
+    opacity: 0 !important;
+    transition: opacity 0.25s !important;
+    background-color: rgba($base-darkest, 0.9);
+    padding: 8px 12px !important;
+    line-height: 1.5em !important;
+    display: block;
+    border-radius: 4px;
+    position: relative;
+
+
+    &:not(._left, ._no-pointer)::after {
+      content: "";
+      position: absolute;
+      bottom: -15px;
+      left: calc(50% - 10px);
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border: 10px solid transparent;
+      border-top-color: rgba($base-darkest, 0.9);
+    }
+    &._left::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      right: -15px;
+      top: calc(50% - 10px);
+      border: 10px solid transparent;
+      border-left-color: rgba($base-darkest, 0.9);
+    }
+    
+  }
+  
+  &.menuable__content__active {
+    ._tooltip-content-wrap {
+      opacity: 1 !important;
+    }
+  }
+}

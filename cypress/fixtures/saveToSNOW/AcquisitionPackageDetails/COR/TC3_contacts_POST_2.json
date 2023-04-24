@@ -1,0 +1,33 @@
+Response body: {
+    "result": {
+        "grade_civ": "",
+        "role": "MILITARY",
+        "dodaac": "D0DCCA",
+        "sys_updated_on": "2022-07-22 20:36:01",
+        "suffix": "",
+        "title": "",
+        "type": "COR",
+        "can_access_package": "YES",
+        "sys_id": "660078ea87f01150bc86b889cebb353c",
+        "sys_updated_by": "tony.sumner-ctr@ccpo.mil",
+        "phone_and_extension": "+385 52 113 6541",
+        "sys_created_on": "2022-07-22 20:36:01",
+        "phone_extension": "",
+        "first_name": "Mary",
+        "formal_name": "Pvt Mary s Josh",
+        "email": "test.ss@test.mil",
+        "sys_created_by": "tony.sumner-ctr@ccpo.mil",
+        "sys_mod_count": "0",
+        "last_name": "Josh",
+        "middle_name": "s",
+        "sys_tags": "",
+        "salesforce_id": "",
+        "manually_entered": "true",
+        "phone": "+385521136541",
+        "rank_components": {
+            "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_military_rank/39bef95b879bc190ec3b777acebb3522",
+            "value": "39bef95b879bc190ec3b777acebb3522"
+        },
+        "salutation": ""
+    }
+}

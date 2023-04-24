@@ -1,0 +1,38 @@
+[
+  {
+    "sys_id": {
+      "display_value": "31",
+      "value": "31"
+    },
+    "clin_number": {
+      "display_value": "1001",
+      "value": "1001"
+    },
+    "idiq_clin": {
+      "display_value": "Unclassified XaaS",
+      "value": "0001"
+    },
+    "pop_end_date": {
+      "display_value": "2022-12-31",
+      "value": "2022-12-31"
+    },
+    "pop_start_date": {
+      "display_value": "2022-05-01",
+      "value": "2022-05-01"
+    },
+    "clin_status": {
+      "display_value": "Funding At Risk",
+      "value": "FUNDING_AT_RISK"
+    },
+    "funds_obligated": {
+      "display_value": "1000",
+      "value": "1000"
+    },
+    "funds_total": {
+      "display_value": "1000",
+      "value": "1000"
+    },
+    "cost_records": [],
+    "funds_spent_clin": 286917
+  }
+]

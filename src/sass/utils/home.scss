@@ -1,0 +1,224 @@
+
+%home-card {
+  .v-card {
+    max-width: 466px;
+    padding: 40px 32px;
+    border-top: 20px solid $primary;
+    border-radius: 8px;
+    box-shadow: 0px 12px 24px rgba(27, 27, 27, 0.1);
+  }
+  .v-btn {
+    margin: 0 auto;
+  }
+}
+
+._home {
+  position: relative;
+
+  &.v-main {
+    padding-top: 0 !important;
+    height: 100vh;
+  }
+  
+  .v-main__wrap {
+    position: relative;
+    background-color: transparent;
+    padding: 0;
+    max-height: 100vh;
+  }
+
+  ._welcome-bar {
+    background-color: white;
+    border-radius: 4px;
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.10);
+  }
+
+  .container-max-width {
+    margin: 0 auto;
+    max-width: 1088px;
+    padding: 0 24px;
+  }
+
+  ._home-content {
+    margin: 306px auto 0;
+  }
+  ._resources {
+    background-color: $base-lightest;
+    padding: 60px 0;
+
+    h3.large {
+      font-weight: 700 !important;
+      font-size: 2.4rem !important;
+    }
+
+    .container-max-width {
+      max-width: 1248px;
+      padding: 0 24px;
+    }
+
+    .v-card {
+      padding: 24px;
+      border: 1px solid $base-light;
+      p {
+        margin-bottom: 0;
+        margin-top: 5px;
+        color: $base;
+      }
+    }
+  }
+  .v-card {
+    &._simple-border {
+      border: 1px solid $base-lighter;
+
+    }
+  }
+
+  ._new-user-cards{
+    @extend %home-card;
+  }
+
+  ._learn-more-section {
+    p {
+      font-size: 20px;
+      line-height: 1.67;
+    }
+  }
+
+  ._mt-80 {
+    margin-top: 80px !important
+  }
+  ._mb-80 {
+    margin-bottom: 80px !important;
+  }
+  ._py-80 {
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+  }
+ 
+  ._pb-80 {
+    padding-bottom: 80px !important;
+  }
+
+  .v-expansion-panel-header {
+    background-color: $primary;
+    width: 100%;
+    border-bottom: 1px solid $base-lighter;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-top: 10px !important;
+    padding-bottom: 12px !important;
+    padding-left: 44px !important; 
+    margin-bottom: 0;
+    margin-top: 0;
+
+    &:hover {
+      background-color: $primary-dark;
+    }
+
+    .h3 {
+      color: white !important;
+
+      &._item-count {
+        color: $primary-lighter !important;
+      }
+    }
+
+    .v-expansion-panel-header__icon {
+      left: 12px;
+      top: 16px;
+
+      .v-icon {
+        color: white !important;
+      }      
+    }
+  }
+
+  .v-expansion-panel-content__wrap {
+    padding: 0;
+    ._summary-card-wrapper.v-sheet.v-card {
+      border-top: none !important;
+      border-bottom: 1px solid $base-lighter !important;
+      &:last-child {
+        border-bottom: none !important;
+      }
+    }
+  }
+  .v-expansion-panel-content__wrap {
+    margin-bottom: 0;
+  }
+
+
+  .v-expansion-panels {
+    border: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+
+  ._view-all {
+    //background-color: $base-lightest;
+    border: 1px solid $base-lighter;
+    //border-top: none;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    padding: 12px 24px;
+  }
+}
+
+._home-wrapper {
+  ._hero-banner {
+    background-image: url("./assets/images/jedi-banner.png");
+    background-size: cover;
+    background-position: center top;
+    height: 300px;
+    max-height: 300px;
+    width: 100%;
+    margin-top: 56px;
+    position: absolute;
+  }
+  
+  &._is-new-user {
+    ._home-content {
+      
+    }
+    ._hero-banner {
+      height: 600px;
+      max-height: 600px;
+    }
+    ._welcome-bar {
+      box-shadow: 0px 12px 24px rgba(27, 27, 27, 0.2);
+    }
+  }
+
+  &._is-existing-user {
+    .container-max-width {
+      max-width: 1248px;
+      padding: 0 24px;
+    }  
+    ._hero-banner {
+      background-position: center -170px;
+    }  
+  }
+
+}
+
+
+.provisioned {
+  @extend %home-card !optional;
+  .v-card{
+    max-width: 330px;
+    min-width: 330px;
+    width: 330px;
+  } 
+}
+
+.awarded-task-order-details{
+  dt, dd{
+    @extend .width-50;
+    margin-bottom: 8px;
+  }
+}

@@ -1,0 +1,123 @@
+#file-upload-base{
+  width: 740px;
+  color: $base !important;
+  margin: 0px;
+  padding: 0px;
+}
+
+#v-text-field--is-hovering,
+#v-text-field--is-focused{
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect rx='8' ry='8' width='100%25' height='100%25' fill='%235444961a' stroke='%23544496' stroke-width='4' stroke-dasharray='4' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;
+}
+
+#v-text-field--is-disabled{
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect rx='8' ry='8' width='100%25' height='100%25' fill='%23FBFBFB' stroke='%23adadad' stroke-width='2' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;
+  .v-input__prepend-inner{
+    h2,
+    p,
+    #BrowseToUpload{
+      color: $disabled-dark !important;
+      pointer-events: none
+    }
+  }
+}
+
+#v-text-field--is-errored{
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect rx='8' ry='8' width='100%25' height='100%25' fill='%23fbfbfb' stroke='%23c60634' stroke-width='4' stroke-dasharray='4' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;
+}
+
+.atat-file-upload,
+.atat-file-upload.v-input--is-focused.primary--text{
+  width: 740px;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23fbfbfb' rx='8' ry='8' stroke='%2361686c' stroke-width='2' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;  
+  border-radius: 8px;
+  color: $base !important;
+  margin: 0px;
+  padding: 0px;
+  .v-input__control{
+    .v-input__slot{
+      &::before,
+      &::after{
+        border: none;
+        transition: none !important;
+      }
+      margin: 0px;
+      .v-input__prepend-inner{
+        margin: 0px;
+        padding: 0px;
+        transition: none !important;
+        width: 100%;
+        color: $base-darkest;
+        .content{
+          cursor: pointer;
+          width: 100%;
+        }
+        .content-mini{
+          cursor: pointer;
+          padding: 16px 20px 21px 26px;
+        }
+      }
+    }
+  }
+  &:hover,
+  &.v-text-field--is-hovering{
+    @extend #v-text-field--is-hovering;
+  }
+  &:focus,
+  &.v-input--is-focused{
+    @extend #v-text-field--is-focused;
+  }
+  &.v-text-field--is-errored{
+    @extend #v-text-field--is-errored;
+  }
+  &.v-text-field--is-disabled{
+    @extend #v-text-field--is-disabled;
+  }
+}
+
+.file-upload-validation-messages{
+  width: 740px;
+}
+
+.file-loading-div{
+  @extend #file-upload-base; 
+  padding:  24px 0 26px 32px;
+  border-radius: 8px !important;
+  background-color: $offwhite !important;
+  border: 1px solid $base-light !important;
+
+  .content-div{
+    height: 46px;
+    .filename-and-progress-bar-div{
+      height: 46px;
+      max-width: 485px;
+     
+      .v-progress-linear{
+        width: 475px;
+        .v-progress-linear__determinate,
+        .v-progress-linear__background{
+          background-color: $primary !important;
+        }
+      }
+      
+      ._external-link{
+        display: inherit;
+      }
+    }
+  }
+}
+
+.truncated-file-name {
+  overflow: hidden;
+  height: 24px;
+  word-break: inherit;
+  text-overflow: clip;
+  // width: calc(100% - 100px);
+  text-align: justify;
+  white-space: nowrap;
+}
+.truncated-extension {
+  text-align: justify;
+  overflow: hidden;
+  height: 24px;
+}

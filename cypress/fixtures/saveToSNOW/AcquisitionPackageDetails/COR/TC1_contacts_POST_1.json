@@ -1,0 +1,30 @@
+{
+    "result": {
+        "grade_civ": "",
+        "role": "CONTRACTOR",
+        "dodaac": "",
+        "sys_updated_on": "2022-07-22 20:35:28",
+        "suffix": "",
+        "title": "",
+        "type": "MISSION_OWNER",
+        "can_access_package": "",
+        "sys_id": "2aef28ea87f01150bc86b889cebb352e",
+        "sys_updated_by": "tony.sumner-ctr@ccpo.mil",
+        "phone_and_extension": "+420 512 436 521",
+        "sys_created_on": "2022-07-22 20:35:28",
+        "phone_extension": "",
+        "first_name": "Andrew",
+        "formal_name": "Mr. Andrew J Smith",
+        "email": "test.ss@test.mil",
+        "sys_created_by": "tony.sumner-ctr@ccpo.mil",
+        "sys_mod_count": "0",
+        "last_name": "Smith",
+        "middle_name": "J",
+        "sys_tags": "",
+        "salesforce_id": "",
+        "manually_entered": "false",
+        "phone": "+420512436521",
+        "rank_components": "",
+        "salutation": "MR"
+    }
+}

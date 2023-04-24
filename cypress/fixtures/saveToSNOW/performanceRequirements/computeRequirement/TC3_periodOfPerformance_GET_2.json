@@ -1,0 +1,20 @@
+{
+  "result": {
+    "time_frame": "",
+    "base_period": {
+      "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_period/4a7e8b5c87619d10ec3b777acebb35b0",
+      "value": "4a7e8b5c87619d10ec3b777acebb35b0"
+    },
+    "sys_mod_count": "0",
+    "sys_updated_on": "2022-08-22 15:08:58",
+    "option_periods": "",
+    "sys_tags": "",
+    "pop_start_request": "",
+    "sys_id": "027e875c87619d10ec3b777acebb3598",
+    "sys_updated_by": "prasanthi.alaparthi-ctr@ccpo.mil",
+    "requested_pop_start_date": "",
+    "sys_created_on": "2022-08-22 15:08:58",
+    "recurring_requirement": "",
+    "sys_created_by": "prasanthi.alaparthi-ctr@ccpo.mil"
+  }
+}

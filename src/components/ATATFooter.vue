@@ -1,49 +1,44 @@
 <template>
-  <v-footer class="app-footer">
-    <v-container>
-      <v-row>
-        <v-col>.</v-col>
-        <v-col class="text-right"> Last login: {{ getToday() }} </v-col>
-      </v-row>
-    </v-container>
+  <v-footer class="atat-page-footer container-max-width">
+    <div class="links">
+      <!-- TODO: restore in future ticket
+      <a href="#" class="_text-link">Security Notice</a>
+      <a href="#" class="_text-link">Privacy</a>
+      <a href="#" class="_text-link">Accessibility</a> 
+      -->
+    </div>
+    <div>
+      Last login: {{currentUser.last_login_time}}
+    </div>
   </v-footer>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import { Component, Watch } from "vue-property-decorator";
+import UserStore from "@/store/user";
+import { UserDTO } from "@/api/models";
+import CurrentUserStore from "@/store/user";
+@Component({})
+export default class ATATFooter extends Vue {
+  private currentUser: UserDTO = {};
 
-export default Vue.extend({
-  name: "ATATFooter",
-  data: () => ({}),
-  methods: {
-    getToday() {
-      const today = new Date();
-      console.log(today);
-      return today;
-    },
-  },
-});
-</script>
+  public get getCurrentUser(): UserDTO {
+    return CurrentUserStore.currentUser;
+  }
 
-<style scoped>
-.theme--light.v-footer,
-v-footer.app-footer {
-  z-index: 3;
-  background-color: #fff;
-  border-top: 1px solid #f1f1f1;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 4rem;
-  color: #323a45;
-  font-size: 1rem;
-  padding: 0 1.2rem;
+  @Watch("getCurrentUser")
+  public currentUserChange(newVal: UserDTO): void {
+    this.currentUser = newVal;
+  }  
+
+  public async loadOnEnter(): Promise<void> {
+    this.currentUser = await UserStore.getCurrentUser();
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
 }
-</style>
+</script>

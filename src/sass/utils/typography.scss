@@ -1,0 +1,332 @@
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: $heading-font;
+  font-weight: 500;
+  color: $base-darkest;
+}
+
+h1.xl, .h1.xl {
+  font-size: 6rem !important;
+  font-weight: 400 !important;
+  line-height: 1.1em !important;
+  letter-spacing: -.05rem;
+}
+
+h1.large, .h1.large {
+  font-size: 4.8rem !important;
+  font-weight: 400 !important;
+  line-height: 1.2em !important;
+  letter-spacing: -.025rem;
+}
+
+h1, .h1 {
+  font-size: 3.4rem !important;
+  line-height: 1.3em !important;
+  letter-spacing: .025rem;
+  font-weight: 700 !important;
+}
+
+h2, .h2 {
+  font-size: 2.4rem !important;
+  line-height: 1.3em !important;
+  &.form-section-heading {
+    font-size: 2.0rem !important;
+    font-weight: 500 !important;
+    line-height: 3.2rem !important;
+    margin-bottom: 20px !important; 
+    font-family: $base-font !important;
+  }
+}
+
+h3, .h3 {
+  font-size: 2rem !important;
+  line-height: 1.3em !important;
+  letter-spacing: .015rem; 
+  font-weight: 500 !important;
+}
+
+h4, .h4 {
+  font-size: 1.6rem !important;
+  line-height: 1.5em !important;
+  letter-spacing: .015rem;
+  &._expansion-panel-header {
+    font-family: $base-font !important;
+  }
+}                 
+
+p {
+  margin-bottom: 2.4rem !important;
+}
+
+.lead-paragraph {
+  font-size: 2.1rem !important;
+  line-height: 1.5em !important;
+}                             
+
+.body-sm,
+.help-text {
+  font-size: 1.4rem !important;
+  line-height: 1.5em !important;
+  letter-spacing: .025rem !important;
+  text-align: left;
+}
+
+.help-text {
+  color: $base;
+}
+
+label {
+  color: $base-darkest !important;
+  @extend .body;
+  .chart,
+  .graph{
+    font-size: 1.2rem !important;
+    line-height: 1.3rem !important;
+  }
+}
+
+.field-error {
+  @extend label;
+  color: $error !important;
+  font-weight: 500 !important;
+}
+
+.field-success {
+  @extend label;
+  color: $success;
+}
+
+.micro {
+  font-size: 1rem !important;
+  line-height: 1.2rem !important;
+}
+
+.stepper-step-lg {
+  font-size: 1.9rem !important;
+  font-weight: 700 !important;
+  line-height: 2.5rem !important;
+}
+
+hr, .hr {
+  border-color: $base-lighter !important;
+  -ieVar-❗border-color: $base-lighter !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-bottom: none !important;
+  margin: 40px 0;
+  &.base {
+    border-color: $base !important;
+    -ieVar-❗border-color: $base !important;  
+  }
+  
+  &._and-or {
+    position: relative;
+    &::after {
+      content: "AND/OR";
+      background-color: $base-lighter;
+      padding: 4px;
+      border-radius: 6px;
+      top: 0;
+      left: 50px;
+    }
+  }
+}
+
+
+
+.color-base {
+  color: $base !important;
+}
+
+.v-application a {
+  color: $primary !important; // override vuetify blue
+  text-decoration: underline;
+  
+  &._text-link, &.expandable-content-opener, &.primary-text {
+    text-decoration: underline;
+    color: $primary !important;
+
+    &:hover {
+      color: $primary-dark !important;
+    }
+
+    &:active {
+      color: $primary-darker !important;
+    }
+  }
+
+  ._external-link {
+    position: relative;
+    padding-right: 24px;
+    display: inline-block;
+    white-space: nowrap;
+    text-decoration: underline;
+
+    &:after {
+      font-family: $icon-font;
+      content: "launch";
+      text-decoration: none !important;
+      -webkit-font-feature-settings: 'liga';
+      color: $primary;
+      position: absolute;
+      top: -1px;
+      right: 2px;
+      font-size: 18px;
+    }
+  }
+  &._chevron-right-after {
+    text-decoration: none;
+    &:after {
+      content: "chevron_right";
+      font-family: "Material Icons";
+      -webkit-font-feature-settings: "liga";
+      font-size: 20px;
+      font-weight: normal;
+      display: inline-block;
+      height: 18px;
+      line-height: 18px;
+      text-decoration: none !important;
+      vertical-align: text-bottom;
+    }
+  }
+}
+
+._text-decoration-none {
+  text-decoration: none !important;
+}
+
+._hover-underline:hover {
+  text-decoration: underline !important;
+}
+
+$sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
+@each $size in $sizes {
+  %icon-#{$size},
+  .icon-#{$size} {
+    font-size: #{$size}px !important;
+    height: #{$size}px !important;
+    width: #{$size}px !important;
+    min-height: #{$size}px !important;
+    min-width: #{$size}px !important;
+  }
+}
+
+@for $i from 10 through 30 {
+  .font-size-#{$i}{
+      font-size: #{$i}px !important;
+  }
+}
+
+.word-break-normal {
+  word-break: normal !important;
+}
+
+.dl-bullets {
+  dt {
+    position: relative;
+    padding-left: 16px;
+    font-weight: 700;
+
+    &:before {
+      content: "•";
+      font-weight: 700;
+      position: absolute;
+      left: 0;
+    }
+  }
+
+  dd {
+    padding-left: 16px;
+    margin-bottom: 2.5rem;
+  }
+}
+
+.icon-after--chevron-right {
+  position: relative;
+  padding-right: 24px;
+
+  &:after {
+    position: absolute;
+    content: "chevron_right";
+    font-family: $icon-font;
+    -webkit-font-feature-settings: "liga";
+    right: -28px;
+    font-size: 28px;
+    font-weight: normal;
+    box-shadow: none;
+    color: $primary;
+  }
+}
+
+.text-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-clamp--1-line {
+  -webkit-line-clamp: 1;
+  @extend .text-clamp;
+}
+
+.nowrap {
+  white-space: nowrap !important;
+}
+
+.font-weight-normal {
+  font-weight: 400 !important;
+}
+
+.page-header {
+  margin-bottom: 40px;
+}
+.page-intro {
+  margin-top: -28px;
+  margin-bottom: 40px !important;
+  @extend .copy-max-width;
+}
+
+.v-chip {
+  padding: 2px 4px;
+  height: auto !important;
+  .v-chip__content {
+    color: white;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.4rem;
+  }
+  &.bg-warning {
+    .v-chip__content {
+      color: $base-darkest;
+    }
+  }
+}
+
+._semibold {
+  font-weight: 500 !important;
+}
+
+ul._atat-ul {
+  padding-bottom: 12px;
+  li {
+    padding-bottom: 8px;
+    ul {
+      li {
+        position: relative;
+        &::marker {
+          content: "";
+        }
+        &:before {
+          content: "•";
+          font-size: 2.5rem;
+          position: absolute;
+          left: -18px;
+          top: 0;
+        }
+      }
+    }
+  }
+}
+
+._letter-spacing-none {
+  letter-spacing: 0;
+}

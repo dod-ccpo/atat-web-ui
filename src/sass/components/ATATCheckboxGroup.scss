@@ -1,0 +1,340 @@
+._checkbox, ._checkbox-card {
+  .v-label {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+._checkbox-group-label {
+  font-weight: 500;
+  margin-bottom: 1.6rem !important;
+  font-size: 1.6rem !important;
+}
+
+._checkboxes {
+  &._inline {
+    display: flex;
+    .v-input--checkbox {
+      margin-right: 12px !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+  }
+}
+
+._checkbox {
+  margin-bottom: 12px;
+
+  ._description {
+    font-size: 1.4rem;
+    color: $base;  
+  }
+  
+  &.error--text {
+    ._description {
+      color: $error !important;
+    }
+  }
+
+  &.v-input--is-label-active {
+    .v-icon {
+      color: $primary !important;
+    }
+  }
+
+  &.v-input--is-focused {
+    color: $primary !important;
+
+    .v-input--selection-controls__ripple {
+      &:before {
+        @extend ._radio-focus;
+      }
+    }
+  }
+
+  &.v-input--checkbox {
+    margin-top: 0;
+    padding-top: 0;
+  }
+  &._big-bold-label {
+    label {
+      color: $base-darkest !important;
+      font-size: 20px !important;
+      font-weight: 500 !important;
+      &.error--text {
+        color: $error-dark !important;
+      }
+    }
+    .v-input__slot {
+      align-items: center;
+    }
+  }
+
+  label {
+    color: $base-darkest !important;
+    &.error--text {
+      color: $error-dark !important;
+    }
+  }
+
+  .v-icon {
+    color: $base !important;
+    z-index: 2;
+    &.error--text {
+      color: $error !important;
+    }
+  }
+
+  .v-input--selection-controls__input {
+    &:hover {
+      .v-input--selection-controls__ripple {
+        &:before {
+          @extend ._checkbox-focus;
+        }
+      }
+    }
+
+    &:after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 4px;
+      left: 4px;
+      background-color: $white;
+      z-index: 1;
+    }
+  }
+
+  .v-input__slot {
+    align-items: start;
+    margin-bottom: 16px;
+    transition: none;
+  }
+
+  &._has-text-fields {
+    min-height: 42px;
+    .v-input__control, .v-input__slot {
+      min-height: 42px;
+    }
+    margin-bottom: 4px;
+    .v-input__slot {
+      align-items: center !important;
+    }
+    > .v-input__control {
+      max-width: 180px;
+    }
+    .v-input__prepend-outer {
+      width: 100%;
+      flex-grow: 1;
+    }
+    .atat-text-field {
+      .atat-text-field-error {
+        margin-bottom: 12px;
+      }
+    }
+  }
+
+  &._has-other {
+    &._other-selected {
+      .v-input__slot {
+        margin-bottom: 0;
+      }
+    }
+
+    .v-input__append-outer {
+      width: 100%;
+    }
+  }
+  
+  .atat-text-field-error {
+    .v-icon, .field-error {
+      color: $error !important;
+    }
+  }
+  &.v-input--is-disabled {
+    .v-icon {
+      color: $disabled !important;
+      z-index: 2;
+    }
+    .v-input--selection-controls__input {
+      &:after {
+        background-color: $base-lightest;
+      }
+    }
+    .v-label {
+      color: $disabled !important;
+    }
+  }
+
+}
+
+._cds-checkbox-list {
+  ._has-text-fields {
+    > .v-input__control {
+      max-width: 240px !important;
+    }
+  }
+}
+
+._checkbox-card {
+  @extend ._checkbox;
+  background-color: $base-lightest !important;
+  border: solid 1px $base-lighter;
+  border-radius: 4px !important;
+  padding: 12px;
+
+  &.v-input--is-label-active {
+    background-color: $primary-lighter !important;
+    border: solid 1px $primary;
+    outline: solid 1px $primary;
+    border-radius: 4px !important;
+    &.v-input--is-focused {
+      box-shadow:0px 0px 0px 1px $primary, 0px 0px 0px 3px white, 0px 0px 0px 6px $primary !important;
+    }
+  }
+
+  &:hover:not(.v-input--is-label-active) {
+    border: solid 1px $primary;
+    color: $primary;
+  }
+  &.v-input--is-focused {
+    box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px $primary !important;
+  }
+
+  &.v-input--checkbox {
+    margin-top: 12px !important;;
+    padding-top: 12px !important;;
+  }
+  &.error--text {
+    background-color: $base-lightest !important;
+    border: solid 1px $error;
+    outline: solid 1px $error;
+    border-radius: 4px !important;
+    padding: 12px 0px 0px 12px;
+    &:hover {
+      outline: solid 1px $primary;
+    }
+    &._no-description {
+      padding-bottom: 12px;
+    }
+    label {
+      color: $error-dark !important;
+    }
+  }
+  .v-messages {
+    min-height: 0;
+  }
+  .v-input__slot {
+    margin-bottom: 0px;
+    align-items: start;
+  }
+  .card-label {
+    font-weight:700 !important;
+    font-size:1.6rem;
+    margin-bottom:4px !important;
+    &._no-description {
+      font-weight: 400 !important;
+      margin-bottom: 0 !important;
+    }
+  }
+  label {
+    color: $base-darkest !important;
+    padding-top: 2px;
+  }
+}
+
+._checkbox-focus {
+  background: $primary-lighter !important;
+  transform: scale(1) !important;
+  opacity: 1 !important;
+}
+
+.chart-legend-checkboxes {
+  .v-input--checkbox {
+      &.color {
+          &_chart_1 {
+              .v-icon { color: $chart_color1 !important; }
+              input[type=checkbox]:before { background-color: $chart_color1; }
+          }
+          &_chart_2 {
+              .v-icon { color: $chart_color2 !important; }
+              input[type=checkbox]:before { background-color: $chart_color2; }
+          }
+          &_chart_3 {
+              .v-icon { color: $chart_color3 !important; }
+              input[type=checkbox]:before { background-color: $chart_color3; }
+          }
+          &_chart_4 {
+              .v-icon { color: $chart_color4 !important; }
+              input[type=checkbox]:before { background-color: $chart_color4; }
+          }
+          &_chart_5 {
+              .v-icon { color: $chart_color5 !important; }
+              input[type=checkbox]:before { background-color: $chart_color5; }
+          }
+          &_chart_6 {
+              .v-icon { color: $chart_color6 !important; }
+              input[type=checkbox]:before { background-color: $chart_color6; }
+          }
+          &_chart_7 {
+              .v-icon { color: $chart_color7 !important; }
+              input[type=checkbox]:before { background-color: $chart_color7; }
+          }
+          &_chart_8 {
+              .v-icon { color: $chart_color8 !important; }
+              input[type=checkbox]:before { background-color: $chart_color8; }
+          }
+          &_chart_9 {
+              .v-icon { color: $chart_color9 !important; }
+              input[type=checkbox]:before { background-color: $chart_color9; }
+          }
+          &_chart_10 {
+              .v-icon { color: $chart_color10 !important; }
+              input[type=checkbox]:before { background-color: $chart_color10; }
+          }
+      }
+
+      &.v-input--is-disabled {
+          label.v-label.v-label--is-disabled {
+              color: $base !important;
+          }
+          .v-icon {
+              opacity: 0.5;
+          }
+      }
+
+      input[type=checkbox] {
+          opacity: 1 !important;
+          display: none;
+          position: relative;
+          &:before {
+              content: "";
+              position: absolute;
+              top: 5px;
+              left: -19px;
+              width: 14px;
+              height: 14px;
+              opacity: 0.08;
+              background-color: transparent;
+          }
+
+          &:focus-visible:after {
+              position: absolute;
+              top: -2px;
+              left: -26px;
+              content: "";
+              width: 28px;
+              height: 28px;
+              border: 3px solid $primary;
+              border-radius: 6px;
+          }
+      }
+  }
+}
+
+._checkbox-text-field-wrap {
+  height: 42px;
+  margin: 2px 0 4px;
+}

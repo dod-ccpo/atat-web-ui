@@ -1,0 +1,59 @@
+._input-max-width {
+    max-width: 416px !important;
+    &.with-buttons-1 {
+        max-width: 446px !important;
+    }
+}
+
+._input-wrapper-max-width {
+  width: 416px !important;
+}
+
+.textarea-max-width {
+  @extend .max-width-740;
+}
+
+.optional {
+    font-size: 1.4rem;
+    color: $base;
+    display: inline-block;
+    margin-left: 8px;
+    font-weight: 400;
+}
+
+.form-section {
+    margin-bottom: 16px !important;
+    &:not(:first-of-type) {
+        margin-top: 0 !important;
+    }
+}
+
+// radio buttons
+.v-input--selection-controls {
+  padding-top: 0px !important;
+}
+
+//hr  
+hr{
+  &.base-lighter{
+    border: $base-lighter 1px solid !important;
+    border-bottom: none !important;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+}
+
+//hides the empty error messages space below each form field
+//that is put there by vuetify
+.v-messages{
+  min-height: 0px !important;
+}
+
+
+.define-requirements{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}

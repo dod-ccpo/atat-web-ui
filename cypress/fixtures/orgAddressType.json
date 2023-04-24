@@ -1,0 +1,20 @@
+{
+  "StreetAddress": "2800 Elden Street",
+  "Unit": "#201",
+  "City": "Herndon",
+  "State": "Virg",
+  "Zipcode": 20170,  
+  "StreetAddress1": "2880 Elden Street",
+  "Unit1":"#102",
+  "city1":"Abani",
+  "stateProvince1": "Adrar",
+  "postalCode": "AD37100",
+  "country1":"Algeria",
+  "StreetAddress2": "2802 Main Street",
+  "Unit2": "#202" , 
+  "city2":"Rome",
+  "stateProvince2": "RM",
+  "postalCode1": "RM-300119",
+  "country":"Italy"
+  
+}

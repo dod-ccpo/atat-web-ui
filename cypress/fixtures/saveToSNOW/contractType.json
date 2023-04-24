@@ -1,0 +1,14 @@
+{
+    "result": {
+        "sys_id": "11ec3f1487905510bc86b889cebb359c",
+        "sys_updated_by": "tony.sumner-ctr@ccpo.mil",
+        "firm_fixed_price": "true",
+        "sys_created_on": "2022-06-21 15:13:19",
+        "sys_mod_count": "1",
+        "time_and_materials": "true",
+        "contract_type_justification": " justification for your T&M contract type.",
+        "sys_updated_on": "2022-06-21 15:15:07",
+        "sys_tags": "",
+        "sys_created_by": "tony.sumner-ctr@ccpo.mil"
+    }
+}

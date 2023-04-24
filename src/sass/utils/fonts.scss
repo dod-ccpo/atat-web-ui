@@ -1,0 +1,84 @@
+/* roboto-regular - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+  url('./assets/fonts/roboto-regular.woff2') format('woff2'),
+  url('./assets/fonts/roboto-regular.woff') format('woff');
+}
+/* roboto-italic - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: italic;
+  font-weight: 400;
+  src: local(''),
+  url('./assets/fonts/roboto-italic.woff2') format('woff2'),
+  url('./assets/fonts/roboto-italic.woff') format('woff');
+}
+/* roboto-500 - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local(''),
+  url('./assets/fonts/roboto-500.woff2') format('woff2'),
+  url('./assets/fonts/roboto-500.woff') format('woff');
+}
+/* roboto-500italic - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: italic;
+  font-weight: 500;
+  src: local(''),
+  url('./assets/fonts/roboto-500italic.woff2') format('woff2'),
+  url('./assets/fonts/roboto-500italic.woff') format('woff');
+}
+/* roboto-700 - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local(''),
+  url('./assets/fonts/roboto-700.woff2') format('woff2'),
+  url('./assets/fonts/roboto-700.woff') format('woff');
+}
+/* roboto-700italic - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: italic;
+  font-weight: 700;
+  src: local(''),
+  url('./assets/fonts/roboto-700italic.woff2') format('woff2'),
+  url('./assets/fonts/roboto-700italic.woff') format('woff');
+}
+
+/* roboto-condensed-regular - latin */
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+  url('./assets/fonts/roboto-condensed-regular.woff2') format('woff2'),
+  url('./assets/fonts/roboto-condensed-regular.woff') format('woff');
+}
+
+/* roboto-condensed-500 - latin */
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 500;
+  src: local(''),
+  url('./assets/fonts/roboto-condensed-500.woff2') format('woff2'),
+  url('./assets/fonts/roboto-condensed-500.woff') format('woff');
+}
+
+/* roboto-condensed-700 - latin */
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 700;
+  src: local(''),
+  url('./assets/fonts/roboto-condensed-700.woff2') format('woff2'),
+  url('./assets/fonts/roboto-condensed-700.woff') format('woff');
+}

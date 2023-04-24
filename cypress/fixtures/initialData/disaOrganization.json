@@ -1,0 +1,211 @@
+{
+  "result": [{
+    "name": "x_g_dis_atat_organization",
+    "label": "Assistant to the Director (DD)",
+    "value": "ASSISTANT_TO_THE_DIRECTOR"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Chaplain Program Management Office (DDCH)",
+    "value": "CHAPLAIN_PROGRAM_MANAGEMENT_OFFICE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Chief Financial Officer / Comptroller (CP)",
+    "value": "CHIEF_FINANCIAL_OFFICER_COMPTROLLER"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Chief of Staff (DDC)",
+    "value": "CHIEF_OF_STAFF"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Combined Action Group (DDCG)",
+    "value": "COMBINED_ACTION_GROUP"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Component Acquisition Executive (CAE)",
+    "value": "COMPONENT_ACQUISITION_EXECUTIVE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "DCSC Cyber Security & Analytics (ID)",
+    "value": "DCSC_CYBER_SECURITY_AND_ANALYTICS"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "DCSC Defense Spectrum Organization (DSO)",
+    "value": "DCSC_DEFENSE_SPECTRUM_ORGANIZATION"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "DCSC Joint Enterprise Services (SD)",
+    "value": "DCSC_JOINT_ENTERPRISE_SERVICES"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "DCSC Joint Enterprise Services DoD Enterprise Mobility (SD5)",
+    "value": "DCSC_JOINT_ENTERPRISE_SERVICES_DOD_ENTERPRISE_MOBILITY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "DCSC Joint Interop Test Command (JITC)",
+    "value": "DCSC_JOINT_INTEROP_TEST_COMMAND"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "DCSC National Background Investigative System Directorate (NBIS)",
+    "value": "DCSC_NATIONAL_BACKGROUND_INVESTIGATIVE_SYSTEM_DIRECTORATE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "DCSC Resource Management (BD)",
+    "value": "DCSC_RESOURCE_MANAGEMENT"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "DISA Director Group (DD)",
+    "value": "DISA_DIRECTOR_GROUP"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "EC Chief Data Officer (OD)",
+    "value": "EC_CHIEF_DATA_OFFICER"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "EC Chief Information Officer (IO)",
+    "value": "EC_CHIEF_INFORMATION_OFFICER"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "EC Emerging Technology (EM)",
+    "value": "EC_EMERGING_TECHNOLOGY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "EC Enterprise Engineering & Governance (OE)",
+    "value": "EC_ENTERPRISE_ENGINEERING_AND_GOVERNANCE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "EC Resource Management (EC)",
+    "value": "EC_RESOURCE_MANAGEMENT"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "EC Risk Management (RE)",
+    "value": "EC_RISK_MANAGEMENT"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Executive Deputy Director (DDE)",
+    "value": "EXECUTIVE_DEPUTY_DIRECTOR"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "General Counsel (GC)",
+    "value": "GENERAL_COUNSEL"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "HC Compute Operations Office (HC3)",
+    "value": "HC_COMPUTE_OPERATIONS_OFFICE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "HC Operations Support Office (HC1)",
+    "value": "HC_OPERATIONS_SUPPORT_OFFICE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "HC Product Management Office (HC2)",
+    "value": "HC_PRODUCT_MANAGEMENT_OFFICE"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Inspector General (IG)",
+    "value": "INSPECTOR_GENERAL"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Joint Artificial Intelligence Center (JAIC)",
+    "value": "JOINT_ARTIFICIAL_INTELLIGENCE_CENTER"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Joint Forces Headquarters (JFHQ)",
+    "value": "JOINT_FORCES_HEADQUARTERS"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Joint Services Provider (JSP)",
+    "value": "JOINT_SERVICES_PROVIDER"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Joint Support Group (JSG)",
+    "value": "JOINT_SUPPORT_GROUP"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "OC Cyberspace-Operations (CE)",
+    "value": "OC_CYBERSPACE_OPERATIONS"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "OC Cyberspace-Operations DISA Pacific (PC)",
+    "value": "OC_CYBERSPACE_OPERATIONS_DISA_PACIFIC"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "OC Cyberspace-Operations Joint Staff Support Center (JC)",
+    "value": "OC_CYBERSPACE_OPERATIONS_JOINT_STAFF_SUPPORT_CENTER"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "OC Endpoint Services & Customer Support (FE)",
+    "value": "OC_ENDPOINT_SERVICES_AND_CUSTOMER_SUPPORT"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "OC Resource Management (OC)",
+    "value": "OC_RESOURCE_MANAGEMENT"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "OC Transport Services (IE)",
+    "value": "OC_TRANSPORT_SERVICES"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Office of Equality, Diversity & Inclusion (OEDI)",
+    "value": "OFFICE_OF_EQUALITY_DIVERSITY_AND_INCLUSION"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Office of Strategic Communications & Public Affairs (DDCP)",
+    "value": "OFFICE_OF_STRATEGIC_COMMUNICATIONS_AND_PUBLIC_AFFAIRS"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Pentagon Liaison Officer / Congressional Affairs Coordinator (DDC)",
+    "value": "PENTAGON_LIAISON_OFFICER_CONGRESSIONAL_AFFAIRS_COORDINATOR"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Procurement Services (PSD)",
+    "value": "PROCUREMENT_SERVICES"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Procurement Services DITCO EUR (PL5)",
+    "value": "PROCUREMENT_SERVICES_DITCO_EUR_PL5"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Procurement Services DITCO EUR (PL6)",
+    "value": "PROCUREMENT_SERVICES_DITCO_EUR_PL6"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Procurement Services DITCO PAC (PL7)",
+    "value": "PROCUREMENT_SERVICES_DITCO_PAC"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Procurement Services DITCO Scott (PL8)",
+    "value": "PROCUREMENT_SERVICES_DITCO_SCOTT"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Program Director for Culture & Employee Engagement",
+    "value": "PROGRAM_DIRECTOR_FOR_CULTURE_AND_EMPLOYEE_ENGAGEMENT"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Protocol (DDCA)",
+    "value": "PROTOCOL"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Secretary of Defense Communications",
+    "value": "SECRETARY_OF_DEFENSE_COMMUNICATIONS"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Senior Enlisted Advisor (DDS)",
+    "value": "SENIOR_ENLISTED_ADVISOR"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Small Business Programs (DDC4)",
+    "value": "SMALL_BUSINESS_PROGRAMS"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "White House Communications Agency (WHCA)",
+    "value": "WHITE_HOUSE_COMMUNICATIONS_AGENCY"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "White House Situations Support Staff (WHSSS)",
+    "value": "WHITE_HOUSE_SITUATION_SUPPORT_STAFF"
+  }, {
+    "name": "x_g_dis_atat_organization",
+    "label": "Workforce Services and Development Directorate (WSD)",
+    "value": "WORKFORCE_SERVICES_AND_DEVELOPMENT_DIRECTORATE"
+  }]
+}

@@ -1,0 +1,18 @@
+{
+  "projectTitle": " ATAT TESTProject",
+  "scope": "helloScope",
+  "validContractPercentage": 34,
+  "invalidTextContractPercentage": "test",
+  "invalidNumericContractPercentage": 55,
+  "invalidLessNumericContractPercentage": 0,
+  "projectTitle1": " ATAT TESTProject001",
+  "scope1": "helloScope0001",
+  "projectTitle2": " ATAT TESTProject002",
+  "scope2": "helloScope0002",
+  "projectTitle3": " ATAT TESTProject003",
+  "scope3": "helloScope0003",
+  "projectTitle4": " ATAT TESTProject004",
+  "scope4": "helloScope0004",
+  "projectTitle5": " ATAT TESTProject005",
+  "scope5": "helloScope0005"
+}

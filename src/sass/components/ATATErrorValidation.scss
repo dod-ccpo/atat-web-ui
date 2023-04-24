@@ -1,0 +1,30 @@
+.error--text{
+  &.error--text{
+    fieldset, 
+    fieldset:focus{
+        border-color: $error !important;
+        border-width: 2px;
+      }
+    i, 
+    label,
+    .v-text-field__suffix{
+        color: $error !important;
+    }
+  }
+
+  .atat-text-field-error{
+   
+  }
+}
+
+.customized-error-control{
+  .v-input.v-text-field--outlined ,
+  .v-input.v-text-field--is-focused{
+    fieldset,
+    i{
+      color: $error !important;
+      border-color: $error !important;
+      caret-color: $error !important;
+    }
+  }
+}

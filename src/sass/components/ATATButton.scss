@@ -1,0 +1,249 @@
+.atat-button-hover {
+  background-color: transparent !important;
+  opacity: initial !important;
+  box-shadow: none !important;
+  -ieVar-❗background-color: none !important;
+}
+
+%v-btn-text {
+  text-transform: none !important;
+  font-weight: bold !important;
+  @extend %body;
+}
+
+.v-btn {
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 7px 20px 8px !important;
+  &.v-btn--icon {
+    padding: 0 !important;
+  }
+  @extend %v-btn-text;
+
+  // removes the default darker opacity assigned by vuetify
+  &:hover::before, &:focus::before {
+    opacity: 0 !important;
+  }
+  
+  &.primary.theme--light{
+    background-color:  $primary !important;
+    color: #fff !important;
+    &:hover{
+      box-shadow: none !important;
+      background-color: $primary-dark !important;
+    }
+
+    &:active {
+      background-color: $primary-darker !important;
+    }
+  }
+  
+  &.secondary.theme--light {
+    background-color: $white !important;
+    border: 2px solid $primary !important;
+    color: $primary;
+
+    &:hover {
+      background-color: rgba($primary, 10%) !important;
+    }
+
+    &:active {
+      background-color: rgba($primary, 20%) !important;
+    }
+  }
+
+  &._normal {
+    font-weight: normal !important;
+  }
+
+  &._small-text {
+    font-size: 1.4rem !important;
+  }
+
+  &.link-button, &.tertirary.theme--light  {
+    padding: 6px 12px !important;
+  
+    &.v-btn--disabled {
+      background-color: transparent !important;
+      .v-btn__content {
+        text-decoration: none;
+        color: $disabled !important;
+      }
+
+    }
+
+    &.tooltip-button {
+      padding: 12px !important;
+    }
+
+    background-color: transparent !important;
+
+    i {
+      margin-right: 4px;
+    }
+
+    span {
+      color: $primary !important;
+      text-decoration: underline;
+      font-weight: normal;
+      opacity: 1 !important;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: $primary-lighter !important;
+    }
+
+    &.no-hover{
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: transparent !important;
+      }
+    }
+   
+
+    &.no-border {
+      span {
+        text-decoration: none !important;
+      }
+    }
+
+    &.font-weight-bold {
+      span {
+        font-weight: 700 !important;
+      }
+    }
+  }
+
+  &._quaternary.theme--light {
+    background-color: transparent !important;
+    .v-btn__content {
+      text-decoration: none;
+      color: $primary;
+      font-weight: normal;
+    }
+    &:hover {
+      background-color: $primary-lighter !important;
+    }
+  }
+
+  &.v-btn--text.theme--light {
+    .v-icon {
+      color: $primary !important;
+    }
+
+    .v-btn__content {
+      opacity: 1 !important;
+      font-weight: normal !important;
+      
+      span {
+        color: $primary !important;
+      }      
+    }
+  }
+  
+  &._icon-only {
+    background-color: transparent !important;
+    padding: 4px !important;
+    min-width: unset !important;
+    height: 32px !important;
+    width: 32px !important;
+    color: $base;
+    .v-btn__content > div {
+      display: flex;
+    }
+    &:hover {
+      background-color: $icon-only-hover !important;
+    }
+    
+    &:active {
+      background-color: $icon-only-active !important;
+    }
+
+    &.v-btn--disabled.v-btn--has-bg {
+      background-color: transparent !important;
+    }
+
+    &._plus {
+      height: 24px !important; 
+      width: 24px !important;      
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary;
+    }
+  }
+ 
+}
+
+._meatball-menu {
+  .v-list-item__title {
+    font-size: 1.4rem;
+  }
+
+  .v-list-item {
+    &:hover {
+      cursor: pointer;
+      background-color: $base-lightest;
+      &:before {
+        opacity: 0;
+        background-color: red !important;
+      }
+    }
+
+    .v-list-item__title {
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+    }
+    ._svg-icon {
+      margin-left: 8px;
+    }
+
+    &._separator-before, &._separator-before:hover {
+      position: relative;
+      margin-top: 24px;
+      &:after {
+        cursor: default;
+        content: "";
+        position: absolute;
+        top: -24px;
+        left: 0;
+        margin: 12px 0;
+        height: 1px;
+        min-height: 1px;
+        width: 100%;
+        background-color: $base-lighter;
+        opacity: 1;
+
+      }
+
+    }
+
+  }
+}
+
+._meatball-menu-button {
+  &.v-btn.v-size--default {
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+    padding: 0 !important;
+    border-radius: 4px;
+    background-color: transparent;
+    
+    &:hover {
+      background-color: $base-lightest !important;
+    }
+
+    &[aria-expanded=true] {
+      background-color: $primary-lighter !important;
+    }
+  }
+}
+

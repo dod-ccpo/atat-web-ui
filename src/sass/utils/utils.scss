@@ -1,0 +1,195 @@
+$total: 20;
+@for $i from 1 through $total {  
+    .width-#{$i*5} { width: ($i * 5%) !important}; 
+    .min-width-#{$i*5} { min-width: ($i * 5%) !important}; 
+    .max-width-#{$i*5} { max-width: ($i * 5%) !important}; 
+    .height-#{$i*5} { height: ($i * 5%) !important}; 
+    .min-height-#{$i*5} { min-height: ($i * 5%) !important}; 
+    .max-height-#{$i*5} { max-height: ($i * 5%) !important}; 
+}
+
+$total: 900;
+@for $i from 400 through $total{
+    .font-weight-#{$i} { font-weight: ($i) !important};
+    $i: $i + 100;
+} 
+
+.no-border{
+    border: none !important;
+}
+
+.no-text-decoration{
+    text-decoration: none !important;
+    text-decoration-color: transparent !important;
+    text-decoration-thickness: none !important;
+    text-decoration-style: none !important;
+}
+
+//removes most unwanted effect of gray ripple when 
+//clicking stepper steps and datepicker buttons
+.v-ripple__container{
+    display: none !important;
+}
+$biggest-border-width: 10;
+@for $i from 0 through $biggest-border-width {
+    .border-#{$i} { border-width: $i*1px !important };
+    .border-t-#{$i} { border-top-width: $i*1px !important};
+    .border-b-#{$i} {border-bottom-width: $i*1px !important ;}
+    .border-l-#{$i} {border-left-width: $i*1px !important ;}
+    .border-r-#{$i} {border-right-width: $i*1px !important ;}
+}
+
+.border-solid {
+    border: solid !important;
+}
+
+.pointer {
+    cursor: pointer !important;
+}
+
+$states: 'auto' 'scroll' 'inherit' 'initial' 'overlay' 'hidden' 'revert' 'unset' 'visible';
+@each $state in $states{
+    .overflow-#{$state}{
+        overflow: #{$state} !important;
+    }
+    .overflow-x-#{$state}{
+        overflow-x: #{$state} !important;
+    }
+    .overflow-y-#{$state}{
+        overflow-y: #{$state} !important;
+    }
+}
+
+$positions: 'static' 'relative' 'fixed' 'absolute' 'sticky';
+@each $position in $positions{
+    .position-#{$position}{
+        position: #{$position} !important;
+    }
+}
+
+// max width wrapper classes
+$widths: 500, 640, 740, 840, 760, 1200;
+@each $width in $widths {
+  .max-width-#{$width} {
+    max-width: #{$width}px !important;
+  }
+}
+
+._input-max-width-240 {
+  ._input-wrapper {
+    max-width: 240px;
+  }
+}
+
+//padding and margin modifications
+.remove-y-padding-from-cols  {
+    .col{
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+    }
+}
+
+.remove-y-margin-from-p {
+    p {
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
+    }
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.height-auto {
+    height: auto !important;
+}
+
+.ghost {
+  border-top: 2px solid #544496 !important;
+}
+
+.draggable {
+  border-top: 2px solid transparent;
+  background-color: white;
+  cursor: ns-resize;
+  
+  .drag-icon {
+    opacity: 0;
+  }
+
+  &:hover {
+    .drag-icon {
+      opacity: 1;
+    }
+  }
+
+  .drag-icon.hide-icon {
+    opacity: 0;
+  }
+
+  &.sortable-chosen {
+    .drag-icon {
+      opacity: 1;
+    }
+  }
+
+  .v-input__slot {
+    background-color: white !important;
+  }
+}
+
+.drag-img {
+  background-color: $base-lightest;
+  opacity: 0.9;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  position: absolute;
+  box-shadow: 0px 1px 8px rgba(27, 27, 27, 0.2);
+  @extend #app;
+}
+
+.drag-img-fake {
+  opacity: 0 !important;
+}
+
+._no-shadow {
+  box-shadow: none !important;
+}
+
+.default-box-shadow{
+  box-shadow: 0px 1px 4px rgba(27, 27, 27, 0.1) !important;
+}
+
+.ellipsis{
+  display:inline-block;
+  overflow:hidden;
+  vertical-align:bottom;
+}
+
+.ellipsis:after {
+  display:inline-block;
+  -webkit-animation: ellipsis-keyframes 900ms steps(4, jump-none) infinite;
+  animation: ellipsis-keyframes 900ms steps(4, jump-none) infinite;
+  content: "...";
+}
+
+@keyframes ellipsis-keyframes {
+  0%{
+    transform:translateX(-100%)
+  }
+}
+
+@-webkit-keyframes ellipsis-keyframes {
+  0%{
+    transform:translateX(-100%)
+  }
+}
+
+._shadow {
+  box-shadow: 0px 4px 10px rgba(194, 194, 194, 0.5) !important;
+}
+
+._line-height-1 {
+  line-height: 1 !important;
+}

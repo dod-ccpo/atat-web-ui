@@ -1,0 +1,105 @@
+{
+  "dashboard": {
+    "menuText": "Dashboard"
+  },
+  "acquisitions": {
+    "menuText": "Acquisitions",
+    "dropdownList": [
+      "My Packages",
+      "My Task Orders",
+      "Document Review"
+    ],
+    "acquisitionsTabs": [
+      "Open packages",
+      "Awarded task orders",
+      "Archive",
+      "All packages"
+    ],
+    "draftSubmenu": [
+      "Edit draft package",
+      "Invite contributors",
+      "Archive acquisition",
+      "Delete acquisition package"
+    ],
+    "waitingForTaskOrderSubmenu": [
+      "Add awarded task order",
+      "View completed package",
+      "Archive acquisition",
+      "Delete acquisition package"
+    ],
+    "waitingForSigSubmenu": [
+      "View completed package",
+      "Resend signature request",
+      "Cancel signature request",
+      "Archive acquisition",
+      "Delete acquisition package"
+    ],
+    "taskorderAwarded": [
+      "View task order CLIN summary",
+      "Access provisioned portfolio",
+      "View completed package"
+    ],
+    "archived": [
+      "Restore package to draft",
+      "Delete acquisition package"
+    ]
+  },
+  "portfolios": {
+    "menuText": "Portfolios",
+    "portfolioTabs": [
+      "All portfolios",
+      "Processing",
+      "Active"
+    ],
+    "processingPortfolioCardSubmenu": [
+      "View funding tracker",
+      "View task orders",
+      "Email portfolio managers",
+      "Leave this portfolio"
+    ],
+    "activePortfolioCardSubmenu": [
+      "View funding tracker",
+      "View task orders",
+      "Email portfolio managers",
+      "Leave this portfolio",
+      "Login to the CSP console"
+    ],
+    "submenu": [
+      "Invite members to portfolio",
+      "Rename portfolio",
+      "Leave this portfolio",
+      "Archive portfolio",
+      "Login to the CSP console"
+    ],
+    "tabs": [
+      "Funding Tracker",
+      "Task Orders",
+      "CSP Portal Access"
+    ],
+    "taskorderMenu": [
+      "View task order details",
+      "Request to modify task order"
+    ],
+    "roles": [
+      "ROLES",
+      "Manager",
+      "Viewer"
+    ]
+  },
+  "portals": {
+    "menuText": "Portals",
+    "dropdownList": [
+      "Global Service Desk",
+      "Mission Partner Portal"
+    ]
+  },
+  "user": {
+    "menuText": "User",
+    "dropdownList": [
+      "Profile",
+      "Contact Support",
+      "Submit Feedback",
+      "Sign out"
+    ]
+  }
+}

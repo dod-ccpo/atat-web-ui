@@ -1,0 +1,30 @@
+{
+  "result": {
+    "grade_civ": "",
+    "role": "CIVILIAN",
+    "dodaac": "",
+    "sys_updated_on": "2022-07-19 20:36:11",
+    "suffix": "",
+    "title": "",
+    "type": "FINANCIAL_POC",
+    "can_access_package": "",
+    "sys_id": "b743916987b41150ec3b777acebb3502",
+    "sys_updated_by": "prasanthi.alaparthi-ctr@ccpo.mil",
+    "phone_and_extension": "+1 (532) 784-5362",
+    "sys_created_on": "2022-07-19 20:36:11",
+    "phone_extension": "",
+    "first_name": "Andrew",
+    "formal_name": "Mr. Andrew J Smith",
+    "email": "test.ss@test.mil",
+    "sys_created_by": "prasanthi.alaparthi-ctr@ccpo.mil",
+    "sys_mod_count": "0",
+    "last_name": "Smith",
+    "middle_name": "J",
+    "sys_tags": "",
+    "salesforce_id": "",
+    "manually_entered": "false",
+    "phone": "+15327845362",
+    "rank_components": "",
+    "salutation": "MR"
+  }
+}

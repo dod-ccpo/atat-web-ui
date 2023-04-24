@@ -1,0 +1,94 @@
+// DISA GRAY (BASE)
+$base-darkest: #161b1e;
+$base-darker: #2c353b;
+$base-dark: #41494e;
+$base: #61686c;
+$base-light: #959a9d;
+$base-lighter: #e0e1e2;
+$base-lightest: #f4f5f5;
+$base-off-white: #FBFBFB;
+
+// DISA PURPLE (Primary)
+$primary-darker: #2a224b;
+$primary-dark: #3b3069;
+$primary: #544496;
+$primary-light: #a9a1ca;
+$primary-lighter: #eeecf5;
+$primary-10: #54449610;
+$primary-20: #54449620;
+
+// DISA BLUE
+$info-darker: #004f6f;
+$info-dark: #0076a6;
+$info: #009ddd;
+$info-light: #80ceee;
+$info-lighter: #e6f5fc;
+
+// DISA GREEN
+$success-darker: #315f2d;
+$success-dark: #498e43;
+$success: #62bd59;
+$success-light: #b1deac;
+$success-lighter: #eff8ee;
+
+// DISA GOLD
+$warning-darker: #80642a;
+$warning-dark: #bf963e;
+$warning-dark2: #e9a514;
+$warning: #ffc853;
+$warning-light: #ffe4a9;
+$warning-lighter: #fff9ed;
+
+// DISA RED
+$error-darker: #63031a;
+$error-dark: #940427;
+$error: #c60634;
+$error-light: #e3839a;
+$error-lighter: #f9e6ea;
+
+// DISABLED
+$disabled-darker: #9e9e9e;
+$disabled-dark: #adadad;
+$disabled: #c9c9c9;
+$disabled-light: #e6e6e6;
+
+// DISA ACCENT COLOR
+// $accent-cool-darker: 
+// $accent-cool-dark: 
+// $accent-cool: 
+// $accent-cool-light: 
+$accent-cool-lighter: #f4f5f5;
+
+// MISC
+$black: #000000;
+$offwhite: #fbfbfb;
+$white: #ffffff;
+
+// chart/data visualization colors
+$chart_purple: $primary;
+$chart_blue: #1AA7E0;
+$chart_orange: #FA9441;
+$chart_magenta: #D72D79;
+$chart_green-cool: #70E17B;
+$chart_indigo-warm: #B69FFF;
+$chart_yellow: #FACE00;
+$chart_blue-warm: #2672DE;
+$chart_mint-cool: #7EFBE1;
+$chart_orange-warm: #914734;
+
+$chart_gray: $base_lighter;
+
+// chart/data visualization color sequence
+$chart_color1: $chart_purple;
+$chart_color2: $chart_blue;
+$chart_color3: $chart_orange;
+$chart_color4: $chart_magenta;
+$chart_color5: $chart_green-cool;
+$chart_color6: $chart_indigo-warm;
+$chart_color7: $chart_yellow;
+$chart_color8: $chart_blue-warm;
+$chart_color9: $chart_mint-cool;
+$chart_color10: $chart_orange-warm;
+
+$icon-only-hover: #ededed;
+$icon-only-active: #eeecf5;

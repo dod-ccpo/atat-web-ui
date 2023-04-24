@@ -1,0 +1,26 @@
+._search-input.v-text-field {
+  fieldset {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    top: -4px;
+  }
+  .v-text-field__details {
+    display: none;
+  }
+  .v-input__slot {
+    margin-bottom: 0;
+  }
+}
+
+._search-button.v-btn.theme--light {
+  &.v-size--default {
+    height: 40px;
+    min-width: 48px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding: 7px 15px 8px !important;
+  }
+  &.v-btn--disabled {
+    background-color: $disabled-dark !important;
+  } 
+}

@@ -1,0 +1,15 @@
+.list-circle {
+    @extend %step-circle;
+    border-color: $primary;
+    background-color: $primary-lighter;   
+    color: $primary; 
+    letter-spacing: normal !important;
+    white-space: normal !important;
+    display: inline-block;
+}
+
+.package-list {
+  background: $primary-lighter;
+  border-radius: 8px;
+
+}

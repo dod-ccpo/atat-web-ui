@@ -1,0 +1,96 @@
+._atat-alert {
+  display: block;
+  color: $base-darkest;
+  border-radius: 4px;
+  box-shadow: none;
+  border: 1px solid transparent;
+  padding: 16px 24px;
+  position: relative;
+
+  &._attach-to-bottom-of-card {
+    margin-top: 0 !important;
+    border-radius: 8px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  
+  &._scrollable {
+    &:before, &:after {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      background: rgb(230,245,252);
+    }
+  
+    &:before {
+      top: 0;
+      height: 24px;
+      background: linear-gradient(180deg, rgba(230,245,252,1) 0%, rgba(230,245,252,0) 100%);    
+    }
+    
+    &:after {
+      bottom: 0;
+      height: 60px;
+      background: linear-gradient(180deg, rgba(230,245,252,0) 0%, rgba(230,245,252,1) 100%);    
+    }
+  
+    ._content {
+      overflow-x: hidden;
+      overflow-y: scroll;
+      position: relative;
+    }
+  }
+
+  a {
+    text-decoration: underline;
+    color: $primary !important;
+  }
+
+  &._callout {
+    padding: 24px;
+    border-radius: 8px;
+  }
+
+  &._info-alert {
+    background-color: $info_lighter;
+    border-color: $info;
+    
+    .v-icon {
+      color: $info;
+    }
+  }
+
+  &._error-alert {
+    background-color: $error-lighter;
+    border-color: $error;
+
+    .v-icon {
+      color: $error;
+    }
+  }
+  
+  &._warning-alert {
+    background-color: $warning_lighter;
+    border-color: $warning-dark2;
+    
+    .v-icon {
+      color: $warning-dark2;
+    }
+  }
+
+  &._success-alert {
+    background-color: $success-lighter;
+    border-color: $success;
+    
+    .v-icon {
+      color: $success;
+    }
+  }
+
+  &._border-left-thick {
+    border-left-width: 8px !important;
+  }
+
+}

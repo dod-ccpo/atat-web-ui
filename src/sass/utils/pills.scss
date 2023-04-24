@@ -1,0 +1,174 @@
+div#inputWidthFaker {
+  display: inline-block;
+  font-size: 16px;
+  letter-spacing: 0;
+  position: absolute;
+  left: -10000px;
+  top: -10000px;
+}
+
+._pillbox-wrapper {
+  border:1px solid $base_dark;
+  border-radius: 4px;
+  height: 118px;
+  margin-bottom: 5px;
+  width: 100%;
+  max-width:550px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  &._focused {
+    border-color: $primary;
+    outline: 1px solid $primary;
+  }
+}
+
+._dupe-entry-alert-wrapper {
+  position: relative;
+  ._dupe-entry-alert {
+    position: absolute;
+    top: -26px;
+    left: 1px;
+    right: 2px;
+    padding: 0;
+    border-bottom-right-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    font-size: 14px !important;
+    z-index: 10;
+  }
+}
+
+._pill.v-text-field {
+  display: inline-block;
+  height: 32px;
+  border-radius: 15px;
+  background-color: $primary_lighter;
+  padding: 0 4px 0 12px;
+  line-height: 22px;
+  margin: 3px;
+  position: relative;
+  z-index: 2;
+  border: 1px solid transparent;
+  &:not(.v-input--is-focused) {
+    &:hover, &:focus, &:active {
+      border-color: $primary;
+    }
+  }
+  &:focus {
+    border-color: $primary;
+    outline: none;
+  }
+
+  &._invalid-entry:not(.v-input--is-focused) {
+    background-color: $error-lighter;
+    border-color: transparent;
+    padding-left: 30px;
+    &:hover, &:focus, &:active {
+      border-color: $error-dark;
+    }
+    &:before {
+      font-family: 'Material Icons';
+      content: "error";
+      -webkit-font-feature-settings: 'liga';
+      color: $error;
+      position: absolute;
+      top: 4px;
+      left: 3px;
+      font-size: 24px;
+    }
+  }
+
+  input {
+    height: 29px;
+    padding: 0;
+  }
+
+  &.v-input--is-focused {
+    background-color: transparent;
+    .v-input__append-inner {
+      opacity: 0;
+    }
+  }
+  .v-input__slot {
+    &:before, &:after {
+      display: none;
+    }
+    margin-bottom: 0 !important;
+  }
+  .v-input__control {
+    background-color: transparent !important;
+  }
+  .v-input__append-inner {
+    margin-top: 3px;
+    .v-icon {
+      font-size: 20px;
+      transform-style: preserve-3d;
+      &:hover, &:focus, &:active {
+        color: black;
+        &:after {
+          opacity: 1;
+          color: white;
+          transform: translateZ(-1px);
+          transition: none !important;
+        }
+      }
+    }
+  }
+  .v-icon.v-icon::after {
+    transition: none !important;
+  }
+  .v-text-field__details {
+    display: none !important;
+  }
+}
+
+._pill.v-chip.theme--light {
+  background-color: $primary-lighter !important;
+  margin: 2px 8px 2px 0;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+
+  &:hover {
+    background-color: $primary-lighter !important;
+    border-color: $primary;
+    &:before {
+      opacity: 0;
+    }
+  }
+
+  .v-chip__content {
+    text-transform: none;
+    color: $base-darker;
+    font-weight: normal;
+    padding-left: 4px;
+    font-size: 1.6rem;
+  }
+
+  button {
+    border-radius: 50%;
+    background-color: transparent;
+    color: $base-darker;
+    border: 1px solid transparent;
+    max-width: none;
+    max-height: none;
+    width: 20px;
+    height: 20px;
+    &:hover, &:focus {
+      background-color: white;
+      color: $base-darker;
+      opacity: 1;
+    }
+    &:focus-visible {
+      border-color: $primary;
+    }
+  }
+  .v-icon {
+    &:hover {
+      opacity: 1;
+    }
+    &.v-icon::after {
+      opacity: 0 !important;
+    }
+  
+  }
+}

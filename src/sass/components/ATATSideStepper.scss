@@ -1,0 +1,262 @@
+%step-circle{
+  flex: 0 0 28px;
+  font-size: 1.2rem;
+  border: 1px solid $base-light;
+  margin-right: 12px;
+  text-align: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  line-height: 26px;
+  background-color: $white;
+  outline: 2px solid $white;
+  z-index: 2;
+}
+
+.theme--light {
+  &.v-navigation-drawer {
+    &.global-side-nav-bar {
+      border-right: 1px solid $base-lighter;
+      background-color: $white;
+      z-index: 2;
+      .v-navigation-drawer__border {
+        display: none !important;
+      }
+
+      .v-navigation-drawer__content{
+        overflow-y: hidden;
+        .v-list {
+          padding: 24px 24px 0px 24px;
+          overflow-y: scroll;
+          max-height: calc(100vh - 77px);
+          .v-list-item { 
+            align-items: flex-start;
+            flex-direction: column;
+            min-height: unset;
+            padding: 0;
+            &:last-child {
+              a {
+                &:after {
+                  display: none;
+                }
+              }
+            }
+            a {
+              font-size: 1.6rem;
+              text-decoration: none;
+              color: $base-dark !important;
+              margin-bottom: 20px;
+              position: relative;
+              display: flex;
+              width: 100%;
+              &:focus-visible {
+                .step-text {
+                  text-decoration: underline;
+                }
+              }
+              &:after {
+                position: absolute;
+                left: 14px;
+                bottom: -30px;
+                content: "";
+                width: 1px;
+                height: 100%;
+                background-color: $base-light;
+              }
+              &.substep {
+                margin-bottom: 12px;
+                &:last-child {
+                  margin-bottom: 20px;
+                }
+                &:after {
+                  bottom: -30px;
+                  height: calc(100% + 20px);
+                  background-color: $primary;
+                }
+                .step-text {
+                  margin-left: 9px;
+                }
+                &.step-complete {
+                  &:after {
+                    // vertical line
+                    background-color: $primary;
+                  }
+                  .substep-circle {
+                    background-color: $white;
+                    border-color: $white;
+                    .completed-check {
+                      @extend ._completed-check;
+                      .v-icon {
+                        right: -3px !important;
+                        font-size: 13px !important;                    
+                      }
+                    }
+                  }
+                }
+              }
+              .step-text {
+                margin-top: 2px;
+              }
+              .step-circle {
+                @extend %step-circle;
+              }
+              .substep-circle {
+                flex: 0 0 28px;
+                border: 1px solid $primary;
+                margin: 9px 12px 0 10px;
+                width: 9px;
+                max-width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                line-height: 26px;
+                background-color: $white;
+                z-index: 2;
+                position: relative;
+              }
+              &:hover {
+                .step-text {
+                  color: $base-darkest;
+                }
+                .step-circle {
+                  background-color: $primary-lighter;
+                  border-color: $primary;
+                }
+                .substep-circle {
+                  border-color: $primary;
+                  background-color: $primary;
+                }
+                &.step-complete {
+                  .step-circle {
+                    background-color: $success-lighter;
+                  }
+                }
+              }
+
+              &.step-complete {
+                &:after {
+                  background-color: $success !important;
+                }
+                .step-text {
+                  color: $base-darkest;
+                }
+                .step-circle {
+                  border-color: $success;
+                  position: relative;
+                  color: $success-dark;
+                  .completed-check {
+                    @extend ._completed-check;
+                  }
+                }
+              }            
+              &.router-link-exact-active  {
+                .step-text {
+                  color: $primary;
+                  font-weight: 500;
+                }
+                .step-circle {
+                  border-color: $primary;
+                  background-color: $primary-lighter;   
+                  color: $primary;            
+                }
+                .substep-circle {
+                  border-color: $primary;
+                  background-color: $primary;
+                }
+                &:after {
+                  background-color: $primary;
+                }
+                &:hover {
+                  &:not(.substep) {
+                    .step-text {
+                      color: $base-darkest;
+                    }
+                    .step-circle {
+                      background-color: $primary-lighter;   
+                    } 
+                  }
+                }
+              }
+              &.disabled {
+                color: $base-light !important;
+                pointer-events: none;
+                cursor: not-allowed;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+              }
+            }
+            &.active-step {
+              a.step {
+                &:hover {
+                  .step-text {
+                    color: $base-darkest;
+                  }
+                }
+                &:after {
+                  background-color: $primary;
+                }
+                .step-text {
+                  font-weight: 500;
+                  color: $primary;  
+                }
+                .step-circle {
+                  color: $primary !important;
+                  border-color: $primary !important;
+                  background-color: $primary-lighter;
+                }
+    
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+._completed-check {
+  display: block;
+  position: absolute;
+  height: 12px;
+  width: 12px;
+  top: -1px;
+  right: 0;
+  &:after {
+    content: "";
+    position: absolute;
+    background-color: $white;
+    top: 0;
+    right: -3px;
+    line-height: 1;
+    z-index: 1;
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    border-radius: 50%;
+  }
+  .v-icon {
+    position: absolute;
+    top: -1px;
+    right: -5px;
+    font-size: 12px;
+    color: $success;
+    z-index: 2;
+  }
+}
+
+._stepper-progress-bar {
+  width: 100%;
+  background-color: $white;
+  z-index: 3;
+  font-size: 1.4rem;
+  border-bottom: 1px solid $base-lighter;
+  padding: 20px 24px;
+  .v-progress-linear--rounded {
+    border-radius: 6px;
+  }
+  .v-progress-linear__background {
+    opacity: 1 !important;
+    background-color: $primary-lighter !important;
+  }
+}

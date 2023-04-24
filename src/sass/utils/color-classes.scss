@@ -1,0 +1,90 @@
+.theme--light.v-application {
+  color: $base_darkest !important;
+  .bg-primary-lighter { background-color: $primary-lighter !important; }
+  .bg-primary-light   { background-color: $primary-light !important; }
+  .bg-primary         { background-color: $primary !important; }
+  .bg-primary-dark    { background-color: $primary-dark !important; }
+  .bg-primary-darker  { background-color: $primary-darker !important; }
+
+  .bg-primary-5 { background-color: rgba($primary, 0.05) !important };
+
+  .text-primary-lighter  { color: $primary-lighter !important; }
+  .text-primary-light    { color: $primary-light !important; }
+  .text-primary          { color: $primary !important; }
+  .text-primary-dark     { color: $primary-dark !important; }
+  .text-primary-darker   { color: $primary-darker !important; }
+
+  .text-warning-dark2    { color: $warning-dark2 !important; }
+
+  .bg-base-darkest  { background-color: $base-darkest !important; }
+  .bg-base-darker   { background-color: $base-darker !important; }
+  .bg-base-dark     { background-color: $base-dark !important; }
+  .bg-base          { background-color: $base !important; }
+  .bg-base-light    { background-color: $base-light !important; }
+  .bg-base-lighter  { background-color: $base-lighter !important; }
+  .bg-base-lightest { background-color: $base-lightest !important; }
+  .bg-base-off-white { background-color: $base-off-white !important; }
+
+  .bg-white     { background-color: $white !important; }
+  .bg-offwhite  { background-color: $offwhite !important; }
+
+  .text-base-darkest   { color: $base-darkest !important; }
+  .text-base-darker    { color: $base-darker !important; }
+  .text-base-dark      { color: $base-dark !important; }
+  .text-base           { color: $base !important; }
+  .text-base-light     { color: $base-light !important; }
+  .text-base-lighter   { color: $base-lighter !important; }
+  .text-base-lightest  { color: $base-lightest !important; }
+
+  .text-white { color: $white };
+
+  .text-error           { color: $error !important; }
+  .text-success-dark    { color: $success-dark !important; }
+
+  .border-base-darkest  { border-color: $base-darkest !important; }
+  .border-base-darker   { border-color: $base-darker !important; }
+  .border-base-dark     { border-color: $base-dark !important; }
+  .border-base          { border-color: $base !important; }
+  .border-base-light    { border-color: $base-light !important; }
+  .border-base-lighter  { border-color: $base-lighter !important; }
+  .border-base-lightest { border-color: $base-lightest !important; }
+
+  // DISA BLUE
+  .bg-info-darker   { background-color: $info-darker !important; }
+  .bg-info-dark     { background-color: $info-dark !important; }
+  .bg-info          { background-color: $info !important; }
+  .bg-info-light    { background-color: $info-light !important; }
+  .bg-info-lighter  { background-color: $info-lighter !important; }
+
+  // DISA GREEN
+  .bg-success-darker  { background-color: $success-darker !important; }
+  .bg-success-dark    { background-color: $success-dark !important; }
+  .bg-success         { background-color: $success !important; }
+  .bg-success-light   { background-color: $success-light !important; }
+  .bg-success-lighter { background-color: $success-lighter !important; }
+
+  // DISA GOLD
+  .bg-warning-darker  { background-color: $warning-darker !important; }
+  .bg-warning-dark    { background-color: $warning-dark !important; }
+  .bg-warning         { background-color: $warning !important; }
+  .bg-warning-light   { background-color: $warning-light !important; }
+  .bg-warning-lighter { background-color: $warning-lighter !important; }
+
+  // DISA RED
+  .bg-error-darker  { background-color: $error-darker !important; }
+  .bg-error-dark    { background-color: $error-dark !important; }
+  .bg-error         { background-color: $error !important; }
+  .bg-error-light   { background-color: $error-light !important; }
+  .bg-error-lighter { background-color: $error-lighter !important; }
+
+  // DISABLED
+  .bg-disabled-dark   { background-color: $disabled-dark !important; }
+  .bg-disabled        { background-color: $disabled !important; }
+  .bg-disabled-light  { background-color: $disabled-light !important; }
+
+  .text-disabled      { color: $disabled-darker !important; }
+}
+
+.bg-transparent {
+  background-color: transparent !important;
+}

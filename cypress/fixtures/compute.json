@@ -1,0 +1,15 @@
+{
+  "subtleClassAlert": "Your classification requirements are missing, so we won’t be able to gather all details for your unique requirements at this time. To streamline this process, we recommend revisiting the Contract Details section before proceeding.",
+  "contractDetailsLink": "revisiting the Contract Details section",
+  "formSectionOneHeader": " 1.  Tell us about Instance #1 ",
+  "classLevelLabel": " What classification level is this instance deployed in? ",
+  "descriptionLabelText": " Describe the anticipated need and usage of this instance",
+  "formSectionTwoHeader": "2. Instance configurations",
+  "operSysLicenLabel": " Operating system and licensing ",
+  "regionTooltipTxt": "This is the geographic location where your public cloud resources are located, e.g., within the continental U.S. (CONUS) or outside of the continental U.S. (OCONUS). If you need a certain location, select Other and enter your specifications.",
+  "classLevelTooltipTxt": "The levels listed below are based on the overall classification requirements you previously specified.",
+  "osTooltipTxt": "Specify the type of OS you want to run your instance on. Provide details about your licensing scenario, to include the number of licenses.",
+  "cpuTooltipTxt": "A vCPU, or virtual centrallized processing unit, represents a portion or share of the underlying, physical CPU that is assigned to a particular virtual machine.",
+  "memoryTooltipTxt": "Enter the amount of Random Access Memory (RAM) you need to store data short-term for performing computing operations.",
+  "storageAmountTooltipTxt": "Enter the amount of storage you need to access and store data on a long-term basis."
+}
