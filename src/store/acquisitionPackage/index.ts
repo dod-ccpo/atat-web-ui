@@ -729,7 +729,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public getInitialFairOpportunity() {
+  public getInitialFairOpportunity(): FairOpportunityDTO {
     return initialFairOpportunity();
   }
   @Mutation
@@ -836,10 +836,26 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.projectTitle;
   }
 
-  @Mutation
-  public setFairOpportunity(value: FairOpportunityDTO): void {
-    this.fairOpportunity = value;
+  @Action({rawError: true})
+  public async setFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+    this.doSetFairOpportunity(value);
+    if (this.fairOpportunity && this.fairOpportunity.sys_id) {
+      await api.fairOpportunityTable.update(
+        this.fairOpportunity.sys_id,
+        this.fairOpportunity
+      );
+    } else if (this.fairOpportunity && !this.fairOpportunity.sys_id) {
+      await api.fairOpportunityTable.create(this.fairOpportunity);
+    }
   }
+
+  @Mutation
+  public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+    this.fairOpportunity = this.fairOpportunity
+      ? Object.assign(this.fairOpportunity, value)
+      : value;
+  }
+
   @Mutation
   public setPackageDocumentsSigned(value: PackageDocumentsSignedDTO): void {
     const acquisition_package = typeof value.acquisition_package === "object"
