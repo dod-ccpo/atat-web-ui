@@ -5,7 +5,7 @@ import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CurrentContractDTO,
-  FairOpportunityDTO, // EJY
+  FairOpportunityDTO,
   EvaluationPlanDTO,
   GFEOverviewDTO,
   OrganizationDTO,
