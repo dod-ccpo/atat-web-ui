@@ -66,7 +66,7 @@ import {Component, Mixins} from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import FairOppExceptions from "./components/FairOppExceptions.vue"
 
-import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -79,8 +79,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class Exceptions extends Mixins(SaveOnLeave) {
-  private jaTemplateUrl = "";
-  private mrrTemplateUrl = "";
+
   private selectedException 
     = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
 
@@ -155,22 +154,16 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<FairOpportunityDTO>({storeProperty: StoreProperties.FairOpportunity});
+    const storeData = AcquisitionPackage.fairOpportunity;
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity;
     }
-
-    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('ja');
-    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('mrr');
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage
-          .saveData<FairOpportunityDTO>({data: this.currentData,
-            storeProperty: StoreProperties.FairOpportunity});
+        await AcquisitionPackage.setFairOpportunity(this.currentData)
       }
     } catch (error) {
       console.log(error);
