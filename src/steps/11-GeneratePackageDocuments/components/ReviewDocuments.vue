@@ -27,8 +27,10 @@
             documents</strong> indicated below.
           </li>
           <li class="mb-2">Email your downloaded package and signed documents to DITCO for 
-              processing. <a href="mailto:disa.scott.ditco.mbx.ditco-jwcc@mail.mil">
-                disa.scott.ditco.mbx.ditco-jwcc@mail.mil</a> 
+              processing. 
+              <a :href="createMailToLink">
+                  disa.scott.ditco.mbx.ditco-jwcc@mail.mil
+              </a> 
           </li>
           <li class="mb-2">
             Once a task order is awarded, you can return to ATAT and we’ll help you 
@@ -153,6 +155,7 @@ import IGCE from "@/store/IGCE";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import { signedDocument } from "types/Global";
+import OrganizationData from "@/store/organizationData";
 
 
 @Component({
@@ -189,6 +192,31 @@ export default class ReviewDocuments extends Vue {
   get ditcoUser():boolean {
     return AcquisitionPackage.acquisitionPackage?.contracting_shop === "DITCO"
   }
+
+  get createMailToLink(): string{
+    const mailTo = "mailto:disa.scott.ditco.mbx.ditco-jwcc@mail.mil" 
+    return  mailTo + this.subjectLine + this.emailBody; 
+  } 
+
+  get subjectLine(): string{
+    const agency = AcquisitionPackage.getSelectedAgencyAcronym;
+    const orgName = agency.toUpperCase() === "DISA" 
+      ? OrganizationData.disa_org_data.find(
+        o=>o.value === AcquisitionPackage.organization?.disa_organization)?.label
+      : AcquisitionPackage.organization?.organization_name
+    const packageTitle = AcquisitionPackage.projectTitle;
+    return "?subject=" + agency +  " " + orgName + " - " + packageTitle + " submitted for JWCC"; 
+  }
+
+  get emailBody():string{
+    const org = AcquisitionPackage.contactInfo;
+    return "&body=A JWCC requirements package was submitted for review. All completed templates, " +
+      "signed documents, and supporting documentation are attached." +
+      "%0D%0A%0D%0A" +
+      "For more information regarding this package, please contact " + 
+      org?.formal_name + " at " + org?.email + "."
+  }
+
   private async update(): Promise<void> {
     this._isGenerating = true;
   }
