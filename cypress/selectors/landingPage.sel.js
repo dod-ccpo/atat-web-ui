@@ -16,5 +16,8 @@ module.exports = {
   helpResourceCards: "#HelpfulResourcesCards",
   helpResourceCardsHeaders: ".pa-6 h3",
   helpButtons: ".pa-6 button",
-  alert:"#Alert"
+  alert: "#Alert",
+  acqPackageaccordion: "#PackagesAccordion",
+  acqCard0: "#PackagesAccordion #Package0",
+  acqPackage0:"#Portfolio0"
 }

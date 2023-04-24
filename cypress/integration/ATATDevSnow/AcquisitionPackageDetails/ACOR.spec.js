@@ -1,12 +1,16 @@
-import { bootstrapMockApis,randomNumber,randomString, prefixId} from "../../../helpers";
+import { bootstrapMockApis, randomNumber, randomString, prefixId,randomAlphaNumeric }
+  from "../../../helpers";
 import common from "../../../selectors/common.sel";
+import co from "../../../selectors/contractOffice.sel";
 import contact from "../../../selectors/contact.sel";
 import commonCorAcor from "../../../selectors/commonCorAcor.sel";
 import acor from "../../../selectors/acor.sel";
 
 describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
     
-  let contactInfo;
+  let contactInfo;  
+  let pt = "TC-Step-1-COR-" + randomAlphaNumeric(5);
+  let scope = "Project Scope-" + randomString(5);  
     
   beforeEach(() => {
     bootstrapMockApis();
@@ -17,26 +21,36 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
 
     cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
+    cy.selectDitcoOption(co.radioDITCO, "DITCO");
+    cy.textExists("#Step_AcquisitionPackageDetails .step-text", " Acquisition Package Details ");
+    //Verify the Substeps are  visible
+    cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");    
+    cy.fillNewAcquisition(pt, scope);
   });
 
-  it("TC1: ACOR: Option is Yes: Selected Contact Information", () => {
-    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
+  //Temporarily skipping this tc, this functionality not avilable on UI 
+  it.skip("TC1: ACOR: Option is Yes: Selected Contact Information", () => {
+    cy.clickDevToggleBtn();
+    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
+    cy.activeStep(common.subStepContactInformationTxt);
 
     //Navigates to Contact information
-    cy.textExists(common.header, "Let’s confirm your contact information");
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
 
+    //select radio button
+    cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIVILIAN");   
+    
     //Click on Continue button
-    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
-    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.btnClick(common.continueBtn, " Continue ");
 
     //navigate to COR
-    cy.textExists(
-      common.header,
-      " Let’s gather info about your Contracting Officer’s Representative (COR) "
+    cy.waitUntilElementIsGone(contact.phoneInputBox);
+    cy.verifyPageHeader(
+      "Let’s gather info about your Contracting Officer’s Representative (COR)"
     );        
         
     //Click on Continue button    
-    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.btnExists(common.continueBtn, " Continue ").scrollIntoView().click();
 
     //navigates to ACOR option to select yes or no
     cy.acorOption(acor.yesRadioBtn, "true");
@@ -66,35 +80,40 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
 
   });  
 
-  it("TC2: ACOR: Option is true: Manually enter Contact information", () => {
-    cy.clickSideStepper(common.subStepContactInformationLink," Contact Information "); 
+  it("TC2: ACOR: Option is true: Enter ACOR information", () => {
+    cy.clickDevToggleBtn();
+    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
+    cy.activeStep(common.subStepContactInformationTxt);
 
     //Navigates to Contact information
-    cy.textExists(common.header, "Let’s confirm your contact information");
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
 
+    //select radio button
+    cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIVILIAN");   
+    
     //Click on Continue button
-    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
-    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.btnClick(common.continueBtn, " Continue ");
 
     //navigate to COR
-    cy.textExists(
-      common.header,
-      " Let’s gather info about your Contracting Officer’s Representative (COR) "
+    cy.waitUntilElementIsGone(contact.phoneInputBox);
+    cy.verifyPageHeader(
+      "Let’s gather info about your Contracting Officer’s Representative (COR)"
     );        
         
-    //Click on Continue button
-    cy.btnExists(common.continueBtn, " Continue ").click();
+    //Click on Continue button    
+    cy.btnExists(common.continueBtn, " Continue ").scrollIntoView().click();   
+    const contactHeaderTxtSelector = prefixId(commonCorAcor.contactHeaderTxt, "COR_");
+    cy.waitUntilElementIsGone(contactHeaderTxtSelector);
 
     //navigates to ACOR option to select yes or no
     cy.acorOption(acor.yesRadioBtn, "true");
 
     //manually enter the information
-    cy.manuallyEnterContactInformation(
+    cy.manuallyEnterContactInformation(      
       "ACOR_",
-      " Manually enter your ACOR’s contact information ",
       " Your ACOR’s Contact Information ",
       " What role best describes your ACOR’s affiliation with the DoD? ",
-      "#Radio_Military",
+      contact.militaryRadioBtn,
       "MILITARY"
     );
     const contactDetails = {
@@ -119,32 +138,38 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
       phoneInputSelector,
       "56987412564");
 
-    //radio butttons        
-    cy.radioBtn(commonCorAcor.accessYesRadioBtn, "YES").click({ force: true });
-
     //Click on Continue button
-    cy.btnExists(common.continueBtn,  " Continue ").click();
+    cy.btnExists(common.continueBtn, " Continue ").click();
+    const acorHeaderTxtSelector = prefixId(commonCorAcor.contactHeaderTxt, "ACOR_");
+    cy.waitUntilElementIsGone(acorHeaderTxtSelector);
+    cy.verifyPageHeader("Let’s see if you qualify for an exception to fair opportunity");
     
   });
 
   it("TC3: ACOR: Option is No", () => {
-    cy.clickSideStepper(common.subStepContactInformationLink," Contact Information "); 
+    cy.clickDevToggleBtn();
+    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
+    cy.activeStep(common.subStepContactInformationTxt);
 
     //Navigates to Contact information
-    cy.textExists(common.header, "Let’s confirm your contact information");
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
 
+    //select radio button
+    cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIVILIAN");   
+    
     //Click on Continue button
-    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
-    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.btnClick(common.continueBtn, " Continue ");
 
     //navigate to COR
-    cy.textExists(
-      common.header,
-      " Let’s gather info about your Contracting Officer’s Representative (COR) "
+    cy.waitUntilElementIsGone(contact.phoneInputBox);
+    cy.verifyPageHeader(
+      "Let’s gather info about your Contracting Officer’s Representative (COR)"
     );        
         
-    //Click on Continue button
-    cy.btnExists(common.continueBtn, " Continue ").click();
+    //Click on Continue button    
+    cy.btnExists(common.continueBtn, " Continue ").scrollIntoView().click();   
+    const contactHeaderTxtSelector = prefixId(commonCorAcor.contactHeaderTxt, "COR_");
+    cy.waitUntilElementIsGone(contactHeaderTxtSelector);
 
     //navigates to ACOR option to select yes or no
         
@@ -153,39 +178,37 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
   });  
 
   it("TC4: ACOR:Field Validations", () => {
-    cy.clickSideStepper(common.subStepContactInformationLink," Contact Information "); 
+    cy.clickDevToggleBtn();
+    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
+    cy.activeStep(common.subStepContactInformationTxt);
 
     //Navigates to Contact information
-    cy.textExists(common.header, "Let’s confirm your contact information");
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
 
+    //select radio button
+    cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIVILIAN");   
+    
     //Click on Continue button
-    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
-    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.btnClick(common.continueBtn, " Continue ");
 
     //navigate to COR
-    cy.textExists(
-      common.header,
-      " Let’s gather info about your Contracting Officer’s Representative (COR) "
+    cy.waitUntilElementIsGone(contact.phoneInputBox);
+    cy.verifyPageHeader(
+      "Let’s gather info about your Contracting Officer’s Representative (COR)"
     );        
         
-    //Click on Continue button
-    cy.btnExists(common.continueBtn, " Continue ").click();
-    cy.acorOption(acor.yesRadioBtn, "true");
-    //Validation message for search
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.findElement(commonCorAcor.searchContactInput).focus()
-      .tab()
-      .wait(1000).then(() => {
-        cy.checkErrorMessage(
-          commonCorAcor.searchError,
-          "Please search for or manually enter your ACOR contact information.");
-      });
-    cy.btnExists(commonCorAcor.contactFormToggle,
-      " Manually enter your ACOR’s contact information ")
-      .click();
+    //Click on Continue button    
+    cy.btnExists(common.continueBtn, " Continue ").scrollIntoView().click();   
+    const contactHeaderTxtSelector = prefixId(commonCorAcor.contactHeaderTxt, "COR_");
+    cy.waitUntilElementIsGone(contactHeaderTxtSelector);
+
+    //navigates to ACOR option to select yes or no
+    cy.acorOption(acor.yesRadioBtn, "true");    
+    
     cy.findElement(commonCorAcor.contactAffRadioGroupTxt).scrollIntoView();
     //Validation message for ACOR’s role
-    cy.findElement(contact.militaryRadioBtn).tab().tab()
+    cy.findElement(contact.militaryRadioBtn).focus();
+    cy.clickSomethingElse(commonCorAcor.contactRoleError)
       .then(() => {
         cy.checkErrorMessage(commonCorAcor.contactRoleError, "Please enter your ACOR’s role.");
       });
@@ -197,12 +220,12 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
     const branchDropdown = prefixId(commonCorAcor.serviceBranchDropdown, prefix);
 
     cy.findElement(branchDropdown).focus()
-      .tab().then(() => {
-        selector = prefixId(commonCorAcor.serviceBranchError, prefix);
-        cy.checkErrorMessage(
-          selector,
-          "Please select your ACOR’s service branch.");
-      })
+    cy.clickSomethingElse(selector).then(() => {
+      selector = prefixId(commonCorAcor.serviceBranchError, prefix);
+      cy.checkErrorMessage(
+        selector,
+        "Please select your ACOR’s service branch.");
+    })
         
     cy.findElement(branchDropdown).click({ force: true });
     selector = prefixId(commonCorAcor.serviceBranchDropdownList, prefix);
@@ -238,10 +261,16 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
       phoneErrorSelector,
       "Please enter your ACOR’s phone number"
     );
+    const pNo = randomNumber(10);
+    cy.findElement(phoneSelector).type(pNo);
+    cy.clickSomethingElse(branchDropdown).then(() => {
+      cy.findElement(phoneSelector).scrollIntoView();
+      cy.findElement(phoneErrorSelector).should("not.exist");      
+    }); 
     //US phone Number is not in standard format
     const phoneNumber = randomNumber(8)
-    cy.findElement(phoneSelector).type(phoneNumber)
-      .blur({ force: true })
+    cy.findElement(phoneSelector).clear().type(phoneNumber)
+    cy.clickSomethingElse(phoneErrorSelector)
       .then(() => {
         cy.checkErrorMessage(
           phoneErrorSelector,
@@ -255,6 +284,12 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
       emailErrorSelector,
       "Please enter your ACOR’s email address."
     );
+    const validEmail = randomString(5)+"@test.mil"
+    cy.findElement(emailSelector).type(validEmail);
+    cy.clickSomethingElse(emailSelector).then(() => {
+      cy.findElement(emailSelector).scrollIntoView();
+      cy.findElement(emailErrorSelector).should("not.exist");      
+    });
     // email in standard email format
     const email = randomString(5) + "@test.com"
     cy.findElement(emailSelector).should("be.visible").clear()
