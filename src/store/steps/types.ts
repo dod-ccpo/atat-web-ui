@@ -1,6 +1,7 @@
 export type StepRouteResolver = (current: string) => string;
 export type StepPathResolver = (current: string, direction: string)=> string;
 export interface StepInfo {
+    continueButtonColor: string;
     stepNumber: string;
     stepName: string;
     stepLabel: string;
@@ -10,6 +11,7 @@ export interface StepInfo {
     additionalButtons: AdditionalButton[];
     backButtonText: string | undefined;
     continueButtonText: string | undefined;
+    altContinueAction?: string | undefined;
     completed: boolean | undefined;
     completePercentageWeight: number | undefined;
     stepCompleteOnEnter: string | undefined;

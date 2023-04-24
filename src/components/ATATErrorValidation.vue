@@ -9,7 +9,7 @@
       <div>
         <v-icon class="text-base-error icon-20 ma-1 mt-0" color="error">error</v-icon>
       </div>
-      <div class="field-error ml-2" v-html="errorMessages[idx]"></div>
+      <div class="field-error ml-2 text-left" v-html="errorMessages[idx]"></div>
     </div>
   </div>
 </template>

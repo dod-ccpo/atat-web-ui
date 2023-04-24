@@ -1,50 +1,38 @@
 <template>
   <v-card id="StartBuildingPackageCard" class="text-center">
-    <h2 class="h1 text-primary mb-3">
+    <h2 class="h1 text-primary mb-5">
       Already have an existing JWCC task order?
     </h2>
-    <p>
-      We’ll gather a few details about your task order and start provisioning 
-      your cloud resources with your CSP.
+    <p class="mb-8">
+      We’ll gather details about your task order to start provisioning your cloud resources.
     </p>
 
-    <ATATSearch 
-      buttonText="Search"
-      placeHolder="Search Task Order Number"
-      class="mb-4 d-inline-block"
+    <TaskOrderSearch
+      :TONumber.sync="TONumber"
+      @startProvisionWorkflow="startProvisionWorkflow"
     />
-
-    <v-btn 
-      id="LearnMoreTOSearch"
-      class="secondary"
-      @click="scrollToLearnMore"
-    >
-      Learn More
-    </v-btn>
-
+  
   </v-card>
 </template>
+
 
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-import ATATSearch from "@/components/ATATSearch.vue";
-
-import { scrollToId } from "@/helpers";
+import TaskOrderSearch from "@/portfolios/components/TaskOrderSearch.vue";
 
 @Component({
   components: {
-    ATATSearch,
+    TaskOrderSearch,
   }
 })
 
 export default class ExistingTaskOrderCard extends Vue {
-
-  public scrollToLearnMore(): void {
-    scrollToId("SectionProvisionResources");
+  public TONumber = "";
+  public async startProvisionWorkflow(): Promise<void> {
+    this.$emit("startProvisionWorkflow");
   }
-
 }
 
 </script>

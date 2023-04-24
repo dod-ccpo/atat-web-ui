@@ -132,14 +132,14 @@ import {
 import PortfolioSummary from "@/store/portfolioSummary";
 import Toast from "@/store/toast";
 import SlideoutPanel from "@/store/slideoutPanel";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 
 import { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { differenceInDays, formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
 import { PortfolioSummarySearchDTO } from "@/api/models";
 import _ from "lodash";
-import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
@@ -158,7 +158,7 @@ export default class PortfoliosSummary extends Vue {
   public isHaCCAdmin = false;
 
   public page = 1;
-  public recordsPerPage = 3;
+  public recordsPerPage = 5;
   public numberOfPages = 0;
   public portfolioCount = 0;
   public offset = 0;
@@ -177,7 +177,7 @@ export default class PortfoliosSummary extends Vue {
 
   public filterChips: FilterOption[] = []
 
-  public roles = PortfolioData.summaryFilterRoles; // EJY figure this out
+  public roles = PortfolioStore.summaryFilterRoles; // EJY figure this out
 
   public async generateFilterChips(): Promise<void> {
     this.filterChips = [];
@@ -215,7 +215,7 @@ export default class PortfoliosSummary extends Vue {
         const filters = this.queryParams[key]?.filter(
           obj => obj.value !== removedFilter.value
         ) || [];
-        await PortfolioData.setPortfolioSummaryQueryParams({[key]: filters });
+        await PortfolioStore.setPortfolioSummaryQueryParams({[key]: filters });
       }
       break;
     }
@@ -225,7 +225,7 @@ export default class PortfoliosSummary extends Vue {
   public async clearSearchOrFilters(whatToClear: string): Promise<void> {
     switch(whatToClear) {
     case "both":
-      await PortfolioData.resetQueryParams();
+      await PortfolioStore.resetQueryParams();
       this.searchString = "";
       this.searchedString = "";
       break;
@@ -239,11 +239,11 @@ export default class PortfoliosSummary extends Vue {
 
   public async clearAllFilters(): Promise<void> {
     this.filterChips = [];
-    PortfolioData.resetFilters();
+    PortfolioStore.resetFilters();
   }
 
   public get queryParams(): PortfolioSummaryQueryParams {
-    return PortfolioData.portfolioSummaryQueryParams;
+    return PortfolioStore.portfolioSummaryQueryParams;
   }
 
   public getValuesFromFilterOptions(objects: FilterOption[] | undefined): string[] {
@@ -309,7 +309,7 @@ export default class PortfoliosSummary extends Vue {
   }
 
   public async setQueryParams(key: string, value: string): Promise<void> {
-    await PortfolioData.setPortfolioSummaryQueryParams({
+    await PortfolioStore.setPortfolioSummaryQueryParams({
       [key]: value
     });
   }
@@ -374,18 +374,15 @@ export default class PortfoliosSummary extends Vue {
     limit: this.recordsPerPage,
     offset: this.offset,
   }
-  
-  // TEMP hard-coded logged-in user Maria Missionowner
-  public currentUserSysId = "e0c4c728875ed510ec3b777acebb356f"; // pragma: allowlist secret
+   
+  public currentUserSysId = "";
 
   public async loadPortfolioData(): Promise<void> {
+    const currentUser = await CurrentUserStore.getCurrentUser();
+    this.currentUserSysId = currentUser.sys_id as string;
     
     this.isLoading = true;
     this.portfolioCardData = [];
-
-    // below used to map stub CSPs to actual CSPs until have actual CSP data
-    const cspStubs = ["CSP_A", "CSP_B", "CSP_C", "CSP_D", "CSP_Mock"];
-    const csps = ["aws", "azure", "google", "oracle", "oracle"];
 
     if (this.activeTab) {
       this.portfolioSearchDTO.portfolioStatus = this.activeTab === "ALL" ? "" : this.activeTab;
@@ -401,6 +398,7 @@ export default class PortfoliosSummary extends Vue {
     this.portfolioSearchDTO.offset = this.offset;
 
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
+    debugger;
     this.portfolioCount = storeData.total_count;
     this.$emit("totalCount", storeData.total_count);
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
@@ -409,18 +407,33 @@ export default class PortfoliosSummary extends Vue {
       storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
     }
     storeData.portfolioSummaryList.forEach((portfolio) => {
+      
+      // TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
+      // from portfolio_managers and portfolio_viewers sysIds lists
+
       let cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
-      cardData.csp = csps[cspStubs.indexOf(portfolio.csp_display)];
+      
+      cardData.csp = portfolio.vendor;
+
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
+      cardData.description = portfolio.description;
       cardData.status = portfolio.portfolio_status;
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.agency = portfolio.dod_component;
 
+      const activeTaskOrderSysId = portfolio.active_task_order.value as string;
+      const activeTaskOrder = portfolio.task_orders.find(
+        obj => obj.sys_id === activeTaskOrderSysId
+      );
+
+      cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
+
       // lastModified - if status is "Processing" use "Started ... ago" string
       if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
         const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
+
         cardData.lastModifiedStr = "Started " + agoString + " ago";
       } else {
         const updatedDate = createDateStr(portfolio.sys_updated_on, true);

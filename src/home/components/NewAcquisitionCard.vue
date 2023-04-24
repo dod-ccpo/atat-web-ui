@@ -1,9 +1,9 @@
 <template>
   <v-card id="StartBuildingPackageCard" class="text-center">
-    <h2 class="h1 text-primary mb-3">
+    <h2 class="h1 text-primary mb-5">
       Start building your JWCC acquisition package
     </h2>
-    <p>
+    <p class="mb-8">
       We’ll guide you through steps to prepare procurement documents based on 
       your project’s specific needs.
     </p>
@@ -15,13 +15,6 @@
       @keydown.space="startNewAcquisition"
     >
       Start a new acquisition
-    </v-btn>
-    <v-btn 
-      id="LearnMoreBuilding"
-      class="secondary"
-      @click="scrollToLearnMore"
-    >
-      Learn More
     </v-btn>
 
   </v-card>
