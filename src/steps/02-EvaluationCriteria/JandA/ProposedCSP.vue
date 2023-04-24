@@ -84,7 +84,6 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
   public cspCardClicked(index: number): void {
     this.csps.forEach(c => c.selected = false);
     this.csps[index].selected = true;
-    debugger;
     this.selectedCSP = this.csps[index].iconName.toUpperCase() as CSP;
   }
 
@@ -112,7 +111,7 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.selectedCSP = storeData.proposed_csp;
       const index = this.csps.findIndex(obj => obj.iconName === this.selectedCSP?.toLowerCase());
-      if (index) {
+      if (index > -1) {
         this.csps[index].selected = true;
       }
     }
@@ -120,7 +119,6 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      debugger;
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }
