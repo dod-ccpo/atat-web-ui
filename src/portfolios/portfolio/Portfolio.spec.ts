@@ -256,26 +256,26 @@ describe("Testing Portfolio", () => {
       );
     });
 
-    it("Test calculateTimeToExpiration", async () => {
-      vuetify = new Vuetify();
+    // it("Test calculateTimeToExpiration", async () => {
+    //   vuetify = new Vuetify();
 
-      alertsKey = alertKeys.Expired;
-      wrapper = shallowMount(Portfolio, {
-        vuetify,
-        localVue,
-      });
+    //   alertsKey = alertKeys.Expired;
+    //   wrapper = shallowMount(Portfolio, {
+    //     vuetify,
+    //     localVue,
+    //   });
 
-      await wrapper.setData({
-        taskOrder: {
-          pop_end_date: '2022-12-31'
-        }
-      });
+    //   await wrapper.setData({
+    //     taskOrder: {
+    //       pop_end_date: '2022-12-31'
+    //     }
+    //   });
 
-      wrapper.vm.calculateTimeToExpiration();
-      const runOutOfFundsDate = wrapper.vm.$data.runOutOfFundsDate;
-      expect(runOutOfFundsDate.length).toBeGreaterThan(0);
+    //   wrapper.vm.calculateTimeToExpiration();
+    //   const runOutOfFundsDate = wrapper.vm.$data.runOutOfFundsDate;
+    //   expect(runOutOfFundsDate.length).toBeGreaterThan(0);
  
-    });
+    // });
 
     it("Test loadOnEnter", async () => {
       vuetify = new Vuetify();

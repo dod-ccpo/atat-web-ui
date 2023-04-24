@@ -60,7 +60,7 @@ import { Component, Watch } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { FilterOption, PortfolioSummaryQueryParams } from "types/Global";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({
   components: {
@@ -71,11 +71,11 @@ import PortfolioData from "@/store/portfolio";
 
 export default class FilterSlideout extends Vue {  
   public selectedPortfolioRole = "ALL";
-  public portfolioRoles: FilterOption[] = PortfolioData.summaryFilterRoles;
+  public portfolioRoles: FilterOption[] = PortfolioStore.summaryFilterRoles;
   public selectedFundingStatuses: string[] = []; 
-  private fundingStatuses: FilterOption[] = PortfolioData.summaryFilterFundingStatuses;
+  private fundingStatuses: FilterOption[] = PortfolioStore.summaryFilterFundingStatuses;
   public selectedCSPs: string[] = []; 
-  private cspOptions: FilterOption[] = PortfolioData.summaryFilterCSPs;
+  private cspOptions: FilterOption[] = PortfolioStore.summaryFilterCSPs;
 
   public get resetDisabled(): boolean {
     return this.selectedPortfolioRole === "ALL"
@@ -83,7 +83,7 @@ export default class FilterSlideout extends Vue {
       && this.selectedFundingStatuses.length === 0;
   }
 
-  public portfolioSummaryQueryParams = PortfolioData.portfolioSummaryQPs;
+  public portfolioSummaryQueryParams = PortfolioStore.portfolioSummaryQPs;
 
   @Watch("portfolioSummaryQueryParams", { deep: true })
   public queryParamsUpdated(newParams: PortfolioSummaryQueryParams): void {
@@ -93,7 +93,7 @@ export default class FilterSlideout extends Vue {
   }
 
   public async resetFilters(): Promise<void> {
-    PortfolioData.resetFilters();
+    PortfolioStore.resetFilters();
   }
 
   public async applyFilters(): Promise<void> {
@@ -103,7 +103,7 @@ export default class FilterSlideout extends Vue {
     const selectedCSPObjs = this.cspOptions.filter(
       obj => this.selectedCSPs.includes(obj.value)
     );
-    PortfolioData.setPortfolioSummaryQueryParams({
+    PortfolioStore.setPortfolioSummaryQueryParams({
       role: this.selectedPortfolioRole,
       fundingStatuses: selectedFundingStatusObjs,
       csps: selectedCSPObjs,

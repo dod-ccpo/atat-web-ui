@@ -23,8 +23,11 @@
           </v-text-field>
 
         <div>
-          <v-tabs class="_header-tab "
-          v-model="_selectedTab">
+          <v-tabs 
+            class="_header-tab "
+            v-model="_selectedTab"
+            v-if="!isPortfolioProvisioning"
+          >
             <v-tab
               v-for="tab in items"
               :key="tab"
@@ -34,7 +37,10 @@
           </v-tabs>
         </div>
       </div>
-      <div class="d-flex justify-end align-center">
+      <div 
+        class="d-flex justify-end align-center"
+        v-if="!isPortfolioProvisioning"      
+      >
         <v-btn
           class="_icon-only mr-2"
           id="Info_Button"
@@ -49,7 +55,7 @@
             color="base-dark"
           />
         </v-btn>
-
+        <!-- TODO: Reinstate menu in future ticket when functionality complete
         <v-menu
           :offset-y="true"
           left
@@ -118,6 +124,7 @@
             </v-list-item>
           </v-list>
         </v-menu>
+        -->
       </div>
     </div>
   </v-app-bar>
@@ -133,11 +140,11 @@ import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembers
 import PortfolioDrawer from "@/portfolios/portfolio/components/shared/PortfolioDrawer.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { SlideoutPanelContent } from "../../../../../types/Global";
-import { getIdText } from "@/helpers";
+import {getIdText, hasChanges} from "@/helpers";
 
 @Component({
   components: {
@@ -150,6 +157,7 @@ import { getIdText } from "@/helpers";
 export default class PortfolioSummaryPageHead extends Vue {
   @Prop({ default: "Headline" }) private headline!: string;
   @Prop() private portfolioStatus!: string;
+  @Prop() public isPortfolioProvisioning!: boolean;
   @Prop({ default: [""], required: true }) private items!: string[];
   @PropSync("value") private _selectedTab!: number ;
   @PropSync("title") private _title!: string;
@@ -159,14 +167,13 @@ export default class PortfolioSummaryPageHead extends Vue {
   public showDrawer = false;
 
   public openModal():void {
-    PortfolioData.setShowAddMembersModal(true);
+    PortfolioStore.setShowAddMembersModal(true);
   }
 
   public saveTitle(): void {
-    const obj ={
-      title: this._title
+    if(hasChanges(PortfolioStore.currentPortfolio.title, this._title)) {
+      PortfolioStore.updatePortfolioTitle(this._title);
     }
-    PortfolioData.setPortfolioData(obj)
   }
   
   public async openSlideoutPanel(e: Event): Promise<void> {

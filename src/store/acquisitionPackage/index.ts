@@ -609,14 +609,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: false})
-  public async setDisableContinue(value: boolean): Promise<void> {
-    this.doSetDisableContinue(value);
-  }
-  @Mutation
-  private doSetDisableContinue(value: boolean): void {
-    this.disableContinue = value;
-  }
-  @Action({rawError: false})
   public async setHideNavigation(value: boolean): Promise<void> {
     this.doSetHideNavigation(value);
   }
@@ -649,6 +641,16 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public async doSetValidateNow(value: boolean): Promise<void>{
     this.validateNow = value;
+  }
+
+  @Action({rawError: false})
+  public async setDisableContinue(value: boolean): Promise<void> {
+    this.doSetDisableContinue(value);
+  }
+
+  @Mutation
+  private doSetDisableContinue(value: boolean): void {
+    this.disableContinue = value;
   }
 
   public get getAllowDeveloperNavigation(): boolean {
