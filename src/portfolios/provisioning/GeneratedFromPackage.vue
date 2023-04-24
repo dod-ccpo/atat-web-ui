@@ -154,7 +154,7 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
     });
     const selectedIndex = this.packageData.findIndex(obj => obj.isSelected === true);
     if (selectedIndex > -1) {
-      AcquisitionPackage.setDisableContinue(false);
+      await AcquisitionPackage.setDisableContinue(false);
     }
 
   }
@@ -167,7 +167,7 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   public async saveOnLeave(): Promise<boolean> {
     try {
       const sysId = PortfolioStore.didNotUseDAPPS ? "" : this.selectedPackageSysId;
-      PortfolioStore.setSelectedAcquisitionPackageSysId(sysId);
+      await PortfolioStore.setSelectedAcquisitionPackageSysId(sysId);
     } 
     catch { console.log("Error saving data") }
 
