@@ -40,6 +40,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { Component, Mixins } from "vue-property-decorator";
 import { CSP } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -107,7 +108,7 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = AcquisitionPackage.fairOpportunity;
+    const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.selectedCSP = storeData.proposed_csp;
       const index = this.csps.findIndex(obj => obj.iconName === this.selectedCSP?.toLowerCase());
