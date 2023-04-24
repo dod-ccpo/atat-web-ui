@@ -1119,7 +1119,6 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
       this.setPackagePercentLoaded(55);
-      debugger;
       if(fairOppSysId) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(
           fairOppSysId
