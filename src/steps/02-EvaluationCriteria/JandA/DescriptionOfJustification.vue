@@ -100,9 +100,11 @@
 import {Component, Mixins} from "vue-property-decorator";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import {FairOpportunityDTO} from "@/api/models";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
+import _ from "lodash";
+import {hasChanges} from "@/helpers";
 
 @Component({
   components: {
@@ -115,17 +117,39 @@ export default class DescriptionOfJustification extends Mixins(SaveOnLeave) {
   justficationDescription = "";
   selectedException = "";
 
+  private get currentData(): FairOpportunityDTO {
+    return {
+      // eslint-disable-next-line camelcase
+      justification: this.justficationDescription,
+    } as FairOpportunityDTO;
+  }
+  private get savedData(): FairOpportunityDTO {
+    return {
+      // eslint-disable-next-line camelcase
+      justification: AcquisitionPackage.fairOpportunity?.justification || "",
+    } as FairOpportunityDTO;
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<FairOpportunityDTO>({storeProperty: StoreProperties.FairOpportunity});
+    const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity;
-      // TODO: set the 'justficationDescription' from store/ snow
+      this.justficationDescription = storeData.justification as string;
     }
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    // TODO: save the 'justficationDescription' to store/ snow
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.setFairOpportunity(this.currentData)
+      }
+    } catch (error) {
+      console.log(error);
+    }
     return true;
   }
 
