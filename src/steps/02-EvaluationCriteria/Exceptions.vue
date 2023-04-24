@@ -43,49 +43,16 @@
             />
 
             <ATATAlert
+                v-if="evalAlertDisplay"
               id="JandAMMRWarningAlert"
-              type="warning"
+              :type="evalAlertType"
               :showIcon="false"
               class="copy-max-width my-10"
-              v-if="selectedException !== '' && selectedException !== 'NO_NONE'"
             >
               <template v-slot:content>
-                <p>
-                  <strong>
-                    In order to submit your package to a contracting office, 
-                    you will need to complete a Justification &amp; Approval (J&amp;A) 
-                    and Sole Source Market Research Report (MRR).
-                  </strong>
-                </p>
-                <p>
-                  We recommend downloading the
-                  <a 
-                    :href="jaTemplateUrl"
-                    download= "JWCC J&A Template_Template.docx"
-                    class="_text-link" id="JandATemplateLink"
-                  >
-                    <span>J&amp;A template</span>
-                  </a>
-                  and
-                   <!-- eslint-disable-next-line max-len -->
-                  <a :href="mrrTemplateUrl"
-                   download="JWCC Market Research Report (Sole Source)_Template.docx"
-                    class="_text-link" id="MRRTemplateLink"
-                  >
-                    <span>MRR template</span>
-                  </a>
-                  for reference as you work through this wizard. In the following sections, we'll 
-                  help you prepare some details required in these templates, but you will need 
-                  to complete them outside of DAPPS. At the end, you'll have an opportunity to 
-                  upload your signed J&amp;A and MRR for inclusion in your final package.
-                </p>
-                <p>
-                  NOTE: DISA does not require MRRs for Undefinitized Contract actions (UCAs), 
-                  Bridge contract actions, and for FAR 52.217-8 Option to Extend Services.
-                </p>
+                <div v-html="evalAlertContent"></div>
               </template>
             </ATATAlert>
-
           </v-col>
         </v-row>
       </v-container>
@@ -116,6 +83,59 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
   private mrrTemplateUrl = "";
   private selectedException 
     = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
+
+  /**
+   * Returns whether the ATATAlert should be displayed or not
+   */
+  get evalAlertDisplay(): boolean {
+    return this.selectedException !== "";
+  }
+
+  /**
+   * Returns the type value for the ATATAlert component, based
+   * on the selected exception option.
+   */
+  get evalAlertType(): string {
+    return  this.selectedException !== "" && this.selectedException !== "NO_NONE" ?
+      "warning" : "info";
+  }
+
+  /**
+   * Returns the template content for the ATATAlert component, based
+   * on the selected exception option.
+   */
+  get evalAlertContent(): string {
+    const notNoneAlertContentDefault = `
+      <p>
+        Your final acquisition package will require a
+        <strong>
+          Justification & Approval (J&A)
+        </strong>
+        . We’ll help you complete all of your required justification documentation.
+      </p> `;
+    if (this.selectedException === 'YES_FAR_16_505_B_2_I_B' ||
+        this.selectedException === 'YES_FAR_16_505_B_2_I_C') {
+      return notNoneAlertContentDefault;
+    } else if (this.selectedException === 'YES_FAR_16_505_B_2_I_A') {
+      return `
+      ${notNoneAlertContentDefault}
+      <p>
+        Note: This exception to fair opportunity process is rarely approved by the
+        Contracting Office. To obtain approval, you will likely need to provide
+        additional justification during the acquisition review process.
+      </p>`;
+    } else {
+      return `
+      <p>
+        Your final acquisition package does NOT require a Justification & Approval (J&A).
+        If there are other exceptions that apply to this effort that we did not address,
+        please contact your Contracting Office.
+      </p>
+      <p>
+        That’s all the information we need for this section.
+      </p>`;
+    }
+  }
 
   private get currentData(): FairOpportunityDTO {
     return {
