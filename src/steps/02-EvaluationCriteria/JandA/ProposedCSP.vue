@@ -33,9 +33,13 @@
 </template>
 
 <script lang="ts">
+import { FairOpportunityDTO } from "@/api/models";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { hasChanges } from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { Component, Mixins } from "vue-property-decorator";
+import { CSP } from "../../../../types/Global";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -43,7 +47,8 @@ import { Component } from "vue-property-decorator";
   }
 })
 
-export default class ProposedCSP extends Vue {
+export default class ProposedCSP extends Mixins(SaveOnLeave) {
+  public selectedCSP: CSP = "";
 
   public csps = [
     {
@@ -79,6 +84,54 @@ export default class ProposedCSP extends Vue {
   public cspCardClicked(index: number): void {
     this.csps.forEach(c => c.selected = false);
     this.csps[index].selected = true;
+    debugger;
+    this.selectedCSP = this.csps[index].iconName.toUpperCase() as CSP;
+  }
+
+  private get currentData(): FairOpportunityDTO {
+    return {
+      // eslint-disable-next-line camelcase
+      proposed_csp: this.selectedCSP,
+    };
+  }
+
+  private get savedData(): FairOpportunityDTO {
+    return {
+      // eslint-disable-next-line camelcase
+      proposed_csp: AcquisitionPackage.fairOpportunity?.proposed_csp || "",
+    };
+  }
+
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = AcquisitionPackage.fairOpportunity;
+    if (storeData) {
+      this.selectedCSP = storeData.proposed_csp;
+      const index = this.csps.findIndex(obj => obj.iconName === this.selectedCSP?.toLowerCase());
+      if (index) {
+        this.csps[index].selected = true;
+      }
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      debugger;
+      if (this.hasChanged()) {
+        await AcquisitionPackage.setFairOpportunity(this.currentData)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 
 

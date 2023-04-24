@@ -88,7 +88,7 @@ import {Component, Mixins} from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import FairOppExceptions from "./components/FairOppExceptions.vue"
 
-import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -125,7 +125,7 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage.fairOpportunity;
     if (storeData) {
-      this.selectedException = storeData.exception_to_fair_opportunity;
+      this.selectedException = storeData.exception_to_fair_opportunity as string;
     }
   }
 
