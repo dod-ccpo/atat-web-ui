@@ -15,7 +15,8 @@ import {
   SingleMultiple,
   EstimateOptionValue,
   TrainingEstimate,
-  EstimateOptionValueObjectArray
+  EstimateOptionValueObjectArray,
+  CSP
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -212,8 +213,8 @@ export interface CrossDomainSolutionDTO extends BaseTableDTO {
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {
-  exception_to_fair_opportunity: string;
-  proposed_csp?: "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
+  exception_to_fair_opportunity?: string;
+  proposed_csp?: CSP;
   justification?: string;
   min_govt_requirements?: string;
 
