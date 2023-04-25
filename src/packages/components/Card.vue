@@ -270,31 +270,31 @@ export default class Card extends Vue {
     switch (menuItem.action) {
     case "Edit draft package":
       await Steps.setAltBackDestination(AppSections.activeAppSection);
-      if(this.isDitco && this.isWaitingForSignatures){
-        this.$router.replace({
-          name: routeNames.UploadSignedDocuments,
-          replace: true,
-          params: {
-            direction: "next"
-          },
-          query: {
-            packageId: this.cardData.sys_id
-          }
-        }).catch(() => console.log("avoiding redundant navigation"));
-        await AcquisitionPackage.setPackageId(this.cardData.sys_id as string);
-        AcquisitionPackage.setProjectTitle(this.modifiedData.projectOverview);
-      }else{
-        this.$router.replace({
-          name: routeNames.ContractingShop,
-          replace: true,
-          params: {
-            direction: "next"
-          },
-          query: {
-            packageId: this.cardData.sys_id
-          }
-        }).catch(() => console.log("avoiding redundant navigation"));
-      }
+      // if(this.isDitco && this.isWaitingForSignatures){
+      //   this.$router.replace({
+      //     name: routeNames.UploadSignedDocuments,
+      //     replace: true,
+      //     params: {
+      //       direction: "next"
+      //     },
+      //     query: {
+      //       packageId: this.cardData.sys_id
+      //     }
+      //   }).catch(() => console.log("avoiding redundant navigation"));
+      //   await AcquisitionPackage.setPackageId(this.cardData.sys_id as string);
+      //   AcquisitionPackage.setProjectTitle(this.modifiedData.projectOverview);
+      // }else{
+      this.$router.replace({
+        name: routeNames.ContractingShop,
+        replace: true,
+        params: {
+          direction: "next"
+        },
+        query: {
+          packageId: this.cardData.sys_id
+        }
+      }).catch(() => console.log("avoiding redundant navigation"));
+      // }
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
       await acquisitionPackage.setFirstTimeVisit(false)
       break;
@@ -353,8 +353,9 @@ export default class Card extends Vue {
       if(this.isOwner){
         this.cardMenuItems.push(
           {
-            title: this.isDitco && this.isWaitingForSignatures?
-              "Upload signed documents":"Edit draft package",
+            // title: this.isDitco && this.isWaitingForSignatures?
+            //   "Upload signed documents":"Edit draft package",
+            title: "Edit draft package",
             action: "Edit draft package"
           },{
             title: "Archive acquisition",
