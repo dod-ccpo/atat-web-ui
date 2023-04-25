@@ -26,7 +26,7 @@
               <template v-slot:label>
                 <div class="_svg-icon-div">
                   <ATATSVGIcon 
-                    id="Azure" 
+                    :id="csp.value + 'Icon'" 
                     :name="csp.iconName"
                     class="svg-icon"
                     :width="csp.width" 
