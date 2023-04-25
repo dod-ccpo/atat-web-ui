@@ -1182,7 +1182,6 @@ export class AcquisitionPackageStore extends VuexModule {
           initialSensitiveInformation()
         );
       }
-      debugger
       if(ContractingShopNonDitcoAddressID){
         const contractingShopNonDitcoAddress = await api.addressTable.retrieve(
           ContractingShopNonDitcoAddressID
@@ -1708,7 +1707,6 @@ export class AcquisitionPackageStore extends VuexModule {
     data: TableDTO;
     storeProperty: string;
   }): Promise<void> {
-    debugger
     try {
       const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
       const apiEndPoint = await this.getApiEndPoint(storeProperty);
