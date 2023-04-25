@@ -13,7 +13,12 @@ module.exports = {
   emergencyDeclarationControl: "#emergency-declaration-support-requirement_radio_group_control",
   emergencyDeclarationerror: "#emergency-declaration-support-requirement_radio_group_control" +
     " .field-error",
+  activeRadioOption: "#emergency-declaration-support-requirement_radio_group_control" +
+    " .v-item--active",
   radioBtnYes:"#Radio_YesEmergencyDeclaration",
   radioBtnNo: "#Radio_NoEmergencyDeclaration",  
-  
+  projDisAcknowledge: "#projectDisclaimer",
+  projDisChxkBox: "#Checkbox_YesProjectDisclaimer",
+  projDisBoxError:"#projectDisclaimer  .field-error",
+  projDisLabel:"h2.mb-5"
 }
