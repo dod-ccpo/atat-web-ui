@@ -108,9 +108,9 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
       <p>
         Your final acquisition package will require a
         <strong>
-          Justification & Approval (J&A)
+          Justification & Approval (J&A).
         </strong>
-        . We’ll help you complete all of your required justification documentation.
+        We’ll help you complete all of your required justification documentation.
       </p> `;
     if (this.selectedException === 'YES_FAR_16_505_B_2_I_B' ||
         this.selectedException === 'YES_FAR_16_505_B_2_I_C') {
