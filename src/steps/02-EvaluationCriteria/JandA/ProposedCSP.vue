@@ -54,7 +54,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import { CSP } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";
@@ -117,9 +117,22 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
     }
   ];
 
+  public get validateFormNow(): boolean {
+    return AcquisitionPackage.getValidateNow;
+  }
+
+  @Watch('validateFormNow')
+  public validateNowChange(): void {
+    if(!this.$refs.radioButtonGroup.validate())
+      this.setErrorMessage();
+  }
+  public setErrorMessage(): void {
+    this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
+  }
+
   private onBlur(): void {
     if (this.$refs && this.$refs.radioButtonGroup) {
-      this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
+      this.setErrorMessage();
     }
   }
   private onClick(): void {
