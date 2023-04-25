@@ -60,6 +60,7 @@ import { travelRequirementApi } from "./travelRequirement";
 import { RegionsAPI } from "./regions";
 import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
+import { AddressApi } from "@/api/address";
 
 
 export const api = {
@@ -127,6 +128,7 @@ export const api = {
   regionsTable: new RegionsAPI(),
   packageDocumentsSignedTable: new PackageDocumentsSignedAPI(),
   packageDocumentsUnsignedTable: new PackageDocumentsUnsignedAPI(),
+  addressTable: new AddressApi(),
 }
 
 export default {
