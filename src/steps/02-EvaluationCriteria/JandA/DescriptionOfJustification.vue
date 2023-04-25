@@ -102,7 +102,6 @@ export default class DescriptionOfJustification extends Mixins(SaveOnLeave) {
   public showMore = false;
   public exceptionType = "";
   public rationale = "";
-  public cspName = "";
 
   private get currentData(): FairOpportunityDTO {
     return {
