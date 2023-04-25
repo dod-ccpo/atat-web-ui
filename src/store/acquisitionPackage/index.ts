@@ -860,6 +860,7 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async setFairOpportunity(value: FairOpportunityDTO): Promise<void> {
     this.doSetFairOpportunity(value);
+    debugger;
     if (this.initialized) {
       if (this.fairOpportunity && this.fairOpportunity.sys_id) {
         await api.fairOpportunityTable.update(
@@ -869,7 +870,7 @@ export class AcquisitionPackageStore extends VuexModule {
       } else if (this.fairOpportunity && !this.fairOpportunity.sys_id) {
         const savedObj = await api.fairOpportunityTable.create(this.fairOpportunity);
         if (savedObj.sys_id) {
-          await this.doSetFairOpportunitySysId(savedObj.sys_id);
+          await this.doSetFairOpportunity(savedObj);
           await this.updateAcquisitionPackage();
         }
       }
@@ -880,12 +881,9 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = this.fairOpportunity
       ? Object.assign(this.fairOpportunity, value)
       : value;
-  }
-  @Mutation
-  public async doSetFairOpportunitySysId(sys_id: string): Promise<void> {
     if (this.acquisitionPackage) {
-      this.acquisitionPackage.fair_opportunity = sys_id;
-    }
+      this.acquisitionPackage.fair_opportunity = value.sys_id as string;
+    }  
   }
 
   @Mutation
