@@ -42,7 +42,7 @@
                     <v-card 
                       v-for="(csp,idx) in csps" 
                       :key="idx" 
-                      class="_calculator-card"
+                      class="_csp-card _calculator-card"
                      >
                       <div class="_svg-icon-div">
                       <ATATSVGIcon 
@@ -150,10 +150,10 @@ export default class CreatePriceEstimate extends Vue {
       ]
     },
     {
-      name: "Google Cloud Platform (GCP)",
+      name: "Google Cloud",
       iconName: "gcp",
-      width: "64",
-      height: "57",
+      width: "62",
+      height: "50",
       links: [
         {
           text: "IL2 calculator",
@@ -172,8 +172,8 @@ export default class CreatePriceEstimate extends Vue {
     {
       name: "Microsoft Azure",
       iconName: "azure",
-      width: "64",
-      height: "50",
+      width: "60",
+      height: "56",
       links: [
         {
           text: "View calculator",

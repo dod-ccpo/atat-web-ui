@@ -97,6 +97,8 @@ export interface SelectData {
   header?: string;
   divider?: boolean;
   isSelectable?: boolean;
+  sys_id?: string;
+  name?:string;
 }
 
 /**
@@ -726,3 +728,5 @@ export interface TrainingEstimate {
   trainingOption: SingleMultiple;
   cloudSupportEnvironmentInstance: ReferenceColumn | string;
 }
+
+export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";

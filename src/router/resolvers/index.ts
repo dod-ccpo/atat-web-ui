@@ -196,7 +196,16 @@ export const A11yRequirementResolver = (current: string): string => {
 //     ? routeNames.PII
 //     : routeNames.Training;
 // };
+export const ContractingInfoResolver = (current: string): string => {
+  const needsContractInformation =
+      AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";
 
+  if (needsContractInformation) {
+    return routeNames.ContractingOfficeInfo;
+  }
+  return current === routeNames.ContractingShop 
+    ? routeNames.ProjectOverview : routeNames.ContractingShop;
+};
 
 /****************************************************************************/
 /****************************************************************************/
@@ -1371,6 +1380,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CertificationPOCsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
+  ContractingInfoResolver,
 };
 
 // add path resolvers here 
