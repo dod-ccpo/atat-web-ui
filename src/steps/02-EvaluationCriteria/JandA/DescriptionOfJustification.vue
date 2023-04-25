@@ -14,7 +14,7 @@
           </p>
           <ATATExpandableLink 
             v-if="showMore" 
-            aria-id="DescriptionMore"
+            aria-id="JustificationMoreInfo"
           >
             <template v-slot:header>
               What else should I include in my description of the justification?
@@ -131,15 +131,16 @@ export default class DescriptionOfJustification extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.justficationDescription = storeData.justification as string;
       
-      const csp = this.csps[storeData.proposed_csp as string] || "your CSP’s";
-
       const selectedException = storeData.exception_to_fair_opportunity;
+      
       switch (selectedException) {
-      case "YES_FAR_16_505_B_2_I_B":
+      case "YES_FAR_16_505_B_2_I_B": {
         this.exceptionType = "unique or highly specialized capabilities";
+        const csp = this.csps[storeData.proposed_csp as string] || "your CSP’s";
         this.rationale = `include a discussion of ${csp}
           unique qualifications for fulfilling the order requirements`;
         break;
+      }
       case "YES_FAR_16_505_B_2_I_C":
         this.exceptionType = "logical follow-on";
         this.rationale = `describe why the relationship between the initial 
