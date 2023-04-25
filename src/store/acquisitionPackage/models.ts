@@ -45,5 +45,5 @@ export interface SessionData {
   allowDeveloperNavigation: boolean;
   regions: RegionsDTO[];
   packageDocumentsSigned:PackageDocumentsSignedDTO
-  nonDitcoAddress:AddressDTO
+  contractingShopNonDitcoAddress:AddressDTO
 }

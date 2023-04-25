@@ -262,7 +262,7 @@ export default class ContractingOfficeInfo extends Mixins(SaveOnLeave) {
     this.selectedAddressType = this.addressTypes.USA
     const storeData = await AcquisitionPackage
       .loadData<AddressDTO>({storeProperty:
-        StoreProperties.NonDitcoAddress}) as Record<string, any>;
+        StoreProperties.ContractingShopNonDitcoAddress}) as Record<string, any>;
     if (storeData) {
       this.name = storeData.name;
 
@@ -291,7 +291,7 @@ export default class ContractingOfficeInfo extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveData( {data: this.currentData,
-          storeProperty: StoreProperties.NonDitcoAddress});
+          storeProperty: StoreProperties.ContractingShopNonDitcoAddress});
       }
     } catch (error) {
       console.log(error);

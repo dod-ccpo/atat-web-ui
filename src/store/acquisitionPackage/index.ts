@@ -78,7 +78,7 @@ export const StoreProperties = {
   ContractConsiderations: "contractConsiderations",
   Regions:"regions",
   PackageDocumentsSigned:"packageDocumentsSigned",
-  NonDitcoAddress:"nonDitcoAddress"
+  ContractingShopNonDitcoAddress:"contractingShopNonDitcoAddress"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -279,7 +279,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       // periodOfPerformance: store.periodOfPerformance,
       sensitiveInformation: store.sensitiveInformation,
       allowDeveloperNavigation: store.allowDeveloperNavigation,
-      nonDitcoAddress: store.nonDitcoAddress
+      contractingShopNonDitcoAddress: store.contractingShopNonDitcoAddress
     })
   );
 };
@@ -366,7 +366,7 @@ export class AcquisitionPackageStore extends VuexModule {
   currentUserIsContributor = false;
 
   packageCreator: User = {};
-  nonDitcoAddress: AddressDTO | null = null;
+  contractingShopNonDitcoAddress: AddressDTO | null = null;
   @Mutation
   public doSetPackageCreator(user: User): void {
     this.packageCreator = user;
@@ -802,9 +802,9 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
   @Mutation
-  public setNonDitcoAddress(value: AddressDTO): void {
-    this.nonDitcoAddress = this.nonDitcoAddress
-      ? Object.assign(this.nonDitcoAddress, value)
+  public setContractingShopNonDitcoAddress(value: AddressDTO): void {
+    this.contractingShopNonDitcoAddress = this.contractingShopNonDitcoAddress
+      ? Object.assign(this.contractingShopNonDitcoAddress, value)
       : value;
   }
 
@@ -937,7 +937,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.classificationLevel = sessionData.classificationLevel;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
     this.regions = sessionData.regions
-    this.nonDitcoAddress = sessionData.nonDitcoAddress;
+    this.contractingShopNonDitcoAddress = sessionData.contractingShopNonDitcoAddress;
   }
 
   @Action({rawError: true})
@@ -993,7 +993,8 @@ export class AcquisitionPackageStore extends VuexModule {
       const corSysId = acquisitionPackage.cor as string;
       const aCorSysId = acquisitionPackage.acor as string;
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
-      const nonDitcoAddressId = acquisitionPackage.contracting_shop_non_ditco_address as string;
+      const ContractingShopNonDitcoAddressID =
+          acquisitionPackage.contracting_shop_non_ditco_address as string;
 
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -1010,7 +1011,7 @@ export class AcquisitionPackageStore extends VuexModule {
         cor: corSysId,
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
-        contracting_shop_non_ditco_address: nonDitcoAddressId,
+        contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
       });
 
       if (acquisitionPackage.contributors) {
@@ -1134,15 +1135,16 @@ export class AcquisitionPackageStore extends VuexModule {
           initialSensitiveInformation()
         );
       }
-      if(nonDitcoAddressId){
-        const nonDitcoAddress = await api.addressTable.retrieve(
-          nonDitcoAddressId
+      debugger
+      if(ContractingShopNonDitcoAddressID){
+        const contractingShopNonDitcoAddress = await api.addressTable.retrieve(
+          ContractingShopNonDitcoAddressID
         );
-        if(nonDitcoAddress){
-          this.setNonDitcoAddress(nonDitcoAddress);
+        if(contractingShopNonDitcoAddress){
+          this.setContractingShopNonDitcoAddress(contractingShopNonDitcoAddress);
         }
       }else{
-        this.setNonDitcoAddress(initialNonDitcoAddress())
+        this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
       }
       this.setPackagePercentLoaded(70);
 
@@ -1329,7 +1331,7 @@ export class AcquisitionPackageStore extends VuexModule {
             acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
           }
           this.setPackagePercentLoaded(50);
-          this.setNonDitcoAddress(initialNonDitcoAddress())
+          this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
           // this.setPeriods([]);
           // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
@@ -1442,7 +1444,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractConsiderations]: api.contractConsiderationsTable,
     [StoreProperties.Regions]:api.regionsTable,
     [StoreProperties.PackageDocumentsSigned]:api.packageDocumentsSignedTable,
-    [StoreProperties.NonDitcoAddress]:api.addressTable,
+    [StoreProperties.ContractingShopNonDitcoAddress]:api.addressTable,
 
   }
 
@@ -1462,7 +1464,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractConsiderations]: "contract_considerations",
     [StoreProperties.Regions]: "regions",
     [StoreProperties.PackageDocumentsSigned]: "package_documents_signed",
-    [StoreProperties.NonDitcoAddress]: "non_ditco_address",
+    [StoreProperties.ContractingShopNonDitcoAddress]: "contracting_shop_non_ditco_address",
 
   }
 
@@ -1659,6 +1661,7 @@ export class AcquisitionPackageStore extends VuexModule {
     data: TableDTO;
     storeProperty: string;
   }): Promise<void> {
+    debugger
     try {
       const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
       const apiEndPoint = await this.getApiEndPoint(storeProperty);
@@ -2030,7 +2033,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.selectedAgency = { text: "", value: "" };
     this.selectedAgencyAcronym = "";
     this.showInviteContributorsModal = false;
-    this.nonDitcoAddress = null;
+    this.contractingShopNonDitcoAddress = null;
   }
 }
 
