@@ -117,7 +117,7 @@
 
         <hr />
 
-        <span v-if="getInstanceLocation">
+        <span v-if="showPricingDetails">
           <h2 class="mb-4">
             {{getPricingDetailsSequenceNum}}
             Pricing details
@@ -531,7 +531,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
    * returns false if the instance location is on_prem
    * returns true otherwise
    */
-  public get getInstanceLocation(): boolean {
+  public get showPricingDetails(): boolean {
     return this.instanceData.instance_location === "ON_PREM" ? false:true 
   }
 
