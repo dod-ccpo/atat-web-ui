@@ -6,25 +6,38 @@
           <h1 class="page-header">
             Which CSP does this exception to fair opportunity apply to?
           </h1>
-          <div class="d-flex">
-            <v-card 
-              v-for="(csp, index) in csps" 
-              :key="index" 
-              class="_csp-card _selectable"
-              :class="{ '_selected' : csp.selected }"
-              @click="cspCardClicked(index)"
+
+          <v-radio-group
+            class="_atat-radio-group _inline"
+            ref="radioButtonGroup"
+            :rules="[$validators.required('Please select a CSP.')]"
+            v-model="selectedCSP"
+          >
+            <v-radio
+              v-for="(csp, index) in cspOptions"
+              :key="index"
+              :value="csp.value"
+              :id="csp.value + 'Button'"
+              name="cspRadios"
+              class="_csp-card d-flex inline"
+              @click="onClick"
+              @blur="onBlur"
             >
-              <div class="_svg-icon-div">
-              <ATATSVGIcon 
-                id="Azure" 
-                :name="csp.iconName"
-                class="svg-icon"
-                :width="csp.width" 
-                :height="csp.height" />
-              </div>
-              <h3 class="_csp-name"> {{ csp.name }}</h3>
-            </v-card>
-          </div>
+              <template v-slot:label>
+                <div class="_svg-icon-div">
+                  <ATATSVGIcon 
+                    id="Azure" 
+                    :name="csp.iconName"
+                    class="svg-icon"
+                    :width="csp.width" 
+                    :height="csp.height" 
+                  />
+                </div>
+                <h3 class="_csp-name"> {{ csp.name }}</h3>
+              </template>
+            </v-radio>
+          </v-radio-group>
+          <ATATErrorValidation :errorMessages="errorMessages" />
 
         </v-col>
       </v-row>
@@ -33,26 +46,45 @@
 </template>
 
 <script lang="ts">
-import { FairOpportunityDTO } from "@/api/models";
+import Vue from "vue";
+
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+
 import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { Component, Mixins } from "vue-property-decorator";
 import { CSP } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";
+import { FairOpportunityDTO } from "@/api/models";
 
 @Component({
   components: {
+    ATATErrorValidation,
+    ATATRadioGroup,
     ATATSVGIcon,
   }
 })
 
 export default class ProposedCSP extends Mixins(SaveOnLeave) {
-  public selectedCSP: CSP = "";
+  // refs
+  $refs!: {
+    radioButtonGroup: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      validate: () => boolean;
+      resetValidation: () => boolean;
+    };
+  }; 
 
-  public csps = [
+  public selectedCSP: CSP = "";
+  private errorMessages: string[] = [];
+
+  public cspOptions = [
     {
+      value: "AWS",
       name: "Amazon Web Services (AWS)",
       iconName: "aws",
       width: "64",
@@ -60,6 +92,7 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
       selected: false,
     },
     {
+      value: "GCP",
       name: "Google Cloud",
       iconName: "gcp",
       width: "62",
@@ -67,6 +100,7 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
       selected: false,
     },
     {
+      value: "AZURE",
       name: "Microsoft Azure",
       iconName: "azure",
       width: "60",
@@ -74,6 +108,7 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
       selected: false,
     },                
     {
+      value: "ORACLE",
       name: "Oracle Cloud",
       iconName: "oracle",
       width: "64",
@@ -82,12 +117,14 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
     }
   ];
 
-  public cspCardClicked(index: number): void {
-    this.csps.forEach(c => c.selected = false);
-    this.csps[index].selected = true;
-    this.selectedCSP = this.csps[index].iconName.toUpperCase() as CSP;
+  private onBlur(): void {
+    if (this.$refs && this.$refs.radioButtonGroup) {
+      this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
+    }
   }
-
+  private onClick(): void {
+    this.errorMessages = [];
+  } 
   private get currentData(): FairOpportunityDTO {
     return {
       // eslint-disable-next-line camelcase
@@ -102,7 +139,6 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
     };
   }
 
-
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
@@ -111,10 +147,6 @@ export default class ProposedCSP extends Mixins(SaveOnLeave) {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.selectedCSP = storeData.proposed_csp;
-      const index = this.csps.findIndex(obj => obj.iconName === this.selectedCSP?.toLowerCase());
-      if (index > -1) {
-        this.csps[index].selected = true;
-      }
     }
   }
 

@@ -1,6 +1,5 @@
 <template>
-  <div 
-    :id="id+'_radio_group_control'" >
+  <div :id="id+'_radio_group_control'">
     <v-radio-group
       class="_atat-radio-group"
       ref="radioButtonGroup"
