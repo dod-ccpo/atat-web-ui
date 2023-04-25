@@ -35,6 +35,7 @@
                     :isCurrency="true"
                     :width="400"
                     :rules="[$validators.required('Enter the estimated cost to migrate.')]"
+                    @blur="validateMigrationEstimate"
                   />
                   <div class="align-left" style="max-width: 400px;">
                     Estimated delay of project for a migration
@@ -124,12 +125,74 @@
                 name="ProductFeature"
                 :legend="`Is there a specific product or feature that is peculiar to ${cspName}?`"
                 :value.sync="currentData.cause_product_feature_peculiar_to_csp"
-                :items="productFeatureOptions"
+                :items="isPeculiarOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
               <v-expand-transition>
-                <div v-if="hasPeculiarProduct">
-                  peculiar product/feature fields
+                <div class="mt-10" v-if="hasPeculiarProduct">
+                  <ATATRadioGroup 
+                    id="IsProductOrFeature"
+                    name="IsProductOrFeature"
+                    legend="Is it a product or feature?"
+                    :value.sync="currentData.cause_product_feature_type"
+                    :items="productOrFeatureOptions"
+                    :rules="[$validators.required('Please select an option.')]"
+                  />
+                  <v-expand-transition>
+                    <div class="mt-10" v-if="productOrFeatureSelected">
+                      <ATATTextField
+                        id="PlatformOrTechName"
+                        class="mt-10 mb-10"
+                        :value.sync="currentData.cause_product_feature_name"
+                        :label="`Name of the unique ${productOrFeatureStr}`"
+                        :rules="[
+                          $validators.required(`Enter the name of your ${productOrFeatureStr}.`)
+                        ]"
+                      />
+
+                      <ATATTextArea 
+                        id="WhyEssential"
+                        :label="`Why is this ${productOrFeatureStr} essential to 
+                          the Government’s requirements?`"
+                        helpText="Fill in the blank to complete the suggested sentence 
+                          below or write your own reason."
+                        :value.sync="currentData.cause_product_feature_why_essential"
+                        :maxChars="500"
+                        :rows="6"
+                        :validateItOnBlur="true"
+                        :rules="[
+                          $validators.required(whyEssentialErrorMessage),
+                          $validators.notSameAsDefault(
+                            whyEssentialErrorMessage,
+                            defaultWhyEssential
+                          )
+                        ]"
+                      />
+
+                      <ATATTextArea 
+                        id="WhyEssential"
+                        class="mt-10"
+                        :label="`Why do other similar ${productOrFeatureStr} not 
+                          meet the Government’s requirements?`"
+                        helpText="Fill in the blank to complete the suggested sentence 
+                          below or write your own reason."
+                        :value.sync="currentData.cause_product_feature_why_others_inadequate"
+                        :maxChars="500"
+                        :rows="6"
+                        :validateItOnBlur="true"
+                        :rules="[
+                          $validators.required(whyOthersInadequateErrorMessage),
+                          $validators.notSameAsDefault(
+                            whyOthersInadequateErrorMessage,
+                            defaultWhyOthersInadequate
+                          )
+                        ]"
+                      />
+
+
+                    </div>
+
+                  </v-expand-transition>
                 </div>
               </v-expand-transition>
 
@@ -182,8 +245,32 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     "retrain and obtain certification in another platform/technology.";
   public insufficientTimeErrorMessage = "Explain why there is insufficient time."
 
-  public productFeatureOptions: RadioButton[] = getYesNoRadioOptions("ProdFeat");
+  public isPeculiarOptions: RadioButton[] = getYesNoRadioOptions("ProdFeat");
   public hasPeculiarProduct = false;
+  public productOrFeatureOptions: RadioButton[] = [
+    { id: "Product", label: "Product", value: "PRODUCT" },
+    { id: "Feature", label: "Feature", value: "FEATURE" },
+  ];
+  public productOrFeatureSelected = false;
+  public get whyEssentialErrorMessage(): string {
+    return `Describe why the ${this.productOrFeatureStr} is essential.`;
+  }
+  public get defaultWhyEssential(): string {
+    return "This " + this.productOrFeatureStr + " is essential to the Government’s " + 
+      "requirements due to...";
+  } 
+  public get whyOthersInadequateErrorMessage(): string {
+    return `Describe why other ${this.productOrFeatureStr} do not meet your requirements`;
+  }
+  public get defaultWhyOthersInadequate(): string {
+    return "Other similar " + this.productOrFeatureStr + " do not meet, nor can be " +
+      "modified to meet, the Government’s requirements due to...";
+  } 
+  public get productOrFeatureStr(): string {
+    return this.currentData.cause_product_feature_type
+      ? this.currentData.cause_product_feature_type.toLowerCase()
+      : "";
+  }
 
   public unitsOfTime: SelectData[] = [
     { text: "Day(s)", value: "DAYS" },
@@ -193,44 +280,41 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   ];
 
   @Watch("currentData", {deep: true})
-  public currentDataChanged(
-    nVal: FairOpportunityDTO, oVal: FairOpportunityDTO
-  ): void {
+  public currentDataChanged(newVal: FairOpportunityDTO): void {
+    /* eslint-disable camelcase */
     this.requiresAddlTimeCost 
-      = nVal.cause_migration_addl_time_cost === "YES" ? true : false;
+      = newVal.cause_migration_addl_time_cost === "YES" ? true : false;
     this.govtEngineersTrained 
-      = nVal.cause_govt_engineers_training_certified === "YES" ? true : false;
+      = newVal.cause_govt_engineers_training_certified === "YES" ? true : false;
     this.hasPeculiarProduct 
-      = nVal.cause_product_feature_peculiar_to_csp === "YES" ? true : false;
-    if (nVal.cause_migration_estimated_delay_amount !== oVal.cause_migration_estimated_delay_amount
-      || nVal.cause_migration_estimated_cost !== oVal.cause_migration_estimated_cost) {
-      this.validateMigrationEstimate();
-    }
+      = newVal.cause_product_feature_peculiar_to_csp === "YES" ? true : false;
+    this.productOrFeatureSelected = newVal.cause_product_feature_type !== undefined
+      && newVal.cause_product_feature_type.length > 0;
+
+    this.currentData.cause_product_feature_why_essential = this.defaultWhyEssential;
+    this.currentData.cause_product_feature_why_others_inadequate = this.defaultWhyOthersInadequate;
+    /* eslint-enable camelcase */
+  }
+
+  public get mCost(): string {
+    return this.currentData.cause_migration_estimated_cost as string;
+  }
+  public get mDelay(): string {
+    return this.currentData.cause_migration_estimated_delay_amount as unknown as string;
   }
 
   public validateMigrationEstimate(): void {
     this.migrationError = false;
     this.migrationErrorMessage = "";
-    const cost = this.currentData.cause_migration_estimated_cost;
-    const delay = this.currentData.cause_migration_estimated_delay_amount as unknown as string;
-    if ((!cost || cost === "0.00") && (!delay || parseInt(delay) === 0)) {
+    if ((!this.mCost || this.mCost === "0.00") && (!this.mDelay || parseInt(this.mDelay) === 0)) {
       this.migrationError = true;
       this.migrationErrorMessage = `Either your estimated cost or estimated delay 
         must be greater than 0.`;
-    } else if (!delay) {
+    } else if (!this.mDelay) {
       this.migrationError = true;
       this.migrationErrorMessage = "Enter the estimated delay for a migration.";
     }
   }
-
-  // public validateInsufficientTimeReason(): void {
-  //   this.insufficientTimeReasonError = false;
-  //   if (this.currentData.cause_govt_engineers_insufficient_time_reason
-  //     === this.defaultInsufficientTimeReason) {
-  //     this.insufficientTimeReasonError = true;
-  //   }
-  // }
-
 
   public currentData: FairOpportunityDTO = {}
   private get savedData(): FairOpportunityDTO {
@@ -241,22 +325,27 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 
-
-
   public async loadOnEnter(): Promise<void> {
-    debugger;
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.currentData = storeData;
 
-      // eslint-disable-next-line camelcase
+      /* eslint-disable camelcase */
       this.currentData.cause_migration_estimated_delay_unit 
         = this.currentData.cause_migration_estimated_delay_unit || "MONTHS"; 
 
-      // eslint-disable-next-line camelcase
       this.currentData.cause_govt_engineers_insufficient_time_reason
         = this.currentData.cause_govt_engineers_insufficient_time_reason
         || this.defaultInsufficientTimeReason;
+
+      this.currentData.cause_product_feature_why_essential
+        = this.currentData.cause_product_feature_why_essential
+        || this.defaultWhyEssential;
+
+      this.currentData.cause_product_feature_why_others_inadequate
+        = this.currentData.cause_product_feature_why_others_inadequate
+        || this.defaultWhyOthersInadequate;
+      /* eslint-enable camelcase */
 
       const cspNames = {
         AWS: "Amazon",
@@ -269,8 +358,10 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger;
-    // EJY - KEEP AN EYE ON VARIOUS CUSTOM VALIATIONS
+    this.validateMigrationEstimate();
+    if (this.migrationError === true) {
+      return false;
+    }
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
@@ -284,8 +375,6 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
-
 
 }
 </script>

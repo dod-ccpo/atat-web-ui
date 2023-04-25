@@ -136,7 +136,6 @@ export default class ATATSelect extends Vue {
 
   @Emit("onChange")
   private onChange(val: string | SelectData): void {
-    debugger;
     const isString = typeof val === "string";
     const isObject = typeof val === "object"
     let isSelectable = true;
