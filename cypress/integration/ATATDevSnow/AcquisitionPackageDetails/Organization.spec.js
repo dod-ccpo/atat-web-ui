@@ -1,114 +1,110 @@
-import { bootstrapMockApis,randomString} from "../../../helpers";
+import {
+  bootstrapMockApis,
+  randomString,
+  randomAlphaNumeric,
+  capitalizeFirstLetter
+} from "../../../helpers";
 import common from "../../../selectors/common.sel";
+import projectOverview from "../../../selectors/projectOverview.sel";
 import org from "../../../selectors/org.sel";
+import co from "../../../selectors/contractOffice.sel";
+import contact from "../../../selectors/contact.sel";
+import lp from "../../../selectors/landingPage.sel";
 
-describe("Test suite: Acquisition Package: Organization ", () => {
-    
-  let projectDetails;
+describe("Test suite: Acquisition Package Details: Organization ", () => {
+  
   let orgAddressType;
+  let pt = "Step-1-Organization-" + randomAlphaNumeric(5);
+  let scope = "Project Scope-" + randomString(5);
+  const expectedEmail = Cypress.env("snowUser");
+  const expectedNames = expectedEmail.split('-ctr')[0].split('.');
+  const expectedFirstName = expectedNames[0];
+  const firstName = capitalizeFirstLetter(expectedFirstName);
       
   beforeEach(() => {
     bootstrapMockApis();
-
-    cy.fixture("projectOverview").then((details) => {
-      projectDetails = details;
-    });
+    
     cy.fixture("orgAddressType").then((types) => {
       orgAddressType = types;
     });
     
     cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
+    cy.selectDitcoOption(co.radioDITCO, "DITCO");
+    cy.textExists(common.stepAcquisitionText, " Acquisition Package Details ");
+    //Verify the Substeps are  visible
+    cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");    
+    cy.fillNewAcquisition(pt, scope);
   });
 
-  it("TC1: Organization substep is active", () => {
-    cy.findElement(common.stepAcquisitionText)
-      .should("be.visible")
-      .and('have.css', 'color', 'rgb(84, 68, 150)')
-    cy.findElement(common.subStepOrganizationLink).click();
-    cy.findElement(common.subStepOrganizationTxt)
-      .should("be.visible")
-      .and('have.css', 'color', 'rgb(84, 68, 150)');
-    
-  });
-
-  
-  it("TC2: Next,we'll gather information about your org & Address Type is Foreign",
-    () => {
-    
-      cy.fillNewAcquisition(projectDetails.projectTitle1, projectDetails.scope1);
-        
-      // Navigates to "Organization"
-      cy.textExists(common.packageNameHeader, projectDetails.projectTitle1);
-
-      //header 
-      cy.findElement(common.wrap).scrollTo('top', { easing: 'linear' });
-      cy.textExists(common.header, " Next, we’ll gather information about your organization ");
-
-      //text Label
-      cy.textExists(org.agencyLabel, " What agency do you work for? ");
-
-      //Select the Value from Service or agency dropdown
-      cy.agency("Defense");
-
-      //section One
-      cy.textExists(org.sectionOneHeaderText, "1. Tell us more about your organization");
-      cy.textExists(org.orgNameTxtLabel, " Organization name ");
-      cy.enterTextInTextField(org.orgNameTxtBox, "TestDepartmentof Defense");
-      cy.textExists(org.activityAddressCodeLabel, " DoD Activity Address Code (DoDAAC) ");
-      cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDDDE");
-
-      //section Two
-      cy.textExists(org.sectionTwoHeaderText, "2. What is your organization’s address?");
-
-      //Assert radio group text  
-      const addressType = ["U.S.address", "Military", "Foreign address"];
-      let foundRadioOptions = 0;
-      cy.findElement(org.addressTypeRadioGroup)
-        .children()
-        .each(($addressTypetext) => {
-          const text = $addressTypetext;
-          if (addressType.indexOf(text) > -1) {
-            foundRadioOptions++
-          };
-          return foundRadioOptions === addressType.length;
-        });
-        
-      //radio buttons        
-      cy.radioBtn(org.usaRadioBtn, "US").not("[disabled]");
-      cy.radioBtn(org.militaryradioBtn, "MILITARY").not("[disabled]");
-      cy.radioBtn(org.foreignradioBtn, "FOREIGN").not("[disabled]");
-
-      //Select the radio button      
-      cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN");
-      const orgAddress = {
-        streetAddress : orgAddressType.StreetAddress,
-        unit : orgAddressType.Unit2,            
-        city : orgAddressType.city2,
-        state:   "",
-        zipCode: orgAddressType.postalCode1,
-        apoFPOSelector :    "",
-        statecodeSelector :    "",
-        stateProvince :    orgAddressType.stateProvince2,
-        inputCountryName :    orgAddressType.country
-        
-      }
-      //enter the text in the text fields
-      cy.enterOrganizationAddress(orgAddress);
-      //Assert buttons
-      cy.btnExists(common.continueBtn, " Continue ");
-      cy.btnExists(common.backBtn, "Back");
-
-    });  
-
-  it("TC3: Service Agency selected is DISA & Address Type is Military", () => {
-        
-    cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
-
+  it("TC1: Next,we'll gather information about your org & Address Type is Foreign",    () => {     
+      
     // Navigates to "Organization"
-    cy.textExists(common.header, " Next, we’ll gather information about your organization ");
+    cy.textExists(common.packageNameHeader, pt);
 
-    // Serviceagency is DISA
+    //text Label
+    cy.textExists(org.agencyLabel, "What service or agency are you affiliated with?");
+
+    //Select the Value from Service or agency dropdown
+    cy.agency("Defense");
+
+    //section One
+    cy.textExists(org.sectionOneHeaderText, "1. Tell us more about your organization");
+    cy.textExists(org.orgNameTxtLabel, " Organization name ");
+    cy.enterTextInTextField(org.orgNameTxtBox, "TestDepartmentof Defense");
+    cy.textExists(org.activityAddressCodeLabel, " DoD Activity Address Code (DoDAAC) ");
+    cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDDDE");
+
+    //section Two
+    cy.textExists(org.sectionTwoHeaderText, "2. What is your organization’s address?");
+
+    //Assert radio group text      
+    const addressType = ["U.S.address", "Military", "Foreign address"];      
+    let foundRadioOptions = 0;
+    cy.findElement(org.addressTypeRadioGroup)
+      .children()
+      .each(($addressTypetext) => {
+        const text = $addressTypetext;
+        if (addressType.indexOf(text) > -1) {
+          foundRadioOptions++
+        };
+        return foundRadioOptions === addressType.length;
+      });
+        
+    //radio buttons        
+    cy.radioBtn(org.usaRadioBtn, "US").not("[disabled]");
+    cy.radioBtn(org.militaryradioBtn, "MILITARY").not("[disabled]");
+    cy.radioBtn(org.foreignradioBtn, "FOREIGN").not("[disabled]");
+
+    //Select the radio button      
+    cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN");
+    const orgAddress = {
+      streetAddress : orgAddressType.StreetAddress,
+      unit : orgAddressType.Unit2,            
+      city : orgAddressType.city2,
+      state:   "",
+      zipCode: orgAddressType.postalCode1,
+      apoFPOSelector :    "",
+      statecodeSelector :    "",
+      stateProvince :    orgAddressType.stateProvince2,
+      inputCountryName :    orgAddressType.country
+        
+    }
+    //enter the text in the text fields
+    cy.enterOrganizationAddress(orgAddress);
+    //Assert buttons     
+    cy.btnExists(common.backBtn, "Back");
+    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.waitUntilElementIsGone(org.foreignradioBtn);
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
+    cy.btnExists(common.backBtn, "Back").click();
+    cy.waitUntilElementIsGone(contact.militaryRadioBtn);
+    cy.findElement(org.activityAddressCodeTxtBox).should("have.value", "DoDDDE");
+    cy.verifySelectedRadioOption(org.addressTypeRadioActive, "radio_button_checkedForeign address");
+  });  
+    
+  it("TC2: Service Agency selected is DISA & Address Type is Military", () => {       
+    // Service agency is DISA
     cy.agency("Defense Information Systems");
     cy.textExists(org.disaDropDownLabel," DISA Organization ");
     cy.autoCompleteSelection(org.disaOrgInput, "Assistan",org.disaAutoComplete);
@@ -133,16 +129,18 @@ describe("Test suite: Acquisition Package: Organization ", () => {
 
     //Click on Continue button
     cy.btnClick(common.continueBtn, " Continue "); 
-
+    cy.waitUntilElementIsGone(org.militaryradioBtn);
     //Navigates to Contact information
-    cy.verifyPageHeader("Let’s confirm your contact information");
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
+    cy.btnExists(common.backBtn, "Back").click();
+    cy.waitUntilElementIsGone(contact.militaryRadioBtn);
+    cy.findElement(org.activityAddressCodeTxtBox).should("have.value", "DoDDDA");
+    const militaryOption = "radio_button_checkedMilitary/Diplomatic (APO, FPO, or DPO)";
+    cy.verifySelectedRadioOption(org.addressTypeRadioActive, militaryOption );
     
   });
 
-  it("TC4: Service Agency selected is not DISA & Address Type is US", () => {
-    cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
-    cy.textExists(common.header, " Next, we’ll gather information about your organization ");
-
+  it("TC3: Service Agency selected is not DISA & Address Type is US", () => {
     //Service Agency is not DISA
     cy.agency("Communications");
     cy.enterTextInTextField(org.orgNameTxtBox, "TestDepartmentof Defense");
@@ -163,12 +161,32 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     //Click on Continue button
     cy.btnExists(common.continueBtn, " Continue ").click();
     //Navigates to Contact information
-    cy.findElement(common.wrap).scrollTo('top', { easing: 'linear' });
-    cy.textExists(common.header, "Let’s confirm your contact information");
-
+    cy.waitUntilElementIsGone(org.foreignradioBtn);
+    cy.verifyPageHeader("Let’s find out about the primary point of contact for this requirement");
+    cy.findElement(common.dashboardTab).click();
+    cy.waitUntilElementIsGone(common.sideNavBar);
+    cy.textExists(lp.welcomeBarText, "Hi " + firstName + "! How can we help you?");
+    //navigate to Acquisition package to ensure the data is retreiving correctly on edit
+    cy.findElement(lp.acqPackageaccordion).should("exist");
+    cy.textExists(lp.acqCard0, pt).then(() => {
+      cy.findElement("#Portfolio0").click();
+    });
+    cy.waitUntilElementIsGone(lp.acqCard0);
+    cy.waitUntilModalNotVisible();
+    cy.verifySelectedRadioOption(co.activeRadioOption, "Yes");
+    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.waitUntilElementIsGone(co.radioDITCO);
+    cy.clickDevToggleBtn();
+    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.waitUntilElementIsGone(projectOverview.projDisChxkBox);
+    cy.verifyPageHeader(" Next, we’ll gather information about your organization ");   
+    cy.findElement(org.orgNameTxtBox).should("have.value", "TestDepartmentof Defense");
+    cy.findElement(org.activityAddressCodeTxtBox).should("have.value", "DoDCEC");
+    cy.verifySelectedRadioOption(org.addressTypeRadioActive, "radio_button_checkedU.S. address");
   });
 
-  it("TC5: Request to add your agency", () => {
+  //this functionality is hidden on UI temproraily
+  it.skip("TC4: Request to add your agency", () => {
     cy.clickSideStepper(common.subStepOrganizationLink, " Organization ");
     // Navigates to "Organization"
     cy.textExists(org.requestAgencyLink,  " Request to have your agency added ").click();
@@ -177,16 +195,18 @@ describe("Test suite: Acquisition Package: Organization ", () => {
         
   });    
 
-  it("TC6: Validations: DISA & US address", () => {
-    cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
-    cy.verifyPageHeader(" Next, we’ll gather information about your organization ");
+  it("TC5: Validations: DISA & US address", () => {   
     //Service Agency is DISA
     cy.verifyRequiredDropdown(
       org.agencyInput,
       org.agencyError,
-      "Please select your agency."
-    );    
+      "Please select your agency or service."
+    ); 
     cy.agency("Defense Information Systems");
+    cy.waitUntil(() => {
+      return cy.findElement(org.disaOrgInput).should("be.visible");
+    });
+    
     // DISA dropdown is blank
     cy.verifyRequiredInput(
       org.disaOrgInput,
@@ -199,6 +219,12 @@ describe("Test suite: Acquisition Package: Organization ", () => {
       org.activityAddressCodeError,
       "Please enter your 6-character DoDAAC."
     );
+    cy.findElement(org.activityAddressCodeTxtBox).scrollIntoView()
+      .type("DODCCA")
+    cy.clickSomethingElse(org.disaOrgInput).then(() => {
+      cy.findElement(org.activityAddressCodeTxtBox).scrollIntoView();
+      cy.findElement(org.activityAddressCodeError).should("not.exist");      
+    });  
     //DoD Activity value more than 6 characters
     const dodTxt=randomString(7)
     cy.findElement(org.activityAddressCodeTxtBox).should("be.visible").clear()
@@ -237,18 +263,19 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     );
   });
 
-  it("TC7: Validations: Not DISA & Foreign address", () => {
-    cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
-    cy.textExists(common.header, " Next, we’ll gather information about your organization ");
+  it("TC6: Validations: Not DISA & Foreign address", () => {   
+    
     cy.agency("Communications");
     // Organization Name  is blank
     cy.verifyRequiredInput(
       org.orgNameTxtBox,
       org.orgNameError,
       "Please enter your organization name."); 
+    cy.findElement(org.orgNameTxtBox).type("org");
+    cy.clickSomethingElse(org.activityAddressCodeTxtBox);
     //Organization Name is more than 80 characters    
     const orgNameTxt=randomString(81)
-    cy.findElement(org.orgNameTxtBox,).should("be.visible").clear()
+    cy.findElement(org.orgNameTxtBox).scrollIntoView().clear()
       .type(orgNameTxt).blur({ force: true }).then(() => {
         cy.checkErrorMessage(
           org.orgNameError,
@@ -278,9 +305,8 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     
   });
 
-  it("TC8: Validations: Military address", () => {
-    cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
-    cy.textExists(common.header, " Next, we’ll gather information about your organization ");
+  it("TC7: Validations: Military address", () => {
+    
     //select Address type as Military
     cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
     //APO/FPO/DPO dropdown is blank

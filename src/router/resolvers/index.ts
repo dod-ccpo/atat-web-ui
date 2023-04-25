@@ -5,12 +5,10 @@ import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
-import TaskOrder from "@/store/taskOrder";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
-import { ClassificationLevelDTO, EvaluationPlanDTO } from "@/api/models";
+import { EvaluationPlanDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
@@ -51,21 +49,9 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   return (source === "TECH_PROPOSAL" || source === "SET_LUMP_SUM") && !method ? true : false;
 }
 
-export const CreateEvalPlanRouteResolver = (current: string): string => {
-  if (current === routeNames.NoEvalPlan) {
-    return routeNames.PeriodOfPerformance;
-  }
-  if(current === routeNames.EvalPlanDetails){
-    return routeNames.CreateEvalPlan
-  }
-  return current === routeNames.Exceptions
-    ? routeNames.CreateEvalPlan
-    : routeNames.Exceptions;
-};
-
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
-  if (missingEvalPlanMethod(evalPlan)) {
+  if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
     return routeNames.PeriodOfPerformance;
   }
   Steps.setAdditionalButtonText({
@@ -85,16 +71,14 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 };
 
 export const BVTOResolver = (current: string): string => {
+
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
-    if (!evalPlanRequired()) {
-      return routeNames.NoEvalPlan;
-    }
-    if (missingEvalPlanMethod(evalPlan)) {
+    // moving backwards
+    if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
       return routeNames.CreateEvalPlan;
     }
   }
-
   if (evalPlan?.method === "BVTO") {
     return routeNames.Differentiators;
   }
@@ -104,17 +88,23 @@ export const BVTOResolver = (current: string): string => {
     : routeNames.EvalPlanDetails;
 };
 
-export const NoEvalPlanRouteResolver = (current: string): string => {
-  if(current === routeNames.CreateEvalPlan){
-    return routeNames.Exceptions
-  }
-  if (evalPlanRequired()) {
-    return routeNames.CreateEvalPlan;
-  }
-  return current === routeNames.Exceptions
-    ? routeNames.NoEvalPlan
-    : routeNames.Exceptions;
+const isProdEnv = (): boolean | null => {
+  return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
+}
+
+export const ProposedCSPRouteResolver = (current: string): string => {
+  // TODO - remove isProdEnv condition below when J&A/MRR ready for production
+  return current === routeNames.Exceptions && (isProdEnv() || evalPlanRequired()) 
+    ? routeNames.CreateEvalPlan
+    : routeNames.ProposedCSP
 };
+
+export const CertificationPOCsRouteResolver = (current: string): string => {
+  // TODO - remove isProdEnv condition below when J&A/MRR ready for production
+  return (isProdEnv() || evalPlanRequired()) && current === routeNames.CreateEvalPlan
+    ? routeNames.Exceptions
+    : routeNames.CertificationPOCs
+}
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
@@ -1375,10 +1365,10 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
-  CreateEvalPlanRouteResolver,
   BVTOResolver,
-  NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
+  ProposedCSPRouteResolver,
+  CertificationPOCsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
 };

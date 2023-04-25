@@ -24,6 +24,7 @@ import Portfolios from "@/portfolios/Index.vue";
 import Packages from "@/packages/Index.vue";
 import Home from "@/home/Index.vue";
 import CurrentUserStore from "./store/user";
+import AcquisitionPackage from "./store/acquisitionPackage";
 
 @Component({
   components: {
@@ -82,6 +83,7 @@ export default class App extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    await AcquisitionPackage.setIsProdEnv();
     if (process.env.NODE_ENV === "development") {
       // NOTE: add `userId` to .env file with your snow sys_id to view 
       // your packages etc. when running locally
