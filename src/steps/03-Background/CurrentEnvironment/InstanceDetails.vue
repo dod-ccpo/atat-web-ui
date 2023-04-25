@@ -73,7 +73,7 @@
         <hr v-if="hasTellUsAboutInstanceHeading" />
 
         <h2 class="mb-4">
-          {{getCurrentUsageAndUsersSequenceNum()}}
+          {{getCurrentUsageAndUsersSequenceNum}}
           Current usage and users
         </h2>
 
@@ -101,7 +101,7 @@
         <hr />
 
         <h2 class="mb-4">
-          {{getInstanceConfigurationsSequenceNum()}}
+          {{getInstanceConfigurationsSequenceNum}}
           Instance configurations
         </h2>
 
@@ -117,9 +117,9 @@
 
         <hr />
 
-        <span v-if="instanceData.instance_location !== 'ON_PREM'">
+        <span v-if="getInstanceLocation">
           <h2 class="mb-4">
-            {{getPricingDetailsSequenceNum()}}
+            {{getPricingDetailsSequenceNum}}
             Pricing details
           </h2>
 
@@ -129,7 +129,7 @@
         </span>
 
         <h2 class="mb-4">
-          {{getAdditionalInfoSequenceNum()}}
+          {{getAdditionalInfoSequenceNum}}
           Additional information 
           <span class="text-base font-weight-400">(Optional)</span>
         </h2>
@@ -273,7 +273,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     // if instance location is on-premise AND only one classification was selected.
     // classification radio options will show if either NO (ZERO) classification
     // levels were selected, or more than one was selected.
-    return !(this.instanceData.instance_location === 'ON_PREM' 
+    return !(this.currEnvData.env_location === 'ON_PREM'
       && this.currEnvData.env_classifications_onprem.length === 1);
   }
 
@@ -526,32 +526,40 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
 
     return isValid;
   }
+  /**
+   * Processes the instance location 
+   * returns false if the instance location is on_prem
+   * returns true otherwise
+   */
+  public get getInstanceLocation(): boolean {
+    return this.instanceData.instance_location === "ON_PREM" ? false:true 
+  }
 
   /**
    * Compiles and returns the sequence number for current usage & user section
    */
-  getCurrentUsageAndUsersSequenceNum(): string {
+  public get getCurrentUsageAndUsersSequenceNum(): string {
     return this.hasTellUsAboutInstanceHeading ? "2." : "1.";
   }
 
   /**
    * Compiles and returns the sequence number for instance configurations section
    */
-  getInstanceConfigurationsSequenceNum(): string {
+  public get getInstanceConfigurationsSequenceNum(): string {
     return this.hasTellUsAboutInstanceHeading ? "3." : "2.";
   }
 
   /**
    * Compiles and returns the sequence number for pricing details section
    */
-  getPricingDetailsSequenceNum(): string {
+  public get getPricingDetailsSequenceNum(): string {
     return this.hasTellUsAboutInstanceHeading ? "4." : "3.";
   }
 
   /**
    * Compiles and returns the sequence number for additional information section
    */
-  getAdditionalInfoSequenceNum(): string {
+  public get getAdditionalInfoSequenceNum(): string {
     if (this.hasTellUsAboutInstanceHeading) {
       return this.instanceData.instance_location === "ON_PREM" ? "4." : "5.";
     } else {
