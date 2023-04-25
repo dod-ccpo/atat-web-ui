@@ -77,6 +77,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   funding_requirement: ReferenceColumn | string;
   contracting_shop?: string;
   funding_request?: ReferenceColumn | string;
+  contracting_shop_non_ditco_address?: ReferenceColumn | string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -908,15 +909,17 @@ export interface PackageDocumentsUnsignedDTO extends BaseTableDTO {
   sys_created_by?: string
 }
 export interface AddressDTO extends BaseTableDTO {
-  name?:string;
-  address_type?: string;
-  city?: string;
-  apo_fpo_dpo?: string;
-  country?: string;
-  state?: string;
-  street_address?: string;
-  zip_code?: string;
+  apo_fpo_cpo?: string
+  country?: string
+  address_type?: string
   category?: "" | "CONTRACTING_OFFICE" | "FOIA" | "ORGANIZATION";
-  unit?: string;
-  aa_ae_ap?: string;
+  city?: string
+  zip_postal_code?: string
+  acquisition_package?: string
+  street_address_1?: string
+  street_address_2?: string
+  unit?: string
+  state_province_state_code?: string
+  name?: string
+  aa_ae_ap?: string
 }

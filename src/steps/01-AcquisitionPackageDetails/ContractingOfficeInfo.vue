@@ -36,16 +36,16 @@
                 :selectedCountry.sync="selectedCountry"
                 :requiredFields='[
                 {field:"StreetAddress", message: "Please enter an address."},
-                {field:"City", message:  "Please enter a city."},
-              {field:"State" , message: "Please select a state."},
+                {field:"City", message:  "Enter a city."},
+              {field:"State" , message: "Select a state code."},
               {field:"ZIPCode" , message: "Please enter a ZIP code."},
               {
                 field:"APO_FPO_DPO",
-                message: "Please select a military post office (APO or FPO)."
+                message: "Select a military or diplomatic post office (APO, FPO, or DPO)."
                 },
-              {field:"StateCode", message:  "Please select a state code."},
-              {field:"StateProvince", message: "Please enter a state/province."},
-              {field:"Country", message: "Please select a country."},
+              {field:"StateCode", message:  "Select a state code."},
+              {field:"StateProvince", message: "Enter a state/province."},
+              {field:"Country", message: "Select a country."},
               {field:"PostalCode" , message: "Please enter a postal code."},
               ]'
                 :isValidRules='[
@@ -131,7 +131,6 @@ export default class ContractingOfficeInfo extends Mixins(SaveOnLeave) {
   private zipCode = "";
   private stateOrProvince = "";
   private country = "";
-  private showDialog = false;
 
   private addressTypeOptions: RadioButton[] = [
     {
@@ -171,16 +170,20 @@ export default class ContractingOfficeInfo extends Mixins(SaveOnLeave) {
     // Foreign addresses set country obj
     if (this.selectedAddressType === this.addressTypes.FOR) {
       this.selectedCountry =
-        this.countryListData.find((c) => c.text === this.savedData?.country)
+        this.countryListData.find((c) => c.value === this.savedData.country.value)
         || this.emptySelectData;
+      this.stateOrProvince = this.savedData.state_province_state_code
     } else {
       // US or Military addreses - set country obj to USA
-      this.selectedCountry = { text: "United States of America", value: "US" };
+
+      const US = this.countryListData.
+        find((c) => c.text === "United States of America")|| {};
+      this.selectedCountry = {text:US.text, value:US.value}
 
       // Military addresses - set selectedStateCode and selectedMilitaryPO
       if (this.selectedAddressType === this.addressTypes.MIL && this.stateCodeListData) {
         this.selectedStateCode =
-          this.stateCodeListData.find((s) => s.value === this.stateOrProvince)
+          this.stateCodeListData.find((s) => s.value === this.savedData.state_province_state_code)
           || this.emptySelectData;
 
         this.selectedMilitaryPO =
@@ -189,8 +192,12 @@ export default class ContractingOfficeInfo extends Mixins(SaveOnLeave) {
 
         // US addresses - set selectedState
       } else if (this.selectedAddressType === this.addressTypes.USA && this.stateListData) {
+        if(this.savedData.state_province_state_code === ""){
+          return
+        }
         this.selectedState =
-          this.stateListData.find((stateObj) => stateObj.value === this.stateOrProvince)
+          this.stateListData.find(
+            (stateObj) => stateObj.value === this.savedData.state_province_state_code)
           || this.emptySelectData;
       }
     }
@@ -200,7 +207,7 @@ export default class ContractingOfficeInfo extends Mixins(SaveOnLeave) {
 
   public countryListData: SelectData[] = [{text: "", value: ""}];
   public async mounted(): Promise<void> {
-    this.countryListData = ContactData.countryListData(["US"]);
+    this.countryListData = ContactData.countryChoices;
     await this.loadOnEnter();
     this.setSelectedData();
   }
@@ -218,77 +225,62 @@ export default class ContractingOfficeInfo extends Mixins(SaveOnLeave) {
     }
 
     return {
-      name: this.name,
+      apo_fpo_cpo: this.selectedMilitaryPO.value,
+      country: this.selectedCountry.value,
       address_type: this.selectedAddressType,
-      street_address: this.streetAddress1,
-      city,
-      zip_code: this.zipCode,
-      state,
-      country: this.selectedCountry.text as string,
+      category: "CONTRACTING_OFFICE",
+      city: city,
+      zip_postal_code: this.zipCode,
+      acquisition_package: AcquisitionPackage.packageId,
+      street_address_1: this.streetAddress1,
+      unit: this.streetAddress2,
+      state_province_state_code: state,
+      name: this.name,
+      aa_ae_ap: this.selectedStateCode.value
     };
   }
 
   private savedData = {
-    name: "",
-    dodaac: "",
-    agency: "",
-    address_type: "",
-    street_address_1: "",
-    street_address_2: "",
-    city: "",
-    zip_code: "",
-    state: "",
+    apo_fpo_cpo: "",
     country: "",
+    address_type: "",
+    category: "",
+    city: "",
+    zip_postal_code: "",
+    acquisition_package: "",
+    street_address_1: "",
+    unit: "",
+    state_province_state_code: "",
+    name: "",
+    aa_ae_ap:""
   } as Record<string, any>
 
   // methods
 
   public async loadOnEnter(): Promise<void> {
-    debugger
     this.stateListData = ContactData.stateChoices;
     this.selectedAddressType = this.addressTypes.USA
-    // const storeData = await AcquisitionPackage
-    //   .loadData<AddressDTO>({storeProperty:
-    //     StoreProperties.Organization}) as Record<string, any>;
+    const storeData = await AcquisitionPackage
+      .loadData<AddressDTO>({storeProperty:
+        StoreProperties.NonDitcoAddress}) as Record<string, any>;
+    if (storeData) {
+      this.name = storeData.name;
 
-    // if (storeData) {
-    //   const keys: string[] = [
-    //     "name",
-    //     "dodaac",
-    //     "agency",
-    //     "address_type",
-    //     "street_address_1",
-    //     "street_address_2",
-    //     "city",
-    //     "zip_code",
-    //     "state",
-    //     "country",
-    //   ];
-    //   keys.forEach((key: string) => {
-    //     if (Object.prototype.hasOwnProperty.call(storeData, key)) {
-    //       this.savedData[key] = storeData[key];
-    //     }
-    //   });
-    //
-    //   this.name = storeData.name;
-    //   this.dodAddressCode = storeData.dodaac;
-    //
-    //   const selectedAddressTypeIndx = this.addressTypeOptions.findIndex(
-    //     (options) => options.value === storeData.address_type
-    //   );
-    //
-    //   this.selectedAddressType =
-    //     selectedAddressTypeIndx > -1
-    //       ? this.addressTypeOptions[selectedAddressTypeIndx].value
-    //       : "";
-    //
-    //   this.streetAddress1 = storeData.street_address_1;
-    //   this.streetAddress2 = storeData.street_address_2;
-    //   this.city = storeData.city;
-    //   this.zipCode = storeData.zip_code;
-    //   this.stateOrProvince = storeData.state;
-    //
-    // }
+      const selectedAddressTypeIndx = this.addressTypeOptions.findIndex(
+        (options) => options.value === storeData.address_type
+      );
+
+      this.selectedAddressType =
+        selectedAddressTypeIndx > -1
+          ? this.addressTypeOptions[selectedAddressTypeIndx].value
+          : "";
+
+      this.streetAddress1 = storeData.street_address_1;
+      this.streetAddress2 = storeData.unit;
+      this.city = storeData.city;
+      this.zipCode = storeData.zip_postal_code;
+      this.savedData = storeData
+    }
   }
 
   private hasChanged(): boolean {
@@ -299,7 +291,7 @@ export default class ContractingOfficeInfo extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveData( {data: this.currentData,
-          storeProperty: StoreProperties.Organization});
+          storeProperty: StoreProperties.NonDitcoAddress});
       }
     } catch (error) {
       console.log(error);

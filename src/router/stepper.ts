@@ -175,6 +175,7 @@ import {
   IGCETrainingPathResolver,
   FeeChargedResolver,
   showDITCOPageResolver,
+  ContractingInfoResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -321,6 +322,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Contracting Office Info",
         path: "contracting-office-info",
         name: routeNames.ContractingOfficeInfo,
+        routeResolver:ContractingInfoResolver,
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
