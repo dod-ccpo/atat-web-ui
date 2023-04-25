@@ -474,8 +474,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         el.scrollIntoView({
           behavior: "smooth"
         });
-      } else {
-        await DescriptionOfWork.setNeedsSecurityRequirements();
+      } else if(DescriptionOfWork.isEndOfServiceOfferings) {
+        DescriptionOfWork.doSetShowSecurityRequirements(true)
       }
     } catch (error) {
       console.log(error);
