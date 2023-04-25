@@ -52,16 +52,20 @@
       background-color: $white;
       z-index: 2;
     }
-    
   }
 }
 
+._csp-card {
+  width: 200px !important;
+  max-width: 200px;
+  
+  height: 160px;
+  &._calculator-card {
+    height: 245px;
+    width: 169px !important;
+    max-width: 169px;
+  }
 
-// requirements cost estimate csp cards
-._calculator-card {
-  width: 169px !important;
-  height: 245px;
-  max-width: 169px;
   margin: 10px 16px 20px 0px;
   box-sizing: border-box;
   align-self: stretch;
@@ -70,10 +74,23 @@
   border: 1px solid $base-light !important;
   border-radius: 4px;
   box-shadow: none !important;
+  text-align: center;
+  padding: 12px;
+  font-weight: 700;
 
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
+
+  .v-label {
+    flex-direction: column !important;
+  }
+
+  .v-input--selection-controls__input {
+    // display: none !important;
+    opacity: 0;
+    height: 0 !important;
+  }
 
   ._svg-icon-div {
     display: flex !important;
@@ -103,4 +120,27 @@
     width: 100%;
     margin-top: 8px;
   }
+
+  &._selectable {
+    &:focus:before {
+      opacity: 0 !important;
+    }
+    &:hover {
+      border-color: $primary !important;
+      outline: 1px solid $primary;
+      cursor: pointer;
+    }
+  }
+  &._selected, &.v-item--active {
+    border-color: $primary !important;
+    outline: 1px solid $primary;
+    background-color: $primary-lighter;
+  }
+
+  &.v-radio--is-focused {
+    border-color: $primary !important;
+    outline: 1px solid $primary !important;
+    box-shadow: 0px 0px 0px 2px white, 0px 0px 0px 4px $primary !important;
+  }
+
 }

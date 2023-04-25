@@ -726,3 +726,5 @@ export interface TrainingEstimate {
   trainingOption: SingleMultiple;
   cloudSupportEnvironmentInstance: ReferenceColumn | string;
 }
+
+export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
