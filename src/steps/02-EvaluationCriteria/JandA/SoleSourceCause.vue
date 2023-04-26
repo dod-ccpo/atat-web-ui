@@ -172,7 +172,7 @@
                       <ATATTextArea 
                         id="WhyEssential"
                         class="mt-10"
-                        :label="`Why do other similar ${productOrFeatureStr} not 
+                        :label="`Why do other similar ${productOrFeatureStr}s not 
                           meet the Government’s requirements?`"
                         helpText="Fill in the blank to complete the suggested sentence 
                           below or write your own reason."
@@ -274,17 +274,12 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public get whyEssentialErrorMessage(): string {
     return `Describe why the ${this.productOrFeatureStr} is essential.`;
   }
-  public get defaultWhyEssential(): string {
-    return "This " + this.productOrFeatureStr + " is essential to the Government’s " + 
-      "requirements due to...";
-  } 
+  public defaultWhyEssential = "";
+  public defaultWhyOthersInadequate = ""
+
   public get whyOthersInadequateErrorMessage(): string {
-    return `Describe why other ${this.productOrFeatureStr} do not meet your requirements`;
+    return `Describe why other ${this.productOrFeatureStr}s do not meet your requirements`;
   }
-  public get defaultWhyOthersInadequate(): string {
-    return "Other similar " + this.productOrFeatureStr + " do not meet, nor can be " +
-      "modified to meet, the Government’s requirements due to...";
-  } 
   public get productOrFeatureStr(): string {
     return this.currentData.cause_product_feature_type
       ? this.currentData.cause_product_feature_type.toLowerCase()
@@ -311,8 +306,42 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     this.hasPeculiarProduct = newVal === "YES" ? true : false;    
   }
   @Watch("pfType")
-  public pfTypeChanged(): void {
-    this.productOrFeatureSelected = true;    
+  public pfTypeChanged(newVal: string, oldVal: string): void {
+    this.productOrFeatureSelected = true;   
+    oldVal = oldVal.toLowerCase();
+    newVal = newVal.toLowerCase();
+    // update DEFAULT text for why product/feature is essential
+    // get first two words from old default why essential
+    const prevEssentialStart = oldVal 
+      ? this.defaultWhyEssential.split(" ").slice(0,2).join(" ").toLowerCase() : ""; 
+
+    this.defaultWhyEssential = "This " + this.productOrFeatureStr + " is essential " +
+      "to the Government’s requirements due to...";      
+    // if no oldVal (product/feature radios hadn't been selected) OR
+    // if oldEntryLength (length of what's in the textarea) is same as new default length,
+    // no changes were made, just swap the new default text into the value
+    if (!oldVal || this.pfWhyEssential.length === this.defaultWhyEssential.length) {
+      this.pfWhyEssential = this.defaultWhyEssential;
+    } else if (prevEssentialStart === "this " + oldVal) {
+      // just change the 2nd word from oldVal to newVal 
+      // (e.g., from "product" to "feature" or vice-versa)
+      const substrEssential = this.pfWhyEssential.slice(prevEssentialStart.length);
+      this.pfWhyEssential = "This " + newVal + substrEssential;
+    }
+
+    // update DEFAULT why other similar products/features are inadequate
+    debugger;
+    const prevInadequateStart = oldVal 
+      ? this.defaultWhyOthersInadequate.split(" ").slice(0,3).join(" ").toLowerCase() : ""; 
+    this.defaultWhyOthersInadequate = "Other similar " + this.productOrFeatureStr + "s " +
+      "do not meet, nor can be modified to meet, the Government’s requirements due to...";
+    if (!oldVal || this.pfWhyOthersInadequate.length === this.defaultWhyOthersInadequate.length) {
+      this.pfWhyOthersInadequate = this.defaultWhyOthersInadequate;
+    } else if (prevInadequateStart === "other similar " + oldVal + "s") {
+      const substrInadequate = this.pfWhyOthersInadequate.slice(prevInadequateStart.length);
+      this.pfWhyOthersInadequate = "Other similar " + newVal + "s" + substrInadequate;
+    }
+
   }
 
   public get mCost(): string {
@@ -337,7 +366,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
 
   public get currentData(): FairOpportunityDTO {
     const fairOppSaved: FairOpportunityDTO 
-      = AcquisitionPackage.fairOpportunity || AcquisitionPackage.getInitialFairOpportunity();
+      = _.cloneDeep(AcquisitionPackage.fairOpportunity) 
+      || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
     const formData: FairOpportunityDTO = {
       /* eslint-disable camelcase */
       cause_migration_addl_time_cost: this.migrAddlTimeCost,
@@ -383,11 +413,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       this.pfPeculiarToCSP = storeData.cause_product_feature_peculiar_to_csp as YesNo;
       this.pfType = storeData.cause_product_feature_type;
       this.pfName = storeData.cause_product_feature_name as string;
-      this.pfWhyEssential = storeData.cause_product_feature_why_essential  
-        || this.defaultWhyEssential;
-      this.pfWhyOthersInadequate = storeData.cause_product_feature_why_others_inadequate 
-        || this.defaultWhyOthersInadequate;
-
+      this.pfWhyEssential = storeData.cause_product_feature_why_essential as string;
+      this.pfWhyOthersInadequate = storeData.cause_product_feature_why_others_inadequate as string;
       const cspNames = {
         AWS: "Amazon",
         GCP: "Google",
