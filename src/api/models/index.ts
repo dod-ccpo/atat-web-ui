@@ -16,7 +16,8 @@ import {
   EstimateOptionValue,
   TrainingEstimate,
   EstimateOptionValueObjectArray,
-  CSP
+  CSP,
+  UnitOfTime
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -222,7 +223,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   cause_migration_addl_time_cost?: YesNo;
   cause_migration_estimated_cost?: string;
   cause_migration_estimated_delay_amount?: number | null;
-  cause_migration_estimated_delay_unit?: "" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
+  cause_migration_estimated_delay_unit?: UnitOfTime;
 
   cause_govt_engineers_training_certified?: YesNo;
   cause_govt_engineers_platform_name?: string;

@@ -21,7 +21,7 @@
                 name="AddlTimeCost"
                 legend="Would a fair opportunity competition require your project to 
                   migrate from one platform to another, resulting in additional time and cost?"
-                :value.sync="currentData.cause_migration_addl_time_cost"
+                :value.sync="migrAddlTimeCost"
                 :items="addlTimeCostOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
@@ -30,7 +30,7 @@
                   <ATATTextField
                     id="MigrationEstimatedCost"
                     class="mt-10 mb-10"
-                    :value.sync="currentData.cause_migration_estimated_cost"
+                    :value.sync="migrEstCost"
                     label="Estimated cost to migrate"
                     :isCurrency="true"
                     :width="400"
@@ -43,7 +43,7 @@
                       <ATATTextField
                         id="MigrationEstimatedDelay"
                         class="mt-0"
-                        :value.sync="currentData.cause_migration_estimated_delay_amount"
+                        :value.sync="migrEstDelayAmt"
                         label="Estimated delay amount"
                         :labelSrOnly="true"
                         type="number"
@@ -55,7 +55,7 @@
                       
                       <ATATSelect 
                         :items="unitsOfTime"
-                        :selectedValue.sync="currentData.cause_migration_estimated_delay_unit"
+                        :selectedValue.sync="migrEstDelayUnit"
                         label="Estimated delay unit of time"
                         :labelSrOnly="true"
                         :returnObject="false"
@@ -80,7 +80,7 @@
                 name="GovtEngineers"
                 :legend="`Are your Government engineers trained and certified in a 
                   specific cloud platform or technology that is unique to ${cspName}?`"
-                :value.sync="currentData.cause_govt_engineers_training_certified"
+                :value.sync="geCertified"
                 :items="govtEngineersOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
@@ -90,7 +90,7 @@
                   <ATATTextField
                     id="PlatformOrTechName"
                     class="mt-10 mb-10"
-                    :value.sync="currentData.cause_govt_engineers_platform_name"
+                    :value.sync="gePlatformName"
                     label="Name of unique cloud platform/technology"
                     :rules="[
                       $validators.required('Enter the name of the cloud platform/technology.')
@@ -102,7 +102,7 @@
                       in another platform?"
                     helpText="Fill in the blank to complete the suggested sentence 
                       below or write your own reason."
-                    :value.sync="currentData.cause_govt_engineers_insufficient_time_reason"
+                    :value.sync="geInsufficientTimeReason"
                     :maxChars="500"
                     :rows="6"
                     :validateItOnBlur="true"
@@ -124,7 +124,7 @@
                 id="ProductFeature"
                 name="ProductFeature"
                 :legend="`Is there a specific product or feature that is peculiar to ${cspName}?`"
-                :value.sync="currentData.cause_product_feature_peculiar_to_csp"
+                :value.sync="pfPeculiarToCSP"
                 :items="isPeculiarOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
@@ -134,7 +134,7 @@
                     id="IsProductOrFeature"
                     name="IsProductOrFeature"
                     legend="Is it a product or feature?"
-                    :value.sync="currentData.cause_product_feature_type"
+                    :value.sync="pfType"
                     :items="productOrFeatureOptions"
                     :rules="[$validators.required('Please select an option.')]"
                   />
@@ -143,7 +143,7 @@
                       <ATATTextField
                         id="PlatformOrTechName"
                         class="mt-10 mb-10"
-                        :value.sync="currentData.cause_product_feature_name"
+                        :value.sync="pfName"
                         :label="`Name of the unique ${productOrFeatureStr}`"
                         :rules="[
                           $validators.required(`Enter the name of your ${productOrFeatureStr}.`)
@@ -156,7 +156,7 @@
                           the Government’s requirements?`"
                         helpText="Fill in the blank to complete the suggested sentence 
                           below or write your own reason."
-                        :value.sync="currentData.cause_product_feature_why_essential"
+                        :value.sync="pfWhyEssential"
                         :maxChars="500"
                         :rows="6"
                         :validateItOnBlur="true"
@@ -176,7 +176,7 @@
                           meet the Government’s requirements?`"
                         helpText="Fill in the blank to complete the suggested sentence 
                           below or write your own reason."
-                        :value.sync="currentData.cause_product_feature_why_others_inadequate"
+                        :value.sync="pfWhyOthersInadequate"
                         :maxChars="500"
                         :rows="6"
                         :validateItOnBlur="true"
@@ -215,7 +215,7 @@ import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import { RadioButton, SelectData } from "types/Global";
+import { ProductOrType, RadioButton, SelectData, UnitOfTime, YesNo } from "types/Global";
 import { FairOpportunityDTO } from "@/api/models";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -234,16 +234,35 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public cspName = "";
+
+  // MIGRATION SECTION
+  public migrAddlTimeCost: YesNo = "";
+  public migrEstCost = "";
+  public migrEstDelayAmt: number | null = null;
+  public migrEstDelayUnit: UnitOfTime = "";
+
   public addlTimeCostOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
   public requiresAddlTimeCost = false;
   public migrationError = false;
   public migrationErrorMessage = "";
+  
+  // GOVT ENGINEERS SECTION
+  public geCertified: YesNo = "";
+  public gePlatformName = "";
+  public geInsufficientTimeReason = "";
 
   public govtEngineersOptions: RadioButton[] = getYesNoRadioOptions("GovtEngineers");
   public govtEngineersTrained = false;
   public defaultInsufficientTimeReason = "Due to ..., there is insufficient time to " +
     "retrain and obtain certification in another platform/technology.";
   public insufficientTimeErrorMessage = "Explain why there is insufficient time."
+
+  // PRODUCT FEATURE SECTION
+  public pfPeculiarToCSP: YesNo = "";
+  public pfType: ProductOrType = "";
+  public pfName = "";
+  public pfWhyEssential = "";
+  public pfWhyOthersInadequate = "";
 
   public isPeculiarOptions: RadioButton[] = getYesNoRadioOptions("ProdFeat");
   public hasPeculiarProduct = false;
@@ -279,21 +298,21 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     { text: "Year(s)", value: "YEARS" },
   ];
 
-  @Watch("currentData", {deep: true})
-  public currentDataChanged(newVal: FairOpportunityDTO): void {
-    /* eslint-disable camelcase */
-    this.requiresAddlTimeCost 
-      = newVal.cause_migration_addl_time_cost === "YES" ? true : false;
-    this.govtEngineersTrained 
-      = newVal.cause_govt_engineers_training_certified === "YES" ? true : false;
-    this.hasPeculiarProduct 
-      = newVal.cause_product_feature_peculiar_to_csp === "YES" ? true : false;
-    this.productOrFeatureSelected = newVal.cause_product_feature_type !== undefined
-      && newVal.cause_product_feature_type.length > 0;
-
-    this.currentData.cause_product_feature_why_essential = this.defaultWhyEssential;
-    this.currentData.cause_product_feature_why_others_inadequate = this.defaultWhyOthersInadequate;
-    /* eslint-enable camelcase */
+  @Watch("migrAddlTimeCost")
+  public migrAddlTimeCostChanged(newVal: YesNo): void {
+    this.requiresAddlTimeCost = newVal === "YES" ? true : false;    
+  }
+  @Watch("geCertified")
+  public geCertifiedChanged(newVal: YesNo): void {
+    this.govtEngineersTrained = newVal === "YES" ? true : false;
+  }
+  @Watch("pfPeculiarToCSP")
+  public pfPeculiarToCSPChanged(newVal: YesNo): void {
+    this.hasPeculiarProduct = newVal === "YES" ? true : false;    
+  }
+  @Watch("pfType")
+  public pfTypeChanged(): void {
+    this.productOrFeatureSelected = true;    
   }
 
   public get mCost(): string {
@@ -316,7 +335,30 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     }
   }
 
-  public currentData: FairOpportunityDTO = {}
+  public get currentData(): FairOpportunityDTO {
+    const fairOppSaved: FairOpportunityDTO 
+      = AcquisitionPackage.fairOpportunity || AcquisitionPackage.getInitialFairOpportunity();
+    const formData: FairOpportunityDTO = {
+      /* eslint-disable camelcase */
+      cause_migration_addl_time_cost: this.migrAddlTimeCost,
+      cause_migration_estimated_cost: this.migrEstCost,
+      cause_migration_estimated_delay_amount: this.migrEstDelayAmt,
+      cause_migration_estimated_delay_unit: this.migrEstDelayUnit,
+
+      cause_govt_engineers_training_certified: this.geCertified,
+      cause_govt_engineers_platform_name: this.gePlatformName,
+      cause_govt_engineers_insufficient_time_reason: this.geInsufficientTimeReason,
+
+      cause_product_feature_peculiar_to_csp: this.pfPeculiarToCSP,
+      cause_product_feature_type: this.pfType,
+      cause_product_feature_name: this.pfName,
+      cause_product_feature_why_essential: this.pfWhyEssential,
+      cause_product_feature_why_others_inadequate: this.pfWhyOthersInadequate,
+      /* eslint-enable camelcase */
+    }
+    return Object.assign(fairOppSaved, formData);
+  }
+
   private get savedData(): FairOpportunityDTO {
     return AcquisitionPackage.fairOpportunity || AcquisitionPackage.getInitialFairOpportunity();
   }
@@ -328,24 +370,23 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.currentData = storeData;
+      this.migrAddlTimeCost = storeData.cause_migration_addl_time_cost as YesNo;
+      this.migrEstCost = storeData.cause_migration_estimated_cost as string;
+      this.migrEstDelayAmt = storeData.cause_migration_estimated_delay_amount || null;
+      this.migrEstDelayUnit = storeData.cause_migration_estimated_delay_unit || "MONTHS";
 
-      /* eslint-disable camelcase */
-      this.currentData.cause_migration_estimated_delay_unit 
-        = this.currentData.cause_migration_estimated_delay_unit || "MONTHS"; 
-
-      this.currentData.cause_govt_engineers_insufficient_time_reason
-        = this.currentData.cause_govt_engineers_insufficient_time_reason
+      this.geCertified = storeData.cause_govt_engineers_training_certified as YesNo;
+      this.gePlatformName = storeData.cause_govt_engineers_platform_name as string;
+      this.geInsufficientTimeReason = storeData.cause_govt_engineers_insufficient_time_reason 
         || this.defaultInsufficientTimeReason;
-
-      this.currentData.cause_product_feature_why_essential
-        = this.currentData.cause_product_feature_why_essential
+      
+      this.pfPeculiarToCSP = storeData.cause_product_feature_peculiar_to_csp as YesNo;
+      this.pfType = storeData.cause_product_feature_type;
+      this.pfName = storeData.cause_product_feature_name as string;
+      this.pfWhyEssential = storeData.cause_product_feature_why_essential  
         || this.defaultWhyEssential;
-
-      this.currentData.cause_product_feature_why_others_inadequate
-        = this.currentData.cause_product_feature_why_others_inadequate
+      this.pfWhyOthersInadequate = storeData.cause_product_feature_why_others_inadequate 
         || this.defaultWhyOthersInadequate;
-      /* eslint-enable camelcase */
 
       const cspNames = {
         AWS: "Amazon",
@@ -362,8 +403,27 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     if (this.migrationError === true) {
       return false;
     }
+    debugger;
     try {
       if (this.hasChanged()) {
+        // ensure data cleared if any section main question is "NO"
+        /* eslint-disable camelcase */
+        if (this.currentData.cause_migration_addl_time_cost === "NO") {
+          this.currentData.cause_migration_estimated_cost = "";
+          this.currentData.cause_migration_estimated_delay_amount = null;
+          this.currentData.cause_migration_estimated_delay_unit = "";
+        }
+        if (this.currentData.cause_govt_engineers_training_certified === "NO") {
+          this.currentData.cause_govt_engineers_platform_name = "";
+          this.currentData.cause_govt_engineers_insufficient_time_reason = "";
+        }
+        if (this.currentData.cause_product_feature_peculiar_to_csp === "NO") {
+          this.currentData.cause_product_feature_type = "";
+          this.currentData.cause_product_feature_name = "";
+          this.currentData.cause_product_feature_why_essential = "";
+          this.currentData.cause_product_feature_why_others_inadequate = "";
+        }
+        /* eslint-enable camelcase */
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }
     } catch (error) {

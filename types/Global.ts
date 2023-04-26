@@ -611,6 +611,9 @@ export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
 export type SingleMultiple = "SINGLE" | "MULTIPLE" | "";
 
+export type UnitOfTime = undefined | "" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
+export type ProductOrType = undefined | "" | "PRODUCT" | "FEATURE";
+
 export interface CurrEnvInstanceUsage {
   currentUsageDescription?: EnvironmentInstanceUsage;
   trafficSpikeCauses?: string[]; // EJY need to refactor in component
