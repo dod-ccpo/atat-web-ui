@@ -121,17 +121,15 @@
     margin-top: 8px;
   }
 
-  &._selectable {
-    &:focus:before {
-      opacity: 0 !important;
-    }
+  &.v-radio {
     &:hover {
       border-color: $primary !important;
       outline: 1px solid $primary;
       cursor: pointer;
     }
   }
-  &._selected, &.v-item--active {
+  
+  &.v-item--active {
     border-color: $primary !important;
     outline: 1px solid $primary;
     background-color: $primary-lighter;
