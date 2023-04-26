@@ -7,7 +7,7 @@
             <h1 class="mb-3">
               Tell us about your minimum government requirements
             </h1>
-            <p>
+            <p class="mb-10 copy-max-width">
               In the field below, explain what is being supported and provide any
               information regarding your verified minimum requirements. Discuss, if
               applicable, how the required delivery/performance date impacted the
@@ -16,27 +16,18 @@
             </p>
             <ATATTextArea
                 id="minGovReqExplanation"
+                ref="minGovReqExplanation"
                 class="max-width-740"
-                :rows="7"
-                :rules="
-              [
-                $validators.required(
-                  'Enter your minimum government requirements.'
-                ),
-                $validators.maxLength(
-                  1000,
-                  'Please limit your description to 1000 characters or less'
-                ),
-              ]
-              "
+                :rows="11"
+                :rules="minGovReqExpRules"
                 :value.sync="minGovReqExplanation"
+                @blur="onMinGovReqExpBlur"
                 maxChars="1000"
             />
-            <!-- TODO: style correction when disabled as captured in figma -->
             <v-btn
                 id="RestoreMinGovReqExplanationButton"
-                class="secondary px-4 mb-1 mt-1"
-                :disabled="restoreDisabled"
+                class="secondary font-size-14 px-4 mb-1 mt-1"
+                :disabled="isMinGovReqExpDefaultUnmodified"
                 @click="onRestoreMinGovReqExpClick"
             >
               <ATATSVGIcon
@@ -85,6 +76,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
+import Vue from "vue";
 
 /**
  * This component handles all the functionality related to capturing the minimum
@@ -104,19 +96,33 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
       "These offerings include..."
   public minGovReqExplanation = this.minGovReqExplanationDefault;
   public showRestoreModal = false;
+  public minGovReqExpRules: unknown[] = [
+    this.$validators.required(
+      'Enter your minimum government requirements.'
+    ),
+    this.$validators.maxLength(
+      1000,
+      'Please limit your description to 1000 characters or less'
+    ),
+  ]
+  $refs!: {
+    minGovReqExplanation: Vue & {
+      resetValidation(): void
+    };
+  };
 
   /**
    * Dynamically derives the restore button icon color based on the state.
    */
   get btnRestoreIconColor(): string {
-    return this.restoreDisabled ? "disabled" : "primary";
+    return this.isMinGovReqExpDefaultUnmodified ? "disabled" : "primary";
   }
 
   /**
    * Restore button's state should be disabled if the user does not change the
    * default text or does a manual restore to default.
    */
-  get restoreDisabled(): boolean {
+  get isMinGovReqExpDefaultUnmodified(): boolean {
     return this.minGovReqExplanationDefault === this.minGovReqExplanation;
   }
 
@@ -143,6 +149,19 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
    */
   onRestoreMinGovReqExpCancel(): void {
     this.showRestoreModal = false;
+  }
+
+  /**
+   * Triggers validation if there is no change to the default explanation.
+   */
+  async onMinGovReqExpBlur(): Promise<void> {
+    if (this.isMinGovReqExpDefaultUnmodified) {
+      console.log("Default unmodified...");
+      // this.$nextTick(()=> {
+      //   this.$refs.minGovReqExplanation?.resetValidation();
+      // })
+      // TODO: trigger validation
+    }
   }
 
   private get currentData(): FairOpportunityDTO {
