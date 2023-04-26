@@ -83,7 +83,8 @@ export const defaultIgceEstimate = (): IgceEstimateDTO => {
     title: "",
     unit: "",
     unit_price: null,
-    unit_quantity: ""
+    unit_quantity: "",
+    updated_description: "NO",
   }
 }
 
@@ -518,6 +519,7 @@ export class IGCEStore extends VuexModule {
       classificationLevelSysId?: string,
       classificationInstanceSysId?: string,
       unit_quantity: string,
+      description:string,
     }
   ): Promise<void> {
     const isClassificationInstance = instanceRef.classificationInstanceSysId !== undefined;
@@ -529,7 +531,6 @@ export class IGCEStore extends VuexModule {
     const instanceQuery: AxiosRequestConfig = {
       params: { sysparm_query: instanceQueryString },
     };
-
     const costEstimateRowData = await api.igceEstimateTable.getQuery(instanceQuery)
     const costEstimateSysId = costEstimateRowData[0]?.sys_id || "";
 
@@ -538,7 +539,9 @@ export class IGCEStore extends VuexModule {
         costEstimateSysId, {
           classification_level: instanceRef.classificationLevelSysId,
           contract_type: getContractType(),
-          unit_quantity: instanceRef.unit_quantity
+          unit_quantity: instanceRef.unit_quantity,
+          description: costEstimateRowData[0].updated_description === "NO"? instanceRef.description
+            : costEstimateRowData[0].description
         });
     }
   }
@@ -811,7 +814,8 @@ export class IGCEStore extends VuexModule {
           title: offering.title as string,
           unit: offering.unit as string,
           unit_price: offering.unit_price as number,
-          unit_quantity: offering.unit_quantity as string
+          unit_quantity: offering.unit_quantity as string,
+          updated_description: offering.updated_description
         }
         igceEstimateSysId !== undefined
           ? apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate))

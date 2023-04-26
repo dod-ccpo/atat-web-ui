@@ -173,7 +173,8 @@ const saveOrUpdateClassificationInstance =
         await IGCEStore.updateIgceEstimateRecord({
           classificationInstanceSysId: objSysId,
           classificationLevelSysId: classificationLevel,
-          unit_quantity
+          unit_quantity,
+          description: tempObject.usage_description,
         });
       } else {
         const savedObject = await api.classificationInstanceTable.create(
@@ -274,7 +275,8 @@ export const saveOrUpdateOtherServiceOffering =
           await IGCEStore.updateIgceEstimateRecord({
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
-            unit_quantity
+            unit_quantity,
+            description:tempObject.anticipated_need_or_usage
           });
         } else {
           const savedObject = await api.computeEnvironmentInstanceTable.create(
@@ -311,7 +313,8 @@ export const saveOrUpdateOtherServiceOffering =
           await IGCEStore.updateIgceEstimateRecord({
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
-            unit_quantity
+            unit_quantity,
+            description:tempObject.anticipated_need_or_usage
           });
 
         } else {
@@ -344,7 +347,8 @@ export const saveOrUpdateOtherServiceOffering =
           await IGCEStore.updateIgceEstimateRecord({
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
-            unit_quantity
+            unit_quantity,
+            description:tempObject.anticipated_need_or_usage
           });
         } else {
           const savedObject = await api.storageEnvironmentInstanceTable.create(
@@ -376,7 +380,8 @@ export const saveOrUpdateOtherServiceOffering =
           await IGCEStore.updateIgceEstimateRecord({
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
-            unit_quantity
+            unit_quantity,
+            description:tempObject.anticipated_need_or_usage
           });
         } else {
           const savedObject = await api.xaaSEnvironmentInstanceTable.create(
@@ -439,7 +444,8 @@ export const saveOrUpdateOtherServiceOffering =
           await IGCEStore.updateIgceEstimateRecord({
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
-            unit_quantity
+            unit_quantity,
+            description:tempObject.anticipated_need_or_usage
           });
 
         } else {
