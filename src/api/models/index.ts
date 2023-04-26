@@ -223,7 +223,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   // cause of sole source form fields
   cause_migration_addl_time_cost?: YesNo;
   cause_migration_estimated_cost?: string;
-  cause_migration_estimated_delay_amount?: number | null;
+  cause_migration_estimated_delay_amount?: string;
   cause_migration_estimated_delay_unit?: UnitOfTime;
 
   cause_govt_engineers_training_certified?: YesNo;

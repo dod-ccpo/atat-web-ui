@@ -43,7 +43,14 @@ export default class SaveOnLeave extends Vue {
     
     this.$nextTick(()=> {
       AcquisitionPackage.setValidateNow(false);
-      if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
+      if (!isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {
+        const el = document.getElementsByClassName("error--text")[0];
+        if (el) {
+          el.scrollIntoView({
+            behavior: "smooth"
+          });          
+        }
+      } else if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
         Steps.setLeaveStepComplete(from.name as string);  
         Steps.clearAdditionalButtonText();     
         AcquisitionPackage.setDisableContinue(false);

@@ -881,7 +881,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setFairOpportunity(value: FairOpportunityDTO): Promise<void> {
-    debugger;
     this.doSetFairOpportunity(value);
     if (this.initialized) {
       if (this.fairOpportunity && this.fairOpportunity.sys_id) {
@@ -901,11 +900,9 @@ export class AcquisitionPackageStore extends VuexModule {
   }
   @Mutation
   public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
-    debugger;
     this.fairOpportunity = this.fairOpportunity
       ? Object.assign(this.fairOpportunity, value)
       : value;
-    debugger;
     if (value.sys_id && this.acquisitionPackage && !this.acquisitionPackage.fair_opportunity) {
       this.acquisitionPackage.fair_opportunity = value.sys_id as string;
     }  

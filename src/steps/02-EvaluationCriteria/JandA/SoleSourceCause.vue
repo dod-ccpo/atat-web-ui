@@ -161,10 +161,10 @@
                         :rows="6"
                         :validateItOnBlur="true"
                         :rules="[
-                          $validators.required(whyEssentialErrorMessage),
-                          $validators.notSameAsDefault(
-                            whyEssentialErrorMessage,
-                            defaultWhyEssential
+                          this.$validators.required(this.whyEssentialErrorMessage),
+                          this.$validators.notSameAsDefault(
+                            this.whyEssentialErrorMessage,
+                            this.defaultWhyEssential
                           )
                         ]"
                       />
@@ -181,14 +181,13 @@
                         :rows="6"
                         :validateItOnBlur="true"
                         :rules="[
-                          $validators.required(whyOthersInadequateErrorMessage),
-                          $validators.notSameAsDefault(
-                            whyOthersInadequateErrorMessage,
-                            defaultWhyOthersInadequate
+                          this.$validators.required(this.whyOthersInadequateErrorMessage),
+                          this.$validators.notSameAsDefault(
+                            this.whyOthersInadequateErrorMessage,
+                            this.defaultWhyOthersInadequate
                           )
                         ]"
                       />
-
 
                     </div>
 
@@ -206,7 +205,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -238,7 +236,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   // MIGRATION SECTION
   public migrAddlTimeCost: YesNo = "";
   public migrEstCost = "";
-  public migrEstDelayAmt: number | null = null;
+  public migrEstDelayAmt = "";
   public migrEstDelayUnit: UnitOfTime = "";
 
   public addlTimeCostOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
@@ -330,7 +328,6 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     }
 
     // update DEFAULT why other similar products/features are inadequate
-    debugger;
     const prevInadequateStart = oldVal 
       ? this.defaultWhyOthersInadequate.split(" ").slice(0,3).join(" ").toLowerCase() : ""; 
     this.defaultWhyOthersInadequate = "Other similar " + this.productOrFeatureStr + "s " +
@@ -341,14 +338,13 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       const substrInadequate = this.pfWhyOthersInadequate.slice(prevInadequateStart.length);
       this.pfWhyOthersInadequate = "Other similar " + newVal + "s" + substrInadequate;
     }
-
   }
 
   public get mCost(): string {
     return this.currentData.cause_migration_estimated_cost as string;
   }
   public get mDelay(): string {
-    return this.currentData.cause_migration_estimated_delay_amount as unknown as string;
+    return this.currentData.cause_migration_estimated_delay_amount as string;
   }
 
   public validateMigrationEstimate(): void {
@@ -402,7 +398,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.migrAddlTimeCost = storeData.cause_migration_addl_time_cost as YesNo;
       this.migrEstCost = storeData.cause_migration_estimated_cost as string;
-      this.migrEstDelayAmt = storeData.cause_migration_estimated_delay_amount || null;
+      this.migrEstDelayAmt = storeData.cause_migration_estimated_delay_amount as string;
       this.migrEstDelayUnit = storeData.cause_migration_estimated_delay_unit || "MONTHS";
 
       this.geCertified = storeData.cause_govt_engineers_training_certified as YesNo;
@@ -426,18 +422,19 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    this.validateMigrationEstimate();
-    if (this.migrationError === true) {
-      return false;
+    if (this.migrAddlTimeCost === "YES") {
+      this.validateMigrationEstimate();
+      if (this.migrationError === true) {
+        return false;
+      }
     }
-    debugger;
     try {
       if (this.hasChanged()) {
         // ensure data cleared if any section main question is "NO"
         /* eslint-disable camelcase */
         if (this.currentData.cause_migration_addl_time_cost === "NO") {
           this.currentData.cause_migration_estimated_cost = "";
-          this.currentData.cause_migration_estimated_delay_amount = null;
+          this.currentData.cause_migration_estimated_delay_amount = "";
           this.currentData.cause_migration_estimated_delay_unit = "";
         }
         if (this.currentData.cause_govt_engineers_training_certified === "NO") {
