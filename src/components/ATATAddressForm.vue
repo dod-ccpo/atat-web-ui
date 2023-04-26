@@ -153,7 +153,14 @@ import ATATTextField from "./ATATTextField.vue";
 import Inputmask from "inputmask/";
 
 
-import { isValidObj, mask, RadioButton, SelectData, stringObj } from "types/Global";
+import {
+  AutoCompleteItem,
+  isValidObj,
+  mask,
+  RadioButton,
+  SelectData,
+  stringObj
+} from "types/Global";
 
 @Component({
   components: {
@@ -182,7 +189,7 @@ export default class ATATAddressForm extends Vue {
   @PropSync("selectedStateCode") public _selectedStateCode?: string;
   @PropSync("stateOrProvince") public _stateOrProvince?: string;
   @PropSync("zipCode") public _zipCode?: string;
-  @PropSync("selectedCountry") public _selectedCountry?: SelectData;
+  @PropSync("selectedCountry") public _selectedCountry?: AutoCompleteItem;
 
   @Prop({required: true}) public addressTypeOptions?: RadioButton[];
   @Prop({required: true}) public addressTypes?: stringObj;

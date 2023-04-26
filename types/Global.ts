@@ -97,6 +97,8 @@ export interface SelectData {
   header?: string;
   divider?: boolean;
   isSelectable?: boolean;
+  sys_id?: string;
+  name?:string;
 }
 
 /**
