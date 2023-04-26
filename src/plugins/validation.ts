@@ -76,6 +76,24 @@ export class ValidationPlugin {
   };
 
   /**
+   * Validator that ensures the field value is not empty and also not equal to
+   * the default field value.
+   * Returns the error message otherwise.
+   *
+   * @param defaultValue - value that the user entered value will be compared against
+   * @param message
+   * @returns {function(*=): boolean}
+   */
+  requiredIfDefaultNotModified(
+    defaultValue: string, message?: string
+  ): ((v: string) => string | true | undefined) {
+    message = message || "This field is required and cannot be the same as the default text.";
+    return (v: string) => {
+      return ((v !== "") && (v?.trim() !== defaultValue)) || message;
+    };
+  };
+
+  /**
  * Validator ensures that field only contains integers
  * Returns the error message otherwise.
  *

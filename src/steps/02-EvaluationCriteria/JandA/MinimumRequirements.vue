@@ -16,12 +16,10 @@
             </p>
             <ATATTextArea
                 id="minGovReqExplanation"
-                ref="minGovReqExplanation"
                 class="max-width-740"
                 :rows="11"
                 :rules="minGovReqExpRules"
                 :value.sync="minGovReqExplanation"
-                @blur="onMinGovReqExpBlur"
                 maxChars="1000"
             />
             <v-btn
@@ -97,7 +95,8 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
   public minGovReqExplanation = this.minGovReqExplanationDefault;
   public showRestoreModal = false;
   public minGovReqExpRules: unknown[] = [
-    this.$validators.required(
+    this.$validators.requiredIfDefaultNotModified(
+      this.minGovReqExplanationDefault,
       'Enter your minimum government requirements.'
     ),
     this.$validators.maxLength(
@@ -105,11 +104,6 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
       'Please limit your description to 1000 characters or less'
     ),
   ]
-  $refs!: {
-    minGovReqExplanation: Vue & {
-      resetValidation(): void
-    };
-  };
 
   /**
    * Dynamically derives the restore button icon color based on the state.
@@ -149,19 +143,6 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
    */
   onRestoreMinGovReqExpCancel(): void {
     this.showRestoreModal = false;
-  }
-
-  /**
-   * Triggers validation if there is no change to the default explanation.
-   */
-  async onMinGovReqExpBlur(): Promise<void> {
-    if (this.isMinGovReqExpDefaultUnmodified) {
-      console.log("Default unmodified...");
-      // this.$nextTick(()=> {
-      //   this.$refs.minGovReqExplanation?.resetValidation();
-      // })
-      // TODO: trigger validation
-    }
   }
 
   private get currentData(): FairOpportunityDTO {
