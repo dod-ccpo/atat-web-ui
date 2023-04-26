@@ -359,8 +359,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     return Object.assign(fairOppSaved, formData);
   }
 
-  private get savedData(): FairOpportunityDTO {
-    return AcquisitionPackage.fairOpportunity || AcquisitionPackage.getInitialFairOpportunity();
+  private get savedData(): FairOpportunityDTO | null {
+    return AcquisitionPackage.getFairOpportunity;
   }
 
   private hasChanged(): boolean {

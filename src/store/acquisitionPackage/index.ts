@@ -934,10 +934,14 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.evaluationPlan || initialEvaluationPlan();
   }
 
-  @Action({rawError: true})
-  public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
-    return this.fairOpportunity;
+  public get getFairOpportunity(): FairOpportunityDTO | null {
+    return this.fairOpportunity || null;
   }
+  
+  // @Action({rawError: true})
+  // public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
+  //   return this.fairOpportunity;
+  // }
   @Action({rawError: true})
   public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
     return this.packageDocumentsSigned;
