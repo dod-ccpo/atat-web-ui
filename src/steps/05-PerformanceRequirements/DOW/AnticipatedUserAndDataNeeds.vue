@@ -1,4 +1,5 @@
 <template>
+  <v-form ref="form" lazy-validation>
   <v-container fluid class="container-max-width _anticipated-users-accordion">
     <v-row>
       <v-col class="col-12">
@@ -76,22 +77,23 @@
       </v-col>
     </v-row>
   </v-container>
+</v-form>
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
 
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { ClassificationLevelDTO, PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
+import { PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel, hasChanges } from "@/helpers";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import Periods from "@/store/periods";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import classificationRequirements from "@/store/classificationRequirements";
 import _ from "lodash";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import Vue from "vue";
 
 @Component({
   components: {
@@ -100,6 +102,11 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
   },
 })
 export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
+  
+  $refs!: {
+    form: Vue & { validate: () => boolean};
+  }
+
   private periods: PeriodDTO[] | null = [];
   public accordionClosed: number[] = [];
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];
@@ -108,6 +115,9 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
     return DescriptionOfWork.returnToDOWSummary === true
   }
 
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.form as Vue & { validate: () => boolean };
+  }
 
   private async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -143,6 +153,7 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         for(const classification of this.currentData){
+          classification.isValid = this.$refs.form.validate();
           await this.updateSnowSelected(classification);
         }
       }

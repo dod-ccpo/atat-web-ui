@@ -275,6 +275,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
 
     this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
+    
     this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
@@ -382,8 +383,8 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           ? `<div class="text-error font-weight-500">Unknown</div>`
           : instanceClone.descriptionOfNeed;
       }
-      isValid = await this.validateInstance(instanceClone);
-      if (!isValid) {
+      instanceClone.isComplete = await this.validateInstance(instanceClone);
+      if (!instanceClone.isComplete) {
         typeOrTitle += this.rowErrorMessage
       }
 
@@ -450,13 +451,21 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         performance,
         personnelOnsiteAccess,
         trainingType,
-        sysId: instanceClone.sysId
+        sysId: instanceClone.sysId,
       };
 
       this.tableData.push(instanceData);
     })
+
     // ensure sorted by instance number
     this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
+  }
+
+  public async logInstanceCompletion(): Promise<void>{
+    this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
+    this.offeringInstances.forEach(async i => {
+      i.isComplete = await this.validateInstance(i)
+    });
   }
 
   public async validateInstance(instance: OtherServiceOfferingData): Promise<boolean> {
@@ -520,8 +529,12 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     else if(this.isTraining){
       requiredFields = [
         "trainingRequirementTitle",
+        "trainingFacilityType",
+        "trainingLocation",
+        "trainingPersonnel",
         "trainingType",
         "entireDuration",
+        "trainingTimeZone",
         "anticipatedNeedUsage",
         "periodsNeeded"
       ]
@@ -603,6 +616,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await DescriptionOfWork.setNeedsSecurityRequirements();
+    await this.logInstanceCompletion();
     return true;
   }
 

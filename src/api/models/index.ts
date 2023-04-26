@@ -107,6 +107,7 @@ export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
   data_increase?: YesNo;
   data_growth_estimate_type?: SingleMultiple;
   data_growth_estimate_percentage?: string[];
+  isValid?:boolean;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {

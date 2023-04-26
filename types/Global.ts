@@ -418,6 +418,7 @@ export interface OtherServiceOfferingData {
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
   classifiedInformationTypes?: string;
+  isComplete?: boolean;
 }
 
 export interface totalClassLevelsInDOWObject {
