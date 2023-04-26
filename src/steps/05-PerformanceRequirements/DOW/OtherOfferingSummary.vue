@@ -383,8 +383,8 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           ? `<div class="text-error font-weight-500">Unknown</div>`
           : instanceClone.descriptionOfNeed;
       }
-      instanceClone.isComplete = await this.validateInstance(instanceClone);
-      if (!instanceClone.isComplete) {
+      isValid = await this.validateInstance(instanceClone);
+      if (!isValid) {
         typeOrTitle += this.rowErrorMessage
       }
 
@@ -451,7 +451,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         performance,
         personnelOnsiteAccess,
         trainingType,
-        sysId: instanceClone.sysId,
+        sysId: instanceClone.sysId
       };
 
       this.tableData.push(instanceData);
@@ -527,18 +527,33 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
       ]
     }
     else if(this.isTraining){
-      requiredFields = [
+
+      const commonFields = [
         "trainingRequirementTitle",
-        "trainingFacilityType",
-        "trainingLocation",
-        "trainingPersonnel",
         "trainingType",
+        "trainingPersonnel",
         "entireDuration",
-        "trainingTimeZone",
         "anticipatedNeedUsage",
         "periodsNeeded"
       ]
+
+      let additionalFields:string[] = [];
+      switch(instance.trainingType?.toUpperCase()){
+      case "ONSITE_INSTRUCTOR_CONUS":
+        additionalFields = ["trainingFacilityType","trainingLocation"];
+        break;
+      case "ONSITE_INSTRUCTOR_OCONUS":
+        additionalFields = ["trainingLocation"];
+        break;
+      case "VIRTUAL_INSTRUCTOR":
+        additionalFields = ["trainingTimeZone"];
+        break;
+      default:
+        break;
+      }
+      requiredFields = commonFields.concat(additionalFields);
     }
+
     //soo, on-site access, duration
     else if(this.isAdvisoryAssistance || this.isDocumentation || 
     this.isHelpDesk || this.isGeneralCloudSupport){
