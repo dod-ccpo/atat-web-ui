@@ -160,7 +160,7 @@
                         :maxChars="500"
                         :rows="6"
                         :validateItOnBlur="true"
-                        :turnRulesOff.sync="whyEssentialDefaultTextReset"
+                        :turnRulesOff.sync="whyEssentialRulesOff"
                         :rules="[
                           this.$validators.required(this.whyEssentialErrorMessage),
                           this.$validators.notSameAsDefault(
@@ -181,7 +181,7 @@
                         :maxChars="500"
                         :rows="6"
                         :validateItOnBlur="true"
-                        :turnRulesOff.sync="whyInadequateDefaultTextReset"
+                        :turnRulesOff.sync="whyInadequateRulesOff"
                         :rules="[
                           this.$validators.required(this.whyOthersInadequateErrorMessage),
                           this.$validators.notSameAsDefault(
@@ -287,8 +287,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       : "";
   }
 
-  public whyEssentialDefaultTextReset = false;
-  public whyInadequateDefaultTextReset = false;
+  public whyEssentialRulesOff = false;
+  public whyInadequateRulesOff = false;
   
   public unitsOfTime: SelectData[] = [
     { text: "Day(s)", value: "DAYS" },
@@ -311,8 +311,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   }
   @Watch("pfType")
   public pfTypeChanged(newVal: string, oldVal: string): void {
-    this.whyEssentialDefaultTextReset = true;
-    this.whyInadequateDefaultTextReset = true;
+    this.whyEssentialRulesOff = true;
+    this.whyInadequateRulesOff = true;
     this.productOrFeatureSelected = true;   
     oldVal = oldVal.toLowerCase();
     newVal = newVal.toLowerCase();
@@ -437,6 +437,9 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    this.whyEssentialRulesOff = false;
+    this.whyInadequateRulesOff = false;
+
     if (this.migrAddlTimeCost === "YES") {
       this.validateMigrationEstimate();
       if (this.migrationError === true) {
