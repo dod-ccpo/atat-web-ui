@@ -16,7 +16,8 @@ import {
   EstimateOptionValue,
   TrainingEstimate,
   EstimateOptionValueObjectArray,
-  CSP
+  CSP,
+  UnitOfTime
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -107,6 +108,7 @@ export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
   data_increase?: YesNo;
   data_growth_estimate_type?: SingleMultiple;
   data_growth_estimate_percentage?: string[];
+  isValid?:boolean;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -222,8 +224,8 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   // cause of sole source form fields
   cause_migration_addl_time_cost?: YesNo;
   cause_migration_estimated_cost?: string;
-  cause_migration_estimated_delay_amount?: number;
-  cause_migration_est_delay_unit?: "" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
+  cause_migration_estimated_delay_amount?: string;
+  cause_migration_estimated_delay_unit?: UnitOfTime;
 
   cause_govt_engineers_training_certified?: YesNo;
   cause_govt_engineers_platform_name?: string;
@@ -236,6 +238,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   cause_product_feature_why_others_inadequate?: string;
   // END cause of sole source form fields 
 
+  write_own_sole_source_cause?: YesNo; // TODO: ADD TO SNOW
   cause_of_sole_source_situation?: string; // summary of cause fields
 
   why_csp_is_only_capable_source?: string;
@@ -941,7 +944,8 @@ export interface IgceEstimateDTO extends BaseTableDTO {
   unit_quantity?: string;
   dow_task_number?: string;
   classification_display?: string;
-  idiq_clin_type?: string
+  idiq_clin_type?: string;
+  updated_description?:"YES"|"NO"
 }
 
 export interface RegionsDTO extends BaseTableDTO {

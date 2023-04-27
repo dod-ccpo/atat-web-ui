@@ -313,6 +313,7 @@ export interface DOWClassificationInstance {
   typeOfMobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   typeOfMobilityOther?: string;
   ts_contractor_clearance_type?: string;
+  updated_description?: "YES" | "NO"
 }
 
 export interface DOWServiceOffering {
@@ -418,6 +419,7 @@ export interface OtherServiceOfferingData {
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
   classifiedInformationTypes?: string;
+  isComplete?: boolean;
 }
 
 export interface totalClassLevelsInDOWObject {
@@ -612,6 +614,9 @@ export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL"
 export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
 export type SingleMultiple = "SINGLE" | "MULTIPLE" | "";
+
+export type UnitOfTime = undefined | "" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
+export type ProductOrType = undefined | "" | "PRODUCT" | "FEATURE";
 
 export interface CurrEnvInstanceUsage {
   currentUsageDescription?: EnvironmentInstanceUsage;

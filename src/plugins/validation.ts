@@ -63,7 +63,7 @@ export class ValidationPlugin {
         // array of strings
         return v && Object.values(v).length > 0 || message;
       } else if (typeof (v) === "string") {
-        return (v !== "") || message;
+        return (v.trim() !== "") || message;
       } else if ( typeof (v) === "undefined"){ //validates file upload
         return message;
       } else if (isCurrency) {
@@ -74,6 +74,15 @@ export class ValidationPlugin {
       }
     };
   };
+
+  notSameAsDefault(
+    message?: string, defaultValue?: string
+  ): ((v: string) => string | true | undefined) {
+    message = message || "Text cannot be the same as the default text";
+    return (v: string) => {
+      return v && v.trim() !== defaultValue?.trim() || message;
+    }
+  }
 
   /**
    * Validator that ensures the field value is not empty and also not equal to
