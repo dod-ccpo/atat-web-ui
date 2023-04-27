@@ -111,7 +111,8 @@
                       $validators.notSameAsDefault(
                         insufficientTimeErrorMessage,
                         defaultInsufficientTimeReason
-                      )
+                      ),
+                      $validators.maxLength(500)
                     ]"
                   />
 
@@ -162,11 +163,12 @@
                         :validateItOnBlur="true"
                         :turnRulesOff.sync="whyEssentialRulesOff"
                         :rules="[
-                          this.$validators.required(this.whyEssentialErrorMessage),
-                          this.$validators.notSameAsDefault(
-                            this.whyEssentialErrorMessage,
-                            this.defaultWhyEssential
-                          )
+                          $validators.required(whyEssentialErrorMessage),
+                          $validators.notSameAsDefault(
+                            whyEssentialErrorMessage,
+                            defaultWhyEssential
+                          ),
+                          $validators.maxLength(500)
                         ]"
                       />
 
@@ -183,11 +185,12 @@
                         :validateItOnBlur="true"
                         :turnRulesOff.sync="whyInadequateRulesOff"
                         :rules="[
-                          this.$validators.required(this.whyOthersInadequateErrorMessage),
-                          this.$validators.notSameAsDefault(
-                            this.whyOthersInadequateErrorMessage,
-                            this.defaultWhyOthersInadequate
-                          )
+                          $validators.required(whyOthersInadequateErrorMessage),
+                          $validators.notSameAsDefault(
+                            whyOthersInadequateErrorMessage,
+                            defaultWhyOthersInadequate
+                          ),
+                          $validators.maxLength(500)
                         ]"
                       />
 
