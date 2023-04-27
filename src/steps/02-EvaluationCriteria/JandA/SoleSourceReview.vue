@@ -7,11 +7,16 @@
             {{ pagewHeaderIntro }} the cause of your sole source situation
           </h1>
           <div class="copy-max-width">
-            <p class="mb-4">
+            <p class="mb-4" v-if="!writeOwnExplanation">
               Based on what you’ve told us, we’ve suggested language to explain the 
               factors that led to your decision to solicit only one source for this 
               project. You can edit any details to meet your requirements, but be sure
               to include all relevant information from the following instructions.
+            </p>
+            <p class="mb-4" v-else>
+              In the field below, please explain the factors that led to your decision
+              to solicit only one source for this project. Be sure to include any 
+              relevant details from the following instructions.
             </p>
             <ATATExpandableLink 
             aria-id="Instructions"
@@ -60,6 +65,7 @@
 
             <v-btn
               id="RestoreSuggestionButton"
+              v-if="!writeOwnExplanation"
               class="secondary font-size-14 px-4 mb-1 mt-1"
               :disabled="isSoleSourceCauseIsDefault"
               @click="confirmRestoreDefaultText"
@@ -116,10 +122,6 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public soleSourceCause = "";
   public defaultSuggestion = "";
   public showRestoreModal = false;
-
-  public confirmRestoreDefaultText(): void {
-    this.showRestoreModal = true;
-  }
 
   public writeOwnExplanation = false;
   public get pagewHeaderIntro(): string {
@@ -220,6 +222,10 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public restoreSuggestion(): void {
     this.soleSourceCause = this.defaultSuggestion;
     this.showRestoreModal = false;
+  }
+
+  public confirmRestoreDefaultText(): void {
+    this.showRestoreModal = true;
   }
 
   get btnRestoreIconColor(): string {
