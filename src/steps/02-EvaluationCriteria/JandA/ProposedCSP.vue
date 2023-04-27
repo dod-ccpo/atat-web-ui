@@ -49,7 +49,6 @@
 import Vue from "vue";
 
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
-import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { hasChanges } from "@/helpers";
@@ -63,7 +62,6 @@ import { FairOpportunityDTO } from "@/api/models";
 @Component({
   components: {
     ATATErrorValidation,
-    ATATRadioGroup,
     ATATSVGIcon,
   }
 })

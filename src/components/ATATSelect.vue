@@ -5,6 +5,7 @@
         v-if="label"
         :id="id + '_dropdown_field_label'"
         :for="id + '_dropdown'"
+        :class="{ 'd-sr-only': labelSrOnly }"
       >
         {{ label }}
         <span v-if="optional" class="optional">
@@ -30,7 +31,7 @@
         :placeholder="placeholder"
         :class="{ 'mt-2' : label }"
         :return-object="returnObject"
-        :style="'width: ' + width + 'px'"
+        :style="'max-width: ' + width + 'px; width: ' + width + 'px'"
         :rules="_rules"
         :menu-props="{ bottom: true, offsetY: true }"
         :disabled="menuDisabled"
@@ -125,6 +126,7 @@ export default class ATATSelect extends Vue {
   @Prop({ default: "standard" }) public iconType?: string;
   @Prop({ default: false }) private menuDisabled?: boolean;
   @Prop({ default: false }) private showSelectedValue?: boolean;
+  @Prop( {default: false }) private labelSrOnly?: boolean;
 
   //data
   private rounded = false;
