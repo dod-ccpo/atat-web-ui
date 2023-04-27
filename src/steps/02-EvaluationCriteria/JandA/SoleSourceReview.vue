@@ -7,7 +7,7 @@
             {{ pagewHeaderIntro }} the cause of your sole source situation
           </h1>
           <div class="copy-max-width">
-            <p>
+            <p class="mb-4">
               Based on what you’ve told us, we’ve suggested language to explain the 
               factors that led to your decision to solicit only one source for this 
               project. You can edit any details to meet your requirements, but be sure
@@ -44,7 +44,7 @@
 
             <ATATTextArea 
               id="SoleSourceSituation"
-              class="mt-10 textarea-max-width"
+              class="mt-6 textarea-max-width"
               label="Cause of your sole source situation"
               :labelSrOnly="true"
               :value.sync="soleSourceCause"
@@ -58,18 +58,42 @@
               ]"
             />
 
+            <v-btn
+              id="RestoreSuggestionButton"
+              class="secondary font-size-14 px-4 mb-1 mt-1"
+              :disabled="isSoleSourceCauseIsDefault"
+              @click="confirmRestoreDefaultText"
+            >
+              <ATATSVGIcon
+                  id="RestoreSuggestionButtonIcon"
+                  width="19"
+                  height="15"
+                  name="restore"
+                  class="mr-1"
+                  :color="btnRestoreIconColor"
+              />
+              Restore to suggestion
+            </v-btn>
+
           </div>
         </v-col>
       </v-row>
     </v-container>    
+    <ConfirmRestoreDefaultTextModal
+      @okRestore="restoreSuggestion"
+      :showRestoreModal.sync="showRestoreModal"
+    />
   </v-form>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import ConfirmRestoreDefaultTextModal from "../components/ConfirmRestoreDefaultTextModal.vue";
+
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
@@ -79,14 +103,22 @@ import { FairOpportunityDTO } from "@/api/models";
 
 @Component({
   components: {
+    ATATSVGIcon,
     ATATExpandableLink,
     ATATTextArea,
+    ConfirmRestoreDefaultTextModal,
   }
 })
 
 export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public projectTitle = AcquisitionPackage.projectTitle;
   public soleSourceCause = "";
+  public defaultSuggestion = "";
+  public showRestoreModal = false;
+
+  public confirmRestoreDefaultText(): void {
+    this.showRestoreModal = true;
+  }
 
   public writeOwnExplanation = false;
   public get pagewHeaderIntro(): string {
@@ -170,11 +202,27 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     }
     if (needsProductFeatureP) suggestedText += this.getProductFeatureP;
     
-    this.soleSourceCause = suggestedText;
+    this.soleSourceCause = this.soleSourceCause || suggestedText;
+    this.defaultSuggestion = suggestedText;
   }
 
   public get getRowCount(): number {
     return this.writeOwnExplanation ? 12 : 19;
+  }
+
+  public isSoleSourceCauseIsDefault = false;
+  @Watch("soleSourceCause")
+  public soleSourceCauseChanged(): void {
+    this.isSoleSourceCauseIsDefault = this.soleSourceCause === this.defaultSuggestion;
+  }
+
+  public restoreSuggestion(): void {
+    this.soleSourceCause = this.defaultSuggestion;
+    this.showRestoreModal = false;
+  }
+
+  get btnRestoreIconColor(): string {
+    return this.isSoleSourceCauseIsDefault ? "disabled" : "primary";
   }
 
   public get currentData(): FairOpportunityDTO {
@@ -205,7 +253,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.soleSourceCause = storeData.cause_of_sole_source_situation as string;
       this.writeOwnExplanation = storeData.write_own_sole_source_cause === "YES";
-      if (!this.writeOwnExplanation && !this.soleSourceCause) {
+      if (!this.writeOwnExplanation) {
         this.generateSuggestion();
       }
     }

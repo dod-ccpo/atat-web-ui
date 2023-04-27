@@ -318,12 +318,10 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     oldVal = oldVal.toLowerCase();
     newVal = newVal.toLowerCase();
     if (!this.isLoading) {
-
       // update DEFAULT text for why product/feature is essential
       // get first two words from old default why essential
       const prevEssentialStart = oldVal 
         ? this.defaultWhyEssential.split(" ").slice(0,2).join(" ").toLowerCase() : ""; 
-      debugger;
       this.defaultWhyEssential = "This " + this.productOrFeatureStr + " is essential " +
         "to the Government’s requirements due to...";      
       // if no oldVal (product/feature radios hadn't been selected) OR
