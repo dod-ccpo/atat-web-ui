@@ -20,6 +20,9 @@
                 :rows="11"
                 :rules="minGovReqExpRules"
                 :value.sync="minGovReqExplanation"
+                :show-error-messages="showErrorMessages"
+                @blur="onMinGovReqExpBlurAndEdit"
+                @keyup="onMinGovReqExpBlurAndEdit"
                 maxChars="1000"
             />
             <v-btn
@@ -104,6 +107,7 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
       'Please limit your description to 1000 characters or less'
     ),
   ]
+  public showErrorMessages = true; // error messages are not displayed under certain rules
 
   /**
    * Dynamically derives the restore button icon color based on the state.
@@ -134,7 +138,12 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
    */
   onRestoreMinGovReqExpConfirm(): void {
     this.minGovReqExplanation = this.minGovReqExplanationDefault;
+    this.showErrorMessages = false;
     this.showRestoreModal = false;
+  }
+
+  onMinGovReqExpBlurAndEdit(): void {
+    this.showErrorMessages = true;
   }
 
   /**
