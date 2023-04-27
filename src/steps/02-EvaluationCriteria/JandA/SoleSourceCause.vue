@@ -160,6 +160,7 @@
                         :maxChars="500"
                         :rows="6"
                         :validateItOnBlur="true"
+                        :turnRulesOff.sync="whyEssentialDefaultTextReset"
                         :rules="[
                           this.$validators.required(this.whyEssentialErrorMessage),
                           this.$validators.notSameAsDefault(
@@ -170,7 +171,7 @@
                       />
 
                       <ATATTextArea 
-                        id="WhyEssential"
+                        id="WhyInadequate"
                         class="mt-10"
                         :label="`Why do other similar ${productOrFeatureStr}s not 
                           meet the Government’s requirements?`"
@@ -180,6 +181,7 @@
                         :maxChars="500"
                         :rows="6"
                         :validateItOnBlur="true"
+                        :turnRulesOff.sync="whyInadequateDefaultTextReset"
                         :rules="[
                           this.$validators.required(this.whyOthersInadequateErrorMessage),
                           this.$validators.notSameAsDefault(
@@ -233,7 +235,6 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public cspName = "";
   public writeOwnCause: YesNo = "";
-  public writeOwnCauseOnLoad = "";
 
   // MIGRATION SECTION
   public migrAddlTimeCost: YesNo = "";
@@ -286,6 +287,9 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       : "";
   }
 
+  public whyEssentialDefaultTextReset = false;
+  public whyInadequateDefaultTextReset = false;
+  
   public unitsOfTime: SelectData[] = [
     { text: "Day(s)", value: "DAYS" },
     { text: "Week(s)", value: "WEEKS" },
@@ -307,6 +311,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   }
   @Watch("pfType")
   public pfTypeChanged(newVal: string, oldVal: string): void {
+    this.whyEssentialDefaultTextReset = true;
+    this.whyInadequateDefaultTextReset = true;
     this.productOrFeatureSelected = true;   
     oldVal = oldVal.toLowerCase();
     newVal = newVal.toLowerCase();
@@ -437,7 +443,6 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
         return false;
       }
     }
-    debugger;
     try {
       if (this.hasChanged()) {
         // ensure data cleared if any section main question is "NO"
