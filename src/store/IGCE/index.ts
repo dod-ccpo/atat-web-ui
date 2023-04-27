@@ -540,7 +540,7 @@ export class IGCEStore extends VuexModule {
           classification_level: instanceRef.classificationLevelSysId,
           contract_type: getContractType(),
           unit_quantity: instanceRef.unit_quantity,
-          description: costEstimateRowData[0].updated_description === "NO"? instanceRef.description
+          description: costEstimateRowData[0].updated_description !== "YES"? instanceRef.description
             : costEstimateRowData[0].description
         });
     }
