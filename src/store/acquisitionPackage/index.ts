@@ -888,6 +888,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.fairOpportunity.sys_id,
           this.fairOpportunity
         );
+        await this.doSetFairOpportunity(value);
       } else if (this.fairOpportunity && !this.fairOpportunity.sys_id) {
         const savedObj = await api.fairOpportunityTable.create(this.fairOpportunity);
         if (savedObj.sys_id) {
@@ -902,7 +903,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = this.fairOpportunity
       ? Object.assign(this.fairOpportunity, value)
       : value;
-    if (this.acquisitionPackage) {
+    if (value.sys_id && this.acquisitionPackage && !this.acquisitionPackage.fair_opportunity) {
       this.acquisitionPackage.fair_opportunity = value.sys_id as string;
     }  
   }
@@ -934,10 +935,14 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.evaluationPlan || initialEvaluationPlan();
   }
 
-  @Action({rawError: true})
-  public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
-    return this.fairOpportunity;
+  public get getFairOpportunity(): FairOpportunityDTO | null {
+    return this.fairOpportunity || null;
   }
+  
+  // @Action({rawError: true})
+  // public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
+  //   return this.fairOpportunity;
+  // }
   @Action({rawError: true})
   public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
     return this.packageDocumentsSigned;

@@ -274,16 +274,19 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
    * a save is performed immediately after load.
    */
   public async loadOnEnter(): Promise<void> {
-    let storeData = await AcquisitionPackage.getFairOpportunity();
-    if (storeData) {
-      this.fairOppDTO = storeData;
-      this.exception_to_fair_opportunity = storeData.exception_to_fair_opportunity;
-      this.savedData = {
-        exception_to_fair_opportunity: storeData.exception_to_fair_opportunity
-      }
-    }
-    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('ja');
-    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('mrr');
+
+    // EJY THIS ENTIRE FILE IS NO LONGER NEEDED, CORRECT?
+
+    // let storeData = await AcquisitionPackage.getFairOpportunity();
+    // if (storeData) {
+    //   this.fairOppDTO = storeData;
+    //   this.exception_to_fair_opportunity = storeData.exception_to_fair_opportunity;
+    //   this.savedData = {
+    //     exception_to_fair_opportunity: storeData.exception_to_fair_opportunity
+    //   }
+    // }
+    // this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('ja');
+    // this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('mrr');
 
   }
 
