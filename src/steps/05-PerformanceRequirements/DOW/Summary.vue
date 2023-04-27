@@ -291,7 +291,9 @@ export default class Summary extends Mixins(SaveOnLeave) {
   ];
 
   get isAnticipatedUsersAndDataInvalid():boolean{
-    return ClassificationRequirements.selectedClassificationLevels.every(cl => !cl.isValid)
+    return ClassificationRequirements.selectedClassificationLevels.some(
+      cl => cl.isValid === undefined || cl.isValid === false
+    )
   }
 
   public getTooltipText(value: string): string {
