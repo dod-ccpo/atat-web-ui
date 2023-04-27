@@ -20,8 +20,8 @@
                 :rows="11"
                 :rules="minGovReqExpRules"
                 :value.sync="minGovReqExplanation"
-                @blur="onMinGovReqExpBlurAndEdit"
-                @keyup="onMinGovReqExpBlurAndEdit"
+                @blur="resetValidationRules"
+                @keyup="resetValidationRules"
                 maxChars="1000"
             />
             <v-btn
@@ -104,7 +104,8 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
     1000,
     'Please limit your description to 1000 characters or less'
   )
-  public minGovReqExpRules: unknown[] = [];
+  public minGovReqExpRules: unknown[] = [
+    this.validationRuleReqIfDefaultNotModified, this.validationRuleMaxLength];
 
   /**
    * Dynamically derives the restore button icon color based on the state.
@@ -140,7 +141,7 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
     this.showRestoreModal = false;
   }
 
-  onMinGovReqExpBlurAndEdit(): void {
+  resetValidationRules(): void {
     this.minGovReqExpRules.splice(0);
     this.minGovReqExpRules.push(this.validationRuleReqIfDefaultNotModified);
     this.minGovReqExpRules.push(this.validationRuleMaxLength);
@@ -180,6 +181,7 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    this.resetValidationRules();
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
