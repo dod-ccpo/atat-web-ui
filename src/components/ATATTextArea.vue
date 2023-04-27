@@ -4,6 +4,7 @@
       <label
         :id="id + '_text_field_label'"
         class="form-field-label width-100"
+        :class="{ 'd-sr-only': labelSrOnly }"
         :for="id + '_text_area'"
       >
         <span v-html="label"></span>
@@ -100,6 +101,7 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: true }) private validateItOnBlur!: boolean;
   @Prop({ default: false }) private optional?: boolean;
   @PropSync("turnRulesOff", { default: false }) private _turnRulesOff?: boolean;
+  @Prop( {default: false }) private labelSrOnly?: boolean;
 
   //data
   private placeHolder = "";
