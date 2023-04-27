@@ -237,6 +237,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   cause_product_feature_why_others_inadequate?: string;
   // END cause of sole source form fields 
 
+  write_own_sole_source_cause?: YesNo; // TODO: ADD TO SNOW
   cause_of_sole_source_situation?: string; // summary of cause fields
 
   why_csp_is_only_capable_source?: string;

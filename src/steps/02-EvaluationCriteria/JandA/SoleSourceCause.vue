@@ -232,6 +232,8 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public cspName = "";
+  public writeOwnCause: YesNo = "";
+  public writeOwnCauseOnLoad = "";
 
   // MIGRATION SECTION
   public migrAddlTimeCost: YesNo = "";
@@ -366,6 +368,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
     const formData: FairOpportunityDTO = {
       /* eslint-disable camelcase */
+      write_own_sole_source_cause: this.writeOwnCause,
+
       cause_migration_addl_time_cost: this.migrAddlTimeCost,
       cause_migration_estimated_cost: this.migrEstCost,
       cause_migration_estimated_delay_amount: this.migrEstDelayAmt,
@@ -396,6 +400,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
+      this.writeOwnCause = storeData.write_own_sole_source_cause as string;
+
       this.migrAddlTimeCost = storeData.cause_migration_addl_time_cost as YesNo;
       this.migrEstCost = storeData.cause_migration_estimated_cost as string;
       this.migrEstDelayAmt = storeData.cause_migration_estimated_delay_amount as string;
@@ -432,20 +438,31 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         // ensure data cleared if any section main question is "NO"
         /* eslint-disable camelcase */
-        if (this.currentData.cause_migration_addl_time_cost === "NO") {
-          this.currentData.cause_migration_estimated_cost = "";
-          this.currentData.cause_migration_estimated_delay_amount = "";
-          this.currentData.cause_migration_estimated_delay_unit = "";
+        let sectionsWithNoSelectedCount = 0;
+        if (this.migrAddlTimeCost === "NO") {
+          this.migrEstCost = "";
+          this.migrEstDelayAmt = "";
+          this.migrEstDelayUnit = "";
+          sectionsWithNoSelectedCount++;
         }
-        if (this.currentData.cause_govt_engineers_training_certified === "NO") {
-          this.currentData.cause_govt_engineers_platform_name = "";
-          this.currentData.cause_govt_engineers_insufficient_time_reason = "";
+        if (this.geCertified === "NO") {
+          this.gePlatformName = "";
+          this.geInsufficientTimeReason = "";
+          sectionsWithNoSelectedCount++;
         }
-        if (this.currentData.cause_product_feature_peculiar_to_csp === "NO") {
-          this.currentData.cause_product_feature_type = "";
-          this.currentData.cause_product_feature_name = "";
-          this.currentData.cause_product_feature_why_essential = "";
-          this.currentData.cause_product_feature_why_others_inadequate = "";
+        if (this.pfPeculiarToCSP === "NO") {
+          this.pfType = "";
+          this.pfName = "";
+          this.pfWhyEssential = "";
+          this.pfWhyOthersInadequate = "";
+          sectionsWithNoSelectedCount++;
+        }
+        
+        if (this.writeOwnCause !== "YES") {
+          // if it's already "YES" (set from action handler when "I want to write 
+          //  my own explanation" button, don't change it, but if it's NO as set on page load, 
+          // check if user answered "NO" to all 3 sections 
+          this.writeOwnCause = sectionsWithNoSelectedCount === 3 ? "YES" : "NO";
         }
         /* eslint-enable camelcase */
         await AcquisitionPackage.setFairOpportunity(this.currentData)
@@ -455,6 +472,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     }
 
     return true;
+
   }
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
