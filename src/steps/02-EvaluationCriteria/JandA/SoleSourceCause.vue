@@ -398,9 +398,12 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    // eslint-disable-next-line camelcase
+    await AcquisitionPackage.setFairOpportunity({write_own_sole_source_cause: "NO"})
+
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.writeOwnCause = storeData.write_own_sole_source_cause as string;
+      this.writeOwnCause = "NO";
 
       this.migrAddlTimeCost = storeData.cause_migration_addl_time_cost as YesNo;
       this.migrEstCost = storeData.cause_migration_estimated_cost as string;
@@ -434,6 +437,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
         return false;
       }
     }
+    debugger;
     try {
       if (this.hasChanged()) {
         // ensure data cleared if any section main question is "NO"
@@ -457,7 +461,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
           this.pfWhyOthersInadequate = "";
           sectionsWithNoSelectedCount++;
         }
-        
+        this.writeOwnCause 
+          = AcquisitionPackage.fairOpportunity?.write_own_sole_source_cause as YesNo;
         if (this.writeOwnCause !== "YES") {
           // if it's already "YES" (set from action handler when "I want to write 
           //  my own explanation" button, don't change it, but if it's NO as set on page load, 

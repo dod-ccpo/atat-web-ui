@@ -30,6 +30,8 @@ export default class SoleSourceReview extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    // this.writeOwnExplanation = 
+    // AcquisitionPackage.fairOppWritesOwnButtonClicked.soleSource === true;
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.writeOwnExplanation = storeData.write_own_sole_source_cause === "YES";

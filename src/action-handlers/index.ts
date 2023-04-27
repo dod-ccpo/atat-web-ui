@@ -49,7 +49,6 @@ async function writeOwnSoleSourceCause() {
     },
     replace: true
   }).catch(() => console.log("avoiding redundant navigation"));
-
 }
 
 function clearCurrentContractInfo() {
