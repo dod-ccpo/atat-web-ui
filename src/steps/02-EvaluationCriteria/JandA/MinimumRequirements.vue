@@ -18,11 +18,17 @@
                 id="minGovReqExplanation"
                 class="max-width-740"
                 :rows="11"
-                :rules="minGovReqExpRules"
                 :value.sync="minGovReqExplanation"
-                @blur="onMinGovReqExpBlurAndEdit"
-                @keyup="onMinGovReqExpBlurAndEdit"
                 maxChars="1000"
+                :turnRulesOff.sync="turnRulesOff"
+                :rules="[
+                  $validators.notSameAsDefault(
+                    'Enter your minimum government requirements.', suggestedText,
+                  ),
+                  $validators.maxLength(
+                    1000, 'Please limit your description to 1000 characters or less'
+                  ),
+                ]"
             />
             <v-btn
                 id="RestoreMinGovReqExplanationButton"
@@ -52,8 +58,8 @@
         no-click-animation
         okText="Restore"
         width="470"
-        @ok="onRestoreMinGovReqExpConfirm"
-        @cancelClicked="onRestoreMinGovReqExpCancel"
+        @ok="okClicked"
+        @cancelClicked="cancelClicked"
     >
       <template #content>
         <p class="body mb-5">
@@ -76,7 +82,6 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
-import Vue from "vue";
 
 /**
  * This component handles all the functionality related to capturing the minimum
@@ -91,25 +96,16 @@ import Vue from "vue";
 })
 
 export default class MinimumRequirements extends Mixins(SaveOnLeave) {
-  public minGovReqExplanationDefault =
-      "The cloud offerings must continue at their current level in order to support...\n\n" +
-      "These offerings include..."
-  public minGovReqExplanation = this.minGovReqExplanationDefault;
+  public suggestedText =
+    "The cloud offerings must continue at their current level in order to support...\n\n" +
+    "These offerings include..."
+  public minGovReqExplanation = this.suggestedText;
   public showRestoreModal = false;
-  public validationRuleReqIfDefaultNotModified = this.$validators.requiredIfDefaultNotModified(
-    this.minGovReqExplanationDefault,
-    'Enter your minimum government requirements.'
-  )
-  public validationRuleMaxLength = this.$validators.maxLength(
-    1000,
-    'Please limit your description to 1000 characters or less'
-  )
-  public minGovReqExpRules: unknown[] = [];
-
+  public turnRulesOff = false;
   /**
    * Dynamically derives the restore button icon color based on the state.
    */
-  get btnRestoreIconColor(): string {
+  public get btnRestoreIconColor(): string {
     return this.isMinGovReqExpDefaultUnmodified ? "disabled" : "primary";
   }
 
@@ -117,15 +113,15 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
    * Restore button's state should be disabled if the user does not change the
    * default text or does a manual restore to default.
    */
-  get isMinGovReqExpDefaultUnmodified(): boolean {
-    return this.minGovReqExplanationDefault === this.minGovReqExplanation;
+  public get isMinGovReqExpDefaultUnmodified(): boolean {
+    return this.suggestedText === this.minGovReqExplanation;
   }
 
   /**
    * Since the user can only click the button if the text changes from the default, this
    * function simply sets the state such that the modal gets opened.
    */
-  onRestoreMinGovReqExpClick(): void {
+  public onRestoreMinGovReqExpClick(): void {
     this.showRestoreModal = true;
   }
 
@@ -133,24 +129,13 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
    * Upon confirming the restore, the text gets reset to default and the state is
    * set such that the modal gets closed.
    */
-  onRestoreMinGovReqExpConfirm(): void {
-    this.minGovReqExplanation = this.minGovReqExplanationDefault;
-    this.minGovReqExpRules.splice(0);
-    this.minGovReqExpRules.push(this.validationRuleMaxLength);
+  public okClicked(): void {
+    this.turnRulesOff = true;
+    this.minGovReqExplanation = this.suggestedText;
     this.showRestoreModal = false;
   }
 
-  onMinGovReqExpBlurAndEdit(): void {
-    this.minGovReqExpRules.splice(0);
-    this.minGovReqExpRules.push(this.validationRuleReqIfDefaultNotModified);
-    this.minGovReqExpRules.push(this.validationRuleMaxLength);
-  }
-
-  /**
-   * When the user clicks cancel on the modal, nothing else needs to be done except
-   * the state needs to be set such that the modal gets closed.
-   */
-  onRestoreMinGovReqExpCancel(): void {
+  public cancelClicked(): void {
     this.showRestoreModal = false;
   }
 
@@ -173,13 +158,14 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.minGovReqExplanation = storeData.min_govt_requirements &&
-      storeData.min_govt_requirements.trim().length > 0
-        ? storeData.min_govt_requirements : this.minGovReqExplanationDefault;
+      const minReq = storeData.min_govt_requirements as string;
+      this.minGovReqExplanation = minReq && minReq.trim().length > 0
+        ? minReq : this.suggestedText;
     }
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    this.turnRulesOff = false;
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
