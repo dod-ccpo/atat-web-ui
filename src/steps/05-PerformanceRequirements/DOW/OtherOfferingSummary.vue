@@ -273,7 +273,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.showSecurityNote = false;
     const allPeriods = await Periods.getAllPeriods();
     const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
-
     this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
     this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);

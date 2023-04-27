@@ -941,7 +941,8 @@ export interface IgceEstimateDTO extends BaseTableDTO {
   unit_quantity?: string;
   dow_task_number?: string;
   classification_display?: string;
-  idiq_clin_type?: string
+  idiq_clin_type?: string;
+  updated_description?:"YES"|"NO"
 }
 
 export interface RegionsDTO extends BaseTableDTO {

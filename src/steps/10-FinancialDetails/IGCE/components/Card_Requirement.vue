@@ -92,6 +92,8 @@ export default class CardRequirement extends Vue {
     if(this.description !== ""){
       // eslint-disable-next-line camelcase
       this._cardData.description = this.description;
+      // eslint-disable-next-line camelcase
+      this._cardData.updated_description = "YES";
     }else{
       this.description = this._cardData.description;
     }
