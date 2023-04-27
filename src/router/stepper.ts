@@ -488,6 +488,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        additionalButtons: [
+          {
+            buttonText: "I want to write my own explanation",
+            buttonId: "WriteOwnSoleSourceCause",
+            buttonClass: "secondary",
+            actionName: "writeOwnSoleSourceCause",
+          },
+        ]
       },
       {
         menuText: "Sole Source Review",
