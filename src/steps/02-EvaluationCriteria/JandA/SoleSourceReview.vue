@@ -65,12 +65,12 @@
               @click="confirmRestoreDefaultText"
             >
               <ATATSVGIcon
-                  id="RestoreSuggestionButtonIcon"
-                  width="19"
-                  height="15"
-                  name="restore"
-                  class="mr-1"
-                  :color="btnRestoreIconColor"
+                id="RestoreSuggestionButtonIcon"
+                width="19"
+                height="15"
+                name="restore"
+                class="mr-1"
+                :color="btnRestoreIconColor"
               />
               Restore to suggestion
             </v-btn>
@@ -82,6 +82,7 @@
     <ConfirmRestoreDefaultTextModal
       @okRestore="restoreSuggestion"
       :showRestoreModal.sync="showRestoreModal"
+      :isBasedOnResponses="true"
     />
   </v-form>
 </template>

@@ -11,7 +11,8 @@
   >
     <template #content>
       <p class="body mb-5">
-        Your description will be reverted to the default suggested language.
+        Your description will be reverted to the default suggested 
+        language{{ getBasedOnResponses }}.
         Any changes that you made to this field will not be saved.
       </p>
     </template>
@@ -20,7 +21,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 
 @Component({
@@ -31,13 +32,23 @@ import ATATDialog from "@/components/ATATDialog.vue";
 
 export default class ConfirmRestoreDefaultTextModal extends Vue {
   @PropSync("showRestoreModal", { default: false }) public _showRestoreModal?:boolean;
+  @Prop({ default: false }) public isBasedOnResponses?: boolean;
+  
   public okClicked(): void {
     this.$emit("okRestore")
   }
+
   public cancelClicked(): void {
     this.$emit("cancelRestore");
     this._showRestoreModal = false;
   }
+
+  public get getBasedOnResponses(): string {
+    return this.isBasedOnResponses 
+      ? " based on your responses to the previous questionnaire" : "";
+  }
+
+
 }
 
 </script>
