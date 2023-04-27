@@ -56,11 +56,6 @@
     &:active {
       background-color: rgba($primary, 20%) !important;
     }
-
-    &.v-btn--disabled {
-      border-color: $disabled !important;
-      background-color: $white !important;
-    }
   }
 
   &._normal {
