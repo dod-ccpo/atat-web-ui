@@ -44,7 +44,7 @@
         :placeholder="placeHolder"
         @input="onInput"
         class="text-primary"
-        :rules="rules"
+        :rules.sync="rules"
         :rows="rows"
         :readonly="readOnly"
         :no-resize="noResize"
@@ -54,7 +54,7 @@
         :counter="maxChars"
       >
       </v-textarea>
-      <ATATErrorValidation v-if="showErrorMessages"
+      <ATATErrorValidation
         :errorMessages="errorMessages" 
         :textAreaWithCounter="maxChars !== ''"
         :id="id"
@@ -99,7 +99,6 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: "" }) private maxChars!: string;
   @Prop({ default: true }) private validateItOnBlur!: boolean;
   @Prop({ default: false }) private optional?: boolean;
-  @Prop({ default: true }) private showErrorMessages?: boolean;
 
   //data
   private placeHolder = "";
@@ -120,6 +119,11 @@ export default class ATATTextArea extends Vue {
   public validateNowChange(): void {
     if(!this.$refs.atatTextArea.validate())
       this.setErrorMessage();
+  }
+
+  @Watch('rules')
+  public rulesChanged(): void {
+    this.$refs.atatTextArea.validate();
   }
 
   //@Events

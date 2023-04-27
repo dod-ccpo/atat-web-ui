@@ -104,8 +104,7 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
     1000,
     'Please limit your description to 1000 characters or less'
   )
-  public minGovReqExpRules: unknown[] = []
-  // public showErrorMessages = true; // error messages are not displayed under certain rules
+  public minGovReqExpRules: unknown[] = [];
 
   /**
    * Dynamically derives the restore button icon color based on the state.
@@ -136,16 +135,14 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
    */
   onRestoreMinGovReqExpConfirm(): void {
     this.minGovReqExplanation = this.minGovReqExplanationDefault;
-    // this.showErrorMessages = false;
     this.minGovReqExpRules.splice(0);
-    this.minGovReqExpRules.push(this.validationRuleReqIfDefaultNotModified);
     this.minGovReqExpRules.push(this.validationRuleMaxLength);
     this.showRestoreModal = false;
   }
 
   onMinGovReqExpBlurAndEdit(): void {
-    // this.showErrorMessages = true;
     this.minGovReqExpRules.splice(0);
+    this.minGovReqExpRules.push(this.validationRuleReqIfDefaultNotModified);
     this.minGovReqExpRules.push(this.validationRuleMaxLength);
   }
 
