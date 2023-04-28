@@ -417,17 +417,21 @@ export default class CommonCorAcor extends Vue {
 
       if (this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value) {
         const rankComp = (storeData.rank_components as unknown) as { link: string, value: string };
+        console.log("HERE 1");
+        console.log(storeData.rank_components);
         if (rankComp) {
+          console.log("HERE 2");
+          console.log(rankComp);
           this.savedData.rank_components = rankComp.value;
         }
 
         const emptyBranch: Record<string, string> = {text: "", value: ""};
 
         //retrieve selected Military Rank from rank component
-        const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
+        const rank = await ContactData.GetMilitaryRank(rankComp?.value || "");
 
         this.selectedBranch = rank !== undefined
-          ? this.branchData.find((branch) => branch.value === rank.branch) || emptyBranch
+          ? this.branchData.find((branch) => branch.value === rank?.branch) || emptyBranch
           : emptyBranch;
 
         this.selectedRank = rank !== undefined
