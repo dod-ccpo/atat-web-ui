@@ -40,7 +40,7 @@ describe("Testing Common Component", () => {
     last_name: "",
     middle_name: "",
     role: "MILITARY",
-    rank_components: { link: "TEST LINK", value: "RANK_1" } as unknown as string,
+    rank_components: "RANK_1",
     suffix: "",
     salutation: "",
     phone: "",
