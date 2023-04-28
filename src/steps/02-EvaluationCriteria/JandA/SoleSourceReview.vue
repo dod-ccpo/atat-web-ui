@@ -13,6 +13,14 @@
               project. You can edit any details to meet your requirements, but be sure
               to include all relevant information from the following instructions.
             </p>
+            <p class="mb-4" v-else-if="allSectionsNO">
+              Your project has an uncommon cause for an exception to fair opportunity, 
+              so unfortunately, we were not able to suggest language to help you 
+              complete this portion of the J&A. In the field below, please explain 
+              the factors that led to your decision to solicit only one source for 
+              this project. Be sure to include any relevant details from the following 
+              instructions.
+            </p>
             <p class="mb-4" v-else>
               In the field below, please explain the factors that led to your decision
               to solicit only one source for this project. Be sure to include any 
@@ -124,6 +132,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public showRestoreModal = false;
 
   public writeOwnExplanation = false;
+  public allSectionsNO = false;
   public get pagewHeaderIntro(): string {
     return this.writeOwnExplanation ? "Tell us about" : "Let’s review";
   }
@@ -259,6 +268,11 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.soleSourceCause = storeData.cause_of_sole_source_situation as string;
+
+      this.allSectionsNO = storeData.cause_migration_addl_time_cost === "NO"
+        && storeData.cause_govt_engineers_training_certified === "NO"
+        && storeData.cause_product_feature_peculiar_to_csp === "NO";
+
       this.writeOwnExplanation = storeData.write_own_sole_source_cause === "YES";
       if (!this.writeOwnExplanation) {
         this.generateSuggestion();
