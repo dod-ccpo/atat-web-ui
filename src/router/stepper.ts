@@ -1207,14 +1207,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: FeeCharged,
         routeResolver: FeeChargedResolver,
       },
-      // {
-      //   menuText: "Cost Summary",
-      //   excludeFromMenu: true,
-      //   path: "cost-summary",
-      //   name: routeNames.CostSummary,
-      //   completePercentageWeight: 1,
-      //   component: CostSummary
-      // },
+      {
+        menuText: "Cost Summary",
+        excludeFromMenu: true,
+        path: "cost-summary",
+        name: routeNames.CostSummary,
+        completePercentageWeight: 1,
+        component: CostSummary
+      },
       {
         menuText: "Estimates Developed",
         excludeFromMenu: true,

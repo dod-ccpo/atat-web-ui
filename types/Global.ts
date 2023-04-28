@@ -732,6 +732,7 @@ export interface TrainingEstimate {
   estimatedTrainingPrice: string;
   trainingOption: SingleMultiple;
   cloudSupportEnvironmentInstance: ReferenceColumn | string;
+  dow_task_number?: string;
 }
 
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
