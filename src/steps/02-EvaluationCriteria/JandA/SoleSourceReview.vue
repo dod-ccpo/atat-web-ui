@@ -276,6 +276,8 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       this.writeOwnExplanation = storeData.write_own_sole_source_cause === "YES";
       if (!this.writeOwnExplanation) {
         this.generateSuggestion();
+      } else {
+        this.soleSourceCause = "";
       }
     }
   }
