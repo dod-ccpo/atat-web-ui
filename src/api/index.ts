@@ -61,6 +61,7 @@ import { RegionsAPI } from "./regions";
 import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
 import { AddressApi } from "@/api/address";
+import { CostEstimateApi } from "@/api/costEstimate";
 
 
 export const api = {
@@ -98,6 +99,7 @@ export const api = {
   countriesTable: new CountriesApi(),
   taskOrderTable: new TaskOrderApi(),
   costsTable: new CostsApi(),
+  costEstimateTable: new CostEstimateApi(),
   clinTable: new ClinAPi(),
   clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),

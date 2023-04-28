@@ -1117,7 +1117,7 @@ export const IGCESurgeCapabilities =  (current:string): string =>{
     if (current === routeNames.SurgeCapacity){
       // TODO: change routeNames.EstimatesDeveloped below to routeNames.CostSummary
       // when cost summary page is reinstated
-      return contractingShopIsDitco() ? routeNames.EstimatesDeveloped : routeNames.FeeCharged;
+      return contractingShopIsDitco() ? routeNames.CostSummary : routeNames.FeeCharged;
     }
     if (current === routeNames.FeeCharged){
       return routeNames.SurgeCapacity;
@@ -1134,14 +1134,14 @@ export const FeeChargedResolver = (current: string): string => {
     return routeNames.FeeCharged
   }
 
-  if (current === routeNames.EstimatesDeveloped) {
+  if (current === routeNames.CostSummary) {
     return surgeCapacity === "YES" 
       ? routeNames.SurgeCapabilities
       : routeNames.SurgeCapacity;
   }
   // TODO: change routeNames.EstimatesDeveloped below to routeNames.CostSummary
   // when cost summary page is reinstated
-  return routeNames.EstimatesDeveloped;
+  return routeNames.CostSummary;
 }
 
 const contractingShopIsDitco = (): boolean => {
