@@ -762,14 +762,14 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
   debugger;
   const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
   
-  // DescriptionOfWork.showSecurityRequirements -- is incorrectly set true at this point
+  // DescriptionOfWork.goToSecurityRequirementsPage -- is incorrectly set true at this point
 
-  const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
+  const goToSecurityRequirementsPage = DescriptionOfWork.goToSecurityRequirementsPage;
 
-  if (packageHasSecretOrHigher && showSecurityRequirements) {
+  if (packageHasSecretOrHigher && goToSecurityRequirementsPage) {
     // GO TO THE SECURITY REQUIREMENTS FORM 
     // but reset back to false first for next trip thru DOW
-    DescriptionOfWork.doSetNeedsSecurityRequirements(false);
+    DescriptionOfWork.doSetGroupNeedsSecurityRequirements(false);
     return DOWSecurityRequitementsPath;  
   }
 
@@ -805,10 +805,10 @@ export const DOWSecurityRequirementsPathResolver
   = (current: string, direction: string): string => {
     debugger;
     const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
-    const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
+    const goToSecurityRequirementsPage = DescriptionOfWork.goToSecurityRequirementsPage;
 
-    if (packageHasSecretOrHigher && showSecurityRequirements) {
-      DescriptionOfWork.doSetNeedsSecurityRequirements(false);
+    if (packageHasSecretOrHigher && goToSecurityRequirementsPage) {
+      DescriptionOfWork.doSetGroupNeedsSecurityRequirements(false);
       return DOWSecurityRequitementsPath;
     }
 
@@ -820,7 +820,7 @@ export const DOWSecurityRequirementsPathResolver
     } else if (direction === "prev") {
       return OfferingDetailsPathResolver(current, direction);
     }
-    DescriptionOfWork.doSetNeedsSecurityRequirements(false);
+    DescriptionOfWork.doSetGroupNeedsSecurityRequirements(false);
     return DowSummaryPathResolver(current, direction);
   };
 

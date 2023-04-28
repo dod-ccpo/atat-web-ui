@@ -457,6 +457,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    debugger;
     await AcquisitionPackage.setValidateNow(true);
     const isValid = this.$refs.form.validate();
     try {
@@ -474,8 +475,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         el.scrollIntoView({
           behavior: "smooth"
         });
-      } else {
-        await DescriptionOfWork.setNeedsSecurityRequirements();
+      } else {       
+        await DescriptionOfWork.setGroupNeedsSecurityRequirements();
       }
     } catch (error) {
       console.log(error);

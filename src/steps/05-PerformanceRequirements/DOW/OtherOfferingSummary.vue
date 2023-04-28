@@ -204,7 +204,11 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     }
   }
 
+  public goingToInstanceDetails = false;
+
   public navigate(): void {
+    debugger;
+    this.goingToInstanceDetails = true;
     // route to ServiceOfferings or DOW Summary
     this.$router.push({
       name: "pathResolver",
@@ -235,7 +239,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     }
     this.navigate();
   }
-
+  // EJY HERE
   public async editInstance(item: OtherServiceSummaryTableData): Promise<void> {
     await DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(item.instanceNumber);
     this.navigate();
@@ -627,7 +631,14 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   };
 
   protected async saveOnLeave(): Promise<boolean> {
-    await DescriptionOfWork.setNeedsSecurityRequirements();
+    // EJY this should not be set when editing, only when continuing
+    debugger;
+    if (this.goingToInstanceDetails) {
+      DescriptionOfWork.resetGoToSecurityRequirementsPage();
+    } else {
+      await DescriptionOfWork.setGroupNeedsSecurityRequirements();
+    }
+
     await this.logInstanceCompletion();
     return true;
   }

@@ -878,71 +878,86 @@ export class DescriptionOfWorkStore extends VuexModule {
     return groupObj ? groupObj.label : "service offering";
   }
 
-  public serviceNeedsSecurityRequirements = false;
+  public serviceGroupNeedsSecurityRequirements = false;
 
   @Action({rawError: true})
-  public async setNeedsSecurityRequirements(): Promise<void> {
-    debugger;
-    const needsSecurityRequirements
+  public async setGroupNeedsSecurityRequirements(): Promise<void> {
+    const groupNeedsSecurityRequirements
         = this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId);
-    await this.doSetNeedsSecurityRequirements(needsSecurityRequirements);
-    await this.setShowSecurityRequirements();
-  }
-  @Mutation
-  public async doSetNeedsSecurityRequirements(value: boolean): Promise<void> {
-    this.serviceNeedsSecurityRequirements = value;
-    if (value === false) {
-      DescriptionOfWork.resetShowSecurityRequirements();
+    await this.doSetGroupNeedsSecurityRequirements(groupNeedsSecurityRequirements);
+    if (!groupNeedsSecurityRequirements) {
+      this.resetGoToSecurityRequirementsPage(); 
     }
-  }
-
-  public showSecurityRequirements = false;
-
-  @Action({rawError: true})
-  public resetShowSecurityRequirements(): void {
-    this.doResetShowSecurityRequirements();
+    await this.setGoToSecurityRequirementsPage();
   }
   @Mutation
-  public doResetShowSecurityRequirements(): void {
-    this.showSecurityRequirements = false;
+  public async doSetGroupNeedsSecurityRequirements(value: boolean): Promise<void> {
+    this.serviceGroupNeedsSecurityRequirements = value;
+  }
+
+  public goToSecurityRequirementsPage = false;
+
+  @Action({rawError: true})
+  public resetGoToSecurityRequirementsPage(): void {
+    this.doResetGoToSecurityRequirementsPage();
+  }
+  @Mutation
+  public doResetGoToSecurityRequirementsPage(): void {
+    this.goToSecurityRequirementsPage = false;
   }
 
   @Action({rawError: true})
-  public async setShowSecurityRequirements(): Promise<void> {
+  public async setGoToSecurityRequirementsPage(): Promise<void> {
     // "high side" is secret or above
     const highSideSysIds = ClassificationRequirements.highSideSysIds;
-    let highSideInstances = undefined;
-
+    let hasHighSideInstances = false;
+    debugger;
+    let isXaaSGroup = false;
+    let isLastXaaSOffering = false;
     if (this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId)) {
-      const offeringGroupObj = this.DOWObject.find(
+      const groupObj = this.DOWObject.find(
         obj => obj.serviceOfferingGroupId === this.currentGroupId
       );
-
-      if (offeringGroupObj) {
+  
+      if (groupObj) {
         if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
-          // check classificationInstances object
-          const offering = offeringGroupObj.serviceOfferings.find(
-            obj => obj.name === this.currentOfferingName
-          );
-          if (offering) {
-            highSideInstances = offering.classificationInstances?.filter(
-              obj => highSideSysIds.includes(obj.classificationLevelSysId)
-            );
-          }
-        } else {
+          isXaaSGroup = true;
+          debugger;
+          // only show security requirements page for XaaS offerings 
+          // after leaving last selected offering
+          const selectedEdgeOfferings = groupObj.serviceOfferings.map(obj => obj.name);
+          const len = selectedEdgeOfferings.length;
+          isLastXaaSOffering 
+            = this.currentOfferingName === selectedEdgeOfferings[len - 1] ? true : false;
+
+          const highSideInstanceObjects = groupObj.serviceOfferings.filter(offering => {
+            return offering.classificationInstances?.filter(
+              instance => highSideSysIds.includes(instance.classificationLevelSysId) 
+            )
+          })
+          hasHighSideInstances = highSideInstanceObjects.length > 0;
+          debugger;
+
+        } else if (groupObj.otherOfferingData) {
           // check otherOfferingData object
-          highSideInstances = offeringGroupObj.otherOfferingData?.filter(
+          // EJY note to self - some flawed logic here I believe
+          const highSideInstanceObjects = groupObj.otherOfferingData.filter(
             obj => highSideSysIds.includes(obj.classificationLevel as string)
           );
+          hasHighSideInstances = highSideInstanceObjects?.length > 0;
         }
       }
     }
-    const showSecurityReqs = highSideInstances !== undefined && highSideInstances.length > 0;
-    this.doSetShowSecurityRequirements(showSecurityReqs);
+
+    const goToSecurityReqsPage = isXaaSGroup
+      ? isLastXaaSOffering && hasHighSideInstances
+      : hasHighSideInstances;
+    debugger;
+    this.doSetGoToSecurityRequirementsPage(goToSecurityReqsPage);
   }
   @Mutation
-  public doSetShowSecurityRequirements(value: boolean): void {
-    this.showSecurityRequirements = value;
+  public doSetGoToSecurityRequirementsPage(value: boolean): void {
+    this.goToSecurityRequirementsPage = value;
   }
 
   @Action({rawError: true})
@@ -2100,7 +2115,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         = updatedInstancesData;
 
     await this.saveSelectedServiceOfferings().then(async () => {
-      await this.setNeedsSecurityRequirements();
+      await this.setGroupNeedsSecurityRequirements();
     });
   }
 
