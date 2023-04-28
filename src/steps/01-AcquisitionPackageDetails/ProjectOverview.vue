@@ -23,6 +23,8 @@
               :currentTitle.sync="currentTitle"
             />
           </div>
+          <v-btn
+            @click="craftDowNumber">Craft Dow Number</v-btn>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectScope
               label="What is the scope of your requirement?"
@@ -81,6 +83,8 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { YesNo } from "types/Global";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import ClassificationRequirements from "@/store/classificationRequirements";
 
 @Component({
   components: {
@@ -104,6 +108,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   public set projectTitle(value: string) {
     AcquisitionPackage.setProjectTitle(value);
   }
+
 
   private get currentData(): ProjectOverviewDTO {
     return {

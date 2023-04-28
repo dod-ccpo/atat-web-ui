@@ -255,6 +255,8 @@ export const saveOrUpdateOtherServiceOffering =
       tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
       tempObject.instance_number = serviceOffering.instanceNumber;
 
+      const dowTaskNumber = await createDOWTaskNumber(serviceOffering, offeringType);
+
       if(serviceOffering.sysId)
         tempObject.sys_id = serviceOffering.sysId;
       let title = serviceGroupVerbiageInfo[offeringType.toUpperCase()].offeringName;
@@ -292,7 +294,8 @@ export const saveOrUpdateOtherServiceOffering =
             otherServiceOfferingData: serviceOffering,
             offeringType,
             idiqClinType,
-            unit_quantity
+            unit_quantity,
+            dowTaskNumber
           });
         }
         break;
@@ -331,7 +334,8 @@ export const saveOrUpdateOtherServiceOffering =
             otherServiceOfferingData: serviceOffering,
             offeringType,
             idiqClinType,
-            unit_quantity
+            unit_quantity,
+            dowTaskNumber
           });
         }
         break;
@@ -364,7 +368,8 @@ export const saveOrUpdateOtherServiceOffering =
             otherServiceOfferingData: serviceOffering,
             offeringType,
             idiqClinType,
-            unit_quantity
+            unit_quantity,
+            dowTaskNumber
           });
         }
         break;
@@ -398,7 +403,8 @@ export const saveOrUpdateOtherServiceOffering =
             otherServiceOfferingData: serviceOffering,
             offeringType,
             idiqClinType,
-            unit_quantity
+            unit_quantity,
+            dowTaskNumber
           });
         }
         break;
@@ -463,7 +469,8 @@ export const saveOrUpdateOtherServiceOffering =
               otherServiceOfferingData: serviceOffering,
               offeringType,
               idiqClinType,
-              unit_quantity
+              unit_quantity,
+              dowTaskNumber
             });
           }
         }
@@ -476,6 +483,29 @@ export const saveOrUpdateOtherServiceOffering =
 
       return objSysId;
     };
+
+const createDOWTaskNumber = async(
+  serviceOffering: OtherServiceOfferingData,
+  offeringType: string
+): Promise<string> =>{
+  debugger;
+  const classification = ClassificationRequirements.classificationLevels.find(
+    cr => cr.sys_id === serviceOffering.classificationLevel
+  )
+
+  const offeringInfo = DescriptionOfWork.serviceOfferings.find(
+    so => so.service_offering_group.toUpperCase() === offeringType.toUpperCase()
+  )
+  
+  const isXaas = offeringInfo?.offering_type === "XAAS_SERVICE";
+  const dowTaskNumber = (isXaas ? "4.2" : "4.3") + 
+    "." + classification?.dow_task_number_component +
+    "." + offeringInfo?.dow_task_number_component +
+    "." + (isXaas ? "1" : serviceOffering.instanceNumber);    
+    
+  console.log(dowTaskNumber);
+  return dowTaskNumber;
+}
 
 const mapClassificationInstanceFromDTO = (
   value: ClassificationInstanceDTO

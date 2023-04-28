@@ -16,6 +16,7 @@ import {
   TrainingEstimateDTO, ReferenceColumn, CrossDomainSolutionDTO
 } from "@/api/models";
 import { currencyStringToNumber } from "@/helpers";
+import ClassificationRequirements from "../classificationRequirements";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
@@ -608,8 +609,10 @@ export class IGCEStore extends VuexModule {
       offeringType: string,
       idiqClinType: string,
       unit_quantity: string,
+      dowTaskNumber: string,
     }):
     Promise<void> {
+    debugger;
     await this.createIgceEstimateRecord({
       ...defaultIgceEstimate(),
       environment_instance: envInstanceRef.environmentInstanceSysId,
@@ -621,12 +624,13 @@ export class IGCEStore extends VuexModule {
         envInstanceRef.offeringType,
         envInstanceRef.otherServiceOfferingData
       ),
+      dow_task_number: envInstanceRef.dowTaskNumber,
       unit: envInstanceRef.unit,
       idiq_clin_type: envInstanceRef.idiqClinType,
       unit_quantity: envInstanceRef.unit_quantity
     });
   }
-
+ 
   /**
    * This is expected to be called whenever a record gets created in the Classification Instance
    * or one of its child tables.

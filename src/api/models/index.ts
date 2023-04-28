@@ -87,6 +87,7 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   classification: string;
   classification_level?: ReferenceColumn | string;
   display?: string;
+  dow_task_number_component?: number
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
@@ -358,6 +359,8 @@ export interface ServiceOfferingDTO extends BaseTableDTO {
   other?: string;
   service_offering_group: string;
   sequence: string;
+  dow_task_number_component: number;
+  offering_type?: string;
 }
 
 export interface PeriodOfPerformanceDTO extends BaseTableDTO {
