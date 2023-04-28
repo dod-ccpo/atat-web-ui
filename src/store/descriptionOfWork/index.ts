@@ -332,7 +332,6 @@ export const saveOrUpdateOtherServiceOffering =
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
             dow_task_number: dowTaskNumber,
-            dow_task_number: dowTaskNumber,
             description: createCostEstimateDescription(
               "database",
               serviceOffering
