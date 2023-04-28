@@ -37,7 +37,7 @@ export const buildCurrentSelectedClassLevelList = (
         data_egress_monthly_unit: "" as StorageUnit,
         data_increase: "" as YesNo,
         data_growth_estimate_type: "" as SingleMultiple,
-        data_growth_estimate_percentage: [""], 
+        data_growth_estimate_percentage: [""]
       }
       currentSelectedClassLevelList.push(defaultSelectedClassificationLevel);
     }
