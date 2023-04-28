@@ -87,6 +87,7 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   classification: string;
   classification_level?: ReferenceColumn | string;
   display?: string;
+  dow_task_number_component?: number
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
@@ -358,6 +359,8 @@ export interface ServiceOfferingDTO extends BaseTableDTO {
   other?: string;
   service_offering_group: string;
   sequence: string;
+  dow_task_number_component: number;
+  offering_type?: string;
 }
 
 export interface PeriodOfPerformanceDTO extends BaseTableDTO {
@@ -668,6 +671,7 @@ export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceD
   training_requirement_title?: string;
   training_time_zone?: string;
   ts_contractor_clearance_type?: string;
+  instance_number?:number;
 }
 
 export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
@@ -841,6 +845,7 @@ export interface TrainingEstimateDTO extends BaseTableDTO{
   training_option: string; //SINGLE or MULTIPLE
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
   cloud_support_environment_instance: ReferenceColumn | string;
+  dow_task_number?: string;
 }
 
 export interface EstimateOptionValueDTO {
