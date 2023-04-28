@@ -120,6 +120,7 @@ import {
   RankData,
   SelectData,
 } from "../../../../types/Global";
+import {convertColumnReferencesToValues} from "@/api/helpers";
 
 @Component({
   components: {
@@ -409,29 +410,26 @@ export default class CommonCorAcor extends Vue {
 
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
 
-    const storeData = await AcquisitionPackage.getContact(this.corOrAcor);
+    let storeData = await AcquisitionPackage.getContact(this.corOrAcor);
+    storeData = convertColumnReferencesToValues(storeData);
     this.savedData = storeData;
 
     if (storeData) {
       this.selectedRole = storeData.role;
 
       if (this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value) {
-        const rankComp = (storeData.rank_components as unknown) as { link: string, value: string };
-        console.log("HERE 1");
-        console.log(storeData.rank_components);
+        const rankComp = storeData.rank_components;
         if (rankComp) {
-          console.log("HERE 2");
-          console.log(rankComp);
-          this.savedData.rank_components = rankComp.value;
+          this.savedData.rank_components = rankComp;
         }
 
         const emptyBranch: Record<string, string> = {text: "", value: ""};
 
         //retrieve selected Military Rank from rank component
-        const rank = await ContactData.GetMilitaryRank(rankComp?.value || "");
+        const rank = await ContactData.GetMilitaryRank(rankComp || "");
 
         this.selectedBranch = rank !== undefined
-          ? this.branchData.find((branch) => branch.value === rank?.branch) || emptyBranch
+          ? this.branchData.find((branch) => branch.value === rank.branch) || emptyBranch
           : emptyBranch;
 
         this.selectedRank = rank !== undefined
