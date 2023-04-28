@@ -47,7 +47,7 @@ import _, { differenceWith, first, last } from "lodash";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "../acquisitionPackage";
 import Periods from "../periods";
-import IGCEStore from "@/store/IGCE";
+import IGCEStore, { createCostEstimateDescription } from "@/store/IGCE";
 import { 
   buildClassificationLabel, 
   toTitleCase, 
@@ -276,7 +276,10 @@ export const saveOrUpdateOtherServiceOffering =
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
-            description:tempObject.anticipated_need_or_usage
+            description: createCostEstimateDescription(
+              "compute",
+              serviceOffering
+            ),
           });
         } else {
           const savedObject = await api.computeEnvironmentInstanceTable.create(
@@ -314,7 +317,10 @@ export const saveOrUpdateOtherServiceOffering =
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
-            description:tempObject.anticipated_need_or_usage
+            description: createCostEstimateDescription(
+              "database",
+              serviceOffering
+            ),
           });
 
         } else {
@@ -348,7 +354,10 @@ export const saveOrUpdateOtherServiceOffering =
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
-            description:tempObject.anticipated_need_or_usage
+            description: createCostEstimateDescription(
+              "storage",
+              serviceOffering
+            ),
           });
         } else {
           const savedObject = await api.storageEnvironmentInstanceTable.create(
