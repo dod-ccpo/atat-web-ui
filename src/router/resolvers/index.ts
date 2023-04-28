@@ -7,7 +7,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
-import { EvaluationPlanDTO } from "@/api/models";
+import { EvaluationPlanDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
@@ -1330,6 +1330,15 @@ export const FinancialPOCResolver =  (current: string): string => {
     ? routeNames.ReadyToGeneratePackage
     : routeNames.FinancialPOCForm
 }
+export const onlyOneClassification = (classifications: SelectedClassificationLevelDTO[])=>{
+  const onlyUnclassified = classifications
+    .every(classification => classification.classification === "U")
+  const onlySecret = classifications
+    .every(classification => classification.classification === "S")
+  const onlyTopSecret = classifications
+    .every(classification => classification.classification === "TS")
+  return (onlySecret||onlyUnclassified||onlyTopSecret)
+}
 
 export const SecurityRequirementsResolver = (current: string): string => {
   debugger
@@ -1343,35 +1352,42 @@ export const SecurityRequirementsResolver = (current: string): string => {
   if(secretOrTopSecret){
     return routeNames.SecurityRequirements
   }
-
+  //reuse onlyonefunction
+  if(onlyOneClassification(classifications) &&
+      current === routeNames.ClassificationRequirements){
+    return routeNames.CurrentContract
+  }
   return current === routeNames.ClassificationRequirements
-    ? CrossDomainResolver(current)
+    ? routeNames.CrossDomain
     : routeNames.ClassificationRequirements
 }
+  
 export const CrossDomainResolver = (current: string): string => {
   debugger
+  //create function for this to be reused
   const classifications = ClassificationRequirements.selectedClassificationLevels
-  const onlyUnclassified = classifications
-    .every(classification => classification.classification === "U")
-  const onlySecret = classifications
-    .every(classification => classification.classification === "S")
-  const onlyTopSecret = classifications
-    .every(classification => classification.classification === "TS")
+  onlyOneClassification(classifications)
 
   //forward
-  if(onlySecret||onlyUnclassified||onlyTopSecret &&
-  current ===routeNames.SecurityRequirements||routeNames.ClassificationRequirements){
+  if(onlyOneClassification(classifications) &&
+  current === routeNames.SecurityRequirements){
     return routeNames.CurrentContract
   }
 
   //backwards
-  if(onlySecret||onlyUnclassified||onlyTopSecret &&
-      current === routeNames.CurrentContract){
+  let secretOrTopSecret = false
+  classifications.forEach(classification => {
+    if(classification.classification === "S" || classification.classification === "TS"){
+      secretOrTopSecret = true
+    }
+  })
+  if(onlyOneClassification(classifications) &&
+      current === routeNames.CurrentContract && secretOrTopSecret){
     return routeNames.SecurityRequirements
   }
 
 
-  return current === routeNames.SecurityRequirements || routeNames.ClassificationRequirements
+  return current === routeNames.SecurityRequirements
     ? routeNames.CrossDomain
     : routeNames.ClassificationRequirements
 }
