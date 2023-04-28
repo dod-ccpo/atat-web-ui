@@ -9,7 +9,7 @@
           <p>
             If you need more {{ serviceGroupVerbiageInfo.typeForText }}s, add them below. You can
             also edit or delete any info from the {{ serviceGroupVerbiageInfo.typeForText }}s
-            that you have already entered. When you’re done, click “Continue” and we will
+            ssss that you have already entered. When you’re done, click “Continue” and we will
             <span v-if="showSecurityNote">
               find out about your security requirements for these services.
             </span>
@@ -475,7 +475,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     if (this.isCompute) {
       requiredFields = [
         "environmentType",
-        "classificationLevel",
         "entireDuration",
         "memoryAmount",
         "descriptionOfNeed",
@@ -503,7 +502,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "numberOfInstances",
         "operatingSystem",
         "databaseLicensing",
-        "classificationLevel",
         "operatingSystemLicense",
         "storageType",
         "storageAmount",
@@ -565,12 +563,12 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     }
     else if (this.isGeneralXaaS) {
       requiredFields = [
-        "classificationLevel",
         "descriptionOfNeed",
         "entireDuration",
         "periodsNeeded"
       ];
     }
+    requiredFields.push("classificationLevel");
     isValid = requiredFields.every(f => {
       return f === "periodsNeeded"
         ? this.isPeriodsNeededValid(instanceData)
