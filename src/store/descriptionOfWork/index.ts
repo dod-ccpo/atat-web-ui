@@ -882,6 +882,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({rawError: true})
   public async setNeedsSecurityRequirements(): Promise<void> {
+    debugger;
     const needsSecurityRequirements
         = this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId);
     await this.doSetNeedsSecurityRequirements(needsSecurityRequirements);

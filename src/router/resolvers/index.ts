@@ -283,6 +283,7 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 
 /****************************************************************************/
 export const ArchitecturalDesignResolver = (current: string): string => {
+  debugger;
   const groupId = DescriptionOfWork.currentGroupId;
   setDontNeedButton(groupId);
   //coming from replicate and optimize or replicate details
@@ -446,6 +447,7 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 export const ServiceOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
+  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
   DescriptionOfWork.setCurrentGroupRemoved(false);
@@ -623,17 +625,19 @@ export const ServiceOfferingsPathResolver = (
 
 /****************************************************************************
 
-███████ ██ ███    ███ ██████  ██      ███████      ██████      ███████  ██████  ██████  ███    ███ 
-██      ██ ████  ████ ██   ██ ██      ██          ██           ██      ██    ██ ██   ██ ████  ████ 
-███████ ██ ██ ████ ██ ██████  ██      █████       ███████      █████   ██    ██ ██████  ██ ████ ██ 
-     ██ ██ ██  ██  ██ ██      ██      ██          ██    ██     ██      ██    ██ ██   ██ ██  ██  ██ 
-███████ ██ ██      ██ ██      ███████ ███████      ██████      ██       ██████  ██   ██ ██      ██ 
+███████ ██ ███    ███ ██████  ██      ███████     ███████     ███████  ██████  ██████  ███    ███ 
+██      ██ ████  ████ ██   ██ ██      ██               ██     ██      ██    ██ ██   ██ ████  ████ 
+███████ ██ ██ ████ ██ ██████  ██      █████           ██      █████   ██    ██ ██████  ██ ████ ██ 
+     ██ ██ ██  ██  ██ ██      ██      ██             ██       ██      ██    ██ ██   ██ ██  ██  ██ 
+███████ ██ ██      ██ ██      ███████ ███████        ██       ██       ██████  ██   ██ ██      ██ 
 
 /****************************************************************************/
 
+// STEPPER: Service Offering Details
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
+  debugger;
   Steps.clearAltBackButtonText();
   Steps.setAdditionalButtonHide(false);
   const groupId = DescriptionOfWork.currentGroupId;
@@ -662,6 +666,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   }
 
   if(current === routeNames.ServiceOfferings && isOtherOffering && direction === "next"){
+    // NAVIGATING FORWARD FROM AN "OTHER OFFERING" FORM -- GO TO SUMMARY
     return OtherOfferingSummaryPathResolver(current, direction);
   }
 
@@ -754,9 +759,16 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 /****************************************************************************/
 
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
+  debugger;
   const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
+  
+  // DescriptionOfWork.showSecurityRequirements -- is incorrectly set true at this point
+
   const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
+
   if (packageHasSecretOrHigher && showSecurityRequirements) {
+    // GO TO THE SECURITY REQUIREMENTS FORM 
+    // but reset back to false first for next trip thru DOW
     DescriptionOfWork.doSetNeedsSecurityRequirements(false);
     return DOWSecurityRequitementsPath;  
   }
@@ -787,9 +799,11 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
 
 /****************************************************************************/
 
+// STEPPER: Security Requirements
 
 export const DOWSecurityRequirementsPathResolver 
   = (current: string, direction: string): string => {
+    debugger;
     const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
     const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
 
@@ -822,6 +836,7 @@ export const DOWSecurityRequirementsPathResolver
 /****************************************************************************/
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+  debugger;
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if (current === routeNames.DOWLandingPage) {
