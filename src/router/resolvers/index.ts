@@ -1341,7 +1341,6 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
 }
 
 export const SecurityRequirementsResolver = (current: string): string => {
-  debugger
   const classifications = ClassificationRequirements.selectedClassificationLevels
   let secretOrTopSecret = false
   classifications.forEach(classification => {
@@ -1352,7 +1351,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
   if(secretOrTopSecret){
     return routeNames.SecurityRequirements
   }
-  //reuse onlyonefunction
+
   if(onlyOneClassification(classifications) &&
       current === routeNames.ClassificationRequirements){
     return routeNames.CurrentContract
@@ -1363,7 +1362,6 @@ export const SecurityRequirementsResolver = (current: string): string => {
 }
   
 export const CrossDomainResolver = (current: string): string => {
-  debugger
   //create function for this to be reused
   const classifications = ClassificationRequirements.selectedClassificationLevels
   onlyOneClassification(classifications)
