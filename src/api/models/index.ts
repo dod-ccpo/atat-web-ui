@@ -562,6 +562,11 @@ export interface CostsDTO extends BaseTableDTO {
   value: string;
 }
 
+export interface CostEstimateDTO extends BaseTableDTO {
+  packageId: string
+  payload: Record<string, any>
+}
+
 export interface CostGroupDTO {
   totalActual: number;
   totalProjected: number;
