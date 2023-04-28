@@ -313,6 +313,7 @@ export interface DOWClassificationInstance {
   typeOfMobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   typeOfMobilityOther?: string;
   ts_contractor_clearance_type?: string;
+  updated_description?: "YES" | "NO"
 }
 
 export interface DOWServiceOffering {
@@ -418,6 +419,7 @@ export interface OtherServiceOfferingData {
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
   classifiedInformationTypes?: string;
+  isComplete?: boolean;
 }
 
 export interface totalClassLevelsInDOWObject {

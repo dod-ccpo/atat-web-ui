@@ -484,7 +484,6 @@ export default class OtherOfferings extends Vue {
     } else {
       this.validateOtherTierOnBlur = true;
     }
-    DescriptionOfWork.doSetShowSecurityRequirements(false)
     return;
   }
 
