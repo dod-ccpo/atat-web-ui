@@ -19,7 +19,7 @@
                 class="max-width-740"
                 :rows="11"
                 :value.sync="minGovReqExplanation"
-                maxChars="1000"
+                :maxChars="1000"
                 :turnRulesOff.sync="turnRulesOff"
                 :rules="[
                   $validators.notSameAsDefault(
