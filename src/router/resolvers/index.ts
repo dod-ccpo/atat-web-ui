@@ -1383,6 +1383,9 @@ export const CrossDomainResolver = (current: string): string => {
       current === routeNames.CurrentContract && secretOrTopSecret){
     return routeNames.SecurityRequirements
   }
+  if(current === routeNames.CurrentContract && !onlyOneClassification(classifications)){
+    return routeNames.CrossDomain
+  }
 
 
   return current === routeNames.SecurityRequirements

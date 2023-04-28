@@ -42,7 +42,7 @@
                         .required('Please select at least one type of cross-domain solution.')
                       ]"
                       :textfieldRules="[
-                        $validators.required('Enter the number of users in this region.')
+                        $validators.required('Enter the approximate quantity of data/month.')
                         ]"
                       @checkboxTextfieldDataUpdate="solutionTypeDataUpdate"
                     />
@@ -154,7 +154,7 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
       const index = this.domainInfo.solutionType.findIndex(
         solutionType => solutionType.type === item.value);
 
-      if(index > -1) { 
+      if(index > -1) {
         solutionTypeData.push(this.domainInfo.solutionType[index]);
       } else {
         const itemIndex = this.cdsSolutionItems.findIndex(
@@ -200,7 +200,7 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     const secretFound = selectedClassifications
       .some(classification => classification.classification === "S")
     const topSecretFound = selectedClassifications
-    selectedClassifications.findIndex(classification => classification.classification === "TS")
+      .some(classification => classification.classification === "TS")
     if(unclassifiedFound && secretFound && topSecretFound){
       this.cdsSolutionItems = [
         {
