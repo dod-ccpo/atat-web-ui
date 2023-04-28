@@ -1332,6 +1332,7 @@ export const FinancialPOCResolver =  (current: string): string => {
 }
 
 export const SecurityRequirementsResolver = (current: string): string => {
+  debugger
   const classifications = ClassificationRequirements.selectedClassificationLevels
   let secretOrTopSecret = false
   classifications.forEach(classification => {
@@ -1344,7 +1345,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
   }
 
   return current === routeNames.ClassificationRequirements
-    ? routeNames.CrossDomain
+    ? CrossDomainResolver(current)
     : routeNames.ClassificationRequirements
 }
 export const CrossDomainResolver = (current: string): string => {
@@ -1358,19 +1359,19 @@ export const CrossDomainResolver = (current: string): string => {
     .every(classification => classification.classification === "TS")
 
   //forward
-  if((onlySecret||onlyUnclassified||onlyTopSecret)&&
-  current ===routeNames.SecurityRequirements){
-    return routeNames.ClassificationRequirements
+  if(onlySecret||onlyUnclassified||onlyTopSecret &&
+  current ===routeNames.SecurityRequirements||routeNames.ClassificationRequirements){
+    return routeNames.CurrentContract
   }
 
   //backwards
-  if((onlySecret||onlyUnclassified||onlyTopSecret) &&
-      current === routeNames.ClassificationRequirements){
+  if(onlySecret||onlyUnclassified||onlyTopSecret &&
+      current === routeNames.CurrentContract){
     return routeNames.SecurityRequirements
   }
 
 
-  return current === routeNames.SecurityRequirements
+  return current === routeNames.SecurityRequirements || routeNames.ClassificationRequirements
     ? routeNames.CrossDomain
     : routeNames.ClassificationRequirements
 }
