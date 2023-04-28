@@ -111,7 +111,8 @@
                       $validators.notSameAsDefault(
                         insufficientTimeErrorMessage,
                         defaultInsufficientTimeReason
-                      )
+                      ),
+                      $validators.maxLength(500)
                     ]"
                   />
 
@@ -162,11 +163,12 @@
                         :validateItOnBlur="true"
                         :turnRulesOff.sync="whyEssentialRulesOff"
                         :rules="[
-                          this.$validators.required(this.whyEssentialErrorMessage),
-                          this.$validators.notSameAsDefault(
-                            this.whyEssentialErrorMessage,
-                            this.defaultWhyEssential
-                          )
+                          $validators.required(whyEssentialErrorMessage),
+                          $validators.notSameAsDefault(
+                            whyEssentialErrorMessage,
+                            defaultWhyEssential
+                          ),
+                          $validators.maxLength(500)
                         ]"
                       />
 
@@ -183,11 +185,12 @@
                         :validateItOnBlur="true"
                         :turnRulesOff.sync="whyInadequateRulesOff"
                         :rules="[
-                          this.$validators.required(this.whyOthersInadequateErrorMessage),
-                          this.$validators.notSameAsDefault(
-                            this.whyOthersInadequateErrorMessage,
-                            this.defaultWhyOthersInadequate
-                          )
+                          $validators.required(whyOthersInadequateErrorMessage),
+                          $validators.notSameAsDefault(
+                            whyOthersInadequateErrorMessage,
+                            defaultWhyOthersInadequate
+                          ),
+                          $validators.maxLength(500)
                         ]"
                       />
 
@@ -235,6 +238,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public cspName = "";
   public writeOwnCause: YesNo = "";
+  public isLoading = false;
 
   // MIGRATION SECTION
   public migrAddlTimeCost: YesNo = "";
@@ -316,35 +320,36 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     this.productOrFeatureSelected = true;   
     oldVal = oldVal.toLowerCase();
     newVal = newVal.toLowerCase();
-    // update DEFAULT text for why product/feature is essential
-    // get first two words from old default why essential
-    const prevEssentialStart = oldVal 
-      ? this.defaultWhyEssential.split(" ").slice(0,2).join(" ").toLowerCase() : ""; 
+    if (!this.isLoading) {
+      // update DEFAULT text for why product/feature is essential
+      // get first two words from old default why essential
+      const prevEssentialStart = oldVal 
+        ? this.defaultWhyEssential.split(" ").slice(0,2).join(" ").toLowerCase() : ""; 
+      this.defaultWhyEssential = "This " + this.productOrFeatureStr + " is essential " +
+        "to the Government’s requirements due to...";      
+      // if no oldVal (product/feature radios hadn't been selected) OR
+      // if oldEntryLength (length of what's in the textarea) is same as new default length,
+      // no changes were made, just swap the new default text into the value
+      if (!oldVal || this.pfWhyEssential.length === this.defaultWhyEssential.length) {
+        this.pfWhyEssential = this.defaultWhyEssential;
+      } else if (prevEssentialStart === "this " + oldVal) {
+        // just change the 2nd word from oldVal to newVal 
+        // (e.g., from "product" to "feature" or vice-versa)
+        const substrEssential = this.pfWhyEssential.slice(prevEssentialStart.length);
+        this.pfWhyEssential = "This " + newVal + substrEssential;
+      }
 
-    this.defaultWhyEssential = "This " + this.productOrFeatureStr + " is essential " +
-      "to the Government’s requirements due to...";      
-    // if no oldVal (product/feature radios hadn't been selected) OR
-    // if oldEntryLength (length of what's in the textarea) is same as new default length,
-    // no changes were made, just swap the new default text into the value
-    if (!oldVal || this.pfWhyEssential.length === this.defaultWhyEssential.length) {
-      this.pfWhyEssential = this.defaultWhyEssential;
-    } else if (prevEssentialStart === "this " + oldVal) {
-      // just change the 2nd word from oldVal to newVal 
-      // (e.g., from "product" to "feature" or vice-versa)
-      const substrEssential = this.pfWhyEssential.slice(prevEssentialStart.length);
-      this.pfWhyEssential = "This " + newVal + substrEssential;
-    }
-
-    // update DEFAULT why other similar products/features are inadequate
-    const prevInadequateStart = oldVal 
-      ? this.defaultWhyOthersInadequate.split(" ").slice(0,3).join(" ").toLowerCase() : ""; 
-    this.defaultWhyOthersInadequate = "Other similar " + this.productOrFeatureStr + "s " +
-      "do not meet, nor can be modified to meet, the Government’s requirements due to...";
-    if (!oldVal || this.pfWhyOthersInadequate.length === this.defaultWhyOthersInadequate.length) {
-      this.pfWhyOthersInadequate = this.defaultWhyOthersInadequate;
-    } else if (prevInadequateStart === "other similar " + oldVal + "s") {
-      const substrInadequate = this.pfWhyOthersInadequate.slice(prevInadequateStart.length);
-      this.pfWhyOthersInadequate = "Other similar " + newVal + "s" + substrInadequate;
+      // update DEFAULT why other similar products/features are inadequate
+      const prevInadequateStart = oldVal 
+        ? this.defaultWhyOthersInadequate.split(" ").slice(0,3).join(" ").toLowerCase() : ""; 
+      this.defaultWhyOthersInadequate = "Other similar " + this.productOrFeatureStr + "s " +
+        "do not meet, nor can be modified to meet, the Government’s requirements due to...";
+      if (!oldVal || this.pfWhyOthersInadequate.length === this.defaultWhyOthersInadequate.length) {
+        this.pfWhyOthersInadequate = this.defaultWhyOthersInadequate;
+      } else if (prevInadequateStart === "other similar " + oldVal + "s") {
+        const substrInadequate = this.pfWhyOthersInadequate.slice(prevInadequateStart.length);
+        this.pfWhyOthersInadequate = "Other similar " + newVal + "s" + substrInadequate;
+      }
     }
   }
 
@@ -488,7 +493,9 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
 
   }
   public async mounted(): Promise<void> {
+    this.isLoading = true;
     await this.loadOnEnter();
+    this.isLoading = false;
   }
 
 }
