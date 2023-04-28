@@ -140,20 +140,7 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     },
   ];
 
-  public cdsSolutionItems: Checkbox[] = [
-    {
-      id: "UtoS",
-      label: "Unclassified to Secret",
-      value: "U_TO_S",
-      textfieldValue: "",
-    },
-    {
-      id: "StoU",
-      label: "Secret to Unclassified",
-      value: "S_TO_U",
-      textfieldValue: "",
-    },
-  ];
+  public cdsSolutionItems: Checkbox[] = [];
 
   public cdsSolutionLabelHelpText = `For each selection, enter the approximate quantity of 
     data that you expect to transfer between domains each month.`;
@@ -208,9 +195,61 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     this.availablePeriodCheckboxItems = await createPeriodCheckboxItems();
     const selectedClassifications = 
       await ClassificationRequirements.getSelectedClassificationLevels()
-    const topSecretFound =
-      selectedClassifications.findIndex(classification => classification.classification === "TS")
-    if(topSecretFound >= 0){
+    const unclassifiedFound = selectedClassifications
+      .some(classification => classification.classification === "U")
+    const secretFound = selectedClassifications
+      .some(classification => classification.classification === "S")
+    const topSecretFound = selectedClassifications
+    selectedClassifications.findIndex(classification => classification.classification === "TS")
+    if(unclassifiedFound && secretFound){
+      this.cdsSolutionItems = [
+        {
+          id: "UtoS",
+          label: "Unclassified to Secret",
+          value: "U_TO_S",
+          textfieldValue: "",
+        },
+        {
+          id: "StoU",
+          label: "Secret to Unclassified",
+          value: "S_TO_U",
+          textfieldValue: "",
+        },
+      ]
+    }
+    else if(unclassifiedFound && topSecretFound){
+      this.cdsSolutionItems = [
+        {
+          id: "UtoTS",
+          label: "Unclassified to Top Secret",
+          value: "U_TO_TS",
+          textfieldValue: "",
+        },
+        {
+          id: "TStoU",
+          label: "Top Secret to Unclassified",
+          value: "TS_TO_U",
+          textfieldValue: "",
+        },
+      ]
+    }
+    else if( secretFound && topSecretFound) {
+      this.cdsSolutionItems = [
+        {
+          id: "StoTS",
+          label: "Secret to Top Secret",
+          value: "S_TO_TS",
+          textfieldValue: "",
+        },
+        {
+          id: "TStoS",
+          label: "Top Secret to Secret",
+          value: "TS_TO_S",
+          textfieldValue: "",
+        }
+      ]
+    }
+    else if(unclassifiedFound && secretFound && topSecretFound){
       this.cdsSolutionItems = [
         {
           id: "UtoS",

@@ -1347,6 +1347,33 @@ export const SecurityRequirementsResolver = (current: string): string => {
     ? routeNames.CrossDomain
     : routeNames.ClassificationRequirements
 }
+export const CrossDomainResolver = (current: string): string => {
+  debugger
+  const classifications = ClassificationRequirements.selectedClassificationLevels
+  const onlyUnclassified = classifications
+    .every(classification => classification.classification === "U")
+  const onlySecret = classifications
+    .every(classification => classification.classification === "S")
+  const onlyTopSecret = classifications
+    .every(classification => classification.classification === "TS")
+
+  //forward
+  if((onlySecret||onlyUnclassified||onlyTopSecret)&&
+  current ===routeNames.SecurityRequirements){
+    return routeNames.ClassificationRequirements
+  }
+
+  //backwards
+  if((onlySecret||onlyUnclassified||onlyTopSecret) &&
+      current === routeNames.ClassificationRequirements){
+    return routeNames.SecurityRequirements
+  }
+
+
+  return current === routeNames.SecurityRequirements
+    ? routeNames.CrossDomain
+    : routeNames.ClassificationRequirements
+}
 
 
 // add resolver here so that it can be found by invoker
@@ -1379,6 +1406,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ProposedCSPRouteResolver,
   CertificationPOCsRouteResolver,
   SecurityRequirementsResolver,
+  CrossDomainResolver,
   AnticipatedUserAndDataNeedsResolver,
   ContractingInfoResolver,
 };

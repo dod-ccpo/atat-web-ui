@@ -195,6 +195,7 @@ import {
   FeeChargedResolver,
   showDITCOPageResolver,
   ContractingInfoResolver,
+  CrossDomainResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -739,6 +740,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnEnter: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: CrossDomain,
+        routeResolver: CrossDomainResolver
       },
     ]
   },
