@@ -178,11 +178,11 @@ export default class CostSummary extends Vue {
   public createTableData(source:Record<string, any>, clinAmount:string,rowName:string):void{
     const tableItem = {
       CLINTypeClassAggregate: rowName,
-      BasePeriod: getCurrencyString(source["Base Period"],true),
-      OptionOne:getCurrencyString(source["Option 1"],true),
-      OptionTwo:getCurrencyString(source["Option 2"],true),
-      OptionThree:getCurrencyString(source["Option 3"],true),
-      OptionFour:getCurrencyString(source["Option 4"],true),
+      BasePeriod: getCurrencyString(source["Base Period"] || 0,true),
+      OptionOne:getCurrencyString(source["Option 1"]|| 0,true),
+      OptionTwo:getCurrencyString(source["Option 2"]|| 0,true),
+      OptionThree:getCurrencyString(source["Option 3"]|| 0,true),
+      OptionFour:getCurrencyString(source["Option 4"]|| 0,true),
       Total:getCurrencyString(source["Total"],true),
       isCLINAmount: clinAmount
     }
