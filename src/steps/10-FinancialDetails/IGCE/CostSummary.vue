@@ -22,20 +22,21 @@
              View/Edit estimates
            </v-btn>
           </div>
-          <ATATAlert
-            id="ClassificationRequirementsAlert"
-            type="warning"
-            class="copy-max-width my-10"
-          >
-            <template v-slot:content>
-              <span class="h2 font-size-20">Missing price estimate details</span>
-              <p class="mb-0">
-                Your summary reflects the projected prices that you’ve told us about so far, but
-                totals may change after you add this missing info. We recommend going back to
-                complete your price estimates before proceeding.
-              </p>
-            </template>
-          </ATATAlert>
+<!--          <ATATAlert-->
+<!--            id="ClassificationRequirementsAlert"-->
+<!--            type="warning"-->
+<!--            class="copy-max-width my-10"-->
+<!--          >-->
+<!--            <template v-slot:content>-->
+<!--              <span class="h2 font-size-20">Missing price estimate details</span>-->
+<!--              <p class="mb-0">-->
+<!--                Your summary reflects the projected prices that you’ve told us about so far,
+                     but-->
+<!--                totals may change after you add this missing info. We recommend going back to-->
+<!--                complete your price estimates before proceeding.-->
+<!--              </p>-->
+<!--            </template>-->
+<!--          </ATATAlert>-->
             <v-data-table
               id="CostEstimateDataTable"
               :headers="tableHeaders"
