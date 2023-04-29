@@ -88,6 +88,14 @@
           label="Integers only"
           ref="integerField"
       /></v-col>
+      <v-col cols="7"
+        ><ATATTextField
+          :rules="[$validators.isEmail()]"
+          :value="emailValue"
+          label="Email only"
+          ref="emailField"
+          id='checkEmail'
+      /></v-col>
     </v-row>
   </v-form>
 </template>
@@ -116,6 +124,7 @@ export default class ValidatatorsExample extends Vue {
   private maxValue = "12345678910";
   private requiredValue = "";
   private integerValue = "y";
+  private emailValue = ""
 
   private setToast(
     type: "success" | "info", 
