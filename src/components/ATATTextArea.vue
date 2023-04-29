@@ -4,6 +4,7 @@
       <label
         :id="id + '_text_field_label'"
         class="form-field-label width-100"
+        :class="{ 'd-sr-only': labelSrOnly }"
         :for="id + '_text_area'"
       >
         <span v-html="label"></span>
@@ -54,7 +55,7 @@
         :counter="maxChars"
       >
       </v-textarea>
-      <ATATErrorValidation 
+      <ATATErrorValidation
         :errorMessages="errorMessages" 
         :textAreaWithCounter="maxChars !== ''"
         :id="id"
@@ -77,7 +78,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ATATTextArea extends Vue {
   // refs
   $refs!: {
-    atatTextArea: Vue & { 
+    atatTextArea: Vue & {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
@@ -100,6 +101,7 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: true }) private validateItOnBlur!: boolean;
   @Prop({ default: false }) private optional?: boolean;
   @PropSync("turnRulesOff", { default: false }) private _turnRulesOff?: boolean;
+  @Prop( {default: false }) private labelSrOnly?: boolean;
 
   //data
   private placeHolder = "";
@@ -126,6 +128,11 @@ export default class ATATTextArea extends Vue {
   public validateNowChange(): void {
     if(!this.$refs.atatTextArea.validate())
       this.setErrorMessage();
+  }
+
+  @Watch('rules')
+  public rulesChanged(): void {
+    this.$refs.atatTextArea.validate();
   }
 
   //@Events
