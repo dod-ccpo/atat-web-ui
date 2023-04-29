@@ -199,7 +199,7 @@ export class ValidationPlugin {
   isEmail = (): ((v: string) => string | true | undefined) => {
     return (v: string) => {
       if (v && v !== "") {
-        if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/i.test(v) === false) {
+        if (/[a-z0-9]+@[a-z-_.0-9]+\.[a-z]{3}/i.test(v) === false) {
           return "Please use standard domain format, like ‘@mail.mil’"
         } else if (/^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i.test(v) === false) {
           return "Please use your .mil or .gov email address."
