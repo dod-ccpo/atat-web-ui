@@ -5,7 +5,7 @@
         <h1 class="page-header mb-3">
            Review your cost estimate summary
         </h1>
-         <div class="copy-max-width d-flex">
+         <div class="copy-max-width d-flex mb-4">
             <p id="IntroP" class="mb-10">
               Based on your estimates for each requirement, we’ve calculated the total 
               projected price for each period of your task order. Your completed IGCE 
