@@ -7,7 +7,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
-import { EvaluationPlanDTO } from "@/api/models";
+import { EvaluationPlanDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
@@ -1330,6 +1330,15 @@ export const FinancialPOCResolver =  (current: string): string => {
     ? routeNames.ReadyToGeneratePackage
     : routeNames.FinancialPOCForm
 }
+export const onlyOneClassification = (classifications: SelectedClassificationLevelDTO[])=>{
+  const onlyUnclassified = classifications
+    .every(classification => classification.classification === "U")
+  const onlySecret = classifications
+    .every(classification => classification.classification === "S")
+  const onlyTopSecret = classifications
+    .every(classification => classification.classification === "TS")
+  return (onlySecret||onlyUnclassified||onlyTopSecret)
+}
 
 export const SecurityRequirementsResolver = (current: string): string => {
   const classifications = ClassificationRequirements.selectedClassificationLevels
@@ -1343,7 +1352,43 @@ export const SecurityRequirementsResolver = (current: string): string => {
     return routeNames.SecurityRequirements
   }
 
+  if(onlyOneClassification(classifications) &&
+      current === routeNames.ClassificationRequirements){
+    return routeNames.CurrentContract
+  }
   return current === routeNames.ClassificationRequirements
+    ? routeNames.CrossDomain
+    : routeNames.ClassificationRequirements
+}
+  
+export const CrossDomainResolver = (current: string): string => {
+  //create function for this to be reused
+  const classifications = ClassificationRequirements.selectedClassificationLevels
+  onlyOneClassification(classifications)
+
+  //forward
+  if(onlyOneClassification(classifications) &&
+  current === routeNames.SecurityRequirements){
+    return routeNames.CurrentContract
+  }
+
+  //backwards
+  let secretOrTopSecret = false
+  classifications.forEach(classification => {
+    if(classification.classification === "S" || classification.classification === "TS"){
+      secretOrTopSecret = true
+    }
+  })
+  if(onlyOneClassification(classifications) &&
+      current === routeNames.CurrentContract && secretOrTopSecret){
+    return routeNames.SecurityRequirements
+  }
+  if(current === routeNames.CurrentContract && !onlyOneClassification(classifications)){
+    return routeNames.CrossDomain
+  }
+
+
+  return current === routeNames.SecurityRequirements
     ? routeNames.CrossDomain
     : routeNames.ClassificationRequirements
 }
@@ -1379,6 +1424,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ProposedCSPRouteResolver,
   CertificationPOCsRouteResolver,
   SecurityRequirementsResolver,
+  CrossDomainResolver,
   AnticipatedUserAndDataNeedsResolver,
   ContractingInfoResolver,
 };
