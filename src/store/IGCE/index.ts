@@ -840,8 +840,9 @@ export class IGCEStore extends VuexModule {
   public async saveIgceEstimates(costEstimateList: IgceEstimateDTO[][]): Promise<void> {
     const apiCallList: Promise<IgceEstimateDTO>[] = [];
     for (const estimate in costEstimateList) {
-      costEstimateList[estimate].forEach(offering => {
+      costEstimateList[estimate].forEach(async offering => {
         const igceEstimateSysId = offering.sys_id as string;
+        offering.dow_task_number = await this.getCDSDowTaskNumber(offering);
         const igceEstimate: IgceEstimateDTO = {
           description: offering.description as string,
           title: offering.title as string,
@@ -849,9 +850,7 @@ export class IGCEStore extends VuexModule {
           unit_price: offering.unit_price as number,
           unit_quantity: offering.unit_quantity as string,
           updated_description: offering.updated_description,
-          dow_task_number: offering.title?.includes("Cross Domain Solution") 
-            ? "4.2.6"
-            : offering.dow_task_number
+          dow_task_number:  await this.getCDSDowTaskNumber(offering)
         }
         igceEstimateSysId !== undefined
           ? apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate))
@@ -860,6 +859,14 @@ export class IGCEStore extends VuexModule {
     }
     await Promise.all(apiCallList);
   }
+
+  @Action({ rawError: true })
+  public async getCDSDowTaskNumber(offering:IgceEstimateDTO):Promise<string>{
+    return await offering.title?.includes("Cross Domain Solution") 
+      ? "4.2.6"
+      : offering.dow_task_number as string;
+  }
+
 }
 
 const IGCE = getModule(IGCEStore);
