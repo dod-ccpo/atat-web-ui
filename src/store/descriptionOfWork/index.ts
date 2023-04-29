@@ -521,18 +521,20 @@ export const createDOWTaskNumber = async(
   const offeringInfo = DescriptionOfWork.serviceOfferings.find(
     so => so.service_offering_group.toUpperCase() === offeringType.toUpperCase()
   )
-
-  const dow_task_number_component = offeringType !== "general_xaas"
-    ? offeringInfo?.dow_task_number_component 
-    : "11"
-  
   const isXaas = offeringInfo?.offering_type === "XAAS_SERVICE";
-  const dowTaskNumber = (isXaas ? "4.2" : "4.3") + 
+
+  let dow_task_number_component = offeringInfo?.dow_task_number_component
+  let section = isXaas ? "4.2" : "4.3";
+
+  if (offeringType === "general_xaas"){
+    dow_task_number_component = 11;
+    section = "4.2";
+  }
+  
+  return section +
     "." + classification?.dow_task_number_component +
     "." + dow_task_number_component +
     "." + (isXaas ? "1" : instanceNumber);    
-    
-  return dowTaskNumber;
 }
 
 const mapClassificationInstanceFromDTO = (
