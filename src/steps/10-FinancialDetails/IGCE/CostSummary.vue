@@ -90,16 +90,16 @@
                    <td>
                     <div>{{ item.BasePeriod }}</div>
                   </td>
-                  <td>
+                  <td v-if="periodsLength > 1">
                     <div>{{ item.OptionOne }}</div>
                   </td>
-                  <td>
+                  <td v-if="periodsLength > 2">
                     <div>{{ item.OptionTwo }}</div>
                   </td>
-                  <td>
+                  <td v-if="periodsLength > 3">
                     <div>{{ item.OptionThree }}</div>
                   </td>
-                  <td>
+                  <td v-if="periodsLength > 4">
                     <div>{{ item.OptionFour }}</div>
                   </td>
                   <td>
@@ -126,6 +126,7 @@ import { api } from "@/api";
 import { CostEstimateDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 import IGCEStore from "@/store/IGCE";
+import Periods from "@/store/periods";
 
 
 export interface IGCECostSummaryItem {
@@ -148,16 +149,12 @@ export interface IGCECostSummaryItem {
 export default class CostSummary extends Vue {
   public tableData: IGCECostSummaryItem[] = []
   public costData: CostEstimateDTO = {packageId:"",payload:{}}
-  public surgePercentage = ""
+  public surgePercentage = "";
+  public periodsLength = Periods.periods.length
 
   public tableHeaders = [
     { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate"},
-    { text: "Base Period", value: "BasePeriod"},
-    { text: "Option 1", value: "OptionOne"},
-    { text: "Option 2", value: "OptionTwo"},
-    { text: "Option 3", value: "OptionThree"},
-    { text: "Option 4", value: "OptionFour"},
-    { text: "Total", value: "Total"},
+
   ];
 
   public getIdText(str: string): string {
@@ -176,13 +173,23 @@ export default class CostSummary extends Vue {
   }
 
   public createTableData(source:Record<string, any>, clinAmount:string,rowName:string):void{
+    let option1,option2,option3,option4
+    if(source["Option 1"]){
+      option1 = getCurrencyString(source["Option 1"],true)
+    }if(source["Option 2"]){
+      option2 = getCurrencyString(source["Option 2"],true)
+    }if(source["Option 3"]){
+      option3 = getCurrencyString(source["Option 3"],true)
+    }if(source["Option 4"]){
+      option4 = getCurrencyString(source["Option 4"],true)
+    }
     const tableItem = {
       CLINTypeClassAggregate: rowName,
       BasePeriod: getCurrencyString(source["Base Period"] || 0,true),
-      OptionOne:getCurrencyString(source["Option 1"]|| 0,true),
-      OptionTwo:getCurrencyString(source["Option 2"]|| 0,true),
-      OptionThree:getCurrencyString(source["Option 3"]|| 0,true),
-      OptionFour:getCurrencyString(source["Option 4"]|| 0,true),
+      OptionOne:option1,
+      OptionTwo:option2,
+      OptionThree:option3,
+      OptionFour:option4,
       Total:getCurrencyString(source["Total"],true),
       isCLINAmount: clinAmount
     }
@@ -190,15 +197,30 @@ export default class CostSummary extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    const headers = [
+      { text: "Base Period", value: "BasePeriod"},
+      { text: "Option 1", value: "OptionOne"},
+      { text: "Option 2", value: "OptionTwo"},
+      { text: "Option 3", value: "OptionThree"},
+      { text: "Option 4", value: "OptionFour"},
+    ]
+    for(let i = 0; i < this.periodsLength ; i++){
+      this.tableHeaders.push(headers[i])
+    }
+
+    this.tableHeaders.push({ text: "Total", value: "Total"})
     this.costData.payload.data.forEach((CLIN:Record<string, any>) => {
       this.createTableData(CLIN,"true",CLIN["CLIN Type & Classification"])
     })
     const subTotalData = this.costData.payload.subtotal
     const totalData = this.costData.payload.total_price
     const surgeData = this.costData.payload.surge
+    const ditcoFee = this.costData.payload.ditco_fee
+    const grandTotal = this.costData.payload.grand_total_with_fee
     this.createTableData(subTotalData,"false","Subtotal")
     this.createTableData(surgeData,"false",this.surgePercentage)
     this.createTableData(totalData,"false", "Total Price")
+    // this.createTableData(ditcoFee,"false","Ditco FEE")
   }
 
   public async mounted(): Promise<void> {
