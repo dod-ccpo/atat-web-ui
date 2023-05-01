@@ -8,7 +8,7 @@ import validators from "../../../plugins/validation";
 import ContactData from "@/store/contactData";
 import {ContactDTO, MilitaryRankDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import {CorAcorSelectData, SelectData} from "../../../../types/Global";
+import {CorAcorSelectData} from "../../../../types/Global";
 
 Vue.use(Vuetify);
 
