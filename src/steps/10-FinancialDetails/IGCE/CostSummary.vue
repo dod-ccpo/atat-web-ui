@@ -276,7 +276,7 @@ export default class CostSummary extends Vue {
   }
 
   public isItemAggregate(label: string): boolean {
-    return ['total', 'surge', ].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+    return ['total'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
   }
   public isFee(label: string): boolean {
     return ['%'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
