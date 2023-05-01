@@ -99,6 +99,8 @@ export interface SelectData {
   header?: string;
   divider?: boolean;
   isSelectable?: boolean;
+  sys_id?: string;
+  name?:string;
 }
 
 /**
@@ -315,6 +317,7 @@ export interface DOWClassificationInstance {
   typeOfMobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   typeOfMobilityOther?: string;
   ts_contractor_clearance_type?: string;
+  updated_description?: "YES" | "NO"
 }
 
 export interface DOWServiceOffering {
@@ -420,6 +423,7 @@ export interface OtherServiceOfferingData {
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
   classifiedInformationTypes?: string;
+  isComplete?: boolean;
 }
 
 export interface totalClassLevelsInDOWObject {
@@ -667,6 +671,9 @@ export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
 export type SingleMultiple = "SINGLE" | "MULTIPLE" | "";
 
+export type UnitOfTime = undefined | "" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
+export type ProductOrType = undefined | "" | "PRODUCT" | "FEATURE";
+
 export interface CurrEnvInstanceUsage {
   currentUsageDescription?: EnvironmentInstanceUsage;
   trafficSpikeCauses?: string[]; // EJY need to refactor in component
@@ -781,6 +788,7 @@ export interface TrainingEstimate {
   estimatedTrainingPrice: string;
   trainingOption: SingleMultiple;
   cloudSupportEnvironmentInstance: ReferenceColumn | string;
+  dow_task_number?: string;
 }
 
 export enum ClassificationLevels {
@@ -788,3 +796,4 @@ export enum ClassificationLevels {
   SCRT = "Secret",
   TSCRT = "Top Secret"
 }
+export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";

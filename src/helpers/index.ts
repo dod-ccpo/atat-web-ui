@@ -7,7 +7,7 @@ import {
   ReferenceColumn, 
   SystemChoiceDTO 
 } from "@/api/models";
-import { Checkbox, SelectData, User } from "types/Global";
+import { Checkbox, RadioButton, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import { Statuses } from "@/store/acquisitionPackage";
@@ -429,3 +429,17 @@ export function convertStringArrayToCommaList(arr: string[], conjunction?: strin
   return commaList;
 }
 
+export function getYesNoRadioOptions(groupId: string): RadioButton[] {
+  return [
+    {
+      id: groupId + "Yes",
+      label: "Yes",
+      value: "YES"
+    },
+    {
+      id: groupId + "No",
+      label: "No",
+      value: "NO"
+    },
+  ];
+}

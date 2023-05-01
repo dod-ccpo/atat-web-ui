@@ -16,7 +16,9 @@ import {
   EstimateOptionValue,
   TrainingEstimate,
   EstimateOptionValueObjectArray,
-  Environment
+  Environment,
+  CSP,
+  UnitOfTime,
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -78,6 +80,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   funding_requirement: ReferenceColumn | string;
   contracting_shop?: string;
   funding_request?: ReferenceColumn | string;
+  contracting_shop_non_ditco_address?: ReferenceColumn | string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -85,6 +88,7 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   classification: string;
   classification_level?: ReferenceColumn | string;
   display?: string;
+  dow_task_number_component?: number
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
@@ -106,6 +110,7 @@ export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
   data_increase?: YesNo;
   data_growth_estimate_type?: SingleMultiple;
   data_growth_estimate_percentage?: string[];
+  isValid?:boolean;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -213,8 +218,78 @@ export interface CrossDomainSolutionDTO extends BaseTableDTO {
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {
-  exception_to_fair_opportunity: string;
+  exception_to_fair_opportunity?: string;
+  proposed_csp?: CSP;
+  justification?: string;
+  min_govt_requirements?: string;
+
+  // cause of sole source form fields
+  cause_migration_addl_time_cost?: YesNo;
+  cause_migration_estimated_cost?: string;
+  cause_migration_estimated_delay_amount?: string;
+  cause_migration_estimated_delay_unit?: UnitOfTime;
+
+  cause_govt_engineers_training_certified?: YesNo;
+  cause_govt_engineers_platform_name?: string;
+  cause_govt_engineers_insufficient_time_reason?: string;
+  
+  cause_product_feature_peculiar_to_csp?: YesNo;
+  cause_product_feature_type?: "" | "PRODUCT" | "FEATURE";
+  cause_product_feature_name?: string;
+  cause_product_feature_why_essential?: string;
+  cause_product_feature_why_others_inadequate?: string;
+  // END cause of sole source form fields 
+
+  write_own_sole_source_cause?: YesNo; // TODO: ADD TO SNOW
+  cause_of_sole_source_situation?: string; // summary of cause fields
+
+  why_csp_is_only_capable_source?: string;
+  procurement_discussion?: string;
+  requirement_impact?: string;
+  contract_action?: "" | "UCA " | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE";
+
+  // market research efforts form
+  research_is_csp_only_source_capable?: YesNo;
+  research_start_date?: string;
+  research_end_date?: string;
+  research_supporting_data?: string;
+  
+  research_review_catalogs_reviewed?: YesNo;
+  research_review_catalogs_same_research_date?: YesNo;
+  research_review_catalogs_start_date?: string;
+  research_review_catalogs_end_date?: string;
+  research_review_catalogs_review_results?: string;
+  
+  research_other_techniques_used?: string; // array of sys_ids
+  research_other_technique?: string;
+  research_personal_knowledge_person_or_position?: string;
+  research_techniques_summary?: string;
+  // END market research efforts form
+  
+  market_research_details?: string; // summary of research fields
+  
+  market_research_conducted_by?: string; // JSON object - array of name, title, organization
+  
+  other_facts_to_support_logical_follow_on?: YesNo;
+  other_facts_to_support_logical_follow_on_details?: string;
+
+  barriers_follow_on_requirement?: YesNo;
+  barriers_follow_on_expected_date?: string;
+  barriers_agency_pursuing_training_or_certs?: YesNo;
+  barriers_planning_future_development?: YesNo; 
+  barriers_j_a_prepared?: YesNo
+  barriers_j_a_prepared_results?: string;
+
+  barriers_plans_to_remove_barriers?: string; // summary of barriers fields
+
+  technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  technical_poc_sys_id?: string;
+  requirements_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  requirements_poc_sys_id?: string;
+
 }
+
+
 
 export interface OrganizationDTO extends BaseTableDTO {
   street_address_1?: string;
@@ -285,6 +360,8 @@ export interface ServiceOfferingDTO extends BaseTableDTO {
   other?: string;
   service_offering_group: string;
   sequence: string;
+  dow_task_number_component: number;
+  offering_type?: string;
 }
 
 export interface PeriodOfPerformanceDTO extends BaseTableDTO {
@@ -489,6 +566,11 @@ export interface CostsDTO extends BaseTableDTO {
   value: string;
 }
 
+export interface CostEstimateDTO extends BaseTableDTO {
+  packageId: string
+  payload: Record<string, any>
+}
+
 export interface CostGroupDTO {
   totalActual: number;
   totalProjected: number;
@@ -604,6 +686,7 @@ export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceD
   training_requirement_title?: string;
   training_time_zone?: string;
   ts_contractor_clearance_type?: string;
+  instance_number?:number;
 }
 
 export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
@@ -812,6 +895,7 @@ export interface TrainingEstimateDTO extends BaseTableDTO{
   training_option: string; //SINGLE or MULTIPLE
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
   cloud_support_environment_instance: ReferenceColumn | string;
+  dow_task_number?: string;
 }
 
 export interface EstimateOptionValueDTO {
@@ -920,7 +1004,8 @@ export interface IgceEstimateDTO extends BaseTableDTO {
   unit_quantity?: string;
   dow_task_number?: string;
   classification_display?: string;
-  idiq_clin_type?: string
+  idiq_clin_type?: string;
+  updated_description?:"YES"|"NO"
 }
 
 export interface RegionsDTO extends BaseTableDTO {
@@ -956,4 +1041,19 @@ export interface PackageDocumentsUnsignedDTO extends BaseTableDTO {
   sys_updated_on?: string
   sys_tags?: string
   sys_created_by?: string
+}
+export interface AddressDTO extends BaseTableDTO {
+  apo_fpo_cpo?: string
+  country?: string
+  address_type?: string
+  category?: "" | "CONTRACTING_OFFICE" | "FOIA" | "ORGANIZATION";
+  city?: string
+  zip_postal_code?: string
+  acquisition_package?: string
+  street_address_1?: string
+  street_address_2?: string
+  unit?: string
+  state_province_state_code?: string
+  name?: string
+  aa_ae_ap?: string
 }

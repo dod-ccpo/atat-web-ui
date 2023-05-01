@@ -14,7 +14,7 @@ export class CountriesApi extends TableApiBase<CountryDTO> {
         // eslint-disable-next-line camelcase
         sysparm_query:"active=true^ORDERBYname",
         // eslint-disable-next-line camelcase
-        sysparm_fields:"name,iso3166_2"
+        sysparm_fields:"name,iso3166_2,sys_id"
       }
     }
     return await super.all(config);

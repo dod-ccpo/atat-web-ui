@@ -79,7 +79,7 @@ export class ValidationPlugin {
         // array of strings
         return v && Object.values(v).length > 0 || message;
       } else if (typeof (v) === "string") {
-        return (v !== "") || message;
+        return (v.trim() !== "") || message;
       } else if ( typeof (v) === "undefined"){ //validates file upload
         return message;
       } else if (isCurrency) {
@@ -90,6 +90,15 @@ export class ValidationPlugin {
       }
     };
   };
+
+  notSameAsDefault(
+    message?: string, defaultValue?: string
+  ): ((v: string) => string | true | undefined) {
+    message = message || "Text cannot be the same as the default text";
+    return (v: string) => {
+      return v && v.trim() !== defaultValue?.trim() || message;
+    }
+  }
 
   /**
  * Validator ensures that field only contains integers
@@ -210,7 +219,7 @@ export class ValidationPlugin {
     isScrt = isScrt === undefined ? false : isScrt;
     return (v: string) => {
       if (v && v !== "") {
-        if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/i.test(v) === false) {
+        if (/[a-z0-9]+@[a-z-_.0-9]+\.[a-z]{3}/i.test(v) === false) {
           return "Please use standard domain format, like ‘@mail.mil’"
         } else if (!isScrt && /^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i.test(v) === false) {
           return message || "Please use your .mil or .gov email address."

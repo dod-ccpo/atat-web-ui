@@ -6,6 +6,8 @@ import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
 import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import { FairOpportunityDTO } from "@/api/models";
+import { routeNames } from "@/router/stepper";
 
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
@@ -16,7 +18,8 @@ const actionHandlerNames = {
   confirmDeleteTravelAll: "confirmDeleteTravelAll",
   openTOSearchModal: "openTOSearchModal",
   startProvisioning: "startProvisioning",
-  didNotUseDapps: "didNotUseDapps"
+  didNotUseDapps: "didNotUseDapps",
+  writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
 }
 
 const actions =  {
@@ -29,6 +32,7 @@ const actions =  {
   [actionHandlerNames.openTOSearchModal]: openTOSearchModal,
   [actionHandlerNames.startProvisioning]: startProvisioning,
   [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
+  [actionHandlerNames.writeOwnSoleSourceCause]: writeOwnSoleSourceCause,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -42,6 +46,19 @@ function sampleAdditionalButtonAction(actionArgs: string[]) {
   // console.log("in action-handler: foo: " + foo + "bar: " + bar);
   AcquisitionPackage.sampleAdditionalButtonActionInStore(actionArgs);
   alert("\"Cancel\" will navigate to JWCC intro when completed.");
+}
+
+async function writeOwnSoleSourceCause() {
+  // eslint-disable-next-line camelcase
+  const fairOpp: FairOpportunityDTO = { write_own_sole_source_cause: "YES" };
+  await AcquisitionPackage.setFairOpportunity(fairOpp);
+  router.push({
+    name: routeNames.SoleSourceReview,
+    params: {
+      direction: "next"
+    },
+    replace: true
+  }).catch(() => console.log("avoiding redundant navigation"));
 }
 
 function clearCurrentContractInfo() {

@@ -10,6 +10,7 @@ import CorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/CorInfo.vue"
 import AcorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
 import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import DAPPSChecklist from "@/steps/01-AcquisitionPackageDetails/DAPPSChecklist.vue";
+import ContractingOfficeInfo from "@/steps/01-AcquisitionPackageDetails/ContractingOfficeInfo.vue";
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Evaluation Criteria
@@ -193,6 +194,8 @@ import {
   IGCETrainingPathResolver,
   FeeChargedResolver,
   showDITCOPageResolver,
+  ContractingInfoResolver,
+  CrossDomainResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -312,7 +315,8 @@ export const routeNames = {
   UploadSignedDocuments:"Upload_Signed_Documents",
   ReadyToSubmit:"Ready_To_Submit",
   UnderReview:"Under_Review",
-  DAPPSChecklist:"DAPPSChecklist"
+  DAPPSChecklist:"DAPPSChecklist",
+  ContractingOfficeInfo:"Contracting_Office_Info"
 };
 
 /**
@@ -352,6 +356,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         component: ContractingShop
+      },{
+        menuText: "Contracting Office Info",
+        path: "contracting-office-info",
+        name: routeNames.ContractingOfficeInfo,
+        routeResolver:ContractingInfoResolver,
+        completePercentageWeight: 0,
+        completed: false,
+        excludeFromMenu: true,
+        component: ContractingOfficeInfo
       },
       {
         menuText: "Project Overview",
@@ -476,6 +489,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        additionalButtons: [
+          {
+            buttonText: "I want to write my own explanation",
+            buttonId: "WriteOwnSoleSourceCause",
+            buttonClass: "secondary",
+            actionName: "writeOwnSoleSourceCause",
+          },
+        ]
       },
       {
         menuText: "Sole Source Review",
@@ -719,6 +740,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnEnter: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: CrossDomain,
+        routeResolver: CrossDomainResolver
       },
     ]
   },
@@ -1185,14 +1207,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: FeeCharged,
         routeResolver: FeeChargedResolver,
       },
-      // {
-      //   menuText: "Cost Summary",
-      //   excludeFromMenu: true,
-      //   path: "cost-summary",
-      //   name: routeNames.CostSummary,
-      //   completePercentageWeight: 1,
-      //   component: CostSummary
-      // },
+      {
+        menuText: "Cost Summary",
+        excludeFromMenu: true,
+        path: "cost-summary",
+        name: routeNames.CostSummary,
+        completePercentageWeight: 1,
+        component: CostSummary
+      },
       {
         menuText: "Estimates Developed",
         excludeFromMenu: true,

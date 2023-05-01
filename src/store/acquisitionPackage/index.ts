@@ -32,6 +32,7 @@ import {
   FundingRequirementDTO,
   RegionsDTO,
   PackageDocumentsSignedDTO,
+  AddressDTO
 } from "@/api/models";
 
 import { 
@@ -76,7 +77,8 @@ export const StoreProperties = {
   CurrentEnvironment: "currentEnvironment",
   ContractConsiderations: "contractConsiderations",
   Regions:"regions",
-  PackageDocumentsSigned:"packageDocumentsSigned"
+  PackageDocumentsSigned:"packageDocumentsSigned",
+  ContractingShopNonDitcoAddress:"contractingShopNonDitcoAddress"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -138,6 +140,18 @@ const initialOrganization = () => {
     organization_name: "",
     agency: "",
     state: "",
+  };
+};
+const initialNonDitcoAddress = ():AddressDTO => {
+  return {
+    name: "",
+    address_type: "US",
+    street_address_1: "",
+    unit: "",
+    city: "",
+    zip_postal_code: "",
+    state_province_state_code: "",
+    country: "",
   };
 };
 
@@ -266,7 +280,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       // periods: store.periods,
       // periodOfPerformance: store.periodOfPerformance,
       sensitiveInformation: store.sensitiveInformation,
-      allowDeveloperNavigation: store.allowDeveloperNavigation
+      allowDeveloperNavigation: store.allowDeveloperNavigation,
+      contractingShopNonDitcoAddress: store.contractingShopNonDitcoAddress
     })
   );
 };
@@ -373,6 +388,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   packageCreator: User = {};
+  contractingShopNonDitcoAddress: AddressDTO | null = null;
   @Mutation
   public doSetPackageCreator(user: User): void {
     this.packageCreator = user;
@@ -754,7 +770,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public getInitialFairOpportunity() {
+  public getInitialFairOpportunity(): FairOpportunityDTO {
     return initialFairOpportunity();
   }
   @Mutation
@@ -810,6 +826,12 @@ export class AcquisitionPackageStore extends VuexModule {
       ? Object.assign(this.sensitiveInformation, value)
       : value;
   }
+  @Mutation
+  public setContractingShopNonDitcoAddress(value: AddressDTO): void {
+    this.contractingShopNonDitcoAddress = this.contractingShopNonDitcoAddress
+      ? Object.assign(this.contractingShopNonDitcoAddress, value)
+      : value;
+  }
 
   // @Mutation
   // public setPeriods(value: PeriodDTO[]): void {
@@ -861,10 +883,35 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.projectTitle;
   }
 
-  @Mutation
-  public setFairOpportunity(value: FairOpportunityDTO): void {
-    this.fairOpportunity = value;
+  @Action({rawError: true})
+  public async setFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+    this.doSetFairOpportunity(value);
+    if (this.initialized) {
+      if (this.fairOpportunity && this.fairOpportunity.sys_id) {
+        await api.fairOpportunityTable.update(
+          this.fairOpportunity.sys_id,
+          this.fairOpportunity
+        );
+        await this.doSetFairOpportunity(value);
+      } else if (this.fairOpportunity && !this.fairOpportunity.sys_id) {
+        const savedObj = await api.fairOpportunityTable.create(this.fairOpportunity);
+        if (savedObj.sys_id) {
+          await this.doSetFairOpportunity(savedObj);
+          await this.updateAcquisitionPackage();
+        }
+      }
+    }
   }
+  @Mutation
+  public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+    this.fairOpportunity = this.fairOpportunity
+      ? Object.assign(this.fairOpportunity, value)
+      : value;
+    if (value.sys_id && this.acquisitionPackage && !this.acquisitionPackage.fair_opportunity) {
+      this.acquisitionPackage.fair_opportunity = value.sys_id as string;
+    }  
+  }
+
   @Mutation
   public setPackageDocumentsSigned(value: PackageDocumentsSignedDTO): void {
     const acquisition_package = typeof value.acquisition_package === "object"
@@ -892,10 +939,14 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.evaluationPlan || initialEvaluationPlan();
   }
 
-  @Action({rawError: true})
-  public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
-    return this.fairOpportunity;
+  public get getFairOpportunity(): FairOpportunityDTO | null {
+    return this.fairOpportunity || null;
   }
+  
+  // @Action({rawError: true})
+  // public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
+  //   return this.fairOpportunity;
+  // }
   @Action({rawError: true})
   public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
     return this.packageDocumentsSigned;
@@ -940,6 +991,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.classificationLevel = sessionData.classificationLevel;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
     this.regions = sessionData.regions
+    this.contractingShopNonDitcoAddress = sessionData.contractingShopNonDitcoAddress;
   }
 
   @Action({rawError: true})
@@ -995,6 +1047,8 @@ export class AcquisitionPackageStore extends VuexModule {
       const corSysId = acquisitionPackage.cor as string;
       const aCorSysId = acquisitionPackage.acor as string;
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
+      const ContractingShopNonDitcoAddressID =
+          acquisitionPackage.contracting_shop_non_ditco_address as string;
 
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -1011,6 +1065,7 @@ export class AcquisitionPackageStore extends VuexModule {
         cor: corSysId,
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
+        contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
       });
 
       if (acquisitionPackage.contributors) {
@@ -1096,7 +1151,6 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
       this.setPackagePercentLoaded(55);
-
       if(fairOppSysId) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(
           fairOppSysId
@@ -1133,6 +1187,16 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setSensitiveInformation(
           initialSensitiveInformation()
         );
+      }
+      if(ContractingShopNonDitcoAddressID){
+        const contractingShopNonDitcoAddress = await api.addressTable.retrieve(
+          ContractingShopNonDitcoAddressID
+        );
+        if(contractingShopNonDitcoAddress){
+          this.setContractingShopNonDitcoAddress(contractingShopNonDitcoAddress);
+        }
+      }else{
+        this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
       }
       this.setPackagePercentLoaded(70);
 
@@ -1319,7 +1383,7 @@ export class AcquisitionPackageStore extends VuexModule {
             acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
           }
           this.setPackagePercentLoaded(50);
-
+          this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
           // this.setPeriods([]);
           // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
@@ -1432,6 +1496,8 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractConsiderations]: api.contractConsiderationsTable,
     [StoreProperties.Regions]:api.regionsTable,
     [StoreProperties.PackageDocumentsSigned]:api.packageDocumentsSignedTable,
+    [StoreProperties.ContractingShopNonDitcoAddress]:api.addressTable,
+
   }
 
   //mapping store propertties name to acquisition package properties
@@ -1450,6 +1516,8 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractConsiderations]: "contract_considerations",
     [StoreProperties.Regions]: "regions",
     [StoreProperties.PackageDocumentsSigned]: "package_documents_signed",
+    [StoreProperties.ContractingShopNonDitcoAddress]: "contracting_shop_non_ditco_address",
+
   }
 
   @Action({ rawError: true })
@@ -2016,7 +2084,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.selectedAgency = { text: "", value: "" };
     this.selectedAgencyAcronym = "";
     this.showInviteContributorsModal = false;
-  
+    this.contractingShopNonDitcoAddress = null;
   }
 }
 

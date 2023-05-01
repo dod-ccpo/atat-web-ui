@@ -76,7 +76,7 @@ export class ContactDataStore extends VuexModule {
       return  {
 
         text: country.name,
-        value: country.iso3166_2,
+        value: country.sys_id,
       }
     })
   }
