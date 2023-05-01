@@ -248,7 +248,9 @@ export default class CostSummary extends Vue {
     const ditcoFee = this.costData.payload.ditco_fee
     const contratingFee = this.costData.payload.contracting_office_fee
     const grandTotal = this.costData.payload.grand_total_with_fee
-    this.createTableData(subTotalData,"false","Subtotal")
+    if(surgeData){
+      this.createTableData(subTotalData,"false","Subtotal")
+    }
     if(surgeData){
       this.createTableData(surgeData,"false",this.surgePercentage)
     }
@@ -258,7 +260,9 @@ export default class CostSummary extends Vue {
     }else if(contratingFee){
       this.createFeeData("contractingOffice",contratingFee,"false")
     }
-    this.createFeeData("grandTotal", grandTotal, "false")
+    if(ditcoFee || contratingFee){
+      this.createFeeData("grandTotal", grandTotal, "false")
+    }
     // this.createTableData(ditcoFee,"false","Ditco FEE")
   }
 
