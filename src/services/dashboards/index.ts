@@ -106,14 +106,7 @@ export class DashboardService {
     taskOrderNumber: string
   ): Promise<PortFolioDashBoardDTO> {
     try {
-      const taskOrderRequestConfig: AxiosRequestConfig = {
-        params: {
-          sysparm_query: `task_order_number=${taskOrderNumber}`,
-        },
-      };
-
-      const taskOrders = await api.taskOrderTable.all(taskOrderRequestConfig);
-      const taskOrder = taskOrders.length > 0 ? taskOrders[0] : undefined;
+      const taskOrder = await api.taskOrderTable.retrieve(taskOrderNumber);
 
       if (taskOrder === undefined) {
         throw new Error(
@@ -161,7 +154,7 @@ export class DashboardService {
       };
 
       const costs = await api.costsTable.all(costsRequestConfig);
-
+      // TODO - account for no cost data in AT-8734
       return {
         taskOrder,
         clins,

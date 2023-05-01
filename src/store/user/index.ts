@@ -10,11 +10,18 @@ import rootStore from "../index";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import api from "@/api";
 import Vue from "vue";
-import { AcquisitionPackageSummarySearchDTO, CompanyDTO, UserDTO } from "@/api/models";
-import AcquisitionPackageSummary from "../acquisitionPackageSummary";
 import { AxiosRequestConfig } from "axios";
 import { User } from "types/Global";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import {
+  AcquisitionPackageSummarySearchDTO, 
+  CompanyDTO,
+  PortfolioSummarySearchDTO, 
+  UserDTO 
+} from "@/api/models";
+import AcquisitionPackageSummary from "../acquisitionPackageSummary";
+import PortfolioSummary from "../portfolioSummary";
+
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
 
@@ -110,6 +117,35 @@ export class UserStore extends VuexModule {
 
     return userHasPackages;
   }
+
+  public userHasPortfolios = false;
+ 
+  @Action({rawError: true})
+  public async hasPortfolios(): Promise<boolean> {
+    const searchDTO:PortfolioSummarySearchDTO = {
+      role: "ALL",
+      fundingStatuses: [],
+      csps: [],
+      portfolioStatus: "",
+      sort: "DESCsys_updated_on",
+      limit: 1,
+      offset: 0
+    };
+
+    const portfolioData = await PortfolioSummary
+      .searchPortfolioSummaryList(searchDTO);
+    const hasPortfolios = portfolioData.total_count > 0;
+    await this.doSetUserHasPortfolios(hasPortfolios);
+    return this.userHasPortfolios;
+  }
+  @Mutation
+  public async doSetUserHasPortfolios(bool: boolean): Promise<void> {
+    this.userHasPortfolios = bool;
+  }
+  public get getUserHasPortfolios(): boolean {
+    return this.userHasPortfolios;
+  }
+
 
   @Action({rawError: true})
   async ensureInitialized(): Promise<void> {
