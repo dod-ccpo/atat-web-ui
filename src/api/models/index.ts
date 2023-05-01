@@ -712,6 +712,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   csp: ReferenceColumn;
   active_task_order: ReferenceColumn;
   csp_display: string; // "<<cloud_service_package.name >>"
+  vendor: CSP;
   dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
   sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
