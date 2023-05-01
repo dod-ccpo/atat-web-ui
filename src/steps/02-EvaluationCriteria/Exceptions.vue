@@ -46,7 +46,7 @@
                 v-if="evalAlertDisplay"
               id="JandAMMRWarningAlert"
               :type="evalAlertType"
-              :showIcon="false"
+              :showIcon="true"
               class="copy-max-width my-10"
             >
               <template v-slot:content>
