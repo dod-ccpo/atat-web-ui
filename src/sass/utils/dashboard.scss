@@ -1,5 +1,5 @@
 ._dashboard {
-  &._funding-dashboard{
+  &._funding-dashboard:not(.bg-white){
     .v-main__wrap {
       background-color: $base-lightest;
     }

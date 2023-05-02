@@ -7,10 +7,14 @@
           View details about the task orders associated with your portfolio
           below. You can request to modify an active task order to exercise an
           option or to change CLIN funding and period of performance details.
+          <!--
           You can also add a new task order to continue funding your cloud
           resources and support for this portfolio.
+          -->
         </p>
+        <!-- 
         <v-btn outlined class="ml-10 secondary"> Add a new task order </v-btn>
+        -->
       </div>
       <TaskOrderCard
         :isHistory="false"
@@ -37,7 +41,7 @@ import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOr
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
 import { createDateStr, getStatusLabelFromValue, toCurrencyString } from "@/helpers";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({
   components: {
@@ -56,7 +60,7 @@ export default class TaskOrder extends Vue {
    */
 
   public async loadOnEnter(): Promise<void> {
-    this.activeTaskOrderNumber = PortfolioData.activeTaskOrderNumber;
+    this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     const portfolioSummaryList = 
       await PortfolioSummary.getAllPortfolioSummaryList() as unknown as PortfolioSummaryDTO[];
     if (portfolioSummaryList !== null){

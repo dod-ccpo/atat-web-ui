@@ -31,15 +31,15 @@
         </span>
 
         <v-btn 
-          @click="$emit('next')" 
+          @click="continueClicked()" 
           v-if="!hideContinueButton"
           depressed 
-          :color="this.continueButtonText === 'Continue' || 'Submit my acquisition package'
-          ? 'primary' : 'secondary'"
+          :color="continueButtonColor
+            || this.continueButtonText === 'Continue'? 'primary' : 'secondary'"
           role="link" 
           class="ml-4"
           id="ContinueButton"
-          :disabled="disableContinueButton"
+          :disabled="disableContinue"
         >
           {{ continueButtonText }}
         </v-btn>
@@ -62,12 +62,22 @@ export default class ATATStepperNavigation extends Vue {
   @Prop({ default: false }) private noPrevious?: boolean;
   @Prop({ default: "stepperNavigation" }) private id?: string;
   @Prop({ default: false }) private hideContinueButton?: boolean;
-  @Prop({ default: false }) private disableContinueButton?: boolean;
+  @Prop({ default: false }) private disableContinue!: boolean;
+  @Prop({ default: "" }) private continueButtonColor?: string;
+  @Prop({ default: "" }) private altContinueAction?: string;
 
   private getButtonClass(button: AdditionalButton) {
     return button.buttonClass || "secondary";
   }
 
+
+  private continueClicked(): void {
+    if (!this.altContinueAction) {
+      this.$emit("next");
+    } else {
+      this.$emit("takeAltContinueAction");
+    }
+  }
 
 }
 </script>

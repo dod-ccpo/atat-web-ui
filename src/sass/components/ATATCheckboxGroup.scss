@@ -8,6 +8,18 @@
 ._checkbox-group-label {
   font-weight: 500;
   margin-bottom: 1.6rem !important;
+  font-size: 1.6rem !important;
+}
+
+._checkboxes {
+  &._inline {
+    display: flex;
+    .v-input--checkbox {
+      margin-right: 12px !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+  }
 }
 
 ._checkbox {
@@ -232,6 +244,7 @@
     padding-top: 2px;
   }
 }
+
 ._checkbox-focus {
   background: $primary-lighter !important;
   transform: scale(1) !important;
