@@ -64,10 +64,10 @@ describe("Test suite: Contract Details: E2E work flow",  () => {
     cy.verifyPageHeader(
       " What classification level(s) will be required for your cloud resources and/or services? "
     );
-    cy.selectCheckBoxes([contractDetails.level2,contractDetails.level5])
+    cy.selectCheckBoxes([contractDetails.level2])
     cy.btnClick(common.continueBtn, " Continue ");    
     // Cross domain page& security req page  is skipped 
-    cy.waitUntilElementIsGone(contractDetails.level4);
+    cy.waitUntilElementIsGone(contractDetails.level2);
     cy.verifyPageHeader(
       "Do you have a current contract for this effort?"
     );
