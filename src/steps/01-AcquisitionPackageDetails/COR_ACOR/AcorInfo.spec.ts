@@ -17,7 +17,7 @@ describe("Testing AcorInfo Component", () => {
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
   localVue.use(validators);
 
-  const currentDontactData: ContactDTO = {
+  const mockCurrentDontactData: ContactDTO = {
     grade_civ: "",
     role: "",
     dodaac: "",
@@ -36,7 +36,7 @@ describe("Testing AcorInfo Component", () => {
     manually_entered: "",
   }
 
-  const savedDontactData: ContactDTO = {
+  const mockSavedDontactData: ContactDTO = {
     grade_civ: "",
     role: "",
     dodaac: "",
@@ -66,8 +66,8 @@ describe("Testing AcorInfo Component", () => {
       localVue
     });
 
-    wrapper.vm.$data.currentContactData = currentDontactData;
-    wrapper.vm.$data.savedContactData = savedDontactData;
+    wrapper.vm.$data.currentContactData = mockCurrentDontactData;
+    wrapper.vm.$data.savedContactData = mockSavedDontactData;
   });
 
   afterEach(() => {
