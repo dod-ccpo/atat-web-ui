@@ -79,6 +79,20 @@
                 </v-row>
               </div>
             </div>
+            <ATATAlert
+              id='removeCDSWarning'
+              type='warning'
+              :showIcon="false"
+              v-if="showCDSWarning"
+              :maxWidth='740'
+            >
+              <template v-slot:content>
+                <p class="mb-0">
+                  This action will delete the cross domain requirements that you have previously 
+                  entered.
+                </p>
+              </template>
+            </ATATAlert>
           </v-col>
         </v-row>
       </v-container>
@@ -103,13 +117,15 @@ import { createPeriodCheckboxItems } from "@/helpers";
 import Periods from "@/store/periods";
 
 import ClassificationRequirements from "@/store/classificationRequirements";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
     AnticipatedDurationandUsage,
     ATATRadioGroup,
     ATATTextField,
-    ATATCheckboxGroup
+    ATATCheckboxGroup,
+    ATATAlert
   }
 })
 export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
@@ -122,6 +138,8 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     anticipatedNeedUsage: "",
     selectedPeriods: []
   }
+
+  private removeCDS = false
 
   public selectedCDSCheckboxItems: Checkbox[] = [];
 
@@ -144,6 +162,14 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
 
   public cdsSolutionLabelHelpText = `For each selection, enter the approximate quantity of 
     data that you expect to transfer between domains each month.`;
+
+  @Watch("domainInfo.crossDomainSolutionRequired")
+  public updateCDSRequired(): void {
+    if(this.domainInfo.crossDomainSolutionRequired === "NO" && 
+      ClassificationRequirements.cdsSolution?.cross_domain_solution_required === "YES"){
+      this.removeCDS = true;
+    }
+  }
 
   @Watch("selectedCDSCheckboxItems")
   public updateSelectedCDSCheckboxItems(): void {
@@ -189,6 +215,9 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     this.domainInfo.solutionType = solutionTypeData;
   }
 
+  public get showCDSWarning(): boolean {
+    return this.removeCDS ? true: false
+  }
   protected async loadOnEnter(): Promise<boolean> {
     const periods = await Periods.loadPeriods();
     this.isPeriodsDataMissing = (periods && periods.length === 0);
@@ -327,8 +356,13 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     return true;
   }
 
+
   protected async saveOnLeave(): Promise<boolean> {
-    await ClassificationRequirements.setCdsSolution(this.domainInfo);
+    if(this.removeCDS){
+      await ClassificationRequirements.removeCdsSolution()
+    }else{
+      await ClassificationRequirements.setCdsSolution(this.domainInfo);
+    }
     return true;
   }
 }

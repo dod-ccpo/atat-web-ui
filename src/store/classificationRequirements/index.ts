@@ -428,6 +428,20 @@ export class ClassificationRequirementsStore extends VuexModule {
     });
   }
 
+  @Action({rawError: true})
+  public async removeCdsSolution(): Promise<void> {
+
+    const cdsSolution: CrossDomainSolution = {
+      crossDomainSolutionRequired: "NO",
+      entireDuration: "",
+      anticipatedNeedUsage: "",
+      solutionType: [],
+      projectedFileStream: "",
+      selectedPeriods: [""]
+
+    }
+    await this.setCdsSolution(cdsSolution)
+  }
 
   @Mutation
   private doSetCdsSolution(value: CrossDomainSolutionDTO): void {
