@@ -869,9 +869,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   public get DOWSecReqOfferingName(): string {
     // returns current service offering if tactical edge,
     // or group name if other offering
-    if (this.currentGroupId === "EDGE_COMPUTING") {
-      return this.currentOfferingName;
-    }
+    // if (this.currentGroupId === "EDGE_COMPUTING") {
+    //   return this.currentOfferingName;
+    // }
     const groupObj = this.serviceOfferingGroups.find(
       obj => obj.value === this.currentGroupId
     );
@@ -920,31 +920,33 @@ export class DescriptionOfWorkStore extends VuexModule {
       );
   
       if (groupObj) {
-        if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
+        if (!this.otherServiceOfferings.includes(this.currentGroupId)
+          && this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId)
+        ) {
           isXaaSGroup = true;
-          debugger;
           // only show security requirements page for XaaS offerings 
           // after leaving last selected offering
           const selectedEdgeOfferings = groupObj.serviceOfferings.map(obj => obj.name);
           const len = selectedEdgeOfferings.length;
           isLastXaaSOffering 
             = this.currentOfferingName === selectedEdgeOfferings[len - 1] ? true : false;
-
-          const highSideInstanceObjects = groupObj.serviceOfferings.filter(offering => {
-            return offering.classificationInstances?.filter(
-              instance => highSideSysIds.includes(instance.classificationLevelSysId) 
-            )
-          })
-          hasHighSideInstances = highSideInstanceObjects.length > 0;
-          debugger;
+          if (isLastXaaSOffering) {
+            groupObj.serviceOfferings.forEach(offering => {
+              offering.classificationInstances?.forEach((instance) => {
+                if (highSideSysIds.includes(instance.classificationLevelSysId)) {
+                  hasHighSideInstances = true;
+                }
+              });
+              debugger;
+            }) 
+          }
 
         } else if (groupObj.otherOfferingData) {
-          // check otherOfferingData object
-          // EJY note to self - some flawed logic here I believe
           const highSideInstanceObjects = groupObj.otherOfferingData.filter(
             obj => highSideSysIds.includes(obj.classificationLevel as string)
           );
           hasHighSideInstances = highSideInstanceObjects?.length > 0;
+          debugger;
         }
       }
     }
@@ -964,6 +966,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async saveSecurityRequirements(
     securityReqs: SecurityRequirement[],
   ): Promise<void> {
+    debugger;
     // pragma: allowlist secret
     const offeringGroupObj = this.DOWObject.find(
       obj => obj.serviceOfferingGroupId === this.currentGroupId

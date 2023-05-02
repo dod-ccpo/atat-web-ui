@@ -8,7 +8,7 @@
         cloud services and support, what type of classified information will be accessed?
       </span>
       <span v-if="isDOW">
-        advisory services, what type of classified information will contractor employees 
+        requirement(s), what type of classified information will contractor employees 
         be required to access?
       </span>
     </p>
@@ -20,7 +20,7 @@
       classification level.
     </p>
     <p v-if="isDOW" id="DOWMessageNote" class="mb-5">
-      Select all that apply to this support service.
+      Select all that apply to this category.
     </p>
 
     <ATATCheckboxGroup

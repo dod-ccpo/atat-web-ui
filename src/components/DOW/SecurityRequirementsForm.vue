@@ -5,7 +5,7 @@
         class="copy-max-width mb-10"
         id="ClearanceLevelRadio"
         legend="What clearance level is required for contractor employees to provide your
-         training?"
+         requirement(s)?"
         :items="clearanceLevels"
         :value.sync="_selectedClearanceLevel"
       />

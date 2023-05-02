@@ -9,7 +9,7 @@
           </h1>
           <div class="copy-max-width">
             <p class="mb-10" id="IntroP">
-              {{ offeringName }} services may require individuals to have a different clearance 
+              This category may require individuals to have a different clearance 
               and/or level of access to classified information compared to other 
               performance requirements. We pre-filled your security requirements 
               based on information you already provided, but you can edit options 
@@ -103,6 +103,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
+    debugger;
     try {
       if (this.hasChanged()) {
         await DescriptionOfWork.saveSecurityRequirements(this.currentData);
