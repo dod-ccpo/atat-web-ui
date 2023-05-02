@@ -2037,7 +2037,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await TaskOrder.reset();
     await ClassificationRequirements.reset();
     await EvaluationPlan.reset();
-
+    Steps.clearAltBackButtonText();
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
 
     this.doReset();
