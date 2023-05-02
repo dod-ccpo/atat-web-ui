@@ -906,7 +906,7 @@ Cypress.Commands.add("selectDatefromDatePicker", (ciSel,nmSel,selDateSel,calDate
   cy.findElement(ciSel).click();
   cy.findElement(nmSel).click({ force: true }).then(() => {
     cy.findElement(selDateSel).each(($el) => {
-      var dateName = $el.text()
+      const dateName = $el.text()
       if (dateName == calDate) {
         cy.wrap($el).click({ force: true })
       }
