@@ -894,6 +894,27 @@ Cypress.Commands.add("popLengthOptionYearExists", () => {
 
 });
 
+Cypress.Commands.add("defaultPoPLengthValue", (inputSelector,dropdownSelector) => {
+  cy.findElement(inputSelector).invoke('val').should('be.equal', "1");          
+  cy.findElement(dropdownSelector).then(($option) => {
+    const defaultOption = $option.text();    
+    cy.log(defaultOption)
+  }).should('have.text', "Year");      
+})
+
+Cypress.Commands.add("selectDatefromDatePicker", (ciSel,nmSel,selDateSel,calDate,dpSel) => {
+  cy.findElement(ciSel).click();
+  cy.findElement(nmSel).click({ force: true }).then(() => {
+    cy.findElement(selDateSel).each(($el) => {
+      var dateName = $el.text()
+      if (dateName == calDate) {
+        cy.wrap($el).click({ force: true })
+      }
+    });
+    cy.findElement(dpSel).should("not.visible");  
+  });
+});
+
 Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
   cy.findElement(sac.piiRadioOtionActive)
