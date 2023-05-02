@@ -147,7 +147,7 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
     = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
 
   public get isProdEnv(): boolean {
-    return AcquisitionPackage.isProdEnv as boolean;
+    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
   }
 
   /**
