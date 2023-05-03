@@ -177,21 +177,26 @@ export default class ContributorInviteModal extends Vue {
     return this.searchObj.searchResults.length > 0;
   }
 
-  public clearSearch(): void {
+  public async clearSearch(): Promise<void> {
     this.searchString = "";
     this.searchObj.alreadyInvited = false;
-    this.searchObj.searchResults = [];
+    await this.clearResults();
   }
 
   @Watch("searchString")
-  public searchStringChanged(newVal: string, oldVal: string): void {
+  public async searchStringChanged(newVal: string, oldVal: string): Promise<void> {
     if (newVal !== oldVal && newVal.trim().length > 2) {
       this.searchObj.noResults = false;
       this.searchObj.alreadyInvited = false
       this.onUserSearchValueChange(newVal);
     } else {  
-      this.searchObj.searchResults = [];      
+      await this.clearResults();
     }
+  }
+
+  public async clearResults(): Promise<void> {
+    this.searchObj.searchResults = [];      
+    await UserManagement.doResetAbortController();
   }
 
   /**
@@ -200,9 +205,8 @@ export default class ContributorInviteModal extends Vue {
    */
   public onUserSearchValueChange = _.debounce(async (newValue: string) => {
     if (!this.isSearching) {
-      await UserManagement.doResetAbortController();
       this.isSearching = true;
-      this.searchObj.searchResults = [];
+      await this.clearResults();
       this.searchObj.isLoading = true;
       const response = await UserManagement.searchUserByNameAndEmail(newValue)
       this.searchObj.searchResults = response.map(userSearchDTO => {
