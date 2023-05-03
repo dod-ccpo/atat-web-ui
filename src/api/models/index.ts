@@ -238,12 +238,16 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   cause_product_feature_why_essential?: string;
   cause_product_feature_why_others_inadequate?: string;
   // END cause of sole source form fields 
-
-  write_own_sole_source_cause?: YesNo; // TODO: ADD TO SNOW
+ 
   cause_of_sole_source_situation?: string; // summary of cause fields
+  cause_of_sole_source_situation_is_custom?: YesNo;
 
   why_csp_is_only_capable_source?: string;
+
   procurement_discussion?: string;
+  procurement_has_existing_env: YesNo;
+  procurement_previous_impact: string;
+
   requirement_impact?: string;
   contract_action?: "" | "UCA " | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE";
 
@@ -266,7 +270,8 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   // END market research efforts form
   
   market_research_details?: string; // summary of research fields
-  
+  market_research_details_is_custom?: YesNo;
+
   market_research_conducted_by?: string; // JSON object - array of name, title, organization
   
   other_facts_to_support_logical_follow_on?: YesNo;
@@ -280,6 +285,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   barriers_j_a_prepared_results?: string;
 
   barriers_plans_to_remove_barriers?: string; // summary of barriers fields
+  barriers_plans_to_remove_barriers_is_custom?: YesNo;
 
   technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
   technical_poc_sys_id?: string;
