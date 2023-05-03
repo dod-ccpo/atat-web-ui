@@ -195,6 +195,7 @@ export default class ContributorInviteModal extends Vue {
   }
 
   public async clearResults(): Promise<void> {
+    this.searchObj.isLoading = false;
     this.searchObj.searchResults = [];      
     await UserManagement.doResetAbortController();
   }
