@@ -315,23 +315,42 @@ export default class EnvironmentSummary extends Vue {
     const instanceData: Record<string, any> = _.clone(instance);
     let isValid = true;
     let requiredFields: string[] = [];
-    requiredFields = [
-      "instance_location",
-      "classification_level",
-      "current_usage_description",
-      "users_per_region",
-      "operating_system",
-      "licensing",
-      "number_of_vcpus",
-      "processor_speed",
-      "memory_amount",
-      "storage_type",
-      "storage_amount",
-      "performance_tier",
-      "number_of_instances",
-      "data_egress_monthly_amount",
-      "pricing_model",
-    ];
+    if (instanceData.instance_location === "ON_PREM") {
+      requiredFields = [
+        "instance_location",
+        "classification_level",
+        "current_usage_description",
+        "users_per_region",
+        "operating_system",
+        "licensing",
+        "number_of_vcpus",
+        "processor_speed",
+        "memory_amount",
+        "storage_type",
+        "storage_amount",
+        "performance_tier",
+        "number_of_instances",
+        "data_egress_monthly_amount"
+      ];
+    } else {
+      requiredFields = [
+        "instance_location",
+        "classification_level",
+        "current_usage_description",
+        "users_per_region",
+        "operating_system",
+        "licensing",
+        "number_of_vcpus",
+        "processor_speed",
+        "memory_amount",
+        "storage_type",
+        "storage_amount",
+        "performance_tier",
+        "number_of_instances",
+        "data_egress_monthly_amount",
+        "pricing_model",
+      ];
+    }
     requiredFields.forEach((field) => {
       if (instanceData[field] === "") {
         isValid = false;
