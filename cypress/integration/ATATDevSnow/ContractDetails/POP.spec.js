@@ -1,50 +1,56 @@
-import { bootstrapMockApis,cleanText,randomNumberBetween}from "../../../helpers";
-import common from "../../../selectors/common.sel"
+import {
+  bootstrapMockApis,
+  randomNumberBetween,
+  randomAlphaNumeric,
+  randomString
+} from "../../../helpers";
+import common from "../../../selectors/common.sel";
+import co from "../../../selectors/contractOffice.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
 
 describe("Test suite: Contract Details Step:Period of Performance substep", () => {
+  let pt = "TC-Step-3-ContractDetails-PoP length-" + randomAlphaNumeric(5);
+  let scope = "Project Scope-" + randomString(5);  
 
 
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
+    cy.selectDitcoOption(co.radioDITCO, "DITCO");
+    cy.textExists(common.stepAcquisitionText, " Acquisition Package Details ");
+    //Verify the Substeps are  visible
+    cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");    
+    cy.fillNewAcquisition(pt, scope);
+    cy.clickDevToggleBtn();
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.activeStep(common.stepContractDetailsText);
+    cy.verifyPageHeader("Let’s gather details about the duration of your task order");
   });
     
-  it("TC1: Period of Perfomance on the Vertical Stepper is active", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    //Verify the Substeps are  visible
-    cy.textExists(common.subStepPopText, " Period of Performance ");
-    cy.activeStep(common.stepContractDetailsText);
-    cy.activeStep(common.subStepPopText)      
-      .click();     
-      
-  });
-
-  it("TC2: Asserts: Let’s gather some details about the duration of your task order", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    cy.textExists(common.header,
-      " Let’s gather some details about the duration of your task order ");
-    const expectedPOPText = "Your Period of Performance (PoP) will begin based upon" +
-      " the execution date of your task order or on your requested start date, if applicable." +
-      " It will extend through the length of the base period, plus any subsequent option periods." +
-      " In the fields below, specify the length of time that each period will remain in effect." +
-      " Add, duplicate or remove option periods as needed, up to 5 years total." +
-      " Learn more about PoPs on the JWCC contract."
-    cy.findElement("p.mb-10").then(($el) => {
-      let actualTxt = $el.text();
-      cy.log(actualTxt);
-      const formattedTxt = cleanText(actualTxt)
-      expect(formattedTxt).equal(expectedPOPText);
-
-    });
+  
+  it("TC1: Asserts:  Let’s gather details about the duration of your task order", () => {
+    
+    const expectedPOPText = "Your Period of Performance (PoP) will begin based" +
+      " upon the execution date of your task order or on your requested start date," +
+      " if applicable. It will extend through the length of the base period," +
+      " plus any subsequent exercised option periods. In the fields below," +
+      " specify the required length of time for each period." +
+      " Add, duplicate or remove option periods as needed," +
+      " not to exceed five calendar years total. Learn more about PoPs on the JWCC contract."
+    cy.verifyTextMatches("p.mb-10", expectedPOPText);
 
     cy.findElement(contractDetails.popLearnMoreLink).should("exist");
     //assert the labels
     cy.textExists(contractDetails.popLengthLabelText, " Period of Performance length ");
     cy.textExists(contractDetails.baseLabelText, "Base");
     cy.findElement(contractDetails.baseInputTxtBox).should("exist");
+    //default base period
+    cy.defaultPoPLengthValue(
+      contractDetails.baseInputTxtBox,
+      contractDetails.baseDropdownDefault
+    );         
     cy.findElement(contractDetails.baseDropdownIcon).click();
     const expectedOptions = [
       "Year",
@@ -63,63 +69,71 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
         return foundDropdownItems === expectedOptions.length;
       });
     
-    cy.findElement(contractDetails.baseDropdownMonth).click();
-    //Enter the Value for Base
-    cy.findElement(contractDetails.baseInputTxtBox).type("12");
     cy.findElement(contractDetails.baseDuplicateButton).should("not.be.disabled");
     cy.findElement(contractDetails.baseDeleteButton).should("be.disabled");
     
     //Add an Option Link:
     cy.findElement(contractDetails.addOptionLink).should("exist").click();
-    cy.findElement(contractDetails.optionalTextBox).type("4");
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
-    cy.btnExists(common.backBtn, "Back").not("[disabled]");
+    //default option period
+    cy.defaultPoPLengthValue(
+      contractDetails.optionalTextBox,
+      contractDetails.optionOneDropdownDefault
+    );
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.waitUntilElementIsGone(contractDetails.baseInputTxtBox);
+    cy.verifyPageHeader(
+      " Do you want to request a PoP start date? "
+    );    
   });
 
-  it("TC3: Validations: Pop Length should not be able to exceed 5 years in total", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+  it("TC2: Validations: Pop Length should not exceed one year", () => {
+    let option;
     const showValidationMessage = (() => {
       cy.checkErrorMessage(contractDetails.errorMessageText,
-        " The total length of your base and option periods should be 5 years or less.");
+        " The length of this period must be "+ option +" or less.");
     });
-    //enter the Base value morethan 5 years 
-    cy.findElement(contractDetails.baseInputTxtBox).type("6").then(() => {
+    //enter the Base value morethan 1 years 
+    cy.findElement(contractDetails.baseInputTxtBox).clear().type("6").then(() => {
+      option = " 1 year ";
       showValidationMessage()
     });
-    //enter the base value and Option year more than 5 years
-    cy.findElement(contractDetails.baseInputTxtBox).clear().type("3");
-    cy.findElement(contractDetails.addOptionLink).should("exist").click();
-    cy.findElement(contractDetails.optionalTextBox).type("4").then(() => {      
-      showValidationMessage()
-    });
-    cy.findElement(contractDetails.baseDeleteButton).click();
-    //enter the base value morethan 5 years in months
+    //enter the base value 13 months
+    cy.findElement(contractDetails.baseInputTxtBox).clear().type("13")
     cy.findElement(contractDetails.baseDropdownIcon).click();
-    cy.findElement(contractDetails.baseDropdownMonth).click();
-    cy.findElement(contractDetails.baseInputTxtBox).clear().type("66")
-      .then(() => {
-        showValidationMessage()
-      });
-  });
-
-  it("TC4: Delete: Let’s gather some details about the duration of your task order", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    cy.popLengthOptionYearExists();    
-    cy.findElement(contractDetails.addOptionLink).click();
-    cy.popLengthOptionYearExists();
-    cy.findElement(contractDetails.baseDeleteButton).click();
+    cy.findElement(contractDetails.baseDropdownMonth).click().then(() => {
+      option = "12 months"
+      showValidationMessage()
+    });
+    //enter the base value more than 365 days
+    cy.findElement(contractDetails.baseInputTxtBox).clear().type("367")
+    cy.findElement(contractDetails.baseDropdownIcon).click();
+    cy.findElement(contractDetails.baseDropdownDays).click().then(() => {
+      option = "365 days"
+      showValidationMessage()
+    });
+    //enter the base value more than 52 weeks
+    cy.findElement(contractDetails.baseInputTxtBox).clear().type("55")
+    cy.findElement(contractDetails.baseDropdownIcon).click();
+    cy.findElement(contractDetails.baseDropdownWeek).click().then(() => {
+      option = "52 weeks"
+      showValidationMessage()
+    });
     
   });
 
-  it("TC5: Duplicate: Drag and Drop", () => {
-    // cy.hopOutOfIframe(true, true);
-    //cy.homePageClickAcquisitionPackBtn();
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+  it("TC3: Delete:  Let’s gather details about the duration of your task order", () => {   
+    cy.popLengthOptionYearExists();    
+    cy.findElement(contractDetails.addOptionLink).click();
+    cy.popLengthOptionYearExists();
+    cy.findElement(contractDetails.baseDeleteButton).click();    
+  });
+
+  it("TC4: Duplicate: Drag and Drop", () => {       
     cy.findElement(contractDetails.baseDropdownIcon).click();
     cy.findElement(contractDetails.baseDropdownMonth).click();
     //Enter the Value for Base
     const base = randomNumberBetween(1,12);
-    cy.findElement(contractDetails.baseInputTxtBox).type(base);
+    cy.findElement(contractDetails.baseInputTxtBox).clear().type(base);
     cy.findElement(contractDetails.baseDuplicateButton).click({force: true})
       .then(() => {
         cy.findElement(contractDetails.optionalTextBox).should("exist")
@@ -129,7 +143,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
       });
     cy.findElement(contractDetails.addOptionLink).should("exist").click();
     const option2 =randomNumberBetween(1,4);
-    cy.findElement(contractDetails.optionalTwoTextBox).type(option2);
+    cy.findElement(contractDetails.optionalTwoTextBox).clear().type(option2);
     cy.findElement(contractDetails.sourceItem)
       .drag(contractDetails.targetItem)
       .then((success) => {
@@ -142,61 +156,78 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     cy.findElement(contractDetails.baseInputTxtBox).should("have.value", option2);
   });
 
-  it("TC6: Asserts: Do you want to request a PoP start date?", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    cy.textExists(common.header,
-      " Let’s gather some details about the duration of your task order ");
+  it("TC5: Asserts: Do you want to request a PoP start date?", () => {
+    cy.findElement(contractDetails.addOptionLink).click();    
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, "Do you want to request a PoP start date?");
+    cy.waitUntilElementIsGone(contractDetails.baseInputTxtBox);
+    cy.verifyPageHeader(
+      " Do you want to request a PoP start date? "
+    );
+    
     const expectedstartText = "Due to project requirements and/or contractual obligations," +
       " your PoP may need to start on a specific date. If no date is specified," +
       " then your PoP will begin based upon the execution date of your task order."
-    cy.findElement(contractDetails.popText).then(($e) => {
-      let actualTxt = $e.text();
-      cy.log(actualTxt);
-      const formattedTxt = cleanText(actualTxt)
-      expect(formattedTxt).equal(expectedstartText);
-
-    });
+    cy.verifyTextMatches(contractDetails.popText,expectedstartText);    
     //assert radio button options
-    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").not("[disabled]")
-    cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NO").not("[disabled]")
+    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES")
+      .not("[disabled]").and("not.checked");
+    cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NO")
+      .not("[disabled]").and("not.checked")
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
-    cy.btnExists(common.backBtn, "Back").not("[disabled]");
+    cy.btnExists(common.backBtn, "Back").not("[disabled]").click();
+    cy.waitUntilElementIsGone(contractDetails.popStartDateNoRadioOption);
+    cy.verifyPageHeader(
+      " Let’s gather details about the duration of your task order "
+    );
+    cy.defaultPoPLengthValue(
+      contractDetails.baseInputTxtBox,
+      contractDetails.baseDropdownDefault
+    );
+    cy.defaultPoPLengthValue(
+      contractDetails.optionalTextBox,
+      contractDetails.optionOneDropdownDefault
+    );
   });
   
-  it("TC7: POP Start Date: Select Radio Option", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    cy.textExists(common.header,
-      " Let’s gather some details about the duration of your task order ");
+  it("TC6: POP Start Date: Select Radio Option", () => { 
+    cy.findElement(contractDetails.addOptionLink).click();
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, "Do you want to request a PoP start date?");
+    cy.waitUntilElementIsGone(contractDetails.baseInputTxtBox);
+    cy.verifyPageHeader(
+      " Do you want to request a PoP start date? "
+    );
     //Select Yes radio option
     cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NO").click({ force: true });
     cy.findElement(contractDetails.requestedStartDate).should("not.exist")
     cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").click({ force: true });
     cy.findElement(contractDetails.requestedStartDate).should("exist"); 
     cy.findElement(contractDetails.requestedStartDropdownIcon).click();
-    const listOptions = ["No sooner than","Not later than"]    
+    const listOptions = [
+      "No sooner than",
+      "Not later than"
+    ]    
     cy.verifyStringArray(contractDetails.requestedStartDropdownList, listOptions);
     cy.findElement(contractDetails.requestedStartDateNosoonerthan).click();
-    cy.findElement(contractDetails.calendarIcon).click();
-    cy.findElement(contractDetails.navigateNextMonth).click({force: true}).then(() => {
-      cy.findElement(contractDetails.selectDate).first().click({ force: true });
-      
-    }); 
+    cy.selectDatefromDatePicker(
+      contractDetails.calendarIcon,
+      contractDetails.navigateNextMonth,
+      contractDetails.selectDate,
+      "11",
+      contractDetails.datePicker
+    );
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
   });
 
-  it("TC8: POP Start Date: Requested Start date is Not later than",
-    () => {
-      cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-      cy.textExists(common.header,
-        " Let’s gather some details about the duration of your task order ");
+  it("TC7: POP Start Date: Requested Start date is Not later than",
+    () => {     
+      cy.findElement(contractDetails.addOptionLink).click();
       cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-      cy.textExists(common.header, "Do you want to request a PoP start date?");
-      //Select Yes radio option
-      cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NO").click({ force: true });
+      cy.waitUntilElementIsGone(contractDetails.baseInputTxtBox);
+      cy.verifyPageHeader(
+        " Do you want to request a PoP start date? "
+      );
+      
+      //Select Yes radio option      
       cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES")
         .click({ force: true });
       cy.findElement(contractDetails.requestedStartDropdownIcon).click();      
@@ -204,89 +235,71 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
       cy.findElement(contractDetails.requestedStartDateNotlaterthan).click().then(() => {
         cy.findElement(contractDetails.warningTextMessage).should("exist");
       }); 
-      const expectedWarningMessageText = "In the event that a JWCC contract option period is not" +
-        " exercised or is terminated/canceled prior to the end of the last anticipated option" +
-        " period in the JWCC contract schedule, any current task orders’ terms and conditions" +
-        " will be unaffected. All efforts will be made to accommodate your requested period of" +
-        " performance start date. However, there is no guarantee that the award will be made" +
-        " by said date. Normal contracting lead times and/or complexity of requirements may" +
+      const expectedWarningMessageText = "All efforts will be made to accommodate your requested" +
+        " period of performance start date. However, there is no guarantee that the award will be" +
+        " made by said date. Normal contracting lead times and/or complexity of requirements may" +
         " prevent meeting the requested date."
-      cy.findElement(contractDetails.warningTextMessage).then(($e) => {
-        let actualTxt = $e.text();
-        cy.log(actualTxt);
-        const formattedTxt = cleanText(actualTxt)
-        expect(formattedTxt).equal(expectedWarningMessageText);
-
-      });
-      cy.findElement(contractDetails.calendarIcon).click();
-      cy.findElement(contractDetails.navigateNextMonth).click({force: true}).then(() => {
-        cy.findElement(contractDetails.selectDate).first().click({ force: true });
-      
-      });
+      cy.verifyTextMatches(contractDetails.warningTextMessage,expectedWarningMessageText);      
+      cy.selectDatefromDatePicker(
+        contractDetails.calendarIcon,
+        contractDetails.navigateNextMonth,
+        contractDetails.selectDate,
+        "13",
+        contractDetails.datePicker
+      );
       cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+      cy.waitUntilElementIsGone(contractDetails.popStartDateYesRadioOption);
+      cy.verifyPageHeader("Will this be a recurring requirement?")
     });
   
-  it("TC9: Validations: POP Start Date", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    cy.textExists(common.header,
-      " Let’s gather some details about the duration of your task order ");
+  it("TC8: Validations: POP Start Date", () => {
+    cy.findElement(contractDetails.addOptionLink).click();
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, "Do you want to request a PoP start date?");   
+    cy.waitUntilElementIsGone(contractDetails.baseInputTxtBox);
+    cy.verifyPageHeader( "Do you want to request a PoP start date?");
     //radio button options not selected
-    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").focus().tab().tab()
+    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").focus();
+    cy.clickSomethingElse(contractDetails.popStartRadioError)
       .then(() => {
         cy.checkErrorMessage(
           contractDetails.popStartRadioError,
           "Please select an option"
         );
       });
-    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").click({ force: true });
-    cy.findElement(contractDetails.requestDatePicker).focus().tab()
-      .then(() => {
-        cy.checkErrorMessage(
-          contractDetails.requestDatePickerError,
-          "Please enter a valid date"
-        );
-      })
+    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES")
+      .click({ force: true }).then(() => {
+        cy.findElement("#RequestDateOption_dropdown_field_control").should("exist");
+        cy.findElement(contractDetails.requestDatePicker).focus().click();
+        cy.clickSomethingElse()
+          .then(() => {
+            cy.checkErrorMessage(
+              contractDetails.requestDatePickerError,
+              "Please enter a valid date"
+            );
+          });
+      });  
     
   });
 
-  it("TC10: Asserts: Will this be a future recurring requirement?", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+  it("TC9: Asserts: Will this be a recurring requirement?", () => {
+    cy.findElement(contractDetails.addOptionLink).click();
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.findElement(contractDetails.popRadioGroup).should("exist");
+    cy.waitUntilElementIsGone(contractDetails.baseInputTxtBox);
+    cy.verifyPageHeader( "Do you want to request a PoP start date?");
+    cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NO").click({ force: true });
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, " Will this be a future recurring requirement? ");
-    const expectedRecuringReqText = "DISA has developed a tracking system for expiring" +
-      " contracts. Responding YES to this question will enable contract" +
-      " specialists to populate the tracking system."
-    cy.findElement(contractDetails.recurringReqText).then(($e) => {
-      let actualTxt = $e.text();
-      cy.log(actualTxt);
-      const formattedTxt = cleanText(actualTxt)
-      expect(formattedTxt).equal(expectedRecuringReqText);
-
-    });
+    cy.waitUntilElementIsGone(contractDetails.popStartDateNoRadioOption);
+    cy.verifyPageHeader( "  Will this be a recurring requirement? ");    
     //assert radio button options
     cy.radioBtn(contractDetails.yesRadioOption,  "YES").not("[disabled]").click({force: true});
     cy.radioBtn(contractDetails.noRadioOption, "NO").not("[disabled]").click({force: true});
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
-    cy.btnExists(common.backBtn, "Back").not("[disabled]");
-  });  
-
-  it("TC11: Validations: Future Recurring Requirement", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.findElement(contractDetails.popRadioGroup).should("exist");
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    //radio button options not selected
-    cy.findElement(contractDetails.yesRadioOption).focus().not("checked").tab()
-      .not("checked").tab().then(() => {
-        cy.checkErrorMessage(
-          contractDetails.futureRecurringRadioError,
-          "Please select an option"
-        );
-      });
-  });
+    cy.waitUntilElementIsGone(contractDetails.yesRadioOption);
+    cy.verifyPageHeader("Which contract type(s) apply to this acquisition?");    
+    cy.btnExists(common.backBtn, "Back").not("[disabled]").click();
+    cy.verifyPageHeader("  Will this be a recurring requirement? ");
+    cy.waitUntilElementIsGone(contractDetails.ffpCheckBox);
+    cy.verifySelectedRadioOption(contractDetails.activeRadioOption, "No");
+  });    
 
 });
