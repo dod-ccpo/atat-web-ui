@@ -197,7 +197,7 @@ export default class ContributorInviteModal extends Vue {
   public async clearResults(): Promise<void> {
     this.searchObj.isLoading = false;
     this.searchObj.searchResults = [];      
-    UserManagement.triggerAbort();
+    await UserManagement.triggerAbort();
   }
 
   /**
@@ -226,7 +226,7 @@ export default class ContributorInviteModal extends Vue {
       this.searchObj.isLoading = false;
       this.isSearching = false;
     } else {
-      UserManagement.triggerAbort();
+      await UserManagement.triggerAbort();
       this.searchObj.searchResults = [];
       this.searchObj.noResults = false;
       this.searchObj.alreadyInvited = false;         
@@ -270,13 +270,13 @@ export default class ContributorInviteModal extends Vue {
   /**
    * Resets the state of the modal and all the properties.
    */
-  public onCancel(): void {
+  public async onCancel(): Promise<void> {
     this.searchString = "";
     this.searchObj.alreadyInvited = false;
     this.searchObj.searchResults = [];
     this.searchObj.noResults = false;
     this.searchObj.isLoading = false;
-    UserManagement.triggerAbort();    
+    await UserManagement.triggerAbort();    
   }
 
   @Watch("_showInviteModal")
