@@ -211,6 +211,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         acquisitionPackageSummaryList = [];
       }
       this.setAcquisitionPackageSummaryList(acquisitionPackageSummaryList); // caches the list
+      await this.setPackagesWaitingForTaskOrder();
       return {
         total_count: acquisitionPackageSummaryCount,
         acquisitionPackageSummaryList: acquisitionPackageSummaryList
@@ -218,6 +219,29 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     } catch (error) {
       throw new Error("error occurred searching acquisition package summary list :" + error);
     }
+  }
+
+  public packagesWaitingForTaskOrder = 0;
+  @Action({rawError: true})
+  public async setPackagesWaitingForTaskOrder(): Promise<void> {
+    const searchDTO:AcquisitionPackageSummarySearchDTO = {
+      acquisitionPackageStatus: "WAITING_FOR_TASK_ORDER",
+      searchString: "",
+      sort: "DESCsys_updated_on",
+      offset: 0
+    };
+    const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
+    let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO);
+    searchQuery = optionalSearchQuery + searchQuery;
+    const count = await this.getAcquisitionPackageSummaryCount(searchQuery);
+    this.doSetPackagesWaitingForTaskOrder(count);
+  }
+  @Mutation
+  public doSetPackagesWaitingForTaskOrder(count: number): void {
+    this.packagesWaitingForTaskOrder = count;
+  }
+  public get getPackagesWaitingForTaskOrderCount(): number {
+    return this.packagesWaitingForTaskOrder;
   }
 
   /**

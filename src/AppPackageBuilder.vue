@@ -22,11 +22,13 @@
           @next="navigate('next')"
           @previous="navigate('previous')"
           @additionalButtonClick="additionalButtonClick"
+          @takeAltContinueAction="takeAltContinueAction"
           :additionalButtons="additionalButtons"
           :backButtonText="backButtonText"
           :continueButtonText="continueButtonText"
+          :altContinueAction="altContinueAction"
           :hideContinueButton="hideContinueButton"
-          :disableContinueButton="disableContinueButton"
+          :disableContinue="disableContinueButton"
           :noPrevious="noPrevious"
           class="mb-8"
           :class="[currentRouteName === routeNames.DAPPSChecklist? 'mx-auto':'']"
@@ -71,7 +73,7 @@ import {
   isPathResolver
 } from "@/store/steps/helpers";
 
-import { buildStepperData, routeNames } from "./router/stepper";
+import { buildStepperData, routeNames, stepperRoutes } from "./router/stepper";
 import actionHandler from "./action-handlers/index";
 import AppSections from "./store/appSections";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -106,6 +108,7 @@ export default class AppPackageBuilder extends Vue {
   private noPrevious = false;
   private backButtonText = "Back";
   private continueButtonText = "Continue";
+  private altContinueAction = "";
   private altBackDestination = "";
   private hideContinueButton = false;
   private disableContinueButton = false;
@@ -114,6 +117,7 @@ export default class AppPackageBuilder extends Vue {
   private firstTimeVisit = false
 
   async mounted(): Promise<void> {
+    await Steps.setSteps(stepperRoutes);
     this.hideNavigation = AcquisitionPackage.hideNavigation;
     this.hideSideNavigation = AcquisitionPackage.hideSideNavigation;
     this.routeNames = routeNames;
@@ -190,20 +194,28 @@ export default class AppPackageBuilder extends Vue {
 
         return ;
       }
-      await this.$router.push({name: nextStepName as string, params: {direction}});
-    } else if (direction === "previous" && this.altBackDestination) {
-      await Steps.setAltBackDestination("");
-      switch (this.altBackDestination) {
-      case AppSections.sectionTitles.Home: {
-        await this.$router.push({name: "home", params: {direction}})
-        AppSections.changeActiveSection(AppSections.sectionTitles.Home);
-        break;
+
+      Steps.setAltBackDestination("");   
+      this.$router.push({ name: nextStepName as string, params: { direction } });
+
+    } else if (direction === "previous" && this.altBackDestination) { 
+      if (this.$route.name === this.routeNames.DAPPSChecklist && this.firstTimeVisit
+      || this.$route.name === this.routeNames.ContractingShop && !this.firstTimeVisit) {
+        await Steps.setAltBackDestination("");
+        switch (this.altBackDestination) {
+        case AppSections.sectionTitles.Home: {
+          await this.$router.push({name: "home", params: {direction}})
+          AppSections.changeActiveSection(AppSections.sectionTitles.Home);
+          break;
+        }
+        case AppSections.sectionTitles.Packages: {
+          await this.$router.push({name: "home", params: {direction}})
+          AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
+          break;
+        }
+        }
+
       }
-      case AppSections.sectionTitles.Packages: {
-        await this.$router.push({name: "home", params: {direction}})
-        AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
-        break;
-      }}
     }
   }
   public get currentRouteName():string|null|undefined{
@@ -240,6 +252,7 @@ export default class AppPackageBuilder extends Vue {
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
     this.continueButtonText = step.continueButtonText || "Continue";
+    this.altContinueAction = step.altContinueAction || "";
     if (step.stepName === routeNames.DOWSummary) {
       this.continueButtonText = DescriptionOfWork.currentDOWSection === "XaaS"
         ? "Wrap up XaaS requirements" : "Wrap up Cloud Support Package";
@@ -266,5 +279,12 @@ export default class AppPackageBuilder extends Vue {
       this.$router.push({ name: button.name });
     }
   }
+
+  private async takeAltContinueAction() {
+    if (this.altContinueAction) {
+      await actionHandler(this.altContinueAction, []);
+    }
+  }
+    
 }
 </script>

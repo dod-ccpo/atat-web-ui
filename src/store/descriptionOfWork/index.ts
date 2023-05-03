@@ -47,7 +47,7 @@ import _, { differenceWith, first, last } from "lodash";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "../acquisitionPackage";
 import Periods from "../periods";
-import IGCEStore from "@/store/IGCE";
+import IGCEStore, { createCostEstimateDescription } from "@/store/IGCE";
 import { 
   buildClassificationLabel, 
   toTitleCase, 
@@ -161,6 +161,10 @@ const saveOrUpdateClassificationInstance =
       tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
       tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
       tempObject.ts_contractor_clearance_type = classificationInstance.tsContractorClearanceType;
+      const dowTaskNumber = await createDOWTaskNumber(
+        classificationInstance.classificationLevelSysId as string, 
+        title, 
+      );
       if(classificationInstance.sysId)
         tempObject.sys_id = classificationInstance.sysId;
 
@@ -175,6 +179,7 @@ const saveOrUpdateClassificationInstance =
           classificationLevelSysId: classificationLevel,
           unit_quantity,
           description: tempObject.usage_description,
+          dow_task_number: dowTaskNumber
         });
       } else {
         const savedObject = await api.classificationInstanceTable.create(
@@ -187,7 +192,8 @@ const saveOrUpdateClassificationInstance =
           title: capitalizeEachWord(title, "_") + " - " + serviceOfferingName,
           description: classificationInstance.anticipatedNeedUsage,
           idiqClinType: "CLOUD",
-          unit_quantity
+          unit_quantity,
+          dow_task_number: dowTaskNumber
         });
       }
 
@@ -255,6 +261,12 @@ export const saveOrUpdateOtherServiceOffering =
       tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
       tempObject.instance_number = serviceOffering.instanceNumber;
 
+      const dowTaskNumber = await createDOWTaskNumber(
+          serviceOffering.classificationLevel as string, 
+          offeringType, 
+          serviceOffering.instanceNumber
+      );
+
       if(serviceOffering.sysId)
         tempObject.sys_id = serviceOffering.sysId;
       let title = serviceGroupVerbiageInfo[offeringType.toUpperCase()].offeringName;
@@ -276,7 +288,11 @@ export const saveOrUpdateOtherServiceOffering =
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
-            description:tempObject.anticipated_need_or_usage
+            dow_task_number: dowTaskNumber,
+            description: createCostEstimateDescription(
+              "compute",
+              serviceOffering
+            ),
           });
         } else {
           const savedObject = await api.computeEnvironmentInstanceTable.create(
@@ -292,7 +308,8 @@ export const saveOrUpdateOtherServiceOffering =
             otherServiceOfferingData: serviceOffering,
             offeringType,
             idiqClinType,
-            unit_quantity
+            unit_quantity,
+            dowTaskNumber
           });
         }
         break;
@@ -314,7 +331,11 @@ export const saveOrUpdateOtherServiceOffering =
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
-            description:tempObject.anticipated_need_or_usage
+            dow_task_number: dowTaskNumber,
+            description: createCostEstimateDescription(
+              "database",
+              serviceOffering
+            ),
           });
 
         } else {
@@ -331,7 +352,8 @@ export const saveOrUpdateOtherServiceOffering =
             otherServiceOfferingData: serviceOffering,
             offeringType,
             idiqClinType,
-            unit_quantity
+            unit_quantity,
+            dowTaskNumber
           });
         }
         break;
@@ -348,7 +370,11 @@ export const saveOrUpdateOtherServiceOffering =
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
-            description:tempObject.anticipated_need_or_usage
+            dow_task_number: dowTaskNumber,
+            description: createCostEstimateDescription(
+              "storage",
+              serviceOffering
+            ),
           });
         } else {
           const savedObject = await api.storageEnvironmentInstanceTable.create(
@@ -364,7 +390,8 @@ export const saveOrUpdateOtherServiceOffering =
             otherServiceOfferingData: serviceOffering,
             offeringType,
             idiqClinType,
-            unit_quantity
+            unit_quantity,
+            dowTaskNumber
           });
         }
         break;
@@ -381,7 +408,8 @@ export const saveOrUpdateOtherServiceOffering =
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
-            description:tempObject.anticipated_need_or_usage
+            description:tempObject.anticipated_need_or_usage,
+            dow_task_number: dowTaskNumber
           });
         } else {
           const savedObject = await api.xaaSEnvironmentInstanceTable.create(
@@ -398,7 +426,8 @@ export const saveOrUpdateOtherServiceOffering =
             otherServiceOfferingData: serviceOffering,
             offeringType,
             idiqClinType,
-            unit_quantity
+            unit_quantity,
+            dowTaskNumber
           });
         }
         break;
@@ -445,7 +474,8 @@ export const saveOrUpdateOtherServiceOffering =
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
-            description:tempObject.anticipated_need_or_usage
+            description:tempObject.anticipated_need_or_usage,
+            dow_task_number: dowTaskNumber
           });
 
         } else {
@@ -453,17 +483,19 @@ export const saveOrUpdateOtherServiceOffering =
                 tempObject as CloudSupportEnvironmentInstanceDTO
           );
           objSysId = savedObject.sys_id as string;
+          const isPortability = offeringType === "portability_plan";
           if (offeringType !== "training"){
             await IGCEStore.createIgceEstimateEnvironmentInstance({
               environmentInstanceSysId: objSysId,
               classificationLevelSysId: savedObject.classification_level,
               title: title,
               description: savedObject.anticipated_need_or_usage,
-              unit: offeringType === "portability_plan" ? "each" : "month",
+              unit: isPortability ? "each" : "month",
               otherServiceOfferingData: serviceOffering,
               offeringType,
               idiqClinType,
-              unit_quantity
+              unit_quantity,
+              dowTaskNumber: isPortability ? "4.3.1" : dowTaskNumber 
             });
           }
         }
@@ -476,6 +508,34 @@ export const saveOrUpdateOtherServiceOffering =
 
       return objSysId;
     };
+
+export const createDOWTaskNumber = async(
+  classificationLevel: string,
+  offeringType: string,
+  instanceNumber?: number
+): Promise<string> =>{
+  const classification = ClassificationRequirements.classificationLevels.find(
+    cr => cr.sys_id === classificationLevel
+  )
+
+  const offeringInfo = DescriptionOfWork.serviceOfferings.find(
+    so => so.service_offering_group.toUpperCase() === offeringType.toUpperCase()
+  )
+  const isXaas = offeringInfo?.offering_type === "XAAS_SERVICE";
+
+  let dow_task_number_component = offeringInfo?.dow_task_number_component
+  let section = isXaas ? "4.2" : "4.3";
+
+  if (offeringType === "general_xaas"){
+    dow_task_number_component = 11;
+    section = "4.2";
+  }
+  
+  return section +
+    "." + classification?.dow_task_number_component +
+    "." + dow_task_number_component +
+    "." + (isXaas ? "1" : instanceNumber);    
+}
 
 const mapClassificationInstanceFromDTO = (
   value: ClassificationInstanceDTO

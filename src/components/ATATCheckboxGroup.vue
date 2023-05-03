@@ -18,7 +18,7 @@
     <p v-if="groupLabelHelpText" class="text-base font-size-14 mb-3">
       {{ groupLabelHelpText }}
     </p>
-    <div class="_checkboxes">
+    <div class="_checkboxes" :class="{'_inline' : inline}">
       <v-checkbox
         v-for="(item, index) in _items"
         v-model="_selected"
@@ -32,6 +32,7 @@
           { '_has-text-fields': hasTextFields },
           { '_big-bold-label': boldText },
         ]"
+        :style="cardStyles"
         :key="id + '_' + item.value"
         :label="item.label"
         :value="item.value"
@@ -208,6 +209,8 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private hasTextFields?: boolean;
   @Prop({ default: false }) private boldText?: boolean;
   @Prop() private labelWidth?: string;
+  @Prop() private cardWidth?: string;
+  @Prop({ default: false }) private cardNormal?: boolean;
   @Prop() private labelFontSize?: string;
   @Prop() private labelFontWeight?: string;
   @Prop() private textFieldAppendText?: string;
@@ -217,6 +220,8 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private showIconWithMessage?: boolean;
   @Prop({ default: false }) private showPerformanceRequirementTotal?: boolean;
   @Prop({ default: false }) private validateOnLoad?: boolean;
+  @Prop({ default: false }) private inline?: boolean;
+
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -410,6 +415,10 @@ export default class ATATCheckboxGroup extends Vue {
         this.setEventListeners();
       });
     }
+  }
+  
+  public get cardStyles(): string {
+    return this.cardWidth ? `min-width: ${this.cardWidth}px; max-width: ${this.cardWidth}px;` : "";
   }
 
   public get labelStyles(): string {

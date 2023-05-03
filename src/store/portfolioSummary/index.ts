@@ -13,6 +13,7 @@ import Vue from "vue";
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
 import { Statuses } from "../acquisitionPackage";
+import CurrentUserStore from "../user";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
@@ -110,14 +111,15 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
     Promise<string> {
+    const currentUser = await CurrentUserStore.getCurrentUser();
+    const userSysId = currentUser.sys_id;
     let query = "";
     if (searchDTO.role === "ALL") {
       query = query +
-        "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356^OR" + // pragma: allowlist secret
-        "portfolio_viewersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+        `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
     } else { // "MANAGED"
       query = query +
-        "^portfolio_managersLIKEe0c4c728875ed510ec3b777acebb356"; // pragma: allowlist secret
+        `^portfolio_managersLIKE${userSysId}`;
     }
     query = query + "^portfolio_status!=ARCHIVED"
     query = query + "^ORDERBY" + searchDTO.sort;
@@ -135,7 +137,7 @@ export class PortfolioSummaryStore extends VuexModule {
     await this.ensureInitialized();
     const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_fields: 'name',
+        sysparm_fields: 'name,description',
         sysparm_query: searchQuery
       }
     };
@@ -195,21 +197,25 @@ export class PortfolioSummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    const cspSysIds = portfolioSummaryList.map(portfolio => portfolio.csp.value);
-    const allCspList = await api.cloudServiceProviderTable.getQuery(
-      {
-        params:
-          {
-            sysparm_fields: "sys_id,name",
-            sysparm_query: "sys_idIN" + cspSysIds
-          }
-      }
-    )
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.csp_display =
-        (allCspList.find(
-          (csp: CloudServiceProviderDTO) => portfolio.csp.value === csp.sys_id)?.name) || "";
-    });
+    
+    // TODO: AT-8744 - rewire CSPs to environments
+    // CSPs are no longer stored at the portfolio level - they are per environment   
+
+    // const cspSysIds = portfolioSummaryList.map(portfolio => portfolio.csp.value);
+    // const allCspList = await api.cloudServiceProviderTable.getQuery(
+    //   {
+    //     params:
+    //       {
+    //         sysparm_fields: "sys_id,name",
+    //         sysparm_query: "sys_idIN" + cspSysIds
+    //       }
+    //   }
+    // )
+    // portfolioSummaryList.forEach(portfolio => {
+    //   portfolio.csp_display =
+    //     (allCspList.find(
+    //       (csp: CloudServiceProviderDTO) => portfolio.csp.value === csp.sys_id)?.name) || "";
+    // });
   }
 
   /**
@@ -332,7 +338,11 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private computeAllAggregationsAndPopRollup(portfolioSummaryList: PortfolioSummaryDTO[]) {
     portfolioSummaryList.forEach(portfolio => {
-      portfolio.dod_component = 'ARMY' // FIXME: delete this line after API starts returning
+      
+      // TODO: after schema changes made for /provisioning POST call, use `portfolio.agency` 
+      // instead of `portfolio.dod_component`
+      portfolio.dod_component = 'ARMY' 
+
       let totalObligatedForPortfolio = 0;
       let fundsSpentForPortfolio = 0;
       portfolio.task_orders.forEach(taskOrder => {
@@ -402,13 +412,19 @@ export class PortfolioSummaryStore extends VuexModule {
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
       }
+
       const portfolioSummaryCount = await this.getPortfolioSummaryCount(searchQuery);
       let portfolioSummaryList: PortfolioSummaryDTO[];
       if (portfolioSummaryCount > 0) {
         portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
+
         // callouts to other functions to set data from other tables
         await this.setAlertsForPortfolios(portfolioSummaryList);
-        await this.setCspDisplay(portfolioSummaryList);
+        
+        // TODO: AT-8744 - rewire CSPs to environments
+        // CSP data is now stored at the environment level, not portfolio
+        // await this.setCspDisplay(portfolioSummaryList);
+
         await this.setTaskOrdersForPortfolios(portfolioSummaryList);
         await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
         await this.setCostsToTaskOrderClins(portfolioSummaryList);

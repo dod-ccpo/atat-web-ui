@@ -107,7 +107,7 @@ import {
   ToastObj,
   User
 } from "../../../../../types/Global";
-import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 
 import Toast from "@/store/toast";
 
@@ -160,7 +160,7 @@ export default class AddMembersModal extends Vue {
     if (newVal) {
       this.validEmailList = [];
       this.enteredEmails = [];
-      this.portfolioData = await PortfolioData.getPortfolioData();
+      this.portfolioData = await PortfolioStore.getPortfolioData();
       this.projectTitle = this.portfolioData.title || "New Acquisition";
       await this.setExistingMembers();
 
@@ -170,7 +170,7 @@ export default class AddMembersModal extends Vue {
         });
       }
     } else {
-      PortfolioData.setShowAddMembersModal(false);
+      PortfolioStore.setShowAddMembersModal(false);
     }
   }
 
@@ -507,7 +507,7 @@ export default class AddMembersModal extends Vue {
       role: this.selectedRole,
     }
 
-    await PortfolioData.saveMembers(newMembers);
+    await PortfolioStore.saveMembers(newMembers);
     this.$emit("members-invited")
   }
 
