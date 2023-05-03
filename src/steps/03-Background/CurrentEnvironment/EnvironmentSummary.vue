@@ -330,8 +330,10 @@ export default class EnvironmentSummary extends Vue {
       "performance_tier",
       "number_of_instances",
       "data_egress_monthly_amount",
-      "pricing_model",
     ];
+    if (instanceData.instance_location !== "ON_PREM") {
+      requiredFields.push("pricing_model");
+    }
     requiredFields.forEach((field) => {
       if (instanceData[field] === "") {
         isValid = false;
