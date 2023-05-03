@@ -199,7 +199,7 @@ export default class ContributorInviteModal extends Vue {
     if (!this.isSearching) {
       await UserManagement.doResetAbortController();
       this.isSearching = true;
-      this.searchObj.searchResults = [];
+      this.searchObj.searchResults.length = 0;
       this.searchObj.isLoading = true;
       const response = await UserManagement.searchUserByNameAndEmail(newValue)
       this.searchObj.searchResults = response.map(userSearchDTO => {
@@ -224,7 +224,7 @@ export default class ContributorInviteModal extends Vue {
       this.isSearching = false;
       this.onUserSearchValueChange(newValue);
     }
-  }, 500)
+  }, 1000)
 
   public removeSelectedUser(index: number): void {
     this.userSelectedList.splice(index, 1);

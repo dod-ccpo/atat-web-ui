@@ -29,11 +29,23 @@ export class UserManagementStore extends VuexModule {
    * for the use case instead of all the columns to protect user information.
    */
   @Action({rawError: true})
-  public async searchUserByNameAndEmail(searchBy: string):
+  public async searchUserByNameAndEmail(searchStr: string):
     Promise<UserSearchResultDTO[]> {
     try {
-      const searchQuery 
-        = `^nameLIKE${searchBy}^ORemailLIKE${searchBy}^emailISNOTEMPTY^active=true`;
+      // default - search email, first, and last name fields
+      // eslint-disable-next-line max-len
+      let searchQuery = `^first_nameSTARTSWITH${searchStr}^ORlast_nameSTARTSWITH${searchStr}^ORemailSTARTSWITH${searchStr}^emailISNOTEMPTY^active=true`;
+      
+      if (/^[A-Za-z0-9_.-]+@[A-Za-z0-9.-]+$/i.test(searchStr)) {
+        // complete valid email -- search email equals
+        searchQuery = `^email=${searchStr}^active=true`;
+      } else if (searchStr.includes("@")) {
+        // incomplete email - search email starts with
+        searchQuery = `^emailSTARTSWITH${searchStr}`;
+      } else if (searchStr.includes(" ")) {
+        // likely first and last name - search name starts with
+        searchQuery = `^nameSTARTSWITH${searchStr}`;
+      }
       const userSearchRequestConfig: AxiosRequestConfig = {
         signal: this.controller.signal,
         params: {
