@@ -180,6 +180,7 @@ export default class ContributorInviteModal extends Vue {
   public clearSearch(): void {
     this.searchString = "";
     this.searchObj.alreadyInvited = false;
+    this.searchObj.searchResults = [];
   }
 
   @Watch("searchString")
@@ -188,6 +189,8 @@ export default class ContributorInviteModal extends Vue {
       this.searchObj.noResults = false;
       this.searchObj.alreadyInvited = false
       this.onUserSearchValueChange(newVal);
+    } else {  
+      this.searchObj.searchResults = [];      
     }
   }
 
@@ -199,7 +202,7 @@ export default class ContributorInviteModal extends Vue {
     if (!this.isSearching) {
       await UserManagement.doResetAbortController();
       this.isSearching = true;
-      this.searchObj.searchResults.length = 0;
+      this.searchObj.searchResults = [];
       this.searchObj.isLoading = true;
       const response = await UserManagement.searchUserByNameAndEmail(newValue)
       this.searchObj.searchResults = response.map(userSearchDTO => {
