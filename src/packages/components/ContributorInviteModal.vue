@@ -195,8 +195,8 @@ export default class ContributorInviteModal extends Vue {
   }
 
   /**
-   * Starts searching 500 milliseconds after user changes the search value. Only
-   * searches if there are at least 3 characters in the newValue
+   * Starts searching 1 second after user pauses when entering a search value.
+   * Only searches if there are at least 3 characters in the newValue
    */
   public onUserSearchValueChange = _.debounce(async (newValue: string) => {
     if (!this.isSearching) {
