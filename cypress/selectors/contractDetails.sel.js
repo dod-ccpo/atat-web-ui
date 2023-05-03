@@ -8,6 +8,7 @@ module.exports = {
   baseLabelText: "#BaseRow .duration",
   baseInputTxtBox: "#BaseDuration_text_field",
   baseDropdownIcon: "#BaseDropdown_dropdown_field_control .v-input__control .v-input__append-inner",
+  baseDropdownDefault:"#BaseDropdown_dropdown_field_control .v-select__selections",
   baseDropdownList: "#BaseDropdown_dropdown_field_control  .v-list",
   baseDropdownYear: "#BaseDropdown_DropdownListItem_Year",
   baseDropdownMonth: "#BaseDropdown_DropdownListItem_Months",
@@ -21,6 +22,7 @@ module.exports = {
   optionalTextBox: "#Option1Duration_text_field",
   optionDropdownIcon: "#Option1Dropdown_dropdown_field_control .v-input__control" +
     " .v-input__append-inner",
+  optionOneDropdownDefault:"#Option1Dropdown_dropdown_field_control .v-select__selections",
   optionDropdownList: "#Option1Dropdown_dropdown_dropdown_field_control .v-list",
   optionDropdownYear: "#Option1Dropdown_DropdownListItem_Year",
   optionDropdownMonth: "#Option1Dropdown_DropdownListItem_Months",
@@ -42,10 +44,11 @@ module.exports = {
   requestedStartDropdownList:"#RequestDateOption_dropdown_field_control .v-list",
   requestedStartDateNosoonerthan: "#RequestDateOption_DropdownListItem_Nosoonerthan",
   requestedStartDateNotlaterthan: "#RequestDateOption_DropdownListItem_Notlaterthan",
-  warningTextMessage: "._atat-alert .mb-0",
+  warningTextMessage: "#RequestDateAlert .mb-0",
   requestDatePicker: "#RequestDatePickerDatePickerTextField",
   requestDatePickerError:"#RequestDatePickerDatePickerContainer .field-error",
   calendarIcon: "#RequestDatePickerDatePickerButtonIcon",
+  datePicker:"#RequestDatePickerDatePicker",
   navigateCalendar: ".v-date-picker-header i",
   navigateNextMonth: "button[aria-label='Next month']",
   selectDate: ".v-date-picker-table button:not(.v-btn--disabled)",
@@ -63,6 +66,7 @@ module.exports = {
   introPText: "#IntroP",
   farLink: "._text-link",
   selectMessageText: "#SelectMessage",
+  selectedContractTypeOption:"#ContractTypesCheckboxes input[type=checkbox]:checked",
   ffpCheckBox: "#Checkbox_FFPCheckbox",
   tmCheckBox: "#Checkbox_TMCheckbox",
   tmTextFieldLabel:"#JustificationForTM_text_field_label",
@@ -71,15 +75,21 @@ module.exports = {
   
   //What classification level(s) will be required for your cloud resources and /or services?
   selectMess: "#SelectMessage",
-  classCheckBoxes: "#ClassificationLevelCheckboxes",
+  classCheckBoxes: "#ClassificationLevelCheckboxes input[type=checkbox]",
+  checkedClassCheckBoxes:"#ClassificationLevelCheckboxes input[type=checkbox]:checked",
   level2: "#Checkbox_IL2",
   level4: "#Checkbox_IL4",
   level5: "#Checkbox_IL5",
   level6: "#Checkbox_IL6",
+  ts:"#Checkbox_TS",
   modalLevel2: "#Checkbox_IL2Modal",
   modalLevel4: "#Checkbox_IL4Modal",
   modalLevel5: "#Checkbox_IL5Modal",
   modalLevel6: "#Checkbox_IL6Modal",
   errorClassCheckBox: "#ClassificationLevelCheckboxes .field-error",
   alertMessage: "#ClassificationRequirementsAlert p",
+  activeCheckBox:"#ClassificationLevelCheckboxes .v-input--is-label-active",
+
+  //Cross Domain
+  cdsRadiogroup:"#needsCDSGroup_radio_group_control"
 }
